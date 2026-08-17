@@ -85,7 +85,7 @@ jobs:
 
   vocabulary-is-current:
     name: Platform Vocabulary Matches Grove
-    runs-on: macos-15
+    runs-on: blacksmith-6vcpu-macos-15
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@v7
@@ -110,7 +110,7 @@ jobs:
 
   emitted-resource-conformance:
     name: Grove Output Conforms to the Guides
-    runs-on: macos-15
+    runs-on: blacksmith-6vcpu-macos-15
     timeout-minutes: 75
     steps:
       - uses: actions/checkout@v7
