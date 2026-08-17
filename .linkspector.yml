@@ -21,8 +21,6 @@ ignorePatterns:
   # The initial Pages URL becomes reachable only after the first main-branch deployment.
   # Publisher validates every link within the generated implementation guides during this PR.
   - pattern: '^https://schmiedmayerlab\.github\.io/grove-fhir(/.*)?$'
-  # reuse.software does not index private repositories; remove this exception when the repo is public.
-  - pattern: '^https://api\.reuse\.software/(badge|info)/github\.com/SchmiedmayerLab/grove-fhir$'
 replacementPatterns:
   - pattern: '(.*)#gh-dark-mode-only'
     replacement: '$1'
