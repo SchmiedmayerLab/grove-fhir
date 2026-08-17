@@ -36,3 +36,16 @@ jobs:
         with:
           languages: python
       - uses: github/codeql-action/analyze@v4
+        with:
+          output: codeql-results
+          # Private repositories cannot upload without GitHub Advanced Security.
+          # Public repositories publish findings to the Security tab automatically.
+          upload: ${{ github.event.repository.private && 'never' || 'always' }}
+      - name: Upload CodeQL results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: codeql-results
+          if-no-files-found: error
+          retention-days: 14
+          path: codeql-results
