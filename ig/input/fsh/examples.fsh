@@ -174,12 +174,14 @@ Instance: PhoneSensorDevice
 InstanceOf: GroveSensorDevice
 Usage: #inline
 Title: "iPhone as the Recording Sensor"
-Description: "The phone hardware that counted the steps."
+Description: "The phone hardware that counted the steps. Its device type was inferred from the model identifier."
 * id = "sensor-device"
 * deviceName[userFriendlyName].name = "Leo's iPhone"
 * deviceName[userFriendlyName].type = #user-friendly-name
 * modelNumber = "iPhone17,2"
 * type = GroveDeviceType#phone "Phone"
+* type.coding[0].extension[0].url = Canonical(GroveInferredValue)
+* type.coding[0].extension[0].valueBoolean = true
 * version[hardware].type = $mdc#531974 "MDC_ID_PROD_SPEC_HW"
 * version[hardware].value = "iPhone17,2"
 
