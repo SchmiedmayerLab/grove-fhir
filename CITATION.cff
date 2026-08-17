@@ -1,0 +1,16 @@
+# This source file is part of the Grove FHIR open-source project
+#
+# SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTRIBUTORS.md)
+#
+# SPDX-License-Identifier: MIT
+
+cff-version: 1.2.0
+message: If you use this software, please cite it as below.
+type: software
+title: Grove FHIR
+authors:
+  - given-names: Paul
+    family-names: Schmiedmayer
+license: MIT
+url: https://github.com/SchmiedmayerLab/grove-fhir
+repository-code: https://github.com/SchmiedmayerLab/grove-fhir

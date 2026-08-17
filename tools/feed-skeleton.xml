@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/" version="2.0">
+  <channel>
+    <title>Grove Alliance FHIR Publications</title>
+    <description>FHIR packages published by the Grove Alliance</description>
+    <link>https://grovealliance.org/fhir</link>
+    <generator>Grove Alliance</generator>
+    <language>en</language>
+    <item>
+      <title>placeholder</title>
+      <description>Feed initialized; first real entry replaces this.</description>
+      <link>https://grovealliance.org/fhir</link>
+    </item>
+  </channel>
+</rss>

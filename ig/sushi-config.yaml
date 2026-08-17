@@ -1,0 +1,87 @@
+#
+# This source file is part of the Grove FHIR open-source project
+#
+# SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTRIBUTORS.md)
+#
+# SPDX-License-Identifier: MIT
+#
+
+id: org.grovealliance.fhir.core
+canonical: https://grovealliance.org/fhir/core
+name: GroveFHIRCore
+title: Grove FHIR Core
+description: >-
+  Platform-neutral FHIR profiles, extensions, and terminology for mobile health data:
+  how observations captured on phones and wearables carry their recording device,
+  gateway app, record identity, timing, and platform metadata — and how questionnaires
+  carry cross-platform input and rendering hints. Written by the Grove framework and
+  designed for any mobile health data source.
+status: draft
+version: 0.5.0
+fhirVersion: 4.0.1
+copyrightYear: 2022+
+releaseLabel: ci-build
+publisher:
+  name: Grove Alliance
+  url: https://grovealliance.org
+jurisdiction: http://unstats.un.org/unsd/methods/m49/m49.htm#001 "World"
+license: MIT
+
+dependencies:
+  # Pinned, not `dev`: `dev` means "the last local build on this computer", which no one
+  # else can resolve. Build platforms/ first and install its package.tgz into the package
+  # cache under this version — see README.md.
+  org.grovealliance.fhir.platforms:
+    version: 0.1.0
+    uri: https://grovealliance.org/fhir/platforms/ImplementationGuide/org.grovealliance.fhir.platforms
+  hl7.fhir.uv.sdc: 4.0.0
+  hl7.fhir.uv.extensions.r4: 5.3.0
+  hl7.fhir.uv.phd: 2.0.0
+
+# pin-canonicals disambiguates multi-version matches for extensions-pack canonicals.
+parameters:
+  pin-canonicals: pin-multiples
+
+menu:
+  Home: index.html
+  Consuming Grove Data: consuming.html
+  Provenance Model: provenance.html
+  Metadata Policy: metadata.html
+  Questionnaires: questionnaires.html
+  Renderer Support Matrix: questionnaire-support.html
+  Renderer Roadmap: questionnaire-roadmap.html
+  Sensor Streams: sensors.html
+  Dense Series: series.html
+  Identifiers: identifiers.html
+  Security and Privacy: security.html
+  Supersession: supersession.html
+  Change Log: changes.html
+  Artifacts: artifacts.html
+
+pages:
+  index.md:
+    title: Home
+  consuming.md:
+    title: Consuming Grove Data
+  provenance.md:
+    title: Provenance Model
+  metadata.md:
+    title: Metadata Policy
+  questionnaires.md:
+    title: Questionnaires
+  questionnaire-support.md:
+    title: Renderer Support Matrix
+  questionnaire-roadmap.md:
+    title: Renderer Roadmap
+  sensors.md:
+    title: Sensor Streams
+  series.md:
+    title: Dense Series
+  identifiers.md:
+    title: Identifiers
+  security.md:
+    title: Security and Privacy
+  supersession.md:
+    title: Supersession
+  changes.md:
+    title: Change Log

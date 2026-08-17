@@ -1,0 +1,26 @@
+{
+  "website": {
+    "style": "fhir.layout",
+    "url": "https://grovealliance.org",
+    "server": "cloud",
+    "org": "Grove Alliance",
+    "no-registry": true,
+    "clone-xml-json": false
+  },
+  "feeds": {
+    "package": "package-feed.xml",
+    "publication": "publication-feed.xml"
+  },
+  "layout-rules": [
+    {
+      "npm": "org.grovealliance.fhir.core",
+      "canonical": "https://grovealliance.org/fhir/core",
+      "destination": "/fhir/core"
+    },
+    {
+      "npm": "org.grovealliance.fhir.*",
+      "canonical": "https://grovealliance.org/fhir/*",
+      "destination": "/fhir/*"
+    }
+  ]
+}

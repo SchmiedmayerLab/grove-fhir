@@ -1,0 +1,77 @@
+#
+# This source file is part of the Grove FHIR open-source project
+#
+# SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTRIBUTORS.md)
+#
+# SPDX-License-Identifier: MIT
+#
+
+name: Documentation
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build GitHub Pages
+    runs-on: blacksmith-4vcpu-ubuntu-2404
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+          bundler-cache: false
+      - uses: actions/cache@v5
+        with:
+          path: |
+            ~/.fhir
+            .build/fhir-tools
+            .build/bundle
+            archive/v0-healthkit-shaped/input-cache
+            ig/input-cache
+            platforms/input-cache
+          key: fhir-pages-${{ runner.os }}-${{ hashFiles('Gemfile.lock', 'package-lock.json', 'Scripts/download-fhir-tools.sh') }}
+          restore-keys: |
+            fhir-pages-${{ runner.os }}-
+      - run: npm ci
+      - name: Build the documentation site
+        run: npm run pages:build
+      - name: Upload the Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: .build/pages
+
+  deploy:
+    name: Deploy GitHub Pages
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy documentation
+        id: deployment
+        uses: actions/deploy-pages@v4

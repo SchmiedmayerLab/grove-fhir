@@ -1,0 +1,26 @@
+version = 1
+
+# These formats cannot safely carry comments without changing their semantics or generated output.
+[[annotations]]
+path = [
+    "LICENSE.md",
+    "LICENSES/MIT.txt",
+    "Gemfile.lock",
+    "archive/v0-healthkit-shaped/ig.ini",
+    "archive/v0-healthkit-shaped/input/ignoreWarnings.txt",
+    "archive/v0-healthkit-shaped/publication-request.json",
+    "ig/input/ignoreWarnings.txt",
+    "ig/ig.ini",
+    "package-lock.json",
+    "package.json",
+    "platforms/input/ignoreWarnings.txt",
+    "platforms/ig.ini",
+    "tools/feed-skeleton.xml",
+    "tools/local-ig-registry.json",
+    "tools/publish-setup.json",
+    "tools/publish-templates/header.template",
+    "tools/publish-templates/postamble.template",
+    "tools/publish-templates/preamble.template"
+]
+SPDX-FileCopyrightText = "2026 Schmiedmayer Lab and the project authors (see CONTRIBUTORS.md)"
+SPDX-License-Identifier = "MIT"

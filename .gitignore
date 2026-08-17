@@ -1,0 +1,23 @@
+#
+# This source file is part of the Grove FHIR open-source project
+#
+# SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTRIBUTORS.md)
+#
+# SPDX-License-Identifier: MIT
+#
+
+.DS_Store
+node_modules/
+.build/
+.internal/
+__pycache__/
+
+# IG Publisher and SUSHI output. Everything here is reproducible from input/.
+**/output/
+**/temp/
+**/input-cache/
+**/template/
+**/fsh-generated/
+**/publish-temp/
+.bundle/
+ig/Requirements-fromNarrative.json
