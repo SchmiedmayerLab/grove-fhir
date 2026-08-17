@@ -12,6 +12,15 @@
 // Resource.identifier). Only concepts with no standard counterpart anywhere are minted
 // here; each definition names the standards it aligns with.
 
+Extension: GroveInferredValue
+Id: grove-inferred-value
+Title: "Inferred Value"
+Description: "Marks a coded value that Grove inferred from adjacent platform data rather than receiving directly from the source platform."
+* ^context[+].type = #element
+* ^context[=].expression = "Coding"
+* value[x] only boolean
+* valueBoolean 1..1
+
 Extension: GroveRecordingMethod
 Id: grove-recording-method
 Title: "Recording Method"
