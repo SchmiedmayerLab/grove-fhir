@@ -1,0 +1,17 @@
+{
+  "package-id": "org.grovealliance.fhir.core",
+  "version": "0.3.0",
+  "path": "https://grovealliance.org/fhir/core/0.3.0",
+  "mode": "milestone",
+  "status": "release",
+  "sequence": "Releases",
+  "desc": "First Grove-branded release of the Grove FHIR Core extensions.",
+  "first": true,
+  "title": "Grove FHIR Core Extensions",
+  "ci-build": "https://build.grovealliance.org/fhir/core",
+  "category": "Extensions",
+  "introduction": "FHIR extensions and terminology written by the Grove framework.",
+  "registry-description": "FHIR extensions and terminology written by the Grove framework",
+  "registry-country": "us",
+  "registry-authority": "Grove Alliance"
+}

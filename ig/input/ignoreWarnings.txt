@@ -1,0 +1,58 @@
+== Suppressed Messages ==
+
+# Grove has no CDA or OID-based exchange touchpoint; OIDs can be assigned via
+# auto-oid-root before a milestone publication if ever needed.
+The resource CodeSystem/grove-annotate-image-colors should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/fhir-tools-ig/CodeSystem-ig-parameters.html#ig-parameters-auto-oid-root)
+The resource CodeSystem/grove-autocapitalize should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/fhir-tools-ig/CodeSystem-ig-parameters.html#ig-parameters-auto-oid-root)
+The resource CodeSystem/grove-autocomplete-tokens should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/fhir-tools-ig/CodeSystem-ig-parameters.html#ig-parameters-auto-oid-root)
+The resource CodeSystem/grove-device-type should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/fhir-tools-ig/CodeSystem-ig-parameters.html#ig-parameters-auto-oid-root)
+The resource CodeSystem/grove-device-version-type should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/fhir-tools-ig/CodeSystem-ig-parameters.html#ig-parameters-auto-oid-root)
+The resource CodeSystem/grove-questionnaire-item-control should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/fhir-tools-ig/CodeSystem-ig-parameters.html#ig-parameters-auto-oid-root)
+The resource CodeSystem/grove-recording-method should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/fhir-tools-ig/CodeSystem-ig-parameters.html#ig-parameters-auto-oid-root)
+The resource ValueSet/grove-annotate-image-colors should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/fhir-tools-ig/CodeSystem-ig-parameters.html#ig-parameters-auto-oid-root)
+The resource ValueSet/grove-autocapitalize should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/fhir-tools-ig/CodeSystem-ig-parameters.html#ig-parameters-auto-oid-root)
+The resource ValueSet/grove-autocomplete-tokens should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/fhir-tools-ig/CodeSystem-ig-parameters.html#ig-parameters-auto-oid-root)
+The resource ValueSet/grove-device-type should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/fhir-tools-ig/CodeSystem-ig-parameters.html#ig-parameters-auto-oid-root)
+The resource ValueSet/grove-recording-method should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/fhir-tools-ig/CodeSystem-ig-parameters.html#ig-parameters-auto-oid-root)
+
+The resource CodeSystem/grove-sensorkit-concepts should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/fhir-tools-ig/CodeSystem-ig-parameters.html#ig-parameters-auto-oid-root)
+The resource CodeSystem/grove-sensorkit-values should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/fhir-tools-ig/CodeSystem-ig-parameters.html#ig-parameters-auto-oid-root)
+The resource CodeSystem/grove-sensor-batch-format should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/fhir-tools-ig/CodeSystem-ig-parameters.html#ig-parameters-auto-oid-root)
+The resource ValueSet/grove-sensor-batch-type should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/fhir-tools-ig/CodeSystem-ig-parameters.html#ig-parameters-auto-oid-root)
+The resource ValueSet/grove-platform-metadata-key should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/fhir-tools-ig/CodeSystem-ig-parameters.html#ig-parameters-auto-oid-root)
+The resource ValueSet/grove-sensor-batch-format should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/fhir-tools-ig/CodeSystem-ig-parameters.html#ig-parameters-auto-oid-root)
+The resource ValueSet/grove-visit-location-category should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/fhir-tools-ig/CodeSystem-ig-parameters.html#ig-parameters-auto-oid-root)
+The resource ValueSet/grove-wear-state should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/fhir-tools-ig/CodeSystem-ig-parameters.html#ig-parameters-auto-oid-root)
+The resource ValueSet/grove-wrist-side should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/fhir-tools-ig/CodeSystem-ig-parameters.html#ig-parameters-auto-oid-root)
+
+# SDC 4.0.0 itself links its item-control extension description to the retired 2025Jan
+# preview. The extension canonical and package are valid; this is an upstream narrative link.
+The link 'http://hl7.org/fhir/uv/sdc/2025Jan/rendering.html#itemControl' for "SDC implementation guide" cannot be resolved
+
+# Count-valued quantities deliberately use UCUM annotation codes ({steps}, {count}, ...):
+# the alternative is dropping UCUM entirely. Consumers compare on code, not annotation.
+%UCUM Codes that contain human readable annotations%
+
+# Nothing suppresses the platform code systems: they resolve from the
+# org.grovealliance.fhir.platforms dependency, and a build where they do not is a broken
+# build, not an expected one. Apple's documentation namespace is gone from this guide as
+# of 0.5.0 — do not re-add a suppression for it.
+
+# Grove identifier systems are minted and documented by this guide (Identifiers page);
+# they are identifier namespaces, not resolvable terminology resources. Listed one by
+# one rather than by prefix, so a typo in a system URL still shows up.
+No definition could be found for URL value 'https://grovealliance.org/fhir/sid/healthkit-sample-id'
+No definition could be found for URL value 'https://grovealliance.org/fhir/sid/health-connect-record-id'
+No definition could be found for URL value 'https://grovealliance.org/fhir/sid/sensorkit-sample-id'
+No definition could be found for URL value 'https://grovealliance.org/fhir/sid/apple-bundle-id'
+No definition could be found for URL value 'https://grovealliance.org/fhir/sid/android-application-id'
+No definition could be found for URL value 'https://grovealliance.org/fhir/sid/device-local-id'
+
+# The sensor-batch example carries a relative sidecar URL. Note that R4 resolves a
+# relative Attachment url against the service base, not against the enclosing upload, so
+# this suppression stands only until the example states its base explicitly.
+No definition could be found for URL value 'batches/device-usage-2026-08-12.csv.gz'
+
+# The passthrough example uses HL7's reserved example OID root as the institutional
+# identifier system; it is deliberately not a registered system.
+No definition could be found for URL value 'urn:oid:2.16.840.1.113883.19.5'

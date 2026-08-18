@@ -1,0 +1,28 @@
+#
+# This source file is part of the Grove FHIR open-source project
+#
+# SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTRIBUTORS.md)
+#
+# SPDX-License-Identifier: MIT
+#
+
+dirs:
+  - .
+useGitIgnore: true
+excludedDirs:
+  # These files are Publisher inputs whose links resolve only after FHIR artifacts are generated.
+  # The Publisher checks the rendered guides and reports broken links as build failures.
+  - archive/v0-healthkit-shaped/input/pagecontent
+  - ig/input/pagecontent
+  - platforms/input/pagecontent
+ignorePatterns:
+  - pattern: '^doc:.*$'
+  - pattern: '^http://localhost.*$'
+  # The initial Pages URL becomes reachable only after the first main-branch deployment.
+  # Publisher validates every link within the generated implementation guides during this PR.
+  - pattern: '^https://schmiedmayerlab\.github\.io/grove-fhir(/.*)?$'
+replacementPatterns:
+  - pattern: '(.*)#gh-dark-mode-only'
+    replacement: '$1'
+  - pattern: '(.*)#gh-light-mode-only'
+    replacement: '$1'

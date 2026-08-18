@@ -1,0 +1,58 @@
+#
+# This source file is part of the Grove FHIR open-source project
+#
+# SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTRIBUTORS.md)
+#
+# SPDX-License-Identifier: MIT
+#
+
+id: org.grovealliance.fhir.core
+canonical: https://grovealliance.org/fhir/core
+name: GroveFHIRCore
+title: Grove FHIR Core Extensions
+description: >-
+  FHIR extensions and terminology written by the Grove framework: provenance and
+  metadata of Observations created from Apple HealthKit samples, questionnaire
+  rendering hints for iOS clients, and the annotate-image questionnaire item control.
+status: draft
+version: 0.3.0
+fhirVersion: 4.0.1
+copyrightYear: 2022+
+releaseLabel: ci-build
+publisher:
+  name: Grove Alliance
+  url: https://grovealliance.org
+jurisdiction: http://unstats.un.org/unsd/methods/m49/m49.htm#001 "World"
+license: MIT
+
+# Sub-extension canonicals deliberately deviate from <canonical>/StructureDefinition/<id>:
+# Grove writes them as parent canonical + field name.
+parameters:
+  special-url:
+    - https://grovealliance.org/fhir/core/StructureDefinition/sourceDevice/name
+    - https://grovealliance.org/fhir/core/StructureDefinition/sourceDevice/manufacturer
+    - https://grovealliance.org/fhir/core/StructureDefinition/sourceDevice/model
+    - https://grovealliance.org/fhir/core/StructureDefinition/sourceDevice/hardwareVersion
+    - https://grovealliance.org/fhir/core/StructureDefinition/sourceDevice/firmwareVersion
+    - https://grovealliance.org/fhir/core/StructureDefinition/sourceDevice/softwareVersion
+    - https://grovealliance.org/fhir/core/StructureDefinition/sourceDevice/localIdentifier
+    - https://grovealliance.org/fhir/core/StructureDefinition/sourceDevice/udiDeviceIdentifier
+    - https://grovealliance.org/fhir/core/StructureDefinition/sourceRevision/source
+    - https://grovealliance.org/fhir/core/StructureDefinition/sourceRevision/source/name
+    - https://grovealliance.org/fhir/core/StructureDefinition/sourceRevision/source/bundleIdentifier
+    - https://grovealliance.org/fhir/core/StructureDefinition/sourceRevision/version
+    - https://grovealliance.org/fhir/core/StructureDefinition/sourceRevision/productType
+    - https://grovealliance.org/fhir/core/StructureDefinition/sourceRevision/OSVersion
+    - https://grovealliance.org/fhir/core/StructureDefinition/metadata/HKWasUserEntered
+    - https://grovealliance.org/fhir/core/StructureDefinition/metadata/HKMetadataKeyHeartRateMotionContext
+
+menu:
+  Home: index.html
+  Supersession: supersession.html
+  Artifacts: artifacts.html
+
+pages:
+  index.md:
+    title: Home
+  supersession.md:
+    title: Canonical URL Supersession

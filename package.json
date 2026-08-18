@@ -1,0 +1,17 @@
+{
+  "name": "grove-fhir",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Build and validation tooling for the Grove FHIR implementation guides",
+  "scripts": {
+    "build": "./Scripts/build-guides.sh",
+    "pages:build": "./Scripts/build-guides.sh && ./Scripts/assemble-pages.sh",
+    "test": "python3 Scripts/check-content.py && python3 -m unittest discover -s Tests -v"
+  },
+  "devDependencies": {
+    "fsh-sushi": "3.20.0"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
