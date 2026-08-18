@@ -24,7 +24,7 @@ permissions:
 jobs:
   build:
     name: Build GitHub Pages
-    runs-on: blacksmith-4vcpu-ubuntu-2404
+    runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v7

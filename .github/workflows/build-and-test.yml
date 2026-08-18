@@ -24,7 +24,7 @@ permissions:
 jobs:
   tooling:
     name: Repository and Tooling Tests
-    runs-on: blacksmith-4vcpu-ubuntu-2404
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-python@v6
@@ -37,7 +37,7 @@ jobs:
 
   guides:
     name: Build All Implementation Guides
-    runs-on: blacksmith-4vcpu-ubuntu-2404
+    runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v7
@@ -85,7 +85,7 @@ jobs:
 
   vocabulary-is-current:
     name: Platform Vocabulary Matches Grove
-    runs-on: blacksmith-6vcpu-macos-26
+    runs-on: macOS-26
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@v7
@@ -110,7 +110,7 @@ jobs:
 
   emitted-resource-conformance:
     name: Grove Output Conforms to the Guides
-    runs-on: blacksmith-6vcpu-macos-26
+    runs-on: macOS-26
     timeout-minutes: 75
     steps:
       - uses: actions/checkout@v7

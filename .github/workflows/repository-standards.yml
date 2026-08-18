@@ -22,8 +22,6 @@ jobs:
   standards:
     name: Standards
     uses: SchmiedmayerLab/.github/.github/workflows/repository-standards.yml@v0.5
-    with:
-      runs_on_labels: '["blacksmith-4vcpu-ubuntu-2404"]'
     permissions:
       contents: read
       pull-requests: read
