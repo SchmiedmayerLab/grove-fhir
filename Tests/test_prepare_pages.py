@@ -18,6 +18,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from Scripts import fhir_package_semantic_snapshot as SNAPSHOT
+
 
 ROOT = Path(__file__).parents[1]
 SCRIPT_PATH = ROOT / "Scripts/prepare-pages.py"
@@ -143,6 +145,118 @@ class PreparePagesTests(unittest.TestCase):
                 '<div xmlns="http://www.w3.org/1999/xhtml">'
                 '<a href="https://example.org/grove-fhir/fhir/mobile/ci-build/'
                 'StructureDefinition-example.html">profile</a></div>',
+            )
+
+    def test_publisher_dates_do_not_change_the_sanitized_semantic_baseline(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            archives: list[Path] = []
+            for name, package_date, resource_date in (
+                (
+                    "first",
+                    "20260819110517",
+                    "2026-08-19T11:05:17-07:00",
+                ),
+                (
+                    "second",
+                    "20260820120618",
+                    "2026-08-20T12:06:18+02:00",
+                ),
+            ):
+                archive = root / f"{name}.tgz"
+                generated = {
+                    "resourceType": "CodeSystem",
+                    "id": "generated",
+                    "url": "https://example.org/fhir/CodeSystem/generated",
+                    "status": "active",
+                    "content": "complete",
+                    "date": resource_date,
+                }
+                authored = {
+                    "resourceType": "PlanDefinition",
+                    "id": "authored",
+                    "url": "https://example.org/fhir/PlanDefinition/authored",
+                    "status": "active",
+                    "date": "2025-01-02T03:04:05Z",
+                }
+                index = {
+                    "index-version": 2,
+                    "files": [
+                        {
+                            "filename": "CodeSystem-generated.json",
+                            "resourceType": "CodeSystem",
+                            "id": "generated",
+                            "url": generated["url"],
+                        },
+                        {
+                            "filename": "PlanDefinition-authored.json",
+                            "resourceType": "PlanDefinition",
+                            "id": "authored",
+                            "url": authored["url"],
+                        },
+                    ],
+                }
+                internals = {
+                    "npm-name": "org.example.fhir",
+                    "date": (
+                        f"{package_date[:4]}-{package_date[4:6]}-{package_date[6:8]}"
+                    ),
+                    "date-time": f"{package_date}-0700",
+                }
+                self._write_package(
+                    archive,
+                    {
+                        "name": "org.example.fhir",
+                        "version": "0.1.0",
+                        "canonical": "https://example.org/fhir",
+                        "url": "file:///tmp/output",
+                        "date": package_date,
+                        "description": "Example package (built today)",
+                        "fhirVersions": ["4.0.1"],
+                        "dependencies": {},
+                    },
+                    {
+                        "package/.index.json": json.dumps(index).encode(),
+                        "package/CodeSystem-generated.json": json.dumps(
+                            generated
+                        ).encode(),
+                        "package/PlanDefinition-authored.json": json.dumps(
+                            authored
+                        ).encode(),
+                        "package/other/spec.internals": json.dumps(
+                            internals
+                        ).encode(),
+                    },
+                )
+                PREPARE_PAGES.rewrite_package_archive(
+                    archive,
+                    "https://example.org/fhir",
+                    1_700_000_000,
+                    repository_root=root,
+                    public_urls={},
+                    source_url="https://github.com/example/repository/tree/revision",
+                )
+                archives.append(archive)
+
+            self.assertEqual(archives[0].read_bytes(), archives[1].read_bytes())
+            first = SNAPSHOT.create_snapshot(archives[0])
+            second = SNAPSHOT.create_snapshot(archives[1])
+            self.assertEqual(first, second)
+            generated_resource = first["codeSystems"][
+                "https://example.org/fhir/CodeSystem/generated"
+            ]["resource"]
+            authored_resource = first["otherConformance"][
+                "https://example.org/fhir/PlanDefinition/authored"
+            ]["resource"]
+            self.assertNotIn("date", generated_resource)
+            self.assertEqual(authored_resource["date"], "2025-01-02T03:04:05Z")
+            with tarfile.open(archives[0], "r:gz") as package:
+                internals_file = package.extractfile("package/other/spec.internals")
+                self.assertIsNotNone(internals_file)
+                normalized_internals = json.load(internals_file)
+            self.assertEqual(normalized_internals["date"], "2023-11-14")
+            self.assertEqual(
+                normalized_internals["date-time"], "20231114221320+0000"
             )
 
     def test_package_sanitization_rejects_escaped_ansi_without_url_false_positive(self) -> None:

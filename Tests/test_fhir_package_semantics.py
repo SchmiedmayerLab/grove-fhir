@@ -365,6 +365,12 @@ class FHIRPackageSemanticTests(unittest.TestCase):
         sanitized = SNAPSHOT.sanitize_resource(code_system, "20260819070000")
         self.assertNotIn("date", sanitized)
 
+    def test_authored_datetime_near_build_clock_remains_semantic(self) -> None:
+        code_system = deepcopy(self._resources()["CodeSystem-measurements.json"])
+        code_system["date"] = "2026-08-19T07:00:01-07:00"
+        sanitized = SNAPSHOT.sanitize_resource(code_system, "20260819070000")
+        self.assertEqual(sanitized["date"], "2026-08-19T07:00:01-07:00")
+
     def test_snapshot_is_deterministic_across_file_and_key_order(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

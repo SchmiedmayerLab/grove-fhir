@@ -230,6 +230,10 @@ PACKAGE_BUILD_KEYS = frozenset(
 )
 LOCAL_PATH = re.compile(r"^(?:file:/+|/|[A-Za-z]:[\\/])")
 BUILT_SUFFIX = re.compile(r"\s*\(built [^)]*\)\s*$")
+PUBLISHER_RESOURCE_DATE = re.compile(
+    r"^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})"
+    r"(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$"
+)
 SHA256 = re.compile(r"^[0-9a-f]{64}$")
 PUBLISHER_DIAGNOSTIC_MEMBERS = frozenset(
     {"other/.index.json", "other/validation-oo.json", "other/validation-summary.json"}
@@ -433,6 +437,34 @@ def _sanitize_package_metadata(
     return package, dict(sorted(dependencies.items()))
 
 
+def is_publisher_generated_resource_date(
+    resource: Mapping[str, Any], package_build_timestamp: str | None
+) -> bool:
+    """Identify the Publisher date tied exactly to one package build.
+
+    The Publisher records its local wall-clock timestamp as 14 digits in
+    package.json and renders the same digits as a timezone-qualified FHIR
+    dateTime on generated canonical resources. Matching the complete timestamp
+    avoids discarding authored date-only or independently authored dateTime
+    values.
+    """
+    if package_build_timestamp is None or not re.fullmatch(
+        r"[0-9]{14}", package_build_timestamp
+    ):
+        return False
+    if not (
+        resource.get("resourceType") in CANONICAL_RESOURCE_SECTIONS
+        or resource.get("resourceType") in OTHER_CONFORMANCE_TYPES
+        or isinstance(resource.get("url"), str)
+    ):
+        return False
+    date = resource.get("date")
+    if not isinstance(date, str):
+        return False
+    match = PUBLISHER_RESOURCE_DATE.fullmatch(date)
+    return match is not None and "".join(match.groups()) == package_build_timestamp
+
+
 def sanitize_resource(
     resource: Mapping[str, Any], package_build_timestamp: str | None = None
 ) -> dict[str, Any]:
@@ -444,20 +476,8 @@ def sanitize_resource(
         meta.pop("lastUpdated", None)
         if not meta:
             sanitized.pop("meta", None)
-    if (
-        package_build_timestamp is not None
-        and (
-            sanitized.get("resourceType") in CANONICAL_RESOURCE_SECTIONS
-            or sanitized.get("resourceType") in OTHER_CONFORMANCE_TYPES
-            or isinstance(sanitized.get("url"), str)
-        )
-    ):
-        date = sanitized.get("date")
-        if (
-            isinstance(date, str)
-            and re.sub(r"[^0-9]", "", date)[:14] == package_build_timestamp
-        ):
-            sanitized.pop("date")
+    if is_publisher_generated_resource_date(sanitized, package_build_timestamp):
+        sanitized.pop("date")
     if sanitized.get("resourceType") == "ImplementationGuide":
         _strip_implementation_guide_build_data(sanitized)
     _strip_nested_narratives(sanitized)

@@ -27,11 +27,19 @@ from datetime import datetime, timezone
 from pathlib import Path, PurePosixPath
 from typing import Any
 
+try:
+    from fhir_package_semantic_snapshot import is_publisher_generated_resource_date
+except ModuleNotFoundError:  # Imported as Scripts.prepare-pages in tests.
+    from Scripts.fhir_package_semantic_snapshot import (  # type: ignore[no-redef]
+        is_publisher_generated_resource_date,
+    )
+
 
 TEXT_SUFFIXES = {
     ".css",
     ".csv",
     ".html",
+    ".internals",
     ".json",
     ".js",
     ".map",
@@ -148,6 +156,35 @@ def read_package_metadata(path: Path) -> dict[str, Any]:
         return json.load(package_file)
 
 
+def normalize_publisher_internals(
+    text: str, package_build_timestamp: str | None, source_date_epoch: int
+) -> str:
+    """Replace the Publisher's private build clock with the reproducible clock."""
+    try:
+        internals = json.loads(text)
+    except json.JSONDecodeError as error:
+        raise ValueError("package spec.internals must contain JSON") from error
+    if not isinstance(internals, dict) or package_build_timestamp is None:
+        raise ValueError("package spec.internals has no exact Publisher build timestamp")
+    expected_date = (
+        f"{package_build_timestamp[:4]}-{package_build_timestamp[4:6]}-"
+        f"{package_build_timestamp[6:8]}"
+    )
+    date_time = internals.get("date-time")
+    if (
+        internals.get("date") != expected_date
+        or not isinstance(date_time, str)
+        or not re.fullmatch(
+            re.escape(package_build_timestamp) + r"(?:Z|[+-][0-9]{4})", date_time
+        )
+    ):
+        raise ValueError("package spec.internals build timestamp is inconsistent")
+    reproducible = datetime.fromtimestamp(source_date_epoch, tz=timezone.utc)
+    internals["date"] = reproducible.strftime("%Y-%m-%d")
+    internals["date-time"] = reproducible.strftime("%Y%m%d%H%M%S+0000")
+    return json.dumps(internals, indent=2, ensure_ascii=False) + "\n"
+
+
 def rewrite_package_archive(
     path: Path,
     canonical: str,
@@ -157,6 +194,14 @@ def rewrite_package_archive(
     public_urls: dict[str, str],
     source_url: str,
 ) -> None:
+    original_metadata = read_package_metadata(path)
+    raw_package_date = original_metadata.get("date")
+    package_build_timestamp = (
+        raw_package_date
+        if isinstance(raw_package_date, str)
+        and re.fullmatch(r"[0-9]{14}", raw_package_date)
+        else None
+    )
     entries: list[tuple[tarfile.TarInfo, bytes | None]] = []
     seen_names: set[str] = set()
     with tarfile.open(path, "r:gz") as source:
@@ -211,6 +256,31 @@ def rewrite_package_archive(
                         public_urls,
                         source_url,
                     )
+                    if member.name == "package/other/spec.internals":
+                        rewritten = normalize_publisher_internals(
+                            rewritten, package_build_timestamp, source_date_epoch
+                        )
+                    elif (
+                        member.name != "package/package.json"
+                        and PurePosixPath(member.name).suffix == ".json"
+                        and package_build_timestamp is not None
+                    ):
+                        try:
+                            resource = json.loads(rewritten)
+                        except json.JSONDecodeError:
+                            pass
+                        else:
+                            if (
+                                isinstance(resource, dict)
+                                and is_publisher_generated_resource_date(
+                                    resource, package_build_timestamp
+                                )
+                            ):
+                                resource.pop("date")
+                                rewritten = (
+                                    json.dumps(resource, indent=2, ensure_ascii=False)
+                                    + "\n"
+                                )
                     validate_portable_text(
                         rewritten,
                         f"{path.name}:{member.name}",
