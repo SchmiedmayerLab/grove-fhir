@@ -15,21 +15,15 @@ readonly SITE_DIRECTORY="$REPOSITORY_ROOT/.build/pages"
 
 for guide in \
   "$REPOSITORY_ROOT/ig/output" \
-  "$REPOSITORY_ROOT/platforms/output" \
-  "$REPOSITORY_ROOT/archive/v0-healthkit-shaped/output"; do
+  "$REPOSITORY_ROOT/platforms/output"; do
   test -f "$guide/index.html"
 done
 
 rm -rf "$SITE_DIRECTORY"
-mkdir -p \
-  "$SITE_DIRECTORY/platforms" \
-  "$SITE_DIRECTORY/archive/v0-healthkit-shaped"
+mkdir -p "$SITE_DIRECTORY/platforms"
 
 cp -R "$REPOSITORY_ROOT/ig/output/." "$SITE_DIRECTORY/"
 cp -R "$REPOSITORY_ROOT/platforms/output/." "$SITE_DIRECTORY/platforms/"
-cp -R \
-  "$REPOSITORY_ROOT/archive/v0-healthkit-shaped/output/." \
-  "$SITE_DIRECTORY/archive/v0-healthkit-shaped/"
 
 # GitHub Pages should serve Publisher output verbatim, including underscore-prefixed assets.
 touch "$SITE_DIRECTORY/.nojekyll"

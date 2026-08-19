@@ -6,14 +6,15 @@ SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTR
 SPDX-License-Identifier: MIT
 -->
 
-# Grove FHIR Core Extensions
+# Legacy HealthKit-shaped prototype
 
-This implementation guide defines the FHIR extensions and terminology written by the
-[Grove](https://grovealliance.org) framework — a set of Swift packages for building
-digital-health research applications on Apple platforms.
+This guide preserves an early Grove FHIR prototype for migration analysis. It modeled
+HealthKit provenance and questionnaire rendering with a set of Grove extensions that are
+not part of the proposed reusable contract.
 
-(Archived v0 index page; see the workspace README for the demonstration record and the
-v2 redesign that supersedes this HealthKit-shaped draft.)
+The package was never a stable Grove FHIR release and is not a supported dependency. New
+implementations should use the [current preview](https://schmiedmayerlab.github.io/grove-fhir/)
+only for review and validation while the first contract is defined.
 
 ### Dependencies
 
