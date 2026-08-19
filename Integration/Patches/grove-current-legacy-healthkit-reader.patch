@@ -136,12 +136,40 @@ index 4d652bf9f0fa20930872ea769883fb1fcc62e031..7743a438b0076c01009924f8696eb514
        $TESTING_FLOOR_DEPLOYMENT_TARGETS \
      | beautify || rc=1
      if [ -d "$part_path" ]; then
+diff --git a/Tests/FHIRModelsExtensionsTests/FHIRSupersededSpellingWritingTests.swift b/Tests/FHIRModelsExtensionsTests/FHIRSupersededSpellingWritingTests.swift
+index 69fba29bfe2be46e078d808da7daff9797400e18..83a70fe94955f27cfba0324100785fd5a51fdd8b 100644
+--- a/Tests/FHIRModelsExtensionsTests/FHIRSupersededSpellingWritingTests.swift
++++ b/Tests/FHIRModelsExtensionsTests/FHIRSupersededSpellingWritingTests.swift
+@@ -216,10 +216,20 @@ struct FHIRSupersededSpellingWritingTests {
+     }
+ 
+     @Test
+-    func appendingUnderTheDefaultPolicyAddsNoCopies() {
++    func appendingUnderTheDefaultPolicyAddsNoCopiesForRetiredSourceIdentifiers() {
++        let identifiers = [
++            RetiredFHIRCanonicalURLs.sourceDevice,
++            RetiredFHIRCanonicalURLs.sourceRevision
++        ]
+         var subject = observation([])
+-        subject.append(extension: ext(Self.canonical, value: "payload"))
+-        #expect(urls(subject) == [Self.canonical])
++        for identifier in identifiers {
++            subject.append(extension: ext(identifier.canonical, value: "payload"))
++        }
++
++        let written = urls(subject)
++        #expect(written == identifiers.map(\.canonical))
++        let retired = identifiers.flatMap(\.superseded)
++        #expect(Set(written).isDisjoint(with: Set(retired)))
+     }
+ 
+     /// The pre-rename metadata envelope nested the platform key in the url and carried entries the
 diff --git a/Tests/FHIRModelsExtensionsTests/LegacyWriterCompatibilityEvidenceTests.swift b/Tests/FHIRModelsExtensionsTests/LegacyWriterCompatibilityEvidenceTests.swift
 new file mode 100644
-index 0000000000000000000000000000000000000000..025c308fef64a921427d01ede95508521490d86c
+index 0000000000000000000000000000000000000000..67184af3d9bd88a82a9e9e77bc92e2026ec9168a
 --- /dev/null
 +++ b/Tests/FHIRModelsExtensionsTests/LegacyWriterCompatibilityEvidenceTests.swift
-@@ -0,0 +1,203 @@
+@@ -0,0 +1,189 @@
 +//
 +// This source file belongs to the Grove open-source project
 +//
@@ -330,20 +358,6 @@ index 0000000000000000000000000000000000000000..025c308fef64a921427d01ede9550852
 +        }
 +    }
 +
-+    @Test
-+    func newExtensionUsesOnlyTheCanonicalSpelling() throws {
-+        var observation = Observation(code: CodeableConcept(), status: .init(.final))
-+        for identifier in Self.retiredIdentifiers {
-+            observation.append(
-+                extension: Extension(url: identifier, value: .string("new write".asFHIRStringPrimitive()))
-+            )
-+        }
-+
-+        let urls = try #require(observation.extension).compactMap { $0.url.value?.url.absoluteString }
-+        #expect(urls == Self.retiredIdentifiers.map { $0.url.absoluteString })
-+        let legacy = Self.retiredIdentifiers.flatMap { $0.superseded.map(\.absoluteString) }
-+        #expect(Set(urls).isDisjoint(with: Set(legacy)))
-+    }
 +}
 diff --git a/Tests/TestPlans/FHIRModelsExtensions.xctestplan b/Tests/TestPlans/FHIRModelsExtensions.xctestplan
 index b8a6f7210fcc1d65f213ba8c44ebfc957a282ceb..6f8fbe383b0d2f6e8a72b03278a184f674b49023 100644

@@ -211,7 +211,7 @@
       "id": "grove-current-legacy-healthkit-reader",
       "source": "grove-healthkit",
       "patch": "Integration/Patches/grove-current-legacy-healthkit-reader.patch",
-      "sha256": "a04a359bc1c1a8330b7582c5b955997c4442d2ce71d343435216b61c03c8db5e",
+      "sha256": "4f48c024a6e5959fa52f1d77275672ecc4bc8e96b577fd5f9ceffc62a4fe9244",
       "dependsOn": [
         "grove-questionnaire-contract",
         "grove-mobile-contract",
