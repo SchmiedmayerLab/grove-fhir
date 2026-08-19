@@ -9,21 +9,18 @@
 id: org.grovealliance.fhir.core
 canonical: https://grovealliance.org/fhir/core
 name: GroveFHIRCore
-title: Grove FHIR Core
+title: Grove FHIR Continuous Preview
 description: >-
-  Platform-neutral FHIR profiles, extensions, and terminology for mobile health data:
-  how observations captured on phones and wearables carry their recording device,
-  gateway app, record identity, timing, and platform metadata — and how questionnaires
-  carry cross-platform input and rendering hints. Written by the Grove framework and
-  designed for any mobile health data source.
+  Draft FHIR R4 exchange definitions under review for a reusable mobile health and
+  questionnaire contract, with Grove Swift as the first reference implementation.
 status: draft
 version: 0.5.0
 fhirVersion: 4.0.1
 copyrightYear: 2022+
 releaseLabel: ci-build
 publisher:
-  name: Grove Alliance
-  url: https://grovealliance.org
+  name: Schmiedmayer Lab
+  url: https://github.com/SchmiedmayerLab
 jurisdiction: http://unstats.un.org/unsd/methods/m49/m49.htm#001 "World"
 license: MIT
 
@@ -43,45 +40,23 @@ parameters:
   pin-canonicals: pin-multiples
 
 menu:
-  Home: index.html
-  Consuming Grove Data: consuming.html
-  Provenance Model: provenance.html
-  Metadata Policy: metadata.html
-  Questionnaires: questionnaires.html
-  Renderer Support Matrix: questionnaire-support.html
-  Renderer Roadmap: questionnaire-roadmap.html
-  Sensor Streams: sensors.html
-  Dense Series: series.html
-  Identifiers: identifiers.html
-  Security and Privacy: security.html
-  Supersession: supersession.html
-  Change Log: changes.html
+  Overview: index.html
+  Validate: consuming.html
+  Status: publication-status.html
   Artifacts: artifacts.html
 
 pages:
   index.md:
     title: Home
   consuming.md:
-    title: Consuming Grove Data
-  provenance.md:
-    title: Provenance Model
-  metadata.md:
-    title: Metadata Policy
-  questionnaires.md:
-    title: Questionnaires
-  questionnaire-support.md:
-    title: Renderer Support Matrix
-  questionnaire-roadmap.md:
-    title: Renderer Roadmap
-  sensors.md:
-    title: Sensor Streams
-  series.md:
-    title: Dense Series
+    title: Validate Preview Resources
   identifiers.md:
-    title: Identifiers
-  security.md:
-    title: Security and Privacy
-  supersession.md:
-    title: Supersession
-  changes.md:
-    title: Change Log
+    title: Identifier Systems in the Prototype
+  metadata.md:
+    title: Metadata in the Combined Prototype
+  questionnaires.md:
+    title: Questionnaire Resources in the Prototype
+  questionnaire-support.md:
+    title: Renderer Support
+  publication-status.md:
+    title: Preview Status

@@ -16,19 +16,25 @@ SPDX-License-Identifier: MIT
 [![REUSE status](https://api.reuse.software/badge/github.com/SchmiedmayerLab/grove-fhir)](https://api.reuse.software/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE.md)
 
-FHIR R4 implementation guides for interoperable mobile and wearable health data produced by
-[Grove](https://github.com/SchmiedmayerLab/Grove).
+Grove FHIR contains draft FHIR R4 exchange definitions for mobile health observations and
+questionnaire resources. The contract is being developed for reuse across implementations, with
+[Grove Swift](https://github.com/SchmiedmayerLab/Grove) as its first reference implementation.
 
 ## Documentation
 
-Read the [Grove FHIR Core implementation guide](https://schmiedmayerlab.github.io/grove-fhir/) for
-the profiles, extensions, examples, and questionnaire conventions that define Grove's wire format.
-The site also publishes the [platform vocabulary guide](https://schmiedmayerlab.github.io/grove-fhir/platforms/)
-for HealthKit, Health Connect, and SensorKit codes.
+The [Grove FHIR preview](https://schmiedmayerlab.github.io/grove-fhir/) publishes the current
+profiles, extensions, examples, and validation packages. Its
+[status page](https://schmiedmayerlab.github.io/grove-fhir/publication-status.html) explains which
+parts are under review for the reusable contract. Platform identifiers used by the draft are in the
+separate
+[Platform Terminology preview](https://schmiedmayerlab.github.io/grove-fhir/platforms/).
 
-Both guides are drafts. Their packages and rendered documentation are built and validated from the
-FHIR Shorthand in this repository on every pull request. The original HealthKit-shaped draft remains
-available in the [documentation archive](https://schmiedmayerlab.github.io/grove-fhir/archive/v0-healthkit-shaped/).
+The repository's [artifact inventory](ARTIFACT_INVENTORY.md) records the review disposition of
+every FHIR Shorthand declaration.
+
+GitHub Pages is a continuous preview, not a released specification. Package identifiers,
+canonical URLs, and resource definitions may change before the first stable release. Applications
+should not take a dependency on the preview packages.
 
 ## Development
 
@@ -41,9 +47,9 @@ npm test
 npm run pages:build
 ```
 
-`pages:build` builds the archived guide, the platform vocabulary, and the core guide in dependency
-order, rejects Publisher QA errors or warnings, and assembles the exact GitHub Pages artifact under
-`.build/pages`.
+`pages:build` builds and validates the current and legacy guides in dependency order, rejects
+Publisher QA errors or warnings, and assembles the active previews under `.build/pages`. The legacy
+guide is retained in source and still validated, but is not part of the published preview.
 
 ## Contributing
 
