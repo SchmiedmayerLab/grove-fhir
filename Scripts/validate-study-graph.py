@@ -76,6 +76,11 @@ RULES = {
         "ResearchSubject.individual references the participant used by accepted study data.",
         "Bundle.entry[3].resource.individual.reference",
     ),
+    "observation-participant": diagnostic(
+        "study-graph.observation-participant",
+        "The accepted study Observation references the participant enrolled by ResearchSubject.",
+        "Bundle.entry[5].resource.subject.reference",
+    ),
     "observation-study": diagnostic(
         "study-graph.observation-study",
         "The standard workflow-researchStudy extension references the accepted ResearchStudy.",
@@ -203,8 +208,11 @@ def validate_graph(resource: Any) -> Iterable[Mapping[str, str]]:
         diagnostics.append(RULES["protocol"])
     if _reference(subject.get("study")) != "ResearchStudy/accepted-study":
         diagnostics.append(RULES["enrollment-study"])
-    if _reference(subject.get("individual")) != "Patient/accepted-participant":
+    enrollment_participant = _reference(subject.get("individual"))
+    if enrollment_participant != "Patient/accepted-participant":
         diagnostics.append(RULES["enrollment-participant"])
+    elif _reference(observation.get("subject")) != enrollment_participant:
+        diagnostics.append(RULES["observation-participant"])
 
     study_extensions = [
         extension

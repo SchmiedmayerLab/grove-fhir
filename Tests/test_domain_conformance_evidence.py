@@ -103,6 +103,20 @@ class DomainCorpusTests(unittest.TestCase):
         )
         self.assertEqual(DOMAIN.mobile_effective_choice_failure(witness), "mobile-effective-choice")
 
+    def test_primitive_cardinality_witnesses_remove_values_and_extensions(self) -> None:
+        manifest_path = ROOT / "Conformance/corpora/mobile/corpus.json"
+        manifest = load_manifest(manifest_path)
+        cases = build_cases(manifest, load_bases(manifest, manifest_path))
+        effective = cases["mobile-observation-effective-required"]
+        self.assertNotIn("effectiveDateTime", effective)
+        self.assertNotIn("_effectiveDateTime", effective)
+        missing_start = cases["step-count-period-start-required"]["effectivePeriod"]
+        self.assertNotIn("start", missing_start)
+        self.assertNotIn("_start", missing_start)
+        missing_end = cases["step-count-period-end-required"]["effectivePeriod"]
+        self.assertNotIn("end", missing_end)
+        self.assertNotIn("_end", missing_end)
+
 
 class ValidatorOutcomeTests(unittest.TestCase):
     def setUp(self) -> None:
@@ -164,6 +178,7 @@ class StudyGraphTests(unittest.TestCase):
         manifest = load_manifest(manifest_path)
         bases = load_bases(manifest, manifest_path)
         cases = build_cases(manifest, bases)
+        self.assertEqual(len(cases), 15)
         self.assertEqual(list(STUDY.validate_graph(bases["accepted-study-graph"])), [])
         for case in manifest["cases"]:
             self.assertEqual(
@@ -240,6 +255,18 @@ class HeartRateEquivalenceTests(unittest.TestCase):
                 self.specification["clinicalProfile"],
                 item["adapterProfile"],
             )
+
+    def test_quantity_comparator_changes_clinical_semantics(self) -> None:
+        item, graph = self.static_graph()
+        observation = copy.deepcopy(graph.observation)
+        observation["valueQuantity"]["comparator"] = "<"
+        projection = HEART_RATE.project(
+            HEART_RATE.FixtureGraph(observation, graph.provenance, graph.bundle),
+            self.specification["clinicalProfile"],
+            item["adapterProfile"],
+        )
+        self.assertEqual(projection["valueQuantity"]["comparator"], "<")
+        self.assertNotEqual(projection, self.specification["expectedProjection"])
 
     def test_required_gateway_removal_is_rejected(self) -> None:
         item, graph = self.static_graph()

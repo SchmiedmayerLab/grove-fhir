@@ -260,6 +260,7 @@ def project(
         "effectiveKind": _effective_kind(observation),
         "valueQuantity": {
             "value": quantity.get("value"),
+            "comparator": quantity.get("comparator"),
             "system": quantity.get("system"),
             "code": quantity.get("code"),
         },

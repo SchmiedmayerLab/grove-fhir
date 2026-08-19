@@ -123,6 +123,23 @@
       }
     },
     {
+      "id": "study-graph-observation-participant-link",
+      "base": "accepted-study-graph",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/entry/5/resource/subject/reference",
+          "value": "Patient/other-participant"
+        }
+      ],
+      "expectedRule": {
+        "code": "study-graph.observation-participant",
+        "reason": "The accepted study Observation references the participant enrolled by ResearchSubject.",
+        "location": "Bundle.entry[5].resource.subject.reference",
+        "severity": "error"
+      }
+    },
+    {
       "id": "study-graph-observation-study-link",
       "base": "accepted-study-graph",
       "patch": [{"op": "replace", "path": "/entry/5/resource/extension/0/valueReference/reference", "value": "ResearchStudy/other-study"}],

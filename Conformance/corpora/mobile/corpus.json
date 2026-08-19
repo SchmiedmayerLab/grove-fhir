@@ -242,7 +242,7 @@
     },
     {
       "id": "mobile-observation-effective-required",
-      "base": "mobile-observation",
+      "base": "mobile-observation-code-only-component",
       "patch": [{"op": "remove", "path": "/effectiveDateTime"}],
       "expectedRule": {
         "code": "grove-mobile-observation.effective",
@@ -408,7 +408,7 @@
     {
       "id": "step-count-period-start-required",
       "base": "step-count",
-      "patch": [{"op": "remove", "path": "/effectivePeriod/start"}],
+      "patch": [{"op": "replace", "path": "/effectivePeriod", "value": {"end": "2026-08-19T10:00:00-07:00", "_end": {"extension": [{"url": "http://hl7.org/fhir/StructureDefinition/timezone", "valueCode": "America/Los_Angeles"}]}}}],
       "expectedRule": {
         "code": "grove-mobile-observation.effective-period.start",
         "reason": "A mobile Observation effective Period has a start instant.",
@@ -419,7 +419,7 @@
     {
       "id": "step-count-period-end-required",
       "base": "step-count",
-      "patch": [{"op": "remove", "path": "/effectivePeriod/end"}],
+      "patch": [{"op": "replace", "path": "/effectivePeriod", "value": {"start": "2026-08-19T09:00:00-07:00", "_start": {"extension": [{"url": "http://hl7.org/fhir/StructureDefinition/timezone", "valueCode": "America/Los_Angeles"}]}}}],
       "expectedRule": {
         "code": "grove-mobile-step-count.effective-period.end",
         "reason": "A step-count effective Period has an end instant.",

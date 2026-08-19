@@ -87,6 +87,7 @@
     "effectiveKind": "dateTime",
     "valueQuantity": {
       "value": 72,
+      "comparator": null,
       "system": "http://unitsofmeasure.org",
       "code": "/min"
     }

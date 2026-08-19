@@ -222,18 +222,24 @@
     ],
     "step-count-period-start-required": [
       {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Observation.effective.ofType(Period)",
+        "detailsContains": "Observation.effective[x]:effectivePeriod.start: minimum required = 1, but only found 0 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-step-count|0.1.0)"
+      },
+      {
         "messageId": "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-step-count#grove-step-count-period-1",
         "code": "invariant",
         "expression": "Observation",
-        "detailsContains": "Constraint failed: grove-step-count-period-1: 'A step-count Observation has a non-zero effective Period.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-step-count)Cannot invoke \"java.lang.Integer.intValue()\" because the return value of \"org.hl7.fhir.r5.model.BaseDateTimeType.getYear()\" is null (log: Cannot invoke \"java.lang.Integer.intValue()\" because the return value of \"org.hl7.fhir.r5.model.BaseDateTimeType.getYear()\" is null)"
+        "detailsContains": "Constraint failed: grove-step-count-period-1: 'A step-count Observation has a non-zero effective Period.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-step-count)"
       }
     ],
     "mobile-observation-effective-required": [
       {
-        "messageId": "http://hl7.org/fhir/StructureDefinition/heartrate#vs-1",
-        "code": "invariant",
-        "expression": "Observation.effective.ofType(dateTime)",
-        "detailsContains": "Constraint failed: vs-1: 'if Observation.effective[x] is dateTime and has a value then that value shall be precise to the day'"
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Observation",
+        "detailsContains": "Observation.effective[x]: minimum required = 1, but only found 0 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-observation|0.1.0)"
       }
     ],
     "step-count-effective-date-time-prohibited": [
@@ -703,10 +709,16 @@
     ],
     "step-count-period-end-required": [
       {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Observation.effective.ofType(Period)",
+        "detailsContains": "Observation.effective[x]:effectivePeriod.end: minimum required = 1, but only found 0 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-step-count|0.1.0)"
+      },
+      {
         "messageId": "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-step-count#grove-step-count-period-1",
         "code": "invariant",
         "expression": "Observation",
-        "detailsContains": "Constraint failed: grove-step-count-period-1: 'A step-count Observation has a non-zero effective Period.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-step-count)Cannot invoke \"java.lang.Integer.intValue()\" because the return value of \"org.hl7.fhir.r5.model.BaseDateTimeType.getYear()\" is null (log: Cannot invoke \"java.lang.Integer.intValue()\" because the return value of \"org.hl7.fhir.r5.model.BaseDateTimeType.getYear()\" is null)"
+        "detailsContains": "Constraint failed: grove-step-count-period-1: 'A step-count Observation has a non-zero effective Period.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-step-count)"
       }
     ],
     "step-count-unit-system-fixed": [
