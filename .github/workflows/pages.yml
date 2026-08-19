@@ -53,6 +53,7 @@ jobs:
             .build/bundle
             mobile/input-cache
             healthkit/input-cache
+            health-connect/input-cache
           key: fhir-pages-${{ runner.os }}-${{ hashFiles('Gemfile.lock', 'package-lock.json', 'Scripts/download-fhir-tools.sh') }}
           restore-keys: |
             fhir-pages-${{ runner.os }}-

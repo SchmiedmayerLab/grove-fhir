@@ -1,0 +1,20 @@
+== Suppressed Messages ==
+# This adapter targets FHIR R4. It does not publish the generated R4B package claim.
+WARNING: 2: An HTML fragment from the set [cross-version-analysis.xhtml, cross-version-analysis-inline.xhtml] is not included anywhere in the produced implementation guide
+
+# The guide intentionally defines no global profiles; an empty generated table adds no implementation guidance.
+WARNING: 4: The HTML fragment 'globals-table.xhtml' is not included anywhere in the produced implementation guide
+
+# Health Connect does not identify a responsible performer for these records. Capture mode and DataOrigin identify neither a person nor a clinical performer.
+WARNING: Bundle/HealthConnectStudyBundleExample: Bundle.entry[7].resource/*Observation/HealthConnectHeartRateSampleOneExample*/: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Bundle/HealthConnectStudyBundleExample: Bundle.entry[8].resource/*Observation/HealthConnectHeartRateSampleTwoExample*/: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Bundle/HealthConnectStudyBundleExample: Bundle.entry[9].resource/*Observation/HealthConnectBodyWeightExample*/: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Bundle/HealthConnectStudyBundleExample: Bundle.entry[10].resource/*Observation/HealthConnectStepCountExample*/: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Observation/HealthConnectHeartRateSampleOneExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Observation/HealthConnectHeartRateSampleTwoExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Observation/HealthConnectBodyWeightExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Observation/HealthConnectStepCountExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+
+# The fixed observation code and exact effective Period carry the interval-total semantics. The UCUM annotation is not used for dimensional comparison.
+WARNING: Bundle/HealthConnectStudyBundleExample: Bundle.entry[10].resource/*Observation/HealthConnectStepCountExample*/.value.ofType(Quantity): UCUM Codes that contain human readable annotations like {steps} can be misleading (e.g. they are ignored when comparing units). Best Practice is not to depend on annotations in the UCUM code, so this usage should be checked
+WARNING: Observation/HealthConnectStepCountExample: Observation.value.ofType(Quantity): UCUM Codes that contain human readable annotations like {steps} can be misleading (e.g. they are ignored when comparing units). Best Practice is not to depend on annotations in the UCUM code, so this usage should be checked

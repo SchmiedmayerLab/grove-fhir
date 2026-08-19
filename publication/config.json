@@ -20,6 +20,14 @@
         "healthkit"
       ],
       "representativeResource": "StructureDefinition/healthkit-observation"
+    },
+    {
+      "source": "health-connect",
+      "canonicalPath": "fhir/health-connect",
+      "aliases": [
+        "health-connect"
+      ],
+      "representativeResource": "StructureDefinition/health-connect-observation"
     }
   ],
   "retiredPreviewPaths": [

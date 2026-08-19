@@ -57,6 +57,33 @@
         {"fshName": "HealthKitBluetoothSourceProvenanceExample", "fshType": "Instance", "resourceType": "Provenance", "id": "HealthKitBluetoothSourceProvenanceExample", "classification": "example"},
         {"fshName": "HealthKitStudyBundleExample", "fshType": "Instance", "resourceType": "Bundle", "id": "HealthKitStudyBundleExample", "classification": "example"}
       ]
+    },
+    {
+      "source": "health-connect",
+      "packageId": "org.grovealliance.fhir.health-connect",
+      "canonical": "https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect",
+      "artifacts": [
+        {"fshName": "HealthConnectObservation", "fshType": "Profile", "resourceType": "StructureDefinition", "id": "health-connect-observation", "classification": "definition"},
+        {"fshName": "HealthConnectConversionProvenance", "fshType": "Profile", "resourceType": "StructureDefinition", "id": "health-connect-conversion-provenance", "classification": "definition"},
+        {"fshName": "HealthConnectRecordIdentifier", "fshType": "Instance", "resourceType": "NamingSystem", "id": "health-connect-record-id", "classification": "definition"},
+        {"fshName": "HealthConnectOutputIdentifier", "fshType": "Instance", "resourceType": "NamingSystem", "id": "health-connect-output-id", "classification": "definition"},
+        {"fshName": "AndroidPackageName", "fshType": "Instance", "resourceType": "NamingSystem", "id": "android-package-name", "classification": "definition"},
+        {"fshName": "HealthConnectPatientExample", "fshType": "Instance", "resourceType": "Patient", "id": "HealthConnectPatientExample", "classification": "example"},
+        {"fshName": "HealthConnectStudyPlanExample", "fshType": "Instance", "resourceType": "PlanDefinition", "id": "HealthConnectStudyPlanExample", "classification": "example"},
+        {"fshName": "HealthConnectResearchStudyExample", "fshType": "Instance", "resourceType": "ResearchStudy", "id": "HealthConnectResearchStudyExample", "classification": "example"},
+        {"fshName": "HealthConnectResearchSubjectExample", "fshType": "Instance", "resourceType": "ResearchSubject", "id": "HealthConnectResearchSubjectExample", "classification": "example"},
+        {"fshName": "HealthConnectRecordingDeviceExample", "fshType": "Instance", "resourceType": "Device", "id": "HealthConnectRecordingDeviceExample", "classification": "example"},
+        {"fshName": "HealthConnectConverterApplicationExample", "fshType": "Instance", "resourceType": "Device", "id": "HealthConnectConverterApplicationExample", "classification": "example"},
+        {"fshName": "HealthConnectSourceApplicationExample", "fshType": "Instance", "resourceType": "Device", "id": "HealthConnectSourceApplicationExample", "classification": "example"},
+        {"fshName": "HealthConnectHeartRateSampleOneExample", "fshType": "Instance", "resourceType": "Observation", "id": "HealthConnectHeartRateSampleOneExample", "classification": "example"},
+        {"fshName": "HealthConnectHeartRateSampleTwoExample", "fshType": "Instance", "resourceType": "Observation", "id": "HealthConnectHeartRateSampleTwoExample", "classification": "example"},
+        {"fshName": "HealthConnectBodyWeightExample", "fshType": "Instance", "resourceType": "Observation", "id": "HealthConnectBodyWeightExample", "classification": "example"},
+        {"fshName": "HealthConnectStepCountExample", "fshType": "Instance", "resourceType": "Observation", "id": "HealthConnectStepCountExample", "classification": "example"},
+        {"fshName": "HealthConnectHeartRateProvenanceExample", "fshType": "Instance", "resourceType": "Provenance", "id": "HealthConnectHeartRateProvenanceExample", "classification": "example"},
+        {"fshName": "HealthConnectBodyWeightProvenanceExample", "fshType": "Instance", "resourceType": "Provenance", "id": "HealthConnectBodyWeightProvenanceExample", "classification": "example"},
+        {"fshName": "HealthConnectStepCountProvenanceExample", "fshType": "Instance", "resourceType": "Provenance", "id": "HealthConnectStepCountProvenanceExample", "classification": "example"},
+        {"fshName": "HealthConnectStudyBundleExample", "fshType": "Instance", "resourceType": "Bundle", "id": "HealthConnectStudyBundleExample", "classification": "example"}
+      ]
     }
   ]
 }

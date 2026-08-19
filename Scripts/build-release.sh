@@ -13,8 +13,8 @@ REPOSITORY_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 readonly REPOSITORY_ROOT
 readonly TOOLS_DIRECTORY="$REPOSITORY_ROOT/.build/fhir-tools"
 
-if [[ "$#" -ne 1 || ("$1" != "mobile" && "$1" != "healthkit") ]]; then
-  echo "Usage: $0 <mobile|healthkit>" >&2
+if [[ "$#" -ne 1 || ("$1" != "mobile" && "$1" != "healthkit" && "$1" != "health-connect") ]]; then
+  echo "Usage: $0 <mobile|healthkit|health-connect>" >&2
   exit 2
 fi
 
@@ -26,8 +26,8 @@ if [[ ! -f "$REQUEST" ]]; then
 fi
 
 cd "$REPOSITORY_ROOT"
-if [[ "$GUIDE" == "healthkit" ]]; then
-  ./Scripts/build-guides.sh mobile healthkit
+if grep -q '^  org\.grovealliance\.fhir\.mobile:' "$GUIDE/sushi-config.yaml"; then
+  ./Scripts/build-guides.sh mobile "$GUIDE"
 else
   ./Scripts/build-guides.sh mobile
 fi

@@ -13,11 +13,9 @@ REPOSITORY_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 readonly REPOSITORY_ROOT
 readonly SITE_DIRECTORY="$REPOSITORY_ROOT/.build/pages"
 
-for guide in \
-  "$REPOSITORY_ROOT/mobile/output" \
-  "$REPOSITORY_ROOT/healthkit/output"; do
-  test -f "$guide/index.html"
-done
+while IFS= read -r guide; do
+  test -f "$REPOSITORY_ROOT/$guide/output/index.html"
+done < <(python3 -c 'import json, sys; print("\n".join(guide["source"] for guide in json.load(open(sys.argv[1], encoding="utf-8"))["guides"]))' "$REPOSITORY_ROOT/publication/config.json")
 
 if [[ -n "${PUBLISHED_SITE_ROOT:-}" ]]; then
   python3 "$REPOSITORY_ROOT/Scripts/prepare-pages.py" \
