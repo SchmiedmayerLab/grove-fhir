@@ -159,8 +159,8 @@ class PreparePagesTests(unittest.TestCase):
                 ),
                 (
                     "second",
-                    "20260820120618",
-                    "2026-08-20T12:06:18+02:00",
+                    "20260820200618",
+                    "2026-08-20T20:06:18+02:00",
                 ),
             ):
                 archive = root / f"{name}.tgz"
@@ -201,7 +201,11 @@ class PreparePagesTests(unittest.TestCase):
                     "date": (
                         f"{package_date[:4]}-{package_date[4:6]}-{package_date[6:8]}"
                     ),
-                    "date-time": f"{package_date}-0700",
+                    "date-time": (
+                        f"{package_date[:8]}"
+                        f"{int(package_date[8:10]) % 12 or 12:02d}"
+                        f"{package_date[10:]}-0700"
+                    ),
                 }
                 self._write_package(
                     archive,
@@ -258,6 +262,47 @@ class PreparePagesTests(unittest.TestCase):
             self.assertEqual(
                 normalized_internals["date-time"], "20231114221320+0000"
             )
+
+    def test_publisher_internals_rejects_an_unrelated_clock(self) -> None:
+        with self.assertRaisesRegex(
+            ValueError, "spec.internals build timestamp is inconsistent"
+        ):
+            PREPARE_PAGES.normalize_publisher_internals(
+                json.dumps(
+                    {
+                        "date": "2026-08-19",
+                        "date-time": "20260819081640+0000",
+                    }
+                ),
+                "20260819201639",
+                1_700_000_000,
+            )
+
+    def test_publisher_internals_rejects_invalid_clock_data(self) -> None:
+        cases = (
+            (
+                "20269919201639",
+                {
+                    "date": "2026-99-19",
+                    "date-time": "20269919081639+0000",
+                },
+            ),
+            (
+                "20260819201639",
+                {
+                    "date": "2026-08-19",
+                    "date-time": "20260819081639+9999",
+                },
+            ),
+        )
+        for package_date, internals in cases:
+            with self.subTest(package_date=package_date, internals=internals):
+                with self.assertRaisesRegex(
+                    ValueError, "spec.internals build timestamp is inconsistent"
+                ):
+                    PREPARE_PAGES.normalize_publisher_internals(
+                        json.dumps(internals), package_date, 1_700_000_000
+                    )
 
     def test_package_sanitization_rejects_escaped_ansi_without_url_false_positive(self) -> None:
         PREPARE_PAGES.validate_portable_text(

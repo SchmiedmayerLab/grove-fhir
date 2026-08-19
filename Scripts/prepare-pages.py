@@ -159,23 +159,40 @@ def read_package_metadata(path: Path) -> dict[str, Any]:
 def normalize_publisher_internals(
     text: str, package_build_timestamp: str | None, source_date_epoch: int
 ) -> str:
-    """Replace the Publisher's private build clock with the reproducible clock."""
+    """Replace the Publisher's private build clock with the reproducible clock.
+
+    Publisher 2.3.2 renders ``spec.internals`` with a 12-hour clock but omits
+    the meridiem, while ``package.json`` retains the same local wall clock in
+    24-hour form. Bind the date, minute, and second exactly and accept only the
+    corresponding 12-hour projection before normalizing both fields.
+    """
     try:
         internals = json.loads(text)
     except json.JSONDecodeError as error:
         raise ValueError("package spec.internals must contain JSON") from error
     if not isinstance(internals, dict) or package_build_timestamp is None:
         raise ValueError("package spec.internals has no exact Publisher build timestamp")
+    try:
+        package_clock = datetime.strptime(package_build_timestamp, "%Y%m%d%H%M%S")
+    except ValueError as error:
+        raise ValueError("package spec.internals build timestamp is inconsistent") from error
     expected_date = (
         f"{package_build_timestamp[:4]}-{package_build_timestamp[4:6]}-"
         f"{package_build_timestamp[6:8]}"
+    )
+    expected_internals_timestamp = (
+        package_build_timestamp[:8]
+        + f"{package_clock.hour % 12 or 12:02d}"
+        + package_build_timestamp[10:]
     )
     date_time = internals.get("date-time")
     if (
         internals.get("date") != expected_date
         or not isinstance(date_time, str)
         or not re.fullmatch(
-            re.escape(package_build_timestamp) + r"(?:Z|[+-][0-9]{4})", date_time
+            re.escape(expected_internals_timestamp)
+            + r"(?:Z|[+-](?:(?:0[0-9]|1[0-3])[0-5][0-9]|1400))",
+            date_time,
         )
     ):
         raise ValueError("package spec.internals build timestamp is inconsistent")
