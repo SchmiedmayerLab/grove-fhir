@@ -402,6 +402,30 @@ class IntegrationProposalValidationTests(unittest.TestCase):
         self.assertEqual(invoked.call_args.args[0], ["tool", "literal argument"])
         self.assertNotIn("shell", invoked.call_args.kwargs)
 
+    def test_disposable_environment_rejects_java_option_overrides(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            home = Path(directory) / "home"
+            with patch.dict(
+                os.environ,
+                {
+                    "JAVA_TOOL_OPTIONS": "-Duser.home=/exact-private-cache",
+                    "JDK_JAVA_OPTIONS": "-Duser.home=/override-one",
+                    "_JAVA_OPTIONS": "-Duser.home=/override-two",
+                    "GRADLE_USER_HOME": "/exact-gradle-cache",
+                },
+            ):
+                environment = VALIDATE.command_environment(home)
+
+            self.assertEqual(
+                environment["JAVA_TOOL_OPTIONS"],
+                "-Duser.home=/exact-private-cache",
+            )
+            self.assertNotIn("JDK_JAVA_OPTIONS", environment)
+            self.assertNotIn("_JAVA_OPTIONS", environment)
+            self.assertEqual(
+                environment["GRADLE_USER_HOME"], "/exact-gradle-cache"
+            )
+
     def test_runs_only_the_explicit_group_on_its_declared_platform(self) -> None:
         tests = [
             {

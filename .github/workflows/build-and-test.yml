@@ -225,6 +225,13 @@ jobs:
         with:
           name: implementation-guides
           path: .build
+      - name: Seed the exact offline FHIR package cache
+        run: |
+          validator_home="$RUNNER_TEMP/grove-fhir-validator-home"
+          test ! -e "$validator_home"
+          test ! -L "$validator_home"
+          mkdir "$validator_home"
+          HOME="$validator_home" ./Scripts/download-fhir-tools.sh --offline .build/fhir-tools
       - name: Apply and test the exact portable proposal closure
         run: >-
           python3 Scripts/validate-integration-proposals.py
@@ -245,6 +252,8 @@ jobs:
           GROVE_HEALTH_CONNECT_PACKAGE: ${{ github.workspace }}/.build/pages/fhir/health-connect/ci-build/package.tgz
           GROVE_CONFORMANCE_EXPORT: ${{ github.workspace }}/.build/android-export
         run: >-
+          env GRADLE_USER_HOME="$HOME/.gradle"
+          JAVA_TOOL_OPTIONS="-Duser.home=$RUNNER_TEMP/grove-fhir-validator-home"
           python3 Scripts/validate-integration-proposals.py
           --platform linux
           --test-group android-emitted-resource-conformance
@@ -365,6 +374,8 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: "22.22.0"
+      - run: npm ci
+        working-directory: grove-fhir
       - uses: actions/setup-java@v5
         with:
           distribution: temurin
@@ -373,6 +384,14 @@ jobs:
         with:
           name: implementation-guides
           path: grove-fhir/.build
+      - name: Seed the exact offline FHIR package cache
+        working-directory: grove-fhir
+        run: |
+          validator_home="$RUNNER_TEMP/grove-fhir-validator-home"
+          test ! -e "$validator_home"
+          test ! -L "$validator_home"
+          mkdir "$validator_home"
+          HOME="$validator_home" ./Scripts/download-fhir-tools.sh --offline .build/fhir-tools
       - name: Validate and export exact current Grove Questionnaire resources
         working-directory: grove-fhir
         env:
@@ -380,6 +399,7 @@ jobs:
           GROVE_IG_QUESTIONNAIRE: ${{ github.workspace }}/grove-fhir/.build/pages/fhir/questionnaire/ci-build/package.tgz
           GROVE_CONFORMANCE_EXPORT: ${{ runner.temp }}/grove-questionnaire-resources
         run: >-
+          env JAVA_TOOL_OPTIONS="-Duser.home=$RUNNER_TEMP/grove-fhir-validator-home"
           python3 Scripts/validate-integration-proposals.py
           --platform macos
           --test-group emitted-resource-conformance
@@ -393,6 +413,7 @@ jobs:
           GROVE_IG_QUESTIONNAIRE: ${{ github.workspace }}/grove-fhir/.build/pages/fhir/questionnaire/ci-build/package.tgz
           GROVE_CONFORMANCE_EXPORT: ${{ runner.temp }}/grove-current-resources
         run: >-
+          env JAVA_TOOL_OPTIONS="-Duser.home=$RUNNER_TEMP/grove-fhir-validator-home"
           python3 Scripts/validate-integration-proposals.py
           --platform macos
           --test-group emitted-resource-conformance

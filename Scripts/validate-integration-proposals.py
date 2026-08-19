@@ -44,7 +44,8 @@ def command_environment(home: Path) -> dict[str, str]:
     environment = {
         key: value
         for key, value in os.environ.items()
-        if not key.startswith("GIT_") and key not in {"HOME", "TMPDIR"}
+        if not key.startswith("GIT_")
+        and key not in {"HOME", "TMPDIR", "JDK_JAVA_OPTIONS", "_JAVA_OPTIONS"}
     }
     environment.update(
         {

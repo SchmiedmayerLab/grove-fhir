@@ -9,6 +9,17 @@
 
 set -euo pipefail
 
+offline=false
+if [[ "${1:-}" == "--offline" ]]; then
+  offline=true
+  shift
+fi
+if (( $# > 1 )); then
+  echo "Usage: $0 [--offline] [tools-directory]" >&2
+  exit 2
+fi
+
+readonly OFFLINE="$offline"
 readonly TOOLS_DIRECTORY="${1:-.build/fhir-tools}"
 readonly PUBLISHER_VERSION="2.3.2"
 readonly PUBLISHER_SHA256="07c576024df917cc1f879b6b5a64147cd0222d5b4129688e8f0ad9ccce58b1d5"
@@ -51,11 +62,20 @@ download_and_verify() {
   local destination="$2"
   local expected_sha="$3"
 
-  if [[ -f "$destination" ]] && printf '%s  %s\n' "$expected_sha" "$destination" | shasum -a 256 --check --status; then
+  if [[ -f "$destination" && ! -L "$destination" ]] \
+      && printf '%s  %s\n' "$expected_sha" "$destination" | shasum -a 256 --check --status; then
     return
+  fi
+  if [[ "$OFFLINE" == "true" ]]; then
+    echo "Offline FHIR tool cache is missing or invalid: $destination" >&2
+    exit 1
   fi
 
   local temporary_file="${destination}.download"
+  if [[ -L "$destination" || -L "$temporary_file" ]]; then
+    echo "FHIR tool destination must not be a symlink: $destination" >&2
+    exit 1
+  fi
   curl --fail --location --retry 3 --output "$temporary_file" "$url"
   printf '%s  %s\n' "$expected_sha" "$temporary_file" | shasum -a 256 --check
   mv "$temporary_file" "$destination"

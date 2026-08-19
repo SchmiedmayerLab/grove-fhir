@@ -122,6 +122,46 @@ class ConformanceWorkflowTests(unittest.TestCase):
             3,
         )
 
+    def test_emitted_resource_jobs_seed_only_the_downloaded_offline_cache(self) -> None:
+        command = "./Scripts/download-fhir-tools.sh --offline .build/fhir-tools"
+        private_home = "$RUNNER_TEMP/grove-fhir-validator-home"
+        linux = self.build.split("  integration-proposals:", 1)[1].split(
+            "  vocabulary-is-current:", 1
+        )[0]
+        macos = self.build.split("  emitted-resource-conformance:", 1)[1].split(
+            "  conformance-evidence:", 1
+        )[0]
+        for job in (linux, macos):
+            self.assertEqual(job.count(command), 1)
+            self.assertLess(job.index(command), job.index("emitted-resource-conformance"))
+            self.assertIn(f'validator_home="{private_home}"', job)
+            self.assertIn('test ! -e "$validator_home"', job)
+            self.assertIn('test ! -L "$validator_home"', job)
+            self.assertIn('mkdir "$validator_home"', job)
+            self.assertNotIn('mkdir -p "$validator_home"', job)
+            self.assertIn(f'HOME="$validator_home" {command}', job)
+        self.assertIn("      - run: npm ci\n        working-directory: grove-fhir", macos)
+        java_home = f'JAVA_TOOL_OPTIONS="-Duser.home={private_home}"'
+        gradle_home = 'GRADLE_USER_HOME="$HOME/.gradle"'
+        android_export = linux.split(
+            "      - name: Export and validate exact Android conformance and wire resources",
+            1,
+        )[1].split("      - name: Stage the exact flat Android evidence sets", 1)[0]
+        questionnaire_export = macos.split(
+            "      - name: Validate and export exact current Grove Questionnaire resources",
+            1,
+        )[1].split("      - name: Validate and export exact current Grove resources", 1)[0]
+        mobile_export = macos.split(
+            "      - name: Validate and export exact current Grove resources", 1
+        )[1].split("      - name: Export the exact historical Grove", 1)[0]
+        self.assertIn(java_home, android_export)
+        self.assertIn(gradle_home, android_export)
+        self.assertIn(java_home, questionnaire_export)
+        self.assertIn(java_home, mobile_export)
+        self.assertNotIn(gradle_home, questionnaire_export + mobile_export)
+        self.assertEqual(self.build.count(java_home), 3)
+        self.assertEqual(self.build.count(gradle_home), 1)
+
     def test_exact_head_and_base_guards_are_not_mutable_refs(self) -> None:
         self.assertIn("github.event.pull_request.head.sha || github.sha", self.build)
         self.assertIn("github.event.pull_request.base.sha || github.event.before", self.build)
