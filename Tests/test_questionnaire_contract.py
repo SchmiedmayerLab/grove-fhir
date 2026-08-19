@@ -14,6 +14,7 @@ import json
 import subprocess
 import sys
 import tarfile
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -29,7 +30,7 @@ QUESTIONNAIRE_CANONICAL = (
 )
 
 sys.path.insert(0, str(ROOT / "Scripts"))
-from questionnaire_fixture_corpus import apply_mutation, load_json  # noqa: E402
+from questionnaire_fixture_corpus import apply_mutation, load_json, write_json  # noqa: E402
 
 spec = importlib.util.spec_from_file_location(
     "validate_questionnaire", ROOT / "Scripts/validate-questionnaire.py"
@@ -49,6 +50,16 @@ def load_generated(filename: str) -> dict:
 
 
 class QuestionnaireContractTests(unittest.TestCase):
+    def test_fixture_writer_preserves_exact_decimal_values(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            source = Path(temporary) / "source.json"
+            destination = Path(temporary) / "destination.json"
+            source.write_text('{"valueDecimal":1.20}\n', encoding="utf-8")
+
+            write_json(destination, load_json(source))
+
+            self.assertEqual(destination.read_bytes(), b'{"valueDecimal":1.20}\n')
+
     def test_profiles_derive_from_sdc_and_publish_named_rules(self) -> None:
         questionnaire = load_generated("StructureDefinition-grove-questionnaire.json")
         response = load_generated("StructureDefinition-grove-questionnaire-response.json")

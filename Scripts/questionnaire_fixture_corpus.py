@@ -13,12 +13,14 @@ from typing import Any
 
 try:
     from fhir_fixture_corpus import (
+        canonical_json_bytes,
         CorpusError,
         apply_patch_operation,
         strict_json_loads,
     )
 except ModuleNotFoundError:  # Imported as Scripts.questionnaire_fixture_corpus in tests.
     from Scripts.fhir_fixture_corpus import (
+        canonical_json_bytes,
         CorpusError,
         apply_patch_operation,
         strict_json_loads,
@@ -34,6 +36,14 @@ def load_json(path: Path) -> dict[str, Any]:
     if not isinstance(value, dict):
         raise ValueError(f"{path} must contain a JSON object")
     return value
+
+
+def write_json(path: Path, value: dict[str, Any]) -> None:
+    """Write one canonical JSON object without losing decimal precision."""
+    try:
+        path.write_bytes(canonical_json_bytes(value))
+    except (OSError, TypeError, ValueError) as error:
+        raise ValueError(f"unable to write {path}: {error}") from error
 
 
 def apply_mutation(resource: dict[str, Any], mutation: dict[str, Any]) -> dict[str, Any]:

@@ -18,7 +18,7 @@ import tempfile
 from pathlib import Path
 from typing import Any, Sequence
 
-from questionnaire_fixture_corpus import apply_mutation, load_json
+from questionnaire_fixture_corpus import apply_mutation, load_json, write_json
 
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -156,10 +156,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 base = load_json(CORPUS / case["base"])
                 resource = apply_mutation(base, case["mutation"])
                 path = invalid_directory / f"{case['id']}.json"
-                path.write_text(
-                    json.dumps(resource, indent=2, sort_keys=True) + "\n",
-                    encoding="utf-8",
-                )
+                write_json(path, resource)
                 resources.append((path, False, expected_rule))
 
         for index, (resource_path, expected_valid, expected_rule) in enumerate(resources):
