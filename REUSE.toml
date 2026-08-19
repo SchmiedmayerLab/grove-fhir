@@ -11,11 +11,17 @@ path = [
     "archive/v0-healthkit-shaped/publication-request.json",
     "ig/input/ignoreWarnings.txt",
     "ig/ig.ini",
+    "Integration/sources.json",
     "package-lock.json",
     "package.json",
     "platforms/input/ignoreWarnings.txt",
     "platforms/ig.ini",
     "publication/config.json"
 ]
+SPDX-FileCopyrightText = "2026 Schmiedmayer Lab and the project authors (see CONTRIBUTORS.md)"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = ["Integration/Patches/**/*.patch"]
 SPDX-FileCopyrightText = "2026 Schmiedmayer Lab and the project authors (see CONTRIBUTORS.md)"
 SPDX-License-Identifier = "MIT"

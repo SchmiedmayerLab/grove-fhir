@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "sources": [
+    {
+      "id": "grove",
+      "repository": "https://github.com/SchmiedmayerLab/Grove.git",
+      "path": "Integration/Sources/Grove",
+      "gitlink": "2c2a7c61004fd6c56bfb4b67f1e967b4bee98d06",
+      "targets": [
+        {
+          "id": "questionnaire",
+          "ref": "refs/pull/49/head",
+          "commit": "5e5bcfae39caed46e9ce12a70d84c1546aa76aea"
+        },
+        {
+          "id": "healthkit",
+          "ref": "refs/pull/60/head",
+          "commit": "fb78db4c5343c234825b433706f7ee62f111c5cc",
+          "predecessor": "questionnaire"
+        },
+        {
+          "id": "sensorkit",
+          "ref": "refs/pull/61/head",
+          "commit": "2c2a7c61004fd6c56bfb4b67f1e967b4bee98d06",
+          "predecessor": "healthkit"
+        }
+      ]
+    },
+    {
+      "id": "my-heart-counts-ios",
+      "repository": "https://github.com/SchmiedmayerLab/MyHeartCounts-iOS.git",
+      "path": "Integration/Sources/MyHeartCountsIOS",
+      "gitlink": "e7ae70ebbbfb335eea274cd35eacd5d3c5c93d33",
+      "targets": [
+        {
+          "id": "main",
+          "ref": "refs/heads/main",
+          "commit": "01a49557a48d68f9e79939f8c4d879edae1cfafc"
+        },
+        {
+          "id": "app-version",
+          "ref": "refs/pull/198/head",
+          "commit": "e7ae70ebbbfb335eea274cd35eacd5d3c5c93d33"
+        }
+      ]
+    },
+    {
+      "id": "my-heart-counts-android",
+      "repository": "https://github.com/SchmiedmayerLab/MyHeartCounts-Android.git",
+      "path": "Integration/Sources/MyHeartCountsAndroid",
+      "gitlink": "5d9fc561ba2b30f93a2334a1678ea5f4103263c6",
+      "targets": [
+        {
+          "id": "main",
+          "ref": "refs/heads/main",
+          "commit": "5d9fc561ba2b30f93a2334a1678ea5f4103263c6"
+        }
+      ]
+    },
+    {
+      "id": "my-heart-counts-firebase",
+      "repository": "https://github.com/SchmiedmayerLab/MyHeartCounts-Firebase.git",
+      "path": "Integration/Sources/MyHeartCountsFirebase",
+      "gitlink": "8bad2e814ad60763ddf810750e503488719f55f5",
+      "targets": [
+        {
+          "id": "main",
+          "ref": "refs/heads/main",
+          "commit": "8bad2e814ad60763ddf810750e503488719f55f5"
+        }
+      ]
+    },
+    {
+      "id": "my-heart-counts-study-definitions",
+      "repository": "https://github.com/SchmiedmayerLab/MyHeartCounts-StudyDefinitions.git",
+      "path": "Integration/Sources/MyHeartCountsStudyDefinitions",
+      "gitlink": "06e410c9ded3727296961dc39526aa1c49905538",
+      "targets": [
+        {
+          "id": "main",
+          "ref": "refs/heads/main",
+          "commit": "06e410c9ded3727296961dc39526aa1c49905538"
+        }
+      ]
+    }
+  ],
+  "proposals": []
+}
