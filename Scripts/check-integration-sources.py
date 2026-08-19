@@ -94,8 +94,10 @@ def first_cycle(graph: dict[str, list[str]]) -> list[str] | None:
 
 def validate_test_commands(proposal_id: str, tests: Any) -> list[str]:
     failures: list[str] = []
-    if not isinstance(tests, list) or not tests:
-        return [f"{proposal_id} must declare at least one structured test command"]
+    if tests is None:
+        return failures
+    if not isinstance(tests, list):
+        return [f"{proposal_id} tests must be a list of structured commands"]
     for index, test in enumerate(tests):
         label = f"{proposal_id} test {index + 1}"
         if not isinstance(test, dict):
@@ -108,7 +110,9 @@ def validate_test_commands(proposal_id: str, tests: Any) -> list[str]:
             )
         cwd = test.get("cwd")
         try:
-            safe_relative_path(cwd if isinstance(cwd, str) else "")
+            safe_cwd = safe_relative_path(cwd if isinstance(cwd, str) else "")
+            if ".git" in safe_cwd.parts:
+                raise ValueError("Git metadata is not a test working directory")
         except ValueError:
             failures.append(f"{label} cwd must be a safe relative path")
         argv = test.get("argv")
@@ -130,8 +134,16 @@ def validate_manifest(manifest: Any) -> list[str]:
     failures: list[str] = []
     if not isinstance(manifest, dict):
         return ["integration manifest must be a JSON object"]
-    if manifest.get("schemaVersion") != 1:
-        failures.append("integration manifest schemaVersion must be 1")
+    unknown_manifest_fields = sorted(
+        set(manifest) - {"schemaVersion", "sources", "proposals"}
+    )
+    if unknown_manifest_fields:
+        failures.append(
+            "integration manifest contains unsupported fields: "
+            + ", ".join(unknown_manifest_fields)
+        )
+    if manifest.get("schemaVersion") != 2:
+        failures.append("integration manifest schemaVersion must be 2")
     sources = manifest.get("sources")
     if not isinstance(sources, list) or not sources:
         return [*failures, "integration manifest must contain sources"]
@@ -144,6 +156,14 @@ def validate_manifest(manifest: Any) -> list[str]:
         if not isinstance(source, dict):
             failures.append("every integration source must be an object")
             continue
+        unknown_source_fields = sorted(
+            set(source) - {"id", "repository", "path", "gitlink", "targets"}
+        )
+        if unknown_source_fields:
+            failures.append(
+                "integration source contains unsupported fields: "
+                + ", ".join(unknown_source_fields)
+            )
         source_id = source.get("id")
         if not isinstance(source_id, str) or not IDENTIFIER.fullmatch(source_id):
             failures.append(f"invalid integration source id: {source_id!r}")
@@ -188,6 +208,15 @@ def validate_manifest(manifest: Any) -> list[str]:
         predecessor_graph: dict[str, list[str]] = {}
         for target in targets:
             target_id = target.get("id") if isinstance(target, dict) else None
+            if isinstance(target, dict):
+                unknown_target_fields = sorted(
+                    set(target) - {"id", "ref", "commit", "predecessor"}
+                )
+                if unknown_target_fields:
+                    failures.append(
+                        f"{source_id} target contains unsupported fields: "
+                        + ", ".join(unknown_target_fields)
+                    )
             if not isinstance(target_id, str) or not IDENTIFIER.fullmatch(target_id):
                 failures.append(
                     f"{source_id} contains an invalid target id: {target_id!r}"
@@ -250,11 +279,33 @@ def validate_manifest(manifest: Any) -> list[str]:
         return failures
 
     proposal_ids: set[str] = set()
+    patch_paths: set[str] = set()
+    proposal_sources: dict[str, Any] = {}
     proposal_dependencies: dict[str, list[str]] = {}
+    proposal_apply_dependencies: dict[str, list[str]] = {}
     for proposal in proposals:
         if not isinstance(proposal, dict):
             failures.append("every integration proposal must be an object")
             continue
+        unknown_proposal_fields = sorted(
+            set(proposal)
+            - {
+                "id",
+                "source",
+                "target",
+                "patch",
+                "sha256",
+                "dependsOn",
+                "appliesAfter",
+                "tests",
+                "claims",
+            }
+        )
+        if unknown_proposal_fields:
+            failures.append(
+                "integration proposal contains unsupported fields: "
+                + ", ".join(unknown_proposal_fields)
+            )
         proposal_id = proposal.get("id")
         if not isinstance(proposal_id, str) or not IDENTIFIER.fullmatch(proposal_id):
             failures.append(f"invalid integration proposal id: {proposal_id!r}")
@@ -264,6 +315,7 @@ def validate_manifest(manifest: Any) -> list[str]:
         proposal_ids.add(proposal_id)
 
         source_id = proposal.get("source")
+        proposal_sources[proposal_id] = source_id
         target_id = proposal.get("target")
         if (source_id, target_id) not in target_keys:
             failures.append(
@@ -281,6 +333,9 @@ def validate_manifest(manifest: Any) -> list[str]:
                 safe_relative_path(patch)
             except ValueError as error:
                 failures.append(f"{proposal_id}: {error}")
+            if patch in patch_paths:
+                failures.append(f"duplicate integration proposal patch: {patch}")
+            patch_paths.add(patch)
 
         checksum = proposal.get("sha256")
         if not isinstance(checksum, str) or not re.fullmatch(r"[0-9a-f]{64}", checksum):
@@ -309,6 +364,30 @@ def validate_manifest(manifest: Any) -> list[str]:
                     valid_dependencies.append(dependency)
         proposal_dependencies[proposal_id] = valid_dependencies
 
+        apply_dependencies = proposal.get("appliesAfter", [])
+        valid_apply_dependencies: list[str] = []
+        if not isinstance(apply_dependencies, list):
+            failures.append(f"{proposal_id} appliesAfter must be a list")
+        else:
+            seen_apply_dependencies: set[str] = set()
+            for dependency in apply_dependencies:
+                if not isinstance(dependency, str) or not IDENTIFIER.fullmatch(
+                    dependency
+                ):
+                    failures.append(
+                        f"{proposal_id} contains an invalid applied dependency id: "
+                        f"{dependency!r}"
+                    )
+                elif dependency in seen_apply_dependencies:
+                    failures.append(
+                        f"{proposal_id} contains duplicate applied dependency: "
+                        f"{dependency}"
+                    )
+                else:
+                    seen_apply_dependencies.add(dependency)
+                    valid_apply_dependencies.append(dependency)
+        proposal_apply_dependencies[proposal_id] = valid_apply_dependencies
+
         failures.extend(validate_test_commands(proposal_id, proposal.get("tests")))
         claims = proposal.get("claims")
         if (
@@ -326,6 +405,23 @@ def validate_manifest(manifest: Any) -> list[str]:
                 failures.append(
                     f"{proposal_id} references unknown proposal dependency: "
                     f"{dependency}"
+                )
+    for proposal_id, dependencies in proposal_apply_dependencies.items():
+        for dependency in dependencies:
+            if dependency not in proposal_ids:
+                failures.append(
+                    f"{proposal_id} references unknown applied dependency: "
+                    f"{dependency}"
+                )
+                continue
+            if dependency not in proposal_dependencies.get(proposal_id, []):
+                failures.append(
+                    f"{proposal_id} applied dependency {dependency} must also be "
+                    "listed in dependsOn"
+                )
+            if proposal_sources.get(dependency) != proposal_sources.get(proposal_id):
+                failures.append(
+                    f"{proposal_id} cannot apply cross-source dependency {dependency}"
                 )
     dependency_cycle = first_cycle(proposal_dependencies)
     if dependency_cycle:

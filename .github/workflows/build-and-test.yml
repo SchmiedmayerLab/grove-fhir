@@ -56,6 +56,24 @@ jobs:
       - name: Verify immutable external source pins
         run: python3 Scripts/check-integration-sources.py --fetch-targets
 
+  integration-proposals:
+    name: Integration Proposal Validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: true
+          fetch-depth: 1
+          persist-credentials: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+      - name: Fetch immutable proposal targets
+        run: python3 Scripts/check-integration-sources.py --fetch-targets
+      - name: Apply and test external change proposals
+        run: python3 Scripts/validate-integration-proposals.py
+
   guides:
     name: Build All Implementation Guides
     runs-on: ubuntu-latest

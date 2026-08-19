@@ -26,7 +26,7 @@ SPECIFICATION.loader.exec_module(CHECK)
 
 class IntegrationSourceManifestTests(unittest.TestCase):
     manifest = {
-        "schemaVersion": 1,
+        "schemaVersion": 2,
         "sources": [
             {
                 "id": "example",
@@ -54,6 +54,7 @@ class IntegrationSourceManifestTests(unittest.TestCase):
             "patch": f"Integration/Patches/{identifier}.patch",
             "sha256": "b" * 64,
             "dependsOn": dependencies,
+            "appliesAfter": [],
             "tests": [{"cwd": ".", "argv": ["swift", "test"]}],
             "claims": ["The example preserves the declared contract."],
         }
@@ -172,6 +173,23 @@ class IntegrationSourceManifestTests(unittest.TestCase):
             CHECK.validate_manifest(manifest),
         )
 
+    def test_rejects_unknown_schema_fields_and_reused_patch_files(self) -> None:
+        manifest = deepcopy(self.manifest)
+        first = self.proposal("first", [])
+        second = self.proposal("second", [])
+        second["patch"] = first["patch"]
+        first["command"] = "swift test"
+        manifest["proposals"] = [first, second]
+        failures = CHECK.validate_manifest(manifest)
+        self.assertIn(
+            "integration proposal contains unsupported fields: command", failures
+        )
+        self.assertIn(
+            "duplicate integration proposal patch: "
+            "Integration/Patches/first.patch",
+            failures,
+        )
+
     def test_rejects_unknown_and_cyclic_proposal_dependencies(self) -> None:
         unknown = deepcopy(self.manifest)
         unknown["proposals"] = [self.proposal("proposal", ["missing"])]
@@ -188,6 +206,61 @@ class IntegrationSourceManifestTests(unittest.TestCase):
         self.assertIn(
             "proposal dependency cycle: proposal-a -> proposal-b -> proposal-a",
             CHECK.validate_manifest(cyclic),
+        )
+
+    def test_tests_are_optional_and_never_inferred(self) -> None:
+        manifest = deepcopy(self.manifest)
+        proposal = self.proposal("proposal", [])
+        proposal.pop("tests")
+        manifest["proposals"] = [proposal]
+        self.assertEqual(CHECK.validate_manifest(manifest), [])
+
+    def test_rejects_a_test_working_directory_inside_git_metadata(self) -> None:
+        manifest = deepcopy(self.manifest)
+        proposal = self.proposal("proposal", [])
+        proposal["tests"] = [{"cwd": ".git/hooks", "argv": ["git", "status"]}]
+        manifest["proposals"] = [proposal]
+        self.assertIn(
+            "proposal test 1 cwd must be a safe relative path",
+            CHECK.validate_manifest(manifest),
+        )
+
+    def test_applied_dependencies_are_explicit_same_source_dependencies(self) -> None:
+        valid = deepcopy(self.manifest)
+        parent = self.proposal("parent", [])
+        child = self.proposal("child", ["parent"])
+        child["appliesAfter"] = ["parent"]
+        valid["proposals"] = [parent, child]
+        self.assertEqual(CHECK.validate_manifest(valid), [])
+
+        missing_order = deepcopy(valid)
+        missing_order["proposals"][1]["dependsOn"] = []
+        self.assertIn(
+            "child applied dependency parent must also be listed in dependsOn",
+            CHECK.validate_manifest(missing_order),
+        )
+
+        cross_source = deepcopy(valid)
+        cross_source["sources"].append(
+            {
+                "id": "other",
+                "repository": "https://github.com/SchmiedmayerLab/other.git",
+                "path": "Integration/Sources/Other",
+                "gitlink": "c" * 40,
+                "targets": [
+                    {
+                        "id": "main",
+                        "ref": "refs/heads/main",
+                        "commit": "c" * 40,
+                    }
+                ],
+            }
+        )
+        cross_source["proposals"][0]["source"] = "other"
+        cross_source["proposals"][0]["target"] = "main"
+        self.assertIn(
+            "child cannot apply cross-source dependency parent",
+            CHECK.validate_manifest(cross_source),
         )
 
     def test_gitmodules_must_exactly_match_manifest_sources(self) -> None:
