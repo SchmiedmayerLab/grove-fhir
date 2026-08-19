@@ -37,24 +37,24 @@ class PreparePagesTests(unittest.TestCase):
     def test_rewrites_build_locations(self) -> None:
         repository = Path("/private/tmp/grove-fhir")
         text = (
-            "file:///private/tmp/grove-fhir/platforms/output/CodeSystem-example.html "
-            "/private/tmp/grove-fhir/ig/output/index.html"
+            "file:///private/tmp/grove-fhir/healthkit/output/CodeSystem-example.html "
+            "/private/tmp/grove-fhir/mobile/output/index.html"
         )
 
         result = PREPARE_PAGES.replace_build_locations(
             text,
             repository,
             {
-                "platforms": "https://example.org/fhir/platforms/ci-build",
-                "ig": "https://example.org/fhir/core/ci-build",
+                "healthkit": "https://example.org/grove-fhir/fhir/healthkit/ci-build",
+                "mobile": "https://example.org/grove-fhir/fhir/mobile/ci-build",
             },
             "https://github.com/example/repository/tree/revision",
         )
 
         self.assertEqual(
             result,
-            "https://example.org/fhir/platforms/ci-build/CodeSystem-example.html "
-            "https://example.org/fhir/core/ci-build/index.html",
+            "https://example.org/grove-fhir/fhir/healthkit/ci-build/CodeSystem-example.html "
+            "https://example.org/grove-fhir/fhir/mobile/ci-build/index.html",
         )
 
     def test_rewrites_package_deterministically(self) -> None:
@@ -74,13 +74,36 @@ class PreparePagesTests(unittest.TestCase):
                     "title": "Example",
                     "fhirVersions": ["4.0.1"],
                 },
+                {
+                    "package/example/Observation-example.json": json.dumps(
+                        {
+                            "resourceType": "Observation",
+                            "id": "example",
+                            "text": {
+                                "status": "generated",
+                                "div": (
+                                    '<div xmlns="http://www.w3.org/1999/xhtml">'
+                                    '<a href="file:///private/tmp/grove-fhir/mobile/output/'
+                                    'StructureDefinition-example.html">profile</a></div>'
+                                ),
+                            },
+                        }
+                    ).encode(),
+                },
             )
             shutil.copy2(original, first)
             shutil.copy2(original, second)
 
             for archive in (first, second):
                 PREPARE_PAGES.rewrite_package_archive(
-                    archive, "https://example.org/fhir/example", 1_700_000_000
+                    archive,
+                    "https://example.org/fhir/example",
+                    1_700_000_000,
+                    repository_root=Path("/private/tmp/grove-fhir"),
+                    public_urls={
+                        "mobile": "https://example.org/grove-fhir/fhir/mobile/ci-build"
+                    },
+                    source_url="https://github.com/example/repository/tree/revision",
                 )
 
             self.assertEqual(first.read_bytes(), second.read_bytes())
@@ -88,6 +111,18 @@ class PreparePagesTests(unittest.TestCase):
             self.assertEqual(metadata["url"], metadata["canonical"])
             self.assertEqual(metadata["date"], "20231114221320")
             self.assertEqual(metadata["description"], "Example package")
+            with tarfile.open(first, "r:gz") as package:
+                example_file = package.extractfile(
+                    "package/example/Observation-example.json"
+                )
+                self.assertIsNotNone(example_file)
+                example = json.load(example_file)
+            self.assertEqual(
+                example["text"]["div"],
+                '<div xmlns="http://www.w3.org/1999/xhtml">'
+                '<a href="https://example.org/grove-fhir/fhir/mobile/ci-build/'
+                'StructureDefinition-example.html">profile</a></div>',
+            )
 
     def test_assembles_ci_only_publication_surface(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -101,17 +136,17 @@ class PreparePagesTests(unittest.TestCase):
             guides = (
                 self._write_guide(
                     repository,
-                    "ig",
-                    "org.example.core",
-                    "https://example.org/fhir/core",
+                    "mobile",
+                    "org.example.mobile",
+                    "https://pages.example/repository/fhir/mobile",
                     "StructureDefinition",
                     "example-profile",
                 ),
                 self._write_guide(
                     repository,
-                    "platforms",
-                    "org.example.platforms",
-                    "https://example.org/fhir/platforms",
+                    "healthkit",
+                    "org.example.healthkit",
+                    "https://pages.example/repository/fhir/healthkit",
                     "CodeSystem",
                     "example-codes",
                 ),
@@ -119,25 +154,39 @@ class PreparePagesTests(unittest.TestCase):
             configuration = {
                 "schemaVersion": 1,
                 "previewBaseUrl": "https://pages.example/repository",
-                "canonicalBaseUrl": "https://example.org",
+                "canonicalBaseUrl": "https://pages.example/repository",
                 "sourceRepository": "https://github.com/example/repository",
+                "releaseMode": "ci-build-only",
                 "guides": [
                     {
                         "source": guides[0][0],
-                        "canonicalPath": "fhir/core",
+                        "canonicalPath": "fhir/mobile",
                         "aliases": [""],
                         "representativeResource": "StructureDefinition/example-profile",
                     },
                     {
                         "source": guides[1][0],
-                        "canonicalPath": "fhir/platforms",
-                        "aliases": ["platforms"],
+                        "canonicalPath": "fhir/healthkit",
+                        "aliases": ["healthkit"],
                         "representativeResource": "CodeSystem/example-codes",
                     },
                 ],
-                "retiredPreviewPaths": ["archive/legacy/"],
+                "retiredPreviewPaths": ["fhir/core/", "fhir/platforms/", "platforms/"],
             }
             site = repository / ".build/pages"
+            published = Path(directory) / "published"
+            (published / "fhir/core/0.5.0").mkdir(parents=True)
+            (published / "fhir/core/0.5.0/index.html").write_text(
+                "retired release", encoding="utf-8"
+            )
+            (published / "fhir/platforms/0.1.0").mkdir(parents=True)
+            (published / "fhir/platforms/0.1.0/index.html").write_text(
+                "retired release", encoding="utf-8"
+            )
+            (published / "fhir/mobile/0.0.1").mkdir(parents=True)
+            (published / "fhir/mobile/0.0.1/index.html").write_text(
+                "unreleased pre-1.0 build", encoding="utf-8"
+            )
 
             PREPARE_PAGES.assemble_site(
                 site,
@@ -146,6 +195,7 @@ class PreparePagesTests(unittest.TestCase):
                 "https://pages.example/repository",
                 "abc123",
                 1_700_000_000,
+                published,
             )
 
             self.assertEqual(
@@ -158,51 +208,65 @@ class PreparePagesTests(unittest.TestCase):
                 [],
             )
 
-            core = site / "fhir/core"
+            mobile = site / "fhir/mobile"
             self.assertTrue((site / "index.html").is_file())
-            self.assertTrue((site / "platforms/index.html").is_file())
-            self.assertTrue((core / "ci-build/index.html").is_file())
-            self.assertTrue((core / "ci-build/package.tgz.sha256").is_file())
+            self.assertTrue((site / "healthkit/index.html").is_file())
+            self.assertTrue((mobile / "ci-build/index.html").is_file())
+            self.assertTrue((mobile / "ci-build/package.tgz.sha256").is_file())
             preview_manifest = json.loads(
-                (core / "ci-build/publication-manifest.json").read_text(encoding="utf-8")
+                (mobile / "ci-build/publication-manifest.json").read_text(encoding="utf-8")
             )
             self.assertEqual(preview_manifest["sourceRevision"], "abc123")
-            self.assertEqual(preview_manifest["canonical"], "https://example.org/fhir/core")
-            self.assertIn("ci-build/", (core / "index.html").read_text(encoding="utf-8"))
-            history = json.loads((core / "package-list.json").read_text(encoding="utf-8"))
-            self.assertEqual(history["package-id"], "org.example.core")
+            self.assertEqual(
+                preview_manifest["canonical"],
+                "https://pages.example/repository/fhir/mobile",
+            )
+            self.assertIn("ci-build/", (mobile / "index.html").read_text(encoding="utf-8"))
+            history = json.loads((mobile / "package-list.json").read_text(encoding="utf-8"))
+            self.assertEqual(history["package-id"], "org.example.mobile")
             self.assertEqual(history["list"], [
                 {
                     "version": "current",
                     "desc": "Current build from the default branch.",
-                    "path": "https://pages.example/repository/fhir/core/ci-build",
+                    "path": "https://pages.example/repository/fhir/mobile/ci-build",
                     "status": "ci-build",
                     "fhirversion": "4.0.1",
                 }
             ])
             self.assertIn(
                 "The current entry tracks the latest build",
-                (core / "history.html").read_text(encoding="utf-8"),
+                (mobile / "history.html").read_text(encoding="utf-8"),
             )
             self.assertTrue(
-                (core / "StructureDefinition/example-profile/index.html").is_file()
+                (mobile / "StructureDefinition/example-profile/index.html").is_file()
             )
-            self.assertTrue((core / "StructureDefinition/example-profile.json").is_file())
+            self.assertTrue((mobile / "StructureDefinition/example-profile.json").is_file())
             self.assertFalse(
-                (core / "StructureDefinition/example-profile/example-profile.json").exists()
+                (mobile / "StructureDefinition/example-profile/example-profile.json").exists()
             )
-            checksum = (core / "package.tgz.sha256").read_text(encoding="utf-8").split()[0]
-            self.assertEqual(checksum, hashlib.sha256((core / "package.tgz").read_bytes()).hexdigest())
-            metadata = PREPARE_PAGES.read_package_metadata(core / "package.tgz")
+            checksum = (mobile / "package.tgz.sha256").read_text(encoding="utf-8").split()[0]
+            self.assertEqual(
+                checksum,
+                hashlib.sha256((mobile / "package.tgz").read_bytes()).hexdigest(),
+            )
+            metadata = PREPARE_PAGES.read_package_metadata(mobile / "package.tgz")
             self.assertEqual(metadata["url"], metadata["canonical"])
-            self.assertFalse((site / "archive/legacy").exists())
+            self.assertFalse((site / "fhir/core").exists())
+            self.assertFalse((site / "fhir/platforms").exists())
+            self.assertFalse((site / "fhir/mobile/0.0.1").exists())
             self.assertNotIn(
                 "Local Development build",
-                (core / "ci-build/index.html").read_text(encoding="utf-8"),
+                (mobile / "ci-build/index.html").read_text(encoding="utf-8"),
             )
+            self.assertFalse((mobile / "ci-build/package.db").exists())
+            icon = (mobile / "ci-build/assets/images/001.svg").read_text(
+                encoding="utf-8"
+            )
+            self.assertIn('inkscape:export-filename="Globe Flag.png"', icon)
+            self.assertNotIn(r"C:\Users", icon)
             self.assertIn(
-                "https://pages.example/repository/fhir/core/history.html",
-                (core / "ci-build/index.html").read_text(encoding="utf-8"),
+                "https://pages.example/repository/fhir/mobile/history.html",
+                (mobile / "ci-build/index.html").read_text(encoding="utf-8"),
             )
 
     def test_local_validation_rejects_canonical_origin_drift(self) -> None:
@@ -216,51 +280,37 @@ class PreparePagesTests(unittest.TestCase):
             )
             self._write_guide(
                 repository,
-                "ig",
-                "org.example.core",
-                "https://other.example/fhir/core",
+                "mobile",
+                "org.example.mobile",
+                "https://other.example/fhir/mobile",
                 "StructureDefinition",
                 "example-profile",
             )
             configuration = {
                 "schemaVersion": 1,
                 "previewBaseUrl": "https://pages.example/repository",
-                "canonicalBaseUrl": "https://example.org",
+                "canonicalBaseUrl": "https://pages.example/repository",
                 "sourceRepository": "https://github.com/example/repository",
+                "releaseMode": "ci-build-only",
                 "guides": [
                     {
-                        "source": "ig",
-                        "canonicalPath": "fhir/core",
+                        "source": "mobile",
+                        "canonicalPath": "fhir/mobile",
                         "aliases": [""],
                         "representativeResource": "StructureDefinition/example-profile",
                     }
                 ],
             }
             site = repository / ".build/pages"
-            PREPARE_PAGES.assemble_site(
-                site,
-                repository,
-                configuration,
-                "https://pages.example/repository",
-                "abc123",
-                1_700_000_000,
-            )
-
-            failures = CHECK_PUBLICATION.check_site(
-                site,
-                repository,
-                configuration,
-                "https://pages.example/repository",
-            )
-
-            self.assertTrue(
-                any("expected configured canonical" in failure for failure in failures),
-                failures,
-            )
-            self.assertTrue(
-                any("package canonical" in failure for failure in failures),
-                failures,
-            )
+            with self.assertRaisesRegex(ValueError, "does not match configured canonical"):
+                PREPARE_PAGES.assemble_site(
+                    site,
+                    repository,
+                    configuration,
+                    "https://pages.example/repository",
+                    "abc123",
+                    1_700_000_000,
+                )
 
     def test_local_validation_rejects_non_https_canonical_origin(self) -> None:
         failures = CHECK_PUBLICATION.check_site(
@@ -268,7 +318,8 @@ class PreparePagesTests(unittest.TestCase):
             Path("/unused"),
             {
                 "canonicalBaseUrl": "http://example.org",
-                "guides": [{"source": "ig", "canonicalPath": "fhir/core"}],
+                "releaseMode": "ci-build-only",
+                "guides": [{"source": "mobile", "canonicalPath": "fhir/mobile"}],
             },
             "https://pages.example/repository",
         )
@@ -276,19 +327,55 @@ class PreparePagesTests(unittest.TestCase):
         self.assertEqual(
             failures,
             [
-                "invalid publication configuration: canonicalBaseUrl must be an HTTPS "
-                "origin without credentials, a path, query, or fragment"
+                "invalid publication configuration: canonicalBaseUrl must be an HTTPS URL "
+                "without credentials, an unsafe path, query, or fragment"
             ],
         )
 
+    def test_canonical_base_accepts_a_safe_github_pages_path(self) -> None:
+        self.assertEqual(
+            CHECK_PUBLICATION.canonical_for_guide(
+                {"canonicalBaseUrl": "https://pages.example/grove-fhir/"},
+                {"canonicalPath": "fhir/mobile"},
+            ),
+            "https://pages.example/grove-fhir/fhir/mobile",
+        )
+
+    def test_canonical_base_rejects_unsafe_urls(self) -> None:
+        unsafe = (
+            "http://pages.example/grove-fhir",
+            "https://user@pages.example/grove-fhir",
+            "https://pages.example/grove-fhir//nested",
+            "https://pages.example/grove-fhir/../other",
+            "https://pages.example/grove%2Dfhir",
+            "https://pages.example/grove-fhir?preview=true",
+            "https://pages.example/grove-fhir#preview",
+        )
+        for base_url in unsafe:
+            with self.subTest(base_url=base_url):
+                with self.assertRaises(ValueError):
+                    CHECK_PUBLICATION.canonical_for_guide(
+                        {"canonicalBaseUrl": base_url},
+                        {"canonicalPath": "fhir/mobile"},
+                    )
+
     @staticmethod
-    def _write_package(path: Path, metadata: dict[str, object]) -> None:
+    def _write_package(
+        path: Path,
+        metadata: dict[str, object],
+        extra_files: dict[str, bytes] | None = None,
+    ) -> None:
         with tarfile.open(path, "w:gz") as package:
             payload = (json.dumps(metadata) + "\n").encode()
             info = tarfile.TarInfo("package/package.json")
             info.size = len(payload)
             info.mtime = 99
             package.addfile(info, io.BytesIO(payload))
+            for name, contents in sorted((extra_files or {}).items()):
+                info = tarfile.TarInfo(name)
+                info.size = len(contents)
+                info.mtime = 99
+                package.addfile(info, io.BytesIO(contents))
 
     def _write_guide(
         self,
@@ -312,6 +399,15 @@ class PreparePagesTests(unittest.TestCase):
         local = output.resolve().as_uri()
         (output / "index.html").write_text(
             f"Local Development build <a href='{history}'>history</a> {local}",
+            encoding="utf-8",
+        )
+        (output / "package.db").write_text(
+            f"file://{output}/package-cache", encoding="utf-8"
+        )
+        icon = output / "assets/images/001.svg"
+        icon.parent.mkdir(parents=True)
+        icon.write_text(
+            '<svg inkscape:export-filename="C:\\Users\\Philip\\Desktop\\Globe Flag.png" />',
             encoding="utf-8",
         )
         metadata = {

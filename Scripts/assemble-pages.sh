@@ -14,8 +14,8 @@ readonly REPOSITORY_ROOT
 readonly SITE_DIRECTORY="$REPOSITORY_ROOT/.build/pages"
 
 for guide in \
-  "$REPOSITORY_ROOT/ig/output" \
-  "$REPOSITORY_ROOT/platforms/output"; do
+  "$REPOSITORY_ROOT/mobile/output" \
+  "$REPOSITORY_ROOT/healthkit/output"; do
   test -f "$guide/index.html"
 done
 

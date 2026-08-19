@@ -18,7 +18,7 @@ from urllib.parse import urlparse
 
 
 ROOT = Path(__file__).resolve().parent.parent
-GUIDES = (ROOT / "archive/v0-healthkit-shaped", ROOT / "platforms", ROOT / "ig")
+GUIDES = (ROOT / "mobile", ROOT / "healthkit")
 REQUIRED_CONFIGURATION_KEYS = {"id", "canonical", "version", "fhirVersion", "license"}
 
 
@@ -35,7 +35,8 @@ def tracked_files() -> list[Path]:
     result = subprocess.run(
         ["git", "ls-files", "-z"], cwd=ROOT, check=True, capture_output=True
     )
-    return [ROOT / item.decode() for item in result.stdout.split(b"\0") if item]
+    paths = [ROOT / item.decode() for item in result.stdout.split(b"\0") if item]
+    return [path for path in paths if path.is_file()]
 
 
 def main() -> int:
@@ -51,17 +52,26 @@ def main() -> int:
         if configuration.get("license") != "MIT":
             failures.append(f"{configuration_path.relative_to(ROOT)} must declare the MIT license")
 
-    platform_configuration = configurations[ROOT / "platforms"]
-    core_configuration_text = (ROOT / "ig" / "sushi-config.yaml").read_text(encoding="utf-8")
-    expected_dependency = (
-        "org.grovealliance.fhir.platforms:\n"
-        f"    version: {platform_configuration.get('version', '<missing>')}"
+    mobile_configuration = configurations[ROOT / "mobile"]
+    healthkit_configuration_text = (ROOT / "healthkit" / "sushi-config.yaml").read_text(
+        encoding="utf-8"
     )
-    if expected_dependency not in core_configuration_text:
-        failures.append("ig/sushi-config.yaml does not pin the current platform-guide version")
+    expected_dependency = (
+        "org.grovealliance.fhir.mobile:\n"
+        f"    version: {mobile_configuration.get('version', '<missing>')}"
+    )
+    if expected_dependency not in healthkit_configuration_text:
+        failures.append(
+            "healthkit/sushi-config.yaml does not pin the current Mobile guide version"
+        )
 
     publication_path = ROOT / "publication/config.json"
     publication = json.loads(publication_path.read_text(encoding="utf-8"))
+    if publication.get("releaseMode") != "ci-build-only":
+        failures.append(
+            "publication/config.json must keep releaseMode at ci-build-only until an "
+            "immutable release is explicitly approved"
+        )
     canonical_base_url = publication.get("canonicalBaseUrl")
     canonical_base = urlparse(canonical_base_url) if isinstance(canonical_base_url, str) else None
     if (
@@ -70,31 +80,34 @@ def main() -> int:
         or not canonical_base.netloc
         or canonical_base.username is not None
         or canonical_base.password is not None
-        or canonical_base.path not in {"", "/"}
+        or "%" in canonical_base.path
+        or "\\" in canonical_base.path
+        or "//" in canonical_base.path
+        or (
+            canonical_base.path not in {"", "/"}
+            and any(
+                segment in {"", ".", ".."}
+                for segment in canonical_base.path.strip("/").split("/")
+            )
+        )
         or canonical_base.params
         or canonical_base.query
         or canonical_base.fragment
     ):
         failures.append(
-            "publication/config.json canonicalBaseUrl must be an HTTPS origin without "
-            "credentials, a path, query, or fragment"
+            "publication/config.json canonicalBaseUrl must be an HTTPS URL without "
+            "credentials, an unsafe path, query, or fragment"
         )
         canonical_base_url = None
     published_sources: set[str] = set()
     aliases: set[str] = set()
     for guide in publication.get("guides", []):
         source = guide.get("source")
-        if source not in {"ig", "platforms"}:
+        if source not in {"mobile", "healthkit"}:
             failures.append(f"publication/config.json has an unknown active guide: {source!r}")
             continue
         published_sources.add(source)
         configuration = configurations[ROOT / source]
-        canonical_path = urlparse(configuration["canonical"]).path.strip("/")
-        if guide.get("canonicalPath") != canonical_path:
-            failures.append(
-                f"publication path for {source} does not match its canonical URL: "
-                f"{guide.get('canonicalPath')!r} != {canonical_path!r}"
-            )
         if canonical_base_url is not None:
             expected_canonical = (
                 f"{canonical_base_url.rstrip('/')}/{str(guide.get('canonicalPath', '')).strip('/')}"
@@ -108,8 +121,28 @@ def main() -> int:
             if alias in aliases:
                 failures.append(f"publication alias is declared more than once: {alias!r}")
             aliases.add(alias)
-    if published_sources != {"ig", "platforms"}:
+    if published_sources != {"mobile", "healthkit"}:
         failures.append("publication/config.json must publish exactly the two active guides")
+
+    active_paths = {
+        str(guide.get("canonicalPath", "")).strip("/")
+        for guide in publication.get("guides", [])
+    }
+    active_paths.update(alias.strip("/") for alias in aliases if alias)
+    for retired in publication.get("retiredPreviewPaths", []):
+        retired_path = str(retired).strip("/")
+        if not retired_path:
+            failures.append("publication/config.json contains an empty retired path")
+            continue
+        if any(
+            retired_path == active
+            or retired_path.startswith(f"{active}/")
+            or active.startswith(f"{retired_path}/")
+            for active in active_paths
+        ):
+            failures.append(
+                f"retired publication path overlaps an active path: {retired!r}"
+            )
 
     for path in tracked_files():
         relative = path.relative_to(ROOT)

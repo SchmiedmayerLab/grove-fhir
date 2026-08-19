@@ -51,17 +51,20 @@ jobs:
             ~/.fhir
             .build/fhir-tools
             .build/bundle
-            archive/v0-healthkit-shaped/input-cache
-            ig/input-cache
-            platforms/input-cache
+            mobile/input-cache
+            healthkit/input-cache
           key: fhir-pages-${{ runner.os }}-${{ hashFiles('Gemfile.lock', 'package-lock.json', 'Scripts/download-fhir-tools.sh') }}
           restore-keys: |
             fhir-pages-${{ runner.os }}-
       - run: npm ci
+      - name: Verify documentation and publication sources
+        run: npm test
       - name: Build the documentation site
         env:
           PUBLISHED_SITE_ROOT: ${{ github.workspace }}/.published
         run: npm run pages:build
+      - name: Verify the assembled package artifact allowlist
+        run: python3 -m unittest Tests.test_artifact_allowlist -v
       - name: Upload the Pages artifact
         uses: actions/upload-pages-artifact@v4
         with:

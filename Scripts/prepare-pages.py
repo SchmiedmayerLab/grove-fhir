@@ -25,7 +25,6 @@ import tempfile
 from datetime import datetime, timezone
 from pathlib import Path, PurePosixPath
 from typing import Any
-from urllib.parse import urlparse
 
 
 TEXT_SUFFIXES = {
@@ -40,6 +39,10 @@ TEXT_SUFFIXES = {
     ".xml",
 }
 LOCAL_LOCATION = re.compile(r"file://|/(?:Users|home/runner|private/tmp)/")
+WINDOWS_LOCAL_LOCATION = re.compile(r"(?i)\b[A-Z]:\\(?:Users|home\\runner|private\\tmp)\\")
+INKSCAPE_EXPORT_FILENAME = re.compile(
+    r'(inkscape:export-filename=")[A-Za-z]:\\[^"\r\n]*\\([^"\\\r\n]+)(")'
+)
 MALFORMED_DATA_URL = re.compile(
     r"url\([^)]*?pagesdata:(image/[^;]+;base64,[A-Za-z0-9+/=]+)\)"
 )
@@ -52,6 +55,8 @@ def load_configuration(path: Path) -> dict[str, Any]:
         raise ValueError("publication/config.json must use schemaVersion 1")
     if not isinstance(configuration.get("guides"), list) or not configuration["guides"]:
         raise ValueError("publication/config.json must declare at least one guide")
+    if configuration.get("releaseMode") not in {"ci-build-only", "immutable-releases"}:
+        raise ValueError("publication/config.json must declare a supported releaseMode")
     return configuration
 
 
@@ -88,6 +93,10 @@ def replace_build_locations(
             replacements.extend(((local.as_uri(), public_url), (str(local), public_url)))
 
     rewritten = MALFORMED_DATA_URL.sub(r"url(data:\1)", text)
+    # The Publisher template currently carries an Inkscape export path from the
+    # machine on which its international-language icon was authored. The path is
+    # non-functional metadata; retain only the asset name in the hosted copy.
+    rewritten = INKSCAPE_EXPORT_FILENAME.sub(r"\1\2\3", rewritten)
     for local, public in sorted(replacements, key=lambda item: len(item[0]), reverse=True):
         rewritten = rewritten.replace(local, public)
     return rewritten.replace(str(repository_root), source_url)
@@ -101,7 +110,15 @@ def read_package_metadata(path: Path) -> dict[str, Any]:
         return json.load(package_file)
 
 
-def rewrite_package_archive(path: Path, canonical: str, source_date_epoch: int) -> None:
+def rewrite_package_archive(
+    path: Path,
+    canonical: str,
+    source_date_epoch: int,
+    *,
+    repository_root: Path,
+    public_urls: dict[str, str],
+    source_url: str,
+) -> None:
     entries: list[tuple[tarfile.TarInfo, bytes | None]] = []
     with tarfile.open(path, "r:gz") as source:
         for original in source.getmembers():
@@ -117,6 +134,26 @@ def rewrite_package_archive(path: Path, canonical: str, source_date_epoch: int) 
                 if isinstance(description, str):
                     package["description"] = BUILT_SUFFIX.sub("", description)
                 payload = (json.dumps(package, indent=2, ensure_ascii=False) + "\n").encode()
+
+            if payload is not None and PurePosixPath(member.name).suffix in TEXT_SUFFIXES:
+                try:
+                    text = payload.decode("utf-8")
+                except UnicodeDecodeError:
+                    pass
+                else:
+                    rewritten = replace_build_locations(
+                        text,
+                        repository_root,
+                        public_urls,
+                        source_url,
+                    )
+                    if LOCAL_LOCATION.search(rewritten) or WINDOWS_LOCAL_LOCATION.search(
+                        rewritten
+                    ):
+                        raise ValueError(
+                            f"local filesystem location remains in {path.name}: {member.name}"
+                        )
+                    payload = rewritten.encode("utf-8")
 
             member.uid = 0
             member.gid = 0
@@ -280,6 +317,11 @@ def prepare_guide(
     history_url: str,
     source_date_epoch: int,
 ) -> None:
+    # package.db is Publisher's local package-cache database. It is not part of
+    # an IG publication and embeds absolute build paths, so it must never reach
+    # the public site or an alias.
+    (stage / "package.db").unlink(missing_ok=True)
+
     for path in stage.rglob("*"):
         if path.is_file() and path.suffix in TEXT_SUFFIXES:
             try:
@@ -292,7 +334,14 @@ def prepare_guide(
             path.write_text(rewritten, encoding="utf-8")
 
     for archive in stage.glob("package*.tgz"):
-        rewrite_package_archive(archive, canonical, source_date_epoch)
+        rewrite_package_archive(
+            archive,
+            canonical,
+            source_date_epoch,
+            repository_root=repository_root,
+            public_urls=public_urls,
+            source_url=source_url,
+        )
 
     leaked_locations: list[str] = []
     for path in stage.rglob("*"):
@@ -302,7 +351,7 @@ def prepare_guide(
             text = path.read_text(encoding="utf-8")
         except UnicodeDecodeError:
             continue
-        if LOCAL_LOCATION.search(text):
+        if LOCAL_LOCATION.search(text) or WINDOWS_LOCAL_LOCATION.search(text):
             leaked_locations.append(str(path.relative_to(stage)))
     if leaked_locations:
         raise RuntimeError(
@@ -339,6 +388,17 @@ def assemble_site(
                     raise ValueError(f"published site contains a symbolic link: {path}")
             shutil.copytree(published_fhir, site / "fhir", dirs_exist_ok=True)
 
+    if configuration.get("releaseMode") == "ci-build-only":
+        for guide in configuration["guides"]:
+            canonical_root = site / safe_relative_path(
+                guide["canonicalPath"], "canonicalPath"
+            )
+            if canonical_root.exists():
+                if canonical_root.is_dir():
+                    shutil.rmtree(canonical_root)
+                else:
+                    canonical_root.unlink()
+
     guides = configuration["guides"]
     public_urls = {
         guide["source"]: f"{base_url}/{guide['canonicalPath']}/ci-build"
@@ -363,10 +423,14 @@ def assemble_site(
             canonical = metadata.get("canonical")
             if not isinstance(canonical, str):
                 raise ValueError(f"{source} package has no canonical URL")
-            if urlparse(canonical).path.strip("/") != guide["canonicalPath"]:
+            expected_canonical = (
+                f"{str(configuration['canonicalBaseUrl']).rstrip('/')}/"
+                f"{guide['canonicalPath']}"
+            )
+            if canonical.rstrip("/") != expected_canonical:
                 raise ValueError(
-                    f"{source} canonical path {urlparse(canonical).path!r} does not match "
-                    f"publication path {guide['canonicalPath']!r}"
+                    f"{source} canonical {canonical!r} does not match configured "
+                    f"canonical {expected_canonical!r}"
                 )
 
             preview_url = public_urls[source]
@@ -464,7 +528,10 @@ def assemble_site(
     for retired in configuration.get("retiredPreviewPaths", []):
         retired_path = site / safe_relative_path(retired, "retiredPreviewPath")
         if retired_path.exists():
-            raise RuntimeError(f"retired preview path was republished: {retired}")
+            if retired_path.is_dir():
+                shutil.rmtree(retired_path)
+            else:
+                retired_path.unlink()
 
 
 def main() -> int:

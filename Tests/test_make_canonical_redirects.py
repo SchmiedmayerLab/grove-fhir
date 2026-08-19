@@ -24,7 +24,7 @@ SPEC.loader.exec_module(ROUTES)
 
 
 class CanonicalRedirectTests(unittest.TestCase):
-    canonical = "https://example.org/fhir/core"
+    canonical = "https://pages.example/repository/fhir/mobile"
 
     def add_resource(
         self,

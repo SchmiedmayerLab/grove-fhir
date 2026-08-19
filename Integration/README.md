@@ -29,7 +29,9 @@ Run the source check after initializing the submodules:
 ```sh
 git submodule update --init --depth 1
 python3 Scripts/check-integration-sources.py --fetch-targets
-python3 Scripts/validate-integration-proposals.py
+python3 Scripts/validate-integration-proposals.py \
+  --platform linux \
+  --test-group portable
 ```
 
 ## Proposal dependencies
@@ -41,8 +43,11 @@ validator materializes the child proposal's exact target, then checks and applie
 the declared patch chain there. This makes a rebase across two pinned commits an
 explicit, tested claim rather than an assumption.
 
-Tests are optional. When present, each command has a repository-relative `cwd` and
-an `argv` array, for example:
+Tests are optional. When present, each command names an explicit execution `group`,
+the platforms on which that complete group may run, a repository-relative `cwd`,
+and an `argv` array. The validator requires both `--platform` and `--test-group`;
+it refuses to run a group on another platform. An optional, repeatable `--proposal`
+selects one proposal and its dependency closure. For example:
 
 ```json
 {
@@ -55,6 +60,8 @@ an `argv` array, for example:
   "appliesAfter": ["grove-mobile-contract"],
   "tests": [
     {
+      "group": "portable",
+      "platforms": ["linux", "macos"],
       "cwd": ".",
       "argv": ["git", "diff", "--check"]
     }
@@ -63,9 +70,10 @@ an `argv` array, for example:
 }
 ```
 
-The manifest currently contains no proposals, so proposal validation reports that
-no external code ran. Later PRs in the stack add the reviewable patch files and
-their exact checksums.
+The manifest contains the reviewable Grove Mobile contract proposal and its exact
+checksum. Its portable checks may run on Linux or macOS; its Swift contract and
+emitted-resource checks run only on macOS. Later stack layers may add proposals for
+the other pinned repositories using the same explicit dependency and platform model.
 
 The temporary integration sources remain part of the unmerged Grove FHIR stack so
 contract and implementation changes can be reviewed together. Once the external

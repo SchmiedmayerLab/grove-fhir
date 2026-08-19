@@ -1,0 +1,51 @@
+#
+# This source file is part of the Grove FHIR open-source project
+#
+# SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTRIBUTORS.md)
+#
+# SPDX-License-Identifier: MIT
+#
+
+id: org.grovealliance.fhir.mobile
+canonical: https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile
+name: GroveFHIRMobile
+title: Grove FHIR Mobile
+description: >-
+  FHIR R4 profiles and examples for exchanging measurements collected by mobile
+  applications and connected devices.
+status: draft
+version: 0.1.0
+fhirVersion: 4.0.1
+copyrightYear: 2026+
+releaseLabel: ci-build
+publisher:
+  name: Schmiedmayer Lab
+  url: https://github.com/SchmiedmayerLab
+jurisdiction: http://unstats.un.org/unsd/methods/m49/m49.htm#001 "World"
+license: MIT
+
+# The R4 core package contains observation-gatewayDevice and
+# workflow-researchStudy. The exact extensions package is needed only for the
+# standard timezone extension, which is not shipped in hl7.fhir.r4.core 4.0.1.
+dependencies:
+  hl7.terminology.r4: 7.3.0
+  hl7.fhir.uv.extensions.r4: 5.3.0
+
+menu:
+  Overview: index.html
+  Observations: observations.html
+  Devices and provenance: devices.html
+  Study context: study.html
+  Implement and validate: implementation.html
+
+pages:
+  index.md:
+    title: Overview
+  observations.md:
+    title: Observations
+  devices.md:
+    title: Devices and provenance
+  study.md:
+    title: Study context
+  implementation.md:
+    title: Implement and validate

@@ -16,6 +16,7 @@ import json
 import os
 import stat
 import subprocess
+import sys
 import tempfile
 from pathlib import Path
 from typing import Any, Sequence
@@ -168,6 +169,35 @@ def ordered_proposals(manifest: dict[str, Any]) -> list[dict[str, Any]]:
     for proposal in manifest["proposals"]:
         visit(proposal["id"])
     return result
+
+
+def selected_proposals(
+    manifest: dict[str, Any], identifiers: Sequence[str]
+) -> tuple[list[dict[str, Any]], set[str]]:
+    """Return dependency-ordered proposals and the explicitly requested roots."""
+    ordered = ordered_proposals(manifest)
+    if not identifiers:
+        return ordered, set()
+
+    proposals = {proposal["id"]: proposal for proposal in ordered}
+    unknown = sorted(set(identifiers) - set(proposals))
+    if unknown:
+        raise ProposalValidationError(
+            "unknown integration proposal: " + ", ".join(unknown)
+        )
+    roots = set(identifiers)
+    included: set[str] = set()
+
+    def include(identifier: str) -> None:
+        if identifier in included:
+            return
+        for dependency in proposals[identifier]["dependsOn"]:
+            include(dependency)
+        included.add(identifier)
+
+    for identifier in identifiers:
+        include(identifier)
+    return [proposal for proposal in ordered if proposal["id"] in included], roots
 
 
 def application_plan(
@@ -381,10 +411,32 @@ def run_declared_tests(
     proposal: dict[str, Any],
     *,
     environment: dict[str, str],
+    platform: str,
+    test_group: str,
+    require_group: bool,
 ) -> None:
-    for index, test in enumerate(proposal.get("tests", []), start=1):
+    tests = [
+        test
+        for test in proposal.get("tests", [])
+        if test["group"] == test_group
+    ]
+    if require_group and not tests:
+        raise ProposalValidationError(
+            f"{proposal['id']} declares no tests in requested group {test_group}"
+        )
+    disallowed = [test for test in tests if platform not in test["platforms"]]
+    if disallowed:
+        allowed = ", ".join(disallowed[0]["platforms"])
+        raise ProposalValidationError(
+            f"{proposal['id']} test group {test_group} does not support "
+            f"platform {platform}; allowed: {allowed}"
+        )
+    for index, test in enumerate(tests, start=1):
         cwd = secure_path(repository, test["cwd"], kind="test cwd")
-        print(f"  test {index}: {' '.join(test['argv'])}", flush=True)
+        print(
+            f"  {test_group} test {index}: {' '.join(test['argv'])}",
+            flush=True,
+        )
         run_command(
             test["argv"],
             cwd=cwd,
@@ -393,8 +445,15 @@ def run_declared_tests(
         )
 
 
-def validate_proposals(root: Path, manifest: dict[str, Any]) -> None:
-    ordered = ordered_proposals(manifest)
+def validate_proposals(
+    root: Path,
+    manifest: dict[str, Any],
+    *,
+    platform: str,
+    test_group: str,
+    proposal_ids: Sequence[str] = (),
+) -> None:
+    ordered, requested_roots = selected_proposals(manifest, proposal_ids)
     if not ordered:
         print("No integration proposals are declared; no external code was executed.")
         return
@@ -454,7 +513,14 @@ def validate_proposals(root: Path, manifest: dict[str, Any]) -> None:
                         workspace, applied["id"], patches[applied["id"]]
                     )
                     apply_patch(repository, patch, environment=environment)
-                run_declared_tests(repository, proposal, environment=environment)
+                run_declared_tests(
+                    repository,
+                    proposal,
+                    environment=environment,
+                    platform=platform,
+                    test_group=test_group,
+                    require_group=identifier in requested_roots,
+                )
 
                 actual = output(
                     "git", "rev-parse", "HEAD", cwd=repository, environment=environment
@@ -506,7 +572,19 @@ def validate_proposals(root: Path, manifest: dict[str, Any]) -> None:
                     + ", ".join(changed)
                 )
 
-    print(f"Validated {len(ordered)} integration proposals in disposable repositories")
+    print(
+        f"Validated {len(ordered)} integration proposals for {platform}/"
+        f"{test_group} in disposable repositories"
+    )
+
+
+def host_platform() -> str:
+    """Return the supported manifest platform for this Python process."""
+    if sys.platform == "darwin":
+        return "macos"
+    if sys.platform.startswith("linux"):
+        return "linux"
+    raise ProposalValidationError(f"unsupported validation host: {sys.platform}")
 
 
 def main() -> int:
@@ -514,10 +592,31 @@ def main() -> int:
     parser.add_argument(
         "--manifest", type=Path, default=Path("Integration/sources.json")
     )
+    parser.add_argument(
+        "--platform", required=True, choices=sorted(CHECKER.TEST_PLATFORMS)
+    )
+    parser.add_argument("--test-group", required=True)
+    parser.add_argument("--proposal", action="append", default=[])
     arguments = parser.parse_args()
     try:
+        if not CHECKER.IDENTIFIER.fullmatch(arguments.test_group):
+            raise ProposalValidationError(
+                "test group must be a lowercase identifier"
+            )
+        actual_platform = host_platform()
+        if arguments.platform != actual_platform:
+            raise ProposalValidationError(
+                f"requested platform {arguments.platform} does not match "
+                f"validation host {actual_platform}"
+            )
         manifest = read_manifest(ROOT, arguments.manifest)
-        validate_proposals(ROOT, manifest)
+        validate_proposals(
+            ROOT,
+            manifest,
+            platform=arguments.platform,
+            test_group=arguments.test_group,
+            proposal_ids=arguments.proposal,
+        )
     except ProposalValidationError as error:
         print(f"Integration proposal validation failed: {error}")
         return 1

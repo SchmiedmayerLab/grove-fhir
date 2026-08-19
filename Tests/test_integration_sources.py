@@ -13,6 +13,7 @@ import tempfile
 import unittest
 from copy import deepcopy
 from pathlib import Path
+from unittest import mock
 
 
 SCRIPT = Path(__file__).parents[1] / "Scripts/check-integration-sources.py"
@@ -55,12 +56,39 @@ class IntegrationSourceManifestTests(unittest.TestCase):
             "sha256": "b" * 64,
             "dependsOn": dependencies,
             "appliesAfter": [],
-            "tests": [{"cwd": ".", "argv": ["swift", "test"]}],
+            "tests": [
+                {
+                    "group": "portable",
+                    "platforms": ["linux", "macos"],
+                    "cwd": ".",
+                    "argv": ["git", "diff", "--check"],
+                }
+            ],
             "claims": ["The example preserves the declared contract."],
         }
 
     def test_accepts_an_immutable_source_manifest(self) -> None:
         self.assertEqual(CHECK.validate_manifest(deepcopy(self.manifest)), [])
+
+    def test_empty_submodule_directory_is_not_mistaken_for_the_parent_repository(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "Integration/Sources/Example").mkdir(parents=True)
+            with mock.patch.object(CHECK, "gitlink", return_value="a" * 40):
+                failures = CHECK.verify_repository(
+                    root=root,
+                    source=deepcopy(self.manifest["sources"][0]),
+                    fetch_targets=False,
+                )
+        self.assertEqual(
+            failures,
+            [
+                "example submodule is not initialized: "
+                "Integration/Sources/Example"
+            ],
+        )
 
     def test_accepts_independent_targets_without_implying_array_order(self) -> None:
         manifest = deepcopy(self.manifest)
@@ -157,7 +185,8 @@ class IntegrationSourceManifestTests(unittest.TestCase):
         manifest["proposals"] = [proposal]
         failures = CHECK.validate_manifest(manifest)
         self.assertIn(
-            "proposal test 1 must be an object with cwd and argv", failures
+            "proposal test 1 must be an object with group, platforms, cwd, and argv",
+            failures,
         )
         self.assertIn(
             "proposal must declare at least one nonempty contract claim", failures
@@ -214,6 +243,41 @@ class IntegrationSourceManifestTests(unittest.TestCase):
         proposal.pop("tests")
         manifest["proposals"] = [proposal]
         self.assertEqual(CHECK.validate_manifest(manifest), [])
+
+    def test_test_groups_require_explicit_consistent_platforms(self) -> None:
+        manifest = deepcopy(self.manifest)
+        proposal = self.proposal("proposal", [])
+        proposal["tests"] = [
+            {
+                "group": "macos-contract",
+                "platforms": ["macos"],
+                "cwd": ".",
+                "argv": ["swift", "test"],
+            },
+            {
+                "group": "macos-contract",
+                "platforms": ["linux"],
+                "cwd": ".",
+                "argv": ["git", "diff", "--check"],
+            },
+        ]
+        manifest["proposals"] = [proposal]
+        self.assertIn(
+            "proposal test group macos-contract must use one consistent platform set",
+            CHECK.validate_manifest(manifest),
+        )
+
+        proposal["tests"][1]["platforms"] = ["macos", "macos"]
+        failures = CHECK.validate_manifest(manifest)
+        self.assertIn(
+            "proposal test 2 contains duplicate platform: macos", failures
+        )
+
+        proposal["tests"][1]["platforms"] = ["windows"]
+        self.assertIn(
+            "proposal test 2 contains unsupported platform: 'windows'",
+            CHECK.validate_manifest(manifest),
+        )
 
     def test_rejects_a_test_working_directory_inside_git_metadata(self) -> None:
         manifest = deepcopy(self.manifest)

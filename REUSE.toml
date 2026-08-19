@@ -6,16 +6,15 @@ path = [
     "LICENSE.md",
     "LICENSES/MIT.txt",
     "Gemfile.lock",
-    "archive/v0-healthkit-shaped/ig.ini",
-    "archive/v0-healthkit-shaped/input/ignoreWarnings.txt",
-    "archive/v0-healthkit-shaped/publication-request.json",
-    "ig/input/ignoreWarnings.txt",
-    "ig/ig.ini",
     "Integration/sources.json",
+    "healthkit/ig.ini",
+    "healthkit/input/data/terminology-provenance.json",
+    "healthkit/input/ignoreWarnings.txt",
+    "mobile/ig.ini",
+    "mobile/input/ignoreWarnings.txt",
     "package-lock.json",
     "package.json",
-    "platforms/input/ignoreWarnings.txt",
-    "platforms/ig.ini",
+    "publication/artifact-allowlist.json",
     "publication/config.json"
 ]
 SPDX-FileCopyrightText = "2026 Schmiedmayer Lab and the project authors (see CONTRIBUTORS.md)"

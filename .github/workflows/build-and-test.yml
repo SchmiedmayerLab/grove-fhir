@@ -21,20 +21,20 @@ concurrency:
 permissions:
   contents: read
 
-env:
-  # This guide snapshot was generated against the reviewed HealthKit producer.
-  # Later stack layers replace this legacy checkout with the proposal manifest.
-  GROVE_EVIDENCE_COMMIT: fb78db4c5343c234825b433706f7ee62f111c5cc
-
 jobs:
   tooling:
     name: Repository and Tooling Tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
       - uses: actions/setup-python@v6
         with:
           python-version: "3.13"
+      - run: npm ci
       - name: Run repository and tooling tests
         run: npm test
       - name: Reject whitespace errors
@@ -72,7 +72,10 @@ jobs:
       - name: Fetch immutable proposal targets
         run: python3 Scripts/check-integration-sources.py --fetch-targets
       - name: Apply and test external change proposals
-        run: python3 Scripts/validate-integration-proposals.py
+        run: >-
+          python3 Scripts/validate-integration-proposals.py
+          --platform linux
+          --test-group portable
 
   guides:
     name: Build All Implementation Guides
@@ -98,18 +101,21 @@ jobs:
             ~/.fhir
             .build/fhir-tools
             .build/bundle
-            archive/v0-healthkit-shaped/input-cache
-            ig/input-cache
-            platforms/input-cache
+            mobile/input-cache
+            healthkit/input-cache
           key: fhir-guides-${{ runner.os }}-${{ hashFiles('Gemfile.lock', 'package-lock.json', 'Scripts/download-fhir-tools.sh') }}
           restore-keys: |
             fhir-guides-${{ runner.os }}-
       - run: npm ci
-      - name: Build archived, platform, and core guides
+      - name: Build the Mobile and HealthKit guides
         run: npm run build
+      - name: Verify the published artifact allowlist
+        run: python3 -m unittest Tests.test_artifact_allowlist -v
+      - name: Assemble the sanitized preview artifact
+        run: ./Scripts/assemble-pages.sh
       - name: Summarize publisher QA
         if: always()
-        run: python3 Scripts/check-guide-qa.py --summary archive/v0-healthkit-shaped platforms ig
+        run: python3 Scripts/check-guide-qa.py --summary mobile healthkit
       - name: Upload rendered guides and QA reports
         if: always()
         uses: actions/upload-artifact@v4
@@ -117,10 +123,7 @@ jobs:
           name: implementation-guides
           if-no-files-found: error
           retention-days: 14
-          path: |
-            archive/v0-healthkit-shaped/output
-            platforms/output
-            ig/output
+          path: .build/pages
 
   vocabulary-is-current:
     name: Platform Vocabulary Matches Grove
@@ -130,23 +133,22 @@ jobs:
       - uses: actions/checkout@v7
         with:
           path: grove-fhir
-      - uses: actions/checkout@v7
-        with:
-          repository: SchmiedmayerLab/Grove
-          ref: ${{ env.GROVE_EVIDENCE_COMMIT }}
-          path: grove
+          submodules: true
+          fetch-depth: 1
           persist-credentials: false
-      - name: Dump the vocabulary Grove writes
-        working-directory: grove
-        run: ./Scripts/run-package-tests.sh GroveHealthKitFHIR macOS
-      - name: Regenerate the platform vocabulary
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+      - name: Fetch the immutable Grove proposal target
         working-directory: grove-fhir
-        run: |
-          python3 tools/generate-platform-vocabulary.py \
-            --grove ../grove --dump ../grove/.build/grove-vocabulary.json
-      - name: Reject vocabulary drift
+        run: python3 Scripts/check-integration-sources.py --fetch-targets
+      - name: Test the exact Grove Mobile contract proposal
         working-directory: grove-fhir
-        run: git diff --exit-code -- platforms/input
+        run: >-
+          python3 Scripts/validate-integration-proposals.py
+          --platform macos
+          --test-group macos-contract
+          --proposal grove-mobile-contract
 
   emitted-resource-conformance:
     name: Grove Output Conforms to the Guides
@@ -156,12 +158,12 @@ jobs:
       - uses: actions/checkout@v7
         with:
           path: grove-fhir
-      - uses: actions/checkout@v7
-        with:
-          repository: SchmiedmayerLab/Grove
-          ref: ${{ env.GROVE_EVIDENCE_COMMIT }}
-          path: grove
+          submodules: true
+          fetch-depth: 1
           persist-credentials: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
       - uses: actions/setup-node@v6
         with:
           node-version: 22
@@ -175,24 +177,49 @@ jobs:
         with:
           ruby-version: "3.3"
           bundler-cache: false
-      - name: Install and build both active guide packages
+      - uses: actions/cache@v5
+        with:
+          path: |
+            ~/.fhir
+            grove-fhir/.build/fhir-tools
+            grove-fhir/.build/bundle
+            grove-fhir/mobile/input-cache
+            grove-fhir/healthkit/input-cache
+          key: >-
+            fhir-guides-${{ runner.os }}-${{
+              hashFiles(
+                'grove-fhir/Gemfile.lock',
+                'grove-fhir/package-lock.json',
+                'grove-fhir/Scripts/download-fhir-tools.sh'
+              )
+            }}
+          restore-keys: |
+            fhir-guides-${{ runner.os }}-
+      - name: Fetch the immutable Grove proposal target
+        working-directory: grove-fhir
+        run: python3 Scripts/check-integration-sources.py --fetch-targets
+      - name: Build the exact Mobile and HealthKit packages
         working-directory: grove-fhir
         run: |
           npm ci
-          ./Scripts/build-guides.sh platforms ig
-      - name: Validate resources emitted by Grove
-        working-directory: grove
+          ./Scripts/build-guides.sh mobile healthkit
+      - name: Validate deterministic resources from the exact Grove proposal
+        working-directory: grove-fhir
         env:
           FHIR_VALIDATOR: ${{ github.workspace }}/grove-fhir/.build/fhir-tools/validator_cli.jar
-        run: |
-          export GROVE_IG_CORE="$HOME/.fhir/packages/org.grovealliance.fhir.core#0.5.0"
-          export GROVE_IG_PLATFORMS="$HOME/.fhir/packages/org.grovealliance.fhir.platforms#0.1.0"
-          ./Scripts/validate-fhir-conformance.sh
+          GROVE_IG_MOBILE: ${{ github.workspace }}/grove-fhir/mobile/output/package.tgz
+          GROVE_IG_HEALTHKIT: ${{ github.workspace }}/grove-fhir/healthkit/output/package.tgz
+          GROVE_CONFORMANCE_EXPORT: ${{ github.workspace }}/grove-fhir/.build/grove-conformance-fixtures
+        run: >-
+          python3 Scripts/validate-integration-proposals.py
+          --platform macos
+          --test-group emitted-resource-conformance
+          --proposal grove-mobile-contract
       - name: Upload emitted fixtures and validation report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: grove-conformance-fixtures
-          if-no-files-found: warn
+          if-no-files-found: error
           retention-days: 14
-          path: grove/.build/conformance-fixtures
+          path: grove-fhir/.build/grove-conformance-fixtures
