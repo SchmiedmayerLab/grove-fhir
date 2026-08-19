@@ -20,7 +20,7 @@
       "repository": "https://github.com/SchmiedmayerLab/Grove.git",
       "path": "Integration/Sources/GroveLegacy021",
       "commit": "7fbc89d590ee29d9e73b9d700f91aa1e3d905883",
-      "purpose": "Historical Grove 0.2.1 baseline retained for later deterministic semantic compatibility evidence."
+      "purpose": "Exact Grove 0.2.1 HealthKit writer used to generate a frozen full compatibility Observation."
     },
     {
       "id": "grove-sensorkit-reference",
@@ -34,7 +34,7 @@
       "repository": "https://github.com/SchmiedmayerLab/MyHeartCounts-iOS.git",
       "path": "Integration/Sources/MyHeartCountsIOS",
       "commit": "e7ae70ebbbfb335eea274cd35eacd5d3c5c93d33",
-      "purpose": "Exact My Heart Counts iOS application revision retained for cross-platform conformance evidence."
+      "purpose": "Exact My Heart Counts iOS application writer used to freeze legacy-candidate study-enrollment bytes without claiming migration."
     },
     {
       "id": "my-heart-counts-android",
@@ -168,6 +168,154 @@
         "The default Grove Swift HealthKit adapter emits only heart rate, body weight, and exact-interval step count under the reviewed Mobile and HealthKit profiles, and fails closed for other source types.",
         "HealthKit source identity is a complete lowercase UUID business identifier, while recording device, actual gateway, explicitly classified source author, and converter assembler remain distinct provenance roles; ambiguous source authors are omitted.",
         "Recording method and ResearchStudy attribution are emitted only from explicit evidence, using the Grove recording-method extension and the standard workflow-researchStudy extension without retired canonicals or metadata shortcuts."
+      ]
+    },
+    {
+      "id": "grove-legacy-021-healthkit-writer-fixture",
+      "source": "grove-legacy-021",
+      "patch": "Integration/Patches/grove-legacy-021-healthkit-writer-fixture.patch",
+      "sha256": "4d09a6da0740cce1b3004450b7dc4f678a194150955d26a4017e332032ec6d79",
+      "dependsOn": [],
+      "appliesAfter": [],
+      "tests": [
+        {
+          "group": "portable",
+          "platforms": [
+            "linux",
+            "macos"
+          ],
+          "cwd": ".",
+          "argv": [
+            "git",
+            "diff",
+            "--check"
+          ]
+        },
+        {
+          "group": "legacy-writer-evidence",
+          "platforms": [
+            "macos"
+          ],
+          "cwd": ".",
+          "argv": [
+            "./Scripts/export-grove-021-compatibility-fixture.sh"
+          ]
+        }
+      ],
+      "claims": [
+        "The exact Grove 0.2.1 HKSample.resource(...) production path generates the tracked Observation, including sample identity and every retired device, revision, and metadata tree emitted for an unsaved CI sample.",
+        "Determinism normalizes only Observation.id, identifier[0].id, identifier[0].value, and the existing retired source-revision source/name and source/bundleIdentifier leaves; the replacement source values are fixture values, not real HKSource identity. The resulting fixture has SHA-256 46be7e8e1076af82d5fe6e0ca028da554b51de91db2605addd81342fc1d03191 and is historical compatibility evidence only."
+      ]
+    },
+    {
+      "id": "grove-current-legacy-healthkit-reader",
+      "source": "grove-healthkit",
+      "patch": "Integration/Patches/grove-current-legacy-healthkit-reader.patch",
+      "sha256": "a04a359bc1c1a8330b7582c5b955997c4442d2ce71d343435216b61c03c8db5e",
+      "dependsOn": [
+        "grove-questionnaire-contract",
+        "grove-mobile-contract",
+        "grove-legacy-021-healthkit-writer-fixture"
+      ],
+      "appliesAfter": [
+        "grove-questionnaire-contract",
+        "grove-mobile-contract"
+      ],
+      "tests": [
+        {
+          "group": "portable",
+          "platforms": [
+            "linux",
+            "macos"
+          ],
+          "cwd": ".",
+          "argv": [
+            "git",
+            "diff",
+            "--check"
+          ]
+        },
+        {
+          "group": "current-reader-evidence",
+          "platforms": [
+            "macos"
+          ],
+          "cwd": ".",
+          "argv": [
+            "./Scripts/run-package-tests.sh",
+            "FHIRModelsExtensions",
+            "macOS"
+          ]
+        }
+      ],
+      "claims": [
+        "The current composed Grove reader byte-checks and decodes the repository-external full Observation emitted by the exact Grove 0.2.1 materialization, with a byte-identical tracked fallback for standalone runs, and verifies its identity and every retired device, revision, and metadata tree present.",
+        "Lookup for both declared device and revision identifiers is bounded to exact spellings, canonical values win when canonical and legacy copies coexist, and newly appended declared extensions use canonical spellings only."
+      ]
+    },
+    {
+      "id": "my-heart-counts-ios-study-enrollment-writer-fixture",
+      "source": "my-heart-counts-ios",
+      "patch": "Integration/Patches/my-heart-counts-ios-study-enrollment-writer-fixture.patch",
+      "sha256": "1dd890121c59a6111a6e7cc583808fd1bd5e96b3247d5c7583849cc858aec18a",
+      "dependsOn": [
+        "grove-mobile-contract"
+      ],
+      "appliesAfter": [],
+      "tests": [
+        {
+          "group": "portable",
+          "platforms": [
+            "linux",
+            "macos"
+          ],
+          "cwd": ".",
+          "argv": [
+            "git",
+            "diff",
+            "--check"
+          ]
+        },
+        {
+          "group": "mhc-ios-writer-evidence",
+          "platforms": [
+            "macos"
+          ],
+          "cwd": ".",
+          "argv": [
+            "xcodebuild",
+            "test",
+            "-project",
+            "MyHeartCounts.xcodeproj",
+            "-scheme",
+            "MyHeartCounts",
+            "-testPlan",
+            "MyHeartCounts Unit Tests",
+            "-destination",
+            "platform=iOS Simulator,name=iPhone 17 Pro,OS=26.5",
+            "-only-testing:MyHeartCountsTests/NHSNumberTests",
+            "-skipPackagePluginValidation",
+            "-skipMacroValidation",
+            "-derivedDataPath",
+            ".build/compatibility-evidence/DerivedData",
+            "CODE_SIGNING_ALLOWED=NO"
+          ]
+        },
+        {
+          "group": "mhc-ios-writer-evidence",
+          "platforms": [
+            "macos"
+          ],
+          "cwd": ".",
+          "argv": [
+            "./Scripts/export-mhc-ios-e7ae-study-enrollment-fixture.sh"
+          ]
+        }
+      ],
+      "claims": [
+        "The exact current My Heart Counts iOS production study-enrollment extension writer is applied to a deterministic full core-R4 heart-rate Observation without changing the app-facing enrollment lookup behavior; the clinical shell is representative evidence, not a claim that the app's whole Observation writer emitted it.",
+        "The deterministic study-enrollment fixture has SHA-256 27958f9fbbd77be4b293823e4455fd16a7298586745dfe7efa129b7a03739e00 and is legacy-candidate evidence only; Grove does not consume it and no canonical migration is claimed.",
+        "The accepted ResearchStudy, PlanDefinition, ResearchSubject, and Provenance graph remains a separate Grove FHIR-owned fixture/corpus; actual My Heart Counts migration is deferred."
       ]
     },
     {

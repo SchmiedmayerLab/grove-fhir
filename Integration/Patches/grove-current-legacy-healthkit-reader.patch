@@ -1,0 +1,369 @@
+diff --git a/Compatibility/Fixtures/grove-0.2.1-healthkit-sample.json b/Compatibility/Fixtures/grove-0.2.1-healthkit-sample.json
+new file mode 100644
+index 0000000000000000000000000000000000000000..2895aa3aa8af5f97c17c599145dde3b40079e3ba
+--- /dev/null
++++ b/Compatibility/Fixtures/grove-0.2.1-healthkit-sample.json
+@@ -0,0 +1,100 @@
++{
++  "code" : {
++    "coding" : [
++      {
++        "code" : "55423-8",
++        "display" : "Number of steps in unspecified time Pedometer",
++        "system" : "http://loinc.org"
++      },
++      {
++        "code" : "HKQuantityTypeIdentifierStepCount",
++        "display" : "Step Count",
++        "system" : "http://developer.apple.com/documentation/healthkit"
++      }
++    ]
++  },
++  "effectivePeriod" : {
++    "end" : "2021-01-01T00:01:00Z",
++    "start" : "2021-01-01T00:00:00Z"
++  },
++  "extension" : [
++    {
++      "extension" : [
++        {
++          "url" : "https://bdh.stanford.edu/fhir/defs/sourceDevice/name",
++          "valueString" : "Compatibility Watch"
++        },
++        {
++          "url" : "https://bdh.stanford.edu/fhir/defs/sourceDevice/manufacturer",
++          "valueString" : "Grove Alliance"
++        },
++        {
++          "url" : "https://bdh.stanford.edu/fhir/defs/sourceDevice/model",
++          "valueString" : "Fixture-021"
++        },
++        {
++          "url" : "https://bdh.stanford.edu/fhir/defs/sourceDevice/hardwareVersion",
++          "valueString" : "1.0"
++        },
++        {
++          "url" : "https://bdh.stanford.edu/fhir/defs/sourceDevice/firmwareVersion",
++          "valueString" : "2.1"
++        },
++        {
++          "url" : "https://bdh.stanford.edu/fhir/defs/sourceDevice/softwareVersion",
++          "valueString" : "0.2.1"
++        },
++        {
++          "url" : "https://bdh.stanford.edu/fhir/defs/sourceDevice/localIdentifier",
++          "valueString" : "legacy-device-021"
++        },
++        {
++          "url" : "https://bdh.stanford.edu/fhir/defs/sourceDevice/UDIDeviceIdentifier",
++          "valueString" : "urn:oid:1.2.840.10008.1.2.1"
++        }
++      ],
++      "url" : "https://bdh.stanford.edu/fhir/defs/sourceDevice"
++    },
++    {
++      "extension" : [
++        {
++          "extension" : [
++            {
++              "url" : "https://bdh.stanford.edu/fhir/defs/sourceRevision/source/name",
++              "valueString" : "Grove Compatibility Source"
++            },
++            {
++              "url" : "https://bdh.stanford.edu/fhir/defs/sourceRevision/source/bundleIdentifier",
++              "valueString" : "org.grovealliance.compatibility-evidence"
++            }
++          ],
++          "url" : "https://bdh.stanford.edu/fhir/defs/sourceRevision/source"
++        }
++      ],
++      "url" : "https://bdh.stanford.edu/fhir/defs/sourceRevision"
++    },
++    {
++      "extension" : [
++        {
++          "url" : "https://bdh.stanford.edu/fhir/defs/metadata/HKTimeZone",
++          "valueString" : "UTC"
++        }
++      ],
++      "url" : "https://bdh.stanford.edu/fhir/defs/metadata"
++    }
++  ],
++  "id" : "01234567-89AB-CDEF-0123-456789ABCDEF",
++  "identifier" : [
++    {
++      "id" : "01234567-89AB-CDEF-0123-456789ABCDEF",
++      "value" : "01234567-89AB-CDEF-0123-456789ABCDEF"
++    }
++  ],
++  "issued" : "2021-01-01T00:02:00Z",
++  "resourceType" : "Observation",
++  "status" : "final",
++  "valueQuantity" : {
++    "unit" : "steps",
++    "value" : 42
++  }
++}
+diff --git a/Compatibility/Fixtures/grove-0.2.1-healthkit-sample.json.license b/Compatibility/Fixtures/grove-0.2.1-healthkit-sample.json.license
+new file mode 100644
+index 0000000000000000000000000000000000000000..fa4e8d92d0d6dd0607945debab5a41bbb1039903
+--- /dev/null
++++ b/Compatibility/Fixtures/grove-0.2.1-healthkit-sample.json.license
+@@ -0,0 +1,3 @@
++SPDX-FileCopyrightText: 2026 Stanford University and the project authors (see CONTRIBUTORS.md)
++
++SPDX-License-Identifier: MIT
+diff --git a/Scripts/run-package-tests.sh b/Scripts/run-package-tests.sh
+index 4d652bf9f0fa20930872ea769883fb1fcc62e031..7743a438b0076c01009924f8696eb514c4453378 100755
+--- a/Scripts/run-package-tests.sh
++++ b/Scripts/run-package-tests.sh
+@@ -223,6 +223,10 @@ run() { # <package> <platform> [mode: "ui"]
+   if [ -n "${GROVE_CONFORMANCE_EXPORT:-}" ]; then
+     conformance_export_argument="GROVE_CONFORMANCE_EXPORT=$GROVE_CONFORMANCE_EXPORT"
+   fi
++  local compatibility_export_argument=""
++  if [ -n "${GROVE_COMPATIBILITY_EXPORT:-}" ]; then
++    compatibility_export_argument="GROVE_COMPATIBILITY_EXPORT=$GROVE_COMPATIBILITY_EXPORT"
++  fi
+   # Xcode 26 SIGABRTs (exit 134, DVTInvalidation "message sent to invalidated object") when a single
+   # `xcodebuild test` launches a SECOND .xctest bundle: in-checkout writes during the run (DerivedData,
+   # the .xcresult, and Xcode's own .swiftpm user-state/scheme files) make Xcode re-resolve the package
+@@ -256,6 +260,7 @@ run() { # <package> <platform> [mode: "ui"]
+       -derivedDataPath "$DERIVED_DATA_PATH" \
+       -packageCachePath "$PACKAGE_CACHE_PATH" \
+       ${conformance_export_argument:+"$conformance_export_argument"} \
++      ${compatibility_export_argument:+"$compatibility_export_argument"} \
+       $TESTING_FLOOR_DEPLOYMENT_TARGETS \
+     | beautify || rc=1
+     if [ -d "$part_path" ]; then
+diff --git a/Tests/FHIRModelsExtensionsTests/LegacyWriterCompatibilityEvidenceTests.swift b/Tests/FHIRModelsExtensionsTests/LegacyWriterCompatibilityEvidenceTests.swift
+new file mode 100644
+index 0000000000000000000000000000000000000000..025c308fef64a921427d01ede95508521490d86c
+--- /dev/null
++++ b/Tests/FHIRModelsExtensionsTests/LegacyWriterCompatibilityEvidenceTests.swift
+@@ -0,0 +1,203 @@
++//
++// This source file belongs to the Grove open-source project
++//
++// SPDX-FileCopyrightText: 2026 Stanford University and the project authors (see CONTRIBUTORS.md)
++//
++// SPDX-License-Identifier: MIT
++//
++
++@testable import FHIRModelsExtensions
++import Foundation
++import GroveLegacyIdentifiers
++import ModelsR4
++import Testing
++
++
++/// Exercises the current reader against bytes emitted by the exact 0.2.1 writer. Synthetic legacy
++/// extensions remain useful unit tests, but they cannot prove that the frozen historical wire shape
++/// still crosses the release boundary.
++@Suite
++struct LegacyWriterCompatibilityEvidenceTests {
++    private static let sampleID = "01234567-89AB-CDEF-0123-456789ABCDEF"
++    private static let sourceDevice = FHIRExtensionURL(
++        RetiredFHIRCanonicalURLs.sourceDevice.canonical,
++        superseding: RetiredFHIRCanonicalURLs.sourceDevice.superseded
++    )
++    private static let sourceRevision = FHIRExtensionURL(
++        RetiredFHIRCanonicalURLs.sourceRevision.canonical,
++        superseding: RetiredFHIRCanonicalURLs.sourceRevision.superseded
++    )
++    private static let metadata = "https://bdh.stanford.edu/fhir/defs/metadata"
++
++    private static var retiredIdentifiers: [FHIRExtensionURL] {
++        [sourceDevice, sourceRevision]
++    }
++
++    private var trackedFixtureURL: URL {
++        URL(fileURLWithPath: #filePath)
++            .deletingLastPathComponent()
++            .deletingLastPathComponent()
++            .deletingLastPathComponent()
++            .appending(component: "Compatibility", directoryHint: .isDirectory)
++            .appending(component: "Fixtures", directoryHint: .isDirectory)
++            .appending(component: "grove-0.2.1-healthkit-sample.json", directoryHint: .notDirectory)
++    }
++
++    private func fixtureBytes() throws -> Data {
++        let tracked = try Data(contentsOf: trackedFixtureURL)
++        guard let exportedPath = ProcessInfo.processInfo.environment["GROVE_COMPATIBILITY_EXPORT"],
++              !exportedPath.isEmpty else {
++            return tracked
++        }
++
++        try #require(exportedPath.hasPrefix("/"), "GROVE_COMPATIBILITY_EXPORT must be absolute")
++        let exported = try Data(contentsOf: URL(fileURLWithPath: exportedPath))
++        #expect(exported == tracked, "current reader must consume the exact exported 0.2.1 bytes")
++        return exported
++    }
++
++    private func legacyObservation() throws -> Observation {
++        try JSONDecoder().decode(Observation.self, from: fixtureBytes())
++    }
++
++    private func rawFixture() throws -> [String: Any] {
++        try #require(
++            JSONSerialization.jsonObject(with: fixtureBytes()) as? [String: Any]
++        )
++    }
++
++    private func stringValue(_ elements: [Extension]) -> String? {
++        elements.first?.value?.stringValue?.value?.string
++    }
++
++    @Test
++    func readsExactLegacyWriterBytes() throws {
++        let observation = try legacyObservation()
++        let raw = try rawFixture()
++        #expect(raw["resourceType"] as? String == "Observation")
++        #expect(raw["id"] as? String == Self.sampleID)
++        #expect(raw["status"] as? String == "final")
++        #expect(raw["issued"] as? String == "2021-01-01T00:02:00Z")
++
++        let identifiers = try #require(raw["identifier"] as? [[String: Any]])
++        #expect(identifiers.count == 1)
++        #expect(identifiers.first?["id"] as? String == Self.sampleID)
++        #expect(identifiers.first?["value"] as? String == Self.sampleID)
++
++        let code = try #require(raw["code"] as? [String: Any])
++        let codings = try #require(code["coding"] as? [[String: Any]])
++        #expect(codings.count == 2)
++        #expect(codings[0]["code"] as? String == "55423-8")
++        #expect(codings[0]["system"] as? String == "http://loinc.org")
++        #expect(codings[1]["code"] as? String == "HKQuantityTypeIdentifierStepCount")
++        #expect(
++            codings[1]["system"] as? String
++                == "http://developer.apple.com/documentation/healthkit"
++        )
++
++        let effective = try #require(raw["effectivePeriod"] as? [String: Any])
++        #expect(effective["start"] as? String == "2021-01-01T00:00:00Z")
++        #expect(effective["end"] as? String == "2021-01-01T00:01:00Z")
++        let quantity = try #require(raw["valueQuantity"] as? [String: Any])
++        #expect(quantity["unit"] as? String == "steps")
++        #expect((quantity["value"] as? NSNumber)?.intValue == 42)
++
++        let topLevel = try #require(observation.extension)
++        #expect(topLevel.compactMap { $0.url.value?.url.absoluteString } == [
++            Self.sourceDevice.superseded[0].absoluteString,
++            Self.sourceRevision.superseded[0].absoluteString,
++            Self.metadata
++        ])
++
++        let device = try #require(observation.extensions(for: Self.sourceDevice).first)
++        #expect(device.extension?.count == 8)
++        let expectedDevice = [
++            "name": "Compatibility Watch",
++            "manufacturer": "Grove Alliance",
++            "model": "Fixture-021",
++            "hardwareVersion": "1.0",
++            "firmwareVersion": "2.1",
++            "softwareVersion": "0.2.1",
++            "localIdentifier": "legacy-device-021",
++            "UDIDeviceIdentifier": "urn:oid:1.2.840.10008.1.2.1"
++        ]
++        for (component, expected) in expectedDevice {
++            #expect(
++                stringValue(device.extensions(for: Self.sourceDevice.appending(component: component)))
++                    == expected
++            )
++        }
++
++        let revision = try #require(observation.extensions(for: Self.sourceRevision).first)
++        #expect(revision.extension?.count == 1)
++        let sourceIdentifier = Self.sourceRevision.appending(component: "source")
++        let source = try #require(revision.extensions(for: sourceIdentifier).first)
++        #expect(source.extension?.count == 2)
++        #expect(
++            stringValue(source.extensions(for: sourceIdentifier.appending(component: "name")))
++                == "Grove Compatibility Source"
++        )
++        #expect(
++            stringValue(source.extensions(for: sourceIdentifier.appending(component: "bundleIdentifier")))
++                == "org.grovealliance.compatibility-evidence"
++        )
++        for omitted in ["version", "productType", "OSVersion"] {
++            #expect(revision.extensions(for: Self.sourceRevision.appending(component: omitted)).isEmpty)
++        }
++
++        let metadataURL: FHIRPrimitive<FHIRURI> = "https://bdh.stanford.edu/fhir/defs/metadata"
++        let metadata = try #require(observation.extensions(for: metadataURL).first)
++        #expect(metadata.extension?.count == 1)
++        let timeZoneURL: FHIRPrimitive<FHIRURI> = "https://bdh.stanford.edu/fhir/defs/metadata/HKTimeZone"
++        #expect(
++            stringValue(metadata.extensions(for: timeZoneURL)) == "UTC"
++        )
++    }
++
++    @Test
++    func lookupIsBoundedToDeclaredSpellings() throws {
++        for identifier in Self.retiredIdentifiers {
++            let legacy = try #require(identifier.superseded.first)
++            var observation = try legacyObservation()
++            observation.extension = [
++                Extension(
++                    // swiftlint:disable:next force_unwrapping
++                    url: URL(string: legacy.absoluteString + "-other")!.asFHIRURIPrimitive(),
++                    value: .string("not the declared identifier".asFHIRStringPrimitive())
++                )
++            ]
++
++            #expect(observation.extensions(for: identifier).isEmpty)
++        }
++    }
++
++    @Test
++    func canonicalSpellingWinsOverTheFrozenLegacyCopy() throws {
++        for identifier in Self.retiredIdentifiers {
++            var observation = try legacyObservation()
++            observation.extension?.append(
++                Extension(url: identifier, value: .string("canonical".asFHIRStringPrimitive()))
++            )
++
++            let resolved = observation.extensions(for: identifier)
++            #expect(resolved.count == 1)
++            #expect(resolved.first?.url.value?.url.absoluteString == identifier.url.absoluteString)
++            #expect(stringValue(resolved) == "canonical")
++        }
++    }
++
++    @Test
++    func newExtensionUsesOnlyTheCanonicalSpelling() throws {
++        var observation = Observation(code: CodeableConcept(), status: .init(.final))
++        for identifier in Self.retiredIdentifiers {
++            observation.append(
++                extension: Extension(url: identifier, value: .string("new write".asFHIRStringPrimitive()))
++            )
++        }
++
++        let urls = try #require(observation.extension).compactMap { $0.url.value?.url.absoluteString }
++        #expect(urls == Self.retiredIdentifiers.map { $0.url.absoluteString })
++        let legacy = Self.retiredIdentifiers.flatMap { $0.superseded.map(\.absoluteString) }
++        #expect(Set(urls).isDisjoint(with: Set(legacy)))
++    }
++}
+diff --git a/Tests/TestPlans/FHIRModelsExtensions.xctestplan b/Tests/TestPlans/FHIRModelsExtensions.xctestplan
+index b8a6f7210fcc1d65f213ba8c44ebfc957a282ceb..6f8fbe383b0d2f6e8a72b03278a184f674b49023 100644
+--- a/Tests/TestPlans/FHIRModelsExtensions.xctestplan
++++ b/Tests/TestPlans/FHIRModelsExtensions.xctestplan
+@@ -27,6 +27,17 @@
+         "name" : "FHIRQuestionnaires"
+       }
+     ]
++    },
++    "environmentVariableEntries" : [
++      {
++        "key" : "GROVE_COMPATIBILITY_EXPORT",
++        "value" : "$(GROVE_COMPATIBILITY_EXPORT)"
++      }
++    ],
++    "targetForVariableExpansion" : {
++      "containerPath" : "container:",
++      "identifier" : "FHIRModelsExtensionsTests",
++      "name" : "FHIRModelsExtensionsTests"
+     }
+   },
+   "testTargets" : [

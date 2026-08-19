@@ -50,6 +50,7 @@ class IntegrationProposalValidationTests(unittest.TestCase):
         return result.stdout.strip()
 
     def make_sources(self, root: Path) -> tuple[Path, Path, str, str]:
+        self.git(root, "init", "--quiet", "--initial-branch=main", "--template=")
         upstream = root / "upstream"
         upstream.mkdir()
         self.git(
@@ -88,6 +89,28 @@ class IntegrationProposalValidationTests(unittest.TestCase):
         self.git(root, "clone", "--quiet", str(upstream), str(second_source))
         self.git(first_source, "checkout", "--quiet", "--detach", first)
         self.git(second_source, "checkout", "--quiet", "--detach", second)
+        for source in (first_source, second_source):
+            self.git(
+                source,
+                "remote",
+                "set-url",
+                "origin",
+                "https://github.com/SchmiedmayerLab/example.git",
+            )
+        self.git(
+            root,
+            "update-index",
+            "--add",
+            "--cacheinfo",
+            f"160000,{first},Integration/Sources/ExampleFirst",
+        )
+        self.git(
+            root,
+            "update-index",
+            "--add",
+            "--cacheinfo",
+            f"160000,{second},Integration/Sources/ExampleSecond",
+        )
         return first_source, second_source, first, second
 
     @staticmethod
@@ -264,6 +287,58 @@ class IntegrationProposalValidationTests(unittest.TestCase):
             self.assertEqual(
                 self.git(source, "status", "--porcelain=v1"), before_status
             )
+
+    def test_selected_proposal_does_not_require_an_unrelated_checkout(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            _, unrelated, first, second = self.make_sources(root)
+            contents = self.patch_contents("before", "after")
+            proposal = self.proposal(
+                "proposal",
+                source="example-first",
+                contents=contents,
+                tests=[
+                    {
+                        "group": "portable",
+                        "platforms": ["linux", "macos"],
+                        "cwd": ".",
+                        "argv": ["git", "diff", "--check"],
+                    }
+                ],
+            )
+            self.write_patches(root, [("proposal", contents)])
+            unrelated.rename(root / "uninitialized-unrelated-source")
+
+            VALIDATE.validate_proposals(
+                root,
+                self.manifest(first, second, [proposal]),
+                platform="linux",
+                test_group="portable",
+                proposal_ids=["proposal"],
+            )
+
+    def test_selected_proposal_rejects_a_missing_required_checkout(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            required, _, first, second = self.make_sources(root)
+            contents = self.patch_contents("before", "after")
+            proposal = self.proposal(
+                "proposal", source="example-first", contents=contents
+            )
+            self.write_patches(root, [("proposal", contents)])
+            required.rename(root / "uninitialized-required-source")
+
+            with self.assertRaisesRegex(
+                VALIDATE.ProposalValidationError,
+                "missing source: Integration/Sources/ExampleFirst",
+            ):
+                VALIDATE.validate_proposals(
+                    root,
+                    self.manifest(first, second, [proposal]),
+                    platform="linux",
+                    test_group="portable",
+                    proposal_ids=["proposal"],
+                )
 
     def test_rejects_a_symlinked_patch_and_test_working_directory(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

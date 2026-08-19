@@ -1,0 +1,239 @@
+diff --git a/Compatibility/Fixtures/my-heart-counts-ios-e7ae-study-enrollment.json b/Compatibility/Fixtures/my-heart-counts-ios-e7ae-study-enrollment.json
+new file mode 100644
+index 0000000000000000000000000000000000000000..90ce0fd169a048cee1c2b9cb933d3a9a4c5f843f
+--- /dev/null
++++ b/Compatibility/Fixtures/my-heart-counts-ios-e7ae-study-enrollment.json
+@@ -0,0 +1,39 @@
++{
++  "code" : {
++    "coding" : [
++      {
++        "code" : "8867-4",
++        "display" : "Heart rate",
++        "system" : "http://loinc.org"
++      }
++    ]
++  },
++  "effectiveDateTime" : "2021-01-01T00:00:00Z",
++  "extension" : [
++    {
++      "extension" : [
++        {
++          "url" : "https://myheartcounts.stanford.edu/fhir/StructureDefinition/study-enrollment/study-id",
++          "valueString" : "11111111-2222-3333-4444-555555555555"
++        },
++        {
++          "url" : "https://myheartcounts.stanford.edu/fhir/StructureDefinition/study-enrollment/study-revision",
++          "valueInteger" : 42
++        }
++      ],
++      "url" : "https://myheartcounts.stanford.edu/fhir/StructureDefinition/study-enrollment"
++    }
++  ],
++  "id" : "mhc-ios-e7ae-study-enrollment-evidence",
++  "resourceType" : "Observation",
++  "status" : "final",
++  "subject" : {
++    "reference" : "Patient/mhc-compatibility-participant"
++  },
++  "valueQuantity" : {
++    "code" : "/min",
++    "system" : "http://unitsofmeasure.org",
++    "unit" : "beats/minute",
++    "value" : 72
++  }
++}
+diff --git a/Compatibility/Fixtures/my-heart-counts-ios-e7ae-study-enrollment.json.license b/Compatibility/Fixtures/my-heart-counts-ios-e7ae-study-enrollment.json.license
+new file mode 100644
+index 0000000000000000000000000000000000000000..fa4e8d92d0d6dd0607945debab5a41bbb1039903
+--- /dev/null
++++ b/Compatibility/Fixtures/my-heart-counts-ios-e7ae-study-enrollment.json.license
+@@ -0,0 +1,3 @@
++SPDX-FileCopyrightText: 2026 Stanford University and the project authors (see CONTRIBUTORS.md)
++
++SPDX-License-Identifier: MIT
+diff --git a/MyHeartCounts/MyHeartCountsStandard+HealthKit.swift b/MyHeartCounts/MyHeartCountsStandard+HealthKit.swift
+index 7f8da40cb6f2179d68fada952d499cb2d7aa997f..917df5cf2fd14e68df01a4af86ce9875f41e2c95 100644
+--- a/MyHeartCounts/MyHeartCountsStandard+HealthKit.swift
++++ b/MyHeartCounts/MyHeartCountsStandard+HealthKit.swift
+@@ -310,16 +310,29 @@ extension FHIRExtensionBuilderProtocol where Self == FHIRExtensionBuilder<Void>
+             guard let enrollmentInfo = MyHeartCountsStandard.currentEnrollmentInfo else {
+                 return
+             }
++            try Self.mhcStudyRevision(
++                studyId: enrollmentInfo.studyId,
++                studyRevision: enrollmentInfo.studyRevision
++            ).apply(to: &resource)
++        }
++    }
++
++    /// Builds the exact study-enrollment extension emitted by the current My Heart Counts app.
++    ///
++    /// This overload makes the production writer deterministic for compatibility evidence while the
++    /// app-facing builder above continues to read the current enrollment at application time.
++    static func mhcStudyRevision(studyId: String, studyRevision: UInt) -> Self {
++        .init { resource in
+             let extUrl = FHIRExtensionURL.mhcStudyEnrollmentInfo
+             let ext = Extension(
+                 extension: [
+                     Extension(
+                         url: extUrl.appending(component: "study-id"),
+-                        value: .string(enrollmentInfo.studyId.asFHIRStringPrimitive())
++                        value: .string(studyId.asFHIRStringPrimitive())
+                     ),
+                     Extension(
+                         url: extUrl.appending(component: "study-revision"),
+-                        value: .integer(Int(enrollmentInfo.studyRevision).asFHIRIntegerPrimitive())
++                        value: .integer(Int(studyRevision).asFHIRIntegerPrimitive())
+                     )
+                 ],
+                 url: extUrl
+diff --git a/MyHeartCountsTests/StudyEnrollmentCompatibilityEvidenceTests.swift b/MyHeartCountsTests/StudyEnrollmentCompatibilityEvidenceTests.swift
+new file mode 100644
+index 0000000000000000000000000000000000000000..9bfdfb0fc7546d0bfff95a6ede29a4ee8be8194e
+--- /dev/null
++++ b/MyHeartCountsTests/StudyEnrollmentCompatibilityEvidenceTests.swift
+@@ -0,0 +1,91 @@
++//
++// This source file belongs to the My Heart Counts iOS open-source project
++//
++// SPDX-FileCopyrightText: 2026 Stanford University and the project authors (see CONTRIBUTORS.md)
++//
++// SPDX-License-Identifier: MIT
++//
++
++import FHIRModelsExtensions
++import Foundation
++import ModelsR4
++@testable import MyHeartCounts
++import Testing
++
++
++/// Freezes the exact study-enrollment extension bytes emitted by the app at the evidenced revision.
++/// This is legacy-candidate provenance; it does not declare the URL canonical or migrate its shape.
++@Suite
++struct StudyEnrollmentEvidenceTests {
++    private static let fixtureName = "my-heart-counts-ios-e7ae-study-enrollment.json"
++
++    private var repositoryRoot: URL {
++        URL(fileURLWithPath: #filePath)
++            .deletingLastPathComponent()
++            .deletingLastPathComponent()
++    }
++
++    private var fixtureURL: URL {
++        repositoryRoot
++            .appending(component: "Compatibility", directoryHint: .isDirectory)
++            .appending(component: "Fixtures", directoryHint: .isDirectory)
++            .appending(component: Self.fixtureName, directoryHint: .notDirectory)
++    }
++
++    private var exportURL: URL {
++        repositoryRoot
++            .appending(component: ".build", directoryHint: .isDirectory)
++            .appending(component: "compatibility-evidence", directoryHint: .isDirectory)
++            .appending(component: "my-heart-counts-ios-e7ae", directoryHint: .isDirectory)
++            .appending(component: "study-enrollment.json", directoryHint: .notDirectory)
++    }
++
++    @Test
++    func exactCurrentWriterBytes() throws {
++        var observation = Observation(
++            code: CodeableConcept(coding: [
++                Coding(
++                    code: "8867-4".asFHIRStringPrimitive(),
++                    display: "Heart rate".asFHIRStringPrimitive(),
++                    system: "http://loinc.org".asFHIRURIPrimitive()
++                )
++            ]),
++            status: .init(.final)
++        )
++        observation.id = "mhc-ios-e7ae-study-enrollment-evidence".asFHIRStringPrimitive()
++        observation.subject = Reference(
++            reference: "Patient/mhc-compatibility-participant".asFHIRStringPrimitive()
++        )
++        observation.effective = try .dateTime(FHIRPrimitive(DateTime(
++            date: Date(timeIntervalSince1970: 1_609_459_200),
++            timeZone: .gmt
++        )))
++        observation.value = .quantity(Quantity(
++            code: "/min".asFHIRStringPrimitive(),
++            system: "http://unitsofmeasure.org".asFHIRURIPrimitive(),
++            unit: "beats/minute".asFHIRStringPrimitive(),
++            value: 72.asFHIRDecimalPrimitive()
++        ))
++        try observation.apply(.mhcStudyRevision(
++            studyId: "11111111-2222-3333-4444-555555555555",
++            studyRevision: 42
++        ))
++
++        #expect(observation.code.coding?.isEmpty == false)
++        #expect(observation.subject?.reference?.value?.string == "Patient/mhc-compatibility-participant")
++        #expect(observation.effective != nil)
++        #expect(observation.value != nil)
++
++        let encoder = JSONEncoder()
++        encoder.outputFormatting = [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes]
++        var bytes = try encoder.encode(observation)
++        bytes.append(0x0A)
++
++        try FileManager.default.createDirectory(
++            at: exportURL.deletingLastPathComponent(),
++            withIntermediateDirectories: true
++        )
++        try bytes.write(to: exportURL, options: .atomic)
++        #expect(bytes == (try Data(contentsOf: fixtureURL)))
++    }
++}
+diff --git a/Scripts/export-mhc-ios-e7ae-study-enrollment-fixture.sh b/Scripts/export-mhc-ios-e7ae-study-enrollment-fixture.sh
+new file mode 100755
+index 0000000000000000000000000000000000000000..ed4ae85f094a0318b57beb05d95a92e941cbef87
+--- /dev/null
++++ b/Scripts/export-mhc-ios-e7ae-study-enrollment-fixture.sh
+@@ -0,0 +1,46 @@
++#!/usr/bin/env bash
++#
++# This source file belongs to the My Heart Counts iOS open-source project
++#
++# SPDX-FileCopyrightText: 2026 Stanford University and the project authors (see CONTRIBUTORS.md)
++#
++# SPDX-License-Identifier: MIT
++#
++
++set -euo pipefail
++cd "$(dirname "$0")/.."
++
++readonly fixture="Compatibility/Fixtures/my-heart-counts-ios-e7ae-study-enrollment.json"
++readonly output=".build/compatibility-evidence/my-heart-counts-ios-e7ae/study-enrollment.json"
++readonly export_name="my-heart-counts-ios-e7ae-study-enrollment.json"
++
++xcodebuild test \
++    -project MyHeartCounts.xcodeproj \
++    -scheme MyHeartCounts \
++    -testPlan "MyHeartCounts Unit Tests" \
++    -destination "platform=iOS Simulator,name=iPhone 17 Pro,OS=26.5" \
++    -only-testing:MyHeartCountsTests/StudyEnrollmentEvidenceTests \
++    -parallel-testing-enabled NO \
++    -enableCodeCoverage NO \
++    -skipPackagePluginValidation \
++    -skipMacroValidation \
++    -derivedDataPath .build/compatibility-evidence/DerivedData \
++    CODE_SIGNING_ALLOWED=NO
++cmp "$fixture" "$output"
++
++if [ -n "${MHC_COMPATIBILITY_EXPORT:-}" ]; then
++    case "$MHC_COMPATIBILITY_EXPORT" in
++        /*) ;;
++        *)
++            echo "error: MHC_COMPATIBILITY_EXPORT must be an absolute directory" >&2
++            exit 2
++            ;;
++    esac
++    if [ "$MHC_COMPATIBILITY_EXPORT" = "/" ]; then
++        echo "error: MHC_COMPATIBILITY_EXPORT must not be the filesystem root" >&2
++        exit 2
++    fi
++    mkdir -p "$MHC_COMPATIBILITY_EXPORT"
++    cp "$output" "$MHC_COMPATIBILITY_EXPORT/$export_name"
++    cmp "$fixture" "$MHC_COMPATIBILITY_EXPORT/$export_name"
++fi

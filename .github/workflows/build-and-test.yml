@@ -178,7 +178,7 @@ jobs:
   vocabulary-is-current:
     name: Platform Vocabulary Matches Grove
     runs-on: macos-latest
-    timeout-minutes: 45
+    timeout-minutes: 75
     steps:
       - uses: actions/checkout@v7
         with:
@@ -199,6 +199,33 @@ jobs:
           --platform macos
           --test-group macos-contract
           --proposal grove-mobile-contract
+      - name: Freeze the exact Grove 0.2.1 HealthKit writer bytes
+        working-directory: grove-fhir
+        env:
+          GROVE_COMPATIBILITY_EXPORT: ${{ runner.temp }}/grove-0.2.1-healthkit-sample.json
+        run: >-
+          python3 Scripts/validate-integration-proposals.py
+          --platform macos
+          --test-group legacy-writer-evidence
+          --proposal grove-legacy-021-healthkit-writer-fixture
+      - name: Test the current Grove reader against the exact legacy bytes
+        working-directory: grove-fhir
+        env:
+          GROVE_COMPATIBILITY_EXPORT: ${{ runner.temp }}/grove-0.2.1-healthkit-sample.json
+        run: >-
+          python3 Scripts/validate-integration-proposals.py
+          --platform macos
+          --test-group current-reader-evidence
+          --proposal grove-current-legacy-healthkit-reader
+      - name: Freeze the exact My Heart Counts iOS legacy-candidate writer bytes
+        working-directory: grove-fhir
+        env:
+          MHC_COMPATIBILITY_EXPORT: ${{ runner.temp }}/mhc-ios-e7ae-compatibility
+        run: >-
+          python3 Scripts/validate-integration-proposals.py
+          --platform macos
+          --test-group mhc-ios-writer-evidence
+          --proposal my-heart-counts-ios-study-enrollment-writer-fixture
 
   emitted-resource-conformance:
     name: Grove Output Conforms to the Guides

@@ -286,6 +286,108 @@ def source_state(
     return head, status, references, configuration
 
 
+def declared_gitlinks(
+    root: Path, sources: dict[str, dict[str, Any]]
+) -> dict[str, str]:
+    """Read every declared source commit from the root index without opening it."""
+    try:
+        gitlinks, failures = CHECKER.stage_zero_gitlinks(root)
+    except subprocess.CalledProcessError as error:
+        raise ProposalValidationError(
+            f"cannot read repository gitlinks: {error}"
+        ) from error
+    if failures:
+        raise ProposalValidationError(
+            "invalid repository gitlinks:\n- " + "\n- ".join(failures)
+        )
+
+    for identifier, source in sources.items():
+        path = source["path"]
+        recorded = gitlinks.get(path)
+        if recorded is None:
+            raise ProposalValidationError(
+                f"{identifier} source is not a stage-zero gitlink: {path}"
+            )
+        if recorded != source["commit"]:
+            raise ProposalValidationError(
+                f"{identifier} gitlink {recorded} != declared commit "
+                f"{source['commit']}"
+            )
+    return gitlinks
+
+
+def required_source_ids(
+    ordered: Sequence[dict[str, Any]],
+    proposals: dict[str, dict[str, Any]],
+) -> set[str]:
+    """Return physical sources needed by the selected dependency/apply closure."""
+    required: set[str] = set()
+    for proposal in ordered:
+        required.add(proposal["source"])
+        required.update(
+            applied["source"] for applied in application_plan(proposal, proposals)
+        )
+    return required
+
+
+def verified_source_path(
+    *,
+    root: Path,
+    identifier: str,
+    source: dict[str, Any],
+    gitlinks: dict[str, str],
+    environment: dict[str, str],
+) -> Path:
+    """Verify one initialized source before allowing it into materialization."""
+    path = secure_path(root, source["path"], kind="source")
+    try:
+        git_metadata = (path / ".git").lstat()
+    except FileNotFoundError as error:
+        raise ProposalValidationError(
+            f"{identifier} integration source is not initialized"
+        ) from error
+    if stat.S_ISLNK(git_metadata.st_mode):
+        raise ProposalValidationError(
+            f"{identifier} integration source Git metadata is a symlink"
+        )
+    recorded = gitlinks[source["path"]]
+    head = output("git", "rev-parse", "HEAD", cwd=path, environment=environment)
+    if head != recorded:
+        raise ProposalValidationError(
+            f"{identifier} checkout {head} != stage-zero gitlink {recorded}"
+        )
+    if output(
+        "git",
+        "status",
+        "--porcelain=v1",
+        "--untracked-files=all",
+        cwd=path,
+        environment=environment,
+    ):
+        raise ProposalValidationError(
+            f"{identifier} integration source contains local changes"
+        )
+    if output(
+        "git",
+        "rev-parse",
+        "--abbrev-ref",
+        "HEAD",
+        cwd=path,
+        environment=environment,
+    ) != "HEAD":
+        raise ProposalValidationError(
+            f"{identifier} integration source checkout is not detached"
+        )
+    origin = output(
+        "git", "remote", "get-url", "origin", cwd=path, environment=environment
+    )
+    if origin != source["repository"]:
+        raise ProposalValidationError(
+            f"{identifier} origin {origin!r} != {source['repository']!r}"
+        )
+    return path
+
+
 def materialize_exact_commit(
     *,
     source: Path,
@@ -458,33 +560,32 @@ def validate_proposals(
         print("No integration proposals are declared; no external code was executed.")
         return
 
-    proposals = {proposal["id"]: proposal for proposal in ordered}
+    proposals = {
+        proposal["id"]: proposal for proposal in manifest["proposals"]
+    }
     sources = {source["id"]: source for source in manifest["sources"]}
     patches = load_patches(root, manifest)
+    gitlinks = declared_gitlinks(root, sources)
+    required_sources = required_source_ids(ordered, proposals)
 
     with tempfile.TemporaryDirectory(prefix="grove-fhir-proposals-") as directory:
         workspace = Path(directory).resolve(strict=True)
         home = workspace / "home"
         environment = command_environment(home)
         source_paths = {
-            identifier: secure_path(root, source["path"], kind="source")
-            for identifier, source in sources.items()
+            identifier: verified_source_path(
+                root=root,
+                identifier=identifier,
+                source=sources[identifier],
+                gitlinks=gitlinks,
+                environment=environment,
+            )
+            for identifier in sorted(required_sources)
         }
         before = {
             identifier: source_state(path, environment=environment)
             for identifier, path in source_paths.items()
         }
-        for identifier, (head, status, _, _) in before.items():
-            if head != sources[identifier]["commit"]:
-                raise ProposalValidationError(
-                    f"{identifier} checkout {head} != declared commit "
-                    f"{sources[identifier]['commit']}"
-                )
-            if status:
-                raise ProposalValidationError(
-                    f"{identifier} integration source contains local changes"
-                )
-
         try:
             for ordinal, proposal in enumerate(ordered, start=1):
                 identifier = proposal["id"]
