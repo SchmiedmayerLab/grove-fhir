@@ -88,9 +88,11 @@ jobs:
         run: >-
           python3 Scripts/check-live-publication.py
           --base-url "${{ steps.deployment.outputs.page_url }}"
+          --expected-revision "${{ github.sha }}"
       - name: Verify the canonical host
         if: vars.FHIR_CANONICAL_BASE_URL != ''
         run: >-
           python3 Scripts/check-live-publication.py
           --base-url "${{ vars.FHIR_CANONICAL_BASE_URL }}"
+          --expected-revision "${{ github.sha }}"
           --canonical-only

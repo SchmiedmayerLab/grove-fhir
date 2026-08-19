@@ -29,6 +29,31 @@ def safe_path(value: str) -> Path:
     return Path(*path.parts) if value else Path()
 
 
+def canonical_for_guide(configuration: dict[str, Any], guide: dict[str, Any]) -> str:
+    base_url = configuration.get("canonicalBaseUrl")
+    if not isinstance(base_url, str):
+        raise ValueError("publication configuration has no canonicalBaseUrl")
+    parsed = urlparse(base_url)
+    if (
+        parsed.scheme != "https"
+        or not parsed.netloc
+        or parsed.username is not None
+        or parsed.password is not None
+        or parsed.path not in {"", "/"}
+        or parsed.params
+        or parsed.query
+        or parsed.fragment
+    ):
+        raise ValueError(
+            "canonicalBaseUrl must be an HTTPS origin without credentials, a path, "
+            "query, or fragment"
+        )
+    canonical_path = safe_path(str(guide.get("canonicalPath", ""))).as_posix()
+    if not canonical_path or canonical_path == ".":
+        raise ValueError("each published guide must have a non-empty canonicalPath")
+    return f"{base_url.rstrip('/')}/{canonical_path}"
+
+
 def scalar_configuration(path: Path) -> dict[str, str]:
     values: dict[str, str] = {}
     for line in path.read_text(encoding="utf-8").splitlines():
@@ -83,8 +108,16 @@ def check_site(
     base_url: str,
 ) -> list[str]:
     failures: list[str] = []
+    try:
+        expected_canonicals = {
+            str(guide.get("source")): canonical_for_guide(configuration, guide)
+            for guide in configuration["guides"]
+        }
+    except (KeyError, TypeError, ValueError) as error:
+        return [f"invalid publication configuration: {error}"]
     for guide in configuration["guides"]:
         source = guide["source"]
+        expected_canonical = expected_canonicals[source]
         canonical_root = site / safe_path(guide["canonicalPath"])
         preview = canonical_root / "ci-build"
         expected_files = (
@@ -96,6 +129,9 @@ def check_site(
             canonical_root / "publication-manifest.json",
             canonical_root / "canonical-routes.json",
             preview / "index.html",
+            preview / "package.tgz",
+            preview / "package.tgz.sha256",
+            preview / "publication-manifest.json",
         )
         for path in expected_files:
             if not path.is_file():
@@ -107,8 +143,13 @@ def check_site(
         metadata = package_metadata(canonical_root / "package.tgz")
         expected = {
             "name": source_configuration.get("id"),
-            "canonical": source_configuration.get("canonical"),
+            "canonical": expected_canonical,
         }
+        if source_configuration.get("canonical") != expected_canonical:
+            failures.append(
+                f"{source} canonical is {source_configuration.get('canonical')!r}; "
+                f"expected configured canonical {expected_canonical!r}"
+            )
         for key, value in expected.items():
             if metadata.get(key) != value:
                 failures.append(
@@ -150,7 +191,11 @@ def check_site(
             failures.append(f"{source} preview package version does not match sushi-config.yaml")
 
         checksum = (canonical_root / "package.tgz.sha256").read_text(encoding="utf-8").split()
-        if len(checksum) != 2 or checksum[0] != digest(canonical_root / "package.tgz"):
+        if (
+            len(checksum) != 2
+            or checksum[1] != "package.tgz"
+            or checksum[0] != digest(canonical_root / "package.tgz")
+        ):
             failures.append(f"{source} package checksum is invalid")
 
         manifest = json.loads(
@@ -160,6 +205,44 @@ def check_site(
             failures.append(f"{source} publication manifest checksum is invalid")
         if manifest.get("canonical") != metadata.get("canonical"):
             failures.append(f"{source} publication manifest canonical is invalid")
+        if manifest.get("packageId") != metadata.get("name"):
+            failures.append(f"{source} publication manifest package id is invalid")
+        if manifest.get("packageVersion") != metadata.get("version"):
+            failures.append(f"{source} publication manifest package version is invalid")
+
+        preview_package = preview / "package.tgz"
+        preview_digest = digest(preview_package)
+        preview_metadata = package_metadata(preview_package)
+        if preview_metadata.get("canonical") != expected_canonical:
+            failures.append(f"{source} preview package canonical is invalid")
+        preview_checksum = (preview / "package.tgz.sha256").read_text(
+            encoding="utf-8"
+        ).split()
+        if (
+            len(preview_checksum) != 2
+            or preview_checksum[1] != "package.tgz"
+            or preview_checksum[0] != preview_digest
+        ):
+            failures.append(f"{source} preview package checksum is invalid")
+        preview_manifest = json.loads(
+            (preview / "publication-manifest.json").read_text(encoding="utf-8")
+        )
+        expected_preview_manifest = {
+            "packageId": preview_metadata.get("name"),
+            "packageVersion": preview_metadata.get("version"),
+            "canonical": expected_canonical,
+            "packageSha256": preview_digest,
+        }
+        for key, value in expected_preview_manifest.items():
+            if preview_manifest.get(key) != value:
+                failures.append(
+                    f"{source} preview publication manifest {key} is "
+                    f"{preview_manifest.get(key)!r}; expected {value!r}"
+                )
+        if not isinstance(preview_manifest.get("sourceRevision"), str) or not preview_manifest[
+            "sourceRevision"
+        ]:
+            failures.append(f"{source} preview publication manifest has no source revision")
 
         resources = owned_resources(preview, str(metadata["canonical"]))
         route_manifest = json.loads(

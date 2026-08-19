@@ -119,6 +119,7 @@ class PreparePagesTests(unittest.TestCase):
             configuration = {
                 "schemaVersion": 1,
                 "previewBaseUrl": "https://pages.example/repository",
+                "canonicalBaseUrl": "https://example.org",
                 "sourceRepository": "https://github.com/example/repository",
                 "guides": [
                     {
@@ -161,6 +162,12 @@ class PreparePagesTests(unittest.TestCase):
             self.assertTrue((site / "index.html").is_file())
             self.assertTrue((site / "platforms/index.html").is_file())
             self.assertTrue((core / "ci-build/index.html").is_file())
+            self.assertTrue((core / "ci-build/package.tgz.sha256").is_file())
+            preview_manifest = json.loads(
+                (core / "ci-build/publication-manifest.json").read_text(encoding="utf-8")
+            )
+            self.assertEqual(preview_manifest["sourceRevision"], "abc123")
+            self.assertEqual(preview_manifest["canonical"], "https://example.org/fhir/core")
             self.assertIn("ci-build/", (core / "index.html").read_text(encoding="utf-8"))
             history = json.loads((core / "package-list.json").read_text(encoding="utf-8"))
             self.assertEqual(history["package-id"], "org.example.core")
@@ -197,6 +204,82 @@ class PreparePagesTests(unittest.TestCase):
                 "https://pages.example/repository/fhir/core/history.html",
                 (core / "ci-build/index.html").read_text(encoding="utf-8"),
             )
+
+    def test_local_validation_rejects_canonical_origin_drift(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            repository = Path(directory) / "repository"
+            repository.mkdir()
+            (repository / "tools").mkdir()
+            shutil.copy2(
+                ROOT / "tools/make-canonical-redirects.py",
+                repository / "tools/make-canonical-redirects.py",
+            )
+            self._write_guide(
+                repository,
+                "ig",
+                "org.example.core",
+                "https://other.example/fhir/core",
+                "StructureDefinition",
+                "example-profile",
+            )
+            configuration = {
+                "schemaVersion": 1,
+                "previewBaseUrl": "https://pages.example/repository",
+                "canonicalBaseUrl": "https://example.org",
+                "sourceRepository": "https://github.com/example/repository",
+                "guides": [
+                    {
+                        "source": "ig",
+                        "canonicalPath": "fhir/core",
+                        "aliases": [""],
+                        "representativeResource": "StructureDefinition/example-profile",
+                    }
+                ],
+            }
+            site = repository / ".build/pages"
+            PREPARE_PAGES.assemble_site(
+                site,
+                repository,
+                configuration,
+                "https://pages.example/repository",
+                "abc123",
+                1_700_000_000,
+            )
+
+            failures = CHECK_PUBLICATION.check_site(
+                site,
+                repository,
+                configuration,
+                "https://pages.example/repository",
+            )
+
+            self.assertTrue(
+                any("expected configured canonical" in failure for failure in failures),
+                failures,
+            )
+            self.assertTrue(
+                any("package canonical" in failure for failure in failures),
+                failures,
+            )
+
+    def test_local_validation_rejects_non_https_canonical_origin(self) -> None:
+        failures = CHECK_PUBLICATION.check_site(
+            Path("/unused"),
+            Path("/unused"),
+            {
+                "canonicalBaseUrl": "http://example.org",
+                "guides": [{"source": "ig", "canonicalPath": "fhir/core"}],
+            },
+            "https://pages.example/repository",
+        )
+
+        self.assertEqual(
+            failures,
+            [
+                "invalid publication configuration: canonicalBaseUrl must be an HTTPS "
+                "origin without credentials, a path, query, or fragment"
+            ],
+        )
 
     @staticmethod
     def _write_package(path: Path, metadata: dict[str, object]) -> None:

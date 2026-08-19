@@ -62,6 +62,24 @@ def main() -> int:
 
     publication_path = ROOT / "publication/config.json"
     publication = json.loads(publication_path.read_text(encoding="utf-8"))
+    canonical_base_url = publication.get("canonicalBaseUrl")
+    canonical_base = urlparse(canonical_base_url) if isinstance(canonical_base_url, str) else None
+    if (
+        canonical_base is None
+        or canonical_base.scheme != "https"
+        or not canonical_base.netloc
+        or canonical_base.username is not None
+        or canonical_base.password is not None
+        or canonical_base.path not in {"", "/"}
+        or canonical_base.params
+        or canonical_base.query
+        or canonical_base.fragment
+    ):
+        failures.append(
+            "publication/config.json canonicalBaseUrl must be an HTTPS origin without "
+            "credentials, a path, query, or fragment"
+        )
+        canonical_base_url = None
     published_sources: set[str] = set()
     aliases: set[str] = set()
     for guide in publication.get("guides", []):
@@ -77,6 +95,15 @@ def main() -> int:
                 f"publication path for {source} does not match its canonical URL: "
                 f"{guide.get('canonicalPath')!r} != {canonical_path!r}"
             )
+        if canonical_base_url is not None:
+            expected_canonical = (
+                f"{canonical_base_url.rstrip('/')}/{str(guide.get('canonicalPath', '')).strip('/')}"
+            )
+            if configuration["canonical"].rstrip("/") != expected_canonical:
+                failures.append(
+                    f"canonical URL for {source} does not use the configured canonical origin: "
+                    f"{configuration['canonical']!r} != {expected_canonical!r}"
+                )
         for alias in guide.get("aliases", []):
             if alias in aliases:
                 failures.append(f"publication alias is declared more than once: {alias!r}")

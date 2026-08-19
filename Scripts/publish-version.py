@@ -144,8 +144,28 @@ def publish_version(
         raise ValueError(f"package version is not publishable SemVer: {version!r}")
     if not isinstance(canonical, str):
         raise ValueError("package has no canonical URL")
-    if urlparse(canonical).path.strip("/") != guide["canonicalPath"]:
-        raise ValueError("package canonical does not match the configured publication path")
+    canonical_base = configuration.get("canonicalBaseUrl")
+    parsed_base = urlparse(canonical_base) if isinstance(canonical_base, str) else None
+    if (
+        parsed_base is None
+        or parsed_base.scheme != "https"
+        or not parsed_base.netloc
+        or parsed_base.username is not None
+        or parsed_base.password is not None
+        or parsed_base.path not in {"", "/"}
+        or parsed_base.params
+        or parsed_base.query
+        or parsed_base.fragment
+    ):
+        raise ValueError("publication canonicalBaseUrl is not a valid HTTPS origin")
+    expected_canonical = (
+        f"{canonical_base.rstrip('/')}/{safe_path(guide['canonicalPath']).as_posix()}"
+    )
+    if canonical.rstrip("/") != expected_canonical:
+        raise ValueError(
+            f"package canonical {canonical!r} does not match configured canonical "
+            f"{expected_canonical!r}"
+        )
     expected_url = f"{canonical}/{version}"
     if metadata.get("url") != expected_url or metadata.get("notForPublication") is True:
         raise ValueError(
@@ -153,9 +173,10 @@ def publish_version(
         )
 
     canonical_root = site.resolve() / safe_path(guide["canonicalPath"])
-    version_root = canonical_root / version
-    if version_root.exists():
-        raise FileExistsError(f"immutable version already exists: {version_root}")
+    if (canonical_root / version).exists():
+        raise FileExistsError(
+            f"immutable version already exists: {canonical_root / version}"
+        )
     package_list_path = canonical_root / "package-list.json"
     if package_list_path.is_file():
         history = json.loads(package_list_path.read_text(encoding="utf-8"))
@@ -173,14 +194,29 @@ def publish_version(
     if any(entry.get("version") == version for entry in releases):
         raise ValueError(f"version {version} already exists in package-list.json")
 
-    canonical_root.mkdir(parents=True, exist_ok=True)
-    staging_root = canonical_root / f".{version}.tmp"
-    if staging_root.exists():
-        raise FileExistsError(f"stale publication staging directory exists: {staging_root}")
+    canonical_root.parent.mkdir(parents=True, exist_ok=True)
+    transaction_root = canonical_root.with_name(
+        f".{canonical_root.name}.{version}.publish.tmp"
+    )
+    backup_root = canonical_root.with_name(
+        f".{canonical_root.name}.{version}.backup.tmp"
+    )
+    for temporary in (transaction_root, backup_root):
+        if temporary.exists():
+            raise FileExistsError(
+                f"stale publication transaction directory exists: {temporary}"
+            )
     redirects = load_module(
         "canonical_redirects", repository_root / "tools/make-canonical-redirects.py"
     )
     try:
+        if canonical_root.exists():
+            shutil.copytree(canonical_root, transaction_root)
+        else:
+            transaction_root.mkdir()
+
+        version_root = transaction_root / version
+        staging_root = transaction_root / f".{version}.tmp"
         shutil.copytree(source, staging_root)
         package_digest = sha256(staging_root / "package.tgz")
         (staging_root / "package.tgz.sha256").write_text(
@@ -188,65 +224,81 @@ def publish_version(
         )
         redirects.generate_routes(source, staging_root, canonical)
         staging_root.rename(version_root)
-    except Exception:
-        if staging_root.exists():
-            shutil.rmtree(staging_root)
-        raise
 
-    if current:
-        for entry in releases:
-            entry.pop("current", None)
-    release = {
-        "version": version,
-        "path": expected_url,
-        "status": status,
-        "sequence": sequence,
-        "fhirversion": metadata["fhirVersions"][0],
-        "date": publication_date,
-        "desc": description,
-    }
-    if current:
-        release["current"] = True
-    history["list"] = [release, *releases]
-    package_list_path.write_text(
-        json.dumps(history, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
-    )
-
-    prepare_pages = load_module(
-        "prepare_pages", repository_root / "Scripts/prepare-pages.py"
-    )
-    (canonical_root / "history.html").write_text(
-        prepare_pages.render_history(history, f"{canonical}/package.tgz"), encoding="utf-8"
-    )
-    if current:
-        remove_generated_routes(canonical_root)
-        routes = redirects.generate_routes(
-            source, canonical_root, canonical, target_prefix=version
-        )
-        (canonical_root / "index.html").write_text(
-            release_redirect(str(metadata["title"]), canonical, version), encoding="utf-8"
-        )
-        shutil.copy2(version_root / "package.tgz", canonical_root / "package.tgz")
-        (canonical_root / "package.tgz.sha256").write_text(
-            f"{package_digest}  package.tgz\n", encoding="utf-8"
-        )
-        (canonical_root / "publication-manifest.json").write_text(
-            json.dumps(
-                {
-                    "schemaVersion": 1,
-                    "packageId": package_id,
-                    "packageVersion": version,
-                    "canonical": canonical,
-                    "publication": expected_url,
-                    "sourceRevision": revision,
-                    "packageSha256": package_digest,
-                    "canonicalRouteCount": len(routes),
-                },
-                indent=2,
-            )
-            + "\n",
+        if current:
+            for entry in releases:
+                entry.pop("current", None)
+        release = {
+            "version": version,
+            "path": expected_url,
+            "status": status,
+            "sequence": sequence,
+            "fhirversion": metadata["fhirVersions"][0],
+            "date": publication_date,
+            "desc": description,
+        }
+        if current:
+            release["current"] = True
+        history["list"] = [release, *releases]
+        (transaction_root / "package-list.json").write_text(
+            json.dumps(history, indent=2, ensure_ascii=False) + "\n",
             encoding="utf-8",
         )
+
+        prepare_pages = load_module(
+            "prepare_pages", repository_root / "Scripts/prepare-pages.py"
+        )
+        (transaction_root / "history.html").write_text(
+            prepare_pages.render_history(history, f"{canonical}/package.tgz"),
+            encoding="utf-8",
+        )
+        if current:
+            remove_generated_routes(transaction_root)
+            routes = redirects.generate_routes(
+                source, transaction_root, canonical, target_prefix=version
+            )
+            (transaction_root / "index.html").write_text(
+                release_redirect(str(metadata["title"]), canonical, version),
+                encoding="utf-8",
+            )
+            shutil.copy2(version_root / "package.tgz", transaction_root / "package.tgz")
+            (transaction_root / "package.tgz.sha256").write_text(
+                f"{package_digest}  package.tgz\n", encoding="utf-8"
+            )
+            (transaction_root / "publication-manifest.json").write_text(
+                json.dumps(
+                    {
+                        "schemaVersion": 1,
+                        "packageId": package_id,
+                        "packageVersion": version,
+                        "canonical": canonical,
+                        "publication": expected_url,
+                        "sourceRevision": revision,
+                        "packageSha256": package_digest,
+                        "canonicalRouteCount": len(routes),
+                    },
+                    indent=2,
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+
+        if canonical_root.exists():
+            canonical_root.rename(backup_root)
+        try:
+            transaction_root.rename(canonical_root)
+        except Exception:
+            if backup_root.exists() and not canonical_root.exists():
+                backup_root.rename(canonical_root)
+            raise
+        if backup_root.exists():
+            shutil.rmtree(backup_root, ignore_errors=True)
+    except Exception:
+        if transaction_root.exists():
+            shutil.rmtree(transaction_root)
+        if backup_root.exists() and not canonical_root.exists():
+            backup_root.rename(canonical_root)
+        raise
     return version
 
 

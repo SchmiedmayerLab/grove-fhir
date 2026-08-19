@@ -431,6 +431,10 @@ def assemble_site(
                 "packageSha256": ci_digest,
                 "canonicalRouteCount": len(routes),
             }
+            (preview_destination / "package.tgz.sha256").write_text(
+                f"{ci_digest}  package.tgz\n", encoding="utf-8"
+            )
+            write_json(preview_destination / "publication-manifest.json", ci_manifest)
             if not release_entries:
                 (canonical_root / "index.html").write_text(
                     render_preview_redirect(str(metadata["title"]), canonical), encoding="utf-8"

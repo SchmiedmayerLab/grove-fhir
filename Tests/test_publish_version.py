@@ -15,6 +15,7 @@ import tarfile
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 
 ROOT = Path(__file__).parents[1]
@@ -28,6 +29,7 @@ SPECIFICATION.loader.exec_module(PUBLISH)
 class PublishVersionTests(unittest.TestCase):
     canonical = "https://example.org/fhir/core"
     configuration = {
+        "canonicalBaseUrl": "https://example.org",
         "guides": [
             {
                 "source": "ig",
@@ -113,14 +115,105 @@ class PublishVersionTests(unittest.TestCase):
                 )
             self.assertFalse((site / "fhir/core/0.1.0-preview.1").exists())
 
-    def _write_output(self, output: Path, *, not_for_publication: bool = False) -> None:
+    def test_rejects_a_package_from_another_canonical_origin(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / "source"
+            site = root / "published"
+            self._write_output(
+                source,
+                canonical="https://other.example/fhir/core",
+            )
+
+            with self.assertRaisesRegex(ValueError, "configured canonical"):
+                PUBLISH.publish_version(
+                    site=site,
+                    source=source,
+                    configuration=self.configuration,
+                    guide_source="ig",
+                    status="preview",
+                    sequence="0.x Preview",
+                    publication_date="2026-08-18",
+                    description="Wrong canonical origin.",
+                    current=True,
+                    revision="abc123",
+                    repository_root=ROOT,
+                )
+            self.assertFalse(site.exists())
+
+    def test_failure_after_staging_leaves_existing_publication_unchanged(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            first_source = root / "first-source"
+            second_source = root / "second-source"
+            site = root / "published"
+            self._write_output(first_source)
+            PUBLISH.publish_version(
+                site=site,
+                source=first_source,
+                configuration=self.configuration,
+                guide_source="ig",
+                status="preview",
+                sequence="0.x Preview",
+                publication_date="2026-08-18",
+                description="First reviewed preview.",
+                current=True,
+                revision="abc123",
+                repository_root=ROOT,
+            )
+            publication = site / "fhir/core"
+            before = {
+                str(path.relative_to(publication)): path.read_bytes()
+                for path in publication.rglob("*")
+                if path.is_file()
+            }
+            self._write_output(second_source, version="0.1.0-preview.2")
+
+            with mock.patch.object(
+                PUBLISH, "release_redirect", side_effect=RuntimeError("injected failure")
+            ):
+                with self.assertRaisesRegex(RuntimeError, "injected failure"):
+                    PUBLISH.publish_version(
+                        site=site,
+                        source=second_source,
+                        configuration=self.configuration,
+                        guide_source="ig",
+                        status="preview",
+                        sequence="0.x Preview",
+                        publication_date="2026-08-19",
+                        description="Second reviewed preview.",
+                        current=True,
+                        revision="def456",
+                        repository_root=ROOT,
+                    )
+
+            after = {
+                str(path.relative_to(publication)): path.read_bytes()
+                for path in publication.rglob("*")
+                if path.is_file()
+            }
+            self.assertEqual(after, before)
+            self.assertFalse((publication / "0.1.0-preview.2").exists())
+            self.assertEqual(
+                list((site / "fhir").glob(".core.*.tmp")),
+                [],
+            )
+
+    def _write_output(
+        self,
+        output: Path,
+        *,
+        not_for_publication: bool = False,
+        version: str = "0.1.0-preview.1",
+        canonical: str | None = None,
+    ) -> None:
         output.mkdir()
-        version = "0.1.0-preview.1"
+        canonical = canonical or self.canonical
         metadata = {
             "name": "org.example.core",
             "version": version,
-            "canonical": self.canonical,
-            "url": f"{self.canonical}/{version}",
+            "canonical": canonical,
+            "url": f"{canonical}/{version}",
             "notForPublication": not_for_publication,
             "title": "Example Core",
             "description": "Example release",
@@ -135,7 +228,7 @@ class PublishVersionTests(unittest.TestCase):
         resource = {
             "resourceType": "StructureDefinition",
             "id": "example",
-            "url": f"{self.canonical}/StructureDefinition/example",
+            "url": f"{canonical}/StructureDefinition/example",
         }
         prefix = "StructureDefinition-example"
         (output / f"{prefix}.json").write_text(json.dumps(resource), encoding="utf-8")
