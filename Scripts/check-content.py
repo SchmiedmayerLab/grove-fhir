@@ -17,7 +17,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parent.parent
-GUIDES = (ROOT / "archive/v0-healthkit-shaped", ROOT / "platforms", ROOT / "ig")
+GUIDES = (ROOT / "platforms", ROOT / "ig")
 REQUIRED_CONFIGURATION_KEYS = {"id", "canonical", "version", "fhirVersion", "license"}
 
 

@@ -6,26 +6,21 @@
 // SPDX-License-Identifier: MIT
 //
 
-// Open key spaces. Apple and Google own these namespaces and extend them with every
-// release, and HealthKit additionally accepts arbitrary third-party keys, so these are
-// fragment systems: a code absent from the listing below is still a valid code. The
-// enumerated systems are generated instead — see generated-healthkit-values.fsh.
+// HealthKit identifier spaces used by the Grove Swift conversion. These systems are
+// fragments because HealthKit adds identifiers and accepts third-party metadata keys.
 
 CodeSystem: HealthKitSampleTypeCS
 Id: healthkit-sample-type
 Title: "HealthKit Sample Types"
 Description: """
-HealthKit sample-type identifiers, as their raw string values
-(`HKQuantityTypeIdentifierStepCount`, `HKCategoryTypeIdentifierSleepAnalysis`,
-`HKDataTypeStateOfMind`, …). Grove writes this coding alongside the clinical coding of
-every observation, because the platform identifier says exactly which sensor pipeline
-produced the number — something LOINC cannot express.
-
-A fragment: Apple adds sample types with every release.
+HealthKit sample-type identifiers preserved by the Grove Swift conversion. The codes
+are raw HealthKit identifier strings. This Grove-published fragment is not an Apple
+terminology publication.
 """
 * ^url = "https://grovealliance.org/fhir/platforms/CodeSystem/healthkit-sample-type"
 * ^valueSet = "https://grovealliance.org/fhir/platforms/ValueSet/healthkit-sample-type"
-* ^experimental = false
+* ^copyright = "HealthKit identifiers originate in Apple SDK declarations. Apple and HealthKit are trademarks of Apple Inc. The repository's MIT license does not grant rights in Apple material."
+* ^experimental = true
 * ^caseSensitive = true
 * ^content = #fragment
 * #HKQuantityTypeIdentifierStepCount "Step Count"
@@ -37,9 +32,9 @@ A fragment: Apple adds sample types with every release.
 ValueSet: HealthKitSampleTypeVS
 Id: healthkit-sample-type
 Title: "HealthKit Sample Types"
-Description: "All HealthKit sample-type identifiers. Bind extensibly: the system is a fragment."
+Description: "HealthKit sample-type identifiers included in this preview. Bind extensibly: the system is a fragment."
 * ^url = "https://grovealliance.org/fhir/platforms/ValueSet/healthkit-sample-type"
-* ^experimental = false
+* ^experimental = true
 * include codes from system HealthKitSampleTypeCS
 
 
@@ -47,18 +42,14 @@ CodeSystem: HealthKitMetadataKeyCS
 Id: healthkit-metadata-key
 Title: "HealthKit Metadata Keys"
 Description: """
-HealthKit metadata keys, as their raw string values. Used as the `key` coding of the
-core guide's platform-metadata entry — the last layer of the metadata policy, after
-time zone, recording method, body site, device properties, and components have each
-claimed what belongs to them.
-
-A fragment: HealthKit accepts arbitrary third-party keys. The codes are the raw values,
-not the Swift constant names — they disagree more often than not, and Grove writes the
-raw value. A test in the framework pins every code below to what HealthKit returns.
+HealthKit metadata keys preserved by the Grove Swift conversion. The codes are raw
+HealthKit key strings. This Grove-published fragment is not an Apple terminology
+publication and does not assign clinical meaning to the keys.
 """
 * ^url = "https://grovealliance.org/fhir/platforms/CodeSystem/healthkit-metadata-key"
 * ^valueSet = "https://grovealliance.org/fhir/platforms/ValueSet/healthkit-metadata-key"
-* ^experimental = false
+* ^copyright = "HealthKit identifiers originate in Apple SDK declarations. Apple and HealthKit are trademarks of Apple Inc. The repository's MIT license does not grant rights in Apple material."
+* ^experimental = true
 * ^caseSensitive = true
 * ^content = #fragment
 * #HKAlpineSlopeGrade "Alpine Slope Grade"
@@ -97,10 +88,10 @@ raw value. A test in the framework pins every code below to what HealthKit retur
 * #HKSexualActivityProtectionUsed "Sexual Activity: Protection Used"
 * #HKSwimmingLocationType "Swimming Location Type"
 * #HKSwimmingStrokeStyle "Swimming Stroke Style"
-* #HKTimeZone "Time Zone" "Routed to the standard timezone extension on effective[x]; never a metadata entry."
+* #HKTimeZone "Time Zone"
 * #HKVO2MaxTestType "VO2 Max Test Type"
 * #HKVO2MaxValue "VO2 Max Value"
-* #HKWasUserEntered "Was User Entered" "Routed to the core guide's recording-method extension; never a metadata entry."
+* #HKWasUserEntered "Was User Entered"
 * #HKWeatherCondition "Weather Condition"
 * #HKWeatherHumidity "Weather Humidity"
 * #HKWeatherTemperature "Weather Temperature"
@@ -108,59 +99,7 @@ raw value. A test in the framework pins every code below to what HealthKit retur
 ValueSet: HealthKitMetadataKeyVS
 Id: healthkit-metadata-key
 Title: "HealthKit Metadata Keys"
-Description: "All published HealthKit metadata keys. Bind extensibly: HealthKit accepts arbitrary third-party keys."
+Description: "HealthKit metadata keys included in this preview. Bind extensibly: HealthKit accepts arbitrary third-party keys."
 * ^url = "https://grovealliance.org/fhir/platforms/ValueSet/healthkit-metadata-key"
-* ^experimental = false
+* ^experimental = true
 * include codes from system HealthKitMetadataKeyCS
-
-
-CodeSystem: HealthConnectMetadataKeyCS
-Id: health-connect-metadata-key
-Title: "Health Connect Metadata Keys"
-Description: """
-Android Health Connect metadata fields, named as in the Health Connect API. A fragment:
-the field set grows with the platform.
-"""
-* ^url = "https://grovealliance.org/fhir/platforms/CodeSystem/health-connect-metadata-key"
-* ^valueSet = "https://grovealliance.org/fhir/platforms/ValueSet/health-connect-metadata-key"
-* ^experimental = false
-* ^caseSensitive = true
-* ^content = #fragment
-* #clientRecordId "Client Record ID"
-* #clientRecordVersion "Client Record Version"
-
-ValueSet: HealthConnectMetadataKeyVS
-Id: health-connect-metadata-key
-Title: "Health Connect Metadata Keys"
-Description: "All published Health Connect metadata fields. Bind extensibly: the field set grows with the platform."
-* ^url = "https://grovealliance.org/fhir/platforms/ValueSet/health-connect-metadata-key"
-* ^experimental = false
-* include codes from system HealthConnectMetadataKeyCS
-
-
-CodeSystem: HealthConnectRecordTypeCS
-Id: health-connect-record-type
-Title: "Health Connect Record Types"
-Description: """
-Android Health Connect record classes, named as in the Health Connect API
-(`StepsRecord`, `HeartRateRecord`, …) — the Android counterpart of HealthKit's
-sample-type identifiers, and written into `Observation.code` for the same reason: the
-platform class says which pipeline produced the number.
-
-A fragment: the record set grows with the platform.
-"""
-* ^url = "https://grovealliance.org/fhir/platforms/CodeSystem/health-connect-record-type"
-* ^experimental = false
-* ^caseSensitive = true
-* ^content = #fragment
-* #StepsRecord "Steps"
-* #HeartRateRecord "Heart Rate"
-* #SleepSessionRecord "Sleep Session"
-
-
-ValueSet: HealthConnectRecordTypeVS
-Id: health-connect-record-type
-Title: "Health Connect Record Types"
-Description: "All Health Connect record classes."
-* ^experimental = false
-* include codes from system HealthConnectRecordTypeCS

@@ -61,6 +61,10 @@ UNRECOGNIZED_CODE = "unrecognized-platform-value"
 UNRECOGNIZED_DEFINITION = (
     "Grove's code, not Apple's: the platform reported a value the writing build did not "
     "recognize. Several of these enumerations declare an `unknown` case of their own.")
+APPLE_TERMINOLOGY_NOTICE = (
+    "HealthKit identifiers and enum names originate in Apple SDK declarations. Apple "
+    "and HealthKit are trademarks of Apple Inc. The repository's MIT license does not "
+    "grant rights in Apple material.")
 
 
 def class_name(system: str) -> str:
@@ -100,7 +104,8 @@ def code_system(system: str, title_text: str, description: str, codes):
         f'Title: "{title_text}"',
         f'Description: "{description}"',
         f'* ^url = "https://grovealliance.org/fhir/platforms/CodeSystem/{system}"',
-        "* ^experimental = false",
+        f'* ^copyright = "{APPLE_TERMINOLOGY_NOTICE}"',
+        "* ^experimental = true",
         "* ^caseSensitive = true",
         "* ^content = #complete",
     ]
@@ -209,7 +214,7 @@ def main() -> int:
         seen.add(system)
         lines += code_system(
             system, entry["title"],
-            f"Values of Apple HealthKit's `{entry['type']}`, coded by their Swift case names.",
+            f"Codes emitted by Grove for `{entry['type']}`, derived from Swift case names.",
             [(concept["code"], concept["display"]) for concept in entry["concepts"]])
 
     for vocabulary_name, relative, system, title_text, description in LITERAL_SOURCES:

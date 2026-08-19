@@ -9,12 +9,12 @@
 id: org.grovealliance.fhir.core
 canonical: https://grovealliance.org/fhir/core
 name: GroveFHIRCore
-title: Grove FHIR Continuous Preview
+title: Grove FHIR Mobile Data Exchange Preview
 description: >-
-  Draft FHIR R4 exchange definitions under review for a reusable mobile health and
-  questionnaire contract, with Grove Swift as the first reference implementation.
+  Draft FHIR R4 Mobile Data Exchange profiles and extensions for HealthKit observations
+  emitted by Grove Swift.
 status: draft
-version: 0.5.0
+version: 0.6.0-preview.1
 fhirVersion: 4.0.1
 copyrightYear: 2022+
 releaseLabel: ci-build
@@ -29,11 +29,9 @@ dependencies:
   # else can resolve. Build platforms/ first and install its package.tgz into the package
   # cache under this version — see README.md.
   org.grovealliance.fhir.platforms:
-    version: 0.1.0
+    version: 0.2.0-preview.1
     uri: https://grovealliance.org/fhir/platforms/ImplementationGuide/org.grovealliance.fhir.platforms
-  hl7.fhir.uv.sdc: 4.0.0
   hl7.fhir.uv.extensions.r4: 5.3.0
-  hl7.fhir.uv.phd: 2.0.0
 
 # pin-canonicals disambiguates multi-version matches for extensions-pack canonicals.
 parameters:
@@ -42,21 +40,10 @@ parameters:
 menu:
   Overview: index.html
   Validate: consuming.html
-  Status: publication-status.html
   Artifacts: artifacts.html
 
 pages:
   index.md:
-    title: Home
+    title: Overview
   consuming.md:
-    title: Validate Preview Resources
-  identifiers.md:
-    title: Identifier Systems in the Prototype
-  metadata.md:
-    title: Metadata in the Combined Prototype
-  questionnaires.md:
-    title: Questionnaire Resources in the Prototype
-  questionnaire-support.md:
-    title: Renderer Support
-  publication-status.md:
-    title: Preview Status
+    title: Validate Resources

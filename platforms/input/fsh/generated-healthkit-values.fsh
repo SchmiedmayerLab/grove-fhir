@@ -13,9 +13,10 @@
 CodeSystem: HealthkitAppleEcgAlgorithmVersionCS
 Id: healthkit-apple-ecg-algorithm-version
 Title: "HealthKit Apple ECG Algorithm Version"
-Description: "Values of Apple HealthKit's `HKAppleECGAlgorithmVersion`, coded by their Swift case names."
+Description: "Codes emitted by Grove for `HKAppleECGAlgorithmVersion`, derived from Swift case names."
 * ^url = "https://grovealliance.org/fhir/platforms/CodeSystem/healthkit-apple-ecg-algorithm-version"
-* ^experimental = false
+* ^copyright = "HealthKit identifiers and enum names originate in Apple SDK declarations. Apple and HealthKit are trademarks of Apple Inc. The repository's MIT license does not grant rights in Apple material."
+* ^experimental = true
 * ^caseSensitive = true
 * ^content = #complete
 * #version1 "version1"
@@ -26,9 +27,10 @@ Description: "Values of Apple HealthKit's `HKAppleECGAlgorithmVersion`, coded by
 CodeSystem: HealthkitAppleWalkingSteadinessClassificationCS
 Id: healthkit-apple-walking-steadiness-classification
 Title: "HealthKit Apple Walking Steadiness Classification"
-Description: "Values of Apple HealthKit's `HKAppleWalkingSteadinessClassification`, coded by their Swift case names."
+Description: "Codes emitted by Grove for `HKAppleWalkingSteadinessClassification`, derived from Swift case names."
 * ^url = "https://grovealliance.org/fhir/platforms/CodeSystem/healthkit-apple-walking-steadiness-classification"
-* ^experimental = false
+* ^copyright = "HealthKit identifiers and enum names originate in Apple SDK declarations. Apple and HealthKit are trademarks of Apple Inc. The repository's MIT license does not grant rights in Apple material."
+* ^experimental = true
 * ^caseSensitive = true
 * ^content = #complete
 * #ok "ok"
@@ -40,9 +42,10 @@ Description: "Values of Apple HealthKit's `HKAppleWalkingSteadinessClassificatio
 CodeSystem: HealthkitBloodGlucoseMealTimeCS
 Id: healthkit-blood-glucose-meal-time
 Title: "HealthKit Blood Glucose Meal Time"
-Description: "Values of Apple HealthKit's `HKBloodGlucoseMealTime`, coded by their Swift case names."
+Description: "Codes emitted by Grove for `HKBloodGlucoseMealTime`, derived from Swift case names."
 * ^url = "https://grovealliance.org/fhir/platforms/CodeSystem/healthkit-blood-glucose-meal-time"
-* ^experimental = false
+* ^copyright = "HealthKit identifiers and enum names originate in Apple SDK declarations. Apple and HealthKit are trademarks of Apple Inc. The repository's MIT license does not grant rights in Apple material."
+* ^experimental = true
 * ^caseSensitive = true
 * ^content = #complete
 * #preprandial "preprandial"
@@ -53,9 +56,10 @@ Description: "Values of Apple HealthKit's `HKBloodGlucoseMealTime`, coded by the
 CodeSystem: HealthkitBodyTemperatureSensorLocationCS
 Id: healthkit-body-temperature-sensor-location
 Title: "HealthKit Body Temperature Sensor Location"
-Description: "Values of Apple HealthKit's `HKBodyTemperatureSensorLocation`, coded by their Swift case names."
+Description: "Codes emitted by Grove for `HKBodyTemperatureSensorLocation`, derived from Swift case names."
 * ^url = "https://grovealliance.org/fhir/platforms/CodeSystem/healthkit-body-temperature-sensor-location"
-* ^experimental = false
+* ^copyright = "HealthKit identifiers and enum names originate in Apple SDK declarations. Apple and HealthKit are trademarks of Apple Inc. The repository's MIT license does not grant rights in Apple material."
+* ^experimental = true
 * ^caseSensitive = true
 * ^content = #complete
 * #other "other"
@@ -76,9 +80,10 @@ Description: "Values of Apple HealthKit's `HKBodyTemperatureSensorLocation`, cod
 CodeSystem: HealthkitCategoryValueAppetiteChangesCS
 Id: healthkit-category-value-appetite-changes
 Title: "HealthKit Category Value Appetite Changes"
-Description: "Values of Apple HealthKit's `HKCategoryValueAppetiteChanges`, coded by their Swift case names."
+Description: "Codes emitted by Grove for `HKCategoryValueAppetiteChanges`, derived from Swift case names."
 * ^url = "https://grovealliance.org/fhir/platforms/CodeSystem/healthkit-category-value-appetite-changes"
-* ^experimental = false
+* ^copyright = "HealthKit identifiers and enum names originate in Apple SDK declarations. Apple and HealthKit are trademarks of Apple Inc. The repository's MIT license does not grant rights in Apple material."
+* ^experimental = true
 * ^caseSensitive = true
 * ^content = #complete
 * #unspecified "unspecified"
@@ -91,9 +96,10 @@ Description: "Values of Apple HealthKit's `HKCategoryValueAppetiteChanges`, code
 CodeSystem: HealthkitCategoryValueAppleStandHourCS
 Id: healthkit-category-value-apple-stand-hour
 Title: "HealthKit Category Value Apple Stand Hour"
-Description: "Values of Apple HealthKit's `HKCategoryValueAppleStandHour`, coded by their Swift case names."
+Description: "Codes emitted by Grove for `HKCategoryValueAppleStandHour`, derived from Swift case names."
 * ^url = "https://grovealliance.org/fhir/platforms/CodeSystem/healthkit-category-value-apple-stand-hour"
-* ^experimental = false
+* ^copyright = "HealthKit identifiers and enum names originate in Apple SDK declarations. Apple and HealthKit are trademarks of Apple Inc. The repository's MIT license does not grant rights in Apple material."
+* ^experimental = true
 * ^caseSensitive = true
 * ^content = #complete
 * #stood "stood"
@@ -104,9 +110,10 @@ Description: "Values of Apple HealthKit's `HKCategoryValueAppleStandHour`, coded
 CodeSystem: HealthkitCategoryValueAppleWalkingSteadinessEventCS
 Id: healthkit-category-value-apple-walking-steadiness-event
 Title: "HealthKit Category Value Apple Walking Steadiness Event"
-Description: "Values of Apple HealthKit's `HKCategoryValueAppleWalkingSteadinessEvent`, coded by their Swift case names."
+Description: "Codes emitted by Grove for `HKCategoryValueAppleWalkingSteadinessEvent`, derived from Swift case names."
 * ^url = "https://grovealliance.org/fhir/platforms/CodeSystem/healthkit-category-value-apple-walking-steadiness-event"
-* ^experimental = false
+* ^copyright = "HealthKit identifiers and enum names originate in Apple SDK declarations. Apple and HealthKit are trademarks of Apple Inc. The repository's MIT license does not grant rights in Apple material."
+* ^experimental = true
 * ^caseSensitive = true
 * ^content = #complete
 * #initialLow "initial low"
@@ -119,9 +126,10 @@ Description: "Values of Apple HealthKit's `HKCategoryValueAppleWalkingSteadiness
 CodeSystem: HealthkitCategoryValueCervicalMucusQualityCS
 Id: healthkit-category-value-cervical-mucus-quality
 Title: "HealthKit Category Value Cervical Mucus Quality"
-Description: "Values of Apple HealthKit's `HKCategoryValueCervicalMucusQuality`, coded by their Swift case names."
+Description: "Codes emitted by Grove for `HKCategoryValueCervicalMucusQuality`, derived from Swift case names."
 * ^url = "https://grovealliance.org/fhir/platforms/CodeSystem/healthkit-category-value-cervical-mucus-quality"
-* ^experimental = false
+* ^copyright = "HealthKit identifiers and enum names originate in Apple SDK declarations. Apple and HealthKit are trademarks of Apple Inc. The repository's MIT license does not grant rights in Apple material."
+* ^experimental = true
 * ^caseSensitive = true
 * ^content = #complete
 * #dry "dry"
@@ -135,9 +143,10 @@ Description: "Values of Apple HealthKit's `HKCategoryValueCervicalMucusQuality`,
 CodeSystem: HealthkitCategoryValueContraceptiveCS
 Id: healthkit-category-value-contraceptive
 Title: "HealthKit Category Value Contraceptive"
-Description: "Values of Apple HealthKit's `HKCategoryValueContraceptive`, coded by their Swift case names."
+Description: "Codes emitted by Grove for `HKCategoryValueContraceptive`, derived from Swift case names."
 * ^url = "https://grovealliance.org/fhir/platforms/CodeSystem/healthkit-category-value-contraceptive"
-* ^experimental = false
+* ^copyright = "HealthKit identifiers and enum names originate in Apple SDK declarations. Apple and HealthKit are trademarks of Apple Inc. The repository's MIT license does not grant rights in Apple material."
+* ^experimental = true
 * ^caseSensitive = true
 * ^content = #complete
 * #unspecified "unspecified"
@@ -153,9 +162,10 @@ Description: "Values of Apple HealthKit's `HKCategoryValueContraceptive`, coded 
 CodeSystem: HealthkitCategoryValueEnvironmentalAudioExposureEventCS
 Id: healthkit-category-value-environmental-audio-exposure-event
 Title: "HealthKit Category Value Environmental Audio Exposure Event"
-Description: "Values of Apple HealthKit's `HKCategoryValueEnvironmentalAudioExposureEvent`, coded by their Swift case names."
+Description: "Codes emitted by Grove for `HKCategoryValueEnvironmentalAudioExposureEvent`, derived from Swift case names."
 * ^url = "https://grovealliance.org/fhir/platforms/CodeSystem/healthkit-category-value-environmental-audio-exposure-event"
-* ^experimental = false
+* ^copyright = "HealthKit identifiers and enum names originate in Apple SDK declarations. Apple and HealthKit are trademarks of Apple Inc. The repository's MIT license does not grant rights in Apple material."
+* ^experimental = true
 * ^caseSensitive = true
 * ^content = #complete
 * #momentaryLimit "momentary limit"
@@ -165,9 +175,10 @@ Description: "Values of Apple HealthKit's `HKCategoryValueEnvironmentalAudioExpo
 CodeSystem: HealthkitCategoryValueHeadphoneAudioExposureEventCS
 Id: healthkit-category-value-headphone-audio-exposure-event
 Title: "HealthKit Category Value Headphone Audio Exposure Event"
-Description: "Values of Apple HealthKit's `HKCategoryValueHeadphoneAudioExposureEvent`, coded by their Swift case names."
+Description: "Codes emitted by Grove for `HKCategoryValueHeadphoneAudioExposureEvent`, derived from Swift case names."
 * ^url = "https://grovealliance.org/fhir/platforms/CodeSystem/healthkit-category-value-headphone-audio-exposure-event"
-* ^experimental = false
+* ^copyright = "HealthKit identifiers and enum names originate in Apple SDK declarations. Apple and HealthKit are trademarks of Apple Inc. The repository's MIT license does not grant rights in Apple material."
+* ^experimental = true
 * ^caseSensitive = true
 * ^content = #complete
 * #sevenDayLimit "seven day limit"
@@ -177,9 +188,10 @@ Description: "Values of Apple HealthKit's `HKCategoryValueHeadphoneAudioExposure
 CodeSystem: HealthkitCategoryValueLowCardioFitnessEventCS
 Id: healthkit-category-value-low-cardio-fitness-event
 Title: "HealthKit Category Value Low Cardio Fitness Event"
-Description: "Values of Apple HealthKit's `HKCategoryValueLowCardioFitnessEvent`, coded by their Swift case names."
+Description: "Codes emitted by Grove for `HKCategoryValueLowCardioFitnessEvent`, derived from Swift case names."
 * ^url = "https://grovealliance.org/fhir/platforms/CodeSystem/healthkit-category-value-low-cardio-fitness-event"
-* ^experimental = false
+* ^copyright = "HealthKit identifiers and enum names originate in Apple SDK declarations. Apple and HealthKit are trademarks of Apple Inc. The repository's MIT license does not grant rights in Apple material."
+* ^experimental = true
 * ^caseSensitive = true
 * ^content = #complete
 * #lowFitness "low fitness"
@@ -189,9 +201,10 @@ Description: "Values of Apple HealthKit's `HKCategoryValueLowCardioFitnessEvent`
 CodeSystem: HealthkitCategoryValueMenstrualFlowCS
 Id: healthkit-category-value-menstrual-flow
 Title: "HealthKit Category Value Menstrual Flow"
-Description: "Values of Apple HealthKit's `HKCategoryValueMenstrualFlow`, coded by their Swift case names."
+Description: "Codes emitted by Grove for `HKCategoryValueMenstrualFlow`, derived from Swift case names."
 * ^url = "https://grovealliance.org/fhir/platforms/CodeSystem/healthkit-category-value-menstrual-flow"
-* ^experimental = false
+* ^copyright = "HealthKit identifiers and enum names originate in Apple SDK declarations. Apple and HealthKit are trademarks of Apple Inc. The repository's MIT license does not grant rights in Apple material."
+* ^experimental = true
 * ^caseSensitive = true
 * ^content = #complete
 * #unspecified "unspecified"
@@ -205,9 +218,10 @@ Description: "Values of Apple HealthKit's `HKCategoryValueMenstrualFlow`, coded 
 CodeSystem: HealthkitCategoryValueOvulationTestResultCS
 Id: healthkit-category-value-ovulation-test-result
 Title: "HealthKit Category Value Ovulation Test Result"
-Description: "Values of Apple HealthKit's `HKCategoryValueOvulationTestResult`, coded by their Swift case names."
+Description: "Codes emitted by Grove for `HKCategoryValueOvulationTestResult`, derived from Swift case names."
 * ^url = "https://grovealliance.org/fhir/platforms/CodeSystem/healthkit-category-value-ovulation-test-result"
-* ^experimental = false
+* ^copyright = "HealthKit identifiers and enum names originate in Apple SDK declarations. Apple and HealthKit are trademarks of Apple Inc. The repository's MIT license does not grant rights in Apple material."
+* ^experimental = true
 * ^caseSensitive = true
 * ^content = #complete
 * #negative "negative"
@@ -220,9 +234,10 @@ Description: "Values of Apple HealthKit's `HKCategoryValueOvulationTestResult`, 
 CodeSystem: HealthkitCategoryValuePregnancyTestResultCS
 Id: healthkit-category-value-pregnancy-test-result
 Title: "HealthKit Category Value Pregnancy Test Result"
-Description: "Values of Apple HealthKit's `HKCategoryValuePregnancyTestResult`, coded by their Swift case names."
+Description: "Codes emitted by Grove for `HKCategoryValuePregnancyTestResult`, derived from Swift case names."
 * ^url = "https://grovealliance.org/fhir/platforms/CodeSystem/healthkit-category-value-pregnancy-test-result"
-* ^experimental = false
+* ^copyright = "HealthKit identifiers and enum names originate in Apple SDK declarations. Apple and HealthKit are trademarks of Apple Inc. The repository's MIT license does not grant rights in Apple material."
+* ^experimental = true
 * ^caseSensitive = true
 * ^content = #complete
 * #negative "negative"
@@ -234,9 +249,10 @@ Description: "Values of Apple HealthKit's `HKCategoryValuePregnancyTestResult`, 
 CodeSystem: HealthkitCategoryValuePresenceCS
 Id: healthkit-category-value-presence
 Title: "HealthKit Category Value Presence"
-Description: "Values of Apple HealthKit's `HKCategoryValuePresence`, coded by their Swift case names."
+Description: "Codes emitted by Grove for `HKCategoryValuePresence`, derived from Swift case names."
 * ^url = "https://grovealliance.org/fhir/platforms/CodeSystem/healthkit-category-value-presence"
-* ^experimental = false
+* ^copyright = "HealthKit identifiers and enum names originate in Apple SDK declarations. Apple and HealthKit are trademarks of Apple Inc. The repository's MIT license does not grant rights in Apple material."
+* ^experimental = true
 * ^caseSensitive = true
 * ^content = #complete
 * #present "present"
@@ -247,9 +263,10 @@ Description: "Values of Apple HealthKit's `HKCategoryValuePresence`, coded by th
 CodeSystem: HealthkitCategoryValueProgesteroneTestResultCS
 Id: healthkit-category-value-progesterone-test-result
 Title: "HealthKit Category Value Progesterone Test Result"
-Description: "Values of Apple HealthKit's `HKCategoryValueProgesteroneTestResult`, coded by their Swift case names."
+Description: "Codes emitted by Grove for `HKCategoryValueProgesteroneTestResult`, derived from Swift case names."
 * ^url = "https://grovealliance.org/fhir/platforms/CodeSystem/healthkit-category-value-progesterone-test-result"
-* ^experimental = false
+* ^copyright = "HealthKit identifiers and enum names originate in Apple SDK declarations. Apple and HealthKit are trademarks of Apple Inc. The repository's MIT license does not grant rights in Apple material."
+* ^experimental = true
 * ^caseSensitive = true
 * ^content = #complete
 * #negative "negative"
@@ -261,9 +278,10 @@ Description: "Values of Apple HealthKit's `HKCategoryValueProgesteroneTestResult
 CodeSystem: HealthkitCategoryValueSeverityCS
 Id: healthkit-category-value-severity
 Title: "HealthKit Category Value Severity"
-Description: "Values of Apple HealthKit's `HKCategoryValueSeverity`, coded by their Swift case names."
+Description: "Codes emitted by Grove for `HKCategoryValueSeverity`, derived from Swift case names."
 * ^url = "https://grovealliance.org/fhir/platforms/CodeSystem/healthkit-category-value-severity"
-* ^experimental = false
+* ^copyright = "HealthKit identifiers and enum names originate in Apple SDK declarations. Apple and HealthKit are trademarks of Apple Inc. The repository's MIT license does not grant rights in Apple material."
+* ^experimental = true
 * ^caseSensitive = true
 * ^content = #complete
 * #unspecified "unspecified"
@@ -277,9 +295,10 @@ Description: "Values of Apple HealthKit's `HKCategoryValueSeverity`, coded by th
 CodeSystem: HealthkitCategoryValueSleepAnalysisCS
 Id: healthkit-category-value-sleep-analysis
 Title: "HealthKit Category Value Sleep Analysis"
-Description: "Values of Apple HealthKit's `HKCategoryValueSleepAnalysis`, coded by their Swift case names."
+Description: "Codes emitted by Grove for `HKCategoryValueSleepAnalysis`, derived from Swift case names."
 * ^url = "https://grovealliance.org/fhir/platforms/CodeSystem/healthkit-category-value-sleep-analysis"
-* ^experimental = false
+* ^copyright = "HealthKit identifiers and enum names originate in Apple SDK declarations. Apple and HealthKit are trademarks of Apple Inc. The repository's MIT license does not grant rights in Apple material."
+* ^experimental = true
 * ^caseSensitive = true
 * ^content = #complete
 * #inBed "in bed"
@@ -294,9 +313,10 @@ Description: "Values of Apple HealthKit's `HKCategoryValueSleepAnalysis`, coded 
 CodeSystem: HealthkitCategoryValueVaginalBleedingCS
 Id: healthkit-category-value-vaginal-bleeding
 Title: "HealthKit Category Value Vaginal Bleeding"
-Description: "Values of Apple HealthKit's `HKCategoryValueVaginalBleeding`, coded by their Swift case names."
+Description: "Codes emitted by Grove for `HKCategoryValueVaginalBleeding`, derived from Swift case names."
 * ^url = "https://grovealliance.org/fhir/platforms/CodeSystem/healthkit-category-value-vaginal-bleeding"
-* ^experimental = false
+* ^copyright = "HealthKit identifiers and enum names originate in Apple SDK declarations. Apple and HealthKit are trademarks of Apple Inc. The repository's MIT license does not grant rights in Apple material."
+* ^experimental = true
 * ^caseSensitive = true
 * ^content = #complete
 * #unspecified "unspecified"
@@ -310,9 +330,10 @@ Description: "Values of Apple HealthKit's `HKCategoryValueVaginalBleeding`, code
 CodeSystem: HealthkitCyclingFunctionalThresholdPowerTestTypeCS
 Id: healthkit-cycling-functional-threshold-power-test-type
 Title: "HealthKit Cycling Functional Threshold Power Test Type"
-Description: "Values of Apple HealthKit's `HKCyclingFunctionalThresholdPowerTestType`, coded by their Swift case names."
+Description: "Codes emitted by Grove for `HKCyclingFunctionalThresholdPowerTestType`, derived from Swift case names."
 * ^url = "https://grovealliance.org/fhir/platforms/CodeSystem/healthkit-cycling-functional-threshold-power-test-type"
-* ^experimental = false
+* ^copyright = "HealthKit identifiers and enum names originate in Apple SDK declarations. Apple and HealthKit are trademarks of Apple Inc. The repository's MIT license does not grant rights in Apple material."
+* ^experimental = true
 * ^caseSensitive = true
 * ^content = #complete
 * #maxExercise60Minute "max exercise60 minute"
@@ -325,9 +346,10 @@ Description: "Values of Apple HealthKit's `HKCyclingFunctionalThresholdPowerTest
 CodeSystem: HealthkitDevicePlacementSideCS
 Id: healthkit-device-placement-side
 Title: "HealthKit Device Placement Side"
-Description: "Values of Apple HealthKit's `HKDevicePlacementSide`, coded by their Swift case names."
+Description: "Codes emitted by Grove for `HKDevicePlacementSide`, derived from Swift case names."
 * ^url = "https://grovealliance.org/fhir/platforms/CodeSystem/healthkit-device-placement-side"
-* ^experimental = false
+* ^copyright = "HealthKit identifiers and enum names originate in Apple SDK declarations. Apple and HealthKit are trademarks of Apple Inc. The repository's MIT license does not grant rights in Apple material."
+* ^experimental = true
 * ^caseSensitive = true
 * ^content = #complete
 * #unknown "unknown"
@@ -340,9 +362,10 @@ Description: "Values of Apple HealthKit's `HKDevicePlacementSide`, coded by thei
 CodeSystem: HealthkitElectrocardiogramClassificationCS
 Id: healthkit-electrocardiogram-classification
 Title: "HealthKit Electrocardiogram Classification"
-Description: "Values of Apple HealthKit's `HKElectrocardiogram.Classification`, coded by their Swift case names."
+Description: "Codes emitted by Grove for `HKElectrocardiogram.Classification`, derived from Swift case names."
 * ^url = "https://grovealliance.org/fhir/platforms/CodeSystem/healthkit-electrocardiogram-classification"
-* ^experimental = false
+* ^copyright = "HealthKit identifiers and enum names originate in Apple SDK declarations. Apple and HealthKit are trademarks of Apple Inc. The repository's MIT license does not grant rights in Apple material."
+* ^experimental = true
 * ^caseSensitive = true
 * ^content = #complete
 * #notSet "not set"
@@ -359,9 +382,10 @@ Description: "Values of Apple HealthKit's `HKElectrocardiogram.Classification`, 
 CodeSystem: HealthkitElectrocardiogramSymptomsStatusCS
 Id: healthkit-electrocardiogram-symptoms-status
 Title: "HealthKit Electrocardiogram Symptoms Status"
-Description: "Values of Apple HealthKit's `HKElectrocardiogram.SymptomsStatus`, coded by their Swift case names."
+Description: "Codes emitted by Grove for `HKElectrocardiogram.SymptomsStatus`, derived from Swift case names."
 * ^url = "https://grovealliance.org/fhir/platforms/CodeSystem/healthkit-electrocardiogram-symptoms-status"
-* ^experimental = false
+* ^copyright = "HealthKit identifiers and enum names originate in Apple SDK declarations. Apple and HealthKit are trademarks of Apple Inc. The repository's MIT license does not grant rights in Apple material."
+* ^experimental = true
 * ^caseSensitive = true
 * ^content = #complete
 * #notSet "not set"
@@ -373,9 +397,10 @@ Description: "Values of Apple HealthKit's `HKElectrocardiogram.SymptomsStatus`, 
 CodeSystem: HealthkitHeartRateMotionContextCS
 Id: healthkit-heart-rate-motion-context
 Title: "HealthKit Heart Rate Motion Context"
-Description: "Values of Apple HealthKit's `HKHeartRateMotionContext`, coded by their Swift case names."
+Description: "Codes emitted by Grove for `HKHeartRateMotionContext`, derived from Swift case names."
 * ^url = "https://grovealliance.org/fhir/platforms/CodeSystem/healthkit-heart-rate-motion-context"
-* ^experimental = false
+* ^copyright = "HealthKit identifiers and enum names originate in Apple SDK declarations. Apple and HealthKit are trademarks of Apple Inc. The repository's MIT license does not grant rights in Apple material."
+* ^experimental = true
 * ^caseSensitive = true
 * ^content = #complete
 * #notSet "not set"
@@ -387,9 +412,10 @@ Description: "Values of Apple HealthKit's `HKHeartRateMotionContext`, coded by t
 CodeSystem: HealthkitHeartRateRecoveryTestTypeCS
 Id: healthkit-heart-rate-recovery-test-type
 Title: "HealthKit Heart Rate Recovery Test Type"
-Description: "Values of Apple HealthKit's `HKHeartRateRecoveryTestType`, coded by their Swift case names."
+Description: "Codes emitted by Grove for `HKHeartRateRecoveryTestType`, derived from Swift case names."
 * ^url = "https://grovealliance.org/fhir/platforms/CodeSystem/healthkit-heart-rate-recovery-test-type"
-* ^experimental = false
+* ^copyright = "HealthKit identifiers and enum names originate in Apple SDK declarations. Apple and HealthKit are trademarks of Apple Inc. The repository's MIT license does not grant rights in Apple material."
+* ^experimental = true
 * ^caseSensitive = true
 * ^content = #complete
 * #maxExercise "max exercise"
@@ -401,9 +427,10 @@ Description: "Values of Apple HealthKit's `HKHeartRateRecoveryTestType`, coded b
 CodeSystem: HealthkitHeartRateSensorLocationCS
 Id: healthkit-heart-rate-sensor-location
 Title: "HealthKit Heart Rate Sensor Location"
-Description: "Values of Apple HealthKit's `HKHeartRateSensorLocation`, coded by their Swift case names."
+Description: "Codes emitted by Grove for `HKHeartRateSensorLocation`, derived from Swift case names."
 * ^url = "https://grovealliance.org/fhir/platforms/CodeSystem/healthkit-heart-rate-sensor-location"
-* ^experimental = false
+* ^copyright = "HealthKit identifiers and enum names originate in Apple SDK declarations. Apple and HealthKit are trademarks of Apple Inc. The repository's MIT license does not grant rights in Apple material."
+* ^experimental = true
 * ^caseSensitive = true
 * ^content = #complete
 * #other "other"
@@ -419,9 +446,10 @@ Description: "Values of Apple HealthKit's `HKHeartRateSensorLocation`, coded by 
 CodeSystem: HealthkitInsulinDeliveryReasonCS
 Id: healthkit-insulin-delivery-reason
 Title: "HealthKit Insulin Delivery Reason"
-Description: "Values of Apple HealthKit's `HKInsulinDeliveryReason`, coded by their Swift case names."
+Description: "Codes emitted by Grove for `HKInsulinDeliveryReason`, derived from Swift case names."
 * ^url = "https://grovealliance.org/fhir/platforms/CodeSystem/healthkit-insulin-delivery-reason"
-* ^experimental = false
+* ^copyright = "HealthKit identifiers and enum names originate in Apple SDK declarations. Apple and HealthKit are trademarks of Apple Inc. The repository's MIT license does not grant rights in Apple material."
+* ^experimental = true
 * ^caseSensitive = true
 * ^content = #complete
 * #basal "basal"
@@ -432,9 +460,10 @@ Description: "Values of Apple HealthKit's `HKInsulinDeliveryReason`, coded by th
 CodeSystem: HealthkitPhysicalEffortEstimationTypeCS
 Id: healthkit-physical-effort-estimation-type
 Title: "HealthKit Physical Effort Estimation Type"
-Description: "Values of Apple HealthKit's `HKPhysicalEffortEstimationType`, coded by their Swift case names."
+Description: "Codes emitted by Grove for `HKPhysicalEffortEstimationType`, derived from Swift case names."
 * ^url = "https://grovealliance.org/fhir/platforms/CodeSystem/healthkit-physical-effort-estimation-type"
-* ^experimental = false
+* ^copyright = "HealthKit identifiers and enum names originate in Apple SDK declarations. Apple and HealthKit are trademarks of Apple Inc. The repository's MIT license does not grant rights in Apple material."
+* ^experimental = true
 * ^caseSensitive = true
 * ^content = #complete
 * #activityLookup "activity lookup"
@@ -445,9 +474,10 @@ Description: "Values of Apple HealthKit's `HKPhysicalEffortEstimationType`, code
 CodeSystem: HealthkitStateOfMindAssociationCS
 Id: healthkit-state-of-mind-association
 Title: "HealthKit State Of Mind Association"
-Description: "Values of Apple HealthKit's `HKStateOfMind.Association`, coded by their Swift case names."
+Description: "Codes emitted by Grove for `HKStateOfMind.Association`, derived from Swift case names."
 * ^url = "https://grovealliance.org/fhir/platforms/CodeSystem/healthkit-state-of-mind-association"
-* ^experimental = false
+* ^copyright = "HealthKit identifiers and enum names originate in Apple SDK declarations. Apple and HealthKit are trademarks of Apple Inc. The repository's MIT license does not grant rights in Apple material."
+* ^experimental = true
 * ^caseSensitive = true
 * ^content = #complete
 * #community "community"
@@ -474,9 +504,10 @@ Description: "Values of Apple HealthKit's `HKStateOfMind.Association`, coded by 
 CodeSystem: HealthkitStateOfMindKindCS
 Id: healthkit-state-of-mind-kind
 Title: "HealthKit State Of Mind Kind"
-Description: "Values of Apple HealthKit's `HKStateOfMind.Kind`, coded by their Swift case names."
+Description: "Codes emitted by Grove for `HKStateOfMind.Kind`, derived from Swift case names."
 * ^url = "https://grovealliance.org/fhir/platforms/CodeSystem/healthkit-state-of-mind-kind"
-* ^experimental = false
+* ^copyright = "HealthKit identifiers and enum names originate in Apple SDK declarations. Apple and HealthKit are trademarks of Apple Inc. The repository's MIT license does not grant rights in Apple material."
+* ^experimental = true
 * ^caseSensitive = true
 * ^content = #complete
 * #momentaryEmotion "momentary emotion"
@@ -487,9 +518,10 @@ Description: "Values of Apple HealthKit's `HKStateOfMind.Kind`, coded by their S
 CodeSystem: HealthkitStateOfMindLabelCS
 Id: healthkit-state-of-mind-label
 Title: "HealthKit State Of Mind Label"
-Description: "Values of Apple HealthKit's `HKStateOfMind.Label`, coded by their Swift case names."
+Description: "Codes emitted by Grove for `HKStateOfMind.Label`, derived from Swift case names."
 * ^url = "https://grovealliance.org/fhir/platforms/CodeSystem/healthkit-state-of-mind-label"
-* ^experimental = false
+* ^copyright = "HealthKit identifiers and enum names originate in Apple SDK declarations. Apple and HealthKit are trademarks of Apple Inc. The repository's MIT license does not grant rights in Apple material."
+* ^experimental = true
 * ^caseSensitive = true
 * ^content = #complete
 * #amazed "amazed"
@@ -536,9 +568,10 @@ Description: "Values of Apple HealthKit's `HKStateOfMind.Label`, coded by their 
 CodeSystem: HealthkitStateOfMindValenceClassificationCS
 Id: healthkit-state-of-mind-valence-classification
 Title: "HealthKit State Of Mind Valence Classification"
-Description: "Values of Apple HealthKit's `HKStateOfMind.ValenceClassification`, coded by their Swift case names."
+Description: "Codes emitted by Grove for `HKStateOfMind.ValenceClassification`, derived from Swift case names."
 * ^url = "https://grovealliance.org/fhir/platforms/CodeSystem/healthkit-state-of-mind-valence-classification"
-* ^experimental = false
+* ^copyright = "HealthKit identifiers and enum names originate in Apple SDK declarations. Apple and HealthKit are trademarks of Apple Inc. The repository's MIT license does not grant rights in Apple material."
+* ^experimental = true
 * ^caseSensitive = true
 * ^content = #complete
 * #veryUnpleasant "very unpleasant"
@@ -554,9 +587,10 @@ Description: "Values of Apple HealthKit's `HKStateOfMind.ValenceClassification`,
 CodeSystem: HealthkitSwimmingStrokeStyleCS
 Id: healthkit-swimming-stroke-style
 Title: "HealthKit Swimming Stroke Style"
-Description: "Values of Apple HealthKit's `HKSwimmingStrokeStyle`, coded by their Swift case names."
+Description: "Codes emitted by Grove for `HKSwimmingStrokeStyle`, derived from Swift case names."
 * ^url = "https://grovealliance.org/fhir/platforms/CodeSystem/healthkit-swimming-stroke-style"
-* ^experimental = false
+* ^copyright = "HealthKit identifiers and enum names originate in Apple SDK declarations. Apple and HealthKit are trademarks of Apple Inc. The repository's MIT license does not grant rights in Apple material."
+* ^experimental = true
 * ^caseSensitive = true
 * ^content = #complete
 * #unknown "unknown"
@@ -572,9 +606,10 @@ Description: "Values of Apple HealthKit's `HKSwimmingStrokeStyle`, coded by thei
 CodeSystem: HealthkitUserMotionContextCS
 Id: healthkit-user-motion-context
 Title: "HealthKit User Motion Context"
-Description: "Values of Apple HealthKit's `HKUserMotionContext`, coded by their Swift case names."
+Description: "Codes emitted by Grove for `HKUserMotionContext`, derived from Swift case names."
 * ^url = "https://grovealliance.org/fhir/platforms/CodeSystem/healthkit-user-motion-context"
-* ^experimental = false
+* ^copyright = "HealthKit identifiers and enum names originate in Apple SDK declarations. Apple and HealthKit are trademarks of Apple Inc. The repository's MIT license does not grant rights in Apple material."
+* ^experimental = true
 * ^caseSensitive = true
 * ^content = #complete
 * #notSet "not set"
@@ -586,9 +621,10 @@ Description: "Values of Apple HealthKit's `HKUserMotionContext`, coded by their 
 CodeSystem: HealthkitVo2MaxTestTypeCS
 Id: healthkit-vo2-max-test-type
 Title: "HealthKit VO2 Max Test Type"
-Description: "Values of Apple HealthKit's `HKVO2MaxTestType`, coded by their Swift case names."
+Description: "Codes emitted by Grove for `HKVO2MaxTestType`, derived from Swift case names."
 * ^url = "https://grovealliance.org/fhir/platforms/CodeSystem/healthkit-vo2-max-test-type"
-* ^experimental = false
+* ^copyright = "HealthKit identifiers and enum names originate in Apple SDK declarations. Apple and HealthKit are trademarks of Apple Inc. The repository's MIT license does not grant rights in Apple material."
+* ^experimental = true
 * ^caseSensitive = true
 * ^content = #complete
 * #maxExercise "max exercise"
@@ -601,9 +637,10 @@ Description: "Values of Apple HealthKit's `HKVO2MaxTestType`, coded by their Swi
 CodeSystem: HealthkitWaterSalinityCS
 Id: healthkit-water-salinity
 Title: "HealthKit Water Salinity"
-Description: "Values of Apple HealthKit's `HKWaterSalinity`, coded by their Swift case names."
+Description: "Codes emitted by Grove for `HKWaterSalinity`, derived from Swift case names."
 * ^url = "https://grovealliance.org/fhir/platforms/CodeSystem/healthkit-water-salinity"
-* ^experimental = false
+* ^copyright = "HealthKit identifiers and enum names originate in Apple SDK declarations. Apple and HealthKit are trademarks of Apple Inc. The repository's MIT license does not grant rights in Apple material."
+* ^experimental = true
 * ^caseSensitive = true
 * ^content = #complete
 * #freshWater "fresh water"
@@ -614,9 +651,10 @@ Description: "Values of Apple HealthKit's `HKWaterSalinity`, coded by their Swif
 CodeSystem: HealthkitWeatherConditionCS
 Id: healthkit-weather-condition
 Title: "HealthKit Weather Condition"
-Description: "Values of Apple HealthKit's `HKWeatherCondition`, coded by their Swift case names."
+Description: "Codes emitted by Grove for `HKWeatherCondition`, derived from Swift case names."
 * ^url = "https://grovealliance.org/fhir/platforms/CodeSystem/healthkit-weather-condition"
-* ^experimental = false
+* ^copyright = "HealthKit identifiers and enum names originate in Apple SDK declarations. Apple and HealthKit are trademarks of Apple Inc. The repository's MIT license does not grant rights in Apple material."
+* ^experimental = true
 * ^caseSensitive = true
 * ^content = #complete
 * #none "none"
@@ -653,9 +691,10 @@ Description: "Values of Apple HealthKit's `HKWeatherCondition`, coded by their S
 CodeSystem: HealthkitWorkoutSwimmingLocationTypeCS
 Id: healthkit-workout-swimming-location-type
 Title: "HealthKit Workout Swimming Location Type"
-Description: "Values of Apple HealthKit's `HKWorkoutSwimmingLocationType`, coded by their Swift case names."
+Description: "Codes emitted by Grove for `HKWorkoutSwimmingLocationType`, derived from Swift case names."
 * ^url = "https://grovealliance.org/fhir/platforms/CodeSystem/healthkit-workout-swimming-location-type"
-* ^experimental = false
+* ^copyright = "HealthKit identifiers and enum names originate in Apple SDK declarations. Apple and HealthKit are trademarks of Apple Inc. The repository's MIT license does not grant rights in Apple material."
+* ^experimental = true
 * ^caseSensitive = true
 * ^content = #complete
 * #unknown "unknown"
@@ -669,7 +708,8 @@ Id: healthkit-electrocardiogram-property
 Title: "HealthKit Electrocardiogram Properties"
 Description: "Component codes of an electrocardiogram observation."
 * ^url = "https://grovealliance.org/fhir/platforms/CodeSystem/healthkit-electrocardiogram-property"
-* ^experimental = false
+* ^copyright = "HealthKit identifiers and enum names originate in Apple SDK declarations. Apple and HealthKit are trademarks of Apple Inc. The repository's MIT license does not grant rights in Apple material."
+* ^experimental = true
 * ^caseSensitive = true
 * ^content = #complete
 * #classification "Electrocardiogram Classification"
@@ -683,7 +723,8 @@ Id: healthkit-state-of-mind-property
 Title: "HealthKit State of Mind Properties"
 Description: "Component codes of a state-of-mind observation."
 * ^url = "https://grovealliance.org/fhir/platforms/CodeSystem/healthkit-state-of-mind-property"
-* ^experimental = false
+* ^copyright = "HealthKit identifiers and enum names originate in Apple SDK declarations. Apple and HealthKit are trademarks of Apple Inc. The repository's MIT license does not grant rights in Apple material."
+* ^experimental = true
 * ^caseSensitive = true
 * ^content = #complete
 * #kind "State of Mind Kind"
@@ -698,7 +739,8 @@ Id: healthkit-workout-activity-type
 Title: "HealthKit Workout Activity Types"
 Description: "Apple HealthKit's `HKWorkoutActivityType`, coded by its Swift case names."
 * ^url = "https://grovealliance.org/fhir/platforms/CodeSystem/healthkit-workout-activity-type"
-* ^experimental = false
+* ^copyright = "HealthKit identifiers and enum names originate in Apple SDK declarations. Apple and HealthKit are trademarks of Apple Inc. The repository's MIT license does not grant rights in Apple material."
+* ^experimental = true
 * ^caseSensitive = true
 * ^content = #complete
 * #americanFootball "american football"

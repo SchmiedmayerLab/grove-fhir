@@ -6,9 +6,9 @@ SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTR
 SPDX-License-Identifier: MIT
 -->
 
-This page shows how to inspect resources against the current combined preview packages.
-Validation against them is useful for review, but does not establish compatibility with
-a released Grove FHIR contract.
+This page shows how to validate Mobile Data Exchange resources against the current
+preview packages. Passing validation does not establish compatibility with a released
+Grove FHIR contract.
 
 ### Validate a draft resource
 
@@ -48,19 +48,8 @@ Receivers compare the complete `(identifier.system, identifier.value)` pair when
 deduplicating source records. A repeated source identifier is expected when a mobile
 platform redelivers a sample.
 
-### Questionnaire resources
+### Package boundary
 
-The current package contains draft `Questionnaire` and `QuestionnaireResponse` profiles.
-A response identifies its source instrument through the `questionnaire` canonical;
-receivers need the corresponding Questionnaire to interpret its items and coded answers.
-The combined prototype still includes annotation-specific constraints, so these profiles
-are not yet the independent Questionnaire contract described on the overview.
-
-### Excluded from the receiver contract
-
-SensorKit resources and batch formats remain experimental. Health Connect examples do
-not have a Grove Swift implementation. The receiver CapabilityStatement has no
-corresponding Grove server implementation. None of these establish a supported receiver
-or exchange contract.
-
-See [Preview Status](publication-status.html) for the current scope and release status.
+The packages cover Mobile Data Exchange profiles and their supporting HealthKit
+terminology. They do not define questionnaire, image-annotation, SensorKit, Health
+Connect, or receiver behavior. See the [overview](index.html) for the current scope.

@@ -59,18 +59,17 @@ jobs:
             ~/.fhir
             .build/fhir-tools
             .build/bundle
-            archive/v0-healthkit-shaped/input-cache
             ig/input-cache
             platforms/input-cache
           key: fhir-guides-${{ runner.os }}-${{ hashFiles('Gemfile.lock', 'package-lock.json', 'Scripts/download-fhir-tools.sh') }}
           restore-keys: |
             fhir-guides-${{ runner.os }}-
       - run: npm ci
-      - name: Build archived, platform, and core guides
+      - name: Build platform and core guides
         run: npm run build
       - name: Summarize publisher QA
         if: always()
-        run: python3 Scripts/check-guide-qa.py --summary archive/v0-healthkit-shaped platforms ig
+        run: python3 Scripts/check-guide-qa.py --summary platforms ig
       - name: Upload rendered guides and QA reports
         if: always()
         uses: actions/upload-artifact@v4
@@ -79,7 +78,6 @@ jobs:
           if-no-files-found: error
           retention-days: 14
           path: |
-            archive/v0-healthkit-shaped/output
             platforms/output
             ig/output
 
@@ -93,8 +91,8 @@ jobs:
           path: grove-fhir
       - uses: actions/checkout@v7
         with:
-          repository: ${{ vars.GROVE_REPOSITORY || 'SchmiedmayerLab/Grove' }}
-          ref: ${{ vars.GROVE_REF || 'main' }}
+          repository: SchmiedmayerLab/Grove
+          ref: 6fe6b681a1576c4805b7bfe2408789cb7757612b
           path: grove
       - name: Dump the vocabulary Grove writes
         working-directory: grove
@@ -118,8 +116,8 @@ jobs:
           path: grove-fhir
       - uses: actions/checkout@v7
         with:
-          repository: ${{ vars.GROVE_REPOSITORY || 'SchmiedmayerLab/Grove' }}
-          ref: ${{ vars.GROVE_REF || 'main' }}
+          repository: SchmiedmayerLab/Grove
+          ref: 6fe6b681a1576c4805b7bfe2408789cb7757612b
           path: grove
       - uses: actions/setup-node@v6
         with:
@@ -139,14 +137,31 @@ jobs:
         run: |
           npm ci
           ./Scripts/build-guides.sh platforms ig
-      - name: Validate resources emitted by Grove
+      - name: Emit Mobile Data Exchange fixtures from Grove
         working-directory: grove
-        env:
-          FHIR_VALIDATOR: ${{ github.workspace }}/grove-fhir/.build/fhir-tools/validator_cli.jar
         run: |
-          export GROVE_IG_CORE="$HOME/.fhir/packages/org.grovealliance.fhir.core#0.5.0"
-          export GROVE_IG_PLATFORMS="$HOME/.fhir/packages/org.grovealliance.fhir.platforms#0.1.0"
-          ./Scripts/validate-fhir-conformance.sh
+          rm -rf .build/conformance-fixtures
+          ./Scripts/run-package-tests.sh GroveHealthKitFHIR macOS
+      - name: Validate Mobile Data Exchange fixtures
+        working-directory: grove
+        run: |
+          fixtures=(
+            .build/conformance-fixtures/heart-rate.json
+            .build/conformance-fixtures/step-count.json
+            .build/conformance-fixtures/sleep-analysis.json
+            .build/conformance-fixtures/state-of-mind.json
+          )
+          for fixture in "${fixtures[@]}"; do
+            test -f "$fixture"
+          done
+          java -jar ../grove-fhir/.build/fhir-tools/validator_cli.jar \
+            -version 4.0.1 \
+            -ig "$HOME/.fhir/packages/org.grovealliance.fhir.core#0.6.0-preview.1" \
+            -ig "$HOME/.fhir/packages/org.grovealliance.fhir.platforms#0.2.0-preview.1" \
+            "${fixtures[@]}" 2>&1 | tee .build/conformance-fixtures/validation.txt
+          if grep -q '\*FAILURE\*' .build/conformance-fixtures/validation.txt; then
+            exit 1
+          fi
       - name: Upload emitted fixtures and validation report
         if: always()
         uses: actions/upload-artifact@v4

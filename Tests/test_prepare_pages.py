@@ -61,6 +61,27 @@ class PreparePagesTests(unittest.TestCase):
                 metadata = json.load(package_file)
             self.assertEqual(metadata["url"], "https://example.org/guide")
 
+    def test_rewrites_provisional_publication_links(self) -> None:
+        repository = Path("/private/tmp/grove-fhir")
+        text = (
+            "Local Development build; "
+            "https://grovealliance.org/fhir/core/history.html; "
+            "https://grovealliance.org/fhir/platforms/history.html"
+        )
+
+        result = PREPARE_PAGES.replace_build_locations(
+            text,
+            repository,
+            "https://example.org/grove-fhir",
+        )
+
+        self.assertEqual(
+            result,
+            "Continuous preview build; "
+            "https://github.com/SchmiedmayerLab/grove-fhir/releases; "
+            "https://github.com/SchmiedmayerLab/grove-fhir/releases",
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

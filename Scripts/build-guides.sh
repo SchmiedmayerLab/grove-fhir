@@ -12,7 +12,7 @@ set -euo pipefail
 REPOSITORY_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 readonly REPOSITORY_ROOT
 readonly TOOLS_DIRECTORY="$REPOSITORY_ROOT/.build/fhir-tools"
-readonly DEFAULT_GUIDES=("archive/v0-healthkit-shaped" "platforms" "ig")
+readonly DEFAULT_GUIDES=("platforms" "ig")
 
 cd "$REPOSITORY_ROOT"
 export PATH="$REPOSITORY_ROOT/node_modules/.bin:$PATH"
@@ -49,10 +49,10 @@ for guide in "${guides[@]}"; do
 
   case "$guide" in
     platforms)
-      install_package "$guide" "org.grovealliance.fhir.platforms" "0.1.0"
+      install_package "$guide" "org.grovealliance.fhir.platforms" "0.2.0-preview.1"
       ;;
     ig)
-      install_package "$guide" "org.grovealliance.fhir.core" "0.5.0"
+      install_package "$guide" "org.grovealliance.fhir.core" "0.6.0-preview.1"
       ;;
   esac
 done

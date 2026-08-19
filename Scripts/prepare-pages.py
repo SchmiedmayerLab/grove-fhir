@@ -35,6 +35,12 @@ GUIDE_PATHS = {
 }
 LOCAL_LOCATION = re.compile(r"file://|/(?:Users|home/runner|private/tmp)/")
 MALFORMED_DATA_URL = re.compile(r"url\([^)]*?pagesdata:(image/[^;]+;base64,[A-Za-z0-9+/=]+)\)")
+PROVISIONAL_HISTORY_URLS = {
+    "https://grovealliance.org/fhir/core/history.html":
+        "https://github.com/SchmiedmayerLab/grove-fhir/releases",
+    "https://grovealliance.org/fhir/platforms/history.html":
+        "https://github.com/SchmiedmayerLab/grove-fhir/releases",
+}
 
 
 def replace_build_locations(text: str, repository_root: Path, base_url: str) -> str:
@@ -47,6 +53,9 @@ def replace_build_locations(text: str, repository_root: Path, base_url: str) -> 
     rewritten = MALFORMED_DATA_URL.sub(r"url(data:\1)", text)
     for local, public in sorted(replacements, key=lambda item: len(item[0]), reverse=True):
         rewritten = rewritten.replace(local, public)
+    for canonical_history, releases in PROVISIONAL_HISTORY_URLS.items():
+        rewritten = rewritten.replace(canonical_history, releases)
+    rewritten = rewritten.replace("Local Development build", "Continuous preview build")
     return rewritten.replace(
         str(repository_root),
         "https://github.com/SchmiedmayerLab/grove-fhir/tree/main",

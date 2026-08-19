@@ -9,12 +9,12 @@
 id: org.grovealliance.fhir.platforms
 canonical: https://grovealliance.org/fhir/platforms
 name: GroveFHIRPlatforms
-title: "Grove Platform Terminology Preview"
+title: "Grove HealthKit Terminology Preview"
 description: >-
-  Draft source-platform identifiers referenced by Grove FHIR, published separately from
-  the exchange profiles and without assigning clinical meaning.
+  Draft HealthKit identifiers referenced by Grove FHIR Mobile Data Exchange resources,
+  published separately from the exchange profiles and without assigning clinical meaning.
 status: draft
-version: 0.1.0
+version: 0.2.0-preview.1
 fhirVersion: 4.0.1
 copyrightYear: 2026+
 releaseLabel: ci-build
@@ -29,11 +29,8 @@ parameters:
 
 menu:
   Overview: index.html
-  Status: publication-status.html
   Artifacts: artifacts.html
 
 pages:
   index.md:
-    title: Home
-  publication-status.md:
-    title: Preview Status
+    title: Overview

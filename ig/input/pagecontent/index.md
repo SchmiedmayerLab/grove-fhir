@@ -12,61 +12,33 @@ SPDX-License-Identifier: MIT
 > identifiers, canonical URLs, and resource definitions may change before the first
 > stable release. Applications should not depend on these packages yet.
 
-This preview contains candidates for a reusable FHIR R4 exchange contract. Grove Swift
-is the first reference implementation evaluated against the definitions. No package in
-this preview is a released specification.
+The provisional `grovealliance.org` canonical URLs identify draft resources but do not
+currently host this preview. Use the GitHub Pages URLs on this site for review and
+downloads.
+
+Grove FHIR Mobile Data Exchange is a draft FHIR R4 contract for observations imported
+from HealthKit. Grove Swift is the first implementation used to evaluate the
+definitions. No package in this preview is a released specification.
 
 ### Scope
 
-The proposed contract has three domains:
-
-| Domain | Purpose |
+| Material | Status in Mobile Data Exchange |
 |---|---|
-| Mobile Data Exchange | Represent HealthKit observations, source-record identity, recording hardware, gateway software, capture method, and typed source metadata |
-| Questionnaire Exchange | Exchange FHIR Questionnaire and QuestionnaireResponse resources independently of a particular renderer |
-| Platform Terminology | Preserve source-platform identifiers used by exchanged resources without assigning clinical meaning |
+| HealthKit observations, source-record identity, devices, capture method, and typed source metadata | Candidate contract, evaluated against Grove Swift |
+| HealthKit sample-type identifiers, metadata keys, and enumerated values | Terminology dependency published in the separate HealthKit guide |
 
-The current `org.grovealliance.fhir.core` package predates those boundaries and contains
-additional prototype material. Its generated artifact list is a record of the current
-build, not an endorsed stable contract.
-
-### Current boundaries
-
-| Current material | Review status |
-|---|---|
-| HealthKit observation exchange | Candidate Mobile contract |
-| Questionnaire and QuestionnaireResponse exchange | Candidate Questionnaire contract; annotation-specific constraints are not included in that scope |
-| HealthKit identifiers used by the Swift mapping | Candidate Platform Terminology |
-| SensorKit observations and raw sensor batches | Experimental |
-| Health Connect definitions | No Grove Swift implementation evidence |
-| Image annotation | Grove application feature, outside the proposed FHIR contract |
-| Receiver CapabilityStatement | No corresponding Grove receiver implementation |
+Questionnaires, image annotation, SensorKit, Health Connect, and receiver behavior are
+outside this guide.
 
 ### Use this preview
 
 | Goal | Page |
 |---|---|
-| Validate a resource against the current build | [Validate Preview Resources](consuming.html) |
-| Understand the scope and release status | [Preview Status](publication-status.html) |
+| Validate a resource against the current build | [Validate Resources](consuming.html) |
 | Browse generated FHIR resources | [Artifacts](artifacts.html) |
-| Review source-platform identifiers | [Platform Terminology](https://schmiedmayerlab.github.io/grove-fhir/platforms/) |
+| Review HealthKit sample types, metadata keys, and values | [HealthKit Terminology](https://schmiedmayerlab.github.io/grove-fhir/platforms/) |
 
 ### Contract and guidance
 
-Only profiles, extensions, terminology resources, and invariants in a future reviewed,
-versioned package can define conformance requirements. Examples and explanatory pages
-are informative. Grove product capabilities and roadmap work are outside this guide.
-
-### Dependencies
-
-{% include dependency-table.xhtml %}
-
-{% include globals-table.xhtml %}
-
-### Cross-Version Analysis
-
-{% include cross-version-analysis.xhtml %}
-
-### Intellectual Property Statements
-
-{% include ip-statements.xhtml %}
+Profiles, extensions, and terminology resources define the current preview. Explanatory
+prose is informative. Grove product behavior is outside this guide.

@@ -12,7 +12,6 @@ useGitIgnore: true
 excludedDirs:
   # These files are Publisher inputs whose links resolve only after FHIR artifacts are generated.
   # The Publisher checks the rendered guides and reports broken links as build failures.
-  - archive/v0-healthkit-shaped/input/pagecontent
   - ig/input/pagecontent
   - platforms/input/pagecontent
 ignorePatterns:

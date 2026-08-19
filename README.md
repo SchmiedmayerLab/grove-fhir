@@ -16,21 +16,17 @@ SPDX-License-Identifier: MIT
 [![REUSE status](https://api.reuse.software/badge/github.com/SchmiedmayerLab/grove-fhir)](https://api.reuse.software/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE.md)
 
-Grove FHIR contains draft FHIR R4 exchange definitions for mobile health observations and
-questionnaire resources. The contract is being developed for reuse across implementations, with
-[Grove Swift](https://github.com/SchmiedmayerLab/Grove) as its first reference implementation.
+Grove FHIR contains a draft FHIR R4 Mobile Data Exchange contract and the HealthKit terminology
+used by its current Swift implementation. The contract is being developed for reuse across
+implementations, with [Grove Swift](https://github.com/SchmiedmayerLab/Grove) as its first reference
+implementation.
 
 ## Documentation
 
-The [Grove FHIR preview](https://schmiedmayerlab.github.io/grove-fhir/) publishes the current
-profiles, extensions, examples, and validation packages. Its
-[status page](https://schmiedmayerlab.github.io/grove-fhir/publication-status.html) explains which
-parts are under review for the reusable contract. Platform identifiers used by the draft are in the
-separate
-[Platform Terminology preview](https://schmiedmayerlab.github.io/grove-fhir/platforms/).
-
-The repository's [artifact inventory](ARTIFACT_INVENTORY.md) records the review disposition of
-every FHIR Shorthand declaration.
+The [Mobile Data Exchange preview](https://schmiedmayerlab.github.io/grove-fhir/) publishes the
+current profiles, extensions, terminology, and validation package. HealthKit identifiers referenced by
+the draft are published in the separate
+[HealthKit Terminology preview](https://schmiedmayerlab.github.io/grove-fhir/platforms/).
 
 GitHub Pages is a continuous preview, not a released specification. Package identifiers,
 canonical URLs, and resource definitions may change before the first stable release. Applications
@@ -47,9 +43,8 @@ npm test
 npm run pages:build
 ```
 
-`pages:build` builds and validates the current and legacy guides in dependency order, rejects
-Publisher QA errors or warnings, and assembles the active previews under `.build/pages`. The legacy
-guide is retained in source and still validated, but is not part of the published preview.
+`pages:build` builds and validates the platform and core guides in dependency order, rejects
+Publisher QA errors or warnings, and assembles the previews under `.build/pages`.
 
 ## Contributing
 
