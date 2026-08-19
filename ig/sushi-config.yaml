@@ -13,7 +13,7 @@ title: Grove FHIR Implementation Guide
 description: >-
   FHIR R4 profiles, extensions, terminology, and examples for exchanging mobile health
   observations and questionnaires.
-status: active
+status: draft
 version: 0.5.0
 fhirVersion: 4.0.1
 copyrightYear: 2022+

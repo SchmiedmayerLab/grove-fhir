@@ -13,7 +13,7 @@ title: "Grove Platform Terminology"
 description: >-
   FHIR code systems and value sets that preserve source-platform identifiers referenced
   by Grove FHIR resources without assigning clinical meaning.
-status: active
+status: draft
 version: 0.1.0
 fhirVersion: 4.0.1
 copyrightYear: 2026+
