@@ -25,10 +25,6 @@ REPOSITORY = re.compile(
     r"^https://github\.com/SchmiedmayerLab/[A-Za-z0-9][A-Za-z0-9._-]*\.git$"
 )
 SOURCE_PATH = re.compile(r"^Integration/Sources/[A-Za-z0-9][A-Za-z0-9._-]*$")
-REFERENCE = re.compile(
-    r"^refs/(?:heads/[A-Za-z0-9](?:[A-Za-z0-9._/-]*[A-Za-z0-9])?"
-    r"|pull/[1-9][0-9]*/head)$"
-)
 PATCH_PATH = re.compile(
     r"^Integration/Patches/[a-z0-9](?:[a-z0-9._/-]*[a-z0-9])?\.patch$"
 )
@@ -50,14 +46,9 @@ def safe_relative_path(value: str) -> Path:
     return Path(*path.parts)
 
 
-def valid_reference(value: Any) -> bool:
-    """Accept only unambiguous GitHub branch and pull-request provenance refs."""
-    if not isinstance(value, str) or not REFERENCE.fullmatch(value):
-        return False
-    forbidden = ("..", "//", "@{", "/.", "./")
-    return not any(token in value for token in forbidden) and not value.endswith(
-        ".lock"
-    )
+def normalize_repository(value: str) -> str:
+    """Return the comparison form of an already validated GitHub repository URL."""
+    return value.removesuffix(".git").casefold()
 
 
 def first_cycle(graph: dict[str, list[str]]) -> list[str] | None:
@@ -175,22 +166,21 @@ def validate_manifest(manifest: Any) -> list[str]:
             "integration manifest contains unsupported fields: "
             + ", ".join(unknown_manifest_fields)
         )
-    if manifest.get("schemaVersion") != 2:
-        failures.append("integration manifest schemaVersion must be 2")
+    if manifest.get("schemaVersion") != 3:
+        failures.append("integration manifest schemaVersion must be 3")
     sources = manifest.get("sources")
     if not isinstance(sources, list) or not sources:
         return [*failures, "integration manifest must contain sources"]
 
     source_ids: set[str] = set()
     paths: set[str] = set()
-    repositories: set[str] = set()
-    target_keys: set[tuple[str, str]] = set()
+    source_repositories: dict[str, str] = {}
     for source in sources:
         if not isinstance(source, dict):
             failures.append("every integration source must be an object")
             continue
         unknown_source_fields = sorted(
-            set(source) - {"id", "repository", "path", "gitlink", "targets"}
+            set(source) - {"id", "repository", "path", "commit", "purpose"}
         )
         if unknown_source_fields:
             failures.append(
@@ -220,91 +210,16 @@ def validate_manifest(manifest: Any) -> list[str]:
             failures.append(
                 f"{source_id} repository must be an HTTPS SchmiedmayerLab .git URL"
             )
-        elif repository in repositories:
-            failures.append(f"duplicate integration repository: {repository}")
         else:
-            repositories.add(repository)
+            source_repositories[source_id] = normalize_repository(repository)
 
-        gitlink_value = source.get("gitlink")
-        gitlink_is_valid = isinstance(gitlink_value, str) and COMMIT.fullmatch(
-            gitlink_value
-        )
-        if not gitlink_is_valid:
-            failures.append(f"{source_id} gitlink must be a full lowercase commit SHA")
+        commit = source.get("commit")
+        if not isinstance(commit, str) or not COMMIT.fullmatch(commit):
+            failures.append(f"{source_id} commit must be a full lowercase SHA")
 
-        targets = source.get("targets")
-        if not isinstance(targets, list) or not targets:
-            failures.append(f"{source_id} must contain at least one target")
-            continue
-        target_ids: set[str] = set()
-        target_commits: set[str] = set()
-        predecessor_graph: dict[str, list[str]] = {}
-        for target in targets:
-            target_id = target.get("id") if isinstance(target, dict) else None
-            if isinstance(target, dict):
-                unknown_target_fields = sorted(
-                    set(target) - {"id", "ref", "commit", "predecessor"}
-                )
-                if unknown_target_fields:
-                    failures.append(
-                        f"{source_id} target contains unsupported fields: "
-                        + ", ".join(unknown_target_fields)
-                    )
-            if not isinstance(target_id, str) or not IDENTIFIER.fullmatch(target_id):
-                failures.append(
-                    f"{source_id} contains an invalid target id: {target_id!r}"
-                )
-                continue
-            key = (source_id, target_id)
-            if key in target_keys:
-                failures.append(
-                    f"duplicate integration target: {source_id}/{target_id}"
-                )
-            target_keys.add(key)
-            target_ids.add(target_id)
-
-            reference = target.get("ref")
-            if not valid_reference(reference):
-                failures.append(
-                    f"{source_id}/{target_id} must use a valid heads or "
-                    "pull-request ref"
-                )
-            commit = target.get("commit")
-            if not isinstance(commit, str) or not COMMIT.fullmatch(commit):
-                failures.append(
-                    f"{source_id}/{target_id} commit must be a full lowercase SHA"
-                )
-            else:
-                target_commits.add(commit)
-
-            predecessor = target.get("predecessor")
-            predecessor_graph[target_id] = []
-            if predecessor is not None:
-                if not isinstance(predecessor, str) or not IDENTIFIER.fullmatch(
-                    predecessor
-                ):
-                    failures.append(
-                        f"{source_id}/{target_id} predecessor must be a target id"
-                    )
-                else:
-                    predecessor_graph[target_id].append(predecessor)
-
-        for target_id, predecessors in predecessor_graph.items():
-            for predecessor in predecessors:
-                if predecessor not in target_ids:
-                    failures.append(
-                        f"{source_id}/{target_id} references unknown predecessor: "
-                        f"{predecessor}"
-                    )
-        cycle = first_cycle(predecessor_graph)
-        if cycle:
-            failures.append(
-                f"{source_id} target predecessor cycle: {' -> '.join(cycle)}"
-            )
-        if gitlink_is_valid and gitlink_value not in target_commits:
-            failures.append(
-                f"{source_id} gitlink must equal one declared target commit"
-            )
+        purpose = source.get("purpose")
+        if not isinstance(purpose, str) or not purpose.strip():
+            failures.append(f"{source_id} purpose must be a nonempty string")
 
     proposals = manifest.get("proposals")
     if not isinstance(proposals, list):
@@ -325,7 +240,6 @@ def validate_manifest(manifest: Any) -> list[str]:
             - {
                 "id",
                 "source",
-                "target",
                 "patch",
                 "sha256",
                 "dependsOn",
@@ -348,12 +262,16 @@ def validate_manifest(manifest: Any) -> list[str]:
         proposal_ids.add(proposal_id)
 
         source_id = proposal.get("source")
-        proposal_sources[proposal_id] = source_id
-        target_id = proposal.get("target")
-        if (source_id, target_id) not in target_keys:
+        if not isinstance(source_id, str) or not IDENTIFIER.fullmatch(source_id):
             failures.append(
-                f"{proposal_id} references unknown target: {source_id}/{target_id}"
+                f"{proposal_id} source must be a lowercase source identifier"
             )
+            proposal_sources[proposal_id] = None
+        elif source_id not in source_ids:
+            failures.append(f"{proposal_id} references unknown source: {source_id}")
+            proposal_sources[proposal_id] = source_id
+        else:
+            proposal_sources[proposal_id] = source_id
 
         patch = proposal.get("patch")
         if not isinstance(patch, str) or not PATCH_PATH.fullmatch(patch):
@@ -452,9 +370,18 @@ def validate_manifest(manifest: Any) -> list[str]:
                     f"{proposal_id} applied dependency {dependency} must also be "
                     "listed in dependsOn"
                 )
-            if proposal_sources.get(dependency) != proposal_sources.get(proposal_id):
+            dependency_source = proposal_sources.get(dependency)
+            proposal_source = proposal_sources.get(proposal_id)
+            dependency_repository = source_repositories.get(dependency_source)
+            proposal_repository = source_repositories.get(proposal_source)
+            if (
+                dependency_repository is not None
+                and proposal_repository is not None
+                and dependency_repository != proposal_repository
+            ):
                 failures.append(
-                    f"{proposal_id} cannot apply cross-source dependency {dependency}"
+                    f"{proposal_id} cannot apply dependency {dependency} from a "
+                    "different repository"
                 )
     dependency_cycle = first_cycle(proposal_dependencies)
     if dependency_cycle:
@@ -485,6 +412,51 @@ def gitlink(root: Path, relative: str) -> str:
     if mode != "160000" or stage != "0" or recorded_path != relative:
         raise ValueError(f"{relative} is not a stage-zero gitlink")
     return revision
+
+
+def stage_zero_gitlinks(root: Path) -> tuple[dict[str, str], list[str]]:
+    """Return every stage-zero gitlink and report conflicted gitlink entries."""
+    output = run("git", "ls-files", "--stage", "-z", cwd=root)
+    gitlinks: dict[str, str] = {}
+    failures: list[str] = []
+    for row in output.split("\0"):
+        if not row:
+            continue
+        try:
+            metadata, path = row.split("\t", 1)
+            mode, revision, stage = metadata.split()
+        except ValueError:
+            failures.append(f"invalid index entry: {row!r}")
+            continue
+        if mode != "160000":
+            continue
+        if stage != "0":
+            failures.append(f"gitlink is not at stage zero: {path}")
+            continue
+        if path in gitlinks:
+            failures.append(f"duplicate stage-zero gitlink: {path}")
+            continue
+        gitlinks[path] = revision
+    return gitlinks, failures
+
+
+def verify_gitlink_set(root: Path, manifest: dict[str, Any]) -> list[str]:
+    """Require the index gitlinks to be exactly the manifest's physical sources."""
+    try:
+        actual, failures = stage_zero_gitlinks(root)
+    except subprocess.CalledProcessError as error:
+        return [f"cannot read repository gitlinks: {error}"]
+    expected = {source["path"]: source["commit"] for source in manifest["sources"]}
+    for path in sorted(set(expected) - set(actual)):
+        failures.append(f"missing stage-zero gitlink: {path}")
+    for path in sorted(set(actual) - set(expected)):
+        failures.append(f"unexpected stage-zero gitlink: {path}")
+    for path in sorted(set(actual) & set(expected)):
+        if actual[path] != expected[path]:
+            failures.append(
+                f"{path} gitlink {actual[path]} != manifest commit {expected[path]}"
+            )
+    return failures
 
 
 def verify_gitmodules(root: Path, manifest: dict[str, Any]) -> list[str]:
@@ -524,7 +496,6 @@ def verify_gitmodules(root: Path, manifest: dict[str, Any]) -> list[str]:
 
     actual_pairs: set[tuple[str, str]] = set()
     actual_paths: set[str] = set()
-    actual_repositories: set[str] = set()
     for module_name, properties in modules.items():
         unsupported = sorted(set(properties) - {"path", "url", "shallow"})
         if unsupported:
@@ -542,9 +513,6 @@ def verify_gitmodules(root: Path, manifest: dict[str, Any]) -> list[str]:
         if path in actual_paths:
             failures.append(f"duplicate .gitmodules path: {path}")
         actual_paths.add(path)
-        if repository in actual_repositories:
-            failures.append(f"duplicate .gitmodules repository: {repository}")
-        actual_repositories.add(repository)
         actual_pairs.add((path, repository))
 
     expected_pairs = {
@@ -561,9 +529,7 @@ def verify_gitmodules(root: Path, manifest: dict[str, Any]) -> list[str]:
     return failures
 
 
-def verify_repository(
-    *, root: Path, source: dict[str, Any], fetch_targets: bool
-) -> list[str]:
+def verify_repository(*, root: Path, source: dict[str, Any]) -> list[str]:
     failures: list[str] = []
     source_id = source["id"]
     relative = source["path"]
@@ -572,13 +538,14 @@ def verify_repository(
         recorded = gitlink(root, relative)
     except (ValueError, subprocess.CalledProcessError) as error:
         return [f"{source_id}: {error}"]
-    if recorded != source["gitlink"]:
+    if recorded != source["commit"]:
         failures.append(
-            f"{source_id} manifest gitlink {source['gitlink']} != index {recorded}"
+            f"{source_id} manifest commit {source['commit']} != index {recorded}"
         )
     if (
         checkout.is_symlink()
         or not checkout.is_dir()
+        or (checkout / ".git").is_symlink()
         or not (checkout / ".git").exists()
     ):
         failures.append(f"{source_id} submodule is not initialized: {relative}")
@@ -587,48 +554,22 @@ def verify_repository(
         head = run("git", "rev-parse", "HEAD", cwd=checkout)
         if head != recorded:
             failures.append(f"{source_id} checkout {head} != gitlink {recorded}")
-        if run("git", "status", "--porcelain", cwd=checkout):
+        if run(
+            "git",
+            "status",
+            "--porcelain=v1",
+            "--untracked-files=all",
+            cwd=checkout,
+        ):
             failures.append(f"{source_id} submodule contains local changes")
+        if run("git", "rev-parse", "--abbrev-ref", "HEAD", cwd=checkout) != "HEAD":
+            failures.append(f"{source_id} submodule checkout is not detached")
         remote = run("git", "remote", "get-url", "origin", cwd=checkout)
         if remote != source["repository"]:
             failures.append(
                 f"{source_id} origin {remote!r} != {source['repository']!r}"
             )
             return failures
-        if fetch_targets:
-            for target in source["targets"]:
-                # GitHub does not advertise arbitrary commit-object wants. Fetch the
-                # declared provenance ref so a shallow CI checkout receives its
-                # history, then prove that the immutable pin remains reachable from
-                # that ref. A normal ref advance therefore does not invalidate an
-                # older pin, while a force-push that discards it does.
-                run(
-                    "git",
-                    "fetch",
-                    "--quiet",
-                    "--no-tags",
-                    "origin",
-                    target["ref"],
-                    cwd=checkout,
-                )
-                fetched_tip = run(
-                    "git", "rev-parse", "--verify", "FETCH_HEAD^{commit}", cwd=checkout
-                )
-                try:
-                    run(
-                        "git",
-                        "merge-base",
-                        "--is-ancestor",
-                        target["commit"],
-                        fetched_tip,
-                        cwd=checkout,
-                    )
-                except subprocess.CalledProcessError:
-                    failures.append(
-                        f"{source_id}/{target['id']} pinned commit "
-                        f"{target['commit']} is not reachable from "
-                        f"{target['ref']} at {fetched_tip}"
-                    )
     except subprocess.CalledProcessError as error:
         failures.append(f"{source_id}: git command failed: {error}")
     return failures
@@ -655,7 +596,6 @@ def main() -> int:
     parser.add_argument(
         "--manifest", type=Path, default=Path("Integration/sources.json")
     )
-    parser.add_argument("--fetch-targets", action="store_true")
     arguments = parser.parse_args()
     manifest_path = (ROOT / arguments.manifest).resolve()
     try:
@@ -668,14 +608,9 @@ def main() -> int:
     failures = validate_manifest(manifest)
     if not failures:
         failures.extend(verify_gitmodules(ROOT, manifest))
+        failures.extend(verify_gitlink_set(ROOT, manifest))
         for source in manifest["sources"]:
-            failures.extend(
-                verify_repository(
-                    root=ROOT,
-                    source=source,
-                    fetch_targets=arguments.fetch_targets,
-                )
-            )
+            failures.extend(verify_repository(root=ROOT, source=source))
         failures.extend(verify_proposals(ROOT, manifest))
     if failures:
         print("Integration source checks failed:")
@@ -683,9 +618,8 @@ def main() -> int:
             print(f"- {failure}")
         return 1
     print(
-        f"Verified {len(manifest['sources'])} integration sources, "
-        f"{sum(len(source['targets']) for source in manifest['sources'])} targets, "
-        f"and {len(manifest['proposals'])} proposals"
+        f"Verified {len(manifest['sources'])} integration sources and "
+        f"{len(manifest['proposals'])} proposals"
     )
     return 0
 

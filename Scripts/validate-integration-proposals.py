@@ -203,7 +203,7 @@ def selected_proposals(
 def application_plan(
     proposal: dict[str, Any], proposals: dict[str, dict[str, Any]]
 ) -> list[dict[str, Any]]:
-    """Return opt-in same-source patch ancestors followed by the proposal."""
+    """Return opt-in same-repository patch ancestors followed by the proposal."""
     result: list[dict[str, Any]] = []
     visited: set[str] = set()
 
@@ -293,7 +293,7 @@ def materialize_exact_commit(
     destination: Path,
     environment: dict[str, str],
 ) -> None:
-    """Create a self-contained, detached repository at an already-fetched commit."""
+    """Create a self-contained, detached repository from an exact physical source."""
     source_git_directory = Path(
         output(
             "git",
@@ -342,8 +342,8 @@ def materialize_exact_commit(
         environment=alternate_environment,
     )
 
-    # Targets are intentionally fetched at depth one. Mark this exact commit as the
-    # shallow boundary so repack copies its complete tree without requiring parents.
+    # A physical source may be shallow. Mark its exact commit as the temporary
+    # repository's boundary so repack copies the tree without requiring parents.
     (destination / ".git/shallow").write_text(f"{commit}\n", encoding="ascii")
     run_command(
         ["git", "repack", "--quiet", "-a", "-d"],
@@ -460,11 +460,6 @@ def validate_proposals(
 
     proposals = {proposal["id"]: proposal for proposal in ordered}
     sources = {source["id"]: source for source in manifest["sources"]}
-    targets = {
-        (source["id"], target["id"]): target["commit"]
-        for source in manifest["sources"]
-        for target in source["targets"]
-    }
     patches = load_patches(root, manifest)
 
     with tempfile.TemporaryDirectory(prefix="grove-fhir-proposals-") as directory:
@@ -480,10 +475,10 @@ def validate_proposals(
             for identifier, path in source_paths.items()
         }
         for identifier, (head, status, _, _) in before.items():
-            if head != sources[identifier]["gitlink"]:
+            if head != sources[identifier]["commit"]:
                 raise ProposalValidationError(
-                    f"{identifier} checkout {head} != declared gitlink "
-                    f"{sources[identifier]['gitlink']}"
+                    f"{identifier} checkout {head} != declared commit "
+                    f"{sources[identifier]['commit']}"
                 )
             if status:
                 raise ProposalValidationError(
@@ -494,7 +489,7 @@ def validate_proposals(
             for ordinal, proposal in enumerate(ordered, start=1):
                 identifier = proposal["id"]
                 source_id = proposal["source"]
-                commit = targets[(source_id, proposal["target"])]
+                commit = sources[source_id]["commit"]
                 repository = workspace / "repositories" / f"{ordinal}-{identifier}"
                 materialize_exact_commit(
                     source=source_paths[source_id],

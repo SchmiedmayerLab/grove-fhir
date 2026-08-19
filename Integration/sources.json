@@ -1,94 +1,74 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "sources": [
     {
-      "id": "grove",
+      "id": "grove-questionnaire",
       "repository": "https://github.com/SchmiedmayerLab/Grove.git",
-      "path": "Integration/Sources/Grove",
-      "gitlink": "2c2a7c61004fd6c56bfb4b67f1e967b4bee98d06",
-      "targets": [
-        {
-          "id": "questionnaire",
-          "ref": "refs/pull/49/head",
-          "commit": "5e5bcfae39caed46e9ce12a70d84c1546aa76aea"
-        },
-        {
-          "id": "healthkit",
-          "ref": "refs/pull/60/head",
-          "commit": "fb78db4c5343c234825b433706f7ee62f111c5cc",
-          "predecessor": "questionnaire"
-        },
-        {
-          "id": "sensorkit",
-          "ref": "refs/pull/61/head",
-          "commit": "2c2a7c61004fd6c56bfb4b67f1e967b4bee98d06",
-          "predecessor": "healthkit"
-        }
-      ]
+      "path": "Integration/Sources/GroveQuestionnaire",
+      "commit": "5e5bcfae39caed46e9ce12a70d84c1546aa76aea",
+      "purpose": "Exact Grove Questionnaire proposal base retained for review and same-repository proposal composition."
+    },
+    {
+      "id": "grove-healthkit",
+      "repository": "https://github.com/SchmiedmayerLab/Grove.git",
+      "path": "Integration/Sources/GroveHealthKit",
+      "commit": "fb78db4c5343c234825b433706f7ee62f111c5cc",
+      "purpose": "Exact Grove Mobile and HealthKit proposal base used to materialize the current Swift contract."
+    },
+    {
+      "id": "grove-legacy-021",
+      "repository": "https://github.com/SchmiedmayerLab/Grove.git",
+      "path": "Integration/Sources/GroveLegacy021",
+      "commit": "7fbc89d590ee29d9e73b9d700f91aa1e3d905883",
+      "purpose": "Historical Grove 0.2.1 baseline retained for later deterministic semantic compatibility evidence."
+    },
+    {
+      "id": "grove-sensorkit-reference",
+      "repository": "https://github.com/SchmiedmayerLab/Grove.git",
+      "path": "Integration/Sources/GroveSensorKit",
+      "commit": "2c2a7c61004fd6c56bfb4b67f1e967b4bee98d06",
+      "purpose": "Inactive Grove SensorKit proposal tip retained for provenance and reference only; no proposal is materialized from it."
     },
     {
       "id": "my-heart-counts-ios",
       "repository": "https://github.com/SchmiedmayerLab/MyHeartCounts-iOS.git",
       "path": "Integration/Sources/MyHeartCountsIOS",
-      "gitlink": "e7ae70ebbbfb335eea274cd35eacd5d3c5c93d33",
-      "targets": [
-        {
-          "id": "main",
-          "ref": "refs/heads/main",
-          "commit": "01a49557a48d68f9e79939f8c4d879edae1cfafc"
-        },
-        {
-          "id": "app-version",
-          "ref": "refs/pull/198/head",
-          "commit": "e7ae70ebbbfb335eea274cd35eacd5d3c5c93d33"
-        }
-      ]
+      "commit": "e7ae70ebbbfb335eea274cd35eacd5d3c5c93d33",
+      "purpose": "Exact My Heart Counts iOS application revision retained for cross-platform conformance evidence."
     },
     {
       "id": "my-heart-counts-android",
       "repository": "https://github.com/SchmiedmayerLab/MyHeartCounts-Android.git",
       "path": "Integration/Sources/MyHeartCountsAndroid",
-      "gitlink": "5d9fc561ba2b30f93a2334a1678ea5f4103263c6",
-      "targets": [
-        {
-          "id": "main",
-          "ref": "refs/heads/main",
-          "commit": "5d9fc561ba2b30f93a2334a1678ea5f4103263c6"
-        }
-      ]
+      "commit": "5d9fc561ba2b30f93a2334a1678ea5f4103263c6",
+      "purpose": "Exact My Heart Counts Android base used to materialize the Health Connect proposal."
     },
     {
       "id": "my-heart-counts-firebase",
       "repository": "https://github.com/SchmiedmayerLab/MyHeartCounts-Firebase.git",
       "path": "Integration/Sources/MyHeartCountsFirebase",
-      "gitlink": "8bad2e814ad60763ddf810750e503488719f55f5",
-      "targets": [
-        {
-          "id": "main",
-          "ref": "refs/heads/main",
-          "commit": "8bad2e814ad60763ddf810750e503488719f55f5"
-        }
-      ]
+      "commit": "8bad2e814ad60763ddf810750e503488719f55f5",
+      "purpose": "Exact My Heart Counts Firebase base used to materialize the source-neutral FHIR receiver proposal."
     },
     {
-      "id": "my-heart-counts-study-definitions",
+      "id": "my-heart-counts-study-definitions-024",
       "repository": "https://github.com/SchmiedmayerLab/MyHeartCounts-StudyDefinitions.git",
-      "path": "Integration/Sources/MyHeartCountsStudyDefinitions",
-      "gitlink": "06e410c9ded3727296961dc39526aa1c49905538",
-      "targets": [
-        {
-          "id": "main",
-          "ref": "refs/heads/main",
-          "commit": "06e410c9ded3727296961dc39526aa1c49905538"
-        }
-      ]
+      "path": "Integration/Sources/MyHeartCountsStudyDefinitions024",
+      "commit": "44a658790d03b74a570e40eadba06ae5fa435b60",
+      "purpose": "Exact StudyDefinitions 0.2.4 dependency pinned by the retained My Heart Counts iOS revision."
+    },
+    {
+      "id": "my-heart-counts-study-definitions-025",
+      "repository": "https://github.com/SchmiedmayerLab/MyHeartCounts-StudyDefinitions.git",
+      "path": "Integration/Sources/MyHeartCountsStudyDefinitions025",
+      "commit": "06e410c9ded3727296961dc39526aa1c49905538",
+      "purpose": "Exact StudyDefinitions 0.2.5 revision retained as the later study-revision evidence baseline."
     }
   ],
   "proposals": [
     {
       "id": "grove-questionnaire-contract",
-      "source": "grove",
-      "target": "questionnaire",
+      "source": "grove-questionnaire",
       "patch": "Integration/Patches/grove-questionnaire-contract.patch",
       "sha256": "6dc99c1a2836f8a18b3c7e4f0ab6f2cf87ac30d2541aa7ff80d5299d6297b2fe",
       "dependsOn": [],
@@ -138,8 +118,7 @@
     },
     {
       "id": "grove-mobile-contract",
-      "source": "grove",
-      "target": "healthkit",
+      "source": "grove-healthkit",
       "patch": "Integration/Patches/grove-mobile-contract.patch",
       "sha256": "6b603d3d34861b6c5ffd763f293b82c1d50def145e5392894160778e4bfad875",
       "dependsOn": [
@@ -194,7 +173,6 @@
     {
       "id": "my-heart-counts-android-health-connect",
       "source": "my-heart-counts-android",
-      "target": "main",
       "patch": "Integration/Patches/my-heart-counts-android-health-connect.patch",
       "sha256": "4384e86a9ff63cde99aa94895f6d5a65d7b7379f7322015e243429d8e63ea62d",
       "dependsOn": [
@@ -250,7 +228,6 @@
     {
       "id": "my-heart-counts-firebase-fhir-receiver",
       "source": "my-heart-counts-firebase",
-      "target": "main",
       "patch": "Integration/Patches/my-heart-counts-firebase-fhir-receiver.patch",
       "sha256": "aa205f118ca5f3bd4406b7585acb3e001cd0f721c5ee8f171b42e82dfd0b41ff",
       "dependsOn": [
