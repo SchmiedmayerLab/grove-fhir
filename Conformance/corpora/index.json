@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "coverage": "Conformance/corpora/coverage.json",
+  "domainCorpora": [
+    {
+      "id": "mobile",
+      "manifest": "Conformance/corpora/mobile/corpus.json",
+      "validatorExpectations": "Conformance/corpora/mobile/validator-expectations.json",
+      "additionalValidResources": [
+        "Conformance/study-graph/accepted-study-graph.json"
+      ]
+    },
+    {
+      "id": "healthkit",
+      "manifest": "Conformance/corpora/healthkit/corpus.json",
+      "validatorExpectations": "Conformance/corpora/healthkit/validator-expectations.json"
+    },
+    {
+      "id": "health-connect",
+      "manifest": "Conformance/corpora/health-connect/corpus.json",
+      "validatorExpectations": "Conformance/corpora/health-connect/validator-expectations.json"
+    }
+  ],
+  "referencedCorpora": [
+    {
+      "id": "questionnaire-validator",
+      "manifest": "questionnaire/fixtures/validator/cases.json",
+      "ownership": "questionnaire"
+    },
+    {
+      "id": "questionnaire-pairs",
+      "manifest": "questionnaire/fixtures/pairs/cases.json",
+      "ownership": "questionnaire"
+    }
+  ]
+}

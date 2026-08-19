@@ -1,0 +1,46 @@
+{
+  "resourceType": "Device",
+  "id": "application-device",
+  "meta": {
+    "profile": [
+      "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-application-device"
+    ]
+  },
+  "contained": [
+    {
+      "resourceType": "Device",
+      "id": "parent-device",
+      "status": "active"
+    }
+  ],
+  "identifier": [
+    {
+      "system": "https://study.example.org/fhir/identifiers/application",
+      "value": "org.example.mobile-study"
+    }
+  ],
+  "status": "active",
+  "deviceName": [
+    {
+      "name": "Mobile Study",
+      "type": "user-friendly-name"
+    }
+  ],
+  "version": [
+    {
+      "type": {
+        "coding": [
+          {
+            "system": "urn:iso:std:iso:11073:10101",
+            "code": "531975"
+          }
+        ]
+      },
+      "value": "3.2.0"
+    }
+  ],
+  "parent": {
+    "reference": "#parent-device",
+    "type": "Device"
+  }
+}

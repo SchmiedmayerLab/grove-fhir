@@ -1,0 +1,200 @@
+{
+  "schemaVersion": 1,
+  "warningAllowlist": [
+    {
+      "messageId": "All_observations_should_have_a_performer"
+    },
+    {
+      "messageId": "Error_validating_code_running_without_terminology_services"
+    },
+    {
+      "messageId": "Terminology_TX_NoValid_2_CC"
+    },
+    {
+      "messageId": "Terminology_TX_NoValid_17",
+      "expression": "Observation.component[0].value.ofType(string)"
+    },
+    {
+      "messageId": "http://hl7.org/fhir/StructureDefinition/DomainResource#dom-6"
+    }
+  ],
+  "cases": {
+    "healthkit-motion-value-code-required-binding": [
+      {
+        "messageId": "Unknown_Code_in_Version",
+        "code": "code-invalid",
+        "expression": "Observation.component[0].value.ofType(CodeableConcept).coding[0].code",
+        "detailsContains": "Unknown code 'unknown' in the CodeSystem 'https://schmiedmayerlab.github.io/grove-fhir/fhir/healthkit/CodeSystem/healthkit-heart-rate-motion-context' version '0.1.0'"
+      },
+      {
+        "messageId": "Terminology_TX_NoValid_1_CC",
+        "code": "code-invalid",
+        "expression": "Observation.component[0].value.ofType(CodeableConcept)",
+        "detailsContains": "None of the codings provided are in the value set 'HealthKit Heart Rate Motion Context' (https://schmiedmayerlab.github.io/grove-fhir/fhir/healthkit/ValueSet/healthkit-heart-rate-motion-context|0.1.0), and a coding from this value set is required) (codes = https://schmiedmayerlab.github.io/grove-fhir/fhir/healthkit/CodeSystem/healthkit-heart-rate-motion-context#unknown)"
+      }
+    ],
+    "healthkit-motion-context-heart-rate-only": [
+      {
+        "messageId": "UNABLE_TO_INFER_CODESYSTEM",
+        "code": "not-found",
+        "expression": "Observation.value.ofType(Quantity).code",
+        "detailsContains": "The System URI could not be determined for the code '/min' in the ValueSet 'http://hl7.org/fhir/ValueSet/ucum-bodyweight|4.0.1'"
+      },
+      {
+        "messageId": "Terminology_TX_NoValid_16",
+        "code": "code-invalid",
+        "expression": "Observation.value.ofType(Quantity).code",
+        "detailsContains": "The value provided ('/min') was not found in the value set 'Body Weight Units' (http://hl7.org/fhir/ValueSet/ucum-bodyweight|4.0.1), and a code is required from this value set  (error message = The System URI could not be determined for the code '/min' in the ValueSet 'http://hl7.org/fhir/ValueSet/ucum-bodyweight|4.0.1'; The provided code '#/min' was not found in the value set 'http://hl7.org/fhir/ValueSet/ucum-bodyweight|4.0.1')"
+      },
+      {
+        "messageId": "https://schmiedmayerlab.github.io/grove-fhir/fhir/healthkit/StructureDefinition/healthkit-observation#healthkit-motion-context-1",
+        "code": "invariant",
+        "expression": "Observation",
+        "detailsContains": "Constraint failed: healthkit-motion-context-1: 'Heart-rate motion context is present only on an Observation coded with LOINC 8867-4.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/healthkit/StructureDefinition/healthkit-observation)"
+      },
+      {
+        "messageId": "VALIDATION_VAL_PROFILE_MINIMUM_MAGIC",
+        "code": "structure",
+        "expression": "Observation.code",
+        "detailsContains": "HeartRateCode: magic LOINC code 8867-4 required, but not found (from http://hl7.org/fhir/StructureDefinition/heartrate|4.0.1). Note that other Observation codes are allowed in addition to this required magic code"
+      }
+    ],
+    "healthkit-motion-value-required": [
+      {
+        "messageId": "http://hl7.org/fhir/StructureDefinition/heartrate#vs-3",
+        "code": "invariant",
+        "expression": "Observation.component[0]",
+        "detailsContains": "Constraint failed: vs-3: 'If there is no a value a data absent reason must be present'"
+      },
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Observation.component[0]",
+        "detailsContains": "Observation.component:heartRateMotionContext.value[x]: minimum required = 1, but only found 0 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/healthkit/StructureDefinition/healthkit-observation|0.1.0)"
+      }
+    ],
+    "healthkit-object-identifier-required": [
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Observation",
+        "detailsContains": "Observation.identifier: minimum required = 1, but only found 0 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/healthkit/StructureDefinition/healthkit-observation|0.1.0)"
+      },
+      {
+        "messageId": "Validation_VAL_Profile_Minimum_SLICE",
+        "code": "structure",
+        "expression": "Observation",
+        "detailsContains": "Slice 'Observation.identifier:healthKitObjectId': a matching slice is required, but not found (from https://schmiedmayerlab.github.io/grove-fhir/fhir/healthkit/StructureDefinition/healthkit-observation|0.1.0). Note that other slices are allowed in addition to this required slice"
+      }
+    ],
+    "healthkit-motion-data-absent-prohibited": [
+      {
+        "messageId": "Validation_VAL_Profile_Maximum",
+        "code": "structure",
+        "expression": "Observation.component[0]",
+        "detailsContains": "Observation.component:heartRateMotionContext.dataAbsentReason: max allowed = 0, but found 1 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/healthkit/StructureDefinition/healthkit-observation|0.1.0)"
+      }
+    ],
+    "healthkit-primary-result-required": [
+      {
+        "messageId": "https://schmiedmayerlab.github.io/grove-fhir/fhir/healthkit/StructureDefinition/healthkit-observation#healthkit-primary-result-1",
+        "code": "invariant",
+        "expression": "Observation",
+        "detailsContains": "Constraint failed: healthkit-primary-result-1: 'A HealthKit Observation has a primary quantity result or a reason why that result is absent. Metadata components do not satisfy this rule.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/healthkit/StructureDefinition/healthkit-observation)"
+      }
+    ],
+    "healthkit-motion-code-fixed": [
+      {
+        "messageId": "Unknown_Code_in_Version",
+        "code": "code-invalid",
+        "expression": "Observation.component[0].code.coding[0].code",
+        "detailsContains": "Unknown code 'OtherMetadataKey' in the CodeSystem 'https://schmiedmayerlab.github.io/grove-fhir/fhir/healthkit/CodeSystem/healthkit-metadata-key' version '0.1.0'"
+      }
+    ],
+    "healthkit-object-id-lowercase-uuid": [
+      {
+        "messageId": "https://schmiedmayerlab.github.io/grove-fhir/fhir/healthkit/StructureDefinition/healthkit-observation#healthkit-object-id-1",
+        "code": "invariant",
+        "expression": "Observation.identifier[0]",
+        "detailsContains": "Constraint failed: healthkit-object-id-1: 'A HealthKit object identifier value is lowercase UUID text in 8-4-4-4-12 hyphenated form.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/healthkit/StructureDefinition/healthkit-observation)"
+      }
+    ],
+    "healthkit-object-identifier-system": [
+      {
+        "messageId": "Validation_VAL_Profile_Minimum_SLICE",
+        "code": "structure",
+        "expression": "Observation",
+        "detailsContains": "Slice 'Observation.identifier:healthKitObjectId': a matching slice is required, but not found (from https://schmiedmayerlab.github.io/grove-fhir/fhir/healthkit/StructureDefinition/healthkit-observation|0.1.0). Note that other slices are allowed in addition to this required slice"
+      }
+    ],
+    "healthkit-object-identifier-limit": [
+      {
+        "messageId": "Validation_VAL_Profile_Maximum",
+        "code": "structure",
+        "expression": "Observation",
+        "detailsContains": "Observation.identifier:healthKitObjectId: max allowed = 1, but found 2 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/healthkit/StructureDefinition/healthkit-observation|0.1.0)"
+      },
+      {
+        "messageId": "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-observation#grove-identifier-token-1",
+        "code": "invariant",
+        "expression": "Observation",
+        "detailsContains": "Constraint failed: grove-identifier-token-1: 'A resource does not repeat the same identifier system and value pair.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-observation)"
+      }
+    ],
+    "healthkit-value-quantity-only": [
+      {
+        "code": "invalid",
+        "expression": "Observation.value[x]",
+        "detailsContains": "This property must be a simple value, not an Object (valueString at Observation.value[x])"
+      },
+      {
+        "messageId": "https://schmiedmayerlab.github.io/grove-fhir/fhir/healthkit/StructureDefinition/healthkit-observation#healthkit-primary-result-1",
+        "code": "invariant",
+        "expression": "Observation",
+        "detailsContains": "Constraint failed: healthkit-primary-result-1: 'A HealthKit Observation has a primary quantity result or a reason why that result is absent. Metadata components do not satisfy this rule.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/healthkit/StructureDefinition/healthkit-observation)"
+      }
+    ],
+    "healthkit-object-identifier-value-required": [
+      {
+        "messageId": "https://schmiedmayerlab.github.io/grove-fhir/fhir/healthkit/StructureDefinition/healthkit-observation#healthkit-object-id-1",
+        "code": "invariant",
+        "expression": "Observation.identifier[0]",
+        "detailsContains": "Constraint failed: healthkit-object-id-1: 'A HealthKit object identifier value is lowercase UUID text in 8-4-4-4-12 hyphenated form.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/healthkit/StructureDefinition/healthkit-observation)"
+      },
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Observation.identifier[0]",
+        "detailsContains": "Observation.identifier:healthKitObjectId.value: minimum required = 1, but only found 0 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/healthkit/StructureDefinition/healthkit-observation|0.1.0)"
+      },
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Observation.identifier[0]",
+        "detailsContains": "Observation.identifier.value: minimum required = 1, but only found 0 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/healthkit/StructureDefinition/healthkit-observation|0.1.0)"
+      }
+    ],
+    "healthkit-motion-context-limit": [
+      {
+        "messageId": "Validation_VAL_Profile_Maximum",
+        "code": "structure",
+        "expression": "Observation",
+        "detailsContains": "Observation.component:heartRateMotionContext: max allowed = 1, but found 2 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/healthkit/StructureDefinition/healthkit-observation|0.1.0)"
+      }
+    ],
+    "healthkit-motion-value-codeable-concept-only": [
+      {
+        "messageId": "Extension_PROF_Type",
+        "code": "structure",
+        "expression": "Observation.component[0].value.ofType(string)",
+        "detailsContains": "The Profile 'https://schmiedmayerlab.github.io/grove-fhir/fhir/healthkit/StructureDefinition/healthkit-observation|0.1.0' definition allows for the type CodeableConcept but found type string"
+      },
+      {
+        "messageId": "Terminology_TX_Code_ValueSet",
+        "code": "code-invalid",
+        "expression": "Observation.component[0].value.ofType(string)",
+        "detailsContains": "No code provided, and a code is required from the value set 'HealthKit Heart Rate Motion Context' (https://schmiedmayerlab.github.io/grove-fhir/fhir/healthkit/ValueSet/healthkit-heart-rate-motion-context|0.1.0)"
+      }
+    ]
+  }
+}

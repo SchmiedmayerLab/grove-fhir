@@ -1,0 +1,192 @@
+{
+  "schemaVersion": 1,
+  "bases": [
+    {"id": "accepted-study-graph", "path": "accepted-study-graph.json"}
+  ],
+  "cases": [
+    {
+      "id": "study-graph-duplicate-logical-identity",
+      "base": "accepted-study-graph",
+      "patch": [
+        {
+          "op": "copy",
+          "from": "/entry/1",
+          "path": "/entry/-"
+        }
+      ],
+      "expectedRule": {
+        "code": "study-graph.identity",
+        "reason": "Every accepted graph resource has one unique logical id and a matching unique fullUrl.",
+        "location": "Bundle.entry",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "study-graph-full-url-identity",
+      "base": "accepted-study-graph",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/entry/1/fullUrl",
+          "value": "https://study.example.org/fhir/PlanDefinition/other-plan"
+        }
+      ],
+      "expectedRule": {
+        "code": "study-graph.identity",
+        "reason": "Every accepted graph resource has one unique logical id and a matching unique fullUrl.",
+        "location": "Bundle.entry",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "study-graph-ambiguous-extra-role",
+      "base": "accepted-study-graph",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/entry/-",
+          "value": {
+            "fullUrl": "https://study.example.org/fhir/PlanDefinition/unexpected-plan",
+            "resource": {
+              "resourceType": "PlanDefinition",
+              "id": "unexpected-plan",
+              "status": "active"
+            }
+          }
+        }
+      ],
+      "expectedRule": {
+        "code": "study-graph.roles",
+        "reason": "The accepted graph contains exactly one resource for every declared study role and no ambiguous extras.",
+        "location": "Bundle.entry",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "study-graph-application-role-required",
+      "base": "accepted-study-graph",
+      "patch": [
+        {
+          "op": "remove",
+          "path": "/entry/4"
+        }
+      ],
+      "expectedRule": {
+        "code": "study-graph.roles",
+        "reason": "The accepted graph contains exactly one resource for every declared study role and no ambiguous extras.",
+        "location": "Bundle.entry",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "study-graph-plan-revision",
+      "base": "accepted-study-graph",
+      "patch": [{"op": "replace", "path": "/entry/1/resource/version", "value": "43"}],
+      "expectedRule": {
+        "code": "study-graph.plan-version",
+        "reason": "The accepted study graph is explicitly pinned to PlanDefinition version 42.",
+        "location": "Bundle.entry[1].resource.version",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "study-graph-protocol-link",
+      "base": "accepted-study-graph",
+      "patch": [{"op": "replace", "path": "/entry/2/resource/protocol/0/reference", "value": "PlanDefinition/other-plan"}],
+      "expectedRule": {
+        "code": "study-graph.protocol",
+        "reason": "ResearchStudy.protocol references the accepted versioned PlanDefinition.",
+        "location": "Bundle.entry[2].resource.protocol[0].reference",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "study-graph-enrollment-study-link",
+      "base": "accepted-study-graph",
+      "patch": [{"op": "replace", "path": "/entry/3/resource/study/reference", "value": "ResearchStudy/other-study"}],
+      "expectedRule": {
+        "code": "study-graph.enrollment-study",
+        "reason": "ResearchSubject.study references the accepted ResearchStudy.",
+        "location": "Bundle.entry[3].resource.study.reference",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "study-graph-enrollment-participant-link",
+      "base": "accepted-study-graph",
+      "patch": [{"op": "replace", "path": "/entry/3/resource/individual/reference", "value": "Patient/other-participant"}],
+      "expectedRule": {
+        "code": "study-graph.enrollment-participant",
+        "reason": "ResearchSubject.individual references the participant used by accepted study data.",
+        "location": "Bundle.entry[3].resource.individual.reference",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "study-graph-observation-study-link",
+      "base": "accepted-study-graph",
+      "patch": [{"op": "replace", "path": "/entry/5/resource/extension/0/valueReference/reference", "value": "ResearchStudy/other-study"}],
+      "expectedRule": {
+        "code": "study-graph.observation-study",
+        "reason": "The standard workflow-researchStudy extension references the accepted ResearchStudy.",
+        "location": "Bundle.entry[5].resource.extension[0].valueReference.reference",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "study-graph-conversion-target-link",
+      "base": "accepted-study-graph",
+      "patch": [{"op": "replace", "path": "/entry/6/resource/target/0/reference", "value": "Observation/other-observation"}],
+      "expectedRule": {
+        "code": "study-graph.provenance-target",
+        "reason": "Conversion Provenance targets the accepted study Observation.",
+        "location": "Bundle.entry[6].resource.target[0].reference",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "study-graph-conversion-assembler-link",
+      "base": "accepted-study-graph",
+      "patch": [{"op": "replace", "path": "/entry/6/resource/agent/0/who/reference", "value": "Device/other-application"}],
+      "expectedRule": {
+        "code": "study-graph.provenance-assembler",
+        "reason": "Conversion Provenance identifies the application Device that assembled the FHIR resources.",
+        "location": "Bundle.entry[6].resource.agent[0].who.reference",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "study-graph-conversion-plan-source-link",
+      "base": "accepted-study-graph",
+      "patch": [{"op": "replace", "path": "/entry/6/resource/entity/1/what/reference", "value": "PlanDefinition/other-plan"}],
+      "expectedRule": {
+        "code": "study-graph.provenance-plan-source",
+        "reason": "Conversion Provenance identifies the exact versioned PlanDefinition as a source entity.",
+        "location": "Bundle.entry[6].resource.entity[1].what.reference",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "study-graph-conversion-enrollment-source-link",
+      "base": "accepted-study-graph",
+      "patch": [{"op": "replace", "path": "/entry/6/resource/entity/2/what/reference", "value": "ResearchSubject/other-enrollment"}],
+      "expectedRule": {
+        "code": "study-graph.provenance-enrollment-source",
+        "reason": "Conversion Provenance identifies the influencing ResearchSubject enrollment as a source entity.",
+        "location": "Bundle.entry[6].resource.entity[2].what.reference",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "study-graph-conversion-provenance-required",
+      "base": "accepted-study-graph",
+      "patch": [{"op": "remove", "path": "/entry/6"}],
+      "expectedRule": {
+        "code": "study-graph.provenance-required",
+        "reason": "The accepted graph includes conversion Provenance for the exchanged Observation.",
+        "location": "Bundle.entry",
+        "severity": "error"
+      }
+    }
+  ]
+}

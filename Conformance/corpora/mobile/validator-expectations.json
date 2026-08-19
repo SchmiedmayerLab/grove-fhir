@@ -1,0 +1,793 @@
+{
+  "schemaVersion": 1,
+  "warningAllowlist": [
+    {
+      "messageId": "All_observations_should_have_a_performer"
+    },
+    {
+      "messageId": "All_observations_should_have_a_subject"
+    },
+    {
+      "messageId": "All_observations_should_have_an_effectiveDateTime_or_an_effectivePeriod"
+    },
+    {
+      "messageId": "Error_validating_code_running_without_terminology_services"
+    },
+    {
+      "messageId": "TYPE_SPECIFIC_CHECKS_DT_QTY_UCUM_ANNOTATIONS"
+    },
+    {
+      "messageId": "Terminology_TX_NoValid_2_CC"
+    },
+    {
+      "messageId": "UNKNOWN_CODESYSTEM"
+    },
+    {
+      "messageId": "http://hl7.org/fhir/StructureDefinition/DomainResource#dom-6"
+    }
+  ],
+  "cases": {
+    "step-count-comparator-prohibited": [
+      {
+        "messageId": "Validation_VAL_Profile_Maximum",
+        "code": "structure",
+        "expression": "Observation.value.ofType(Quantity)",
+        "detailsContains": "Observation.value[x].comparator: max allowed = 0, but found 1 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-step-count|0.1.0)"
+      }
+    ],
+    "mobile-observation-identifier-value-required": [
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Observation.identifier[0]",
+        "detailsContains": "Observation.identifier.value: minimum required = 1, but only found 0 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-observation|0.1.0)"
+      }
+    ],
+    "mobile-observation-code-only-component-not-result": [
+      {
+        "messageId": "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-observation#grove-mobile-result-1",
+        "code": "invariant",
+        "expression": "Observation",
+        "detailsContains": "Constraint failed: grove-mobile-result-1: 'A mobile Observation has a value, one or more components or members, or a reason why the result is absent.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-observation)"
+      }
+    ],
+    "step-count-value-quantity-only": [
+      {
+        "code": "invalid",
+        "expression": "Observation.value[x]",
+        "detailsContains": "This property must be a simple value, not an Object (valueString at Observation.value[x])"
+      },
+      {
+        "messageId": "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-observation#grove-mobile-result-1",
+        "code": "invariant",
+        "expression": "Observation",
+        "detailsContains": "Constraint failed: grove-mobile-result-1: 'A mobile Observation has a value, one or more components or members, or a reason why the result is absent.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-observation)"
+      },
+      {
+        "messageId": "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-step-count#grove-step-count-result-1",
+        "code": "invariant",
+        "expression": "Observation",
+        "detailsContains": "Constraint failed: grove-step-count-result-1: 'A step-count Observation has a count value or a reason why the count is absent.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-step-count)"
+      }
+    ],
+    "recording-device-version-type-required": [
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Device.version[0]",
+        "detailsContains": "Device.version.type: minimum required = 1, but only found 0 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-recording-device|0.1.0)"
+      }
+    ],
+    "step-count-period-end-timezone-limit": [
+      {
+        "messageId": "Validation_VAL_Profile_Maximum",
+        "code": "structure",
+        "expression": "Observation.effective.ofType(Period).end",
+        "detailsContains": "Observation.effective[x]:effectivePeriod.end.extension:endTimezone: max allowed = 1, but found 2 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-step-count|0.1.0)"
+      }
+    ],
+    "mobile-observation-result-required": [
+      {
+        "messageId": "http://hl7.org/fhir/StructureDefinition/vitalsigns#vs-2",
+        "code": "invariant",
+        "expression": "Observation",
+        "detailsContains": "Constraint failed: vs-2: 'If there is no component or hasMember element then either a value[x] or a data absent reason must be present.' (defined in http://hl7.org/fhir/StructureDefinition/vitalsigns)"
+      },
+      {
+        "messageId": "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-observation#grove-mobile-result-1",
+        "code": "invariant",
+        "expression": "Observation",
+        "detailsContains": "Constraint failed: grove-mobile-result-1: 'A mobile Observation has a value, one or more components or members, or a reason why the result is absent.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-observation)"
+      }
+    ],
+    "step-count-value-number-required": [
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Observation.value.ofType(Quantity)",
+        "detailsContains": "Observation.value[x].value: minimum required = 1, but only found 0 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-step-count|0.1.0)"
+      },
+      {
+        "messageId": "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-step-count#grove-step-count-value-1",
+        "code": "invariant",
+        "expression": "Observation",
+        "detailsContains": "Constraint failed: grove-step-count-value-1: 'A populated step count is not negative.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-step-count)"
+      }
+    ],
+    "mobile-observation-recording-method-value-required": [
+      {
+        "messageId": "http://hl7.org/fhir/StructureDefinition/Extension#ext-1",
+        "code": "invariant",
+        "expression": "Observation.extension[0]",
+        "detailsContains": "Constraint failed: ext-1: 'Must have either extensions or value[x], not both' (defined in http://hl7.org/fhir/StructureDefinition/Extension)"
+      },
+      {
+        "messageId": "Extension_EXT_Simple_ABSENT",
+        "code": "structure",
+        "expression": "Observation.extension[0]",
+        "detailsContains": "The Extension 'https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-recording-method' definition is for a simple extension, so it must contain a value"
+      },
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Observation.extension[0]",
+        "detailsContains": "Extension.value[x]: minimum required = 1, but only found 0 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-recording-method|0.1.0)"
+      }
+    ],
+    "application-device-identifier-system-required": [
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Device.identifier[0]",
+        "detailsContains": "Device.identifier.system: minimum required = 1, but only found 0 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-application-device|0.1.0)"
+      }
+    ],
+    "application-device-identifier-required": [
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Device",
+        "detailsContains": "Device.identifier: minimum required = 1, but only found 0 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-application-device|0.1.0)"
+      }
+    ],
+    "step-count-period-order": [
+      {
+        "messageId": "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-step-count#grove-step-count-period-1",
+        "code": "invariant",
+        "expression": "Observation",
+        "detailsContains": "Constraint failed: grove-step-count-period-1: 'A step-count Observation has a non-zero effective Period.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-step-count)"
+      }
+    ],
+    "application-device-version-value-required": [
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Device.version[0]",
+        "detailsContains": "Device.version.value: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/Device|4.0.1)"
+      },
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Device.version[0]",
+        "detailsContains": "Device.version:applicationVersion.value: minimum required = 1, but only found 0 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-application-device|0.1.0)"
+      },
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Device.version[0]",
+        "detailsContains": "Device.version.value: minimum required = 1, but only found 0 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-application-device|0.1.0)"
+      }
+    ],
+    "mobile-observation-research-study-target": [
+      {
+        "messageId": "Reference_REF_BadTargetType",
+        "code": "structure",
+        "expression": "Observation.extension[2].value.ofType(Reference)",
+        "detailsContains": "Invalid Resource target type. Found Device, but expected one of ([ResearchStudy])"
+      },
+      {
+        "messageId": "CONTAINED_ORPHAN_DOM3",
+        "code": "invalid",
+        "expression": "Observation.contained[2]",
+        "detailsContains": "The contained resource 'study' is not referenced to from elsewhere in the containing resource nor does it refer to the containing resource (dom-3)"
+      }
+    ],
+    "step-count-period-required": [
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Observation",
+        "detailsContains": "Observation.effective[x]: minimum required = 1, but only found 0 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-step-count|0.1.0)"
+      },
+      {
+        "messageId": "Validation_VAL_Profile_Minimum_SLICE",
+        "code": "structure",
+        "expression": "Observation",
+        "detailsContains": "Slice 'Observation.effective[x]:effectivePeriod': a matching slice is required, but not found (from https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-step-count|0.1.0). Note that other slices are allowed in addition to this required slice"
+      },
+      {
+        "messageId": "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-step-count#grove-step-count-period-1",
+        "code": "invariant",
+        "expression": "Observation",
+        "detailsContains": "Constraint failed: grove-step-count-period-1: 'A step-count Observation has a non-zero effective Period.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-step-count)"
+      }
+    ],
+    "mobile-observation-recording-method-coding-only": [
+      {
+        "messageId": "Extension_EXT_Type",
+        "code": "structure",
+        "expression": "Observation.extension[0]",
+        "detailsContains": "The Extension 'https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-recording-method' definition allows for the types [Coding] but found type string"
+      }
+    ],
+    "step-count-period-start-required": [
+      {
+        "messageId": "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-step-count#grove-step-count-period-1",
+        "code": "invariant",
+        "expression": "Observation",
+        "detailsContains": "Constraint failed: grove-step-count-period-1: 'A step-count Observation has a non-zero effective Period.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-step-count)Cannot invoke \"java.lang.Integer.intValue()\" because the return value of \"org.hl7.fhir.r5.model.BaseDateTimeType.getYear()\" is null (log: Cannot invoke \"java.lang.Integer.intValue()\" because the return value of \"org.hl7.fhir.r5.model.BaseDateTimeType.getYear()\" is null)"
+      }
+    ],
+    "mobile-observation-effective-required": [
+      {
+        "messageId": "http://hl7.org/fhir/StructureDefinition/heartrate#vs-1",
+        "code": "invariant",
+        "expression": "Observation.effective.ofType(dateTime)",
+        "detailsContains": "Constraint failed: vs-1: 'if Observation.effective[x] is dateTime and has a value then that value shall be precise to the day'"
+      }
+    ],
+    "step-count-effective-date-time-prohibited": [
+      {
+        "code": "structure",
+        "expression": "Observation",
+        "detailsContains": "Unrecognized property 'effectivePeriod'"
+      },
+      {
+        "messageId": "Validation_VAL_Profile_NotSlice",
+        "code": "invalid",
+        "expression": "Observation.effective.ofType(dateTime)",
+        "detailsContains": "This element does not match any known slice defined in the profile https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-step-count|0.1.0 and slicing is CLOSED: "
+      },
+      {
+        "messageId": "Validation_VAL_Profile_Minimum_SLICE",
+        "code": "structure",
+        "expression": "Observation",
+        "detailsContains": "Slice 'Observation.effective[x]:effectivePeriod': a matching slice is required, but not found (from https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-step-count|0.1.0). Note that other slices are allowed in addition to this required slice"
+      },
+      {
+        "messageId": "Extension_PROF_Type",
+        "code": "structure",
+        "expression": "Observation.effective.ofType(dateTime)",
+        "detailsContains": "The Profile 'https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-step-count|0.1.0' definition allows for the type Period but found type dateTime"
+      },
+      {
+        "messageId": "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-step-count#grove-step-count-period-1",
+        "code": "invariant",
+        "expression": "Observation",
+        "detailsContains": "Constraint failed: grove-step-count-period-1: 'A step-count Observation has a non-zero effective Period.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-step-count)"
+      }
+    ],
+    "recording-device-incomplete-identifier": [
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Device.identifier[0]",
+        "detailsContains": "Device.identifier.system: minimum required = 1, but only found 0 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-recording-device|0.1.0)"
+      }
+    ],
+    "conversion-provenance-source-required": [
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Provenance",
+        "detailsContains": "Provenance.entity: minimum required = 1, but only found 0 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-conversion-provenance|0.1.0)"
+      }
+    ],
+    "conversion-provenance-target-mobile-observation": [
+      {
+        "messageId": "Reference_REF_BadTargetType",
+        "code": "structure",
+        "expression": "Provenance.target[0]",
+        "detailsContains": "Invalid Resource target type. Found Observation, but expected one of (Device)"
+      },
+      {
+        "messageId": "Reference_REF_BadTargetType",
+        "code": "structure",
+        "expression": "Provenance.target[0]",
+        "detailsContains": "Invalid Resource target type. Found Device, but expected one of ([Observation])"
+      },
+      {
+        "messageId": "CONTAINED_ORPHAN_DOM3",
+        "code": "invalid",
+        "expression": "Provenance.contained[0]",
+        "detailsContains": "The contained resource 'converted' is not referenced to from elsewhere in the containing resource nor does it refer to the containing resource (dom-3)"
+      }
+    ],
+    "mobile-observation-recording-method-required-binding": [
+      {
+        "messageId": "Unknown_Code_in_Version",
+        "code": "code-invalid",
+        "expression": "Observation.extension[0].value.ofType(Coding).code",
+        "detailsContains": "Unknown code 'unknown' in the CodeSystem 'https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/CodeSystem/grove-recording-method' version '0.1.0'"
+      },
+      {
+        "messageId": "Terminology_TX_NoValid_12",
+        "code": "code-invalid",
+        "expression": "Observation.extension[0].value.ofType(Coding)",
+        "detailsContains": "The Coding provided (https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/CodeSystem/grove-recording-method#unknown) was not found in the value set 'Grove Recording Method' (https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/ValueSet/grove-recording-method|0.1.0), and a code is required from this value set.  (error message = The provided code 'https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/CodeSystem/grove-recording-method#unknown' was not found in the value set 'https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/ValueSet/grove-recording-method|0.1.0'; Unknown code 'unknown' in the CodeSystem 'https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/CodeSystem/grove-recording-method' version '0.1.0')"
+      }
+    ],
+    "step-count-negative-value": [
+      {
+        "messageId": "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-step-count#grove-step-count-value-1",
+        "code": "invariant",
+        "expression": "Observation",
+        "detailsContains": "Constraint failed: grove-step-count-value-1: 'A populated step count is not negative.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-step-count)"
+      }
+    ],
+    "conversion-provenance-assembler-required": [
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Provenance",
+        "detailsContains": "Provenance.agent: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/Provenance|4.0.1)"
+      },
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Provenance",
+        "detailsContains": "Provenance.agent: minimum required = 1, but only found 0 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-conversion-provenance|0.1.0)"
+      },
+      {
+        "messageId": "Validation_VAL_Profile_Minimum_SLICE",
+        "code": "structure",
+        "expression": "Provenance",
+        "detailsContains": "Slice 'Provenance.agent:assembler': a matching slice is required, but not found (from https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-conversion-provenance|0.1.0). Note that other slices are allowed in addition to this required slice"
+      },
+      {
+        "messageId": "CONTAINED_ORPHAN_DOM3",
+        "code": "invalid",
+        "expression": "Provenance.contained[1]",
+        "detailsContains": "The contained resource 'assembler' is not referenced to from elsewhere in the containing resource nor does it refer to the containing resource (dom-3)"
+      }
+    ],
+    "step-count-result-required": [
+      {
+        "messageId": "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-observation#grove-mobile-result-1",
+        "code": "invariant",
+        "expression": "Observation",
+        "detailsContains": "Constraint failed: grove-mobile-result-1: 'A mobile Observation has a value, one or more components or members, or a reason why the result is absent.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-observation)"
+      },
+      {
+        "messageId": "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-step-count#grove-step-count-result-1",
+        "code": "invariant",
+        "expression": "Observation",
+        "detailsContains": "Constraint failed: grove-step-count-result-1: 'A step-count Observation has a count value or a reason why the count is absent.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-step-count)"
+      }
+    ],
+    "application-device-name-value-required": [
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Device.deviceName[0]",
+        "detailsContains": "Device.deviceName.name: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/Device|4.0.1)"
+      },
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Device.deviceName[0]",
+        "detailsContains": "Device.deviceName:applicationName.name: minimum required = 1, but only found 0 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-application-device|0.1.0)"
+      },
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Device.deviceName[0]",
+        "detailsContains": "Device.deviceName.name: minimum required = 1, but only found 0 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-application-device|0.1.0)"
+      }
+    ],
+    "mobile-observation-duplicate-identifier": [
+      {
+        "messageId": "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-observation#grove-identifier-token-1",
+        "code": "invariant",
+        "expression": "Observation",
+        "detailsContains": "Constraint failed: grove-identifier-token-1: 'A resource does not repeat the same identifier system and value pair.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-observation)"
+      }
+    ],
+    "mobile-observation-subject-patient-only": [
+      {
+        "messageId": "Reference_REF_BadTargetType",
+        "code": "structure",
+        "expression": "Observation.subject",
+        "detailsContains": "Invalid Resource target type. Found Patient, but expected one of (Device)"
+      },
+      {
+        "messageId": "Reference_REF_BadTargetType",
+        "code": "structure",
+        "expression": "Observation.subject",
+        "detailsContains": "Invalid Resource target type. Found Device, but expected one of ([Patient])"
+      },
+      {
+        "messageId": "CONTAINED_ORPHAN_DOM3",
+        "code": "invalid",
+        "expression": "Observation.contained[0]",
+        "detailsContains": "The contained resource 'participant' is not referenced to from elsewhere in the containing resource nor does it refer to the containing resource (dom-3)"
+      }
+    ],
+    "mobile-observation-identifier-required": [
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Observation",
+        "detailsContains": "Observation.identifier: minimum required = 1, but only found 0 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-observation|0.1.0)"
+      }
+    ],
+    "conversion-provenance-assembler-type-fixed": [
+      {
+        "messageId": "Validation_VAL_Profile_Minimum_SLICE",
+        "code": "structure",
+        "expression": "Provenance",
+        "detailsContains": "Slice 'Provenance.agent:assembler': a matching slice is required, but not found (from https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-conversion-provenance|0.1.0). Note that other slices are allowed in addition to this required slice"
+      }
+    ],
+    "mobile-observation-subject-required": [
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Observation",
+        "detailsContains": "Observation.subject: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/heartrate|4.0.1)"
+      },
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Observation",
+        "detailsContains": "Observation.subject: minimum required = 1, but only found 0 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-observation|0.1.0)"
+      },
+      {
+        "messageId": "CONTAINED_ORPHAN_DOM3",
+        "code": "invalid",
+        "expression": "Observation.contained[0]",
+        "detailsContains": "The contained resource 'participant' is not referenced to from elsewhere in the containing resource nor does it refer to the containing resource (dom-3)"
+      }
+    ],
+    "conversion-provenance-activity-required": [
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Provenance",
+        "detailsContains": "Provenance.activity: minimum required = 1, but only found 0 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-conversion-provenance|0.1.0)"
+      }
+    ],
+    "conversion-provenance-recorded-required": [
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Provenance",
+        "detailsContains": "Provenance.recorded: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/Provenance|4.0.1)"
+      },
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Provenance",
+        "detailsContains": "Provenance.recorded: minimum required = 1, but only found 0 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-conversion-provenance|0.1.0)"
+      }
+    ],
+    "mobile-observation-recording-method-nested-extension-prohibited": [
+      {
+        "messageId": "http://hl7.org/fhir/StructureDefinition/Extension#ext-1",
+        "code": "invariant",
+        "expression": "Observation.extension[0]",
+        "detailsContains": "Constraint failed: ext-1: 'Must have either extensions or value[x], not both' (defined in http://hl7.org/fhir/StructureDefinition/Extension)"
+      },
+      {
+        "messageId": "Validation_VAL_Profile_Maximum",
+        "code": "structure",
+        "expression": "Observation.extension[0]",
+        "detailsContains": "Extension.extension: max allowed = 0, but found 1 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-recording-method|0.1.0)"
+      }
+    ],
+    "step-count-period-start-timezone-limit": [
+      {
+        "messageId": "Validation_VAL_Profile_Maximum",
+        "code": "structure",
+        "expression": "Observation.effective.ofType(Period).start",
+        "detailsContains": "Observation.effective[x]:effectivePeriod.start.extension:startTimezone: max allowed = 1, but found 2 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-step-count|0.1.0)"
+      }
+    ],
+    "step-count-unit-code-fixed": [
+      {
+        "messageId": "_DT_Fixed_Wrong",
+        "code": "value",
+        "expression": "Observation.value.ofType(Quantity).code",
+        "detailsContains": "Value is '1' but is fixed to '{steps}' in the profile https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-step-count|0.1.0#Observation.value[x].code"
+      }
+    ],
+    "conversion-provenance-source-role-fixed": [
+      {
+        "messageId": "_DT_Fixed_Wrong",
+        "code": "value",
+        "expression": "Provenance.entity[0].role",
+        "detailsContains": "Value is 'revision' but is fixed to 'source' in the profile https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-conversion-provenance|0.1.0#Provenance.entity.role"
+      }
+    ],
+    "application-device-identifier-value-required": [
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Device.identifier[0]",
+        "detailsContains": "Device.identifier.value: minimum required = 1, but only found 0 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-application-device|0.1.0)"
+      }
+    ],
+    "conversion-provenance-assembler-application-target": [
+      {
+        "messageId": "Reference_REF_BadTargetType",
+        "code": "structure",
+        "expression": "Provenance.agent[0].who",
+        "detailsContains": "Invalid Resource target type. Found Device, but expected one of (Observation)"
+      },
+      {
+        "messageId": "Reference_REF_BadTargetType",
+        "code": "structure",
+        "expression": "Provenance.agent[0].who",
+        "detailsContains": "Invalid Resource target type. Found Observation, but expected one of ([Practitioner, Organization, Device, Patient, PractitionerRole, RelatedPerson])"
+      },
+      {
+        "messageId": "Reference_REF_BadTargetType",
+        "code": "structure",
+        "expression": "Provenance.agent[0].who",
+        "detailsContains": "Invalid Resource target type. Found Observation, but expected one of ([Device])"
+      },
+      {
+        "messageId": "CONTAINED_ORPHAN_DOM3",
+        "code": "invalid",
+        "expression": "Provenance.contained[1]",
+        "detailsContains": "The contained resource 'assembler' is not referenced to from elsewhere in the containing resource nor does it refer to the containing resource (dom-3)"
+      }
+    ],
+    "application-device-name-required": [
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Device",
+        "detailsContains": "Device.deviceName: minimum required = 1, but only found 0 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-application-device|0.1.0)"
+      },
+      {
+        "messageId": "Validation_VAL_Profile_Minimum_SLICE",
+        "code": "structure",
+        "expression": "Device",
+        "detailsContains": "Slice 'Device.deviceName:applicationName': a matching slice is required, but not found (from https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-application-device|0.1.0). Note that other slices are allowed in addition to this required slice"
+      }
+    ],
+    "conversion-provenance-target-required": [
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Provenance",
+        "detailsContains": "Provenance.target: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/Provenance|4.0.1)"
+      },
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Provenance",
+        "detailsContains": "Provenance.target: minimum required = 1, but only found 0 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-conversion-provenance|0.1.0)"
+      },
+      {
+        "messageId": "CONTAINED_ORPHAN_DOM3",
+        "code": "invalid",
+        "expression": "Provenance.contained[0]",
+        "detailsContains": "The contained resource 'converted' is not referenced to from elsewhere in the containing resource nor does it refer to the containing resource (dom-3)"
+      }
+    ],
+    "mobile-observation-gateway-limit": [
+      {
+        "messageId": "Validation_VAL_Profile_Maximum",
+        "code": "structure",
+        "expression": "Observation",
+        "detailsContains": "Observation.extension:gatewayDevice: max allowed = 1, but found 2 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-observation|0.1.0)"
+      }
+    ],
+    "application-device-version-limit": [
+      {
+        "messageId": "Validation_VAL_Profile_Maximum",
+        "code": "structure",
+        "expression": "Device",
+        "detailsContains": "Device.version:applicationVersion: max allowed = 1, but found 2 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-application-device|0.1.0)"
+      }
+    ],
+    "conversion-provenance-source-role-required": [
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Provenance.entity[0]",
+        "detailsContains": "Provenance.entity.role: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/Provenance|4.0.1)"
+      },
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Provenance.entity[0]",
+        "detailsContains": "Provenance.entity.role: minimum required = 1, but only found 0 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-conversion-provenance|0.1.0)"
+      }
+    ],
+    "mobile-observation-gateway-application-target": [
+      {
+        "messageId": "Reference_REF_BadTargetType",
+        "code": "structure",
+        "expression": "Observation.extension[1].value.ofType(Reference)",
+        "detailsContains": "Invalid Resource target type. Found Patient, but expected one of ([Device])"
+      },
+      {
+        "messageId": "CONTAINED_ORPHAN_DOM3",
+        "code": "invalid",
+        "expression": "Observation.contained[1]",
+        "detailsContains": "The contained resource 'application' is not referenced to from elsewhere in the containing resource nor does it refer to the containing resource (dom-3)"
+      }
+    ],
+    "application-device-parent-device-target": [
+      {
+        "messageId": "Reference_REF_WrongTarget",
+        "code": "structure",
+        "expression": "Device.parent",
+        "detailsContains": "The type 'Patient' is not a valid Target for this element (must be one of [CanonicalType[http://hl7.org/fhir/StructureDefinition/Device|4.0.1]])"
+      },
+      {
+        "messageId": "Reference_REF_BadTargetType",
+        "code": "structure",
+        "expression": "Device.parent",
+        "detailsContains": "Invalid Resource target type. Found Patient, but expected one of (Device)"
+      }
+    ],
+    "mobile-observation-identifier-system-required": [
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Observation.identifier[0]",
+        "detailsContains": "Observation.identifier.system: minimum required = 1, but only found 0 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-observation|0.1.0)"
+      }
+    ],
+    "conversion-provenance-activity-transform": [
+      {
+        "messageId": "Unknown_Code_in_Version",
+        "code": "code-invalid",
+        "expression": "Provenance.activity.coding[0].code",
+        "detailsContains": "Unknown code 'create' in the CodeSystem 'http://terminology.hl7.org/CodeSystem/iso-21089-lifecycle' version '1.0.0'"
+      },
+      {
+        "messageId": "TYPE_CHECKS_PATTERN_CC",
+        "code": "value",
+        "expression": "Provenance.activity",
+        "detailsContains": "The pattern [system http://terminology.hl7.org/CodeSystem/iso-21089-lifecycle, code transform, and display 'null'] defined in the profile https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-conversion-provenance|0.1.0 not found. Issues: [ValidationMessage[level=ERROR,type=VALUE,location=Provenance.activity.coding.code,message=Value is 'create' but is fixed to 'transform' in the profile https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-conversion-provenance|0.1.0#Provenance]]"
+      }
+    ],
+    "conversion-provenance-assembler-type-required": [
+      {
+        "messageId": "Validation_VAL_Profile_Minimum_SLICE",
+        "code": "structure",
+        "expression": "Provenance",
+        "detailsContains": "Slice 'Provenance.agent:assembler': a matching slice is required, but not found (from https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-conversion-provenance|0.1.0). Note that other slices are allowed in addition to this required slice"
+      }
+    ],
+    "mobile-observation-recording-method-limit": [
+      {
+        "messageId": "Validation_VAL_Profile_Maximum",
+        "code": "structure",
+        "expression": "Observation",
+        "detailsContains": "Observation.extension:recordingMethod: max allowed = 1, but found 2 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-observation|0.1.0)"
+      }
+    ],
+    "step-count-code-fixed": [
+      {
+        "messageId": "Unknown_Code_in_Version",
+        "code": "code-invalid",
+        "expression": "Observation.code.coding[0].code",
+        "detailsContains": "Unknown code 'other-count' in the CodeSystem 'https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/CodeSystem/grove-mobile-measurement' version '0.1.0'"
+      },
+      {
+        "messageId": "TYPE_CHECKS_PATTERN_CC",
+        "code": "value",
+        "expression": "Observation.code",
+        "detailsContains": "The pattern [system https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/CodeSystem/grove-mobile-measurement, code step-count-total, and display 'null'] defined in the profile https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-step-count|0.1.0 not found. Issues: [ValidationMessage[level=ERROR,type=VALUE,location=Observation.code.coding.code,message=Value is 'other-count' but is fixed to 'step-count-total' in the profile https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-step-count|0.1.0#Observation]]"
+      },
+      {
+        "messageId": "Terminology_TX_NoValid_1_CC",
+        "code": "code-invalid",
+        "expression": "Observation.code",
+        "detailsContains": "None of the codings provided are in the value set 'Grove Mobile Measurement' (https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/ValueSet/grove-mobile-measurement|0.1.0), and a coding from this value set is required) (codes = https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/CodeSystem/grove-mobile-measurement#other-count)"
+      }
+    ],
+    "recording-device-identifier-value-required": [
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Device.identifier[0]",
+        "detailsContains": "Device.identifier.value: minimum required = 1, but only found 0 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-recording-device|0.1.0)"
+      }
+    ],
+    "step-count-period-end-required": [
+      {
+        "messageId": "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-step-count#grove-step-count-period-1",
+        "code": "invariant",
+        "expression": "Observation",
+        "detailsContains": "Constraint failed: grove-step-count-period-1: 'A step-count Observation has a non-zero effective Period.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-step-count)Cannot invoke \"java.lang.Integer.intValue()\" because the return value of \"org.hl7.fhir.r5.model.BaseDateTimeType.getYear()\" is null (log: Cannot invoke \"java.lang.Integer.intValue()\" because the return value of \"org.hl7.fhir.r5.model.BaseDateTimeType.getYear()\" is null)"
+      }
+    ],
+    "step-count-unit-system-fixed": [
+      {
+        "messageId": "_DT_Fixed_Wrong",
+        "code": "value",
+        "expression": "Observation.value.ofType(Quantity).system",
+        "detailsContains": "Value is 'https://example.org/units' but is fixed to 'http://unitsofmeasure.org' in the profile https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-step-count|0.1.0#Observation.value[x].system"
+      }
+    ],
+    "application-device-name-limit": [
+      {
+        "messageId": "Validation_VAL_Profile_Maximum",
+        "code": "structure",
+        "expression": "Device",
+        "detailsContains": "Device.deviceName:applicationName: max allowed = 1, but found 2 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-application-device|0.1.0)"
+      }
+    ],
+    "application-device-name-type-fixed": [
+      {
+        "messageId": "Validation_VAL_Profile_Minimum_SLICE",
+        "code": "structure",
+        "expression": "Device",
+        "detailsContains": "Slice 'Device.deviceName:applicationName': a matching slice is required, but not found (from https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-application-device|0.1.0). Note that other slices are allowed in addition to this required slice"
+      }
+    ],
+    "mobile-observation-date-time-timezone-limit": [
+      {
+        "messageId": "Validation_VAL_Profile_Maximum",
+        "code": "structure",
+        "expression": "Observation.effective.ofType(dateTime)",
+        "detailsContains": "Observation.effective[x]:effectiveDateTime.extension:timezone: max allowed = 1, but found 2 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-observation|0.1.0)"
+      }
+    ],
+    "conversion-provenance-assembler-who-required": [
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Provenance.agent[0]",
+        "detailsContains": "Provenance.agent.who: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/Provenance|4.0.1)"
+      },
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Provenance.agent[0]",
+        "detailsContains": "Provenance.agent:assembler.who: minimum required = 1, but only found 0 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-conversion-provenance|0.1.0)"
+      },
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Provenance.agent[0]",
+        "detailsContains": "Provenance.agent.who: minimum required = 1, but only found 0 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-conversion-provenance|0.1.0)"
+      },
+      {
+        "messageId": "CONTAINED_ORPHAN_DOM3",
+        "code": "invalid",
+        "expression": "Provenance.contained[1]",
+        "detailsContains": "The contained resource 'assembler' is not referenced to from elsewhere in the containing resource nor does it refer to the containing resource (dom-3)"
+      }
+    ],
+    "step-count-unit-system-required": [
+      {
+        "messageId": "http://hl7.org/fhir/StructureDefinition/Quantity#qty-3",
+        "code": "invariant",
+        "expression": "Observation.value.ofType(Quantity)",
+        "detailsContains": "Constraint failed: qty-3: 'If a code for the unit is present, the system SHALL also be present'"
+      },
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Observation.value.ofType(Quantity)",
+        "detailsContains": "Observation.value[x].system: minimum required = 1, but only found 0 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-step-count|0.1.0)"
+      }
+    ],
+    "step-count-unit-code-required": [
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Observation.value.ofType(Quantity)",
+        "detailsContains": "Observation.value[x].code: minimum required = 1, but only found 0 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-step-count|0.1.0)"
+      }
+    ]
+  }
+}

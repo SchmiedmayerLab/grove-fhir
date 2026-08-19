@@ -1,0 +1,147 @@
+{
+  "schemaVersion": 2,
+  "externalDirectoryContract": "evidence-lock-exact-allowlist",
+  "clinicalProfile": "http://hl7.org/fhir/StructureDefinition/heartrate",
+  "roles": {
+    "recordingDeviceProfile": "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-recording-device",
+    "applicationDeviceProfile": "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-application-device",
+    "gatewayExtension": "http://hl7.org/fhir/StructureDefinition/observation-gatewayDevice",
+    "assemblerSystem": "http://terminology.hl7.org/CodeSystem/provenance-participant-type",
+    "assemblerCode": "assembler",
+    "entererSystem": "http://terminology.hl7.org/CodeSystem/provenance-participant-type",
+    "entererCode": "enterer",
+    "transformSystem": "http://terminology.hl7.org/CodeSystem/iso-21089-lifecycle",
+    "transformCode": "transform"
+  },
+  "excludedFromClinicalEquivalence": [
+    {
+      "path": "Resource.id",
+      "reason": "Technical resource ids are local to an export and do not establish clinical equivalence."
+    },
+    {
+      "path": "Observation.meta.profile[adapter]",
+      "reason": "HealthKit and Health Connect intentionally assert different source-adapter profiles."
+    },
+    {
+      "path": "Observation.identifier",
+      "reason": "Source and output business identifiers are platform-specific and are checked only within each provenance graph."
+    },
+    {
+      "path": "Observation.subject.reference|identifier",
+      "reason": "Participant ids and references are deployment-local; only Patient subject type is shared clinical meaning."
+    },
+    {
+      "path": "Observation.effective[x].value",
+      "reason": "Exact sample instants are source events; equivalence requires the same populated effective choice kind, not timestamp equality."
+    },
+    {
+      "path": "Observation.issued",
+      "reason": "Issued time reflects platform conversion and ingestion timing."
+    },
+    {
+      "path": "Observation.device identity",
+      "reason": "Recording hardware identities differ; the recorder role and profile are checked per platform."
+    },
+    {
+      "path": "Observation.extension[observation-gatewayDevice] identity",
+      "reason": "A gateway is included only when an actual mediator is known and is never inferred from the converter application."
+    },
+    {
+      "path": "Observation.extension[workflow-researchStudy]",
+      "reason": "Study references are deployment-local and are validated by the accepted study graph, not by clinical equivalence."
+    },
+    {
+      "path": "Observation.extension[grove-recording-method]",
+      "reason": "Acquisition method is useful provenance context but is outside the minimal cross-platform heart-rate projection."
+    },
+    {
+      "path": "Observation.component",
+      "reason": "HealthKit metadata components have no required Health Connect equivalent."
+    },
+    {
+      "path": "Observation.valueQuantity.unit|display",
+      "reason": "Human-readable unit text may differ; UCUM system and code carry interoperable unit semantics."
+    },
+    {
+      "path": "Provenance.occurred[x]|recorded",
+      "reason": "Conversion timing is platform-specific; the transform activity and graph roles are checked instead."
+    },
+    {
+      "path": "Device identifiers and names",
+      "reason": "Recorder, gateway, source application, and converter identities are platform-local; their distinct roles are checked structurally."
+    }
+  ],
+  "expectedProjection": {
+    "resourceType": "Observation",
+    "clinicalProfile": "http://hl7.org/fhir/StructureDefinition/heartrate",
+    "status": "final",
+    "category": {
+      "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+      "code": "vital-signs"
+    },
+    "code": {
+      "system": "http://loinc.org",
+      "code": "8867-4"
+    },
+    "subjectType": "Patient",
+    "effectiveKind": "dateTime",
+    "valueQuantity": {
+      "value": 72,
+      "system": "http://unitsofmeasure.org",
+      "code": "/min"
+    }
+  },
+  "staticInputs": [
+    {
+      "id": "healthkit-static",
+      "semantics": "healthkit",
+      "observation": "../corpora/healthkit/bases/heart-rate.json",
+      "provenance": "../corpora/healthkit/bases/heart-rate-conversion-provenance.json",
+      "adapterProfile": "https://schmiedmayerlab.github.io/grove-fhir/fhir/healthkit/StructureDefinition/healthkit-observation",
+      "sourceIdentifierSystem": "https://schmiedmayerlab.github.io/grove-fhir/fhir/healthkit/NamingSystem/healthkit-object-id",
+      "provenanceProfile": "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-conversion-provenance",
+      "gatewayExpectation": "required",
+      "requireDataOrigin": false
+    },
+    {
+      "id": "health-connect-static",
+      "semantics": "health-connect",
+      "observation": "../corpora/health-connect/bases/heart-rate.json",
+      "provenance": "../corpora/health-connect/bases/conversion-provenance.json",
+      "adapterProfile": "https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/StructureDefinition/health-connect-observation",
+      "sourceIdentifierSystem": "https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/NamingSystem/health-connect-record-id",
+      "provenanceProfile": "https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/StructureDefinition/health-connect-conversion-provenance",
+      "gatewayExpectation": "required",
+      "requireDataOrigin": true
+    }
+  ],
+  "implementationInputs": [
+    {
+      "id": "grove-current-resources",
+      "semantics": "healthkit",
+      "files": {
+        "observation": "heart-rate.json",
+        "provenance": "heart-rate-provenance.json"
+      },
+      "adapterProfile": "https://schmiedmayerlab.github.io/grove-fhir/fhir/healthkit/StructureDefinition/healthkit-observation",
+      "sourceIdentifierSystem": "https://schmiedmayerlab.github.io/grove-fhir/fhir/healthkit/NamingSystem/healthkit-object-id",
+      "provenanceProfile": "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-conversion-provenance",
+      "gatewayExpectation": "absent-in-export",
+      "requireDataOrigin": false
+    },
+    {
+      "id": "my-heart-counts-android-conformance",
+      "semantics": "health-connect",
+      "files": {
+        "observation": "health-connect-heart-rate-observation-1.json",
+        "provenance": "health-connect-heart-rate-provenance.json",
+        "bundle": "health-connect-heart-rate-bundle.json"
+      },
+      "adapterProfile": "https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/StructureDefinition/health-connect-observation",
+      "sourceIdentifierSystem": "https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/NamingSystem/health-connect-record-id",
+      "provenanceProfile": "https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/StructureDefinition/health-connect-conversion-provenance",
+      "gatewayExpectation": "absent-in-export",
+      "requireDataOrigin": true
+    }
+  ]
+}
