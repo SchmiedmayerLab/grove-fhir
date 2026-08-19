@@ -432,6 +432,7 @@
       "required": ["version", "precision"],
       "properties": {
         "version": {"$ref": "#/$defs/nonemptyString"},
+        "setupVersion": {"$ref": "#/$defs/nonemptyString"},
         "precision": {"enum": ["exact", "major-minor"]},
         "distribution": {"$ref": "#/$defs/nonemptyString"}
       }
@@ -479,7 +480,19 @@
             "node": {"$ref": "#/$defs/runtime"},
             "npm": {"$ref": "#/$defs/runtime"},
             "python": {"$ref": "#/$defs/runtime"},
-            "java": {"$ref": "#/$defs/runtime"},
+            "java": {
+              "allOf": [
+                {"$ref": "#/$defs/runtime"},
+                {
+                  "type": "object",
+                  "properties": {
+                    "setupVersion": {"$ref": "#/$defs/nonemptyString"},
+                    "distribution": {"$ref": "#/$defs/nonemptyString"}
+                  },
+                  "required": ["setupVersion", "distribution"]
+                }
+              ]
+            },
             "ruby": {"$ref": "#/$defs/runtime"},
             "bundler": {"$ref": "#/$defs/runtime"}
           }
@@ -699,6 +712,7 @@
           "items": {"$ref": "#/$defs/nonemptyString"}
         },
         "declaredVersion": {"$ref": "#/$defs/nonemptyString"},
+        "setupVersion": {"$ref": "#/$defs/nonemptyString"},
         "precision": {"enum": ["exact", "major-minor"]},
         "version": {"$ref": "#/$defs/nonemptyString"},
         "distribution": {"$ref": "#/$defs/nonemptyString"},
@@ -715,6 +729,14 @@
             "required": ["zlibVersion"]
           },
           "else": {"not": {"required": ["zlibVersion"]}}
+        },
+        {
+          "if": {"properties": {"id": {"const": "java"}}, "required": ["id"]},
+          "then": {
+            "properties": {"setupVersion": {"$ref": "#/$defs/nonemptyString"}},
+            "required": ["setupVersion"]
+          },
+          "else": {"not": {"required": ["setupVersion"]}}
         }
       ]
     },

@@ -32,6 +32,10 @@ class ConformanceWorkflowTests(unittest.TestCase):
         for identifier in ("node", "python", "java", "ruby"):
             self.assertEqual(runtimes[identifier]["precision"], "exact")
             self.assertIn(runtimes[identifier]["version"], self.build)
+        java_setup_version = runtimes["java"]["setupVersion"]
+        self.assertEqual(
+            self.build.count(f'java-version: "{java_setup_version}"'), 4
+        )
         self.assertEqual(runtimes["bundler"]["precision"], "exact")
         self.assertIn(
             f"gem install bundler -v {runtimes['bundler']['version']}", self.build

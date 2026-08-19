@@ -137,7 +137,7 @@ jobs:
       - uses: actions/setup-java@v5
         with:
           distribution: temurin
-          java-version: "21.0.10+7"
+          java-version: "21.0.10+7.0.LTS"
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: "3.3.12"
@@ -208,7 +208,7 @@ jobs:
       - uses: actions/setup-java@v5
         with:
           distribution: temurin
-          java-version: "21.0.10+7"
+          java-version: "21.0.10+7.0.LTS"
       - run: npm ci
       - name: Select the exact locked Firebase CLI
         env:
@@ -364,7 +364,7 @@ jobs:
       - uses: actions/setup-java@v5
         with:
           distribution: temurin
-          java-version: "21.0.10+7"
+          java-version: "21.0.10+7.0.LTS"
       - uses: actions/download-artifact@v5
         with:
           name: implementation-guides
@@ -512,7 +512,7 @@ jobs:
       - uses: actions/setup-java@v5
         with:
           distribution: temurin
-          java-version: "21.0.10+7"
+          java-version: "21.0.10+7.0.LTS"
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: "3.3.12"

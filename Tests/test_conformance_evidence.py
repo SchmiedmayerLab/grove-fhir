@@ -95,6 +95,25 @@ class ConformanceEvidenceTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("classification", result.stderr)
 
+        with tempfile.TemporaryDirectory() as directory:
+            toolchain = json.loads((ROOT / "Conformance/toolchain.json").read_text())
+            toolchain["runtimes"]["java"].pop("setupVersion")
+            invalid = Path(directory) / "invalid-toolchain.json"
+            invalid.write_text(json.dumps(toolchain), encoding="utf-8")
+            result = subprocess.run(
+                [
+                    "node",
+                    str(ROOT / "Scripts/validate-json-schema.cjs"),
+                    str(ROOT / "Conformance/evidence.schema.json"),
+                    str(invalid),
+                ],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+            )
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("setupVersion", result.stderr)
+
     def test_generator_identity_does_not_cover_same_source_implementation(self) -> None:
         proposals = {
             "writer-one": {
