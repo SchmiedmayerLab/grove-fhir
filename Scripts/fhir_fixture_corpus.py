@@ -489,12 +489,6 @@ def materialize_corpus(manifest_path: Path, output: Path) -> dict[str, Any]:
     return index
 
 
-def _diagnostic_matches(expected: Mapping[str, Any], diagnostic: Any) -> bool:
-    return isinstance(diagnostic, dict) and all(
-        diagnostic.get(field) == value for field, value in expected.items()
-    )
-
-
 def validate_results(manifest: Mapping[str, Any], results: Any) -> list[str]:
     """Check base success and exact expected-rule evidence for every invalid case."""
     failures: list[str] = []
@@ -544,12 +538,9 @@ def validate_results(manifest: Mapping[str, Any], results: Any) -> list[str]:
         if not isinstance(diagnostics, list):
             failures.append(f"case {identifier} diagnostics must be a list")
             continue
-        if not any(
-            _diagnostic_matches(case["expectedRule"], diagnostic)
-            for diagnostic in diagnostics
-        ):
+        if diagnostics != [case["expectedRule"]]:
             failures.append(
-                f"case {identifier} did not report its exact expectedRule: "
+                f"case {identifier} must report exactly one diagnostic equal to expectedRule: "
                 + json.dumps(case["expectedRule"], sort_keys=True)
             )
     return failures

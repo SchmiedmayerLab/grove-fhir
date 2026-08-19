@@ -20,6 +20,7 @@ const tarStream = require("tar-stream");
 const PACKAGE_ID = /^[a-z0-9][a-z0-9.-]*$/;
 const PACKAGE_VERSION = /^[0-9A-Za-z][0-9A-Za-z.+-]*$/;
 const MAX_METADATA_BYTES = 1024 * 1024;
+const MAX_TEMPLATE_FILE_BYTES = 64 * 1024 * 1024;
 
 function usage() {
   console.error(
@@ -92,6 +93,99 @@ async function readPackageMetadata(archive) {
   return metadata;
 }
 
+function safeArchivePath(name) {
+  if (
+    typeof name !== "string" ||
+    name.length === 0 ||
+    name.includes("\\") ||
+    path.posix.isAbsolute(name)
+  ) {
+    throw new Error(`template archive has unsafe member path: ${name}`);
+  }
+  const normalized = path.posix.normalize(name);
+  if (normalized === "." || normalized === ".." || normalized.startsWith("../")) {
+    throw new Error(`template archive has unsafe member path: ${name}`);
+  }
+  return normalized;
+}
+
+async function extractTemplateArchive(archive, destination) {
+  const extractor = tarStream.extract();
+  const members = new Set();
+  extractor.on("entry", (header, stream, next) => {
+    let relative;
+    try {
+      relative = safeArchivePath(header.name);
+      if (members.has(relative)) {
+        throw new Error(`template archive has duplicate member: ${relative}`);
+      }
+      members.add(relative);
+      if (header.type !== "file") {
+        throw new Error(
+          `template archive member ${relative} has unsupported type ${header.type}`
+        );
+      }
+    } catch (error) {
+      stream.resume();
+      extractor.destroy(error);
+      return;
+    }
+
+    const target = path.join(destination, ...relative.split("/"));
+    fs.mkdirSync(path.dirname(target), { recursive: true });
+    const chunks = [];
+    let size = 0;
+    stream.on("data", (chunk) => {
+      size += chunk.length;
+      if (size > MAX_TEMPLATE_FILE_BYTES) {
+        extractor.destroy(
+          new Error(`template archive member exceeds size limit: ${relative}`)
+        );
+        return;
+      }
+      chunks.push(chunk);
+    });
+    stream.on("end", () => {
+      try {
+        fs.writeFileSync(target, Buffer.concat(chunks), { flag: "wx", mode: 0o644 });
+        next();
+      } catch (error) {
+        extractor.destroy(error);
+      }
+    });
+  });
+  await pipeline(fs.createReadStream(archive), zlib.createGunzip(), extractor);
+}
+
+async function cachePublisherTemplate(archive, cacheRoot, packageId, version) {
+  const expected = path.join(cacheRoot, `${packageId}#${version}`);
+  const temporary = fs.mkdtempSync(
+    path.join(cacheRoot, `.${packageId}#${version}.`)
+  );
+  try {
+    await extractTemplateArchive(archive, temporary);
+    const installedMetadata = JSON.parse(
+      fs.readFileSync(path.join(temporary, "package", "package.json"), "utf8")
+    );
+    if (
+      installedMetadata.name !== packageId ||
+      installedMetadata.version !== version ||
+      installedMetadata.type !== "fhir.template"
+    ) {
+      throw new Error("cached Publisher template metadata changed during installation");
+    }
+    if (!fs.statSync(path.join(temporary, "config.json")).isFile()) {
+      throw new Error("Publisher template has no root config.json");
+    }
+    fs.rmSync(expected, { recursive: true, force: true });
+    fs.renameSync(temporary, expected);
+    return expected;
+  } catch (error) {
+    fs.rmSync(temporary, { recursive: true, force: true });
+    throw error;
+  }
+}
+
 async function main() {
   const { archive, cacheRoot } = parseArguments(
     process.argv.slice(2)
@@ -112,6 +206,16 @@ async function main() {
   }
 
   fs.mkdirSync(cacheRoot, { recursive: true });
+  if (metadata.type === "fhir.template") {
+    const installed = await cachePublisherTemplate(
+      archive,
+      cacheRoot,
+      packageId,
+      version
+    );
+    console.log(`Cached ${packageId}#${version} at ${installed}`);
+    return;
+  }
   const cache = new DiskBasedPackageCache(cacheRoot);
   const installed = await cache.cachePackageTarball(
     packageId,

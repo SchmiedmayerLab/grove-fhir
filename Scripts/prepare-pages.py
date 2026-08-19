@@ -120,10 +120,36 @@ def rewrite_package_archive(
     source_url: str,
 ) -> None:
     entries: list[tuple[tarfile.TarInfo, bytes | None]] = []
+    seen_names: set[str] = set()
     with tarfile.open(path, "r:gz") as source:
         for original in source.getmembers():
+            if not isinstance(original.name, str) or not original.name or "\\" in original.name:
+                raise ValueError(f"unsafe package archive member: {original.name!r}")
+            candidate = PurePosixPath(original.name)
+            if (
+                candidate.is_absolute()
+                or ".." in candidate.parts
+                or "." in candidate.parts
+                or candidate.as_posix() != original.name.rstrip("/")
+            ):
+                raise ValueError(f"unsafe package archive member: {original.name!r}")
+            normalized_name = candidate.as_posix()
+            if normalized_name in seen_names:
+                raise ValueError(f"duplicate package archive member: {normalized_name}")
+            seen_names.add(normalized_name)
+            if not original.isfile() and not original.isdir():
+                raise ValueError(
+                    f"unsupported package archive member type: {original.name}"
+                )
             member = copy.copy(original)
-            payload = source.extractfile(original).read() if original.isfile() else None
+            member.name = normalized_name
+            if original.isfile():
+                extracted = source.extractfile(original)
+                if extracted is None:
+                    raise ValueError(f"unreadable package archive member: {original.name}")
+                payload = extracted.read()
+            else:
+                payload = None
             if member.name == "package/package.json" and payload is not None:
                 package = json.loads(payload)
                 package["url"] = canonical
@@ -161,12 +187,28 @@ def rewrite_package_archive(
             member.gname = ""
             member.mtime = source_date_epoch
             member.pax_headers = {}
+            member.linkname = ""
+            member.devmajor = 0
+            member.devminor = 0
+            if member.isdir():
+                member.type = tarfile.DIRTYPE
+                member.mode = 0o755
+                member.size = 0
+            else:
+                member.type = tarfile.REGTYPE
+                member.mode = 0o644
             if payload is not None:
                 member.size = len(payload)
+            try:
+                member.tobuf(format=tarfile.USTAR_FORMAT)
+            except (ValueError, UnicodeError) as error:
+                raise ValueError(
+                    f"package archive member cannot be represented in USTAR: {member.name}"
+                ) from error
             entries.append((member, payload))
 
     uncompressed = io.BytesIO()
-    with tarfile.open(fileobj=uncompressed, mode="w", format=tarfile.PAX_FORMAT) as target:
+    with tarfile.open(fileobj=uncompressed, mode="w", format=tarfile.USTAR_FORMAT) as target:
         for member, payload in sorted(entries, key=lambda entry: entry[0].name):
             target.addfile(member, io.BytesIO(payload) if payload is not None else None)
 

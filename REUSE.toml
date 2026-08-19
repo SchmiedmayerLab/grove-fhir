@@ -6,6 +6,7 @@ path = [
     "LICENSE.md",
     "LICENSES/MIT.txt",
     "Gemfile.lock",
+    "Conformance/**/*.json",
     "Integration/sources.json",
     "health-connect/ig.ini",
     "health-connect/input/ignoreWarnings.txt",

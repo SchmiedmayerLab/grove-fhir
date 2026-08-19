@@ -253,7 +253,29 @@ class FHIRFixtureCorpusTests(unittest.TestCase):
         results["caseDiagnostics"]["missing-status"][0]["reason"] = "Some failure"
         failures = CORPUS.validate_results(self.manifest, results)
         self.assertEqual(len(failures), 1)
-        self.assertIn("missing-status did not report its exact expectedRule", failures[0])
+        self.assertIn("missing-status must report exactly one diagnostic", failures[0])
+
+    def test_reason_specific_results_reject_cascading_diagnostics(self) -> None:
+        results = {
+            "schemaVersion": 1,
+            "baseDiagnostics": {"heart-rate": []},
+            "caseDiagnostics": {
+                "missing-status": [
+                    deepcopy(self.manifest["cases"][0]["expectedRule"]),
+                    {
+                        "code": "cascading-error",
+                        "reason": "A secondary error must not be silently accepted.",
+                        "severity": "error",
+                    },
+                ],
+                "wrong-value-type": [
+                    deepcopy(self.manifest["cases"][1]["expectedRule"])
+                ],
+            },
+        }
+        failures = CORPUS.validate_results(self.manifest, results)
+        self.assertEqual(len(failures), 1)
+        self.assertIn("missing-status must report exactly one diagnostic", failures[0])
 
     def test_in_process_validator_uses_the_same_results_contract(self) -> None:
         bases = {"heart-rate": self.base}

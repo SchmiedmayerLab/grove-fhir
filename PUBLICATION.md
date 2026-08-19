@@ -28,6 +28,9 @@ The GitHub Pages locations at `/`, `/healthkit/`, `/health-connect/`, and `/ques
 publication root also exposes the package, its SHA-256 checksum, and HTML plus JSON, XML, and Turtle
 routes for every locally owned canonical resource. `publication/config.json` is the single routing
 configuration, and `npm run pages:build` verifies the assembled surface before deployment.
+That command creates the guide-only local preview. CI adds conformance evidence only after
+all exact platform proposal outputs are available, following the complete inventory in
+`Conformance/README.md`; it never substitutes stale or checked-in implementation outputs.
 
 GitHub Pages is both the publication host and canonical base during pre-1.0 development. The
 canonical base will move only through an explicit breaking-change review before the first stable

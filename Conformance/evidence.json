@@ -1,0 +1,733 @@
+{
+  "kind": "grove-fhir-conformance-evidence",
+  "schemaVersion": 1,
+  "repository": "https://github.com/SchmiedmayerLab/grove-fhir",
+  "toolchain": "Conformance/toolchain.json",
+  "integrationSources": "Integration/sources.json",
+  "publicationConfig": "publication/config.json",
+  "artifactAllowlist": "publication/artifact-allowlist.json",
+  "semanticBaseline": "Conformance/semantic-baseline.json",
+  "trackedInputs": [
+    ".github/workflows/build-and-test.yml",
+    ".github/workflows/pages.yml",
+    ".gitmodules",
+    "Conformance/README.md",
+    "Conformance/evidence.json",
+    "Conformance/evidence.schema.json",
+    "Conformance/semantic-baseline.json",
+    "Conformance/toolchain.json",
+    "Gemfile",
+    "Gemfile.lock",
+    "Integration/sources.json",
+    "Scripts/assemble-pages.sh",
+    "Scripts/build-conformance-evidence.py",
+    "Scripts/build-guides.sh",
+    "Scripts/cache-fhir-package.cjs",
+    "Scripts/check-evidence-lock.py",
+    "Scripts/check-guide-qa.py",
+    "Scripts/check-integration-sources.py",
+    "Scripts/conformance-path-matrix.py",
+    "Scripts/conformance_evidence.py",
+    "Scripts/download-fhir-tools.sh",
+    "Scripts/fhir_fixture_corpus.py",
+    "Scripts/fhir_package_semantic_diff.py",
+    "Scripts/fhir_package_semantic_snapshot.py",
+    "Scripts/prepare-pages.py",
+    "Scripts/questionnaire_fixture_corpus.py",
+    "Scripts/validate-domain-fhir.py",
+    "Scripts/validate-heart-rate-equivalence.py",
+    "Scripts/validate-integration-proposals.py",
+    "Scripts/validate-json-schema.cjs",
+    "Scripts/validate-questionnaire-fhir.py",
+    "Scripts/validate-receiver-evidence.cjs",
+    "Scripts/validate-study-graph.py",
+    "Scripts/write-evidence-attestation.py",
+    "package-lock.json",
+    "package.json",
+    "publication/artifact-allowlist.json",
+    "publication/config.json"
+  ],
+  "trackedInputRoots": ["Conformance", "Scripts", "Tests"],
+  "guides": [
+    {
+      "id": "mobile",
+      "source": "mobile",
+      "package": ".build/pages/fhir/mobile/ci-build/package.tgz",
+      "packageId": "org.grovealliance.fhir.mobile",
+      "version": "0.1.0",
+      "fhirVersion": "4.0.1",
+      "canonical": "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile",
+      "structureDefinitions": [
+        "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-application-device",
+        "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-conversion-provenance",
+        "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-observation",
+        "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-step-count",
+        "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-recording-device",
+        "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-recording-method"
+      ],
+      "dependencies": [
+        {"packageId": "hl7.fhir.r4.core", "version": "4.0.1"},
+        {"packageId": "hl7.fhir.uv.extensions.r4", "version": "5.3.0"},
+        {"packageId": "hl7.terminology.r4", "version": "7.3.0"}
+      ]
+    },
+    {
+      "id": "healthkit",
+      "source": "healthkit",
+      "package": ".build/pages/fhir/healthkit/ci-build/package.tgz",
+      "packageId": "org.grovealliance.fhir.healthkit",
+      "version": "0.1.0",
+      "fhirVersion": "4.0.1",
+      "canonical": "https://schmiedmayerlab.github.io/grove-fhir/fhir/healthkit",
+      "structureDefinitions": [
+        "https://schmiedmayerlab.github.io/grove-fhir/fhir/healthkit/StructureDefinition/healthkit-observation"
+      ],
+      "dependencies": [
+        {"packageId": "hl7.fhir.r4.core", "version": "4.0.1"},
+        {"packageId": "hl7.fhir.uv.extensions.r4", "version": "5.3.0"},
+        {"packageId": "hl7.terminology.r4", "version": "7.3.0"},
+        {"packageId": "org.grovealliance.fhir.mobile", "version": "0.1.0"}
+      ]
+    },
+    {
+      "id": "health-connect",
+      "source": "health-connect",
+      "package": ".build/pages/fhir/health-connect/ci-build/package.tgz",
+      "packageId": "org.grovealliance.fhir.health-connect",
+      "version": "0.1.0",
+      "fhirVersion": "4.0.1",
+      "canonical": "https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect",
+      "structureDefinitions": [
+        "https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/StructureDefinition/health-connect-conversion-provenance",
+        "https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/StructureDefinition/health-connect-observation"
+      ],
+      "dependencies": [
+        {"packageId": "hl7.fhir.r4.core", "version": "4.0.1"},
+        {"packageId": "hl7.fhir.uv.extensions.r4", "version": "5.3.0"},
+        {"packageId": "hl7.terminology.r4", "version": "7.3.0"},
+        {"packageId": "org.grovealliance.fhir.mobile", "version": "0.1.0"}
+      ]
+    },
+    {
+      "id": "questionnaire",
+      "source": "questionnaire",
+      "package": ".build/pages/fhir/questionnaire/ci-build/package.tgz",
+      "packageId": "org.grovealliance.fhir.questionnaire",
+      "version": "0.1.0",
+      "fhirVersion": "4.0.1",
+      "canonical": "https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire",
+      "structureDefinitions": [
+        "https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire",
+        "https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire-response"
+      ],
+      "dependencies": [
+        {"packageId": "hl7.fhir.r4.core", "version": "4.0.1"},
+        {"packageId": "hl7.terminology.r4", "version": "7.3.0"},
+        {"packageId": "hl7.fhir.uv.extensions.r4", "version": "5.3.0-ballot-tc1"},
+        {"packageId": "hl7.fhir.uv.sdc", "version": "4.0.0"}
+      ]
+    }
+  ],
+  "corpora": [
+    {
+      "id": "domain-fhir",
+      "root": "Conformance/corpora",
+      "manifest": "Conformance/corpora/index.json",
+      "format": "domain-fhir-corpora",
+      "packageIds": [
+        "org.grovealliance.fhir.mobile",
+        "org.grovealliance.fhir.healthkit",
+        "org.grovealliance.fhir.health-connect"
+      ],
+      "purpose": "Reason-specific one-mutation Mobile, HealthKit, and Health Connect corpora with exact official Validator expectations and live-FSH coverage inventory."
+    },
+    {
+      "id": "accepted-study-graph",
+      "root": "Conformance/study-graph",
+      "manifest": "Conformance/study-graph/corpus.json",
+      "format": "study-graph-corpus",
+      "packageIds": ["org.grovealliance.fhir.mobile"],
+      "purpose": "Accepted core-R4 study graph plus exact one-mutation semantic cases, kept separate from MHC iOS legacy-candidate writer evidence."
+    },
+    {
+      "id": "receiver-lifecycle",
+      "root": "Conformance/receiver-envelope",
+      "manifest": "Conformance/receiver-envelope/lifecycle-cases.json",
+      "format": "receiver-lifecycle-corpus",
+      "packageIds": [
+        "org.grovealliance.fhir.mobile",
+        "org.grovealliance.fhir.health-connect"
+      ],
+      "purpose": "Closed receiver-envelope schema and deterministic upsert, update, zero-output, and deletion lifecycle cases."
+    },
+    {
+      "id": "heart-rate-equivalence",
+      "root": "Conformance/semantic-equivalence",
+      "manifest": "Conformance/semantic-equivalence/heart-rate.json",
+      "format": "semantic-equivalence-corpus",
+      "packageIds": [
+        "org.grovealliance.fhir.mobile",
+        "org.grovealliance.fhir.healthkit",
+        "org.grovealliance.fhir.health-connect"
+      ],
+      "purpose": "Deterministic cross-platform heart-rate semantic-equivalence contract over exact Grove and Android producer evidence."
+    },
+    {
+      "id": "questionnaire-validator",
+      "root": "questionnaire/fixtures/validator",
+      "manifest": "questionnaire/fixtures/validator/cases.json",
+      "format": "questionnaire-validator-legacy",
+      "packageIds": ["org.grovealliance.fhir.questionnaire"],
+      "purpose": "Valid resources and isolated invalid mutations exercised by the exact R4 Validator package."
+    },
+    {
+      "id": "questionnaire-pairs",
+      "root": "questionnaire/fixtures/pairs",
+      "manifest": "questionnaire/fixtures/pairs/cases.json",
+      "format": "questionnaire-pair-legacy",
+      "packageIds": ["org.grovealliance.fhir.questionnaire"],
+      "purpose": "Deterministic Questionnaire and QuestionnaireResponse round-trip and cross-resource rule fixtures."
+    }
+  ],
+  "validationReports": [
+    {
+      "id": "domain-fhir-validation",
+      "path": "domain-fhir-validation.json",
+      "mediaType": "application/json",
+      "format": "domain-fhir-validation-v1",
+      "producer": "Scripts/validate-domain-fhir.py",
+      "purpose": "Official locked-Validator results for the static domain corpora, live FSH coverage, accepted study graph, and every manifest-declared external FHIR resource."
+    }
+  ],
+  "externalEvidence": [
+    {
+      "id": "grove-questionnaire-resources",
+      "implementation": "grove-questionnaire",
+      "source": "grove-questionnaire",
+      "proposals": ["grove-questionnaire-contract"],
+      "classification": "accepted-contract",
+      "kind": "directory",
+      "files": [
+        {"path": "questionnaire-response.json", "mediaType": "application/fhir+json", "format": "fhir-json"},
+        {"path": "questionnaire.json", "mediaType": "application/fhir+json", "format": "fhir-json"},
+        {
+          "path": "questionnaire-emitted-resource-attestation.json",
+          "mediaType": "application/json",
+          "format": "test-attestation-v1",
+          "testGroup": "emitted-resource-conformance",
+          "attestationInputs": [
+            {"name": "questionnaire-response", "evidenceSet": "grove-questionnaire-resources", "path": "questionnaire-response.json"},
+            {"name": "questionnaire", "evidenceSet": "grove-questionnaire-resources", "path": "questionnaire.json"}
+          ]
+        }
+      ],
+      "purpose": "Questionnaire and QuestionnaireResponse resources emitted by the exact Swift Questionnaire proposal, with a canonical command-and-input attestation; the locked domain Validator report independently covers both resources."
+    },
+    {
+      "id": "grove-current-resources",
+      "implementation": "grove-healthkit",
+      "source": "grove-healthkit",
+      "proposals": ["grove-questionnaire-contract", "grove-mobile-contract"],
+      "classification": "accepted-contract",
+      "kind": "directory",
+      "files": [
+        {"path": "body-weight-provenance.json", "mediaType": "application/fhir+json", "format": "fhir-json"},
+        {"path": "body-weight.json", "mediaType": "application/fhir+json", "format": "fhir-json"},
+        {"path": "heart-rate-provenance.json", "mediaType": "application/fhir+json", "format": "fhir-json"},
+        {"path": "heart-rate.json", "mediaType": "application/fhir+json", "format": "fhir-json"},
+        {"path": "step-count-provenance.json", "mediaType": "application/fhir+json", "format": "fhir-json"},
+        {"path": "step-count.json", "mediaType": "application/fhir+json", "format": "fhir-json"},
+        {
+          "path": "mobile-emitted-resource-attestation.json",
+          "mediaType": "application/json",
+          "format": "test-attestation-v1",
+          "testGroup": "emitted-resource-conformance",
+          "attestationInputs": [
+            {"name": "body-weight-provenance", "evidenceSet": "grove-current-resources", "path": "body-weight-provenance.json"},
+            {"name": "body-weight", "evidenceSet": "grove-current-resources", "path": "body-weight.json"},
+            {"name": "heart-rate-provenance", "evidenceSet": "grove-current-resources", "path": "heart-rate-provenance.json"},
+            {"name": "heart-rate", "evidenceSet": "grove-current-resources", "path": "heart-rate.json"},
+            {"name": "step-count-provenance", "evidenceSet": "grove-current-resources", "path": "step-count-provenance.json"},
+            {"name": "step-count", "evidenceSet": "grove-current-resources", "path": "step-count.json"}
+          ]
+        }
+      ],
+      "purpose": "Six Mobile/HealthKit resources emitted by the exact Swift proposal, with a canonical command-and-input attestation; the final independent domain Validator report covers every external FHIR set."
+    },
+    {
+      "id": "my-heart-counts-android-conformance",
+      "implementation": "my-heart-counts-android",
+      "source": "my-heart-counts-android",
+      "proposals": ["my-heart-counts-android-health-connect"],
+      "classification": "accepted-contract",
+      "kind": "directory",
+      "files": [
+        {"path": "health-connect-heart-rate-bundle.json", "mediaType": "application/fhir+json", "format": "fhir-json"},
+        {"path": "health-connect-heart-rate-observation-1.json", "mediaType": "application/fhir+json", "format": "fhir-json"},
+        {"path": "health-connect-heart-rate-observation-2.json", "mediaType": "application/fhir+json", "format": "fhir-json"},
+        {"path": "health-connect-heart-rate-provenance.json", "mediaType": "application/fhir+json", "format": "fhir-json"},
+        {"path": "health-connect-heart-rate-update-bundle.json", "mediaType": "application/fhir+json", "format": "fhir-json"},
+        {"path": "health-connect-step-deletion-bundle.json", "mediaType": "application/fhir+json", "format": "fhir-json"},
+        {"path": "health-connect-steps-bundle.json", "mediaType": "application/fhir+json", "format": "fhir-json"},
+        {"path": "health-connect-steps-observation-1.json", "mediaType": "application/fhir+json", "format": "fhir-json"},
+        {"path": "health-connect-steps-provenance.json", "mediaType": "application/fhir+json", "format": "fhir-json"},
+        {"path": "health-connect-weight-bundle.json", "mediaType": "application/fhir+json", "format": "fhir-json"},
+        {"path": "health-connect-weight-observation-1.json", "mediaType": "application/fhir+json", "format": "fhir-json"},
+        {"path": "health-connect-weight-provenance.json", "mediaType": "application/fhir+json", "format": "fhir-json"},
+        {
+          "path": "android-emitted-resource-attestation.json",
+          "mediaType": "application/json",
+          "format": "test-attestation-v1",
+          "testGroup": "android-emitted-resource-conformance",
+          "attestationInputs": [
+            {"name": "heart-rate-bundle", "evidenceSet": "my-heart-counts-android-conformance", "path": "health-connect-heart-rate-bundle.json"},
+            {"name": "heart-rate-observation-1", "evidenceSet": "my-heart-counts-android-conformance", "path": "health-connect-heart-rate-observation-1.json"},
+            {"name": "heart-rate-observation-2", "evidenceSet": "my-heart-counts-android-conformance", "path": "health-connect-heart-rate-observation-2.json"},
+            {"name": "heart-rate-provenance", "evidenceSet": "my-heart-counts-android-conformance", "path": "health-connect-heart-rate-provenance.json"},
+            {"name": "heart-rate-update-bundle", "evidenceSet": "my-heart-counts-android-conformance", "path": "health-connect-heart-rate-update-bundle.json"},
+            {"name": "step-deletion-bundle", "evidenceSet": "my-heart-counts-android-conformance", "path": "health-connect-step-deletion-bundle.json"},
+            {"name": "steps-bundle", "evidenceSet": "my-heart-counts-android-conformance", "path": "health-connect-steps-bundle.json"},
+            {"name": "steps-observation-1", "evidenceSet": "my-heart-counts-android-conformance", "path": "health-connect-steps-observation-1.json"},
+            {"name": "steps-provenance", "evidenceSet": "my-heart-counts-android-conformance", "path": "health-connect-steps-provenance.json"},
+            {"name": "weight-bundle", "evidenceSet": "my-heart-counts-android-conformance", "path": "health-connect-weight-bundle.json"},
+            {"name": "weight-observation-1", "evidenceSet": "my-heart-counts-android-conformance", "path": "health-connect-weight-observation-1.json"},
+            {"name": "weight-provenance", "evidenceSet": "my-heart-counts-android-conformance", "path": "health-connect-weight-provenance.json"}
+          ]
+        }
+      ],
+      "purpose": "Health Connect resources emitted by the Android proposal, with a canonical command-and-input attestation, and accepted by the exact package closure."
+    },
+    {
+      "id": "my-heart-counts-android-wire",
+      "implementation": "my-heart-counts-android",
+      "source": "my-heart-counts-android",
+      "proposals": ["my-heart-counts-android-health-connect"],
+      "classification": "accepted-contract",
+      "kind": "directory",
+      "files": [
+        {"path": "health-connect-heart-rate-update-bundle.json", "mediaType": "application/fhir+json", "format": "fhir-json"},
+        {"path": "health-connect-heart-rate-upsert-bundle.json", "mediaType": "application/fhir+json", "format": "fhir-json"},
+        {"path": "health-connect-heart-rate-zero-output-upsert-bundle.json", "mediaType": "application/fhir+json", "format": "fhir-json"},
+        {"path": "health-connect-step-deletion-bundle.json", "mediaType": "application/fhir+json", "format": "fhir-json"}
+      ],
+      "purpose": "Exact backend wire Bundles emitted by the Android proposal for receiver lifecycle evidence."
+    },
+    {
+      "id": "firebase-lifecycle-result",
+      "implementation": "my-heart-counts-firebase",
+      "source": "my-heart-counts-firebase",
+      "proposals": ["my-heart-counts-firebase-fhir-receiver"],
+      "classification": "accepted-contract",
+      "kind": "file",
+      "files": [
+        {
+          "path": "firebase-lifecycle-result.json",
+          "mediaType": "application/json",
+          "format": "test-attestation-v1",
+          "testGroup": "firebase-contract",
+          "attestationInputs": [
+            {"name": "heart-rate-upsert", "evidenceSet": "my-heart-counts-android-wire", "path": "health-connect-heart-rate-upsert-bundle.json"},
+            {"name": "heart-rate-update", "evidenceSet": "my-heart-counts-android-wire", "path": "health-connect-heart-rate-update-bundle.json"},
+            {"name": "heart-rate-zero-output", "evidenceSet": "my-heart-counts-android-wire", "path": "health-connect-heart-rate-zero-output-upsert-bundle.json"},
+            {"name": "step-deletion", "evidenceSet": "my-heart-counts-android-wire", "path": "health-connect-step-deletion-bundle.json"}
+          ]
+        }
+      ],
+      "purpose": "Attests that the exact Firebase lifecycle and byte-preservation proposal tests passed."
+    },
+    {
+      "id": "grove-legacy-healthkit-sample",
+      "implementation": "grove-legacy-021",
+      "source": "grove-legacy-021",
+      "proposals": ["grove-legacy-021-healthkit-writer-fixture"],
+      "classification": "historical-writer",
+      "kind": "file",
+      "files": [
+        {"path": "grove-0.2.1-healthkit-sample.json", "mediaType": "application/fhir+json", "format": "fhir-json"}
+      ],
+      "purpose": "Exact full HealthKit sample Observation emitted by the real historical Grove 0.2.1 writer."
+    },
+    {
+      "id": "grove-current-reader-result",
+      "implementation": "grove-current-legacy-reader",
+      "source": "grove-healthkit",
+      "proposals": [
+        "grove-questionnaire-contract",
+        "grove-mobile-contract",
+        "grove-current-legacy-healthkit-reader"
+      ],
+      "classification": "accepted-contract",
+      "kind": "file",
+      "files": [
+        {
+          "path": "grove-current-reader-result.json",
+          "mediaType": "application/json",
+          "format": "test-attestation-v1",
+          "testGroup": "current-reader-evidence",
+          "attestationInputs": [
+            {"name": "grove-legacy-healthkit-sample", "evidenceSet": "grove-legacy-healthkit-sample", "path": "grove-0.2.1-healthkit-sample.json"}
+          ]
+        }
+      ],
+      "purpose": "Attests that the current reader consumed and byte-checked the actual historical writer output."
+    },
+    {
+      "id": "mhc-ios-study-enrollment",
+      "implementation": "my-heart-counts-ios",
+      "source": "my-heart-counts-ios",
+      "proposals": ["my-heart-counts-ios-study-enrollment-writer-fixture"],
+      "classification": "legacy-candidate",
+      "kind": "file",
+      "files": [
+        {"path": "my-heart-counts-ios-e7ae-study-enrollment.json", "mediaType": "application/fhir+json", "format": "fhir-json"}
+      ],
+      "purpose": "Exact current e7ae iOS legacy-candidate study-enrollment writer output; no migration is implied."
+    }
+  ],
+  "implementations": [
+    {
+      "id": "grove-questionnaire",
+      "source": "grove-questionnaire",
+      "repository": "https://github.com/SchmiedmayerLab/Grove.git",
+      "commit": "5e5bcfae39caed46e9ce12a70d84c1546aa76aea",
+      "status": "active",
+      "classification": "accepted-contract",
+      "direction": "round-trip",
+      "packages": ["questionnaire"],
+      "profiles": [
+        "https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire",
+        "https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire-response"
+      ],
+      "generator": {
+        "type": "integration-proposal",
+        "proposal": "grove-questionnaire-contract",
+        "entrypoint": "Scripts/validate-questionnaire-conformance.sh"
+      },
+      "normalization": {
+        "policy": "Public Grove conversion APIs emit deterministic fixtures without volatile identifiers or timestamps.",
+        "deterministic": true,
+        "volatileFields": []
+      },
+      "provenance": {"nestedGitlinks": [], "resolvedPackages": []},
+      "purpose": "Proves the reviewed Swift Questionnaire contract against the exact Questionnaire package."
+    },
+    {
+      "id": "grove-healthkit",
+      "source": "grove-healthkit",
+      "repository": "https://github.com/SchmiedmayerLab/Grove.git",
+      "commit": "fb78db4c5343c234825b433706f7ee62f111c5cc",
+      "status": "active",
+      "classification": "accepted-contract",
+      "direction": "round-trip",
+      "packages": ["mobile", "healthkit"],
+      "profiles": [
+        "https://schmiedmayerlab.github.io/grove-fhir/fhir/healthkit/StructureDefinition/healthkit-observation",
+        "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-observation"
+      ],
+      "generator": {
+        "type": "integration-proposal",
+        "proposal": "grove-mobile-contract",
+        "entrypoint": "Scripts/validate-fhir-conformance.sh"
+      },
+      "normalization": {
+        "policy": "Frozen source values and deterministic conversion inputs provide stable identifiers, instants, and bundle ordering.",
+        "deterministic": true,
+        "volatileFields": []
+      },
+      "provenance": {"nestedGitlinks": [], "resolvedPackages": []},
+      "purpose": "Proves reviewed Swift HealthKit production and decoding against the Mobile and HealthKit packages."
+    },
+    {
+      "id": "my-heart-counts-android",
+      "source": "my-heart-counts-android",
+      "repository": "https://github.com/SchmiedmayerLab/MyHeartCounts-Android.git",
+      "commit": "5d9fc561ba2b30f93a2334a1678ea5f4103263c6",
+      "status": "active",
+      "classification": "accepted-contract",
+      "direction": "produce",
+      "packages": ["mobile", "health-connect"],
+      "profiles": [
+        "https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/StructureDefinition/health-connect-observation",
+        "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-observation"
+      ],
+      "generator": {
+        "type": "integration-proposal",
+        "proposal": "my-heart-counts-android-health-connect",
+        "entrypoint": "Scripts/validate-health-connect-fhir-conformance.sh"
+      },
+      "normalization": {
+        "policy": "Frozen Health Connect source records, repository scope, and event sequence produce exact canonical JSON bytes.",
+        "deterministic": true,
+        "volatileFields": []
+      },
+      "provenance": {"nestedGitlinks": [], "resolvedPackages": []},
+      "purpose": "Proves the reviewed Android Health Connect producer against exact Mobile and Health Connect packages."
+    },
+    {
+      "id": "grove-current-legacy-reader",
+      "source": "grove-healthkit",
+      "repository": "https://github.com/SchmiedmayerLab/Grove.git",
+      "commit": "fb78db4c5343c234825b433706f7ee62f111c5cc",
+      "status": "active",
+      "classification": "accepted-contract",
+      "direction": "consume",
+      "packages": [],
+      "profiles": [],
+      "generator": {
+        "type": "integration-proposal",
+        "proposal": "grove-current-legacy-healthkit-reader",
+        "entrypoint": "Scripts/run-package-tests.sh"
+      },
+      "normalization": {
+        "policy": "The reader consumes the exact byte-checked historical writer artifact; the result attestation is derived from the proposal's canonical test argv and immutable input digest.",
+        "deterministic": true,
+        "volatileFields": []
+      },
+      "provenance": {"nestedGitlinks": [], "resolvedPackages": []},
+      "purpose": "Attests current Grove decoding compatibility with the exact real Grove 0.2.1 HealthKit Observation without claiming that historical shape as an accepted profile."
+    },
+    {
+      "id": "my-heart-counts-firebase",
+      "source": "my-heart-counts-firebase",
+      "repository": "https://github.com/SchmiedmayerLab/MyHeartCounts-Firebase.git",
+      "commit": "8bad2e814ad60763ddf810750e503488719f55f5",
+      "status": "active",
+      "classification": "accepted-contract",
+      "direction": "consume",
+      "packages": ["mobile", "health-connect"],
+      "profiles": [
+        "https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/StructureDefinition/health-connect-observation",
+        "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-observation"
+      ],
+      "generator": {
+        "type": "integration-proposal",
+        "proposal": "my-heart-counts-firebase-fhir-receiver",
+        "entrypoint": "functions/test"
+      },
+      "normalization": {
+        "policy": "The receiver preserves exact submitted Bundle bytes; frozen producer vectors are compared by SHA-256.",
+        "deterministic": true,
+        "volatileFields": []
+      },
+      "provenance": {"nestedGitlinks": [], "resolvedPackages": []},
+      "purpose": "Pins the reviewed backend consumer without claiming broader profile validation than its tests perform."
+    },
+    {
+      "id": "my-heart-counts-ios",
+      "source": "my-heart-counts-ios",
+      "repository": "https://github.com/SchmiedmayerLab/MyHeartCounts-iOS.git",
+      "commit": "e7ae70ebbbfb335eea274cd35eacd5d3c5c93d33",
+      "status": "active",
+      "classification": "legacy-candidate",
+      "direction": "produce",
+      "packages": [],
+      "profiles": [],
+      "generator": {
+        "type": "integration-proposal",
+        "proposal": "my-heart-counts-ios-study-enrollment-writer-fixture",
+        "entrypoint": "Scripts/export-mhc-ios-e7ae-study-enrollment-fixture.sh"
+      },
+      "normalization": {
+        "policy": "The exact e7ae writer runs with fixed participant, study, enrollment, identifier, and instant inputs; no accepted migration or package conformance is claimed.",
+        "deterministic": true,
+        "volatileFields": []
+      },
+      "provenance": {
+        "nestedGitlinks": [
+          {
+            "path": "MyHeartCounts-StudyDefinitions",
+            "repository": "https://github.com/SchmiedmayerLab/MyHeartCounts-StudyDefinitions.git",
+            "commit": "93cc43abca414a1b1675b2829044eb410052212b",
+            "purpose": "Records the nested gitlink present at the pinned iOS commit; it is distinct from SwiftPM resolution."
+          }
+        ],
+        "resolvedPackages": [
+          {
+            "manifest": "MyHeartCounts.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved",
+            "identity": "myheartcounts-studydefinitions",
+            "repository": "https://github.com/SchmiedmayerLab/MyHeartCounts-StudyDefinitions.git",
+            "version": "0.2.4",
+            "revision": "44a658790d03b74a570e40eadba06ae5fa435b60"
+          }
+        ]
+      },
+      "purpose": "Executes and retains the exact current e7ae iOS study-enrollment writer as legacy-candidate evidence only."
+    },
+    {
+      "id": "grove-legacy-021",
+      "source": "grove-legacy-021",
+      "repository": "https://github.com/SchmiedmayerLab/Grove.git",
+      "commit": "7fbc89d590ee29d9e73b9d700f91aa1e3d905883",
+      "status": "pinned-reference",
+      "classification": "historical-writer",
+      "direction": "produce",
+      "packages": [],
+      "profiles": [],
+      "generator": {
+        "type": "integration-proposal",
+        "proposal": "grove-legacy-021-healthkit-writer-fixture",
+        "entrypoint": "Scripts/export-grove-021-compatibility-fixture.sh"
+      },
+      "normalization": {
+        "policy": "The exact Grove 0.2.1 production writer runs on an unsaved CI HKQuantitySample. It replaces only the random sample UUID at Observation.id and identifier[0].id/value plus the retired source-revision source/name and source/bundleIdentifier leaves with deterministic fixture values. Those source strings are not real HKSource identity; version, productType, and OSVersion remain absent.",
+        "deterministic": true,
+        "volatileFields": [
+          "Observation.id",
+          "identifier[0].id",
+          "identifier[0].value",
+          "source/name",
+          "source/bundleIdentifier"
+        ]
+      },
+      "provenance": {"nestedGitlinks": [], "resolvedPackages": []},
+      "purpose": "Identifies the real historical Grove writer separately from accepted contracts and later migration candidates."
+    },
+    {
+      "id": "grove-sensorkit-reference",
+      "source": "grove-sensorkit-reference",
+      "repository": "https://github.com/SchmiedmayerLab/Grove.git",
+      "commit": "2c2a7c61004fd6c56bfb4b67f1e967b4bee98d06",
+      "status": "inactive-reference",
+      "classification": "inactive-reference",
+      "direction": "reference",
+      "packages": [],
+      "profiles": [],
+      "generator": null,
+      "normalization": {
+        "policy": "Inactive reference only; it is not packaged or treated as accepted conformance evidence.",
+        "deterministic": false,
+        "volatileFields": []
+      },
+      "provenance": {"nestedGitlinks": [], "resolvedPackages": []},
+      "purpose": "Preserves provenance for the superseded SensorKit proposal without reactivating its shapes."
+    },
+    {
+      "id": "study-definitions-024",
+      "source": "my-heart-counts-study-definitions-024",
+      "repository": "https://github.com/SchmiedmayerLab/MyHeartCounts-StudyDefinitions.git",
+      "commit": "44a658790d03b74a570e40eadba06ae5fa435b60",
+      "status": "pinned-reference",
+      "classification": "dependency-pin",
+      "direction": "reference",
+      "packages": [],
+      "profiles": [],
+      "generator": null,
+      "normalization": {
+        "policy": "Exact dependency selected by the current pinned e7ae iOS evidence; no migration is implied.",
+        "deterministic": false,
+        "volatileFields": []
+      },
+      "provenance": {"nestedGitlinks": [], "resolvedPackages": []},
+      "studyRevision": 42,
+      "purpose": "Pins StudyDefinitions 0.2.4 at revision 42 as selected by Package.resolved in the current e7ae iOS evidence."
+    },
+    {
+      "id": "study-definitions-025",
+      "source": "my-heart-counts-study-definitions-025",
+      "repository": "https://github.com/SchmiedmayerLab/MyHeartCounts-StudyDefinitions.git",
+      "commit": "06e410c9ded3727296961dc39526aa1c49905538",
+      "status": "pinned-reference",
+      "classification": "dependency-pin",
+      "direction": "reference",
+      "packages": [],
+      "profiles": [],
+      "generator": null,
+      "normalization": {
+        "policy": "Later repository-state pin only; no adoption or migration by the pinned iOS writer is implied.",
+        "deterministic": false,
+        "volatileFields": []
+      },
+      "provenance": {"nestedGitlinks": [], "resolvedPackages": []},
+      "studyRevision": 43,
+      "purpose": "Pins the later study-definition baseline for bounded study-revision comparison and provenance evidence; no adoption by the e7ae writer is implied."
+    }
+  ],
+  "pathMatrix": {
+    "grove_questionnaire": [
+      "Integration/Patches/grove-questionnaire-contract.patch",
+      "Integration/Sources/GroveQuestionnaire",
+      "Integration/Sources/GroveQuestionnaire/**",
+      "questionnaire/**"
+    ],
+    "grove_mobile": [
+      "Integration/Patches/grove-current-legacy-healthkit-reader.patch",
+      "Integration/Patches/grove-legacy-021-healthkit-writer-fixture.patch",
+      "Integration/Patches/grove-mobile-contract.patch",
+      "Integration/Sources/GroveHealthKit",
+      "Integration/Sources/GroveHealthKit/**",
+      "Integration/Sources/GroveLegacy021",
+      "Integration/Sources/GroveLegacy021/**",
+      "healthkit/**",
+      "mobile/**"
+    ],
+    "mhc_ios_study": [
+      "Conformance/study-graph/**",
+      "Integration/Patches/my-heart-counts-ios-study-enrollment-writer-fixture.patch",
+      "Integration/Sources/MyHeartCountsIOS",
+      "Integration/Sources/MyHeartCountsIOS/**",
+      "Integration/Sources/MyHeartCountsStudyDefinitions024",
+      "Integration/Sources/MyHeartCountsStudyDefinitions024/**",
+      "Integration/Sources/MyHeartCountsStudyDefinitions025",
+      "Integration/Sources/MyHeartCountsStudyDefinitions025/**"
+    ],
+    "android": [
+      "Conformance/receiver-envelope/**",
+      "Conformance/semantic-equivalence/**",
+      "Integration/Patches/my-heart-counts-android-health-connect.patch",
+      "Integration/Sources/MyHeartCountsAndroid",
+      "Integration/Sources/MyHeartCountsAndroid/**",
+      "health-connect/**"
+    ],
+    "firebase": [
+      "Conformance/receiver-envelope/**",
+      "Integration/Patches/my-heart-counts-firebase-fhir-receiver.patch",
+      "Integration/Sources/MyHeartCountsFirebase",
+      "Integration/Sources/MyHeartCountsFirebase/**"
+    ],
+    "evidence_common": [
+      ".github/workflows/build-and-test.yml",
+      ".github/workflows/pages.yml",
+      ".gitmodules",
+      "Conformance/README.md",
+      "Conformance/evidence.json",
+      "Conformance/evidence.schema.json",
+      "Conformance/semantic-baseline.json",
+      "Conformance/toolchain.json",
+      "Gemfile",
+      "Gemfile.lock",
+      "Integration/sources.json",
+      "REUSE.toml",
+      "Scripts/assemble-pages.sh",
+      "Scripts/build-conformance-evidence.py",
+      "Scripts/build-guides.sh",
+      "Scripts/cache-fhir-package.cjs",
+      "Scripts/check-evidence-lock.py",
+      "Scripts/check-guide-qa.py",
+      "Scripts/check-integration-sources.py",
+      "Scripts/conformance-path-matrix.py",
+      "Scripts/conformance_evidence.py",
+      "Scripts/download-fhir-tools.sh",
+      "Scripts/fhir_fixture_corpus.py",
+      "Scripts/fhir_package_semantic_diff.py",
+      "Scripts/fhir_package_semantic_snapshot.py",
+      "Scripts/prepare-pages.py",
+      "Scripts/questionnaire_fixture_corpus.py",
+      "Scripts/validate-domain-fhir.py",
+      "Scripts/validate-heart-rate-equivalence.py",
+      "Scripts/validate-integration-proposals.py",
+      "Scripts/validate-json-schema.cjs",
+      "Scripts/validate-questionnaire-fhir.py",
+      "Scripts/validate-receiver-evidence.cjs",
+      "Scripts/validate-study-graph.py",
+      "Scripts/write-evidence-attestation.py",
+      "package-lock.json",
+      "package.json",
+      "publication/**"
+    ]
+  },
+  "pathMatrixIgnored": [
+    "Integration/Patches/grove-sensorkit-reference.patch",
+    "Integration/Sources/GroveSensorKit",
+    "Integration/Sources/GroveSensorKit/**"
+  ]
+}

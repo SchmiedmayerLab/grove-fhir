@@ -107,11 +107,32 @@ class PreparePagesTests(unittest.TestCase):
                 )
 
             self.assertEqual(first.read_bytes(), second.read_bytes())
+            header = first.read_bytes()[:10]
+            self.assertEqual(
+                header,
+                b"\x1f\x8b\x08\x00"
+                + (1_700_000_000).to_bytes(4, "little")
+                + b"\x02\xff",
+            )
             metadata = PREPARE_PAGES.read_package_metadata(first)
             self.assertEqual(metadata["url"], metadata["canonical"])
             self.assertEqual(metadata["date"], "20231114221320")
             self.assertEqual(metadata["description"], "Example package")
             with tarfile.open(first, "r:gz") as package:
+                names = [member.name for member in package.getmembers()]
+                self.assertEqual(names, sorted(names))
+                self.assertEqual(len(names), len(set(names)))
+                for member in package.getmembers():
+                    self.assertEqual(member.mtime, 1_700_000_000)
+                    self.assertEqual(member.uid, 0)
+                    self.assertEqual(member.gid, 0)
+                    self.assertEqual(member.uname, "")
+                    self.assertEqual(member.gname, "")
+                    self.assertEqual(member.pax_headers, {})
+                    self.assertEqual(member.linkname, "")
+                    self.assertEqual(member.devmajor, 0)
+                    self.assertEqual(member.devminor, 0)
+                    self.assertEqual(member.mode, 0o755 if member.isdir() else 0o644)
                 example_file = package.extractfile(
                     "package/example/Observation-example.json"
                 )
