@@ -262,8 +262,8 @@ InstanceOf: GroveWearStateObservation
 Usage: #example
 Title: "Watch On-Wrist State"
 Description: """
-The watch is worn on the left wrist, crown facing right — the denominator observation
-that lets consumers distinguish "no data" from "not worn".
+An on-wrist state sample indicating that the watch is worn on the left wrist with the
+crown oriented to the right.
 """
 * meta.source = "https://grovealliance.org/fhir/source/sensorkit"
 * meta.tag[deviceType] = GroveDeviceType#watch "Watch"
@@ -314,9 +314,8 @@ InstanceOf: GroveVisitObservation
 Usage: #example
 Title: "SensorKit Visit"
 Description: """
-A gym visit: the location category and distance from home as components, arrival and
-departure as the time windows SensorKit actually reports, and `effectivePeriod`
-spanning the widest possible visit.
+A SensorKit visit with a gym location category, distance from home, arrival and
+departure windows, and an `effectivePeriod` spanning both windows.
 """
 * meta.source = "https://grovealliance.org/fhir/source/sensorkit"
 * meta.tag[deviceType] = GroveDeviceType#phone "Phone"
@@ -345,8 +344,8 @@ InstanceOf: GroveDeviceUsageObservation
 Usage: #example
 Title: "SensorKit Device-Usage Summary"
 Description: """
-A device-usage reporting period: unlock duration as the value, wake and unlock counts
-as components, and the per-app detail in the raw batch this observation derives from.
+A SensorKit device-usage reporting period with unlock duration as the value, screen-wake
+and unlock counts as components, and detailed usage in the referenced sensor batch.
 """
 * meta.source = "https://grovealliance.org/fhir/source/sensorkit"
 * meta.tag[deviceType] = GroveDeviceType#phone "Phone"
@@ -371,11 +370,10 @@ InstanceOf: GroveSensorBatchDocument
 Usage: #example
 Title: "Raw Device-Usage Batch"
 Description: """
-The raw per-app, per-notification and per-web-domain detail behind the device-usage
-summary, shipped as a gzip-compressed CSV sidecar file. `contentType` is the media type
-once decompressed, `format` records the gzip, and `hash` and `size` are the SHA-1 and
-byte length of the stored `.csv.gz` itself, so a consumer verifies the file it fetched
-before decompressing it.
+A gzip-compressed CSV attachment containing detailed application, notification, and web
+usage data for the device-usage summary. `contentType` identifies the decompressed media
+type, `format` identifies the serialization and compression, and `hash` and `size`
+describe the stored compressed file.
 """
 * status = #current
 * type = GroveSensorKitSampleType#com.apple.SensorKit.deviceUsageReport "Device Usage"
@@ -392,7 +390,7 @@ Instance: AndroidSensorDevice
 InstanceOf: GroveSensorDevice
 Usage: #inline
 Title: "Android Phone (Recording Sensor)"
-Description: "The phone whose pedometer counted the steps, as Health Connect reports it."
+Description: "An Android phone represented as the recording device for the Health Connect step-count example."
 * deviceName[userFriendlyName].name = "Pixel 9 Pro"
 * deviceName[userFriendlyName].type = #user-friendly-name
 * manufacturer = "Google"
@@ -404,7 +402,7 @@ Instance: AndroidGatewayDevice
 InstanceOf: GroveGatewayDevice
 Usage: #inline
 Title: "Android App (Gateway)"
-Description: "The app that read the record out of Health Connect and uploaded it."
+Description: "An Android application represented as the gateway device for the Health Connect step-count example."
 * deviceName[userFriendlyName].name = "Study App"
 * deviceName[userFriendlyName].type = #user-friendly-name
 * identifier[androidApplicationId].system = "https://grovealliance.org/fhir/sid/android-application-id"
@@ -418,10 +416,9 @@ InstanceOf: GroveMobileSensorObservation
 Usage: #example
 Title: "Health Connect Step Count"
 Description: """
-The same measurement as the HealthKit step-count example, recorded on Android. Only the
-identifier system and the platform coding differ — which is the point of a
-platform-neutral guide, and the reason the identifier slices are Must Support rather
-than fixed to one vendor.
+An Android Health Connect step-count Observation with a LOINC measurement code, a
+Health Connect record-type coding, a Health Connect record identifier, and Android
+recording and gateway devices.
 """
 * meta.source = "https://grovealliance.org/fhir/source/health-connect"
 * meta.tag[deviceType] = GroveDeviceType#phone "Phone"

@@ -6,61 +6,91 @@ SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTR
 SPDX-License-Identifier: MIT
 -->
 
-This page shows how to inspect resources against the current combined preview packages.
-Validation against them is useful for review, but does not establish compatibility with
-a released Grove FHIR contract.
+The generated guide is both documentation and an executable set of FHIR rules. Use the
+human-readable pages to understand a resource, the raw JSON to implement it, and the
+packages to validate it.
 
-### Validate a draft resource
+### Start from an example
 
-Download both packages under distinct filenames, then pass them to the FHIR Validator:
+Choose the example closest to your use case:
+
+| Use case | Rendered resource | Raw JSON |
+|---|---|---|
+| Step count | [Example](Observation-GroveStepCountObservationExample.html) | [JSON](Observation-GroveStepCountObservationExample.json) |
+| Heart rate with device and metadata | [Example](Observation-GroveHeartRateObservationExample.html) | [JSON](Observation-GroveHeartRateObservationExample.json) |
+| Sleep stage | [Example](Observation-GroveSleepObservationExample.html) | [JSON](Observation-GroveSleepObservationExample.json) |
+| Follow-up questionnaire | [Example](Questionnaire-GroveFollowUpQuestionnaireExample.html) | [JSON](Questionnaire-GroveFollowUpQuestionnaireExample.json) |
+| Completed questionnaire | [Example](QuestionnaireResponse-GroveFollowUpQuestionnaireResponseExample.html) | [JSON](QuestionnaireResponse-GroveFollowUpQuestionnaireResponseExample.json) |
+
+Each example links to the profile it conforms to. Add that profile's canonical URL to
+`meta.profile` in resources produced by your application.
+
+### Read a profile page
+
+A generated profile page offers several views of the same definition:
+
+| View | Use it for |
+|---|---|
+| Overview | A summary of the profile and its purpose |
+| Differential Table | Only the rules added or changed by Grove FHIR |
+| Snapshot Table | The complete resource after inherited FHIR rules are applied |
+| Examples | Complete resources that declare the profile |
+| JSON | The machine-readable `StructureDefinition` |
+
+Cardinality appears as `minimum..maximum`. For example, `1..1` means exactly one value,
+`0..1` means optional and singular, and `0..*` means optional and repeatable.
+
+**Must Support** does not make an optional element required. In this guide, a producer
+populates a Must Support element when the source information is available; a consumer
+accepts and preserves or interprets it when present.
+
+### Download the packages
+
+The core package contains the profiles, extensions, terminology, and examples. The
+platform package contains the HealthKit code systems referenced by mobile observations.
 
 ```sh
-curl -L https://schmiedmayerlab.github.io/grove-fhir/package.tgz \
-  -o grove-fhir-core-preview.tgz
-curl -L https://schmiedmayerlab.github.io/grove-fhir/platforms/package.tgz \
-  -o grove-fhir-platforms-preview.tgz
-
-java -jar validator_cli.jar resource.json \
-  -version 4.0.1 \
-  -ig grove-fhir-core-preview.tgz \
-  -ig grove-fhir-platforms-preview.tgz
+curl -L https://schmiedmayerlab.github.io/grove-fhir/fhir/core/package.tgz \
+  -o grove-fhir-core.tgz
+curl -L https://schmiedmayerlab.github.io/grove-fhir/fhir/platforms/package.tgz \
+  -o grove-fhir-platforms.tgz
 ```
 
-The packages are not published through a FHIR package registry. Validation confirms
-that a resource matches this preview; it does not make the preview a stable contract.
+The corresponding SHA-256 files are published beside each package:
 
-### Mobile observation shape
+- `https://schmiedmayerlab.github.io/grove-fhir/fhir/core/package.tgz.sha256`
+- `https://schmiedmayerlab.github.io/grove-fhir/fhir/platforms/package.tgz.sha256`
 
-The implemented Mobile candidates use the following FHIR elements:
+### Run the FHIR Validator
 
-| Information | FHIR representation |
-|---|---|
-| Measurement | `Observation.code` and `value[x]` |
-| Measurement time | `Observation.effective[x]` |
-| Participant | `Observation.subject` |
-| Recording hardware | `Observation.device` |
-| Saving application | `observation-gatewayDevice` extension |
-| Source record identity | `Observation.identifier` |
-| Capture method | Grove Recording Method extension |
-| Remaining typed source metadata | Grove Platform Metadata extension |
+Use the official FHIR Validator with FHIR R4 and load both packages:
 
-Receivers compare the complete `(identifier.system, identifier.value)` pair when
-deduplicating source records. A repeated source identifier is expected when a mobile
-platform redelivers a sample.
+```sh
+java -jar validator_cli.jar resource.json \
+  -version 4.0.1 \
+  -ig grove-fhir-platforms.tgz \
+  -ig grove-fhir-core.tgz
+```
 
-### Questionnaire resources
+Run the same command for a `Questionnaire` and its `QuestionnaireResponse`. Validation
+checks base FHIR, the selected Grove profile, terminology bindings, cardinalities, data
+types, and invariants. It does not check whether two separate resources belong to the
+same participant or business workflow; applications enforce those relationships.
 
-The current package contains draft `Questionnaire` and `QuestionnaireResponse` profiles.
-A response identifies its source instrument through the `questionnaire` canonical;
-receivers need the corresponding Questionnaire to interpret its items and coded answers.
-The combined prototype still includes annotation-specific constraints, so these profiles
-are not yet the independent Questionnaire contract described on the overview.
+If the Validator cannot resolve a Grove canonical, confirm that both packages were
+loaded and that the resource uses the exact profile URL shown on its generated profile
+page. When diagnosing an error, compare the failing path with the Differential Table
+first, then use the Snapshot Table for inherited base-FHIR rules.
 
-### Excluded from the receiver contract
+<details markdown="1">
+<summary><strong>Package dependencies and licensing</strong></summary>
 
-SensorKit resources and batch formats remain experimental. Health Connect examples do
-not have a Grove Swift implementation. The receiver CapabilityStatement has no
-corresponding Grove server implementation. None of these establish a supported receiver
-or exchange contract.
+{% include dependency-table.xhtml %}
 
-See [Preview Status](publication-status.html) for the current scope and release status.
+{% include globals-table.xhtml %}
+
+{% include cross-version-analysis.xhtml %}
+
+{% include ip-statements.xhtml %}
+
+</details>

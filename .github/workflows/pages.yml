@@ -28,6 +28,11 @@ jobs:
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v7
+      - name: Check out immutable publications
+        uses: actions/checkout@v7
+        with:
+          ref: publication
+          path: .published
       - uses: actions/setup-node@v6
         with:
           node-version: 22
@@ -54,6 +59,8 @@ jobs:
             fhir-pages-${{ runner.os }}-
       - run: npm ci
       - name: Build the documentation site
+        env:
+          PUBLISHED_SITE_ROOT: ${{ github.workspace }}/.published
         run: npm run pages:build
       - name: Upload the Pages artifact
         uses: actions/upload-pages-artifact@v4
@@ -66,12 +73,24 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     permissions:
+      contents: read
       pages: write
       id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - uses: actions/checkout@v7
       - name: Deploy documentation
         id: deployment
         uses: actions/deploy-pages@v4
+      - name: Verify the deployed preview
+        run: >-
+          python3 Scripts/check-live-publication.py
+          --base-url "${{ steps.deployment.outputs.page_url }}"
+      - name: Verify the canonical host
+        if: vars.FHIR_CANONICAL_BASE_URL != ''
+        run: >-
+          python3 Scripts/check-live-publication.py
+          --base-url "${{ vars.FHIR_CANONICAL_BASE_URL }}"
+          --canonical-only

@@ -15,21 +15,13 @@ Parent: Device
 Id: grove-sensor-device
 Title: "Grove Sensor Device"
 Description: """
-The device that RECORDED a mobile health observation — a watch, chest strap, scale,
-ring, or the phone itself. Referenced (usually contained) from `Observation.device`.
+The hardware that recorded a mobile health observation, such as a watch, chest strap,
+scale, ring, or phone. `Observation.device` references this resource.
 
-Vocabulary-aligned with the Personal Health Device IG (MDC-coded version types) without
-deriving from PhdDevice: mobile platforms rarely supply the identifiers PhdDevice
-requires (EUI-64, serial), so derivation would make real HealthKit / Health Connect
-instances non-conformant. Instances originating from true PHD-modeled BLE devices MAY
-additionally conform to PhdDevice.
-
-Contained, not standalone: mobile platforms provide no stable device identity, and
-minting a deterministic one — a hash over manufacturer, model, and versions — would
-produce exactly the durable per-participant key that Grove's identifier hashing exists
-to withhold, letting anyone holding two datasets join them on the device. That trade is
-deliberate: the Device stays contained, and the facts consumers actually filter on are
-denormalised onto the Observation instead (see ``GroveMobileSensorObservation``).
+Use a contained Device when the source platform does not provide a stable, independently
+resolvable device record. An external reference may be used when such a record exists.
+The profile aligns device version types with the Personal Health Device IG while allowing
+the partial device information commonly supplied by mobile platforms.
 """
 * deviceName MS
 * deviceName ^slicing.discriminator.type = #value
@@ -74,17 +66,14 @@ Parent: Device
 Id: grove-gateway-device
 Title: "Grove Gateway Device"
 Description: """
-The app-and-OS environment that SAVED a mobile health observation into the platform
-store: the app's name, platform application identifier, and version, plus the phone or
-watch model and operating-system version it ran on. Linked from the Observation via the
-HL7 `observation-gatewayDevice` extension — the same role the Personal Health Device IG
-gives its gateway (PHG) device, and the concept R5 promoted into core as
-`Device.gateway`.
+The application and operating-system environment that saved a mobile health observation.
+It records the application name, platform application identifier and version, hardware
+model, and operating-system version. The standard `observation-gatewayDevice` extension
+links it from the Observation.
 
-When the phone is itself the sensor (phone-recorded steps), an Observation legitimately
-carries two Devices describing one physical phone: the hardware as its
-``GroveSensorDevice``, the app + OS as its gateway. Do not collapse them — the version
-slicing differs.
+When a phone both records and saves a value, the Observation may reference the same
+physical hardware in two roles: a sensor Device for acquisition and a gateway Device
+for the application environment.
 """
 * deviceName MS
 * deviceName ^slicing.discriminator.type = #value
@@ -120,27 +109,19 @@ Parent: Observation
 Id: grove-mobile-sensor-observation
 Title: "Grove Mobile Sensor Observation"
 Description: """
-An Observation captured on a mobile platform (HealthKit, Health Connect, a BLE device
-via a phone). Carries: the platform record identity in `identifier` (enabling
-conditional-create deduplication), full-precision timing in `effective[x]`, the
-recording device in `device` (→ ``GroveSensorDevice``), the saving app in the
-`observation-gatewayDevice` extension (→ ``GroveGatewayDevice``), the capture modality
-in the ``GroveRecordingMethod`` extension, and residual platform metadata in
-``GrovePlatformMetadata``.
+An Observation captured through a mobile health platform. The profile carries the
+source-record identity in `identifier`, full-precision timing in `effective[x]`, the
+recording hardware in `device`, and the saving application in the standard
+`observation-gatewayDevice` extension. Grove extensions record the capture method and
+typed source metadata that has no standard FHIR representation.
 
-Category note: FHIR's vitalsigns profile applies on its own force to vital-sign codes;
-writers set `category` accordingly (e.g. `vital-signs`). `subject` is required: a
-platform sample carries no subject of its own, so the converting application supplies
-the participant reference at conversion time.
-
-Devices are contained, and a contained resource is unreachable by search — so the two
-facts consumers filter on are denormalised onto the Observation using FHIR's own
-metadata: the acquisition channel in `meta.source` (`_source`) and the recording
-device's form factor in `meta.tag` (`_tag`). `Device.type` on the contained Device
-remains the semantic home of the form factor; `meta.tag` is its searchable copy.
+`subject` identifies the person described by the sample and is supplied by the
+converting application. `meta.source` identifies the acquisition channel. When the
+recording device type is known, `meta.tag` carries a searchable copy of `Device.type`.
+See [Mobile Observations](mobile.html) for the core mapping and examples.
 """
 * meta.source MS
-* meta.source ^short = "Acquisition channel URI, one per path: https://grovealliance.org/fhir/source/{healthkit|health-connect|sensorkit|fitbit-web-api}"
+* meta.source ^short = "URI identifying the acquisition channel"
 * meta.tag ^slicing.discriminator.type = #value
 * meta.tag ^slicing.discriminator.path = "system"
 * meta.tag ^slicing.rules = #open
@@ -150,7 +131,7 @@ remains the semantic home of the form factor; `meta.tag` is its searchable copy.
 * meta.tag[deviceType] from GroveDeviceTypeVS (required)
 * meta.tag[deviceType] ^short = "Form factor of the recording device, copied from the contained `Device.type`"
 * identifier 1..* MS
-* identifier ^short = "Platform record id; system per platform (see Identifiers page)"
+* identifier ^short = "Source-platform record identifier (see Mobile Observations)"
 * identifier ^slicing.discriminator.type = #value
 * identifier ^slicing.discriminator.path = "system"
 * identifier ^slicing.rules = #open
@@ -185,5 +166,5 @@ remains the semantic home of the form factor; `meta.tag` is its searchable copy.
 * extension[gatewayDevice].valueReference only Reference(GroveGatewayDevice)
 * extension[gatewayDevice] ^short = "The app + OS that saved the record"
 * extension[recordingMethod] ^short = "Sensed, actively measured, or manually entered"
-* extension[platformMetadata] ^short = "Residual platform metadata (see Metadata Policy)"
+* extension[platformMetadata] ^short = "Typed source metadata with no standard FHIR representation"
 * extension[studyRevision] ^short = "Deployment study-definition revision in force when this resource was produced"

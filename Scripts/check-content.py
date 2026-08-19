@@ -14,6 +14,7 @@ import py_compile
 import re
 import subprocess
 from pathlib import Path
+from urllib.parse import urlparse
 
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -58,6 +59,30 @@ def main() -> int:
     )
     if expected_dependency not in core_configuration_text:
         failures.append("ig/sushi-config.yaml does not pin the current platform-guide version")
+
+    publication_path = ROOT / "publication/config.json"
+    publication = json.loads(publication_path.read_text(encoding="utf-8"))
+    published_sources: set[str] = set()
+    aliases: set[str] = set()
+    for guide in publication.get("guides", []):
+        source = guide.get("source")
+        if source not in {"ig", "platforms"}:
+            failures.append(f"publication/config.json has an unknown active guide: {source!r}")
+            continue
+        published_sources.add(source)
+        configuration = configurations[ROOT / source]
+        canonical_path = urlparse(configuration["canonical"]).path.strip("/")
+        if guide.get("canonicalPath") != canonical_path:
+            failures.append(
+                f"publication path for {source} does not match its canonical URL: "
+                f"{guide.get('canonicalPath')!r} != {canonical_path!r}"
+            )
+        for alias in guide.get("aliases", []):
+            if alias in aliases:
+                failures.append(f"publication alias is declared more than once: {alias!r}")
+            aliases.add(alias)
+    if published_sources != {"ig", "platforms"}:
+        failures.append("publication/config.json must publish exactly the two active guides")
 
     for path in tracked_files():
         relative = path.relative_to(ROOT)

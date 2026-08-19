@@ -10,6 +10,7 @@
 node_modules/
 .build/
 .internal/
+.published/
 __pycache__/
 
 # IG Publisher and SUSHI output. Everything here is reproducible from input/.

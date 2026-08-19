@@ -15,12 +15,7 @@ path = [
     "package.json",
     "platforms/input/ignoreWarnings.txt",
     "platforms/ig.ini",
-    "tools/feed-skeleton.xml",
-    "tools/local-ig-registry.json",
-    "tools/publish-setup.json",
-    "tools/publish-templates/header.template",
-    "tools/publish-templates/postamble.template",
-    "tools/publish-templates/preamble.template"
+    "publication/config.json"
 ]
 SPDX-FileCopyrightText = "2026 Schmiedmayer Lab and the project authors (see CONTRIBUTORS.md)"
 SPDX-License-Identifier = "MIT"

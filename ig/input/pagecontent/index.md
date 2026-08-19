@@ -6,67 +6,70 @@ SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTR
 SPDX-License-Identifier: MIT
 -->
 
-> **Continuous preview**
->
-> This site is an unreleased build used to review the Grove FHIR contract. Its package
-> identifiers, canonical URLs, and resource definitions may change before the first
-> stable release. Applications should not depend on these packages yet.
+Grove FHIR defines how mobile health measurements and questionnaires are represented
+as FHIR R4 resources. It keeps the clinical content in standard FHIR elements and adds
+the source details needed to interpret, trace, and deduplicate data collected on a
+mobile device.
 
-This preview contains candidates for a reusable FHIR R4 exchange contract. Grove Swift
-is the first reference implementation evaluated against the definitions. No package in
-this preview is a released specification.
+You do not need to learn the entire guide before using it. Start with the kind of data
+you want to exchange:
 
-### Scope
-
-The proposed contract has three domains:
-
-| Domain | Purpose |
+| I want to… | Start here |
 |---|---|
-| Mobile Data Exchange | Represent HealthKit observations, source-record identity, recording hardware, gateway software, capture method, and typed source metadata |
-| Questionnaire Exchange | Exchange FHIR Questionnaire and QuestionnaireResponse resources independently of a particular renderer |
-| Platform Terminology | Preserve source-platform identifiers used by exchanged resources without assigning clinical meaning |
+| Encode a measurement from HealthKit | [Mobile Observations](mobile.html) |
+| Exchange a form and its answers | [Questionnaires](questionnaires.html) |
+| Check a JSON resource | [Read and Validate](consuming.html) |
 
-The current `org.grovealliance.fhir.core` package predates those boundaries and contains
-additional prototype material. Its generated artifact list is a record of the current
-build, not an endorsed stable contract.
+### Mobile observations
 
-### Current boundaries
+A mobile measurement is a FHIR `Observation`. The measurement, subject, and time use
+standard FHIR fields. Grove profiles add a stable source-record identifier and describe
+the sensor that recorded the value, the app that saved it, the capture method, and
+typed source metadata.
 
-| Current material | Review status |
-|---|---|
-| HealthKit observation exchange | Candidate Mobile contract |
-| Questionnaire and QuestionnaireResponse exchange | Candidate Questionnaire contract; annotation-specific constraints are not included in that scope |
-| HealthKit identifiers used by the Swift mapping | Candidate Platform Terminology |
-| SensorKit observations and raw sensor batches | Experimental |
-| Health Connect definitions | No Grove Swift implementation evidence |
-| Image annotation | Grove application feature, outside the proposed FHIR contract |
-| Receiver CapabilityStatement | No corresponding Grove receiver implementation |
+```text
+mobile platform record
+        |
+        v
+Observation ----> recording Device
+        |
+        +--------> gateway Device (app + operating system)
+```
 
-### Use this preview
+Begin with the [step-count example](Observation-GroveStepCountObservationExample.html),
+then use the [Mobile Sensor Observation profile](StructureDefinition-grove-mobile-sensor-observation.html)
+to see every rule.
 
-| Goal | Page |
-|---|---|
-| Validate a resource against the current build | [Validate Preview Resources](consuming.html) |
-| Understand the scope and release status | [Preview Status](publication-status.html) |
-| Browse generated FHIR resources | [Artifacts](artifacts.html) |
-| Review source-platform identifiers | [Platform Terminology](https://schmiedmayerlab.github.io/grove-fhir/platforms/) |
+### Questionnaires
 
-### Contract and guidance
+A FHIR `Questionnaire` defines an instrument. A `QuestionnaireResponse` contains the
+answers and names the instrument by its canonical URL. Stable `linkId` values connect
+each answer to its question, including conditional follow-up questions.
 
-Only profiles, extensions, terminology resources, and invariants in a future reviewed,
-versioned package can define conformance requirements. Examples and explanatory pages
-are informative. Grove product capabilities and roadmap work are outside this guide.
+```text
+Questionnaire.url <---- QuestionnaireResponse.questionnaire
+Questionnaire.item.linkId <---- QuestionnaireResponse.item.linkId
+```
 
-### Dependencies
+The [follow-up questionnaire](Questionnaire-GroveFollowUpQuestionnaireExample.html) and
+its [completed response](QuestionnaireResponse-GroveFollowUpQuestionnaireResponseExample.html)
+show the complete relationship.
 
-{% include dependency-table.xhtml %}
+### How to read this guide
 
-{% include globals-table.xhtml %}
+FHIR implementation guides use a few recurring terms:
 
-### Cross-Version Analysis
+- A **profile** states the rules for a FHIR resource, including required fields,
+  allowed types, terminology bindings, and invariants.
+- An **extension** gives a defined home to information that has no suitable field in
+  the base FHIR resource.
+- A **terminology resource** defines the systems and values used in coded fields.
+- An **example** is a complete resource that applies the profiles in a realistic case.
 
-{% include cross-version-analysis.xhtml %}
+On a generated profile page, start with **Overview** and **Differential Table**. The
+differential shows what this guide adds to base FHIR. Use **Snapshot Table** when you
+need the complete inherited structure, and **JSON** when implementing or debugging a
+serializer.
 
-### Intellectual Property Statements
-
-{% include ip-statements.xhtml %}
+The quickest practical route is: inspect an example, open its profile, then
+[validate your own resource](consuming.html).

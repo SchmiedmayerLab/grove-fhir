@@ -17,9 +17,8 @@ Title: "HealthKit Sample Types"
 Description: """
 HealthKit sample-type identifiers, as their raw string values
 (`HKQuantityTypeIdentifierStepCount`, `HKCategoryTypeIdentifierSleepAnalysis`,
-`HKDataTypeStateOfMind`, …). Grove writes this coding alongside the clinical coding of
-every observation, because the platform identifier says exactly which sensor pipeline
-produced the number — something LOINC cannot express.
+`HKDataTypeStateOfMind`, …). This coding may be written alongside a clinical coding to
+retain the source platform's data type.
 
 A fragment: Apple adds sample types with every release.
 """
@@ -48,13 +47,12 @@ Id: healthkit-metadata-key
 Title: "HealthKit Metadata Keys"
 Description: """
 HealthKit metadata keys, as their raw string values. Used as the `key` coding of the
-core guide's platform-metadata entry — the last layer of the metadata policy, after
-time zone, recording method, body site, device properties, and components have each
-claimed what belongs to them.
+core guide's platform-metadata entry when a source key/value pair has no more specific
+FHIR representation.
 
 A fragment: HealthKit accepts arbitrary third-party keys. The codes are the raw values,
-not the Swift constant names — they disagree more often than not, and Grove writes the
-raw value. A test in the framework pins every code below to what HealthKit returns.
+not the Swift constant names. Grove writes the raw value, and tests pin each listed code
+to the value returned by HealthKit.
 """
 * ^url = "https://grovealliance.org/fhir/platforms/CodeSystem/healthkit-metadata-key"
 * ^valueSet = "https://grovealliance.org/fhir/platforms/ValueSet/healthkit-metadata-key"

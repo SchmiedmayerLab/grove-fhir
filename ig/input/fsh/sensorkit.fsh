@@ -17,9 +17,8 @@ CodeSystem: GroveSensorKitConcepts
 Id: grove-sensorkit-concepts
 Title: "SensorKit Observation Concepts"
 Description: """
-Component and observation codes for concepts SensorKit reports that no established
-vocabulary covers: wearable placement, visit timing windows, and device-usage
-summary metrics.
+Codes used by the SensorKit profiles for device placement, visit timing, and
+device-usage summary measurements.
 """
 * ^experimental = false
 * ^caseSensitive = true
@@ -39,8 +38,8 @@ CodeSystem: GroveSensorKitValues
 Id: grove-sensorkit-values
 Title: "SensorKit Coded Values"
 Description: """
-Coded values for SensorKit concepts: wear state, laterality, and visit location
-categories. Replaces the free-string and app-specific codes earlier study apps used.
+Codes used by the SensorKit profiles for wear state, device placement, and visit
+location categories.
 """
 * ^experimental = false
 * ^caseSensitive = true
@@ -61,10 +60,9 @@ Parent: GroveMobileSensorObservation
 Id: grove-wear-state-observation
 Title: "Grove Wear-State Observation"
 Description: """
-Whether the watch is being worn, from SensorKit's on-wrist stream. The wear state is
-the coded value; wrist and crown placement ride as coded components. Wear state is the
-denominator for every other wearable stream — consumers use it to distinguish "no
-data" from "not worn".
+Represents a sample from SensorKit's on-wrist state stream. The Observation value
+records whether the watch is worn. Components record the wrist location and crown
+orientation when available.
 """
 * code = GroveSensorKitSampleType#com.apple.SensorKit.onWristState
 * value[x] only CodeableConcept
@@ -104,10 +102,10 @@ Parent: GroveMobileSensorObservation
 Id: grove-visit-observation
 Title: "Grove Visit Observation"
 Description: """
-A coarse location-category visit from SensorKit — the kind of place and the timing,
-never coordinates. SensorKit reports arrival and departure as time *windows*; they map
-to `valuePeriod` components, while `effectivePeriod` spans the widest possible visit
-(arrival-window start to departure-window end).
+Represents a SensorKit visit without geographic coordinates. Components record the
+location category, distance from home, and the reported arrival and departure windows.
+`effectivePeriod` spans from the start of the arrival window through the end of the
+departure window.
 """
 * code = GroveSensorKitSampleType#com.apple.SensorKit.visits
 * effective[x] only Period
@@ -135,7 +133,7 @@ to `valuePeriod` components, while `effectivePeriod` spans the widest possible v
 ValueSet: GroveVisitLocationCategoryVS
 Id: grove-visit-location-category
 Title: "Visit Location Category"
-Description: "The kinds of place SensorKit reports a visit to."
+Description: "Location categories used by the Grove SensorKit visit profile."
 * ^experimental = false
 * GroveSensorKitValues#home
 * GroveSensorKitValues#work
@@ -149,10 +147,10 @@ Parent: GroveMobileSensorObservation
 Id: grove-device-usage-observation
 Title: "Grove Device-Usage Observation"
 Description: """
-A device-usage reporting period from SensorKit: total unlock duration as the value,
-screen-wake and unlock counts as components. Per-app, per-notification, and per-web
-breakdowns do not fit coded components — ship them as a raw sensor batch
-(``GroveSensorBatchDocument``) and point `derivedFrom` at it.
+Represents a SensorKit device-usage reporting period. The Observation value records
+total unlock duration, and components record screen-wake and unlock counts. Detailed
+per-application, notification, and web-usage data can be carried in a
+``GroveSensorBatchDocument`` referenced by `derivedFrom`.
 """
 * code = GroveSensorKitSampleType#com.apple.SensorKit.deviceUsageReport
 * effective[x] only Period
@@ -178,19 +176,18 @@ Parent: DocumentReference
 Id: grove-sensor-batch-document
 Title: "Grove Sensor Batch Document"
 Description: """
-A raw high-resolution sensor batch (PPG waveforms, accelerometer streams, per-app
-usage detail) that is too dense for Observation resources. The document carries the
-payload inline, or points at a sidecar file uploaded alongside the FHIR payload, and
-summary Observations point back via `derivedFrom`.
+Represents a batch of sensor data, such as a PPG waveform, accelerometer stream, or
+detailed device-usage report. The attachment can contain the payload inline or reference
+an external file. A summary Observation can reference the document through `derivedFrom`.
 
 `type` names the sensor stream; `content.attachment.contentType` is the media type of
 the payload once decompressed; `content.format` names its serialization and any
-compression applied to the stored bytes; `hash` and `size` are taken over the bytes as
-stored, so a consumer verifies the file it fetched without decompressing it first.
+compression applied to the stored bytes. `hash` and `size` describe the stored bytes,
+including compression when present.
 
-R4 resolves a relative `attachment.url` against the *service base*, not against the
-resource or an enclosing archive. A writer that ships sidecar files therefore SHALL
-either publish an absolute URL or document the archive root it resolves against.
+FHIR R4 resolves a relative `attachment.url` against the service base. A writer using
+sidecar files SHALL provide an absolute URL or document the base used to resolve a
+relative URL.
 """
 * type 1..1 MS
 * type from GroveSensorBatchTypeVS (extensible)
@@ -210,6 +207,6 @@ either publish an absolute URL or document the archive root it resolves against.
 ValueSet: GroveSensorBatchTypeVS
 Id: grove-sensor-batch-type
 Title: "Sensor Batch Types"
-Description: "The sensor streams raw batches can carry."
+Description: "SensorKit stream identifiers permitted for a Grove Sensor Batch Document."
 * ^experimental = false
 * include codes from system GroveSensorKitSampleType
