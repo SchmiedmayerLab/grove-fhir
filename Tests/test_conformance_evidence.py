@@ -274,6 +274,102 @@ class ConformanceEvidenceTests(unittest.TestCase):
                     )
                 )
 
+    def test_archive_sidecar_symlink_never_overwrites_its_target(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            evidence = root / "evidence"
+            evidence.mkdir()
+            (evidence / "exact.txt").write_text("exact\n", encoding="utf-8")
+            archive = root / EVIDENCE.ARCHIVE_FILENAME
+            victim = root / "victim.txt"
+            victim.write_text("sentinel\n", encoding="utf-8")
+            sidecar = Path(f"{archive}.sha256")
+            sidecar.symlink_to(victim)
+
+            with self.assertRaisesRegex(EVIDENCE.EvidenceError, "checksum path is unsafe"):
+                EVIDENCE.create_deterministic_archive(evidence, archive, EPOCH)
+            self.assertEqual(victim.read_text(encoding="utf-8"), "sentinel\n")
+            self.assertFalse(archive.exists())
+
+            sidecar.unlink()
+            sidecar.write_text("stale\n", encoding="utf-8")
+            EVIDENCE.create_deterministic_archive(evidence, archive, EPOCH)
+            self.assertFalse(sidecar.is_symlink())
+            self.assertEqual(
+                sidecar.read_text(encoding="utf-8"),
+                f"{EVIDENCE.sha256_file(archive)}  {archive.name}\n",
+            )
+
+    def test_archive_and_external_evidence_reject_nonportable_text(self) -> None:
+        declaration = {"path": "resource.json", "format": "fhir-json"}
+        evidence_set = {"id": "example"}
+        for text, expected in (
+            ("Current: /Users/runner/secret", "machine-local"),
+            (r"Cache: C:\Users\runner\.fhir", "machine-local"),
+            ("\x1b[31mSuccess\x1b[0m", "ANSI"),
+        ):
+            with self.subTest(text=text), self.assertRaisesRegex(
+                EVIDENCE.EvidenceError, expected
+            ):
+                EVIDENCE._validate_external_file(
+                    canonical_json_bytes(
+                        {"resourceType": "Observation", "note": [{"text": text}]}
+                    ),
+                    declaration,
+                    evidence_set,
+                    {},
+                    {},
+                )
+        EVIDENCE._validate_external_file(
+            canonical_json_bytes(
+                {
+                    "resourceType": "Observation",
+                    "note": [
+                        {"text": "https://example.org/home/runner/reference"}
+                    ],
+                }
+            ),
+            declaration,
+            evidence_set,
+            {},
+            {},
+        )
+
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            evidence = root / "evidence"
+            evidence.mkdir()
+            payload = b'{"path":"/private/tmp/validator-output"}\n'
+            (evidence / "report.json").write_bytes(payload)
+            archive = root / EVIDENCE.ARCHIVE_FILENAME
+            with self.assertRaisesRegex(EVIDENCE.EvidenceError, "machine-local"):
+                EVIDENCE.create_deterministic_archive(evidence, archive, EPOCH)
+
+            with archive.open("wb") as raw:
+                with EVIDENCE.gzip.GzipFile(
+                    filename="", mode="wb", fileobj=raw, compresslevel=9, mtime=EPOCH
+                ) as compressed:
+                    with tarfile.open(
+                        fileobj=compressed, mode="w", format=tarfile.USTAR_FORMAT
+                    ) as bundle:
+                        member = tarfile.TarInfo(
+                            f"{EVIDENCE.ARCHIVE_PREFIX}/report.json"
+                        )
+                        member.size = len(payload)
+                        member.mode = 0o644
+                        member.mtime = EPOCH
+                        bundle.addfile(member, io.BytesIO(payload))
+            Path(f"{archive}.sha256").write_text(
+                f"{EVIDENCE.sha256_file(archive)}  {archive.name}\n",
+                encoding="utf-8",
+            )
+            self.assertTrue(
+                any(
+                    "machine-local" in failure
+                    for failure in EVIDENCE.verify_archive(evidence, archive, EPOCH)
+                )
+            )
+
     def test_portable_site_verifier_rejects_every_publication_drift(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -308,6 +404,27 @@ class ConformanceEvidenceTests(unittest.TestCase):
             EVIDENCE.inject_pages(evidence, archive, site)
             self.assertTrue(
                 any("member set does not exactly match" in item for item in EVIDENCE.verify_site_evidence(site, REVISION))
+            )
+
+    def test_pages_parent_symlink_is_rejected_without_external_deletion(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            evidence, archive, site = self._site_fixture(root / "fixture")
+            external = root / "external"
+            external.mkdir()
+            shutil.move(str(site / "conformance"), str(external / "conformance"))
+            (site / "conformance").symlink_to(
+                external / "conformance", target_is_directory=True
+            )
+            sentinel = external / "conformance/ci-build/sentinel.txt"
+            sentinel.write_text("do not delete\n", encoding="utf-8")
+
+            failures = EVIDENCE.verify_site_evidence(site, REVISION)
+            self.assertTrue(any("symlink" in failure for failure in failures))
+            with self.assertRaisesRegex(EVIDENCE.EvidenceError, "symlink"):
+                EVIDENCE.inject_pages(evidence, archive, site)
+            self.assertEqual(
+                sentinel.read_text(encoding="utf-8"), "do not delete\n"
             )
 
     def test_raw_validator_transcripts_are_not_external_evidence(self) -> None:

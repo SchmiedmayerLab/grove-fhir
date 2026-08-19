@@ -49,6 +49,39 @@ SHA256 = re.compile(r"^[0-9a-f]{64}$")
 COMMIT = re.compile(r"^[0-9a-f]{40}$")
 ZERO_COMMIT = "0" * 40
 IDENTIFIER = re.compile(r"^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$")
+MACHINE_LOCAL_UNIX_PATH = re.compile(
+    r"(?<![A-Za-z0-9._~:/?#%+\\-])/(?:Users|home/runner|private/tmp)/"
+)
+MACHINE_LOCAL_WINDOWS_PATH = re.compile(
+    r"(?i)(?<![A-Za-z0-9_])(?:[A-Z]:\\+(?:Users|home\\+runner|private\\+tmp)\\+)"
+)
+TEXT_SUFFIXES = frozenset(
+    {
+        ".css",
+        ".csv",
+        ".fsh",
+        ".html",
+        ".ini",
+        ".json",
+        ".js",
+        ".map",
+        ".md",
+        ".mjs",
+        ".patch",
+        ".py",
+        ".rb",
+        ".scss",
+        ".sh",
+        ".svg",
+        ".toml",
+        ".ttl",
+        ".txt",
+        ".xml",
+        ".xhtml",
+        ".yaml",
+        ".yml",
+    }
+)
 
 
 class EvidenceError(ValueError):
@@ -97,6 +130,80 @@ def load_json_object(path: Path, label: str) -> dict[str, Any]:
     if not isinstance(value, dict):
         raise EvidenceError(f"{label} must be a JSON object: {path}")
     return value
+
+
+def _json_strings(value: Any) -> Iterable[str]:
+    if isinstance(value, str):
+        yield value
+    elif isinstance(value, list):
+        for item in value:
+            yield from _json_strings(item)
+    elif isinstance(value, dict):
+        for item in value.values():
+            yield from _json_strings(item)
+
+
+def validate_portable_text_bytes(data: bytes, label: str, suffix: str) -> None:
+    """Reject terminal control output and machine-local paths from public text.
+
+    JSON string values are inspected after decoding as well as in their encoded form so
+    escaped Windows separators and an escaped U+001B cannot bypass the publication gate.
+    HTTPS URL paths such as ``https://example.org/home/runner/reference`` are not treated
+    as filesystem locations.
+    """
+    try:
+        text = data.decode("utf-8")
+    except UnicodeDecodeError as error:
+        raise EvidenceError(f"public text is not UTF-8 in {label}: {error}") from error
+    candidates = [text]
+    if suffix.lower() == ".json":
+        try:
+            decoded = strict_json_loads(text)
+        except ValueError:
+            decoded = None
+        if decoded is not None:
+            candidates.extend(_json_strings(decoded))
+    if any("\x1b" in candidate for candidate in candidates):
+        raise EvidenceError(f"ANSI escape data is not portable in {label}")
+    if any(
+        "file://" in candidate
+        or MACHINE_LOCAL_UNIX_PATH.search(candidate)
+        or MACHINE_LOCAL_WINDOWS_PATH.search(candidate)
+        for candidate in candidates
+    ):
+        raise EvidenceError(f"machine-local filesystem path is not portable in {label}")
+
+
+def validate_portable_package_bytes(data: bytes, label: str) -> None:
+    """Inspect every UTF-8 text member of a sanitized FHIR package archive."""
+    try:
+        with tarfile.open(fileobj=io.BytesIO(data), mode="r:*") as package:
+            for member in package.getmembers():
+                name = PurePosixPath(member.name)
+                if not member.isfile() or name.suffix.lower() not in TEXT_SUFFIXES:
+                    continue
+                extracted = package.extractfile(member)
+                if extracted is None:
+                    raise EvidenceError(
+                        f"unable to inspect public package text {label}:{member.name}"
+                    )
+                validate_portable_text_bytes(
+                    extracted.read(), f"{label}:{member.name}", name.suffix
+                )
+    except (EOFError, OSError, tarfile.TarError) as error:
+        raise EvidenceError(f"unable to inspect public package {label}: {error}") from error
+
+
+def validate_portable_public_bytes(data: bytes, label: str, name: str) -> None:
+    suffix = PurePosixPath(name).suffix.lower()
+    if suffix in TEXT_SUFFIXES:
+        validate_portable_text_bytes(data, label, suffix)
+    elif suffix == ".tgz":
+        validate_portable_package_bytes(data, label)
+
+
+def validate_portable_file(path: Path, label: str) -> None:
+    validate_portable_public_bytes(path.read_bytes(), label, path.name)
 
 
 def safe_relative_path(value: Any, label: str) -> str:
@@ -1361,6 +1468,9 @@ def collect_packages(
         source_archive = source_archive.resolve()
         if not source_archive.is_file():
             raise EvidenceError(f"guide {identifier} package does not exist: {source_archive}")
+        validate_portable_package_bytes(
+            source_archive.read_bytes(), f"guide {identifier} sanitized package"
+        )
         try:
             package_files = read_package_json_files(source_archive)
         except ValueError as error:
@@ -1913,8 +2023,14 @@ def _validate_external_file(
 ) -> None:
     label = f"external evidence {evidence_set['id']}:{file_declaration['path']}"
     if file_declaration["format"] == "fhir-json":
+        validate_portable_text_bytes(
+            data, label, PurePosixPath(file_declaration["path"]).suffix
+        )
         _validate_fhir_json(data, label)
     elif file_declaration["format"] == "test-attestation-v1":
+        validate_portable_text_bytes(
+            data, label, PurePosixPath(file_declaration["path"]).suffix
+        )
         _validate_attestation(
             data,
             file_declaration,
@@ -2189,6 +2305,7 @@ def _validate_domain_fhir_report(
     external_evidence: Sequence[Mapping[str, Any]],
 ) -> None:
     label = f"validation report {declaration['id']}"
+    validate_portable_text_bytes(data, label, ".json")
     report = _strict_json_bytes(data, label)
     expected_top_level = {
         "kind",
@@ -2542,6 +2659,11 @@ def collect_corpora(
         source_files = regular_files(source_root, f"corpus {corpus['id']}")
         if not source_files:
             raise EvidenceError(f"corpus {corpus['id']} is empty")
+        for source in source_files:
+            validate_portable_file(
+                source,
+                f"corpus {corpus['id']}:{source.relative_to(source_root).as_posix()}",
+            )
         destination_root = evidence_root / "corpora" / corpus["id"]
         if copy_corpora:
             for source in source_files:
@@ -2660,15 +2782,23 @@ def _write_supporting_evidence(
         "provenance/gitmodules.txt": ".gitmodules",
     }
     for destination, source in copies.items():
+        source_path = resolve_path(
+            repository, source, f"evidence support file {source}"
+        )
+        validate_portable_file(source_path, f"evidence support file {source}")
         _copy_file(
-            resolve_path(repository, source, f"evidence support file {source}"),
+            source_path,
             evidence_root / destination,
         )
     proposal_by_id = {proposal["id"]: proposal for proposal in integration["proposals"]}
     for locked in proposals:
         proposal = proposal_by_id[locked["id"]]
+        proposal_path = resolve_path(
+            repository, proposal["patch"], f"proposal {locked['id']}"
+        )
+        validate_portable_file(proposal_path, f"proposal {locked['id']}")
         _copy_file(
-            resolve_path(repository, proposal["patch"], f"proposal {locked['id']}"),
+            proposal_path,
             evidence_root / "proposals" / f"{locked['id']}.patch",
         )
 
@@ -2772,6 +2902,32 @@ def write_json(path: Path, value: Mapping[str, Any]) -> None:
     path.write_bytes(canonical_json_bytes(value))
 
 
+def _validate_archive_sidecar_target(sidecar: Path) -> None:
+    if sidecar.is_symlink() or (sidecar.exists() and not sidecar.is_file()):
+        raise EvidenceError(f"archive checksum path is unsafe: {sidecar}")
+
+
+def _write_archive_sidecar(archive: Path, checksum: str) -> None:
+    sidecar = Path(f"{archive}.sha256")
+    _validate_archive_sidecar_target(sidecar)
+    descriptor, filename = tempfile.mkstemp(
+        prefix=f".{sidecar.name}.", suffix=".tmp", dir=sidecar.parent
+    )
+    temporary = Path(filename)
+    try:
+        with os.fdopen(descriptor, "w", encoding="utf-8", newline="\n") as stream:
+            descriptor = -1
+            stream.write(f"{checksum}  {archive.name}\n")
+        # Replacing a name is safe even if it is swapped to a symlink after the
+        # preflight check: os.replace replaces the link itself and never opens its target.
+        os.replace(temporary, sidecar)
+    finally:
+        if descriptor >= 0:
+            os.close(descriptor)
+        if temporary.exists():
+            temporary.unlink()
+
+
 def create_deterministic_archive(
     evidence_root: Path, archive: Path, source_date_epoch: int
 ) -> str:
@@ -2783,9 +2939,15 @@ def create_deterministic_archive(
     ):
         raise EvidenceError("source date epoch must fit the gzip timestamp field")
     files = regular_files(evidence_root, "conformance evidence archive source")
+    for path in files:
+        validate_portable_file(
+            path,
+            f"conformance evidence {path.relative_to(evidence_root).as_posix()}",
+        )
     archive.parent.mkdir(parents=True, exist_ok=True)
     if archive.is_symlink():
         raise EvidenceError(f"archive path may not be a symlink: {archive}")
+    _validate_archive_sidecar_target(Path(f"{archive}.sha256"))
     try:
         with archive.open("wb") as raw:
             with gzip.GzipFile(
@@ -2817,8 +2979,7 @@ def create_deterministic_archive(
     except (OSError, tarfile.TarError, ValueError) as error:
         raise EvidenceError(f"unable to create deterministic evidence archive: {error}") from error
     checksum = sha256_file(archive)
-    sidecar = Path(f"{archive}.sha256")
-    sidecar.write_text(f"{checksum}  {archive.name}\n", encoding="utf-8", newline="\n")
+    _write_archive_sidecar(archive, checksum)
     return checksum
 
 
@@ -3008,17 +3169,24 @@ def verify_archive(
         return failures
     if header != canonical_gzip_header(source_date_epoch):
         failures.append("evidence archive gzip header is not canonical")
-    try:
-        actual_sidecar = sidecar.read_text(encoding="utf-8")
-    except (OSError, UnicodeDecodeError) as error:
-        failures.append(f"unable to read evidence archive checksum: {error}")
+    if sidecar.is_symlink() or not sidecar.is_file():
+        failures.append(f"evidence archive checksum is missing or unsafe: {sidecar}")
     else:
-        if actual_sidecar != expected_sidecar:
-            failures.append("evidence archive checksum sidecar does not match")
-    expected = {
-        f"{ARCHIVE_PREFIX}/{path.relative_to(evidence_root).as_posix()}": path.read_bytes()
-        for path in regular_files(evidence_root, "conformance evidence")
-    }
+        try:
+            actual_sidecar = sidecar.read_text(encoding="utf-8")
+        except (OSError, UnicodeDecodeError) as error:
+            failures.append(f"unable to read evidence archive checksum: {error}")
+        else:
+            if actual_sidecar != expected_sidecar:
+                failures.append("evidence archive checksum sidecar does not match")
+    try:
+        expected = {
+            f"{ARCHIVE_PREFIX}/{path.relative_to(evidence_root).as_posix()}": path.read_bytes()
+            for path in regular_files(evidence_root, "conformance evidence")
+        }
+    except EvidenceError as error:
+        failures.append(str(error))
+        return failures
     found: dict[str, bytes] = {}
     try:
         with tarfile.open(archive, "r:gz") as bundle:
@@ -3047,7 +3215,14 @@ def verify_archive(
                     continue
                 if member.name in found:
                     failures.append(f"duplicate evidence archive member: {member.name}")
-                found[member.name] = extracted.read()
+                payload = extracted.read()
+                found[member.name] = payload
+                try:
+                    validate_portable_public_bytes(
+                        payload, f"evidence archive member {member.name}", member.name
+                    )
+                except EvidenceError as error:
+                    failures.append(str(error))
             if member_names != sorted(member_names) or len(member_names) != len(
                 set(member_names)
             ):
@@ -3272,18 +3447,37 @@ or its <a href="semantic-diff.json">machine-readable form</a>.</p>
     return index.encode("utf-8")
 
 
+def _safe_pages_destination(site: Path) -> tuple[Path, Path]:
+    """Resolve the Pages evidence destination without traversing child symlinks."""
+    if site.is_symlink() or not site.is_dir():
+        raise EvidenceError(f"Pages site must be a non-symlink directory: {site}")
+    resolved_site = site.resolve()
+    current = resolved_site
+    for component in ("conformance", "ci-build"):
+        current = current / component
+        if current.is_symlink():
+            raise EvidenceError(f"Pages evidence path may not be a symlink: {current}")
+        if current.exists() and not current.is_dir():
+            raise EvidenceError(f"Pages evidence path must be a directory: {current}")
+    resolved_destination = current.resolve(strict=False)
+    if (
+        resolved_destination == resolved_site
+        or not resolved_destination.is_relative_to(resolved_site)
+    ):
+        raise EvidenceError("Pages evidence destination escapes the Pages site")
+    return resolved_site, current
+
+
 def inject_pages(
     evidence_root: Path,
     archive: Path,
     site: Path,
 ) -> None:
-    if evidence_root.is_symlink() or archive.is_symlink() or site.is_symlink():
+    if evidence_root.is_symlink() or archive.is_symlink():
         raise EvidenceError("Pages injection paths may not be symlinks")
+    site, destination = _safe_pages_destination(site)
     evidence_root = evidence_root.resolve()
     archive = archive.resolve()
-    site = site.resolve()
-    if not site.is_dir():
-        raise EvidenceError(f"Pages site must be a non-symlink directory: {site}")
     if archive.name != ARCHIVE_FILENAME:
         raise EvidenceError(
             f"public evidence archive must be named {ARCHIVE_FILENAME}"
@@ -3294,12 +3488,7 @@ def inject_pages(
     )
     if archive_failures:
         raise EvidenceError("invalid evidence archive:\n" + "\n".join(archive_failures))
-    destination = site / "conformance" / "ci-build"
-    if destination.is_symlink():
-        raise EvidenceError(f"Pages evidence destination is unsafe: {destination}")
     if destination.exists():
-        if not destination.is_dir():
-            raise EvidenceError(f"Pages evidence destination is unsafe: {destination}")
         shutil.rmtree(destination)
     destination.mkdir(parents=True)
     _copy_file(archive, destination / archive.name)
@@ -3326,12 +3515,7 @@ def verify_site_evidence(site: Path, expected_revision: str) -> list[str]:
     try:
         if not COMMIT.fullmatch(expected_revision):
             raise EvidenceError("expected revision must be a full lowercase commit SHA")
-        if site.is_symlink():
-            raise EvidenceError(f"Pages site must be a non-symlink directory: {site}")
-        site = site.resolve()
-        if not site.is_dir():
-            raise EvidenceError(f"Pages site must be a non-symlink directory: {site}")
-        destination = site / "conformance" / "ci-build"
+        site, destination = _safe_pages_destination(site)
         lock_path = destination / LOCK_FILENAME
         lock = load_json_object(lock_path, "Pages evidence lock")
         if lock.get("sourceRevision") != expected_revision:
@@ -3364,13 +3548,16 @@ def verify_site_evidence(site: Path, expected_revision: str) -> list[str]:
             header = b""
         if header != canonical_gzip_header(source_date_epoch):
             failures.append("Pages evidence archive gzip header is not canonical")
-        try:
-            actual_sidecar = sidecar.read_text(encoding="utf-8")
-        except (OSError, UnicodeDecodeError) as error:
-            failures.append(f"unable to read Pages evidence checksum: {error}")
+        if sidecar.is_symlink() or not sidecar.is_file():
+            failures.append(f"Pages evidence checksum is missing or unsafe: {sidecar}")
         else:
-            if actual_sidecar != expected_sidecar:
-                failures.append("Pages evidence archive checksum sidecar does not match")
+            try:
+                actual_sidecar = sidecar.read_text(encoding="utf-8")
+            except (OSError, UnicodeDecodeError) as error:
+                failures.append(f"unable to read Pages evidence checksum: {error}")
+            else:
+                if actual_sidecar != expected_sidecar:
+                    failures.append("Pages evidence archive checksum sidecar does not match")
         names: set[str] = set()
         ordered_names: list[str] = []
         archive_members: dict[str, bytes] = {}
@@ -3415,7 +3602,16 @@ def verify_site_evidence(site: Path, expected_revision: str) -> list[str]:
                     )
                     continue
                 relative = member.name[len(ARCHIVE_PREFIX) + 1 :]
-                archive_members[relative] = extracted.read()
+                payload = extracted.read()
+                archive_members[relative] = payload
+                try:
+                    validate_portable_public_bytes(
+                        payload,
+                        f"Pages evidence archive member {member.name}",
+                        relative,
+                    )
+                except EvidenceError as error:
+                    failures.append(str(error))
         if ordered_names != sorted(ordered_names) or len(ordered_names) != len(
             set(ordered_names)
         ):
@@ -3507,6 +3703,13 @@ def verify_site_evidence(site: Path, expected_revision: str) -> list[str]:
                 or package_path.stat().st_size != package.get("size")
             ):
                 failures.append(f"Pages package bytes do not match the lock: {relative}")
+                continue
+            try:
+                validate_portable_package_bytes(
+                    package_path.read_bytes(), f"Pages package {relative}"
+                )
+            except EvidenceError as error:
+                failures.append(str(error))
                 continue
             try:
                 metadata = read_package_json_files(package_path)["package.json"]

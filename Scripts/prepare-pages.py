@@ -17,6 +17,7 @@ import html
 import importlib.util
 import io
 import json
+import os
 import re
 import shutil
 import subprocess
@@ -32,14 +33,23 @@ TEXT_SUFFIXES = {
     ".csv",
     ".html",
     ".json",
+    ".js",
+    ".map",
     ".md",
+    ".mjs",
+    ".scss",
     ".svg",
     ".ttl",
     ".txt",
     ".xml",
+    ".xhtml",
 }
-LOCAL_LOCATION = re.compile(r"file://|/(?:Users|home/runner|private/tmp)/")
-WINDOWS_LOCAL_LOCATION = re.compile(r"(?i)\b[A-Z]:\\(?:Users|home\\runner|private\\tmp)\\")
+MACHINE_LOCAL_UNIX_PATH = re.compile(
+    r"(?<![A-Za-z0-9._~:/?#%+\\-])/(?:Users|home/runner|private/tmp)/"
+)
+MACHINE_LOCAL_WINDOWS_PATH = re.compile(
+    r"(?i)(?<![A-Za-z0-9_])(?:[A-Z]:\\+(?:Users|home\\+runner|private\\+tmp)\\+)"
+)
 INKSCAPE_EXPORT_FILENAME = re.compile(
     r'(inkscape:export-filename=")[A-Za-z]:\\[^"\r\n]*\\([^"\\\r\n]+)(")'
 )
@@ -47,6 +57,34 @@ MALFORMED_DATA_URL = re.compile(
     r"url\([^)]*?pagesdata:(image/[^;]+;base64,[A-Za-z0-9+/=]+)\)"
 )
 BUILT_SUFFIX = re.compile(r"\s*\(built [^)]*\)\s*$")
+
+
+def _json_strings(value: Any) -> list[str]:
+    if isinstance(value, str):
+        return [value]
+    if isinstance(value, list):
+        return [text for item in value for text in _json_strings(item)]
+    if isinstance(value, dict):
+        return [text for item in value.values() for text in _json_strings(item)]
+    return []
+
+
+def validate_portable_text(text: str, label: str, suffix: str) -> None:
+    candidates = [text]
+    if suffix.lower() == ".json":
+        try:
+            candidates.extend(_json_strings(json.loads(text)))
+        except json.JSONDecodeError:
+            pass
+    if any("\x1b" in candidate for candidate in candidates):
+        raise ValueError(f"ANSI escape data remains in {label}")
+    if any(
+        "file://" in candidate
+        or MACHINE_LOCAL_UNIX_PATH.search(candidate)
+        or MACHINE_LOCAL_WINDOWS_PATH.search(candidate)
+        for candidate in candidates
+    ):
+        raise ValueError(f"local filesystem location remains in {label}")
 
 
 def load_configuration(path: Path) -> dict[str, Any]:
@@ -173,12 +211,11 @@ def rewrite_package_archive(
                         public_urls,
                         source_url,
                     )
-                    if LOCAL_LOCATION.search(rewritten) or WINDOWS_LOCAL_LOCATION.search(
-                        rewritten
-                    ):
-                        raise ValueError(
-                            f"local filesystem location remains in {path.name}: {member.name}"
-                        )
+                    validate_portable_text(
+                        rewritten,
+                        f"{path.name}:{member.name}",
+                        PurePosixPath(member.name).suffix,
+                    )
                     payload = rewritten.encode("utf-8")
 
             member.uid = 0
@@ -349,6 +386,30 @@ def load_redirect_generator(repository_root: Path) -> Any:
     return module
 
 
+def safe_site_output(site: Path, repository_root: Path) -> Path:
+    """Reject output aliases before any recursive deletion or publication write."""
+    lexical_repository = Path(os.path.abspath(repository_root))
+    lexical_site = Path(os.path.abspath(site))
+    if lexical_site == lexical_repository or not lexical_site.is_relative_to(
+        lexical_repository
+    ):
+        raise ValueError("site output must be a dedicated directory below the repository")
+    current = lexical_repository
+    for component in lexical_site.relative_to(lexical_repository).parts:
+        current = current / component
+        if current.is_symlink():
+            raise ValueError(f"site output path may not traverse a symlink: {current}")
+        if current.exists() and not current.is_dir():
+            raise ValueError(f"site output path component is not a directory: {current}")
+    resolved_site = lexical_site.resolve(strict=False)
+    resolved_repository = lexical_repository.resolve()
+    if resolved_site == resolved_repository or not resolved_site.is_relative_to(
+        resolved_repository
+    ):
+        raise ValueError("site output escapes the repository")
+    return resolved_site
+
+
 def prepare_guide(
     stage: Path,
     repository_root: Path,
@@ -393,7 +454,11 @@ def prepare_guide(
             text = path.read_text(encoding="utf-8")
         except UnicodeDecodeError:
             continue
-        if LOCAL_LOCATION.search(text) or WINDOWS_LOCAL_LOCATION.search(text):
+        try:
+            validate_portable_text(
+                text, f"{source}:{path.relative_to(stage)}", path.suffix
+            )
+        except ValueError:
             leaked_locations.append(str(path.relative_to(stage)))
     if leaked_locations:
         raise RuntimeError(
@@ -411,10 +476,8 @@ def assemble_site(
     source_date_epoch: int,
     published_root: Path | None = None,
 ) -> None:
-    site = site.resolve()
+    site = safe_site_output(site, repository_root)
     repository_root = repository_root.resolve()
-    if site == repository_root or repository_root not in site.parents:
-        raise ValueError("site output must be a dedicated directory below the repository")
 
     if site.exists():
         shutil.rmtree(site)

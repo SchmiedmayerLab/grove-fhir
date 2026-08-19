@@ -129,7 +129,7 @@
         "type": "Device",
         "identifier": {
           "system": "https://study.example.org/fhir/identifiers/application",
-          "value": "org.example.mobile-study"
+          "value": "org.example.health-connect-converter"
         }
       }
     }

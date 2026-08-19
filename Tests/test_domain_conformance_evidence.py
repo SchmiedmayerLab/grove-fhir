@@ -196,8 +196,8 @@ class HeartRateEquivalenceTests(unittest.TestCase):
             HEART_RATE._load_json(cls.specification_path), "specification"
         )
 
-    def static_graph(self):
-        item = self.specification["staticInputs"][0]
+    def static_graph(self, index: int = 0):
+        item = self.specification["staticInputs"][index]
         observation = HEART_RATE._repository_input(
             self.specification_path, item["observation"], "observation"
         )
@@ -279,6 +279,17 @@ class HeartRateEquivalenceTests(unittest.TestCase):
         with self.assertRaises(HEART_RATE.EquivalenceError):
             HEART_RATE.validate_roles(
                 HEART_RATE.FixtureGraph(observation, graph.provenance, graph.bundle),
+                item,
+                self.specification["roles"],
+            )
+
+    def test_reference_identifier_must_agree_with_resolved_target(self) -> None:
+        item, graph = self.static_graph(1)
+        provenance = copy.deepcopy(graph.provenance)
+        provenance["agent"][0]["who"]["identifier"]["value"] = "contradictory-device"
+        with self.assertRaisesRegex(HEART_RATE.EquivalenceError, "contradicts"):
+            HEART_RATE.validate_roles(
+                HEART_RATE.FixtureGraph(graph.observation, provenance, graph.bundle),
                 item,
                 self.specification["roles"],
             )

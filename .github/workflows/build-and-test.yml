@@ -173,6 +173,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: implementation-guides
+          include-hidden-files: true
           if-no-files-found: error
           retention-days: 14
           path: |
@@ -293,6 +294,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: linux-evidence-fragments
+          include-hidden-files: true
           if-no-files-found: error
           retention-days: 14
           path: |
@@ -474,6 +476,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: mac-evidence-fragments
+          include-hidden-files: true
           if-no-files-found: error
           retention-days: 14
           path: grove-fhir/.build/mac-evidence
@@ -603,6 +606,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: conformance-evidence
+          include-hidden-files: true
           if-no-files-found: error
           retention-days: 14
           path: |
@@ -613,6 +617,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: pages-site-candidate
+          include-hidden-files: true
           if-no-files-found: error
           retention-days: 14
           path: .build/pages
@@ -706,6 +711,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: pages-site
+          include-hidden-files: true
           if-no-files-found: error
           retention-days: 14
           path: .build/pages

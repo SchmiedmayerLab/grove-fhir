@@ -377,7 +377,7 @@
       "id": "my-heart-counts-firebase-fhir-receiver",
       "source": "my-heart-counts-firebase",
       "patch": "Integration/Patches/my-heart-counts-firebase-fhir-receiver.patch",
-      "sha256": "aa205f118ca5f3bd4406b7585acb3e001cd0f721c5ee8f171b42e82dfd0b41ff",
+      "sha256": "e7a9138609d328decd0ff9ff55b1ad9700718c29dba34ac25509c51a290724ff",
       "dependsOn": [
         "my-heart-counts-android-health-connect"
       ],
@@ -449,7 +449,7 @@
         }
       ],
       "claims": [
-        "The source-neutral receiver library accepts only complete FHIR R4 collection Bundle JSON under a strict five-field envelope, preserves the exact submitted Bundle bytes and companion resources, and performs structural and complete-identifier checks without exposing an unauthenticated intake endpoint or claiming full profile validation.",
+        "The source-neutral receiver library accepts only JSON whose parsed object has resourceType Bundle and type collection under a strict five-field envelope, preserves the exact submitted bytes and companion resources, and performs only structural and complete-identifier checks; it does not expose an unauthenticated intake endpoint or itself establish FHIR R4 base-resource or profile conformance, which remain independent producer and integration-CI gates.",
         "A trusted server-derived partition plus complete source and Observation identifiers scope collision-safe indexes, while authoritative per-source event sequences provide exact replay, newer replacement, tombstone-only update, deletion, stale-event rejection, and complete output-set ownership without synthesizing lossy FHIR resources.",
         "Generation-pinned immutable Bundle and manifest objects, paged transactional claims, a leased at-least-once outbox, bounded retry/dead-letter and garbage-collection quarantine, and generation-aware metadata retirement support complete series beyond 200 samples; 16 MiB, 50,000-Observation, and 80,000-token receiver limits reject an entire event without truncation, and the frozen Android vectors are checked at their exact producer byte hashes."
       ]

@@ -65,6 +65,11 @@
       "id": "empty-identifier-value",
       "patch": [{"op": "replace", "path": "/sourceIdentifier/value", "value": ""}],
       "valid": false
+    },
+    {
+      "id": "non-absolute-identifier-system",
+      "patch": [{"op": "replace", "path": "/sourceIdentifier/system", "value": "not-a-uri"}],
+      "valid": false
     }
   ],
   "byteBoundaryCases": [

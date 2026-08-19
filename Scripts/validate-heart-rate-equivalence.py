@@ -107,6 +107,19 @@ def _reference_token(reference: Mapping[str, Any]) -> tuple[str, str] | None:
     return None
 
 
+def _assert_reference_identifier_matches(
+    reference: Mapping[str, Any],
+    target: Mapping[str, Any],
+    label: str,
+) -> Mapping[str, Any]:
+    token = _reference_token(reference)
+    if token is not None and token not in _identifier_tokens(target, token[0]):
+        raise EquivalenceError(
+            f"{label}.identifier contradicts the resolved target identifier"
+        )
+    return target
+
+
 def _load_json(path: Path) -> Any:
     if path.is_symlink() or not path.is_file():
         raise EquivalenceError(f"input must be a regular file: {path}")
@@ -149,7 +162,8 @@ class FixtureGraph:
                 for resource in owner.get("contained", [])
                 if isinstance(resource, dict) and resource.get("id") == identifier
             ]
-            return _object(_one(matches, f"{label} contained target"), label)
+            target = _object(_one(matches, f"{label} contained target"), label)
+            return _assert_reference_identifier_matches(value, target, label)
 
         candidates: list[Mapping[str, Any]] = []
         if self.bundle is not None:
@@ -175,7 +189,8 @@ class FixtureGraph:
         unique = {
             canonical_json_bytes(candidate): candidate for candidate in candidates
         }
-        return _object(_one(list(unique.values()), f"{label} target"), label)
+        target = _object(_one(list(unique.values()), f"{label} target"), label)
+        return _assert_reference_identifier_matches(value, target, label)
 
 
 def _subject_type(observation: Mapping[str, Any], graph: FixtureGraph) -> str:

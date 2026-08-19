@@ -145,6 +145,69 @@ class PreparePagesTests(unittest.TestCase):
                 'StructureDefinition-example.html">profile</a></div>',
             )
 
+    def test_package_sanitization_rejects_escaped_ansi_without_url_false_positive(self) -> None:
+        PREPARE_PAGES.validate_portable_text(
+            json.dumps({"url": "https://example.org/home/runner/reference"}),
+            "safe URL",
+            ".json",
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            archive = Path(directory) / "ansi.tgz"
+            self._write_package(
+                archive,
+                {
+                    "name": "example",
+                    "version": "0.1.0",
+                    "canonical": "https://example.org/fhir/example",
+                    "url": "https://example.org/fhir/example",
+                    "date": "volatile",
+                    "description": "Example package",
+                    "title": "Example",
+                    "fhirVersions": ["4.0.1"],
+                },
+                {
+                    "package/example/Observation-example.json": json.dumps(
+                        {
+                            "resourceType": "Observation",
+                            "note": [{"text": "\x1b[31mvalidator output\x1b[0m"}],
+                        }
+                    ).encode("utf-8")
+                },
+            )
+            with self.assertRaisesRegex(ValueError, "ANSI"):
+                PREPARE_PAGES.rewrite_package_archive(
+                    archive,
+                    "https://example.org/fhir/example",
+                    1_700_000_000,
+                    repository_root=Path(directory),
+                    public_urls={},
+                    source_url="https://github.com/example/repository/tree/revision",
+                )
+
+    def test_site_output_symlink_is_rejected_before_recursive_deletion(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            repository = Path(directory) / "repository"
+            (repository / ".build").mkdir(parents=True)
+            victim = repository / "guide-source"
+            victim.mkdir()
+            sentinel = victim / "sentinel.txt"
+            sentinel.write_text("do not delete\n", encoding="utf-8")
+            site = repository / ".build/pages"
+            site.symlink_to(victim, target_is_directory=True)
+
+            with self.assertRaisesRegex(ValueError, "symlink"):
+                PREPARE_PAGES.assemble_site(
+                    site,
+                    repository,
+                    {},
+                    "https://example.org/grove-fhir",
+                    "1" * 40,
+                    1_700_000_000,
+                )
+            self.assertEqual(
+                sentinel.read_text(encoding="utf-8"), "do not delete\n"
+            )
+
     def test_assembles_ci_only_publication_surface(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             repository = Path(directory) / "repository"
@@ -230,6 +293,7 @@ class PreparePagesTests(unittest.TestCase):
             )
 
             mobile = site / "fhir/mobile"
+            self.assertTrue((site / ".nojekyll").is_file())
             self.assertTrue((site / "index.html").is_file())
             self.assertTrue((site / "healthkit/index.html").is_file())
             self.assertTrue((mobile / "ci-build/index.html").is_file())

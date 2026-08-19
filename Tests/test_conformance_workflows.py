@@ -48,6 +48,51 @@ class ConformanceWorkflowTests(unittest.TestCase):
         self.assertIn("pages-site-candidate", build_pages)
         self.assertIn("Scripts/check-evidence-lock.py site", build_pages)
 
+    def test_dot_build_artifacts_explicitly_include_hidden_files(self) -> None:
+        expected = {
+            "implementation-guides": (".build/pages", ".build/fhir-tools"),
+            "linux-evidence-fragments": (
+                ".build/android-conformance",
+                ".build/android-wire",
+                ".build/firebase-lifecycle-result.json",
+            ),
+            "mac-evidence-fragments": ("grove-fhir/.build/mac-evidence",),
+            "conformance-evidence": (
+                ".build/conformance-evidence",
+                ".build/corpus.tgz",
+                ".build/corpus.tgz.sha256",
+            ),
+            "pages-site-candidate": (".build/pages",),
+            "pages-site": (".build/pages",),
+        }
+        upload_blocks = [
+            f"      - {block}"
+            for block in self.build.split("\n      - ")[1:]
+            if "uses: actions/upload-artifact@v4" in block
+        ]
+        actual: dict[str, str] = {}
+        for block in upload_blocks:
+            match = re.search(r"^          name: ([^\n]+)$", block, re.MULTILINE)
+            self.assertIsNotNone(match, block)
+            assert match is not None
+            actual[match.group(1)] = block
+
+        self.assertEqual(set(actual), set(expected))
+        for artifact, paths in expected.items():
+            with self.subTest(artifact=artifact):
+                block = actual[artifact]
+                self.assertIn("          include-hidden-files: true\n", block)
+                for path in paths:
+                    self.assertIn(path, block)
+
+    def test_pages_deployment_preserves_nojekyll(self) -> None:
+        self.assertIn("uses: actions/upload-pages-artifact@v5", self.pages)
+        self.assertNotIn("uses: actions/upload-pages-artifact@v4", self.pages)
+        pages_upload = self.pages.split(
+            "uses: actions/upload-pages-artifact@v5", 1
+        )[1].split("      - ", 1)[0]
+        self.assertIn("include-hidden-files: true", pages_upload)
+
     def test_guides_build_once_and_consumers_only_download(self) -> None:
         guides, later = self.build.split("  integration-proposals:", 1)
         self.assertEqual(self.build.count("Build all implementation guides exactly once"), 1)

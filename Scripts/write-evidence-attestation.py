@@ -20,6 +20,8 @@ from conformance_evidence import (
     IDENTIFIER,
     load_json_object,
     sha256_file,
+    validate_portable_file,
+    validate_portable_text_bytes,
 )
 
 
@@ -107,6 +109,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             path = Path(filename)
             if path.is_symlink() or not path.is_file():
                 raise EvidenceError(f"attestation input is missing or unsafe: {filename}")
+            validate_portable_file(path, f"attestation input {name}")
             inputs.append(
                 {"name": name, "sha256": sha256_file(path), "size": path.stat().st_size}
             )
@@ -124,8 +127,10 @@ def main(argv: Sequence[str] | None = None) -> int:
         }
         if arguments.output.is_symlink():
             raise EvidenceError("attestation output may not be a symlink")
+        encoded = canonical_json_bytes(document)
+        validate_portable_text_bytes(encoded, "generated attestation", ".json")
         arguments.output.parent.mkdir(parents=True, exist_ok=True)
-        arguments.output.write_bytes(canonical_json_bytes(document))
+        arguments.output.write_bytes(encoded)
         return 0
     except (EvidenceError, OSError, ValueError) as error:
         parser.exit(1, f"error: {error}\n")
