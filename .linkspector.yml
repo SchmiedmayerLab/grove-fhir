@@ -15,12 +15,13 @@ excludedDirs:
   - mobile/input/pagecontent
   - healthkit/input/pagecontent
   - health-connect/input/pagecontent
+  - questionnaire/input/pagecontent
 ignorePatterns:
   - pattern: '^doc:.*$'
   - pattern: '^http://localhost.*$'
   # These routes are introduced by this pull request and are verified in the assembled
   # Pages artifact. They become live when the change is deployed from the default branch.
-  - pattern: '^https://schmiedmayerlab\.github\.io/grove-fhir/(fhir/(mobile|healthkit|health-connect)|healthkit|health-connect)(/.*)?$'
+  - pattern: '^https://schmiedmayerlab\.github\.io/grove-fhir/(fhir/(mobile|healthkit|health-connect|questionnaire)|healthkit|health-connect|questionnaire)(/.*)?$'
 replacementPatterns:
   - pattern: '(.*)#gh-dark-mode-only'
     replacement: '$1'

@@ -1,0 +1,37 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "validator-questionnaire-constraints",
+  "meta": {
+    "profile": [
+      "https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire"
+    ]
+  },
+  "extension": [
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/artifact-versionAlgorithm",
+      "valueCoding": {
+        "system": "http://hl7.org/fhir/version-algorithm",
+        "code": "semver"
+      }
+    }
+  ],
+  "url": "https://example.org/fhir/Questionnaire/validator-questionnaire-constraints",
+  "version": "1.2.3-alpha.1+build.7",
+  "name": "ValidatorQuestionnaireConstraints",
+  "title": "Validator Questionnaire Constraints",
+  "status": "active",
+  "item": [
+    {
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/minLength",
+          "valueInteger": 2
+        }
+      ],
+      "linkId": "comment",
+      "text": "Comment",
+      "type": "string",
+      "maxLength": 8
+    }
+  ]
+}

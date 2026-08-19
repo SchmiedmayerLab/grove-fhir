@@ -1,0 +1,349 @@
+{
+  "valid": [
+    "valid/questionnaire.json",
+    "valid/questionnaire-constraints.json",
+    "valid/questionnaire-conditions.json",
+    "valid/questionnaire-expressions.json",
+    "valid/questionnaire-typed-constraints.json",
+    "valid/questionnaire-response.json"
+  ],
+  "invalid": [
+    {
+      "id": "questionnaire-version-missing",
+      "base": "valid/questionnaire.json",
+      "expectedRule": "qg-version-1",
+      "expectedValidatorRule": "qg-version-1",
+      "mutation": {"op": "remove", "path": "/version"}
+    },
+    {
+      "id": "questionnaire-version-invalid-semver",
+      "base": "valid/questionnaire.json",
+      "expectedRule": "qg-version-1",
+      "expectedValidatorRule": "qg-version-1",
+      "mutation": {"op": "replace", "path": "/version", "value": "01.0.0"}
+    },
+    {
+      "id": "questionnaire-version-algorithm",
+      "base": "valid/questionnaire.json",
+      "expectedRule": "qg-version-algorithm-1",
+      "expectedValidatorRule": "qg-version-algorithm-1",
+      "mutation": {"op": "replace", "path": "/extension/0/valueCoding/code", "value": "date"}
+    },
+    {
+      "id": "questionnaire-reference-item",
+      "base": "valid/questionnaire.json",
+      "expectedRule": "qg-reference-1",
+      "expectedValidatorRule": "qg-reference-1",
+      "mutation": {"op": "replace", "path": "/item/0/type", "value": "reference"}
+    },
+    {
+      "id": "questionnaire-prohibited-repeats",
+      "base": "valid/questionnaire.json",
+      "expectedRule": "qg-repeats-1",
+      "expectedValidatorRule": "qg-repeats-1",
+      "mutation": {"op": "add", "path": "/item/0/repeats", "value": true}
+    },
+    {
+      "id": "questionnaire-enable-forms-combined",
+      "base": "valid/questionnaire-conditions.json",
+      "expectedRule": "qg-enable-1",
+      "expectedValidatorRule": "qg-enable-1",
+      "mutation": {
+        "op": "add",
+        "path": "/item/1/extension",
+        "value": [
+          {
+            "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-enableWhenExpression",
+            "valueExpression": {
+              "language": "text/fhirpath",
+              "expression": "%resource.item.where(linkId = 'show-detail').answer.valueBoolean = true"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "questionnaire-variable-name-missing",
+      "base": "valid/questionnaire-expressions.json",
+      "expectedRule": "qg-variable-name-1",
+      "expectedValidatorRule": "qg-variable-name-1",
+      "mutation": {"op": "remove", "path": "/extension/1/valueExpression/name"}
+    },
+    {
+      "id": "questionnaire-variable-name-reserved",
+      "base": "valid/questionnaire-expressions.json",
+      "expectedRule": "qg-variable-name-reserved",
+      "fhirValidator": false,
+      "mutation": {"op": "replace", "path": "/extension/1/valueExpression/name", "value": "resource"}
+    },
+    {
+      "id": "questionnaire-variable-name-duplicate",
+      "base": "valid/questionnaire-expressions.json",
+      "expectedRule": "qg-variable-name-duplicate",
+      "fhirValidator": false,
+      "mutation": {"op": "copy", "from": "/extension/1", "path": "/extension/-"}
+    },
+    {
+      "id": "questionnaire-expression-language",
+      "base": "valid/questionnaire-expressions.json",
+      "expectedRule": "qg-expression-1",
+      "expectedValidatorRule": "qg-expression-1",
+      "mutation": {"op": "replace", "path": "/item/0/extension/1/valueExpression/language", "value": "text/cql"}
+    },
+    {
+      "id": "questionnaire-expression-body",
+      "base": "valid/questionnaire-expressions.json",
+      "expectedRule": "qg-expression-1",
+      "expectedValidatorRule": "qg-expression-1",
+      "mutation": {"op": "remove", "path": "/item/0/extension/1/valueExpression/expression"}
+    },
+    {
+      "id": "questionnaire-target-constraint-malformed",
+      "base": "valid/questionnaire-expressions.json",
+      "expectedRule": "qg-target-constraint-shape",
+      "expectedValidatorRule": "ext-1",
+      "mutation": {"op": "remove", "path": "/extension/2/extension/3/valueString"}
+    },
+    {
+      "id": "questionnaire-initial-forms-combined",
+      "base": "valid/questionnaire-expressions.json",
+      "expectedRule": "qg-initial-1",
+      "expectedValidatorRule": "qg-initial-1",
+      "mutation": {"op": "add", "path": "/item/0/initial", "value": [{"valueString": "Literal"}]}
+    },
+    {
+      "id": "questionnaire-length-placement",
+      "base": "valid/questionnaire-constraints.json",
+      "expectedRule": "qg-length-1",
+      "expectedValidatorRule": "qg-length-1",
+      "mutation": {"op": "replace", "path": "/item/0/type", "value": "boolean"}
+    },
+    {
+      "id": "questionnaire-length-order",
+      "base": "valid/questionnaire-constraints.json",
+      "expectedRule": "qg-min-max-1",
+      "expectedValidatorRule": "qg-min-max-1",
+      "mutation": {"op": "replace", "path": "/item/0/maxLength", "value": 1}
+    },
+    {
+      "id": "questionnaire-decimal-placement",
+      "base": "valid/questionnaire.json",
+      "expectedRule": "qg-decimal-1",
+      "expectedValidatorRule": "qg-decimal-1",
+      "mutation": {
+        "op": "add",
+        "path": "/item/0/extension",
+        "value": [{"url": "http://hl7.org/fhir/StructureDefinition/maxDecimalPlaces", "valueInteger": 2}]
+      }
+    },
+    {
+      "id": "questionnaire-decimal-precision-negative",
+      "base": "valid/questionnaire-typed-constraints.json",
+      "expectedRule": "qg-decimal-precision",
+      "fhirValidator": false,
+      "mutation": {
+        "op": "replace",
+        "path": "/item/0/extension/2/valueInteger",
+        "value": -1
+      }
+    },
+    {
+      "id": "questionnaire-value-bound-placement",
+      "base": "valid/questionnaire.json",
+      "expectedRule": "qg-value-bounds-1",
+      "expectedValidatorRule": "qg-value-bounds-1",
+      "mutation": {
+        "op": "add",
+        "path": "/item/0/extension",
+        "value": [{"url": "http://hl7.org/fhir/StructureDefinition/minValue", "valueInteger": 1}]
+      }
+    },
+    {
+      "id": "questionnaire-quantity-placement",
+      "base": "valid/questionnaire.json",
+      "expectedRule": "qg-quantity-1",
+      "expectedValidatorRule": "qg-quantity-1",
+      "mutation": {
+        "op": "add",
+        "path": "/item/0/extension",
+        "value": [
+          {
+            "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-minQuantity",
+            "valueQuantity": {"value": 1, "system": "http://unitsofmeasure.org", "code": "kg"}
+          }
+        ]
+      }
+    },
+    {
+      "id": "questionnaire-value-bound-type",
+      "base": "valid/questionnaire-typed-constraints.json",
+      "expectedRule": "qg-value-bound-type",
+      "fhirValidator": false,
+      "mutation": {
+        "op": "replace",
+        "path": "/item/0/extension/0",
+        "value": {
+          "url": "http://hl7.org/fhir/StructureDefinition/minValue",
+          "valueInteger": 1
+        }
+      }
+    },
+    {
+      "id": "questionnaire-value-bound-order",
+      "base": "valid/questionnaire-typed-constraints.json",
+      "expectedRule": "qg-value-bounds-order",
+      "fhirValidator": false,
+      "mutation": {
+        "op": "replace",
+        "path": "/item/0/extension/1/valueDecimal",
+        "value": 0
+      }
+    },
+    {
+      "id": "questionnaire-quantity-bound-order",
+      "base": "valid/questionnaire-typed-constraints.json",
+      "expectedRule": "qg-quantity-bounds-order",
+      "fhirValidator": false,
+      "mutation": {
+        "op": "replace",
+        "path": "/item/1/extension/1/valueQuantity/value",
+        "value": 0
+      }
+    },
+    {
+      "id": "questionnaire-unit-placement",
+      "base": "valid/questionnaire.json",
+      "expectedRule": "qg-unit-1",
+      "expectedValidatorRule": "qg-unit-1",
+      "mutation": {
+        "op": "add",
+        "path": "/item/0/extension",
+        "value": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unitOption",
+            "valueCoding": {"system": "http://unitsofmeasure.org", "code": "kg"}
+          }
+        ]
+      }
+    },
+    {
+      "id": "questionnaire-unit-choice-exclusive",
+      "base": "valid/questionnaire-typed-constraints.json",
+      "expectedRule": "qg-unit-1",
+      "expectedValidatorRule": "qg-unit-1",
+      "mutation": {
+        "op": "add",
+        "path": "/item/1/extension/-",
+        "value": {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unitValueSet",
+          "valueCanonical": "https://example.org/fhir/ValueSet/unit|1.0.0"
+        }
+      }
+    },
+    {
+      "id": "questionnaire-attachment-placement",
+      "base": "valid/questionnaire.json",
+      "expectedRule": "qg-attachment-1",
+      "expectedValidatorRule": "qg-attachment-1",
+      "mutation": {
+        "op": "add",
+        "path": "/item/0/extension",
+        "value": [{"url": "http://hl7.org/fhir/StructureDefinition/mimeType", "valueCode": "image/png"}]
+      }
+    },
+    {
+      "id": "questionnaire-attachment-size-negative",
+      "base": "valid/questionnaire-typed-constraints.json",
+      "expectedRule": "qg-attachment-size",
+      "fhirValidator": false,
+      "mutation": {
+        "op": "replace",
+        "path": "/item/2/extension/1/valueDecimal",
+        "value": -1
+      }
+    },
+    {
+      "id": "questionnaire-occurrence-placement",
+      "base": "valid/questionnaire.json",
+      "expectedRule": "qg-occurrence-1",
+      "expectedValidatorRule": "qg-occurrence-1",
+      "mutation": {
+        "op": "add",
+        "path": "/item/0/extension",
+        "value": [{"url": "http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs", "valueInteger": 1}]
+      }
+    },
+    {
+      "id": "questionnaire-occurrence-order",
+      "base": "valid/questionnaire-typed-constraints.json",
+      "expectedRule": "qg-min-max-1",
+      "fhirValidator": false,
+      "mutation": {
+        "op": "replace",
+        "path": "/item/3/extension/0/valueInteger",
+        "value": 3
+      }
+    },
+    {
+      "id": "questionnaire-style-sensitive",
+      "base": "valid/questionnaire.json",
+      "expectedRule": "qg-style-sensitive-1",
+      "expectedValidatorRule": "qg-style-sensitive-1",
+      "mutation": {
+        "op": "add",
+        "path": "/item/0/extension",
+        "value": [{"url": "http://hl7.org/fhir/StructureDefinition/rendering-styleSensitive", "valueBoolean": true}]
+      }
+    },
+    {
+      "id": "response-unversioned-canonical",
+      "base": "valid/questionnaire-response.json",
+      "expectedRule": "gqr-canonical-1",
+      "expectedValidatorRule": "gqr-canonical-1",
+      "mutation": {
+        "op": "replace",
+        "path": "/questionnaire",
+        "value": "https://example.org/fhir/Questionnaire/validator-questionnaire"
+      }
+    },
+    {
+      "id": "response-fragment-canonical",
+      "base": "valid/questionnaire-response.json",
+      "expectedRule": "gqr-canonical-1",
+      "expectedValidatorRule": "gqr-canonical-1",
+      "mutation": {
+        "op": "replace",
+        "path": "/questionnaire",
+        "value": "https://example.org/fhir/Questionnaire/validator-questionnaire#section|1.0.0"
+      }
+    },
+    {
+      "id": "response-identifier-missing",
+      "base": "valid/questionnaire-response.json",
+      "expectedRule": "gqr-identifier-1",
+      "expectedValidatorRule": "gqr-identifier-1",
+      "mutation": {"op": "remove", "path": "/identifier"}
+    },
+    {
+      "id": "response-text-missing",
+      "base": "valid/questionnaire-response.json",
+      "expectedRule": "gqr-text-1",
+      "expectedValidatorRule": "gqr-text-1",
+      "mutation": {"op": "remove", "path": "/item/0/text"}
+    },
+    {
+      "id": "response-completion-mode-contradictory",
+      "base": "valid/questionnaire-response.json",
+      "expectedRule": "gqr-completion-mode-1",
+      "expectedValidatorRule": "gqr-completion-mode-1",
+      "mutation": {
+        "op": "add",
+        "path": "/extension/0/valueCodeableConcept/coding/-",
+        "value": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ParticipationMode",
+          "code": "VERBAL"
+        }
+      }
+    }
+  ]
+}

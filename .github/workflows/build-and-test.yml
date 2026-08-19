@@ -137,6 +137,7 @@ jobs:
             mobile/input-cache
             healthkit/input-cache
             health-connect/input-cache
+            questionnaire/input-cache
           key: fhir-guides-${{ runner.os }}-${{ hashFiles('Gemfile.lock', 'package-lock.json', 'Scripts/download-fhir-tools.sh') }}
           restore-keys: |
             fhir-guides-${{ runner.os }}-
@@ -145,6 +146,8 @@ jobs:
         run: npm run build
       - name: Verify the published artifact allowlist
         run: python3 -m unittest Tests.test_artifact_allowlist -v
+      - name: Validate the Questionnaire fixture corpus
+        run: python3 Scripts/validate-questionnaire-fhir.py
       - name: Fetch the immutable Android proposal target
         run: python3 Scripts/check-integration-sources.py --fetch-targets
       - name: Validate Android-emitted resources against the exact guides
@@ -162,7 +165,7 @@ jobs:
         run: ./Scripts/assemble-pages.sh
       - name: Summarize publisher QA
         if: always()
-        run: python3 Scripts/check-guide-qa.py --summary mobile healthkit health-connect
+        run: python3 Scripts/check-guide-qa.py --summary mobile healthkit health-connect questionnaire
       - name: Upload rendered guides and QA reports
         if: always()
         uses: actions/upload-artifact@v4
@@ -189,7 +192,7 @@ jobs:
       - name: Fetch the immutable Grove proposal target
         working-directory: grove-fhir
         run: python3 Scripts/check-integration-sources.py --fetch-targets
-      - name: Test the exact Grove Mobile contract proposal
+      - name: Test the exact Grove Questionnaire and Mobile contract proposals
         working-directory: grove-fhir
         run: >-
           python3 Scripts/validate-integration-proposals.py
@@ -232,6 +235,7 @@ jobs:
             grove-fhir/.build/bundle
             grove-fhir/mobile/input-cache
             grove-fhir/healthkit/input-cache
+            grove-fhir/questionnaire/input-cache
           key: >-
             fhir-guides-${{ runner.os }}-${{
               hashFiles(
@@ -245,17 +249,18 @@ jobs:
       - name: Fetch the immutable Grove proposal target
         working-directory: grove-fhir
         run: python3 Scripts/check-integration-sources.py --fetch-targets
-      - name: Build the exact Mobile and HealthKit packages
+      - name: Build the exact Mobile, HealthKit, and Questionnaire packages
         working-directory: grove-fhir
         run: |
           npm ci
-          ./Scripts/build-guides.sh mobile healthkit
-      - name: Validate deterministic resources from the exact Grove proposal
+          ./Scripts/build-guides.sh mobile healthkit questionnaire
+      - name: Validate deterministic resources from the exact Grove proposals
         working-directory: grove-fhir
         env:
           FHIR_VALIDATOR: ${{ github.workspace }}/grove-fhir/.build/fhir-tools/validator_cli.jar
           GROVE_IG_MOBILE: ${{ github.workspace }}/grove-fhir/mobile/output/package.tgz
           GROVE_IG_HEALTHKIT: ${{ github.workspace }}/grove-fhir/healthkit/output/package.tgz
+          GROVE_IG_QUESTIONNAIRE: ${{ github.workspace }}/grove-fhir/questionnaire/output/package.tgz
           GROVE_CONFORMANCE_EXPORT: ${{ github.workspace }}/grove-fhir/.build/grove-conformance-fixtures
         run: >-
           python3 Scripts/validate-integration-proposals.py

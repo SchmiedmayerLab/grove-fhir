@@ -1,0 +1,42 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "validator-questionnaire-conditions",
+  "meta": {
+    "profile": [
+      "https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire"
+    ]
+  },
+  "extension": [
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/artifact-versionAlgorithm",
+      "valueCoding": {
+        "system": "http://hl7.org/fhir/version-algorithm",
+        "code": "semver"
+      }
+    }
+  ],
+  "url": "https://example.org/fhir/Questionnaire/validator-questionnaire-conditions",
+  "version": "1.0.0",
+  "name": "ValidatorQuestionnaireConditions",
+  "title": "Validator Questionnaire Conditions",
+  "status": "active",
+  "item": [
+    {
+      "linkId": "show-detail",
+      "text": "Show detail?",
+      "type": "boolean"
+    },
+    {
+      "linkId": "detail",
+      "text": "Detail",
+      "type": "string",
+      "enableWhen": [
+        {
+          "question": "show-detail",
+          "operator": "=",
+          "answerBoolean": true
+        }
+      ]
+    }
+  ]
+}

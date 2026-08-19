@@ -86,13 +86,68 @@
   ],
   "proposals": [
     {
+      "id": "grove-questionnaire-contract",
+      "source": "grove",
+      "target": "questionnaire",
+      "patch": "Integration/Patches/grove-questionnaire-contract.patch",
+      "sha256": "6dc99c1a2836f8a18b3c7e4f0ab6f2cf87ac30d2541aa7ff80d5299d6297b2fe",
+      "dependsOn": [],
+      "appliesAfter": [],
+      "tests": [
+        {
+          "group": "portable",
+          "platforms": [
+            "linux",
+            "macos"
+          ],
+          "cwd": ".",
+          "argv": [
+            "git",
+            "diff",
+            "--check"
+          ]
+        },
+        {
+          "group": "macos-contract",
+          "platforms": [
+            "macos"
+          ],
+          "cwd": ".",
+          "argv": [
+            "./Scripts/run-package-tests.sh",
+            "GroveQuestionnaire",
+            "macOS"
+          ]
+        },
+        {
+          "group": "emitted-resource-conformance",
+          "platforms": [
+            "macos"
+          ],
+          "cwd": ".",
+          "argv": [
+            "./Scripts/validate-questionnaire-conformance.sh"
+          ]
+        }
+      ],
+      "claims": [
+        "Grove Swift imports and exports the reviewed versioned Questionnaire contract and imports and exports QuestionnaireResponse resources without silently dropping supported semantic content.",
+        "Completed and amended responses fail closed when enablement, requiredness, target constraints, answer nesting, types, repeats, or versioned choice membership cannot be evaluated or do not match the referenced Questionnaire.",
+        "Deterministic Questionnaire and QuestionnaireResponse fixtures round-trip through the public implementation and pass both the repository pair checker and the exact R4 Questionnaire package."
+      ]
+    },
+    {
       "id": "grove-mobile-contract",
       "source": "grove",
       "target": "healthkit",
       "patch": "Integration/Patches/grove-mobile-contract.patch",
       "sha256": "6b603d3d34861b6c5ffd763f293b82c1d50def145e5392894160778e4bfad875",
-      "dependsOn": [],
-      "appliesAfter": [],
+      "dependsOn": [
+        "grove-questionnaire-contract"
+      ],
+      "appliesAfter": [
+        "grove-questionnaire-contract"
+      ],
       "tests": [
         {
           "group": "portable",

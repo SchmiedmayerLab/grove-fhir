@@ -71,13 +71,15 @@ selects one proposal and its dependency closure. For example:
 }
 ```
 
-The manifest contains the reviewable Grove Swift Mobile contract, My Heart Counts
-Android Health Connect adapter, and My Heart Counts Firebase receiver proposals with
-their exact checksums. Portable checks may run on Linux or macOS. The Swift contract
-and emitted-resource checks run only on macOS. Android and Firebase contract tests
-run on either platform. The Android proposal is a reusable adapter rather than proof
-that the My Heart Counts application deploys Health Connect. The Firebase proposal is
-a structurally validated receiver library; it deliberately does not expose an intake
+The manifest contains the reviewable Grove Swift Questionnaire and Mobile contracts,
+the My Heart Counts Android Health Connect adapter, and the My Heart Counts Firebase
+receiver proposals with their exact checksums. The Questionnaire patch is applied
+before the Mobile patch when the later Grove revision is tested, making that composition
+an explicit gate. Portable checks may run on Linux or macOS. The Swift contract and
+emitted-resource checks run only on macOS. Android and Firebase contract tests run on
+either platform. The Android proposal is a reusable adapter rather than proof that the
+My Heart Counts application deploys Health Connect. The Firebase proposal is a
+structurally validated receiver library; it deliberately does not expose an intake
 endpoint or choose an authenticated caller-to-partition mapping. Those deployment
 decisions and end-to-end evidence belong to the later conformance layer.
 

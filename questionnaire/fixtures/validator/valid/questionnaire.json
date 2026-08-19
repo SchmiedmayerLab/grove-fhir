@@ -1,0 +1,32 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "validator-questionnaire",
+  "meta": {
+    "profile": [
+      "https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire"
+    ]
+  },
+  "extension": [
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/artifact-versionAlgorithm",
+      "valueCoding": {
+        "system": "http://hl7.org/fhir/version-algorithm",
+        "code": "semver"
+      }
+    }
+  ],
+  "url": "https://example.org/fhir/Questionnaire/validator-questionnaire",
+  "version": "1.0.0",
+  "name": "ValidatorQuestionnaire",
+  "title": "Validator Questionnaire",
+  "status": "active",
+  "subjectType": ["Patient"],
+  "item": [
+    {
+      "linkId": "name",
+      "text": "What is your name?",
+      "type": "string",
+      "required": true
+    }
+  ]
+}
