@@ -288,6 +288,29 @@ class IntegrationProposalValidationTests(unittest.TestCase):
                 self.git(source, "status", "--porcelain=v1"), before_status
             )
 
+    def test_rejects_a_genuine_change_in_an_exact_source_checkout(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source, _, first, second = self.make_sources(root)
+            contents = self.patch_contents("before", "after")
+            proposal = self.proposal(
+                "proposal", source="example-first", contents=contents
+            )
+            self.write_patches(root, [("proposal", contents)])
+            (source / "value.txt").write_text("changed\n", encoding="utf-8")
+
+            with self.assertRaisesRegex(
+                VALIDATE.ProposalValidationError,
+                "example-first integration source contains local changes",
+            ):
+                VALIDATE.validate_proposals(
+                    root,
+                    self.manifest(first, second, [proposal]),
+                    platform="linux",
+                    test_group="portable",
+                    proposal_ids=["proposal"],
+                )
+
     def test_selected_proposal_does_not_require_an_unrelated_checkout(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

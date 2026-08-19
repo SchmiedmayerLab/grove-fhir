@@ -23,6 +23,10 @@ permissions:
 
 env:
   EVIDENCE_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+  # Exact source materialization never needs large screenshot blobs. Keeping the
+  # tracked LFS pointers also lets the hermetic Git check avoid executing an
+  # inherited filter process while it proves that each checkout is unchanged.
+  GIT_LFS_SKIP_SMUDGE: "1"
 
 jobs:
   changes:

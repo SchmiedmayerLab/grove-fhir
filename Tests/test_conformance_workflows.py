@@ -131,6 +131,10 @@ class ConformanceWorkflowTests(unittest.TestCase):
 
     def test_partial_source_initialization_and_full_inventory_are_explicit(self) -> None:
         self.assertNotIn("submodules: true", self.build)
+        workflow_environment = self.build.split("\nenv:\n", 1)[1].split(
+            "\njobs:\n", 1
+        )[0]
+        self.assertIn('  GIT_LFS_SKIP_SMUDGE: "1"\n', workflow_environment)
         integration = self.build.split("  integration-sources:", 1)[1].split("  guides:", 1)[0]
         self.assertEqual(integration.count("Integration/Sources/"), 9)
         guides = self.build.split("  guides:", 1)[1].split("  integration-proposals:", 1)[0]
