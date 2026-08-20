@@ -175,6 +175,20 @@
         "path": {"$ref": "#/$defs/relativePath"}
       }
     },
+    "expectedUnknownExtension": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "expression", "url", "valueField"],
+      "properties": {
+        "path": {"$ref": "#/$defs/relativePath"},
+        "expression": {"$ref": "#/$defs/nonemptyString"},
+        "url": {"$ref": "#/$defs/httpsUrl"},
+        "valueField": {
+          "type": "string",
+          "pattern": "^(extension|value[A-Z][A-Za-z0-9]*)$"
+        }
+      }
+    },
     "externalEvidenceSet": {
       "type": "object",
       "additionalProperties": false,
@@ -207,12 +221,33 @@
           "minItems": 1,
           "items": {"$ref": "#/$defs/externalEvidenceFile"}
         },
+        "expectedUnknownExtensions": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/expectedUnknownExtension"}
+        },
         "purpose": {"$ref": "#/$defs/nonemptyString"}
       },
       "allOf": [
         {
           "if": {"properties": {"kind": {"const": "file"}}},
           "then": {"properties": {"files": {"type": "array", "maxItems": 1}}}
+        },
+        {
+          "if": {
+            "properties": {
+              "classification": {
+                "enum": ["historical-writer", "legacy-candidate"]
+              }
+            },
+            "required": ["classification"]
+          },
+          "then": {
+            "properties": {"expectedUnknownExtensions": {"type": "array"}},
+            "required": ["expectedUnknownExtensions"]
+          },
+          "else": {"properties": {"expectedUnknownExtensions": false}}
         }
       ]
     },
@@ -941,9 +976,32 @@
           "minItems": 1,
           "items": {"$ref": "#/$defs/lockedExternalEvidenceFile"}
         },
+        "expectedUnknownExtensions": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/expectedUnknownExtension"}
+        },
         "setDigest": {"$ref": "#/$defs/sha256"},
         "transitiveSha256": {"$ref": "#/$defs/sha256"}
-      }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "classification": {
+                "enum": ["historical-writer", "legacy-candidate"]
+              }
+            },
+            "required": ["classification"]
+          },
+          "then": {
+            "properties": {"expectedUnknownExtensions": {"type": "array"}},
+            "required": ["expectedUnknownExtensions"]
+          },
+          "else": {"properties": {"expectedUnknownExtensions": false}}
+        }
+      ]
     },
     "lockedValidationReport": {
       "type": "object",

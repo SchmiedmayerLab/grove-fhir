@@ -47,6 +47,7 @@ DEFAULT_TOOLS = ROOT / ".build/fhir-tools"
 DEFAULT_LOCK = ROOT / ".build/conformance/evidence-lock.json"
 MESSAGE_ID_URL = "http://hl7.org/fhir/StructureDefinition/operationoutcome-message-id"
 FILE_URL = "http://hl7.org/fhir/StructureDefinition/operationoutcome-file"
+EXTENSION_VALUE_FIELD = re.compile(r"^(?:extension|value[A-Z][A-Za-z0-9]*)$")
 
 
 class DomainValidationError(ValueError):
@@ -464,10 +465,14 @@ def resolve_external_evidence(
     evidence: Mapping[str, Any],
     supplied: Mapping[str, Path],
     required: bool,
-) -> tuple[list[dict[str, Any]], list[tuple[str, str, Path]]]:
+) -> tuple[
+    list[dict[str, Any]],
+    list[tuple[str, str, Path]],
+    dict[tuple[str, str], list[Mapping[str, str]]],
+]:
     declarations = unique_by_id(evidence.get("externalEvidence"), "external evidence")
     if not supplied and not required:
-        return [], []
+        return [], [], {}
     if set(supplied) != set(declarations):
         missing = sorted(set(declarations) - set(supplied))
         unknown = sorted(set(supplied) - set(declarations))
@@ -476,10 +481,20 @@ def resolve_external_evidence(
         )
     reports: list[dict[str, Any]] = []
     fhir_files: list[tuple[str, str, Path]] = []
+    expected_unknown_extensions: dict[
+        tuple[str, str], list[Mapping[str, str]]
+    ] = {}
     for identifier, declaration in sorted(declarations.items()):
         kind = declaration.get("kind")
+        classification = declaration.get("classification")
         files = declaration.get("files")
-        if kind not in {"directory", "file"} or not isinstance(files, list) or not files:
+        if (
+            kind not in {"directory", "file"}
+            or classification
+            not in {"accepted-contract", "historical-writer", "legacy-candidate"}
+            or not isinstance(files, list)
+            or not files
+        ):
             raise DomainValidationError(f"external evidence {identifier} declaration is invalid")
         declared: dict[str, Mapping[str, Any]] = {}
         for item in files:
@@ -490,6 +505,76 @@ def resolve_external_evidence(
             if name in declared:
                 raise DomainValidationError(f"external evidence {identifier} repeats {name}")
             declared[name] = item
+        fhir_names = {
+            name for name, item in declared.items() if item.get("format") == "fhir-json"
+        }
+        raw_expectations = declaration.get("expectedUnknownExtensions")
+        legacy = classification in {"historical-writer", "legacy-candidate"}
+        if legacy:
+            if not isinstance(raw_expectations, list) or not raw_expectations:
+                raise DomainValidationError(
+                    f"external evidence {identifier} needs expectedUnknownExtensions"
+                )
+            by_path: dict[str, list[Mapping[str, str]]] = {}
+            allowed_fields = {"path", "expression", "url", "valueField"}
+            for expectation in raw_expectations:
+                if (
+                    not isinstance(expectation, dict)
+                    or set(expectation) != allowed_fields
+                    or not all(
+                        isinstance(value, str) and value
+                        for value in expectation.values()
+                    )
+                    or not expectation["url"].startswith("https://")
+                    or (
+                        EXTENSION_VALUE_FIELD.fullmatch(expectation["valueField"])
+                        is None
+                    )
+                ):
+                    raise DomainValidationError(
+                        f"external evidence {identifier} has an invalid unknown-extension contract"
+                    )
+                name = safe_manifest_path(
+                    expectation["path"],
+                    f"external evidence {identifier} expected unknown-extension path",
+                ).as_posix()
+                if name not in fhir_names:
+                    raise DomainValidationError(
+                        f"external evidence {identifier} unknown-extension contract "
+                        f"references non-FHIR file {name}"
+                    )
+                normalized = {
+                    "path": name,
+                    "expression": expectation["expression"],
+                    "url": expectation["url"],
+                    "valueField": expectation["valueField"],
+                }
+                by_path.setdefault(name, []).append(normalized)
+            if set(by_path) != fhir_names:
+                raise DomainValidationError(
+                    f"external evidence {identifier} unknown-extension contract must "
+                    "cover every FHIR file"
+                )
+            for name, expectations in by_path.items():
+                if len(expectations) != len(
+                    {
+                        (
+                            item["expression"],
+                            item["url"],
+                            item["valueField"],
+                        )
+                        for item in expectations
+                    }
+                ):
+                    raise DomainValidationError(
+                        f"external evidence {identifier}/{name} repeats an "
+                        "unknown-extension contract entry"
+                    )
+                expected_unknown_extensions[(identifier, name)] = expectations
+        elif raw_expectations is not None:
+            raise DomainValidationError(
+                f"accepted external evidence {identifier} may not expect Validator errors"
+            )
         location = supplied[identifier]
         resolved: dict[str, Path] = {}
         if kind == "file":
@@ -548,9 +633,29 @@ def resolve_external_evidence(
             size = path.stat().st_size
             file_reports.append({"path": name, "sha256": digest, "size": size})
             if item.get("format") == "fhir-json":
+                file_reports[-1]["expectedErrorCount"] = len(
+                    expected_unknown_extensions.get((identifier, name), [])
+                )
                 fhir_files.append((identifier, name, path))
-        reports.append({"id": identifier, "files": file_reports})
-    return reports, fhir_files
+        validation_scope = (
+            "none"
+            if not fhir_names
+            else "r4-core"
+            if legacy
+            else "accepted-package-closure"
+        )
+        reports.append(
+            {
+                "id": identifier,
+                "validationScope": validation_scope,
+                "expectedErrorCount": sum(
+                    len(expected_unknown_extensions.get((identifier, name), []))
+                    for name in fhir_names
+                ),
+                "files": file_reports,
+            }
+        )
+    return reports, fhir_files, expected_unknown_extensions
 
 
 def locked_package_hashes(lock_path: Path | None) -> dict[str, str]:
@@ -674,11 +779,15 @@ def operation_outcomes(path: Path) -> dict[Path, Mapping[str, Any]]:
     if value.get("resourceType") == "OperationOutcome":
         outcomes = [value]
     elif value.get("resourceType") == "Bundle" and isinstance(value.get("entry"), list):
-        outcomes = [
-            entry.get("resource")
+        if any(
+            not isinstance(entry, dict)
+            or not isinstance(entry.get("resource"), dict)
             for entry in value["entry"]
-            if isinstance(entry, dict) and isinstance(entry.get("resource"), dict)
-        ]
+        ):
+            raise DomainValidationError(
+                "FHIR Validator output Bundle contains a malformed entry"
+            )
+        outcomes = [entry["resource"] for entry in value["entry"]]
     else:
         raise DomainValidationError("FHIR Validator output is not an OperationOutcome Bundle")
     indexed: dict[Path, Mapping[str, Any]] = {}
@@ -940,9 +1049,93 @@ def fhir_resource_count(resource: Any) -> int:
     return count
 
 
+def unknown_extension_shape(
+    resource: Mapping[str, Any],
+    filename: str,
+) -> list[dict[str, str]]:
+    """Return the exact ordered extension tree for a legacy FHIR witness."""
+    resource_type = resource.get("resourceType")
+    if not isinstance(resource_type, str) or not resource_type:
+        raise DomainValidationError("legacy extension witness must have a resourceType")
+    result: list[dict[str, str]] = []
+
+    def walk(value: Any, expression: str) -> None:
+        if isinstance(value, list):
+            for index, item in enumerate(value):
+                walk(item, f"{expression}[{index}]")
+            return
+        if not isinstance(value, dict):
+            return
+        for extension_field in ("extension", "modifierExtension"):
+            if extension_field not in value:
+                continue
+            extensions = value[extension_field]
+            if not isinstance(extensions, list) or not extensions:
+                raise DomainValidationError(
+                    f"legacy extension field {expression}.{extension_field} must be a nonempty list"
+                )
+            for index, extension in enumerate(extensions):
+                extension_expression = f"{expression}.{extension_field}[{index}]"
+                if not isinstance(extension, dict):
+                    raise DomainValidationError(
+                        f"legacy extension {extension_expression} must be an object"
+                    )
+                url = extension.get("url")
+                payload_fields = [
+                    key
+                    for key in extension
+                    if key == "extension" or key.startswith("value")
+                ]
+                if (
+                    not isinstance(url, str)
+                    or not url
+                    or len(payload_fields) != 1
+                    or set(extension) != {"url", payload_fields[0]}
+                ):
+                    raise DomainValidationError(
+                        f"legacy extension {extension_expression} does not have an exact "
+                        "url-plus-one-value shape"
+                    )
+                result.append(
+                    {
+                        "path": filename,
+                        "expression": extension_expression,
+                        "url": url,
+                        "valueField": payload_fields[0],
+                    }
+                )
+                walk(extension, extension_expression)
+        for key, child in value.items():
+            if key not in {"extension", "modifierExtension"}:
+                walk(child, f"{expression}.{key}")
+
+    walk(resource, resource_type)
+    return result
+
+
+def expected_unknown_extension_issue_matches(
+    issue: Mapping[str, Any], expectation: Mapping[str, str]
+) -> bool:
+    details = issue.get("details")
+    expected_text = (
+        f"The extension {expectation['url']} could not be found so is not allowed here"
+    )
+    return (
+        issue.get("severity") == "error"
+        and issue.get("code") == "structure"
+        and issue_message_id(issue) == "Extension_EXT_Unknown_NotHere"
+        and issue.get("expression") == [expectation["expression"]]
+        and isinstance(details, dict)
+        and details.get("text") == expected_text
+    )
+
+
 def validate_external_fhir(
     files: Sequence[tuple[str, str, Path]],
     set_reports: list[dict[str, Any]],
+    expected_unknown_extensions: Mapping[
+        tuple[str, str], Sequence[Mapping[str, str]]
+    ],
     package_paths: Mapping[str, Path],
     validator: Path,
     java_home: Path,
@@ -954,6 +1147,7 @@ def validate_external_fhir(
             "fhirInputCount": 0,
             "resourceCount": 0,
             "warningCount": 0,
+            "expectedErrorCount": 0,
             "sets": set_reports,
         }, []
     reports_by_file = {
@@ -963,51 +1157,95 @@ def validate_external_fhir(
     }
     resource_count = 0
     for set_id, name, path in files:
-        count = fhir_resource_count(load_json(path, f"external FHIR {set_id}/{name}"))
+        resource = load_json(path, f"external FHIR {set_id}/{name}")
+        count = fhir_resource_count(resource)
         reports_by_file[(set_id, name)]["resourceCount"] = count
         resource_count += count
-    output = temporary / "external-fhir-validator-outcome.json"
-    command = [
-        "java",
-        f"-Duser.home={java_home}",
-        "-jar",
-        str(validator),
-        *(str(path) for _set_id, _name, path in files),
-        "-version",
-        "4.0.1",
-    ]
-    for package in (package_paths[identifier] for identifier in sorted(package_paths)):
-        command.extend(("-ig", str(package)))
-    command.extend(
-        (
-            "-tx",
-            "n/a",
-            "-txCache",
-            str(temporary / "tx-cache"),
-            "-no-http-access",
-            "-allow-example-urls",
-            "true",
-            "-level",
-            "errors",
-            "-output-style",
-            "json",
-            "-output",
-            str(output),
-        )
-    )
-    environment = os.environ.copy()
-    environment["FHIR_TX_CACHE"] = str(temporary / "tx-cache")
-    result = subprocess.run(command, cwd=ROOT, capture_output=True, text=True, env=environment)
-    if not output.is_file():
-        raise DomainValidationError(
-            f"FHIR Validator wrote no external evidence outcome (exit {result.returncode}):\n"
-            f"{result.stdout}\n{result.stderr}"
-        )
-    outcomes = operation_outcomes(output)
-    expected_paths = {path.resolve() for _set_id, _name, path in files}
     failures: list[str] = []
-    if set(outcomes) != expected_paths:
-        failures.append("external FHIR Validator outcomes do not exactly match declared inputs")
+    for set_id, name, path in files:
+        expectations = list(expected_unknown_extensions.get((set_id, name), []))
+        if expectations:
+            actual_shape = unknown_extension_shape(
+                load_json(path, f"legacy external FHIR {set_id}/{name}"), name
+            )
+            if actual_shape != expectations:
+                failures.append(
+                    f"external FHIR {set_id}/{name} legacy extension shape differs from "
+                    f"its exact contract; expected {json.dumps(expectations, sort_keys=True)}, "
+                    f"found {json.dumps(actual_shape, sort_keys=True)}"
+                )
+
+    accepted_files = [
+        item for item in files if (item[0], item[1]) not in expected_unknown_extensions
+    ]
+    legacy_files = [
+        item for item in files if (item[0], item[1]) in expected_unknown_extensions
+    ]
+    outcomes: dict[Path, Mapping[str, Any]] = {}
+    for scope, scoped_files, include_packages in (
+        ("accepted-package-closure", accepted_files, True),
+        ("r4-core", legacy_files, False),
+    ):
+        if not scoped_files:
+            continue
+        output = temporary / f"external-fhir-{scope}-validator-outcome.json"
+        command = [
+            "java",
+            f"-Duser.home={java_home}",
+            "-jar",
+            str(validator),
+            *(str(path) for _set_id, _name, path in scoped_files),
+            "-version",
+            "4.0.1",
+        ]
+        if include_packages:
+            for package in (
+                package_paths[identifier] for identifier in sorted(package_paths)
+            ):
+                command.extend(("-ig", str(package)))
+        command.extend(
+            (
+                "-tx",
+                "n/a",
+                "-txCache",
+                str(temporary / "tx-cache"),
+                "-no-http-access",
+                "-allow-example-urls",
+                "true",
+                "-level",
+                "errors",
+                "-output-style",
+                "json",
+                "-output",
+                str(output),
+            )
+        )
+        environment = os.environ.copy()
+        environment["FHIR_TX_CACHE"] = str(temporary / "tx-cache")
+        result = subprocess.run(
+            command, cwd=ROOT, capture_output=True, text=True, env=environment
+        )
+        if not output.is_file():
+            raise DomainValidationError(
+                f"FHIR Validator wrote no {scope} external evidence outcome "
+                f"(exit {result.returncode}):\n{result.stdout}\n{result.stderr}"
+            )
+        scoped_outcomes = operation_outcomes(output)
+        scoped_paths = {path.resolve() for _set_id, _name, path in scoped_files}
+        if set(scoped_outcomes) != scoped_paths:
+            failures.append(
+                f"external FHIR Validator {scope} outcomes do not exactly match declared inputs"
+            )
+        if set(outcomes) & set(scoped_outcomes):
+            failures.append("external FHIR Validator returned a file in multiple scopes")
+        outcomes.update(scoped_outcomes)
+        allowed_returncodes = {0, 1} if scope == "r4-core" else {0}
+        if result.returncode not in allowed_returncodes:
+            failures.append(
+                f"external FHIR Validator {scope} exited {result.returncode}; "
+                f"expected one of {sorted(allowed_returncodes)}"
+            )
+
     warning_count = 0
     reverse = {path.resolve(): (set_id, name) for set_id, name, path in files}
     for path, outcome in outcomes.items():
@@ -1015,30 +1253,70 @@ def validate_external_fhir(
         if not isinstance(issues, list):
             failures.append(f"external FHIR {reverse.get(path, ('unknown', path.name))} has malformed issues")
             continue
+        if any(
+            not isinstance(issue, dict)
+            or issue.get("severity")
+            not in {"fatal", "error", "warning", "information"}
+            for issue in issues
+        ):
+            failures.append(
+                f"external FHIR {reverse.get(path, ('unknown', path.name))} "
+                "has a malformed issue"
+            )
+            continue
         errors = [
             issue
             for issue in issues
-            if isinstance(issue, dict) and issue.get("severity") in {"fatal", "error"}
+            if issue.get("severity") in {"fatal", "error"}
         ]
         warning_count += sum(
             1
             for issue in issues
-            if isinstance(issue, dict) and issue.get("severity") == "warning"
+            if issue.get("severity") == "warning"
         )
-        if errors:
-            set_id, name = reverse.get(path, ("unknown", path.name))
+        set_id, name = reverse.get(path, ("unknown", path.name))
+        expectations = list(expected_unknown_extensions.get((set_id, name), []))
+        if expectations:
+            error_matches = [
+                [
+                    index
+                    for index, expectation in enumerate(expectations)
+                    if expected_unknown_extension_issue_matches(error, expectation)
+                ]
+                for error in errors
+            ]
+            expectation_matches = [
+                [
+                    index
+                    for index, error in enumerate(errors)
+                    if expected_unknown_extension_issue_matches(error, expectation)
+                ]
+                for expectation in expectations
+            ]
+            if (
+                len(errors) != len(expectations)
+                or any(len(matches) != 1 for matches in error_matches)
+                or any(len(matches) != 1 for matches in expectation_matches)
+            ):
+                failures.append(
+                    f"external FHIR {set_id}/{name} errors did not match its exact "
+                    f"unknown-extension contract: {json.dumps(errors, sort_keys=True)}"
+                )
+        elif errors:
             failures.append(
                 f"external FHIR {set_id}/{name} has error diagnostics: "
                 + json.dumps(errors, sort_keys=True)
             )
-    if result.returncode != 0 and not failures:
-        failures.append(f"external FHIR Validator exited {result.returncode} without diagnostics")
     return (
         {
             "setCount": len(set_reports),
             "fhirInputCount": len(files),
             "resourceCount": resource_count,
             "warningCount": warning_count,
+            "expectedErrorCount": sum(
+                len(expectations)
+                for expectations in expected_unknown_extensions.values()
+            ),
             "sets": set_reports,
         },
         failures,
@@ -1076,7 +1354,11 @@ def main(argv: Sequence[str] | None = None) -> int:
             corpus_index.get("coverage"), "domain corpus coverage inventory"
         )
         external_supplied = parse_external_evidence(arguments.external_evidence)
-        external_reports, external_files = resolve_external_evidence(
+        (
+            external_reports,
+            external_files,
+            expected_unknown_extensions,
+        ) = resolve_external_evidence(
             evidence, external_supplied, arguments.require_external_evidence
         )
         guide_ids = set(corpora)
@@ -1174,6 +1456,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 external_report, external_failures = validate_external_fhir(
                     external_files,
                     external_reports,
+                    expected_unknown_extensions,
                     package_paths,
                     validator,
                     java_home,

@@ -15,6 +15,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 from Scripts.fhir_fixture_corpus import build_cases, load_bases, load_manifest
 
@@ -405,6 +406,293 @@ class ReceiverEvidenceTests(unittest.TestCase):
 
 
 class ExternalEvidenceInventoryTests(unittest.TestCase):
+    @staticmethod
+    def unknown_extension_expectation(path: str = "resource.json") -> dict[str, str]:
+        return {
+            "path": path,
+            "expression": "Observation.extension[0]",
+            "url": "https://legacy.example/fhir/extension",
+            "valueField": "valueString",
+        }
+
+    def test_legacy_extension_shape_and_diagnostic_are_exact(self) -> None:
+        expectation = self.unknown_extension_expectation()
+        resource = {
+            "resourceType": "Observation",
+            "extension": [
+                {
+                    "url": expectation["url"],
+                    "valueString": "legacy",
+                }
+            ],
+        }
+        self.assertEqual(
+            DOMAIN.unknown_extension_shape(resource, "resource.json"),
+            [expectation],
+        )
+        issue = {
+            "severity": "error",
+            "code": "structure",
+            "expression": [expectation["expression"]],
+            "details": {
+                "text": f"The extension {expectation['url']} could not be found so is not allowed here"
+            },
+            "extension": [
+                {
+                    "url": DOMAIN.MESSAGE_ID_URL,
+                    "valueCode": "Extension_EXT_Unknown_NotHere",
+                }
+            ],
+        }
+        self.assertTrue(
+            DOMAIN.expected_unknown_extension_issue_matches(issue, expectation)
+        )
+        changed_issue = copy.deepcopy(issue)
+        changed_issue["details"]["text"] += " (changed)"
+        self.assertFalse(
+            DOMAIN.expected_unknown_extension_issue_matches(changed_issue, expectation)
+        )
+        changed_resource = copy.deepcopy(resource)
+        changed_resource["extension"][0]["valueInteger"] = 1
+        del changed_resource["extension"][0]["valueString"]
+        self.assertNotEqual(
+            DOMAIN.unknown_extension_shape(changed_resource, "resource.json"),
+            [expectation],
+        )
+
+    def test_validator_outcome_bundle_rejects_malformed_extra_entries(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            source = Path(directory) / "resource.json"
+            outcome = Path(directory) / "outcome.json"
+            outcome.write_text(
+                json.dumps(
+                    {
+                        "resourceType": "Bundle",
+                        "entry": [
+                            {
+                                "resource": {
+                                    "resourceType": "OperationOutcome",
+                                    "extension": [
+                                        {
+                                            "url": DOMAIN.FILE_URL,
+                                            "valueString": str(source),
+                                        }
+                                    ],
+                                    "issue": [],
+                                }
+                            },
+                            {"fullUrl": "urn:uuid:malformed-extra"},
+                        ],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            with self.assertRaisesRegex(
+                DOMAIN.DomainValidationError, "malformed entry"
+            ):
+                DOMAIN.operation_outcomes(outcome)
+
+    def test_manifest_declares_only_the_two_exact_legacy_contracts(self) -> None:
+        manifest = DOMAIN.load_json(ROOT / "Conformance/evidence.json", "evidence")
+        declarations = {
+            item["id"]: item for item in manifest["externalEvidence"]
+        }
+        contracts = {
+            identifier: declaration["expectedUnknownExtensions"]
+            for identifier, declaration in declarations.items()
+            if "expectedUnknownExtensions" in declaration
+        }
+        self.assertEqual(
+            {identifier: len(contract) for identifier, contract in contracts.items()},
+            {
+                "grove-legacy-healthkit-sample": 15,
+                "mhc-ios-study-enrollment": 3,
+            },
+        )
+        self.assertTrue(
+            all(
+                item["url"].startswith("https://bdh.stanford.edu/fhir/defs/")
+                for item in contracts["grove-legacy-healthkit-sample"]
+            )
+        )
+        self.assertTrue(
+            all(
+                item["url"].startswith(
+                    "https://myheartcounts.stanford.edu/fhir/StructureDefinition/study-enrollment"
+                )
+                for item in contracts["mhc-ios-study-enrollment"]
+            )
+        )
+
+    def test_legacy_contract_is_required_and_propagated_to_the_report(self) -> None:
+        expectation = self.unknown_extension_expectation()
+        declaration = {
+            "id": "legacy",
+            "classification": "historical-writer",
+            "kind": "file",
+            "files": [{"path": "resource.json", "format": "fhir-json"}],
+            "expectedUnknownExtensions": [expectation],
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "resource.json"
+            path.write_text(
+                json.dumps(
+                    {
+                        "resourceType": "Observation",
+                        "extension": [
+                            {
+                                "url": expectation["url"],
+                                "valueString": "legacy",
+                            }
+                        ],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            reports, files, expectations = DOMAIN.resolve_external_evidence(
+                {"externalEvidence": [declaration]}, {"legacy": path}, True
+            )
+            self.assertEqual(len(files), 1)
+            self.assertEqual(
+                expectations[("legacy", "resource.json")], [expectation]
+            )
+            self.assertEqual(reports[0]["validationScope"], "r4-core")
+            self.assertEqual(reports[0]["expectedErrorCount"], 1)
+            self.assertEqual(reports[0]["files"][0]["expectedErrorCount"], 1)
+
+            missing = copy.deepcopy(declaration)
+            del missing["expectedUnknownExtensions"]
+            with self.assertRaisesRegex(
+                DOMAIN.DomainValidationError, "needs expectedUnknownExtensions"
+            ):
+                DOMAIN.resolve_external_evidence(
+                    {"externalEvidence": [missing]}, {"legacy": path}, True
+                )
+
+    def test_external_validator_partitions_accepted_and_legacy_scopes(self) -> None:
+        expectation = self.unknown_extension_expectation("legacy.json")
+        evidence = {
+            "externalEvidence": [
+                {
+                    "id": "accepted",
+                    "classification": "accepted-contract",
+                    "kind": "file",
+                    "files": [{"path": "accepted.json", "format": "fhir-json"}],
+                },
+                {
+                    "id": "legacy",
+                    "classification": "legacy-candidate",
+                    "kind": "file",
+                    "files": [{"path": "legacy.json", "format": "fhir-json"}],
+                    "expectedUnknownExtensions": [expectation],
+                },
+            ]
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            accepted = root / "accepted.json"
+            legacy = root / "legacy.json"
+            accepted.write_text('{"resourceType":"Patient"}', encoding="utf-8")
+            legacy.write_text(
+                json.dumps(
+                    {
+                        "resourceType": "Observation",
+                        "extension": [
+                            {
+                                "url": expectation["url"],
+                                "valueString": "legacy",
+                            }
+                        ],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            set_reports, files, expectations = DOMAIN.resolve_external_evidence(
+                evidence,
+                {"accepted": accepted, "legacy": legacy},
+                True,
+            )
+            commands: list[list[str]] = []
+            extra_legacy_issues: list[object] = []
+
+            def validator_run(command, **_kwargs):
+                commands.append(command)
+                output = Path(command[command.index("-output") + 1])
+                inputs = command[command.index("-jar") + 2 : command.index("-version")]
+                self.assertEqual(len(inputs), 1)
+                source = Path(inputs[0]).resolve()
+                issues = []
+                returncode = 0
+                if source == legacy.resolve():
+                    returncode = 1
+                    issues = [
+                        {
+                            "severity": "error",
+                            "code": "structure",
+                            "expression": [expectation["expression"]],
+                            "details": {
+                                "text": f"The extension {expectation['url']} could not be found so is not allowed here"
+                            },
+                            "extension": [
+                                {
+                                    "url": DOMAIN.MESSAGE_ID_URL,
+                                    "valueCode": "Extension_EXT_Unknown_NotHere",
+                                }
+                            ],
+                        }
+                    ]
+                    issues.extend(extra_legacy_issues)
+                output.write_text(
+                    json.dumps(
+                        {
+                            "resourceType": "OperationOutcome",
+                            "extension": [
+                                {
+                                    "url": DOMAIN.FILE_URL,
+                                    "valueString": str(source),
+                                }
+                            ],
+                            "issue": issues,
+                        }
+                    ),
+                    encoding="utf-8",
+                )
+                return subprocess.CompletedProcess(command, returncode, "", "")
+
+            with mock.patch.object(DOMAIN.subprocess, "run", side_effect=validator_run):
+                report, failures = DOMAIN.validate_external_fhir(
+                    files,
+                    set_reports,
+                    expectations,
+                    {"guide": root / "guide.tgz"},
+                    root / "validator.jar",
+                    root / "validator-home",
+                    root,
+                )
+
+            self.assertEqual(failures, [])
+            self.assertEqual(report["expectedErrorCount"], 1)
+            self.assertEqual(len(commands), 2)
+            self.assertIn("-ig", commands[0])
+            self.assertNotIn("-ig", commands[1])
+            self.assertIn("accepted.json", " ".join(commands[0]))
+            self.assertIn("legacy.json", " ".join(commands[1]))
+
+            extra_legacy_issues.append(None)
+            with mock.patch.object(DOMAIN.subprocess, "run", side_effect=validator_run):
+                _report, malformed_failures = DOMAIN.validate_external_fhir(
+                    files,
+                    set_reports,
+                    expectations,
+                    {"guide": root / "guide.tgz"},
+                    root / "validator.jar",
+                    root / "validator-home",
+                    root,
+                )
+            self.assertTrue(
+                any("malformed issue" in failure for failure in malformed_failures)
+            )
+
     def test_package_override_symlink_is_rejected(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -420,6 +708,7 @@ class ExternalEvidenceInventoryTests(unittest.TestCase):
             "externalEvidence": [
                 {
                     "id": "fixture",
+                    "classification": "accepted-contract",
                     "kind": "directory",
                     "files": [
                         {"path": "resource.json", "format": "fhir-json"},
@@ -432,9 +721,12 @@ class ExternalEvidenceInventoryTests(unittest.TestCase):
             root = Path(directory)
             (root / "resource.json").write_text('{"resourceType":"Patient"}', encoding="utf-8")
             (root / "validation.txt").write_text("ok", encoding="utf-8")
-            reports, files = DOMAIN.resolve_external_evidence(evidence, {"fixture": root}, True)
+            reports, files, expectations = DOMAIN.resolve_external_evidence(
+                evidence, {"fixture": root}, True
+            )
             self.assertEqual(len(reports), 1)
             self.assertEqual(len(files), 1)
+            self.assertEqual(expectations, {})
             (root / "extra").mkdir()
             with self.assertRaises(DOMAIN.DomainValidationError):
                 DOMAIN.resolve_external_evidence(evidence, {"fixture": root}, True)

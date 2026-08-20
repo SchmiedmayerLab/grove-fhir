@@ -1,10 +1,21 @@
 diff --git a/Compatibility/Fixtures/my-heart-counts-ios-e7ae-study-enrollment.json b/Compatibility/Fixtures/my-heart-counts-ios-e7ae-study-enrollment.json
 new file mode 100644
-index 0000000000000000000000000000000000000000..90ce0fd169a048cee1c2b9cb933d3a9a4c5f843f
+index 0000000000000000000000000000000000000000..d9bbe61f01143d9319260089568b549a69eda234
 --- /dev/null
 +++ b/Compatibility/Fixtures/my-heart-counts-ios-e7ae-study-enrollment.json
-@@ -0,0 +1,39 @@
+@@ -0,0 +1,50 @@
 +{
++  "category" : [
++    {
++      "coding" : [
++        {
++          "code" : "vital-signs",
++          "display" : "Vital Signs",
++          "system" : "http://terminology.hl7.org/CodeSystem/observation-category"
++        }
++      ]
++    }
++  ],
 +  "code" : {
 +    "coding" : [
 +      {
@@ -90,10 +101,10 @@ index 7f8da40cb6f2179d68fada952d499cb2d7aa997f..917df5cf2fd14e68df01a4af86ce9875
                  url: extUrl
 diff --git a/MyHeartCountsTests/StudyEnrollmentCompatibilityEvidenceTests.swift b/MyHeartCountsTests/StudyEnrollmentCompatibilityEvidenceTests.swift
 new file mode 100644
-index 0000000000000000000000000000000000000000..9bfdfb0fc7546d0bfff95a6ede29a4ee8be8194e
+index 0000000000000000000000000000000000000000..61efa3a33591f45ea734b65f67efb464178c3cf5
 --- /dev/null
 +++ b/MyHeartCountsTests/StudyEnrollmentCompatibilityEvidenceTests.swift
-@@ -0,0 +1,91 @@
+@@ -0,0 +1,103 @@
 +//
 +// This source file belongs to the My Heart Counts iOS open-source project
 +//
@@ -114,6 +125,16 @@ index 0000000000000000000000000000000000000000..9bfdfb0fc7546d0bfff95a6ede29a4ee
 +@Suite
 +struct StudyEnrollmentEvidenceTests {
 +    private static let fixtureName = "my-heart-counts-ios-e7ae-study-enrollment.json"
++
++    private static var vitalSignsCategory: CodeableConcept {
++        CodeableConcept(coding: [
++            Coding(
++                code: "vital-signs".asFHIRStringPrimitive(),
++                display: "Vital Signs".asFHIRStringPrimitive(),
++                system: "http://terminology.hl7.org/CodeSystem/observation-category".asFHIRURIPrimitive()
++            )
++        ])
++    }
 +
 +    private var repositoryRoot: URL {
 +        URL(fileURLWithPath: #filePath)
@@ -149,6 +170,7 @@ index 0000000000000000000000000000000000000000..9bfdfb0fc7546d0bfff95a6ede29a4ee
 +            status: .init(.final)
 +        )
 +        observation.id = "mhc-ios-e7ae-study-enrollment-evidence".asFHIRStringPrimitive()
++        observation.category = [Self.vitalSignsCategory]
 +        observation.subject = Reference(
 +            reference: "Patient/mhc-compatibility-participant".asFHIRStringPrimitive()
 +        )
@@ -168,6 +190,7 @@ index 0000000000000000000000000000000000000000..9bfdfb0fc7546d0bfff95a6ede29a4ee
 +        ))
 +
 +        #expect(observation.code.coding?.isEmpty == false)
++        #expect(observation.category?.first?.coding?.first?.code?.value?.string == "vital-signs")
 +        #expect(observation.subject?.reference?.value?.string == "Patient/mhc-compatibility-participant")
 +        #expect(observation.effective != nil)
 +        #expect(observation.value != nil)

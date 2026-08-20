@@ -257,7 +257,7 @@
       "id": "my-heart-counts-ios-study-enrollment-writer-fixture",
       "source": "my-heart-counts-ios",
       "patch": "Integration/Patches/my-heart-counts-ios-study-enrollment-writer-fixture.patch",
-      "sha256": "1dd890121c59a6111a6e7cc583808fd1bd5e96b3247d5c7583849cc858aec18a",
+      "sha256": "3f1925397d136edb344e50d9d8a64fece823391bffc91a2cfdf8c463ab1f0234",
       "dependsOn": [
         "grove-mobile-contract"
       ],
@@ -314,7 +314,7 @@
       ],
       "claims": [
         "The exact current My Heart Counts iOS production study-enrollment extension writer is applied to a deterministic full core-R4 heart-rate Observation without changing the app-facing enrollment lookup behavior; the clinical shell is representative evidence, not a claim that the app's whole Observation writer emitted it.",
-        "The deterministic study-enrollment fixture has SHA-256 27958f9fbbd77be4b293823e4455fd16a7298586745dfe7efa129b7a03739e00 and is legacy-candidate evidence only; Grove does not consume it and no canonical migration is claimed.",
+        "The deterministic study-enrollment fixture has SHA-256 e3e94f9068defe7801e68e1e81a741bb7624ca2431dbb0ba6da812151727e906 and is legacy-candidate evidence only; Grove does not consume it and no canonical migration is claimed.",
         "The accepted ResearchStudy, PlanDefinition, ResearchSubject, and Provenance graph remains a separate Grove FHIR-owned fixture/corpus; actual My Heart Counts migration is deferred."
       ]
     },

@@ -345,6 +345,23 @@
       "files": [
         {"path": "grove-0.2.1-healthkit-sample.json", "mediaType": "application/fhir+json", "format": "fhir-json"}
       ],
+      "expectedUnknownExtensions": [
+        {"path": "grove-0.2.1-healthkit-sample.json", "expression": "Observation.extension[0]", "url": "https://bdh.stanford.edu/fhir/defs/sourceDevice", "valueField": "extension"},
+        {"path": "grove-0.2.1-healthkit-sample.json", "expression": "Observation.extension[0].extension[0]", "url": "https://bdh.stanford.edu/fhir/defs/sourceDevice/name", "valueField": "valueString"},
+        {"path": "grove-0.2.1-healthkit-sample.json", "expression": "Observation.extension[0].extension[1]", "url": "https://bdh.stanford.edu/fhir/defs/sourceDevice/manufacturer", "valueField": "valueString"},
+        {"path": "grove-0.2.1-healthkit-sample.json", "expression": "Observation.extension[0].extension[2]", "url": "https://bdh.stanford.edu/fhir/defs/sourceDevice/model", "valueField": "valueString"},
+        {"path": "grove-0.2.1-healthkit-sample.json", "expression": "Observation.extension[0].extension[3]", "url": "https://bdh.stanford.edu/fhir/defs/sourceDevice/hardwareVersion", "valueField": "valueString"},
+        {"path": "grove-0.2.1-healthkit-sample.json", "expression": "Observation.extension[0].extension[4]", "url": "https://bdh.stanford.edu/fhir/defs/sourceDevice/firmwareVersion", "valueField": "valueString"},
+        {"path": "grove-0.2.1-healthkit-sample.json", "expression": "Observation.extension[0].extension[5]", "url": "https://bdh.stanford.edu/fhir/defs/sourceDevice/softwareVersion", "valueField": "valueString"},
+        {"path": "grove-0.2.1-healthkit-sample.json", "expression": "Observation.extension[0].extension[6]", "url": "https://bdh.stanford.edu/fhir/defs/sourceDevice/localIdentifier", "valueField": "valueString"},
+        {"path": "grove-0.2.1-healthkit-sample.json", "expression": "Observation.extension[0].extension[7]", "url": "https://bdh.stanford.edu/fhir/defs/sourceDevice/UDIDeviceIdentifier", "valueField": "valueString"},
+        {"path": "grove-0.2.1-healthkit-sample.json", "expression": "Observation.extension[1]", "url": "https://bdh.stanford.edu/fhir/defs/sourceRevision", "valueField": "extension"},
+        {"path": "grove-0.2.1-healthkit-sample.json", "expression": "Observation.extension[1].extension[0]", "url": "https://bdh.stanford.edu/fhir/defs/sourceRevision/source", "valueField": "extension"},
+        {"path": "grove-0.2.1-healthkit-sample.json", "expression": "Observation.extension[1].extension[0].extension[0]", "url": "https://bdh.stanford.edu/fhir/defs/sourceRevision/source/name", "valueField": "valueString"},
+        {"path": "grove-0.2.1-healthkit-sample.json", "expression": "Observation.extension[1].extension[0].extension[1]", "url": "https://bdh.stanford.edu/fhir/defs/sourceRevision/source/bundleIdentifier", "valueField": "valueString"},
+        {"path": "grove-0.2.1-healthkit-sample.json", "expression": "Observation.extension[2]", "url": "https://bdh.stanford.edu/fhir/defs/metadata", "valueField": "extension"},
+        {"path": "grove-0.2.1-healthkit-sample.json", "expression": "Observation.extension[2].extension[0]", "url": "https://bdh.stanford.edu/fhir/defs/metadata/HKTimeZone", "valueField": "valueString"}
+      ],
       "purpose": "Exact full HealthKit sample Observation emitted by the real historical Grove 0.2.1 writer."
     },
     {
@@ -380,6 +397,11 @@
       "kind": "file",
       "files": [
         {"path": "my-heart-counts-ios-e7ae-study-enrollment.json", "mediaType": "application/fhir+json", "format": "fhir-json"}
+      ],
+      "expectedUnknownExtensions": [
+        {"path": "my-heart-counts-ios-e7ae-study-enrollment.json", "expression": "Observation.extension[0]", "url": "https://myheartcounts.stanford.edu/fhir/StructureDefinition/study-enrollment", "valueField": "extension"},
+        {"path": "my-heart-counts-ios-e7ae-study-enrollment.json", "expression": "Observation.extension[0].extension[0]", "url": "https://myheartcounts.stanford.edu/fhir/StructureDefinition/study-enrollment/study-id", "valueField": "valueString"},
+        {"path": "my-heart-counts-ios-e7ae-study-enrollment.json", "expression": "Observation.extension[0].extension[1]", "url": "https://myheartcounts.stanford.edu/fhir/StructureDefinition/study-enrollment/study-revision", "valueField": "valueInteger"}
       ],
       "purpose": "Exact current e7ae iOS legacy-candidate study-enrollment writer output; no migration is implied."
     }

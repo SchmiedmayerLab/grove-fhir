@@ -136,10 +136,11 @@ then decodes those actual producer bytes; standalone runs fall back to the golde
 
 The My Heart Counts iOS proposal freezes the production study-enrollment extension
 writer at `e7ae70ebbbfb335eea274cd35eacd5d3c5c93d33`, applied to a deterministic full
-core-R4 heart-rate Observation with code, patient subject, effective time, and value.
+core-R4 heart-rate Observation with Vital Signs category, code, patient subject,
+effective time, and value.
 Its deterministic fixture path is
 `Compatibility/Fixtures/my-heart-counts-ios-e7ae-study-enrollment.json`; its SHA-256 is
-`27958f9fbbd77be4b293823e4455fd16a7298586745dfe7efa129b7a03739e00`. This is
+`e3e94f9068defe7801e68e1e81a741bb7624ca2431dbb0ba6da812151727e906`. This is
 legacy-candidate provenance only: Grove does not consume it here, the URL is not
 declared canonical, and My Heart Counts is not migrated. The accepted
 ResearchStudy/PlanDefinition/ResearchSubject/Provenance graph remains a separate

@@ -559,6 +559,7 @@ class ConformanceEvidenceTests(unittest.TestCase):
             external = [
                 {
                     "id": "accepted-fhir",
+                    "classification": "accepted-contract",
                     "files": [
                         {
                             "path": "resource.json",
@@ -570,7 +571,29 @@ class ConformanceEvidenceTests(unittest.TestCase):
                     "transitiveSha256": "b" * 64,
                 },
                 {
+                    "id": "legacy-fhir",
+                    "classification": "legacy-candidate",
+                    "files": [
+                        {
+                            "path": "legacy.json",
+                            "format": "fhir-json",
+                            "sha256": "1" * 64,
+                            "size": 84,
+                        }
+                    ],
+                    "expectedUnknownExtensions": [
+                        {
+                            "path": "legacy.json",
+                            "expression": "Observation.extension[0]",
+                            "url": "https://legacy.example/fhir/extension",
+                            "valueField": "valueString",
+                        }
+                    ],
+                    "transitiveSha256": "2" * 64,
+                },
+                {
                     "id": "test-result",
+                    "classification": "accepted-contract",
                     "files": [
                         {
                             "path": "result.json",
@@ -621,24 +644,44 @@ class ConformanceEvidenceTests(unittest.TestCase):
                     }
                 ],
                 "externalEvidence": {
-                    "setCount": 2,
-                    "fhirInputCount": 1,
-                    "resourceCount": 1,
+                    "setCount": 3,
+                    "fhirInputCount": 2,
+                    "resourceCount": 2,
                     "warningCount": 0,
+                    "expectedErrorCount": 1,
                     "sets": [
                         {
                             "id": "accepted-fhir",
+                            "validationScope": "accepted-package-closure",
+                            "expectedErrorCount": 0,
                             "files": [
                                 {
                                     "path": "resource.json",
                                     "sha256": "a" * 64,
                                     "size": 42,
                                     "resourceCount": 1,
+                                    "expectedErrorCount": 0,
+                                }
+                            ],
+                        },
+                        {
+                            "id": "legacy-fhir",
+                            "validationScope": "r4-core",
+                            "expectedErrorCount": 1,
+                            "files": [
+                                {
+                                    "path": "legacy.json",
+                                    "sha256": "1" * 64,
+                                    "size": 84,
+                                    "resourceCount": 1,
+                                    "expectedErrorCount": 1,
                                 }
                             ],
                         },
                         {
                             "id": "test-result",
+                            "validationScope": "none",
+                            "expectedErrorCount": 0,
                             "files": [
                                 {
                                     "path": "result.json",
@@ -710,6 +753,44 @@ class ConformanceEvidenceTests(unittest.TestCase):
             self.assertTrue(
                 (evidence_root / "reports/domain-fhir-validation.json").is_file()
             )
+            report["externalEvidence"]["sets"][1]["expectedErrorCount"] = True
+            source.write_bytes(canonical_json_bytes(report))
+            with self.assertRaisesRegex(
+                EVIDENCE.EvidenceError, "external validation contract has drifted"
+            ):
+                EVIDENCE.collect_validation_reports(
+                    repository,
+                    evidence_root,
+                    manifest,
+                    inputs,
+                    tools,
+                    packages,
+                    external,
+                    {"domain-fhir-validation": source.resolve()},
+                    copy_reports=True,
+                )
+            report["externalEvidence"]["sets"][1]["expectedErrorCount"] = 1
+            report["externalEvidence"]["sets"][1]["files"][0][
+                "expectedErrorCount"
+            ] = True
+            source.write_bytes(canonical_json_bytes(report))
+            with self.assertRaisesRegex(
+                EVIDENCE.EvidenceError, "resource or expected error count is invalid"
+            ):
+                EVIDENCE.collect_validation_reports(
+                    repository,
+                    evidence_root,
+                    manifest,
+                    inputs,
+                    tools,
+                    packages,
+                    external,
+                    {"domain-fhir-validation": source.resolve()},
+                    copy_reports=True,
+                )
+            report["externalEvidence"]["sets"][1]["files"][0][
+                "expectedErrorCount"
+            ] = 1
             report["externalEvidence"]["sets"][0]["files"][0]["sha256"] = "0" * 64
             source.write_bytes(canonical_json_bytes(report))
             with self.assertRaisesRegex(EVIDENCE.EvidenceError, "file bytes have drifted"):

@@ -88,6 +88,15 @@ machine-specific paths and timings; the path-free domain report independently va
 every declared FHIR resource. The current-reader attestation is owned by a distinct
 reader implementation at the same Grove source commit.
 
+Accepted-contract FHIR sets are validated against the complete accepted guide-package
+closure. Historical-writer and legacy-candidate sets instead run in a separate core-R4
+Validator invocation: their retired extension trees remain exact evidence rather than
+being reintroduced as active StructureDefinitions. Each such set declares every expected
+unknown extension by file, FHIR expression, URL, and value field. The gate requires the
+resource shape and the Validator's `Extension_EXT_Unknown_NotHere` errors to match that
+declaration one-to-one; a missing, extra, moved, renamed, or differently represented
+extension, or any other error, fails validation.
+
 For an intentionally supplied package, `build` accepts one or more
 `--package GUIDE=PATH` options. The package must have the declared identity, version,
 canonical URL, FHIR version, and dependency map. The generated lock records

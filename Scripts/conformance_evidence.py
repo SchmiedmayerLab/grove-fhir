@@ -985,6 +985,39 @@ def validate_manifest_semantics(
             raise EvidenceError(
                 f"external evidence {evidence_set['id']} has duplicate file paths"
             )
+        fhir_paths = {
+            item["path"]
+            for item in evidence_set["files"]
+            if item["format"] == "fhir-json"
+        }
+        expected_unknown = evidence_set.get("expectedUnknownExtensions")
+        legacy = evidence_set["classification"] in {
+            "historical-writer",
+            "legacy-candidate",
+        }
+        if legacy:
+            if not isinstance(expected_unknown, list) or not expected_unknown:
+                raise EvidenceError(
+                    f"legacy external evidence {evidence_set['id']} needs an exact "
+                    "unknown-extension contract"
+                )
+            contract_paths = {item["path"] for item in expected_unknown}
+            contract_locations = {
+                (item["path"], item["expression"]) for item in expected_unknown
+            }
+            if (
+                contract_paths != fhir_paths
+                or len(contract_locations) != len(expected_unknown)
+            ):
+                raise EvidenceError(
+                    f"legacy external evidence {evidence_set['id']} unknown-extension "
+                    "contract does not exactly cover its FHIR files and locations"
+                )
+        elif expected_unknown is not None:
+            raise EvidenceError(
+                f"accepted external evidence {evidence_set['id']} may not expect "
+                "FHIR Validator errors"
+            )
         for file in evidence_set["files"]:
             input_names: set[str] = set()
             for reference in file.get("attestationInputs", []):
@@ -2275,6 +2308,10 @@ def collect_external_evidence(
             "files": records,
             "setDigest": semantic_sha256(records),
         }
+        if "expectedUnknownExtensions" in evidence_set:
+            entry["expectedUnknownExtensions"] = [
+                dict(item) for item in evidence_set["expectedUnknownExtensions"]
+            ]
         entry["transitiveSha256"] = semantic_sha256(
             {
                 **entry,
@@ -2447,6 +2484,7 @@ def _validate_domain_fhir_report(
         "fhirInputCount",
         "resourceCount",
         "warningCount",
+        "expectedErrorCount",
         "sets",
     }:
         raise EvidenceError(f"{label} externalEvidence summary is not closed")
@@ -2466,7 +2504,13 @@ def _validate_domain_fhir_report(
     )
     if external.get("fhirInputCount") != expected_fhir_count:
         raise EvidenceError(f"{label} external FHIR input count has drifted")
-    for field in ("resourceCount", "warningCount"):
+    expected_error_count = sum(
+        len(evidence_set.get("expectedUnknownExtensions", []))
+        for evidence_set in external_evidence
+    )
+    if external.get("expectedErrorCount") != expected_error_count:
+        raise EvidenceError(f"{label} expected external error count has drifted")
+    for field in ("resourceCount", "warningCount", "expectedErrorCount"):
         value = external.get(field)
         if not isinstance(value, int) or isinstance(value, bool) or value < 0:
             raise EvidenceError(f"{label} {field} must be a nonnegative integer")
@@ -2474,15 +2518,46 @@ def _validate_domain_fhir_report(
     reported_ids: list[str] = []
     recursive_resource_count = 0
     for reported_set in reported_sets:
-        if not isinstance(reported_set, dict) or set(reported_set) != {"id", "files"}:
+        if not isinstance(reported_set, dict) or set(reported_set) != {
+            "id",
+            "validationScope",
+            "expectedErrorCount",
+            "files",
+        }:
             raise EvidenceError(f"{label} has an invalid external evidence set record")
         identifier = reported_set.get("id")
         files = reported_set.get("files")
         if identifier not in expected_sets or not isinstance(files, list):
             raise EvidenceError(f"{label} references an unknown external evidence set")
         reported_ids.append(identifier)
+        expected_set = expected_sets[identifier]
+        fhir_files = [
+            file for file in expected_set["files"] if file["format"] == "fhir-json"
+        ]
+        expected_scope = (
+            "none"
+            if not fhir_files
+            else "r4-core"
+            if expected_set["classification"]
+            in {"historical-writer", "legacy-candidate"}
+            else "accepted-package-closure"
+        )
+        set_expected_error_count = len(
+            expected_set.get("expectedUnknownExtensions", [])
+        )
+        reported_set_error_count = reported_set.get("expectedErrorCount")
+        if (
+            reported_set.get("validationScope") != expected_scope
+            or not isinstance(reported_set_error_count, int)
+            or isinstance(reported_set_error_count, bool)
+            or reported_set_error_count < 0
+            or reported_set_error_count != set_expected_error_count
+        ):
+            raise EvidenceError(
+                f"{label} external validation contract has drifted for {identifier}"
+            )
         expected_files = {
-            file["path"]: file for file in expected_sets[identifier]["files"]
+            file["path"]: file for file in expected_set["files"]
         }
         if len(files) != len(expected_files):
             raise EvidenceError(f"{label} file count has drifted for {identifier}")
@@ -2499,7 +2574,7 @@ def _validate_domain_fhir_report(
             is_fhir = expected["format"] == "fhir-json"
             expected_keys = {"path", "sha256", "size"}
             if is_fhir:
-                expected_keys.add("resourceCount")
+                expected_keys.update({"resourceCount", "expectedErrorCount"})
             if set(file) != expected_keys:
                 raise EvidenceError(
                     f"{label} file record fields have drifted for {identifier}:{path_value}"
@@ -2513,13 +2588,24 @@ def _validate_domain_fhir_report(
                 )
             if is_fhir:
                 resource_count = file.get("resourceCount")
+                file_expected_error_count = sum(
+                    expectation["path"] == path_value
+                    for expectation in expected_set.get(
+                        "expectedUnknownExtensions", []
+                    )
+                )
+                reported_file_error_count = file.get("expectedErrorCount")
                 if (
                     not isinstance(resource_count, int)
                     or isinstance(resource_count, bool)
                     or resource_count < 1
+                    or not isinstance(reported_file_error_count, int)
+                    or isinstance(reported_file_error_count, bool)
+                    or reported_file_error_count < 0
+                    or reported_file_error_count != file_expected_error_count
                 ):
                     raise EvidenceError(
-                        f"{label} FHIR resource count is invalid for "
+                        f"{label} FHIR resource or expected error count is invalid for "
                         f"{identifier}:{path_value}"
                     )
                 recursive_resource_count += resource_count
