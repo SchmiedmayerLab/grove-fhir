@@ -19,5 +19,12 @@
         "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle"
       ]
     }
+  ],
+  "semanticVectors": [
+    {
+      "id": "heart-rate",
+      "path": "resources/exchange-bundle.json",
+      "resourcePointer": "/entry/1/resource"
+    }
   ]
 }

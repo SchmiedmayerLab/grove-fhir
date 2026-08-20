@@ -4,7 +4,7 @@
   "title": "Grove FHIR producer conformance manifest",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schemaVersion", "fhirVersion", "producer", "packages", "resources"],
+  "required": ["schemaVersion", "fhirVersion", "producer", "packages", "resources", "semanticVectors"],
   "properties": {
     "schemaVersion": {"const": 1},
     "fhirVersion": {"const": "4.0.1"},
@@ -47,6 +47,20 @@
             "uniqueItems": true,
             "items": {"type": "string", "pattern": "^https://grovealliance[.]org/fhir/"}
           }
+        }
+      }
+    },
+    "semanticVectors": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "path", "resourcePointer"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "path": {"type": "string", "pattern": "^[^/].*[.]json$"},
+          "resourcePointer": {"type": "string", "pattern": "^(|/.*)$"}
         }
       }
     }

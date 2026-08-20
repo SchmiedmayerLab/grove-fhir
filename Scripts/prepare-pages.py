@@ -103,6 +103,49 @@ def load_configuration(path: Path) -> dict[str, Any]:
         raise ValueError("publication/config.json must declare at least one guide")
     if configuration.get("releaseMode") not in {"ci-build-only", "immutable-releases"}:
         raise ValueError("publication/config.json must declare a supported releaseMode")
+
+    sources: set[str] = set()
+    canonical_paths: set[str] = set()
+    for index, guide in enumerate(configuration["guides"]):
+        if not isinstance(guide, dict):
+            raise ValueError(f"publication guide[{index}] must be an object")
+        source = guide.get("source")
+        canonical = guide.get("canonicalPath")
+        if not isinstance(source, str) or not isinstance(canonical, str):
+            raise ValueError(
+                f"publication guide[{index}] must declare string source and canonicalPath"
+            )
+        source_path = safe_relative_path(source, f"guide[{index}] source").as_posix()
+        canonical_path = safe_relative_path(
+            canonical, f"guide[{index}] canonicalPath"
+        ).as_posix()
+        if source_path in sources:
+            raise ValueError(f"publication guide source is repeated: {source_path}")
+        if canonical_path in canonical_paths:
+            raise ValueError(
+                f"publication canonicalPath is repeated: {canonical_path}"
+            )
+        sources.add(source_path)
+        canonical_paths.add(canonical_path)
+
+    aliases: set[str] = set()
+    for index, guide in enumerate(configuration["guides"]):
+        declared_aliases = guide.get("aliases", [])
+        if not isinstance(declared_aliases, list) or not all(
+            isinstance(alias, str) for alias in declared_aliases
+        ):
+            raise ValueError(f"publication guide[{index}] aliases must be strings")
+        for alias in declared_aliases:
+            alias_path = safe_relative_path(
+                alias, f"guide[{index}] alias", allow_empty=True
+            ).as_posix()
+            if alias_path in canonical_paths:
+                raise ValueError(
+                    f"publication alias collides with canonicalPath: {alias_path}"
+                )
+            if alias_path in aliases:
+                raise ValueError(f"publication alias is repeated: {alias_path}")
+            aliases.add(alias_path)
     return configuration
 
 

@@ -6,7 +6,7 @@
     ]
   },
   "identifier": {
-    "system": "https://study.example.org/fhir/identifiers/exchange-bundle",
+    "system": "https://grovealliance.org/fhir/examples/NamingSystem/exchange-bundle",
     "value": "exchange-20260820-001"
   },
   "type": "collection",
@@ -17,17 +17,17 @@
         {
           "url": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-exchange-entry-identifier",
           "valueIdentifier": {
-            "system": "https://study.example.org/fhir/identifiers/participant",
+            "system": "https://grovealliance.org/fhir/examples/NamingSystem/participant",
             "value": "participant-001"
           }
         }
       ],
-      "fullUrl": "urn:uuid:9610c841-e815-599e-a2bf-9bdb688d6737",
+      "fullUrl": "urn:uuid:2068bbaf-f65a-5386-9b8e-58119d6e33d3",
       "resource": {
         "resourceType": "Patient",
         "identifier": [
           {
-            "system": "https://study.example.org/fhir/identifiers/participant",
+            "system": "https://grovealliance.org/fhir/examples/NamingSystem/participant",
             "value": "participant-001"
           }
         ]
@@ -38,12 +38,12 @@
         {
           "url": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-exchange-entry-identifier",
           "valueIdentifier": {
-            "system": "https://study.example.org/fhir/identifiers/mobile-observation",
+            "system": "https://grovealliance.org/fhir/examples/NamingSystem/mobile-observation",
             "value": "heart-rate-20260820-001"
           }
         }
       ],
-      "fullUrl": "urn:uuid:cd27941b-2a75-5f7a-bd25-71e9480eac24",
+      "fullUrl": "urn:uuid:f60aa6a4-7dd9-502e-b4a5-b8f060dcaf3c",
       "resource": {
         "resourceType": "Observation",
         "meta": {
@@ -53,7 +53,7 @@
         },
         "identifier": [
           {
-            "system": "https://study.example.org/fhir/identifiers/mobile-observation",
+            "system": "https://grovealliance.org/fhir/examples/NamingSystem/mobile-observation",
             "value": "heart-rate-20260820-001"
           }
         ],
@@ -77,9 +77,9 @@
           ]
         },
         "subject": {
-          "reference": "urn:uuid:9610c841-e815-599e-a2bf-9bdb688d6737"
+          "reference": "urn:uuid:2068bbaf-f65a-5386-9b8e-58119d6e33d3"
         },
-        "effectiveDateTime": "2026-08-20T10:30:00-07:00",
+        "effectiveDateTime": "2026-08-20T08:30:00.251-07:00",
         "valueQuantity": {
           "value": 72,
           "unit": "beats/minute",

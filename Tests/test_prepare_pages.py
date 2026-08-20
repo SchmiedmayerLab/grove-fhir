@@ -36,6 +36,24 @@ CHECK_SPECIFICATION.loader.exec_module(CHECK_PUBLICATION)
 
 
 class PreparePagesTests(unittest.TestCase):
+    def test_configuration_rejects_alias_and_canonical_path_collisions(self) -> None:
+        configuration = {
+            "schemaVersion": 1,
+            "releaseMode": "ci-build-only",
+            "guides": [
+                {
+                    "source": "sensor",
+                    "canonicalPath": "sensor",
+                    "aliases": ["sensor"],
+                }
+            ],
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "config.json"
+            path.write_text(json.dumps(configuration), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "collides with canonicalPath"):
+                PREPARE_PAGES.load_configuration(path)
+
     def test_rewrites_build_locations(self) -> None:
         repository = Path("/private/tmp/grove-fhir")
         text = (
