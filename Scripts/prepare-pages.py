@@ -30,7 +30,6 @@ TEXT_SUFFIXES = {
     ".xml",
 }
 GUIDE_PATHS = {
-    "archive/v0-healthkit-shaped": "archive/v0-healthkit-shaped",
     "platforms": "platforms",
     "ig": "",
 }

@@ -9,16 +9,18 @@
 id: org.grovealliance.fhir.platforms
 canonical: https://grovealliance.org/fhir/platforms
 name: GroveFHIRPlatforms
-title: "Grove FHIR Platform Vocabularies"
-description: "Code systems for the mobile-platform vocabularies Grove data references: HealthKit sample types, HealthKit value enumerations, HealthKit metadata keys, Health Connect metadata fields, and SensorKit sensor streams."
+title: "Grove Platform Terminology Preview"
+description: >-
+  Draft source-platform identifiers referenced by Grove FHIR, published separately from
+  the exchange profiles and without assigning clinical meaning.
 status: draft
 version: 0.1.0
 fhirVersion: 4.0.1
 copyrightYear: 2026+
 releaseLabel: ci-build
 publisher:
-  name: Grove
-  url: https://grovealliance.org
+  name: Schmiedmayer Lab
+  url: https://github.com/SchmiedmayerLab
 license: MIT
 jurisdiction: http://unstats.un.org/unsd/methods/m49/m49.htm#001
 
@@ -26,9 +28,12 @@ parameters:
   pin-canonicals: pin-multiples
 
 menu:
-  Home: index.html
+  Overview: index.html
+  Status: publication-status.html
   Artifacts: artifacts.html
 
 pages:
   index.md:
     title: Home
+  publication-status.md:
+    title: Preview Status

@@ -6,85 +6,61 @@ SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTR
 SPDX-License-Identifier: MIT
 -->
 
-This page is for anyone **receiving** data a Grove app produces — research data
-platforms, analysts, downstream services. Everything Grove writes is plain FHIR R4; the
-profiles in this guide are the contract for what you will find where.
+This page shows how to inspect resources against the current combined preview packages.
+Validation against them is useful for review, but does not establish compatibility with
+a released Grove FHIR contract.
 
-### Validate what you receive
+### Validate a draft resource
 
-The guide ships as a standard FHIR NPM package. To validate a resource (or a whole
-export) against the contract:
+Download both packages under distinct filenames, then pass them to the FHIR Validator:
 
+```sh
+curl -L https://schmiedmayerlab.github.io/grove-fhir/package.tgz \
+  -o grove-fhir-core-preview.tgz
+curl -L https://schmiedmayerlab.github.io/grove-fhir/platforms/package.tgz \
+  -o grove-fhir-platforms-preview.tgz
+
+java -jar validator_cli.jar resource.json \
+  -version 4.0.1 \
+  -ig grove-fhir-core-preview.tgz \
+  -ig grove-fhir-platforms-preview.tgz
 ```
-java -jar validator_cli.jar your-data.json -version 4.0.1 \
-  -ig package.tgz -ig platforms-package.tgz
-```
 
-**Both packages are needed, and neither is on a registry yet.** This guide depends on
-`org.grovealliance.fhir.platforms` for the HealthKit and SensorKit codings, and package
-dependencies resolve from registries the validator can reach — so pointing at this
-guide's `package.tgz` alone leaves the platform code systems unresolvable. Download
-[this site's `package.tgz`](package.tgz) and the
-[platform guide's](https://grovealliance.org/fhir/platforms/package.tgz), and pass both.
-When the packages reach a registry, `-ig org.grovealliance.fhir.core` will resolve the
-dependency by itself and one flag will do.
+The packages are not published through a FHIR package registry. Validation confirms
+that a resource matches this preview; it does not make the preview a stable contract.
 
-Observations declare their profile in `meta.profile`
-(`https://grovealliance.org/fhir/core/StructureDefinition/grove-mobile-sensor-observation`),
-so profile-aware validators and stores pick the contract up automatically.
+### Mobile observation shape
 
-### What you will receive
+The implemented Mobile candidates use the following FHIR elements:
 
-| You get | Where to look |
+| Information | FHIR representation |
 |---|---|
-| The measurement | `code` (LOINC/SNOMED + platform coding), `value[x]`, `category` |
-| When, precisely | `effective[x]` (fractional seconds preserved; named zone in the `timezone` extension) |
-| Which hardware measured it | `device` → contained [Grove Sensor Device](StructureDefinition-grove-sensor-device.html) |
-| Which app saved it | `observation-gatewayDevice` extension → contained [Grove Gateway Device](StructureDefinition-grove-gateway-device.html) |
-| Sensed vs user-entered | [Recording Method](StructureDefinition-grove-recording-method.html) extension |
-| The platform record id | `identifier` with a [Grove system](identifiers.html) — your deduplication key |
-| Everything else the platform attached | [Platform Metadata](StructureDefinition-grove-platform-metadata.html) entries (see [Metadata Policy](metadata.html)) |
+| Measurement | `Observation.code` and `value[x]` |
+| Measurement time | `Observation.effective[x]` |
+| Participant | `Observation.subject` |
+| Recording hardware | `Observation.device` |
+| Saving application | `observation-gatewayDevice` extension |
+| Source record identity | `Observation.identifier` |
+| Capture method | Grove Recording Method extension |
+| Remaining typed source metadata | Grove Platform Metadata extension |
 
-Questionnaire answers arrive as standard `QuestionnaireResponse` resources; annotated-image
-answers are attachment answers (PNG) on the item whose control is `annotate-image`
-(see the [example response](QuestionnaireResponse-GroveQuestionnaireResponseExample.html)).
+Receivers compare the complete `(identifier.system, identifier.value)` pair when
+deduplicating source records. A repeated source identifier is expected when a mobile
+platform redelivers a sample.
 
-Worked examples of the observation shapes: a
-[chest-strap heart rate](Observation-GroveHeartRateObservationExample.html), a
-[phone-recorded step count](Observation-GroveStepCountObservationExample.html), a
-[sleep stage](Observation-GroveSleepObservationExample.html), and a
-[wear-state observation](Observation-GroveWearStateObservationExample.html) from a
-passive sensor stream. The matching
-[Health Connect step count](Observation-GroveHealthConnectStepCountExample.html) shows the
-Android record-id, sensor-device, gateway-app, and platform-code slices on the same wire format.
-The BLE identifier slice is specified and Must Support, but no example instantiates it yet.
+### Questionnaire resources
 
-The offset on `effective[x]` is the recording device's when the platform recorded one,
-and the converting machine's when it did not — so an offset alone does not tell you
-where the participant was. The `timezone` extension is the discriminator: present means
-the zone is the sample's own, absent means the offset is incidental and only the instant
-is meaningful. Batch conversions run on a desktop are the case to watch.
+The current package contains draft `Questionnaire` and `QuestionnaireResponse` profiles.
+A response identifies its source instrument through the `questionnaire` canonical;
+receivers need the corresponding Questionnaire to interpret its items and coded answers.
+The combined prototype still includes annotation-specific constraints, so these profiles
+are not yet the independent Questionnaire contract described on the overview.
 
-### Before you store it
+### Excluded from the receiver contract
 
-Everything on this page is identifiable personal health data, and the sensor streams are
-identifiable regardless of what `subject` says. Read
-[Security and Privacy](security.html) before an extract leaves your system: it states the
-confidentiality labels resources carry, what de-identifying these streams actually
-requires, and why a content-derived identifier has to be keyed.
+SensorKit resources and batch formats remain experimental. Health Connect examples do
+not have a Grove Swift implementation. The receiver CapabilityStatement has no
+corresponding Grove server implementation. None of these establish a supported receiver
+or exchange contract.
 
-### Deduplication
-
-Treat `(identifier.system, identifier.value)` as the platform record identity; the
-mechanics — conditional create, server responses, passthrough records — live on the
-[Identifiers](identifiers.html) page. Mobile platforms can re-deliver samples, so
-receiving a duplicate identifier is normal, not an error.
-
-### Reading historical data
-
-Research databases contain resources written by earlier Grove/Spezi versions. Their
-encodings remain valid forever; the [Supersession](supersession.html) page maps every
-historical spelling (`bdh.stanford.edu`, `spezi.stanford.edu` extensions, epoch-decimal
-time extensions, extension-based sample ids) to its current equivalent. A consumer that
-wants one code path can normalize old resources using that concordance; a consumer that
-only reads current-profile data can filter on `meta.profile`.
+See [Preview Status](publication-status.html) for the current scope and release status.

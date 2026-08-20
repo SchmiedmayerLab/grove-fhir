@@ -6,52 +6,30 @@ SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTR
 SPDX-License-Identifier: MIT
 -->
 
-Identifier systems minted by this guide live under
-`https://grovealliance.org/fhir/sid/`; its code systems live under
-`https://grovealliance.org/fhir/core/CodeSystem/`, and the platform vocabularies under
-`https://grovealliance.org/fhir/platforms/CodeSystem/`. All are stable, permanent URIs;
-none are resolvable endpoints.
+# Identifier systems in the prototype
 
-### Record identity
+FHIR token matching uses the complete `(system, value)` pair. The current combined
+prototype defines these Grove-owned system URIs:
 
-| System | Used in | Value |
-|---|---|---|
-| `…/sid/healthkit-sample-id` | `Observation.identifier` | `HKObject.uuid` (UUID string) |
-| `…/sid/health-connect-record-id` | `Observation.identifier` | Health Connect `Metadata.id` |
-| `…/sid/sensorkit-sample-id` | `Observation.identifier` | Deterministic digest of a SensorKit sample's own content, keyed per deployment (SensorKit assigns no record ids) — see [Security and Privacy](security.html) |
-
-Deduplication: writers use conditional create
-(`Bundle.entry.request.ifNoneExist: identifier=<system>|<value>`) — servers return
-`200` on a single existing match (no duplicate written) and `412` on multiple matches,
-so uploaders treat `412` as a data-hygiene signal, not a transient failure. Readers treat
-(system, value) as the platform record identity. For passthrough resources whose own
-`identifier` list carries source-institution identity (clinical records), the record id
-travels in the [Source Record Identifier](StructureDefinition-grove-source-record-id.html)
-extension instead.
-
-### App identity
-
-| System | Used in | Value |
-|---|---|---|
-| `…/sid/apple-bundle-id` | `Device.identifier` (gateway) | The app's bundle identifier |
-| `…/sid/android-application-id` | `Device.identifier` (gateway) | The app's application id |
-
-If HL7's mobile-app-identifier work (UMHAI) produces a standard system, it slots in as
-an additional `Device.identifier` without displacing these.
-
-### Device identity
-
-| System | Used in | Value |
-|---|---|---|
-| `…/sid/device-local-id` | `Device.identifier` (sensor) | The platform's ephemeral local device identifier |
-
-### Platform metadata key spaces
-
-| System | Kind |
+| System | Intended value |
 |---|---|
-| `…/platforms/CodeSystem/healthkit-metadata-key` | Fragment code system — raw HealthKit metadata keys |
-| `…/platforms/CodeSystem/health-connect-metadata-key` | Fragment code system — Health Connect metadata fields |
+| `https://grovealliance.org/fhir/sid/healthkit-sample-id` | HealthKit object UUID |
+| `https://grovealliance.org/fhir/sid/device-local-id` | Source-platform device identifier when no standard hardware identifier is available |
+| `https://grovealliance.org/fhir/sid/apple-bundle-id` | Apple application bundle identifier |
+| `https://grovealliance.org/fhir/sid/sensorkit-sample-id` | Prototype SensorKit sample identity |
+| `https://grovealliance.org/fhir/sid/health-connect-record-id` | Prototype Health Connect record identity |
+| `https://grovealliance.org/fhir/sid/android-application-id` | Android application identifier |
 
-Both are published by the
-[platform vocabularies guide](https://grovealliance.org/fhir/platforms), alongside the
-sample-type and value enumerations.
+Only the HealthKit, device-local, and Apple bundle identifier mappings currently have
+Grove Swift implementation evidence. The remaining systems do not establish a stable
+exchange contract.
+
+### Receiver behavior in the combined prototype
+
+The current `GroveDataReceiver` CapabilityStatement is a requirements artifact. It
+describes transaction uploads and conditional create for Observation and
+DocumentReference resources. Under that prototype, an uploader supplies
+`ifNoneExist: identifier={system}|{value}` and a receiver compares the complete token.
+
+Grove does not implement that receiver. The CapabilityStatement and its conditional-
+create behavior are therefore not part of the proposed stable contract.

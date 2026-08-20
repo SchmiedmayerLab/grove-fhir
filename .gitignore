@@ -20,4 +20,4 @@ __pycache__/
 **/fsh-generated/
 **/publish-temp/
 .bundle/
-ig/Requirements-fromNarrative.json
+**/Requirements-fromNarrative.json
