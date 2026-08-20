@@ -15,25 +15,79 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.event.pull_request.head.sha || github.sha }}
   cancel-in-progress: true
 
 permissions:
   contents: read
 
+env:
+  EVIDENCE_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+  # Evidence inputs are an exact HEAD/index/worktree set. Keep Python's ignored
+  # bytecode caches out of every fresh job so they cannot execute outside that set.
+  PYTHONDONTWRITEBYTECODE: "1"
+  # Exact source materialization never needs large screenshot blobs. Keeping the
+  # tracked LFS pointers also lets the hermetic Git check avoid executing an
+  # inherited filter process while it proves that each checkout is unchanged.
+  GIT_LFS_SKIP_SMUDGE: "1"
+
 jobs:
+  changes:
+    name: Conformance Change Matrix
+    runs-on: ubuntu-latest
+    outputs:
+      grove_questionnaire: ${{ steps.matrix.outputs.grove_questionnaire }}
+      grove_mobile: ${{ steps.matrix.outputs.grove_mobile }}
+      mhc_ios_study: ${{ steps.matrix.outputs.mhc_ios_study }}
+      android: ${{ steps.matrix.outputs.android }}
+      firebase: ${{ steps.matrix.outputs.firebase }}
+      evidence_common: ${{ steps.matrix.outputs.evidence_common }}
+      any_active: ${{ steps.matrix.outputs.any_active }}
+      base: ${{ steps.matrix.outputs.base }}
+      head: ${{ steps.matrix.outputs.head }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ env.EVIDENCE_HEAD_SHA }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13.15"
+      - name: Fetch the exact event base commit when necessary
+        if: github.event_name == 'pull_request' || github.event_name == 'push'
+        env:
+          EVENT_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          if [[ "$EVENT_BASE" != "0000000000000000000000000000000000000000" ]] && ! git cat-file -e "$EVENT_BASE^{commit}"; then
+            git fetch --no-tags --depth=1 origin "$EVENT_BASE"
+          fi
+          git cat-file -e "$EVIDENCE_HEAD_SHA^{commit}"
+      - name: Classify exact event paths
+        id: matrix
+        run: >-
+          python3 Scripts/conformance-path-matrix.py
+          --event-name "${{ github.event_name }}"
+          --event-json "$GITHUB_EVENT_PATH"
+          --event-head "$EVIDENCE_HEAD_SHA"
+          --github-output "$GITHUB_OUTPUT"
+
   tooling:
     name: Repository and Tooling Tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          ref: ${{ env.EVIDENCE_HEAD_SHA }}
+          fetch-depth: 1
+          persist-credentials: false
       - uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: "22.22.0"
           cache: npm
       - uses: actions/setup-python@v6
         with:
-          python-version: "3.13"
+          python-version: "3.13.15"
       - run: npm ci
       - name: Run repository and tooling tests
         run: npm test
@@ -47,87 +101,56 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
-          submodules: true
+          ref: ${{ env.EVIDENCE_HEAD_SHA }}
           fetch-depth: 1
           persist-credentials: false
+      - name: Initialize the exact complete nine-source inventory
+        run: >-
+          git submodule update --init --depth 1 --
+          Integration/Sources/GroveQuestionnaire
+          Integration/Sources/GroveHealthKit
+          Integration/Sources/GroveLegacy021
+          Integration/Sources/GroveSensorKit
+          Integration/Sources/MyHeartCountsIOS
+          Integration/Sources/MyHeartCountsAndroid
+          Integration/Sources/MyHeartCountsFirebase
+          Integration/Sources/MyHeartCountsStudyDefinitions024
+          Integration/Sources/MyHeartCountsStudyDefinitions025
       - uses: actions/setup-python@v6
         with:
-          python-version: "3.13"
-      - name: Verify immutable external source pins
-        run: python3 Scripts/check-integration-sources.py --fetch-targets
-
-  integration-proposals:
-    name: Integration Proposal Validation
-    runs-on: ubuntu-latest
-    timeout-minutes: 60
-    steps:
-      - uses: actions/checkout@v7
-        with:
-          submodules: true
-          fetch-depth: 1
-          persist-credentials: false
-      - uses: actions/setup-python@v6
-        with:
-          python-version: "3.13"
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 22
-      - uses: actions/setup-java@v5
-        with:
-          distribution: temurin
-          java-version: 21
-      - name: Fetch immutable proposal targets
-        run: python3 Scripts/check-integration-sources.py --fetch-targets
-      - name: Apply and test external change proposals
-        run: >-
-          python3 Scripts/validate-integration-proposals.py
-          --platform linux
-          --test-group portable
-      - name: Test the exact Android Health Connect proposal
-        run: >-
-          python3 Scripts/validate-integration-proposals.py
-          --platform linux
-          --test-group android-contract
-          --proposal my-heart-counts-android-health-connect
-      - name: Install the exact Firebase CLI
-        env:
-          FIREBASE_CLI_DISABLE_UPDATE_CHECK: "true"
-        run: npm install --global firebase-tools@15.27.0
-      - name: Test the exact Firebase receiver proposal
-        env:
-          CI: "true"
-          FIREBASE_CLI_DISABLE_UPDATE_CHECK: "true"
-        run: >-
-          python3 Scripts/validate-integration-proposals.py
-          --platform linux
-          --test-group firebase-contract
-          --proposal my-heart-counts-firebase-fhir-receiver
+          python-version: "3.13.15"
+      - name: Verify all nine immutable external source pins
+        run: python3 Scripts/check-integration-sources.py
 
   guides:
     name: Build All Implementation Guides
+    needs: changes
+    if: needs.changes.outputs.any_active == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v7
         with:
-          submodules: true
+          ref: ${{ env.EVIDENCE_HEAD_SHA }}
           fetch-depth: 1
           persist-credentials: false
       - uses: actions/setup-python@v6
         with:
-          python-version: "3.13"
+          python-version: "3.13.15"
       - uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: "22.22.0"
           cache: npm
       - uses: actions/setup-java@v5
         with:
           distribution: temurin
-          java-version: 21
+          java-version: "21.0.10+7.0.LTS"
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: "3.3"
+          ruby-version: "3.3.12"
           bundler-cache: false
+      - name: Select the exact Bundler
+        run: gem install bundler -v 4.0.16 --no-document
       - uses: actions/cache@v5
         with:
           path: |
@@ -142,56 +165,184 @@ jobs:
           restore-keys: |
             fhir-guides-${{ runner.os }}-
       - run: npm ci
-      - name: Build all implementation guides
+      - name: Build all implementation guides exactly once
         run: npm run build
       - name: Verify the published artifact allowlist
         run: python3 -m unittest Tests.test_artifact_allowlist -v
       - name: Validate the Questionnaire fixture corpus
         run: python3 Scripts/validate-questionnaire-fhir.py
-      - name: Fetch the immutable Android proposal target
-        run: python3 Scripts/check-integration-sources.py --fetch-targets
-      - name: Validate Android-emitted resources against the exact guides
-        env:
-          FHIR_VALIDATOR_JAR: ${{ github.workspace }}/.build/fhir-tools/validator_cli.jar
-          GROVE_MOBILE_PACKAGE: ${{ github.workspace }}/mobile/output/package.tgz
-          GROVE_HEALTH_CONNECT_PACKAGE: ${{ github.workspace }}/health-connect/output/package.tgz
-          GROVE_CONFORMANCE_EXPORT: ${{ github.workspace }}/.build/health-connect-conformance-fixtures
-        run: >-
-          python3 Scripts/validate-integration-proposals.py
-          --platform linux
-          --test-group android-emitted-resource-conformance
-          --proposal my-heart-counts-android-health-connect
-      - name: Assemble the sanitized preview artifact
+      - name: Assemble the exact sanitized Pages packages
         run: ./Scripts/assemble-pages.sh
       - name: Summarize publisher QA
         if: always()
         run: python3 Scripts/check-guide-qa.py --summary mobile healthkit health-connect questionnaire
-      - name: Upload rendered guides and QA reports
-        if: always()
+      - name: Upload sanitized guides and downloaded tools
         uses: actions/upload-artifact@v4
         with:
           name: implementation-guides
+          include-hidden-files: true
           if-no-files-found: error
           retention-days: 14
-          path: .build/pages
+          path: |
+            .build/pages
+            .build/fhir-tools
+
+  integration-proposals:
+    name: Integration Proposal Validation
+    needs: [changes, guides]
+    if: needs.changes.outputs.any_active == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ env.EVIDENCE_HEAD_SHA }}
+          fetch-depth: 1
+          persist-credentials: false
+      - name: Initialize only the Linux proposal sources
+        run: >-
+          git submodule update --init --depth 1 --
+          Integration/Sources/GroveQuestionnaire
+          Integration/Sources/GroveHealthKit
+          Integration/Sources/MyHeartCountsAndroid
+          Integration/Sources/MyHeartCountsFirebase
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13.15"
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22.22.0"
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21.0.10+7.0.LTS"
+      - run: npm ci
+      - name: Select the exact locked Firebase CLI
+        env:
+          CI: "true"
+          FIREBASE_CLI_DISABLE_UPDATE_CHECK: "true"
+        run: |
+          test "$(./node_modules/.bin/firebase --version)" = "15.26.0"
+          echo "$GITHUB_WORKSPACE/node_modules/.bin" >> "$GITHUB_PATH"
+      - uses: actions/download-artifact@v5
+        with:
+          name: implementation-guides
+          path: .build
+      - name: Seed the exact offline FHIR package cache
+        run: |
+          validator_home="$RUNNER_TEMP/grove-fhir-validator-home"
+          test ! -e "$validator_home"
+          test ! -L "$validator_home"
+          mkdir "$validator_home"
+          HOME="$validator_home" ./Scripts/download-fhir-tools.sh --offline .build/fhir-tools
+      - name: Apply and test the exact portable proposal closure
+        run: >-
+          python3 Scripts/validate-integration-proposals.py
+          --platform linux
+          --test-group portable
+          --proposal my-heart-counts-android-health-connect
+          --proposal my-heart-counts-firebase-fhir-receiver
+      - name: Test the exact Android Health Connect proposal
+        run: >-
+          python3 Scripts/validate-integration-proposals.py
+          --platform linux
+          --test-group android-contract
+          --proposal my-heart-counts-android-health-connect
+      - name: Export and validate exact Android conformance and wire resources
+        env:
+          FHIR_VALIDATOR_JAR: ${{ github.workspace }}/.build/fhir-tools/validator_cli.jar
+          GROVE_MOBILE_PACKAGE: ${{ github.workspace }}/.build/pages/fhir/mobile/ci-build/package.tgz
+          GROVE_HEALTH_CONNECT_PACKAGE: ${{ github.workspace }}/.build/pages/fhir/health-connect/ci-build/package.tgz
+          GROVE_CONFORMANCE_EXPORT: ${{ github.workspace }}/.build/android-export
+        run: >-
+          env GRADLE_USER_HOME="$HOME/.gradle"
+          JAVA_TOOL_OPTIONS="-Duser.home=$RUNNER_TEMP/grove-fhir-validator-home"
+          python3 Scripts/validate-integration-proposals.py
+          --platform linux
+          --test-group android-emitted-resource-conformance
+          --proposal my-heart-counts-android-health-connect
+      - name: Stage the exact flat Android evidence sets
+        run: |
+          cp -R .build/android-export/conformance-fixtures .build/android-conformance
+          cp -R .build/android-export/wire-fixtures .build/android-wire
+      - name: Attest the exact Android export command and resource bytes
+        run: >-
+          python3 Scripts/write-evidence-attestation.py
+          --artifact my-heart-counts-android-conformance
+          --implementation my-heart-counts-android
+          --proposal my-heart-counts-android-health-connect
+          --test-group android-emitted-resource-conformance
+          --input heart-rate-bundle=.build/android-conformance/health-connect-heart-rate-bundle.json
+          --input heart-rate-observation-1=.build/android-conformance/health-connect-heart-rate-observation-1.json
+          --input heart-rate-observation-2=.build/android-conformance/health-connect-heart-rate-observation-2.json
+          --input heart-rate-provenance=.build/android-conformance/health-connect-heart-rate-provenance.json
+          --input heart-rate-update-bundle=.build/android-conformance/health-connect-heart-rate-update-bundle.json
+          --input step-deletion-bundle=.build/android-conformance/health-connect-step-deletion-bundle.json
+          --input steps-bundle=.build/android-conformance/health-connect-steps-bundle.json
+          --input steps-observation-1=.build/android-conformance/health-connect-steps-observation-1.json
+          --input steps-provenance=.build/android-conformance/health-connect-steps-provenance.json
+          --input weight-bundle=.build/android-conformance/health-connect-weight-bundle.json
+          --input weight-observation-1=.build/android-conformance/health-connect-weight-observation-1.json
+          --input weight-provenance=.build/android-conformance/health-connect-weight-provenance.json
+          --output .build/android-conformance/android-emitted-resource-attestation.json
+      - name: Test the exact Firebase receiver proposal
+        env:
+          CI: "true"
+          FIREBASE_CLI_DISABLE_UPDATE_CHECK: "true"
+        run: >-
+          python3 Scripts/validate-integration-proposals.py
+          --platform linux
+          --test-group firebase-contract
+          --proposal my-heart-counts-firebase-fhir-receiver
+      - name: Attest the Firebase test command and frozen Android inputs
+        run: >-
+          python3 Scripts/write-evidence-attestation.py
+          --artifact firebase-lifecycle-result
+          --implementation my-heart-counts-firebase
+          --proposal my-heart-counts-firebase-fhir-receiver
+          --test-group firebase-contract
+          --input heart-rate-upsert=.build/android-wire/health-connect-heart-rate-upsert-bundle.json
+          --input heart-rate-update=.build/android-wire/health-connect-heart-rate-update-bundle.json
+          --input heart-rate-zero-output=.build/android-wire/health-connect-heart-rate-zero-output-upsert-bundle.json
+          --input step-deletion=.build/android-wire/health-connect-step-deletion-bundle.json
+          --output .build/firebase-lifecycle-result.json
+      - name: Upload Linux implementation evidence fragments
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-evidence-fragments
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 14
+          path: |
+            .build/android-conformance
+            .build/android-wire
+            .build/firebase-lifecycle-result.json
 
   vocabulary-is-current:
     name: Platform Vocabulary Matches Grove
+    needs: changes
+    if: >-
+      needs.changes.outputs.grove_questionnaire == 'true' ||
+      needs.changes.outputs.grove_mobile == 'true' ||
+      needs.changes.outputs.evidence_common == 'true'
     runs-on: macos-latest
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@v7
         with:
+          ref: ${{ env.EVIDENCE_HEAD_SHA }}
           path: grove-fhir
-          submodules: true
           fetch-depth: 1
           persist-credentials: false
+      - name: Initialize only the Grove contract sources
+        working-directory: grove-fhir
+        run: >-
+          git submodule update --init --depth 1 --
+          Integration/Sources/GroveQuestionnaire
+          Integration/Sources/GroveHealthKit
       - uses: actions/setup-python@v6
         with:
-          python-version: "3.13"
-      - name: Fetch the immutable Grove proposal target
-        working-directory: grove-fhir
-        run: python3 Scripts/check-integration-sources.py --fetch-targets
+          python-version: "3.13.15"
       - name: Test the exact Grove Questionnaire and Mobile contract proposals
         working-directory: grove-fhir
         run: >-
@@ -199,79 +350,400 @@ jobs:
           --platform macos
           --test-group macos-contract
           --proposal grove-mobile-contract
-
   emitted-resource-conformance:
     name: Grove Output Conforms to the Guides
+    needs: [changes, guides]
+    if: needs.changes.outputs.any_active == 'true'
     runs-on: macos-latest
-    timeout-minutes: 75
+    timeout-minutes: 120
     steps:
       - uses: actions/checkout@v7
         with:
+          ref: ${{ env.EVIDENCE_HEAD_SHA }}
           path: grove-fhir
-          submodules: true
           fetch-depth: 1
           persist-credentials: false
+      - name: Initialize only the macOS evidence sources
+        working-directory: grove-fhir
+        run: >-
+          git submodule update --init --depth 1 --
+          Integration/Sources/GroveQuestionnaire
+          Integration/Sources/GroveHealthKit
+          Integration/Sources/GroveLegacy021
+          Integration/Sources/MyHeartCountsIOS
       - uses: actions/setup-python@v6
         with:
-          python-version: "3.13"
+          python-version: "3.13.15"
       - uses: actions/setup-node@v6
         with:
-          node-version: 22
-          cache: npm
-          cache-dependency-path: grove-fhir/package-lock.json
+          node-version: "22.22.0"
+      - run: npm ci
+        working-directory: grove-fhir
       - uses: actions/setup-java@v5
         with:
           distribution: temurin
-          java-version: 21
-      - uses: ruby/setup-ruby@v1
+          java-version: "21.0.10+7.0.LTS"
+      - uses: actions/download-artifact@v5
         with:
-          ruby-version: "3.3"
-          bundler-cache: false
-      - uses: actions/cache@v5
-        with:
-          path: |
-            ~/.fhir
-            grove-fhir/.build/fhir-tools
-            grove-fhir/.build/bundle
-            grove-fhir/mobile/input-cache
-            grove-fhir/healthkit/input-cache
-            grove-fhir/questionnaire/input-cache
-          key: >-
-            fhir-guides-${{ runner.os }}-${{
-              hashFiles(
-                'grove-fhir/Gemfile.lock',
-                'grove-fhir/package-lock.json',
-                'grove-fhir/Scripts/download-fhir-tools.sh'
-              )
-            }}
-          restore-keys: |
-            fhir-guides-${{ runner.os }}-
-      - name: Fetch the immutable Grove proposal target
-        working-directory: grove-fhir
-        run: python3 Scripts/check-integration-sources.py --fetch-targets
-      - name: Build the exact Mobile, HealthKit, and Questionnaire packages
+          name: implementation-guides
+          path: grove-fhir/.build
+      - name: Seed the exact offline FHIR package cache
         working-directory: grove-fhir
         run: |
-          npm ci
-          ./Scripts/build-guides.sh mobile healthkit questionnaire
-      - name: Validate deterministic resources from the exact Grove proposals
+          validator_home="$RUNNER_TEMP/grove-fhir-validator-home"
+          test ! -e "$validator_home"
+          test ! -L "$validator_home"
+          mkdir "$validator_home"
+          HOME="$validator_home" ./Scripts/download-fhir-tools.sh --offline .build/fhir-tools
+      - name: Validate and export exact current Grove Questionnaire resources
         working-directory: grove-fhir
         env:
           FHIR_VALIDATOR: ${{ github.workspace }}/grove-fhir/.build/fhir-tools/validator_cli.jar
-          GROVE_IG_MOBILE: ${{ github.workspace }}/grove-fhir/mobile/output/package.tgz
-          GROVE_IG_HEALTHKIT: ${{ github.workspace }}/grove-fhir/healthkit/output/package.tgz
-          GROVE_IG_QUESTIONNAIRE: ${{ github.workspace }}/grove-fhir/questionnaire/output/package.tgz
-          GROVE_CONFORMANCE_EXPORT: ${{ github.workspace }}/grove-fhir/.build/grove-conformance-fixtures
+          GROVE_IG_QUESTIONNAIRE: ${{ github.workspace }}/grove-fhir/.build/pages/fhir/questionnaire/ci-build/package.tgz
+          GROVE_CONFORMANCE_EXPORT: ${{ runner.temp }}/grove-questionnaire-resources
         run: >-
+          env JAVA_TOOL_OPTIONS="-Duser.home=$RUNNER_TEMP/grove-fhir-validator-home"
+          python3 Scripts/validate-integration-proposals.py
+          --platform macos
+          --test-group emitted-resource-conformance
+          --proposal grove-questionnaire-contract
+      - name: Validate and export exact current Grove resources
+        working-directory: grove-fhir
+        env:
+          FHIR_VALIDATOR: ${{ github.workspace }}/grove-fhir/.build/fhir-tools/validator_cli.jar
+          GROVE_IG_MOBILE: ${{ github.workspace }}/grove-fhir/.build/pages/fhir/mobile/ci-build/package.tgz
+          GROVE_IG_HEALTHKIT: ${{ github.workspace }}/grove-fhir/.build/pages/fhir/healthkit/ci-build/package.tgz
+          GROVE_IG_QUESTIONNAIRE: ${{ github.workspace }}/grove-fhir/.build/pages/fhir/questionnaire/ci-build/package.tgz
+          GROVE_CONFORMANCE_EXPORT: ${{ runner.temp }}/grove-current-resources
+        run: >-
+          env JAVA_TOOL_OPTIONS="-Duser.home=$RUNNER_TEMP/grove-fhir-validator-home"
           python3 Scripts/validate-integration-proposals.py
           --platform macos
           --test-group emitted-resource-conformance
           --proposal grove-mobile-contract
-      - name: Upload emitted fixtures and validation report
-        if: always()
+      - name: Export the exact historical Grove 0.2.1 HealthKit sample
+        working-directory: grove-fhir
+        env:
+          GROVE_COMPATIBILITY_EXPORT: ${{ runner.temp }}/grove-0.2.1-healthkit-sample.json
+        run: >-
+          python3 Scripts/validate-integration-proposals.py
+          --platform macos
+          --test-group legacy-writer-evidence
+          --proposal grove-legacy-021-healthkit-writer-fixture
+      - name: Test the current reader against those exact historical bytes
+        working-directory: grove-fhir
+        env:
+          GROVE_COMPATIBILITY_EXPORT: ${{ runner.temp }}/grove-0.2.1-healthkit-sample.json
+        run: >-
+          python3 Scripts/validate-integration-proposals.py
+          --platform macos
+          --test-group current-reader-evidence
+          --proposal grove-current-legacy-healthkit-reader
+      - name: Attest the exact current-reader test and input
+        working-directory: grove-fhir
+        run: >-
+          python3 Scripts/write-evidence-attestation.py
+          --artifact grove-current-reader-result
+          --implementation grove-current-legacy-reader
+          --proposal grove-current-legacy-healthkit-reader
+          --test-group current-reader-evidence
+          --input grove-legacy-healthkit-sample=${{ runner.temp }}/grove-0.2.1-healthkit-sample.json
+          --output ${{ runner.temp }}/grove-current-reader-result.json
+      - name: Test and export the exact current MHC iOS writer candidate
+        working-directory: grove-fhir
+        env:
+          MHC_COMPATIBILITY_EXPORT: ${{ runner.temp }}/mhc-ios-e7ae-compatibility
+        run: >-
+          python3 Scripts/validate-integration-proposals.py
+          --platform macos
+          --test-group mhc-ios-writer-evidence
+          --proposal my-heart-counts-ios-study-enrollment-writer-fixture
+      - name: Stage the exact macOS evidence fragment
+        working-directory: grove-fhir
+        run: |
+          mkdir -p .build/mac-evidence/grove-questionnaire-resources
+          mkdir -p .build/mac-evidence/grove-current-resources
+          cp "${{ runner.temp }}/grove-questionnaire-resources/questionnaire.json" .build/mac-evidence/grove-questionnaire-resources/questionnaire.json
+          cp "${{ runner.temp }}/grove-questionnaire-resources/questionnaire-response.json" .build/mac-evidence/grove-questionnaire-resources/questionnaire-response.json
+          cp "${{ runner.temp }}/grove-current-resources/body-weight.json" .build/mac-evidence/grove-current-resources/body-weight.json
+          cp "${{ runner.temp }}/grove-current-resources/body-weight-provenance.json" .build/mac-evidence/grove-current-resources/body-weight-provenance.json
+          cp "${{ runner.temp }}/grove-current-resources/heart-rate.json" .build/mac-evidence/grove-current-resources/heart-rate.json
+          cp "${{ runner.temp }}/grove-current-resources/heart-rate-provenance.json" .build/mac-evidence/grove-current-resources/heart-rate-provenance.json
+          cp "${{ runner.temp }}/grove-current-resources/step-count.json" .build/mac-evidence/grove-current-resources/step-count.json
+          cp "${{ runner.temp }}/grove-current-resources/step-count-provenance.json" .build/mac-evidence/grove-current-resources/step-count-provenance.json
+          cp "${{ runner.temp }}/grove-0.2.1-healthkit-sample.json" .build/mac-evidence/grove-0.2.1-healthkit-sample.json
+          cp "${{ runner.temp }}/grove-current-reader-result.json" .build/mac-evidence/grove-current-reader-result.json
+          cp "${{ runner.temp }}/mhc-ios-e7ae-compatibility/my-heart-counts-ios-e7ae-study-enrollment.json" .build/mac-evidence/my-heart-counts-ios-e7ae-study-enrollment.json
+      - name: Attest the exact Questionnaire export command and resource bytes
+        working-directory: grove-fhir
+        run: >-
+          python3 Scripts/write-evidence-attestation.py
+          --artifact grove-questionnaire-resources
+          --implementation grove-questionnaire
+          --proposal grove-questionnaire-contract
+          --test-group emitted-resource-conformance
+          --input questionnaire-response=.build/mac-evidence/grove-questionnaire-resources/questionnaire-response.json
+          --input questionnaire=.build/mac-evidence/grove-questionnaire-resources/questionnaire.json
+          --output .build/mac-evidence/grove-questionnaire-resources/questionnaire-emitted-resource-attestation.json
+      - name: Attest the exact Mobile export command and resource bytes
+        working-directory: grove-fhir
+        run: >-
+          python3 Scripts/write-evidence-attestation.py
+          --artifact grove-current-resources
+          --implementation grove-healthkit
+          --proposal grove-mobile-contract
+          --test-group emitted-resource-conformance
+          --input body-weight-provenance=.build/mac-evidence/grove-current-resources/body-weight-provenance.json
+          --input body-weight=.build/mac-evidence/grove-current-resources/body-weight.json
+          --input heart-rate-provenance=.build/mac-evidence/grove-current-resources/heart-rate-provenance.json
+          --input heart-rate=.build/mac-evidence/grove-current-resources/heart-rate.json
+          --input step-count-provenance=.build/mac-evidence/grove-current-resources/step-count-provenance.json
+          --input step-count=.build/mac-evidence/grove-current-resources/step-count.json
+          --output .build/mac-evidence/grove-current-resources/mobile-emitted-resource-attestation.json
+      - name: Upload macOS implementation evidence fragments
         uses: actions/upload-artifact@v4
         with:
-          name: grove-conformance-fixtures
+          name: mac-evidence-fragments
+          include-hidden-files: true
           if-no-files-found: error
           retention-days: 14
-          path: grove-fhir/.build/grove-conformance-fixtures
+          path: grove-fhir/.build/mac-evidence
+
+  conformance-evidence:
+    name: Assemble Conformance Evidence
+    needs: [changes, guides, integration-proposals, emitted-resource-conformance]
+    if: needs.changes.outputs.any_active == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ env.EVIDENCE_HEAD_SHA }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Fetch the exact semantic base commit
+        env:
+          SEMANTIC_BASE: ${{ needs.changes.outputs.base }}
+        run: |
+          if [[ "$SEMANTIC_BASE" != "0000000000000000000000000000000000000000" ]] && ! git cat-file -e "$SEMANTIC_BASE^{commit}"; then
+            git fetch --no-tags --depth=1 origin "$SEMANTIC_BASE"
+          fi
+      - name: Initialize only MHC iOS for nested and SwiftPM provenance
+        run: git submodule update --init --depth 1 -- Integration/Sources/MyHeartCountsIOS
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13.15"
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22.22.0"
+          cache: npm
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21.0.10+7.0.LTS"
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3.12"
+          bundler-cache: false
+      - name: Select the exact Bundler
+        run: gem install bundler -v 4.0.16 --no-document
+      - run: npm ci
+      - uses: actions/download-artifact@v5
+        with:
+          name: implementation-guides
+          path: .build
+      - uses: actions/download-artifact@v5
+        with:
+          name: linux-evidence-fragments
+          path: .build/fragments/linux
+      - uses: actions/download-artifact@v5
+        with:
+          name: mac-evidence-fragments
+          path: .build/fragments/mac
+      - name: Validate all declarative JSON Schemas
+        run: npm run schema:validate
+      - name: Validate the accepted study graph
+        run: python3 Scripts/validate-study-graph.py
+      - name: Validate exact receiver lifecycle evidence
+        run: >-
+          node Scripts/validate-receiver-evidence.cjs
+          --external-evidence my-heart-counts-android-wire=.build/fragments/linux/android-wire
+          --require-external-evidence
+      - name: Validate exact cross-platform heart-rate equivalence
+        run: >-
+          python3 Scripts/validate-heart-rate-equivalence.py
+          --external-evidence grove-current-resources=.build/fragments/mac/grove-current-resources
+          --external-evidence my-heart-counts-android-conformance=.build/fragments/linux/android-conformance
+          --require-implementation-fixtures
+      - name: Validate domain corpora, live FSH coverage, and every external FHIR resource
+        run: |
+          mkdir -p .build/conformance
+          python3 Scripts/validate-domain-fhir.py \
+            --evidence Conformance/evidence.json \
+            --toolchain Conformance/toolchain.json \
+            --tools-directory .build/fhir-tools \
+            --require-external-evidence \
+            --external-evidence grove-questionnaire-resources=.build/fragments/mac/grove-questionnaire-resources \
+            --external-evidence grove-current-resources=.build/fragments/mac/grove-current-resources \
+            --external-evidence my-heart-counts-android-conformance=.build/fragments/linux/android-conformance \
+            --external-evidence my-heart-counts-android-wire=.build/fragments/linux/android-wire \
+            --external-evidence firebase-lifecycle-result=.build/fragments/linux/firebase-lifecycle-result.json \
+            --external-evidence grove-legacy-healthkit-sample=.build/fragments/mac/grove-0.2.1-healthkit-sample.json \
+            --external-evidence grove-current-reader-result=.build/fragments/mac/grove-current-reader-result.json \
+            --external-evidence mhc-ios-study-enrollment=.build/fragments/mac/my-heart-counts-ios-e7ae-study-enrollment.json \
+            --report .build/conformance/domain-fhir-validation.json
+      - name: Build and verify deterministic evidence from exact artifacts
+        run: >-
+          python3 Scripts/build-conformance-evidence.py build
+          --semantic-base "${{ needs.changes.outputs.base }}"
+          --external-evidence grove-questionnaire-resources=.build/fragments/mac/grove-questionnaire-resources
+          --external-evidence grove-current-resources=.build/fragments/mac/grove-current-resources
+          --external-evidence my-heart-counts-android-conformance=.build/fragments/linux/android-conformance
+          --external-evidence my-heart-counts-android-wire=.build/fragments/linux/android-wire
+          --external-evidence firebase-lifecycle-result=.build/fragments/linux/firebase-lifecycle-result.json
+          --external-evidence grove-legacy-healthkit-sample=.build/fragments/mac/grove-0.2.1-healthkit-sample.json
+          --external-evidence grove-current-reader-result=.build/fragments/mac/grove-current-reader-result.json
+          --external-evidence mhc-ios-study-enrollment=.build/fragments/mac/my-heart-counts-ios-e7ae-study-enrollment.json
+          --validation-report domain-fhir-validation=.build/conformance/domain-fhir-validation.json
+      - name: Inject evidence into the exact guide site without rebuilding
+        run: python3 Scripts/build-conformance-evidence.py inject-pages
+      - name: Replay the locked official domain validation
+        run: |
+          python3 Scripts/validate-domain-fhir.py \
+            --evidence Conformance/evidence.json \
+            --toolchain Conformance/toolchain.json \
+            --tools-directory .build/fhir-tools \
+            --evidence-lock .build/conformance-evidence/evidence-lock.json \
+            --require-evidence-lock \
+            --require-external-evidence \
+            --external-evidence grove-questionnaire-resources=.build/fragments/mac/grove-questionnaire-resources \
+            --external-evidence grove-current-resources=.build/fragments/mac/grove-current-resources \
+            --external-evidence my-heart-counts-android-conformance=.build/fragments/linux/android-conformance \
+            --external-evidence my-heart-counts-android-wire=.build/fragments/linux/android-wire \
+            --external-evidence firebase-lifecycle-result=.build/fragments/linux/firebase-lifecycle-result.json \
+            --external-evidence grove-legacy-healthkit-sample=.build/fragments/mac/grove-0.2.1-healthkit-sample.json \
+            --external-evidence grove-current-reader-result=.build/fragments/mac/grove-current-reader-result.json \
+            --external-evidence mhc-ios-study-enrollment=.build/fragments/mac/my-heart-counts-ios-e7ae-study-enrollment.json \
+            --report .build/conformance/domain-fhir-validation-replay.json
+          cmp .build/conformance/domain-fhir-validation.json .build/conformance/domain-fhir-validation-replay.json
+      - name: Re-verify the complete evidence and publication bytes
+        run: |
+          python3 Scripts/check-evidence-lock.py full --expected-revision "$EVIDENCE_HEAD_SHA"
+          python3 Scripts/check-evidence-lock.py site --site .build/pages --expected-revision "$EVIDENCE_HEAD_SHA"
+      - name: Upload the exact standalone conformance evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: conformance-evidence
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 14
+          path: |
+            .build/conformance-evidence
+            .build/corpus.tgz
+            .build/corpus.tgz.sha256
+      - name: Upload the evidence-bearing candidate site
+        uses: actions/upload-artifact@v4
+        with:
+          name: pages-site-candidate
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 14
+          path: .build/pages
+
+  conformance-gates:
+    name: Conformance Gate Aggregate
+    needs:
+      - changes
+      - tooling
+      - integration-sources
+      - guides
+      - integration-proposals
+      - vocabulary-is-current
+      - emitted-resource-conformance
+      - conformance-evidence
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Prove every success or skip is authorized by the exact path matrix
+        env:
+          ACTIVE: ${{ needs.changes.outputs.any_active }}
+          VOCABULARY_REQUIRED: ${{ needs.changes.outputs.grove_questionnaire == 'true' || needs.changes.outputs.grove_mobile == 'true' || needs.changes.outputs.evidence_common == 'true' }}
+          CHANGES_RESULT: ${{ needs.changes.result }}
+          TOOLING_RESULT: ${{ needs.tooling.result }}
+          SOURCES_RESULT: ${{ needs.integration-sources.result }}
+          GUIDES_RESULT: ${{ needs.guides.result }}
+          LINUX_RESULT: ${{ needs.integration-proposals.result }}
+          VOCABULARY_RESULT: ${{ needs.vocabulary-is-current.result }}
+          MAC_RESULT: ${{ needs.emitted-resource-conformance.result }}
+          EVIDENCE_RESULT: ${{ needs.conformance-evidence.result }}
+        run: |
+          test "$CHANGES_RESULT" = success
+          test "$TOOLING_RESULT" = success
+          test "$SOURCES_RESULT" = success
+          if [[ "$ACTIVE" = true ]]; then
+            test "$GUIDES_RESULT" = success
+            test "$LINUX_RESULT" = success
+            test "$MAC_RESULT" = success
+            test "$EVIDENCE_RESULT" = success
+          else
+            test "$GUIDES_RESULT" = skipped
+            test "$LINUX_RESULT" = skipped
+            test "$MAC_RESULT" = skipped
+            test "$EVIDENCE_RESULT" = skipped
+          fi
+          if [[ "$VOCABULARY_REQUIRED" = true ]]; then
+            test "$VOCABULARY_RESULT" = success
+          else
+            test "$VOCABULARY_RESULT" = skipped
+          fi
+
+  build-pages:
+    name: Build GitHub Pages
+    needs: [changes, conformance-evidence, conformance-gates]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Require a successful path matrix and aggregate
+        if: needs.changes.result != 'success' || needs.conformance-gates.result != 'success'
+        run: |
+          echo "The exact change matrix or conformance gate aggregate failed." >&2
+          exit 1
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ env.EVIDENCE_HEAD_SHA }}
+          fetch-depth: 1
+          persist-credentials: false
+      - uses: actions/setup-python@v6
+        if: needs.changes.outputs.any_active == 'true'
+        with:
+          python-version: "3.13.15"
+      - name: Require the evidence assembler for active changes
+        if: needs.changes.outputs.any_active == 'true' && needs.conformance-evidence.result != 'success'
+        run: |
+          echo "The conformance evidence assembler did not succeed." >&2
+          exit 1
+      - uses: actions/download-artifact@v5
+        if: needs.changes.outputs.any_active == 'true'
+        with:
+          name: pages-site-candidate
+          path: .build/pages
+      - name: Verify the exact candidate artifact
+        if: needs.changes.outputs.any_active == 'true'
+        run: >-
+          python3 Scripts/check-evidence-lock.py site
+          --site .build/pages
+          --expected-revision "$EVIDENCE_HEAD_SHA"
+      - name: Forward the exact verified Pages artifact
+        if: needs.changes.outputs.any_active == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: pages-site
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 14
+          path: .build/pages
+      - name: Report a truthful no-publication result
+        if: needs.changes.outputs.any_active != 'true'
+        run: |
+          echo "No active #8 conformance or publication path changed; no Pages artifact was produced."

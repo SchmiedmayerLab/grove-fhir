@@ -49,14 +49,17 @@ class IntegrationProposalValidationTests(unittest.TestCase):
         )
         return result.stdout.strip()
 
-    def make_source(self, root: Path) -> tuple[Path, str, str]:
-        source = root / "Integration/Sources/Example"
-        source.mkdir(parents=True)
-        self.git(source, "init", "--quiet", "--initial-branch=main", "--template=")
-        (source / "value.txt").write_text("before\n", encoding="utf-8")
-        self.git(source, "add", "value.txt")
+    def make_sources(self, root: Path) -> tuple[Path, Path, str, str]:
+        self.git(root, "init", "--quiet", "--initial-branch=main", "--template=")
+        upstream = root / "upstream"
+        upstream.mkdir()
         self.git(
-            source,
+            upstream, "init", "--quiet", "--initial-branch=main", "--template="
+        )
+        (upstream / "value.txt").write_text("before\n", encoding="utf-8")
+        self.git(upstream, "add", "value.txt")
+        self.git(
+            upstream,
             "-c",
             "commit.gpgsign=false",
             "commit",
@@ -64,11 +67,11 @@ class IntegrationProposalValidationTests(unittest.TestCase):
             "-m",
             "Initial fixture",
         )
-        first = self.git(source, "rev-parse", "HEAD")
-        (source / "second.txt").write_text("second base\n", encoding="utf-8")
-        self.git(source, "add", "second.txt")
+        first = self.git(upstream, "rev-parse", "HEAD")
+        (upstream / "second.txt").write_text("second base\n", encoding="utf-8")
+        self.git(upstream, "add", "second.txt")
         self.git(
-            source,
+            upstream,
             "-c",
             "commit.gpgsign=false",
             "commit",
@@ -76,8 +79,39 @@ class IntegrationProposalValidationTests(unittest.TestCase):
             "-m",
             "Second fixture",
         )
-        second = self.git(source, "rev-parse", "HEAD")
-        return source, first, second
+        second = self.git(upstream, "rev-parse", "HEAD")
+
+        sources = root / "Integration/Sources"
+        sources.mkdir(parents=True)
+        first_source = sources / "ExampleFirst"
+        second_source = sources / "ExampleSecond"
+        self.git(root, "clone", "--quiet", str(upstream), str(first_source))
+        self.git(root, "clone", "--quiet", str(upstream), str(second_source))
+        self.git(first_source, "checkout", "--quiet", "--detach", first)
+        self.git(second_source, "checkout", "--quiet", "--detach", second)
+        for source in (first_source, second_source):
+            self.git(
+                source,
+                "remote",
+                "set-url",
+                "origin",
+                "https://github.com/SchmiedmayerLab/example.git",
+            )
+        self.git(
+            root,
+            "update-index",
+            "--add",
+            "--cacheinfo",
+            f"160000,{first},Integration/Sources/ExampleFirst",
+        )
+        self.git(
+            root,
+            "update-index",
+            "--add",
+            "--cacheinfo",
+            f"160000,{second},Integration/Sources/ExampleSecond",
+        )
+        return first_source, second_source, first, second
 
     @staticmethod
     def patch_contents(before: str, after: str) -> bytes:
@@ -94,7 +128,7 @@ class IntegrationProposalValidationTests(unittest.TestCase):
     def proposal(
         identifier: str,
         *,
-        target: str,
+        source: str,
         contents: bytes,
         depends_on: list[str] | None = None,
         applies_after: list[str] | None = None,
@@ -102,8 +136,7 @@ class IntegrationProposalValidationTests(unittest.TestCase):
     ) -> dict[str, object]:
         proposal: dict[str, object] = {
             "id": identifier,
-            "source": "example",
-            "target": target,
+            "source": source,
             "patch": f"Integration/Patches/{identifier}.patch",
             "sha256": hashlib.sha256(contents).hexdigest(),
             "dependsOn": depends_on or [],
@@ -121,26 +154,21 @@ class IntegrationProposalValidationTests(unittest.TestCase):
         proposals: list[dict[str, object]],
     ) -> dict[str, object]:
         return {
-            "schemaVersion": 2,
+            "schemaVersion": 3,
             "sources": [
                 {
-                    "id": "example",
+                    "id": "example-first",
                     "repository": "https://github.com/SchmiedmayerLab/example.git",
-                    "path": "Integration/Sources/Example",
-                    "gitlink": second,
-                    "targets": [
-                        {
-                            "id": "first",
-                            "ref": "refs/heads/main",
-                            "commit": first,
-                        },
-                        {
-                            "id": "second",
-                            "ref": "refs/pull/2/head",
-                            "commit": second,
-                            "predecessor": "first",
-                        },
-                    ],
+                    "path": "Integration/Sources/ExampleFirst",
+                    "commit": first,
+                    "purpose": "First exact proposal base.",
+                },
+                {
+                    "id": "example-second",
+                    "repository": "https://github.com/SchmiedmayerLab/example.git",
+                    "path": "Integration/Sources/ExampleSecond",
+                    "commit": second,
+                    "purpose": "Second exact proposal base.",
                 }
             ],
             "proposals": proposals,
@@ -157,7 +185,7 @@ class IntegrationProposalValidationTests(unittest.TestCase):
     def test_validates_an_explicit_patch_stack_on_different_exact_bases(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            source, first, second = self.make_source(root)
+            first_source, second_source, first, second = self.make_sources(root)
             parent_patch = self.patch_contents("before", "middle")
             child_patch = self.patch_contents("middle", "after")
             test = {
@@ -172,11 +200,11 @@ class IntegrationProposalValidationTests(unittest.TestCase):
                 ],
             }
             parent = self.proposal(
-                "parent", target="first", contents=parent_patch
+                "parent", source="example-first", contents=parent_patch
             )
             child = self.proposal(
                 "child",
-                target="second",
+                source="example-second",
                 contents=child_patch,
                 depends_on=["parent"],
                 applies_after=["parent"],
@@ -185,15 +213,21 @@ class IntegrationProposalValidationTests(unittest.TestCase):
             self.write_patches(
                 root, [("parent", parent_patch), ("child", child_patch)]
             )
-            before = self.git(source, "status", "--porcelain=v1")
+            before = {
+                source: VALIDATE.source_state(source, environment=os.environ.copy())
+                for source in (first_source, second_source)
+            }
             VALIDATE.validate_proposals(
                 root,
                 self.manifest(first, second, [child, parent]),
                 platform="linux",
                 test_group="portable",
             )
-            self.assertEqual(self.git(source, "rev-parse", "HEAD"), second)
-            self.assertEqual(self.git(source, "status", "--porcelain=v1"), before)
+            after = {
+                source: VALIDATE.source_state(source, environment=os.environ.copy())
+                for source in (first_source, second_source)
+            }
+            self.assertEqual(after, before)
 
     def test_orders_cross_source_dependencies_without_applying_them(self) -> None:
         manifest = {
@@ -213,10 +247,10 @@ class IntegrationProposalValidationTests(unittest.TestCase):
     def test_an_omitted_test_list_executes_no_inferred_command(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            _, first, second = self.make_source(root)
+            _, _, first, second = self.make_sources(root)
             contents = self.patch_contents("before", "after")
             proposal = self.proposal(
-                "proposal", target="second", contents=contents
+                "proposal", source="example-second", contents=contents
             )
             self.write_patches(root, [("proposal", contents)])
             with patch.object(VALIDATE, "run_declared_tests") as run_tests:
@@ -232,10 +266,10 @@ class IntegrationProposalValidationTests(unittest.TestCase):
     def test_a_patch_failure_still_leaves_the_source_unchanged(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            source, first, second = self.make_source(root)
+            _, source, first, second = self.make_sources(root)
             contents = self.patch_contents("not-the-base", "after")
             proposal = self.proposal(
-                "proposal", target="second", contents=contents
+                "proposal", source="example-second", contents=contents
             )
             self.write_patches(root, [("proposal", contents)])
             before_head = self.git(source, "rev-parse", "HEAD")
@@ -253,6 +287,81 @@ class IntegrationProposalValidationTests(unittest.TestCase):
             self.assertEqual(
                 self.git(source, "status", "--porcelain=v1"), before_status
             )
+
+    def test_rejects_a_genuine_change_in_an_exact_source_checkout(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source, _, first, second = self.make_sources(root)
+            contents = self.patch_contents("before", "after")
+            proposal = self.proposal(
+                "proposal", source="example-first", contents=contents
+            )
+            self.write_patches(root, [("proposal", contents)])
+            (source / "value.txt").write_text("changed\n", encoding="utf-8")
+
+            with self.assertRaisesRegex(
+                VALIDATE.ProposalValidationError,
+                "example-first integration source contains local changes",
+            ):
+                VALIDATE.validate_proposals(
+                    root,
+                    self.manifest(first, second, [proposal]),
+                    platform="linux",
+                    test_group="portable",
+                    proposal_ids=["proposal"],
+                )
+
+    def test_selected_proposal_does_not_require_an_unrelated_checkout(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            _, unrelated, first, second = self.make_sources(root)
+            contents = self.patch_contents("before", "after")
+            proposal = self.proposal(
+                "proposal",
+                source="example-first",
+                contents=contents,
+                tests=[
+                    {
+                        "group": "portable",
+                        "platforms": ["linux", "macos"],
+                        "cwd": ".",
+                        "argv": ["git", "diff", "--check"],
+                    }
+                ],
+            )
+            self.write_patches(root, [("proposal", contents)])
+            unrelated.rename(root / "uninitialized-unrelated-source")
+
+            VALIDATE.validate_proposals(
+                root,
+                self.manifest(first, second, [proposal]),
+                platform="linux",
+                test_group="portable",
+                proposal_ids=["proposal"],
+            )
+
+    def test_selected_proposal_rejects_a_missing_required_checkout(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            required, _, first, second = self.make_sources(root)
+            contents = self.patch_contents("before", "after")
+            proposal = self.proposal(
+                "proposal", source="example-first", contents=contents
+            )
+            self.write_patches(root, [("proposal", contents)])
+            required.rename(root / "uninitialized-required-source")
+
+            with self.assertRaisesRegex(
+                VALIDATE.ProposalValidationError,
+                "missing source: Integration/Sources/ExampleFirst",
+            ):
+                VALIDATE.validate_proposals(
+                    root,
+                    self.manifest(first, second, [proposal]),
+                    platform="linux",
+                    test_group="portable",
+                    proposal_ids=["proposal"],
+                )
 
     def test_rejects_a_symlinked_patch_and_test_working_directory(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -292,6 +401,30 @@ class IntegrationProposalValidationTests(unittest.TestCase):
                 )
         self.assertEqual(invoked.call_args.args[0], ["tool", "literal argument"])
         self.assertNotIn("shell", invoked.call_args.kwargs)
+
+    def test_disposable_environment_rejects_java_option_overrides(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            home = Path(directory) / "home"
+            with patch.dict(
+                os.environ,
+                {
+                    "JAVA_TOOL_OPTIONS": "-Duser.home=/exact-private-cache",
+                    "JDK_JAVA_OPTIONS": "-Duser.home=/override-one",
+                    "_JAVA_OPTIONS": "-Duser.home=/override-two",
+                    "GRADLE_USER_HOME": "/exact-gradle-cache",
+                },
+            ):
+                environment = VALIDATE.command_environment(home)
+
+            self.assertEqual(
+                environment["JAVA_TOOL_OPTIONS"],
+                "-Duser.home=/exact-private-cache",
+            )
+            self.assertNotIn("JDK_JAVA_OPTIONS", environment)
+            self.assertNotIn("_JAVA_OPTIONS", environment)
+            self.assertEqual(
+                environment["GRADLE_USER_HOME"], "/exact-gradle-cache"
+            )
 
     def test_runs_only_the_explicit_group_on_its_declared_platform(self) -> None:
         tests = [

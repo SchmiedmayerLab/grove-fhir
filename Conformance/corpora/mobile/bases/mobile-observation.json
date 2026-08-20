@@ -1,0 +1,119 @@
+{
+  "resourceType": "Observation",
+  "id": "mobile-observation",
+  "meta": {
+    "profile": [
+      "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-observation"
+    ]
+  },
+  "contained": [
+    {
+      "resourceType": "Patient",
+      "id": "participant",
+      "identifier": [
+        {
+          "system": "https://study.example.org/fhir/identifiers/participant",
+          "value": "participant-001"
+        }
+      ]
+    },
+    {
+      "resourceType": "Device",
+      "id": "application",
+      "meta": {
+        "profile": [
+          "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-application-device"
+        ]
+      },
+      "identifier": [
+        {
+          "system": "https://study.example.org/fhir/identifiers/application",
+          "value": "org.example.mobile-study"
+        }
+      ],
+      "status": "active",
+      "deviceName": [
+        {
+          "name": "Mobile Study",
+          "type": "user-friendly-name"
+        }
+      ]
+    },
+    {
+      "resourceType": "ResearchStudy",
+      "id": "study",
+      "title": "Example Study",
+      "status": "active"
+    }
+  ],
+  "extension": [
+    {
+      "url": "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-recording-method",
+      "valueCoding": {
+        "system": "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/CodeSystem/grove-recording-method",
+        "code": "automatically-recorded"
+      }
+    },
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/observation-gatewayDevice",
+      "valueReference": {
+        "reference": "#application"
+      }
+    },
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/workflow-researchStudy",
+      "valueReference": {
+        "reference": "#study"
+      }
+    }
+  ],
+  "identifier": [
+    {
+      "system": "https://study.example.org/fhir/identifiers/mobile-observation",
+      "value": "heart-rate-001"
+    }
+  ],
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "vital-signs"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "8867-4"
+      }
+    ]
+  },
+  "subject": {
+    "reference": "#participant",
+    "type": "Patient",
+    "identifier": {
+      "system": "https://study.example.org/fhir/identifiers/participant",
+      "value": "participant-001"
+    }
+  },
+  "effectiveDateTime": "2026-08-19T10:30:00.251-07:00",
+  "_effectiveDateTime": {
+    "extension": [
+      {
+        "url": "http://hl7.org/fhir/StructureDefinition/timezone",
+        "valueCode": "America/Los_Angeles"
+      }
+    ]
+  },
+  "issued": "2026-08-19T17:30:02.000Z",
+  "valueQuantity": {
+    "value": 72,
+    "unit": "beats/minute",
+    "system": "http://unitsofmeasure.org",
+    "code": "/min"
+  }
+}

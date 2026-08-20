@@ -1,0 +1,136 @@
+{
+  "resourceType": "Observation",
+  "id": "healthkit-heart-rate",
+  "meta": {
+    "profile": [
+      "https://schmiedmayerlab.github.io/grove-fhir/fhir/healthkit/StructureDefinition/healthkit-observation",
+      "http://hl7.org/fhir/StructureDefinition/heartrate"
+    ]
+  },
+  "contained": [
+    {
+      "resourceType": "Device",
+      "id": "recorder",
+      "meta": {
+        "profile": [
+          "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-recording-device"
+        ]
+      },
+      "identifier": [
+        {
+          "system": "https://study.example.org/fhir/identifiers/recording-device",
+          "value": "healthkit-recorder"
+        }
+      ],
+      "status": "active"
+    },
+    {
+      "resourceType": "Device",
+      "id": "gateway",
+      "meta": {
+        "profile": [
+          "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-application-device"
+        ]
+      },
+      "identifier": [
+        {
+          "system": "https://study.example.org/fhir/identifiers/application",
+          "value": "org.example.healthkit-converter"
+        }
+      ],
+      "status": "active",
+      "deviceName": [
+        {
+          "name": "HealthKit Converter",
+          "type": "user-friendly-name"
+        }
+      ]
+    }
+  ],
+  "extension": [
+    {
+      "url": "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-recording-method",
+      "valueCoding": {
+        "system": "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/CodeSystem/grove-recording-method",
+        "code": "automatically-recorded"
+      }
+    },
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/workflow-researchStudy",
+      "valueReference": {
+        "reference": "ResearchStudy/accepted-study"
+      }
+    },
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/observation-gatewayDevice",
+      "valueReference": {
+        "reference": "#gateway",
+        "type": "Device"
+      }
+    }
+  ],
+  "identifier": [
+    {
+      "system": "https://schmiedmayerlab.github.io/grove-fhir/fhir/healthkit/NamingSystem/healthkit-object-id",
+      "value": "1e091e2a-9f3e-49cd-b237-2ef5a3d0f213"
+    }
+  ],
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "vital-signs"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "8867-4"
+      }
+    ]
+  },
+  "subject": {
+    "type": "Patient",
+    "identifier": {
+      "system": "https://study.example.org/fhir/identifiers/participant",
+      "value": "participant-001"
+    }
+  },
+  "effectiveDateTime": "2026-08-19T10:30:00.251-07:00",
+  "issued": "2026-08-19T17:30:02.000Z",
+  "device": {
+    "reference": "#recorder",
+    "type": "Device"
+  },
+  "valueQuantity": {
+    "value": 72,
+    "unit": "beats/minute",
+    "system": "http://unitsofmeasure.org",
+    "code": "/min"
+  },
+  "component": [
+    {
+      "code": {
+        "coding": [
+          {
+            "system": "https://schmiedmayerlab.github.io/grove-fhir/fhir/healthkit/CodeSystem/healthkit-metadata-key",
+            "code": "HKMetadataKeyHeartRateMotionContext"
+          }
+        ]
+      },
+      "valueCodeableConcept": {
+        "coding": [
+          {
+            "system": "https://schmiedmayerlab.github.io/grove-fhir/fhir/healthkit/CodeSystem/healthkit-heart-rate-motion-context",
+            "code": "sedentary"
+          }
+        ]
+      }
+    }
+  ]
+}

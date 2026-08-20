@@ -1,0 +1,183 @@
+{
+  "kind": "grove-fhir-toolchain",
+  "schemaVersion": 1,
+  "runtimes": {
+    "node": {"version": "22.22.0", "precision": "exact"},
+    "npm": {"version": "10.9.4", "precision": "exact"},
+    "python": {"version": "3.13.15", "precision": "exact"},
+    "java": {
+      "version": "21.0.10+7",
+      "setupVersion": "21.0.10+7.0.LTS",
+      "precision": "exact",
+      "distribution": "temurin"
+    },
+    "ruby": {"version": "3.3.12", "precision": "exact"},
+    "bundler": {"version": "4.0.16", "precision": "exact"}
+  },
+  "npmPackages": [
+    {"name": "ajv", "version": "8.20.0"},
+    {"name": "fhir-package-loader", "version": "2.2.4"},
+    {"name": "firebase-tools", "version": "15.26.0"},
+    {"name": "fsh-sushi", "version": "3.20.0"},
+    {"name": "tar-stream", "version": "3.2.0"}
+  ],
+  "rubyPackages": [
+    {"name": "jekyll", "version": "4.4.1"}
+  ],
+  "artifacts": [
+    {
+      "id": "fhir-ig-publisher",
+      "kind": "jar",
+      "version": "2.3.2",
+      "url": "https://github.com/HL7/fhir-ig-publisher/releases/download/2.3.2/publisher.jar",
+      "sha256": "07c576024df917cc1f879b6b5a64147cd0222d5b4129688e8f0ad9ccce58b1d5"
+    },
+    {
+      "id": "fhir-validator",
+      "kind": "jar",
+      "version": "6.10.2",
+      "url": "https://github.com/hapifhir/org.hl7.fhir.core/releases/download/6.10.2/validator_cli.jar",
+      "sha256": "a3addadfa18dfa23146a0a243b6ede68eaad92157a5407738c468bb3d7e4ccd6"
+    },
+    {
+      "id": "fhir2.base.template",
+      "kind": "fhir-template",
+      "version": "0.1.0",
+      "url": "https://packages.fhir.org/fhir2.base.template/0.1.0",
+      "sha256": "b351fa5fcc8edd76f491e129de4aeb35c888265ae0f7b33ea2af0571a7533fed"
+    },
+    {
+      "id": "hl7.fhir.r4.core",
+      "kind": "fhir-package",
+      "version": "4.0.1",
+      "url": "https://packages.fhir.org/hl7.fhir.r4.core/4.0.1",
+      "sha256": "ebd7731df7d36b5b7d39d5fb6c9d77b44bb7fe5742f1a2e87f164738c3289d44"
+    },
+    {
+      "id": "hl7.fhir.r5.core",
+      "kind": "fhir-package",
+      "version": "5.0.0",
+      "url": "https://packages.fhir.org/hl7.fhir.r5.core/5.0.0",
+      "sha256": "74b27cd1bfce9e80eaceac431edf230b0945a443564fbf5512f82e5fa50a80d4"
+    },
+    {
+      "id": "hl7.fhir.xver-extensions",
+      "kind": "fhir-package",
+      "version": "0.1.0",
+      "url": "https://packages.fhir.org/hl7.fhir.xver-extensions/0.1.0",
+      "sha256": "f3bb9fa2083402e88a02b41f433655274e8a1cca563211c8f7ba6fd0badf537a"
+    },
+    {
+      "id": "hl7.terminology.r4",
+      "kind": "fhir-package",
+      "version": "6.2.0",
+      "url": "https://packages.fhir.org/hl7.terminology.r4/6.2.0",
+      "sha256": "79404c9cc95491fc0155627cd039c401a6eb4748175328131e91b709a41300e2"
+    },
+    {
+      "id": "hl7.fhir.uv.extensions.r4",
+      "kind": "fhir-package",
+      "version": "5.2.0",
+      "url": "https://packages.fhir.org/hl7.fhir.uv.extensions.r4/5.2.0",
+      "sha256": "b406e75575f05676559d0759770c5939d023ee72fb2ef38e0b3259328487720a"
+    },
+    {
+      "id": "hl7.fhir.uv.extensions.r5",
+      "kind": "fhir-package",
+      "version": "5.2.0",
+      "url": "https://packages.fhir.org/hl7.fhir.uv.extensions.r5/5.2.0",
+      "sha256": "e02fc6eff0f37c1611a35aa93ef9aaa3b55ab7371a5c96f4d2a5834106a13170"
+    },
+    {
+      "id": "hl7.terminology.r5",
+      "kind": "fhir-package",
+      "version": "7.1.0",
+      "url": "https://packages.fhir.org/hl7.terminology.r5/7.1.0",
+      "sha256": "473303108b5607aad7b910581739e8bbf3e61a625ed9e739c66e0ca597d4aefe"
+    },
+    {
+      "id": "hl7.fhir.uv.extensions.r5",
+      "kind": "fhir-package",
+      "version": "5.3.0",
+      "url": "https://packages.fhir.org/hl7.fhir.uv.extensions.r5/5.3.0",
+      "sha256": "f1039cac888d79ebd29878d7debe5e647ffe7ed962a9033da095258a03a06105"
+    },
+    {
+      "id": "hl7.terminology",
+      "kind": "fhir-package",
+      "version": "7.3.0",
+      "url": "https://packages.fhir.org/hl7.terminology/7.3.0",
+      "sha256": "8318f87cdcb44a6dfc5c197ca569c9b0499b06f45522324bfc4b4b810d51d4b9"
+    },
+    {
+      "id": "hl7.fhir.uv.extensions",
+      "kind": "fhir-package",
+      "version": "5.3.0",
+      "url": "https://packages.fhir.org/hl7.fhir.uv.extensions/5.3.0",
+      "sha256": "6e3a3f9929e05d2b813a3f98fa1ad2f5122fb6b2819fa73e6c5520002fb2c5b0"
+    },
+    {
+      "id": "hl7.terminology.r4",
+      "kind": "fhir-package",
+      "version": "7.1.0",
+      "url": "https://packages.fhir.org/hl7.terminology.r4/7.1.0",
+      "sha256": "1cb0cd5601972925fcd04f2c175d9cc63a9ecd9346a91a6e735f1a865dc5fba1"
+    },
+    {
+      "id": "hl7.fhir.uv.extensions.r4",
+      "kind": "fhir-package",
+      "version": "5.3.0",
+      "url": "https://packages.fhir.org/hl7.fhir.uv.extensions.r4/5.3.0",
+      "sha256": "dfbc3ac95df91ed845cc6b60920d2875f679361fa0e16f227cee93c4a9ab2104"
+    },
+    {
+      "id": "hl7.terminology.r4",
+      "kind": "fhir-package",
+      "version": "7.3.0",
+      "url": "https://packages.fhir.org/hl7.terminology.r4/7.3.0",
+      "sha256": "1a1ef2aa22ecc820341267f2bdba3b2d1f4adafb9bdddfc9e51c611cd64f3b54"
+    },
+    {
+      "id": "hl7.fhir.uv.sdc",
+      "kind": "fhir-package",
+      "version": "4.0.0",
+      "url": "https://packages.fhir.org/hl7.fhir.uv.sdc/4.0.0",
+      "sha256": "d785be8474c7ec7988e32e326430d9ca4aeb2cac4a1f195022e4d6f7dc5c5291"
+    },
+    {
+      "id": "hl7.fhir.uv.extensions.r4",
+      "kind": "fhir-package",
+      "version": "5.3.0-ballot-tc1",
+      "url": "https://packages.fhir.org/hl7.fhir.uv.extensions.r4/5.3.0-ballot-tc1",
+      "sha256": "5f5d1e88052d615453e6b7a1eb4f885df36590f14b52974e5860485d16819bd9"
+    },
+    {
+      "id": "hl7.fhir.r4.examples",
+      "kind": "fhir-package",
+      "version": "4.0.1",
+      "url": "https://packages.fhir.org/hl7.fhir.r4.examples/4.0.1",
+      "sha256": "e18b31e7a52145a31f1f3f409cf6847583b08b7306cc4e9460a95a7b5efba930"
+    },
+    {
+      "id": "hl7.fhir.uv.xver-r5.r4",
+      "kind": "fhir-package",
+      "version": "0.1.0",
+      "url": "https://packages.fhir.org/hl7.fhir.uv.xver-r5.r4/0.1.0",
+      "sha256": "7ee6f04d78ced803dd567559a0d178bafbd2d3b71db61bbbf6b15c796a1a664d"
+    },
+    {
+      "id": "hl7.fhir.uv.tools.r4",
+      "kind": "fhir-package",
+      "version": "1.1.2",
+      "url": "https://packages.fhir.org/hl7.fhir.uv.tools.r4/1.1.2",
+      "sha256": "a1f166f8808629a40c4acabc16a4fbfd164d9f38f9db95b6f4b38bb69155dfe4"
+    },
+    {
+      "id": "hl7.terminology.r4",
+      "kind": "fhir-package",
+      "version": "6.5.0",
+      "url": "https://packages.fhir.org/hl7.terminology.r4/6.5.0",
+      "sha256": "a28b638483a11df696ed92198276236d759e41c7a3a8960c9e7e7d0a1185bd06"
+    }
+  ]
+}

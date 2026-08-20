@@ -280,10 +280,10 @@ index febbddc0dbd63f144d7ca25fb96b3cb64ded4b0f..803f92ae1efafc33c3eb49f69c564011
  // are not being ingested, queue items would NOT_FOUND-retry-then-dead-letter
 diff --git a/functions/src/services/fhirExchange/README.md b/functions/src/services/fhirExchange/README.md
 new file mode 100644
-index 0000000000000000000000000000000000000000..408b12449ad39fd7334e0a564b279a815e7ce1df
+index 0000000000000000000000000000000000000000..67867669e1f4092f5669588e531bc832d39c89dc
 --- /dev/null
 +++ b/functions/src/services/fhirExchange/README.md
-@@ -0,0 +1,161 @@
+@@ -0,0 +1,164 @@
 +<!--
 +SPDX-FileCopyrightText: 2026 Stanford University and the project authors (see CONTRIBUTORS.md)
 +SPDX-License-Identifier: MIT
@@ -294,9 +294,11 @@ index 0000000000000000000000000000000000000000..408b12449ad39fd7334e0a564b279a81
 +This directory contains the source-neutral storage boundary for mobile FHIR
 +exchange. It does not depend on the repository's legacy partial FHIR models.
 +
-+`FhirBundleReceiver.receive` accepts an exact FHIR R4 collection Bundle JSON
-+string for every replacement and deletion. A complete `(system, value)` identifier names
-+the source record. `sourceVersion` is the producer's journaled data revision;
++`FhirBundleReceiver.receive` accepts an exact JSON string whose parsed object has
++`resourceType` `Bundle` and `type` `collection`. It does not establish FHIR R4
++base-resource or profile conformance; those remain independent producer and
++integration-CI gates. A complete `(system, value)` identifier names the source
++record. `sourceVersion` is the producer's journaled data revision;
 +`eventSequence` is the producer/outbox sequence that orders this source
 +record's exchange events.
 +The source version is non-negative and the event sequence is positive; both are
@@ -442,15 +444,16 @@ index 0000000000000000000000000000000000000000..408b12449ad39fd7334e0a564b279a81
 +Storage generations. Time-based history retention deliberately cannot infer
 +that account-to-partition mapping, and it never deletes the current source head.
 +
-+The boundary performs resource-shape and identity checks needed for safe
-+storage. Full profile conformance remains a producer and integration-CI
-+responsibility using the HL7 FHIR Validator.
++The boundary performs only resource-shape and identity checks needed for safe
++storage; it does not establish FHIR R4 base-resource or profile conformance.
++Those remain a producer and integration-CI responsibility using the HL7 FHIR
++Validator.
 diff --git a/functions/src/services/fhirExchange/fhirBundleReceiver.test.ts b/functions/src/services/fhirExchange/fhirBundleReceiver.test.ts
 new file mode 100644
-index 0000000000000000000000000000000000000000..573ea79194335d1c6107be02660236272cbf97c8
+index 0000000000000000000000000000000000000000..6f6d47c259dc1ca259184efddd4ed70cb7e33bfc
 --- /dev/null
 +++ b/functions/src/services/fhirExchange/fhirBundleReceiver.test.ts
-@@ -0,0 +1,1869 @@
+@@ -0,0 +1,1875 @@
 +// This source file belongs to the My Heart Counts Firebase project
 +//
 +// SPDX-FileCopyrightText: 2026 Stanford University and the project authors (see CONTRIBUTORS.md)
@@ -837,12 +840,18 @@ index 0000000000000000000000000000000000000000..573ea79194335d1c6107be0266023627
 +    expect(() => compareSourceVersions("01", "1")).to.throw(FhirExchangeError);
 +  });
 +
-+  it("keys the complete identifier without delimiter or system collisions", () => {
-+    const systemA = completeIdentifierKey({ system: "a", value: "b|c" });
-+    const systemB = completeIdentifierKey({ system: "a|b", value: "c" });
-+    const systemC = completeIdentifierKey({ system: "another", value: "b|c" });
-+    expect(systemA).to.not.equal(systemB);
-+    expect(systemA).to.not.equal(systemC);
++  it("keys complete identifiers without system collisions", () => {
++    const keyA = completeIdentifierKey({ system: "urn:a", value: "b|c" });
++    const keyB = completeIdentifierKey({ system: "urn:b", value: "c" });
++    const keyC = completeIdentifierKey({ system: "urn:c", value: "b|c" });
++    expect(keyA).to.not.equal(keyB);
++    expect(keyA).to.not.equal(keyC);
++  });
++
++  it("rejects a non-absolute identifier system", () => {
++    expect(() =>
++      completeIdentifierKey({ system: "not-a-uri", value: "record-1" }),
++    ).to.throw(FhirExchangeError, "absolute URI");
 +  });
 +
 +  it("preserves a complete Android FHIR Bundle byte-for-byte and deeply", async () => {
@@ -2322,10 +2331,10 @@ index 0000000000000000000000000000000000000000..573ea79194335d1c6107be0266023627
 +});
 diff --git a/functions/src/services/fhirExchange/fhirBundleReceiver.ts b/functions/src/services/fhirExchange/fhirBundleReceiver.ts
 new file mode 100644
-index 0000000000000000000000000000000000000000..4c528ec9536aadd4668f487730202320d1ec2a3d
+index 0000000000000000000000000000000000000000..be075ae758313a948a18f58495f782a793af6280
 --- /dev/null
 +++ b/functions/src/services/fhirExchange/fhirBundleReceiver.ts
-@@ -0,0 +1,2933 @@
+@@ -0,0 +1,2934 @@
 +// This source file belongs to the My Heart Counts Firebase project
 +//
 +// SPDX-FileCopyrightText: 2026 Stanford University and the project authors (see CONTRIBUTORS.md)
@@ -2751,13 +2760,14 @@ index 0000000000000000000000000000000000000000..4c528ec9536aadd4668f487730202320
 +  assertWellFormedUnicode(identifier.system, `${path}.system`);
 +  assertWellFormedUnicode(identifier.value, `${path}.value`);
 +  if (
++    !/^[A-Za-z][A-Za-z0-9+.-]*:\S+$/.test(identifier.system) ||
 +    Buffer.byteLength(identifier.system, "utf8") >
 +      MAX_IDENTIFIER_SYSTEM_BYTES ||
 +    Buffer.byteLength(identifier.value, "utf8") > MAX_IDENTIFIER_VALUE_BYTES
 +  ) {
 +    throw new FhirExchangeError(
 +      "invalid-identifier",
-+      `${path} exceeds the supported identifier size.`,
++      `${path} must use an absolute URI system within supported size limits.`,
 +    );
 +  }
 +}
@@ -3159,7 +3169,7 @@ index 0000000000000000000000000000000000000000..4c528ec9536aadd4668f487730202320
 +  if (!isJsonObject(parsed) || parsed.resourceType !== "Bundle") {
 +    throw new FhirExchangeError(
 +      "not-a-fhir-bundle",
-+      "bundleJson must contain one complete FHIR Bundle resource.",
++      "bundleJson must contain one collection-Bundle-shaped JSON object.",
 +    );
 +  }
 +  if (parsed.type !== "collection") {

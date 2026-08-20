@@ -5,11 +5,15 @@
   "description": "Build and validation tooling for the Grove FHIR implementation guides",
   "scripts": {
     "build": "./Scripts/build-guides.sh",
+    "evidence:update-baseline": "python3 Scripts/build-conformance-evidence.py update-semantic-baseline",
     "pages:build": "./Scripts/build-guides.sh && ./Scripts/assemble-pages.sh",
+    "schema:validate": "node Scripts/validate-json-schema.cjs Conformance/evidence.schema.json Conformance/evidence.json Conformance/toolchain.json Conformance/semantic-baseline.json",
     "test": "python3 Scripts/check-content.py && python3 -m unittest discover -s Tests -v"
   },
   "devDependencies": {
+    "ajv": "8.20.0",
     "fhir-package-loader": "2.2.4",
+    "firebase-tools": "15.26.0",
     "fsh-sushi": "3.20.0",
     "tar-stream": "3.2.0"
   },

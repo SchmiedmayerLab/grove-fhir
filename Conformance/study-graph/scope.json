@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "acceptedContract": {
+    "fixture": "accepted-study-graph.json",
+    "planDefinitionVersion": "42",
+    "enrollmentInfluencedConversion": true,
+    "status": "accepted"
+  },
+  "myHeartCountsMigration": {
+    "status": "not-assessed",
+    "claims": []
+  }
+}

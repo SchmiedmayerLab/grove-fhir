@@ -4,8 +4,20 @@
 #
 # SPDX-License-Identifier: MIT
 
-[submodule "grove"]
-	path = Integration/Sources/Grove
+[submodule "grove_questionnaire"]
+	path = Integration/Sources/GroveQuestionnaire
+	url = https://github.com/SchmiedmayerLab/Grove.git
+	shallow = true
+[submodule "grove_healthkit"]
+	path = Integration/Sources/GroveHealthKit
+	url = https://github.com/SchmiedmayerLab/Grove.git
+	shallow = true
+[submodule "grove_legacy_021"]
+	path = Integration/Sources/GroveLegacy021
+	url = https://github.com/SchmiedmayerLab/Grove.git
+	shallow = true
+[submodule "grove_sensorkit_reference"]
+	path = Integration/Sources/GroveSensorKit
 	url = https://github.com/SchmiedmayerLab/Grove.git
 	shallow = true
 [submodule "my_heart_counts_ios"]
@@ -20,7 +32,11 @@
 	path = Integration/Sources/MyHeartCountsFirebase
 	url = https://github.com/SchmiedmayerLab/MyHeartCounts-Firebase.git
 	shallow = true
-[submodule "my_heart_counts_study_definitions"]
-	path = Integration/Sources/MyHeartCountsStudyDefinitions
+[submodule "my_heart_counts_study_definitions_024"]
+	path = Integration/Sources/MyHeartCountsStudyDefinitions024
+	url = https://github.com/SchmiedmayerLab/MyHeartCounts-StudyDefinitions.git
+	shallow = true
+[submodule "my_heart_counts_study_definitions_025"]
+	path = Integration/Sources/MyHeartCountsStudyDefinitions025
 	url = https://github.com/SchmiedmayerLab/MyHeartCounts-StudyDefinitions.git
 	shallow = true

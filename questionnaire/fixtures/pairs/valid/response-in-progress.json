@@ -25,7 +25,39 @@
     {
       "linkId": "identity",
       "text": "Identity",
-      "item": []
+      "item": [
+        {
+          "linkId": "name",
+          "text": "Name",
+          "answer": [
+            {
+              "valueString": "Ada Lovelace"
+            }
+          ]
+        },
+        {
+          "linkId": "consent",
+          "text": "Do you consent?",
+          "answer": [
+            {
+              "valueBoolean": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "symptoms",
+      "text": "Symptoms",
+      "answer": [
+        {
+          "valueCoding": {
+            "system": "https://example.org/fhir/CodeSystem/symptom",
+            "code": "fatigue",
+            "display": "Fatigue"
+          }
+        }
+      ]
     },
     {
       "linkId": "has-note",

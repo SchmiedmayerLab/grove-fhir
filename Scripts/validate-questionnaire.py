@@ -384,9 +384,24 @@ def validate_questionnaire(questionnaire: dict[str, Any]) -> list[Issue]:
             "dateTime": "valueDateTime",
             "time": "valueTime",
         }.get(item_type)
-        if expected_bound_type and any(key and key != expected_bound_type for key in (lower_key, upper_key)):
+        bound_type_mismatch = bool(
+            expected_bound_type
+            and any(
+                key and key != expected_bound_type
+                for key in (lower_key, upper_key)
+            )
+        )
+        if bound_type_mismatch:
             issues.append(Issue("qg-value-bound-type", path, "Bound datatype must match the Questionnaire item type"))
-        validate_bound_pair(item, path, MIN_VALUE, MAX_VALUE, "qg-value-bounds-order", issues)
+        else:
+            validate_bound_pair(
+                item,
+                path,
+                MIN_VALUE,
+                MAX_VALUE,
+                "qg-value-bounds-order",
+                issues,
+            )
 
         has_quantity_bounds = bool(extensions(item, MIN_QUANTITY) or extensions(item, MAX_QUANTITY))
         if has_quantity_bounds and item_type != "quantity":

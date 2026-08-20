@@ -18,6 +18,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from Scripts import fhir_package_semantic_snapshot as SNAPSHOT
+
 
 ROOT = Path(__file__).parents[1]
 SCRIPT_PATH = ROOT / "Scripts/prepare-pages.py"
@@ -107,11 +109,32 @@ class PreparePagesTests(unittest.TestCase):
                 )
 
             self.assertEqual(first.read_bytes(), second.read_bytes())
+            header = first.read_bytes()[:10]
+            self.assertEqual(
+                header,
+                b"\x1f\x8b\x08\x00"
+                + (1_700_000_000).to_bytes(4, "little")
+                + b"\x02\xff",
+            )
             metadata = PREPARE_PAGES.read_package_metadata(first)
             self.assertEqual(metadata["url"], metadata["canonical"])
             self.assertEqual(metadata["date"], "20231114221320")
             self.assertEqual(metadata["description"], "Example package")
             with tarfile.open(first, "r:gz") as package:
+                names = [member.name for member in package.getmembers()]
+                self.assertEqual(names, sorted(names))
+                self.assertEqual(len(names), len(set(names)))
+                for member in package.getmembers():
+                    self.assertEqual(member.mtime, 1_700_000_000)
+                    self.assertEqual(member.uid, 0)
+                    self.assertEqual(member.gid, 0)
+                    self.assertEqual(member.uname, "")
+                    self.assertEqual(member.gname, "")
+                    self.assertEqual(member.pax_headers, {})
+                    self.assertEqual(member.linkname, "")
+                    self.assertEqual(member.devmajor, 0)
+                    self.assertEqual(member.devminor, 0)
+                    self.assertEqual(member.mode, 0o755 if member.isdir() else 0o644)
                 example_file = package.extractfile(
                     "package/example/Observation-example.json"
                 )
@@ -122,6 +145,226 @@ class PreparePagesTests(unittest.TestCase):
                 '<div xmlns="http://www.w3.org/1999/xhtml">'
                 '<a href="https://example.org/grove-fhir/fhir/mobile/ci-build/'
                 'StructureDefinition-example.html">profile</a></div>',
+            )
+
+    def test_publisher_dates_do_not_change_the_sanitized_semantic_baseline(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            archives: list[Path] = []
+            for name, package_date, resource_date in (
+                (
+                    "first",
+                    "20260819110517",
+                    "2026-08-19T11:05:17-07:00",
+                ),
+                (
+                    "second",
+                    "20260820200618",
+                    "2026-08-20T20:06:18+02:00",
+                ),
+            ):
+                archive = root / f"{name}.tgz"
+                generated = {
+                    "resourceType": "CodeSystem",
+                    "id": "generated",
+                    "url": "https://example.org/fhir/CodeSystem/generated",
+                    "status": "active",
+                    "content": "complete",
+                    "date": resource_date,
+                }
+                authored = {
+                    "resourceType": "PlanDefinition",
+                    "id": "authored",
+                    "url": "https://example.org/fhir/PlanDefinition/authored",
+                    "status": "active",
+                    "date": "2025-01-02T03:04:05Z",
+                }
+                index = {
+                    "index-version": 2,
+                    "files": [
+                        {
+                            "filename": "CodeSystem-generated.json",
+                            "resourceType": "CodeSystem",
+                            "id": "generated",
+                            "url": generated["url"],
+                        },
+                        {
+                            "filename": "PlanDefinition-authored.json",
+                            "resourceType": "PlanDefinition",
+                            "id": "authored",
+                            "url": authored["url"],
+                        },
+                    ],
+                }
+                internals = {
+                    "npm-name": "org.example.fhir",
+                    "date": (
+                        f"{package_date[:4]}-{package_date[4:6]}-{package_date[6:8]}"
+                    ),
+                    "date-time": (
+                        f"{package_date[:8]}"
+                        f"{int(package_date[8:10]) % 12 or 12:02d}"
+                        f"{package_date[10:]}-0700"
+                    ),
+                }
+                self._write_package(
+                    archive,
+                    {
+                        "name": "org.example.fhir",
+                        "version": "0.1.0",
+                        "canonical": "https://example.org/fhir",
+                        "url": "file:///tmp/output",
+                        "date": package_date,
+                        "description": "Example package (built today)",
+                        "fhirVersions": ["4.0.1"],
+                        "dependencies": {},
+                    },
+                    {
+                        "package/.index.json": json.dumps(index).encode(),
+                        "package/CodeSystem-generated.json": json.dumps(
+                            generated
+                        ).encode(),
+                        "package/PlanDefinition-authored.json": json.dumps(
+                            authored
+                        ).encode(),
+                        "package/other/spec.internals": json.dumps(
+                            internals
+                        ).encode(),
+                    },
+                )
+                PREPARE_PAGES.rewrite_package_archive(
+                    archive,
+                    "https://example.org/fhir",
+                    1_700_000_000,
+                    repository_root=root,
+                    public_urls={},
+                    source_url="https://github.com/example/repository/tree/revision",
+                )
+                archives.append(archive)
+
+            self.assertEqual(archives[0].read_bytes(), archives[1].read_bytes())
+            first = SNAPSHOT.create_snapshot(archives[0])
+            second = SNAPSHOT.create_snapshot(archives[1])
+            self.assertEqual(first, second)
+            generated_resource = first["codeSystems"][
+                "https://example.org/fhir/CodeSystem/generated"
+            ]["resource"]
+            authored_resource = first["otherConformance"][
+                "https://example.org/fhir/PlanDefinition/authored"
+            ]["resource"]
+            self.assertNotIn("date", generated_resource)
+            self.assertEqual(authored_resource["date"], "2025-01-02T03:04:05Z")
+            with tarfile.open(archives[0], "r:gz") as package:
+                internals_file = package.extractfile("package/other/spec.internals")
+                self.assertIsNotNone(internals_file)
+                normalized_internals = json.load(internals_file)
+            self.assertEqual(normalized_internals["date"], "2023-11-14")
+            self.assertEqual(
+                normalized_internals["date-time"], "20231114221320+0000"
+            )
+
+    def test_publisher_internals_rejects_an_unrelated_clock(self) -> None:
+        with self.assertRaisesRegex(
+            ValueError, "spec.internals build timestamp is inconsistent"
+        ):
+            PREPARE_PAGES.normalize_publisher_internals(
+                json.dumps(
+                    {
+                        "date": "2026-08-19",
+                        "date-time": "20260819081640+0000",
+                    }
+                ),
+                "20260819201639",
+                1_700_000_000,
+            )
+
+    def test_publisher_internals_rejects_invalid_clock_data(self) -> None:
+        cases = (
+            (
+                "20269919201639",
+                {
+                    "date": "2026-99-19",
+                    "date-time": "20269919081639+0000",
+                },
+            ),
+            (
+                "20260819201639",
+                {
+                    "date": "2026-08-19",
+                    "date-time": "20260819081639+9999",
+                },
+            ),
+        )
+        for package_date, internals in cases:
+            with self.subTest(package_date=package_date, internals=internals):
+                with self.assertRaisesRegex(
+                    ValueError, "spec.internals build timestamp is inconsistent"
+                ):
+                    PREPARE_PAGES.normalize_publisher_internals(
+                        json.dumps(internals), package_date, 1_700_000_000
+                    )
+
+    def test_package_sanitization_rejects_escaped_ansi_without_url_false_positive(self) -> None:
+        PREPARE_PAGES.validate_portable_text(
+            json.dumps({"url": "https://example.org/home/runner/reference"}),
+            "safe URL",
+            ".json",
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            archive = Path(directory) / "ansi.tgz"
+            self._write_package(
+                archive,
+                {
+                    "name": "example",
+                    "version": "0.1.0",
+                    "canonical": "https://example.org/fhir/example",
+                    "url": "https://example.org/fhir/example",
+                    "date": "volatile",
+                    "description": "Example package",
+                    "title": "Example",
+                    "fhirVersions": ["4.0.1"],
+                },
+                {
+                    "package/example/Observation-example.json": json.dumps(
+                        {
+                            "resourceType": "Observation",
+                            "note": [{"text": "\x1b[31mvalidator output\x1b[0m"}],
+                        }
+                    ).encode("utf-8")
+                },
+            )
+            with self.assertRaisesRegex(ValueError, "ANSI"):
+                PREPARE_PAGES.rewrite_package_archive(
+                    archive,
+                    "https://example.org/fhir/example",
+                    1_700_000_000,
+                    repository_root=Path(directory),
+                    public_urls={},
+                    source_url="https://github.com/example/repository/tree/revision",
+                )
+
+    def test_site_output_symlink_is_rejected_before_recursive_deletion(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            repository = Path(directory) / "repository"
+            (repository / ".build").mkdir(parents=True)
+            victim = repository / "guide-source"
+            victim.mkdir()
+            sentinel = victim / "sentinel.txt"
+            sentinel.write_text("do not delete\n", encoding="utf-8")
+            site = repository / ".build/pages"
+            site.symlink_to(victim, target_is_directory=True)
+
+            with self.assertRaisesRegex(ValueError, "symlink"):
+                PREPARE_PAGES.assemble_site(
+                    site,
+                    repository,
+                    {},
+                    "https://example.org/grove-fhir",
+                    "1" * 40,
+                    1_700_000_000,
+                )
+            self.assertEqual(
+                sentinel.read_text(encoding="utf-8"), "do not delete\n"
             )
 
     def test_assembles_ci_only_publication_surface(self) -> None:
@@ -209,6 +452,7 @@ class PreparePagesTests(unittest.TestCase):
             )
 
             mobile = site / "fhir/mobile"
+            self.assertTrue((site / ".nojekyll").is_file())
             self.assertTrue((site / "index.html").is_file())
             self.assertTrue((site / "healthkit/index.html").is_file())
             self.assertTrue((mobile / "ci-build/index.html").is_file())

@@ -1,0 +1,339 @@
+{
+  "schemaVersion": 1,
+  "bases": [
+    {"id": "health-connect-conversion-provenance", "path": "bases/conversion-provenance.json"},
+    {"id": "health-connect-heart-rate", "path": "bases/heart-rate.json"}
+  ],
+  "cases": [
+    {
+      "id": "health-connect-output-id-format",
+      "base": "health-connect-heart-rate",
+      "patch": [{"op": "replace", "path": "/identifier/1/value", "value": "a88b6d9b3483f39ff951423556714f70ecb62c28a26aa75432aa2f81f7e3377b"}],
+      "expectedRule": {
+        "code": "health-connect-output-id-1",
+        "reason": "The Health Connect output identifier uses the versioned lowercase SHA-256 form defined by this guide.",
+        "location": "Observation",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "health-connect-record-id-format",
+      "base": "health-connect-heart-rate",
+      "patch": [{"op": "replace", "path": "/identifier/0/value", "value": "v1:5D81FD22DF74BCB7D9571B201CADF87B3935072C126DFFBC2AF908D994D054A2"}],
+      "expectedRule": {
+        "code": "health-connect-record-id-value-1",
+        "reason": "The Health Connect record identifier uses the repository-scoped lowercase SHA-256 form defined by this guide.",
+        "location": "Observation.identifier[0].value",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "health-connect-record-identifier-required",
+      "base": "health-connect-heart-rate",
+      "patch": [{"op": "remove", "path": "/identifier/0"}],
+      "expectedRule": {
+        "code": "health-connect-observation.record-id",
+        "reason": "A Health Connect Observation carries exactly one source Record Identifier slice.",
+        "location": "Observation.identifier",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "health-connect-output-identifier-required",
+      "base": "health-connect-heart-rate",
+      "patch": [{"op": "remove", "path": "/identifier/1"}],
+      "expectedRule": {
+        "code": "health-connect-observation.output-id",
+        "reason": "A Health Connect Observation carries exactly one stable output Identifier slice.",
+        "location": "Observation.identifier",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "health-connect-record-identifier-limit",
+      "base": "health-connect-heart-rate",
+      "patch": [{"op": "copy", "from": "/identifier/0", "path": "/identifier/-"}],
+      "expectedRule": {
+        "code": "health-connect-observation.record-id.max",
+        "reason": "A Health Connect Observation carries exactly one source Record Identifier slice.",
+        "location": "Observation.identifier",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "health-connect-output-identifier-limit",
+      "base": "health-connect-heart-rate",
+      "patch": [{"op": "copy", "from": "/identifier/1", "path": "/identifier/-"}],
+      "expectedRule": {
+        "code": "health-connect-observation.output-id.max",
+        "reason": "A Health Connect Observation carries exactly one stable output Identifier slice.",
+        "location": "Observation.identifier",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "health-connect-record-identifier-system",
+      "base": "health-connect-heart-rate",
+      "patch": [{"op": "replace", "path": "/identifier/0/system", "value": "https://example.org/wrong-record-system"}],
+      "expectedRule": {
+        "code": "health-connect-observation.record-id.system",
+        "reason": "The required source Record Identifier uses the Health Connect record-id NamingSystem URI.",
+        "location": "Observation.identifier",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "health-connect-output-identifier-system",
+      "base": "health-connect-heart-rate",
+      "patch": [{"op": "replace", "path": "/identifier/1/system", "value": "https://example.org/wrong-output-system"}],
+      "expectedRule": {
+        "code": "health-connect-observation.output-id.system",
+        "reason": "The required stable output Identifier uses the Health Connect output-id NamingSystem URI.",
+        "location": "Observation.identifier",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "health-connect-record-identifier-value-required",
+      "base": "health-connect-heart-rate",
+      "patch": [{"op": "remove", "path": "/identifier/0/value"}],
+      "expectedRule": {
+        "code": "health-connect-observation.record-id.value",
+        "reason": "The Health Connect source Record Identifier carries its versioned digest value.",
+        "location": "Observation.identifier[0].value",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "health-connect-output-identifier-value-required",
+      "base": "health-connect-heart-rate",
+      "patch": [{"op": "remove", "path": "/identifier/1/value"}],
+      "expectedRule": {
+        "code": "health-connect-observation.output-id.value",
+        "reason": "The Health Connect stable output Identifier carries its versioned digest value.",
+        "location": "Observation.identifier[1].value",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "health-connect-issued-required",
+      "base": "health-connect-heart-rate",
+      "patch": [{"op": "remove", "path": "/issued"}],
+      "expectedRule": {
+        "code": "health-connect-observation.issued",
+        "reason": "A Health Connect Observation carries the source record's last-modified instant in issued.",
+        "location": "Observation.issued",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "health-connect-value-required",
+      "base": "health-connect-heart-rate",
+      "patch": [{"op": "remove", "path": "/valueQuantity"}],
+      "expectedRule": {
+        "code": "health-connect-observation.value",
+        "reason": "A Health Connect Observation carries exactly one populated Quantity result.",
+        "location": "Observation.value[x]",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "health-connect-value-quantity-only",
+      "base": "health-connect-heart-rate",
+      "patch": [{"op": "move", "from": "/valueQuantity", "path": "/valueString"}],
+      "expectedRule": {
+        "code": "health-connect-observation.value.quantity",
+        "reason": "A Health Connect Observation represents its result as a Quantity.",
+        "location": "Observation.value[x]",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "health-connect-data-absent-prohibited",
+      "base": "health-connect-heart-rate",
+      "patch": [{"op": "add", "path": "/dataAbsentReason", "value": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/data-absent-reason", "code": "unknown"}]}}],
+      "expectedRule": {
+        "code": "health-connect-observation.data-absent-reason",
+        "reason": "A Health Connect Observation with its required Quantity does not carry dataAbsentReason.",
+        "location": "Observation.dataAbsentReason",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "health-connect-provenance-target-required",
+      "base": "health-connect-conversion-provenance",
+      "patch": [{"op": "remove", "path": "/target"}],
+      "expectedRule": {
+        "code": "health-connect-conversion-provenance.target",
+        "reason": "Health Connect conversion Provenance identifies at least one converted Health Connect Observation.",
+        "location": "Provenance.target",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "health-connect-provenance-target-profile",
+      "base": "health-connect-conversion-provenance",
+      "patch": [{"op": "replace", "path": "/target/0/reference", "value": "#source-application"}],
+      "expectedRule": {
+        "code": "health-connect-conversion-provenance.target.profile",
+        "reason": "Health Connect conversion Provenance targets a Health Connect Observation.",
+        "location": "Provenance.target[0]",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "health-connect-provenance-single-source-entity",
+      "base": "health-connect-conversion-provenance",
+      "patch": [{"op": "copy", "from": "/entity/0", "path": "/entity/-"}],
+      "expectedRule": {
+        "code": "health-connect-conversion-provenance.entity",
+        "reason": "One Health Connect conversion Provenance resource represents exactly one source Record.",
+        "location": "Provenance.entity",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "health-connect-provenance-source-entity-required",
+      "base": "health-connect-conversion-provenance",
+      "patch": [{"op": "remove", "path": "/entity"}],
+      "expectedRule": {
+        "code": "health-connect-conversion-provenance.entity.required",
+        "reason": "A Health Connect conversion Provenance identifies its one source Record entity.",
+        "location": "Provenance.entity",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "health-connect-provenance-source-reference-prohibited",
+      "base": "health-connect-conversion-provenance",
+      "patch": [{"op": "add", "path": "/entity/0/what/reference", "value": "Basic/source-record"}],
+      "expectedRule": {
+        "code": "health-connect-conversion-provenance.entity.reference",
+        "reason": "The non-FHIR source Record is represented by Identifier rather than by a FHIR Reference.",
+        "location": "Provenance.entity[0].what.reference",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "health-connect-provenance-source-identifier-required",
+      "base": "health-connect-conversion-provenance",
+      "patch": [{"op": "remove", "path": "/entity/0/what/identifier"}],
+      "expectedRule": {
+        "code": "health-connect-conversion-provenance.entity.identifier",
+        "reason": "The source entity carries exactly one complete Health Connect Record Identifier.",
+        "location": "Provenance.entity[0].what.identifier",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "health-connect-provenance-source-system-fixed",
+      "base": "health-connect-conversion-provenance",
+      "patch": [{"op": "replace", "path": "/entity/0/what/identifier/system", "value": "https://example.org/wrong-system"}],
+      "expectedRule": {
+        "code": "health-connect-conversion-provenance.entity.identifier.system",
+        "reason": "The source entity identifier uses the Health Connect Record Identifier NamingSystem URI.",
+        "location": "Provenance.entity[0].what.identifier.system",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "health-connect-provenance-source-system-required",
+      "base": "health-connect-conversion-provenance",
+      "patch": [{"op": "remove", "path": "/entity/0/what/identifier/system"}],
+      "expectedRule": {
+        "code": "health-connect-conversion-provenance.entity.identifier.system.required",
+        "reason": "The source entity identifier carries its required NamingSystem URI.",
+        "location": "Provenance.entity[0].what.identifier.system",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "health-connect-provenance-source-value-required",
+      "base": "health-connect-conversion-provenance",
+      "patch": [{"op": "remove", "path": "/entity/0/what/identifier/value"}],
+      "expectedRule": {
+        "code": "health-connect-conversion-provenance.entity.identifier.value.required",
+        "reason": "The source entity identifier carries its required repository-scoped value.",
+        "location": "Provenance.entity[0].what.identifier.value",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "health-connect-provenance-source-value-format",
+      "base": "health-connect-conversion-provenance",
+      "patch": [{"op": "replace", "path": "/entity/0/what/identifier/value", "value": "record-raw"}],
+      "expectedRule": {
+        "code": "health-connect-record-id-value-1",
+        "reason": "The Health Connect record identifier uses the repository-scoped lowercase SHA-256 form defined by this guide.",
+        "location": "Provenance.entity[0].what.identifier.value",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "health-connect-provenance-source-agent-required",
+      "base": "health-connect-conversion-provenance",
+      "patch": [{"op": "remove", "path": "/entity/0/agent"}],
+      "expectedRule": {
+        "code": "health-connect-conversion-provenance.entity.agent",
+        "reason": "The source entity identifies exactly one DataOrigin application agent.",
+        "location": "Provenance.entity[0].agent",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "health-connect-provenance-source-agent-limit",
+      "base": "health-connect-conversion-provenance",
+      "patch": [{"op": "copy", "from": "/entity/0/agent/0", "path": "/entity/0/agent/-"}],
+      "expectedRule": {
+        "code": "health-connect-conversion-provenance.entity.agent.max",
+        "reason": "A Health Connect source entity identifies exactly one DataOrigin application agent.",
+        "location": "Provenance.entity[0].agent",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "health-connect-provenance-source-agent-enterer",
+      "base": "health-connect-conversion-provenance",
+      "patch": [{"op": "replace", "path": "/entity/0/agent/0/type/coding/0/code", "value": "author"}],
+      "expectedRule": {
+        "code": "health-connect-conversion-provenance.entity.agent.type",
+        "reason": "The Health Connect DataOrigin application uses the Provenance enterer participation type.",
+        "location": "Provenance.entity[0].agent[0].type",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "health-connect-provenance-source-agent-type-required",
+      "base": "health-connect-conversion-provenance",
+      "patch": [{"op": "remove", "path": "/entity/0/agent/0/type"}],
+      "expectedRule": {
+        "code": "health-connect-conversion-provenance.entity.agent.type",
+        "reason": "The source-record agent declares its participant type.",
+        "location": "Provenance.entity[0].agent[0].type",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "health-connect-provenance-source-agent-who-required",
+      "base": "health-connect-conversion-provenance",
+      "patch": [{"op": "remove", "path": "/entity/0/agent/0/who"}],
+      "expectedRule": {
+        "code": "health-connect-conversion-provenance.entity.agent.who",
+        "reason": "The Health Connect DataOrigin agent references its application Device.",
+        "location": "Provenance.entity[0].agent[0].who",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "health-connect-provenance-source-agent-device-target",
+      "base": "health-connect-conversion-provenance",
+      "patch": [{"op": "replace", "path": "/entity/0/agent/0/who/reference", "value": "#converted"}],
+      "expectedRule": {
+        "code": "health-connect-conversion-provenance.entity.agent.who.target",
+        "reason": "The Health Connect DataOrigin agent references a Device.",
+        "location": "Provenance.entity[0].agent[0].who",
+        "severity": "error"
+      }
+    }
+  ]
+}

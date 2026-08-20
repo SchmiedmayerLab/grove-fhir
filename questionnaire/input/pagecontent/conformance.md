@@ -43,8 +43,10 @@ python3 Scripts/validate-questionnaire-fhir.py \
 ```
 
 The repository's static corpus also includes one-operation invalid mutations. The
-wrapper submits each applicable case to the official Validator; unit tests assert the
-specific stable Grove rule for every case.
+wrapper submits each applicable case to the official Validator. The separate
+`validator-expectations.json` manifest declares the complete error set for every case;
+each observed error and each declared matcher must correspond one-to-one, so an extra
+companion error cannot be hidden by the presence of the intended Grove rule.
 
 ### Paired validation
 
@@ -109,7 +111,9 @@ and text, extension placement, and bound relationships.
 The paired corpus covers exact resolution, hierarchy, datatype, inline and versioned
 ValueSet membership, text equality, repeats and limits, status-aware required items,
 and unknown, duplicate, misplaced, and disabled items. Each invalid case declares the
-stable expected rule so a test cannot pass because an unrelated error happened first.
+stable expected rule, and the tests require that rule to be the complete local error
+set. The `Conformance/corpora` live-FSH inventory references both Questionnaire-owned
+manifests by corpus ID and ownership; it does not copy or redefine their cases.
 
 ### Dependencies and terminology notices
 

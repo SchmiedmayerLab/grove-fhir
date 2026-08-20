@@ -17,6 +17,7 @@ import html
 import importlib.util
 import io
 import json
+import os
 import re
 import shutil
 import subprocess
@@ -26,20 +27,37 @@ from datetime import datetime, timezone
 from pathlib import Path, PurePosixPath
 from typing import Any
 
+try:
+    from fhir_package_semantic_snapshot import is_publisher_generated_resource_date
+except ModuleNotFoundError:  # Imported as Scripts.prepare-pages in tests.
+    from Scripts.fhir_package_semantic_snapshot import (  # type: ignore[no-redef]
+        is_publisher_generated_resource_date,
+    )
+
 
 TEXT_SUFFIXES = {
     ".css",
     ".csv",
     ".html",
+    ".internals",
     ".json",
+    ".js",
+    ".map",
     ".md",
+    ".mjs",
+    ".scss",
     ".svg",
     ".ttl",
     ".txt",
     ".xml",
+    ".xhtml",
 }
-LOCAL_LOCATION = re.compile(r"file://|/(?:Users|home/runner|private/tmp)/")
-WINDOWS_LOCAL_LOCATION = re.compile(r"(?i)\b[A-Z]:\\(?:Users|home\\runner|private\\tmp)\\")
+MACHINE_LOCAL_UNIX_PATH = re.compile(
+    r"(?<![A-Za-z0-9._~:/?#%+\\-])/(?:Users|home/runner|private/tmp)/"
+)
+MACHINE_LOCAL_WINDOWS_PATH = re.compile(
+    r"(?i)(?<![A-Za-z0-9_])(?:[A-Z]:\\+(?:Users|home\\+runner|private\\+tmp)\\+)"
+)
 INKSCAPE_EXPORT_FILENAME = re.compile(
     r'(inkscape:export-filename=")[A-Za-z]:\\[^"\r\n]*\\([^"\\\r\n]+)(")'
 )
@@ -47,6 +65,34 @@ MALFORMED_DATA_URL = re.compile(
     r"url\([^)]*?pagesdata:(image/[^;]+;base64,[A-Za-z0-9+/=]+)\)"
 )
 BUILT_SUFFIX = re.compile(r"\s*\(built [^)]*\)\s*$")
+
+
+def _json_strings(value: Any) -> list[str]:
+    if isinstance(value, str):
+        return [value]
+    if isinstance(value, list):
+        return [text for item in value for text in _json_strings(item)]
+    if isinstance(value, dict):
+        return [text for item in value.values() for text in _json_strings(item)]
+    return []
+
+
+def validate_portable_text(text: str, label: str, suffix: str) -> None:
+    candidates = [text]
+    if suffix.lower() == ".json":
+        try:
+            candidates.extend(_json_strings(json.loads(text)))
+        except json.JSONDecodeError:
+            pass
+    if any("\x1b" in candidate for candidate in candidates):
+        raise ValueError(f"ANSI escape data remains in {label}")
+    if any(
+        "file://" in candidate
+        or MACHINE_LOCAL_UNIX_PATH.search(candidate)
+        or MACHINE_LOCAL_WINDOWS_PATH.search(candidate)
+        for candidate in candidates
+    ):
+        raise ValueError(f"local filesystem location remains in {label}")
 
 
 def load_configuration(path: Path) -> dict[str, Any]:
@@ -110,6 +156,52 @@ def read_package_metadata(path: Path) -> dict[str, Any]:
         return json.load(package_file)
 
 
+def normalize_publisher_internals(
+    text: str, package_build_timestamp: str | None, source_date_epoch: int
+) -> str:
+    """Replace the Publisher's private build clock with the reproducible clock.
+
+    Publisher 2.3.2 renders ``spec.internals`` with a 12-hour clock but omits
+    the meridiem, while ``package.json`` retains the same local wall clock in
+    24-hour form. Bind the date, minute, and second exactly and accept only the
+    corresponding 12-hour projection before normalizing both fields.
+    """
+    try:
+        internals = json.loads(text)
+    except json.JSONDecodeError as error:
+        raise ValueError("package spec.internals must contain JSON") from error
+    if not isinstance(internals, dict) or package_build_timestamp is None:
+        raise ValueError("package spec.internals has no exact Publisher build timestamp")
+    try:
+        package_clock = datetime.strptime(package_build_timestamp, "%Y%m%d%H%M%S")
+    except ValueError as error:
+        raise ValueError("package spec.internals build timestamp is inconsistent") from error
+    expected_date = (
+        f"{package_build_timestamp[:4]}-{package_build_timestamp[4:6]}-"
+        f"{package_build_timestamp[6:8]}"
+    )
+    expected_internals_timestamp = (
+        package_build_timestamp[:8]
+        + f"{package_clock.hour % 12 or 12:02d}"
+        + package_build_timestamp[10:]
+    )
+    date_time = internals.get("date-time")
+    if (
+        internals.get("date") != expected_date
+        or not isinstance(date_time, str)
+        or not re.fullmatch(
+            re.escape(expected_internals_timestamp)
+            + r"(?:Z|[+-](?:(?:0[0-9]|1[0-3])[0-5][0-9]|1400))",
+            date_time,
+        )
+    ):
+        raise ValueError("package spec.internals build timestamp is inconsistent")
+    reproducible = datetime.fromtimestamp(source_date_epoch, tz=timezone.utc)
+    internals["date"] = reproducible.strftime("%Y-%m-%d")
+    internals["date-time"] = reproducible.strftime("%Y%m%d%H%M%S+0000")
+    return json.dumps(internals, indent=2, ensure_ascii=False) + "\n"
+
+
 def rewrite_package_archive(
     path: Path,
     canonical: str,
@@ -119,11 +211,45 @@ def rewrite_package_archive(
     public_urls: dict[str, str],
     source_url: str,
 ) -> None:
+    original_metadata = read_package_metadata(path)
+    raw_package_date = original_metadata.get("date")
+    package_build_timestamp = (
+        raw_package_date
+        if isinstance(raw_package_date, str)
+        and re.fullmatch(r"[0-9]{14}", raw_package_date)
+        else None
+    )
     entries: list[tuple[tarfile.TarInfo, bytes | None]] = []
+    seen_names: set[str] = set()
     with tarfile.open(path, "r:gz") as source:
         for original in source.getmembers():
+            if not isinstance(original.name, str) or not original.name or "\\" in original.name:
+                raise ValueError(f"unsafe package archive member: {original.name!r}")
+            candidate = PurePosixPath(original.name)
+            if (
+                candidate.is_absolute()
+                or ".." in candidate.parts
+                or "." in candidate.parts
+                or candidate.as_posix() != original.name.rstrip("/")
+            ):
+                raise ValueError(f"unsafe package archive member: {original.name!r}")
+            normalized_name = candidate.as_posix()
+            if normalized_name in seen_names:
+                raise ValueError(f"duplicate package archive member: {normalized_name}")
+            seen_names.add(normalized_name)
+            if not original.isfile() and not original.isdir():
+                raise ValueError(
+                    f"unsupported package archive member type: {original.name}"
+                )
             member = copy.copy(original)
-            payload = source.extractfile(original).read() if original.isfile() else None
+            member.name = normalized_name
+            if original.isfile():
+                extracted = source.extractfile(original)
+                if extracted is None:
+                    raise ValueError(f"unreadable package archive member: {original.name}")
+                payload = extracted.read()
+            else:
+                payload = None
             if member.name == "package/package.json" and payload is not None:
                 package = json.loads(payload)
                 package["url"] = canonical
@@ -147,12 +273,36 @@ def rewrite_package_archive(
                         public_urls,
                         source_url,
                     )
-                    if LOCAL_LOCATION.search(rewritten) or WINDOWS_LOCAL_LOCATION.search(
-                        rewritten
-                    ):
-                        raise ValueError(
-                            f"local filesystem location remains in {path.name}: {member.name}"
+                    if member.name == "package/other/spec.internals":
+                        rewritten = normalize_publisher_internals(
+                            rewritten, package_build_timestamp, source_date_epoch
                         )
+                    elif (
+                        member.name != "package/package.json"
+                        and PurePosixPath(member.name).suffix == ".json"
+                        and package_build_timestamp is not None
+                    ):
+                        try:
+                            resource = json.loads(rewritten)
+                        except json.JSONDecodeError:
+                            pass
+                        else:
+                            if (
+                                isinstance(resource, dict)
+                                and is_publisher_generated_resource_date(
+                                    resource, package_build_timestamp
+                                )
+                            ):
+                                resource.pop("date")
+                                rewritten = (
+                                    json.dumps(resource, indent=2, ensure_ascii=False)
+                                    + "\n"
+                                )
+                    validate_portable_text(
+                        rewritten,
+                        f"{path.name}:{member.name}",
+                        PurePosixPath(member.name).suffix,
+                    )
                     payload = rewritten.encode("utf-8")
 
             member.uid = 0
@@ -161,12 +311,28 @@ def rewrite_package_archive(
             member.gname = ""
             member.mtime = source_date_epoch
             member.pax_headers = {}
+            member.linkname = ""
+            member.devmajor = 0
+            member.devminor = 0
+            if member.isdir():
+                member.type = tarfile.DIRTYPE
+                member.mode = 0o755
+                member.size = 0
+            else:
+                member.type = tarfile.REGTYPE
+                member.mode = 0o644
             if payload is not None:
                 member.size = len(payload)
+            try:
+                member.tobuf(format=tarfile.USTAR_FORMAT)
+            except (ValueError, UnicodeError) as error:
+                raise ValueError(
+                    f"package archive member cannot be represented in USTAR: {member.name}"
+                ) from error
             entries.append((member, payload))
 
     uncompressed = io.BytesIO()
-    with tarfile.open(fileobj=uncompressed, mode="w", format=tarfile.PAX_FORMAT) as target:
+    with tarfile.open(fileobj=uncompressed, mode="w", format=tarfile.USTAR_FORMAT) as target:
         for member, payload in sorted(entries, key=lambda entry: entry[0].name):
             target.addfile(member, io.BytesIO(payload) if payload is not None else None)
 
@@ -307,6 +473,30 @@ def load_redirect_generator(repository_root: Path) -> Any:
     return module
 
 
+def safe_site_output(site: Path, repository_root: Path) -> Path:
+    """Reject output aliases before any recursive deletion or publication write."""
+    lexical_repository = Path(os.path.abspath(repository_root))
+    lexical_site = Path(os.path.abspath(site))
+    if lexical_site == lexical_repository or not lexical_site.is_relative_to(
+        lexical_repository
+    ):
+        raise ValueError("site output must be a dedicated directory below the repository")
+    current = lexical_repository
+    for component in lexical_site.relative_to(lexical_repository).parts:
+        current = current / component
+        if current.is_symlink():
+            raise ValueError(f"site output path may not traverse a symlink: {current}")
+        if current.exists() and not current.is_dir():
+            raise ValueError(f"site output path component is not a directory: {current}")
+    resolved_site = lexical_site.resolve(strict=False)
+    resolved_repository = lexical_repository.resolve()
+    if resolved_site == resolved_repository or not resolved_site.is_relative_to(
+        resolved_repository
+    ):
+        raise ValueError("site output escapes the repository")
+    return resolved_site
+
+
 def prepare_guide(
     stage: Path,
     repository_root: Path,
@@ -351,7 +541,11 @@ def prepare_guide(
             text = path.read_text(encoding="utf-8")
         except UnicodeDecodeError:
             continue
-        if LOCAL_LOCATION.search(text) or WINDOWS_LOCAL_LOCATION.search(text):
+        try:
+            validate_portable_text(
+                text, f"{source}:{path.relative_to(stage)}", path.suffix
+            )
+        except ValueError:
             leaked_locations.append(str(path.relative_to(stage)))
     if leaked_locations:
         raise RuntimeError(
@@ -369,10 +563,8 @@ def assemble_site(
     source_date_epoch: int,
     published_root: Path | None = None,
 ) -> None:
-    site = site.resolve()
+    site = safe_site_output(site, repository_root)
     repository_root = repository_root.resolve()
-    if site == repository_root or repository_root not in site.parents:
-        raise ValueError("site output must be a dedicated directory below the repository")
 
     if site.exists():
         shutil.rmtree(site)

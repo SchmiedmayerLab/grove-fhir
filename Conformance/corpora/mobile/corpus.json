@@ -1,0 +1,684 @@
+{
+  "schemaVersion": 1,
+  "bases": [
+    {"id": "application-device", "path": "bases/application-device.json"},
+    {"id": "conversion-provenance", "path": "bases/conversion-provenance.json"},
+    {"id": "mobile-observation-code-only-component", "path": "bases/mobile-observation-code-only-component.json"},
+    {"id": "mobile-observation", "path": "bases/mobile-observation.json"},
+    {"id": "recording-device", "path": "bases/recording-device.json"},
+    {"id": "step-count", "path": "bases/step-count.json"}
+  ],
+  "cases": [
+    {
+      "id": "recording-device-incomplete-identifier",
+      "base": "recording-device",
+      "patch": [{"op": "remove", "path": "/identifier/0/system"}],
+      "expectedRule": {
+        "code": "grove-recording-device.identifier.system",
+        "reason": "Every present recording-device identifier has a system.",
+        "location": "Device.identifier[0].system",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "recording-device-identifier-value-required",
+      "base": "recording-device",
+      "patch": [{"op": "remove", "path": "/identifier/0/value"}],
+      "expectedRule": {
+        "code": "grove-recording-device.identifier.value",
+        "reason": "Every present recording-device identifier has a value.",
+        "location": "Device.identifier[0].value",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "recording-device-version-type-required",
+      "base": "recording-device",
+      "patch": [{"op": "remove", "path": "/version/0/type"}],
+      "expectedRule": {
+        "code": "grove-recording-device.version.type",
+        "reason": "Every present recording-device version identifies its version type.",
+        "location": "Device.version[0].type",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "application-device-identifier-required",
+      "base": "application-device",
+      "patch": [{"op": "remove", "path": "/identifier"}],
+      "expectedRule": {
+        "code": "grove-application-device.identifier",
+        "reason": "An application device has at least one complete stable identifier.",
+        "location": "Device.identifier",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "application-device-identifier-system-required",
+      "base": "application-device",
+      "patch": [{"op": "remove", "path": "/identifier/0/system"}],
+      "expectedRule": {
+        "code": "grove-application-device.identifier.system",
+        "reason": "Every application-device identifier has a system.",
+        "location": "Device.identifier[0].system",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "application-device-identifier-value-required",
+      "base": "application-device",
+      "patch": [{"op": "remove", "path": "/identifier/0/value"}],
+      "expectedRule": {
+        "code": "grove-application-device.identifier.value",
+        "reason": "Every application-device identifier has a value.",
+        "location": "Device.identifier[0].value",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "application-device-name-required",
+      "base": "application-device",
+      "patch": [{"op": "remove", "path": "/deviceName"}],
+      "expectedRule": {
+        "code": "grove-application-device.name",
+        "reason": "An application device has exactly one application-name slice.",
+        "location": "Device.deviceName",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "application-device-name-type-fixed",
+      "base": "application-device",
+      "patch": [{"op": "replace", "path": "/deviceName/0/type", "value": "model-name"}],
+      "expectedRule": {
+        "code": "grove-application-device.name.type",
+        "reason": "The application-name slice uses the user-friendly-name type.",
+        "location": "Device.deviceName[0].type",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "application-device-name-value-required",
+      "base": "application-device",
+      "patch": [{"op": "remove", "path": "/deviceName/0/name"}],
+      "expectedRule": {
+        "code": "grove-application-device.name.value",
+        "reason": "The application-name slice carries its display name.",
+        "location": "Device.deviceName[0].name",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "application-device-name-limit",
+      "base": "application-device",
+      "patch": [{"op": "copy", "from": "/deviceName/0", "path": "/deviceName/-"}],
+      "expectedRule": {
+        "code": "grove-application-device.name.max",
+        "reason": "An application Device carries exactly one application-name slice.",
+        "location": "Device.deviceName",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "application-device-version-value-required",
+      "base": "application-device",
+      "patch": [{"op": "remove", "path": "/version/0/value"}],
+      "expectedRule": {
+        "code": "grove-application-device.version.value",
+        "reason": "An application-version slice carries its version value.",
+        "location": "Device.version[0].value",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "application-device-version-limit",
+      "base": "application-device",
+      "patch": [{"op": "copy", "from": "/version/0", "path": "/version/-"}],
+      "expectedRule": {
+        "code": "grove-application-device.version.max",
+        "reason": "An application Device carries at most one application-version slice.",
+        "location": "Device.version",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "application-device-parent-device-target",
+      "base": "application-device",
+      "patch": [{"op": "add", "path": "/parent/type", "value": "Patient"}],
+      "expectedRule": {
+        "code": "grove-application-device.parent.target",
+        "reason": "An application Device parent references a Device.",
+        "location": "Device.parent",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "mobile-observation-result-required",
+      "base": "mobile-observation",
+      "patch": [{"op": "remove", "path": "/valueQuantity"}],
+      "expectedRule": {
+        "code": "grove-mobile-result-1",
+        "reason": "A mobile Observation has a top-level value, a valued or absent-reason component, a member, or a top-level absent reason.",
+        "location": "Observation",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "mobile-observation-code-only-component-not-result",
+      "base": "mobile-observation-code-only-component",
+      "patch": [{"op": "remove", "path": "/valueQuantity"}],
+      "expectedRule": {
+        "code": "grove-mobile-result-1",
+        "reason": "A mobile Observation has a top-level value, a valued or absent-reason component, a member, or a top-level absent reason.",
+        "location": "Observation",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "mobile-observation-duplicate-identifier",
+      "base": "mobile-observation",
+      "patch": [{"op": "copy", "from": "/identifier/0", "path": "/identifier/-"}],
+      "expectedRule": {
+        "code": "grove-identifier-token-1",
+        "reason": "A resource does not repeat the same identifier system and value pair.",
+        "location": "Observation",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "mobile-observation-identifier-required",
+      "base": "mobile-observation",
+      "patch": [{"op": "remove", "path": "/identifier"}],
+      "expectedRule": {
+        "code": "grove-mobile-observation.identifier",
+        "reason": "A mobile Observation has at least one complete stable identifier.",
+        "location": "Observation.identifier",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "mobile-observation-identifier-system-required",
+      "base": "mobile-observation",
+      "patch": [{"op": "remove", "path": "/identifier/0/system"}],
+      "expectedRule": {
+        "code": "grove-mobile-observation.identifier.system",
+        "reason": "Every mobile Observation identifier has a system.",
+        "location": "Observation.identifier[0].system",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "mobile-observation-identifier-value-required",
+      "base": "mobile-observation",
+      "patch": [{"op": "remove", "path": "/identifier/0/value"}],
+      "expectedRule": {
+        "code": "grove-mobile-observation.identifier.value",
+        "reason": "Every mobile Observation identifier has a value.",
+        "location": "Observation.identifier[0].value",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "mobile-observation-subject-required",
+      "base": "mobile-observation",
+      "patch": [{"op": "remove", "path": "/subject"}],
+      "expectedRule": {
+        "code": "grove-mobile-observation.subject",
+        "reason": "A mobile Observation identifies its Patient subject.",
+        "location": "Observation.subject",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "mobile-observation-subject-patient-only",
+      "base": "mobile-observation",
+      "patch": [{"op": "replace", "path": "/subject/reference", "value": "#application"}],
+      "expectedRule": {
+        "code": "grove-mobile-observation.subject.patient",
+        "reason": "The mobile Observation subject references a Patient.",
+        "location": "Observation.subject",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "mobile-observation-effective-required",
+      "base": "mobile-observation-code-only-component",
+      "patch": [{"op": "remove", "path": "/effectiveDateTime"}],
+      "expectedRule": {
+        "code": "grove-mobile-observation.effective",
+        "reason": "A mobile Observation carries an effective dateTime or Period.",
+        "location": "Observation.effective[x]",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "mobile-observation-recording-method-limit",
+      "base": "mobile-observation",
+      "patch": [{"op": "copy", "from": "/extension/0", "path": "/extension/-"}],
+      "expectedRule": {
+        "code": "grove-mobile-observation.recording-method.max",
+        "reason": "A mobile Observation carries at most one Grove recording-method extension.",
+        "location": "Observation.extension",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "mobile-observation-recording-method-value-required",
+      "base": "mobile-observation",
+      "patch": [{"op": "remove", "path": "/extension/0/valueCoding"}],
+      "expectedRule": {
+        "code": "grove-recording-method.value",
+        "reason": "A Grove recording-method extension carries exactly one value.",
+        "location": "Observation.extension[0].value[x]",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "mobile-observation-recording-method-coding-only",
+      "base": "mobile-observation",
+      "patch": [{"op": "replace", "path": "/extension/0", "value": {"url": "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-recording-method", "valueString": "automatically-recorded"}}],
+      "expectedRule": {
+        "code": "grove-recording-method.value.coding",
+        "reason": "A Grove recording-method extension represents its value with Coding.",
+        "location": "Observation.extension[0].value[x]",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "mobile-observation-recording-method-required-binding",
+      "base": "mobile-observation",
+      "patch": [{"op": "replace", "path": "/extension/0/valueCoding/code", "value": "unknown"}],
+      "expectedRule": {
+        "code": "grove-recording-method.binding",
+        "reason": "A Grove recording-method code is drawn from the required Grove Recording Method value set.",
+        "location": "Observation.extension[0].valueCoding",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "mobile-observation-recording-method-nested-extension-prohibited",
+      "base": "mobile-observation",
+      "patch": [{"op": "add", "path": "/extension/0/extension", "value": [{"url": "https://example.org/nested", "valueBoolean": true}]}],
+      "expectedRule": {
+        "code": "grove-recording-method.extension.max",
+        "reason": "The simple Grove recording-method extension has no nested extensions.",
+        "location": "Observation.extension[0].extension",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "mobile-observation-gateway-limit",
+      "base": "mobile-observation",
+      "patch": [{"op": "copy", "from": "/extension/1", "path": "/extension/-"}],
+      "expectedRule": {
+        "code": "grove-mobile-observation.gateway-device.max",
+        "reason": "A mobile Observation carries at most one gateway-device extension.",
+        "location": "Observation.extension",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "mobile-observation-gateway-application-target",
+      "base": "mobile-observation",
+      "patch": [{"op": "replace", "path": "/extension/1/valueReference/reference", "value": "#participant"}],
+      "expectedRule": {
+        "code": "grove-mobile-observation.gateway-device.target",
+        "reason": "The gateway-device extension references a Grove Application Device.",
+        "location": "Observation.extension[1].valueReference",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "mobile-observation-research-study-target",
+      "base": "mobile-observation",
+      "patch": [{"op": "replace", "path": "/extension/2/valueReference/reference", "value": "#application"}],
+      "expectedRule": {
+        "code": "grove-mobile-observation.research-study.target",
+        "reason": "The standard workflow-researchStudy extension references a ResearchStudy.",
+        "location": "Observation.extension[2].valueReference",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "mobile-observation-date-time-timezone-limit",
+      "base": "mobile-observation",
+      "patch": [{"op": "copy", "from": "/_effectiveDateTime/extension/0", "path": "/_effectiveDateTime/extension/-"}],
+      "expectedRule": {
+        "code": "grove-mobile-observation.effective-date-time.timezone.max",
+        "reason": "An effective dateTime carries at most one standard timezone extension.",
+        "location": "Observation.effectiveDateTime.extension",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "step-count-result-required",
+      "base": "step-count",
+      "patch": [{"op": "remove", "path": "/valueQuantity"}],
+      "expectedRule": {
+        "code": "grove-step-count-result-1",
+        "reason": "A step-count Observation has a count value or a reason why the count is absent.",
+        "location": "Observation",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "step-count-period-order",
+      "base": "step-count",
+      "patch": [{"op": "replace", "path": "/effectivePeriod/end", "value": "2026-08-19T09:00:00-07:00"}],
+      "expectedRule": {
+        "code": "grove-step-count-period-1",
+        "reason": "A step-count Observation has a non-zero effective Period.",
+        "location": "Observation",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "step-count-negative-value",
+      "base": "step-count",
+      "patch": [{"op": "replace", "path": "/valueQuantity/value", "value": -1}],
+      "expectedRule": {
+        "code": "grove-step-count-value-1",
+        "reason": "A populated step count is not negative.",
+        "location": "Observation",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "step-count-code-fixed",
+      "base": "step-count",
+      "patch": [{"op": "replace", "path": "/code/coding/0/code", "value": "other-count"}],
+      "expectedRule": {
+        "code": "grove-mobile-step-count.code",
+        "reason": "A step-count Observation uses the fixed Grove step-count-total code.",
+        "location": "Observation.code",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "step-count-period-required",
+      "base": "step-count",
+      "patch": [{"op": "remove", "path": "/effectivePeriod"}],
+      "expectedRule": {
+        "code": "grove-mobile-step-count.effective-period",
+        "reason": "A step-count Observation has exactly one effective Period.",
+        "location": "Observation.effective[x]",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "step-count-period-start-required",
+      "base": "step-count",
+      "patch": [{"op": "replace", "path": "/effectivePeriod", "value": {"end": "2026-08-19T10:00:00-07:00", "_end": {"extension": [{"url": "http://hl7.org/fhir/StructureDefinition/timezone", "valueCode": "America/Los_Angeles"}]}}}],
+      "expectedRule": {
+        "code": "grove-mobile-observation.effective-period.start",
+        "reason": "A mobile Observation effective Period has a start instant.",
+        "location": "Observation.effectivePeriod.start",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "step-count-period-end-required",
+      "base": "step-count",
+      "patch": [{"op": "replace", "path": "/effectivePeriod", "value": {"start": "2026-08-19T09:00:00-07:00", "_start": {"extension": [{"url": "http://hl7.org/fhir/StructureDefinition/timezone", "valueCode": "America/Los_Angeles"}]}}}],
+      "expectedRule": {
+        "code": "grove-mobile-step-count.effective-period.end",
+        "reason": "A step-count effective Period has an end instant.",
+        "location": "Observation.effectivePeriod.end",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "step-count-effective-date-time-prohibited",
+      "base": "step-count",
+      "patch": [{"op": "add", "path": "/effectiveDateTime", "value": "2026-08-19T09:30:00-07:00"}],
+      "expectedRule": {
+        "code": "grove-mobile-step-count.effective-date-time.max",
+        "reason": "A step-count Observation uses an effective Period and not effectiveDateTime.",
+        "location": "Observation.effective[x]",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "step-count-value-quantity-only",
+      "base": "step-count",
+      "patch": [{"op": "move", "from": "/valueQuantity", "path": "/valueString"}],
+      "expectedRule": {
+        "code": "grove-mobile-step-count.value.quantity",
+        "reason": "A step-count Observation represents its result as a Quantity.",
+        "location": "Observation.value[x]",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "step-count-period-start-timezone-limit",
+      "base": "step-count",
+      "patch": [{"op": "copy", "from": "/effectivePeriod/_start/extension/0", "path": "/effectivePeriod/_start/extension/-"}],
+      "expectedRule": {
+        "code": "grove-mobile-observation.effective-period.start.timezone.max",
+        "reason": "An effective Period start carries at most one standard timezone extension.",
+        "location": "Observation.effectivePeriod.start.extension",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "step-count-period-end-timezone-limit",
+      "base": "step-count",
+      "patch": [{"op": "copy", "from": "/effectivePeriod/_end/extension/0", "path": "/effectivePeriod/_end/extension/-"}],
+      "expectedRule": {
+        "code": "grove-mobile-observation.effective-period.end.timezone.max",
+        "reason": "An effective Period end carries at most one standard timezone extension.",
+        "location": "Observation.effectivePeriod.end.extension",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "step-count-value-number-required",
+      "base": "step-count",
+      "patch": [{"op": "remove", "path": "/valueQuantity/value"}],
+      "expectedRule": {
+        "code": "grove-mobile-step-count.value",
+        "reason": "A populated step-count Quantity carries its numeric count.",
+        "location": "Observation.valueQuantity.value",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "step-count-comparator-prohibited",
+      "base": "step-count",
+      "patch": [{"op": "add", "path": "/valueQuantity/comparator", "value": ">"}],
+      "expectedRule": {
+        "code": "grove-mobile-step-count.comparator",
+        "reason": "A step count is an exact source count and has no Quantity comparator.",
+        "location": "Observation.valueQuantity.comparator",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "step-count-unit-system-fixed",
+      "base": "step-count",
+      "patch": [{"op": "replace", "path": "/valueQuantity/system", "value": "https://example.org/units"}],
+      "expectedRule": {
+        "code": "grove-mobile-step-count.unit.system",
+        "reason": "A step-count Quantity uses the UCUM code system.",
+        "location": "Observation.valueQuantity.system",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "step-count-unit-system-required",
+      "base": "step-count",
+      "patch": [{"op": "remove", "path": "/valueQuantity/system"}],
+      "expectedRule": {
+        "code": "grove-mobile-step-count.unit.system.required",
+        "reason": "A step-count Quantity carries its required UCUM system.",
+        "location": "Observation.valueQuantity.system",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "step-count-unit-code-fixed",
+      "base": "step-count",
+      "patch": [{"op": "replace", "path": "/valueQuantity/code", "value": "1"}],
+      "expectedRule": {
+        "code": "grove-mobile-step-count.unit.code",
+        "reason": "A step-count Quantity uses the UCUM annotation code {steps}.",
+        "location": "Observation.valueQuantity.code",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "step-count-unit-code-required",
+      "base": "step-count",
+      "patch": [{"op": "remove", "path": "/valueQuantity/code"}],
+      "expectedRule": {
+        "code": "grove-mobile-step-count.unit.code.required",
+        "reason": "A step-count Quantity carries its required UCUM annotation code.",
+        "location": "Observation.valueQuantity.code",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "conversion-provenance-target-required",
+      "base": "conversion-provenance",
+      "patch": [{"op": "remove", "path": "/target"}],
+      "expectedRule": {
+        "code": "grove-mobile-conversion-provenance.target",
+        "reason": "Conversion Provenance identifies at least one converted mobile Observation.",
+        "location": "Provenance.target",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "conversion-provenance-recorded-required",
+      "base": "conversion-provenance",
+      "patch": [{"op": "remove", "path": "/recorded"}],
+      "expectedRule": {
+        "code": "grove-mobile-conversion-provenance.recorded",
+        "reason": "Conversion Provenance records when the provenance statement was assembled.",
+        "location": "Provenance.recorded",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "conversion-provenance-activity-transform",
+      "base": "conversion-provenance",
+      "patch": [{"op": "replace", "path": "/activity/coding/0/code", "value": "create"}],
+      "expectedRule": {
+        "code": "grove-mobile-conversion-provenance.activity",
+        "reason": "Conversion Provenance uses the ISO 21089 transform lifecycle activity.",
+        "location": "Provenance.activity",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "conversion-provenance-activity-required",
+      "base": "conversion-provenance",
+      "patch": [{"op": "remove", "path": "/activity"}],
+      "expectedRule": {
+        "code": "grove-mobile-conversion-provenance.activity",
+        "reason": "Conversion Provenance records exactly one activity.",
+        "location": "Provenance.activity",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "conversion-provenance-assembler-required",
+      "base": "conversion-provenance",
+      "patch": [{"op": "remove", "path": "/agent"}],
+      "expectedRule": {
+        "code": "grove-mobile-conversion-provenance.assembler",
+        "reason": "Conversion Provenance identifies exactly one assembler application agent.",
+        "location": "Provenance.agent",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "conversion-provenance-assembler-who-required",
+      "base": "conversion-provenance",
+      "patch": [{"op": "remove", "path": "/agent/0/who"}],
+      "expectedRule": {
+        "code": "grove-mobile-conversion-provenance.assembler.who",
+        "reason": "The assembler agent references the application Device.",
+        "location": "Provenance.agent[0].who",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "conversion-provenance-assembler-type-fixed",
+      "base": "conversion-provenance",
+      "patch": [{"op": "replace", "path": "/agent/0/type/coding/0/code", "value": "author"}],
+      "expectedRule": {
+        "code": "grove-mobile-conversion-provenance.assembler.type",
+        "reason": "The required application agent uses the Provenance assembler participation type.",
+        "location": "Provenance.agent[0].type",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "conversion-provenance-assembler-type-required",
+      "base": "conversion-provenance",
+      "patch": [{"op": "remove", "path": "/agent/0/type"}],
+      "expectedRule": {
+        "code": "grove-mobile-conversion-provenance.assembler.type",
+        "reason": "The required assembler participant declares its participant type.",
+        "location": "Provenance.agent[0].type",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "conversion-provenance-target-mobile-observation",
+      "base": "conversion-provenance",
+      "patch": [{"op": "replace", "path": "/target/0/reference", "value": "#assembler"}],
+      "expectedRule": {
+        "code": "grove-mobile-conversion-provenance.target.profile",
+        "reason": "Conversion Provenance targets a Grove Mobile Observation.",
+        "location": "Provenance.target[0]",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "conversion-provenance-assembler-application-target",
+      "base": "conversion-provenance",
+      "patch": [{"op": "replace", "path": "/agent/0/who/reference", "value": "#converted"}],
+      "expectedRule": {
+        "code": "grove-mobile-conversion-provenance.assembler.who.target",
+        "reason": "The assembler agent references a Grove Application Device.",
+        "location": "Provenance.agent[0].who",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "conversion-provenance-source-required",
+      "base": "conversion-provenance",
+      "patch": [{"op": "remove", "path": "/entity"}],
+      "expectedRule": {
+        "code": "grove-mobile-conversion-provenance.entity",
+        "reason": "Conversion Provenance identifies at least one source entity.",
+        "location": "Provenance.entity",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "conversion-provenance-source-role-fixed",
+      "base": "conversion-provenance",
+      "patch": [{"op": "replace", "path": "/entity/0/role", "value": "revision"}],
+      "expectedRule": {
+        "code": "grove-mobile-conversion-provenance.entity.role",
+        "reason": "A converted input is represented with the Provenance source entity role.",
+        "location": "Provenance.entity[0].role",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "conversion-provenance-source-role-required",
+      "base": "conversion-provenance",
+      "patch": [{"op": "remove", "path": "/entity/0/role"}],
+      "expectedRule": {
+        "code": "grove-mobile-conversion-provenance.entity.role",
+        "reason": "Every conversion Provenance entity declares its role.",
+        "location": "Provenance.entity[0].role",
+        "severity": "error"
+      }
+    }
+  ]
+}

@@ -9,95 +9,100 @@
 name: Documentation
 
 on:
-  pull_request:
-  push:
+  workflow_run:
+    workflows: [Build and Test]
+    types: [completed]
     branches: [main]
-  workflow_dispatch:
 
 concurrency:
-  group: pages-${{ github.ref }}
+  group: pages-${{ github.event.workflow_run.head_sha }}
   cancel-in-progress: true
 
 permissions:
+  actions: read
   contents: read
+  pages: write
+  id-token: write
 
 jobs:
-  build:
-    name: Build GitHub Pages
-    runs-on: ubuntu-latest
-    timeout-minutes: 60
-    steps:
-      - uses: actions/checkout@v7
-      - name: Check out immutable publications
-        uses: actions/checkout@v7
-        with:
-          ref: publication
-          path: .published
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 22
-          cache: npm
-      - uses: actions/setup-java@v5
-        with:
-          distribution: temurin
-          java-version: 21
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: "3.3"
-          bundler-cache: false
-      - uses: actions/cache@v5
-        with:
-          path: |
-            ~/.fhir
-            .build/fhir-tools
-            .build/bundle
-            mobile/input-cache
-            healthkit/input-cache
-            health-connect/input-cache
-            questionnaire/input-cache
-          key: fhir-pages-${{ runner.os }}-${{ hashFiles('Gemfile.lock', 'package-lock.json', 'Scripts/download-fhir-tools.sh') }}
-          restore-keys: |
-            fhir-pages-${{ runner.os }}-
-      - run: npm ci
-      - name: Verify documentation and publication sources
-        run: npm test
-      - name: Build the documentation site
-        env:
-          PUBLISHED_SITE_ROOT: ${{ github.workspace }}/.published
-        run: npm run pages:build
-      - name: Verify the assembled package artifact allowlist
-        run: python3 -m unittest Tests.test_artifact_allowlist -v
-      - name: Upload the Pages artifact
-        uses: actions/upload-pages-artifact@v4
-        with:
-          path: .build/pages
-
   deploy:
     name: Deploy GitHub Pages
-    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
-    needs: build
+    if: >-
+      github.event.workflow_run.head_repository.full_name == github.repository &&
+      github.event.workflow_run.head_branch == 'main' &&
+      github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pages: write
-      id-token: write
+    timeout-minutes: 20
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          fetch-depth: 1
+          persist-credentials: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13.15"
+      - name: Locate the unique verified Pages artifact
+        id: artifact
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const artifacts = await github.paginate(
+              github.rest.actions.listWorkflowRunArtifacts,
+              {
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                run_id: context.payload.workflow_run.id,
+                per_page: 100,
+              },
+            );
+            const matches = artifacts.filter(
+              (artifact) => artifact.name === "pages-site" && !artifact.expired,
+            );
+            if (matches.length > 1) {
+              core.setFailed("Build and Test produced multiple pages-site artifacts");
+              return;
+            }
+            core.setOutput("present", matches.length === 1 ? "true" : "false");
+      - uses: actions/download-artifact@v5
+        if: steps.artifact.outputs.present == 'true'
+        with:
+          name: pages-site
+          path: .build/pages
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ github.token }}
+      - name: Verify the downloaded lock and exact build-once site
+        if: steps.artifact.outputs.present == 'true'
+        run: >-
+          python3 Scripts/check-evidence-lock.py site
+          --site .build/pages
+          --expected-revision "${{ github.event.workflow_run.head_sha }}"
+      - name: Upload the already verified Pages artifact
+        if: steps.artifact.outputs.present == 'true'
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: .build/pages
+          include-hidden-files: true
       - name: Deploy documentation
+        if: steps.artifact.outputs.present == 'true'
         id: deployment
         uses: actions/deploy-pages@v4
       - name: Verify the deployed preview
+        if: steps.artifact.outputs.present == 'true'
         run: >-
           python3 Scripts/check-live-publication.py
           --base-url "${{ steps.deployment.outputs.page_url }}"
-          --expected-revision "${{ github.sha }}"
+          --expected-revision "${{ github.event.workflow_run.head_sha }}"
       - name: Verify the canonical host
-        if: vars.FHIR_CANONICAL_BASE_URL != ''
+        if: steps.artifact.outputs.present == 'true' && vars.FHIR_CANONICAL_BASE_URL != ''
         run: >-
           python3 Scripts/check-live-publication.py
           --base-url "${{ vars.FHIR_CANONICAL_BASE_URL }}"
-          --expected-revision "${{ github.sha }}"
+          --expected-revision "${{ github.event.workflow_run.head_sha }}"
           --canonical-only
+      - name: Report a truthful deployment skip
+        if: steps.artifact.outputs.present != 'true'
+        run: echo "The successful Build and Test run had no active publication changes; deployment was skipped."

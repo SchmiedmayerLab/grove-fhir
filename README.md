@@ -48,7 +48,10 @@ npm run pages:build
 ```
 
 `pages:build` builds and validates the guides in dependency order, rejects
-Publisher QA errors or warnings, and assembles the published guides under `.build/pages`.
+Publisher QA errors or warnings, and assembles a guide-only local preview under
+`.build/pages`. The full evidence-bearing site additionally requires all exact platform
+proposal outputs; [Conformance/README.md](Conformance/README.md) documents that fail-closed
+inventory and the reproducible lock commands.
 
 The [publication model](PUBLICATION.md) documents canonical routes, package checksums, and the
 release process.

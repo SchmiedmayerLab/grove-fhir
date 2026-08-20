@@ -1,0 +1,410 @@
+{
+  "schemaVersion": 1,
+  "warningAllowlist": [
+    {
+      "messageId": "All_observations_should_have_a_performer"
+    },
+    {
+      "messageId": "Error_validating_code_running_without_terminology_services"
+    },
+    {
+      "messageId": "Reference_REF_NoDisplay"
+    },
+    {
+      "messageId": "Terminology_TX_NoValid_2_CC"
+    },
+    {
+      "messageId": "http://hl7.org/fhir/StructureDefinition/DomainResource#dom-6"
+    }
+  ],
+  "cases": {
+    "health-connect-issued-required": [
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Observation",
+        "detailsContains": "Observation.issued: minimum required = 1, but only found 0 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/StructureDefinition/health-connect-observation|0.1.0)"
+      }
+    ],
+    "health-connect-provenance-source-agent-enterer": [
+      {
+        "messageId": "TYPE_CHECKS_PATTERN_CC",
+        "code": "value",
+        "expression": "Provenance.entity[0].agent[0].type",
+        "detailsContains": "The pattern [system http://terminology.hl7.org/CodeSystem/provenance-participant-type, code enterer, and display 'null'] defined in the profile https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/StructureDefinition/health-connect-conversion-provenance|0.1.0 not found. Issues: [ValidationMessage[level=ERROR,type=VALUE,location=Provenance.entity[0].agent[0].type.coding.code,message=Value is 'author' but is fixed to 'enterer' in the profile https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/StructureDefinition/health-connect-conversion-provenance|0.1.0#Provenance.entity.agent]]"
+      }
+    ],
+    "health-connect-provenance-source-agent-device-target": [
+      {
+        "messageId": "Reference_REF_BadTargetType",
+        "code": "structure",
+        "expression": "Provenance.entity[0].agent[0].who",
+        "detailsContains": "Invalid Resource target type. Found Device, but expected one of (Observation)"
+      },
+      {
+        "messageId": "Reference_REF_BadTargetType",
+        "code": "structure",
+        "expression": "Provenance.entity[0].agent[0].who",
+        "detailsContains": "Invalid Resource target type. Found Observation, but expected one of ([Practitioner, Organization, Device, Patient, PractitionerRole, RelatedPerson])"
+      },
+      {
+        "messageId": "Reference_REF_BadTargetType",
+        "code": "structure",
+        "expression": "Provenance.entity[0].agent[0].who",
+        "detailsContains": "Invalid Resource target type. Found Observation, but expected one of ([Device])"
+      },
+      {
+        "messageId": "CONTAINED_ORPHAN_DOM3",
+        "code": "invalid",
+        "expression": "Provenance.contained[1]",
+        "detailsContains": "The contained resource 'source-application' is not referenced to from elsewhere in the containing resource nor does it refer to the containing resource (dom-3)"
+      }
+    ],
+    "health-connect-provenance-source-agent-limit": [
+      {
+        "messageId": "Validation_VAL_Profile_Maximum",
+        "code": "structure",
+        "expression": "Provenance.entity[0]",
+        "detailsContains": "Provenance.entity.agent: max allowed = 1, but found 2 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/StructureDefinition/health-connect-conversion-provenance|0.1.0)"
+      }
+    ],
+    "health-connect-record-identifier-value-required": [
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Observation.identifier[0]",
+        "detailsContains": "Observation.identifier:recordId.value: minimum required = 1, but only found 0 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/StructureDefinition/health-connect-observation|0.1.0)"
+      },
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Observation.identifier[0]",
+        "detailsContains": "Observation.identifier.value: minimum required = 1, but only found 0 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/StructureDefinition/health-connect-observation|0.1.0)"
+      }
+    ],
+    "health-connect-provenance-source-value-format": [
+      {
+        "messageId": "https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/StructureDefinition/health-connect-conversion-provenance#health-connect-record-id-value-1",
+        "code": "invariant",
+        "expression": "Provenance.entity[0].what.identifier.value",
+        "detailsContains": "Constraint failed: health-connect-record-id-value-1: 'The Health Connect record identifier uses the repository-scoped lowercase SHA-256 form defined by this guide.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/StructureDefinition/health-connect-conversion-provenance)"
+      }
+    ],
+    "health-connect-provenance-source-agent-type-required": [
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Provenance.entity[0].agent[0]",
+        "detailsContains": "Provenance.entity.agent.type: minimum required = 1, but only found 0 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/StructureDefinition/health-connect-conversion-provenance|0.1.0)"
+      }
+    ],
+    "health-connect-output-id-format": [
+      {
+        "messageId": "https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/StructureDefinition/health-connect-observation#health-connect-output-id-1",
+        "code": "invariant",
+        "expression": "Observation",
+        "detailsContains": "Constraint failed: health-connect-output-id-1: 'The Health Connect output identifier uses the versioned lowercase SHA-256 form defined by this guide.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/StructureDefinition/health-connect-observation)"
+      }
+    ],
+    "health-connect-output-identifier-system": [
+      {
+        "messageId": "Validation_VAL_Profile_Minimum_SLICE",
+        "code": "structure",
+        "expression": "Observation",
+        "detailsContains": "Slice 'Observation.identifier:outputId': a matching slice is required, but not found (from https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/StructureDefinition/health-connect-observation|0.1.0). Note that other slices are allowed in addition to this required slice"
+      }
+    ],
+    "health-connect-output-identifier-value-required": [
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Observation.identifier[1]",
+        "detailsContains": "Observation.identifier:outputId.value: minimum required = 1, but only found 0 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/StructureDefinition/health-connect-observation|0.1.0)"
+      },
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Observation.identifier[1]",
+        "detailsContains": "Observation.identifier.value: minimum required = 1, but only found 0 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/StructureDefinition/health-connect-observation|0.1.0)"
+      },
+      {
+        "messageId": "https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/StructureDefinition/health-connect-observation#health-connect-output-id-1",
+        "code": "invariant",
+        "expression": "Observation",
+        "detailsContains": "Constraint failed: health-connect-output-id-1: 'The Health Connect output identifier uses the versioned lowercase SHA-256 form defined by this guide.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/StructureDefinition/health-connect-observation)"
+      }
+    ],
+    "health-connect-value-required": [
+      {
+        "messageId": "http://hl7.org/fhir/StructureDefinition/vitalsigns#vs-2",
+        "code": "invariant",
+        "expression": "Observation",
+        "detailsContains": "Constraint failed: vs-2: 'If there is no component or hasMember element then either a value[x] or a data absent reason must be present.' (defined in http://hl7.org/fhir/StructureDefinition/vitalsigns)"
+      },
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Observation",
+        "detailsContains": "Observation.value[x]: minimum required = 1, but only found 0 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/StructureDefinition/health-connect-observation|0.1.0)"
+      },
+      {
+        "messageId": "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-observation#grove-mobile-result-1",
+        "code": "invariant",
+        "expression": "Observation",
+        "detailsContains": "Constraint failed: grove-mobile-result-1: 'A mobile Observation has a value, one or more components or members, or a reason why the result is absent.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-observation)"
+      }
+    ],
+    "health-connect-provenance-source-reference-prohibited": [
+      {
+        "messageId": "Validation_VAL_Profile_Maximum",
+        "code": "structure",
+        "expression": "Provenance.entity[0].what",
+        "detailsContains": "Provenance.entity.what.reference: max allowed = 0, but found 1 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/StructureDefinition/health-connect-conversion-provenance|0.1.0)"
+      }
+    ],
+    "health-connect-provenance-target-profile": [
+      {
+        "messageId": "Reference_REF_BadTargetType",
+        "code": "structure",
+        "expression": "Provenance.target[0]",
+        "detailsContains": "Invalid Resource target type. Found Observation, but expected one of (Device)"
+      },
+      {
+        "messageId": "Reference_REF_BadTargetType",
+        "code": "structure",
+        "expression": "Provenance.target[0]",
+        "detailsContains": "Invalid Resource target type. Found Device, but expected one of ([Observation])"
+      },
+      {
+        "messageId": "CONTAINED_ORPHAN_DOM3",
+        "code": "invalid",
+        "expression": "Provenance.contained[0]",
+        "detailsContains": "The contained resource 'converted' is not referenced to from elsewhere in the containing resource nor does it refer to the containing resource (dom-3)"
+      }
+    ],
+    "health-connect-record-identifier-system": [
+      {
+        "messageId": "Validation_VAL_Profile_Minimum_SLICE",
+        "code": "structure",
+        "expression": "Observation",
+        "detailsContains": "Slice 'Observation.identifier:recordId': a matching slice is required, but not found (from https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/StructureDefinition/health-connect-observation|0.1.0). Note that other slices are allowed in addition to this required slice"
+      }
+    ],
+    "health-connect-provenance-target-required": [
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Provenance",
+        "detailsContains": "Provenance.target: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/Provenance|4.0.1)"
+      },
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Provenance",
+        "detailsContains": "Provenance.target: minimum required = 1, but only found 0 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/StructureDefinition/health-connect-conversion-provenance|0.1.0)"
+      },
+      {
+        "messageId": "CONTAINED_ORPHAN_DOM3",
+        "code": "invalid",
+        "expression": "Provenance.contained[0]",
+        "detailsContains": "The contained resource 'converted' is not referenced to from elsewhere in the containing resource nor does it refer to the containing resource (dom-3)"
+      }
+    ],
+    "health-connect-record-identifier-limit": [
+      {
+        "messageId": "Validation_VAL_Profile_Maximum",
+        "code": "structure",
+        "expression": "Observation",
+        "detailsContains": "Observation.identifier:recordId: max allowed = 1, but found 2 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/StructureDefinition/health-connect-observation|0.1.0)"
+      },
+      {
+        "messageId": "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-observation#grove-identifier-token-1",
+        "code": "invariant",
+        "expression": "Observation",
+        "detailsContains": "Constraint failed: grove-identifier-token-1: 'A resource does not repeat the same identifier system and value pair.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-observation)"
+      }
+    ],
+    "health-connect-provenance-source-identifier-required": [
+      {
+        "code": "invalid",
+        "expression": "Provenance.entity[0].what",
+        "detailsContains": "Object must have some content"
+      },
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Provenance.entity[0].what",
+        "detailsContains": "Provenance.entity.what.identifier: minimum required = 1, but only found 0 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/StructureDefinition/health-connect-conversion-provenance|0.1.0)"
+      }
+    ],
+    "health-connect-provenance-source-agent-required": [
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Provenance.entity[0]",
+        "detailsContains": "Provenance.entity.agent: minimum required = 1, but only found 0 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/StructureDefinition/health-connect-conversion-provenance|0.1.0)"
+      },
+      {
+        "messageId": "CONTAINED_ORPHAN_DOM3",
+        "code": "invalid",
+        "expression": "Provenance.contained[1]",
+        "detailsContains": "The contained resource 'source-application' is not referenced to from elsewhere in the containing resource nor does it refer to the containing resource (dom-3)"
+      }
+    ],
+    "health-connect-value-quantity-only": [
+      {
+        "code": "invalid",
+        "expression": "Observation.value[x]",
+        "detailsContains": "This property must be a simple value, not an Object (valueString at Observation.value[x])"
+      },
+      {
+        "messageId": "http://hl7.org/fhir/StructureDefinition/vitalsigns#vs-2",
+        "code": "invariant",
+        "expression": "Observation",
+        "detailsContains": "Constraint failed: vs-2: 'If there is no component or hasMember element then either a value[x] or a data absent reason must be present.' (defined in http://hl7.org/fhir/StructureDefinition/vitalsigns)"
+      },
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Observation",
+        "detailsContains": "Observation.value[x]: minimum required = 1, but only found 0 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/StructureDefinition/health-connect-observation|0.1.0)"
+      },
+      {
+        "messageId": "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-observation#grove-mobile-result-1",
+        "code": "invariant",
+        "expression": "Observation",
+        "detailsContains": "Constraint failed: grove-mobile-result-1: 'A mobile Observation has a value, one or more components or members, or a reason why the result is absent.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-observation)"
+      }
+    ],
+    "health-connect-provenance-single-source-entity": [
+      {
+        "messageId": "Validation_VAL_Profile_Maximum",
+        "code": "structure",
+        "expression": "Provenance",
+        "detailsContains": "Provenance.entity: max allowed = 1, but found 2 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/StructureDefinition/health-connect-conversion-provenance|0.1.0)"
+      }
+    ],
+    "health-connect-output-identifier-required": [
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Observation",
+        "detailsContains": "Observation.identifier: minimum required = 2, but only found 1 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/StructureDefinition/health-connect-observation|0.1.0)"
+      },
+      {
+        "messageId": "Validation_VAL_Profile_Minimum_SLICE",
+        "code": "structure",
+        "expression": "Observation",
+        "detailsContains": "Slice 'Observation.identifier:outputId': a matching slice is required, but not found (from https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/StructureDefinition/health-connect-observation|0.1.0). Note that other slices are allowed in addition to this required slice"
+      }
+    ],
+    "health-connect-output-identifier-limit": [
+      {
+        "messageId": "Validation_VAL_Profile_Maximum",
+        "code": "structure",
+        "expression": "Observation",
+        "detailsContains": "Observation.identifier:outputId: max allowed = 1, but found 2 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/StructureDefinition/health-connect-observation|0.1.0)"
+      },
+      {
+        "messageId": "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-observation#grove-identifier-token-1",
+        "code": "invariant",
+        "expression": "Observation",
+        "detailsContains": "Constraint failed: grove-identifier-token-1: 'A resource does not repeat the same identifier system and value pair.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-observation)"
+      }
+    ],
+    "health-connect-provenance-source-system-fixed": [
+      {
+        "messageId": "_DT_Fixed_Wrong",
+        "code": "value",
+        "expression": "Provenance.entity[0].what.identifier.system",
+        "detailsContains": "Value is 'https://example.org/wrong-system' but is fixed to 'https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/NamingSystem/health-connect-record-id' in the profile https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/StructureDefinition/health-connect-conversion-provenance|0.1.0#Provenance.entity.what.identifier.system"
+      }
+    ],
+    "health-connect-record-identifier-required": [
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Observation",
+        "detailsContains": "Observation.identifier: minimum required = 2, but only found 1 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/StructureDefinition/health-connect-observation|0.1.0)"
+      },
+      {
+        "messageId": "Validation_VAL_Profile_Minimum_SLICE",
+        "code": "structure",
+        "expression": "Observation",
+        "detailsContains": "Slice 'Observation.identifier:recordId': a matching slice is required, but not found (from https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/StructureDefinition/health-connect-observation|0.1.0). Note that other slices are allowed in addition to this required slice"
+      }
+    ],
+    "health-connect-provenance-source-agent-who-required": [
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Provenance.entity[0].agent[0]",
+        "detailsContains": "Provenance.agent.who: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/Provenance|4.0.1)"
+      },
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Provenance.entity[0].agent[0]",
+        "detailsContains": "Provenance.entity.agent.who: minimum required = 1, but only found 0 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/StructureDefinition/health-connect-conversion-provenance|0.1.0)"
+      },
+      {
+        "messageId": "CONTAINED_ORPHAN_DOM3",
+        "code": "invalid",
+        "expression": "Provenance.contained[1]",
+        "detailsContains": "The contained resource 'source-application' is not referenced to from elsewhere in the containing resource nor does it refer to the containing resource (dom-3)"
+      }
+    ],
+    "health-connect-data-absent-prohibited": [
+      {
+        "messageId": "http://hl7.org/fhir/StructureDefinition/Observation#obs-6",
+        "code": "invariant",
+        "expression": "Observation",
+        "detailsContains": "Constraint failed: obs-6: 'dataAbsentReason SHALL only be present if Observation.value[x] is not present'"
+      },
+      {
+        "messageId": "Validation_VAL_Profile_Maximum",
+        "code": "structure",
+        "expression": "Observation",
+        "detailsContains": "Observation.dataAbsentReason: max allowed = 0, but found 1 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/StructureDefinition/health-connect-observation|0.1.0)"
+      }
+    ],
+    "health-connect-record-id-format": [
+      {
+        "messageId": "https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/StructureDefinition/health-connect-observation#health-connect-record-id-value-1",
+        "code": "invariant",
+        "expression": "Observation.identifier[0].value",
+        "detailsContains": "Constraint failed: health-connect-record-id-value-1: 'The Health Connect record identifier uses the repository-scoped lowercase SHA-256 form defined by this guide.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/StructureDefinition/health-connect-observation)"
+      }
+    ],
+    "health-connect-provenance-source-entity-required": [
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Provenance",
+        "detailsContains": "Provenance.entity: minimum required = 1, but only found 0 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/StructureDefinition/health-connect-conversion-provenance|0.1.0)"
+      },
+      {
+        "messageId": "CONTAINED_ORPHAN_DOM3",
+        "code": "invalid",
+        "expression": "Provenance.contained[1]",
+        "detailsContains": "The contained resource 'source-application' is not referenced to from elsewhere in the containing resource nor does it refer to the containing resource (dom-3)"
+      }
+    ],
+    "health-connect-provenance-source-system-required": [
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Provenance.entity[0].what.identifier",
+        "detailsContains": "Provenance.entity.what.identifier.system: minimum required = 1, but only found 0 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/StructureDefinition/health-connect-conversion-provenance|0.1.0)"
+      }
+    ],
+    "health-connect-provenance-source-value-required": [
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Provenance.entity[0].what.identifier",
+        "detailsContains": "Provenance.entity.what.identifier.value: minimum required = 1, but only found 0 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/StructureDefinition/health-connect-conversion-provenance|0.1.0)"
+      }
+    ]
+  }
+}
