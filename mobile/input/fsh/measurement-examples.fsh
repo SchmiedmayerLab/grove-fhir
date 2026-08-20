@@ -195,7 +195,7 @@ Description: "An interval total of distance traveled."
 * identifier.value = "distance-20260820-001"
 * status = #final
 * category = $observationCategory#activity "Activity"
-* code = GroveMobileMeasurementCS#distance-traveled "Distance traveled"
+* code = $loinc#103208-5 "Distance traveled"
 * subject = Reference(GroveMobilePatientExample)
 * performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-20T08:00:00-07:00"

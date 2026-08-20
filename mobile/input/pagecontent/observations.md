@@ -30,7 +30,7 @@ available for a measurement governed by another established profile.
 | Serum/plasma glucose | `grove-mobile-serum-plasma-glucose` | LOINC `2345-7`, serum or plasma specimen | UCUM `mg/dL` | `dateTime` |
 | Interstitial glucose | `grove-mobile-interstitial-glucose` | LOINC `99504-3`, interstitial-fluid specimen | UCUM `mg/dL` | `dateTime` |
 | Step count | `grove-mobile-step-count` | Grove `step-count-total` | UCUM `{steps}` | `Period` |
-| Distance | `grove-mobile-distance` | Grove `distance-traveled` | UCUM `m` | `Period` |
+| Distance | `grove-mobile-distance` | LOINC `103208-5` | UCUM `m` | `Period` |
 | Active energy | `grove-mobile-active-energy` | Grove `active-energy-burned` | UCUM `kcal` | `Period` |
 | Sleep duration | `grove-mobile-sleep-duration` | LOINC `93832-4` | UCUM `h` | `Period` |
 | Sleep stage | `grove-mobile-sleep-stage` | Grove `sleep-stage` and required Grove stage value set | coded stage | `Period` |
@@ -104,10 +104,14 @@ Prefer an established domain profile and terminology. Grove imposes the FHIR R4 
 profiles for heart rate, body weight, blood pressure, body temperature, respiratory
 rate, oxygen saturation, height, and BMI rather than recreating them.
 
-Step count, distance, and active energy use Grove codes because no R4 core profile or
-established code exactly expresses their source-neutral interval-total semantics. The
-code definitions are complete and intentionally narrow. Sleep duration uses LOINC
-`93832-4`; it summarizes total sleep and does not represent stages.
+Distance uses active LOINC `103208-5` because its measured patient path-length meaning
+is compatible with an Observation whose exact event interval is carried in
+`effectivePeriod`. Step count remains a Grove code: LOINC `41950-7` fixes a 24-hour
+number-rate meaning and therefore cannot label arbitrary source intervals. Active
+energy also remains a Grove code: LOINC `41981-2` has an energy-rate property and does
+not faithfully label a total number of kilocalories accumulated over the exact source
+interval. These Grove definitions are complete and intentionally narrow. Sleep
+duration uses LOINC `93832-4`; it summarizes total sleep and does not represent stages.
 
 Quantities carry the UCUM system and the catalog code. Producers convert supported
 source units without inventing precision. A glucose source selects the profile that

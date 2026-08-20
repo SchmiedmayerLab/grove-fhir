@@ -381,8 +381,7 @@ Parent: GroveMobileObservation
 Id: grove-mobile-distance
 Title: "Grove Mobile Distance"
 Description: "Distance traveled during an exact effective Period, normalized to UCUM metres."
-* code = GroveMobileMeasurementCS#distance-traveled
-* code from GroveMobileMeasurementVS (required)
+* code = $loinc#103208-5
 * effective[x] only Period
 * effectivePeriod.end 1..1 MS
 * value[x] only Quantity

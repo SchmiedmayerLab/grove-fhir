@@ -119,7 +119,7 @@
       "id": "distance",
       "profile": "grove-mobile-distance",
       "standardProfile": null,
-      "code": {"system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement", "code": "distance-traveled"},
+      "code": {"system": "http://loinc.org", "code": "103208-5"},
       "quantity": {"system": "http://unitsofmeasure.org", "code": "m"},
       "effective": "Period",
       "coverage": {"healthkit": "supported", "health-connect": "supported", "sensorkit": "mapped-standard", "google-health-api": "supported", "oura": "supported", "withings": "supported"}
