@@ -1570,12 +1570,17 @@ def validate_adapter_provenance_graph(
         target_profiles = set(claim["targetAdapterProfiles"])
         outputs_by_source: dict[str, set[str]] = {}
         provenances_by_source: dict[str, list[dict[str, Any]]] = {}
+        # A bundle whose outputs for a source are all retractions records a lifecycle event
+        # rather than a conversion, so it carries no conversion Provenance to describe.
+        converted_sources: set[str] = set()
         for resource in entry_resources:
             profiles = resource.get("meta", {}).get("profile", [])
             profile_set = set(profiles) if isinstance(profiles, list) else set()
             if profile_set & target_profiles:
                 source = source_value(resource, claim["sourceIdentifierSystem"], "output")
                 outputs_by_source.setdefault(source, set()).add(url_by_resource[id(resource)])
+                if resource.get("status") != "entered-in-error":
+                    converted_sources.add(source)
             if claim["profile"] in profile_set:
                 entity = resource["entity"][0]["what"]["identifier"]
                 source = complete_identifier(entity, f"{label} Provenance source entity")[1]
@@ -1583,6 +1588,13 @@ def validate_adapter_provenance_graph(
 
         for source, output_urls in outputs_by_source.items():
             provenances = provenances_by_source.get(source, [])
+            if source not in converted_sources:
+                if provenances:
+                    raise ProducerValidationError(
+                        f"{label} {claim['adapter']} retraction must not claim a conversion "
+                        "Provenance"
+                    )
+                continue
             if len(provenances) != 1:
                 raise ProducerValidationError(
                     f"{label} {claim['adapter']} source record must have exactly one "

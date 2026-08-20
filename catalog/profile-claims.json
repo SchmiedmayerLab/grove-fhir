@@ -78,7 +78,7 @@
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-observation",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-observation"
       ],
-      "rule": "One Provenance in the exchange graph targets every HealthKit Observation produced from its exact sole source-object Identifier; every target is an internal UUID reference."
+      "rule": "One Provenance in the exchange graph targets every HealthKit Observation produced from its exact sole source-object Identifier; every target is an internal UUID reference. A bundle whose outputs for a source record are all entered-in-error records a retraction rather than a conversion and carries no conversion Provenance."
     },
     {
       "adapter": "health-connect",
@@ -91,7 +91,7 @@
         "https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-serum-plasma-glucose",
         "https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-interstitial-glucose"
       ],
-      "rule": "One Provenance in the exchange graph targets every Health Connect Observation produced from its exact sole source-record Identifier; every target is an internal UUID reference. The Provenance directly declares only the Health Connect conversion profile; its inherited Mobile profile is not repeated."
+      "rule": "One Provenance in the exchange graph targets every Health Connect Observation produced from its exact sole source-record Identifier; every target is an internal UUID reference. The Provenance directly declares only the Health Connect conversion profile; its inherited Mobile profile is not repeated. A bundle whose outputs for a source record are all entered-in-error records a retraction rather than a conversion and carries no conversion Provenance."
     },
     {
       "adapter": "connected-health",
@@ -101,7 +101,7 @@
         "https://grovealliance.org/fhir/connected-health/StructureDefinition/connected-health-observation",
         "https://grovealliance.org/fhir/connected-health/StructureDefinition/connected-health-recording-document"
       ],
-      "rule": "One Provenance in the exchange graph targets every connected-provider Observation and Recording Document carrying its exact sole source-record Identifier; every target is an internal UUID reference."
+      "rule": "One Provenance in the exchange graph targets every connected-provider Observation and Recording Document carrying its exact sole source-record Identifier; every target is an internal UUID reference. A bundle whose outputs for a source record are all entered-in-error records a retraction rather than a conversion and carries no conversion Provenance."
     },
     {
       "adapter": "sensorkit",
@@ -115,7 +115,7 @@
         "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-on-wrist-observation",
         "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-visit-observation"
       ],
-      "rule": "One Provenance in the exchange graph targets every SensorKit structured and raw output carrying its exact sole source-record Identifier; every target is an internal UUID reference."
+      "rule": "One Provenance in the exchange graph targets every SensorKit structured and raw output carrying its exact sole source-record Identifier; every target is an internal UUID reference. A bundle whose outputs for a source record are all entered-in-error records a retraction rather than a conversion and carries no conversion Provenance."
     }
   ],
   "sensorKitProviderSpecificClaims": {
