@@ -6,8 +6,11 @@ path = [
     "LICENSE.md",
     "LICENSES/MIT.txt",
     "Gemfile.lock",
+    "Conformance/README.md",
     "Conformance/**/*.json",
-    "Integration/sources.json",
+    "catalog/*.json",
+    "connected-health/ig.ini",
+    "connected-health/input/ignoreWarnings.txt",
     "health-connect/ig.ini",
     "health-connect/input/ignoreWarnings.txt",
     "healthkit/ig.ini",
@@ -18,15 +21,15 @@ path = [
     "questionnaire/ig.ini",
     "questionnaire/fixtures/**/*.json",
     "questionnaire/input/ignoreWarnings.txt",
+    "sensor/ig.ini",
+    "sensor/input/ignoreWarnings.txt",
+    "sensorkit/ig.ini",
+    "sensorkit/input/ignoreWarnings.txt",
+    "sensorkit/sushi-config.yaml",
     "package-lock.json",
     "package.json",
     "publication/artifact-allowlist.json",
     "publication/config.json"
 ]
-SPDX-FileCopyrightText = "2026 Schmiedmayer Lab and the project authors (see CONTRIBUTORS.md)"
-SPDX-License-Identifier = "MIT"
-
-[[annotations]]
-path = ["Integration/Patches/**/*.patch"]
 SPDX-FileCopyrightText = "2026 Schmiedmayer Lab and the project authors (see CONTRIBUTORS.md)"
 SPDX-License-Identifier = "MIT"

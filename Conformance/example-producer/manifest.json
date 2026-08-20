@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "fhirVersion": "4.0.1",
+  "producer": {
+    "name": "Grove FHIR example producer",
+    "version": "0.2.0"
+  },
+  "packages": [
+    {
+      "alias": "mobile",
+      "packageId": "org.grovealliance.fhir.mobile",
+      "version": "0.2.0"
+    }
+  ],
+  "resources": [
+    {
+      "path": "resources/heart-rate.json",
+      "requiredProfiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-observation"
+      ]
+    }
+  ]
+}

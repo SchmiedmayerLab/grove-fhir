@@ -6,12 +6,12 @@
 // SPDX-License-Identifier: MIT
 //
 
-Alias: $healthKitObjectId = https://schmiedmayerlab.github.io/grove-fhir/fhir/healthkit/NamingSystem/healthkit-object-id
-Alias: $healthKitSourceDeviceId = https://schmiedmayerlab.github.io/grove-fhir/fhir/healthkit/NamingSystem/healthkit-source-device-id
-Alias: $appleBundleId = https://schmiedmayerlab.github.io/grove-fhir/fhir/healthkit/NamingSystem/apple-bundle-id
-Alias: $healthKitMetadataKey = https://schmiedmayerlab.github.io/grove-fhir/fhir/healthkit/CodeSystem/healthkit-metadata-key
-Alias: $healthKitHeartRateMotionContext = https://schmiedmayerlab.github.io/grove-fhir/fhir/healthkit/CodeSystem/healthkit-heart-rate-motion-context
-Alias: $groveMobileMeasurement = https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/CodeSystem/grove-mobile-measurement
+Alias: $healthKitObjectId = https://grovealliance.org/fhir/healthkit/NamingSystem/healthkit-object-id
+Alias: $healthKitSourceDeviceId = https://grovealliance.org/fhir/healthkit/NamingSystem/healthkit-source-device-id
+Alias: $appleBundleId = https://grovealliance.org/fhir/healthkit/NamingSystem/apple-bundle-id
+Alias: $healthKitMetadataKey = https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-metadata-key
+Alias: $healthKitHeartRateMotionContext = https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-heart-rate-motion-context
+Alias: $groveMobileMeasurement = https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement
 Alias: $loinc = http://loinc.org
 Alias: $observationCategory = http://terminology.hl7.org/CodeSystem/observation-category
 Alias: $provenanceParticipantType = http://terminology.hl7.org/CodeSystem/provenance-participant-type

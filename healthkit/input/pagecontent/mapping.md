@@ -61,7 +61,7 @@ for a clinical measurement technique and is not used for HealthKit capture mode.
 
 ### Device, application, and provenance
 
-Map `HKDevice` to a [Grove Recording Device](https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition-grove-recording-device.html)
+Map `HKDevice` to a [Grove Recording Device](https://grovealliance.org/fhir/mobile/StructureDefinition-grove-recording-device.html)
 only when it identifies the hardware that acquired the value. Omit the recorder when
 HealthKit does not establish it. Do not assign a serial number or globally linkable
 hardware identifier unless the exchange requires it and the study authorizes it.
@@ -73,7 +73,7 @@ codes `531974`, `531976`, and `531975`, respectively. `HKDevice.model` maps to
 conformance to a PHD profile.
 
 Represent the converting app as a
-[Grove Application Device](https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition-grove-application-device.html).
+[Grove Application Device](https://grovealliance.org/fhir/mobile/StructureDefinition-grove-application-device.html).
 Its Apple bundle identifier uses the [Apple Bundle Identifier](NamingSystem-apple-bundle-id.html)
 namespace. The bundle identifier identifies the application product. The converter's
 exact software-version string populates its typed application-version slice. If an
@@ -82,7 +82,7 @@ serialization for this field. Neither the bundle identifier nor that version ide
 an installation, host, account, or person. Do not generate a per-install identifier by
 default; add one only under an explicit namespace and use case with the required privacy
 authorization. The app is the assembler agent in
-[conversion Provenance](https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition-grove-mobile-conversion-provenance.html).
+[conversion Provenance](https://grovealliance.org/fhir/mobile/StructureDefinition-grove-mobile-conversion-provenance.html).
 Converting a stored HealthKit object does not by itself make the app an Observation
 gateway; add `observation-gatewayDevice` only if the app actually mediated or routed the
 measurement.
@@ -153,7 +153,7 @@ examples.
 ### Study context
 
 Study linkage follows the Mobile guide's
-[study model](https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/study.html): a
+[study model](https://grovealliance.org/fhir/mobile/study.html): a
 versioned PlanDefinition is referenced by ResearchStudy, ResearchSubject connects the
 Patient to the study, and `workflow-researchStudy` links the Observation. The
 [study Bundle](Bundle-HealthKitStudyBundleExample.html) demonstrates the graph.

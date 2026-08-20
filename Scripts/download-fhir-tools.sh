@@ -21,6 +21,9 @@ fi
 
 readonly OFFLINE="$offline"
 readonly TOOLS_DIRECTORY="${1:-.build/fhir-tools}"
+REPOSITORY_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+readonly REPOSITORY_ROOT
+readonly FHIR_PACKAGE_CACHE="$REPOSITORY_ROOT/.build/fhir-home/.fhir/packages"
 readonly PUBLISHER_VERSION="2.3.2"
 readonly PUBLISHER_SHA256="07c576024df917cc1f879b6b5a64147cd0222d5b4129688e8f0ad9ccce58b1d5"
 readonly VALIDATOR_VERSION="6.10.2"
@@ -34,6 +37,7 @@ readonly TEMPLATE_SHA256="b351fa5fcc8edd76f491e129de4aeb35c888265ae0f7b33ea2af05
 # validation request. Keep the complete, checksum-pinned dependency closure in
 # one place so a fresh runner never depends on mutable package-server state.
 readonly FHIR_PACKAGE_ARCHIVES=(
+  "hl7.fhir.pubpack|0.2.5|ce55f91c9e4ca723711a9c6a55aee22368278b73e3c4e0c6408bf90488a1a360"
   "hl7.fhir.r4.core|4.0.1|ebd7731df7d36b5b7d39d5fb6c9d77b44bb7fe5742f1a2e87f164738c3289d44"
   "hl7.fhir.r5.core|5.0.0|74b27cd1bfce9e80eaceac431edf230b0945a443564fbf5512f82e5fa50a80d4"
   "hl7.fhir.xver-extensions|0.1.0|f3bb9fa2083402e88a02b41f433655274e8a1cca563211c8f7ba6fd0badf537a"
@@ -55,7 +59,7 @@ readonly FHIR_PACKAGE_ARCHIVES=(
   "hl7.terminology.r4|6.5.0|a28b638483a11df696ed92198276236d759e41c7a3a8960c9e7e7d0a1185bd06"
 )
 
-mkdir -p "$TOOLS_DIRECTORY"
+mkdir -p "$TOOLS_DIRECTORY" "$FHIR_PACKAGE_CACHE"
 
 download_and_verify() {
   local url="$1"
@@ -95,7 +99,9 @@ download_and_verify \
   "https://packages.fhir.org/${TEMPLATE_ID}/${TEMPLATE_VERSION}" \
   "$template_archive" \
   "$TEMPLATE_SHA256"
-node "$(dirname "$0")/cache-fhir-package.cjs" "$template_archive"
+node "$(dirname "$0")/cache-fhir-package.cjs" \
+  --cache-root "$FHIR_PACKAGE_CACHE" \
+  "$template_archive"
 
 for package_specification in "${FHIR_PACKAGE_ARCHIVES[@]}"; do
   IFS='|' read -r package_id package_version package_sha256 <<< "$package_specification"
@@ -104,5 +110,7 @@ for package_specification in "${FHIR_PACKAGE_ARCHIVES[@]}"; do
     "https://packages.fhir.org/${package_id}/${package_version}" \
     "$package_archive" \
     "$package_sha256"
-  node "$(dirname "$0")/cache-fhir-package.cjs" "$package_archive"
+  node "$(dirname "$0")/cache-fhir-package.cjs" \
+    --cache-root "$FHIR_PACKAGE_CACHE" \
+    "$package_archive"
 done

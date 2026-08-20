@@ -7,13 +7,13 @@
 #
 
 id: org.grovealliance.fhir.health-connect
-canonical: https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect
+canonical: https://grovealliance.org/fhir/health-connect
 name: GroveFHIRHealthConnect
 title: Grove FHIR Health Connect Adapter
 description: >-
   FHIR R4 mappings for Android Health Connect records exchanged through the Grove Mobile contract.
 status: draft
-version: 0.1.0
+version: 0.2.0
 fhirVersion: 4.0.1
 copyrightYear: 2026+
 releaseLabel: ci-build
@@ -26,8 +26,8 @@ license: MIT
 dependencies:
   hl7.terminology.r4: 7.3.0
   org.grovealliance.fhir.mobile:
-    version: 0.1.0
-    uri: https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/ImplementationGuide/org.grovealliance.fhir.mobile
+    version: 0.2.0
+    uri: https://grovealliance.org/fhir/mobile/ImplementationGuide/org.grovealliance.fhir.mobile
 
 menu:
   Overview: index.html

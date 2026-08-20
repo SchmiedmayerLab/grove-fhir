@@ -129,7 +129,7 @@ InstanceOf: HealthKitObservation
 Usage: #example
 Title: "HealthKit Step Count"
 Description: "A HealthKit interval sample preserving the recorded count of 1,042 steps over one hour."
-* meta.profile[+] = "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-step-count"
+* meta.profile[+] = "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-step-count"
 * identifier[healthKitObjectId].system = $healthKitObjectId
 * identifier[healthKitObjectId].value = "f1e2d3c4-4b5a-4c6d-8e9f-1234567890ab"
 * status = #final

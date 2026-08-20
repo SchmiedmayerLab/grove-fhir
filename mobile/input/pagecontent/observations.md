@@ -48,7 +48,7 @@ fields are:
   "resourceType": "Observation",
   "meta": {
     "profile": [
-      "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-observation",
+      "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-observation",
       "http://hl7.org/fhir/StructureDefinition/heartrate"
     ]
   },

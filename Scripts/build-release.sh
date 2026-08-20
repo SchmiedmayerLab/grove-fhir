@@ -36,8 +36,8 @@ fi
 
 publication_path="$(python3 -c 'import json, sys; print(json.load(open(sys.argv[1], encoding="utf-8"))["path"])' "$REQUEST")"
 readonly publication_path
-if [[ "$publication_path" != https://schmiedmayerlab.github.io/grove-fhir/fhir/* ]]; then
-  echo "publication request path is outside the configured draft canonical host" >&2
+if [[ "$publication_path" != https://grovealliance.org/fhir/* ]]; then
+  echo "publication request path is outside the configured canonical namespace" >&2
   exit 1
 fi
 

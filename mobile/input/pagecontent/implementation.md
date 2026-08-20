@@ -39,8 +39,8 @@ org.grovealliance.fhir.mobile#0.1.0
 The package archive and checksum are published at:
 
 ```text
-https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/package.tgz
-https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/package.tgz.sha256
+https://grovealliance.org/fhir/mobile/package.tgz
+https://grovealliance.org/fhir/mobile/package.tgz.sha256
 ```
 
 This pre-1.0 continuous build is not published in a FHIR package registry. Download the
@@ -52,10 +52,10 @@ new archive over an older copy because removed artifacts would remain:
 ```sh
 mkdir -p grove-mobile-package
 curl --fail --location \
-  https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/package.tgz \
+  https://grovealliance.org/fhir/mobile/package.tgz \
   --output grove-mobile-package/package.tgz
 curl --fail --location \
-  https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/package.tgz.sha256 \
+  https://grovealliance.org/fhir/mobile/package.tgz.sha256 \
   --output grove-mobile-package/package.tgz.sha256
 (cd grove-mobile-package && shasum -a 256 --check package.tgz.sha256)
 cache_backup="$(mktemp -d)"
@@ -82,7 +82,7 @@ Download the official FHIR Validator and the Grove package, then run:
 java -jar validator_cli.jar observation.json \
   -version 4.0.1 \
   -ig grove-mobile-package/package.tgz \
-  -profile https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-observation \
+  -profile https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-observation \
   -profile http://hl7.org/fhir/StructureDefinition/heartrate
 ```
 
@@ -98,7 +98,7 @@ gateway applications, study links, and conversion provenance.
 
 The [heart-rate JSON](Observation-GroveMobileHeartRateExample.json) is a compact starting
 fixture. The [step-count JSON](Observation-GroveMobileStepCountExample.json) demonstrates
-an interval aggregate. The [HealthKit adapter guide](https://schmiedmayerlab.github.io/grove-fhir/fhir/healthkit/)
+an interval aggregate. The [HealthKit adapter guide](https://grovealliance.org/fhir/healthkit/)
 shows how a source package derives from this contract without changing its shared
 semantics.
 

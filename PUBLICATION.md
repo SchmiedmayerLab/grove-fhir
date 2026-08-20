@@ -10,7 +10,9 @@ SPDX-License-Identifier: MIT
 
 # Publication
 
-Grove FHIR currently publishes one mutable pre-1.0 continuous build. No release exists.
+Grove FHIR currently publishes one mutable pre-1.0 continuous preview. No immutable
+release exists. Version 0.2.0 is the package contract used by the coordinated
+implementation pull requests.
 
 ## Continuous preview
 
@@ -24,17 +26,17 @@ pre-1.0 canonical paths:
 | `org.grovealliance.fhir.health-connect` | `/fhir/health-connect/ci-build/` | `/fhir/health-connect/package-list.json` and `/fhir/health-connect/history.html` |
 | `org.grovealliance.fhir.questionnaire` | `/fhir/questionnaire/ci-build/` | `/fhir/questionnaire/package-list.json` and `/fhir/questionnaire/history.html` |
 
-The GitHub Pages locations at `/`, `/healthkit/`, `/health-connect/`, and `/questionnaire/` are reader-friendly aliases. Each
+The GitHub Pages locations at `/`, `/healthkit/`, `/health-connect/`, and `/questionnaire/` are reader-friendly preview aliases. Each
 publication root also exposes the package, its SHA-256 checksum, and HTML plus JSON, XML, and Turtle
 routes for every locally owned canonical resource. `publication/config.json` is the single routing
 configuration, and `npm run pages:build` verifies the assembled surface before deployment.
-That command creates the guide-only local preview. CI adds conformance evidence only after
-all exact platform proposal outputs are available, following the complete inventory in
-`Conformance/README.md`; it never substitutes stale or checked-in implementation outputs.
+That command creates the guide-only local preview. Producer repositories validate
+their own emitted resources with the producer-neutral kit; Grove FHIR does not fetch,
+patch, build, or attest those repositories.
 
-GitHub Pages is both the publication host and canonical base during pre-1.0 development. The
-canonical base will move only through an explicit breaking-change review before the first stable
-release. Deployment checks exercise every canonical route on the Pages host.
+The canonical namespace is `https://grovealliance.org/fhir`; hosting that namespace is
+deliberately out of scope for this iteration. GitHub Pages is only the mutable preview
+host. Deploying or redirecting the canonical host requires a separate reviewed change.
 
 Only the latest `ci-build` is deployed during pre-1.0 development. The site does not retain
 pre-1.0 version directories, superseded packages, or legacy documentation surfaces.
@@ -56,7 +58,7 @@ following:
 2. The guide contains a reviewed `publication-request.json` whose package ID, version, and path agree
    with `sushi-config.yaml`.
 3. The release commit is approved, merged, and tagged. Dependencies use exact versions.
-4. `Scripts/build-release.sh <mobile|healthkit|health-connect|questionnaire>` builds once in FHIR Publisher publication mode.
+4. `Scripts/build-release.sh <guide>` builds once in FHIR Publisher publication mode.
 5. `Scripts/publish-version.py` adds that exact output to a clean checkout of the `publication`
    branch. The resulting package, QA report, release notes, and checksums are attached to the matching
    GitHub Release.

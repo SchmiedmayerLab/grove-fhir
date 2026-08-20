@@ -27,11 +27,11 @@ EXPECTATIONS = CORPUS / "validator-expectations.json"
 MESSAGE_ID_URL = "http://hl7.org/fhir/StructureDefinition/operationoutcome-message-id"
 PROFILES = {
     "Questionnaire": (
-        "https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/"
+        "https://grovealliance.org/fhir/questionnaire/"
         "StructureDefinition/grove-questionnaire"
     ),
     "QuestionnaireResponse": (
-        "https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/"
+        "https://grovealliance.org/fhir/questionnaire/"
         "StructureDefinition/grove-questionnaire-response"
     ),
 }

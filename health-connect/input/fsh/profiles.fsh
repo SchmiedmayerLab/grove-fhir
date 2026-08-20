@@ -9,7 +9,7 @@
 Invariant: health-connect-output-id-1
 Description: "The Health Connect output identifier uses the versioned lowercase SHA-256 form defined by this guide."
 Severity: #error
-Expression: "identifier.where(system = 'https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/NamingSystem/health-connect-output-id').all(value.matches('^v1:[0-9a-f]{64}$'))"
+Expression: "identifier.where(system = 'https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-output-id').all(value.matches('^v1:[0-9a-f]{64}$'))"
 
 Invariant: health-connect-record-id-value-1
 Description: "The Health Connect record identifier uses the repository-scoped lowercase SHA-256 form defined by this guide."

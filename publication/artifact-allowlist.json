@@ -4,7 +4,7 @@
     {
       "source": "mobile",
       "packageId": "org.grovealliance.fhir.mobile",
-      "canonical": "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile",
+      "canonical": "https://grovealliance.org/fhir/mobile",
       "artifacts": [
         {"fshName": "GroveRecordingMethod", "fshType": "Extension", "resourceType": "StructureDefinition", "id": "grove-recording-method", "classification": "definition"},
         {"fshName": "GroveRecordingMethodCS", "fshType": "CodeSystem", "resourceType": "CodeSystem", "id": "grove-recording-method", "classification": "definition"},
@@ -31,7 +31,7 @@
     {
       "source": "healthkit",
       "packageId": "org.grovealliance.fhir.healthkit",
-      "canonical": "https://schmiedmayerlab.github.io/grove-fhir/fhir/healthkit",
+      "canonical": "https://grovealliance.org/fhir/healthkit",
       "artifacts": [
         {"fshName": "HealthKitMetadataKeyCS", "fshType": "CodeSystem", "resourceType": "CodeSystem", "id": "healthkit-metadata-key", "classification": "definition"},
         {"fshName": "HealthKitMetadataKeyVS", "fshType": "ValueSet", "resourceType": "ValueSet", "id": "healthkit-metadata-key", "classification": "definition"},
@@ -61,7 +61,7 @@
     {
       "source": "health-connect",
       "packageId": "org.grovealliance.fhir.health-connect",
-      "canonical": "https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect",
+      "canonical": "https://grovealliance.org/fhir/health-connect",
       "artifacts": [
         {"fshName": "HealthConnectObservation", "fshType": "Profile", "resourceType": "StructureDefinition", "id": "health-connect-observation", "classification": "definition"},
         {"fshName": "HealthConnectConversionProvenance", "fshType": "Profile", "resourceType": "StructureDefinition", "id": "health-connect-conversion-provenance", "classification": "definition"},
@@ -88,7 +88,7 @@
     {
       "source": "questionnaire",
       "packageId": "org.grovealliance.fhir.questionnaire",
-      "canonical": "https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire",
+      "canonical": "https://grovealliance.org/fhir/questionnaire",
       "artifacts": [
         {"fshName": "GroveQuestionnaire", "fshType": "Profile", "resourceType": "StructureDefinition", "id": "grove-questionnaire", "classification": "definition"},
         {"fshName": "GroveQuestionnaireResponse", "fshType": "Profile", "resourceType": "StructureDefinition", "id": "grove-questionnaire-response", "classification": "definition"},

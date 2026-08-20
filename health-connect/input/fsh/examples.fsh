@@ -91,7 +91,7 @@ Description: "The first FHIR heart-rate Observation emitted from a Health Connec
 * identifier[recordId].system = $healthConnectRecordId
 * identifier[recordId].value = "v1:5d81fd22df74bcb7d9571b201cadf87b3935072c126dffbc2af908d994d054a2"
 * identifier[outputId].system = $healthConnectOutputId
-* identifier[outputId].value = "v1:fa6b916338c24c756a8bd722bb5e17e1ce6e385ee7b6b82a1d53f13db394fd48"
+* identifier[outputId].value = "v1:95e250a54a2ec574e981ab6fae82ac85ac77d9a03e805d5ba7967af0697faf6c"
 * status = #final
 * category = $observationCategory#vital-signs "Vital Signs"
 * code = $loinc#8867-4 "Heart rate"
@@ -112,7 +112,7 @@ Description: "The second FHIR heart-rate Observation emitted from the same Healt
 * identifier[recordId].system = $healthConnectRecordId
 * identifier[recordId].value = "v1:5d81fd22df74bcb7d9571b201cadf87b3935072c126dffbc2af908d994d054a2"
 * identifier[outputId].system = $healthConnectOutputId
-* identifier[outputId].value = "v1:60ef803113a12172615a58667d52262d7ea0defff01c585e559c753919015621"
+* identifier[outputId].value = "v1:906d2a041f2e73004a52f33c943b4c6a53759094c993747e2c3074c32733a66d"
 * status = #final
 * category = $observationCategory#vital-signs "Vital Signs"
 * code = $loinc#8867-4 "Heart rate"
@@ -133,7 +133,7 @@ Description: "A manually entered Health Connect WeightRecord represented with th
 * identifier[recordId].system = $healthConnectRecordId
 * identifier[recordId].value = "v1:9607c85191132deb33f7519e1487aa51c66292ff47c73f5a26fe75ea77418e57"
 * identifier[outputId].system = $healthConnectOutputId
-* identifier[outputId].value = "v1:084b0687ef5f23ec547f37f2aadde05601f1e86525655217cdf020e8d0f20275"
+* identifier[outputId].value = "v1:13be909196c3762bf744e4cb185438e1f5c628b90f3f4a78c6793c6ad0c447b5"
 * status = #final
 * category = $observationCategory#vital-signs "Vital Signs"
 * code = $loinc#29463-7 "Body weight"
@@ -149,11 +149,11 @@ InstanceOf: HealthConnectObservation
 Usage: #example
 Title: "Health Connect Step Count"
 Description: "A Health Connect StepsRecord preserving the source interval and count."
-* meta.profile[+] = "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-step-count"
+* meta.profile[+] = "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-step-count"
 * identifier[recordId].system = $healthConnectRecordId
 * identifier[recordId].value = "v1:2145220948c744c2f6ad52d58991c466bcb09cb0e81c986580bfb2f89b54a639"
 * identifier[outputId].system = $healthConnectOutputId
-* identifier[outputId].value = "v1:76e56085fac0447e1e22ead1e90ae951517fb15d741c644e72a8c1c9609ead85"
+* identifier[outputId].value = "v1:52c47544652e896224f9ecc987111949f5f97e3dcc1916fcbe9369309ed912c0"
 * status = #final
 * category = $observationCategory#activity "Activity"
 * code = $groveMobileMeasurement#step-count-total "Step count total"

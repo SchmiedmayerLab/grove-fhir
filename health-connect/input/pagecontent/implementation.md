@@ -17,16 +17,16 @@ Download the exact archives and verify their checksums:
 ```sh
 mkdir -p grove-packages/mobile grove-packages/health-connect
 curl --fail --location \
-  https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/package.tgz \
+  https://grovealliance.org/fhir/mobile/package.tgz \
   --output grove-packages/mobile/package.tgz
 curl --fail --location \
-  https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/package.tgz.sha256 \
+  https://grovealliance.org/fhir/mobile/package.tgz.sha256 \
   --output grove-packages/mobile/package.tgz.sha256
 curl --fail --location \
-  https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/package.tgz \
+  https://grovealliance.org/fhir/health-connect/package.tgz \
   --output grove-packages/health-connect/package.tgz
 curl --fail --location \
-  https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/package.tgz.sha256 \
+  https://grovealliance.org/fhir/health-connect/package.tgz.sha256 \
   --output grove-packages/health-connect/package.tgz.sha256
 (cd grove-packages/mobile && shasum -a 256 --check package.tgz.sha256)
 (cd grove-packages/health-connect && shasum -a 256 --check package.tgz.sha256)
@@ -64,7 +64,7 @@ java -jar validator_cli.jar observation.json \
   -version 4.0.1 \
   -ig grove-packages/mobile/package.tgz \
   -ig grove-packages/health-connect/package.tgz \
-  -profile https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/StructureDefinition/health-connect-observation \
+  -profile https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-observation \
   -profile http://hl7.org/fhir/StructureDefinition/heartrate
 ```
 

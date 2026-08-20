@@ -74,12 +74,14 @@ jobs:
           path: .build/pages
           run-id: ${{ github.event.workflow_run.id }}
           github-token: ${{ github.token }}
-      - name: Verify the downloaded lock and exact build-once site
+      - name: Verify the downloaded build-once site
         if: steps.artifact.outputs.present == 'true'
         run: >-
-          python3 Scripts/check-evidence-lock.py site
+          python3 Scripts/check-publication.py
           --site .build/pages
-          --expected-revision "${{ github.event.workflow_run.head_sha }}"
+          --repository-root .
+          --config publication/config.json
+          --base-url https://schmiedmayerlab.github.io/grove-fhir
       - name: Upload the already verified Pages artifact
         if: steps.artifact.outputs.present == 'true'
         uses: actions/upload-pages-artifact@v5

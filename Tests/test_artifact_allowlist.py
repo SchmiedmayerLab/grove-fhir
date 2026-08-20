@@ -32,11 +32,11 @@ USAGE = re.compile(r"^Usage:\s+#(definition|example)\s*$", re.MULTILINE)
 FHIR_ID = re.compile(r"^[A-Za-z0-9.-]{1,64}$")
 ARTIFACT_KEYS = {"fshName", "fshType", "resourceType", "id", "classification"}
 HEALTH_CONNECT_RECORD_SYSTEM = (
-    "https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/"
+    "https://grovealliance.org/fhir/health-connect/"
     "NamingSystem/health-connect-record-id"
 )
 HEALTH_CONNECT_OUTPUT_SYSTEM = (
-    "https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/"
+    "https://grovealliance.org/fhir/health-connect/"
     "NamingSystem/health-connect-output-id"
 )
 HEALTH_CONNECT_EXAMPLE_REPOSITORY_SCOPE = "1f5c58aa-6ec6-4e79-a682-829a9debd3f5"
@@ -467,7 +467,7 @@ class ArtifactAllowlistTests(unittest.TestCase):
         self.assertEqual(
             constraints.get("health-connect-output-id-1"),
             "identifier.where(system = "
-            "'https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/"
+            "'https://grovealliance.org/fhir/health-connect/"
             "NamingSystem/health-connect-output-id').all("
             "value.matches('^v1:[0-9a-f]{64}$'))",
         )
@@ -492,7 +492,7 @@ class ArtifactAllowlistTests(unittest.TestCase):
         ]
         self.assertEqual(
             source_system.get("patternUri"),
-            "https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/"
+            "https://grovealliance.org/fhir/health-connect/"
             "NamingSystem/health-connect-record-id",
         )
         self.assertEqual(
@@ -539,11 +539,11 @@ class ArtifactAllowlistTests(unittest.TestCase):
             for observation in observations
         ]
         record_system = (
-            "https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/"
+            "https://grovealliance.org/fhir/health-connect/"
             "NamingSystem/health-connect-record-id"
         )
         output_system = (
-            "https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/"
+            "https://grovealliance.org/fhir/health-connect/"
             "NamingSystem/health-connect-output-id"
         )
         self.assertEqual(by_system[0][record_system], by_system[1][record_system])
@@ -619,7 +619,7 @@ class ArtifactAllowlistTests(unittest.TestCase):
         )
         self.assertEqual(
             health_connect_single_output_identifier(step_record),
-            "v1:f8e413af42c5e7a9d04152b38cbf60ec43b24d2831965c0be269a5b7ead16736",
+            "v1:b0289ed972244bd0b0e94a1c7bbe9dffa0afe8971013de1d64c8929f130c8aed",
         )
         non_ascii_record = health_connect_record_identifier("steps", "héal记录")
         self.assertEqual(
@@ -628,7 +628,7 @@ class ArtifactAllowlistTests(unittest.TestCase):
         )
         self.assertEqual(
             health_connect_single_output_identifier(non_ascii_record),
-            "v1:c1d40e4865981bcda26185ed54bb640b7c449210901153dc327de3131e9104fb",
+            "v1:70b8e32ea187b4f0b88469d091067ff6c271ace69cfca6b0f6e313327194fdd4",
         )
         self.assertNotEqual(
             health_connect_record_identifier("steps", "same-raw-id"),
@@ -694,7 +694,7 @@ class ArtifactAllowlistTests(unittest.TestCase):
             source.get("identifier"),
             [
                 {
-                    "system": "https://schmiedmayerlab.github.io/grove-fhir/fhir/"
+                    "system": "https://grovealliance.org/fhir/"
                     "health-connect/NamingSystem/android-package-name",
                     "value": "com.example.wearable",
                 }

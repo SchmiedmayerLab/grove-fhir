@@ -25,7 +25,7 @@ standard version-algorithm extension:
 
 ```json
 {
-  "url": "https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/Questionnaire/GroveWeeklySymptomCheckInExample",
+  "url": "https://grovealliance.org/fhir/questionnaire/Questionnaire/GroveWeeklySymptomCheckInExample",
   "version": "1.0.0",
   "status": "active"
 }
@@ -35,7 +35,7 @@ The response joins URL and version with one `|`:
 
 ```json
 {
-  "questionnaire": "https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/Questionnaire/GroveWeeklySymptomCheckInExample|1.0.0"
+  "questionnaire": "https://grovealliance.org/fhir/questionnaire/Questionnaire/GroveWeeklySymptomCheckInExample|1.0.0"
 }
 ```
 
@@ -91,10 +91,10 @@ Download the package and verify its checksum:
 ```sh
 mkdir -p grove-questionnaire-package
 curl --fail --location \
-  https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/package.tgz \
+  https://grovealliance.org/fhir/questionnaire/package.tgz \
   --output grove-questionnaire-package/package.tgz
 curl --fail --location \
-  https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/package.tgz.sha256 \
+  https://grovealliance.org/fhir/questionnaire/package.tgz.sha256 \
   --output grove-questionnaire-package/package.tgz.sha256
 (cd grove-questionnaire-package && shasum -a 256 --check package.tgz.sha256)
 ```
@@ -105,12 +105,12 @@ Run the official FHIR Validator once for each resource:
 java -jar validator_cli.jar questionnaire.json \
   -version 4.0.1 \
   -ig grove-questionnaire-package/package.tgz \
-  -profile https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire
+  -profile https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire
 
 java -jar validator_cli.jar questionnaire-response.json \
   -version 4.0.1 \
   -ig grove-questionnaire-package/package.tgz \
-  -profile https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire-response
+  -profile https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire-response
 ```
 
 In a checkout of this repository, the wrapper supplies the exact package and profile:

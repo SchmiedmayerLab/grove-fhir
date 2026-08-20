@@ -8,7 +8,7 @@
 
 Invariant: healthkit-motion-context-1
 Description: "Heart-rate motion context is present only on an Observation coded with LOINC 8867-4."
-Expression: "component.where(code.coding.where(system = 'https://schmiedmayerlab.github.io/grove-fhir/fhir/healthkit/CodeSystem/healthkit-metadata-key' and code = 'HKMetadataKeyHeartRateMotionContext').exists()).empty() or code.coding.where(system = 'http://loinc.org' and code = '8867-4').exists()"
+Expression: "component.where(code.coding.where(system = 'https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-metadata-key' and code = 'HKMetadataKeyHeartRateMotionContext').exists()).empty() or code.coding.where(system = 'http://loinc.org' and code = '8867-4').exists()"
 Severity: #error
 
 Invariant: healthkit-object-id-1

@@ -95,8 +95,8 @@ Use these fixed vectors to test the byte encoding. The fixture repository scope 
 
 | Record type and raw id | Record identifier | Output identifier |
 |---|---|---|
-| `steps`, `source-record` | `v1:f3ad444267f81a426a6d6b1fde24b59553c5623164226a639f755aca851f414e` | `v1:f8e413af42c5e7a9d04152b38cbf60ec43b24d2831965c0be269a5b7ead16736` |
-| `steps`, `héal记录` | `v1:6e258b000caca29d65d79445792030e6aadc81216f8c9c3b73dce2d20299b6a4` | `v1:c1d40e4865981bcda26185ed54bb640b7c449210901153dc327de3131e9104fb` |
+| `steps`, `source-record` | `v1:f3ad444267f81a426a6d6b1fde24b59553c5623164226a639f755aca851f414e` | `v1:b0289ed972244bd0b0e94a1c7bbe9dffa0afe8971013de1d64c8929f130c8aed` |
+| `steps`, `héal记录` | `v1:6e258b000caca29d65d79445792030e6aadc81216f8c9c3b73dce2d20299b6a4` | `v1:70b8e32ea187b4f0b88469d091067ff6c271ace69cfca6b0f6e313327194fdd4` |
 
 The second row proves that every length is a UTF-8 byte length, not a character count.
 The two published heart-rate examples exercise the sample form and share one Record
@@ -177,7 +177,7 @@ it must not group outputs from different source Record identifiers.
 ### Study context and terminology notices
 
 Study linkage follows the Mobile guide's
-[study model](https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/study.html): a
+[study model](https://grovealliance.org/fhir/mobile/study.html): a
 versioned PlanDefinition is referenced by ResearchStudy, ResearchSubject links the Patient,
 and `workflow-researchStudy` links each Observation. Health Connect synchronization tokens,
 permissions, and Android package names are operational facts and do not belong in those

@@ -7,13 +7,13 @@
 #
 
 id: org.grovealliance.fhir.questionnaire
-canonical: https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire
+canonical: https://grovealliance.org/fhir/questionnaire
 name: GroveFHIRQuestionnaire
 title: Grove FHIR Questionnaire Exchange
 description: >-
   A FHIR R4 contract for exchanging versioned questionnaires and their responses.
 status: draft
-version: 0.1.0
+version: 0.2.0
 fhirVersion: 4.0.1
 copyrightYear: 2026+
 releaseLabel: ci-build

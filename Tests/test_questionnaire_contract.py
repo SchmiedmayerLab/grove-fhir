@@ -25,7 +25,7 @@ GENERATED = ROOT / "questionnaire/fsh-generated/resources"
 VALIDATOR_FIXTURES = ROOT / "questionnaire/fixtures/validator"
 PAIR_FIXTURES = ROOT / "questionnaire/fixtures/pairs"
 QUESTIONNAIRE_CANONICAL = (
-    "https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/"
+    "https://grovealliance.org/fhir/questionnaire/"
     "Questionnaire/GroveWeeklySymptomCheckInExample"
 )
 
@@ -450,7 +450,7 @@ class QuestionnaireContractTests(unittest.TestCase):
             self.assertIsNotNone(package_file)
             package = json.load(package_file)
         self.assertEqual(package["name"], "org.grovealliance.fhir.questionnaire")
-        self.assertEqual(package["version"], "0.1.0")
+        self.assertEqual(package["version"], "0.2.0")
         self.assertEqual(package["dependencies"].get("hl7.fhir.uv.sdc"), "4.0.0")
         self.assertEqual(
             package["dependencies"].get("hl7.fhir.uv.extensions.r4"),

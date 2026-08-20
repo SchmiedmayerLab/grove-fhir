@@ -7,13 +7,13 @@
 #
 
 id: org.grovealliance.fhir.healthkit
-canonical: https://schmiedmayerlab.github.io/grove-fhir/fhir/healthkit
+canonical: https://grovealliance.org/fhir/healthkit
 name: GroveFHIRHealthKit
 title: Grove FHIR HealthKit Adapter
 description: >-
   FHIR R4 mappings for HealthKit records exchanged through the Grove Mobile contract.
 status: draft
-version: 0.1.0
+version: 0.2.0
 fhirVersion: 4.0.1
 copyrightYear: 2026+
 releaseLabel: ci-build
@@ -26,8 +26,8 @@ license: MIT
 dependencies:
   hl7.terminology.r4: 7.3.0
   org.grovealliance.fhir.mobile:
-    version: 0.1.0
-    uri: https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/ImplementationGuide/org.grovealliance.fhir.mobile
+    version: 0.2.0
+    uri: https://grovealliance.org/fhir/mobile/ImplementationGuide/org.grovealliance.fhir.mobile
   # HealthKit instances populate the Mobile profile's standard timezone slice.
   # Declare the exact package so standalone SUSHI consumers resolve that extension.
   hl7.fhir.uv.extensions.r4: 5.3.0
