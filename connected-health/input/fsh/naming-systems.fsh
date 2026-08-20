@@ -17,7 +17,7 @@ Description: "The identifier namespace for a provider-scoped source record conve
 * kind = #identifier
 * date = "2026-08-20"
 * publisher = "Schmiedmayer Lab"
-* description = "Identifies one provider-scoped source record without exposing its provider-native key. Values use the versioned digest algorithm defined by the machine-readable adapter catalog. The complete system and value pair is a business identifier, never a FHIR Resource.id or authorization credential."
+* description = "Identifies one provider-scoped source record without exposing its provider-native key. The provider account input is deployment-scoped and pseudonymous, and the raw source-native key is digest input only. Values use the versioned digest algorithm defined by the machine-readable adapter catalog. The complete system and value pair is business identity, never a FHIR Resource.id, access token, authorization credential, or permission to fetch provider data."
 * uniqueId.type = #uri
 * uniqueId.value = $connectedHealthSourceRecordId
 * uniqueId.preferred = true

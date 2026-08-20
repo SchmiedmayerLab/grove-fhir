@@ -4,15 +4,87 @@
   "version": "0.2.0",
   "source": {
     "inventory": "Grove SampleType all-known quantities, categories, correlations, other sample types, clinical records, ECG, workout, and explicit sleep aggregate",
-    "sdkBaseline": "Apple HealthKit as exposed by the Grove branch for PR 60",
+    "sdkBaseline": "Apple HealthKit source surface captured at the exact Grove repository revision below",
+    "groveRepository": "https://github.com/SchmiedmayerLab/Grove",
+    "groveRevision": "bf7e25d1a59bc3afc20476f856ad54d2649edee4",
     "rowCount": 209
   },
+  "swiftProducer": {
+    "numericCanonicalization": {
+      "mobileEffectiveContract": "catalog/measurement-catalog.json#effectiveCanonicalization",
+      "effectivePrecision": "millisecond",
+      "effectiveRounding": "half-even",
+      "scalarQuantityDecimal": "shortest-round-trip",
+      "identityPreimages": "unmodified",
+      "sensorAndEcgTiming": "excluded"
+    }
+  },
+  "sourceTypeCoding": {
+    "system": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-source-type",
+    "element": "Observation.code.coding",
+    "cardinality": "exactly one",
+    "rule": "Every admitted HealthKit Observation preserves its exact sourceTypeIdentifier as an additional provider coding; the shared or authoritative standard coding remains the normative result meaning."
+  },
+  "conversionProvenanceProfile": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-conversion-provenance",
   "statusVocabulary": {
     "supported": "The 0.2.0 HealthKit adapter defines and validates emitted FHIR output.",
     "mapped-standard": "The source is represented by another exact Grove or authoritative standard package rather than a Mobile measurement profile.",
     "provider-specific": "The 0.2.0 adapter defines output whose meaning remains HealthKit-specific.",
     "deferred": "No FHIR output for this source type is admitted by the 0.2.0 adapter.",
     "intentionally-unsupported": "The 0.2.0 contract explicitly rejects this source meaning rather than approximating it."
+  },
+  "standardAdapterClaims": {
+    "body-mass-index": {
+      "claimMode": "exactly-standard-plus-adapter",
+      "profiles": [
+        "http://hl7.org/fhir/StructureDefinition/bmi",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-observation"
+      ],
+      "code": {"system": "http://loinc.org", "code": "39156-5"},
+      "quantity": {"system": "http://unitsofmeasure.org", "code": "kg/m2", "unit": "kg/m2"},
+      "effective": "dateTime",
+      "reason": "FHIR R4 already publishes an authoritative BMI profile; a one-source Grove Mobile wrapper would duplicate it."
+    }
+  },
+  "sensorAdapterClaims": {
+    "electrocardiogram": {
+      "claimMode": "exactly-sensor-plus-adapter",
+      "profiles": [
+        "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-ecg-observation",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-observation"
+      ],
+      "sourceTypeIdentifier": "HKDataTypeIdentifierElectrocardiogram",
+      "sourceLead": "HKElectrocardiogram.Lead.appleWatchSimilarToLeadI",
+      "leadCode": {"system": "urn:iso:std:iso:11073:10101", "code": "131329", "display": "MDC_ECG_ELEC_POTL_I"},
+      "quantity": {"system": "http://unitsofmeasure.org", "code": "mV", "unit": "mV"},
+      "callerEvidence": ["HKElectrocardiogram", "all HKElectrocardiogram.VoltageMeasurement values and timeSinceSampleStart offsets", "the exact associated HKCategorySample objects when symptomsStatus is present"],
+      "requiredContext": ["classification", "symptomsStatus", "numberOfVoltageMeasurements", "HKElectrocardiogram.startDate/endDate"],
+      "optionalContext": ["averageHeartRate", "samplingFrequency", "HKMetadataKeyAppleECGAlgorithmVersion"],
+      "correlatedSymptomEvidence": {
+        "url": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-correlated-symptom",
+        "cardinality": "0..7",
+        "children": [
+          {"url": "sourceIdentifier", "type": "Identifier", "meaning": "Exact HKCategorySample UUID under the HealthKit object NamingSystem"},
+          {"url": "effectivePeriod", "type": "Period", "meaning": "Exact HKCategorySample startDate/endDate"},
+          {"url": "symptomType", "type": "code", "meaning": "Exact admitted HealthKit symptom category identifier"},
+          {"url": "severity", "type": "code", "meaning": "Exact admitted HealthKit symptom severity"},
+          {"url": "sourceName", "type": "string", "cardinality": "1..1", "meaning": "Exact HKSourceRevision.source.name"},
+          {"url": "sourceBundleIdentifier", "type": "string", "cardinality": "1..1", "meaning": "Exact HKSourceRevision.source.bundleIdentifier"},
+          {"url": "sourceVersion", "type": "string", "cardinality": "0..1", "meaning": "Exact HKSourceRevision.version when present"},
+          {"url": "sourceProductType", "type": "string", "cardinality": "0..1", "meaning": "Exact HKSourceRevision.productType when present"},
+          {"url": "sourceOperatingSystemMajorVersion", "type": "integer", "cardinality": "1..1", "meaning": "Exact HKSourceRevision.operatingSystemVersion.majorVersion"},
+          {"url": "sourceOperatingSystemMinorVersion", "type": "integer", "cardinality": "1..1", "meaning": "Exact HKSourceRevision.operatingSystemVersion.minorVersion"},
+          {"url": "sourceOperatingSystemPatchVersion", "type": "integer", "cardinality": "1..1", "meaning": "Exact HKSourceRevision.operatingSystemVersion.patchVersion"}
+        ]
+      },
+      "sourceRevisionDisclosure": {
+        "requiredProducerInput": "explicitly-authorized",
+        "failureRule": "Without explicit caller authorization to disclose every correlated symptom HKSourceRevision field, the structured HealthKit ECG output is not admitted and conversion fails closed.",
+        "scope": "Authorization is producer input and is not encoded as a FHIR consent or authorization assertion."
+      },
+      "effectiveRule": "Observation.effectivePeriod starts at HKElectrocardiogram.startDate plus the exact first timeSinceSampleStart and ends at the exact last supplied voltage instant. The required healthkit-ecg-source-period extension separately preserves the HKElectrocardiogram startDate/endDate.",
+      "admissionRule": "The caller supplies already-obtained evidence. The supplied voltage count equals numberOfVoltageMeasurements; offsets are complete, unique, sorted, and satisfy offset[i] = offset[0] + i * SampledData.period exactly; every voltage is present; and samplingFrequency, when reported, equals 1000 / period in milliseconds exactly. Every associated symptom is supplied as its exact HKCategorySample UUID, start/end, type, severity, and complete HKSourceRevision fields. Symptom UUIDs are unique; distinct samples with the same symptom type remain distinct and are admitted. Missing, non-uniform, duplicate-UUID, resampled, or inconsistent evidence fails closed; the adapter performs no HealthKit query."
+    }
   },
   "rows": [
     {
@@ -757,21 +829,20 @@
     {
       "sourceTypeIdentifier": "HKDataTypeIdentifierElectrocardiogram",
       "title": "ECG",
-      "status": "mapped-standard",
-      "swiftImplementationStatus": "sensor-or-waveform",
-      "measurementIDs": [
-        "sensor-ecg"
-      ],
+      "status": "supported",
+      "swiftImplementationStatus": "supported",
+      "measurementIDs": ["electrocardiogram"],
       "profiles": [
-        "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-ecg-observation"
+        "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-ecg-observation",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-observation"
       ],
-      "requirement": "Use the Grove Sensor ECG graph; the HealthKit adapter retains source identity while the Sensor profile defines waveform semantics."
+      "requirement": "The caller supplies the HKElectrocardiogram, every voltage measurement with its exact timeSinceSampleStart, and each associated HKCategorySample when symptomsStatus is present. The adapter preserves symptom UUID/timing/type/severity and complete HKSourceRevision fields, classification, average heart rate, sampling frequency, reported count, Apple ECG algorithm-version metadata when present, source and waveform intervals, lead, offsets, and voltages without fetching or resampling. Explicit caller authorization for linkable symptom-source disclosure is required; otherwise conversion fails closed."
     },
     {
       "sourceTypeIdentifier": "HKDataTypeIdentifierHeartbeatSeries",
       "title": "Heartbeat Series",
       "status": "deferred",
-      "swiftImplementationStatus": "sensor-or-waveform",
+      "swiftImplementationStatus": "deferred",
       "measurementIDs": [],
       "profiles": [],
       "requirement": "Use a Grove Sensor waveform graph once the HealthKit heartbeat-series adapter is implemented."
@@ -895,19 +966,9 @@
       "title": "Blood Glucose",
       "status": "deferred",
       "swiftImplementationStatus": "deferred",
-      "measurementIDs": [
-        "blood-glucose",
-        "capillary-blood-glucose",
-        "serum-plasma-glucose",
-        "interstitial-glucose"
-      ],
-      "profiles": [
-        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-blood-glucose",
-        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-capillary-blood-glucose",
-        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-serum-plasma-glucose",
-        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-interstitial-glucose"
-      ],
-      "requirement": "HealthKit does not identify the specimen needed to select a glucose profile; source-only conversion fails closed."
+      "measurementIDs": [],
+      "profiles": [],
+      "requirement": "HealthKit does not identify the specimen needed by the Health Connect-only glucose profiles; source-only conversion fails closed."
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierBloodPressureDiastolic",
@@ -957,7 +1018,8 @@
         "body-mass-index"
       ],
       "profiles": [
-        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-bmi"
+        "http://hl7.org/fhir/StructureDefinition/bmi",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-observation"
       ]
     },
     {

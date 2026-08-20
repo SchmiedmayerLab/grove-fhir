@@ -30,11 +30,15 @@ class HealthConnectCatalogTests(unittest.TestCase):
     def setUpClass(cls) -> None:
         cls.adapter = json.loads((ROOT / "catalog/health-connect-adapter.json").read_text(encoding="utf-8"))
         cls.contract = json.loads((ROOT / "catalog/health-connect-identity.json").read_text(encoding="utf-8"))
+        cls.claims = json.loads((ROOT / "catalog/profile-claims.json").read_text(encoding="utf-8"))
         cls.measurements = {
             item["id"] for item in json.loads(
                 (ROOT / "catalog/measurement-catalog.json").read_text(encoding="utf-8")
             )["measurements"]
         }
+        cls.measurements.update(
+            item["id"] for item in cls.adapter["adapterMeasurements"]
+        )
 
     def test_record_type_inventory_is_exact_closed_and_complete(self) -> None:
         self.assertEqual(self.adapter["source"]["version"], "1.1.0")
@@ -48,6 +52,10 @@ class HealthConnectCatalogTests(unittest.TestCase):
         self.assertEqual({row["status"] for row in rows if row["status"] == "supported" and row["outputs"]}, {"supported"})
         self.assertEqual({row["token"] for row in rows if row["status"] == "supported"}, SUPPORTED)
         self.assertEqual(set(self.adapter["statusVocabulary"]), STATUSES)
+        self.assertEqual(
+            self.adapter["sourceTypeExtension"]["codeSystem"],
+            "https://grovealliance.org/fhir/health-connect/CodeSystem/health-connect-record-type",
+        )
         for row in rows:
             self.assertIn(row["status"], STATUSES)
             self.assertEqual(bool(row["outputs"]), row["status"] == "supported")
@@ -55,6 +63,57 @@ class HealthConnectCatalogTests(unittest.TestCase):
                 self.assertIn(output["measurement"], self.measurements)
             for context in row["context"]:
                 self.assertIn(context, self.adapter["contextMappings"])
+
+    def test_glucose_profiles_are_adapter_specific_and_specimen_exact(self) -> None:
+        measurements = {
+            item["id"]: item for item in self.adapter["adapterMeasurements"]
+        }
+        self.assertEqual(
+            set(measurements),
+            {
+                "blood-glucose",
+                "capillary-blood-glucose",
+                "serum-plasma-glucose",
+                "interstitial-glucose",
+            },
+        )
+        for measurement in measurements.values():
+            self.assertEqual(measurement["scope"], "health-connect-adapter")
+            self.assertEqual(
+                measurement["claimMode"], "exactly-one-adapter-specific-profile"
+            )
+            self.assertTrue(
+                measurement["profile"].startswith(
+                    "https://grovealliance.org/fhir/health-connect/StructureDefinition/"
+                    "health-connect-"
+                )
+            )
+        self.assertEqual(
+            [item["id"] for item in measurements["serum-plasma-glucose"]["specimenAlternatives"]],
+            ["plasma", "serum"],
+        )
+
+    def test_conversion_provenance_is_child_only_and_covers_every_output_profile(self) -> None:
+        claim = next(
+            item
+            for item in self.claims["adapterConversionProvenanceClaims"]
+            if item["adapter"] == "health-connect"
+        )
+        self.assertEqual(
+            claim["profile"],
+            "https://grovealliance.org/fhir/health-connect/StructureDefinition/"
+            "health-connect-conversion-provenance",
+        )
+        self.assertIn("inherited Mobile profile is not repeated", claim["rule"])
+        self.assertEqual(
+            set(claim["targetAdapterProfiles"]),
+            {
+                "https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-observation",
+                *{
+                    item["profile"] for item in self.adapter["adapterMeasurements"]
+                },
+            },
+        )
 
     def test_context_mappings_are_closed_and_lossless(self) -> None:
         contexts = self.adapter["contextMappings"]
@@ -77,6 +136,29 @@ class HealthConnectCatalogTests(unittest.TestCase):
         self.assertIn("additional coding", sleep["element"])
         self.assertEqual(contexts["sleepTitle"]["valueType"], "string")
         self.assertEqual(contexts["sleepNotes"]["element"], "Observation.note.text")
+
+    def test_mobile_health_connect_coverage_is_bidirectional(self) -> None:
+        shared = {
+            item["id"]: item
+            for item in json.loads(
+                (ROOT / "catalog/measurement-catalog.json").read_text(encoding="utf-8")
+            )["measurements"]
+        }
+        supported_outputs = {
+            output["measurement"]
+            for row in self.adapter["recordTypes"]
+            if row["status"] == "supported"
+            for output in row["outputs"]
+        }
+        adapter_only = {item["id"] for item in self.adapter["adapterMeasurements"]}
+        self.assertEqual(supported_outputs - set(shared), adapter_only)
+        for measurement_id, measurement in shared.items():
+            claimed = measurement["coverage"]["health-connect"] == "supported"
+            self.assertEqual(
+                claimed,
+                measurement_id in supported_outputs,
+                measurement_id,
+            )
 
     def test_every_normative_identity_vector_is_exact(self) -> None:
         for vector in self.contract["vectors"]:

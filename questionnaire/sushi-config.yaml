@@ -20,7 +20,6 @@ releaseLabel: ci-build
 publisher:
   name: Schmiedmayer Lab
   url: https://github.com/SchmiedmayerLab
-jurisdiction: http://unstats.un.org/unsd/methods/m49/m49.htm#001 "World"
 license: MIT
 
 dependencies:

@@ -24,6 +24,9 @@ class ConnectedHealthCatalogTests(unittest.TestCase):
         cls.catalog = json.loads(CATALOG_PATH.read_text(encoding="utf-8"))
         cls.measurements = json.loads(MEASUREMENT_PATH.read_text(encoding="utf-8"))
         cls.graph = json.loads(GRAPH_PATH.read_text(encoding="utf-8"))
+        cls.claims = json.loads(
+            (ROOT / "catalog/profile-claims.json").read_text(encoding="utf-8")
+        )
 
     def test_release_and_package_identity_are_exact(self) -> None:
         self.assertEqual(self.catalog["schemaVersion"], 1)
@@ -31,6 +34,20 @@ class ConnectedHealthCatalogTests(unittest.TestCase):
         self.assertEqual(self.catalog["version"], "0.2.0")
         self.assertEqual(
             self.catalog["packageId"], "org.grovealliance.fhir.connected-health"
+        )
+        self.assertEqual(
+            self.catalog["sourceTypeExtension"]["codeRule"],
+            "provider id + '/' + exact source token; the atomic Withings blood-pressure output uses withings/getmeas:9+10",
+        )
+        self.assertTrue(
+            self.catalog["recordingDocument"]["adapterProfile"].endswith(
+                "/connected-health-recording-document"
+            )
+        )
+        self.assertTrue(
+            self.catalog["conversionProvenanceProfile"].endswith(
+                "/connected-health-conversion-provenance"
+            )
         )
         package = next(
             package
@@ -41,17 +58,49 @@ class ConnectedHealthCatalogTests(unittest.TestCase):
         self.assertEqual(package["canonical"], self.catalog["canonical"])
         self.assertEqual(
             package["dependencies"],
-            ["org.grovealliance.fhir.mobile#0.2.0"],
+            [
+                "org.grovealliance.fhir.mobile#0.2.0",
+                "org.grovealliance.fhir.sensor#0.2.0",
+            ],
         )
         self.assertEqual(
             set(package["profiles"]),
             {
                 "connected-health-conversion-provenance",
                 "connected-health-observation",
+                "connected-health-recording-document",
             },
         )
+        provenance = next(
+            claim for claim in self.claims["adapterConversionProvenanceClaims"]
+            if claim["adapter"] == "connected-health"
+        )
+        self.assertEqual(provenance["profile"], self.catalog["conversionProvenanceProfile"])
+        self.assertEqual(
+            provenance["sourceIdentifierSystem"],
+            self.catalog["identity"]["sourceRecord"]["system"],
+        )
+        self.assertIn(
+            self.catalog["recordingDocument"]["adapterProfile"],
+            provenance["targetAdapterProfiles"],
+        )
+        admission = self.catalog["rawPayloadAdmission"]
+        self.assertEqual(
+            admission["allowedAssertions"],
+            ["caller-authorized-opaque-payload", "verified-sanitized-input"],
+        )
+        self.assertIn("exactly one", admission["failureRule"])
+        self.assertTrue(admission["notFHIRAuthorization"])
 
     def test_provider_and_source_type_inventory_is_closed(self) -> None:
+        self.assertEqual(
+            self.catalog["sourceReference"],
+            {
+                "repository": "https://github.com/SchmiedmayerLab/MyHeartCounts-Firebase.git",
+                "revision": "c16f5bbd18aac8d16b393a0cb64e9816c04930e3",
+                "scope": "Exact source types and consumed elements in the Google Health API, Oura, and Withings provider adapters; API fetching behavior is not part of this contract.",
+            },
+        )
         providers = {provider["id"]: provider for provider in self.catalog["providers"]}
         self.assertEqual(set(providers), {"google-health-api", "oura", "withings"})
 
@@ -141,6 +190,12 @@ class ConnectedHealthCatalogTests(unittest.TestCase):
                             "https://grovealliance.org/fhir/sensor/StructureDefinition/"
                             "grove-sensor-recording-document",
                         )
+                        raw = source_type["raw"]
+                        self.assertEqual(
+                            raw["adapterProfile"],
+                            self.catalog["recordingDocument"]["adapterProfile"],
+                        )
+                        self.assertEqual(raw["outputDiscriminator"], "native-recording")
                     else:
                         self.assertIsInstance(element.get("reason"), str)
                         self.assertTrue(element["reason"])
@@ -161,6 +216,27 @@ class ConnectedHealthCatalogTests(unittest.TestCase):
                             "supported",
                             f"{provider['id']} {source_type['token']} {element['path']}",
                         )
+
+    def test_mobile_provider_coverage_is_bidirectional(self) -> None:
+        by_id = {
+            measurement["id"]: measurement
+            for measurement in self.measurements["measurements"]
+        }
+        for provider in self.catalog["providers"]:
+            supported = {
+                measurement_id
+                for source_type in provider["sourceTypes"]
+                for element in source_type["elements"]
+                if element["status"] == "supported"
+                for measurement_id in element["measurementIds"]
+            }
+            for measurement_id, measurement in by_id.items():
+                claimed = measurement["coverage"][provider["id"]] == "supported"
+                self.assertEqual(
+                    claimed,
+                    measurement_id in supported,
+                    f"{provider['id']} {measurement_id}",
+                )
 
     def test_fail_closed_provider_boundaries_are_frozen(self) -> None:
         providers = {provider["id"]: provider for provider in self.catalog["providers"]}
@@ -224,10 +300,28 @@ class ConnectedHealthCatalogTests(unittest.TestCase):
                 "groupedMapping": (
                     "the exact outputDiscriminator declared on that groupedMappings row"
                 ),
+                "mappedStandardRaw": "native-recording",
                 "noFallback": True,
             },
         )
         self.assertIn("optional and repository-assigned", identity["resourceIdPolicy"])
+        self.assertIn(
+            "deployment-scoped pseudonymous",
+            identity["providerAccountIdentifier"]["requirement"],
+        )
+        self.assertIn(
+            "vendor email address",
+            identity["providerAccountIdentifier"]["prohibitedByDefault"],
+        )
+        self.assertEqual(
+            identity["sourceNativeId"]["emission"],
+            "Digest input only for FHIR metadata: the raw value must not appear in "
+            "Resource.id, Identifier.value, extensions, attachment URL/title, or "
+            "Provenance text. Opaque caller-supplied attachment bytes are not "
+            "semantically inspected and require separate deployment authorization "
+            "and minimization.",
+        )
+        self.assertTrue(identity["derivedDigest"]["notAuthorization"])
         for vector in identity["vectors"]:
             preimage = json.dumps(
                 vector["inputs"], ensure_ascii=False, separators=(",", ":")

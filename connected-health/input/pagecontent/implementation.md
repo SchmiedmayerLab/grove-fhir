@@ -17,14 +17,33 @@ A producer must:
 2. fail closed unless its status admits the listed output;
 3. normalize units without changing the source interval or inventing an instant;
 4. assign complete source and output business identifiers;
-5. declare exactly the shared semantic profile plus the adapter profile; and
-6. exchange a complete resource graph in a Grove Mobile collection Bundle using
+5. declare exactly the catalogued profile pair for a shared Observation or native Recording Document; and
+6. include one `connected-health-conversion-provenance` whose sole source entity is the
+   complete connected-provider source-record Identifier and whose internal UUID targets
+   cover every structured and raw output for that source record; and
+7. exchange a complete resource graph in a Grove Mobile collection Bundle using
    deterministic `urn:uuid` full URLs for internal references.
 
-`Resource.id` remains optional and repository-assigned. Provider-native keys are not
-copied into `Resource.id`. Implementations validate their own emitted resources with the
-generic producer kit under `Scripts/validate-producer.py`; this repository does not run
-consumer implementations.
+`providerAccountIdentifier` is a complete, deployment-scoped pseudonymous Identifier.
+A vendor email, account/member id, OAuth subject, or token is prohibited unless an
+explicit deployment privacy policy separately authorizes that disclosure; this package
+does not. The exact `sourceNativeId` and provider-account pair are digest inputs only and
+must not appear in FHIR metadata, identifiers, URLs, titles, displays, or Provenance text.
+An opaque native attachment can itself contain sensitive provider fields. Before
+emission, the producer therefore requires exactly one explicit caller assertion:
+`caller-authorized-opaque-payload` or `verified-sanitized-input`; absent, ambiguous, or
+unsupported assertions fail closed. This producer preflight is not encoded as FHIR
+consent or authorization. The generic conformance kit validates metadata and byte integrity but does not
+claim to inspect opaque payload semantics or secrets. The resulting digest is business
+identity for deduplication and reference resolution, never a credential or authorization
+to fetch provider data. The digest, profile claim, and Attachment hash do not authorize
+disclosure; URL access control, consent, minimization, retention, and deletion remain
+deployment policy.
+
+`Resource.id` remains optional and repository-assigned. Provider-native keys and derived
+digests are not copied into `Resource.id`. Implementations validate their own emitted
+resources with the generic producer kit under `Scripts/validate-producer.py`; this
+repository does not run consumer implementations.
 
 Canonical URLs identify artifacts. They do not promise that Grove hosts a package or a
 FHIR endpoint at the canonical origin.

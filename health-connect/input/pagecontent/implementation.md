@@ -31,21 +31,26 @@ package directory because removed artifacts would remain.
 For each emitted Observation:
 
 1. Select an admitted row in `catalog/health-connect-adapter.json`.
-2. Declare exactly two profiles in `meta.profile`: the exact shared measurement profile
-   selected by that row and Health Connect Observation. Do not repeat an inherited Mobile
-   or core standard profile.
+2. For a shared measurement, declare exactly two profiles in `meta.profile`: the exact
+   shared measurement profile selected by that row and Health Connect Observation. A
+   specimen-specific glucose output instead declares only its exact Health Connect child
+   profile. Do not repeat an inherited Mobile or core standard profile.
 3. Populate the complete source-record and output business identifiers using
    `catalog/health-connect-identity.json`.
 4. Apply every required code, unit, effective type, result shape, specimen, and admitted
    context mapping from the machine catalogs.
-5. Add conversion Provenance and every internally referenced graph node.
+5. Add conversion Provenance and every internally referenced graph node. Conversion
+   Provenance directly declares only Health Connect Conversion Provenance; its inherited
+   Mobile conversion profile is not repeated. Its sole source entity Identifier matches
+   the output source-record Identifier, and it targets every output for that source Record.
 6. Package the complete graph as a Grove Mobile Exchange Bundle. Derive every entry
    `urn:uuid` from its entry business identifier and use those URNs for internal references.
    `Resource.id` remains optional and repository-assigned.
 
 The source-neutral measurement profile inherits the generic Mobile and applicable core
 standard constraints. The adapter profile adds Health Connect identity and source context.
-Both direct profile claims are required; inherited profiles are not separately declared.
+Both direct profile claims are required for shared measurements; inherited profiles are
+not separately declared. Adapter-specific glucose follows the closed child-only mode above.
 
 ### Validate producer output
 

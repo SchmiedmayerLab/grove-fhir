@@ -33,14 +33,43 @@ exchange graph. Its positive base is byte-for-byte equal to the example producer
 Bundle. Every negative case applies exactly one RFC 6902 JSON Patch operation and
 names the one rule it is intended to violate.
 
+`Conformance/corpora/mobile-semantics/corpus.json` is the implementation-neutral
+clinical projection corpus. It contains exactly one vector for every shared Mobile
+measurement and binds the exact profile, code, unit, effective shape, result shape,
+edge rules, and admitted adapter context to `catalog/measurement-catalog.json`.
+A producer manifest binds one generated Observation to every shared Mobile meaning
+present in its submitted resources through `semanticVectors`. The generic kit resolves
+the declared JSON Pointer and compares the exact normalized clinical projection to the
+versioned vector. Equal offset-bearing FHIR instants are normalized without losing
+fractional precision before comparison, so a producer retains a real source offset when
+available and uses UTC when its source API supplies only an instant; it never invents an
+offset to match a fixture. Swift, Kotlin, and TypeScript repositories therefore generate these
+fixtures in their own CI; Grove FHIR still never executes their implementations.
+
 The structural conformance kit rejects graph and deterministic-identity failures
 without needing an implementation guide build. Profile terminology and cardinality
 failures are intentionally delegated to the official HL7 FHIR Validator with the
 exact `org.grovealliance.fhir.mobile#0.2.0` package. A producer test suite must run
 both layers; structural-only success is not FHIR conformance.
 
-An adapter Observation has one unambiguous profile claim: exactly one shared Mobile
-measurement profile plus exactly one adapter profile. It does not repeat the generic
-Grove Mobile Observation or an imposed standard profile in `meta.profile`. The
-machine-readable rule is `catalog/profile-claims.json`; the structural conformance kit
-enforces it for standalone resources and Bundle entries.
+Every adapter output uses one of the closed direct-claim modes in
+`catalog/profile-claims.json`:
+
+- A shared Mobile or Sensor Observation claims exactly the applicable shared semantic
+  profile and its adapter profile. Inherited generic or core profiles are not repeated.
+- HealthKit body-mass index claims exactly the authoritative R4 BMI profile and the
+  generic HealthKit Observation profile.
+- A Health Connect specimen-specific glucose Observation or a SensorKit-only
+  Observation claims exactly its adapter-specific child profile.
+- The SensorKit ECG hybrid claims exactly the source-neutral Sensor ECG profile and
+  the SensorKit ECG profile, and includes its required linked native Recording
+  Document in the same graph.
+- A raw SensorKit or Connected Health DocumentReference claims exactly the
+  source-neutral Sensor Recording Document profile and its adapter Recording Document
+  profile.
+- Adapter conversion Provenance claims exactly its adapter conversion profile.
+
+The structural conformance kit enforces these modes for standalone resources and
+Bundle entries. A producer manifest's `requiredProfiles` must equal the resource's
+complete direct Grove profile set, so a producer-authored manifest cannot hide an
+extra claim.

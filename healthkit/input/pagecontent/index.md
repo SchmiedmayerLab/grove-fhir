@@ -48,9 +48,8 @@ for an importer.
 - The optional `heartRateMotionContext` component preserves one allowlisted HealthKit
   metadata value. An invariant permits it only on LOINC `8867-4` heart-rate records.
 
-The HealthKit sample type selects the mapping profile in converter code; it is not added
-as a second coding beside the clinical code. This avoids placing non-equivalent source
-and clinical concepts in one CodeableConcept.
+The HealthKit sample type selects the mapping profile and is retained as one additional
+adapter-lineage coding beside the normative shared or standard clinical coding.
 
 Continue with [Mapping](mapping.html) for field-by-field rules, or open
 [Artifacts](artifacts.html) for every profile, naming system, terminology resource, and

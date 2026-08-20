@@ -1,0 +1,40 @@
+id: org.grovealliance.fhir.sensorkit
+canonical: https://grovealliance.org/fhir/sensorkit
+name: GroveFHIRSensorKit
+title: Grove FHIR SensorKit Adapter
+description: FHIR R4 adapter contracts for data already obtained from Apple SensorKit.
+status: draft
+version: 0.2.0
+fhirVersion: 4.0.1
+copyrightYear: 2026+
+releaseLabel: ci-build
+license: MIT
+publisher:
+  name: Grove Alliance
+  url: https://grovealliance.org
+dependencies:
+  org.grovealliance.fhir.mobile:
+    version: 0.2.0
+    uri: https://grovealliance.org/fhir/mobile/ImplementationGuide/org.grovealliance.fhir.mobile
+  org.grovealliance.fhir.sensor:
+    version: 0.2.0
+    uri: https://grovealliance.org/fhir/sensor/ImplementationGuide/org.grovealliance.fhir.sensor
+pages:
+  index.md:
+    title: Home
+  mapping.md:
+    title: Source inventory and mappings
+  status-matrix.md:
+    title: Authoritative status matrix
+  implementation.md:
+    title: Producer contract
+menu:
+  Home: index.html
+  Inventory: mapping.html
+  Status matrix: status-matrix.html
+  Producer contract: implementation.html
+  Artifacts: artifacts.html
+parameters:
+  show-inherited-invariants: false
+  usage-stats-opt-out: true
+  i18n-default-lang: en

@@ -20,7 +20,6 @@ releaseLabel: ci-build
 publisher:
   name: Schmiedmayer Lab
   url: https://github.com/SchmiedmayerLab
-jurisdiction: http://unstats.un.org/unsd/methods/m49/m49.htm#001 "World"
 license: MIT
 
 dependencies:
@@ -31,13 +30,11 @@ dependencies:
   org.grovealliance.fhir.sensor:
     version: 0.2.0
     uri: https://grovealliance.org/fhir/sensor/ImplementationGuide/org.grovealliance.fhir.sensor
-  # HealthKit instances populate the Mobile profile's standard timezone slice.
-  # Declare the exact package so standalone SUSHI consumers resolve that extension.
-  hl7.fhir.uv.extensions.r4: 5.3.0
 
 menu:
   Overview: index.html
   Mapping: mapping.html
+  Status matrix: status-matrix.html
   Implement and validate: implementation.html
   Artifacts: artifacts.html
 
@@ -46,6 +43,8 @@ pages:
     title: Overview
   mapping.md:
     title: Mapping
+  status-matrix.md:
+    title: Authoritative status matrix
   implementation.md:
     title: Implement and validate
   terminology-provenance.md:

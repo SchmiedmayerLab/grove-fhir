@@ -9,6 +9,7 @@ SPDX-License-Identifier: MIT
 Conversion dispatches on the exact AndroidX Health Connect 1.1 Record class. The normative
 inventory, output cardinality, and context mappings are machine-readable in
 `catalog/health-connect-adapter.json`; prose never expands or overrides that closed table.
+The [authoritative status matrix](status-matrix.html) renders all 41 record classes.
 
 ### Common Record mapping
 
@@ -67,7 +68,7 @@ must not stamp a profile whose meaning is not established by the source.
 
 ### Glucose specimen and meal context
 
-The specimen-source enum selects both the shared glucose profile and a synthesized
+The specimen-source enum selects one Health Connect adapter-specific glucose profile and a synthesized
 [Health Connect Specimen](StructureDefinition-health-connect-specimen.html). The Specimen
 declares that adapter profile directly and carries exactly one admitted SNOMED CT type:
 
@@ -109,6 +110,11 @@ Provenance. `DataOrigin.packageName` identifies the application that inserted th
 into Health Connect and is represented as an enterer. It does not prove which hardware
 measured the value or which person performed it. Capture mode does not populate
 `Observation.method` or justify a performer.
+
+Conversion Provenance directly declares only the Health Connect conversion profile. Its
+inherited Mobile profile is not repeated. Exactly one Provenance per source Record targets
+every Observation produced from that Record and carries the same complete source-record
+Identifier as its sole source entity.
 
 Study links follow the Mobile study model. They are included only when independently known
 and are not inferred from Health Connect metadata.

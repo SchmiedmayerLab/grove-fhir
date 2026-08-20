@@ -18,3 +18,17 @@ WARNING: Observation/GoogleHealthStepsExample: Observation.value.ofType(Quantity
 # Grove has no assigned stable OID root. Canonical URLs are authoritative identifiers; inventing OIDs would create unstable aliases.
 WARNING: Resource: The resource CodeSystem/connected-health-provider should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/fhir-tools-ig/CodeSystem-ig-parameters.html#ig-parameters-auto-oid-root)
 WARNING: Resource: The resource ValueSet/connected-health-provider should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/fhir-tools-ig/CodeSystem-ig-parameters.html#ig-parameters-auto-oid-root)
+
+# Provider-qualified source types are canonical-URL terminology. Grove has no assigned stable OID root and does not invent aliases for CDA.
+WARNING: Resource: The resource CodeSystem/connected-health-source-type should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/fhir-tools-ig/CodeSystem-ig-parameters.html#ig-parameters-auto-oid-root)
+WARNING: Resource: The resource ValueSet/connected-health-source-type should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/fhir-tools-ig/CodeSystem-ig-parameters.html#ig-parameters-auto-oid-root)
+
+# The exact offline dependency closure identifies the guide language, but the external BCP 47 code system does not enumerate language codes locally.
+WARNING: ImplementationGuide/org.grovealliance.fhir.connected-health: ImplementationGuide.language.system: A definition for CodeSystem 'urn:ietf:bcp:47' could not be found, so the code cannot be validated
+WARNING: ImplementationGuide/org.grovealliance.fhir.connected-health: ImplementationGuide.language: A definition for CodeSystem 'urn:ietf:bcp:47' could not be found, so the code cannot be validated
+
+# UCUM is deliberately not expanded from a network terminology service during the reproducible offline build; the fixed unit is enforced structurally and by the catalog/package binding tests.
+WARNING: Observation/GoogleHealthStepsExample: Observation.value.ofType(Quantity): Unable to validate code '{steps}' in system 'http://unitsofmeasure.org' because the validator is running without terminology services
+
+# Publisher 2.3.2 cannot resolve the required core MimeType binding offline. This exact suppression is limited to the reviewed raw example; the Sensor profile and producer kit still enforce byte integrity.
+ERROR: DocumentReference/GoogleHealthHeartRateRecordingExample: DocumentReference.content[0].attachment.contentType: The value provided ('application/octet-stream') was not found in the value set 'MimeType' (http://hl7.org/fhir/ValueSet/mimetypes|4.0.1), and a code is required from this value set  (error message = Cannot invoke "org.hl7.fhir.r5.terminologies.client.TerminologyClientContext.getAddress()" because "tc" is null)

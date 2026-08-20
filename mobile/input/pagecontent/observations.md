@@ -14,6 +14,12 @@ available for a measurement governed by another established profile.
 
 ### Shared measurement contract
 
+Every profile in this table has at least two independently supported source adapters
+in version 0.2.0. A meaning implemented by only one source stays in that adapter guide.
+Accordingly, HealthKit BMI claims the authoritative R4 BMI profile directly alongside
+the HealthKit adapter profile, while specimen-specific glucose profiles are defined in
+Health Connect, whose source record supplies the required specimen evidence.
+
 | Measurement | Grove profile | Standard basis | Normalized result | Effective |
 |---|---|---|---|---|
 | Heart rate | `grove-mobile-heart-rate` | FHIR R4 Heart Rate, LOINC `8867-4` | UCUM `/min` | `dateTime` |
@@ -23,12 +29,7 @@ available for a measurement governed by another established profile.
 | Respiratory rate | `grove-mobile-respiratory-rate` | FHIR R4 Respiratory Rate, LOINC `9279-1` | UCUM `/min` | `dateTime` |
 | Oxygen saturation | `grove-mobile-oxygen-saturation` | FHIR R4 Oxygen Saturation, LOINC `2708-6` | UCUM `%` | `dateTime` |
 | Body height | `grove-mobile-body-height` | FHIR R4 Body Height, LOINC `8302-2` | UCUM `cm` | `dateTime` |
-| BMI | `grove-mobile-bmi` | FHIR R4 BMI, LOINC `39156-5` | UCUM `kg/m2` | `dateTime` |
 | Basal body temperature | `grove-mobile-basal-body-temperature` | Grove `basal-body-temperature` | UCUM `Cel` | `dateTime` |
-| Whole-blood glucose | `grove-mobile-blood-glucose` | LOINC `2339-0`, whole-blood specimen | UCUM `mg/dL` | `dateTime` |
-| Capillary-blood glucose | `grove-mobile-capillary-blood-glucose` | LOINC `32016-8`, capillary-blood specimen | UCUM `mg/dL` | `dateTime` |
-| Serum/plasma glucose | `grove-mobile-serum-plasma-glucose` | LOINC `2345-7`, serum or plasma specimen | UCUM `mg/dL` | `dateTime` |
-| Interstitial glucose | `grove-mobile-interstitial-glucose` | LOINC `99504-3`, interstitial-fluid specimen | UCUM `mg/dL` | `dateTime` |
 | Step count | `grove-mobile-step-count` | Grove `step-count-total` | UCUM `{steps}` | `Period` |
 | Distance | `grove-mobile-distance` | LOINC `103208-5` | UCUM `m` | `Period` |
 | Active energy | `grove-mobile-active-energy` | Grove `active-energy-burned` | UCUM `kcal` | `Period` |
@@ -139,9 +140,13 @@ Those are transport and deployment policy outside this guide.
 
 ### Time, capture mode, and clinical method
 
-Use the effective datatype fixed by the selected profile. Preserve fractional seconds
-and the numeric UTC offset. When the source also supplies an IANA time-zone name, attach
-the standard `timezone` extension; the name must agree with the offset at that instant.
+Use the effective datatype fixed by the selected profile. For every Mobile scalar or
+aggregate `effectiveDateTime` and `effectivePeriod` endpoint, round the exact instant to
+the nearest millisecond with ties to even before FHIR serialization. Preserve the
+caller/source numeric UTC offset when it is available; never invent one. This rule does
+not apply to Sensor or ECG `SampledData`, whose exact Decimal timing contract is defined
+by the Sensor guide. When the source also supplies an IANA time-zone name, attach the
+standard `timezone` extension; the name must agree with the offset at that instant.
 
 The [Grove Recording Method extension](StructureDefinition-grove-recording-method.html)
 describes positively established `manual-entry`, `actively-recorded`, or

@@ -8,6 +8,13 @@
     "inventory": "RecordType.all",
     "recordTypeCount": 41
   },
+  "sourceTypeExtension": {
+    "url": "https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-record-type",
+    "codeSystem": "https://grovealliance.org/fhir/health-connect/CodeSystem/health-connect-record-type",
+    "element": "Observation.extension.valueCode",
+    "cardinality": "exactly one",
+    "rule": "Every admitted output preserves the exact AndroidX Health Connect 1.1 Record class token; the token is lineage and does not replace Observation.code."
+  },
   "statusVocabulary": {
     "supported": "The 0.2.0 adapter defines and validates emitted FHIR output.",
     "mapped-standard": "The source maps directly to an established external FHIR profile without a Grove semantic profile.",
@@ -15,6 +22,51 @@
     "deferred": "No FHIR output for this source type is admitted by the 0.2.0 adapter.",
     "intentionally-unsupported": "The 0.2.0 contract explicitly rejects this source meaning rather than approximating it."
   },
+  "adapterMeasurements": [
+    {
+      "id": "blood-glucose",
+      "scope": "health-connect-adapter",
+      "profile": "https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-whole-blood-glucose",
+      "claimMode": "exactly-one-adapter-specific-profile",
+      "code": {"system": "http://loinc.org", "code": "2339-0"},
+      "quantity": {"system": "http://unitsofmeasure.org", "code": "mg/dL", "unit": "mg/dL"},
+      "specimen": {"system": "http://snomed.info/sct", "code": "258580003", "display": "Whole blood sample"},
+      "effective": "dateTime"
+    },
+    {
+      "id": "capillary-blood-glucose",
+      "scope": "health-connect-adapter",
+      "profile": "https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-capillary-blood-glucose",
+      "claimMode": "exactly-one-adapter-specific-profile",
+      "code": {"system": "http://loinc.org", "code": "32016-8"},
+      "quantity": {"system": "http://unitsofmeasure.org", "code": "mg/dL", "unit": "mg/dL"},
+      "specimen": {"system": "http://snomed.info/sct", "code": "122554006", "display": "Capillary blood specimen"},
+      "effective": "dateTime"
+    },
+    {
+      "id": "serum-plasma-glucose",
+      "scope": "health-connect-adapter",
+      "profile": "https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-serum-plasma-glucose",
+      "claimMode": "exactly-one-adapter-specific-profile",
+      "code": {"system": "http://loinc.org", "code": "2345-7"},
+      "quantity": {"system": "http://unitsofmeasure.org", "code": "mg/dL", "unit": "mg/dL"},
+      "specimenAlternatives": [
+        {"id": "plasma", "system": "http://snomed.info/sct", "code": "119361006", "display": "Plasma specimen"},
+        {"id": "serum", "system": "http://snomed.info/sct", "code": "119364003", "display": "Serum specimen"}
+      ],
+      "effective": "dateTime"
+    },
+    {
+      "id": "interstitial-glucose",
+      "scope": "health-connect-adapter",
+      "profile": "https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-interstitial-glucose",
+      "claimMode": "exactly-one-adapter-specific-profile",
+      "code": {"system": "http://loinc.org", "code": "99504-3"},
+      "quantity": {"system": "http://unitsofmeasure.org", "code": "mg/dL", "unit": "mg/dL"},
+      "specimen": {"system": "http://snomed.info/sct", "code": "258479004", "display": "Interstitial fluid specimen"},
+      "effective": "dateTime"
+    }
+  ],
   "recordTypes": [
     {"token": "ActiveCaloriesBurnedRecord", "status": "supported", "outputs": [{"measurement": "active-energy", "cardinality": "1"}], "context": []},
     {"token": "BasalBodyTemperatureRecord", "status": "supported", "outputs": [{"measurement": "basal-body-temperature", "cardinality": "1"}], "context": ["temperatureMeasurementLocation"]},

@@ -5,6 +5,28 @@
   "packageId": "org.grovealliance.fhir.connected-health",
   "canonical": "https://grovealliance.org/fhir/connected-health",
   "adapterProfile": "https://grovealliance.org/fhir/connected-health/StructureDefinition/connected-health-observation",
+  "sourceTypeExtension": {
+    "url": "https://grovealliance.org/fhir/connected-health/StructureDefinition/connected-health-source-type",
+    "codeSystem": "https://grovealliance.org/fhir/connected-health/CodeSystem/connected-health-source-type",
+    "element": "Observation.extension.valueCode or DocumentReference.extension.valueCode",
+    "cardinality": "exactly one",
+    "codeRule": "provider id + '/' + exact source token; the atomic Withings blood-pressure output uses withings/getmeas:9+10",
+    "rule": "Every admitted output makes the exact catalog dispatch token recoverable without reversing its source-record digest."
+  },
+  "recordingDocument": {
+    "sourceNeutralProfile": "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document",
+    "adapterProfile": "https://grovealliance.org/fhir/connected-health/StructureDefinition/connected-health-recording-document",
+    "claimMode": "exactly-source-neutral-plus-adapter",
+    "outputDiscriminator": "native-recording",
+    "encoding": "caller-supplied exact already-obtained provider bytes"
+  },
+  "rawPayloadAdmission": {
+    "contract": "https://grovealliance.org/fhir/sensor#recording-document.payloadAdmission",
+    "allowedAssertions": ["caller-authorized-opaque-payload", "verified-sanitized-input"],
+    "failureRule": "The producer fails closed before emission unless the caller supplies exactly one assertion.",
+    "notFHIRAuthorization": true
+  },
+  "conversionProvenanceProfile": "https://grovealliance.org/fhir/connected-health/StructureDefinition/connected-health-conversion-provenance",
   "statusVocabulary": [
     "supported",
     "mapped-standard",
@@ -20,13 +42,28 @@
     "intentionally-unsupported": "Version 0.2.0 deliberately refuses a normalized conversion because doing so would be misleading or diagnostic-adjacent."
   },
   "sourceReference": {
-    "repository": "https://github.com/StanfordBDHG/MyHeartCounts",
+    "repository": "https://github.com/SchmiedmayerLab/MyHeartCounts-Firebase.git",
     "revision": "c16f5bbd18aac8d16b393a0cb64e9816c04930e3",
     "scope": "Exact source types and consumed elements in the Google Health API, Oura, and Withings provider adapters; API fetching behavior is not part of this contract."
   },
   "identity": {
     "canonicalization": "RFC 8785/JCS serialization of arrays and Unicode scalar-value strings; UTF-8; non-ASCII unescaped; short JSON escapes for quote, reverse solidus, backspace, tab, line feed, form feed, and carriage return; other U+0000 through U+001F as lowercase \\u00xx; invalid Unicode surrogates rejected",
     "digest": "SHA-256 over the UTF-8 preimage, lowercase hexadecimal, prefixed with v1:",
+    "providerAccountIdentifier": {
+      "requirement": "A complete deployment-scoped pseudonymous Identifier pair. It must be stable for the provider-account scope needed for deduplication.",
+      "prohibitedByDefault": ["vendor email address", "vendor account id", "vendor member id", "OAuth subject or token"],
+      "exception": "A raw vendor account value may be used only when an explicit deployment privacy policy authorizes that disclosure; this package grants no such authorization.",
+      "emission": "Digest input only; the pair is not copied to the emitted clinical resource."
+    },
+    "sourceNativeId": {
+      "requirement": "The exact stable native record or group key supplied by the already-obtained provider payload.",
+      "emission": "Digest input only for FHIR metadata: the raw value must not appear in Resource.id, Identifier.value, extensions, attachment URL/title, or Provenance text. Opaque caller-supplied attachment bytes are not semantically inspected and require separate deployment authorization and minimization."
+    },
+    "derivedDigest": {
+      "meaning": "A deterministic business identity for deduplication and reference resolution.",
+      "notAuthorization": true,
+      "rule": "It is not an access token, credential, proof of authorization, or permission to fetch provider data."
+    },
     "sourceRecord": {
       "system": "https://grovealliance.org/fhir/connected-health/NamingSystem/connected-health-source-record-id",
       "preimage": ["providerCode", "providerAccountIdentifier.system", "providerAccountIdentifier.value", "sourceType", "sourceNativeId"]
@@ -37,6 +74,7 @@
       "outputDiscriminatorRule": {
         "ordinarySupportedMeasurement": "the exact measurementId string from the supported element mapping",
         "groupedMapping": "the exact outputDiscriminator declared on that groupedMappings row",
+        "mappedStandardRaw": "native-recording",
         "noFallback": true
       }
     },
@@ -60,6 +98,18 @@
         "inputs": ["https://grovealliance.org/fhir/connected-health/NamingSystem/connected-health-source-record-id", "v1:c698f75a1901b494c9c5a2107a88708dccbd1d5556fc5c85f364c536164fa383", "step-count"],
         "canonicalPreimage": "[\"https://grovealliance.org/fhir/connected-health/NamingSystem/connected-health-source-record-id\",\"v1:c698f75a1901b494c9c5a2107a88708dccbd1d5556fc5c85f364c536164fa383\",\"step-count\"]",
         "identifierValue": "v1:58ec980e4eaa0bd8ca600043db5446c21a13482b064fffbb44469046f1876406"
+      },
+      {
+        "role": "sourceRecord",
+        "inputs": ["google-health-api", "https://provider.example.org/accounts", "account-001", "heart-rate", "heart-rate-2026-08-20"],
+        "canonicalPreimage": "[\"google-health-api\",\"https://provider.example.org/accounts\",\"account-001\",\"heart-rate\",\"heart-rate-2026-08-20\"]",
+        "identifierValue": "v1:e9174b24826045a9d8bfb85888baea27526e626b5049f7c8d0cb6a1479c965d5"
+      },
+      {
+        "role": "output",
+        "inputs": ["https://grovealliance.org/fhir/connected-health/NamingSystem/connected-health-source-record-id", "v1:e9174b24826045a9d8bfb85888baea27526e626b5049f7c8d0cb6a1479c965d5", "native-recording"],
+        "canonicalPreimage": "[\"https://grovealliance.org/fhir/connected-health/NamingSystem/connected-health-source-record-id\",\"v1:e9174b24826045a9d8bfb85888baea27526e626b5049f7c8d0cb6a1479c965d5\",\"native-recording\"]",
+        "identifierValue": "v1:277b888059d003e8c0fe6b6d131b09a703bf6bc56f9be37fb8bb97582cf98e7a"
       },
       {
         "role": "sourceRecord",
@@ -158,7 +208,7 @@
           "token": "blood-glucose",
           "status": "deferred",
           "elements": [
-            {"path": "bloodGlucose.bloodGlucoseMilligramsPerDeciliter", "status": "deferred", "reason": "The consumed source shape has no specimen evidence, so none of the four specimen-specific shared glucose profiles can be selected."}
+            {"path": "bloodGlucose.bloodGlucoseMilligramsPerDeciliter", "status": "deferred", "reason": "The consumed source shape has no specimen evidence, so none of the four Health Connect-only specimen-specific glucose profiles can be selected."}
           ]
         },
         {
@@ -204,6 +254,7 @@
           "token": "heart-rate",
           "status": "mapped-standard",
           "archiveDataType": "heartRate",
+          "raw": {"sourceNeutralProfile": "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document", "adapterProfile": "https://grovealliance.org/fhir/connected-health/StructureDefinition/connected-health-recording-document", "outputDiscriminator": "native-recording"},
           "elements": [
             {"path": "payload", "status": "mapped-standard", "sensorProfile": "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document", "reason": "The source points may be irregular; retain the provider-native recording rather than resample or invent a uniform SampledData period."}
           ]
@@ -277,6 +328,7 @@
           "token": "heartrate",
           "status": "mapped-standard",
           "archiveDataType": "heartRate",
+          "raw": {"sourceNeutralProfile": "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document", "adapterProfile": "https://grovealliance.org/fhir/connected-health/StructureDefinition/connected-health-recording-document", "outputDiscriminator": "native-recording"},
           "elements": [
             {"path": "payload", "status": "mapped-standard", "sensorProfile": "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document", "reason": "Timestamped points may be irregular; retain the provider-native recording rather than resample or invent a uniform SampledData period."}
           ]
@@ -323,6 +375,7 @@
           "token": "activityIntraday",
           "status": "mapped-standard",
           "archiveDataType": "activityIntraday",
+          "raw": {"sourceNeutralProfile": "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document", "adapterProfile": "https://grovealliance.org/fhir/connected-health/StructureDefinition/connected-health-recording-document", "outputDiscriminator": "native-recording"},
           "elements": [
             {"path": "steps", "status": "mapped-standard", "sensorProfile": "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document"},
             {"path": "calories", "status": "mapped-standard", "sensorProfile": "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document"},
@@ -336,6 +389,7 @@
           "token": "sleepIntraday",
           "status": "mapped-standard",
           "archiveDataType": "sleepIntraday",
+          "raw": {"sourceNeutralProfile": "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document", "adapterProfile": "https://grovealliance.org/fhir/connected-health/StructureDefinition/connected-health-recording-document", "outputDiscriminator": "native-recording"},
           "elements": [
             {"path": "hr", "status": "mapped-standard", "sensorProfile": "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document"},
             {"path": "rr", "status": "mapped-standard", "sensorProfile": "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document"},

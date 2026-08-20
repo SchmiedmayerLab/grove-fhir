@@ -72,10 +72,79 @@ Description: "The source and output identities plus allowlisted source context f
 * issued 1..1 MS
 * specimen only Reference(HealthConnectSpecimen)
 * extension contains
+    HealthConnectRecordType named healthConnectRecordType 1..1 MS and
     $bodyPosition named bodyPosition 0..1 MS and
     HealthConnectGlucoseMealContext named glucoseMealContext 0..1 MS and
     HealthConnectSleepTitle named sleepTitle 0..1 MS
 * note MS
+
+Profile: HealthConnectWholeBloodGlucose
+Parent: HealthConnectObservation
+Id: health-connect-whole-blood-glucose
+Title: "Health Connect Whole-blood Glucose"
+Description: "A Health Connect BloodGlucoseRecord with explicit whole-blood specimen evidence. This adapter-specific profile is not a shared Mobile profile."
+* code = $loinc#2339-0
+* effective[x] only dateTime
+* value[x] 1..1 MS
+* value[x] only Quantity
+* valueQuantity.value 1..1 MS
+* valueQuantity.comparator 0..0
+* valueQuantity.system 1..1 MS
+* valueQuantity.system = $ucum (exactly)
+* valueQuantity.code 1..1 MS
+* valueQuantity.code = #mg/dL (exactly)
+* specimen 1..1 MS
+
+Profile: HealthConnectCapillaryBloodGlucose
+Parent: HealthConnectObservation
+Id: health-connect-capillary-blood-glucose
+Title: "Health Connect Capillary-blood Glucose"
+Description: "A Health Connect BloodGlucoseRecord with explicit capillary-blood specimen evidence. This adapter-specific profile is not a shared Mobile profile."
+* code = $loinc#32016-8
+* effective[x] only dateTime
+* value[x] 1..1 MS
+* value[x] only Quantity
+* valueQuantity.value 1..1 MS
+* valueQuantity.comparator 0..0
+* valueQuantity.system 1..1 MS
+* valueQuantity.system = $ucum (exactly)
+* valueQuantity.code 1..1 MS
+* valueQuantity.code = #mg/dL (exactly)
+* specimen 1..1 MS
+
+Profile: HealthConnectSerumPlasmaGlucose
+Parent: HealthConnectObservation
+Id: health-connect-serum-plasma-glucose
+Title: "Health Connect Serum or Plasma Glucose"
+Description: "A Health Connect BloodGlucoseRecord with explicit serum or plasma specimen evidence. The referenced Specimen preserves which source enum was present. This adapter-specific profile is not a shared Mobile profile."
+* code = $loinc#2345-7
+* effective[x] only dateTime
+* value[x] 1..1 MS
+* value[x] only Quantity
+* valueQuantity.value 1..1 MS
+* valueQuantity.comparator 0..0
+* valueQuantity.system 1..1 MS
+* valueQuantity.system = $ucum (exactly)
+* valueQuantity.code 1..1 MS
+* valueQuantity.code = #mg/dL (exactly)
+* specimen 1..1 MS
+
+Profile: HealthConnectInterstitialGlucose
+Parent: HealthConnectObservation
+Id: health-connect-interstitial-glucose
+Title: "Health Connect Interstitial-fluid Glucose"
+Description: "A Health Connect BloodGlucoseRecord with explicit interstitial-fluid specimen evidence. This adapter-specific profile is not a shared Mobile profile."
+* code = $loinc#99504-3
+* effective[x] only dateTime
+* value[x] 1..1 MS
+* value[x] only Quantity
+* valueQuantity.value 1..1 MS
+* valueQuantity.comparator 0..0
+* valueQuantity.system 1..1 MS
+* valueQuantity.system = $ucum (exactly)
+* valueQuantity.code 1..1 MS
+* valueQuantity.code = #mg/dL (exactly)
+* specimen 1..1 MS
 
 Profile: HealthConnectSpecimen
 Parent: Specimen

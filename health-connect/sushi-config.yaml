@@ -20,11 +20,12 @@ releaseLabel: ci-build
 publisher:
   name: Schmiedmayer Lab
   url: https://github.com/SchmiedmayerLab
-jurisdiction: http://unstats.un.org/unsd/methods/m49/m49.htm#001 "World"
 license: MIT
 
 dependencies:
   hl7.terminology.r4: 7.3.0
+  # Used directly by the version-pinned standard body-position extension slice.
+  hl7.fhir.uv.extensions.r4: 5.3.0
   org.grovealliance.fhir.mobile:
     version: 0.2.0
     uri: https://grovealliance.org/fhir/mobile/ImplementationGuide/org.grovealliance.fhir.mobile
@@ -32,6 +33,7 @@ dependencies:
 menu:
   Overview: index.html
   Mapping: mapping.html
+  Status matrix: status-matrix.html
   Synchronization: synchronization.html
   Implement and validate: implementation.html
   Artifacts: artifacts.html
@@ -41,6 +43,8 @@ pages:
     title: Overview
   mapping.md:
     title: Mapping
+  status-matrix.md:
+    title: Authoritative status matrix
   synchronization.md:
     title: Synchronization
   implementation.md:

@@ -29,15 +29,38 @@ Description: "Source lineage and deterministic business identity for a shared Mo
 * identifier[outputId].value 1..1 MS
 * identifier[outputId].value obeys connected-health-digest-id-1
 * issued 1..1 MS
-* extension contains ConnectedHealthProvider named connectedHealthProvider 1..1 MS
+* extension contains
+    ConnectedHealthProvider named connectedHealthProvider 1..1 MS and
+    ConnectedHealthSourceType named connectedHealthSourceType 1..1 MS
+
+Profile: ConnectedHealthRecordingDocument
+Parent: GroveSensorRecordingDocument
+Id: connected-health-recording-document
+Title: "Connected Health Recording Document"
+Description: "A provider-native payload already obtained from Google Health API, Oura, or Withings and retained without inventing uniform timing or scalar semantics."
+* identifier ^slicing.discriminator.type = #value
+* identifier ^slicing.discriminator.path = "system"
+* identifier ^slicing.rules = #open
+* identifier contains
+    sourceRecordId 1..1 MS and
+    outputId 1..1 MS
+* identifier[sourceRecordId].system = $connectedHealthSourceRecordId
+* identifier[sourceRecordId].value 1..1 MS
+* identifier[sourceRecordId].value obeys connected-health-digest-id-1
+* identifier[outputId].system = $connectedHealthOutputId
+* identifier[outputId].value 1..1 MS
+* identifier[outputId].value obeys connected-health-digest-id-1
+* extension contains
+    ConnectedHealthProvider named connectedHealthProvider 1..1 MS and
+    ConnectedHealthSourceType named connectedHealthSourceType 1..1 MS
 
 Profile: ConnectedHealthConversionProvenance
-Parent: GroveMobileConversionProvenance
+Parent: GroveSensorConversionProvenance
 Id: connected-health-conversion-provenance
 Title: "Connected Health Conversion Provenance"
-Description: "Provenance for converting one already-obtained connected-provider record into one or more source-neutral Observations."
+Description: "Provenance for converting one already-obtained connected-provider record into one or more source-neutral Observations or native Recording Documents."
 * target 1..* MS
-* target only Reference(ConnectedHealthObservation)
+* target only Reference(ConnectedHealthObservation or ConnectedHealthRecordingDocument)
 * entity 1..1 MS
 * entity.role = #source
 * entity.what.reference 0..0

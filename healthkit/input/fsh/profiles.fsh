@@ -21,6 +21,11 @@ Description: "A shared sleep-stage output carries exactly one exact HealthKit sl
 Expression: "(code.coding.where(system = 'https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement' and code = 'sleep-stage').exists() and value.ofType(CodeableConcept).coding.where(system = 'https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-sleep-analysis').count() = 1) or (code.coding.where(system = 'https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement' and code = 'sleep-stage').empty() and value.ofType(CodeableConcept).coding.where(system = 'https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-sleep-analysis').empty())"
 Severity: #error
 
+Invariant: healthkit-ecg-symptom-state-1
+Description: "A present symptoms status has at least one caller-supplied correlated symptom; none and not-set have no correlated symptom."
+Expression: "(extension('https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-symptoms-status').value.first() = 'present' and extension('https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-correlated-symptom').exists()) or (extension('https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-symptoms-status').value.first() != 'present' and extension('https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-correlated-symptom').empty())"
+Severity: #error
+
 Profile: HealthKitObservation
 Parent: GroveMobileObservation
 Id: healthkit-observation
@@ -34,6 +39,13 @@ Description: "The source identity and allowlisted HealthKit context for an Obser
 * identifier[healthKitObjectId] obeys healthkit-object-id-1
 * identifier[healthKitObjectId].system = $healthKitObjectId
 * identifier[healthKitObjectId].value 1..1 MS
+* code.coding ^slicing.discriminator.type = #value
+* code.coding ^slicing.discriminator.path = "system"
+* code.coding ^slicing.rules = #open
+* code.coding contains healthKitSourceType 1..1 MS
+* code.coding[healthKitSourceType].system = $healthKitSourceType
+* code.coding[healthKitSourceType].code 1..1 MS
+* code.coding[healthKitSourceType] from HealthKitSourceTypeVS (required)
 * component ^slicing.discriminator.type = #pattern
 * component ^slicing.discriminator.path = "code"
 * component ^slicing.rules = #open
@@ -43,3 +55,46 @@ Description: "The source identity and allowlisted HealthKit context for an Obser
 * component[heartRateMotionContext].value[x] only CodeableConcept
 * component[heartRateMotionContext].valueCodeableConcept from HealthKitHeartRateMotionContextVS (required)
 * component[heartRateMotionContext].dataAbsentReason 0..0
+
+Profile: HealthKitECGObservation
+Parent: HealthKitObservation
+Id: healthkit-ecg-observation
+Title: "HealthKit ECG Observation"
+Description: "A lossless HealthKit ECG adapter result that is directly claimed together with the source-neutral Grove Sensor ECG profile. It retains the exact HealthKit classification, symptom evidence, optional average heart rate and sampling frequency, reported voltage count, and complete Lead-I-like voltage series supplied by the caller; it performs no HealthKit query."
+* obeys healthkit-ecg-symptom-state-1
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKDataTypeIdentifierElectrocardiogram "ECG"
+* extension contains
+    HealthKitECGClassification named healthKitECGClassification 1..1 MS and
+    HealthKitECGSymptomsStatus named healthKitECGSymptomsStatus 1..1 MS and
+    HealthKitECGCorrelatedSymptom named healthKitECGCorrelatedSymptom 0..7 MS and
+    HealthKitECGAverageHeartRate named healthKitECGAverageHeartRate 0..1 MS and
+    HealthKitECGSamplingFrequency named healthKitECGSamplingFrequency 0..1 MS and
+    HealthKitECGVoltageMeasurementCount named healthKitECGVoltageMeasurementCount 1..1 MS and
+    HealthKitECGAlgorithmVersion named healthKitECGAlgorithmVersion 0..1 MS and
+    HealthKitECGSourcePeriod named healthKitECGSourcePeriod 1..1 MS
+* code = $loinc#11524-6 "EKG study"
+* effective[x] 1..1 MS
+* effective[x] only Period
+* value[x] 0..0
+* dataAbsentReason 0..0
+* component 1..1 MS
+* component contains voltage 1..1 MS
+* component[voltage].code = $mdc#131329 "MDC_ECG_ELEC_POTL_I"
+* component[voltage].value[x] 1..1 MS
+* component[voltage].value[x] only SampledData
+* component[voltage].dataAbsentReason 0..0
+
+Profile: HealthKitConversionProvenance
+Parent: GroveMobileConversionProvenance
+Id: healthkit-conversion-provenance
+Title: "HealthKit Conversion Provenance"
+Description: "Provenance for transforming one HealthKit object into one or more HealthKit adapter Observations without fetching source data."
+* target 1..* MS
+* target only Reference(HealthKitObservation)
+* entity 1..1 MS
+* entity.role = #source
+* entity.what.reference 0..0
+* entity.what.identifier 1..1 MS
+* entity.what.identifier.system = $healthKitObjectId
+* entity.what.identifier.value 1..1 MS
+* entity.what.identifier.value obeys healthkit-object-id-1

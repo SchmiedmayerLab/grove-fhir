@@ -7,6 +7,7 @@
 //
 
 Alias: $connectedHealthProvider = https://grovealliance.org/fhir/connected-health/CodeSystem/connected-health-provider
+Alias: $connectedHealthSourceType = https://grovealliance.org/fhir/connected-health/CodeSystem/connected-health-source-type
 Alias: $connectedHealthSourceRecordId = https://grovealliance.org/fhir/connected-health/NamingSystem/connected-health-source-record-id
 Alias: $connectedHealthOutputId = https://grovealliance.org/fhir/connected-health/NamingSystem/connected-health-output-id
 Alias: $connectedHealthConversionId = https://grovealliance.org/fhir/connected-health/NamingSystem/connected-health-conversion-id

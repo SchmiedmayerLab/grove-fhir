@@ -12,6 +12,9 @@ and the applicable clinical or research profile. Preserve the facts HealthKit st
 do not infer hardware, capture mode, clinical meaning, or study membership from an API
 type alone.
 
+The [authoritative status matrix](status-matrix.html) renders all 209 source types from
+the release's machine catalog, including every admitted and fail-closed row.
+
 ### Object identity
 
 Map `HKObject.uuid` to `Observation.identifier` with the
@@ -22,9 +25,27 @@ Serialize the value as lowercase UUID text in `8-4-4-4-12` hyphenated form. This
 identifies the source HealthKit object; it does not claim that independently created
 clinical records are globally the same event.
 
-The sample-type identifier dispatches converter code but is not copied into
-`Observation.code`. The selected FHIR profile and its required terminology state the
-meaning of the result.
+The sample-type identifier dispatches converter code and is preserved as exactly one
+additional coding from the adapter's `healthkit-source-type` CodeSystem. The shared or
+authoritative standard coding remains the normative clinical meaning; the HealthKit
+coding preserves adapter lineage and is not a substitute clinical code.
+
+### Electrocardiograms
+
+A structured HealthKit ECG directly claims the source-neutral Sensor ECG profile and
+the HealthKit ECG adapter profile. The caller supplies the already-obtained
+`HKElectrocardiogram`, every voltage measurement and exact offset, and every associated
+symptom `HKCategorySample`; the adapter performs no query and never resamples. Voltage
+offsets must form one exact uniform sequence, the reported count must match, and an
+optional sampling frequency must agree exactly with the SampledData period.
+
+Each correlated symptom preserves its UUID, exact Period, type, severity, and complete
+`HKSourceRevision` source name, bundle identifier, optional version/product type, and
+operating-system version components. These fields are linkable. The producer therefore
+requires explicit caller authorization for their disclosure; without it, the lossless
+structured ECG claim is not admitted and conversion fails closed. This authorization
+is producer input, not a FHIR consent or authorization assertion. Distinct symptom
+samples may have the same type; their HealthKit UUIDs, not their types, are unique.
 
 ### Values, units, and time
 

@@ -28,7 +28,7 @@ class PackageGraphTests(unittest.TestCase):
         sources = [package["source"] for package in graph["packages"]]
         self.assertEqual(
             sources,
-            ["mobile", "questionnaire", "sensor", "healthkit", "health-connect", "connected-health"],
+            ["mobile", "questionnaire", "sensor", "sensorkit", "healthkit", "health-connect", "connected-health"],
         )
         self.assertEqual(len(sources), len(set(sources)))
         for package in graph["packages"]:
@@ -40,6 +40,48 @@ class PackageGraphTests(unittest.TestCase):
             self.assertEqual(package["profiles"], sorted(set(package["profiles"])))
             for profile in package["profiles"]:
                 self.assertRegex(profile, r"^[a-z][a-z0-9-]{0,63}$")
+
+    def test_readme_and_publication_list_the_complete_graph(self) -> None:
+        graph = json.loads((ROOT / "catalog/package-graph.json").read_text(encoding="utf-8"))
+        publication = json.loads((ROOT / "publication/config.json").read_text(encoding="utf-8"))
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        publication_doc = (ROOT / "PUBLICATION.md").read_text(encoding="utf-8")
+        configured = {guide["source"] for guide in publication["guides"]}
+        expected = {package["source"] for package in graph["packages"]}
+        self.assertEqual(configured, expected)
+        for package in graph["packages"]:
+            self.assertIn(f"`{package['packageId']}`", readme)
+            self.assertIn(f"`{package['packageId']}`", publication_doc)
+            self.assertIn(f"/{package['source']}/", publication_doc)
+
+    def test_conformance_documentation_names_every_closed_claim_mode(self) -> None:
+        claims = json.loads(
+            (ROOT / "catalog/profile-claims.json").read_text(encoding="utf-8")
+        )
+        conformance = (ROOT / "Conformance/README.md").read_text(encoding="utf-8")
+        self.assertIn("catalog/profile-claims.json", conformance)
+        self.assertIn("authoritative R4 BMI profile", conformance)
+        self.assertIn("specimen-specific glucose", conformance)
+        self.assertIn("SensorKit-only", conformance)
+        self.assertIn("SensorKit ECG hybrid", conformance)
+        self.assertIn("raw SensorKit or Connected Health DocumentReference", conformance)
+        self.assertIn("Adapter conversion Provenance", conformance)
+        self.assertIn("requiredProfiles", conformance)
+        self.assertEqual(
+            claims["sensorKitHybridObservationClaims"]["cardinality"], 2
+        )
+        self.assertEqual(
+            claims["healthConnectProviderSpecificClaims"]["cardinality"], 1
+        )
+        self.assertEqual(
+            claims["sensorKitProviderSpecificClaims"]["cardinality"], 1
+        )
+        self.assertEqual(
+            claims["sensorKitRecordingDocumentClaim"]["cardinality"], 2
+        )
+        self.assertEqual(
+            claims["connectedHealthRecordingDocumentClaim"]["cardinality"], 2
+        )
 
 
 if __name__ == "__main__":

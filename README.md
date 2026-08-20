@@ -32,13 +32,29 @@ GitHub Pages remains the documentation preview.
 ## Documentation
 
 Start with the [Mobile Data Exchange guide](https://schmiedmayerlab.github.io/grove-fhir/)
-to understand the common resource model and copy a complete example. Use the
-[HealthKit adapter guide](https://schmiedmayerlab.github.io/grove-fhir/healthkit/) when
-converting Apple HealthKit samples. Use the
-[Health Connect adapter guide](https://schmiedmayerlab.github.io/grove-fhir/health-connect/)
-when converting and synchronizing Android Health Connect records. Use the
+to understand the common resource model and copy a complete example. The exact 0.2.0
+package graph is:
+
+| Package | Layer and dependency |
+|---|---|
+| `org.grovealliance.fhir.mobile` | Source-neutral mobile measurements, exchange graphs, Devices, and conversion provenance; foundation package |
+| `org.grovealliance.fhir.questionnaire` | International Questionnaire and QuestionnaireResponse exchange; independent of the measurement graph and based on SDC R4 |
+| `org.grovealliance.fhir.sensor` | Source-neutral SampledData, ECG, immutable raw Recording Documents, and Sensor conversion provenance; depends on Mobile |
+| `org.grovealliance.fhir.healthkit` | Apple HealthKit adapter; depends on Mobile and Sensor |
+| `org.grovealliance.fhir.health-connect` | Android Health Connect 1.1 adapter; depends on Mobile |
+| `org.grovealliance.fhir.sensorkit` | Apple SensorKit adapter; depends on Mobile and Sensor |
+| `org.grovealliance.fhir.connected-health` | Google Health API, Oura, and Withings mappings; depends on Mobile and Sensor |
+
+Use the [HealthKit adapter](https://schmiedmayerlab.github.io/grove-fhir/healthkit/),
+[Health Connect adapter](https://schmiedmayerlab.github.io/grove-fhir/health-connect/),
+[Sensor and waveform guide](https://schmiedmayerlab.github.io/grove-fhir/sensor/),
+[SensorKit adapter](https://schmiedmayerlab.github.io/grove-fhir/sensorkit/), or
+[connected-provider adapter](https://schmiedmayerlab.github.io/grove-fhir/connected-health/)
+for the applicable already-obtained source data. Use the
 [Questionnaire Exchange guide](https://schmiedmayerlab.github.io/grove-fhir/questionnaire/)
-to publish instruments and exchange their responses.
+to publish instruments and exchange their responses. Adapter packages define mappings
+and conformance; they do not fetch provider or platform data, authenticate to provider
+APIs, or specify receiver storage.
 
 ## Development
 

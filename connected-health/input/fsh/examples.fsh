@@ -44,6 +44,7 @@ Description: "An already-obtained Google Health API steps interval converted to 
 * issued = "2026-08-20T17:00:01Z"
 * valueQuantity = 1042 '{steps}' "steps"
 * extension[connectedHealthProvider].valueCode = #google-health-api
+* extension[connectedHealthSourceType].valueCode = #google-health-api/steps
 
 Instance: GoogleHealthStepsProvenanceExample
 InstanceOf: ConnectedHealthConversionProvenance
@@ -57,3 +58,39 @@ Description: "The conversion event linking one already-obtained Google Health st
 * entity.role = #source
 * entity.what.identifier.system = $connectedHealthSourceRecordId
 * entity.what.identifier.value = "v1:9caeaee8e6d50dc85bb5f91cadfa4f8a3303a5eb612e8d6e6a58017454996102"
+
+Instance: GoogleHealthHeartRateRecordingExample
+InstanceOf: ConnectedHealthRecordingDocument
+Usage: #example
+Title: "Google Health Native Heart-rate Recording"
+Description: "An explicitly authorized caller encoding of already-obtained irregular heart-rate points, retained without resampling."
+* meta.profile[+] = "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document"
+* identifier[sourceRecordId].system = $connectedHealthSourceRecordId
+* identifier[sourceRecordId].value = "v1:e9174b24826045a9d8bfb85888baea27526e626b5049f7c8d0cb6a1479c965d5"
+* identifier[outputId].system = $connectedHealthOutputId
+* identifier[outputId].value = "v1:277b888059d003e8c0fe6b6d131b09a703bf6bc56f9be37fb8bb97582cf98e7a"
+* extension[connectedHealthProvider].valueCode = #google-health-api
+* extension[connectedHealthSourceType].valueCode = #google-health-api/heart-rate
+* status = #current
+* type.text = "Google Health API heart-rate archive"
+* subject = Reference(ConnectedHealthPatientExample)
+* date = "2026-08-20T17:00:01Z"
+* author = Reference(ConnectedHealthApplicationExample)
+* content.attachment.contentType = #application/octet-stream
+* content.attachment.title = "Authorized minimized provider recording"
+* content.attachment.data = "AQID"
+* content.attachment.size = 3
+* content.attachment.hash = "cDeAcZjCKn0rCAc3HXY3eahP388="
+
+Instance: GoogleHealthHeartRateRecordingProvenanceExample
+InstanceOf: ConnectedHealthConversionProvenance
+Usage: #example
+Title: "Google Health Native Heart-rate Conversion Provenance"
+Description: "The conversion event linking one already-obtained source record to its native Recording Document."
+* target = Reference(GoogleHealthHeartRateRecordingExample)
+* recorded = "2026-08-20T17:00:01Z"
+* agent[assembler].type = $provenanceParticipantType#assembler
+* agent[assembler].who = Reference(ConnectedHealthApplicationExample)
+* entity.role = #source
+* entity.what.identifier.system = $connectedHealthSourceRecordId
+* entity.what.identifier.value = "v1:e9174b24826045a9d8bfb85888baea27526e626b5049f7c8d0cb6a1479c965d5"

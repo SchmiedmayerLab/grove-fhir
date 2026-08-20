@@ -16,10 +16,14 @@
     {
       "source": "sensor",
       "canonicalPath": "sensor",
-      "aliases": [
-        "sensor"
-      ],
+      "aliases": [],
       "representativeResource": "StructureDefinition/grove-sensor-sampled-data-observation"
+    },
+    {
+      "source": "sensorkit",
+      "canonicalPath": "sensorkit",
+      "aliases": [],
+      "representativeResource": "StructureDefinition/sensorkit-observation"
     },
     {
       "source": "healthkit",
@@ -36,9 +40,7 @@
     {
       "source": "connected-health",
       "canonicalPath": "connected-health",
-      "aliases": [
-        "connected-health"
-      ],
+      "aliases": [],
       "representativeResource": "StructureDefinition/connected-health-observation"
     },
     {

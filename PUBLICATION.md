@@ -22,11 +22,16 @@ pre-1.0 canonical paths:
 | Package | Mutable preview | Publication metadata |
 |---|---|---|
 | `org.grovealliance.fhir.mobile` | `/fhir/mobile/ci-build/` | `/fhir/mobile/package-list.json` and `/fhir/mobile/history.html` |
+| `org.grovealliance.fhir.sensor` | `/fhir/sensor/ci-build/` | `/fhir/sensor/package-list.json` and `/fhir/sensor/history.html` |
+| `org.grovealliance.fhir.sensorkit` | `/fhir/sensorkit/ci-build/` | `/fhir/sensorkit/package-list.json` and `/fhir/sensorkit/history.html` |
 | `org.grovealliance.fhir.healthkit` | `/fhir/healthkit/ci-build/` | `/fhir/healthkit/package-list.json` and `/fhir/healthkit/history.html` |
 | `org.grovealliance.fhir.health-connect` | `/fhir/health-connect/ci-build/` | `/fhir/health-connect/package-list.json` and `/fhir/health-connect/history.html` |
+| `org.grovealliance.fhir.connected-health` | `/fhir/connected-health/ci-build/` | `/fhir/connected-health/package-list.json` and `/fhir/connected-health/history.html` |
 | `org.grovealliance.fhir.questionnaire` | `/fhir/questionnaire/ci-build/` | `/fhir/questionnaire/package-list.json` and `/fhir/questionnaire/history.html` |
 
-The GitHub Pages locations at `/`, `/healthkit/`, `/health-connect/`, and `/questionnaire/` are reader-friendly preview aliases. Each
+The GitHub Pages locations at `/`, `/sensor/`, `/sensorkit/`, `/healthkit/`,
+`/health-connect/`, `/connected-health/`, and `/questionnaire/` are reader-friendly
+preview aliases. Each
 publication root also exposes the package, its SHA-256 checksum, and HTML plus JSON, XML, and Turtle
 routes for every locally owned canonical resource. `publication/config.json` is the single routing
 configuration, and `npm run pages:build` verifies the assembled surface before deployment.
@@ -40,6 +45,34 @@ host. Deploying or redirecting the canonical host requires a separate reviewed c
 
 Only the latest `ci-build` is deployed during pre-1.0 development. The site does not retain
 pre-1.0 version directories, superseded packages, or legacy documentation surfaces.
+
+## Offline terminology reproducibility
+
+Publisher and Validator runs are pinned to FHIR R4 4.0.1 and execute without network
+access. No generated terminology transaction is tracked or redistributed, and Grove
+does not publish or version an external IANA, LOINC, UCUM, or ISO/IEEE CodeSystem.
+External terminology and language diagnostics that the offline Publisher cannot resolve
+are reviewed only through exact resource-scoped messages in each guide's
+`ignoreWarnings.txt`; the QA gate requires every configured message to be exercised
+exactly once and rejects any unconfigured suppression.
+
+The QA ledger reports three separate values for each severity: raw Publisher findings,
+exact-suppressed findings, and unsuppressed findings. Readiness requires zero
+unsuppressed errors and warnings. Two pinned Publisher/dependency defect families remain
+visible in the raw error count:
+
+- with `-tx n/a`, Publisher 2.3.2 can raise the exact `tc is null` error while checking
+  the required R4 MIME binding on the published raw-recording examples; and
+- SDC 4.0.0 generates definition-table links to retired anchors in that frozen
+  dependency's own `2025Jan` pages.
+
+The MIME errors are accepted only when the resource path, element path, MIME code,
+ValueSet version, and complete diagnostic all match once. The SDC errors are accepted
+only at the exact generated profile, DOM path, line, column, anchor, and link text. The
+documentation never describes either build as having zero raw errors. FSH, package,
+catalog, and producer-corpus tests enforce the normative codes and units independently.
+A suppressed offline lookup diagnostic neither replaces a terminology license nor
+grants access to an attachment.
 
 ## Future immutable releases
 

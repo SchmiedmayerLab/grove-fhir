@@ -23,70 +23,6 @@ Description: "An interval total of activity-related energy expenditure."
 * issued = "2026-08-20T16:00:02Z"
 * valueQuantity = 215 'kcal' "kcal"
 
-Instance: GroveMobileBloodGlucoseExample
-InstanceOf: GroveMobileBloodGlucose
-Usage: #example
-Title: "Source-neutral Mobile Whole-blood Glucose"
-Description: "A whole-blood glucose result normalized to milligrams per decilitre."
-* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
-* identifier.value = "blood-glucose-20260820-001"
-* status = #final
-* category = $observationCategory#laboratory "Laboratory"
-* code = $loinc#2339-0 "Glucose [Mass/volume] in Blood"
-* subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
-* effectiveDateTime = "2026-08-20T08:15:00-07:00"
-* issued = "2026-08-20T15:15:02Z"
-* valueQuantity = 97 'mg/dL' "mg/dL"
-
-Instance: GroveMobileCapillaryBloodGlucoseExample
-InstanceOf: GroveMobileCapillaryBloodGlucose
-Usage: #example
-Title: "Source-neutral Mobile Capillary-blood Glucose"
-Description: "A capillary-blood glucose result normalized to milligrams per decilitre."
-* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
-* identifier.value = "capillary-blood-glucose-20260820-001"
-* status = #final
-* category = $observationCategory#laboratory "Laboratory"
-* code = $loinc#32016-8 "Glucose [Mass/volume] in Capillary blood"
-* subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
-* effectiveDateTime = "2026-08-20T08:16:00-07:00"
-* issued = "2026-08-20T15:16:02Z"
-* valueQuantity = 96 'mg/dL' "mg/dL"
-
-Instance: GroveMobileSerumPlasmaGlucoseExample
-InstanceOf: GroveMobileSerumPlasmaGlucose
-Usage: #example
-Title: "Source-neutral Mobile Serum or Plasma Glucose"
-Description: "A serum-or-plasma glucose result normalized to milligrams per decilitre."
-* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
-* identifier.value = "serum-plasma-glucose-20260820-001"
-* status = #final
-* category = $observationCategory#laboratory "Laboratory"
-* code = $loinc#2345-7 "Glucose [Mass/volume] in Serum or Plasma"
-* subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
-* effectiveDateTime = "2026-08-20T08:17:00-07:00"
-* issued = "2026-08-20T15:17:02Z"
-* valueQuantity = 95 'mg/dL' "mg/dL"
-
-Instance: GroveMobileInterstitialGlucoseExample
-InstanceOf: GroveMobileInterstitialGlucose
-Usage: #example
-Title: "Source-neutral Mobile Interstitial-fluid Glucose"
-Description: "An interstitial-fluid glucose result normalized to milligrams per decilitre."
-* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
-* identifier.value = "interstitial-glucose-20260820-001"
-* status = #final
-* category = $observationCategory#laboratory "Laboratory"
-* code = $loinc#99504-3 "Glucose [Mass/volume] in Interstitial fluid"
-* subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
-* effectiveDateTime = "2026-08-20T08:18:00-07:00"
-* issued = "2026-08-20T15:18:02Z"
-* valueQuantity = 94 'mg/dL' "mg/dL"
-
 Instance: GroveMobileBasalBodyTemperatureExample
 InstanceOf: GroveMobileBasalBodyTemperature
 Usage: #example
@@ -121,22 +57,6 @@ Description: "A blood-pressure panel with normalized systolic and diastolic comp
 * component[systolic].valueQuantity = 118 'mm[Hg]' "mmHg"
 * component[diastolic].code = $loinc#8462-4 "Diastolic blood pressure"
 * component[diastolic].valueQuantity = 76 'mm[Hg]' "mmHg"
-
-Instance: GroveMobileBMIExample
-InstanceOf: GroveMobileBMI
-Usage: #example
-Title: "Source-neutral Mobile Body Mass Index"
-Description: "A body mass index normalized to kilograms per square metre."
-* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
-* identifier.value = "bmi-20260820-001"
-* status = #final
-* category = $observationCategory#vital-signs "Vital Signs"
-* code = $loinc#39156-5 "Body mass index (BMI) [Ratio]"
-* subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
-* effectiveDateTime = "2026-08-20T08:25:00-07:00"
-* issued = "2026-08-20T15:25:02Z"
-* valueQuantity = 22.4 'kg/m2' "kg/m2"
 
 Instance: GroveMobileBodyHeightExample
 InstanceOf: GroveMobileBodyHeight

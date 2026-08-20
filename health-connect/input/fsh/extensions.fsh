@@ -6,6 +6,15 @@
 // SPDX-License-Identifier: MIT
 //
 
+Extension: HealthConnectRecordType
+Id: health-connect-record-type
+Title: "Health Connect Record Type"
+Description: "Identifies the exact AndroidX Health Connect 1.1 Record class already read by the caller. It is source lineage, not a clinical result code, fetch instruction, or authorization grant."
+Context: Observation
+* value[x] only code
+* valueCode 1..1
+* valueCode from HealthConnectRecordTypeVS (required)
+
 Extension: HealthConnectGlucoseMealContext
 Id: health-connect-glucose-meal-context
 Title: "Health Connect Glucose Meal Context"
