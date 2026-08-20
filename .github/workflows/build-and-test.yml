@@ -40,6 +40,22 @@ jobs:
       - name: Reject whitespace errors
         run: git diff --check
 
+  integration-sources:
+    name: Integration Proposal Sources
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: true
+          fetch-depth: 1
+          persist-credentials: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+      - name: Verify immutable external source pins
+        run: python3 Scripts/check-integration-sources.py --fetch-targets
+
   guides:
     name: Build All Implementation Guides
     runs-on: ubuntu-latest
