@@ -146,6 +146,13 @@ class ProducerConformanceTests(unittest.TestCase):
         with self.assertRaises(VALIDATOR.ProducerValidationError):
             VALIDATOR.validate_adapter_profile_claim(missing_shared, "Observation")
 
+        sensor = copy.deepcopy(observation)
+        sensor["meta"]["profile"][0] = (
+            "https://grovealliance.org/fhir/sensor/StructureDefinition/"
+            "grove-sensor-ecg-observation"
+        )
+        VALIDATOR.validate_adapter_profile_claim(sensor, "Observation")
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -141,6 +141,7 @@ def adapter_profile_contract() -> tuple[set[str], set[str]]:
         f"https://grovealliance.org/fhir/mobile/StructureDefinition/{entry['profile']}"
         for entry in measurements["measurements"]
     }
+    shared.update(claims["observationAdapterClaim"].get("sharedSensorProfiles", []))
     adapters = set(claims["observationAdapterClaim"]["adapterProfiles"])
     return shared, adapters
 

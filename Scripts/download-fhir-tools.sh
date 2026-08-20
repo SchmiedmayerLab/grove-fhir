@@ -57,6 +57,8 @@ readonly FHIR_PACKAGE_ARCHIVES=(
   "hl7.fhir.uv.xver-r5.r4|0.1.0|7ee6f04d78ced803dd567559a0d178bafbd2d3b71db61bbbf6b15c796a1a664d"
   "hl7.fhir.uv.tools.r4|1.1.2|a1f166f8808629a40c4acabc16a4fbfd164d9f38f9db95b6f4b38bb69155dfe4"
   "hl7.terminology.r4|6.5.0|a28b638483a11df696ed92198276236d759e41c7a3a8960c9e7e7d0a1185bd06"
+  "hl7.fhir.uv.phd|2.0.0|1a45243b578414d07803327fd21899ac88f4cd1a36c632240c508b5a217848b9"
+  "hl7.fhir.uv.pocd|0.3.0|927fcd5bbc941b4fd44c7bf6ad7275941e644211ad879c4519dae1cb98521d4a"
 )
 
 mkdir -p "$TOOLS_DIRECTORY" "$FHIR_PACKAGE_CACHE"

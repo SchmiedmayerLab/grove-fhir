@@ -14,6 +14,10 @@
       "https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-observation",
       "https://grovealliance.org/fhir/connected-health/StructureDefinition/connected-health-observation"
     ],
+    "sharedSensorProfiles": [
+      "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-ecg-observation",
+      "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-sampled-data-observation"
+    ],
     "forbiddenExplicitProfiles": [
       "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-observation",
       "http://hl7.org/fhir/StructureDefinition/bp",

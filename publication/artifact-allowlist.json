@@ -71,6 +71,25 @@
       ]
     },
     {
+      "source": "sensor",
+      "packageId": "org.grovealliance.fhir.sensor",
+      "canonical": "https://grovealliance.org/fhir/sensor",
+      "artifacts": [
+        {"fshName": "GroveSensorSampledDataObservation", "fshType": "Profile", "resourceType": "StructureDefinition", "id": "grove-sensor-sampled-data-observation", "classification": "definition"},
+        {"fshName": "GroveSensorECGObservation", "fshType": "Profile", "resourceType": "StructureDefinition", "id": "grove-sensor-ecg-observation", "classification": "definition"},
+        {"fshName": "GroveSensorRecordingDocument", "fshType": "Profile", "resourceType": "StructureDefinition", "id": "grove-sensor-recording-document", "classification": "definition"},
+        {"fshName": "GroveSensorConversionProvenance", "fshType": "Profile", "resourceType": "StructureDefinition", "id": "grove-sensor-conversion-provenance", "classification": "definition"},
+        {"fshName": "GroveNativeRecordingMimeTypeVS", "fshType": "ValueSet", "resourceType": "ValueSet", "id": "grove-native-recording-mime-type", "classification": "definition"},
+        {"fshName": "GroveSensorPatientExample", "fshType": "Instance", "resourceType": "Patient", "id": "GroveSensorPatientExample", "classification": "example"},
+        {"fshName": "GroveSensorDeviceExample", "fshType": "Instance", "resourceType": "Device", "id": "GroveSensorDeviceExample", "classification": "example"},
+        {"fshName": "GroveSensorConverterExample", "fshType": "Instance", "resourceType": "Device", "id": "GroveSensorConverterExample", "classification": "example"},
+        {"fshName": "GroveSensorSampledDataExample", "fshType": "Instance", "resourceType": "Observation", "id": "GroveSensorSampledDataExample", "classification": "example"},
+        {"fshName": "GroveSensorECGExample", "fshType": "Instance", "resourceType": "Observation", "id": "GroveSensorECGExample", "classification": "example"},
+        {"fshName": "GroveSensorRecordingDocumentExample", "fshType": "Instance", "resourceType": "DocumentReference", "id": "GroveSensorRecordingDocumentExample", "classification": "example"},
+        {"fshName": "GroveSensorConversionProvenanceExample", "fshType": "Instance", "resourceType": "Provenance", "id": "GroveSensorConversionProvenanceExample", "classification": "example"}
+      ]
+    },
+    {
       "source": "healthkit",
       "packageId": "org.grovealliance.fhir.healthkit",
       "canonical": "https://grovealliance.org/fhir/healthkit",

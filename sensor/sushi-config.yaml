@@ -1,0 +1,49 @@
+#
+# This source file is part of the Grove FHIR open-source project
+#
+# SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTRIBUTORS.md)
+#
+# SPDX-License-Identifier: MIT
+#
+
+id: org.grovealliance.fhir.sensor
+canonical: https://grovealliance.org/fhir/sensor
+name: GroveFHIRSensor
+title: Grove FHIR Sensor and Waveform
+description: >-
+  Source-neutral FHIR R4 contracts for sampled sensor time series, ECG waveforms,
+  and externally encoded sensor recordings.
+status: draft
+version: 0.2.0
+fhirVersion: 4.0.1
+copyrightYear: 2026+
+releaseLabel: ci-build
+publisher:
+  name: Schmiedmayer Lab
+  url: https://github.com/SchmiedmayerLab
+license: MIT
+
+dependencies:
+  hl7.terminology.r4: 7.3.0
+  org.grovealliance.fhir.mobile:
+    version: 0.2.0
+    uri: https://grovealliance.org/fhir/mobile/ImplementationGuide/org.grovealliance.fhir.mobile
+  hl7.fhir.uv.phd: 2.0.0
+
+parameters:
+  special-url:
+    - urn:ietf:bcp:13
+
+menu:
+  Overview: index.html
+  Time series and ECG: waveforms.html
+  Implement and validate: implementation.html
+  Artifacts: artifacts.html
+
+pages:
+  index.md:
+    title: Overview
+  waveforms.md:
+    title: Time series and ECG
+  implementation.md:
+    title: Implement and validate

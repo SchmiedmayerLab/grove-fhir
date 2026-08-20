@@ -1,0 +1,35 @@
+== Suppressed Messages ==
+# This contract targets FHIR R4. It does not publish the generated R4B package claim.
+WARNING: 2: An HTML fragment from the set [cross-version-analysis.xhtml, cross-version-analysis-inline.xhtml] is not included anywhere in the produced implementation guide
+
+# The guide intentionally defines no global profiles; an empty generated table adds no implementation guidance.
+WARNING: 4: The HTML fragment 'globals-table.xhtml' is not included anywhere in the produced implementation guide
+
+# The narrative explains the conditional PHD relationship directly; generated dependency and IP boilerplate fragments add no contract detail.
+WARNING: 1: The HTML fragment 'ip-statements.xhtml' is not included anywhere in the produced implementation guide
+WARNING: 3: An HTML fragment from the set [dependency-table.xhtml, dependency-table-short.xhtml, dependency-table-nontech.xhtml] is not included anywhere in the produced implementation guide
+
+# The passive example sources do not identify a responsible clinical performer.
+WARNING: Observation/GroveSensorSampledDataExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Observation/GroveSensorECGExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+
+# Offline validation cannot resolve the external ISO/IEEE 11073 MDC and UCUM terminologies. The exact systems/codes remain fixed by the profiles and machine catalog.
+WARNING: Observation/GroveSensorECGExample: Observation.component[0].code.coding[0].system: A definition for CodeSystem 'urn:iso:std:iso:11073:10101' could not be found, so the code cannot be validated
+WARNING: Observation/GroveSensorECGExample: Observation.component[0].value.ofType(SampledData).origin: Unable to validate code 'mV' in system 'http://unitsofmeasure.org' because the validator is running without terminology services
+WARNING: Observation/GroveSensorSampledDataExample: Observation.code.coding[0].system: A definition for CodeSystem 'urn:iso:std:iso:11073:10101' could not be found, so the code cannot be validated
+WARNING: Observation/GroveSensorSampledDataExample: Observation.value.ofType(SampledData).origin: Unable to validate code '1' in system 'http://unitsofmeasure.org' because the validator is running without terminology services
+
+# Grove constrains but does not publish the external IANA BCP 13 CodeSystem; only the locally owned ValueSet can receive a Grove OID.
+WARNING: Resource: The resource ValueSet/grove-native-recording-mime-type should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/fhir-tools-ig/CodeSystem-ig-parameters.html#ig-parameters-auto-oid-root)
+
+# Publisher 2.3.2 cannot expand the required core MIME binding with -tx n/a. The Grove-owned ValueSet carries its own closed expansion, but Grove does not publish an external CodeSystem or carry a terminology transaction cache.
+WARNING: Grove Sensor Recording Document.attachment.DocumentReference.content.attachment.contentType: Binding http://hl7.org/fhir/ValueSet/mimetypes|4.0.1 could not be expanded
+WARNING: ValueSet/grove-native-recording-mime-type: ValueSet.expansion: Because the expansion uses system 'urn:ietf:bcp:13' without a version, it should list the system using the expansion parameter 'used-codesystem'
+
+# The exact offline dependency closure identifies English as the guide language, but the external BCP 47 code system does not enumerate language codes locally.
+WARNING: ImplementationGuide/org.grovealliance.fhir.sensor: ImplementationGuide.language.system: A definition for CodeSystem 'urn:ietf:bcp:47' could not be found, so the code cannot be validated
+WARNING: ImplementationGuide/org.grovealliance.fhir.sensor: ImplementationGuide.language: A definition for CodeSystem 'urn:ietf:bcp:47' could not be found, so the code cannot be validated
+
+# Publisher 2.3.2 emits this exact null-client diagnostic for the fixed LOINC ECG pattern when no terminology transaction is tracked. The FSH and catalog/package binding tests enforce the code.
+WARNING: StructureDefinition/grove-sensor-ecg-observation: StructureDefinition.snapshot.element[29].pattern.ofType(CodeableConcept): Error Cannot invoke "org.hl7.fhir.r5.terminologies.client.TerminologyClientContext.getAddress()" because "tc" is null validating CodeableConcept
+WARNING: StructureDefinition/grove-sensor-ecg-observation: StructureDefinition.differential.element[1].pattern.ofType(CodeableConcept): Error Cannot invoke "org.hl7.fhir.r5.terminologies.client.TerminologyClientContext.getAddress()" because "tc" is null validating CodeableConcept

@@ -48,6 +48,7 @@
       "canonical": "https://grovealliance.org/fhir/sensor",
       "dependencies": ["org.grovealliance.fhir.mobile#0.2.0", "hl7.fhir.uv.phd#2.0.0"],
       "profiles": [
+        "grove-sensor-conversion-provenance",
         "grove-sensor-ecg-observation",
         "grove-sensor-recording-document",
         "grove-sensor-sampled-data-observation"

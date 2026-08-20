@@ -13,8 +13,8 @@ REPOSITORY_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 readonly REPOSITORY_ROOT
 readonly TOOLS_DIRECTORY="$REPOSITORY_ROOT/.build/fhir-tools"
 
-if [[ "$#" -ne 1 || ("$1" != "mobile" && "$1" != "healthkit" && "$1" != "health-connect" && "$1" != "questionnaire") ]]; then
-  echo "Usage: $0 <mobile|healthkit|health-connect|questionnaire>" >&2
+if [[ "$#" -ne 1 || ("$1" != "mobile" && "$1" != "sensor" && "$1" != "healthkit" && "$1" != "health-connect" && "$1" != "questionnaire") ]]; then
+  echo "Usage: $0 <mobile|sensor|healthkit|health-connect|questionnaire>" >&2
   exit 2
 fi
 
