@@ -84,5 +84,57 @@
       ]
     }
   ],
-  "proposals": []
+  "proposals": [
+    {
+      "id": "grove-mobile-contract",
+      "source": "grove",
+      "target": "healthkit",
+      "patch": "Integration/Patches/grove-mobile-contract.patch",
+      "sha256": "6b603d3d34861b6c5ffd763f293b82c1d50def145e5392894160778e4bfad875",
+      "dependsOn": [],
+      "appliesAfter": [],
+      "tests": [
+        {
+          "group": "portable",
+          "platforms": [
+            "linux",
+            "macos"
+          ],
+          "cwd": ".",
+          "argv": [
+            "git",
+            "diff",
+            "--check"
+          ]
+        },
+        {
+          "group": "macos-contract",
+          "platforms": [
+            "macos"
+          ],
+          "cwd": ".",
+          "argv": [
+            "./Scripts/run-package-tests.sh",
+            "GroveHealthKitFHIR",
+            "macOS"
+          ]
+        },
+        {
+          "group": "emitted-resource-conformance",
+          "platforms": [
+            "macos"
+          ],
+          "cwd": ".",
+          "argv": [
+            "./Scripts/validate-fhir-conformance.sh"
+          ]
+        }
+      ],
+      "claims": [
+        "The default Grove Swift HealthKit adapter emits only heart rate, body weight, and exact-interval step count under the reviewed Mobile and HealthKit profiles, and fails closed for other source types.",
+        "HealthKit source identity is a complete lowercase UUID business identifier, while recording device, actual gateway, explicitly classified source author, and converter assembler remain distinct provenance roles; ambiguous source authors are omitted.",
+        "Recording method and ResearchStudy attribution are emitted only from explicit evidence, using the Grove recording-method extension and the standard workflow-researchStudy extension without retired canonicals or metadata shortcuts."
+      ]
+    }
+  ]
 }

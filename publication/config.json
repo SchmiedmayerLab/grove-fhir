@@ -1,27 +1,31 @@
 {
   "schemaVersion": 1,
   "previewBaseUrl": "https://schmiedmayerlab.github.io/grove-fhir",
-  "canonicalBaseUrl": "https://grovealliance.org",
+  "canonicalBaseUrl": "https://schmiedmayerlab.github.io/grove-fhir",
   "sourceRepository": "https://github.com/SchmiedmayerLab/grove-fhir",
+  "releaseMode": "ci-build-only",
   "guides": [
     {
-      "source": "ig",
-      "canonicalPath": "fhir/core",
+      "source": "mobile",
+      "canonicalPath": "fhir/mobile",
       "aliases": [
         ""
       ],
-      "representativeResource": "StructureDefinition/grove-mobile-sensor-observation"
+      "representativeResource": "StructureDefinition/grove-mobile-observation"
     },
     {
-      "source": "platforms",
-      "canonicalPath": "fhir/platforms",
+      "source": "healthkit",
+      "canonicalPath": "fhir/healthkit",
       "aliases": [
-        "platforms"
+        "healthkit"
       ],
-      "representativeResource": "CodeSystem/healthkit-sample-type"
+      "representativeResource": "StructureDefinition/healthkit-observation"
     }
   ],
   "retiredPreviewPaths": [
-    "archive/v0-healthkit-shaped/"
+    "archive/v0-healthkit-shaped/",
+    "fhir/core/",
+    "fhir/platforms/",
+    "platforms/"
   ]
 }

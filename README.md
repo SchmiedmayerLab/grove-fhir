@@ -16,20 +16,19 @@ SPDX-License-Identifier: MIT
 [![REUSE status](https://api.reuse.software/badge/github.com/SchmiedmayerLab/grove-fhir)](https://api.reuse.software/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE.md)
 
-Grove FHIR is a FHIR R4 implementation guide for exchanging mobile health observations,
-questionnaires, and questionnaire responses. It defines reusable profiles, extensions,
-terminology, examples, and validation packages. [Grove Swift](https://github.com/SchmiedmayerLab/Grove)
-provides the Apple-platform reference implementation for its HealthKit and Questionnaire
-resource mappings.
+Grove FHIR defines reusable FHIR R4 contracts for mobile health data. The Mobile Data
+Exchange guide describes source-neutral Observations, recording and application Device
+roles, study context, and conversion provenance. Platform adapters add the identifiers and
+mappings needed by a specific source without changing the shared resource shape.
+[Grove Swift](https://github.com/SchmiedmayerLab/Grove) is the reference implementation for
+the HealthKit adapter.
 
 ## Documentation
 
-The [Grove FHIR Implementation Guide](https://schmiedmayerlab.github.io/grove-fhir/) starts with
-practical introductions to [Mobile Observations](https://schmiedmayerlab.github.io/grove-fhir/mobile.html),
-[Questionnaires](https://schmiedmayerlab.github.io/grove-fhir/questionnaires.html), and
-[resource validation](https://schmiedmayerlab.github.io/grove-fhir/consuming.html). HealthKit code
-systems and value sets are published in the separate
-[Platform Terminology guide](https://schmiedmayerlab.github.io/grove-fhir/platforms/).
+Start with the [Mobile Data Exchange guide](https://schmiedmayerlab.github.io/grove-fhir/)
+to understand the common resource model and copy a complete example. Use the
+[HealthKit adapter guide](https://schmiedmayerlab.github.io/grove-fhir/healthkit/) when
+converting Apple HealthKit samples.
 
 ## Development
 

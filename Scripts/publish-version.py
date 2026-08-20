@@ -120,6 +120,10 @@ def publish_version(
     revision: str,
     repository_root: Path,
 ) -> str:
+    if configuration.get("releaseMode") != "immutable-releases":
+        raise ValueError(
+            "immutable release publication is disabled by publication releaseMode"
+        )
     guide = next(
         (entry for entry in configuration["guides"] if entry["source"] == guide_source), None
     )
@@ -152,12 +156,21 @@ def publish_version(
         or not parsed_base.netloc
         or parsed_base.username is not None
         or parsed_base.password is not None
-        or parsed_base.path not in {"", "/"}
+        or "%" in parsed_base.path
+        or "\\" in parsed_base.path
+        or "//" in parsed_base.path
+        or (
+            parsed_base.path not in {"", "/"}
+            and any(
+                segment in {"", ".", ".."}
+                for segment in parsed_base.path.strip("/").split("/")
+            )
+        )
         or parsed_base.params
         or parsed_base.query
         or parsed_base.fragment
     ):
-        raise ValueError("publication canonicalBaseUrl is not a valid HTTPS origin")
+        raise ValueError("publication canonicalBaseUrl is not a valid HTTPS base URL")
     expected_canonical = (
         f"{canonical_base.rstrip('/')}/{safe_path(guide['canonicalPath']).as_posix()}"
     )

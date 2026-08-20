@@ -12,7 +12,7 @@ set -euo pipefail
 REPOSITORY_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 readonly REPOSITORY_ROOT
 readonly TOOLS_DIRECTORY="$REPOSITORY_ROOT/.build/fhir-tools"
-readonly DEFAULT_GUIDES=("archive/v0-healthkit-shaped" "platforms" "ig")
+readonly DEFAULT_GUIDES=("mobile" "healthkit")
 
 cd "$REPOSITORY_ROOT"
 export PATH="$REPOSITORY_ROOT/node_modules/.bin:$PATH"
@@ -29,32 +29,32 @@ else
   guides=("$@")
 fi
 
-install_package() {
+clean_generated_guide_content() {
   local guide="$1"
-  local package_id="$2"
-  local package_version="$3"
-  local package_archive="$guide/output/package.tgz"
-  local package_directory="$HOME/.fhir/packages/${package_id}#${package_version}"
-
-  test -f "$package_archive"
-  rm -rf "$package_directory"
-  mkdir -p "$package_directory"
-  tar -xzf "$package_archive" -C "$package_directory"
+  local directory
+  for directory in fsh-generated output temp template translations; do
+    local generated="$REPOSITORY_ROOT/$guide/$directory"
+    if [[ -d "$generated" ]]; then
+      find "$generated" -depth -delete
+    fi
+  done
 }
 
 for guide in "${guides[@]}"; do
   test -f "$guide/sushi-config.yaml"
   echo "Building $guide"
-  (cd "$guide" && java -jar "$TOOLS_DIRECTORY/publisher.jar" -ig ig.ini)
-
-  case "$guide" in
-    platforms)
-      install_package "$guide" "org.grovealliance.fhir.platforms" "0.1.0"
-      ;;
-    ig)
-      install_package "$guide" "org.grovealliance.fhir.core" "0.5.0"
-      ;;
-  esac
+  clean_generated_guide_content "$guide"
+  publisher_arguments=(-ig ig.ini)
+  if [[ "$guide" == "healthkit" ]]; then
+    test -f "$REPOSITORY_ROOT/mobile/output/package.tgz"
+    node "$REPOSITORY_ROOT/Scripts/cache-fhir-package.cjs" \
+      "$REPOSITORY_ROOT/mobile/output/package.tgz"
+    publisher_arguments+=(
+      -packages
+      "$REPOSITORY_ROOT/mobile/output"
+    )
+  fi
+  (cd "$guide" && java -jar "$TOOLS_DIRECTORY/publisher.jar" "${publisher_arguments[@]}")
 done
 
 python3 Scripts/check-guide-qa.py "${guides[@]}"

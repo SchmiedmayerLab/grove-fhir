@@ -60,12 +60,21 @@ def canonical_for_guide(configuration: dict[str, Any], guide: dict[str, Any]) ->
         or not parsed.netloc
         or parsed.username is not None
         or parsed.password is not None
-        or parsed.path not in {"", "/"}
+        or "%" in parsed.path
+        or "\\" in parsed.path
+        or "//" in parsed.path
+        or (
+            parsed.path not in {"", "/"}
+            and any(
+                segment in {"", ".", ".."}
+                for segment in parsed.path.strip("/").split("/")
+            )
+        )
         or parsed.params
         or parsed.query
         or parsed.fragment
     ):
-        raise RuntimeError("publication canonicalBaseUrl is not a valid HTTPS origin")
+        raise RuntimeError("publication canonicalBaseUrl is not a valid HTTPS base URL")
     path = str(guide.get("canonicalPath", "")).strip("/")
     if not path or any(segment in {"", ".", ".."} for segment in path.split("/")):
         raise RuntimeError(f"invalid canonicalPath: {guide.get('canonicalPath')!r}")
@@ -146,6 +155,9 @@ def verify(
     expected_revision: str,
 ) -> None:
     base_url = base_url.rstrip("/")
+    release_mode = configuration.get("releaseMode")
+    if release_mode not in {"ci-build-only", "immutable-releases"}:
+        raise RuntimeError("publication configuration has an unsupported releaseMode")
     if not canonical_only:
         for guide in configuration["guides"]:
             for alias in guide.get("aliases", []):
@@ -168,6 +180,7 @@ def verify(
             or entries[0].get("version") != "current"
             or entries[0].get("status") != "ci-build"
             or entries[0].get("path") != f"{root}/ci-build"
+            or (release_mode == "ci-build-only" and len(entries) != 1)
         ):
             raise RuntimeError(f"{root}/package-list.json does not describe a CI build")
         if package_list.get("canonical") != expected_canonical:

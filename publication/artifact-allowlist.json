@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "packages": [
+    {
+      "source": "mobile",
+      "packageId": "org.grovealliance.fhir.mobile",
+      "canonical": "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile",
+      "artifacts": [
+        {"fshName": "GroveRecordingMethod", "fshType": "Extension", "resourceType": "StructureDefinition", "id": "grove-recording-method", "classification": "definition"},
+        {"fshName": "GroveRecordingMethodCS", "fshType": "CodeSystem", "resourceType": "CodeSystem", "id": "grove-recording-method", "classification": "definition"},
+        {"fshName": "GroveRecordingMethodVS", "fshType": "ValueSet", "resourceType": "ValueSet", "id": "grove-recording-method", "classification": "definition"},
+        {"fshName": "GroveMobileMeasurementCS", "fshType": "CodeSystem", "resourceType": "CodeSystem", "id": "grove-mobile-measurement", "classification": "definition"},
+        {"fshName": "GroveMobileMeasurementVS", "fshType": "ValueSet", "resourceType": "ValueSet", "id": "grove-mobile-measurement", "classification": "definition"},
+        {"fshName": "GroveRecordingDevice", "fshType": "Profile", "resourceType": "StructureDefinition", "id": "grove-recording-device", "classification": "definition"},
+        {"fshName": "GroveApplicationDevice", "fshType": "Profile", "resourceType": "StructureDefinition", "id": "grove-application-device", "classification": "definition"},
+        {"fshName": "GroveMobileObservation", "fshType": "Profile", "resourceType": "StructureDefinition", "id": "grove-mobile-observation", "classification": "definition"},
+        {"fshName": "GroveMobileStepCount", "fshType": "Profile", "resourceType": "StructureDefinition", "id": "grove-mobile-step-count", "classification": "definition"},
+        {"fshName": "GroveMobileConversionProvenance", "fshType": "Profile", "resourceType": "StructureDefinition", "id": "grove-mobile-conversion-provenance", "classification": "definition"},
+        {"fshName": "MobileObservationIdentifierExample", "fshType": "Instance", "resourceType": "NamingSystem", "id": "MobileObservationIdentifierExample", "classification": "example"},
+        {"fshName": "GroveMobilePatientExample", "fshType": "Instance", "resourceType": "Patient", "id": "GroveMobilePatientExample", "classification": "example"},
+        {"fshName": "GroveMobileStudyPlanExample", "fshType": "Instance", "resourceType": "PlanDefinition", "id": "GroveMobileStudyPlanExample", "classification": "example"},
+        {"fshName": "GroveMobileResearchStudyExample", "fshType": "Instance", "resourceType": "ResearchStudy", "id": "GroveMobileResearchStudyExample", "classification": "example"},
+        {"fshName": "GroveMobileResearchSubjectExample", "fshType": "Instance", "resourceType": "ResearchSubject", "id": "GroveMobileResearchSubjectExample", "classification": "example"},
+        {"fshName": "GroveRecordingDeviceExample", "fshType": "Instance", "resourceType": "Device", "id": "GroveRecordingDeviceExample", "classification": "example"},
+        {"fshName": "GroveApplicationDeviceExample", "fshType": "Instance", "resourceType": "Device", "id": "GroveApplicationDeviceExample", "classification": "example"},
+        {"fshName": "GroveMobileHeartRateExample", "fshType": "Instance", "resourceType": "Observation", "id": "GroveMobileHeartRateExample", "classification": "example"},
+        {"fshName": "GroveMobileStepCountExample", "fshType": "Instance", "resourceType": "Observation", "id": "GroveMobileStepCountExample", "classification": "example"},
+        {"fshName": "GroveMobileConversionProvenanceExample", "fshType": "Instance", "resourceType": "Provenance", "id": "GroveMobileConversionProvenanceExample", "classification": "example"}
+      ]
+    },
+    {
+      "source": "healthkit",
+      "packageId": "org.grovealliance.fhir.healthkit",
+      "canonical": "https://schmiedmayerlab.github.io/grove-fhir/fhir/healthkit",
+      "artifacts": [
+        {"fshName": "HealthKitMetadataKeyCS", "fshType": "CodeSystem", "resourceType": "CodeSystem", "id": "healthkit-metadata-key", "classification": "definition"},
+        {"fshName": "HealthKitMetadataKeyVS", "fshType": "ValueSet", "resourceType": "ValueSet", "id": "healthkit-metadata-key", "classification": "definition"},
+        {"fshName": "HealthKitHeartRateMotionContextCS", "fshType": "CodeSystem", "resourceType": "CodeSystem", "id": "healthkit-heart-rate-motion-context", "classification": "definition"},
+        {"fshName": "HealthKitHeartRateMotionContextVS", "fshType": "ValueSet", "resourceType": "ValueSet", "id": "healthkit-heart-rate-motion-context", "classification": "definition"},
+        {"fshName": "HealthKitObservation", "fshType": "Profile", "resourceType": "StructureDefinition", "id": "healthkit-observation", "classification": "definition"},
+        {"fshName": "HealthKitObjectIdentifier", "fshType": "Instance", "resourceType": "NamingSystem", "id": "healthkit-object-id", "classification": "definition"},
+        {"fshName": "AppleBundleIdentifier", "fshType": "Instance", "resourceType": "NamingSystem", "id": "apple-bundle-id", "classification": "definition"},
+        {"fshName": "HealthKitSourceDeviceIdentifier", "fshType": "Instance", "resourceType": "NamingSystem", "id": "healthkit-source-device-id", "classification": "definition"},
+        {"fshName": "HealthKitPatientExample", "fshType": "Instance", "resourceType": "Patient", "id": "HealthKitPatientExample", "classification": "example"},
+        {"fshName": "HealthKitStudyPlanExample", "fshType": "Instance", "resourceType": "PlanDefinition", "id": "HealthKitStudyPlanExample", "classification": "example"},
+        {"fshName": "HealthKitResearchStudyExample", "fshType": "Instance", "resourceType": "ResearchStudy", "id": "HealthKitResearchStudyExample", "classification": "example"},
+        {"fshName": "HealthKitResearchSubjectExample", "fshType": "Instance", "resourceType": "ResearchSubject", "id": "HealthKitResearchSubjectExample", "classification": "example"},
+        {"fshName": "HealthKitRecordingDeviceExample", "fshType": "Instance", "resourceType": "Device", "id": "HealthKitRecordingDeviceExample", "classification": "example"},
+        {"fshName": "HealthKitApplicationDeviceExample", "fshType": "Instance", "resourceType": "Device", "id": "HealthKitApplicationDeviceExample", "classification": "example"},
+        {"fshName": "HealthKitSourceApplicationDeviceExample", "fshType": "Instance", "resourceType": "Device", "id": "HealthKitSourceApplicationDeviceExample", "classification": "example"},
+        {"fshName": "HealthKitBluetoothSourceDeviceExample", "fshType": "Instance", "resourceType": "Device", "id": "HealthKitBluetoothSourceDeviceExample", "classification": "example"},
+        {"fshName": "HealthKitHeartRateObservationExample", "fshType": "Instance", "resourceType": "Observation", "id": "HealthKitHeartRateObservationExample", "classification": "example"},
+        {"fshName": "HealthKitBluetoothHeartRateObservationExample", "fshType": "Instance", "resourceType": "Observation", "id": "HealthKitBluetoothHeartRateObservationExample", "classification": "example"},
+        {"fshName": "HealthKitStepCountObservationExample", "fshType": "Instance", "resourceType": "Observation", "id": "HealthKitStepCountObservationExample", "classification": "example"},
+        {"fshName": "HealthKitManuallyEnteredBodyWeightExample", "fshType": "Instance", "resourceType": "Observation", "id": "HealthKitManuallyEnteredBodyWeightExample", "classification": "example"},
+        {"fshName": "HealthKitConversionProvenanceExample", "fshType": "Instance", "resourceType": "Provenance", "id": "HealthKitConversionProvenanceExample", "classification": "example"},
+        {"fshName": "HealthKitBluetoothSourceProvenanceExample", "fshType": "Instance", "resourceType": "Provenance", "id": "HealthKitBluetoothSourceProvenanceExample", "classification": "example"},
+        {"fshName": "HealthKitStudyBundleExample", "fshType": "Instance", "resourceType": "Bundle", "id": "HealthKitStudyBundleExample", "classification": "example"}
+      ]
+    }
+  ]
+}

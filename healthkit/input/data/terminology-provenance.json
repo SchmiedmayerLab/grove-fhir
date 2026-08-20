@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "package": "org.grovealliance.fhir.healthkit#0.1.0",
+  "extractionDate": "2026-08-19",
+  "source": {
+    "framework": "Apple HealthKit",
+    "sdk": "iPhoneOS 27.0",
+    "xcode": {
+      "version": "27.0",
+      "build": "27A5237l"
+    },
+    "sourceCommit": null,
+    "sourceCommitReason": "The terminology was selected from an installed Apple SDK, not a Git source tree.",
+    "files": [
+      {
+        "path": "HealthKit.framework/Headers/HKMetadata.h",
+        "sha256": "ce1c107200f9e330d66347f0bf22c8529bf102b26302eb8ef49b16d9945a353d"
+      },
+      {
+        "path": "HealthKit.framework/Headers/HKMetadataEnums.h",
+        "sha256": "eddcc86fdfd78cafc37f832a1210eec51d679cdae432f358426fc724209fdad1"
+      }
+    ],
+    "documentation": [
+      "https://developer.apple.com/documentation/healthkit/hksource/bundleidentifier",
+      "https://developer.apple.com/documentation/healthkit/hksourcerevision",
+      "https://developer.apple.com/documentation/healthkit/hkmetadatakeyheartratemotioncontext"
+    ]
+  },
+  "selection": {
+    "method": "manual-allowlist",
+    "tool": {
+      "name": "ripgrep",
+      "version": "15.2.0"
+    },
+    "generated": false,
+    "description": "One metadata key and three motion-context values were manually selected from the listed SDK headers for the mapping and example defined by this adapter. No full SDK vocabulary was copied."
+  },
+  "terminology": {
+    "caseSensitive": true,
+    "artifacts": {
+      "healthkit-metadata-key": {
+        "content": "complete",
+        "rationale": "Complete describes this adapter's explicit residual-metadata allowlist of one key; it does not claim to enumerate every HealthKit metadata key."
+      },
+      "healthkit-heart-rate-motion-context": {
+        "content": "complete",
+        "rationale": "The code system contains an adapter code for every HKHeartRateMotionContext case present in the iPhoneOS 27.0 SDK baseline.",
+        "rawNSNumberMapping": {
+          "0": {
+            "sourceCase": "notSet",
+            "adapterCode": "not-set"
+          },
+          "1": {
+            "sourceCase": "sedentary",
+            "adapterCode": "sedentary"
+          },
+          "2": {
+            "sourceCase": "active",
+            "adapterCode": "active"
+          }
+        },
+        "unknownValuePolicy": "reject-or-omit-never-default"
+      }
+    }
+  },
+  "thirdParty": {
+    "owner": "Apple Inc.",
+    "attribution": "HealthKit API identifiers and type names originate from Apple and are retained here to identify the platform concepts used by the interoperability mapping.",
+    "retainedTerminology": "The terminology allowlist extracted from the hashed SDK headers contains HKMetadataKeyHeartRateMotionContext and adapter codes for the notSet, sedentary, and active cases.",
+    "descriptiveApiReferences": "The mapping narrative and identifier definitions also refer to HKObject.uuid, HKSource.bundleIdentifier, HKSourceRevision, HKDevice, HKMetadataKeyWasUserEntered, and the three supported HKQuantityType identifiers. These references describe source fields and dispatch rules; they are not represented as a copied platform vocabulary.",
+    "redistributionBasis": "These API identifiers and case names are reproduced only as interoperability identifiers needed to state the source mapping. The package does not reproduce Apple documentation prose, SDK implementation, or a general HealthKit vocabulary.",
+    "excludedMaterial": "No HealthKit SDK implementation or documentation text is copied into the package.",
+    "repositoryLicense": "The repository's MIT license applies to Grove-authored repository material; the retained Apple names remain attributed above."
+  }
+}

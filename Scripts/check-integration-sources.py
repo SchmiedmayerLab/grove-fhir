@@ -32,6 +32,7 @@ REFERENCE = re.compile(
 PATCH_PATH = re.compile(
     r"^Integration/Patches/[a-z0-9](?:[a-z0-9._/-]*[a-z0-9])?\.patch$"
 )
+TEST_PLATFORMS = frozenset({"linux", "macos"})
 
 
 def safe_relative_path(value: str) -> Path:
@@ -98,16 +99,48 @@ def validate_test_commands(proposal_id: str, tests: Any) -> list[str]:
         return failures
     if not isinstance(tests, list):
         return [f"{proposal_id} tests must be a list of structured commands"]
+    group_platforms: dict[str, tuple[str, ...]] = {}
     for index, test in enumerate(tests):
         label = f"{proposal_id} test {index + 1}"
         if not isinstance(test, dict):
-            failures.append(f"{label} must be an object with cwd and argv")
+            failures.append(
+                f"{label} must be an object with group, platforms, cwd, and argv"
+            )
             continue
-        unknown = sorted(set(test) - {"cwd", "argv"})
+        unknown = sorted(set(test) - {"group", "platforms", "cwd", "argv"})
         if unknown:
             failures.append(
                 f"{label} contains unsupported fields: {', '.join(unknown)}"
             )
+        group = test.get("group")
+        if not isinstance(group, str) or not IDENTIFIER.fullmatch(group):
+            failures.append(f"{label} group must be a lowercase identifier")
+        platforms = test.get("platforms")
+        valid_platforms: list[str] = []
+        if not isinstance(platforms, list) or not platforms:
+            failures.append(f"{label} platforms must be a nonempty list")
+        else:
+            seen_platforms: set[str] = set()
+            for platform in platforms:
+                if platform not in TEST_PLATFORMS:
+                    failures.append(
+                        f"{label} contains unsupported platform: {platform!r}"
+                    )
+                elif platform in seen_platforms:
+                    failures.append(
+                        f"{label} contains duplicate platform: {platform}"
+                    )
+                else:
+                    seen_platforms.add(platform)
+                    valid_platforms.append(platform)
+        if isinstance(group, str) and IDENTIFIER.fullmatch(group) and valid_platforms:
+            normalized = tuple(sorted(valid_platforms))
+            previous = group_platforms.setdefault(group, normalized)
+            if previous != normalized:
+                failures.append(
+                    f"{proposal_id} test group {group} must use one consistent "
+                    "platform set"
+                )
         cwd = test.get("cwd")
         try:
             safe_cwd = safe_relative_path(cwd if isinstance(cwd, str) else "")
@@ -543,7 +576,11 @@ def verify_repository(
         failures.append(
             f"{source_id} manifest gitlink {source['gitlink']} != index {recorded}"
         )
-    if not checkout.exists():
+    if (
+        checkout.is_symlink()
+        or not checkout.is_dir()
+        or not (checkout / ".git").exists()
+    ):
         failures.append(f"{source_id} submodule is not initialized: {relative}")
         return failures
     try:

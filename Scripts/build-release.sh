@@ -13,8 +13,8 @@ REPOSITORY_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 readonly REPOSITORY_ROOT
 readonly TOOLS_DIRECTORY="$REPOSITORY_ROOT/.build/fhir-tools"
 
-if [[ "$#" -ne 1 || ("$1" != "ig" && "$1" != "platforms") ]]; then
-  echo "Usage: $0 <ig|platforms>" >&2
+if [[ "$#" -ne 1 || ("$1" != "mobile" && "$1" != "healthkit") ]]; then
+  echo "Usage: $0 <mobile|healthkit>" >&2
   exit 2
 fi
 
@@ -26,16 +26,16 @@ if [[ ! -f "$REQUEST" ]]; then
 fi
 
 cd "$REPOSITORY_ROOT"
-if [[ "$GUIDE" == "ig" ]]; then
-  ./Scripts/build-guides.sh platforms ig
+if [[ "$GUIDE" == "healthkit" ]]; then
+  ./Scripts/build-guides.sh mobile healthkit
 else
-  ./Scripts/build-guides.sh platforms
+  ./Scripts/build-guides.sh mobile
 fi
 
 publication_path="$(python3 -c 'import json, sys; print(json.load(open(sys.argv[1], encoding="utf-8"))["path"])' "$REQUEST")"
 readonly publication_path
-if [[ "$publication_path" != https://grovealliance.org/fhir/* ]]; then
-  echo "publication request path is outside the Grove FHIR canonical host" >&2
+if [[ "$publication_path" != https://schmiedmayerlab.github.io/grove-fhir/fhir/* ]]; then
+  echo "publication request path is outside the configured draft canonical host" >&2
   exit 1
 fi
 

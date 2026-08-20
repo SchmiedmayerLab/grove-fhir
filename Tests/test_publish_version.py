@@ -27,13 +27,14 @@ SPECIFICATION.loader.exec_module(PUBLISH)
 
 
 class PublishVersionTests(unittest.TestCase):
-    canonical = "https://example.org/fhir/core"
+    canonical = "https://pages.example/repository/fhir/mobile"
     configuration = {
-        "canonicalBaseUrl": "https://example.org",
+        "canonicalBaseUrl": "https://pages.example/repository",
+        "releaseMode": "immutable-releases",
         "guides": [
             {
-                "source": "ig",
-                "canonicalPath": "fhir/core",
+                "source": "mobile",
+                "canonicalPath": "fhir/mobile",
                 "aliases": [""],
                 "representativeResource": "StructureDefinition/example",
             }
@@ -51,7 +52,7 @@ class PublishVersionTests(unittest.TestCase):
                 site=site,
                 source=source,
                 configuration=self.configuration,
-                guide_source="ig",
+                guide_source="mobile",
                 status="preview",
                 sequence="0.x Preview",
                 publication_date="2026-08-18",
@@ -62,7 +63,7 @@ class PublishVersionTests(unittest.TestCase):
             )
 
             self.assertEqual(version, "0.1.0-preview.1")
-            publication = site / "fhir/core"
+            publication = site / "fhir/mobile"
             immutable = publication / version
             self.assertTrue((immutable / "index.html").is_file())
             self.assertTrue((immutable / "package.tgz.sha256").is_file())
@@ -81,7 +82,7 @@ class PublishVersionTests(unittest.TestCase):
                     site=site,
                     source=source,
                     configuration=self.configuration,
-                    guide_source="ig",
+                    guide_source="mobile",
                     status="preview",
                     sequence="0.x Preview",
                     publication_date="2026-08-18",
@@ -104,7 +105,7 @@ class PublishVersionTests(unittest.TestCase):
                     site=site,
                     source=source,
                     configuration=self.configuration,
-                    guide_source="ig",
+                    guide_source="mobile",
                     status="preview",
                     sequence="0.x Preview",
                     publication_date="2026-08-18",
@@ -113,7 +114,33 @@ class PublishVersionTests(unittest.TestCase):
                     revision="abc123",
                     repository_root=ROOT,
                 )
-            self.assertFalse((site / "fhir/core/0.1.0-preview.1").exists())
+            self.assertFalse((site / "fhir/mobile/0.1.0-preview.1").exists())
+
+    def test_rejects_publication_while_release_mode_is_ci_build_only(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / "source"
+            self._write_output(source)
+            configuration = {
+                **self.configuration,
+                "releaseMode": "ci-build-only",
+            }
+
+            with self.assertRaisesRegex(ValueError, "release publication is disabled"):
+                PUBLISH.publish_version(
+                    site=root / "published",
+                    source=source,
+                    configuration=configuration,
+                    guide_source="mobile",
+                    status="preview",
+                    sequence="0.x Preview",
+                    publication_date="2026-08-18",
+                    description="Disabled release.",
+                    current=True,
+                    revision="abc123",
+                    repository_root=ROOT,
+                )
+            self.assertFalse((root / "published").exists())
 
     def test_rejects_a_package_from_another_canonical_origin(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -122,7 +149,7 @@ class PublishVersionTests(unittest.TestCase):
             site = root / "published"
             self._write_output(
                 source,
-                canonical="https://other.example/fhir/core",
+                canonical="https://other.example/fhir/mobile",
             )
 
             with self.assertRaisesRegex(ValueError, "configured canonical"):
@@ -130,7 +157,7 @@ class PublishVersionTests(unittest.TestCase):
                     site=site,
                     source=source,
                     configuration=self.configuration,
-                    guide_source="ig",
+                    guide_source="mobile",
                     status="preview",
                     sequence="0.x Preview",
                     publication_date="2026-08-18",
@@ -152,7 +179,7 @@ class PublishVersionTests(unittest.TestCase):
                 site=site,
                 source=first_source,
                 configuration=self.configuration,
-                guide_source="ig",
+                guide_source="mobile",
                 status="preview",
                 sequence="0.x Preview",
                 publication_date="2026-08-18",
@@ -161,7 +188,7 @@ class PublishVersionTests(unittest.TestCase):
                 revision="abc123",
                 repository_root=ROOT,
             )
-            publication = site / "fhir/core"
+            publication = site / "fhir/mobile"
             before = {
                 str(path.relative_to(publication)): path.read_bytes()
                 for path in publication.rglob("*")
@@ -177,7 +204,7 @@ class PublishVersionTests(unittest.TestCase):
                         site=site,
                         source=second_source,
                         configuration=self.configuration,
-                        guide_source="ig",
+                        guide_source="mobile",
                         status="preview",
                         sequence="0.x Preview",
                         publication_date="2026-08-19",
@@ -195,9 +222,43 @@ class PublishVersionTests(unittest.TestCase):
             self.assertEqual(after, before)
             self.assertFalse((publication / "0.1.0-preview.2").exists())
             self.assertEqual(
-                list((site / "fhir").glob(".core.*.tmp")),
+                list((site / "fhir").glob(".mobile.*.tmp")),
                 [],
             )
+
+    def test_rejects_unsafe_canonical_base_urls(self) -> None:
+        unsafe = (
+            "http://pages.example/repository",
+            "https://user@pages.example/repository",
+            "https://pages.example/repository//nested",
+            "https://pages.example/repository/../other",
+            "https://pages.example/repository%2Fnested",
+            "https://pages.example/repository?preview=true",
+            "https://pages.example/repository#preview",
+        )
+        for base_url in unsafe:
+            with self.subTest(base_url=base_url), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                source = root / "source"
+                self._write_output(source)
+                configuration = {
+                    **self.configuration,
+                    "canonicalBaseUrl": base_url,
+                }
+                with self.assertRaisesRegex(ValueError, "valid HTTPS base URL"):
+                    PUBLISH.publish_version(
+                        site=root / "published",
+                        source=source,
+                        configuration=configuration,
+                        guide_source="mobile",
+                        status="preview",
+                        sequence="0.x Preview",
+                        publication_date="2026-08-18",
+                        description="Unsafe canonical base.",
+                        current=True,
+                        revision="abc123",
+                        repository_root=ROOT,
+                    )
 
     def _write_output(
         self,
@@ -210,12 +271,12 @@ class PublishVersionTests(unittest.TestCase):
         output.mkdir()
         canonical = canonical or self.canonical
         metadata = {
-            "name": "org.example.core",
+            "name": "org.example.mobile",
             "version": version,
             "canonical": canonical,
             "url": f"{canonical}/{version}",
             "notForPublication": not_for_publication,
-            "title": "Example Core",
+            "title": "Example Mobile",
             "description": "Example release",
             "fhirVersions": ["4.0.1"],
         }

@@ -12,15 +12,14 @@ useGitIgnore: true
 excludedDirs:
   # These files are Publisher inputs whose links resolve only after FHIR artifacts are generated.
   # The Publisher checks the rendered guides and reports broken links as build failures.
-  - archive/v0-healthkit-shaped/input/pagecontent
-  - ig/input/pagecontent
-  - platforms/input/pagecontent
+  - mobile/input/pagecontent
+  - healthkit/input/pagecontent
 ignorePatterns:
   - pattern: '^doc:.*$'
   - pattern: '^http://localhost.*$'
   # These routes are introduced by this pull request and are verified in the assembled
   # Pages artifact. They become live when the change is deployed from the default branch.
-  - pattern: '^https://schmiedmayerlab\.github\.io/grove-fhir/(mobile|questionnaires|consuming)\.html$'
+  - pattern: '^https://schmiedmayerlab\.github\.io/grove-fhir/(fhir/(mobile|healthkit)|healthkit)(/.*)?$'
 replacementPatterns:
   - pattern: '(.*)#gh-dark-mode-only'
     replacement: '$1'

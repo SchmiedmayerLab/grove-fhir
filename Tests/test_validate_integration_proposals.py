@@ -161,6 +161,8 @@ class IntegrationProposalValidationTests(unittest.TestCase):
             parent_patch = self.patch_contents("before", "middle")
             child_patch = self.patch_contents("middle", "after")
             test = {
+                "group": "portable",
+                "platforms": ["linux", "macos"],
                 "cwd": ".",
                 "argv": [
                     sys.executable,
@@ -185,7 +187,10 @@ class IntegrationProposalValidationTests(unittest.TestCase):
             )
             before = self.git(source, "status", "--porcelain=v1")
             VALIDATE.validate_proposals(
-                root, self.manifest(first, second, [child, parent])
+                root,
+                self.manifest(first, second, [child, parent]),
+                platform="linux",
+                test_group="portable",
             )
             self.assertEqual(self.git(source, "rev-parse", "HEAD"), second)
             self.assertEqual(self.git(source, "status", "--porcelain=v1"), before)
@@ -216,7 +221,10 @@ class IntegrationProposalValidationTests(unittest.TestCase):
             self.write_patches(root, [("proposal", contents)])
             with patch.object(VALIDATE, "run_declared_tests") as run_tests:
                 VALIDATE.validate_proposals(
-                    root, self.manifest(first, second, [proposal])
+                    root,
+                    self.manifest(first, second, [proposal]),
+                    platform="linux",
+                    test_group="portable",
                 )
             run_tests.assert_called_once()
             self.assertNotIn("tests", run_tests.call_args.args[1])
@@ -236,7 +244,10 @@ class IntegrationProposalValidationTests(unittest.TestCase):
                 VALIDATE.ProposalValidationError, "git apply --check"
             ):
                 VALIDATE.validate_proposals(
-                    root, self.manifest(first, second, [proposal])
+                    root,
+                    self.manifest(first, second, [proposal]),
+                    platform="linux",
+                    test_group="portable",
                 )
             self.assertEqual(self.git(source, "rev-parse", "HEAD"), before_head)
             self.assertEqual(
@@ -281,6 +292,82 @@ class IntegrationProposalValidationTests(unittest.TestCase):
                 )
         self.assertEqual(invoked.call_args.args[0], ["tool", "literal argument"])
         self.assertNotIn("shell", invoked.call_args.kwargs)
+
+    def test_runs_only_the_explicit_group_on_its_declared_platform(self) -> None:
+        tests = [
+            {
+                "group": "portable",
+                "platforms": ["linux", "macos"],
+                "cwd": ".",
+                "argv": [sys.executable, "-c", "pass"],
+            },
+            {
+                "group": "macos-contract",
+                "platforms": ["macos"],
+                "cwd": ".",
+                "argv": ["swift", "test"],
+            },
+        ]
+        proposal = {"id": "proposal", "tests": tests}
+        with tempfile.TemporaryDirectory() as directory:
+            with patch.object(VALIDATE, "run_command") as run:
+                VALIDATE.run_declared_tests(
+                    Path(directory),
+                    proposal,
+                    environment={},
+                    platform="linux",
+                    test_group="portable",
+                    require_group=True,
+                )
+            run.assert_called_once()
+            self.assertEqual(
+                run.call_args.args[0], [sys.executable, "-c", "pass"]
+            )
+
+            with self.assertRaisesRegex(
+                VALIDATE.ProposalValidationError,
+                "does not support platform linux",
+            ):
+                VALIDATE.run_declared_tests(
+                    Path(directory),
+                    proposal,
+                    environment={},
+                    platform="linux",
+                    test_group="macos-contract",
+                    require_group=True,
+                )
+
+    def test_explicit_selection_includes_dependencies_and_requires_root_group(self) -> None:
+        manifest = {
+            "proposals": [
+                {"id": "child", "dependsOn": ["parent"]},
+                {"id": "unrelated", "dependsOn": []},
+                {"id": "parent", "dependsOn": []},
+            ]
+        }
+        ordered, roots = VALIDATE.selected_proposals(manifest, ["child"])
+        self.assertEqual(
+            [proposal["id"] for proposal in ordered], ["parent", "child"]
+        )
+        self.assertEqual(roots, {"child"})
+        with self.assertRaisesRegex(
+            VALIDATE.ProposalValidationError, "unknown integration proposal: missing"
+        ):
+            VALIDATE.selected_proposals(manifest, ["missing"])
+
+        with tempfile.TemporaryDirectory() as directory:
+            with self.assertRaisesRegex(
+                VALIDATE.ProposalValidationError,
+                "declares no tests in requested group portable",
+            ):
+                VALIDATE.run_declared_tests(
+                    Path(directory),
+                    {"id": "child", "tests": []},
+                    environment={},
+                    platform="linux",
+                    test_group="portable",
+                    require_group=True,
+                )
 
 
 if __name__ == "__main__":

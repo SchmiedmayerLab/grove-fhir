@@ -8,3 +8,8 @@
 
 # GitHub Linguist otherwise classifies FHIR Shorthand as GLSL because both use .fsh.
 *.fsh linguist-detectable=false
+
+# Stored integration proposals are patches against third-party source trees. Their
+# context and removed lines can contain upstream whitespace that the proposal must
+# reproduce exactly; the materializer runs git diff --check on the applied result.
+Integration/Patches/*.patch -whitespace

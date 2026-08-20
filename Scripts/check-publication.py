@@ -19,7 +19,20 @@ from typing import Any
 from urllib.parse import urlparse
 
 
-LOCAL_LOCATION = re.compile(r"file://|/(?:Users|home/runner|private/tmp)/")
+LOCAL_LOCATION = re.compile(
+    r"file://|/(?:Users|home/runner|private/tmp)/|(?i:\b[A-Z]:\\(?:Users|home\\runner|private\\tmp)\\)"
+)
+PUBLIC_TEXT_SUFFIXES = {
+    ".css",
+    ".csv",
+    ".html",
+    ".json",
+    ".md",
+    ".svg",
+    ".ttl",
+    ".txt",
+    ".xml",
+}
 
 
 def safe_path(value: str) -> Path:
@@ -39,14 +52,23 @@ def canonical_for_guide(configuration: dict[str, Any], guide: dict[str, Any]) ->
         or not parsed.netloc
         or parsed.username is not None
         or parsed.password is not None
-        or parsed.path not in {"", "/"}
+        or "%" in parsed.path
+        or "\\" in parsed.path
+        or "//" in parsed.path
+        or (
+            parsed.path not in {"", "/"}
+            and any(
+                segment in {"", ".", ".."}
+                for segment in parsed.path.strip("/").split("/")
+            )
+        )
         or parsed.params
         or parsed.query
         or parsed.fragment
     ):
         raise ValueError(
-            "canonicalBaseUrl must be an HTTPS origin without credentials, a path, "
-            "query, or fragment"
+            "canonicalBaseUrl must be an HTTPS URL without credentials, an unsafe "
+            "path, query, or fragment"
         )
     canonical_path = safe_path(str(guide.get("canonicalPath", ""))).as_posix()
     if not canonical_path or canonical_path == ".":
@@ -108,6 +130,9 @@ def check_site(
     base_url: str,
 ) -> list[str]:
     failures: list[str] = []
+    release_mode = configuration.get("releaseMode")
+    if release_mode not in {"ci-build-only", "immutable-releases"}:
+        return ["invalid publication configuration: unsupported releaseMode"]
     try:
         expected_canonicals = {
             str(guide.get("source")): canonical_for_guide(configuration, guide)
@@ -115,6 +140,13 @@ def check_site(
         }
     except (KeyError, TypeError, ValueError) as error:
         return [f"invalid publication configuration: {error}"]
+    package_databases = sorted(site.rglob("package.db"))
+    if package_databases:
+        failures.append(
+            "Publisher package database leaked into the site: "
+            + ", ".join(str(path.relative_to(site)) for path in package_databases[:10])
+        )
+
     for guide in configuration["guides"]:
         source = guide["source"]
         expected_canonical = expected_canonicals[source]
@@ -172,6 +204,10 @@ def check_site(
         else:
             ci_entries = [entry for entry in entries if entry.get("version") == "current"]
             release_entries = [entry for entry in entries if entry.get("version") != "current"]
+            if release_mode == "ci-build-only" and release_entries:
+                failures.append(
+                    f"{source} package-list retains immutable releases in ci-build-only mode"
+                )
             if len(ci_entries) != 1 or ci_entries[0].get("status") != "ci-build":
                 failures.append(f"{source} package-list must contain exactly one CI entry")
             elif ci_entries[0].get("path") != expected_preview:
@@ -300,7 +336,7 @@ def check_site(
     for guide in configuration["guides"]:
         preview = site / safe_path(guide["canonicalPath"]) / "ci-build"
         for path in preview.rglob("*"):
-            if not path.is_file() or path.suffix not in {".html", ".json", ".xml", ".ttl"}:
+            if not path.is_file() or path.suffix not in PUBLIC_TEXT_SUFFIXES:
                 continue
             try:
                 contents = path.read_text(encoding="utf-8")

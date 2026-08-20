@@ -10,42 +10,48 @@ SPDX-License-Identifier: MIT
 
 # Publication
 
-Grove FHIR separates mutable previews from reviewed releases. No release currently exists.
+Grove FHIR currently publishes one mutable pre-1.0 continuous build. No release exists.
 
 ## Continuous preview
 
-Every default-branch build publishes both active guides under their future canonical paths:
+Every default-branch build replaces `ci-build` for both active guides at their current
+pre-1.0 canonical paths:
 
 | Package | Mutable preview | Publication metadata |
 |---|---|---|
-| `org.grovealliance.fhir.core` | `/fhir/core/ci-build/` | `/fhir/core/package-list.json` and `/fhir/core/history.html` |
-| `org.grovealliance.fhir.platforms` | `/fhir/platforms/ci-build/` | `/fhir/platforms/package-list.json` and `/fhir/platforms/history.html` |
+| `org.grovealliance.fhir.mobile` | `/fhir/mobile/ci-build/` | `/fhir/mobile/package-list.json` and `/fhir/mobile/history.html` |
+| `org.grovealliance.fhir.healthkit` | `/fhir/healthkit/ci-build/` | `/fhir/healthkit/package-list.json` and `/fhir/healthkit/history.html` |
 
-The current GitHub Pages locations at `/` and `/platforms/` remain compatibility aliases. Each
+The GitHub Pages locations at `/` and `/healthkit/` are reader-friendly aliases. Each
 publication root also exposes the package, its SHA-256 checksum, and HTML plus JSON, XML, and Turtle
 routes for every locally owned canonical resource. `publication/config.json` is the single routing
 configuration, and `npm run pages:build` verifies the assembled surface before deployment.
 
-GitHub Pages is the draft host. It does not make `grovealliance.org` authoritative. The repository
-variable `FHIR_CANONICAL_BASE_URL` must remain unset until DNS, TLS, and GitHub Pages custom-domain
-configuration are complete. Once set, deployment checks exercise the canonical host as well as the
-Pages preview.
+GitHub Pages is both the publication host and canonical base during pre-1.0 development. The
+canonical base will move only through an explicit breaking-change review before the first stable
+release. Deployment checks exercise every canonical route on the Pages host.
 
-## Immutable releases
+Only the latest `ci-build` is deployed during pre-1.0 development. The site does not retain
+pre-1.0 version directories, superseded packages, or legacy documentation surfaces.
 
-Rendered releases live on the orphan `publication` branch, separate from source. A release is added
-under `/fhir/<package>/<version>/`; `Scripts/publish-version.py` refuses to overwrite an existing
-directory. The default-branch Pages build overlays that branch, adds the current `/ci-build/`, and
-regenerates the combined history page. Versionless canonical routes continue to reference the last
-accepted release, not a newer CI build.
+## Future immutable releases
 
-Publishing requires a dedicated reviewed PR and all of the following:
+Immutable-release tooling is present but dormant. It may be activated only through an explicit,
+reviewed decision to publish a release. The activation change must update `releaseMode` and its
+repository validation in the same pull request. At that point, rendered releases would live on the
+orphan `publication` branch under `/fhir/<package>/<version>/`; `Scripts/publish-version.py` refuses
+to overwrite an existing version. The default-branch Pages build can overlay that branch, add the
+current `/ci-build/`, and regenerate the combined history page. Versionless canonical routes would
+then reference the last accepted release rather than a newer CI build.
+
+Activating and publishing an immutable release requires a dedicated reviewed PR and all of the
+following:
 
 1. The canonical host resolves over HTTPS and passes the live publication check.
 2. The guide contains a reviewed `publication-request.json` whose package ID, version, and path agree
    with `sushi-config.yaml`.
 3. The release commit is approved, merged, and tagged. Dependencies use exact versions.
-4. `Scripts/build-release.sh <ig|platforms>` builds once in FHIR Publisher publication mode.
+4. `Scripts/build-release.sh <mobile|healthkit>` builds once in FHIR Publisher publication mode.
 5. `Scripts/publish-version.py` adds that exact output to a clean checkout of the `publication`
    branch. The resulting package, QA report, release notes, and checksums are attached to the matching
    GitHub Release.
