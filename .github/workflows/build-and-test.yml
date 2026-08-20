@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.13"
       - name: Run repository and tooling tests
@@ -41,7 +41,7 @@ jobs:
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
@@ -53,7 +53,7 @@ jobs:
         with:
           ruby-version: "3.3"
           bundler-cache: false
-      - uses: actions/cache@v5
+      - uses: actions/cache@v6
         with:
           path: |
             ~/.fhir
@@ -73,7 +73,7 @@ jobs:
         run: python3 Scripts/check-guide-qa.py --summary archive/v0-healthkit-shaped platforms ig
       - name: Upload rendered guides and QA reports
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: implementation-guides
           if-no-files-found: error
@@ -121,7 +121,7 @@ jobs:
           repository: ${{ vars.GROVE_REPOSITORY || 'SchmiedmayerLab/Grove' }}
           ref: ${{ vars.GROVE_REF || 'main' }}
           path: grove
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
@@ -149,7 +149,7 @@ jobs:
           ./Scripts/validate-fhir-conformance.sh
       - name: Upload emitted fixtures and validation report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: grove-conformance-fixtures
           if-no-files-found: warn
