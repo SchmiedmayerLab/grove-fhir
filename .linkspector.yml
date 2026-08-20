@@ -14,12 +14,13 @@ excludedDirs:
   # The Publisher checks the rendered guides and reports broken links as build failures.
   - mobile/input/pagecontent
   - healthkit/input/pagecontent
+  - health-connect/input/pagecontent
 ignorePatterns:
   - pattern: '^doc:.*$'
   - pattern: '^http://localhost.*$'
   # These routes are introduced by this pull request and are verified in the assembled
   # Pages artifact. They become live when the change is deployed from the default branch.
-  - pattern: '^https://schmiedmayerlab\.github\.io/grove-fhir/(fhir/(mobile|healthkit)|healthkit)(/.*)?$'
+  - pattern: '^https://schmiedmayerlab\.github\.io/grove-fhir/(fhir/(mobile|healthkit|health-connect)|healthkit|health-connect)(/.*)?$'
 replacementPatterns:
   - pattern: '(.*)#gh-dark-mode-only'
     replacement: '$1'

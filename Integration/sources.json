@@ -135,6 +135,144 @@
         "HealthKit source identity is a complete lowercase UUID business identifier, while recording device, actual gateway, explicitly classified source author, and converter assembler remain distinct provenance roles; ambiguous source authors are omitted.",
         "Recording method and ResearchStudy attribution are emitted only from explicit evidence, using the Grove recording-method extension and the standard workflow-researchStudy extension without retired canonicals or metadata shortcuts."
       ]
+    },
+    {
+      "id": "my-heart-counts-android-health-connect",
+      "source": "my-heart-counts-android",
+      "target": "main",
+      "patch": "Integration/Patches/my-heart-counts-android-health-connect.patch",
+      "sha256": "4384e86a9ff63cde99aa94895f6d5a65d7b7379f7322015e243429d8e63ea62d",
+      "dependsOn": [
+        "grove-mobile-contract"
+      ],
+      "appliesAfter": [],
+      "tests": [
+        {
+          "group": "portable",
+          "platforms": [
+            "linux",
+            "macos"
+          ],
+          "cwd": ".",
+          "argv": [
+            "git",
+            "diff",
+            "--check"
+          ]
+        },
+        {
+          "group": "android-contract",
+          "platforms": [
+            "linux",
+            "macos"
+          ],
+          "cwd": ".",
+          "argv": [
+            "./gradlew",
+            ":health:check",
+            ":health-fhir:check",
+            "--console=plain"
+          ]
+        },
+        {
+          "group": "android-emitted-resource-conformance",
+          "platforms": [
+            "linux",
+            "macos"
+          ],
+          "cwd": ".",
+          "argv": [
+            "./Scripts/validate-health-connect-fhir-conformance.sh"
+          ]
+        }
+      ],
+      "claims": [
+        "The Android Health Connect adapter emits complete FHIR R4 collection Bundles for exactly StepsRecord, WeightRecord, and HeartRateRecord under the reviewed Grove Mobile, Health Connect, and applicable domain profiles, and fails closed for every other record type.",
+        "Repository-scoped pseudonymous source identities, deterministic one-to-many output identities, distinct source-application/converter/recorder roles, and immutable conversion Provenance and companion resources preserve the reviewed identity and provenance contract without exposing the raw Health Connect id or hidden repository scope.",
+        "A projection-scoped token lease, durable boundary-baseline-drain recovery, enumerable exact-byte outbox, authoritative event sequence, complete update/deletion tombstones, valid zero-output state, and fail-consistent receiver limits prevent token progress from losing or stranding an accepted source projection."
+      ]
+    },
+    {
+      "id": "my-heart-counts-firebase-fhir-receiver",
+      "source": "my-heart-counts-firebase",
+      "target": "main",
+      "patch": "Integration/Patches/my-heart-counts-firebase-fhir-receiver.patch",
+      "sha256": "aa205f118ca5f3bd4406b7585acb3e001cd0f721c5ee8f171b42e82dfd0b41ff",
+      "dependsOn": [
+        "my-heart-counts-android-health-connect"
+      ],
+      "appliesAfter": [],
+      "tests": [
+        {
+          "group": "portable",
+          "platforms": [
+            "linux",
+            "macos"
+          ],
+          "cwd": ".",
+          "argv": [
+            "git",
+            "diff",
+            "--check"
+          ]
+        },
+        {
+          "group": "firebase-contract",
+          "platforms": [
+            "linux",
+            "macos"
+          ],
+          "cwd": "functions",
+          "argv": [
+            "npm",
+            "ci"
+          ]
+        },
+        {
+          "group": "firebase-contract",
+          "platforms": [
+            "linux",
+            "macos"
+          ],
+          "cwd": "functions",
+          "argv": [
+            "./node_modules/.bin/tsc",
+            "--project",
+            "tsconfig.json"
+          ]
+        },
+        {
+          "group": "firebase-contract",
+          "platforms": [
+            "linux",
+            "macos"
+          ],
+          "cwd": "functions",
+          "argv": [
+            "npm",
+            "run",
+            "lint:strict"
+          ]
+        },
+        {
+          "group": "firebase-contract",
+          "platforms": [
+            "linux",
+            "macos"
+          ],
+          "cwd": ".",
+          "argv": [
+            "npm",
+            "run",
+            "test:ci"
+          ]
+        }
+      ],
+      "claims": [
+        "The source-neutral receiver library accepts only complete FHIR R4 collection Bundle JSON under a strict five-field envelope, preserves the exact submitted Bundle bytes and companion resources, and performs structural and complete-identifier checks without exposing an unauthenticated intake endpoint or claiming full profile validation.",
+        "A trusted server-derived partition plus complete source and Observation identifiers scope collision-safe indexes, while authoritative per-source event sequences provide exact replay, newer replacement, tombstone-only update, deletion, stale-event rejection, and complete output-set ownership without synthesizing lossy FHIR resources.",
+        "Generation-pinned immutable Bundle and manifest objects, paged transactional claims, a leased at-least-once outbox, bounded retry/dead-letter and garbage-collection quarantine, and generation-aware metadata retirement support complete series beyond 200 samples; 16 MiB, 50,000-Observation, and 80,000-token receiver limits reject an entire event without truncation, and the frozen Android vectors are checked at their exact producer byte hashes."
+      ]
     }
   ]
 }

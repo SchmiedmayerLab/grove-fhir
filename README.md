@@ -21,14 +21,17 @@ Exchange guide describes source-neutral Observations, recording and application 
 roles, study context, and conversion provenance. Platform adapters add the identifiers and
 mappings needed by a specific source without changing the shared resource shape.
 [Grove Swift](https://github.com/SchmiedmayerLab/Grove) is the reference implementation for
-the HealthKit adapter.
+the HealthKit adapter. The Health Connect adapter defines the corresponding Android exchange
+and synchronization contract.
 
 ## Documentation
 
 Start with the [Mobile Data Exchange guide](https://schmiedmayerlab.github.io/grove-fhir/)
 to understand the common resource model and copy a complete example. Use the
 [HealthKit adapter guide](https://schmiedmayerlab.github.io/grove-fhir/healthkit/) when
-converting Apple HealthKit samples.
+converting Apple HealthKit samples. Use the
+[Health Connect adapter guide](https://schmiedmayerlab.github.io/grove-fhir/health-connect/)
+when converting and synchronizing Android Health Connect records.
 
 ## Development
 

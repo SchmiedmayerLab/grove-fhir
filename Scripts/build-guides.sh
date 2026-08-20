@@ -12,7 +12,6 @@ set -euo pipefail
 REPOSITORY_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 readonly REPOSITORY_ROOT
 readonly TOOLS_DIRECTORY="$REPOSITORY_ROOT/.build/fhir-tools"
-readonly DEFAULT_GUIDES=("mobile" "healthkit")
 
 cd "$REPOSITORY_ROOT"
 export PATH="$REPOSITORY_ROOT/node_modules/.bin:$PATH"
@@ -24,7 +23,10 @@ export PATH="$REPOSITORY_ROOT/.build/bin:$PATH"
 ./Scripts/download-fhir-tools.sh "$TOOLS_DIRECTORY"
 
 if [[ "$#" -eq 0 ]]; then
-  guides=("${DEFAULT_GUIDES[@]}")
+  guides=()
+  while IFS= read -r guide; do
+    guides+=("$guide")
+  done < <(python3 -c 'import json; print("\n".join(guide["source"] for guide in json.load(open("publication/config.json", encoding="utf-8"))["guides"]))')
 else
   guides=("$@")
 fi
@@ -45,7 +47,7 @@ for guide in "${guides[@]}"; do
   echo "Building $guide"
   clean_generated_guide_content "$guide"
   publisher_arguments=(-ig ig.ini)
-  if [[ "$guide" == "healthkit" ]]; then
+  if grep -q '^  org\.grovealliance\.fhir\.mobile:' "$guide/sushi-config.yaml"; then
     test -f "$REPOSITORY_ROOT/mobile/output/package.tgz"
     node "$REPOSITORY_ROOT/Scripts/cache-fhir-package.cjs" \
       "$REPOSITORY_ROOT/mobile/output/package.tgz"

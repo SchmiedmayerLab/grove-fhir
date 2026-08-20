@@ -12,7 +12,8 @@ This directory pins the public source evidence used to design cross-repository
 contract changes. There is one submodule per external repository. `sources.json`
 records its exact gitlink plus any additional commits that participate in the Grove
 FHIR work. A target's `ref` identifies where that commit was observed; validation
-fetches the commit by SHA and does not follow the ref when it moves.
+fetches the ref only to prove that the pinned commit remains in its history, then
+materializes the proposal at the exact SHA rather than the moving ref tip.
 
 The source check verifies the manifest, `.gitmodules`, exact Git commits, clean
 submodule checkouts, and proposal metadata and checksums. The proposal check then
@@ -70,10 +71,15 @@ selects one proposal and its dependency closure. For example:
 }
 ```
 
-The manifest contains the reviewable Grove Mobile contract proposal and its exact
-checksum. Its portable checks may run on Linux or macOS; its Swift contract and
-emitted-resource checks run only on macOS. Later stack layers may add proposals for
-the other pinned repositories using the same explicit dependency and platform model.
+The manifest contains the reviewable Grove Swift Mobile contract, My Heart Counts
+Android Health Connect adapter, and My Heart Counts Firebase receiver proposals with
+their exact checksums. Portable checks may run on Linux or macOS. The Swift contract
+and emitted-resource checks run only on macOS. Android and Firebase contract tests
+run on either platform. The Android proposal is a reusable adapter rather than proof
+that the My Heart Counts application deploys Health Connect. The Firebase proposal is
+a structurally validated receiver library; it deliberately does not expose an intake
+endpoint or choose an authenticated caller-to-partition mapping. Those deployment
+decisions and end-to-end evidence belong to the later conformance layer.
 
 The temporary integration sources remain part of the unmerged Grove FHIR stack so
 contract and implementation changes can be reviewed together. Once the external

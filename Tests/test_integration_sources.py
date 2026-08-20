@@ -90,6 +90,55 @@ class IntegrationSourceManifestTests(unittest.TestCase):
             ],
         )
 
+    def test_fetches_the_provenance_ref_without_following_its_tip(self) -> None:
+        source = deepcopy(self.manifest["sources"][0])
+        pinned = source["targets"][0]["commit"]
+        advanced_tip = "b" * 40
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            checkout = root / "Integration/Sources/Example"
+            (checkout / ".git").mkdir(parents=True)
+
+            def fake_run(*arguments: str, cwd: Path) -> str:
+                if arguments == ("git", "rev-parse", "HEAD"):
+                    return pinned
+                if arguments == ("git", "status", "--porcelain"):
+                    return ""
+                if arguments == ("git", "remote", "get-url", "origin"):
+                    return source["repository"]
+                if arguments[:2] == ("git", "fetch"):
+                    self.assertEqual(arguments[-1], "refs/heads/main")
+                    self.assertNotIn(pinned, arguments)
+                    return ""
+                if arguments == (
+                    "git",
+                    "rev-parse",
+                    "--verify",
+                    "FETCH_HEAD^{commit}",
+                ):
+                    return advanced_tip
+                if arguments == (
+                    "git",
+                    "merge-base",
+                    "--is-ancestor",
+                    pinned,
+                    advanced_tip,
+                ):
+                    return ""
+                self.fail(f"unexpected git command: {arguments!r}")
+
+            with (
+                mock.patch.object(CHECK, "gitlink", return_value=pinned),
+                mock.patch.object(CHECK, "run", side_effect=fake_run),
+            ):
+                failures = CHECK.verify_repository(
+                    root=root,
+                    source=source,
+                    fetch_targets=True,
+                )
+
+        self.assertEqual(failures, [])
+
     def test_accepts_independent_targets_without_implying_array_order(self) -> None:
         manifest = deepcopy(self.manifest)
         manifest["sources"][0]["targets"].append(

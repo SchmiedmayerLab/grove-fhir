@@ -69,6 +69,13 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: "3.13"
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 21
       - name: Fetch immutable proposal targets
         run: python3 Scripts/check-integration-sources.py --fetch-targets
       - name: Apply and test external change proposals
@@ -76,6 +83,25 @@ jobs:
           python3 Scripts/validate-integration-proposals.py
           --platform linux
           --test-group portable
+      - name: Test the exact Android Health Connect proposal
+        run: >-
+          python3 Scripts/validate-integration-proposals.py
+          --platform linux
+          --test-group android-contract
+          --proposal my-heart-counts-android-health-connect
+      - name: Install the exact Firebase CLI
+        env:
+          FIREBASE_CLI_DISABLE_UPDATE_CHECK: "true"
+        run: npm install --global firebase-tools@15.27.0
+      - name: Test the exact Firebase receiver proposal
+        env:
+          CI: "true"
+          FIREBASE_CLI_DISABLE_UPDATE_CHECK: "true"
+        run: >-
+          python3 Scripts/validate-integration-proposals.py
+          --platform linux
+          --test-group firebase-contract
+          --proposal my-heart-counts-firebase-fhir-receiver
 
   guides:
     name: Build All Implementation Guides
@@ -83,6 +109,13 @@ jobs:
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v7
+        with:
+          submodules: true
+          fetch-depth: 1
+          persist-credentials: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
       - uses: actions/setup-node@v6
         with:
           node-version: 22
@@ -103,19 +136,33 @@ jobs:
             .build/bundle
             mobile/input-cache
             healthkit/input-cache
+            health-connect/input-cache
           key: fhir-guides-${{ runner.os }}-${{ hashFiles('Gemfile.lock', 'package-lock.json', 'Scripts/download-fhir-tools.sh') }}
           restore-keys: |
             fhir-guides-${{ runner.os }}-
       - run: npm ci
-      - name: Build the Mobile and HealthKit guides
+      - name: Build all implementation guides
         run: npm run build
       - name: Verify the published artifact allowlist
         run: python3 -m unittest Tests.test_artifact_allowlist -v
+      - name: Fetch the immutable Android proposal target
+        run: python3 Scripts/check-integration-sources.py --fetch-targets
+      - name: Validate Android-emitted resources against the exact guides
+        env:
+          FHIR_VALIDATOR_JAR: ${{ github.workspace }}/.build/fhir-tools/validator_cli.jar
+          GROVE_MOBILE_PACKAGE: ${{ github.workspace }}/mobile/output/package.tgz
+          GROVE_HEALTH_CONNECT_PACKAGE: ${{ github.workspace }}/health-connect/output/package.tgz
+          GROVE_CONFORMANCE_EXPORT: ${{ github.workspace }}/.build/health-connect-conformance-fixtures
+        run: >-
+          python3 Scripts/validate-integration-proposals.py
+          --platform linux
+          --test-group android-emitted-resource-conformance
+          --proposal my-heart-counts-android-health-connect
       - name: Assemble the sanitized preview artifact
         run: ./Scripts/assemble-pages.sh
       - name: Summarize publisher QA
         if: always()
-        run: python3 Scripts/check-guide-qa.py --summary mobile healthkit
+        run: python3 Scripts/check-guide-qa.py --summary mobile healthkit health-connect
       - name: Upload rendered guides and QA reports
         if: always()
         uses: actions/upload-artifact@v4

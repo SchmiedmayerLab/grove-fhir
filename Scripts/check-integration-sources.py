@@ -597,24 +597,37 @@ def verify_repository(
             return failures
         if fetch_targets:
             for target in source["targets"]:
+                # GitHub does not advertise arbitrary commit-object wants. Fetch the
+                # declared provenance ref so a shallow CI checkout receives its
+                # history, then prove that the immutable pin remains reachable from
+                # that ref. A normal ref advance therefore does not invalidate an
+                # older pin, while a force-push that discards it does.
                 run(
                     "git",
                     "fetch",
                     "--quiet",
                     "--no-tags",
-                    "--depth",
-                    "1",
                     "origin",
-                    target["commit"],
+                    target["ref"],
                     cwd=checkout,
                 )
-                fetched = run(
+                fetched_tip = run(
                     "git", "rev-parse", "--verify", "FETCH_HEAD^{commit}", cwd=checkout
                 )
-                if fetched != target["commit"]:
+                try:
+                    run(
+                        "git",
+                        "merge-base",
+                        "--is-ancestor",
+                        target["commit"],
+                        fetched_tip,
+                        cwd=checkout,
+                    )
+                except subprocess.CalledProcessError:
                     failures.append(
-                        f"{source_id}/{target['id']} fetched {fetched}; "
-                        f"expected {target['commit']}"
+                        f"{source_id}/{target['id']} pinned commit "
+                        f"{target['commit']} is not reachable from "
+                        f"{target['ref']} at {fetched_tip}"
                     )
     except subprocess.CalledProcessError as error:
         failures.append(f"{source_id}: git command failed: {error}")

@@ -8,6 +8,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 import tarfile
@@ -30,6 +31,15 @@ INSTANCE_BLOCK = re.compile(
 USAGE = re.compile(r"^Usage:\s+#(definition|example)\s*$", re.MULTILINE)
 FHIR_ID = re.compile(r"^[A-Za-z0-9.-]{1,64}$")
 ARTIFACT_KEYS = {"fshName", "fshType", "resourceType", "id", "classification"}
+HEALTH_CONNECT_RECORD_SYSTEM = (
+    "https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/"
+    "NamingSystem/health-connect-record-id"
+)
+HEALTH_CONNECT_OUTPUT_SYSTEM = (
+    "https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/"
+    "NamingSystem/health-connect-output-id"
+)
+HEALTH_CONNECT_EXAMPLE_REPOSITORY_SCOPE = "1f5c58aa-6ec6-4e79-a682-829a9debd3f5"
 
 
 def scalar_configuration(path: Path) -> dict[str, str]:
@@ -61,6 +71,56 @@ def fsh_declarations(source: str) -> dict[tuple[str, str], str]:
                 instance_usage[name] if fsh_type == "Instance" else "definition"
             )
     return declarations
+
+
+def sized(value: str) -> bytes:
+    return sized_bytes(value.encode("utf-8"))
+
+
+def sized_bytes(value: bytes) -> bytes:
+    return str(len(value)).encode("ascii") + b":" + value
+
+
+def versioned_sha256(preimage: bytes) -> str:
+    return f"v1:{hashlib.sha256(preimage).hexdigest()}"
+
+
+def health_connect_record_identifier(record_type: str, raw_identifier: str) -> str:
+    preimage = b"record\0" + b"\0".join(
+        (
+            sized(HEALTH_CONNECT_EXAMPLE_REPOSITORY_SCOPE),
+            sized(record_type),
+            sized(raw_identifier),
+        )
+    )
+    return versioned_sha256(preimage)
+
+
+def health_connect_identifier_tuple(system: str, value: str) -> bytes:
+    return sized(system) + b"\0" + sized(value)
+
+
+def health_connect_single_output_identifier(record_identifier: str) -> str:
+    source_tuple = health_connect_identifier_tuple(
+        HEALTH_CONNECT_RECORD_SYSTEM, record_identifier
+    )
+    return versioned_sha256(b"single\0" + sized_bytes(source_tuple))
+
+
+def health_connect_sample_output_identifier(
+    record_identifier: str,
+    instant: str,
+    beats_per_minute: int,
+    occurrence: int,
+) -> str:
+    source_tuple = health_connect_identifier_tuple(
+        HEALTH_CONNECT_RECORD_SYSTEM, record_identifier
+    )
+    preimage = b"sample\0" + sized_bytes(source_tuple)
+    preimage += b"\0" + instant.encode("ascii")
+    preimage += b"\0" + str(beats_per_minute).encode("ascii")
+    preimage += b"\0" + str(occurrence).encode("ascii")
+    return versioned_sha256(preimage)
 
 
 def package_contents(
@@ -345,6 +405,303 @@ class ArtifactAllowlistTests(unittest.TestCase):
             "value.length().toString() & ':' & value).isDistinct()",
         )
 
+    def test_built_health_connect_package_has_exact_mobile_dependency(self) -> None:
+        archive_paths = (
+            ROOT / "health-connect/output/package.tgz",
+            ROOT / ".build/pages/fhir/health-connect/ci-build/package.tgz",
+        )
+        mobile_configuration = scalar_configuration(ROOT / "mobile/sushi-config.yaml")
+        for archive_path in archive_paths:
+            if not archive_path.is_file():
+                continue
+            with tarfile.open(archive_path, "r:gz") as archive:
+                metadata_file = archive.extractfile("package/package.json")
+                self.assertIsNotNone(metadata_file)
+                metadata = json.load(metadata_file)
+                self.assertEqual(
+                    metadata.get("dependencies", {}).get(mobile_configuration["id"]),
+                    mobile_configuration["version"],
+                )
+                index_file = archive.extractfile("package/.index.json")
+                self.assertIsNotNone(index_file)
+                index = json.load(index_file)
+                packaged_resource_types = {
+                    entry["resourceType"] for entry in index["files"]
+                }
+                self.assertNotIn("CodeSystem", packaged_resource_types)
+                self.assertNotIn("ValueSet", packaged_resource_types)
+
+    def test_health_connect_profiles_preserve_both_identity_layers(self) -> None:
+        profile_path = (
+            ROOT
+            / "health-connect/output/StructureDefinition-health-connect-observation.json"
+        )
+        provenance_path = (
+            ROOT
+            / "health-connect/output/StructureDefinition-health-connect-conversion-provenance.json"
+        )
+        if not profile_path.is_file() or not provenance_path.is_file():
+            self.skipTest("Health Connect Publisher output is not present")
+
+        profile = json.loads(profile_path.read_text(encoding="utf-8"))
+        differential = {
+            element["id"]: element
+            for element in profile["differential"]["element"]
+        }
+        self.assertEqual(
+            differential["Observation.identifier:recordId"].get("min"), 1
+        )
+        self.assertEqual(
+            differential["Observation.identifier:outputId"].get("min"), 1
+        )
+        self.assertEqual(differential["Observation.issued"].get("min"), 1)
+        self.assertEqual(differential["Observation.value[x]"].get("min"), 1)
+        self.assertEqual(
+            differential["Observation.value[x]"].get("type"), [{"code": "Quantity"}]
+        )
+        self.assertEqual(differential["Observation.dataAbsentReason"].get("max"), "0")
+        constraints = {
+            constraint["key"]: constraint["expression"]
+            for constraint in differential["Observation"].get("constraint", [])
+        }
+        self.assertEqual(
+            constraints.get("health-connect-output-id-1"),
+            "identifier.where(system = "
+            "'https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/"
+            "NamingSystem/health-connect-output-id').all("
+            "value.matches('^v1:[0-9a-f]{64}$'))",
+        )
+        record_value_constraints = {
+            constraint["key"]: constraint["expression"]
+            for constraint in differential[
+                "Observation.identifier:recordId.value"
+            ].get("constraint", [])
+        }
+        self.assertEqual(
+            record_value_constraints.get("health-connect-record-id-value-1"),
+            "matches('^v1:[0-9a-f]{64}$')",
+        )
+
+        provenance = json.loads(provenance_path.read_text(encoding="utf-8"))
+        provenance_differential = {
+            element["id"]: element
+            for element in provenance["differential"]["element"]
+        }
+        source_system = provenance_differential[
+            "Provenance.entity.what.identifier.system"
+        ]
+        self.assertEqual(
+            source_system.get("patternUri"),
+            "https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/"
+            "NamingSystem/health-connect-record-id",
+        )
+        self.assertEqual(
+            provenance_differential["Provenance.entity.what.reference"].get("max"),
+            "0",
+        )
+        self.assertEqual(
+            provenance_differential["Provenance.entity.agent.type"].get(
+                "patternCodeableConcept"
+            ),
+            {
+                "coding": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/"
+                        "provenance-participant-type",
+                        "code": "enterer",
+                    }
+                ]
+            },
+        )
+        self.assertEqual(
+            provenance_differential["Provenance.entity.agent.who"]["type"],
+            [
+                {
+                    "code": "Reference",
+                    "targetProfile": [
+                        "http://hl7.org/fhir/StructureDefinition/Device"
+                    ],
+                }
+            ],
+        )
+
+    def test_health_connect_heart_rate_outputs_share_only_source_identity(self) -> None:
+        output = ROOT / "health-connect/output"
+        paths = (
+            output / "Observation-HealthConnectHeartRateSampleOneExample.json",
+            output / "Observation-HealthConnectHeartRateSampleTwoExample.json",
+        )
+        if not all(path.is_file() for path in paths):
+            self.skipTest("Health Connect Publisher examples are not present")
+        observations = [json.loads(path.read_text(encoding="utf-8")) for path in paths]
+        by_system = [
+            {identifier["system"]: identifier["value"] for identifier in observation["identifier"]}
+            for observation in observations
+        ]
+        record_system = (
+            "https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/"
+            "NamingSystem/health-connect-record-id"
+        )
+        output_system = (
+            "https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/"
+            "NamingSystem/health-connect-output-id"
+        )
+        self.assertEqual(by_system[0][record_system], by_system[1][record_system])
+        self.assertNotEqual(by_system[0][output_system], by_system[1][output_system])
+        self.assertTrue(
+            all(observation["effectiveDateTime"].endswith("Z") for observation in observations)
+        )
+        self.assertTrue(all("_effectiveDateTime" not in observation for observation in observations))
+
+    def test_health_connect_output_identifiers_use_the_documented_digest(self) -> None:
+        output = ROOT / "health-connect/output"
+        cases = (
+            (
+                output / "Observation-HealthConnectHeartRateSampleOneExample.json",
+                "heart-rate",
+                "heart-record",
+                ("2026-08-19T17:30:15.000000000Z", 72, 0),
+            ),
+            (
+                output / "Observation-HealthConnectHeartRateSampleTwoExample.json",
+                "heart-rate",
+                "heart-record",
+                ("2026-08-19T17:30:45.000000000Z", 75, 0),
+            ),
+            (
+                output / "Observation-HealthConnectBodyWeightExample.json",
+                "weight",
+                "fixture-weight",
+                None,
+            ),
+            (
+                output / "Observation-HealthConnectStepCountExample.json",
+                "steps",
+                "fixture-step",
+                None,
+            ),
+        )
+        if not all(path.is_file() for path, _, _, _ in cases):
+            self.skipTest("Health Connect Publisher examples are not present")
+
+        for path, record_type, raw_identifier, sample in cases:
+            observation = json.loads(path.read_text(encoding="utf-8"))
+            identifiers = {
+                identifier["system"]: identifier["value"]
+                for identifier in observation["identifier"]
+            }
+            expected_record = health_connect_record_identifier(
+                record_type, raw_identifier
+            )
+            self.assertEqual(
+                identifiers[HEALTH_CONNECT_RECORD_SYSTEM], expected_record, path.name
+            )
+            if sample is None:
+                expected_output = health_connect_single_output_identifier(
+                    expected_record
+                )
+            else:
+                expected_output = health_connect_sample_output_identifier(
+                    expected_record, *sample
+                )
+            self.assertEqual(
+                identifiers[HEALTH_CONNECT_OUTPUT_SYSTEM], expected_output, path.name
+            )
+            self.assertRegex(
+                identifiers[HEALTH_CONNECT_OUTPUT_SYSTEM], r"^v1:[0-9a-f]{64}$"
+            )
+
+    def test_health_connect_digest_vectors_cover_scope_type_and_utf8_length(self) -> None:
+        step_record = health_connect_record_identifier("steps", "source-record")
+        self.assertEqual(
+            step_record,
+            "v1:f3ad444267f81a426a6d6b1fde24b59553c5623164226a639f755aca851f414e",
+        )
+        self.assertEqual(
+            health_connect_single_output_identifier(step_record),
+            "v1:f8e413af42c5e7a9d04152b38cbf60ec43b24d2831965c0be269a5b7ead16736",
+        )
+        non_ascii_record = health_connect_record_identifier("steps", "héal记录")
+        self.assertEqual(
+            non_ascii_record,
+            "v1:6e258b000caca29d65d79445792030e6aadc81216f8c9c3b73dce2d20299b6a4",
+        )
+        self.assertEqual(
+            health_connect_single_output_identifier(non_ascii_record),
+            "v1:c1d40e4865981bcda26185ed54bb640b7c449210901153dc327de3131e9104fb",
+        )
+        self.assertNotEqual(
+            health_connect_record_identifier("steps", "same-raw-id"),
+            health_connect_record_identifier("weight", "same-raw-id"),
+        )
+        mapping = (
+            ROOT / "health-connect/input/pagecontent/mapping.md"
+        ).read_text(encoding="utf-8")
+        for fixed_value in (
+            HEALTH_CONNECT_EXAMPLE_REPOSITORY_SCOPE,
+            step_record,
+            health_connect_single_output_identifier(step_record),
+            non_ascii_record,
+            health_connect_single_output_identifier(non_ascii_record),
+        ):
+            self.assertIn(f"`{fixed_value}`", mapping)
+
+    def test_health_connect_provenance_uses_each_observations_source_identity(self) -> None:
+        output = ROOT / "health-connect/output"
+        cases = (
+            (
+                output / "Provenance-HealthConnectHeartRateProvenanceExample.json",
+                (
+                    output / "Observation-HealthConnectHeartRateSampleOneExample.json",
+                    output / "Observation-HealthConnectHeartRateSampleTwoExample.json",
+                ),
+            ),
+            (
+                output / "Provenance-HealthConnectBodyWeightProvenanceExample.json",
+                (output / "Observation-HealthConnectBodyWeightExample.json",),
+            ),
+            (
+                output / "Provenance-HealthConnectStepCountProvenanceExample.json",
+                (output / "Observation-HealthConnectStepCountExample.json",),
+            ),
+        )
+        if not all(
+            provenance_path.is_file()
+            and all(observation_path.is_file() for observation_path in observation_paths)
+            for provenance_path, observation_paths in cases
+        ):
+            self.skipTest("Health Connect Publisher examples are not present")
+
+        for provenance_path, observation_paths in cases:
+            provenance = json.loads(provenance_path.read_text(encoding="utf-8"))
+            provenance_source = provenance["entity"][0]["what"]["identifier"]
+            self.assertEqual(provenance_source["system"], HEALTH_CONNECT_RECORD_SYSTEM)
+            for observation_path in observation_paths:
+                observation = json.loads(observation_path.read_text(encoding="utf-8"))
+                source_identifiers = [
+                    identifier
+                    for identifier in observation["identifier"]
+                    if identifier["system"] == HEALTH_CONNECT_RECORD_SYSTEM
+                ]
+                self.assertEqual(source_identifiers, [provenance_source])
+
+    def test_health_connect_does_not_invent_data_origin_metadata(self) -> None:
+        path = ROOT / "health-connect/output/Device-HealthConnectSourceApplicationExample.json"
+        if not path.is_file():
+            self.skipTest("Health Connect Publisher examples are not present")
+        source = json.loads(path.read_text(encoding="utf-8"))
+        self.assertEqual(
+            source.get("identifier"),
+            [
+                {
+                    "system": "https://schmiedmayerlab.github.io/grove-fhir/fhir/"
+                    "health-connect/NamingSystem/android-package-name",
+                    "value": "com.example.wearable",
+                }
+            ],
+        )
+        self.assertNotIn("deviceName", source)
+        self.assertNotIn("version", source)
 
 if __name__ == "__main__":
     unittest.main()

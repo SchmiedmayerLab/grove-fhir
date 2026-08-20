@@ -7,6 +7,8 @@ path = [
     "LICENSES/MIT.txt",
     "Gemfile.lock",
     "Integration/sources.json",
+    "health-connect/ig.ini",
+    "health-connect/input/ignoreWarnings.txt",
     "healthkit/ig.ini",
     "healthkit/input/data/terminology-provenance.json",
     "healthkit/input/ignoreWarnings.txt",

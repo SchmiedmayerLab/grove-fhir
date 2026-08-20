@@ -18,7 +18,9 @@ from urllib.parse import urlparse
 
 
 ROOT = Path(__file__).resolve().parent.parent
-GUIDES = (ROOT / "mobile", ROOT / "healthkit")
+EXPECTED_GUIDE_SOURCES = ("mobile", "healthkit", "health-connect")
+MOBILE_ADAPTER_SOURCES = ("healthkit", "health-connect")
+GUIDES = tuple(ROOT / source for source in EXPECTED_GUIDE_SOURCES)
 REQUIRED_CONFIGURATION_KEYS = {"id", "canonical", "version", "fhirVersion", "license"}
 
 
@@ -53,17 +55,18 @@ def main() -> int:
             failures.append(f"{configuration_path.relative_to(ROOT)} must declare the MIT license")
 
     mobile_configuration = configurations[ROOT / "mobile"]
-    healthkit_configuration_text = (ROOT / "healthkit" / "sushi-config.yaml").read_text(
-        encoding="utf-8"
-    )
     expected_dependency = (
         "org.grovealliance.fhir.mobile:\n"
         f"    version: {mobile_configuration.get('version', '<missing>')}"
     )
-    if expected_dependency not in healthkit_configuration_text:
-        failures.append(
-            "healthkit/sushi-config.yaml does not pin the current Mobile guide version"
+    for source in MOBILE_ADAPTER_SOURCES:
+        adapter_configuration_text = (ROOT / source / "sushi-config.yaml").read_text(
+            encoding="utf-8"
         )
+        if expected_dependency not in adapter_configuration_text:
+            failures.append(
+                f"{source}/sushi-config.yaml does not pin the current Mobile guide version"
+            )
 
     publication_path = ROOT / "publication/config.json"
     publication = json.loads(publication_path.read_text(encoding="utf-8"))
@@ -103,7 +106,7 @@ def main() -> int:
     aliases: set[str] = set()
     for guide in publication.get("guides", []):
         source = guide.get("source")
-        if source not in {"mobile", "healthkit"}:
+        if source not in EXPECTED_GUIDE_SOURCES:
             failures.append(f"publication/config.json has an unknown active guide: {source!r}")
             continue
         published_sources.add(source)
@@ -121,8 +124,18 @@ def main() -> int:
             if alias in aliases:
                 failures.append(f"publication alias is declared more than once: {alias!r}")
             aliases.add(alias)
-    if published_sources != {"mobile", "healthkit"}:
-        failures.append("publication/config.json must publish exactly the two active guides")
+    if published_sources != set(EXPECTED_GUIDE_SOURCES):
+        failures.append("publication/config.json must publish exactly the active guides")
+    publication_sources = [
+        guide.get("source") for guide in publication.get("guides", [])
+    ]
+    if "mobile" in publication_sources:
+        mobile_index = publication_sources.index("mobile")
+        for source in MOBILE_ADAPTER_SOURCES:
+            if source in publication_sources and publication_sources.index(source) < mobile_index:
+                failures.append(
+                    f"publication/config.json must build Mobile before its {source} adapter"
+                )
 
     active_paths = {
         str(guide.get("canonicalPath", "")).strip("/")
