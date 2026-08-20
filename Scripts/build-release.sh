@@ -12,6 +12,12 @@ set -euo pipefail
 REPOSITORY_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 readonly REPOSITORY_ROOT
 readonly TOOLS_DIRECTORY="$REPOSITORY_ROOT/.build/fhir-tools"
+readonly FHIR_TOOL_HOME="$REPOSITORY_ROOT/.build/fhir-home"
+JAVA_COMMAND="java"
+if [[ -x "$REPOSITORY_ROOT/.build/jdk21/Contents/Home/bin/java" ]]; then
+  JAVA_COMMAND="$REPOSITORY_ROOT/.build/jdk21/Contents/Home/bin/java"
+fi
+readonly JAVA_COMMAND
 
 if [[ "$#" -ne 1 || ("$1" != "mobile" && "$1" != "sensor" && "$1" != "healthkit" && "$1" != "health-connect" && "$1" != "questionnaire") ]]; then
   echo "Usage: $0 <mobile|sensor|healthkit|health-connect|questionnaire>" >&2
@@ -43,8 +49,9 @@ fi
 
 export PATH="$REPOSITORY_ROOT/node_modules/.bin:$REPOSITORY_ROOT/.build/bin:$PATH"
 echo "Building publication-mode output for $GUIDE at $publication_path"
-(cd "$GUIDE" && java -jar "$TOOLS_DIRECTORY/publisher.jar" \
+(cd "$GUIDE" && "$JAVA_COMMAND" -Duser.home="$FHIR_TOOL_HOME" -jar "$TOOLS_DIRECTORY/publisher.jar" \
   -ig ig.ini \
+  -tx n/a \
   -publish "$publication_path")
 
 python3 Scripts/check-guide-qa.py "$GUIDE"

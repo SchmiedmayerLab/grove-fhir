@@ -41,3 +41,25 @@ Title: "HealthKit Heart Rate Motion Context"
 Description: "Motion contexts permitted by the HealthKit 0.2.0 heart-rate metadata mapping."
 * ^experimental = false
 * include codes from system HealthKitHeartRateMotionContextCS
+
+CodeSystem: HealthKitSleepAnalysisCS
+Id: healthkit-sleep-analysis
+Title: "HealthKit Sleep Analysis"
+Description: "Exact HealthKit HKCategoryValueSleepAnalysis cases retained alongside the source-neutral Grove sleep-stage coding."
+* ^experimental = false
+* ^caseSensitive = true
+* ^content = #complete
+* ^copyright = "HealthKit API identifiers and type names originate from Apple Inc. and are used here only to identify source API concepts for interoperability. The MIT license applies to Grove-authored definitions; it does not grant rights in Apple material."
+* #inBed "In bed" "HealthKit HKCategoryValueSleepAnalysis.inBed."
+* #asleepUnspecified "Asleep, unspecified" "HealthKit HKCategoryValueSleepAnalysis.asleepUnspecified."
+* #awake "Awake" "HealthKit HKCategoryValueSleepAnalysis.awake."
+* #asleepCore "Asleep, core" "HealthKit HKCategoryValueSleepAnalysis.asleepCore."
+* #asleepDeep "Asleep, deep" "HealthKit HKCategoryValueSleepAnalysis.asleepDeep."
+* #asleepREM "Asleep, REM" "HealthKit HKCategoryValueSleepAnalysis.asleepREM."
+
+ValueSet: HealthKitSleepAnalysisVS
+Id: healthkit-sleep-analysis
+Title: "HealthKit Sleep Analysis"
+Description: "HealthKit sleep-analysis source cases admitted as the second coding of a shared sleep-stage result."
+* ^experimental = false
+* include codes from system HealthKitSleepAnalysisCS

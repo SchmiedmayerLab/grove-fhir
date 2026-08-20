@@ -5,7 +5,7 @@
   "observationAdapterClaim": {
     "cardinality": 2,
     "members": [
-      "exactly one shared measurement profile from catalog/measurement-catalog.json",
+      "exactly one shared semantic profile from catalog/measurement-catalog.json or sharedSensorProfiles",
       "exactly one adapter profile listed below"
     ],
     "inheritedProfilesAreNotDeclared": true,
@@ -29,5 +29,11 @@
       "http://hl7.org/fhir/StructureDefinition/oxygensat",
       "http://hl7.org/fhir/StructureDefinition/resprate"
     ]
+  },
+  "healthConnectSpecimenClaim": {
+    "identifierSystem": "https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-specimen-id",
+    "cardinality": 1,
+    "profile": "https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-specimen",
+    "otherProfilesAllowed": false
   }
 }

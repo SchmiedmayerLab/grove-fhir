@@ -158,7 +158,7 @@
       "code": {"system": "http://loinc.org", "code": "93832-4"},
       "quantity": {"system": "http://unitsofmeasure.org", "code": "h"},
       "effective": "Period",
-      "coverage": {"healthkit": "supported", "health-connect": "supported", "sensorkit": "mapped-standard", "google-health-api": "supported", "oura": "supported", "withings": "supported"}
+      "coverage": {"healthkit": "deferred", "health-connect": "supported", "sensorkit": "mapped-standard", "google-health-api": "supported", "oura": "supported", "withings": "supported"}
     },
     {
       "id": "sleep-stage",

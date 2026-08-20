@@ -6,94 +6,80 @@ SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTR
 SPDX-License-Identifier: MIT
 -->
 
-A converted resource validates against the Health Connect adapter, the Mobile envelope,
-and the profile that defines its clinical result. Install both Grove packages and validate
-all declared profile canonicals together.
+Version 0.2.0 is a producer mapping contract. It does not define a server, receiver,
+database, authentication scheme, transport envelope, or payload-size limit. A producer
+converts Records it has already read from Health Connect and returns a FHIR R4 collection
+Bundle conforming to the Mobile exchange contract.
 
-### Download the packages
+### Package closure
 
-Download the exact archives and verify their checksums:
+The canonical URLs identify artifacts; they are not download endpoints. Build these exact
+packages from the reviewed repository revision and install them in an isolated FHIR package
+cache:
+
+```text
+org.grovealliance.fhir.mobile#0.2.0
+org.grovealliance.fhir.health-connect#0.2.0
+```
+
+The Health Connect package pins the Mobile package at `0.2.0`. Record the repository
+revision and archive checksum in producer CI. Do not overlay an archive on an existing
+package directory because removed artifacts would remain.
+
+### Required output contract
+
+For each emitted Observation:
+
+1. Select an admitted row in `catalog/health-connect-adapter.json`.
+2. Declare exactly two profiles in `meta.profile`: the exact shared measurement profile
+   selected by that row and Health Connect Observation. Do not repeat an inherited Mobile
+   or core standard profile.
+3. Populate the complete source-record and output business identifiers using
+   `catalog/health-connect-identity.json`.
+4. Apply every required code, unit, effective type, result shape, specimen, and admitted
+   context mapping from the machine catalogs.
+5. Add conversion Provenance and every internally referenced graph node.
+6. Package the complete graph as a Grove Mobile Exchange Bundle. Derive every entry
+   `urn:uuid` from its entry business identifier and use those URNs for internal references.
+   `Resource.id` remains optional and repository-assigned.
+
+The source-neutral measurement profile inherits the generic Mobile and applicable core
+standard constraints. The adapter profile adds Health Connect identity and source context.
+Both direct profile claims are required; inherited profiles are not separately declared.
+
+### Validate producer output
+
+Use the producer-neutral wrapper from this repository. It verifies package identity,
+profile claims, deterministic graph identity, reference resolution, and then invokes the
+official Validator in FHIR R4 offline mode:
 
 ```sh
-mkdir -p grove-packages/mobile grove-packages/health-connect
-curl --fail --location \
-  https://grovealliance.org/fhir/mobile/package.tgz \
-  --output grove-packages/mobile/package.tgz
-curl --fail --location \
-  https://grovealliance.org/fhir/mobile/package.tgz.sha256 \
-  --output grove-packages/mobile/package.tgz.sha256
-curl --fail --location \
-  https://grovealliance.org/fhir/health-connect/package.tgz \
-  --output grove-packages/health-connect/package.tgz
-curl --fail --location \
-  https://grovealliance.org/fhir/health-connect/package.tgz.sha256 \
-  --output grove-packages/health-connect/package.tgz.sha256
-(cd grove-packages/mobile && shasum -a 256 --check package.tgz.sha256)
-(cd grove-packages/health-connect && shasum -a 256 --check package.tgz.sha256)
+python3 Scripts/validate-producer.py \
+  --manifest path/to/grove-fhir-producer.json \
+  --validator path/to/validator_cli.jar \
+  --package mobile=path/to/org.grovealliance.fhir.mobile-0.2.0.tgz \
+  --package health-connect=path/to/org.grovealliance.fhir.health-connect-0.2.0.tgz
 ```
 
-The Health Connect package declares its exact Mobile dependency. These pre-1.0 continuous
-builds retain version `0.2.0` while their checksums change, so replace an old cache directory
-rather than overlaying a new archive.
+The producer repository generates its own fixtures from its public mapping API. This IG
+repository never checks out, patches, or executes producer implementations.
 
-```sh
-cache_backup="$(mktemp -d)"
-test ! -e "$HOME/.fhir/packages/org.grovealliance.fhir.mobile#0.2.0" || \
-  mv "$HOME/.fhir/packages/org.grovealliance.fhir.mobile#0.2.0" "$cache_backup/"
-test ! -e "$HOME/.fhir/packages/org.grovealliance.fhir.health-connect#0.2.0" || \
-  mv "$HOME/.fhir/packages/org.grovealliance.fhir.health-connect#0.2.0" "$cache_backup/"
-mkdir -p "$HOME/.fhir/packages/org.grovealliance.fhir.mobile#0.2.0"
-mkdir -p "$HOME/.fhir/packages/org.grovealliance.fhir.health-connect#0.2.0"
-tar -xzf grove-packages/mobile/package.tgz \
-  -C "$HOME/.fhir/packages/org.grovealliance.fhir.mobile#0.2.0"
-tar -xzf grove-packages/health-connect/package.tgz \
-  -C "$HOME/.fhir/packages/org.grovealliance.fhir.health-connect#0.2.0"
-```
+### Required converter tests
 
-```yaml
-dependencies:
-  org.grovealliance.fhir.health-connect: 0.2.0
-```
+Test every one of the 41 exact AndroidX Health Connect 1.1 Record classes in the adapter
+catalog. Supported rows need positive conversion fixtures; every other row needs a
+fail-closed status assertion. Positive coverage includes all 13 supported Record families,
+all admitted glucose specimens, blood-pressure and temperature context, all eight sleep
+stage tokens, multiple and duplicate-time heart-rate samples, exact point and interval
+times, and absent optional metadata. Negative coverage includes unsupported specimens,
+unknown source context, invalid identity lexemes, wrong shared profile claims, wrong
+code/unit/result shape, unresolved Bundle references, and incomplete Provenance.
 
-### Validate an Observation
+Health Connect read permissions, scheduling, and change-token recovery belong to the
+calling application. The adapter may expose producer-owned durable synchronization state,
+as described in [Synchronization](synchronization.html), but it does not fetch Records or
+define how a deployment stores or transmits the resulting Bundle.
 
-Pass both local package archives to the official FHIR Validator. For a heart-rate output:
+{% include dependency-table-nontech.xhtml %}
 
-```sh
-java -jar validator_cli.jar observation.json \
-  -version 4.0.1 \
-  -ig grove-packages/mobile/package.tgz \
-  -ig grove-packages/health-connect/package.tgz \
-  -profile https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-observation \
-  -profile http://hl7.org/fhir/StructureDefinition/heartrate
-```
-
-Validation checks required source and output identifiers, the required quantity result,
-effective time, issued time, terminology bindings, and the profile intersection. It cannot
-prove that all samples from a `HeartRateRecord` were emitted, that output identifiers remain
-stable between runs, or that a deletion removed the complete prior output set. Test those
-behaviors with a persistent synchronization journal.
-
-### Minimum converter tests
-
-A conforming adapter test suite covers:
-
-- heart-rate records with zero, one, multiple, and duplicate-time samples;
-- exact step intervals, zone offsets, and count boundaries;
-- weight precision and every recording-method branch;
-- absent and populated Device metadata without invented identifiers;
-- source and converter applications that are the same and that are different;
-- idempotent replay, source updates that add and remove outputs, and deletion changes;
-- receiver-limit preflight, unsupported first-seen Records, tombstoning a previously
-  published unsupported update, and a two-event replacement whose combined form is too
-  large;
-- crash and replay between the tombstone-only and active halves of a split replacement;
-- failure before and after destination acknowledgement; and
-- expired-token full reconciliation, including deletion of stale journaled and pending
-  outputs; and
-- A→B→A filter changes with exclusive projection ownership and reactivation.
-
-Start with the [documentation Bundle JSON](Bundle-HealthConnectStudyBundleExample.json) to
-inspect the profiles and references, then compare each result with the
-[mapping rules](mapping.html). The aggregate Bundle is not an operational event: exercise
-the single-source event lifecycle described in [Synchronization](synchronization.html).
+{% include ip-statements.xhtml %}

@@ -11,9 +11,11 @@ from __future__ import annotations
 import copy
 import importlib.util
 import json
+import subprocess
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 from Scripts import fhir_fixture_corpus as CORPUS
 
@@ -58,6 +60,18 @@ class ProducerConformanceTests(unittest.TestCase):
             path.write_text(json.dumps(manifest), encoding="utf-8")
             with self.assertRaisesRegex(VALIDATOR.ProducerValidationError, "unsafe resource path"):
                 VALIDATOR.validate_manifest(path)
+
+    def test_intermediate_symlink_component_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            outside = root / "outside"
+            outside.mkdir()
+            (outside / "resource.json").write_text("{}", encoding="utf-8")
+            (root / "linked").symlink_to(outside, target_is_directory=True)
+            with self.assertRaisesRegex(
+                VALIDATOR.ProducerValidationError, "symlink component"
+            ):
+                VALIDATOR.safe_resource_path(root, "linked/resource.json")
 
     def test_duplicate_package_alias_is_rejected(self) -> None:
         manifest = json.loads(self.example.read_text(encoding="utf-8"))
@@ -137,7 +151,7 @@ class ProducerConformanceTests(unittest.TestCase):
             invalid["meta"]["profile"].append(extra)
             with self.subTest(extra=extra), self.assertRaisesRegex(
                 VALIDATOR.ProducerValidationError,
-                "exactly one shared measurement profile and exactly one adapter profile",
+                "exactly one shared semantic profile",
             ):
                 VALIDATOR.validate_adapter_profile_claim(invalid, "Observation")
 
@@ -152,6 +166,116 @@ class ProducerConformanceTests(unittest.TestCase):
             "grove-sensor-ecg-observation"
         )
         VALIDATOR.validate_adapter_profile_claim(sensor, "Observation")
+
+    def test_health_connect_specimen_claim_is_explicit_and_exact(self) -> None:
+        profile = (
+            "https://grovealliance.org/fhir/health-connect/StructureDefinition/"
+            "health-connect-specimen"
+        )
+        specimen = {
+            "resourceType": "Specimen",
+            "meta": {"profile": [profile]},
+            "identifier": [{
+                "system": (
+                    "https://grovealliance.org/fhir/health-connect/NamingSystem/"
+                    "health-connect-specimen-id"
+                ),
+                "value": "v1:" + "0" * 64,
+            }],
+        }
+        VALIDATOR.validate_health_connect_specimen_claim(specimen, "Specimen")
+        for invalid_profiles in ([], [profile, "http://example.org/extra"]):
+            invalid = copy.deepcopy(specimen)
+            invalid["meta"]["profile"] = invalid_profiles
+            with self.subTest(profiles=invalid_profiles), self.assertRaisesRegex(
+                VALIDATOR.ProducerValidationError, "must directly claim exactly"
+            ):
+                VALIDATOR.validate_health_connect_specimen_claim(invalid, "Specimen")
+
+    def test_validator_runs_each_resource_offline_and_parses_outcome(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            validator = root / "validator.jar"
+            validator.write_bytes(b"jar")
+            resources = [root / "one.json", root / "two.json"]
+            for resource in resources:
+                resource.write_text('{"resourceType":"Patient"}', encoding="utf-8")
+            commands: list[list[str]] = []
+
+            def successful_run(command: list[str], **_: object) -> subprocess.CompletedProcess[str]:
+                commands.append(command)
+                output = Path(command[command.index("-output") + 1])
+                output.write_text(json.dumps({
+                    "resourceType": "OperationOutcome",
+                    "issue": [{"severity": "information", "code": "informational"}],
+                }), encoding="utf-8")
+                return subprocess.CompletedProcess(command, 0, stdout="validated")
+
+            with mock.patch.object(VALIDATOR.subprocess, "run", side_effect=successful_run):
+                VALIDATOR.run_validator(validator, [], resources)
+
+            self.assertEqual(len(commands), 2)
+            for command, resource in zip(commands, resources, strict=True):
+                self.assertIn(["-version", "4.0.1"], [command[index:index + 2] for index in range(len(command) - 1)])
+                self.assertIn(["-tx", "n/a"], [command[index:index + 2] for index in range(len(command) - 1)])
+                self.assertIn("-no-http-access", command)
+                self.assertEqual(command[-1], str(resource))
+
+    def test_validator_error_in_any_produced_outcome_fails_even_with_zero_exit(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            validator = root / "validator.jar"
+            validator.write_bytes(b"jar")
+            resource = root / "resource.json"
+            resource.write_text('{"resourceType":"Patient"}', encoding="utf-8")
+
+            def error_run(command: list[str], **_: object) -> subprocess.CompletedProcess[str]:
+                output = Path(command[command.index("-output") + 1])
+                output.write_text(json.dumps({
+                    "resourceType": "Bundle",
+                    "type": "collection",
+                    "entry": [
+                        {"resource": {"resourceType": "OperationOutcome", "issue": [
+                            {"severity": "information", "code": "informational"}
+                        ]}},
+                        {"resource": {"resourceType": "OperationOutcome", "issue": [
+                            {"severity": "error", "code": "invalid", "diagnostics": "bad unit"}
+                        ]}},
+                    ],
+                }), encoding="utf-8")
+                return subprocess.CompletedProcess(command, 0, stdout="")
+
+            with mock.patch.object(VALIDATOR.subprocess, "run", side_effect=error_run):
+                with self.assertRaisesRegex(VALIDATOR.ProducerValidationError, "bad unit"):
+                    VALIDATOR.run_validator(validator, [], [resource])
+
+    def test_validator_process_and_output_failures_are_closed(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            validator = root / "validator.jar"
+            validator.write_bytes(b"jar")
+            resource = root / "resource.json"
+            resource.write_text('{"resourceType":"Patient"}', encoding="utf-8")
+
+            def nonzero_run(command: list[str], **_: object) -> subprocess.CompletedProcess[str]:
+                output = Path(command[command.index("-output") + 1])
+                output.write_text(json.dumps({
+                    "resourceType": "OperationOutcome",
+                    "issue": [{"severity": "information", "code": "informational"}],
+                }), encoding="utf-8")
+                return subprocess.CompletedProcess(command, 2, stdout="failed")
+
+            with mock.patch.object(VALIDATOR.subprocess, "run", side_effect=nonzero_run):
+                with self.assertRaisesRegex(VALIDATOR.ProducerValidationError, "process failed"):
+                    VALIDATOR.run_validator(validator, [], [resource])
+
+            with mock.patch.object(
+                VALIDATOR.subprocess,
+                "run",
+                return_value=subprocess.CompletedProcess([], 0, stdout="no output"),
+            ):
+                with self.assertRaisesRegex(VALIDATOR.ProducerValidationError, "no trustworthy"):
+                    VALIDATOR.run_validator(validator, [], [resource])
 
 
 if __name__ == "__main__":

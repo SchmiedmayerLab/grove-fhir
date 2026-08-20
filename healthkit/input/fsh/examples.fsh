@@ -108,7 +108,7 @@ InstanceOf: HealthKitObservation
 Usage: #example
 Title: "HealthKit Heart Rate"
 Description: "A passive HealthKit heart-rate sample with the standard clinical profile and an allowlisted motion-context value."
-* meta.profile[+] = "http://hl7.org/fhir/StructureDefinition/heartrate"
+* meta.profile[+] = "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-heart-rate"
 * identifier[healthKitObjectId].system = $healthKitObjectId
 * identifier[healthKitObjectId].value = "1e091e2a-9f3e-49cd-b237-2ef5a3d0f213"
 * status = #final
@@ -150,7 +150,7 @@ InstanceOf: HealthKitObservation
 Usage: #example
 Title: "HealthKit Bluetooth Heart Rate"
 Description: "A heart-rate sample imported directly from a supported Bluetooth Low Energy heart-rate monitor under an exchange policy that permits the source identifier."
-* meta.profile[+] = "http://hl7.org/fhir/StructureDefinition/heartrate"
+* meta.profile[+] = "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-heart-rate"
 * identifier[healthKitObjectId].system = $healthKitObjectId
 * identifier[healthKitObjectId].value = "d7f395c0-7e4a-4eb8-943d-5e32dc70071a"
 * status = #final
@@ -169,7 +169,7 @@ InstanceOf: HealthKitObservation
 Usage: #example
 Title: "HealthKit Manually Entered Body Weight"
 Description: "A body weight with an explicit HealthKit user-entered indication mapped to manual-entry."
-* meta.profile[+] = "http://hl7.org/fhir/StructureDefinition/bodyweight"
+* meta.profile[+] = "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-body-weight"
 * identifier[healthKitObjectId].system = $healthKitObjectId
 * identifier[healthKitObjectId].value = "a4b6fbcd-a358-4b2b-bea5-eb1ed80a8a63"
 * status = #final
@@ -182,6 +182,45 @@ Description: "A body weight with an explicit HealthKit user-entered indication m
 * valueQuantity = 68.4 'kg' "kg"
 * extension[recordingMethod].valueCoding = GroveRecordingMethodCS#manual-entry "Manual entry"
 * extension[researchStudy].valueReference = Reference(HealthKitResearchStudyExample)
+
+Instance: HealthKitBloodPressureObservationExample
+InstanceOf: HealthKitObservation
+Usage: #example
+Title: "HealthKit Blood Pressure"
+Description: "A HealthKit blood-pressure correlation whose result is carried by the required systolic and diastolic components rather than Observation.value."
+* meta.profile[+] = "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-blood-pressure"
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "b2081271-af21-4aac-9c43-921e536e0742"
+* status = #final
+* category = $observationCategory#vital-signs "Vital Signs"
+* code = $loinc#85354-9 "Blood pressure panel with all children optional"
+* subject = Reference(HealthKitPatientExample)
+* effectiveDateTime = "2026-08-19T08:20:00-07:00"
+* issued = "2026-08-19T15:20:01Z"
+* component[+].code = $loinc#8480-6 "Systolic blood pressure"
+* component[=].valueQuantity = 118 'mm[Hg]' "mmHg"
+* component[+].code = $loinc#8462-4 "Diastolic blood pressure"
+* component[=].valueQuantity = 76 'mm[Hg]' "mmHg"
+* device = Reference(HealthKitRecordingDeviceExample)
+
+Instance: HealthKitSleepStageObservationExample
+InstanceOf: HealthKitObservation
+Usage: #example
+Title: "HealthKit Sleep Stage"
+Description: "A HealthKit asleep-core interval retaining both the shared light-sleep meaning and the exact HealthKit source case."
+* meta.profile[+] = "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-sleep-stage"
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "6d4e94ef-0cdb-4930-982f-6fa4501b3e8b"
+* status = #final
+* category = $observationCategory#activity "Activity"
+* code = $groveMobileMeasurement#sleep-stage "Sleep stage"
+* subject = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T23:10:00-07:00"
+* effectivePeriod.end = "2026-08-19T23:42:00-07:00"
+* issued = "2026-08-20T07:00:01Z"
+* valueCodeableConcept.coding[+] = $groveSleepStage#light "Light sleep"
+* valueCodeableConcept.coding[+] = $healthKitSleepAnalysis#asleepCore "Asleep, core"
+* device = Reference(HealthKitRecordingDeviceExample)
 
 Instance: HealthKitConversionProvenanceExample
 InstanceOf: GroveMobileConversionProvenance

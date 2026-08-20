@@ -67,8 +67,23 @@ def safe_resource_path(root: Path, value: Any) -> Path:
     candidate = PurePosixPath(value)
     if candidate.is_absolute() or not candidate.parts or any(part in {"", ".", ".."} for part in candidate.parts):
         raise ProducerValidationError(f"unsafe resource path: {value!r}")
-    path = root.joinpath(*candidate.parts)
-    if path.is_symlink() or not path.is_file() or path.resolve().parent != root.resolve() and root.resolve() not in path.resolve().parents:
+    if root.is_symlink():
+        raise ProducerValidationError("manifest resource directory must not be a symlink")
+    path = root
+    for part in candidate.parts:
+        path = path / part
+        if path.is_symlink():
+            raise ProducerValidationError(
+                f"resource path contains a symlink component: {value}"
+            )
+    try:
+        resolved_root = root.resolve(strict=True)
+        resolved_path = path.resolve(strict=True)
+    except OSError as error:
+        raise ProducerValidationError(f"resource is absent: {value}") from error
+    if not path.is_file() or (
+        resolved_path.parent != resolved_root and resolved_root not in resolved_path.parents
+    ):
         raise ProducerValidationError(f"resource is absent, linked, or outside the manifest directory: {value}")
     return path
 
@@ -158,11 +173,43 @@ def validate_adapter_profile_claim(resource: dict[str, Any], label: str) -> None
     if not claimed_adapters:
         return
     claimed_shared = set(profiles) & shared_profiles
-    if len(claimed_adapters) != 1 or len(claimed_shared) != 1 or len(profiles) != 2 or len(set(profiles)) != 2:
+    if (
+        len(claimed_adapters) != 1
+        or len(claimed_shared) != 1
+        or len(profiles) != 2
+        or len(set(profiles)) != 2
+    ):
         raise ProducerValidationError(
-            f"{label} adapter Observation must claim exactly one shared measurement profile "
+            f"{label} adapter Observation must claim exactly one shared semantic profile "
             "and exactly one adapter profile"
         )
+
+
+def validate_health_connect_specimen_claim(resource: dict[str, Any], label: str) -> None:
+    """Require an exact direct profile claim on synthesized Health Connect Specimens."""
+    if resource.get("resourceType") != "Specimen":
+        return
+    claims = read_json(CATALOG_ROOT / "profile-claims.json")["healthConnectSpecimenClaim"]
+    identifiers = resource.get("identifier", [])
+    if not isinstance(identifiers, list):
+        raise ProducerValidationError(f"{label} has invalid identifier")
+    if not any(
+        isinstance(identifier, dict)
+        and identifier.get("system") == claims["identifierSystem"]
+        for identifier in identifiers
+    ):
+        return
+    profiles = resource.get("meta", {}).get("profile", [])
+    if profiles != [claims["profile"]]:
+        raise ProducerValidationError(
+            f"{label} synthesized Health Connect Specimen must directly claim exactly "
+            f"{claims['profile']}"
+        )
+
+
+def validate_resource_profile_claims(resource: dict[str, Any], label: str) -> None:
+    validate_adapter_profile_claim(resource, label)
+    validate_health_connect_specimen_claim(resource, label)
 
 
 def validate_exchange_bundle(resource: dict[str, Any], label: str) -> None:
@@ -197,7 +244,7 @@ def validate_exchange_bundle(resource: dict[str, Any], label: str) -> None:
             raise ProducerValidationError(f"{label} repeats entry fullUrl {expected}")
         full_urls.add(expected)
         entry_resource = entry["resource"]
-        validate_adapter_profile_claim(entry_resource, f"{label} entry[{index}].resource")
+        validate_resource_profile_claims(entry_resource, f"{label} entry[{index}].resource")
         entry_resources.append(entry_resource)
         resource_type = entry_resource.get("resourceType")
         resource_id = entry_resource.get("id")
@@ -286,7 +333,7 @@ def validate_manifest(path: Path) -> tuple[dict[str, Any], list[Path]]:
         missing = set(required) - set(actual)
         if missing:
             raise ProducerValidationError(f"{relative} is missing required profiles: {', '.join(sorted(missing))}")
-        validate_adapter_profile_claim(resource, relative)
+        validate_resource_profile_claims(resource, relative)
         validate_exchange_bundle(resource, relative)
         paths.append(resource_path)
     return manifest, paths
@@ -337,18 +384,102 @@ def validate_packages(manifest: dict[str, Any], supplied: dict[str, Path]) -> li
     return paths
 
 
+def operation_outcomes(value: Any) -> list[dict[str, Any]]:
+    """Return every OperationOutcome in one closed Validator JSON result."""
+    if not isinstance(value, dict):
+        raise ProducerValidationError("FHIR Validator output must be a JSON resource")
+    if value.get("resourceType") == "OperationOutcome":
+        return [value]
+    if value.get("resourceType") == "Bundle":
+        entries = value.get("entry")
+        if not isinstance(entries, list) or not entries:
+            raise ProducerValidationError("FHIR Validator output Bundle has no entries")
+        outcomes: list[dict[str, Any]] = []
+        for index, entry in enumerate(entries):
+            if not isinstance(entry, dict) or not isinstance(entry.get("resource"), dict):
+                raise ProducerValidationError(
+                    f"FHIR Validator output Bundle entry[{index}] has no resource"
+                )
+            outcomes.extend(operation_outcomes(entry["resource"]))
+        return outcomes
+    raise ProducerValidationError(
+        "FHIR Validator output is not an OperationOutcome or outcome Bundle: "
+        f"{value.get('resourceType')!r}"
+    )
+
+
+def reject_validator_errors(value: Any, label: str) -> None:
+    outcomes = operation_outcomes(value)
+    if not outcomes:
+        raise ProducerValidationError(f"FHIR Validator produced no OperationOutcome for {label}")
+    errors: list[str] = []
+    for outcome_index, outcome in enumerate(outcomes):
+        issues = outcome.get("issue")
+        if not isinstance(issues, list) or not issues:
+            raise ProducerValidationError(
+                f"FHIR Validator OperationOutcome[{outcome_index}] has no populated issue array for {label}"
+            )
+        for issue_index, issue in enumerate(issues):
+            if not isinstance(issue, dict):
+                raise ProducerValidationError(
+                    f"FHIR Validator OperationOutcome[{outcome_index}].issue[{issue_index}] is invalid"
+                )
+            severity = issue.get("severity")
+            if severity not in {"fatal", "error", "warning", "information"}:
+                raise ProducerValidationError(
+                    f"FHIR Validator issue has invalid severity for {label}: {severity!r}"
+                )
+            if severity in {"fatal", "error"}:
+                diagnostics = issue.get("diagnostics")
+                if not isinstance(diagnostics, str) or not diagnostics:
+                    details = issue.get("details")
+                    diagnostics = details.get("text") if isinstance(details, dict) else None
+                errors.append(
+                    diagnostics
+                    if isinstance(diagnostics, str) and diagnostics
+                    else "unspecified validation error"
+                )
+    if errors:
+        raise ProducerValidationError(
+            f"FHIR Validator rejected {label}: " + " | ".join(errors)
+        )
+
+
 def run_validator(validator: Path, packages: list[Path], resources: list[Path]) -> None:
     if validator.is_symlink() or not validator.is_file():
         raise ProducerValidationError(f"Validator JAR is absent or linked: {validator}")
     with tempfile.TemporaryDirectory(prefix="grove-fhir-producer-") as directory:
-        output = Path(directory) / "operation-outcome.json"
-        command = ["java", "-jar", str(validator), "-version", "4.0", "-level", "errors"]
-        for package in packages:
-            command.extend(("-ig", str(package)))
-        command.extend(("-output", str(output), *(str(path) for path in resources)))
-        result = subprocess.run(command, check=False, text=True)
-        if result.returncode != 0:
-            raise ProducerValidationError(f"FHIR Validator rejected producer resources (exit {result.returncode})")
+        for index, resource in enumerate(resources):
+            output = Path(directory) / f"operation-outcome-{index}.json"
+            command = [
+                "java", "-jar", str(validator),
+                "-version", "4.0.1",
+                "-tx", "n/a",
+                "-no-http-access",
+                "-level", "errors",
+            ]
+            for package in packages:
+                command.extend(("-ig", str(package)))
+            command.extend(("-output", str(output), str(resource)))
+            result = subprocess.run(
+                command,
+                check=False,
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+            )
+            label = resource.name
+            if not output.is_file() or output.is_symlink():
+                raise ProducerValidationError(
+                    f"FHIR Validator produced no trustworthy OperationOutcome for {label} "
+                    f"(exit {result.returncode})"
+                )
+            reject_validator_errors(read_json(output), label)
+            if result.returncode != 0:
+                raise ProducerValidationError(
+                    f"FHIR Validator process failed for {label} after producing an error-free "
+                    f"OperationOutcome (exit {result.returncode})"
+                )
 
 
 def main(argv: list[str] | None = None) -> int:

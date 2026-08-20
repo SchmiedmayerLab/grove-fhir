@@ -66,7 +66,7 @@
       "packageId": "org.grovealliance.fhir.health-connect",
       "canonical": "https://grovealliance.org/fhir/health-connect",
       "dependencies": ["org.grovealliance.fhir.mobile#0.2.0"],
-      "profiles": ["health-connect-conversion-provenance", "health-connect-observation"]
+      "profiles": ["health-connect-conversion-provenance", "health-connect-observation", "health-connect-specimen"]
     },
     {
       "source": "connected-health",

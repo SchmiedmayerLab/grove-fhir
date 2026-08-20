@@ -87,7 +87,7 @@ InstanceOf: HealthConnectObservation
 Usage: #example
 Title: "Health Connect Heart Rate Sample One"
 Description: "The first FHIR heart-rate Observation emitted from a Health Connect HeartRateRecord containing two samples."
-* meta.profile[+] = "http://hl7.org/fhir/StructureDefinition/heartrate"
+* meta.profile[+] = "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-heart-rate"
 * identifier[recordId].system = $healthConnectRecordId
 * identifier[recordId].value = "v1:5d81fd22df74bcb7d9571b201cadf87b3935072c126dffbc2af908d994d054a2"
 * identifier[outputId].system = $healthConnectOutputId
@@ -108,7 +108,7 @@ InstanceOf: HealthConnectObservation
 Usage: #example
 Title: "Health Connect Heart Rate Sample Two"
 Description: "The second FHIR heart-rate Observation emitted from the same Health Connect HeartRateRecord."
-* meta.profile[+] = "http://hl7.org/fhir/StructureDefinition/heartrate"
+* meta.profile[+] = "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-heart-rate"
 * identifier[recordId].system = $healthConnectRecordId
 * identifier[recordId].value = "v1:5d81fd22df74bcb7d9571b201cadf87b3935072c126dffbc2af908d994d054a2"
 * identifier[outputId].system = $healthConnectOutputId
@@ -129,7 +129,7 @@ InstanceOf: HealthConnectObservation
 Usage: #example
 Title: "Health Connect Body Weight"
 Description: "A manually entered Health Connect WeightRecord represented with the standard FHIR body-weight profile."
-* meta.profile[+] = "http://hl7.org/fhir/StructureDefinition/bodyweight"
+* meta.profile[+] = "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-body-weight"
 * identifier[recordId].system = $healthConnectRecordId
 * identifier[recordId].value = "v1:9607c85191132deb33f7519e1487aa51c66292ff47c73f5a26fe75ea77418e57"
 * identifier[outputId].system = $healthConnectOutputId
@@ -165,6 +165,121 @@ Description: "A Health Connect StepsRecord preserving the source interval and co
 * device = Reference(HealthConnectRecordingDeviceExample)
 * extension[recordingMethod].valueCoding = GroveRecordingMethodCS#automatically-recorded "Automatically recorded"
 * extension[researchStudy].valueReference = Reference(HealthConnectResearchStudyExample)
+
+Instance: HealthConnectCapillaryGlucoseSpecimenExample
+InstanceOf: HealthConnectSpecimen
+Usage: #example
+Title: "Health Connect Capillary Blood Specimen"
+Description: "The standard-coded specimen node synthesized from an exact Health Connect capillary-blood specimen source."
+* identifier[specimenId].system = $healthConnectSpecimenId
+* identifier[specimenId].value = "v1:4a1edaa2a7498d9ccece1800a986c538e4ecbb8142c4d9eccdec6ff5233f5888"
+* status = #available
+* type = $sct#122554006 "Capillary blood specimen"
+* subject = Reference(HealthConnectPatientExample)
+
+Instance: HealthConnectCapillaryGlucoseExample
+InstanceOf: HealthConnectObservation
+Usage: #example
+Title: "Health Connect Capillary Blood Glucose"
+Description: "A Health Connect glucose result whose exact source specimen selects the capillary-blood profile and whose non-unknown meal context is retained."
+* meta.profile[+] = "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-capillary-blood-glucose"
+* identifier[recordId].system = $healthConnectRecordId
+* identifier[recordId].value = "v1:418e0f2921d81e751ed8e852adecbadaba9e1029376d72f53986b828a1f9f85c"
+* identifier[outputId].system = $healthConnectOutputId
+* identifier[outputId].value = "v1:0bbd830a7f45f86795c3b48d02036cdd6fff9f0426bf5e84418ec3ed5d37b002"
+* status = #final
+* category = $observationCategory#laboratory "Laboratory"
+* code = $loinc#32016-8 "Glucose [Mass/volume] in Capillary blood"
+* subject = Reference(HealthConnectPatientExample)
+* effectiveDateTime = "2026-08-20T07:15:00-07:00"
+* issued = "2026-08-20T14:15:01Z"
+* valueQuantity = 96 'mg/dL' "mg/dL"
+* specimen = Reference(HealthConnectCapillaryGlucoseSpecimenExample)
+* extension[glucoseMealContext].extension[relationToMeal].valueCoding = $healthConnectRelationToMeal#RELATION_TO_MEAL_FASTING "Fasting"
+* extension[glucoseMealContext].extension[mealType].valueCoding = $healthConnectMealType#MEAL_TYPE_BREAKFAST "Breakfast"
+
+Instance: HealthConnectBloodPressureExample
+InstanceOf: HealthConnectObservation
+Usage: #example
+Title: "Health Connect Blood Pressure"
+Description: "A Health Connect blood-pressure panel retaining standard body-position and measurement-site concepts."
+* meta.profile[+] = "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-blood-pressure"
+* identifier[recordId].system = $healthConnectRecordId
+* identifier[recordId].value = "v1:8be98fb85dac5edf35e99206e5446a9e29c4ba7407c34e624beead340d3a2496"
+* identifier[outputId].system = $healthConnectOutputId
+* identifier[outputId].value = "v1:c40d6ecf8ac8e47695854fe37f17f525d9543061e9dd6636ba203e7c6747a043"
+* status = #final
+* category = $observationCategory#vital-signs "Vital Signs"
+* code = $loinc#85354-9 "Blood pressure panel with all children optional"
+* subject = Reference(HealthConnectPatientExample)
+* effectiveDateTime = "2026-08-20T07:20:00-07:00"
+* issued = "2026-08-20T14:20:01Z"
+* component[+].code = $loinc#8480-6 "Systolic blood pressure"
+* component[=].valueQuantity = 118 'mm[Hg]' "mmHg"
+* component[+].code = $loinc#8462-4 "Diastolic blood pressure"
+* component[=].valueQuantity = 76 'mm[Hg]' "mmHg"
+* extension[bodyPosition].valueCodeableConcept = $sct#33586001 "Sitting position"
+* bodySite = $sct#368208006 "Left upper arm structure"
+
+Instance: HealthConnectBodyTemperatureExample
+InstanceOf: HealthConnectObservation
+Usage: #example
+Title: "Health Connect Body Temperature"
+Description: "A Health Connect body-temperature result retaining its standard oral-cavity measurement site."
+* meta.profile[+] = "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-body-temperature"
+* identifier[recordId].system = $healthConnectRecordId
+* identifier[recordId].value = "v1:60cd178b7217debbe54b66b792321a13d96e5ceaf79502b0ec84ef6a8203d572"
+* identifier[outputId].system = $healthConnectOutputId
+* identifier[outputId].value = "v1:a7c00c60457ff86ed9ce3d2defb0c2ab430266a02c8dadd15d3cb2878c1c9f11"
+* status = #final
+* category = $observationCategory#vital-signs "Vital Signs"
+* code = $loinc#8310-5 "Body temperature"
+* subject = Reference(HealthConnectPatientExample)
+* effectiveDateTime = "2026-08-20T07:25:00-07:00"
+* issued = "2026-08-20T14:25:01Z"
+* valueQuantity = 36.8 'Cel' "Cel"
+* bodySite = $sct#74262004 "Oral cavity structure"
+
+Instance: HealthConnectSleepDurationExample
+InstanceOf: HealthConnectObservation
+Usage: #example
+Title: "Health Connect Sleep Duration Summary"
+Description: "A source-neutral duration summary retaining a non-blank Health Connect title and note."
+* meta.profile[+] = "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-sleep-duration"
+* identifier[recordId].system = $healthConnectRecordId
+* identifier[recordId].value = "v1:6aa7fc16df9f67c3d25839405ac5968467870ac98e9da11ecfd75f19edf35ab1"
+* identifier[outputId].system = $healthConnectOutputId
+* identifier[outputId].value = "v1:d2ddff915398c4166fd606c2a068e6f65d2706a942d8d0a45679848a0174ac8e"
+* status = #final
+* category = $observationCategory#activity "Activity"
+* code = $loinc#93832-4 "Sleep duration"
+* subject = Reference(HealthConnectPatientExample)
+* effectivePeriod.start = "2026-08-19T23:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T07:00:00-07:00"
+* issued = "2026-08-20T14:00:01Z"
+* valueQuantity = 7.5 'h' "h"
+* extension[sleepTitle].valueString = "Night sleep"
+* note.text = "Brief awakening recorded by the participant."
+
+Instance: HealthConnectSleepStageExample
+InstanceOf: HealthConnectObservation
+Usage: #example
+Title: "Health Connect Light Sleep Stage"
+Description: "One sleep-session stage retaining both the shared light-sleep class and exact Health Connect source token."
+* meta.profile[+] = "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-sleep-stage"
+* identifier[recordId].system = $healthConnectRecordId
+* identifier[recordId].value = "v1:6aa7fc16df9f67c3d25839405ac5968467870ac98e9da11ecfd75f19edf35ab1"
+* identifier[outputId].system = $healthConnectOutputId
+* identifier[outputId].value = "v1:dd27f848265f4d73c4d52bda94a6c109d9a9162d8b66bddc84f58b0c7fcb3b83"
+* status = #final
+* category = $observationCategory#activity "Activity"
+* code = $groveMobileMeasurement#sleep-stage "Sleep stage"
+* subject = Reference(HealthConnectPatientExample)
+* effectivePeriod.start = "2026-08-19T23:10:00-07:00"
+* effectivePeriod.end = "2026-08-19T23:42:00-07:00"
+* issued = "2026-08-20T14:00:01Z"
+* valueCodeableConcept.coding[+] = $groveSleepStage#light "Light sleep"
+* valueCodeableConcept.coding[+] = $healthConnectSleepStage#STAGE_TYPE_LIGHT "Light sleep"
 
 Instance: HealthConnectHeartRateProvenanceExample
 InstanceOf: HealthConnectConversionProvenance

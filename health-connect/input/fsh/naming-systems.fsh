@@ -38,6 +38,54 @@ Description: "The identifier namespace for the stable identity of one FHIR Obser
 * uniqueId.value = $healthConnectOutputId
 * uniqueId.preferred = true
 
+Instance: HealthConnectSpecimenIdentifier
+InstanceOf: NamingSystem
+Usage: #definition
+Title: "Health Connect Specimen Identifier"
+Description: "The identifier namespace for a specimen node deterministically derived from one Health Connect BloodGlucoseRecord and its admitted specimen-source token."
+* id = "health-connect-specimen-id"
+* name = "HealthConnectSpecimenIdentifier"
+* status = #active
+* kind = #identifier
+* date = "2026-08-20"
+* publisher = "Schmiedmayer Lab"
+* description = "Identifies one synthesized Specimen resource by the complete source Record identifier and exact supported Health Connect specimen-source token. It is a business identifier, never a FHIR Resource.id."
+* uniqueId.type = #uri
+* uniqueId.value = $healthConnectSpecimenId
+* uniqueId.preferred = true
+
+Instance: HealthConnectConversionIdentifier
+InstanceOf: NamingSystem
+Usage: #definition
+Title: "Health Connect Conversion Identifier"
+Description: "The identifier namespace for one durable conversion event represented by a Provenance Bundle entry."
+* id = "health-connect-conversion-id"
+* name = "HealthConnectConversionIdentifier"
+* status = #active
+* kind = #identifier
+* date = "2026-08-20"
+* publisher = "Schmiedmayer Lab"
+* description = "Identifies one conversion event from a nonempty sorted set of complete source Record identifiers and a durable positive event sequence. In FHIR R4 Provenance has no native identifier, so this complete pair is carried by the enclosing Grove exchange entry-identifier extension."
+* uniqueId.type = #uri
+* uniqueId.value = $healthConnectConversionId
+* uniqueId.preferred = true
+
+Instance: HealthConnectExchangeIdentifier
+InstanceOf: NamingSystem
+Usage: #definition
+Title: "Health Connect Exchange Identifier"
+Description: "The identifier namespace for one acknowledged Health Connect exchange event Bundle."
+* id = "health-connect-exchange-id"
+* name = "HealthConnectExchangeIdentifier"
+* status = #active
+* kind = #identifier
+* date = "2026-08-20"
+* publisher = "Schmiedmayer Lab"
+* description = "Identifies the Grove Mobile collection Bundle for one event from a nonempty sorted set of complete source Record identifiers and a durable positive event sequence. It is carried in Bundle.identifier, not Resource.id."
+* uniqueId.type = #uri
+* uniqueId.value = $healthConnectExchangeId
+* uniqueId.preferred = true
+
 Instance: AndroidPackageName
 InstanceOf: NamingSystem
 Usage: #definition
