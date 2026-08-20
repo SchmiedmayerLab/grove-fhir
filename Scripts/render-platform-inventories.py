@@ -115,6 +115,26 @@ def main() -> int:
     )
     arguments = parser.parse_args()
 
+    # A toolchain on a different SDK cannot speak to whether the vendor changed anything,
+    # so say that plainly rather than reporting it as drift.
+    recorded = json.loads(
+        (ROOT / "catalog/healthkit-adapter.json").read_text(encoding="utf-8")
+    )["source"]["sdkBaseline"]
+    try:
+        installed = sdk_baseline()
+    except PlatformUnavailable:
+        installed = None
+    if installed is not None and installed != recorded:
+        print(
+            f"This toolchain is {installed['platform']} {installed['version']} "
+            f"(Xcode {installed['xcodeVersion']}, build {installed['xcodeBuild']}), but the "
+            f"catalogs are frozen on {recorded['platform']} {recorded['version']} "
+            f"(Xcode {recorded['xcodeVersion']}, build {recorded['xcodeBuild']}). Select the "
+            "recorded Xcode before checking or regenerating the inventories.",
+            file=sys.stderr,
+        )
+        return 2
+
     stale: list[str] = []
     unreachable: list[str] = []
     for relative, build in EVIDENCE.items():

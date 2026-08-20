@@ -76,9 +76,18 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: "3.13.15"
-      # The evidence records the SDK baseline it was read from, so a runner on a
-      # different Xcode reports as drift rather than silently rewriting the inventory.
-      - run: xcodebuild -version
+      # The identifiers are read from the SDK the catalogs are frozen on, so select that
+      # Xcode when the runner has it. If it does not, the check reports that it cannot
+      # verify rather than reporting a vendor change that did not happen.
+      - name: Select the Xcode the catalogs are frozen on
+        run: |
+          version=$(python3 -c 'import json; print(json.load(open("catalog/healthkit-adapter.json"))["source"]["sdkBaseline"]["xcodeVersion"])')
+          if [ -d "/Applications/Xcode_${version}.app" ]; then
+            sudo xcode-select --switch "/Applications/Xcode_${version}.app/Contents/Developer"
+          else
+            echo "::warning::Xcode ${version} is not installed; available: $(find /Applications -maxdepth 1 -name 'Xcode*.app' | tr '\n' ' ')"
+          fi
+          xcodebuild -version
       - run: python3 Scripts/render-platform-inventories.py --check
 
   draft-guides:
