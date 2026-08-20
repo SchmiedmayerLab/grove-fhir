@@ -54,7 +54,7 @@ jobs:
           if git ls-files -s | grep '^160000 '; then
             exit 1
           fi
-          if grep -R --line-number --fixed-strings 'git submodule' .github Scripts Conformance README.md; then
+          if grep -REn 'git[[:space:]]+submodule' .github Scripts Conformance README.md; then
             exit 1
           fi
       - run: git diff --check
