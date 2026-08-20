@@ -201,9 +201,7 @@ def apple_identifier_values(names: list[str]) -> dict[str, str]:
     baseline = sdk_baseline()
     major = baseline["version"].split(".")[0]
     with tempfile.TemporaryDirectory() as scratch:
-        work = Path(scratch)
-        listing, binary = work / "names.txt", work / "dump"
-        listing.write_text("\n".join(names), encoding="utf-8")
+        binary = Path(scratch) / "dump"
         _run([
             "xcrun", "--sdk", "iphonesimulator", "clang", "-fobjc-arc",
             "-target", f"arm64-apple-ios{baseline['version']}-simulator",
@@ -212,7 +210,10 @@ def apple_identifier_values(names: list[str]) -> dict[str, str]:
         ])
         device, created = _simulator_on_baseline(major)
         try:
-            dumped = _run(["xcrun", "simctl", "spawn", device, str(binary), str(listing)])
+            dumped = _run(
+                ["xcrun", "simctl", "spawn", device, str(binary)],
+                input="\n".join(names),
+            )
         finally:
             if created:
                 subprocess.run(["xcrun", "simctl", "delete", device], capture_output=True)

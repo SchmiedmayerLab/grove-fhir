@@ -21,17 +21,12 @@ static void emit(NSString *name, NSString *value) {
     printf("%s\t%s\n", name.UTF8String, value.UTF8String);
 }
 
-int main(int argc, const char **argv) {
+int main(void) {
     @autoreleasepool {
-        if (argc < 2) {
-            fprintf(stderr, "usage: %s <file-of-constant-names>\n", argv[0]);
-            return 2;
-        }
-        NSString *names = [NSString stringWithContentsOfFile:@(argv[1])
-                                                    encoding:NSUTF8StringEncoding
-                                                       error:nil];
-        if (names == nil) {
-            fprintf(stderr, "could not read %s\n", argv[1]);
+        NSData *input = [NSFileHandle.fileHandleWithStandardInput readDataToEndOfFile];
+        NSString *names = [[NSString alloc] initWithData:input encoding:NSUTF8StringEncoding];
+        if (names.length == 0) {
+            fprintf(stderr, "expected constant names on stdin\n");
             return 2;
         }
         int unresolved = 0;
