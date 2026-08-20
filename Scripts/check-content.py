@@ -14,6 +14,7 @@ import py_compile
 import re
 import subprocess
 from pathlib import Path
+from urllib.parse import urlparse
 
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -58,6 +59,57 @@ def main() -> int:
     )
     if expected_dependency not in core_configuration_text:
         failures.append("ig/sushi-config.yaml does not pin the current platform-guide version")
+
+    publication_path = ROOT / "publication/config.json"
+    publication = json.loads(publication_path.read_text(encoding="utf-8"))
+    canonical_base_url = publication.get("canonicalBaseUrl")
+    canonical_base = urlparse(canonical_base_url) if isinstance(canonical_base_url, str) else None
+    if (
+        canonical_base is None
+        or canonical_base.scheme != "https"
+        or not canonical_base.netloc
+        or canonical_base.username is not None
+        or canonical_base.password is not None
+        or canonical_base.path not in {"", "/"}
+        or canonical_base.params
+        or canonical_base.query
+        or canonical_base.fragment
+    ):
+        failures.append(
+            "publication/config.json canonicalBaseUrl must be an HTTPS origin without "
+            "credentials, a path, query, or fragment"
+        )
+        canonical_base_url = None
+    published_sources: set[str] = set()
+    aliases: set[str] = set()
+    for guide in publication.get("guides", []):
+        source = guide.get("source")
+        if source not in {"ig", "platforms"}:
+            failures.append(f"publication/config.json has an unknown active guide: {source!r}")
+            continue
+        published_sources.add(source)
+        configuration = configurations[ROOT / source]
+        canonical_path = urlparse(configuration["canonical"]).path.strip("/")
+        if guide.get("canonicalPath") != canonical_path:
+            failures.append(
+                f"publication path for {source} does not match its canonical URL: "
+                f"{guide.get('canonicalPath')!r} != {canonical_path!r}"
+            )
+        if canonical_base_url is not None:
+            expected_canonical = (
+                f"{canonical_base_url.rstrip('/')}/{str(guide.get('canonicalPath', '')).strip('/')}"
+            )
+            if configuration["canonical"].rstrip("/") != expected_canonical:
+                failures.append(
+                    f"canonical URL for {source} does not use the configured canonical origin: "
+                    f"{configuration['canonical']!r} != {expected_canonical!r}"
+                )
+        for alias in guide.get("aliases", []):
+            if alias in aliases:
+                failures.append(f"publication alias is declared more than once: {alias!r}")
+            aliases.add(alias)
+    if published_sources != {"ig", "platforms"}:
+        failures.append("publication/config.json must publish exactly the two active guides")
 
     for path in tracked_files():
         relative = path.relative_to(ROOT)

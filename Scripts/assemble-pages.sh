@@ -19,18 +19,23 @@ for guide in \
   test -f "$guide/index.html"
 done
 
-rm -rf "$SITE_DIRECTORY"
-mkdir -p "$SITE_DIRECTORY/platforms"
+if [[ -n "${PUBLISHED_SITE_ROOT:-}" ]]; then
+  python3 "$REPOSITORY_ROOT/Scripts/prepare-pages.py" \
+    --site "$SITE_DIRECTORY" \
+    --repository-root "$REPOSITORY_ROOT" \
+    --config "$REPOSITORY_ROOT/publication/config.json" \
+    --base-url "${PAGES_BASE_URL:-https://schmiedmayerlab.github.io/grove-fhir}" \
+    --published-root "$PUBLISHED_SITE_ROOT"
+else
+  python3 "$REPOSITORY_ROOT/Scripts/prepare-pages.py" \
+    --site "$SITE_DIRECTORY" \
+    --repository-root "$REPOSITORY_ROOT" \
+    --config "$REPOSITORY_ROOT/publication/config.json" \
+    --base-url "${PAGES_BASE_URL:-https://schmiedmayerlab.github.io/grove-fhir}"
+fi
 
-cp -R "$REPOSITORY_ROOT/ig/output/." "$SITE_DIRECTORY/"
-cp -R "$REPOSITORY_ROOT/platforms/output/." "$SITE_DIRECTORY/platforms/"
-
-# GitHub Pages should serve Publisher output verbatim, including underscore-prefixed assets.
-touch "$SITE_DIRECTORY/.nojekyll"
-
-python3 "$REPOSITORY_ROOT/Scripts/prepare-pages.py" \
+python3 "$REPOSITORY_ROOT/Scripts/check-publication.py" \
   --site "$SITE_DIRECTORY" \
   --repository-root "$REPOSITORY_ROOT" \
+  --config "$REPOSITORY_ROOT/publication/config.json" \
   --base-url "${PAGES_BASE_URL:-https://schmiedmayerlab.github.io/grove-fhir}"
-
-echo "Assembled GitHub Pages site at $SITE_DIRECTORY"

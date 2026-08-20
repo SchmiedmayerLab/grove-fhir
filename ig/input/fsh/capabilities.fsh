@@ -6,24 +6,20 @@
 // SPDX-License-Identifier: MIT
 //
 
-// The server behaviour the Identifiers page states normatively, as a conformance
-// resource rather than prose. Requirements-kind: it describes what a receiver must
-// offer, not what any particular deployment does offer.
+// Receiver requirements expressed as a conformance resource rather than prose.
 
 Instance: GroveDataReceiver
 InstanceOf: CapabilityStatement
 Usage: #definition
 Title: "Grove Data Receiver"
 Description: """
-What a server has to offer to receive Grove uploads.
+Requirements for a server that receives Grove uploads.
 
-The load-bearing capability is conditional create on `identifier`: an uploader submits a
-transaction Bundle whose entries carry `ifNoneExist: identifier={system}|{value}`, so a
-record the platform re-reports — after a reinstall, a background retry, or a second
-device syncing the same store — is recognised rather than duplicated. A server returns
-`200` on a single existing match and `412` on multiple, which uploaders treat as a
-data-hygiene signal rather than a transient failure. See the
-[Identifiers](identifiers.html) page for the systems each platform uses.
+The server supports conditional create on `identifier`. An uploader submits a transaction
+Bundle whose entries carry `ifNoneExist: identifier={system}|{value}`, allowing a repeated
+source record to be recognised rather than duplicated. A server returns `200` on a single
+existing match and `412` on multiple. See
+[Source identity](mobile.html#source-identity) for the identifier rule.
 """
 * name = "GroveDataReceiver"
 * status = #draft

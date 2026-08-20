@@ -9,10 +9,10 @@
 id: org.grovealliance.fhir.core
 canonical: https://grovealliance.org/fhir/core
 name: GroveFHIRCore
-title: Grove FHIR Continuous Preview
+title: Grove FHIR Implementation Guide
 description: >-
-  Draft FHIR R4 exchange definitions under review for a reusable mobile health and
-  questionnaire contract, with Grove Swift as the first reference implementation.
+  FHIR R4 profiles, extensions, terminology, and examples for exchanging mobile health
+  observations and questionnaires.
 status: draft
 version: 0.5.0
 fhirVersion: 4.0.1
@@ -41,22 +41,16 @@ parameters:
 
 menu:
   Overview: index.html
-  Validate: consuming.html
-  Status: publication-status.html
-  Artifacts: artifacts.html
+  Mobile Observations: mobile.html
+  Questionnaires: questionnaires.html
+  Read and Validate: consuming.html
 
 pages:
   index.md:
-    title: Home
-  consuming.md:
-    title: Validate Preview Resources
-  identifiers.md:
-    title: Identifier Systems in the Prototype
-  metadata.md:
-    title: Metadata in the Combined Prototype
+    title: Overview
+  mobile.md:
+    title: Mobile Observations
   questionnaires.md:
-    title: Questionnaire Resources in the Prototype
-  questionnaire-support.md:
-    title: Renderer Support
-  publication-status.md:
-    title: Preview Status
+    title: Questionnaires
+  consuming.md:
+    title: Read and Validate

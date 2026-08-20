@@ -13,9 +13,9 @@ CodeSystem: GroveDeviceVersionType
 Id: grove-device-version-type
 Title: "Grove Device Version Type"
 Description: """
-Version types for `Device.version.type` beyond the IEEE 11073 MDC production-specification
-codes (hardware 531974, software 531975, firmware 531976). MDC defines no code for an
-operating-system version, which mobile gateway devices need.
+Version types for `Device.version.type` that are not represented by the IEEE 11073 MDC
+production-specification codes for hardware, software, and firmware. The
+`operating-system` code represents the operating-system version of a gateway device.
 """
 * ^experimental = false
 * ^caseSensitive = true
@@ -27,10 +27,9 @@ CodeSystem: GroveRecordingMethodCS
 Id: grove-recording-method
 Title: "Grove Recording Method"
 Description: """
-How a mobile health observation was captured, aligned with Android Health Connect's
-recording-method enumeration and the IEEE 1752.1-2021 `modality` concept
-(sensed vs. self-reported). HealthKit's `HKMetadataKeyWasUserEntered = true` maps to
-`manual-entry`.
+Codes describing how a mobile health observation was captured. The codes distinguish
+passive sensing, user-initiated measurement, manual entry, and an unknown method.
+HealthKit's `HKMetadataKeyWasUserEntered = true` maps to `manual-entry`.
 """
 * ^experimental = false
 * ^caseSensitive = true
@@ -52,8 +51,7 @@ CodeSystem: GroveDeviceType
 Id: grove-device-type
 Title: "Grove Mobile Device Type"
 Description: """
-Coarse device form factors for `Device.type`, mirroring Android Health Connect's
-device-type enumeration so data from either mobile platform can carry it.
+Device form-factor codes used for recording and gateway devices.
 """
 * ^experimental = false
 * ^caseSensitive = true
@@ -80,10 +78,9 @@ CodeSystem: GroveSensorBatchFormatCS
 Id: grove-sensor-batch-format
 Title: "Grove Sensor Batch Format"
 Description: """
-How a raw sensor batch is serialized and compressed, for `DocumentReference.content.format`.
-The media type in `contentType` describes the decompressed payload, so without this the
-compression a consumer must undo is recorded nowhere. HL7's format codes cover clinical
-document profiles and have no counterpart for bulk sensor payloads.
+Codes for the serialization and compression recorded in
+`DocumentReference.content.format` for a Grove Sensor Batch Document. The attachment's
+`contentType` identifies the media type after decompression.
 """
 * ^experimental = false
 * ^caseSensitive = true
@@ -105,11 +102,11 @@ ValueSet: GrovePlatformMetadataKeyVS
 Id: grove-platform-metadata-key
 Title: "Platform Metadata Keys"
 Description: """
-The platform key spaces a ``GrovePlatformMetadata`` entry draws its key from, published
-by the [platform vocabularies guide](https://grovealliance.org/fhir/platforms). Both are
-fragment systems the platform vendor owns and HealthKit additionally accepts third-party
-keys, so the binding that uses this set is extensible: an unlisted key is still valid,
-and the resulting warning marks a key the guide has not yet published.
+Platform metadata key code systems published by the
+[platform terminology guide](https://grovealliance.org/fhir/platforms). The value set
+includes the HealthKit and Health Connect key systems. Both are fragment code systems,
+and the binding is extensible so an implementation can use an unlisted platform key
+when no listed code applies.
 """
 * ^experimental = false
 * include codes from system $platformHealthKitMetadataKey
@@ -120,9 +117,9 @@ CodeSystem: GroveQuestionnaireItemControl
 Id: grove-questionnaire-item-control
 Title: "Grove Questionnaire Item Control"
 Description: """
-Item control codes for Grove-specific questionnaire item renderers, used as codings in
-the standard `questionnaire-itemControl` extension (whose binding is extensible; no
-image-annotation control exists in the HL7 item-control code system).
+Grove-specific item control codes used in the standard
+`questionnaire-itemControl` extension. The `annotate-image` code identifies an item
+whose answer is an annotated image attachment.
 """
 * ^identifier[+].system = "urn:ietf:rfc:3986"
 * ^identifier[=].value = "http://spezi.stanford.edu/fhir/CodeSystem/questionnaire-item-control"
@@ -171,10 +168,10 @@ CodeSystem: GroveAutocompleteTokens
 Id: grove-autocomplete-tokens
 Title: "Grove Autocomplete Tokens"
 Description: """
-Semantic content types for text answers, taken verbatim from the WHATWG HTML living
-standard's `autocomplete` detail tokens — the de-facto cross-platform vocabulary.
-Renderers map them to platform autofill facilities (iOS `UITextContentType`,
-Android autofill hints, HTML `autocomplete`).
+Semantic content types for text answers, using values from the WHATWG HTML
+`autocomplete` detail tokens. Renderers can map supported values to platform autofill
+facilities such as iOS `UITextContentType`, Android autofill hints, and HTML
+`autocomplete`.
 """
 * ^experimental = false
 * ^caseSensitive = true
@@ -219,9 +216,9 @@ CodeSystem: GroveAutocapitalizeCS
 Id: grove-autocapitalize
 Title: "Grove Autocapitalize"
 Description: """
-Autocapitalization behaviours for text answers, taken verbatim from the WHATWG HTML
-living standard's `autocapitalize` attribute values; 1:1 with iOS
-`UITextAutocapitalizationType` and mappable to Android input types.
+Autocapitalization behaviours for text answers, using values from the WHATWG HTML
+`autocapitalize` attribute. Renderers can map supported values to native text-input
+settings.
 """
 * ^experimental = false
 * ^caseSensitive = true

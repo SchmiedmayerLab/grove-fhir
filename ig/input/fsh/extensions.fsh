@@ -26,9 +26,7 @@ Id: grove-recording-method
 Title: "Recording Method"
 Description: """
 How the observation was captured: passively sensed, actively measured, or entered by
-the user. Aligned with Android Health Connect's recording methods and IEEE 1752.1-2021's
-`modality` (sensed vs. self-reported); HealthKit's `HKMetadataKeyWasUserEntered = true`
-maps to `manual-entry`. No HL7 code system covers this concept.
+the user. HealthKit's `HKMetadataKeyWasUserEntered = true` maps to `manual-entry`.
 """
 * ^context[+].type = #element
 * ^context[=].expression = "Observation"
@@ -41,62 +39,50 @@ Extension: GroveSourceRecordId
 Id: grove-source-record-id
 Title: "Source Record Identifier"
 Description: """
-The identifier of the record in the originating mobile platform's store, for resources
-where writing it into the resource's own `identifier` list would misrepresent
-source-assigned business identity — chiefly clinical-record payloads passed through
-from a platform store (e.g. HealthKit clinical records), whose `identifier` content
-belongs to the originating healthcare institution.
+Carries the originating platform record identifier when the resource's own `identifier`
+element is reserved for identifiers assigned to the source resource. This applies, for
+example, to a clinical document whose business identifier was assigned by the
+originating healthcare institution.
 
-Grove-authored Observations do NOT use this extension: they carry the platform record
-identifier in `Observation.identifier` with the Grove identifier systems
-(see the Identifiers page), per ``GroveMobileSensorObservation``.
+Grove Mobile Sensor Observations carry the source record identifier directly in
+`Observation.identifier`; see [Source identity](mobile.html#source-identity).
 """
 * ^context[+].type = #element
 * ^context[=].expression = "DomainResource"
 * value[x] only Identifier
 * valueIdentifier 1..1
-* valueIdentifier ^short = "system = a Grove identifier system; value = the platform record id"
+* valueIdentifier ^short = "Platform identifier system and source record value"
 
 
 Extension: GroveStudyRevision
 Id: grove-study-revision
 Title: "Study Definition Revision"
 Description: """
-The revision of the study definition in force when the resource was produced.
-
-The study itself is referenced by the HL7 `workflow-researchStudy` extension. That
-extension's value is a `Reference`, whose `display` is plain-text narrative for a reader
-— not a machine-readable version — so the revision needs a home of its own. It is not a
-FHIR version of the `ResearchStudy` resource either: study bundles are revised
-independently of whatever server stores them, so a versioned reference
-(`ResearchStudy/x/_history/y`) would assert something untrue.
-
-A deployment that revises its protocol mid-study needs this to tell which definition a
-participant was answering.
+Identifies the revision of the study definition in effect when the resource was
+produced. Use the HL7 `workflow-researchStudy` extension to reference the study and this
+extension to record a deployment-defined study revision. The revision is distinct from
+the version history of a FHIR `ResearchStudy` resource.
 """
 * ^context[+].type = #element
 * ^context[=].expression = "DomainResource"
 * value[x] only string
 * valueString 1..1
-* valueString ^short = "The study-definition revision, as the deployment numbers it"
+* valueString ^short = "Deployment-defined study revision identifier"
 
 
 Extension: GrovePlatformMetadata
 Id: grove-platform-metadata
 Title: "Platform Metadata Entry"
 Description: """
-One entry of the originating platform's metadata dictionary that has no better FHIR
-home. This is the LAST layer of the metadata policy (see the Metadata Policy page):
-time zones go to the standard `timezone` extension, recording modality to
-``GroveRecordingMethod``, body/sensor location to `Observation.bodySite`,
-device-adjacent values to `Device.property`, measurement-adjacent values to
-`Observation.component` — only the residue lands here.
+Represents one typed entry from the source platform's metadata that is not mapped to a
+standard FHIR element or published extension. Map time zones to the standard `timezone`
+extension, recording method to ``GroveRecordingMethod``, and measurement-specific values
+to the appropriate Observation element before using this extension. See
+[Recording method and metadata](mobile.html#recording-method-and-metadata).
 
-The key is a Coding whose system identifies the platform key space
-(`https://grovealliance.org/fhir/platforms/CodeSystem/healthkit-metadata-key` or
-`…/health-connect-metadata-key`, both fragment code systems published by the
-[platform vocabularies guide](https://grovealliance.org/fhir/platforms) — arbitrary
-platform keys are valid codes) and whose code is the raw platform key.
+The key is a Coding whose system identifies the platform key space and whose code is the
+raw platform key. The permitted key systems are published by the
+[platform terminology guide](https://grovealliance.org/fhir/platforms).
 """
 * ^context[+].type = #element
 * ^context[=].expression = "Observation"
@@ -106,18 +92,16 @@ platform keys are valid codes) and whose code is the raw platform key.
 * extension[key].valueCoding from GrovePlatformMetadataKeyVS (extensible)
 * extension[key] ^short = "The platform metadata key (system = platform key space, code = raw key)"
 * extension[value].value[x] only string or boolean or decimal or dateTime or Coding or Quantity
-* extension[value] ^short = "The entry's value, typed by its platform runtime type"
+* extension[value] ^short = "Metadata value represented with an appropriate FHIR datatype"
 
 
 Extension: GroveAutocomplete
 Id: grove-autocomplete
 Title: "Autocomplete"
 Description: """
-The semantic content type of a text answer, enabling platform autofill. Values are the
-WHATWG HTML `autocomplete` detail tokens — the cross-platform vocabulary that maps 1:1
-to iOS `UITextContentType`, Android autofill hints, and HTML `autocomplete`. No SDC or
-HL7 extension covers autofill semantics (verified against SDC STU4 and the extensions
-pack 5.3.0).
+Records the semantic purpose of a text answer for use by platform autofill features.
+Values use the WHATWG HTML `autocomplete` detail tokens. Renderers can map supported
+values to native autofill APIs.
 """
 * ^identifier[+].system = "urn:ietf:rfc:3986"
 * ^identifier[=].value = "http://bdh.stanford.edu/fhir/StructureDefinition/ios-textcontenttype"
@@ -133,10 +117,9 @@ Extension: GroveAutocapitalize
 Id: grove-autocapitalize
 Title: "Autocapitalize"
 Description: """
-The autocapitalization behaviour for a text answer. Values are the WHATWG HTML
-`autocapitalize` attribute values, 1:1 with iOS `UITextAutocapitalizationType` and
-mappable to Android input types. The SDC keyboard extension deliberately excludes
-input capabilities; no standard counterpart exists.
+Records the autocapitalization behaviour for a text answer. Values use the WHATWG HTML
+`autocapitalize` attribute values and can be mapped to supported native text-input
+settings.
 """
 * ^identifier[+].system = "urn:ietf:rfc:3986"
 * ^identifier[=].value = "http://bdh.stanford.edu/fhir/StructureDefinition/ios-autocapitalizationType"
@@ -152,12 +135,11 @@ Extension: GroveAnnotateImageRegion
 Id: grove-annotate-image-region
 Title: "Annotate Image: Region"
 Description: """
-One selectable region of an annotate-image item: the label the user sees, the pen color
-used when annotating that region, and — where the region is anatomical — a body-site
-code that makes answers extractable to `Observation.bodySite`. The base image itself is
-carried by the SDC `sdc-questionnaire-itemMedia` extension; the answer is an attachment
-(the annotated image), constrained via the standard `mimeType`/`maxSize` extensions.
-No standard region-legend or body-map questionnaire extension exists.
+Defines one selectable region for an annotate-image Questionnaire item. The label names
+the region, the optional code can identify an anatomical site, and the color selects the
+drawing color. The SDC `sdc-questionnaire-itemMedia` extension carries the base image,
+and the answer is an Attachment constrained by the standard `mimeType` and `maxSize`
+extensions.
 """
 * ^identifier[+].system = "urn:ietf:rfc:3986"
 * ^identifier[=].value = "http://spezi.stanford.edu/fhir/CodeSystem/questionnaire-item-control/annotate-image/region"

@@ -16,25 +16,20 @@ SPDX-License-Identifier: MIT
 [![REUSE status](https://api.reuse.software/badge/github.com/SchmiedmayerLab/grove-fhir)](https://api.reuse.software/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE.md)
 
-Grove FHIR contains draft FHIR R4 exchange definitions for mobile health observations and
-questionnaire resources. The contract is being developed for reuse across implementations, with
-[Grove Swift](https://github.com/SchmiedmayerLab/Grove) as its first reference implementation.
+Grove FHIR is a FHIR R4 implementation guide for exchanging mobile health observations,
+questionnaires, and questionnaire responses. It defines reusable profiles, extensions,
+terminology, examples, and validation packages. [Grove Swift](https://github.com/SchmiedmayerLab/Grove)
+provides the Apple-platform reference implementation for its HealthKit and Questionnaire
+resource mappings.
 
 ## Documentation
 
-The [Grove FHIR preview](https://schmiedmayerlab.github.io/grove-fhir/) publishes the current
-profiles, extensions, examples, and validation packages. Its
-[status page](https://schmiedmayerlab.github.io/grove-fhir/publication-status.html) explains which
-parts are under review for the reusable contract. Platform identifiers used by the draft are in the
-separate
-[Platform Terminology preview](https://schmiedmayerlab.github.io/grove-fhir/platforms/).
-
-The repository's [artifact inventory](ARTIFACT_INVENTORY.md) records the review disposition of
-every FHIR Shorthand declaration.
-
-GitHub Pages is a continuous preview, not a released specification. Package identifiers,
-canonical URLs, and resource definitions may change before the first stable release. Applications
-should not take a dependency on the preview packages.
+The [Grove FHIR Implementation Guide](https://schmiedmayerlab.github.io/grove-fhir/) starts with
+practical introductions to [Mobile Observations](https://schmiedmayerlab.github.io/grove-fhir/mobile.html),
+[Questionnaires](https://schmiedmayerlab.github.io/grove-fhir/questionnaires.html), and
+[resource validation](https://schmiedmayerlab.github.io/grove-fhir/consuming.html). HealthKit code
+systems and value sets are published in the separate
+[Platform Terminology guide](https://schmiedmayerlab.github.io/grove-fhir/platforms/).
 
 ## Development
 
@@ -47,9 +42,11 @@ npm test
 npm run pages:build
 ```
 
-`pages:build` builds and validates the current and legacy guides in dependency order, rejects
-Publisher QA errors or warnings, and assembles the active previews under `.build/pages`. The legacy
-guide is retained in source and still validated, but is not part of the published preview.
+`pages:build` builds and validates the guides in dependency order, rejects
+Publisher QA errors or warnings, and assembles the published guides under `.build/pages`.
+
+The [publication model](PUBLICATION.md) documents canonical routes, package checksums, and the
+release process.
 
 ## Contributing
 

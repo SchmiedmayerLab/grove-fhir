@@ -6,9 +6,8 @@
 // SPDX-License-Identifier: MIT
 //
 
-// Questionnaire conformance. The item-level hints are defined in extensions.fsh; this
-// file gives them a profile to hang from and turns the two rules the Questionnaires
-// page states as normative into invariants a validator can enforce.
+// Questionnaire conformance. Item-level hints are defined in extensions.fsh; this file
+// applies them to the Questionnaire profile and encodes reusable validation rules.
 
 Invariant: grove-que-media-text
 Description: "An item carrying the SDC itemMedia extension SHALL also carry item.text, so renderers without media support degrade to text."
@@ -33,20 +32,13 @@ Parent: Questionnaire
 Id: grove-questionnaire
 Title: "Grove Questionnaire"
 Description: """
-An instrument a Grove renderer presents. Nothing here changes what a Questionnaire is:
-the profile exists so the guide's item-level hints have a conformance home, and so the
-two rules the [Questionnaires](questionnaires.html) page states as normative become
-machine-checkable — an item whose content is an image keeps its text, and an
-annotate-image item really carries an image to annotate.
+A FHIR R4 Questionnaire for exchange through Grove. The profile gives item-level
+validation and presentation extensions a conformance home while preserving the standard
+Questionnaire structure. Optional hints do not prevent another FHIR renderer from
+presenting the instrument; item text remains available as the common fallback.
 
-Every hint below is optional and ignorable. A renderer that knows none of them still
-presents a conformant instrument, which is why no slice is required; Must Support means
-Grove's own renderer honors it, not that an authoring tool must emit it.
-
-`autocomplete`, `autocapitalize`, and the annotate-image region legend carry no Must
-Support flag: Grove recognises them on import, and nothing in Grove writes them yet. The
-[Renderer Support Matrix](questionnaire-support.html) tracks that, and the flags return
-when a writer does.
+See [Questionnaires](questionnaires.html) for the relationship between an instrument,
+its canonical URL, stable item linkIds, and QuestionnaireResponse answers.
 """
 * obeys grove-que-media-text and grove-que-annotate-image
 * url MS
@@ -75,15 +67,14 @@ Parent: QuestionnaireResponse
 Id: grove-questionnaire-response
 Title: "Grove Questionnaire Response"
 Description: """
-A response Grove produces for a ``GroveQuestionnaire``. The instrument is named by
-canonical URL rather than by reference, so a response stays interpretable away from the
-server that served the form, and how it was captured rides in the standard
-completionMode extension.
+A response to a ``GroveQuestionnaire``. The `questionnaire` element names the instrument
+by canonical URL, and the standard completionMode extension records how the answers were
+collected.
 
-Item text travels on every answered item — including a follow-up nested under the answer
-it qualifies, which is where Grove puts child questions — so a reader can render the
-response without resolving the instrument. That is a warning rather than an error: a
-response imported from another system may legitimately omit it.
+Answered items retain their question text, including follow-up items nested under the
+answer that enabled them. This keeps a response human-readable on its own; the referenced
+Questionnaire remains authoritative for choices, constraints, definitions, and complete
+interpretation.
 """
 * obeys grove-qr-item-text
 * questionnaire 1..1 MS

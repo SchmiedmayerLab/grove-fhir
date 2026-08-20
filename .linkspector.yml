@@ -18,9 +18,9 @@ excludedDirs:
 ignorePatterns:
   - pattern: '^doc:.*$'
   - pattern: '^http://localhost.*$'
-  # The initial Pages URL becomes reachable only after the first main-branch deployment.
-  # Publisher validates every link within the generated implementation guides during this PR.
-  - pattern: '^https://schmiedmayerlab\.github\.io/grove-fhir(/.*)?$'
+  # These routes are introduced by this pull request and are verified in the assembled
+  # Pages artifact. They become live when the change is deployed from the default branch.
+  - pattern: '^https://schmiedmayerlab\.github\.io/grove-fhir/(mobile|questionnaires|consuming)\.html$'
 replacementPatterns:
   - pattern: '(.*)#gh-dark-mode-only'
     replacement: '$1'

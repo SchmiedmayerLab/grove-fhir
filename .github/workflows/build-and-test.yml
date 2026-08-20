@@ -21,6 +21,11 @@ concurrency:
 permissions:
   contents: read
 
+env:
+  # This guide snapshot was generated against the reviewed HealthKit producer.
+  # Later stack layers replace this legacy checkout with the proposal manifest.
+  GROVE_EVIDENCE_COMMIT: fb78db4c5343c234825b433706f7ee62f111c5cc
+
 jobs:
   tooling:
     name: Repository and Tooling Tests
@@ -93,9 +98,10 @@ jobs:
           path: grove-fhir
       - uses: actions/checkout@v7
         with:
-          repository: ${{ vars.GROVE_REPOSITORY || 'SchmiedmayerLab/Grove' }}
-          ref: ${{ vars.GROVE_REF || 'main' }}
+          repository: SchmiedmayerLab/Grove
+          ref: ${{ env.GROVE_EVIDENCE_COMMIT }}
           path: grove
+          persist-credentials: false
       - name: Dump the vocabulary Grove writes
         working-directory: grove
         run: ./Scripts/run-package-tests.sh GroveHealthKitFHIR macOS
@@ -118,9 +124,10 @@ jobs:
           path: grove-fhir
       - uses: actions/checkout@v7
         with:
-          repository: ${{ vars.GROVE_REPOSITORY || 'SchmiedmayerLab/Grove' }}
-          ref: ${{ vars.GROVE_REF || 'main' }}
+          repository: SchmiedmayerLab/Grove
+          ref: ${{ env.GROVE_EVIDENCE_COMMIT }}
           path: grove
+          persist-credentials: false
       - uses: actions/setup-node@v6
         with:
           node-version: 22

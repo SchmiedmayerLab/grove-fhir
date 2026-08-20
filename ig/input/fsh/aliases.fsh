@@ -26,7 +26,7 @@ Alias: $obsCategory = http://terminology.hl7.org/CodeSystem/observation-category
 Alias: $deviceNameType = http://hl7.org/fhir/device-nametype
 Alias: $bodySite = http://hl7.org/fhir/ValueSet/body-site
 
-// Grove identifier systems (documented on the Identifiers page)
+// Grove identifier systems (documented on the Mobile Observations page)
 Alias: $sidHealthKitSampleId = https://grovealliance.org/fhir/sid/healthkit-sample-id
 Alias: $sidHealthConnectRecordId = https://grovealliance.org/fhir/sid/health-connect-record-id
 Alias: $sidAppleBundleId = https://grovealliance.org/fhir/sid/apple-bundle-id
