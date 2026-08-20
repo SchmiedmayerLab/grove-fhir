@@ -73,7 +73,10 @@
       "packageId": "org.grovealliance.fhir.connected-health",
       "canonical": "https://grovealliance.org/fhir/connected-health",
       "dependencies": ["org.grovealliance.fhir.mobile#0.2.0"],
-      "profiles": ["connected-health-conversion-provenance", "connected-health-observation"]
+      "profiles": [
+        "connected-health-conversion-provenance",
+        "connected-health-observation"
+      ]
     }
   ]
 }

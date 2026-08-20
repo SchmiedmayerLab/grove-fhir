@@ -169,6 +169,27 @@
       ]
     },
     {
+      "source": "connected-health",
+      "packageId": "org.grovealliance.fhir.connected-health",
+      "canonical": "https://grovealliance.org/fhir/connected-health",
+      "artifacts": [
+        {"fshName": "ConnectedHealthProvider", "fshType": "Extension", "resourceType": "StructureDefinition", "id": "connected-health-provider", "classification": "definition"},
+        {"fshName": "ConnectedHealthProviderCS", "fshType": "CodeSystem", "resourceType": "CodeSystem", "id": "connected-health-provider", "classification": "definition"},
+        {"fshName": "ConnectedHealthProviderVS", "fshType": "ValueSet", "resourceType": "ValueSet", "id": "connected-health-provider", "classification": "definition"},
+        {"fshName": "ConnectedHealthObservation", "fshType": "Profile", "resourceType": "StructureDefinition", "id": "connected-health-observation", "classification": "definition"},
+        {"fshName": "ConnectedHealthConversionProvenance", "fshType": "Profile", "resourceType": "StructureDefinition", "id": "connected-health-conversion-provenance", "classification": "definition"},
+        {"fshName": "ConnectedHealthSourceRecordIdentifier", "fshType": "Instance", "resourceType": "NamingSystem", "id": "connected-health-source-record-id", "classification": "definition"},
+        {"fshName": "ConnectedHealthOutputIdentifier", "fshType": "Instance", "resourceType": "NamingSystem", "id": "connected-health-output-id", "classification": "definition"},
+        {"fshName": "ConnectedHealthConversionIdentifier", "fshType": "Instance", "resourceType": "NamingSystem", "id": "connected-health-conversion-id", "classification": "definition"},
+        {"fshName": "ConnectedHealthExchangeIdentifier", "fshType": "Instance", "resourceType": "NamingSystem", "id": "connected-health-exchange-id", "classification": "definition"},
+        {"fshName": "ConnectedHealthProviderAccountIdentifier", "fshType": "Instance", "resourceType": "NamingSystem", "id": "connected-health-provider-account-id", "classification": "definition"},
+        {"fshName": "ConnectedHealthPatientExample", "fshType": "Instance", "resourceType": "Patient", "id": "ConnectedHealthPatientExample", "classification": "example"},
+        {"fshName": "ConnectedHealthApplicationExample", "fshType": "Instance", "resourceType": "Device", "id": "ConnectedHealthApplicationExample", "classification": "example"},
+        {"fshName": "GoogleHealthStepsExample", "fshType": "Instance", "resourceType": "Observation", "id": "GoogleHealthStepsExample", "classification": "example"},
+        {"fshName": "GoogleHealthStepsProvenanceExample", "fshType": "Instance", "resourceType": "Provenance", "id": "GoogleHealthStepsProvenanceExample", "classification": "example"}
+      ]
+    },
+    {
       "source": "questionnaire",
       "packageId": "org.grovealliance.fhir.questionnaire",
       "canonical": "https://grovealliance.org/fhir/questionnaire",

@@ -31,8 +31,15 @@ ENTRY_IDENTIFIER_EXTENSION = (
     "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-exchange-entry-identifier"
 )
 ENTRY_UUID_NAMESPACE = uuid.UUID("a9a39cf1-c944-5d15-a3c2-c395969ea101")
+VALIDATOR_FILE_EXTENSION = (
+    "http://hl7.org/fhir/StructureDefinition/operationoutcome-file"
+)
+VALIDATOR_ATTEMPTS = 2
+VALIDATOR_LOG_LIMIT = 4000
 TOP_LEVEL_KEYS = {"schemaVersion", "fhirVersion", "producer", "packages", "resources"}
 CATALOG_ROOT = Path(__file__).parents[1] / "catalog"
+REPOSITORY_ROOT = Path(__file__).parents[1]
+FHIR_TOOL_HOME = REPOSITORY_ROOT / ".build" / "fhir-home"
 
 
 class ProducerValidationError(ValueError):
@@ -384,83 +391,126 @@ def validate_packages(manifest: dict[str, Any], supplied: dict[str, Path]) -> li
     return paths
 
 
-def operation_outcomes(value: Any) -> list[dict[str, Any]]:
-    """Return every OperationOutcome in one closed Validator JSON result."""
+def validator_outcomes(
+    value: Any, resources: list[Path]
+) -> list[tuple[Path, dict[str, Any]]]:
+    """Require Validator's exact one-input or ordered multi-input output shape."""
     if not isinstance(value, dict):
         raise ProducerValidationError("FHIR Validator output must be a JSON resource")
-    if value.get("resourceType") == "OperationOutcome":
-        return [value]
-    if value.get("resourceType") == "Bundle":
-        entries = value.get("entry")
-        if not isinstance(entries, list) or not entries:
-            raise ProducerValidationError("FHIR Validator output Bundle has no entries")
-        outcomes: list[dict[str, Any]] = []
-        for index, entry in enumerate(entries):
-            if not isinstance(entry, dict) or not isinstance(entry.get("resource"), dict):
-                raise ProducerValidationError(
-                    f"FHIR Validator output Bundle entry[{index}] has no resource"
-                )
-            outcomes.extend(operation_outcomes(entry["resource"]))
-        return outcomes
-    raise ProducerValidationError(
-        "FHIR Validator output is not an OperationOutcome or outcome Bundle: "
-        f"{value.get('resourceType')!r}"
-    )
-
-
-def reject_validator_errors(value: Any, label: str) -> None:
-    outcomes = operation_outcomes(value)
-    if not outcomes:
-        raise ProducerValidationError(f"FHIR Validator produced no OperationOutcome for {label}")
-    errors: list[str] = []
-    for outcome_index, outcome in enumerate(outcomes):
-        issues = outcome.get("issue")
-        if not isinstance(issues, list) or not issues:
+    if len(resources) == 1:
+        if value.get("resourceType") != "OperationOutcome":
             raise ProducerValidationError(
-                f"FHIR Validator OperationOutcome[{outcome_index}] has no populated issue array for {label}"
+                "one-input FHIR Validator output must be one OperationOutcome"
             )
-        for issue_index, issue in enumerate(issues):
-            if not isinstance(issue, dict):
+        outcomes = [value]
+    else:
+        if value.get("resourceType") != "Bundle" or value.get("type") != "collection":
+            raise ProducerValidationError(
+                "multi-input FHIR Validator output must be a collection Bundle"
+            )
+        entries = value.get("entry")
+        if not isinstance(entries, list) or len(entries) != len(resources):
+            actual = len(entries) if isinstance(entries, list) else "invalid"
+            raise ProducerValidationError(
+                "FHIR Validator output count does not match inputs: "
+                f"{actual} != {len(resources)}"
+            )
+        outcomes = []
+        for index, entry in enumerate(entries):
+            if not isinstance(entry, dict) or set(entry) != {"resource"}:
                 raise ProducerValidationError(
-                    f"FHIR Validator OperationOutcome[{outcome_index}].issue[{issue_index}] is invalid"
+                    f"FHIR Validator output Bundle entry[{index}] must contain only resource"
                 )
-            severity = issue.get("severity")
-            if severity not in {"fatal", "error", "warning", "information"}:
+            outcome = entry["resource"]
+            if not isinstance(outcome, dict) or outcome.get("resourceType") != "OperationOutcome":
                 raise ProducerValidationError(
-                    f"FHIR Validator issue has invalid severity for {label}: {severity!r}"
+                    f"FHIR Validator output Bundle entry[{index}] is not one OperationOutcome"
                 )
-            if severity in {"fatal", "error"}:
-                diagnostics = issue.get("diagnostics")
-                if not isinstance(diagnostics, str) or not diagnostics:
-                    details = issue.get("details")
-                    diagnostics = details.get("text") if isinstance(details, dict) else None
-                errors.append(
-                    diagnostics
-                    if isinstance(diagnostics, str) and diagnostics
-                    else "unspecified validation error"
-                )
+            outcomes.append(outcome)
+
+    result: list[tuple[Path, dict[str, Any]]] = []
+    for index, (resource, outcome) in enumerate(zip(resources, outcomes, strict=True)):
+        extensions = outcome.get("extension", [])
+        matches = [
+            extension.get("valueString")
+            for extension in extensions
+            if isinstance(extension, dict)
+            and extension.get("url") == VALIDATOR_FILE_EXTENSION
+        ] if isinstance(extensions, list) else []
+        if matches != [str(resource)]:
+            raise ProducerValidationError(
+                f"FHIR Validator output[{index}] file attribution does not match input "
+                f"{resource}"
+            )
+        result.append((resource, outcome))
+    return result
+
+
+def reject_validator_errors(outcome: dict[str, Any], label: str) -> None:
+    errors: list[str] = []
+    issues = outcome.get("issue")
+    if not isinstance(issues, list) or not issues:
+        raise ProducerValidationError(
+            f"FHIR Validator OperationOutcome has no populated issue array for {label}"
+        )
+    for issue_index, issue in enumerate(issues):
+        if not isinstance(issue, dict):
+            raise ProducerValidationError(
+                f"FHIR Validator OperationOutcome.issue[{issue_index}] is invalid for {label}"
+            )
+        severity = issue.get("severity")
+        if severity not in {"fatal", "error", "warning", "information"}:
+            raise ProducerValidationError(
+                f"FHIR Validator issue has invalid severity for {label}: {severity!r}"
+            )
+        if severity in {"fatal", "error"}:
+            diagnostics = issue.get("diagnostics")
+            if not isinstance(diagnostics, str) or not diagnostics:
+                details = issue.get("details")
+                diagnostics = details.get("text") if isinstance(details, dict) else None
+            errors.append(
+                diagnostics
+                if isinstance(diagnostics, str) and diagnostics
+                else "unspecified validation error"
+            )
     if errors:
         raise ProducerValidationError(
             f"FHIR Validator rejected {label}: " + " | ".join(errors)
         )
 
 
+def truncated_validator_log(value: str | None) -> str:
+    """Return a bounded, printable process log for a terminal infrastructure failure."""
+    if not value:
+        return "<empty>"
+    normalized = value.replace("\x00", "\\0").strip()
+    if len(normalized) <= VALIDATOR_LOG_LIMIT:
+        return normalized
+    return "…" + normalized[-VALIDATOR_LOG_LIMIT:]
+
+
 def run_validator(validator: Path, packages: list[Path], resources: list[Path]) -> None:
     if validator.is_symlink() or not validator.is_file():
         raise ProducerValidationError(f"Validator JAR is absent or linked: {validator}")
+    ordered_resources = sorted(resources, key=lambda path: path.as_posix())
     with tempfile.TemporaryDirectory(prefix="grove-fhir-producer-") as directory:
-        for index, resource in enumerate(resources):
-            output = Path(directory) / f"operation-outcome-{index}.json"
-            command = [
-                "java", "-jar", str(validator),
-                "-version", "4.0.1",
-                "-tx", "n/a",
-                "-no-http-access",
-                "-level", "errors",
-            ]
-            for package in packages:
-                command.extend(("-ig", str(package)))
-            command.extend(("-output", str(output), str(resource)))
+        output = Path(directory) / "operation-outcomes.json"
+        command = [
+            "java", f"-Duser.home={FHIR_TOOL_HOME}", "-jar", str(validator),
+            "-version", "4.0.1",
+            "-tx", "n/a",
+            "-no-http-access",
+            "-level", "errors",
+        ]
+        for package in packages:
+            command.extend(("-ig", str(package)))
+        command.extend(("-output", str(output)))
+        command.extend(str(resource) for resource in ordered_resources)
+
+        last_failure = ""
+        for attempt in range(1, VALIDATOR_ATTEMPTS + 1):
+            if output.exists() or output.is_symlink():
+                output.unlink()
             result = subprocess.run(
                 command,
                 check=False,
@@ -468,18 +518,38 @@ def run_validator(validator: Path, packages: list[Path], resources: list[Path]) 
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT,
             )
-            label = resource.name
+            process_log = truncated_validator_log(result.stdout)
             if not output.is_file() or output.is_symlink():
-                raise ProducerValidationError(
-                    f"FHIR Validator produced no trustworthy OperationOutcome for {label} "
-                    f"(exit {result.returncode})"
+                last_failure = (
+                    "FHIR Validator produced no trustworthy OperationOutcome output "
+                    f"(exit {result.returncode}); log: {process_log}"
                 )
-            reject_validator_errors(read_json(output), label)
-            if result.returncode != 0:
-                raise ProducerValidationError(
-                    f"FHIR Validator process failed for {label} after producing an error-free "
-                    f"OperationOutcome (exit {result.returncode})"
+                if attempt < VALIDATOR_ATTEMPTS:
+                    continue
+                raise ProducerValidationError(last_failure)
+            try:
+                parsed = read_json(output)
+                outcomes = validator_outcomes(parsed, ordered_resources)
+            except ProducerValidationError as error:
+                last_failure = (
+                    f"untrustworthy FHIR Validator output: {error} "
+                    f"(exit {result.returncode}); log: {process_log}"
                 )
+                if attempt < VALIDATOR_ATTEMPTS:
+                    continue
+                raise ProducerValidationError(last_failure) from error
+
+            # A real FHIR fatal/error is final and is never retried or ignored.
+            for resource, outcome in outcomes:
+                reject_validator_errors(outcome, resource.name)
+            if result.returncode == 0:
+                return
+            last_failure = (
+                "FHIR Validator process failed after producing only error-free, correctly "
+                f"attributed OperationOutcomes (exit {result.returncode}); log: {process_log}"
+            )
+            if attempt == VALIDATOR_ATTEMPTS:
+                raise ProducerValidationError(last_failure)
 
 
 def main(argv: list[str] | None = None) -> int:

@@ -1,0 +1,43 @@
+#
+# This source file is part of the Grove FHIR open-source project
+#
+# SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTRIBUTORS.md)
+#
+# SPDX-License-Identifier: MIT
+#
+
+id: org.grovealliance.fhir.connected-health
+canonical: https://grovealliance.org/fhir/connected-health
+name: GroveFHIRConnectedHealth
+title: Grove FHIR Connected Provider Adapter
+description: >-
+  FHIR R4 mappings for already-obtained Google Health API, Oura, and Withings data exchanged through Grove source-neutral contracts.
+status: draft
+version: 0.2.0
+fhirVersion: 4.0.1
+copyrightYear: 2026+
+releaseLabel: ci-build
+publisher:
+  name: Schmiedmayer Lab
+  url: https://github.com/SchmiedmayerLab
+jurisdiction: http://unstats.un.org/unsd/methods/m49/m49.htm#001 "World"
+license: MIT
+
+dependencies:
+  hl7.terminology.r4: 7.3.0
+  org.grovealliance.fhir.mobile:
+    version: 0.2.0
+    uri: https://grovealliance.org/fhir/mobile/ImplementationGuide/org.grovealliance.fhir.mobile
+menu:
+  Overview: index.html
+  Mapping: mapping.html
+  Implement and validate: implementation.html
+  Artifacts: artifacts.html
+
+pages:
+  index.md:
+    title: Overview
+  mapping.md:
+    title: Mapping
+  implementation.md:
+    title: Implement and validate

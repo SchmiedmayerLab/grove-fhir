@@ -33,6 +33,17 @@ class ProducerConformanceTests(unittest.TestCase):
     def setUp(self) -> None:
         self.example = ROOT / "Conformance/example-producer/manifest.json"
 
+    @staticmethod
+    def outcome(path: Path, issues: list[dict[str, str]]) -> dict[str, object]:
+        return {
+            "resourceType": "OperationOutcome",
+            "extension": [{
+                "url": VALIDATOR.VALIDATOR_FILE_EXTENSION,
+                "valueString": str(path),
+            }],
+            "issue": issues,
+        }
+
     def test_repository_example_is_structurally_valid(self) -> None:
         manifest, resources = VALIDATOR.validate_manifest(self.example)
         self.assertEqual(manifest["fhirVersion"], "4.0.1")
@@ -192,7 +203,7 @@ class ProducerConformanceTests(unittest.TestCase):
             ):
                 VALIDATOR.validate_health_connect_specimen_claim(invalid, "Specimen")
 
-    def test_validator_runs_each_resource_offline_and_parses_outcome(self) -> None:
+    def test_validator_runs_one_offline_batch_and_parses_attributed_outcomes(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             validator = root / "validator.jar"
@@ -206,20 +217,27 @@ class ProducerConformanceTests(unittest.TestCase):
                 commands.append(command)
                 output = Path(command[command.index("-output") + 1])
                 output.write_text(json.dumps({
-                    "resourceType": "OperationOutcome",
-                    "issue": [{"severity": "information", "code": "informational"}],
+                    "resourceType": "Bundle",
+                    "type": "collection",
+                    "entry": [
+                        {"resource": self.outcome(resource, [
+                            {"severity": "information", "code": "informational"}
+                        ])}
+                        for resource in sorted(resources)
+                    ],
                 }), encoding="utf-8")
                 return subprocess.CompletedProcess(command, 0, stdout="validated")
 
             with mock.patch.object(VALIDATOR.subprocess, "run", side_effect=successful_run):
                 VALIDATOR.run_validator(validator, [], resources)
 
-            self.assertEqual(len(commands), 2)
-            for command, resource in zip(commands, resources, strict=True):
-                self.assertIn(["-version", "4.0.1"], [command[index:index + 2] for index in range(len(command) - 1)])
-                self.assertIn(["-tx", "n/a"], [command[index:index + 2] for index in range(len(command) - 1)])
-                self.assertIn("-no-http-access", command)
-                self.assertEqual(command[-1], str(resource))
+            self.assertEqual(len(commands), 1)
+            command = commands[0]
+            self.assertIn(["-version", "4.0.1"], [command[index:index + 2] for index in range(len(command) - 1)])
+            self.assertIn(["-tx", "n/a"], [command[index:index + 2] for index in range(len(command) - 1)])
+            self.assertIn("-no-http-access", command)
+            self.assertIn(f"-Duser.home={VALIDATOR.FHIR_TOOL_HOME}", command)
+            self.assertEqual(command[-2:], [str(resource) for resource in sorted(resources)])
 
     def test_validator_error_in_any_produced_outcome_fails_even_with_zero_exit(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -231,23 +249,17 @@ class ProducerConformanceTests(unittest.TestCase):
 
             def error_run(command: list[str], **_: object) -> subprocess.CompletedProcess[str]:
                 output = Path(command[command.index("-output") + 1])
-                output.write_text(json.dumps({
-                    "resourceType": "Bundle",
-                    "type": "collection",
-                    "entry": [
-                        {"resource": {"resourceType": "OperationOutcome", "issue": [
-                            {"severity": "information", "code": "informational"}
-                        ]}},
-                        {"resource": {"resourceType": "OperationOutcome", "issue": [
-                            {"severity": "error", "code": "invalid", "diagnostics": "bad unit"}
-                        ]}},
-                    ],
-                }), encoding="utf-8")
+                output.write_text(json.dumps(self.outcome(resource, [
+                    {"severity": "error", "code": "invalid", "diagnostics": "bad unit"}
+                ])), encoding="utf-8")
                 return subprocess.CompletedProcess(command, 0, stdout="")
 
-            with mock.patch.object(VALIDATOR.subprocess, "run", side_effect=error_run):
+            with mock.patch.object(
+                VALIDATOR.subprocess, "run", side_effect=error_run
+            ) as run:
                 with self.assertRaisesRegex(VALIDATOR.ProducerValidationError, "bad unit"):
                     VALIDATOR.run_validator(validator, [], [resource])
+                self.assertEqual(run.call_count, 1)
 
     def test_validator_process_and_output_failures_are_closed(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -259,23 +271,57 @@ class ProducerConformanceTests(unittest.TestCase):
 
             def nonzero_run(command: list[str], **_: object) -> subprocess.CompletedProcess[str]:
                 output = Path(command[command.index("-output") + 1])
-                output.write_text(json.dumps({
-                    "resourceType": "OperationOutcome",
-                    "issue": [{"severity": "information", "code": "informational"}],
-                }), encoding="utf-8")
+                output.write_text(json.dumps(self.outcome(resource, [
+                    {"severity": "information", "code": "informational"}
+                ])), encoding="utf-8")
                 return subprocess.CompletedProcess(command, 2, stdout="failed")
 
-            with mock.patch.object(VALIDATOR.subprocess, "run", side_effect=nonzero_run):
+            with mock.patch.object(
+                VALIDATOR.subprocess, "run", side_effect=nonzero_run
+            ) as run:
                 with self.assertRaisesRegex(VALIDATOR.ProducerValidationError, "process failed"):
                     VALIDATOR.run_validator(validator, [], [resource])
+                self.assertEqual(run.call_count, 2)
 
             with mock.patch.object(
                 VALIDATOR.subprocess,
                 "run",
-                return_value=subprocess.CompletedProcess([], 0, stdout="no output"),
-            ):
+                return_value=subprocess.CompletedProcess(
+                    [], 0, stdout="no output " + "x" * 5000
+                ),
+            ) as run:
                 with self.assertRaisesRegex(VALIDATOR.ProducerValidationError, "no trustworthy"):
                     VALIDATOR.run_validator(validator, [], [resource])
+                self.assertEqual(run.call_count, 2)
+
+    def test_validator_retries_wrong_batch_shape_once_and_fails_closed(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            validator = root / "validator.jar"
+            validator.write_bytes(b"jar")
+            resources = [root / "one.json", root / "two.json"]
+            for resource in resources:
+                resource.write_text('{"resourceType":"Patient"}', encoding="utf-8")
+
+            def wrong_count(command: list[str], **_: object) -> subprocess.CompletedProcess[str]:
+                output = Path(command[command.index("-output") + 1])
+                output.write_text(json.dumps({
+                    "resourceType": "Bundle",
+                    "type": "collection",
+                    "entry": [{"resource": self.outcome(resources[0], [
+                        {"severity": "information", "code": "informational"}
+                    ])}],
+                }), encoding="utf-8")
+                return subprocess.CompletedProcess(command, 0, stdout="wrong count")
+
+            with mock.patch.object(
+                VALIDATOR.subprocess, "run", side_effect=wrong_count
+            ) as run:
+                with self.assertRaisesRegex(
+                    VALIDATOR.ProducerValidationError, "output count does not match"
+                ):
+                    VALIDATOR.run_validator(validator, [], resources)
+                self.assertEqual(run.call_count, 2)
 
 
 if __name__ == "__main__":

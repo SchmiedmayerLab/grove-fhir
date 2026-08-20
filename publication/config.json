@@ -34,6 +34,14 @@
       "representativeResource": "StructureDefinition/health-connect-observation"
     },
     {
+      "source": "connected-health",
+      "canonicalPath": "connected-health",
+      "aliases": [
+        "connected-health"
+      ],
+      "representativeResource": "StructureDefinition/connected-health-observation"
+    },
+    {
       "source": "questionnaire",
       "canonicalPath": "questionnaire",
       "aliases": [],
