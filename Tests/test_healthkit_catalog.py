@@ -35,19 +35,34 @@ class HealthKitCatalogTests(unittest.TestCase):
 
     def test_inventory_is_exact_closed_and_unique(self) -> None:
         rows = self.catalog["rows"]
+        source = self.catalog["source"]
         self.assertEqual(
-            self.catalog["source"]["groveRepository"],
-            "https://github.com/SchmiedmayerLab/Grove",
+            source["sdkBaseline"],
+            {
+                "platform": "iPhoneOS",
+                "version": "27.0",
+                "xcodeVersion": "27.0",
+                "xcodeBuild": "27A5237l",
+            },
         )
-        self.assertEqual(
-            self.catalog["source"]["groveRevision"],
-            "bf7e25d1a59bc3afc20476f856ad54d2649edee4",
-        )
-        self.assertEqual(self.catalog["source"]["rowCount"], 209)
-        self.assertEqual(len(rows), 209)
+        self.assertEqual(source["platform"], "Apple HealthKit")
+        self.assertEqual(source["accessed"], "2026-08-20")
+        self.assertEqual(source["rowCount"], 212)
+        self.assertEqual(source["derivedAggregateCount"], 1)
+        self.assertIn("derived mappings are excluded", source["rowScope"])
+        self.assertEqual(len(rows), 212)
         identifiers = [row["sourceTypeIdentifier"] for row in rows]
         self.assertEqual(identifiers, sorted(identifiers))
         self.assertEqual(len(identifiers), len(set(identifiers)))
+        self.assertFalse(any("#" in identifier for identifier in identifiers))
+        self.assertTrue(
+            all(
+                evidence.get("url", "").startswith("https://developer.apple.com/")
+                or evidence.get("path")
+                == "healthkit/input/data/terminology-provenance.json"
+                for evidence in source["evidence"]
+            )
+        )
         statuses = set(self.catalog["statusVocabulary"])
         for row in rows:
             self.assertEqual(
@@ -56,7 +71,6 @@ class HealthKitCatalogTests(unittest.TestCase):
                     "sourceTypeIdentifier",
                     "title",
                     "status",
-                    "swiftImplementationStatus",
                     "measurementIDs",
                     "profiles",
                 }
@@ -65,20 +79,15 @@ class HealthKitCatalogTests(unittest.TestCase):
             self.assertIn(row["status"], statuses)
             self.assertEqual(len(row["profiles"]), len(set(row["profiles"])))
             if row["status"] == "supported":
-                self.assertEqual(row["swiftImplementationStatus"], "supported")
                 self.assertTrue(row["measurementIDs"])
                 self.assertTrue(row["profiles"])
             else:
-                self.assertIn(
-                    row["swiftImplementationStatus"],
-                    {"deferred", "no-published-contract"},
-                )
                 self.assertIsInstance(row.get("requirement"), str)
                 self.assertTrue(row["requirement"])
 
-    def test_swift_numeric_canonicalization_reuses_the_mobile_contract(self) -> None:
+    def test_producer_numeric_canonicalization_reuses_the_mobile_contract(self) -> None:
         self.assertEqual(
-            self.catalog["swiftProducer"]["numericCanonicalization"],
+            self.catalog["producerCanonicalization"],
             {
                 "mobileEffectiveContract": "catalog/measurement-catalog.json#effectiveCanonicalization",
                 "effectivePrecision": "millisecond",
@@ -93,6 +102,50 @@ class HealthKitCatalogTests(unittest.TestCase):
         )
         self.assertEqual(
             self.mobile["effectiveCanonicalization"]["rounding"], "half-even"
+        )
+
+    def test_platform_additions_and_derived_aggregate_are_explicit(self) -> None:
+        rows = {row["sourceTypeIdentifier"]: row for row in self.catalog["rows"]}
+        expected_additions = {
+            "HKCategoryTypeIdentifierEnvironmentalAudioExposureEvent",
+            "HKCategoryTypeIdentifierHypertensionEvent",
+            "HKCategoryTypeIdentifierBleedingAfterMenopause",
+            "HKCategoryTypeIdentifierMenopausalState",
+        }
+        self.assertTrue(expected_additions <= set(rows))
+        for identifier in expected_additions:
+            self.assertEqual(rows[identifier]["status"], "deferred")
+            self.assertEqual(rows[identifier]["measurementIDs"], [])
+            self.assertEqual(rows[identifier]["profiles"], [])
+
+        deprecated = rows["HKCategoryTypeIdentifierAudioExposureEvent"]
+        self.assertEqual(deprecated["title"], "Audio Exposure Event (Deprecated)")
+        self.assertIn(
+            "HKCategoryTypeIdentifierEnvironmentalAudioExposureEvent",
+            deprecated["requirement"],
+        )
+
+        aggregates = self.catalog["derivedAggregates"]
+        self.assertEqual(len(aggregates), 1)
+        self.assertEqual(
+            aggregates[0],
+            {
+                "id": "sleep-duration-session-aggregate",
+                "title": "Sleep Duration Session Aggregate",
+                "sourceTypeIdentifiers": ["HKCategoryTypeIdentifierSleepAnalysis"],
+                "scope": "derived-from-platform-samples",
+                "status": "deferred",
+                "measurementIDs": ["sleep-duration"],
+                "profiles": [
+                    "https://grovealliance.org/fhir/mobile/StructureDefinition/"
+                    "grove-mobile-sleep-duration"
+                ],
+                "requirement": (
+                    "This is not a HealthKit platform source identifier. Version 0.2.0 "
+                    "does not define the session-boundary aggregation contract; "
+                    "individual admitted samples map only to sleep stage."
+                ),
+            },
         )
 
     def test_profile_relocation_and_standard_bmi_claim_are_exact(self) -> None:

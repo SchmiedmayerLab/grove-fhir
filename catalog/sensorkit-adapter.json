@@ -15,15 +15,26 @@
     "supported": "Version 0.2.0 defines a lossless structured mapping to the listed source-neutral Sensor profile plus the SensorKit adapter profile. A row may require the listed linked native Recording Document when exact source fields cannot be carried in the structured projection alone.",
     "mapped-standard": "Version 0.2.0 admits the stream as the listed source-neutral Sensor Recording Document and does not invent a structured scalar or waveform meaning.",
     "provider-specific": "Version 0.2.0 defines the listed SensorKit-only structured profile because no exact source-neutral or international profile represents the source semantics.",
-    "deferred": "The platform stream is inventoried, but version 0.2.0 publishes no admitted output because the Grove source adapter or a lossless representation is not available.",
+    "deferred": "The platform stream is inventoried, but version 0.2.0 publishes no admitted output contract.",
     "intentionally-unsupported": "Version 0.2.0 deliberately refuses the stream because any available representation would create a misleading or unsafe meaning."
   },
   "sourceEvidence": {
-    "appleSensorInventory": "https://developer.apple.com/documentation/sensorkit/srsensor",
+    "platform": "Apple SensorKit",
+    "sdkBaseline": {
+      "platform": "iPhoneOS",
+      "version": "27.0",
+      "xcodeVersion": "27.0",
+      "xcodeBuild": "27A5237l"
+    },
     "accessed": "2026-08-20",
-    "groveRepository": "https://github.com/SchmiedmayerLab/Grove",
-    "groveRevision": "09d8a5ed490b344b5523d036910a48b97220bad1",
-    "scope": "The exact 20 streams implemented by Grove plus two stable iOS 26 additions and two iOS 27 beta additions shown by the current Apple SRSensor inventory."
+    "appleSensorInventory": "https://developer.apple.com/documentation/sensorkit/srsensor",
+    "appleFrameworkDocumentation": "https://developer.apple.com/documentation/sensorkit",
+    "scope": "The exact 24 public Apple SRSensor symbols frozen by the v0.2.0 catalog, with stable and beta availability represented per row."
+  },
+  "inventoryScopes": {
+    "catalog-baseline": "One of the 20 platform symbols in the initial closed v0.2.0 catalog baseline.",
+    "stable-addition": "A stable platform symbol added to complete the stated SDK baseline.",
+    "beta-addition": "A beta platform symbol present in the stated SDK baseline."
   },
   "profileClaims": {
     "sharedObservation": {
@@ -83,9 +94,8 @@
     {
       "sourceToken": "SRSensor.accelerometer",
       "sourceTypeCode": "accelerometer",
-      "groveSensor": "Sensor.accelerometer",
       "minimumIOS": "14.0",
-      "scope": "grove-implemented",
+      "scope": "catalog-baseline",
       "status": "mapped-standard",
       "structured": {"status": "deferred", "reason": "The source batch identifier is part of the exact SensorKit record and is not preserved by bare SampledData."},
       "raw": {"status": "mapped-standard", "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-recording-document", "outputDiscriminator": "native-recording", "encoding": "caller-supplied exact bytes"}
@@ -93,18 +103,16 @@
     {
       "sourceToken": "SRSensor.acousticSettings",
       "sourceTypeCode": "acoustic-settings",
-      "groveSensor": null,
       "minimumIOS": "26.0",
-      "scope": "current-stable-addition",
+      "scope": "stable-addition",
       "status": "deferred",
-      "reason": "The current Grove SensorKit source adapter does not implement this stable platform addition."
+      "reason": "Version 0.2.0 publishes no reviewed output contract for this stable platform symbol."
     },
     {
       "sourceToken": "SRSensor.ambientLightSensor",
       "sourceTypeCode": "ambient-light",
-      "groveSensor": "Sensor.ambientLight",
       "minimumIOS": "14.0",
-      "scope": "grove-implemented",
+      "scope": "catalog-baseline",
       "status": "mapped-standard",
       "structured": {"status": "deferred", "reason": "The source contains heterogeneous light fields for which version 0.2.0 does not publish a lossless component profile."},
       "raw": {"status": "mapped-standard", "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-recording-document", "outputDiscriminator": "native-recording", "encoding": "caller-supplied exact bytes"}
@@ -112,9 +120,8 @@
     {
       "sourceToken": "SRSensor.ambientPressure",
       "sourceTypeCode": "ambient-pressure",
-      "groveSensor": "Sensor.ambientPressure",
       "minimumIOS": "15.4",
-      "scope": "grove-implemented",
+      "scope": "catalog-baseline",
       "status": "mapped-standard",
       "structured": {"status": "deferred", "reason": "Pressure and temperature are mixed-unit fields and must not be collapsed into one SampledData value."},
       "raw": {"status": "mapped-standard", "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-recording-document", "outputDiscriminator": "native-recording", "encoding": "caller-supplied exact bytes"}
@@ -122,9 +129,8 @@
     {
       "sourceToken": "SRSensor.deviceUsageReport",
       "sourceTypeCode": "device-usage",
-      "groveSensor": "Sensor.deviceUsage",
       "minimumIOS": "14.0",
-      "scope": "grove-implemented",
+      "scope": "catalog-baseline",
       "status": "provider-specific",
       "structured": {"profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-device-usage-observation", "outputDiscriminator": "device-usage-summary", "representedFields": ["duration", "totalScreenWakes", "totalUnlocks", "totalUnlockDuration"], "graphContract": {"requiredResources": ["sensorkit-device-usage-observation", "sensorkit-recording-document"], "relationship": "The summary Observation.derivedFrom contains exactly one internal UUID reference to the native Recording Document in the same Grove Mobile collection Bundle.", "sharedSourceIdentity": true}},
       "raw": {"status": "mapped-standard", "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-recording-document", "outputDiscriminator": "native-recording", "requiredForFields": ["version", "appUsageByCategory", "notificationUsageByCategory", "webUsageByCategory"], "encoding": "caller-supplied exact bytes"}
@@ -132,9 +138,8 @@
     {
       "sourceToken": "SRSensor.electrocardiogram",
       "sourceTypeCode": "ecg",
-      "groveSensor": "Sensor.ecg",
       "minimumIOS": "17.4",
-      "scope": "grove-implemented",
+      "scope": "catalog-baseline",
       "status": "supported",
       "structured": {
         "sourceNeutralProfile": "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-ecg-observation",
@@ -153,9 +158,8 @@
     {
       "sourceToken": "SRSensor.faceMetrics",
       "sourceTypeCode": "face-metrics",
-      "groveSensor": "Sensor.faceMetrics",
       "minimumIOS": "17.0",
-      "scope": "grove-implemented",
+      "scope": "catalog-baseline",
       "status": "mapped-standard",
       "structured": {"status": "deferred", "reason": "Version 0.2.0 publishes no reviewed structured profile for the heterogeneous face metrics."},
       "raw": {"status": "mapped-standard", "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-recording-document", "outputDiscriminator": "native-recording", "encoding": "caller-supplied exact bytes"}
@@ -163,27 +167,24 @@
     {
       "sourceToken": "SRSensor.headphoneMotion",
       "sourceTypeCode": "headphone-motion",
-      "groveSensor": null,
       "minimumIOS": "27.0",
       "scope": "beta-addition",
       "status": "deferred",
-      "reason": "The platform API is beta and unavailable to the current Grove source adapter."
+      "reason": "This symbol is beta in the stated SDK baseline, and version 0.2.0 publishes no admitted output contract."
     },
     {
       "sourceToken": "SRSensor.headphoneSettings",
       "sourceTypeCode": "headphone-settings",
-      "groveSensor": null,
       "minimumIOS": "27.0",
       "scope": "beta-addition",
       "status": "deferred",
-      "reason": "The platform API is beta and unavailable to the current Grove source adapter."
+      "reason": "This symbol is beta in the stated SDK baseline, and version 0.2.0 publishes no admitted output contract."
     },
     {
       "sourceToken": "SRSensor.heartRate",
       "sourceTypeCode": "heart-rate",
-      "groveSensor": "Sensor.heartRate",
       "minimumIOS": "17.0",
-      "scope": "grove-implemented",
+      "scope": "catalog-baseline",
       "status": "mapped-standard",
       "structured": {"status": "deferred", "reason": "Bare SampledData cannot preserve CMHighFrequencyHeartRateDataConfidence for each source point."},
       "raw": {"status": "mapped-standard", "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-recording-document", "outputDiscriminator": "native-recording", "encoding": "caller-supplied exact bytes"}
@@ -191,9 +192,8 @@
     {
       "sourceToken": "SRSensor.keyboardMetrics",
       "sourceTypeCode": "keyboard-metrics",
-      "groveSensor": "Sensor.keyboardMetrics",
       "minimumIOS": "14.0",
-      "scope": "grove-implemented",
+      "scope": "catalog-baseline",
       "status": "mapped-standard",
       "structured": {"status": "deferred", "reason": "Version 0.2.0 publishes no reviewed structured profile for the heterogeneous keyboard metrics."},
       "raw": {"status": "mapped-standard", "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-recording-document", "outputDiscriminator": "native-recording", "encoding": "caller-supplied exact bytes"}
@@ -201,9 +201,8 @@
     {
       "sourceToken": "SRSensor.mediaEvents",
       "sourceTypeCode": "media-events",
-      "groveSensor": "Sensor.mediaEvents",
       "minimumIOS": "16.4",
-      "scope": "grove-implemented",
+      "scope": "catalog-baseline",
       "status": "mapped-standard",
       "structured": {"status": "deferred", "reason": "Media interactions do not have a reviewed source-neutral clinical Observation representation in version 0.2.0."},
       "raw": {"status": "mapped-standard", "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-recording-document", "outputDiscriminator": "native-recording", "encoding": "caller-supplied exact bytes"}
@@ -211,9 +210,8 @@
     {
       "sourceToken": "SRSensor.messagesUsageReport",
       "sourceTypeCode": "messages-usage",
-      "groveSensor": "Sensor.messagesUsage",
       "minimumIOS": "14.0",
-      "scope": "grove-implemented",
+      "scope": "catalog-baseline",
       "status": "mapped-standard",
       "structured": {"status": "deferred", "reason": "Messages usage has no reviewed source-neutral clinical Observation representation in version 0.2.0."},
       "raw": {"status": "mapped-standard", "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-recording-document", "outputDiscriminator": "native-recording", "encoding": "caller-supplied exact bytes"}
@@ -221,9 +219,8 @@
     {
       "sourceToken": "SRSensor.odometer",
       "sourceTypeCode": "odometer",
-      "groveSensor": "Sensor.odometer",
       "minimumIOS": "17.0",
-      "scope": "grove-implemented",
+      "scope": "catalog-baseline",
       "status": "mapped-standard",
       "structured": {"status": "deferred", "reason": "Speed, slope, and motion fields are heterogeneous and are not a shared Mobile distance total."},
       "raw": {"status": "mapped-standard", "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-recording-document", "outputDiscriminator": "native-recording", "encoding": "caller-supplied exact bytes"}
@@ -231,9 +228,8 @@
     {
       "sourceToken": "SRSensor.onWristState",
       "sourceTypeCode": "on-wrist",
-      "groveSensor": "Sensor.onWrist",
       "minimumIOS": "14.0",
-      "scope": "grove-implemented",
+      "scope": "catalog-baseline",
       "status": "provider-specific",
       "structured": {"profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-on-wrist-observation", "outputDiscriminator": "on-wrist", "representedFields": ["onWrist", "wristLocation", "crownOrientation", "currentStateStart", "timestamp"], "rule": "Use onWristDate only when onWrist is true and offWristDate only when onWrist is false; the stale opposite-state date must not bracket the current state."},
       "raw": {"status": "mapped-standard", "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-recording-document", "outputDiscriminator": "native-recording", "encoding": "caller-supplied exact bytes"}
@@ -241,9 +237,8 @@
     {
       "sourceToken": "SRSensor.pedometerData",
       "sourceTypeCode": "pedometer",
-      "groveSensor": "Sensor.pedometer",
       "minimumIOS": "14.0",
-      "scope": "grove-implemented",
+      "scope": "catalog-baseline",
       "status": "mapped-standard",
       "structured": {"status": "deferred", "reason": "The composite pedometer record contains multiple aggregates and is not automatically one shared step-count result."},
       "raw": {"status": "mapped-standard", "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-recording-document", "outputDiscriminator": "native-recording", "encoding": "caller-supplied exact bytes"}
@@ -251,9 +246,8 @@
     {
       "sourceToken": "SRSensor.phoneUsageReport",
       "sourceTypeCode": "phone-usage",
-      "groveSensor": "Sensor.phoneUsage",
       "minimumIOS": "14.0",
-      "scope": "grove-implemented",
+      "scope": "catalog-baseline",
       "status": "mapped-standard",
       "structured": {"status": "deferred", "reason": "Phone usage has no reviewed source-neutral clinical Observation representation in version 0.2.0."},
       "raw": {"status": "mapped-standard", "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-recording-document", "outputDiscriminator": "native-recording", "encoding": "caller-supplied exact bytes"}
@@ -261,9 +255,8 @@
     {
       "sourceToken": "SRSensor.photoplethysmogram",
       "sourceTypeCode": "ppg",
-      "groveSensor": "Sensor.ppg",
       "minimumIOS": "17.4",
-      "scope": "grove-implemented",
+      "scope": "catalog-baseline",
       "status": "mapped-standard",
       "structured": {"status": "deferred", "reason": "Version 0.2.0 does not freeze the wavelength/channel and calibration semantics needed for a lossless SampledData mapping."},
       "raw": {"status": "mapped-standard", "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-recording-document", "outputDiscriminator": "native-recording", "encoding": "caller-supplied exact bytes"}
@@ -271,9 +264,8 @@
     {
       "sourceToken": "SRSensor.rotationRate",
       "sourceTypeCode": "rotation-rate",
-      "groveSensor": "Sensor.rotationRate",
       "minimumIOS": "14.0",
-      "scope": "grove-implemented",
+      "scope": "catalog-baseline",
       "status": "supported",
       "structured": {"sourceNeutralProfile": "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-sampled-data-observation", "adapterProfile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-observation", "outputDiscriminator": "sampled-data", "dimensions": 3, "ucumCode": "rad/s", "condition": "All x/y/z values and timestamps are present and prove one exact uniform period; otherwise emit only a Recording Document."},
       "raw": {"status": "mapped-standard", "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-recording-document", "outputDiscriminator": "native-recording", "encoding": "caller-supplied exact bytes"}
@@ -281,9 +273,8 @@
     {
       "sourceToken": "SRSensor.siriSpeechMetrics",
       "sourceTypeCode": "siri-speech-metrics",
-      "groveSensor": "Sensor.siriSpeechMetrics",
       "minimumIOS": "15.0",
-      "scope": "grove-implemented",
+      "scope": "catalog-baseline",
       "status": "mapped-standard",
       "structured": {"status": "deferred", "reason": "Speech metrics have no reviewed source-neutral clinical Observation representation in version 0.2.0."},
       "raw": {"status": "mapped-standard", "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-recording-document", "outputDiscriminator": "native-recording", "encoding": "caller-supplied exact bytes"}
@@ -291,18 +282,16 @@
     {
       "sourceToken": "SRSensor.sleepSessions",
       "sourceTypeCode": "sleep-sessions",
-      "groveSensor": null,
       "minimumIOS": "26.0",
-      "scope": "current-stable-addition",
+      "scope": "stable-addition",
       "status": "deferred",
-      "reason": "The current Grove SensorKit source adapter does not implement this stable platform addition."
+      "reason": "Version 0.2.0 publishes no reviewed output contract for this stable platform symbol."
     },
     {
       "sourceToken": "SRSensor.telephonySpeechMetrics",
       "sourceTypeCode": "telephony-speech-metrics",
-      "groveSensor": "Sensor.telephonySpeechMetrics",
       "minimumIOS": "15.0",
-      "scope": "grove-implemented",
+      "scope": "catalog-baseline",
       "status": "mapped-standard",
       "structured": {"status": "deferred", "reason": "Speech metrics have no reviewed source-neutral clinical Observation representation in version 0.2.0."},
       "raw": {"status": "mapped-standard", "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-recording-document", "outputDiscriminator": "native-recording", "encoding": "caller-supplied exact bytes"}
@@ -310,9 +299,8 @@
     {
       "sourceToken": "SRSensor.visits",
       "sourceTypeCode": "visits",
-      "groveSensor": "Sensor.visits",
       "minimumIOS": "14.0",
-      "scope": "grove-implemented",
+      "scope": "catalog-baseline",
       "status": "provider-specific",
       "structured": {"profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-visit-observation", "outputDiscriminator": "visit-summary", "representedFields": ["locationCategory", "distanceFromHome", "arrivalDateInterval", "departureDateInterval"], "rule": "The widest arrival-start through departure-end Period is the effective interval; exact arrival and departure uncertainty windows remain separate Period components. This output does not assert a clinical Encounter or expose locationId."},
       "raw": {"status": "mapped-standard", "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-recording-document", "outputDiscriminator": "native-recording", "encoding": "caller-supplied exact bytes"}
@@ -320,9 +308,8 @@
     {
       "sourceToken": "SRSensor.wristTemperature",
       "sourceTypeCode": "wrist-temperature",
-      "groveSensor": "Sensor.wristTemperature",
       "minimumIOS": "17.0",
-      "scope": "grove-implemented",
+      "scope": "catalog-baseline",
       "status": "mapped-standard",
       "structured": {"status": "deferred", "reason": "A wrist-temperature session is not automatically the shared body-temperature or basal-body-temperature meaning."},
       "raw": {"status": "mapped-standard", "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-recording-document", "outputDiscriminator": "native-recording", "encoding": "caller-supplied exact bytes"}

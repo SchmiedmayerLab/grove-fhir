@@ -15,8 +15,8 @@ SPDX-License-Identifier: MIT
   waveform meaning is invented.
 - `provider-specific`: a reviewed SensorKit-only structured profile represents the
   source semantics because no exact shared or international profile does.
-- `deferred`: the stream is inventoried, but v0.2.0 admits no output because the Grove
-  source adapter or a lossless representation is not available.
+- `deferred`: the stream is inventoried, but v0.2.0 publishes no admitted output
+  contract.
 - `intentionally-unsupported`: v0.2.0 deliberately rejects an unsafe or misleading
   representation.
 
@@ -32,7 +32,7 @@ SensorKit-only profiles. A visit is not a clinical Encounter. A SensorKit wrist
 temperature session is not automatically body temperature, and a composite pedometer
 record is not automatically one shared step-count result.
 
-See `catalog/sensorkit-adapter.json` for the exact 24 source tokens, platform/Grove
+See `catalog/sensorkit-adapter.json` for the exact 24 source tokens, platform inventory
 scope, OS availability, profile claims, represented fields, fail-closed conditions, and
 status.
 The [authoritative status matrix](status-matrix.html) renders every one of those rows.

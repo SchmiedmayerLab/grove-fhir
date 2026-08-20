@@ -26,8 +26,8 @@ that irregular points are uniform. Structured and raw transformations use the sa
 Connected Health conversion Provenance graph shape.
 
 `catalog/connected-health-adapter.json` is the authoritative v0.2.0 inventory. Every
-source type and consumed source element from the reference provider adapters has exactly
-one status. The catalog is a closed release contract, not a roadmap.
+source type and consumed source element from the closed provider source catalogs has
+exactly one status. The catalog is a closed release contract, not a roadmap.
 
 Continue with [Mapping](mapping.html) and [Implementation](implementation.html). Open
 [Artifacts](artifacts.html) for the package surface.

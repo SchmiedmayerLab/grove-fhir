@@ -93,16 +93,28 @@ class ConnectedHealthCatalogTests(unittest.TestCase):
         self.assertTrue(admission["notFHIRAuthorization"])
 
     def test_provider_and_source_type_inventory_is_closed(self) -> None:
+        source_evidence = self.catalog["sourceEvidence"]
         self.assertEqual(
-            self.catalog["sourceReference"],
-            {
-                "repository": "https://github.com/SchmiedmayerLab/MyHeartCounts-Firebase.git",
-                "revision": "c16f5bbd18aac8d16b393a0cb64e9816c04930e3",
-                "scope": "Exact source types and consumed elements in the Google Health API, Oura, and Withings provider adapters; API fetching behavior is not part of this contract.",
-            },
+            source_evidence["accessed"],
+            "2026-08-20",
         )
+        self.assertIn("already-obtained payloads", source_evidence["scope"])
+        self.assertIn("providers[].sourceTypes[].token", source_evidence["tokenBinding"])
+        evidence_providers = {
+            provider["id"]: provider for provider in source_evidence["providers"]
+        }
+        self.assertEqual(
+            {provider_id: provider["version"] for provider_id, provider in evidence_providers.items()},
+            {"google-health-api": "v4", "oura": "2.0", "withings": "2.0"},
+        )
+        for provider in evidence_providers.values():
+            self.assertTrue(provider["documentation"])
+            self.assertTrue(
+                all(url.startswith("https://") for url in provider["documentation"])
+            )
         providers = {provider["id"]: provider for provider in self.catalog["providers"]}
         self.assertEqual(set(providers), {"google-health-api", "oura", "withings"})
+        self.assertEqual(set(evidence_providers), set(providers))
 
         expected_google = {
             "steps",

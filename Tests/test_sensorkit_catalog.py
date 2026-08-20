@@ -97,54 +97,41 @@ class SensorKitCatalogTests(unittest.TestCase):
         }
         self.assertEqual(set(source_tokens), expected)
         scopes = [entry["scope"] for entry in entries]
-        self.assertEqual(scopes.count("grove-implemented"), 20)
-        self.assertEqual(scopes.count("current-stable-addition"), 2)
+        self.assertEqual(scopes.count("catalog-baseline"), 20)
+        self.assertEqual(scopes.count("stable-addition"), 2)
         self.assertEqual(scopes.count("beta-addition"), 2)
+        self.assertEqual(
+            set(self.catalog["inventoryScopes"]),
+            {"catalog-baseline", "stable-addition", "beta-addition"},
+        )
         self.assertEqual(
             self.catalog["sourceEvidence"]["appleSensorInventory"],
             "https://developer.apple.com/documentation/sensorkit/srsensor",
         )
-
-    def test_grove_tokens_are_exact_and_additions_are_honestly_deferred(self) -> None:
-        by_token = {entry["sourceToken"]: entry for entry in self.catalog["entries"]}
-        expected_grove = {
-            "SRSensor.accelerometer": "Sensor.accelerometer",
-            "SRSensor.ambientLightSensor": "Sensor.ambientLight",
-            "SRSensor.ambientPressure": "Sensor.ambientPressure",
-            "SRSensor.deviceUsageReport": "Sensor.deviceUsage",
-            "SRSensor.electrocardiogram": "Sensor.ecg",
-            "SRSensor.faceMetrics": "Sensor.faceMetrics",
-            "SRSensor.heartRate": "Sensor.heartRate",
-            "SRSensor.keyboardMetrics": "Sensor.keyboardMetrics",
-            "SRSensor.mediaEvents": "Sensor.mediaEvents",
-            "SRSensor.messagesUsageReport": "Sensor.messagesUsage",
-            "SRSensor.odometer": "Sensor.odometer",
-            "SRSensor.onWristState": "Sensor.onWrist",
-            "SRSensor.pedometerData": "Sensor.pedometer",
-            "SRSensor.phoneUsageReport": "Sensor.phoneUsage",
-            "SRSensor.photoplethysmogram": "Sensor.ppg",
-            "SRSensor.rotationRate": "Sensor.rotationRate",
-            "SRSensor.siriSpeechMetrics": "Sensor.siriSpeechMetrics",
-            "SRSensor.telephonySpeechMetrics": "Sensor.telephonySpeechMetrics",
-            "SRSensor.visits": "Sensor.visits",
-            "SRSensor.wristTemperature": "Sensor.wristTemperature",
-        }
         self.assertEqual(
+            self.catalog["sourceEvidence"]["sdkBaseline"],
             {
-                token: entry["groveSensor"]
-                for token, entry in by_token.items()
-                if entry["scope"] == "grove-implemented"
+                "platform": "iPhoneOS",
+                "version": "27.0",
+                "xcodeVersion": "27.0",
+                "xcodeBuild": "27A5237l",
             },
-            expected_grove,
         )
-        for token in (
-            "SRSensor.acousticSettings",
-            "SRSensor.sleepSessions",
-            "SRSensor.headphoneMotion",
-            "SRSensor.headphoneSettings",
-        ):
+        self.assertEqual(
+            self.catalog["sourceEvidence"]["appleFrameworkDocumentation"],
+            "https://developer.apple.com/documentation/sensorkit",
+        )
+
+    def test_platform_additions_are_honestly_deferred(self) -> None:
+        by_token = {entry["sourceToken"]: entry for entry in self.catalog["entries"]}
+        for token in ("SRSensor.acousticSettings", "SRSensor.sleepSessions"):
+            self.assertEqual(by_token[token]["scope"], "stable-addition")
             self.assertEqual(by_token[token]["status"], "deferred")
-            self.assertIsNone(by_token[token]["groveSensor"])
+            self.assertIn("stable platform symbol", by_token[token]["reason"])
+        for token in ("SRSensor.headphoneMotion", "SRSensor.headphoneSettings"):
+            self.assertEqual(by_token[token]["scope"], "beta-addition")
+            self.assertEqual(by_token[token]["status"], "deferred")
+            self.assertIn("beta in the stated SDK baseline", by_token[token]["reason"])
 
     def test_every_row_has_one_definitive_status_and_admitted_contract(self) -> None:
         statuses = set(self.catalog["statusVocabulary"])
@@ -155,7 +142,6 @@ class SensorKitCatalogTests(unittest.TestCase):
                 <= {
                     "sourceToken",
                     "sourceTypeCode",
-                    "groveSensor",
                     "minimumIOS",
                     "scope",
                     "status",

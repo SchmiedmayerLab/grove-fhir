@@ -12,7 +12,7 @@
 CodeSystem: HealthKitSourceTypeCS
 Id: healthkit-source-type
 Title: "HealthKit Source Types"
-Description: "The complete closed HealthKit type inventory consumed by the Grove 0.2.0 adapter. A coding preserves exact source semantics and does not replace the shared or standard clinical coding."
+Description: "The complete closed HealthKit platform source-type inventory frozen by version 0.2.0. A coding preserves exact source semantics and does not replace the shared or standard clinical coding."
 * ^experimental = false
 * ^caseSensitive = true
 * ^content = #complete
@@ -22,8 +22,9 @@ Description: "The complete closed HealthKit type inventory consumed by the Grove
 * #HKCategoryTypeIdentifierAppetiteChanges "Appetite Changes"
 * #HKCategoryTypeIdentifierAppleStandHour "Apple Stand Hour"
 * #HKCategoryTypeIdentifierAppleWalkingSteadinessEvent "Apple Walking Steadiness Event"
-* #HKCategoryTypeIdentifierAudioExposureEvent "Environmental Audio Exposure Event"
+* #HKCategoryTypeIdentifierAudioExposureEvent "Audio Exposure Event (Deprecated)"
 * #HKCategoryTypeIdentifierBladderIncontinence "Bladder Incontinence"
+* #HKCategoryTypeIdentifierBleedingAfterMenopause "Bleeding After Menopause"
 * #HKCategoryTypeIdentifierBleedingAfterPregnancy "Bleeding After Pregnancy"
 * #HKCategoryTypeIdentifierBleedingDuringPregnancy "Bleeding During Pregnancy"
 * #HKCategoryTypeIdentifierBloating "Bloating"
@@ -37,6 +38,7 @@ Description: "The complete closed HealthKit type inventory consumed by the Grove
 * #HKCategoryTypeIdentifierDiarrhea "Diarrhea"
 * #HKCategoryTypeIdentifierDizziness "Dizziness"
 * #HKCategoryTypeIdentifierDrySkin "Dry Skin"
+* #HKCategoryTypeIdentifierEnvironmentalAudioExposureEvent "Environmental Audio Exposure Event"
 * #HKCategoryTypeIdentifierFainting "Fainting"
 * #HKCategoryTypeIdentifierFatigue "Fatigue"
 * #HKCategoryTypeIdentifierFever "Fever"
@@ -48,6 +50,7 @@ Description: "The complete closed HealthKit type inventory consumed by the Grove
 * #HKCategoryTypeIdentifierHeartburn "Heartburn"
 * #HKCategoryTypeIdentifierHighHeartRateEvent "High Heart Rate Event"
 * #HKCategoryTypeIdentifierHotFlashes "Hot Flashes"
+* #HKCategoryTypeIdentifierHypertensionEvent "Hypertension Event"
 * #HKCategoryTypeIdentifierInfrequentMenstrualCycles "Infrequent Menstrual Cycles"
 * #HKCategoryTypeIdentifierIntermenstrualBleeding "Intermenstrual Bleeding"
 * #HKCategoryTypeIdentifierIrregularHeartRhythmEvent "Irregular Heart Rhythm Event"
@@ -59,6 +62,7 @@ Description: "The complete closed HealthKit type inventory consumed by the Grove
 * #HKCategoryTypeIdentifierLowHeartRateEvent "Low Heart Rate Event"
 * #HKCategoryTypeIdentifierLowerBackPain "Lower Back Pain"
 * #HKCategoryTypeIdentifierMemoryLapse "Memory Lapse"
+* #HKCategoryTypeIdentifierMenopausalState "Menopausal State"
 * #HKCategoryTypeIdentifierMenstrualFlow "Menstrual Flow"
 * #HKCategoryTypeIdentifierMindfulSession "Mindful Session"
 * #HKCategoryTypeIdentifierMoodChanges "Mood Changes"
@@ -78,7 +82,6 @@ Description: "The complete closed HealthKit type inventory consumed by the Grove
 * #HKCategoryTypeIdentifierSinusCongestion "Sinus Congestion"
 * #HKCategoryTypeIdentifierSkippedHeartbeat "Skipped Heartbeat"
 * #HKCategoryTypeIdentifierSleepAnalysis "Sleep Analysis"
-* #HKCategoryTypeIdentifierSleepAnalysis#session-aggregate "Sleep Duration Session Aggregate"
 * #HKCategoryTypeIdentifierSleepApneaEvent "Sleep Apnea Event"
 * #HKCategoryTypeIdentifierSleepChanges "Sleep Changes"
 * #HKCategoryTypeIdentifierSoreThroat "Sore Throat"
@@ -230,6 +233,6 @@ Description: "The complete closed HealthKit type inventory consumed by the Grove
 ValueSet: HealthKitSourceTypeVS
 Id: healthkit-source-type
 Title: "HealthKit Source Types"
-Description: "The complete closed set of HealthKit source types known to the Grove 0.2.0 adapter."
+Description: "The complete closed set of HealthKit platform source types in the version 0.2.0 catalog."
 * ^experimental = false
 * include codes from system HealthKitSourceTypeCS

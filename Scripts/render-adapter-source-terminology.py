@@ -48,7 +48,7 @@ def healthkit() -> str:
     return HEADER + f'''CodeSystem: HealthKitSourceTypeCS
 Id: healthkit-source-type
 Title: "HealthKit Source Types"
-Description: "The complete closed HealthKit type inventory consumed by the Grove 0.2.0 adapter. A coding preserves exact source semantics and does not replace the shared or standard clinical coding."
+Description: "The complete closed HealthKit platform source-type inventory frozen by version 0.2.0. A coding preserves exact source semantics and does not replace the shared or standard clinical coding."
 * ^experimental = false
 * ^caseSensitive = true
 * ^content = #complete
@@ -58,7 +58,7 @@ Description: "The complete closed HealthKit type inventory consumed by the Grove
 ValueSet: HealthKitSourceTypeVS
 Id: healthkit-source-type
 Title: "HealthKit Source Types"
-Description: "The complete closed set of HealthKit source types known to the Grove 0.2.0 adapter."
+Description: "The complete closed set of HealthKit platform source types in the version 0.2.0 catalog."
 * ^experimental = false
 * include codes from system HealthKitSourceTypeCS
 '''

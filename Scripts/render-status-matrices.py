@@ -71,27 +71,29 @@ def healthkit() -> str:
                 f"`{item['sourceTypeIdentifier']}`",
                 item["title"],
                 f"`{item['status']}`",
-                f"`{item['swiftImplementationStatus']}`",
                 ", ".join(item["measurementIDs"]),
                 profile_names(item["profiles"]),
                 item.get("requirement"),
             ]
         )
-    return (
+    source = catalog["source"]
+    sdk = source["sdkBaseline"]
+    result = (
         HEADER
         + "# Authoritative HealthKit status matrix\n\n"
-        + f"This table is the complete, closed v0.2.0 inventory of all {catalog['source']['rowCount']} HealthKit "
-        + f"types captured from `{catalog['source']['groveRepository']}` at exact revision "
-        + f"`{catalog['source']['groveRevision']}`. Each row has one definitive "
-        "contract status; this is a release contract, not a roadmap. `supported` means "
-        "the Swift adapter has a conformant output contract in this release. All other "
-        "rows are not admitted by v0.2.0 and producers fail closed.\n\n"
+        + f"This table is the complete, closed v0.2.0 inventory of all {source['rowCount']} "
+        f"Apple HealthKit platform source types frozen against {sdk['platform']} "
+        f"{sdk['version']} from Xcode {sdk['xcodeVersion']} build `{sdk['xcodeBuild']}`. "
+        "The evidence is the official Apple platform documentation and the exact SDK "
+        "provenance declared by the catalog. Each row has one definitive contract status; "
+        "this is a release contract, not a roadmap. `supported` means v0.2.0 admits a "
+        "conformant output contract. All other rows are not admitted and producers fail "
+        "closed.\n\n"
         + table(
             [
                 "HealthKit type",
                 "Title",
                 "Contract status",
-                "Swift status",
                 "Measurement",
                 "Direct profile claim(s)",
                 "Binding reason / requirement",
@@ -99,6 +101,36 @@ def healthkit() -> str:
             rows,
         )
     )
+    derived_rows = [
+        [
+            f"`{item['id']}`",
+            item["title"],
+            [f"`{identifier}`" for identifier in item["sourceTypeIdentifiers"]],
+            f"`{item['status']}`",
+            item["measurementIDs"],
+            profile_names(item["profiles"]),
+            item["requirement"],
+        ]
+        for item in catalog["derivedAggregates"]
+    ]
+    result += (
+        "\n## Derived aggregate contracts\n\n"
+        "These rows are derived mappings, not HealthKit platform source identifiers, and "
+        "are excluded from the source-type count and source-type CodeSystem.\n\n"
+        + table(
+            [
+                "Aggregate",
+                "Title",
+                "Input source type(s)",
+                "Contract status",
+                "Measurement",
+                "Target profile",
+                "Binding reason / requirement",
+            ],
+            derived_rows,
+        )
+    )
+    return result
 
 
 def health_connect() -> str:
@@ -152,7 +184,6 @@ def sensorkit() -> str:
             [
                 f"`{item['sourceToken']}`",
                 f"`{item['sourceTypeCode']}`",
-                item.get("groveSensor"),
                 item["scope"],
                 item["minimumIOS"],
                 f"`{item['status']}`",
@@ -164,16 +195,15 @@ def sensorkit() -> str:
     return (
         HEADER
         + "# Authoritative SensorKit status matrix\n\n"
-        + "This table is the complete v0.2.0 SensorKit inventory: the 20 streams "
-        "implemented by the current Grove source adapter, two current stable platform "
-        "additions, and two beta/unavailable additions. Each of the 24 rows has one "
-        "definitive status. Native Recording Document support is distinct from a "
+        + "This table is the complete v0.2.0 SensorKit inventory: 20 catalog-baseline "
+        "platform symbols, two stable additions, and two beta additions in the stated "
+        "Apple SDK baseline. Each of the 24 rows has one definitive status. Native "
+        "Recording Document support is distinct from a "
         "structured semantic mapping and never implies that fetching occurs in FHIR.\n\n"
         + table(
             [
                 "SensorKit source",
                 "Adapter code",
-                "Grove source case",
                 "Inventory scope",
                 "Minimum iOS",
                 "Status",
