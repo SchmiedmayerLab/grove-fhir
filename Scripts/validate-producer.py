@@ -16,6 +16,7 @@ import subprocess
 import sys
 import tarfile
 import tempfile
+import uuid
 from pathlib import Path, PurePosixPath
 from typing import Any
 
@@ -23,7 +24,15 @@ from typing import Any
 PACKAGE_ALIAS = re.compile(r"^[a-z][a-z0-9-]*$")
 PACKAGE_ID = re.compile(r"^[a-z0-9.-]+$")
 GROVE_PROFILE = "https://grovealliance.org/fhir/"
+EXCHANGE_BUNDLE_PROFILE = (
+    "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle"
+)
+ENTRY_IDENTIFIER_EXTENSION = (
+    "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-exchange-entry-identifier"
+)
+ENTRY_UUID_NAMESPACE = uuid.UUID("a9a39cf1-c944-5d15-a3c2-c395969ea101")
 TOP_LEVEL_KEYS = {"schemaVersion", "fhirVersion", "producer", "packages", "resources"}
+CATALOG_ROOT = Path(__file__).parents[1] / "catalog"
 
 
 class ProducerValidationError(ValueError):
@@ -62,6 +71,142 @@ def safe_resource_path(root: Path, value: Any) -> Path:
     if path.is_symlink() or not path.is_file() or path.resolve().parent != root.resolve() and root.resolve() not in path.resolve().parents:
         raise ProducerValidationError(f"resource is absent, linked, or outside the manifest directory: {value}")
     return path
+
+
+def all_references(value: Any) -> list[str]:
+    references: list[str] = []
+    if isinstance(value, dict):
+        reference = value.get("reference")
+        if isinstance(reference, str):
+            references.append(reference)
+        for child in value.values():
+            references.extend(all_references(child))
+    elif isinstance(value, list):
+        for child in value:
+            references.extend(all_references(child))
+    return references
+
+
+def complete_identifier(value: Any, label: str) -> tuple[str, str]:
+    if not isinstance(value, dict):
+        raise ProducerValidationError(f"{label} must be an Identifier")
+    system = value.get("system")
+    identifier_value = value.get("value")
+    if not isinstance(system, str) or not system or not isinstance(identifier_value, str) or not identifier_value:
+        raise ProducerValidationError(f"{label} must have a complete system and value")
+    return system, identifier_value
+
+
+def canonical_json_string(value: str) -> str:
+    """Serialize one Unicode scalar-value string using RFC 8785/JCS escaping."""
+    escapes = {
+        '"': '\\"',
+        "\\": "\\\\",
+        "\b": "\\b",
+        "\t": "\\t",
+        "\n": "\\n",
+        "\f": "\\f",
+        "\r": "\\r",
+    }
+    output = ['"']
+    for character in value:
+        point = ord(character)
+        if 0xD800 <= point <= 0xDFFF:
+            raise ProducerValidationError("entry identity contains an invalid Unicode surrogate")
+        if character in escapes:
+            output.append(escapes[character])
+        elif point <= 0x1F:
+            output.append(f"\\u{point:04x}")
+        else:
+            output.append(character)
+    output.append('"')
+    return "".join(output)
+
+
+def canonical_identifier_name(system: str, value: str) -> str:
+    """Return the RFC 8785 serialization of exactly ``[system, value]``."""
+    return f"[{canonical_json_string(system)},{canonical_json_string(value)}]"
+
+
+def expected_entry_full_url(system: str, value: str) -> str:
+    name = canonical_identifier_name(system, value)
+    return f"urn:uuid:{uuid.uuid5(ENTRY_UUID_NAMESPACE, name)}"
+
+
+def adapter_profile_contract() -> tuple[set[str], set[str]]:
+    """Return the exact shared-measurement and adapter profile sets."""
+    measurements = read_json(CATALOG_ROOT / "measurement-catalog.json")
+    claims = read_json(CATALOG_ROOT / "profile-claims.json")
+    shared = {
+        f"https://grovealliance.org/fhir/mobile/StructureDefinition/{entry['profile']}"
+        for entry in measurements["measurements"]
+    }
+    adapters = set(claims["observationAdapterClaim"]["adapterProfiles"])
+    return shared, adapters
+
+
+def validate_adapter_profile_claim(resource: dict[str, Any], label: str) -> None:
+    """Require an adapter Observation to claim exactly shared metric + adapter."""
+    if resource.get("resourceType") != "Observation":
+        return
+    profiles = resource.get("meta", {}).get("profile", [])
+    if not isinstance(profiles, list) or any(not isinstance(profile, str) for profile in profiles):
+        raise ProducerValidationError(f"{label} has invalid meta.profile")
+    shared_profiles, adapter_profiles = adapter_profile_contract()
+    claimed_adapters = set(profiles) & adapter_profiles
+    if not claimed_adapters:
+        return
+    claimed_shared = set(profiles) & shared_profiles
+    if len(claimed_adapters) != 1 or len(claimed_shared) != 1 or len(profiles) != 2 or len(set(profiles)) != 2:
+        raise ProducerValidationError(
+            f"{label} adapter Observation must claim exactly one shared measurement profile "
+            "and exactly one adapter profile"
+        )
+
+
+def validate_exchange_bundle(resource: dict[str, Any], label: str) -> None:
+    profiles = resource.get("meta", {}).get("profile", [])
+    if EXCHANGE_BUNDLE_PROFILE not in profiles:
+        return
+    if resource.get("type") != "collection":
+        raise ProducerValidationError(f"{label} exchange Bundle must have type collection")
+    complete_identifier(resource.get("identifier"), f"{label} Bundle.identifier")
+    entries = resource.get("entry")
+    if not isinstance(entries, list) or not entries:
+        raise ProducerValidationError(f"{label} exchange Bundle must contain entries")
+    full_urls: set[str] = set()
+    internal_logical_references: set[str] = set()
+    entry_resources: list[dict[str, Any]] = []
+    for index, entry in enumerate(entries):
+        if not isinstance(entry, dict) or not isinstance(entry.get("resource"), dict):
+            raise ProducerValidationError(f"{label} entry[{index}] must contain a resource")
+        extensions = entry.get("extension", [])
+        identities = [
+            extension.get("valueIdentifier")
+            for extension in extensions
+            if isinstance(extension, dict) and extension.get("url") == ENTRY_IDENTIFIER_EXTENSION
+        ] if isinstance(extensions, list) else []
+        if len(identities) != 1:
+            raise ProducerValidationError(f"{label} entry[{index}] must have one entry identifier")
+        system, value = complete_identifier(identities[0], f"{label} entry[{index}] identity")
+        expected = expected_entry_full_url(system, value)
+        if entry.get("fullUrl") != expected:
+            raise ProducerValidationError(f"{label} entry[{index}] fullUrl is not the deterministic UUID URN")
+        if expected in full_urls:
+            raise ProducerValidationError(f"{label} repeats entry fullUrl {expected}")
+        full_urls.add(expected)
+        entry_resource = entry["resource"]
+        validate_adapter_profile_claim(entry_resource, f"{label} entry[{index}].resource")
+        entry_resources.append(entry_resource)
+        resource_type = entry_resource.get("resourceType")
+        resource_id = entry_resource.get("id")
+        if isinstance(resource_type, str) and isinstance(resource_id, str):
+            internal_logical_references.add(f"{resource_type}/{resource_id}")
+    for reference in all_references(entry_resources):
+        if reference.startswith("urn:uuid:") and reference not in full_urls:
+            raise ProducerValidationError(f"{label} has unresolved internal UUID reference {reference}")
+        if reference in internal_logical_references:
+            raise ProducerValidationError(f"{label} internal entry reference must use its UUID URN: {reference}")
 
 
 def validate_manifest(path: Path) -> tuple[dict[str, Any], list[Path]]:
@@ -140,6 +285,8 @@ def validate_manifest(path: Path) -> tuple[dict[str, Any], list[Path]]:
         missing = set(required) - set(actual)
         if missing:
             raise ProducerValidationError(f"{relative} is missing required profiles: {', '.join(sorted(missing))}")
+        validate_adapter_profile_claim(resource, relative)
+        validate_exchange_bundle(resource, relative)
         paths.append(resource_path)
     return manifest, paths
 

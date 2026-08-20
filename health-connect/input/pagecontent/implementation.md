@@ -33,26 +33,26 @@ curl --fail --location \
 ```
 
 The Health Connect package declares its exact Mobile dependency. These pre-1.0 continuous
-builds retain version `0.1.0` while their checksums change, so replace an old cache directory
+builds retain version `0.2.0` while their checksums change, so replace an old cache directory
 rather than overlaying a new archive.
 
 ```sh
 cache_backup="$(mktemp -d)"
-test ! -e "$HOME/.fhir/packages/org.grovealliance.fhir.mobile#0.1.0" || \
-  mv "$HOME/.fhir/packages/org.grovealliance.fhir.mobile#0.1.0" "$cache_backup/"
-test ! -e "$HOME/.fhir/packages/org.grovealliance.fhir.health-connect#0.1.0" || \
-  mv "$HOME/.fhir/packages/org.grovealliance.fhir.health-connect#0.1.0" "$cache_backup/"
-mkdir -p "$HOME/.fhir/packages/org.grovealliance.fhir.mobile#0.1.0"
-mkdir -p "$HOME/.fhir/packages/org.grovealliance.fhir.health-connect#0.1.0"
+test ! -e "$HOME/.fhir/packages/org.grovealliance.fhir.mobile#0.2.0" || \
+  mv "$HOME/.fhir/packages/org.grovealliance.fhir.mobile#0.2.0" "$cache_backup/"
+test ! -e "$HOME/.fhir/packages/org.grovealliance.fhir.health-connect#0.2.0" || \
+  mv "$HOME/.fhir/packages/org.grovealliance.fhir.health-connect#0.2.0" "$cache_backup/"
+mkdir -p "$HOME/.fhir/packages/org.grovealliance.fhir.mobile#0.2.0"
+mkdir -p "$HOME/.fhir/packages/org.grovealliance.fhir.health-connect#0.2.0"
 tar -xzf grove-packages/mobile/package.tgz \
-  -C "$HOME/.fhir/packages/org.grovealliance.fhir.mobile#0.1.0"
+  -C "$HOME/.fhir/packages/org.grovealliance.fhir.mobile#0.2.0"
 tar -xzf grove-packages/health-connect/package.tgz \
-  -C "$HOME/.fhir/packages/org.grovealliance.fhir.health-connect#0.1.0"
+  -C "$HOME/.fhir/packages/org.grovealliance.fhir.health-connect#0.2.0"
 ```
 
 ```yaml
 dependencies:
-  org.grovealliance.fhir.health-connect: 0.1.0
+  org.grovealliance.fhir.health-connect: 0.2.0
 ```
 
 ### Validate an Observation

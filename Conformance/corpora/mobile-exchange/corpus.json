@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "bases": [
+    {
+      "id": "mobile-exchange",
+      "path": "exchange-bundle.json"
+    }
+  ],
+  "cases": [
+    {
+      "id": "missing-entry-identifier",
+      "base": "mobile-exchange",
+      "patch": [
+        {
+          "op": "remove",
+          "path": "/entry/0/extension"
+        }
+      ],
+      "expectedRule": {
+        "code": "mobile-exchange.entry-identifier",
+        "reason": "Every Bundle entry must carry exactly one complete Grove exchange entry identifier.",
+        "location": "Bundle.entry[0]",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "non-deterministic-full-url",
+      "base": "mobile-exchange",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/entry/1/fullUrl",
+          "value": "urn:uuid:00000000-0000-5000-8000-000000000000"
+        }
+      ],
+      "expectedRule": {
+        "code": "mobile-exchange.deterministic-full-url",
+        "reason": "Bundle.entry.fullUrl must be the UUID version 5 value derived from its complete entry identifier.",
+        "location": "Bundle.entry[1].fullUrl",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "unresolved-internal-reference",
+      "base": "mobile-exchange",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/entry/1/resource/subject/reference",
+          "value": "urn:uuid:00000000-0000-5000-8000-000000000001"
+        }
+      ],
+      "expectedRule": {
+        "code": "mobile-exchange.resolved-reference",
+        "reason": "Every internal UUID URN reference must resolve to a Bundle entry fullUrl.",
+        "location": "Bundle.entry[1].resource.subject.reference",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "wrong-heart-rate-unit",
+      "base": "mobile-exchange",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/entry/1/resource/valueQuantity/code",
+          "value": "kg"
+        }
+      ],
+      "expectedRule": {
+        "code": "mobile-heart-rate.fixed-unit",
+        "reason": "A Grove Mobile heart-rate result must use the fixed UCUM code /min.",
+        "location": "Bundle.entry[1].resource.valueQuantity.code",
+        "severity": "error"
+      }
+    }
+  ]
+}

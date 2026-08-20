@@ -6,50 +6,69 @@ SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTR
 SPDX-License-Identifier: MIT
 -->
 
-A mobile measurement is a FHIR R4 `Observation` that conforms to the
-[Grove Mobile Observation](StructureDefinition-grove-mobile-observation.html) envelope
-and, when available, a separate profile for its clinical meaning. FHIR R4 explicitly
-supports declaring multiple profiles when they describe independent aspects of the
-same resource.
+A mobile measurement is a FHIR R4 `Observation`. For the shared measurements below,
+the Grove profile imposes the authoritative FHIR R4 Vital Signs profile when one
+exists and adds source-neutral exchange identity and provenance context. The generic
+[Grove Mobile Observation](StructureDefinition-grove-mobile-observation.html) remains
+available for a measurement governed by another established profile.
 
-| Measurement | Profile | Clinical definition |
-|---|---|---|
-| Heart rate | Mobile envelope + [FHIR R4 Heart Rate](https://hl7.org/fhir/R4/heartrate.html) | LOINC `8867-4`, UCUM `/min` |
-| Body weight | Mobile envelope + [FHIR R4 Body Weight](https://hl7.org/fhir/R4/bodyweight.html) | LOINC `29463-7`, a permitted UCUM body-weight unit |
-| Step count | Mobile envelope + [Grove Mobile Step Count](StructureDefinition-grove-mobile-step-count.html) | Grove `step-count-total`, UCUM `{steps}`, attributed to an exact Period |
-| Another measurement | Mobile envelope + an appropriate clinical or research profile | The implementation supplies an established code when no suitable profile exists |
+### Shared measurement contract
 
-The Mobile envelope covers exchange identity, time, device roles, study context, and
-conversion. It does not copy the constraints from standard clinical profiles. A
-heart-rate record declares both profile canonicals in `meta.profile` and must validate
-against both contracts.
+| Measurement | Grove profile | Standard basis | Normalized result | Effective |
+|---|---|---|---|---|
+| Heart rate | `grove-mobile-heart-rate` | FHIR R4 Heart Rate, LOINC `8867-4` | UCUM `/min` | `dateTime` |
+| Body weight | `grove-mobile-body-weight` | FHIR R4 Body Weight, LOINC `29463-7` | UCUM `kg` | `dateTime` |
+| Blood pressure | `grove-mobile-blood-pressure` | FHIR R4 Blood Pressure, LOINC `85354-9` | `8480-6` and `8462-4`, UCUM `mm[Hg]` | `dateTime` |
+| Body temperature | `grove-mobile-body-temperature` | FHIR R4 Body Temperature, LOINC `8310-5` | UCUM `Cel` | `dateTime` |
+| Respiratory rate | `grove-mobile-respiratory-rate` | FHIR R4 Respiratory Rate, LOINC `9279-1` | UCUM `/min` | `dateTime` |
+| Oxygen saturation | `grove-mobile-oxygen-saturation` | FHIR R4 Oxygen Saturation, LOINC `2708-6` | UCUM `%` | `dateTime` |
+| Body height | `grove-mobile-body-height` | FHIR R4 Body Height, LOINC `8302-2` | UCUM `cm` | `dateTime` |
+| BMI | `grove-mobile-bmi` | FHIR R4 BMI, LOINC `39156-5` | UCUM `kg/m2` | `dateTime` |
+| Basal body temperature | `grove-mobile-basal-body-temperature` | Grove `basal-body-temperature` | UCUM `Cel` | `dateTime` |
+| Whole-blood glucose | `grove-mobile-blood-glucose` | LOINC `2339-0`, whole-blood specimen | UCUM `mg/dL` | `dateTime` |
+| Capillary-blood glucose | `grove-mobile-capillary-blood-glucose` | LOINC `32016-8`, capillary-blood specimen | UCUM `mg/dL` | `dateTime` |
+| Serum/plasma glucose | `grove-mobile-serum-plasma-glucose` | LOINC `2345-7`, serum or plasma specimen | UCUM `mg/dL` | `dateTime` |
+| Interstitial glucose | `grove-mobile-interstitial-glucose` | LOINC `99504-3`, interstitial-fluid specimen | UCUM `mg/dL` | `dateTime` |
+| Step count | `grove-mobile-step-count` | Grove `step-count-total` | UCUM `{steps}` | `Period` |
+| Distance | `grove-mobile-distance` | Grove `distance-traveled` | UCUM `m` | `Period` |
+| Active energy | `grove-mobile-active-energy` | Grove `active-energy-burned` | UCUM `kcal` | `Period` |
+| Sleep duration | `grove-mobile-sleep-duration` | LOINC `93832-4` | UCUM `h` | `Period` |
+| Sleep stage | `grove-mobile-sleep-stage` | Grove `sleep-stage` and required Grove stage value set | coded stage | `Period` |
 
-### Fields every mapping must address
+The machine-readable source of this table is
+`catalog/measurement-catalog.json` in the source repository. A standard-first Grove
+profile declares the standard profile through the R4 `structuredefinition-imposeProfile`
+extension. An instance claiming the Grove profile therefore has to validate against
+both profiles; a producer declares only the Grove canonical in `meta.profile`.
+
+An adapter output declares exactly two canonicals: this shared measurement profile
+and the one adapter profile. It does not separately declare Grove Mobile Observation
+or the imposed core profile; those constraints are inherited. This exact-two rule
+prevents a producer from presenting ambiguous adapter or measurement semantics.
+
+### Fields every mapping addresses
 
 | Question | FHIR element | Rule |
 |---|---|---|
-| Which exchanged record is this? | `identifier` | At least one stable `(system, value)` pair |
-| What was measured? | `code` | Use the code fixed by the domain profile, or an established code with the generic profile |
+| Which exchanged record is this? | `identifier` | At least one stable complete `(system, value)` pair |
+| What was measured? | `code` | Fixed by the selected profile |
 | Who does the result describe? | `subject` | Exactly one Patient reference |
-| When did it apply? | `effectiveDateTime` or `effectivePeriod` | Required; a general interval has a start and may remain open |
-| What was the result? | `value[x]`, `component`, or `hasMember` | Required unless `dataAbsentReason` explains its absence |
-| Which hardware or metric measured it? | `device` | Device or DeviceMetric, when known |
-| How was this record captured? | `grove-recording-method` | Add only when the source positively establishes the capture mode |
-| Which app mediated the measurement? | `observation-gatewayDevice` | Application Device, only when it actually routed or mediated the measurement |
-| Which study is it relevant to? | `workflow-researchStudy` | ResearchStudy reference, when applicable |
+| When did it apply? | `effectiveDateTime` or `effectivePeriod` | Fixed by the selected profile |
+| What was the result? | `value[x]`, `component`, or `hasMember` | Required unless `dataAbsentReason` explains absence |
+| Which hardware measured it? | `device` | Device or DeviceMetric, when known |
+| How was it captured? | `grove-recording-method` | Only when the source positively establishes the mode |
+| Which app mediated it? | `observation-gatewayDevice` | Only when the application actually mediated the measurement |
+| Which study applies? | `workflow-researchStudy` | ResearchStudy reference, when applicable |
 
-The [heart-rate example](Observation-GroveMobileHeartRateExample.html) shows these
-fields together. The [step-count example](Observation-GroveMobileStepCountExample.html)
-shows the required interval and source count. The heart-rate example's central clinical
-fields are:
+The [heart-rate example](Observation-GroveMobileHeartRateExample.html) demonstrates a
+standard-first profile:
 
 ```json
 {
   "resourceType": "Observation",
   "meta": {
     "profile": [
-      "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-observation",
-      "http://hl7.org/fhir/StructureDefinition/heartrate"
+      "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-heart-rate"
     ]
   },
   "identifier": [{
@@ -57,14 +76,8 @@ fields are:
     "value": "heart-rate-20260819-001"
   }],
   "status": "final",
-  "code": {
-    "coding": [{
-      "system": "http://loinc.org",
-      "code": "8867-4",
-      "display": "Heart rate"
-    }]
-  },
-  "subject": { "reference": "Patient/GroveMobilePatientExample" },
+  "code": {"coding": [{"system": "http://loinc.org", "code": "8867-4"}]},
+  "subject": {"reference": "Patient/GroveMobilePatientExample"},
   "effectiveDateTime": "2026-08-19T10:30:00.251-07:00",
   "valueQuantity": {
     "value": 72,
@@ -78,60 +91,62 @@ fields are:
 
 An Observation identifier is a business identifier for the exchanged record, not the
 FHIR server's resource id. Producers assign a namespace they control and a stable value
-within that namespace. Consumers compare the complete `(system, value)` pair. A bare
-UUID or value is insufficient because another producer may issue the same value in a
-different namespace.
+within that namespace. Consumers compare the complete `(system, value)` pair.
 
 An adapter may require an additional identifier for the original platform object. It
-defines that identifier system in its own package. Do not put a platform object UUID
-into `Observation.id`; a server may replace that logical id when it creates or copies
-the resource.
+defines that identifier system in its own package. Never put a HealthKit UUID, Health
+Connect record ID, or provider record ID into `Resource.id`; a repository may assign or
+replace that logical id.
 
 ### Codes and quantities
 
-`Observation.code` states what the result means. Prefer an established domain profile
-and terminology instead of recreating its constraints in Grove. Heart rate and body
-weight therefore conform directly to the FHIR R4 Vital Signs profiles alongside the
-Mobile envelope.
+Prefer an established domain profile and terminology. Grove imposes the FHIR R4 core
+profiles for heart rate, body weight, blood pressure, body temperature, respiratory
+rate, oxygen saturation, height, and BMI rather than recreating them.
 
-Step count uses the Grove `step-count-total` code and preserves the source interval
-total in UCUM `{steps}`. The required Period defines the interval to which the count is
-attributed, and its end must be later than its start. The value is the total count within
-that exact Period; it is not a point sample or a normalized rate. Consumers compare
-counts only with the associated Period and must not assume that equal counts represent
-equal activity rates.
+Step count, distance, and active energy use Grove codes because no R4 core profile or
+established code exactly expresses their source-neutral interval-total semantics. The
+code definitions are complete and intentionally narrow. Sleep duration uses LOINC
+`93832-4`; it summarizes total sleep and does not represent stages.
 
-Quantities carry a machine-readable UCUM system and code. Preserve enough precision
-to reproduce the source value.
+Quantities carry the UCUM system and the catalog code. Producers convert supported
+source units without inventing precision. A glucose source selects the profile that
+fixes both analyte code and specimen: whole blood, capillary blood, serum/plasma, or
+interstitial fluid. Unknown-specimen glucose and any unlisted specimen fail closed;
+they are never relabeled as blood.
+
+### Exchange graph
+
+The normative producer output is a
+[Grove Mobile Exchange Bundle](StructureDefinition-grove-mobile-exchange-bundle.html),
+a FHIR `collection` Bundle. Every entry carries one complete
+`grove-exchange-entry-identifier`; its `fullUrl` is the UUID version 5 value defined by
+`catalog/exchange-identity.json`. References between Bundle entries use those UUID URNs.
+
+The RFC 8785 JSON Canonicalization Scheme serialization of exactly `[system,value]` is
+the UUID name under namespace `a9a39cf1-c944-5d15-a3c2-c395969ea101`. This works for
+resources without a native
+`identifier`, such as Provenance, without turning `Resource.id` into source identity.
+The entry identifier supplements rather than replaces a resource's native identifier,
+canonical URL, or Provenance source identity.
+
+The Bundle has no receiver byte, resource-count, paging, retry, or storage limits.
+Those are transport and deployment policy outside this guide.
 
 ### Time, capture mode, and clinical method
 
-Use `effectiveDateTime` for a point measurement and `effectivePeriod` for a result over
-an interval. Preserve fractional seconds and the numeric UTC offset. When the source
-also supplies an IANA time-zone name, attach the standard `timezone` extension to the
-date-time value; the named zone must agree with the offset at that instant.
+Use the effective datatype fixed by the selected profile. Preserve fractional seconds
+and the numeric UTC offset. When the source also supplies an IANA time-zone name, attach
+the standard `timezone` extension; the name must agree with the offset at that instant.
 
 The [Grove Recording Method extension](StructureDefinition-grove-recording-method.html)
-describes a positively established capture mode:
-
-- `manual-entry`: a person entered the result;
-- `actively-recorded`: a person deliberately initiated or participated in this
-  measurement; or
-- `automatically-recorded`: the source recorded this measurement without individual
-  initiation.
-
-Omit the extension when the mode is unknown. A converter must not infer automatic
-recording merely because a source lacks a user-entered flag. `Observation.method`
-remains available for the clinical measurement technique, such as a laboratory or
-device procedure; Grove does not bind it to capture mode.
+describes positively established `manual-entry`, `actively-recorded`, or
+`automatically-recorded` capture. Omit it when unknown. `Observation.method` remains
+available for the clinical measurement technique and is not a capture-mode field.
 
 ### Must Support
 
 For elements marked **Must Support**, a producer includes the element whenever the
 source supplies the fact and the mapping is authorized. A consumer accepts the element
-when present and preserves it or exposes its meaning to downstream processing. These
-obligations do not turn an optional cardinality into a required one.
-
-A producer always supplies the required identifier, status, code, Patient, effective
-time, and either a result or `dataAbsentReason`. It supplies category, capture mode,
-devices, and other Must Support context when those facts are known.
+when present and preserves it or exposes its meaning. This does not turn an optional
+cardinality into a required one.

@@ -11,7 +11,7 @@ the source context your application can state accurately.
 
 ### Producer sequence
 
-1. Apply the Mobile envelope and choose the matching clinical or research profile.
+1. Select the exact shared measurement profile from the normative catalog.
 2. Assign a stable Observation identifier as a complete `(system, value)` pair.
 3. Set the Patient, effective time, status, and result. Add category and recording
    method when they are known.
@@ -20,7 +20,9 @@ the source context your application can state accurately.
    the measurement.
 6. Link applicable studies with `workflow-researchStudy`.
 7. Create conversion Provenance when the application transformed a source record.
-8. Validate the resource against FHIR R4 and the Grove package.
+8. Place the complete graph in a Grove Mobile Exchange Bundle, derive deterministic
+   entry UUID URNs, and use them for internal references.
+9. Validate the Bundle against FHIR R4 and the Grove package.
 
 Source-platform fields do not pass through a generic metadata container. A platform
 adapter owns its identifier namespaces, source-type terminology, and a small allowlist
@@ -33,45 +35,31 @@ established terminology.
 FHIR package tooling identifies this guide as:
 
 ```text
-org.grovealliance.fhir.mobile#0.1.0
+org.grovealliance.fhir.mobile#0.2.0
 ```
 
-The package archive and checksum are published at:
-
-```text
-https://grovealliance.org/fhir/mobile/package.tgz
-https://grovealliance.org/fhir/mobile/package.tgz.sha256
-```
-
-This pre-1.0 continuous build is not published in a FHIR package registry. Download the
-archive, verify its checksum, and unpack it into the standard FHIR package cache before
-running SUSHI. The continuous build keeps the same pre-1.0 package version while its
-checksum changes. Replace the exact cache directory when updating it; do not extract a
-new archive over an older copy because removed artifacts would remain:
+The Grove canonical is an identifier, not a package-download promise. Version 0.2.0 is
+not hosted at the canonical URLs and is not published in a FHIR package registry.
+Build the package from the reviewed repository revision, record that revision and the
+package checksum in producer CI, and install the resulting archive in an isolated FHIR
+package cache. Do not extract a new archive over an older copy because removed artifacts
+would remain:
 
 ```sh
-mkdir -p grove-mobile-package
-curl --fail --location \
-  https://grovealliance.org/fhir/mobile/package.tgz \
-  --output grove-mobile-package/package.tgz
-curl --fail --location \
-  https://grovealliance.org/fhir/mobile/package.tgz.sha256 \
-  --output grove-mobile-package/package.tgz.sha256
-(cd grove-mobile-package && shasum -a 256 --check package.tgz.sha256)
 cache_backup="$(mktemp -d)"
-test ! -e "$HOME/.fhir/packages/org.grovealliance.fhir.mobile#0.1.0" || \
-  mv "$HOME/.fhir/packages/org.grovealliance.fhir.mobile#0.1.0" \
+test ! -e "$HOME/.fhir/packages/org.grovealliance.fhir.mobile#0.2.0" || \
+  mv "$HOME/.fhir/packages/org.grovealliance.fhir.mobile#0.2.0" \
      "$cache_backup/"
-mkdir -p "$HOME/.fhir/packages/org.grovealliance.fhir.mobile#0.1.0"
-tar -xzf grove-mobile-package/package.tgz \
-  -C "$HOME/.fhir/packages/org.grovealliance.fhir.mobile#0.1.0"
+mkdir -p "$HOME/.fhir/packages/org.grovealliance.fhir.mobile#0.2.0"
+tar -xzf path/to/org.grovealliance.fhir.mobile-0.2.0.tgz \
+  -C "$HOME/.fhir/packages/org.grovealliance.fhir.mobile#0.2.0"
 ```
 
 After caching it, a FHIR Shorthand project can declare the exact dependency:
 
 ```yaml
 dependencies:
-  org.grovealliance.fhir.mobile: 0.1.0
+  org.grovealliance.fhir.mobile: 0.2.0
 ```
 
 ### Validate a resource
@@ -79,11 +67,10 @@ dependencies:
 Download the official FHIR Validator and the Grove package, then run:
 
 ```sh
-java -jar validator_cli.jar observation.json \
+java -jar validator_cli.jar exchange-bundle.json \
   -version 4.0.1 \
   -ig grove-mobile-package/package.tgz \
-  -profile https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-observation \
-  -profile http://hl7.org/fhir/StructureDefinition/heartrate
+  -profile https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle
 ```
 
 Validation checks base FHIR rules, required fields, supported datatypes, terminology
@@ -95,6 +82,11 @@ At minimum, test one valid fixture for every supported measurement mapping and o
 invalid fixture for each contract rule. Include identity collisions, missing results,
 point and interval timing, exact step-count intervals, source time zones, absent devices,
 gateway applications, study links, and conversion provenance.
+
+For producer CI, use the repository's producer-neutral `Scripts/validate-producer.py`
+wrapper. It verifies package identity, required profile claims, deterministic UUID URNs,
+and internal graph resolution before invoking the official Validator. It does not run
+or import producer code.
 
 The [heart-rate JSON](Observation-GroveMobileHeartRateExample.json) is a compact starting
 fixture. The [step-count JSON](Observation-GroveMobileStepCountExample.json) demonstrates

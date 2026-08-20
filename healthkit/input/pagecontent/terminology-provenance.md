@@ -6,7 +6,7 @@ SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTR
 SPDX-License-Identifier: MIT
 -->
 
-The HealthKit-specific terminology in version 0.1.0 is a case-sensitive allowlist. It
+The HealthKit-specific terminology in version 0.2.0 is a case-sensitive allowlist. It
 contains one metadata key and three adapter motion-context codes required by the
 heart-rate mapping; it is not a copy of the HealthKit SDK vocabulary.
 
@@ -16,7 +16,7 @@ It records the following reproducibility information:
 
 | Field | Value |
 |---|---|
-| Package | `org.grovealliance.fhir.healthkit#0.1.0` |
+| Package | `org.grovealliance.fhir.healthkit#0.2.0` |
 | SDK baseline | iPhoneOS 27.0, Xcode 27.0 build 27A5237l |
 | Extraction date | 2026-08-19 |
 | Selection method | Manual allowlist using ripgrep 15.2.0 |

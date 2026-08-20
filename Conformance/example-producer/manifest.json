@@ -14,9 +14,9 @@
   ],
   "resources": [
     {
-      "path": "resources/heart-rate.json",
+      "path": "resources/exchange-bundle.json",
       "requiredProfiles": [
-        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-observation"
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle"
       ]
     }
   ]

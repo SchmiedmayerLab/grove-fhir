@@ -32,6 +32,10 @@ Description: "Measurement concepts defined by the Grove Mobile contract when an 
 * ^caseSensitive = true
 * ^content = #complete
 * #step-count-total "Step count total" "The total number of steps attributed to the exact Observation effective Period."
+* #distance-traveled "Distance traveled" "The path length attributed to the exact Observation effective Period."
+* #active-energy-burned "Active energy burned" "Energy expended through activity, excluding basal energy, during the exact Observation effective Period."
+* #basal-body-temperature "Basal body temperature" "Body temperature recorded at physiologic rest for fertility-awareness or cycle-tracking use; it is distinct from a general body-temperature vital sign."
+* #sleep-stage "Sleep stage" "The classification assigned to an exact interval within a sleep session."
 
 ValueSet: GroveMobileMeasurementVS
 Id: grove-mobile-measurement
@@ -40,6 +44,29 @@ Description: "Measurement concepts defined by Grove Mobile for use in its focuse
 * ^experimental = false
 * include codes from system GroveMobileMeasurementCS
 
-// No ConceptMap is published for 0.1.0 because the potential HL7 PHR stepCount
+CodeSystem: GroveSleepStageCS
+Id: grove-sleep-stage
+Title: "Grove Sleep Stage"
+Description: "Source-neutral sleep-stage classes shared by mobile and connected-device adapters. Adapters retain a source-specific code separately when the source distinction is more precise."
+* ^experimental = false
+* ^caseSensitive = true
+* ^content = #complete
+* #awake "Awake" "The person was classified as awake."
+* #in-bed "In bed" "The person was classified as being in bed without asserting wake or sleep."
+* #out-of-bed "Out of bed" "The person was classified as outside the sleep-session bed interval."
+* #asleep-unspecified "Asleep, unspecified stage" "The person was classified as asleep without a more specific stage."
+* #light "Light sleep" "The source classified the interval as light sleep without a more portable stage distinction."
+* #deep "Deep sleep" "The source classified the interval as deep or slow-wave sleep."
+* #rem "REM sleep" "The source classified the interval as rapid-eye-movement sleep."
+* #unknown "Unknown sleep stage" "The interval was part of a sleep session but the stage was not known."
+
+ValueSet: GroveSleepStageVS
+Id: grove-sleep-stage
+Title: "Grove Sleep Stage"
+Description: "Source-neutral sleep stages admitted by the Grove Mobile sleep-stage profile."
+* ^experimental = false
+* include codes from system GroveSleepStageCS
+
+// No ConceptMap is published for 0.2.0 because the potential HL7 PHR stepCount
 // target is not a stable package dependency. Any future mapping from
 // step-count-total to that target must be wider, never equal.
