@@ -74,6 +74,27 @@ catalog, and producer-corpus tests enforce the normative codes and units indepen
 A suppressed offline lookup diagnostic neither replaces a terminology license nor
 grants access to an attachment.
 
+## Moving an adapter to a new platform baseline
+
+Each adapter catalog enumerates a platform's source concepts exactly, and
+`*/input/data/*-inventory.json` records what the platform published when the catalog was
+frozen. `Tests/test_platform_inventory.py` holds the two to each other offline, and
+`Scripts/build-release.sh` re-reads the platforms before publishing, so an inventory that
+drifts cannot reach a release.
+
+A new SDK or artifact version is a version change, not an in-place edit:
+
+1. Point the baseline at the new platform — `source.sdkBaseline` for the Apple catalogs,
+   `source.version` for `catalog/health-connect-adapter.json`.
+2. `npm run inventory:refresh` to re-record the evidence.
+3. `npm run inventory:verify-sdk` on a Mac, which cross-checks the Apple evidence against
+   the installed SDK headers and re-hashes the recorded header inputs.
+4. Reconcile each catalog against the regenerated evidence; the expected counts in
+   `Tests/test_platform_inventory.py` move with it.
+5. Refresh `healthkit/input/data/terminology-provenance.json` and every count stated in
+   guide prose, then `python3 Scripts/render-adapter-source-terminology.py` and
+   `python3 Scripts/render-status-matrices.py`.
+
 ## Future immutable releases
 
 Immutable-release tooling is present but dormant. It may be activated only through an explicit,

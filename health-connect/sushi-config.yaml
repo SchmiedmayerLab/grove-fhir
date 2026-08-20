@@ -34,6 +34,7 @@ menu:
   Overview: index.html
   Mapping: mapping.html
   Status matrix: status-matrix.html
+  Concept properties: concept-properties.html
   Synchronization: synchronization.html
   Implement and validate: implementation.html
   Artifacts: artifacts.html
@@ -45,6 +46,8 @@ pages:
     title: Mapping
   status-matrix.md:
     title: Authoritative status matrix
+  concept-properties.md:
+    title: Concept properties
   synchronization.md:
     title: Synchronization
   implementation.md:

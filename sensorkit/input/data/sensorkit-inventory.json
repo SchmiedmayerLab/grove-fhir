@@ -1,0 +1,113 @@
+{
+  "oracle": {
+    "headers": {},
+    "kind": "apple-runtime-identifiers",
+    "method": "Every SensorKit identifier constant declared by the SDK baseline, resolved inside an iOS simulator on that baseline, plus the sample types Apple exposes only through a class accessor. Documentation pages come from Apple's published symbol index.",
+    "retrieved": "2026-08-20",
+    "sdkBaseline": {
+      "platform": "iPhoneOS",
+      "version": "27.0",
+      "xcodeBuild": "27A5237l",
+      "xcodeVersion": "27.0"
+    }
+  },
+  "schemaVersion": 1,
+  "sensors": {
+    "SRSensorAccelerometer": {
+      "documentation": "https://developer.apple.com/documentation/sensorkit/srsensor/accelerometer",
+      "identifier": "com.apple.SensorKit.motion.accelerometer"
+    },
+    "SRSensorAcousticSettings": {
+      "documentation": "https://developer.apple.com/documentation/sensorkit/srsensor/acousticsettings",
+      "identifier": "com.apple.SensorKit.hearing.acousticSettings"
+    },
+    "SRSensorAmbientLightSensor": {
+      "documentation": "https://developer.apple.com/documentation/sensorkit/srsensor/ambientlightsensor",
+      "identifier": "com.apple.SensorKit.als"
+    },
+    "SRSensorAmbientPressure": {
+      "documentation": "https://developer.apple.com/documentation/sensorkit/srsensor/ambientpressure",
+      "identifier": "com.apple.SensorKit.ambientPressure"
+    },
+    "SRSensorDeviceUsageReport": {
+      "documentation": "https://developer.apple.com/documentation/sensorkit/srsensor/deviceusagereport",
+      "identifier": "com.apple.SensorKit.deviceUsageReport"
+    },
+    "SRSensorElectrocardiogram": {
+      "documentation": "https://developer.apple.com/documentation/sensorkit/srsensor/electrocardiogram",
+      "identifier": "com.apple.SensorKit.ECG"
+    },
+    "SRSensorFaceMetrics": {
+      "documentation": "https://developer.apple.com/documentation/sensorkit/srsensor/facemetrics",
+      "identifier": "com.apple.SensorKit.faceMetrics"
+    },
+    "SRSensorHeadphoneMotion": {
+      "documentation": "https://developer.apple.com/documentation/sensorkit/srsensor/headphonemotion",
+      "identifier": "com.apple.SensorKit.motion.headphone"
+    },
+    "SRSensorHeadphoneSettings": {
+      "documentation": "https://developer.apple.com/documentation/sensorkit/srsensor/headphonesettings",
+      "identifier": "com.apple.SensorKit.hearing.headphoneSettings"
+    },
+    "SRSensorHeartRate": {
+      "documentation": "https://developer.apple.com/documentation/sensorkit/srsensor/heartrate",
+      "identifier": "com.apple.SensorKit.heart.rate"
+    },
+    "SRSensorKeyboardMetrics": {
+      "documentation": "https://developer.apple.com/documentation/sensorkit/srsensor/keyboardmetrics",
+      "identifier": "com.apple.SensorKit.keyboardMetrics"
+    },
+    "SRSensorMediaEvents": {
+      "documentation": "https://developer.apple.com/documentation/sensorkit/srsensor/mediaevents",
+      "identifier": "com.apple.SensorKit.mediaEvents"
+    },
+    "SRSensorMessagesUsageReport": {
+      "documentation": "https://developer.apple.com/documentation/sensorkit/srsensor/messagesusagereport",
+      "identifier": "com.apple.SensorKit.messagesUsageReport"
+    },
+    "SRSensorOdometer": {
+      "documentation": "https://developer.apple.com/documentation/sensorkit/srsensor/odometer",
+      "identifier": "com.apple.SensorKit.odometer"
+    },
+    "SRSensorOnWristState": {
+      "documentation": "https://developer.apple.com/documentation/sensorkit/srsensor/onwriststate",
+      "identifier": "com.apple.SensorKit.onWristState"
+    },
+    "SRSensorPedometerData": {
+      "documentation": "https://developer.apple.com/documentation/sensorkit/srsensor/pedometerdata",
+      "identifier": "com.apple.SensorKit.pedometer.data"
+    },
+    "SRSensorPhoneUsageReport": {
+      "documentation": "https://developer.apple.com/documentation/sensorkit/srsensor/phoneusagereport",
+      "identifier": "com.apple.SensorKit.phoneUsageReport"
+    },
+    "SRSensorPhotoplethysmogram": {
+      "documentation": "https://developer.apple.com/documentation/sensorkit/srsensor/photoplethysmogram",
+      "identifier": "com.apple.SensorKit.PPG"
+    },
+    "SRSensorRotationRate": {
+      "documentation": "https://developer.apple.com/documentation/sensorkit/srsensor/rotationrate",
+      "identifier": "com.apple.SensorKit.motion.gyroscope"
+    },
+    "SRSensorSiriSpeechMetrics": {
+      "documentation": "https://developer.apple.com/documentation/sensorkit/srsensor/sirispeechmetrics",
+      "identifier": "com.apple.SensorKit.speechMetrics.siri"
+    },
+    "SRSensorSleepSessions": {
+      "documentation": "https://developer.apple.com/documentation/sensorkit/srsensor/sleepsessions",
+      "identifier": "com.apple.SensorKit.sleep.sessions"
+    },
+    "SRSensorTelephonySpeechMetrics": {
+      "documentation": "https://developer.apple.com/documentation/sensorkit/srsensor/telephonyspeechmetrics",
+      "identifier": "com.apple.SensorKit.speechMetrics.telephony"
+    },
+    "SRSensorVisits": {
+      "documentation": "https://developer.apple.com/documentation/sensorkit/srsensor/visits",
+      "identifier": "com.apple.SensorKit.visits"
+    },
+    "SRSensorWristTemperature": {
+      "documentation": "https://developer.apple.com/documentation/sensorkit/srsensor/wristtemperature",
+      "identifier": "com.apple.SensorKit.wristTemperature"
+    }
+  }
+}

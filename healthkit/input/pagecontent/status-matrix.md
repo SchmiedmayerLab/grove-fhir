@@ -11,7 +11,7 @@ GENERATED FILE. Edit the corresponding catalog JSON and run
 
 # Authoritative HealthKit status matrix
 
-This table is the complete, closed v0.2.0 inventory of all 212 Apple HealthKit platform source types frozen against iPhoneOS 27.0 from Xcode 27.0 build `27A5237l`. The evidence is the official Apple platform documentation and the exact SDK provenance declared by the catalog. Each row has one definitive contract status; this is a release contract, not a roadmap. `supported` means v0.2.0 admits a conformant output contract. All other rows are not admitted and producers fail closed.
+This table is the complete, closed v0.2.0 inventory of all 220 Apple HealthKit platform source types frozen against iPhoneOS 27.0 from Xcode 27.0 build `27A5237l`. The evidence is the official Apple platform documentation and the exact SDK provenance declared by the catalog. Each row has one definitive contract status; this is a release contract, not a roadmap. `supported` means v0.2.0 admits a conformant output contract. All other rows are not admitted and producers fail closed.
 
 | HealthKit type | Title | Contract status | Measurement | Direct profile claim(s) | Binding reason / requirement |
 | --- | --- | --- | --- | --- | --- |
@@ -20,7 +20,7 @@ This table is the complete, closed v0.2.0 inventory of all 212 Apple HealthKit p
 | `HKCategoryTypeIdentifierAppetiteChanges` | Appetite Changes | `deferred` | — | — | No shared or adapter-specific v0.2 output contract is published for this type. |
 | `HKCategoryTypeIdentifierAppleStandHour` | Apple Stand Hour | `deferred` | — | — | No shared or adapter-specific v0.2 output contract is published for this type. |
 | `HKCategoryTypeIdentifierAppleWalkingSteadinessEvent` | Apple Walking Steadiness Event | `deferred` | — | — | No shared or adapter-specific v0.2 output contract is published for this type. |
-| `HKCategoryTypeIdentifierAudioExposureEvent` | Audio Exposure Event (Deprecated) | `deferred` | — | — | Apple deprecates this source type in favor of HKCategoryTypeIdentifierEnvironmentalAudioExposureEvent. Version 0.2.0 publishes no admitted output contract for either event type. |
+| `HKCategoryTypeIdentifierAudioExposureEvent` | Audio Exposure Event | `deferred` | — | — | Apple renames this constant to HKCategoryTypeIdentifierEnvironmentalAudioExposureEvent while keeping its identifier. Version 0.2.0 publishes no admitted output contract. |
 | `HKCategoryTypeIdentifierBladderIncontinence` | Bladder Incontinence | `deferred` | — | — | No shared or adapter-specific v0.2 output contract is published for this type. |
 | `HKCategoryTypeIdentifierBleedingAfterMenopause` | Bleeding After Menopause | `deferred` | — | — | The source type is beta in the stated SDK baseline and v0.2.0 publishes no admitted output contract. |
 | `HKCategoryTypeIdentifierBleedingAfterPregnancy` | Bleeding After Pregnancy | `deferred` | — | — | No shared or adapter-specific v0.2 output contract is published for this type. |
@@ -36,7 +36,6 @@ This table is the complete, closed v0.2.0 inventory of all 212 Apple HealthKit p
 | `HKCategoryTypeIdentifierDiarrhea` | Diarrhea | `deferred` | — | — | No shared or adapter-specific v0.2 output contract is published for this type. |
 | `HKCategoryTypeIdentifierDizziness` | Dizziness | `deferred` | — | — | No shared or adapter-specific v0.2 output contract is published for this type. |
 | `HKCategoryTypeIdentifierDrySkin` | Dry Skin | `deferred` | — | — | No shared or adapter-specific v0.2 output contract is published for this type. |
-| `HKCategoryTypeIdentifierEnvironmentalAudioExposureEvent` | Environmental Audio Exposure Event | `deferred` | — | — | No shared or adapter-specific v0.2.0 output contract is published for this platform source type. |
 | `HKCategoryTypeIdentifierFainting` | Fainting | `deferred` | — | — | No shared or adapter-specific v0.2 output contract is published for this type. |
 | `HKCategoryTypeIdentifierFatigue` | Fatigue | `deferred` | — | — | No shared or adapter-specific v0.2 output contract is published for this type. |
 | `HKCategoryTypeIdentifierFever` | Fever | `deferred` | — | — | No shared or adapter-specific v0.2 output contract is published for this type. |
@@ -87,6 +86,12 @@ This table is the complete, closed v0.2.0 inventory of all 212 Apple HealthKit p
 | `HKCategoryTypeIdentifierVaginalDryness` | Vaginal Dryness | `deferred` | — | — | No shared or adapter-specific v0.2 output contract is published for this type. |
 | `HKCategoryTypeIdentifierVomiting` | Vomiting | `deferred` | — | — | No shared or adapter-specific v0.2 output contract is published for this type. |
 | `HKCategoryTypeIdentifierWheezing` | Wheezing | `deferred` | — | — | No shared or adapter-specific v0.2 output contract is published for this type. |
+| `HKCharacteristicTypeIdentifierActivityMoveMode` | Activity Move Mode | `deferred` | — | — | A HealthKit characteristic describes the subject rather than a measurement. Version 0.2.0 publishes no admitted output contract for characteristics. |
+| `HKCharacteristicTypeIdentifierBiologicalSex` | Biological Sex | `deferred` | — | — | A HealthKit characteristic describes the subject rather than a measurement. Version 0.2.0 publishes no admitted output contract for characteristics. |
+| `HKCharacteristicTypeIdentifierBloodType` | Blood Type | `deferred` | — | — | A HealthKit characteristic describes the subject rather than a measurement. Version 0.2.0 publishes no admitted output contract for characteristics. |
+| `HKCharacteristicTypeIdentifierDateOfBirth` | Date of Birth | `deferred` | — | — | A HealthKit characteristic describes the subject rather than a measurement. Version 0.2.0 publishes no admitted output contract for characteristics. |
+| `HKCharacteristicTypeIdentifierFitzpatrickSkinType` | Fitzpatrick Skin Type | `deferred` | — | — | A HealthKit characteristic describes the subject rather than a measurement. Version 0.2.0 publishes no admitted output contract for characteristics. |
+| `HKCharacteristicTypeIdentifierWheelchairUse` | Wheelchair Use | `deferred` | — | — | A HealthKit characteristic describes the subject rather than a measurement. Version 0.2.0 publishes no admitted output contract for characteristics. |
 | `HKClinicalTypeIdentifierAllergyRecord` | Allergy Record | `deferred` | — | — | HealthKit clinical records already carry provider FHIR; the v0.2 HealthKit Observation adapter does not rewrite or re-profile them. |
 | `HKClinicalTypeIdentifierClinicalNoteRecord` | Clinical Note Record | `deferred` | — | — | HealthKit clinical records already carry provider FHIR; the v0.2 HealthKit Observation adapter does not rewrite or re-profile them. |
 | `HKClinicalTypeIdentifierConditionRecord` | Condition Record | `deferred` | — | — | HealthKit clinical records already carry provider FHIR; the v0.2 HealthKit Observation adapter does not rewrite or re-profile them. |
@@ -102,6 +107,9 @@ This table is the complete, closed v0.2.0 inventory of all 212 Apple HealthKit p
 | `HKDataTypeIdentifierElectrocardiogram` | ECG | `supported` | electrocardiogram | grove-sensor-ecg-observation; healthkit-ecg-observation | The caller supplies the HKElectrocardiogram, every voltage measurement with its exact timeSinceSampleStart, and each associated HKCategorySample when symptomsStatus is present. The adapter preserves symptom UUID/timing/type/severity and complete HKSourceRevision fields, classification, average heart rate, sampling frequency, reported count, Apple ECG algorithm-version metadata when present, source and waveform intervals, lead, offsets, and voltages without fetching or resampling. Explicit caller authorization for linkable symptom-source disclosure is required; otherwise conversion fails closed. |
 | `HKDataTypeIdentifierHeartbeatSeries` | Heartbeat Series | `deferred` | — | — | Use a Grove Sensor waveform graph once the HealthKit heartbeat-series adapter is implemented. |
 | `HKDataTypeStateOfMind` | State of Mind | `deferred` | — | — | No shared or HealthKit-adapter v0.2 output contract is published for this sample type. |
+| `HKDataTypeUserAnnotatedMedicationConcept` | User Annotated Medication Concept | `deferred` | — | — | No shared or adapter-specific v0.2 output contract is published for this type. |
+| `HKDocumentTypeIdentifierCDA` | CDA Document | `deferred` | — | — | No shared or adapter-specific v0.2 output contract is published for this type. |
+| `HKMedicationDoseEventTypeIdentifierMedicationDoseEvent` | Medication Dose Event | `deferred` | — | — | No shared or adapter-specific v0.2 output contract is published for this type. |
 | `HKQuantityTypeIdentifierActiveEnergyBurned` | Active Energy Burned | `supported` | active-energy | grove-mobile-active-energy | — |
 | `HKQuantityTypeIdentifierAppleExerciseTime` | Apple Exercise Time | `deferred` | — | — | No shared or adapter-specific v0.2 output contract is published for this type. |
 | `HKQuantityTypeIdentifierAppleMoveTime` | Apple Move Time | `deferred` | — | — | No shared or adapter-specific v0.2 output contract is published for this type. |

@@ -12,7 +12,7 @@ and the applicable clinical or research profile. Preserve the facts HealthKit st
 do not infer hardware, capture mode, clinical meaning, or study membership from an API
 type alone.
 
-The [authoritative status matrix](status-matrix.html) renders all 209 source types from
+The [authoritative status matrix](status-matrix.html) renders all 220 source-type identifiers from
 the release's machine catalog, including every admitted and fail-closed row.
 
 ### Object identity

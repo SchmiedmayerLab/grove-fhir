@@ -75,3 +75,6 @@ WARNING: Resource: The resource ValueSet/health-connect-sleep-stage should have 
 
 # The adapter directly pins the final 5.3.0 extension package for the versioned body-position slice. Publisher's package-age heuristic ranks the older ballot-tc1 label as newer; changing to that ballot would weaken the exact final dependency closure.
 WARNING: ImplementationGuide/org.grovealliance.fhir.health-connect: ImplementationGuide.dependsOn[1]: The ImplementationGuide uses package hl7.fhir.uv.extensions.r4#5.3.0 released on 2026-05-16, but the most recent appropriate version is 5.3.0-ballot-tc1. This reference is getting old and the more recent version should be considered
+
+# Grove has no assigned stable OID root. Canonical URLs are the authoritative identifiers; inventing OIDs would create unstable aliases.
+WARNING: Resource: The resource CodeSystem/health-connect-concept-property should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/fhir-tools-ig/CodeSystem-ig-parameters.html#ig-parameters-auto-oid-root)

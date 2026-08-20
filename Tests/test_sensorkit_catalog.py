@@ -141,7 +141,11 @@ class SensorKitCatalogTests(unittest.TestCase):
                 set(entry)
                 <= {
                     "sourceToken",
+                    "symbol",
+                    "identifier",
                     "sourceTypeCode",
+                    "title",
+                    "documentation",
                     "minimumIOS",
                     "scope",
                     "status",

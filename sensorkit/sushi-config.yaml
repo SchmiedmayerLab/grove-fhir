@@ -26,12 +26,15 @@ pages:
     title: Source inventory and mappings
   status-matrix.md:
     title: Authoritative status matrix
+  concept-properties.md:
+    title: Concept properties
   implementation.md:
     title: Producer contract
 menu:
   Home: index.html
   Inventory: mapping.html
   Status matrix: status-matrix.html
+  Concept properties: concept-properties.html
   Producer contract: implementation.html
   Artifacts: artifacts.html
 parameters:

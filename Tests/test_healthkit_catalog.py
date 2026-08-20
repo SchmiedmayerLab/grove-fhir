@@ -47,22 +47,19 @@ class HealthKitCatalogTests(unittest.TestCase):
         )
         self.assertEqual(source["platform"], "Apple HealthKit")
         self.assertEqual(source["accessed"], "2026-08-20")
-        self.assertEqual(source["rowCount"], 212)
+        self.assertEqual(source["rowCount"], len(rows))
         self.assertEqual(source["derivedAggregateCount"], 1)
         self.assertIn("derived mappings are excluded", source["rowScope"])
-        self.assertEqual(len(rows), 212)
         identifiers = [row["sourceTypeIdentifier"] for row in rows]
         self.assertEqual(identifiers, sorted(identifiers))
         self.assertEqual(len(identifiers), len(set(identifiers)))
         self.assertFalse(any("#" in identifier for identifier in identifiers))
-        self.assertTrue(
-            all(
-                evidence.get("url", "").startswith("https://developer.apple.com/")
-                or evidence.get("path")
-                == "healthkit/input/data/terminology-provenance.json"
-                for evidence in source["evidence"]
+        for evidence in source["evidence"]:
+            url, path = evidence.get("url", ""), evidence.get("path", "")
+            self.assertTrue(
+                url.startswith("https://developer.apple.com/") or (ROOT / path).is_file(),
+                evidence,
             )
-        )
         statuses = set(self.catalog["statusVocabulary"])
         for row in rows:
             self.assertEqual(
@@ -70,6 +67,8 @@ class HealthKitCatalogTests(unittest.TestCase):
                 {
                     "sourceTypeIdentifier",
                     "title",
+                    "symbols",
+                    "documentation",
                     "status",
                     "measurementIDs",
                     "profiles",
@@ -107,7 +106,6 @@ class HealthKitCatalogTests(unittest.TestCase):
     def test_platform_additions_and_derived_aggregate_are_explicit(self) -> None:
         rows = {row["sourceTypeIdentifier"]: row for row in self.catalog["rows"]}
         expected_additions = {
-            "HKCategoryTypeIdentifierEnvironmentalAudioExposureEvent",
             "HKCategoryTypeIdentifierHypertensionEvent",
             "HKCategoryTypeIdentifierBleedingAfterMenopause",
             "HKCategoryTypeIdentifierMenopausalState",
@@ -118,11 +116,11 @@ class HealthKitCatalogTests(unittest.TestCase):
             self.assertEqual(rows[identifier]["measurementIDs"], [])
             self.assertEqual(rows[identifier]["profiles"], [])
 
-        deprecated = rows["HKCategoryTypeIdentifierAudioExposureEvent"]
-        self.assertEqual(deprecated["title"], "Audio Exposure Event (Deprecated)")
+        renamed = rows["HKCategoryTypeIdentifierAudioExposureEvent"]
+        self.assertEqual(renamed["title"], "Audio Exposure Event")
         self.assertIn(
             "HKCategoryTypeIdentifierEnvironmentalAudioExposureEvent",
-            deprecated["requirement"],
+            renamed["symbols"],
         )
 
         aggregates = self.catalog["derivedAggregates"]

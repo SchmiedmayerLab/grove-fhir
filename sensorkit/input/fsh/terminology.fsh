@@ -6,45 +6,6 @@
 // SPDX-License-Identifier: MIT
 //
 
-CodeSystem: SensorKitSourceTypeCS
-Id: sensorkit-source-type
-Title: "SensorKit Source Type"
-Description: "Closed source tokens for the SensorKit platform inventory admitted by Grove FHIR 0.2.0."
-* ^caseSensitive = true
-* ^content = #complete
-* ^experimental = false
-* #accelerometer "Accelerometer"
-* #acoustic-settings "Acoustic settings"
-* #ambient-light "Ambient light"
-* #ambient-pressure "Ambient pressure"
-* #device-usage "Device usage report"
-* #ecg "Electrocardiogram"
-* #face-metrics "Face metrics"
-* #headphone-motion "Headphone motion"
-* #headphone-settings "Headphone settings"
-* #heart-rate "High-frequency heart rate"
-* #keyboard-metrics "Keyboard metrics"
-* #media-events "Media events"
-* #messages-usage "Messages usage report"
-* #odometer "Odometer"
-* #on-wrist "On-wrist state"
-* #pedometer "Pedometer data"
-* #phone-usage "Phone usage report"
-* #ppg "Photoplethysmogram"
-* #rotation-rate "Rotation rate"
-* #siri-speech-metrics "Siri speech metrics"
-* #sleep-sessions "Sleep sessions"
-* #telephony-speech-metrics "Telephony speech metrics"
-* #visits "Visits"
-* #wrist-temperature "Wrist temperature"
-
-ValueSet: SensorKitSourceTypeVS
-Id: sensorkit-source-type
-Title: "SensorKit Source Type"
-Description: "The exact SensorKit source stream token."
-* ^experimental = false
-* include codes from system SensorKitSourceTypeCS
-
 CodeSystem: SensorKitConceptCS
 Id: sensorkit-concept
 Title: "SensorKit Adapter Concept"

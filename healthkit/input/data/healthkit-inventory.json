@@ -1,0 +1,1343 @@
+{
+  "oracle": {
+    "headers": {
+      "HKMetadata.h": "ce1c107200f9e330d66347f0bf22c8529bf102b26302eb8ef49b16d9945a353d",
+      "HKMetadataEnums.h": "eddcc86fdfd78cafc37f832a1210eec51d679cdae432f358426fc724209fdad1",
+      "HKObjectType.h": "90c56172228a80a20977456b4a82f5caca5196252bd42d7e89d0f338035f5c81",
+      "HKTypeIdentifiers.h": "225fbba606cbdb016a02652c078388468c0a8048e669cc65772ee98e3ca1a06c"
+    },
+    "kind": "apple-runtime-identifiers",
+    "method": "Every HealthKit identifier constant declared by the SDK baseline, resolved inside an iOS simulator on that baseline, plus the sample types Apple exposes only through a class accessor. Documentation pages come from Apple's published symbol index.",
+    "retrieved": "2026-08-20",
+    "sdkBaseline": {
+      "platform": "iPhoneOS",
+      "version": "27.0",
+      "xcodeBuild": "27A5237l",
+      "xcodeVersion": "27.0"
+    }
+  },
+  "schemaVersion": 1,
+  "sourceTypes": {
+    "HKCategoryTypeIdentifierAbdominalCramps": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/abdominalcramps",
+      "symbols": [
+        "HKCategoryTypeIdentifierAbdominalCramps"
+      ]
+    },
+    "HKCategoryTypeIdentifierAcne": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/acne",
+      "symbols": [
+        "HKCategoryTypeIdentifierAcne"
+      ]
+    },
+    "HKCategoryTypeIdentifierAppetiteChanges": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/appetitechanges",
+      "symbols": [
+        "HKCategoryTypeIdentifierAppetiteChanges"
+      ]
+    },
+    "HKCategoryTypeIdentifierAppleStandHour": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/applestandhour",
+      "symbols": [
+        "HKCategoryTypeIdentifierAppleStandHour"
+      ]
+    },
+    "HKCategoryTypeIdentifierAppleWalkingSteadinessEvent": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/applewalkingsteadinessevent",
+      "symbols": [
+        "HKCategoryTypeIdentifierAppleWalkingSteadinessEvent"
+      ]
+    },
+    "HKCategoryTypeIdentifierAudioExposureEvent": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/environmentalaudioexposureevent",
+      "symbols": [
+        "HKCategoryTypeIdentifierAudioExposureEvent",
+        "HKCategoryTypeIdentifierEnvironmentalAudioExposureEvent"
+      ]
+    },
+    "HKCategoryTypeIdentifierBladderIncontinence": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/bladderincontinence",
+      "symbols": [
+        "HKCategoryTypeIdentifierBladderIncontinence"
+      ]
+    },
+    "HKCategoryTypeIdentifierBleedingAfterMenopause": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/bleedingaftermenopause",
+      "symbols": [
+        "HKCategoryTypeIdentifierBleedingAfterMenopause"
+      ]
+    },
+    "HKCategoryTypeIdentifierBleedingAfterPregnancy": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/bleedingafterpregnancy",
+      "symbols": [
+        "HKCategoryTypeIdentifierBleedingAfterPregnancy"
+      ]
+    },
+    "HKCategoryTypeIdentifierBleedingDuringPregnancy": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/bleedingduringpregnancy",
+      "symbols": [
+        "HKCategoryTypeIdentifierBleedingDuringPregnancy"
+      ]
+    },
+    "HKCategoryTypeIdentifierBloating": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/bloating",
+      "symbols": [
+        "HKCategoryTypeIdentifierBloating"
+      ]
+    },
+    "HKCategoryTypeIdentifierBreastPain": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/breastpain",
+      "symbols": [
+        "HKCategoryTypeIdentifierBreastPain"
+      ]
+    },
+    "HKCategoryTypeIdentifierCervicalMucusQuality": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/cervicalmucusquality",
+      "symbols": [
+        "HKCategoryTypeIdentifierCervicalMucusQuality"
+      ]
+    },
+    "HKCategoryTypeIdentifierChestTightnessOrPain": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/chesttightnessorpain",
+      "symbols": [
+        "HKCategoryTypeIdentifierChestTightnessOrPain"
+      ]
+    },
+    "HKCategoryTypeIdentifierChills": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/chills",
+      "symbols": [
+        "HKCategoryTypeIdentifierChills"
+      ]
+    },
+    "HKCategoryTypeIdentifierConstipation": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/constipation",
+      "symbols": [
+        "HKCategoryTypeIdentifierConstipation"
+      ]
+    },
+    "HKCategoryTypeIdentifierContraceptive": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/contraceptive",
+      "symbols": [
+        "HKCategoryTypeIdentifierContraceptive"
+      ]
+    },
+    "HKCategoryTypeIdentifierCoughing": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/coughing",
+      "symbols": [
+        "HKCategoryTypeIdentifierCoughing"
+      ]
+    },
+    "HKCategoryTypeIdentifierDiarrhea": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/diarrhea",
+      "symbols": [
+        "HKCategoryTypeIdentifierDiarrhea"
+      ]
+    },
+    "HKCategoryTypeIdentifierDizziness": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/dizziness",
+      "symbols": [
+        "HKCategoryTypeIdentifierDizziness"
+      ]
+    },
+    "HKCategoryTypeIdentifierDrySkin": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/dryskin",
+      "symbols": [
+        "HKCategoryTypeIdentifierDrySkin"
+      ]
+    },
+    "HKCategoryTypeIdentifierFainting": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/fainting",
+      "symbols": [
+        "HKCategoryTypeIdentifierFainting"
+      ]
+    },
+    "HKCategoryTypeIdentifierFatigue": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/fatigue",
+      "symbols": [
+        "HKCategoryTypeIdentifierFatigue"
+      ]
+    },
+    "HKCategoryTypeIdentifierFever": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/fever",
+      "symbols": [
+        "HKCategoryTypeIdentifierFever"
+      ]
+    },
+    "HKCategoryTypeIdentifierGeneralizedBodyAche": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/generalizedbodyache",
+      "symbols": [
+        "HKCategoryTypeIdentifierGeneralizedBodyAche"
+      ]
+    },
+    "HKCategoryTypeIdentifierHairLoss": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/hairloss",
+      "symbols": [
+        "HKCategoryTypeIdentifierHairLoss"
+      ]
+    },
+    "HKCategoryTypeIdentifierHandwashingEvent": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/handwashingevent",
+      "symbols": [
+        "HKCategoryTypeIdentifierHandwashingEvent"
+      ]
+    },
+    "HKCategoryTypeIdentifierHeadache": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/headache",
+      "symbols": [
+        "HKCategoryTypeIdentifierHeadache"
+      ]
+    },
+    "HKCategoryTypeIdentifierHeadphoneAudioExposureEvent": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/headphoneaudioexposureevent",
+      "symbols": [
+        "HKCategoryTypeIdentifierHeadphoneAudioExposureEvent"
+      ]
+    },
+    "HKCategoryTypeIdentifierHeartburn": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/heartburn",
+      "symbols": [
+        "HKCategoryTypeIdentifierHeartburn"
+      ]
+    },
+    "HKCategoryTypeIdentifierHighHeartRateEvent": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/highheartrateevent",
+      "symbols": [
+        "HKCategoryTypeIdentifierHighHeartRateEvent"
+      ]
+    },
+    "HKCategoryTypeIdentifierHotFlashes": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/hotflashes",
+      "symbols": [
+        "HKCategoryTypeIdentifierHotFlashes"
+      ]
+    },
+    "HKCategoryTypeIdentifierHypertensionEvent": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/hypertensionevent",
+      "symbols": [
+        "HKCategoryTypeIdentifierHypertensionEvent"
+      ]
+    },
+    "HKCategoryTypeIdentifierInfrequentMenstrualCycles": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/infrequentmenstrualcycles",
+      "symbols": [
+        "HKCategoryTypeIdentifierInfrequentMenstrualCycles"
+      ]
+    },
+    "HKCategoryTypeIdentifierIntermenstrualBleeding": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/intermenstrualbleeding",
+      "symbols": [
+        "HKCategoryTypeIdentifierIntermenstrualBleeding"
+      ]
+    },
+    "HKCategoryTypeIdentifierIrregularHeartRhythmEvent": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/irregularheartrhythmevent",
+      "symbols": [
+        "HKCategoryTypeIdentifierIrregularHeartRhythmEvent"
+      ]
+    },
+    "HKCategoryTypeIdentifierIrregularMenstrualCycles": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/irregularmenstrualcycles",
+      "symbols": [
+        "HKCategoryTypeIdentifierIrregularMenstrualCycles"
+      ]
+    },
+    "HKCategoryTypeIdentifierLactation": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/lactation",
+      "symbols": [
+        "HKCategoryTypeIdentifierLactation"
+      ]
+    },
+    "HKCategoryTypeIdentifierLossOfSmell": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/lossofsmell",
+      "symbols": [
+        "HKCategoryTypeIdentifierLossOfSmell"
+      ]
+    },
+    "HKCategoryTypeIdentifierLossOfTaste": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/lossoftaste",
+      "symbols": [
+        "HKCategoryTypeIdentifierLossOfTaste"
+      ]
+    },
+    "HKCategoryTypeIdentifierLowCardioFitnessEvent": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/lowcardiofitnessevent",
+      "symbols": [
+        "HKCategoryTypeIdentifierLowCardioFitnessEvent"
+      ]
+    },
+    "HKCategoryTypeIdentifierLowHeartRateEvent": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/lowheartrateevent",
+      "symbols": [
+        "HKCategoryTypeIdentifierLowHeartRateEvent"
+      ]
+    },
+    "HKCategoryTypeIdentifierLowerBackPain": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/lowerbackpain",
+      "symbols": [
+        "HKCategoryTypeIdentifierLowerBackPain"
+      ]
+    },
+    "HKCategoryTypeIdentifierMemoryLapse": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/memorylapse",
+      "symbols": [
+        "HKCategoryTypeIdentifierMemoryLapse"
+      ]
+    },
+    "HKCategoryTypeIdentifierMenopausalState": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/menopausalstate",
+      "symbols": [
+        "HKCategoryTypeIdentifierMenopausalState"
+      ]
+    },
+    "HKCategoryTypeIdentifierMenstrualFlow": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/menstrualflow",
+      "symbols": [
+        "HKCategoryTypeIdentifierMenstrualFlow"
+      ]
+    },
+    "HKCategoryTypeIdentifierMindfulSession": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/mindfulsession",
+      "symbols": [
+        "HKCategoryTypeIdentifierMindfulSession"
+      ]
+    },
+    "HKCategoryTypeIdentifierMoodChanges": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/moodchanges",
+      "symbols": [
+        "HKCategoryTypeIdentifierMoodChanges"
+      ]
+    },
+    "HKCategoryTypeIdentifierNausea": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/nausea",
+      "symbols": [
+        "HKCategoryTypeIdentifierNausea"
+      ]
+    },
+    "HKCategoryTypeIdentifierNightSweats": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/nightsweats",
+      "symbols": [
+        "HKCategoryTypeIdentifierNightSweats"
+      ]
+    },
+    "HKCategoryTypeIdentifierOvulationTestResult": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/ovulationtestresult",
+      "symbols": [
+        "HKCategoryTypeIdentifierOvulationTestResult"
+      ]
+    },
+    "HKCategoryTypeIdentifierPelvicPain": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/pelvicpain",
+      "symbols": [
+        "HKCategoryTypeIdentifierPelvicPain"
+      ]
+    },
+    "HKCategoryTypeIdentifierPersistentIntermenstrualBleeding": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/persistentintermenstrualbleeding",
+      "symbols": [
+        "HKCategoryTypeIdentifierPersistentIntermenstrualBleeding"
+      ]
+    },
+    "HKCategoryTypeIdentifierPregnancy": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/pregnancy",
+      "symbols": [
+        "HKCategoryTypeIdentifierPregnancy"
+      ]
+    },
+    "HKCategoryTypeIdentifierPregnancyTestResult": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/pregnancytestresult",
+      "symbols": [
+        "HKCategoryTypeIdentifierPregnancyTestResult"
+      ]
+    },
+    "HKCategoryTypeIdentifierProgesteroneTestResult": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/progesteronetestresult",
+      "symbols": [
+        "HKCategoryTypeIdentifierProgesteroneTestResult"
+      ]
+    },
+    "HKCategoryTypeIdentifierProlongedMenstrualPeriods": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/prolongedmenstrualperiods",
+      "symbols": [
+        "HKCategoryTypeIdentifierProlongedMenstrualPeriods"
+      ]
+    },
+    "HKCategoryTypeIdentifierRapidPoundingOrFlutteringHeartbeat": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/rapidpoundingorflutteringheartbeat",
+      "symbols": [
+        "HKCategoryTypeIdentifierRapidPoundingOrFlutteringHeartbeat"
+      ]
+    },
+    "HKCategoryTypeIdentifierRunnyNose": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/runnynose",
+      "symbols": [
+        "HKCategoryTypeIdentifierRunnyNose"
+      ]
+    },
+    "HKCategoryTypeIdentifierSexualActivity": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/sexualactivity",
+      "symbols": [
+        "HKCategoryTypeIdentifierSexualActivity"
+      ]
+    },
+    "HKCategoryTypeIdentifierShortnessOfBreath": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/shortnessofbreath",
+      "symbols": [
+        "HKCategoryTypeIdentifierShortnessOfBreath"
+      ]
+    },
+    "HKCategoryTypeIdentifierSinusCongestion": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/sinuscongestion",
+      "symbols": [
+        "HKCategoryTypeIdentifierSinusCongestion"
+      ]
+    },
+    "HKCategoryTypeIdentifierSkippedHeartbeat": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/skippedheartbeat",
+      "symbols": [
+        "HKCategoryTypeIdentifierSkippedHeartbeat"
+      ]
+    },
+    "HKCategoryTypeIdentifierSleepAnalysis": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/sleepanalysis",
+      "symbols": [
+        "HKCategoryTypeIdentifierSleepAnalysis"
+      ]
+    },
+    "HKCategoryTypeIdentifierSleepApneaEvent": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/sleepapneaevent",
+      "symbols": [
+        "HKCategoryTypeIdentifierSleepApneaEvent"
+      ]
+    },
+    "HKCategoryTypeIdentifierSleepChanges": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/sleepchanges",
+      "symbols": [
+        "HKCategoryTypeIdentifierSleepChanges"
+      ]
+    },
+    "HKCategoryTypeIdentifierSoreThroat": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/sorethroat",
+      "symbols": [
+        "HKCategoryTypeIdentifierSoreThroat"
+      ]
+    },
+    "HKCategoryTypeIdentifierToothbrushingEvent": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/toothbrushingevent",
+      "symbols": [
+        "HKCategoryTypeIdentifierToothbrushingEvent"
+      ]
+    },
+    "HKCategoryTypeIdentifierVaginalDryness": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/vaginaldryness",
+      "symbols": [
+        "HKCategoryTypeIdentifierVaginalDryness"
+      ]
+    },
+    "HKCategoryTypeIdentifierVomiting": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/vomiting",
+      "symbols": [
+        "HKCategoryTypeIdentifierVomiting"
+      ]
+    },
+    "HKCategoryTypeIdentifierWheezing": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/wheezing",
+      "symbols": [
+        "HKCategoryTypeIdentifierWheezing"
+      ]
+    },
+    "HKCharacteristicTypeIdentifierActivityMoveMode": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcharacteristictypeidentifier/activitymovemode",
+      "symbols": [
+        "HKCharacteristicTypeIdentifierActivityMoveMode"
+      ]
+    },
+    "HKCharacteristicTypeIdentifierBiologicalSex": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcharacteristictypeidentifier/biologicalsex",
+      "symbols": [
+        "HKCharacteristicTypeIdentifierBiologicalSex"
+      ]
+    },
+    "HKCharacteristicTypeIdentifierBloodType": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcharacteristictypeidentifier/bloodtype",
+      "symbols": [
+        "HKCharacteristicTypeIdentifierBloodType"
+      ]
+    },
+    "HKCharacteristicTypeIdentifierDateOfBirth": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcharacteristictypeidentifier/dateofbirth",
+      "symbols": [
+        "HKCharacteristicTypeIdentifierDateOfBirth"
+      ]
+    },
+    "HKCharacteristicTypeIdentifierFitzpatrickSkinType": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcharacteristictypeidentifier/fitzpatrickskintype",
+      "symbols": [
+        "HKCharacteristicTypeIdentifierFitzpatrickSkinType"
+      ]
+    },
+    "HKCharacteristicTypeIdentifierWheelchairUse": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcharacteristictypeidentifier/wheelchairuse",
+      "symbols": [
+        "HKCharacteristicTypeIdentifierWheelchairUse"
+      ]
+    },
+    "HKClinicalTypeIdentifierAllergyRecord": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkclinicaltypeidentifier/allergyrecord",
+      "symbols": [
+        "HKClinicalTypeIdentifierAllergyRecord"
+      ]
+    },
+    "HKClinicalTypeIdentifierClinicalNoteRecord": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkclinicaltypeidentifier/clinicalnoterecord",
+      "symbols": [
+        "HKClinicalTypeIdentifierClinicalNoteRecord"
+      ]
+    },
+    "HKClinicalTypeIdentifierConditionRecord": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkclinicaltypeidentifier/conditionrecord",
+      "symbols": [
+        "HKClinicalTypeIdentifierConditionRecord"
+      ]
+    },
+    "HKClinicalTypeIdentifierCoverageRecord": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkclinicaltypeidentifier/coveragerecord",
+      "symbols": [
+        "HKClinicalTypeIdentifierCoverageRecord"
+      ]
+    },
+    "HKClinicalTypeIdentifierImmunizationRecord": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkclinicaltypeidentifier/immunizationrecord",
+      "symbols": [
+        "HKClinicalTypeIdentifierImmunizationRecord"
+      ]
+    },
+    "HKClinicalTypeIdentifierLabResultRecord": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkclinicaltypeidentifier/labresultrecord",
+      "symbols": [
+        "HKClinicalTypeIdentifierLabResultRecord"
+      ]
+    },
+    "HKClinicalTypeIdentifierMedicationRecord": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkclinicaltypeidentifier/medicationrecord",
+      "symbols": [
+        "HKClinicalTypeIdentifierMedicationRecord"
+      ]
+    },
+    "HKClinicalTypeIdentifierProcedureRecord": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkclinicaltypeidentifier/procedurerecord",
+      "symbols": [
+        "HKClinicalTypeIdentifierProcedureRecord"
+      ]
+    },
+    "HKClinicalTypeIdentifierVitalSignRecord": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkclinicaltypeidentifier/vitalsignrecord",
+      "symbols": [
+        "HKClinicalTypeIdentifierVitalSignRecord"
+      ]
+    },
+    "HKCorrelationTypeIdentifierBloodPressure": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcorrelationtypeidentifier/bloodpressure",
+      "symbols": [
+        "HKCorrelationTypeIdentifierBloodPressure"
+      ]
+    },
+    "HKCorrelationTypeIdentifierFood": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcorrelationtypeidentifier/food",
+      "symbols": [
+        "HKCorrelationTypeIdentifierFood"
+      ]
+    },
+    "HKDataTypeIdentifierAudiogram": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkaudiogramsampletype",
+      "symbols": [
+        "HKSampleType.audiogramSampleType()"
+      ]
+    },
+    "HKDataTypeIdentifierElectrocardiogram": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkelectrocardiogramtype",
+      "symbols": [
+        "HKObjectType.electrocardiogramType()"
+      ]
+    },
+    "HKDataTypeIdentifierHeartbeatSeries": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkdatatypeidentifierheartbeatseries",
+      "symbols": [
+        "HKDataTypeIdentifierHeartbeatSeries"
+      ]
+    },
+    "HKDataTypeStateOfMind": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkdatatypeidentifierstateofmind",
+      "symbols": [
+        "HKDataTypeIdentifierStateOfMind"
+      ]
+    },
+    "HKDataTypeUserAnnotatedMedicationConcept": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkdatatypeidentifieruserannotatedmedicationconcept",
+      "symbols": [
+        "HKDataTypeIdentifierUserAnnotatedMedicationConcept"
+      ]
+    },
+    "HKDocumentTypeIdentifierCDA": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkdocumenttypeidentifier/cda",
+      "symbols": [
+        "HKDocumentTypeIdentifierCDA"
+      ]
+    },
+    "HKMedicationDoseEventTypeIdentifierMedicationDoseEvent": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkmedicationdoseeventtypeidentifiermedicationdoseevent",
+      "symbols": [
+        "HKMedicationDoseEventTypeIdentifierMedicationDoseEvent"
+      ]
+    },
+    "HKQuantityTypeIdentifierActiveEnergyBurned": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/activeenergyburned",
+      "symbols": [
+        "HKQuantityTypeIdentifierActiveEnergyBurned"
+      ]
+    },
+    "HKQuantityTypeIdentifierAppleExerciseTime": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/appleexercisetime",
+      "symbols": [
+        "HKQuantityTypeIdentifierAppleExerciseTime"
+      ]
+    },
+    "HKQuantityTypeIdentifierAppleMoveTime": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/applemovetime",
+      "symbols": [
+        "HKQuantityTypeIdentifierAppleMoveTime"
+      ]
+    },
+    "HKQuantityTypeIdentifierAppleSleepingBreathingDisturbances": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/applesleepingbreathingdisturbances",
+      "symbols": [
+        "HKQuantityTypeIdentifierAppleSleepingBreathingDisturbances"
+      ]
+    },
+    "HKQuantityTypeIdentifierAppleSleepingWristTemperature": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/applesleepingwristtemperature",
+      "symbols": [
+        "HKQuantityTypeIdentifierAppleSleepingWristTemperature"
+      ]
+    },
+    "HKQuantityTypeIdentifierAppleStandTime": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/applestandtime",
+      "symbols": [
+        "HKQuantityTypeIdentifierAppleStandTime"
+      ]
+    },
+    "HKQuantityTypeIdentifierAppleWalkingSteadiness": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/applewalkingsteadiness",
+      "symbols": [
+        "HKQuantityTypeIdentifierAppleWalkingSteadiness"
+      ]
+    },
+    "HKQuantityTypeIdentifierAtrialFibrillationBurden": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/atrialfibrillationburden",
+      "symbols": [
+        "HKQuantityTypeIdentifierAtrialFibrillationBurden"
+      ]
+    },
+    "HKQuantityTypeIdentifierBasalBodyTemperature": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/basalbodytemperature",
+      "symbols": [
+        "HKQuantityTypeIdentifierBasalBodyTemperature"
+      ]
+    },
+    "HKQuantityTypeIdentifierBasalEnergyBurned": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/basalenergyburned",
+      "symbols": [
+        "HKQuantityTypeIdentifierBasalEnergyBurned"
+      ]
+    },
+    "HKQuantityTypeIdentifierBloodAlcoholContent": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/bloodalcoholcontent",
+      "symbols": [
+        "HKQuantityTypeIdentifierBloodAlcoholContent"
+      ]
+    },
+    "HKQuantityTypeIdentifierBloodGlucose": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/bloodglucose",
+      "symbols": [
+        "HKQuantityTypeIdentifierBloodGlucose"
+      ]
+    },
+    "HKQuantityTypeIdentifierBloodPressureDiastolic": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/bloodpressurediastolic",
+      "symbols": [
+        "HKQuantityTypeIdentifierBloodPressureDiastolic"
+      ]
+    },
+    "HKQuantityTypeIdentifierBloodPressureSystolic": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/bloodpressuresystolic",
+      "symbols": [
+        "HKQuantityTypeIdentifierBloodPressureSystolic"
+      ]
+    },
+    "HKQuantityTypeIdentifierBodyFatPercentage": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/bodyfatpercentage",
+      "symbols": [
+        "HKQuantityTypeIdentifierBodyFatPercentage"
+      ]
+    },
+    "HKQuantityTypeIdentifierBodyMass": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/bodymass",
+      "symbols": [
+        "HKQuantityTypeIdentifierBodyMass"
+      ]
+    },
+    "HKQuantityTypeIdentifierBodyMassIndex": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/bodymassindex",
+      "symbols": [
+        "HKQuantityTypeIdentifierBodyMassIndex"
+      ]
+    },
+    "HKQuantityTypeIdentifierBodyTemperature": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/bodytemperature",
+      "symbols": [
+        "HKQuantityTypeIdentifierBodyTemperature"
+      ]
+    },
+    "HKQuantityTypeIdentifierCrossCountrySkiingSpeed": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/crosscountryskiingspeed",
+      "symbols": [
+        "HKQuantityTypeIdentifierCrossCountrySkiingSpeed"
+      ]
+    },
+    "HKQuantityTypeIdentifierCyclingCadence": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/cyclingcadence",
+      "symbols": [
+        "HKQuantityTypeIdentifierCyclingCadence"
+      ]
+    },
+    "HKQuantityTypeIdentifierCyclingFunctionalThresholdPower": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/cyclingfunctionalthresholdpower",
+      "symbols": [
+        "HKQuantityTypeIdentifierCyclingFunctionalThresholdPower"
+      ]
+    },
+    "HKQuantityTypeIdentifierCyclingPower": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/cyclingpower",
+      "symbols": [
+        "HKQuantityTypeIdentifierCyclingPower"
+      ]
+    },
+    "HKQuantityTypeIdentifierCyclingSpeed": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/cyclingspeed",
+      "symbols": [
+        "HKQuantityTypeIdentifierCyclingSpeed"
+      ]
+    },
+    "HKQuantityTypeIdentifierDietaryBiotin": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarybiotin",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryBiotin"
+      ]
+    },
+    "HKQuantityTypeIdentifierDietaryCaffeine": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarycaffeine",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryCaffeine"
+      ]
+    },
+    "HKQuantityTypeIdentifierDietaryCalcium": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarycalcium",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryCalcium"
+      ]
+    },
+    "HKQuantityTypeIdentifierDietaryCarbohydrates": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarycarbohydrates",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryCarbohydrates"
+      ]
+    },
+    "HKQuantityTypeIdentifierDietaryChloride": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarychloride",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryChloride"
+      ]
+    },
+    "HKQuantityTypeIdentifierDietaryCholesterol": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarycholesterol",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryCholesterol"
+      ]
+    },
+    "HKQuantityTypeIdentifierDietaryChromium": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarychromium",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryChromium"
+      ]
+    },
+    "HKQuantityTypeIdentifierDietaryCopper": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarycopper",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryCopper"
+      ]
+    },
+    "HKQuantityTypeIdentifierDietaryEnergyConsumed": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryenergyconsumed",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryEnergyConsumed"
+      ]
+    },
+    "HKQuantityTypeIdentifierDietaryFatMonounsaturated": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryfatmonounsaturated",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryFatMonounsaturated"
+      ]
+    },
+    "HKQuantityTypeIdentifierDietaryFatPolyunsaturated": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryfatpolyunsaturated",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryFatPolyunsaturated"
+      ]
+    },
+    "HKQuantityTypeIdentifierDietaryFatSaturated": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryfatsaturated",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryFatSaturated"
+      ]
+    },
+    "HKQuantityTypeIdentifierDietaryFatTotal": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryfattotal",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryFatTotal"
+      ]
+    },
+    "HKQuantityTypeIdentifierDietaryFiber": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryfiber",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryFiber"
+      ]
+    },
+    "HKQuantityTypeIdentifierDietaryFolate": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryfolate",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryFolate"
+      ]
+    },
+    "HKQuantityTypeIdentifierDietaryIodine": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryiodine",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryIodine"
+      ]
+    },
+    "HKQuantityTypeIdentifierDietaryIron": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryiron",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryIron"
+      ]
+    },
+    "HKQuantityTypeIdentifierDietaryMagnesium": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarymagnesium",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryMagnesium"
+      ]
+    },
+    "HKQuantityTypeIdentifierDietaryManganese": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarymanganese",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryManganese"
+      ]
+    },
+    "HKQuantityTypeIdentifierDietaryMolybdenum": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarymolybdenum",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryMolybdenum"
+      ]
+    },
+    "HKQuantityTypeIdentifierDietaryNiacin": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryniacin",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryNiacin"
+      ]
+    },
+    "HKQuantityTypeIdentifierDietaryPantothenicAcid": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarypantothenicacid",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryPantothenicAcid"
+      ]
+    },
+    "HKQuantityTypeIdentifierDietaryPhosphorus": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryphosphorus",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryPhosphorus"
+      ]
+    },
+    "HKQuantityTypeIdentifierDietaryPotassium": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarypotassium",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryPotassium"
+      ]
+    },
+    "HKQuantityTypeIdentifierDietaryProtein": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryprotein",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryProtein"
+      ]
+    },
+    "HKQuantityTypeIdentifierDietaryRiboflavin": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryriboflavin",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryRiboflavin"
+      ]
+    },
+    "HKQuantityTypeIdentifierDietarySelenium": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryselenium",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietarySelenium"
+      ]
+    },
+    "HKQuantityTypeIdentifierDietarySodium": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarysodium",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietarySodium"
+      ]
+    },
+    "HKQuantityTypeIdentifierDietarySugar": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarysugar",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietarySugar"
+      ]
+    },
+    "HKQuantityTypeIdentifierDietaryThiamin": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarythiamin",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryThiamin"
+      ]
+    },
+    "HKQuantityTypeIdentifierDietaryVitaminA": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryvitamina",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryVitaminA"
+      ]
+    },
+    "HKQuantityTypeIdentifierDietaryVitaminB12": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryvitaminb12",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryVitaminB12"
+      ]
+    },
+    "HKQuantityTypeIdentifierDietaryVitaminB6": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryvitaminb6",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryVitaminB6"
+      ]
+    },
+    "HKQuantityTypeIdentifierDietaryVitaminC": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryvitaminc",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryVitaminC"
+      ]
+    },
+    "HKQuantityTypeIdentifierDietaryVitaminD": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryvitamind",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryVitaminD"
+      ]
+    },
+    "HKQuantityTypeIdentifierDietaryVitaminE": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryvitamine",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryVitaminE"
+      ]
+    },
+    "HKQuantityTypeIdentifierDietaryVitaminK": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryvitamink",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryVitaminK"
+      ]
+    },
+    "HKQuantityTypeIdentifierDietaryWater": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarywater",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryWater"
+      ]
+    },
+    "HKQuantityTypeIdentifierDietaryZinc": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryzinc",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryZinc"
+      ]
+    },
+    "HKQuantityTypeIdentifierDistanceCrossCountrySkiing": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/distancecrosscountryskiing",
+      "symbols": [
+        "HKQuantityTypeIdentifierDistanceCrossCountrySkiing"
+      ]
+    },
+    "HKQuantityTypeIdentifierDistanceCycling": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/distancecycling",
+      "symbols": [
+        "HKQuantityTypeIdentifierDistanceCycling"
+      ]
+    },
+    "HKQuantityTypeIdentifierDistanceDownhillSnowSports": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/distancedownhillsnowsports",
+      "symbols": [
+        "HKQuantityTypeIdentifierDistanceDownhillSnowSports"
+      ]
+    },
+    "HKQuantityTypeIdentifierDistancePaddleSports": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/distancepaddlesports",
+      "symbols": [
+        "HKQuantityTypeIdentifierDistancePaddleSports"
+      ]
+    },
+    "HKQuantityTypeIdentifierDistanceRowing": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/distancerowing",
+      "symbols": [
+        "HKQuantityTypeIdentifierDistanceRowing"
+      ]
+    },
+    "HKQuantityTypeIdentifierDistanceSkatingSports": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/distanceskatingsports",
+      "symbols": [
+        "HKQuantityTypeIdentifierDistanceSkatingSports"
+      ]
+    },
+    "HKQuantityTypeIdentifierDistanceSwimming": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/distanceswimming",
+      "symbols": [
+        "HKQuantityTypeIdentifierDistanceSwimming"
+      ]
+    },
+    "HKQuantityTypeIdentifierDistanceWalkingRunning": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/distancewalkingrunning",
+      "symbols": [
+        "HKQuantityTypeIdentifierDistanceWalkingRunning"
+      ]
+    },
+    "HKQuantityTypeIdentifierDistanceWheelchair": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/distancewheelchair",
+      "symbols": [
+        "HKQuantityTypeIdentifierDistanceWheelchair"
+      ]
+    },
+    "HKQuantityTypeIdentifierElectrodermalActivity": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/electrodermalactivity",
+      "symbols": [
+        "HKQuantityTypeIdentifierElectrodermalActivity"
+      ]
+    },
+    "HKQuantityTypeIdentifierEnvironmentalAudioExposure": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/environmentalaudioexposure",
+      "symbols": [
+        "HKQuantityTypeIdentifierEnvironmentalAudioExposure"
+      ]
+    },
+    "HKQuantityTypeIdentifierEnvironmentalSoundReduction": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/environmentalsoundreduction",
+      "symbols": [
+        "HKQuantityTypeIdentifierEnvironmentalSoundReduction"
+      ]
+    },
+    "HKQuantityTypeIdentifierEstimatedWorkoutEffortScore": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/estimatedworkouteffortscore",
+      "symbols": [
+        "HKQuantityTypeIdentifierEstimatedWorkoutEffortScore"
+      ]
+    },
+    "HKQuantityTypeIdentifierFlightsClimbed": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/flightsclimbed",
+      "symbols": [
+        "HKQuantityTypeIdentifierFlightsClimbed"
+      ]
+    },
+    "HKQuantityTypeIdentifierForcedExpiratoryVolume1": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/forcedexpiratoryvolume1",
+      "symbols": [
+        "HKQuantityTypeIdentifierForcedExpiratoryVolume1"
+      ]
+    },
+    "HKQuantityTypeIdentifierForcedVitalCapacity": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/forcedvitalcapacity",
+      "symbols": [
+        "HKQuantityTypeIdentifierForcedVitalCapacity"
+      ]
+    },
+    "HKQuantityTypeIdentifierHeadphoneAudioExposure": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/headphoneaudioexposure",
+      "symbols": [
+        "HKQuantityTypeIdentifierHeadphoneAudioExposure"
+      ]
+    },
+    "HKQuantityTypeIdentifierHeartRate": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/heartrate",
+      "symbols": [
+        "HKQuantityTypeIdentifierHeartRate"
+      ]
+    },
+    "HKQuantityTypeIdentifierHeartRateRecoveryOneMinute": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/heartraterecoveryoneminute",
+      "symbols": [
+        "HKQuantityTypeIdentifierHeartRateRecoveryOneMinute"
+      ]
+    },
+    "HKQuantityTypeIdentifierHeartRateVariabilitySDNN": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/heartratevariabilitysdnn",
+      "symbols": [
+        "HKQuantityTypeIdentifierHeartRateVariabilitySDNN"
+      ]
+    },
+    "HKQuantityTypeIdentifierHeight": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/height",
+      "symbols": [
+        "HKQuantityTypeIdentifierHeight"
+      ]
+    },
+    "HKQuantityTypeIdentifierInhalerUsage": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/inhalerusage",
+      "symbols": [
+        "HKQuantityTypeIdentifierInhalerUsage"
+      ]
+    },
+    "HKQuantityTypeIdentifierInsulinDelivery": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/insulindelivery",
+      "symbols": [
+        "HKQuantityTypeIdentifierInsulinDelivery"
+      ]
+    },
+    "HKQuantityTypeIdentifierLeanBodyMass": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/leanbodymass",
+      "symbols": [
+        "HKQuantityTypeIdentifierLeanBodyMass"
+      ]
+    },
+    "HKQuantityTypeIdentifierNikeFuel": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/nikefuel",
+      "symbols": [
+        "HKQuantityTypeIdentifierNikeFuel"
+      ]
+    },
+    "HKQuantityTypeIdentifierNumberOfAlcoholicBeverages": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/numberofalcoholicbeverages",
+      "symbols": [
+        "HKQuantityTypeIdentifierNumberOfAlcoholicBeverages"
+      ]
+    },
+    "HKQuantityTypeIdentifierNumberOfTimesFallen": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/numberoftimesfallen",
+      "symbols": [
+        "HKQuantityTypeIdentifierNumberOfTimesFallen"
+      ]
+    },
+    "HKQuantityTypeIdentifierOxygenSaturation": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/oxygensaturation",
+      "symbols": [
+        "HKQuantityTypeIdentifierOxygenSaturation"
+      ]
+    },
+    "HKQuantityTypeIdentifierPaddleSportsSpeed": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/paddlesportsspeed",
+      "symbols": [
+        "HKQuantityTypeIdentifierPaddleSportsSpeed"
+      ]
+    },
+    "HKQuantityTypeIdentifierPeakExpiratoryFlowRate": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/peakexpiratoryflowrate",
+      "symbols": [
+        "HKQuantityTypeIdentifierPeakExpiratoryFlowRate"
+      ]
+    },
+    "HKQuantityTypeIdentifierPeripheralPerfusionIndex": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/peripheralperfusionindex",
+      "symbols": [
+        "HKQuantityTypeIdentifierPeripheralPerfusionIndex"
+      ]
+    },
+    "HKQuantityTypeIdentifierPhysicalEffort": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/physicaleffort",
+      "symbols": [
+        "HKQuantityTypeIdentifierPhysicalEffort"
+      ]
+    },
+    "HKQuantityTypeIdentifierPushCount": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/pushcount",
+      "symbols": [
+        "HKQuantityTypeIdentifierPushCount"
+      ]
+    },
+    "HKQuantityTypeIdentifierRespiratoryRate": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/respiratoryrate",
+      "symbols": [
+        "HKQuantityTypeIdentifierRespiratoryRate"
+      ]
+    },
+    "HKQuantityTypeIdentifierRestingHeartRate": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/restingheartrate",
+      "symbols": [
+        "HKQuantityTypeIdentifierRestingHeartRate"
+      ]
+    },
+    "HKQuantityTypeIdentifierRowingSpeed": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/rowingspeed",
+      "symbols": [
+        "HKQuantityTypeIdentifierRowingSpeed"
+      ]
+    },
+    "HKQuantityTypeIdentifierRunningGroundContactTime": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/runninggroundcontacttime",
+      "symbols": [
+        "HKQuantityTypeIdentifierRunningGroundContactTime"
+      ]
+    },
+    "HKQuantityTypeIdentifierRunningPower": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/runningpower",
+      "symbols": [
+        "HKQuantityTypeIdentifierRunningPower"
+      ]
+    },
+    "HKQuantityTypeIdentifierRunningSpeed": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/runningspeed",
+      "symbols": [
+        "HKQuantityTypeIdentifierRunningSpeed"
+      ]
+    },
+    "HKQuantityTypeIdentifierRunningStrideLength": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/runningstridelength",
+      "symbols": [
+        "HKQuantityTypeIdentifierRunningStrideLength"
+      ]
+    },
+    "HKQuantityTypeIdentifierRunningVerticalOscillation": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/runningverticaloscillation",
+      "symbols": [
+        "HKQuantityTypeIdentifierRunningVerticalOscillation"
+      ]
+    },
+    "HKQuantityTypeIdentifierSixMinuteWalkTestDistance": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/sixminutewalktestdistance",
+      "symbols": [
+        "HKQuantityTypeIdentifierSixMinuteWalkTestDistance"
+      ]
+    },
+    "HKQuantityTypeIdentifierStairAscentSpeed": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/stairascentspeed",
+      "symbols": [
+        "HKQuantityTypeIdentifierStairAscentSpeed"
+      ]
+    },
+    "HKQuantityTypeIdentifierStairDescentSpeed": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/stairdescentspeed",
+      "symbols": [
+        "HKQuantityTypeIdentifierStairDescentSpeed"
+      ]
+    },
+    "HKQuantityTypeIdentifierStepCount": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/stepcount",
+      "symbols": [
+        "HKQuantityTypeIdentifierStepCount"
+      ]
+    },
+    "HKQuantityTypeIdentifierSwimmingStrokeCount": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/swimmingstrokecount",
+      "symbols": [
+        "HKQuantityTypeIdentifierSwimmingStrokeCount"
+      ]
+    },
+    "HKQuantityTypeIdentifierTimeInDaylight": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/timeindaylight",
+      "symbols": [
+        "HKQuantityTypeIdentifierTimeInDaylight"
+      ]
+    },
+    "HKQuantityTypeIdentifierUVExposure": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/uvexposure",
+      "symbols": [
+        "HKQuantityTypeIdentifierUVExposure"
+      ]
+    },
+    "HKQuantityTypeIdentifierUnderwaterDepth": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/underwaterdepth",
+      "symbols": [
+        "HKQuantityTypeIdentifierUnderwaterDepth"
+      ]
+    },
+    "HKQuantityTypeIdentifierVO2Max": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/vo2max",
+      "symbols": [
+        "HKQuantityTypeIdentifierVO2Max"
+      ]
+    },
+    "HKQuantityTypeIdentifierWaistCircumference": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/waistcircumference",
+      "symbols": [
+        "HKQuantityTypeIdentifierWaistCircumference"
+      ]
+    },
+    "HKQuantityTypeIdentifierWalkingAsymmetryPercentage": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/walkingasymmetrypercentage",
+      "symbols": [
+        "HKQuantityTypeIdentifierWalkingAsymmetryPercentage"
+      ]
+    },
+    "HKQuantityTypeIdentifierWalkingDoubleSupportPercentage": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/walkingdoublesupportpercentage",
+      "symbols": [
+        "HKQuantityTypeIdentifierWalkingDoubleSupportPercentage"
+      ]
+    },
+    "HKQuantityTypeIdentifierWalkingHeartRateAverage": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/walkingheartrateaverage",
+      "symbols": [
+        "HKQuantityTypeIdentifierWalkingHeartRateAverage"
+      ]
+    },
+    "HKQuantityTypeIdentifierWalkingSpeed": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/walkingspeed",
+      "symbols": [
+        "HKQuantityTypeIdentifierWalkingSpeed"
+      ]
+    },
+    "HKQuantityTypeIdentifierWalkingStepLength": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/walkingsteplength",
+      "symbols": [
+        "HKQuantityTypeIdentifierWalkingStepLength"
+      ]
+    },
+    "HKQuantityTypeIdentifierWaterTemperature": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/watertemperature",
+      "symbols": [
+        "HKQuantityTypeIdentifierWaterTemperature"
+      ]
+    },
+    "HKQuantityTypeIdentifierWorkoutEffortScore": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/workouteffortscore",
+      "symbols": [
+        "HKQuantityTypeIdentifierWorkoutEffortScore"
+      ]
+    },
+    "HKScoredAssessmentTypeIdentifierGAD7": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkscoredassessmenttypeidentifier/gad7",
+      "symbols": [
+        "HKScoredAssessmentTypeIdentifierGAD7"
+      ]
+    },
+    "HKScoredAssessmentTypeIdentifierPHQ9": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkscoredassessmenttypeidentifier/phq9",
+      "symbols": [
+        "HKScoredAssessmentTypeIdentifierPHQ9"
+      ]
+    },
+    "HKVisionPrescriptionTypeIdentifier": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkvisionprescriptiontypeidentifier",
+      "symbols": [
+        "HKVisionPrescriptionTypeIdentifier"
+      ]
+    },
+    "HKWorkoutRouteTypeIdentifier": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkworkoutroutetypeidentifier",
+      "symbols": [
+        "HKWorkoutRouteTypeIdentifier"
+      ]
+    },
+    "HKWorkoutTypeIdentifier": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkworkouttypeidentifier",
+      "symbols": [
+        "HKWorkoutTypeIdentifier"
+      ]
+    }
+  }
+}

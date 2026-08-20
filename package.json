@@ -7,6 +7,8 @@
     "build": "./Scripts/build-guides.sh",
     "pages:build": "./Scripts/build-guides.sh && ./Scripts/assemble-pages.sh",
     "producer-kit:check": "python3 Scripts/validate-producer.py --manifest Conformance/example-producer/manifest.json --structural-only",
+    "inventory:refresh": "python3 Scripts/render-platform-inventories.py",
+    "inventory:check": "python3 Scripts/render-platform-inventories.py --check",
     "test": "python3 Scripts/check-content.py && python3 -m unittest discover -s Tests -v"
   },
   "devDependencies": {

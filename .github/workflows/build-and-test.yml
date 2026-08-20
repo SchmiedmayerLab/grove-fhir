@@ -59,6 +59,28 @@ jobs:
           fi
       - run: git diff --check
 
+  platform-inventory:
+    name: Regenerate Adapter Inventories From the Platforms
+    # The other jobs only prove each catalog matches the evidence committed beside it.
+    # This one re-reads the platforms, so a symbol written into both files is still
+    # caught. HealthKit and SensorKit identifiers are read from a running simulator,
+    # which is why this lane is macOS.
+    runs-on: macos-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 1
+          persist-credentials: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13.15"
+      # The evidence records the SDK baseline it was read from, so a runner on a
+      # different Xcode reports as drift rather than silently rewriting the inventory.
+      - run: xcodebuild -version
+      - run: python3 Scripts/render-platform-inventories.py --check
+
   draft-guides:
     name: "Draft: Build Changed R4 Guides"
     if: github.event_name == 'pull_request' && github.event.pull_request.draft == true

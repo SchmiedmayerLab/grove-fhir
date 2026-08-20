@@ -11,8 +11,8 @@
       "xcodeBuild": "27A5237l"
     },
     "accessed": "2026-08-20",
-    "inventory": "Closed v0.2.0 platform-adapter inventory of HealthKit quantities, categories, correlations, characteristics, clinical records, ECG, workouts, and other public sample types. Derived aggregation contracts are listed separately and are not counted as platform source types.",
-    "rowScope": "rows contains only public Apple HealthKit source type identifiers in the stated SDK baseline; derived mappings are excluded and declared separately.",
+    "inventory": "Every source-type identifier the stated SDK baseline hands back at runtime, read inside an iOS simulator on that baseline. Derived aggregation contracts are listed separately and are not platform source types.",
+    "rowScope": "rows contains exactly the runtime source-type identifiers of the stated SDK baseline, one row per identifier, and derived mappings are excluded and declared separately; where Apple declares more than one constant for an identifier, every declaring name is listed in symbols.",
     "evidence": [
       {
         "kind": "platform-documentation",
@@ -20,9 +20,9 @@
         "scope": "HealthKit data-type families and public source concepts"
       },
       {
-        "kind": "platform-documentation",
-        "url": "https://developer.apple.com/documentation/healthkit/hkobjecttype",
-        "scope": "HealthKit object-type identity and construction"
+        "kind": "platform-runtime-inventory",
+        "path": "healthkit/input/data/healthkit-inventory.json",
+        "scope": "Runtime identifiers, their declaring constants, and canonical documentation pages"
       },
       {
         "kind": "sdk-provenance",
@@ -30,7 +30,7 @@
         "scope": "Exact SDK baseline, retained source terminology, and source-file hashes"
       }
     ],
-    "rowCount": 212,
+    "rowCount": 220,
     "derivedAggregateCount": 1
   },
   "producerCanonicalization": {
@@ -62,8 +62,15 @@
         "http://hl7.org/fhir/StructureDefinition/bmi",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-observation"
       ],
-      "code": {"system": "http://loinc.org", "code": "39156-5"},
-      "quantity": {"system": "http://unitsofmeasure.org", "code": "kg/m2", "unit": "kg/m2"},
+      "code": {
+        "system": "http://loinc.org",
+        "code": "39156-5"
+      },
+      "quantity": {
+        "system": "http://unitsofmeasure.org",
+        "code": "kg/m2",
+        "unit": "kg/m2"
+      },
       "effective": "dateTime",
       "reason": "FHIR R4 already publishes an authoritative BMI profile; a one-source Grove Mobile wrapper would duplicate it."
     }
@@ -77,26 +84,98 @@
       ],
       "sourceTypeIdentifier": "HKDataTypeIdentifierElectrocardiogram",
       "sourceLead": "HKElectrocardiogram.Lead.appleWatchSimilarToLeadI",
-      "leadCode": {"system": "urn:iso:std:iso:11073:10101", "code": "131329", "display": "MDC_ECG_ELEC_POTL_I"},
-      "quantity": {"system": "http://unitsofmeasure.org", "code": "mV", "unit": "mV"},
-      "callerEvidence": ["HKElectrocardiogram", "all HKElectrocardiogram.VoltageMeasurement values and timeSinceSampleStart offsets", "the exact associated HKCategorySample objects when symptomsStatus is present"],
-      "requiredContext": ["classification", "symptomsStatus", "numberOfVoltageMeasurements", "HKElectrocardiogram.startDate/endDate"],
-      "optionalContext": ["averageHeartRate", "samplingFrequency", "HKMetadataKeyAppleECGAlgorithmVersion"],
+      "leadCode": {
+        "system": "urn:iso:std:iso:11073:10101",
+        "code": "131329",
+        "display": "MDC_ECG_ELEC_POTL_I"
+      },
+      "quantity": {
+        "system": "http://unitsofmeasure.org",
+        "code": "mV",
+        "unit": "mV"
+      },
+      "callerEvidence": [
+        "HKElectrocardiogram",
+        "all HKElectrocardiogram.VoltageMeasurement values and timeSinceSampleStart offsets",
+        "the exact associated HKCategorySample objects when symptomsStatus is present"
+      ],
+      "requiredContext": [
+        "classification",
+        "symptomsStatus",
+        "numberOfVoltageMeasurements",
+        "HKElectrocardiogram.startDate/endDate"
+      ],
+      "optionalContext": [
+        "averageHeartRate",
+        "samplingFrequency",
+        "HKMetadataKeyAppleECGAlgorithmVersion"
+      ],
       "correlatedSymptomEvidence": {
         "url": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-correlated-symptom",
         "cardinality": "0..7",
         "children": [
-          {"url": "sourceIdentifier", "type": "Identifier", "meaning": "Exact HKCategorySample UUID under the HealthKit object NamingSystem"},
-          {"url": "effectivePeriod", "type": "Period", "meaning": "Exact HKCategorySample startDate/endDate"},
-          {"url": "symptomType", "type": "code", "meaning": "Exact admitted HealthKit symptom category identifier"},
-          {"url": "severity", "type": "code", "meaning": "Exact admitted HealthKit symptom severity"},
-          {"url": "sourceName", "type": "string", "cardinality": "1..1", "meaning": "Exact HKSourceRevision.source.name"},
-          {"url": "sourceBundleIdentifier", "type": "string", "cardinality": "1..1", "meaning": "Exact HKSourceRevision.source.bundleIdentifier"},
-          {"url": "sourceVersion", "type": "string", "cardinality": "0..1", "meaning": "Exact HKSourceRevision.version when present"},
-          {"url": "sourceProductType", "type": "string", "cardinality": "0..1", "meaning": "Exact HKSourceRevision.productType when present"},
-          {"url": "sourceOperatingSystemMajorVersion", "type": "integer", "cardinality": "1..1", "meaning": "Exact HKSourceRevision.operatingSystemVersion.majorVersion"},
-          {"url": "sourceOperatingSystemMinorVersion", "type": "integer", "cardinality": "1..1", "meaning": "Exact HKSourceRevision.operatingSystemVersion.minorVersion"},
-          {"url": "sourceOperatingSystemPatchVersion", "type": "integer", "cardinality": "1..1", "meaning": "Exact HKSourceRevision.operatingSystemVersion.patchVersion"}
+          {
+            "url": "sourceIdentifier",
+            "type": "Identifier",
+            "meaning": "Exact HKCategorySample UUID under the HealthKit object NamingSystem"
+          },
+          {
+            "url": "effectivePeriod",
+            "type": "Period",
+            "meaning": "Exact HKCategorySample startDate/endDate"
+          },
+          {
+            "url": "symptomType",
+            "type": "code",
+            "meaning": "Exact admitted HealthKit symptom category identifier"
+          },
+          {
+            "url": "severity",
+            "type": "code",
+            "meaning": "Exact admitted HealthKit symptom severity"
+          },
+          {
+            "url": "sourceName",
+            "type": "string",
+            "cardinality": "1..1",
+            "meaning": "Exact HKSourceRevision.source.name"
+          },
+          {
+            "url": "sourceBundleIdentifier",
+            "type": "string",
+            "cardinality": "1..1",
+            "meaning": "Exact HKSourceRevision.source.bundleIdentifier"
+          },
+          {
+            "url": "sourceVersion",
+            "type": "string",
+            "cardinality": "0..1",
+            "meaning": "Exact HKSourceRevision.version when present"
+          },
+          {
+            "url": "sourceProductType",
+            "type": "string",
+            "cardinality": "0..1",
+            "meaning": "Exact HKSourceRevision.productType when present"
+          },
+          {
+            "url": "sourceOperatingSystemMajorVersion",
+            "type": "integer",
+            "cardinality": "1..1",
+            "meaning": "Exact HKSourceRevision.operatingSystemVersion.majorVersion"
+          },
+          {
+            "url": "sourceOperatingSystemMinorVersion",
+            "type": "integer",
+            "cardinality": "1..1",
+            "meaning": "Exact HKSourceRevision.operatingSystemVersion.minorVersion"
+          },
+          {
+            "url": "sourceOperatingSystemPatchVersion",
+            "type": "integer",
+            "cardinality": "1..1",
+            "meaning": "Exact HKSourceRevision.operatingSystemVersion.patchVersion"
+          }
         ]
       },
       "sourceRevisionDisclosure": {
@@ -112,11 +191,17 @@
     {
       "id": "sleep-duration-session-aggregate",
       "title": "Sleep Duration Session Aggregate",
-      "sourceTypeIdentifiers": ["HKCategoryTypeIdentifierSleepAnalysis"],
+      "sourceTypeIdentifiers": [
+        "HKCategoryTypeIdentifierSleepAnalysis"
+      ],
       "scope": "derived-from-platform-samples",
       "status": "deferred",
-      "measurementIDs": ["sleep-duration"],
-      "profiles": ["https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-sleep-duration"],
+      "measurementIDs": [
+        "sleep-duration"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-sleep-duration"
+      ],
       "requirement": "This is not a HealthKit platform source identifier. Version 0.2.0 does not define the session-boundary aggregation contract; individual admitted samples map only to sleep stage."
     }
   ],
@@ -124,6 +209,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierAbdominalCramps",
       "title": "Abdominal Cramps",
+      "symbols": [
+        "HKCategoryTypeIdentifierAbdominalCramps"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/abdominalcramps",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -132,6 +221,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierAcne",
       "title": "Acne",
+      "symbols": [
+        "HKCategoryTypeIdentifierAcne"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/acne",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -140,6 +233,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierAppetiteChanges",
       "title": "Appetite Changes",
+      "symbols": [
+        "HKCategoryTypeIdentifierAppetiteChanges"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/appetitechanges",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -148,6 +245,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierAppleStandHour",
       "title": "Apple Stand Hour",
+      "symbols": [
+        "HKCategoryTypeIdentifierAppleStandHour"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/applestandhour",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -156,6 +257,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierAppleWalkingSteadinessEvent",
       "title": "Apple Walking Steadiness Event",
+      "symbols": [
+        "HKCategoryTypeIdentifierAppleWalkingSteadinessEvent"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/applewalkingsteadinessevent",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -163,15 +268,24 @@
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierAudioExposureEvent",
-      "title": "Audio Exposure Event (Deprecated)",
+      "title": "Audio Exposure Event",
+      "symbols": [
+        "HKCategoryTypeIdentifierAudioExposureEvent",
+        "HKCategoryTypeIdentifierEnvironmentalAudioExposureEvent"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/environmentalaudioexposureevent",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
-      "requirement": "Apple deprecates this source type in favor of HKCategoryTypeIdentifierEnvironmentalAudioExposureEvent. Version 0.2.0 publishes no admitted output contract for either event type."
+      "requirement": "Apple renames this constant to HKCategoryTypeIdentifierEnvironmentalAudioExposureEvent while keeping its identifier. Version 0.2.0 publishes no admitted output contract."
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierBladderIncontinence",
       "title": "Bladder Incontinence",
+      "symbols": [
+        "HKCategoryTypeIdentifierBladderIncontinence"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/bladderincontinence",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -180,6 +294,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierBleedingAfterMenopause",
       "title": "Bleeding After Menopause",
+      "symbols": [
+        "HKCategoryTypeIdentifierBleedingAfterMenopause"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/bleedingaftermenopause",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -188,6 +306,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierBleedingAfterPregnancy",
       "title": "Bleeding After Pregnancy",
+      "symbols": [
+        "HKCategoryTypeIdentifierBleedingAfterPregnancy"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/bleedingafterpregnancy",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -196,6 +318,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierBleedingDuringPregnancy",
       "title": "Bleeding During Pregnancy",
+      "symbols": [
+        "HKCategoryTypeIdentifierBleedingDuringPregnancy"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/bleedingduringpregnancy",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -204,6 +330,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierBloating",
       "title": "Bloating",
+      "symbols": [
+        "HKCategoryTypeIdentifierBloating"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/bloating",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -212,6 +342,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierBreastPain",
       "title": "Breast Pain",
+      "symbols": [
+        "HKCategoryTypeIdentifierBreastPain"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/breastpain",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -220,6 +354,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierCervicalMucusQuality",
       "title": "Cervical Mucus Quality",
+      "symbols": [
+        "HKCategoryTypeIdentifierCervicalMucusQuality"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/cervicalmucusquality",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -228,6 +366,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierChestTightnessOrPain",
       "title": "Chest Tightness/Pain",
+      "symbols": [
+        "HKCategoryTypeIdentifierChestTightnessOrPain"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/chesttightnessorpain",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -236,6 +378,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierChills",
       "title": "Chills",
+      "symbols": [
+        "HKCategoryTypeIdentifierChills"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/chills",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -244,6 +390,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierConstipation",
       "title": "Constipation",
+      "symbols": [
+        "HKCategoryTypeIdentifierConstipation"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/constipation",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -252,6 +402,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierContraceptive",
       "title": "Contraceptive",
+      "symbols": [
+        "HKCategoryTypeIdentifierContraceptive"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/contraceptive",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -260,6 +414,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierCoughing",
       "title": "Coughing",
+      "symbols": [
+        "HKCategoryTypeIdentifierCoughing"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/coughing",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -268,6 +426,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierDiarrhea",
       "title": "Diarrhea",
+      "symbols": [
+        "HKCategoryTypeIdentifierDiarrhea"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/diarrhea",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -276,6 +438,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierDizziness",
       "title": "Dizziness",
+      "symbols": [
+        "HKCategoryTypeIdentifierDizziness"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/dizziness",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -284,22 +450,22 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierDrySkin",
       "title": "Dry Skin",
+      "symbols": [
+        "HKCategoryTypeIdentifierDrySkin"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/dryskin",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
       "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
     },
     {
-      "sourceTypeIdentifier": "HKCategoryTypeIdentifierEnvironmentalAudioExposureEvent",
-      "title": "Environmental Audio Exposure Event",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2.0 output contract is published for this platform source type."
-    },
-    {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierFainting",
       "title": "Fainting",
+      "symbols": [
+        "HKCategoryTypeIdentifierFainting"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/fainting",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -308,6 +474,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierFatigue",
       "title": "Fatigue",
+      "symbols": [
+        "HKCategoryTypeIdentifierFatigue"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/fatigue",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -316,6 +486,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierFever",
       "title": "Fever",
+      "symbols": [
+        "HKCategoryTypeIdentifierFever"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/fever",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -324,6 +498,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierGeneralizedBodyAche",
       "title": "Generalized Body Ache",
+      "symbols": [
+        "HKCategoryTypeIdentifierGeneralizedBodyAche"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/generalizedbodyache",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -332,6 +510,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierHairLoss",
       "title": "Hair Loss",
+      "symbols": [
+        "HKCategoryTypeIdentifierHairLoss"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/hairloss",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -340,6 +522,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierHandwashingEvent",
       "title": "Handwashing Event",
+      "symbols": [
+        "HKCategoryTypeIdentifierHandwashingEvent"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/handwashingevent",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -348,6 +534,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierHeadache",
       "title": "Headache",
+      "symbols": [
+        "HKCategoryTypeIdentifierHeadache"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/headache",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -356,6 +546,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierHeadphoneAudioExposureEvent",
       "title": "Headphone Audio Exposure Event",
+      "symbols": [
+        "HKCategoryTypeIdentifierHeadphoneAudioExposureEvent"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/headphoneaudioexposureevent",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -364,6 +558,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierHeartburn",
       "title": "Heartburn",
+      "symbols": [
+        "HKCategoryTypeIdentifierHeartburn"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/heartburn",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -372,6 +570,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierHighHeartRateEvent",
       "title": "High Heart Rate Event",
+      "symbols": [
+        "HKCategoryTypeIdentifierHighHeartRateEvent"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/highheartrateevent",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -380,6 +582,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierHotFlashes",
       "title": "Hot Flashes",
+      "symbols": [
+        "HKCategoryTypeIdentifierHotFlashes"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/hotflashes",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -388,6 +594,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierHypertensionEvent",
       "title": "Hypertension Event",
+      "symbols": [
+        "HKCategoryTypeIdentifierHypertensionEvent"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/hypertensionevent",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -396,6 +606,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierInfrequentMenstrualCycles",
       "title": "Infrequent Menstrual Cycles",
+      "symbols": [
+        "HKCategoryTypeIdentifierInfrequentMenstrualCycles"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/infrequentmenstrualcycles",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -404,6 +618,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierIntermenstrualBleeding",
       "title": "Intermenstrual Bleeding",
+      "symbols": [
+        "HKCategoryTypeIdentifierIntermenstrualBleeding"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/intermenstrualbleeding",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -412,6 +630,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierIrregularHeartRhythmEvent",
       "title": "Irregular Heart Rhythm Event",
+      "symbols": [
+        "HKCategoryTypeIdentifierIrregularHeartRhythmEvent"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/irregularheartrhythmevent",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -420,6 +642,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierIrregularMenstrualCycles",
       "title": "Irregular Menstrual Cycles",
+      "symbols": [
+        "HKCategoryTypeIdentifierIrregularMenstrualCycles"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/irregularmenstrualcycles",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -428,6 +654,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierLactation",
       "title": "Lactation",
+      "symbols": [
+        "HKCategoryTypeIdentifierLactation"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/lactation",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -436,6 +666,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierLossOfSmell",
       "title": "Loss of Smell",
+      "symbols": [
+        "HKCategoryTypeIdentifierLossOfSmell"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/lossofsmell",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -444,6 +678,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierLossOfTaste",
       "title": "Loss of Taste",
+      "symbols": [
+        "HKCategoryTypeIdentifierLossOfTaste"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/lossoftaste",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -452,6 +690,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierLowCardioFitnessEvent",
       "title": "Low Cardio Fitness Event",
+      "symbols": [
+        "HKCategoryTypeIdentifierLowCardioFitnessEvent"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/lowcardiofitnessevent",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -460,6 +702,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierLowHeartRateEvent",
       "title": "Low Heart Rate Event",
+      "symbols": [
+        "HKCategoryTypeIdentifierLowHeartRateEvent"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/lowheartrateevent",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -468,6 +714,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierLowerBackPain",
       "title": "Lower Back Pain",
+      "symbols": [
+        "HKCategoryTypeIdentifierLowerBackPain"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/lowerbackpain",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -476,6 +726,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierMemoryLapse",
       "title": "Memory Lapse",
+      "symbols": [
+        "HKCategoryTypeIdentifierMemoryLapse"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/memorylapse",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -484,6 +738,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierMenopausalState",
       "title": "Menopausal State",
+      "symbols": [
+        "HKCategoryTypeIdentifierMenopausalState"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/menopausalstate",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -492,6 +750,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierMenstrualFlow",
       "title": "Menstrual Flow",
+      "symbols": [
+        "HKCategoryTypeIdentifierMenstrualFlow"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/menstrualflow",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -500,6 +762,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierMindfulSession",
       "title": "Mindful Session",
+      "symbols": [
+        "HKCategoryTypeIdentifierMindfulSession"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/mindfulsession",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -508,6 +774,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierMoodChanges",
       "title": "Mood Changes",
+      "symbols": [
+        "HKCategoryTypeIdentifierMoodChanges"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/moodchanges",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -516,6 +786,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierNausea",
       "title": "Nausea",
+      "symbols": [
+        "HKCategoryTypeIdentifierNausea"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/nausea",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -524,6 +798,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierNightSweats",
       "title": "Night Sweats",
+      "symbols": [
+        "HKCategoryTypeIdentifierNightSweats"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/nightsweats",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -532,6 +810,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierOvulationTestResult",
       "title": "Ovulation Test Result",
+      "symbols": [
+        "HKCategoryTypeIdentifierOvulationTestResult"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/ovulationtestresult",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -540,6 +822,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierPelvicPain",
       "title": "Pelvic Pain",
+      "symbols": [
+        "HKCategoryTypeIdentifierPelvicPain"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/pelvicpain",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -548,6 +834,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierPersistentIntermenstrualBleeding",
       "title": "Persistent Intermenstrual Bleeding",
+      "symbols": [
+        "HKCategoryTypeIdentifierPersistentIntermenstrualBleeding"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/persistentintermenstrualbleeding",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -556,6 +846,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierPregnancy",
       "title": "Pregnancy",
+      "symbols": [
+        "HKCategoryTypeIdentifierPregnancy"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/pregnancy",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -564,6 +858,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierPregnancyTestResult",
       "title": "Pregnancy Test Result",
+      "symbols": [
+        "HKCategoryTypeIdentifierPregnancyTestResult"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/pregnancytestresult",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -572,6 +870,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierProgesteroneTestResult",
       "title": "Progesterone Test Result",
+      "symbols": [
+        "HKCategoryTypeIdentifierProgesteroneTestResult"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/progesteronetestresult",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -580,6 +882,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierProlongedMenstrualPeriods",
       "title": "Prolonged Menstrual Periods",
+      "symbols": [
+        "HKCategoryTypeIdentifierProlongedMenstrualPeriods"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/prolongedmenstrualperiods",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -588,6 +894,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierRapidPoundingOrFlutteringHeartbeat",
       "title": "Rapid/Pounding/Fluttering Heartbeat",
+      "symbols": [
+        "HKCategoryTypeIdentifierRapidPoundingOrFlutteringHeartbeat"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/rapidpoundingorflutteringheartbeat",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -596,6 +906,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierRunnyNose",
       "title": "Runny Nose",
+      "symbols": [
+        "HKCategoryTypeIdentifierRunnyNose"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/runnynose",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -604,6 +918,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierSexualActivity",
       "title": "Sexual Activity",
+      "symbols": [
+        "HKCategoryTypeIdentifierSexualActivity"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/sexualactivity",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -612,6 +930,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierShortnessOfBreath",
       "title": "Shortness of Breath",
+      "symbols": [
+        "HKCategoryTypeIdentifierShortnessOfBreath"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/shortnessofbreath",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -620,6 +942,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierSinusCongestion",
       "title": "Sinus Congestion",
+      "symbols": [
+        "HKCategoryTypeIdentifierSinusCongestion"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/sinuscongestion",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -628,6 +954,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierSkippedHeartbeat",
       "title": "Skipped Heartbeat",
+      "symbols": [
+        "HKCategoryTypeIdentifierSkippedHeartbeat"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/skippedheartbeat",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -636,6 +966,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierSleepAnalysis",
       "title": "Sleep Analysis",
+      "symbols": [
+        "HKCategoryTypeIdentifierSleepAnalysis"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/sleepanalysis",
       "status": "supported",
       "measurementIDs": [
         "sleep-stage"
@@ -647,6 +981,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierSleepApneaEvent",
       "title": "Sleep Apnea Event",
+      "symbols": [
+        "HKCategoryTypeIdentifierSleepApneaEvent"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/sleepapneaevent",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -655,6 +993,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierSleepChanges",
       "title": "Sleep Changes",
+      "symbols": [
+        "HKCategoryTypeIdentifierSleepChanges"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/sleepchanges",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -663,6 +1005,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierSoreThroat",
       "title": "Sore Throat",
+      "symbols": [
+        "HKCategoryTypeIdentifierSoreThroat"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/sorethroat",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -671,6 +1017,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierToothbrushingEvent",
       "title": "Toothbrushing Event",
+      "symbols": [
+        "HKCategoryTypeIdentifierToothbrushingEvent"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/toothbrushingevent",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -679,6 +1029,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierVaginalDryness",
       "title": "Vaginal Dryness",
+      "symbols": [
+        "HKCategoryTypeIdentifierVaginalDryness"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/vaginaldryness",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -687,6 +1041,10 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierVomiting",
       "title": "Vomiting",
+      "symbols": [
+        "HKCategoryTypeIdentifierVomiting"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/vomiting",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -695,14 +1053,94 @@
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierWheezing",
       "title": "Wheezing",
+      "symbols": [
+        "HKCategoryTypeIdentifierWheezing"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/wheezing",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
       "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
     },
     {
+      "sourceTypeIdentifier": "HKCharacteristicTypeIdentifierActivityMoveMode",
+      "title": "Activity Move Mode",
+      "symbols": [
+        "HKCharacteristicTypeIdentifierActivityMoveMode"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcharacteristictypeidentifier/activitymovemode",
+      "status": "deferred",
+      "measurementIDs": [],
+      "profiles": [],
+      "requirement": "A HealthKit characteristic describes the subject rather than a measurement. Version 0.2.0 publishes no admitted output contract for characteristics."
+    },
+    {
+      "sourceTypeIdentifier": "HKCharacteristicTypeIdentifierBiologicalSex",
+      "title": "Biological Sex",
+      "symbols": [
+        "HKCharacteristicTypeIdentifierBiologicalSex"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcharacteristictypeidentifier/biologicalsex",
+      "status": "deferred",
+      "measurementIDs": [],
+      "profiles": [],
+      "requirement": "A HealthKit characteristic describes the subject rather than a measurement. Version 0.2.0 publishes no admitted output contract for characteristics."
+    },
+    {
+      "sourceTypeIdentifier": "HKCharacteristicTypeIdentifierBloodType",
+      "title": "Blood Type",
+      "symbols": [
+        "HKCharacteristicTypeIdentifierBloodType"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcharacteristictypeidentifier/bloodtype",
+      "status": "deferred",
+      "measurementIDs": [],
+      "profiles": [],
+      "requirement": "A HealthKit characteristic describes the subject rather than a measurement. Version 0.2.0 publishes no admitted output contract for characteristics."
+    },
+    {
+      "sourceTypeIdentifier": "HKCharacteristicTypeIdentifierDateOfBirth",
+      "title": "Date of Birth",
+      "symbols": [
+        "HKCharacteristicTypeIdentifierDateOfBirth"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcharacteristictypeidentifier/dateofbirth",
+      "status": "deferred",
+      "measurementIDs": [],
+      "profiles": [],
+      "requirement": "A HealthKit characteristic describes the subject rather than a measurement. Version 0.2.0 publishes no admitted output contract for characteristics."
+    },
+    {
+      "sourceTypeIdentifier": "HKCharacteristicTypeIdentifierFitzpatrickSkinType",
+      "title": "Fitzpatrick Skin Type",
+      "symbols": [
+        "HKCharacteristicTypeIdentifierFitzpatrickSkinType"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcharacteristictypeidentifier/fitzpatrickskintype",
+      "status": "deferred",
+      "measurementIDs": [],
+      "profiles": [],
+      "requirement": "A HealthKit characteristic describes the subject rather than a measurement. Version 0.2.0 publishes no admitted output contract for characteristics."
+    },
+    {
+      "sourceTypeIdentifier": "HKCharacteristicTypeIdentifierWheelchairUse",
+      "title": "Wheelchair Use",
+      "symbols": [
+        "HKCharacteristicTypeIdentifierWheelchairUse"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcharacteristictypeidentifier/wheelchairuse",
+      "status": "deferred",
+      "measurementIDs": [],
+      "profiles": [],
+      "requirement": "A HealthKit characteristic describes the subject rather than a measurement. Version 0.2.0 publishes no admitted output contract for characteristics."
+    },
+    {
       "sourceTypeIdentifier": "HKClinicalTypeIdentifierAllergyRecord",
       "title": "Allergy Record",
+      "symbols": [
+        "HKClinicalTypeIdentifierAllergyRecord"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkclinicaltypeidentifier/allergyrecord",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -711,6 +1149,10 @@
     {
       "sourceTypeIdentifier": "HKClinicalTypeIdentifierClinicalNoteRecord",
       "title": "Clinical Note Record",
+      "symbols": [
+        "HKClinicalTypeIdentifierClinicalNoteRecord"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkclinicaltypeidentifier/clinicalnoterecord",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -719,6 +1161,10 @@
     {
       "sourceTypeIdentifier": "HKClinicalTypeIdentifierConditionRecord",
       "title": "Condition Record",
+      "symbols": [
+        "HKClinicalTypeIdentifierConditionRecord"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkclinicaltypeidentifier/conditionrecord",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -727,6 +1173,10 @@
     {
       "sourceTypeIdentifier": "HKClinicalTypeIdentifierCoverageRecord",
       "title": "Coverage Record",
+      "symbols": [
+        "HKClinicalTypeIdentifierCoverageRecord"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkclinicaltypeidentifier/coveragerecord",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -735,6 +1185,10 @@
     {
       "sourceTypeIdentifier": "HKClinicalTypeIdentifierImmunizationRecord",
       "title": "Immunization Record",
+      "symbols": [
+        "HKClinicalTypeIdentifierImmunizationRecord"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkclinicaltypeidentifier/immunizationrecord",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -743,6 +1197,10 @@
     {
       "sourceTypeIdentifier": "HKClinicalTypeIdentifierLabResultRecord",
       "title": "Lab Result Record",
+      "symbols": [
+        "HKClinicalTypeIdentifierLabResultRecord"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkclinicaltypeidentifier/labresultrecord",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -751,6 +1209,10 @@
     {
       "sourceTypeIdentifier": "HKClinicalTypeIdentifierMedicationRecord",
       "title": "Medication Record",
+      "symbols": [
+        "HKClinicalTypeIdentifierMedicationRecord"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkclinicaltypeidentifier/medicationrecord",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -759,6 +1221,10 @@
     {
       "sourceTypeIdentifier": "HKClinicalTypeIdentifierProcedureRecord",
       "title": "Procedure Record",
+      "symbols": [
+        "HKClinicalTypeIdentifierProcedureRecord"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkclinicaltypeidentifier/procedurerecord",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -767,6 +1233,10 @@
     {
       "sourceTypeIdentifier": "HKClinicalTypeIdentifierVitalSignRecord",
       "title": "Vital Sign Record",
+      "symbols": [
+        "HKClinicalTypeIdentifierVitalSignRecord"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkclinicaltypeidentifier/vitalsignrecord",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -775,6 +1245,10 @@
     {
       "sourceTypeIdentifier": "HKCorrelationTypeIdentifierBloodPressure",
       "title": "Blood Pressure",
+      "symbols": [
+        "HKCorrelationTypeIdentifierBloodPressure"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcorrelationtypeidentifier/bloodpressure",
       "status": "supported",
       "measurementIDs": [
         "blood-pressure"
@@ -786,6 +1260,10 @@
     {
       "sourceTypeIdentifier": "HKCorrelationTypeIdentifierFood",
       "title": "Food",
+      "symbols": [
+        "HKCorrelationTypeIdentifierFood"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcorrelationtypeidentifier/food",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -794,6 +1272,10 @@
     {
       "sourceTypeIdentifier": "HKDataTypeIdentifierAudiogram",
       "title": "Audiogram",
+      "symbols": [
+        "HKSampleType.audiogramSampleType()"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkaudiogramsampletype",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -802,8 +1284,14 @@
     {
       "sourceTypeIdentifier": "HKDataTypeIdentifierElectrocardiogram",
       "title": "ECG",
+      "symbols": [
+        "HKObjectType.electrocardiogramType()"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkelectrocardiogramtype",
       "status": "supported",
-      "measurementIDs": ["electrocardiogram"],
+      "measurementIDs": [
+        "electrocardiogram"
+      ],
       "profiles": [
         "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-ecg-observation",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-observation"
@@ -813,6 +1301,10 @@
     {
       "sourceTypeIdentifier": "HKDataTypeIdentifierHeartbeatSeries",
       "title": "Heartbeat Series",
+      "symbols": [
+        "HKDataTypeIdentifierHeartbeatSeries"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkdatatypeidentifierheartbeatseries",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -821,14 +1313,58 @@
     {
       "sourceTypeIdentifier": "HKDataTypeStateOfMind",
       "title": "State of Mind",
+      "symbols": [
+        "HKDataTypeIdentifierStateOfMind"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkdatatypeidentifierstateofmind",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
       "requirement": "No shared or HealthKit-adapter v0.2 output contract is published for this sample type."
     },
     {
+      "sourceTypeIdentifier": "HKDataTypeUserAnnotatedMedicationConcept",
+      "title": "User Annotated Medication Concept",
+      "symbols": [
+        "HKDataTypeIdentifierUserAnnotatedMedicationConcept"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkdatatypeidentifieruserannotatedmedicationconcept",
+      "status": "deferred",
+      "measurementIDs": [],
+      "profiles": [],
+      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+    },
+    {
+      "sourceTypeIdentifier": "HKDocumentTypeIdentifierCDA",
+      "title": "CDA Document",
+      "symbols": [
+        "HKDocumentTypeIdentifierCDA"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkdocumenttypeidentifier/cda",
+      "status": "deferred",
+      "measurementIDs": [],
+      "profiles": [],
+      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+    },
+    {
+      "sourceTypeIdentifier": "HKMedicationDoseEventTypeIdentifierMedicationDoseEvent",
+      "title": "Medication Dose Event",
+      "symbols": [
+        "HKMedicationDoseEventTypeIdentifierMedicationDoseEvent"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkmedicationdoseeventtypeidentifiermedicationdoseevent",
+      "status": "deferred",
+      "measurementIDs": [],
+      "profiles": [],
+      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+    },
+    {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierActiveEnergyBurned",
       "title": "Active Energy Burned",
+      "symbols": [
+        "HKQuantityTypeIdentifierActiveEnergyBurned"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/activeenergyburned",
       "status": "supported",
       "measurementIDs": [
         "active-energy"
@@ -840,6 +1376,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierAppleExerciseTime",
       "title": "Apple Exercise Time",
+      "symbols": [
+        "HKQuantityTypeIdentifierAppleExerciseTime"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/appleexercisetime",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -848,6 +1388,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierAppleMoveTime",
       "title": "Apple Move Time",
+      "symbols": [
+        "HKQuantityTypeIdentifierAppleMoveTime"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/applemovetime",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -856,6 +1400,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierAppleSleepingBreathingDisturbances",
       "title": "Apple Sleeping Breathing Disturbances",
+      "symbols": [
+        "HKQuantityTypeIdentifierAppleSleepingBreathingDisturbances"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/applesleepingbreathingdisturbances",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -864,6 +1412,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierAppleSleepingWristTemperature",
       "title": "Apple Sleeping Wrist Temperature",
+      "symbols": [
+        "HKQuantityTypeIdentifierAppleSleepingWristTemperature"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/applesleepingwristtemperature",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -872,6 +1424,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierAppleStandTime",
       "title": "Apple Stand Time",
+      "symbols": [
+        "HKQuantityTypeIdentifierAppleStandTime"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/applestandtime",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -880,6 +1436,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierAppleWalkingSteadiness",
       "title": "Apple Walking Steadiness",
+      "symbols": [
+        "HKQuantityTypeIdentifierAppleWalkingSteadiness"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/applewalkingsteadiness",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -888,6 +1448,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierAtrialFibrillationBurden",
       "title": "AFib Burden",
+      "symbols": [
+        "HKQuantityTypeIdentifierAtrialFibrillationBurden"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/atrialfibrillationburden",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -896,6 +1460,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierBasalBodyTemperature",
       "title": "Basal Body Temperature",
+      "symbols": [
+        "HKQuantityTypeIdentifierBasalBodyTemperature"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/basalbodytemperature",
       "status": "supported",
       "measurementIDs": [
         "basal-body-temperature"
@@ -907,6 +1475,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierBasalEnergyBurned",
       "title": "Basal Energy Burned",
+      "symbols": [
+        "HKQuantityTypeIdentifierBasalEnergyBurned"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/basalenergyburned",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -915,6 +1487,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierBloodAlcoholContent",
       "title": "Blood Alcohol Content",
+      "symbols": [
+        "HKQuantityTypeIdentifierBloodAlcoholContent"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/bloodalcoholcontent",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -923,6 +1499,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierBloodGlucose",
       "title": "Blood Glucose",
+      "symbols": [
+        "HKQuantityTypeIdentifierBloodGlucose"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/bloodglucose",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -931,6 +1511,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierBloodPressureDiastolic",
       "title": "Blood Pressure (Diastolic)",
+      "symbols": [
+        "HKQuantityTypeIdentifierBloodPressureDiastolic"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/bloodpressurediastolic",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -939,6 +1523,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierBloodPressureSystolic",
       "title": "Blood Pressure (Systolic)",
+      "symbols": [
+        "HKQuantityTypeIdentifierBloodPressureSystolic"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/bloodpressuresystolic",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -947,6 +1535,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierBodyFatPercentage",
       "title": "Body Fat Percentage",
+      "symbols": [
+        "HKQuantityTypeIdentifierBodyFatPercentage"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/bodyfatpercentage",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -955,6 +1547,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierBodyMass",
       "title": "Body Mass",
+      "symbols": [
+        "HKQuantityTypeIdentifierBodyMass"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/bodymass",
       "status": "supported",
       "measurementIDs": [
         "body-weight"
@@ -966,6 +1562,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierBodyMassIndex",
       "title": "BMI",
+      "symbols": [
+        "HKQuantityTypeIdentifierBodyMassIndex"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/bodymassindex",
       "status": "supported",
       "measurementIDs": [
         "body-mass-index"
@@ -978,6 +1578,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierBodyTemperature",
       "title": "Body Temperature",
+      "symbols": [
+        "HKQuantityTypeIdentifierBodyTemperature"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/bodytemperature",
       "status": "supported",
       "measurementIDs": [
         "body-temperature"
@@ -989,6 +1593,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierCrossCountrySkiingSpeed",
       "title": "Cross Country Skiing Speed",
+      "symbols": [
+        "HKQuantityTypeIdentifierCrossCountrySkiingSpeed"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/crosscountryskiingspeed",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -997,6 +1605,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierCyclingCadence",
       "title": "Cycling Cadence",
+      "symbols": [
+        "HKQuantityTypeIdentifierCyclingCadence"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/cyclingcadence",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1005,6 +1617,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierCyclingFunctionalThresholdPower",
       "title": "Cycling Functional Threshold Power",
+      "symbols": [
+        "HKQuantityTypeIdentifierCyclingFunctionalThresholdPower"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/cyclingfunctionalthresholdpower",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1013,6 +1629,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierCyclingPower",
       "title": "Cycling Power",
+      "symbols": [
+        "HKQuantityTypeIdentifierCyclingPower"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/cyclingpower",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1021,6 +1641,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierCyclingSpeed",
       "title": "Cycling Speed",
+      "symbols": [
+        "HKQuantityTypeIdentifierCyclingSpeed"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/cyclingspeed",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1029,6 +1653,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryBiotin",
       "title": "Dietary Biotin Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryBiotin"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarybiotin",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1037,6 +1665,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryCaffeine",
       "title": "Dietary Caffeine Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryCaffeine"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarycaffeine",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1045,6 +1677,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryCalcium",
       "title": "Dietary Calcium Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryCalcium"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarycalcium",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1053,6 +1689,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryCarbohydrates",
       "title": "Dietary Carbohydrates Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryCarbohydrates"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarycarbohydrates",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1061,6 +1701,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryChloride",
       "title": "Dietary Chloride Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryChloride"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarychloride",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1069,6 +1713,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryCholesterol",
       "title": "Dietary Cholesterol Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryCholesterol"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarycholesterol",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1077,6 +1725,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryChromium",
       "title": "Dietary Chromium Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryChromium"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarychromium",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1085,6 +1737,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryCopper",
       "title": "Dietary Copper Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryCopper"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarycopper",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1093,6 +1749,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryEnergyConsumed",
       "title": "Dietary Energy Consumed",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryEnergyConsumed"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryenergyconsumed",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1101,6 +1761,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryFatMonounsaturated",
       "title": "Dietary Monounsaturated Fat Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryFatMonounsaturated"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryfatmonounsaturated",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1109,6 +1773,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryFatPolyunsaturated",
       "title": "Dietary Polyunsaturated Fat Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryFatPolyunsaturated"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryfatpolyunsaturated",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1117,6 +1785,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryFatSaturated",
       "title": "Dietary Saturated Fat Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryFatSaturated"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryfatsaturated",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1125,6 +1797,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryFatTotal",
       "title": "Dietary Total Fat Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryFatTotal"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryfattotal",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1133,6 +1809,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryFiber",
       "title": "Dietary Fiber Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryFiber"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryfiber",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1141,6 +1821,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryFolate",
       "title": "Dietary Folate Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryFolate"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryfolate",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1149,6 +1833,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryIodine",
       "title": "Dietary Iodine Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryIodine"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryiodine",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1157,6 +1845,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryIron",
       "title": "Dietary Iron Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryIron"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryiron",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1165,6 +1857,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryMagnesium",
       "title": "Dietary Magnesium Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryMagnesium"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarymagnesium",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1173,6 +1869,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryManganese",
       "title": "Dietary Manganese Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryManganese"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarymanganese",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1181,6 +1881,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryMolybdenum",
       "title": "Dietary Molybdenum Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryMolybdenum"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarymolybdenum",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1189,6 +1893,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryNiacin",
       "title": "Dietary Niacin Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryNiacin"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryniacin",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1197,6 +1905,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryPantothenicAcid",
       "title": "Dietary Pantothenic Acid Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryPantothenicAcid"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarypantothenicacid",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1205,6 +1917,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryPhosphorus",
       "title": "Dietary Phosphorus Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryPhosphorus"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryphosphorus",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1213,6 +1929,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryPotassium",
       "title": "Dietary Potassium Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryPotassium"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarypotassium",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1221,6 +1941,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryProtein",
       "title": "Dietary Protein Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryProtein"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryprotein",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1229,6 +1953,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryRiboflavin",
       "title": "Dietary Riboflavin Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryRiboflavin"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryriboflavin",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1237,6 +1965,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietarySelenium",
       "title": "Dietary Selenium Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietarySelenium"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryselenium",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1245,6 +1977,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietarySodium",
       "title": "Dietary Sodium Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietarySodium"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarysodium",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1253,6 +1989,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietarySugar",
       "title": "Dietary Sugar Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietarySugar"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarysugar",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1261,6 +2001,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryThiamin",
       "title": "Dietary Thiamin Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryThiamin"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarythiamin",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1269,6 +2013,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryVitaminA",
       "title": "Dietary Vitamin A Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryVitaminA"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryvitamina",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1277,6 +2025,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryVitaminB12",
       "title": "Dietary Vitamin B12 Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryVitaminB12"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryvitaminb12",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1285,6 +2037,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryVitaminB6",
       "title": "Dietary Vitamin B6 Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryVitaminB6"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryvitaminb6",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1293,6 +2049,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryVitaminC",
       "title": "Dietary Vitamin C Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryVitaminC"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryvitaminc",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1301,6 +2061,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryVitaminD",
       "title": "Dietary Vitamin D Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryVitaminD"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryvitamind",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1309,6 +2073,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryVitaminE",
       "title": "Dietary Vitamin E Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryVitaminE"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryvitamine",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1317,6 +2085,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryVitaminK",
       "title": "Dietary Vitamin K Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryVitaminK"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryvitamink",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1325,6 +2097,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryWater",
       "title": "Dietary Water Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryWater"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarywater",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1333,6 +2109,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryZinc",
       "title": "Dietary Zinc Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryZinc"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryzinc",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1341,6 +2121,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDistanceCrossCountrySkiing",
       "title": "Cross-Country Skiing Distance",
+      "symbols": [
+        "HKQuantityTypeIdentifierDistanceCrossCountrySkiing"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/distancecrosscountryskiing",
       "status": "supported",
       "measurementIDs": [
         "distance"
@@ -1352,6 +2136,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDistanceCycling",
       "title": "Cycling Distance",
+      "symbols": [
+        "HKQuantityTypeIdentifierDistanceCycling"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/distancecycling",
       "status": "supported",
       "measurementIDs": [
         "distance"
@@ -1363,6 +2151,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDistanceDownhillSnowSports",
       "title": "Downhill Snow Sports Distance",
+      "symbols": [
+        "HKQuantityTypeIdentifierDistanceDownhillSnowSports"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/distancedownhillsnowsports",
       "status": "supported",
       "measurementIDs": [
         "distance"
@@ -1374,6 +2166,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDistancePaddleSports",
       "title": "Paddle Sports Distance",
+      "symbols": [
+        "HKQuantityTypeIdentifierDistancePaddleSports"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/distancepaddlesports",
       "status": "supported",
       "measurementIDs": [
         "distance"
@@ -1385,6 +2181,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDistanceRowing",
       "title": "Rowing Distance",
+      "symbols": [
+        "HKQuantityTypeIdentifierDistanceRowing"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/distancerowing",
       "status": "supported",
       "measurementIDs": [
         "distance"
@@ -1396,6 +2196,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDistanceSkatingSports",
       "title": "Skating Sports Distance",
+      "symbols": [
+        "HKQuantityTypeIdentifierDistanceSkatingSports"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/distanceskatingsports",
       "status": "supported",
       "measurementIDs": [
         "distance"
@@ -1407,6 +2211,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDistanceSwimming",
       "title": "Swimming Distance",
+      "symbols": [
+        "HKQuantityTypeIdentifierDistanceSwimming"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/distanceswimming",
       "status": "supported",
       "measurementIDs": [
         "distance"
@@ -1418,6 +2226,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDistanceWalkingRunning",
       "title": "Distance Walking/Running",
+      "symbols": [
+        "HKQuantityTypeIdentifierDistanceWalkingRunning"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/distancewalkingrunning",
       "status": "supported",
       "measurementIDs": [
         "distance"
@@ -1429,6 +2241,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDistanceWheelchair",
       "title": "Wheelchair Distance",
+      "symbols": [
+        "HKQuantityTypeIdentifierDistanceWheelchair"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/distancewheelchair",
       "status": "supported",
       "measurementIDs": [
         "distance"
@@ -1440,6 +2256,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierElectrodermalActivity",
       "title": "Electrodermal Activity",
+      "symbols": [
+        "HKQuantityTypeIdentifierElectrodermalActivity"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/electrodermalactivity",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1448,6 +2268,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierEnvironmentalAudioExposure",
       "title": "Environmental Audio Exposure",
+      "symbols": [
+        "HKQuantityTypeIdentifierEnvironmentalAudioExposure"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/environmentalaudioexposure",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1456,6 +2280,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierEnvironmentalSoundReduction",
       "title": "Environmental Sound Reduction",
+      "symbols": [
+        "HKQuantityTypeIdentifierEnvironmentalSoundReduction"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/environmentalsoundreduction",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1464,6 +2292,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierEstimatedWorkoutEffortScore",
       "title": "Estimated Workout Effort",
+      "symbols": [
+        "HKQuantityTypeIdentifierEstimatedWorkoutEffortScore"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/estimatedworkouteffortscore",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1472,6 +2304,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierFlightsClimbed",
       "title": "Flights Climbed",
+      "symbols": [
+        "HKQuantityTypeIdentifierFlightsClimbed"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/flightsclimbed",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1480,6 +2316,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierForcedExpiratoryVolume1",
       "title": "Forced Expiratory Volume (1 sec)",
+      "symbols": [
+        "HKQuantityTypeIdentifierForcedExpiratoryVolume1"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/forcedexpiratoryvolume1",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1488,6 +2328,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierForcedVitalCapacity",
       "title": "Forced Vital Capacity",
+      "symbols": [
+        "HKQuantityTypeIdentifierForcedVitalCapacity"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/forcedvitalcapacity",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1496,6 +2340,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierHeadphoneAudioExposure",
       "title": "Headphone Audio Exposure",
+      "symbols": [
+        "HKQuantityTypeIdentifierHeadphoneAudioExposure"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/headphoneaudioexposure",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1504,6 +2352,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierHeartRate",
       "title": "Heart Rate",
+      "symbols": [
+        "HKQuantityTypeIdentifierHeartRate"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/heartrate",
       "status": "supported",
       "measurementIDs": [
         "heart-rate"
@@ -1515,6 +2367,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierHeartRateRecoveryOneMinute",
       "title": "Heart Rate Recovery (1 min)",
+      "symbols": [
+        "HKQuantityTypeIdentifierHeartRateRecoveryOneMinute"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/heartraterecoveryoneminute",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1523,6 +2379,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierHeartRateVariabilitySDNN",
       "title": "Heart Rate Variability SDNN",
+      "symbols": [
+        "HKQuantityTypeIdentifierHeartRateVariabilitySDNN"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/heartratevariabilitysdnn",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1531,6 +2391,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierHeight",
       "title": "Height",
+      "symbols": [
+        "HKQuantityTypeIdentifierHeight"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/height",
       "status": "supported",
       "measurementIDs": [
         "body-height"
@@ -1542,6 +2406,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierInhalerUsage",
       "title": "Inhaler Usage",
+      "symbols": [
+        "HKQuantityTypeIdentifierInhalerUsage"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/inhalerusage",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1550,6 +2418,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierInsulinDelivery",
       "title": "Insulin Delivery",
+      "symbols": [
+        "HKQuantityTypeIdentifierInsulinDelivery"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/insulindelivery",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1558,6 +2430,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierLeanBodyMass",
       "title": "Lean Body Mass",
+      "symbols": [
+        "HKQuantityTypeIdentifierLeanBodyMass"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/leanbodymass",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1566,6 +2442,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierNikeFuel",
       "title": "NikeFuel",
+      "symbols": [
+        "HKQuantityTypeIdentifierNikeFuel"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/nikefuel",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1574,6 +2454,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierNumberOfAlcoholicBeverages",
       "title": "Number of Alcoholic Beverages",
+      "symbols": [
+        "HKQuantityTypeIdentifierNumberOfAlcoholicBeverages"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/numberofalcoholicbeverages",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1582,6 +2466,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierNumberOfTimesFallen",
       "title": "Number of Times Fallen",
+      "symbols": [
+        "HKQuantityTypeIdentifierNumberOfTimesFallen"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/numberoftimesfallen",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1590,6 +2478,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierOxygenSaturation",
       "title": "Oxygen Saturation",
+      "symbols": [
+        "HKQuantityTypeIdentifierOxygenSaturation"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/oxygensaturation",
       "status": "supported",
       "measurementIDs": [
         "oxygen-saturation"
@@ -1601,6 +2493,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierPaddleSportsSpeed",
       "title": "Paddle Sports Speed",
+      "symbols": [
+        "HKQuantityTypeIdentifierPaddleSportsSpeed"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/paddlesportsspeed",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1609,6 +2505,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierPeakExpiratoryFlowRate",
       "title": "Peak Expiratory Flow Rate",
+      "symbols": [
+        "HKQuantityTypeIdentifierPeakExpiratoryFlowRate"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/peakexpiratoryflowrate",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1617,6 +2517,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierPeripheralPerfusionIndex",
       "title": "Peripheral Perfusion Index",
+      "symbols": [
+        "HKQuantityTypeIdentifierPeripheralPerfusionIndex"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/peripheralperfusionindex",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1625,6 +2529,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierPhysicalEffort",
       "title": "Physical Effort",
+      "symbols": [
+        "HKQuantityTypeIdentifierPhysicalEffort"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/physicaleffort",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1633,6 +2541,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierPushCount",
       "title": "Wheelchair Push Count",
+      "symbols": [
+        "HKQuantityTypeIdentifierPushCount"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/pushcount",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1641,6 +2553,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierRespiratoryRate",
       "title": "Respiratory Rate",
+      "symbols": [
+        "HKQuantityTypeIdentifierRespiratoryRate"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/respiratoryrate",
       "status": "supported",
       "measurementIDs": [
         "respiratory-rate"
@@ -1652,6 +2568,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierRestingHeartRate",
       "title": "Resting Heart Rate",
+      "symbols": [
+        "HKQuantityTypeIdentifierRestingHeartRate"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/restingheartrate",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1660,6 +2580,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierRowingSpeed",
       "title": "Rowing Speed",
+      "symbols": [
+        "HKQuantityTypeIdentifierRowingSpeed"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/rowingspeed",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1668,6 +2592,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierRunningGroundContactTime",
       "title": "Ground Contact Time",
+      "symbols": [
+        "HKQuantityTypeIdentifierRunningGroundContactTime"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/runninggroundcontacttime",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1676,6 +2604,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierRunningPower",
       "title": "Running Power",
+      "symbols": [
+        "HKQuantityTypeIdentifierRunningPower"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/runningpower",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1684,6 +2616,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierRunningSpeed",
       "title": "Running Speed",
+      "symbols": [
+        "HKQuantityTypeIdentifierRunningSpeed"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/runningspeed",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1692,6 +2628,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierRunningStrideLength",
       "title": "Running Stride Length",
+      "symbols": [
+        "HKQuantityTypeIdentifierRunningStrideLength"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/runningstridelength",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1700,6 +2640,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierRunningVerticalOscillation",
       "title": "Running Vertical Oscillation",
+      "symbols": [
+        "HKQuantityTypeIdentifierRunningVerticalOscillation"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/runningverticaloscillation",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1708,6 +2652,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierSixMinuteWalkTestDistance",
       "title": "6 Minute Walk Test Distance",
+      "symbols": [
+        "HKQuantityTypeIdentifierSixMinuteWalkTestDistance"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/sixminutewalktestdistance",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1716,6 +2664,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierStairAscentSpeed",
       "title": "Stair Ascent Speed",
+      "symbols": [
+        "HKQuantityTypeIdentifierStairAscentSpeed"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/stairascentspeed",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1724,6 +2676,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierStairDescentSpeed",
       "title": "Stair Descent Speed",
+      "symbols": [
+        "HKQuantityTypeIdentifierStairDescentSpeed"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/stairdescentspeed",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1732,6 +2688,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierStepCount",
       "title": "Step Count",
+      "symbols": [
+        "HKQuantityTypeIdentifierStepCount"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/stepcount",
       "status": "supported",
       "measurementIDs": [
         "step-count"
@@ -1743,6 +2703,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierSwimmingStrokeCount",
       "title": "Swimming Stroke Count",
+      "symbols": [
+        "HKQuantityTypeIdentifierSwimmingStrokeCount"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/swimmingstrokecount",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1751,6 +2715,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierTimeInDaylight",
       "title": "Time in Daylight",
+      "symbols": [
+        "HKQuantityTypeIdentifierTimeInDaylight"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/timeindaylight",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1759,6 +2727,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierUVExposure",
       "title": "UV Exposure",
+      "symbols": [
+        "HKQuantityTypeIdentifierUVExposure"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/uvexposure",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1767,6 +2739,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierUnderwaterDepth",
       "title": "Underwater Depth",
+      "symbols": [
+        "HKQuantityTypeIdentifierUnderwaterDepth"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/underwaterdepth",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1775,6 +2751,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierVO2Max",
       "title": "VO2Max",
+      "symbols": [
+        "HKQuantityTypeIdentifierVO2Max"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/vo2max",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1783,6 +2763,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierWaistCircumference",
       "title": "Waist Circumference",
+      "symbols": [
+        "HKQuantityTypeIdentifierWaistCircumference"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/waistcircumference",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1791,6 +2775,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierWalkingAsymmetryPercentage",
       "title": "Walking Asymmetry Percentage",
+      "symbols": [
+        "HKQuantityTypeIdentifierWalkingAsymmetryPercentage"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/walkingasymmetrypercentage",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1799,6 +2787,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierWalkingDoubleSupportPercentage",
       "title": "Walking Double Support Percentage",
+      "symbols": [
+        "HKQuantityTypeIdentifierWalkingDoubleSupportPercentage"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/walkingdoublesupportpercentage",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1807,6 +2799,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierWalkingHeartRateAverage",
       "title": "Walking Heart Rate Average",
+      "symbols": [
+        "HKQuantityTypeIdentifierWalkingHeartRateAverage"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/walkingheartrateaverage",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1815,6 +2811,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierWalkingSpeed",
       "title": "Walking Speed",
+      "symbols": [
+        "HKQuantityTypeIdentifierWalkingSpeed"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/walkingspeed",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1823,6 +2823,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierWalkingStepLength",
       "title": "Walking Step Length",
+      "symbols": [
+        "HKQuantityTypeIdentifierWalkingStepLength"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/walkingsteplength",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1831,6 +2835,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierWaterTemperature",
       "title": "Water Temperature",
+      "symbols": [
+        "HKQuantityTypeIdentifierWaterTemperature"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/watertemperature",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1839,6 +2847,10 @@
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierWorkoutEffortScore",
       "title": "Workout Effort",
+      "symbols": [
+        "HKQuantityTypeIdentifierWorkoutEffortScore"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/workouteffortscore",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1847,6 +2859,10 @@
     {
       "sourceTypeIdentifier": "HKScoredAssessmentTypeIdentifierGAD7",
       "title": "GAD-7",
+      "symbols": [
+        "HKScoredAssessmentTypeIdentifierGAD7"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkscoredassessmenttypeidentifier/gad7",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1855,6 +2871,10 @@
     {
       "sourceTypeIdentifier": "HKScoredAssessmentTypeIdentifierPHQ9",
       "title": "PHQ-9",
+      "symbols": [
+        "HKScoredAssessmentTypeIdentifierPHQ9"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkscoredassessmenttypeidentifier/phq9",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1863,6 +2883,10 @@
     {
       "sourceTypeIdentifier": "HKVisionPrescriptionTypeIdentifier",
       "title": "Vision Prescription",
+      "symbols": [
+        "HKVisionPrescriptionTypeIdentifier"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkvisionprescriptiontypeidentifier",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1871,6 +2895,10 @@
     {
       "sourceTypeIdentifier": "HKWorkoutRouteTypeIdentifier",
       "title": "Workout Route",
+      "symbols": [
+        "HKWorkoutRouteTypeIdentifier"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkworkoutroutetypeidentifier",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
@@ -1879,6 +2907,10 @@
     {
       "sourceTypeIdentifier": "HKWorkoutTypeIdentifier",
       "title": "Workout",
+      "symbols": [
+        "HKWorkoutTypeIdentifier"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkworkouttypeidentifier",
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],

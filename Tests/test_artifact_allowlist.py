@@ -386,7 +386,9 @@ class ArtifactAllowlistTests(unittest.TestCase):
                             "health-connect-relation-to-meal",
                             "health-connect-sleep-stage",
                         )
-                    },
+                    }
+                    # Concept properties are defined, never bound, so they have no value set.
+                    | {("CodeSystem", "health-connect-concept-property")},
                 )
 
     def test_health_connect_profiles_preserve_both_identity_layers(self) -> None:

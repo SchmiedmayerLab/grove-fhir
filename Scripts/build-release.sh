@@ -50,6 +50,12 @@ if [[ "$publication_path" != https://grovealliance.org/fhir/* ]]; then
 fi
 
 export PATH="$REPOSITORY_ROOT/node_modules/.bin:$REPOSITORY_ROOT/.build/bin:$PATH"
+
+# The pull-request suite only proves each catalog matches the evidence committed beside
+# it. Re-read the platforms before publishing, so a symbol written into both files
+# cannot reach a released code system that calls itself complete.
+python3 Scripts/render-platform-inventories.py --check
+
 echo "Building publication-mode output for $GUIDE at $publication_path"
 (cd "$GUIDE" && "$JAVA_COMMAND" -Duser.home="$FHIR_TOOL_HOME" -jar "$TOOLS_DIRECTORY/publisher.jar" \
   -ig ig.ini \
