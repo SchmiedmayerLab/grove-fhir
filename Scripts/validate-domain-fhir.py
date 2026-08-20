@@ -78,12 +78,8 @@ def load_json(path: Path, label: str) -> dict[str, Any]:
 
 
 def resolve_repository_path(value: Any, label: str) -> Path:
-    if not isinstance(value, str) or not value or "\\" in value:
-        raise DomainValidationError(f"{label} must be a repository-relative POSIX path")
-    relative = Path(value)
-    if relative.is_absolute() or ".." in relative.parts:
-        raise DomainValidationError(f"{label} must not escape the repository")
-    path = (ROOT / relative).resolve()
+    relative = safe_manifest_path(value, label)
+    path = absolute_without_symlinks(ROOT / relative, label)
     if not path.is_relative_to(ROOT):
         raise DomainValidationError(f"{label} escapes the repository")
     return path
@@ -103,6 +99,7 @@ def fsh_inventory(paths: Sequence[Path]) -> tuple[dict[str, str], set[str], set[
             raise DomainValidationError(f"coverage FSH source must be a regular file: {path}")
         current_kind: str | None = None
         current_name: str | None = None
+        current_rule: str | None = None
         try:
             lines = path.read_text(encoding="utf-8").splitlines()
         except (OSError, UnicodeDecodeError) as error:
@@ -112,6 +109,7 @@ def fsh_inventory(paths: Sequence[Path]) -> tuple[dict[str, str], set[str], set[
             header = FSH_DEFINITION.match(stripped)
             if header:
                 current_kind, current_name = header.groups()
+                current_rule = None
                 if current_kind == "Invariant":
                     if current_name in invariants:
                         raise DomainValidationError(f"duplicate FSH invariant {current_name}")
@@ -132,6 +130,12 @@ def fsh_inventory(paths: Sequence[Path]) -> tuple[dict[str, str], set[str], set[
             )
             if not (stripped.startswith("* ") or continuation):
                 continue
+            if stripped.startswith("* "):
+                current_rule = stripped
+            elif current_rule is None:
+                raise DomainValidationError(
+                    f"orphan computable FSH continuation at {path}:{line_number}"
+                )
             if stripped.startswith("* insert") or " obeys " in f" {stripped} " or "^" in stripped:
                 continue
             computable = bool(
@@ -141,7 +145,12 @@ def fsh_inventory(paths: Sequence[Path]) -> tuple[dict[str, str], set[str], set[
                 or (" from " in stripped and "(required)" in stripped)
             )
             if computable:
-                key = f"{current_kind}:{current_name}|{stripped}"
+                source_rule = (
+                    stripped
+                    if not continuation
+                    else f"{current_rule} >> {stripped}"
+                )
+                key = f"{current_kind}:{current_name}|{source_rule}"
                 if key in rules:
                     raise DomainValidationError(f"duplicate computable FSH rule: {key}")
                 rules.add(key)
@@ -168,21 +177,38 @@ def validate_domain_coverage(
     coverage_path: Path,
     corpora: Mapping[str, Mapping[str, Any]],
     validator_version: str,
+    referenced_corpora: Mapping[str, Mapping[str, Any]] | None = None,
 ) -> list[dict[str, Any]]:
+    referenced_corpora = referenced_corpora or {}
+    reference_groups: dict[str, list[tuple[str, Mapping[str, Any]]]] = {}
+    for identifier, corpus in referenced_corpora.items():
+        ownership = corpus.get("ownership")
+        if not isinstance(ownership, str) or not ownership:
+            raise DomainValidationError(
+                f"referenced corpus {identifier} needs nonempty ownership"
+            )
+        if ownership in corpora:
+            raise DomainValidationError(
+                f"referenced corpus ownership collides with domain corpus: {ownership}"
+            )
+        reference_groups.setdefault(ownership, []).append((identifier, corpus))
+
     coverage = load_json(coverage_path, "domain coverage inventory")
     if coverage.get("schemaVersion") != 2 or set(coverage) != {"schemaVersion", "guides"}:
         raise DomainValidationError("domain coverage inventory must use schemaVersion 2")
     declarations = coverage.get("guides")
-    if not isinstance(declarations, dict) or set(declarations) != set(corpora):
-        raise DomainValidationError("domain coverage guides must exactly match domain corpora")
+    expected_guides = set(corpora) | set(reference_groups)
+    if not isinstance(declarations, dict) or set(declarations) != expected_guides:
+        raise DomainValidationError(
+            "domain coverage guides must exactly match domain and referenced corpus ownership"
+        )
     reports: list[dict[str, Any]] = []
-    for guide_id in sorted(corpora):
+    for guide_id in sorted(expected_guides):
         declaration = declarations[guide_id]
         if not isinstance(declaration, dict):
             raise DomainValidationError(f"coverage guide {guide_id} must be an object")
         expected_fields = {
             "fsh",
-            "manifest",
             "structureDefinitions",
             "invariants",
             "sourceRules",
@@ -191,6 +217,10 @@ def validate_domain_coverage(
             "nonInvalidBoundaries",
             "validatorLimitations",
         }
+        if guide_id in corpora:
+            expected_fields.add("manifest")
+        else:
+            expected_fields.add("corpusReferences")
         if set(declaration) != expected_fields:
             raise DomainValidationError(f"coverage guide {guide_id} has unsupported or missing fields")
         fsh_values = declaration["fsh"]
@@ -216,16 +246,92 @@ def validate_domain_coverage(
                 f"coverage guide {guide_id} computable FSH rules have drifted; "
                 f"missing={missing}, extra={extra}"
             )
-        manifest_path = resolve_repository_path(
-            declaration["manifest"], f"coverage guide {guide_id} manifest"
-        )
-        indexed_manifest = resolve_repository_path(
-            corpora[guide_id].get("manifest"), f"corpus {guide_id} manifest"
-        )
-        if manifest_path != indexed_manifest:
-            raise DomainValidationError(f"coverage guide {guide_id} manifest differs from corpus index")
-        manifest = load_manifest(manifest_path)
-        case_ids = {case["id"] for case in manifest["cases"]}
+        manifest_path: Path | None = None
+        manifest: Mapping[str, Any] | None = None
+        valid_ids: set[str] = set()
+        if guide_id in corpora:
+            manifest_path = resolve_repository_path(
+                declaration["manifest"], f"coverage guide {guide_id} manifest"
+            )
+            indexed_manifest = resolve_repository_path(
+                corpora[guide_id].get("manifest"), f"corpus {guide_id} manifest"
+            )
+            if manifest_path != indexed_manifest:
+                raise DomainValidationError(
+                    f"coverage guide {guide_id} manifest differs from corpus index"
+                )
+            manifest = load_manifest(manifest_path)
+            case_ids = {case["id"] for case in manifest["cases"]}
+            valid_ids = {base["id"] for base in manifest["bases"]}
+            if guide_id == "mobile":
+                valid_ids.add("accepted-study-graph")
+        else:
+            references = declaration["corpusReferences"]
+            expected_references = [
+                {"id": identifier, "ownership": guide_id}
+                for identifier, _corpus in sorted(reference_groups[guide_id])
+            ]
+            if references != expected_references:
+                raise DomainValidationError(
+                    f"coverage guide {guide_id} corpus references have drifted"
+                )
+            case_ids: set[str] = set()
+            for identifier, corpus in sorted(reference_groups[guide_id]):
+                referenced_manifest_path = resolve_repository_path(
+                    corpus.get("manifest"),
+                    f"referenced corpus {identifier} manifest",
+                )
+                referenced_manifest = load_json(
+                    referenced_manifest_path,
+                    f"referenced corpus {identifier} manifest",
+                )
+                invalid = referenced_manifest.get("invalid")
+                if not isinstance(invalid, list) or not all(
+                    isinstance(case, dict)
+                    and isinstance(case.get("id"), str)
+                    and case["id"]
+                    for case in invalid
+                ):
+                    raise DomainValidationError(
+                        f"referenced corpus {identifier} has invalid cases"
+                    )
+                qualified_cases = {f"{identifier}/{case['id']}" for case in invalid}
+                if len(qualified_cases) != len(invalid) or case_ids & qualified_cases:
+                    raise DomainValidationError(
+                        f"referenced corpus {identifier} repeats case ids"
+                    )
+                case_ids.update(qualified_cases)
+                for case in invalid:
+                    if "base" not in case:
+                        if "validatorExpectations" in corpus:
+                            raise DomainValidationError(
+                                f"referenced corpus {identifier} case {case['id']} needs a base"
+                            )
+                        continue
+                    resolve_corpus_relative_path(
+                        referenced_manifest_path.parent,
+                        case.get("base"),
+                        f"referenced corpus {identifier} case {case['id']} base",
+                    )
+                witness_paths: list[Any] = []
+                for field in ("valid", "additionalValidResponses", "valueSets"):
+                    values = referenced_manifest.get(field, [])
+                    if not isinstance(values, list):
+                        raise DomainValidationError(
+                            f"referenced corpus {identifier} {field} must be a list"
+                        )
+                    witness_paths.extend(values)
+                for field in ("questionnaire", "response"):
+                    value = referenced_manifest.get(field)
+                    if value is not None:
+                        witness_paths.append(value)
+                for value in witness_paths:
+                    witness = resolve_corpus_relative_path(
+                        referenced_manifest_path.parent,
+                        value,
+                        f"referenced corpus {identifier} valid witness",
+                    )
+                    valid_ids.add(f"{identifier}/{value}")
         invariant_cases: list[str] = []
         for invariant_id, values in invariant_coverage.items():
             if not isinstance(values, list) or not values or not all(
@@ -241,12 +347,12 @@ def validate_domain_coverage(
             for case, boundary in case_boundaries.items()
         ):
             raise DomainValidationError(f"coverage guide {guide_id} has invalid case boundaries")
-        covered_cases = invariant_cases + list(case_boundaries)
-        if len(covered_cases) != len(set(covered_cases)) or set(covered_cases) != case_ids:
-            missing = sorted(case_ids - set(covered_cases))
-            extra = sorted(set(covered_cases) - case_ids)
+        covered_cases = set(invariant_cases) | set(case_boundaries)
+        if len(invariant_cases) != len(set(invariant_cases)) or covered_cases != case_ids:
+            missing = sorted(case_ids - covered_cases)
+            extra = sorted(covered_cases - case_ids)
             raise DomainValidationError(
-                f"coverage guide {guide_id} cases are not covered exactly once; "
+                f"coverage guide {guide_id} cases are not covered by a unique invariant and/or boundary; "
                 f"missing={missing}, extra={extra}"
             )
         if not all(case in case_ids for case in invariant_cases):
@@ -283,18 +389,25 @@ def validate_domain_coverage(
             "parent-equivalent",
             "valid-only-open-slice",
             "validator-limitation",
+            "valid-fixture",
         }
-        base_ids = {base["id"] for base in manifest["bases"]}
-        additional_ids = {"accepted-study-graph"} if guide_id == "mobile" else set()
         for boundary, evidence in non_invalid.items():
             if not isinstance(evidence, dict) or evidence.get("classification") not in allowed_classifications:
                 raise DomainValidationError(f"coverage boundary {guide_id}/{boundary} has invalid classification")
+            if guide_id in corpora and evidence["classification"] == "valid-fixture":
+                raise DomainValidationError(
+                    f"coverage boundary {guide_id}/{boundary} has the wrong witness classification"
+                )
+            if guide_id not in corpora and evidence["classification"] != "valid-fixture":
+                raise DomainValidationError(
+                    f"coverage boundary {guide_id}/{boundary} has the wrong witness classification"
+                )
             valid_bases = evidence.get("validBases")
             if (
                 not isinstance(valid_bases, list)
                 or not valid_bases
                 or not all(isinstance(value, str) for value in valid_bases)
-                or not set(valid_bases) <= base_ids | additional_ids
+                or not set(valid_bases) <= valid_ids
             ):
                 raise DomainValidationError(f"coverage boundary {guide_id}/{boundary} has invalid validBases")
             limitation_id = evidence.get("limitation")
@@ -306,7 +419,15 @@ def validate_domain_coverage(
                 raise DomainValidationError(f"coverage boundary {guide_id}/{boundary} has spurious limitation")
         if used_limitations != set(limitations):
             raise DomainValidationError(f"coverage guide {guide_id} has stale validator limitations")
+        if limitations and (manifest is None or manifest_path is None):
+            raise DomainValidationError(
+                f"coverage guide {guide_id} may not declare referenced-corpus Validator limitations"
+            )
         for limitation_id, limitation in limitations.items():
+            if manifest is None or manifest_path is None:
+                raise DomainValidationError(
+                    f"coverage limitation {guide_id}/{limitation_id} has no domain manifest"
+                )
             if not isinstance(limitation, dict) or set(limitation) != {
                 "tool", "version", "base", "patch", "customCheck"
             }:
@@ -443,6 +564,17 @@ def safe_manifest_path(value: Any, label: str) -> Path:
     if path.is_absolute() or ".." in path.parts or path.as_posix() != value:
         raise DomainValidationError(f"{label} must be a safe relative POSIX path")
     return Path(*path.parts)
+
+
+def resolve_corpus_relative_path(root: Path, value: Any, label: str) -> Path:
+    relative = safe_manifest_path(value, label)
+    absolute_root = absolute_without_symlinks(root, f"{label} root")
+    path = absolute_without_symlinks(absolute_root / relative, label)
+    if not path.is_relative_to(absolute_root) or not path.is_file():
+        raise DomainValidationError(
+            f"{label} must be a regular file beneath its declared corpus root"
+        )
+    return path
 
 
 def parse_external_evidence(values: Sequence[str]) -> dict[str, Path]:
@@ -1350,6 +1482,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         if corpus_index.get("schemaVersion") != 1:
             raise DomainValidationError("corpus index schemaVersion must be 1")
         corpora = unique_by_id(corpus_index.get("domainCorpora"), "domain corpora")
+        referenced_corpora = unique_by_id(
+            corpus_index.get("referencedCorpora"), "referenced corpora"
+        )
         coverage_path = resolve_repository_path(
             corpus_index.get("coverage"), "domain corpus coverage inventory"
         )
@@ -1385,7 +1520,10 @@ def main(argv: Sequence[str] | None = None) -> int:
             raise DomainValidationError("toolchain must declare exactly one fhir-validator JAR")
         validator_artifact = validators[0]
         coverage_reports = validate_domain_coverage(
-            coverage_path, corpora, validator_artifact["version"]
+            coverage_path,
+            corpora,
+            validator_artifact["version"],
+            referenced_corpora,
         )
         validator = (
             arguments.validator.resolve()

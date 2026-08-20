@@ -47,6 +47,7 @@ ARCHIVE_PREFIX = "grove-fhir-conformance-evidence"
 ARCHIVE_FILENAME = "corpus.tgz"
 SHA256 = re.compile(r"^[0-9a-f]{64}$")
 COMMIT = re.compile(r"^[0-9a-f]{40}$")
+GIT_OBJECT_ID = re.compile(r"^[0-9a-f]{40}(?:[0-9a-f]{24})?$")
 ZERO_COMMIT = "0" * 40
 IDENTIFIER = re.compile(r"^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$")
 MACHINE_LOCAL_UNIX_PATH = re.compile(
@@ -464,7 +465,7 @@ def collect_runtime_environment(toolchain: Mapping[str, Any]) -> list[dict[str, 
         ),
         "bundler": (
             ["bundle", "--version"],
-            re.compile(r"^Bundler version ([0-9]+(?:\.[0-9]+)+)$"),
+            re.compile(r"\A(?:Bundler version )?([0-9]+(?:\.[0-9]+)+)\Z"),
             False,
         ),
     }
@@ -881,6 +882,55 @@ def validate_semantic_baseline_inputs(
             )
 
 
+def _owned_structure_definition_owners(
+    manifest: Mapping[str, Any],
+) -> dict[str, str]:
+    """Return the unique guide owner for every declared StructureDefinition."""
+    owners: dict[str, str] = {}
+    for guide in unique_by_id(manifest.get("guides"), "evidence guides").values():
+        for canonical in guide["structureDefinitions"]:
+            prior = owners.get(canonical)
+            if prior is not None:
+                raise EvidenceError(
+                    f"StructureDefinition {canonical} is owned by both {prior} and "
+                    f"{guide['id']}"
+                )
+            owners[canonical] = guide["id"]
+    return owners
+
+
+def validate_implementation_profile_claims(manifest: Mapping[str, Any]) -> None:
+    """Keep package/profile claims producer-only and exactly owner-complete."""
+    owners = _owned_structure_definition_owners(manifest)
+    implementations = unique_by_id(
+        manifest.get("implementations"), "implementation evidence"
+    )
+    for implementation in implementations.values():
+        identifier = implementation["id"]
+        direction = implementation["direction"]
+        packages = implementation["packages"]
+        profiles = implementation["profiles"]
+        if direction in {"consume", "reference"}:
+            if packages or profiles:
+                raise EvidenceError(
+                    f"non-producer implementation {identifier} may not claim packages "
+                    "or profiles"
+                )
+            continue
+        unknown = sorted(set(profiles) - set(owners))
+        if unknown:
+            raise EvidenceError(
+                f"producer implementation {identifier} claims unowned "
+                "StructureDefinitions: " + ", ".join(unknown)
+            )
+        expected_packages = {owners[profile] for profile in profiles}
+        if set(packages) != expected_packages:
+            raise EvidenceError(
+                f"producer implementation {identifier} package owners are not exact; "
+                f"declared={sorted(packages)}, expected={sorted(expected_packages)}"
+            )
+
+
 def validate_manifest_semantics(
     repository: Path,
     manifest: Mapping[str, Any],
@@ -1035,6 +1085,7 @@ def validate_manifest_semantics(
                         f"external evidence {evidence_set['id']} references unknown "
                         f"attestation input {reference['evidenceSet']}:{reference['path']}"
                     )
+    validate_implementation_profile_claims(manifest)
     for implementation in implementations.values():
         source_id = implementation["source"]
         if source_id not in sources:
@@ -1159,47 +1210,327 @@ def _file_record(repository: Path, path: Path) -> dict[str, Any]:
     }
 
 
+def _git_output(repository: Path, arguments: Sequence[str], label: str) -> bytes:
+    try:
+        result = subprocess.run(
+            ["git", *arguments],
+            cwd=repository,
+            check=True,
+            capture_output=True,
+        )
+    except (OSError, subprocess.CalledProcessError) as error:
+        raise EvidenceError(f"unable to inspect {label}: {error}") from error
+    return result.stdout
+
+
+def _git_object_format(repository: Path) -> str:
+    try:
+        value = _git_output(
+            repository,
+            ["rev-parse", "--show-object-format"],
+            "Git object format",
+        ).decode("ascii").strip()
+    except UnicodeDecodeError as error:
+        raise EvidenceError("Git object format is not ASCII") from error
+    if value not in {"sha1", "sha256"}:
+        raise EvidenceError(f"unsupported Git object format: {value!r}")
+    return value
+
+
+def _decode_git_path(value: bytes, label: str) -> str:
+    try:
+        path = value.decode("utf-8")
+    except UnicodeDecodeError as error:
+        raise EvidenceError(f"{label} path is not UTF-8") from error
+    return safe_relative_path(path, f"{label} path")
+
+
+def _git_index_entries(repository: Path) -> dict[str, tuple[str, str]]:
+    entries: dict[str, tuple[str, str]] = {}
+    output = _git_output(
+        repository,
+        ["ls-files", "--stage", "-z"],
+        "Git index",
+    )
+    for record in output.split(b"\0"):
+        if not record:
+            continue
+        metadata, separator, encoded_path = record.partition(b"\t")
+        try:
+            parts = metadata.decode("ascii").split()
+        except UnicodeDecodeError as error:
+            raise EvidenceError("Git index metadata is not ASCII") from error
+        if not separator or len(parts) != 3:
+            raise EvidenceError("Git index record is malformed")
+        mode, object_id, stage = parts
+        path = _decode_git_path(encoded_path, "Git index")
+        if (
+            stage != "0"
+            or not GIT_OBJECT_ID.fullmatch(object_id)
+            or path in entries
+        ):
+            raise EvidenceError(f"Git index entry is not exact: {path}")
+        entries[path] = (mode, object_id)
+    return entries
+
+
+def _git_tree_entries(
+    repository: Path, revision: str
+) -> dict[str, tuple[str, str]]:
+    if not COMMIT.fullmatch(revision):
+        raise EvidenceError("Git tree revision must be a full lowercase commit SHA")
+    entries: dict[str, tuple[str, str]] = {}
+    output = _git_output(
+        repository,
+        ["ls-tree", "-rz", "--full-tree", revision],
+        f"Git tree {revision}",
+    )
+    for record in output.split(b"\0"):
+        if not record:
+            continue
+        metadata, separator, encoded_path = record.partition(b"\t")
+        try:
+            parts = metadata.decode("ascii").split()
+        except UnicodeDecodeError as error:
+            raise EvidenceError("Git tree metadata is not ASCII") from error
+        if not separator or len(parts) != 3:
+            raise EvidenceError("Git tree record is malformed")
+        mode, kind, object_id = parts
+        path = _decode_git_path(encoded_path, "Git tree")
+        expected_kind = "commit" if mode == "160000" else "blob"
+        if (
+            kind != expected_kind
+            or not GIT_OBJECT_ID.fullmatch(object_id)
+            or path in entries
+        ):
+            raise EvidenceError(f"Git tree entry is not exact: {path}")
+        entries[path] = (mode, object_id)
+    return entries
+
+
+def _git_blob_id(data: bytes, object_format: str) -> str:
+    header = f"blob {len(data)}\0".encode("ascii")
+    if object_format == "sha1":
+        return hashlib.sha1(header + data, usedforsecurity=False).hexdigest()
+    if object_format == "sha256":
+        return hashlib.sha256(header + data).hexdigest()
+    raise EvidenceError(f"unsupported Git object format: {object_format!r}")
+
+
+def _verify_committed_file(
+    repository: Path,
+    relative: str,
+    entry: tuple[str, str],
+    object_format: str,
+    label: str,
+) -> Path:
+    mode, object_id = entry
+    if mode not in {"100644", "100755"}:
+        raise EvidenceError(f"{label} is not a regular Git file: {relative}")
+    path = resolve_path(repository, relative, label)
+    if path.is_symlink() or not path.is_file():
+        raise EvidenceError(f"{label} is not a non-symlink regular file: {relative}")
+    try:
+        data = path.read_bytes()
+        executable = bool(path.stat().st_mode & 0o111)
+    except OSError as error:
+        raise EvidenceError(f"unable to inspect {label} {relative}: {error}") from error
+    if _git_blob_id(data, object_format) != object_id:
+        raise EvidenceError(
+            f"{label} working-tree bytes do not match the attributed source revision: "
+            f"{relative}"
+        )
+    if executable != (mode == "100755"):
+        raise EvidenceError(
+            f"{label} working-tree mode does not match the attributed source revision: "
+            f"{relative}"
+        )
+    return path
+
+
+def _entries_under(
+    entries: Mapping[str, tuple[str, str]], relative_root: str
+) -> dict[str, tuple[str, str]]:
+    prefix = f"{relative_root}/"
+    return {
+        path: entry
+        for path, entry in entries.items()
+        if path.startswith(prefix)
+    }
+
+
+def _collect_committed_root(
+    repository: Path,
+    relative_root: str,
+    label: str,
+    index_entries: Mapping[str, tuple[str, str]],
+    tree_entries: Mapping[str, tuple[str, str]],
+) -> set[str]:
+    root = resolve_path(repository, relative_root, label)
+    if root.is_symlink() or not root.is_dir():
+        raise EvidenceError(f"{label} must be a non-symlink directory: {relative_root}")
+    indexed = _entries_under(index_entries, relative_root)
+    committed = _entries_under(tree_entries, relative_root)
+    if indexed != committed:
+        raise EvidenceError(
+            f"{label} Git index does not exactly match the attributed source revision"
+        )
+    non_regular = sorted(
+        path
+        for path, (mode, _) in committed.items()
+        if mode not in {"100644", "100755"}
+    )
+    if non_regular:
+        raise EvidenceError(
+            f"{label} contains non-regular Git entries: {', '.join(non_regular)}"
+        )
+    committed_paths = set(committed)
+    actual_paths = {
+        path.relative_to(repository).as_posix()
+        for path in regular_files(root, label)
+    }
+    missing = sorted(committed_paths - actual_paths)
+    extras = sorted(actual_paths - committed_paths)
+    if missing or extras:
+        raise EvidenceError(
+            f"{label} working-tree inventory does not exactly match Git "
+            f"(missing={missing}, untracked-or-ignored={extras})"
+        )
+    return committed_paths
+
+
 def collect_input_paths(
     repository: Path,
     manifest: Mapping[str, Any],
     integration: Mapping[str, Any],
 ) -> list[Path]:
+    repository = repository.resolve()
     sources, proposals = _integration_maps(integration)
-    relative_paths = set(manifest["trackedInputs"])
+    revision = git_revision(repository)
+    object_format = _git_object_format(repository)
+    index_entries = _git_index_entries(repository)
+    tree_entries = _git_tree_entries(repository, revision)
+    relative_paths = {
+        safe_relative_path(path, "tracked evidence input")
+        for path in manifest["trackedInputs"]
+    }
     for relative_root in manifest["trackedInputRoots"]:
-        tracked_root = resolve_path(
-            repository, relative_root, f"tracked input root {relative_root}"
+        normalized_root = safe_relative_path(
+            relative_root, f"tracked input root {relative_root}"
         )
-        for path in regular_files(tracked_root, f"tracked input root {relative_root}"):
-            relative_paths.add(path.relative_to(repository).as_posix())
+        relative_paths.update(
+            _collect_committed_root(
+                repository,
+                normalized_root,
+                f"tracked input root {normalized_root}",
+                index_entries,
+                tree_entries,
+            )
+        )
     for guide in manifest["guides"]:
-        source = resolve_path(repository, guide["source"], f"guide {guide['id']} source")
+        guide_source = safe_relative_path(
+            guide["source"], f"guide {guide['id']} source"
+        )
         for name in ("ig.ini", "sushi-config.yaml"):
-            relative_paths.add((PurePosixPath(guide["source"]) / name).as_posix())
-        input_directory = source / "input"
-        for path in regular_files(input_directory, f"guide {guide['id']} input"):
-            relative_paths.add(path.relative_to(repository).as_posix())
+            relative_paths.add((PurePosixPath(guide_source) / name).as_posix())
+        input_root = (PurePosixPath(guide_source) / "input").as_posix()
+        relative_paths.update(
+            _collect_committed_root(
+                repository,
+                input_root,
+                f"guide {guide['id']} input",
+                index_entries,
+                tree_entries,
+            )
+        )
     for corpus in manifest["corpora"]:
-        corpus_root = resolve_path(repository, corpus["root"], f"corpus {corpus['id']} root")
-        for path in regular_files(corpus_root, f"corpus {corpus['id']}"):
-            relative_paths.add(path.relative_to(repository).as_posix())
+        corpus_root = safe_relative_path(
+            corpus["root"], f"corpus {corpus['id']} root"
+        )
+        relative_paths.update(
+            _collect_committed_root(
+                repository,
+                corpus_root,
+                f"corpus {corpus['id']}",
+                index_entries,
+                tree_entries,
+            )
+        )
     for proposal in proposals.values():
-        relative_paths.add(proposal["patch"])
+        relative_paths.add(
+            safe_relative_path(proposal["patch"], f"proposal {proposal['id']} patch")
+        )
+
+    for relative in relative_paths:
+        indexed = index_entries.get(relative)
+        committed = tree_entries.get(relative)
+        if indexed is None or indexed != committed:
+            raise EvidenceError(
+                f"tracked evidence input is not exact in HEAD and the Git index: {relative}"
+            )
     for implementation in manifest["implementations"]:
         source = sources[implementation["source"]]
+        if not implementation["provenance"]["resolvedPackages"]:
+            continue
+        source_relative = safe_relative_path(
+            source["path"], f"source {source['id']} path"
+        )
+        source_commit = source["commit"]
+        if not COMMIT.fullmatch(source_commit):
+            raise EvidenceError(f"source {source['id']} commit is invalid")
+        source_root = resolve_path(
+            repository, source_relative, f"source {source['id']} checkout"
+        )
+        if git_revision(source_root) != source_commit:
+            raise EvidenceError(
+                f"source {source['id']} checkout HEAD does not match its pinned gitlink"
+            )
+        source_format = _git_object_format(source_root)
+        source_index = _git_index_entries(source_root)
+        source_tree = _git_tree_entries(source_root, source_commit)
         for resolved in implementation["provenance"]["resolvedPackages"]:
+            manifest_relative = safe_relative_path(
+                resolved["manifest"],
+                f"implementation {implementation['id']} resolved package manifest",
+            )
+            indexed = source_index.get(manifest_relative)
+            committed = source_tree.get(manifest_relative)
+            if indexed is None or indexed != committed:
+                raise EvidenceError(
+                    f"resolved package manifest is not exact in the pinned source "
+                    f"index: {source_relative}/{manifest_relative}"
+                )
+            _verify_committed_file(
+                source_root,
+                manifest_relative,
+                committed,
+                source_format,
+                f"implementation {implementation['id']} resolved package manifest",
+            )
             relative_paths.add(
-                (
-                    PurePosixPath(source["path"])
-                    / PurePosixPath(resolved["manifest"])
-                ).as_posix()
+                (PurePosixPath(source_relative) / manifest_relative).as_posix()
             )
     paths: list[Path] = []
     for relative in sorted(relative_paths):
-        path = resolve_path(repository, relative, f"tracked evidence input {relative}")
-        if not path.is_file():
-            raise EvidenceError(f"tracked evidence input is not a file: {relative}")
-        paths.append(path)
+        if relative in index_entries:
+            paths.append(
+                _verify_committed_file(
+                    repository,
+                    relative,
+                    tree_entries[relative],
+                    object_format,
+                    "tracked evidence input",
+                )
+            )
+        else:
+            path = resolve_path(
+                repository, relative, f"gitlink-owned evidence input {relative}"
+            )
+            if path.is_symlink() or not path.is_file():
+                raise EvidenceError(
+                    f"gitlink-owned evidence input is not a regular file: {relative}"
+                )
+            paths.append(path)
     return paths
 
 
@@ -1247,23 +1578,14 @@ def git_commit_epoch(repository: Path, revision: str) -> int:
     return int(value)
 
 
-def _gitlink_commit(repository: Path, relative: str) -> str:
-    try:
-        result = subprocess.run(
-            ["git", "ls-files", "--stage", "--", relative],
-            cwd=repository,
-            check=True,
-            capture_output=True,
-            text=True,
-        )
-    except (OSError, subprocess.CalledProcessError) as error:
-        raise EvidenceError(f"unable to inspect gitlink {relative}: {error}") from error
-    lines = [line for line in result.stdout.splitlines() if line]
-    if len(lines) != 1:
+def _gitlink_commit(repository: Path, relative: str, revision: str) -> str:
+    relative = safe_relative_path(relative, "gitlink path")
+    indexed = _git_index_entries(repository).get(relative)
+    committed = _git_tree_entries(repository, revision).get(relative)
+    if indexed is None or indexed != committed:
         raise EvidenceError(f"gitlink {relative} is absent or ambiguous")
-    metadata, indexed_path = lines[0].split("\t", 1)
-    mode, commit, stage = metadata.split()
-    if mode != "160000" or stage != "0" or indexed_path != relative or not COMMIT.fullmatch(commit):
+    mode, commit = indexed
+    if mode != "160000" or not COMMIT.fullmatch(commit):
         raise EvidenceError(f"index entry is not an exact gitlink: {relative}")
     return commit
 
@@ -1282,10 +1604,11 @@ def collect_gitlinks(
         raise EvidenceError("gitlink provenance inputs are not locked")
     result: list[dict[str, Any]] = []
     top_level_by_source: dict[str, dict[str, Any]] = {}
+    repository_revision = git_revision(repository)
     for source_id in sorted(sources):
         source = sources[source_id]
         relative = safe_relative_path(source["path"], f"source {source_id} path")
-        index_commit = _gitlink_commit(repository, relative)
+        index_commit = _gitlink_commit(repository, relative, repository_revision)
         if index_commit != source["commit"]:
             raise EvidenceError(f"gitlink {relative} does not match Integration/sources.json")
         entry: dict[str, Any] = {
@@ -1319,7 +1642,14 @@ def collect_gitlinks(
                 raise EvidenceError(
                     f"nested provenance requires initialized source {implementation['source']}"
                 )
-            nested_commit = _gitlink_commit(source_root, nested_relative)
+            if git_revision(source_root) != source["commit"]:
+                raise EvidenceError(
+                    f"source {implementation['source']} checkout HEAD does not match "
+                    "its pinned gitlink"
+                )
+            nested_commit = _gitlink_commit(
+                source_root, nested_relative, source["commit"]
+            )
             if nested_commit != nested["commit"]:
                 raise EvidenceError(
                     f"nested gitlink {implementation['id']}:{nested_relative} has drifted"
@@ -1638,6 +1968,278 @@ def collect_packages(
     for identifier in sorted(raw):
         visit(identifier)
     return [complete[identifier] for identifier in sorted(complete)]
+
+
+def _canonical_reference(value: Any) -> tuple[str, str | None] | None:
+    if not isinstance(value, str) or not value:
+        return None
+    canonical, separator, version = value.partition("|")
+    if not canonical:
+        return None
+    return canonical, version if separator else None
+
+
+def _validate_locked_canonical_version(
+    canonical: str,
+    version: str | None,
+    definition: Mapping[str, Any],
+    label: str,
+) -> None:
+    if version is None:
+        return
+    expected = definition["version"]
+    if version != expected:
+        raise EvidenceError(
+            f"{label} references {canonical} version {version!r}, expected {expected!r}"
+        )
+
+
+def _owned_profile_closures(
+    evidence_root: Path,
+    manifest: Mapping[str, Any],
+    packages: Sequence[Mapping[str, Any]],
+) -> tuple[dict[str, dict[str, Any]], dict[str, frozenset[str]]]:
+    """Load the exact owned definitions and their transitive owned base closure."""
+    guides = unique_by_id(manifest.get("guides"), "evidence guides")
+    package_by_id = unique_by_id(list(packages), "locked guide packages")
+    if set(package_by_id) != set(guides):
+        raise EvidenceError(
+            "locked guide package inventory is not exact; "
+            f"locked={sorted(package_by_id)}, expected={sorted(guides)}"
+        )
+    definitions: dict[str, dict[str, Any]] = {}
+    owned_namespaces = [
+        f"{guide['canonical']}/StructureDefinition/" for guide in guides.values()
+    ]
+    for identifier, guide in guides.items():
+        package = package_by_id[identifier]
+        snapshot_path = resolve_path(
+            evidence_root,
+            package.get("semanticSnapshot"),
+            f"guide {identifier} semantic snapshot",
+        )
+        snapshot = load_json_object(
+            snapshot_path, f"guide {identifier} semantic snapshot"
+        )
+        metadata = snapshot.get("package")
+        if not isinstance(metadata, dict) or (
+            metadata.get("name") != guide["packageId"]
+            or metadata.get("version") != guide["version"]
+            or metadata.get("canonical") != guide["canonical"]
+        ):
+            raise EvidenceError(
+                f"guide {identifier} semantic snapshot package ownership has drifted"
+            )
+        structure_definitions = snapshot.get("structureDefinitions")
+        if not isinstance(structure_definitions, dict):
+            raise EvidenceError(
+                f"guide {identifier} semantic snapshot StructureDefinitions are invalid"
+            )
+        expected = set(guide["structureDefinitions"])
+        if set(structure_definitions) != expected:
+            raise EvidenceError(
+                f"guide {identifier} semantic snapshot StructureDefinition inventory "
+                "is not exact"
+            )
+        for canonical in sorted(expected):
+            entry = structure_definitions[canonical]
+            resource = entry.get("resource") if isinstance(entry, dict) else None
+            if (
+                not isinstance(resource, dict)
+                or resource.get("resourceType") != "StructureDefinition"
+                or resource.get("url") != canonical
+                or not isinstance(resource.get("type"), str)
+                or not isinstance(resource.get("version"), str)
+                or not resource["version"]
+            ):
+                raise EvidenceError(
+                    f"guide {identifier} StructureDefinition {canonical} is invalid"
+                )
+            definitions[canonical] = resource
+
+    closures: dict[str, frozenset[str]] = {}
+    visiting: set[str] = set()
+
+    def visit(canonical: str) -> frozenset[str]:
+        if canonical in closures:
+            return closures[canonical]
+        if canonical in visiting:
+            raise EvidenceError(
+                f"owned StructureDefinition baseDefinition cycle at {canonical}"
+            )
+        visiting.add(canonical)
+        closure = {canonical}
+        base_reference = _canonical_reference(
+            definitions[canonical].get("baseDefinition")
+        )
+        if base_reference is not None:
+            base, version = base_reference
+            if base in definitions:
+                _validate_locked_canonical_version(
+                    base,
+                    version,
+                    definitions[base],
+                    f"StructureDefinition {canonical} baseDefinition",
+                )
+                closure.update(visit(base))
+            elif any(base.startswith(prefix) for prefix in owned_namespaces):
+                raise EvidenceError(
+                    f"StructureDefinition {canonical} has unresolved owned "
+                    f"baseDefinition {base}"
+                )
+        visiting.remove(canonical)
+        closures[canonical] = frozenset(closure)
+        return closures[canonical]
+
+    for canonical in sorted(definitions):
+        visit(canonical)
+    return definitions, closures
+
+
+def _exercised_owned_profiles(
+    evidence_root: Path,
+    implementation_id: str,
+    external_evidence: Sequence[Mapping[str, Any]],
+    definitions: Mapping[str, Mapping[str, Any]],
+    owned_namespaces: Sequence[str],
+) -> set[str]:
+    """Find owned profile assertions and Extension URLs in emitted FHIR JSON."""
+    exercised: set[str] = set()
+
+    def register(value: Any, usage: str, resource_type: str | None) -> None:
+        if usage == "extension":
+            reference = (value, None) if isinstance(value, str) and value else None
+        else:
+            reference = _canonical_reference(value)
+        if reference is None:
+            return
+        canonical, version = reference
+        definition = definitions.get(canonical)
+        if definition is None:
+            if any(canonical.startswith(prefix) for prefix in owned_namespaces):
+                raise EvidenceError(
+                    f"implementation {implementation_id} exercises undefined owned "
+                    f"StructureDefinition {canonical}"
+                )
+            return
+        _validate_locked_canonical_version(
+            canonical,
+            version,
+            definition,
+            f"implementation {implementation_id} {usage}",
+        )
+        expected_type = definition["type"]
+        if usage == "meta.profile" and expected_type != resource_type:
+            raise EvidenceError(
+                f"implementation {implementation_id} applies {canonical} to "
+                f"{resource_type!r}, expected {expected_type!r}"
+            )
+        if usage == "extension" and expected_type != "Extension":
+            raise EvidenceError(
+                f"implementation {implementation_id} uses non-Extension {canonical} "
+                "as an Extension URL"
+            )
+        exercised.add(canonical)
+
+    def walk(value: Any, resource_type: str | None = None) -> None:
+        if isinstance(value, list):
+            for item in value:
+                walk(item, resource_type)
+            return
+        if not isinstance(value, dict):
+            return
+        local_resource_type = resource_type
+        declared_type = value.get("resourceType")
+        if isinstance(declared_type, str) and declared_type:
+            local_resource_type = declared_type
+            meta = value.get("meta")
+            profiles = meta.get("profile") if isinstance(meta, dict) else None
+            if isinstance(profiles, list):
+                for profile in profiles:
+                    register(profile, "meta.profile", local_resource_type)
+        for field in ("extension", "modifierExtension"):
+            extensions = value.get(field)
+            if not isinstance(extensions, list):
+                continue
+            for extension in extensions:
+                if isinstance(extension, dict):
+                    register(extension.get("url"), "extension", local_resource_type)
+        for child in value.values():
+            walk(child, local_resource_type)
+
+    for evidence_set in external_evidence:
+        if evidence_set.get("implementation") != implementation_id:
+            continue
+        set_root = safe_relative_path(
+            evidence_set.get("path"),
+            f"implementation {implementation_id} evidence path",
+        )
+        for file in evidence_set.get("files", []):
+            if not isinstance(file, dict) or file.get("format") != "fhir-json":
+                continue
+            relative = (
+                PurePosixPath(set_root)
+                / PurePosixPath(
+                    safe_relative_path(
+                        file.get("path"),
+                        f"implementation {implementation_id} FHIR evidence file",
+                    )
+                )
+            ).as_posix()
+            path = resolve_path(
+                evidence_root,
+                relative,
+                f"implementation {implementation_id} FHIR evidence file",
+            )
+            if not path.is_file():
+                raise EvidenceError(
+                    f"implementation {implementation_id} FHIR evidence is missing: "
+                    f"{relative}"
+                )
+            walk(_strict_json_bytes(path.read_bytes(), relative))
+    return exercised
+
+
+def validate_implementation_profile_coverage(
+    evidence_root: Path,
+    manifest: Mapping[str, Any],
+    packages: Sequence[Mapping[str, Any]],
+    external_evidence: Sequence[Mapping[str, Any]],
+) -> None:
+    """Prove producer claims equal the emitted owned StructureDefinition closure."""
+    validate_implementation_profile_claims(manifest)
+    implementations = unique_by_id(
+        manifest.get("implementations"), "implementation evidence"
+    )
+    definitions, closures = _owned_profile_closures(
+        evidence_root, manifest, packages
+    )
+    owned_namespaces = [
+        f"{guide['canonical']}/StructureDefinition/"
+        for guide in unique_by_id(
+            manifest.get("guides"), "evidence guides"
+        ).values()
+    ]
+    for implementation in implementations.values():
+        if implementation["direction"] not in {"produce", "round-trip"}:
+            continue
+        roots = _exercised_owned_profiles(
+            evidence_root,
+            implementation["id"],
+            external_evidence,
+            definitions,
+            owned_namespaces,
+        )
+        actual: set[str] = set()
+        for root in roots:
+            actual.update(closures[root])
+        claimed = set(implementation["profiles"])
+        if claimed != actual:
+            raise EvidenceError(
+                f"producer implementation {implementation['id']} owned profile closure "
+                f"is not exact; undeclared={sorted(actual - claimed)}, "
+                f"unexercised={sorted(claimed - actual)}"
+            )
 
 
 def _semantic_baseline_from_packages(
@@ -2397,6 +2999,10 @@ def _validate_domain_fhir_report(
     domain_corpora = unique_by_id(
         corpus_index.get("domainCorpora"), "domain corpus index entries"
     )
+    referenced_corpora = unique_by_id(
+        corpus_index.get("referencedCorpora"),
+        "referenced corpus index entries",
+    )
     packages_by_id = {item["id"]: item for item in packages}
     expected_guides: dict[str, dict[str, Any]] = {}
     for identifier, corpus in sorted(domain_corpora.items()):
@@ -2459,7 +3065,20 @@ def _validate_domain_fhir_report(
         "domain coverage inventory",
     )
     coverage_guides = coverage.get("guides")
-    if not isinstance(coverage_guides, dict) or set(coverage_guides) != set(domain_corpora):
+    referenced_owners = {
+        item.get("ownership")
+        for item in referenced_corpora.values()
+        if isinstance(item.get("ownership"), str) and item.get("ownership")
+    }
+    if (
+        any(
+            not isinstance(item.get("ownership"), str)
+            or not item.get("ownership")
+            for item in referenced_corpora.values()
+        )
+        or not isinstance(coverage_guides, dict)
+        or set(coverage_guides) != set(domain_corpora) | referenced_owners
+    ):
         raise EvidenceError(f"{label} source coverage inventory has drifted")
     expected_coverage = []
     for identifier, source in sorted(coverage_guides.items()):
@@ -2691,6 +3310,9 @@ def collect_validation_reports(
                         "mobile/input/fsh/",
                         "healthkit/input/fsh/",
                         "health-connect/input/fsh/",
+                        "questionnaire/input/fsh/",
+                        "questionnaire/fixtures/validator/",
+                        "questionnaire/fixtures/pairs/",
                     )
                 )
             ],
@@ -2933,6 +3555,9 @@ def build_lock(
         gitlinks,
         external_locations,
         copy_evidence=True,
+    )
+    validate_implementation_profile_coverage(
+        evidence_root, manifest, packages, external_evidence
     )
     validation_reports = collect_validation_reports(
         repository,
@@ -3452,6 +4077,9 @@ def verify_evidence(
             package["inputMode"] = input_modes.get(package["id"], "declared")
         if lock.get("packages") != packages:
             failures.append("evidence package or dependency closure has drifted")
+        validate_implementation_profile_coverage(
+            evidence_root, manifest, packages, external_evidence
+        )
         validation_reports = collect_validation_reports(
             repository,
             evidence_root,

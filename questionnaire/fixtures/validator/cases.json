@@ -12,42 +12,42 @@
       "id": "questionnaire-version-missing",
       "base": "valid/questionnaire.json",
       "expectedRule": "qg-version-1",
-      "expectedValidatorRule": "qg-version-1",
       "mutation": {"op": "remove", "path": "/version"}
     },
     {
       "id": "questionnaire-version-invalid-semver",
       "base": "valid/questionnaire.json",
       "expectedRule": "qg-version-1",
-      "expectedValidatorRule": "qg-version-1",
       "mutation": {"op": "replace", "path": "/version", "value": "01.0.0"}
     },
     {
       "id": "questionnaire-version-algorithm",
       "base": "valid/questionnaire.json",
       "expectedRule": "qg-version-algorithm-1",
-      "expectedValidatorRule": "qg-version-algorithm-1",
       "mutation": {"op": "replace", "path": "/extension/0/valueCoding/code", "value": "date"}
     },
     {
       "id": "questionnaire-reference-item",
       "base": "valid/questionnaire.json",
       "expectedRule": "qg-reference-1",
-      "expectedValidatorRule": "qg-reference-1",
       "mutation": {"op": "replace", "path": "/item/0/type", "value": "reference"}
+    },
+    {
+      "id": "questionnaire-item-text-missing",
+      "base": "valid/questionnaire.json",
+      "expectedRule": "qg-item-text-1",
+      "mutation": {"op": "remove", "path": "/item/0/text"}
     },
     {
       "id": "questionnaire-prohibited-repeats",
       "base": "valid/questionnaire.json",
       "expectedRule": "qg-repeats-1",
-      "expectedValidatorRule": "qg-repeats-1",
       "mutation": {"op": "add", "path": "/item/0/repeats", "value": true}
     },
     {
       "id": "questionnaire-enable-forms-combined",
       "base": "valid/questionnaire-conditions.json",
       "expectedRule": "qg-enable-1",
-      "expectedValidatorRule": "qg-enable-1",
       "mutation": {
         "op": "add",
         "path": "/item/1/extension",
@@ -66,7 +66,6 @@
       "id": "questionnaire-variable-name-missing",
       "base": "valid/questionnaire-expressions.json",
       "expectedRule": "qg-variable-name-1",
-      "expectedValidatorRule": "qg-variable-name-1",
       "mutation": {"op": "remove", "path": "/extension/1/valueExpression/name"}
     },
     {
@@ -87,49 +86,42 @@
       "id": "questionnaire-expression-language",
       "base": "valid/questionnaire-expressions.json",
       "expectedRule": "qg-expression-1",
-      "expectedValidatorRule": "qg-expression-1",
       "mutation": {"op": "replace", "path": "/item/0/extension/1/valueExpression/language", "value": "text/cql"}
     },
     {
       "id": "questionnaire-expression-body",
       "base": "valid/questionnaire-expressions.json",
       "expectedRule": "qg-expression-1",
-      "expectedValidatorRule": "qg-expression-1",
       "mutation": {"op": "remove", "path": "/item/0/extension/1/valueExpression/expression"}
     },
     {
       "id": "questionnaire-target-constraint-malformed",
       "base": "valid/questionnaire-expressions.json",
       "expectedRule": "qg-target-constraint-shape",
-      "expectedValidatorRule": "ext-1",
       "mutation": {"op": "remove", "path": "/extension/2/extension/3/valueString"}
     },
     {
       "id": "questionnaire-initial-forms-combined",
       "base": "valid/questionnaire-expressions.json",
       "expectedRule": "qg-initial-1",
-      "expectedValidatorRule": "qg-initial-1",
       "mutation": {"op": "add", "path": "/item/0/initial", "value": [{"valueString": "Literal"}]}
     },
     {
       "id": "questionnaire-length-placement",
       "base": "valid/questionnaire-constraints.json",
       "expectedRule": "qg-length-1",
-      "expectedValidatorRule": "qg-length-1",
       "mutation": {"op": "replace", "path": "/item/0/type", "value": "boolean"}
     },
     {
       "id": "questionnaire-length-order",
       "base": "valid/questionnaire-constraints.json",
       "expectedRule": "qg-min-max-1",
-      "expectedValidatorRule": "qg-min-max-1",
       "mutation": {"op": "replace", "path": "/item/0/maxLength", "value": 1}
     },
     {
       "id": "questionnaire-decimal-placement",
       "base": "valid/questionnaire.json",
       "expectedRule": "qg-decimal-1",
-      "expectedValidatorRule": "qg-decimal-1",
       "mutation": {
         "op": "add",
         "path": "/item/0/extension",
@@ -151,7 +143,6 @@
       "id": "questionnaire-value-bound-placement",
       "base": "valid/questionnaire.json",
       "expectedRule": "qg-value-bounds-1",
-      "expectedValidatorRule": "qg-value-bounds-1",
       "mutation": {
         "op": "add",
         "path": "/item/0/extension",
@@ -162,7 +153,6 @@
       "id": "questionnaire-quantity-placement",
       "base": "valid/questionnaire.json",
       "expectedRule": "qg-quantity-1",
-      "expectedValidatorRule": "qg-quantity-1",
       "mutation": {
         "op": "add",
         "path": "/item/0/extension",
@@ -214,7 +204,6 @@
       "id": "questionnaire-unit-placement",
       "base": "valid/questionnaire.json",
       "expectedRule": "qg-unit-1",
-      "expectedValidatorRule": "qg-unit-1",
       "mutation": {
         "op": "add",
         "path": "/item/0/extension",
@@ -230,7 +219,6 @@
       "id": "questionnaire-unit-choice-exclusive",
       "base": "valid/questionnaire-typed-constraints.json",
       "expectedRule": "qg-unit-1",
-      "expectedValidatorRule": "qg-unit-1",
       "mutation": {
         "op": "add",
         "path": "/item/1/extension/-",
@@ -244,7 +232,6 @@
       "id": "questionnaire-attachment-placement",
       "base": "valid/questionnaire.json",
       "expectedRule": "qg-attachment-1",
-      "expectedValidatorRule": "qg-attachment-1",
       "mutation": {
         "op": "add",
         "path": "/item/0/extension",
@@ -266,7 +253,6 @@
       "id": "questionnaire-occurrence-placement",
       "base": "valid/questionnaire.json",
       "expectedRule": "qg-occurrence-1",
-      "expectedValidatorRule": "qg-occurrence-1",
       "mutation": {
         "op": "add",
         "path": "/item/0/extension",
@@ -288,7 +274,6 @@
       "id": "questionnaire-style-sensitive",
       "base": "valid/questionnaire.json",
       "expectedRule": "qg-style-sensitive-1",
-      "expectedValidatorRule": "qg-style-sensitive-1",
       "mutation": {
         "op": "add",
         "path": "/item/0/extension",
@@ -299,7 +284,6 @@
       "id": "response-unversioned-canonical",
       "base": "valid/questionnaire-response.json",
       "expectedRule": "gqr-canonical-1",
-      "expectedValidatorRule": "gqr-canonical-1",
       "mutation": {
         "op": "replace",
         "path": "/questionnaire",
@@ -310,7 +294,6 @@
       "id": "response-fragment-canonical",
       "base": "valid/questionnaire-response.json",
       "expectedRule": "gqr-canonical-1",
-      "expectedValidatorRule": "gqr-canonical-1",
       "mutation": {
         "op": "replace",
         "path": "/questionnaire",
@@ -321,21 +304,18 @@
       "id": "response-identifier-missing",
       "base": "valid/questionnaire-response.json",
       "expectedRule": "gqr-identifier-1",
-      "expectedValidatorRule": "gqr-identifier-1",
       "mutation": {"op": "remove", "path": "/identifier"}
     },
     {
       "id": "response-text-missing",
       "base": "valid/questionnaire-response.json",
       "expectedRule": "gqr-text-1",
-      "expectedValidatorRule": "gqr-text-1",
       "mutation": {"op": "remove", "path": "/item/0/text"}
     },
     {
       "id": "response-completion-mode-contradictory",
       "base": "valid/questionnaire-response.json",
       "expectedRule": "gqr-completion-mode-1",
-      "expectedValidatorRule": "gqr-completion-mode-1",
       "mutation": {
         "op": "add",
         "path": "/extension/0/valueCodeableConcept/coding/-",

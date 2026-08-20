@@ -1,0 +1,287 @@
+{
+  "schemaVersion": 1,
+  "cases": {
+    "questionnaire-version-missing": [
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Questionnaire",
+        "detailsContains": "Questionnaire.version: minimum required = 1, but only found 0 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire|0.1.0)"
+      },
+      {
+        "messageId": "https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire#qg-version-1",
+        "code": "invariant",
+        "expression": "Questionnaire",
+        "detailsContains": "Constraint failed: qg-version-1: 'Questionnaire.version is a valid Semantic Versioning 2.0.0 version.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire)"
+      }
+    ],
+    "questionnaire-version-invalid-semver": [
+      {
+        "messageId": "https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire#qg-version-1",
+        "code": "invariant",
+        "expression": "Questionnaire",
+        "detailsContains": "Constraint failed: qg-version-1: 'Questionnaire.version is a valid Semantic Versioning 2.0.0 version.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire)"
+      }
+    ],
+    "questionnaire-version-algorithm": [
+      {
+        "messageId": "_DT_Fixed_Wrong",
+        "code": "value",
+        "expression": "Questionnaire.extension[0].value.ofType(Coding).code",
+        "detailsContains": "Value is 'date' but is fixed to 'semver' in the profile https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire|0.1.0#Questionnaire.extension:versionAlgorithm.value[x]:valueCoding.code"
+      },
+      {
+        "messageId": "https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire#qg-version-algorithm-1",
+        "code": "invariant",
+        "expression": "Questionnaire",
+        "detailsContains": "Constraint failed: qg-version-algorithm-1: 'The instrument declares Semantic Versioning as its one version comparison algorithm.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire)"
+      }
+    ],
+    "questionnaire-reference-item": [
+      {
+        "messageId": "https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire#qg-reference-1",
+        "code": "invariant",
+        "expression": "Questionnaire",
+        "detailsContains": "Constraint failed: qg-reference-1: 'Reference questions and reference-valued answer options are outside this exchange contract.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire)"
+      }
+    ],
+    "questionnaire-item-text-missing": [
+      {
+        "messageId": "https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire#qg-item-text-1",
+        "code": "invariant",
+        "expression": "Questionnaire",
+        "detailsContains": "Constraint failed: qg-item-text-1: 'Every question and display item has text; structural groups may use text as an optional heading.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire)"
+      }
+    ],
+    "questionnaire-prohibited-repeats": [
+      {
+        "messageId": "https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire#qg-repeats-1",
+        "code": "invariant",
+        "expression": "Questionnaire",
+        "detailsContains": "Constraint failed: qg-repeats-1: 'Repeated answers are limited to choice, open-choice, and attachment questions.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire)"
+      }
+    ],
+    "questionnaire-enable-forms-combined": [
+      {
+        "messageId": "https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire#qg-enable-1",
+        "code": "invariant",
+        "expression": "Questionnaire",
+        "detailsContains": "Constraint failed: qg-enable-1: 'An item does not combine core enableWhen rules with an enableWhenExpression.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire)"
+      }
+    ],
+    "questionnaire-variable-name-missing": [
+      {
+        "messageId": "http://hl7.org/fhir/StructureDefinition/variable#var-1",
+        "code": "invariant",
+        "expression": "Questionnaire.extension[1]",
+        "detailsContains": "Constraint failed: var-1: 'Variable expressions must have a name'"
+      },
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Questionnaire.extension[1].value.ofType(Expression)",
+        "detailsContains": "Questionnaire.extension:variable.value[x].name: minimum required = 1, but only found 0 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire|0.1.0)"
+      },
+      {
+        "messageId": "https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire#qg-variable-name-1",
+        "code": "invariant",
+        "expression": "Questionnaire",
+        "detailsContains": "Constraint failed: qg-variable-name-1: 'Every variable expression has a non-empty name.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire)"
+      }
+    ],
+    "questionnaire-expression-language": [
+      {
+        "messageId": "https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire#qg-expression-1",
+        "code": "invariant",
+        "expression": "Questionnaire",
+        "detailsContains": "Constraint failed: qg-expression-1: 'Every retained expression is a non-empty FHIRPath expression.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire)"
+      }
+    ],
+    "questionnaire-expression-body": [
+      {
+        "messageId": "http://hl7.org/fhir/StructureDefinition/Expression#exp-1",
+        "code": "invariant",
+        "expression": "Questionnaire.item[0].extension[1].value.ofType(Expression)",
+        "detailsContains": "Constraint failed: exp-1: 'An expression or a reference must be provided'"
+      },
+      {
+        "messageId": "https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire#qg-expression-1",
+        "code": "invariant",
+        "expression": "Questionnaire",
+        "detailsContains": "Constraint failed: qg-expression-1: 'Every retained expression is a non-empty FHIRPath expression.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire)"
+      }
+    ],
+    "questionnaire-target-constraint-malformed": [
+      {
+        "messageId": "http://hl7.org/fhir/StructureDefinition/Extension#ext-1",
+        "code": "invariant",
+        "expression": "Questionnaire.extension[2].extension[3]",
+        "detailsContains": "Constraint failed: ext-1: 'Must have either extensions or value[x], not both' (defined in http://hl7.org/fhir/StructureDefinition/Extension)"
+      },
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Questionnaire.extension[2].extension[3]",
+        "detailsContains": "Extension.extension:human.value[x]: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/targetConstraint|5.3.0-ballot-tc1)"
+      }
+    ],
+    "questionnaire-initial-forms-combined": [
+      {
+        "messageId": "https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire#qg-initial-1",
+        "code": "invariant",
+        "expression": "Questionnaire",
+        "detailsContains": "Constraint failed: qg-initial-1: 'An item does not combine a literal initial value with an initialExpression.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire)"
+      }
+    ],
+    "questionnaire-length-placement": [
+      {
+        "messageId": "https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire#qg-length-1",
+        "code": "invariant",
+        "expression": "Questionnaire",
+        "detailsContains": "Constraint failed: qg-length-1: 'Text length constraints are used only on string, text, url, or open-choice items.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire)"
+      }
+    ],
+    "questionnaire-length-order": [
+      {
+        "messageId": "https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire#qg-min-max-1",
+        "code": "invariant",
+        "expression": "Questionnaire",
+        "detailsContains": "Constraint failed: qg-min-max-1: 'Minimum text length and occurrence counts do not exceed their corresponding maxima.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire)"
+      }
+    ],
+    "questionnaire-decimal-placement": [
+      {
+        "messageId": "https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire#qg-decimal-1",
+        "code": "invariant",
+        "expression": "Questionnaire",
+        "detailsContains": "Constraint failed: qg-decimal-1: 'maxDecimalPlaces is used only on decimal items.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire)"
+      }
+    ],
+    "questionnaire-value-bound-placement": [
+      {
+        "messageId": "https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire#qg-value-bounds-1",
+        "code": "invariant",
+        "expression": "Questionnaire",
+        "detailsContains": "Constraint failed: qg-value-bounds-1: 'Generic minimum and maximum value bounds are used only on integer, decimal, date, dateTime, or time items.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire)"
+      }
+    ],
+    "questionnaire-quantity-placement": [
+      {
+        "messageId": "Profile_EXT_Not_Here",
+        "code": "structure",
+        "expression": "Questionnaire.item[0]",
+        "detailsContains": "The extension http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-minQuantity v4.0.0 is not allowed to be used at this point (based on context invariant 'ofType(ElementDefinition).type.exists(code='Quantity') or where(%resource.is(Questionnaire)).exists(type.first()='quantity')')"
+      },
+      {
+        "messageId": "https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire#qg-quantity-1",
+        "code": "invariant",
+        "expression": "Questionnaire",
+        "detailsContains": "Constraint failed: qg-quantity-1: 'Quantity bounds are used only on quantity items.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire)"
+      }
+    ],
+    "questionnaire-unit-placement": [
+      {
+        "messageId": "Profile_EXT_Not_Here",
+        "code": "structure",
+        "expression": "Questionnaire.item[0]",
+        "detailsContains": "The extension http://hl7.org/fhir/StructureDefinition/questionnaire-unitOption v4.0.1 is not allowed to be used at this point (based on context invariant 'type='quantity'')"
+      },
+      {
+        "messageId": "https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire#qg-unit-1",
+        "code": "invariant",
+        "expression": "Questionnaire",
+        "detailsContains": "Constraint failed: qg-unit-1: 'A fixed questionnaire unit is used only for integer or decimal items; selectable units are used only for quantity items and come from either inline options or one ValueSet.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire)"
+      }
+    ],
+    "questionnaire-unit-choice-exclusive": [
+      {
+        "messageId": "https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire#qg-unit-1",
+        "code": "invariant",
+        "expression": "Questionnaire",
+        "detailsContains": "Constraint failed: qg-unit-1: 'A fixed questionnaire unit is used only for integer or decimal items; selectable units are used only for quantity items and come from either inline options or one ValueSet.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire)"
+      }
+    ],
+    "questionnaire-attachment-placement": [
+      {
+        "messageId": "https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire#qg-attachment-1",
+        "code": "invariant",
+        "expression": "Questionnaire",
+        "detailsContains": "Constraint failed: qg-attachment-1: 'MIME type and maximum-size constraints are used only on attachment items.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire)"
+      }
+    ],
+    "questionnaire-occurrence-placement": [
+      {
+        "messageId": "https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire#qg-occurrence-1",
+        "code": "invariant",
+        "expression": "Questionnaire",
+        "detailsContains": "Constraint failed: qg-occurrence-1: 'Minimum and maximum occurrence constraints are used only on repeating items.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire)"
+      }
+    ],
+    "questionnaire-style-sensitive": [
+      {
+        "messageId": "https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire#qg-style-sensitive-1",
+        "code": "invariant",
+        "expression": "Questionnaire",
+        "detailsContains": "Constraint failed: qg-style-sensitive-1: 'This exchange contract does not accept presentation-sensitive semantics.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire)"
+      }
+    ],
+    "response-unversioned-canonical": [
+      {
+        "messageId": "https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire-response#gqr-canonical-1",
+        "code": "invariant",
+        "expression": "QuestionnaireResponse",
+        "detailsContains": "Constraint failed: gqr-canonical-1: 'The response names the exact instrument version with a url|version canonical and neither component contains a fragment or an extra separator.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire-response)"
+      }
+    ],
+    "response-fragment-canonical": [
+      {
+        "messageId": "https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire-response#gqr-canonical-1",
+        "code": "invariant",
+        "expression": "QuestionnaireResponse",
+        "detailsContains": "Constraint failed: gqr-canonical-1: 'The response names the exact instrument version with a url|version canonical and neither component contains a fragment or an extra separator.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire-response)"
+      }
+    ],
+    "response-identifier-missing": [
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "QuestionnaireResponse",
+        "detailsContains": "QuestionnaireResponse.identifier: minimum required = 1, but only found 0 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire-response|0.1.0)"
+      },
+      {
+        "messageId": "https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire-response#gqr-identifier-1",
+        "code": "invariant",
+        "expression": "QuestionnaireResponse",
+        "detailsContains": "Constraint failed: gqr-identifier-1: 'The response has one business identifier with a complete system and value pair.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire-response)"
+      }
+    ],
+    "response-text-missing": [
+      {
+        "messageId": "https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire-response#gqr-text-1",
+        "code": "invariant",
+        "expression": "QuestionnaireResponse",
+        "detailsContains": "Constraint failed: gqr-text-1: 'Every response item that carries an answer repeats the question text.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire-response)"
+      }
+    ],
+    "response-completion-mode-contradictory": [
+      {
+        "messageId": "Validation_VAL_Profile_Maximum",
+        "code": "structure",
+        "expression": "QuestionnaireResponse.extension[0].value.ofType(CodeableConcept)",
+        "detailsContains": "QuestionnaireResponse.extension:completionMode.value[x].coding: max allowed = 1, but found 2 (from https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire-response|0.1.0)"
+      },
+      {
+        "messageId": "_DT_Fixed_Wrong",
+        "code": "value",
+        "expression": "QuestionnaireResponse.extension[0].value.ofType(CodeableConcept).coding[1].code",
+        "detailsContains": "Value is 'VERBAL' but is fixed to 'ELECTRONIC' in the profile https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire-response|0.1.0#QuestionnaireResponse.extension:completionMode.value[x].coding.code"
+      },
+      {
+        "messageId": "https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire-response#gqr-completion-mode-1",
+        "code": "invariant",
+        "expression": "QuestionnaireResponse",
+        "detailsContains": "Constraint failed: gqr-completion-mode-1: 'The response declares exactly one electronic ParticipationMode coding.' (defined in https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire-response)"
+      }
+    ]
+  }
+}

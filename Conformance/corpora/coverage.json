@@ -33,9 +33,9 @@
         "RuleSet:GroveMobileObservationRules|* effectivePeriod.start 1..1 MS": "effective-period-start-cardinality",
         "RuleSet:GroveMobileObservationRules|* effectivePeriod.start.extension contains $timezone named startTimezone 0..1 MS": "effective-period-start-timezone-cardinality",
         "RuleSet:GroveMobileObservationRules|* effectivePeriod.end.extension contains $timezone named endTimezone 0..1 MS": "effective-period-end-timezone-cardinality",
-        "RuleSet:GroveMobileObservationRules|GroveRecordingMethod named recordingMethod 0..1 MS and": "recording-method-slice-cardinality",
-        "RuleSet:GroveMobileObservationRules|$gatewayDevice named gatewayDevice 0..1 MS and": "gateway-device-slice-cardinality",
-        "RuleSet:GroveMobileObservationRules|$researchStudy named researchStudy 0..* MS": "research-study-open-slice",
+        "RuleSet:GroveMobileObservationRules|* extension contains >> GroveRecordingMethod named recordingMethod 0..1 MS and": "recording-method-slice-cardinality",
+        "RuleSet:GroveMobileObservationRules|* extension contains >> $gatewayDevice named gatewayDevice 0..1 MS and": "gateway-device-slice-cardinality",
+        "RuleSet:GroveMobileObservationRules|* extension contains >> $researchStudy named researchStudy 0..* MS": "research-study-open-slice",
         "RuleSet:GroveMobileObservationRules|* extension[gatewayDevice].valueReference only Reference(GroveApplicationDevice)": "gateway-device-target-type",
         "RuleSet:GroveMobileObservationRules|* extension[researchStudy].valueReference only Reference(ResearchStudy)": "research-study-target-type",
         "Profile:GroveRecordingDevice|* version.type 1..1 MS": "recording-device-version-type-cardinality",
@@ -206,8 +206,8 @@
         "health-connect-record-id-value-1": ["health-connect-record-id-format", "health-connect-provenance-source-value-format"]
       },
       "sourceRules": {
-        "Profile:HealthConnectObservation|recordId 1..1 MS and": "health-connect-record-identifier-cardinality",
-        "Profile:HealthConnectObservation|outputId 1..1 MS": "health-connect-output-identifier-cardinality",
+        "Profile:HealthConnectObservation|* identifier contains >> recordId 1..1 MS and": "health-connect-record-identifier-cardinality",
+        "Profile:HealthConnectObservation|* identifier contains >> outputId 1..1 MS": "health-connect-output-identifier-cardinality",
         "Profile:HealthConnectObservation|* identifier[recordId].system = $healthConnectRecordId": "health-connect-record-system-fixed",
         "Profile:HealthConnectObservation|* identifier[recordId].value 1..1 MS": "health-connect-record-value-cardinality",
         "Profile:HealthConnectObservation|* identifier[outputId].system = $healthConnectOutputId": "health-connect-output-system-fixed",
@@ -263,6 +263,485 @@
       "supplementalBoundaries": [],
       "nonInvalidBoundaries": {
         "health-connect-source-role-parent-equivalent": {"classification": "parent-equivalent", "validBases": ["health-connect-conversion-provenance"]}
+      },
+      "validatorLimitations": {}
+    },
+    "questionnaire": {
+      "fsh": [
+        "questionnaire/input/fsh/profiles.fsh"
+      ],
+      "corpusReferences": [
+        {
+          "id": "questionnaire-pairs",
+          "ownership": "questionnaire"
+        },
+        {
+          "id": "questionnaire-validator",
+          "ownership": "questionnaire"
+        }
+      ],
+      "structureDefinitions": {
+        "GroveQuestionnaire": "grove-questionnaire",
+        "GroveQuestionnaireResponse": "grove-questionnaire-response"
+      },
+      "invariants": {
+        "qg-version-1": [
+          "questionnaire-validator/questionnaire-version-missing",
+          "questionnaire-validator/questionnaire-version-invalid-semver"
+        ],
+        "qg-version-algorithm-1": [
+          "questionnaire-validator/questionnaire-version-algorithm"
+        ],
+        "qg-item-text-1": [
+          "questionnaire-validator/questionnaire-item-text-missing"
+        ],
+        "qg-reference-1": [
+          "questionnaire-validator/questionnaire-reference-item"
+        ],
+        "qg-repeats-1": [
+          "questionnaire-validator/questionnaire-prohibited-repeats"
+        ],
+        "qg-enable-1": [
+          "questionnaire-validator/questionnaire-enable-forms-combined"
+        ],
+        "qg-expression-1": [
+          "questionnaire-validator/questionnaire-expression-language",
+          "questionnaire-validator/questionnaire-expression-body"
+        ],
+        "qg-variable-name-1": [
+          "questionnaire-validator/questionnaire-variable-name-missing"
+        ],
+        "qg-initial-1": [
+          "questionnaire-validator/questionnaire-initial-forms-combined"
+        ],
+        "qg-length-1": [
+          "questionnaire-validator/questionnaire-length-placement"
+        ],
+        "qg-decimal-1": [
+          "questionnaire-validator/questionnaire-decimal-placement"
+        ],
+        "qg-value-bounds-1": [
+          "questionnaire-validator/questionnaire-value-bound-placement"
+        ],
+        "qg-quantity-1": [
+          "questionnaire-validator/questionnaire-quantity-placement"
+        ],
+        "qg-unit-1": [
+          "questionnaire-validator/questionnaire-unit-placement",
+          "questionnaire-validator/questionnaire-unit-choice-exclusive"
+        ],
+        "qg-attachment-1": [
+          "questionnaire-validator/questionnaire-attachment-placement"
+        ],
+        "qg-occurrence-1": [
+          "questionnaire-validator/questionnaire-occurrence-placement"
+        ],
+        "qg-min-max-1": [
+          "questionnaire-validator/questionnaire-length-order",
+          "questionnaire-validator/questionnaire-occurrence-order"
+        ],
+        "qg-style-sensitive-1": [
+          "questionnaire-validator/questionnaire-style-sensitive"
+        ],
+        "gqr-canonical-1": [
+          "questionnaire-validator/response-unversioned-canonical",
+          "questionnaire-validator/response-fragment-canonical"
+        ],
+        "gqr-identifier-1": [
+          "questionnaire-validator/response-identifier-missing"
+        ],
+        "gqr-text-1": [
+          "questionnaire-validator/response-text-missing"
+        ],
+        "gqr-completion-mode-1": [
+          "questionnaire-validator/response-completion-mode-contradictory"
+        ]
+      },
+      "sourceRules": {
+        "Profile:GroveQuestionnaireResponse|* authored 1..1 MS": "response-authored-cardinality",
+        "Profile:GroveQuestionnaireResponse|* extension[completionMode] 1..1 MS": "response-completion-extension-cardinality",
+        "Profile:GroveQuestionnaireResponse|* extension[completionMode].valueCodeableConcept from $questionnaireResponseModeVS (required)": "response-completion-mode-contract",
+        "Profile:GroveQuestionnaireResponse|* extension[completionMode].valueCodeableConcept.coding 1..1 MS": "response-completion-mode-contract",
+        "Profile:GroveQuestionnaireResponse|* extension[completionMode].valueCodeableConcept.coding.code 1..1 MS": "response-completion-code-cardinality",
+        "Profile:GroveQuestionnaireResponse|* extension[completionMode].valueCodeableConcept.coding.code = #ELECTRONIC (exactly)": "response-completion-mode-contract",
+        "Profile:GroveQuestionnaireResponse|* extension[completionMode].valueCodeableConcept.coding.system 1..1 MS": "response-completion-system-cardinality",
+        "Profile:GroveQuestionnaireResponse|* extension[completionMode].valueCodeableConcept.coding.system = $participationMode (exactly)": "response-completion-system-fixed",
+        "Profile:GroveQuestionnaireResponse|* extension[completionMode].value[x] only CodeableConcept": "response-completion-value-type",
+        "Profile:GroveQuestionnaireResponse|* identifier 1..1 MS": "response-identifier-cardinality",
+        "Profile:GroveQuestionnaireResponse|* identifier.system 1..1 MS": "response-identifier-system-cardinality",
+        "Profile:GroveQuestionnaireResponse|* identifier.value 1..1 MS": "response-identifier-value-cardinality",
+        "Profile:GroveQuestionnaireResponse|* item.answer.valueCoding.extension contains >> $itemWeight named itemWeight 0..1 MS": "response-item-weight-open-slice",
+        "Profile:GroveQuestionnaireResponse|* item.linkId 1..1 MS": "response-item-link-id-cardinality",
+        "Profile:GroveQuestionnaireResponse|* questionnaire 1..1 MS": "response-questionnaire-cardinality",
+        "Profile:GroveQuestionnaireResponse|* questionnaire only Canonical(GroveQuestionnaire)": "response-questionnaire-type",
+        "Profile:GroveQuestionnaireResponse|* status 1..1 MS": "response-status-cardinality",
+        "Profile:GroveQuestionnaire|* extension contains >> $targetConstraint named targetConstraint 0..* MS": "root-target-constraint-open-slice",
+        "Profile:GroveQuestionnaire|* extension contains >> $variable named variable 0..* MS and": "root-variable-open-slice",
+        "Profile:GroveQuestionnaire|* extension[variable].valueExpression.name 1..1 MS": "root-variable-name-cardinality",
+        "Profile:GroveQuestionnaire|* extension[versionAlgorithm] 1..1 MS": "version-algorithm-cardinality",
+        "Profile:GroveQuestionnaire|* extension[versionAlgorithm].valueCoding.code 1..1": "version-algorithm-code-cardinality",
+        "Profile:GroveQuestionnaire|* extension[versionAlgorithm].valueCoding.code = #semver (exactly)": "version-algorithm-code-fixed",
+        "Profile:GroveQuestionnaire|* extension[versionAlgorithm].valueCoding.system 1..1": "version-algorithm-system-cardinality",
+        "Profile:GroveQuestionnaire|* extension[versionAlgorithm].valueCoding.system = $versionAlgorithm (exactly)": "version-algorithm-system-fixed",
+        "Profile:GroveQuestionnaire|* extension[versionAlgorithm].value[x] only Coding": "version-algorithm-value-type",
+        "Profile:GroveQuestionnaire|* item 1..* MS": "questionnaire-item-cardinality",
+        "Profile:GroveQuestionnaire|* item.answerOption.extension contains >> $itemWeight named itemWeight 0..1 MS": "answer-option-item-weight-open-slice",
+        "Profile:GroveQuestionnaire|* item.answerOption.extension contains >> $optionExclusive named optionExclusive 0..1 MS and": "answer-option-exclusive-open-slice",
+        "Profile:GroveQuestionnaire|* item.answerOption.valueCoding.extension contains >> $itemWeight named itemWeight 0..1 MS": "answer-option-coding-item-weight-open-slice",
+        "Profile:GroveQuestionnaire|* item.extension contains >> $calculatedExpression named calculatedExpression 0..1 MS and": "item-calculated-expression-cardinality",
+        "Profile:GroveQuestionnaire|* item.extension contains >> $enableWhenExpression named enableWhenExpression 0..1 MS and": "item-enable-expression-cardinality",
+        "Profile:GroveQuestionnaire|* item.extension contains >> $initialExpression named initialExpression 0..1 MS and": "item-initial-expression-cardinality",
+        "Profile:GroveQuestionnaire|* item.extension contains >> $maxDecimalPlaces named maxDecimalPlaces 0..1 MS and": "item-max-decimal-places-cardinality",
+        "Profile:GroveQuestionnaire|* item.extension contains >> $maxOccurs named maxOccurs 0..1 MS and": "item-max-occurs-cardinality",
+        "Profile:GroveQuestionnaire|* item.extension contains >> $maxQuantity named maxQuantity 0..1 MS and": "item-max-quantity-cardinality",
+        "Profile:GroveQuestionnaire|* item.extension contains >> $maxSize named maxSize 0..1 MS": "item-max-size-cardinality",
+        "Profile:GroveQuestionnaire|* item.extension contains >> $maxValue named maxValue 0..1 MS and": "item-max-value-cardinality",
+        "Profile:GroveQuestionnaire|* item.extension contains >> $mimeType named mimeType 0..* MS and": "item-mime-type-open-slice",
+        "Profile:GroveQuestionnaire|* item.extension contains >> $minLength named minLength 0..1 MS and": "item-min-length-cardinality",
+        "Profile:GroveQuestionnaire|* item.extension contains >> $minOccurs named minOccurs 0..1 MS and": "item-min-occurs-cardinality",
+        "Profile:GroveQuestionnaire|* item.extension contains >> $minQuantity named minQuantity 0..1 MS and": "item-min-quantity-cardinality",
+        "Profile:GroveQuestionnaire|* item.extension contains >> $minValue named minValue 0..1 MS and": "item-min-value-cardinality",
+        "Profile:GroveQuestionnaire|* item.extension contains >> $questionnaireUnit named unit 0..1 MS and": "item-fixed-unit-cardinality",
+        "Profile:GroveQuestionnaire|* item.extension contains >> $targetConstraint named targetConstraint 0..* MS and": "item-target-constraint-open-slice",
+        "Profile:GroveQuestionnaire|* item.extension contains >> $unitOption named unitOption 0..* MS and": "item-unit-option-open-slice",
+        "Profile:GroveQuestionnaire|* item.extension contains >> $unitValueSet named unitValueSet 0..1 MS and": "item-unit-value-set-cardinality",
+        "Profile:GroveQuestionnaire|* item.extension contains >> $variable named variable 0..* MS and": "item-variable-open-slice",
+        "Profile:GroveQuestionnaire|* item.extension[variable].valueExpression.name 1..1 MS": "item-variable-name-cardinality",
+        "Profile:GroveQuestionnaire|* item.linkId 1..1 MS": "item-link-id-cardinality",
+        "Profile:GroveQuestionnaire|* item.type 1..1 MS": "item-type-cardinality",
+        "Profile:GroveQuestionnaire|* status 1..1 MS": "questionnaire-status-cardinality",
+        "Profile:GroveQuestionnaire|* version 1..1 MS": "questionnaire-version-cardinality"
+      },
+      "caseBoundaries": {
+        "questionnaire-validator/questionnaire-version-missing": "questionnaire-version-cardinality",
+        "questionnaire-validator/questionnaire-version-algorithm": "version-algorithm-code-fixed",
+        "questionnaire-validator/questionnaire-variable-name-missing": "root-variable-name-cardinality",
+        "questionnaire-validator/questionnaire-variable-name-reserved": "qg-variable-name-reserved",
+        "questionnaire-validator/questionnaire-variable-name-duplicate": "qg-variable-name-duplicate",
+        "questionnaire-validator/questionnaire-target-constraint-malformed": "qg-target-constraint-shape",
+        "questionnaire-validator/questionnaire-decimal-precision-negative": "qg-decimal-precision",
+        "questionnaire-validator/questionnaire-value-bound-type": "qg-value-bound-type",
+        "questionnaire-validator/questionnaire-value-bound-order": "qg-value-bounds-order",
+        "questionnaire-validator/questionnaire-quantity-bound-order": "qg-quantity-bounds-order",
+        "questionnaire-validator/questionnaire-attachment-size-negative": "qg-attachment-size",
+        "questionnaire-validator/response-identifier-missing": "response-identifier-cardinality",
+        "questionnaire-validator/response-completion-mode-contradictory": "response-completion-mode-contract",
+        "questionnaire-pairs/pair-questionnaire-version": "pair-questionnaire-canonical",
+        "questionnaire-pairs/pair-question-child-direct-nesting": "pair-item-nesting",
+        "questionnaire-pairs/pair-answer-datatype": "pair-answer-type",
+        "questionnaire-pairs/pair-inline-option-membership": "pair-inline-option",
+        "questionnaire-pairs/pair-versioned-valueset-membership": "pair-valueset-membership",
+        "questionnaire-pairs/pair-response-text": "pair-response-text",
+        "questionnaire-pairs/pair-nonrepeating-answer": "pair-repeats",
+        "questionnaire-pairs/pair-answer-maximum-occurrence": "pair-answer-occurrence",
+        "questionnaire-pairs/pair-required-completed": "pair-required-item",
+        "questionnaire-pairs/pair-unknown-item": "pair-item-unknown",
+        "questionnaire-pairs/pair-duplicate-item": "pair-item-duplicate",
+        "questionnaire-pairs/pair-misplaced-item": "pair-item-misplaced",
+        "questionnaire-pairs/pair-disabled-item": "pair-item-disabled",
+        "questionnaire-pairs/pair-entered-in-error": "pair-response-entered-in-error"
+      },
+      "supplementalBoundaries": [
+        "qg-variable-name-reserved",
+        "qg-variable-name-duplicate",
+        "qg-target-constraint-shape",
+        "qg-decimal-precision",
+        "qg-value-bound-type",
+        "qg-value-bounds-order",
+        "qg-quantity-bounds-order",
+        "qg-attachment-size",
+        "pair-questionnaire-canonical",
+        "pair-item-nesting",
+        "pair-answer-type",
+        "pair-inline-option",
+        "pair-valueset-membership",
+        "pair-response-text",
+        "pair-repeats",
+        "pair-answer-occurrence",
+        "pair-required-item",
+        "pair-item-unknown",
+        "pair-item-duplicate",
+        "pair-item-misplaced",
+        "pair-item-disabled",
+        "pair-response-entered-in-error"
+      ],
+      "nonInvalidBoundaries": {
+        "answer-option-coding-item-weight-open-slice": {
+          "classification": "valid-fixture",
+          "validBases": [
+            "questionnaire-validator/valid/questionnaire-typed-constraints.json"
+          ]
+        },
+        "answer-option-exclusive-open-slice": {
+          "classification": "valid-fixture",
+          "validBases": [
+            "questionnaire-validator/valid/questionnaire-typed-constraints.json"
+          ]
+        },
+        "answer-option-item-weight-open-slice": {
+          "classification": "valid-fixture",
+          "validBases": [
+            "questionnaire-validator/valid/questionnaire-typed-constraints.json"
+          ]
+        },
+        "item-calculated-expression-cardinality": {
+          "classification": "valid-fixture",
+          "validBases": [
+            "questionnaire-validator/valid/questionnaire-expressions.json"
+          ]
+        },
+        "item-enable-expression-cardinality": {
+          "classification": "valid-fixture",
+          "validBases": [
+            "questionnaire-validator/valid/questionnaire-expressions.json"
+          ]
+        },
+        "item-fixed-unit-cardinality": {
+          "classification": "valid-fixture",
+          "validBases": [
+            "questionnaire-validator/valid/questionnaire-typed-constraints.json"
+          ]
+        },
+        "item-initial-expression-cardinality": {
+          "classification": "valid-fixture",
+          "validBases": [
+            "questionnaire-validator/valid/questionnaire-expressions.json"
+          ]
+        },
+        "item-link-id-cardinality": {
+          "classification": "valid-fixture",
+          "validBases": [
+            "questionnaire-validator/valid/questionnaire-typed-constraints.json"
+          ]
+        },
+        "item-max-decimal-places-cardinality": {
+          "classification": "valid-fixture",
+          "validBases": [
+            "questionnaire-validator/valid/questionnaire-typed-constraints.json"
+          ]
+        },
+        "item-max-occurs-cardinality": {
+          "classification": "valid-fixture",
+          "validBases": [
+            "questionnaire-validator/valid/questionnaire-typed-constraints.json"
+          ]
+        },
+        "item-max-quantity-cardinality": {
+          "classification": "valid-fixture",
+          "validBases": [
+            "questionnaire-validator/valid/questionnaire-typed-constraints.json"
+          ]
+        },
+        "item-max-size-cardinality": {
+          "classification": "valid-fixture",
+          "validBases": [
+            "questionnaire-validator/valid/questionnaire-typed-constraints.json"
+          ]
+        },
+        "item-max-value-cardinality": {
+          "classification": "valid-fixture",
+          "validBases": [
+            "questionnaire-validator/valid/questionnaire-typed-constraints.json"
+          ]
+        },
+        "item-mime-type-open-slice": {
+          "classification": "valid-fixture",
+          "validBases": [
+            "questionnaire-validator/valid/questionnaire-typed-constraints.json"
+          ]
+        },
+        "item-min-length-cardinality": {
+          "classification": "valid-fixture",
+          "validBases": [
+            "questionnaire-validator/valid/questionnaire-constraints.json"
+          ]
+        },
+        "item-min-occurs-cardinality": {
+          "classification": "valid-fixture",
+          "validBases": [
+            "questionnaire-validator/valid/questionnaire-typed-constraints.json"
+          ]
+        },
+        "item-min-quantity-cardinality": {
+          "classification": "valid-fixture",
+          "validBases": [
+            "questionnaire-validator/valid/questionnaire-typed-constraints.json"
+          ]
+        },
+        "item-min-value-cardinality": {
+          "classification": "valid-fixture",
+          "validBases": [
+            "questionnaire-validator/valid/questionnaire-typed-constraints.json"
+          ]
+        },
+        "item-target-constraint-open-slice": {
+          "classification": "valid-fixture",
+          "validBases": [
+            "questionnaire-validator/valid/questionnaire-expressions.json"
+          ]
+        },
+        "item-type-cardinality": {
+          "classification": "valid-fixture",
+          "validBases": [
+            "questionnaire-validator/valid/questionnaire-typed-constraints.json"
+          ]
+        },
+        "item-unit-option-open-slice": {
+          "classification": "valid-fixture",
+          "validBases": [
+            "questionnaire-validator/valid/questionnaire-typed-constraints.json"
+          ]
+        },
+        "item-unit-value-set-cardinality": {
+          "classification": "valid-fixture",
+          "validBases": [
+            "questionnaire-validator/valid/questionnaire-typed-constraints.json"
+          ]
+        },
+        "item-variable-name-cardinality": {
+          "classification": "valid-fixture",
+          "validBases": [
+            "questionnaire-validator/valid/questionnaire-expressions.json"
+          ]
+        },
+        "item-variable-open-slice": {
+          "classification": "valid-fixture",
+          "validBases": [
+            "questionnaire-validator/valid/questionnaire-expressions.json"
+          ]
+        },
+        "questionnaire-item-cardinality": {
+          "classification": "valid-fixture",
+          "validBases": [
+            "questionnaire-validator/valid/questionnaire.json"
+          ]
+        },
+        "questionnaire-status-cardinality": {
+          "classification": "valid-fixture",
+          "validBases": [
+            "questionnaire-validator/valid/questionnaire.json"
+          ]
+        },
+        "response-authored-cardinality": {
+          "classification": "valid-fixture",
+          "validBases": [
+            "questionnaire-validator/valid/questionnaire-response.json"
+          ]
+        },
+        "response-completion-code-cardinality": {
+          "classification": "valid-fixture",
+          "validBases": [
+            "questionnaire-validator/valid/questionnaire-response.json"
+          ]
+        },
+        "response-completion-extension-cardinality": {
+          "classification": "valid-fixture",
+          "validBases": [
+            "questionnaire-validator/valid/questionnaire-response.json"
+          ]
+        },
+        "response-completion-system-cardinality": {
+          "classification": "valid-fixture",
+          "validBases": [
+            "questionnaire-validator/valid/questionnaire-response.json"
+          ]
+        },
+        "response-completion-system-fixed": {
+          "classification": "valid-fixture",
+          "validBases": [
+            "questionnaire-validator/valid/questionnaire-response.json"
+          ]
+        },
+        "response-completion-value-type": {
+          "classification": "valid-fixture",
+          "validBases": [
+            "questionnaire-validator/valid/questionnaire-response.json"
+          ]
+        },
+        "response-identifier-system-cardinality": {
+          "classification": "valid-fixture",
+          "validBases": [
+            "questionnaire-validator/valid/questionnaire-response.json"
+          ]
+        },
+        "response-identifier-value-cardinality": {
+          "classification": "valid-fixture",
+          "validBases": [
+            "questionnaire-validator/valid/questionnaire-response.json"
+          ]
+        },
+        "response-item-link-id-cardinality": {
+          "classification": "valid-fixture",
+          "validBases": [
+            "questionnaire-validator/valid/questionnaire-response.json"
+          ]
+        },
+        "response-item-weight-open-slice": {
+          "classification": "valid-fixture",
+          "validBases": [
+            "questionnaire-validator/valid/questionnaire-response.json"
+          ]
+        },
+        "response-questionnaire-cardinality": {
+          "classification": "valid-fixture",
+          "validBases": [
+            "questionnaire-validator/valid/questionnaire-response.json"
+          ]
+        },
+        "response-questionnaire-type": {
+          "classification": "valid-fixture",
+          "validBases": [
+            "questionnaire-validator/valid/questionnaire-response.json"
+          ]
+        },
+        "response-status-cardinality": {
+          "classification": "valid-fixture",
+          "validBases": [
+            "questionnaire-validator/valid/questionnaire-response.json"
+          ]
+        },
+        "root-target-constraint-open-slice": {
+          "classification": "valid-fixture",
+          "validBases": [
+            "questionnaire-validator/valid/questionnaire-expressions.json"
+          ]
+        },
+        "root-variable-open-slice": {
+          "classification": "valid-fixture",
+          "validBases": [
+            "questionnaire-validator/valid/questionnaire-expressions.json"
+          ]
+        },
+        "version-algorithm-cardinality": {
+          "classification": "valid-fixture",
+          "validBases": [
+            "questionnaire-validator/valid/questionnaire.json"
+          ]
+        },
+        "version-algorithm-code-cardinality": {
+          "classification": "valid-fixture",
+          "validBases": [
+            "questionnaire-validator/valid/questionnaire.json"
+          ]
+        },
+        "version-algorithm-system-cardinality": {
+          "classification": "valid-fixture",
+          "validBases": [
+            "questionnaire-validator/valid/questionnaire.json"
+          ]
+        },
+        "version-algorithm-system-fixed": {
+          "classification": "valid-fixture",
+          "validBases": [
+            "questionnaire-validator/valid/questionnaire.json"
+          ]
+        },
+        "version-algorithm-value-type": {
+          "classification": "valid-fixture",
+          "validBases": [
+            "questionnaire-validator/valid/questionnaire.json"
+          ]
+        }
       },
       "validatorLimitations": {}
     }

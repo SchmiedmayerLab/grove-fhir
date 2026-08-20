@@ -41,6 +41,15 @@ validator = importlib.util.module_from_spec(spec)
 sys.modules[spec.name] = validator
 spec.loader.exec_module(validator)
 
+fhir_spec = importlib.util.spec_from_file_location(
+    "validate_questionnaire_fhir", ROOT / "Scripts/validate-questionnaire-fhir.py"
+)
+if fhir_spec is None or fhir_spec.loader is None:
+    raise RuntimeError("Cannot load Questionnaire FHIR validator")
+fhir_validator = importlib.util.module_from_spec(fhir_spec)
+sys.modules[fhir_spec.name] = fhir_validator
+fhir_spec.loader.exec_module(fhir_validator)
+
 
 def load_generated(filename: str) -> dict:
     path = GENERATED / filename
@@ -59,6 +68,32 @@ class QuestionnaireContractTests(unittest.TestCase):
             write_json(destination, load_json(source))
 
             self.assertEqual(destination.read_bytes(), b'{"valueDecimal":1.20}\n')
+
+    def test_official_corpus_paths_cannot_escape_or_traverse_symlinks(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary).resolve()
+            corpus = root / "corpus"
+            corpus.mkdir()
+            valid = corpus / "valid.json"
+            valid.write_text("{}\n", encoding="utf-8")
+            outside = root / "outside.json"
+            outside.write_text("{}\n", encoding="utf-8")
+            (corpus / "linked.json").symlink_to(outside)
+
+            self.assertEqual(
+                fhir_validator.resolve_corpus_file(
+                    corpus, "valid.json", "Questionnaire fixture"
+                ),
+                valid,
+            )
+            with self.assertRaisesRegex(ValueError, "safe relative POSIX path"):
+                fhir_validator.resolve_corpus_file(
+                    corpus, "../outside.json", "Questionnaire fixture"
+                )
+            with self.assertRaisesRegex(ValueError, "may not traverse a symlink"):
+                fhir_validator.resolve_corpus_file(
+                    corpus, "linked.json", "Questionnaire fixture"
+                )
 
     def test_profiles_derive_from_sdc_and_publish_named_rules(self) -> None:
         questionnaire = load_generated("StructureDefinition-grove-questionnaire.json")
@@ -205,6 +240,15 @@ class QuestionnaireContractTests(unittest.TestCase):
 
     def test_static_validator_corpus_has_one_mutation_and_expected_rule(self) -> None:
         manifest = load_json(VALIDATOR_FIXTURES / "cases.json")
+        official_case_ids = {
+            case["id"]
+            for case in manifest["invalid"]
+            if case.get("fhirValidator") is not False
+        }
+        self.assertEqual(
+            set(fhir_validator.load_expectations(official_case_ids)),
+            official_case_ids,
+        )
         for relative in manifest["valid"]:
             resource = load_json(VALIDATOR_FIXTURES / relative)
             issues = (
@@ -227,10 +271,46 @@ class QuestionnaireContractTests(unittest.TestCase):
                     if invalid["resourceType"] == "Questionnaire"
                     else validator.validate_response(invalid)
                 )
-                self.assertIn(case["expectedRule"], {issue.rule for issue in issues})
-                if case.get("fhirValidator") is not False:
-                    self.assertIsInstance(case.get("expectedValidatorRule"), str)
-                    self.assertTrue(case["expectedValidatorRule"])
+                self.assertEqual(
+                    [(issue.rule, issue.severity) for issue in issues],
+                    [(case["expectedRule"], "error")],
+                )
+
+    def test_official_validator_expectations_reject_extra_or_overlapping_errors(self) -> None:
+        def issue(message_id: str) -> dict:
+            return {
+                "severity": "error",
+                "code": "invariant",
+                "expression": ["Questionnaire"],
+                "details": {"text": f"Constraint failed: {message_id}"},
+                "extension": [
+                    {
+                        "url": fhir_validator.MESSAGE_ID_URL,
+                        "valueString": message_id,
+                    }
+                ],
+            }
+
+        expected = [
+            {
+                "messageId": "intended-rule",
+                "code": "invariant",
+                "expression": "Questionnaire",
+            }
+        ]
+        self.assertIsNone(
+            fhir_validator.exact_error_failure([issue("intended-rule")], expected)
+        )
+        self.assertIsNotNone(
+            fhir_validator.exact_error_failure(
+                [issue("intended-rule"), issue("unrelated-rule")], expected
+            )
+        )
+        self.assertIsNotNone(
+            fhir_validator.exact_error_failure(
+                [issue("intended-rule")], expected + [{"code": "invariant"}]
+            )
+        )
 
     def test_pair_corpus_covers_each_cross_resource_rule(self) -> None:
         manifest = load_json(PAIR_FIXTURES / "cases.json")
@@ -247,10 +327,13 @@ class QuestionnaireContractTests(unittest.TestCase):
                 target = in_progress if case["target"] == "inProgressResponse" else response
                 invalid = apply_mutation(target, case["mutation"])
                 issues = validator.validate_pair(questionnaire, invalid, value_sets)
-                rules = {issue.rule for issue in issues}
-                self.assertIn(case["expectedRule"], rules)
+                self.assertEqual(
+                    [(issue.rule, issue.severity) for issue in issues],
+                    [(case["expectedRule"], "error")],
+                )
                 expected_rules.add(case["expectedRule"])
-        self.assertTrue(
+        self.assertEqual(
+            expected_rules,
             {
                 "pair-questionnaire-canonical",
                 "pair-item-nesting",
@@ -265,7 +348,8 @@ class QuestionnaireContractTests(unittest.TestCase):
                 "pair-item-duplicate",
                 "pair-item-misplaced",
                 "pair-item-disabled",
-            }.issubset(expected_rules)
+                "pair-response-entered-in-error",
+            },
         )
 
     def test_cli_emits_stable_machine_readable_report(self) -> None:

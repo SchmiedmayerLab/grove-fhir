@@ -139,7 +139,7 @@
         "org.grovealliance.fhir.healthkit",
         "org.grovealliance.fhir.health-connect"
       ],
-      "purpose": "Reason-specific one-mutation Mobile, HealthKit, and Health Connect corpora with exact official Validator expectations and live-FSH coverage inventory."
+      "purpose": "Reason-specific one-mutation Mobile, HealthKit, and Health Connect corpora with exact official Validator expectations, plus live-FSH coverage that references the Questionnaire-owned validator and pair manifests without copying them."
     },
     {
       "id": "accepted-study-graph",
@@ -196,7 +196,7 @@
       "mediaType": "application/json",
       "format": "domain-fhir-validation-v1",
       "producer": "Scripts/validate-domain-fhir.py",
-      "purpose": "Official locked-Validator results for the static domain corpora, live FSH coverage, accepted study graph, and every manifest-declared external FHIR resource."
+      "purpose": "Official locked-Validator results for the static domain corpora, four-guide live FSH coverage including the referenced Questionnaire corpora, accepted study graph, and every manifest-declared external FHIR resource."
     }
   ],
   "externalEvidence": [
@@ -440,11 +440,16 @@
       "commit": "fb78db4c5343c234825b433706f7ee62f111c5cc",
       "status": "active",
       "classification": "accepted-contract",
-      "direction": "round-trip",
+      "direction": "produce",
       "packages": ["mobile", "healthkit"],
       "profiles": [
-        "https://schmiedmayerlab.github.io/grove-fhir/fhir/healthkit/StructureDefinition/healthkit-observation",
-        "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-observation"
+        "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-application-device",
+        "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-conversion-provenance",
+        "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-observation",
+        "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-step-count",
+        "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-recording-device",
+        "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-recording-method",
+        "https://schmiedmayerlab.github.io/grove-fhir/fhir/healthkit/StructureDefinition/healthkit-observation"
       ],
       "generator": {
         "type": "integration-proposal",
@@ -457,7 +462,7 @@
         "volatileFields": []
       },
       "provenance": {"nestedGitlinks": [], "resolvedPackages": []},
-      "purpose": "Proves reviewed Swift HealthKit production and decoding against the Mobile and HealthKit packages."
+      "purpose": "Proves reviewed Swift HealthKit production against the Mobile and HealthKit packages; bounded historical decoding is evidenced separately by grove-current-legacy-reader."
     },
     {
       "id": "my-heart-counts-android",
@@ -469,8 +474,14 @@
       "direction": "produce",
       "packages": ["mobile", "health-connect"],
       "profiles": [
-        "https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/StructureDefinition/health-connect-observation",
-        "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-observation"
+        "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-application-device",
+        "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-conversion-provenance",
+        "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-observation",
+        "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-step-count",
+        "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-recording-device",
+        "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-recording-method",
+        "https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/StructureDefinition/health-connect-conversion-provenance",
+        "https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/StructureDefinition/health-connect-observation"
       ],
       "generator": {
         "type": "integration-proposal",
@@ -516,11 +527,8 @@
       "status": "active",
       "classification": "accepted-contract",
       "direction": "consume",
-      "packages": ["mobile", "health-connect"],
-      "profiles": [
-        "https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/StructureDefinition/health-connect-observation",
-        "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-observation"
-      ],
+      "packages": [],
+      "profiles": [],
       "generator": {
         "type": "integration-proposal",
         "proposal": "my-heart-counts-firebase-fhir-receiver",

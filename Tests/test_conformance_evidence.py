@@ -30,6 +30,224 @@ EPOCH = 1_700_000_000
 
 
 class ConformanceEvidenceTests(unittest.TestCase):
+    def test_documented_local_build_disables_python_bytecode_first(self) -> None:
+        documentation = (ROOT / "Conformance/README.md").read_text(encoding="utf-8")
+        command_block = documentation.split("```console", 1)[1].split("```", 1)[0]
+        commands = [line for line in command_block.splitlines() if line.strip()]
+        self.assertEqual(commands[0], "export PYTHONDONTWRITEBYTECODE=1")
+        self.assertTrue(any(line.startswith("python3 ") for line in commands[1:]))
+
+    def test_input_inventory_is_exactly_bound_to_git_head_and_gitlinks(self) -> None:
+        def git(repository: Path, *arguments: str) -> str:
+            result = subprocess.run(
+                ["git", *arguments],
+                cwd=repository,
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+            return result.stdout.strip()
+
+        def write(path: Path, value: str) -> None:
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(value, encoding="utf-8")
+
+        with tempfile.TemporaryDirectory() as directory:
+            fixture = Path(directory)
+            upstream = fixture / "source-upstream"
+            upstream.mkdir()
+            git(upstream, "init", "--quiet")
+            git(upstream, "config", "user.name", "Conformance Test")
+            git(upstream, "config", "user.email", "test@example.org")
+            git(upstream, "config", "commit.gpgsign", "false")
+            package_manifest = upstream / "Project/Package.resolved"
+            write(package_manifest, '{"version":1}\n')
+            git(upstream, "add", "Project/Package.resolved")
+            git(upstream, "commit", "--quiet", "-m", "Pin package")
+            source_commit = git(upstream, "rev-parse", "HEAD")
+
+            repository = fixture / "repository"
+            repository.mkdir()
+            repository = repository.resolve()
+            git(repository, "init", "--quiet")
+            git(repository, "config", "user.name", "Conformance Test")
+            git(repository, "config", "user.email", "test@example.org")
+            git(repository, "config", "commit.gpgsign", "false")
+            git(
+                repository,
+                "-c",
+                "protocol.file.allow=always",
+                "submodule",
+                "add",
+                "--quiet",
+                str(upstream),
+                "Integration/Sources/External",
+            )
+            write(
+                repository / ".gitignore",
+                "__pycache__/\n*.ignored\n**/ignored.fsh\n",
+            )
+            tracked_script = repository / "Scripts/tracked.py"
+            write(tracked_script, "VALUE = 1\n")
+            write(repository / "Conformance/corpora/case.json", "{}\n")
+            write(repository / "guide/ig.ini", "[IG]\n")
+            write(repository / "guide/sushi-config.yaml", "id: example\n")
+            write(repository / "guide/input/fsh/profile.fsh", "Profile: Example\n")
+            git(repository, "add", ".")
+            git(repository, "commit", "--quiet", "-m", "Fixture")
+
+            manifest = {
+                "trackedInputs": [
+                    ".gitignore",
+                    ".gitmodules",
+                    "Scripts/tracked.py",
+                ],
+                "trackedInputRoots": ["Scripts"],
+                "guides": [{"id": "guide", "source": "guide"}],
+                "corpora": [
+                    {
+                        "id": "corpus",
+                        "root": "Conformance/corpora",
+                    }
+                ],
+                "implementations": [
+                    {
+                        "id": "implementation",
+                        "source": "external",
+                        "provenance": {
+                            "resolvedPackages": [
+                                {"manifest": "Project/Package.resolved"}
+                            ]
+                        },
+                    }
+                ],
+            }
+            integration = {
+                "schemaVersion": 3,
+                "sources": [
+                    {
+                        "id": "external",
+                        "path": "Integration/Sources/External",
+                        "commit": source_commit,
+                    }
+                ],
+                "proposals": [],
+            }
+
+            expected = {
+                ".gitignore",
+                ".gitmodules",
+                "Conformance/corpora/case.json",
+                "Integration/Sources/External/Project/Package.resolved",
+                "Scripts/tracked.py",
+                "guide/ig.ini",
+                "guide/input/fsh/profile.fsh",
+                "guide/sushi-config.yaml",
+            }
+            actual = {
+                path.relative_to(repository).as_posix()
+                for path in EVIDENCE.collect_input_paths(
+                    repository, manifest, integration
+                )
+            }
+            self.assertEqual(actual, expected)
+
+            python_cache = repository / "Scripts/__pycache__/tracked.cpython-313.pyc"
+            write(python_cache, "derived cache bytes")
+            with self.assertRaisesRegex(
+                EVIDENCE.EvidenceError, "untracked-or-ignored"
+            ):
+                EVIDENCE.collect_input_paths(repository, manifest, integration)
+            python_cache.unlink()
+
+            extras = (
+                ("Scripts/untracked.py", "untracked script"),
+                ("Scripts/local.ignored", "ignored script input"),
+                ("Conformance/corpora/untracked.json", "untracked corpus"),
+                ("Conformance/corpora/local.ignored", "ignored corpus"),
+                ("guide/input/fsh/untracked.fsh", "untracked guide FSH"),
+                ("guide/input/fsh/ignored.fsh", "ignored guide FSH"),
+            )
+            for relative, label in extras:
+                extra = repository / relative
+                write(extra, "unexpected\n")
+                with self.subTest(label=label), self.assertRaisesRegex(
+                    EVIDENCE.EvidenceError, "untracked-or-ignored"
+                ):
+                    EVIDENCE.collect_input_paths(repository, manifest, integration)
+                extra.unlink()
+
+            guide_link = repository / "guide/input/fsh/linked.fsh"
+            guide_link.symlink_to("profile.fsh")
+            with self.assertRaisesRegex(
+                EVIDENCE.EvidenceError, "symlink|non-regular"
+            ):
+                EVIDENCE.collect_input_paths(repository, manifest, integration)
+            guide_link.unlink()
+
+            checked_out_manifest = (
+                repository
+                / "Integration/Sources/External/Project/Package.resolved"
+            )
+            checked_out_manifest.write_text('{"version":2}\n', encoding="utf-8")
+            with self.assertRaisesRegex(
+                EVIDENCE.EvidenceError, "resolved package manifest working-tree bytes"
+            ):
+                EVIDENCE.collect_input_paths(repository, manifest, integration)
+            checked_out_manifest.write_text('{"version":1}\n', encoding="utf-8")
+
+            checked_out_manifest.write_text('{"version":2}\n', encoding="utf-8")
+            git(
+                repository / "Integration/Sources/External",
+                "add",
+                "Project/Package.resolved",
+            )
+            with self.assertRaisesRegex(
+                EVIDENCE.EvidenceError, "not exact in the pinned source index"
+            ):
+                EVIDENCE.collect_input_paths(repository, manifest, integration)
+            git(
+                repository / "Integration/Sources/External",
+                "reset",
+                "--quiet",
+                "HEAD",
+                "--",
+                "Project/Package.resolved",
+            )
+            checked_out_manifest.write_text('{"version":1}\n', encoding="utf-8")
+
+            source_checkout = repository / "Integration/Sources/External"
+            checked_out_manifest.write_text('{"version":2}\n', encoding="utf-8")
+            git(source_checkout, "add", "Project/Package.resolved")
+            git(source_checkout, "config", "user.name", "Conformance Test")
+            git(source_checkout, "config", "user.email", "test@example.org")
+            git(source_checkout, "config", "commit.gpgsign", "false")
+            git(source_checkout, "commit", "--quiet", "-m", "Wrong checkout")
+            with self.assertRaisesRegex(
+                EVIDENCE.EvidenceError, "checkout HEAD does not match"
+            ):
+                EVIDENCE.collect_input_paths(repository, manifest, integration)
+            git(source_checkout, "checkout", "--quiet", "--detach", source_commit)
+
+            tracked_script.write_text("VALUE = 2\n", encoding="utf-8")
+            with self.assertRaisesRegex(
+                EVIDENCE.EvidenceError, "working-tree bytes"
+            ):
+                EVIDENCE.collect_input_paths(repository, manifest, integration)
+            tracked_script.write_text("VALUE = 1\n", encoding="utf-8")
+
+            tracked_script.chmod(0o755)
+            with self.assertRaisesRegex(
+                EVIDENCE.EvidenceError, "working-tree mode"
+            ):
+                EVIDENCE.collect_input_paths(repository, manifest, integration)
+            tracked_script.chmod(0o644)
+
+            tracked_script.write_text("VALUE = 3\n", encoding="utf-8")
+            git(repository, "add", "Scripts/tracked.py")
+            with self.assertRaisesRegex(EVIDENCE.EvidenceError, "Git index"):
+                EVIDENCE.collect_input_paths(repository, manifest, integration)
+
     def test_downloaded_package_identity_ignores_non_fhir_json_but_rejects_links(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -199,6 +417,59 @@ class ConformanceEvidenceTests(unittest.TestCase):
         self.assertEqual(
             jekyll["lockfileSha256"], EVIDENCE.sha256_file(ROOT / "Gemfile.lock")
         )
+
+    def test_bundler_runtime_version_accepts_only_exact_cli_forms(self) -> None:
+        toolchain = json.loads((ROOT / "Conformance/toolchain.json").read_text())
+
+        def collect(bundler_output: str) -> list[dict[str, object]]:
+            runtimes = toolchain["runtimes"]
+            outputs = {
+                "node": f"v{runtimes['node']['version']}",
+                "npm": runtimes["npm"]["version"],
+                "python": f"Python {runtimes['python']['version']}",
+                "ruby": f"ruby {runtimes['ruby']['version']} (revision exact)",
+                "bundler": bundler_output,
+                "java": (
+                    f"    java.runtime.version = {runtimes['java']['version']}\n"
+                    "    java.vendor = Eclipse Adoptium"
+                ),
+            }
+
+            def command_output(
+                _command: list[str], label: str, **_kwargs: object
+            ) -> str:
+                return outputs[label]
+
+            with patch.object(EVIDENCE, "_command_output", side_effect=command_output):
+                return EVIDENCE.collect_runtime_environment(toolchain)
+
+        for output in ("4.0.16", "Bundler version 4.0.16"):
+            with self.subTest(output=output):
+                bundler = next(
+                    item for item in collect(output) if item["id"] == "bundler"
+                )
+                self.assertEqual(bundler["version"], "4.0.16")
+
+        rejected = (
+            "v4.0.16",
+            "bundler 4.0.16",
+            "Bundler version 4.0.16 extra",
+            "4.0.16-beta",
+            "4",
+            "4.0.16.",
+            " 4.0.16",
+            "4.0.16 ",
+            "\x1b[32m4.0.16\x1b[0m",
+            "4.0.16\nBundler version 4.0.16",
+            "Bundler version 4.0.16\n4.0.16",
+        )
+        for output in rejected:
+            with self.subTest(output=output):
+                with self.assertRaisesRegex(
+                    EVIDENCE.EvidenceError,
+                    "unable to parse bundler runtime version",
+                ):
+                    collect(output)
 
     def test_archive_is_byte_deterministic_and_metadata_closed(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -753,6 +1024,51 @@ class ConformanceEvidenceTests(unittest.TestCase):
             self.assertTrue(
                 (evidence_root / "reports/domain-fhir-validation.json").is_file()
             )
+            base_input_closure = locked[0]["inputClosureSha256"]
+            questionnaire_inputs = (
+                "questionnaire/input/fsh/profiles.fsh",
+                "questionnaire/fixtures/validator/cases.json",
+                "questionnaire/fixtures/pairs/cases.json",
+            )
+            for index, path in enumerate(questionnaire_inputs, start=4):
+                first_inputs = inputs + [
+                    {
+                        "path": path,
+                        "sha256": str(index) * 64,
+                        "size": index,
+                    }
+                ]
+                first = EVIDENCE.collect_validation_reports(
+                    repository,
+                    evidence_root,
+                    manifest,
+                    first_inputs,
+                    tools,
+                    packages,
+                    external,
+                    {"domain-fhir-validation": source.resolve()},
+                    copy_reports=True,
+                )
+                self.assertNotEqual(
+                    first[0]["inputClosureSha256"], base_input_closure
+                )
+                changed_inputs = copy.deepcopy(first_inputs)
+                changed_inputs[-1]["sha256"] = "f" * 64
+                changed = EVIDENCE.collect_validation_reports(
+                    repository,
+                    evidence_root,
+                    manifest,
+                    changed_inputs,
+                    tools,
+                    packages,
+                    external,
+                    {"domain-fhir-validation": source.resolve()},
+                    copy_reports=True,
+                )
+                self.assertNotEqual(
+                    changed[0]["inputClosureSha256"],
+                    first[0]["inputClosureSha256"],
+                )
             report["externalEvidence"]["sets"][1]["expectedErrorCount"] = True
             source.write_bytes(canonical_json_bytes(report))
             with self.assertRaisesRegex(
@@ -820,6 +1136,403 @@ class ConformanceEvidenceTests(unittest.TestCase):
                     {"domain-fhir-validation": source.resolve()},
                     copy_reports=True,
                 )
+
+    def test_implementation_profile_claims_are_owned_and_producer_only(self) -> None:
+        manifest = json.loads((ROOT / "Conformance/evidence.json").read_text())
+        EVIDENCE.validate_implementation_profile_claims(manifest)
+
+        consumer_claim = copy.deepcopy(manifest)
+        firebase = next(
+            item
+            for item in consumer_claim["implementations"]
+            if item["id"] == "my-heart-counts-firebase"
+        )
+        firebase["packages"] = ["mobile"]
+        with self.assertRaisesRegex(EVIDENCE.EvidenceError, "non-producer"):
+            EVIDENCE.validate_implementation_profile_claims(consumer_claim)
+
+        unowned_claim = copy.deepcopy(manifest)
+        android = next(
+            item
+            for item in unowned_claim["implementations"]
+            if item["id"] == "my-heart-counts-android"
+        )
+        android["profiles"].append("https://example.org/StructureDefinition/unowned")
+        with self.assertRaisesRegex(EVIDENCE.EvidenceError, "unowned"):
+            EVIDENCE.validate_implementation_profile_claims(unowned_claim)
+
+        missing_owner = copy.deepcopy(manifest)
+        grove = next(
+            item
+            for item in missing_owner["implementations"]
+            if item["id"] == "grove-healthkit"
+        )
+        grove["packages"].remove("healthkit")
+        with self.assertRaisesRegex(EVIDENCE.EvidenceError, "owners are not exact"):
+            EVIDENCE.validate_implementation_profile_claims(missing_owner)
+
+    def test_manifest_has_the_reviewed_producer_profile_closures(self) -> None:
+        manifest = json.loads((ROOT / "Conformance/evidence.json").read_text())
+        implementations = {
+            item["id"]: item for item in manifest["implementations"]
+        }
+        mobile = [
+            "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-application-device",
+            "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-conversion-provenance",
+            "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-observation",
+            "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-mobile-step-count",
+            "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-recording-device",
+            "https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/StructureDefinition/grove-recording-method",
+        ]
+        grove = implementations["grove-healthkit"]
+        self.assertEqual(grove["direction"], "produce")
+        self.assertEqual(grove["packages"], ["mobile", "healthkit"])
+        self.assertEqual(
+            grove["profiles"],
+            mobile
+            + [
+                "https://schmiedmayerlab.github.io/grove-fhir/fhir/healthkit/StructureDefinition/healthkit-observation"
+            ],
+        )
+        self.assertIn("historical decoding is evidenced separately", grove["purpose"])
+        android = implementations["my-heart-counts-android"]
+        self.assertEqual(android["packages"], ["mobile", "health-connect"])
+        self.assertEqual(
+            android["profiles"],
+            mobile
+            + [
+                "https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/StructureDefinition/health-connect-conversion-provenance",
+                "https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect/StructureDefinition/health-connect-observation",
+            ],
+        )
+        firebase = implementations["my-heart-counts-firebase"]
+        self.assertEqual(firebase["direction"], "consume")
+        self.assertEqual(firebase["packages"], [])
+        self.assertEqual(firebase["profiles"], [])
+
+    def test_generated_fhir_profile_coverage_is_exact_and_inherited(self) -> None:
+        mobile_canonical = "https://example.org/fhir/mobile"
+        adapter_canonical = "https://example.org/fhir/adapter"
+        base = f"{mobile_canonical}/StructureDefinition/mobile-observation"
+        extension = f"{mobile_canonical}/StructureDefinition/recording-method"
+        child = f"{adapter_canonical}/StructureDefinition/adapter-observation"
+
+        def definition(
+            canonical: str, resource_type: str, base_definition: str
+        ) -> dict[str, object]:
+            return {
+                "resourceType": "StructureDefinition",
+                "url": canonical,
+                "version": "1.0.0",
+                "type": resource_type,
+                "baseDefinition": base_definition,
+            }
+
+        manifest = {
+            "guides": [
+                {
+                    "id": "mobile",
+                    "packageId": "org.example.mobile",
+                    "version": "1.0.0",
+                    "canonical": mobile_canonical,
+                    "structureDefinitions": [base, extension],
+                },
+                {
+                    "id": "adapter",
+                    "packageId": "org.example.adapter",
+                    "version": "1.0.0",
+                    "canonical": adapter_canonical,
+                    "structureDefinitions": [child],
+                },
+            ],
+            "implementations": [
+                {
+                    "id": "producer",
+                    "direction": "produce",
+                    "packages": ["mobile", "adapter"],
+                    "profiles": [base, extension, child],
+                },
+                {
+                    "id": "consumer",
+                    "direction": "consume",
+                    "packages": [],
+                    "profiles": [],
+                },
+            ],
+        }
+        packages = [
+            {"id": "mobile", "semanticSnapshot": "snapshots/mobile.json"},
+            {"id": "adapter", "semanticSnapshot": "snapshots/adapter.json"},
+        ]
+        external = [
+            {
+                "id": "producer-resources",
+                "implementation": "producer",
+                "path": "implementations/producer/producer-resources",
+                "files": [{"path": "observation.json", "format": "fhir-json"}],
+            }
+        ]
+        resource = {
+            "resourceType": "Observation",
+            "meta": {"profile": [f"{child}|1.0.0"]},
+            "extension": [{"url": extension, "valueString": "automatic"}],
+        }
+
+        def snapshot(
+            package_id: str,
+            canonical: str,
+            definitions: dict[str, dict[str, object]],
+        ) -> dict[str, object]:
+            return {
+                "package": {
+                    "name": package_id,
+                    "version": "1.0.0",
+                    "canonical": canonical,
+                },
+                "structureDefinitions": {
+                    url: {"resource": value} for url, value in definitions.items()
+                },
+            }
+
+        with tempfile.TemporaryDirectory() as directory:
+            evidence_root = Path(directory)
+            mobile_snapshot = snapshot(
+                "org.example.mobile",
+                mobile_canonical,
+                {
+                    base: definition(
+                        base,
+                        "Observation",
+                        "http://hl7.org/fhir/StructureDefinition/Observation",
+                    ),
+                    extension: definition(
+                        extension,
+                        "Extension",
+                        "http://hl7.org/fhir/StructureDefinition/Extension",
+                    ),
+                },
+            )
+            adapter_snapshot = snapshot(
+                "org.example.adapter",
+                adapter_canonical,
+                {child: definition(child, "Observation", f"{base}|1.0.0")},
+            )
+            self._json(evidence_root / "snapshots/mobile.json", mobile_snapshot)
+            self._json(evidence_root / "snapshots/adapter.json", adapter_snapshot)
+            resource_path = (
+                evidence_root
+                / "implementations/producer/producer-resources/observation.json"
+            )
+            self._json(resource_path, resource)
+
+            EVIDENCE.validate_implementation_profile_coverage(
+                evidence_root, manifest, packages, external
+            )
+
+            missing_base = copy.deepcopy(manifest)
+            missing_base["implementations"][0]["profiles"].remove(base)
+            with self.assertRaisesRegex(EVIDENCE.EvidenceError, "undeclared"):
+                EVIDENCE.validate_implementation_profile_coverage(
+                    evidence_root, missing_base, packages, external
+                )
+
+            missing_extension_claim = copy.deepcopy(manifest)
+            missing_extension_claim["implementations"][0]["profiles"].remove(extension)
+            with self.assertRaisesRegex(EVIDENCE.EvidenceError, "undeclared"):
+                EVIDENCE.validate_implementation_profile_coverage(
+                    evidence_root, missing_extension_claim, packages, external
+                )
+
+            no_extension_resource = copy.deepcopy(resource)
+            no_extension_resource.pop("extension")
+            self._json(resource_path, no_extension_resource)
+            with self.assertRaisesRegex(EVIDENCE.EvidenceError, "unexercised"):
+                EVIDENCE.validate_implementation_profile_coverage(
+                    evidence_root, manifest, packages, external
+                )
+
+            wrong_resource_type = copy.deepcopy(resource)
+            wrong_resource_type["resourceType"] = "Patient"
+            self._json(resource_path, wrong_resource_type)
+            with self.assertRaisesRegex(EVIDENCE.EvidenceError, "expected 'Observation'"):
+                EVIDENCE.validate_implementation_profile_coverage(
+                    evidence_root, manifest, packages, external
+                )
+
+            wrong_profile_version = copy.deepcopy(resource)
+            wrong_profile_version["meta"]["profile"] = [f"{child}|9.9.9"]
+            self._json(resource_path, wrong_profile_version)
+            with self.assertRaisesRegex(EVIDENCE.EvidenceError, "version '9.9.9'"):
+                EVIDENCE.validate_implementation_profile_coverage(
+                    evidence_root, manifest, packages, external
+                )
+
+            profile_fragment = copy.deepcopy(resource)
+            profile_fragment["meta"]["profile"] = [f"{child}#other"]
+            self._json(resource_path, profile_fragment)
+            with self.assertRaisesRegex(EVIDENCE.EvidenceError, "undefined owned"):
+                EVIDENCE.validate_implementation_profile_coverage(
+                    evidence_root, manifest, packages, external
+                )
+
+            altered_extension = copy.deepcopy(resource)
+            altered_extension["extension"][0]["url"] = f"{extension}|1.0.0"
+            self._json(resource_path, altered_extension)
+            with self.assertRaisesRegex(EVIDENCE.EvidenceError, "undefined owned"):
+                EVIDENCE.validate_implementation_profile_coverage(
+                    evidence_root, manifest, packages, external
+                )
+
+            undefined_profile = copy.deepcopy(resource)
+            undefined_profile["meta"]["profile"].append(
+                f"{mobile_canonical}/StructureDefinition/not-declared"
+            )
+            self._json(resource_path, undefined_profile)
+            with self.assertRaisesRegex(EVIDENCE.EvidenceError, "undefined owned"):
+                EVIDENCE.validate_implementation_profile_coverage(
+                    evidence_root, manifest, packages, external
+                )
+
+            self._json(resource_path, resource)
+            missing_owned_base = copy.deepcopy(adapter_snapshot)
+            missing_owned_base["structureDefinitions"][child]["resource"][
+                "baseDefinition"
+            ] = f"{mobile_canonical}/StructureDefinition/not-declared"
+            self._json(
+                evidence_root / "snapshots/adapter.json", missing_owned_base
+            )
+            with self.assertRaisesRegex(EVIDENCE.EvidenceError, "unresolved owned"):
+                EVIDENCE.validate_implementation_profile_coverage(
+                    evidence_root, manifest, packages, external
+                )
+
+            wrong_base_version = copy.deepcopy(adapter_snapshot)
+            wrong_base_version["structureDefinitions"][child]["resource"][
+                "baseDefinition"
+            ] = f"{base}|9.9.9"
+            self._json(
+                evidence_root / "snapshots/adapter.json", wrong_base_version
+            )
+            with self.assertRaisesRegex(EVIDENCE.EvidenceError, "version '9.9.9'"):
+                EVIDENCE.validate_implementation_profile_coverage(
+                    evidence_root, manifest, packages, external
+                )
+
+            self._json(evidence_root / "snapshots/adapter.json", adapter_snapshot)
+            cyclic_mobile = copy.deepcopy(mobile_snapshot)
+            cyclic_mobile["structureDefinitions"][base]["resource"][
+                "baseDefinition"
+            ] = child
+            self._json(evidence_root / "snapshots/mobile.json", cyclic_mobile)
+            with self.assertRaisesRegex(EVIDENCE.EvidenceError, "cycle"):
+                EVIDENCE.validate_implementation_profile_coverage(
+                    evidence_root, manifest, packages, external
+                )
+
+    def test_profile_coverage_gate_runs_during_build_and_replay(self) -> None:
+        manifest = {
+            "toolchain": "Conformance/toolchain.json",
+            "semanticBaseline": "Conformance/semantic-baseline.json",
+            "integrationSources": "Integration/sources.json",
+            "pathMatrix": [],
+            "pathMatrixIgnored": [],
+        }
+        packages = [{"id": "mobile", "inputMode": "declared"}]
+        external = [{"id": "producer-resources"}]
+        with tempfile.TemporaryDirectory() as directory:
+            repository = Path(directory) / "repository"
+            evidence_root = Path(directory) / "evidence"
+            repository.mkdir()
+            evidence_root.mkdir()
+            with (
+                patch.object(EVIDENCE, "collect_inputs", return_value=[]),
+                patch.object(EVIDENCE, "collect_runtime_environment", return_value=[]),
+                patch.object(EVIDENCE, "collect_language_packages", return_value=[]),
+                patch.object(EVIDENCE, "collect_tool_artifacts", return_value=[]),
+                patch.object(EVIDENCE, "collect_proposals", return_value=[]),
+                patch.object(EVIDENCE, "collect_gitlinks", return_value=[]),
+                patch.object(EVIDENCE, "collect_resolved_packages", return_value=[]),
+                patch.object(EVIDENCE, "_write_supporting_evidence"),
+                patch.object(EVIDENCE, "collect_packages", return_value=packages),
+                patch.object(EVIDENCE, "collect_semantic_evidence", return_value={}),
+                patch.object(EVIDENCE, "collect_external_evidence", return_value=external),
+                patch.object(EVIDENCE, "collect_validation_reports", return_value=[]),
+                patch.object(EVIDENCE, "collect_corpora", return_value=[]),
+                patch.object(EVIDENCE, "output_file_records", return_value=[]),
+                patch.object(EVIDENCE, "_toolchain_transitive_hash", return_value="hash"),
+                patch.object(EVIDENCE, "validate_implementation_profile_coverage") as gate,
+            ):
+                EVIDENCE.build_lock(
+                    repository,
+                    evidence_root,
+                    manifest,
+                    {},
+                    {},
+                    REVISION,
+                    EPOCH,
+                    EVIDENCE.ZERO_COMMIT,
+                )
+            gate.assert_called_once_with(
+                evidence_root, manifest, packages, external
+            )
+
+            self._json(repository / "Conformance/evidence.json", manifest)
+            self._json(repository / "Conformance/toolchain.json", {})
+            self._json(repository / "Conformance/semantic-baseline.json", {})
+            self._json(repository / "Integration/sources.json", {})
+            self._json(repository / "package.json", {})
+            lock = {
+                "sourceRevision": REVISION,
+                "sourceDateEpoch": EPOCH,
+                "inputs": [],
+                "runtimes": [],
+                "runtimeTransitiveSha256": EVIDENCE.semantic_sha256([]),
+                "languagePackages": [],
+                "languagePackagesTransitiveSha256": EVIDENCE.semantic_sha256([]),
+                "toolArtifacts": [],
+                "toolArtifactsTransitiveSha256": EVIDENCE.semantic_sha256([]),
+                "toolchainTransitiveSha256": "hash",
+                "pathMatrixSha256": EVIDENCE.semantic_sha256(
+                    {"pathMatrix": [], "pathMatrixIgnored": []}
+                ),
+                "proposals": [],
+                "gitlinks": [],
+                "resolvedPackages": [],
+                "externalEvidence": external,
+                "packages": packages,
+            }
+            lock["lockDigest"] = EVIDENCE.semantic_sha256(lock)
+            self._json(evidence_root / EVIDENCE.LOCK_FILENAME, lock)
+            with (
+                patch.object(EVIDENCE, "validate_toolchain"),
+                patch.object(EVIDENCE, "validate_manifest_semantics"),
+                patch.object(EVIDENCE, "git_revision", return_value=REVISION),
+                patch.object(EVIDENCE, "git_commit_epoch", return_value=EPOCH),
+                patch.object(EVIDENCE, "collect_inputs", return_value=[]),
+                patch.object(EVIDENCE, "collect_runtime_environment", return_value=[]),
+                patch.object(EVIDENCE, "collect_language_packages", return_value=[]),
+                patch.object(EVIDENCE, "collect_tool_artifacts", return_value=[]),
+                patch.object(EVIDENCE, "_toolchain_transitive_hash", return_value="hash"),
+                patch.object(EVIDENCE, "collect_proposals", return_value=[]),
+                patch.object(EVIDENCE, "collect_gitlinks", return_value=[]),
+                patch.object(EVIDENCE, "collect_resolved_packages", return_value=[]),
+                patch.object(EVIDENCE, "collect_external_evidence", return_value=external),
+                patch.object(EVIDENCE, "collect_packages", return_value=copy.deepcopy(packages)),
+                patch.object(
+                    EVIDENCE,
+                    "validate_implementation_profile_coverage",
+                    side_effect=EVIDENCE.EvidenceError("profile replay gate reached"),
+                ) as replay_gate,
+            ):
+                failures = EVIDENCE.verify_evidence(
+                    repository,
+                    repository / "Conformance/evidence.json",
+                    repository / "Conformance/evidence.schema.json",
+                    evidence_root,
+                    validate_schema=False,
+                )
+            self.assertEqual(failures, ["profile replay gate reached"])
+            replay_gate.assert_called_once()
 
     def test_composed_attestation_uses_the_final_producer_proposal(self) -> None:
         evidence_set = {

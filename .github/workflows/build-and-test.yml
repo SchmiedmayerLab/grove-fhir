@@ -23,6 +23,9 @@ permissions:
 
 env:
   EVIDENCE_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+  # Evidence inputs are an exact HEAD/index/worktree set. Keep Python's ignored
+  # bytecode caches out of every fresh job so they cannot execute outside that set.
+  PYTHONDONTWRITEBYTECODE: "1"
   # Exact source materialization never needs large screenshot blobs. Keeping the
   # tracked LFS pointers also lets the hermetic Git check avoid executing an
   # inherited filter process while it proves that each checkout is unchanged.

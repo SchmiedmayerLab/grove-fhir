@@ -45,6 +45,7 @@ those platform fragments). Then, from a clean checkout, build the guides and gen
 the locked domain report with the complete inventory:
 
 ```console
+export PYTHONDONTWRITEBYTECODE=1
 npm ci
 npm run schema:validate
 npm run pages:build
@@ -88,6 +89,15 @@ machine-specific paths and timings; the path-free domain report independently va
 every declared FHIR resource. The current-reader attestation is owned by a distinct
 reader implementation at the same Grove source commit.
 
+Implementation `packages` and `profiles` are producer claims, not a list of contracts
+that a structural consumer happens to receive. `consume` and `reference` entries keep
+both arrays empty. For `produce` and `round-trip` entries, `profiles` is the exact set
+of owned StructureDefinitions exercised by emitted `meta.profile` assertions, owned
+Extension URLs, and their transitive owned `baseDefinition` chain; `packages` is
+exactly the set of guides that owns those definitions. Both evidence build and replay
+derive that closure from the locked semantic package snapshots and exact generated
+FHIR bytes and fail on a missing, extra, mistyped, or unexercised claim.
+
 Accepted-contract FHIR sets are validated against the complete accepted guide-package
 closure. Historical-writer and legacy-candidate sets instead run in a separate core-R4
 Validator invocation: their retired extension trees remain exact evidence rather than
@@ -96,6 +106,15 @@ unknown extension by file, FHIR expression, URL, and value field. The gate requi
 resource shape and the Validator's `Extension_EXT_Unknown_NotHere` errors to match that
 declaration one-to-one; a missing, extra, moved, renamed, or differently represented
 extension, or any other error, fails validation.
+
+The live-FSH coverage inventory follows the same ownership boundary. Mobile,
+HealthKit, and Health Connect point directly to their domain manifests. Questionnaire
+instead references the existing `questionnaire-validator` and `questionnaire-pairs`
+corpora by ID and `questionnaire` ownership, so the evidence layer inventories its two
+profiles, named invariants, computable rules, and exact case boundaries without
+duplicating the Questionnaire package's fixtures. Multiline `contains` rules retain
+their parent FSH path in the inventory key, preventing identical slice names in
+different contexts from collapsing into one rule.
 
 For an intentionally supplied package, `build` accepts one or more
 `--package GUIDE=PATH` options. The package must have the declared identity, version,
@@ -131,6 +150,14 @@ separate provenance facts.
 
 JSON is encoded canonically and parsed without duplicate keys, non-finite values, or
 decimal precision loss. Fixture corpora and Conformance inputs are hashed recursively.
+Source inputs are first enumerated from the stage-zero Git index and required to match
+the attributed HEAD tree and working-tree bytes and modes exactly. Declared input,
+guide, and corpus roots reject every untracked, ignored, symlink, or other non-regular
+extra; fresh CI jobs disable Python bytecode-cache writes so ignored `__pycache__`
+content cannot enter or execute outside that closure. Resolved-package manifests inside
+gitlinks are checked against the exact pinned submodule commit rather than trusted from
+the submodule working tree. Externally generated evidence remains a separate,
+allowlisted and attested byte closure.
 FHIR package snapshots retain authored conformance semantics and examples while
 normalizing only documented Publisher build noise. The evidence archive uses sorted
 regular files, fixed ownership and modes, and the exact source commit epoch for every

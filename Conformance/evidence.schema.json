@@ -348,11 +348,13 @@
         },
         "direction": {"enum": ["produce", "consume", "round-trip", "reference"]},
         "packages": {
+          "description": "For produce and round-trip evidence only, the exact set of guides owning the exercised StructureDefinition closure; consume and reference entries must be empty.",
           "type": "array",
           "uniqueItems": true,
           "items": {"$ref": "#/$defs/identifier"}
         },
         "profiles": {
+          "description": "For produce and round-trip evidence only, the exact owned StructureDefinition closure exercised through meta.profile, owned Extension URLs, and transitive owned baseDefinition links; consume and reference entries must be empty.",
           "type": "array",
           "uniqueItems": true,
           "items": {"$ref": "#/$defs/httpsUrl"}

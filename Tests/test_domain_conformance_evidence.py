@@ -62,7 +62,51 @@ class DomainCorpusTests(unittest.TestCase):
         referenced = {item["id"]: item for item in index["referencedCorpora"]}
         self.assertEqual(set(referenced), {"questionnaire-validator", "questionnaire-pairs"})
         self.assertTrue(all(item["ownership"] == "questionnaire" for item in referenced.values()))
+        self.assertEqual(
+            referenced["questionnaire-validator"]["validatorExpectations"],
+            "questionnaire/fixtures/validator/validator-expectations.json",
+        )
         self.assertFalse((ROOT / "Conformance/corpora/questionnaire").exists())
+
+    def test_referenced_corpus_paths_reject_escape_and_symlink_components(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory).resolve()
+            corpus = root / "questionnaire/fixtures/validator"
+            corpus.mkdir(parents=True)
+            witness = corpus / "valid.json"
+            witness.write_text("{}\n", encoding="utf-8")
+            manifest = corpus / "cases.json"
+            manifest.write_text("{}\n", encoding="utf-8")
+            outside = root / "outside.json"
+            outside.write_text("{}\n", encoding="utf-8")
+            (corpus / "linked").symlink_to(root, target_is_directory=True)
+            (root / "manifest-link").symlink_to(corpus, target_is_directory=True)
+
+            with mock.patch.object(DOMAIN, "ROOT", root):
+                self.assertEqual(
+                    DOMAIN.resolve_corpus_relative_path(
+                        corpus, "valid.json", "referenced witness"
+                    ),
+                    witness,
+                )
+                with self.assertRaisesRegex(
+                    DOMAIN.DomainValidationError, "safe relative POSIX path"
+                ):
+                    DOMAIN.resolve_corpus_relative_path(
+                        corpus, "../outside.json", "referenced witness"
+                    )
+                with self.assertRaisesRegex(
+                    DOMAIN.DomainValidationError, "may not traverse a symlink"
+                ):
+                    DOMAIN.resolve_corpus_relative_path(
+                        corpus, "linked/outside.json", "referenced witness"
+                    )
+                with self.assertRaisesRegex(
+                    DOMAIN.DomainValidationError, "may not traverse a symlink"
+                ):
+                    DOMAIN.resolve_repository_path(
+                        "manifest-link/cases.json", "referenced manifest"
+                    )
 
     def test_live_fsh_parser_finds_known_definitions_invariants_and_rules(self) -> None:
         definitions, invariants, rules = DOMAIN.fsh_inventory(
@@ -79,16 +123,45 @@ class DomainCorpusTests(unittest.TestCase):
         self.assertEqual(len(invariants), 5)
         self.assertEqual(len(rules), 58)
 
+        questionnaire_definitions, questionnaire_invariants, questionnaire_rules = (
+            DOMAIN.fsh_inventory([ROOT / "questionnaire/input/fsh/profiles.fsh"])
+        )
+        self.assertEqual(
+            questionnaire_definitions,
+            {
+                "GroveQuestionnaire": "grove-questionnaire",
+                "GroveQuestionnaireResponse": "grove-questionnaire-response",
+            },
+        )
+        self.assertIn("qg-item-text-1", questionnaire_invariants)
+        self.assertIn(
+            "Profile:GroveQuestionnaire|* extension contains >> "
+            "$targetConstraint named targetConstraint 0..* MS",
+            questionnaire_rules,
+        )
+        self.assertIn(
+            "Profile:GroveQuestionnaire|* item.extension contains >> "
+            "$targetConstraint named targetConstraint 0..* MS and",
+            questionnaire_rules,
+        )
+        self.assertEqual(len(questionnaire_invariants), 22)
+        self.assertEqual(len(questionnaire_rules), 53)
+
     def test_live_coverage_inventory_is_complete(self) -> None:
         index = DOMAIN.load_json(ROOT / "Conformance/corpora/index.json", "index")
         reports = DOMAIN.validate_domain_coverage(
             ROOT / "Conformance/corpora/coverage.json",
             DOMAIN.unique_by_id(index["domainCorpora"], "corpora"),
             "6.10.2",
+            DOMAIN.unique_by_id(index["referencedCorpora"], "referenced corpora"),
         )
-        self.assertEqual(sum(item["structureDefinitionCount"] for item in reports), 9)
-        self.assertEqual(sum(item["invariantCount"] for item in reports), 10)
-        self.assertEqual(sum(item["computableRuleCount"] for item in reports), 92)
+        self.assertEqual(
+            [item["id"] for item in reports],
+            ["health-connect", "healthkit", "mobile", "questionnaire"],
+        )
+        self.assertEqual(sum(item["structureDefinitionCount"] for item in reports), 11)
+        self.assertEqual(sum(item["invariantCount"] for item in reports), 32)
+        self.assertEqual(sum(item["computableRuleCount"] for item in reports), 145)
         self.assertEqual(sum(item["validatorLimitationCount"] for item in reports), 1)
 
     def test_effective_choice_limitation_has_an_effective_custom_witness(self) -> None:

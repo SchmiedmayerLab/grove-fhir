@@ -25,6 +25,7 @@
     {
       "id": "questionnaire-validator",
       "manifest": "questionnaire/fixtures/validator/cases.json",
+      "validatorExpectations": "questionnaire/fixtures/validator/validator-expectations.json",
       "ownership": "questionnaire"
     },
     {
