@@ -1,0 +1,85 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "validator-questionnaire-expressions",
+  "meta": {
+    "profile": [
+      "https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire"
+    ]
+  },
+  "extension": [
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/artifact-versionAlgorithm",
+      "valueCoding": {
+        "system": "http://hl7.org/fhir/version-algorithm",
+        "code": "semver"
+      }
+    },
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/variable",
+      "valueExpression": {
+        "name": "answerCount",
+        "language": "text/fhirpath",
+        "expression": "%resource.item.count()"
+      }
+    },
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/targetConstraint",
+      "extension": [
+        {"url": "key", "valueId": "question-present"},
+        {"url": "severity", "valueCode": "error"},
+        {
+          "url": "expression",
+          "valueExpression": {
+            "language": "text/fhirpath",
+            "expression": "%resource.repeat(item | answer.item).where(linkId = 'comment').exists()"
+          }
+        },
+        {"url": "human", "valueString": "The comment question must be present."}
+      ]
+    }
+  ],
+  "url": "https://example.org/fhir/Questionnaire/validator-questionnaire-expressions",
+  "version": "1.0.0",
+  "name": "ValidatorQuestionnaireExpressions",
+  "title": "Validator Questionnaire Expressions",
+  "status": "active",
+  "item": [
+    {
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/variable",
+          "valueExpression": {
+            "name": "localAnswers",
+            "language": "text/fhirpath",
+            "expression": "%context.answers()"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+          "valueExpression": {
+            "language": "text/fhirpath",
+            "expression": "'Not supplied'"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/targetConstraint",
+          "extension": [
+            {"url": "key", "valueId": "comment-not-blank"},
+            {"url": "severity", "valueCode": "warning"},
+            {
+              "url": "expression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%resource.repeat(item | answer.item).where(linkId = 'comment').answer.value.ofType(string).all($this.trim().length() > 0)"
+              }
+            },
+            {"url": "human", "valueString": "Avoid an all-whitespace comment."}
+          ]
+        }
+      ],
+      "linkId": "comment",
+      "text": "Comment",
+      "type": "string"
+    }
+  ]
+}

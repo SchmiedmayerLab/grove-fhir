@@ -1,0 +1,164 @@
+{
+  "questionnaire": "valid/questionnaire.json",
+  "response": "valid/response.json",
+  "valueSets": ["valid/value-set.json"],
+  "additionalValidResponses": ["valid/response-in-progress.json"],
+  "invalid": [
+    {
+      "id": "pair-questionnaire-version",
+      "target": "response",
+      "expectedRule": "pair-questionnaire-canonical",
+      "mutation": {
+        "op": "replace",
+        "path": "/questionnaire",
+        "value": "https://example.org/fhir/Questionnaire/paired-questionnaire|1.1.0"
+      }
+    },
+    {
+      "id": "pair-question-child-direct-nesting",
+      "target": "response",
+      "expectedRule": "pair-item-nesting",
+      "mutation": {
+        "op": "add",
+        "path": "/item/0/item/1/item",
+        "value": [
+          {
+            "linkId": "decline-reason",
+            "text": "Why not?",
+            "answer": [{"valueString": "Wrong location"}]
+          }
+        ]
+      }
+    },
+    {
+      "id": "pair-answer-datatype",
+      "target": "response",
+      "expectedRule": "pair-answer-type",
+      "mutation": {
+        "op": "replace",
+        "path": "/item/0/item/0/answer/0",
+        "value": {"valueBoolean": true}
+      }
+    },
+    {
+      "id": "pair-inline-option-membership",
+      "target": "response",
+      "expectedRule": "pair-inline-option",
+      "mutation": {
+        "op": "replace",
+        "path": "/item/1/answer/0/valueCoding/code",
+        "value": "nausea"
+      }
+    },
+    {
+      "id": "pair-versioned-valueset-membership",
+      "target": "response",
+      "expectedRule": "pair-valueset-membership",
+      "mutation": {
+        "op": "replace",
+        "path": "/item/2/answer/0/valueCoding/code",
+        "value": "unknown"
+      }
+    },
+    {
+      "id": "pair-response-text",
+      "target": "response",
+      "expectedRule": "pair-response-text",
+      "mutation": {
+        "op": "replace",
+        "path": "/item/2/text",
+        "value": "How are you feeling?"
+      }
+    },
+    {
+      "id": "pair-nonrepeating-answer",
+      "target": "response",
+      "expectedRule": "pair-repeats",
+      "mutation": {
+        "op": "copy",
+        "from": "/item/2/answer/0",
+        "path": "/item/2/answer/-"
+      }
+    },
+    {
+      "id": "pair-answer-maximum-occurrence",
+      "target": "response",
+      "expectedRule": "pair-answer-occurrence",
+      "mutation": {
+        "op": "copy",
+        "from": "/item/1/answer/0",
+        "path": "/item/1/answer/-"
+      }
+    },
+    {
+      "id": "pair-required-completed",
+      "target": "inProgressResponse",
+      "expectedRule": "pair-required-item",
+      "mutation": {
+        "op": "replace",
+        "path": "/status",
+        "value": "completed"
+      }
+    },
+    {
+      "id": "pair-unknown-item",
+      "target": "response",
+      "expectedRule": "pair-item-unknown",
+      "mutation": {
+        "op": "add",
+        "path": "/item/-",
+        "value": {"linkId": "not-in-questionnaire", "text": "Unknown"}
+      }
+    },
+    {
+      "id": "pair-duplicate-item",
+      "target": "response",
+      "expectedRule": "pair-item-duplicate",
+      "mutation": {
+        "op": "copy",
+        "from": "/item/1",
+        "path": "/item/-"
+      }
+    },
+    {
+      "id": "pair-misplaced-item",
+      "target": "response",
+      "expectedRule": "pair-item-misplaced",
+      "mutation": {
+        "op": "add",
+        "path": "/item/-",
+        "value": {
+          "linkId": "name",
+          "text": "Name",
+          "answer": [{"valueString": "Wrong level"}]
+        }
+      }
+    },
+    {
+      "id": "pair-disabled-item",
+      "target": "response",
+      "expectedRule": "pair-item-disabled",
+      "mutation": {
+        "op": "add",
+        "path": "/item/3/answer/0/item",
+        "value": [
+          {
+            "linkId": "note",
+            "text": "Note",
+            "answer": [{"valueString": "This item is disabled."}]
+          }
+        ]
+      }
+    },
+    {
+      "id": "pair-entered-in-error",
+      "target": "response",
+      "expectedRule": "pair-response-entered-in-error",
+      "mutation": {
+        "op": "replace",
+        "path": "/status",
+        "value": "entered-in-error"
+      }
+    }
+  ]
+}

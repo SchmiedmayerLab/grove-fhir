@@ -18,7 +18,7 @@ from urllib.parse import urlparse
 
 
 ROOT = Path(__file__).resolve().parent.parent
-EXPECTED_GUIDE_SOURCES = ("mobile", "healthkit", "health-connect")
+EXPECTED_GUIDE_SOURCES = ("mobile", "healthkit", "health-connect", "questionnaire")
 MOBILE_ADAPTER_SOURCES = ("healthkit", "health-connect")
 GUIDES = tuple(ROOT / source for source in EXPECTED_GUIDE_SOURCES)
 REQUIRED_CONFIGURATION_KEYS = {"id", "canonical", "version", "fhirVersion", "license"}

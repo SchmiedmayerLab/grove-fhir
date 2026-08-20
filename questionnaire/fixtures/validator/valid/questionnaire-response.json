@@ -1,0 +1,38 @@
+{
+  "resourceType": "QuestionnaireResponse",
+  "id": "validator-questionnaire-response",
+  "meta": {
+    "profile": [
+      "https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire-response"
+    ]
+  },
+  "extension": [
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/questionnaireresponse-completionMode",
+      "valueCodeableConcept": {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ParticipationMode",
+            "code": "ELECTRONIC",
+            "display": "Electronic Data"
+          }
+        ],
+        "text": "Captured electronically"
+      }
+    }
+  ],
+  "identifier": {
+    "system": "https://example.org/questionnaire-response-id",
+    "value": "validator-response-1"
+  },
+  "questionnaire": "https://example.org/fhir/Questionnaire/validator-questionnaire|1.0.0",
+  "status": "completed",
+  "authored": "2026-08-19T12:00:00-07:00",
+  "item": [
+    {
+      "linkId": "name",
+      "text": "What is your name?",
+      "answer": [{"valueString": "Ada"}]
+    }
+  ]
+}

@@ -1,0 +1,115 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "paired-questionnaire",
+  "extension": [
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/artifact-versionAlgorithm",
+      "valueCoding": {
+        "system": "http://hl7.org/fhir/version-algorithm",
+        "code": "semver"
+      }
+    }
+  ],
+  "url": "https://example.org/fhir/Questionnaire/paired-questionnaire",
+  "version": "1.2.0",
+  "name": "PairedQuestionnaire",
+  "title": "Paired Questionnaire",
+  "status": "active",
+  "subjectType": ["Patient"],
+  "item": [
+    {
+      "linkId": "identity",
+      "text": "Identity",
+      "type": "group",
+      "item": [
+        {
+          "linkId": "name",
+          "text": "Name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "linkId": "consent",
+          "text": "Do you consent?",
+          "type": "boolean",
+          "required": true,
+          "item": [
+            {
+              "linkId": "decline-reason",
+              "text": "Why not?",
+              "type": "string",
+              "required": true,
+              "enableWhen": [
+                {
+                  "question": "consent",
+                  "operator": "=",
+                  "answerBoolean": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs",
+          "valueInteger": 1
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-maxOccurs",
+          "valueInteger": 2
+        }
+      ],
+      "linkId": "symptoms",
+      "text": "Symptoms",
+      "type": "choice",
+      "required": true,
+      "repeats": true,
+      "answerOption": [
+        {
+          "valueCoding": {
+            "system": "https://example.org/fhir/CodeSystem/symptom",
+            "code": "fatigue",
+            "display": "Fatigue"
+          }
+        },
+        {
+          "valueCoding": {
+            "system": "https://example.org/fhir/CodeSystem/symptom",
+            "code": "pain",
+            "display": "Pain"
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "mood",
+      "text": "Mood",
+      "type": "choice",
+      "required": true,
+      "answerValueSet": "https://example.org/fhir/ValueSet/mood|1.0.0"
+    },
+    {
+      "linkId": "has-note",
+      "text": "Add a note?",
+      "type": "boolean",
+      "item": [
+        {
+          "linkId": "note",
+          "text": "Note",
+          "type": "text",
+          "required": true,
+          "enableWhen": [
+            {
+              "question": "has-note",
+              "operator": "=",
+              "answerBoolean": true
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -13,8 +13,8 @@ REPOSITORY_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 readonly REPOSITORY_ROOT
 readonly TOOLS_DIRECTORY="$REPOSITORY_ROOT/.build/fhir-tools"
 
-if [[ "$#" -ne 1 || ("$1" != "mobile" && "$1" != "healthkit" && "$1" != "health-connect") ]]; then
-  echo "Usage: $0 <mobile|healthkit|health-connect>" >&2
+if [[ "$#" -ne 1 || ("$1" != "mobile" && "$1" != "healthkit" && "$1" != "health-connect" && "$1" != "questionnaire") ]]; then
+  echo "Usage: $0 <mobile|healthkit|health-connect|questionnaire>" >&2
   exit 2
 fi
 
@@ -26,10 +26,12 @@ if [[ ! -f "$REQUEST" ]]; then
 fi
 
 cd "$REPOSITORY_ROOT"
-if grep -q '^  org\.grovealliance\.fhir\.mobile:' "$GUIDE/sushi-config.yaml"; then
+if [[ "$GUIDE" == "mobile" ]]; then
+  ./Scripts/build-guides.sh mobile
+elif grep -q '^  org\.grovealliance\.fhir\.mobile:' "$GUIDE/sushi-config.yaml"; then
   ./Scripts/build-guides.sh mobile "$GUIDE"
 else
-  ./Scripts/build-guides.sh mobile
+  ./Scripts/build-guides.sh "$GUIDE"
 fi
 
 publication_path="$(python3 -c 'import json, sys; print(json.load(open(sys.argv[1], encoding="utf-8"))["path"])' "$REQUEST")"

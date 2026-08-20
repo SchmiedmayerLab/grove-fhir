@@ -84,6 +84,18 @@
         {"fshName": "HealthConnectStepCountProvenanceExample", "fshType": "Instance", "resourceType": "Provenance", "id": "HealthConnectStepCountProvenanceExample", "classification": "example"},
         {"fshName": "HealthConnectStudyBundleExample", "fshType": "Instance", "resourceType": "Bundle", "id": "HealthConnectStudyBundleExample", "classification": "example"}
       ]
+    },
+    {
+      "source": "questionnaire",
+      "packageId": "org.grovealliance.fhir.questionnaire",
+      "canonical": "https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire",
+      "artifacts": [
+        {"fshName": "GroveQuestionnaire", "fshType": "Profile", "resourceType": "StructureDefinition", "id": "grove-questionnaire", "classification": "definition"},
+        {"fshName": "GroveQuestionnaireResponse", "fshType": "Profile", "resourceType": "StructureDefinition", "id": "grove-questionnaire-response", "classification": "definition"},
+        {"fshName": "GroveQuestionnairePatientExample", "fshType": "Instance", "resourceType": "Patient", "id": "GroveQuestionnairePatientExample", "classification": "example"},
+        {"fshName": "GroveWeeklySymptomCheckInExample", "fshType": "Instance", "resourceType": "Questionnaire", "id": "GroveWeeklySymptomCheckInExample", "classification": "example"},
+        {"fshName": "GroveWeeklySymptomCheckInResponseExample", "fshType": "Instance", "resourceType": "QuestionnaireResponse", "id": "GroveWeeklySymptomCheckInResponseExample", "classification": "example"}
+      ]
     }
   ]
 }

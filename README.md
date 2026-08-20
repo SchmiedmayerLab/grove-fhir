@@ -22,7 +22,8 @@ roles, study context, and conversion provenance. Platform adapters add the ident
 mappings needed by a specific source without changing the shared resource shape.
 [Grove Swift](https://github.com/SchmiedmayerLab/Grove) is the reference implementation for
 the HealthKit adapter. The Health Connect adapter defines the corresponding Android exchange
-and synchronization contract.
+and synchronization contract. The Questionnaire Exchange guide defines a separate SDC-based
+contract for versioned instruments and responses.
 
 ## Documentation
 
@@ -31,7 +32,9 @@ to understand the common resource model and copy a complete example. Use the
 [HealthKit adapter guide](https://schmiedmayerlab.github.io/grove-fhir/healthkit/) when
 converting Apple HealthKit samples. Use the
 [Health Connect adapter guide](https://schmiedmayerlab.github.io/grove-fhir/health-connect/)
-when converting and synchronizing Android Health Connect records.
+when converting and synchronizing Android Health Connect records. Use the
+[Questionnaire Exchange guide](https://schmiedmayerlab.github.io/grove-fhir/questionnaire/)
+to publish instruments and exchange their responses.
 
 ## Development
 

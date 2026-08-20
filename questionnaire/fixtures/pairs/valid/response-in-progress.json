@@ -1,0 +1,36 @@
+{
+  "resourceType": "QuestionnaireResponse",
+  "id": "paired-response-in-progress",
+  "extension": [
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/questionnaireresponse-completionMode",
+      "valueCodeableConcept": {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ParticipationMode",
+            "code": "ELECTRONIC"
+          }
+        ]
+      }
+    }
+  ],
+  "identifier": {
+    "system": "https://example.org/questionnaire-response-id",
+    "value": "paired-response-in-progress-1"
+  },
+  "questionnaire": "https://example.org/fhir/Questionnaire/paired-questionnaire|1.2.0",
+  "status": "in-progress",
+  "authored": "2026-08-19T12:00:00-07:00",
+  "item": [
+    {
+      "linkId": "identity",
+      "text": "Identity",
+      "item": []
+    },
+    {
+      "linkId": "has-note",
+      "text": "Add a note?",
+      "answer": [{"valueBoolean": false}]
+    }
+  ]
+}

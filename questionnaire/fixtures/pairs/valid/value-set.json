@@ -1,0 +1,19 @@
+{
+  "resourceType": "ValueSet",
+  "id": "mood",
+  "url": "https://example.org/fhir/ValueSet/mood",
+  "version": "1.0.0",
+  "name": "Mood",
+  "status": "active",
+  "compose": {
+    "include": [
+      {
+        "system": "https://example.org/fhir/CodeSystem/mood",
+        "concept": [
+          {"code": "calm", "display": "Calm"},
+          {"code": "anxious", "display": "Anxious"}
+        ]
+      }
+    ]
+  }
+}

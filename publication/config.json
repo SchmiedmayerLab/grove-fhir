@@ -28,6 +28,14 @@
         "health-connect"
       ],
       "representativeResource": "StructureDefinition/health-connect-observation"
+    },
+    {
+      "source": "questionnaire",
+      "canonicalPath": "fhir/questionnaire",
+      "aliases": [
+        "questionnaire"
+      ],
+      "representativeResource": "StructureDefinition/grove-questionnaire"
     }
   ],
   "retiredPreviewPaths": [
