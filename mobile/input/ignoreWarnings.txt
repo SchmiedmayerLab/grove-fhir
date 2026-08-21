@@ -81,3 +81,8 @@ WARNING: StructureDefinition/grove-mobile-respiratory-rate: StructureDefinition.
 WARNING: StructureDefinition/grove-mobile-respiratory-rate: StructureDefinition.differential.element[1].pattern.ofType(CodeableConcept): Error Cannot invoke "org.hl7.fhir.r5.terminologies.client.TerminologyClientContext.getAddress()" because "tc" is null validating CodeableConcept
 WARNING: StructureDefinition/grove-mobile-sleep-duration: StructureDefinition.snapshot.element[29].pattern.ofType(CodeableConcept): Error Cannot invoke "org.hl7.fhir.r5.terminologies.client.TerminologyClientContext.getAddress()" because "tc" is null validating CodeableConcept
 WARNING: StructureDefinition/grove-mobile-sleep-duration: StructureDefinition.differential.element[1].pattern.ofType(CodeableConcept): Error Cannot invoke "org.hl7.fhir.r5.terminologies.client.TerminologyClientContext.getAddress()" because "tc" is null validating CodeableConcept
+
+# The exact R4 extensions package remains deliberately pinned; the package cache carries the
+# 5.3.0-ballot-tc1 build only because SDC 4.0.0 declares it, and the Publisher's package-age
+# heuristic recommends it over the pinned final release.
+WARNING: ImplementationGuide/org.grovealliance.fhir.mobile: ImplementationGuide.dependsOn[1]: The ImplementationGuide uses package hl7.fhir.uv.extensions.r4#5.3.0 released on 2026-05-16, but the most recent appropriate version is 5.3.0-ballot-tc1. This reference is getting old and the more recent version should be considered

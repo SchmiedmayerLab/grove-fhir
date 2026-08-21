@@ -122,7 +122,7 @@
         "messageId": "Validation_VAL_Profile_Minimum",
         "code": "structure",
         "expression": "Questionnaire.extension[2].extension[3]",
-        "detailsContains": "Extension.extension:human.value[x]: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/targetConstraint|5.3.0-ballot-tc1)"
+        "detailsContains": "Extension.extension:human.value[x]: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/targetConstraint|5.3.0)"
       }
     ],
     "questionnaire-initial-forms-combined": [

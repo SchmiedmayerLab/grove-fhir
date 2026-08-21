@@ -225,7 +225,7 @@ class GuideQATests(unittest.TestCase):
         )
         self.assertEqual(len(errors["sensorkit"]), 3)
         self.assertEqual(len(errors["connected-health"]), 1)
-        self.assertEqual(len(errors["questionnaire"]), 34)
+        self.assertEqual(len(errors["questionnaire"]), 32)
         sdc_link = re.compile(
             r"^ERROR: en/StructureDefinition-grove-questionnaire"
             r"(?:-response)?-definitions\.html#/html/body(?:/div)+/table/tr/td/p/a "
