@@ -147,8 +147,10 @@ def main() -> int:
             continue
         if arguments.check:
             current = destination.read_text(encoding="utf-8") if destination.is_file() else ""
-            # The retrieval date moves on every run and is not part of the claim.
-            if _without_retrieved(current) != _without_retrieved(rendered):
+            # The retrieval date moves on every run, and documentation URLs follow Apple's live
+            # site organization rather than the SDK; neither is part of the drift claim. Write
+            # mode still refreshes both.
+            if _sdk_facts(current) != _sdk_facts(rendered):
                 stale.append(relative)
             continue
         destination.parent.mkdir(parents=True, exist_ok=True)
@@ -162,12 +164,23 @@ def main() -> int:
     return 2 if unreachable else 0
 
 
-def _without_retrieved(text: str) -> str:
+def _sdk_facts(text: str) -> str:
     if not text:
         return text
     payload = json.loads(text)
-    payload.get("oracle", {}).pop("retrieved", None)
-    return serialize(payload)
+
+    def strip(node: object) -> object:
+        if isinstance(node, dict):
+            return {
+                key: strip(value)
+                for key, value in node.items()
+                if key not in ("retrieved", "documentation")
+            }
+        if isinstance(node, list):
+            return [strip(item) for item in node]
+        return node
+
+    return json.dumps(strip(payload), sort_keys=True)
 
 
 if __name__ == "__main__":

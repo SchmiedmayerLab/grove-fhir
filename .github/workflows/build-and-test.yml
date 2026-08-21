@@ -59,12 +59,38 @@ jobs:
           fi
       - run: git diff --check
 
+  inventory-paths:
+    name: Detect inventory-relevant changes
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.filter.outputs.changed }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+      - id: filter
+        run: |
+          git fetch --quiet --depth 1 origin "${{ github.event.pull_request.base.sha }}"
+          if git diff --name-only "${{ github.event.pull_request.base.sha }}" HEAD -- \
+              'catalog/*-adapter.json' '*/input/data/*-inventory.json' \
+              Scripts/platform_inventory.py Scripts/apple-identifier-dump.m \
+              Scripts/render-platform-inventories.py | grep -q .; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
+
   platform-inventory:
     name: Regenerate Adapter Inventories From the Platforms
     # The other jobs only prove each catalog matches the evidence committed beside it.
     # This one re-reads the platforms, so a symbol written into both files is still
     # caught. HealthKit and SensorKit identifiers are read from a running simulator,
-    # which is why this lane is macOS.
+    # which is why this lane is macOS. It runs only when its inputs can have changed;
+    # pushes to main always run it.
+    needs: inventory-paths
+    if: always() && (github.event_name != 'pull_request' || needs.inventory-paths.outputs.changed == 'true')
     runs-on: macos-latest
     timeout-minutes: 20
     steps:
@@ -88,7 +114,19 @@ jobs:
             echo "::warning::Xcode ${version} is not installed; available: $(find /Applications -maxdepth 1 -name 'Xcode*.app' | tr '\n' ' ')"
           fi
           xcodebuild -version
-      - run: python3 Scripts/render-platform-inventories.py --check
+      # Exit 2 means the recorded Xcode is unavailable on this image, so the platforms cannot
+      # be re-read here; that is "cannot verify", not drift, and must not fail the pull request.
+      - name: Check the inventories against the running platforms
+        run: |
+          set +e
+          python3 Scripts/render-platform-inventories.py --check
+          status=$?
+          set -e
+          if [ "$status" -eq 2 ]; then
+            echo "::warning::The recorded Xcode is unavailable on this runner image; platform inventories were not re-verified."
+            exit 0
+          fi
+          exit "$status"
 
   draft-guides:
     name: "Draft: Build Changed R4 Guides"
