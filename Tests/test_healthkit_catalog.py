@@ -40,13 +40,13 @@ class HealthKitCatalogTests(unittest.TestCase):
             source["sdkBaseline"],
             {
                 "platform": "iPhoneOS",
-                "version": "27.0",
-                "xcodeVersion": "27.0",
-                "xcodeBuild": "27A5237l",
+                "version": "26.5",
+                "xcodeVersion": "26.6",
+                "xcodeBuild": "17F113",
             },
         )
         self.assertEqual(source["platform"], "Apple HealthKit")
-        self.assertEqual(source["accessed"], "2026-08-20")
+        self.assertEqual(source["accessed"], "2026-08-21")
         self.assertEqual(source["rowCount"], len(rows))
         self.assertEqual(source["derivedAggregateCount"], 1)
         self.assertIn("derived mappings are excluded", source["rowScope"])
@@ -107,8 +107,6 @@ class HealthKitCatalogTests(unittest.TestCase):
         rows = {row["sourceTypeIdentifier"]: row for row in self.catalog["rows"]}
         expected_additions = {
             "HKCategoryTypeIdentifierHypertensionEvent",
-            "HKCategoryTypeIdentifierBleedingAfterMenopause",
-            "HKCategoryTypeIdentifierMenopausalState",
         }
         self.assertTrue(expected_additions <= set(rows))
         for identifier in expected_additions:

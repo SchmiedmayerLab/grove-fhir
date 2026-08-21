@@ -21,7 +21,7 @@ Description: "The concept properties the HealthKit source-type code system carri
 CodeSystem: HealthKitSourceTypeCS
 Id: healthkit-source-type
 Title: "HealthKit Source Types"
-Description: "The 220 source-type identifiers the iPhoneOS 27.0 SDK baseline (Xcode 27.0, build 27A5237l) hands back at runtime. A code is the identifier a producer reads from the sample, not the name of the constant that holds it. Membership is derived from, and verified against, healthkit/input/data/healthkit-inventory.json; the derived sleep-duration session aggregate is a Grove transformation contract rather than a platform source type and is excluded. A coding preserves exact source semantics and does not replace the shared or standard clinical coding."
+Description: "The 218 source-type identifiers the iPhoneOS 26.5 SDK baseline (Xcode 26.6, build 17F113) hands back at runtime. A code is the identifier a producer reads from the sample, not the name of the constant that holds it. Membership is derived from, and verified against, healthkit/input/data/healthkit-inventory.json; the derived sleep-duration session aggregate is a Grove transformation contract rather than a platform source type and is excluded. A coding preserves exact source semantics and does not replace the shared or standard clinical coding."
 * ^experimental = false
 * ^caseSensitive = true
 * ^content = #complete
@@ -51,9 +51,6 @@ Description: "The 220 source-type identifiers the iPhoneOS 27.0 SDK baseline (Xc
 * #HKCategoryTypeIdentifierBladderIncontinence "Bladder Incontinence"
 * #HKCategoryTypeIdentifierBladderIncontinence ^property[0].code = #documentation
 * #HKCategoryTypeIdentifierBladderIncontinence ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/bladderincontinence"
-* #HKCategoryTypeIdentifierBleedingAfterMenopause "Bleeding After Menopause"
-* #HKCategoryTypeIdentifierBleedingAfterMenopause ^property[0].code = #documentation
-* #HKCategoryTypeIdentifierBleedingAfterMenopause ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/bleedingaftermenopause"
 * #HKCategoryTypeIdentifierBleedingAfterPregnancy "Bleeding After Pregnancy"
 * #HKCategoryTypeIdentifierBleedingAfterPregnancy ^property[0].code = #documentation
 * #HKCategoryTypeIdentifierBleedingAfterPregnancy ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/bleedingafterpregnancy"
@@ -162,9 +159,6 @@ Description: "The 220 source-type identifiers the iPhoneOS 27.0 SDK baseline (Xc
 * #HKCategoryTypeIdentifierMemoryLapse "Memory Lapse"
 * #HKCategoryTypeIdentifierMemoryLapse ^property[0].code = #documentation
 * #HKCategoryTypeIdentifierMemoryLapse ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/memorylapse"
-* #HKCategoryTypeIdentifierMenopausalState "Menopausal State"
-* #HKCategoryTypeIdentifierMenopausalState ^property[0].code = #documentation
-* #HKCategoryTypeIdentifierMenopausalState ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/menopausalstate"
 * #HKCategoryTypeIdentifierMenstrualFlow "Menstrual Flow"
 * #HKCategoryTypeIdentifierMenstrualFlow ^property[0].code = #documentation
 * #HKCategoryTypeIdentifierMenstrualFlow ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/menstrualflow"

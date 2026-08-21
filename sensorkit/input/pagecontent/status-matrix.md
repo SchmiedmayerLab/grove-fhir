@@ -22,8 +22,6 @@ This table is the complete v0.2.0 SensorKit inventory: 20 catalog-baseline platf
 | `SRSensor.deviceUsageReport` | `device-usage` | catalog-baseline | 14.0 | `provider-specific` | sensorkit-device-usage-observation | sensorkit-recording-document | — |
 | `SRSensor.electrocardiogram` | `ecg` | catalog-baseline | 17.4 | `supported` | sensorkit-ecg-observation | sensorkit-recording-document | — |
 | `SRSensor.faceMetrics` | `face-metrics` | catalog-baseline | 17.0 | `mapped-standard` | deferred | sensorkit-recording-document | Version 0.2.0 publishes no reviewed structured profile for the heterogeneous face metrics. |
-| `SRSensor.headphoneMotion` | `headphone-motion` | beta-addition | 27.0 | `deferred` | — | — | This symbol is beta in the stated SDK baseline, and version 0.2.0 publishes no admitted output contract. |
-| `SRSensor.headphoneSettings` | `headphone-settings` | beta-addition | 27.0 | `deferred` | — | — | This symbol is beta in the stated SDK baseline, and version 0.2.0 publishes no admitted output contract. |
 | `SRSensor.heartRate` | `heart-rate` | catalog-baseline | 17.0 | `mapped-standard` | deferred | sensorkit-recording-document | Bare SampledData cannot preserve CMHighFrequencyHeartRateDataConfidence for each source point. |
 | `SRSensor.keyboardMetrics` | `keyboard-metrics` | catalog-baseline | 14.0 | `mapped-standard` | deferred | sensorkit-recording-document | Version 0.2.0 publishes no reviewed structured profile for the heterogeneous keyboard metrics. |
 | `SRSensor.mediaEvents` | `media-events` | catalog-baseline | 16.4 | `mapped-standard` | deferred | sensorkit-recording-document | Media interactions do not have a reviewed source-neutral clinical Observation representation in version 0.2.0. |

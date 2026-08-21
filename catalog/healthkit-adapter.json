@@ -6,11 +6,11 @@
     "platform": "Apple HealthKit",
     "sdkBaseline": {
       "platform": "iPhoneOS",
-      "version": "27.0",
-      "xcodeVersion": "27.0",
-      "xcodeBuild": "27A5237l"
+      "version": "26.5",
+      "xcodeVersion": "26.6",
+      "xcodeBuild": "17F113"
     },
-    "accessed": "2026-08-20",
+    "accessed": "2026-08-21",
     "inventory": "Every source-type identifier the stated SDK baseline hands back at runtime, read inside an iOS simulator on that baseline. Derived aggregation contracts are listed separately and are not platform source types.",
     "rowScope": "rows contains exactly the runtime source-type identifiers of the stated SDK baseline, one row per identifier, and derived mappings are excluded and declared separately; where Apple declares more than one constant for an identifier, every declaring name is listed in symbols.",
     "evidence": [
@@ -30,7 +30,7 @@
         "scope": "Exact SDK baseline, retained source terminology, and source-file hashes"
       }
     ],
-    "rowCount": 220,
+    "rowCount": 218,
     "derivedAggregateCount": 1
   },
   "producerCanonicalization": {
@@ -290,18 +290,6 @@
       "measurementIDs": [],
       "profiles": [],
       "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
-    },
-    {
-      "sourceTypeIdentifier": "HKCategoryTypeIdentifierBleedingAfterMenopause",
-      "title": "Bleeding After Menopause",
-      "symbols": [
-        "HKCategoryTypeIdentifierBleedingAfterMenopause"
-      ],
-      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/bleedingaftermenopause",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "The source type is beta in the stated SDK baseline and v0.2.0 publishes no admitted output contract."
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierBleedingAfterPregnancy",
@@ -734,18 +722,6 @@
       "measurementIDs": [],
       "profiles": [],
       "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
-    },
-    {
-      "sourceTypeIdentifier": "HKCategoryTypeIdentifierMenopausalState",
-      "title": "Menopausal State",
-      "symbols": [
-        "HKCategoryTypeIdentifierMenopausalState"
-      ],
-      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/menopausalstate",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "The source type is beta in the stated SDK baseline and v0.2.0 publishes no admitted output contract."
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierMenstrualFlow",

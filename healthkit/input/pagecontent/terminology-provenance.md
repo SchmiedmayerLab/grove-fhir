@@ -7,7 +7,7 @@ SPDX-License-Identifier: MIT
 -->
 
 The HealthKit-specific terminology in version 0.2.0 is case-sensitive. It contains a
-closed 220-concept platform source-type inventory, one metadata key, and three adapter
+closed 218-concept platform source-type inventory, one metadata key, and three adapter
 motion-context codes required by the heart-rate mapping. The separately declared sleep
 duration aggregate is not a platform source type and is excluded from the source-type
 CodeSystem.
@@ -19,12 +19,12 @@ It records the following reproducibility information:
 | Field | Value |
 |---|---|
 | Package | `org.grovealliance.fhir.healthkit#0.2.0` |
-| SDK baseline | iPhoneOS 27.0, Xcode 27.0 build 27A5237l |
-| Extraction date | 2026-08-20 |
+| SDK baseline | iPhoneOS 26.5, Xcode 26.6 build 17F113 |
+| Extraction date | 2026-08-21 |
 | Selection method | Every declared identifier constant resolved inside an iOS simulator on the SDK baseline, plus the two sample types Apple publishes without a constant, read by `Scripts/platform_inventory.py` |
 | SDK inputs | `HKTypeIdentifiers.h`, `HKObjectType.h`, `HKMetadata.h`, and `HKMetadataEnums.h`, with SHA-256 hashes in the manifest |
 | Case sensitivity | Case-sensitive |
-| Content scope | Complete for the 220 source-type identifiers and the adapter terminology frozen by v0.2.0 |
+| Content scope | Complete for the 218 source-type identifiers and the adapter terminology frozen by v0.2.0 |
 
 The retained identifiers and type names originate from Apple. The SDK baseline,
 official platform documentation, and catalog together bind the source-type inventory;

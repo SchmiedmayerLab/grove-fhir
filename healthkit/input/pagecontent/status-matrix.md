@@ -11,7 +11,7 @@ GENERATED FILE. Edit the corresponding catalog JSON and run
 
 # Authoritative HealthKit status matrix
 
-This table is the complete, closed v0.2.0 inventory of all 220 Apple HealthKit platform source types frozen against iPhoneOS 27.0 from Xcode 27.0 build `27A5237l`. The evidence is the official Apple platform documentation and the exact SDK provenance declared by the catalog. Each row has one definitive contract status; this is a release contract, not a roadmap. `supported` means v0.2.0 admits a conformant output contract. All other rows are not admitted and producers fail closed.
+This table is the complete, closed v0.2.0 inventory of all 218 Apple HealthKit platform source types frozen against iPhoneOS 26.5 from Xcode 26.6 build `17F113`. The evidence is the official Apple platform documentation and the exact SDK provenance declared by the catalog. Each row has one definitive contract status; this is a release contract, not a roadmap. `supported` means v0.2.0 admits a conformant output contract. All other rows are not admitted and producers fail closed.
 
 | HealthKit type | Title | Contract status | Measurement | Direct profile claim(s) | Binding reason / requirement |
 | --- | --- | --- | --- | --- | --- |
@@ -22,7 +22,6 @@ This table is the complete, closed v0.2.0 inventory of all 220 Apple HealthKit p
 | `HKCategoryTypeIdentifierAppleWalkingSteadinessEvent` | Apple Walking Steadiness Event | `deferred` | — | — | No shared or adapter-specific v0.2 output contract is published for this type. |
 | `HKCategoryTypeIdentifierAudioExposureEvent` | Audio Exposure Event | `deferred` | — | — | Apple renames this constant to HKCategoryTypeIdentifierEnvironmentalAudioExposureEvent while keeping its identifier. Version 0.2.0 publishes no admitted output contract. |
 | `HKCategoryTypeIdentifierBladderIncontinence` | Bladder Incontinence | `deferred` | — | — | No shared or adapter-specific v0.2 output contract is published for this type. |
-| `HKCategoryTypeIdentifierBleedingAfterMenopause` | Bleeding After Menopause | `deferred` | — | — | The source type is beta in the stated SDK baseline and v0.2.0 publishes no admitted output contract. |
 | `HKCategoryTypeIdentifierBleedingAfterPregnancy` | Bleeding After Pregnancy | `deferred` | — | — | No shared or adapter-specific v0.2 output contract is published for this type. |
 | `HKCategoryTypeIdentifierBleedingDuringPregnancy` | Bleeding During Pregnancy | `deferred` | — | — | No shared or adapter-specific v0.2 output contract is published for this type. |
 | `HKCategoryTypeIdentifierBloating` | Bloating | `deferred` | — | — | No shared or adapter-specific v0.2 output contract is published for this type. |
@@ -59,7 +58,6 @@ This table is the complete, closed v0.2.0 inventory of all 220 Apple HealthKit p
 | `HKCategoryTypeIdentifierLowHeartRateEvent` | Low Heart Rate Event | `deferred` | — | — | No shared or adapter-specific v0.2 output contract is published for this type. |
 | `HKCategoryTypeIdentifierLowerBackPain` | Lower Back Pain | `deferred` | — | — | No shared or adapter-specific v0.2 output contract is published for this type. |
 | `HKCategoryTypeIdentifierMemoryLapse` | Memory Lapse | `deferred` | — | — | No shared or adapter-specific v0.2 output contract is published for this type. |
-| `HKCategoryTypeIdentifierMenopausalState` | Menopausal State | `deferred` | — | — | The source type is beta in the stated SDK baseline and v0.2.0 publishes no admitted output contract. |
 | `HKCategoryTypeIdentifierMenstrualFlow` | Menstrual Flow | `deferred` | — | — | No shared or adapter-specific v0.2 output contract is published for this type. |
 | `HKCategoryTypeIdentifierMindfulSession` | Mindful Session | `deferred` | — | — | No shared or adapter-specific v0.2 output contract is published for this type. |
 | `HKCategoryTypeIdentifierMoodChanges` | Mood Changes | `deferred` | — | — | No shared or adapter-specific v0.2 output contract is published for this type. |

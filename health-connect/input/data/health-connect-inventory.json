@@ -3,7 +3,7 @@
     "artifact": "androidx.health.connect:connect-client:1.1.0",
     "filter": "Top-level classes in androidx.health.connect.client.records whose name ends in Record, excluding the abstract supertypes Record, InstantaneousRecord, IntervalRecord, and SeriesRecord.",
     "kind": "androidx-published-artifact",
-    "retrieved": "2026-08-20",
+    "retrieved": "2026-08-21",
     "sha256": "ce1601af0ef671ec6a76b0f29d2af22acc578e408c7107d08ea23067d3822593"
   },
   "records": {
