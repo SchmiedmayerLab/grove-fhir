@@ -68,10 +68,12 @@ class SensorCatalogTests(unittest.TestCase):
             len(timing["vectors"][-1]["start"].split(".")[1].rstrip("Z")), 6
         )
 
-    def test_sensor_pins_mobile_and_phd_r4_dependencies(self) -> None:
+    def test_sensor_pins_mobile_and_terminology_dependencies(self) -> None:
         configuration = (ROOT / "sensor/sushi-config.yaml").read_text(encoding="utf-8")
         self.assertIn("org.grovealliance.fhir.mobile:\n    version: 0.2.0", configuration)
-        self.assertIn("hl7.fhir.uv.phd: 2.0.0", configuration)
+        self.assertIn("hl7.terminology.r4: 7.3.0", configuration)
+        # PHD is an alignment described in prose, not a package dependency.
+        self.assertNotIn("hl7.fhir.uv.phd", configuration)
 
 
 if __name__ == "__main__":

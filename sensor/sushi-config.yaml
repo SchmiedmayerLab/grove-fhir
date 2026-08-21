@@ -28,7 +28,6 @@ dependencies:
   org.grovealliance.fhir.mobile:
     version: 0.2.0
     uri: https://grovealliance.org/fhir/mobile/ImplementationGuide/org.grovealliance.fhir.mobile
-  hl7.fhir.uv.phd: 2.0.0
 
 parameters:
   special-url:

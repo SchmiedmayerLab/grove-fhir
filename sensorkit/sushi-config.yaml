@@ -1,3 +1,11 @@
+#
+# This source file is part of the Grove FHIR open-source project
+#
+# SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTRIBUTORS.md)
+#
+# SPDX-License-Identifier: MIT
+#
+
 id: org.grovealliance.fhir.sensorkit
 canonical: https://grovealliance.org/fhir/sensorkit
 name: GroveFHIRSensorKit
@@ -10,9 +18,10 @@ copyrightYear: 2026+
 releaseLabel: ci-build
 license: MIT
 publisher:
-  name: Grove Alliance
-  url: https://grovealliance.org
+  name: Schmiedmayer Lab
+  url: https://github.com/SchmiedmayerLab
 dependencies:
+  hl7.terminology.r4: 7.3.0
   org.grovealliance.fhir.mobile:
     version: 0.2.0
     uri: https://grovealliance.org/fhir/mobile/ImplementationGuide/org.grovealliance.fhir.mobile

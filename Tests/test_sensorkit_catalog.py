@@ -44,6 +44,7 @@ class SensorKitCatalogTests(unittest.TestCase):
         self.assertEqual(
             package["dependencies"],
             [
+                "hl7.terminology.r4#7.3.0",
                 "org.grovealliance.fhir.mobile#0.2.0",
                 "org.grovealliance.fhir.sensor#0.2.0",
             ],

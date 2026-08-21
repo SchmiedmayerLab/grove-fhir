@@ -16,6 +16,6 @@ inline numeric sequences and `DocumentReference.content.attachment` for a native
 externally encoded recording. It imposes no receiver capacity or byte threshold.
 
 The HL7 Personal Health Device guide's `PhdRtsaObservation` is the authoritative
-profile for IEEE 11073 PHD/PHG workflows. Grove depends on that package and reuses its
+profile for IEEE 11073 PHD/PHG workflows. Grove aligns with that package's
 SampledData representation, but does not impose its mandatory PHD gateway, device,
 category, and measurement-status assertions on non-PHD phone or wearable sources.

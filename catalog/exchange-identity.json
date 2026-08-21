@@ -1,5 +1,7 @@
 {
   "schemaVersion": 1,
+  "version": "0.2.0",
+  "fhirVersion": "4.0.1",
   "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle",
   "entryIdentifierExtension": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-exchange-entry-identifier",
   "fullUrlAlgorithm": {
@@ -48,9 +50,9 @@
     },
     {
       "case": "non-ascii",
-      "system": "https://例.example/識別子",
-      "value": "café-東京",
-      "input": "[\"https://例.example/識別子\",\"café-東京\"]",
+      "system": "https://\u4f8b.example/\u8b58\u5225\u5b50",
+      "value": "caf\u00e9-\u6771\u4eac",
+      "input": "[\"https://\u4f8b.example/\u8b58\u5225\u5b50\",\"caf\u00e9-\u6771\u4eac\"]",
       "fullUrl": "urn:uuid:f1395804-98e2-5d14-a2f4-cbe93380ee7a"
     }
   ]

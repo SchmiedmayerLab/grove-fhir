@@ -52,13 +52,10 @@ readonly FHIR_PACKAGE_ARCHIVES=(
   "hl7.fhir.uv.extensions.r4|5.3.0|dfbc3ac95df91ed845cc6b60920d2875f679361fa0e16f227cee93c4a9ab2104"
   "hl7.terminology.r4|7.3.0|1a1ef2aa22ecc820341267f2bdba3b2d1f4adafb9bdddfc9e51c611cd64f3b54"
   "hl7.fhir.uv.sdc|4.0.0|d785be8474c7ec7988e32e326430d9ca4aeb2cac4a1f195022e4d6f7dc5c5291"
-  "hl7.fhir.uv.extensions.r4|5.3.0-ballot-tc1|5f5d1e88052d615453e6b7a1eb4f885df36590f14b52974e5860485d16819bd9"
   "hl7.fhir.r4.examples|4.0.1|e18b31e7a52145a31f1f3f409cf6847583b08b7306cc4e9460a95a7b5efba930"
   "hl7.fhir.uv.xver-r5.r4|0.1.0|7ee6f04d78ced803dd567559a0d178bafbd2d3b71db61bbbf6b15c796a1a664d"
   "hl7.fhir.uv.tools.r4|1.1.2|a1f166f8808629a40c4acabc16a4fbfd164d9f38f9db95b6f4b38bb69155dfe4"
   "hl7.terminology.r4|6.5.0|a28b638483a11df696ed92198276236d759e41c7a3a8960c9e7e7d0a1185bd06"
-  "hl7.fhir.uv.phd|2.0.0|1a45243b578414d07803327fd21899ac88f4cd1a36c632240c508b5a217848b9"
-  "hl7.fhir.uv.pocd|0.3.0|927fcd5bbc941b4fd44c7bf6ad7275941e644211ad879c4519dae1cb98521d4a"
 )
 
 mkdir -p "$TOOLS_DIRECTORY" "$FHIR_PACKAGE_CACHE"

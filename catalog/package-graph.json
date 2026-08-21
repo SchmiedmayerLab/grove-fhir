@@ -8,7 +8,10 @@
       "source": "mobile",
       "packageId": "org.grovealliance.fhir.mobile",
       "canonical": "https://grovealliance.org/fhir/mobile",
-      "dependencies": [],
+      "dependencies": [
+        "hl7.terminology.r4#7.3.0",
+        "hl7.fhir.uv.extensions.r4#5.3.0"
+      ],
       "profiles": [
         "grove-application-device",
         "grove-mobile-active-energy",
@@ -34,14 +37,23 @@
       "source": "questionnaire",
       "packageId": "org.grovealliance.fhir.questionnaire",
       "canonical": "https://grovealliance.org/fhir/questionnaire",
-      "dependencies": ["hl7.fhir.uv.sdc#4.0.0"],
-      "profiles": ["grove-questionnaire", "grove-questionnaire-response"]
+      "dependencies": [
+        "hl7.fhir.uv.sdc#4.0.0",
+        "hl7.fhir.uv.extensions.r4#5.3.0"
+      ],
+      "profiles": [
+        "grove-questionnaire",
+        "grove-questionnaire-response"
+      ]
     },
     {
       "source": "sensor",
       "packageId": "org.grovealliance.fhir.sensor",
       "canonical": "https://grovealliance.org/fhir/sensor",
-      "dependencies": ["org.grovealliance.fhir.mobile#0.2.0", "hl7.fhir.uv.phd#2.0.0"],
+      "dependencies": [
+        "hl7.terminology.r4#7.3.0",
+        "org.grovealliance.fhir.mobile#0.2.0"
+      ],
       "profiles": [
         "grove-sensor-conversion-provenance",
         "grove-sensor-ecg-observation",
@@ -54,6 +66,7 @@
       "packageId": "org.grovealliance.fhir.sensorkit",
       "canonical": "https://grovealliance.org/fhir/sensorkit",
       "dependencies": [
+        "hl7.terminology.r4#7.3.0",
         "org.grovealliance.fhir.mobile#0.2.0",
         "org.grovealliance.fhir.sensor#0.2.0"
       ],
@@ -71,14 +84,26 @@
       "source": "healthkit",
       "packageId": "org.grovealliance.fhir.healthkit",
       "canonical": "https://grovealliance.org/fhir/healthkit",
-      "dependencies": ["org.grovealliance.fhir.mobile#0.2.0", "org.grovealliance.fhir.sensor#0.2.0"],
-      "profiles": ["healthkit-conversion-provenance", "healthkit-ecg-observation", "healthkit-observation"]
+      "dependencies": [
+        "hl7.terminology.r4#7.3.0",
+        "org.grovealliance.fhir.mobile#0.2.0",
+        "org.grovealliance.fhir.sensor#0.2.0"
+      ],
+      "profiles": [
+        "healthkit-conversion-provenance",
+        "healthkit-ecg-observation",
+        "healthkit-observation"
+      ]
     },
     {
       "source": "health-connect",
       "packageId": "org.grovealliance.fhir.health-connect",
       "canonical": "https://grovealliance.org/fhir/health-connect",
-      "dependencies": ["org.grovealliance.fhir.mobile#0.2.0"],
+      "dependencies": [
+        "hl7.terminology.r4#7.3.0",
+        "hl7.fhir.uv.extensions.r4#5.3.0",
+        "org.grovealliance.fhir.mobile#0.2.0"
+      ],
       "profiles": [
         "health-connect-capillary-blood-glucose",
         "health-connect-conversion-provenance",
@@ -93,7 +118,10 @@
       "source": "connected-health",
       "packageId": "org.grovealliance.fhir.connected-health",
       "canonical": "https://grovealliance.org/fhir/connected-health",
-      "dependencies": ["org.grovealliance.fhir.mobile#0.2.0", "org.grovealliance.fhir.sensor#0.2.0"],
+      "dependencies": [
+        "org.grovealliance.fhir.mobile#0.2.0",
+        "org.grovealliance.fhir.sensor#0.2.0"
+      ],
       "profiles": [
         "connected-health-conversion-provenance",
         "connected-health-observation",
