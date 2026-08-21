@@ -20,7 +20,7 @@ Description: "HealthKit metadata keys retained by Grove FHIR HealthKit 0.2.0 aft
 ValueSet: HealthKitMetadataKeyVS
 Id: healthkit-metadata-key
 Title: "HealthKit Metadata Keys"
-Description: "The HealthKit 0.2.0 allowlist of metadata keys represented by named Observation component slices."
+Description: "The HealthKit 0.2.0 allowlist of retained metadata keys. Each key maps to its published representation: a named Observation component or a named extension."
 * ^experimental = false
 * include codes from system HealthKitMetadataKeyCS
 

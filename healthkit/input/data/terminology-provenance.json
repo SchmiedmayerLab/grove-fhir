@@ -44,7 +44,7 @@
       "version": "0.2.0"
     },
     "generated": true,
-    "description": "The catalog freezes the 218 source-type identifiers the stated SDK baseline hands back at runtime. Every identifier constant the headers declare is resolved inside an iOS simulator on that baseline, together with the two sample types Apple publishes without a constant. A code is the identifier a producer reads from a sample, not the name of the constant holding it. One metadata key plus three motion-context values used by admitted mappings are selected separately. The separately declared sleep-duration aggregate is not a platform source type and is excluded from the source-type CodeSystem."
+    "description": "The catalog freezes the 218 source-type identifiers the stated SDK baseline hands back at runtime. Every identifier constant the headers declare is resolved inside an iOS simulator on that baseline, together with the two sample types Apple publishes without a constant. A code is the identifier a producer reads from a sample, not the name of the constant holding it. Two metadata keys plus three motion-context values used by admitted mappings are selected separately. The separately declared sleep-duration aggregate is not a platform source type and is excluded from the source-type CodeSystem."
   },
   "terminology": {
     "caseSensitive": true,
@@ -57,7 +57,7 @@
       },
       "healthkit-metadata-key": {
         "content": "complete",
-        "rationale": "Complete describes this adapter's explicit residual-metadata allowlist of one key; it does not claim to enumerate every HealthKit metadata key."
+        "rationale": "Complete describes this adapter's explicit residual-metadata allowlist of two keys (HKMetadataKeyHeartRateMotionContext and HKMetadataKeyAppleECGAlgorithmVersion); it does not claim to enumerate every HealthKit metadata key."
       },
       "healthkit-heart-rate-motion-context": {
         "content": "complete",
@@ -83,7 +83,7 @@
   "thirdParty": {
     "owner": "Apple Inc.",
     "attribution": "HealthKit API identifiers and type names originate from Apple and are retained here to identify the platform concepts used by the interoperability mapping.",
-    "retainedTerminology": "The package retains the 220 public source-type identifiers in the closed version 0.2.0 catalog, HKMetadataKeyHeartRateMotionContext, and adapter codes for the notSet, sedentary, and active motion-context cases.",
+    "retainedTerminology": "The package retains the 218 public source-type identifiers in the closed version 0.2.0 catalog, the two allowlisted metadata keys (HKMetadataKeyHeartRateMotionContext and HKMetadataKeyAppleECGAlgorithmVersion), and the republished Apple case vocabularies for heart-rate motion context, sleep analysis, ECG classification, ECG symptoms status, symptom severity, and ECG algorithm version.",
     "descriptiveApiReferences": "The mapping narrative and identifier definitions also refer to HKObject.uuid, HKSource.bundleIdentifier, HKSourceRevision, HKDevice, HKMetadataKeyWasUserEntered, and source fields required by admitted mappings. These references describe source fields and dispatch rules; they are not copied documentation prose.",
     "redistributionBasis": "These API identifiers and case names are reproduced only as interoperability identifiers needed to state the source mapping. The package does not reproduce Apple documentation prose, SDK implementation, or a general HealthKit vocabulary.",
     "excludedMaterial": "No HealthKit SDK implementation, private API, or documentation prose is copied into the package.",

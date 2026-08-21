@@ -7,7 +7,7 @@ SPDX-License-Identifier: MIT
 -->
 
 The HealthKit-specific terminology in version 0.2.0 is case-sensitive. It contains a
-closed 218-concept platform source-type inventory, one metadata key, and three adapter
+closed 218-concept platform source-type inventory, two metadata keys, and the adapter
 motion-context codes required by the heart-rate mapping. The separately declared sleep
 duration aggregate is not a platform source type and is excluded from the source-type
 CodeSystem.
