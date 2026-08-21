@@ -22,8 +22,6 @@ WARNING: Bundle/GroveMobileExchangeBundleExample: Bundle.entry[2].resource/*Obse
 # The fixed observation code and exact effective Period carry the interval-total semantics. The UCUM annotation is not used for dimensional comparison.
 WARNING: Observation/GroveMobileStepCountExample: Observation.value.ofType(Quantity): UCUM Codes that contain human readable annotations like {steps} can be misleading (e.g. they are ignored when comparing units). Best Practice is not to depend on annotations in the UCUM code, so this usage should be checked
 
-# The exact R4 extensions package remains deliberately pinned; the Publisher's package-age heuristic recommends a later ballot build without identifying a contract defect.
-WARNING: ImplementationGuide/org.grovealliance.fhir.mobile: ImplementationGuide.dependsOn[1]: The ImplementationGuide uses package hl7.fhir.uv.extensions.r4#5.3.0 released on 2026-05-16, but the most recent appropriate version is 5.3.0-ballot-tc1. This reference is getting old and the more recent version should be considered
 
 # Offline Publisher cannot enumerate UCUM. Every exact unit is fixed by the profiles, machine catalog, and semantic vector corpus.
 WARNING: Bundle/GroveMobileExchangeBundleExample: Bundle.entry[2].resource/*Observation/GroveMobileExchangeHeartRateExample*/.value.ofType(Quantity): Unable to validate code '/min' in system 'http://unitsofmeasure.org' because the validator is running without terminology services
