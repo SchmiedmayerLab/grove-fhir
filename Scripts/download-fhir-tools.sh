@@ -82,7 +82,9 @@ download_and_verify() {
     echo "FHIR tool destination must not be a symlink: $destination" >&2
     exit 1
   fi
-  curl --fail --location --retry 3 --output "$temporary_file" "$url"
+  # --retry alone skips connection failures, which is how the package host usually fails.
+  curl --fail --location --retry 3 --retry-all-errors --retry-delay 5 \
+    --connect-timeout 30 --output "$temporary_file" "$url"
   printf '%s  %s\n' "$expected_sha" "$temporary_file" | shasum -a 256 --check
   mv "$temporary_file" "$destination"
 }
