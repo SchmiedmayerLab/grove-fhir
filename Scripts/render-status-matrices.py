@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import argparse
 import json
+from collections import Counter
 import sys
 from pathlib import Path
 from typing import Any
@@ -169,6 +170,8 @@ def health_connect() -> str:
 
 def sensorkit() -> str:
     catalog = load("sensorkit-adapter.json")
+    entries = catalog["entries"]
+    scope_counts = Counter(entry["scope"] for entry in entries)
     rows = []
     for item in catalog["entries"]:
         structured = item.get("structured", {})
@@ -195,9 +198,10 @@ def sensorkit() -> str:
     return (
         HEADER
         + "# Authoritative SensorKit status matrix\n\n"
-        + "This table is the complete v0.2.0 SensorKit inventory: 20 catalog-baseline "
-        "platform symbols, two stable additions, and two beta additions in the stated "
-        "Apple SDK baseline. Each of the 24 rows has one definitive status. Native "
+        + "This table is the complete v0.2.0 SensorKit inventory: "
+        f"{scope_counts.get('catalog-baseline', 0)} catalog-baseline platform symbols and "
+        f"{scope_counts.get('stable-addition', 0)} stable additions in the stated Apple SDK "
+        f"baseline. Each of the {len(entries)} rows has one definitive status. Native "
         "Recording Document support is distinct from a "
         "structured semantic mapping and never implies that fetching occurs in FHIR.\n\n"
         + table(

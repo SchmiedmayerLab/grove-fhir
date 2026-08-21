@@ -11,10 +11,8 @@ SensorKit. It adds exact source identity and preserves SensorKit-only semantics 
 reusing the source-neutral Mobile and Sensor packages for measurements, uniform time
 series, ECG recordings, and native recording documents.
 
-The authoritative v0.2.0 inventory contains all 24 streams in the stated Apple
-`SRSensor` baseline: 20 catalog-baseline symbols, two stable additions, and two beta
-additions. Every row has one definitive status in
-`catalog/sensorkit-adapter.json`.
+The authoritative v0.2.0 inventory contains all 22 streams in the stated Apple `SRSensor` baseline: 20 catalog-baseline symbols and two stable additions.
+Every row has one definitive status in `catalog/sensorkit-adapter.json`.
 
 This package does not request SensorKit authorization, start collection, query samples,
 encode native payloads, transmit resources, or define receiver/storage policy. Those
