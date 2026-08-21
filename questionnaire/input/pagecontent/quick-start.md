@@ -86,16 +86,10 @@ On a profile page:
 
 ### 4. Validate each resource with the package
 
-Download the package and verify its checksum:
+The canonical namespace is deliberately not hosted; this guide's publication root exposes the archive beside this page.
+Download [`package.tgz`](package.tgz) and [`package.tgz.sha256`](package.tgz.sha256), then verify the checksum:
 
 ```sh
-mkdir -p grove-questionnaire-package
-curl --fail --location \
-  https://grovealliance.org/fhir/questionnaire/package.tgz \
-  --output grove-questionnaire-package/package.tgz
-curl --fail --location \
-  https://grovealliance.org/fhir/questionnaire/package.tgz.sha256 \
-  --output grove-questionnaire-package/package.tgz.sha256
 (cd grove-questionnaire-package && shasum -a 256 --check package.tgz.sha256)
 ```
 

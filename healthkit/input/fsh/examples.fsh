@@ -323,8 +323,8 @@ Description: "A producer-supplied Bluetooth heart-rate monitor authored the Heal
 Instance: HealthKitStudyBundleExample
 InstanceOf: Bundle
 Usage: #example
-Title: "HealthKit Study Exchange Bundle"
-Description: "A collection of the participant, versioned protocol, study enrollment, devices, converted Observations, and conversion Provenance."
+Title: "HealthKit Study Documentation Bundle"
+Description: "A documentation collection of the participant, versioned protocol, study enrollment, devices, converted Observations, and conversion Provenance. It is not an operational exchange bundle: a conformant exchange uses the GroveMobileExchangeBundle profile with deterministic urn:uuid full URLs, a Bundle identifier, and entry identifier extensions, as shown in the Mobile guide's exchange example."
 * type = #collection
 * timestamp = "2026-08-19T17:30:03.000Z"
 * entry[+].fullUrl = "https://study.example.org/fhir/Patient/HealthKitPatientExample"

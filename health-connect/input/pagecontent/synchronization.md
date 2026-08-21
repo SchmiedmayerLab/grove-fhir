@@ -23,8 +23,8 @@ defined by `catalog/health-connect-identity.json`.
 When a Record maps to several Observations, derive the complete replacement set before
 publishing it. An update can add, retain, or remove output identifiers. A deletion resolves
 the prior set from the ledger because Health Connect supplies only the deleted Record id.
-How the caller represents deletion to its destination is deployment policy; this IG does
-not define a deletion envelope, receiver projection, or storage lifecycle.
+The exchange representation of a retraction is defined by the shared contract: publish the prior output set as `entered-in-error` stubs with no conversion Provenance, as described under "Retracting an entered-in-error record" on the implementation page.
+Receiver projection and storage lifecycle remain deployment policy.
 
 ### Token advancement boundary
 

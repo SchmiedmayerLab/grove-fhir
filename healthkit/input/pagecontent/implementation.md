@@ -12,23 +12,10 @@ packages and validate all applicable profile canonicals together.
 
 ### Download the packages
 
-This pre-1.0 continuous build is not published in a FHIR package registry. Download the
-two exact archives and verify their checksums:
+This pre-1.0 continuous build is not published in a FHIR package registry, and the canonical namespace is deliberately not hosted.
+Each published guide exposes its own archive beside this page: download [`package.tgz`](package.tgz) and [`package.tgz.sha256`](package.tgz.sha256) from this guide's publication root and the Mobile guide's publication root, then verify both checksums:
 
 ```sh
-mkdir -p grove-packages/mobile grove-packages/healthkit
-curl --fail --location \
-  https://grovealliance.org/fhir/mobile/package.tgz \
-  --output grove-packages/mobile/package.tgz
-curl --fail --location \
-  https://grovealliance.org/fhir/mobile/package.tgz.sha256 \
-  --output grove-packages/mobile/package.tgz.sha256
-curl --fail --location \
-  https://grovealliance.org/fhir/healthkit/package.tgz \
-  --output grove-packages/healthkit/package.tgz
-curl --fail --location \
-  https://grovealliance.org/fhir/healthkit/package.tgz.sha256 \
-  --output grove-packages/healthkit/package.tgz.sha256
 (cd grove-packages/mobile && shasum -a 256 --check package.tgz.sha256)
 (cd grove-packages/healthkit && shasum -a 256 --check package.tgz.sha256)
 ```
@@ -82,3 +69,10 @@ privacy decisions against representative source fixtures.
 
 Start with the [heart-rate JSON](Observation-HealthKitHeartRateObservationExample.json),
 then compare it with the field-by-field [mapping rules](mapping.html).
+
+### Retracting an entered-in-error record
+
+When a previously converted source record is retracted, publish a bundle whose outputs for that source are all `entered-in-error` stubs.
+Each stub keeps the profile claims, the normative code, and the complete business identifiers of the output it retracts, sets `status` to `entered-in-error`, and carries `dataAbsentReason` in place of a value.
+A bundle whose outputs for a source record are all entered-in-error records a retraction rather than a conversion and carries no conversion Provenance.
+The repository conformance validator enforces both directions: a retraction claiming a conversion Provenance and a conversion missing one are each rejected.

@@ -51,9 +51,9 @@ samples may have the same type; their HealthKit UUIDs, not their types, are uniq
 
 | HealthKit sample type | Required profile and code | FHIR value |
 |---|---|---|
-| `HKQuantityTypeIdentifierHeartRate` | FHIR R4 Heart Rate; LOINC `8867-4` | `valueQuantity`, UCUM `/min` |
+| `HKQuantityTypeIdentifierHeartRate` | Grove Mobile Heart Rate (imposes FHIR R4 Heart Rate); LOINC `8867-4` | `valueQuantity`, UCUM `/min` |
 | `HKQuantityTypeIdentifierStepCount` | Grove Mobile Step Count; Grove `step-count-total` | `valueQuantity`, UCUM `{steps}`, exact `effectivePeriod` |
-| `HKQuantityTypeIdentifierBodyMass` | FHIR R4 Body Weight; LOINC `29463-7` | `valueQuantity`, a permitted UCUM body-weight unit |
+| `HKQuantityTypeIdentifierBodyMass` | Grove Mobile Body Weight (imposes FHIR R4 Body Weight); LOINC `29463-7` | `valueQuantity`, UCUM `kg` |
 
 Use `effectiveDateTime` for a point result. Use `effectivePeriod` when HealthKit supplies
 a start and end that define an interval. Preserve fractional seconds and the numeric
