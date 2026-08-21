@@ -55,13 +55,13 @@
       "required": ["Observation.valueCodeableConcept.coding[system=https://grovealliance.org/fhir/health-connect/CodeSystem/health-connect-sleep-stage]"],
       "allowedAdditions": []
     },
-    "connected-health.default": {
-      "required": ["Observation.extension[connected-health-provider]", "Observation.extension[connected-health-source-type]"],
-      "allowedAdditions": ["Observation.identifier[connectedHealthSourceRecordId]", "Observation.identifier[connectedHealthOutputId]", "Observation.device", "Observation.extension[recordingMethod]", "Observation.extension[gatewayDevice]", "Observation.extension[researchStudy]", "Observation.derivedFrom"]
+    "providers.default": {
+      "required": ["Observation.extension[provider]", "Observation.extension[provider-source-type]"],
+      "allowedAdditions": ["Observation.identifier[providerSourceRecordId]", "Observation.identifier[providerOutputId]", "Observation.device", "Observation.extension[recordingMethod]", "Observation.extension[gatewayDevice]", "Observation.extension[researchStudy]", "Observation.derivedFrom"]
     },
-    "connected-health.withings-blood-pressure": {
-      "inherits": "connected-health.default",
-      "required": ["Observation.extension[connected-health-source-type].valueCode=withings/getmeas:9+10"],
+    "providers.withings-blood-pressure": {
+      "inherits": "providers.default",
+      "required": ["Observation.extension[provider-source-type].valueCode=withings/getmeas:9+10"],
       "allowedAdditions": []
     }
   },
@@ -73,7 +73,7 @@
       "effective": {"type": "Period", "start": "2026-08-20T08:00:00-07:00", "end": "2026-08-20T09:00:00-07:00"},
       "result": {"type": "Quantity", "value": 312.5, "system": "http://unitsofmeasure.org", "code": "kcal", "unit": "kcal"},
       "edgeRules": ["The effective Period has an exact start and end.", "No rate conversion is admitted; value is total active energy for the Period."],
-      "admittedSourceContext": {"healthkit": "healthkit.default", "health-connect": "health-connect.default", "google-health-api": "connected-health.default", "oura": "connected-health.default", "withings": "connected-health.default"}
+      "admittedSourceContext": {"healthkit": "healthkit.default", "health-connect": "health-connect.default", "google-health-api": "providers.default", "oura": "providers.default", "withings": "providers.default"}
     },
     {
       "id": "basal-body-temperature",
@@ -94,7 +94,7 @@
         {"id": "diastolic", "system": "http://loinc.org", "code": "8462-4", "value": 76, "quantitySystem": "http://unitsofmeasure.org", "quantityCode": "mm[Hg]", "unit": "mmHg"}
       ]},
       "edgeRules": ["Observation.value[x] is absent.", "Exactly one populated systolic and one populated diastolic component are required; a partial panel fails closed."],
-      "admittedSourceContext": {"healthkit": "healthkit.default", "health-connect": "health-connect.blood-pressure", "withings": "connected-health.withings-blood-pressure"}
+      "admittedSourceContext": {"healthkit": "healthkit.default", "health-connect": "health-connect.blood-pressure", "withings": "providers.withings-blood-pressure"}
     },
     {
       "id": "body-height",
@@ -103,7 +103,7 @@
       "effective": {"type": "dateTime", "value": "2026-08-20T08:15:00-07:00"},
       "result": {"type": "Quantity", "value": 171.2, "system": "http://unitsofmeasure.org", "code": "cm", "unit": "cm"},
       "edgeRules": ["The normalized result is centimetres; source units must be converted exactly before projection."],
-      "admittedSourceContext": {"healthkit": "healthkit.default", "health-connect": "health-connect.default", "google-health-api": "connected-health.default", "withings": "connected-health.default"}
+      "admittedSourceContext": {"healthkit": "healthkit.default", "health-connect": "health-connect.default", "google-health-api": "providers.default", "withings": "providers.default"}
     },
     {
       "id": "body-temperature",
@@ -112,7 +112,7 @@
       "effective": {"type": "dateTime", "value": "2026-08-20T08:20:00-07:00"},
       "result": {"type": "Quantity", "value": 37.1, "system": "http://unitsofmeasure.org", "code": "Cel", "unit": "Cel"},
       "edgeRules": ["This is general body temperature; basal/resting temperature is not substituted.", "Source measurement location is adapter context and does not change the clinical projection."],
-      "admittedSourceContext": {"healthkit": "healthkit.default", "health-connect": "health-connect.temperature", "google-health-api": "connected-health.default", "withings": "connected-health.default"}
+      "admittedSourceContext": {"healthkit": "healthkit.default", "health-connect": "health-connect.temperature", "google-health-api": "providers.default", "withings": "providers.default"}
     },
     {
       "id": "body-weight",
@@ -121,7 +121,7 @@
       "effective": {"type": "dateTime", "value": "2026-08-20T08:25:00-07:00"},
       "result": {"type": "Quantity", "value": 68.4, "system": "http://unitsofmeasure.org", "code": "kg", "unit": "kg"},
       "edgeRules": ["The normalized result is kilograms; source units must be converted exactly before projection."],
-      "admittedSourceContext": {"healthkit": "healthkit.default", "health-connect": "health-connect.default", "google-health-api": "connected-health.default", "withings": "connected-health.default"}
+      "admittedSourceContext": {"healthkit": "healthkit.default", "health-connect": "health-connect.default", "google-health-api": "providers.default", "withings": "providers.default"}
     },
     {
       "id": "distance",
@@ -130,7 +130,7 @@
       "effective": {"type": "Period", "start": "2026-08-20T07:00:00-07:00", "end": "2026-08-20T07:30:00-07:00"},
       "result": {"type": "Quantity", "value": 4820.5, "system": "http://unitsofmeasure.org", "code": "m", "unit": "m"},
       "edgeRules": ["The result is distance over the exact Period, not speed or a fixed-day aggregate.", "HealthKit activity-specific source type remains adapter lineage and is not discarded from the full resource."],
-      "admittedSourceContext": {"healthkit": "healthkit.default", "health-connect": "health-connect.default", "google-health-api": "connected-health.default", "oura": "connected-health.default", "withings": "connected-health.default"}
+      "admittedSourceContext": {"healthkit": "healthkit.default", "health-connect": "health-connect.default", "google-health-api": "providers.default", "oura": "providers.default", "withings": "providers.default"}
     },
     {
       "id": "heart-rate",
@@ -139,7 +139,7 @@
       "effective": {"type": "dateTime", "value": "2026-08-20T08:30:00.251-07:00"},
       "result": {"type": "Quantity", "value": 72, "system": "http://unitsofmeasure.org", "code": "/min", "unit": "beats/minute"},
       "edgeRules": ["Only a scalar heart-rate sample is admitted; high-frequency series use the Sensor contract or a native Recording Document.", "HealthKit motion context is adapter context and does not alter the normalized value."],
-      "admittedSourceContext": {"healthkit": "healthkit.heart-rate", "health-connect": "health-connect.default", "withings": "connected-health.default"}
+      "admittedSourceContext": {"healthkit": "healthkit.heart-rate", "health-connect": "health-connect.default", "withings": "providers.default"}
     },
     {
       "id": "oxygen-saturation",
@@ -148,7 +148,7 @@
       "effective": {"type": "dateTime", "value": "2026-08-20T08:35:00-07:00"},
       "result": {"type": "Quantity", "value": 98, "system": "http://unitsofmeasure.org", "code": "%", "unit": "%"},
       "edgeRules": ["Fractional source values are converted to percent exactly; 0.98 becomes 98, not 0.98 percent."],
-      "admittedSourceContext": {"healthkit": "healthkit.default", "health-connect": "health-connect.default", "withings": "connected-health.default"}
+      "admittedSourceContext": {"healthkit": "healthkit.default", "health-connect": "health-connect.default", "withings": "providers.default"}
     },
     {
       "id": "respiratory-rate",
@@ -166,7 +166,7 @@
       "effective": {"type": "Period", "start": "2026-08-19T23:00:00-07:00", "end": "2026-08-20T06:30:00-07:00"},
       "result": {"type": "Quantity", "value": 7.5, "system": "http://unitsofmeasure.org", "code": "h", "unit": "h"},
       "edgeRules": ["Duration and effective Period are both required and must describe the same admitted source summary semantics.", "HealthKit has no admitted v0.2.0 aggregate rule and must not synthesize this projection."],
-      "admittedSourceContext": {"health-connect": "health-connect.sleep-duration", "google-health-api": "connected-health.default", "oura": "connected-health.default"}
+      "admittedSourceContext": {"health-connect": "health-connect.sleep-duration", "google-health-api": "providers.default", "oura": "providers.default"}
     },
     {
       "id": "sleep-stage",
@@ -184,7 +184,7 @@
       "effective": {"type": "Period", "start": "2026-08-20T08:00:00-07:00", "end": "2026-08-20T09:00:00-07:00"},
       "result": {"type": "Quantity", "value": 1042, "system": "http://unitsofmeasure.org", "code": "{steps}", "unit": "steps"},
       "edgeRules": ["The Period is non-zero.", "A populated step count is non-negative and represents the exact source interval, not an assumed 24-hour total."],
-      "admittedSourceContext": {"healthkit": "healthkit.default", "health-connect": "health-connect.default", "google-health-api": "connected-health.default", "oura": "connected-health.default", "withings": "connected-health.default"}
+      "admittedSourceContext": {"healthkit": "healthkit.default", "health-connect": "health-connect.default", "google-health-api": "providers.default", "oura": "providers.default", "withings": "providers.default"}
     }
   ]
 }

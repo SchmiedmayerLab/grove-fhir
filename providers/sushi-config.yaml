@@ -6,9 +6,9 @@
 # SPDX-License-Identifier: MIT
 #
 
-id: org.grovealliance.fhir.connected-health
-canonical: https://grovealliance.org/fhir/connected-health
-name: GroveFHIRConnectedHealth
+id: org.grovealliance.fhir.providers
+canonical: https://grovealliance.org/fhir/providers
+name: GroveFHIRProvider
 title: Grove FHIR Connected Provider Adapter
 description: >-
   FHIR R4 mappings for already-obtained Google Health API, Oura, and Withings data exchanged through Grove source-neutral contracts.

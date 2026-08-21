@@ -64,7 +64,7 @@ Every adapter output uses one of the closed direct-claim modes in
 - The SensorKit ECG hybrid claims exactly the source-neutral Sensor ECG profile and
   the SensorKit ECG profile, and includes its required linked native Recording
   Document in the same graph.
-- A raw SensorKit or Connected Health DocumentReference claims exactly the
+- A raw SensorKit or Provider DocumentReference claims exactly the
   source-neutral Sensor Recording Document profile and its adapter Recording Document
   profile.
 - Adapter conversion Provenance claims exactly its adapter conversion profile.

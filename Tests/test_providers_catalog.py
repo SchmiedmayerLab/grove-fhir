@@ -13,12 +13,12 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-CATALOG_PATH = ROOT / "catalog/connected-health-adapter.json"
+CATALOG_PATH = ROOT / "catalog/providers-adapter.json"
 MEASUREMENT_PATH = ROOT / "catalog/measurement-catalog.json"
 GRAPH_PATH = ROOT / "catalog/package-graph.json"
 
 
-class ConnectedHealthCatalogTests(unittest.TestCase):
+class ProviderCatalogTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls.catalog = json.loads(CATALOG_PATH.read_text(encoding="utf-8"))
@@ -33,7 +33,7 @@ class ConnectedHealthCatalogTests(unittest.TestCase):
         self.assertEqual(self.catalog["fhirVersion"], "4.0.1")
         self.assertEqual(self.catalog["version"], "0.2.0")
         self.assertEqual(
-            self.catalog["packageId"], "org.grovealliance.fhir.connected-health"
+            self.catalog["packageId"], "org.grovealliance.fhir.providers"
         )
         self.assertEqual(
             self.catalog["sourceTypeExtension"]["codeRule"],
@@ -41,18 +41,18 @@ class ConnectedHealthCatalogTests(unittest.TestCase):
         )
         self.assertTrue(
             self.catalog["recordingDocument"]["adapterProfile"].endswith(
-                "/connected-health-recording-document"
+                "/provider-recording-document"
             )
         )
         self.assertTrue(
             self.catalog["conversionProvenanceProfile"].endswith(
-                "/connected-health-conversion-provenance"
+                "/provider-conversion-provenance"
             )
         )
         package = next(
             package
             for package in self.graph["packages"]
-            if package["source"] == "connected-health"
+            if package["source"] == "providers"
         )
         self.assertEqual(package["packageId"], self.catalog["packageId"])
         self.assertEqual(package["canonical"], self.catalog["canonical"])
@@ -66,14 +66,14 @@ class ConnectedHealthCatalogTests(unittest.TestCase):
         self.assertEqual(
             set(package["profiles"]),
             {
-                "connected-health-conversion-provenance",
-                "connected-health-observation",
-                "connected-health-recording-document",
+                "provider-conversion-provenance",
+                "provider-observation",
+                "provider-recording-document",
             },
         )
         provenance = next(
             claim for claim in self.claims["adapterConversionProvenanceClaims"]
-            if claim["adapter"] == "connected-health"
+            if claim["adapter"] == "providers"
         )
         self.assertEqual(provenance["profile"], self.catalog["conversionProvenanceProfile"])
         self.assertEqual(

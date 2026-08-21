@@ -115,17 +115,17 @@
       ]
     },
     {
-      "source": "connected-health",
-      "packageId": "org.grovealliance.fhir.connected-health",
-      "canonical": "https://grovealliance.org/fhir/connected-health",
+      "source": "providers",
+      "packageId": "org.grovealliance.fhir.providers",
+      "canonical": "https://grovealliance.org/fhir/providers",
       "dependencies": [
         "org.grovealliance.fhir.mobile#0.2.0",
         "org.grovealliance.fhir.sensor#0.2.0"
       ],
       "profiles": [
-        "connected-health-conversion-provenance",
-        "connected-health-observation",
-        "connected-health-recording-document"
+        "provider-conversion-provenance",
+        "provider-observation",
+        "provider-recording-document"
       ]
     }
   ]

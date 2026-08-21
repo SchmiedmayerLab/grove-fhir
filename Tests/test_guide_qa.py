@@ -64,7 +64,7 @@ class GuideQATests(unittest.TestCase):
                 "SensorKitECGDocumentExample": "application/json",
                 "SensorKitInverseECGDocumentExample": "application/json",
             },
-            "connected-health": {
+            "providers": {
                 "GoogleHealthHeartRateRecordingExample": "application/octet-stream",
             },
         }
@@ -106,7 +106,7 @@ class GuideQATests(unittest.TestCase):
             )
 
         source_content_types: dict[str, set[str]] = {}
-        for guide in ("sensor", "sensorkit", "connected-health"):
+        for guide in ("sensor", "sensorkit", "providers"):
             source = "\n".join(
                 path.read_text(encoding="utf-8")
                 for path in sorted((ROOT / guide / "input/fsh").glob("*.fsh"))
@@ -119,7 +119,7 @@ class GuideQATests(unittest.TestCase):
             {
                 "sensor": {"application/octet-stream"},
                 "sensorkit": {"application/json"},
-                "connected-health": {"application/octet-stream"},
+                "providers": {"application/octet-stream"},
             },
         )
 
@@ -209,7 +209,7 @@ class GuideQATests(unittest.TestCase):
             "sensorkit",
             "healthkit",
             "health-connect",
-            "connected-health",
+            "providers",
             "questionnaire",
         ):
             errors[guide] = {
@@ -221,10 +221,10 @@ class GuideQATests(unittest.TestCase):
             }
         self.assertEqual(
             {guide for guide, messages in errors.items() if messages},
-            {"sensorkit", "connected-health", "questionnaire"},
+            {"sensorkit", "providers", "questionnaire"},
         )
         self.assertEqual(len(errors["sensorkit"]), 3)
-        self.assertEqual(len(errors["connected-health"]), 1)
+        self.assertEqual(len(errors["providers"]), 1)
         self.assertEqual(len(errors["questionnaire"]), 32)
         sdc_link = re.compile(
             r"^ERROR: en/StructureDefinition-grove-questionnaire"

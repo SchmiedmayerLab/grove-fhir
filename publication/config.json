@@ -38,10 +38,10 @@
       "representativeResource": "StructureDefinition/health-connect-observation"
     },
     {
-      "source": "connected-health",
-      "canonicalPath": "connected-health",
+      "source": "providers",
+      "canonicalPath": "providers",
       "aliases": [],
-      "representativeResource": "StructureDefinition/connected-health-observation"
+      "representativeResource": "StructureDefinition/provider-observation"
     },
     {
       "source": "questionnaire",

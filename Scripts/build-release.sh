@@ -19,8 +19,8 @@ if [[ -x "$REPOSITORY_ROOT/.build/jdk21/Contents/Home/bin/java" ]]; then
 fi
 readonly JAVA_COMMAND
 
-if [[ "$#" -ne 1 || ("$1" != "mobile" && "$1" != "sensor" && "$1" != "sensorkit" && "$1" != "healthkit" && "$1" != "health-connect" && "$1" != "connected-health" && "$1" != "questionnaire") ]]; then
-  echo "Usage: $0 <mobile|sensor|sensorkit|healthkit|health-connect|connected-health|questionnaire>" >&2
+if [[ "$#" -ne 1 || ("$1" != "mobile" && "$1" != "sensor" && "$1" != "sensorkit" && "$1" != "healthkit" && "$1" != "health-connect" && "$1" != "providers" && "$1" != "questionnaire") ]]; then
+  echo "Usage: $0 <mobile|sensor|sensorkit|healthkit|health-connect|providers|questionnaire>" >&2
   exit 2
 fi
 

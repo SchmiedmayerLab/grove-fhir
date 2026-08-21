@@ -1472,120 +1472,120 @@
       ]
     },
     {
-      "source": "connected-health",
-      "packageId": "org.grovealliance.fhir.connected-health",
-      "canonical": "https://grovealliance.org/fhir/connected-health",
+      "source": "providers",
+      "packageId": "org.grovealliance.fhir.providers",
+      "canonical": "https://grovealliance.org/fhir/providers",
       "artifacts": [
         {
-          "fshName": "ConnectedHealthProvider",
+          "fshName": "ProviderProvider",
           "fshType": "Extension",
           "resourceType": "StructureDefinition",
-          "id": "connected-health-provider",
+          "id": "provider",
           "classification": "definition"
         },
         {
-          "fshName": "ConnectedHealthSourceType",
+          "fshName": "ProviderSourceType",
           "fshType": "Extension",
           "resourceType": "StructureDefinition",
-          "id": "connected-health-source-type",
+          "id": "provider-source-type",
           "classification": "definition"
         },
         {
-          "fshName": "ConnectedHealthProviderCS",
+          "fshName": "ProviderProviderCS",
           "fshType": "CodeSystem",
           "resourceType": "CodeSystem",
-          "id": "connected-health-provider",
+          "id": "provider",
           "classification": "definition"
         },
         {
-          "fshName": "ConnectedHealthProviderVS",
+          "fshName": "ProviderProviderVS",
           "fshType": "ValueSet",
           "resourceType": "ValueSet",
-          "id": "connected-health-provider",
+          "id": "provider",
           "classification": "definition"
         },
         {
-          "fshName": "ConnectedHealthSourceTypeCS",
+          "fshName": "ProviderSourceTypeCS",
           "fshType": "CodeSystem",
           "resourceType": "CodeSystem",
-          "id": "connected-health-source-type",
+          "id": "provider-source-type",
           "classification": "definition"
         },
         {
-          "fshName": "ConnectedHealthSourceTypeVS",
+          "fshName": "ProviderSourceTypeVS",
           "fshType": "ValueSet",
           "resourceType": "ValueSet",
-          "id": "connected-health-source-type",
+          "id": "provider-source-type",
           "classification": "definition"
         },
         {
-          "fshName": "ConnectedHealthObservation",
+          "fshName": "ProviderObservation",
           "fshType": "Profile",
           "resourceType": "StructureDefinition",
-          "id": "connected-health-observation",
+          "id": "provider-observation",
           "classification": "definition"
         },
         {
-          "fshName": "ConnectedHealthRecordingDocument",
+          "fshName": "ProviderRecordingDocument",
           "fshType": "Profile",
           "resourceType": "StructureDefinition",
-          "id": "connected-health-recording-document",
+          "id": "provider-recording-document",
           "classification": "definition"
         },
         {
-          "fshName": "ConnectedHealthConversionProvenance",
+          "fshName": "ProviderConversionProvenance",
           "fshType": "Profile",
           "resourceType": "StructureDefinition",
-          "id": "connected-health-conversion-provenance",
+          "id": "provider-conversion-provenance",
           "classification": "definition"
         },
         {
-          "fshName": "ConnectedHealthSourceRecordIdentifier",
+          "fshName": "ProviderSourceRecordIdentifier",
           "fshType": "Instance",
           "resourceType": "NamingSystem",
-          "id": "connected-health-source-record-id",
+          "id": "provider-source-record-id",
           "classification": "definition"
         },
         {
-          "fshName": "ConnectedHealthOutputIdentifier",
+          "fshName": "ProviderOutputIdentifier",
           "fshType": "Instance",
           "resourceType": "NamingSystem",
-          "id": "connected-health-output-id",
+          "id": "provider-output-id",
           "classification": "definition"
         },
         {
-          "fshName": "ConnectedHealthConversionIdentifier",
+          "fshName": "ProviderConversionIdentifier",
           "fshType": "Instance",
           "resourceType": "NamingSystem",
-          "id": "connected-health-conversion-id",
+          "id": "provider-conversion-id",
           "classification": "definition"
         },
         {
-          "fshName": "ConnectedHealthExchangeIdentifier",
+          "fshName": "ProviderExchangeIdentifier",
           "fshType": "Instance",
           "resourceType": "NamingSystem",
-          "id": "connected-health-exchange-id",
+          "id": "provider-exchange-id",
           "classification": "definition"
         },
         {
-          "fshName": "ConnectedHealthProviderAccountIdentifier",
+          "fshName": "ProviderProviderAccountIdentifier",
           "fshType": "Instance",
           "resourceType": "NamingSystem",
-          "id": "connected-health-provider-account-id",
+          "id": "provider-account-id",
           "classification": "definition"
         },
         {
-          "fshName": "ConnectedHealthPatientExample",
+          "fshName": "ProviderPatientExample",
           "fshType": "Instance",
           "resourceType": "Patient",
-          "id": "ConnectedHealthPatientExample",
+          "id": "ProviderPatientExample",
           "classification": "example"
         },
         {
-          "fshName": "ConnectedHealthApplicationExample",
+          "fshName": "ProviderApplicationExample",
           "fshType": "Instance",
           "resourceType": "Device",
-          "id": "ConnectedHealthApplicationExample",
+          "id": "ProviderApplicationExample",
           "classification": "example"
         },
         {

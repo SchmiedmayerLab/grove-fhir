@@ -6,82 +6,82 @@
 // SPDX-License-Identifier: MIT
 //
 
-Instance: ConnectedHealthSourceRecordIdentifier
+Instance: ProviderSourceRecordIdentifier
 InstanceOf: NamingSystem
 Usage: #definition
-Title: "Connected Health Source Record Identifier"
-Description: "The identifier namespace for a provider-scoped source record converted by the Connected Health adapter."
-* id = "connected-health-source-record-id"
-* name = "ConnectedHealthSourceRecordIdentifier"
+Title: "Provider Source Record Identifier"
+Description: "The identifier namespace for a provider-scoped source record converted by the Provider adapter."
+* id = "provider-source-record-id"
+* name = "ProviderSourceRecordIdentifier"
 * status = #active
 * kind = #identifier
 * date = "2026-08-20"
 * publisher = "Schmiedmayer Lab"
 * description = "Identifies one provider-scoped source record without exposing its provider-native key. The provider account input is deployment-scoped and pseudonymous, and the raw source-native key is digest input only. Values use the versioned digest algorithm defined by the machine-readable adapter catalog. The complete system and value pair is business identity, never a FHIR Resource.id, access token, authorization credential, or permission to fetch provider data."
 * uniqueId.type = #uri
-* uniqueId.value = $connectedHealthSourceRecordId
+* uniqueId.value = $providerSourceRecordId
 * uniqueId.preferred = true
 
-Instance: ConnectedHealthOutputIdentifier
+Instance: ProviderOutputIdentifier
 InstanceOf: NamingSystem
 Usage: #definition
-Title: "Connected Health Output Identifier"
+Title: "Provider Output Identifier"
 Description: "The identifier namespace for one source-neutral Observation emitted from a connected-provider record."
-* id = "connected-health-output-id"
-* name = "ConnectedHealthOutputIdentifier"
+* id = "provider-output-id"
+* name = "ProviderOutputIdentifier"
 * status = #active
 * kind = #identifier
 * date = "2026-08-20"
 * publisher = "Schmiedmayer Lab"
 * description = "Identifies one logical output of a connected-provider conversion. One-to-many conversions use distinct output discriminants. Values are stable business identifiers and are not FHIR Resource.id values."
 * uniqueId.type = #uri
-* uniqueId.value = $connectedHealthOutputId
+* uniqueId.value = $providerOutputId
 * uniqueId.preferred = true
 
-Instance: ConnectedHealthConversionIdentifier
+Instance: ProviderConversionIdentifier
 InstanceOf: NamingSystem
 Usage: #definition
-Title: "Connected Health Conversion Identifier"
+Title: "Provider Conversion Identifier"
 Description: "The identifier namespace for one durable connected-provider conversion event."
-* id = "connected-health-conversion-id"
-* name = "ConnectedHealthConversionIdentifier"
+* id = "provider-conversion-id"
+* name = "ProviderConversionIdentifier"
 * status = #active
 * kind = #identifier
 * date = "2026-08-20"
 * publisher = "Schmiedmayer Lab"
 * description = "Identifies one conversion event over an exact source-record identifier set and durable positive event sequence. FHIR R4 Provenance has no native identifier, so the pair is carried by the enclosing exchange entry-identifier extension."
 * uniqueId.type = #uri
-* uniqueId.value = $connectedHealthConversionId
+* uniqueId.value = $providerConversionId
 * uniqueId.preferred = true
 
-Instance: ConnectedHealthExchangeIdentifier
+Instance: ProviderExchangeIdentifier
 InstanceOf: NamingSystem
 Usage: #definition
-Title: "Connected Health Exchange Identifier"
+Title: "Provider Exchange Identifier"
 Description: "The identifier namespace for one acknowledged connected-provider collection Bundle."
-* id = "connected-health-exchange-id"
-* name = "ConnectedHealthExchangeIdentifier"
+* id = "provider-exchange-id"
+* name = "ProviderExchangeIdentifier"
 * status = #active
 * kind = #identifier
 * date = "2026-08-20"
 * publisher = "Schmiedmayer Lab"
 * description = "Identifies one Grove Mobile collection Bundle event. The value is carried in Bundle.identifier and does not define transport, receiver, storage, or authentication policy."
 * uniqueId.type = #uri
-* uniqueId.value = $connectedHealthExchangeId
+* uniqueId.value = $providerExchangeId
 * uniqueId.preferred = true
 
-Instance: ConnectedHealthProviderAccountIdentifier
+Instance: ProviderProviderAccountIdentifier
 InstanceOf: NamingSystem
 Usage: #definition
-Title: "Connected Health Provider Account Identifier"
+Title: "Provider Account Identifier"
 Description: "The namespace used when a deployment has a stable, evidenced provider-account identifier."
-* id = "connected-health-provider-account-id"
-* name = "ConnectedHealthProviderAccountIdentifier"
+* id = "provider-account-id"
+* name = "ProviderProviderAccountIdentifier"
 * status = #active
 * kind = #identifier
 * date = "2026-08-20"
 * publisher = "Schmiedmayer Lab"
 * description = "Identifies a provider account only when the source supplies that identity. It is not required on clinical outputs, must not be synthesized from a person name, and is not an OAuth token or other authorization secret."
 * uniqueId.type = #uri
-* uniqueId.value = $connectedHealthProviderAccountId
+* uniqueId.value = $providerAccountId
 * uniqueId.preferred = true

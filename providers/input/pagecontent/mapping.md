@@ -12,7 +12,7 @@ The machine catalog uses exactly these meanings:
 
 - `supported`: v0.2.0 defines an exact conversion to a listed shared profile.
 - `mapped-standard`: v0.2.0 maps the provider-native payload to the exact source-neutral
-  Sensor plus Connected Health Recording Document profile pair without asserting a
+  Sensor plus Provider Recording Document profile pair without asserting a
   scalar clinical meaning.
 - `provider-specific`: the source element is known and inventoried but has no shared
   Mobile semantic profile in this release.
@@ -36,7 +36,7 @@ Important fail-closed boundaries include:
 - Withings systolic and diastolic values become one blood-pressure panel only when both
   occur in the same provider measure group.
 
-See `catalog/connected-health-adapter.json` for every exact source token, element, unit
+See `catalog/providers-adapter.json` for every exact source token, element, unit
 conversion, grouping rule, shared profile, and definitive status.
 The [authoritative status matrix](status-matrix.html) renders every provider field and
 the atomic Withings grouped mapping from that machine catalog.

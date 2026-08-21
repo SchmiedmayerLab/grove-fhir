@@ -391,7 +391,7 @@ class ProducerConformanceTests(unittest.TestCase):
             claims["healthConnectProviderSpecificClaims"]["profiles"][0],
             claims["sensorKitProviderSpecificClaims"]["profiles"][0],
             claims["sensorKitRecordingDocumentClaim"]["profiles"][1],
-            claims["connectedHealthRecordingDocumentClaim"]["profiles"][1],
+            claims["providerRecordingDocumentClaim"]["profiles"][1],
             *[
                 claim["profile"]
                 for claim in claims["adapterConversionProvenanceClaims"]
@@ -516,7 +516,7 @@ class ProducerConformanceTests(unittest.TestCase):
             VALIDATOR.validate_health_connect_source_type(wrong_record, "HealthConnect")
 
         connected_catalog = json.loads(
-            (ROOT / "catalog/connected-health-adapter.json").read_text(encoding="utf-8")
+            (ROOT / "catalog/providers-adapter.json").read_text(encoding="utf-8")
         )
         source_vector = next(
             vector for vector in connected_catalog["identity"]["vectors"]
@@ -544,7 +544,7 @@ class ProducerConformanceTests(unittest.TestCase):
             ],
             "extension": [
                 {
-                    "url": "https://grovealliance.org/fhir/connected-health/StructureDefinition/connected-health-provider",
+                    "url": "https://grovealliance.org/fhir/providers/StructureDefinition/provider",
                     "valueCode": "google-health-api",
                 },
                 {
@@ -553,13 +553,13 @@ class ProducerConformanceTests(unittest.TestCase):
                 },
             ],
         }
-        VALIDATOR.validate_connected_health_identity(connected, "Connected")
+        VALIDATOR.validate_provider_identity(connected, "Connected")
         cross_provider = copy.deepcopy(connected)
         cross_provider["extension"][1]["valueCode"] = "oura/heartrate"
         with self.assertRaisesRegex(
             VALIDATOR.ProducerValidationError, "unknown or cross-provider"
         ):
-            VALIDATOR.validate_connected_health_identity(cross_provider, "Connected")
+            VALIDATOR.validate_provider_identity(cross_provider, "Connected")
 
     def test_sensorkit_specific_and_recording_claims_are_exact(self) -> None:
         provider_profile = (

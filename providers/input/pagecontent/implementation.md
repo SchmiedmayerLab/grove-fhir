@@ -7,7 +7,7 @@ SPDX-License-Identifier: MIT
 -->
 
 Pass already-obtained provider records into a mapper that consumes the exact contract in
-`catalog/connected-health-adapter.json`. Provider API clients, credentials, token refresh,
+`catalog/providers-adapter.json`. Provider API clients, credentials, token refresh,
 subscriptions, and network retries belong to the calling application and are outside this
 package.
 
@@ -18,7 +18,7 @@ A producer must:
 3. normalize units without changing the source interval or inventing an instant;
 4. assign complete source and output business identifiers;
 5. declare exactly the catalogued profile pair for a shared Observation or native Recording Document; and
-6. include one `connected-health-conversion-provenance` whose sole source entity is the
+6. include one `provider-conversion-provenance` whose sole source entity is the
    complete connected-provider source-record Identifier and whose internal UUID targets
    cover every structured and raw output for that source record; and
 7. exchange a complete resource graph in a Grove Mobile collection Bundle using

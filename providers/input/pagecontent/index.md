@@ -14,18 +14,25 @@ receiving service.
 Every normalized Observation declares exactly two direct profiles:
 
 1. the exact source-neutral Grove Mobile measurement profile; and
-2. [Connected Health Observation](StructureDefinition-connected-health-observation.html).
+2. [Provider Observation](StructureDefinition-provider-observation.html).
 
 The shared profile owns clinical meaning, result shape, unit, and time semantics. The
 adapter profile owns provider lineage and deterministic business identity. Inherited
 Mobile and core standard profiles are not repeated in `meta.profile`. Provider-native
 irregular recordings marked `mapped-standard` declare exactly the source-neutral Grove
-Sensor Recording Document and Connected Health Recording Document profiles. The adapter
+Sensor Recording Document and Provider Recording Document profiles. The adapter
 document preserves provider lineage and exact source/output identity without pretending
 that irregular points are uniform. Structured and raw transformations use the same
-Connected Health conversion Provenance graph shape.
+Provider conversion Provenance graph shape.
 
-`catalog/connected-health-adapter.json` is the authoritative v0.2.0 inventory. Every
+### When a source becomes its own adapter
+
+One adapter guide serves every connected provider because the providers share one profile shape: one Provider Observation profile, one identity scheme, and one raw-payload admission rule, with only the source vocabulary differing per provider.
+A new provider therefore lands as a section of `catalog/providers-adapter.json` by default.
+A source graduates to its own adapter guide only when its profile shape genuinely diverges — its own evidence rules, identity contract, or resource structure — which is why HealthKit, SensorKit, and Health Connect are separate adapters and Google Health API, Oura, and Withings are not.
+The vendor is never the axis: the same company can ship data through several source APIs, and each API follows the contract of the adapter it arrives through.
+
+`catalog/providers-adapter.json` is the authoritative v0.2.0 inventory. Every
 source type and consumed source element from the closed provider source catalogs has
 exactly one status. The catalog is a closed release contract, not a roadmap.
 

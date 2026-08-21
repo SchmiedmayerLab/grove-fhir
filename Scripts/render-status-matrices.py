@@ -220,8 +220,8 @@ def sensorkit() -> str:
     )
 
 
-def connected_health() -> str:
-    catalog = load("connected-health-adapter.json")
+def providers() -> str:
+    catalog = load("providers-adapter.json")
     rows = []
     grouped_rows = []
     for provider in catalog["providers"]:
@@ -285,7 +285,7 @@ OUTPUTS = {
     ROOT / "healthkit/input/pagecontent/status-matrix.md": healthkit,
     ROOT / "health-connect/input/pagecontent/status-matrix.md": health_connect,
     ROOT / "sensorkit/input/pagecontent/status-matrix.md": sensorkit,
-    ROOT / "connected-health/input/pagecontent/status-matrix.md": connected_health,
+    ROOT / "providers/input/pagecontent/status-matrix.md": providers,
 }
 
 

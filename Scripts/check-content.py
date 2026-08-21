@@ -24,7 +24,7 @@ EXPECTED_GUIDE_SOURCES = (
     "sensorkit",
     "healthkit",
     "health-connect",
-    "connected-health",
+    "providers",
     "questionnaire",
 )
 MOBILE_ADAPTER_SOURCES = (
@@ -32,7 +32,7 @@ MOBILE_ADAPTER_SOURCES = (
     "sensorkit",
     "healthkit",
     "health-connect",
-    "connected-health",
+    "providers",
 )
 GUIDES = tuple(ROOT / source for source in EXPECTED_GUIDE_SOURCES)
 REQUIRED_CONFIGURATION_KEYS = {"id", "canonical", "version", "fhirVersion", "license"}

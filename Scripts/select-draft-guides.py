@@ -43,7 +43,7 @@ def seed_for_path(path: str, guides: set[str]) -> set[str]:
         "catalog/healthkit-adapter.json": {"healthkit"},
         "catalog/health-connect-adapter.json": {"health-connect"},
         "catalog/health-connect-identity.json": {"health-connect"},
-        "catalog/connected-health-adapter.json": {"connected-health"},
+        "catalog/providers-adapter.json": {"providers"},
         "catalog/sensorkit-adapter.json": {"sensorkit"},
     }
     if path in catalog_seeds:

@@ -68,10 +68,10 @@ ADAPTER_PACKAGE_PROFILES = {
         "https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-specimen",
         "https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-conversion-provenance",
     },
-    "org.grovealliance.fhir.connected-health": {
-        "https://grovealliance.org/fhir/connected-health/StructureDefinition/connected-health-observation",
-        "https://grovealliance.org/fhir/connected-health/StructureDefinition/connected-health-recording-document",
-        "https://grovealliance.org/fhir/connected-health/StructureDefinition/connected-health-conversion-provenance",
+    "org.grovealliance.fhir.providers": {
+        "https://grovealliance.org/fhir/providers/StructureDefinition/provider-observation",
+        "https://grovealliance.org/fhir/providers/StructureDefinition/provider-recording-document",
+        "https://grovealliance.org/fhir/providers/StructureDefinition/provider-conversion-provenance",
     },
     "org.grovealliance.fhir.sensorkit": {
         "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-observation",
@@ -1015,7 +1015,7 @@ def validate_health_connect_source_type(resource: dict[str, Any], label: str) ->
         )
 
 
-def validate_connected_health_claim(resource: dict[str, Any], label: str) -> None:
+def validate_provider_claim(resource: dict[str, Any], label: str) -> None:
     """Require the exact source-neutral plus adapter pair on connected raw data."""
     if resource.get("resourceType") != "DocumentReference":
         return
@@ -1023,13 +1023,13 @@ def validate_connected_health_claim(resource: dict[str, Any], label: str) -> Non
     if not isinstance(profiles, list):
         raise ProducerValidationError(f"{label} has invalid meta.profile")
     claim = read_json(CATALOG_ROOT / "profile-claims.json")[
-        "connectedHealthRecordingDocumentClaim"
+        "providerRecordingDocumentClaim"
     ]
     if claim["profiles"][1] not in profiles:
         return
     if len(profiles) != claim["cardinality"] or set(profiles) != set(claim["profiles"]):
         raise ProducerValidationError(
-            f"{label} Connected Health Recording Document must directly claim exactly "
+            f"{label} Provider Recording Document must directly claim exactly "
             "the source-neutral and connected adapter profiles"
         )
 
@@ -1090,7 +1090,7 @@ def validate_adapter_conversion_provenance(
         )
 
 
-def validate_connected_health_identity(resource: dict[str, Any], label: str) -> None:
+def validate_provider_identity(resource: dict[str, Any], label: str) -> None:
     """Validate provider lineage and deterministic source/output business identity."""
     if resource.get("resourceType") not in {"Observation", "DocumentReference"}:
         return
@@ -1098,16 +1098,16 @@ def validate_connected_health_identity(resource: dict[str, Any], label: str) -> 
     if not isinstance(profiles, list):
         return
     adapter = (
-        "https://grovealliance.org/fhir/connected-health/StructureDefinition/"
-        "connected-health-observation"
+        "https://grovealliance.org/fhir/providers/StructureDefinition/"
+        "provider-observation"
     )
     document_adapter = (
-        "https://grovealliance.org/fhir/connected-health/StructureDefinition/"
-        "connected-health-recording-document"
+        "https://grovealliance.org/fhir/providers/StructureDefinition/"
+        "provider-recording-document"
     )
     if adapter not in profiles and document_adapter not in profiles:
         return
-    catalog = read_json(CATALOG_ROOT / "connected-health-adapter.json")
+    catalog = read_json(CATALOG_ROOT / "providers-adapter.json")
     source_system = catalog["identity"]["sourceRecord"]["system"]
     output_system = catalog["identity"]["output"]["system"]
     identifiers = resource.get("identifier", [])
@@ -1121,7 +1121,7 @@ def validate_connected_health_identity(resource: dict[str, Any], label: str) -> 
         ]
         if len(matches) != 1:
             raise ProducerValidationError(
-                f"{label} must carry exactly one Connected Health {role} identifier"
+                f"{label} must carry exactly one Provider {role} identifier"
             )
         return complete_identifier(matches[0], f"{label} {role} identifier")[1]
 
@@ -1131,14 +1131,14 @@ def validate_connected_health_identity(resource: dict[str, Any], label: str) -> 
     if re.fullmatch(digest_pattern, source_value) is None or re.fullmatch(
         digest_pattern, output_value
     ) is None:
-        raise ProducerValidationError(f"{label} has an invalid Connected Health digest")
+        raise ProducerValidationError(f"{label} has an invalid Provider digest")
     if resource.get("id") in {source_value, output_value}:
         raise ProducerValidationError(
-            f"{label} must not copy a Connected Health business identifier into Resource.id"
+            f"{label} must not copy a Provider business identifier into Resource.id"
         )
     provider_url = (
-        "https://grovealliance.org/fhir/connected-health/StructureDefinition/"
-        "connected-health-provider"
+        "https://grovealliance.org/fhir/providers/StructureDefinition/"
+        "provider"
     )
     extensions = resource.get("extension", [])
     providers = [
@@ -1148,7 +1148,7 @@ def validate_connected_health_identity(resource: dict[str, Any], label: str) -> 
     admitted_providers = {item["id"] for item in catalog["providers"]}
     if len(providers) != 1 or providers[0] not in admitted_providers:
         raise ProducerValidationError(
-            f"{label} must carry exactly one admitted Connected Health provider"
+            f"{label} must carry exactly one admitted Provider provider"
         )
     source_type_url = catalog["sourceTypeExtension"]["url"]
     source_types = [
@@ -1157,7 +1157,7 @@ def validate_connected_health_identity(resource: dict[str, Any], label: str) -> 
     ] if isinstance(extensions, list) else []
     if len(source_types) != 1 or not isinstance(source_types[0], str):
         raise ProducerValidationError(
-            f"{label} must carry exactly one coded Connected Health source type"
+            f"{label} must carry exactly one coded Provider source type"
         )
     provider = next(item for item in catalog["providers"] if item["id"] == providers[0])
     ordinary = {
@@ -1172,7 +1172,7 @@ def validate_connected_health_identity(resource: dict[str, Any], label: str) -> 
     grouped_row = grouped.get(source_types[0])
     if source_row is None and grouped_row is None:
         raise ProducerValidationError(
-            f"{label} uses an unknown or cross-provider Connected Health source type"
+            f"{label} uses an unknown or cross-provider Provider source type"
         )
     if resource["resourceType"] == "DocumentReference":
         if source_row is None or "raw" not in source_row:
@@ -1188,7 +1188,7 @@ def validate_connected_health_identity(resource: dict[str, Any], label: str) -> 
         claimed = [measurement_profiles[item] for item in profiles if item in measurement_profiles]
         if len(claimed) != 1:
             raise ProducerValidationError(
-                f"{label} Connected Health Observation has no exact shared measurement"
+                f"{label} Provider Observation has no exact shared measurement"
             )
         if grouped_row is not None:
             admitted_measurements = set(grouped_row["measurementIds"])
@@ -1201,7 +1201,7 @@ def validate_connected_health_identity(resource: dict[str, Any], label: str) -> 
             }
         if claimed[0] not in admitted_measurements:
             raise ProducerValidationError(
-                f"{label} Connected Health source type does not admit its claimed measurement"
+                f"{label} Provider source type does not admit its claimed measurement"
             )
         discriminator = (
             "blood-pressure-panel"
@@ -1212,7 +1212,7 @@ def validate_connected_health_identity(resource: dict[str, Any], label: str) -> 
     expected = "v1:" + hashlib.sha256(preimage.encode("utf-8")).hexdigest()
     if output_value != expected:
         raise ProducerValidationError(
-            f"{label} Connected Health output identifier does not match its exact "
+            f"{label} Provider output identifier does not match its exact "
             "source and discriminator"
         )
 
@@ -1533,9 +1533,9 @@ def validate_resource_profile_claims(
     validate_healthkit_source_type(resource, label)
     validate_healthkit_ecg_contract(resource, label)
     validate_health_connect_source_type(resource, label)
-    validate_connected_health_claim(resource, label)
+    validate_provider_claim(resource, label)
     validate_adapter_conversion_provenance(resource, label)
-    validate_connected_health_identity(resource, label)
+    validate_provider_identity(resource, label)
     validate_sensorkit_profile_claim(resource, label)
     validate_sensorkit_identity(resource, label)
     validate_sensorkit_ecg_contract(resource, label)

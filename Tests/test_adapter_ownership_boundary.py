@@ -20,7 +20,7 @@ ROOT = Path(__file__).resolve().parents[1]
 CATALOG_PATHS = (
     ROOT / "catalog/healthkit-adapter.json",
     ROOT / "catalog/sensorkit-adapter.json",
-    ROOT / "catalog/connected-health-adapter.json",
+    ROOT / "catalog/providers-adapter.json",
 )
 FORBIDDEN_KEYS = {
     "groveRepository",
@@ -61,7 +61,7 @@ def owned_text_paths() -> list[Path]:
         ROOT / "Scripts/render-status-matrices.py",
         ROOT / "Scripts/render-adapter-source-terminology.py",
     ]
-    for source in ("healthkit", "sensorkit", "connected-health"):
+    for source in ("healthkit", "sensorkit", "providers"):
         paths.extend(sorted((ROOT / source / "input/pagecontent").glob("*.md")))
     return paths
 

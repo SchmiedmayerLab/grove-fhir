@@ -43,13 +43,13 @@ package graph is:
 | `org.grovealliance.fhir.healthkit` | Apple HealthKit adapter; depends on Mobile and Sensor |
 | `org.grovealliance.fhir.health-connect` | Android Health Connect 1.1 adapter; depends on Mobile |
 | `org.grovealliance.fhir.sensorkit` | Apple SensorKit adapter; depends on Mobile and Sensor |
-| `org.grovealliance.fhir.connected-health` | Google Health API, Oura, and Withings mappings; depends on Mobile and Sensor |
+| `org.grovealliance.fhir.providers` | Google Health API, Oura, and Withings mappings; depends on Mobile and Sensor |
 
 Use the [HealthKit adapter](https://schmiedmayerlab.github.io/grove-fhir/healthkit/),
 [Health Connect adapter](https://schmiedmayerlab.github.io/grove-fhir/health-connect/),
 [Sensor and waveform guide](https://schmiedmayerlab.github.io/grove-fhir/sensor/),
 [SensorKit adapter](https://schmiedmayerlab.github.io/grove-fhir/sensorkit/), or
-[connected-provider adapter](https://schmiedmayerlab.github.io/grove-fhir/connected-health/)
+[connected-provider adapter](https://schmiedmayerlab.github.io/grove-fhir/providers/)
 for the applicable already-obtained source data. Use the
 [Questionnaire Exchange guide](https://schmiedmayerlab.github.io/grove-fhir/questionnaire/)
 to publish instruments and exchange their responses. Adapter packages define mappings

@@ -28,7 +28,7 @@ class PackageGraphTests(unittest.TestCase):
         sources = [package["source"] for package in graph["packages"]]
         self.assertEqual(
             sources,
-            ["mobile", "questionnaire", "sensor", "sensorkit", "healthkit", "health-connect", "connected-health"],
+            ["mobile", "questionnaire", "sensor", "sensorkit", "healthkit", "health-connect", "providers"],
         )
         self.assertEqual(len(sources), len(set(sources)))
         for package in graph["packages"]:
@@ -64,7 +64,7 @@ class PackageGraphTests(unittest.TestCase):
         self.assertIn("specimen-specific glucose", conformance)
         self.assertIn("SensorKit-only", conformance)
         self.assertIn("SensorKit ECG hybrid", conformance)
-        self.assertIn("raw SensorKit or Connected Health DocumentReference", conformance)
+        self.assertIn("raw SensorKit or Provider DocumentReference", conformance)
         self.assertIn("Adapter conversion Provenance", conformance)
         self.assertIn("requiredProfiles", conformance)
         self.assertEqual(
@@ -80,7 +80,7 @@ class PackageGraphTests(unittest.TestCase):
             claims["sensorKitRecordingDocumentClaim"]["cardinality"], 2
         )
         self.assertEqual(
-            claims["connectedHealthRecordingDocumentClaim"]["cardinality"], 2
+            claims["providerRecordingDocumentClaim"]["cardinality"], 2
         )
 
 

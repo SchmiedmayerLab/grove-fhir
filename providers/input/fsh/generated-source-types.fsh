@@ -9,9 +9,9 @@
 // `python3 Scripts/render-adapter-source-terminology.py`.
 //
 
-CodeSystem: ConnectedHealthSourceTypeCS
-Id: connected-health-source-type
-Title: "Connected Health Source Types"
+CodeSystem: ProviderSourceTypeCS
+Id: provider-source-type
+Title: "Provider Source Types"
 Description: "The complete provider-qualified Google Health API, Oura, and Withings source inventory admitted or explicitly classified by version 0.2.0. The code is source lineage, not a clinical result code or fetch instruction."
 * ^experimental = false
 * ^caseSensitive = true
@@ -86,9 +86,9 @@ Description: "The complete provider-qualified Google Health API, Oura, and Withi
 * #withings/getworkouts:interval "Withings: getworkouts:interval"
 * #withings/sleepIntraday "Withings: sleepIntraday"
 
-ValueSet: ConnectedHealthSourceTypeVS
-Id: connected-health-source-type
-Title: "Connected Health Source Types"
-Description: "The complete closed provider-qualified source-type inventory for the Connected Health 0.2.0 adapter."
+ValueSet: ProviderSourceTypeVS
+Id: provider-source-type
+Title: "Provider Source Types"
+Description: "The complete closed provider-qualified source-type inventory for the Provider 0.2.0 adapter."
 * ^experimental = false
-* include codes from system ConnectedHealthSourceTypeCS
+* include codes from system ProviderSourceTypeCS

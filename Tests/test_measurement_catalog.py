@@ -81,7 +81,7 @@ class MeasurementCatalogTests(unittest.TestCase):
             (ROOT / "catalog/sensorkit-adapter.json").read_text(encoding="utf-8")
         )
         connected = json.loads(
-            (ROOT / "catalog/connected-health-adapter.json").read_text(
+            (ROOT / "catalog/providers-adapter.json").read_text(
                 encoding="utf-8"
             )
         )

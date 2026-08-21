@@ -6,15 +6,15 @@
 // SPDX-License-Identifier: MIT
 //
 
-Invariant: connected-health-digest-id-1
+Invariant: provider-digest-id-1
 Description: "A connected-provider digest identifier uses the versioned lowercase SHA-256 form defined by this guide."
 Severity: #error
 Expression: "matches('^v1:[0-9a-f]{64}$')"
 
-Profile: ConnectedHealthObservation
+Profile: ProviderObservation
 Parent: GroveMobileObservation
-Id: connected-health-observation
-Title: "Connected Health Observation"
+Id: provider-observation
+Title: "Provider Observation"
 Description: "Source lineage and deterministic business identity for a shared Mobile or Sensor Observation converted from already-obtained Google Health API, Oura, or Withings data. Every output also declares exactly one exact source-neutral semantic profile."
 * identifier ^slicing.discriminator.type = #value
 * identifier ^slicing.discriminator.path = "system"
@@ -22,21 +22,21 @@ Description: "Source lineage and deterministic business identity for a shared Mo
 * identifier contains
     sourceRecordId 1..1 MS and
     outputId 1..1 MS
-* identifier[sourceRecordId].system = $connectedHealthSourceRecordId
+* identifier[sourceRecordId].system = $providerSourceRecordId
 * identifier[sourceRecordId].value 1..1 MS
-* identifier[sourceRecordId].value obeys connected-health-digest-id-1
-* identifier[outputId].system = $connectedHealthOutputId
+* identifier[sourceRecordId].value obeys provider-digest-id-1
+* identifier[outputId].system = $providerOutputId
 * identifier[outputId].value 1..1 MS
-* identifier[outputId].value obeys connected-health-digest-id-1
+* identifier[outputId].value obeys provider-digest-id-1
 * issued 1..1 MS
 * extension contains
-    ConnectedHealthProvider named connectedHealthProvider 1..1 MS and
-    ConnectedHealthSourceType named connectedHealthSourceType 1..1 MS
+    ProviderProvider named provider 1..1 MS and
+    ProviderSourceType named providerSourceType 1..1 MS
 
-Profile: ConnectedHealthRecordingDocument
+Profile: ProviderRecordingDocument
 Parent: GroveSensorRecordingDocument
-Id: connected-health-recording-document
-Title: "Connected Health Recording Document"
+Id: provider-recording-document
+Title: "Provider Recording Document"
 Description: "A provider-native payload already obtained from Google Health API, Oura, or Withings and retained without inventing uniform timing or scalar semantics."
 * identifier ^slicing.discriminator.type = #value
 * identifier ^slicing.discriminator.path = "system"
@@ -44,27 +44,27 @@ Description: "A provider-native payload already obtained from Google Health API,
 * identifier contains
     sourceRecordId 1..1 MS and
     outputId 1..1 MS
-* identifier[sourceRecordId].system = $connectedHealthSourceRecordId
+* identifier[sourceRecordId].system = $providerSourceRecordId
 * identifier[sourceRecordId].value 1..1 MS
-* identifier[sourceRecordId].value obeys connected-health-digest-id-1
-* identifier[outputId].system = $connectedHealthOutputId
+* identifier[sourceRecordId].value obeys provider-digest-id-1
+* identifier[outputId].system = $providerOutputId
 * identifier[outputId].value 1..1 MS
-* identifier[outputId].value obeys connected-health-digest-id-1
+* identifier[outputId].value obeys provider-digest-id-1
 * extension contains
-    ConnectedHealthProvider named connectedHealthProvider 1..1 MS and
-    ConnectedHealthSourceType named connectedHealthSourceType 1..1 MS
+    ProviderProvider named provider 1..1 MS and
+    ProviderSourceType named providerSourceType 1..1 MS
 
-Profile: ConnectedHealthConversionProvenance
+Profile: ProviderConversionProvenance
 Parent: GroveSensorConversionProvenance
-Id: connected-health-conversion-provenance
-Title: "Connected Health Conversion Provenance"
+Id: provider-conversion-provenance
+Title: "Provider Conversion Provenance"
 Description: "Provenance for converting one already-obtained connected-provider record into one or more source-neutral Observations or native Recording Documents."
 * target 1..* MS
-* target only Reference(ConnectedHealthObservation or ConnectedHealthRecordingDocument)
+* target only Reference(ProviderObservation or ProviderRecordingDocument)
 * entity 1..1 MS
 * entity.role = #source
 * entity.what.reference 0..0
 * entity.what.identifier 1..1 MS
-* entity.what.identifier.system = $connectedHealthSourceRecordId
+* entity.what.identifier.system = $providerSourceRecordId
 * entity.what.identifier.value 1..1 MS
-* entity.what.identifier.value obeys connected-health-digest-id-1
+* entity.what.identifier.value obeys provider-digest-id-1

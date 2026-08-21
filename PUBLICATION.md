@@ -26,11 +26,11 @@ pre-1.0 canonical paths:
 | `org.grovealliance.fhir.sensorkit` | `/fhir/sensorkit/ci-build/` | `/fhir/sensorkit/package-list.json` and `/fhir/sensorkit/history.html` |
 | `org.grovealliance.fhir.healthkit` | `/fhir/healthkit/ci-build/` | `/fhir/healthkit/package-list.json` and `/fhir/healthkit/history.html` |
 | `org.grovealliance.fhir.health-connect` | `/fhir/health-connect/ci-build/` | `/fhir/health-connect/package-list.json` and `/fhir/health-connect/history.html` |
-| `org.grovealliance.fhir.connected-health` | `/fhir/connected-health/ci-build/` | `/fhir/connected-health/package-list.json` and `/fhir/connected-health/history.html` |
+| `org.grovealliance.fhir.providers` | `/fhir/providers/ci-build/` | `/fhir/providers/package-list.json` and `/fhir/providers/history.html` |
 | `org.grovealliance.fhir.questionnaire` | `/fhir/questionnaire/ci-build/` | `/fhir/questionnaire/package-list.json` and `/fhir/questionnaire/history.html` |
 
 The GitHub Pages locations at `/`, `/sensor/`, `/sensorkit/`, `/healthkit/`,
-`/health-connect/`, `/connected-health/`, and `/questionnaire/` are reader-friendly
+`/health-connect/`, `/providers/`, and `/questionnaire/` are reader-friendly
 preview aliases. Each
 publication root also exposes the package, its SHA-256 checksum, and HTML plus JSON, XML, and Turtle
 routes for every locally owned canonical resource. `publication/config.json` is the single routing
