@@ -101,6 +101,9 @@ for guide in "${guides[@]}"; do
     test -f "$REPOSITORY_ROOT/$guide/output/package.tgz"
     test -f "$REPOSITORY_ROOT/$guide/output/qa.json"
     python3 "$REPOSITORY_ROOT/Scripts/check-guide-qa.py" "$REPOSITORY_ROOT/$guide"
+    if [[ "$guide" == "mobile" ]]; then
+      python3 "$REPOSITORY_ROOT/Scripts/check-semantic-baseline.py"
+    fi
   }
 done
 
