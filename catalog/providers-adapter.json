@@ -397,7 +397,10 @@
               "status": "supported",
               "measurementIds": [
                 "respiratory-rate-average"
-              ]
+              ],
+              "aggregationMethod": {
+                "respiratory-rate-average": "daily-mean"
+              }
             }
           ]
         },
@@ -615,7 +618,10 @@
               "status": "supported",
               "measurementIds": [
                 "sleep-heart-rate"
-              ]
+              ],
+              "aggregationMethod": {
+                "sleep-heart-rate": "session-minimum"
+              }
             },
             {
               "path": "average_hrv",
@@ -627,7 +633,10 @@
               "status": "supported",
               "measurementIds": [
                 "respiratory-rate-average"
-              ]
+              ],
+              "aggregationMethod": {
+                "respiratory-rate-average": "session-mean"
+              }
             }
           ]
         },
@@ -986,7 +995,10 @@
               "measurementIds": [
                 "sleep-heart-rate",
                 "sleeping-heart-rate-average"
-              ]
+              ],
+              "aggregationMethod": {
+                "sleep-heart-rate": "session-mean"
+              }
             }
           ]
         },
@@ -999,7 +1011,10 @@
               "status": "supported",
               "measurementIds": [
                 "respiratory-rate-average"
-              ]
+              ],
+              "aggregationMethod": {
+                "respiratory-rate-average": "session-mean"
+              }
             }
           ]
         },

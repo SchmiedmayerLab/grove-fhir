@@ -208,6 +208,26 @@ class ProviderCatalogTests(unittest.TestCase):
                         self.assertIsInstance(element.get("reason"), str)
                         self.assertTrue(element["reason"])
 
+    def test_method_choice_measurements_declare_their_aggregation(self) -> None:
+        choices = {
+            measurement["id"]: measurement["methodChoice"]
+            for measurement in self.measurements["measurements"]
+            if measurement.get("methodChoice")
+        }
+        for provider in self.catalog["providers"]:
+            for source_type in provider["sourceTypes"]:
+                for element in source_type["elements"]:
+                    label = f"{provider['id']}/{source_type['token']}/{element['path']}"
+                    declared = element.get("aggregationMethod", {})
+                    expected = {
+                        measurement_id
+                        for measurement_id in element.get("measurementIds", [])
+                        if measurement_id in choices
+                    }
+                    self.assertEqual(set(declared), expected, label)
+                    for measurement_id, method in declared.items():
+                        self.assertIn(method, choices[measurement_id], label)
+
     def test_supported_rows_match_mobile_coverage(self) -> None:
         by_id = {
             measurement["id"]: measurement
