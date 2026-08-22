@@ -159,3 +159,73 @@ Title: "HealthKit ECG Algorithm Version"
 Description: "The closed Apple ECG algorithm versions admitted by version 0.2.0."
 * ^experimental = false
 * include codes from system HealthKitECGAlgorithmVersionCS
+
+CodeSystem: GroveSymptomSeverityCS
+Id: grove-symptom-severity
+Title: "Grove Symptom Severity"
+Description: "The normalized ordinal severity a user-logged HealthKit symptom Observation reports; the exact HealthKit category value is retained as a secondary coding."
+* ^experimental = false
+* ^caseSensitive = true
+* ^content = #complete
+* #not-present "Not present" "The symptom was assessed and reported as not present."
+* #present "Present, severity unspecified" "The symptom was reported present without a severity grade."
+* #mild "Mild" "The symptom was reported as mild."
+* #moderate "Moderate" "The symptom was reported as moderate."
+* #severe "Severe" "The symptom was reported as severe."
+
+ValueSet: GroveSymptomSeverityVS
+Id: grove-symptom-severity
+Title: "Grove Symptom Severity"
+Description: "Every normalized severity a graded HealthKit symptom Observation may report."
+* ^experimental = false
+* include codes from system GroveSymptomSeverityCS
+
+ValueSet: GroveSymptomPresenceVS
+Id: grove-symptom-presence
+Title: "Grove Symptom Presence"
+Description: "The presence subset for HealthKit symptom types that report presence without a severity grade."
+* ^experimental = false
+* GroveSymptomSeverityCS#not-present
+* GroveSymptomSeverityCS#present
+
+
+CodeSystem: HealthKitClinicalRecordTypeCS
+Id: healthkit-clinical-record-type
+Title: "HealthKit Clinical Record Type"
+Description: "The nine HKClinicalTypeIdentifier record classes a pass-through clinical document may carry; the corresponding LOINC document/section code is stated per concept."
+* ^experimental = false
+* ^caseSensitive = true
+* ^content = #complete
+* #allergy-record "Allergy record" "The HealthKit allergy record class; the corresponding LOINC document code is 48765-2."
+* #condition-record "Condition record" "The HealthKit condition record class; the corresponding LOINC document code is 11450-4."
+* #coverage-record "Coverage record" "The HealthKit coverage record class; the corresponding LOINC document code is 48768-6."
+* #immunization-record "Immunization record" "The HealthKit immunization record class; the corresponding LOINC document code is 11369-6."
+* #lab-result-record "Laboratory result record" "The HealthKit laboratory result record class; the corresponding LOINC document code is 11502-2."
+* #medication-record "Medication record" "The HealthKit medication record class; the corresponding LOINC document code is 10160-0."
+* #procedure-record "Procedure record" "The HealthKit procedure record class; the corresponding LOINC document code is 47519-4."
+* #vital-sign-record "Vital sign record" "The HealthKit vital sign record class; the corresponding LOINC document code is 8716-3."
+* #clinical-note-record "Clinical note record" "The HealthKit clinical note record class; the corresponding LOINC document code is 34109-9."
+
+ValueSet: HealthKitClinicalRecordTypeVS
+Id: healthkit-clinical-record-type
+Title: "HealthKit Clinical Record Type"
+Description: "Every admitted pass-through clinical record class."
+* ^experimental = false
+* include codes from system HealthKitClinicalRecordTypeCS
+
+CodeSystem: HealthKitClinicalFHIRReleaseCS
+Id: healthkit-clinical-fhir-release
+Title: "HealthKit Clinical FHIR Release"
+Description: "The FHIR releases HealthKit surfaces for provider-issued clinical resources (HKFHIRRelease)."
+* ^experimental = false
+* ^caseSensitive = true
+* ^content = #complete
+* #dstu2 "DSTU2" "The payload is FHIR DSTU2."
+* #r4 "R4" "The payload is FHIR R4."
+
+ValueSet: HealthKitClinicalFHIRReleaseVS
+Id: healthkit-clinical-fhir-release
+Title: "HealthKit Clinical FHIR Release"
+Description: "Every admitted pass-through payload FHIR release; HKFHIRRelease.unknown fails closed and is never emitted."
+* ^experimental = false
+* include codes from system HealthKitClinicalFHIRReleaseCS

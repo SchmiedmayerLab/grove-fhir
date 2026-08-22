@@ -22,6 +22,7 @@ Description: "The closed registry of payload formats a Grove recording DocumentR
 * #provider-json-1 "Provider JSON 1" "The verbatim JSON payload returned by the provider API call that produced the batch, byte-preserved apart from transport framing."
 * #grove-ppg-1 "Grove PPG Binary 1" "Grove PPG Binary 1"
 * #grove-batch-archive-1 "Grove Batch Archive 1" "A POSIX ustar tar stream, optionally compressed as one whole; every archived file is itself a registry-format payload or a documented sidecar of one."
+* #fhir-resource-1 "FHIR Resource 1" "One complete provider-issued FHIR resource in FHIR JSON representation, byte-preserved exactly as the source platform delivered it."
 
 ValueSet: GroveRecordingFormatVS
 Id: grove-recording-format

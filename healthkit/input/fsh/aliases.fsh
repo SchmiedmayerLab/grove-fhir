@@ -25,3 +25,4 @@ Alias: $provenanceParticipantType = http://terminology.hl7.org/CodeSystem/proven
 Alias: $recordLifecycleEvent = http://terminology.hl7.org/CodeSystem/iso-21089-lifecycle
 Alias: $mdc = urn:iso:std:iso:11073:10101
 Alias: $ucum = http://unitsofmeasure.org
+Alias: $recordingFormat = https://grovealliance.org/fhir/sensor/CodeSystem/grove-recording-format

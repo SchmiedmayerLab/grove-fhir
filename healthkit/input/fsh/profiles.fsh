@@ -98,3 +98,36 @@ Description: "Provenance for transforming one HealthKit object into one or more 
 * entity.what.identifier.system = $healthKitObjectId
 * entity.what.identifier.value 1..1 MS
 * entity.what.identifier.value obeys healthkit-object-id-1
+
+Profile: HealthKitClinicalRecordDocument
+Parent: DocumentReference
+Id: healthkit-clinical-record-document
+Title: "HealthKit Clinical Record Document"
+Description: "A pass-through envelope for one provider-issued clinical FHIR resource surfaced by HealthKit. The payload is byte-preserved in the declared source FHIR release; Grove asserts identity and provenance, never conformance over the issuer's resource."
+* identifier 1..* MS
+* status MS
+* type 1..1 MS
+* type from HealthKitClinicalRecordTypeVS (required)
+* subject 1..1 MS
+* subject only Reference(Patient)
+* date 1..1 MS
+* content 1..1 MS
+* content.format 1..1 MS
+* content.format = $recordingFormat#fhir-resource-1 "FHIR Resource 1"
+* content.attachment.contentType 1..1 MS
+* content.attachment.contentType = #application/fhir+json (exactly)
+* content.attachment.title 1..1 MS
+* content.attachment.size 1..1 MS
+* content.attachment.hash 1..1 MS
+* extension contains HealthKitClinicalFHIRRelease named fhirRelease 1..1 MS
+
+Extension: HealthKitClinicalFHIRRelease
+Id: healthkit-clinical-fhir-release
+Title: "HealthKit Clinical FHIR Release"
+Description: "The FHIR release of the pass-through payload, read from HKFHIRVersion.fhirRelease and never inferred."
+* ^context[+].type = #element
+* ^context[=].expression = "DocumentReference"
+* value[x] only code
+* valueCode 1..1
+* valueCode from HealthKitClinicalFHIRReleaseVS (required)
+

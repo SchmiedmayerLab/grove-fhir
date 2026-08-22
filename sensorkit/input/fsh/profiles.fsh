@@ -201,3 +201,238 @@ Description: "A platform-exclusive SensorKit visit summary preserving the catego
 * component[departureWindow].value[x] 1..1 MS
 * component[departureWindow].value[x] only Period
 * component[departureWindow].dataAbsentReason 0..0
+
+Profile: SensorKitMessagesUsageObservation
+Parent: SensorKitObservation
+Id: sensorkit-messages-usage-observation
+Title: "SensorKit Messages Usage Observation"
+Description: "A platform-exclusive, content-free summary of one SensorKit messages-usage reporting interval: message and distinct-contact counts only, never content or identities."
+* extension[sensorKitSourceType].valueCode = #messages-usage
+* code = $sensorKitConcept#messages-usage-summary "Messages usage summary"
+* effective[x] 1..1 MS
+* effective[x] only Period
+* value[x] 0..0
+* dataAbsentReason 0..0
+* derivedFrom 0..1 MS
+* derivedFrom only Reference(SensorKitRecordingDocument)
+* component ^slicing.discriminator.type = #pattern
+* component ^slicing.discriminator.path = "code"
+* component ^slicing.rules = #closed
+* component contains incomingMessages 1..1 MS and outgoingMessages 1..1 MS and uniqueContacts 1..1 MS
+* component[incomingMessages].code = $sensorKitConcept#incoming-messages "Incoming messages"
+* component[incomingMessages].value[x] 1..1 MS
+* component[incomingMessages].value[x] only Quantity
+* component[incomingMessages].valueQuantity.system = $ucum (exactly)
+* component[incomingMessages].valueQuantity.code = #{count} (exactly)
+* component[incomingMessages].dataAbsentReason 0..0
+* component[outgoingMessages].code = $sensorKitConcept#outgoing-messages "Outgoing messages"
+* component[outgoingMessages].value[x] 1..1 MS
+* component[outgoingMessages].value[x] only Quantity
+* component[outgoingMessages].valueQuantity.system = $ucum (exactly)
+* component[outgoingMessages].valueQuantity.code = #{count} (exactly)
+* component[outgoingMessages].dataAbsentReason 0..0
+* component[uniqueContacts].code = $sensorKitConcept#unique-contacts "Unique contacts"
+* component[uniqueContacts].value[x] 1..1 MS
+* component[uniqueContacts].value[x] only Quantity
+* component[uniqueContacts].valueQuantity.system = $ucum (exactly)
+* component[uniqueContacts].valueQuantity.code = #{count} (exactly)
+* component[uniqueContacts].dataAbsentReason 0..0
+
+Profile: SensorKitPhoneUsageObservation
+Parent: SensorKitObservation
+Id: sensorkit-phone-usage-observation
+Title: "SensorKit Phone Usage Observation"
+Description: "A platform-exclusive, content-free summary of one SensorKit phone-usage reporting interval: the total call duration as the value plus call and distinct-contact counts, never identities."
+* extension[sensorKitSourceType].valueCode = #phone-usage
+* code = $sensorKitConcept#phone-usage-summary "Phone usage summary"
+* effective[x] 1..1 MS
+* effective[x] only Period
+* value[x] 1..1 MS
+* value[x] only Quantity
+* valueQuantity.system 1..1 MS
+* valueQuantity.system = $ucum (exactly)
+* valueQuantity.code 1..1 MS
+* valueQuantity.code = #s (exactly)
+* dataAbsentReason 0..0
+* derivedFrom 0..1 MS
+* derivedFrom only Reference(SensorKitRecordingDocument)
+* component ^slicing.discriminator.type = #pattern
+* component ^slicing.discriminator.path = "code"
+* component ^slicing.rules = #closed
+* component contains incomingCalls 1..1 MS and outgoingCalls 1..1 MS and uniqueContacts 1..1 MS
+* component[incomingCalls].code = $sensorKitConcept#incoming-calls "Incoming calls"
+* component[incomingCalls].value[x] 1..1 MS
+* component[incomingCalls].value[x] only Quantity
+* component[incomingCalls].valueQuantity.system = $ucum (exactly)
+* component[incomingCalls].valueQuantity.code = #{count} (exactly)
+* component[incomingCalls].dataAbsentReason 0..0
+* component[outgoingCalls].code = $sensorKitConcept#outgoing-calls "Outgoing calls"
+* component[outgoingCalls].value[x] 1..1 MS
+* component[outgoingCalls].value[x] only Quantity
+* component[outgoingCalls].valueQuantity.system = $ucum (exactly)
+* component[outgoingCalls].valueQuantity.code = #{count} (exactly)
+* component[outgoingCalls].dataAbsentReason 0..0
+* component[uniqueContacts].code = $sensorKitConcept#unique-contacts "Unique contacts"
+* component[uniqueContacts].value[x] 1..1 MS
+* component[uniqueContacts].value[x] only Quantity
+* component[uniqueContacts].valueQuantity.system = $ucum (exactly)
+* component[uniqueContacts].valueQuantity.code = #{count} (exactly)
+* component[uniqueContacts].dataAbsentReason 0..0
+
+Profile: SensorKitKeyboardMetricsObservation
+Parent: SensorKitObservation
+Id: sensorkit-keyboard-metrics-observation
+Title: "SensorKit Keyboard Metrics Observation"
+Description: "A platform-exclusive, content-free summary of one SensorKit keyboard-metrics reporting interval: the total typing duration as the value plus typing-event counts; the summary is lossy, so the native recording is mandatory. No typed content, emoji identity, or sentiment is ever represented."
+* extension[sensorKitSourceType].valueCode = #keyboard-metrics
+* code = $sensorKitConcept#keyboard-metrics-summary "Keyboard metrics summary"
+* effective[x] 1..1 MS
+* effective[x] only Period
+* value[x] 1..1 MS
+* value[x] only Quantity
+* valueQuantity.system 1..1 MS
+* valueQuantity.system = $ucum (exactly)
+* valueQuantity.code 1..1 MS
+* valueQuantity.code = #s (exactly)
+* dataAbsentReason 0..0
+* derivedFrom 1..1 MS
+* derivedFrom only Reference(SensorKitRecordingDocument)
+* component ^slicing.discriminator.type = #pattern
+* component ^slicing.discriminator.path = "code"
+* component ^slicing.rules = #closed
+* component contains totalWords 1..1 MS and totalAlteredWords 1..1 MS and totalTaps 1..1 MS and totalDeletes 1..1 MS and totalEmojis 1..1 MS and totalAutocorrections 1..1 MS and totalPauses 1..1 MS and totalTypingEpisodes 1..1 MS and typingSpeed 1..1 MS
+* component[totalWords].code = $sensorKitConcept#total-words "Total words"
+* component[totalWords].value[x] 1..1 MS
+* component[totalWords].value[x] only Quantity
+* component[totalWords].valueQuantity.system = $ucum (exactly)
+* component[totalWords].valueQuantity.code = #{count} (exactly)
+* component[totalWords].dataAbsentReason 0..0
+* component[totalAlteredWords].code = $sensorKitConcept#total-altered-words "Total altered words"
+* component[totalAlteredWords].value[x] 1..1 MS
+* component[totalAlteredWords].value[x] only Quantity
+* component[totalAlteredWords].valueQuantity.system = $ucum (exactly)
+* component[totalAlteredWords].valueQuantity.code = #{count} (exactly)
+* component[totalAlteredWords].dataAbsentReason 0..0
+* component[totalTaps].code = $sensorKitConcept#total-taps "Total taps"
+* component[totalTaps].value[x] 1..1 MS
+* component[totalTaps].value[x] only Quantity
+* component[totalTaps].valueQuantity.system = $ucum (exactly)
+* component[totalTaps].valueQuantity.code = #{count} (exactly)
+* component[totalTaps].dataAbsentReason 0..0
+* component[totalDeletes].code = $sensorKitConcept#total-deletes "Total deletes"
+* component[totalDeletes].value[x] 1..1 MS
+* component[totalDeletes].value[x] only Quantity
+* component[totalDeletes].valueQuantity.system = $ucum (exactly)
+* component[totalDeletes].valueQuantity.code = #{count} (exactly)
+* component[totalDeletes].dataAbsentReason 0..0
+* component[totalEmojis].code = $sensorKitConcept#total-emojis "Total emojis"
+* component[totalEmojis].value[x] 1..1 MS
+* component[totalEmojis].value[x] only Quantity
+* component[totalEmojis].valueQuantity.system = $ucum (exactly)
+* component[totalEmojis].valueQuantity.code = #{count} (exactly)
+* component[totalEmojis].dataAbsentReason 0..0
+* component[totalAutocorrections].code = $sensorKitConcept#total-autocorrections "Total autocorrections"
+* component[totalAutocorrections].value[x] 1..1 MS
+* component[totalAutocorrections].value[x] only Quantity
+* component[totalAutocorrections].valueQuantity.system = $ucum (exactly)
+* component[totalAutocorrections].valueQuantity.code = #{count} (exactly)
+* component[totalAutocorrections].dataAbsentReason 0..0
+* component[totalPauses].code = $sensorKitConcept#total-pauses "Total pauses"
+* component[totalPauses].value[x] 1..1 MS
+* component[totalPauses].value[x] only Quantity
+* component[totalPauses].valueQuantity.system = $ucum (exactly)
+* component[totalPauses].valueQuantity.code = #{count} (exactly)
+* component[totalPauses].dataAbsentReason 0..0
+* component[totalTypingEpisodes].code = $sensorKitConcept#total-typing-episodes "Total typing episodes"
+* component[totalTypingEpisodes].value[x] 1..1 MS
+* component[totalTypingEpisodes].value[x] only Quantity
+* component[totalTypingEpisodes].valueQuantity.system = $ucum (exactly)
+* component[totalTypingEpisodes].valueQuantity.code = #{count} (exactly)
+* component[totalTypingEpisodes].dataAbsentReason 0..0
+* component[typingSpeed].code = $sensorKitConcept#typing-speed "Typing speed"
+* component[typingSpeed].value[x] 1..1 MS
+* component[typingSpeed].value[x] only Quantity
+* component[typingSpeed].valueQuantity.system = $ucum (exactly)
+* component[typingSpeed].valueQuantity.code = #/s (exactly)
+* component[typingSpeed].dataAbsentReason 0..0
+
+Profile: SensorKitSleepSessionObservation
+Parent: SensorKitObservation
+Id: sensorkit-sleep-session-observation
+Title: "SensorKit Sleep Session Observation"
+Description: "A platform-exclusive assertion of one SensorKit sleep session interval. The source publishes only the session bounds, so no stage, efficiency, or quality result may be invented."
+* extension[sensorKitSourceType].valueCode = #sleep-sessions
+* code = $sensorKitConcept#sleep-session "Sleep session"
+* effective[x] 1..1 MS
+* effective[x] only Period
+* value[x] 0..0
+* dataAbsentReason 0..0
+* derivedFrom 0..1 MS
+* derivedFrom only Reference(SensorKitRecordingDocument)
+
+
+Profile: SensorKitAccelerometerObservation
+Parent: SensorKitObservation
+Id: sensorkit-accelerometer-observation
+Title: "SensorKit Accelerometer Observation"
+Description: "A platform-exclusive coverage summary of one SensorKit accelerometer batch; the grove-csv-1 recording document carries the signal and is mandatory."
+* extension[sensorKitSourceType].valueCode = #accelerometer
+* code = $sensorKitConcept#accelerometer-recording-summary "Accelerometer recording summary"
+* effective[x] 1..1 MS
+* effective[x] only Period
+* value[x] 0..0
+* dataAbsentReason 0..0
+* derivedFrom 1..1 MS
+* derivedFrom only Reference(SensorKitRecordingDocument)
+* component ^slicing.discriminator.type = #pattern
+* component ^slicing.discriminator.path = "code"
+* component ^slicing.rules = #closed
+* component contains sampleCount 1..1 MS and batchCount 1..1 MS
+* component[sampleCount].code = $sensorKitConcept#sample-count "Sample count"
+* component[sampleCount].value[x] 1..1 MS
+* component[sampleCount].value[x] only Quantity
+* component[sampleCount].valueQuantity.system = $ucum (exactly)
+* component[sampleCount].valueQuantity.code = #{count} (exactly)
+* component[sampleCount].dataAbsentReason 0..0
+* component[batchCount].code = $sensorKitConcept#batch-count "Batch count"
+* component[batchCount].value[x] 1..1 MS
+* component[batchCount].value[x] only Quantity
+* component[batchCount].valueQuantity.system = $ucum (exactly)
+* component[batchCount].valueQuantity.code = #{count} (exactly)
+* component[batchCount].dataAbsentReason 0..0
+
+Profile: SensorKitPpgObservation
+Parent: SensorKitObservation
+Id: sensorkit-ppg-observation
+Title: "SensorKit PPG Observation"
+Description: "A platform-exclusive coverage summary of one SensorKit photoplethysmogram batch; the grove-ppg-1 recording document carries the signal and is mandatory."
+* extension[sensorKitSourceType].valueCode = #ppg
+* code = $sensorKitConcept#ppg-recording-summary "PPG recording summary"
+* effective[x] 1..1 MS
+* effective[x] only Period
+* value[x] 0..0
+* dataAbsentReason 0..0
+* derivedFrom 1..1 MS
+* derivedFrom only Reference(SensorKitRecordingDocument)
+* component ^slicing.discriminator.type = #pattern
+* component ^slicing.discriminator.path = "code"
+* component ^slicing.rules = #closed
+* component contains recordCount 1..1 MS and opticalSampleCount 1..1 MS and accelerometerSampleCount 1..1 MS
+* component[recordCount].code = $sensorKitConcept#record-count "Record count"
+* component[recordCount].value[x] 1..1 MS
+* component[recordCount].value[x] only Quantity
+* component[recordCount].valueQuantity.system = $ucum (exactly)
+* component[recordCount].valueQuantity.code = #{count} (exactly)
+* component[recordCount].dataAbsentReason 0..0
+* component[opticalSampleCount].code = $sensorKitConcept#optical-sample-count "Optical sample count"
+* component[opticalSampleCount].value[x] 1..1 MS
+* component[opticalSampleCount].value[x] only Quantity
+* component[opticalSampleCount].valueQuantity.system = $ucum (exactly)
+* component[opticalSampleCount].valueQuantity.code = #{count} (exactly)
+* component[opticalSampleCount].dataAbsentReason 0..0
+* component[accelerometerSampleCount].code = $sensorKitConcept#accelerometer-sample-count "Accelerometer sample count"
+* component[accelerometerSampleCount].value[x] 1..1 MS
+* component[accelerometerSampleCount].value[x] only Quantity
+* component[accelerometerSampleCount].valueQuantity.system = $ucum (exactly)
+* component[accelerometerSampleCount].valueQuantity.code = #{count} (exactly)
+* component[accelerometerSampleCount].dataAbsentReason 0..0

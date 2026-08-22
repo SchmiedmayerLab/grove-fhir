@@ -13,7 +13,7 @@ packages and validate all applicable profile canonicals together.
 ### Download the packages
 
 This pre-1.0 continuous build is not published in a FHIR package registry, and the canonical namespace is deliberately not hosted.
-Each published guide exposes its own archive at its publication root: download [`package.tgz`](https://grovealliance.org/fhir/healthkit/package.tgz) and [`package.tgz.sha256`](https://grovealliance.org/fhir/healthkit/package.tgz.sha256) plus the [Mobile package](https://grovealliance.org/fhir/mobile/package.tgz) and [its checksum](https://grovealliance.org/fhir/mobile/package.tgz.sha256), then verify both checksums:
+Each published guide exposes its archive and checksum from its [Artifacts page](artifacts.html); download this guide's `package.tgz` and `package.tgz.sha256` there, plus the Mobile guide's pair from its own Artifacts page, then verify both checksums:
 
 ```sh
 (cd grove-packages/mobile && shasum -a 256 --check package.tgz.sha256)

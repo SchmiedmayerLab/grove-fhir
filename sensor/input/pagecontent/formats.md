@@ -102,6 +102,47 @@ Source: `SRSensor.wristTemperature (SRWristTemperatureSession)`.
 | `errorEstimate` | number | `Cel` | Estimated error converted to degrees Celsius. |
 | `condition` | string | — | SRWristTemperature.Condition textual value for the sample. |
 
+#### Columns for `rotation-rate`
+
+Source: `SRSensor.rotationRate (CMRecordedRotationRateData)`.
+
+| Column | Type | Unit | Meaning |
+|---|---|---|---|
+| `timestamp` | timestamp | — | Sample instant (CMRecordedRotationRateData.startDate). |
+| `x` | number | `rad/s` | Rotation rate about x in radians per second. |
+| `y` | number | `rad/s` | Rotation rate about y in radians per second. |
+| `z` | number | `rad/s` | Rotation rate about z in radians per second. |
+| `device` | string | — | Source device description for the batch. |
+
+#### Columns for `odometer`
+
+Source: `SRSensor.odometer (CMOdometerData)`.
+
+| Column | Type | Unit | Meaning |
+|---|---|---|---|
+| `start` | timestamp | — | Recording interval start (startDate). |
+| `end` | timestamp | — | Recording interval end (endDate). |
+| `gpsDate` | timestamp | — | Time of the GPS measurement associated with the location. |
+| `speed` | number | `m/s` | Instantaneous device velocity in metres per second. |
+| `speedAccuracy` | number | `m/s` | Accuracy of the speed value. |
+| `slope` | number | `deg` | Slope toward the direction of travel in degrees; empty when unavailable. |
+| `maxAbsSlope` | number | `deg` | Maximum absolute slope toward all directions in degrees; empty when unavailable. |
+| `deltaDistance` | number | `m` | Distance travelled since the last location in metres. |
+| `deltaDistanceAccuracy` | number | `m` | Accuracy of the delta distance in metres. |
+| `deltaAltitude` | number | `m` | Change in altitude above mean sea level in metres. |
+| `verticalAccuracy` | number | `m` | Validity and estimated uncertainty of the altitude values in metres. |
+| `originDevice` | string | — | CMOdometerOriginDevice case name: unknown, local, or remote. |
+| `device` | string | — | Source device description for the batch. |
+
+#### Columns for `heartbeat-series`
+
+Source: `HKDataTypeIdentifierHeartbeatSeries (HKHeartbeatSeriesSample)`.
+
+| Column | Type | Unit | Meaning |
+|---|---|---|---|
+| `timestamp` | timestamp | — | Beat instant as seconds since the series start anchor stated by the document. |
+| `precededByGap` | integer | — | 1 when a gap in beat detection precedes this beat, else 0. |
+
 ### `fhir-json-1` — FHIR JSON Array 1
 
 Media type: `application/json`.
@@ -194,3 +235,11 @@ A POSIX ustar tar stream, optionally compressed as one whole; every archived fil
 ustar magic; entry paths are relative, at most 100 UTF-8 bytes, without leading slash or dot segments; file mode 0644, directory mode 0755; owner, group, and device ids 0; modification time 0; contents padded to 512-byte blocks; the archive ends with two zero blocks.
 The whole tar stream is stored uncompressed, gzip-compressed, or Zstandard-compressed; receivers detect the compression from the leading magic bytes (0x1F 0x8B gzip, 0x28 0xB5 0x2F 0xFD Zstandard, otherwise uncompressed).
 Entry order, header fields, and compression parameters are producer-deterministic: archiving the same files twice yields identical bytes for the uncompressed tar stream.
+
+### `fhir-resource-1` — FHIR Resource 1
+
+Media type: `application/fhir+json`.
+UTF-8.
+One complete provider-issued FHIR resource in FHIR JSON representation, byte-preserved exactly as the source platform delivered it.
+The carrying document records the issuing source; Grove never asserts conformance over another issuer's resource.
+One document carries exactly one clinical record's FHIR payload.

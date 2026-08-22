@@ -1,15 +1,15 @@
 {
   "schemaVersion": 1,
   "description": "The per-measurement terminology review record; profile generation refuses any measurement without an approved entry whose digest matches the measurement's current terminology projection.",
-  "digestScope": "grove-terminology-projection-2",
-  "digestAlgorithm": "sha256 over the UTF-8 canonical JSON (sorted keys, separators ',' ':') of the terminology projection: the measurement's code, components, description, effective, hasMember, obeys, quantity, standardProfile, valueKind, valueSet, resultCodeSystem, and allowedValues fields, omitting null or absent fields.",
+  "digestScope": "grove-terminology-projection-3",
+  "digestAlgorithm": "sha256 over the UTF-8 canonical JSON (sorted keys, separators ',' ':') of the terminology projection: the measurement's code, components, description, effective, hasMember, obeys, quantity, standardProfile, valueKind, valueSet, resultCodes, resultCodeSystem, and allowedValues fields, omitting null or absent fields.",
   "groundTruthFiles": [
     "catalog/terminology/loinc-concepts.json",
     "catalog/terminology/ucum-units.json",
     "mobile/input/fsh/terminology.fsh",
     "mobile/input/fsh/profiles.fsh"
   ],
-  "groundTruthDigest": "sha256:b18338f9b9d48154de26975d5b5a7d8985b32efe51733b0c1b2771f95dfb711b",
+  "groundTruthDigest": "sha256:08588581536bdba4f8fbbb7764967510a230a5d4c6456429d48c9897b5a6b127",
   "bootstrap": "Entries with provenance 'bootstrap' cite the v0.2.0 release review during which their codes, units, and effective semantics shipped, proven byte-identical by the generation parity gate; the bootstrap set is terminal as of v0.3 and every new entry carries a named two-role review with a commit-SHA reviewRef.",
   "entries": {
     "active-energy": {
@@ -22,6 +22,116 @@
       "provenance": "bootstrap",
       "reviewedOn": "2026-08-21"
     },
+    "apple-exercise-time": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:523dede899664815126b3c9fcc8f5af87caf52a12d29fbd0bbebe03ab7207361",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Only HealthKit evidences Apple's ring-credited exercise minutes, so it is platform-exclusive. Apple documents the metric as algorithmically thresholded activity credit, which is not the LOINC 55411-3 Exercise duration concept (a session duration), so a Grove code preserves the distinction verified against the Apple developer documentation and LOINC search results. Cumulative interval samples take effective Period; min carries dimension {s:1}."
+    },
+    "apple-move-time": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:dff282112f7954574b0339d6f104c4491f061fd7963a1bf7a092b386f8d199b0",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Only HealthKit evidences Move-ring time credit (the mode Apple offers in place of active-calorie goals), so it is platform-exclusive with a Grove code; LOINC has no matching proprietary-credit concept per the activity-duration searches (101688-0..101691-4 are self-reported activity durations, not device ring credit). Cumulative interval samples take effective Period; min carries dimension {s:1}."
+    },
+    "apple-stand-hour": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:ab269466833ce7711fa70e3645312bd6e3e6e6da464e908d27d93fc6c70d0c66",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Platform-exclusive coded Observation with a two-code Grove value set and full HK enum absorption; the HK source token is retained per the adapter's sourceTypeCoding rule. Verifier: enum cases stood/idle re-verified; confirmed no Health Connect stand-hour record in the 41-record catalog; no id collision."
+    },
+    "apple-stand-time": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:2eadee0450a304d88d3f5e03c9c72c3230fe9594d0142d30bc493ef80e768961",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Only HealthKit evidences stand-time credit, so it is platform-exclusive. LOINC search for stand time returns only PROMIS/PhenX questionnaire items and imaging views, no device-measured standing-time quantity, so a Grove code is defined. Cumulative interval samples take effective Period; min carries dimension {s:1}."
+    },
+    "atrial-fibrillation-burden": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:12a49a82e6b7991866d81bb5d6c9db710275e6d91960873ee03271131a2946f3",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "NLM Clinical Tables returns zero LOINC results for 'atrial fibrillation burden', so a Grove code is defined. Explicitly named in the aggregate-family policy list; HealthKit is the only evidencing source (Withings getmeas:130/139 are diagnostic-adjacent AFib classifications, already intentionally-unsupported in the providers catalog, not burden percentages). % parses under pinned UCUM 2.2 as dimensionless; effective Period covers the exact multi-day estimation window."
+    },
     "basal-body-temperature": {
       "status": "approved",
       "approvedBy": [
@@ -32,6 +142,160 @@
       "provenance": "bootstrap",
       "reviewedOn": "2026-08-21"
     },
+    "basal-energy": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:702959cbf09ae89f54b711d9a64a641dc176825b1a2040ad492301bdf7fa067e",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Two sources (HealthKit BasalEnergyBurned, Google Health API basalEnergyBurned.kcal) evidence the interval basal-energy total, so it is shared. LOINC search (NLM Clinical Tables, tx.fhir.org LOINC 2.82) found only rate or index concepts - 69429-9 Metabolic rate --resting, 82278-3 Measured RMR, 50042-1 Basal metabolic rate index - none of which is an interval energy total, so a Grove code mirrors the existing active-energy-burned pattern. kcal matches the shipped active-energy unit and the energy dimension {g:1,m:2,s:-2} from the pinned UCUM table; interval totals take effective Period."
+    },
+    "basal-metabolic-rate": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:92c80c16ffdcc38dfea7e166e660c70bb8aa5518eb396246f3ebb1e753c1d6e7",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "LOINC was searched via NLM Clinical Tables: 50042-1 is 'Basal metabolic rate index' (an indexed ratio) and 69429-9 is 'Metabolic rate --resting' (RMR, measured under looser resting conditions), so neither states BMR itself and a Grove code is defined. Health Connect's record stores a Power (kcal/day canonical, watts derivable), and kcal/d parses under pinned UCUM 2.2 to the power dimension {g:1,m:2,s:-3}. effective dateTime because the record is instantaneous."
+    },
+    "bladder-incontinence": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:c707a1bc5a1d9b7b8d79a4e83664d8fe47bbe5b8425072f77fc3625bc88b080b",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Same normalization note as vaginal-dryness: align with the symptoms batch's severity pattern and value set. Verifier: confirmed, no changes."
+    },
+    "bleeding-after-pregnancy": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:9abbb445a430db3b6226a4848c5f5ec6130b977297346a39b97ae737a0066c11",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Shares the Grove vaginal-bleeding value set with bleeding-during-pregnancy. Verifier: confirmed, no changes."
+    },
+    "bleeding-during-pregnancy": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:c8dc4dc375969545973a0a58fb4fb4f1c3fd0c9c87b9d4f58c4dcedff5bd1b67",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Should share its Grove vaginal-bleeding value set with bleeding-after-pregnancy and be reviewed alongside the cycle-tracking enum-absorption design for consistency. Verifier: all five VaginalBleeding cases re-verified verbatim; Apple abstract confirms 'as a symptom' framing."
+    },
+    "blood-alcohol-content": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:48be6e0b572cee0fbdcf0d6dda920e77796dbba81f35a471c6506107567ae16b",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Decided as a plain scalar. LOINC ethanol concepts were reviewed (5639-0 is Presence/PrThr; the quantitative blood-ethanol codes are MCnc lab measurements in mg/dL) and rejected: HealthKit stores a consumer percent figure whose laboratory reinterpretation would assert an MCnc dimension {g:1,m:-3} the dimensionless % cannot carry. % parses under pinned UCUM 2.2 as dimensionless; effective dateTime for a point entry."
+    },
+    "blood-glucose-unspecified-specimen": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:5240f8145ba0d9cf6e8813ed8c30093ee8598f1c7f45a11d2b312f49b21a3093",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "2339-0 is already pinned and ratified (LOINC 2.82, ACTIVE, MCnc, Qn); its system Bld does not assert a sub-specimen, so the unspecified-specimen reading is faithful, and disjointness from the Health Connect whole-blood profile (same code plus REQUIRED SNOMED 258580003 specimen) is enforced by the required-ABSENT specimen rule. Verified in catalog/providers-adapter.json that google-health-api blood-glucose is deferred precisely because 'the consumed source shape has no specimen evidence', so HealthKit and Google Health API both evidence the specimen-less form (two sources). mg/dL parses under pinned UCUM 2.2 with dimension {g:1,m:-3}, matching MCnc; effective dateTime for a point result."
+    },
     "blood-pressure": {
       "status": "approved",
       "approvedBy": [
@@ -41,6 +305,72 @@
       "digest": "sha256:ce8119ec086c1702f7851421d75a8cd4e776a59234ff16e5077919970b2fd8a0",
       "provenance": "bootstrap",
       "reviewedOn": "2026-08-21"
+    },
+    "blood-type": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:9ca0e0595b796482280c82cdfb285791425d06845a91458e7b9fa118911249e5",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Exact LOINC exists and is active; Grove value set of eight ABO/Rh codes with full HKBloodType absorption and the HK token retained as secondary coding. Nothing contentious."
+    },
+    "body-fat-mass": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:58d6e1911f7a5aca998c3235e81bdb77b8f0784aefaf8569559f560342df8afb",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Only Withings (getmeas:8) evidences absolute fat mass, so the two-source bar for shared is not met and the concept lands in the providers adapter guide. Verified 73708-0 'Body fat [Mass] Calculated' ACTIVE, PROPERTY Mass, METHOD Calculated on NLM Clinical Tables; the Calculated method matches a BIA-derived value. kg, dimension {g:1}; point scale reading, effectiveDateTime."
+    },
+    "body-fat-percentage": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:0d0057a0e81ad7f75a3ca6bffc8de4263fbe3391ea25fda313e6a87ec3cdd5e7",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Four distinct sources evidence the concept (HealthKit, Health Connect, google-health-api, withings), well past the two-source bar. LOINC 41982-0 'Percentage of body fat Measured' was chosen over the BIA-specific 77233-5 because the sources include manual entry and devices of unspecified method; verified on tx.fhir.org (LOINC 2.82): display exact, PROPERTY MFr (LP6831-4), SCALE Qn, status ACTIVE, matching the pinned MFr dimensionless propertyDimension. UCUM % is in the pinned unit set with empty dimension vector, and a point body-composition reading takes effectiveDateTime."
     },
     "body-height": {
       "status": "approved",
@@ -62,6 +392,28 @@
       "provenance": "bootstrap",
       "reviewedOn": "2026-08-21"
     },
+    "body-water-mass": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:ed85bf9307e961dd468433f09c3a8b7ee180e64d485156ba28de1007ed9105d5",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Two distinct sources (Health Connect BodyWaterMassRecord and Withings measure type 77, both kilogram body-composition outputs) satisfy the shared bar. LOINC 101683-1 'Body water mass' verified on tx.fhir.org (LOINC 2.82): PROPERTY Mass (LP6826-4), SCALE Qn, ACTIVE — an exact modern LOINC for smart-scale body composition. UCUM kg dimension {g:1} matches the pinned Mass propertyDimension; a point reading takes effectiveDateTime. Withings extracellular/intracellular water (types 168/169) remain distinct unmodeled refinements and are not folded in."
+    },
     "body-weight": {
       "status": "approved",
       "approvedBy": [
@@ -71,6 +423,1062 @@
       "digest": "sha256:392c955f3d7d17a669a2ec0dab5c773e2c9fa32b535c402c9f8fc163c8ee63b2",
       "provenance": "bootstrap",
       "reviewedOn": "2026-08-21"
+    },
+    "bone-mass": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:8de6fe1da30decc1d74036c85ebeb20cc8cdea501d56f6d8a30e4fd2a66cc510",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Two distinct sources (Health Connect BoneMassRecord and Withings measure type 88) satisfy the shared bar. LOINC 101685-6 'Body bone mass' verified on tx.fhir.org (LOINC 2.82): PROPERTY Mass (LP6826-4), SCALE Qn, ACTIVE; the DXA density codes (46383-6 and site-specific series) were rejected as different Mass/Area concepts. UCUM kg dimension {g:1} matches the pinned Mass propertyDimension; a point reading takes effectiveDateTime."
+    },
+    "cervical-mucus-quality": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:5b65008410fa4161643505a16924dfdacfd70644e11ee367c6e407d6b40e09dc",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-workout-enums)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Panel-verified absorption (2026-08-21): HK dry/sticky/creamy/watery/eggWhite and HC APPEARANCE_* absorb losslessly; #unusual and #unknown only from Health Connect; the HC sensation axis is an optional component per the decided one-record-one-Observation identity rule; no exact LOINC exists (10570-0 and neighbors rejected as inexact)."
+    },
+    "contraceptive-use": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:452b984bc38f716138ab8e1a9d3c6de1336e27ecb40129d022bb31e3fc1fd71e",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Sleep-stage-pattern absorption: Grove codes normative, HK enum token retained as secondary coding. Verifier: 8659-5 re-verified (ACTIVE, Nom); all seven enum cases re-extracted verbatim from Apple docs; no Health Connect contraceptive record confirmed."
+    },
+    "cycling-cadence": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:81ae3ba3f287121b3dacae9168f795ed05e9cfe2eff79fce3f382cb0f7a4c2bf",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "HealthKit CyclingCadence and Health Connect CyclingPedalingCadenceRecord both evidence the same crank-revolution-rate concept, satisfying the two-source rule. LOINC 2.82 has no cadence or pedaling concept (NLM Clinical Tables and tx.fhir.org expansions for 'cadence' and 'pedaling' are empty), so a Grove code is defined. The unit follows the shipped heart-rate precedent: UCUM code /min (dimension {s:-1}) with a human unit naming the counted event, avoiding any new annotation token; Health Connect cadence samples normalize to point effectiveDateTime observations."
+    },
+    "cycling-functional-threshold-power": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:9ec42cbda2060fd593cd33938c352ac825dc95061f4cab18c7eaa45dc68e5bf0",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Only HealthKit evidences an FTP estimate, so it stays platform-exclusive; it is not in the policy's windowed daily/rolling aggregate family, and each estimate is published as a point value, so effectiveDateTime applies. LOINC 2.82 has no functional-threshold-power concept (NLM Clinical Tables and tx.fhir.org expansions for 'functional threshold' are empty), so a Grove code is defined. UCUM W parses with dimension {g:1,m:2,s:-3}, and the description pins the distinctness from the shared instantaneous power concept."
+    },
+    "deep-sleep-duration": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:0147cbf85d87c055a09c7cba265722e21ad54b3de23e018c1dba284fdc2a7599",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Three provider sources emit deep-sleep totals without stage intervals, so the concept is a session aggregate for the phase-2 design rather than a point or interval-stage measurement. Verified 93831-6 'Deep sleep duration' ACTIVE, PROPERTY Time, SCALE Qn on NLM Clinical Tables. min has dimension {s:1}; the sleep session (or source civil day as a complete Period) is the effective Period."
+    },
+    "dietary-biotin": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:04886508e78308d6c214c9d0df15d386f8e62ca49087ee410201338c952e5d57",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Rejected candidate 81017-6 verified ACTIVE but MRat/24H, example ug/(24.h)."
+    },
+    "dietary-caffeine": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:25498e4a18dc9e69e3e2748905e0b85cf5c20a95d3da5174e6a89a072ed88404",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Re-verified: 80490-6 is MRat, 24H, example mg/(24.h) — rejection confirmed."
+    },
+    "dietary-calcium": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:26ab703b310fc4bf927cd55237aa1d1d39e04efab5a7d9b0c3a39da048a33ee8",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Re-verified all three candidates: 81137-2 and 35264-1 are MRat/24H; 9045-6 Calcium intake Estimated is Pt but Property Sub with example unit mol — every candidate fails one axis, so the row is Grove-coded like sodium and potassium."
+    },
+    "dietary-carbohydrates": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:54288c311320013c8a75ea921034729222c131b98b019baa131c55a047136f8f",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Re-verified: ACTIVE, Pt, Mass, Measured, example unit g. HC totalCarbohydrate: Mass confirmed in androidx source."
+    },
+    "dietary-chloride": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:9ffb732d6c3fdf1731514a2d8c06c0f35b893c9c6c9a3ab222623d442c8efe88",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Rejected candidate 81080-4 verified ACTIVE but MRat/24H, example mg/(24.h); no Pt-timed chloride intake code exists."
+    },
+    "dietary-cholesterol": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:9ff3598f8e0eb8dfd82786b63a0df44199aa288f34effe9f0cdba64fa34b6a26",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Re-verified: 81022-6 is MRat, 24H, example mg/(24.h) — rejection confirmed. mg composes from pinned prefix m and base unit g."
+    },
+    "dietary-chromium": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:cd3fe18894c7e165f620b5adf15fbbb557dd3e0da8267048438d8cd4c457c162",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Rejected candidate 81023-4 verified ACTIVE but MRat/24H, example ug/(24.h)."
+    },
+    "dietary-copper": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:a1a66978014707ea5ac9edbccf6f100af3efe50a6eb9c0f2c76fcdce7bdf63de",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Rejected candidate 81027-5 verified ACTIVE but MRat/24H, example ug/(24.h); ug canonical matches the adult RDA scale."
+    },
+    "dietary-energy": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:0ee9a162a4660d9f1619a76763088cc6cac7a18b899b7c8c94fb82842b7801bc",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Re-verified 2026-08-21 (tx.fhir.org r4): ACTIVE, Time Pt (LP6960-1), Property EngRat (LP6804-1), example UCUM unit kcal — the example unit carries no time denominator, so a per-event kcal value matches LOINC's own content despite the nominal rate property; recorded as a content quirk. Pinning requires adding EngRat -> {g:1,m:2,s:-2} to propertyDimensions. HK energy-unit cumulative; HC Energy field (androidx source verified)."
+    },
+    "dietary-energy-from-fat": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:a13979e32212b66c45aa8b0596a45b5c329c458b6146ccd1e0fbc37b534dcf00",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Added by adversarial review: androidx source confirms energyFromFat: Energy; both designers flagged it but neither emitted a row, which would have silently dropped a populated HC field."
+    },
+    "dietary-fat-monounsaturated": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:2ab7b29ccc56a61ed791cad4347195f099877765af01d82a37c34e1cbb6caa0a",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Re-verified via NLM search: only 81897-1 Estimated and 81899-7 Measured exist, both 24-hour — rejection confirmed."
+    },
+    "dietary-fat-polyunsaturated": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:b73727f4e79818ec3ebc3ccca3b2b05821a465a5882c7983821edc58e833b917",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Re-verified via NLM search: only 81131-5 Estimated and 81036-6 Measured exist, both 24-hour — rejection confirmed."
+    },
+    "dietary-fat-saturated": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:bc41471fc16ace9caf7951d5fc9c67d8ae23af8e6b351421dc45acfb7e208547",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Re-verified via NLM search: only 81033-3 Estimated and 81136-4 Measured exist, both 24-hour — rejection confirmed. Both platform sources are mass."
+    },
+    "dietary-fat-total": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:e86f5ceb9d5477a1bfb7b215e7506db00fabba5aaa8d0d3ff16c83768272d6d5",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Re-verified: ACTIVE, Pt, Mass, Measured, example unit g. HC totalFat: Mass confirmed in androidx source."
+    },
+    "dietary-fat-trans": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:b8dc6aadb7913b507cdbacebdd53c1c149fe9765b94ff0feb637b825248c8de6",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Added by adversarial review: designer 1 flagged transFat but neither result emitted a row, leaving an HC field with no route and breaking losslessness; androidx source confirms transFat: Mass, and the NLM search confirms only 24-hour LOINC codes exist."
+    },
+    "dietary-fat-unsaturated": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:c0b094a79770d6163ebcaff3e686cde04f6d3df14ef86ef5255ee347c4164d90",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Added by adversarial review for losslessness: androidx source confirms unsaturatedFat: Mass as an independent optional field, so dropping it or recomputing it from mono plus poly would lose or fabricate source data."
+    },
+    "dietary-fiber": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:d1a32a8f9c70b7fb391ecc6cf9905fe1540d1822ad4a5e96043517a36d913e59",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Re-verified: 81057-2 Fiber intake 24 hour Measured is MRat (LP6833-0), 24H (LP6924-7), example g/(24.h) — wrong axis for meal-level Periods, rejection confirmed."
+    },
+    "dietary-folate": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:7aad3bac840f0b0177cdaf6d9d60ad128075e425a7220d1e3bb85ff0bd199bb9",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Rejected candidate 81066-3 verified ACTIVE but MRat/24H, example ug/(24.h). HC additionally carries a separate folicAcid field, split into a platform-exclusive row to avoid double counting; DFE weighting is a documentation caveat only."
+    },
+    "dietary-folic-acid": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:92394b9dba68cf1dbbbfbc9c8f167636d3ba775a498809e531e5fbadb46b0614",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "androidx source confirms folicAcid: Mass exists alongside folate; HK has no counterpart, so the row correctly stays platform-exclusive; folding into dietary-folate would double-count and was rejected."
+    },
+    "dietary-iodine": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:9031f6d3951712c536d93747b4662bb8bb99efbb1047394bfc4a30c1bf15ce10",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Rejected candidate 81003-6 verified ACTIVE but MRat/24H, example ug/(24.h)."
+    },
+    "dietary-iron": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:1de9a44d641ae783ebaea5cfe85dddf8bdc6824b5d308cc273fe2659f4d6e8c1",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Rejected candidate 81082-0 verified ACTIVE but MRat/24H, example mg/(24.h); dietary intake stays distinct from serum iron lab concepts."
+    },
+    "dietary-magnesium": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:d8f7c6dddebd1c044ac6d642e3c874a15ad000e67c2cf2e1b535d007b1e9675c",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Rejected candidate 81005-1 verified ACTIVE but MRat/24H, example mg/(24.h)."
+    },
+    "dietary-manganese": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:44d68bc69efb8d6597d680d691aceea4d7636c8a2d216074d39d0e74b727a6d8",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Rejected candidate 81007-7 verified ACTIVE but MRat/24H, example mg/(24.h)."
+    },
+    "dietary-molybdenum": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:7ab191cfab75400ae5a234ce5ac4e20df0c24cbe5402f7a00a414fce89ce1b97",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Rejected candidate 81084-6 verified ACTIVE but MRat/24H with the anomalous example unit ug/(72.h) — the quirk designer 2 reported is real and further disqualifies the code."
+    },
+    "dietary-niacin": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:de7ab256f4bb956909c811ecb0e896de0f8ff1cc0991d0ee99c9e364670b733f",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Rejected candidate 81135-6 verified ACTIVE but MRat/24H, example mg/(24.h). Niacin-equivalent weighting is not representable on either platform; documentation caveat only."
+    },
+    "dietary-pantothenic-acid": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:35a729d51ba87974796424d998da650067389e84045d1780ee7ccb7105980e64",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Rejected candidate 81068-9 verified ACTIVE but MRat/24H, example mg/(24.h)."
+    },
+    "dietary-phosphorus": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:806b0fd6fc83f3f1b8cc42c31db9fb6bbae30061bbf7f65297263c3c935b56ef",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Rejected candidate 81132-3 verified ACTIVE but MRat/24H, example mg/(24.h)."
+    },
+    "dietary-potassium": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:57772010df8be6396887dca196dafd8179b25c172481811babf8e4e85b6515fb",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Re-verified: 9074-6 Potassium intake Measured is Pt, Property Sub, example unit mol — rejection confirmed."
+    },
+    "dietary-protein": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:b0fea6292e71a6066344c811c0262c9f41bc9013d79dd231ef148188327289ae",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Re-verified: ACTIVE, Pt (LP6960-1), Mass (LP6826-4), Method Measured (LP6378-6), example unit g. HK mass-unit cumulative; HC protein: Mass (androidx source)."
+    },
+    "dietary-riboflavin": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:263c28eed55f5f05f501812a322323d5ffb3d58eee1771f93eaec2c9a8ed0337",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Rejected candidate 81070-5 verified ACTIVE but MRat/24H, example mg/(24.h)."
+    },
+    "dietary-selenium": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:16a6423462235ba29ed029dbb82d59a963fc47b2537e2da24b021b06426d6a40",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Rejected candidate 81087-9 verified ACTIVE but MRat/24H, example ug/(24.h)."
+    },
+    "dietary-sodium": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:0ce84501fbdfde32e8a4e50c6491da37deceb7bec43467006571d319679a1401",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Re-verified: 9087-8 Sodium intake Measured is Pt but Property Sub (LP6869-4) with example unit mol — mass under a molar code violates the property, rejection confirmed."
+    },
+    "dietary-sugar": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:3f88b4e431e02cb0b18ab7671d2a27cd3b0933c5f9549f856b9768a9bc156a15",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Re-verified: 62262-1 is DEPRECATED (tx.fhir.org STATUS) and an NLM Clinical Tables search for sugars intake returns no other candidate; Grove code stands. Both platform sources confirmed as mass."
+    },
+    "dietary-thiamin": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:1f083cfa79c2fefd1c4a23811afd8d98f1d2fd500c3d97ceb351b402178fc7e6",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Rejected candidate 81927-6 verified ACTIVE but MRat/24H, example mg/(24.h). HK spells the identifier DietaryThiamin; HC thiamin: Mass (androidx source)."
+    },
+    "dietary-vitamin-a": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:456e19652124631c6ac4ac9d4d8be1811434cb4174a4b48d6f85705152b7f4e2",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Adversarial re-verification 2026-08-21: candidate 81072-1 is ACTIVE but Property MRat (LP6833-0), Time 24H (LP6924-7), example ug/(24.h) — wrong axis for a per-event mass over an arbitrary Period, so it is demoted to rejected candidate and the row is Grove-coded, consistent with the macro-fat rejections. Both platforms store plain mass; RAE weighting is a documentation caveat only."
+    },
+    "dietary-vitamin-b12": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:e594211c06696d21aace8656cca40bed540e65572a954d1fc8c2bddf36ac6399",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Rejected candidate 81062-2 verified ACTIVE but MRat/24H, example ug/(24.h). HC vitaminB12: Mass confirmed directly in androidx source (line 109)."
+    },
+    "dietary-vitamin-b6": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:b10d1ed4ab27ab704b867e7ac79a1930e393dc5b4d7e4ca539be85d151f93bfd",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Rejected candidate 81064-8 verified ACTIVE but MRat/24H, example mg/(24.h). HC vitaminB6: Mass confirmed directly in androidx source (line 111)."
+    },
+    "dietary-vitamin-c": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:8e9699d7d000511304b556b62708b3c807572f888bb4f30c9868d0dc8c954296",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Rejected candidate 81074-7 verified ACTIVE but MRat/24H, example mg/(24.h)."
+    },
+    "dietary-vitamin-d": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:f5d0b7a0dc030f0064605a86f80c008e36fb0b46006d7463bee86d63c5ce0334",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Rejected candidate 81929-2 verified ACTIVE but MRat/24H, example ug/(24.h). Apple doc JSON confirms DietaryVitaminD uses mass units, cumulative, so no IU pitfall inside the model; producers converting IU-labeled food data apply 40 IU = 1 ug before emission (adapter normalization rule)."
+    },
+    "dietary-vitamin-e": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:ee10fd861defdce9cdb3e807af3ed72986cd729eefe4de1856f7bd2f8093f247",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Rejected candidate 81076-2 verified ACTIVE but MRat/24H, example mg/(24.h). Alpha-tocopherol labeling convention is a documentation caveat only."
+    },
+    "dietary-vitamin-k": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:3f3eec12b3c34ff592cde9d37e390d6281360aaca299dd09413447b20b486a30",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Rejected candidate 81078-8 verified ACTIVE but MRat/24H, example ug/(24.h)."
+    },
+    "dietary-zinc": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:00d8fad532ed9421e054097db67ea571856464b6f97852639164ead015736d33",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Rejected candidate 81089-5 verified ACTIVE but MRat/24H, example mg/(24.h)."
     },
     "distance": {
       "status": "approved",
@@ -82,6 +1490,270 @@
       "provenance": "bootstrap",
       "reviewedOn": "2026-08-21"
     },
+    "electrodermal-activity": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:0d9ad541b3be39cc3f7e9845097b095622711850e993b0053db6f8755247b931",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "The providers catalog confirms Withings getmeas:196 is unmodeled precisely because 'Electrodermal activity has no shared Mobile scalar profile', which together with HealthKit's HKQuantityTypeIdentifierElectrodermalActivity satisfies the two-source shared bar. No faithful LOINC skin-conductance concept exists (searches return psychophysiology panels, not a scalar conductance), so a Grove code is defined. uS parses under pinned UCUM 2.2 (prefix u on S) with the conductance dimension {g:-1,m:-2,s:1,C:2}; effective dateTime for a point sample, with the differing measurement sites (HealthKit sensor vs Withings feet) carried as a body-site coding."
+    },
+    "elevation-gained": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:42975bb93f832f92f159c38ba53a81e97175168e49c409f408c7b3a8f47ed9f2",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Health Connect is the only source with a scalar elevation-gain record (Withings elevation exists only as a mapped-standard intraday recording), so it is platform-exclusive. LOINC candidates were checked and rejected: 101687-2 Elevation climbed carries PROPERTY LRat with example unit {#} (verified via tx.fhir.org $lookup part LP412244-8 and findacode's LOINC 2.76+ attributes), and 93971-0 is explicitly [Length/Time] 24 hour - neither is a plain interval length total in metres, which would break the property-dimension gate. m carries dimension {m:1}; interval totals take Period."
+    },
+    "environmental-audio-exposure": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:5e893d3fd7a917fd0b351195d8941e9a2f93f0d182e1c0333851a38bb4060a0a",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Apple docs verified: samples use sound pressure units and 'measure discrete values of the equivalent continuous sound pressure level' (Leq, A-weighted dBASPL), which is an interval-averaged level, hence effectivePeriod. LOINC searches ('sound exposure', 'noise', 'decibel', 'sound level') surface only PhenX questionnaire items, none a faithful measured exposure level, so a Grove code is defined. dB[SPL] parses in the pinned UCUM table as the d prefix on the metric special unit B[SPL]; dimension {g:1,m:-1,s:-2} as decided. A-weighting is not expressible in UCUM and is carried by the concept definition per the pinned convention."
+    },
+    "environmental-sound-reduction": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:33dd03d821cc85f05d3926f279c4b38d5a3ef95d7973d332f49e59aa2c858eb2",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Apple docs verified: 'measures the difference in sound intensity when wearing headphones that lower environmental sound levels', in sound pressure units as equivalent continuous sound pressure level values, collected automatically with supported headphones. The pinned Grove convention keeps dB[SPL] (dimension {g:1,m:-1,s:-2}) even for this level difference; the profile description must state it is a reduction so consumers do not read it as exposure. No LOINC concept models hearing-protection attenuation as a measured observation, so a Grove code is defined; interval semantics give effectivePeriod."
+    },
+    "extracellular-water-mass": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:dbab05308e740d0c09d8d6ecc161c99cc34ec9a131988f296d259f3ddbde97fc",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Single-source (Withings getmeas:168), so platform-exclusive. Searched NLM Clinical Tables for 'extracellular water' and found no mass-quantity LOINC (101683-1 covers only total body water), so a Grove code is defined. kg, dimension {g:1}; point BIA reading, effectiveDateTime."
+    },
+    "flights-climbed": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:87a10482163a7ab99b2d9745402ee931a3557a26fdafab52688dad6815926fc9",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Three sources (HealthKit, Health Connect, Google Health API) evidence flights/floors climbed, so it is shared. Verified 100304-5 'Flights climbed [#] Reporting Period' ACTIVE, PROPERTY Num, SCALE Qn on tx.fhir.org (LOINC 2.82); it was chosen over 93833-2 (fixed 24-hour timing) because the sources report arbitrary intervals matching an effective Period. New UCUM annotation {flights} is proposed to extend the closed allowlist: like {steps}, it names one reviewed dimensionless counting semantics (flight-of-stairs ascent events as counted by the source), keeping the count distinguishable from bare '1'."
+    },
+    "fluid-intake": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:42affdb99042dabd4a4e37d7efa155f98f47b6f7a8d524c2912f7240bd4fb143",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Re-verified: 8985-4 ACTIVE, Pt, Property Vol (LP6893-4), example unit mL; 8990-4 is the 24-hour variant and 75300-4 is DEPRECATED (both confirmed). Apple doc JSON confirms DietaryWater uses volume units, cumulative. Pinning requires adding Vol -> {m:3} to propertyDimensions. HC hydration is a separate record type, so these observations never join a dietary-intake summary on the HC path."
+    },
+    "forced-expiratory-volume-1": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:b60b3a92821d44008dbeb6814a4628e545d171f0009aaa2c6e1adb5d97ed490d",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Verified 20150-9 on tx.fhir.org (display 'FEV1', STATUS ACTIVE, PROPERTY LP6893-4=Vol, SCALE LP7753-9=Qn) and NLM Clinical Tables (component 'Volume expired during 1.0 s of forced expiration'), matching Apple's definition of HKQuantityTypeIdentifierForcedExpiratoryVolume1 exactly. Apple docs confirm volume units and discrete values, so effectiveDateTime and UCUM L (dimension {m:3}) are exact. No second source exists across Health Connect, SensorKit, or the providers catalog."
+    },
+    "forced-vital-capacity": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:48c17c495a12ecb7406b4011ac0a57d83354e4c78b61009b659208c127c24741",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Verified 19868-9 on tx.fhir.org (STATUS ACTIVE, PROPERTY LP6893-4=Vol, SCALE LP7753-9=Qn) and NLM Clinical Tables (long common name 'Forced vital capacity [Volume] Respiratory system by Spirometry'); the 'by Spirometry' method is faithful because an FVC value is by definition a spirometry maneuver. Apple docs confirm HKQuantityTypeIdentifierForcedVitalCapacity uses volume units with discrete values, so a point effectiveDateTime and UCUM L (pinned table dimension {m:3}) are exact. Health Connect, SensorKit, and the three providers carry no spirometry element, so the two-source bar for a shared measurement is not met."
+    },
+    "gad7-assessment": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:d6e58cad04fc07bbd3aff50b91227a786fe89a6deb51e8ec95e167f54edf39c4",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Exact LOINC total-score code, panel, and all four LA answer displays independently re-verified. {score} annotation token must be added to the UCUM annotation allowlist (currently contains only 'steps')."
+    },
+    "handwashing-session": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:b3e678033538f626fa170471dd955e3036b7c69ae92833fd61035fbdc1dd95c4",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Mirror of toothbrushing-session; both are hygiene interval events with duration as the only datum. Verifier: confirmed, no changes."
+    },
+    "headphone-audio-exposure": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:41b7e395105c062360b214746a9f96599495de0be44cad0077bb46c3c07a5446",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Apple docs verified: identical semantics to environmental audio exposure ('discrete values of the equivalent continuous sound pressure level' in sound pressure units), so the same dB[SPL] convention, dimension {g:1,m:-1,s:-2}, and effectivePeriod apply. No faithful LOINC exists (LOINC noise content is PhenX questionnaire material), so a Grove code is defined. The sibling HKCategoryTypeIdentifierHeadphoneAudioExposureEvent is deliberately excluded from this concept's sources: it is an OS limit-alert event, not a level measurement (see notes)."
+    },
     "heart-rate": {
       "status": "approved",
       "approvedBy": [
@@ -91,6 +1763,380 @@
       "digest": "sha256:6638a130e87e6fc546291361a91713baf92a0b8131e47b2396417d471ce2cec4",
       "provenance": "bootstrap",
       "reviewedOn": "2026-08-21"
+    },
+    "heart-rate-recovery-one-minute": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:4d56de2baca4b5a13d3a1026aa0835e254aed7620e1e79f4f1307c02da9d087c",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "NLM Clinical Tables returns zero LOINC results for 'heart rate recovery', so no faithful LOINC concept exists for this protocolized delta and a Grove code is defined. Only HealthKit evidences it, making it platform-exclusive. /min parses under pinned UCUM 2.2 with dimension {s:-1}; effective dateTime is the one-minute-post-exercise instant the sample is anchored to."
+    },
+    "heart-rate-variability-rmssd": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:ebbd47d3472b1792718698ed8cd118796d520982438538128306784e2af6b39d",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "NLM Clinical Tables returns zero LOINC concepts for RMSSD (only the SDNN codes 80404-7/76643-6 exist), so a Grove code is required to avoid mislabeling RMSSD as SDNN — the exact confusion the providers catalog flags ('RMSSD is distinct from SDNN'). Two sources evidence it: Health Connect HeartRateVariabilityRmssdRecord (an InstantaneousRecord) and the Google Health API rootMeanSquareOfSuccessiveDifferencesMilliseconds element. ms parses under pinned UCUM 2.2 with dimension {s:1}; effective dateTime matches both sources' instantaneous shape."
+    },
+    "heart-rate-variability-sdnn": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:f46319b6dd91ac01db9a712495ea939a50c842f105977ab114cd20cde8e230f4",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "HealthKit and Google Health API both carry SDNN, meeting the two-source bar. Verified 112429-6 'Heart rate variability SDNN [Time]' ACTIVE, PROPERTY Time, SCALE Qn on tx.fhir.org (LOINC 2.82); chosen over 80404-7 (R-R interval.standard deviation) because it names the SDNN statistic exactly and method-neutrally. ms is a prefixed UCUM second with dimension {s:1}; sources timestamp each SDNN result, hence effectiveDateTime, with the measurement window as source context. Adjudicated across batch conflict per policy (LOINC exactness / fail-closed); see integration commit."
+    },
+    "inhaler-usage": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:a48c4ba30df277842d56efa51a766f58a238facc0e38eb18a32b54edfb948bc5",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "NLM Clinical Tables returns no LOINC observation for a count of inhaler actuations (only the ACT questionnaire item 82672-7, which is an ordinal survey answer, not a device count), so a Grove code is defined. Apple docs confirm HKQuantityTypeIdentifierInhalerUsage uses count units with cumulative values, hence an interval total with effectivePeriod. The unit extends the closed annotation allowlist with {puff}: dimensionless, one reviewed counting semantics ('inhaler actuation events as counted by the source device or user entry'), mirroring the admitted {steps} precedent."
+    },
+    "insulin-delivery": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:24e51da72e23158a0dfa5c0f2c6c3f8c12cdf3b6614edf2cfba90a94a1881992",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Implements the DECIDED shape: scalar dose plus a required basal/bolus reason component sourced from HealthKit's HKMetadataKeyInsulinDeliveryReason (HKInsulinDeliveryReason .basal/.bolus). No LOINC observation concept states delivered-insulin-with-reason, so a Grove code is defined; [iU] is the pinned UCUM 2.2 arbitrary international-unit token with an empty dimension vector. effective Period because HealthKit insulin samples span the delivery interval (basal spans especially)."
+    },
+    "intermenstrual-bleeding": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:25f498366f1828e15ec9162fa75e5ff6ffd602a77f1631193393c7815bd3fa24",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-workout-enums)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Panel-verified: both platforms record a bare event; the fixed #present code needs no absorption map; no exact LOINC (86648-3 rejected)."
+    },
+    "intracellular-water-mass": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:c2f4e2ac55be284f054b5e09959c06816d71c860b16d8f0b6bda7dfe83646c6d",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Single-source (Withings getmeas:169), so platform-exclusive. Searched NLM Clinical Tables for 'intracellular water' and found no LOINC, so a Grove code is defined, mirroring the extracellular concept. kg, dimension {g:1}; point BIA reading, effectiveDateTime."
+    },
+    "lactation-status": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:92356d32b7bdbb03b2618cf05519c6816c1180630711184e2a4f39ae9df5c5ed",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Parallel to pregnancy-status; same presence-only interval semantics. Verifier: 63895-7 re-verified (ACTIVE, Find/Nom); same optional answer-list secondary-coding note as pregnancy-status."
+    },
+    "lean-body-mass": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:2f1ec8b9972214c213a4d617f867cd25bbb1fecb2c578cca570c839f8179566a",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "HealthKit and Health Connect alone satisfy the two-source rule; Withings measure type 5 (fat-free mass) is folded in with an explicit distinctness caveat because consumer scales use the terms interchangeably. LOINC 91557-9 'Lean body weight' is the method-less concept, deliberately preferred over method-bound 8342-8 (immersion), 8343-6 (skin fold), and 88334-8 (Calculated); verified on tx.fhir.org (LOINC 2.82): PROPERTY Mass (LP6826-4), SCALE Qn, ACTIVE. UCUM kg parses as prefix k on base unit g, dimension {g:1}, matching the pinned Mass propertyDimension; a point reading takes effectiveDateTime."
+    },
+    "light-sleep-duration": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:b89c7490f0a0d94a646e0d4183233853b97af05d0291f68566dcad25f81781b5",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Three provider stage-total rows with no stage intervals, hence aggregate-family. Verified 93830-8 'Light sleep duration' ACTIVE, PROPERTY Time, SCALE Qn on NLM Clinical Tables. min, dimension {s:1}; sleep-session effective Period."
+    },
+    "menstruation-flow": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:a71ab4bc08b8a2399349a2954f5eecf4b143eae82e27b92de2607e5de2bde176",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-workout-enums)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Panel-verified absorption: HK unspecified/light/medium/heavy/none and HC FLOW_UNKNOWN/LIGHT/MEDIUM/HEAVY; #none only from HealthKit; no exact LOINC (3146-8/49033-4 rejected)."
+    },
+    "menstruation-period": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:ba0ac6810c04d5cf593962492a4925461fefb250b78d6575cb8290828fe88fe9",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-workout-enums)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Panel decision: the period interval is the HC-recorded companion of menstruation-flow; single-source, so platform-exclusive to the Health Connect guide."
+    },
+    "mindfulness-session": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:d1e41654099add9388593f050bff44747d65a575442142ca8b62a8fd955c6d0b",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Two sources (HealthKit MindfulSession category samples, Health Connect MindfulnessSessionRecord) evidence a bounded mindfulness session, so it is shared. LOINC search for mindfulness/meditation (NLM Clinical Tables) returns only the FFMQ questionnaire panel 100280-7, no session-duration observation, so a Grove code is defined. Session shape mirrors sleep-duration: value is the session duration, effective is the exact session Period; min carries dimension {s:1} per the pinned UCUM table."
+    },
+    "muscle-mass": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:0f38f4547a5ebd0519f0f172ccf17c3de414a1f6ca9f5d47c72b82de57c9a8bd",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Only Withings (measure type 76) evidences whole-body muscle mass — neither mobile platform nor another provider carries it — so it fails the two-source bar and lands in the providers adapter guide as its one owning guide. LOINC 73964-9 'Body muscle mass Calculated' verified on tx.fhir.org (LOINC 2.82): PROPERTY Mass (LP6826-4), SCALE Qn, ACTIVE; the Calculated method faithfully matches impedance derivation. Withings segmental muscle mass (type 175) is a different, per-region concept and stays unmodeled."
+    },
+    "number-of-alcoholic-beverages": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:4146bc8d174b849f0c4bdd150e7fe90af3e8f53a04f37004178c709840879eaf",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "LOINC's alcohol-use concepts are survey items (drinks per day/week ratios) rather than an interval drink total, so a Grove code is defined. HealthKit models this as a cumulative quantity, hence effective Period. The unit requires extending the closed annotation allowlist with {drinks} (justified above); the annotation is dimensionless by definition, so the dimension vector is empty."
+    },
+    "number-of-times-fallen": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:9151e88a81f4550adcc282e4c0df57682073e9d9120ec6687e7ea40f4d89f6e4",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Only HealthKit evidences the interval fall count, so it is platform-exclusive. LOINC number-of-falls codes (75856-5 past 12 months Reported, 91380-6 past 3 months, 5485x CMS assessment windows) all fix a reporting window or assessment context and are not faithful to an arbitrary-interval device count, so a Grove code is defined with the caveat in the description. New annotation {falls} (justification: fall events as counted by the source device or user entry); effective is the exact source Period."
+    },
+    "ovulation-test-result": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:3477a459d05c43cdc5990636bf1eaee794ea2a8d251eb30a93752119ae42e93c",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-workout-enums)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Panel-verified absorption: HK negative/luteinizingHormoneSurge/indeterminate/estrogenSurge and HC RESULT_NEGATIVE/HIGH/POSITIVE/INCONCLUSIVE; the HK estrogenSurge->high-fertility widening is flagged and the token retained; no exact LOINC (15079-7/11976-8 rejected)."
     },
     "oxygen-saturation": {
       "status": "approved",
@@ -102,6 +2148,226 @@
       "provenance": "bootstrap",
       "reviewedOn": "2026-08-21"
     },
+    "oxygen-saturation-daily-average": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:45a745c9ba45431edb33a18efd4548cb0760eea6bef0d901e01197f83f4305f8",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Verified 103209-3 'Mean oxygen saturation' on tx.fhir.org (STATUS ACTIVE, SCALE LP7753-9=Qn, PROPERTY LP6839-7=NRat) with NLM Clinical Tables agreeing on component and NRat; the window-agnostic mean fits both daily averages, with the civil day carried by effectivePeriod. Caveat for the gate: LOINC 2.82 assigns PROPERTY NRat to this term although values are percent, so the pinned propertyDimensions NRat entry ({s:-1}) must not be used to dimension-check this concept's % unit (dimension {}); the unit table, not the property, is authoritative here. Two provider sources (google-health-api dailyOxygenSaturation.averagePercentage, Oura daily_spo2 spo2_percentage.average) satisfy the two-source bar, so ownership is mobile. Adjudicated across batch conflict per policy (LOINC exactness / fail-closed); see integration commit."
+    },
+    "peak-expiratory-flow-rate": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:aa50d4c9e7a9a55a99f6217a4bc35510cc3afd9bddd3e8ce3e6750fa6a48d534",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Verified 33452-4 on tx.fhir.org (STATUS ACTIVE, PROPERTY LP6895-9=VRat, SCALE LP7753-9=Qn) and NLM Clinical Tables (component 'Expiratory gas flow.max'); the peak-flow-meter-specific sibling 19935-6 was rejected because Apple docs only say volume/time units with discrete values and do not fix the device. UCUM L/min parses from the pinned table (L {m:3} over min {s:1} gives {m:3,s:-1}). Point maneuver result, hence effectiveDateTime. HealthKit is the only evidencing source."
+    },
+    "peripheral-perfusion-index": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:f330afc0cdd5324503c574bcf2079ad5f3b532272e342c2a1f6eca9be29ac054",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "61006-3 verified via NLM Clinical Tables and tx.fhir.org lookup (ACTIVE, PROPERTY VelRto, SCALE Qn, METHOD Pulse oximetry), matching HealthKit's pulse-oximeter perfusion index exactly; the pre/postductal variants 73794-0/73798-1 are neonatal-site-specific and were rejected. VelRto is a ratio, so the dimensionless UCUM % is consistent (VelRto is not yet in the pinned propertyDimensions map and needs a null-safe entry when adopted). effective dateTime for a point sample."
+    },
+    "phq9-assessment": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:b40c4ccdd8cccd4be12acfb20fa105fb76a1169144be8cb30590e2d2f318e77a",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "preferNotToAnswer is the one modeling wrinkle; dataAbsentReason asked-declined on the item component resolves it without inventing codes. Intentionally-unsupported was rejected: these are validated instruments with first-class LOINC, and dropping them would discard exact clinical semantics."
+    },
+    "physical-effort": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:5c93d03188b8f6a7312b78c692dc0195d41234672f7e616a310159830347e7e9",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Only HealthKit evidences this intensity estimate, so it is platform-exclusive. Apple documents the native unit kcal/(kg*hr); the UCUM expression kcal/kg/h parses against the pinned table (kcal {g:1,m:2,s:-2} / kg {g:1} / h {s:1} = {m:2,s:-3}). The pinned [MET] entry has dimension {m:3,s:-1,g:-1} (oxygen-volume based), so a lossless conversion to [MET] does not exist dimensionally and the energy-based unit is kept; LOINC has MET assessment codes but no continuous device intensity stream, so a Grove code is defined."
+    },
+    "power": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:7a8b97a651d8b8fd8c17c9e53250c4696d7dc16b0537e5972dcaac4b53b86d6f",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "HealthKit (RunningPower, CyclingPower) and Health Connect (PowerRecord) both evidence instantaneous exercise power, so it is shared with the sport tag as context, following the distance-merge precedent. LOINC 2.82 has no instantaneous power-output code: NLM Clinical Tables 'watts' returns only 93342-4 'Power level --peak during exercise' (EngRat), a peak aggregate that is not faithful to per-sample data, so a Grove code is defined. UCUM W is in the pinned essence with dimension {g:1,m:2,s:-3}; Health Connect PowerRecord samples normalize to point effectiveDateTime observations."
+    },
+    "pregnancy-status": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:56c1e17e7b15ff895623884d16690131fec651feb07ad9432b15bd72887a6d6a",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Interval state flag as coded Observation; absence of a sample never implies not-pregnant, which the profile documentation must state."
+    },
+    "pregnancy-test-result": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:595cb1c28598118555bc37ac9a6cdb267077036501c91c1fe21fb1f869458427",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Coded Ord result under an exact LOINC code with a three-code Grove value set and full HK enum absorption; the HK source token stays as secondary coding."
+    },
+    "progesterone-test-result": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:b2bbd8ade49d624b7b1f137d4c231bf793b8f1e2d21c67bef09ec7337046cd4d",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Structurally identical to pregnancy-test-result but without a LOINC code; revisit if LOINC ratifies a qualitative urine PdG concept."
+    },
+    "rem-sleep-duration": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:f0fe45608e704eae7d570b3c631aa8d0fd77e0bb2b7209c854bb136577f23b9b",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Same evidence pattern as deep sleep: three provider stage-total rows with no stage intervals, hence aggregate-family. Verified 93829-0 'REM sleep duration' ACTIVE, PROPERTY Time, SCALE Qn on NLM Clinical Tables. min, dimension {s:1}; sleep-session effective Period."
+    },
     "respiratory-rate": {
       "status": "approved",
       "approvedBy": [
@@ -111,6 +2377,204 @@
       "digest": "sha256:107d7f39eea9ab83ab59f30f87fab5dfa8159ec9cd15b11bbfb96f2fe53a019a",
       "provenance": "bootstrap",
       "reviewedOn": "2026-08-21"
+    },
+    "respiratory-rate-average": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:ed353014a32a7625a66cc2f8d74d947e79a9389bdcc05e20f85a22d048ff186a",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Verified 103217-6 'Mean respiratory rate' on NLM Clinical Tables (PROPERTY NRat, matching the pinned NRat dimension {s:-1} for /min); the component is window-agnostic, so one concept faithfully covers Google's civil-date dailyRespiratoryRate.breathsPerMinute, Oura's sleep-session average_breath, and Withings' getsummary rr_average, with the differing windows expressed only through effectivePeriod. UCUM /min parses from the pinned table. Three distinct provider sources clear the two-source bar, so ownership is mobile; the review summary for the aggregate design should note the window heterogeneity explicitly. Adjudicated across batch conflict per policy (LOINC exactness / fail-closed); see integration commit."
+    },
+    "resting-heart-rate": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:736b9031e1a1ef06be9bd9869fa75105189f8e5811aadc19e7db72777bb7cd49",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "40443-4 verified via NLM Clinical Tables (long common name 'Heart rate --resting') and tx.fhir.org lookup (ACTIVE, PROPERTY NRat, SCALE Qn); /min matches the NRat dimension {s:-1}. Three sources evidence the concept (HealthKit daily estimate, Health Connect RestingHeartRateRecord, Google Health API daily-resting-heart-rate), but the value is a daily/rolling windowed estimate, so per policy it is aggregate-family rather than a point shared measurement; effective Period covers the exact estimation window, including Health Connect's instant records once the design fixes window semantics."
+    },
+    "running-ground-contact-time": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:f00addf48e32cbcedac20279544957dbded81c41078270727cf09cabd713eaf0",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "HK-only running dynamics metric (millisecond unit per Apple docs); no faithful LOINC concept; platform-exclusive per the one-source rule. Authored at integration after the gait batch omitted it."
+    },
+    "running-stride-length": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:6ed8a34f67a94bfc94ea5db2996b4a0467552290c135ab4f3a4c098a49f906b9",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "HK-only running dynamics metric (meter unit per Apple docs); no faithful LOINC stride-length observation exists (gait analysis LOINC codes are instrument-bound); platform-exclusive per the one-source rule. Authored at integration after the gait batch omitted it; unit verified against HKUnit meter."
+    },
+    "running-vertical-oscillation": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:11f5b6775594488bbeea0d3dae6f58e7d05a277f18afd0db76c5c9d8f4901a02",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "HK-only running dynamics metric (centimeter unit per Apple docs); no faithful LOINC concept; platform-exclusive per the one-source rule. Authored at integration after the gait batch omitted it."
+    },
+    "sexual-activity": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:b140f8ce30c7b03c9b71dbf07548f20bcc0e48ed905caa89d7b9b8dfb8bbf566",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-workout-enums)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Panel-verified: HC PROTECTION_USED_PROTECTED/UNPROTECTED absorb directly; HealthKit has no enum - its boolean HKMetadataKeySexualActivityProtectionUsed maps losslessly with absent metadata mapping to #unknown and no second coding retained."
+    },
+    "six-minute-walk-test-distance": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:f73b67231cbb44ad4305fcfe8f23238915d722712b5b67fe996d906889b816c8",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Only HealthKit evidences the type. LOINC 64098-7 verified via tx.fhir.org $lookup on LOINC 2.82: STATUS ACTIVE, SCALE Qn (LP7753-9), PROPERTY LP6822-3 - the identical part code as the pinned 103208-5 Distance traveled (Len), confirming it denotes the walked distance in metres; corroborated by loinc.org search results describing 64098-7 as total distance walked in six minutes. m carries dimension {m:1}; the windowed estimate takes a Period effective in the aggregate design."
+    },
+    "skin-temperature": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:d0151caaee490c44a598b491eb67eda7152261d22c2a30a3348e93e41dc6ca41",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Decided design confirmed by evidence: three sources (HealthKit wrist, Health Connect skin, Withings measure type 73) join one shared measurement, and the providers catalog already refuses relabeling skin temperature as body temperature. Health Connect's baseline+delta form is resolved by the adapter: each SkinTemperatureRecord delta is added to the record baseline to yield an absolute reading effective at the delta time, so only absolute Celsius values reach the profile. LOINC 61008-9 verified on tx.fhir.org (LOINC 2.82): display 'Body surface temperature', PROPERTY Temp (LP6872-8), SCALE Qn, ACTIVE, matching the pinned Temp dimension {K:1}; UCUM Cel is pinned. HealthKit's nightly wrist value is admitted at its sample endpoint as a point reading."
+    },
+    "sleep-awake-duration": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:2148d97ded950584dc4bac0456f65b5fa7615fe467e590d8f08141b9f266161a",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Three provider rows total awake time inside a sleep session, hence aggregate-family alongside the other stage totals. Verified 93828-2 'Nighttime awakening duration' ACTIVE, PROPERTY Time, SCALE Qn on NLM Clinical Tables (103210-1 'Awakening duration' was noted; 93828-2 sits in the same consumer sleep panel as 93829-0/93830-8/93831-6, keeping the family coherent). min, dimension {s:1}; sleep-session effective Period."
     },
     "sleep-duration": {
       "status": "approved",
@@ -122,6 +2586,28 @@
       "provenance": "bootstrap",
       "reviewedOn": "2026-08-21"
     },
+    "sleep-heart-rate": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:5265254674e301e1b9919c39d672cbe48aec06d3f3795077440fc30f326f1928",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Oura's session-minimum and Withings' session-average are windowed heart-rate statistics, exactly the shape the phase-2 aggregate design parameterizes (per-concept profile, effectivePeriod window, fixed method/statistic coding), so aggregate-family rather than point results. Searched NLM Clinical Tables for a sleep-scoped heart-rate LOINC and found none, so a Grove code is defined; 40443-4 was rejected because resting and sleeping heart rate are distinct concepts. /min, dimension {s:-1}; sleep-session effective Period."
+    },
     "sleep-stage": {
       "status": "approved",
       "approvedBy": [
@@ -132,6 +2618,138 @@
       "provenance": "bootstrap",
       "reviewedOn": "2026-08-21"
     },
+    "sleeping-breathing-disturbances": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:57575df93794f1f164513291d3c90728e5962b523fe1d23b559c82d37283160c",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Apple's September 2024 white paper 'Estimating Breathing Disturbances and Sleep Apnea Risk from Apple Watch' states the algorithm output 'is expressed as a continuous variable, which has units of events per hour' produced as a nightly measurement, fixing UCUM /h (dimension {s:-1}) over the night's Period. LOINC 90566-1 Respiratory disturbance index exists but was rejected: Apple's metric is a proprietary accelerometry estimate explicitly not equivalent to a polysomnography-derived RDI/AHI, so relabeling would be diagnostic overreach; a Grove code is defined instead. Only HealthKit evidences the concept, so the aggregate family stays adapter-owned."
+    },
+    "sleeping-heart-rate-average": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:c9bfa6d6b5f0f24e072f32a5a63e4480aad43457f88a8e13173bd9863f50a052",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "The catalog marks withings getsummary hr_average unmodeled because 'a sleep-session average is not a point heart-rate measurement' — a windowed average, hence aggregate-family with Withings as the single evidencing source (owner providers). No LOINC concept states a sleep-session heart-rate mean, so a Grove code is defined; it is kept separate from resting-heart-rate (40443-4) because a session mean is not a resting estimate. /min parses with dimension {s:-1}; effective Period is the exact session window."
+    },
+    "speed": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:c029446af511b95e0494efac0bf91e14758d2a6bfd5163df034997401d934e47",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Two distinct sources evidence one instantaneous-speed concept: HealthKit's five sport-scoped speed types and Health Connect's activity-agnostic SpeedRecord, so it becomes a shared measurement with the sport tag demoted to context, exactly as the shipped distance measurement merges nine HK distance types. LOINC 2.82 was searched on NLM Clinical Tables and tx.fhir.org: only walking-speed calculated aggregates exist (41956-4 family) and no code for a generic instantaneous speed sample, so a Grove code is defined. UCUM m/s parses with dimension {m:1,s:-1}; Health Connect SpeedRecord is a sample series whose per-sample times normalize to point effectiveDateTime observations."
+    },
+    "stair-ascent-speed": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:674d1776129168fd50e73a47930b8bd12157d0c0663185fffbb7d3c139b76108",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "LOINC 112431-2 'Stair ascent speed [Velocity]' verified ACTIVE on tx.fhir.org and Ontoserver (LOINC 2.82): PROPERTY Vel (LP6888-4), SCALE Qn (LP7753-9), EXAMPLE_UCUM_UNITS m/s — an exact match for the HealthKit mobility metric. UCUM m/s parses against the pinned essence with dimension {m:1,s:-1}. HealthKit is the only evidencing source; discrete samples take effectiveDateTime."
+    },
+    "stair-descent-speed": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:4a10c9744e1c9c2ea4718577b9c2c5c24d9619d78ca0f6e9b636978ab6eeb1c5",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "LOINC 112430-4 'Stair descent speed [Velocity]' verified ACTIVE on tx.fhir.org and Ontoserver (LOINC 2.82): PROPERTY Vel (LP6888-4), SCALE Qn (LP7753-9), EXAMPLE_UCUM_UNITS m/s — an exact match. UCUM m/s parses with dimension {m:1,s:-1}. HealthKit-only evidence keeps it platform-exclusive; discrete samples take effectiveDateTime."
+    },
+    "step-cadence": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:18039ac812b9c1241058a730a899848a372e8909eabd109b59214ac40aa21b3f",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Only Health Connect's StepsCadenceRecord evidences a step-rate sample (HealthKit has no step-cadence identifier and no provider catalogs one), so it is platform-exclusive to the Health Connect adapter guide. LOINC 2.82 has no cadence or steps-per-minute concept (NLM Clinical Tables and tx.fhir.org expansions both empty), so a Grove code is defined. The unit {steps}/min reuses the already-allowlisted {steps} annotation over min, parsing to dimension {s:-1} with no annotation-allowlist extension; series samples normalize to point effectiveDateTime observations."
+    },
     "step-count": {
       "status": "approved",
       "approvedBy": [
@@ -141,6 +2759,1282 @@
       "digest": "sha256:f38dbea18ad18d51e6a708af3affba98b13df963c2d31495fd95504a8a29ecde",
       "provenance": "bootstrap",
       "reviewedOn": "2026-08-21"
+    },
+    "swimming-stroke-count": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:41a9c36dc89a89b804ec95dc914fa51e968183fde4834389bb375f908a01a124",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Only HealthKit evidences a stroke count, so it is platform-exclusive. LOINC swimming search returns 93816-7 Swimming distance and calorie codes, no stroke-count concept, so a Grove code is defined. The unit needs a new annotation {strokes} (justification: swim-stroke events as counted by the source wrist sensor); like {steps} it is dimensionless with an empty vector, and cumulative interval samples take effective Period."
+    },
+    "symptom-abdominal-cramps": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:0adddbc57d9f0afa7418ba25fd7b0aed2ba389af54b5efc265401aa61efe6e6e",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "No generic LOINC: 28538-7 Abdominal pain [HIV-SSC] is instrument-bound; Grove code used. HKCategoryValueSeverity verified on Apple docs. Cycle-tracking-associated symptom in the Health app."
+    },
+    "symptom-acne": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:d482f58eb55a5faa94ef58a3e7e8ca05c8d191b5652fd2222ead6888ce1c2396",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "No LOINC symptom code exists for acne (only Cutibacterium acnes lab codes); Grove code used. HKCategoryValueSeverity verified. Cycle-tracking-associated."
+    },
+    "symptom-appetite-changes": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:25c69f17421642f37f9619eab44f14e4dc11fe7d27015b4272f1088b2cff13cb",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "FLAG: not a severity type. LOINC candidates all inexact: 71571-4 Changes in appetite [M3], 100768-1 Poor appetite (SURVEY.MTLHLTH), 112498-1 Lack of appetite (ESAS, SURVEY.GNHLTH) — instrument-bound or unidirectional, none capture bidirectional change; Grove code used. Cycle-tracking-associated (HK surfaces it in Cycle Tracking)."
+    },
+    "symptom-bloating": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:731cf5fdc569c05467a16b4e9452ad19d17a5fb9eadcd9a0988553fb39d194b0",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "No generic LOINC: only 28386-1 Gas/bloating [HIV-SSC], instrument-bound and a combined component; Grove code used. HKCategoryValueSeverity verified. Cycle-tracking-associated."
+    },
+    "symptom-breast-pain": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:73ebc12aace6b76ce75d337b980167aa8969822afe599a14bb206ed7e4f31c7d",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "No LOINC symptom code found for breast pain/tenderness; Grove code used. HKCategoryValueSeverity verified. Cycle-tracking-associated."
+    },
+    "symptom-chest-tightness-or-pain": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:8d42fafaf4592f5bb5a041c5715ae947308a5dd6c8a0f3015078a3f0075a3b44",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "LOINC 58259-3 Chest pain rejected: TRIAL status and PhenX class per tx.fhir.org lookup; no other generic candidate. Grove code with a combined tightness-or-pain component mirroring the HK type. HKCategoryValueSeverity verified."
+    },
+    "symptom-chills": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:9aac0912a1d18aa85062305cba530c28957cc87d7eef971cf7c65d920eafb708",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Only instrument-bound LOINC: 28376-2 [HIV-SSC], 70423-9 [FACIT], 69710-2 [PHQ combined with hot flashes]; Grove code used. HKCategoryValueSeverity verified."
+    },
+    "symptom-constipation": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:fcd79ebeeff6b7af68d9e50281fd470029863c228cd8836f3e844c48a51d2a0f",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Only instrument-bound LOINC: 45621-0 [MDS], 28235-0 [CCC], 54773-7 [CMS Assessment]; Grove code used. HKCategoryValueSeverity verified. Cycle-tracking-associated."
+    },
+    "symptom-coughing": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:6a3b6ba33e0ff8e14cf12b405f98d073203f5411ea494746257517b2f11daa03",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "No generic presence/severity LOINC for cough: 64145-6 is a PhenX questionnaire item, 85933-0 is cough duration (Time property); Grove code used. HKCategoryValueSeverity verified."
+    },
+    "symptom-diarrhea": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:a1e788c21ffda8741d96a8c65d99e0e6179f071d4ac36dbd2466020d086a9f0b",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Only instrument-bound LOINC: 45622-8 [MDS], 28379-6 [HIV-SSC], 28089-1 [CCC]; Grove code used. HKCategoryValueSeverity verified. Cycle-tracking-associated."
+    },
+    "symptom-dizziness": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:52e46b1f2137eb994f6a44302fa00a9d7bef453b15cc29e7985991d0a7bf9df7",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Closest LOINC 104032-8 'Dizziness, vertigo' (ACTIVE, Find, Ord) rejected: combined dizziness+vertigo component does not match the pure HK Dizziness concept; Grove code used, 104032-8 recorded as related-inexact. HKCategoryValueSeverity verified. Cycle-tracking-associated."
+    },
+    "symptom-dry-skin": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:21852f91e1d404f63ac694a60da9bf058a770369c1954a6dadba729f0c9ff5c5",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "No LOINC symptom code for dry skin/xerosis found (only FACIT/PhenX items); Grove code used. HKCategoryValueSeverity verified."
+    },
+    "symptom-fainting": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:dc3eca3a6df2a4b3c905e3a82a9349550c641ab89e59be078ac0ccc177e94daa",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Only instrument-bound LOINC: 45706-9 Syncope [MDS]; Grove code used. HKCategoryValueSeverity verified."
+    },
+    "symptom-fatigue": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:7e26dbeb1e26e871b5b4914d7a0893d7d4eba5f13ccec2179d9ebf58d550f01d",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Only instrument- or context-bound LOINC: 28100-6 [CCC], 28383-8 [HIV-SSC], 64097-9/64101-9 (exercise-context), PROMIS banks; no generic presence/severity code, so Grove code used. HKCategoryValueSeverity verified. Cycle-tracking-associated."
+    },
+    "symptom-fever": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:b023c2e1ffe8ace8e20e4679d7cbd351350fea7e26d073c073c08792b6b56017",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Closest LOINC are instrument- or context-bound: 45701-0 Fever [MDS] (METHOD_TYP MDS per tx.fhir.org), 81264-4 Fever duration (Time), 97066-5 Acute illness with fever (combined); Grove code used. HKCategoryValueSeverity verified. No collision with body-temperature or basal-body-temperature measurement ids."
+    },
+    "symptom-generalized-body-ache": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:aee3476c3fb4f7dd2bcbb8b3b9931a745c104ff1e8d171423b6a0f2f87824e19",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Only instrument-bound LOINC: 28390-3 Muscle aches [HIV-SSC], 69686-4 [PHQ]; Grove code used. HKCategoryValueSeverity verified."
+    },
+    "symptom-hair-loss": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:47bf979eef021611eae3b69e5fc3a5891f9f4bea47899c980ebeb16f5a27ffc1",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Only instrument-bound LOINC: 66674-3 Scarring chronic alopecia [PhenX], 70309-0 [FACIT]; Grove code used. HKCategoryValueSeverity verified."
+    },
+    "symptom-headache": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:355e3f4258d6b6bd627b58586d22a81429367ef4ad87b3aa3da695c077543c30",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Contrary to expectation, LOINC has no generic headache presence/severity code: 45715-0 is [MDS]-bound (METHOD_TYP confirmed via tx.fhir.org), 70302-5 is [FACIT], remainder PhenX/PROMIS; Grove code used. HKCategoryValueSeverity verified. Cycle-tracking-associated."
+    },
+    "symptom-heartburn": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:c707517133e5a4e9e85d38cea8e29f451dc42aa443dac81c7b18fedca64b268b",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "No LOINC symptom code found for heartburn (only PhenX/FACIT items); Grove code used. HKCategoryValueSeverity verified."
+    },
+    "symptom-hot-flashes": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:34c20fd332c87b93732f88a6701b6670c74c146ec48c3a8c76dec938aa2ca26c",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Only instrument-bound LOINC: 70376-9 [FACIT], 69710-2 hot flashes or chills [PHQ]; Grove code used. HKCategoryValueSeverity verified. Cycle-tracking-associated."
+    },
+    "symptom-loss-of-smell": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:4064eddc814e1d34c8c2b6d31380802b9a5882d667a10700bd8caa053ff6d310",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "No LOINC symptom code for anosmia/loss of smell found (anosmia search returns only Kallmann syndrome genetics); Grove code used. HKCategoryValueSeverity verified."
+    },
+    "symptom-loss-of-taste": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:4eb057c46087469207269bf7eb2a58547d761cb49d200f0cf1f4987b47041cdd",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "No LOINC symptom code for ageusia/loss of taste found; Grove code used. HKCategoryValueSeverity verified."
+    },
+    "symptom-lower-back-pain": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:f9babc69693d79c025a921120ce333ab52a10dda3b5722ab2ea3e31a48c5bf86",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Only instrument-bound LOINC: 45712-7 Back pain [MDS] (also not lower-back-specific), STarT Back and FACIT items; Grove code used. HKCategoryValueSeverity verified. Cycle-tracking-associated."
+    },
+    "symptom-memory-lapse": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:d04afd55a60c9a4fa28cb97a817c2c87b0739f654dc86d8eaec5c0cba3ed639d",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Only assessment-bound LOINC (CMS/ECog/CCC memory items); Grove code used. HKCategoryValueSeverity binding independently re-verified by the adversarial pass on the Apple memoryLapse page."
+    },
+    "symptom-mood-changes": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:8d4bdbb87b90f5cb6dd024a03f1cbc1fe70f4c0dea4ee5f88f156a19985e3e3b",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Only instrument-bound LOINC: 45557-6 Change in mood [MDS], 89665-4 mood swings [PROMIS]; Grove code used. Presence binding independently re-verified by the adversarial pass. Cycle-tracking-associated (HK surfaces it in Cycle Tracking). Distinct from any mental-wellbeing State of Mind types."
+    },
+    "symptom-nausea": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:2c3672b4b1f2a612e72417f46e005c86ff77572b3e0321b694de081b837d69f2",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "EXACT LOINC MATCH — the only one in the 37-symptom family. Alternatives rejected: 112497-3 Nausea (ESAS, SURVEY.GNHLTH), 42848-2 [CCC], 28391-1 [HIV-SSC]. HKCategoryValueSeverity verified. Cycle-tracking-associated."
+    },
+    "symptom-night-sweats": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:e9a4a493199d3f0f18a10875707a933873bc6cb3beac34e8f9c6da0334cb8f50",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Only instrument-bound LOINC: 28392-9 Night sweats [HIV-SSC], 70379-3 [FACIT]; Grove code used. HKCategoryValueSeverity verified. Cycle-tracking-associated."
+    },
+    "symptom-pelvic-pain": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:c93e6a5fa1db881795fded1db281efdd3883ddad7d9a0d5fbf8d18fd9e772829",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "No generic LOINC symptom code for pelvic pain found (only FACIT pelvic discomfort/cramping items); Grove code used. HKCategoryValueSeverity verified. Cycle-tracking-associated."
+    },
+    "symptom-rapid-pounding-or-fluttering-heartbeat": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:192e56e8bdfee05277f9f3fab3e266cb08c6248f7ad7bc4883ff5ea8a384611f",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "No generic LOINC code for palpitations found (NLM palpitations search returns zero results); Grove code used. HKCategoryValueSeverity verified. No id collision with the heart-rate measurement domain."
+    },
+    "symptom-runny-nose": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:1cc6c4397017ac9095227c58163c991d2aa880df01c35216514679c5026e2210",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "No LOINC symptom code for runny nose/rhinorrhea found (rhinorrhea search returns only a radiology CSF-leak study); Grove code used. HKCategoryValueSeverity verified."
+    },
+    "symptom-shortness-of-breath": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:cc52787d45c380239305f8f514611276d8f576cab4ee2994f6854e2498dd2a28",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "All LOINC candidates instrument- or context-bound: 45705-1 [MDS], 54564-0 [CMS], 112499-9 (ESAS), 98518-4 (7-day recall), PROMIS/FACIT dyspnea banks, Rose Dyspnea Scale items, 64112-6/64113-4 (exercise context); Grove code used. HKCategoryValueSeverity verified."
+    },
+    "symptom-sinus-congestion": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:c4a09a6cea83525ab0b8bf3b8f217793bd11b69acff00fc626aeef8f52964124",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "No LOINC symptom code for sinus/nasal congestion found (nasal congestion search returns zero results); Grove code used. HKCategoryValueSeverity verified."
+    },
+    "symptom-skipped-heartbeat": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:441fde5739cfb8fbe27f01d1e6fee8afdce7c1b4663abecd347041794cf1104b",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "No generic LOINC code found; Grove code used. HKCategoryValueSeverity verified."
+    },
+    "symptom-sleep-changes": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:beff27ddb5befd198db6aaf68b5ecf840e5086af96a2387d24929a58a5112d39",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Only instrument-bound LOINC: 45550-1 [MDS], 71570-6 [M3], 28210-3 [CCC], PROMIS sleep-disturbance scores; Grove code used. Presence binding independently re-verified by the adversarial pass. No id collision with sleep-duration or sleep-stage. Cycle-tracking-associated."
+    },
+    "symptom-sore-throat": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:3e104374f29af84561368e60b94ae9128f55d40d814b5ddd83b1375179790775",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "No generic LOINC symptom code for sore throat found (NLM search returns zero results); Grove code used. HKCategoryValueSeverity verified."
+    },
+    "symptom-vomiting": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:4ec3090931873de3b3aca13e56f4ae07489a8f574ecbf8c390d33c16f0ec3768",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Only instrument-bound LOINC: 45708-5 [MDS], 81224-8 [CCC], 28397-8 [HIV-SSC], 106691-9/106699-2 [CMS Assessment]; unlike nausea, no generic vomiting presence code exists (confirmed by neighbor probe around 81660-3), so Grove code used. HKCategoryValueSeverity verified."
+    },
+    "symptom-wheezing": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:434e1de7ce510d2845256413de9e6edc81ec04b982d3baa59aab533fb5d2cde6",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Only instrument-bound LOINC: 28399-4 Wheezing [HIV-SSC], remainder PhenX; Grove code used. HKCategoryValueSeverity verified."
+    },
+    "time-in-daylight": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:c35410c358c76871bac7efcffb8176412c282973b8f875d0cf870e921d0dc29c",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Apple docs verified: time units and cumulative values, so this is an interval total with effectivePeriod, and UCUM min (pinned table, dimension {s:1}) is exact. NLM Clinical Tables has zero results for 'daylight' and only PhenX recall questionnaires for sun-exposure hours, none a device-measured duration, so a Grove code is defined. No second source exists: Health Connect, SensorKit, and the providers catalog carry no daylight-time element."
+    },
+    "toothbrushing-session": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:ec8cf6e6bea8ff4c3d1d6c3e40bbddae49e2b49a825963f385ff72837887547a",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Value is the exact Period length in seconds; the interval semantics come straight from Apple's documentation (duration set by differing start and end dates). Verifier: identifier and abstract re-confirmed on Apple docs; no Health Connect toothbrushing record confirmed; UCUM s with dimension {s:1} correct."
+    },
+    "total-energy": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:d0fa78b3eb5db82e421748b8438660fe209083ae2f0f04f4b94df306a94f8a25",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Only Health Connect ships a total (basal-plus-active) calorie record; HealthKit and the providers expose only the active/basal decomposition, so this stays platform-exclusive. LOINC 41981-2 Calories burned (verified ACTIVE, Qn via tx.fhir.org) does not distinguish total from activity energy - the same ambiguity that led the shipped catalog to a Grove code for active-energy - so a Grove code keeps total, active, and basal mutually unambiguous. kcal, dimension {g:1,m:2,s:-2}, interval totals take Period."
+    },
+    "underwater-depth": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:0254e82ee7b7c6ed1df4ea296dbe33a95183ae87fcefcd68e6161b2d865db093",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Single-source (HealthKit only), so platform-exclusive. NLM Clinical Tables search for depth-of-water concepts returned no observation code, so a Grove code is defined; the UCUM base unit m ({m:1}) is exact and each sample is a point reading (effectiveDateTime). Depth is non-negative and measured from the water surface."
+    },
+    "uv-exposure": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:ca7430133fabde2e49c7e7beff73717db67437b7f0132e6311a9a9908d23db5a",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Apple docs verified verbatim: count units, discrete values, and 'the sample's value represents the UV index that the user was exposed to during the sample's duration', which fixes effectivePeriod and the WHO/WMO Global Solar UV Index semantics. NLM Clinical Tables returns only questionnaire and lens-transmittance LOINC content for 'ultraviolet', nothing faithful to a measured UV-index exposure, so a Grove code is defined. The unit extends the annotation allowlist with {uvindex}: dimensionless, reviewed semantics 'a value on the dimensionless WHO/WMO Global Solar UV Index scale'; bare UCUM unity was rejected because the Grove precedent ({steps}) uses annotated dimensionless units. Adjudicated across batch conflict per policy (LOINC exactness / fail-closed); see integration commit."
+    },
+    "vaginal-dryness": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:59c754dd9c48fe26010d960a4394794bcc73b508ec15c5ee03501185e96ba483",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "MUST be normalized with the symptoms batch: use the identical Grove severity value set and profile shape the symptoms batch defines (the adapter already has HealthKitSymptomSeverityCS); if that batch chooses a different verdict pattern for severity symptoms, this row follows it. Verifier: all five Severity cases re-verified verbatim; the symptoms-batch normalization requirement stands as the binding open item."
+    },
+    "vo2-max": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:2a0db33998073b1b541a0513b7ed39f1c1ef0c16373a4bbe92a8893461874129",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "The nearest LOINC, 94122-9 'Oxygen consumption (VO2)/Body weight [Volume Rate Content] --peak during exercise' (verified via NLM Clinical Tables, PROPERTY VRatCnt), was reviewed and rejected: its --peak-during-exercise challenge asserts a measured peak-exercise value, while all five evidencing sources (HealthKit, Health Connect Vo2MaxRecord with mixed measurementMethods, Google, Oura, Withings meastype 123) predominantly deliver estimated maxima, so a Grove code is the faithful choice; 60842-2 lacks both the per-mass denominator and the maximal qualifier. mL/kg/min parses under pinned UCUM 2.2 with dimension {m:3,g:-1,s:-1}; effective dateTime because each value is a point estimate. Adjudicated across batch conflict per policy (LOINC exactness / fail-closed); see integration commit."
+    },
+    "waist-circumference": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:d0a1883b3045d43b9c086fad81b073f1044355e5722cc8f9bc4f6ca5f2839a98",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Only HealthKit evidences the concept (Health Connect has no waist record and no frozen provider token carries one), so it is platform-exclusive to the HealthKit guide. LOINC search surfaced only protocol-bound alternatives (56086-2 PhenX, 56114-2 NHANES, 56117-5 WHI, 8281-8 by US); 8280-0 is the code used across US consumer-health mappings and was verified on tx.fhir.org (LOINC 2.82): PROPERTY Len (LP6822-3), SCALE Qn, ACTIVE, matching the pinned Len dimension {m:1}. UCUM cm parses as prefix c on m; a point reading takes effectiveDateTime."
+    },
+    "walking-asymmetry": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:204f0a5f587fb3d13a755664232af342920779eb8039622fe9ca497d91532c38",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "LOINC 112432-0 'Walking asymmetry' was verified ACTIVE on both tx.fhir.org r4 and r4.ontoserver.csiro.au (LOINC 2.82) with PROPERTY Prctl (LP6846-2) and EXAMPLE_UCUM_UNITS %; it is the exact concept created for this mobile gait metric. Caveat for the panel: both servers report SCALE_TYP Ord (LP7751-3), which sits oddly against the quantitative percent value HealthKit emits — recorded here as a LOINC modeling quirk, not a reason to fork a Grove code. UCUM % is in the pinned essence with an empty dimension vector; discrete samples take effectiveDateTime."
+    },
+    "walking-double-support": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:47d7c8d46edbcf57241a98261f11c1fa15723f76d9903402fb9e21c0d3edf375",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "LOINC 112434-6 'Walking double support [Percentile]' verified ACTIVE on tx.fhir.org and Ontoserver (LOINC 2.82): PROPERTY Prctl (LP6846-2), SCALE Qn (LP7753-9), EXAMPLE_UCUM_UNITS % — an exact match for the HealthKit metric this code was created to represent. UCUM % parses with an empty dimension vector. Only HealthKit evidences it; discrete samples take effectiveDateTime."
+    },
+    "walking-heart-rate-average": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:1425144e32216570ac4c8f4c201073dfcd94e8ce4c78eeb89b93467eb8b92ef7",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "NLM Clinical Tables returns no LOINC concept for a walking heart-rate mean ('heart rate walking' yields zero results), and generic pedometer-mean codes do not carry the walking-activity qualifier, so a Grove code is defined. /min parses under pinned UCUM 2.2 with dimension {s:-1}. Explicitly named in the aggregate-family policy list; effective Period covers the daily estimation window."
+    },
+    "walking-speed": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:6a6a84233320a455fadd36caee1181f88f9927fef87e0d55d7dbf11a8d7fdad7",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "LOINC search (NLM Clinical Tables and tx.fhir.org LOINC 2.82 valueset expansion) shows only calculated windowed aggregates (41956-4, 41957-2, 41958-0, 41959-8 'Walking speed 24 hour/past week maximum/mean Calculated', PROPERTY Vel) and no code for the discrete per-bout sample HealthKit emits, so a Grove code is defined rather than misusing an aggregate code. UCUM m/s parses against the pinned essence (m and s base units) with dimension {m:1,s:-1}. Only HealthKit evidences the concept, so it stays platform-exclusive; discrete samples take effectiveDateTime."
+    },
+    "walking-steadiness": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:43d7975cdd95e9767a341470acd2827a0a48846af1976309d0793c57a3dd79cc",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "LOINC 2.82 has no steadiness concept (NLM Clinical Tables and tx.fhir.org expansions for 'steadiness' return nothing relevant), so a Grove code carries the terminology for the phase-2 aggregate design. The metric is a rolling window over roughly a week of gait data, which places it in the aggregate family with an effective Period per policy. The companion HKCategoryTypeIdentifierAppleWalkingSteadinessEvent classification event is a separate category signal and is not folded into this quantity. UCUM % parses with an empty dimension vector."
+    },
+    "walking-step-length": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:9e96823f697c0028f24e11a9161b5bd4b95b25528d2fa7e98faf73c633c6f617",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "LOINC 2.82 has no step-length concept: NLM Clinical Tables 'step length' returns only lensmeter and planimetry terms and the tx.fhir.org LOINC expansion for 'step length' is empty, so a Grove code is defined. UCUM cm parses as prefix c on metric base unit m, dimension {m:1}, matching the body-height precedent in the shipped catalog. HealthKit is the only evidencing source; discrete samples take effectiveDateTime."
+    },
+    "water-temperature": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:5d6009b3484621b61cc0c52d3143d844df2830bde575f03acc9f051ad8c208d3",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Only HealthKit (Apple Watch Ultra submersion sampling) evidences the concept, so it is platform-exclusive to the HealthKit guide. NLM Clinical Tables search for 'water temperature' returned only a social-determinants survey item (112291-0), confirming no faithful patient-linked environmental LOINC exists, so a Grove code is defined. UCUM Cel is pinned with dimension {K:1}; each sample is a point reading, so effectiveDateTime."
+    },
+    "wheelchair-push-count": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:3d03d9a17554fa086b3bef5a48137d261b7be79356d7d06d61489cb72b1900a2",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Two sources (HealthKit PushCount, Health Connect WheelchairPushesRecord) evidence the interval push count, so it is shared. LOINC 96502-0 Number of wheelchair pushes per time period verified via NLM Clinical Tables and tx.fhir.org $lookup on LOINC 2.82: PROPERTY LP6839-7 (Num), SCALE Qn, STATUS ACTIVE - and its per-time-period framing matches effective Period exactly. Num is a dimensionless count, so the pinned propertyDimensions table needs Num -> {}; the unit needs a new annotation {pushes} (justification: wheelchair push events as counted by the source wrist sensor)."
+    },
+    "wheelchair-use": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:aaafb2bb1abff5c8fbf2fdba414aa690660982775ae883f66dbb015d73be2a57",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Judged platform-exclusive. Grove coding is honest only with 95738-1 explicitly considered and rejected — now documented. Flag for the standing reviewer since memory previously leaned intentionally-unsupported pending overrule."
+    },
+    "workout": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:7a395348c183baa813e4f14403f4b34a0ae39477542fb143146730c07c3c0d38",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-workout-enums)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Implements the decided core workout design: the 28-code shared activity value set covers every activity present on all four enumerable platform taxonomies (panel-verified membership 2026-08-21); the long tail maps to #other with the exact platform token retained as a secondary coding; statistics are bound to HKWorkout.allStatistics rather than the deprecated total* properties; segments/laps stay lossless as hasMember children per the amendment."
+    },
+    "workout-effort-score": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:14484b2d238f3c63070bf7f6d6cb17ed5cfae64a83101d1c050faeec81442b90",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Only HealthKit evidences the appleEffortScore scale, so both identifiers merge into one platform-exclusive measurement distinguished by rating method. The scale is Apple-proprietary (1-10 appleEffortScore), not the Borg RPE instruments LOINC carries (e.g., 89204-2 family), so relabeling to a Borg code would misstate the scale and a Grove code is defined. New annotation {score} (justification: a dimensionless ordinal rating on the source-defined scale); the score characterizes the associated workout interval, so effective is Period."
+    },
+    "workout-segment": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:0e38af765f217821db292cff653cf973f14908ba7644ec633ac4124cfa7a35a8",
+      "preparedBy": [
+        {
+          "name": "v0.3 terminology sweep drafting agent (concepts-workout-enums)",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "v0.3 terminology sweep adversarial verifier",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-21",
+      "recordedOn": "2026-08-21",
+      "reviewRef": "pending-integration-commit",
+      "notes": "Implements the decided segments design: the sleep-duration hasMember mechanism, structural value codes for laps/pauses/markers/events, the four HC-only scalar components plus HK lap length as optional slices, and documented overlap permission for lap children. Lap children may overlap activity segments; HK metadata dictionaries ride the recording payload."
     }
   }
 }
