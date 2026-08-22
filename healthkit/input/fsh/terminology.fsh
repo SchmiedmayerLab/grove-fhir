@@ -9,7 +9,7 @@
 CodeSystem: HealthKitMetadataKeyCS
 Id: healthkit-metadata-key
 Title: "HealthKit Metadata Keys"
-Description: "HealthKit metadata keys retained by Grove FHIR HealthKit 0.2.0 after standard FHIR mappings have been applied."
+Description: "HealthKit metadata keys retained by Grove FHIR HealthKit 0.3.0 after standard FHIR mappings have been applied."
 * ^experimental = false
 * ^caseSensitive = true
 * ^content = #complete
@@ -20,14 +20,14 @@ Description: "HealthKit metadata keys retained by Grove FHIR HealthKit 0.2.0 aft
 ValueSet: HealthKitMetadataKeyVS
 Id: healthkit-metadata-key
 Title: "HealthKit Metadata Keys"
-Description: "The HealthKit 0.2.0 allowlist of retained metadata keys. Each key maps to its published representation: a named Observation component or a named extension."
+Description: "The HealthKit 0.3.0 allowlist of retained metadata keys. Each key maps to its published representation: a named Observation component or a named extension."
 * ^experimental = false
 * include codes from system HealthKitMetadataKeyCS
 
 CodeSystem: HealthKitHeartRateMotionContextCS
 Id: healthkit-heart-rate-motion-context
 Title: "HealthKit Heart Rate Motion Context"
-Description: "Adapter codes for the HKHeartRateMotionContext raw values retained by Grove FHIR HealthKit 0.2.0. The mapping to HealthKit source cases is documented separately."
+Description: "Adapter codes for the HKHeartRateMotionContext raw values retained by Grove FHIR HealthKit 0.3.0. The mapping to HealthKit source cases is documented separately."
 * ^experimental = false
 * ^caseSensitive = true
 * ^content = #complete
@@ -39,7 +39,7 @@ Description: "Adapter codes for the HKHeartRateMotionContext raw values retained
 ValueSet: HealthKitHeartRateMotionContextVS
 Id: healthkit-heart-rate-motion-context
 Title: "HealthKit Heart Rate Motion Context"
-Description: "Motion contexts permitted by the HealthKit 0.2.0 heart-rate metadata mapping."
+Description: "Motion contexts permitted by the HealthKit 0.3.0 heart-rate metadata mapping."
 * ^experimental = false
 * include codes from system HealthKitHeartRateMotionContextCS
 

@@ -11,7 +11,7 @@ GENERATED FILE. Edit the corresponding catalog JSON and run
 
 # Authoritative SensorKit status matrix
 
-This table is the complete v0.2.0 SensorKit inventory: 20 catalog-baseline platform symbols and 2 stable additions in the stated Apple SDK baseline. Each of the 22 rows has one definitive status. Native Recording Document support is distinct from a structured semantic mapping and never implies that fetching occurs in FHIR.
+This table is the complete v0.3.0 SensorKit inventory: 20 catalog-baseline platform symbols and 2 stable additions in the stated Apple SDK baseline. Each of the 22 rows has one definitive status. Native Recording Document support is distinct from a structured semantic mapping and never implies that fetching occurs in FHIR.
 
 | SensorKit source | Adapter code | Inventory scope | Minimum iOS | Status | Structured contract | Raw contract | Binding reason |
 | --- | --- | --- | --- | --- | --- | --- | --- |

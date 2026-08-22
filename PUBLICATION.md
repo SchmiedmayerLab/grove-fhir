@@ -11,7 +11,7 @@ SPDX-License-Identifier: MIT
 # Publication
 
 Grove FHIR currently publishes one mutable pre-1.0 continuous preview. No immutable
-release exists. Version 0.2.0 is the package contract used by the coordinated
+release exists. Version 0.3.0 is the package contract used by the coordinated
 implementation pull requests.
 
 ## Continuous preview

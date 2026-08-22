@@ -47,7 +47,7 @@ Description: "Source-neutral sleep stages admitted by the Grove Mobile sleep-sta
 * ^experimental = false
 * include codes from system GroveSleepStageCS
 
-// No ConceptMap is published for 0.2.0 because the potential HL7 PHR stepCount
+// No ConceptMap is published for 0.3.0 because the potential HL7 PHR stepCount
 // target is not a stable package dependency. Any future mapping from
 // step-count-total to that target must be wider, never equal.
 

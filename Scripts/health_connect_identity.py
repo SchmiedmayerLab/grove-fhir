@@ -1,4 +1,4 @@
-"""Deterministic Health Connect 1.1 identity primitives for Grove FHIR 0.2.0."""
+"""Deterministic Health Connect 1.1 identity primitives for Grove FHIR 0.3.0."""
 
 # This source file is part of the Grove FHIR open-source project
 #
@@ -123,9 +123,128 @@ def record(repository_scope: str, record_type: str, raw_record_id: str) -> str:
     return digest(["health-connect-record-id-v1", repository_scope, record_type, raw_record_id])
 
 
+NUTRIENT_TOKENS = frozenset({
+    "dietary-biotin",
+    "dietary-caffeine",
+    "dietary-calcium",
+    "dietary-carbohydrates",
+    "dietary-chloride",
+    "dietary-cholesterol",
+    "dietary-chromium",
+    "dietary-copper",
+    "dietary-energy",
+    "dietary-energy-from-fat",
+    "dietary-fat-monounsaturated",
+    "dietary-fat-polyunsaturated",
+    "dietary-fat-saturated",
+    "dietary-fat-total",
+    "dietary-fat-trans",
+    "dietary-fat-unsaturated",
+    "dietary-fiber",
+    "dietary-folate",
+    "dietary-folic-acid",
+    "dietary-iodine",
+    "dietary-iron",
+    "dietary-magnesium",
+    "dietary-manganese",
+    "dietary-molybdenum",
+    "dietary-niacin",
+    "dietary-pantothenic-acid",
+    "dietary-phosphorus",
+    "dietary-potassium",
+    "dietary-protein",
+    "dietary-riboflavin",
+    "dietary-selenium",
+    "dietary-sodium",
+    "dietary-sugar",
+    "dietary-thiamin",
+    "dietary-vitamin-a",
+    "dietary-vitamin-b12",
+    "dietary-vitamin-b6",
+    "dietary-vitamin-c",
+    "dietary-vitamin-d",
+    "dietary-vitamin-e",
+    "dietary-vitamin-k",
+    "dietary-zinc",
+    "fluid-intake",
+})
+
+WORKOUT_SEGMENT_TOKENS = frozenset({
+    "EXERCISE_LAP",
+    "EXERCISE_SEGMENT_TYPE_ARM_CURL",
+    "EXERCISE_SEGMENT_TYPE_BACK_EXTENSION",
+    "EXERCISE_SEGMENT_TYPE_BALL_SLAM",
+    "EXERCISE_SEGMENT_TYPE_BARBELL_SHOULDER_PRESS",
+    "EXERCISE_SEGMENT_TYPE_BENCH_PRESS",
+    "EXERCISE_SEGMENT_TYPE_BENCH_SIT_UP",
+    "EXERCISE_SEGMENT_TYPE_BIKING",
+    "EXERCISE_SEGMENT_TYPE_BIKING_STATIONARY",
+    "EXERCISE_SEGMENT_TYPE_BURPEE",
+    "EXERCISE_SEGMENT_TYPE_CRUNCH",
+    "EXERCISE_SEGMENT_TYPE_DEADLIFT",
+    "EXERCISE_SEGMENT_TYPE_DOUBLE_ARM_TRICEPS_EXTENSION",
+    "EXERCISE_SEGMENT_TYPE_DUMBBELL_CURL_LEFT_ARM",
+    "EXERCISE_SEGMENT_TYPE_DUMBBELL_CURL_RIGHT_ARM",
+    "EXERCISE_SEGMENT_TYPE_DUMBBELL_FRONT_RAISE",
+    "EXERCISE_SEGMENT_TYPE_DUMBBELL_LATERAL_RAISE",
+    "EXERCISE_SEGMENT_TYPE_DUMBBELL_ROW",
+    "EXERCISE_SEGMENT_TYPE_DUMBBELL_TRICEPS_EXTENSION_LEFT_ARM",
+    "EXERCISE_SEGMENT_TYPE_DUMBBELL_TRICEPS_EXTENSION_RIGHT_ARM",
+    "EXERCISE_SEGMENT_TYPE_DUMBBELL_TRICEPS_EXTENSION_TWO_ARM",
+    "EXERCISE_SEGMENT_TYPE_ELLIPTICAL",
+    "EXERCISE_SEGMENT_TYPE_FORWARD_TWIST",
+    "EXERCISE_SEGMENT_TYPE_FRONT_RAISE",
+    "EXERCISE_SEGMENT_TYPE_HIGH_INTENSITY_INTERVAL_TRAINING",
+    "EXERCISE_SEGMENT_TYPE_HIP_THRUST",
+    "EXERCISE_SEGMENT_TYPE_HULA_HOOP",
+    "EXERCISE_SEGMENT_TYPE_JUMPING_JACK",
+    "EXERCISE_SEGMENT_TYPE_JUMP_ROPE",
+    "EXERCISE_SEGMENT_TYPE_KETTLEBELL_SWING",
+    "EXERCISE_SEGMENT_TYPE_LATERAL_RAISE",
+    "EXERCISE_SEGMENT_TYPE_LAT_PULL_DOWN",
+    "EXERCISE_SEGMENT_TYPE_LEG_CURL",
+    "EXERCISE_SEGMENT_TYPE_LEG_EXTENSION",
+    "EXERCISE_SEGMENT_TYPE_LEG_PRESS",
+    "EXERCISE_SEGMENT_TYPE_LEG_RAISE",
+    "EXERCISE_SEGMENT_TYPE_LUNGE",
+    "EXERCISE_SEGMENT_TYPE_MOUNTAIN_CLIMBER",
+    "EXERCISE_SEGMENT_TYPE_OTHER_WORKOUT",
+    "EXERCISE_SEGMENT_TYPE_PAUSE",
+    "EXERCISE_SEGMENT_TYPE_PILATES",
+    "EXERCISE_SEGMENT_TYPE_PLANK",
+    "EXERCISE_SEGMENT_TYPE_PULL_UP",
+    "EXERCISE_SEGMENT_TYPE_PUNCH",
+    "EXERCISE_SEGMENT_TYPE_REST",
+    "EXERCISE_SEGMENT_TYPE_ROWING_MACHINE",
+    "EXERCISE_SEGMENT_TYPE_RUNNING",
+    "EXERCISE_SEGMENT_TYPE_RUNNING_TREADMILL",
+    "EXERCISE_SEGMENT_TYPE_SHOULDER_PRESS",
+    "EXERCISE_SEGMENT_TYPE_SINGLE_ARM_TRICEPS_EXTENSION",
+    "EXERCISE_SEGMENT_TYPE_SIT_UP",
+    "EXERCISE_SEGMENT_TYPE_SQUAT",
+    "EXERCISE_SEGMENT_TYPE_STAIR_CLIMBING",
+    "EXERCISE_SEGMENT_TYPE_STAIR_CLIMBING_MACHINE",
+    "EXERCISE_SEGMENT_TYPE_STRETCHING",
+    "EXERCISE_SEGMENT_TYPE_SWIMMING_BACKSTROKE",
+    "EXERCISE_SEGMENT_TYPE_SWIMMING_BREASTSTROKE",
+    "EXERCISE_SEGMENT_TYPE_SWIMMING_BUTTERFLY",
+    "EXERCISE_SEGMENT_TYPE_SWIMMING_FREESTYLE",
+    "EXERCISE_SEGMENT_TYPE_SWIMMING_MIXED",
+    "EXERCISE_SEGMENT_TYPE_SWIMMING_OPEN_WATER",
+    "EXERCISE_SEGMENT_TYPE_SWIMMING_OTHER",
+    "EXERCISE_SEGMENT_TYPE_SWIMMING_POOL",
+    "EXERCISE_SEGMENT_TYPE_UNKNOWN",
+    "EXERCISE_SEGMENT_TYPE_UPPER_TWIST",
+    "EXERCISE_SEGMENT_TYPE_WALKING",
+    "EXERCISE_SEGMENT_TYPE_WEIGHTLIFTING",
+    "EXERCISE_SEGMENT_TYPE_WHEELCHAIR",
+    "EXERCISE_SEGMENT_TYPE_YOGA",
+})
+
+
 def output(source: tuple[str, str], selector: list[str]) -> str:
     source_pair = _identifier(source)
-    if not selector or selector[0] not in {"single", "sample", "sleep-stage"}:
+    if not selector or selector[0] not in {"single", "sample", "sleep-stage", "nutrient", "workout-segment"}:
         raise HealthConnectIdentityError("unsupported output selector")
     if selector[0] == "single" and len(selector) != 1:
         raise HealthConnectIdentityError("single output selector has no additional fields")
@@ -133,7 +252,11 @@ def output(source: tuple[str, str], selector: list[str]) -> str:
         raise HealthConnectIdentityError("sample output selector is incomplete")
     if selector[0] == "sleep-stage" and len(selector) != 5:
         raise HealthConnectIdentityError("sleep-stage output selector is incomplete")
-    if selector[0] != "single" and not UNSIGNED.fullmatch(selector[-1]):
+    if selector[0] == "nutrient" and len(selector) != 2:
+        raise HealthConnectIdentityError("nutrient output selector is incomplete")
+    if selector[0] == "workout-segment" and len(selector) != 5:
+        raise HealthConnectIdentityError("workout-segment output selector is incomplete")
+    if selector[0] not in {"single", "nutrient"} and not UNSIGNED.fullmatch(selector[-1]):
         raise HealthConnectIdentityError("output occurrence must be canonical unsigned decimal")
     if selector[0] == "sample":
         if not UTC9.fullmatch(selector[1]):
@@ -145,6 +268,13 @@ def output(source: tuple[str, str], selector: list[str]) -> str:
             raise HealthConnectIdentityError("sleep stage bounds must be canonical UTC instants with nine fractional digits")
         if selector[3] not in SLEEP_STAGE_TYPES:
             raise HealthConnectIdentityError("sleep stage token is not in the closed Health Connect 1.1 inventory")
+    if selector[0] == "nutrient" and selector[1] not in NUTRIENT_TOKENS:
+        raise HealthConnectIdentityError("nutrient token is not an admitted dietary measurement")
+    if selector[0] == "workout-segment":
+        if not UTC9.fullmatch(selector[1]) or not UTC9.fullmatch(selector[2]):
+            raise HealthConnectIdentityError("workout segment bounds must be canonical UTC instants with nine fractional digits")
+        if selector[3] not in WORKOUT_SEGMENT_TOKENS:
+            raise HealthConnectIdentityError("workout segment token is not in the closed Health Connect 1.1 inventory")
     return digest(["health-connect-output-id-v1", source_pair, *selector])
 
 

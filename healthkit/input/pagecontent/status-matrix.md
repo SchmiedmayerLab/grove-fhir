@@ -11,7 +11,7 @@ GENERATED FILE. Edit the corresponding catalog JSON and run
 
 # Authoritative HealthKit status matrix
 
-This table is the complete, closed v0.2.0 inventory of all 218 Apple HealthKit platform source types frozen against iPhoneOS 26.5 from Xcode 26.6 build `17F113`. The evidence is the official Apple platform documentation and the exact SDK provenance declared by the catalog. Each row has one definitive contract status; this is a release contract, not a roadmap. `supported` means v0.2.0 admits a conformant output contract. All other rows are not admitted and producers fail closed.
+This table is the complete, closed v0.3.0 inventory of all 218 Apple HealthKit platform source types frozen against iPhoneOS 26.5 from Xcode 26.6 build `17F113`. The evidence is the official Apple platform documentation and the exact SDK provenance declared by the catalog. Each row has one definitive contract status; this is a release contract, not a roadmap. `supported` means v0.3.0 admits a conformant output contract. All other rows are not admitted and producers fail closed.
 
 | HealthKit type | Title | Contract status | Measurement | Direct profile claim(s) | Binding reason / requirement |
 | --- | --- | --- | --- | --- | --- |

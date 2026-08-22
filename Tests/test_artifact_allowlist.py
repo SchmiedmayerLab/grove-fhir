@@ -389,8 +389,17 @@ class ArtifactAllowlistTests(unittest.TestCase):
                             "health-connect-sleep-stage",
                         )
                     }
-                    # Concept properties are defined, never bound, so they have no value set.
-                    | {("CodeSystem", "health-connect-concept-property")},
+                    # Retained platform codings are defined, never bound, so they have no value set.
+                    | {
+                        ("CodeSystem", "health-connect-cervical-mucus-appearance"),
+                        ("CodeSystem", "health-connect-cervical-mucus-sensation"),
+                        ("CodeSystem", "health-connect-concept-property"),
+                        ("CodeSystem", "health-connect-exercise-segment-type"),
+                        ("CodeSystem", "health-connect-exercise-type"),
+                        ("CodeSystem", "health-connect-menstruation-flow"),
+                        ("CodeSystem", "health-connect-ovulation-test-result"),
+                        ("CodeSystem", "health-connect-sexual-activity-protection"),
+                    },
                 )
 
     def test_health_connect_profiles_preserve_both_identity_layers(self) -> None:

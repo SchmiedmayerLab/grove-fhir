@@ -18,7 +18,7 @@ It records the following reproducibility information:
 
 | Field | Value |
 |---|---|
-| Package | `org.grovealliance.fhir.healthkit#0.2.0` |
+| Package | `org.grovealliance.fhir.healthkit#0.3.0` |
 | SDK baseline | iPhoneOS 26.5, Xcode 26.6 build 17F113 |
 | Extraction date | 2026-08-21 |
 | Selection method | Every declared identifier constant resolved inside an iOS simulator on the SDK baseline, plus the two sample types Apple publishes without a constant, read by `Scripts/platform_inventory.py` |

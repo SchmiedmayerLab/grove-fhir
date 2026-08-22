@@ -67,7 +67,7 @@ for guide in "${guides[@]}"; do
       --cache-root "$FHIR_PACKAGE_CACHE" \
       "$REPOSITORY_ROOT/mobile/output/package.tgz"
     cp "$REPOSITORY_ROOT/mobile/output/package.tgz" \
-      "$guide_package_directory/org.grovealliance.fhir.mobile-0.2.0.tgz"
+      "$guide_package_directory/org.grovealliance.fhir.mobile-0.3.0.tgz"
     has_local_guide_packages=true
   fi
   if grep -q '^  org\.grovealliance\.fhir\.sensor:' "$guide/sushi-config.yaml"; then
@@ -76,7 +76,7 @@ for guide in "${guides[@]}"; do
       --cache-root "$FHIR_PACKAGE_CACHE" \
       "$REPOSITORY_ROOT/sensor/output/package.tgz"
     cp "$REPOSITORY_ROOT/sensor/output/package.tgz" \
-      "$guide_package_directory/org.grovealliance.fhir.sensor-0.2.0.tgz"
+      "$guide_package_directory/org.grovealliance.fhir.sensor-0.3.0.tgz"
     has_local_guide_packages=true
   fi
   if [[ "$has_local_guide_packages" == "true" ]]; then

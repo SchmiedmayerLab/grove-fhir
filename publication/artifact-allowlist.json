@@ -2814,10 +2814,38 @@
       "canonical": "https://grovealliance.org/fhir/health-connect",
       "artifacts": [
         {
+          "fshName": "HealthConnectCervicalMucusAppearanceCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "health-connect-cervical-mucus-appearance",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthConnectCervicalMucusSensationCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "health-connect-cervical-mucus-sensation",
+          "classification": "definition"
+        },
+        {
           "fshName": "HealthConnectConceptPropertyCS",
           "fshType": "CodeSystem",
           "resourceType": "CodeSystem",
           "id": "health-connect-concept-property",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthConnectExerciseSegmentTypeCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "health-connect-exercise-segment-type",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthConnectExerciseTypeCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "health-connect-exercise-type",
           "classification": "definition"
         },
         {
@@ -2835,10 +2863,24 @@
           "classification": "definition"
         },
         {
+          "fshName": "HealthConnectMenstruationFlowCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "health-connect-menstruation-flow",
+          "classification": "definition"
+        },
+        {
           "fshName": "HealthConnectMenstruationPeriodCS",
           "fshType": "CodeSystem",
           "resourceType": "CodeSystem",
           "id": "health-connect-menstruation-period",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthConnectOvulationTestResultCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "health-connect-ovulation-test-result",
           "classification": "definition"
         },
         {
@@ -2856,10 +2898,24 @@
           "classification": "definition"
         },
         {
+          "fshName": "HealthConnectSexualActivityProtectionCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "health-connect-sexual-activity-protection",
+          "classification": "definition"
+        },
+        {
           "fshName": "HealthConnectSleepStageCS",
           "fshType": "CodeSystem",
           "resourceType": "CodeSystem",
           "id": "health-connect-sleep-stage",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthConnectExerciseTitle",
+          "fshType": "Extension",
+          "resourceType": "StructureDefinition",
+          "id": "health-connect-exercise-title",
           "classification": "definition"
         },
         {

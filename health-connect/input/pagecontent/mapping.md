@@ -81,7 +81,7 @@ declares that adapter profile directly and carries exactly one admitted SNOMED C
 | `SPECIMEN_SOURCE_SERUM` | serum/plasma glucose | `119364003` |
 | `SPECIMEN_SOURCE_INTERSTITIAL_FLUID` | interstitial glucose | `258479004` |
 
-Tears and unknown are intentionally unsupported because no shared 0.2.0 profile can be
+Tears and unknown are intentionally unsupported because no shared 0.3.0 profile can be
 stamped without changing or guessing specimen semantics. Non-unknown relation-to-meal and
 meal-type values use the typed meal-context extension and exact adapter CodeSystems.
 

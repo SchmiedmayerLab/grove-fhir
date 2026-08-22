@@ -7,8 +7,8 @@ SPDX-License-Identifier: MIT
 -->
 
 Build the Mobile package before Sensor and validate output with the official HL7 FHIR
-Validator. The package identities are exactly `org.grovealliance.fhir.mobile#0.2.0`
-and `org.grovealliance.fhir.sensor#0.2.0` for FHIR R4 `4.0.1`.
+Validator. The package identities are exactly `org.grovealliance.fhir.mobile#0.3.0`
+and `org.grovealliance.fhir.sensor#0.3.0` for FHIR R4 `4.0.1`.
 
 An adapter Observation declares exactly two profiles: one shared semantic profile
 from Mobile or Sensor and one adapter profile. It never repeats the inherited Grove

@@ -16,7 +16,7 @@ SPDX-License-Identifier: MIT
 [![REUSE status](https://api.reuse.software/badge/github.com/SchmiedmayerLab/grove-fhir)](https://api.reuse.software/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE.md)
 
-Grove FHIR 0.2.0 defines international, reusable FHIR R4 contracts for mobile health data. The Mobile Data
+Grove FHIR 0.3.0 defines international, reusable FHIR R4 contracts for mobile health data. The Mobile Data
 Exchange guide describes source-neutral Observations, recording and application Device
 roles, study context, and conversion provenance. Platform adapters add the identifiers and
 mappings needed by a specific source without changing the shared resource shape.
@@ -32,7 +32,7 @@ GitHub Pages remains the documentation preview.
 ## Documentation
 
 Start with the [Mobile Data Exchange guide](https://schmiedmayerlab.github.io/grove-fhir/)
-to understand the common resource model and copy a complete example. The exact 0.2.0
+to understand the common resource model and copy a complete example. The exact 0.3.0
 package graph is:
 
 | Package | Layer and dependency |

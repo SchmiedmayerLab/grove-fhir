@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "package": "org.grovealliance.fhir.healthkit#0.2.0",
+  "package": "org.grovealliance.fhir.healthkit#0.3.0",
   "extractionDate": "2026-08-21",
   "source": {
     "framework": "Apple HealthKit",
@@ -41,7 +41,7 @@
     "method": "runtime-identifiers-read-in-a-simulator-on-the-sdk-baseline",
     "tool": {
       "name": "Scripts/platform_inventory.py",
-      "version": "0.2.0"
+      "version": "0.3.0"
     },
     "generated": true,
     "description": "The catalog freezes the 218 source-type identifiers the stated SDK baseline hands back at runtime. Every identifier constant the headers declare is resolved inside an iOS simulator on that baseline, together with the two sample types Apple publishes without a constant. A code is the identifier a producer reads from a sample, not the name of the constant holding it. Two metadata keys plus three motion-context values used by admitted mappings are selected separately. The separately declared sleep-duration aggregate is not a platform source type and is excluded from the source-type CodeSystem."

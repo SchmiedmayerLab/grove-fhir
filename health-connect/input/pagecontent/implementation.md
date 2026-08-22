@@ -18,11 +18,11 @@ packages from the reviewed repository revision and install them in an isolated F
 cache:
 
 ```text
-org.grovealliance.fhir.mobile#0.2.0
-org.grovealliance.fhir.health-connect#0.2.0
+org.grovealliance.fhir.mobile#0.3.0
+org.grovealliance.fhir.health-connect#0.3.0
 ```
 
-The Health Connect package pins the Mobile package at `0.2.0`. Record the repository
+The Health Connect package pins the Mobile package at `0.3.0`. Record the repository
 revision and archive checksum in producer CI. Do not overlay an archive on an existing
 package directory because removed artifacts would remain.
 
@@ -62,8 +62,8 @@ official Validator in FHIR R4 offline mode:
 python3 Scripts/validate-producer.py \
   --manifest path/to/grove-fhir-producer.json \
   --validator path/to/validator_cli.jar \
-  --package mobile=path/to/org.grovealliance.fhir.mobile-0.2.0.tgz \
-  --package health-connect=path/to/org.grovealliance.fhir.health-connect-0.2.0.tgz
+  --package mobile=path/to/org.grovealliance.fhir.mobile-0.3.0.tgz \
+  --package health-connect=path/to/org.grovealliance.fhir.health-connect-0.3.0.tgz
 ```
 
 The producer repository generates its own fixtures from its public mapping API. This IG

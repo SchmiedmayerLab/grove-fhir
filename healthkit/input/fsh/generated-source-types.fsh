@@ -688,6 +688,6 @@ Description: "The 218 source-type identifiers the iPhoneOS 26.5 SDK baseline (Xc
 ValueSet: HealthKitSourceTypeVS
 Id: healthkit-source-type
 Title: "HealthKit Source Types"
-Description: "The complete closed set of HealthKit platform source types in the version 0.2.0 catalog."
+Description: "The complete closed set of HealthKit platform source types in the version 0.3.0 catalog."
 * ^experimental = false
 * include codes from system HealthKitSourceTypeCS

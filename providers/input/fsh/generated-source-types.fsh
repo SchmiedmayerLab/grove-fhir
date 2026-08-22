@@ -12,7 +12,7 @@
 CodeSystem: ProviderSourceTypeCS
 Id: provider-source-type
 Title: "Provider Source Types"
-Description: "The complete provider-qualified Google Health API, Oura, and Withings source inventory admitted or explicitly classified by version 0.2.0. The code is source lineage, not a clinical result code or fetch instruction."
+Description: "The complete provider-qualified Google Health API, Oura, and Withings source inventory admitted or explicitly classified by version 0.3.0. The code is source lineage, not a clinical result code or fetch instruction."
 * ^experimental = false
 * ^caseSensitive = true
 * ^content = #complete
@@ -89,6 +89,6 @@ Description: "The complete provider-qualified Google Health API, Oura, and Withi
 ValueSet: ProviderSourceTypeVS
 Id: provider-source-type
 Title: "Provider Source Types"
-Description: "The complete closed provider-qualified source-type inventory for the Provider 0.2.0 adapter."
+Description: "The complete closed provider-qualified source-type inventory for the Provider 0.3.0 adapter."
 * ^experimental = false
 * include codes from system ProviderSourceTypeCS

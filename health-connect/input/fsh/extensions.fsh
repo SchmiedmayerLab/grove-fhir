@@ -38,3 +38,12 @@ Description: "The non-blank title supplied by a Health Connect SleepSessionRecor
 Context: Observation
 * value[x] 1..1 MS
 * value[x] only string
+
+Extension: HealthConnectExerciseTitle
+Id: health-connect-exercise-title
+Title: "Health Connect Exercise Title"
+Description: "The caller-supplied title of a Health Connect exercise session, which the shared workout profile has no element for."
+Context: Observation
+* value[x] 1..1 MS
+* value[x] only string
+

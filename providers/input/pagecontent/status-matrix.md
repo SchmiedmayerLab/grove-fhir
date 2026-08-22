@@ -11,7 +11,7 @@ GENERATED FILE. Edit the corresponding catalog JSON and run
 
 # Authoritative connected-provider status matrix
 
-This table enumerates every provider field in the closed v0.2.0 Google Health API, Oura, and Withings source catalogs. Each field has one definitive status. This adapter maps data already obtained by its caller; it contains no provider authentication, network, pagination, or fetching implementation.
+This table enumerates every provider field in the closed v0.3.0 Google Health API, Oura, and Withings source catalogs. Each field has one definitive status. This adapter maps data already obtained by its caller; it contains no provider authentication, network, pagination, or fetching implementation.
 
 | Provider | Source type | Source status | Provider field | Field status | Measurement | Representation / conversion | Binding reason / effective time |
 | --- | --- | --- | --- | --- | --- | --- | --- |

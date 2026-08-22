@@ -6,7 +6,7 @@ SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTR
 SPDX-License-Identifier: MIT
 -->
 
-Grove FHIR Sensor and Waveform 0.2.0 is the source-neutral layer for uniformly
+Grove FHIR Sensor and Waveform 0.3.0 is the source-neutral layer for uniformly
 sampled time series, ECG channels, and native sensor recordings. It does not define
 how an operating-system framework or provider fetches data. An adapter transforms
 already obtained source objects into these R4 resource shapes.

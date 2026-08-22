@@ -2175,7 +2175,7 @@ def validate_manifest(path: Path) -> tuple[dict[str, Any], list[Path]]:
         if not isinstance(package_id, str) or not PACKAGE_ID.fullmatch(package_id):
             raise ProducerValidationError(f"invalid package id: {package_id!r}")
         if package["version"] != "0.3.0":
-            raise ProducerValidationError("Grove FHIR producer manifests must use package version 0.2.0")
+            raise ProducerValidationError("Grove FHIR producer manifests must use package version 0.3.0")
         if alias in aliases or package_id in package_ids:
             raise ProducerValidationError("package aliases and ids must be unique")
         aliases.add(alias)

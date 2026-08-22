@@ -6,7 +6,7 @@
         "messageId": "Validation_VAL_Profile_Minimum",
         "code": "structure",
         "expression": "Questionnaire",
-        "detailsContains": "Questionnaire.version: minimum required = 1, but only found 0 (from https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire|0.2.0)"
+        "detailsContains": "Questionnaire.version: minimum required = 1, but only found 0 (from https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire|0.3.0)"
       },
       {
         "messageId": "https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire#qg-version-1",
@@ -28,7 +28,7 @@
         "messageId": "_DT_Fixed_Wrong",
         "code": "value",
         "expression": "Questionnaire.extension[0].value.ofType(Coding).code",
-        "detailsContains": "Value is 'date' but is fixed to 'semver' in the profile https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire|0.2.0#Questionnaire.extension:versionAlgorithm.value[x]:valueCoding.code"
+        "detailsContains": "Value is 'date' but is fixed to 'semver' in the profile https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire|0.3.0#Questionnaire.extension:versionAlgorithm.value[x]:valueCoding.code"
       },
       {
         "messageId": "https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire#qg-version-algorithm-1",
@@ -80,7 +80,7 @@
         "messageId": "Validation_VAL_Profile_Minimum",
         "code": "structure",
         "expression": "Questionnaire.extension[1].value.ofType(Expression)",
-        "detailsContains": "Questionnaire.extension:variable.value[x].name: minimum required = 1, but only found 0 (from https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire|0.2.0)"
+        "detailsContains": "Questionnaire.extension:variable.value[x].name: minimum required = 1, but only found 0 (from https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire|0.3.0)"
       },
       {
         "messageId": "https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire#qg-variable-name-1",
@@ -246,7 +246,7 @@
         "messageId": "Validation_VAL_Profile_Minimum",
         "code": "structure",
         "expression": "QuestionnaireResponse",
-        "detailsContains": "QuestionnaireResponse.identifier: minimum required = 1, but only found 0 (from https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire-response|0.2.0)"
+        "detailsContains": "QuestionnaireResponse.identifier: minimum required = 1, but only found 0 (from https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire-response|0.3.0)"
       },
       {
         "messageId": "https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire-response#gqr-identifier-1",
@@ -268,13 +268,13 @@
         "messageId": "Validation_VAL_Profile_Maximum",
         "code": "structure",
         "expression": "QuestionnaireResponse.extension[0].value.ofType(CodeableConcept)",
-        "detailsContains": "QuestionnaireResponse.extension:completionMode.value[x].coding: max allowed = 1, but found 2 (from https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire-response|0.2.0)"
+        "detailsContains": "QuestionnaireResponse.extension:completionMode.value[x].coding: max allowed = 1, but found 2 (from https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire-response|0.3.0)"
       },
       {
         "messageId": "_DT_Fixed_Wrong",
         "code": "value",
         "expression": "QuestionnaireResponse.extension[0].value.ofType(CodeableConcept).coding[1].code",
-        "detailsContains": "Value is 'VERBAL' but is fixed to 'ELECTRONIC' in the profile https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire-response|0.2.0#QuestionnaireResponse.extension:completionMode.value[x].coding.code"
+        "detailsContains": "Value is 'VERBAL' but is fixed to 'ELECTRONIC' in the profile https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire-response|0.3.0#QuestionnaireResponse.extension:completionMode.value[x].coding.code"
       },
       {
         "messageId": "https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire-response#gqr-completion-mode-1",
