@@ -1,0 +1,141 @@
+{
+  "schemaVersion": 1,
+  "copyright": "This material contains content from LOINC (http://loinc.org). LOINC is copyright © 1995-2026, Regenstrief Institute, Inc. and the Logical Observation Identifiers Names and Codes (LOINC) Committee and is available at no cost under the license at http://loinc.org/license.",
+  "loincVersion": null,
+  "loincVersionReason": "Rows are carried from the version 0.2.0 release review; a LOINC release is pinned when the standing terminology reviewer ratifies this table.",
+  "ratification": "pending",
+  "propertyDimensions": {
+    "Len": {
+      "m": 1
+    },
+    "Mass": {
+      "g": 1
+    },
+    "MCnc": {
+      "g": 1,
+      "m": -3
+    },
+    "NRat": {
+      "s": -1
+    },
+    "Pres": {
+      "g": 1,
+      "m": -1,
+      "s": -2
+    },
+    "Temp": {
+      "K": 1
+    },
+    "Time": {
+      "s": 1
+    },
+    "SFr": {},
+    "Find": null,
+    "Ratio": null,
+    "-": null
+  },
+  "concepts": {
+    "103208-5": {
+      "display": "Distance traveled",
+      "property": "Len",
+      "scale": "Qn",
+      "status": "ACTIVE"
+    },
+    "11524-6": {
+      "display": "EKG study",
+      "property": "Find",
+      "scale": "Doc",
+      "status": "ACTIVE"
+    },
+    "2339-0": {
+      "display": "Glucose [Mass/volume] in Blood",
+      "property": "MCnc",
+      "scale": "Qn",
+      "status": "ACTIVE"
+    },
+    "2345-7": {
+      "display": "Glucose [Mass/volume] in Serum or Plasma",
+      "property": "MCnc",
+      "scale": "Qn",
+      "status": "ACTIVE"
+    },
+    "2708-6": {
+      "display": "Oxygen saturation in Arterial blood",
+      "property": "SFr",
+      "scale": "Qn",
+      "status": "ACTIVE"
+    },
+    "29463-7": {
+      "display": "Body weight",
+      "property": "Mass",
+      "scale": "Qn",
+      "status": "ACTIVE"
+    },
+    "32016-8": {
+      "display": "Glucose [Mass/volume] in Capillary blood",
+      "property": "MCnc",
+      "scale": "Qn",
+      "status": "ACTIVE"
+    },
+    "39156-5": {
+      "display": "Body mass index (BMI) [Ratio]",
+      "property": "Ratio",
+      "scale": "Qn",
+      "status": "ACTIVE"
+    },
+    "8302-2": {
+      "display": "Body height",
+      "property": "Len",
+      "scale": "Qn",
+      "status": "ACTIVE"
+    },
+    "8310-5": {
+      "display": "Body temperature",
+      "property": "Temp",
+      "scale": "Qn",
+      "status": "ACTIVE"
+    },
+    "8462-4": {
+      "display": "Diastolic blood pressure",
+      "property": "Pres",
+      "scale": "Qn",
+      "status": "ACTIVE"
+    },
+    "8480-6": {
+      "display": "Systolic blood pressure",
+      "property": "Pres",
+      "scale": "Qn",
+      "status": "ACTIVE"
+    },
+    "85354-9": {
+      "display": "Blood pressure panel with all children optional",
+      "property": "-",
+      "scale": "-",
+      "status": "ACTIVE"
+    },
+    "8867-4": {
+      "display": "Heart rate",
+      "property": "NRat",
+      "scale": "Qn",
+      "status": "ACTIVE"
+    },
+    "9279-1": {
+      "display": "Respiratory rate",
+      "property": "NRat",
+      "scale": "Qn",
+      "status": "ACTIVE"
+    },
+    "93832-4": {
+      "display": "Sleep duration",
+      "property": "Time",
+      "scale": "Qn",
+      "status": "ACTIVE"
+    },
+    "99504-3": {
+      "display": "Glucose [Mass/volume] in Interstitial fluid",
+      "property": "MCnc",
+      "scale": "Qn",
+      "status": "ACTIVE"
+    }
+  }
+}

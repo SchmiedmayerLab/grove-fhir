@@ -9,7 +9,8 @@
     "producer-kit:check": "python3 Scripts/validate-producer.py --manifest Conformance/example-producer/manifest.json --structural-only",
     "inventory:refresh": "python3 Scripts/render-platform-inventories.py",
     "inventory:check": "python3 Scripts/render-platform-inventories.py --check",
-    "test": "python3 Scripts/check-content.py && python3 -m unittest discover -s Tests -v"
+    "terminology:check": "python3 Scripts/check-terminology.py",
+    "test": "python3 Scripts/check-content.py && python3 Scripts/check-terminology.py && python3 -m unittest discover -s Tests -v"
   },
   "devDependencies": {
     "ajv": "8.20.0",

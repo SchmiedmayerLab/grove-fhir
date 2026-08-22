@@ -1,0 +1,7 @@
+{
+  "schemaVersion": 1,
+  "description": "The closed allowlist of UCUM {annotation} tokens Grove units may carry. Annotations are dimensionless by definition, so each admitted token names one reviewed counting semantics; anything else is rejected by the gate.",
+  "annotations": {
+    "steps": "Step count events as counted by the source pedometer."
+  }
+}

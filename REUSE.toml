@@ -9,6 +9,7 @@ path = [
     "Conformance/README.md",
     "Conformance/**/*.json",
     "catalog/*.json",
+    "catalog/terminology/*.json",
     "providers/ig.ini",
     "providers/input/ignoreWarnings.txt",
     "health-connect/ig.ini",
