@@ -48,49 +48,13 @@ class GuideQATests(unittest.TestCase):
         self.assertNotIn("*/input-cache", workflow)
 
     def test_offline_mime_diagnostics_are_exact_and_example_scoped(self) -> None:
-        prefix = (
-            "DocumentReference.content[0].attachment.contentType: The value provided "
-        )
-        suffix = (
-            "was not found in the value set 'MimeType' "
-            "(http://hl7.org/fhir/ValueSet/mimetypes|4.0.1), and a code is required "
-            "from this value set (error message = Cannot invoke "
-            '"org.hl7.fhir.r5.terminologies.client.TerminologyClientContext.getAddress()" '
-            'because "tc" is null)'
-        )
-        expected = {
-            "sensorkit": {
-                "SensorKitDeviceUsageDocumentExample": "application/json",
-                "SensorKitECGDocumentExample": "application/json",
-                "SensorKitInverseECGDocumentExample": "application/json",
-            },
-            "providers": {
-                "GoogleHealthHeartRateRecordingExample": "application/octet-stream",
-            },
-        }
-        expected_errors: dict[str, set[str]] = {
-            guide: {
-                f"ERROR: DocumentReference/{resource}: {prefix}"
-                f"('{content_type}') {suffix}"
-                for resource, content_type in resources.items()
-            }
-            for guide, resources in expected.items()
-        }
-        for guide, resources in expected.items():
-            configured = set(
-                CHECK.configured_suppressions(
-                    ROOT / guide / "input/ignoreWarnings.txt"
-                )
-            )
-            self.assertEqual(
-                {message for message in configured if message.startswith("ERROR: ")},
-                expected_errors[guide],
-            )
         for guide in (
             "mobile",
             "sensor",
+            "sensorkit",
             "healthkit",
             "health-connect",
+            "providers",
             "questionnaire",
         ):
             configured = CHECK.configured_suppressions(
@@ -201,8 +165,7 @@ class GuideQATests(unittest.TestCase):
         self.assertEqual(link_counts.exact_suppressed_errors, 1)
         self.assertEqual(link_counts.unsuppressed_errors, 0)
 
-    def test_error_suppressions_are_limited_to_two_pinned_defect_families(self) -> None:
-        errors: dict[str, set[str]] = {}
+    def test_no_error_suppressions_are_configured(self) -> None:
         for guide in (
             "mobile",
             "sensor",
@@ -212,31 +175,14 @@ class GuideQATests(unittest.TestCase):
             "providers",
             "questionnaire",
         ):
-            errors[guide] = {
+            errors = {
                 message
                 for message in CHECK.configured_suppressions(
                     ROOT / guide / "input/ignoreWarnings.txt"
                 )
                 if message.startswith("ERROR: ")
             }
-        self.assertEqual(
-            {guide for guide, messages in errors.items() if messages},
-            {"sensorkit", "providers", "questionnaire"},
-        )
-        self.assertEqual(len(errors["sensorkit"]), 3)
-        self.assertEqual(len(errors["providers"]), 1)
-        self.assertEqual(len(errors["questionnaire"]), 32)
-        sdc_link = re.compile(
-            r"^ERROR: en/StructureDefinition-grove-questionnaire"
-            r"(?:-response)?-definitions\.html#/html/body(?:/div)+/table/tr/td/p/a "
-            r"at Line [0-9]+, column [0-9]+: The link "
-            r"'http://hl7\.org/fhir/uv/sdc/2025Jan/"
-            r"(?:behavior|rendering)\.html#[A-Za-z]+' for "
-            r'"SDC implementation guide" cannot be resolved$'
-        )
-        self.assertTrue(
-            all(sdc_link.fullmatch(message) for message in errors["questionnaire"])
-        )
+            self.assertEqual(errors, set(), f"{guide} configures error suppressions")
 
     def test_nonzero_publisher_exit_reuses_the_audited_qa_gate(self) -> None:
         script = (ROOT / "Scripts/build-guides.sh").read_text(encoding="utf-8")
