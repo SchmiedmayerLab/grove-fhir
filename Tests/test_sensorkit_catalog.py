@@ -183,6 +183,8 @@ class SensorKitCatalogTests(unittest.TestCase):
                         "outputDiscriminator",
                         "encoding",
                         "requiredForFields",
+                        "formats",
+                        "formatsReason",
                     }
                 )
                 self.assertEqual(raw["status"], "mapped-standard")

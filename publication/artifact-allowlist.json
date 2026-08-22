@@ -378,10 +378,66 @@
       "canonical": "https://grovealliance.org/fhir/sensor",
       "artifacts": [
         {
-          "fshName": "GroveSensorSampledDataObservation",
+          "fshName": "GroveRecordingFormatCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "grove-recording-format",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveSensorConversionProvenanceExample",
+          "fshType": "Instance",
+          "resourceType": "Provenance",
+          "id": "GroveSensorConversionProvenanceExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "GroveSensorConverterExample",
+          "fshType": "Instance",
+          "resourceType": "Device",
+          "id": "GroveSensorConverterExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "GroveSensorDeviceExample",
+          "fshType": "Instance",
+          "resourceType": "Device",
+          "id": "GroveSensorDeviceExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "GroveSensorECGExample",
+          "fshType": "Instance",
+          "resourceType": "Observation",
+          "id": "GroveSensorECGExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "GroveSensorPatientExample",
+          "fshType": "Instance",
+          "resourceType": "Patient",
+          "id": "GroveSensorPatientExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "GroveSensorRecordingDocumentExample",
+          "fshType": "Instance",
+          "resourceType": "DocumentReference",
+          "id": "GroveSensorRecordingDocumentExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "GroveSensorSampledDataExample",
+          "fshType": "Instance",
+          "resourceType": "Observation",
+          "id": "GroveSensorSampledDataExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "GroveSensorConversionProvenance",
           "fshType": "Profile",
           "resourceType": "StructureDefinition",
-          "id": "grove-sensor-sampled-data-observation",
+          "id": "grove-sensor-conversion-provenance",
           "classification": "definition"
         },
         {
@@ -399,10 +455,10 @@
           "classification": "definition"
         },
         {
-          "fshName": "GroveSensorConversionProvenance",
+          "fshName": "GroveSensorSampledDataObservation",
           "fshType": "Profile",
           "resourceType": "StructureDefinition",
-          "id": "grove-sensor-conversion-provenance",
+          "id": "grove-sensor-sampled-data-observation",
           "classification": "definition"
         },
         {
@@ -413,53 +469,11 @@
           "classification": "definition"
         },
         {
-          "fshName": "GroveSensorPatientExample",
-          "fshType": "Instance",
-          "resourceType": "Patient",
-          "id": "GroveSensorPatientExample",
-          "classification": "example"
-        },
-        {
-          "fshName": "GroveSensorDeviceExample",
-          "fshType": "Instance",
-          "resourceType": "Device",
-          "id": "GroveSensorDeviceExample",
-          "classification": "example"
-        },
-        {
-          "fshName": "GroveSensorConverterExample",
-          "fshType": "Instance",
-          "resourceType": "Device",
-          "id": "GroveSensorConverterExample",
-          "classification": "example"
-        },
-        {
-          "fshName": "GroveSensorSampledDataExample",
-          "fshType": "Instance",
-          "resourceType": "Observation",
-          "id": "GroveSensorSampledDataExample",
-          "classification": "example"
-        },
-        {
-          "fshName": "GroveSensorECGExample",
-          "fshType": "Instance",
-          "resourceType": "Observation",
-          "id": "GroveSensorECGExample",
-          "classification": "example"
-        },
-        {
-          "fshName": "GroveSensorRecordingDocumentExample",
-          "fshType": "Instance",
-          "resourceType": "DocumentReference",
-          "id": "GroveSensorRecordingDocumentExample",
-          "classification": "example"
-        },
-        {
-          "fshName": "GroveSensorConversionProvenanceExample",
-          "fshType": "Instance",
-          "resourceType": "Provenance",
-          "id": "GroveSensorConversionProvenanceExample",
-          "classification": "example"
+          "fshName": "GroveRecordingFormatVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "grove-recording-format",
+          "classification": "definition"
         }
       ]
     },

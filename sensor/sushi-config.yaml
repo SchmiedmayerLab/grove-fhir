@@ -37,6 +37,7 @@ menu:
   Overview: index.html
   Guides: https://grovealliance.org/fhir/mobile/guides.html
   Time series and ECG: waveforms.html
+  Formats: formats.html
   Implement and validate: implementation.html
   Artifacts: artifacts.html
 
@@ -45,5 +46,7 @@ pages:
     title: Overview
   waveforms.md:
     title: Time series and ECG
+  formats.md:
+    title: Recording formats
   implementation.md:
     title: Implement and validate

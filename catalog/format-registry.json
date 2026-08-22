@@ -1,0 +1,445 @@
+{
+  "schemaVersion": 1,
+  "fhirVersion": "4.0.1",
+  "version": "0.2.0",
+  "canonical": "https://grovealliance.org/fhir/sensor",
+  "codeSystem": "https://grovealliance.org/fhir/sensor/CodeSystem/grove-recording-format",
+  "valueSet": "https://grovealliance.org/fhir/sensor/ValueSet/grove-recording-format",
+  "description": "The closed registry of payload formats a Grove recording DocumentReference may carry. Every content entry declares exactly one registry format in DocumentReference.content.format, and a receiver can parse any admitted payload from this registry alone; an unregistered payload format is nonconformant.",
+  "formats": {
+    "grove-csv-1": {
+      "title": "Grove CSV 1",
+      "contentType": "text/csv",
+      "status": "active",
+      "specification": {
+        "encoding": "UTF-8 without a byte-order mark.",
+        "structure": "One header row naming every column in order, then one row per source sample in source order.",
+        "rowTerminator": "LF (0x0A) after every row, including the last.",
+        "separator": "Comma (0x2C).",
+        "quoting": "A field is enclosed in double quotes exactly when it contains a comma, a double quote, or a line break; embedded double quotes are doubled; all other fields are unquoted.",
+        "numbers": "Decimal numbers use the shortest representation that round-trips an IEEE-754 binary64 value; integral values may carry a trailing .0.",
+        "timestamps": "Seconds since the Unix epoch as a decimal number in the numbers form above; the column documentation states which columns are timestamps.",
+        "columns": "The column set for a stream is closed and declared in columnSchemas; a producer emits every declared column and no others."
+      },
+      "columnSchemas": {
+        "heart-rate": {
+          "source": "SRSensor.heartRate (CMHighFrequencyHeartRateData)",
+          "columns": [
+            {
+              "name": "timestamp",
+              "type": "timestamp",
+              "meaning": "Sample instant."
+            },
+            {
+              "name": "value",
+              "type": "number",
+              "unit": "/min",
+              "meaning": "Heart rate in beats per minute."
+            },
+            {
+              "name": "confidence",
+              "type": "integer",
+              "meaning": "CMHighFrequencyHeartRateDataConfidence raw value: 0 low, 1 medium, 2 high, 3 highest."
+            },
+            {
+              "name": "device",
+              "type": "string",
+              "meaning": "Source device description for the batch."
+            }
+          ]
+        },
+        "accelerometer": {
+          "source": "SRSensor.accelerometer (CMRecordedAccelerometerData)",
+          "columns": [
+            {
+              "name": "timestamp",
+              "type": "timestamp",
+              "meaning": "Sample instant."
+            },
+            {
+              "name": "identifier",
+              "type": "integer",
+              "meaning": "The CoreMotion batch identifier the sample belongs to."
+            },
+            {
+              "name": "x",
+              "type": "number",
+              "unit": "[g]",
+              "meaning": "Acceleration along x in G."
+            },
+            {
+              "name": "y",
+              "type": "number",
+              "unit": "[g]",
+              "meaning": "Acceleration along y in G."
+            },
+            {
+              "name": "z",
+              "type": "number",
+              "unit": "[g]",
+              "meaning": "Acceleration along z in G."
+            },
+            {
+              "name": "device",
+              "type": "string",
+              "meaning": "Source device description for the batch."
+            }
+          ]
+        },
+        "ambient-light": {
+          "source": "SRSensor.ambientLightSensor (SRAmbientLightSample)",
+          "columns": [
+            {
+              "name": "timestamp",
+              "type": "timestamp",
+              "meaning": "Sample instant."
+            },
+            {
+              "name": "lux",
+              "type": "number",
+              "unit": "lx",
+              "meaning": "Illuminance in lux."
+            },
+            {
+              "name": "placement",
+              "type": "string",
+              "meaning": "SRAmbientLightSample.SensorPlacement textual description."
+            },
+            {
+              "name": "chromacityX",
+              "type": "number",
+              "meaning": "CIE 1931 x chromaticity coordinate."
+            },
+            {
+              "name": "chromacityY",
+              "type": "number",
+              "meaning": "CIE 1931 y chromaticity coordinate."
+            },
+            {
+              "name": "device",
+              "type": "string",
+              "meaning": "Source device description for the batch."
+            }
+          ]
+        },
+        "ambient-pressure": {
+          "source": "SRSensor.ambientPressure (CMRecordedPressureData)",
+          "columns": [
+            {
+              "name": "timestamp",
+              "type": "timestamp",
+              "meaning": "Sample instant."
+            },
+            {
+              "name": "identifier",
+              "type": "integer",
+              "meaning": "The CoreMotion batch identifier the sample belongs to."
+            },
+            {
+              "name": "pressure",
+              "type": "number",
+              "unit": "kPa",
+              "meaning": "Ambient pressure in kilopascals as provided by CoreMotion."
+            },
+            {
+              "name": "temperature",
+              "type": "number",
+              "unit": "Cel",
+              "meaning": "Sensor temperature in degrees Celsius as provided by CoreMotion."
+            },
+            {
+              "name": "device",
+              "type": "string",
+              "meaning": "Source device description for the batch."
+            }
+          ]
+        },
+        "pedometer": {
+          "source": "SRSensor.pedometerData (CMPedometerData)",
+          "columns": [
+            {
+              "name": "start",
+              "type": "timestamp",
+              "meaning": "Interval start."
+            },
+            {
+              "name": "end",
+              "type": "timestamp",
+              "meaning": "Interval end."
+            },
+            {
+              "name": "steps",
+              "type": "integer",
+              "unit": "{steps}",
+              "meaning": "Steps taken in the interval."
+            },
+            {
+              "name": "distance",
+              "type": "number",
+              "unit": "m",
+              "meaning": "Estimated distance in metres; empty when unavailable."
+            },
+            {
+              "name": "floorsUp",
+              "type": "integer",
+              "meaning": "Floors ascended; empty when unavailable."
+            },
+            {
+              "name": "floorsDown",
+              "type": "integer",
+              "meaning": "Floors descended; empty when unavailable."
+            },
+            {
+              "name": "currentPace",
+              "type": "number",
+              "unit": "s/m",
+              "meaning": "Current pace in seconds per metre; empty when unavailable."
+            },
+            {
+              "name": "currentCadence",
+              "type": "number",
+              "unit": "/s",
+              "meaning": "Current cadence in steps per second; empty when unavailable."
+            },
+            {
+              "name": "avgActivePace",
+              "type": "number",
+              "unit": "s/m",
+              "meaning": "Average active pace in seconds per metre; empty when unavailable."
+            },
+            {
+              "name": "device",
+              "type": "string",
+              "meaning": "Source device description for the batch."
+            }
+          ]
+        },
+        "wrist-temperature": {
+          "source": "SRSensor.wristTemperature (SRWristTemperatureSession)",
+          "columns": [
+            {
+              "name": "timestamp",
+              "type": "timestamp",
+              "meaning": "Temperature sample instant."
+            },
+            {
+              "name": "value",
+              "type": "number",
+              "unit": "Cel",
+              "meaning": "Wrist temperature converted to degrees Celsius."
+            },
+            {
+              "name": "errorEstimate",
+              "type": "number",
+              "unit": "Cel",
+              "meaning": "Estimated error converted to degrees Celsius."
+            },
+            {
+              "name": "condition",
+              "type": "string",
+              "meaning": "SRWristTemperature.Condition textual value for the sample."
+            }
+          ]
+        }
+      }
+    },
+    "fhir-json-1": {
+      "title": "FHIR JSON Array 1",
+      "contentType": "application/json",
+      "status": "active",
+      "specification": {
+        "encoding": "UTF-8.",
+        "structure": "A single JSON array; each element is one complete FHIR R4 resource in FHIR JSON representation, in source sample order.",
+        "resources": "Every element conforms to the profile set the emitting adapter declares for its stream; the array carries resources of one stream and one batch only.",
+        "emptyBatch": "An empty batch emits no document rather than an empty array."
+      }
+    },
+    "native-json-1": {
+      "title": "Native JSON 1",
+      "contentType": "application/json",
+      "status": "active",
+      "specification": {
+        "encoding": "UTF-8.",
+        "structure": "The producer's exact native JSON serialization of one source batch, byte-preserved.",
+        "schema": "The emitting adapter documents the per-stream JSON schema; a stream without a documented schema cannot claim this format.",
+        "scope": "One document carries one stream and one batch."
+      }
+    },
+    "provider-json-1": {
+      "title": "Provider JSON 1",
+      "contentType": "application/json",
+      "status": "active",
+      "specification": {
+        "encoding": "UTF-8.",
+        "structure": "The verbatim JSON payload returned by the provider API call that produced the batch, byte-preserved apart from transport framing.",
+        "provenance": "The emitting adapter documents the provider, API, and endpoint per stream; the payload is never rewritten, reordered, or reserialized.",
+        "scope": "One document carries one API response for one account and one source element batch."
+      }
+    },
+    "grove-ppg-1": {
+      "title": "Grove PPG Binary 1",
+      "contentType": "application/octet-stream",
+      "status": "active",
+      "specification": {
+        "primitives": {
+          "varint": "Unsigned LEB128: little-endian groups of 7 bits, high bit set on every byte except the last; signed integers are first truncated to their 64-bit two's-complement pattern, so negative values occupy ten bytes.",
+          "float64": "IEEE-754 binary64 bit pattern, big-endian (network byte order), eight bytes.",
+          "boolean": "One byte: 0x00 false, 0x01 true.",
+          "string": "Varint UTF-8 byte count, then the UTF-8 bytes.",
+          "array": "Varint element count, then the elements in order.",
+          "set": "Varint element count, then the elements; element order is not significant and receivers must not rely on it.",
+          "optional": "One boolean presence byte; when true, the value follows."
+        },
+        "file": "Varint record count, then that many PPG records.",
+        "record": [
+          {
+            "field": "startDate",
+            "encoding": "float64",
+            "meaning": "Record start as seconds since the Unix epoch."
+          },
+          {
+            "field": "nanosecondsSinceStart",
+            "encoding": "varint(int64)",
+            "meaning": "Offset of the record from the batch start in nanoseconds."
+          },
+          {
+            "field": "temperature",
+            "encoding": "optional(float64)",
+            "unit": "Cel",
+            "meaning": "Device temperature in degrees Celsius when available."
+          },
+          {
+            "field": "usage",
+            "encoding": "array(string)",
+            "meaning": "SRPhotoplethysmogramSample.Usage raw values active for the record."
+          },
+          {
+            "field": "opticalSamples",
+            "encoding": "array(opticalSample)",
+            "meaning": "The optical channel samples of the record."
+          },
+          {
+            "field": "accelerometerSamples",
+            "encoding": "array(accelerometerSample)",
+            "meaning": "The accelerometer samples of the record."
+          }
+        ],
+        "opticalSample": [
+          {
+            "field": "emitter",
+            "encoding": "varint(int)",
+            "meaning": "Active emitter index."
+          },
+          {
+            "field": "activePhotodiodeIndexes",
+            "encoding": "set(varint(int))",
+            "meaning": "Active photodiode indexes."
+          },
+          {
+            "field": "signalIdentifier",
+            "encoding": "varint(int)",
+            "meaning": "Signal identifier."
+          },
+          {
+            "field": "nominalWavelength",
+            "encoding": "float64",
+            "unit": "nm",
+            "meaning": "Nominal wavelength in nanometres."
+          },
+          {
+            "field": "effectiveWavelength",
+            "encoding": "float64",
+            "unit": "nm",
+            "meaning": "Effective wavelength in nanometres."
+          },
+          {
+            "field": "samplingFrequency",
+            "encoding": "float64",
+            "unit": "Hz",
+            "meaning": "Sampling frequency in hertz."
+          },
+          {
+            "field": "nanosecondsSinceStart",
+            "encoding": "varint(int64)",
+            "meaning": "Offset from the record start in nanoseconds."
+          },
+          {
+            "field": "conditions",
+            "encoding": "array(string)",
+            "meaning": "SRPhotoplethysmogramOpticalSample.Condition raw values."
+          },
+          {
+            "field": "noiseTerms",
+            "encoding": "optional(noiseTerms)",
+            "meaning": "Noise estimates when available."
+          },
+          {
+            "field": "normalizedReflectance",
+            "encoding": "optional(float64)",
+            "meaning": "Normalized reflectance when available."
+          }
+        ],
+        "noiseTerms": [
+          {
+            "field": "whiteNoise",
+            "encoding": "float64"
+          },
+          {
+            "field": "pinkNoise",
+            "encoding": "float64"
+          },
+          {
+            "field": "backgroundNoise",
+            "encoding": "float64"
+          },
+          {
+            "field": "backgroundNoiseOffset",
+            "encoding": "float64"
+          }
+        ],
+        "accelerometerSample": [
+          {
+            "field": "nanosecondsSinceStart",
+            "encoding": "varint(int64)",
+            "meaning": "Offset from the record start in nanoseconds."
+          },
+          {
+            "field": "samplingFrequency",
+            "encoding": "float64",
+            "unit": "Hz",
+            "meaning": "Sampling frequency in hertz."
+          },
+          {
+            "field": "x",
+            "encoding": "float64",
+            "unit": "[g]",
+            "meaning": "Acceleration along x in G."
+          },
+          {
+            "field": "y",
+            "encoding": "float64",
+            "unit": "[g]",
+            "meaning": "Acceleration along y in G."
+          },
+          {
+            "field": "z",
+            "encoding": "float64",
+            "unit": "[g]",
+            "meaning": "Acceleration along z in G."
+          }
+        ]
+      }
+    },
+    "grove-batch-archive-1": {
+      "title": "Grove Batch Archive 1",
+      "contentType": "application/octet-stream",
+      "status": "active",
+      "specification": {
+        "structure": "A POSIX ustar tar stream, optionally compressed as one whole; every archived file is itself a registry-format payload or a documented sidecar of one.",
+        "tar": "ustar magic; entry paths are relative, at most 100 UTF-8 bytes, without leading slash or dot segments; file mode 0644, directory mode 0755; owner, group, and device ids 0; modification time 0; contents padded to 512-byte blocks; the archive ends with two zero blocks.",
+        "compression": "The whole tar stream is stored uncompressed, gzip-compressed, or Zstandard-compressed; receivers detect the compression from the leading magic bytes (0x1F 0x8B gzip, 0x28 0xB5 0x2F 0xFD Zstandard, otherwise uncompressed).",
+        "determinism": "Entry order, header fields, and compression parameters are producer-deterministic: archiving the same files twice yields identical bytes for the uncompressed tar stream."
+      }
+    }
+  }
+}

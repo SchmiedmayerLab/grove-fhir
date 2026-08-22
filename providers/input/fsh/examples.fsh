@@ -76,11 +76,12 @@ Description: "An explicitly authorized caller encoding of already-obtained irreg
 * subject = Reference(ProviderPatientExample)
 * date = "2026-08-20T17:00:01Z"
 * author = Reference(ProviderApplicationExample)
-* content.attachment.contentType = #application/octet-stream
+* content.attachment.contentType = #application/json
 * content.attachment.title = "Authorized minimized provider recording"
-* content.attachment.data = "AQID"
-* content.attachment.size = 3
-* content.attachment.hash = "cDeAcZjCKn0rCAc3HXY3eahP388="
+* content.attachment.data = "eyJwb2ludCI6W3sic3RhcnRUaW1lTmFub3MiOiIxNzg3MjM2OTgwMDAwMDAwMDAwIiwiZW5kVGltZU5hbm9zIjoiMTc4NzIzNjk4MDAwMDAwMDAwMCIsImRhdGFUeXBlTmFtZSI6ImNvbS5nb29nbGUuaGVhcnRfcmF0ZS5icG0iLCJ2YWx1ZSI6W3siZnBWYWwiOjcxLjB9XX1dfQ=="
+* content.attachment.size = 157
+* content.attachment.hash = "W77rFQFjzMqkuSpq6pY7XVnlw8A="
+* content.format = $recordingFormat#provider-json-1 "Provider JSON 1"
 
 Instance: GoogleHealthHeartRateRecordingProvenanceExample
 InstanceOf: ProviderConversionProvenance

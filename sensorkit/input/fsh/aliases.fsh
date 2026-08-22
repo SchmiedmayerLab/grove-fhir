@@ -16,3 +16,4 @@ Alias: $loinc = http://loinc.org
 Alias: $provenanceParticipantType = http://terminology.hl7.org/CodeSystem/provenance-participant-type
 Alias: $sensorKitRecordId = https://grovealliance.org/fhir/sensorkit/NamingSystem/sensorkit-record-id
 Alias: $sensorKitOutputId = https://grovealliance.org/fhir/sensorkit/NamingSystem/sensorkit-output-id
+Alias: $recordingFormat = https://grovealliance.org/fhir/sensor/CodeSystem/grove-recording-format

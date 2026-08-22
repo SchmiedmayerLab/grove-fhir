@@ -14,3 +14,4 @@ Alias: $providerConversionId = https://grovealliance.org/fhir/providers/NamingSy
 Alias: $providerExchangeId = https://grovealliance.org/fhir/providers/NamingSystem/provider-exchange-id
 Alias: $providerAccountId = https://grovealliance.org/fhir/providers/NamingSystem/provider-account-id
 Alias: $provenanceParticipantType = http://terminology.hl7.org/CodeSystem/provenance-participant-type
+Alias: $recordingFormat = https://grovealliance.org/fhir/sensor/CodeSystem/grove-recording-format

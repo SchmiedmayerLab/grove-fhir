@@ -12,7 +12,9 @@
     "terminology:check": "python3 Scripts/check-terminology.py",
     "profiles:refresh": "python3 Scripts/render-measurement-profiles.py",
     "profiles:check": "python3 Scripts/render-measurement-profiles.py --check",
-    "test": "python3 Scripts/check-content.py && python3 Scripts/check-terminology.py && python3 Scripts/render-measurement-profiles.py --check && python3 -m unittest discover -s Tests -v"
+    "formats:refresh": "python3 Scripts/render-format-registry.py",
+    "formats:check": "python3 Scripts/render-format-registry.py --check",
+    "test": "python3 Scripts/check-content.py && python3 Scripts/check-terminology.py && python3 Scripts/render-measurement-profiles.py --check && python3 Scripts/render-format-registry.py --check && python3 -m unittest discover -s Tests -v"
   },
   "devDependencies": {
     "ajv": "8.20.0",

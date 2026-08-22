@@ -118,6 +118,7 @@ Description: "The caller-supplied exact native encoding that retains session ide
 * date = "2026-08-20T16:10:01Z"
 * author = Reference(SensorKitDeviceExample)
 * content.attachment.contentType = #application/json
+* content.format = $recordingFormat#native-json-1 "Native JSON 1"
 * content.attachment.title = "SensorKit ECG native recording"
 * content.attachment.data = "eyJndWlkYW5jZSI6Imd1aWRlZCIsImZsYWdzIjpbMCwyLDEsMF19"
 * content.attachment.size = 39
@@ -182,6 +183,7 @@ Description: "The caller-supplied exact native encoding paired with the inverse-
 * date = "2026-08-20T16:12:01Z"
 * author = Reference(SensorKitDeviceExample)
 * content.attachment.contentType = #application/json
+* content.format = $recordingFormat#native-json-1 "Native JSON 1"
 * content.attachment.title = "SensorKit inverse-lead ECG native recording"
 * content.attachment.data = "eyJndWlkYW5jZSI6InVuZ3VpZGVkIiwiZmxhZ3MiOlswLDAsMCwwXX0="
 * content.attachment.size = 41
@@ -291,6 +293,7 @@ Description: "The complete caller-encoded SensorKit device-usage report related 
 * date = "2026-08-20T15:15:01Z"
 * author = Reference(SensorKitDeviceExample)
 * content.attachment.contentType = #application/json
+* content.format = $recordingFormat#native-json-1 "Native JSON 1"
 * content.attachment.title = "SensorKit device usage report"
 * content.attachment.data = "eyJ2ZXJzaW9uIjoiMSJ9"
 * content.attachment.size = 15
@@ -381,6 +384,7 @@ Description: "The raw device-usage output whose internal references use determin
 * date = "2026-08-20T15:15:01Z"
 * author.reference = "urn:uuid:7b38448e-4b35-5813-979a-65f2b724c703"
 * content.attachment.contentType = #application/json
+* content.format = $recordingFormat#native-json-1 "Native JSON 1"
 * content.attachment.title = "SensorKit device usage report"
 * content.attachment.data = "eyJ2ZXJzaW9uIjoiMSJ9"
 * content.attachment.size = 15

@@ -13,6 +13,7 @@ Description: "The exact media types from the external IANA BCP 13 registry admit
 * ^experimental = false
 * urn:ietf:bcp:13#application/json "JSON"
 * urn:ietf:bcp:13#application/octet-stream "Arbitrary binary data"
+* urn:ietf:bcp:13#text/csv "Comma-separated values"
 * ^expansion.timestamp = "2026-08-20T00:00:00Z"
 * ^expansion.parameter[+].name = "used-codesystem"
 * ^expansion.parameter[=].valueUri = "urn:ietf:bcp:13"

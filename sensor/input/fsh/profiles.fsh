@@ -100,6 +100,8 @@ Description: "An externally encoded or embedded sensor recording whose native re
 * content.attachment obeys sensor-document-payload-1
 * content.attachment.contentType 1..1 MS
 * content.attachment.contentType from GroveNativeRecordingMimeTypeVS (required)
+* content.format 1..1 MS
+* content.format from GroveRecordingFormatVS (required)
 * content.attachment.title 1..1 MS
 * content.attachment.size 1..1 MS
 * content.attachment.hash 1..1 MS
