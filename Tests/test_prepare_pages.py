@@ -77,6 +77,33 @@ class PreparePagesTests(unittest.TestCase):
             "https://example.org/grove-fhir/fhir/mobile/ci-build/index.html",
         )
 
+    def test_rewrites_authored_canonical_links(self) -> None:
+        mapping = {
+            "https://canonical.example/fhir/mobile": "https://pages.example/repo/mobile/ci-build",
+            "https://canonical.example/fhir/mobile/history.html": (
+                "https://pages.example/repo/mobile/history.html"
+            ),
+            "https://canonical.example/fhir/sensorkit": "https://pages.example/repo/sensorkit/ci-build",
+            "https://canonical.example/fhir/sensor": "https://pages.example/repo/sensor/ci-build",
+            "https://canonical.example/fhir/catalog/": "https://pages.example/repo/catalog/",
+        }
+        text = (
+            '<a href="https://canonical.example/fhir/mobile/study.html">study</a>'
+            " <a href='https://canonical.example/fhir/mobile/history.html'>history</a>"
+            ' <a href="https://canonical.example/fhir/sensorkit/mapping.html">adapter</a>'
+            ' <a href="https://canonical.example/fhir/sensor/waveforms.html">sensor</a>'
+            ' <a href="https://canonical.example/fhir/catalog/measurement-catalog.json">catalog</a>'
+            ' "url": "https://canonical.example/fhir/mobile/StructureDefinition/profile"'
+        )
+        result = PREPARE_PAGES.rewrite_authored_canonical_links(text, mapping)
+        self.assertIn('href="https://pages.example/repo/mobile/ci-build/study.html"', result)
+        self.assertIn("href='https://pages.example/repo/mobile/history.html'", result)
+        self.assertIn('href="https://pages.example/repo/sensorkit/ci-build/mapping.html"', result)
+        self.assertIn('href="https://pages.example/repo/sensor/ci-build/waveforms.html"', result)
+        self.assertIn('href="https://pages.example/repo/catalog/measurement-catalog.json"', result)
+        # Resource identity is never a link target and stays canonical.
+        self.assertIn('"url": "https://canonical.example/fhir/mobile/StructureDefinition/profile"', result)
+
     def test_rewrites_package_deterministically(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             original = Path(directory) / "original.tgz"
@@ -434,6 +461,10 @@ class PreparePagesTests(unittest.TestCase):
                 ],
                 "retiredPreviewPaths": ["fhir/core/", "fhir/platforms/", "platforms/"],
             }
+            (repository / "catalog").mkdir()
+            (repository / "catalog/example-catalog.json").write_text(
+                "{}", encoding="utf-8"
+            )
             site = repository / ".build/pages"
             published = Path(directory) / "published"
             (published / "fhir/core/0.5.0").mkdir(parents=True)
@@ -471,6 +502,7 @@ class PreparePagesTests(unittest.TestCase):
 
             mobile = site / "fhir/mobile"
             self.assertTrue((site / ".nojekyll").is_file())
+            self.assertTrue((site / "catalog/example-catalog.json").is_file())
             self.assertTrue((site / "index.html").is_file())
             self.assertTrue((site / "healthkit/index.html").is_file())
             self.assertTrue((mobile / "ci-build/index.html").is_file())
