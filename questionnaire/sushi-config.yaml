@@ -28,6 +28,7 @@ dependencies:
 
 menu:
   Overview: index.html
+  Guides: https://grovealliance.org/fhir/mobile/guides.html
   Quick start: quick-start.html
   Define an instrument: instruments.html
   Record answers: responses.html

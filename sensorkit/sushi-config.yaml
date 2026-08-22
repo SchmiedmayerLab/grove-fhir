@@ -30,21 +30,25 @@ dependencies:
     uri: https://grovealliance.org/fhir/sensor/ImplementationGuide/org.grovealliance.fhir.sensor
 pages:
   index.md:
-    title: Home
+    title: Overview
   mapping.md:
-    title: Source inventory and mappings
+    title: Mapping
+  walkthrough.md:
+    title: Walkthrough
   status-matrix.md:
     title: Authoritative status matrix
   concept-properties.md:
     title: Concept properties
   implementation.md:
-    title: Producer contract
+    title: Implement and validate
 menu:
-  Home: index.html
-  Inventory: mapping.html
+  Overview: index.html
+  Guides: https://grovealliance.org/fhir/mobile/guides.html
+  Mapping: mapping.html
+  Walkthrough: walkthrough.html
   Status matrix: status-matrix.html
   Concept properties: concept-properties.html
-  Producer contract: implementation.html
+  Implement and validate: implementation.html
   Artifacts: artifacts.html
 parameters:
   show-inherited-invariants: false

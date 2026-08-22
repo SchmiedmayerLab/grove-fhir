@@ -35,6 +35,7 @@ parameters:
 
 menu:
   Overview: index.html
+  Guides: https://grovealliance.org/fhir/mobile/guides.html
   Time series and ECG: waveforms.html
   Implement and validate: implementation.html
   Artifacts: artifacts.html

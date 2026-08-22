@@ -18,7 +18,7 @@ repository scope, change token, and a ledger keyed by the raw Record id. The led
 the derived source identifier and every output identifier previously produced for that
 Record. Raw ids, tokens, filter fingerprints, and repository scope are local operational
 state; they are never copied into FHIR resources except through the derived identifiers
-defined by `catalog/health-connect-identity.json`.
+defined by [`catalog/health-connect-identity.json`](https://grovealliance.org/fhir/catalog/health-connect-identity.json).
 
 When a Record maps to several Observations, derive the complete replacement set before
 publishing it. An update can add, retain, or remove output identifiers. A deletion resolves

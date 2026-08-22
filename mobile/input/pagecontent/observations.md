@@ -37,7 +37,7 @@ Health Connect, whose source record supplies the required specimen evidence.
 | Sleep stage | `grove-mobile-sleep-stage` | Grove `sleep-stage` and required Grove stage value set | coded stage | `Period` |
 
 The machine-readable source of this table is
-`catalog/measurement-catalog.json` in the source repository. A standard-first Grove
+[`catalog/measurement-catalog.json`](https://grovealliance.org/fhir/catalog/measurement-catalog.json) in the source repository. A standard-first Grove
 profile declares the standard profile through the R4 `structuredefinition-imposeProfile`
 extension. An instance claiming the Grove profile therefore has to validate against
 both profiles; a producer declares only the Grove canonical in `meta.profile`.
@@ -126,7 +126,7 @@ The normative producer output is a
 [Grove Mobile Exchange Bundle](StructureDefinition-grove-mobile-exchange-bundle.html),
 a FHIR `collection` Bundle. Every entry carries one complete
 `grove-exchange-entry-identifier`; its `fullUrl` is the UUID version 5 value defined by
-`catalog/exchange-identity.json`. References between Bundle entries use those UUID URNs.
+[`catalog/exchange-identity.json`](https://grovealliance.org/fhir/catalog/exchange-identity.json). References between Bundle entries use those UUID URNs.
 
 The RFC 8785 JSON Canonicalization Scheme serialization of exactly `[system,value]` is
 the UUID name under namespace `a9a39cf1-c944-5d15-a3c2-c395969ea101`. This works for

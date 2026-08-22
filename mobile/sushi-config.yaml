@@ -32,14 +32,18 @@ dependencies:
 
 menu:
   Overview: index.html
+  Guides: guides.html
   Observations: observations.html
   Devices and provenance: devices.html
   Study context: study.html
   Implement and validate: implementation.html
+  Artifacts: artifacts.html
 
 pages:
   index.md:
     title: Overview
+  guides.md:
+    title: The Grove FHIR guides
   observations.md:
     title: Observations
   devices.md:

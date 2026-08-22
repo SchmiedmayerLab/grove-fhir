@@ -33,7 +33,9 @@ dependencies:
 
 menu:
   Overview: index.html
+  Guides: https://grovealliance.org/fhir/mobile/guides.html
   Mapping: mapping.html
+  Walkthrough: walkthrough.html
   Status matrix: status-matrix.html
   Concept properties: concept-properties.html
   Implement and validate: implementation.html
@@ -44,6 +46,8 @@ pages:
     title: Overview
   mapping.md:
     title: Mapping
+  walkthrough.md:
+    title: Walkthrough
   status-matrix.md:
     title: Authoritative status matrix
   concept-properties.md:

@@ -7,7 +7,7 @@ SPDX-License-Identifier: MIT
 -->
 
 Pass already-obtained provider records into a mapper that consumes the exact contract in
-`catalog/providers-adapter.json`. Provider API clients, credentials, token refresh,
+[`catalog/providers-adapter.json`](https://grovealliance.org/fhir/catalog/providers-adapter.json). Provider API clients, credentials, token refresh,
 subscriptions, and network retries belong to the calling application and are outside this
 package.
 

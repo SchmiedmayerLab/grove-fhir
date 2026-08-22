@@ -32,7 +32,9 @@ dependencies:
     uri: https://grovealliance.org/fhir/sensor/ImplementationGuide/org.grovealliance.fhir.sensor
 menu:
   Overview: index.html
+  Guides: https://grovealliance.org/fhir/mobile/guides.html
   Mapping: mapping.html
+  Walkthrough: walkthrough.html
   Status matrix: status-matrix.html
   Implement and validate: implementation.html
   Artifacts: artifacts.html
@@ -42,6 +44,8 @@ pages:
     title: Overview
   mapping.md:
     title: Mapping
+  walkthrough.md:
+    title: Walkthrough
   status-matrix.md:
     title: Authoritative status matrix
   implementation.md:

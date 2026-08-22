@@ -30,13 +30,13 @@ package directory because removed artifacts would remain.
 
 For each emitted Observation:
 
-1. Select an admitted row in `catalog/health-connect-adapter.json`.
+1. Select an admitted row in [`catalog/health-connect-adapter.json`](https://grovealliance.org/fhir/catalog/health-connect-adapter.json).
 2. For a shared measurement, declare exactly two profiles in `meta.profile`: the exact
    shared measurement profile selected by that row and Health Connect Observation. A
    specimen-specific glucose output instead declares only its exact Health Connect child
    profile. Do not repeat an inherited Mobile or core standard profile.
 3. Populate the complete source-record and output business identifiers using
-   `catalog/health-connect-identity.json`.
+   [`catalog/health-connect-identity.json`](https://grovealliance.org/fhir/catalog/health-connect-identity.json).
 4. Apply every required code, unit, effective type, result shape, specimen, and admitted
    context mapping from the machine catalogs.
 5. Add conversion Provenance and every internally referenced graph node. Conversion

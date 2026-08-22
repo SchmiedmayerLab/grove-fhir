@@ -15,8 +15,8 @@ from Mobile or Sensor and one adapter profile. It never repeats the inherited Gr
 Mobile Observation, PHD RTSA, or a core profile unless the resource independently
 conforms to a distinct workflow that explicitly requires that profile.
 
-Producer implementations consume `catalog/sensor-catalog.json` and
-`catalog/profile-claims.json`; these are normative machine-readable contracts, not
+Producer implementations consume [`catalog/sensor-catalog.json`](https://grovealliance.org/fhir/catalog/sensor-catalog.json) and
+[`catalog/profile-claims.json`](https://grovealliance.org/fhir/catalog/profile-claims.json); these are normative machine-readable contracts, not
 generated implementation constants.
 
 Structured Sensor Observations and native Recording Documents use the same auditable

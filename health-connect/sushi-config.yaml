@@ -32,6 +32,7 @@ dependencies:
 
 menu:
   Overview: index.html
+  Guides: https://grovealliance.org/fhir/mobile/guides.html
   Mapping: mapping.html
   Status matrix: status-matrix.html
   Concept properties: concept-properties.html

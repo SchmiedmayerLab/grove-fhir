@@ -38,9 +38,9 @@ repeated in `meta.profile`.
 | `StepsRecord` | step-count interval total |
 | `WeightRecord` | body weight |
 
-`catalog/health-connect-adapter.json` is the authoritative closed inventory. It lists all
-41 `RecordType.all` members with one definitive status, their output cardinality, and exact
-context mappings. A type omitted from the table above is not silently admitted.
+[`catalog/health-connect-adapter.json`](https://grovealliance.org/fhir/catalog/health-connect-adapter.json) is the authoritative closed inventory.
+It lists all 41 `RecordType.all` members with one definitive status, their output cardinality, and exact context mappings.
+A type omitted from the table above is not silently admitted.
 
 ### Identity and source context
 
@@ -49,7 +49,7 @@ The source-record identifier is repository-scoped and does not disclose
 identifiers. A synthesized glucose Specimen, conversion Provenance, and exchange Bundle
 also have complete business identifiers. The JCS/SHA-256 preimages, lexical rules, naming
 systems, and cross-language vectors are normative in
-`catalog/health-connect-identity.json`. None of these values becomes `Resource.id`.
+[`catalog/health-connect-identity.json`](https://grovealliance.org/fhir/catalog/health-connect-identity.json). None of these values becomes `Resource.id`.
 
 Supported source context is represented explicitly:
 

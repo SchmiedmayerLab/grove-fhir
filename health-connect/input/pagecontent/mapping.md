@@ -8,7 +8,8 @@ SPDX-License-Identifier: MIT
 
 Conversion dispatches on the exact AndroidX Health Connect 1.1 Record class. The normative
 inventory, output cardinality, and context mappings are machine-readable in
-`catalog/health-connect-adapter.json`; prose never expands or overrides that closed table.
+[`catalog/health-connect-adapter.json`](https://grovealliance.org/fhir/catalog/health-connect-adapter.json); prose never expands or overrides that closed table.
+The normative status-vocabulary definitions live on the [guide family page](https://grovealliance.org/fhir/mobile/guides.html#status-vocabulary).
 The [authoritative status matrix](status-matrix.html) renders all 41 record classes.
 
 ### Common Record mapping
@@ -29,7 +30,7 @@ or becomes `meta.versionId`.
 
 ### Identity
 
-`catalog/health-connect-identity.json` is the complete normative identity contract. It
+[`catalog/health-connect-identity.json`](https://grovealliance.org/fhir/catalog/health-connect-identity.json) is the complete normative identity contract. It
 defines the six NamingSystem URLs, JCS string and array canonicalization, SHA-256 preimages,
 lexical rules, and test vectors for source Records, single and multi-output Observations,
 sleep stages, Specimens, conversion Provenance, and exchange Bundles.
@@ -63,7 +64,7 @@ business identifiers.
 | `WeightRecord` | body weight | `Quantity` kg at `dateTime` |
 
 Codes, units, effective datatypes, profile canonicals, and standard parent profiles come
-from `catalog/measurement-catalog.json`. Converters normalize only as specified there and
+from [`catalog/measurement-catalog.json`](https://grovealliance.org/fhir/catalog/measurement-catalog.json). Converters normalize only as specified there and
 must not stamp a profile whose meaning is not established by the source.
 
 ### Glucose specimen and meal context
