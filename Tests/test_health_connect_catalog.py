@@ -16,7 +16,7 @@ from Scripts import health_connect_identity as identity
 
 
 ROOT = Path(__file__).parents[1]
-STATUSES = {"supported", "mapped-standard", "provider-specific", "deferred", "intentionally-unsupported"}
+STATUSES = {"supported", "mapped-standard", "platform-exclusive", "unmodeled", "deferred", "intentionally-unsupported"}
 SUPPORTED = {
     "ActiveCaloriesBurnedRecord", "BasalBodyTemperatureRecord", "BloodGlucoseRecord",
     "BloodPressureRecord", "BodyTemperatureRecord", "DistanceRecord", "HeartRateRecord",

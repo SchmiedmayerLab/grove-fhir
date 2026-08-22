@@ -71,10 +71,10 @@ class PackageGraphTests(unittest.TestCase):
             claims["sensorKitHybridObservationClaims"]["cardinality"], 2
         )
         self.assertEqual(
-            claims["healthConnectProviderSpecificClaims"]["cardinality"], 1
+            claims["healthConnectPlatformExclusiveClaims"]["cardinality"], 1
         )
         self.assertEqual(
-            claims["sensorKitProviderSpecificClaims"]["cardinality"], 1
+            claims["sensorKitPlatformExclusiveClaims"]["cardinality"], 1
         )
         self.assertEqual(
             claims["sensorKitRecordingDocumentClaim"]["cardinality"], 2

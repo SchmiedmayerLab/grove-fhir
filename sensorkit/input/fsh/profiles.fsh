@@ -79,7 +79,7 @@ Profile: SensorKitOnWristObservation
 Parent: SensorKitObservation
 Id: sensorkit-on-wrist-observation
 Title: "SensorKit On-Wrist Observation"
-Description: "A provider-specific SensorKit assertion that a watch was on or off the participant's wrist, including the reported wrist and crown placement."
+Description: "A platform-exclusive SensorKit assertion that a watch was on or off the participant's wrist, including the reported wrist and crown placement."
 * extension[sensorKitSourceType].valueCode = #on-wrist
 * code = $sensorKitConcept#on-wrist-state "On-wrist state"
 * effective[x] 1..1 MS
@@ -136,7 +136,7 @@ Profile: SensorKitDeviceUsageObservation
 Parent: SensorKitObservation
 Id: sensorkit-device-usage-observation
 Title: "SensorKit Device Usage Observation"
-Description: "A provider-specific summary of unlock duration, screen wakes, and unlock count over one SensorKit device-usage reporting interval. Per-application, notification, and web detail remains in a related native Recording Document."
+Description: "A platform-exclusive summary of unlock duration, screen wakes, and unlock count over one SensorKit device-usage reporting interval. Per-application, notification, and web detail remains in a related native Recording Document."
 * extension[sensorKitSourceType].valueCode = #device-usage
 * code = $sensorKitConcept#device-usage-summary "Device usage summary"
 * effective[x] 1..1 MS
@@ -171,7 +171,7 @@ Profile: SensorKitVisitObservation
 Parent: SensorKitObservation
 Id: sensorkit-visit-observation
 Title: "SensorKit Visit Observation"
-Description: "A provider-specific SensorKit visit summary preserving the category, distance from home, and uncertain arrival and departure windows without asserting a clinical Encounter."
+Description: "A platform-exclusive SensorKit visit summary preserving the category, distance from home, and uncertain arrival and departure windows without asserting a clinical Encounter."
 * extension[sensorKitSourceType].valueCode = #visits
 * code = $sensorKitConcept#visit-summary "Visit summary"
 * effective[x] 1..1 MS

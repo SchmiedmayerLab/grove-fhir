@@ -41,7 +41,7 @@
       "http://hl7.org/fhir/StructureDefinition/resprate"
     ]
   },
-  "healthConnectProviderSpecificClaims": {
+  "healthConnectPlatformExclusiveClaims": {
     "cardinality": 1,
     "profiles": [
       "https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-whole-blood-glucose",
@@ -118,7 +118,7 @@
       "rule": "One Provenance in the exchange graph targets every SensorKit structured and raw output carrying its exact sole source-record Identifier; every target is an internal UUID reference. A bundle whose outputs for a source record are all entered-in-error records a retraction rather than a conversion and carries no conversion Provenance."
     }
   ],
-  "sensorKitProviderSpecificClaims": {
+  "sensorKitPlatformExclusiveClaims": {
     "cardinality": 1,
     "profiles": [
       "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-device-usage-observation",

@@ -7,14 +7,16 @@
   "statusVocabulary": [
     "supported",
     "mapped-standard",
-    "provider-specific",
+    "platform-exclusive",
+    "unmodeled",
     "deferred",
     "intentionally-unsupported"
   ],
   "statusDefinitions": {
     "supported": "Version 0.2.0 defines a lossless structured mapping to the listed source-neutral Sensor profile plus the SensorKit adapter profile. A row may require the listed linked native Recording Document when exact source fields cannot be carried in the structured projection alone.",
     "mapped-standard": "Version 0.2.0 admits the stream as the listed source-neutral Sensor Recording Document and does not invent a structured scalar or waveform meaning.",
-    "provider-specific": "Version 0.2.0 defines the listed SensorKit-only structured profile because no exact source-neutral or international profile represents the source semantics.",
+    "platform-exclusive": "Version 0.2.0 defines the listed platform-exclusive SensorKit structured profile because no exact source-neutral or international profile exists.",
+    "unmodeled": "The platform stream is inventoried, but no shared or SensorKit-scoped profile models it and no output is admitted.",
     "deferred": "The platform stream is inventoried, but version 0.2.0 publishes no admitted output contract.",
     "intentionally-unsupported": "Version 0.2.0 deliberately refuses the stream because any available representation would create a misleading or unsafe meaning."
   },
@@ -110,10 +112,10 @@
           "identifierValue": "f632b780-1a6f-541d-8c73-ff1e76ce4204"
         },
         {
-          "outputDiscriminator": "native-\n\"\\r\u00e9sum\u00e9\u0001",
+          "outputDiscriminator": "native-\n\"\\résumé\u0001",
           "admitted": false,
           "purpose": "RFC 8785 quote, reverse-solidus, control, and non-ASCII test only",
-          "canonicalPreimage": "[\"https://grovealliance.org/fhir/sensorkit/NamingSystem/sensorkit-record-id\",\"879d9ea2-21cb-4527-b59b-2831dc4c84ab\",\"native-\\n\\\"\\\\r\u00e9sum\u00e9\\u0001\"]",
+          "canonicalPreimage": "[\"https://grovealliance.org/fhir/sensorkit/NamingSystem/sensorkit-record-id\",\"879d9ea2-21cb-4527-b59b-2831dc4c84ab\",\"native-\\n\\\"\\\\résumé\\u0001\"]",
           "identifierValue": "ab9daa44-c154-595e-85e3-d45972b60b39"
         }
       ]
@@ -207,7 +209,7 @@
       "documentation": "https://developer.apple.com/documentation/sensorkit/srsensor/deviceusagereport",
       "minimumIOS": "14.0",
       "scope": "catalog-baseline",
-      "status": "provider-specific",
+      "status": "platform-exclusive",
       "structured": {
         "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-device-usage-observation",
         "outputDiscriminator": "device-usage-summary",
@@ -420,7 +422,7 @@
       "documentation": "https://developer.apple.com/documentation/sensorkit/srsensor/onwriststate",
       "minimumIOS": "14.0",
       "scope": "catalog-baseline",
-      "status": "provider-specific",
+      "status": "platform-exclusive",
       "structured": {
         "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-on-wrist-observation",
         "outputDiscriminator": "on-wrist",
@@ -591,7 +593,7 @@
       "documentation": "https://developer.apple.com/documentation/sensorkit/srsensor/visits",
       "minimumIOS": "14.0",
       "scope": "catalog-baseline",
-      "status": "provider-specific",
+      "status": "platform-exclusive",
       "structured": {
         "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-visit-observation",
         "outputDiscriminator": "visit-summary",

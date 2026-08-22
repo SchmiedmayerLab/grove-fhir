@@ -162,7 +162,7 @@ class SensorKitCatalogTests(unittest.TestCase):
                         "sensorkit-ecg-observation",
                     },
                 )
-            elif entry["status"] == "provider-specific":
+            elif entry["status"] == "platform-exclusive":
                 self.assertRegex(
                     entry["structured"]["profile"],
                     r"/StructureDefinition/sensorkit-(on-wrist|device-usage|visit)-observation$",

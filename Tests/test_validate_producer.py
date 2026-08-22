@@ -388,8 +388,8 @@ class ProducerConformanceTests(unittest.TestCase):
             (ROOT / "catalog/profile-claims.json").read_text(encoding="utf-8")
         )
         profiles = [
-            claims["healthConnectProviderSpecificClaims"]["profiles"][0],
-            claims["sensorKitProviderSpecificClaims"]["profiles"][0],
+            claims["healthConnectPlatformExclusiveClaims"]["profiles"][0],
+            claims["sensorKitPlatformExclusiveClaims"]["profiles"][0],
             claims["sensorKitRecordingDocumentClaim"]["profiles"][1],
             claims["providerRecordingDocumentClaim"]["profiles"][1],
             *[

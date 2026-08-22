@@ -6,7 +6,8 @@
   "statusVocabulary": [
     "supported",
     "mapped-standard",
-    "provider-specific",
+    "platform-exclusive",
+    "unmodeled",
     "deferred",
     "intentionally-unsupported"
   ],
@@ -48,7 +49,8 @@
   "statusDefinitions": {
     "supported": "The named adapter emits and validates this exact Mobile profile in version 0.2.0.",
     "mapped-standard": "Related source data is admitted only in the coverageDetails alternate representation. It does not implement or claim this Mobile profile.",
-    "provider-specific": "The source meaning is admitted only by an adapter/provider-specific profile and does not implement this Mobile profile.",
+    "platform-exclusive": "The source meaning is admitted only by a platform-exclusive adapter profile and does not implement this Mobile profile.",
+    "unmodeled": "The source element is inventoried by its adapter, but nothing models this Mobile meaning and no output is admitted.",
     "deferred": "The source has related data, but version 0.2.0 admits no output for this Mobile meaning.",
     "intentionally-unsupported": "The source has no semantically exact mapping to this Mobile meaning in the closed version 0.2.0 contract."
   },

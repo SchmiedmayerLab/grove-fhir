@@ -595,7 +595,7 @@ def validate_sensorkit_profile_claim(resource: dict[str, Any], label: str) -> No
             "source-neutral Sensor and exact SensorKit adapter profiles"
         )
 
-    provider_claim = claims["sensorKitProviderSpecificClaims"]
+    provider_claim = claims["sensorKitPlatformExclusiveClaims"]
     claimed_provider_profiles = set(profiles) & set(provider_claim["profiles"])
     if claimed_provider_profiles and (
         len(claimed_provider_profiles) != 1
@@ -603,7 +603,7 @@ def validate_sensorkit_profile_claim(resource: dict[str, Any], label: str) -> No
     ):
         raise ProducerValidationError(
             f"{label} SensorKit-only Observation must directly claim exactly one "
-            "provider-specific SensorKit profile"
+            "platform-exclusive SensorKit profile"
         )
 
     if resource.get("resourceType") != "DocumentReference":
@@ -635,7 +635,7 @@ def validate_health_connect_provider_claim(resource: dict[str, Any], label: str)
     if not isinstance(profiles, list):
         raise ProducerValidationError(f"{label} has invalid meta.profile")
     claims = read_json(CATALOG_ROOT / "profile-claims.json")[
-        "healthConnectProviderSpecificClaims"
+        "healthConnectPlatformExclusiveClaims"
     ]
     claimed = set(profiles) & set(claims["profiles"])
     if claimed and (len(claimed) != 1 or len(profiles) != 1):
