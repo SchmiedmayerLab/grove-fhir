@@ -141,7 +141,10 @@ class MobileSemanticVectorTests(unittest.TestCase):
                 self.assertEqual(result["type"], "Quantity")
                 self.assertEqual(
                     {key: result[key] for key in ("system", "code", "unit")},
-                    measurement["quantity"],
+                    {
+                        key: measurement["quantity"][key]
+                        for key in ("system", "code", "unit")
+                    },
                 )
             elif measurement["id"] == "blood-pressure":
                 self.assertEqual(result["type"], "components")

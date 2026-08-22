@@ -10,7 +10,9 @@
     "inventory:refresh": "python3 Scripts/render-platform-inventories.py",
     "inventory:check": "python3 Scripts/render-platform-inventories.py --check",
     "terminology:check": "python3 Scripts/check-terminology.py",
-    "test": "python3 Scripts/check-content.py && python3 Scripts/check-terminology.py && python3 -m unittest discover -s Tests -v"
+    "profiles:refresh": "python3 Scripts/render-measurement-profiles.py",
+    "profiles:check": "python3 Scripts/render-measurement-profiles.py --check",
+    "test": "python3 Scripts/check-content.py && python3 Scripts/check-terminology.py && python3 Scripts/render-measurement-profiles.py --check && python3 -m unittest discover -s Tests -v"
   },
   "devDependencies": {
     "ajv": "8.20.0",

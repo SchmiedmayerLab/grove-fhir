@@ -16,6 +16,8 @@ path = [
     "health-connect/input/ignoreWarnings.txt",
     "healthkit/ig.ini",
     "healthkit/input/data/terminology-provenance.json",
+    "mobile/input/data/terminology-reviews.json",
+    "publication/mobile-semantic-baseline.json",
     "*/input/data/*-inventory.json",
     "healthkit/input/ignoreWarnings.txt",
     "mobile/ig.ini",
