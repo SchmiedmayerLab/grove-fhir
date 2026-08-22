@@ -125,7 +125,14 @@ def main() -> int:
         row = pinned.get(code["code"])
         if row is None:
             continue  # already reported above
-        expected = property_dimensions.get(row["property"])
+        if row["property"] not in property_dimensions:
+            problems.append(
+                f"measurement-catalog.json:{measurement_id}{suffix}: LOINC "
+                f"{code['code']} PROPERTY {row['property']} has no dimension "
+                "mapping; add it to propertyDimensions"
+            )
+            continue
+        expected = property_dimensions[row["property"]]
         if expected is None:
             continue
         parsed = parsed_units.get(quantity["code"])

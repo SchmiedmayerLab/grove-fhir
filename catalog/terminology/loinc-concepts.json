@@ -1,19 +1,21 @@
 {
   "schemaVersion": 1,
-  "copyright": "This material contains content from LOINC (http://loinc.org). LOINC is copyright © 1995-2026, Regenstrief Institute, Inc. and the Logical Observation Identifiers Names and Codes (LOINC) Committee and is available at no cost under the license at http://loinc.org/license.",
-  "loincVersion": null,
-  "loincVersionReason": "Rows are carried from the version 0.2.0 release review; a LOINC release is pinned when the standing terminology reviewer ratifies this table.",
-  "ratification": "pending",
+  "copyright": "This material contains content from LOINC (http://loinc.org). LOINC is copyright © 1995-2026, Regenstrief Institute, Inc. and the Logical Observation Identifiers Names and Codes (LOINC) Committee and is available at no cost under the license at http://loinc.org/license. LOINC® is a registered United States trademark of Regenstrief Institute, Inc.",
+  "loincVersion": "2.82",
+  "loincVersionReason": "Ratified against LOINC 2.82 (released February 2026, https://www.regenstrief.org/article/loinc-version-2-82-concept-release/); all 17 rows verified against LOINC 2.82 content on public FHIR terminology servers.",
+  "ratification": "ratified",
   "propertyDimensions": {
+    "Find": null,
     "Len": {
       "m": 1
-    },
-    "Mass": {
-      "g": 1
     },
     "MCnc": {
       "g": 1,
       "m": -3
+    },
+    "MFr": {},
+    "Mass": {
+      "g": 1
     },
     "NRat": {
       "s": -1
@@ -23,15 +25,14 @@
       "m": -1,
       "s": -2
     },
+    "Ratio": null,
+    "SFr": {},
     "Temp": {
       "K": 1
     },
     "Time": {
       "s": 1
     },
-    "SFr": {},
-    "Find": null,
-    "Ratio": null,
     "-": null
   },
   "concepts": {
@@ -61,7 +62,7 @@
     },
     "2708-6": {
       "display": "Oxygen saturation in Arterial blood",
-      "property": "SFr",
+      "property": "MFr",
       "scale": "Qn",
       "status": "ACTIVE"
     },
@@ -110,7 +111,7 @@
     "85354-9": {
       "display": "Blood pressure panel with all children optional",
       "property": "-",
-      "scale": "-",
+      "scale": "Qn",
       "status": "ACTIVE"
     },
     "8867-4": {
@@ -137,5 +138,6 @@
       "scale": "Qn",
       "status": "ACTIVE"
     }
-  }
+  },
+  "ratifiedBy": "v0.3 terminology panel, two independent verifications (tx.fhir.org r4 and r4.ontoserver.csiro.au, both serving LOINC 2.82), 2026-08-21; standing-reviewer confirmation via pull-request review"
 }
