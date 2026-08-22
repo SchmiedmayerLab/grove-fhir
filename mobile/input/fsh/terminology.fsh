@@ -24,25 +24,6 @@ Description: "Capture modes permitted by the Grove recording-method extension wh
 * ^experimental = false
 * include codes from system GroveRecordingMethodCS
 
-CodeSystem: GroveMobileMeasurementCS
-Id: grove-mobile-measurement
-Title: "Grove Mobile Measurement"
-Description: "Measurement concepts defined by the Grove Mobile contract when an established code would not faithfully represent the exchanged result."
-* ^experimental = false
-* ^caseSensitive = true
-* ^content = #complete
-* #step-count-total "Step count total" "The total number of steps attributed to the exact Observation effective Period."
-* #active-energy-burned "Active energy burned" "Energy expended through activity, excluding basal energy, during the exact Observation effective Period."
-* #basal-body-temperature "Basal body temperature" "Body temperature recorded at physiologic rest for fertility-awareness or cycle-tracking use; it is distinct from a general body-temperature vital sign."
-* #sleep-stage "Sleep stage" "The classification assigned to an exact interval within a sleep session."
-
-ValueSet: GroveMobileMeasurementVS
-Id: grove-mobile-measurement
-Title: "Grove Mobile Measurement"
-Description: "Measurement concepts defined by Grove Mobile for use in its focused domain profiles."
-* ^experimental = false
-* include codes from system GroveMobileMeasurementCS
-
 CodeSystem: GroveSleepStageCS
 Id: grove-sleep-stage
 Title: "Grove Sleep Stage"

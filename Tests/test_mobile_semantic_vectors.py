@@ -128,7 +128,14 @@ class MobileSemanticVectorTests(unittest.TestCase):
                 vector["profile"],
                 f"{self.catalog['canonicalRoot']}/{measurement['profile']}",
             )
-            self.assertEqual(vector["code"], measurement["code"])
+            self.assertEqual(
+                vector["code"],
+                {
+                    key: measurement["code"][key]
+                    for key in ("system", "code")
+                    if key in measurement["code"]
+                },
+            )
             self.assertEqual(vector["effective"]["type"], measurement["effective"])
             if measurement["effective"] == "Period":
                 self.assertLess(

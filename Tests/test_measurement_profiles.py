@@ -20,8 +20,11 @@ RENDERER = ROOT / "Scripts/render-measurement-profiles.py"
 
 FIXTURE_FILES = (
     "catalog/measurement-catalog.json",
+    "catalog/terminology/loinc-concepts.json",
+    "catalog/terminology/ucum-units.json",
     "mobile/input/data/terminology-reviews.json",
     "mobile/input/fsh/aliases.fsh",
+    "mobile/input/fsh/terminology.fsh",
     "mobile/input/fsh/profiles.fsh",
     "mobile/input/fsh/generated-measurement-profiles.fsh",
 )
@@ -42,6 +45,17 @@ class MeasurementProfileProjectionTests(unittest.TestCase):
             destination.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(ROOT / name, destination)
         return directory
+
+    def remint_ground_truth(self, root: Path) -> None:
+        import hashlib
+
+        reviews_path = root / "mobile/input/data/terminology-reviews.json"
+        reviews = json.loads(reviews_path.read_text(encoding="utf-8"))
+        ground = hashlib.sha256()
+        for name in reviews["groundTruthFiles"]:
+            ground.update((root / name).read_bytes())
+        reviews["groundTruthDigest"] = "sha256:" + ground.hexdigest()
+        reviews_path.write_text(json.dumps(reviews, indent=2), encoding="utf-8")
 
     def edit_catalog(self, root: Path, mutate) -> None:
         path = root / "catalog/measurement-catalog.json"
@@ -66,6 +80,7 @@ class MeasurementProfileProjectionTests(unittest.TestCase):
                 for measurement in catalog["measurements"]
             ],
         )
+        self.remint_ground_truth(root)
 
     def test_generated_profiles_are_current(self) -> None:
         code, output = self.run_renderer(ROOT, "--check")
@@ -90,6 +105,7 @@ class MeasurementProfileProjectionTests(unittest.TestCase):
                 text.replace("* code = $loinc#8867-4", "* code = $loinc#8310-5", 1),
                 encoding="utf-8",
             )
+            self.remint_ground_truth(root)
             code, output = self.run_renderer(root, "--check")
             self.assertEqual(code, 1, output)
             self.assertIn("projection differs from the hand profile", output)
@@ -135,6 +151,7 @@ class MeasurementProfileProjectionTests(unittest.TestCase):
                 profiles.read_text(encoding="utf-8") + "\n" + block + "\n",
                 encoding="utf-8",
             )
+            self.remint_ground_truth(root)
             code, output = self.run_renderer(root, "--check")
             self.assertEqual(code, 1, output)
             self.assertIn("still hand-written", output)

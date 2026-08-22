@@ -1,8 +1,16 @@
 {
   "schemaVersion": 1,
   "description": "The per-measurement terminology review record; profile generation refuses any measurement without an approved entry whose digest matches the measurement's current terminology projection.",
-  "digestAlgorithm": "sha256 over the UTF-8 canonical JSON (sorted keys, separators ',' ':') of the terminology projection: the measurement's code, components, effective, hasMember, quantity, standardProfile, valueSet, resultCodeSystem, and allowedValues fields, omitting null or absent fields.",
-  "bootstrap": "Entries for the thirteen version 0.2.0 measurements cite the v0.2.0 release review during which their codes, units, and effective semantics shipped; entries for new measurements require a named FHIR-expert and data-standards review before generation.",
+  "digestScope": "grove-terminology-projection-2",
+  "digestAlgorithm": "sha256 over the UTF-8 canonical JSON (sorted keys, separators ',' ':') of the terminology projection: the measurement's code, components, description, effective, hasMember, obeys, quantity, standardProfile, valueKind, valueSet, resultCodeSystem, and allowedValues fields, omitting null or absent fields.",
+  "groundTruthFiles": [
+    "catalog/terminology/loinc-concepts.json",
+    "catalog/terminology/ucum-units.json",
+    "mobile/input/fsh/terminology.fsh",
+    "mobile/input/fsh/profiles.fsh"
+  ],
+  "groundTruthDigest": "sha256:b18338f9b9d48154de26975d5b5a7d8985b32efe51733b0c1b2771f95dfb711b",
+  "bootstrap": "Entries with provenance 'bootstrap' cite the v0.2.0 release review during which their codes, units, and effective semantics shipped, proven byte-identical by the generation parity gate; the bootstrap set is terminal as of v0.3 and every new entry carries a named two-role review with a commit-SHA reviewRef.",
   "entries": {
     "active-energy": {
       "status": "approved",
@@ -10,7 +18,9 @@
         "v0.2.0 release review"
       ],
       "approvedOn": "2026-08-21",
-      "digest": "sha256:454df28fbacc73aa89bf352a6260a5ed8278669985a147b4b8889cf3025a956e"
+      "digest": "sha256:42427c89d275cdcf36a5b266f10648c11ae2ecc29586c9f3581e3878ad6cc27b",
+      "provenance": "bootstrap",
+      "reviewedOn": "2026-08-21"
     },
     "basal-body-temperature": {
       "status": "approved",
@@ -18,7 +28,9 @@
         "v0.2.0 release review"
       ],
       "approvedOn": "2026-08-21",
-      "digest": "sha256:4cedb6fb0db61290937a1e1d48d257744d787f5b33859e2d8198f17223574447"
+      "digest": "sha256:fe28a111daedd120132ce72f8b074dc5a207437ba69ac7f915aafdffd1b50090",
+      "provenance": "bootstrap",
+      "reviewedOn": "2026-08-21"
     },
     "blood-pressure": {
       "status": "approved",
@@ -26,7 +38,9 @@
         "v0.2.0 release review"
       ],
       "approvedOn": "2026-08-21",
-      "digest": "sha256:b5533b6b750ef4bfc0e9ed2b9ba3a02d713569b2fde0e7eef1923679822546b6"
+      "digest": "sha256:ce8119ec086c1702f7851421d75a8cd4e776a59234ff16e5077919970b2fd8a0",
+      "provenance": "bootstrap",
+      "reviewedOn": "2026-08-21"
     },
     "body-height": {
       "status": "approved",
@@ -34,7 +48,9 @@
         "v0.2.0 release review"
       ],
       "approvedOn": "2026-08-21",
-      "digest": "sha256:a97f28bd6a3ad346468a1c4a332c7b1201ede7f35928c431d2ae7606d8deba40"
+      "digest": "sha256:8affc0996bafe7ebd767aa828306f60f4af27cf66859258bd29a3a4ed1d82c9b",
+      "provenance": "bootstrap",
+      "reviewedOn": "2026-08-21"
     },
     "body-temperature": {
       "status": "approved",
@@ -42,7 +58,9 @@
         "v0.2.0 release review"
       ],
       "approvedOn": "2026-08-21",
-      "digest": "sha256:d105d9638187ffa9d07eeefae56d645429924cc3eae52b48930528d7488efd6f"
+      "digest": "sha256:4e4e42fd49eb52fef2c9154322a6887826bc9fe624f7c4e6e5c429993ca0fcbd",
+      "provenance": "bootstrap",
+      "reviewedOn": "2026-08-21"
     },
     "body-weight": {
       "status": "approved",
@@ -50,7 +68,9 @@
         "v0.2.0 release review"
       ],
       "approvedOn": "2026-08-21",
-      "digest": "sha256:f29863f194542af88080bafa8666677506d6632a22c255b2f1283704cbf659f3"
+      "digest": "sha256:392c955f3d7d17a669a2ec0dab5c773e2c9fa32b535c402c9f8fc163c8ee63b2",
+      "provenance": "bootstrap",
+      "reviewedOn": "2026-08-21"
     },
     "distance": {
       "status": "approved",
@@ -58,7 +78,9 @@
         "v0.2.0 release review"
       ],
       "approvedOn": "2026-08-21",
-      "digest": "sha256:bcf91532a367b18b95e7f888098212678ed5c19e4c51197da2fef45822891188"
+      "digest": "sha256:210a962467fd87e690b273433b5de09dac03229b8eaf27206a3b73013f631484",
+      "provenance": "bootstrap",
+      "reviewedOn": "2026-08-21"
     },
     "heart-rate": {
       "status": "approved",
@@ -66,7 +88,9 @@
         "v0.2.0 release review"
       ],
       "approvedOn": "2026-08-21",
-      "digest": "sha256:38b865f7348473c55af9522c8125659fd87679828499f24d32c5ee076348d822"
+      "digest": "sha256:6638a130e87e6fc546291361a91713baf92a0b8131e47b2396417d471ce2cec4",
+      "provenance": "bootstrap",
+      "reviewedOn": "2026-08-21"
     },
     "oxygen-saturation": {
       "status": "approved",
@@ -74,7 +98,9 @@
         "v0.2.0 release review"
       ],
       "approvedOn": "2026-08-21",
-      "digest": "sha256:7db207e65a42b01d42b28aaff35f233256066cd47196139625bc4e54a1acfdde"
+      "digest": "sha256:ae2e07434062d94b3bc969adad2446eb2e268aa28686a4b326525dfbd7495ce9",
+      "provenance": "bootstrap",
+      "reviewedOn": "2026-08-21"
     },
     "respiratory-rate": {
       "status": "approved",
@@ -82,7 +108,9 @@
         "v0.2.0 release review"
       ],
       "approvedOn": "2026-08-21",
-      "digest": "sha256:3772d25f985da40fc96a057e02e627fe5d5e0c335583d58786ef518187060c5f"
+      "digest": "sha256:107d7f39eea9ab83ab59f30f87fab5dfa8159ec9cd15b11bbfb96f2fe53a019a",
+      "provenance": "bootstrap",
+      "reviewedOn": "2026-08-21"
     },
     "sleep-duration": {
       "status": "approved",
@@ -90,7 +118,9 @@
         "v0.2.0 release review"
       ],
       "approvedOn": "2026-08-21",
-      "digest": "sha256:12121696913fee94e99ce71b4cb19a1e99877611b39dd23b9fafe7682ee2bd24"
+      "digest": "sha256:0e05377ada45a5814b0d835f3ea230dbc020bab4025bb5cf180e4907afe2c831",
+      "provenance": "bootstrap",
+      "reviewedOn": "2026-08-21"
     },
     "sleep-stage": {
       "status": "approved",
@@ -98,7 +128,9 @@
         "v0.2.0 release review"
       ],
       "approvedOn": "2026-08-21",
-      "digest": "sha256:d9a88fed05c49c2fb7b001c89e105f029de008d840cab0e7bd633d6e36cbc746"
+      "digest": "sha256:ea08a863ed5e7a24906ddab8350c579262cc75a3adb1196e42478108a3a8facf",
+      "provenance": "bootstrap",
+      "reviewedOn": "2026-08-21"
     },
     "step-count": {
       "status": "approved",
@@ -106,7 +138,9 @@
         "v0.2.0 release review"
       ],
       "approvedOn": "2026-08-21",
-      "digest": "sha256:eb2b24d118f59bbc9862b9828bdc24cf9e70ea9c9494c366478dc07c2b366522"
+      "digest": "sha256:f38dbea18ad18d51e6a708af3affba98b13df963c2d31495fd95504a8a29ecde",
+      "provenance": "bootstrap",
+      "reviewedOn": "2026-08-21"
     }
   }
 }

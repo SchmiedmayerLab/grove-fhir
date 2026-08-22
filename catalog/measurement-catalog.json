@@ -70,7 +70,9 @@
       "description": "Activity-related energy expenditure, excluding basal energy, during an exact effective Period and normalized to UCUM kilocalories.",
       "code": {
         "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
-        "code": "active-energy-burned"
+        "code": "active-energy-burned",
+        "display": "Active energy burned",
+        "definition": "Energy expended through activity, excluding basal energy, during the exact Observation effective Period."
       },
       "valueKind": "quantity",
       "quantity": {
@@ -104,7 +106,9 @@
       "description": "A source-neutral basal body temperature recorded at physiologic rest and normalized to UCUM degrees Celsius. It is not the general body-temperature vital sign.",
       "code": {
         "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
-        "code": "basal-body-temperature"
+        "code": "basal-body-temperature",
+        "display": "Basal body temperature",
+        "definition": "Body temperature recorded at physiologic rest for fertility-awareness or cycle-tracking use; it is distinct from a general body-temperature vital sign."
       },
       "valueKind": "quantity",
       "quantity": {
@@ -482,7 +486,9 @@
       "description": "A source-neutral sleep-stage classification for one exact interval. A session summary links its ordered, non-overlapping stage Observations through hasMember.",
       "code": {
         "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
-        "code": "sleep-stage"
+        "code": "sleep-stage",
+        "display": "Sleep stage",
+        "definition": "The classification assigned to an exact interval within a sleep session."
       },
       "valueKind": "codeableConcept",
       "quantity": null,
@@ -519,7 +525,9 @@
       "description": "The number of steps recorded during an exact effective Period.",
       "code": {
         "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
-        "code": "step-count-total"
+        "code": "step-count-total",
+        "display": "Step count total",
+        "definition": "The total number of steps attributed to the exact Observation effective Period."
       },
       "valueKind": "quantity",
       "quantity": {

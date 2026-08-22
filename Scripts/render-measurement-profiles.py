@@ -34,19 +34,76 @@ from pathlib import Path
 
 REPOSITORY_ROOT = Path(__file__).resolve().parent.parent
 
+OWNERS = {
+    "mobile": {
+        "parent": "GroveMobileObservation",
+        "generated": "mobile/input/fsh/generated-measurement-profiles.fsh",
+        "measurementSystemTail": "/CodeSystem/grove-mobile-measurement",
+        "codeSystem": "GroveMobileMeasurementCS",
+        "valueSet": "GroveMobileMeasurementVS",
+        "terminologyId": "grove-mobile-measurement",
+        "terminologyTitle": "Grove Mobile Measurement",
+        "codeSystemDescription": (
+            "Measurement concepts defined by the Grove Mobile contract when an "
+            "established code would not faithfully represent the exchanged result."
+        ),
+        "valueSetDescription": (
+            "Measurement concepts defined by Grove Mobile for use in its focused "
+            "domain profiles."
+        ),
+    },
+    "healthkit": {
+        "parent": "HealthKitObservation",
+        "generated": "healthkit/input/fsh/generated-measurement-profiles.fsh",
+        "measurementSystemTail": "/CodeSystem/healthkit-measurement",
+        "codeSystem": "HealthKitMeasurementCS",
+        "valueSet": "HealthKitMeasurementVS",
+        "terminologyId": "healthkit-measurement",
+        "terminologyTitle": "HealthKit Measurement",
+        "codeSystemDescription": (
+            "Measurement concepts defined by the HealthKit adapter for "
+            "platform-exclusive results no established code represents faithfully."
+        ),
+        "valueSetDescription": (
+            "Measurement concepts defined by the HealthKit adapter for its "
+            "platform-exclusive profiles."
+        ),
+    },
+    "health-connect": {
+        "parent": "HealthConnectObservation",
+        "generated": "health-connect/input/fsh/generated-measurement-profiles.fsh",
+        "measurementSystemTail": "/CodeSystem/health-connect-measurement",
+        "codeSystem": "HealthConnectMeasurementCS",
+        "valueSet": "HealthConnectMeasurementVS",
+        "terminologyId": "health-connect-measurement",
+        "terminologyTitle": "Health Connect Measurement",
+        "codeSystemDescription": (
+            "Measurement concepts defined by the Health Connect adapter for "
+            "platform-exclusive results no established code represents faithfully."
+        ),
+        "valueSetDescription": (
+            "Measurement concepts defined by the Health Connect adapter for its "
+            "platform-exclusive profiles."
+        ),
+    },
+}
+
 
 class Layout:
     """The repo-relative inputs and outputs, bound to one root."""
 
     def __init__(self, root: Path) -> None:
+        self.root = root
         self.catalog = root / "catalog/measurement-catalog.json"
         self.reviews = root / "mobile/input/data/terminology-reviews.json"
         self.aliases = root / "mobile/input/fsh/aliases.fsh"
         self.hand_profiles = root / "mobile/input/fsh/profiles.fsh"
         self.generated = root / "mobile/input/fsh/generated-measurement-profiles.fsh"
 
+    def generated_for(self, owner: str) -> Path:
+        return self.root / OWNERS[owner]["generated"]
+
 LOINC = "http://loinc.org"
-GROVE_MEASUREMENT_CS_TAIL = "/CodeSystem/grove-mobile-measurement"
 
 HEADER = """// GENERATED FILE. Edit catalog/measurement-catalog.json and run
 // Scripts/render-measurement-profiles.py; do not edit by hand.
@@ -59,16 +116,26 @@ HEADER = """// GENERATED FILE. Edit catalog/measurement-catalog.json and run
 
 """
 
+DIGEST_SCOPE = "grove-terminology-projection-2"
 PROJECTION_KEYS = (
     "code",
     "components",
+    "description",
     "effective",
     "hasMember",
+    "obeys",
     "quantity",
     "standardProfile",
+    "valueKind",
     "valueSet",
     "resultCodeSystem",
     "allowedValues",
+)
+GROUND_TRUTH_FILES = (
+    "catalog/terminology/loinc-concepts.json",
+    "catalog/terminology/ucum-units.json",
+    "mobile/input/fsh/terminology.fsh",
+    "mobile/input/fsh/profiles.fsh",
 )
 
 
@@ -119,10 +186,11 @@ def quantity_rules(prefix: str, quantity: dict, strict: bool) -> list[str]:
 
 
 def render_profile(measurement: dict, aliases: dict[str, str], by_id: dict) -> str:
+    owner = OWNERS[measurement.get("owner", "mobile")]
     name = fsh_name(measurement["profile"])
     lines = [
         f"Profile: {name}",
-        "Parent: GroveMobileObservation",
+        f"Parent: {owner['parent']}",
         f"Id: {measurement['profile']}",
         f'Title: "{measurement["title"]}"',
         f'Description: "{measurement["description"]}"',
@@ -139,9 +207,9 @@ def render_profile(measurement: dict, aliases: dict[str, str], by_id: dict) -> s
     code = measurement["code"]
     if code["system"] == LOINC:
         lines.append(f"* code = $loinc#{code['code']}")
-    elif code["system"].endswith(GROVE_MEASUREMENT_CS_TAIL):
-        lines.append(f"* code = GroveMobileMeasurementCS#{code['code']}")
-        lines.append("* code from GroveMobileMeasurementVS (required)")
+    elif code["system"].endswith(owner["measurementSystemTail"]):
+        lines.append(f"* code = {owner['codeSystem']}#{code['code']}")
+        lines.append(f"* code from {owner['valueSet']} (required)")
     else:
         raise SystemExit(f"{measurement['id']}: unsupported code system {code['system']}")
     if measurement["effective"] == "Period":
@@ -189,6 +257,36 @@ def render_profile(measurement: dict, aliases: dict[str, str], by_id: dict) -> s
     return "\n".join(lines) + "\n"
 
 
+def render_owner_terminology(owner_key: str, measurements: list[dict]) -> str | None:
+    owner = OWNERS[owner_key]
+    concepts = [
+        m["code"]
+        for m in measurements
+        if m["code"]["system"].endswith(owner["measurementSystemTail"])
+    ]
+    if not concepts:
+        return None
+    lines = [
+        f"CodeSystem: {owner['codeSystem']}",
+        f"Id: {owner['terminologyId']}",
+        f'Title: "{owner["terminologyTitle"]}"',
+        f'Description: "{owner["codeSystemDescription"]}"',
+        "* ^experimental = false",
+        "* ^caseSensitive = true",
+        "* ^content = #complete",
+    ]
+    for code in concepts:
+        lines.append(f'* #{code["code"]} "{code["display"]}" "{code["definition"]}"')
+    lines.append("")
+    lines.append(f"ValueSet: {owner['valueSet']}")
+    lines.append(f"Id: {owner['terminologyId']}")
+    lines.append(f'Title: "{owner["terminologyTitle"]}"')
+    lines.append(f'Description: "{owner["valueSetDescription"]}"')
+    lines.append("* ^experimental = false")
+    lines.append(f"* include codes from system {owner['codeSystem']}")
+    return "\n".join(lines) + "\n"
+
+
 def hand_block(layout: Layout, name: str) -> str | None:
     text = layout.hand_profiles.read_text(encoding="utf-8")
     match = re.search(
@@ -205,8 +303,27 @@ def main() -> int:
     layout = Layout(arguments.root.resolve())
 
     catalog = json.loads(layout.catalog.read_text(encoding="utf-8"))
-    reviews = json.loads(layout.reviews.read_text(encoding="utf-8"))["entries"]
+    review_file = json.loads(layout.reviews.read_text(encoding="utf-8"))
+    reviews = review_file["entries"]
     aliases = alias_map(layout)
+    if review_file.get("digestScope") != DIGEST_SCOPE:
+        print(
+            f"terminology reviews declare digest scope "
+            f"{review_file.get('digestScope')!r}, but this generator computes "
+            f"{DIGEST_SCOPE!r}; re-mint the review digests"
+        )
+        return 2
+    ground_truth = hashlib.sha256()
+    for name in GROUND_TRUTH_FILES:
+        ground_truth.update((layout.root / name).read_bytes())
+    expected_ground_truth = "sha256:" + ground_truth.hexdigest()
+    if review_file.get("groundTruthDigest") != expected_ground_truth:
+        print(
+            "the reviewed terminology ground truth changed "
+            f"(recorded {review_file.get('groundTruthDigest')}, current "
+            f"{expected_ground_truth}); re-review and re-mint"
+        )
+        return 2
     measurements = catalog["measurements"]
     by_id = {measurement["id"]: measurement for measurement in measurements}
 
@@ -228,17 +345,20 @@ def main() -> int:
             return 2
 
     problems = 0
-    emitted: list[str] = []
+    emitted: dict[str, list[str]] = {}
     for measurement in measurements:
         rendered = render_profile(measurement, aliases, by_id)
+        owner_key = measurement.get("owner", "mobile")
         if measurement.get("generation", {}).get("emit"):
-            if hand_block(layout, fsh_name(measurement["profile"])) is not None:
+            if owner_key == "mobile" and hand_block(
+                layout, fsh_name(measurement["profile"])
+            ) is not None:
                 print(
                     f"{measurement['id']}: emitted profile is still hand-written "
                     "in profiles.fsh; remove the hand block"
                 )
                 problems += 1
-            emitted.append(rendered)
+            emitted.setdefault(owner_key, []).append(rendered)
             continue
         hand = hand_block(layout, fsh_name(measurement["profile"]))
         if hand is None:
@@ -258,26 +378,38 @@ def main() -> int:
             )
             problems += 1
 
-    if emitted:
-        rendered_file = HEADER + "\n".join(emitted)
-        if arguments.check:
-            if (
-                not layout.generated.is_file()
-                or layout.generated.read_text(encoding="utf-8") != rendered_file
-            ):
-                print(
-                    f"{layout.generated} is stale; run "
-                    "Scripts/render-measurement-profiles.py"
-                )
+    for owner_key in OWNERS:
+        target = layout.generated_for(owner_key)
+        owner_measurements = [
+            m for m in measurements if m.get("owner", "mobile") == owner_key
+        ]
+        blocks: list[str] = []
+        terminology = render_owner_terminology(owner_key, owner_measurements)
+        if terminology and any(
+            m.get("generation", {}).get("emit") for m in owner_measurements
+        ):
+            blocks.append(terminology)
+        blocks.extend(emitted.get(owner_key, []))
+        if blocks:
+            rendered_file = HEADER + "\n".join(blocks)
+            if arguments.check:
+                if (
+                    not target.is_file()
+                    or target.read_text(encoding="utf-8") != rendered_file
+                ):
+                    print(
+                        f"{target} is stale; run "
+                        "Scripts/render-measurement-profiles.py"
+                    )
+                    problems += 1
+            else:
+                target.write_text(rendered_file, encoding="utf-8")
+        elif target.exists():
+            if arguments.check:
+                print(f"{target} exists but no measurement has generation.emit")
                 problems += 1
-        else:
-            layout.generated.write_text(rendered_file, encoding="utf-8")
-    elif layout.generated.exists():
-        if arguments.check:
-            print(f"{layout.generated} exists but no measurement has generation.emit")
-            problems += 1
-        else:
-            layout.generated.unlink()
+            else:
+                target.unlink()
 
     emit_count = sum(
         1 for measurement in measurements if measurement.get("generation", {}).get("emit")
