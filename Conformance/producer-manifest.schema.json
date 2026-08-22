@@ -28,7 +28,7 @@
         "properties": {
           "alias": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$"},
           "packageId": {"type": "string", "pattern": "^[a-z0-9.-]+$"},
-          "version": {"const": "0.2.0"}
+          "version": {"const": "0.3.0"}
         }
       }
     },

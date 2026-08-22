@@ -64,7 +64,7 @@ The source-type extension carries `withings/getmeas:9+10`, keeping the exact cat
 - `deviceid`, `attrib`, `category`, `created`, and `modified` are not consumed source elements; they are dropped, not smuggled into FHIR metadata.
 - an unpaired type 9 or type 10 emits no normalized Observation at all.
 - a type 11 heart rate in the same group would be its own `getmeas:11` source record and heart-rate output, never a third panel component.
-- `unmodeled` group members such as type 6 (fat ratio) or type 155 (vascular age) never yield a normalized Observation in v0.2.0.
+- `unmodeled` group members such as type 6 (fat ratio) or type 155 (vascular age) never yield a normalized Observation in v0.3.0.
 
 ### The emitted graph
 

@@ -8,14 +8,14 @@ A producer manifest binds emitted files to the Grove FHIR package identities and
 profiles they claim. During coordinated pull-request development, the producer should
 build or download packages from the selected Grove FHIR branch and keep its manifest
 version synchronized. An exact Git SHA or uploaded cross-repository artifact is not a
-requirement for version 0.2.0.
+requirement for version 0.3.0.
 
 ```sh
 python3 Scripts/validate-producer.py \
   --manifest path/to/grove-fhir-producer.json \
   --validator path/to/validator_cli.jar \
-  --package mobile=path/to/org.grovealliance.fhir.mobile-0.2.0.tgz \
-  --package healthkit=path/to/org.grovealliance.fhir.healthkit-0.2.0.tgz
+  --package mobile=path/to/org.grovealliance.fhir.mobile-0.3.0.tgz \
+  --package healthkit=path/to/org.grovealliance.fhir.healthkit-0.3.0.tgz
 ```
 
 The command verifies the manifest and package metadata, ensures each emitted resource
@@ -49,7 +49,7 @@ fixtures in their own CI; Grove FHIR still never executes their implementations.
 The structural conformance kit rejects graph and deterministic-identity failures
 without needing an implementation guide build. Profile terminology and cardinality
 failures are intentionally delegated to the official HL7 FHIR Validator with the
-exact `org.grovealliance.fhir.mobile#0.2.0` package. A producer test suite must run
+exact `org.grovealliance.fhir.mobile#0.3.0` package. A producer test suite must run
 both layers; structural-only success is not FHIR conformance.
 
 Every adapter output uses one of the closed direct-claim modes in

@@ -38,7 +38,7 @@ FHIR package tooling identifies this guide as:
 org.grovealliance.fhir.mobile#0.2.0
 ```
 
-The Grove canonical is an identifier, not a package-download promise. Version 0.2.0 is
+The Grove canonical is an identifier, not a package-download promise. Version 0.3.0 is
 not hosted at the canonical URLs and is not published in a FHIR package registry.
 Build the package from the reviewed repository revision, record that revision and the
 package checksum in producer CI, and install the resulting archive in an isolated FHIR

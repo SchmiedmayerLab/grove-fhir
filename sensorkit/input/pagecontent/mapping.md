@@ -18,12 +18,12 @@ The list below states the SensorKit specifics.
   waveform meaning is invented.
 - `platform-exclusive`: a reviewed SensorKit-only structured profile represents the source semantics because no exact shared or international profile does.
 - `unmodeled`: the stream is inventoried, but no shared or SensorKit-scoped profile models it and no output is admitted.
-- `deferred`: the stream is inventoried, but v0.2.0 publishes no admitted output
+- `deferred`: the stream is inventoried, but v0.3.0 publishes no admitted output
   contract.
-- `intentionally-unsupported`: v0.2.0 deliberately rejects an unsafe or misleading
+- `intentionally-unsupported`: v0.3.0 deliberately rejects an unsafe or misleading
   representation.
 
-Only rotation rate may use generic SampledData in v0.2.0, and only when its complete
+Only rotation rate may use generic SampledData in v0.3.0, and only when its complete
 three-axis values prove one exact uniform period. Accelerometer batch identity,
 high-frequency heart-rate confidence, and ECG guidance/per-voltage flags are not
 representable by bare SampledData without loss, so those streams remain native Recording

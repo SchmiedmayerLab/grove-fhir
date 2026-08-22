@@ -54,7 +54,7 @@ Records or normalized inputs and emits FHIR; it does not call Health Connect API
 
 ### Explicit non-goals
 
-Version 0.2.0 defines no receiver, authenticated intake, tenant partition, Firebase or cloud
+Version 0.3.0 defines no receiver, authenticated intake, tenant partition, Firebase or cloud
 storage model, Bundle byte or count limit, replay endpoint, transport acknowledgement
 schema, or downstream merge behavior. Those policies may wrap a conformant Bundle without
 changing its FHIR identities or profile claims.

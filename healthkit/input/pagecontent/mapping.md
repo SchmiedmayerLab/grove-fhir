@@ -150,7 +150,7 @@ the conversion literally consumed them as inputs.
 ### Allowlisted metadata
 
 Map source facts to standard FHIR fields and published extensions before retaining
-adapter-specific metadata. Version 0.2.0 permits one residual key:
+adapter-specific metadata. Version 0.3.0 permits one residual key:
 `HKMetadataKeyHeartRateMotionContext`. It is represented by the named
 `Observation.component:heartRateMotionContext` slice and bound to
 [HealthKit Heart Rate Motion Context](CodeSystem-healthkit-heart-rate-motion-context.html).

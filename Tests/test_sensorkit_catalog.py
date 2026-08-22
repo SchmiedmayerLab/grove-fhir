@@ -34,7 +34,7 @@ class SensorKitCatalogTests(unittest.TestCase):
     def test_release_package_and_profile_graph_are_exact(self) -> None:
         self.assertEqual(self.catalog["schemaVersion"], 1)
         self.assertEqual(self.catalog["fhirVersion"], "4.0.1")
-        self.assertEqual(self.catalog["version"], "0.2.0")
+        self.assertEqual(self.catalog["version"], "0.3.0")
         package = next(
             package for package in self.graph["packages"]
             if package["source"] == "sensorkit"
@@ -45,8 +45,8 @@ class SensorKitCatalogTests(unittest.TestCase):
             package["dependencies"],
             [
                 "hl7.terminology.r4#7.3.0",
-                "org.grovealliance.fhir.mobile#0.2.0",
-                "org.grovealliance.fhir.sensor#0.2.0",
+                "org.grovealliance.fhir.mobile#0.3.0",
+                "org.grovealliance.fhir.sensor#0.3.0",
             ],
         )
         self.assertEqual(

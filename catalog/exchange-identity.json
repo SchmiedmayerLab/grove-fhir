@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "version": "0.2.0",
+  "version": "0.3.0",
   "fhirVersion": "4.0.1",
   "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle",
   "entryIdentifierExtension": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-exchange-entry-identifier",

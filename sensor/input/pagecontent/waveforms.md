@@ -11,7 +11,7 @@ SPDX-License-Identifier: MIT
 `grove-sensor-sampled-data-observation` carries one uniformly sampled numeric series.
 `SampledData.period` is the strictly positive number of milliseconds between frames,
 and `dimensions` is the strictly positive number of interlaced decimal values in each
-frame. At least two complete frames are required. Version 0.2.0 admits direct numeric values only: `factor`, `lowerLimit`, and
+frame. At least two complete frames are required. Version 0.3.0 admits direct numeric values only: `factor`, `lowerLimit`, and
 `upperLimit` are absent, and `E`, `U`, `L`, and omitted-value tokens are not admitted.
 The data token count is an exact multiple of `dimensions`.
 

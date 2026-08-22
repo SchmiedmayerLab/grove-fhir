@@ -56,4 +56,4 @@ Continue with [Mapping](mapping.html) for field-by-field rules, or open
 [Artifacts](artifacts.html) for every profile, naming system, terminology resource, and
 example in the package. [Terminology provenance](terminology-provenance.html) records
 the SDK baseline, selection method, source-file hashes, ownership, and publication scope
-for the HealthKit names retained by version 0.2.0.
+for the HealthKit names retained by version 0.3.0.

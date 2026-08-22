@@ -52,7 +52,7 @@
       "healthkit-source-type": {
         "content": "complete",
         "sourceTypeCount": 218,
-        "rationale": "Complete describes the closed set of runtime source-type identifiers frozen in catalog/healthkit-adapter.json for version 0.2.0 and verified against healthkit/input/data/healthkit-inventory.json; it does not copy Apple documentation prose or private SDK concepts.",
+        "rationale": "Complete describes the closed set of runtime source-type identifiers frozen in catalog/healthkit-adapter.json for version 0.3.0 and verified against healthkit/input/data/healthkit-inventory.json; it does not copy Apple documentation prose or private SDK concepts.",
         "derivedAggregateExclusion": "The sleep-duration session aggregate is a Grove-defined transformation contract, not a HealthKit source identifier, and is excluded from this CodeSystem."
       },
       "healthkit-metadata-key": {
@@ -83,7 +83,7 @@
   "thirdParty": {
     "owner": "Apple Inc.",
     "attribution": "HealthKit API identifiers and type names originate from Apple and are retained here to identify the platform concepts used by the interoperability mapping.",
-    "retainedTerminology": "The package retains the 218 public source-type identifiers in the closed version 0.2.0 catalog, the two allowlisted metadata keys (HKMetadataKeyHeartRateMotionContext and HKMetadataKeyAppleECGAlgorithmVersion), and the republished Apple case vocabularies for heart-rate motion context, sleep analysis, ECG classification, ECG symptoms status, symptom severity, and ECG algorithm version.",
+    "retainedTerminology": "The package retains the 218 public source-type identifiers in the closed version 0.3.0 catalog, the two allowlisted metadata keys (HKMetadataKeyHeartRateMotionContext and HKMetadataKeyAppleECGAlgorithmVersion), and the republished Apple case vocabularies for heart-rate motion context, sleep analysis, ECG classification, ECG symptoms status, symptom severity, and ECG algorithm version.",
     "descriptiveApiReferences": "The mapping narrative and identifier definitions also refer to HKObject.uuid, HKSource.bundleIdentifier, HKSourceRevision, HKDevice, HKMetadataKeyWasUserEntered, and source fields required by admitted mappings. These references describe source fields and dispatch rules; they are not copied documentation prose.",
     "redistributionBasis": "These API identifiers and case names are reproduced only as interoperability identifiers needed to state the source mapping. The package does not reproduce Apple documentation prose, SDK implementation, or a general HealthKit vocabulary.",
     "excludedMaterial": "No HealthKit SDK implementation, private API, or documentation prose is copied into the package.",

@@ -1526,7 +1526,7 @@ def validate_sampled_data(
     effective: Any,
     label: str,
 ) -> None:
-    """Enforce the exact v0.2 uniform-frame and interval semantics."""
+    """Enforce the exact v0.3 uniform-frame and interval semantics."""
     if not isinstance(sampled, dict):
         raise ProducerValidationError(f"{label} must be SampledData")
     for forbidden in ("factor", "lowerLimit", "upperLimit"):
@@ -2174,7 +2174,7 @@ def validate_manifest(path: Path) -> tuple[dict[str, Any], list[Path]]:
             raise ProducerValidationError(f"invalid package alias: {alias!r}")
         if not isinstance(package_id, str) or not PACKAGE_ID.fullmatch(package_id):
             raise ProducerValidationError(f"invalid package id: {package_id!r}")
-        if package["version"] != "0.2.0":
+        if package["version"] != "0.3.0":
             raise ProducerValidationError("Grove FHIR producer manifests must use package version 0.2.0")
         if alias in aliases or package_id in package_ids:
             raise ProducerValidationError("package aliases and ids must be unique")

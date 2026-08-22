@@ -25,7 +25,7 @@ code system description, read by resolving every declared constant inside an iOS
 baseline and verified against `healthkit/input/data/healthkit-inventory.json`. `content` is therefore
 `complete` for that baseline. Moving to a later SDK baseline is a version change, not an in-place edit.
 
-Whether the v0.2 adapter admits output for a source type is the `status` column of the
+Whether the v0.3 adapter admits output for a source type is the `status` column of the
 [status matrix](status-matrix.html), and never appears in terminology.
 
 Each property is defined as a concept in [healthkit-concept-property](CodeSystem-healthkit-concept-property.html), which is what `CodeSystem.property.uri` names.

@@ -14,7 +14,7 @@ description: >-
   Source-neutral FHIR R4 contracts for sampled sensor time series, ECG waveforms,
   and externally encoded sensor recordings.
 status: draft
-version: 0.2.0
+version: 0.3.0
 fhirVersion: 4.0.1
 copyrightYear: 2026+
 releaseLabel: ci-build
@@ -26,7 +26,7 @@ license: MIT
 dependencies:
   hl7.terminology.r4: 7.3.0
   org.grovealliance.fhir.mobile:
-    version: 0.2.0
+    version: 0.3.0
     uri: https://grovealliance.org/fhir/mobile/ImplementationGuide/org.grovealliance.fhir.mobile
 
 parameters:

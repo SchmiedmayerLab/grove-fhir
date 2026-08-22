@@ -3,13 +3,13 @@
   "fhirVersion": "4.0.1",
   "producer": {
     "name": "Grove FHIR example producer",
-    "version": "0.2.0"
+    "version": "0.3.0"
   },
   "packages": [
     {
       "alias": "mobile",
       "packageId": "org.grovealliance.fhir.mobile",
-      "version": "0.2.0"
+      "version": "0.3.0"
     }
   ],
   "resources": [

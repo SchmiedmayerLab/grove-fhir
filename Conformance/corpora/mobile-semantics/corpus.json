@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "fhirVersion": "4.0.1",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "catalog": "catalog/measurement-catalog.json",
   "purpose": "Implementation-neutral normalized clinical projections used by Swift, Kotlin, and TypeScript producer CI. These vectors contain no source business identity and execute no producer implementation.",
   "comparisonRule": "Compare exactly profile, code, effective, and result after removing adapter lineage/context. Every Mobile scalar or aggregate effective endpoint is first rounded to the nearest millisecond with ties to even, then serialized with the caller/source numeric UTC offset when available; Sensor and ECG SampledData timing is excluded. Parse offset-bearing FHIR endpoints without precision loss, require the emitted endpoint already to be millisecond-canonical, and normalize equal instants to the vector representation. Compare the remaining projection using RFC 8785/JCS JSON. Adapter context is admitted only by the referenced closed sourceContextRules and is not part of the source-neutral clinical projection.",
@@ -2260,7 +2260,7 @@
       },
       "edgeRules": [
         "Duration and effective Period are both required and must describe the same admitted source summary semantics.",
-        "HealthKit has no admitted v0.2.0 aggregate rule and must not synthesize this projection."
+        "HealthKit has no admitted v0.3.0 aggregate rule and must not synthesize this projection."
       ],
       "admittedSourceContext": {
         "health-connect": "health-connect.sleep-duration",

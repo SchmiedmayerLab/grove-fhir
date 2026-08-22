@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "fhirVersion": "4.0.1",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "packageId": "org.grovealliance.fhir.sensorkit",
   "canonical": "https://grovealliance.org/fhir/sensorkit",
   "statusVocabulary": [
@@ -13,12 +13,12 @@
     "intentionally-unsupported"
   ],
   "statusDefinitions": {
-    "supported": "Version 0.2.0 defines a lossless structured mapping to the listed source-neutral Sensor profile plus the SensorKit adapter profile. A row may require the listed linked native Recording Document when exact source fields cannot be carried in the structured projection alone.",
-    "mapped-standard": "Version 0.2.0 admits the stream as the listed source-neutral Sensor Recording Document and does not invent a structured scalar or waveform meaning.",
-    "platform-exclusive": "Version 0.2.0 defines the listed platform-exclusive SensorKit structured profile because no exact source-neutral or international profile exists.",
+    "supported": "Version 0.3.0 defines a lossless structured mapping to the listed source-neutral Sensor profile plus the SensorKit adapter profile. A row may require the listed linked native Recording Document when exact source fields cannot be carried in the structured projection alone.",
+    "mapped-standard": "Version 0.3.0 admits the stream as the listed source-neutral Sensor Recording Document and does not invent a structured scalar or waveform meaning.",
+    "platform-exclusive": "Version 0.3.0 defines the listed platform-exclusive SensorKit structured profile because no exact source-neutral or international profile exists.",
     "unmodeled": "The platform stream is inventoried, but no shared or SensorKit-scoped profile models it and no output is admitted.",
-    "deferred": "The platform stream is inventoried, but version 0.2.0 publishes no admitted output contract.",
-    "intentionally-unsupported": "Version 0.2.0 deliberately refuses the stream because any available representation would create a misleading or unsafe meaning."
+    "deferred": "The platform stream is inventoried, but version 0.3.0 publishes no admitted output contract.",
+    "intentionally-unsupported": "Version 0.3.0 deliberately refuses the stream because any available representation would create a misleading or unsafe meaning."
   },
   "sourceEvidence": {
     "platform": "Apple SensorKit",
@@ -31,10 +31,10 @@
     "accessed": "2026-08-20",
     "appleSensorInventory": "https://developer.apple.com/documentation/sensorkit/srsensor",
     "appleFrameworkDocumentation": "https://developer.apple.com/documentation/sensorkit",
-    "scope": "The exact 22 public Apple SRSensor symbols frozen by the v0.2.0 catalog."
+    "scope": "The exact 22 public Apple SRSensor symbols frozen by the v0.3.0 catalog."
   },
   "inventoryScopes": {
-    "catalog-baseline": "One of the 20 platform symbols in the initial closed v0.2.0 catalog baseline.",
+    "catalog-baseline": "One of the 20 platform symbols in the initial closed v0.3.0 catalog baseline.",
     "stable-addition": "A stable platform symbol added to complete the stated SDK baseline."
   },
   "profileClaims": {
@@ -160,7 +160,7 @@
       "minimumIOS": "26.0",
       "scope": "stable-addition",
       "status": "deferred",
-      "reason": "Version 0.2.0 publishes no reviewed output contract for this stable platform symbol."
+      "reason": "Version 0.3.0 publishes no reviewed output contract for this stable platform symbol."
     },
     {
       "sourceToken": "SRSensor.ambientLightSensor",
@@ -174,7 +174,7 @@
       "status": "mapped-standard",
       "structured": {
         "status": "deferred",
-        "reason": "The source contains heterogeneous light fields for which version 0.2.0 does not publish a lossless component profile."
+        "reason": "The source contains heterogeneous light fields for which version 0.3.0 does not publish a lossless component profile."
       },
       "raw": {
         "status": "mapped-standard",
@@ -317,7 +317,7 @@
       "status": "mapped-standard",
       "structured": {
         "status": "deferred",
-        "reason": "Version 0.2.0 publishes no reviewed structured profile for the heterogeneous face metrics."
+        "reason": "Version 0.3.0 publishes no reviewed structured profile for the heterogeneous face metrics."
       },
       "raw": {
         "status": "mapped-standard",
@@ -438,7 +438,7 @@
       "status": "mapped-standard",
       "structured": {
         "status": "deferred",
-        "reason": "Media interactions do not have a reviewed source-neutral clinical Observation representation in version 0.2.0."
+        "reason": "Media interactions do not have a reviewed source-neutral clinical Observation representation in version 0.3.0."
       },
       "raw": {
         "status": "mapped-standard",
@@ -754,7 +754,7 @@
       "status": "mapped-standard",
       "structured": {
         "status": "deferred",
-        "reason": "Speech metrics have no reviewed source-neutral clinical Observation representation in version 0.2.0."
+        "reason": "Speech metrics have no reviewed source-neutral clinical Observation representation in version 0.3.0."
       },
       "raw": {
         "status": "mapped-standard",
@@ -857,7 +857,7 @@
       "status": "mapped-standard",
       "structured": {
         "status": "deferred",
-        "reason": "Speech metrics have no reviewed source-neutral clinical Observation representation in version 0.2.0."
+        "reason": "Speech metrics have no reviewed source-neutral clinical Observation representation in version 0.3.0."
       },
       "raw": {
         "status": "mapped-standard",

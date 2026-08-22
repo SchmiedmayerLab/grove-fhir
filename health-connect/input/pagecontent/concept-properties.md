@@ -22,7 +22,7 @@ artifact named in the code system description, excluding the abstract supertypes
 `content` is therefore `complete` for that artifact version. Moving to a later artifact is a version
 change, not an in-place edit.
 
-Whether the v0.2 adapter admits output for a record type is the `status` column of the
+Whether the v0.3 adapter admits output for a record type is the `status` column of the
 [status matrix](status-matrix.html), and never appears in terminology.
 
 Each property is defined as a concept in [health-connect-concept-property](CodeSystem-health-connect-concept-property.html), which is what `CodeSystem.property.uri` names.

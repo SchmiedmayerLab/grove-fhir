@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "fhirVersion": "4.0.1",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "source": {
     "platform": "Apple HealthKit",
     "sdkBaseline": {
@@ -49,12 +49,12 @@
   },
   "conversionProvenanceProfile": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-conversion-provenance",
   "statusVocabulary": {
-    "supported": "The 0.2.0 HealthKit adapter defines and validates emitted FHIR output.",
+    "supported": "The 0.3.0 HealthKit adapter defines and validates emitted FHIR output.",
     "mapped-standard": "The source is represented by another exact Grove or authoritative standard package rather than a Mobile measurement profile.",
-    "platform-exclusive": "The 0.2.0 adapter defines output through a platform-exclusive HealthKit profile whose meaning remains HealthKit-specific.",
+    "platform-exclusive": "The 0.3.0 adapter defines output through a platform-exclusive HealthKit profile whose meaning remains HealthKit-specific.",
     "unmodeled": "The source type is inventoried, but no shared or HealthKit-scoped profile models it and no output is admitted.",
     "deferred": "No FHIR output for this source type is admitted by the 0.2.0 adapter.",
-    "intentionally-unsupported": "The 0.2.0 contract explicitly rejects this source meaning rather than approximating it."
+    "intentionally-unsupported": "The 0.3.0 contract explicitly rejects this source meaning rather than approximating it."
   },
   "standardAdapterClaims": {
     "body-mass-index": {
@@ -203,7 +203,7 @@
       "profiles": [
         "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-sleep-duration"
       ],
-      "requirement": "This is not a HealthKit platform source identifier. Version 0.2.0 does not define the session-boundary aggregation contract; individual admitted samples map only to sleep stage."
+      "requirement": "This is not a HealthKit platform source identifier. Version 0.3.0 does not define the session-boundary aggregation contract; individual admitted samples map only to sleep stage."
     }
   ],
   "rows": [
@@ -1226,7 +1226,7 @@
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
-      "requirement": "A HealthKit characteristic describes the subject rather than a measurement. Version 0.2.0 publishes no admitted output contract for characteristics."
+      "requirement": "A HealthKit characteristic describes the subject rather than a measurement. Version 0.3.0 publishes no admitted output contract for characteristics."
     },
     {
       "sourceTypeIdentifier": "HKCharacteristicTypeIdentifierBloodType",
@@ -1253,7 +1253,7 @@
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
-      "requirement": "A HealthKit characteristic describes the subject rather than a measurement. Version 0.2.0 publishes no admitted output contract for characteristics."
+      "requirement": "A HealthKit characteristic describes the subject rather than a measurement. Version 0.3.0 publishes no admitted output contract for characteristics."
     },
     {
       "sourceTypeIdentifier": "HKCharacteristicTypeIdentifierFitzpatrickSkinType",
