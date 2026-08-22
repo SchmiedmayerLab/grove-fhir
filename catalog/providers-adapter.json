@@ -80,7 +80,7 @@
     ]
   },
   "identity": {
-    "canonicalization": "RFC 8785/JCS serialization of arrays and Unicode scalar-value strings; UTF-8; non-ASCII unescaped; short JSON escapes for quote, reverse solidus, backspace, tab, line feed, form feed, and carriage return; other U+0000 through U+001F as lowercase \\u00xx; invalid Unicode surrogates rejected",
+    "canonicalization": "RFC 8785/JCS serialization of arrays and Unicode scalar-value strings; UTF-8; non-ASCII unescaped; short JSON escapes for quote, reverse solidus, backspace, tab, line feed, form feed, and carriage return; other U+0000 through U+001F as lowercase \\u00xx; invalid Unicode surrogates rejected; each source-record Identifier pair serializes as the canonical two-string array [system,value], pairs sort by unsigned lexicographic UTF-8 byte order of those serializations, and duplicate pairs are rejected",
     "digest": "SHA-256 over the UTF-8 preimage, lowercase hexadecimal, prefixed with v1:",
     "providerAccountIdentifier": {
       "requirement": "A complete deployment-scoped pseudonymous Identifier pair. It must be stable for the provider-account scope needed for deduplication.",
@@ -129,14 +129,14 @@
     "conversion": {
       "system": "https://grovealliance.org/fhir/providers/NamingSystem/provider-conversion-id",
       "preimage": [
-        "sortedSourceRecordIdentifiers",
+        "sortedSourceRecordIdentifiers flattened as system,value per pair in sorted pair order",
         "positiveEventSequence"
       ]
     },
     "exchange": {
       "system": "https://grovealliance.org/fhir/providers/NamingSystem/provider-exchange-id",
       "preimage": [
-        "sortedSourceRecordIdentifiers",
+        "sortedSourceRecordIdentifiers flattened as system,value per pair in sorted pair order",
         "positiveEventSequence"
       ]
     },
@@ -196,9 +196,43 @@
         ],
         "canonicalUtf8Hex": "5b226f757261222c2268747470733a2f2f70726f76696465722e6578616d706c652e6f72672f6163636f756e7473222c22636166c3a95c6e5c225c5c222c22736c656570222c2272c3a973756dc3a92d5c7530303031225d",
         "identifierValue": "v1:05890004d78c74e768503a2aa14e91a66c5f815b41937a2de626fd167d6c59de"
+      },
+      {
+        "role": "conversion",
+        "inputs": [
+          "https://grovealliance.org/fhir/providers/NamingSystem/provider-source-record-id",
+          "v1:335d6070863e13e73a8b1a1e7ca87f3517761dd157e5bd4e13824e06b5cb924c",
+          "1"
+        ],
+        "canonicalPreimage": "[\"https://grovealliance.org/fhir/providers/NamingSystem/provider-source-record-id\",\"v1:335d6070863e13e73a8b1a1e7ca87f3517761dd157e5bd4e13824e06b5cb924c\",\"1\"]",
+        "identifierValue": "v1:8e2bafe52854eecf1223dcc706c615348dfe26754f6bc816e479bc1ef22d3f8c"
+      },
+      {
+        "role": "exchange",
+        "inputs": [
+          "https://grovealliance.org/fhir/providers/NamingSystem/provider-source-record-id",
+          "v1:335d6070863e13e73a8b1a1e7ca87f3517761dd157e5bd4e13824e06b5cb924c",
+          "1"
+        ],
+        "canonicalPreimage": "[\"https://grovealliance.org/fhir/providers/NamingSystem/provider-source-record-id\",\"v1:335d6070863e13e73a8b1a1e7ca87f3517761dd157e5bd4e13824e06b5cb924c\",\"1\"]",
+        "identifierValue": "v1:8e2bafe52854eecf1223dcc706c615348dfe26754f6bc816e479bc1ef22d3f8c"
+      },
+      {
+        "role": "exchange",
+        "inputs": [
+          "https://grovealliance.org/fhir/providers/NamingSystem/provider-source-record-id",
+          "v1:c698f75a1901b494c9c5a2107a88708dccbd1d5556fc5c85f364c536164fa383",
+          "https://grovealliance.org/fhir/providers/NamingSystem/provider-source-record-id",
+          "v1:e9174b24826045a9d8bfb85888baea27526e626b5049f7c8d0cb6a1479c965d5",
+          "12"
+        ],
+        "canonicalPreimage": "[\"https://grovealliance.org/fhir/providers/NamingSystem/provider-source-record-id\",\"v1:c698f75a1901b494c9c5a2107a88708dccbd1d5556fc5c85f364c536164fa383\",\"https://grovealliance.org/fhir/providers/NamingSystem/provider-source-record-id\",\"v1:e9174b24826045a9d8bfb85888baea27526e626b5049f7c8d0cb6a1479c965d5\",\"12\"]",
+        "identifierValue": "v1:81c14fff4e338c12d112a93bee860056eaa0fa4dbacf9354c3eda9c97f675587"
       }
     ],
-    "resourceIdPolicy": "Resource.id is optional and repository-assigned; no provider-native key or digest is copied into Resource.id."
+    "resourceIdPolicy": "Resource.id is optional and repository-assigned; no provider-native key or digest is copied into Resource.id.",
+    "positiveEventSequence": "A durable positive event sequence written as a non-zero ASCII digit followed by zero or more ASCII digits; no sign, no leading zero, no other characters. A byte-identical retry reuses the sequence; changed content allocates a higher value.",
+    "singleConversionRule": "A conversion Provenance has exactly one source-record pair. When a Bundle carries exactly one conversion event, the exchange event is that conversion's emission and reuses its sequence, so the exchange identifier value equals the conversion identifier value byte for byte and only the NamingSystem distinguishes them."
   },
   "providers": [
     {

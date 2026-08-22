@@ -1521,6 +1521,73 @@ def validate_sensor_contract(resource: dict[str, Any], label: str) -> None:
             validate_recording_attachment(attachment, f"{label}.content[{index}].attachment")
 
 
+RECORDING_DOCUMENT_PROFILE_TAIL = "-recording-document"
+
+
+def validate_recording_format(resource: dict[str, Any], label: str) -> None:
+    """Require one registered payload format per recording content entry."""
+    if resource.get("resourceType") != "DocumentReference":
+        return
+    profiles = resource.get("meta", {}).get("profile", [])
+    if not isinstance(profiles, list) or not any(
+        isinstance(profile, str) and profile.endswith(RECORDING_DOCUMENT_PROFILE_TAIL)
+        for profile in profiles
+    ):
+        return
+    registry = read_json(CATALOG_ROOT / "format-registry.json")
+    formats = registry["formats"]
+    contents = resource.get("content", [])
+    if not isinstance(contents, list) or not contents:
+        raise ProducerValidationError(f"{label} recording document has no content")
+    declared_codes: list[str] = []
+    for index, content in enumerate(contents):
+        format_coding = content.get("format") if isinstance(content, dict) else None
+        if not isinstance(format_coding, dict):
+            raise ProducerValidationError(
+                f"{label} content[{index}] declares no registry payload format"
+            )
+        if format_coding.get("system") != registry["codeSystem"]:
+            raise ProducerValidationError(
+                f"{label} content[{index}] format system is not the Grove "
+                "recording-format registry"
+            )
+        code = format_coding.get("code")
+        entry = formats.get(code) if isinstance(code, str) else None
+        if entry is None:
+            raise ProducerValidationError(
+                f"{label} content[{index}] declares unregistered format {code!r}"
+            )
+        content_type = content.get("attachment", {}).get("contentType")
+        if content_type != entry["contentType"]:
+            raise ProducerValidationError(
+                f"{label} content[{index}] contentType {content_type!r} does not "
+                f"match registry format {code} ({entry['contentType']})"
+            )
+        declared_codes.append(code)
+
+    sensorkit = read_json(CATALOG_ROOT / "sensorkit-adapter.json")
+    extension_url = (
+        "https://grovealliance.org/fhir/sensorkit/StructureDefinition/"
+        "sensorkit-source-type"
+    )
+    source_codes = [
+        extension.get("valueCode")
+        for extension in resource.get("extension", [])
+        if isinstance(extension, dict) and extension.get("url") == extension_url
+    ]
+    if len(source_codes) == 1 and isinstance(source_codes[0], str):
+        rows = {entry["sourceTypeCode"]: entry for entry in sensorkit["entries"]}
+        row = rows.get(source_codes[0])
+        admitted = (row or {}).get("raw", {}).get("formats")
+        if isinstance(admitted, list):
+            for code in declared_codes:
+                if code not in admitted:
+                    raise ProducerValidationError(
+                        f"{label} declares format {code!r}, which the SensorKit "
+                        f"stream {source_codes[0]!r} does not admit"
+                    )
+
+
 def validate_resource_profile_claims(
     resource: dict[str, Any],
     label: str,
@@ -1540,6 +1607,7 @@ def validate_resource_profile_claims(
     validate_sensorkit_identity(resource, label)
     validate_sensorkit_ecg_contract(resource, label)
     validate_sensor_contract(resource, label)
+    validate_recording_format(resource, label)
 
 
 def validate_adapter_provenance_graph(
@@ -1639,6 +1707,71 @@ def validate_adapter_provenance_graph(
             )
 
 
+PROVIDER_CONVERSION_ID = (
+    "https://grovealliance.org/fhir/providers/NamingSystem/provider-conversion-id"
+)
+PROVIDER_EXCHANGE_ID = (
+    "https://grovealliance.org/fhir/providers/NamingSystem/provider-exchange-id"
+)
+PROVIDER_CONVERSION_PROVENANCE_PROFILE = (
+    "https://grovealliance.org/fhir/providers/StructureDefinition/"
+    "provider-conversion-provenance"
+)
+V1_DIGEST = re.compile(r"^v1:[0-9a-f]{64}$")
+
+
+def validate_provider_exchange_identity(
+    bundle: dict[str, Any],
+    entry_identities: list[tuple[str, str, dict[str, Any]]],
+    label: str,
+) -> None:
+    """Enforce the frozen provider conversion/exchange identity encoding."""
+    conversion_values: list[str] = []
+    for index, (system, value, entry_resource) in enumerate(entry_identities):
+        profiles = entry_resource.get("meta", {}).get("profile", [])
+        claims_profile = (
+            isinstance(profiles, list)
+            and PROVIDER_CONVERSION_PROVENANCE_PROFILE in profiles
+        )
+        if system == PROVIDER_CONVERSION_ID:
+            if not V1_DIGEST.match(value):
+                raise ProducerValidationError(
+                    f"{label} entry[{index}] provider conversion identifier is not "
+                    "a v1 digest"
+                )
+            if not claims_profile:
+                raise ProducerValidationError(
+                    f"{label} entry[{index}] uses the provider conversion "
+                    "namespace without claiming the provider conversion "
+                    "provenance profile"
+                )
+            conversion_values.append(value)
+        elif claims_profile:
+            raise ProducerValidationError(
+                f"{label} entry[{index}] claims the provider conversion "
+                "provenance profile without the provider conversion namespace"
+            )
+    if not conversion_values:
+        return
+    identifier = bundle.get("identifier", {})
+    if identifier.get("system") != PROVIDER_EXCHANGE_ID or not V1_DIGEST.match(
+        str(identifier.get("value"))
+    ):
+        raise ProducerValidationError(
+            f"{label} provider exchange Bundle.identifier must be a v1 digest in "
+            "the provider exchange namespace"
+        )
+    if len(conversion_values) != len(set(conversion_values)):
+        raise ProducerValidationError(
+            f"{label} repeats a provider conversion identifier value"
+        )
+    if len(conversion_values) == 1 and identifier.get("value") != conversion_values[0]:
+        raise ProducerValidationError(
+            f"{label} single-conversion exchange identifier must equal the "
+            "conversion identifier byte for byte"
+        )
+
+
 def validate_exchange_bundle(
     resource: dict[str, Any],
     label: str,
@@ -1656,6 +1789,7 @@ def validate_exchange_bundle(
     full_urls: set[str] = set()
     internal_logical_references: set[str] = set()
     entry_resources: list[dict[str, Any]] = []
+    entry_identities: list[tuple[str, str, dict[str, Any]]] = []
     resources_by_full_url: dict[str, dict[str, Any]] = {}
     for index, entry in enumerate(entries):
         if not isinstance(entry, dict) or not isinstance(entry.get("resource"), dict):
@@ -1682,6 +1816,7 @@ def validate_exchange_bundle(
             active_adapter_profiles,
         )
         entry_resources.append(entry_resource)
+        entry_identities.append((system, value, entry_resource))
         resources_by_full_url[expected] = entry_resource
         resource_type = entry_resource.get("resourceType")
         resource_id = entry_resource.get("id")
@@ -1694,6 +1829,7 @@ def validate_exchange_bundle(
             raise ProducerValidationError(f"{label} internal entry reference must use its UUID URN: {reference}")
 
     validate_adapter_provenance_graph(entry_resources, resources_by_full_url, label)
+    validate_provider_exchange_identity(resource, entry_identities, label)
 
     sensorkit_hybrid_profiles = {
         (

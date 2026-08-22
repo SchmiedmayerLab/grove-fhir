@@ -81,9 +81,9 @@ class GuideQATests(unittest.TestCase):
         self.assertEqual(
             source_content_types,
             {
-                "sensor": {"application/octet-stream"},
+                "sensor": {"application/json"},
                 "sensorkit": {"application/json"},
-                "providers": {"application/octet-stream"},
+                "providers": {"application/json"},
             },
         )
 
@@ -99,7 +99,7 @@ class GuideQATests(unittest.TestCase):
                     r"^\* urn:ietf:bcp:13#([^\s]+)", terminology, re.MULTILINE
                 )
             ),
-            {"application/json", "application/octet-stream"},
+            {"application/json", "application/octet-stream", "text/csv"},
         )
         self.assertEqual(
             set(

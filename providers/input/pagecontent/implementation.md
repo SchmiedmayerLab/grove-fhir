@@ -41,6 +41,18 @@ disclosure; URL access control, consent, minimization, retention, and deletion r
 deployment policy.
 
 `Resource.id` remains optional and repository-assigned. Provider-native keys and derived
+### Conversion and exchange identity
+
+The conversion and exchange identifier values are v1 digests over one flat RFC 8785/JCS string array.
+Collect the source-record Identifier pairs in scope: for a conversion identifier, the sole `entity.what` Identifier of that conversion Provenance; for an exchange identifier, every distinct source-record Identifier carried by the Bundle's provider conversion Provenance source entities.
+Serialize each pair as the canonical two-string array `["<system>","<value>"]` and sort the pairs by unsigned lexicographic UTF-8 byte order of those serializations; duplicate pairs are rejected.
+The preimage is the canonical serialization of one flat string array holding, in sorted pair order, each pair's system then value, followed by exactly one trailing `positiveEventSequence` element.
+`positiveEventSequence` is the durable positive event sequence of the identified event written as a non-zero ASCII digit followed by zero or more ASCII digits; no sign, no leading zero, no other characters.
+A byte-identical retry reuses the sequence; changed content allocates a higher value.
+When the Bundle carries exactly one conversion event, the exchange event is that conversion's emission and reuses its sequence; the exchange value then equals the conversion value byte for byte, and only the NamingSystem distinguishes them.
+The identifier value is `v1:` followed by the lowercase hexadecimal SHA-256 of the UTF-8 bytes of the preimage, encoded without a byte-order mark.
+The published conversion and exchange vectors in [`catalog/providers-adapter.json`](https://grovealliance.org/fhir/catalog/providers-adapter.json) are normative.
+
 digests are not copied into `Resource.id`. Implementations validate their own emitted
 resources with the generic producer kit under `Scripts/validate-producer.py`; this
 repository does not run consumer implementations.

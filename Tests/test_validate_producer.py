@@ -925,10 +925,15 @@ class ProducerConformanceTests(unittest.TestCase):
             "extension": [{"url": source_type_url, "valueCode": "device-usage"}],
             "content": [{
                 "attachment": {
-                    "data": "AQID",
-                    "size": 3,
-                    "hash": "cDeAcZjCKn0rCAc3HXY3eahP388=",
-                }
+                    "contentType": "application/json",
+                    "data": "e30=",
+                    "size": 2,
+                    "hash": "vyGp6PvFo4RvsFtPoIWeCReyIC8=",
+                },
+                "format": {
+                    "system": "https://grovealliance.org/fhir/sensor/CodeSystem/grove-recording-format",
+                    "code": "native-json-1",
+                },
             }],
             "context": {"related": [{
                 "reference": VALIDATOR.expected_entry_full_url(
