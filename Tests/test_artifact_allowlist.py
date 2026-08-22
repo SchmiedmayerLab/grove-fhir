@@ -382,6 +382,8 @@ class ArtifactAllowlistTests(unittest.TestCase):
                         for resource_type in ("CodeSystem", "ValueSet")
                         for identifier in (
                             "health-connect-meal-type",
+                            "health-connect-measurement",
+                            "health-connect-menstruation-period",
                             "health-connect-record-type",
                             "health-connect-relation-to-meal",
                             "health-connect-sleep-stage",

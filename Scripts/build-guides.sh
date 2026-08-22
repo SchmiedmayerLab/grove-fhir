@@ -19,7 +19,7 @@ if [[ -x "$REPOSITORY_ROOT/.build/jdk21/Contents/Home/bin/java" ]]; then
   JAVA_COMMAND="$REPOSITORY_ROOT/.build/jdk21/Contents/Home/bin/java"
 fi
 readonly JAVA_COMMAND
-readonly JAVA_MEMORY_ARGUMENTS=("-Xmx768m" "-XX:MaxMetaspaceSize=256m")
+readonly JAVA_MEMORY_ARGUMENTS=("-Xmx4g" "-XX:MaxMetaspaceSize=512m")
 
 cd "$REPOSITORY_ROOT"
 export PATH="$REPOSITORY_ROOT/node_modules/.bin:$PATH"

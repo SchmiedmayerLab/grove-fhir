@@ -56,7 +56,11 @@ class MobileSemanticVectorTests(unittest.TestCase):
         self.assertEqual(self.corpus["fhirVersion"], "4.0.1")
         self.assertEqual(self.corpus["version"], "0.2.0")
         self.assertIn("execute no producer implementation", self.corpus["purpose"])
-        expected = [measurement["id"] for measurement in self.catalog["measurements"]]
+        expected = [
+            measurement["id"]
+            for measurement in self.catalog["measurements"]
+            if measurement.get("owner", "mobile") == "mobile"
+        ]
         actual = [vector["id"] for vector in self.corpus["vectors"]]
         self.assertEqual(actual, expected)
         self.assertEqual(len(actual), len(set(actual)))
@@ -111,6 +115,8 @@ class MobileSemanticVectorTests(unittest.TestCase):
     def test_every_projection_matches_exact_catalog_semantics(self) -> None:
         vectors = {vector["id"]: vector for vector in self.corpus["vectors"]}
         for measurement in self.catalog["measurements"]:
+            if measurement.get("owner", "mobile") != "mobile":
+                continue
             vector = vectors[measurement["id"]]
             self.assertEqual(
                 set(vector),
@@ -168,7 +174,6 @@ class MobileSemanticVectorTests(unittest.TestCase):
                     self.assertEqual(actual["quantityCode"], expected["quantity"]["code"])
                     self.assertEqual(actual["unit"], expected["quantity"]["unit"])
             else:
-                self.assertEqual(measurement["id"], "sleep-stage")
                 self.assertEqual(result["type"], "CodeableConcept")
                 self.assertEqual(result["system"], measurement["resultCodeSystem"])
                 self.assertIn(result["code"], measurement["allowedValues"])
@@ -185,8 +190,13 @@ class MobileSemanticVectorTests(unittest.TestCase):
             self.assertIsInstance(rule.get("required", []), list)
             self.assertIsInstance(rule.get("allowedAdditions", []), list)
 
+        mobile_measurements = [
+            measurement
+            for measurement in self.catalog["measurements"]
+            if measurement.get("owner", "mobile") == "mobile"
+        ]
         for measurement, vector in zip(
-            self.catalog["measurements"], self.corpus["vectors"], strict=True
+            mobile_measurements, self.corpus["vectors"], strict=True
         ):
             expected_sources = {
                 source

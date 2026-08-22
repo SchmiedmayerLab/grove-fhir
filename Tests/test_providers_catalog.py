@@ -65,11 +65,7 @@ class ProviderCatalogTests(unittest.TestCase):
         )
         self.assertEqual(
             set(package["profiles"]),
-            {
-                "provider-conversion-provenance",
-                "provider-observation",
-                "provider-recording-document",
-            },
+            {"provider-body-fat-mass", "provider-conversion-provenance", "provider-extracellular-water-mass", "provider-intracellular-water-mass", "provider-muscle-mass", "provider-observation", "provider-recording-document", "provider-sleeping-heart-rate-average"},
         )
         provenance = next(
             claim for claim in self.claims["adapterConversionProvenanceClaims"]
@@ -253,12 +249,13 @@ class ProviderCatalogTests(unittest.TestCase):
     def test_fail_closed_provider_boundaries_are_frozen(self) -> None:
         providers = {provider["id"]: provider for provider in self.catalog["providers"]}
         google = {row["token"]: row for row in providers["google-health-api"]["sourceTypes"]}
-        self.assertEqual(google["blood-glucose"]["status"], "deferred")
-        self.assertNotIn(
-            "measurementIds", google["blood-glucose"]["elements"][0]
+        self.assertEqual(google["blood-glucose"]["status"], "supported")
+        self.assertEqual(
+            google["blood-glucose"]["elements"][0]["measurementIds"],
+            ["blood-glucose-unspecified-specimen"],
         )
-        self.assertEqual(google["daily-oxygen-saturation"]["status"], "deferred")
-        self.assertEqual(google["daily-respiratory-rate"]["status"], "deferred")
+        self.assertEqual(google["daily-oxygen-saturation"]["status"], "supported")
+        self.assertEqual(google["daily-respiratory-rate"]["status"], "supported")
 
         withings = {row["token"]: row for row in providers["withings"]["sourceTypes"]}
         grouped = providers["withings"]["groupedMappings"]

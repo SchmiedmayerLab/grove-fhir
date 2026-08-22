@@ -151,9 +151,15 @@
       "token": "BasalMetabolicRateRecord",
       "title": "Basal Metabolic Rate",
       "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/BasalMetabolicRateRecord",
-      "status": "deferred",
+      "status": "supported",
       "context": [],
-      "outputs": []
+      "outputs": [
+        {
+          "measurement": "basal-metabolic-rate",
+          "cardinality": "0..*",
+          "onePer": "record"
+        }
+      ]
     },
     {
       "token": "BloodGlucoseRecord",
@@ -207,9 +213,15 @@
       "token": "BodyFatRecord",
       "title": "Body Fat",
       "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/BodyFatRecord",
-      "status": "deferred",
+      "status": "supported",
       "context": [],
-      "outputs": []
+      "outputs": [
+        {
+          "measurement": "body-fat-percentage",
+          "cardinality": "0..*",
+          "onePer": "record"
+        }
+      ]
     },
     {
       "token": "BodyTemperatureRecord",
@@ -230,33 +242,57 @@
       "token": "BodyWaterMassRecord",
       "title": "Body Water Mass",
       "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/BodyWaterMassRecord",
-      "status": "deferred",
+      "status": "supported",
       "context": [],
-      "outputs": []
+      "outputs": [
+        {
+          "measurement": "body-water-mass",
+          "cardinality": "0..*",
+          "onePer": "record"
+        }
+      ]
     },
     {
       "token": "BoneMassRecord",
       "title": "Bone Mass",
       "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/BoneMassRecord",
-      "status": "deferred",
+      "status": "supported",
       "context": [],
-      "outputs": []
+      "outputs": [
+        {
+          "measurement": "bone-mass",
+          "cardinality": "0..*",
+          "onePer": "record"
+        }
+      ]
     },
     {
       "token": "CervicalMucusRecord",
       "title": "Cervical Mucus",
       "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/CervicalMucusRecord",
-      "status": "deferred",
+      "status": "supported",
       "context": [],
-      "outputs": []
+      "outputs": [
+        {
+          "measurement": "cervical-mucus-quality",
+          "cardinality": "0..*",
+          "onePer": "record"
+        }
+      ]
     },
     {
       "token": "CyclingPedalingCadenceRecord",
       "title": "Cycling Pedaling Cadence",
       "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/CyclingPedalingCadenceRecord",
-      "status": "deferred",
+      "status": "supported",
       "context": [],
-      "outputs": []
+      "outputs": [
+        {
+          "measurement": "cycling-cadence",
+          "cardinality": "0..*",
+          "onePer": "record"
+        }
+      ]
     },
     {
       "token": "DistanceRecord",
@@ -275,25 +311,48 @@
       "token": "ElevationGainedRecord",
       "title": "Elevation Gained",
       "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/ElevationGainedRecord",
-      "status": "deferred",
+      "status": "supported",
       "context": [],
-      "outputs": []
+      "outputs": [
+        {
+          "measurement": "elevation-gained",
+          "cardinality": "0..*",
+          "onePer": "record"
+        }
+      ]
     },
     {
       "token": "ExerciseSessionRecord",
       "title": "Exercise Session",
       "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/ExerciseSessionRecord",
-      "status": "deferred",
+      "status": "supported",
       "context": [],
-      "outputs": []
+      "outputs": [
+        {
+          "measurement": "workout",
+          "cardinality": "0..*",
+          "onePer": "record"
+        },
+        {
+          "measurement": "workout-segment",
+          "cardinality": "0..*",
+          "onePer": "segment"
+        }
+      ]
     },
     {
       "token": "FloorsClimbedRecord",
       "title": "Floors Climbed",
       "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/FloorsClimbedRecord",
-      "status": "deferred",
+      "status": "supported",
       "context": [],
-      "outputs": []
+      "outputs": [
+        {
+          "measurement": "flights-climbed",
+          "cardinality": "0..*",
+          "onePer": "record"
+        }
+      ]
     },
     {
       "token": "HeartRateRecord",
@@ -313,9 +372,15 @@
       "token": "HeartRateVariabilityRmssdRecord",
       "title": "Heart Rate Variability RMSSD",
       "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/HeartRateVariabilityRmssdRecord",
-      "status": "deferred",
+      "status": "supported",
       "context": [],
-      "outputs": []
+      "outputs": [
+        {
+          "measurement": "heart-rate-variability-rmssd",
+          "cardinality": "0..*",
+          "onePer": "record"
+        }
+      ]
     },
     {
       "token": "HeightRecord",
@@ -334,65 +399,318 @@
       "token": "HydrationRecord",
       "title": "Hydration",
       "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/HydrationRecord",
-      "status": "deferred",
+      "status": "supported",
       "context": [],
-      "outputs": []
+      "outputs": [
+        {
+          "measurement": "fluid-intake",
+          "cardinality": "0..*",
+          "onePer": "record"
+        }
+      ]
     },
     {
       "token": "IntermenstrualBleedingRecord",
       "title": "Intermenstrual Bleeding",
       "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/IntermenstrualBleedingRecord",
-      "status": "deferred",
+      "status": "supported",
       "context": [],
-      "outputs": []
+      "outputs": [
+        {
+          "measurement": "intermenstrual-bleeding",
+          "cardinality": "0..*",
+          "onePer": "record"
+        }
+      ]
     },
     {
       "token": "LeanBodyMassRecord",
       "title": "Lean Body Mass",
       "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/LeanBodyMassRecord",
-      "status": "deferred",
+      "status": "supported",
       "context": [],
-      "outputs": []
+      "outputs": [
+        {
+          "measurement": "lean-body-mass",
+          "cardinality": "0..*",
+          "onePer": "record"
+        }
+      ]
     },
     {
       "token": "MenstruationFlowRecord",
       "title": "Menstruation Flow",
       "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/MenstruationFlowRecord",
-      "status": "deferred",
+      "status": "supported",
       "context": [],
-      "outputs": []
+      "outputs": [
+        {
+          "measurement": "menstruation-flow",
+          "cardinality": "0..*",
+          "onePer": "record"
+        }
+      ]
     },
     {
       "token": "MenstruationPeriodRecord",
       "title": "Menstruation Period",
       "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/MenstruationPeriodRecord",
-      "status": "deferred",
+      "status": "supported",
       "context": [],
-      "outputs": []
+      "outputs": [
+        {
+          "measurement": "menstruation-period",
+          "cardinality": "0..*",
+          "onePer": "record"
+        }
+      ]
     },
     {
       "token": "MindfulnessSessionRecord",
       "title": "Mindfulness Session",
       "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/MindfulnessSessionRecord",
-      "status": "deferred",
+      "status": "supported",
       "context": [],
-      "outputs": []
+      "outputs": [
+        {
+          "measurement": "mindfulness-session",
+          "cardinality": "0..*",
+          "onePer": "record"
+        }
+      ]
     },
     {
       "token": "NutritionRecord",
       "title": "Nutrition",
       "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/NutritionRecord",
-      "status": "deferred",
+      "status": "supported",
       "context": [],
-      "outputs": []
+      "outputs": [
+        {
+          "measurement": "dietary-biotin",
+          "cardinality": "0..*",
+          "onePer": "record"
+        },
+        {
+          "measurement": "dietary-caffeine",
+          "cardinality": "0..1",
+          "onePer": "record"
+        },
+        {
+          "measurement": "dietary-calcium",
+          "cardinality": "0..1",
+          "onePer": "record"
+        },
+        {
+          "measurement": "dietary-carbohydrates",
+          "cardinality": "0..1",
+          "onePer": "record"
+        },
+        {
+          "measurement": "dietary-chloride",
+          "cardinality": "0..1",
+          "onePer": "record"
+        },
+        {
+          "measurement": "dietary-cholesterol",
+          "cardinality": "0..1",
+          "onePer": "record"
+        },
+        {
+          "measurement": "dietary-chromium",
+          "cardinality": "0..1",
+          "onePer": "record"
+        },
+        {
+          "measurement": "dietary-copper",
+          "cardinality": "0..1",
+          "onePer": "record"
+        },
+        {
+          "measurement": "dietary-energy",
+          "cardinality": "0..1",
+          "onePer": "record"
+        },
+        {
+          "measurement": "dietary-energy-from-fat",
+          "cardinality": "0..1",
+          "onePer": "record"
+        },
+        {
+          "measurement": "dietary-fat-monounsaturated",
+          "cardinality": "0..1",
+          "onePer": "record"
+        },
+        {
+          "measurement": "dietary-fat-polyunsaturated",
+          "cardinality": "0..1",
+          "onePer": "record"
+        },
+        {
+          "measurement": "dietary-fat-saturated",
+          "cardinality": "0..1",
+          "onePer": "record"
+        },
+        {
+          "measurement": "dietary-fat-total",
+          "cardinality": "0..1",
+          "onePer": "record"
+        },
+        {
+          "measurement": "dietary-fat-trans",
+          "cardinality": "0..1",
+          "onePer": "record"
+        },
+        {
+          "measurement": "dietary-fat-unsaturated",
+          "cardinality": "0..1",
+          "onePer": "record"
+        },
+        {
+          "measurement": "dietary-fiber",
+          "cardinality": "0..1",
+          "onePer": "record"
+        },
+        {
+          "measurement": "dietary-folate",
+          "cardinality": "0..1",
+          "onePer": "record"
+        },
+        {
+          "measurement": "dietary-folic-acid",
+          "cardinality": "0..1",
+          "onePer": "record"
+        },
+        {
+          "measurement": "dietary-iodine",
+          "cardinality": "0..1",
+          "onePer": "record"
+        },
+        {
+          "measurement": "dietary-iron",
+          "cardinality": "0..1",
+          "onePer": "record"
+        },
+        {
+          "measurement": "dietary-magnesium",
+          "cardinality": "0..1",
+          "onePer": "record"
+        },
+        {
+          "measurement": "dietary-manganese",
+          "cardinality": "0..1",
+          "onePer": "record"
+        },
+        {
+          "measurement": "dietary-molybdenum",
+          "cardinality": "0..1",
+          "onePer": "record"
+        },
+        {
+          "measurement": "dietary-niacin",
+          "cardinality": "0..1",
+          "onePer": "record"
+        },
+        {
+          "measurement": "dietary-pantothenic-acid",
+          "cardinality": "0..1",
+          "onePer": "record"
+        },
+        {
+          "measurement": "dietary-phosphorus",
+          "cardinality": "0..1",
+          "onePer": "record"
+        },
+        {
+          "measurement": "dietary-potassium",
+          "cardinality": "0..1",
+          "onePer": "record"
+        },
+        {
+          "measurement": "dietary-protein",
+          "cardinality": "0..1",
+          "onePer": "record"
+        },
+        {
+          "measurement": "dietary-riboflavin",
+          "cardinality": "0..1",
+          "onePer": "record"
+        },
+        {
+          "measurement": "dietary-selenium",
+          "cardinality": "0..1",
+          "onePer": "record"
+        },
+        {
+          "measurement": "dietary-sodium",
+          "cardinality": "0..1",
+          "onePer": "record"
+        },
+        {
+          "measurement": "dietary-sugar",
+          "cardinality": "0..1",
+          "onePer": "record"
+        },
+        {
+          "measurement": "dietary-thiamin",
+          "cardinality": "0..1",
+          "onePer": "record"
+        },
+        {
+          "measurement": "dietary-vitamin-a",
+          "cardinality": "0..1",
+          "onePer": "record"
+        },
+        {
+          "measurement": "dietary-vitamin-b12",
+          "cardinality": "0..1",
+          "onePer": "record"
+        },
+        {
+          "measurement": "dietary-vitamin-b6",
+          "cardinality": "0..1",
+          "onePer": "record"
+        },
+        {
+          "measurement": "dietary-vitamin-c",
+          "cardinality": "0..1",
+          "onePer": "record"
+        },
+        {
+          "measurement": "dietary-vitamin-d",
+          "cardinality": "0..1",
+          "onePer": "record"
+        },
+        {
+          "measurement": "dietary-vitamin-e",
+          "cardinality": "0..1",
+          "onePer": "record"
+        },
+        {
+          "measurement": "dietary-vitamin-k",
+          "cardinality": "0..1",
+          "onePer": "record"
+        },
+        {
+          "measurement": "dietary-zinc",
+          "cardinality": "0..1",
+          "onePer": "record"
+        }
+      ]
     },
     {
       "token": "OvulationTestRecord",
       "title": "Ovulation Test",
       "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/OvulationTestRecord",
-      "status": "deferred",
+      "status": "supported",
       "context": [],
-      "outputs": []
+      "outputs": [
+        {
+          "measurement": "ovulation-test-result",
+          "cardinality": "0..*",
+          "onePer": "record"
+        }
+      ]
     },
     {
       "token": "OxygenSaturationRecord",
@@ -419,9 +737,15 @@
       "token": "PowerRecord",
       "title": "Power",
       "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/PowerRecord",
-      "status": "deferred",
+      "status": "supported",
       "context": [],
-      "outputs": []
+      "outputs": [
+        {
+          "measurement": "power",
+          "cardinality": "0..*",
+          "onePer": "record"
+        }
+      ]
     },
     {
       "token": "RespiratoryRateRecord",
@@ -440,25 +764,43 @@
       "token": "RestingHeartRateRecord",
       "title": "Resting Heart Rate",
       "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/RestingHeartRateRecord",
-      "status": "deferred",
+      "status": "supported",
       "context": [],
-      "outputs": []
+      "outputs": [
+        {
+          "measurement": "resting-heart-rate",
+          "cardinality": "0..*",
+          "onePer": "record"
+        }
+      ]
     },
     {
       "token": "SexualActivityRecord",
       "title": "Sexual Activity",
       "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/SexualActivityRecord",
-      "status": "deferred",
+      "status": "supported",
       "context": [],
-      "outputs": []
+      "outputs": [
+        {
+          "measurement": "sexual-activity",
+          "cardinality": "0..*",
+          "onePer": "record"
+        }
+      ]
     },
     {
       "token": "SkinTemperatureRecord",
       "title": "Skin Temperature",
       "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/SkinTemperatureRecord",
-      "status": "deferred",
+      "status": "supported",
       "context": [],
-      "outputs": []
+      "outputs": [
+        {
+          "measurement": "skin-temperature",
+          "cardinality": "0..*",
+          "onePer": "record"
+        }
+      ]
     },
     {
       "token": "SleepSessionRecord",
@@ -486,17 +828,29 @@
       "token": "SpeedRecord",
       "title": "Speed",
       "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/SpeedRecord",
-      "status": "deferred",
+      "status": "supported",
       "context": [],
-      "outputs": []
+      "outputs": [
+        {
+          "measurement": "speed",
+          "cardinality": "0..*",
+          "onePer": "record"
+        }
+      ]
     },
     {
       "token": "StepsCadenceRecord",
       "title": "Steps Cadence",
       "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/StepsCadenceRecord",
-      "status": "deferred",
+      "status": "supported",
       "context": [],
-      "outputs": []
+      "outputs": [
+        {
+          "measurement": "step-cadence",
+          "cardinality": "0..*",
+          "onePer": "record"
+        }
+      ]
     },
     {
       "token": "StepsRecord",
@@ -515,17 +869,29 @@
       "token": "TotalCaloriesBurnedRecord",
       "title": "Total Calories Burned",
       "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/TotalCaloriesBurnedRecord",
-      "status": "deferred",
+      "status": "supported",
       "context": [],
-      "outputs": []
+      "outputs": [
+        {
+          "measurement": "total-energy",
+          "cardinality": "0..*",
+          "onePer": "record"
+        }
+      ]
     },
     {
       "token": "Vo2MaxRecord",
       "title": "VO2 Max",
       "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/Vo2MaxRecord",
-      "status": "deferred",
+      "status": "supported",
       "context": [],
-      "outputs": []
+      "outputs": [
+        {
+          "measurement": "vo2-max",
+          "cardinality": "0..*",
+          "onePer": "record"
+        }
+      ]
     },
     {
       "token": "WeightRecord",
@@ -544,9 +910,15 @@
       "token": "WheelchairPushesRecord",
       "title": "Wheelchair Pushes",
       "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/WheelchairPushesRecord",
-      "status": "deferred",
+      "status": "supported",
       "context": [],
-      "outputs": []
+      "outputs": [
+        {
+          "measurement": "wheelchair-push-count",
+          "cardinality": "0..*",
+          "onePer": "record"
+        }
+      ]
     }
   ],
   "contextMappings": {

@@ -99,7 +99,7 @@ class GuideQATests(unittest.TestCase):
                     r"^\* urn:ietf:bcp:13#([^\s]+)", terminology, re.MULTILINE
                 )
             ),
-            {"application/json", "application/octet-stream", "text/csv"},
+            {"application/json", "application/octet-stream", "text/csv", "application/fhir+json"},
         )
         self.assertEqual(
             set(

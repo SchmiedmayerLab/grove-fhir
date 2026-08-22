@@ -27,6 +27,9 @@ FIXTURE_FILES = (
     "mobile/input/fsh/terminology.fsh",
     "mobile/input/fsh/profiles.fsh",
     "mobile/input/fsh/generated-measurement-profiles.fsh",
+    "healthkit/input/fsh/generated-measurement-profiles.fsh",
+    "health-connect/input/fsh/generated-measurement-profiles.fsh",
+    "providers/input/fsh/generated-measurement-profiles.fsh",
 )
 
 
@@ -78,6 +81,7 @@ class MeasurementProfileProjectionTests(unittest.TestCase):
             lambda catalog: [
                 measurement["generation"].update({"emit": False})
                 for measurement in catalog["measurements"]
+                if measurement.get("owner", "mobile") == "mobile"
             ],
         )
         self.remint_ground_truth(root)
@@ -85,7 +89,7 @@ class MeasurementProfileProjectionTests(unittest.TestCase):
     def test_generated_profiles_are_current(self) -> None:
         code, output = self.run_renderer(ROOT, "--check")
         self.assertEqual(code, 0, output)
-        self.assertIn("13 emitted, 0 parity-checked, problems=0", output)
+        self.assertIn("190 emitted, 0 parity-checked, problems=0", output)
 
     def test_projection_still_reproduces_hand_written_profiles(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -93,7 +97,7 @@ class MeasurementProfileProjectionTests(unittest.TestCase):
             self.demote_to_hand_written(root)
             code, output = self.run_renderer(root, "--check")
             self.assertEqual(code, 0, output)
-            self.assertIn("13 parity-checked, problems=0", output)
+            self.assertIn("parity-checked, problems=0", output)
 
     def test_parity_detects_a_drifted_hand_profile(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

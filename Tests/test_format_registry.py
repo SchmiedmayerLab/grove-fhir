@@ -29,6 +29,7 @@ class FormatRegistryTests(unittest.TestCase):
                 "provider-json-1",
                 "grove-ppg-1",
                 "grove-batch-archive-1",
+                "fhir-resource-1",
             ],
         )
         for code, fmt in REGISTRY["formats"].items():
@@ -58,6 +59,9 @@ class FormatRegistryTests(unittest.TestCase):
                 "ambient-pressure",
                 "pedometer",
                 "wrist-temperature",
+                "rotation-rate",
+                "odometer",
+                "heartbeat-series",
             },
         )
         for stream, schema in schemas.items():
@@ -91,9 +95,10 @@ class FormatRegistryTests(unittest.TestCase):
             if isinstance(entry.get("raw"), dict)
             and "grove-csv-1" in entry["raw"].get("formats", [])
         }
+        # heartbeat-series is a HealthKit recording schema, not a SensorKit stream.
         self.assertEqual(
             streams_with_csv,
-            set(REGISTRY["formats"]["grove-csv-1"]["columnSchemas"]),
+            set(REGISTRY["formats"]["grove-csv-1"]["columnSchemas"]) - {"heartbeat-series"},
         )
 
     def test_rendered_outputs_are_current(self) -> None:

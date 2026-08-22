@@ -121,8 +121,14 @@
   "sensorKitPlatformExclusiveClaims": {
     "cardinality": 1,
     "profiles": [
+      "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-accelerometer-observation",
       "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-device-usage-observation",
+      "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-keyboard-metrics-observation",
+      "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-messages-usage-observation",
       "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-on-wrist-observation",
+      "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-phone-usage-observation",
+      "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-ppg-observation",
+      "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-sleep-session-observation",
       "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-visit-observation"
     ],
     "otherProfilesAllowed": false

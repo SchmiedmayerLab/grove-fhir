@@ -51,15 +51,7 @@ class SensorKitCatalogTests(unittest.TestCase):
         )
         self.assertEqual(
             set(package["profiles"]),
-            {
-                "sensorkit-conversion-provenance",
-                "sensorkit-device-usage-observation",
-                "sensorkit-ecg-observation",
-                "sensorkit-observation",
-                "sensorkit-on-wrist-observation",
-                "sensorkit-recording-document",
-                "sensorkit-visit-observation",
-            },
+            {"sensorkit-accelerometer-observation", "sensorkit-conversion-provenance", "sensorkit-device-usage-observation", "sensorkit-ecg-observation", "sensorkit-keyboard-metrics-observation", "sensorkit-messages-usage-observation", "sensorkit-observation", "sensorkit-on-wrist-observation", "sensorkit-phone-usage-observation", "sensorkit-ppg-observation", "sensorkit-recording-document", "sensorkit-sleep-session-observation", "sensorkit-visit-observation"},
         )
 
     def test_current_platform_inventory_is_closed_and_scope_complete(self) -> None:
@@ -122,10 +114,18 @@ class SensorKitCatalogTests(unittest.TestCase):
 
     def test_platform_additions_are_honestly_deferred(self) -> None:
         by_token = {entry["sourceToken"]: entry for entry in self.catalog["entries"]}
-        for token in ("SRSensor.acousticSettings", "SRSensor.sleepSessions"):
-            self.assertEqual(by_token[token]["scope"], "stable-addition")
-            self.assertEqual(by_token[token]["status"], "deferred")
-            self.assertIn("stable platform symbol", by_token[token]["reason"])
+        acoustic = by_token["SRSensor.acousticSettings"]
+        self.assertEqual(acoustic["scope"], "stable-addition")
+        self.assertEqual(acoustic["status"], "deferred")
+        self.assertIn("stable platform symbol", acoustic["reason"])
+        sleep = by_token["SRSensor.sleepSessions"]
+        self.assertEqual(sleep["scope"], "stable-addition")
+        self.assertEqual(sleep["status"], "platform-exclusive")
+        self.assertTrue(
+            sleep["structured"]["profile"].endswith(
+                "sensorkit-sleep-session-observation"
+            )
+        )
 
     def test_every_row_has_one_definitive_status_and_admitted_contract(self) -> None:
         statuses = set(self.catalog["statusVocabulary"])
@@ -165,7 +165,7 @@ class SensorKitCatalogTests(unittest.TestCase):
             elif entry["status"] == "platform-exclusive":
                 self.assertRegex(
                     entry["structured"]["profile"],
-                    r"/StructureDefinition/sensorkit-(on-wrist|device-usage|visit)-observation$",
+                    r"/StructureDefinition/sensorkit-(on-wrist|device-usage|visit|messages-usage|phone-usage|keyboard-metrics|sleep-session|accelerometer|ppg)-observation$",
                 )
             elif entry["status"] == "mapped-standard":
                 self.assertTrue(
@@ -185,6 +185,7 @@ class SensorKitCatalogTests(unittest.TestCase):
                         "requiredForFields",
                         "formats",
                         "formatsReason",
+                        "jsonSchema",
                     }
                 )
                 self.assertEqual(raw["status"], "mapped-standard")
@@ -209,8 +210,14 @@ class SensorKitCatalogTests(unittest.TestCase):
         rotation = by_token["SRSensor.rotationRate"]["structured"]
         self.assertEqual(rotation["dimensions"], 3)
         self.assertEqual(rotation["ucumCode"], "rad/s")
-        self.assertEqual(by_token["SRSensor.accelerometer"]["status"], "mapped-standard")
-        self.assertIn("batch identifier", by_token["SRSensor.accelerometer"]["structured"]["reason"])
+        self.assertEqual(
+            by_token["SRSensor.accelerometer"]["status"], "platform-exclusive"
+        )
+        self.assertTrue(
+            by_token["SRSensor.accelerometer"]["structured"]["profile"].endswith(
+                "sensorkit-accelerometer-observation"
+            )
+        )
         self.assertEqual(by_token["SRSensor.heartRate"]["status"], "mapped-standard")
         self.assertIn("Confidence", by_token["SRSensor.heartRate"]["structured"]["reason"])
         ecg = by_token["SRSensor.electrocardiogram"]
@@ -219,7 +226,9 @@ class SensorKitCatalogTests(unittest.TestCase):
         self.assertTrue(
             any("signalInvalid" in field for field in ecg["raw"]["requiredForFields"])
         )
-        self.assertEqual(by_token["SRSensor.photoplethysmogram"]["status"], "mapped-standard")
+        self.assertEqual(
+            by_token["SRSensor.photoplethysmogram"]["status"], "platform-exclusive"
+        )
         self.assertEqual(by_token["SRSensor.pedometerData"]["status"], "mapped-standard")
         self.assertEqual(by_token["SRSensor.wristTemperature"]["status"], "mapped-standard")
         self.assertIn("must not bracket", by_token["SRSensor.onWristState"]["structured"]["rule"])

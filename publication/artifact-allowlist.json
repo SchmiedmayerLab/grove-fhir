@@ -7,31 +7,38 @@
       "canonical": "https://grovealliance.org/fhir/mobile",
       "artifacts": [
         {
-          "fshName": "GroveRecordingMethod",
-          "fshType": "Extension",
-          "resourceType": "StructureDefinition",
-          "id": "grove-recording-method",
-          "classification": "definition"
-        },
-        {
-          "fshName": "GroveExchangeEntryIdentifier",
-          "fshType": "Extension",
-          "resourceType": "StructureDefinition",
-          "id": "grove-exchange-entry-identifier",
-          "classification": "definition"
-        },
-        {
-          "fshName": "GroveRecordingMethodCS",
+          "fshName": "GroveAggregationMethodCS",
           "fshType": "CodeSystem",
           "resourceType": "CodeSystem",
-          "id": "grove-recording-method",
+          "id": "grove-aggregation-method",
           "classification": "definition"
         },
         {
-          "fshName": "GroveRecordingMethodVS",
-          "fshType": "ValueSet",
-          "resourceType": "ValueSet",
-          "id": "grove-recording-method",
+          "fshName": "GroveCervicalMucusQualityCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "grove-cervical-mucus-quality",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveCervicalMucusSensationCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "grove-cervical-mucus-sensation",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveIntermenstrualBleedingCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "grove-intermenstrual-bleeding",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMenstruationFlowCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "grove-menstruation-flow",
           "classification": "definition"
         },
         {
@@ -42,10 +49,24 @@
           "classification": "definition"
         },
         {
-          "fshName": "GroveMobileMeasurementVS",
-          "fshType": "ValueSet",
-          "resourceType": "ValueSet",
-          "id": "grove-mobile-measurement",
+          "fshName": "GroveOvulationTestResultCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "grove-ovulation-test-result",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveRecordingMethodCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "grove-recording-method",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveSexualActivityCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "grove-sexual-activity",
           "classification": "definition"
         },
         {
@@ -56,199 +77,45 @@
           "classification": "definition"
         },
         {
-          "fshName": "GroveSleepStageVS",
-          "fshType": "ValueSet",
-          "resourceType": "ValueSet",
-          "id": "grove-sleep-stage",
+          "fshName": "GroveWorkoutActivityCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "grove-workout-activity",
           "classification": "definition"
         },
         {
-          "fshName": "GroveRecordingDevice",
-          "fshType": "Profile",
+          "fshName": "GroveWorkoutSegmentTypeCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "grove-workout-segment-type",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveWorkoutStatisticCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "grove-workout-statistic",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveExchangeEntryIdentifier",
+          "fshType": "Extension",
           "resourceType": "StructureDefinition",
-          "id": "grove-recording-device",
+          "id": "grove-exchange-entry-identifier",
           "classification": "definition"
         },
         {
-          "fshName": "GroveApplicationDevice",
-          "fshType": "Profile",
+          "fshName": "GroveRecordingMethod",
+          "fshType": "Extension",
           "resourceType": "StructureDefinition",
-          "id": "grove-application-device",
+          "id": "grove-recording-method",
           "classification": "definition"
-        },
-        {
-          "fshName": "GroveMobileObservation",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "grove-mobile-observation",
-          "classification": "definition"
-        },
-        {
-          "fshName": "GroveMobileExchangeBundle",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "grove-mobile-exchange-bundle",
-          "classification": "definition"
-        },
-        {
-          "fshName": "GroveMobileHeartRate",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "grove-mobile-heart-rate",
-          "classification": "definition"
-        },
-        {
-          "fshName": "GroveMobileBodyWeight",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "grove-mobile-body-weight",
-          "classification": "definition"
-        },
-        {
-          "fshName": "GroveMobileBloodPressure",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "grove-mobile-blood-pressure",
-          "classification": "definition"
-        },
-        {
-          "fshName": "GroveMobileBodyTemperature",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "grove-mobile-body-temperature",
-          "classification": "definition"
-        },
-        {
-          "fshName": "GroveMobileRespiratoryRate",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "grove-mobile-respiratory-rate",
-          "classification": "definition"
-        },
-        {
-          "fshName": "GroveMobileOxygenSaturation",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "grove-mobile-oxygen-saturation",
-          "classification": "definition"
-        },
-        {
-          "fshName": "GroveMobileBodyHeight",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "grove-mobile-body-height",
-          "classification": "definition"
-        },
-        {
-          "fshName": "GroveMobileBasalBodyTemperature",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "grove-mobile-basal-body-temperature",
-          "classification": "definition"
-        },
-        {
-          "fshName": "GroveMobileDistance",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "grove-mobile-distance",
-          "classification": "definition"
-        },
-        {
-          "fshName": "GroveMobileActiveEnergy",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "grove-mobile-active-energy",
-          "classification": "definition"
-        },
-        {
-          "fshName": "GroveMobileSleepDuration",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "grove-mobile-sleep-duration",
-          "classification": "definition"
-        },
-        {
-          "fshName": "GroveMobileSleepStage",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "grove-mobile-sleep-stage",
-          "classification": "definition"
-        },
-        {
-          "fshName": "GroveMobileStepCount",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "grove-mobile-step-count",
-          "classification": "definition"
-        },
-        {
-          "fshName": "GroveMobileConversionProvenance",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "grove-mobile-conversion-provenance",
-          "classification": "definition"
-        },
-        {
-          "fshName": "MobileObservationIdentifierExample",
-          "fshType": "Instance",
-          "resourceType": "NamingSystem",
-          "id": "MobileObservationIdentifierExample",
-          "classification": "example"
-        },
-        {
-          "fshName": "GroveMobilePatientExample",
-          "fshType": "Instance",
-          "resourceType": "Patient",
-          "id": "GroveMobilePatientExample",
-          "classification": "example"
-        },
-        {
-          "fshName": "GroveMobileStudyPlanExample",
-          "fshType": "Instance",
-          "resourceType": "PlanDefinition",
-          "id": "GroveMobileStudyPlanExample",
-          "classification": "example"
-        },
-        {
-          "fshName": "GroveMobileResearchStudyExample",
-          "fshType": "Instance",
-          "resourceType": "ResearchStudy",
-          "id": "GroveMobileResearchStudyExample",
-          "classification": "example"
-        },
-        {
-          "fshName": "GroveMobileResearchSubjectExample",
-          "fshType": "Instance",
-          "resourceType": "ResearchSubject",
-          "id": "GroveMobileResearchSubjectExample",
-          "classification": "example"
-        },
-        {
-          "fshName": "GroveRecordingDeviceExample",
-          "fshType": "Instance",
-          "resourceType": "Device",
-          "id": "GroveRecordingDeviceExample",
-          "classification": "example"
         },
         {
           "fshName": "GroveApplicationDeviceExample",
           "fshType": "Instance",
           "resourceType": "Device",
           "id": "GroveApplicationDeviceExample",
-          "classification": "example"
-        },
-        {
-          "fshName": "GroveMobileHeartRateExample",
-          "fshType": "Instance",
-          "resourceType": "Observation",
-          "id": "GroveMobileHeartRateExample",
-          "classification": "example"
-        },
-        {
-          "fshName": "GroveMobileStepCountExample",
-          "fshType": "Instance",
-          "resourceType": "Observation",
-          "id": "GroveMobileStepCountExample",
           "classification": "example"
         },
         {
@@ -294,6 +161,13 @@
           "classification": "example"
         },
         {
+          "fshName": "GroveMobileConversionProvenanceExample",
+          "fshType": "Instance",
+          "resourceType": "Provenance",
+          "id": "GroveMobileConversionProvenanceExample",
+          "classification": "example"
+        },
+        {
           "fshName": "GroveMobileDistanceExample",
           "fshType": "Instance",
           "resourceType": "Observation",
@@ -301,10 +175,73 @@
           "classification": "example"
         },
         {
+          "fshName": "GroveMobileExchangeApplicationExample",
+          "fshType": "Instance",
+          "resourceType": "Device",
+          "id": "GroveMobileExchangeApplicationExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "GroveMobileExchangeBundleExample",
+          "fshType": "Instance",
+          "resourceType": "Bundle",
+          "id": "GroveMobileExchangeBundleExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "GroveMobileExchangeHeartRateExample",
+          "fshType": "Instance",
+          "resourceType": "Observation",
+          "id": "GroveMobileExchangeHeartRateExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "GroveMobileExchangePatientExample",
+          "fshType": "Instance",
+          "resourceType": "Patient",
+          "id": "GroveMobileExchangePatientExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "GroveMobileExchangeProvenanceExample",
+          "fshType": "Instance",
+          "resourceType": "Provenance",
+          "id": "GroveMobileExchangeProvenanceExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "GroveMobileHeartRateExample",
+          "fshType": "Instance",
+          "resourceType": "Observation",
+          "id": "GroveMobileHeartRateExample",
+          "classification": "example"
+        },
+        {
           "fshName": "GroveMobileOxygenSaturationExample",
           "fshType": "Instance",
           "resourceType": "Observation",
           "id": "GroveMobileOxygenSaturationExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "GroveMobilePatientExample",
+          "fshType": "Instance",
+          "resourceType": "Patient",
+          "id": "GroveMobilePatientExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "GroveMobileResearchStudyExample",
+          "fshType": "Instance",
+          "resourceType": "ResearchStudy",
+          "id": "GroveMobileResearchStudyExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "GroveMobileResearchSubjectExample",
+          "fshType": "Instance",
+          "resourceType": "ResearchSubject",
+          "id": "GroveMobileResearchSubjectExample",
           "classification": "example"
         },
         {
@@ -329,46 +266,739 @@
           "classification": "example"
         },
         {
-          "fshName": "GroveMobileConversionProvenanceExample",
-          "fshType": "Instance",
-          "resourceType": "Provenance",
-          "id": "GroveMobileConversionProvenanceExample",
-          "classification": "example"
-        },
-        {
-          "fshName": "GroveMobileExchangePatientExample",
-          "fshType": "Instance",
-          "resourceType": "Patient",
-          "id": "GroveMobileExchangePatientExample",
-          "classification": "example"
-        },
-        {
-          "fshName": "GroveMobileExchangeApplicationExample",
-          "fshType": "Instance",
-          "resourceType": "Device",
-          "id": "GroveMobileExchangeApplicationExample",
-          "classification": "example"
-        },
-        {
-          "fshName": "GroveMobileExchangeHeartRateExample",
+          "fshName": "GroveMobileStepCountExample",
           "fshType": "Instance",
           "resourceType": "Observation",
-          "id": "GroveMobileExchangeHeartRateExample",
+          "id": "GroveMobileStepCountExample",
           "classification": "example"
         },
         {
-          "fshName": "GroveMobileExchangeProvenanceExample",
+          "fshName": "GroveMobileStudyPlanExample",
           "fshType": "Instance",
-          "resourceType": "Provenance",
-          "id": "GroveMobileExchangeProvenanceExample",
+          "resourceType": "PlanDefinition",
+          "id": "GroveMobileStudyPlanExample",
           "classification": "example"
         },
         {
-          "fshName": "GroveMobileExchangeBundleExample",
+          "fshName": "GroveRecordingDeviceExample",
           "fshType": "Instance",
-          "resourceType": "Bundle",
-          "id": "GroveMobileExchangeBundleExample",
+          "resourceType": "Device",
+          "id": "GroveRecordingDeviceExample",
           "classification": "example"
+        },
+        {
+          "fshName": "MobileObservationIdentifierExample",
+          "fshType": "Instance",
+          "resourceType": "NamingSystem",
+          "id": "MobileObservationIdentifierExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "GroveApplicationDevice",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-application-device",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileActiveEnergy",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-active-energy",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileBasalBodyTemperature",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-basal-body-temperature",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileBasalEnergy",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-basal-energy",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileBloodGlucoseUnspecifiedSpecimen",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-blood-glucose-unspecified-specimen",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileBloodPressure",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-blood-pressure",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileBodyFatPercentage",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-body-fat-percentage",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileBodyHeight",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-body-height",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileBodyTemperature",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-body-temperature",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileBodyWaterMass",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-body-water-mass",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileBodyWeight",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-body-weight",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileBoneMass",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-bone-mass",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileCervicalMucusQuality",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-cervical-mucus-quality",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileConversionProvenance",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-conversion-provenance",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileCyclingCadence",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-cycling-cadence",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileDeepSleepDuration",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-deep-sleep-duration",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileDietaryBiotin",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-dietary-biotin",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileDietaryCaffeine",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-dietary-caffeine",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileDietaryCalcium",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-dietary-calcium",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileDietaryCarbohydrates",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-dietary-carbohydrates",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileDietaryChloride",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-dietary-chloride",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileDietaryCholesterol",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-dietary-cholesterol",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileDietaryChromium",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-dietary-chromium",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileDietaryCopper",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-dietary-copper",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileDietaryEnergy",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-dietary-energy",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileDietaryFatMonounsaturated",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-dietary-fat-monounsaturated",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileDietaryFatPolyunsaturated",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-dietary-fat-polyunsaturated",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileDietaryFatSaturated",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-dietary-fat-saturated",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileDietaryFatTotal",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-dietary-fat-total",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileDietaryFiber",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-dietary-fiber",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileDietaryFolate",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-dietary-folate",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileDietaryIodine",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-dietary-iodine",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileDietaryIron",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-dietary-iron",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileDietaryMagnesium",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-dietary-magnesium",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileDietaryManganese",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-dietary-manganese",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileDietaryMolybdenum",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-dietary-molybdenum",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileDietaryNiacin",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-dietary-niacin",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileDietaryPantothenicAcid",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-dietary-pantothenic-acid",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileDietaryPhosphorus",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-dietary-phosphorus",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileDietaryPotassium",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-dietary-potassium",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileDietaryProtein",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-dietary-protein",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileDietaryRiboflavin",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-dietary-riboflavin",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileDietarySelenium",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-dietary-selenium",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileDietarySodium",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-dietary-sodium",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileDietarySugar",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-dietary-sugar",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileDietaryThiamin",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-dietary-thiamin",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileDietaryVitaminA",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-dietary-vitamin-a",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileDietaryVitaminB12",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-dietary-vitamin-b12",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileDietaryVitaminB6",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-dietary-vitamin-b6",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileDietaryVitaminC",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-dietary-vitamin-c",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileDietaryVitaminD",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-dietary-vitamin-d",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileDietaryVitaminE",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-dietary-vitamin-e",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileDietaryVitaminK",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-dietary-vitamin-k",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileDietaryZinc",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-dietary-zinc",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileDistance",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-distance",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileElectrodermalActivity",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-electrodermal-activity",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileExchangeBundle",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-exchange-bundle",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileFlightsClimbed",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-flights-climbed",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileFluidIntake",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-fluid-intake",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileHeartRate",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-heart-rate",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileHeartRateVariabilityRmssd",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-heart-rate-variability-rmssd",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileHeartRateVariabilitySdnn",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-heart-rate-variability-sdnn",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileIntermenstrualBleeding",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-intermenstrual-bleeding",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileLeanBodyMass",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-lean-body-mass",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileLightSleepDuration",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-light-sleep-duration",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileMenstruationFlow",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-menstruation-flow",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileMindfulnessSession",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-mindfulness-session",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileObservation",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-observation",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileOvulationTestResult",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-ovulation-test-result",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileOxygenSaturation",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-oxygen-saturation",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileOxygenSaturationDailyAverage",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-oxygen-saturation-daily-average",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobilePower",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-power",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileRemSleepDuration",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-rem-sleep-duration",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileRespiratoryRate",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-respiratory-rate",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileRespiratoryRateAverage",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-respiratory-rate-average",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileRestingHeartRate",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-resting-heart-rate",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileSexualActivity",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-sexual-activity",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileSkinTemperature",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-skin-temperature",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileSleepAwakeDuration",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-sleep-awake-duration",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileSleepDuration",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-sleep-duration",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileSleepHeartRate",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-sleep-heart-rate",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileSleepStage",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-sleep-stage",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileSpeed",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-speed",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileStepCount",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-step-count",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileVo2Max",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-vo2-max",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileWheelchairPushCount",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-wheelchair-push-count",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileWorkout",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-workout",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileWorkoutSegment",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-workout-segment",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveRecordingDevice",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-recording-device",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveAggregationMethodVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "grove-aggregation-method",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveCervicalMucusQualityVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "grove-cervical-mucus-quality",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveCervicalMucusSensationVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "grove-cervical-mucus-sensation",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveIntermenstrualBleedingVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "grove-intermenstrual-bleeding",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMenstruationFlowVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "grove-menstruation-flow",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileMeasurementVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "grove-mobile-measurement",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveOvulationTestResultVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "grove-ovulation-test-result",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveRecordingMethodVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "grove-recording-method",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveSexualActivityVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "grove-sexual-activity",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveSleepStageVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "grove-sleep-stage",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveWorkoutActivityVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "grove-workout-activity",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveWorkoutSegmentTypeVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "grove-workout-segment-type",
+          "classification": "definition"
         }
       ]
     },
@@ -707,6 +1337,13 @@
           "classification": "example"
         },
         {
+          "fshName": "SensorKitAccelerometerObservation",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "sensorkit-accelerometer-observation",
+          "classification": "definition"
+        },
+        {
           "fshName": "SensorKitConversionProvenance",
           "fshType": "Profile",
           "resourceType": "StructureDefinition",
@@ -728,6 +1365,20 @@
           "classification": "definition"
         },
         {
+          "fshName": "SensorKitKeyboardMetricsObservation",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "sensorkit-keyboard-metrics-observation",
+          "classification": "definition"
+        },
+        {
+          "fshName": "SensorKitMessagesUsageObservation",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "sensorkit-messages-usage-observation",
+          "classification": "definition"
+        },
+        {
           "fshName": "SensorKitObservation",
           "fshType": "Profile",
           "resourceType": "StructureDefinition",
@@ -742,10 +1393,31 @@
           "classification": "definition"
         },
         {
+          "fshName": "SensorKitPhoneUsageObservation",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "sensorkit-phone-usage-observation",
+          "classification": "definition"
+        },
+        {
+          "fshName": "SensorKitPpgObservation",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "sensorkit-ppg-observation",
+          "classification": "definition"
+        },
+        {
           "fshName": "SensorKitRecordingDocument",
           "fshType": "Profile",
           "resourceType": "StructureDefinition",
           "id": "sensorkit-recording-document",
+          "classification": "definition"
+        },
+        {
+          "fshName": "SensorKitSleepSessionObservation",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "sensorkit-sleep-session-observation",
           "classification": "definition"
         },
         {
@@ -805,6 +1477,27 @@
       "canonical": "https://grovealliance.org/fhir/healthkit",
       "artifacts": [
         {
+          "fshName": "GroveSymptomSeverityCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "grove-symptom-severity",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthKitClinicalFHIRReleaseCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "healthkit-clinical-fhir-release",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthKitClinicalRecordTypeCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "healthkit-clinical-record-type",
+          "classification": "definition"
+        },
+        {
           "fshName": "HealthKitConceptPropertyCS",
           "fshType": "CodeSystem",
           "resourceType": "CodeSystem",
@@ -840,6 +1533,13 @@
           "classification": "definition"
         },
         {
+          "fshName": "HealthKitMeasurementCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "healthkit-measurement",
+          "classification": "definition"
+        },
+        {
           "fshName": "HealthKitMetadataKeyCS",
           "fshType": "CodeSystem",
           "resourceType": "CodeSystem",
@@ -865,6 +1565,90 @@
           "fshType": "CodeSystem",
           "resourceType": "CodeSystem",
           "id": "healthkit-symptom-severity",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitAppleStandHourCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "healthkit-apple-stand-hour",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitBleedingAfterPregnancyCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "healthkit-bleeding-after-pregnancy",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitBleedingDuringPregnancyCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "healthkit-bleeding-during-pregnancy",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitBloodTypeCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "healthkit-blood-type",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitContraceptiveUseCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "healthkit-contraceptive-use",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitLactationStatusCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "healthkit-lactation-status",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitPregnancyStatusCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "healthkit-pregnancy-status",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitPregnancyTestResultCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "healthkit-pregnancy-test-result",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitProgesteroneTestResultCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "healthkit-progesterone-test-result",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitSymptomAppetiteChangesCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "healthkit-symptom-appetite-changes",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitWheelchairUseCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "healthkit-wheelchair-use",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthKitClinicalFHIRRelease",
+          "fshType": "Extension",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-clinical-fhir-release",
           "classification": "definition"
         },
         {
@@ -1099,6 +1883,13 @@
           "classification": "example"
         },
         {
+          "fshName": "HealthKitClinicalRecordDocument",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-clinical-record-document",
+          "classification": "definition"
+        },
+        {
           "fshName": "HealthKitConversionProvenance",
           "fshType": "Profile",
           "resourceType": "StructureDefinition",
@@ -1117,6 +1908,678 @@
           "fshType": "Profile",
           "resourceType": "StructureDefinition",
           "id": "healthkit-observation",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitAppleExerciseTime",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-apple-exercise-time",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitAppleMoveTime",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-apple-move-time",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitAppleStandHour",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-apple-stand-hour",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitAppleStandTime",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-apple-stand-time",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitAtrialFibrillationBurden",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-atrial-fibrillation-burden",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitBladderIncontinence",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-bladder-incontinence",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitBleedingAfterPregnancy",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-bleeding-after-pregnancy",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitBleedingDuringPregnancy",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-bleeding-during-pregnancy",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitBloodAlcoholContent",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-blood-alcohol-content",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitBloodType",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-blood-type",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitContraceptiveUse",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-contraceptive-use",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitCyclingFunctionalThresholdPower",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-cycling-functional-threshold-power",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitEnvironmentalAudioExposure",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-environmental-audio-exposure",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitEnvironmentalSoundReduction",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-environmental-sound-reduction",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitForcedExpiratoryVolume1",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-forced-expiratory-volume-1",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitForcedVitalCapacity",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-forced-vital-capacity",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitGad7Assessment",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-gad7-assessment",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitHandwashingSession",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-handwashing-session",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitHeadphoneAudioExposure",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-headphone-audio-exposure",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitHeartRateRecoveryOneMinute",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-heart-rate-recovery-one-minute",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitInhalerUsage",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-inhaler-usage",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitInsulinDelivery",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-insulin-delivery",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitLactationStatus",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-lactation-status",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitNumberOfAlcoholicBeverages",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-number-of-alcoholic-beverages",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitNumberOfTimesFallen",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-number-of-times-fallen",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitPeakExpiratoryFlowRate",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-peak-expiratory-flow-rate",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitPeripheralPerfusionIndex",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-peripheral-perfusion-index",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitPhq9Assessment",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-phq9-assessment",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitPhysicalEffort",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-physical-effort",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitPregnancyStatus",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-pregnancy-status",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitPregnancyTestResult",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-pregnancy-test-result",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitProgesteroneTestResult",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-progesterone-test-result",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitRunningGroundContactTime",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-running-ground-contact-time",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitRunningStrideLength",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-running-stride-length",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitRunningVerticalOscillation",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-running-vertical-oscillation",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitSixMinuteWalkTestDistance",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-six-minute-walk-test-distance",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitSleepingBreathingDisturbances",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-sleeping-breathing-disturbances",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitStairAscentSpeed",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-stair-ascent-speed",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitStairDescentSpeed",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-stair-descent-speed",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitSwimmingStrokeCount",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-swimming-stroke-count",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitSymptomAbdominalCramps",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-symptom-abdominal-cramps",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitSymptomAcne",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-symptom-acne",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitSymptomAppetiteChanges",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-symptom-appetite-changes",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitSymptomBloating",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-symptom-bloating",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitSymptomBreastPain",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-symptom-breast-pain",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitSymptomChestTightnessOrPain",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-symptom-chest-tightness-or-pain",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitSymptomChills",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-symptom-chills",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitSymptomConstipation",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-symptom-constipation",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitSymptomCoughing",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-symptom-coughing",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitSymptomDiarrhea",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-symptom-diarrhea",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitSymptomDizziness",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-symptom-dizziness",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitSymptomDrySkin",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-symptom-dry-skin",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitSymptomFainting",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-symptom-fainting",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitSymptomFatigue",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-symptom-fatigue",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitSymptomFever",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-symptom-fever",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitSymptomGeneralizedBodyAche",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-symptom-generalized-body-ache",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitSymptomHairLoss",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-symptom-hair-loss",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitSymptomHeadache",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-symptom-headache",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitSymptomHeartburn",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-symptom-heartburn",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitSymptomHotFlashes",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-symptom-hot-flashes",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitSymptomLossOfSmell",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-symptom-loss-of-smell",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitSymptomLossOfTaste",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-symptom-loss-of-taste",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitSymptomLowerBackPain",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-symptom-lower-back-pain",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitSymptomMemoryLapse",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-symptom-memory-lapse",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitSymptomMoodChanges",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-symptom-mood-changes",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitSymptomNausea",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-symptom-nausea",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitSymptomNightSweats",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-symptom-night-sweats",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitSymptomPelvicPain",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-symptom-pelvic-pain",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitSymptomRapidPoundingOrFlutteringHeartbeat",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-symptom-rapid-pounding-or-fluttering-heartbeat",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitSymptomRunnyNose",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-symptom-runny-nose",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitSymptomShortnessOfBreath",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-symptom-shortness-of-breath",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitSymptomSinusCongestion",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-symptom-sinus-congestion",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitSymptomSkippedHeartbeat",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-symptom-skipped-heartbeat",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitSymptomSleepChanges",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-symptom-sleep-changes",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitSymptomSoreThroat",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-symptom-sore-throat",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitSymptomVomiting",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-symptom-vomiting",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitSymptomWheezing",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-symptom-wheezing",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitTimeInDaylight",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-time-in-daylight",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitToothbrushingSession",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-toothbrushing-session",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitUnderwaterDepth",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-underwater-depth",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitUvExposure",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-uv-exposure",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitVaginalDryness",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-vaginal-dryness",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitWaistCircumference",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-waist-circumference",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitWalkingAsymmetry",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-walking-asymmetry",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitWalkingDoubleSupport",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-walking-double-support",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitWalkingHeartRateAverage",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-walking-heart-rate-average",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitWalkingSpeed",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-walking-speed",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitWalkingSteadiness",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-walking-steadiness",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitWalkingStepLength",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-walking-step-length",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitWaterTemperature",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-water-temperature",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitWheelchairUse",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-wheelchair-use",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitWorkoutEffortScore",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-workout-effort-score",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveSymptomPresenceVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "grove-symptom-presence",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveSymptomSeverityVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "grove-symptom-severity",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthKitClinicalFHIRReleaseVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "healthkit-clinical-fhir-release",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthKitClinicalRecordTypeVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "healthkit-clinical-record-type",
           "classification": "definition"
         },
         {
@@ -1155,6 +2618,13 @@
           "classification": "definition"
         },
         {
+          "fshName": "HealthKitMeasurementVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "healthkit-measurement",
+          "classification": "definition"
+        },
+        {
           "fshName": "HealthKitMetadataKeyVS",
           "fshType": "ValueSet",
           "resourceType": "ValueSet",
@@ -1181,6 +2651,83 @@
           "resourceType": "ValueSet",
           "id": "healthkit-symptom-severity",
           "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitAppleStandHourVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "healthkit-apple-stand-hour",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitBleedingAfterPregnancyVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "healthkit-bleeding-after-pregnancy",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitBleedingDuringPregnancyVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "healthkit-bleeding-during-pregnancy",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitBloodTypeVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "healthkit-blood-type",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitContraceptiveUseVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "healthkit-contraceptive-use",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitLactationStatusVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "healthkit-lactation-status",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitPregnancyStatusVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "healthkit-pregnancy-status",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitPregnancyTestResultVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "healthkit-pregnancy-test-result",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitProgesteroneTestResultVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "healthkit-progesterone-test-result",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitSymptomAppetiteChangesVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "healthkit-symptom-appetite-changes",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitWheelchairUseVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "healthkit-wheelchair-use",
+          "classification": "definition"
         }
       ]
     },
@@ -1190,122 +2737,10 @@
       "canonical": "https://grovealliance.org/fhir/health-connect",
       "artifacts": [
         {
-          "fshName": "HealthConnectObservation",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "health-connect-observation",
-          "classification": "definition"
-        },
-        {
-          "fshName": "HealthConnectWholeBloodGlucose",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "health-connect-whole-blood-glucose",
-          "classification": "definition"
-        },
-        {
-          "fshName": "HealthConnectCapillaryBloodGlucose",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "health-connect-capillary-blood-glucose",
-          "classification": "definition"
-        },
-        {
-          "fshName": "HealthConnectSerumPlasmaGlucose",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "health-connect-serum-plasma-glucose",
-          "classification": "definition"
-        },
-        {
-          "fshName": "HealthConnectInterstitialGlucose",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "health-connect-interstitial-glucose",
-          "classification": "definition"
-        },
-        {
-          "fshName": "HealthConnectConversionProvenance",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "health-connect-conversion-provenance",
-          "classification": "definition"
-        },
-        {
-          "fshName": "HealthConnectSpecimen",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "health-connect-specimen",
-          "classification": "definition"
-        },
-        {
-          "fshName": "HealthConnectGlucoseMealContext",
-          "fshType": "Extension",
-          "resourceType": "StructureDefinition",
-          "id": "health-connect-glucose-meal-context",
-          "classification": "definition"
-        },
-        {
-          "fshName": "HealthConnectSleepTitle",
-          "fshType": "Extension",
-          "resourceType": "StructureDefinition",
-          "id": "health-connect-sleep-title",
-          "classification": "definition"
-        },
-        {
-          "fshName": "HealthConnectRecordType",
-          "fshType": "Extension",
-          "resourceType": "StructureDefinition",
-          "id": "health-connect-record-type",
-          "classification": "definition"
-        },
-        {
           "fshName": "HealthConnectConceptPropertyCS",
           "fshType": "CodeSystem",
           "resourceType": "CodeSystem",
           "id": "health-connect-concept-property",
-          "classification": "definition"
-        },
-        {
-          "fshName": "HealthConnectRecordTypeCS",
-          "fshType": "CodeSystem",
-          "resourceType": "CodeSystem",
-          "id": "health-connect-record-type",
-          "classification": "definition"
-        },
-        {
-          "fshName": "HealthConnectRecordTypeVS",
-          "fshType": "ValueSet",
-          "resourceType": "ValueSet",
-          "id": "health-connect-record-type",
-          "classification": "definition"
-        },
-        {
-          "fshName": "HealthConnectSleepStageCS",
-          "fshType": "CodeSystem",
-          "resourceType": "CodeSystem",
-          "id": "health-connect-sleep-stage",
-          "classification": "definition"
-        },
-        {
-          "fshName": "HealthConnectSleepStageVS",
-          "fshType": "ValueSet",
-          "resourceType": "ValueSet",
-          "id": "health-connect-sleep-stage",
-          "classification": "definition"
-        },
-        {
-          "fshName": "HealthConnectRelationToMealCS",
-          "fshType": "CodeSystem",
-          "resourceType": "CodeSystem",
-          "id": "health-connect-relation-to-meal",
-          "classification": "definition"
-        },
-        {
-          "fshName": "HealthConnectRelationToMealVS",
-          "fshType": "ValueSet",
-          "resourceType": "ValueSet",
-          "id": "health-connect-relation-to-meal",
           "classification": "definition"
         },
         {
@@ -1316,45 +2751,59 @@
           "classification": "definition"
         },
         {
-          "fshName": "HealthConnectMealTypeVS",
-          "fshType": "ValueSet",
-          "resourceType": "ValueSet",
-          "id": "health-connect-meal-type",
+          "fshName": "HealthConnectMeasurementCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "health-connect-measurement",
           "classification": "definition"
         },
         {
-          "fshName": "HealthConnectRecordIdentifier",
-          "fshType": "Instance",
-          "resourceType": "NamingSystem",
-          "id": "health-connect-record-id",
+          "fshName": "HealthConnectMenstruationPeriodCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "health-connect-menstruation-period",
           "classification": "definition"
         },
         {
-          "fshName": "HealthConnectOutputIdentifier",
-          "fshType": "Instance",
-          "resourceType": "NamingSystem",
-          "id": "health-connect-output-id",
+          "fshName": "HealthConnectRecordTypeCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "health-connect-record-type",
           "classification": "definition"
         },
         {
-          "fshName": "HealthConnectSpecimenIdentifier",
-          "fshType": "Instance",
-          "resourceType": "NamingSystem",
-          "id": "health-connect-specimen-id",
+          "fshName": "HealthConnectRelationToMealCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "health-connect-relation-to-meal",
           "classification": "definition"
         },
         {
-          "fshName": "HealthConnectConversionIdentifier",
-          "fshType": "Instance",
-          "resourceType": "NamingSystem",
-          "id": "health-connect-conversion-id",
+          "fshName": "HealthConnectSleepStageCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "health-connect-sleep-stage",
           "classification": "definition"
         },
         {
-          "fshName": "HealthConnectExchangeIdentifier",
-          "fshType": "Instance",
-          "resourceType": "NamingSystem",
-          "id": "health-connect-exchange-id",
+          "fshName": "HealthConnectGlucoseMealContext",
+          "fshType": "Extension",
+          "resourceType": "StructureDefinition",
+          "id": "health-connect-glucose-meal-context",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthConnectRecordType",
+          "fshType": "Extension",
+          "resourceType": "StructureDefinition",
+          "id": "health-connect-record-type",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthConnectSleepTitle",
+          "fshType": "Extension",
+          "resourceType": "StructureDefinition",
+          "id": "health-connect-sleep-title",
           "classification": "definition"
         },
         {
@@ -1365,39 +2814,53 @@
           "classification": "definition"
         },
         {
-          "fshName": "HealthConnectPatientExample",
+          "fshName": "HealthConnectBloodPressureExample",
           "fshType": "Instance",
-          "resourceType": "Patient",
-          "id": "HealthConnectPatientExample",
+          "resourceType": "Observation",
+          "id": "HealthConnectBloodPressureExample",
           "classification": "example"
         },
         {
-          "fshName": "HealthConnectStudyPlanExample",
+          "fshName": "HealthConnectBodyTemperatureExample",
           "fshType": "Instance",
-          "resourceType": "PlanDefinition",
-          "id": "HealthConnectStudyPlanExample",
+          "resourceType": "Observation",
+          "id": "HealthConnectBodyTemperatureExample",
           "classification": "example"
         },
         {
-          "fshName": "HealthConnectResearchStudyExample",
+          "fshName": "HealthConnectBodyWeightExample",
           "fshType": "Instance",
-          "resourceType": "ResearchStudy",
-          "id": "HealthConnectResearchStudyExample",
+          "resourceType": "Observation",
+          "id": "HealthConnectBodyWeightExample",
           "classification": "example"
         },
         {
-          "fshName": "HealthConnectResearchSubjectExample",
+          "fshName": "HealthConnectBodyWeightProvenanceExample",
           "fshType": "Instance",
-          "resourceType": "ResearchSubject",
-          "id": "HealthConnectResearchSubjectExample",
+          "resourceType": "Provenance",
+          "id": "HealthConnectBodyWeightProvenanceExample",
           "classification": "example"
         },
         {
-          "fshName": "HealthConnectRecordingDeviceExample",
+          "fshName": "HealthConnectCapillaryGlucoseExample",
           "fshType": "Instance",
-          "resourceType": "Device",
-          "id": "HealthConnectRecordingDeviceExample",
+          "resourceType": "Observation",
+          "id": "HealthConnectCapillaryGlucoseExample",
           "classification": "example"
+        },
+        {
+          "fshName": "HealthConnectCapillaryGlucoseSpecimenExample",
+          "fshType": "Instance",
+          "resourceType": "Specimen",
+          "id": "HealthConnectCapillaryGlucoseSpecimenExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "HealthConnectConversionIdentifier",
+          "fshType": "Instance",
+          "resourceType": "NamingSystem",
+          "id": "health-connect-conversion-id",
+          "classification": "definition"
         },
         {
           "fshName": "HealthConnectConverterApplicationExample",
@@ -1407,10 +2870,17 @@
           "classification": "example"
         },
         {
-          "fshName": "HealthConnectSourceApplicationExample",
+          "fshName": "HealthConnectExchangeIdentifier",
           "fshType": "Instance",
-          "resourceType": "Device",
-          "id": "HealthConnectSourceApplicationExample",
+          "resourceType": "NamingSystem",
+          "id": "health-connect-exchange-id",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthConnectHeartRateProvenanceExample",
+          "fshType": "Instance",
+          "resourceType": "Provenance",
+          "id": "HealthConnectHeartRateProvenanceExample",
           "classification": "example"
         },
         {
@@ -1428,59 +2898,10 @@
           "classification": "example"
         },
         {
-          "fshName": "HealthConnectBodyWeightExample",
+          "fshName": "HealthConnectInterstitialGlucoseExample",
           "fshType": "Instance",
           "resourceType": "Observation",
-          "id": "HealthConnectBodyWeightExample",
-          "classification": "example"
-        },
-        {
-          "fshName": "HealthConnectStepCountExample",
-          "fshType": "Instance",
-          "resourceType": "Observation",
-          "id": "HealthConnectStepCountExample",
-          "classification": "example"
-        },
-        {
-          "fshName": "HealthConnectCapillaryGlucoseSpecimenExample",
-          "fshType": "Instance",
-          "resourceType": "Specimen",
-          "id": "HealthConnectCapillaryGlucoseSpecimenExample",
-          "classification": "example"
-        },
-        {
-          "fshName": "HealthConnectCapillaryGlucoseExample",
-          "fshType": "Instance",
-          "resourceType": "Observation",
-          "id": "HealthConnectCapillaryGlucoseExample",
-          "classification": "example"
-        },
-        {
-          "fshName": "HealthConnectWholeBloodGlucoseSpecimenExample",
-          "fshType": "Instance",
-          "resourceType": "Specimen",
-          "id": "HealthConnectWholeBloodGlucoseSpecimenExample",
-          "classification": "example"
-        },
-        {
-          "fshName": "HealthConnectWholeBloodGlucoseExample",
-          "fshType": "Instance",
-          "resourceType": "Observation",
-          "id": "HealthConnectWholeBloodGlucoseExample",
-          "classification": "example"
-        },
-        {
-          "fshName": "HealthConnectSerumGlucoseSpecimenExample",
-          "fshType": "Instance",
-          "resourceType": "Specimen",
-          "id": "HealthConnectSerumGlucoseSpecimenExample",
-          "classification": "example"
-        },
-        {
-          "fshName": "HealthConnectSerumGlucoseExample",
-          "fshType": "Instance",
-          "resourceType": "Observation",
-          "id": "HealthConnectSerumGlucoseExample",
+          "id": "HealthConnectInterstitialGlucoseExample",
           "classification": "example"
         },
         {
@@ -1491,24 +2912,59 @@
           "classification": "example"
         },
         {
-          "fshName": "HealthConnectInterstitialGlucoseExample",
+          "fshName": "HealthConnectOutputIdentifier",
           "fshType": "Instance",
-          "resourceType": "Observation",
-          "id": "HealthConnectInterstitialGlucoseExample",
+          "resourceType": "NamingSystem",
+          "id": "health-connect-output-id",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthConnectPatientExample",
+          "fshType": "Instance",
+          "resourceType": "Patient",
+          "id": "HealthConnectPatientExample",
           "classification": "example"
         },
         {
-          "fshName": "HealthConnectBloodPressureExample",
+          "fshName": "HealthConnectRecordIdentifier",
           "fshType": "Instance",
-          "resourceType": "Observation",
-          "id": "HealthConnectBloodPressureExample",
+          "resourceType": "NamingSystem",
+          "id": "health-connect-record-id",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthConnectRecordingDeviceExample",
+          "fshType": "Instance",
+          "resourceType": "Device",
+          "id": "HealthConnectRecordingDeviceExample",
           "classification": "example"
         },
         {
-          "fshName": "HealthConnectBodyTemperatureExample",
+          "fshName": "HealthConnectResearchStudyExample",
+          "fshType": "Instance",
+          "resourceType": "ResearchStudy",
+          "id": "HealthConnectResearchStudyExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "HealthConnectResearchSubjectExample",
+          "fshType": "Instance",
+          "resourceType": "ResearchSubject",
+          "id": "HealthConnectResearchSubjectExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "HealthConnectSerumGlucoseExample",
           "fshType": "Instance",
           "resourceType": "Observation",
-          "id": "HealthConnectBodyTemperatureExample",
+          "id": "HealthConnectSerumGlucoseExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "HealthConnectSerumGlucoseSpecimenExample",
+          "fshType": "Instance",
+          "resourceType": "Specimen",
+          "id": "HealthConnectSerumGlucoseSpecimenExample",
           "classification": "example"
         },
         {
@@ -1526,17 +2982,24 @@
           "classification": "example"
         },
         {
-          "fshName": "HealthConnectHeartRateProvenanceExample",
+          "fshName": "HealthConnectSourceApplicationExample",
           "fshType": "Instance",
-          "resourceType": "Provenance",
-          "id": "HealthConnectHeartRateProvenanceExample",
+          "resourceType": "Device",
+          "id": "HealthConnectSourceApplicationExample",
           "classification": "example"
         },
         {
-          "fshName": "HealthConnectBodyWeightProvenanceExample",
+          "fshName": "HealthConnectSpecimenIdentifier",
           "fshType": "Instance",
-          "resourceType": "Provenance",
-          "id": "HealthConnectBodyWeightProvenanceExample",
+          "resourceType": "NamingSystem",
+          "id": "health-connect-specimen-id",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthConnectStepCountExample",
+          "fshType": "Instance",
+          "resourceType": "Observation",
+          "id": "HealthConnectStepCountExample",
           "classification": "example"
         },
         {
@@ -1552,6 +3015,181 @@
           "resourceType": "Bundle",
           "id": "HealthConnectStudyBundleExample",
           "classification": "example"
+        },
+        {
+          "fshName": "HealthConnectStudyPlanExample",
+          "fshType": "Instance",
+          "resourceType": "PlanDefinition",
+          "id": "HealthConnectStudyPlanExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "HealthConnectWholeBloodGlucoseExample",
+          "fshType": "Instance",
+          "resourceType": "Observation",
+          "id": "HealthConnectWholeBloodGlucoseExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "HealthConnectWholeBloodGlucoseSpecimenExample",
+          "fshType": "Instance",
+          "resourceType": "Specimen",
+          "id": "HealthConnectWholeBloodGlucoseSpecimenExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "HealthConnectBasalMetabolicRate",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "health-connect-basal-metabolic-rate",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthConnectCapillaryBloodGlucose",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "health-connect-capillary-blood-glucose",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthConnectConversionProvenance",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "health-connect-conversion-provenance",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthConnectDietaryEnergyFromFat",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "health-connect-dietary-energy-from-fat",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthConnectDietaryFatTrans",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "health-connect-dietary-fat-trans",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthConnectDietaryFatUnsaturated",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "health-connect-dietary-fat-unsaturated",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthConnectDietaryFolicAcid",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "health-connect-dietary-folic-acid",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthConnectElevationGained",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "health-connect-elevation-gained",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthConnectInterstitialGlucose",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "health-connect-interstitial-glucose",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthConnectMenstruationPeriod",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "health-connect-menstruation-period",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthConnectObservation",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "health-connect-observation",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthConnectSerumPlasmaGlucose",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "health-connect-serum-plasma-glucose",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthConnectSpecimen",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "health-connect-specimen",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthConnectStepCadence",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "health-connect-step-cadence",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthConnectTotalEnergy",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "health-connect-total-energy",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthConnectWholeBloodGlucose",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "health-connect-whole-blood-glucose",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthConnectMealTypeVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "health-connect-meal-type",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthConnectMeasurementVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "health-connect-measurement",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthConnectMenstruationPeriodVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "health-connect-menstruation-period",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthConnectRecordTypeVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "health-connect-record-type",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthConnectRelationToMealVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "health-connect-relation-to-meal",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthConnectSleepStageVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "health-connect-sleep-stage",
+          "classification": "definition"
         }
       ]
     },
@@ -1560,6 +3198,13 @@
       "packageId": "org.grovealliance.fhir.providers",
       "canonical": "https://grovealliance.org/fhir/providers",
       "artifacts": [
+        {
+          "fshName": "ProviderMeasurementCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "provider-measurement",
+          "classification": "definition"
+        },
         {
           "fshName": "ProviderProviderCS",
           "fshType": "CodeSystem",
@@ -1687,10 +3332,38 @@
           "classification": "example"
         },
         {
+          "fshName": "ProviderBodyFatMass",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "provider-body-fat-mass",
+          "classification": "definition"
+        },
+        {
           "fshName": "ProviderConversionProvenance",
           "fshType": "Profile",
           "resourceType": "StructureDefinition",
           "id": "provider-conversion-provenance",
+          "classification": "definition"
+        },
+        {
+          "fshName": "ProviderExtracellularWaterMass",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "provider-extracellular-water-mass",
+          "classification": "definition"
+        },
+        {
+          "fshName": "ProviderIntracellularWaterMass",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "provider-intracellular-water-mass",
+          "classification": "definition"
+        },
+        {
+          "fshName": "ProviderMuscleMass",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "provider-muscle-mass",
           "classification": "definition"
         },
         {
@@ -1705,6 +3378,20 @@
           "fshType": "Profile",
           "resourceType": "StructureDefinition",
           "id": "provider-recording-document",
+          "classification": "definition"
+        },
+        {
+          "fshName": "ProviderSleepingHeartRateAverage",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "provider-sleeping-heart-rate-average",
+          "classification": "definition"
+        },
+        {
+          "fshName": "ProviderMeasurementVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "provider-measurement",
           "classification": "definition"
         },
         {
@@ -1729,20 +3416,6 @@
       "canonical": "https://grovealliance.org/fhir/questionnaire",
       "artifacts": [
         {
-          "fshName": "GroveQuestionnaire",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "grove-questionnaire",
-          "classification": "definition"
-        },
-        {
-          "fshName": "GroveQuestionnaireResponse",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "grove-questionnaire-response",
-          "classification": "definition"
-        },
-        {
           "fshName": "GroveQuestionnairePatientExample",
           "fshType": "Instance",
           "resourceType": "Patient",
@@ -1762,6 +3435,20 @@
           "resourceType": "QuestionnaireResponse",
           "id": "GroveWeeklySymptomCheckInResponseExample",
           "classification": "example"
+        },
+        {
+          "fshName": "GroveQuestionnaire",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-questionnaire",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveQuestionnaireResponse",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-questionnaire-response",
+          "classification": "definition"
         }
       ]
     }

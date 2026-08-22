@@ -69,6 +69,23 @@ OWNERS = {
             "platform-exclusive profiles."
         ),
     },
+    "providers": {
+        "parent": "ProviderObservation",
+        "generated": "providers/input/fsh/generated-measurement-profiles.fsh",
+        "measurementSystemTail": "/CodeSystem/provider-measurement",
+        "codeSystem": "ProviderMeasurementCS",
+        "valueSet": "ProviderMeasurementVS",
+        "terminologyId": "provider-measurement",
+        "terminologyTitle": "Provider Measurement",
+        "codeSystemDescription": (
+            "Measurement concepts defined by the providers adapter for "
+            "provider-scoped results no established code represents faithfully."
+        ),
+        "valueSetDescription": (
+            "Measurement concepts defined by the providers adapter for its "
+            "provider-scoped profiles."
+        ),
+    },
     "health-connect": {
         "parent": "HealthConnectObservation",
         "generated": "health-connect/input/fsh/generated-measurement-profiles.fsh",
@@ -116,18 +133,21 @@ HEADER = """// GENERATED FILE. Edit catalog/measurement-catalog.json and run
 
 """
 
-DIGEST_SCOPE = "grove-terminology-projection-2"
+DIGEST_SCOPE = "grove-terminology-projection-3"
 PROJECTION_KEYS = (
     "code",
     "components",
     "description",
     "effective",
     "hasMember",
+    "method",
+    "methodChoice",
     "obeys",
     "quantity",
     "standardProfile",
     "valueKind",
     "valueSet",
+    "resultCodes",
     "resultCodeSystem",
     "allowedValues",
 )
@@ -217,6 +237,27 @@ def render_profile(measurement: dict, aliases: dict[str, str], by_id: dict) -> s
         lines.append("* effectivePeriod.end 1..1 MS")
     else:
         lines.append("* effective[x] only dateTime")
+    method = measurement.get("method")
+    owner_key = measurement.get("owner", "mobile")
+    method_cs = (
+        "GroveAggregationMethodCS"
+        if owner_key == "mobile"
+        else "https://grovealliance.org/fhir/mobile/CodeSystem/grove-aggregation-method"
+    )
+    method_vs = (
+        "GroveAggregationMethodVS"
+        if owner_key == "mobile"
+        else "https://grovealliance.org/fhir/mobile/ValueSet/grove-aggregation-method"
+    )
+    if method:
+        lines.append("* method 1..1 MS")
+        lines.append(
+            f"* method = {method_cs}#{method['code']} "
+            f'"{method["display"]}"'
+        )
+    elif measurement.get("methodChoice"):
+        lines.append("* method 1..1 MS")
+        lines.append(f"* method from {method_vs} (required)")
     kind = measurement["valueKind"]
     if kind == "quantity":
         lines.extend(quantity_rules("", measurement["quantity"], standard is None))
@@ -228,28 +269,47 @@ def render_profile(measurement: dict, aliases: dict[str, str], by_id: dict) -> s
         )
     elif kind == "components":
         lines.append("* value[x] 0..0")
+    else:
+        raise SystemExit(f"{measurement['id']}: unsupported valueKind {kind}")
+    if measurement.get("components"):
         lines.append("* component ^slicing.discriminator.type = #pattern")
         lines.append('* component ^slicing.discriminator.path = "code"')
         lines.append("* component ^slicing.rules = #open")
         contains = " and ".join(
-            f"{component['id']} 1..1 MS" for component in measurement["components"]
+            f"{component['id']} {component.get('cardinality', '1..1')} MS"
+            for component in measurement["components"]
         )
         lines.append(f"* component contains {contains}")
         for component in measurement["components"]:
             slice_name = component["id"]
-            if component["system"] != LOINC:
-                raise SystemExit(
-                    f"{measurement['id']}: unsupported component system "
-                    f"{component['system']}"
+            if component["system"] == LOINC:
+                lines.append(
+                    f"* component[{slice_name}].code = $loinc#{component['code']}"
                 )
-            lines.append(f"* component[{slice_name}].code = $loinc#{component['code']}")
-            lines.extend(
-                quantity_rules(
-                    f"component[{slice_name}].", component["quantity"], False
+            else:
+                lines.append(
+                    f"* component[{slice_name}].code = "
+                    f"{component['system']}#{component['code']}"
                 )
-            )
-    else:
-        raise SystemExit(f"{measurement['id']}: unsupported valueKind {kind}")
+            if component.get("quantity"):
+                lines.extend(
+                    quantity_rules(
+                        f"component[{slice_name}].", component["quantity"], False
+                    )
+                )
+            elif component.get("valueSet"):
+                lines.append(
+                    f"* component[{slice_name}].value[x] only CodeableConcept"
+                )
+                cardinality = component.get("cardinality", "1..1")
+                lines.append(
+                    f"* component[{slice_name}].valueCodeableConcept "
+                    f"{'1..1 MS' if cardinality == '1..1' else 'MS'}"
+                )
+                lines.append(
+                    f"* component[{slice_name}].valueCodeableConcept from "
+                    f"{value_set_name(component['valueSet'])} (required)"
+                )
     for member in measurement.get("hasMember", []):
         lines.append(
             f"* hasMember only Reference({fsh_name(by_id[member]['profile'])})"
@@ -264,6 +324,18 @@ def render_owner_terminology(owner_key: str, measurements: list[dict]) -> str | 
         for m in measurements
         if m["code"]["system"].endswith(owner["measurementSystemTail"])
     ]
+    for m in measurements:
+        for component in m.get("components") or []:
+            if str(component.get("system", "")).endswith(
+                owner["measurementSystemTail"]
+            ) and component.get("display"):
+                concepts.append(
+                    {
+                        "code": component["code"],
+                        "display": component["display"],
+                        "definition": component.get("definition", component["display"]),
+                    }
+                )
     if not concepts:
         return None
     lines = [
@@ -285,6 +357,55 @@ def render_owner_terminology(owner_key: str, measurements: list[dict]) -> str | 
     lines.append("* ^experimental = false")
     lines.append(f"* include codes from system {owner['codeSystem']}")
     return "\n".join(lines) + "\n"
+
+
+def render_code_set(name: str, terminology_id: str, title: str, codes: list) -> str:
+    lines = [
+        f"CodeSystem: {name}CS",
+        f"Id: {terminology_id}",
+        f'Title: "{title} Result"',
+        f'Description: "The closed result codes of the {title} measurement."',
+        "* ^experimental = false",
+        "* ^caseSensitive = true",
+        "* ^content = #complete",
+    ]
+    for code in codes:
+        lines.append(f'* #{code["code"]} "{code["display"]}" "{code["definition"]}"')
+    lines.append("")
+    lines.append(f"ValueSet: {name}VS")
+    lines.append(f"Id: {terminology_id}")
+    lines.append(f'Title: "{title} Result"')
+    lines.append(
+        f'Description: "Every admitted result code of the {title} measurement."'
+    )
+    lines.append("* ^experimental = false")
+    lines.append(f"* include codes from system {name}CS")
+    return "\n".join(lines) + "\n"
+
+
+def render_result_terminology(measurement: dict) -> list[str]:
+    """Generate the CS/VS pairs for a measurement's coded result and components."""
+    blocks: list[str] = []
+    if measurement.get("resultCodes"):
+        blocks.append(
+            render_code_set(
+                value_set_name(measurement["valueSet"])[:-2],
+                measurement["valueSet"].rsplit("/", 1)[1],
+                measurement["title"],
+                measurement["resultCodes"],
+            )
+        )
+    for component in measurement.get("components") or []:
+        if component.get("resultCodes"):
+            blocks.append(
+                render_code_set(
+                    value_set_name(component["valueSet"])[:-2],
+                    component["valueSet"].rsplit("/", 1)[1],
+                    component.get("title", measurement["title"] + " " + component["id"]),
+                    component["resultCodes"],
+                )
+            )
+    return blocks
 
 
 def hand_block(layout: Layout, name: str) -> str | None:
@@ -389,6 +510,9 @@ def main() -> int:
             m.get("generation", {}).get("emit") for m in owner_measurements
         ):
             blocks.append(terminology)
+        for measurement in owner_measurements:
+            if measurement.get("generation", {}).get("emit"):
+                blocks.extend(render_result_terminology(measurement))
         blocks.extend(emitted.get(owner_key, []))
         if blocks:
             rendered_file = HEADER + "\n".join(blocks)

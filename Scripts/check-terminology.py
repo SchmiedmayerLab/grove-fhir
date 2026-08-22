@@ -59,6 +59,7 @@ def main() -> int:
     table = UcumTable(load(root, "ucum-units.json"))
     pinned = concepts["concepts"]
     property_dimensions = concepts["propertyDimensions"]
+    property_exceptions = concepts.get("propertyExceptions", {})
 
     problems: list[str] = []
     loinc_uses: list[tuple[str, str | None, str]] = []
@@ -125,6 +126,8 @@ def main() -> int:
         row = pinned.get(code["code"])
         if row is None:
             continue  # already reported above
+        if code["code"] in property_exceptions:
+            continue
         if row["property"] not in property_dimensions:
             problems.append(
                 f"measurement-catalog.json:{measurement_id}{suffix}: LOINC "

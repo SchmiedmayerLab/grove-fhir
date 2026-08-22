@@ -240,6 +240,132 @@
               "meaning": "SRWristTemperature.Condition textual value for the sample."
             }
           ]
+        },
+        "rotation-rate": {
+          "source": "SRSensor.rotationRate (CMRecordedRotationRateData)",
+          "columns": [
+            {
+              "name": "timestamp",
+              "type": "timestamp",
+              "meaning": "Sample instant (CMRecordedRotationRateData.startDate)."
+            },
+            {
+              "name": "x",
+              "type": "number",
+              "unit": "rad/s",
+              "meaning": "Rotation rate about x in radians per second."
+            },
+            {
+              "name": "y",
+              "type": "number",
+              "unit": "rad/s",
+              "meaning": "Rotation rate about y in radians per second."
+            },
+            {
+              "name": "z",
+              "type": "number",
+              "unit": "rad/s",
+              "meaning": "Rotation rate about z in radians per second."
+            },
+            {
+              "name": "device",
+              "type": "string",
+              "meaning": "Source device description for the batch."
+            }
+          ]
+        },
+        "odometer": {
+          "source": "SRSensor.odometer (CMOdometerData)",
+          "columns": [
+            {
+              "name": "start",
+              "type": "timestamp",
+              "meaning": "Recording interval start (startDate)."
+            },
+            {
+              "name": "end",
+              "type": "timestamp",
+              "meaning": "Recording interval end (endDate)."
+            },
+            {
+              "name": "gpsDate",
+              "type": "timestamp",
+              "meaning": "Time of the GPS measurement associated with the location."
+            },
+            {
+              "name": "speed",
+              "type": "number",
+              "unit": "m/s",
+              "meaning": "Instantaneous device velocity in metres per second."
+            },
+            {
+              "name": "speedAccuracy",
+              "type": "number",
+              "unit": "m/s",
+              "meaning": "Accuracy of the speed value."
+            },
+            {
+              "name": "slope",
+              "type": "number",
+              "unit": "deg",
+              "meaning": "Slope toward the direction of travel in degrees; empty when unavailable."
+            },
+            {
+              "name": "maxAbsSlope",
+              "type": "number",
+              "unit": "deg",
+              "meaning": "Maximum absolute slope toward all directions in degrees; empty when unavailable."
+            },
+            {
+              "name": "deltaDistance",
+              "type": "number",
+              "unit": "m",
+              "meaning": "Distance travelled since the last location in metres."
+            },
+            {
+              "name": "deltaDistanceAccuracy",
+              "type": "number",
+              "unit": "m",
+              "meaning": "Accuracy of the delta distance in metres."
+            },
+            {
+              "name": "deltaAltitude",
+              "type": "number",
+              "unit": "m",
+              "meaning": "Change in altitude above mean sea level in metres."
+            },
+            {
+              "name": "verticalAccuracy",
+              "type": "number",
+              "unit": "m",
+              "meaning": "Validity and estimated uncertainty of the altitude values in metres."
+            },
+            {
+              "name": "originDevice",
+              "type": "string",
+              "meaning": "CMOdometerOriginDevice case name: unknown, local, or remote."
+            },
+            {
+              "name": "device",
+              "type": "string",
+              "meaning": "Source device description for the batch."
+            }
+          ]
+        },
+        "heartbeat-series": {
+          "source": "HKDataTypeIdentifierHeartbeatSeries (HKHeartbeatSeriesSample)",
+          "columns": [
+            {
+              "name": "timestamp",
+              "type": "timestamp",
+              "meaning": "Beat instant as seconds since the series start anchor stated by the document."
+            },
+            {
+              "name": "precededByGap",
+              "type": "integer",
+              "meaning": "1 when a gap in beat detection precedes this beat, else 0."
+            }
+          ]
         }
       }
     },
@@ -439,6 +565,18 @@
         "tar": "ustar magic; entry paths are relative, at most 100 UTF-8 bytes, without leading slash or dot segments; file mode 0644, directory mode 0755; owner, group, and device ids 0; modification time 0; contents padded to 512-byte blocks; the archive ends with two zero blocks.",
         "compression": "The whole tar stream is stored uncompressed, gzip-compressed, or Zstandard-compressed; receivers detect the compression from the leading magic bytes (0x1F 0x8B gzip, 0x28 0xB5 0x2F 0xFD Zstandard, otherwise uncompressed).",
         "determinism": "Entry order, header fields, and compression parameters are producer-deterministic: archiving the same files twice yields identical bytes for the uncompressed tar stream."
+      }
+    },
+    "fhir-resource-1": {
+      "title": "FHIR Resource 1",
+      "contentType": "application/fhir+json",
+      "status": "active",
+      "specification": {
+        "encoding": "UTF-8.",
+        "structure": "One complete provider-issued FHIR resource in FHIR JSON representation, byte-preserved exactly as the source platform delivered it.",
+        "fhirVersion": "The payload's FHIR release (DSTU2 or R4) is declared by the carrying DocumentReference and never inferred; the payload is never converted between releases.",
+        "provenance": "The carrying document records the issuing source; Grove never asserts conformance over another issuer's resource.",
+        "scope": "One document carries exactly one clinical record's FHIR payload."
       }
     }
   }

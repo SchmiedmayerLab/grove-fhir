@@ -10,58 +10,132 @@
     "rounding": "half-even",
     "epoch": "1970-01-01T00:00:00Z",
     "offsetPolicy": "preserve-source-offset",
-    "excludedContracts": ["Sensor SampledData", "ECG SampledData"],
+    "excludedContracts": [
+      "Sensor SampledData",
+      "ECG SampledData"
+    ],
     "vectors": [
-      {"id": "positive-below-half", "input": "1970-01-01T00:00:00.000499999Z", "output": "1970-01-01T00:00:00.000Z"},
-      {"id": "positive-half-to-even", "input": "1970-01-01T00:00:00.000500000Z", "output": "1970-01-01T00:00:00.000Z"},
-      {"id": "positive-half-to-next-even", "input": "1970-01-01T00:00:00.001500000Z", "output": "1970-01-01T00:00:00.002Z"},
-      {"id": "negative-half-to-even", "input": "1969-12-31T23:59:59.999500000Z", "output": "1970-01-01T00:00:00.000Z"},
-      {"id": "negative-half-to-previous-even", "input": "1969-12-31T23:59:59.998500000Z", "output": "1969-12-31T23:59:59.998Z"},
-      {"id": "offset-preserved", "input": "2026-08-20T08:30:00.251499999-07:00", "output": "2026-08-20T08:30:00.251-07:00"}
+      {
+        "id": "positive-below-half",
+        "input": "1970-01-01T00:00:00.000499999Z",
+        "output": "1970-01-01T00:00:00.000Z"
+      },
+      {
+        "id": "positive-half-to-even",
+        "input": "1970-01-01T00:00:00.000500000Z",
+        "output": "1970-01-01T00:00:00.000Z"
+      },
+      {
+        "id": "positive-half-to-next-even",
+        "input": "1970-01-01T00:00:00.001500000Z",
+        "output": "1970-01-01T00:00:00.002Z"
+      },
+      {
+        "id": "negative-half-to-even",
+        "input": "1969-12-31T23:59:59.999500000Z",
+        "output": "1970-01-01T00:00:00.000Z"
+      },
+      {
+        "id": "negative-half-to-previous-even",
+        "input": "1969-12-31T23:59:59.998500000Z",
+        "output": "1969-12-31T23:59:59.998Z"
+      },
+      {
+        "id": "offset-preserved",
+        "input": "2026-08-20T08:30:00.251499999-07:00",
+        "output": "2026-08-20T08:30:00.251-07:00"
+      }
     ]
   },
   "sourceContextRules": {
     "healthkit.default": {
-      "required": ["Observation.code.coding[system=https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-source-type]"],
-      "allowedAdditions": ["Observation.identifier[healthKitObjectId]", "Observation.device", "Observation.extension[recordingMethod]", "Observation.extension[gatewayDevice]", "Observation.extension[researchStudy]", "Observation.derivedFrom"]
+      "required": [
+        "Observation.code.coding[system=https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-source-type]"
+      ],
+      "allowedAdditions": [
+        "Observation.identifier[healthKitObjectId]",
+        "Observation.device",
+        "Observation.extension[recordingMethod]",
+        "Observation.extension[gatewayDevice]",
+        "Observation.extension[researchStudy]",
+        "Observation.derivedFrom"
+      ]
     },
     "healthkit.heart-rate": {
       "inherits": "healthkit.default",
-      "allowedAdditions": ["Observation.component[HKMetadataKeyHeartRateMotionContext]"]
+      "allowedAdditions": [
+        "Observation.component[HKMetadataKeyHeartRateMotionContext]"
+      ]
     },
     "healthkit.sleep-stage": {
       "inherits": "healthkit.default",
-      "required": ["Observation.valueCodeableConcept.coding[system=https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-sleep-analysis]"],
+      "required": [
+        "Observation.valueCodeableConcept.coding[system=https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-sleep-analysis]"
+      ],
       "allowedAdditions": []
     },
     "health-connect.default": {
-      "required": ["Observation.extension[health-connect-record-type]"],
-      "allowedAdditions": ["Observation.identifier[healthConnectRecordId]", "Observation.identifier[healthConnectOutputId]", "Observation.device", "Observation.extension[recordingMethod]", "Observation.extension[gatewayDevice]", "Observation.extension[researchStudy]", "Observation.derivedFrom"]
+      "required": [
+        "Observation.extension[health-connect-record-type]"
+      ],
+      "allowedAdditions": [
+        "Observation.identifier[healthConnectRecordId]",
+        "Observation.identifier[healthConnectOutputId]",
+        "Observation.device",
+        "Observation.extension[recordingMethod]",
+        "Observation.extension[gatewayDevice]",
+        "Observation.extension[researchStudy]",
+        "Observation.derivedFrom"
+      ]
     },
     "health-connect.blood-pressure": {
       "inherits": "health-connect.default",
-      "allowedAdditions": ["Observation.bodySite", "Observation.method"]
+      "allowedAdditions": [
+        "Observation.bodySite",
+        "Observation.method"
+      ]
     },
     "health-connect.temperature": {
       "inherits": "health-connect.default",
-      "allowedAdditions": ["Observation.bodySite"]
+      "allowedAdditions": [
+        "Observation.bodySite"
+      ]
     },
     "health-connect.sleep-duration": {
       "inherits": "health-connect.default",
-      "allowedAdditions": ["Observation.extension[health-connect-sleep-title]", "Observation.note", "Observation.hasMember"]
+      "allowedAdditions": [
+        "Observation.extension[health-connect-sleep-title]",
+        "Observation.note",
+        "Observation.hasMember"
+      ]
     },
     "health-connect.sleep-stage": {
       "inherits": "health-connect.default",
-      "required": ["Observation.valueCodeableConcept.coding[system=https://grovealliance.org/fhir/health-connect/CodeSystem/health-connect-sleep-stage]"],
+      "required": [
+        "Observation.valueCodeableConcept.coding[system=https://grovealliance.org/fhir/health-connect/CodeSystem/health-connect-sleep-stage]"
+      ],
       "allowedAdditions": []
     },
     "providers.default": {
-      "required": ["Observation.extension[provider]", "Observation.extension[provider-source-type]"],
-      "allowedAdditions": ["Observation.identifier[providerSourceRecordId]", "Observation.identifier[providerOutputId]", "Observation.device", "Observation.extension[recordingMethod]", "Observation.extension[gatewayDevice]", "Observation.extension[researchStudy]", "Observation.derivedFrom"]
+      "required": [
+        "Observation.extension[provider]",
+        "Observation.extension[provider-source-type]"
+      ],
+      "allowedAdditions": [
+        "Observation.identifier[providerSourceRecordId]",
+        "Observation.identifier[providerOutputId]",
+        "Observation.device",
+        "Observation.extension[recordingMethod]",
+        "Observation.extension[gatewayDevice]",
+        "Observation.extension[researchStudy]",
+        "Observation.derivedFrom"
+      ]
     },
     "providers.withings-blood-pressure": {
       "inherits": "providers.default",
-      "required": ["Observation.extension[provider-source-type].valueCode=withings/getmeas:9+10"],
+      "required": [
+        "Observation.extension[provider-source-type].valueCode=withings/getmeas:9+10"
+      ],
       "allowedAdditions": []
     }
   },
@@ -69,122 +143,2354 @@
     {
       "id": "active-energy",
       "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-active-energy",
-      "code": {"system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement", "code": "active-energy-burned"},
-      "effective": {"type": "Period", "start": "2026-08-20T08:00:00-07:00", "end": "2026-08-20T09:00:00-07:00"},
-      "result": {"type": "Quantity", "value": 312.5, "system": "http://unitsofmeasure.org", "code": "kcal", "unit": "kcal"},
-      "edgeRules": ["The effective Period has an exact start and end.", "No rate conversion is admitted; value is total active energy for the Period."],
-      "admittedSourceContext": {"healthkit": "healthkit.default", "health-connect": "health-connect.default", "google-health-api": "providers.default", "oura": "providers.default", "withings": "providers.default"}
+      "code": {
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
+        "code": "active-energy-burned"
+      },
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-20T08:00:00-07:00",
+        "end": "2026-08-20T09:00:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 312.5,
+        "system": "http://unitsofmeasure.org",
+        "code": "kcal",
+        "unit": "kcal"
+      },
+      "edgeRules": [
+        "The effective Period has an exact start and end.",
+        "No rate conversion is admitted; value is total active energy for the Period."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default",
+        "google-health-api": "providers.default",
+        "oura": "providers.default",
+        "withings": "providers.default"
+      }
     },
     {
       "id": "basal-body-temperature",
       "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-basal-body-temperature",
-      "code": {"system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement", "code": "basal-body-temperature"},
-      "effective": {"type": "dateTime", "value": "2026-08-20T06:45:00-07:00"},
-      "result": {"type": "Quantity", "value": 36.52, "system": "http://unitsofmeasure.org", "code": "Cel", "unit": "Cel"},
-      "edgeRules": ["Basal/resting semantics must be evidenced by the admitted source type; general body temperature is not substituted.", "Quantity.comparator is not admitted."],
-      "admittedSourceContext": {"healthkit": "healthkit.default", "health-connect": "health-connect.temperature"}
+      "code": {
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
+        "code": "basal-body-temperature"
+      },
+      "effective": {
+        "type": "dateTime",
+        "value": "2026-08-20T06:45:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 36.52,
+        "system": "http://unitsofmeasure.org",
+        "code": "Cel",
+        "unit": "Cel"
+      },
+      "edgeRules": [
+        "Basal/resting semantics must be evidenced by the admitted source type; general body temperature is not substituted.",
+        "Quantity.comparator is not admitted."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.temperature"
+      }
+    },
+    {
+      "id": "basal-energy",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-basal-energy",
+      "code": {
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
+        "code": "basal-energy-burned"
+      },
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-20T08:00:00-07:00",
+        "end": "2026-08-20T09:00:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 68.4,
+        "system": "http://unitsofmeasure.org",
+        "code": "kcal",
+        "unit": "kcal"
+      },
+      "edgeRules": [
+        "The Period is non-zero.",
+        "A populated basal-energy value is non-negative and covers the exact source interval; it never includes active energy."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "google-health-api": "providers.default"
+      }
+    },
+    {
+      "effective": {
+        "type": "dateTime",
+        "value": "2026-08-20T07:45:00.120-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 104,
+        "system": "http://unitsofmeasure.org",
+        "code": "mg/dL",
+        "unit": "mg/dL"
+      },
+      "id": "blood-glucose-unspecified-specimen",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-blood-glucose-unspecified-specimen",
+      "code": {
+        "system": "http://loinc.org",
+        "code": "2339-0"
+      },
+      "edgeRules": [
+        "The result is normalized exactly as the Blood Glucose (Unspecified Specimen) profile states."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "google-health-api": "providers.default"
+      }
     },
     {
       "id": "blood-pressure",
       "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-blood-pressure",
-      "code": {"system": "http://loinc.org", "code": "85354-9"},
-      "effective": {"type": "dateTime", "value": "2026-08-20T08:10:00-07:00"},
-      "result": {"type": "components", "components": [
-        {"id": "systolic", "system": "http://loinc.org", "code": "8480-6", "value": 118, "quantitySystem": "http://unitsofmeasure.org", "quantityCode": "mm[Hg]", "unit": "mmHg"},
-        {"id": "diastolic", "system": "http://loinc.org", "code": "8462-4", "value": 76, "quantitySystem": "http://unitsofmeasure.org", "quantityCode": "mm[Hg]", "unit": "mmHg"}
-      ]},
-      "edgeRules": ["Observation.value[x] is absent.", "Exactly one populated systolic and one populated diastolic component are required; a partial panel fails closed."],
-      "admittedSourceContext": {"healthkit": "healthkit.default", "health-connect": "health-connect.blood-pressure", "withings": "providers.withings-blood-pressure"}
+      "code": {
+        "system": "http://loinc.org",
+        "code": "85354-9"
+      },
+      "effective": {
+        "type": "dateTime",
+        "value": "2026-08-20T08:10:00-07:00"
+      },
+      "result": {
+        "type": "components",
+        "components": [
+          {
+            "id": "systolic",
+            "system": "http://loinc.org",
+            "code": "8480-6",
+            "value": 118,
+            "quantitySystem": "http://unitsofmeasure.org",
+            "quantityCode": "mm[Hg]",
+            "unit": "mmHg"
+          },
+          {
+            "id": "diastolic",
+            "system": "http://loinc.org",
+            "code": "8462-4",
+            "value": 76,
+            "quantitySystem": "http://unitsofmeasure.org",
+            "quantityCode": "mm[Hg]",
+            "unit": "mmHg"
+          }
+        ]
+      },
+      "edgeRules": [
+        "Observation.value[x] is absent.",
+        "Exactly one populated systolic and one populated diastolic component are required; a partial panel fails closed."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.blood-pressure",
+        "withings": "providers.withings-blood-pressure"
+      }
+    },
+    {
+      "id": "body-fat-percentage",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-body-fat-percentage",
+      "code": {
+        "system": "http://loinc.org",
+        "code": "41982-0"
+      },
+      "effective": {
+        "type": "dateTime",
+        "value": "2026-08-21T07:12:04.000-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 23.5,
+        "system": "http://unitsofmeasure.org",
+        "code": "%",
+        "unit": "%"
+      },
+      "edgeRules": [
+        "The value is a fraction of total body mass in [0, 100]; source fractions on [0, 1] are scaled to percent before emission.",
+        "No measurement-method coding is asserted; method is adapter context only."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default",
+        "google-health-api": "providers.default",
+        "withings": "providers.default"
+      }
     },
     {
       "id": "body-height",
       "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-body-height",
-      "code": {"system": "http://loinc.org", "code": "8302-2"},
-      "effective": {"type": "dateTime", "value": "2026-08-20T08:15:00-07:00"},
-      "result": {"type": "Quantity", "value": 171.2, "system": "http://unitsofmeasure.org", "code": "cm", "unit": "cm"},
-      "edgeRules": ["The normalized result is centimetres; source units must be converted exactly before projection."],
-      "admittedSourceContext": {"healthkit": "healthkit.default", "health-connect": "health-connect.default", "google-health-api": "providers.default", "withings": "providers.default"}
+      "code": {
+        "system": "http://loinc.org",
+        "code": "8302-2"
+      },
+      "effective": {
+        "type": "dateTime",
+        "value": "2026-08-20T08:15:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 171.2,
+        "system": "http://unitsofmeasure.org",
+        "code": "cm",
+        "unit": "cm"
+      },
+      "edgeRules": [
+        "The normalized result is centimetres; source units must be converted exactly before projection."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default",
+        "google-health-api": "providers.default",
+        "withings": "providers.default"
+      }
     },
     {
       "id": "body-temperature",
       "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-body-temperature",
-      "code": {"system": "http://loinc.org", "code": "8310-5"},
-      "effective": {"type": "dateTime", "value": "2026-08-20T08:20:00-07:00"},
-      "result": {"type": "Quantity", "value": 37.1, "system": "http://unitsofmeasure.org", "code": "Cel", "unit": "Cel"},
-      "edgeRules": ["This is general body temperature; basal/resting temperature is not substituted.", "Source measurement location is adapter context and does not change the clinical projection."],
-      "admittedSourceContext": {"healthkit": "healthkit.default", "health-connect": "health-connect.temperature", "google-health-api": "providers.default", "withings": "providers.default"}
+      "code": {
+        "system": "http://loinc.org",
+        "code": "8310-5"
+      },
+      "effective": {
+        "type": "dateTime",
+        "value": "2026-08-20T08:20:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 37.1,
+        "system": "http://unitsofmeasure.org",
+        "code": "Cel",
+        "unit": "Cel"
+      },
+      "edgeRules": [
+        "This is general body temperature; basal/resting temperature is not substituted.",
+        "Source measurement location is adapter context and does not change the clinical projection."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.temperature",
+        "google-health-api": "providers.default",
+        "withings": "providers.default"
+      }
+    },
+    {
+      "id": "body-water-mass",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-body-water-mass",
+      "code": {
+        "system": "http://loinc.org",
+        "code": "101683-1"
+      },
+      "effective": {
+        "type": "dateTime",
+        "value": "2026-08-21T07:12:04.000-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 38.2,
+        "system": "http://unitsofmeasure.org",
+        "code": "kg",
+        "unit": "kg"
+      },
+      "edgeRules": [
+        "The value is total body water as a mass; volume intake sources are never admitted here.",
+        "Withings measure.value*10^unit is decoded to kilograms before emission."
+      ],
+      "admittedSourceContext": {
+        "health-connect": "health-connect.default",
+        "withings": "providers.default"
+      }
     },
     {
       "id": "body-weight",
       "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-body-weight",
-      "code": {"system": "http://loinc.org", "code": "29463-7"},
-      "effective": {"type": "dateTime", "value": "2026-08-20T08:25:00-07:00"},
-      "result": {"type": "Quantity", "value": 68.4, "system": "http://unitsofmeasure.org", "code": "kg", "unit": "kg"},
-      "edgeRules": ["The normalized result is kilograms; source units must be converted exactly before projection."],
-      "admittedSourceContext": {"healthkit": "healthkit.default", "health-connect": "health-connect.default", "google-health-api": "providers.default", "withings": "providers.default"}
+      "code": {
+        "system": "http://loinc.org",
+        "code": "29463-7"
+      },
+      "effective": {
+        "type": "dateTime",
+        "value": "2026-08-20T08:25:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 68.4,
+        "system": "http://unitsofmeasure.org",
+        "code": "kg",
+        "unit": "kg"
+      },
+      "edgeRules": [
+        "The normalized result is kilograms; source units must be converted exactly before projection."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default",
+        "google-health-api": "providers.default",
+        "withings": "providers.default"
+      }
+    },
+    {
+      "id": "bone-mass",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-bone-mass",
+      "code": {
+        "system": "http://loinc.org",
+        "code": "101685-6"
+      },
+      "effective": {
+        "type": "dateTime",
+        "value": "2026-08-21T07:12:04.000-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 3.1,
+        "system": "http://unitsofmeasure.org",
+        "code": "kg",
+        "unit": "kg"
+      },
+      "edgeRules": [
+        "The value is an estimated total bone mass; DXA bone-density observations are never emitted under this code."
+      ],
+      "admittedSourceContext": {
+        "health-connect": "health-connect.default",
+        "withings": "providers.default"
+      }
+    },
+    {
+      "id": "cervical-mucus-quality",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-cervical-mucus-quality",
+      "code": {
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
+        "code": "cervical-mucus-quality"
+      },
+      "effective": {
+        "type": "dateTime",
+        "value": "2026-08-20T07:20:00-07:00"
+      },
+      "result": {
+        "type": "CodeableConcept",
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-cervical-mucus-quality",
+        "code": "dry"
+      },
+      "edgeRules": [
+        "The effective bounds are exact.",
+        "The result code comes from the closed Cervical Mucus Quality value set; the exact platform token is retained as a secondary coding where one exists."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default"
+      }
+    },
+    {
+      "id": "cycling-cadence",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-cycling-cadence",
+      "code": {
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
+        "code": "cycling-cadence"
+      },
+      "effective": {
+        "type": "dateTime",
+        "value": "2026-08-20T08:30:00.251-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 85,
+        "system": "http://unitsofmeasure.org",
+        "code": "/min",
+        "unit": "revolutions/minute"
+      },
+      "edgeRules": [
+        "Only a scalar instantaneous sample is admitted; a Health Connect CyclingPedalingCadenceRecord series normalizes to one Observation per sample at that sample's time.",
+        "Step cadence counts steps, not crank revolutions, and never maps here."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default"
+      }
+    },
+    {
+      "id": "deep-sleep-duration",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-deep-sleep-duration",
+      "code": {
+        "system": "http://loinc.org",
+        "code": "93831-6"
+      },
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-19T22:40:00-07:00",
+        "end": "2026-08-20T06:55:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 92,
+        "system": "http://unitsofmeasure.org",
+        "code": "min",
+        "unit": "min"
+      },
+      "edgeRules": [
+        "The effective Period has an exact start and end.",
+        "The method coding asserts the aggregation window; the value is never a point Deep Sleep Duration sample."
+      ],
+      "admittedSourceContext": {
+        "google-health-api": "providers.default",
+        "oura": "providers.default",
+        "withings": "providers.default"
+      }
+    },
+    {
+      "id": "dietary-biotin",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-biotin",
+      "code": {
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
+        "code": "dietary-biotin"
+      },
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-20T12:15:00-07:00",
+        "end": "2026-08-20T12:45:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 45,
+        "system": "http://unitsofmeasure.org",
+        "code": "ug",
+        "unit": "ug"
+      },
+      "edgeRules": [
+        "The effective Period has an exact start and end.",
+        "The value is normalized exactly as the Grove Mobile Dietary Biotin profile states."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default"
+      }
+    },
+    {
+      "id": "dietary-caffeine",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-caffeine",
+      "code": {
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
+        "code": "dietary-caffeine"
+      },
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-20T12:15:00-07:00",
+        "end": "2026-08-20T12:45:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 320,
+        "system": "http://unitsofmeasure.org",
+        "code": "mg",
+        "unit": "mg"
+      },
+      "edgeRules": [
+        "The effective Period has an exact start and end.",
+        "The value is normalized exactly as the Grove Mobile Dietary Caffeine profile states."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default"
+      }
+    },
+    {
+      "id": "dietary-calcium",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-calcium",
+      "code": {
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
+        "code": "dietary-calcium"
+      },
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-20T12:15:00-07:00",
+        "end": "2026-08-20T12:45:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 320,
+        "system": "http://unitsofmeasure.org",
+        "code": "mg",
+        "unit": "mg"
+      },
+      "edgeRules": [
+        "The effective Period has an exact start and end.",
+        "The value is normalized exactly as the Grove Mobile Dietary Calcium profile states."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default"
+      }
+    },
+    {
+      "id": "dietary-carbohydrates",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-carbohydrates",
+      "code": {
+        "system": "http://loinc.org",
+        "code": "9060-5"
+      },
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-20T12:15:00-07:00",
+        "end": "2026-08-20T12:45:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 24.5,
+        "system": "http://unitsofmeasure.org",
+        "code": "g",
+        "unit": "g"
+      },
+      "edgeRules": [
+        "The effective Period has an exact start and end.",
+        "The value is normalized exactly as the Grove Mobile Dietary Carbohydrates profile states."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default"
+      }
+    },
+    {
+      "id": "dietary-chloride",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-chloride",
+      "code": {
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
+        "code": "dietary-chloride"
+      },
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-20T12:15:00-07:00",
+        "end": "2026-08-20T12:45:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 320,
+        "system": "http://unitsofmeasure.org",
+        "code": "mg",
+        "unit": "mg"
+      },
+      "edgeRules": [
+        "The effective Period has an exact start and end.",
+        "The value is normalized exactly as the Grove Mobile Dietary Chloride profile states."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default"
+      }
+    },
+    {
+      "id": "dietary-cholesterol",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-cholesterol",
+      "code": {
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
+        "code": "dietary-cholesterol"
+      },
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-20T12:15:00-07:00",
+        "end": "2026-08-20T12:45:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 320,
+        "system": "http://unitsofmeasure.org",
+        "code": "mg",
+        "unit": "mg"
+      },
+      "edgeRules": [
+        "The effective Period has an exact start and end.",
+        "The value is normalized exactly as the Grove Mobile Dietary Cholesterol profile states."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default"
+      }
+    },
+    {
+      "id": "dietary-chromium",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-chromium",
+      "code": {
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
+        "code": "dietary-chromium"
+      },
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-20T12:15:00-07:00",
+        "end": "2026-08-20T12:45:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 45,
+        "system": "http://unitsofmeasure.org",
+        "code": "ug",
+        "unit": "ug"
+      },
+      "edgeRules": [
+        "The effective Period has an exact start and end.",
+        "The value is normalized exactly as the Grove Mobile Dietary Chromium profile states."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default"
+      }
+    },
+    {
+      "id": "dietary-copper",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-copper",
+      "code": {
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
+        "code": "dietary-copper"
+      },
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-20T12:15:00-07:00",
+        "end": "2026-08-20T12:45:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 45,
+        "system": "http://unitsofmeasure.org",
+        "code": "ug",
+        "unit": "ug"
+      },
+      "edgeRules": [
+        "The effective Period has an exact start and end.",
+        "The value is normalized exactly as the Grove Mobile Dietary Copper profile states."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default"
+      }
+    },
+    {
+      "id": "dietary-energy",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-energy",
+      "code": {
+        "system": "http://loinc.org",
+        "code": "9052-2"
+      },
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-20T12:15:00-07:00",
+        "end": "2026-08-20T12:45:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 640,
+        "system": "http://unitsofmeasure.org",
+        "code": "kcal",
+        "unit": "kcal"
+      },
+      "edgeRules": [
+        "The effective Period has an exact start and end.",
+        "The value is normalized exactly as the Grove Mobile Dietary Energy profile states."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default"
+      }
+    },
+    {
+      "id": "dietary-fat-monounsaturated",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-fat-monounsaturated",
+      "code": {
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
+        "code": "dietary-fat-monounsaturated"
+      },
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-20T12:15:00-07:00",
+        "end": "2026-08-20T12:45:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 24.5,
+        "system": "http://unitsofmeasure.org",
+        "code": "g",
+        "unit": "g"
+      },
+      "edgeRules": [
+        "The effective Period has an exact start and end.",
+        "The value is normalized exactly as the Grove Mobile Dietary Monounsaturated Fat profile states."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default"
+      }
+    },
+    {
+      "id": "dietary-fat-polyunsaturated",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-fat-polyunsaturated",
+      "code": {
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
+        "code": "dietary-fat-polyunsaturated"
+      },
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-20T12:15:00-07:00",
+        "end": "2026-08-20T12:45:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 24.5,
+        "system": "http://unitsofmeasure.org",
+        "code": "g",
+        "unit": "g"
+      },
+      "edgeRules": [
+        "The effective Period has an exact start and end.",
+        "The value is normalized exactly as the Grove Mobile Dietary Polyunsaturated Fat profile states."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default"
+      }
+    },
+    {
+      "id": "dietary-fat-saturated",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-fat-saturated",
+      "code": {
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
+        "code": "dietary-fat-saturated"
+      },
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-20T12:15:00-07:00",
+        "end": "2026-08-20T12:45:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 24.5,
+        "system": "http://unitsofmeasure.org",
+        "code": "g",
+        "unit": "g"
+      },
+      "edgeRules": [
+        "The effective Period has an exact start and end.",
+        "The value is normalized exactly as the Grove Mobile Dietary Saturated Fat profile states."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default"
+      }
+    },
+    {
+      "id": "dietary-fat-total",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-fat-total",
+      "code": {
+        "system": "http://loinc.org",
+        "code": "9067-0"
+      },
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-20T12:15:00-07:00",
+        "end": "2026-08-20T12:45:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 24.5,
+        "system": "http://unitsofmeasure.org",
+        "code": "g",
+        "unit": "g"
+      },
+      "edgeRules": [
+        "The effective Period has an exact start and end.",
+        "The value is normalized exactly as the Grove Mobile Dietary Fat profile states."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default"
+      }
+    },
+    {
+      "id": "dietary-fiber",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-fiber",
+      "code": {
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
+        "code": "dietary-fiber"
+      },
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-20T12:15:00-07:00",
+        "end": "2026-08-20T12:45:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 24.5,
+        "system": "http://unitsofmeasure.org",
+        "code": "g",
+        "unit": "g"
+      },
+      "edgeRules": [
+        "The effective Period has an exact start and end.",
+        "The value is normalized exactly as the Grove Mobile Dietary Fiber profile states."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default"
+      }
+    },
+    {
+      "id": "dietary-folate",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-folate",
+      "code": {
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
+        "code": "dietary-folate"
+      },
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-20T12:15:00-07:00",
+        "end": "2026-08-20T12:45:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 45,
+        "system": "http://unitsofmeasure.org",
+        "code": "ug",
+        "unit": "ug"
+      },
+      "edgeRules": [
+        "The effective Period has an exact start and end.",
+        "The value is normalized exactly as the Grove Mobile Dietary Folate profile states."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default"
+      }
+    },
+    {
+      "id": "dietary-iodine",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-iodine",
+      "code": {
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
+        "code": "dietary-iodine"
+      },
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-20T12:15:00-07:00",
+        "end": "2026-08-20T12:45:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 45,
+        "system": "http://unitsofmeasure.org",
+        "code": "ug",
+        "unit": "ug"
+      },
+      "edgeRules": [
+        "The effective Period has an exact start and end.",
+        "The value is normalized exactly as the Grove Mobile Dietary Iodine profile states."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default"
+      }
+    },
+    {
+      "id": "dietary-iron",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-iron",
+      "code": {
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
+        "code": "dietary-iron"
+      },
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-20T12:15:00-07:00",
+        "end": "2026-08-20T12:45:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 320,
+        "system": "http://unitsofmeasure.org",
+        "code": "mg",
+        "unit": "mg"
+      },
+      "edgeRules": [
+        "The effective Period has an exact start and end.",
+        "The value is normalized exactly as the Grove Mobile Dietary Iron profile states."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default"
+      }
+    },
+    {
+      "id": "dietary-magnesium",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-magnesium",
+      "code": {
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
+        "code": "dietary-magnesium"
+      },
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-20T12:15:00-07:00",
+        "end": "2026-08-20T12:45:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 320,
+        "system": "http://unitsofmeasure.org",
+        "code": "mg",
+        "unit": "mg"
+      },
+      "edgeRules": [
+        "The effective Period has an exact start and end.",
+        "The value is normalized exactly as the Grove Mobile Dietary Magnesium profile states."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default"
+      }
+    },
+    {
+      "id": "dietary-manganese",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-manganese",
+      "code": {
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
+        "code": "dietary-manganese"
+      },
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-20T12:15:00-07:00",
+        "end": "2026-08-20T12:45:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 320,
+        "system": "http://unitsofmeasure.org",
+        "code": "mg",
+        "unit": "mg"
+      },
+      "edgeRules": [
+        "The effective Period has an exact start and end.",
+        "The value is normalized exactly as the Grove Mobile Dietary Manganese profile states."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default"
+      }
+    },
+    {
+      "id": "dietary-molybdenum",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-molybdenum",
+      "code": {
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
+        "code": "dietary-molybdenum"
+      },
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-20T12:15:00-07:00",
+        "end": "2026-08-20T12:45:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 45,
+        "system": "http://unitsofmeasure.org",
+        "code": "ug",
+        "unit": "ug"
+      },
+      "edgeRules": [
+        "The effective Period has an exact start and end.",
+        "The value is normalized exactly as the Grove Mobile Dietary Molybdenum profile states."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default"
+      }
+    },
+    {
+      "id": "dietary-niacin",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-niacin",
+      "code": {
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
+        "code": "dietary-niacin"
+      },
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-20T12:15:00-07:00",
+        "end": "2026-08-20T12:45:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 320,
+        "system": "http://unitsofmeasure.org",
+        "code": "mg",
+        "unit": "mg"
+      },
+      "edgeRules": [
+        "The effective Period has an exact start and end.",
+        "The value is normalized exactly as the Grove Mobile Dietary Niacin profile states."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default"
+      }
+    },
+    {
+      "id": "dietary-pantothenic-acid",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-pantothenic-acid",
+      "code": {
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
+        "code": "dietary-pantothenic-acid"
+      },
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-20T12:15:00-07:00",
+        "end": "2026-08-20T12:45:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 320,
+        "system": "http://unitsofmeasure.org",
+        "code": "mg",
+        "unit": "mg"
+      },
+      "edgeRules": [
+        "The effective Period has an exact start and end.",
+        "The value is normalized exactly as the Grove Mobile Dietary Pantothenic Acid profile states."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default"
+      }
+    },
+    {
+      "id": "dietary-phosphorus",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-phosphorus",
+      "code": {
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
+        "code": "dietary-phosphorus"
+      },
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-20T12:15:00-07:00",
+        "end": "2026-08-20T12:45:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 320,
+        "system": "http://unitsofmeasure.org",
+        "code": "mg",
+        "unit": "mg"
+      },
+      "edgeRules": [
+        "The effective Period has an exact start and end.",
+        "The value is normalized exactly as the Grove Mobile Dietary Phosphorus profile states."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default"
+      }
+    },
+    {
+      "id": "dietary-potassium",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-potassium",
+      "code": {
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
+        "code": "dietary-potassium"
+      },
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-20T12:15:00-07:00",
+        "end": "2026-08-20T12:45:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 320,
+        "system": "http://unitsofmeasure.org",
+        "code": "mg",
+        "unit": "mg"
+      },
+      "edgeRules": [
+        "The effective Period has an exact start and end.",
+        "The value is normalized exactly as the Grove Mobile Dietary Potassium profile states."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default"
+      }
+    },
+    {
+      "id": "dietary-protein",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-protein",
+      "code": {
+        "system": "http://loinc.org",
+        "code": "9080-3"
+      },
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-20T12:15:00-07:00",
+        "end": "2026-08-20T12:45:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 24.5,
+        "system": "http://unitsofmeasure.org",
+        "code": "g",
+        "unit": "g"
+      },
+      "edgeRules": [
+        "The effective Period has an exact start and end.",
+        "The value is normalized exactly as the Grove Mobile Dietary Protein profile states."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default"
+      }
+    },
+    {
+      "id": "dietary-riboflavin",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-riboflavin",
+      "code": {
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
+        "code": "dietary-riboflavin"
+      },
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-20T12:15:00-07:00",
+        "end": "2026-08-20T12:45:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 320,
+        "system": "http://unitsofmeasure.org",
+        "code": "mg",
+        "unit": "mg"
+      },
+      "edgeRules": [
+        "The effective Period has an exact start and end.",
+        "The value is normalized exactly as the Grove Mobile Dietary Riboflavin profile states."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default"
+      }
+    },
+    {
+      "id": "dietary-selenium",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-selenium",
+      "code": {
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
+        "code": "dietary-selenium"
+      },
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-20T12:15:00-07:00",
+        "end": "2026-08-20T12:45:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 45,
+        "system": "http://unitsofmeasure.org",
+        "code": "ug",
+        "unit": "ug"
+      },
+      "edgeRules": [
+        "The effective Period has an exact start and end.",
+        "The value is normalized exactly as the Grove Mobile Dietary Selenium profile states."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default"
+      }
+    },
+    {
+      "id": "dietary-sodium",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-sodium",
+      "code": {
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
+        "code": "dietary-sodium"
+      },
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-20T12:15:00-07:00",
+        "end": "2026-08-20T12:45:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 320,
+        "system": "http://unitsofmeasure.org",
+        "code": "mg",
+        "unit": "mg"
+      },
+      "edgeRules": [
+        "The effective Period has an exact start and end.",
+        "The value is normalized exactly as the Grove Mobile Dietary Sodium profile states."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default"
+      }
+    },
+    {
+      "id": "dietary-sugar",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-sugar",
+      "code": {
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
+        "code": "dietary-sugar"
+      },
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-20T12:15:00-07:00",
+        "end": "2026-08-20T12:45:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 24.5,
+        "system": "http://unitsofmeasure.org",
+        "code": "g",
+        "unit": "g"
+      },
+      "edgeRules": [
+        "The effective Period has an exact start and end.",
+        "The value is normalized exactly as the Grove Mobile Dietary Sugar profile states."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default"
+      }
+    },
+    {
+      "id": "dietary-thiamin",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-thiamin",
+      "code": {
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
+        "code": "dietary-thiamin"
+      },
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-20T12:15:00-07:00",
+        "end": "2026-08-20T12:45:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 320,
+        "system": "http://unitsofmeasure.org",
+        "code": "mg",
+        "unit": "mg"
+      },
+      "edgeRules": [
+        "The effective Period has an exact start and end.",
+        "The value is normalized exactly as the Grove Mobile Dietary Thiamin profile states."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default"
+      }
+    },
+    {
+      "id": "dietary-vitamin-a",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-vitamin-a",
+      "code": {
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
+        "code": "dietary-vitamin-a"
+      },
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-20T12:15:00-07:00",
+        "end": "2026-08-20T12:45:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 45,
+        "system": "http://unitsofmeasure.org",
+        "code": "ug",
+        "unit": "ug"
+      },
+      "edgeRules": [
+        "The effective Period has an exact start and end.",
+        "The value is normalized exactly as the Grove Mobile Dietary Vitamin A profile states."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default"
+      }
+    },
+    {
+      "id": "dietary-vitamin-b12",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-vitamin-b12",
+      "code": {
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
+        "code": "dietary-vitamin-b12"
+      },
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-20T12:15:00-07:00",
+        "end": "2026-08-20T12:45:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 45,
+        "system": "http://unitsofmeasure.org",
+        "code": "ug",
+        "unit": "ug"
+      },
+      "edgeRules": [
+        "The effective Period has an exact start and end.",
+        "The value is normalized exactly as the Grove Mobile Dietary Vitamin B12 profile states."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default"
+      }
+    },
+    {
+      "id": "dietary-vitamin-b6",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-vitamin-b6",
+      "code": {
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
+        "code": "dietary-vitamin-b6"
+      },
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-20T12:15:00-07:00",
+        "end": "2026-08-20T12:45:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 320,
+        "system": "http://unitsofmeasure.org",
+        "code": "mg",
+        "unit": "mg"
+      },
+      "edgeRules": [
+        "The effective Period has an exact start and end.",
+        "The value is normalized exactly as the Grove Mobile Dietary Vitamin B6 profile states."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default"
+      }
+    },
+    {
+      "id": "dietary-vitamin-c",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-vitamin-c",
+      "code": {
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
+        "code": "dietary-vitamin-c"
+      },
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-20T12:15:00-07:00",
+        "end": "2026-08-20T12:45:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 320,
+        "system": "http://unitsofmeasure.org",
+        "code": "mg",
+        "unit": "mg"
+      },
+      "edgeRules": [
+        "The effective Period has an exact start and end.",
+        "The value is normalized exactly as the Grove Mobile Dietary Vitamin C profile states."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default"
+      }
+    },
+    {
+      "id": "dietary-vitamin-d",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-vitamin-d",
+      "code": {
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
+        "code": "dietary-vitamin-d"
+      },
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-20T12:15:00-07:00",
+        "end": "2026-08-20T12:45:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 45,
+        "system": "http://unitsofmeasure.org",
+        "code": "ug",
+        "unit": "ug"
+      },
+      "edgeRules": [
+        "The effective Period has an exact start and end.",
+        "The value is normalized exactly as the Grove Mobile Dietary Vitamin D profile states."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default"
+      }
+    },
+    {
+      "id": "dietary-vitamin-e",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-vitamin-e",
+      "code": {
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
+        "code": "dietary-vitamin-e"
+      },
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-20T12:15:00-07:00",
+        "end": "2026-08-20T12:45:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 320,
+        "system": "http://unitsofmeasure.org",
+        "code": "mg",
+        "unit": "mg"
+      },
+      "edgeRules": [
+        "The effective Period has an exact start and end.",
+        "The value is normalized exactly as the Grove Mobile Dietary Vitamin E profile states."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default"
+      }
+    },
+    {
+      "id": "dietary-vitamin-k",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-vitamin-k",
+      "code": {
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
+        "code": "dietary-vitamin-k"
+      },
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-20T12:15:00-07:00",
+        "end": "2026-08-20T12:45:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 45,
+        "system": "http://unitsofmeasure.org",
+        "code": "ug",
+        "unit": "ug"
+      },
+      "edgeRules": [
+        "The effective Period has an exact start and end.",
+        "The value is normalized exactly as the Grove Mobile Dietary Vitamin K profile states."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default"
+      }
+    },
+    {
+      "id": "dietary-zinc",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-zinc",
+      "code": {
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
+        "code": "dietary-zinc"
+      },
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-20T12:15:00-07:00",
+        "end": "2026-08-20T12:45:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 320,
+        "system": "http://unitsofmeasure.org",
+        "code": "mg",
+        "unit": "mg"
+      },
+      "edgeRules": [
+        "The effective Period has an exact start and end.",
+        "The value is normalized exactly as the Grove Mobile Dietary Zinc profile states."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default"
+      }
     },
     {
       "id": "distance",
       "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-distance",
-      "code": {"system": "http://loinc.org", "code": "103208-5"},
-      "effective": {"type": "Period", "start": "2026-08-20T07:00:00-07:00", "end": "2026-08-20T07:30:00-07:00"},
-      "result": {"type": "Quantity", "value": 4820.5, "system": "http://unitsofmeasure.org", "code": "m", "unit": "m"},
-      "edgeRules": ["The result is distance over the exact Period, not speed or a fixed-day aggregate.", "HealthKit activity-specific source type remains adapter lineage and is not discarded from the full resource."],
-      "admittedSourceContext": {"healthkit": "healthkit.default", "health-connect": "health-connect.default", "google-health-api": "providers.default", "oura": "providers.default", "withings": "providers.default"}
+      "code": {
+        "system": "http://loinc.org",
+        "code": "103208-5"
+      },
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-20T07:00:00-07:00",
+        "end": "2026-08-20T07:30:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 4820.5,
+        "system": "http://unitsofmeasure.org",
+        "code": "m",
+        "unit": "m"
+      },
+      "edgeRules": [
+        "The result is distance over the exact Period, not speed or a fixed-day aggregate.",
+        "HealthKit activity-specific source type remains adapter lineage and is not discarded from the full resource."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default",
+        "google-health-api": "providers.default",
+        "oura": "providers.default",
+        "withings": "providers.default"
+      }
+    },
+    {
+      "effective": {
+        "type": "dateTime",
+        "value": "2026-08-20T10:02:30-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 2.4,
+        "system": "http://unitsofmeasure.org",
+        "code": "uS",
+        "unit": "uS"
+      },
+      "id": "electrodermal-activity",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-electrodermal-activity",
+      "code": {
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
+        "code": "electrodermal-activity"
+      },
+      "edgeRules": [
+        "The result is normalized exactly as the Electrodermal Activity profile states."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "withings": "providers.default"
+      }
+    },
+    {
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-20T08:00:00-07:00",
+        "end": "2026-08-20T09:00:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 6,
+        "system": "http://unitsofmeasure.org",
+        "code": "{flights}",
+        "unit": "flights"
+      },
+      "id": "flights-climbed",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-flights-climbed",
+      "code": {
+        "system": "http://loinc.org",
+        "code": "100304-5"
+      },
+      "edgeRules": [
+        "The result is normalized exactly as the Flights Climbed profile states."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default",
+        "google-health-api": "providers.default"
+      }
+    },
+    {
+      "id": "fluid-intake",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-fluid-intake",
+      "code": {
+        "system": "http://loinc.org",
+        "code": "8985-4"
+      },
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-20T12:15:00-07:00",
+        "end": "2026-08-20T12:45:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 350,
+        "system": "http://unitsofmeasure.org",
+        "code": "mL",
+        "unit": "mL"
+      },
+      "edgeRules": [
+        "The effective Period has an exact start and end.",
+        "The value is normalized exactly as the Grove Mobile Fluid Intake profile states."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default"
+      }
     },
     {
       "id": "heart-rate",
       "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-heart-rate",
-      "code": {"system": "http://loinc.org", "code": "8867-4"},
-      "effective": {"type": "dateTime", "value": "2026-08-20T08:30:00.251-07:00"},
-      "result": {"type": "Quantity", "value": 72, "system": "http://unitsofmeasure.org", "code": "/min", "unit": "beats/minute"},
-      "edgeRules": ["Only a scalar heart-rate sample is admitted; high-frequency series use the Sensor contract or a native Recording Document.", "HealthKit motion context is adapter context and does not alter the normalized value."],
-      "admittedSourceContext": {"healthkit": "healthkit.heart-rate", "health-connect": "health-connect.default", "withings": "providers.default"}
+      "code": {
+        "system": "http://loinc.org",
+        "code": "8867-4"
+      },
+      "effective": {
+        "type": "dateTime",
+        "value": "2026-08-20T08:30:00.251-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 72,
+        "system": "http://unitsofmeasure.org",
+        "code": "/min",
+        "unit": "beats/minute"
+      },
+      "edgeRules": [
+        "Only a scalar heart-rate sample is admitted; high-frequency series use the Sensor contract or a native Recording Document.",
+        "HealthKit motion context is adapter context and does not alter the normalized value."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.heart-rate",
+        "health-connect": "health-connect.default",
+        "withings": "providers.default"
+      }
+    },
+    {
+      "effective": {
+        "type": "dateTime",
+        "value": "2026-08-20T06:58:12.500-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 38,
+        "system": "http://unitsofmeasure.org",
+        "code": "ms",
+        "unit": "ms"
+      },
+      "id": "heart-rate-variability-rmssd",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-heart-rate-variability-rmssd",
+      "code": {
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
+        "code": "heart-rate-variability-rmssd"
+      },
+      "edgeRules": [
+        "The result is normalized exactly as the Heart Rate Variability RMSSD profile states."
+      ],
+      "admittedSourceContext": {
+        "health-connect": "health-connect.default",
+        "google-health-api": "providers.default"
+      }
+    },
+    {
+      "effective": {
+        "type": "dateTime",
+        "value": "2026-08-20T03:12:44.000-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 54,
+        "system": "http://unitsofmeasure.org",
+        "code": "ms",
+        "unit": "ms"
+      },
+      "id": "heart-rate-variability-sdnn",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-heart-rate-variability-sdnn",
+      "code": {
+        "system": "http://loinc.org",
+        "code": "112429-6"
+      },
+      "edgeRules": [
+        "The result is normalized exactly as the Heart Rate Variability SDNN profile states."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "google-health-api": "providers.default"
+      }
+    },
+    {
+      "id": "intermenstrual-bleeding",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-intermenstrual-bleeding",
+      "code": {
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
+        "code": "intermenstrual-bleeding"
+      },
+      "effective": {
+        "type": "dateTime",
+        "value": "2026-08-20T07:20:00-07:00"
+      },
+      "result": {
+        "type": "CodeableConcept",
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-intermenstrual-bleeding",
+        "code": "present"
+      },
+      "edgeRules": [
+        "The effective bounds are exact.",
+        "The result code comes from the closed Intermenstrual Bleeding value set; the exact platform token is retained as a secondary coding where one exists."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default"
+      }
+    },
+    {
+      "id": "lean-body-mass",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-lean-body-mass",
+      "code": {
+        "system": "http://loinc.org",
+        "code": "91557-9"
+      },
+      "effective": {
+        "type": "dateTime",
+        "value": "2026-08-21T07:12:04.000-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 55.3,
+        "system": "http://unitsofmeasure.org",
+        "code": "kg",
+        "unit": "kg"
+      },
+      "edgeRules": [
+        "Source pound and gram values are converted to kilograms before emission.",
+        "Fat-free-mass sources are admitted under the documented caveat; no method coding is asserted."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default",
+        "withings": "providers.default"
+      }
+    },
+    {
+      "id": "light-sleep-duration",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-light-sleep-duration",
+      "code": {
+        "system": "http://loinc.org",
+        "code": "93830-8"
+      },
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-19T22:40:00-07:00",
+        "end": "2026-08-20T06:55:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 214,
+        "system": "http://unitsofmeasure.org",
+        "code": "min",
+        "unit": "min"
+      },
+      "edgeRules": [
+        "The effective Period has an exact start and end.",
+        "The method coding asserts the aggregation window; the value is never a point Light Sleep Duration sample."
+      ],
+      "admittedSourceContext": {
+        "google-health-api": "providers.default",
+        "oura": "providers.default",
+        "withings": "providers.default"
+      }
+    },
+    {
+      "id": "menstruation-flow",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-menstruation-flow",
+      "code": {
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
+        "code": "menstruation-flow"
+      },
+      "effective": {
+        "type": "dateTime",
+        "value": "2026-08-20T07:20:00-07:00"
+      },
+      "result": {
+        "type": "CodeableConcept",
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-menstruation-flow",
+        "code": "unspecified"
+      },
+      "edgeRules": [
+        "The effective bounds are exact.",
+        "The result code comes from the closed Menstruation Flow value set; the exact platform token is retained as a secondary coding where one exists."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default"
+      }
+    },
+    {
+      "id": "mindfulness-session",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-mindfulness-session",
+      "code": {
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
+        "code": "mindfulness-session-duration"
+      },
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-20T07:00:00-07:00",
+        "end": "2026-08-20T07:10:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 10,
+        "system": "http://unitsofmeasure.org",
+        "code": "min",
+        "unit": "min"
+      },
+      "edgeRules": [
+        "The Period is non-zero and the value equals the Period duration within canonical millisecond rounding.",
+        "Session subtype is adapter context; it never changes the normalized duration."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default"
+      }
+    },
+    {
+      "id": "ovulation-test-result",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-ovulation-test-result",
+      "code": {
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
+        "code": "ovulation-test-result"
+      },
+      "effective": {
+        "type": "dateTime",
+        "value": "2026-08-20T07:20:00-07:00"
+      },
+      "result": {
+        "type": "CodeableConcept",
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-ovulation-test-result",
+        "code": "negative"
+      },
+      "edgeRules": [
+        "The effective bounds are exact.",
+        "The result code comes from the closed Ovulation Test Result value set; the exact platform token is retained as a secondary coding where one exists."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default"
+      }
     },
     {
       "id": "oxygen-saturation",
       "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-oxygen-saturation",
-      "code": {"system": "http://loinc.org", "code": "2708-6"},
-      "effective": {"type": "dateTime", "value": "2026-08-20T08:35:00-07:00"},
-      "result": {"type": "Quantity", "value": 98, "system": "http://unitsofmeasure.org", "code": "%", "unit": "%"},
-      "edgeRules": ["Fractional source values are converted to percent exactly; 0.98 becomes 98, not 0.98 percent."],
-      "admittedSourceContext": {"healthkit": "healthkit.default", "health-connect": "health-connect.default", "withings": "providers.default"}
+      "code": {
+        "system": "http://loinc.org",
+        "code": "2708-6"
+      },
+      "effective": {
+        "type": "dateTime",
+        "value": "2026-08-20T08:35:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 98,
+        "system": "http://unitsofmeasure.org",
+        "code": "%",
+        "unit": "%"
+      },
+      "edgeRules": [
+        "Fractional source values are converted to percent exactly; 0.98 becomes 98, not 0.98 percent."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default",
+        "withings": "providers.default"
+      }
+    },
+    {
+      "id": "oxygen-saturation-daily-average",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-oxygen-saturation-daily-average",
+      "code": {
+        "system": "http://loinc.org",
+        "code": "103209-3"
+      },
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-19T22:40:00-07:00",
+        "end": "2026-08-20T06:55:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 96.5,
+        "system": "http://unitsofmeasure.org",
+        "code": "%",
+        "unit": "%"
+      },
+      "edgeRules": [
+        "The effective Period has an exact start and end.",
+        "The method coding asserts the aggregation window; the value is never a point Oxygen Saturation Daily Average sample."
+      ],
+      "admittedSourceContext": {
+        "google-health-api": "providers.default",
+        "oura": "providers.default"
+      }
+    },
+    {
+      "id": "power",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-power",
+      "code": {
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
+        "code": "power"
+      },
+      "effective": {
+        "type": "dateTime",
+        "value": "2026-08-20T08:30:00.251-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 220,
+        "system": "http://unitsofmeasure.org",
+        "code": "W",
+        "unit": "W"
+      },
+      "edgeRules": [
+        "Only a scalar instantaneous sample is admitted; a Health Connect PowerRecord series normalizes to one Observation per sample at that sample's time.",
+        "Cycling functional threshold power is a separate derived-estimate concept and never maps here."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default"
+      }
+    },
+    {
+      "id": "rem-sleep-duration",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-rem-sleep-duration",
+      "code": {
+        "system": "http://loinc.org",
+        "code": "93829-0"
+      },
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-19T22:40:00-07:00",
+        "end": "2026-08-20T06:55:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 104,
+        "system": "http://unitsofmeasure.org",
+        "code": "min",
+        "unit": "min"
+      },
+      "edgeRules": [
+        "The effective Period has an exact start and end.",
+        "The method coding asserts the aggregation window; the value is never a point REM Sleep Duration sample."
+      ],
+      "admittedSourceContext": {
+        "google-health-api": "providers.default",
+        "oura": "providers.default",
+        "withings": "providers.default"
+      }
     },
     {
       "id": "respiratory-rate",
       "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-respiratory-rate",
-      "code": {"system": "http://loinc.org", "code": "9279-1"},
-      "effective": {"type": "dateTime", "value": "2026-08-20T08:40:00-07:00"},
-      "result": {"type": "Quantity", "value": 15, "system": "http://unitsofmeasure.org", "code": "/min", "unit": "breaths/minute"},
-      "edgeRules": ["The normalized result is breaths per minute and is a scalar point observation."],
-      "admittedSourceContext": {"healthkit": "healthkit.default", "health-connect": "health-connect.default"}
+      "code": {
+        "system": "http://loinc.org",
+        "code": "9279-1"
+      },
+      "effective": {
+        "type": "dateTime",
+        "value": "2026-08-20T08:40:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 15,
+        "system": "http://unitsofmeasure.org",
+        "code": "/min",
+        "unit": "breaths/minute"
+      },
+      "edgeRules": [
+        "The normalized result is breaths per minute and is a scalar point observation."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default"
+      }
+    },
+    {
+      "id": "respiratory-rate-average",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-respiratory-rate-average",
+      "code": {
+        "system": "http://loinc.org",
+        "code": "103217-6"
+      },
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-19T22:40:00-07:00",
+        "end": "2026-08-20T06:55:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 14.8,
+        "system": "http://unitsofmeasure.org",
+        "code": "/min",
+        "unit": "breaths/minute"
+      },
+      "edgeRules": [
+        "The effective Period has an exact start and end.",
+        "The method coding asserts the aggregation window; the value is never a point Respiratory Rate Average sample."
+      ],
+      "admittedSourceContext": {
+        "google-health-api": "providers.default",
+        "oura": "providers.default",
+        "withings": "providers.default"
+      }
+    },
+    {
+      "id": "resting-heart-rate",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-resting-heart-rate",
+      "code": {
+        "system": "http://loinc.org",
+        "code": "40443-4"
+      },
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-19T22:40:00-07:00",
+        "end": "2026-08-20T06:55:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 58,
+        "system": "http://unitsofmeasure.org",
+        "code": "/min",
+        "unit": "beats/minute"
+      },
+      "edgeRules": [
+        "The effective Period has an exact start and end.",
+        "The method coding asserts the aggregation window; the value is never a point Resting Heart Rate sample."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default",
+        "google-health-api": "providers.default"
+      }
+    },
+    {
+      "id": "sexual-activity",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-sexual-activity",
+      "code": {
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
+        "code": "sexual-activity"
+      },
+      "effective": {
+        "type": "dateTime",
+        "value": "2026-08-20T07:20:00-07:00"
+      },
+      "result": {
+        "type": "CodeableConcept",
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-sexual-activity",
+        "code": "protected"
+      },
+      "edgeRules": [
+        "The effective bounds are exact.",
+        "The result code comes from the closed Sexual Activity value set; the exact platform token is retained as a secondary coding where one exists."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default"
+      }
+    },
+    {
+      "id": "skin-temperature",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-skin-temperature",
+      "code": {
+        "system": "http://loinc.org",
+        "code": "61008-9"
+      },
+      "effective": {
+        "type": "dateTime",
+        "value": "2026-08-21T03:41:12.000-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 34.9,
+        "system": "http://unitsofmeasure.org",
+        "code": "Cel",
+        "unit": "Cel"
+      },
+      "edgeRules": [
+        "A body-site coding accompanies the value when the source states one (wrist for Apple sleeping wrist temperature; Health Connect measurement location).",
+        "Health Connect baseline+delta records are resolved to absolute Celsius readings before emission; a delta without a baseline fails closed.",
+        "Skin temperature is never emitted as the body-temperature vital sign."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default",
+        "withings": "providers.default"
+      }
+    },
+    {
+      "id": "sleep-awake-duration",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-sleep-awake-duration",
+      "code": {
+        "system": "http://loinc.org",
+        "code": "93828-2"
+      },
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-19T22:40:00-07:00",
+        "end": "2026-08-20T06:55:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 31,
+        "system": "http://unitsofmeasure.org",
+        "code": "min",
+        "unit": "min"
+      },
+      "edgeRules": [
+        "The effective Period has an exact start and end.",
+        "The method coding asserts the aggregation window; the value is never a point Awake Duration During Sleep sample."
+      ],
+      "admittedSourceContext": {
+        "google-health-api": "providers.default",
+        "oura": "providers.default",
+        "withings": "providers.default"
+      }
     },
     {
       "id": "sleep-duration",
       "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-sleep-duration",
-      "code": {"system": "http://loinc.org", "code": "93832-4"},
-      "effective": {"type": "Period", "start": "2026-08-19T23:00:00-07:00", "end": "2026-08-20T06:30:00-07:00"},
-      "result": {"type": "Quantity", "value": 7.5, "system": "http://unitsofmeasure.org", "code": "h", "unit": "h"},
-      "edgeRules": ["Duration and effective Period are both required and must describe the same admitted source summary semantics.", "HealthKit has no admitted v0.2.0 aggregate rule and must not synthesize this projection."],
-      "admittedSourceContext": {"health-connect": "health-connect.sleep-duration", "google-health-api": "providers.default", "oura": "providers.default"}
+      "code": {
+        "system": "http://loinc.org",
+        "code": "93832-4"
+      },
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-19T23:00:00-07:00",
+        "end": "2026-08-20T06:30:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 7.5,
+        "system": "http://unitsofmeasure.org",
+        "code": "h",
+        "unit": "h"
+      },
+      "edgeRules": [
+        "Duration and effective Period are both required and must describe the same admitted source summary semantics.",
+        "HealthKit has no admitted v0.2.0 aggregate rule and must not synthesize this projection."
+      ],
+      "admittedSourceContext": {
+        "health-connect": "health-connect.sleep-duration",
+        "google-health-api": "providers.default",
+        "oura": "providers.default"
+      }
+    },
+    {
+      "id": "sleep-heart-rate",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-sleep-heart-rate",
+      "code": {
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
+        "code": "sleep-heart-rate"
+      },
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-19T22:40:00-07:00",
+        "end": "2026-08-20T06:55:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 52,
+        "system": "http://unitsofmeasure.org",
+        "code": "/min",
+        "unit": "beats/minute"
+      },
+      "edgeRules": [
+        "The effective Period has an exact start and end.",
+        "The method coding asserts the aggregation window; the value is never a point Sleep Heart Rate sample."
+      ],
+      "admittedSourceContext": {
+        "oura": "providers.default",
+        "withings": "providers.default"
+      }
     },
     {
       "id": "sleep-stage",
       "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-sleep-stage",
-      "code": {"system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement", "code": "sleep-stage"},
-      "effective": {"type": "Period", "start": "2026-08-20T00:10:00-07:00", "end": "2026-08-20T00:42:00-07:00"},
-      "result": {"type": "CodeableConcept", "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-sleep-stage", "code": "light"},
-      "edgeRules": ["Exactly one source-neutral stage from the closed value set is the normalized result.", "Known in-bed, out-of-bed, or asleep-unspecified states are not collapsed to awake or unknown; the exact source stage is retained as adapter coding."],
-      "admittedSourceContext": {"healthkit": "healthkit.sleep-stage", "health-connect": "health-connect.sleep-stage"}
+      "code": {
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
+        "code": "sleep-stage"
+      },
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-20T00:10:00-07:00",
+        "end": "2026-08-20T00:42:00-07:00"
+      },
+      "result": {
+        "type": "CodeableConcept",
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-sleep-stage",
+        "code": "light"
+      },
+      "edgeRules": [
+        "Exactly one source-neutral stage from the closed value set is the normalized result.",
+        "Known in-bed, out-of-bed, or asleep-unspecified states are not collapsed to awake or unknown; the exact source stage is retained as adapter coding."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.sleep-stage",
+        "health-connect": "health-connect.sleep-stage"
+      }
+    },
+    {
+      "id": "speed",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-speed",
+      "code": {
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
+        "code": "speed"
+      },
+      "effective": {
+        "type": "dateTime",
+        "value": "2026-08-20T08:30:00.251-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 3.2,
+        "system": "http://unitsofmeasure.org",
+        "code": "m/s",
+        "unit": "m/s"
+      },
+      "edgeRules": [
+        "Only a scalar instantaneous sample is admitted; a Health Connect SpeedRecord series normalizes to one Observation per sample at that sample's time.",
+        "The activity binding is source context and does not alter the normalized value; walking-speed and the stair speeds are separate concepts and never map here."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default"
+      }
     },
     {
       "id": "step-count",
       "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-step-count",
-      "code": {"system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement", "code": "step-count-total"},
-      "effective": {"type": "Period", "start": "2026-08-20T08:00:00-07:00", "end": "2026-08-20T09:00:00-07:00"},
-      "result": {"type": "Quantity", "value": 1042, "system": "http://unitsofmeasure.org", "code": "{steps}", "unit": "steps"},
-      "edgeRules": ["The Period is non-zero.", "A populated step count is non-negative and represents the exact source interval, not an assumed 24-hour total."],
-      "admittedSourceContext": {"healthkit": "healthkit.default", "health-connect": "health-connect.default", "google-health-api": "providers.default", "oura": "providers.default", "withings": "providers.default"}
+      "code": {
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
+        "code": "step-count-total"
+      },
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-20T08:00:00-07:00",
+        "end": "2026-08-20T09:00:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 1042,
+        "system": "http://unitsofmeasure.org",
+        "code": "{steps}",
+        "unit": "steps"
+      },
+      "edgeRules": [
+        "The Period is non-zero.",
+        "A populated step count is non-negative and represents the exact source interval, not an assumed 24-hour total."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default",
+        "google-health-api": "providers.default",
+        "oura": "providers.default",
+        "withings": "providers.default"
+      }
+    },
+    {
+      "effective": {
+        "type": "dateTime",
+        "value": "2026-08-20T09:15:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 41.2,
+        "system": "http://unitsofmeasure.org",
+        "code": "mL/kg/min",
+        "unit": "mL/kg/min"
+      },
+      "id": "vo2-max",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-vo2-max",
+      "code": {
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
+        "code": "vo2-max"
+      },
+      "edgeRules": [
+        "The result is normalized exactly as the VO2 Max profile states."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default",
+        "google-health-api": "providers.default",
+        "oura": "providers.default",
+        "withings": "providers.default"
+      }
+    },
+    {
+      "id": "wheelchair-push-count",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-wheelchair-push-count",
+      "code": {
+        "system": "http://loinc.org",
+        "code": "96502-0"
+      },
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-20T08:00:00-07:00",
+        "end": "2026-08-20T09:00:00-07:00"
+      },
+      "result": {
+        "type": "Quantity",
+        "value": 412,
+        "system": "http://unitsofmeasure.org",
+        "code": "{pushes}",
+        "unit": "pushes"
+      },
+      "edgeRules": [
+        "The Period is non-zero.",
+        "A populated push count is a non-negative integer for the exact source interval and is never merged into step-count."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default"
+      }
+    },
+    {
+      "id": "workout",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-workout",
+      "code": {
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
+        "code": "workout"
+      },
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-20T17:00:00-07:00",
+        "end": "2026-08-20T17:45:00-07:00"
+      },
+      "result": {
+        "type": "CodeableConcept",
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-workout-activity",
+        "code": "running"
+      },
+      "edgeRules": [
+        "The effective bounds are exact.",
+        "The result code comes from the closed Workout value set; the exact platform token is retained as a secondary coding where one exists."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default",
+        "google-health-api": "providers.default",
+        "oura": "providers.default",
+        "withings": "providers.default"
+      }
+    },
+    {
+      "id": "workout-segment",
+      "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-workout-segment",
+      "code": {
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
+        "code": "workout-segment"
+      },
+      "effective": {
+        "type": "Period",
+        "start": "2026-08-20T17:00:00-07:00",
+        "end": "2026-08-20T17:45:00-07:00"
+      },
+      "result": {
+        "type": "CodeableConcept",
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-workout-segment-type",
+        "code": "lap"
+      },
+      "edgeRules": [
+        "The effective bounds are exact.",
+        "The result code comes from the closed Workout Segment value set; the exact platform token is retained as a secondary coding where one exists."
+      ],
+      "admittedSourceContext": {
+        "healthkit": "healthkit.default",
+        "health-connect": "health-connect.default"
+      }
     }
   ]
 }

@@ -214,10 +214,13 @@
         "HKCategoryTypeIdentifierAbdominalCramps"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/abdominalcramps",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-abdominal-cramps"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-abdominal-cramps"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierAcne",
@@ -226,10 +229,13 @@
         "HKCategoryTypeIdentifierAcne"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/acne",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-acne"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-acne"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierAppetiteChanges",
@@ -238,10 +244,13 @@
         "HKCategoryTypeIdentifierAppetiteChanges"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/appetitechanges",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-appetite-changes"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-appetite-changes"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierAppleStandHour",
@@ -250,10 +259,13 @@
         "HKCategoryTypeIdentifierAppleStandHour"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/applestandhour",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "apple-stand-hour"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-apple-stand-hour"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierAppleWalkingSteadinessEvent",
@@ -262,10 +274,10 @@
         "HKCategoryTypeIdentifierAppleWalkingSteadinessEvent"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/applewalkingsteadinessevent",
-      "status": "deferred",
+      "status": "intentionally-unsupported",
       "measurementIDs": [],
       "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "requirement": "Device alert: the enum encodes notification cadence (initial vs repeat) crossed with an Apple-defined banding of the appleWalkingSteadiness percent score, which is the actual measurement and is handled as a quantity type. The alert adds no measurement content beyond that score."
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierAudioExposureEvent",
@@ -275,10 +287,10 @@
         "HKCategoryTypeIdentifierEnvironmentalAudioExposureEvent"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/environmentalaudioexposureevent",
-      "status": "deferred",
+      "status": "intentionally-unsupported",
       "measurementIDs": [],
       "profiles": [],
-      "requirement": "Apple renames this constant to HKCategoryTypeIdentifierEnvironmentalAudioExposureEvent while keeping its identifier. Version 0.2.0 publishes no admitted output contract."
+      "requirement": "Device alert: a threshold-crossing notification against a user-configurable limit, not a measurement. The measurement is the environmentalAudioExposure dB(A) quantity type, which carries the actual exposure level."
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierBladderIncontinence",
@@ -287,10 +299,13 @@
         "HKCategoryTypeIdentifierBladderIncontinence"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/bladderincontinence",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "bladder-incontinence"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-bladder-incontinence"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierBleedingAfterPregnancy",
@@ -299,10 +314,13 @@
         "HKCategoryTypeIdentifierBleedingAfterPregnancy"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/bleedingafterpregnancy",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "bleeding-after-pregnancy"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-bleeding-after-pregnancy"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierBleedingDuringPregnancy",
@@ -311,10 +329,13 @@
         "HKCategoryTypeIdentifierBleedingDuringPregnancy"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/bleedingduringpregnancy",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "bleeding-during-pregnancy"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-bleeding-during-pregnancy"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierBloating",
@@ -323,10 +344,13 @@
         "HKCategoryTypeIdentifierBloating"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/bloating",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-bloating"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-bloating"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierBreastPain",
@@ -335,10 +359,13 @@
         "HKCategoryTypeIdentifierBreastPain"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/breastpain",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-breast-pain"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-breast-pain"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierCervicalMucusQuality",
@@ -347,10 +374,13 @@
         "HKCategoryTypeIdentifierCervicalMucusQuality"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/cervicalmucusquality",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "cervical-mucus-quality"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-cervical-mucus-quality"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierChestTightnessOrPain",
@@ -359,10 +389,13 @@
         "HKCategoryTypeIdentifierChestTightnessOrPain"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/chesttightnessorpain",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-chest-tightness-or-pain"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-chest-tightness-or-pain"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierChills",
@@ -371,10 +404,13 @@
         "HKCategoryTypeIdentifierChills"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/chills",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-chills"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-chills"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierConstipation",
@@ -383,10 +419,13 @@
         "HKCategoryTypeIdentifierConstipation"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/constipation",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-constipation"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-constipation"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierContraceptive",
@@ -395,10 +434,13 @@
         "HKCategoryTypeIdentifierContraceptive"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/contraceptive",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "contraceptive-use"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-contraceptive-use"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierCoughing",
@@ -407,10 +449,13 @@
         "HKCategoryTypeIdentifierCoughing"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/coughing",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-coughing"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-coughing"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierDiarrhea",
@@ -419,10 +464,13 @@
         "HKCategoryTypeIdentifierDiarrhea"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/diarrhea",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-diarrhea"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-diarrhea"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierDizziness",
@@ -431,10 +479,13 @@
         "HKCategoryTypeIdentifierDizziness"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/dizziness",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-dizziness"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-dizziness"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierDrySkin",
@@ -443,10 +494,13 @@
         "HKCategoryTypeIdentifierDrySkin"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/dryskin",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-dry-skin"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-dry-skin"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierFainting",
@@ -455,10 +509,13 @@
         "HKCategoryTypeIdentifierFainting"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/fainting",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-fainting"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-fainting"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierFatigue",
@@ -467,10 +524,13 @@
         "HKCategoryTypeIdentifierFatigue"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/fatigue",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-fatigue"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-fatigue"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierFever",
@@ -479,10 +539,13 @@
         "HKCategoryTypeIdentifierFever"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/fever",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-fever"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-fever"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierGeneralizedBodyAche",
@@ -491,10 +554,13 @@
         "HKCategoryTypeIdentifierGeneralizedBodyAche"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/generalizedbodyache",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-generalized-body-ache"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-generalized-body-ache"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierHairLoss",
@@ -503,10 +569,13 @@
         "HKCategoryTypeIdentifierHairLoss"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/hairloss",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-hair-loss"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-hair-loss"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierHandwashingEvent",
@@ -515,10 +584,13 @@
         "HKCategoryTypeIdentifierHandwashingEvent"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/handwashingevent",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "handwashing-session"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-handwashing-session"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierHeadache",
@@ -527,10 +599,13 @@
         "HKCategoryTypeIdentifierHeadache"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/headache",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-headache"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-headache"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierHeadphoneAudioExposureEvent",
@@ -539,10 +614,10 @@
         "HKCategoryTypeIdentifierHeadphoneAudioExposureEvent"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/headphoneaudioexposureevent",
-      "status": "deferred",
+      "status": "intentionally-unsupported",
       "measurementIDs": [],
       "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "requirement": "Device alert over an OS-computed rolling seven-day dose limit; not a measurement. The headphoneAudioExposure quantity type carries the measured levels."
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierHeartburn",
@@ -551,10 +626,13 @@
         "HKCategoryTypeIdentifierHeartburn"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/heartburn",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-heartburn"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-heartburn"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierHighHeartRateEvent",
@@ -563,10 +641,10 @@
         "HKCategoryTypeIdentifierHighHeartRateEvent"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/highheartrateevent",
-      "status": "deferred",
+      "status": "intentionally-unsupported",
       "measurementIDs": [],
       "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "requirement": "Device alert against a user-configurable threshold; not a measurement. Heart-rate quantities remain the measurement surface."
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierHotFlashes",
@@ -575,10 +653,13 @@
         "HKCategoryTypeIdentifierHotFlashes"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/hotflashes",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-hot-flashes"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-hot-flashes"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierHypertensionEvent",
@@ -587,10 +668,10 @@
         "HKCategoryTypeIdentifierHypertensionEvent"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/hypertensionevent",
-      "status": "deferred",
+      "status": "intentionally-unsupported",
       "measurementIDs": [],
       "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2.0 output contract is published for this platform source type."
+      "requirement": "Device alert from a proprietary screening algorithm asserting possible pathology without any pressure measurement; emitting it as an Observation would fabricate a blood-pressure-adjacent finding with no quantity. Cuff blood-pressure quantities remain the measurement surface."
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierInfrequentMenstrualCycles",
@@ -599,10 +680,10 @@
         "HKCategoryTypeIdentifierInfrequentMenstrualCycles"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/infrequentmenstrualcycles",
-      "status": "deferred",
+      "status": "intentionally-unsupported",
       "measurementIDs": [],
       "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "requirement": "Algorithmic screening alert over derived cycle history; not a measurement."
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierIntermenstrualBleeding",
@@ -611,10 +692,13 @@
         "HKCategoryTypeIdentifierIntermenstrualBleeding"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/intermenstrualbleeding",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "intermenstrual-bleeding"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-intermenstrual-bleeding"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierIrregularHeartRhythmEvent",
@@ -623,10 +707,10 @@
         "HKCategoryTypeIdentifierIrregularHeartRhythmEvent"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/irregularheartrhythmevent",
-      "status": "deferred",
+      "status": "intentionally-unsupported",
       "measurementIDs": [],
       "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "requirement": "FDA-cleared screening notification from a proprietary algorithm, valueless and read-only. Grove admits the ECG itself (sensor ECG adapter claim, HKDataTypeIdentifierElectrocardiogram) and the atrial-fibrillation burden percentage (HKQuantityTypeIdentifierAtrialFibrillationBurden) as the rhythm evidence surfaces; re-emitting the alert would present a screening trigger as a rhythm finding without any waveform or classification payload."
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierIrregularMenstrualCycles",
@@ -635,10 +719,10 @@
         "HKCategoryTypeIdentifierIrregularMenstrualCycles"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/irregularmenstrualcycles",
-      "status": "deferred",
+      "status": "intentionally-unsupported",
       "measurementIDs": [],
       "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "requirement": "Algorithmic screening alert over derived cycle history; not a measurement."
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierLactation",
@@ -647,10 +731,13 @@
         "HKCategoryTypeIdentifierLactation"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/lactation",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "lactation-status"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-lactation-status"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierLossOfSmell",
@@ -659,10 +746,13 @@
         "HKCategoryTypeIdentifierLossOfSmell"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/lossofsmell",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-loss-of-smell"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-loss-of-smell"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierLossOfTaste",
@@ -671,10 +761,13 @@
         "HKCategoryTypeIdentifierLossOfTaste"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/lossoftaste",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-loss-of-taste"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-loss-of-taste"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierLowCardioFitnessEvent",
@@ -683,10 +776,10 @@
         "HKCategoryTypeIdentifierLowCardioFitnessEvent"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/lowcardiofitnessevent",
-      "status": "deferred",
+      "status": "intentionally-unsupported",
       "measurementIDs": [],
       "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "requirement": "Device alert over an Apple-defined classification band of the VO2Max quantity, which is the measurement. Single enum case lowFitness carries no additional measurement meaning."
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierLowHeartRateEvent",
@@ -695,10 +788,10 @@
         "HKCategoryTypeIdentifierLowHeartRateEvent"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/lowheartrateevent",
-      "status": "deferred",
+      "status": "intentionally-unsupported",
       "measurementIDs": [],
       "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "requirement": "Device alert against a user-configurable threshold; the heart-rate quantity series is the admitted measurement. An alert Observation would encode a preference-dependent trigger, not a physiologic result."
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierLowerBackPain",
@@ -707,10 +800,13 @@
         "HKCategoryTypeIdentifierLowerBackPain"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/lowerbackpain",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-lower-back-pain"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-lower-back-pain"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierMemoryLapse",
@@ -719,10 +815,13 @@
         "HKCategoryTypeIdentifierMemoryLapse"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/memorylapse",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-memory-lapse"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-memory-lapse"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierMenstrualFlow",
@@ -731,10 +830,13 @@
         "HKCategoryTypeIdentifierMenstrualFlow"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/menstrualflow",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "menstruation-flow"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-menstruation-flow"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierMindfulSession",
@@ -743,10 +845,13 @@
         "HKCategoryTypeIdentifierMindfulSession"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/mindfulsession",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "mindfulness-session"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-mindfulness-session"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierMoodChanges",
@@ -755,10 +860,13 @@
         "HKCategoryTypeIdentifierMoodChanges"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/moodchanges",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-mood-changes"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-mood-changes"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierNausea",
@@ -767,10 +875,13 @@
         "HKCategoryTypeIdentifierNausea"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/nausea",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-nausea"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-nausea"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierNightSweats",
@@ -779,10 +890,13 @@
         "HKCategoryTypeIdentifierNightSweats"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/nightsweats",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-night-sweats"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-night-sweats"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierOvulationTestResult",
@@ -791,10 +905,13 @@
         "HKCategoryTypeIdentifierOvulationTestResult"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/ovulationtestresult",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "ovulation-test-result"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-ovulation-test-result"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierPelvicPain",
@@ -803,10 +920,13 @@
         "HKCategoryTypeIdentifierPelvicPain"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/pelvicpain",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-pelvic-pain"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-pelvic-pain"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierPersistentIntermenstrualBleeding",
@@ -815,10 +935,10 @@
         "HKCategoryTypeIdentifierPersistentIntermenstrualBleeding"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/persistentintermenstrualbleeding",
-      "status": "deferred",
+      "status": "intentionally-unsupported",
       "measurementIDs": [],
       "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "requirement": "Algorithmic screening alert derived from user-entered cycle data, not a measurement. The primary data (intermenstrualBleeding and menstrualFlow samples) is admitted through the cycle-tracking enum-absorption design; re-emitting HealthKit's derived possible-pathology flag would present a screening notification as a clinical finding."
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierPregnancy",
@@ -827,10 +947,13 @@
         "HKCategoryTypeIdentifierPregnancy"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/pregnancy",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "pregnancy-status"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-pregnancy-status"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierPregnancyTestResult",
@@ -839,10 +962,13 @@
         "HKCategoryTypeIdentifierPregnancyTestResult"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/pregnancytestresult",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "pregnancy-test-result"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-pregnancy-test-result"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierProgesteroneTestResult",
@@ -851,10 +977,13 @@
         "HKCategoryTypeIdentifierProgesteroneTestResult"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/progesteronetestresult",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "progesterone-test-result"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-progesterone-test-result"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierProlongedMenstrualPeriods",
@@ -863,10 +992,10 @@
         "HKCategoryTypeIdentifierProlongedMenstrualPeriods"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/prolongedmenstrualperiods",
-      "status": "deferred",
+      "status": "intentionally-unsupported",
       "measurementIDs": [],
       "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "requirement": "Algorithmic screening alert over derived cycle history; the underlying menstrualFlow data is the measurement and is covered by the cycle-tracking design."
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierRapidPoundingOrFlutteringHeartbeat",
@@ -875,10 +1004,13 @@
         "HKCategoryTypeIdentifierRapidPoundingOrFlutteringHeartbeat"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/rapidpoundingorflutteringheartbeat",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-rapid-pounding-or-fluttering-heartbeat"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-rapid-pounding-or-fluttering-heartbeat"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierRunnyNose",
@@ -887,10 +1019,13 @@
         "HKCategoryTypeIdentifierRunnyNose"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/runnynose",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-runny-nose"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-runny-nose"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierSexualActivity",
@@ -899,10 +1034,13 @@
         "HKCategoryTypeIdentifierSexualActivity"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/sexualactivity",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "sexual-activity"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-sexual-activity"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierShortnessOfBreath",
@@ -911,10 +1049,13 @@
         "HKCategoryTypeIdentifierShortnessOfBreath"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/shortnessofbreath",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-shortness-of-breath"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-shortness-of-breath"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierSinusCongestion",
@@ -923,10 +1064,13 @@
         "HKCategoryTypeIdentifierSinusCongestion"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/sinuscongestion",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-sinus-congestion"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-sinus-congestion"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierSkippedHeartbeat",
@@ -935,10 +1079,13 @@
         "HKCategoryTypeIdentifierSkippedHeartbeat"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/skippedheartbeat",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-skipped-heartbeat"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-skipped-heartbeat"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierSleepAnalysis",
@@ -962,10 +1109,10 @@
         "HKCategoryTypeIdentifierSleepApneaEvent"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/sleepapneaevent",
-      "status": "deferred",
+      "status": "intentionally-unsupported",
       "measurementIDs": [],
       "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "requirement": "Device alert, not a measurement: an Apple proprietary screening algorithm's notification of possible pathology. The underlying signal (HKQuantityTypeIdentifierAppleSleepingBreathingDisturbances) is the measurement surface; emitting the alert as an Observation would misrepresent a screening notification as a clinical finding."
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierSleepChanges",
@@ -974,10 +1121,13 @@
         "HKCategoryTypeIdentifierSleepChanges"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/sleepchanges",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-sleep-changes"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-sleep-changes"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierSoreThroat",
@@ -986,10 +1136,13 @@
         "HKCategoryTypeIdentifierSoreThroat"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/sorethroat",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-sore-throat"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-sore-throat"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierToothbrushingEvent",
@@ -998,10 +1151,13 @@
         "HKCategoryTypeIdentifierToothbrushingEvent"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/toothbrushingevent",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "toothbrushing-session"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-toothbrushing-session"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierVaginalDryness",
@@ -1010,10 +1166,13 @@
         "HKCategoryTypeIdentifierVaginalDryness"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/vaginaldryness",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "vaginal-dryness"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-vaginal-dryness"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierVomiting",
@@ -1022,10 +1181,13 @@
         "HKCategoryTypeIdentifierVomiting"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/vomiting",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-vomiting"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-vomiting"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierWheezing",
@@ -1034,10 +1196,13 @@
         "HKCategoryTypeIdentifierWheezing"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/wheezing",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-wheezing"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-wheezing"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCharacteristicTypeIdentifierActivityMoveMode",
@@ -1046,10 +1211,10 @@
         "HKCharacteristicTypeIdentifierActivityMoveMode"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcharacteristictypeidentifier/activitymovemode",
-      "status": "deferred",
+      "status": "intentionally-unsupported",
       "measurementIDs": [],
       "profiles": [],
-      "requirement": "A HealthKit characteristic describes the subject rather than a measurement. Version 0.2.0 publishes no admitted output contract for characteristics."
+      "requirement": "DECIDED: intentionally-unsupported. A ring-display preference has no semantically exact Mobile meaning; converting it would encode Apple product configuration as clinical data. Verifier attack (would a researcher want it?): the mode is only interpretive context for AppleMoveTime/ActiveEnergy rows, which carry their own units and are handled in their own rows; the mode adds no measurement content of its own. Reason survives."
     },
     {
       "sourceTypeIdentifier": "HKCharacteristicTypeIdentifierBiologicalSex",
@@ -1070,10 +1235,13 @@
         "HKCharacteristicTypeIdentifierBloodType"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcharacteristictypeidentifier/bloodtype",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "A HealthKit characteristic describes the subject rather than a measurement. Version 0.2.0 publishes no admitted output contract for characteristics."
+      "status": "supported",
+      "measurementIDs": [
+        "blood-type"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-blood-type"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCharacteristicTypeIdentifierDateOfBirth",
@@ -1094,10 +1262,10 @@
         "HKCharacteristicTypeIdentifierFitzpatrickSkinType"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcharacteristictypeidentifier/fitzpatrickskintype",
-      "status": "deferred",
+      "status": "intentionally-unsupported",
       "measurementIDs": [],
       "profiles": [],
-      "requirement": "A HealthKit characteristic describes the subject rather than a measurement. Version 0.2.0 publishes no admitted output contract for characteristics."
+      "requirement": "DECIDED: intentionally-unsupported — applied as decided, not re-decided. Verifier correction to the stated reason: an exact LOINC does exist (66555-4), so the decision cannot rest on missing terminology; it rests solely on the decided scope call (single-platform self-reported phenotype outside the measurement contract, no consumer in the exchange set)."
     },
     {
       "sourceTypeIdentifier": "HKCharacteristicTypeIdentifierWheelchairUse",
@@ -1106,10 +1274,13 @@
         "HKCharacteristicTypeIdentifierWheelchairUse"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcharacteristictypeidentifier/wheelchairuse",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "A HealthKit characteristic describes the subject rather than a measurement. Version 0.2.0 publishes no admitted output contract for characteristics."
+      "status": "supported",
+      "measurementIDs": [
+        "wheelchair-use"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-wheelchair-use"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKClinicalTypeIdentifierAllergyRecord",
@@ -1118,10 +1289,11 @@
         "HKClinicalTypeIdentifierAllergyRecord"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkclinicaltypeidentifier/allergyrecord",
-      "status": "deferred",
+      "status": "platform-exclusive",
       "measurementIDs": [],
-      "profiles": [],
-      "requirement": "HealthKit clinical records already carry provider FHIR; the v0.2 HealthKit Observation adapter does not rewrite or re-profile them."
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKClinicalTypeIdentifierClinicalNoteRecord",
@@ -1130,10 +1302,11 @@
         "HKClinicalTypeIdentifierClinicalNoteRecord"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkclinicaltypeidentifier/clinicalnoterecord",
-      "status": "deferred",
+      "status": "platform-exclusive",
       "measurementIDs": [],
-      "profiles": [],
-      "requirement": "HealthKit clinical records already carry provider FHIR; the v0.2 HealthKit Observation adapter does not rewrite or re-profile them."
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKClinicalTypeIdentifierConditionRecord",
@@ -1142,10 +1315,11 @@
         "HKClinicalTypeIdentifierConditionRecord"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkclinicaltypeidentifier/conditionrecord",
-      "status": "deferred",
+      "status": "platform-exclusive",
       "measurementIDs": [],
-      "profiles": [],
-      "requirement": "HealthKit clinical records already carry provider FHIR; the v0.2 HealthKit Observation adapter does not rewrite or re-profile them."
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKClinicalTypeIdentifierCoverageRecord",
@@ -1154,10 +1328,11 @@
         "HKClinicalTypeIdentifierCoverageRecord"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkclinicaltypeidentifier/coveragerecord",
-      "status": "deferred",
+      "status": "platform-exclusive",
       "measurementIDs": [],
-      "profiles": [],
-      "requirement": "HealthKit clinical records already carry provider FHIR; the v0.2 HealthKit Observation adapter does not rewrite or re-profile them."
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKClinicalTypeIdentifierImmunizationRecord",
@@ -1166,10 +1341,11 @@
         "HKClinicalTypeIdentifierImmunizationRecord"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkclinicaltypeidentifier/immunizationrecord",
-      "status": "deferred",
+      "status": "platform-exclusive",
       "measurementIDs": [],
-      "profiles": [],
-      "requirement": "HealthKit clinical records already carry provider FHIR; the v0.2 HealthKit Observation adapter does not rewrite or re-profile them."
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKClinicalTypeIdentifierLabResultRecord",
@@ -1178,10 +1354,11 @@
         "HKClinicalTypeIdentifierLabResultRecord"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkclinicaltypeidentifier/labresultrecord",
-      "status": "deferred",
+      "status": "platform-exclusive",
       "measurementIDs": [],
-      "profiles": [],
-      "requirement": "HealthKit clinical records already carry provider FHIR; the v0.2 HealthKit Observation adapter does not rewrite or re-profile them."
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKClinicalTypeIdentifierMedicationRecord",
@@ -1190,10 +1367,11 @@
         "HKClinicalTypeIdentifierMedicationRecord"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkclinicaltypeidentifier/medicationrecord",
-      "status": "deferred",
+      "status": "platform-exclusive",
       "measurementIDs": [],
-      "profiles": [],
-      "requirement": "HealthKit clinical records already carry provider FHIR; the v0.2 HealthKit Observation adapter does not rewrite or re-profile them."
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKClinicalTypeIdentifierProcedureRecord",
@@ -1202,10 +1380,11 @@
         "HKClinicalTypeIdentifierProcedureRecord"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkclinicaltypeidentifier/procedurerecord",
-      "status": "deferred",
+      "status": "platform-exclusive",
       "measurementIDs": [],
-      "profiles": [],
-      "requirement": "HealthKit clinical records already carry provider FHIR; the v0.2 HealthKit Observation adapter does not rewrite or re-profile them."
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKClinicalTypeIdentifierVitalSignRecord",
@@ -1214,10 +1393,11 @@
         "HKClinicalTypeIdentifierVitalSignRecord"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkclinicaltypeidentifier/vitalsignrecord",
-      "status": "deferred",
+      "status": "platform-exclusive",
       "measurementIDs": [],
-      "profiles": [],
-      "requirement": "HealthKit clinical records already carry provider FHIR; the v0.2 HealthKit Observation adapter does not rewrite or re-profile them."
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCorrelationTypeIdentifierBloodPressure",
@@ -1285,7 +1465,7 @@
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
-      "requirement": "Use a Grove Sensor waveform graph once the HealthKit heartbeat-series adapter is implemented."
+      "requirement": "The beat-to-beat interval series ships as a grove-csv-1 recording (heartbeat-series column schema) in the residual design pass; no Observation output is admitted."
     },
     {
       "sourceTypeIdentifier": "HKDataTypeStateOfMind",
@@ -1357,10 +1537,13 @@
         "HKQuantityTypeIdentifierAppleExerciseTime"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/appleexercisetime",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "apple-exercise-time"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-apple-exercise-time"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierAppleMoveTime",
@@ -1369,10 +1552,13 @@
         "HKQuantityTypeIdentifierAppleMoveTime"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/applemovetime",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "apple-move-time"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-apple-move-time"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierAppleSleepingBreathingDisturbances",
@@ -1381,10 +1567,13 @@
         "HKQuantityTypeIdentifierAppleSleepingBreathingDisturbances"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/applesleepingbreathingdisturbances",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "sleeping-breathing-disturbances"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-sleeping-breathing-disturbances"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierAppleSleepingWristTemperature",
@@ -1393,10 +1582,13 @@
         "HKQuantityTypeIdentifierAppleSleepingWristTemperature"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/applesleepingwristtemperature",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "skin-temperature"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-skin-temperature"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierAppleStandTime",
@@ -1405,10 +1597,13 @@
         "HKQuantityTypeIdentifierAppleStandTime"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/applestandtime",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "apple-stand-time"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-apple-stand-time"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierAppleWalkingSteadiness",
@@ -1417,10 +1612,13 @@
         "HKQuantityTypeIdentifierAppleWalkingSteadiness"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/applewalkingsteadiness",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "walking-steadiness"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-walking-steadiness"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierAtrialFibrillationBurden",
@@ -1429,10 +1627,13 @@
         "HKQuantityTypeIdentifierAtrialFibrillationBurden"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/atrialfibrillationburden",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "atrial-fibrillation-burden"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-atrial-fibrillation-burden"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierBasalBodyTemperature",
@@ -1456,10 +1657,13 @@
         "HKQuantityTypeIdentifierBasalEnergyBurned"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/basalenergyburned",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "basal-energy"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-basal-energy"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierBloodAlcoholContent",
@@ -1468,10 +1672,13 @@
         "HKQuantityTypeIdentifierBloodAlcoholContent"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/bloodalcoholcontent",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "blood-alcohol-content"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-blood-alcohol-content"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierBloodGlucose",
@@ -1480,10 +1687,13 @@
         "HKQuantityTypeIdentifierBloodGlucose"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/bloodglucose",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "HealthKit does not identify the specimen needed by the Health Connect-only glucose profiles; source-only conversion fails closed."
+      "status": "supported",
+      "measurementIDs": [
+        "blood-glucose-unspecified-specimen"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-blood-glucose-unspecified-specimen"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierBloodPressureDiastolic",
@@ -1492,10 +1702,13 @@
         "HKQuantityTypeIdentifierBloodPressureDiastolic"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/bloodpressurediastolic",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "blood-pressure"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-blood-pressure"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierBloodPressureSystolic",
@@ -1504,10 +1717,13 @@
         "HKQuantityTypeIdentifierBloodPressureSystolic"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/bloodpressuresystolic",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "blood-pressure"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-blood-pressure"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierBodyFatPercentage",
@@ -1516,10 +1732,13 @@
         "HKQuantityTypeIdentifierBodyFatPercentage"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/bodyfatpercentage",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "body-fat-percentage"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-body-fat-percentage"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierBodyMass",
@@ -1574,10 +1793,13 @@
         "HKQuantityTypeIdentifierCrossCountrySkiingSpeed"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/crosscountryskiingspeed",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "speed"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-speed"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierCyclingCadence",
@@ -1586,10 +1808,13 @@
         "HKQuantityTypeIdentifierCyclingCadence"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/cyclingcadence",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "cycling-cadence"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-cycling-cadence"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierCyclingFunctionalThresholdPower",
@@ -1598,10 +1823,13 @@
         "HKQuantityTypeIdentifierCyclingFunctionalThresholdPower"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/cyclingfunctionalthresholdpower",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "cycling-functional-threshold-power"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-cycling-functional-threshold-power"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierCyclingPower",
@@ -1610,10 +1838,13 @@
         "HKQuantityTypeIdentifierCyclingPower"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/cyclingpower",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "power"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-power"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierCyclingSpeed",
@@ -1622,10 +1853,13 @@
         "HKQuantityTypeIdentifierCyclingSpeed"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/cyclingspeed",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "speed"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-speed"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryBiotin",
@@ -1634,10 +1868,13 @@
         "HKQuantityTypeIdentifierDietaryBiotin"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarybiotin",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-biotin"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-biotin"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryCaffeine",
@@ -1646,10 +1883,13 @@
         "HKQuantityTypeIdentifierDietaryCaffeine"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarycaffeine",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-caffeine"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-caffeine"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryCalcium",
@@ -1658,10 +1898,13 @@
         "HKQuantityTypeIdentifierDietaryCalcium"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarycalcium",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-calcium"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-calcium"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryCarbohydrates",
@@ -1670,10 +1913,13 @@
         "HKQuantityTypeIdentifierDietaryCarbohydrates"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarycarbohydrates",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-carbohydrates"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-carbohydrates"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryChloride",
@@ -1682,10 +1928,13 @@
         "HKQuantityTypeIdentifierDietaryChloride"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarychloride",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-chloride"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-chloride"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryCholesterol",
@@ -1694,10 +1943,13 @@
         "HKQuantityTypeIdentifierDietaryCholesterol"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarycholesterol",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-cholesterol"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-cholesterol"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryChromium",
@@ -1706,10 +1958,13 @@
         "HKQuantityTypeIdentifierDietaryChromium"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarychromium",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-chromium"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-chromium"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryCopper",
@@ -1718,10 +1973,13 @@
         "HKQuantityTypeIdentifierDietaryCopper"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarycopper",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-copper"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-copper"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryEnergyConsumed",
@@ -1730,10 +1988,13 @@
         "HKQuantityTypeIdentifierDietaryEnergyConsumed"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryenergyconsumed",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-energy"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-energy"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryFatMonounsaturated",
@@ -1742,10 +2003,13 @@
         "HKQuantityTypeIdentifierDietaryFatMonounsaturated"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryfatmonounsaturated",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-fat-monounsaturated"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-fat-monounsaturated"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryFatPolyunsaturated",
@@ -1754,10 +2018,13 @@
         "HKQuantityTypeIdentifierDietaryFatPolyunsaturated"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryfatpolyunsaturated",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-fat-polyunsaturated"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-fat-polyunsaturated"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryFatSaturated",
@@ -1766,10 +2033,13 @@
         "HKQuantityTypeIdentifierDietaryFatSaturated"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryfatsaturated",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-fat-saturated"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-fat-saturated"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryFatTotal",
@@ -1778,10 +2048,13 @@
         "HKQuantityTypeIdentifierDietaryFatTotal"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryfattotal",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-fat-total"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-fat-total"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryFiber",
@@ -1790,10 +2063,13 @@
         "HKQuantityTypeIdentifierDietaryFiber"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryfiber",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-fiber"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-fiber"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryFolate",
@@ -1802,10 +2078,13 @@
         "HKQuantityTypeIdentifierDietaryFolate"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryfolate",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-folate"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-folate"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryIodine",
@@ -1814,10 +2093,13 @@
         "HKQuantityTypeIdentifierDietaryIodine"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryiodine",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-iodine"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-iodine"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryIron",
@@ -1826,10 +2108,13 @@
         "HKQuantityTypeIdentifierDietaryIron"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryiron",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-iron"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-iron"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryMagnesium",
@@ -1838,10 +2123,13 @@
         "HKQuantityTypeIdentifierDietaryMagnesium"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarymagnesium",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-magnesium"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-magnesium"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryManganese",
@@ -1850,10 +2138,13 @@
         "HKQuantityTypeIdentifierDietaryManganese"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarymanganese",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-manganese"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-manganese"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryMolybdenum",
@@ -1862,10 +2153,13 @@
         "HKQuantityTypeIdentifierDietaryMolybdenum"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarymolybdenum",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-molybdenum"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-molybdenum"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryNiacin",
@@ -1874,10 +2168,13 @@
         "HKQuantityTypeIdentifierDietaryNiacin"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryniacin",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-niacin"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-niacin"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryPantothenicAcid",
@@ -1886,10 +2183,13 @@
         "HKQuantityTypeIdentifierDietaryPantothenicAcid"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarypantothenicacid",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-pantothenic-acid"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-pantothenic-acid"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryPhosphorus",
@@ -1898,10 +2198,13 @@
         "HKQuantityTypeIdentifierDietaryPhosphorus"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryphosphorus",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-phosphorus"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-phosphorus"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryPotassium",
@@ -1910,10 +2213,13 @@
         "HKQuantityTypeIdentifierDietaryPotassium"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarypotassium",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-potassium"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-potassium"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryProtein",
@@ -1922,10 +2228,13 @@
         "HKQuantityTypeIdentifierDietaryProtein"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryprotein",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-protein"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-protein"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryRiboflavin",
@@ -1934,10 +2243,13 @@
         "HKQuantityTypeIdentifierDietaryRiboflavin"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryriboflavin",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-riboflavin"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-riboflavin"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietarySelenium",
@@ -1946,10 +2258,13 @@
         "HKQuantityTypeIdentifierDietarySelenium"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryselenium",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-selenium"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-selenium"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietarySodium",
@@ -1958,10 +2273,13 @@
         "HKQuantityTypeIdentifierDietarySodium"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarysodium",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-sodium"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-sodium"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietarySugar",
@@ -1970,10 +2288,13 @@
         "HKQuantityTypeIdentifierDietarySugar"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarysugar",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-sugar"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-sugar"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryThiamin",
@@ -1982,10 +2303,13 @@
         "HKQuantityTypeIdentifierDietaryThiamin"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarythiamin",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-thiamin"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-thiamin"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryVitaminA",
@@ -1994,10 +2318,13 @@
         "HKQuantityTypeIdentifierDietaryVitaminA"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryvitamina",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-vitamin-a"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-vitamin-a"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryVitaminB12",
@@ -2006,10 +2333,13 @@
         "HKQuantityTypeIdentifierDietaryVitaminB12"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryvitaminb12",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-vitamin-b12"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-vitamin-b12"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryVitaminB6",
@@ -2018,10 +2348,13 @@
         "HKQuantityTypeIdentifierDietaryVitaminB6"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryvitaminb6",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-vitamin-b6"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-vitamin-b6"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryVitaminC",
@@ -2030,10 +2363,13 @@
         "HKQuantityTypeIdentifierDietaryVitaminC"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryvitaminc",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-vitamin-c"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-vitamin-c"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryVitaminD",
@@ -2042,10 +2378,13 @@
         "HKQuantityTypeIdentifierDietaryVitaminD"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryvitamind",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-vitamin-d"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-vitamin-d"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryVitaminE",
@@ -2054,10 +2393,13 @@
         "HKQuantityTypeIdentifierDietaryVitaminE"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryvitamine",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-vitamin-e"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-vitamin-e"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryVitaminK",
@@ -2066,10 +2408,13 @@
         "HKQuantityTypeIdentifierDietaryVitaminK"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryvitamink",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-vitamin-k"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-vitamin-k"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryWater",
@@ -2078,10 +2423,13 @@
         "HKQuantityTypeIdentifierDietaryWater"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarywater",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "fluid-intake"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-fluid-intake"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryZinc",
@@ -2090,10 +2438,13 @@
         "HKQuantityTypeIdentifierDietaryZinc"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryzinc",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-zinc"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-zinc"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierDistanceCrossCountrySkiing",
@@ -2237,10 +2588,13 @@
         "HKQuantityTypeIdentifierElectrodermalActivity"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/electrodermalactivity",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "electrodermal-activity"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-electrodermal-activity"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierEnvironmentalAudioExposure",
@@ -2249,10 +2603,13 @@
         "HKQuantityTypeIdentifierEnvironmentalAudioExposure"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/environmentalaudioexposure",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "environmental-audio-exposure"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-environmental-audio-exposure"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierEnvironmentalSoundReduction",
@@ -2261,10 +2618,13 @@
         "HKQuantityTypeIdentifierEnvironmentalSoundReduction"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/environmentalsoundreduction",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "environmental-sound-reduction"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-environmental-sound-reduction"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierEstimatedWorkoutEffortScore",
@@ -2273,10 +2633,13 @@
         "HKQuantityTypeIdentifierEstimatedWorkoutEffortScore"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/estimatedworkouteffortscore",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "workout-effort-score"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-workout-effort-score"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierFlightsClimbed",
@@ -2285,10 +2648,13 @@
         "HKQuantityTypeIdentifierFlightsClimbed"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/flightsclimbed",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "flights-climbed"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-flights-climbed"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierForcedExpiratoryVolume1",
@@ -2297,10 +2663,13 @@
         "HKQuantityTypeIdentifierForcedExpiratoryVolume1"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/forcedexpiratoryvolume1",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "forced-expiratory-volume-1"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-forced-expiratory-volume-1"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierForcedVitalCapacity",
@@ -2309,10 +2678,13 @@
         "HKQuantityTypeIdentifierForcedVitalCapacity"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/forcedvitalcapacity",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "forced-vital-capacity"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-forced-vital-capacity"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierHeadphoneAudioExposure",
@@ -2321,10 +2693,13 @@
         "HKQuantityTypeIdentifierHeadphoneAudioExposure"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/headphoneaudioexposure",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "headphone-audio-exposure"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-headphone-audio-exposure"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierHeartRate",
@@ -2348,10 +2723,13 @@
         "HKQuantityTypeIdentifierHeartRateRecoveryOneMinute"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/heartraterecoveryoneminute",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "heart-rate-recovery-one-minute"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-heart-rate-recovery-one-minute"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierHeartRateVariabilitySDNN",
@@ -2360,10 +2738,13 @@
         "HKQuantityTypeIdentifierHeartRateVariabilitySDNN"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/heartratevariabilitysdnn",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "heart-rate-variability-sdnn"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-heart-rate-variability-sdnn"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierHeight",
@@ -2387,10 +2768,13 @@
         "HKQuantityTypeIdentifierInhalerUsage"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/inhalerusage",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "inhaler-usage"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-inhaler-usage"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierInsulinDelivery",
@@ -2399,10 +2783,13 @@
         "HKQuantityTypeIdentifierInsulinDelivery"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/insulindelivery",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "insulin-delivery"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-insulin-delivery"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierLeanBodyMass",
@@ -2411,10 +2798,13 @@
         "HKQuantityTypeIdentifierLeanBodyMass"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/leanbodymass",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "lean-body-mass"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-lean-body-mass"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierNikeFuel",
@@ -2423,10 +2813,10 @@
         "HKQuantityTypeIdentifierNikeFuel"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/nikefuel",
-      "status": "deferred",
+      "status": "intentionally-unsupported",
       "measurementIDs": [],
       "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "requirement": "NikeFuel is an opaque vendor index with an unpublished formula and a retired ecosystem; it has no physiological dimension, no UCUM representation beyond an arbitrary annotation, and no second source, so normalizing it would launder an undefined score into an exchange measurement."
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierNumberOfAlcoholicBeverages",
@@ -2435,10 +2825,13 @@
         "HKQuantityTypeIdentifierNumberOfAlcoholicBeverages"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/numberofalcoholicbeverages",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "number-of-alcoholic-beverages"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-number-of-alcoholic-beverages"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierNumberOfTimesFallen",
@@ -2447,10 +2840,13 @@
         "HKQuantityTypeIdentifierNumberOfTimesFallen"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/numberoftimesfallen",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "number-of-times-fallen"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-number-of-times-fallen"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierOxygenSaturation",
@@ -2474,10 +2870,13 @@
         "HKQuantityTypeIdentifierPaddleSportsSpeed"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/paddlesportsspeed",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "speed"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-speed"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierPeakExpiratoryFlowRate",
@@ -2486,10 +2885,13 @@
         "HKQuantityTypeIdentifierPeakExpiratoryFlowRate"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/peakexpiratoryflowrate",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "peak-expiratory-flow-rate"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-peak-expiratory-flow-rate"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierPeripheralPerfusionIndex",
@@ -2498,10 +2900,13 @@
         "HKQuantityTypeIdentifierPeripheralPerfusionIndex"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/peripheralperfusionindex",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "peripheral-perfusion-index"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-peripheral-perfusion-index"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierPhysicalEffort",
@@ -2510,10 +2915,13 @@
         "HKQuantityTypeIdentifierPhysicalEffort"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/physicaleffort",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "physical-effort"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-physical-effort"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierPushCount",
@@ -2522,10 +2930,13 @@
         "HKQuantityTypeIdentifierPushCount"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/pushcount",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "wheelchair-push-count"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-wheelchair-push-count"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierRespiratoryRate",
@@ -2549,10 +2960,13 @@
         "HKQuantityTypeIdentifierRestingHeartRate"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/restingheartrate",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "resting-heart-rate"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-resting-heart-rate"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierRowingSpeed",
@@ -2561,10 +2975,13 @@
         "HKQuantityTypeIdentifierRowingSpeed"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/rowingspeed",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "speed"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-speed"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierRunningGroundContactTime",
@@ -2573,10 +2990,13 @@
         "HKQuantityTypeIdentifierRunningGroundContactTime"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/runninggroundcontacttime",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "running-ground-contact-time"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-running-ground-contact-time"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierRunningPower",
@@ -2585,10 +3005,13 @@
         "HKQuantityTypeIdentifierRunningPower"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/runningpower",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "power"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-power"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierRunningSpeed",
@@ -2597,10 +3020,13 @@
         "HKQuantityTypeIdentifierRunningSpeed"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/runningspeed",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "speed"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-speed"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierRunningStrideLength",
@@ -2609,10 +3035,13 @@
         "HKQuantityTypeIdentifierRunningStrideLength"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/runningstridelength",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "running-stride-length"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-running-stride-length"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierRunningVerticalOscillation",
@@ -2621,10 +3050,13 @@
         "HKQuantityTypeIdentifierRunningVerticalOscillation"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/runningverticaloscillation",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "running-vertical-oscillation"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-running-vertical-oscillation"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierSixMinuteWalkTestDistance",
@@ -2633,10 +3065,13 @@
         "HKQuantityTypeIdentifierSixMinuteWalkTestDistance"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/sixminutewalktestdistance",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "six-minute-walk-test-distance"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-six-minute-walk-test-distance"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierStairAscentSpeed",
@@ -2645,10 +3080,13 @@
         "HKQuantityTypeIdentifierStairAscentSpeed"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/stairascentspeed",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "stair-ascent-speed"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-stair-ascent-speed"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierStairDescentSpeed",
@@ -2657,10 +3095,13 @@
         "HKQuantityTypeIdentifierStairDescentSpeed"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/stairdescentspeed",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "stair-descent-speed"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-stair-descent-speed"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierStepCount",
@@ -2684,10 +3125,13 @@
         "HKQuantityTypeIdentifierSwimmingStrokeCount"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/swimmingstrokecount",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "swimming-stroke-count"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-swimming-stroke-count"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierTimeInDaylight",
@@ -2696,10 +3140,13 @@
         "HKQuantityTypeIdentifierTimeInDaylight"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/timeindaylight",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "time-in-daylight"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-time-in-daylight"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierUVExposure",
@@ -2708,10 +3155,13 @@
         "HKQuantityTypeIdentifierUVExposure"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/uvexposure",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "uv-exposure"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-uv-exposure"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierUnderwaterDepth",
@@ -2720,10 +3170,13 @@
         "HKQuantityTypeIdentifierUnderwaterDepth"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/underwaterdepth",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "underwater-depth"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-underwater-depth"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierVO2Max",
@@ -2732,10 +3185,13 @@
         "HKQuantityTypeIdentifierVO2Max"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/vo2max",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "vo2-max"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-vo2-max"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierWaistCircumference",
@@ -2744,10 +3200,13 @@
         "HKQuantityTypeIdentifierWaistCircumference"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/waistcircumference",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "waist-circumference"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-waist-circumference"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierWalkingAsymmetryPercentage",
@@ -2756,10 +3215,13 @@
         "HKQuantityTypeIdentifierWalkingAsymmetryPercentage"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/walkingasymmetrypercentage",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "walking-asymmetry"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-walking-asymmetry"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierWalkingDoubleSupportPercentage",
@@ -2768,10 +3230,13 @@
         "HKQuantityTypeIdentifierWalkingDoubleSupportPercentage"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/walkingdoublesupportpercentage",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "walking-double-support"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-walking-double-support"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierWalkingHeartRateAverage",
@@ -2780,10 +3245,13 @@
         "HKQuantityTypeIdentifierWalkingHeartRateAverage"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/walkingheartrateaverage",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "walking-heart-rate-average"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-walking-heart-rate-average"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierWalkingSpeed",
@@ -2792,10 +3260,13 @@
         "HKQuantityTypeIdentifierWalkingSpeed"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/walkingspeed",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "walking-speed"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-walking-speed"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierWalkingStepLength",
@@ -2804,10 +3275,13 @@
         "HKQuantityTypeIdentifierWalkingStepLength"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/walkingsteplength",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "walking-step-length"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-walking-step-length"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierWaterTemperature",
@@ -2816,10 +3290,13 @@
         "HKQuantityTypeIdentifierWaterTemperature"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/watertemperature",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "water-temperature"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-water-temperature"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierWorkoutEffortScore",
@@ -2828,10 +3305,13 @@
         "HKQuantityTypeIdentifierWorkoutEffortScore"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/workouteffortscore",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "workout-effort-score"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-workout-effort-score"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKScoredAssessmentTypeIdentifierGAD7",
@@ -2840,10 +3320,13 @@
         "HKScoredAssessmentTypeIdentifierGAD7"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkscoredassessmenttypeidentifier/gad7",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or HealthKit-adapter v0.2 output contract is published for this sample type."
+      "status": "supported",
+      "measurementIDs": [
+        "gad7-assessment"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-gad7-assessment"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKScoredAssessmentTypeIdentifierPHQ9",
@@ -2852,10 +3335,13 @@
         "HKScoredAssessmentTypeIdentifierPHQ9"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkscoredassessmenttypeidentifier/phq9",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or HealthKit-adapter v0.2 output contract is published for this sample type."
+      "status": "supported",
+      "measurementIDs": [
+        "phq9-assessment"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-phq9-assessment"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKVisionPrescriptionTypeIdentifier",
@@ -2867,7 +3353,7 @@
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
-      "requirement": "No shared or HealthKit-adapter v0.2 output contract is published for this sample type."
+      "requirement": "A vision prescription is a clinical document, not a measurement; the residual design pass decides its envelope route and no Observation output is admitted."
     },
     {
       "sourceTypeIdentifier": "HKWorkoutRouteTypeIdentifier",
@@ -2888,10 +3374,15 @@
         "HKWorkoutTypeIdentifier"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkworkouttypeidentifier",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or HealthKit-adapter v0.2 output contract is published for this sample type."
+      "status": "supported",
+      "measurementIDs": [
+        "workout",
+        "workout-segment"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-workout",
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-workout-segment"
+      ]
     }
   ]
 }

@@ -80,6 +80,8 @@ class HealthKitCatalogTests(unittest.TestCase):
             if row["status"] == "supported":
                 self.assertTrue(row["measurementIDs"])
                 self.assertTrue(row["profiles"])
+            elif row["status"] == "platform-exclusive":
+                self.assertTrue(row["profiles"])
             else:
                 self.assertIsInstance(row.get("requirement"), str)
                 self.assertTrue(row["requirement"])
@@ -110,7 +112,7 @@ class HealthKitCatalogTests(unittest.TestCase):
         }
         self.assertTrue(expected_additions <= set(rows))
         for identifier in expected_additions:
-            self.assertEqual(rows[identifier]["status"], "deferred")
+            self.assertEqual(rows[identifier]["status"], "intentionally-unsupported")
             self.assertEqual(rows[identifier]["measurementIDs"], [])
             self.assertEqual(rows[identifier]["profiles"], [])
 
@@ -178,8 +180,10 @@ class HealthKitCatalogTests(unittest.TestCase):
             row for row in self.catalog["rows"]
             if row["sourceTypeIdentifier"] == "HKQuantityTypeIdentifierBloodGlucose"
         )
-        self.assertEqual(glucose["status"], "deferred")
-        self.assertEqual(glucose["profiles"], [])
+        self.assertEqual(glucose["status"], "supported")
+        self.assertEqual(
+            glucose["measurementIDs"], ["blood-glucose-unspecified-specimen"]
+        )
         ecg = next(
             row for row in self.catalog["rows"]
             if row["sourceTypeIdentifier"] == "HKDataTypeIdentifierElectrocardiogram"

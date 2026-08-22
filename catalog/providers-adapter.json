@@ -302,12 +302,14 @@
         },
         {
           "token": "body-fat",
-          "status": "unmodeled",
+          "status": "supported",
           "elements": [
             {
               "path": "bodyFat.percentage",
-              "status": "unmodeled",
-              "reason": "No shared Mobile body-fat profile exists in version 0.2.0."
+              "status": "supported",
+              "measurementIds": [
+                "body-fat-percentage"
+              ]
             }
           ]
         },
@@ -328,72 +330,87 @@
         },
         {
           "token": "vo2-max",
-          "status": "unmodeled",
+          "status": "supported",
           "elements": [
             {
               "path": "vo2Max.vo2Max",
-              "status": "unmodeled",
-              "reason": "No shared Mobile VO2 max profile exists in version 0.2.0."
+              "status": "supported",
+              "measurementIds": [
+                "vo2-max"
+              ]
             }
           ]
         },
         {
           "token": "daily-oxygen-saturation",
-          "status": "deferred",
+          "status": "supported",
           "elements": [
             {
               "path": "dailyOxygenSaturation.averagePercentage",
-              "status": "deferred",
-              "reason": "A civil-date daily average is not a point-in-time pulse-oximetry result and cannot satisfy the shared oxygen-saturation effective-time semantics without invention."
+              "status": "supported",
+              "measurementIds": [
+                "oxygen-saturation-daily-average"
+              ]
             }
           ]
         },
         {
           "token": "heart-rate-variability",
-          "status": "unmodeled",
+          "status": "supported",
           "elements": [
             {
               "path": "heartRateVariability.rootMeanSquareOfSuccessiveDifferencesMilliseconds",
-              "status": "unmodeled",
-              "reason": "RMSSD is distinct from SDNN and no shared Mobile HRV profile exists in version 0.2.0."
+              "status": "supported",
+              "measurementIds": [
+                "heart-rate-variability-rmssd"
+              ]
             },
             {
               "path": "heartRateVariability.standardDeviationMilliseconds",
-              "status": "unmodeled",
-              "reason": "No shared Mobile HRV profile exists in version 0.2.0."
+              "status": "supported",
+              "measurementIds": [
+                "heart-rate-variability-rmssd",
+                "heart-rate-variability-sdnn"
+              ]
             }
           ]
         },
         {
           "token": "daily-resting-heart-rate",
-          "status": "unmodeled",
+          "status": "supported",
           "elements": [
             {
               "path": "dailyRestingHeartRate.beatsPerMinute",
-              "status": "unmodeled",
-              "reason": "Resting heart rate is a daily aggregate with semantics distinct from the shared point heart-rate profile."
+              "status": "supported",
+              "measurementIds": [
+                "resting-heart-rate"
+              ]
             }
           ]
         },
         {
           "token": "daily-respiratory-rate",
-          "status": "deferred",
+          "status": "supported",
           "elements": [
             {
               "path": "dailyRespiratoryRate.breathsPerMinute",
-              "status": "deferred",
-              "reason": "A civil-date daily average cannot satisfy the shared point respiratory-rate effective-time semantics without invention."
+              "status": "supported",
+              "measurementIds": [
+                "respiratory-rate-average"
+              ]
             }
           ]
         },
         {
           "token": "blood-glucose",
-          "status": "deferred",
+          "status": "supported",
           "elements": [
             {
               "path": "bloodGlucose.bloodGlucoseMilligramsPerDeciliter",
-              "status": "deferred",
-              "reason": "The consumed source shape has no specimen evidence, so none of the four Health Connect-only specimen-specific glucose profiles can be selected."
+              "status": "supported",
+              "measurementIds": [
+                "blood-glucose-unspecified-specimen"
+              ]
             }
           ]
         },
@@ -414,23 +431,27 @@
         },
         {
           "token": "floors",
-          "status": "unmodeled",
+          "status": "supported",
           "elements": [
             {
               "path": "floors.count",
-              "status": "unmodeled",
-              "reason": "No shared Mobile floors-climbed profile exists in version 0.2.0."
+              "status": "supported",
+              "measurementIds": [
+                "flights-climbed"
+              ]
             }
           ]
         },
         {
           "token": "basal-energy-burned",
-          "status": "unmodeled",
+          "status": "supported",
           "elements": [
             {
               "path": "basalEnergyBurned.kcal",
-              "status": "unmodeled",
-              "reason": "Basal energy is not active energy and has no shared Mobile profile in version 0.2.0."
+              "status": "supported",
+              "measurementIds": [
+                "basal-energy"
+              ]
             }
           ]
         },
@@ -449,34 +470,44 @@
             },
             {
               "path": "sleep.summary.stagesSummary[type=DEEP].minutes",
-              "status": "unmodeled",
-              "reason": "A stage-duration summary has no stage interval and is not a shared sleep-stage Observation."
+              "status": "supported",
+              "measurementIds": [
+                "deep-sleep-duration"
+              ]
             },
             {
               "path": "sleep.summary.stagesSummary[type=REM].minutes",
-              "status": "unmodeled",
-              "reason": "A stage-duration summary has no stage interval and is not a shared sleep-stage Observation."
+              "status": "supported",
+              "measurementIds": [
+                "rem-sleep-duration"
+              ]
             },
             {
               "path": "sleep.summary.stagesSummary[type=LIGHT].minutes",
-              "status": "unmodeled",
-              "reason": "A stage-duration summary has no stage interval and is not a shared sleep-stage Observation."
+              "status": "supported",
+              "measurementIds": [
+                "light-sleep-duration"
+              ]
             },
             {
               "path": "sleep.summary.stagesSummary[type=AWAKE].minutes",
-              "status": "unmodeled",
-              "reason": "A stage-duration summary has no stage interval and is not a shared sleep-stage Observation."
+              "status": "supported",
+              "measurementIds": [
+                "sleep-awake-duration"
+              ]
             }
           ]
         },
         {
           "token": "exercise",
-          "status": "unmodeled",
+          "status": "supported",
           "elements": [
             {
               "path": "exercise.interval",
-              "status": "unmodeled",
-              "reason": "Workout duration has no shared Mobile profile in version 0.2.0."
+              "status": "supported",
+              "measurementIds": [
+                "workout"
+              ]
             }
           ]
         },
@@ -553,28 +584,38 @@
             },
             {
               "path": "deep_sleep_duration",
-              "status": "unmodeled",
-              "reason": "A stage-duration summary has no stage interval and is not a shared sleep-stage Observation."
+              "status": "supported",
+              "measurementIds": [
+                "deep-sleep-duration"
+              ]
             },
             {
               "path": "rem_sleep_duration",
-              "status": "unmodeled",
-              "reason": "A stage-duration summary has no stage interval and is not a shared sleep-stage Observation."
+              "status": "supported",
+              "measurementIds": [
+                "rem-sleep-duration"
+              ]
             },
             {
               "path": "light_sleep_duration",
-              "status": "unmodeled",
-              "reason": "A stage-duration summary has no stage interval and is not a shared sleep-stage Observation."
+              "status": "supported",
+              "measurementIds": [
+                "light-sleep-duration"
+              ]
             },
             {
               "path": "awake_time",
-              "status": "unmodeled",
-              "reason": "A stage-duration summary has no stage interval and is not a shared sleep-stage Observation."
+              "status": "supported",
+              "measurementIds": [
+                "sleep-awake-duration"
+              ]
             },
             {
               "path": "lowest_heart_rate",
-              "status": "unmodeled",
-              "reason": "A sleep-session minimum is not a point heart-rate measurement."
+              "status": "supported",
+              "measurementIds": [
+                "sleep-heart-rate"
+              ]
             },
             {
               "path": "average_hrv",
@@ -583,63 +624,71 @@
             },
             {
               "path": "average_breath",
-              "status": "deferred",
-              "reason": "A session average cannot satisfy the shared point respiratory-rate effective-time semantics without invention."
+              "status": "supported",
+              "measurementIds": [
+                "respiratory-rate-average"
+              ]
             }
           ]
         },
         {
           "token": "daily_spo2",
-          "status": "deferred",
+          "status": "supported",
           "elements": [
             {
               "path": "spo2_percentage.average",
-              "status": "deferred",
-              "reason": "A daily average is not a point-in-time pulse-oximetry result."
+              "status": "supported",
+              "measurementIds": [
+                "oxygen-saturation-daily-average"
+              ]
             }
           ]
         },
         {
           "token": "workout",
-          "status": "unmodeled",
+          "status": "supported",
           "elements": [
             {
               "path": "start_datetime/end_datetime",
-              "status": "unmodeled",
-              "reason": "Workout duration has no shared Mobile profile in version 0.2.0."
+              "status": "supported",
+              "measurementIds": [
+                "workout"
+              ]
             }
           ]
         },
         {
           "token": "vO2_max",
-          "status": "unmodeled",
+          "status": "supported",
           "elements": [
             {
               "path": "vo2_max",
-              "status": "unmodeled",
-              "reason": "No shared Mobile VO2 max profile exists in version 0.2.0."
+              "status": "supported",
+              "measurementIds": [
+                "vo2-max"
+              ]
             }
           ]
         },
         {
           "token": "daily_cardiovascular_age",
-          "status": "unmodeled",
+          "status": "intentionally-unsupported",
           "elements": [
             {
               "path": "vascular_age",
-              "status": "unmodeled",
-              "reason": "A provider-computed cardiovascular age is not a physiological measurement shared across sources."
+              "status": "intentionally-unsupported",
+              "reason": "Although two providers report it, each value is the output of an undisclosed proprietary algorithm over different inputs (Withings pulse-wave velocity versus Oura PPG features), so the numbers are not comparable and no shared physiological definition exists; normalizing them under one code would fabricate clinical comparability, and the diagnostic-adjacent 'age' framing makes a shared measurement unsafe. Both provider catalog rows already record this refusal."
             }
           ]
         },
         {
           "token": "daily_readiness",
-          "status": "unmodeled",
+          "status": "intentionally-unsupported",
           "elements": [
             {
               "path": "score",
-              "status": "unmodeled",
-              "reason": "A provider-computed readiness score is not a physiological measurement shared across sources."
+              "status": "intentionally-unsupported",
+              "reason": "A proprietary vendor score with no physiologic unit is not a comparable measurement; normalizing it as a dimensionless quantity would misrepresent an undisclosed composite algorithm as an observable. The same verdict applies to Oura's daily sleep and activity scores, which are not yet inventoried in providers-adapter.json."
             }
           ]
         },
@@ -716,12 +765,14 @@
         },
         {
           "token": "getmeas:6",
-          "status": "unmodeled",
+          "status": "supported",
           "elements": [
             {
               "path": "measure.value*10^unit",
-              "status": "unmodeled",
-              "reason": "No shared Mobile body-fat profile exists in version 0.2.0."
+              "status": "supported",
+              "measurementIds": [
+                "body-fat-percentage"
+              ]
             }
           ]
         },
@@ -806,23 +857,25 @@
         },
         {
           "token": "getmeas:123",
-          "status": "unmodeled",
+          "status": "supported",
           "elements": [
             {
               "path": "measure.value*10^unit",
-              "status": "unmodeled",
-              "reason": "No shared Mobile VO2 max profile exists in version 0.2.0."
+              "status": "supported",
+              "measurementIds": [
+                "vo2-max"
+              ]
             }
           ]
         },
         {
           "token": "getmeas:155",
-          "status": "unmodeled",
+          "status": "intentionally-unsupported",
           "elements": [
             {
               "path": "measure.value*10^unit",
-              "status": "unmodeled",
-              "reason": "A provider-computed cardiovascular age is not a physiological measurement shared across sources."
+              "status": "intentionally-unsupported",
+              "reason": "Although two providers report it, each value is the output of an undisclosed proprietary algorithm over different inputs (Withings pulse-wave velocity versus Oura PPG features), so the numbers are not comparable and no shared physiological definition exists; normalizing them under one code would fabricate clinical comparability, and the diagnostic-adjacent 'age' framing makes a shared measurement unsafe. Both provider catalog rows already record this refusal."
             }
           ]
         },
@@ -873,78 +926,93 @@
         },
         {
           "token": "getsummary:deepsleepduration",
-          "status": "unmodeled",
+          "status": "supported",
           "elements": [
             {
               "path": "data.deepsleepduration",
-              "status": "unmodeled",
-              "reason": "A stage-duration summary has no stage interval and is not a shared sleep-stage Observation."
+              "status": "supported",
+              "measurementIds": [
+                "deep-sleep-duration"
+              ]
             }
           ]
         },
         {
           "token": "getsummary:remsleepduration",
-          "status": "unmodeled",
+          "status": "supported",
           "elements": [
             {
               "path": "data.remsleepduration",
-              "status": "unmodeled",
-              "reason": "A stage-duration summary has no stage interval and is not a shared sleep-stage Observation."
+              "status": "supported",
+              "measurementIds": [
+                "rem-sleep-duration"
+              ]
             }
           ]
         },
         {
           "token": "getsummary:lightsleepduration",
-          "status": "unmodeled",
+          "status": "supported",
           "elements": [
             {
               "path": "data.lightsleepduration",
-              "status": "unmodeled",
-              "reason": "A stage-duration summary has no stage interval and is not a shared sleep-stage Observation."
+              "status": "supported",
+              "measurementIds": [
+                "light-sleep-duration"
+              ]
             }
           ]
         },
         {
           "token": "getsummary:wakeupduration",
-          "status": "unmodeled",
+          "status": "supported",
           "elements": [
             {
               "path": "data.wakeupduration",
-              "status": "unmodeled",
-              "reason": "A stage-duration summary has no stage interval and is not a shared sleep-stage Observation."
+              "status": "supported",
+              "measurementIds": [
+                "sleep-awake-duration"
+              ]
             }
           ]
         },
         {
           "token": "getsummary:hr_average",
-          "status": "unmodeled",
+          "status": "supported",
           "elements": [
             {
               "path": "data.hr_average",
-              "status": "unmodeled",
-              "reason": "A sleep-session average is not a point heart-rate measurement."
+              "status": "supported",
+              "measurementIds": [
+                "sleep-heart-rate",
+                "sleeping-heart-rate-average"
+              ]
             }
           ]
         },
         {
           "token": "getsummary:rr_average",
-          "status": "deferred",
+          "status": "supported",
           "elements": [
             {
               "path": "data.rr_average",
-              "status": "deferred",
-              "reason": "A sleep-session average cannot satisfy the shared point respiratory-rate effective-time semantics without invention."
+              "status": "supported",
+              "measurementIds": [
+                "respiratory-rate-average"
+              ]
             }
           ]
         },
         {
           "token": "getworkouts:interval",
-          "status": "unmodeled",
+          "status": "supported",
           "elements": [
             {
               "path": "startdate/enddate",
-              "status": "unmodeled",
-              "reason": "Workout duration has no shared Mobile profile in version 0.2.0."
+              "status": "supported",
+              "measurementIds": [
+                "workout"
+              ]
             }
           ]
         },
@@ -1029,78 +1097,90 @@
         },
         {
           "token": "getmeas:5",
-          "status": "unmodeled",
+          "status": "supported",
           "elements": [
             {
               "path": "measure.value*10^unit",
-              "status": "unmodeled",
-              "reason": "Fat-free mass has no shared Mobile profile in version 0.2.0."
+              "status": "supported",
+              "measurementIds": [
+                "lean-body-mass"
+              ]
             }
           ]
         },
         {
           "token": "getmeas:8",
-          "status": "unmodeled",
+          "status": "supported",
           "elements": [
             {
               "path": "measure.value*10^unit",
-              "status": "unmodeled",
-              "reason": "Fat mass has no shared Mobile profile in version 0.2.0."
+              "status": "supported",
+              "measurementIds": [
+                "body-fat-mass"
+              ]
             }
           ]
         },
         {
           "token": "getmeas:73",
-          "status": "unmodeled",
+          "status": "supported",
           "elements": [
             {
               "path": "measure.value*10^unit",
-              "status": "unmodeled",
-              "reason": "Skin temperature is not relabeled as core or generic body temperature."
+              "status": "supported",
+              "measurementIds": [
+                "skin-temperature"
+              ]
             }
           ]
         },
         {
           "token": "getmeas:76",
-          "status": "unmodeled",
+          "status": "supported",
           "elements": [
             {
               "path": "measure.value*10^unit",
-              "status": "unmodeled",
-              "reason": "Muscle mass has no shared Mobile profile in version 0.2.0."
+              "status": "supported",
+              "measurementIds": [
+                "muscle-mass"
+              ]
             }
           ]
         },
         {
           "token": "getmeas:77",
-          "status": "unmodeled",
+          "status": "supported",
           "elements": [
             {
               "path": "measure.value*10^unit",
-              "status": "unmodeled",
-              "reason": "Hydration has no shared Mobile profile in version 0.2.0."
+              "status": "supported",
+              "measurementIds": [
+                "body-water-mass"
+              ]
             }
           ]
         },
         {
           "token": "getmeas:88",
-          "status": "unmodeled",
+          "status": "supported",
           "elements": [
             {
               "path": "measure.value*10^unit",
-              "status": "unmodeled",
-              "reason": "Bone mass has no shared Mobile profile in version 0.2.0."
+              "status": "supported",
+              "measurementIds": [
+                "bone-mass"
+              ]
             }
           ]
         },
         {
           "token": "getmeas:91",
-          "status": "unmodeled",
+          "status": "intentionally-unsupported",
           "elements": [
             {
               "path": "measure.value*10^unit",
-              "status": "unmodeled",
-              "reason": "Pulse-wave velocity has no shared Mobile profile in version 0.2.0."
+              "status": "intentionally-unsupported",
+              "reason": "Diagnostic-adjacent cardiovascular assessment: Withings PWV is an aortic-stiffness screening value produced by a proprietary single-vendor scale algorithm (and was subject to regulatory withdrawal and reintroduction), with no second evidencing source and no safe wellness normalization, so admitting it as a normalized measurement would misrepresent a clinical vascular assessment."
             }
           ]
         },
@@ -1172,78 +1252,84 @@
         },
         {
           "token": "getmeas:167",
-          "status": "unmodeled",
+          "status": "intentionally-unsupported",
           "elements": [
             {
               "path": "measure.value*10^unit",
-              "status": "unmodeled",
-              "reason": "Nerve health score has no shared Mobile profile in version 0.2.0."
+              "status": "intentionally-unsupported",
+              "reason": "A proprietary vendor score with no physiologic unit, and additionally diagnostic-adjacent: Withings positions it as small-fiber-neuropathy screening, so an untyped scalar Observation would be misleading."
             }
           ]
         },
         {
           "token": "getmeas:168",
-          "status": "unmodeled",
+          "status": "supported",
           "elements": [
             {
               "path": "measure.value*10^unit",
-              "status": "unmodeled",
-              "reason": "Extracellular water has no shared Mobile profile in version 0.2.0."
+              "status": "supported",
+              "measurementIds": [
+                "extracellular-water-mass"
+              ]
             }
           ]
         },
         {
           "token": "getmeas:169",
-          "status": "unmodeled",
+          "status": "supported",
           "elements": [
             {
               "path": "measure.value*10^unit",
-              "status": "unmodeled",
-              "reason": "Intracellular water has no shared Mobile profile in version 0.2.0."
+              "status": "supported",
+              "measurementIds": [
+                "intracellular-water-mass"
+              ]
             }
           ]
         },
         {
           "token": "getmeas:170",
-          "status": "unmodeled",
+          "status": "intentionally-unsupported",
           "elements": [
             {
               "path": "measure.value*10^unit",
-              "status": "unmodeled",
-              "reason": "Visceral fat has no shared Mobile profile in version 0.2.0."
+              "status": "intentionally-unsupported",
+              "reason": "The value is a unitless proprietary rating, not a mass or area; emitting it as a dimensionless UCUM quantity would assert a measurand and comparability the vendor does not define."
             }
           ]
         },
         {
           "token": "getmeas:174",
-          "status": "unmodeled",
+          "status": "intentionally-unsupported",
           "elements": [
             {
               "path": "measure.value*10^unit",
-              "status": "unmodeled",
-              "reason": "Segmental fat mass has no shared Mobile profile in version 0.2.0."
+              "status": "intentionally-unsupported",
+              "reason": "The consumed v0.2 source shape (measure.value*10^unit) does not recover which body segment a value belongs to, and v0.2 has no body-segment site model; emitting a segment mass under whole-body fat-mass or muscle-mass semantics would be wrong, so conversion is refused rather than mislabeled."
             }
           ]
         },
         {
           "token": "getmeas:175",
-          "status": "unmodeled",
+          "status": "intentionally-unsupported",
           "elements": [
             {
               "path": "measure.value*10^unit",
-              "status": "unmodeled",
-              "reason": "Segmental muscle mass has no shared Mobile profile in version 0.2.0."
+              "status": "intentionally-unsupported",
+              "reason": "The consumed v0.2 source shape (measure.value*10^unit) does not recover which body segment a value belongs to, and v0.2 has no body-segment site model; emitting a segment mass under whole-body fat-mass or muscle-mass semantics would be wrong, so conversion is refused rather than mislabeled."
             }
           ]
         },
         {
           "token": "getmeas:196",
-          "status": "unmodeled",
+          "status": "supported",
           "elements": [
             {
               "path": "measure.value*10^unit",
-              "status": "unmodeled",
-              "reason": "Electrodermal activity has no shared Mobile scalar profile in version 0.2.0."
+              "status": "supported",
+              "measurementIds": [
+                "electrodermal-activity"
+              ]
             }
           ]
         }
