@@ -360,12 +360,17 @@ Profile: SensorKitSleepSessionObservation
 Parent: SensorKitObservation
 Id: sensorkit-sleep-session-observation
 Title: "SensorKit Sleep Session Observation"
-Description: "A platform-exclusive assertion of one SensorKit sleep session interval. The source publishes only the session bounds, so no stage, efficiency, or quality result may be invented."
+Description: "A platform-exclusive assertion of one SensorKit sleep session interval. The source publishes only the session bounds, so the result is the exact length of that interval and no stage, efficiency, or quality result may be invented."
 * extension[sensorKitSourceType].valueCode = #sleep-sessions
 * code = $sensorKitConcept#sleep-session "Sleep session"
 * effective[x] 1..1 MS
 * effective[x] only Period
-* value[x] 0..0
+* value[x] 1..1 MS
+* value[x] only Quantity
+* valueQuantity.system 1..1 MS
+* valueQuantity.system = $ucum (exactly)
+* valueQuantity.code 1..1 MS
+* valueQuantity.code = #s (exactly)
 * dataAbsentReason 0..0
 * derivedFrom 0..1 MS
 * derivedFrom only Reference(SensorKitRecordingDocument)
