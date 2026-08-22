@@ -26,3 +26,9 @@ Description: "The exact media types from the external IANA BCP 13 registry admit
 * ^expansion.contains[+].system = "urn:ietf:bcp:13"
 * ^expansion.contains[=].code = #application/octet-stream
 * ^expansion.contains[=].display = "Arbitrary binary data"
+* ^expansion.contains[+].system = "urn:ietf:bcp:13"
+* ^expansion.contains[=].code = #text/csv
+* ^expansion.contains[=].display = "Comma-separated values"
+* ^expansion.contains[+].system = "urn:ietf:bcp:13"
+* ^expansion.contains[=].code = #application/fhir+json
+* ^expansion.contains[=].display = "FHIR JSON"

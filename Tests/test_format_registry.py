@@ -7,6 +7,7 @@
 #
 
 import json
+import re
 import subprocess
 import sys
 import unittest
@@ -42,11 +43,21 @@ class FormatRegistryTests(unittest.TestCase):
         terminology = (ROOT / "sensor/input/fsh/terminology.fsh").read_text(
             encoding="utf-8"
         )
-        for code, fmt in REGISTRY["formats"].items():
-            self.assertIn(
-                f"#{fmt['contentType']} ", terminology,
-                f"{code} contentType {fmt['contentType']} is not in the MIME value set",
+        expected = {fmt["contentType"] for fmt in REGISTRY["formats"].values()}
+        composed = set(
+            re.findall(r"^\* urn:ietf:bcp:13#(\S+) ", terminology, re.MULTILINE)
+        )
+        # The Validator reads the pinned expansion offline, so an admitted code that
+        # never reaches it is rejected at conformance time rather than here.
+        expanded = set(
+            re.findall(
+                r"^\* \^expansion\.contains\[=\]\.code = #(\S+)$",
+                terminology,
+                re.MULTILINE,
             )
+        )
+        self.assertEqual(composed, expected)
+        self.assertEqual(expanded, expected)
 
     def test_csv_column_schemas_are_closed(self) -> None:
         schemas = REGISTRY["formats"]["grove-csv-1"]["columnSchemas"]
