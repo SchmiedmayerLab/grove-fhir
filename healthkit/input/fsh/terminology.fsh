@@ -85,7 +85,7 @@ Description: "Exact HKElectrocardiogram.Classification cases retained on a lossl
 ValueSet: HealthKitECGClassificationVS
 Id: healthkit-ecg-classification
 Title: "HealthKit ECG Classification"
-Description: "The closed HealthKit ECG classification cases admitted by version 0.2.0."
+Description: "The closed HealthKit ECG classification cases admitted by version 0.3.0."
 * ^experimental = false
 * include codes from system HealthKitECGClassificationCS
 
@@ -104,7 +104,7 @@ Description: "Exact HKElectrocardiogram.SymptomsStatus cases retained on a lossl
 ValueSet: HealthKitECGSymptomsStatusVS
 Id: healthkit-ecg-symptoms-status
 Title: "HealthKit ECG Symptoms Status"
-Description: "The closed HealthKit ECG symptoms-status cases admitted by version 0.2.0."
+Description: "The closed HealthKit ECG symptoms-status cases admitted by version 0.3.0."
 * ^experimental = false
 * include codes from system HealthKitECGSymptomsStatusCS
 
@@ -125,7 +125,7 @@ Description: "Exact HKCategoryValueSeverity cases retained for a correlated Heal
 ValueSet: HealthKitSymptomSeverityVS
 Id: healthkit-symptom-severity
 Title: "HealthKit Symptom Severity"
-Description: "The closed HealthKit symptom severity cases admitted by version 0.2.0."
+Description: "The closed HealthKit symptom severity cases admitted by version 0.3.0."
 * ^experimental = false
 * include codes from system HealthKitSymptomSeverityCS
 
@@ -156,7 +156,7 @@ Description: "Exact HKAppleECGAlgorithmVersion cases retained when the HealthKit
 ValueSet: HealthKitECGAlgorithmVersionVS
 Id: healthkit-ecg-algorithm-version
 Title: "HealthKit ECG Algorithm Version"
-Description: "The closed Apple ECG algorithm versions admitted by version 0.2.0."
+Description: "The closed Apple ECG algorithm versions admitted by version 0.3.0."
 * ^experimental = false
 * include codes from system HealthKitECGAlgorithmVersionCS
 
@@ -229,3 +229,118 @@ Title: "HealthKit Clinical FHIR Release"
 Description: "Every admitted pass-through payload FHIR release; HKFHIRRelease.unknown fails closed and is never emitted."
 * ^experimental = false
 * include codes from system HealthKitClinicalFHIRReleaseCS
+
+CodeSystem: HealthKitPresenceCS
+Id: healthkit-presence
+Title: "HealthKit Presence"
+Description: "Exact HealthKit HKCategoryValuePresence cases retained alongside the source-neutral Grove presence coding."
+* ^experimental = false
+* ^caseSensitive = true
+* ^content = #complete
+* ^copyright = "HealthKit API identifiers and type names originate from Apple Inc. and are used here only to identify source API concepts for interoperability. The MIT license applies to Grove-authored definitions; it does not grant rights in Apple material."
+* #present "Present" "HealthKit HKCategoryValuePresence.present."
+* #notPresent "Not present" "HealthKit HKCategoryValuePresence.notPresent."
+
+CodeSystem: HealthKitAppetiteChangesCS
+Id: healthkit-appetite-changes
+Title: "HealthKit Appetite Changes"
+Description: "Exact HealthKit HKCategoryValueAppetiteChanges cases retained alongside the source-neutral Grove appetite coding."
+* ^experimental = false
+* ^caseSensitive = true
+* ^content = #complete
+* ^copyright = "HealthKit API identifiers and type names originate from Apple Inc. and are used here only to identify source API concepts for interoperability. The MIT license applies to Grove-authored definitions; it does not grant rights in Apple material."
+* #unspecified "Unspecified" "HealthKit HKCategoryValueAppetiteChanges.unspecified."
+* #noChange "No change" "HealthKit HKCategoryValueAppetiteChanges.noChange."
+* #decreased "Decreased" "HealthKit HKCategoryValueAppetiteChanges.decreased."
+* #increased "Increased" "HealthKit HKCategoryValueAppetiteChanges.increased."
+
+CodeSystem: HealthKitAppleStandHourCS
+Id: healthkit-apple-stand-hour-value
+Title: "HealthKit Apple Stand Hour"
+Description: "Exact HealthKit HKCategoryValueAppleStandHour cases retained alongside the source-neutral Grove stand-hour coding."
+* ^experimental = false
+* ^caseSensitive = true
+* ^content = #complete
+* ^copyright = "HealthKit API identifiers and type names originate from Apple Inc. and are used here only to identify source API concepts for interoperability. The MIT license applies to Grove-authored definitions; it does not grant rights in Apple material."
+* #stood "Stood" "HealthKit HKCategoryValueAppleStandHour.stood."
+* #idle "Idle" "HealthKit HKCategoryValueAppleStandHour.idle."
+
+CodeSystem: HealthKitCervicalMucusQualityCS
+Id: healthkit-cervical-mucus-quality
+Title: "HealthKit Cervical Mucus Quality"
+Description: "Exact HealthKit HKCategoryValueCervicalMucusQuality cases retained alongside the source-neutral Grove cervical-mucus coding."
+* ^experimental = false
+* ^caseSensitive = true
+* ^content = #complete
+* ^copyright = "HealthKit API identifiers and type names originate from Apple Inc. and are used here only to identify source API concepts for interoperability. The MIT license applies to Grove-authored definitions; it does not grant rights in Apple material."
+* #dry "Dry" "HealthKit HKCategoryValueCervicalMucusQuality.dry."
+* #sticky "Sticky" "HealthKit HKCategoryValueCervicalMucusQuality.sticky."
+* #creamy "Creamy" "HealthKit HKCategoryValueCervicalMucusQuality.creamy."
+* #watery "Watery" "HealthKit HKCategoryValueCervicalMucusQuality.watery."
+* #eggWhite "Egg white" "HealthKit HKCategoryValueCervicalMucusQuality.eggWhite."
+
+CodeSystem: HealthKitContraceptiveCS
+Id: healthkit-contraceptive
+Title: "HealthKit Contraceptive"
+Description: "Exact HealthKit HKCategoryValueContraceptive cases retained alongside the source-neutral Grove contraceptive coding."
+* ^experimental = false
+* ^caseSensitive = true
+* ^content = #complete
+* ^copyright = "HealthKit API identifiers and type names originate from Apple Inc. and are used here only to identify source API concepts for interoperability. The MIT license applies to Grove-authored definitions; it does not grant rights in Apple material."
+* #unspecified "Unspecified" "HealthKit HKCategoryValueContraceptive.unspecified."
+* #implant "Implant" "HealthKit HKCategoryValueContraceptive.implant."
+* #injection "Injection" "HealthKit HKCategoryValueContraceptive.injection."
+* #intrauterineDevice "Intrauterine device" "HealthKit HKCategoryValueContraceptive.intrauterineDevice."
+* #intravaginalRing "Intravaginal ring" "HealthKit HKCategoryValueContraceptive.intravaginalRing."
+* #oral "Oral" "HealthKit HKCategoryValueContraceptive.oral."
+* #patch "Patch" "HealthKit HKCategoryValueContraceptive.patch."
+
+CodeSystem: HealthKitOvulationTestResultCS
+Id: healthkit-ovulation-test-result
+Title: "HealthKit Ovulation Test Result"
+Description: "Exact HealthKit HKCategoryValueOvulationTestResult cases retained alongside the source-neutral Grove ovulation-result coding."
+* ^experimental = false
+* ^caseSensitive = true
+* ^content = #complete
+* ^copyright = "HealthKit API identifiers and type names originate from Apple Inc. and are used here only to identify source API concepts for interoperability. The MIT license applies to Grove-authored definitions; it does not grant rights in Apple material."
+* #negative "Negative" "HealthKit HKCategoryValueOvulationTestResult.negative."
+* #luteinizingHormoneSurge "Luteinizing hormone surge" "HealthKit HKCategoryValueOvulationTestResult.luteinizingHormoneSurge."
+* #indeterminate "Indeterminate" "HealthKit HKCategoryValueOvulationTestResult.indeterminate."
+* #estrogenSurge "Estrogen surge" "HealthKit HKCategoryValueOvulationTestResult.estrogenSurge."
+
+CodeSystem: HealthKitTestResultCS
+Id: healthkit-test-result
+Title: "HealthKit Test Result"
+Description: "Exact HealthKit pregnancy and progesterone test-result cases retained alongside the source-neutral Grove result coding."
+* ^experimental = false
+* ^caseSensitive = true
+* ^content = #complete
+* ^copyright = "HealthKit API identifiers and type names originate from Apple Inc. and are used here only to identify source API concepts for interoperability. The MIT license applies to Grove-authored definitions; it does not grant rights in Apple material."
+* #positive "Positive" "HealthKit HKCategoryValuePregnancyTestResult.positive or HKCategoryValueProgesteroneTestResult.positive."
+* #negative "Negative" "HealthKit HKCategoryValuePregnancyTestResult.negative or HKCategoryValueProgesteroneTestResult.negative."
+* #indeterminate "Indeterminate" "HealthKit HKCategoryValuePregnancyTestResult.indeterminate or HKCategoryValueProgesteroneTestResult.indeterminate."
+
+CodeSystem: HealthKitVaginalBleedingCS
+Id: healthkit-vaginal-bleeding
+Title: "HealthKit Vaginal Bleeding"
+Description: "Exact HealthKit HKCategoryValueVaginalBleeding cases retained alongside the source-neutral Grove flow coding; the retired HKCategoryValueMenstrualFlow shares this case set."
+* ^experimental = false
+* ^caseSensitive = true
+* ^content = #complete
+* ^copyright = "HealthKit API identifiers and type names originate from Apple Inc. and are used here only to identify source API concepts for interoperability. The MIT license applies to Grove-authored definitions; it does not grant rights in Apple material."
+* #unspecified "Unspecified" "HealthKit HKCategoryValueVaginalBleeding.unspecified."
+* #light "Light" "HealthKit HKCategoryValueVaginalBleeding.light."
+* #medium "Medium" "HealthKit HKCategoryValueVaginalBleeding.medium."
+* #heavy "Heavy" "HealthKit HKCategoryValueVaginalBleeding.heavy."
+* #none "None" "HealthKit HKCategoryValueVaginalBleeding.none."
+
+CodeSystem: HealthKitInsulinDeliveryReasonCS
+Id: healthkit-insulin-delivery-reason
+Title: "HealthKit Insulin Delivery Reason"
+Description: "Exact HealthKit HKInsulinDeliveryReason cases carried as the required reason component of an insulin-delivery Observation."
+* ^experimental = false
+* ^caseSensitive = true
+* ^content = #complete
+* ^copyright = "HealthKit API identifiers and type names originate from Apple Inc. and are used here only to identify source API concepts for interoperability. The MIT license applies to Grove-authored definitions; it does not grant rights in Apple material."
+* #basal "Basal" "HealthKit HKInsulinDeliveryReason.basal."
+* #bolus "Bolus" "HealthKit HKInsulinDeliveryReason.bolus."

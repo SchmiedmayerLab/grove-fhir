@@ -10,12 +10,12 @@
     "mobile/input/fsh/profiles.fsh"
   ],
   "groundTruthDigest": "sha256:08588581536bdba4f8fbbb7764967510a230a5d4c6456429d48c9897b5a6b127",
-  "bootstrap": "Entries with provenance 'bootstrap' cite the v0.2.0 release review during which their codes, units, and effective semantics shipped, proven byte-identical by the generation parity gate; the bootstrap set is terminal as of v0.3 and every new entry carries a named two-role review with a commit-SHA reviewRef.",
+  "bootstrap": "Entries with provenance 'bootstrap' cite the v0.3.0 release review during which their codes, units, and effective semantics shipped, proven byte-identical by the generation parity gate; the bootstrap set is terminal as of v0.3 and every new entry carries a named two-role review with a commit-SHA reviewRef.",
   "entries": {
     "active-energy": {
       "status": "approved",
       "approvedBy": [
-        "v0.2.0 release review"
+        "v0.3.0 release review"
       ],
       "approvedOn": "2026-08-21",
       "digest": "sha256:42427c89d275cdcf36a5b266f10648c11ae2ecc29586c9f3581e3878ad6cc27b",
@@ -135,7 +135,7 @@
     "basal-body-temperature": {
       "status": "approved",
       "approvedBy": [
-        "v0.2.0 release review"
+        "v0.3.0 release review"
       ],
       "approvedOn": "2026-08-21",
       "digest": "sha256:fe28a111daedd120132ce72f8b074dc5a207437ba69ac7f915aafdffd1b50090",
@@ -299,7 +299,7 @@
     "blood-pressure": {
       "status": "approved",
       "approvedBy": [
-        "v0.2.0 release review"
+        "v0.3.0 release review"
       ],
       "approvedOn": "2026-08-21",
       "digest": "sha256:ce8119ec086c1702f7851421d75a8cd4e776a59234ff16e5077919970b2fd8a0",
@@ -375,7 +375,7 @@
     "body-height": {
       "status": "approved",
       "approvedBy": [
-        "v0.2.0 release review"
+        "v0.3.0 release review"
       ],
       "approvedOn": "2026-08-21",
       "digest": "sha256:8affc0996bafe7ebd767aa828306f60f4af27cf66859258bd29a3a4ed1d82c9b",
@@ -385,7 +385,7 @@
     "body-temperature": {
       "status": "approved",
       "approvedBy": [
-        "v0.2.0 release review"
+        "v0.3.0 release review"
       ],
       "approvedOn": "2026-08-21",
       "digest": "sha256:4e4e42fd49eb52fef2c9154322a6887826bc9fe624f7c4e6e5c429993ca0fcbd",
@@ -417,7 +417,7 @@
     "body-weight": {
       "status": "approved",
       "approvedBy": [
-        "v0.2.0 release review"
+        "v0.3.0 release review"
       ],
       "approvedOn": "2026-08-21",
       "digest": "sha256:392c955f3d7d17a669a2ec0dab5c773e2c9fa32b535c402c9f8fc163c8ee63b2",
@@ -1483,7 +1483,7 @@
     "distance": {
       "status": "approved",
       "approvedBy": [
-        "v0.2.0 release review"
+        "v0.3.0 release review"
       ],
       "approvedOn": "2026-08-21",
       "digest": "sha256:210a962467fd87e690b273433b5de09dac03229b8eaf27206a3b73013f631484",
@@ -1757,7 +1757,7 @@
     "heart-rate": {
       "status": "approved",
       "approvedBy": [
-        "v0.2.0 release review"
+        "v0.3.0 release review"
       ],
       "approvedOn": "2026-08-21",
       "digest": "sha256:6638a130e87e6fc546291361a91713baf92a0b8131e47b2396417d471ce2cec4",
@@ -1987,7 +1987,7 @@
     "menstruation-flow": {
       "status": "approved",
       "provenance": "reviewed",
-      "digest": "sha256:a71ab4bc08b8a2399349a2954f5eecf4b143eae82e27b92de2607e5de2bde176",
+      "digest": "sha256:705e354f1586d2b55c2921ab12fdceec32edce3700ed7f9fe2075887c16e5cc6",
       "preparedBy": [
         {
           "name": "v0.3 terminology sweep drafting agent (concepts-workout-enums)",
@@ -2004,7 +2004,7 @@
       "reviewedOn": "2026-08-21",
       "recordedOn": "2026-08-21",
       "reviewRef": "pending-integration-commit",
-      "notes": "Panel-verified absorption: HK unspecified/light/medium/heavy/none and HC FLOW_UNKNOWN/LIGHT/MEDIUM/HEAVY; #none only from HealthKit; no exact LOINC (3146-8/49033-4 rejected)."
+      "notes": "Panel-verified absorption: HK unspecified/light/medium/heavy/none and HC FLOW_UNKNOWN/LIGHT/MEDIUM/HEAVY; #none only from HealthKit; no exact LOINC (3146-8/49033-4 rejected). Amended at integration: HealthKit's required HKMetadataKeyMenstrualCycleStart is represented as the optional cycleStart component per the lossless-conversion rule."
     },
     "menstruation-period": {
       "status": "approved",
@@ -2141,7 +2141,7 @@
     "oxygen-saturation": {
       "status": "approved",
       "approvedBy": [
-        "v0.2.0 release review"
+        "v0.3.0 release review"
       ],
       "approvedOn": "2026-08-21",
       "digest": "sha256:ae2e07434062d94b3bc969adad2446eb2e268aa28686a4b326525dfbd7495ce9",
@@ -2371,7 +2371,7 @@
     "respiratory-rate": {
       "status": "approved",
       "approvedBy": [
-        "v0.2.0 release review"
+        "v0.3.0 release review"
       ],
       "approvedOn": "2026-08-21",
       "digest": "sha256:107d7f39eea9ab83ab59f30f87fab5dfa8159ec9cd15b11bbfb96f2fe53a019a",
@@ -2579,7 +2579,7 @@
     "sleep-duration": {
       "status": "approved",
       "approvedBy": [
-        "v0.2.0 release review"
+        "v0.3.0 release review"
       ],
       "approvedOn": "2026-08-21",
       "digest": "sha256:0e05377ada45a5814b0d835f3ea230dbc020bab4025bb5cf180e4907afe2c831",
@@ -2611,7 +2611,7 @@
     "sleep-stage": {
       "status": "approved",
       "approvedBy": [
-        "v0.2.0 release review"
+        "v0.3.0 release review"
       ],
       "approvedOn": "2026-08-21",
       "digest": "sha256:ea08a863ed5e7a24906ddab8350c579262cc75a3adb1196e42478108a3a8facf",
@@ -2753,7 +2753,7 @@
     "step-count": {
       "status": "approved",
       "approvedBy": [
-        "v0.2.0 release review"
+        "v0.3.0 release review"
       ],
       "approvedOn": "2026-08-21",
       "digest": "sha256:f38dbea18ad18d51e6a708af3affba98b13df963c2d31495fd95504a8a29ecde",

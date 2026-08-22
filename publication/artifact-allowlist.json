@@ -35,6 +35,13 @@
           "classification": "definition"
         },
         {
+          "fshName": "GroveMenstrualCycleStartCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "grove-menstrual-cycle-start",
+          "classification": "definition"
+        },
+        {
           "fshName": "GroveMenstruationFlowCS",
           "fshType": "CodeSystem",
           "resourceType": "CodeSystem",
@@ -945,6 +952,13 @@
           "classification": "definition"
         },
         {
+          "fshName": "GroveMenstrualCycleStartVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "grove-menstrual-cycle-start",
+          "classification": "definition"
+        },
+        {
           "fshName": "GroveMenstruationFlowVS",
           "fshType": "ValueSet",
           "resourceType": "ValueSet",
@@ -1484,6 +1498,27 @@
           "classification": "definition"
         },
         {
+          "fshName": "HealthKitAppetiteChangesCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "healthkit-appetite-changes",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthKitAppleStandHourCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "healthkit-apple-stand-hour-value",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthKitCervicalMucusQualityCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "healthkit-cervical-mucus-quality",
+          "classification": "definition"
+        },
+        {
           "fshName": "HealthKitClinicalFHIRReleaseCS",
           "fshType": "CodeSystem",
           "resourceType": "CodeSystem",
@@ -1502,6 +1537,13 @@
           "fshType": "CodeSystem",
           "resourceType": "CodeSystem",
           "id": "healthkit-concept-property",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthKitContraceptiveCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "healthkit-contraceptive",
           "classification": "definition"
         },
         {
@@ -1533,6 +1575,13 @@
           "classification": "definition"
         },
         {
+          "fshName": "HealthKitInsulinDeliveryReasonCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "healthkit-insulin-delivery-reason",
+          "classification": "definition"
+        },
+        {
           "fshName": "HealthKitMeasurementCS",
           "fshType": "CodeSystem",
           "resourceType": "CodeSystem",
@@ -1544,6 +1593,20 @@
           "fshType": "CodeSystem",
           "resourceType": "CodeSystem",
           "id": "healthkit-metadata-key",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthKitOvulationTestResultCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "healthkit-ovulation-test-result",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthKitPresenceCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "healthkit-presence",
           "classification": "definition"
         },
         {
@@ -1565,6 +1628,20 @@
           "fshType": "CodeSystem",
           "resourceType": "CodeSystem",
           "id": "healthkit-symptom-severity",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthKitTestResultCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "healthkit-test-result",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthKitVaginalBleedingCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "healthkit-vaginal-bleeding",
           "classification": "definition"
         },
         {

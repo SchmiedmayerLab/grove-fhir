@@ -69,6 +69,7 @@ Description: "Measurement concepts defined by the Grove Mobile contract when an 
 * #workout "Workout session" "One recorded workout session over the exact Observation effective Period."
 * #workout-segment "Workout segment" "One classified interval or event within a workout session."
 * #cervical-mucus-sensation "Cervical mucus sensation" "The reported cervical mucus sensation accompanying a quality observation."
+* #menstrual-cycle-start "Menstrual cycle start" "Whether the flow observation marks the first day of a menstrual cycle, as the source states it."
 
 ValueSet: GroveMobileMeasurementVS
 Id: grove-mobile-measurement
@@ -152,6 +153,23 @@ Title: "Menstruation Flow Result"
 Description: "Every admitted result code of the Menstruation Flow measurement."
 * ^experimental = false
 * include codes from system GroveMenstruationFlowCS
+
+CodeSystem: GroveMenstrualCycleStartCS
+Id: grove-menstrual-cycle-start
+Title: "Menstrual Cycle Start Result"
+Description: "The closed result codes of the Menstrual Cycle Start measurement."
+* ^experimental = false
+* ^caseSensitive = true
+* ^content = #complete
+* #cycle-start "Cycle start" "The observation marks the first day of a menstrual cycle."
+* #not-cycle-start "Not cycle start" "The observation does not mark the first day of a menstrual cycle."
+
+ValueSet: GroveMenstrualCycleStartVS
+Id: grove-menstrual-cycle-start
+Title: "Menstrual Cycle Start Result"
+Description: "Every admitted result code of the Menstrual Cycle Start measurement."
+* ^experimental = false
+* include codes from system GroveMenstrualCycleStartCS
 
 CodeSystem: GroveOvulationTestResultCS
 Id: grove-ovulation-test-result
@@ -1221,13 +1239,21 @@ Profile: GroveMobileMenstruationFlow
 Parent: GroveMobileObservation
 Id: grove-mobile-menstruation-flow
 Title: "Menstruation Flow"
-Description: "The observed menstrual flow classification, with the exact platform value retained as a secondary coding. The HealthKit iOS 18 vaginal-bleeding replacement uses the identical case set."
+Description: "The observed menstrual flow classification, with the exact platform value retained as a secondary coding. The HealthKit iOS 18 vaginal-bleeding replacement uses the identical case set. HealthKit's mandatory cycle-start metadata is carried as an optional coded component so no source information is dropped."
 * code = GroveMobileMeasurementCS#menstruation-flow
 * code from GroveMobileMeasurementVS (required)
 * effective[x] only dateTime
 * value[x] only CodeableConcept
 * valueCodeableConcept 1..1 MS
 * valueCodeableConcept from GroveMenstruationFlowVS (required)
+* component ^slicing.discriminator.type = #pattern
+* component ^slicing.discriminator.path = "code"
+* component ^slicing.rules = #open
+* component contains cycleStart 0..1 MS
+* component[cycleStart].code = https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement#menstrual-cycle-start
+* component[cycleStart].value[x] only CodeableConcept
+* component[cycleStart].valueCodeableConcept MS
+* component[cycleStart].valueCodeableConcept from GroveMenstrualCycleStartVS (required)
 
 Profile: GroveMobileMindfulnessSession
 Parent: GroveMobileObservation
