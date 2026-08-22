@@ -23,15 +23,18 @@ from questionnaire_fixture_corpus import apply_mutation, load_json, write_json
 
 ROOT = Path(__file__).resolve().parent.parent
 CORPUS = ROOT / "questionnaire/fixtures/validator"
+# The guide build populates this home. Validating against it rather than the ambient
+# one keeps the run reproducible on a machine whose own FHIR cache is empty.
+FHIR_HOME = ROOT / ".build/fhir-home"
 EXPECTATIONS = CORPUS / "validator-expectations.json"
 MESSAGE_ID_URL = "http://hl7.org/fhir/StructureDefinition/operationoutcome-message-id"
 PROFILES = {
     "Questionnaire": (
-        "https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/"
+        "https://grovealliance.org/fhir/questionnaire/"
         "StructureDefinition/grove-questionnaire"
     ),
     "QuestionnaireResponse": (
-        "https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/"
+        "https://grovealliance.org/fhir/questionnaire/"
         "StructureDefinition/grove-questionnaire-response"
     ),
 }
@@ -146,10 +149,12 @@ def validate_one(
     resource_path: Path,
     outcome_path: Path,
     allow_example_urls: bool,
+    fhir_home: Path,
 ) -> tuple[list[dict[str, Any]], str]:
     resource = load_json(resource_path)
     command = [
         "java",
+        f"-Duser.home={fhir_home}",
         "-jar",
         str(validator),
         str(resource_path),
@@ -184,6 +189,12 @@ def validate_one(
 
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--fhir-home",
+        type=Path,
+        default=FHIR_HOME,
+        help="FHIR home holding the packages the Validator resolves against",
+    )
     parser.add_argument(
         "--validator",
         type=Path,
@@ -275,6 +286,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                     resource_path,
                     outcome_path,
                     allow_example_urls,
+                    arguments.fhir_home.resolve(),
                 )
             except (OSError, RuntimeError, ValueError) as error:
                 failures.append(str(error))

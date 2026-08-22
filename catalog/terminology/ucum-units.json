@@ -1,0 +1,2362 @@
+{
+  "schemaVersion": 1,
+  "ucumVersion": "2.2",
+  "revisionDate": "2024-06-17",
+  "source": {
+    "url": "https://raw.githubusercontent.com/ucum-org/ucum/main/ucum-essence.xml",
+    "sha256": "dfccea1b5dc284245ebae97edd1dc03c45864da4e87df55bc9851797b4fd0b61"
+  },
+  "baseUnits": [
+    "C",
+    "K",
+    "cd",
+    "g",
+    "m",
+    "rad",
+    "s"
+  ],
+  "prefixes": {
+    "E": {
+      "factor": "1e18"
+    },
+    "G": {
+      "factor": "1e9"
+    },
+    "Gi": {
+      "factor": "1073741824"
+    },
+    "Ki": {
+      "factor": "1024"
+    },
+    "M": {
+      "factor": "1e6"
+    },
+    "Mi": {
+      "factor": "1048576"
+    },
+    "P": {
+      "factor": "1e15"
+    },
+    "T": {
+      "factor": "1e12"
+    },
+    "Ti": {
+      "factor": "1099511627776"
+    },
+    "Y": {
+      "factor": "1e24"
+    },
+    "Z": {
+      "factor": "1e21"
+    },
+    "a": {
+      "factor": "1e-18"
+    },
+    "c": {
+      "factor": "1e-2"
+    },
+    "d": {
+      "factor": "1e-1"
+    },
+    "da": {
+      "factor": "1e1"
+    },
+    "f": {
+      "factor": "1e-15"
+    },
+    "h": {
+      "factor": "1e2"
+    },
+    "k": {
+      "factor": "1e3"
+    },
+    "m": {
+      "factor": "1e-3"
+    },
+    "n": {
+      "factor": "1e-9"
+    },
+    "p": {
+      "factor": "1e-12"
+    },
+    "u": {
+      "factor": "1e-6"
+    },
+    "y": {
+      "factor": "1e-24"
+    },
+    "z": {
+      "factor": "1e-21"
+    }
+  },
+  "units": {
+    "%": {
+      "isMetric": false,
+      "property": "fraction",
+      "dimension": {}
+    },
+    "%[slope]": {
+      "isMetric": false,
+      "property": "slope",
+      "isSpecial": true,
+      "dimension": {
+        "rad": 1
+      }
+    },
+    "'": {
+      "isMetric": false,
+      "property": "plane angle",
+      "dimension": {
+        "rad": 1
+      }
+    },
+    "''": {
+      "isMetric": false,
+      "property": "plane angle",
+      "dimension": {
+        "rad": 1
+      }
+    },
+    "10*": {
+      "isMetric": false,
+      "property": "number",
+      "dimension": {}
+    },
+    "10^": {
+      "isMetric": false,
+      "property": "number",
+      "dimension": {}
+    },
+    "A": {
+      "isMetric": true,
+      "property": "electric current",
+      "dimension": {
+        "C": 1,
+        "s": -1
+      }
+    },
+    "AU": {
+      "isMetric": false,
+      "property": "length",
+      "dimension": {
+        "m": 1
+      }
+    },
+    "Ao": {
+      "isMetric": false,
+      "property": "length",
+      "dimension": {
+        "m": 1
+      }
+    },
+    "B": {
+      "isMetric": true,
+      "property": "level",
+      "isSpecial": true,
+      "dimension": {}
+    },
+    "B[10.nV]": {
+      "isMetric": true,
+      "property": "electric potential level",
+      "isSpecial": true,
+      "dimension": {
+        "g": 1,
+        "m": 2,
+        "s": -2,
+        "C": -1
+      }
+    },
+    "B[SPL]": {
+      "isMetric": true,
+      "property": "pressure level",
+      "isSpecial": true,
+      "dimension": {
+        "g": 1,
+        "m": -1,
+        "s": -2
+      }
+    },
+    "B[V]": {
+      "isMetric": true,
+      "property": "electric potential level",
+      "isSpecial": true,
+      "dimension": {
+        "g": 1,
+        "m": 2,
+        "s": -2,
+        "C": -1
+      }
+    },
+    "B[W]": {
+      "isMetric": true,
+      "property": "power level",
+      "isSpecial": true,
+      "dimension": {
+        "g": 1,
+        "m": 2,
+        "s": -3
+      }
+    },
+    "B[kW]": {
+      "isMetric": true,
+      "property": "power level",
+      "isSpecial": true,
+      "dimension": {
+        "g": 1,
+        "m": 2,
+        "s": -3
+      }
+    },
+    "B[mV]": {
+      "isMetric": true,
+      "property": "electric potential level",
+      "isSpecial": true,
+      "dimension": {
+        "g": 1,
+        "m": 2,
+        "s": -2,
+        "C": -1
+      }
+    },
+    "B[uV]": {
+      "isMetric": true,
+      "property": "electric potential level",
+      "isSpecial": true,
+      "dimension": {
+        "g": 1,
+        "m": 2,
+        "s": -2,
+        "C": -1
+      }
+    },
+    "Bd": {
+      "isMetric": true,
+      "property": "signal transmission rate",
+      "dimension": {
+        "s": -1
+      }
+    },
+    "Bi": {
+      "isMetric": true,
+      "property": "electric current",
+      "dimension": {
+        "C": 1,
+        "s": -1
+      }
+    },
+    "Bq": {
+      "isMetric": true,
+      "property": "radioactivity",
+      "dimension": {
+        "s": -1
+      }
+    },
+    "By": {
+      "isMetric": true,
+      "property": "amount of information",
+      "dimension": {}
+    },
+    "C": {
+      "dimension": {
+        "C": 1
+      },
+      "isMetric": true,
+      "property": "electric charge"
+    },
+    "Cel": {
+      "isMetric": true,
+      "property": "temperature",
+      "isSpecial": true,
+      "dimension": {
+        "K": 1
+      }
+    },
+    "Ci": {
+      "isMetric": true,
+      "property": "radioactivity",
+      "dimension": {
+        "s": -1
+      }
+    },
+    "F": {
+      "isMetric": true,
+      "property": "electric capacitance",
+      "dimension": {
+        "C": 2,
+        "g": -1,
+        "m": -2,
+        "s": 2
+      }
+    },
+    "G": {
+      "isMetric": true,
+      "property": "magnetic flux density",
+      "dimension": {
+        "g": 1,
+        "s": -1,
+        "C": -1
+      }
+    },
+    "Gal": {
+      "isMetric": true,
+      "property": "acceleration",
+      "dimension": {
+        "m": 1,
+        "s": -2
+      }
+    },
+    "Gb": {
+      "isMetric": true,
+      "property": "magnetic tension",
+      "dimension": {
+        "C": 1,
+        "s": -1
+      }
+    },
+    "Gy": {
+      "isMetric": true,
+      "property": "energy dose",
+      "dimension": {
+        "m": 2,
+        "s": -2
+      }
+    },
+    "H": {
+      "isMetric": true,
+      "property": "inductance",
+      "dimension": {
+        "g": 1,
+        "m": 2,
+        "C": -2
+      }
+    },
+    "Hz": {
+      "isMetric": true,
+      "property": "frequency",
+      "dimension": {
+        "s": -1
+      }
+    },
+    "J": {
+      "isMetric": true,
+      "property": "energy",
+      "dimension": {
+        "g": 1,
+        "m": 2,
+        "s": -2
+      }
+    },
+    "K": {
+      "dimension": {
+        "K": 1
+      },
+      "isMetric": true,
+      "property": "temperature"
+    },
+    "Ky": {
+      "isMetric": true,
+      "property": "lineic number",
+      "dimension": {
+        "m": -1
+      }
+    },
+    "L": {
+      "isMetric": true,
+      "property": "volume",
+      "dimension": {
+        "m": 3
+      }
+    },
+    "Lmb": {
+      "isMetric": true,
+      "property": "brightness",
+      "dimension": {
+        "cd": 1,
+        "m": -2
+      }
+    },
+    "Mx": {
+      "isMetric": true,
+      "property": "flux of magnetic induction",
+      "dimension": {
+        "g": 1,
+        "m": 2,
+        "s": -1,
+        "C": -1
+      }
+    },
+    "N": {
+      "isMetric": true,
+      "property": "force",
+      "dimension": {
+        "g": 1,
+        "m": 1,
+        "s": -2
+      }
+    },
+    "Np": {
+      "isMetric": true,
+      "property": "level",
+      "isSpecial": true,
+      "dimension": {}
+    },
+    "Oe": {
+      "isMetric": true,
+      "property": "magnetic field intensity",
+      "dimension": {
+        "C": 1,
+        "s": -1,
+        "m": -1
+      }
+    },
+    "Ohm": {
+      "isMetric": true,
+      "property": "electric resistance",
+      "dimension": {
+        "g": 1,
+        "m": 2,
+        "s": -1,
+        "C": -2
+      }
+    },
+    "P": {
+      "isMetric": true,
+      "property": "dynamic viscosity",
+      "dimension": {
+        "g": 1,
+        "m": -1,
+        "s": -1
+      }
+    },
+    "Pa": {
+      "isMetric": true,
+      "property": "pressure",
+      "dimension": {
+        "g": 1,
+        "m": -1,
+        "s": -2
+      }
+    },
+    "R": {
+      "isMetric": true,
+      "property": "ion dose",
+      "dimension": {
+        "C": 1,
+        "g": -1
+      }
+    },
+    "RAD": {
+      "isMetric": true,
+      "property": "energy dose",
+      "dimension": {
+        "m": 2,
+        "s": -2
+      }
+    },
+    "REM": {
+      "isMetric": true,
+      "property": "dose equivalent",
+      "dimension": {
+        "m": 2,
+        "s": -2
+      }
+    },
+    "S": {
+      "isMetric": true,
+      "property": "electric conductance",
+      "dimension": {
+        "g": -1,
+        "m": -2,
+        "s": 1,
+        "C": 2
+      }
+    },
+    "St": {
+      "isMetric": true,
+      "property": "kinematic viscosity",
+      "dimension": {
+        "m": 2,
+        "s": -1
+      }
+    },
+    "Sv": {
+      "isMetric": true,
+      "property": "dose equivalent",
+      "dimension": {
+        "m": 2,
+        "s": -2
+      }
+    },
+    "T": {
+      "isMetric": true,
+      "property": "magnetic flux density",
+      "dimension": {
+        "g": 1,
+        "s": -1,
+        "C": -1
+      }
+    },
+    "U": {
+      "isMetric": true,
+      "property": "catalytic activity",
+      "dimension": {
+        "s": -1
+      }
+    },
+    "V": {
+      "isMetric": true,
+      "property": "electric potential",
+      "dimension": {
+        "g": 1,
+        "m": 2,
+        "s": -2,
+        "C": -1
+      }
+    },
+    "W": {
+      "isMetric": true,
+      "property": "power",
+      "dimension": {
+        "g": 1,
+        "m": 2,
+        "s": -3
+      }
+    },
+    "Wb": {
+      "isMetric": true,
+      "property": "magnetic flux",
+      "dimension": {
+        "g": 1,
+        "m": 2,
+        "s": -1,
+        "C": -1
+      }
+    },
+    "[APL'U]": {
+      "isMetric": false,
+      "property": "biologic activity of anticardiolipin IgA",
+      "isArbitrary": true,
+      "dimension": {}
+    },
+    "[AU]": {
+      "isMetric": false,
+      "property": "procedure defined amount of an allergen using some reference standard",
+      "isArbitrary": true,
+      "dimension": {}
+    },
+    "[Amb'a'1'U]": {
+      "isMetric": false,
+      "property": "procedure defined amount of the major allergen of ragweed",
+      "isArbitrary": true,
+      "dimension": {}
+    },
+    "[BAU]": {
+      "isMetric": false,
+      "property": "amount of an allergen calibrated through in-vivo testing based on the ID50EAL method of (intradermal dilution for 50mm sum of erythema diameters",
+      "isArbitrary": true,
+      "dimension": {}
+    },
+    "[Btu]": {
+      "isMetric": false,
+      "property": "energy",
+      "dimension": {
+        "g": 1,
+        "m": 2,
+        "s": -2
+      }
+    },
+    "[Btu_39]": {
+      "isMetric": false,
+      "property": "energy",
+      "dimension": {
+        "g": 1,
+        "m": 2,
+        "s": -2
+      }
+    },
+    "[Btu_59]": {
+      "isMetric": false,
+      "property": "energy",
+      "dimension": {
+        "g": 1,
+        "m": 2,
+        "s": -2
+      }
+    },
+    "[Btu_60]": {
+      "isMetric": false,
+      "property": "energy",
+      "dimension": {
+        "g": 1,
+        "m": 2,
+        "s": -2
+      }
+    },
+    "[Btu_IT]": {
+      "isMetric": false,
+      "property": "energy",
+      "dimension": {
+        "g": 1,
+        "m": 2,
+        "s": -2
+      }
+    },
+    "[Btu_m]": {
+      "isMetric": false,
+      "property": "energy",
+      "dimension": {
+        "g": 1,
+        "m": 2,
+        "s": -2
+      }
+    },
+    "[Btu_th]": {
+      "isMetric": false,
+      "property": "energy",
+      "dimension": {
+        "g": 1,
+        "m": 2,
+        "s": -2
+      }
+    },
+    "[CCID_50]": {
+      "isMetric": false,
+      "property": "biologic activity (infectivity) of an infectious agent preparation",
+      "isArbitrary": true,
+      "dimension": {}
+    },
+    "[CFU]": {
+      "isMetric": false,
+      "property": "amount of a proliferating organism",
+      "isArbitrary": true,
+      "dimension": {}
+    },
+    "[Cal]": {
+      "isMetric": false,
+      "property": "energy",
+      "dimension": {
+        "g": 1,
+        "m": 2,
+        "s": -2
+      }
+    },
+    "[Ch]": {
+      "isMetric": false,
+      "property": "gauge of catheters",
+      "dimension": {
+        "m": 1
+      }
+    },
+    "[D'ag'U]": {
+      "isMetric": false,
+      "property": "procedure defined amount of a poliomyelitis d-antigen substance",
+      "isArbitrary": true,
+      "dimension": {}
+    },
+    "[EID_50]": {
+      "isMetric": false,
+      "property": "biologic activity (infectivity) of an infectious agent preparation",
+      "isArbitrary": true,
+      "dimension": {}
+    },
+    "[ELU]": {
+      "isMetric": false,
+      "property": "arbitrary ELISA unit",
+      "isArbitrary": true,
+      "dimension": {}
+    },
+    "[EU]": {
+      "isMetric": false,
+      "property": "Ehrlich unit",
+      "isArbitrary": true,
+      "dimension": {}
+    },
+    "[FEU]": {
+      "isMetric": false,
+      "property": "amount of fibrinogen broken down into the measured d-dimers",
+      "isArbitrary": true,
+      "dimension": {}
+    },
+    "[FFU]": {
+      "isMetric": false,
+      "property": "amount of an infectious agent",
+      "isArbitrary": true,
+      "dimension": {}
+    },
+    "[FNU]": {
+      "isMetric": false,
+      "property": "turbidity",
+      "dimension": {}
+    },
+    "[GPL'U]": {
+      "isMetric": false,
+      "property": "biologic activity of anticardiolipin IgG",
+      "isArbitrary": true,
+      "dimension": {}
+    },
+    "[G]": {
+      "isMetric": true,
+      "property": "(unclassified)",
+      "dimension": {
+        "m": 3,
+        "g": -1,
+        "s": -2
+      }
+    },
+    "[HPF]": {
+      "isMetric": false,
+      "property": "view area in microscope",
+      "dimension": {}
+    },
+    "[HP]": {
+      "isMetric": false,
+      "property": "power",
+      "dimension": {
+        "m": 2,
+        "g": 1,
+        "s": -3
+      }
+    },
+    "[IR]": {
+      "isMetric": false,
+      "property": "amount of an allergen calibrated through in-vivo testing using the Stallergenes® method",
+      "isArbitrary": true,
+      "dimension": {}
+    },
+    "[IU]": {
+      "isMetric": true,
+      "property": "arbitrary",
+      "isArbitrary": true,
+      "dimension": {}
+    },
+    "[LPF]": {
+      "isMetric": false,
+      "property": "view area in microscope",
+      "dimension": {}
+    },
+    "[Lf]": {
+      "isMetric": false,
+      "property": "procedure defined amount of an antigen substance",
+      "isArbitrary": true,
+      "dimension": {}
+    },
+    "[MET]": {
+      "isMetric": false,
+      "property": "metabolic cost of physical activity",
+      "dimension": {
+        "m": 3,
+        "s": -1,
+        "g": -1
+      }
+    },
+    "[MPL'U]": {
+      "isMetric": false,
+      "property": "biologic activity of anticardiolipin IgM",
+      "isArbitrary": true,
+      "dimension": {}
+    },
+    "[NTU]": {
+      "isMetric": false,
+      "property": "turbidity",
+      "dimension": {}
+    },
+    "[PFU]": {
+      "isMetric": false,
+      "property": "amount of an infectious agent",
+      "isArbitrary": true,
+      "dimension": {}
+    },
+    "[PNU]": {
+      "isMetric": false,
+      "property": "procedure defined amount of a protein substance",
+      "isArbitrary": true,
+      "dimension": {}
+    },
+    "[PRU]": {
+      "isMetric": false,
+      "property": "fluid resistance",
+      "dimension": {
+        "g": 1,
+        "m": -4,
+        "s": -1
+      }
+    },
+    "[S]": {
+      "isMetric": false,
+      "property": "sedimentation coefficient",
+      "dimension": {
+        "s": 1
+      }
+    },
+    "[TCID_50]": {
+      "isMetric": false,
+      "property": "biologic activity (infectivity) of an infectious agent preparation",
+      "isArbitrary": true,
+      "dimension": {}
+    },
+    "[USP'U]": {
+      "isMetric": false,
+      "property": "arbitrary",
+      "isArbitrary": true,
+      "dimension": {}
+    },
+    "[acr_br]": {
+      "isMetric": false,
+      "property": "area",
+      "dimension": {
+        "m": 2
+      }
+    },
+    "[acr_us]": {
+      "isMetric": false,
+      "property": "area",
+      "dimension": {
+        "m": 2
+      }
+    },
+    "[anti'Xa'U]": {
+      "isMetric": false,
+      "property": "biologic activity of factor Xa inhibitor (heparin)",
+      "isArbitrary": true,
+      "dimension": {}
+    },
+    "[arb'U]": {
+      "isMetric": false,
+      "property": "arbitrary",
+      "isArbitrary": true,
+      "dimension": {}
+    },
+    "[bbl_us]": {
+      "isMetric": false,
+      "property": "fluid volume",
+      "dimension": {
+        "m": 3
+      }
+    },
+    "[bdsk'U]": {
+      "isMetric": false,
+      "property": "biologic activity of phosphatase",
+      "isArbitrary": true,
+      "dimension": {}
+    },
+    "[beth'U]": {
+      "isMetric": false,
+      "property": "biologic activity of factor VIII inhibitor",
+      "isArbitrary": true,
+      "dimension": {}
+    },
+    "[bf_i]": {
+      "isMetric": false,
+      "property": "volume",
+      "dimension": {
+        "m": 3
+      }
+    },
+    "[bu_br]": {
+      "isMetric": false,
+      "property": "volume",
+      "dimension": {
+        "m": 3
+      }
+    },
+    "[bu_us]": {
+      "isMetric": false,
+      "property": "dry volume",
+      "dimension": {
+        "m": 3
+      }
+    },
+    "[c]": {
+      "isMetric": true,
+      "property": "velocity",
+      "dimension": {
+        "m": 1,
+        "s": -1
+      }
+    },
+    "[car_Au]": {
+      "isMetric": false,
+      "property": "mass fraction",
+      "dimension": {}
+    },
+    "[car_m]": {
+      "isMetric": false,
+      "property": "mass",
+      "dimension": {
+        "g": 1
+      }
+    },
+    "[cft_i]": {
+      "isMetric": false,
+      "property": "volume",
+      "dimension": {
+        "m": 3
+      }
+    },
+    "[ch_br]": {
+      "isMetric": false,
+      "property": "length",
+      "dimension": {
+        "m": 1
+      }
+    },
+    "[ch_us]": {
+      "isMetric": false,
+      "property": "length",
+      "dimension": {
+        "m": 1
+      }
+    },
+    "[cicero]": {
+      "isMetric": false,
+      "property": "length",
+      "dimension": {
+        "m": 1
+      }
+    },
+    "[cin_i]": {
+      "isMetric": false,
+      "property": "volume",
+      "dimension": {
+        "m": 3
+      }
+    },
+    "[cml_i]": {
+      "isMetric": false,
+      "property": "area",
+      "dimension": {
+        "m": 2
+      }
+    },
+    "[cr_i]": {
+      "isMetric": false,
+      "property": "volume",
+      "dimension": {
+        "m": 3
+      }
+    },
+    "[crd_us]": {
+      "isMetric": false,
+      "property": "fluid volume",
+      "dimension": {
+        "m": 3
+      }
+    },
+    "[cup_m]": {
+      "isMetric": false,
+      "property": "volume",
+      "dimension": {
+        "m": 3
+      }
+    },
+    "[cup_us]": {
+      "isMetric": false,
+      "property": "volume",
+      "dimension": {
+        "m": 3
+      }
+    },
+    "[cyd_i]": {
+      "isMetric": false,
+      "property": "volume",
+      "dimension": {
+        "m": 3
+      }
+    },
+    "[degF]": {
+      "isMetric": false,
+      "property": "temperature",
+      "isSpecial": true,
+      "dimension": {
+        "K": 1
+      }
+    },
+    "[degR]": {
+      "isMetric": false,
+      "property": "temperature",
+      "dimension": {
+        "K": 1
+      }
+    },
+    "[degRe]": {
+      "isMetric": false,
+      "property": "temperature",
+      "isSpecial": true,
+      "dimension": {
+        "K": 1
+      }
+    },
+    "[den]": {
+      "isMetric": false,
+      "property": "linear mass density (of textile thread)",
+      "dimension": {
+        "g": 1,
+        "m": -1
+      }
+    },
+    "[didot]": {
+      "isMetric": false,
+      "property": "length",
+      "dimension": {
+        "m": 1
+      }
+    },
+    "[diop]": {
+      "isMetric": false,
+      "property": "refraction of a lens",
+      "dimension": {
+        "m": -1
+      }
+    },
+    "[dpt_us]": {
+      "isMetric": false,
+      "property": "dry volume",
+      "dimension": {
+        "m": 3
+      }
+    },
+    "[dqt_us]": {
+      "isMetric": false,
+      "property": "dry volume",
+      "dimension": {
+        "m": 3
+      }
+    },
+    "[dr_ap]": {
+      "isMetric": false,
+      "property": "mass",
+      "dimension": {
+        "g": 1
+      }
+    },
+    "[dr_av]": {
+      "isMetric": false,
+      "property": "mass",
+      "dimension": {
+        "g": 1
+      }
+    },
+    "[drp]": {
+      "isMetric": false,
+      "property": "volume",
+      "dimension": {
+        "m": 3
+      }
+    },
+    "[dye'U]": {
+      "isMetric": false,
+      "property": "biologic activity of amylase",
+      "isArbitrary": true,
+      "dimension": {}
+    },
+    "[e]": {
+      "isMetric": true,
+      "property": "electric charge",
+      "dimension": {
+        "C": 1
+      }
+    },
+    "[eps_0]": {
+      "isMetric": true,
+      "property": "electric permittivity",
+      "dimension": {
+        "C": 2,
+        "g": -1,
+        "m": -3,
+        "s": 2
+      }
+    },
+    "[fdr_br]": {
+      "isMetric": false,
+      "property": "volume",
+      "dimension": {
+        "m": 3
+      }
+    },
+    "[fdr_us]": {
+      "isMetric": false,
+      "property": "fluid volume",
+      "dimension": {
+        "m": 3
+      }
+    },
+    "[foz_br]": {
+      "isMetric": false,
+      "property": "volume",
+      "dimension": {
+        "m": 3
+      }
+    },
+    "[foz_m]": {
+      "isMetric": false,
+      "property": "fluid volume",
+      "dimension": {
+        "m": 3
+      }
+    },
+    "[foz_us]": {
+      "isMetric": false,
+      "property": "fluid volume",
+      "dimension": {
+        "m": 3
+      }
+    },
+    "[ft_br]": {
+      "isMetric": false,
+      "property": "length",
+      "dimension": {
+        "m": 1
+      }
+    },
+    "[ft_i]": {
+      "isMetric": false,
+      "property": "length",
+      "dimension": {
+        "m": 1
+      }
+    },
+    "[ft_us]": {
+      "isMetric": false,
+      "property": "length",
+      "dimension": {
+        "m": 1
+      }
+    },
+    "[fth_br]": {
+      "isMetric": false,
+      "property": "length",
+      "dimension": {
+        "m": 1
+      }
+    },
+    "[fth_i]": {
+      "isMetric": false,
+      "property": "depth of water",
+      "dimension": {
+        "m": 1
+      }
+    },
+    "[fth_us]": {
+      "isMetric": false,
+      "property": "length",
+      "dimension": {
+        "m": 1
+      }
+    },
+    "[fur_us]": {
+      "isMetric": false,
+      "property": "length",
+      "dimension": {
+        "m": 1
+      }
+    },
+    "[g]": {
+      "isMetric": true,
+      "property": "acceleration",
+      "dimension": {
+        "m": 1,
+        "s": -2
+      }
+    },
+    "[gal_br]": {
+      "isMetric": false,
+      "property": "volume",
+      "dimension": {
+        "m": 3
+      }
+    },
+    "[gal_us]": {
+      "isMetric": false,
+      "property": "fluid volume",
+      "dimension": {
+        "m": 3
+      }
+    },
+    "[gal_wi]": {
+      "isMetric": false,
+      "property": "dry volume",
+      "dimension": {
+        "m": 3
+      }
+    },
+    "[gil_br]": {
+      "isMetric": false,
+      "property": "volume",
+      "dimension": {
+        "m": 3
+      }
+    },
+    "[gil_us]": {
+      "isMetric": false,
+      "property": "fluid volume",
+      "dimension": {
+        "m": 3
+      }
+    },
+    "[gr]": {
+      "isMetric": false,
+      "property": "mass",
+      "dimension": {
+        "g": 1
+      }
+    },
+    "[h]": {
+      "isMetric": true,
+      "property": "action",
+      "dimension": {
+        "g": 1,
+        "m": 2,
+        "s": -1
+      }
+    },
+    "[hd_i]": {
+      "isMetric": false,
+      "property": "height of horses",
+      "dimension": {
+        "m": 1
+      }
+    },
+    "[hnsf'U]": {
+      "isMetric": false,
+      "property": "x-ray attenuation",
+      "dimension": {}
+    },
+    "[hp'_C]": {
+      "isMetric": false,
+      "property": "homeopathic potency (retired)",
+      "isSpecial": true,
+      "dimension": {}
+    },
+    "[hp'_M]": {
+      "isMetric": false,
+      "property": "homeopathic potency (retired)",
+      "isSpecial": true,
+      "dimension": {}
+    },
+    "[hp'_Q]": {
+      "isMetric": false,
+      "property": "homeopathic potency (retired)",
+      "isSpecial": true,
+      "dimension": {}
+    },
+    "[hp'_X]": {
+      "isMetric": false,
+      "property": "homeopathic potency (retired)",
+      "isSpecial": true,
+      "dimension": {}
+    },
+    "[hp_C]": {
+      "isMetric": false,
+      "property": "homeopathic potency (Hahnemann)",
+      "isArbitrary": true,
+      "dimension": {}
+    },
+    "[hp_M]": {
+      "isMetric": false,
+      "property": "homeopathic potency (Hahnemann)",
+      "isArbitrary": true,
+      "dimension": {}
+    },
+    "[hp_Q]": {
+      "isMetric": false,
+      "property": "homeopathic potency (Hahnemann)",
+      "isArbitrary": true,
+      "dimension": {}
+    },
+    "[hp_X]": {
+      "isMetric": false,
+      "property": "homeopathic potency (Hahnemann)",
+      "isArbitrary": true,
+      "dimension": {}
+    },
+    "[iU]": {
+      "isMetric": true,
+      "property": "arbitrary",
+      "isArbitrary": true,
+      "dimension": {}
+    },
+    "[in_br]": {
+      "isMetric": false,
+      "property": "length",
+      "dimension": {
+        "m": 1
+      }
+    },
+    "[in_i'H2O]": {
+      "isMetric": false,
+      "property": "pressure",
+      "dimension": {
+        "g": 1,
+        "s": -2,
+        "m": -1
+      }
+    },
+    "[in_i'Hg]": {
+      "isMetric": false,
+      "property": "pressure",
+      "dimension": {
+        "g": 1,
+        "s": -2,
+        "m": -1
+      }
+    },
+    "[in_i]": {
+      "isMetric": false,
+      "property": "length",
+      "dimension": {
+        "m": 1
+      }
+    },
+    "[in_us]": {
+      "isMetric": false,
+      "property": "length",
+      "dimension": {
+        "m": 1
+      }
+    },
+    "[k]": {
+      "isMetric": true,
+      "property": "(unclassified)",
+      "dimension": {
+        "g": 1,
+        "m": 2,
+        "s": -2,
+        "K": -1
+      }
+    },
+    "[ka'U]": {
+      "isMetric": false,
+      "property": "biologic activity of phosphatase",
+      "isArbitrary": true,
+      "dimension": {}
+    },
+    "[kn_br]": {
+      "isMetric": false,
+      "property": "velocity",
+      "dimension": {
+        "m": 1,
+        "s": -1
+      }
+    },
+    "[kn_i]": {
+      "isMetric": false,
+      "property": "velocity",
+      "dimension": {
+        "m": 1,
+        "s": -1
+      }
+    },
+    "[knk'U]": {
+      "isMetric": false,
+      "property": "arbitrary biologic activity",
+      "isArbitrary": true,
+      "dimension": {}
+    },
+    "[kp_C]": {
+      "isMetric": false,
+      "property": "homeopathic potency (Korsakov)",
+      "isArbitrary": true,
+      "dimension": {}
+    },
+    "[kp_M]": {
+      "isMetric": false,
+      "property": "homeopathic potency (Korsakov)",
+      "isArbitrary": true,
+      "dimension": {}
+    },
+    "[kp_Q]": {
+      "isMetric": false,
+      "property": "homeopathic potency (Korsakov)",
+      "isArbitrary": true,
+      "dimension": {}
+    },
+    "[kp_X]": {
+      "isMetric": false,
+      "property": "homeopathic potency (Korsakov)",
+      "isArbitrary": true,
+      "dimension": {}
+    },
+    "[lb_ap]": {
+      "isMetric": false,
+      "property": "mass",
+      "dimension": {
+        "g": 1
+      }
+    },
+    "[lb_av]": {
+      "isMetric": false,
+      "property": "mass",
+      "dimension": {
+        "g": 1
+      }
+    },
+    "[lb_tr]": {
+      "isMetric": false,
+      "property": "mass",
+      "dimension": {
+        "g": 1
+      }
+    },
+    "[lbf_av]": {
+      "isMetric": false,
+      "property": "force",
+      "dimension": {
+        "g": 1,
+        "m": 1,
+        "s": -2
+      }
+    },
+    "[lcwt_av]": {
+      "isMetric": false,
+      "property": "mass",
+      "dimension": {
+        "g": 1
+      }
+    },
+    "[ligne]": {
+      "isMetric": false,
+      "property": "length",
+      "dimension": {
+        "m": 1
+      }
+    },
+    "[lk_br]": {
+      "isMetric": false,
+      "property": "length",
+      "dimension": {
+        "m": 1
+      }
+    },
+    "[lk_us]": {
+      "isMetric": false,
+      "property": "length",
+      "dimension": {
+        "m": 1
+      }
+    },
+    "[lne]": {
+      "isMetric": false,
+      "property": "length",
+      "dimension": {
+        "m": 1
+      }
+    },
+    "[lton_av]": {
+      "isMetric": false,
+      "property": "mass",
+      "dimension": {
+        "g": 1
+      }
+    },
+    "[ly]": {
+      "isMetric": true,
+      "property": "length",
+      "dimension": {
+        "m": 1
+      }
+    },
+    "[m/s2/Hz^(1/2)]": {
+      "isMetric": false,
+      "property": "amplitude spectral density",
+      "isSpecial": true,
+      "dimension": {
+        "m": 2,
+        "s": -3
+      }
+    },
+    "[m_e]": {
+      "isMetric": true,
+      "property": "mass",
+      "dimension": {
+        "g": 1
+      }
+    },
+    "[m_p]": {
+      "isMetric": true,
+      "property": "mass",
+      "dimension": {
+        "g": 1
+      }
+    },
+    "[mclg'U]": {
+      "isMetric": false,
+      "property": "arbitrary biologic activity",
+      "isArbitrary": true,
+      "dimension": {}
+    },
+    "[mesh_i]": {
+      "isMetric": false,
+      "property": "lineic number",
+      "dimension": {
+        "m": -1
+      }
+    },
+    "[mi_br]": {
+      "isMetric": false,
+      "property": "length",
+      "dimension": {
+        "m": 1
+      }
+    },
+    "[mi_i]": {
+      "isMetric": false,
+      "property": "length",
+      "dimension": {
+        "m": 1
+      }
+    },
+    "[mi_us]": {
+      "isMetric": false,
+      "property": "length",
+      "dimension": {
+        "m": 1
+      }
+    },
+    "[mil_i]": {
+      "isMetric": false,
+      "property": "length",
+      "dimension": {
+        "m": 1
+      }
+    },
+    "[mil_us]": {
+      "isMetric": false,
+      "property": "length",
+      "dimension": {
+        "m": 1
+      }
+    },
+    "[min_br]": {
+      "isMetric": false,
+      "property": "volume",
+      "dimension": {
+        "m": 3
+      }
+    },
+    "[min_us]": {
+      "isMetric": false,
+      "property": "fluid volume",
+      "dimension": {
+        "m": 3
+      }
+    },
+    "[mu_0]": {
+      "isMetric": true,
+      "property": "magnetic permeability",
+      "dimension": {
+        "g": 1,
+        "m": 1,
+        "C": -2
+      }
+    },
+    "[nmi_br]": {
+      "isMetric": false,
+      "property": "length",
+      "dimension": {
+        "m": 1
+      }
+    },
+    "[nmi_i]": {
+      "isMetric": false,
+      "property": "length",
+      "dimension": {
+        "m": 1
+      }
+    },
+    "[oz_ap]": {
+      "isMetric": false,
+      "property": "mass",
+      "dimension": {
+        "g": 1
+      }
+    },
+    "[oz_av]": {
+      "isMetric": false,
+      "property": "mass",
+      "dimension": {
+        "g": 1
+      }
+    },
+    "[oz_m]": {
+      "isMetric": false,
+      "property": "mass",
+      "dimension": {
+        "g": 1
+      }
+    },
+    "[oz_tr]": {
+      "isMetric": false,
+      "property": "mass",
+      "dimension": {
+        "g": 1
+      }
+    },
+    "[p'diop]": {
+      "isMetric": false,
+      "property": "refraction of a prism",
+      "isSpecial": true,
+      "dimension": {
+        "rad": 1
+      }
+    },
+    "[pH]": {
+      "isMetric": false,
+      "property": "acidity",
+      "isSpecial": true,
+      "dimension": {
+        "m": -3
+      }
+    },
+    "[pc_br]": {
+      "isMetric": false,
+      "property": "length",
+      "dimension": {
+        "m": 1
+      }
+    },
+    "[pca]": {
+      "isMetric": false,
+      "property": "length",
+      "dimension": {
+        "m": 1
+      }
+    },
+    "[pca_pr]": {
+      "isMetric": false,
+      "property": "length",
+      "dimension": {
+        "m": 1
+      }
+    },
+    "[pi]": {
+      "isMetric": false,
+      "property": "number",
+      "dimension": {}
+    },
+    "[pied]": {
+      "isMetric": false,
+      "property": "length",
+      "dimension": {
+        "m": 1
+      }
+    },
+    "[pk_br]": {
+      "isMetric": false,
+      "property": "volume",
+      "dimension": {
+        "m": 3
+      }
+    },
+    "[pk_us]": {
+      "isMetric": false,
+      "property": "dry volume",
+      "dimension": {
+        "m": 3
+      }
+    },
+    "[pnt]": {
+      "isMetric": false,
+      "property": "length",
+      "dimension": {
+        "m": 1
+      }
+    },
+    "[pnt_pr]": {
+      "isMetric": false,
+      "property": "length",
+      "dimension": {
+        "m": 1
+      }
+    },
+    "[pouce]": {
+      "isMetric": false,
+      "property": "length",
+      "dimension": {
+        "m": 1
+      }
+    },
+    "[ppb]": {
+      "isMetric": false,
+      "property": "fraction",
+      "dimension": {}
+    },
+    "[ppm]": {
+      "isMetric": false,
+      "property": "fraction",
+      "dimension": {}
+    },
+    "[ppth]": {
+      "isMetric": false,
+      "property": "fraction",
+      "dimension": {}
+    },
+    "[pptr]": {
+      "isMetric": false,
+      "property": "fraction",
+      "dimension": {}
+    },
+    "[psi]": {
+      "isMetric": false,
+      "property": "pressure",
+      "dimension": {
+        "g": 1,
+        "m": -1,
+        "s": -2
+      }
+    },
+    "[pt_br]": {
+      "isMetric": false,
+      "property": "volume",
+      "dimension": {
+        "m": 3
+      }
+    },
+    "[pt_us]": {
+      "isMetric": false,
+      "property": "fluid volume",
+      "dimension": {
+        "m": 3
+      }
+    },
+    "[pwt_tr]": {
+      "isMetric": false,
+      "property": "mass",
+      "dimension": {
+        "g": 1
+      }
+    },
+    "[qt_br]": {
+      "isMetric": false,
+      "property": "volume",
+      "dimension": {
+        "m": 3
+      }
+    },
+    "[qt_us]": {
+      "isMetric": false,
+      "property": "fluid volume",
+      "dimension": {
+        "m": 3
+      }
+    },
+    "[rch_us]": {
+      "isMetric": false,
+      "property": "length",
+      "dimension": {
+        "m": 1
+      }
+    },
+    "[rd_br]": {
+      "isMetric": false,
+      "property": "length",
+      "dimension": {
+        "m": 1
+      }
+    },
+    "[rd_us]": {
+      "isMetric": false,
+      "property": "length",
+      "dimension": {
+        "m": 1
+      }
+    },
+    "[rlk_us]": {
+      "isMetric": false,
+      "property": "length",
+      "dimension": {
+        "m": 1
+      }
+    },
+    "[sc_ap]": {
+      "isMetric": false,
+      "property": "mass",
+      "dimension": {
+        "g": 1
+      }
+    },
+    "[sct]": {
+      "isMetric": false,
+      "property": "area",
+      "dimension": {
+        "m": 2
+      }
+    },
+    "[scwt_av]": {
+      "isMetric": false,
+      "property": "mass",
+      "dimension": {
+        "g": 1
+      }
+    },
+    "[sft_i]": {
+      "isMetric": false,
+      "property": "area",
+      "dimension": {
+        "m": 2
+      }
+    },
+    "[sin_i]": {
+      "isMetric": false,
+      "property": "area",
+      "dimension": {
+        "m": 2
+      }
+    },
+    "[smgy'U]": {
+      "isMetric": false,
+      "property": "biologic activity of amylase",
+      "isArbitrary": true,
+      "dimension": {}
+    },
+    "[smi_us]": {
+      "isMetric": false,
+      "property": "area",
+      "dimension": {
+        "m": 2
+      }
+    },
+    "[smoot]": {
+      "isMetric": false,
+      "property": "length",
+      "dimension": {
+        "m": 1
+      }
+    },
+    "[srd_us]": {
+      "isMetric": false,
+      "property": "area",
+      "dimension": {
+        "m": 2
+      }
+    },
+    "[ston_av]": {
+      "isMetric": false,
+      "property": "mass",
+      "dimension": {
+        "g": 1
+      }
+    },
+    "[stone_av]": {
+      "isMetric": false,
+      "property": "mass",
+      "dimension": {
+        "g": 1
+      }
+    },
+    "[syd_i]": {
+      "isMetric": false,
+      "property": "area",
+      "dimension": {
+        "m": 2
+      }
+    },
+    "[tb'U]": {
+      "isMetric": false,
+      "property": "biologic activity of tuberculin",
+      "isArbitrary": true,
+      "dimension": {}
+    },
+    "[tbs_m]": {
+      "isMetric": false,
+      "property": "volume",
+      "dimension": {
+        "m": 3
+      }
+    },
+    "[tbs_us]": {
+      "isMetric": false,
+      "property": "volume",
+      "dimension": {
+        "m": 3
+      }
+    },
+    "[todd'U]": {
+      "isMetric": false,
+      "property": "biologic activity antistreptolysin O",
+      "isArbitrary": true,
+      "dimension": {}
+    },
+    "[tsp_m]": {
+      "isMetric": false,
+      "property": "volume",
+      "dimension": {
+        "m": 3
+      }
+    },
+    "[tsp_us]": {
+      "isMetric": false,
+      "property": "volume",
+      "dimension": {
+        "m": 3
+      }
+    },
+    "[twp]": {
+      "isMetric": false,
+      "property": "area",
+      "dimension": {
+        "m": 2
+      }
+    },
+    "[wood'U]": {
+      "isMetric": false,
+      "property": "fluid resistance",
+      "dimension": {
+        "g": 1,
+        "m": -4,
+        "s": -1
+      }
+    },
+    "[yd_br]": {
+      "isMetric": false,
+      "property": "length",
+      "dimension": {
+        "m": 1
+      }
+    },
+    "[yd_i]": {
+      "isMetric": false,
+      "property": "length",
+      "dimension": {
+        "m": 1
+      }
+    },
+    "[yd_us]": {
+      "isMetric": false,
+      "property": "length",
+      "dimension": {
+        "m": 1
+      }
+    },
+    "a": {
+      "isMetric": false,
+      "property": "time",
+      "dimension": {
+        "s": 1
+      }
+    },
+    "a_g": {
+      "isMetric": false,
+      "property": "time",
+      "dimension": {
+        "s": 1
+      }
+    },
+    "a_j": {
+      "isMetric": false,
+      "property": "time",
+      "dimension": {
+        "s": 1
+      }
+    },
+    "a_t": {
+      "isMetric": false,
+      "property": "time",
+      "dimension": {
+        "s": 1
+      }
+    },
+    "ar": {
+      "isMetric": true,
+      "property": "area",
+      "dimension": {
+        "m": 2
+      }
+    },
+    "atm": {
+      "isMetric": false,
+      "property": "pressure",
+      "dimension": {
+        "g": 1,
+        "m": -1,
+        "s": -2
+      }
+    },
+    "att": {
+      "isMetric": false,
+      "property": "pressure",
+      "dimension": {
+        "g": 1,
+        "m": -1,
+        "s": -2
+      }
+    },
+    "b": {
+      "isMetric": false,
+      "property": "action area",
+      "dimension": {
+        "m": 2
+      }
+    },
+    "bar": {
+      "isMetric": true,
+      "property": "pressure",
+      "dimension": {
+        "g": 1,
+        "m": -1,
+        "s": -2
+      }
+    },
+    "bit": {
+      "isMetric": true,
+      "property": "amount of information",
+      "dimension": {}
+    },
+    "bit_s": {
+      "isMetric": false,
+      "property": "amount of information",
+      "isSpecial": true,
+      "dimension": {}
+    },
+    "cal": {
+      "isMetric": true,
+      "property": "energy",
+      "dimension": {
+        "g": 1,
+        "m": 2,
+        "s": -2
+      }
+    },
+    "cal_IT": {
+      "isMetric": true,
+      "property": "energy",
+      "dimension": {
+        "g": 1,
+        "m": 2,
+        "s": -2
+      }
+    },
+    "cal_[15]": {
+      "isMetric": true,
+      "property": "energy",
+      "dimension": {
+        "g": 1,
+        "m": 2,
+        "s": -2
+      }
+    },
+    "cal_[20]": {
+      "isMetric": true,
+      "property": "energy",
+      "dimension": {
+        "g": 1,
+        "m": 2,
+        "s": -2
+      }
+    },
+    "cal_m": {
+      "isMetric": true,
+      "property": "energy",
+      "dimension": {
+        "g": 1,
+        "m": 2,
+        "s": -2
+      }
+    },
+    "cal_th": {
+      "isMetric": true,
+      "property": "energy",
+      "dimension": {
+        "g": 1,
+        "m": 2,
+        "s": -2
+      }
+    },
+    "cd": {
+      "dimension": {
+        "cd": 1
+      },
+      "isMetric": true,
+      "property": "luminous intensity"
+    },
+    "circ": {
+      "isMetric": false,
+      "property": "plane angle",
+      "dimension": {
+        "rad": 1
+      }
+    },
+    "d": {
+      "isMetric": false,
+      "property": "time",
+      "dimension": {
+        "s": 1
+      }
+    },
+    "deg": {
+      "isMetric": false,
+      "property": "plane angle",
+      "dimension": {
+        "rad": 1
+      }
+    },
+    "dyn": {
+      "isMetric": true,
+      "property": "force",
+      "dimension": {
+        "g": 1,
+        "m": 1,
+        "s": -2
+      }
+    },
+    "eV": {
+      "isMetric": true,
+      "property": "energy",
+      "dimension": {
+        "g": 1,
+        "m": 2,
+        "s": -2
+      }
+    },
+    "eq": {
+      "isMetric": true,
+      "property": "amount of substance",
+      "dimension": {}
+    },
+    "erg": {
+      "isMetric": true,
+      "property": "energy",
+      "dimension": {
+        "g": 1,
+        "m": 2,
+        "s": -2
+      }
+    },
+    "g": {
+      "dimension": {
+        "g": 1
+      },
+      "isMetric": true,
+      "property": "mass"
+    },
+    "g%": {
+      "isMetric": true,
+      "property": "mass concentration",
+      "dimension": {
+        "g": 1,
+        "m": -3
+      }
+    },
+    "gf": {
+      "isMetric": true,
+      "property": "force",
+      "dimension": {
+        "g": 1,
+        "m": 1,
+        "s": -2
+      }
+    },
+    "gon": {
+      "isMetric": false,
+      "property": "plane angle",
+      "dimension": {
+        "rad": 1
+      }
+    },
+    "h": {
+      "isMetric": false,
+      "property": "time",
+      "dimension": {
+        "s": 1
+      }
+    },
+    "kat": {
+      "isMetric": true,
+      "property": "catalytic activity",
+      "dimension": {
+        "s": -1
+      }
+    },
+    "l": {
+      "isMetric": true,
+      "property": "volume",
+      "dimension": {
+        "m": 3
+      }
+    },
+    "lm": {
+      "isMetric": true,
+      "property": "luminous flux",
+      "dimension": {
+        "cd": 1,
+        "rad": 2
+      }
+    },
+    "lx": {
+      "isMetric": true,
+      "property": "illuminance",
+      "dimension": {
+        "cd": 1,
+        "rad": 2,
+        "m": -2
+      }
+    },
+    "m": {
+      "dimension": {
+        "m": 1
+      },
+      "isMetric": true,
+      "property": "length"
+    },
+    "m[H2O]": {
+      "isMetric": true,
+      "property": "pressure",
+      "dimension": {
+        "g": 1,
+        "m": -1,
+        "s": -2
+      }
+    },
+    "m[Hg]": {
+      "isMetric": true,
+      "property": "pressure",
+      "dimension": {
+        "g": 1,
+        "m": -1,
+        "s": -2
+      }
+    },
+    "mho": {
+      "isMetric": true,
+      "property": "electric conductance",
+      "dimension": {
+        "g": -1,
+        "m": -2,
+        "s": 1,
+        "C": 2
+      }
+    },
+    "min": {
+      "isMetric": false,
+      "property": "time",
+      "dimension": {
+        "s": 1
+      }
+    },
+    "mo": {
+      "isMetric": false,
+      "property": "time",
+      "dimension": {
+        "s": 1
+      }
+    },
+    "mo_g": {
+      "isMetric": false,
+      "property": "time",
+      "dimension": {
+        "s": 1
+      }
+    },
+    "mo_j": {
+      "isMetric": false,
+      "property": "time",
+      "dimension": {
+        "s": 1
+      }
+    },
+    "mo_s": {
+      "isMetric": false,
+      "property": "time",
+      "dimension": {
+        "s": 1
+      }
+    },
+    "mol": {
+      "isMetric": true,
+      "property": "amount of substance",
+      "dimension": {}
+    },
+    "osm": {
+      "isMetric": true,
+      "property": "amount of substance (dissolved particles)",
+      "dimension": {}
+    },
+    "pc": {
+      "isMetric": true,
+      "property": "length",
+      "dimension": {
+        "m": 1
+      }
+    },
+    "ph": {
+      "isMetric": true,
+      "property": "illuminance",
+      "dimension": {
+        "cd": 1,
+        "rad": 2,
+        "m": -2
+      }
+    },
+    "rad": {
+      "dimension": {
+        "rad": 1
+      },
+      "isMetric": true,
+      "property": "plane angle"
+    },
+    "s": {
+      "dimension": {
+        "s": 1
+      },
+      "isMetric": true,
+      "property": "time"
+    },
+    "sb": {
+      "isMetric": true,
+      "property": "lum. intensity density",
+      "dimension": {
+        "cd": 1,
+        "m": -2
+      }
+    },
+    "sph": {
+      "isMetric": false,
+      "property": "solid angle",
+      "dimension": {
+        "rad": 2
+      }
+    },
+    "sr": {
+      "isMetric": true,
+      "property": "solid angle",
+      "dimension": {
+        "rad": 2
+      }
+    },
+    "st": {
+      "isMetric": true,
+      "property": "volume",
+      "dimension": {
+        "m": 3
+      }
+    },
+    "t": {
+      "isMetric": true,
+      "property": "mass",
+      "dimension": {
+        "g": 1
+      }
+    },
+    "tex": {
+      "isMetric": true,
+      "property": "linear mass density (of textile thread)",
+      "dimension": {
+        "g": 1,
+        "m": -1
+      }
+    },
+    "u": {
+      "isMetric": true,
+      "property": "mass",
+      "dimension": {
+        "g": 1
+      }
+    },
+    "wk": {
+      "isMetric": false,
+      "property": "time",
+      "dimension": {
+        "s": 1
+      }
+    }
+  }
+}

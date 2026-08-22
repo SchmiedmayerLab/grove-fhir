@@ -1,23 +1,28 @@
 {
   "name": "grove-fhir",
-  "version": "0.0.0",
+  "version": "0.3.0",
   "private": true,
   "description": "Build and validation tooling for the Grove FHIR implementation guides",
   "scripts": {
     "build": "./Scripts/build-guides.sh",
-    "evidence:update-baseline": "python3 Scripts/build-conformance-evidence.py update-semantic-baseline",
     "pages:build": "./Scripts/build-guides.sh && ./Scripts/assemble-pages.sh",
-    "schema:validate": "node Scripts/validate-json-schema.cjs Conformance/evidence.schema.json Conformance/evidence.json Conformance/toolchain.json Conformance/semantic-baseline.json",
-    "test": "python3 Scripts/check-content.py && python3 -m unittest discover -s Tests -v"
+    "producer-kit:check": "python3 Scripts/validate-producer.py --manifest Conformance/example-producer/manifest.json --structural-only",
+    "inventory:refresh": "python3 Scripts/render-platform-inventories.py",
+    "inventory:check": "python3 Scripts/render-platform-inventories.py --check",
+    "terminology:check": "python3 Scripts/check-terminology.py",
+    "profiles:refresh": "python3 Scripts/render-measurement-profiles.py",
+    "profiles:check": "python3 Scripts/render-measurement-profiles.py --check",
+    "formats:refresh": "python3 Scripts/render-format-registry.py",
+    "formats:check": "python3 Scripts/render-format-registry.py --check",
+    "test": "python3 Scripts/check-content.py && python3 Scripts/check-terminology.py && python3 Scripts/render-measurement-profiles.py --check && python3 Scripts/render-format-registry.py --check && python3 -m unittest discover -s Tests -v"
   },
   "devDependencies": {
     "ajv": "8.20.0",
     "fhir-package-loader": "2.2.4",
-    "firebase-tools": "15.26.0",
     "fsh-sushi": "3.20.0",
     "tar-stream": "3.2.0"
   },
   "engines": {
-    "node": ">=22"
+    "node": ">=24"
   }
 }

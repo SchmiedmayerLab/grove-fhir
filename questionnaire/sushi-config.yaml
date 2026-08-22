@@ -7,28 +7,28 @@
 #
 
 id: org.grovealliance.fhir.questionnaire
-canonical: https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire
+canonical: https://grovealliance.org/fhir/questionnaire
 name: GroveFHIRQuestionnaire
 title: Grove FHIR Questionnaire Exchange
 description: >-
   A FHIR R4 contract for exchanging versioned questionnaires and their responses.
 status: draft
-version: 0.1.0
+version: 0.3.0
 fhirVersion: 4.0.1
 copyrightYear: 2026+
 releaseLabel: ci-build
 publisher:
   name: Schmiedmayer Lab
   url: https://github.com/SchmiedmayerLab
-jurisdiction: http://unstats.un.org/unsd/methods/m49/m49.htm#001 "World"
 license: MIT
 
 dependencies:
   hl7.fhir.uv.sdc: 4.0.0
-  hl7.fhir.uv.extensions.r4: 5.3.0-ballot-tc1
+  hl7.fhir.uv.extensions.r4: 5.3.0
 
 menu:
   Overview: index.html
+  Guides: https://grovealliance.org/fhir/mobile/guides.html
   Quick start: quick-start.html
   Define an instrument: instruments.html
   Record answers: responses.html

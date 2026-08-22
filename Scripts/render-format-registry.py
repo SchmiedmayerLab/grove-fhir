@@ -1,0 +1,199 @@
+#!/usr/bin/env python3
+#
+# This source file is part of the Grove FHIR open-source project
+#
+# SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTRIBUTORS.md)
+#
+# SPDX-License-Identifier: MIT
+#
+"""Render the recording format registry into the sensor guide.
+
+catalog/format-registry.json is the authoritative closed registry of payload
+formats a Grove recording DocumentReference may declare; this renderer projects
+it into the format terminology FSH and the narrative formats page so the guide
+and the machine contract can never drift apart.
+
+Usage:
+  Scripts/render-format-registry.py           # write both outputs
+  Scripts/render-format-registry.py --check   # verify both outputs are current
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+REGISTRY = ROOT / "catalog/format-registry.json"
+FSH_OUTPUT = ROOT / "sensor/input/fsh/generated-recording-formats.fsh"
+PAGE_OUTPUT = ROOT / "sensor/input/pagecontent/formats.md"
+
+FSH_HEADER = """//
+// This source file is part of the Grove FHIR open-source project
+//
+// SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTRIBUTORS.md)
+//
+// SPDX-License-Identifier: MIT
+//
+// GENERATED FILE. Edit catalog/format-registry.json and run
+// `python3 Scripts/render-format-registry.py`.
+//
+"""
+
+PAGE_HEADER = """<!--
+This source file is part of the Grove FHIR open-source project
+
+SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTRIBUTORS.md)
+
+SPDX-License-Identifier: MIT
+
+GENERATED FILE. Edit catalog/format-registry.json and run
+`python3 Scripts/render-format-registry.py`.
+-->
+"""
+
+
+def render_fsh(registry: dict) -> str:
+    lines = [FSH_HEADER]
+    lines.append("CodeSystem: GroveRecordingFormatCS")
+    lines.append("Id: grove-recording-format")
+    lines.append('Title: "Grove Recording Format"')
+    lines.append(
+        'Description: "The closed registry of payload formats a Grove recording '
+        "DocumentReference may declare in content.format. Each code is fully "
+        "specified in the format registry and on the formats page, so a receiver "
+        'can parse any admitted payload from the guide alone."'
+    )
+    lines.append("* ^experimental = false")
+    lines.append("* ^caseSensitive = true")
+    lines.append("* ^content = #complete")
+    for code, fmt in registry["formats"].items():
+        summary = fmt["specification"].get("structure", fmt["title"])
+        lines.append(f'* #{code} "{fmt["title"]}" "{summary}"')
+    lines.append("")
+    lines.append("ValueSet: GroveRecordingFormatVS")
+    lines.append("Id: grove-recording-format")
+    lines.append('Title: "Grove Recording Format"')
+    lines.append(
+        'Description: "Every payload format admitted for a Grove recording '
+        'DocumentReference content entry."'
+    )
+    lines.append("* ^experimental = false")
+    lines.append("* include codes from system GroveRecordingFormatCS")
+    return "\n".join(lines) + "\n"
+
+
+def render_column_table(schema: dict) -> list[str]:
+    lines = [
+        "",
+        f"Source: `{schema['source']}`.",
+        "",
+        "| Column | Type | Unit | Meaning |",
+        "|---|---|---|---|",
+    ]
+    for column in schema["columns"]:
+        unit = f"`{column['unit']}`" if "unit" in column else "—"
+        lines.append(
+            f"| `{column['name']}` | {column['type']} | {unit} | {column['meaning']} |"
+        )
+    return lines
+
+
+def render_record_table(title: str, fields: list[dict]) -> list[str]:
+    lines = ["", f"**{title}**", "", "| Field | Encoding | Unit | Meaning |", "|---|---|---|---|"]
+    for field in fields:
+        unit = f"`{field['unit']}`" if "unit" in field else "—"
+        meaning = field.get("meaning", "")
+        lines.append(
+            f"| `{field['field']}` | `{field['encoding']}` | {unit} | {meaning} |"
+        )
+    return lines
+
+
+def render_page(registry: dict) -> str:
+    lines = [PAGE_HEADER]
+    lines.append(
+        "Every Grove recording DocumentReference content entry declares exactly one payload format from this closed registry in `content.format`."
+    )
+    lines.append(
+        "A receiver can parse every admitted payload from this page and the machine registry alone; an unregistered payload format is nonconformant."
+    )
+    lines.append(
+        "The machine registry is [`catalog/format-registry.json`](https://grovealliance.org/fhir/catalog/format-registry.json); this page renders it."
+    )
+    for code, fmt in registry["formats"].items():
+        spec = fmt["specification"]
+        lines.append("")
+        lines.append(f"### `{code}` — {fmt['title']}")
+        lines.append("")
+        lines.append(f"Media type: `{fmt['contentType']}`.")
+        for key in (
+            "encoding",
+            "structure",
+            "rowTerminator",
+            "separator",
+            "quoting",
+            "numbers",
+            "timestamps",
+            "columns",
+            "resources",
+            "emptyBatch",
+            "provenance",
+            "scope",
+            "tar",
+            "compression",
+            "determinism",
+            "file",
+        ):
+            value = spec.get(key)
+            if isinstance(value, str):
+                lines.append(value)
+        if "primitives" in spec:
+            lines.append("")
+            lines.append("**Primitive encodings**")
+            lines.append("")
+            lines.append("| Primitive | Encoding |")
+            lines.append("|---|---|")
+            for name, rule in spec["primitives"].items():
+                lines.append(f"| `{name}` | {rule} |")
+        for key, title in (
+            ("record", "Record layout"),
+            ("opticalSample", "Optical sample layout"),
+            ("noiseTerms", "Noise terms layout"),
+            ("accelerometerSample", "Accelerometer sample layout"),
+        ):
+            if key in spec:
+                lines.extend(render_record_table(title, spec[key]))
+        if "columnSchemas" in fmt:
+            for stream, schema in fmt["columnSchemas"].items():
+                lines.append("")
+                lines.append(f"#### Columns for `{stream}`")
+                lines.extend(render_column_table(schema))
+    return "\n".join(lines) + "\n"
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--check", action="store_true")
+    arguments = parser.parse_args()
+
+    registry = json.loads(REGISTRY.read_text(encoding="utf-8"))
+    outputs = {FSH_OUTPUT: render_fsh(registry), PAGE_OUTPUT: render_page(registry)}
+    stale = []
+    for path, rendered in outputs.items():
+        if arguments.check:
+            if not path.is_file() or path.read_text(encoding="utf-8") != rendered:
+                stale.append(path)
+        else:
+            path.write_text(rendered, encoding="utf-8")
+    if stale:
+        for path in stale:
+            print(f"{path} is stale; run Scripts/render-format-registry.py")
+        return 1
+    print(f"format registry: {len(registry['formats'])} formats rendered")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "description": "The closed allowlist of UCUM {annotation} tokens Grove units may carry. Annotations are dimensionless by definition, so each admitted token names one reviewed counting semantics; anything else is rejected by the gate.",
+  "annotations": {
+    "count": "A dimensionless count of the events the component definition states.",
+    "drinks": "Standard alcoholic beverages as logged by the subject.",
+    "falls": "Fall events as counted by the source.",
+    "flights": "Flights of stairs ascended as counted by the source.",
+    "floors": "Floors climbed as counted by the source.",
+    "laps": "Pool laps as counted by the source.",
+    "puff": "Inhaler actuations as counted by the source.",
+    "pushes": "Wheelchair pushes as counted by the source.",
+    "score": "A bounded score on the scale the profile description states.",
+    "steps": "Step count events as counted by the source pedometer.",
+    "strokes": "Swimming strokes as counted by the source.",
+    "uvindex": "The WHO/WMO ultraviolet index value the subject was exposed to."
+  }
+}

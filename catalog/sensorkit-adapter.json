@@ -1,0 +1,929 @@
+{
+  "schemaVersion": 1,
+  "fhirVersion": "4.0.1",
+  "version": "0.3.0",
+  "packageId": "org.grovealliance.fhir.sensorkit",
+  "canonical": "https://grovealliance.org/fhir/sensorkit",
+  "statusVocabulary": [
+    "supported",
+    "mapped-standard",
+    "platform-exclusive",
+    "unmodeled",
+    "deferred",
+    "intentionally-unsupported"
+  ],
+  "statusDefinitions": {
+    "supported": "Version 0.3.0 defines a lossless structured mapping to the listed source-neutral Sensor profile plus the SensorKit adapter profile. A row may require the listed linked native Recording Document when exact source fields cannot be carried in the structured projection alone.",
+    "mapped-standard": "Version 0.3.0 admits the stream as the listed source-neutral Sensor Recording Document and does not invent a structured scalar or waveform meaning.",
+    "platform-exclusive": "Version 0.3.0 defines the listed platform-exclusive SensorKit structured profile because no exact source-neutral or international profile exists.",
+    "unmodeled": "The platform stream is inventoried, but no shared or SensorKit-scoped profile models it and no output is admitted.",
+    "deferred": "The platform stream is inventoried, but version 0.3.0 publishes no admitted output contract.",
+    "intentionally-unsupported": "Version 0.3.0 deliberately refuses the stream because any available representation would create a misleading or unsafe meaning."
+  },
+  "sourceEvidence": {
+    "platform": "Apple SensorKit",
+    "sdkBaseline": {
+      "platform": "iPhoneOS",
+      "version": "26.5",
+      "xcodeVersion": "26.6",
+      "xcodeBuild": "17F113"
+    },
+    "accessed": "2026-08-20",
+    "appleSensorInventory": "https://developer.apple.com/documentation/sensorkit/srsensor",
+    "appleFrameworkDocumentation": "https://developer.apple.com/documentation/sensorkit",
+    "scope": "The exact 22 public Apple SRSensor symbols frozen by the v0.3.0 catalog."
+  },
+  "inventoryScopes": {
+    "catalog-baseline": "One of the 20 platform symbols in the initial closed v0.3.0 catalog baseline.",
+    "stable-addition": "A stable platform symbol added to complete the stated SDK baseline."
+  },
+  "profileClaims": {
+    "sharedObservation": {
+      "rule": "exactly two direct meta.profile claims: the listed source-neutral Sensor semantic profile and the SensorKit adapter profile",
+      "adapterProfile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-observation"
+    },
+    "hybridObservation": {
+      "rule": "exactly two direct meta.profile claims: the listed source-neutral Sensor semantic profile and the exact SensorKit hybrid adapter child; one linked exact native Recording Document is mandatory",
+      "adapterProfile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-ecg-observation"
+    },
+    "recordingDocument": {
+      "rule": "exactly two direct meta.profile claims: the source-neutral Sensor Recording Document profile and the SensorKit Recording Document adapter profile",
+      "sourceNeutralProfile": "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document",
+      "adapterProfile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-recording-document",
+      "defaultOutputDiscriminator": "native-recording",
+      "defaultRule": "Every admitted raw representation uses this profile pair and output discriminator unless its row explicitly replaces them."
+    },
+    "providerSpecificObservation": {
+      "rule": "exactly one direct meta.profile claim: the listed SensorKit-only profile, which inherits the adapter envelope"
+    },
+    "conversionProvenance": {
+      "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-conversion-provenance",
+      "rule": "The adapter-specific Provenance targets every structured and raw output from the source record and carries that exact source-record Identifier as its sole source entity."
+    }
+  },
+  "rawPayloadAdmission": {
+    "contract": "https://grovealliance.org/fhir/sensor#recording-document.payloadAdmission",
+    "allowedAssertions": [
+      "caller-authorized-opaque-payload",
+      "verified-sanitized-input"
+    ],
+    "failureRule": "The producer fails closed before emission unless the caller supplies exactly one assertion.",
+    "notFHIRAuthorization": true
+  },
+  "identity": {
+    "sourceRecord": {
+      "system": "https://grovealliance.org/fhir/sensorkit/NamingSystem/sensorkit-record-id",
+      "assignmentRule": "The SensorKit-facing producer assigns one stable lowercase UUID to one exact source stream record. Re-fetching unchanged content must reuse it; changed content or a distinct source record must use a different value. Cross-producer equality is not asserted because SensorKit supplies no durable sample identifier."
+    },
+    "output": {
+      "system": "https://grovealliance.org/fhir/sensorkit/NamingSystem/sensorkit-output-id",
+      "namespace": "c0b8814a-8178-5e92-996a-c4cf36cd640b",
+      "algorithm": "UUIDv5 over the RFC 8785/JCS UTF-8 serialization of exactly [sourceRecordIdentifier.system, sourceRecordIdentifier.value, outputDiscriminator]",
+      "rule": "Use the exact outputDiscriminator on the admitted structured or raw representation; there is no fallback.",
+      "vectors": [
+        {
+          "outputDiscriminator": "sampled-data",
+          "canonicalPreimage": "[\"https://grovealliance.org/fhir/sensorkit/NamingSystem/sensorkit-record-id\",\"879d9ea2-21cb-4527-b59b-2831dc4c84ab\",\"sampled-data\"]",
+          "identifierValue": "746739c0-630c-581d-8808-f12114c2adf9"
+        },
+        {
+          "outputDiscriminator": "native-recording",
+          "canonicalPreimage": "[\"https://grovealliance.org/fhir/sensorkit/NamingSystem/sensorkit-record-id\",\"879d9ea2-21cb-4527-b59b-2831dc4c84ab\",\"native-recording\"]",
+          "identifierValue": "70246b31-e681-5149-8002-d515b8611713"
+        },
+        {
+          "outputDiscriminator": "on-wrist",
+          "canonicalPreimage": "[\"https://grovealliance.org/fhir/sensorkit/NamingSystem/sensorkit-record-id\",\"879d9ea2-21cb-4527-b59b-2831dc4c84ab\",\"on-wrist\"]",
+          "identifierValue": "b1b6d7c7-b185-50ea-8426-241fd27f02dc"
+        },
+        {
+          "outputDiscriminator": "device-usage-summary",
+          "canonicalPreimage": "[\"https://grovealliance.org/fhir/sensorkit/NamingSystem/sensorkit-record-id\",\"879d9ea2-21cb-4527-b59b-2831dc4c84ab\",\"device-usage-summary\"]",
+          "identifierValue": "db96cf40-07cd-57c5-9b00-db0be8090ffc"
+        },
+        {
+          "outputDiscriminator": "ecg-waveform",
+          "canonicalPreimage": "[\"https://grovealliance.org/fhir/sensorkit/NamingSystem/sensorkit-record-id\",\"879d9ea2-21cb-4527-b59b-2831dc4c84ab\",\"ecg-waveform\"]",
+          "identifierValue": "5d856ae1-3d82-5056-b21a-5700476b122a"
+        },
+        {
+          "outputDiscriminator": "visit-summary",
+          "canonicalPreimage": "[\"https://grovealliance.org/fhir/sensorkit/NamingSystem/sensorkit-record-id\",\"879d9ea2-21cb-4527-b59b-2831dc4c84ab\",\"visit-summary\"]",
+          "identifierValue": "f632b780-1a6f-541d-8c73-ff1e76ce4204"
+        },
+        {
+          "outputDiscriminator": "native-\n\"\\résumé\u0001",
+          "admitted": false,
+          "purpose": "RFC 8785 quote, reverse-solidus, control, and non-ASCII test only",
+          "canonicalPreimage": "[\"https://grovealliance.org/fhir/sensorkit/NamingSystem/sensorkit-record-id\",\"879d9ea2-21cb-4527-b59b-2831dc4c84ab\",\"native-\\n\\\"\\\\résumé\\u0001\"]",
+          "identifierValue": "ab9daa44-c154-595e-85e3-d45972b60b39"
+        }
+      ]
+    },
+    "valuePattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+    "contentRule": "Every source field represented in the structured resource or native recording must participate in the producer's stable identity input; Resource.id, repository ids, subject references, and processing timestamps must not participate.",
+    "resourceIdPolicy": "Resource.id is optional and repository-assigned. SensorKit source-record and output identifiers are complete business Identifiers and are never copied into Resource.id."
+  },
+  "entries": [
+    {
+      "sourceToken": "SRSensor.accelerometer",
+      "symbol": "SRSensorAccelerometer",
+      "identifier": "com.apple.SensorKit.motion.accelerometer",
+      "sourceTypeCode": "accelerometer",
+      "title": "Accelerometer",
+      "documentation": "https://developer.apple.com/documentation/sensorkit/srsensor/accelerometer",
+      "minimumIOS": "14.0",
+      "scope": "catalog-baseline",
+      "status": "platform-exclusive",
+      "structured": {
+        "status": "platform-exclusive",
+        "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-accelerometer-observation",
+        "outputDiscriminator": "accelerometer-recording-summary"
+      },
+      "raw": {
+        "status": "mapped-standard",
+        "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-recording-document",
+        "outputDiscriminator": "native-recording",
+        "encoding": "caller-supplied exact bytes",
+        "formats": [
+          "grove-csv-1"
+        ]
+      }
+    },
+    {
+      "sourceToken": "SRSensor.acousticSettings",
+      "symbol": "SRSensorAcousticSettings",
+      "identifier": "com.apple.SensorKit.hearing.acousticSettings",
+      "sourceTypeCode": "acoustic-settings",
+      "title": "Acoustic settings",
+      "documentation": "https://developer.apple.com/documentation/sensorkit/srsensor/acousticsettings",
+      "minimumIOS": "26.0",
+      "scope": "stable-addition",
+      "status": "deferred",
+      "reason": "Version 0.3.0 publishes no reviewed output contract for this stable platform symbol."
+    },
+    {
+      "sourceToken": "SRSensor.ambientLightSensor",
+      "symbol": "SRSensorAmbientLightSensor",
+      "identifier": "com.apple.SensorKit.als",
+      "sourceTypeCode": "ambient-light",
+      "title": "Ambient light",
+      "documentation": "https://developer.apple.com/documentation/sensorkit/srsensor/ambientlightsensor",
+      "minimumIOS": "14.0",
+      "scope": "catalog-baseline",
+      "status": "mapped-standard",
+      "structured": {
+        "status": "deferred",
+        "reason": "The source contains heterogeneous light fields for which version 0.3.0 does not publish a lossless component profile."
+      },
+      "raw": {
+        "status": "mapped-standard",
+        "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-recording-document",
+        "outputDiscriminator": "native-recording",
+        "encoding": "caller-supplied exact bytes",
+        "formats": [
+          "grove-csv-1"
+        ]
+      }
+    },
+    {
+      "sourceToken": "SRSensor.ambientPressure",
+      "symbol": "SRSensorAmbientPressure",
+      "identifier": "com.apple.SensorKit.ambientPressure",
+      "sourceTypeCode": "ambient-pressure",
+      "title": "Ambient pressure",
+      "documentation": "https://developer.apple.com/documentation/sensorkit/srsensor/ambientpressure",
+      "minimumIOS": "15.4",
+      "scope": "catalog-baseline",
+      "status": "mapped-standard",
+      "structured": {
+        "status": "deferred",
+        "reason": "Pressure and temperature are mixed-unit fields and must not be collapsed into one SampledData value."
+      },
+      "raw": {
+        "status": "mapped-standard",
+        "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-recording-document",
+        "outputDiscriminator": "native-recording",
+        "encoding": "caller-supplied exact bytes",
+        "formats": [
+          "grove-csv-1"
+        ]
+      }
+    },
+    {
+      "sourceToken": "SRSensor.deviceUsageReport",
+      "symbol": "SRSensorDeviceUsageReport",
+      "identifier": "com.apple.SensorKit.deviceUsageReport",
+      "sourceTypeCode": "device-usage",
+      "title": "Device usage report",
+      "documentation": "https://developer.apple.com/documentation/sensorkit/srsensor/deviceusagereport",
+      "minimumIOS": "14.0",
+      "scope": "catalog-baseline",
+      "status": "platform-exclusive",
+      "structured": {
+        "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-device-usage-observation",
+        "outputDiscriminator": "device-usage-summary",
+        "representedFields": [
+          "duration",
+          "totalScreenWakes",
+          "totalUnlocks",
+          "totalUnlockDuration"
+        ],
+        "graphContract": {
+          "requiredResources": [
+            "sensorkit-device-usage-observation",
+            "sensorkit-recording-document"
+          ],
+          "relationship": "The summary Observation.derivedFrom contains exactly one internal UUID reference to the native Recording Document in the same Grove Mobile collection Bundle.",
+          "sharedSourceIdentity": true
+        }
+      },
+      "raw": {
+        "status": "mapped-standard",
+        "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-recording-document",
+        "outputDiscriminator": "native-recording",
+        "requiredForFields": [
+          "version",
+          "appUsageByCategory",
+          "notificationUsageByCategory",
+          "webUsageByCategory"
+        ],
+        "encoding": "caller-supplied exact bytes",
+        "formats": [
+          "fhir-json-1",
+          "native-json-1"
+        ]
+      }
+    },
+    {
+      "sourceToken": "SRSensor.electrocardiogram",
+      "symbol": "SRSensorElectrocardiogram",
+      "identifier": "com.apple.SensorKit.ECG",
+      "sourceTypeCode": "ecg",
+      "title": "Electrocardiogram",
+      "documentation": "https://developer.apple.com/documentation/sensorkit/srsensor/electrocardiogram",
+      "minimumIOS": "17.4",
+      "scope": "catalog-baseline",
+      "status": "supported",
+      "structured": {
+        "sourceNeutralProfile": "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-ecg-observation",
+        "adapterProfile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-ecg-observation",
+        "outputDiscriminator": "ecg-waveform",
+        "representedFields": [
+          "startDate",
+          "duration",
+          "frequency",
+          "lead",
+          "guidance",
+          "voltage values",
+          "derived sample times"
+        ],
+        "admissionRule": "All batches form one complete uniform series at the exact reported frequency, one exact lead orientation is retained, and no voltage sample is omitted. Non-uniform, incomplete, mixed-lead, or inconsistent input fails closed.",
+        "graphContract": {
+          "requiredResources": [
+            "sensorkit-ecg-observation",
+            "sensorkit-recording-document"
+          ],
+          "relationship": "The ECG Observation.derivedFrom contains exactly one internal UUID reference to the native Recording Document in the same Grove Mobile collection Bundle.",
+          "sharedSourceIdentity": true
+        }
+      },
+      "raw": {
+        "status": "mapped-standard",
+        "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-recording-document",
+        "outputDiscriminator": "native-recording",
+        "requiredForFields": [
+          "session identifiers and states",
+          "per-voltage signalInvalid flag",
+          "per-voltage crownTouched flag",
+          "exact native batch structure"
+        ],
+        "encoding": "caller-supplied exact bytes",
+        "formats": [
+          "fhir-json-1",
+          "native-json-1"
+        ]
+      }
+    },
+    {
+      "sourceToken": "SRSensor.faceMetrics",
+      "symbol": "SRSensorFaceMetrics",
+      "identifier": "com.apple.SensorKit.faceMetrics",
+      "sourceTypeCode": "face-metrics",
+      "title": "Face metrics",
+      "documentation": "https://developer.apple.com/documentation/sensorkit/srsensor/facemetrics",
+      "minimumIOS": "17.0",
+      "scope": "catalog-baseline",
+      "status": "mapped-standard",
+      "structured": {
+        "status": "deferred",
+        "reason": "Version 0.3.0 publishes no reviewed structured profile for the heterogeneous face metrics."
+      },
+      "raw": {
+        "status": "mapped-standard",
+        "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-recording-document",
+        "outputDiscriminator": "native-recording",
+        "encoding": "caller-supplied exact bytes",
+        "formats": [
+          "native-json-1"
+        ],
+        "jsonSchema": {
+          "schemaId": "sensorkit-face-metrics-json",
+          "structure": "UTF-8; one JSON array of face-metrics records in source order; every declared field present; timestamps are seconds since the Unix epoch.",
+          "fields": [
+            {
+              "name": "timestamp",
+              "type": "number",
+              "unit": "s (Unix epoch)",
+              "optional": false,
+              "meaning": "Fetch-record delivery instant."
+            },
+            {
+              "name": "sessionIdentifier",
+              "type": "string",
+              "optional": false,
+              "meaning": "Camera session identifier."
+            },
+            {
+              "name": "version",
+              "type": "string",
+              "optional": false,
+              "meaning": "Face-metrics algorithm version."
+            },
+            {
+              "name": "context",
+              "type": "array(string)",
+              "optional": false,
+              "meaning": "Active SRFaceMetrics.Context option names; closed domain currently deviceUnlock and messagingAppUsage."
+            },
+            {
+              "name": "partialFaceExpressions",
+              "type": "array(object)",
+              "optional": false,
+              "meaning": "[{identifier: string, value: number}] from [SRFaceMetricsExpression]."
+            },
+            {
+              "name": "wholeFaceExpressions",
+              "type": "array(object)",
+              "optional": false,
+              "meaning": "[{identifier: string, value: number}] from [SRFaceMetricsExpression]."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "sourceToken": "SRSensor.heartRate",
+      "symbol": "SRSensorHeartRate",
+      "identifier": "com.apple.SensorKit.heart.rate",
+      "sourceTypeCode": "heart-rate",
+      "title": "High-frequency heart rate",
+      "documentation": "https://developer.apple.com/documentation/sensorkit/srsensor/heartrate",
+      "minimumIOS": "17.0",
+      "scope": "catalog-baseline",
+      "status": "mapped-standard",
+      "structured": {
+        "status": "deferred",
+        "reason": "Bare SampledData cannot preserve CMHighFrequencyHeartRateDataConfidence for each source point."
+      },
+      "raw": {
+        "status": "mapped-standard",
+        "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-recording-document",
+        "outputDiscriminator": "native-recording",
+        "encoding": "caller-supplied exact bytes",
+        "formats": [
+          "grove-csv-1"
+        ]
+      }
+    },
+    {
+      "sourceToken": "SRSensor.keyboardMetrics",
+      "symbol": "SRSensorKeyboardMetrics",
+      "identifier": "com.apple.SensorKit.keyboardMetrics",
+      "sourceTypeCode": "keyboard-metrics",
+      "title": "Keyboard metrics",
+      "documentation": "https://developer.apple.com/documentation/sensorkit/srsensor/keyboardmetrics",
+      "minimumIOS": "14.0",
+      "scope": "catalog-baseline",
+      "status": "platform-exclusive",
+      "structured": {
+        "status": "platform-exclusive",
+        "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-keyboard-metrics-observation",
+        "outputDiscriminator": "keyboard-metrics-summary"
+      },
+      "raw": {
+        "status": "mapped-standard",
+        "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-recording-document",
+        "outputDiscriminator": "native-recording",
+        "encoding": "caller-supplied exact bytes",
+        "formats": [
+          "native-json-1"
+        ],
+        "jsonSchema": {
+          "schemaId": "sensorkit-keyboard-metrics-json",
+          "structure": "UTF-8; one JSON array of per-keyboard report objects in source order; every declared field present; a distribution with no samples encodes an empty values array; timestamps are seconds since the Unix epoch.",
+          "fields": "Designer 1's field list adopted verbatim: timestamp, duration, keyboardIdentifier, version, width (mm), height (mm), inputModes, sessionIdentifiers, counts object with exactly the 19 Int properties, totalPathTime (s), totalPathLength (mm), totalTypingDuration (s), typingSpeed, pathTypingSpeed, durationMetrics object with exactly the 32 scalar ProbabilityMetric<UnitDuration> members, durationMetricArrays with exactly deleteToDeletes/longWordTouchDownUp/longWordTouchDownDown/longWordTouchUpDown, distanceMetrics with exactly the 8 scalar error-distance members, distanceMetricArrays with exactly longWordUpErrorDistance/longWordDownErrorDistance, pathErrorDistanceRatio, sentiments object with exactly the 10 SentimentCategory cases."
+        }
+      }
+    },
+    {
+      "sourceToken": "SRSensor.mediaEvents",
+      "symbol": "SRSensorMediaEvents",
+      "identifier": "com.apple.SensorKit.mediaEvents",
+      "sourceTypeCode": "media-events",
+      "title": "Media events",
+      "documentation": "https://developer.apple.com/documentation/sensorkit/srsensor/mediaevents",
+      "minimumIOS": "16.4",
+      "scope": "catalog-baseline",
+      "status": "mapped-standard",
+      "structured": {
+        "status": "deferred",
+        "reason": "Media interactions do not have a reviewed source-neutral clinical Observation representation in version 0.3.0."
+      },
+      "raw": {
+        "status": "mapped-standard",
+        "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-recording-document",
+        "outputDiscriminator": "native-recording",
+        "encoding": "caller-supplied exact bytes",
+        "formats": [
+          "native-json-1"
+        ],
+        "jsonSchema": {
+          "schemaId": "sensorkit-media-events-json",
+          "structure": "Same array, encoding, and timestamp conventions as sensorkit-messages-usage-json; one event object per source sample.",
+          "fields": [
+            {
+              "name": "timestamp",
+              "type": "number",
+              "unit": "s (Unix epoch)",
+              "optional": false,
+              "meaning": "Event instant from the fetch record."
+            },
+            {
+              "name": "mediaIdentifier",
+              "type": "string",
+              "optional": false,
+              "meaning": "Opaque Apple-assigned identifier correlating on/off-screen pairs; carries no media content or URL, but enables longitudinal linkage of media items and must never leave the raw document."
+            },
+            {
+              "name": "eventType",
+              "type": "string",
+              "optional": false,
+              "meaning": "SRMediaEventType case name; closed domain exactly onScreen or offScreen."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "sourceToken": "SRSensor.messagesUsageReport",
+      "symbol": "SRSensorMessagesUsageReport",
+      "identifier": "com.apple.SensorKit.messagesUsageReport",
+      "sourceTypeCode": "messages-usage",
+      "title": "Messages usage report",
+      "documentation": "https://developer.apple.com/documentation/sensorkit/srsensor/messagesusagereport",
+      "minimumIOS": "14.0",
+      "scope": "catalog-baseline",
+      "status": "platform-exclusive",
+      "structured": {
+        "status": "platform-exclusive",
+        "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-messages-usage-observation",
+        "outputDiscriminator": "messages-usage-summary"
+      },
+      "raw": {
+        "status": "mapped-standard",
+        "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-recording-document",
+        "outputDiscriminator": "native-recording",
+        "encoding": "caller-supplied exact bytes",
+        "formats": [
+          "native-json-1"
+        ],
+        "jsonSchema": {
+          "schemaId": "sensorkit-messages-usage-json",
+          "structure": "UTF-8; one JSON array of report objects in source order; one document per stream per batch; empty batch emits no document; every declared field present; timestamps are seconds since the Unix epoch as JSON numbers.",
+          "fields": [
+            {
+              "name": "timestamp",
+              "type": "number",
+              "unit": "s (Unix epoch)",
+              "optional": false,
+              "meaning": "Report anchor instant from the SRFetchResult delivery record; the report interval is [timestamp, timestamp + duration]."
+            },
+            {
+              "name": "duration",
+              "type": "number",
+              "unit": "s",
+              "optional": false,
+              "meaning": "Duration the report spans (SRMessagesUsageReport.duration)."
+            },
+            {
+              "name": "totalIncomingMessages",
+              "type": "integer",
+              "optional": false,
+              "meaning": "Messages received in the interval."
+            },
+            {
+              "name": "totalOutgoingMessages",
+              "type": "integer",
+              "optional": false,
+              "meaning": "Messages sent in the interval."
+            },
+            {
+              "name": "totalUniqueContacts",
+              "type": "integer",
+              "optional": false,
+              "meaning": "Distinct contacts messaged in the interval; a count only, no identities."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "sourceToken": "SRSensor.odometer",
+      "symbol": "SRSensorOdometer",
+      "identifier": "com.apple.SensorKit.odometer",
+      "sourceTypeCode": "odometer",
+      "title": "Odometer",
+      "documentation": "https://developer.apple.com/documentation/sensorkit/srsensor/odometer",
+      "minimumIOS": "17.0",
+      "scope": "catalog-baseline",
+      "status": "mapped-standard",
+      "structured": {
+        "status": "deferred",
+        "reason": "Speed, slope, and motion fields are heterogeneous and are not a shared Mobile distance total."
+      },
+      "raw": {
+        "status": "mapped-standard",
+        "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-recording-document",
+        "outputDiscriminator": "native-recording",
+        "encoding": "caller-supplied exact bytes",
+        "formats": [
+          "grove-csv-1"
+        ]
+      }
+    },
+    {
+      "sourceToken": "SRSensor.onWristState",
+      "symbol": "SRSensorOnWristState",
+      "identifier": "com.apple.SensorKit.onWristState",
+      "sourceTypeCode": "on-wrist",
+      "title": "On-wrist state",
+      "documentation": "https://developer.apple.com/documentation/sensorkit/srsensor/onwriststate",
+      "minimumIOS": "14.0",
+      "scope": "catalog-baseline",
+      "status": "platform-exclusive",
+      "structured": {
+        "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-on-wrist-observation",
+        "outputDiscriminator": "on-wrist",
+        "representedFields": [
+          "onWrist",
+          "wristLocation",
+          "crownOrientation",
+          "currentStateStart",
+          "timestamp"
+        ],
+        "rule": "Use onWristDate only when onWrist is true and offWristDate only when onWrist is false; the stale opposite-state date must not bracket the current state."
+      },
+      "raw": {
+        "status": "mapped-standard",
+        "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-recording-document",
+        "outputDiscriminator": "native-recording",
+        "encoding": "caller-supplied exact bytes",
+        "formats": [
+          "fhir-json-1",
+          "native-json-1"
+        ]
+      }
+    },
+    {
+      "sourceToken": "SRSensor.pedometerData",
+      "symbol": "SRSensorPedometerData",
+      "identifier": "com.apple.SensorKit.pedometer.data",
+      "sourceTypeCode": "pedometer",
+      "title": "Pedometer data",
+      "documentation": "https://developer.apple.com/documentation/sensorkit/srsensor/pedometerdata",
+      "minimumIOS": "14.0",
+      "scope": "catalog-baseline",
+      "status": "mapped-standard",
+      "structured": {
+        "status": "deferred",
+        "reason": "The composite pedometer record contains multiple aggregates and is not automatically one shared step-count result."
+      },
+      "raw": {
+        "status": "mapped-standard",
+        "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-recording-document",
+        "outputDiscriminator": "native-recording",
+        "encoding": "caller-supplied exact bytes",
+        "formats": [
+          "grove-csv-1"
+        ]
+      }
+    },
+    {
+      "sourceToken": "SRSensor.phoneUsageReport",
+      "symbol": "SRSensorPhoneUsageReport",
+      "identifier": "com.apple.SensorKit.phoneUsageReport",
+      "sourceTypeCode": "phone-usage",
+      "title": "Phone usage report",
+      "documentation": "https://developer.apple.com/documentation/sensorkit/srsensor/phoneusagereport",
+      "minimumIOS": "14.0",
+      "scope": "catalog-baseline",
+      "status": "platform-exclusive",
+      "structured": {
+        "status": "platform-exclusive",
+        "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-phone-usage-observation",
+        "outputDiscriminator": "phone-usage-summary"
+      },
+      "raw": {
+        "status": "mapped-standard",
+        "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-recording-document",
+        "outputDiscriminator": "native-recording",
+        "encoding": "caller-supplied exact bytes",
+        "formats": [
+          "native-json-1"
+        ],
+        "jsonSchema": {
+          "schemaId": "sensorkit-phone-usage-json",
+          "structure": "Same array, encoding, and timestamp conventions as sensorkit-messages-usage-json.",
+          "fields": [
+            {
+              "name": "timestamp",
+              "type": "number",
+              "unit": "s (Unix epoch)",
+              "optional": false,
+              "meaning": "Report anchor instant from the SRFetchResult delivery record."
+            },
+            {
+              "name": "duration",
+              "type": "number",
+              "unit": "s",
+              "optional": false,
+              "meaning": "Duration the report spans."
+            },
+            {
+              "name": "totalIncomingCalls",
+              "type": "integer",
+              "optional": false,
+              "meaning": "Calls received."
+            },
+            {
+              "name": "totalOutgoingCalls",
+              "type": "integer",
+              "optional": false,
+              "meaning": "Calls made."
+            },
+            {
+              "name": "totalPhoneCallDuration",
+              "type": "number",
+              "unit": "s",
+              "optional": false,
+              "meaning": "Total duration of all calls."
+            },
+            {
+              "name": "totalUniqueContacts",
+              "type": "integer",
+              "optional": false,
+              "meaning": "Distinct contacts; a count only."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "sourceToken": "SRSensor.photoplethysmogram",
+      "symbol": "SRSensorPhotoplethysmogram",
+      "identifier": "com.apple.SensorKit.PPG",
+      "sourceTypeCode": "ppg",
+      "title": "Photoplethysmogram",
+      "documentation": "https://developer.apple.com/documentation/sensorkit/srsensor/photoplethysmogram",
+      "minimumIOS": "17.4",
+      "scope": "catalog-baseline",
+      "status": "platform-exclusive",
+      "structured": {
+        "status": "platform-exclusive",
+        "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-ppg-observation",
+        "outputDiscriminator": "ppg-recording-summary"
+      },
+      "raw": {
+        "status": "mapped-standard",
+        "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-recording-document",
+        "outputDiscriminator": "native-recording",
+        "encoding": "caller-supplied exact bytes",
+        "formats": [
+          "grove-ppg-1"
+        ]
+      }
+    },
+    {
+      "sourceToken": "SRSensor.rotationRate",
+      "symbol": "SRSensorRotationRate",
+      "identifier": "com.apple.SensorKit.motion.gyroscope",
+      "sourceTypeCode": "rotation-rate",
+      "title": "Rotation rate",
+      "documentation": "https://developer.apple.com/documentation/sensorkit/srsensor/rotationrate",
+      "minimumIOS": "14.0",
+      "scope": "catalog-baseline",
+      "status": "supported",
+      "structured": {
+        "sourceNeutralProfile": "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-sampled-data-observation",
+        "adapterProfile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-observation",
+        "outputDiscriminator": "sampled-data",
+        "dimensions": 3,
+        "ucumCode": "rad/s",
+        "condition": "All x/y/z values and timestamps are present and prove one exact uniform period; otherwise emit only a Recording Document."
+      },
+      "raw": {
+        "status": "mapped-standard",
+        "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-recording-document",
+        "outputDiscriminator": "native-recording",
+        "encoding": "caller-supplied exact bytes",
+        "formats": [
+          "grove-csv-1"
+        ]
+      }
+    },
+    {
+      "sourceToken": "SRSensor.siriSpeechMetrics",
+      "symbol": "SRSensorSiriSpeechMetrics",
+      "identifier": "com.apple.SensorKit.speechMetrics.siri",
+      "sourceTypeCode": "siri-speech-metrics",
+      "title": "Siri speech metrics",
+      "documentation": "https://developer.apple.com/documentation/sensorkit/srsensor/sirispeechmetrics",
+      "minimumIOS": "15.0",
+      "scope": "catalog-baseline",
+      "status": "mapped-standard",
+      "structured": {
+        "status": "deferred",
+        "reason": "Speech metrics have no reviewed source-neutral clinical Observation representation in version 0.3.0."
+      },
+      "raw": {
+        "status": "mapped-standard",
+        "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-recording-document",
+        "outputDiscriminator": "native-recording",
+        "encoding": "caller-supplied exact bytes",
+        "formats": [
+          "native-json-1"
+        ],
+        "jsonSchema": {
+          "schemaId": "sensorkit-speech-metrics-json",
+          "structure": "UTF-8; one JSON array of speech-metrics records in source order; every declared field present; absent values encode as null; timestamps are seconds since the Unix epoch; CMTimeRange encodes as {\"start\": number s, \"duration\": number s}.",
+          "fields": [
+            {
+              "name": "timestamp",
+              "type": "number",
+              "unit": "s (Unix epoch)",
+              "optional": false,
+              "meaning": "Fetch-record delivery instant (SRFetchResult.timestamp); always present on every supported OS."
+            },
+            {
+              "name": "speechTimestamp",
+              "type": "number|null",
+              "unit": "s (Unix epoch)",
+              "optional": true,
+              "meaning": "When the speech occurs (SRSpeechMetrics.timestamp); null on records from OS versions before its introduction."
+            },
+            {
+              "name": "sessionIdentifier",
+              "type": "string|null",
+              "optional": true,
+              "meaning": "Audio session identifier; null before its introduction."
+            },
+            {
+              "name": "sessionFlags",
+              "type": "array(string)|null",
+              "optional": true,
+              "meaning": "Active SessionFlags option names; closed domain currently exactly [\"bypassVoiceProcessing\"]; null before its introduction."
+            },
+            {
+              "name": "timeSinceAudioStart",
+              "type": "number",
+              "unit": "s",
+              "optional": false,
+              "meaning": "Seconds since the audio stream start."
+            },
+            {
+              "name": "audioLevel",
+              "type": "object|null",
+              "optional": true,
+              "meaning": "{timeRange: {start s, duration s}, loudness: number (decibels, no Apple-defined reference level)}."
+            },
+            {
+              "name": "speechExpression",
+              "type": "object|null",
+              "optional": true,
+              "meaning": "{timeRange, version: string, confidence, mood, valence, activation, dominance: dimensionless model scores}."
+            },
+            {
+              "name": "speechRecognitionMetadata",
+              "type": "object|null",
+              "optional": true,
+              "meaning": "{speakingRate: number (words per minute), averagePauseDuration: number s, speechStartTimestamp: number s, speechDuration: number s, voiceAnalytics: {voicing, pitch, jitter, shimmer: each {frameDuration: number s, values: [number]}}|null} — the content-free projection of SFSpeechRecognitionResult.speechRecognitionMetadata."
+            },
+            {
+              "name": "soundClassification",
+              "type": "object|null",
+              "optional": true,
+              "meaning": "{timeRange, classifications: [{identifier: string, confidence: number}]} — model labels, not audio."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "sourceToken": "SRSensor.sleepSessions",
+      "symbol": "SRSensorSleepSessions",
+      "identifier": "com.apple.SensorKit.sleep.sessions",
+      "sourceTypeCode": "sleep-sessions",
+      "title": "Sleep sessions",
+      "documentation": "https://developer.apple.com/documentation/sensorkit/srsensor/sleepsessions",
+      "minimumIOS": "26.0",
+      "scope": "stable-addition",
+      "status": "platform-exclusive",
+      "structured": {
+        "status": "platform-exclusive",
+        "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-sleep-session-observation",
+        "outputDiscriminator": "sleep-session"
+      }
+    },
+    {
+      "sourceToken": "SRSensor.telephonySpeechMetrics",
+      "symbol": "SRSensorTelephonySpeechMetrics",
+      "identifier": "com.apple.SensorKit.speechMetrics.telephony",
+      "sourceTypeCode": "telephony-speech-metrics",
+      "title": "Telephony speech metrics",
+      "documentation": "https://developer.apple.com/documentation/sensorkit/srsensor/telephonyspeechmetrics",
+      "minimumIOS": "15.0",
+      "scope": "catalog-baseline",
+      "status": "mapped-standard",
+      "structured": {
+        "status": "deferred",
+        "reason": "Speech metrics have no reviewed source-neutral clinical Observation representation in version 0.3.0."
+      },
+      "raw": {
+        "status": "mapped-standard",
+        "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-recording-document",
+        "outputDiscriminator": "native-recording",
+        "encoding": "caller-supplied exact bytes",
+        "formats": [
+          "native-json-1"
+        ]
+      }
+    },
+    {
+      "sourceToken": "SRSensor.visits",
+      "symbol": "SRSensorVisits",
+      "identifier": "com.apple.SensorKit.visits",
+      "sourceTypeCode": "visits",
+      "title": "Visits",
+      "documentation": "https://developer.apple.com/documentation/sensorkit/srsensor/visits",
+      "minimumIOS": "14.0",
+      "scope": "catalog-baseline",
+      "status": "platform-exclusive",
+      "structured": {
+        "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-visit-observation",
+        "outputDiscriminator": "visit-summary",
+        "representedFields": [
+          "locationCategory",
+          "distanceFromHome",
+          "arrivalDateInterval",
+          "departureDateInterval"
+        ],
+        "rule": "The widest arrival-start through departure-end Period is the effective interval; exact arrival and departure uncertainty windows remain separate Period components. This output does not assert a clinical Encounter or expose locationId."
+      },
+      "raw": {
+        "status": "mapped-standard",
+        "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-recording-document",
+        "outputDiscriminator": "native-recording",
+        "encoding": "caller-supplied exact bytes",
+        "formats": [
+          "fhir-json-1",
+          "native-json-1"
+        ]
+      }
+    },
+    {
+      "sourceToken": "SRSensor.wristTemperature",
+      "symbol": "SRSensorWristTemperature",
+      "identifier": "com.apple.SensorKit.wristTemperature",
+      "sourceTypeCode": "wrist-temperature",
+      "title": "Wrist temperature",
+      "documentation": "https://developer.apple.com/documentation/sensorkit/srsensor/wristtemperature",
+      "minimumIOS": "17.0",
+      "scope": "catalog-baseline",
+      "status": "mapped-standard",
+      "structured": {
+        "status": "deferred",
+        "reason": "A wrist-temperature session is not automatically the shared body-temperature or basal-body-temperature meaning."
+      },
+      "raw": {
+        "status": "mapped-standard",
+        "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-recording-document",
+        "outputDiscriminator": "native-recording",
+        "encoding": "caller-supplied exact bytes",
+        "formats": [
+          "grove-csv-1"
+        ]
+      }
+    }
+  ]
+}

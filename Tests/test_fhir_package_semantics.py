@@ -930,7 +930,7 @@ class FHIRPackageSemanticTests(unittest.TestCase):
     def test_canonical_resources_align_across_versions(self) -> None:
         first_resources = self._resources()
         second_resources = deepcopy(first_resources)
-        second_resources["StructureDefinition-grove-observation.json"]["version"] = "0.2.0"
+        second_resources["StructureDefinition-grove-observation.json"]["version"] = "0.3.0"
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             before = SNAPSHOT.create_snapshot(

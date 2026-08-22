@@ -1,0 +1,135 @@
+{
+  "oracle": {
+    "artifact": "androidx.health.connect:connect-client:1.1.0",
+    "filter": "Top-level classes in androidx.health.connect.client.records whose name ends in Record, excluding the abstract supertypes Record, InstantaneousRecord, IntervalRecord, and SeriesRecord.",
+    "kind": "androidx-published-artifact",
+    "retrieved": "2026-08-21",
+    "sha256": "ce1601af0ef671ec6a76b0f29d2af22acc578e408c7107d08ea23067d3822593"
+  },
+  "records": {
+    "ActiveCaloriesBurnedRecord": {
+      "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/ActiveCaloriesBurnedRecord"
+    },
+    "BasalBodyTemperatureRecord": {
+      "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/BasalBodyTemperatureRecord"
+    },
+    "BasalMetabolicRateRecord": {
+      "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/BasalMetabolicRateRecord"
+    },
+    "BloodGlucoseRecord": {
+      "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/BloodGlucoseRecord"
+    },
+    "BloodPressureRecord": {
+      "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/BloodPressureRecord"
+    },
+    "BodyFatRecord": {
+      "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/BodyFatRecord"
+    },
+    "BodyTemperatureRecord": {
+      "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/BodyTemperatureRecord"
+    },
+    "BodyWaterMassRecord": {
+      "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/BodyWaterMassRecord"
+    },
+    "BoneMassRecord": {
+      "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/BoneMassRecord"
+    },
+    "CervicalMucusRecord": {
+      "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/CervicalMucusRecord"
+    },
+    "CyclingPedalingCadenceRecord": {
+      "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/CyclingPedalingCadenceRecord"
+    },
+    "DistanceRecord": {
+      "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/DistanceRecord"
+    },
+    "ElevationGainedRecord": {
+      "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/ElevationGainedRecord"
+    },
+    "ExerciseSessionRecord": {
+      "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/ExerciseSessionRecord"
+    },
+    "FloorsClimbedRecord": {
+      "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/FloorsClimbedRecord"
+    },
+    "HeartRateRecord": {
+      "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/HeartRateRecord"
+    },
+    "HeartRateVariabilityRmssdRecord": {
+      "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/HeartRateVariabilityRmssdRecord"
+    },
+    "HeightRecord": {
+      "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/HeightRecord"
+    },
+    "HydrationRecord": {
+      "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/HydrationRecord"
+    },
+    "IntermenstrualBleedingRecord": {
+      "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/IntermenstrualBleedingRecord"
+    },
+    "LeanBodyMassRecord": {
+      "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/LeanBodyMassRecord"
+    },
+    "MenstruationFlowRecord": {
+      "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/MenstruationFlowRecord"
+    },
+    "MenstruationPeriodRecord": {
+      "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/MenstruationPeriodRecord"
+    },
+    "MindfulnessSessionRecord": {
+      "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/MindfulnessSessionRecord"
+    },
+    "NutritionRecord": {
+      "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/NutritionRecord"
+    },
+    "OvulationTestRecord": {
+      "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/OvulationTestRecord"
+    },
+    "OxygenSaturationRecord": {
+      "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/OxygenSaturationRecord"
+    },
+    "PlannedExerciseSessionRecord": {
+      "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/PlannedExerciseSessionRecord"
+    },
+    "PowerRecord": {
+      "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/PowerRecord"
+    },
+    "RespiratoryRateRecord": {
+      "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/RespiratoryRateRecord"
+    },
+    "RestingHeartRateRecord": {
+      "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/RestingHeartRateRecord"
+    },
+    "SexualActivityRecord": {
+      "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/SexualActivityRecord"
+    },
+    "SkinTemperatureRecord": {
+      "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/SkinTemperatureRecord"
+    },
+    "SleepSessionRecord": {
+      "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/SleepSessionRecord"
+    },
+    "SpeedRecord": {
+      "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/SpeedRecord"
+    },
+    "StepsCadenceRecord": {
+      "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/StepsCadenceRecord"
+    },
+    "StepsRecord": {
+      "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/StepsRecord"
+    },
+    "TotalCaloriesBurnedRecord": {
+      "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/TotalCaloriesBurnedRecord"
+    },
+    "Vo2MaxRecord": {
+      "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/Vo2MaxRecord"
+    },
+    "WeightRecord": {
+      "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/WeightRecord"
+    },
+    "WheelchairPushesRecord": {
+      "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/WheelchairPushesRecord"
+    }
+  },
+  "schemaVersion": 1
+}

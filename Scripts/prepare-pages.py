@@ -103,6 +103,49 @@ def load_configuration(path: Path) -> dict[str, Any]:
         raise ValueError("publication/config.json must declare at least one guide")
     if configuration.get("releaseMode") not in {"ci-build-only", "immutable-releases"}:
         raise ValueError("publication/config.json must declare a supported releaseMode")
+
+    sources: set[str] = set()
+    canonical_paths: set[str] = set()
+    for index, guide in enumerate(configuration["guides"]):
+        if not isinstance(guide, dict):
+            raise ValueError(f"publication guide[{index}] must be an object")
+        source = guide.get("source")
+        canonical = guide.get("canonicalPath")
+        if not isinstance(source, str) or not isinstance(canonical, str):
+            raise ValueError(
+                f"publication guide[{index}] must declare string source and canonicalPath"
+            )
+        source_path = safe_relative_path(source, f"guide[{index}] source").as_posix()
+        canonical_path = safe_relative_path(
+            canonical, f"guide[{index}] canonicalPath"
+        ).as_posix()
+        if source_path in sources:
+            raise ValueError(f"publication guide source is repeated: {source_path}")
+        if canonical_path in canonical_paths:
+            raise ValueError(
+                f"publication canonicalPath is repeated: {canonical_path}"
+            )
+        sources.add(source_path)
+        canonical_paths.add(canonical_path)
+
+    aliases: set[str] = set()
+    for index, guide in enumerate(configuration["guides"]):
+        declared_aliases = guide.get("aliases", [])
+        if not isinstance(declared_aliases, list) or not all(
+            isinstance(alias, str) for alias in declared_aliases
+        ):
+            raise ValueError(f"publication guide[{index}] aliases must be strings")
+        for alias in declared_aliases:
+            alias_path = safe_relative_path(
+                alias, f"guide[{index}] alias", allow_empty=True
+            ).as_posix()
+            if alias_path in canonical_paths:
+                raise ValueError(
+                    f"publication alias collides with canonicalPath: {alias_path}"
+                )
+            if alias_path in aliases:
+                raise ValueError(f"publication alias is repeated: {alias_path}")
+            aliases.add(alias_path)
     return configuration
 
 
@@ -146,6 +189,31 @@ def replace_build_locations(
     for local, public in sorted(replacements, key=lambda item: len(item[0]), reverse=True):
         rewritten = rewritten.replace(local, public)
     return rewritten.replace(str(repository_root), source_url)
+
+
+def rewrite_authored_canonical_links(
+    text: str,
+    canonical_public_urls: dict[str, str],
+) -> str:
+    """Repoint authored canonical hyperlinks at the host being assembled.
+
+    Only link attributes are rewritten; canonical URLs elsewhere (resource
+    identity, narrative text, JSON payloads) are left untouched.
+    """
+    ordered = sorted(
+        canonical_public_urls.items(), key=lambda item: len(item[0]), reverse=True
+    )
+    # Two phases so a longer mapping (a guide's history page) shields its match
+    # from a shorter one (the guide prefix) even when the longer one is identity.
+    placeholders: list[tuple[str, str]] = []
+    for index, (canonical, public) in enumerate(ordered):
+        token = f"\x00authored-link-{index}\x00"
+        for quote in ('"', "'"):
+            text = text.replace(f"href={quote}{canonical}", f"href={quote}{token}")
+        placeholders.append((token, public))
+    for token, public in placeholders:
+        text = text.replace(token, public)
+    return text
 
 
 def read_package_metadata(path: Path) -> dict[str, Any]:
@@ -506,6 +574,7 @@ def prepare_guide(
     canonical: str,
     history_url: str,
     source_date_epoch: int,
+    canonical_public_urls: dict[str, str] | None = None,
 ) -> None:
     # package.db is Publisher's local package-cache database. It is not part of
     # an IG publication and embeds absolute build paths, so it must never reach
@@ -521,6 +590,8 @@ def prepare_guide(
             rewritten = replace_build_locations(text, repository_root, public_urls, source_url)
             rewritten = rewritten.replace(f"{canonical}/history.html", history_url)
             rewritten = rewritten.replace("Local Development build", "Continuous Build")
+            if canonical_public_urls and path.suffix == ".html":
+                rewritten = rewrite_authored_canonical_links(rewritten, canonical_public_urls)
             path.write_text(rewritten, encoding="utf-8")
 
     for archive in stage.glob("package*.tgz"):
@@ -571,6 +642,13 @@ def assemble_site(
     site.mkdir(parents=True)
     (site / ".nojekyll").touch()
 
+    catalog_source = repository_root / "catalog"
+    if catalog_source.is_dir():
+        catalog_destination = site / "catalog"
+        catalog_destination.mkdir()
+        for catalog_file in sorted(catalog_source.glob("*.json")):
+            shutil.copy2(catalog_file, catalog_destination / catalog_file.name)
+
     if published_root is not None:
         published_root = published_root.resolve()
         published_fhir = published_root / "fhir"
@@ -596,6 +674,18 @@ def assemble_site(
         guide["source"]: f"{base_url}/{guide['canonicalPath']}/ci-build"
         for guide in guides
     }
+    canonical_base = str(configuration["canonicalBaseUrl"]).rstrip("/")
+    canonical_public_urls = {
+        f"{canonical_base}/{guide['canonicalPath']}": public_urls[guide["source"]]
+        for guide in guides
+    }
+    # History pages live at each guide root, not under ci-build; the longer key
+    # wins over the guide prefix during longest-first replacement.
+    for guide in guides:
+        canonical_public_urls[
+            f"{canonical_base}/{guide['canonicalPath']}/history.html"
+        ] = f"{base_url}/{guide['canonicalPath']}/history.html"
+    canonical_public_urls[f"{canonical_base}/catalog/"] = f"{base_url}/catalog/"
     source_url = f"{configuration['sourceRepository']}/tree/{revision}"
     redirect_generator = load_redirect_generator(repository_root)
 
@@ -636,6 +726,7 @@ def assemble_site(
                 canonical,
                 history_url,
                 source_date_epoch,
+                canonical_public_urls,
             )
             metadata = read_package_metadata(stage / "package.tgz")
             if metadata.get("url") != canonical:

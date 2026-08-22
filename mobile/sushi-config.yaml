@@ -7,21 +7,20 @@
 #
 
 id: org.grovealliance.fhir.mobile
-canonical: https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile
+canonical: https://grovealliance.org/fhir/mobile
 name: GroveFHIRMobile
 title: Grove FHIR Mobile
 description: >-
   FHIR R4 profiles and examples for exchanging measurements collected by mobile
   applications and connected devices.
 status: draft
-version: 0.1.0
+version: 0.3.0
 fhirVersion: 4.0.1
 copyrightYear: 2026+
 releaseLabel: ci-build
 publisher:
   name: Schmiedmayer Lab
   url: https://github.com/SchmiedmayerLab
-jurisdiction: http://unstats.un.org/unsd/methods/m49/m49.htm#001 "World"
 license: MIT
 
 # The R4 core package contains observation-gatewayDevice and
@@ -33,14 +32,18 @@ dependencies:
 
 menu:
   Overview: index.html
+  Guides: guides.html
   Observations: observations.html
   Devices and provenance: devices.html
   Study context: study.html
   Implement and validate: implementation.html
+  Artifacts: artifacts.html
 
 pages:
   index.md:
     title: Overview
+  guides.md:
+    title: The Grove FHIR guides
   observations.md:
     title: Observations
   devices.md:

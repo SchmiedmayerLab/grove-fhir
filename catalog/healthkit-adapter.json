@@ -1,0 +1,3388 @@
+{
+  "schemaVersion": 1,
+  "fhirVersion": "4.0.1",
+  "version": "0.3.0",
+  "source": {
+    "platform": "Apple HealthKit",
+    "sdkBaseline": {
+      "platform": "iPhoneOS",
+      "version": "26.5",
+      "xcodeVersion": "26.6",
+      "xcodeBuild": "17F113"
+    },
+    "accessed": "2026-08-21",
+    "inventory": "Every source-type identifier the stated SDK baseline hands back at runtime, read inside an iOS simulator on that baseline. Derived aggregation contracts are listed separately and are not platform source types.",
+    "rowScope": "rows contains exactly the runtime source-type identifiers of the stated SDK baseline, one row per identifier, and derived mappings are excluded and declared separately; where Apple declares more than one constant for an identifier, every declaring name is listed in symbols.",
+    "evidence": [
+      {
+        "kind": "platform-documentation",
+        "url": "https://developer.apple.com/documentation/healthkit/data-types",
+        "scope": "HealthKit data-type families and public source concepts"
+      },
+      {
+        "kind": "platform-runtime-inventory",
+        "path": "healthkit/input/data/healthkit-inventory.json",
+        "scope": "Runtime identifiers, their declaring constants, and canonical documentation pages"
+      },
+      {
+        "kind": "sdk-provenance",
+        "path": "healthkit/input/data/terminology-provenance.json",
+        "scope": "Exact SDK baseline, retained source terminology, and source-file hashes"
+      }
+    ],
+    "rowCount": 218,
+    "derivedAggregateCount": 1
+  },
+  "producerCanonicalization": {
+    "mobileEffectiveContract": "catalog/measurement-catalog.json#effectiveCanonicalization",
+    "effectivePrecision": "millisecond",
+    "effectiveRounding": "half-even",
+    "scalarQuantityDecimal": "shortest-round-trip",
+    "identityPreimages": "unmodified",
+    "sensorAndEcgTiming": "excluded"
+  },
+  "sourceTypeCoding": {
+    "system": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-source-type",
+    "element": "Observation.code.coding",
+    "cardinality": "exactly one",
+    "rule": "Every admitted HealthKit Observation preserves its exact sourceTypeIdentifier as an additional provider coding; the shared or authoritative standard coding remains the normative result meaning."
+  },
+  "conversionProvenanceProfile": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-conversion-provenance",
+  "statusVocabulary": {
+    "supported": "The 0.3.0 HealthKit adapter defines and validates emitted FHIR output.",
+    "mapped-standard": "The source is represented by another exact Grove or authoritative standard package rather than a Mobile measurement profile.",
+    "platform-exclusive": "The 0.3.0 adapter defines output through a platform-exclusive HealthKit profile whose meaning remains HealthKit-specific.",
+    "unmodeled": "The source type is inventoried, but no shared or HealthKit-scoped profile models it and no output is admitted.",
+    "deferred": "No FHIR output for this source type is admitted by the 0.3.0 adapter.",
+    "intentionally-unsupported": "The 0.3.0 contract explicitly rejects this source meaning rather than approximating it."
+  },
+  "standardAdapterClaims": {
+    "body-mass-index": {
+      "claimMode": "exactly-standard-plus-adapter",
+      "profiles": [
+        "http://hl7.org/fhir/StructureDefinition/bmi",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-observation"
+      ],
+      "code": {
+        "system": "http://loinc.org",
+        "code": "39156-5"
+      },
+      "quantity": {
+        "system": "http://unitsofmeasure.org",
+        "code": "kg/m2",
+        "unit": "kg/m2"
+      },
+      "effective": "dateTime",
+      "reason": "FHIR R4 already publishes an authoritative BMI profile; a one-source Grove Mobile wrapper would duplicate it."
+    }
+  },
+  "sensorAdapterClaims": {
+    "electrocardiogram": {
+      "claimMode": "exactly-sensor-plus-adapter",
+      "profiles": [
+        "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-ecg-observation",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-observation"
+      ],
+      "sourceTypeIdentifier": "HKDataTypeIdentifierElectrocardiogram",
+      "sourceLead": "HKElectrocardiogram.Lead.appleWatchSimilarToLeadI",
+      "leadCode": {
+        "system": "urn:iso:std:iso:11073:10101",
+        "code": "131329",
+        "display": "MDC_ECG_ELEC_POTL_I"
+      },
+      "quantity": {
+        "system": "http://unitsofmeasure.org",
+        "code": "mV",
+        "unit": "mV"
+      },
+      "callerEvidence": [
+        "HKElectrocardiogram",
+        "all HKElectrocardiogram.VoltageMeasurement values and timeSinceSampleStart offsets",
+        "the exact associated HKCategorySample objects when symptomsStatus is present"
+      ],
+      "requiredContext": [
+        "classification",
+        "symptomsStatus",
+        "numberOfVoltageMeasurements",
+        "HKElectrocardiogram.startDate/endDate"
+      ],
+      "optionalContext": [
+        "averageHeartRate",
+        "samplingFrequency",
+        "HKMetadataKeyAppleECGAlgorithmVersion"
+      ],
+      "correlatedSymptomEvidence": {
+        "url": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-correlated-symptom",
+        "cardinality": "0..7",
+        "children": [
+          {
+            "url": "sourceIdentifier",
+            "type": "Identifier",
+            "meaning": "Exact HKCategorySample UUID under the HealthKit object NamingSystem"
+          },
+          {
+            "url": "effectivePeriod",
+            "type": "Period",
+            "meaning": "Exact HKCategorySample startDate/endDate"
+          },
+          {
+            "url": "symptomType",
+            "type": "code",
+            "meaning": "Exact admitted HealthKit symptom category identifier"
+          },
+          {
+            "url": "severity",
+            "type": "code",
+            "meaning": "Exact admitted HealthKit symptom severity"
+          },
+          {
+            "url": "sourceName",
+            "type": "string",
+            "cardinality": "1..1",
+            "meaning": "Exact HKSourceRevision.source.name"
+          },
+          {
+            "url": "sourceBundleIdentifier",
+            "type": "string",
+            "cardinality": "1..1",
+            "meaning": "Exact HKSourceRevision.source.bundleIdentifier"
+          },
+          {
+            "url": "sourceVersion",
+            "type": "string",
+            "cardinality": "0..1",
+            "meaning": "Exact HKSourceRevision.version when present"
+          },
+          {
+            "url": "sourceProductType",
+            "type": "string",
+            "cardinality": "0..1",
+            "meaning": "Exact HKSourceRevision.productType when present"
+          },
+          {
+            "url": "sourceOperatingSystemMajorVersion",
+            "type": "integer",
+            "cardinality": "1..1",
+            "meaning": "Exact HKSourceRevision.operatingSystemVersion.majorVersion"
+          },
+          {
+            "url": "sourceOperatingSystemMinorVersion",
+            "type": "integer",
+            "cardinality": "1..1",
+            "meaning": "Exact HKSourceRevision.operatingSystemVersion.minorVersion"
+          },
+          {
+            "url": "sourceOperatingSystemPatchVersion",
+            "type": "integer",
+            "cardinality": "1..1",
+            "meaning": "Exact HKSourceRevision.operatingSystemVersion.patchVersion"
+          }
+        ]
+      },
+      "sourceRevisionDisclosure": {
+        "requiredProducerInput": "explicitly-authorized",
+        "failureRule": "Without explicit caller authorization to disclose every correlated symptom HKSourceRevision field, the structured HealthKit ECG output is not admitted and conversion fails closed.",
+        "scope": "Authorization is producer input and is not encoded as a FHIR consent or authorization assertion."
+      },
+      "effectiveRule": "Observation.effectivePeriod starts at HKElectrocardiogram.startDate plus the exact first timeSinceSampleStart and ends at the exact last supplied voltage instant. The required healthkit-ecg-source-period extension separately preserves the HKElectrocardiogram startDate/endDate.",
+      "admissionRule": "The caller supplies already-obtained evidence. The supplied voltage count equals numberOfVoltageMeasurements; offsets are complete, unique, sorted, and satisfy offset[i] = offset[0] + i * SampledData.period exactly; every voltage is present; and samplingFrequency, when reported, equals 1000 / period in milliseconds exactly. Every associated symptom is supplied as its exact HKCategorySample UUID, start/end, type, severity, and complete HKSourceRevision fields. Symptom UUIDs are unique; distinct samples with the same symptom type remain distinct and are admitted. Missing, non-uniform, duplicate-UUID, resampled, or inconsistent evidence fails closed; the adapter performs no HealthKit query."
+    }
+  },
+  "derivedAggregates": [
+    {
+      "id": "sleep-duration-session-aggregate",
+      "title": "Sleep Duration Session Aggregate",
+      "sourceTypeIdentifiers": [
+        "HKCategoryTypeIdentifierSleepAnalysis"
+      ],
+      "scope": "derived-from-platform-samples",
+      "status": "deferred",
+      "measurementIDs": [
+        "sleep-duration"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-sleep-duration"
+      ],
+      "requirement": "This is not a HealthKit platform source identifier. Version 0.3.0 does not define the session-boundary aggregation contract; individual admitted samples map only to sleep stage."
+    }
+  ],
+  "rows": [
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierAbdominalCramps",
+      "title": "Abdominal Cramps",
+      "symbols": [
+        "HKCategoryTypeIdentifierAbdominalCramps"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/abdominalcramps",
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-abdominal-cramps"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-abdominal-cramps"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierAcne",
+      "title": "Acne",
+      "symbols": [
+        "HKCategoryTypeIdentifierAcne"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/acne",
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-acne"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-acne"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierAppetiteChanges",
+      "title": "Appetite Changes",
+      "symbols": [
+        "HKCategoryTypeIdentifierAppetiteChanges"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/appetitechanges",
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-appetite-changes"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-appetite-changes"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierAppleStandHour",
+      "title": "Apple Stand Hour",
+      "symbols": [
+        "HKCategoryTypeIdentifierAppleStandHour"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/applestandhour",
+      "status": "supported",
+      "measurementIDs": [
+        "apple-stand-hour"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-apple-stand-hour"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierAppleWalkingSteadinessEvent",
+      "title": "Apple Walking Steadiness Event",
+      "symbols": [
+        "HKCategoryTypeIdentifierAppleWalkingSteadinessEvent"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/applewalkingsteadinessevent",
+      "status": "intentionally-unsupported",
+      "measurementIDs": [],
+      "profiles": [],
+      "requirement": "Device alert: the enum encodes notification cadence (initial vs repeat) crossed with an Apple-defined banding of the appleWalkingSteadiness percent score, which is the actual measurement and is handled as a quantity type. The alert adds no measurement content beyond that score."
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierAudioExposureEvent",
+      "title": "Audio Exposure Event",
+      "symbols": [
+        "HKCategoryTypeIdentifierAudioExposureEvent",
+        "HKCategoryTypeIdentifierEnvironmentalAudioExposureEvent"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/environmentalaudioexposureevent",
+      "status": "intentionally-unsupported",
+      "measurementIDs": [],
+      "profiles": [],
+      "requirement": "Device alert: a threshold-crossing notification against a user-configurable limit, not a measurement. The measurement is the environmentalAudioExposure dB(A) quantity type, which carries the actual exposure level."
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierBladderIncontinence",
+      "title": "Bladder Incontinence",
+      "symbols": [
+        "HKCategoryTypeIdentifierBladderIncontinence"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/bladderincontinence",
+      "status": "supported",
+      "measurementIDs": [
+        "bladder-incontinence"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-bladder-incontinence"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierBleedingAfterPregnancy",
+      "title": "Bleeding After Pregnancy",
+      "symbols": [
+        "HKCategoryTypeIdentifierBleedingAfterPregnancy"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/bleedingafterpregnancy",
+      "status": "supported",
+      "measurementIDs": [
+        "bleeding-after-pregnancy"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-bleeding-after-pregnancy"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierBleedingDuringPregnancy",
+      "title": "Bleeding During Pregnancy",
+      "symbols": [
+        "HKCategoryTypeIdentifierBleedingDuringPregnancy"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/bleedingduringpregnancy",
+      "status": "supported",
+      "measurementIDs": [
+        "bleeding-during-pregnancy"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-bleeding-during-pregnancy"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierBloating",
+      "title": "Bloating",
+      "symbols": [
+        "HKCategoryTypeIdentifierBloating"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/bloating",
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-bloating"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-bloating"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierBreastPain",
+      "title": "Breast Pain",
+      "symbols": [
+        "HKCategoryTypeIdentifierBreastPain"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/breastpain",
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-breast-pain"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-breast-pain"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierCervicalMucusQuality",
+      "title": "Cervical Mucus Quality",
+      "symbols": [
+        "HKCategoryTypeIdentifierCervicalMucusQuality"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/cervicalmucusquality",
+      "status": "supported",
+      "measurementIDs": [
+        "cervical-mucus-quality"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-cervical-mucus-quality"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierChestTightnessOrPain",
+      "title": "Chest Tightness/Pain",
+      "symbols": [
+        "HKCategoryTypeIdentifierChestTightnessOrPain"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/chesttightnessorpain",
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-chest-tightness-or-pain"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-chest-tightness-or-pain"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierChills",
+      "title": "Chills",
+      "symbols": [
+        "HKCategoryTypeIdentifierChills"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/chills",
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-chills"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-chills"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierConstipation",
+      "title": "Constipation",
+      "symbols": [
+        "HKCategoryTypeIdentifierConstipation"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/constipation",
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-constipation"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-constipation"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierContraceptive",
+      "title": "Contraceptive",
+      "symbols": [
+        "HKCategoryTypeIdentifierContraceptive"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/contraceptive",
+      "status": "supported",
+      "measurementIDs": [
+        "contraceptive-use"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-contraceptive-use"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierCoughing",
+      "title": "Coughing",
+      "symbols": [
+        "HKCategoryTypeIdentifierCoughing"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/coughing",
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-coughing"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-coughing"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierDiarrhea",
+      "title": "Diarrhea",
+      "symbols": [
+        "HKCategoryTypeIdentifierDiarrhea"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/diarrhea",
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-diarrhea"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-diarrhea"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierDizziness",
+      "title": "Dizziness",
+      "symbols": [
+        "HKCategoryTypeIdentifierDizziness"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/dizziness",
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-dizziness"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-dizziness"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierDrySkin",
+      "title": "Dry Skin",
+      "symbols": [
+        "HKCategoryTypeIdentifierDrySkin"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/dryskin",
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-dry-skin"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-dry-skin"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierFainting",
+      "title": "Fainting",
+      "symbols": [
+        "HKCategoryTypeIdentifierFainting"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/fainting",
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-fainting"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-fainting"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierFatigue",
+      "title": "Fatigue",
+      "symbols": [
+        "HKCategoryTypeIdentifierFatigue"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/fatigue",
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-fatigue"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-fatigue"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierFever",
+      "title": "Fever",
+      "symbols": [
+        "HKCategoryTypeIdentifierFever"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/fever",
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-fever"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-fever"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierGeneralizedBodyAche",
+      "title": "Generalized Body Ache",
+      "symbols": [
+        "HKCategoryTypeIdentifierGeneralizedBodyAche"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/generalizedbodyache",
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-generalized-body-ache"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-generalized-body-ache"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierHairLoss",
+      "title": "Hair Loss",
+      "symbols": [
+        "HKCategoryTypeIdentifierHairLoss"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/hairloss",
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-hair-loss"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-hair-loss"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierHandwashingEvent",
+      "title": "Handwashing Event",
+      "symbols": [
+        "HKCategoryTypeIdentifierHandwashingEvent"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/handwashingevent",
+      "status": "supported",
+      "measurementIDs": [
+        "handwashing-session"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-handwashing-session"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierHeadache",
+      "title": "Headache",
+      "symbols": [
+        "HKCategoryTypeIdentifierHeadache"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/headache",
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-headache"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-headache"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierHeadphoneAudioExposureEvent",
+      "title": "Headphone Audio Exposure Event",
+      "symbols": [
+        "HKCategoryTypeIdentifierHeadphoneAudioExposureEvent"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/headphoneaudioexposureevent",
+      "status": "intentionally-unsupported",
+      "measurementIDs": [],
+      "profiles": [],
+      "requirement": "Device alert over an OS-computed rolling seven-day dose limit; not a measurement. The headphoneAudioExposure quantity type carries the measured levels."
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierHeartburn",
+      "title": "Heartburn",
+      "symbols": [
+        "HKCategoryTypeIdentifierHeartburn"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/heartburn",
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-heartburn"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-heartburn"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierHighHeartRateEvent",
+      "title": "High Heart Rate Event",
+      "symbols": [
+        "HKCategoryTypeIdentifierHighHeartRateEvent"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/highheartrateevent",
+      "status": "intentionally-unsupported",
+      "measurementIDs": [],
+      "profiles": [],
+      "requirement": "Device alert against a user-configurable threshold; not a measurement. Heart-rate quantities remain the measurement surface."
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierHotFlashes",
+      "title": "Hot Flashes",
+      "symbols": [
+        "HKCategoryTypeIdentifierHotFlashes"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/hotflashes",
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-hot-flashes"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-hot-flashes"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierHypertensionEvent",
+      "title": "Hypertension Event",
+      "symbols": [
+        "HKCategoryTypeIdentifierHypertensionEvent"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/hypertensionevent",
+      "status": "intentionally-unsupported",
+      "measurementIDs": [],
+      "profiles": [],
+      "requirement": "Device alert from a proprietary screening algorithm asserting possible pathology without any pressure measurement; emitting it as an Observation would fabricate a blood-pressure-adjacent finding with no quantity. Cuff blood-pressure quantities remain the measurement surface."
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierInfrequentMenstrualCycles",
+      "title": "Infrequent Menstrual Cycles",
+      "symbols": [
+        "HKCategoryTypeIdentifierInfrequentMenstrualCycles"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/infrequentmenstrualcycles",
+      "status": "intentionally-unsupported",
+      "measurementIDs": [],
+      "profiles": [],
+      "requirement": "Algorithmic screening alert over derived cycle history; not a measurement."
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierIntermenstrualBleeding",
+      "title": "Intermenstrual Bleeding",
+      "symbols": [
+        "HKCategoryTypeIdentifierIntermenstrualBleeding"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/intermenstrualbleeding",
+      "status": "supported",
+      "measurementIDs": [
+        "intermenstrual-bleeding"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-intermenstrual-bleeding"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierIrregularHeartRhythmEvent",
+      "title": "Irregular Heart Rhythm Event",
+      "symbols": [
+        "HKCategoryTypeIdentifierIrregularHeartRhythmEvent"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/irregularheartrhythmevent",
+      "status": "intentionally-unsupported",
+      "measurementIDs": [],
+      "profiles": [],
+      "requirement": "FDA-cleared screening notification from a proprietary algorithm, valueless and read-only. Grove admits the ECG itself (sensor ECG adapter claim, HKDataTypeIdentifierElectrocardiogram) and the atrial-fibrillation burden percentage (HKQuantityTypeIdentifierAtrialFibrillationBurden) as the rhythm evidence surfaces; re-emitting the alert would present a screening trigger as a rhythm finding without any waveform or classification payload."
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierIrregularMenstrualCycles",
+      "title": "Irregular Menstrual Cycles",
+      "symbols": [
+        "HKCategoryTypeIdentifierIrregularMenstrualCycles"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/irregularmenstrualcycles",
+      "status": "intentionally-unsupported",
+      "measurementIDs": [],
+      "profiles": [],
+      "requirement": "Algorithmic screening alert over derived cycle history; not a measurement."
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierLactation",
+      "title": "Lactation",
+      "symbols": [
+        "HKCategoryTypeIdentifierLactation"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/lactation",
+      "status": "supported",
+      "measurementIDs": [
+        "lactation-status"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-lactation-status"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierLossOfSmell",
+      "title": "Loss of Smell",
+      "symbols": [
+        "HKCategoryTypeIdentifierLossOfSmell"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/lossofsmell",
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-loss-of-smell"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-loss-of-smell"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierLossOfTaste",
+      "title": "Loss of Taste",
+      "symbols": [
+        "HKCategoryTypeIdentifierLossOfTaste"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/lossoftaste",
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-loss-of-taste"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-loss-of-taste"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierLowCardioFitnessEvent",
+      "title": "Low Cardio Fitness Event",
+      "symbols": [
+        "HKCategoryTypeIdentifierLowCardioFitnessEvent"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/lowcardiofitnessevent",
+      "status": "intentionally-unsupported",
+      "measurementIDs": [],
+      "profiles": [],
+      "requirement": "Device alert over an Apple-defined classification band of the VO2Max quantity, which is the measurement. Single enum case lowFitness carries no additional measurement meaning."
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierLowHeartRateEvent",
+      "title": "Low Heart Rate Event",
+      "symbols": [
+        "HKCategoryTypeIdentifierLowHeartRateEvent"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/lowheartrateevent",
+      "status": "intentionally-unsupported",
+      "measurementIDs": [],
+      "profiles": [],
+      "requirement": "Device alert against a user-configurable threshold; the heart-rate quantity series is the admitted measurement. An alert Observation would encode a preference-dependent trigger, not a physiologic result."
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierLowerBackPain",
+      "title": "Lower Back Pain",
+      "symbols": [
+        "HKCategoryTypeIdentifierLowerBackPain"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/lowerbackpain",
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-lower-back-pain"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-lower-back-pain"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierMemoryLapse",
+      "title": "Memory Lapse",
+      "symbols": [
+        "HKCategoryTypeIdentifierMemoryLapse"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/memorylapse",
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-memory-lapse"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-memory-lapse"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierMenstrualFlow",
+      "title": "Menstrual Flow",
+      "symbols": [
+        "HKCategoryTypeIdentifierMenstrualFlow"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/menstrualflow",
+      "status": "supported",
+      "measurementIDs": [
+        "menstruation-flow"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-menstruation-flow"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierMindfulSession",
+      "title": "Mindful Session",
+      "symbols": [
+        "HKCategoryTypeIdentifierMindfulSession"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/mindfulsession",
+      "status": "supported",
+      "measurementIDs": [
+        "mindfulness-session"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-mindfulness-session"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierMoodChanges",
+      "title": "Mood Changes",
+      "symbols": [
+        "HKCategoryTypeIdentifierMoodChanges"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/moodchanges",
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-mood-changes"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-mood-changes"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierNausea",
+      "title": "Nausea",
+      "symbols": [
+        "HKCategoryTypeIdentifierNausea"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/nausea",
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-nausea"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-nausea"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierNightSweats",
+      "title": "Night Sweats",
+      "symbols": [
+        "HKCategoryTypeIdentifierNightSweats"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/nightsweats",
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-night-sweats"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-night-sweats"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierOvulationTestResult",
+      "title": "Ovulation Test Result",
+      "symbols": [
+        "HKCategoryTypeIdentifierOvulationTestResult"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/ovulationtestresult",
+      "status": "supported",
+      "measurementIDs": [
+        "ovulation-test-result"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-ovulation-test-result"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierPelvicPain",
+      "title": "Pelvic Pain",
+      "symbols": [
+        "HKCategoryTypeIdentifierPelvicPain"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/pelvicpain",
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-pelvic-pain"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-pelvic-pain"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierPersistentIntermenstrualBleeding",
+      "title": "Persistent Intermenstrual Bleeding",
+      "symbols": [
+        "HKCategoryTypeIdentifierPersistentIntermenstrualBleeding"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/persistentintermenstrualbleeding",
+      "status": "intentionally-unsupported",
+      "measurementIDs": [],
+      "profiles": [],
+      "requirement": "Algorithmic screening alert derived from user-entered cycle data, not a measurement. The primary data (intermenstrualBleeding and menstrualFlow samples) is admitted through the cycle-tracking enum-absorption design; re-emitting HealthKit's derived possible-pathology flag would present a screening notification as a clinical finding."
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierPregnancy",
+      "title": "Pregnancy",
+      "symbols": [
+        "HKCategoryTypeIdentifierPregnancy"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/pregnancy",
+      "status": "supported",
+      "measurementIDs": [
+        "pregnancy-status"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-pregnancy-status"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierPregnancyTestResult",
+      "title": "Pregnancy Test Result",
+      "symbols": [
+        "HKCategoryTypeIdentifierPregnancyTestResult"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/pregnancytestresult",
+      "status": "supported",
+      "measurementIDs": [
+        "pregnancy-test-result"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-pregnancy-test-result"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierProgesteroneTestResult",
+      "title": "Progesterone Test Result",
+      "symbols": [
+        "HKCategoryTypeIdentifierProgesteroneTestResult"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/progesteronetestresult",
+      "status": "supported",
+      "measurementIDs": [
+        "progesterone-test-result"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-progesterone-test-result"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierProlongedMenstrualPeriods",
+      "title": "Prolonged Menstrual Periods",
+      "symbols": [
+        "HKCategoryTypeIdentifierProlongedMenstrualPeriods"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/prolongedmenstrualperiods",
+      "status": "intentionally-unsupported",
+      "measurementIDs": [],
+      "profiles": [],
+      "requirement": "Algorithmic screening alert over derived cycle history; the underlying menstrualFlow data is the measurement and is covered by the cycle-tracking design."
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierRapidPoundingOrFlutteringHeartbeat",
+      "title": "Rapid/Pounding/Fluttering Heartbeat",
+      "symbols": [
+        "HKCategoryTypeIdentifierRapidPoundingOrFlutteringHeartbeat"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/rapidpoundingorflutteringheartbeat",
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-rapid-pounding-or-fluttering-heartbeat"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-rapid-pounding-or-fluttering-heartbeat"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierRunnyNose",
+      "title": "Runny Nose",
+      "symbols": [
+        "HKCategoryTypeIdentifierRunnyNose"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/runnynose",
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-runny-nose"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-runny-nose"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierSexualActivity",
+      "title": "Sexual Activity",
+      "symbols": [
+        "HKCategoryTypeIdentifierSexualActivity"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/sexualactivity",
+      "status": "supported",
+      "measurementIDs": [
+        "sexual-activity"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-sexual-activity"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierShortnessOfBreath",
+      "title": "Shortness of Breath",
+      "symbols": [
+        "HKCategoryTypeIdentifierShortnessOfBreath"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/shortnessofbreath",
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-shortness-of-breath"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-shortness-of-breath"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierSinusCongestion",
+      "title": "Sinus Congestion",
+      "symbols": [
+        "HKCategoryTypeIdentifierSinusCongestion"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/sinuscongestion",
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-sinus-congestion"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-sinus-congestion"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierSkippedHeartbeat",
+      "title": "Skipped Heartbeat",
+      "symbols": [
+        "HKCategoryTypeIdentifierSkippedHeartbeat"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/skippedheartbeat",
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-skipped-heartbeat"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-skipped-heartbeat"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierSleepAnalysis",
+      "title": "Sleep Analysis",
+      "symbols": [
+        "HKCategoryTypeIdentifierSleepAnalysis"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/sleepanalysis",
+      "status": "supported",
+      "measurementIDs": [
+        "sleep-stage"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-sleep-stage"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierSleepApneaEvent",
+      "title": "Sleep Apnea Event",
+      "symbols": [
+        "HKCategoryTypeIdentifierSleepApneaEvent"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/sleepapneaevent",
+      "status": "intentionally-unsupported",
+      "measurementIDs": [],
+      "profiles": [],
+      "requirement": "Device alert, not a measurement: an Apple proprietary screening algorithm's notification of possible pathology. The underlying signal (HKQuantityTypeIdentifierAppleSleepingBreathingDisturbances) is the measurement surface; emitting the alert as an Observation would misrepresent a screening notification as a clinical finding."
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierSleepChanges",
+      "title": "Sleep Changes",
+      "symbols": [
+        "HKCategoryTypeIdentifierSleepChanges"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/sleepchanges",
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-sleep-changes"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-sleep-changes"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierSoreThroat",
+      "title": "Sore Throat",
+      "symbols": [
+        "HKCategoryTypeIdentifierSoreThroat"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/sorethroat",
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-sore-throat"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-sore-throat"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierToothbrushingEvent",
+      "title": "Toothbrushing Event",
+      "symbols": [
+        "HKCategoryTypeIdentifierToothbrushingEvent"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/toothbrushingevent",
+      "status": "supported",
+      "measurementIDs": [
+        "toothbrushing-session"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-toothbrushing-session"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierVaginalDryness",
+      "title": "Vaginal Dryness",
+      "symbols": [
+        "HKCategoryTypeIdentifierVaginalDryness"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/vaginaldryness",
+      "status": "supported",
+      "measurementIDs": [
+        "vaginal-dryness"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-vaginal-dryness"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierVomiting",
+      "title": "Vomiting",
+      "symbols": [
+        "HKCategoryTypeIdentifierVomiting"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/vomiting",
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-vomiting"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-vomiting"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierWheezing",
+      "title": "Wheezing",
+      "symbols": [
+        "HKCategoryTypeIdentifierWheezing"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/wheezing",
+      "status": "supported",
+      "measurementIDs": [
+        "symptom-wheezing"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-wheezing"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCharacteristicTypeIdentifierActivityMoveMode",
+      "title": "Activity Move Mode",
+      "symbols": [
+        "HKCharacteristicTypeIdentifierActivityMoveMode"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcharacteristictypeidentifier/activitymovemode",
+      "status": "intentionally-unsupported",
+      "measurementIDs": [],
+      "profiles": [],
+      "requirement": "DECIDED: intentionally-unsupported. A ring-display preference has no semantically exact Mobile meaning; converting it would encode Apple product configuration as clinical data. Verifier attack (would a researcher want it?): the mode is only interpretive context for AppleMoveTime/ActiveEnergy rows, which carry their own units and are handled in their own rows; the mode adds no measurement content of its own. Reason survives."
+    },
+    {
+      "sourceTypeIdentifier": "HKCharacteristicTypeIdentifierBiologicalSex",
+      "title": "Biological Sex",
+      "symbols": [
+        "HKCharacteristicTypeIdentifierBiologicalSex"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcharacteristictypeidentifier/biologicalsex",
+      "status": "deferred",
+      "measurementIDs": [],
+      "profiles": [],
+      "requirement": "A HealthKit characteristic describes the subject rather than a measurement. Version 0.3.0 publishes no admitted output contract for characteristics."
+    },
+    {
+      "sourceTypeIdentifier": "HKCharacteristicTypeIdentifierBloodType",
+      "title": "Blood Type",
+      "symbols": [
+        "HKCharacteristicTypeIdentifierBloodType"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcharacteristictypeidentifier/bloodtype",
+      "status": "supported",
+      "measurementIDs": [
+        "blood-type"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-blood-type"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCharacteristicTypeIdentifierDateOfBirth",
+      "title": "Date of Birth",
+      "symbols": [
+        "HKCharacteristicTypeIdentifierDateOfBirth"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcharacteristictypeidentifier/dateofbirth",
+      "status": "deferred",
+      "measurementIDs": [],
+      "profiles": [],
+      "requirement": "A HealthKit characteristic describes the subject rather than a measurement. Version 0.3.0 publishes no admitted output contract for characteristics."
+    },
+    {
+      "sourceTypeIdentifier": "HKCharacteristicTypeIdentifierFitzpatrickSkinType",
+      "title": "Fitzpatrick Skin Type",
+      "symbols": [
+        "HKCharacteristicTypeIdentifierFitzpatrickSkinType"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcharacteristictypeidentifier/fitzpatrickskintype",
+      "status": "intentionally-unsupported",
+      "measurementIDs": [],
+      "profiles": [],
+      "requirement": "DECIDED: intentionally-unsupported — applied as decided, not re-decided. Verifier correction to the stated reason: an exact LOINC does exist (66555-4), so the decision cannot rest on missing terminology; it rests solely on the decided scope call (single-platform self-reported phenotype outside the measurement contract, no consumer in the exchange set)."
+    },
+    {
+      "sourceTypeIdentifier": "HKCharacteristicTypeIdentifierWheelchairUse",
+      "title": "Wheelchair Use",
+      "symbols": [
+        "HKCharacteristicTypeIdentifierWheelchairUse"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcharacteristictypeidentifier/wheelchairuse",
+      "status": "supported",
+      "measurementIDs": [
+        "wheelchair-use"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-wheelchair-use"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKClinicalTypeIdentifierAllergyRecord",
+      "title": "Allergy Record",
+      "symbols": [
+        "HKClinicalTypeIdentifierAllergyRecord"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkclinicaltypeidentifier/allergyrecord",
+      "status": "platform-exclusive",
+      "measurementIDs": [],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKClinicalTypeIdentifierClinicalNoteRecord",
+      "title": "Clinical Note Record",
+      "symbols": [
+        "HKClinicalTypeIdentifierClinicalNoteRecord"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkclinicaltypeidentifier/clinicalnoterecord",
+      "status": "platform-exclusive",
+      "measurementIDs": [],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKClinicalTypeIdentifierConditionRecord",
+      "title": "Condition Record",
+      "symbols": [
+        "HKClinicalTypeIdentifierConditionRecord"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkclinicaltypeidentifier/conditionrecord",
+      "status": "platform-exclusive",
+      "measurementIDs": [],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKClinicalTypeIdentifierCoverageRecord",
+      "title": "Coverage Record",
+      "symbols": [
+        "HKClinicalTypeIdentifierCoverageRecord"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkclinicaltypeidentifier/coveragerecord",
+      "status": "platform-exclusive",
+      "measurementIDs": [],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKClinicalTypeIdentifierImmunizationRecord",
+      "title": "Immunization Record",
+      "symbols": [
+        "HKClinicalTypeIdentifierImmunizationRecord"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkclinicaltypeidentifier/immunizationrecord",
+      "status": "platform-exclusive",
+      "measurementIDs": [],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKClinicalTypeIdentifierLabResultRecord",
+      "title": "Lab Result Record",
+      "symbols": [
+        "HKClinicalTypeIdentifierLabResultRecord"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkclinicaltypeidentifier/labresultrecord",
+      "status": "platform-exclusive",
+      "measurementIDs": [],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKClinicalTypeIdentifierMedicationRecord",
+      "title": "Medication Record",
+      "symbols": [
+        "HKClinicalTypeIdentifierMedicationRecord"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkclinicaltypeidentifier/medicationrecord",
+      "status": "platform-exclusive",
+      "measurementIDs": [],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKClinicalTypeIdentifierProcedureRecord",
+      "title": "Procedure Record",
+      "symbols": [
+        "HKClinicalTypeIdentifierProcedureRecord"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkclinicaltypeidentifier/procedurerecord",
+      "status": "platform-exclusive",
+      "measurementIDs": [],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKClinicalTypeIdentifierVitalSignRecord",
+      "title": "Vital Sign Record",
+      "symbols": [
+        "HKClinicalTypeIdentifierVitalSignRecord"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkclinicaltypeidentifier/vitalsignrecord",
+      "status": "platform-exclusive",
+      "measurementIDs": [],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCorrelationTypeIdentifierBloodPressure",
+      "title": "Blood Pressure",
+      "symbols": [
+        "HKCorrelationTypeIdentifierBloodPressure"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcorrelationtypeidentifier/bloodpressure",
+      "status": "supported",
+      "measurementIDs": [
+        "blood-pressure"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-blood-pressure"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCorrelationTypeIdentifierFood",
+      "title": "Food",
+      "symbols": [
+        "HKCorrelationTypeIdentifierFood"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcorrelationtypeidentifier/food",
+      "status": "deferred",
+      "measurementIDs": [],
+      "profiles": [],
+      "requirement": "No shared or adapter-specific output contract is published for this type."
+    },
+    {
+      "sourceTypeIdentifier": "HKDataTypeIdentifierAudiogram",
+      "title": "Audiogram",
+      "symbols": [
+        "HKSampleType.audiogramSampleType()"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkaudiogramsampletype",
+      "status": "deferred",
+      "measurementIDs": [],
+      "profiles": [],
+      "requirement": "No shared or HealthKit-adapter output contract is published for this sample type."
+    },
+    {
+      "sourceTypeIdentifier": "HKDataTypeIdentifierElectrocardiogram",
+      "title": "ECG",
+      "symbols": [
+        "HKObjectType.electrocardiogramType()"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkelectrocardiogramtype",
+      "status": "supported",
+      "measurementIDs": [
+        "electrocardiogram"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-ecg-observation",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-observation"
+      ],
+      "requirement": "The caller supplies the HKElectrocardiogram, every voltage measurement with its exact timeSinceSampleStart, and each associated HKCategorySample when symptomsStatus is present. The adapter preserves symptom UUID/timing/type/severity and complete HKSourceRevision fields, classification, average heart rate, sampling frequency, reported count, Apple ECG algorithm-version metadata when present, source and waveform intervals, lead, offsets, and voltages without fetching or resampling. Explicit caller authorization for linkable symptom-source disclosure is required; otherwise conversion fails closed."
+    },
+    {
+      "sourceTypeIdentifier": "HKDataTypeIdentifierHeartbeatSeries",
+      "title": "Heartbeat Series",
+      "symbols": [
+        "HKDataTypeIdentifierHeartbeatSeries"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkdatatypeidentifierheartbeatseries",
+      "status": "deferred",
+      "measurementIDs": [],
+      "profiles": [],
+      "requirement": "The beat-to-beat interval series ships as a grove-csv-1 recording (heartbeat-series column schema) in the residual design pass; no Observation output is admitted."
+    },
+    {
+      "sourceTypeIdentifier": "HKDataTypeStateOfMind",
+      "title": "State of Mind",
+      "symbols": [
+        "HKDataTypeIdentifierStateOfMind"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkdatatypeidentifierstateofmind",
+      "status": "deferred",
+      "measurementIDs": [],
+      "profiles": [],
+      "requirement": "No shared or HealthKit-adapter output contract is published for this sample type."
+    },
+    {
+      "sourceTypeIdentifier": "HKDataTypeUserAnnotatedMedicationConcept",
+      "title": "User Annotated Medication Concept",
+      "symbols": [
+        "HKDataTypeIdentifierUserAnnotatedMedicationConcept"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkdatatypeidentifieruserannotatedmedicationconcept",
+      "status": "deferred",
+      "measurementIDs": [],
+      "profiles": [],
+      "requirement": "No shared or adapter-specific output contract is published for this type."
+    },
+    {
+      "sourceTypeIdentifier": "HKDocumentTypeIdentifierCDA",
+      "title": "CDA Document",
+      "symbols": [
+        "HKDocumentTypeIdentifierCDA"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkdocumenttypeidentifier/cda",
+      "status": "deferred",
+      "measurementIDs": [],
+      "profiles": [],
+      "requirement": "No shared or adapter-specific output contract is published for this type."
+    },
+    {
+      "sourceTypeIdentifier": "HKMedicationDoseEventTypeIdentifierMedicationDoseEvent",
+      "title": "Medication Dose Event",
+      "symbols": [
+        "HKMedicationDoseEventTypeIdentifierMedicationDoseEvent"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkmedicationdoseeventtypeidentifiermedicationdoseevent",
+      "status": "deferred",
+      "measurementIDs": [],
+      "profiles": [],
+      "requirement": "No shared or adapter-specific output contract is published for this type."
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierActiveEnergyBurned",
+      "title": "Active Energy Burned",
+      "symbols": [
+        "HKQuantityTypeIdentifierActiveEnergyBurned"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/activeenergyburned",
+      "status": "supported",
+      "measurementIDs": [
+        "active-energy"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-active-energy"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierAppleExerciseTime",
+      "title": "Apple Exercise Time",
+      "symbols": [
+        "HKQuantityTypeIdentifierAppleExerciseTime"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/appleexercisetime",
+      "status": "supported",
+      "measurementIDs": [
+        "apple-exercise-time"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-apple-exercise-time"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierAppleMoveTime",
+      "title": "Apple Move Time",
+      "symbols": [
+        "HKQuantityTypeIdentifierAppleMoveTime"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/applemovetime",
+      "status": "supported",
+      "measurementIDs": [
+        "apple-move-time"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-apple-move-time"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierAppleSleepingBreathingDisturbances",
+      "title": "Apple Sleeping Breathing Disturbances",
+      "symbols": [
+        "HKQuantityTypeIdentifierAppleSleepingBreathingDisturbances"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/applesleepingbreathingdisturbances",
+      "status": "supported",
+      "measurementIDs": [
+        "sleeping-breathing-disturbances"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-sleeping-breathing-disturbances"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierAppleSleepingWristTemperature",
+      "title": "Apple Sleeping Wrist Temperature",
+      "symbols": [
+        "HKQuantityTypeIdentifierAppleSleepingWristTemperature"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/applesleepingwristtemperature",
+      "status": "supported",
+      "measurementIDs": [
+        "skin-temperature"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-skin-temperature"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierAppleStandTime",
+      "title": "Apple Stand Time",
+      "symbols": [
+        "HKQuantityTypeIdentifierAppleStandTime"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/applestandtime",
+      "status": "supported",
+      "measurementIDs": [
+        "apple-stand-time"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-apple-stand-time"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierAppleWalkingSteadiness",
+      "title": "Apple Walking Steadiness",
+      "symbols": [
+        "HKQuantityTypeIdentifierAppleWalkingSteadiness"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/applewalkingsteadiness",
+      "status": "supported",
+      "measurementIDs": [
+        "walking-steadiness"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-walking-steadiness"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierAtrialFibrillationBurden",
+      "title": "AFib Burden",
+      "symbols": [
+        "HKQuantityTypeIdentifierAtrialFibrillationBurden"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/atrialfibrillationburden",
+      "status": "supported",
+      "measurementIDs": [
+        "atrial-fibrillation-burden"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-atrial-fibrillation-burden"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierBasalBodyTemperature",
+      "title": "Basal Body Temperature",
+      "symbols": [
+        "HKQuantityTypeIdentifierBasalBodyTemperature"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/basalbodytemperature",
+      "status": "supported",
+      "measurementIDs": [
+        "basal-body-temperature"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-basal-body-temperature"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierBasalEnergyBurned",
+      "title": "Basal Energy Burned",
+      "symbols": [
+        "HKQuantityTypeIdentifierBasalEnergyBurned"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/basalenergyburned",
+      "status": "supported",
+      "measurementIDs": [
+        "basal-energy"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-basal-energy"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierBloodAlcoholContent",
+      "title": "Blood Alcohol Content",
+      "symbols": [
+        "HKQuantityTypeIdentifierBloodAlcoholContent"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/bloodalcoholcontent",
+      "status": "supported",
+      "measurementIDs": [
+        "blood-alcohol-content"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-blood-alcohol-content"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierBloodGlucose",
+      "title": "Blood Glucose",
+      "symbols": [
+        "HKQuantityTypeIdentifierBloodGlucose"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/bloodglucose",
+      "status": "supported",
+      "measurementIDs": [
+        "blood-glucose-unspecified-specimen"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-blood-glucose-unspecified-specimen"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierBloodPressureDiastolic",
+      "title": "Blood Pressure (Diastolic)",
+      "symbols": [
+        "HKQuantityTypeIdentifierBloodPressureDiastolic"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/bloodpressurediastolic",
+      "status": "supported",
+      "measurementIDs": [
+        "blood-pressure"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-blood-pressure"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierBloodPressureSystolic",
+      "title": "Blood Pressure (Systolic)",
+      "symbols": [
+        "HKQuantityTypeIdentifierBloodPressureSystolic"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/bloodpressuresystolic",
+      "status": "supported",
+      "measurementIDs": [
+        "blood-pressure"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-blood-pressure"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierBodyFatPercentage",
+      "title": "Body Fat Percentage",
+      "symbols": [
+        "HKQuantityTypeIdentifierBodyFatPercentage"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/bodyfatpercentage",
+      "status": "supported",
+      "measurementIDs": [
+        "body-fat-percentage"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-body-fat-percentage"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierBodyMass",
+      "title": "Body Mass",
+      "symbols": [
+        "HKQuantityTypeIdentifierBodyMass"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/bodymass",
+      "status": "supported",
+      "measurementIDs": [
+        "body-weight"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-body-weight"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierBodyMassIndex",
+      "title": "BMI",
+      "symbols": [
+        "HKQuantityTypeIdentifierBodyMassIndex"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/bodymassindex",
+      "status": "supported",
+      "measurementIDs": [
+        "body-mass-index"
+      ],
+      "profiles": [
+        "http://hl7.org/fhir/StructureDefinition/bmi",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-observation"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierBodyTemperature",
+      "title": "Body Temperature",
+      "symbols": [
+        "HKQuantityTypeIdentifierBodyTemperature"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/bodytemperature",
+      "status": "supported",
+      "measurementIDs": [
+        "body-temperature"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-body-temperature"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierCrossCountrySkiingSpeed",
+      "title": "Cross Country Skiing Speed",
+      "symbols": [
+        "HKQuantityTypeIdentifierCrossCountrySkiingSpeed"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/crosscountryskiingspeed",
+      "status": "supported",
+      "measurementIDs": [
+        "speed"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-speed"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierCyclingCadence",
+      "title": "Cycling Cadence",
+      "symbols": [
+        "HKQuantityTypeIdentifierCyclingCadence"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/cyclingcadence",
+      "status": "supported",
+      "measurementIDs": [
+        "cycling-cadence"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-cycling-cadence"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierCyclingFunctionalThresholdPower",
+      "title": "Cycling Functional Threshold Power",
+      "symbols": [
+        "HKQuantityTypeIdentifierCyclingFunctionalThresholdPower"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/cyclingfunctionalthresholdpower",
+      "status": "supported",
+      "measurementIDs": [
+        "cycling-functional-threshold-power"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-cycling-functional-threshold-power"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierCyclingPower",
+      "title": "Cycling Power",
+      "symbols": [
+        "HKQuantityTypeIdentifierCyclingPower"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/cyclingpower",
+      "status": "supported",
+      "measurementIDs": [
+        "power"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-power"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierCyclingSpeed",
+      "title": "Cycling Speed",
+      "symbols": [
+        "HKQuantityTypeIdentifierCyclingSpeed"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/cyclingspeed",
+      "status": "supported",
+      "measurementIDs": [
+        "speed"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-speed"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryBiotin",
+      "title": "Dietary Biotin Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryBiotin"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarybiotin",
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-biotin"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-biotin"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryCaffeine",
+      "title": "Dietary Caffeine Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryCaffeine"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarycaffeine",
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-caffeine"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-caffeine"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryCalcium",
+      "title": "Dietary Calcium Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryCalcium"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarycalcium",
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-calcium"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-calcium"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryCarbohydrates",
+      "title": "Dietary Carbohydrates Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryCarbohydrates"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarycarbohydrates",
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-carbohydrates"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-carbohydrates"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryChloride",
+      "title": "Dietary Chloride Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryChloride"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarychloride",
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-chloride"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-chloride"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryCholesterol",
+      "title": "Dietary Cholesterol Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryCholesterol"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarycholesterol",
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-cholesterol"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-cholesterol"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryChromium",
+      "title": "Dietary Chromium Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryChromium"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarychromium",
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-chromium"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-chromium"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryCopper",
+      "title": "Dietary Copper Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryCopper"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarycopper",
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-copper"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-copper"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryEnergyConsumed",
+      "title": "Dietary Energy Consumed",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryEnergyConsumed"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryenergyconsumed",
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-energy"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-energy"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryFatMonounsaturated",
+      "title": "Dietary Monounsaturated Fat Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryFatMonounsaturated"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryfatmonounsaturated",
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-fat-monounsaturated"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-fat-monounsaturated"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryFatPolyunsaturated",
+      "title": "Dietary Polyunsaturated Fat Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryFatPolyunsaturated"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryfatpolyunsaturated",
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-fat-polyunsaturated"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-fat-polyunsaturated"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryFatSaturated",
+      "title": "Dietary Saturated Fat Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryFatSaturated"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryfatsaturated",
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-fat-saturated"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-fat-saturated"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryFatTotal",
+      "title": "Dietary Total Fat Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryFatTotal"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryfattotal",
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-fat-total"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-fat-total"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryFiber",
+      "title": "Dietary Fiber Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryFiber"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryfiber",
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-fiber"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-fiber"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryFolate",
+      "title": "Dietary Folate Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryFolate"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryfolate",
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-folate"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-folate"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryIodine",
+      "title": "Dietary Iodine Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryIodine"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryiodine",
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-iodine"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-iodine"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryIron",
+      "title": "Dietary Iron Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryIron"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryiron",
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-iron"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-iron"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryMagnesium",
+      "title": "Dietary Magnesium Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryMagnesium"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarymagnesium",
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-magnesium"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-magnesium"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryManganese",
+      "title": "Dietary Manganese Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryManganese"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarymanganese",
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-manganese"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-manganese"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryMolybdenum",
+      "title": "Dietary Molybdenum Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryMolybdenum"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarymolybdenum",
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-molybdenum"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-molybdenum"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryNiacin",
+      "title": "Dietary Niacin Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryNiacin"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryniacin",
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-niacin"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-niacin"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryPantothenicAcid",
+      "title": "Dietary Pantothenic Acid Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryPantothenicAcid"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarypantothenicacid",
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-pantothenic-acid"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-pantothenic-acid"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryPhosphorus",
+      "title": "Dietary Phosphorus Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryPhosphorus"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryphosphorus",
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-phosphorus"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-phosphorus"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryPotassium",
+      "title": "Dietary Potassium Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryPotassium"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarypotassium",
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-potassium"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-potassium"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryProtein",
+      "title": "Dietary Protein Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryProtein"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryprotein",
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-protein"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-protein"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryRiboflavin",
+      "title": "Dietary Riboflavin Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryRiboflavin"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryriboflavin",
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-riboflavin"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-riboflavin"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietarySelenium",
+      "title": "Dietary Selenium Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietarySelenium"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryselenium",
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-selenium"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-selenium"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietarySodium",
+      "title": "Dietary Sodium Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietarySodium"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarysodium",
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-sodium"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-sodium"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietarySugar",
+      "title": "Dietary Sugar Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietarySugar"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarysugar",
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-sugar"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-sugar"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryThiamin",
+      "title": "Dietary Thiamin Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryThiamin"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarythiamin",
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-thiamin"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-thiamin"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryVitaminA",
+      "title": "Dietary Vitamin A Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryVitaminA"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryvitamina",
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-vitamin-a"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-vitamin-a"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryVitaminB12",
+      "title": "Dietary Vitamin B12 Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryVitaminB12"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryvitaminb12",
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-vitamin-b12"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-vitamin-b12"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryVitaminB6",
+      "title": "Dietary Vitamin B6 Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryVitaminB6"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryvitaminb6",
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-vitamin-b6"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-vitamin-b6"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryVitaminC",
+      "title": "Dietary Vitamin C Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryVitaminC"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryvitaminc",
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-vitamin-c"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-vitamin-c"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryVitaminD",
+      "title": "Dietary Vitamin D Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryVitaminD"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryvitamind",
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-vitamin-d"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-vitamin-d"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryVitaminE",
+      "title": "Dietary Vitamin E Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryVitaminE"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryvitamine",
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-vitamin-e"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-vitamin-e"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryVitaminK",
+      "title": "Dietary Vitamin K Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryVitaminK"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryvitamink",
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-vitamin-k"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-vitamin-k"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryWater",
+      "title": "Dietary Water Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryWater"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietarywater",
+      "status": "supported",
+      "measurementIDs": [
+        "fluid-intake"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-fluid-intake"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierDietaryZinc",
+      "title": "Dietary Zinc Intake",
+      "symbols": [
+        "HKQuantityTypeIdentifierDietaryZinc"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/dietaryzinc",
+      "status": "supported",
+      "measurementIDs": [
+        "dietary-zinc"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-dietary-zinc"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierDistanceCrossCountrySkiing",
+      "title": "Cross-Country Skiing Distance",
+      "symbols": [
+        "HKQuantityTypeIdentifierDistanceCrossCountrySkiing"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/distancecrosscountryskiing",
+      "status": "supported",
+      "measurementIDs": [
+        "distance"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-distance"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierDistanceCycling",
+      "title": "Cycling Distance",
+      "symbols": [
+        "HKQuantityTypeIdentifierDistanceCycling"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/distancecycling",
+      "status": "supported",
+      "measurementIDs": [
+        "distance"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-distance"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierDistanceDownhillSnowSports",
+      "title": "Downhill Snow Sports Distance",
+      "symbols": [
+        "HKQuantityTypeIdentifierDistanceDownhillSnowSports"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/distancedownhillsnowsports",
+      "status": "supported",
+      "measurementIDs": [
+        "distance"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-distance"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierDistancePaddleSports",
+      "title": "Paddle Sports Distance",
+      "symbols": [
+        "HKQuantityTypeIdentifierDistancePaddleSports"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/distancepaddlesports",
+      "status": "supported",
+      "measurementIDs": [
+        "distance"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-distance"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierDistanceRowing",
+      "title": "Rowing Distance",
+      "symbols": [
+        "HKQuantityTypeIdentifierDistanceRowing"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/distancerowing",
+      "status": "supported",
+      "measurementIDs": [
+        "distance"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-distance"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierDistanceSkatingSports",
+      "title": "Skating Sports Distance",
+      "symbols": [
+        "HKQuantityTypeIdentifierDistanceSkatingSports"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/distanceskatingsports",
+      "status": "supported",
+      "measurementIDs": [
+        "distance"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-distance"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierDistanceSwimming",
+      "title": "Swimming Distance",
+      "symbols": [
+        "HKQuantityTypeIdentifierDistanceSwimming"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/distanceswimming",
+      "status": "supported",
+      "measurementIDs": [
+        "distance"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-distance"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierDistanceWalkingRunning",
+      "title": "Distance Walking/Running",
+      "symbols": [
+        "HKQuantityTypeIdentifierDistanceWalkingRunning"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/distancewalkingrunning",
+      "status": "supported",
+      "measurementIDs": [
+        "distance"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-distance"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierDistanceWheelchair",
+      "title": "Wheelchair Distance",
+      "symbols": [
+        "HKQuantityTypeIdentifierDistanceWheelchair"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/distancewheelchair",
+      "status": "supported",
+      "measurementIDs": [
+        "distance"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-distance"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierElectrodermalActivity",
+      "title": "Electrodermal Activity",
+      "symbols": [
+        "HKQuantityTypeIdentifierElectrodermalActivity"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/electrodermalactivity",
+      "status": "supported",
+      "measurementIDs": [
+        "electrodermal-activity"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-electrodermal-activity"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierEnvironmentalAudioExposure",
+      "title": "Environmental Audio Exposure",
+      "symbols": [
+        "HKQuantityTypeIdentifierEnvironmentalAudioExposure"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/environmentalaudioexposure",
+      "status": "supported",
+      "measurementIDs": [
+        "environmental-audio-exposure"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-environmental-audio-exposure"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierEnvironmentalSoundReduction",
+      "title": "Environmental Sound Reduction",
+      "symbols": [
+        "HKQuantityTypeIdentifierEnvironmentalSoundReduction"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/environmentalsoundreduction",
+      "status": "supported",
+      "measurementIDs": [
+        "environmental-sound-reduction"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-environmental-sound-reduction"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierEstimatedWorkoutEffortScore",
+      "title": "Estimated Workout Effort",
+      "symbols": [
+        "HKQuantityTypeIdentifierEstimatedWorkoutEffortScore"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/estimatedworkouteffortscore",
+      "status": "supported",
+      "measurementIDs": [
+        "workout-effort-score"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-workout-effort-score"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierFlightsClimbed",
+      "title": "Flights Climbed",
+      "symbols": [
+        "HKQuantityTypeIdentifierFlightsClimbed"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/flightsclimbed",
+      "status": "supported",
+      "measurementIDs": [
+        "flights-climbed"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-flights-climbed"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierForcedExpiratoryVolume1",
+      "title": "Forced Expiratory Volume (1 sec)",
+      "symbols": [
+        "HKQuantityTypeIdentifierForcedExpiratoryVolume1"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/forcedexpiratoryvolume1",
+      "status": "supported",
+      "measurementIDs": [
+        "forced-expiratory-volume-1"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-forced-expiratory-volume-1"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierForcedVitalCapacity",
+      "title": "Forced Vital Capacity",
+      "symbols": [
+        "HKQuantityTypeIdentifierForcedVitalCapacity"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/forcedvitalcapacity",
+      "status": "supported",
+      "measurementIDs": [
+        "forced-vital-capacity"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-forced-vital-capacity"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierHeadphoneAudioExposure",
+      "title": "Headphone Audio Exposure",
+      "symbols": [
+        "HKQuantityTypeIdentifierHeadphoneAudioExposure"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/headphoneaudioexposure",
+      "status": "supported",
+      "measurementIDs": [
+        "headphone-audio-exposure"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-headphone-audio-exposure"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierHeartRate",
+      "title": "Heart Rate",
+      "symbols": [
+        "HKQuantityTypeIdentifierHeartRate"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/heartrate",
+      "status": "supported",
+      "measurementIDs": [
+        "heart-rate"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-heart-rate"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierHeartRateRecoveryOneMinute",
+      "title": "Heart Rate Recovery (1 min)",
+      "symbols": [
+        "HKQuantityTypeIdentifierHeartRateRecoveryOneMinute"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/heartraterecoveryoneminute",
+      "status": "supported",
+      "measurementIDs": [
+        "heart-rate-recovery-one-minute"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-heart-rate-recovery-one-minute"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierHeartRateVariabilitySDNN",
+      "title": "Heart Rate Variability SDNN",
+      "symbols": [
+        "HKQuantityTypeIdentifierHeartRateVariabilitySDNN"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/heartratevariabilitysdnn",
+      "status": "supported",
+      "measurementIDs": [
+        "heart-rate-variability-sdnn"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-heart-rate-variability-sdnn"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierHeight",
+      "title": "Height",
+      "symbols": [
+        "HKQuantityTypeIdentifierHeight"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/height",
+      "status": "supported",
+      "measurementIDs": [
+        "body-height"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-body-height"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierInhalerUsage",
+      "title": "Inhaler Usage",
+      "symbols": [
+        "HKQuantityTypeIdentifierInhalerUsage"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/inhalerusage",
+      "status": "supported",
+      "measurementIDs": [
+        "inhaler-usage"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-inhaler-usage"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierInsulinDelivery",
+      "title": "Insulin Delivery",
+      "symbols": [
+        "HKQuantityTypeIdentifierInsulinDelivery"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/insulindelivery",
+      "status": "supported",
+      "measurementIDs": [
+        "insulin-delivery"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-insulin-delivery"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierLeanBodyMass",
+      "title": "Lean Body Mass",
+      "symbols": [
+        "HKQuantityTypeIdentifierLeanBodyMass"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/leanbodymass",
+      "status": "supported",
+      "measurementIDs": [
+        "lean-body-mass"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-lean-body-mass"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierNikeFuel",
+      "title": "NikeFuel",
+      "symbols": [
+        "HKQuantityTypeIdentifierNikeFuel"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/nikefuel",
+      "status": "intentionally-unsupported",
+      "measurementIDs": [],
+      "profiles": [],
+      "requirement": "NikeFuel is an opaque vendor index with an unpublished formula and a retired ecosystem; it has no physiological dimension, no UCUM representation beyond an arbitrary annotation, and no second source, so normalizing it would launder an undefined score into an exchange measurement."
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierNumberOfAlcoholicBeverages",
+      "title": "Number of Alcoholic Beverages",
+      "symbols": [
+        "HKQuantityTypeIdentifierNumberOfAlcoholicBeverages"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/numberofalcoholicbeverages",
+      "status": "supported",
+      "measurementIDs": [
+        "number-of-alcoholic-beverages"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-number-of-alcoholic-beverages"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierNumberOfTimesFallen",
+      "title": "Number of Times Fallen",
+      "symbols": [
+        "HKQuantityTypeIdentifierNumberOfTimesFallen"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/numberoftimesfallen",
+      "status": "supported",
+      "measurementIDs": [
+        "number-of-times-fallen"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-number-of-times-fallen"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierOxygenSaturation",
+      "title": "Oxygen Saturation",
+      "symbols": [
+        "HKQuantityTypeIdentifierOxygenSaturation"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/oxygensaturation",
+      "status": "supported",
+      "measurementIDs": [
+        "oxygen-saturation"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-oxygen-saturation"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierPaddleSportsSpeed",
+      "title": "Paddle Sports Speed",
+      "symbols": [
+        "HKQuantityTypeIdentifierPaddleSportsSpeed"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/paddlesportsspeed",
+      "status": "supported",
+      "measurementIDs": [
+        "speed"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-speed"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierPeakExpiratoryFlowRate",
+      "title": "Peak Expiratory Flow Rate",
+      "symbols": [
+        "HKQuantityTypeIdentifierPeakExpiratoryFlowRate"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/peakexpiratoryflowrate",
+      "status": "supported",
+      "measurementIDs": [
+        "peak-expiratory-flow-rate"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-peak-expiratory-flow-rate"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierPeripheralPerfusionIndex",
+      "title": "Peripheral Perfusion Index",
+      "symbols": [
+        "HKQuantityTypeIdentifierPeripheralPerfusionIndex"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/peripheralperfusionindex",
+      "status": "supported",
+      "measurementIDs": [
+        "peripheral-perfusion-index"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-peripheral-perfusion-index"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierPhysicalEffort",
+      "title": "Physical Effort",
+      "symbols": [
+        "HKQuantityTypeIdentifierPhysicalEffort"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/physicaleffort",
+      "status": "supported",
+      "measurementIDs": [
+        "physical-effort"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-physical-effort"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierPushCount",
+      "title": "Wheelchair Push Count",
+      "symbols": [
+        "HKQuantityTypeIdentifierPushCount"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/pushcount",
+      "status": "supported",
+      "measurementIDs": [
+        "wheelchair-push-count"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-wheelchair-push-count"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierRespiratoryRate",
+      "title": "Respiratory Rate",
+      "symbols": [
+        "HKQuantityTypeIdentifierRespiratoryRate"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/respiratoryrate",
+      "status": "supported",
+      "measurementIDs": [
+        "respiratory-rate"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-respiratory-rate"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierRestingHeartRate",
+      "title": "Resting Heart Rate",
+      "symbols": [
+        "HKQuantityTypeIdentifierRestingHeartRate"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/restingheartrate",
+      "status": "supported",
+      "measurementIDs": [
+        "resting-heart-rate"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-resting-heart-rate"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierRowingSpeed",
+      "title": "Rowing Speed",
+      "symbols": [
+        "HKQuantityTypeIdentifierRowingSpeed"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/rowingspeed",
+      "status": "supported",
+      "measurementIDs": [
+        "speed"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-speed"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierRunningGroundContactTime",
+      "title": "Ground Contact Time",
+      "symbols": [
+        "HKQuantityTypeIdentifierRunningGroundContactTime"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/runninggroundcontacttime",
+      "status": "supported",
+      "measurementIDs": [
+        "running-ground-contact-time"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-running-ground-contact-time"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierRunningPower",
+      "title": "Running Power",
+      "symbols": [
+        "HKQuantityTypeIdentifierRunningPower"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/runningpower",
+      "status": "supported",
+      "measurementIDs": [
+        "power"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-power"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierRunningSpeed",
+      "title": "Running Speed",
+      "symbols": [
+        "HKQuantityTypeIdentifierRunningSpeed"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/runningspeed",
+      "status": "supported",
+      "measurementIDs": [
+        "speed"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-speed"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierRunningStrideLength",
+      "title": "Running Stride Length",
+      "symbols": [
+        "HKQuantityTypeIdentifierRunningStrideLength"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/runningstridelength",
+      "status": "supported",
+      "measurementIDs": [
+        "running-stride-length"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-running-stride-length"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierRunningVerticalOscillation",
+      "title": "Running Vertical Oscillation",
+      "symbols": [
+        "HKQuantityTypeIdentifierRunningVerticalOscillation"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/runningverticaloscillation",
+      "status": "supported",
+      "measurementIDs": [
+        "running-vertical-oscillation"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-running-vertical-oscillation"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierSixMinuteWalkTestDistance",
+      "title": "6 Minute Walk Test Distance",
+      "symbols": [
+        "HKQuantityTypeIdentifierSixMinuteWalkTestDistance"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/sixminutewalktestdistance",
+      "status": "supported",
+      "measurementIDs": [
+        "six-minute-walk-test-distance"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-six-minute-walk-test-distance"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierStairAscentSpeed",
+      "title": "Stair Ascent Speed",
+      "symbols": [
+        "HKQuantityTypeIdentifierStairAscentSpeed"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/stairascentspeed",
+      "status": "supported",
+      "measurementIDs": [
+        "stair-ascent-speed"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-stair-ascent-speed"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierStairDescentSpeed",
+      "title": "Stair Descent Speed",
+      "symbols": [
+        "HKQuantityTypeIdentifierStairDescentSpeed"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/stairdescentspeed",
+      "status": "supported",
+      "measurementIDs": [
+        "stair-descent-speed"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-stair-descent-speed"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierStepCount",
+      "title": "Step Count",
+      "symbols": [
+        "HKQuantityTypeIdentifierStepCount"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/stepcount",
+      "status": "supported",
+      "measurementIDs": [
+        "step-count"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-step-count"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierSwimmingStrokeCount",
+      "title": "Swimming Stroke Count",
+      "symbols": [
+        "HKQuantityTypeIdentifierSwimmingStrokeCount"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/swimmingstrokecount",
+      "status": "supported",
+      "measurementIDs": [
+        "swimming-stroke-count"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-swimming-stroke-count"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierTimeInDaylight",
+      "title": "Time in Daylight",
+      "symbols": [
+        "HKQuantityTypeIdentifierTimeInDaylight"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/timeindaylight",
+      "status": "supported",
+      "measurementIDs": [
+        "time-in-daylight"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-time-in-daylight"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierUVExposure",
+      "title": "UV Exposure",
+      "symbols": [
+        "HKQuantityTypeIdentifierUVExposure"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/uvexposure",
+      "status": "supported",
+      "measurementIDs": [
+        "uv-exposure"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-uv-exposure"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierUnderwaterDepth",
+      "title": "Underwater Depth",
+      "symbols": [
+        "HKQuantityTypeIdentifierUnderwaterDepth"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/underwaterdepth",
+      "status": "supported",
+      "measurementIDs": [
+        "underwater-depth"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-underwater-depth"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierVO2Max",
+      "title": "VO2Max",
+      "symbols": [
+        "HKQuantityTypeIdentifierVO2Max"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/vo2max",
+      "status": "supported",
+      "measurementIDs": [
+        "vo2-max"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-vo2-max"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierWaistCircumference",
+      "title": "Waist Circumference",
+      "symbols": [
+        "HKQuantityTypeIdentifierWaistCircumference"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/waistcircumference",
+      "status": "supported",
+      "measurementIDs": [
+        "waist-circumference"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-waist-circumference"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierWalkingAsymmetryPercentage",
+      "title": "Walking Asymmetry Percentage",
+      "symbols": [
+        "HKQuantityTypeIdentifierWalkingAsymmetryPercentage"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/walkingasymmetrypercentage",
+      "status": "supported",
+      "measurementIDs": [
+        "walking-asymmetry"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-walking-asymmetry"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierWalkingDoubleSupportPercentage",
+      "title": "Walking Double Support Percentage",
+      "symbols": [
+        "HKQuantityTypeIdentifierWalkingDoubleSupportPercentage"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/walkingdoublesupportpercentage",
+      "status": "supported",
+      "measurementIDs": [
+        "walking-double-support"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-walking-double-support"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierWalkingHeartRateAverage",
+      "title": "Walking Heart Rate Average",
+      "symbols": [
+        "HKQuantityTypeIdentifierWalkingHeartRateAverage"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/walkingheartrateaverage",
+      "status": "supported",
+      "measurementIDs": [
+        "walking-heart-rate-average"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-walking-heart-rate-average"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierWalkingSpeed",
+      "title": "Walking Speed",
+      "symbols": [
+        "HKQuantityTypeIdentifierWalkingSpeed"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/walkingspeed",
+      "status": "supported",
+      "measurementIDs": [
+        "walking-speed"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-walking-speed"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierWalkingStepLength",
+      "title": "Walking Step Length",
+      "symbols": [
+        "HKQuantityTypeIdentifierWalkingStepLength"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/walkingsteplength",
+      "status": "supported",
+      "measurementIDs": [
+        "walking-step-length"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-walking-step-length"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierWaterTemperature",
+      "title": "Water Temperature",
+      "symbols": [
+        "HKQuantityTypeIdentifierWaterTemperature"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/watertemperature",
+      "status": "supported",
+      "measurementIDs": [
+        "water-temperature"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-water-temperature"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierWorkoutEffortScore",
+      "title": "Workout Effort",
+      "symbols": [
+        "HKQuantityTypeIdentifierWorkoutEffortScore"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/workouteffortscore",
+      "status": "supported",
+      "measurementIDs": [
+        "workout-effort-score"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-workout-effort-score"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKScoredAssessmentTypeIdentifierGAD7",
+      "title": "GAD-7",
+      "symbols": [
+        "HKScoredAssessmentTypeIdentifierGAD7"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkscoredassessmenttypeidentifier/gad7",
+      "status": "supported",
+      "measurementIDs": [
+        "gad7-assessment"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-gad7-assessment"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKScoredAssessmentTypeIdentifierPHQ9",
+      "title": "PHQ-9",
+      "symbols": [
+        "HKScoredAssessmentTypeIdentifierPHQ9"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkscoredassessmenttypeidentifier/phq9",
+      "status": "supported",
+      "measurementIDs": [
+        "phq9-assessment"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-phq9-assessment"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKVisionPrescriptionTypeIdentifier",
+      "title": "Vision Prescription",
+      "symbols": [
+        "HKVisionPrescriptionTypeIdentifier"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkvisionprescriptiontypeidentifier",
+      "status": "deferred",
+      "measurementIDs": [],
+      "profiles": [],
+      "requirement": "A vision prescription is a clinical document, not a measurement; the residual design pass decides its envelope route and no Observation output is admitted."
+    },
+    {
+      "sourceTypeIdentifier": "HKWorkoutRouteTypeIdentifier",
+      "title": "Workout Route",
+      "symbols": [
+        "HKWorkoutRouteTypeIdentifier"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkworkoutroutetypeidentifier",
+      "status": "deferred",
+      "measurementIDs": [],
+      "profiles": [],
+      "requirement": "No shared or HealthKit-adapter output contract is published for this sample type."
+    },
+    {
+      "sourceTypeIdentifier": "HKWorkoutTypeIdentifier",
+      "title": "Workout",
+      "symbols": [
+        "HKWorkoutTypeIdentifier"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkworkouttypeidentifier",
+      "status": "supported",
+      "measurementIDs": [
+        "workout",
+        "workout-segment"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-workout",
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-workout-segment"
+      ]
+    }
+  ]
+}

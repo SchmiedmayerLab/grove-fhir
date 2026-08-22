@@ -12,19 +12,22 @@ fields and established domain profiles. Grove profiles make record identity, cap
 mode, device roles, conversion provenance, and research-study context consistent across
 source platforms.
 
+Grove FHIR is a family of seven guides; [the guide family page](guides.html) maps them, their catalogs, and the shared status vocabulary.
+
 ### Choose your starting point
 
 | Goal | Read | Working example |
 |---|---|---|
 | Encode or consume a measurement | [Observations](observations.html) | [Heart rate](Observation-GroveMobileHeartRateExample.html) |
+| Exchange a complete resource graph | [Observations](observations.html#exchange-graph) | [Collection Bundle](Bundle-GroveMobileExchangeBundleExample.html) |
 | Distinguish the sensor from the app | [Devices and provenance](devices.html) | [Conversion provenance](Provenance-GroveMobileConversionProvenanceExample.html) |
 | Connect data to a study revision | [Study context](study.html) | [Study protocol](PlanDefinition-GroveMobileStudyPlanExample.html) |
 | Add the package and validate JSON | [Implement and validate](implementation.html) | [Heart-rate JSON](Observation-GroveMobileHeartRateExample.json) |
 
 ### The exchange model
 
-The Observation is the clinical record. Other resources describe the context needed
-to interpret and audit that record.
+The collection Bundle is the exchange unit. Its Observation entries are the clinical
+records; other entries describe the context needed to interpret and audit them.
 
 ```text
 Patient <--------- Observation ---------> recording Device

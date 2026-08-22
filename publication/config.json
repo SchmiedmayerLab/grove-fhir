@@ -1,40 +1,52 @@
 {
   "schemaVersion": 1,
   "previewBaseUrl": "https://schmiedmayerlab.github.io/grove-fhir",
-  "canonicalBaseUrl": "https://schmiedmayerlab.github.io/grove-fhir",
+  "canonicalBaseUrl": "https://grovealliance.org/fhir",
   "sourceRepository": "https://github.com/SchmiedmayerLab/grove-fhir",
   "releaseMode": "ci-build-only",
   "guides": [
     {
       "source": "mobile",
-      "canonicalPath": "fhir/mobile",
+      "canonicalPath": "mobile",
       "aliases": [
         ""
       ],
       "representativeResource": "StructureDefinition/grove-mobile-observation"
     },
     {
+      "source": "sensor",
+      "canonicalPath": "sensor",
+      "aliases": [],
+      "representativeResource": "StructureDefinition/grove-sensor-sampled-data-observation"
+    },
+    {
+      "source": "sensorkit",
+      "canonicalPath": "sensorkit",
+      "aliases": [],
+      "representativeResource": "StructureDefinition/sensorkit-observation"
+    },
+    {
       "source": "healthkit",
-      "canonicalPath": "fhir/healthkit",
-      "aliases": [
-        "healthkit"
-      ],
+      "canonicalPath": "healthkit",
+      "aliases": [],
       "representativeResource": "StructureDefinition/healthkit-observation"
     },
     {
       "source": "health-connect",
-      "canonicalPath": "fhir/health-connect",
-      "aliases": [
-        "health-connect"
-      ],
+      "canonicalPath": "health-connect",
+      "aliases": [],
       "representativeResource": "StructureDefinition/health-connect-observation"
     },
     {
+      "source": "providers",
+      "canonicalPath": "providers",
+      "aliases": [],
+      "representativeResource": "StructureDefinition/provider-observation"
+    },
+    {
       "source": "questionnaire",
-      "canonicalPath": "fhir/questionnaire",
-      "aliases": [
-        "questionnaire"
-      ],
+      "canonicalPath": "questionnaire",
+      "aliases": [],
       "representativeResource": "StructureDefinition/grove-questionnaire"
     }
   ],

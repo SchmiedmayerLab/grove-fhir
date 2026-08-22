@@ -1,0 +1,55 @@
+== Suppressed Messages ==
+# This adapter targets FHIR R4. It does not publish the generated R4B package claim.
+WARNING: 2: An HTML fragment from the set [cross-version-analysis.xhtml, cross-version-analysis-inline.xhtml] is not included anywhere in the produced implementation guide
+
+# The guide intentionally defines no global profiles; an empty generated table adds no implementation guidance.
+WARNING: 4: The HTML fragment 'globals-table.xhtml' is not included anywhere in the produced implementation guide
+
+# The narrative states the exact Mobile dependency and division of responsibility; generated boilerplate adds no contract detail.
+WARNING: 1: The HTML fragment 'ip-statements.xhtml' is not included anywhere in the produced implementation guide
+WARNING: 3: An HTML fragment from the set [dependency-table.xhtml, dependency-table-short.xhtml, dependency-table-nontech.xhtml] is not included anywhere in the produced implementation guide
+
+# Provider records do not identify a responsible clinical performer. Provider lineage is not a performer assertion.
+WARNING: Observation/GoogleHealthStepsExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+
+# The fixed code and complete effective Period carry interval-total semantics. The UCUM annotation is not used for dimensional comparison.
+WARNING: Observation/GoogleHealthStepsExample: Observation.value.ofType(Quantity): UCUM Codes that contain human readable annotations like {steps} can be misleading (e.g. they are ignored when comparing units). Best Practice is not to depend on annotations in the UCUM code, so this usage should be checked
+
+# Grove has no assigned stable OID root. Canonical URLs are authoritative identifiers; inventing OIDs would create unstable aliases.
+WARNING: Resource: The resource CodeSystem/provider should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/fhir-tools-ig/CodeSystem-ig-parameters.html#ig-parameters-auto-oid-root)
+WARNING: Resource: The resource ValueSet/provider should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/fhir-tools-ig/CodeSystem-ig-parameters.html#ig-parameters-auto-oid-root)
+
+# Provider-qualified source types are canonical-URL terminology. Grove has no assigned stable OID root and does not invent aliases for CDA.
+WARNING: Resource: The resource CodeSystem/provider-source-type should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/fhir-tools-ig/CodeSystem-ig-parameters.html#ig-parameters-auto-oid-root)
+WARNING: Resource: The resource ValueSet/provider-source-type should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/fhir-tools-ig/CodeSystem-ig-parameters.html#ig-parameters-auto-oid-root)
+
+# The exact offline dependency closure identifies the guide language, but the external BCP 47 code system does not enumerate language codes locally.
+WARNING: ImplementationGuide/org.grovealliance.fhir.providers: ImplementationGuide.language.system: A definition for CodeSystem 'urn:ietf:bcp:47' could not be found, so the code cannot be validated
+WARNING: ImplementationGuide/org.grovealliance.fhir.providers: ImplementationGuide.language: A definition for CodeSystem 'urn:ietf:bcp:47' could not be found, so the code cannot be validated
+
+# UCUM is deliberately not expanded from a network terminology service during the reproducible offline build; the fixed unit is enforced structurally and by the catalog/package binding tests.
+WARNING: Observation/GoogleHealthStepsExample: Observation.value.ofType(Quantity): Unable to validate code '{steps}' in system 'http://unitsofmeasure.org' because the validator is running without terminology services
+
+# Publisher 2.3.2 cannot resolve the required core MimeType binding offline. This exact suppression is limited to the reviewed raw example; the Sensor profile and producer kit still enforce byte integrity.
+WARNING: Observation/WithingsBloodPressureExample: Observation.component[0].value.ofType(Quantity): Unable to validate code 'mm[Hg]' in system 'http://unitsofmeasure.org' because the validator is running without terminology services
+WARNING: Observation/WithingsBloodPressureExample: Observation.component[1].value.ofType(Quantity): Unable to validate code 'mm[Hg]' in system 'http://unitsofmeasure.org' because the validator is running without terminology services
+WARNING: Observation/WithingsBloodPressureExample: Observation.component[0].value.ofType(Quantity).system: A definition for CodeSystem 'http://unitsofmeasure.org' could not be found, so the code cannot be validated
+WARNING: Observation/WithingsBloodPressureExample: Observation.component[1].value.ofType(Quantity).system: A definition for CodeSystem 'http://unitsofmeasure.org' could not be found, so the code cannot be validated
+WARNING: Observation/WithingsBloodPressureExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Bundle/WithingsExchangeBundleExample: Bundle.entry[2].resource/*Observation/WithingsBloodPressureExample*/.component[0].value.ofType(Quantity).system: A definition for CodeSystem 'http://unitsofmeasure.org' could not be found, so the code cannot be validated
+WARNING: Bundle/WithingsExchangeBundleExample: Bundle.entry[2].resource/*Observation/WithingsBloodPressureExample*/.component[1].value.ofType(Quantity).system: A definition for CodeSystem 'http://unitsofmeasure.org' could not be found, so the code cannot be validated
+WARNING: Bundle/WithingsExchangeBundleExample: Bundle.entry[2].resource/*Observation/WithingsBloodPressureExample*/: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Bundle/WithingsExchangeBundleExample: Bundle.entry[2].resource/*Observation/WithingsBloodPressureExample*/.component[0].value.ofType(Quantity): Unable to validate code 'mm[Hg]' in system 'http://unitsofmeasure.org' because the validator is running without terminology services
+WARNING: Bundle/WithingsExchangeBundleExample: Bundle.entry[2].resource/*Observation/WithingsBloodPressureExample*/.component[1].value.ofType(Quantity): Unable to validate code 'mm[Hg]' in system 'http://unitsofmeasure.org' because the validator is running without terminology services
+# v0.3 sweep: reviewed benign warning families on the generated profiles.
+WARNING: Resource: The resource CodeSystem/provider-measurement should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/fhir-tools-ig/CodeSystem-ig-parameters.html#ig-parameters-auto-oid-root)
+WARNING: Resource: The resource ValueSet/provider-measurement should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/fhir-tools-ig/CodeSystem-ig-parameters.html#ig-parameters-auto-oid-root)
+WARNING: StructureDefinition.where(url = 'https://grovealliance.org/fhir/providers/StructureDefinition/provider-body-fat-mass'): The Implementation Guide contains no examples for this profile
+WARNING: StructureDefinition.where(url = 'https://grovealliance.org/fhir/providers/StructureDefinition/provider-extracellular-water-mass'): The Implementation Guide contains no examples for this profile
+WARNING: StructureDefinition.where(url = 'https://grovealliance.org/fhir/providers/StructureDefinition/provider-intracellular-water-mass'): The Implementation Guide contains no examples for this profile
+WARNING: StructureDefinition.where(url = 'https://grovealliance.org/fhir/providers/StructureDefinition/provider-muscle-mass'): The Implementation Guide contains no examples for this profile
+WARNING: StructureDefinition.where(url = 'https://grovealliance.org/fhir/providers/StructureDefinition/provider-sleeping-heart-rate-average'): The Implementation Guide contains no examples for this profile
+WARNING: StructureDefinition/provider-body-fat-mass: StructureDefinition.differential.element[1].pattern.ofType(CodeableConcept): Error Cannot invoke "org.hl7.fhir.r5.terminologies.client.TerminologyClientContext.getAddress()" because "tc" is null validating CodeableConcept
+WARNING: StructureDefinition/provider-body-fat-mass: StructureDefinition.snapshot.element[49].pattern.ofType(CodeableConcept): Error Cannot invoke "org.hl7.fhir.r5.terminologies.client.TerminologyClientContext.getAddress()" because "tc" is null validating CodeableConcept
+WARNING: StructureDefinition/provider-muscle-mass: StructureDefinition.differential.element[1].pattern.ofType(CodeableConcept): Error Cannot invoke "org.hl7.fhir.r5.terminologies.client.TerminologyClientContext.getAddress()" because "tc" is null validating CodeableConcept
+WARNING: StructureDefinition/provider-muscle-mass: StructureDefinition.snapshot.element[49].pattern.ofType(CodeableConcept): Error Cannot invoke "org.hl7.fhir.r5.terminologies.client.TerminologyClientContext.getAddress()" because "tc" is null validating CodeableConcept
