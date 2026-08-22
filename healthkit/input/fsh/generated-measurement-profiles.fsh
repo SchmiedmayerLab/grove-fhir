@@ -1522,7 +1522,7 @@ Profile: HealthkitWalkingHeartRateAverage
 Parent: HealthKitObservation
 Id: healthkit-walking-heart-rate-average
 Title: "Walking Heart Rate Average"
-Description: "The average heart rate during walking activity over a daily window, normalized to UCUM beats per minute. HealKit-only evidence today; the phase-2 aggregate design implements the windowing."
+Description: "The average heart rate during walking activity over a daily window, normalized to UCUM beats per minute. HealthKit-only evidence today; the phase-2 aggregate design implements the windowing."
 * code = HealthKitMeasurementCS#walking-heart-rate-average
 * code from HealthKitMeasurementVS (required)
 * effective[x] only Period

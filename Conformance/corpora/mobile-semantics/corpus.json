@@ -2131,8 +2131,8 @@
       "id": "resting-heart-rate",
       "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-resting-heart-rate",
       "code": {
-        "system": "http://loinc.org",
-        "code": "40443-4"
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
+        "code": "resting-heart-rate"
       },
       "effective": {
         "type": "Period",

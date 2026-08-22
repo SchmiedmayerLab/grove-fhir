@@ -60,6 +60,7 @@ Description: "Measurement concepts defined by the Grove Mobile contract when an 
 * #mindfulness-session-duration "Mindfulness session duration" "The duration of a single mindfulness session covering the exact Observation effective Period."
 * #ovulation-test-result "Ovulation test result" "The classified result of a home ovulation test."
 * #power "Power" "The mechanical power the subject produces at the exact Observation effective instant, recorded during activity."
+* #resting-heart-rate "Resting heart rate" "The estimated heart rate at rest across the exact Observation effective Period."
 * #sexual-activity "Sexual activity" "A logged sexual-activity event with its protection-used classification."
 * #sleep-heart-rate "Sleep heart rate" "A heart-rate statistic aggregated over the exact sleep-session effective Period."
 * #sleep-stage "Sleep stage" "The classification assigned to an exact interval within a sleep session."
@@ -1386,8 +1387,9 @@ Profile: GroveMobileRestingHeartRate
 Parent: GroveMobileObservation
 Id: grove-mobile-resting-heart-rate
 Title: "Resting Heart Rate"
-Description: "A windowed estimate of the heart rate while at rest, normalized to UCUM beats per minute over the exact estimation window. It is semantically distinct from the shared point heart-rate measurement and is implemented by the phase-2 aggregate design."
-* code = $loinc#40443-4
+Description: "A windowed estimate of the heart rate while at rest, normalized to UCUM beats per minute over the exact estimation window. It is semantically distinct from the shared point heart-rate measurement and is implemented by the phase-2 aggregate design. LOINC 40443-4 is deliberately not used: it denotes a heart rate measured at rest, which R4 classifies as a vital sign, whereas this result is a derived daily estimate that must not be surfaced as a measured vital sign."
+* code = GroveMobileMeasurementCS#resting-heart-rate
+* code from GroveMobileMeasurementVS (required)
 * effective[x] only Period
 * effectivePeriod.end 1..1 MS
 * method 1..1 MS

@@ -2403,7 +2403,7 @@
     "resting-heart-rate": {
       "status": "approved",
       "provenance": "reviewed",
-      "digest": "sha256:736b9031e1a1ef06be9bd9869fa75105189f8e5811aadc19e7db72777bb7cd49",
+      "digest": "sha256:c2e45044ed18c30c57058bb42f8642e2803111722122c646dbaff81e977c0528",
       "preparedBy": [
         {
           "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
@@ -2417,10 +2417,10 @@
         }
       ],
       "ratification": "pending-pull-request-review",
-      "reviewedOn": "2026-08-21",
-      "recordedOn": "2026-08-21",
+      "reviewedOn": "2026-08-22",
+      "recordedOn": "2026-08-22",
       "reviewRef": "pending-integration-commit",
-      "notes": "40443-4 verified via NLM Clinical Tables (long common name 'Heart rate --resting') and tx.fhir.org lookup (ACTIVE, PROPERTY NRat, SCALE Qn); /min matches the NRat dimension {s:-1}. Three sources evidence the concept (HealthKit daily estimate, Health Connect RestingHeartRateRecord, Google Health API daily-resting-heart-rate), but the value is a daily/rolling windowed estimate, so per policy it is aggregate-family rather than a point shared measurement; effective Period covers the exact estimation window, including Health Connect's instant records once the design fixes window semantics."
+      "notes": "Coded in the Grove Mobile measurement CodeSystem rather than LOINC 40443-4. 40443-4 was verified as a real concept (NLM Clinical Tables long common name 'Heart rate --resting'; tx.fhir.org ACTIVE, PROPERTY NRat, SCALE Qn, dimension {s:-1} matching /min), but R4 classifies it as a heart-rate vital sign: the official validator auto-applies StructureDefinition/heartrate to any Observation carrying it, demanding category vital-signs and the magic code 8867-4. This result is a daily/rolling derived estimate, not a measured vital sign, so claiming that profile would surface an aggregate to clinical consumers as a point vital sign. A Grove code is the CodeSystem's stated purpose for exactly this case, and it matches the four sibling heart-rate aggregates. Three sources evidence the concept (HealthKit daily estimate, Health Connect RestingHeartRateRecord, Google Health API daily-resting-heart-rate); effective Period covers the exact estimation window."
     },
     "running-ground-contact-time": {
       "status": "approved",
@@ -3819,7 +3819,7 @@
     "walking-heart-rate-average": {
       "status": "approved",
       "provenance": "reviewed",
-      "digest": "sha256:1425144e32216570ac4c8f4c201073dfcd94e8ce4c78eeb89b93467eb8b92ef7",
+      "digest": "sha256:9d44a1ac571b533102de3e946c01f717cf303f4496357d43e042eddbd4115817",
       "preparedBy": [
         {
           "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
@@ -3834,9 +3834,9 @@
       ],
       "ratification": "pending-pull-request-review",
       "reviewedOn": "2026-08-21",
-      "recordedOn": "2026-08-21",
+      "recordedOn": "2026-08-22",
       "reviewRef": "pending-integration-commit",
-      "notes": "NLM Clinical Tables returns no LOINC concept for a walking heart-rate mean ('heart rate walking' yields zero results), and generic pedometer-mean codes do not carry the walking-activity qualifier, so a Grove code is defined. /min parses under pinned UCUM 2.2 with dimension {s:-1}. Explicitly named in the aggregate-family policy list; effective Period covers the daily estimation window."
+      "notes": "NLM Clinical Tables returns no LOINC concept for a walking heart-rate mean ('heart rate walking' yields zero results), and generic pedometer-mean codes do not carry the walking-activity qualifier, so a Grove code is defined. /min parses under pinned UCUM 2.2 with dimension {s:-1}. Explicitly named in the aggregate-family policy list; effective Period covers the daily estimation window. Re-recorded on 2026-08-22 for a spelling correction in the narrative description; the concept, code, unit, and dimension are unchanged."
     },
     "walking-speed": {
       "status": "approved",
