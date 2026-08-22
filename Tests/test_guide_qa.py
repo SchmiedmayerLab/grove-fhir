@@ -109,7 +109,7 @@ class GuideQATests(unittest.TestCase):
                     re.MULTILINE,
                 )
             ),
-            {"application/json", "application/octet-stream"},
+            {"application/json", "application/octet-stream", "text/csv", "application/fhir+json"},
         )
         self.assertIn(
             '* ^expansion.parameter[=].valueUri = "urn:ietf:bcp:13"',
