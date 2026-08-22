@@ -1424,7 +1424,7 @@
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "requirement": "No shared or adapter-specific output contract is published for this type."
     },
     {
       "sourceTypeIdentifier": "HKDataTypeIdentifierAudiogram",
@@ -1436,7 +1436,7 @@
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
-      "requirement": "No shared or HealthKit-adapter v0.2 output contract is published for this sample type."
+      "requirement": "No shared or HealthKit-adapter output contract is published for this sample type."
     },
     {
       "sourceTypeIdentifier": "HKDataTypeIdentifierElectrocardiogram",
@@ -1477,7 +1477,7 @@
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
-      "requirement": "No shared or HealthKit-adapter v0.2 output contract is published for this sample type."
+      "requirement": "No shared or HealthKit-adapter output contract is published for this sample type."
     },
     {
       "sourceTypeIdentifier": "HKDataTypeUserAnnotatedMedicationConcept",
@@ -1489,7 +1489,7 @@
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "requirement": "No shared or adapter-specific output contract is published for this type."
     },
     {
       "sourceTypeIdentifier": "HKDocumentTypeIdentifierCDA",
@@ -1501,7 +1501,7 @@
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "requirement": "No shared or adapter-specific output contract is published for this type."
     },
     {
       "sourceTypeIdentifier": "HKMedicationDoseEventTypeIdentifierMedicationDoseEvent",
@@ -1513,7 +1513,7 @@
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
-      "requirement": "No shared or adapter-specific v0.2 output contract is published for this type."
+      "requirement": "No shared or adapter-specific output contract is published for this type."
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierActiveEnergyBurned",
@@ -3365,7 +3365,7 @@
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
-      "requirement": "No shared or HealthKit-adapter v0.2 output contract is published for this sample type."
+      "requirement": "No shared or HealthKit-adapter output contract is published for this sample type."
     },
     {
       "sourceTypeIdentifier": "HKWorkoutTypeIdentifier",

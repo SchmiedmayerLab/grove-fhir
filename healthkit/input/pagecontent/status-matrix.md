@@ -100,14 +100,14 @@ This table is the complete, closed v0.3.0 inventory of all 218 Apple HealthKit p
 | `HKClinicalTypeIdentifierProcedureRecord` | Procedure Record | `platform-exclusive` | — | healthkit-clinical-record-document | — |
 | `HKClinicalTypeIdentifierVitalSignRecord` | Vital Sign Record | `platform-exclusive` | — | healthkit-clinical-record-document | — |
 | `HKCorrelationTypeIdentifierBloodPressure` | Blood Pressure | `supported` | blood-pressure | grove-mobile-blood-pressure | — |
-| `HKCorrelationTypeIdentifierFood` | Food | `deferred` | — | — | No shared or adapter-specific v0.2 output contract is published for this type. |
-| `HKDataTypeIdentifierAudiogram` | Audiogram | `deferred` | — | — | No shared or HealthKit-adapter v0.2 output contract is published for this sample type. |
+| `HKCorrelationTypeIdentifierFood` | Food | `deferred` | — | — | No shared or adapter-specific output contract is published for this type. |
+| `HKDataTypeIdentifierAudiogram` | Audiogram | `deferred` | — | — | No shared or HealthKit-adapter output contract is published for this sample type. |
 | `HKDataTypeIdentifierElectrocardiogram` | ECG | `supported` | electrocardiogram | grove-sensor-ecg-observation; healthkit-ecg-observation | The caller supplies the HKElectrocardiogram, every voltage measurement with its exact timeSinceSampleStart, and each associated HKCategorySample when symptomsStatus is present. The adapter preserves symptom UUID/timing/type/severity and complete HKSourceRevision fields, classification, average heart rate, sampling frequency, reported count, Apple ECG algorithm-version metadata when present, source and waveform intervals, lead, offsets, and voltages without fetching or resampling. Explicit caller authorization for linkable symptom-source disclosure is required; otherwise conversion fails closed. |
 | `HKDataTypeIdentifierHeartbeatSeries` | Heartbeat Series | `deferred` | — | — | The beat-to-beat interval series ships as a grove-csv-1 recording (heartbeat-series column schema) in the residual design pass; no Observation output is admitted. |
-| `HKDataTypeStateOfMind` | State of Mind | `deferred` | — | — | No shared or HealthKit-adapter v0.2 output contract is published for this sample type. |
-| `HKDataTypeUserAnnotatedMedicationConcept` | User Annotated Medication Concept | `deferred` | — | — | No shared or adapter-specific v0.2 output contract is published for this type. |
-| `HKDocumentTypeIdentifierCDA` | CDA Document | `deferred` | — | — | No shared or adapter-specific v0.2 output contract is published for this type. |
-| `HKMedicationDoseEventTypeIdentifierMedicationDoseEvent` | Medication Dose Event | `deferred` | — | — | No shared or adapter-specific v0.2 output contract is published for this type. |
+| `HKDataTypeStateOfMind` | State of Mind | `deferred` | — | — | No shared or HealthKit-adapter output contract is published for this sample type. |
+| `HKDataTypeUserAnnotatedMedicationConcept` | User Annotated Medication Concept | `deferred` | — | — | No shared or adapter-specific output contract is published for this type. |
+| `HKDocumentTypeIdentifierCDA` | CDA Document | `deferred` | — | — | No shared or adapter-specific output contract is published for this type. |
+| `HKMedicationDoseEventTypeIdentifierMedicationDoseEvent` | Medication Dose Event | `deferred` | — | — | No shared or adapter-specific output contract is published for this type. |
 | `HKQuantityTypeIdentifierActiveEnergyBurned` | Active Energy Burned | `supported` | active-energy | grove-mobile-active-energy | — |
 | `HKQuantityTypeIdentifierAppleExerciseTime` | Apple Exercise Time | `supported` | apple-exercise-time | healthkit-apple-exercise-time | — |
 | `HKQuantityTypeIdentifierAppleMoveTime` | Apple Move Time | `supported` | apple-move-time | healthkit-apple-move-time | — |
@@ -231,7 +231,7 @@ This table is the complete, closed v0.3.0 inventory of all 218 Apple HealthKit p
 | `HKScoredAssessmentTypeIdentifierGAD7` | GAD-7 | `supported` | gad7-assessment | healthkit-gad7-assessment | — |
 | `HKScoredAssessmentTypeIdentifierPHQ9` | PHQ-9 | `supported` | phq9-assessment | healthkit-phq9-assessment | — |
 | `HKVisionPrescriptionTypeIdentifier` | Vision Prescription | `deferred` | — | — | A vision prescription is a clinical document, not a measurement; the residual design pass decides its envelope route and no Observation output is admitted. |
-| `HKWorkoutRouteTypeIdentifier` | Workout Route | `deferred` | — | — | No shared or HealthKit-adapter v0.2 output contract is published for this sample type. |
+| `HKWorkoutRouteTypeIdentifier` | Workout Route | `deferred` | — | — | No shared or HealthKit-adapter output contract is published for this sample type. |
 | `HKWorkoutTypeIdentifier` | Workout | `supported` | workout, workout-segment | grove-mobile-workout; grove-mobile-workout-segment | — |
 
 ## Derived aggregate contracts
