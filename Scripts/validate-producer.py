@@ -596,7 +596,8 @@ def adapter_profile_contract() -> tuple[set[str], set[str]]:
     measurements = read_json(CATALOG_ROOT / "measurement-catalog.json")
     claims = read_json(CATALOG_ROOT / "profile-claims.json")
     shared = {
-        f"https://grovealliance.org/fhir/mobile/StructureDefinition/{entry['profile']}"
+        f"https://grovealliance.org/fhir/{entry.get('owner', 'mobile')}"
+        f"/StructureDefinition/{entry['profile']}"
         for entry in measurements["measurements"]
     }
     shared.update(claims["observationAdapterClaim"].get("sharedSensorProfiles", []))
