@@ -83,6 +83,27 @@ class PackageGraphTests(unittest.TestCase):
             claims["providerRecordingDocumentClaim"]["cardinality"], 2
         )
 
+    def test_sensorkit_conversion_claim_covers_every_registered_output(self) -> None:
+        graph = json.loads((ROOT / "catalog/package-graph.json").read_text(encoding="utf-8"))
+        claims = json.loads((ROOT / "catalog/profile-claims.json").read_text(encoding="utf-8"))
+        package = next(
+            entry for entry in graph["packages"] if entry["source"] == "sensorkit"
+        )
+        claim = next(
+            entry
+            for entry in claims["adapterConversionProvenanceClaims"]
+            if entry["adapter"] == "sensorkit"
+        )
+        # Every SensorKit output profile derives from sensorkit-observation or is the
+        # recording document, so the conversion Provenance targets all of them.
+        base = f"{package['canonical']}/StructureDefinition/"
+        expected = sorted(
+            base + name
+            for name in package["profiles"]
+            if base + name != claim["profile"]
+        )
+        self.assertEqual(claim["targetAdapterProfiles"], expected)
+
 
 if __name__ == "__main__":
     unittest.main()

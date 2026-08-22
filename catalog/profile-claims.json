@@ -108,11 +108,17 @@
       "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-conversion-provenance",
       "sourceIdentifierSystem": "https://grovealliance.org/fhir/sensorkit/NamingSystem/sensorkit-record-id",
       "targetAdapterProfiles": [
-        "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-observation",
-        "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-recording-document",
+        "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-accelerometer-observation",
         "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-device-usage-observation",
         "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-ecg-observation",
+        "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-keyboard-metrics-observation",
+        "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-messages-usage-observation",
+        "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-observation",
         "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-on-wrist-observation",
+        "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-phone-usage-observation",
+        "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-ppg-observation",
+        "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-recording-document",
+        "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-sleep-session-observation",
         "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-visit-observation"
       ],
       "rule": "One Provenance in the exchange graph targets every SensorKit structured and raw output carrying its exact sole source-record Identifier; every target is an internal UUID reference. A bundle whose outputs for a source record are all entered-in-error records a retraction rather than a conversion and carries no conversion Provenance."
