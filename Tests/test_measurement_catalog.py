@@ -161,6 +161,34 @@ class MeasurementCatalogTests(unittest.TestCase):
             generated = uuid.uuid5(uuid.UUID(contract["fullUrlAlgorithm"]["namespace"]), value)
             self.assertEqual(f"urn:uuid:{generated}", vector["fullUrl"])
 
+    def test_recording_device_identity_vectors_are_exact(self) -> None:
+        import importlib.util
+
+        spec = importlib.util.spec_from_file_location(
+            "grove_identity_digest", ROOT / "Scripts/health_connect_identity.py"
+        )
+        assert spec and spec.loader
+        identity = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(identity)
+        contract = json.loads((ROOT / "catalog/exchange-identity.json").read_text(encoding="utf-8"))
+        device = contract["recordingDeviceIdentity"]
+
+        # Every admitted key kind is a published preimage, and every preimage names its kind in
+        # the third slot so one kind's digest can never be mistaken for another's.
+        self.assertEqual(set(device["keyKinds"]), set(device["preimages"]))
+        for kind, preimage in device["preimages"].items():
+            self.assertEqual(preimage[0], "grove-recording-device-id-v1")
+            self.assertEqual(preimage[3], kind)
+
+        self.assertTrue(device["vectors"])
+        for vector in device["vectors"]:
+            self.assertEqual(identity.canonical_json(vector["input"]), vector["canonical"])
+            self.assertEqual(identity.digest(vector["input"]), vector["value"])
+            self.assertIn(vector["input"][3], device["preimages"])
+            self.assertEqual(
+                len(vector["input"]), len(device["preimages"][vector["input"][3]])
+            )
+
     def test_uuid_algorithm_rejects_invalid_unicode(self) -> None:
         import importlib.util
 
