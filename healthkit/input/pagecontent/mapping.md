@@ -12,8 +12,10 @@ and the applicable clinical or research profile. Preserve the facts HealthKit st
 do not infer hardware, capture mode, clinical meaning, or study membership from an API
 type alone.
 
+The normative status-vocabulary definitions live on the [guide family page](https://grovealliance.org/fhir/mobile/guides.html#status-vocabulary).
 The [authoritative status matrix](status-matrix.html) renders all 218 source-type identifiers from
 the release's machine catalog, including every admitted and fail-closed row.
+The [walkthrough](walkthrough.html) applies the rules below to one concrete heart-rate sample, from `HKQuantitySample` to the uploaded exchange Bundle.
 
 ### Object identity
 

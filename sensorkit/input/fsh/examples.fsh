@@ -206,7 +206,7 @@ Instance: SensorKitOnWristExample
 InstanceOf: SensorKitOnWristObservation
 Usage: #example
 Title: "SensorKit On-Wrist State"
-Description: "A provider-specific on-wrist state with wrist and crown placement preserved as coded components."
+Description: "A platform-exclusive on-wrist state with wrist and crown placement preserved as coded components."
 * identifier[sensorKitRecordId].system = $sensorKitRecordId
 * identifier[sensorKitRecordId].value = "f66d92c6-6819-4d9d-8f0f-d12f9c0a1f03"
 * identifier[sensorKitOutputId].system = $sensorKitOutputId
@@ -228,7 +228,7 @@ Instance: SensorKitDeviceUsageExample
 InstanceOf: SensorKitDeviceUsageObservation
 Usage: #example
 Title: "SensorKit Device Usage Summary"
-Description: "A provider-specific device-usage summary; detailed application, notification, and web usage remains in the native recording."
+Description: "A platform-exclusive device-usage summary; detailed application, notification, and web usage remains in the native recording."
 * identifier[sensorKitRecordId].system = $sensorKitRecordId
 * identifier[sensorKitRecordId].value = "b4df30d0-2a34-492e-a68e-b1eab1cb471d"
 * identifier[sensorKitOutputId].system = $sensorKitOutputId
@@ -251,7 +251,7 @@ Instance: SensorKitVisitExample
 InstanceOf: SensorKitVisitObservation
 Usage: #example
 Title: "SensorKit Visit Summary"
-Description: "A provider-specific visit summary that preserves uncertain arrival and departure windows without asserting a clinical Encounter."
+Description: "A platform-exclusive visit summary that preserves uncertain arrival and departure windows without asserting a clinical Encounter."
 * identifier[sensorKitRecordId].system = $sensorKitRecordId
 * identifier[sensorKitRecordId].value = "d75fc337-6aac-4edf-931d-bbf1b24736aa"
 * identifier[sensorKitOutputId].system = $sensorKitOutputId
@@ -310,3 +310,127 @@ Description: "One conversion event targeting both the structured summary and req
 * entity.role = #source
 * entity.what.identifier.system = $sensorKitRecordId
 * entity.what.identifier.value = "b4df30d0-2a34-492e-a68e-b1eab1cb471d"
+
+Instance: SensorKitExchangePatientExample
+InstanceOf: Patient
+Usage: #example
+Title: "Exchange Bundle SensorKit Participant"
+Description: "The Patient node in the deterministic SensorKit device-usage exchange Bundle."
+* identifier.system = "https://study.example.org/fhir/identifiers/participant"
+* identifier.value = "sensorkit-participant-001"
+
+Instance: SensorKitExchangeDeviceExample
+InstanceOf: GroveRecordingDevice
+Usage: #example
+Title: "Exchange Bundle SensorKit Recording Device"
+Description: "The watch node in the deterministic SensorKit device-usage exchange Bundle."
+* identifier.system = "https://study.example.org/fhir/identifiers/device"
+* identifier.value = "sensorkit-watch-001"
+* status = #active
+* manufacturer = "Example Manufacturer"
+* type.text = "Watch"
+
+Instance: SensorKitExchangeApplicationExample
+InstanceOf: GroveApplicationDevice
+Usage: #example
+Title: "Exchange Bundle SensorKit Application"
+Description: "The converting-application node in the deterministic SensorKit device-usage exchange Bundle."
+* status = #active
+* identifier.system = "https://study.example.org/fhir/identifiers/application"
+* identifier.value = "sensorkit-mapper"
+* deviceName[applicationName].name = "SensorKit Mapper"
+* deviceName[applicationName].type = #user-friendly-name
+
+Instance: SensorKitExchangeDeviceUsageExample
+InstanceOf: SensorKitDeviceUsageObservation
+Usage: #example
+Title: "Exchange Bundle SensorKit Device Usage Summary"
+Description: "The structured device-usage output whose internal references use deterministic Bundle UUID URNs."
+* identifier[sensorKitRecordId].system = $sensorKitRecordId
+* identifier[sensorKitRecordId].value = "b4df30d0-2a34-492e-a68e-b1eab1cb471d"
+* identifier[sensorKitOutputId].system = $sensorKitOutputId
+* identifier[sensorKitOutputId].value = "6e7453a7-0045-5f96-a847-5a956a817dd4"
+* extension[sensorKitSourceType].valueCode = #device-usage
+* status = #final
+* code = $sensorKitConcept#device-usage-summary "Device usage summary"
+* subject.reference = "urn:uuid:d66ce444-2f05-5661-ac7c-86f080cf3be4"
+* effectivePeriod.start = "2026-08-20T08:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T08:15:00-07:00"
+* valueQuantity = 372 's' "seconds"
+* derivedFrom.reference = "urn:uuid:6f4e4010-4e0b-5f04-adf2-78b20c1a196b"
+* component[screenWakes].code = $sensorKitConcept#screen-wakes "Screen wakes"
+* component[screenWakes].valueQuantity = 6 '{count}' "{count}"
+* component[unlocks].code = $sensorKitConcept#unlocks "Unlocks"
+* component[unlocks].valueQuantity = 4 '{count}' "{count}"
+* device.reference = "urn:uuid:7b38448e-4b35-5813-979a-65f2b724c703"
+
+Instance: SensorKitExchangeDeviceUsageDocumentExample
+InstanceOf: SensorKitRecordingDocument
+Usage: #example
+Title: "Exchange Bundle SensorKit Native Device Usage Recording"
+Description: "The raw device-usage output whose internal references use deterministic Bundle UUID URNs."
+* meta.profile[+] = "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document"
+* identifier[sensorKitRecordId].system = $sensorKitRecordId
+* identifier[sensorKitRecordId].value = "b4df30d0-2a34-492e-a68e-b1eab1cb471d"
+* identifier[sensorKitOutputId].system = $sensorKitOutputId
+* identifier[sensorKitOutputId].value = "d42f2915-17ba-5891-a068-9a6a9d6732b6"
+* extension[sensorKitSourceType].valueCode = #device-usage
+* status = #current
+* type = $sensorKitSourceType#device-usage "Device usage report"
+* subject.reference = "urn:uuid:d66ce444-2f05-5661-ac7c-86f080cf3be4"
+* date = "2026-08-20T15:15:01Z"
+* author.reference = "urn:uuid:7b38448e-4b35-5813-979a-65f2b724c703"
+* content.attachment.contentType = #application/json
+* content.attachment.title = "SensorKit device usage report"
+* content.attachment.data = "eyJ2ZXJzaW9uIjoiMSJ9"
+* content.attachment.size = 15
+* content.attachment.hash = "sHigu4BMVa0IJ0LR3NDJ5y8l4sc="
+* context.related.reference = "urn:uuid:f83aa5e2-ed76-5ddb-a9eb-8d30858b8b55"
+
+Instance: SensorKitExchangeDeviceUsageProvenanceExample
+InstanceOf: SensorKitConversionProvenance
+Usage: #example
+Title: "Exchange Bundle SensorKit Device-usage Conversion Provenance"
+Description: "One conversion event whose deterministic UUID targets cover both device-usage outputs of the same source record."
+* target[+].reference = "urn:uuid:f83aa5e2-ed76-5ddb-a9eb-8d30858b8b55"
+* target[+].reference = "urn:uuid:6f4e4010-4e0b-5f04-adf2-78b20c1a196b"
+* recorded = "2026-08-20T15:15:01Z"
+* agent[assembler].type = $provenanceParticipantType#assembler
+* agent[assembler].who.reference = "urn:uuid:247b668e-0fb3-5b9f-ac46-bd66c9536d8b"
+* entity.role = #source
+* entity.what.identifier.system = $sensorKitRecordId
+* entity.what.identifier.value = "b4df30d0-2a34-492e-a68e-b1eab1cb471d"
+
+Instance: SensorKitDeviceUsageExchangeBundleExample
+InstanceOf: GroveMobileExchangeBundle
+Usage: #example
+Title: "SensorKit Device-usage Exchange Bundle"
+Description: "The mandated dual-output graph for one SensorKit device-usage record: the structured summary, its required native Recording Document, the shared devices, and one Provenance covering both outputs, with deterministic UUID URN fullUrls."
+* identifier.system = "https://study.example.org/fhir/identifiers/exchange-bundle"
+* identifier.value = "sensorkit-device-usage-20260820-001"
+* type = #collection
+* timestamp = "2026-08-20T15:15:01Z"
+* entry[0].extension[entryIdentifier].valueIdentifier.system = "https://study.example.org/fhir/identifiers/participant"
+* entry[0].extension[entryIdentifier].valueIdentifier.value = "sensorkit-participant-001"
+* entry[0].fullUrl = "urn:uuid:d66ce444-2f05-5661-ac7c-86f080cf3be4"
+* entry[0].resource = SensorKitExchangePatientExample
+* entry[1].extension[entryIdentifier].valueIdentifier.system = "https://study.example.org/fhir/identifiers/device"
+* entry[1].extension[entryIdentifier].valueIdentifier.value = "sensorkit-watch-001"
+* entry[1].fullUrl = "urn:uuid:7b38448e-4b35-5813-979a-65f2b724c703"
+* entry[1].resource = SensorKitExchangeDeviceExample
+* entry[2].extension[entryIdentifier].valueIdentifier.system = "https://study.example.org/fhir/identifiers/application"
+* entry[2].extension[entryIdentifier].valueIdentifier.value = "sensorkit-mapper"
+* entry[2].fullUrl = "urn:uuid:247b668e-0fb3-5b9f-ac46-bd66c9536d8b"
+* entry[2].resource = SensorKitExchangeApplicationExample
+* entry[3].extension[entryIdentifier].valueIdentifier.system = $sensorKitOutputId
+* entry[3].extension[entryIdentifier].valueIdentifier.value = "6e7453a7-0045-5f96-a847-5a956a817dd4"
+* entry[3].fullUrl = "urn:uuid:f83aa5e2-ed76-5ddb-a9eb-8d30858b8b55"
+* entry[3].resource = SensorKitExchangeDeviceUsageExample
+* entry[4].extension[entryIdentifier].valueIdentifier.system = $sensorKitOutputId
+* entry[4].extension[entryIdentifier].valueIdentifier.value = "d42f2915-17ba-5891-a068-9a6a9d6732b6"
+* entry[4].fullUrl = "urn:uuid:6f4e4010-4e0b-5f04-adf2-78b20c1a196b"
+* entry[4].resource = SensorKitExchangeDeviceUsageDocumentExample
+* entry[5].extension[entryIdentifier].valueIdentifier.system = "https://study.example.org/fhir/identifiers/provenance"
+* entry[5].extension[entryIdentifier].valueIdentifier.value = "device-usage-conversion-20260820-001"
+* entry[5].fullUrl = "urn:uuid:4f82250f-1bf7-5c5f-b13a-d967fb3a9592"
+* entry[5].resource = SensorKitExchangeDeviceUsageProvenanceExample

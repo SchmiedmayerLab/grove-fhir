@@ -12,7 +12,8 @@ reusing the source-neutral Mobile and Sensor packages for measurements, uniform 
 series, ECG recordings, and native recording documents.
 
 The authoritative v0.2.0 inventory contains all 22 streams in the stated Apple `SRSensor` baseline: 20 catalog-baseline symbols and two stable additions.
-Every row has one definitive status in `catalog/sensorkit-adapter.json`.
+Every row has one definitive status in [`catalog/sensorkit-adapter.json`](https://grovealliance.org/fhir/catalog/sensorkit-adapter.json).
+The [device-usage walkthrough](walkthrough.html) demonstrates the dual-output contract that pairs each structured summary with its required native Recording Document.
 
 This package does not request SensorKit authorization, start collection, query samples,
 encode native payloads, transmit resources, or define receiver/storage policy. Those

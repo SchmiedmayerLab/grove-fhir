@@ -94,3 +94,65 @@ Description: "The conversion event linking one already-obtained source record to
 * entity.role = #source
 * entity.what.identifier.system = $providerSourceRecordId
 * entity.what.identifier.value = "v1:e9174b24826045a9d8bfb85888baea27526e626b5049f7c8d0cb6a1479c965d5"
+
+Instance: WithingsBloodPressureExample
+InstanceOf: ProviderObservation
+Usage: #example
+Title: "Withings Grouped Blood Pressure"
+Description: "One already-obtained Withings measure group holding one diastolic (type 9) and one systolic (type 10) value converted into one shared blood-pressure panel."
+* meta.profile[+] = "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-blood-pressure"
+* identifier[sourceRecordId].system = $providerSourceRecordId
+* identifier[sourceRecordId].value = "v1:335d6070863e13e73a8b1a1e7ca87f3517761dd157e5bd4e13824e06b5cb924c"
+* identifier[outputId].system = $providerOutputId
+* identifier[outputId].value = "v1:69164aa34a29ecfcd5b8ffef92b7257d0c5bcd039ae88955c3688b4efab95793"
+* status = #final
+* category = http://terminology.hl7.org/CodeSystem/observation-category#vital-signs "Vital Signs"
+* code = http://loinc.org#85354-9 "Blood pressure panel with all children optional"
+* subject.reference = "urn:uuid:8e270383-7562-584e-a754-972a899031f8"
+* effectiveDateTime = "2026-08-20T07:45:00-07:00"
+* issued = "2026-08-20T17:00:01Z"
+* component[0].code = http://loinc.org#8480-6 "Systolic blood pressure"
+* component[0].valueQuantity = 118 'mm[Hg]' "mmHg"
+* component[1].code = http://loinc.org#8462-4 "Diastolic blood pressure"
+* component[1].valueQuantity = 76 'mm[Hg]' "mmHg"
+* extension[provider].valueCode = #withings
+* extension[providerSourceType].valueCode = #withings/getmeas:9+10
+
+Instance: WithingsBloodPressureProvenanceExample
+InstanceOf: ProviderConversionProvenance
+Usage: #example
+Title: "Withings Grouped Blood Pressure Conversion Provenance"
+Description: "The conversion event linking one Withings measure-group source record to its single grouped blood-pressure output."
+* target.reference = "urn:uuid:9bab53d6-0eec-52eb-9425-a556dd9238b4"
+* recorded = "2026-08-20T17:00:01Z"
+* agent[assembler].type = $provenanceParticipantType#assembler
+* agent[assembler].who.reference = "urn:uuid:f3ec89f2-5381-5b86-a800-c85ef81bdc7c"
+* entity.role = #source
+* entity.what.identifier.system = $providerSourceRecordId
+* entity.what.identifier.value = "v1:335d6070863e13e73a8b1a1e7ca87f3517761dd157e5bd4e13824e06b5cb924c"
+
+Instance: WithingsExchangeBundleExample
+InstanceOf: GroveMobileExchangeBundle
+Usage: #example
+Title: "Withings Exchange Bundle"
+Description: "The complete deterministic collection graph for one converted Withings blood-pressure measure group."
+* identifier.system = $providerExchangeId
+* identifier.value = "v1:8e2bafe52854eecf1223dcc706c615348dfe26754f6bc816e479bc1ef22d3f8c"
+* type = #collection
+* timestamp = "2026-08-20T17:00:01Z"
+* entry[0].extension[entryIdentifier].valueIdentifier.system = "https://study.example.org/fhir/identifiers/participant"
+* entry[0].extension[entryIdentifier].valueIdentifier.value = "participant-connected-001"
+* entry[0].fullUrl = "urn:uuid:8e270383-7562-584e-a754-972a899031f8"
+* entry[0].resource = ProviderPatientExample
+* entry[1].extension[entryIdentifier].valueIdentifier.system = "https://study.example.org/fhir/identifiers/application"
+* entry[1].extension[entryIdentifier].valueIdentifier.value = "provider-mapper"
+* entry[1].fullUrl = "urn:uuid:f3ec89f2-5381-5b86-a800-c85ef81bdc7c"
+* entry[1].resource = ProviderApplicationExample
+* entry[2].extension[entryIdentifier].valueIdentifier.system = $providerOutputId
+* entry[2].extension[entryIdentifier].valueIdentifier.value = "v1:69164aa34a29ecfcd5b8ffef92b7257d0c5bcd039ae88955c3688b4efab95793"
+* entry[2].fullUrl = "urn:uuid:9bab53d6-0eec-52eb-9425-a556dd9238b4"
+* entry[2].resource = WithingsBloodPressureExample
+* entry[3].extension[entryIdentifier].valueIdentifier.system = $providerConversionId
+* entry[3].extension[entryIdentifier].valueIdentifier.value = "v1:8e2bafe52854eecf1223dcc706c615348dfe26754f6bc816e479bc1ef22d3f8c"
+* entry[3].fullUrl = "urn:uuid:996be494-199d-5a2d-836b-24f45a1c14b8"
+* entry[3].resource = WithingsBloodPressureProvenanceExample

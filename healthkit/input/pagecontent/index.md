@@ -31,6 +31,7 @@ The [study exchange Bundle](Bundle-HealthKitStudyBundleExample.html) puts the pa
 versioned protocol, study enrollment, devices, Observation, and Provenance together.
 Its [JSON representation](Bundle-HealthKitStudyBundleExample.json) is a complete fixture
 for an importer.
+The [walkthrough](walkthrough.html) follows one heart-rate sample from `HKQuantitySample` to the uploaded exchange Bundle.
 
 ### What the adapter adds
 

@@ -349,3 +349,57 @@ Description: "A documentation collection of the participant, versioned protocol,
 * entry[=].resource = HealthKitConversionProvenanceExample
 * entry[+].fullUrl = "https://study.example.org/fhir/Provenance/HealthKitStepCountConversionProvenanceExample"
 * entry[=].resource = HealthKitStepCountConversionProvenanceExample
+
+Instance: HealthKitExchangeHeartRateObservationExample
+InstanceOf: HealthKitObservation
+Usage: #example
+Title: "Exchange Heart Rate Observation"
+Description: "The converter's heart-rate output for one HealthKit sample without an HKDevice. The subject is the caller-supplied literal Patient reference; the object UUID is the sole business identifier."
+* meta.profile[+] = "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-heart-rate"
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "9a2f4d6e-1c3b-4f8a-b7d0-5e6a8c9b0d1f"
+* status = #final
+* category = $observationCategory#vital-signs "Vital Signs"
+* code = $loinc#8867-4 "Heart rate"
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierHeartRate "Heart Rate"
+* subject.reference = "https://study.example.org/fhir/Patient/participant-hk-001"
+* effectiveDateTime = "2026-08-20T09:12:45.128-07:00"
+* issued = "2026-08-20T16:12:47.000Z"
+* valueQuantity = 76 '/min' "beats/minute"
+
+Instance: HealthKitExchangeConversionProvenanceExample
+InstanceOf: HealthKitConversionProvenance
+Usage: #example
+Title: "Exchange Conversion Provenance"
+Description: "Conversion provenance whose target and assembler resolve through the deterministic Bundle UUID URNs and whose sole source entity is the HealthKit object identifier."
+* target.reference = "urn:uuid:697f6d32-7fb0-54d3-ba0e-8d933f6e5457"
+* occurredDateTime = "2026-08-20T09:12:47-07:00"
+* recorded = "2026-08-20T16:12:47.000Z"
+* activity = $recordLifecycleEvent#transform "Transform/Translate Record Lifecycle Event"
+* agent[assembler].type = $provenanceParticipantType#assembler "Assembler"
+* agent[assembler].who.reference = "urn:uuid:88912f8b-fd4e-51f9-8a72-ab97fde584d9"
+* entity.role = #source
+* entity.what.identifier.system = $healthKitObjectId
+* entity.what.identifier.value = "9a2f4d6e-1c3b-4f8a-b7d0-5e6a8c9b0d1f"
+
+Instance: HealthKitExchangeBundleExample
+InstanceOf: GroveMobileExchangeBundle
+Usage: #example
+Title: "HealthKit Exchange Bundle"
+Description: "The complete graph one heart-rate conversion uploads: the Observation, the converting application, and the conversion Provenance under deterministic UUIDv5 full URLs and graph-namespace identifiers."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-graph"
+* identifier.value = "9a2f4d6e-1c3b-4f8a-b7d0-5e6a8c9b0d1f|exchange-bundle"
+* type = #collection
+* timestamp = "2026-08-20T16:12:47.000Z"
+* entry[0].extension[entryIdentifier].valueIdentifier.system = $healthKitObjectId
+* entry[0].extension[entryIdentifier].valueIdentifier.value = "9a2f4d6e-1c3b-4f8a-b7d0-5e6a8c9b0d1f"
+* entry[0].fullUrl = "urn:uuid:697f6d32-7fb0-54d3-ba0e-8d933f6e5457"
+* entry[0].resource = HealthKitExchangeHeartRateObservationExample
+* entry[1].extension[entryIdentifier].valueIdentifier.system = $appleBundleId
+* entry[1].extension[entryIdentifier].valueIdentifier.value = "org.grovealliance.example"
+* entry[1].fullUrl = "urn:uuid:88912f8b-fd4e-51f9-8a72-ab97fde584d9"
+* entry[1].resource = HealthKitApplicationDeviceExample
+* entry[2].extension[entryIdentifier].valueIdentifier.system = "https://study.example.org/fhir/identifiers/mobile-graph"
+* entry[2].extension[entryIdentifier].valueIdentifier.value = "9a2f4d6e-1c3b-4f8a-b7d0-5e6a8c9b0d1f|conversion-provenance"
+* entry[2].fullUrl = "urn:uuid:16d49bf9-a6dc-58da-bc29-7146da34831c"
+* entry[2].resource = HealthKitExchangeConversionProvenanceExample
