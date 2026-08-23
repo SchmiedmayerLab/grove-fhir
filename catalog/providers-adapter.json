@@ -626,7 +626,7 @@
             {
               "path": "average_hrv",
               "status": "unmodeled",
-              "reason": "No shared Mobile HRV profile exists in version 0.3.0."
+              "reason": "Oura reports this as an RMSSD average over the sleep session, which the shared heart-rate-variability-rmssd measurement represents. Unmodelled only until the session-window effective rule for it is settled."
             },
             {
               "path": "average_breath",

@@ -1226,7 +1226,7 @@
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
-      "requirement": "A HealthKit characteristic describes the subject rather than a measurement. Version 0.3.0 publishes no admitted output contract for characteristics."
+      "requirement": "Version 0.3.0 publishes no reviewed contract for this characteristic. LOINC 76689-9 'Sex assigned at birth' represents it faithfully, and the supported blood-type and wheelchair-use rows show a characteristic can carry an Observation, so this is unfinished work rather than a modelling refusal."
     },
     {
       "sourceTypeIdentifier": "HKCharacteristicTypeIdentifierBloodType",
@@ -1253,7 +1253,7 @@
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
-      "requirement": "A HealthKit characteristic describes the subject rather than a measurement. Version 0.3.0 publishes no admitted output contract for characteristics."
+      "requirement": "A date of birth is a direct identifier, and the exchange's Patient node is deliberately pseudonymous. Publishing it needs a privacy decision, not a mapping; age at observation is the research-safe alternative."
     },
     {
       "sourceTypeIdentifier": "HKCharacteristicTypeIdentifierFitzpatrickSkinType",
@@ -1465,7 +1465,7 @@
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
-      "requirement": "The beat-to-beat interval series ships as a grove-csv-1 recording (heartbeat-series column schema) in the residual design pass; no Observation output is admitted."
+      "requirement": "The beat-to-beat interval series has a published grove-csv-1 column schema, but the HealthKit adapter has no recording-document profile to carry it yet, so no output is admitted."
     },
     {
       "sourceTypeIdentifier": "HKDataTypeStateOfMind",
@@ -3353,7 +3353,7 @@
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
-      "requirement": "A vision prescription is a clinical document, not a measurement; the residual design pass decides its envelope route and no Observation output is admitted."
+      "requirement": "R4 VisionPrescription represents the structured glasses and contacts prescriptions faithfully, but it requires a prescriber the platform does not supply, and the vertex and pupillary distances need extensions to stay lossless. Deferred pending that design, not because the data is unmodellable."
     },
     {
       "sourceTypeIdentifier": "HKWorkoutRouteTypeIdentifier",

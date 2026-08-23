@@ -100,6 +100,16 @@ class HealthConnectCatalogTests(unittest.TestCase):
             for context in row["context"]:
                 self.assertIn(context, self.adapter["contextMappings"])
 
+    def test_every_unsupported_record_states_why(self) -> None:
+        # A row that produces no output has to say why, exactly as the HealthKit catalog
+        # requires; a silent deferral reads as an oversight rather than a decision.
+        for row in self.adapter["recordTypes"]:
+            if row["status"] == "supported":
+                continue
+            with self.subTest(record=row["token"]):
+                self.assertIsInstance(row.get("reason"), str)
+                self.assertTrue(row["reason"])
+
     def test_glucose_profiles_are_adapter_specific_and_specimen_exact(self) -> None:
         measurements = {
             item["id"]: item for item in self.adapter["adapterMeasurements"]

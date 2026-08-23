@@ -25,6 +25,7 @@ license: MIT
 
 dependencies:
   hl7.terminology.r4: 7.3.0
+  hl7.fhir.uv.extensions.r4: 5.3.0
   org.grovealliance.fhir.mobile:
     version: 0.3.0
     uri: https://grovealliance.org/fhir/mobile/ImplementationGuide/org.grovealliance.fhir.mobile

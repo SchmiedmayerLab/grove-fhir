@@ -731,7 +731,8 @@
       "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/PlannedExerciseSessionRecord",
       "status": "deferred",
       "context": [],
-      "outputs": []
+      "outputs": [],
+      "reason": "A planned exercise session states future intent rather than an observed measurement, so it has no place in a measurement contract. R4 CarePlan would carry it if a deployment ever needs the plan itself."
     },
     {
       "token": "PowerRecord",

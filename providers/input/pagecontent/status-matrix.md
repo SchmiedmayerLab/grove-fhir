@@ -47,7 +47,7 @@ This table enumerates every provider field in the closed v0.3.0 Google Health AP
 | `oura` | `sleep` | `supported` | `light_sleep_duration` | `supported` | light-sleep-duration | — | — |
 | `oura` | `sleep` | `supported` | `awake_time` | `supported` | sleep-awake-duration | — | — |
 | `oura` | `sleep` | `supported` | `lowest_heart_rate` | `supported` | sleep-heart-rate | — | — |
-| `oura` | `sleep` | `supported` | `average_hrv` | `unmodeled` | — | — | No shared Mobile HRV profile exists in version 0.3.0. |
+| `oura` | `sleep` | `supported` | `average_hrv` | `unmodeled` | — | — | Oura reports this as an RMSSD average over the sleep session, which the shared heart-rate-variability-rmssd measurement represents. Unmodelled only until the session-window effective rule for it is settled. |
 | `oura` | `sleep` | `supported` | `average_breath` | `supported` | respiratory-rate-average | — | — |
 | `oura` | `daily_spo2` | `supported` | `spo2_percentage.average` | `supported` | oxygen-saturation-daily-average | — | — |
 | `oura` | `workout` | `supported` | `start_datetime/end_datetime` | `supported` | workout | — | — |
