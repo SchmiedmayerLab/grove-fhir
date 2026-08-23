@@ -42,6 +42,7 @@ dependencies:
 
 menu:
   Overview: index.html
+  New to FHIR: fhir-basics.html
   Guides: guides.html
   Observations: observations.html
   Devices and provenance: devices.html
@@ -52,6 +53,8 @@ menu:
 pages:
   index.md:
     title: Overview
+  fhir-basics.md:
+    title: New to FHIR
   guides.md:
     title: The Grove FHIR guides
   observations.md:

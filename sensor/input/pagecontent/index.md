@@ -11,6 +11,10 @@ sampled time series, ECG channels, and native sensor recordings. It does not def
 how an operating-system framework or provider fetches data. An adapter transforms
 already obtained source objects into these R4 resource shapes.
 
+New to FHIR?
+[Start with the FHIR basics page](https://grovealliance.org/fhir/mobile/fhir-basics.html) in the Mobile guide.
+It covers the resources these guides use, identifiers and references, and how to read a profile page.
+
 The package is international and uses FHIR R4 `Observation.valueSampledData` for
 inline numeric sequences and `DocumentReference.content.attachment` for a native or
 externally encoded recording. It imposes no receiver capacity or byte threshold.

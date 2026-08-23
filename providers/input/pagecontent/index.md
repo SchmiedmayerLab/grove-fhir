@@ -11,6 +11,10 @@ from Google Health API, Oura, or Withings into international FHIR R4. It does no
 OAuth, permissions, subscriptions, webhooks, polling, fetching, transport, storage, or a
 receiving service.
 
+New to FHIR?
+[Start with the FHIR basics page](https://grovealliance.org/fhir/mobile/fhir-basics.html) in the Mobile guide.
+It covers the resources these guides use, identifiers and references, and how to read a profile page.
+
 Every normalized Observation declares exactly two direct profiles:
 
 1. the exact source-neutral Grove Mobile measurement profile; and

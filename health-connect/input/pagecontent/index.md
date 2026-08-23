@@ -10,6 +10,10 @@ The Grove Health Connect Adapter maps AndroidX Health Connect 1.1 Records that h
 been read by an application into international FHIR R4. It does not request permissions,
 fetch Records, or define a receiving service.
 
+New to FHIR?
+[Start with the FHIR basics page](https://grovealliance.org/fhir/mobile/fhir-basics.html) in the Mobile guide.
+It covers the resources these guides use, identifiers and references, and how to read a profile page.
+
 Every emitted Observation declares exactly two direct profiles:
 
 1. the exact source-neutral Grove Mobile measurement profile; and

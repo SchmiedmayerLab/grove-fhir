@@ -16,6 +16,10 @@ conforms to two independent contracts:
 2. A clinical or research profile defines what the result means and which units are
    valid.
 
+New to FHIR?
+[Start with the FHIR basics page](https://grovealliance.org/fhir/mobile/fhir-basics.html) in the Mobile guide.
+It covers the resources these guides use, identifiers and references, and how to read a profile page.
+
 Both profile canonicals appear in `Observation.meta.profile`, and the resource must
 validate against both.
 

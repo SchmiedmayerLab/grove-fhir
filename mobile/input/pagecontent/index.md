@@ -14,10 +14,15 @@ source platforms.
 
 Grove FHIR is a family of seven guides; [the guide family page](guides.html) maps them, their catalogs, and the shared status vocabulary.
 
+New to FHIR?
+[Start here](fhir-basics.html).
+It covers the five resources these guides use, the difference between an id and an identifier, and how to read a profile page — enough to follow everything below.
+
 ### Choose your starting point
 
 | Goal | Read | Working example |
 |---|---|---|
+| Understand FHIR well enough to read this guide | [New to FHIR](fhir-basics.html) | [Heart-rate JSON](Observation-GroveMobileHeartRateExample.json) |
 | Encode or consume a measurement | [Observations](observations.html) | [Heart rate](Observation-GroveMobileHeartRateExample.html) |
 | Exchange a complete resource graph | [Observations](observations.html#exchange-graph) | [Collection Bundle](Bundle-GroveMobileExchangeBundleExample.html) |
 | Distinguish the sensor from the app | [Devices and provenance](devices.html) | [Conversion provenance](Provenance-GroveMobileConversionProvenanceExample.html) |
