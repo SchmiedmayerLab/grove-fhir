@@ -148,6 +148,19 @@ not apply to Sensor or ECG `SampledData`, whose exact Decimal timing contract is
 by the Sensor guide. When the source also supplies an IANA time-zone name, attach the
 standard `timezone` extension; the name must agree with the offset at that instant.
 
+`Observation.issued` states when this version of the record became available. Take it from the
+source platform's own timestamp for the version wherever the platform keeps one, and only fall
+back to the conversion instant where it does not; each adapter guide names which it uses.
+
+Preferring the source timestamp is what keeps a conversion reproducible: an unchanged source
+record has to convert to an identical graph, or a re-read stops deduplicating against what was
+already sent. A wall-clock `issued` would make every re-conversion look like new data.
+
+Ordering *revisions of the same measurement* is a separate question, and `issued` does not answer
+it — a replaced record can carry an earlier timestamp than the one it supersedes. Where a platform
+gives the writer a logical identity and a version, the adapter carries both, and a receiver
+supersedes on the version.
+
 The [Grove Recording Method extension](StructureDefinition-grove-recording-method.html)
 describes positively established `manual-entry`, `actively-recorded`, or
 `automatically-recorded` capture. Omit it when unknown. `Observation.method` remains

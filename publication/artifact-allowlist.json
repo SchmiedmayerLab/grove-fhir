@@ -2345,6 +2345,13 @@
           "classification": "definition"
         },
         {
+          "fshName": "HealthKitSyncVersion",
+          "fshType": "Extension",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-sync-version",
+          "classification": "definition"
+        },
+        {
           "fshName": "AppleBundleIdentifier",
           "fshType": "Instance",
           "resourceType": "NamingSystem",
@@ -2478,6 +2485,13 @@
           "classification": "example"
         },
         {
+          "fshName": "HealthKitRevisedBodyWeightObservationExample",
+          "fshType": "Instance",
+          "resourceType": "Observation",
+          "id": "HealthKitRevisedBodyWeightObservationExample",
+          "classification": "example"
+        },
+        {
           "fshName": "HealthKitSleepStageObservationExample",
           "fshType": "Instance",
           "resourceType": "Observation",
@@ -2525,6 +2539,13 @@
           "resourceType": "PlanDefinition",
           "id": "HealthKitStudyPlanExample",
           "classification": "example"
+        },
+        {
+          "fshName": "HealthKitSyncIdentifier",
+          "fshType": "Instance",
+          "resourceType": "NamingSystem",
+          "id": "healthkit-sync-id",
+          "classification": "definition"
         },
         {
           "fshName": "HealthkitAppleExerciseTimeExample",
@@ -4123,6 +4144,13 @@
           "classification": "definition"
         },
         {
+          "fshName": "HealthConnectClientRecordVersion",
+          "fshType": "Extension",
+          "resourceType": "StructureDefinition",
+          "id": "health-connect-client-record-version",
+          "classification": "definition"
+        },
+        {
           "fshName": "HealthConnectExerciseTitle",
           "fshType": "Extension",
           "resourceType": "StructureDefinition",
@@ -4205,6 +4233,13 @@
           "resourceType": "Specimen",
           "id": "HealthConnectCapillaryGlucoseSpecimenExample",
           "classification": "example"
+        },
+        {
+          "fshName": "HealthConnectClientRecordIdentifier",
+          "fshType": "Instance",
+          "resourceType": "NamingSystem",
+          "id": "health-connect-client-record-id",
+          "classification": "definition"
         },
         {
           "fshName": "HealthConnectConversionIdentifier",
@@ -4344,6 +4379,13 @@
           "fshType": "Instance",
           "resourceType": "ResearchSubject",
           "id": "HealthConnectResearchSubjectExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "HealthConnectRevisedWeightExample",
+          "fshType": "Instance",
+          "resourceType": "Observation",
+          "id": "HealthConnectRevisedWeightExample",
           "classification": "example"
         },
         {

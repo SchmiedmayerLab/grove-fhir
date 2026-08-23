@@ -16,11 +16,13 @@ Description: "HealthKit metadata keys retained by Grove FHIR HealthKit 0.3.0 aft
 * ^copyright = "HealthKit API identifiers and type names originate from Apple Inc. and are used here only to identify source API concepts for interoperability. The MIT license applies to Grove-authored definitions; it does not grant rights in Apple material."
 * #HKMetadataKeyHeartRateMotionContext "Heart Rate Motion Context" "The HealthKit metadata key whose NSNumber value is mapped to a bounded motion-context code."
 * #HKMetadataKeyAppleECGAlgorithmVersion "Apple ECG Algorithm Version" "The HealthKit metadata key whose NSNumber value identifies the Apple ECG classification algorithm version."
+* #HKMetadataKeySyncIdentifier "Sync Identifier" "The HealthKit metadata key whose value is the writer-assigned logical identity of a sample, stable across the replacements HealthKit performs when a higher sync version is saved."
+* #HKMetadataKeySyncVersion "Sync Version" "The HealthKit metadata key whose NSNumber value orders revisions of one sync identifier; HealthKit keeps the higher version and discards the lower."
 
 ValueSet: HealthKitMetadataKeyVS
 Id: healthkit-metadata-key
 Title: "HealthKit Metadata Keys"
-Description: "The HealthKit 0.3.0 allowlist of retained metadata keys. Each key maps to its published representation: a named Observation component or a named extension."
+Description: "The HealthKit 0.3.0 allowlist of retained metadata keys. Each key maps to its published representation: a named Observation component, a named extension, or a named identifier slice."
 * ^experimental = false
 * include codes from system HealthKitMetadataKeyCS
 

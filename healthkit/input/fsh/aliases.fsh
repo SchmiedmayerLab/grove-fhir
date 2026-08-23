@@ -7,6 +7,7 @@
 //
 
 Alias: $healthKitObjectId = https://grovealliance.org/fhir/healthkit/NamingSystem/healthkit-object-id
+Alias: $healthKitSyncId = https://grovealliance.org/fhir/healthkit/NamingSystem/healthkit-sync-id
 Alias: $healthKitSourceDeviceId = https://grovealliance.org/fhir/healthkit/NamingSystem/healthkit-source-device-id
 Alias: $appleBundleId = https://grovealliance.org/fhir/healthkit/NamingSystem/apple-bundle-id
 Alias: $healthKitMetadataKey = https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-metadata-key

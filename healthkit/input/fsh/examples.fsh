@@ -125,6 +125,28 @@ Description: "A passive HealthKit heart-rate sample with the standard clinical p
 * component[heartRateMotionContext].code = $healthKitMetadataKey#HKMetadataKeyHeartRateMotionContext "Heart Rate Motion Context"
 * component[heartRateMotionContext].valueCodeableConcept = $healthKitHeartRateMotionContext#sedentary "Sedentary"
 
+Instance: HealthKitRevisedBodyWeightObservationExample
+InstanceOf: HealthKitObservation
+Usage: #example
+Title: "HealthKit Revised Body Weight"
+Description: "A body-weight sample a connected scale re-imported after correcting it. HealthKit replaced the earlier object, so this Observation carries a new object identifier, the unchanged sync identifier that names the measurement, and the higher sync version that supersedes the previous one."
+* meta.profile[+] = "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-body-weight"
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "7c3f9b41-58d2-4e6a-9a10-4b8e2f6d05c7"
+* identifier[healthKitSyncId].system = $healthKitSyncId
+* identifier[healthKitSyncId].value = "scale-weighin-2026-08-19"
+* extension[syncVersion].valueInteger = 2
+* status = #final
+* category = $observationCategory#vital-signs "Vital Signs"
+* code = $loinc#29463-7 "Body weight"
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierBodyMass "Body Mass"
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectiveDateTime = "2026-08-19T07:12:00.000-07:00"
+* issued = "2026-08-20T08:00:00.000Z"
+* valueQuantity = 68.9 'kg' "kg"
+* extension[researchStudy].valueReference = Reference(HealthKitResearchStudyExample)
+
 Instance: HealthKitStepCountObservationExample
 InstanceOf: HealthKitObservation
 Usage: #example

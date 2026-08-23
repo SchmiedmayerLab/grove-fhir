@@ -16,6 +16,11 @@ Description: "A HealthKit object identifier value is lowercase UUID text in 8-4-
 Expression: "value.matches('^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$')"
 Severity: #error
 
+Invariant: healthkit-sync-version-1
+Description: "A sync version orders revisions of one logical sample, so it appears only with the sync identifier it versions."
+Expression: "extension('https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-sync-version').empty() or identifier.where(system = 'https://grovealliance.org/fhir/healthkit/NamingSystem/healthkit-sync-id').exists()"
+Severity: #error
+
 Invariant: healthkit-sleep-stage-1
 Description: "A shared sleep-stage output carries exactly one exact HealthKit sleep-analysis source coding, and no other output carries one."
 Expression: "(code.coding.where(system = 'https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement' and code = 'sleep-stage').exists() and value.ofType(CodeableConcept).coding.where(system = 'https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-sleep-analysis').count() = 1) or (code.coding.where(system = 'https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement' and code = 'sleep-stage').empty() and value.ofType(CodeableConcept).coding.where(system = 'https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-sleep-analysis').empty())"
@@ -31,14 +36,17 @@ Parent: GroveMobileObservation
 Id: healthkit-observation
 Title: "HealthKit Observation"
 Description: "The source identity and allowlisted HealthKit context for an Observation that also conforms to an appropriate clinical or research profile."
-* obeys healthkit-motion-context-1 and healthkit-sleep-stage-1
+* obeys healthkit-motion-context-1 and healthkit-sleep-stage-1 and healthkit-sync-version-1
 * identifier ^slicing.discriminator.type = #value
 * identifier ^slicing.discriminator.path = "system"
 * identifier ^slicing.rules = #open
-* identifier contains healthKitObjectId 1..1 MS
+* identifier contains healthKitObjectId 1..1 MS and healthKitSyncId 0..1 MS
 * identifier[healthKitObjectId] obeys healthkit-object-id-1
 * identifier[healthKitObjectId].system = $healthKitObjectId
 * identifier[healthKitObjectId].value 1..1 MS
+* identifier[healthKitSyncId].system = $healthKitSyncId
+* identifier[healthKitSyncId].value 1..1 MS
+* extension contains HealthKitSyncVersion named syncVersion 0..1 MS
 * code.coding ^slicing.discriminator.type = #value
 * code.coding ^slicing.discriminator.path = "system"
 * code.coding ^slicing.rules = #open
@@ -131,3 +139,12 @@ Description: "The FHIR release of the pass-through payload, read from HKFHIRVers
 * valueCode 1..1
 * valueCode from HealthKitClinicalFHIRReleaseVS (required)
 
+
+Extension: HealthKitSyncVersion
+Id: healthkit-sync-version
+Title: "HealthKit Sync Version"
+Description: "The HKMetadataKeySyncVersion of the sample this Observation was converted from. HealthKit replaces a sample when a writer saves a higher version under the same sync identifier, and the replacement carries a new object UUID; the version orders those revisions so a receiver can supersede rather than double-count."
+* ^context[+].type = #element
+* ^context[=].expression = "Observation"
+* value[x] only integer
+* valueInteger 1..1

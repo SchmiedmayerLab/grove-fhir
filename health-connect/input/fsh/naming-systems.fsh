@@ -22,6 +22,22 @@ Description: "The identifier namespace for the repository-scoped identity of a H
 * uniqueId.value = $healthConnectRecordId
 * uniqueId.preferred = true
 
+Instance: HealthConnectClientRecordIdentifier
+InstanceOf: NamingSystem
+Usage: #definition
+Title: "Health Connect Client Record Identifier"
+Description: "The identifier namespace for the writer-assigned logical record behind a Health Connect Record, taken from metadata.clientRecordId."
+* id = "health-connect-client-record-id"
+* name = "HealthConnectClientRecordIdentifier"
+* status = #active
+* kind = #identifier
+* date = "2026-08-24"
+* publisher = "Schmiedmayer Lab"
+* description = "Identifies the writer-assigned logical record behind a Health Connect Record, taken from metadata.clientRecordId. A writer that re-imports a measurement reuses this value and raises its clientRecordVersion, and the stored Record then carries a new metadata.id, so this namespace names the measurement while the record namespace names the exact row it was read from. The value is opaque writer text; compare the complete system and value pair."
+* uniqueId.type = #uri
+* uniqueId.value = $healthConnectClientRecordId
+* uniqueId.preferred = true
+
 Instance: HealthConnectOutputIdentifier
 InstanceOf: NamingSystem
 Usage: #definition

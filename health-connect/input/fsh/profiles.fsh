@@ -51,6 +51,12 @@ Description: "A shared sleep-stage output carries exactly one exact Health Conne
 Severity: #error
 Expression: "(code.coding.where(system = 'https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement' and code = 'sleep-stage').exists() and value.ofType(CodeableConcept).coding.where(system = 'https://grovealliance.org/fhir/health-connect/CodeSystem/health-connect-sleep-stage').count() = 1) or (code.coding.where(system = 'https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement' and code = 'sleep-stage').empty() and value.ofType(CodeableConcept).coding.where(system = 'https://grovealliance.org/fhir/health-connect/CodeSystem/health-connect-sleep-stage').empty())"
 
+Invariant: health-connect-client-record-version-1
+Description: "A client record version orders revisions of one writer-assigned record, so it appears only with the client record identifier it versions."
+Expression: "extension('https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-client-record-version').empty() or identifier.where(system = 'https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-client-record-id').exists()"
+Severity: #error
+
+
 Profile: HealthConnectObservation
 Parent: GroveMobileObservation
 Id: health-connect-observation
@@ -62,20 +68,24 @@ Description: "The source and output identities plus allowlisted source context f
 * identifier ^slicing.rules = #open
 * identifier contains
     recordId 1..1 MS and
-    outputId 1..1 MS
+    outputId 1..1 MS and
+    clientRecordId 0..1 MS
 * identifier[recordId].system = $healthConnectRecordId
 * identifier[recordId].value 1..1 MS
 * identifier[recordId].value obeys health-connect-record-id-value-1
 * identifier[outputId].system = $healthConnectOutputId
 * identifier[outputId].value 1..1 MS
-* obeys health-connect-output-id-1
+* identifier[clientRecordId].system = $healthConnectClientRecordId
+* identifier[clientRecordId].value 1..1 MS
+* obeys health-connect-output-id-1 and health-connect-client-record-version-1
 * issued 1..1 MS
 * specimen only Reference(HealthConnectSpecimen)
 * extension contains
     HealthConnectRecordType named healthConnectRecordType 1..1 MS and
     $bodyPosition named bodyPosition 0..1 MS and
     HealthConnectGlucoseMealContext named glucoseMealContext 0..1 MS and
-    HealthConnectSleepTitle named sleepTitle 0..1 MS
+    HealthConnectSleepTitle named sleepTitle 0..1 MS and
+    HealthConnectClientRecordVersion named clientRecordVersion 0..1 MS
 * note MS
 
 Profile: HealthConnectWholeBloodGlucose
@@ -184,3 +194,13 @@ Description: "Provenance for transforming one Health Connect source Record into 
 * entity.agent.type = $provenanceParticipantType#enterer
 * entity.agent.who 1..1 MS
 * entity.agent.who only Reference(Device)
+
+
+Extension: HealthConnectClientRecordVersion
+Id: health-connect-client-record-version
+Title: "Health Connect Client Record Version"
+Description: "The clientRecordVersion of the Record this Observation was converted from. A writer that re-imports a measurement reuses its clientRecordId and raises this version, and Health Connect keeps the higher one; the version orders those revisions so a receiver can supersede rather than double-count."
+* ^context[+].type = #element
+* ^context[=].expression = "Observation"
+* value[x] only integer
+* valueInteger 1..1

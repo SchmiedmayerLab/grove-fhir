@@ -7,6 +7,7 @@
 //
 
 Alias: $healthConnectRecordId = https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-record-id
+Alias: $healthConnectClientRecordId = https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-client-record-id
 Alias: $healthConnectOutputId = https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-output-id
 Alias: $healthConnectSpecimenId = https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-specimen-id
 Alias: $healthConnectConversionId = https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-conversion-id

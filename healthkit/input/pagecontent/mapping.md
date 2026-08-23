@@ -21,11 +21,32 @@ The [walkthrough](walkthrough.html) applies the rules below to one concrete hear
 
 Map `HKObject.uuid` to `Observation.identifier` with the
 [HealthKit Object Identifier](NamingSystem-healthkit-object-id.html) system. The complete
-`(system, value)` pair is the authoritative source-record identity and deduplication key.
+`(system, value)` pair identifies the exact HealthKit row the Observation was read from.
 Do not use the UUID as `Observation.id`; a FHIR repository controls that logical id.
 Serialize the value as lowercase UUID text in `8-4-4-4-12` hyphenated form. This pair
 identifies the source HealthKit object; it does not claim that independently created
 clinical records are globally the same event.
+
+The object UUID is not a deduplication key on its own.
+HealthKit replaces a sample when a writer saves one carrying the same `HKMetadataKeySyncIdentifier` and a higher `HKMetadataKeySyncVersion`, and the replacement is a new object with a new UUID.
+Deduplicating on the UUID alone therefore counts a revised measurement twice, which affects exactly the revisable data: sleep, energy, heart rate, and anything a server-synced third-party application re-imports.
+
+### Logical identity and revisions
+
+When the sample carries `HKMetadataKeySyncIdentifier`, map it to a second `Observation.identifier`
+with the [HealthKit Sync Identifier](NamingSystem-healthkit-sync-id.html) system, and map
+`HKMetadataKeySyncVersion` to the
+[HealthKit Sync Version](StructureDefinition-healthkit-sync-version.html) extension.
+
+The two identifiers answer different questions, and a receiver needs both:
+
+- the object identifier names the row that was read, so a re-read of the same row is recognised;
+- the sync identifier names the measurement, so a revision of it is recognised as the same
+  measurement and the higher sync version supersedes the lower.
+
+A sample without a sync identifier carries neither, and its object identifier remains the only
+identity it has. Do not synthesize one: a writer that does not assign a sync identity has not
+promised that any two of its samples are the same measurement.
 
 The sample-type identifier dispatches converter code and is preserved as exactly one
 additional coding from the adapter's `healthkit-source-type` CodeSystem. The shared or

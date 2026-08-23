@@ -105,6 +105,31 @@ Description: "The first FHIR heart-rate Observation emitted from a Health Connec
 * extension[healthConnectRecordType].valueCode = #HeartRateRecord
 * extension[researchStudy].valueReference = Reference(HealthConnectResearchStudyExample)
 
+Instance: HealthConnectRevisedWeightExample
+InstanceOf: HealthConnectObservation
+Usage: #example
+Title: "Health Connect Revised Weight"
+Description: "A weight a connected scale re-imported after correcting it. The stored Record carries a new metadata.id, so this Observation carries a new record identifier, the unchanged clientRecordId that names the measurement, and the higher clientRecordVersion that supersedes the previous one."
+* meta.profile[+] = "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-body-weight"
+* identifier[recordId].system = $healthConnectRecordId
+* identifier[recordId].value = "v1:3ab6c1f0e58d24796b0fd3c8e214a97f5d0c8b6e4a72391fd85be0c47a19d3f6"
+* identifier[outputId].system = $healthConnectOutputId
+* identifier[outputId].value = "v1:c47f92b1d8e35a06429fc7b18e3d05a9276be4c130fa8d5729ec4b016df8a3e2"
+* identifier[clientRecordId].system = $healthConnectClientRecordId
+* identifier[clientRecordId].value = "scale-weighin-2026-08-19"
+* extension[clientRecordVersion].valueInteger = 2
+* status = #final
+* category = $observationCategory#vital-signs "Vital Signs"
+* code = $loinc#29463-7 "Body weight"
+* subject = Reference(HealthConnectPatientExample)
+* performer = Reference(HealthConnectPatientExample)
+* effectiveDateTime = "2026-08-19T14:12:00Z"
+* issued = "2026-08-20T08:00:00Z"
+* valueQuantity = 68.9 'kg' "kg"
+* extension[recordingMethod].valueCoding = GroveRecordingMethodCS#automatically-recorded "Automatically recorded"
+* extension[healthConnectRecordType].valueCode = #WeightRecord
+* extension[researchStudy].valueReference = Reference(HealthConnectResearchStudyExample)
+
 Instance: HealthConnectHeartRateSampleTwoExample
 InstanceOf: HealthConnectObservation
 Usage: #example

@@ -19,6 +19,8 @@ The [authoritative status matrix](status-matrix.html) renders all 41 record clas
 | `metadata.id`, repository scope, exact Record class | required source-record identifier |
 | deterministic logical output key | required output identifier |
 | `metadata.lastModifiedTime` | `Observation.issued` |
+| `metadata.clientRecordId` | client record identifier, when the writer assigns one |
+| `metadata.clientRecordVersion` | client record version extension |
 | `metadata.recordingMethod` | Grove recording-method extension; unknown is omitted |
 | `metadata.device` | recording Device when supplied; no invented hardware identifier |
 | `metadata.dataOrigin.packageName` | source application Device and Provenance enterer |
@@ -26,7 +28,26 @@ The [authoritative status matrix](status-matrix.html) renders all 41 record clas
 The converter must operate on a Record read from Health Connect. It does not invent
 platform-assigned ids, last-modified times, DataOrigin, or Device metadata. Neither
 `clientRecordId` nor `clientRecordVersion` replaces `metadata.id`, becomes `Resource.id`,
-or becomes `meta.versionId`.
+or becomes `meta.versionId`; they are carried beside it as the writer's own identity for
+the measurement.
+
+### Logical identity and revisions
+
+`metadata.id` names the exact stored Record. It is not a deduplication key on its own: a writer
+that re-imports a measurement reuses its `clientRecordId` and raises its `clientRecordVersion`,
+and the stored Record then carries a new `metadata.id`. Deduplicating on `metadata.id` alone
+therefore counts a revised measurement twice.
+
+When the Record carries `clientRecordId`, map it to a second `Observation.identifier` with the
+[Health Connect Client Record Identifier](NamingSystem-health-connect-client-record-id.html)
+system, and map `clientRecordVersion` to the
+[Health Connect Client Record Version](StructureDefinition-health-connect-client-record-version.html)
+extension. A Record without a `clientRecordId` carries neither; do not synthesize one, because a
+writer that assigns no client record identity has not promised that any two of its Records are the
+same measurement.
+
+This is the same contract the HealthKit adapter states for `HKMetadataKeySyncIdentifier` and
+`HKMetadataKeySyncVersion`, so a receiver applies one supersession rule to both platforms.
 
 ### Identity
 
