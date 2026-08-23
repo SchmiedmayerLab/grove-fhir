@@ -18,7 +18,6 @@ path = [
     "healthkit/ig.ini",
     "healthkit/input/data/terminology-provenance.json",
     "mobile/input/data/terminology-reviews.json",
-    "publication/mobile-semantic-baseline.json",
     "*/input/data/*-inventory.json",
     "healthkit/input/ignoreWarnings.txt",
     "mobile/ig.ini",
@@ -37,5 +36,14 @@ path = [
     "publication/artifact-allowlist.json",
     "publication/config.json"
 ]
+SPDX-FileCopyrightText = "2026 Schmiedmayer Lab and the project authors (see CONTRIBUTORS.md)"
+SPDX-License-Identifier = "MIT"
+
+# The semantic baseline is a snapshot of built package content, including the guides' own
+# copyright statements. REUSE would otherwise read those as this file's own copyright and fail
+# to parse the JSON that follows them.
+[[annotations]]
+path = ["publication/mobile-semantic-baseline.json"]
+precedence = "override"
 SPDX-FileCopyrightText = "2026 Schmiedmayer Lab and the project authors (see CONTRIBUTORS.md)"
 SPDX-License-Identifier = "MIT"
