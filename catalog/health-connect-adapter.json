@@ -1320,5 +1320,15 @@
       "authorAndTime": "omit because Health Connect supplies neither",
       "blankPolicy": "omit"
     }
+  },
+  "recordingDeviceIdentity": {
+    "adapterId": "health-connect",
+    "note": "Health Connect states no hardware version, so the key rests on manufacturer and model.",
+    "sourceFields": {
+      "manufacturer": "Metadata.device.manufacturer",
+      "model": "Metadata.device.model",
+      "hardwareVersion": ""
+    },
+    "status": "derived"
   }
 }

@@ -925,5 +925,14 @@
         ]
       }
     }
-  ]
+  ],
+  "recordingDeviceIdentity": {
+    "adapterId": "sensorkit",
+    "sourceFields": {
+      "manufacturer": "recordingDevice.manufacturer",
+      "model": "recordingDevice.model",
+      "hardwareVersion": "recordingDevice.hardwareVersion"
+    },
+    "status": "derived"
+  }
 }

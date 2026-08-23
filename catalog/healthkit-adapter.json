@@ -3384,5 +3384,14 @@
         "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-workout-segment"
       ]
     }
-  ]
+  ],
+  "recordingDeviceIdentity": {
+    "adapterId": "healthkit",
+    "sourceFields": {
+      "manufacturer": "HKDevice.manufacturer",
+      "model": "HKDevice.model",
+      "hardwareVersion": "HKDevice.hardwareVersion"
+    },
+    "status": "derived"
+  }
 }

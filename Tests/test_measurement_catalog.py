@@ -196,6 +196,31 @@ class MeasurementCatalogTests(unittest.TestCase):
         by_case = {vector["case"]: vector["value"] for vector in device["vectors"]}
         self.assertNotEqual(by_case["apple-watch"], by_case["different-participant-same-model"])
 
+    def test_every_adapter_declares_its_recording_device_identity(self) -> None:
+        contract = json.loads((ROOT / "catalog/exchange-identity.json").read_text(encoding="utf-8"))
+        keyed = {
+            field
+            for field in contract["recordingDeviceIdentity"]["preimage"]
+            if field in {"manufacturer", "model", "hardwareVersion"}
+        }
+        adapters = {}
+        for name in ("healthkit", "sensorkit", "health-connect", "providers"):
+            catalog = json.loads(
+                (ROOT / f"catalog/{name}-adapter.json").read_text(encoding="utf-8")
+            )
+            declaration = catalog.get("recordingDeviceIdentity")
+            self.assertIsNotNone(declaration, f"{name} declares no recording-device identity")
+            self.assertIn(declaration["status"], {"derived", "unavailable"}, name)
+            # A deriving adapter maps every keyed field, so a source that silently stops
+            # supplying one cannot quietly change the identity it mints.
+            if declaration["status"] == "derived":
+                self.assertEqual(set(declaration["sourceFields"]), keyed, name)
+            else:
+                self.assertFalse(declaration["sourceFields"], name)
+                self.assertTrue(declaration.get("note"), f"{name} must say why it cannot derive one")
+            adapters[name] = declaration["adapterId"]
+        self.assertEqual(len(set(adapters.values())), len(adapters), "adapter ids must be distinct")
+
     def test_uuid_algorithm_rejects_invalid_unicode(self) -> None:
         import importlib.util
 

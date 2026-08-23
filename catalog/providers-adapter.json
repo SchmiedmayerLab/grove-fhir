@@ -1350,5 +1350,11 @@
         }
       ]
     }
-  ]
+  ],
+  "recordingDeviceIdentity": {
+    "adapterId": "providers",
+    "note": "A connected provider's device metadata lives on a separate vendor endpoint the adapter does not consume, and its per-unit identifiers are refused outright. Provider Observations therefore carry a per-sample recording Device until that input exists.",
+    "sourceFields": {},
+    "status": "unavailable"
+  }
 }
