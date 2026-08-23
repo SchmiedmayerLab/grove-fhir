@@ -173,21 +173,28 @@ class MeasurementCatalogTests(unittest.TestCase):
         contract = json.loads((ROOT / "catalog/exchange-identity.json").read_text(encoding="utf-8"))
         device = contract["recordingDeviceIdentity"]
 
-        # Every admitted key kind is a published preimage, and every preimage names its kind in
-        # the third slot so one kind's digest can never be mistaken for another's.
-        self.assertEqual(set(device["keyKinds"]), set(device["preimages"]))
-        for kind, preimage in device["preimages"].items():
-            self.assertEqual(preimage[0], "grove-recording-device-id-v1")
-            self.assertEqual(preimage[3], kind)
+        self.assertEqual(
+            device["preimage"],
+            [
+                "grove-recording-device-id-v1",
+                "subjectReference",
+                "adapterId",
+                "manufacturer",
+                "model",
+                "hardwareVersion",
+            ],
+        )
 
         self.assertTrue(device["vectors"])
         for vector in device["vectors"]:
+            self.assertEqual(len(vector["input"]), len(device["preimage"]))
             self.assertEqual(identity.canonical_json(vector["input"]), vector["canonical"])
             self.assertEqual(identity.digest(vector["input"]), vector["value"])
-            self.assertIn(vector["input"][3], device["preimages"])
-            self.assertEqual(
-                len(vector["input"]), len(device["preimages"][vector["input"][3]])
-            )
+
+        # Two participants wearing the same model are two devices; that is the whole point of
+        # keying on the subject rather than the product configuration alone.
+        by_case = {vector["case"]: vector["value"] for vector in device["vectors"]}
+        self.assertNotEqual(by_case["apple-watch"], by_case["different-participant-same-model"])
 
     def test_uuid_algorithm_rejects_invalid_unicode(self) -> None:
         import importlib.util

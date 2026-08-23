@@ -27,45 +27,26 @@
     "unresolvedUuidUrnsAllowed": false
   },
   "recordingDeviceIdentity": {
-    "namingSystem": "https://grovealliance.org/fhir/mobile/NamingSystem/grove-recording-device-id",
-    "purpose": "A recording Device deduplicates across every Observation it produced, so one physical recorder is stored once per configuration instead of once per sample.",
+    "purpose": "A recording Device deduplicates across every Observation it produced, so one participant's recorder is stored once instead of once per sample.",
     "digest": {
       "algorithm": "SHA-256",
       "output": "v1:<64 lowercase hexadecimal digits>",
       "input": "UTF-8 without BOM of the RFC 8785/JCS serialization of the preimage array"
     },
-    "keyKinds": {
-      "model-class": "The source states no per-unit identifier, so the key is the product configuration. This identifies a model owned by one repository, not an individual unit; two identical units in one repository deduplicate into one Device.",
-      "local-identifier": "The platform states an opaque installation-local device identifier and the deployment has authorized its use through recordingDeviceIdentifierSystem."
-    },
-    "preimages": {
-      "model-class": [
-        "grove-recording-device-id-v1",
-        "repositoryScope",
-        "adapterId",
-        "model-class",
-        "manufacturer",
-        "model",
-        "hardwareVersion",
-        "firmwareVersion",
-        "softwareVersion"
-      ],
-      "local-identifier": [
-        "grove-recording-device-id-v1",
-        "repositoryScope",
-        "adapterId",
-        "local-identifier",
-        "localIdentifier",
-        "firmwareVersion",
-        "softwareVersion"
-      ]
-    },
-    "precedence": "local-identifier takes precedence when the deployment authorizes it; otherwise model-class. Changing that authorization re-identifies every recording Device, so a deployment fixes it before its first export.",
-    "versionsParticipate": "The firmware and software versions participate because the Device resource represents them, as the adapter content rule requires. A configuration change therefore mints a new Device rather than mutating a shared one, which keeps every emitted Device immutable and makes an out-of-order backfill write byte-identical content.",
-    "failClosed": "A model-class key requires a non-empty manufacturer and at least one of model or hardwareVersion. A source that states less has no admitted device identity; the producer emits its per-sample derived identity instead of asserting a shared device.",
+    "preimage": [
+      "grove-recording-device-id-v1",
+      "subjectReference",
+      "adapterId",
+      "manufacturer",
+      "model",
+      "hardwareVersion"
+    ],
+    "subjectParticipates": "A wearable belongs to a person, so the subject partitions the key: two participants wearing the same model are two devices, which is what Device means in R4. This is the one identity in the family that admits a subject reference; every other identity derives from source data alone and must not.",
+    "versionsExcluded": "Firmware and software change over a recorder's life and are therefore not part of its identity. They are not carried on the deduplicated Device either, because a backfill converts samples out of order and would leave an arbitrary value behind. Each Observation states the versions in force when it was recorded.",
+    "failClosed": "The key requires a non-empty manufacturer and at least one of model or hardwareVersion. A source that states less has no admitted device identity; the producer emits its per-sample derived identity instead of asserting a shared device.",
     "prohibitedInputs": [
-      "subject references, Resource.id, repository ids, and processing timestamps",
-      "vendor per-unit identifiers and serial numbers, including a digest of one"
+      "vendor per-unit identifiers and serial numbers, including a digest of one",
+      "firmware, software, Resource.id, repository ids, and processing timestamps"
     ],
     "lexicalRules": {
       "jsonTypes": [
@@ -77,50 +58,43 @@
     },
     "vectors": [
       {
-        "case": "model-class-apple-watch",
+        "case": "apple-watch",
         "input": [
           "grove-recording-device-id-v1",
-          "1f5c58aa-6ec6-4e79-a682-829a9debd3f5",
+          "Patient/1a2b3c",
           "healthkit",
-          "model-class",
           "Apple Inc.",
           "Watch",
-          "Watch7,12",
-          "11.2",
-          "26.0"
+          "Watch7,12"
         ],
-        "canonical": "[\"grove-recording-device-id-v1\",\"1f5c58aa-6ec6-4e79-a682-829a9debd3f5\",\"healthkit\",\"model-class\",\"Apple Inc.\",\"Watch\",\"Watch7,12\",\"11.2\",\"26.0\"]",
-        "value": "v1:bb7862b04e576c946dd0a7dca35e139e5460552bff21c5f5da66c9bdc30fe064"
+        "canonical": "[\"grove-recording-device-id-v1\",\"Patient/1a2b3c\",\"healthkit\",\"Apple Inc.\",\"Watch\",\"Watch7,12\"]",
+        "value": "v1:24be7c46d4f2dd7603a7c265ddbbba606350b9a3853d083f2f8e20298e1cea12"
       },
       {
-        "case": "model-class-no-hardware-version",
+        "case": "no-hardware-version",
         "input": [
           "grove-recording-device-id-v1",
-          "1f5c58aa-6ec6-4e79-a682-829a9debd3f5",
+          "Patient/1a2b3c",
           "health-connect",
-          "model-class",
           "Google",
           "Pixel Watch",
-          "",
-          "",
           ""
         ],
-        "canonical": "[\"grove-recording-device-id-v1\",\"1f5c58aa-6ec6-4e79-a682-829a9debd3f5\",\"health-connect\",\"model-class\",\"Google\",\"Pixel Watch\",\"\",\"\",\"\"]",
-        "value": "v1:29ba09b1fd5190f96c6dc3f1e37db864030d021f433fdd26a2b7bfb8a6ef1512"
+        "canonical": "[\"grove-recording-device-id-v1\",\"Patient/1a2b3c\",\"health-connect\",\"Google\",\"Pixel Watch\",\"\"]",
+        "value": "v1:21406c38c6cc90762bbe31d7ac3d501c6e9ca26125a173ea25199b030b027577"
       },
       {
-        "case": "local-identifier",
+        "case": "different-participant-same-model",
         "input": [
           "grove-recording-device-id-v1",
-          "1f5c58aa-6ec6-4e79-a682-829a9debd3f5",
+          "Patient/9z8y7x",
           "healthkit",
-          "local-identifier",
-          "0F1E2D3C-4B5A-6978-8796-A5B4C3D2E1F0",
-          "11.2",
-          "26.0"
+          "Apple Inc.",
+          "Watch",
+          "Watch7,12"
         ],
-        "canonical": "[\"grove-recording-device-id-v1\",\"1f5c58aa-6ec6-4e79-a682-829a9debd3f5\",\"healthkit\",\"local-identifier\",\"0F1E2D3C-4B5A-6978-8796-A5B4C3D2E1F0\",\"11.2\",\"26.0\"]",
-        "value": "v1:24315610739dc9f91e4b45d5ed48660d5a980827009c69d6899af2015c40caa0"
+        "canonical": "[\"grove-recording-device-id-v1\",\"Patient/9z8y7x\",\"healthkit\",\"Apple Inc.\",\"Watch\",\"Watch7,12\"]",
+        "value": "v1:87628d0c3f69e0cf925be66b02f512af7cb9f261877097a9b46a29077c427f59"
       }
     ]
   },

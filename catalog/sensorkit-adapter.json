@@ -121,7 +121,7 @@
       ]
     },
     "valuePattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-    "contentRule": "Every source field represented in the structured resource or native recording must participate in the producer's stable identity input; Resource.id, repository ids, subject references, and processing timestamps must not participate.",
+    "contentRule": "Every source field represented in the structured resource or native recording must participate in the producer's stable identity input; Resource.id, repository ids, subject references, and processing timestamps must not participate. The recording-device identity in exchange-identity.json is the one exception: a wearable belongs to a person, so its key admits the subject reference to keep one participant's recorder distinct from another's identical model.",
     "resourceIdPolicy": "Resource.id is optional and repository-assigned. SensorKit source-record and output identifiers are complete business Identifiers and are never copied into Resource.id."
   },
   "entries": [
