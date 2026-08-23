@@ -267,7 +267,7 @@ Description: "A conformant Health Connect Dietary Unsaturated Fat instance."
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * issued = "2026-08-20T08:00:00Z"
-* valueQuantity = 42 'g'
+* valueQuantity = 57 'g'
 
 Instance: HealthConnectDietaryFolicAcidExample
 InstanceOf: HealthConnectDietaryFolicAcid

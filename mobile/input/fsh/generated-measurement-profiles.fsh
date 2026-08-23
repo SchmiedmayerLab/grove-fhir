@@ -1767,8 +1767,6 @@ Description: "A conformant Cervical Mucus Quality instance."
 * performer = Reference(GroveMobilePatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueCodeableConcept = GroveCervicalMucusQualityCS#dry "Dry"
-* component[sensation].code = https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement#cervical-mucus-sensation
-* component[sensation].valueCodeableConcept = GroveCervicalMucusSensationCS#light "Light"
 
 Instance: GroveMobileCyclingCadenceExample
 InstanceOf: GroveMobileCyclingCadence
@@ -1947,7 +1945,7 @@ Description: "A conformant Grove Mobile Dietary Monounsaturated Fat instance."
 * performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
-* valueQuantity = 25 'g'
+* valueQuantity = 35 'g'
 
 Instance: GroveMobileDietaryFatPolyunsaturatedExample
 InstanceOf: GroveMobileDietaryFatPolyunsaturated
@@ -1962,7 +1960,7 @@ Description: "A conformant Grove Mobile Dietary Polyunsaturated Fat instance."
 * performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
-* valueQuantity = 17 'g'
+* valueQuantity = 22 'g'
 
 Instance: GroveMobileDietaryFatSaturatedExample
 InstanceOf: GroveMobileDietaryFatSaturated
@@ -2497,8 +2495,6 @@ Description: "A conformant Menstruation Flow instance."
 * performer = Reference(GroveMobilePatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueCodeableConcept = GroveMenstruationFlowCS#unspecified "Unspecified"
-* component[cycleStart].code = https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement#menstrual-cycle-start
-* component[cycleStart].valueCodeableConcept = GroveMenstrualCycleStartCS#cycle-start "Cycle start"
 
 Instance: GroveMobileMindfulnessSessionExample
 InstanceOf: GroveMobileMindfulnessSession
@@ -2720,30 +2716,6 @@ Description: "A conformant Workout instance."
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = GroveWorkoutActivityCS#running "Running"
-* component[active-duration].code = https://grovealliance.org/fhir/mobile/CodeSystem/grove-workout-statistic#active-duration
-* component[active-duration].valueQuantity = 2700 's'
-* component[distance-sum].code = https://grovealliance.org/fhir/mobile/CodeSystem/grove-workout-statistic#distance-sum
-* component[distance-sum].valueQuantity = 8400 'm'
-* component[active-energy-sum].code = https://grovealliance.org/fhir/mobile/CodeSystem/grove-workout-statistic#active-energy-sum
-* component[active-energy-sum].valueQuantity = 430 'kcal'
-* component[heart-rate-avg].code = https://grovealliance.org/fhir/mobile/CodeSystem/grove-workout-statistic#heart-rate-avg
-* component[heart-rate-avg].valueQuantity = 142 '/min'
-* component[heart-rate-max].code = https://grovealliance.org/fhir/mobile/CodeSystem/grove-workout-statistic#heart-rate-max
-* component[heart-rate-max].valueQuantity = 171 '/min'
-* component[heart-rate-min].code = https://grovealliance.org/fhir/mobile/CodeSystem/grove-workout-statistic#heart-rate-min
-* component[heart-rate-min].valueQuantity = 96 '/min'
-* component[step-count-sum].code = https://grovealliance.org/fhir/mobile/CodeSystem/grove-workout-statistic#step-count-sum
-* component[step-count-sum].valueQuantity = 6120 '{steps}'
-* component[elevation-gain].code = https://grovealliance.org/fhir/mobile/CodeSystem/grove-workout-statistic#elevation-gain
-* component[elevation-gain].valueQuantity = 145 'm'
-* component[flights-climbed-sum].code = https://grovealliance.org/fhir/mobile/CodeSystem/grove-workout-statistic#flights-climbed-sum
-* component[flights-climbed-sum].valueQuantity = 8 '{flights}'
-* component[speed-avg].code = https://grovealliance.org/fhir/mobile/CodeSystem/grove-workout-statistic#speed-avg
-* component[speed-avg].valueQuantity = 2.8 'm/s'
-* component[swimming-stroke-count-sum].code = https://grovealliance.org/fhir/mobile/CodeSystem/grove-workout-statistic#swimming-stroke-count-sum
-* component[swimming-stroke-count-sum].valueQuantity = 480 '{strokes}'
-* component[pool-lap-count].code = https://grovealliance.org/fhir/mobile/CodeSystem/grove-workout-statistic#pool-lap-count
-* component[pool-lap-count].valueQuantity = 24 '{laps}'
 
 Instance: GroveMobileWorkoutSegmentExample
 InstanceOf: GroveMobileWorkoutSegment
@@ -2759,13 +2731,3 @@ Description: "A conformant Workout Segment instance."
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = GroveWorkoutSegmentTypeCS#lap "Lap"
-* component[repetitions].code = https://grovealliance.org/fhir/mobile/CodeSystem/grove-workout-statistic#repetitions
-* component[repetitions].valueQuantity = 12 '{count}' "repetitions"
-* component[set-weight].code = https://grovealliance.org/fhir/mobile/CodeSystem/grove-workout-statistic#set-weight
-* component[set-weight].valueQuantity = 20 'kg'
-* component[set-index].code = https://grovealliance.org/fhir/mobile/CodeSystem/grove-workout-statistic#set-index
-* component[set-index].valueQuantity = 3 '{count}' "set index"
-* component[rating-of-perceived-exertion].code = https://grovealliance.org/fhir/mobile/CodeSystem/grove-workout-statistic#rating-of-perceived-exertion
-* component[rating-of-perceived-exertion].valueQuantity = 7 '{score}' "RPE 0-10"
-* component[lap-length].code = https://grovealliance.org/fhir/mobile/CodeSystem/grove-workout-statistic#lap-length
-* component[lap-length].valueQuantity = 25 'm'

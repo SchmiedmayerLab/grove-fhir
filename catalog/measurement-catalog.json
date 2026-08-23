@@ -1670,7 +1670,7 @@
         "system": "http://unitsofmeasure.org",
         "code": "g",
         "unit": "g",
-        "example": 25,
+        "example": 35,
         "dimension": {
           "g": 1
         }
@@ -1705,7 +1705,7 @@
         "system": "http://unitsofmeasure.org",
         "code": "g",
         "unit": "g",
-        "example": 17,
+        "example": 22,
         "dimension": {
           "g": 1
         }
@@ -1846,7 +1846,7 @@
         "system": "http://unitsofmeasure.org",
         "code": "g",
         "unit": "g",
-        "example": 42,
+        "example": 57,
         "dimension": {
           "g": 1
         }

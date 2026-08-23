@@ -1,9 +1,9 @@
-# Links the Publisher cannot resolve while building without network access.
+# Links the Publisher reports as unresolvable.
 #
 # Every target below is rendered by the SDC 4.0.0 package into this guide's StructureDefinition
-# pages; none is authored here. The pages exist and resolve publicly, but the offline Publisher
-# cannot follow them to confirm the fragment, so it reports them as broken. Declaring them exactly
-# keeps a link this guide actually breaks from hiding among them.
+# pages; none is authored here. Each page exists and resolves publicly, but the Publisher checks a
+# link's fragment against content it holds locally and has none for these, so it reports them as
+# broken. Declaring them exactly keeps a link this guide actually breaks from hiding among them.
 http://hl7.org/fhir/uv/sdc/2025Jan/behavior.html#itemWeight
 http://hl7.org/fhir/uv/sdc/2025Jan/behavior.html#maxDecimalPlaces
 http://hl7.org/fhir/uv/sdc/2025Jan/behavior.html#maxOccurs

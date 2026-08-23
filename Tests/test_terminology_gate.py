@@ -205,8 +205,14 @@ class CompleteCodeSystemDefinitionTests(unittest.TestCase):
                     complete = True
                 elif system and complete and re.match(r"^\* #\S+\s", line) and "^property" not in line:
                     # A concept line carries its display and then its definition.
-                    if len(re.findall(r'"(?:[^"\\]|\\.)*"', line)) < 2:
+                    quoted = re.findall(r'"((?:[^"\\]|\\.)*)"', line)
+                    if len(quoted) < 2:
                         findings.append(f"{source.relative_to(ROOT)}: {system}: {line.strip()[:60]}")
+                    elif quoted[0].strip() == quoted[1].strip():
+                        # Repeating the display is not a definition.
+                        findings.append(
+                            f"{source.relative_to(ROOT)}: {system}: {quoted[0]} defines itself"
+                        )
         self.assertEqual(findings, [], "concepts in a #complete CodeSystem state no definition")
 
 

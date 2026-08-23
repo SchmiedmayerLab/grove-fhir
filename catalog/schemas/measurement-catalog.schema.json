@@ -84,7 +84,43 @@
       }
     },
     "effectiveCanonicalization": {
-      "type": "object"
+      "type": "object",
+      "description": "How every exchanged timestamp is normalised. A silent typo here changes a normative contract, so the shape is closed and the two mechanical fields are enumerated.",
+      "additionalProperties": false,
+      "required": [
+        "scope",
+        "precision",
+        "rounding",
+        "epoch",
+        "offsetPolicy"
+      ],
+      "properties": {
+        "scope": {
+          "type": "string",
+          "minLength": 1
+        },
+        "precision": {
+          "enum": [
+            "second",
+            "millisecond",
+            "microsecond"
+          ]
+        },
+        "rounding": {
+          "enum": [
+            "half-even",
+            "half-up",
+            "truncate"
+          ]
+        },
+        "epoch": {
+          "const": "1970-01-01T00:00:00Z"
+        },
+        "offsetPolicy": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
     },
     "measurements": {
       "type": "array",

@@ -69,7 +69,12 @@ def render_fsh(registry: dict) -> str:
     lines.append("* ^caseSensitive = true")
     lines.append("* ^content = #complete")
     for code, fmt in registry["formats"].items():
-        summary = fmt["specification"].get("structure", fmt["title"])
+        # A #complete code system owes each concept a definition; repeating the title is not
+        # one. A binary format describes its layout under `file` rather than `structure`.
+        specification = fmt["specification"]
+        summary = specification.get("structure") or specification.get("file")
+        if not summary:
+            raise SystemExit(f"{code}: the registry states no structure or file layout to define it by")
         lines.append(f'* #{code} "{fmt["title"]}" "{summary}"')
     lines.append("")
     lines.append("ValueSet: GroveRecordingFormatVS")

@@ -283,7 +283,7 @@ class MeasurementCatalogTests(unittest.TestCase):
                     return [".".join(trail) + f" = {node}"]
             return []
 
-        for source in sorted((ROOT / "catalog").glob("*.json")):
+        for source in sorted((ROOT / "catalog").rglob("*.json")):
             self.assertEqual(
                 findings(json.loads(source.read_text(encoding="utf-8")), []),
                 [],

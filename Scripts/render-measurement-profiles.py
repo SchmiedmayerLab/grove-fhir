@@ -599,9 +599,9 @@ def example_method(measurement: dict) -> str | None:
 def example_result_lines(measurement: dict) -> list[str]:
     """The value the profile requires, in the exact shape the profile admits.
 
-    A coded measurement can also carry components — a workout states its activity as the value and
-    its statistics as components — so components render for every kind that declares them, not
-    only for the one whose value lives in them.
+    Only components the profile requires are rendered. A workout declares every statistic any
+    activity could carry, each optional, so emitting them all would publish a running workout
+    that also counted swimming strokes.
     """
     kind = measurement.get("valueKind", "quantity")
     lines: list[str] = []
@@ -611,6 +611,8 @@ def example_result_lines(measurement: dict) -> list[str]:
         system, code, display = coded_example(measurement)
         lines.append(f'* valueCodeableConcept = {system}#{code} "{display}"')
     for component in measurement.get("components", []):
+        if component.get("cardinality", "1..1").startswith("0"):
+            continue
         slice_name = component["id"]
         if component["system"] == LOINC:
             lines.append(f"* component[{slice_name}].code = $loinc#{component['code']}")
