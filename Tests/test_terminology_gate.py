@@ -186,5 +186,88 @@ class TerminologyGateTests(unittest.TestCase):
             self.assertEqual(code, 0, output)
 
 
+class CompleteCodeSystemDefinitionTests(unittest.TestCase):
+    """A `#complete` code system is the authority for its concepts, so each one owes a definition."""
+
+    def test_every_concept_in_a_complete_system_states_a_definition(self) -> None:
+        import re
+
+        findings: list[str] = []
+        for source in sorted(ROOT.glob("*/input/fsh/*.fsh")):
+            system = complete = None
+            for line in source.read_text(encoding="utf-8").splitlines():
+                header = re.match(r"^CodeSystem:\s+(\S+)", line)
+                if header:
+                    system, complete = header.group(1), False
+                elif re.match(r"^(ValueSet|Profile|Extension|Instance|Logical|Resource):", line):
+                    system = None
+                elif system and "^content = #complete" in line:
+                    complete = True
+                elif system and complete and re.match(r"^\* #\S+\s", line) and "^property" not in line:
+                    # A concept line carries its display and then its definition.
+                    if len(re.findall(r'"(?:[^"\\]|\\.)*"', line)) < 2:
+                        findings.append(f"{source.relative_to(ROOT)}: {system}: {line.strip()[:60]}")
+        self.assertEqual(findings, [], "concepts in a #complete CodeSystem state no definition")
+
+
+class SnomedPinTests(unittest.TestCase):
+    """SNOMED codings are validated against a reviewed pin, because the build has no tx server.
+
+    Without this the Publisher reports every SNOMED coding as unvalidatable, the guides suppress
+    the warning, and a retired concept or a wrong display reaches publication unchallenged.
+    """
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.pin = json.loads(
+            (ROOT / "catalog/terminology/snomed-concepts.json").read_text(encoding="utf-8")
+        )["concepts"]
+
+    def codings(self) -> list[tuple[str, str, str]]:
+        import re
+
+        found: list[tuple[str, str, str | None]] = []
+        # Both the alias and the full URL, and a coding may state no display at all.
+        coding = re.compile(r'(?:\$sct|http://snomed\.info/sct)#(\d+)(?:\s+"([^"]*)")?')
+        for source in sorted(ROOT.glob("*/input/fsh/*.fsh")):
+            for line in source.read_text(encoding="utf-8").splitlines():
+                for match in coding.finditer(line):
+                    found.append((str(source.relative_to(ROOT)), match.group(1), match.group(2)))
+        for path in sorted((ROOT / "catalog").rglob("*.json")):
+            name = str(path.relative_to(ROOT))
+            catalog = json.loads(path.read_text(encoding="utf-8"))
+
+            def walk(node: object) -> None:
+                if isinstance(node, dict):
+                    if node.get("system") == "http://snomed.info/sct" and node.get("code"):
+                        found.append((name, str(node["code"]), node.get("display")))
+                    for value in node.values():
+                        walk(value)
+                elif isinstance(node, list):
+                    for value in node:
+                        walk(value)
+
+            walk(catalog)
+        return found
+
+    def test_every_snomed_coding_is_pinned_with_a_matching_display(self) -> None:
+        codings = self.codings()
+        self.assertTrue(codings, "found no SNOMED codings to check")
+        for where, code, display in codings:
+            with self.subTest(code=code, where=where):
+                self.assertIn(code, self.pin, f"{where} uses an unpinned SNOMED code")
+                self.assertEqual(self.pin[code]["status"], "ACTIVE", where)
+                # A coding with no display cannot be cross-checked, which is the case most
+                # likely to carry a silently retired concept.
+                self.assertIsNotNone(display, f"{where} states a SNOMED code with no display")
+                self.assertEqual(self.pin[code]["display"], display, where)
+
+    def test_the_pin_carries_no_concept_the_guides_stopped_using(self) -> None:
+        used = {code for _, code, _ in self.codings()}
+        self.assertEqual(
+            sorted(set(self.pin) - used), [], "pinned SNOMED concepts no guide references"
+        )
+
+
 if __name__ == "__main__":
     unittest.main()

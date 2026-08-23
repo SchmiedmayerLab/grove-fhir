@@ -50,6 +50,7 @@ Description: "A lossless, uniformly sampled three-axis rotation-rate stream that
 * status = #final
 * code = $sensorKitSourceType#rotation-rate "Rotation rate"
 * subject = Reference(SensorKitPatientExample)
+* performer = Reference(SensorKitPatientExample)
 * effectivePeriod.start = "2026-08-20T09:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T09:00:00.020-07:00"
 * valueSampledData.origin.value = 0
@@ -88,6 +89,7 @@ Description: "The complete uniform voltage projection of one SensorKit ECG recor
 * status = #final
 * code = $loinc#11524-6 "EKG study"
 * subject = Reference(SensorKitPatientExample)
+* performer = Reference(SensorKitPatientExample)
 * effectivePeriod.start = "2026-08-20T09:10:00.000-07:00"
 * effectivePeriod.end = "2026-08-20T09:10:00.012-07:00"
 * derivedFrom = Reference(SensorKitECGDocumentExample)
@@ -154,6 +156,7 @@ Description: "A complete right-arm-minus-left-arm voltage projection. The exact 
 * status = #final
 * code = $loinc#11524-6 "EKG study"
 * subject = Reference(SensorKitPatientExample)
+* performer = Reference(SensorKitPatientExample)
 * effectivePeriod.start = "2026-08-20T09:12:00.000-07:00"
 * effectivePeriod.end = "2026-08-20T09:12:00.012-07:00"
 * derivedFrom = Reference(SensorKitInverseECGDocumentExample)
@@ -217,6 +220,7 @@ Description: "A platform-exclusive on-wrist state with wrist and crown placement
 * status = #final
 * code = $sensorKitConcept#on-wrist-state "On-wrist state"
 * subject = Reference(SensorKitPatientExample)
+* performer = Reference(SensorKitPatientExample)
 * effectivePeriod.start = "2026-08-20T08:30:00-07:00"
 * effectivePeriod.end = "2026-08-20T09:02:00-07:00"
 * valueCodeableConcept = $sensorKitValue#on-wrist "On wrist"
@@ -239,6 +243,7 @@ Description: "A platform-exclusive device-usage summary; detailed application, n
 * status = #final
 * code = $sensorKitConcept#device-usage-summary "Device usage summary"
 * subject = Reference(SensorKitPatientExample)
+* performer = Reference(SensorKitPatientExample)
 * effectivePeriod.start = "2026-08-20T08:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T08:15:00-07:00"
 * valueQuantity = 372 's' "seconds"
@@ -262,6 +267,7 @@ Description: "A platform-exclusive visit summary that preserves uncertain arriva
 * status = #final
 * code = $sensorKitConcept#visit-summary "Visit summary"
 * subject = Reference(SensorKitPatientExample)
+* performer = Reference(SensorKitPatientExample)
 * effectivePeriod.start = "2026-08-20T07:59:00-07:00"
 * effectivePeriod.end = "2026-08-20T09:31:00-07:00"
 * component[locationCategory].code = $sensorKitConcept#visit-location-category "Visit location category"
@@ -357,6 +363,7 @@ Description: "The structured device-usage output whose internal references use d
 * status = #final
 * code = $sensorKitConcept#device-usage-summary "Device usage summary"
 * subject.reference = "urn:uuid:d66ce444-2f05-5661-ac7c-86f080cf3be4"
+* performer.reference = "urn:uuid:d66ce444-2f05-5661-ac7c-86f080cf3be4"
 * effectivePeriod.start = "2026-08-20T08:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T08:15:00-07:00"
 * valueQuantity = 372 's' "seconds"
@@ -438,3 +445,226 @@ Description: "The mandated dual-output graph for one SensorKit device-usage reco
 * entry[5].extension[entryIdentifier].valueIdentifier.value = "device-usage-conversion-20260820-001"
 * entry[5].fullUrl = "urn:uuid:4f82250f-1bf7-5c5f-b13a-d967fb3a9592"
 * entry[5].resource = SensorKitExchangeDeviceUsageProvenanceExample
+
+Instance: SensorKitAccelerometerDocumentExample
+InstanceOf: SensorKitRecordingDocument
+Usage: #example
+Title: "SensorKit Accelerometer Native Recording"
+Description: "The caller-supplied native recording the summary counts, retained verbatim."
+* meta.profile[+] = "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document"
+* identifier[sensorKitRecordId].system = $sensorKitRecordId
+* identifier[sensorKitRecordId].value = "8c910da2-ed1c-58c6-b2d9-fda1364d3acd"
+* identifier[sensorKitOutputId].system = $sensorKitOutputId
+* identifier[sensorKitOutputId].value = "29d749ad-5a4a-506d-aa32-d0ec7fafad04"
+* extension[sensorKitSourceType].valueCode = #accelerometer
+* status = #current
+* type = $sensorKitSourceType#accelerometer "Accelerometer"
+* subject = Reference(SensorKitPatientExample)
+* date = "2026-08-20T17:05:01Z"
+* author = Reference(SensorKitDeviceExample)
+* content.attachment.contentType = #application/json
+* content.format = $recordingFormat#native-json-1 "Native JSON 1"
+* content.attachment.title = "SensorKit Accelerometer Native Recording"
+* content.attachment.data = "eyJiYXRjaGVzIjoxMiwic2FtcGxlcyI6Mzg0MDB9"
+* content.attachment.size = 30
+* content.attachment.hash = "hQFxt+175NpnZIjpgDT0QoDkqH0="
+
+Instance: SensorKitAccelerometerExample
+InstanceOf: SensorKitAccelerometerObservation
+Usage: #example
+Title: "SensorKit Accelerometer Recording Summary"
+Description: "A platform-exclusive coverage summary of one accelerometer batch; the recording document carries the signal."
+* identifier[sensorKitRecordId].system = $sensorKitRecordId
+* identifier[sensorKitRecordId].value = "770e985b-a934-5a76-98da-2fb465055555"
+* identifier[sensorKitOutputId].system = $sensorKitOutputId
+* identifier[sensorKitOutputId].value = "9f080bfd-73f0-5a58-9718-af6427af17c3"
+* extension[sensorKitSourceType].valueCode = #accelerometer
+* status = #final
+* code = $sensorKitConcept#accelerometer-recording-summary "Accelerometer recording summary"
+* subject = Reference(SensorKitPatientExample)
+* performer = Reference(SensorKitPatientExample)
+* effectivePeriod.start = "2026-08-20T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-21T00:00:00-07:00"
+* derivedFrom = Reference(SensorKitAccelerometerDocumentExample)
+* component[sampleCount].code = $sensorKitConcept#sample-count "Sample count"
+* component[sampleCount].valueQuantity = 38400 '{count}'
+* component[batchCount].code = $sensorKitConcept#batch-count "Batch count"
+* component[batchCount].valueQuantity = 12 '{count}'
+* device = Reference(SensorKitDeviceExample)
+
+Instance: SensorKitPPGDocumentExample
+InstanceOf: SensorKitRecordingDocument
+Usage: #example
+Title: "SensorKit PPG Native Recording"
+Description: "The caller-supplied native recording the summary counts, retained verbatim."
+* meta.profile[+] = "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document"
+* identifier[sensorKitRecordId].system = $sensorKitRecordId
+* identifier[sensorKitRecordId].value = "dbf9ec4d-b3fa-5315-9525-56ab63618b9a"
+* identifier[sensorKitOutputId].system = $sensorKitOutputId
+* identifier[sensorKitOutputId].value = "d4e8aa57-26a5-513f-9c0c-45f5ee0a8c60"
+* extension[sensorKitSourceType].valueCode = #ppg
+* status = #current
+* type = $sensorKitSourceType#ppg "Photoplethysmogram"
+* subject = Reference(SensorKitPatientExample)
+* date = "2026-08-20T17:05:01Z"
+* author = Reference(SensorKitDeviceExample)
+* content.attachment.contentType = #application/json
+* content.format = $recordingFormat#native-json-1 "Native JSON 1"
+* content.attachment.title = "SensorKit PPG Native Recording"
+* content.attachment.data = "eyJyZWNvcmRzIjo0LCJvcHRpY2FsIjoyMDQ4MCwiYWNjZWxlcm9tZXRlciI6NTEyMH0="
+* content.attachment.size = 50
+* content.attachment.hash = "dDmCExc+PsQ3oVKFE/dphZDJFb4="
+
+Instance: SensorKitPPGExample
+InstanceOf: SensorKitPpgObservation
+Usage: #example
+Title: "SensorKit PPG Recording Summary"
+Description: "A platform-exclusive coverage summary of one photoplethysmography recording."
+* identifier[sensorKitRecordId].system = $sensorKitRecordId
+* identifier[sensorKitRecordId].value = "ea336fe9-c965-5921-aa55-98ee77c9a99e"
+* identifier[sensorKitOutputId].system = $sensorKitOutputId
+* identifier[sensorKitOutputId].value = "d27b8519-1fcf-53e6-9eb9-49a68ebae972"
+* extension[sensorKitSourceType].valueCode = #ppg
+* status = #final
+* code = $sensorKitConcept#ppg-recording-summary "PPG recording summary"
+* subject = Reference(SensorKitPatientExample)
+* performer = Reference(SensorKitPatientExample)
+* effectivePeriod.start = "2026-08-20T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-21T00:00:00-07:00"
+* derivedFrom = Reference(SensorKitPPGDocumentExample)
+* component[recordCount].code = $sensorKitConcept#record-count "Record count"
+* component[recordCount].valueQuantity = 4 '{count}'
+* component[opticalSampleCount].code = $sensorKitConcept#optical-sample-count "Optical sample count"
+* component[opticalSampleCount].valueQuantity = 20480 '{count}'
+* component[accelerometerSampleCount].code = $sensorKitConcept#accelerometer-sample-count "Accelerometer sample count"
+* component[accelerometerSampleCount].valueQuantity = 5120 '{count}'
+* device = Reference(SensorKitDeviceExample)
+
+Instance: SensorKitMessagesUsageExample
+InstanceOf: SensorKitMessagesUsageObservation
+Usage: #example
+Title: "SensorKit Messages Usage Summary"
+Description: "A platform-exclusive messaging summary over one day, with no message content exchanged."
+* identifier[sensorKitRecordId].system = $sensorKitRecordId
+* identifier[sensorKitRecordId].value = "05077f73-0625-5b44-a83a-c9a0fbed0849"
+* identifier[sensorKitOutputId].system = $sensorKitOutputId
+* identifier[sensorKitOutputId].value = "8140b80c-5f3d-5ce6-9a5c-e69b2fffc0e8"
+* extension[sensorKitSourceType].valueCode = #messages-usage
+* status = #final
+* code = $sensorKitConcept#messages-usage-summary "Messages usage summary"
+* subject = Reference(SensorKitPatientExample)
+* performer = Reference(SensorKitPatientExample)
+* effectivePeriod.start = "2026-08-20T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-21T00:00:00-07:00"
+* component[incomingMessages].code = $sensorKitConcept#incoming-messages "Incoming messages"
+* component[incomingMessages].valueQuantity = 34 '{count}'
+* component[outgoingMessages].code = $sensorKitConcept#outgoing-messages "Outgoing messages"
+* component[outgoingMessages].valueQuantity = 28 '{count}'
+* component[uniqueContacts].code = $sensorKitConcept#unique-contacts "Unique contacts"
+* component[uniqueContacts].valueQuantity = 9 '{count}'
+* device = Reference(SensorKitDeviceExample)
+
+Instance: SensorKitPhoneUsageExample
+InstanceOf: SensorKitPhoneUsageObservation
+Usage: #example
+Title: "SensorKit Phone Usage Summary"
+Description: "A platform-exclusive call summary over one day, with no call content or correspondent exchanged."
+* identifier[sensorKitRecordId].system = $sensorKitRecordId
+* identifier[sensorKitRecordId].value = "fa4a2356-84a6-54be-b5b3-da5bec5b0067"
+* identifier[sensorKitOutputId].system = $sensorKitOutputId
+* identifier[sensorKitOutputId].value = "8a84bfec-2040-5666-bc5e-f071c5bd7f44"
+* extension[sensorKitSourceType].valueCode = #phone-usage
+* status = #final
+* code = $sensorKitConcept#phone-usage-summary "Phone usage summary"
+* subject = Reference(SensorKitPatientExample)
+* performer = Reference(SensorKitPatientExample)
+* effectivePeriod.start = "2026-08-20T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-21T00:00:00-07:00"
+* valueQuantity = 1860 's'
+* component[incomingCalls].code = $sensorKitConcept#incoming-calls "Incoming calls"
+* component[incomingCalls].valueQuantity = 5 '{count}'
+* component[outgoingCalls].code = $sensorKitConcept#outgoing-calls "Outgoing calls"
+* component[outgoingCalls].valueQuantity = 3 '{count}'
+* component[uniqueContacts].code = $sensorKitConcept#unique-contacts "Unique contacts"
+* component[uniqueContacts].valueQuantity = 6 '{count}'
+* device = Reference(SensorKitDeviceExample)
+
+Instance: SensorKitKeyboardMetricsExample
+InstanceOf: SensorKitKeyboardMetricsObservation
+Usage: #example
+Title: "SensorKit Keyboard Metrics Summary"
+Description: "A platform-exclusive typing summary over one day; no typed text is exchanged."
+* identifier[sensorKitRecordId].system = $sensorKitRecordId
+* identifier[sensorKitRecordId].value = "d2e21dfe-2ead-5b27-a31d-07ad1b95dac4"
+* identifier[sensorKitOutputId].system = $sensorKitOutputId
+* identifier[sensorKitOutputId].value = "330afc8c-e9dc-5ea2-a39e-8e90423af1f8"
+* extension[sensorKitSourceType].valueCode = #keyboard-metrics
+* status = #final
+* code = $sensorKitConcept#keyboard-metrics-summary "Keyboard metrics summary"
+* subject = Reference(SensorKitPatientExample)
+* performer = Reference(SensorKitPatientExample)
+* effectivePeriod.start = "2026-08-20T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-21T00:00:00-07:00"
+* derivedFrom = Reference(SensorKitKeyboardMetricsDocumentExample)
+* valueQuantity = 2400 's'
+* component[totalWords].code = $sensorKitConcept#total-words "Total words"
+* component[totalWords].valueQuantity = 1840 '{count}'
+* component[totalAlteredWords].code = $sensorKitConcept#total-altered-words "Total altered words"
+* component[totalAlteredWords].valueQuantity = 96 '{count}'
+* component[totalTaps].code = $sensorKitConcept#total-taps "Total taps"
+* component[totalTaps].valueQuantity = 9820 '{count}'
+* component[totalDeletes].code = $sensorKitConcept#total-deletes "Total deletes"
+* component[totalDeletes].valueQuantity = 412 '{count}'
+* component[totalEmojis].code = $sensorKitConcept#total-emojis "Total emojis"
+* component[totalEmojis].valueQuantity = 23 '{count}'
+* component[totalAutocorrections].code = $sensorKitConcept#total-autocorrections "Total autocorrections"
+* component[totalAutocorrections].valueQuantity = 57 '{count}'
+* component[totalPauses].code = $sensorKitConcept#total-pauses "Total pauses"
+* component[totalPauses].valueQuantity = 148 '{count}'
+* component[totalTypingEpisodes].code = $sensorKitConcept#total-typing-episodes "Total typing episodes"
+* component[totalTypingEpisodes].valueQuantity = 31 '{count}'
+* component[typingSpeed].code = $sensorKitConcept#typing-speed "Typing speed"
+* component[typingSpeed].valueQuantity = 0.77 '/s'
+* device = Reference(SensorKitDeviceExample)
+
+Instance: SensorKitSleepSessionExample
+InstanceOf: SensorKitSleepSessionObservation
+Usage: #example
+Title: "SensorKit Sleep Session"
+Description: "A platform-exclusive inferred sleep period, stating the exact length of its own interval."
+* identifier[sensorKitRecordId].system = $sensorKitRecordId
+* identifier[sensorKitRecordId].value = "d9b729ee-589e-5beb-913e-f8f9057ef98a"
+* identifier[sensorKitOutputId].system = $sensorKitOutputId
+* identifier[sensorKitOutputId].value = "07b95417-26c7-545e-a7d7-af8c1c6c5e06"
+* extension[sensorKitSourceType].valueCode = #sleep-sessions
+* status = #final
+* code = $sensorKitConcept#sleep-session "Sleep session"
+* subject = Reference(SensorKitPatientExample)
+* performer = Reference(SensorKitPatientExample)
+* effectivePeriod.start = "2026-08-20T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-21T00:00:00-07:00"
+* valueQuantity = 27000 's'
+* device = Reference(SensorKitDeviceExample)
+
+Instance: SensorKitKeyboardMetricsDocumentExample
+InstanceOf: SensorKitRecordingDocument
+Usage: #example
+Title: "SensorKit Keyboard Metrics Native Recording"
+Description: "The caller-supplied native recording the summary counts, retained verbatim; no typed text is included."
+* meta.profile[+] = "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document"
+* identifier[sensorKitRecordId].system = $sensorKitRecordId
+* identifier[sensorKitRecordId].value = "26521dbb-e8ab-529a-9ca8-8725d4ebdd1d"
+* identifier[sensorKitOutputId].system = $sensorKitOutputId
+* identifier[sensorKitOutputId].value = "21b30965-e9c0-574a-80f8-d375ac75c36e"
+* extension[sensorKitSourceType].valueCode = #keyboard-metrics
+* status = #current
+* type = $sensorKitSourceType#keyboard-metrics "Keyboard Metrics"
+* subject = Reference(SensorKitPatientExample)
+* date = "2026-08-20T17:05:01Z"
+* author = Reference(SensorKitDeviceExample)
+* content.attachment.contentType = #application/json
+* content.format = $recordingFormat#native-json-1 "Native JSON 1"
+* content.attachment.title = "SensorKit Keyboard Metrics Native Recording"
+* content.attachment.data = "eyJlcGlzb2RlcyI6MzEsIndvcmRzIjoxODQwLCJ0YXBzIjo5ODIwfQ=="
+* content.attachment.size = 40
+* content.attachment.hash = "+Txt/nnCONsThnkqlptxXARG9Ig="

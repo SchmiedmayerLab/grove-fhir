@@ -11,7 +11,7 @@
   "sourceTypeExtension": {
     "url": "https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-record-type",
     "codeSystem": "https://grovealliance.org/fhir/health-connect/CodeSystem/health-connect-record-type",
-    "element": "Observation.extension.valueCode",
+    "r4Element": "Observation.extension.valueCode",
     "cardinality": "exactly one",
     "rule": "Every admitted output preserves the exact AndroidX Health Connect 1.1 Record class token; the token is lineage and does not replace Observation.code."
   },
@@ -41,7 +41,7 @@
       "specimen": {
         "system": "http://snomed.info/sct",
         "code": "258580003",
-        "display": "Whole blood sample"
+        "display": "Whole blood specimen"
       },
       "effective": "dateTime"
     },
@@ -924,7 +924,7 @@
   ],
   "contextMappings": {
     "bloodGlucoseSpecimen": {
-      "element": "Observation.specimen -> Specimen.type",
+      "r4Element": "Observation.specimen -> Specimen.type",
       "unknownPolicy": "reject",
       "values": [
         {
@@ -935,7 +935,7 @@
           "coding": {
             "system": "http://snomed.info/sct",
             "code": "258580003",
-            "display": "Whole blood sample"
+            "display": "Whole blood specimen"
           }
         },
         {
@@ -1079,7 +1079,7 @@
       }
     },
     "bloodPressureBodyPosition": {
-      "element": "Observation.extension('http://hl7.org/fhir/StructureDefinition/observation-bodyPosition').valueCodeableConcept",
+      "r4Element": "Observation.extension('http://hl7.org/fhir/StructureDefinition/observation-bodyPosition').valueCodeableConcept",
       "unknownPolicy": "omit",
       "values": [
         {
@@ -1121,7 +1121,7 @@
       ]
     },
     "bloodPressureMeasurementLocation": {
-      "element": "Observation.bodySite",
+      "r4Element": "Observation.bodySite",
       "unknownPolicy": "omit",
       "values": [
         {
@@ -1141,7 +1141,7 @@
           "coding": {
             "system": "http://snomed.info/sct",
             "code": "9736006",
-            "display": "Structure of right wrist"
+            "display": "Structure of right wrist region"
           }
         },
         {
@@ -1163,7 +1163,7 @@
       ]
     },
     "temperatureMeasurementLocation": {
-      "element": "Observation.bodySite",
+      "r4Element": "Observation.bodySite",
       "unknownPolicy": "omit",
       "appliesTo": [
         "BasalBodyTemperatureRecord",
@@ -1258,7 +1258,7 @@
     },
     "sleepStage": {
       "sourceCodeSystem": "https://grovealliance.org/fhir/health-connect/CodeSystem/health-connect-sleep-stage",
-      "element": "Observation.valueCodeableConcept.coding (additional coding after the shared Grove stage coding)",
+      "r4Element": "Observation.valueCodeableConcept.coding (additional coding after the shared Grove stage coding)",
       "values": [
         {
           "source": "STAGE_TYPE_UNKNOWN",
@@ -1317,7 +1317,7 @@
       "blankPolicy": "omit"
     },
     "sleepNotes": {
-      "element": "Observation.note.text",
+      "r4Element": "Observation.note.text",
       "authorAndTime": "omit because Health Connect supplies neither",
       "blankPolicy": "omit"
     }

@@ -105,6 +105,7 @@ Description: "An automatically recorded heart-rate measurement with stable ident
 * category = $observationCategory#vital-signs "Vital Signs"
 * code = $loinc#8867-4 "Heart rate"
 * subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00.251-07:00"
 * effectiveDateTime.extension[timezone].valueCode = #America/Los_Angeles
 * issued = "2026-08-19T17:30:02.000Z"
@@ -125,6 +126,7 @@ Description: "An interval step count with stable exchange identity, an exact sou
 * category = $observationCategory#activity "Activity"
 * code = GroveMobileMeasurementCS#step-count-total "Step count total"
 * subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-19T09:00:00-07:00"
 * effectivePeriod.start.extension[startTimezone].valueCode = #America/Los_Angeles
 * effectivePeriod.end = "2026-08-19T10:00:00-07:00"
@@ -179,6 +181,7 @@ Description: "A heart-rate node whose internal references use deterministic Bund
 * category = $observationCategory#vital-signs "Vital Signs"
 * code = $loinc#8867-4 "Heart rate"
 * subject.reference = "urn:uuid:9610c841-e815-599e-a2bf-9bdb688d6737"
+* performer.reference = "urn:uuid:9610c841-e815-599e-a2bf-9bdb688d6737"
 * effectiveDateTime = "2026-08-20T10:30:00-07:00"
 * issued = "2026-08-20T17:30:02Z"
 * valueQuantity = 72 '/min' "beats/minute"

@@ -120,6 +120,44 @@ def exercised_suppressions(path: Path) -> dict[str, int]:
     return result
 
 
+BROKEN_LINK = re.compile(r"The link '([^']+)'")
+
+
+def broken_link_targets(qa_path: Path) -> set[str]:
+    """Every distinct target the Publisher could not resolve.
+
+    Counted separately from warnings: the Publisher reports broken links in its own tally, so a
+    guide can carry them while reporting zero warnings, which is how they stayed invisible.
+    """
+    qa = qa_path.read_text(encoding="utf-8")
+    _, marker, internal = qa.partition('<a name="internal">')
+    if not marker:
+        return set()
+    plain = html.unescape(re.sub(r"<[^>]+>", " ", internal)).replace("\u200b", "")
+    return set(BROKEN_LINK.findall(plain))
+
+
+def configured_broken_links(path: Path) -> set[str]:
+    """Targets a guide declares unresolvable, each with a reason in the file."""
+    if not path.is_file():
+        return set()
+    return {
+        line.strip()
+        for line in path.read_text(encoding="utf-8").splitlines()
+        if line.strip() and not line.strip().startswith("#")
+    }
+
+
+def validate_broken_links(guide: Path) -> list[str]:
+    declared = configured_broken_links(guide / "input" / "expectedBrokenLinks.txt")
+    found = broken_link_targets(guide / "output" / "qa.html")
+    problems = [f"undeclared broken link: {target}" for target in sorted(found - declared)]
+    problems.extend(
+        f"declared broken link no longer occurs: {target}" for target in sorted(declared - found)
+    )
+    return problems
+
+
 def validate_suppressions(guide: Path) -> list[str]:
     """Return exact configuration/execution mismatches for one built guide."""
     configured_path = guide / "input" / "ignoreWarnings.txt"
@@ -163,6 +201,7 @@ def main() -> int:
         qa = json.loads(qa_path.read_text(encoding="utf-8"))
         hints = int(qa.get("hints", 0))
         suppression_problems = validate_suppressions(guide)
+        suppression_problems.extend(validate_broken_links(guide))
         try:
             exact_suppressions = exercised_suppressions(guide / "output" / "qa.html")
             counts = finding_counts(qa, exact_suppressions)
@@ -176,7 +215,8 @@ def main() -> int:
             f"unsuppressed-errors={counts.unsuppressed_errors} "
             f"raw-warnings={counts.raw_warnings} "
             f"exact-suppressed-warnings={counts.exact_suppressed_warnings} "
-            f"unsuppressed-warnings={counts.unsuppressed_warnings} hints={hints}"
+            f"unsuppressed-warnings={counts.unsuppressed_warnings} hints={hints} "
+            f"broken-links={len(broken_link_targets(guide / 'output' / 'qa.html'))}"
         )
         failed |= counts.unsuppressed_errors != 0 or counts.unsuppressed_warnings != 0
         for problem in suppression_problems:

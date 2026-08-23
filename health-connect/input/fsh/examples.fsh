@@ -96,6 +96,7 @@ Description: "The first FHIR heart-rate Observation emitted from a Health Connec
 * category = $observationCategory#vital-signs "Vital Signs"
 * code = $loinc#8867-4 "Heart rate"
 * subject = Reference(HealthConnectPatientExample)
+* performer = Reference(HealthConnectPatientExample)
 * effectiveDateTime = "2026-08-19T17:30:15Z"
 * issued = "2026-08-19T17:30:01Z"
 * valueQuantity = 72 '/min' "beats/minute"
@@ -118,6 +119,7 @@ Description: "The second FHIR heart-rate Observation emitted from the same Healt
 * category = $observationCategory#vital-signs "Vital Signs"
 * code = $loinc#8867-4 "Heart rate"
 * subject = Reference(HealthConnectPatientExample)
+* performer = Reference(HealthConnectPatientExample)
 * effectiveDateTime = "2026-08-19T17:30:45Z"
 * issued = "2026-08-19T17:30:01Z"
 * valueQuantity = 75 '/min' "beats/minute"
@@ -140,6 +142,7 @@ Description: "A manually entered Health Connect WeightRecord represented with th
 * category = $observationCategory#vital-signs "Vital Signs"
 * code = $loinc#29463-7 "Body weight"
 * subject = Reference(HealthConnectPatientExample)
+* performer = Reference(HealthConnectPatientExample)
 * effectiveDateTime = "2026-08-19T08:15:00-07:00"
 * issued = "2026-08-19T17:30:01Z"
 * valueQuantity = 68.4 'kg' "kg"
@@ -161,6 +164,7 @@ Description: "A Health Connect StepsRecord preserving the source interval and co
 * category = $observationCategory#activity "Activity"
 * code = $groveMobileMeasurement#step-count-total "Step count total"
 * subject = Reference(HealthConnectPatientExample)
+* performer = Reference(HealthConnectPatientExample)
 * effectivePeriod.start = "2026-08-19T09:00:00-07:00"
 * effectivePeriod.end = "2026-08-19T10:00:00-07:00"
 * issued = "2026-08-19T17:30:01Z"
@@ -194,6 +198,7 @@ Description: "A Health Connect glucose result whose exact source specimen select
 * category = $observationCategory#laboratory "Laboratory"
 * code = $loinc#32016-8 "Glucose [Mass/volume] in Capillary blood"
 * subject = Reference(HealthConnectPatientExample)
+* performer = Reference(HealthConnectPatientExample)
 * effectiveDateTime = "2026-08-20T07:15:00-07:00"
 * issued = "2026-08-20T14:15:01Z"
 * valueQuantity = 96 'mg/dL' "mg/dL"
@@ -210,7 +215,7 @@ Description: "The standard-coded specimen node synthesized from an exact Health 
 * identifier[specimenId].system = $healthConnectSpecimenId
 * identifier[specimenId].value = "v1:9f117a683f72d4ee8e5d242e1aa956c799f61f88978545bd406b7e5a16de010d"
 * status = #available
-* type = $sct#258580003 "Whole blood sample"
+* type = $sct#258580003 "Whole blood specimen"
 * subject = Reference(HealthConnectPatientExample)
 
 Instance: HealthConnectWholeBloodGlucoseExample
@@ -226,6 +231,7 @@ Description: "A Health Connect glucose result whose exact source specimen select
 * category = $observationCategory#laboratory "Laboratory"
 * code = $loinc#2339-0 "Glucose [Mass/volume] in Blood"
 * subject = Reference(HealthConnectPatientExample)
+* performer = Reference(HealthConnectPatientExample)
 * effectiveDateTime = "2026-08-20T07:16:00-07:00"
 * issued = "2026-08-20T14:16:01Z"
 * valueQuantity = 95 'mg/dL' "mg/dL"
@@ -256,6 +262,7 @@ Description: "A Health Connect glucose result whose exact source specimen select
 * category = $observationCategory#laboratory "Laboratory"
 * code = $loinc#2345-7 "Glucose [Mass/volume] in Serum or Plasma"
 * subject = Reference(HealthConnectPatientExample)
+* performer = Reference(HealthConnectPatientExample)
 * effectiveDateTime = "2026-08-20T07:17:00-07:00"
 * issued = "2026-08-20T14:17:01Z"
 * valueQuantity = 94 'mg/dL' "mg/dL"
@@ -286,6 +293,7 @@ Description: "A Health Connect glucose result whose exact source specimen select
 * category = $observationCategory#laboratory "Laboratory"
 * code = $loinc#99504-3 "Glucose [Mass/volume] in Interstitial fluid"
 * subject = Reference(HealthConnectPatientExample)
+* performer = Reference(HealthConnectPatientExample)
 * effectiveDateTime = "2026-08-20T07:18:00-07:00"
 * issued = "2026-08-20T14:18:01Z"
 * valueQuantity = 93 'mg/dL' "mg/dL"
@@ -306,6 +314,7 @@ Description: "A Health Connect blood-pressure panel retaining standard body-posi
 * category = $observationCategory#vital-signs "Vital Signs"
 * code = $loinc#85354-9 "Blood pressure panel with all children optional"
 * subject = Reference(HealthConnectPatientExample)
+* performer = Reference(HealthConnectPatientExample)
 * effectiveDateTime = "2026-08-20T07:20:00-07:00"
 * issued = "2026-08-20T14:20:01Z"
 * component[+].code = $loinc#8480-6 "Systolic blood pressure"
@@ -331,6 +340,7 @@ Description: "A Health Connect body-temperature result retaining its standard or
 * category = $observationCategory#vital-signs "Vital Signs"
 * code = $loinc#8310-5 "Body temperature"
 * subject = Reference(HealthConnectPatientExample)
+* performer = Reference(HealthConnectPatientExample)
 * effectiveDateTime = "2026-08-20T07:25:00-07:00"
 * issued = "2026-08-20T14:25:01Z"
 * valueQuantity = 36.8 'Cel' "Cel"
@@ -350,6 +360,7 @@ Description: "A source-neutral duration summary retaining a non-blank Health Con
 * category = $observationCategory#activity "Activity"
 * code = $loinc#93832-4 "Sleep duration"
 * subject = Reference(HealthConnectPatientExample)
+* performer = Reference(HealthConnectPatientExample)
 * effectivePeriod.start = "2026-08-19T23:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T07:00:00-07:00"
 * issued = "2026-08-20T14:00:01Z"
@@ -373,6 +384,7 @@ Description: "One sleep-session stage retaining both the shared light-sleep clas
 * category = $observationCategory#activity "Activity"
 * code = $groveMobileMeasurement#sleep-stage "Sleep stage"
 * subject = Reference(HealthConnectPatientExample)
+* performer = Reference(HealthConnectPatientExample)
 * effectivePeriod.start = "2026-08-19T23:10:00-07:00"
 * effectivePeriod.end = "2026-08-19T23:42:00-07:00"
 * issued = "2026-08-20T14:00:01Z"

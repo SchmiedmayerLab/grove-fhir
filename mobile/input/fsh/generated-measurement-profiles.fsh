@@ -1682,3 +1682,1090 @@ Description: "One segment, lap, pause, marker, or event within a workout session
 * component[lap-length].valueQuantity.value 1..1 MS
 * component[lap-length].valueQuantity.system = $ucum (exactly)
 * component[lap-length].valueQuantity.code = #m (exactly)
+
+Instance: GroveMobileBasalEnergyExample
+InstanceOf: GroveMobileBasalEnergy
+Usage: #example
+Title: "Basal Energy Burned Example"
+Description: "A conformant Basal Energy Burned instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "basal-energy-example"
+* status = #final
+* code = GroveMobileMeasurementCS#basal-energy-burned
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* valueQuantity = 1580 'kcal'
+
+Instance: GroveMobileBloodGlucoseUnspecifiedSpecimenExample
+InstanceOf: GroveMobileBloodGlucoseUnspecifiedSpecimen
+Usage: #example
+Title: "Blood Glucose (Unspecified Specimen) Example"
+Description: "A conformant Blood Glucose (Unspecified Specimen) instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "blood-glucose-unspecified-specimen-example"
+* status = #final
+* code = $loinc#2339-0 "Glucose [Mass/volume] in Blood"
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00-07:00"
+* valueQuantity = 95 'mg/dL'
+
+Instance: GroveMobileBodyFatPercentageExample
+InstanceOf: GroveMobileBodyFatPercentage
+Usage: #example
+Title: "Body Fat Percentage Example"
+Description: "A conformant Body Fat Percentage instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "body-fat-percentage-example"
+* status = #final
+* code = $loinc#41982-0 "Percentage of body fat Measured"
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00-07:00"
+* valueQuantity = 22 '%'
+
+Instance: GroveMobileBodyWaterMassExample
+InstanceOf: GroveMobileBodyWaterMass
+Usage: #example
+Title: "Body Water Mass Example"
+Description: "A conformant Body Water Mass instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "body-water-mass-example"
+* status = #final
+* code = $loinc#101683-1 "Body water mass"
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00-07:00"
+* valueQuantity = 42 'kg'
+
+Instance: GroveMobileBoneMassExample
+InstanceOf: GroveMobileBoneMass
+Usage: #example
+Title: "Bone Mass Example"
+Description: "A conformant Bone Mass instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "bone-mass-example"
+* status = #final
+* code = $loinc#101685-6 "Body bone mass"
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00-07:00"
+* valueQuantity = 3.1 'kg'
+
+Instance: GroveMobileCervicalMucusQualityExample
+InstanceOf: GroveMobileCervicalMucusQuality
+Usage: #example
+Title: "Cervical Mucus Quality Example"
+Description: "A conformant Cervical Mucus Quality instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "cervical-mucus-quality-example"
+* status = #final
+* code = GroveMobileMeasurementCS#cervical-mucus-quality
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00-07:00"
+* valueCodeableConcept = GroveCervicalMucusQualityCS#dry "Dry"
+* component[sensation].code = https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement#cervical-mucus-sensation
+* component[sensation].valueCodeableConcept = GroveCervicalMucusSensationCS#light "Light"
+
+Instance: GroveMobileCyclingCadenceExample
+InstanceOf: GroveMobileCyclingCadence
+Usage: #example
+Title: "Cycling Cadence Example"
+Description: "A conformant Cycling Cadence instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "cycling-cadence-example"
+* status = #final
+* code = GroveMobileMeasurementCS#cycling-cadence
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00-07:00"
+* valueQuantity = 85 '/min' "revolutions/minute"
+
+Instance: GroveMobileDeepSleepDurationExample
+InstanceOf: GroveMobileDeepSleepDuration
+Usage: #example
+Title: "Deep Sleep Duration Example"
+Description: "A conformant Deep Sleep Duration instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "deep-sleep-duration-example"
+* status = #final
+* code = $loinc#93831-6 "Deep sleep duration"
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* valueQuantity = 78 'min'
+
+Instance: GroveMobileDietaryBiotinExample
+InstanceOf: GroveMobileDietaryBiotin
+Usage: #example
+Title: "Grove Mobile Dietary Biotin Example"
+Description: "A conformant Grove Mobile Dietary Biotin instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "dietary-biotin-example"
+* status = #final
+* code = GroveMobileMeasurementCS#dietary-biotin
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* valueQuantity = 30 'ug'
+
+Instance: GroveMobileDietaryCaffeineExample
+InstanceOf: GroveMobileDietaryCaffeine
+Usage: #example
+Title: "Grove Mobile Dietary Caffeine Example"
+Description: "A conformant Grove Mobile Dietary Caffeine instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "dietary-caffeine-example"
+* status = #final
+* code = GroveMobileMeasurementCS#dietary-caffeine
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* valueQuantity = 95 'mg'
+
+Instance: GroveMobileDietaryCalciumExample
+InstanceOf: GroveMobileDietaryCalcium
+Usage: #example
+Title: "Grove Mobile Dietary Calcium Example"
+Description: "A conformant Grove Mobile Dietary Calcium instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "dietary-calcium-example"
+* status = #final
+* code = GroveMobileMeasurementCS#dietary-calcium
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* valueQuantity = 1000 'mg'
+
+Instance: GroveMobileDietaryCarbohydratesExample
+InstanceOf: GroveMobileDietaryCarbohydrates
+Usage: #example
+Title: "Grove Mobile Dietary Carbohydrates Example"
+Description: "A conformant Grove Mobile Dietary Carbohydrates instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "dietary-carbohydrates-example"
+* status = #final
+* code = $loinc#9060-5 "Carbohydrate intake Measured"
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* valueQuantity = 275 'g'
+
+Instance: GroveMobileDietaryChlorideExample
+InstanceOf: GroveMobileDietaryChloride
+Usage: #example
+Title: "Grove Mobile Dietary Chloride Example"
+Description: "A conformant Grove Mobile Dietary Chloride instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "dietary-chloride-example"
+* status = #final
+* code = GroveMobileMeasurementCS#dietary-chloride
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* valueQuantity = 2300 'mg'
+
+Instance: GroveMobileDietaryCholesterolExample
+InstanceOf: GroveMobileDietaryCholesterol
+Usage: #example
+Title: "Grove Mobile Dietary Cholesterol Example"
+Description: "A conformant Grove Mobile Dietary Cholesterol instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "dietary-cholesterol-example"
+* status = #final
+* code = GroveMobileMeasurementCS#dietary-cholesterol
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* valueQuantity = 250 'mg'
+
+Instance: GroveMobileDietaryChromiumExample
+InstanceOf: GroveMobileDietaryChromium
+Usage: #example
+Title: "Grove Mobile Dietary Chromium Example"
+Description: "A conformant Grove Mobile Dietary Chromium instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "dietary-chromium-example"
+* status = #final
+* code = GroveMobileMeasurementCS#dietary-chromium
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* valueQuantity = 35 'ug'
+
+Instance: GroveMobileDietaryCopperExample
+InstanceOf: GroveMobileDietaryCopper
+Usage: #example
+Title: "Grove Mobile Dietary Copper Example"
+Description: "A conformant Grove Mobile Dietary Copper instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "dietary-copper-example"
+* status = #final
+* code = GroveMobileMeasurementCS#dietary-copper
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* valueQuantity = 900 'ug'
+
+Instance: GroveMobileDietaryEnergyExample
+InstanceOf: GroveMobileDietaryEnergy
+Usage: #example
+Title: "Grove Mobile Dietary Energy Example"
+Description: "A conformant Grove Mobile Dietary Energy instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "dietary-energy-example"
+* status = #final
+* code = $loinc#9052-2 "Calorie intake total"
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* valueQuantity = 2100 'kcal'
+
+Instance: GroveMobileDietaryFatMonounsaturatedExample
+InstanceOf: GroveMobileDietaryFatMonounsaturated
+Usage: #example
+Title: "Grove Mobile Dietary Monounsaturated Fat Example"
+Description: "A conformant Grove Mobile Dietary Monounsaturated Fat instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "dietary-fat-monounsaturated-example"
+* status = #final
+* code = GroveMobileMeasurementCS#dietary-fat-monounsaturated
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* valueQuantity = 25 'g'
+
+Instance: GroveMobileDietaryFatPolyunsaturatedExample
+InstanceOf: GroveMobileDietaryFatPolyunsaturated
+Usage: #example
+Title: "Grove Mobile Dietary Polyunsaturated Fat Example"
+Description: "A conformant Grove Mobile Dietary Polyunsaturated Fat instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "dietary-fat-polyunsaturated-example"
+* status = #final
+* code = GroveMobileMeasurementCS#dietary-fat-polyunsaturated
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* valueQuantity = 17 'g'
+
+Instance: GroveMobileDietaryFatSaturatedExample
+InstanceOf: GroveMobileDietaryFatSaturated
+Usage: #example
+Title: "Grove Mobile Dietary Saturated Fat Example"
+Description: "A conformant Grove Mobile Dietary Saturated Fat instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "dietary-fat-saturated-example"
+* status = #final
+* code = GroveMobileMeasurementCS#dietary-fat-saturated
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* valueQuantity = 20 'g'
+
+Instance: GroveMobileDietaryFatTotalExample
+InstanceOf: GroveMobileDietaryFatTotal
+Usage: #example
+Title: "Grove Mobile Dietary Fat Example"
+Description: "A conformant Grove Mobile Dietary Fat instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "dietary-fat-total-example"
+* status = #final
+* code = $loinc#9067-0 "Fat intake Measured"
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* valueQuantity = 78 'g'
+
+Instance: GroveMobileDietaryFiberExample
+InstanceOf: GroveMobileDietaryFiber
+Usage: #example
+Title: "Grove Mobile Dietary Fiber Example"
+Description: "A conformant Grove Mobile Dietary Fiber instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "dietary-fiber-example"
+* status = #final
+* code = GroveMobileMeasurementCS#dietary-fiber
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* valueQuantity = 28 'g'
+
+Instance: GroveMobileDietaryFolateExample
+InstanceOf: GroveMobileDietaryFolate
+Usage: #example
+Title: "Grove Mobile Dietary Folate Example"
+Description: "A conformant Grove Mobile Dietary Folate instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "dietary-folate-example"
+* status = #final
+* code = GroveMobileMeasurementCS#dietary-folate
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* valueQuantity = 400 'ug'
+
+Instance: GroveMobileDietaryIodineExample
+InstanceOf: GroveMobileDietaryIodine
+Usage: #example
+Title: "Grove Mobile Dietary Iodine Example"
+Description: "A conformant Grove Mobile Dietary Iodine instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "dietary-iodine-example"
+* status = #final
+* code = GroveMobileMeasurementCS#dietary-iodine
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* valueQuantity = 150 'ug'
+
+Instance: GroveMobileDietaryIronExample
+InstanceOf: GroveMobileDietaryIron
+Usage: #example
+Title: "Grove Mobile Dietary Iron Example"
+Description: "A conformant Grove Mobile Dietary Iron instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "dietary-iron-example"
+* status = #final
+* code = GroveMobileMeasurementCS#dietary-iron
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* valueQuantity = 18 'mg'
+
+Instance: GroveMobileDietaryMagnesiumExample
+InstanceOf: GroveMobileDietaryMagnesium
+Usage: #example
+Title: "Grove Mobile Dietary Magnesium Example"
+Description: "A conformant Grove Mobile Dietary Magnesium instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "dietary-magnesium-example"
+* status = #final
+* code = GroveMobileMeasurementCS#dietary-magnesium
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* valueQuantity = 400 'mg'
+
+Instance: GroveMobileDietaryManganeseExample
+InstanceOf: GroveMobileDietaryManganese
+Usage: #example
+Title: "Grove Mobile Dietary Manganese Example"
+Description: "A conformant Grove Mobile Dietary Manganese instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "dietary-manganese-example"
+* status = #final
+* code = GroveMobileMeasurementCS#dietary-manganese
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* valueQuantity = 2.3 'mg'
+
+Instance: GroveMobileDietaryMolybdenumExample
+InstanceOf: GroveMobileDietaryMolybdenum
+Usage: #example
+Title: "Grove Mobile Dietary Molybdenum Example"
+Description: "A conformant Grove Mobile Dietary Molybdenum instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "dietary-molybdenum-example"
+* status = #final
+* code = GroveMobileMeasurementCS#dietary-molybdenum
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* valueQuantity = 45 'ug'
+
+Instance: GroveMobileDietaryNiacinExample
+InstanceOf: GroveMobileDietaryNiacin
+Usage: #example
+Title: "Grove Mobile Dietary Niacin Example"
+Description: "A conformant Grove Mobile Dietary Niacin instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "dietary-niacin-example"
+* status = #final
+* code = GroveMobileMeasurementCS#dietary-niacin
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* valueQuantity = 16 'mg'
+
+Instance: GroveMobileDietaryPantothenicAcidExample
+InstanceOf: GroveMobileDietaryPantothenicAcid
+Usage: #example
+Title: "Grove Mobile Dietary Pantothenic Acid Example"
+Description: "A conformant Grove Mobile Dietary Pantothenic Acid instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "dietary-pantothenic-acid-example"
+* status = #final
+* code = GroveMobileMeasurementCS#dietary-pantothenic-acid
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* valueQuantity = 5 'mg'
+
+Instance: GroveMobileDietaryPhosphorusExample
+InstanceOf: GroveMobileDietaryPhosphorus
+Usage: #example
+Title: "Grove Mobile Dietary Phosphorus Example"
+Description: "A conformant Grove Mobile Dietary Phosphorus instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "dietary-phosphorus-example"
+* status = #final
+* code = GroveMobileMeasurementCS#dietary-phosphorus
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* valueQuantity = 700 'mg'
+
+Instance: GroveMobileDietaryPotassiumExample
+InstanceOf: GroveMobileDietaryPotassium
+Usage: #example
+Title: "Grove Mobile Dietary Potassium Example"
+Description: "A conformant Grove Mobile Dietary Potassium instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "dietary-potassium-example"
+* status = #final
+* code = GroveMobileMeasurementCS#dietary-potassium
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* valueQuantity = 3400 'mg'
+
+Instance: GroveMobileDietaryProteinExample
+InstanceOf: GroveMobileDietaryProtein
+Usage: #example
+Title: "Grove Mobile Dietary Protein Example"
+Description: "A conformant Grove Mobile Dietary Protein instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "dietary-protein-example"
+* status = #final
+* code = $loinc#9080-3 "Protein intake Measured"
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* valueQuantity = 50 'g'
+
+Instance: GroveMobileDietaryRiboflavinExample
+InstanceOf: GroveMobileDietaryRiboflavin
+Usage: #example
+Title: "Grove Mobile Dietary Riboflavin Example"
+Description: "A conformant Grove Mobile Dietary Riboflavin instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "dietary-riboflavin-example"
+* status = #final
+* code = GroveMobileMeasurementCS#dietary-riboflavin
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* valueQuantity = 1.3 'mg'
+
+Instance: GroveMobileDietarySeleniumExample
+InstanceOf: GroveMobileDietarySelenium
+Usage: #example
+Title: "Grove Mobile Dietary Selenium Example"
+Description: "A conformant Grove Mobile Dietary Selenium instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "dietary-selenium-example"
+* status = #final
+* code = GroveMobileMeasurementCS#dietary-selenium
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* valueQuantity = 55 'ug'
+
+Instance: GroveMobileDietarySodiumExample
+InstanceOf: GroveMobileDietarySodium
+Usage: #example
+Title: "Grove Mobile Dietary Sodium Example"
+Description: "A conformant Grove Mobile Dietary Sodium instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "dietary-sodium-example"
+* status = #final
+* code = GroveMobileMeasurementCS#dietary-sodium
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* valueQuantity = 2300 'mg'
+
+Instance: GroveMobileDietarySugarExample
+InstanceOf: GroveMobileDietarySugar
+Usage: #example
+Title: "Grove Mobile Dietary Sugar Example"
+Description: "A conformant Grove Mobile Dietary Sugar instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "dietary-sugar-example"
+* status = #final
+* code = GroveMobileMeasurementCS#dietary-sugar
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* valueQuantity = 50 'g'
+
+Instance: GroveMobileDietaryThiaminExample
+InstanceOf: GroveMobileDietaryThiamin
+Usage: #example
+Title: "Grove Mobile Dietary Thiamin Example"
+Description: "A conformant Grove Mobile Dietary Thiamin instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "dietary-thiamin-example"
+* status = #final
+* code = GroveMobileMeasurementCS#dietary-thiamin
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* valueQuantity = 1.2 'mg'
+
+Instance: GroveMobileDietaryVitaminAExample
+InstanceOf: GroveMobileDietaryVitaminA
+Usage: #example
+Title: "Grove Mobile Dietary Vitamin A Example"
+Description: "A conformant Grove Mobile Dietary Vitamin A instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "dietary-vitamin-a-example"
+* status = #final
+* code = GroveMobileMeasurementCS#dietary-vitamin-a
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* valueQuantity = 900 'ug'
+
+Instance: GroveMobileDietaryVitaminB12Example
+InstanceOf: GroveMobileDietaryVitaminB12
+Usage: #example
+Title: "Grove Mobile Dietary Vitamin B12 Example"
+Description: "A conformant Grove Mobile Dietary Vitamin B12 instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "dietary-vitamin-b12-example"
+* status = #final
+* code = GroveMobileMeasurementCS#dietary-vitamin-b12
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* valueQuantity = 2.4 'ug'
+
+Instance: GroveMobileDietaryVitaminB6Example
+InstanceOf: GroveMobileDietaryVitaminB6
+Usage: #example
+Title: "Grove Mobile Dietary Vitamin B6 Example"
+Description: "A conformant Grove Mobile Dietary Vitamin B6 instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "dietary-vitamin-b6-example"
+* status = #final
+* code = GroveMobileMeasurementCS#dietary-vitamin-b6
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* valueQuantity = 1.7 'mg'
+
+Instance: GroveMobileDietaryVitaminCExample
+InstanceOf: GroveMobileDietaryVitaminC
+Usage: #example
+Title: "Grove Mobile Dietary Vitamin C Example"
+Description: "A conformant Grove Mobile Dietary Vitamin C instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "dietary-vitamin-c-example"
+* status = #final
+* code = GroveMobileMeasurementCS#dietary-vitamin-c
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* valueQuantity = 90 'mg'
+
+Instance: GroveMobileDietaryVitaminDExample
+InstanceOf: GroveMobileDietaryVitaminD
+Usage: #example
+Title: "Grove Mobile Dietary Vitamin D Example"
+Description: "A conformant Grove Mobile Dietary Vitamin D instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "dietary-vitamin-d-example"
+* status = #final
+* code = GroveMobileMeasurementCS#dietary-vitamin-d
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* valueQuantity = 20 'ug'
+
+Instance: GroveMobileDietaryVitaminEExample
+InstanceOf: GroveMobileDietaryVitaminE
+Usage: #example
+Title: "Grove Mobile Dietary Vitamin E Example"
+Description: "A conformant Grove Mobile Dietary Vitamin E instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "dietary-vitamin-e-example"
+* status = #final
+* code = GroveMobileMeasurementCS#dietary-vitamin-e
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* valueQuantity = 15 'mg'
+
+Instance: GroveMobileDietaryVitaminKExample
+InstanceOf: GroveMobileDietaryVitaminK
+Usage: #example
+Title: "Grove Mobile Dietary Vitamin K Example"
+Description: "A conformant Grove Mobile Dietary Vitamin K instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "dietary-vitamin-k-example"
+* status = #final
+* code = GroveMobileMeasurementCS#dietary-vitamin-k
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* valueQuantity = 120 'ug'
+
+Instance: GroveMobileDietaryZincExample
+InstanceOf: GroveMobileDietaryZinc
+Usage: #example
+Title: "Grove Mobile Dietary Zinc Example"
+Description: "A conformant Grove Mobile Dietary Zinc instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "dietary-zinc-example"
+* status = #final
+* code = GroveMobileMeasurementCS#dietary-zinc
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* valueQuantity = 11 'mg'
+
+Instance: GroveMobileElectrodermalActivityExample
+InstanceOf: GroveMobileElectrodermalActivity
+Usage: #example
+Title: "Electrodermal Activity Example"
+Description: "A conformant Electrodermal Activity instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "electrodermal-activity-example"
+* status = #final
+* code = GroveMobileMeasurementCS#electrodermal-activity
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00-07:00"
+* valueQuantity = 0.8 'uS'
+
+Instance: GroveMobileFlightsClimbedExample
+InstanceOf: GroveMobileFlightsClimbed
+Usage: #example
+Title: "Flights Climbed Example"
+Description: "A conformant Flights Climbed instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "flights-climbed-example"
+* status = #final
+* code = $loinc#100304-5 "Flights climbed [#] Reporting Period"
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* valueQuantity = 12 '{flights}' "flights"
+
+Instance: GroveMobileFluidIntakeExample
+InstanceOf: GroveMobileFluidIntake
+Usage: #example
+Title: "Grove Mobile Fluid Intake Example"
+Description: "A conformant Grove Mobile Fluid Intake instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "fluid-intake-example"
+* status = #final
+* code = $loinc#8985-4 "Fluid intake Measured"
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* valueQuantity = 250 'mL'
+
+Instance: GroveMobileHeartRateVariabilityRmssdExample
+InstanceOf: GroveMobileHeartRateVariabilityRmssd
+Usage: #example
+Title: "Heart Rate Variability RMSSD Example"
+Description: "A conformant Heart Rate Variability RMSSD instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "heart-rate-variability-rmssd-example"
+* status = #final
+* code = GroveMobileMeasurementCS#heart-rate-variability-rmssd
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00-07:00"
+* valueQuantity = 42 'ms'
+
+Instance: GroveMobileHeartRateVariabilitySdnnExample
+InstanceOf: GroveMobileHeartRateVariabilitySdnn
+Usage: #example
+Title: "Heart Rate Variability SDNN Example"
+Description: "A conformant Heart Rate Variability SDNN instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "heart-rate-variability-sdnn-example"
+* status = #final
+* code = $loinc#112429-6 "Heart rate variability SDNN [Time]"
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00-07:00"
+* valueQuantity = 58 'ms'
+
+Instance: GroveMobileIntermenstrualBleedingExample
+InstanceOf: GroveMobileIntermenstrualBleeding
+Usage: #example
+Title: "Intermenstrual Bleeding Example"
+Description: "A conformant Intermenstrual Bleeding instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "intermenstrual-bleeding-example"
+* status = #final
+* code = GroveMobileMeasurementCS#intermenstrual-bleeding
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00-07:00"
+* valueCodeableConcept = GroveIntermenstrualBleedingCS#present "Present"
+
+Instance: GroveMobileLeanBodyMassExample
+InstanceOf: GroveMobileLeanBodyMass
+Usage: #example
+Title: "Lean Body Mass Example"
+Description: "A conformant Lean Body Mass instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "lean-body-mass-example"
+* status = #final
+* code = $loinc#91557-9 "Lean body weight"
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00-07:00"
+* valueQuantity = 56 'kg'
+
+Instance: GroveMobileLightSleepDurationExample
+InstanceOf: GroveMobileLightSleepDuration
+Usage: #example
+Title: "Light Sleep Duration Example"
+Description: "A conformant Light Sleep Duration instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "light-sleep-duration-example"
+* status = #final
+* code = $loinc#93830-8 "Light sleep duration"
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* valueQuantity = 244 'min'
+
+Instance: GroveMobileMenstruationFlowExample
+InstanceOf: GroveMobileMenstruationFlow
+Usage: #example
+Title: "Menstruation Flow Example"
+Description: "A conformant Menstruation Flow instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "menstruation-flow-example"
+* status = #final
+* code = GroveMobileMeasurementCS#menstruation-flow
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00-07:00"
+* valueCodeableConcept = GroveMenstruationFlowCS#unspecified "Unspecified"
+* component[cycleStart].code = https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement#menstrual-cycle-start
+* component[cycleStart].valueCodeableConcept = GroveMenstrualCycleStartCS#cycle-start "Cycle start"
+
+Instance: GroveMobileMindfulnessSessionExample
+InstanceOf: GroveMobileMindfulnessSession
+Usage: #example
+Title: "Mindfulness Session Example"
+Description: "A conformant Mindfulness Session instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "mindfulness-session-example"
+* status = #final
+* code = GroveMobileMeasurementCS#mindfulness-session-duration
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* valueQuantity = 10 'min'
+
+Instance: GroveMobileOvulationTestResultExample
+InstanceOf: GroveMobileOvulationTestResult
+Usage: #example
+Title: "Ovulation Test Result Example"
+Description: "A conformant Ovulation Test Result instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "ovulation-test-result-example"
+* status = #final
+* code = GroveMobileMeasurementCS#ovulation-test-result
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00-07:00"
+* valueCodeableConcept = GroveOvulationTestResultCS#negative "Negative"
+
+Instance: GroveMobileOxygenSaturationDailyAverageExample
+InstanceOf: GroveMobileOxygenSaturationDailyAverage
+Usage: #example
+Title: "Oxygen Saturation Daily Average Example"
+Description: "A conformant Oxygen Saturation Daily Average instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "oxygen-saturation-daily-average-example"
+* status = #final
+* code = $loinc#103209-3 "Mean oxygen saturation"
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* valueQuantity = 96 '%'
+
+Instance: GroveMobilePowerExample
+InstanceOf: GroveMobilePower
+Usage: #example
+Title: "Power Example"
+Description: "A conformant Power instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "power-example"
+* status = #final
+* code = GroveMobileMeasurementCS#power
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00-07:00"
+* valueQuantity = 180 'W'
+
+Instance: GroveMobileRemSleepDurationExample
+InstanceOf: GroveMobileRemSleepDuration
+Usage: #example
+Title: "REM Sleep Duration Example"
+Description: "A conformant REM Sleep Duration instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "rem-sleep-duration-example"
+* status = #final
+* code = $loinc#93829-0 "REM sleep duration"
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* valueQuantity = 96 'min'
+
+Instance: GroveMobileRespiratoryRateAverageExample
+InstanceOf: GroveMobileRespiratoryRateAverage
+Usage: #example
+Title: "Respiratory Rate Average Example"
+Description: "A conformant Respiratory Rate Average instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "respiratory-rate-average-example"
+* status = #final
+* code = $loinc#103217-6 "Mean respiratory rate"
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* method = GroveAggregationMethodCS#daily-mean
+* valueQuantity = 15 '/min' "breaths/minute"
+
+Instance: GroveMobileRestingHeartRateExample
+InstanceOf: GroveMobileRestingHeartRate
+Usage: #example
+Title: "Resting Heart Rate Example"
+Description: "A conformant Resting Heart Rate instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "resting-heart-rate-example"
+* status = #final
+* code = GroveMobileMeasurementCS#resting-heart-rate
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* valueQuantity = 58 '/min' "beats/minute"
+
+Instance: GroveMobileSexualActivityExample
+InstanceOf: GroveMobileSexualActivity
+Usage: #example
+Title: "Sexual Activity Example"
+Description: "A conformant Sexual Activity instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "sexual-activity-example"
+* status = #final
+* code = GroveMobileMeasurementCS#sexual-activity
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00-07:00"
+* valueCodeableConcept = GroveSexualActivityCS#protected "Protection used"
+
+Instance: GroveMobileSkinTemperatureExample
+InstanceOf: GroveMobileSkinTemperature
+Usage: #example
+Title: "Skin Temperature Example"
+Description: "A conformant Skin Temperature instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "skin-temperature-example"
+* status = #final
+* code = $loinc#61008-9 "Body surface temperature"
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00-07:00"
+* valueQuantity = 33.2 'Cel'
+
+Instance: GroveMobileSleepAwakeDurationExample
+InstanceOf: GroveMobileSleepAwakeDuration
+Usage: #example
+Title: "Awake Duration During Sleep Example"
+Description: "A conformant Awake Duration During Sleep instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "sleep-awake-duration-example"
+* status = #final
+* code = $loinc#93828-2 "Nighttime awakening duration"
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* valueQuantity = 22 'min'
+
+Instance: GroveMobileSleepHeartRateExample
+InstanceOf: GroveMobileSleepHeartRate
+Usage: #example
+Title: "Sleep Heart Rate Example"
+Description: "A conformant Sleep Heart Rate instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "sleep-heart-rate-example"
+* status = #final
+* code = GroveMobileMeasurementCS#sleep-heart-rate
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* method = GroveAggregationMethodCS#session-mean
+* valueQuantity = 54 '/min' "beats/minute"
+
+Instance: GroveMobileSpeedExample
+InstanceOf: GroveMobileSpeed
+Usage: #example
+Title: "Speed Example"
+Description: "A conformant Speed instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "speed-example"
+* status = #final
+* code = GroveMobileMeasurementCS#speed
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00-07:00"
+* valueQuantity = 3.2 'm/s'
+
+Instance: GroveMobileVo2MaxExample
+InstanceOf: GroveMobileVo2Max
+Usage: #example
+Title: "VO2 Max Example"
+Description: "A conformant VO2 Max instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "vo2-max-example"
+* status = #final
+* code = GroveMobileMeasurementCS#vo2-max
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00-07:00"
+* valueQuantity = 42.5 'mL/kg/min'
+
+Instance: GroveMobileWheelchairPushCountExample
+InstanceOf: GroveMobileWheelchairPushCount
+Usage: #example
+Title: "Wheelchair Push Count Example"
+Description: "A conformant Wheelchair Push Count instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "wheelchair-push-count-example"
+* status = #final
+* code = $loinc#96502-0 "Number of wheelchair pushes per time period"
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* valueQuantity = 1240 '{pushes}' "pushes"
+
+Instance: GroveMobileWorkoutExample
+InstanceOf: GroveMobileWorkout
+Usage: #example
+Title: "Workout Example"
+Description: "A conformant Workout instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "workout-example"
+* status = #final
+* code = GroveMobileMeasurementCS#workout
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* valueCodeableConcept = GroveWorkoutActivityCS#running "Running"
+* component[active-duration].code = https://grovealliance.org/fhir/mobile/CodeSystem/grove-workout-statistic#active-duration
+* component[active-duration].valueQuantity = 2700 's'
+* component[distance-sum].code = https://grovealliance.org/fhir/mobile/CodeSystem/grove-workout-statistic#distance-sum
+* component[distance-sum].valueQuantity = 8400 'm'
+* component[active-energy-sum].code = https://grovealliance.org/fhir/mobile/CodeSystem/grove-workout-statistic#active-energy-sum
+* component[active-energy-sum].valueQuantity = 430 'kcal'
+* component[heart-rate-avg].code = https://grovealliance.org/fhir/mobile/CodeSystem/grove-workout-statistic#heart-rate-avg
+* component[heart-rate-avg].valueQuantity = 142 '/min'
+* component[heart-rate-max].code = https://grovealliance.org/fhir/mobile/CodeSystem/grove-workout-statistic#heart-rate-max
+* component[heart-rate-max].valueQuantity = 171 '/min'
+* component[heart-rate-min].code = https://grovealliance.org/fhir/mobile/CodeSystem/grove-workout-statistic#heart-rate-min
+* component[heart-rate-min].valueQuantity = 96 '/min'
+* component[step-count-sum].code = https://grovealliance.org/fhir/mobile/CodeSystem/grove-workout-statistic#step-count-sum
+* component[step-count-sum].valueQuantity = 6120 '{steps}'
+* component[elevation-gain].code = https://grovealliance.org/fhir/mobile/CodeSystem/grove-workout-statistic#elevation-gain
+* component[elevation-gain].valueQuantity = 145 'm'
+* component[flights-climbed-sum].code = https://grovealliance.org/fhir/mobile/CodeSystem/grove-workout-statistic#flights-climbed-sum
+* component[flights-climbed-sum].valueQuantity = 8 '{flights}'
+* component[speed-avg].code = https://grovealliance.org/fhir/mobile/CodeSystem/grove-workout-statistic#speed-avg
+* component[speed-avg].valueQuantity = 2.8 'm/s'
+* component[swimming-stroke-count-sum].code = https://grovealliance.org/fhir/mobile/CodeSystem/grove-workout-statistic#swimming-stroke-count-sum
+* component[swimming-stroke-count-sum].valueQuantity = 480 '{strokes}'
+* component[pool-lap-count].code = https://grovealliance.org/fhir/mobile/CodeSystem/grove-workout-statistic#pool-lap-count
+* component[pool-lap-count].valueQuantity = 24 '{laps}'
+
+Instance: GroveMobileWorkoutSegmentExample
+InstanceOf: GroveMobileWorkoutSegment
+Usage: #example
+Title: "Workout Segment Example"
+Description: "A conformant Workout Segment instance."
+* identifier.system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier.value = "workout-segment-example"
+* status = #final
+* code = GroveMobileMeasurementCS#workout-segment
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* valueCodeableConcept = GroveWorkoutSegmentTypeCS#lap "Lap"
+* component[repetitions].code = https://grovealliance.org/fhir/mobile/CodeSystem/grove-workout-statistic#repetitions
+* component[repetitions].valueQuantity = 12 '{count}' "repetitions"
+* component[set-weight].code = https://grovealliance.org/fhir/mobile/CodeSystem/grove-workout-statistic#set-weight
+* component[set-weight].valueQuantity = 20 'kg'
+* component[set-index].code = https://grovealliance.org/fhir/mobile/CodeSystem/grove-workout-statistic#set-index
+* component[set-index].valueQuantity = 3 '{count}' "set index"
+* component[rating-of-perceived-exertion].code = https://grovealliance.org/fhir/mobile/CodeSystem/grove-workout-statistic#rating-of-perceived-exertion
+* component[rating-of-perceived-exertion].valueQuantity = 7 '{score}' "RPE 0-10"
+* component[lap-length].code = https://grovealliance.org/fhir/mobile/CodeSystem/grove-workout-statistic#lap-length
+* component[lap-length].valueQuantity = 25 'm'

@@ -1632,3 +1632,1538 @@ Description: "Apple's 1-10 workout effort rating over the associated workout's e
 * valueQuantity.system = $ucum (exactly)
 * valueQuantity.code 1..1 MS
 * valueQuantity.code = #{score} (exactly)
+
+Instance: HealthkitAppleExerciseTimeExample
+InstanceOf: HealthkitAppleExerciseTime
+Usage: #example
+Title: "Apple Exercise Time Example"
+Description: "A conformant Apple Exercise Time instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "e821f27c-aeb0-ea31-5abb-f8ad73ebee58"
+* status = #final
+* code = HealthKitMeasurementCS#apple-exercise-time
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierAppleExerciseTime
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueQuantity = 32 'min'
+
+Instance: HealthkitAppleMoveTimeExample
+InstanceOf: HealthkitAppleMoveTime
+Usage: #example
+Title: "Apple Move Time Example"
+Description: "A conformant Apple Move Time instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "55e4089a-0858-2cdf-05c1-8129a479398a"
+* status = #final
+* code = HealthKitMeasurementCS#apple-move-time
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierAppleMoveTime
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueQuantity = 45 'min'
+
+Instance: HealthkitAppleStandHourExample
+InstanceOf: HealthkitAppleStandHour
+Usage: #example
+Title: "Apple Stand Hour Example"
+Description: "A conformant Apple Stand Hour instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "921b39ec-8b6a-4008-7d74-145c306c088b"
+* status = #final
+* code = HealthKitMeasurementCS#apple-stand-hour
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierAppleStandHour
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = HealthkitAppleStandHourCS#stood "Stood"
+
+Instance: HealthkitAppleStandTimeExample
+InstanceOf: HealthkitAppleStandTime
+Usage: #example
+Title: "Apple Stand Time Example"
+Description: "A conformant Apple Stand Time instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "6a30d19d-98ce-e4c5-dbaf-8f6231bfa230"
+* status = #final
+* code = HealthKitMeasurementCS#apple-stand-time
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierAppleStandTime
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueQuantity = 12 'min'
+
+Instance: HealthkitAtrialFibrillationBurdenExample
+InstanceOf: HealthkitAtrialFibrillationBurden
+Usage: #example
+Title: "Atrial Fibrillation Burden Example"
+Description: "A conformant Atrial Fibrillation Burden instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "4d36b650-cd5c-94e4-30d8-fa475bd4f72b"
+* status = #final
+* code = HealthKitMeasurementCS#atrial-fibrillation-burden
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierAtrialFibrillationBurden
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueQuantity = 2 '%'
+
+Instance: HealthkitBladderIncontinenceExample
+InstanceOf: HealthkitBladderIncontinence
+Usage: #example
+Title: "Bladder Incontinence Example"
+Description: "A conformant Bladder Incontinence instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "901fa6a9-658d-9d9d-4c2f-44b20913d896"
+* status = #final
+* code = HealthKitMeasurementCS#bladder-incontinence
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierBladderIncontinence
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
+
+Instance: HealthkitBleedingAfterPregnancyExample
+InstanceOf: HealthkitBleedingAfterPregnancy
+Usage: #example
+Title: "Bleeding After Pregnancy Example"
+Description: "A conformant Bleeding After Pregnancy instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "5dc5e541-38c5-fd9e-daf7-9ae811b16009"
+* status = #final
+* code = HealthKitMeasurementCS#bleeding-after-pregnancy
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierBleedingAfterPregnancy
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = HealthkitBleedingAfterPregnancyCS#unspecified "Unspecified"
+
+Instance: HealthkitBleedingDuringPregnancyExample
+InstanceOf: HealthkitBleedingDuringPregnancy
+Usage: #example
+Title: "Bleeding During Pregnancy Example"
+Description: "A conformant Bleeding During Pregnancy instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "8d64bd17-110e-e731-f88e-109f6185a9ec"
+* status = #final
+* code = HealthKitMeasurementCS#bleeding-during-pregnancy
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierBleedingDuringPregnancy
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = HealthkitBleedingDuringPregnancyCS#unspecified "Unspecified"
+
+Instance: HealthkitBloodAlcoholContentExample
+InstanceOf: HealthkitBloodAlcoholContent
+Usage: #example
+Title: "Blood Alcohol Content Example"
+Description: "A conformant Blood Alcohol Content instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "1e6f3626-97eb-4c26-1b5e-39b116316119"
+* status = #final
+* code = HealthKitMeasurementCS#blood-alcohol-content
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierBloodAlcoholContent
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueQuantity = 0.04 '%'
+
+Instance: HealthkitBloodTypeExample
+InstanceOf: HealthkitBloodType
+Usage: #example
+Title: "Grove HealthKit Blood Type Example"
+Description: "A conformant Grove HealthKit Blood Type instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "53fd8bb7-06c4-95e4-5c35-f8c42e1bdf05"
+* status = #final
+* code = $loinc#882-1 "ABO and Rh group [Type] in Blood"
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCharacteristicTypeIdentifierBloodType
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = HealthkitBloodTypeCS#a-positive "A positive"
+
+Instance: HealthkitContraceptiveUseExample
+InstanceOf: HealthkitContraceptiveUse
+Usage: #example
+Title: "Contraceptive Use Example"
+Description: "A conformant Contraceptive Use instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "3937723e-0c60-b942-5828-7efa40a3a953"
+* status = #final
+* code = $loinc#8659-5 "Birth control method - Reported"
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierContraceptive
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = HealthkitContraceptiveUseCS#unspecified "Unspecified"
+
+Instance: HealthkitCyclingFunctionalThresholdPowerExample
+InstanceOf: HealthkitCyclingFunctionalThresholdPower
+Usage: #example
+Title: "Cycling Functional Threshold Power Example"
+Description: "A conformant Cycling Functional Threshold Power instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "b8015c86-bad9-e4c7-66dd-f7dbee2441f0"
+* status = #final
+* code = HealthKitMeasurementCS#cycling-functional-threshold-power
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierCyclingFunctionalThresholdPower
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueQuantity = 235 'W'
+
+Instance: HealthkitEnvironmentalAudioExposureExample
+InstanceOf: HealthkitEnvironmentalAudioExposure
+Usage: #example
+Title: "Environmental Audio Exposure Example"
+Description: "A conformant Environmental Audio Exposure instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "2d82a34b-7de3-c30a-89db-b270a7d45b24"
+* status = #final
+* code = HealthKitMeasurementCS#environmental-audio-exposure
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierEnvironmentalAudioExposure
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueQuantity = 68 'dB[SPL]' "dB(SPL)"
+
+Instance: HealthkitEnvironmentalSoundReductionExample
+InstanceOf: HealthkitEnvironmentalSoundReduction
+Usage: #example
+Title: "Environmental Sound Reduction Example"
+Description: "A conformant Environmental Sound Reduction instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "68499887-0949-c17e-4147-c4a7e6b26a3a"
+* status = #final
+* code = HealthKitMeasurementCS#environmental-sound-reduction
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierEnvironmentalSoundReduction
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueQuantity = 22 'dB[SPL]' "dB(SPL)"
+
+Instance: HealthkitForcedExpiratoryVolume1Example
+InstanceOf: HealthkitForcedExpiratoryVolume1
+Usage: #example
+Title: "Forced Expiratory Volume in 1 Second Example"
+Description: "A conformant Forced Expiratory Volume in 1 Second instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "db5fb0a8-e431-73db-72e6-a9a59b046336"
+* status = #final
+* code = $loinc#20150-9 "FEV1"
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierForcedExpiratoryVolume1
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueQuantity = 3.6 'L'
+
+Instance: HealthkitForcedVitalCapacityExample
+InstanceOf: HealthkitForcedVitalCapacity
+Usage: #example
+Title: "Forced Vital Capacity Example"
+Description: "A conformant Forced Vital Capacity instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "e83b37de-22c3-2d8b-a65f-a8984a841339"
+* status = #final
+* code = $loinc#19868-9 "Forced vital capacity [Volume] Respiratory system by Spirometry"
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierForcedVitalCapacity
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueQuantity = 4.5 'L'
+
+Instance: HealthkitGad7AssessmentExample
+InstanceOf: HealthkitGad7Assessment
+Usage: #example
+Title: "Grove HealthKit GAD-7 Score Example"
+Description: "A conformant Grove HealthKit GAD-7 Score instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "0418768d-25f9-4b0f-b398-21efad1aa1e1"
+* status = #final
+* code = $loinc#70274-6 "Generalized anxiety disorder 7 item (GAD-7) total score [Reported.PHQ]"
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKScoredAssessmentTypeIdentifierGAD7
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueQuantity = 6 '{score}' "score"
+
+Instance: HealthkitHandwashingSessionExample
+InstanceOf: HealthkitHandwashingSession
+Usage: #example
+Title: "Handwashing Session Example"
+Description: "A conformant Handwashing Session instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "6920f57a-8080-c1c7-a4ef-497e41549c58"
+* status = #final
+* code = HealthKitMeasurementCS#handwashing-session
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierHandwashingEvent
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueQuantity = 22 's'
+
+Instance: HealthkitHeadphoneAudioExposureExample
+InstanceOf: HealthkitHeadphoneAudioExposure
+Usage: #example
+Title: "Headphone Audio Exposure Example"
+Description: "A conformant Headphone Audio Exposure instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "43823426-af91-cc2d-5818-7da98cfafe64"
+* status = #final
+* code = HealthKitMeasurementCS#headphone-audio-exposure
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierHeadphoneAudioExposure
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueQuantity = 74 'dB[SPL]' "dB(SPL)"
+
+Instance: HealthkitHeartRateRecoveryOneMinuteExample
+InstanceOf: HealthkitHeartRateRecoveryOneMinute
+Usage: #example
+Title: "Heart Rate Recovery (One Minute) Example"
+Description: "A conformant Heart Rate Recovery (One Minute) instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "ec5a6c9f-5d21-dab1-687c-8943e0a2782c"
+* status = #final
+* code = HealthKitMeasurementCS#heart-rate-recovery-one-minute
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierHeartRateRecoveryOneMinute
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueQuantity = 24 '/min' "beats/minute"
+
+Instance: HealthkitInhalerUsageExample
+InstanceOf: HealthkitInhalerUsage
+Usage: #example
+Title: "Inhaler Usage Example"
+Description: "A conformant Inhaler Usage instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "273b6fc0-3bef-29a7-1001-44603f8fe9be"
+* status = #final
+* code = HealthKitMeasurementCS#inhaler-usage
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierInhalerUsage
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueQuantity = 2 '{puff}' "puffs"
+
+Instance: HealthkitInsulinDeliveryExample
+InstanceOf: HealthkitInsulinDelivery
+Usage: #example
+Title: "Insulin Delivery Example"
+Description: "A conformant Insulin Delivery instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "f0515847-95a4-3a80-0c69-b55f137c36e5"
+* status = #final
+* code = HealthKitMeasurementCS#insulin-delivery
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierInsulinDelivery
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueQuantity = 6 '[iU]' "IU"
+
+Instance: HealthkitLactationStatusExample
+InstanceOf: HealthkitLactationStatus
+Usage: #example
+Title: "Lactation Status Example"
+Description: "A conformant Lactation Status instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "9c3420b5-21cd-8b70-9486-a6902325de7e"
+* status = #final
+* code = $loinc#63895-7 "Breastfeeding status"
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierLactation
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = HealthkitLactationStatusCS#lactating "Lactating"
+
+Instance: HealthkitNumberOfAlcoholicBeveragesExample
+InstanceOf: HealthkitNumberOfAlcoholicBeverages
+Usage: #example
+Title: "Number of Alcoholic Beverages Example"
+Description: "A conformant Number of Alcoholic Beverages instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "7a2e6b52-69cd-d3fb-796b-26c0bccb2f18"
+* status = #final
+* code = HealthKitMeasurementCS#number-of-alcoholic-beverages
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierNumberOfAlcoholicBeverages
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueQuantity = 2 '{drinks}' "drinks"
+
+Instance: HealthkitNumberOfTimesFallenExample
+InstanceOf: HealthkitNumberOfTimesFallen
+Usage: #example
+Title: "Number of Times Fallen Example"
+Description: "A conformant Number of Times Fallen instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "40af54d2-5374-9204-fa3a-e2801d39ee20"
+* status = #final
+* code = HealthKitMeasurementCS#number-of-times-fallen
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierNumberOfTimesFallen
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueQuantity = 1 '{falls}' "falls"
+
+Instance: HealthkitPeakExpiratoryFlowRateExample
+InstanceOf: HealthkitPeakExpiratoryFlowRate
+Usage: #example
+Title: "Peak Expiratory Flow Rate Example"
+Description: "A conformant Peak Expiratory Flow Rate instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "69f1a4d9-ad66-3ab8-1bd0-ace18cb8f4af"
+* status = #final
+* code = $loinc#33452-4 "Maximum expiratory gas flow Respiratory system airway"
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierPeakExpiratoryFlowRate
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueQuantity = 480 'L/min'
+
+Instance: HealthkitPeripheralPerfusionIndexExample
+InstanceOf: HealthkitPeripheralPerfusionIndex
+Usage: #example
+Title: "Peripheral Perfusion Index Example"
+Description: "A conformant Peripheral Perfusion Index instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "84e7fc12-724a-10e1-83e1-50745fb2a92e"
+* status = #final
+* code = $loinc#61006-3 "Perfusion index Tissue by Pulse oximetry"
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierPeripheralPerfusionIndex
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueQuantity = 3.5 '%'
+
+Instance: HealthkitPhq9AssessmentExample
+InstanceOf: HealthkitPhq9Assessment
+Usage: #example
+Title: "Grove HealthKit PHQ-9 Score Example"
+Description: "A conformant Grove HealthKit PHQ-9 Score instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "97975756-8ce3-8418-445d-958bcb599da2"
+* status = #final
+* code = $loinc#44261-6 "Patient Health Questionnaire 9 item (PHQ-9) total score [Reported]"
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKScoredAssessmentTypeIdentifierPHQ9
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueQuantity = 8 '{score}' "score"
+
+Instance: HealthkitPhysicalEffortExample
+InstanceOf: HealthkitPhysicalEffort
+Usage: #example
+Title: "Physical Effort Example"
+Description: "A conformant Physical Effort instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "9b636609-afbd-63a3-8ff7-f778c9751786"
+* status = #final
+* code = HealthKitMeasurementCS#physical-effort
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierPhysicalEffort
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueQuantity = 4.5 'kcal/kg/h' "kcal/(kg.h)"
+
+Instance: HealthkitPregnancyStatusExample
+InstanceOf: HealthkitPregnancyStatus
+Usage: #example
+Title: "Pregnancy Status Example"
+Description: "A conformant Pregnancy Status instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "1ba65cc7-a1a5-adf1-7cbe-ae85a9b2af43"
+* status = #final
+* code = $loinc#82810-3 "Pregnancy status"
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierPregnancy
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = HealthkitPregnancyStatusCS#pregnant "Pregnant"
+
+Instance: HealthkitPregnancyTestResultExample
+InstanceOf: HealthkitPregnancyTestResult
+Usage: #example
+Title: "Pregnancy Test Result Example"
+Description: "A conformant Pregnancy Test Result instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "e16e4a34-13b0-1e27-da9a-c5a5db85c206"
+* status = #final
+* code = $loinc#2106-3 "Choriogonadotropin [Presence] in Urine"
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierPregnancyTestResult
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = HealthkitPregnancyTestResultCS#negative "Negative"
+
+Instance: HealthkitProgesteroneTestResultExample
+InstanceOf: HealthkitProgesteroneTestResult
+Usage: #example
+Title: "Progesterone Test Result Example"
+Description: "A conformant Progesterone Test Result instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "0f59e282-c01f-02f0-315b-829ae7b829f9"
+* status = #final
+* code = HealthKitMeasurementCS#progesterone-test-result
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierProgesteroneTestResult
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = HealthkitProgesteroneTestResultCS#negative "Negative"
+
+Instance: HealthkitRunningGroundContactTimeExample
+InstanceOf: HealthkitRunningGroundContactTime
+Usage: #example
+Title: "Running Ground Contact Time Example"
+Description: "A conformant Running Ground Contact Time instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "5d216ee9-e696-3083-e398-61e58a0bab59"
+* status = #final
+* code = HealthKitMeasurementCS#running-ground-contact-time
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierRunningGroundContactTime
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueQuantity = 245 'ms'
+
+Instance: HealthkitRunningStrideLengthExample
+InstanceOf: HealthkitRunningStrideLength
+Usage: #example
+Title: "Running Stride Length Example"
+Description: "A conformant Running Stride Length instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "bbe97fe1-12ee-2f5f-1641-c738d6cf2533"
+* status = #final
+* code = HealthKitMeasurementCS#running-stride-length
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierRunningStrideLength
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueQuantity = 1.15 'm'
+
+Instance: HealthkitRunningVerticalOscillationExample
+InstanceOf: HealthkitRunningVerticalOscillation
+Usage: #example
+Title: "Running Vertical Oscillation Example"
+Description: "A conformant Running Vertical Oscillation instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "14235ca6-025d-db33-ed61-aacaf5ddd346"
+* status = #final
+* code = HealthKitMeasurementCS#running-vertical-oscillation
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierRunningVerticalOscillation
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueQuantity = 8.4 'cm'
+
+Instance: HealthkitSixMinuteWalkTestDistanceExample
+InstanceOf: HealthkitSixMinuteWalkTestDistance
+Usage: #example
+Title: "Six-Minute Walk Test Distance Example"
+Description: "A conformant Six-Minute Walk Test Distance instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "60311844-798b-e27c-5739-d5d0083bfac2"
+* status = #final
+* code = $loinc#64098-7 "Six minute walk test"
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierSixMinuteWalkTestDistance
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueQuantity = 540 'm'
+
+Instance: HealthkitSleepingBreathingDisturbancesExample
+InstanceOf: HealthkitSleepingBreathingDisturbances
+Usage: #example
+Title: "Sleeping Breathing Disturbances Example"
+Description: "A conformant Sleeping Breathing Disturbances instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "c60434b9-8168-235c-7dfa-35e46190cb56"
+* status = #final
+* code = HealthKitMeasurementCS#sleeping-breathing-disturbances
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierAppleSleepingBreathingDisturbances
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueQuantity = 4.2 '/h' "events/hour"
+
+Instance: HealthkitStairAscentSpeedExample
+InstanceOf: HealthkitStairAscentSpeed
+Usage: #example
+Title: "Stair Ascent Speed Example"
+Description: "A conformant Stair Ascent Speed instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "b9014948-4110-92d1-cf13-269e727a081e"
+* status = #final
+* code = $loinc#112431-2 "Stair ascent speed [Velocity]"
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierStairAscentSpeed
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueQuantity = 0.42 'm/s'
+
+Instance: HealthkitStairDescentSpeedExample
+InstanceOf: HealthkitStairDescentSpeed
+Usage: #example
+Title: "Stair Descent Speed Example"
+Description: "A conformant Stair Descent Speed instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "d557c9fa-5d3a-4eb7-d9cd-614ed0df8247"
+* status = #final
+* code = $loinc#112430-4 "Stair descent speed [Velocity]"
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierStairDescentSpeed
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueQuantity = 0.52 'm/s'
+
+Instance: HealthkitSwimmingStrokeCountExample
+InstanceOf: HealthkitSwimmingStrokeCount
+Usage: #example
+Title: "Swimming Stroke Count Example"
+Description: "A conformant Swimming Stroke Count instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "8857a07d-e82f-e795-68e6-3c485b0ff4fa"
+* status = #final
+* code = HealthKitMeasurementCS#swimming-stroke-count
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierSwimmingStrokeCount
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueQuantity = 640 '{strokes}' "strokes"
+
+Instance: HealthkitSymptomAbdominalCrampsExample
+InstanceOf: HealthkitSymptomAbdominalCramps
+Usage: #example
+Title: "Symptom: Abdominal Cramps Example"
+Description: "A conformant Symptom: Abdominal Cramps instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "7ddd17f2-5a69-4097-6d5c-3aba59b6c9a8"
+* status = #final
+* code = HealthKitMeasurementCS#symptom-abdominal-cramps
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierAbdominalCramps
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
+
+Instance: HealthkitSymptomAcneExample
+InstanceOf: HealthkitSymptomAcne
+Usage: #example
+Title: "Symptom: Acne Example"
+Description: "A conformant Symptom: Acne instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "a2644964-f433-ea05-c8df-b19a8871a7f0"
+* status = #final
+* code = HealthKitMeasurementCS#symptom-acne
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierAcne
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
+
+Instance: HealthkitSymptomAppetiteChangesExample
+InstanceOf: HealthkitSymptomAppetiteChanges
+Usage: #example
+Title: "Symptom: Appetite Changes Example"
+Description: "A conformant Symptom: Appetite Changes instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "92b518ad-299a-af2f-440d-2a7281f0f2a4"
+* status = #final
+* code = HealthKitMeasurementCS#symptom-appetite-changes
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierAppetiteChanges
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = HealthkitSymptomAppetiteChangesCS#no-change "No change"
+
+Instance: HealthkitSymptomBloatingExample
+InstanceOf: HealthkitSymptomBloating
+Usage: #example
+Title: "Symptom: Bloating Example"
+Description: "A conformant Symptom: Bloating instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "5f48ab44-db45-ab32-73ce-0cd65a4ea443"
+* status = #final
+* code = HealthKitMeasurementCS#symptom-bloating
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierBloating
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
+
+Instance: HealthkitSymptomBreastPainExample
+InstanceOf: HealthkitSymptomBreastPain
+Usage: #example
+Title: "Symptom: Breast Pain Example"
+Description: "A conformant Symptom: Breast Pain instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "182cada0-39e0-fd96-a560-4a5670e024fd"
+* status = #final
+* code = HealthKitMeasurementCS#symptom-breast-pain
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierBreastPain
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
+
+Instance: HealthkitSymptomChestTightnessOrPainExample
+InstanceOf: HealthkitSymptomChestTightnessOrPain
+Usage: #example
+Title: "Symptom: Chest Tightness or Pain Example"
+Description: "A conformant Symptom: Chest Tightness or Pain instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "3000e581-ba60-ae25-95d5-0de7a29ad76f"
+* status = #final
+* code = HealthKitMeasurementCS#symptom-chest-tightness-or-pain
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierChestTightnessOrPain
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
+
+Instance: HealthkitSymptomChillsExample
+InstanceOf: HealthkitSymptomChills
+Usage: #example
+Title: "Symptom: Chills Example"
+Description: "A conformant Symptom: Chills instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "6b2568fa-b826-80a6-a64b-9f4b8dfca706"
+* status = #final
+* code = HealthKitMeasurementCS#symptom-chills
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierChills
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
+
+Instance: HealthkitSymptomConstipationExample
+InstanceOf: HealthkitSymptomConstipation
+Usage: #example
+Title: "Symptom: Constipation Example"
+Description: "A conformant Symptom: Constipation instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "63551136-5b51-d374-488c-898f76f29d7c"
+* status = #final
+* code = HealthKitMeasurementCS#symptom-constipation
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierConstipation
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
+
+Instance: HealthkitSymptomCoughingExample
+InstanceOf: HealthkitSymptomCoughing
+Usage: #example
+Title: "Symptom: Coughing Example"
+Description: "A conformant Symptom: Coughing instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "8b2add74-1000-c341-94dd-0ba82c9a20c9"
+* status = #final
+* code = HealthKitMeasurementCS#symptom-coughing
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierCoughing
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
+
+Instance: HealthkitSymptomDiarrheaExample
+InstanceOf: HealthkitSymptomDiarrhea
+Usage: #example
+Title: "Symptom: Diarrhea Example"
+Description: "A conformant Symptom: Diarrhea instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "1c3c0add-e42d-e1a5-1445-b100d070304f"
+* status = #final
+* code = HealthKitMeasurementCS#symptom-diarrhea
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierDiarrhea
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
+
+Instance: HealthkitSymptomDizzinessExample
+InstanceOf: HealthkitSymptomDizziness
+Usage: #example
+Title: "Symptom: Dizziness Example"
+Description: "A conformant Symptom: Dizziness instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "627526a0-353a-bdbf-b8fe-94c8d95e2ace"
+* status = #final
+* code = HealthKitMeasurementCS#symptom-dizziness
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierDizziness
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
+
+Instance: HealthkitSymptomDrySkinExample
+InstanceOf: HealthkitSymptomDrySkin
+Usage: #example
+Title: "Symptom: Dry Skin Example"
+Description: "A conformant Symptom: Dry Skin instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "03248c66-65ca-08b0-8ca7-2955bbbd15c9"
+* status = #final
+* code = HealthKitMeasurementCS#symptom-dry-skin
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierDrySkin
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
+
+Instance: HealthkitSymptomFaintingExample
+InstanceOf: HealthkitSymptomFainting
+Usage: #example
+Title: "Symptom: Fainting Example"
+Description: "A conformant Symptom: Fainting instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "b07ee21f-5fcf-634d-1f2e-5edd474a6596"
+* status = #final
+* code = HealthKitMeasurementCS#symptom-fainting
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierFainting
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
+
+Instance: HealthkitSymptomFatigueExample
+InstanceOf: HealthkitSymptomFatigue
+Usage: #example
+Title: "Symptom: Fatigue Example"
+Description: "A conformant Symptom: Fatigue instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "f79bd489-d9f0-8ba8-7e25-a26508362295"
+* status = #final
+* code = HealthKitMeasurementCS#symptom-fatigue
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierFatigue
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
+
+Instance: HealthkitSymptomFeverExample
+InstanceOf: HealthkitSymptomFever
+Usage: #example
+Title: "Symptom: Fever Example"
+Description: "A conformant Symptom: Fever instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "144b24ec-f5a9-57ea-9074-242385e7fd5e"
+* status = #final
+* code = HealthKitMeasurementCS#symptom-fever
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierFever
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
+
+Instance: HealthkitSymptomGeneralizedBodyAcheExample
+InstanceOf: HealthkitSymptomGeneralizedBodyAche
+Usage: #example
+Title: "Symptom: Generalized Body Ache Example"
+Description: "A conformant Symptom: Generalized Body Ache instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "362bdb63-4aac-7868-30d5-204b81a3ea1a"
+* status = #final
+* code = HealthKitMeasurementCS#symptom-generalized-body-ache
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierGeneralizedBodyAche
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
+
+Instance: HealthkitSymptomHairLossExample
+InstanceOf: HealthkitSymptomHairLoss
+Usage: #example
+Title: "Symptom: Hair Loss Example"
+Description: "A conformant Symptom: Hair Loss instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "3692dad9-9326-9f20-3986-af09550d3294"
+* status = #final
+* code = HealthKitMeasurementCS#symptom-hair-loss
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierHairLoss
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
+
+Instance: HealthkitSymptomHeadacheExample
+InstanceOf: HealthkitSymptomHeadache
+Usage: #example
+Title: "Symptom: Headache Example"
+Description: "A conformant Symptom: Headache instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "653dcc8e-c4ac-bf43-655e-09103c2e054a"
+* status = #final
+* code = HealthKitMeasurementCS#symptom-headache
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierHeadache
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
+
+Instance: HealthkitSymptomHeartburnExample
+InstanceOf: HealthkitSymptomHeartburn
+Usage: #example
+Title: "Symptom: Heartburn Example"
+Description: "A conformant Symptom: Heartburn instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "29033da8-4a6d-ba6f-e593-7b55e965c9ef"
+* status = #final
+* code = HealthKitMeasurementCS#symptom-heartburn
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierHeartburn
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
+
+Instance: HealthkitSymptomHotFlashesExample
+InstanceOf: HealthkitSymptomHotFlashes
+Usage: #example
+Title: "Symptom: Hot Flashes Example"
+Description: "A conformant Symptom: Hot Flashes instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "1a18daa7-1f35-4234-60f1-1a3d3baafc27"
+* status = #final
+* code = HealthKitMeasurementCS#symptom-hot-flashes
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierHotFlashes
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
+
+Instance: HealthkitSymptomLossOfSmellExample
+InstanceOf: HealthkitSymptomLossOfSmell
+Usage: #example
+Title: "Symptom: Loss of Smell Example"
+Description: "A conformant Symptom: Loss of Smell instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "1a9a78f7-ff5a-60d8-348b-b04f49bc5118"
+* status = #final
+* code = HealthKitMeasurementCS#symptom-loss-of-smell
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierLossOfSmell
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
+
+Instance: HealthkitSymptomLossOfTasteExample
+InstanceOf: HealthkitSymptomLossOfTaste
+Usage: #example
+Title: "Symptom: Loss of Taste Example"
+Description: "A conformant Symptom: Loss of Taste instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "a6199bf7-70c8-d1f7-54ea-b0804244cbcd"
+* status = #final
+* code = HealthKitMeasurementCS#symptom-loss-of-taste
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierLossOfTaste
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
+
+Instance: HealthkitSymptomLowerBackPainExample
+InstanceOf: HealthkitSymptomLowerBackPain
+Usage: #example
+Title: "Symptom: Lower Back Pain Example"
+Description: "A conformant Symptom: Lower Back Pain instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "698bd0a0-e2d1-7a7f-6dce-91224b205b33"
+* status = #final
+* code = HealthKitMeasurementCS#symptom-lower-back-pain
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierLowerBackPain
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
+
+Instance: HealthkitSymptomMemoryLapseExample
+InstanceOf: HealthkitSymptomMemoryLapse
+Usage: #example
+Title: "Symptom: Memory Lapse Example"
+Description: "A conformant Symptom: Memory Lapse instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "9ee79786-e458-03f0-88e4-082dfa7658ae"
+* status = #final
+* code = HealthKitMeasurementCS#symptom-memory-lapse
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierMemoryLapse
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
+
+Instance: HealthkitSymptomMoodChangesExample
+InstanceOf: HealthkitSymptomMoodChanges
+Usage: #example
+Title: "Symptom: Mood Changes Example"
+Description: "A conformant Symptom: Mood Changes instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "5e40afaf-e06f-e9f3-af46-3a67b1294340"
+* status = #final
+* code = HealthKitMeasurementCS#symptom-mood-changes
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierMoodChanges
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
+
+Instance: HealthkitSymptomNauseaExample
+InstanceOf: HealthkitSymptomNausea
+Usage: #example
+Title: "Symptom: Nausea Example"
+Description: "A conformant Symptom: Nausea instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "8776e06e-6dcb-3fa3-5ed9-40a31774d6c5"
+* status = #final
+* code = $loinc#81660-3 "Nausea [Presence]"
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierNausea
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
+
+Instance: HealthkitSymptomNightSweatsExample
+InstanceOf: HealthkitSymptomNightSweats
+Usage: #example
+Title: "Symptom: Night Sweats Example"
+Description: "A conformant Symptom: Night Sweats instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "bd4c0274-ced4-fd9d-8290-4d728ee496ea"
+* status = #final
+* code = HealthKitMeasurementCS#symptom-night-sweats
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierNightSweats
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
+
+Instance: HealthkitSymptomPelvicPainExample
+InstanceOf: HealthkitSymptomPelvicPain
+Usage: #example
+Title: "Symptom: Pelvic Pain Example"
+Description: "A conformant Symptom: Pelvic Pain instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "4f864894-3d5f-3d6f-2de9-ac3603125b10"
+* status = #final
+* code = HealthKitMeasurementCS#symptom-pelvic-pain
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierPelvicPain
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
+
+Instance: HealthkitSymptomRapidPoundingOrFlutteringHeartbeatExample
+InstanceOf: HealthkitSymptomRapidPoundingOrFlutteringHeartbeat
+Usage: #example
+Title: "Symptom: Rapid, Pounding, or Fluttering Heartbeat Example"
+Description: "A conformant Symptom: Rapid, Pounding, or Fluttering Heartbeat instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "2e4aa85a-5948-1220-3501-b0e3d9046195"
+* status = #final
+* code = HealthKitMeasurementCS#symptom-rapid-pounding-or-fluttering-heartbeat
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierRapidPoundingOrFlutteringHeartbeat
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
+
+Instance: HealthkitSymptomRunnyNoseExample
+InstanceOf: HealthkitSymptomRunnyNose
+Usage: #example
+Title: "Symptom: Runny Nose Example"
+Description: "A conformant Symptom: Runny Nose instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "1e5b332c-3d5e-d6b8-1ab0-a99842c56874"
+* status = #final
+* code = HealthKitMeasurementCS#symptom-runny-nose
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierRunnyNose
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
+
+Instance: HealthkitSymptomShortnessOfBreathExample
+InstanceOf: HealthkitSymptomShortnessOfBreath
+Usage: #example
+Title: "Symptom: Shortness of Breath Example"
+Description: "A conformant Symptom: Shortness of Breath instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "35139c57-b019-1226-5ed2-ad173e967d8d"
+* status = #final
+* code = HealthKitMeasurementCS#symptom-shortness-of-breath
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierShortnessOfBreath
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
+
+Instance: HealthkitSymptomSinusCongestionExample
+InstanceOf: HealthkitSymptomSinusCongestion
+Usage: #example
+Title: "Symptom: Sinus Congestion Example"
+Description: "A conformant Symptom: Sinus Congestion instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "a56f09b4-eb24-2db0-0e88-535b0ae795bb"
+* status = #final
+* code = HealthKitMeasurementCS#symptom-sinus-congestion
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierSinusCongestion
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
+
+Instance: HealthkitSymptomSkippedHeartbeatExample
+InstanceOf: HealthkitSymptomSkippedHeartbeat
+Usage: #example
+Title: "Symptom: Skipped Heartbeat Example"
+Description: "A conformant Symptom: Skipped Heartbeat instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "88c8492c-e7d3-9a33-5f6a-e62aeacd6e35"
+* status = #final
+* code = HealthKitMeasurementCS#symptom-skipped-heartbeat
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierSkippedHeartbeat
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
+
+Instance: HealthkitSymptomSleepChangesExample
+InstanceOf: HealthkitSymptomSleepChanges
+Usage: #example
+Title: "Symptom: Sleep Changes Example"
+Description: "A conformant Symptom: Sleep Changes instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "1a05ced4-2a06-da47-db88-302e5a7748b7"
+* status = #final
+* code = HealthKitMeasurementCS#symptom-sleep-changes
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierSleepChanges
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
+
+Instance: HealthkitSymptomSoreThroatExample
+InstanceOf: HealthkitSymptomSoreThroat
+Usage: #example
+Title: "Symptom: Sore Throat Example"
+Description: "A conformant Symptom: Sore Throat instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "9d5b8889-0b4e-9945-9c27-27a527591065"
+* status = #final
+* code = HealthKitMeasurementCS#symptom-sore-throat
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierSoreThroat
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
+
+Instance: HealthkitSymptomVomitingExample
+InstanceOf: HealthkitSymptomVomiting
+Usage: #example
+Title: "Symptom: Vomiting Example"
+Description: "A conformant Symptom: Vomiting instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "32d129c7-2b1a-5e99-6d14-4d3e5966580f"
+* status = #final
+* code = HealthKitMeasurementCS#symptom-vomiting
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierVomiting
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
+
+Instance: HealthkitSymptomWheezingExample
+InstanceOf: HealthkitSymptomWheezing
+Usage: #example
+Title: "Symptom: Wheezing Example"
+Description: "A conformant Symptom: Wheezing instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "6048de6c-9738-c79e-1290-d8acf358e65d"
+* status = #final
+* code = HealthKitMeasurementCS#symptom-wheezing
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierWheezing
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
+
+Instance: HealthkitTimeInDaylightExample
+InstanceOf: HealthkitTimeInDaylight
+Usage: #example
+Title: "Time in Daylight Example"
+Description: "A conformant Time in Daylight instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "6628b4e5-9da3-f781-6293-dee0f86f170f"
+* status = #final
+* code = HealthKitMeasurementCS#time-in-daylight
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierTimeInDaylight
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueQuantity = 47 'min'
+
+Instance: HealthkitToothbrushingSessionExample
+InstanceOf: HealthkitToothbrushingSession
+Usage: #example
+Title: "Toothbrushing Session Example"
+Description: "A conformant Toothbrushing Session instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "55f70859-9778-6e5b-753a-f760587caad0"
+* status = #final
+* code = HealthKitMeasurementCS#toothbrushing-session
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierToothbrushingEvent
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueQuantity = 120 's'
+
+Instance: HealthkitUnderwaterDepthExample
+InstanceOf: HealthkitUnderwaterDepth
+Usage: #example
+Title: "Underwater Depth Example"
+Description: "A conformant Underwater Depth instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "60ca89b3-4f3c-cf7d-b04d-1bc5b5a9f67b"
+* status = #final
+* code = HealthKitMeasurementCS#underwater-depth
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierUnderwaterDepth
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueQuantity = 12 'm'
+
+Instance: HealthkitUvExposureExample
+InstanceOf: HealthkitUvExposure
+Usage: #example
+Title: "UV Exposure Example"
+Description: "A conformant UV Exposure instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "3c426536-c5fe-d858-3751-e42e6e5f003a"
+* status = #final
+* code = HealthKitMeasurementCS#uv-exposure
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierUVExposure
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueQuantity = 6 '{uvindex}' "UV index"
+
+Instance: HealthkitVaginalDrynessExample
+InstanceOf: HealthkitVaginalDryness
+Usage: #example
+Title: "Vaginal Dryness Example"
+Description: "A conformant Vaginal Dryness instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "f2dc1db5-75ad-c43e-788e-e4e1ecf88ef9"
+* status = #final
+* code = HealthKitMeasurementCS#vaginal-dryness
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierVaginalDryness
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
+
+Instance: HealthkitWaistCircumferenceExample
+InstanceOf: HealthkitWaistCircumference
+Usage: #example
+Title: "Waist Circumference Example"
+Description: "A conformant Waist Circumference instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "191ce7fa-4877-fef8-2a54-040b59f3d932"
+* status = #final
+* code = $loinc#8280-0 "Waist Circumference at umbilicus by Tape measure"
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierWaistCircumference
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueQuantity = 84 'cm'
+
+Instance: HealthkitWalkingAsymmetryExample
+InstanceOf: HealthkitWalkingAsymmetry
+Usage: #example
+Title: "Walking Asymmetry Example"
+Description: "A conformant Walking Asymmetry instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "4f72ca59-5921-e8ad-b702-004e7bcab4fb"
+* status = #final
+* code = $loinc#112432-0 "Walking asymmetry"
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierWalkingAsymmetryPercentage
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueQuantity = 1.4 '%'
+
+Instance: HealthkitWalkingDoubleSupportExample
+InstanceOf: HealthkitWalkingDoubleSupport
+Usage: #example
+Title: "Walking Double Support Example"
+Description: "A conformant Walking Double Support instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "33a20f61-35c9-e2e7-cb6a-5604b02e1059"
+* status = #final
+* code = $loinc#112434-6 "Walking double support [Percentile]"
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierWalkingDoubleSupportPercentage
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueQuantity = 27 '%'
+
+Instance: HealthkitWalkingHeartRateAverageExample
+InstanceOf: HealthkitWalkingHeartRateAverage
+Usage: #example
+Title: "Walking Heart Rate Average Example"
+Description: "A conformant Walking Heart Rate Average instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "dde70f2a-8ebb-722e-d81b-efd5b045c86b"
+* status = #final
+* code = HealthKitMeasurementCS#walking-heart-rate-average
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierWalkingHeartRateAverage
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueQuantity = 98 '/min' "beats/minute"
+
+Instance: HealthkitWalkingSpeedExample
+InstanceOf: HealthkitWalkingSpeed
+Usage: #example
+Title: "Walking Speed Example"
+Description: "A conformant Walking Speed instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "cf418bd8-7ee5-9da4-34b9-af5457f74c78"
+* status = #final
+* code = HealthKitMeasurementCS#walking-speed
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierWalkingSpeed
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueQuantity = 1.32 'm/s'
+
+Instance: HealthkitWalkingSteadinessExample
+InstanceOf: HealthkitWalkingSteadiness
+Usage: #example
+Title: "Walking Steadiness Example"
+Description: "A conformant Walking Steadiness instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "c37a7580-3f34-6c34-c9d6-2468c3e4f0fd"
+* status = #final
+* code = HealthKitMeasurementCS#walking-steadiness
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierAppleWalkingSteadiness
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueQuantity = 82 '%'
+
+Instance: HealthkitWalkingStepLengthExample
+InstanceOf: HealthkitWalkingStepLength
+Usage: #example
+Title: "Walking Step Length Example"
+Description: "A conformant Walking Step Length instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "c76f7d13-b45c-1407-ce4b-5c07e192f2ac"
+* status = #final
+* code = HealthKitMeasurementCS#walking-step-length
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierWalkingStepLength
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueQuantity = 72 'cm'
+
+Instance: HealthkitWaterTemperatureExample
+InstanceOf: HealthkitWaterTemperature
+Usage: #example
+Title: "Water Temperature Example"
+Description: "A conformant Water Temperature instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "26ce0688-4d50-bb1a-ec89-ed1c4af171e7"
+* status = #final
+* code = HealthKitMeasurementCS#water-temperature
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierWaterTemperature
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueQuantity = 24.5 'Cel'
+
+Instance: HealthkitWheelchairUseExample
+InstanceOf: HealthkitWheelchairUse
+Usage: #example
+Title: "Grove HealthKit Wheelchair Use Example"
+Description: "A conformant Grove HealthKit Wheelchair Use instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "818f3bbc-0889-996f-d520-69ff08b37633"
+* status = #final
+* code = HealthKitMeasurementCS#wheelchair-use
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCharacteristicTypeIdentifierWheelchairUse
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = HealthkitWheelchairUseCS#uses-wheelchair "Uses wheelchair"
+
+Instance: HealthkitWorkoutEffortScoreExample
+InstanceOf: HealthkitWorkoutEffortScore
+Usage: #example
+Title: "Workout Effort Score Example"
+Description: "A conformant Workout Effort Score instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "68fd2d34-fbc8-ed37-4c21-be9a4d8a93e0"
+* status = #final
+* code = HealthKitMeasurementCS#workout-effort-score
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierEstimatedWorkoutEffortScore
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueQuantity = 7 '{score}' "score"

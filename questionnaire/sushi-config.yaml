@@ -21,6 +21,12 @@ publisher:
   name: Schmiedmayer Lab
   url: https://github.com/SchmiedmayerLab
 license: MIT
+copyright: >-
+  Grove-authored profiles, extensions, terminology, and examples in this guide are published by the Schmiedmayer Lab under the MIT license.
+
+  FHIR® is the registered trademark of HL7 and is used with the permission of HL7. HL7 R4 material is copyright © HL7 International.
+
+  This material includes SNOMED Clinical Terms® (SNOMED CT®), which is copyright © SNOMED International. Implementers must hold a valid SNOMED CT affiliate licence in their territory; this guide grants no rights in SNOMED CT.
 
 dependencies:
   hl7.fhir.uv.sdc: 4.0.0

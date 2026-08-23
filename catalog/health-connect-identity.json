@@ -9,7 +9,10 @@
     "input": "UTF-8 without BOM of the RFC 8785/JCS serialization specified below"
   },
   "canonicalization": {
-    "jsonTypes": ["array", "string"],
+    "jsonTypes": [
+      "array",
+      "string"
+    ],
     "objectsNumbersBooleansAndNullAllowed": false,
     "unicode": "Every string contains only Unicode scalar values; isolated UTF-16 surrogates are rejected.",
     "escaping": "Escape quotation mark and reverse solidus; use \\b, \\t, \\n, \\f, and \\r; encode every other U+0000 through U+001F control as lowercase \\u00xx; do not escape solidus or any other scalar value.",
@@ -25,13 +28,71 @@
     "androidPackage": "https://grovealliance.org/fhir/health-connect/NamingSystem/android-package-name"
   },
   "preimages": {
-    "record": ["health-connect-record-id-v1", "repositoryScope", "recordTypeToken", "rawRecordId"],
-    "singleOutput": ["health-connect-output-id-v1", ["sourceIdentifier.system", "sourceIdentifier.value"], "single"],
-    "heartRateSampleOutput": ["health-connect-output-id-v1", ["sourceIdentifier.system", "sourceIdentifier.value"], "sample", "sampleInstantUtc9", "beatsPerMinuteUnsignedDecimal", "occurrenceUnsignedDecimal"],
-    "sleepStageOutput": ["health-connect-output-id-v1", ["sourceIdentifier.system", "sourceIdentifier.value"], "sleep-stage", "startInstantUtc9", "endInstantUtc9", "sourceStageToken", "occurrenceUnsignedDecimal"],
-    "specimen": ["health-connect-specimen-id-v1", ["sourceIdentifier.system", "sourceIdentifier.value"], "sourceSpecimenToken"],
-    "conversion": ["health-connect-conversion-id-v1", [["sortedSourceIdentifier.system", "sortedSourceIdentifier.value"]], "eventSequencePositiveDecimal"],
-    "exchange": ["health-connect-exchange-id-v1", [["sortedSourceIdentifier.system", "sortedSourceIdentifier.value"]], "eventSequencePositiveDecimal"]
+    "record": [
+      "health-connect-record-id-v1",
+      "repositoryScope",
+      "recordTypeToken",
+      "rawRecordId"
+    ],
+    "singleOutput": [
+      "health-connect-output-id-v1",
+      [
+        "sourceIdentifier.system",
+        "sourceIdentifier.value"
+      ],
+      "single"
+    ],
+    "heartRateSampleOutput": [
+      "health-connect-output-id-v1",
+      [
+        "sourceIdentifier.system",
+        "sourceIdentifier.value"
+      ],
+      "sample",
+      "sampleInstantUtc9",
+      "beatsPerMinuteUnsignedDecimal",
+      "occurrenceUnsignedDecimal"
+    ],
+    "sleepStageOutput": [
+      "health-connect-output-id-v1",
+      [
+        "sourceIdentifier.system",
+        "sourceIdentifier.value"
+      ],
+      "sleep-stage",
+      "startInstantUtc9",
+      "endInstantUtc9",
+      "sourceStageToken",
+      "occurrenceUnsignedDecimal"
+    ],
+    "specimen": [
+      "health-connect-specimen-id-v1",
+      [
+        "sourceIdentifier.system",
+        "sourceIdentifier.value"
+      ],
+      "sourceSpecimenToken"
+    ],
+    "conversion": [
+      "health-connect-conversion-id-v1",
+      [
+        [
+          "sortedSourceIdentifier.system",
+          "sortedSourceIdentifier.value"
+        ]
+      ],
+      "eventSequencePositiveDecimal"
+    ],
+    "exchange": [
+      "health-connect-exchange-id-v1",
+      [
+        [
+          "sortedSourceIdentifier.system",
+          "sortedSourceIdentifier.value"
+        ]
+      ],
+      "eventSequencePositiveDecimal"
+    ]
   },
   "lexicalRules": {
     "repositoryScope": "lowercase 8-4-4-4-12 UUID text",
@@ -42,7 +103,7 @@
     "unsignedDecimal": "0 or a non-zero ASCII digit followed by zero or more ASCII digits; no sign or leading zero",
     "eventSequencePositiveDecimal": "a non-zero ASCII digit followed by zero or more ASCII digits; no sign or leading zero"
   },
-  "resourcePlacement": {
+  "r4ResourcePlacement": {
     "record": "Observation.identifier source-record slice and Provenance.entity.what.identifier",
     "output": "Observation.identifier output slice",
     "specimen": "Specimen.identifier",
@@ -74,43 +135,101 @@
   "vectors": [
     {
       "case": "record",
-      "input": ["health-connect-record-id-v1", "1f5c58aa-6ec6-4e79-a682-829a9debd3f5", "HeartRateRecord", "record-heart-001"],
+      "input": [
+        "health-connect-record-id-v1",
+        "1f5c58aa-6ec6-4e79-a682-829a9debd3f5",
+        "HeartRateRecord",
+        "record-heart-001"
+      ],
       "canonical": "[\"health-connect-record-id-v1\",\"1f5c58aa-6ec6-4e79-a682-829a9debd3f5\",\"HeartRateRecord\",\"record-heart-001\"]",
       "value": "v1:01deb07850ba71d43d6e8ddc78de08b36a4c5e4c0905511d08ee7d3a9f12dff4"
     },
     {
       "case": "single-output",
-      "input": ["health-connect-output-id-v1", ["https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-record-id", "v1:01deb07850ba71d43d6e8ddc78de08b36a4c5e4c0905511d08ee7d3a9f12dff4"], "single"],
+      "input": [
+        "health-connect-output-id-v1",
+        [
+          "https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-record-id",
+          "v1:01deb07850ba71d43d6e8ddc78de08b36a4c5e4c0905511d08ee7d3a9f12dff4"
+        ],
+        "single"
+      ],
       "canonical": "[\"health-connect-output-id-v1\",[\"https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-record-id\",\"v1:01deb07850ba71d43d6e8ddc78de08b36a4c5e4c0905511d08ee7d3a9f12dff4\"],\"single\"]",
       "value": "v1:5f20ccaf7c4e804be90daa1739b2ae607ba6060b7d73dd96dfa5ca5e8e05fa32"
     },
     {
       "case": "heart-rate-sample-output",
-      "input": ["health-connect-output-id-v1", ["https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-record-id", "v1:01deb07850ba71d43d6e8ddc78de08b36a4c5e4c0905511d08ee7d3a9f12dff4"], "sample", "2026-08-20T17:30:15.000000000Z", "72", "0"],
+      "input": [
+        "health-connect-output-id-v1",
+        [
+          "https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-record-id",
+          "v1:01deb07850ba71d43d6e8ddc78de08b36a4c5e4c0905511d08ee7d3a9f12dff4"
+        ],
+        "sample",
+        "2026-08-20T17:30:15.000000000Z",
+        "72",
+        "0"
+      ],
       "canonical": "[\"health-connect-output-id-v1\",[\"https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-record-id\",\"v1:01deb07850ba71d43d6e8ddc78de08b36a4c5e4c0905511d08ee7d3a9f12dff4\"],\"sample\",\"2026-08-20T17:30:15.000000000Z\",\"72\",\"0\"]",
       "value": "v1:5084f55b849b401293bda218f1a69936ffb0e95c168b402f57de7385a85a5fbc"
     },
     {
       "case": "sleep-stage-output",
-      "input": ["health-connect-output-id-v1", ["https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-record-id", "v1:01deb07850ba71d43d6e8ddc78de08b36a4c5e4c0905511d08ee7d3a9f12dff4"], "sleep-stage", "2026-08-20T17:30:00.000000000Z", "2026-08-20T18:00:00.000000000Z", "STAGE_TYPE_LIGHT", "0"],
+      "input": [
+        "health-connect-output-id-v1",
+        [
+          "https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-record-id",
+          "v1:01deb07850ba71d43d6e8ddc78de08b36a4c5e4c0905511d08ee7d3a9f12dff4"
+        ],
+        "sleep-stage",
+        "2026-08-20T17:30:00.000000000Z",
+        "2026-08-20T18:00:00.000000000Z",
+        "STAGE_TYPE_LIGHT",
+        "0"
+      ],
       "canonical": "[\"health-connect-output-id-v1\",[\"https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-record-id\",\"v1:01deb07850ba71d43d6e8ddc78de08b36a4c5e4c0905511d08ee7d3a9f12dff4\"],\"sleep-stage\",\"2026-08-20T17:30:00.000000000Z\",\"2026-08-20T18:00:00.000000000Z\",\"STAGE_TYPE_LIGHT\",\"0\"]",
       "value": "v1:bd2af8db32c5e94ba50352f045ac9e82e668d3105f17034a661883f125b79bce"
     },
     {
       "case": "specimen",
-      "input": ["health-connect-specimen-id-v1", ["https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-record-id", "v1:01deb07850ba71d43d6e8ddc78de08b36a4c5e4c0905511d08ee7d3a9f12dff4"], "SPECIMEN_SOURCE_WHOLE_BLOOD"],
+      "input": [
+        "health-connect-specimen-id-v1",
+        [
+          "https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-record-id",
+          "v1:01deb07850ba71d43d6e8ddc78de08b36a4c5e4c0905511d08ee7d3a9f12dff4"
+        ],
+        "SPECIMEN_SOURCE_WHOLE_BLOOD"
+      ],
       "canonical": "[\"health-connect-specimen-id-v1\",[\"https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-record-id\",\"v1:01deb07850ba71d43d6e8ddc78de08b36a4c5e4c0905511d08ee7d3a9f12dff4\"],\"SPECIMEN_SOURCE_WHOLE_BLOOD\"]",
       "value": "v1:8413b0d259e7dce3e061a886197deafb936d5248cb1b8651d4811233441db8f1"
     },
     {
       "case": "conversion",
-      "input": ["health-connect-conversion-id-v1", [["https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-record-id", "v1:01deb07850ba71d43d6e8ddc78de08b36a4c5e4c0905511d08ee7d3a9f12dff4"]], "1"],
+      "input": [
+        "health-connect-conversion-id-v1",
+        [
+          [
+            "https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-record-id",
+            "v1:01deb07850ba71d43d6e8ddc78de08b36a4c5e4c0905511d08ee7d3a9f12dff4"
+          ]
+        ],
+        "1"
+      ],
       "canonical": "[\"health-connect-conversion-id-v1\",[[\"https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-record-id\",\"v1:01deb07850ba71d43d6e8ddc78de08b36a4c5e4c0905511d08ee7d3a9f12dff4\"]],\"1\"]",
       "value": "v1:95402c870f705567a92c0ca087bc744321a817f6a11a2def986ea3a1482a0e85"
     },
     {
       "case": "exchange",
-      "input": ["health-connect-exchange-id-v1", [["https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-record-id", "v1:01deb07850ba71d43d6e8ddc78de08b36a4c5e4c0905511d08ee7d3a9f12dff4"]], "1"],
+      "input": [
+        "health-connect-exchange-id-v1",
+        [
+          [
+            "https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-record-id",
+            "v1:01deb07850ba71d43d6e8ddc78de08b36a4c5e4c0905511d08ee7d3a9f12dff4"
+          ]
+        ],
+        "1"
+      ],
       "canonical": "[\"health-connect-exchange-id-v1\",[[\"https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-record-id\",\"v1:01deb07850ba71d43d6e8ddc78de08b36a4c5e4c0905511d08ee7d3a9f12dff4\"]],\"1\"]",
       "value": "v1:369f8146f2c4052f64ad205aa01cb7395f4f977e602263dfd197f15356a962b8"
     }

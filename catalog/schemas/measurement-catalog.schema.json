@@ -1,0 +1,485 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://grovealliance.org/fhir/catalog/schemas/measurement-catalog.schema.json",
+  "title": "Grove source-neutral measurement catalog",
+  "description": "The reviewed source of truth every generated profile, example, and language contract is projected from. A typo here reaches four guides and three languages, so the shape is closed.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schemaVersion",
+    "fhirVersion",
+    "version",
+    "canonicalRoot",
+    "statusVocabulary",
+    "sources",
+    "statusDefinitions",
+    "effectiveCanonicalization",
+    "measurements"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "schemaVersion": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "fhirVersion": {
+      "const": "4.0.1"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "canonicalRoot": {
+      "type": "string",
+      "format": "uri"
+    },
+    "statusVocabulary": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/status"
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "kind",
+          "catalog"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+          },
+          "kind": {
+            "type": "string",
+            "minLength": 1
+          },
+          "catalog": {
+            "type": "string",
+            "pattern": "^catalog/[a-z0-9-]+\\.json$"
+          },
+          "ownerAdapter": {
+            "type": "string",
+            "description": "The adapter guide that publishes this provider's profiles.",
+            "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+          }
+        }
+      }
+    },
+    "statusDefinitions": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "effectiveCanonicalization": {
+      "type": "object"
+    },
+    "measurements": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/measurement"
+      }
+    }
+  },
+  "$defs": {
+    "status": {
+      "enum": [
+        "supported",
+        "mapped-standard",
+        "platform-exclusive",
+        "unmodeled",
+        "deferred",
+        "intentionally-unsupported"
+      ]
+    },
+    "coding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "system",
+        "code"
+      ],
+      "properties": {
+        "system": {
+          "type": "string",
+          "format": "uri"
+        },
+        "code": {
+          "type": "string",
+          "minLength": 1
+        },
+        "display": {
+          "type": "string",
+          "minLength": 1
+        },
+        "definition": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "quantity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "system",
+        "code",
+        "unit",
+        "example",
+        "dimension"
+      ],
+      "properties": {
+        "system": {
+          "const": "http://unitsofmeasure.org"
+        },
+        "code": {
+          "type": "string",
+          "minLength": 1
+        },
+        "unit": {
+          "type": "string",
+          "minLength": 1
+        },
+        "example": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "A physiologically plausible value, so a generated example never reads as a placeholder."
+        },
+        "dimension": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer"
+          }
+        },
+        "unitMustSupport": {
+          "type": "boolean"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "code": {
+                "const": "%"
+              }
+            },
+            "required": [
+              "code"
+            ]
+          },
+          "then": {
+            "properties": {
+              "example": {
+                "type": "number",
+                "maximum": 100
+              }
+            }
+          }
+        }
+      ]
+    },
+    "resultCode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code",
+        "display"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "minLength": 1
+        },
+        "display": {
+          "type": "string",
+          "minLength": 1
+        },
+        "definition": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "component": {
+      "type": "object",
+      "required": [
+        "id",
+        "system",
+        "code"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-zA-Z][a-zA-Z0-9-]*$"
+        },
+        "system": {
+          "type": "string",
+          "format": "uri"
+        },
+        "code": {
+          "type": "string",
+          "minLength": 1
+        },
+        "display": {
+          "type": "string",
+          "minLength": 1
+        },
+        "quantity": {
+          "$ref": "#/$defs/quantity"
+        },
+        "valueSet": {
+          "type": "string",
+          "format": "uri"
+        },
+        "resultCodes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/resultCode"
+          }
+        },
+        "cardinality": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.\\.([0-9]+|\\*)$"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "definition": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "measurement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "profile",
+        "standardProfile",
+        "title",
+        "description",
+        "code",
+        "valueKind",
+        "quantity",
+        "effective",
+        "generation",
+        "coverage"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "profile": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "standardProfile": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "uri"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "owner": {
+          "enum": [
+            "mobile",
+            "healthkit",
+            "health-connect",
+            "providers"
+          ]
+        },
+        "code": {
+          "$ref": "#/$defs/coding"
+        },
+        "valueKind": {
+          "enum": [
+            "quantity",
+            "codeableConcept",
+            "components"
+          ]
+        },
+        "quantity": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/quantity"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "effective": {
+          "enum": [
+            "Period",
+            "dateTime"
+          ]
+        },
+        "generation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "emit"
+          ],
+          "properties": {
+            "emit": {
+              "type": "boolean"
+            }
+          }
+        },
+        "coverage": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {
+            "$ref": "#/$defs/status"
+          }
+        },
+        "coverageDetails": {
+          "type": "object",
+          "description": "Per-source notes explaining a coverage status that needs more than its label.",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "sourceTokens": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "alternateRepresentation": {
+                "type": "string",
+                "format": "uri"
+              },
+              "reason": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        "valueSet": {
+          "type": "string",
+          "format": "uri"
+        },
+        "resultCodeSystem": {
+          "type": "string",
+          "format": "uri"
+        },
+        "allowedValues": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "resultCodes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/resultCode"
+          }
+        },
+        "method": {
+          "$ref": "#/$defs/resultCode"
+        },
+        "methodChoice": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "string"
+          }
+        },
+        "components": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/component"
+          }
+        },
+        "hasMember": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "obeys": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "valueKind": {
+                "const": "codeableConcept"
+              }
+            },
+            "required": [
+              "valueKind"
+            ]
+          },
+          "then": {
+            "required": [
+              "valueSet"
+            ],
+            "properties": {
+              "valueSet": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "valueKind": {
+                "const": "components"
+              }
+            },
+            "required": [
+              "valueKind"
+            ]
+          },
+          "then": {
+            "required": [
+              "components"
+            ],
+            "properties": {
+              "components": {
+                "type": "array"
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

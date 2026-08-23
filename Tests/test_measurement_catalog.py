@@ -9,6 +9,7 @@
 from __future__ import annotations
 
 import json
+import re
 import unittest
 from pathlib import Path
 
@@ -220,6 +221,75 @@ class MeasurementCatalogTests(unittest.TestCase):
                 self.assertTrue(declaration.get("note"), f"{name} must say why it cannot derive one")
             adapters[name] = declaration["adapterId"]
         self.assertEqual(len(set(adapters.values())), len(adapters), "adapter ids must be distinct")
+
+    def test_every_quantity_carries_an_example_value_within_its_unit(self) -> None:
+        """Every generated profile ships an example, so every quantity needs a value to show.
+
+        Plausibility is a review question, but a value outside the range its own unit declares is
+        a defect any reader can see, so those are checked here.
+        """
+        catalog = json.loads((ROOT / "catalog/measurement-catalog.json").read_text(encoding="utf-8"))
+        for measurement in catalog["measurements"]:
+            quantities = []
+            if measurement.get("valueKind") == "quantity" and measurement["generation"]["emit"]:
+                quantities.append((measurement["id"], measurement["quantity"]))
+            for component in measurement.get("components", []):
+                if component.get("quantity"):
+                    quantities.append((f"{measurement['id']}/{component['id']}", component["quantity"]))
+            for name, quantity in quantities:
+                example = quantity.get("example")
+                self.assertIsInstance(example, (int, float), f"{name} states no example value")
+                self.assertGreater(example, 0, f"{name} has a placeholder example value")
+                if quantity["code"] == "%":
+                    self.assertLessEqual(example, 100, f"{name} exceeds a percentage")
+                declared = re.search(r"(\d+)\s*-\s*(\d+)", quantity.get("unit", ""))
+                if declared:
+                    low, high = int(declared.group(1)), int(declared.group(2))
+                    self.assertGreaterEqual(example, low, f"{name} is below its declared range")
+                    self.assertLessEqual(example, high, f"{name} is above its declared range")
+
+
+    def test_every_fhir_element_path_declares_the_version_it_belongs_to(self) -> None:
+        """A version move has to be able to find every R4-shaped statement by name.
+
+        The catalogs mix platform facts, which survive a FHIR major version, with the projection
+        onto R4 elements, which does not. Naming the version-bound keys keeps the second set
+        greppable instead of leaving a reader to recognise element paths by eye.
+        """
+        resources = (
+            "Observation", "DocumentReference", "Provenance", "Device", "Bundle", "Patient",
+            "ResearchStudy", "ResearchSubject", "Questionnaire", "QuestionnaireResponse", "Specimen",
+        )
+        step = r"(?:\.[A-Za-z0-9_'-]+|\[[^\]\s]*\]|\([^)\s]*\))"
+        one = rf"(?:{'|'.join(resources)}){step}+"
+        # A bare path only: prose that merely opens with an element name is documentation.
+        bare_path = re.compile(rf"^{one}(?: -> {one})?$")
+
+        def findings(node: object, trail: list[str]) -> list[str]:
+            if isinstance(node, dict):
+                for key in node:
+                    self.assertNotEqual(
+                        key,
+                        "element",
+                        f"rename to r4Element so a version move can find it: {'.'.join(trail + [key])}",
+                    )
+                return [f for key, value in node.items() for f in findings(value, trail + [key])]
+            if isinstance(node, list):
+                return [f for index, value in enumerate(node) for f in findings(value, trail + [str(index)])]
+            if isinstance(node, str) and bare_path.match(node.strip()):
+                # The key naming the version must be the value's own key, or the map it sits
+                # directly in. Marking a container does not exempt an arbitrarily deep subtree.
+                if not any(key.startswith("r4") for key in trail[-2:]):
+                    return [".".join(trail) + f" = {node}"]
+            return []
+
+        for source in sorted((ROOT / "catalog").glob("*.json")):
+            self.assertEqual(
+                findings(json.loads(source.read_text(encoding="utf-8")), []),
+                [],
+                f"{source.name} states an R4 element path under a key that does not name the version",
+            )
+
 
     def test_uuid_algorithm_rejects_invalid_unicode(self) -> None:
         import importlib.util

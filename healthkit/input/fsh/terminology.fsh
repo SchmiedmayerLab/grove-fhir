@@ -73,14 +73,14 @@ Description: "Exact HKElectrocardiogram.Classification cases retained on a lossl
 * ^caseSensitive = true
 * ^content = #complete
 * ^copyright = "HealthKit API identifiers and type names originate from Apple Inc. and are used here only to identify source API concepts for interoperability. The MIT license applies to Grove-authored definitions; it does not grant rights in Apple material."
-* #notSet "Not set"
-* #sinusRhythm "Sinus rhythm"
-* #atrialFibrillation "Atrial fibrillation"
-* #inconclusiveLowHeartRate "Inconclusive: low heart rate"
-* #inconclusiveHighHeartRate "Inconclusive: high heart rate"
-* #inconclusivePoorReading "Inconclusive: poor reading"
-* #inconclusiveOther "Inconclusive: other"
-* #unrecognized "Unrecognized"
+* #notSet "Not set" "HealthKit stated no classification for the recording."
+* #sinusRhythm "Sinus rhythm" "The algorithm classified the recording as sinus rhythm."
+* #atrialFibrillation "Atrial fibrillation" "The algorithm classified the recording as atrial fibrillation."
+* #inconclusiveLowHeartRate "Inconclusive: low heart rate" "No classification was reached because the heart rate was below the algorithm's supported range."
+* #inconclusiveHighHeartRate "Inconclusive: high heart rate" "No classification was reached because the heart rate was above the algorithm's supported range."
+* #inconclusivePoorReading "Inconclusive: poor reading" "No classification was reached because the recording quality was insufficient."
+* #inconclusiveOther "Inconclusive: other" "No classification was reached for a reason HealthKit does not enumerate."
+* #unrecognized "Unrecognized" "The recording carries a classification this catalog baseline does not define."
 
 ValueSet: HealthKitECGClassificationVS
 Id: healthkit-ecg-classification
@@ -97,9 +97,9 @@ Description: "Exact HKElectrocardiogram.SymptomsStatus cases retained on a lossl
 * ^caseSensitive = true
 * ^content = #complete
 * ^copyright = "HealthKit API identifiers and type names originate from Apple Inc. and are used here only to identify source API concepts for interoperability. The MIT license applies to Grove-authored definitions; it does not grant rights in Apple material."
-* #notSet "Not set"
-* #none "None"
-* #present "Present"
+* #notSet "Not set" "HealthKit stated no symptom status for the recording."
+* #none "None" "The wearer reported no symptoms during the recording."
+* #present "Present" "The wearer reported one or more symptoms during the recording."
 
 ValueSet: HealthKitECGSymptomsStatusVS
 Id: healthkit-ecg-symptoms-status
@@ -116,11 +116,11 @@ Description: "Exact HKCategoryValueSeverity cases retained for a correlated Heal
 * ^caseSensitive = true
 * ^content = #complete
 * ^copyright = "HealthKit API identifiers and type names originate from Apple Inc. and are used here only to identify source API concepts for interoperability. The MIT license applies to Grove-authored definitions; it does not grant rights in Apple material."
-* #unspecified "Unspecified"
-* #notPresent "Not present"
-* #mild "Mild"
-* #moderate "Moderate"
-* #severe "Severe"
+* #unspecified "Unspecified" "The symptom was logged without a severity grade."
+* #notPresent "Not present" "The symptom was assessed and reported as not present."
+* #mild "Mild" "The symptom was reported as mild."
+* #moderate "Moderate" "The symptom was reported as moderate."
+* #severe "Severe" "The symptom was reported as severe."
 
 ValueSet: HealthKitSymptomSeverityVS
 Id: healthkit-symptom-severity
@@ -150,8 +150,8 @@ Description: "Exact HKAppleECGAlgorithmVersion cases retained when the HealthKit
 * ^caseSensitive = true
 * ^content = #complete
 * ^copyright = "HealthKit API identifiers and type names originate from Apple Inc. and are used here only to identify source API concepts for interoperability. The MIT license applies to Grove-authored definitions; it does not grant rights in Apple material."
-* #version1 "Version 1"
-* #version2 "Version 2"
+* #version1 "Version 1" "The first-generation Apple electrocardiogram classification algorithm."
+* #version2 "Version 2" "The second-generation Apple electrocardiogram classification algorithm."
 
 ValueSet: HealthKitECGAlgorithmVersionVS
 Id: healthkit-ecg-algorithm-version

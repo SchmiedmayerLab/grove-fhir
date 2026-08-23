@@ -116,6 +116,7 @@ Description: "A passive HealthKit heart-rate sample with the standard clinical p
 * code = $loinc#8867-4 "Heart rate"
 * code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierHeartRate "Heart Rate"
 * subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00.251-07:00"
 * issued = "2026-08-19T17:30:02.000Z"
 * valueQuantity = 72 '/min' "beats/minute"
@@ -137,6 +138,7 @@ Description: "A HealthKit interval sample preserving the recorded count of 1,042
 * code = $groveMobileMeasurement#step-count-total "Step count total"
 * code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierStepCount "Step Count"
 * subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T09:00:00-07:00"
 * effectivePeriod.end = "2026-08-19T10:00:00-07:00"
 * issued = "2026-08-19T17:30:02.000Z"
@@ -157,6 +159,7 @@ Description: "A heart-rate sample imported directly from a supported Bluetooth L
 * code = $loinc#8867-4 "Heart rate"
 * code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierHeartRate "Heart Rate"
 * subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T10:45:00.251-07:00"
 * issued = "2026-08-19T17:45:02.000Z"
 * valueQuantity = 78 '/min' "beats/minute"
@@ -176,6 +179,7 @@ Description: "A body weight with an explicit HealthKit user-entered indication m
 * code = $loinc#29463-7 "Body weight"
 * code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierBodyMass "Body Mass"
 * subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T08:15:00-07:00"
 * issued = "2026-08-19T15:15:01.000Z"
 * valueQuantity = 68.4 'kg' "kg"
@@ -195,6 +199,7 @@ Description: "A HealthKit blood-pressure correlation whose result is carried by 
 * code = $loinc#85354-9 "Blood pressure panel with all children optional"
 * code.coding[healthKitSourceType] = $healthKitSourceType#HKCorrelationTypeIdentifierBloodPressure "Blood Pressure"
 * subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T08:20:00-07:00"
 * issued = "2026-08-19T15:20:01Z"
 * component[+].code = $loinc#8480-6 "Systolic blood pressure"
@@ -216,6 +221,7 @@ Description: "A HealthKit asleep-core interval retaining both the shared light-s
 * code = $groveMobileMeasurement#sleep-stage "Sleep stage"
 * code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierSleepAnalysis "Sleep Analysis"
 * subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T23:10:00-07:00"
 * effectivePeriod.end = "2026-08-19T23:42:00-07:00"
 * issued = "2026-08-20T07:00:01Z"
@@ -236,6 +242,7 @@ Description: "A caller-supplied HealthKit ECG with a complete uniformly sampled 
 * code = $loinc#11524-6 "EKG study"
 * code.coding[healthKitSourceType] = $healthKitSourceType#HKDataTypeIdentifierElectrocardiogram "ECG"
 * subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T10:50:00.002-07:00"
 * effectivePeriod.end = "2026-08-19T10:50:00.008-07:00"
 * issued = "2026-08-19T17:50:01Z"
@@ -363,6 +370,7 @@ Description: "The converter's heart-rate output for one HealthKit sample without
 * code = $loinc#8867-4 "Heart rate"
 * code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierHeartRate "Heart Rate"
 * subject.reference = "https://study.example.org/fhir/Patient/participant-hk-001"
+* performer.reference = "https://study.example.org/fhir/Patient/participant-hk-001"
 * effectiveDateTime = "2026-08-20T09:12:45.128-07:00"
 * issued = "2026-08-20T16:12:47.000Z"
 * valueQuantity = 76 '/min' "beats/minute"
@@ -403,3 +411,22 @@ Description: "The complete graph one heart-rate conversion uploads: the Observat
 * entry[2].extension[entryIdentifier].valueIdentifier.value = "9a2f4d6e-1c3b-4f8a-b7d0-5e6a8c9b0d1f|conversion-provenance"
 * entry[2].fullUrl = "urn:uuid:16d49bf9-a6dc-58da-bc29-7146da34831c"
 * entry[2].resource = HealthKitExchangeConversionProvenanceExample
+
+Instance: HealthKitClinicalRecordDocumentExample
+InstanceOf: HealthKitClinicalRecordDocument
+Usage: #example
+Title: "HealthKit Clinical Record Pass-Through"
+Description: "One provider-issued clinical resource surfaced by HealthKit and byte-preserved in its declared FHIR release. Grove asserts identity and provenance over the envelope, never conformance over the issuer's resource."
+* identifier[+].system = $healthKitObjectId
+* identifier[=].value = "3c7f1a90-24f6-4a2c-9d55-6f1c0a1de4b7"
+* extension[fhirRelease].valueCode = #r4
+* status = #current
+* type = HealthKitClinicalRecordTypeCS#allergy-record "Allergy record"
+* subject = Reference(HealthKitPatientExample)
+* date = "2026-08-20T17:05:01Z"
+* content.attachment.contentType = #application/fhir+json
+* content.format = $recordingFormat#fhir-resource-1 "FHIR Resource 1"
+* content.attachment.title = "Provider-issued AllergyIntolerance"
+* content.attachment.data = "eyJyZXNvdXJjZVR5cGUiOiJBbGxlcmd5SW50b2xlcmFuY2UiLCJpZCI6InByb3ZpZGVyLWlzc3VlZC0xIiwiY2xpbmljYWxTdGF0dXMiOnsiY29kaW5nIjpbeyJzeXN0ZW0iOiJodHRwOi8vdGVybWlub2xvZ3kuaGw3Lm9yZy9Db2RlU3lzdGVtL2FsbGVyZ3lpbnRvbGVyYW5jZS1jbGluaWNhbCIsImNvZGUiOiJhY3RpdmUifV19LCJwYXRpZW50Ijp7InJlZmVyZW5jZSI6IlBhdGllbnQvcGFydGljaXBhbnQtaGstMDAxIn19"
+* content.attachment.size = 240
+* content.attachment.hash = "0c+dHXDzCV5zPy4cApwAoV9evYc="

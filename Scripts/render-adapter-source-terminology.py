@@ -80,6 +80,63 @@ def property_code_system(
     return "\n".join(lines) + "\n\n"
 
 
+def source_type_definition(platform: str, symbol: str, outputs: list[str], reason: str | None) -> str:
+    """What one platform source type means, and what Grove does with it.
+
+    A `#complete` code system owes every concept a definition. Repeating the display name is not
+    one, so each concept states its platform symbol and the disposition the catalog already
+    records for it.
+    """
+    opening = f"The {platform} {symbol} source type."
+    # A platform-exclusive type still produces output, just only in its own guide, so the
+    # presence of an admitted output decides the wording rather than the status label.
+    if outputs:
+        return f"{opening} Grove converts it to {human_list(outputs)}."
+    if reason:
+        return f"{opening} Grove admits no output for it. {reason}"
+    return f"{opening} Grove admits no output for it."
+
+
+def human_list(values: list[str]) -> str:
+    if len(values) == 1:
+        return values[0]
+    return ", ".join(values[:-1]) + f" and {values[-1]}"
+
+
+def profile_names(profiles: list[str]) -> list[str]:
+    return [profile.rsplit("/", 1)[-1] for profile in profiles]
+
+
+def sensorkit_definition(entry: dict[str, Any]) -> str:
+    structured = entry.get("structured") or {}
+    profiles = [structured["profile"]] if structured.get("profile") else []
+    return source_type_definition(
+        "SensorKit",
+        entry["sourceToken"],
+        profile_names(profiles),
+        structured.get("reason") or entry.get("reason"),
+    )
+
+
+def provider_definition(provider: dict[str, Any], source: dict[str, Any], grouped: bool = False) -> str:
+    measurements = sorted(
+        {
+            measurement
+            for element in source.get("elements", [])
+            for measurement in element.get("measurementIds", [])
+        }
+        | set(source.get("measurementIds", []))
+    )
+    shape = "grouped mapping" if grouped else "source type"
+    opening = f"The {provider['title']} {source['token']} {shape}."
+    if measurements:
+        return f"{opening} Grove converts it to {human_list(measurements)}."
+    reason = source.get("reason") or source.get("requirement")
+    if reason:
+        return f"{opening} Grove admits no output for it. {reason}"
+    return f"{opening} Grove admits no output for it."
+
+
 def healthkit() -> str:
     data = catalog("healthkit-adapter.json")
     rows = data["rows"]
@@ -98,7 +155,13 @@ def healthkit() -> str:
     blocks: list[str] = []
     for row in rows:
         code = row["sourceTypeIdentifier"]
-        block = [f'* #{code} "{fsh_text(row["title"])}"']
+        definition = source_type_definition(
+            "HealthKit",
+            code,
+            profile_names(row.get("profiles", [])),
+            row.get("requirement"),
+        )
+        block = [f'* #{code} "{fsh_text(row["title"])}" "{fsh_text(definition)}"']
         block.append(
             concept_property(
                 code, 0, "documentation", f'valueString = "{fsh_text(row["documentation"])}"'
@@ -157,7 +220,8 @@ def sensorkit() -> str:
     concepts = "\n".join(
         "\n".join(
             [
-                f'* #{entry["sourceTypeCode"]} "{fsh_text(entry["title"])}"',
+                f'* #{entry["sourceTypeCode"]} "{fsh_text(entry["title"])}" '
+                f'"{fsh_text(sensorkit_definition(entry))}"',
                 concept_property(
                     entry["sourceTypeCode"], 0, "identifier",
                     f'valueString = "{fsh_text(entry["identifier"])}"',
@@ -217,7 +281,8 @@ def health_connect() -> str:
     concepts = "\n".join(
         "\n".join(
             [
-                f'* #{row["token"]} "{fsh_text(row["title"])}"',
+                f'* #{row["token"]} "{fsh_text(row["title"])}" '
+                f'"{fsh_text(source_type_definition("Health Connect", row["token"], [output["measurement"] for output in row.get("outputs", [])], row.get("reason") or row.get("requirement")))}"',
                 concept_property(
                     row["token"],
                     0,
@@ -256,13 +321,14 @@ Description: "The complete closed Health Connect 1.1.0 source Record class inven
 
 def providers() -> str:
     data = catalog("providers-adapter.json")
-    rows: list[tuple[str, str]] = []
+    rows: list[tuple[str, str, str]] = []
     for provider in data["providers"]:
         for source in provider["sourceTypes"]:
             rows.append(
                 (
                     f"{provider['id']}/{source['token']}",
                     f"{provider['title']}: {source['token']}",
+                    provider_definition(provider, source),
                 )
             )
         for grouped in provider.get("groupedMappings", []):
@@ -270,13 +336,15 @@ def providers() -> str:
                 (
                     f"{provider['id']}/{grouped['token']}",
                     f"{provider['title']}: {grouped['token']} (atomic grouped mapping)",
+                    provider_definition(provider, grouped, grouped=True),
                 )
             )
     rows.sort()
-    if len(rows) != len({code for code, _ in rows}):
+    if len(rows) != len({code for code, _, _ in rows}):
         raise ValueError("connected provider-qualified source-type codes are not unique")
     concepts = "\n".join(
-        f'* #{code} "{fsh_text(title)}"' for code, title in rows
+        f'* #{code} "{fsh_text(title)}" "{fsh_text(definition)}"'
+        for code, title, definition in rows
     )
     return HEADER + f'''CodeSystem: ProviderSourceTypeCS
 Id: provider-source-type

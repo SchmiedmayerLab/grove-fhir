@@ -36,6 +36,7 @@ REPOSITORY_ROOT = Path(__file__).resolve().parent.parent
 
 OWNERS = {
     "mobile": {
+        "patientExample": "GroveMobilePatientExample",
         "parent": "GroveMobileObservation",
         "generated": "mobile/input/fsh/generated-measurement-profiles.fsh",
         "measurementSystemTail": "/CodeSystem/grove-mobile-measurement",
@@ -53,6 +54,7 @@ OWNERS = {
         ),
     },
     "healthkit": {
+        "patientExample": "HealthKitPatientExample",
         "parent": "HealthKitObservation",
         "generated": "healthkit/input/fsh/generated-measurement-profiles.fsh",
         "measurementSystemTail": "/CodeSystem/healthkit-measurement",
@@ -70,6 +72,7 @@ OWNERS = {
         ),
     },
     "providers": {
+        "patientExample": "ProviderPatientExample",
         "parent": "ProviderObservation",
         "generated": "providers/input/fsh/generated-measurement-profiles.fsh",
         "measurementSystemTail": "/CodeSystem/provider-measurement",
@@ -87,6 +90,7 @@ OWNERS = {
         ),
     },
     "health-connect": {
+        "patientExample": "HealthConnectPatientExample",
         "parent": "HealthConnectObservation",
         "generated": "health-connect/input/fsh/generated-measurement-profiles.fsh",
         "measurementSystemTail": "/CodeSystem/health-connect-measurement",
@@ -159,9 +163,26 @@ GROUND_TRUTH_FILES = (
 )
 
 
+# Illustrative example values ride along in the catalog but state no terminology, so they stay
+# outside the reviewed projection; tuning one must not invalidate a reviewer's terminology sign-off.
+UNREVIEWED_KEYS = ("example",)
+
+
+def without_unreviewed(value: object) -> object:
+    if isinstance(value, dict):
+        return {
+            key: without_unreviewed(nested)
+            for key, nested in value.items()
+            if key not in UNREVIEWED_KEYS
+        }
+    if isinstance(value, list):
+        return [without_unreviewed(entry) for entry in value]
+    return value
+
+
 def projection_digest(measurement: dict) -> str:
     projection = {
-        key: measurement.get(key)
+        key: without_unreviewed(measurement.get(key))
         for key in PROJECTION_KEYS
         if measurement.get(key) is not None
     }
@@ -315,6 +336,318 @@ def render_profile(measurement: dict, aliases: dict[str, str], by_id: dict) -> s
             f"* hasMember only Reference({fsh_name(by_id[member]['profile'])})"
         )
     return "\n".join(lines) + "\n"
+
+
+# One fixed instant and window so every generated example is byte-stable across runs.
+EXAMPLE_INSTANT = "2026-08-19T10:30:00-07:00"
+EXAMPLE_ISSUED = "2026-08-20T08:00:00Z"
+EXAMPLE_PERIOD_START = "2026-08-19T00:00:00-07:00"
+EXAMPLE_PERIOD_END = "2026-08-20T00:00:00-07:00"
+EXAMPLE_IDENTIFIER_SYSTEM = "https://study.example.org/fhir/identifiers/{owner}-observation"
+
+
+def load_catalog(name: str) -> dict:
+    return json.loads((REPOSITORY_ROOT / "catalog" / name).read_text(encoding="utf-8"))
+
+
+SOURCE_TYPE_MARKERS = {
+    "healthkit": "* code.coding[healthKitSourceType] = $healthKitSourceType#{token}",
+    "health-connect": "* extension[healthConnectRecordType].valueCode = #{token}",
+    "providers": "* extension[providerSourceType].valueCode = #{token}",
+}
+
+
+def source_type_tokens() -> dict[str, dict[str, str]]:
+    """Each adapter's first admitted source type per measurement.
+
+    An adapter profile requires the exact platform type its Observation came from, so an example
+    for one of its profiles has to name one. The adapter catalogs already record that link.
+    """
+    tokens: dict[str, dict[str, str]] = {owner: {} for owner in SOURCE_TYPE_MARKERS}
+
+    healthkit = load_catalog("healthkit-adapter.json")
+    for row in healthkit["rows"]:
+        for measurement in row.get("measurementIDs", []):
+            tokens["healthkit"].setdefault(measurement, row["sourceTypeIdentifier"])
+
+    health_connect = load_catalog("health-connect-adapter.json")
+    for record in health_connect["recordTypes"]:
+        for output in record.get("outputs", []):
+            tokens["health-connect"].setdefault(output["measurement"], record["token"])
+
+    providers = load_catalog("providers-adapter.json")
+    for provider in providers["providers"]:
+        for source_type in provider.get("sourceTypes", []):
+            for element in source_type.get("elements", []):
+                for measurement in element.get("measurementIds", []):
+                    tokens["providers"].setdefault(
+                        measurement, f"{provider['id']}/{source_type['token']}"
+                    )
+    return tokens
+
+
+SOURCE_TYPE_TOKENS = source_type_tokens()
+
+
+def handwritten_instances(owner_key: str) -> set[str]:
+    """Every Instance a guide already defines by hand."""
+    generated = REPOSITORY_ROOT / OWNERS[owner_key]["generated"]
+    directory = generated.parent
+    names: set[str] = set()
+    for source in directory.glob("*.fsh"):
+        if source.name == generated.name:
+            continue
+        for line in source.read_text(encoding="utf-8").splitlines():
+            if line.startswith("Instance:"):
+                names.add(line.split(":", 1)[1].strip())
+    return names
+
+
+def fsh_definitions() -> dict[str, list[str]]:
+    """Every hand-written FSH definition, keyed by its `Id`, as its own block of lines."""
+    definitions: dict[str, list[str]] = {}
+    for source in sorted(REPOSITORY_ROOT.glob("*/input/fsh/*.fsh")):
+        block: list[str] = []
+        for line in source.read_text(encoding="utf-8").splitlines():
+            if re.match(r"^[A-Za-z]+:\s", line) and not line.startswith(("Id:", "Title:", "Description:")):
+                if block:
+                    definitions.setdefault(block_identifier(block), []).extend(block)
+                block = [line]
+            elif block:
+                block.append(line)
+        if block:
+            definitions.setdefault(block_identifier(block), []).extend(block)
+    definitions.pop("", None)
+    return definitions
+
+
+def block_identifier(block: list[str]) -> str:
+    for line in block:
+        if line.startswith("Id:"):
+            return line.split(":", 1)[1].strip()
+    return ""
+
+
+def shared_value_set_example(canonical: str) -> tuple[str, str, str] | None:
+    """A real concept from the terminology a hand-written value set draws on.
+
+    A measurement that binds a shared value set carries no result codes of its own, so its example
+    takes a concept the binding actually admits rather than inventing one.
+    """
+    definitions = fsh_definitions()
+    block = definitions.get(canonical.rsplit("/", 1)[-1])
+    if block is None:
+        return None
+    for line in block:
+        # An enumerated value set names its system inline; an intensional one names it once.
+        enumerated = re.match(r"^\* ([A-Za-z][A-Za-z0-9]*)#([^\s]+)", line)
+        if enumerated:
+            system, code = enumerated.groups()
+            return system, code, concept_display(definitions, system, code) or code
+        included = re.match(r"^\* include codes from system ([A-Za-z][A-Za-z0-9]*)$", line)
+        if included:
+            system = included.group(1)
+            concept = first_concept(definitions, system)
+            if concept:
+                return (system, *concept)
+    return None
+
+
+def first_concept(definitions: dict[str, list[str]], system: str) -> tuple[str, str] | None:
+    for block in definitions.values():
+        if block[0] == f"CodeSystem: {system}":
+            for line in block:
+                concept = re.match(r'^\* #([^\s]+)\s+"([^"]+)"', line)
+                if concept:
+                    return concept.group(1), concept.group(2)
+    return None
+
+
+def concept_display(definitions: dict[str, list[str]], system: str, code: str) -> str | None:
+    for block in definitions.values():
+        if block[0] == f"CodeSystem: {system}":
+            for line in block:
+                concept = re.match(rf'^\* #{re.escape(code)}\s+"([^"]+)"', line)
+                if concept:
+                    return concept.group(1)
+    return None
+
+
+def render_example(measurement: dict) -> str:
+    """One minimal, conformant example per generated profile.
+
+    A profile that ships no instance leaves every reader guessing, and the Publisher reports it
+    for each one. Projecting the example from the same catalog entry as the profile means it
+    cannot drift from the constraints it exists to satisfy.
+    """
+    owner_key = measurement.get("owner", "mobile")
+    owner = OWNERS[owner_key]
+    profile = fsh_name(measurement["profile"])
+    lines = [
+        f"Instance: {profile}Example",
+        f"InstanceOf: {profile}",
+        "Usage: #example",
+        f'Title: "{measurement["title"]} Example"',
+        f'Description: "A conformant {measurement["title"]} instance."',
+        *example_identifier_lines(measurement, owner_key),
+        "* status = #final",
+        f"* code = {example_code(measurement, owner)}",
+        *example_source_type_lines(measurement, owner_key),
+        f"* subject = Reference({owner['patientExample']})",
+        # Consumer health data is self-recorded, so the participant is also the performer.
+        f"* performer = Reference({owner['patientExample']})",
+        *example_effective_lines(measurement, owner_key),
+    ]
+    method = example_method(measurement)
+    if method:
+        method_system = (
+            "GroveAggregationMethodCS"
+            if owner_key == "mobile"
+            else "https://grovealliance.org/fhir/mobile/CodeSystem/grove-aggregation-method"
+        )
+        lines.append(f"* method = {method_system}#{method}")
+    lines.extend(example_result_lines(measurement))
+    return "\n".join(lines) + "\n"
+
+
+def example_code(measurement: dict, owner: dict) -> str:
+    code = measurement["code"]
+    if code["system"] == LOINC:
+        display = code.get("display")
+        return f"$loinc#{code['code']}" + (f' "{display}"' if display else "")
+    return f"{owner['codeSystem']}#{code['code']}"
+
+
+def example_effective_lines(measurement: dict, owner_key: str) -> list[str]:
+    if measurement["effective"] == "Period":
+        lines = [
+            f'* effectivePeriod.start = "{EXAMPLE_PERIOD_START}"',
+            f'* effectivePeriod.end = "{EXAMPLE_PERIOD_END}"',
+        ]
+    else:
+        lines = [f'* effectiveDateTime = "{EXAMPLE_INSTANT}"']
+    # Every adapter records when it produced the result; only the source-neutral guide leaves it out.
+    if owner_key != "mobile":
+        lines.append(f'* issued = "{EXAMPLE_ISSUED}"')
+    return lines
+
+
+def example_digest(measurement: dict, role: str) -> str:
+    """A well-formed versioned digest, derived so an example's identity never changes by accident."""
+    preimage = f"grove-example-identity-v1|{role}|{measurement['id']}"
+    return "v1:" + hashlib.sha256(preimage.encode("utf-8")).hexdigest()
+
+
+def example_uuid(measurement: dict) -> str:
+    digest = hashlib.sha256(f"grove-example-object-id-v1|{measurement['id']}".encode()).hexdigest()
+    return f"{digest[:8]}-{digest[8:12]}-{digest[12:16]}-{digest[16:20]}-{digest[20:32]}"
+
+
+def example_identifier_lines(measurement: dict, owner_key: str) -> list[str]:
+    """The business identity each guide's Observation profile requires of an instance."""
+    match owner_key:
+        case "healthkit":
+            return [
+                "* identifier[healthKitObjectId].system = $healthKitObjectId",
+                f'* identifier[healthKitObjectId].value = "{example_uuid(measurement)}"',
+            ]
+        case "health-connect":
+            return [
+                "* identifier[recordId].system = $healthConnectRecordId",
+                f'* identifier[recordId].value = "{example_digest(measurement, "record")}"',
+                "* identifier[outputId].system = $healthConnectOutputId",
+                f'* identifier[outputId].value = "{example_digest(measurement, "output")}"',
+            ]
+        case "providers":
+            return [
+                "* identifier[sourceRecordId].system = $providerSourceRecordId",
+                f'* identifier[sourceRecordId].value = "{example_digest(measurement, "source")}"',
+                "* identifier[outputId].system = $providerOutputId",
+                f'* identifier[outputId].value = "{example_digest(measurement, "output")}"',
+            ]
+        case _:
+            return [
+                f'* identifier.system = "{EXAMPLE_IDENTIFIER_SYSTEM.format(owner=owner_key)}"',
+                f'* identifier.value = "{measurement["id"]}-example"',
+            ]
+
+
+def example_source_type_lines(measurement: dict, owner_key: str) -> list[str]:
+    """The exact platform type an adapter Observation came from, which its profile requires."""
+    marker = SOURCE_TYPE_MARKERS.get(owner_key)
+    if not marker:
+        return []
+    token = SOURCE_TYPE_TOKENS[owner_key].get(measurement["id"])
+    if token is None:
+        raise SystemExit(f"{measurement['id']}: {owner_key} states no source type for its example")
+    lines = [marker.format(token=token)]
+    if owner_key == "providers":
+        lines.insert(0, f"* extension[provider].valueCode = #{token.split('/', 1)[0]}")
+    return lines
+
+
+def example_method(measurement: dict) -> str | None:
+    """The aggregation method an example has to choose for itself.
+
+    A profile that fixes one method already supplies it to every instance; only a profile offering
+    a choice leaves the required element for the example to fill.
+    """
+    choice = measurement.get("methodChoice")
+    return choice[0] if choice else None
+
+
+def example_result_lines(measurement: dict) -> list[str]:
+    """The value the profile requires, in the exact shape the profile admits.
+
+    A coded measurement can also carry components — a workout states its activity as the value and
+    its statistics as components — so components render for every kind that declares them, not
+    only for the one whose value lives in them.
+    """
+    kind = measurement.get("valueKind", "quantity")
+    lines: list[str] = []
+    if kind == "quantity":
+        lines.append(f"* valueQuantity = {example_quantity(measurement['quantity'])}")
+    elif kind == "codeableConcept":
+        system, code, display = coded_example(measurement)
+        lines.append(f'* valueCodeableConcept = {system}#{code} "{display}"')
+    for component in measurement.get("components", []):
+        slice_name = component["id"]
+        if component["system"] == LOINC:
+            lines.append(f"* component[{slice_name}].code = $loinc#{component['code']}")
+        else:
+            lines.append(
+                f"* component[{slice_name}].code = {component['system']}#{component['code']}"
+            )
+        if component.get("quantity"):
+            lines.append(
+                f"* component[{slice_name}].valueQuantity = "
+                f"{example_quantity(component['quantity'])}"
+            )
+        elif component.get("valueSet"):
+            system, code, display = coded_example(component)
+            lines.append(
+                f"* component[{slice_name}].valueCodeableConcept = "
+                f'{system}#{code} "{display}"'
+            )
+    return lines
+
+
+def coded_example(source: dict) -> tuple[str, str, str]:
+    """The code system, code, and display an example uses for one coded value."""
+    results = source.get("resultCodes")
+    if results:
+        return value_set_name(source["valueSet"])[:-2] + "CS", results[0]["code"], results[0]["display"]
+    shared = shared_value_set_example(source["valueSet"])
+    if shared is None:
+        raise SystemExit(f"no example concept available for value set {source['valueSet']}")
+    return shared
+
+
+def example_quantity(quantity: dict) -> str:
+    """A physiologically plausible value, so an example never reads as a placeholder."""
+    unit = quantity.get("unit")
+    rendered_unit = f' "{unit}"' if unit and unit != quantity["code"] else ""
+    return f"{quantity['example']} '{quantity['code']}'{rendered_unit}"
 
 
 def render_owner_terminology(owner_key: str, measurements: list[dict]) -> str | None:
@@ -514,6 +847,15 @@ def main() -> int:
             if measurement.get("generation", {}).get("emit"):
                 blocks.extend(render_result_terminology(measurement))
         blocks.extend(emitted.get(owner_key, []))
+        # Every generated profile ships one instance, so no profile reaches a reader unexemplified.
+        # A hand-written example is richer than anything projected from the catalog, so it wins.
+        handwritten = handwritten_instances(owner_key)
+        blocks.extend(
+            render_example(measurement)
+            for measurement in owner_measurements
+            if measurement.get("generation", {}).get("emit")
+            and f"{fsh_name(measurement['profile'])}Example" not in handwritten
+        )
         if blocks:
             rendered_file = HEADER + "\n".join(blocks)
             if arguments.check:

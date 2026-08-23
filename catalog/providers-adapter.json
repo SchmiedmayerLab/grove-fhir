@@ -8,7 +8,7 @@
   "sourceTypeExtension": {
     "url": "https://grovealliance.org/fhir/providers/StructureDefinition/provider-source-type",
     "codeSystem": "https://grovealliance.org/fhir/providers/CodeSystem/provider-source-type",
-    "element": "Observation.extension.valueCode or DocumentReference.extension.valueCode",
+    "r4Element": "Observation.extension.valueCode or DocumentReference.extension.valueCode",
     "cardinality": "exactly one",
     "codeRule": "provider id + '/' + exact source token; the atomic Withings blood-pressure output uses withings/getmeas:9+10",
     "rule": "Every admitted output makes the exact catalog dispatch token recoverable without reversing its source-record digest."

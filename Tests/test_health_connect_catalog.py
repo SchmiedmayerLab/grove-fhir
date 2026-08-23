@@ -179,9 +179,9 @@ class HealthConnectCatalogTests(unittest.TestCase):
             {row["shared"] for row in sleep["values"]},
             {"awake", "out-of-bed", "asleep-unspecified", "light", "deep", "rem", "unknown"},
         )
-        self.assertIn("additional coding", sleep["element"])
+        self.assertIn("additional coding", sleep["r4Element"])
         self.assertEqual(contexts["sleepTitle"]["valueType"], "string")
-        self.assertEqual(contexts["sleepNotes"]["element"], "Observation.note.text")
+        self.assertEqual(contexts["sleepNotes"]["r4Element"], "Observation.note.text")
 
     def test_mobile_health_connect_coverage_is_bidirectional(self) -> None:
         shared = {

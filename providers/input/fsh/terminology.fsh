@@ -13,9 +13,9 @@ Description: "The upstream provider whose already-obtained source record was con
 * ^caseSensitive = true
 * ^content = #complete
 * ^experimental = false
-* #google-health-api "Google Health API"
-* #oura "Oura"
-* #withings "Withings"
+* #google-health-api "Google Health API" "Records already obtained from the Google Health API."
+* #oura "Oura" "Records already obtained from the Oura API."
+* #withings "Withings" "Records already obtained from the Withings API."
 
 ValueSet: ProviderProviderVS
 Id: provider

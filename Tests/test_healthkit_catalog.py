@@ -151,7 +151,7 @@ class HealthKitCatalogTests(unittest.TestCase):
             self.catalog["sourceTypeCoding"],
             {
                 "system": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-source-type",
-                "element": "Observation.code.coding",
+                "r4Element": "Observation.code.coding",
                 "cardinality": "exactly one",
                 "rule": "Every admitted HealthKit Observation preserves its exact sourceTypeIdentifier as an additional provider coding; the shared or authoritative standard coding remains the normative result meaning.",
             },

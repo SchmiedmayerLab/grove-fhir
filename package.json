@@ -14,7 +14,8 @@
     "profiles:check": "python3 Scripts/render-measurement-profiles.py --check",
     "formats:refresh": "python3 Scripts/render-format-registry.py",
     "formats:check": "python3 Scripts/render-format-registry.py --check",
-    "test": "python3 Scripts/check-content.py && python3 Scripts/check-terminology.py && python3 Scripts/render-measurement-profiles.py --check && python3 Scripts/render-format-registry.py --check && python3 -m unittest discover -s Tests -v"
+    "test": "npm run schema:check && python3 Scripts/check-content.py && python3 Scripts/check-terminology.py && python3 Scripts/render-measurement-profiles.py --check && python3 Scripts/render-format-registry.py --check && python3 -m unittest discover -s Tests -v",
+    "schema:check": "node Scripts/validate-json-schema.cjs catalog/schemas/measurement-catalog.schema.json catalog/measurement-catalog.json && node Scripts/validate-json-schema.cjs catalog/schemas/package-graph.schema.json catalog/package-graph.json && node Scripts/validate-json-schema.cjs Conformance/producer-manifest.schema.json Conformance/example-producer/manifest.json"
   },
   "devDependencies": {
     "ajv": "8.20.0",

@@ -1,4 +1,5 @@
 {
+  "$schema": "https://grovealliance.org/fhir/catalog/schemas/package-graph.schema.json",
   "schemaVersion": 1,
   "fhirVersion": "4.0.1",
   "version": "0.3.0",

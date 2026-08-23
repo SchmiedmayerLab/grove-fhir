@@ -17,6 +17,18 @@ fhirVersion: 4.0.1
 copyrightYear: 2026+
 releaseLabel: ci-build
 license: MIT
+copyright: >-
+  Grove-authored profiles, extensions, terminology, and examples in this guide are published by the Schmiedmayer Lab under the MIT license.
+
+  FHIR® is the registered trademark of HL7 and is used with the permission of HL7. HL7 R4 material is copyright © HL7 International.
+
+  This material contains content from LOINC (https://loinc.org). LOINC is copyright © 1995-2026 Regenstrief Institute, Inc. and the Logical Observation Identifiers Names and Codes (LOINC) Committee and is available at no cost under the license at https://loinc.org/license. LOINC® is a registered United States trademark of Regenstrief Institute, Inc.
+
+  This material contains UCUM unit codes. UCUM is copyright © 1999-2026 Regenstrief Institute, Inc. and available under the license at https://ucum.org/trac.
+
+  ISO/IEEE 11073-10101 nomenclature codes are copyright © IEEE and ISO and are used here only to identify standard concepts.
+
+  HealthKit and SensorKit API identifiers and type names originate from Apple Inc. and are used here only to identify source API concepts for interoperability. The MIT license applies to Grove-authored definitions; it does not grant rights in Apple material.
 publisher:
   name: Schmiedmayer Lab
   url: https://github.com/SchmiedmayerLab

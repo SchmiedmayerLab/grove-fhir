@@ -39,6 +39,7 @@ Description: "An already-obtained Google Health API steps interval converted to 
 * category = http://terminology.hl7.org/CodeSystem/observation-category#activity "Activity"
 * code = https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement#step-count-total "Step count total"
 * subject = Reference(ProviderPatientExample)
+* performer = Reference(ProviderPatientExample)
 * effectivePeriod.start = "2026-08-20T09:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T10:00:00-07:00"
 * issued = "2026-08-20T17:00:01Z"
@@ -110,6 +111,7 @@ Description: "One already-obtained Withings measure group holding one diastolic 
 * category = http://terminology.hl7.org/CodeSystem/observation-category#vital-signs "Vital Signs"
 * code = http://loinc.org#85354-9 "Blood pressure panel with all children optional"
 * subject.reference = "urn:uuid:8e270383-7562-584e-a754-972a899031f8"
+* performer.reference = "urn:uuid:8e270383-7562-584e-a754-972a899031f8"
 * effectiveDateTime = "2026-08-20T07:45:00-07:00"
 * issued = "2026-08-20T17:00:01Z"
 * component[0].code = http://loinc.org#8480-6 "Systolic blood pressure"

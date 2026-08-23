@@ -20,7 +20,10 @@ ROOT = Path(__file__).parents[1]
 class PackageGraphTests(unittest.TestCase):
     def test_graph_has_exact_r4_version_and_safe_canonicals(self) -> None:
         graph = json.loads((ROOT / "catalog/package-graph.json").read_text(encoding="utf-8"))
-        self.assertEqual(set(graph), {"schemaVersion", "fhirVersion", "version", "canonicalRoot", "packages"})
+        self.assertEqual(
+            set(graph),
+            {"$schema", "schemaVersion", "fhirVersion", "version", "canonicalRoot", "packages"},
+        )
         self.assertEqual(graph["schemaVersion"], 1)
         self.assertEqual(graph["fhirVersion"], "4.0.1")
         self.assertEqual(graph["version"], "0.3.0")

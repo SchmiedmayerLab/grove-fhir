@@ -54,7 +54,18 @@ for guide in "${guides[@]}"; do
   test -f "$guide/sushi-config.yaml"
   echo "Building $guide"
   clean_generated_guide_content "$guide"
-  publisher_arguments=(-ig ig.ini -tx n/a -no-network)
+  # The Publisher validates codings against a terminology server. The server's cache lives in
+  # each guide's input-cache, which is never committed: it holds thousands of SNOMED and LOINC
+  # concepts this project has no licence to redistribute, and it is not ours to relicense under
+  # the repository's MIT terms.
+  #
+  # GROVE_TX_OFFLINE=1 builds without a server. That cannot validate any coding, so it reports
+  # every one as unvalidatable; use it only to check structure when no network is available.
+  if [[ -n "${GROVE_TX_OFFLINE:-}" ]]; then
+    publisher_arguments=(-ig ig.ini -tx n/a -no-network)
+  else
+    publisher_arguments=(-ig ig.ini -tx "${GROVE_TX_SERVER:-https://tx.fhir.org}")
+  fi
   guide_package_directory="$REPOSITORY_ROOT/.build/guide-packages/$guide"
   if [[ -d "$guide_package_directory" ]]; then
     find "$guide_package_directory" -depth -delete

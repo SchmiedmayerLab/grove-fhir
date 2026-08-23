@@ -69,3 +69,8 @@ application developer.
 Start with the [heart-rate JSON](Observation-GroveMobileHeartRateExample.json), then
 compare it with the [Mobile envelope](StructureDefinition-grove-mobile-observation.html)
 and the [FHIR R4 Heart Rate profile](https://hl7.org/fhir/R4/heartrate.html).
+
+Every profile carries an example.
+The hand-written ones show a measurement in the context a producer actually emits it, with the device, study, and platform metadata that surround it.
+The rest are projected from the same catalog entry as the profile itself, so they state the minimum a conformant instance needs and cannot drift from the rules they satisfy.
+A projected example is not a template for a rich record; read a hand-written one for that.
