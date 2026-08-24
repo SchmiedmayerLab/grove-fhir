@@ -76,7 +76,7 @@ jobs:
           # packages whose own metadata contradicts the tag.
           mismatched=0
           while IFS= read -r configuration; do
-            declared="$(python3 -c "import sys,yaml;print(yaml.safe_load(open(sys.argv[1]))['version'])" "$configuration")"
+            declared="$(awk -F': *' '/^version:/{gsub(/"/,"",$2); print $2; exit}' "$configuration")"
             if [ "$declared" != "$VERSION" ]; then
               echo "::error::$configuration declares $declared, not $VERSION."
               mismatched=1
@@ -143,7 +143,7 @@ jobs:
               echo "::error::$guide produced no package.tgz."
               exit 1
             fi
-            identifier="$(python3 -c "import sys,yaml;print(yaml.safe_load(open(sys.argv[1]))['id'])" "$configuration")"
+            identifier="$(awk -F': *' '/^id:/{gsub(/"/,"",$2); print $2; exit}' "$configuration")"
             cp "$package" ".build/release/$identifier-$VERSION.tgz"
           done < <(find . -mindepth 2 -maxdepth 2 -name sushi-config.yaml | sort)
           ls -la .build/release
