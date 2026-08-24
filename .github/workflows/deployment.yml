@@ -9,6 +9,11 @@
 name: Deployment
 
 on:
+  # Two paths, one job. Publishing a release from the UI creates the tag first and this run
+  # attaches the verified packages to it. Dispatching by version verifies everything before any
+  # tag exists, so a failed build leaves nothing behind to delete.
+  release:
+    types: [published]
   workflow_dispatch:
     inputs:
       version:
@@ -22,7 +27,7 @@ on:
         default: false
 
 concurrency:
-  group: deployment-${{ inputs.version }}
+  group: deployment-${{ inputs.version || github.event.release.tag_name }}
   cancel-in-progress: false
 
 permissions:
@@ -38,11 +43,30 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
+          ref: ${{ github.event.release.tag_name || github.ref }}
           fetch-depth: 0
           persist-credentials: false
+      - name: Resolve the version being released
+        id: release
+        env:
+          DISPATCH_VERSION: ${{ inputs.version }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          version="${DISPATCH_VERSION:-$RELEASE_TAG}"
+          if [ -z "$version" ]; then
+            echo "::error::No version was supplied."
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          # A release published from the UI already owns its tag, so this run only attaches to it.
+          if [ "$GITHUB_EVENT_NAME" = "release" ]; then
+            echo "owns-tag=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "owns-tag=true" >> "$GITHUB_OUTPUT"
+          fi
       - name: Refuse a version the guides do not declare
         env:
-          VERSION: ${{ inputs.version }}
+          VERSION: ${{ steps.release.outputs.version }}
         run: |
           if ! printf '%s' "$VERSION" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z]+([.-][0-9A-Za-z]+)*)?$'; then
             echo "::error::'$VERSION' is not a bare semantic version."
@@ -60,8 +84,9 @@ jobs:
           done < <(find . -mindepth 2 -maxdepth 2 -name sushi-config.yaml | sort)
           [ "$mismatched" -eq 0 ]
       - name: Refuse a tag that already exists
+        if: steps.release.outputs.owns-tag == 'true'
         env:
-          VERSION: ${{ inputs.version }}
+          VERSION: ${{ steps.release.outputs.version }}
         run: |
           if git rev-parse -q --verify "refs/tags/$VERSION" >/dev/null; then
             echo "::error::Tag $VERSION already exists; a published version is never rewritten."
@@ -98,7 +123,7 @@ jobs:
           --base-url https://schmiedmayerlab.github.io/grove-fhir
       - name: Collect the published packages
         env:
-          VERSION: ${{ inputs.version }}
+          VERSION: ${{ steps.release.outputs.version }}
         run: |
           mkdir -p .build/release
           while IFS= read -r configuration; do
@@ -115,34 +140,43 @@ jobs:
           ls -la .build/release
       - name: Report a dry run
         if: inputs.dryRun
-        run: echo "Dry run verified ${{ inputs.version }} without tagging or releasing."
+        run: echo "Dry run verified ${{ steps.release.outputs.version }} without tagging or releasing."
       - name: Tag the exact released revision
-        if: '!inputs.dryRun'
+        if: ${{ !inputs.dryRun && steps.release.outputs.owns-tag == 'true' }}
         env:
-          VERSION: ${{ inputs.version }}
+          VERSION: ${{ steps.release.outputs.version }}
           GH_TOKEN: ${{ github.token }}
         run: |
           gh api "repos/$GITHUB_REPOSITORY/git/refs" \
             -f "ref=refs/tags/$VERSION" \
             -f "sha=$GITHUB_SHA" >/dev/null
-      - name: Create the GitHub release
-        if: '!inputs.dryRun'
+      - name: Publish the release and its packages
+        if: ${{ !inputs.dryRun }}
         env:
-          VERSION: ${{ inputs.version }}
+          VERSION: ${{ steps.release.outputs.version }}
+          OWNS_TAG: ${{ steps.release.outputs.owns-tag }}
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "$VERSION" \
-            --repo "$GITHUB_REPOSITORY" \
-            --target "$GITHUB_SHA" \
-            --title "$VERSION" \
-            --generate-notes \
-            --latest \
-            .build/release/*.tgz
+          if [ "$OWNS_TAG" = "true" ]; then
+            gh release create "$VERSION" \
+              --repo "$GITHUB_REPOSITORY" \
+              --target "$GITHUB_SHA" \
+              --title "$VERSION" \
+              --generate-notes \
+              --latest \
+              .build/release/*.tgz
+          else
+            # The release already exists and owns its tag; attach the verified packages to it.
+            gh release upload "$VERSION" \
+              --repo "$GITHUB_REPOSITORY" \
+              --clobber \
+              .build/release/*.tgz
+          fi
       - name: Report where the guides are published
-        if: '!inputs.dryRun'
+        if: ${{ !inputs.dryRun }}
         run: |
           {
-            echo "### Grove FHIR ${{ inputs.version }}"
+            echo "### Grove FHIR ${{ steps.release.outputs.version }}"
             echo
             echo "Guides: https://schmiedmayerlab.github.io/grove-fhir/"
             echo
