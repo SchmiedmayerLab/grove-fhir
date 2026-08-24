@@ -52,7 +52,7 @@ This is the same contract the HealthKit adapter states for `HKMetadataKeySyncIde
 ### Identity
 
 [`catalog/health-connect-identity.json`](https://grovealliance.org/fhir/catalog/health-connect-identity.json) is the complete normative identity contract. It
-defines the six NamingSystem URLs, JCS string and array canonicalization, SHA-256 preimages,
+defines the seven NamingSystem URLs, JCS string and array canonicalization, SHA-256 preimages,
 lexical rules, and test vectors for source Records, single and multi-output Observations,
 sleep stages, Specimens, conversion Provenance, and exchange Bundles.
 

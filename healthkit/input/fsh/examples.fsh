@@ -135,8 +135,8 @@ Description: "A body-weight sample a connected scale re-imported after correctin
 * identifier[healthKitObjectId].value = "7c3f9b41-58d2-4e6a-9a10-4b8e2f6d05c7"
 * identifier[healthKitSyncId].system = $healthKitSyncId
 * identifier[healthKitSyncId].value = "scale-weighin-2026-08-19"
-* extension[syncVersion].valueInteger = 2
-* status = #final
+* extension[syncVersion].valueString = "2"
+* status = #amended
 * category = $observationCategory#vital-signs "Vital Signs"
 * code = $loinc#29463-7 "Body weight"
 * code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierBodyMass "Body Mass"

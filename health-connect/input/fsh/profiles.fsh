@@ -52,8 +52,8 @@ Severity: #error
 Expression: "(code.coding.where(system = 'https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement' and code = 'sleep-stage').exists() and value.ofType(CodeableConcept).coding.where(system = 'https://grovealliance.org/fhir/health-connect/CodeSystem/health-connect-sleep-stage').count() = 1) or (code.coding.where(system = 'https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement' and code = 'sleep-stage').empty() and value.ofType(CodeableConcept).coding.where(system = 'https://grovealliance.org/fhir/health-connect/CodeSystem/health-connect-sleep-stage').empty())"
 
 Invariant: health-connect-client-record-version-1
-Description: "A client record version orders revisions of one writer-assigned record, so it appears only with the client record identifier it versions."
-Expression: "extension('https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-client-record-version').empty() or identifier.where(system = 'https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-client-record-id').exists()"
+Description: "Health Connect always carries a clientRecordVersion for a Record that has a clientRecordId, so the two appear together or not at all. A client record version orders revisions of one writer-assigned record, so it appears only with the client record identifier it versions."
+Expression: "extension('https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-client-record-version').exists() = identifier.where(system = 'https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-client-record-id').exists()"
 Severity: #error
 
 
@@ -202,5 +202,12 @@ Title: "Health Connect Client Record Version"
 Description: "The clientRecordVersion of the Record this Observation was converted from. A writer that re-imports a measurement reuses its clientRecordId and raises this version, and Health Connect keeps the higher one; the version orders those revisions so a receiver can supersede rather than double-count."
 * ^context[+].type = #element
 * ^context[=].expression = "Observation"
-* value[x] only integer
-* valueInteger 1..1
+* value[x] only string
+* valueString 1..1
+* valueString obeys health-connect-client-record-version-value-1
+
+
+Invariant: health-connect-client-record-version-value-1
+Description: "A client record version is a canonical non-negative decimal integer, written without a sign, leading zeros, or separators."
+Expression: "$this.matches('^(0|[1-9][0-9]*)$')"
+Severity: #error

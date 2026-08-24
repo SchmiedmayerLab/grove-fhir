@@ -21,6 +21,7 @@
   },
   "namingSystems": {
     "record": "https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-record-id",
+    "clientRecord": "https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-client-record-id",
     "output": "https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-output-id",
     "specimen": "https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-specimen-id",
     "conversion": "https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-conversion-id",
@@ -127,8 +128,8 @@
     },
     {
       "case": "non-ascii-is-not-escaped",
-      "input": "café 💚  ",
-      "canonical": "\"café 💚  \"",
+      "input": "caf\u00e9 \ud83d\udc9a \u2028",
+      "canonical": "\"caf\u00e9 \ud83d\udc9a \u2028\"",
       "arrayDigest": "v1:a63f97b98e64ea9538a47015494beeddae9743cd70bcd7e3f7d2cbe65677fff4"
     }
   ],

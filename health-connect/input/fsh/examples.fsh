@@ -117,8 +117,8 @@ Description: "A weight a connected scale re-imported after correcting it. The st
 * identifier[outputId].value = "v1:c47f92b1d8e35a06429fc7b18e3d05a9276be4c130fa8d5729ec4b016df8a3e2"
 * identifier[clientRecordId].system = $healthConnectClientRecordId
 * identifier[clientRecordId].value = "scale-weighin-2026-08-19"
-* extension[clientRecordVersion].valueInteger = 2
-* status = #final
+* extension[clientRecordVersion].valueString = "2"
+* status = #amended
 * category = $observationCategory#vital-signs "Vital Signs"
 * code = $loinc#29463-7 "Body weight"
 * subject = Reference(HealthConnectPatientExample)

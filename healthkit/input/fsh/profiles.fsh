@@ -17,8 +17,8 @@ Expression: "value.matches('^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-
 Severity: #error
 
 Invariant: healthkit-sync-version-1
-Description: "A sync version orders revisions of one logical sample, so it appears only with the sync identifier it versions."
-Expression: "extension('https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-sync-version').empty() or identifier.where(system = 'https://grovealliance.org/fhir/healthkit/NamingSystem/healthkit-sync-id').exists()"
+Description: "HealthKit requires a sync version exactly when a sync identifier is present, so the two appear together or not at all. A sync version orders revisions of one logical sample, so it appears only with the sync identifier it versions."
+Expression: "extension('https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-sync-version').exists() = identifier.where(system = 'https://grovealliance.org/fhir/healthkit/NamingSystem/healthkit-sync-id').exists()"
 Severity: #error
 
 Invariant: healthkit-sleep-stage-1
@@ -146,5 +146,12 @@ Title: "HealthKit Sync Version"
 Description: "The HKMetadataKeySyncVersion of the sample this Observation was converted from. HealthKit replaces a sample when a writer saves a higher version under the same sync identifier, and the replacement carries a new object UUID; the version orders those revisions so a receiver can supersede rather than double-count."
 * ^context[+].type = #element
 * ^context[=].expression = "Observation"
-* value[x] only integer
-* valueInteger 1..1
+* value[x] only string
+* valueString 1..1
+* valueString obeys healthkit-sync-version-value-1
+
+
+Invariant: healthkit-sync-version-value-1
+Description: "A sync version is a canonical non-negative decimal integer, written without a sign, leading zeros, or separators."
+Expression: "$this.matches('^(0|[1-9][0-9]*)$')"
+Severity: #error
