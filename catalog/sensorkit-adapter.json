@@ -77,48 +77,77 @@
     },
     "output": {
       "system": "https://grovealliance.org/fhir/sensorkit/NamingSystem/sensorkit-output-id",
-      "namespace": "c0b8814a-8178-5e92-996a-c4cf36cd640b",
-      "algorithm": "UUIDv5 over the RFC 8785/JCS UTF-8 serialization of exactly [sourceRecordIdentifier.system, sourceRecordIdentifier.value, outputDiscriminator]",
+      "algorithm": "The scheme version v1:, the source record identifier's value and the outputDiscriminator, joined by vertical bars. No component may contain a vertical bar; a value carrying one is rejected rather than escaped. Nothing is hashed.",
       "rule": "Use the exact outputDiscriminator on the admitted structured or raw representation; there is no fallback.",
       "vectors": [
         {
           "outputDiscriminator": "sampled-data",
-          "canonicalPreimage": "[\"https://grovealliance.org/fhir/sensorkit/NamingSystem/sensorkit-record-id\",\"879d9ea2-21cb-4527-b59b-2831dc4c84ab\",\"sampled-data\"]",
-          "identifierValue": "746739c0-630c-581d-8808-f12114c2adf9"
+          "components": [
+            "879d9ea2-21cb-4527-b59b-2831dc4c84ab",
+            "sampled-data"
+          ],
+          "identifierValue": "v1:879d9ea2-21cb-4527-b59b-2831dc4c84ab|sampled-data"
         },
         {
           "outputDiscriminator": "native-recording",
-          "canonicalPreimage": "[\"https://grovealliance.org/fhir/sensorkit/NamingSystem/sensorkit-record-id\",\"879d9ea2-21cb-4527-b59b-2831dc4c84ab\",\"native-recording\"]",
-          "identifierValue": "70246b31-e681-5149-8002-d515b8611713"
+          "components": [
+            "879d9ea2-21cb-4527-b59b-2831dc4c84ab",
+            "native-recording"
+          ],
+          "identifierValue": "v1:879d9ea2-21cb-4527-b59b-2831dc4c84ab|native-recording"
         },
         {
           "outputDiscriminator": "on-wrist",
-          "canonicalPreimage": "[\"https://grovealliance.org/fhir/sensorkit/NamingSystem/sensorkit-record-id\",\"879d9ea2-21cb-4527-b59b-2831dc4c84ab\",\"on-wrist\"]",
-          "identifierValue": "b1b6d7c7-b185-50ea-8426-241fd27f02dc"
+          "components": [
+            "879d9ea2-21cb-4527-b59b-2831dc4c84ab",
+            "on-wrist"
+          ],
+          "identifierValue": "v1:879d9ea2-21cb-4527-b59b-2831dc4c84ab|on-wrist"
         },
         {
           "outputDiscriminator": "device-usage-summary",
-          "canonicalPreimage": "[\"https://grovealliance.org/fhir/sensorkit/NamingSystem/sensorkit-record-id\",\"879d9ea2-21cb-4527-b59b-2831dc4c84ab\",\"device-usage-summary\"]",
-          "identifierValue": "db96cf40-07cd-57c5-9b00-db0be8090ffc"
+          "components": [
+            "879d9ea2-21cb-4527-b59b-2831dc4c84ab",
+            "device-usage-summary"
+          ],
+          "identifierValue": "v1:879d9ea2-21cb-4527-b59b-2831dc4c84ab|device-usage-summary"
         },
         {
           "outputDiscriminator": "ecg-waveform",
-          "canonicalPreimage": "[\"https://grovealliance.org/fhir/sensorkit/NamingSystem/sensorkit-record-id\",\"879d9ea2-21cb-4527-b59b-2831dc4c84ab\",\"ecg-waveform\"]",
-          "identifierValue": "5d856ae1-3d82-5056-b21a-5700476b122a"
+          "components": [
+            "879d9ea2-21cb-4527-b59b-2831dc4c84ab",
+            "ecg-waveform"
+          ],
+          "identifierValue": "v1:879d9ea2-21cb-4527-b59b-2831dc4c84ab|ecg-waveform"
         },
         {
           "outputDiscriminator": "visit-summary",
-          "canonicalPreimage": "[\"https://grovealliance.org/fhir/sensorkit/NamingSystem/sensorkit-record-id\",\"879d9ea2-21cb-4527-b59b-2831dc4c84ab\",\"visit-summary\"]",
-          "identifierValue": "f632b780-1a6f-541d-8c73-ff1e76ce4204"
+          "components": [
+            "879d9ea2-21cb-4527-b59b-2831dc4c84ab",
+            "visit-summary"
+          ],
+          "identifierValue": "v1:879d9ea2-21cb-4527-b59b-2831dc4c84ab|visit-summary"
         },
         {
           "outputDiscriminator": "native-\n\"\\résumé\u0001",
-          "admitted": false,
-          "purpose": "RFC 8785 quote, reverse-solidus, control, and non-ASCII test only",
-          "canonicalPreimage": "[\"https://grovealliance.org/fhir/sensorkit/NamingSystem/sensorkit-record-id\",\"879d9ea2-21cb-4527-b59b-2831dc4c84ab\",\"native-\\n\\\"\\\\résumé\\u0001\"]",
-          "identifierValue": "ab9daa44-c154-595e-85e3-d45972b60b39"
+          "components": [
+            "879d9ea2-21cb-4527-b59b-2831dc4c84ab",
+            "native-\n\"\\résumé\u0001"
+          ],
+          "identifierValue": "v1:879d9ea2-21cb-4527-b59b-2831dc4c84ab|native-\n\"\\résumé\u0001"
+        },
+        {
+          "outputDiscriminator": "native|recording",
+          "components": [
+            "879d9ea2-21cb-4527-b59b-2831dc4c84ab",
+            "native|recording"
+          ],
+          "identifierValue": null,
+          "note": "A discriminator carrying the separator has no representation here and is rejected, never escaped."
         }
-      ]
+      ],
+      "separator": "|",
+      "versionPrefix": "v1"
     },
     "valuePattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
     "contentRule": "Every source field represented in the structured resource or native recording must participate in the producer's stable identity input; Resource.id, repository ids, subject references, and processing timestamps must not participate. The recording-device identity in exchange-identity.json is the one exception: a wearable belongs to a person, so its key admits the subject reference to keep one participant's recorder distinct from another's identical model.",

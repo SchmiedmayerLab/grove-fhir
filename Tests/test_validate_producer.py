@@ -778,13 +778,7 @@ class ProducerConformanceTests(unittest.TestCase):
         source_system = catalog["identity"]["sourceRecord"]["system"]
         output_system = catalog["identity"]["output"]["system"]
         source_value = "2fea27a0-5575-4fd2-83d7-d46b03059ddc"
-        preimage = VALIDATOR.canonical_string_array(
-            [source_system, source_value, "ecg-waveform"]
-        )
-        output_value = str(VALIDATOR.uuid.uuid5(
-            VALIDATOR.uuid.UUID(catalog["identity"]["output"]["namespace"]),
-            preimage,
-        ))
+        output_value = f"v1:{source_value}|ecg-waveform"
         ecg = {
             "resourceType": "Observation",
             "meta": {"profile": [
@@ -901,8 +895,8 @@ class ProducerConformanceTests(unittest.TestCase):
             "https://grovealliance.org/fhir/sensorkit/StructureDefinition/"
             "sensorkit-source-type"
         )
-        observation_output = "6e7453a7-0045-5f96-a847-5a956a817dd4"
-        document_output = "d42f2915-17ba-5891-a068-9a6a9d6732b6"
+        observation_output = f"v1:{source_value}|device-usage-summary"
+        document_output = f"v1:{source_value}|native-recording"
         document_url = VALIDATOR.expected_entry_full_url(
             output_system, document_output
         )
@@ -1012,13 +1006,7 @@ class ProducerConformanceTests(unittest.TestCase):
 
         mismatched_identity = copy.deepcopy(bundle)
         other_source = "95ee78bd-a754-4d3d-b084-6031b42d666c"
-        other_preimage = VALIDATOR.canonical_string_array(
-            [source_system, other_source, "native-recording"]
-        )
-        other_output = str(VALIDATOR.uuid.uuid5(
-            VALIDATOR.uuid.UUID("c0b8814a-8178-5e92-996a-c4cf36cd640b"),
-            other_preimage,
-        ))
+        other_output = f"v1:{other_source}|native-recording"
         mismatched_identity["entry"][1]["resource"]["identifier"][0]["value"] = other_source
         mismatched_identity["entry"][1]["resource"]["identifier"][1]["value"] = other_output
         mismatched_identity["entry"][1]["extension"][0]["valueIdentifier"]["value"] = other_output

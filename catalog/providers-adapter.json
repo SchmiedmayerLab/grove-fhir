@@ -11,7 +11,7 @@
     "r4Element": "Observation.extension.valueCode or DocumentReference.extension.valueCode",
     "cardinality": "exactly one",
     "codeRule": "provider id + '/' + exact source token; the atomic Withings blood-pressure output uses withings/getmeas:9+10",
-    "rule": "Every admitted output makes the exact catalog dispatch token recoverable without reversing its source-record digest."
+    "rule": "Every admitted output states the exact catalog dispatch token in its own identifier value."
   },
   "recordingDocument": {
     "sourceNeutralProfile": "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document",
@@ -167,7 +167,7 @@
       ],
       "value": "<providerCode>|<eventSequence>|<role>"
     },
-    "resourceIdPolicy": "Resource.id is optional and repository-assigned; no provider-native key or digest is copied into Resource.id.",
+    "resourceIdPolicy": "Resource.id is optional and repository-assigned; no business identifier is copied into Resource.id.",
     "positiveEventSequence": "A durable positive event sequence written as a non-zero ASCII digit followed by zero or more ASCII digits; no sign, no leading zero, no other characters. A byte-identical retry reuses the sequence; changed content allocates a higher value.",
     "singleConversionRule": "A conversion Provenance has exactly one source-record pair. When a Bundle carries exactly one conversion event, the exchange event is that conversion's emission and reuses its sequence, so the exchange identifier value equals the conversion identifier value byte for byte and only the NamingSystem distinguishes them.",
     "vectors": [

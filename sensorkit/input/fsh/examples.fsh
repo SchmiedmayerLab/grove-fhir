@@ -45,7 +45,7 @@ Description: "A lossless, uniformly sampled three-axis rotation-rate stream that
 * identifier[sensorKitRecordId].system = $sensorKitRecordId
 * identifier[sensorKitRecordId].value = "879d9ea2-21cb-4527-b59b-2831dc4c84ab"
 * identifier[sensorKitOutputId].system = $sensorKitOutputId
-* identifier[sensorKitOutputId].value = "746739c0-630c-581d-8808-f12114c2adf9"
+* identifier[sensorKitOutputId].value = "v1:879d9ea2-21cb-4527-b59b-2831dc4c84ab|sampled-data"
 * extension[sensorKitSourceType].valueCode = #rotation-rate
 * status = #final
 * code = $sensorKitSourceType#rotation-rate "Rotation rate"
@@ -83,7 +83,7 @@ Description: "The complete uniform voltage projection of one SensorKit ECG recor
 * identifier[sensorKitRecordId].system = $sensorKitRecordId
 * identifier[sensorKitRecordId].value = "2fea27a0-5575-4fd2-83d7-d46b03059ddc"
 * identifier[sensorKitOutputId].system = $sensorKitOutputId
-* identifier[sensorKitOutputId].value = "36440490-b02b-5bc5-8542-7137a6525d57"
+* identifier[sensorKitOutputId].value = "v1:2fea27a0-5575-4fd2-83d7-d46b03059ddc|ecg-waveform"
 * extension[sensorKitSourceType].valueCode = #ecg
 * extension[sensorKitECGSessionGuidance].valueCode = #guided
 * status = #final
@@ -112,7 +112,7 @@ Description: "The caller-supplied exact native encoding that retains session ide
 * identifier[sensorKitRecordId].system = $sensorKitRecordId
 * identifier[sensorKitRecordId].value = "2fea27a0-5575-4fd2-83d7-d46b03059ddc"
 * identifier[sensorKitOutputId].system = $sensorKitOutputId
-* identifier[sensorKitOutputId].value = "2db9ff85-802e-5e77-a26c-9801fcef1211"
+* identifier[sensorKitOutputId].value = "v1:2fea27a0-5575-4fd2-83d7-d46b03059ddc|native-recording"
 * extension[sensorKitSourceType].valueCode = #ecg
 * status = #current
 * type = $sensorKitSourceType#ecg "Electrocardiogram"
@@ -150,7 +150,7 @@ Description: "A complete right-arm-minus-left-arm voltage projection. The exact 
 * identifier[sensorKitRecordId].system = $sensorKitRecordId
 * identifier[sensorKitRecordId].value = "725f35ec-8df0-4f35-9477-88472f35e670"
 * identifier[sensorKitOutputId].system = $sensorKitOutputId
-* identifier[sensorKitOutputId].value = "9c118a12-360d-5f31-908c-a806cf1296ce"
+* identifier[sensorKitOutputId].value = "v1:725f35ec-8df0-4f35-9477-88472f35e670|ecg-waveform"
 * extension[sensorKitSourceType].valueCode = #ecg
 * extension[sensorKitECGSessionGuidance].valueCode = #unguided
 * status = #final
@@ -178,7 +178,7 @@ Description: "The caller-supplied exact native encoding paired with the inverse-
 * identifier[sensorKitRecordId].system = $sensorKitRecordId
 * identifier[sensorKitRecordId].value = "725f35ec-8df0-4f35-9477-88472f35e670"
 * identifier[sensorKitOutputId].system = $sensorKitOutputId
-* identifier[sensorKitOutputId].value = "e3bf91bb-f79f-544d-b7e5-d67b46552b67"
+* identifier[sensorKitOutputId].value = "v1:725f35ec-8df0-4f35-9477-88472f35e670|native-recording"
 * extension[sensorKitSourceType].valueCode = #ecg
 * status = #current
 * type = $sensorKitSourceType#ecg "Electrocardiogram"
@@ -215,7 +215,7 @@ Description: "A platform-exclusive on-wrist state with wrist and crown placement
 * identifier[sensorKitRecordId].system = $sensorKitRecordId
 * identifier[sensorKitRecordId].value = "f66d92c6-6819-4d9d-8f0f-d12f9c0a1f03"
 * identifier[sensorKitOutputId].system = $sensorKitOutputId
-* identifier[sensorKitOutputId].value = "cfdca78b-4ff3-5a97-9576-c878247b1ea3"
+* identifier[sensorKitOutputId].value = "v1:f66d92c6-6819-4d9d-8f0f-d12f9c0a1f03|on-wrist"
 * extension[sensorKitSourceType].valueCode = #on-wrist
 * status = #final
 * code = $sensorKitConcept#on-wrist-state "On-wrist state"
@@ -238,7 +238,7 @@ Description: "A platform-exclusive device-usage summary; detailed application, n
 * identifier[sensorKitRecordId].system = $sensorKitRecordId
 * identifier[sensorKitRecordId].value = "b4df30d0-2a34-492e-a68e-b1eab1cb471d"
 * identifier[sensorKitOutputId].system = $sensorKitOutputId
-* identifier[sensorKitOutputId].value = "6e7453a7-0045-5f96-a847-5a956a817dd4"
+* identifier[sensorKitOutputId].value = "v1:b4df30d0-2a34-492e-a68e-b1eab1cb471d|device-usage-summary"
 * extension[sensorKitSourceType].valueCode = #device-usage
 * status = #final
 * code = $sensorKitConcept#device-usage-summary "Device usage summary"
@@ -262,7 +262,7 @@ Description: "A platform-exclusive visit summary that preserves uncertain arriva
 * identifier[sensorKitRecordId].system = $sensorKitRecordId
 * identifier[sensorKitRecordId].value = "d75fc337-6aac-4edf-931d-bbf1b24736aa"
 * identifier[sensorKitOutputId].system = $sensorKitOutputId
-* identifier[sensorKitOutputId].value = "d703cbe1-eb28-5132-8d08-adefe8842fb9"
+* identifier[sensorKitOutputId].value = "v1:d75fc337-6aac-4edf-931d-bbf1b24736aa|visit-summary"
 * extension[sensorKitSourceType].valueCode = #visits
 * status = #final
 * code = $sensorKitConcept#visit-summary "Visit summary"
@@ -291,7 +291,7 @@ Description: "The complete caller-encoded SensorKit device-usage report related 
 * identifier[sensorKitRecordId].system = $sensorKitRecordId
 * identifier[sensorKitRecordId].value = "b4df30d0-2a34-492e-a68e-b1eab1cb471d"
 * identifier[sensorKitOutputId].system = $sensorKitOutputId
-* identifier[sensorKitOutputId].value = "d42f2915-17ba-5891-a068-9a6a9d6732b6"
+* identifier[sensorKitOutputId].value = "v1:b4df30d0-2a34-492e-a68e-b1eab1cb471d|native-recording"
 * extension[sensorKitSourceType].valueCode = #device-usage
 * status = #current
 * type = $sensorKitSourceType#device-usage "Device usage report"
@@ -358,7 +358,7 @@ Description: "The structured device-usage output whose internal references use d
 * identifier[sensorKitRecordId].system = $sensorKitRecordId
 * identifier[sensorKitRecordId].value = "b4df30d0-2a34-492e-a68e-b1eab1cb471d"
 * identifier[sensorKitOutputId].system = $sensorKitOutputId
-* identifier[sensorKitOutputId].value = "6e7453a7-0045-5f96-a847-5a956a817dd4"
+* identifier[sensorKitOutputId].value = "v1:b4df30d0-2a34-492e-a68e-b1eab1cb471d|device-usage-summary"
 * extension[sensorKitSourceType].valueCode = #device-usage
 * status = #final
 * code = $sensorKitConcept#device-usage-summary "Device usage summary"
@@ -383,7 +383,7 @@ Description: "The raw device-usage output whose internal references use determin
 * identifier[sensorKitRecordId].system = $sensorKitRecordId
 * identifier[sensorKitRecordId].value = "b4df30d0-2a34-492e-a68e-b1eab1cb471d"
 * identifier[sensorKitOutputId].system = $sensorKitOutputId
-* identifier[sensorKitOutputId].value = "d42f2915-17ba-5891-a068-9a6a9d6732b6"
+* identifier[sensorKitOutputId].value = "v1:b4df30d0-2a34-492e-a68e-b1eab1cb471d|native-recording"
 * extension[sensorKitSourceType].valueCode = #device-usage
 * status = #current
 * type = $sensorKitSourceType#device-usage "Device usage report"
@@ -455,7 +455,7 @@ Description: "The caller-supplied native recording the summary counts, retained 
 * identifier[sensorKitRecordId].system = $sensorKitRecordId
 * identifier[sensorKitRecordId].value = "8c910da2-ed1c-58c6-b2d9-fda1364d3acd"
 * identifier[sensorKitOutputId].system = $sensorKitOutputId
-* identifier[sensorKitOutputId].value = "29d749ad-5a4a-506d-aa32-d0ec7fafad04"
+* identifier[sensorKitOutputId].value = "v1:8c910da2-ed1c-58c6-b2d9-fda1364d3acd|native-recording"
 * extension[sensorKitSourceType].valueCode = #accelerometer
 * status = #current
 * type = $sensorKitSourceType#accelerometer "Accelerometer"
@@ -477,7 +477,7 @@ Description: "A platform-exclusive coverage summary of one accelerometer batch; 
 * identifier[sensorKitRecordId].system = $sensorKitRecordId
 * identifier[sensorKitRecordId].value = "770e985b-a934-5a76-98da-2fb465055555"
 * identifier[sensorKitOutputId].system = $sensorKitOutputId
-* identifier[sensorKitOutputId].value = "9f080bfd-73f0-5a58-9718-af6427af17c3"
+* identifier[sensorKitOutputId].value = "v1:770e985b-a934-5a76-98da-2fb465055555|accelerometer-recording-summary"
 * extension[sensorKitSourceType].valueCode = #accelerometer
 * status = #final
 * code = $sensorKitConcept#accelerometer-recording-summary "Accelerometer recording summary"
@@ -501,7 +501,7 @@ Description: "The caller-supplied native recording the summary counts, retained 
 * identifier[sensorKitRecordId].system = $sensorKitRecordId
 * identifier[sensorKitRecordId].value = "dbf9ec4d-b3fa-5315-9525-56ab63618b9a"
 * identifier[sensorKitOutputId].system = $sensorKitOutputId
-* identifier[sensorKitOutputId].value = "d4e8aa57-26a5-513f-9c0c-45f5ee0a8c60"
+* identifier[sensorKitOutputId].value = "v1:dbf9ec4d-b3fa-5315-9525-56ab63618b9a|native-recording"
 * extension[sensorKitSourceType].valueCode = #ppg
 * status = #current
 * type = $sensorKitSourceType#ppg "Photoplethysmogram"
@@ -523,7 +523,7 @@ Description: "A platform-exclusive coverage summary of one photoplethysmography 
 * identifier[sensorKitRecordId].system = $sensorKitRecordId
 * identifier[sensorKitRecordId].value = "ea336fe9-c965-5921-aa55-98ee77c9a99e"
 * identifier[sensorKitOutputId].system = $sensorKitOutputId
-* identifier[sensorKitOutputId].value = "d27b8519-1fcf-53e6-9eb9-49a68ebae972"
+* identifier[sensorKitOutputId].value = "v1:ea336fe9-c965-5921-aa55-98ee77c9a99e|ppg-recording-summary"
 * extension[sensorKitSourceType].valueCode = #ppg
 * status = #final
 * code = $sensorKitConcept#ppg-recording-summary "PPG recording summary"
@@ -548,7 +548,7 @@ Description: "A platform-exclusive messaging summary over one day, with no messa
 * identifier[sensorKitRecordId].system = $sensorKitRecordId
 * identifier[sensorKitRecordId].value = "05077f73-0625-5b44-a83a-c9a0fbed0849"
 * identifier[sensorKitOutputId].system = $sensorKitOutputId
-* identifier[sensorKitOutputId].value = "8140b80c-5f3d-5ce6-9a5c-e69b2fffc0e8"
+* identifier[sensorKitOutputId].value = "v1:05077f73-0625-5b44-a83a-c9a0fbed0849|messages-usage-summary"
 * extension[sensorKitSourceType].valueCode = #messages-usage
 * status = #final
 * code = $sensorKitConcept#messages-usage-summary "Messages usage summary"
@@ -572,7 +572,7 @@ Description: "A platform-exclusive call summary over one day, with no call conte
 * identifier[sensorKitRecordId].system = $sensorKitRecordId
 * identifier[sensorKitRecordId].value = "fa4a2356-84a6-54be-b5b3-da5bec5b0067"
 * identifier[sensorKitOutputId].system = $sensorKitOutputId
-* identifier[sensorKitOutputId].value = "8a84bfec-2040-5666-bc5e-f071c5bd7f44"
+* identifier[sensorKitOutputId].value = "v1:fa4a2356-84a6-54be-b5b3-da5bec5b0067|phone-usage-summary"
 * extension[sensorKitSourceType].valueCode = #phone-usage
 * status = #final
 * code = $sensorKitConcept#phone-usage-summary "Phone usage summary"
@@ -597,7 +597,7 @@ Description: "A platform-exclusive typing summary over one day; no typed text is
 * identifier[sensorKitRecordId].system = $sensorKitRecordId
 * identifier[sensorKitRecordId].value = "d2e21dfe-2ead-5b27-a31d-07ad1b95dac4"
 * identifier[sensorKitOutputId].system = $sensorKitOutputId
-* identifier[sensorKitOutputId].value = "330afc8c-e9dc-5ea2-a39e-8e90423af1f8"
+* identifier[sensorKitOutputId].value = "v1:d2e21dfe-2ead-5b27-a31d-07ad1b95dac4|keyboard-metrics-summary"
 * extension[sensorKitSourceType].valueCode = #keyboard-metrics
 * status = #final
 * code = $sensorKitConcept#keyboard-metrics-summary "Keyboard metrics summary"
@@ -635,7 +635,7 @@ Description: "A platform-exclusive inferred sleep period, stating the exact leng
 * identifier[sensorKitRecordId].system = $sensorKitRecordId
 * identifier[sensorKitRecordId].value = "d9b729ee-589e-5beb-913e-f8f9057ef98a"
 * identifier[sensorKitOutputId].system = $sensorKitOutputId
-* identifier[sensorKitOutputId].value = "07b95417-26c7-545e-a7d7-af8c1c6c5e06"
+* identifier[sensorKitOutputId].value = "v1:d9b729ee-589e-5beb-913e-f8f9057ef98a|sleep-session"
 * extension[sensorKitSourceType].valueCode = #sleep-sessions
 * status = #final
 * code = $sensorKitConcept#sleep-session "Sleep session"
@@ -655,7 +655,7 @@ Description: "The caller-supplied native recording the summary counts, retained 
 * identifier[sensorKitRecordId].system = $sensorKitRecordId
 * identifier[sensorKitRecordId].value = "26521dbb-e8ab-529a-9ca8-8725d4ebdd1d"
 * identifier[sensorKitOutputId].system = $sensorKitOutputId
-* identifier[sensorKitOutputId].value = "21b30965-e9c0-574a-80f8-d375ac75c36e"
+* identifier[sensorKitOutputId].value = "v1:26521dbb-e8ab-529a-9ca8-8725d4ebdd1d|native-recording"
 * extension[sensorKitSourceType].valueCode = #keyboard-metrics
 * status = #current
 * type = $sensorKitSourceType#keyboard-metrics "Keyboard Metrics"

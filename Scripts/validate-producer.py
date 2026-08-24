@@ -1389,11 +1389,10 @@ def validate_sensorkit_identity(resource: dict[str, Any], label: str) -> None:
     output_pair = exact_identifier(output_system, "output")
     if not re.fullmatch(identity["valuePattern"], source_pair[1]):
         raise ProducerValidationError(f"{label} has an invalid SensorKit source-record UUID")
-    if not re.fullmatch(
-        r"^[0-9a-f]{8}-[0-9a-f]{4}-5[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
-        output_pair[1],
-    ):
-        raise ProducerValidationError(f"{label} has an invalid SensorKit output UUIDv5")
+    if not re.fullmatch(r"^v1:[^|]+(?:\|[^|]+)+$", output_pair[1]):
+        raise ProducerValidationError(
+            f"{label} SensorKit output identifier is not a v1 composition"
+        )
     if resource.get("id") in {source_pair[1], output_pair[1]}:
         raise ProducerValidationError(
             f"{label} must not copy a SensorKit business identifier into Resource.id"
@@ -1441,8 +1440,11 @@ def validate_sensorkit_identity(resource: dict[str, Any], label: str) -> None:
         raise ProducerValidationError(
             f"{label} admitted SensorKit representation has no output discriminator"
         )
-    preimage = canonical_string_array([source_pair[0], source_pair[1], discriminator])
-    expected = str(uuid.uuid5(uuid.UUID(identity["output"]["namespace"]), preimage))
+    if "|" in discriminator or "|" in source_pair[1]:
+        raise ProducerValidationError(
+            f"{label} SensorKit identity component must not contain a vertical bar"
+        )
+    expected = f"v1:{source_pair[1]}|{discriminator}"
     if output_pair[1] != expected:
         raise ProducerValidationError(
             f"{label} SensorKit output identifier does not match its exact source and discriminator"

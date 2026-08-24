@@ -19,7 +19,7 @@ Real producers already have this shape: the My Heart Counts app uploads each dev
 ### What links the two outputs
 
 Both outputs carry the same SensorKit record identifier, `b4df30d0-2a34-492e-a68e-b1eab1cb471d`, assigned by the producer because SensorKit publishes no durable sample identifier.
-Each output additionally carries its own deterministic output identifier: UUIDv5 under namespace `c0b8814a-8178-5e92-996a-c4cf36cd640b` over the RFC 8785 serialization of `[recordSystem, recordValue, outputDiscriminator]`, with discriminator `device-usage-summary` for the Observation and `native-recording` for the document.
+Each output additionally carries its own deterministic output identifier: the scheme version, the record identifier and the output discriminant joined by a vertical bar, with discriminator `device-usage-summary` for the Observation and `native-recording` for the document. Nothing is hashed, so the value states which record it came from and which output of that record it is.
 `Observation.derivedFrom` holds exactly one internal UUID reference to the document, and `DocumentReference.context.related` points back to exactly the Observation.
 One [conversion Provenance](StructureDefinition-sensorkit-conversion-provenance.html) targets both outputs and names the record identifier as its sole source entity; omitting the raw target is nonconformant.
 Every Bundle entry `fullUrl` is the UUIDv5 of its complete entry business identifier under the Mobile exchange namespace, so the graph serializes identically on every producer.

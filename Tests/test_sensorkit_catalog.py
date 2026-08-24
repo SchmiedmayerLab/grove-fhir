@@ -287,7 +287,9 @@ class SensorKitCatalogTests(unittest.TestCase):
             identity["output"]["system"],
             "https://grovealliance.org/fhir/sensorkit/NamingSystem/sensorkit-output-id",
         )
-        self.assertEqual(identity["output"]["namespace"], "c0b8814a-8178-5e92-996a-c4cf36cd640b")
+        self.assertEqual(identity["output"]["separator"], "|")
+        self.assertEqual(identity["output"]["versionPrefix"], "v1")
+        self.assertNotIn("namespace", identity["output"])
         self.assertIsNotNone(re.fullmatch(identity["valuePattern"], "879d9ea2-21cb-4527-b59b-2831dc4c84ab"))
         self.assertIn("Resource.id is optional", identity["resourceIdPolicy"])
         self.assertIn("exactly two direct", self.catalog["profileClaims"]["sharedObservation"]["rule"])
@@ -308,16 +310,18 @@ class SensorKitCatalogTests(unittest.TestCase):
             self.catalog["profileClaims"]["recordingDocument"]["adapterProfile"],
             provenance["targetAdapterProfiles"],
         )
-        namespace = uuid.UUID(identity["output"]["namespace"])
         for vector in identity["output"]["vectors"]:
-            self.assertEqual(
-                str(uuid.uuid5(namespace, vector["canonicalPreimage"])),
-                vector["identifierValue"],
+            expected = None if "|" in vector["outputDiscriminator"] else (
+                "v1:" + "|".join(vector["components"])
             )
-        edge = identity["output"]["vectors"][-1]
-        self.assertFalse(edge["admitted"])
-        self.assertIn("résumé", edge["canonicalPreimage"])
-        self.assertIn("\\n\\\"\\\\", edge["canonicalPreimage"])
+            self.assertEqual(expected, vector["identifierValue"])
+        # Quotes, backslashes and control characters need no escaping now: they travel verbatim.
+        verbatim = next(v for v in identity["output"]["vectors"] if "résumé" in v["outputDiscriminator"])
+        self.assertIsNotNone(verbatim["identifierValue"])
+        self.assertIn("résumé", verbatim["identifierValue"])
+        # Only the separator itself has no representation, and it is rejected rather than escaped.
+        edge = next(v for v in identity["output"]["vectors"] if v["identifierValue"] is None)
+        self.assertIn("|", edge["outputDiscriminator"])
 
     def test_raw_payload_admission_is_explicit_and_fail_closed(self) -> None:
         admission = self.catalog["rawPayloadAdmission"]

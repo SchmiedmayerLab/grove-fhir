@@ -41,7 +41,7 @@ document uses one Provenance with both targets; omitting the raw target is nonco
 
 SensorKit raw, visit, per-application, communication, face, and speech streams can be
 highly identifying even when participant and account identifiers are pseudonymous.
-Profiles, canonicals, business identifiers, UUID digests, and Attachment hashes never
+Profiles, canonicals, business identifiers, and Attachment hashes never
 grant access, express consent, or authorize disclosure. The deployment separately
 governs consent and authorization, access control, pseudonym scope and linkability,
 data minimization, retention and deletion, and authorization for immutable attachment

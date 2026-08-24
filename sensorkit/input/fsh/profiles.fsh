@@ -12,8 +12,8 @@ Expression: "matches('^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{
 Severity: #error
 
 Invariant: sensorkit-output-id-1
-Description: "A SensorKit output identifier is a lowercase RFC 4122 UUIDv5 with an RFC variant."
-Expression: "matches('^[0-9a-f]{8}-[0-9a-f]{4}-5[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$')"
+Description: "A SensorKit output identifier is a versioned composition of the source record identifier and the output discriminant, joined by a vertical bar. No component may contain a vertical bar."
+Expression: "matches('^v1:[^|]+([|][^|]+)+$')"
 Severity: #error
 
 Invariant: sensorkit-ecg-lead-standard-1
