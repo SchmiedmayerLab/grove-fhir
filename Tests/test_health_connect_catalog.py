@@ -208,70 +208,93 @@ class HealthConnectCatalogTests(unittest.TestCase):
 
     def test_every_normative_identity_vector_is_exact(self) -> None:
         for vector in self.contract["vectors"]:
+            if vector["value"] is None:
+                continue
             with self.subTest(vector=vector["case"]):
-                self.assertEqual(identity.canonical_json(vector["input"]), vector["canonical"])
-                self.assertEqual(identity.digest(vector["input"]), vector["value"])
-
-    def test_string_canonicalization_vectors_cover_cross_language_edges(self) -> None:
-        for vector in self.contract["canonicalizationVectors"]:
-            with self.subTest(vector=vector["case"]):
-                self.assertEqual(identity.canonical_json(vector["input"]), vector["canonical"])
-                self.assertEqual(identity.digest([vector["input"]]), vector["arrayDigest"])
+                if vector["case"] == "deployment-owned-exchange-bundle":
+                    self.assertEqual("|".join(vector["components"]), vector["value"])
+                else:
+                    self.assertEqual(identity.compose(*vector["components"]), vector["value"])
 
     def test_helpers_reproduce_typed_vectors(self) -> None:
         vectors = {item["case"]: item for item in self.contract["vectors"]}
-        record = vectors["record"]
-        self.assertEqual(identity.record(*record["input"][1:]), record["value"])
-        source = tuple(vectors["single-output"]["input"][1])
-        self.assertEqual(identity.output(source, ["single"]), vectors["single-output"]["value"])
+        scope, record_type, raw = vectors["record"]["components"]
+        self.assertEqual(identity.record(scope, record_type, raw), vectors["record"]["value"])
+        for case in ("heart-rate-sample-output", "sleep-stage-output"):
+            components = vectors[case]["components"]
+            with self.subTest(case=case):
+                self.assertEqual(
+                    identity.output(components[0], components[1], components[2], components[3:]),
+                    vectors[case]["value"],
+                )
+        specimen = vectors["specimen"]["components"]
         self.assertEqual(
-            identity.output(source, vectors["heart-rate-sample-output"]["input"][2:]),
-            vectors["heart-rate-sample-output"]["value"],
+            identity.specimen(specimen[0], specimen[1], specimen[2], specimen[4]),
+            vectors["specimen"]["value"],
         )
         self.assertEqual(
-            identity.output(source, vectors["sleep-stage-output"]["input"][2:]),
-            vectors["sleep-stage-output"]["value"],
+            identity.writer_record(*vectors["writer-record"]["components"]),
+            vectors["writer-record"]["value"],
         )
-        specimen = vectors["specimen"]
-        self.assertEqual(identity.specimen(tuple(specimen["input"][1]), specimen["input"][2]), specimen["value"])
-        self.assertEqual(identity.event("conversion", [source], "1"), vectors["conversion"]["value"])
-        self.assertEqual(identity.event("exchange", [source], "1"), vectors["exchange"]["value"])
+        scope, sequence, role = vectors["deployment-owned-exchange-bundle"]["components"]
+        self.assertEqual(
+            identity.event(role, scope, sequence),
+            vectors["deployment-owned-exchange-bundle"]["value"],
+        )
+
+    def test_a_deployment_owned_identity_carries_no_scheme_prefix(self) -> None:
+        value = identity.event("conversion-provenance", "1f5c58aa-6ec6-4e79-a682-829a9debd3f5", "7")
+        self.assertFalse(value.startswith("v1:"))
+
+    def test_a_one_to_one_conversion_carries_no_second_output_identifier(self) -> None:
+        self.assertEqual(self.contract["outputIdentity"]["cardinality"], "0..1")
+        self.assertNotIn("singleOutput", self.contract["compositions"])
+
+    def test_the_scope_is_joined_into_the_value_not_a_sibling_field(self) -> None:
+        self.assertIn("sibling field takes", self.contract["composition"]["whyComposedHere"])
+
+    def test_no_composition_takes_a_measured_value(self) -> None:
+        measured = {"beatsPerMinuteUnsignedDecimal", "valueUnsignedDecimal", "massUnsignedDecimal"}
+        for name, components in self.contract["compositions"].items():
+            with self.subTest(composition=name):
+                self.assertFalse(measured.intersection(components))
 
     def test_identity_grammar_fails_closed(self) -> None:
-        source = (self.contract["namingSystems"]["record"], "source-id")
-        with self.assertRaises(identity.HealthConnectIdentityError):
-            identity.canonical_json({"not": "admitted"})
+        scope = "1f5c58aa-6ec6-4e79-a682-829a9debd3f5"
         with self.assertRaisesRegex(identity.HealthConnectIdentityError, "surrogate"):
-            identity.canonical_json("bad\ud800")
+            identity.compose("bad\ud800")
+        with self.assertRaisesRegex(identity.HealthConnectIdentityError, "non-empty"):
+            identity.compose("")
         with self.assertRaisesRegex(identity.HealthConnectIdentityError, "record type"):
-            identity.record("1f5c58aa-6ec6-4e79-a682-829a9debd3f5", "UnknownRecord", "id")
+            identity.record(scope, "UnknownRecord", "id")
         with self.assertRaisesRegex(identity.HealthConnectIdentityError, "raw record"):
-            identity.record("1f5c58aa-6ec6-4e79-a682-829a9debd3f5", "StepsRecord", "")
+            identity.record(scope, "StepsRecord", "")
+        with self.assertRaisesRegex(identity.HealthConnectIdentityError, "repository scope"):
+            identity.record("not-a-uuid", "StepsRecord", "id")
         with self.assertRaisesRegex(identity.HealthConnectIdentityError, "sample instant"):
-            identity.output(source, ["sample", "2026-08-20T17:30:15Z", "72", "0"])
-        with self.assertRaisesRegex(identity.HealthConnectIdentityError, "beats per minute"):
-            identity.output(source, ["sample", "2026-08-20T17:30:15.000000000Z", "072", "0"])
+            identity.output(scope, "HeartRateRecord", "id", ["sample", "2026-08-20T17:30:15Z", "0"])
         with self.assertRaisesRegex(identity.HealthConnectIdentityError, "occurrence"):
-            identity.output(source, ["sample", "2026-08-20T17:30:15.000000000Z", "72", "00"])
+            identity.output(scope, "HeartRateRecord", "id", ["sample", "2026-08-20T17:30:15.000000000Z", "00"])
         with self.assertRaisesRegex(identity.HealthConnectIdentityError, "sleep stage token"):
             identity.output(
-                source,
+                scope,
+                "SleepSessionRecord",
+                "id",
                 ["sleep-stage", "2026-08-20T17:30:15.000000000Z", "2026-08-20T17:35:15.000000000Z", "LIGHT", "0"],
             )
         with self.assertRaisesRegex(identity.HealthConnectIdentityError, "specimen token"):
-            identity.specimen(source, "SPECIMEN_SOURCE_TEARS")
+            identity.specimen(scope, "BloodGlucoseRecord", "id", "SPECIMEN_SOURCE_TEARS")
         with self.assertRaisesRegex(identity.HealthConnectIdentityError, "positive decimal"):
-            identity.event("conversion", [source], "01")
-        with self.assertRaisesRegex(identity.HealthConnectIdentityError, "duplicate"):
-            identity.event("conversion", [source, source], "1")
-        with self.assertRaisesRegex(identity.HealthConnectIdentityError, "must not be empty"):
-            identity.event("exchange", [], "1")
+            identity.event("conversion-provenance", scope, "01")
+        with self.assertRaisesRegex(identity.HealthConnectIdentityError, "event role"):
+            identity.event("something-else", scope, "1")
 
-    def test_identifier_set_order_is_canonical_utf8_byte_order(self) -> None:
-        identifiers = [("https://é.example", "💚"), ("https://example", "quote\"\\\n")]
-        ordered = identity.identifier_set(reversed(identifiers))
-        expected = sorted((list(item) for item in identifiers), key=lambda item: identity.canonical_json(item).encode("utf-8"))
-        self.assertEqual(ordered, expected)
+    def test_a_separator_in_a_source_value_is_rejected_never_escaped(self) -> None:
+        scope = "1f5c58aa-6ec6-4e79-a682-829a9debd3f5"
+        with self.assertRaisesRegex(identity.HealthConnectIdentityError, "vertical bar"):
+            identity.record(scope, "StepsRecord", "record|weight")
+        with self.assertRaisesRegex(identity.HealthConnectIdentityError, "vertical bar"):
+            identity.writer_record("com.example.app", "client|record")
 
 
 if __name__ == "__main__":

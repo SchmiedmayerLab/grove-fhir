@@ -32,9 +32,7 @@ Title: "Google Health Step Count"
 Description: "An already-obtained Google Health API steps interval converted to the shared step-count contract."
 * meta.profile[+] = "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-step-count"
 * identifier[sourceRecordId].system = $providerSourceRecordId
-* identifier[sourceRecordId].value = "v1:9caeaee8e6d50dc85bb5f91cadfa4f8a3303a5eb612e8d6e6a58017454996102"
-* identifier[outputId].system = $providerOutputId
-* identifier[outputId].value = "v1:6fae7466ee846e8ed1c3d56589a748d8d621eeea49aee9c1b5cd3a740a99ddf1"
+* identifier[sourceRecordId].value = "v1:google-health-api|acct-7f3a9c|steps|content|2026-08-20T16:00:00Z|2026-08-20T17:00:00Z|1042"
 * status = #final
 * category = http://terminology.hl7.org/CodeSystem/observation-category#activity "Activity"
 * code = https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement#step-count-total "Step count total"
@@ -58,7 +56,7 @@ Description: "The conversion event linking one already-obtained Google Health st
 * agent[assembler].who = Reference(ProviderApplicationExample)
 * entity.role = #source
 * entity.what.identifier.system = $providerSourceRecordId
-* entity.what.identifier.value = "v1:9caeaee8e6d50dc85bb5f91cadfa4f8a3303a5eb612e8d6e6a58017454996102"
+* entity.what.identifier.value = "v1:google-health-api|acct-7f3a9c|steps|content|2026-08-20T16:00:00Z|2026-08-20T17:00:00Z|1042"
 
 Instance: GoogleHealthHeartRateRecordingExample
 InstanceOf: ProviderRecordingDocument
@@ -67,9 +65,7 @@ Title: "Google Health Native Heart-rate Recording"
 Description: "An explicitly authorized caller encoding of already-obtained irregular heart-rate points, retained without resampling."
 * meta.profile[+] = "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document"
 * identifier[sourceRecordId].system = $providerSourceRecordId
-* identifier[sourceRecordId].value = "v1:e9174b24826045a9d8bfb85888baea27526e626b5049f7c8d0cb6a1479c965d5"
-* identifier[outputId].system = $providerOutputId
-* identifier[outputId].value = "v1:277b888059d003e8c0fe6b6d131b09a703bf6bc56f9be37fb8bb97582cf98e7a"
+* identifier[sourceRecordId].value = "v1:google-health-api|acct-7f3a9c|heart-rate|content|2026-08-20T16:03:00Z|2026-08-20T16:03:00Z|71"
 * extension[provider].valueCode = #google-health-api
 * extension[providerSourceType].valueCode = #google-health-api/heart-rate
 * status = #current
@@ -95,7 +91,27 @@ Description: "The conversion event linking one already-obtained source record to
 * agent[assembler].who = Reference(ProviderApplicationExample)
 * entity.role = #source
 * entity.what.identifier.system = $providerSourceRecordId
-* entity.what.identifier.value = "v1:e9174b24826045a9d8bfb85888baea27526e626b5049f7c8d0cb6a1479c965d5"
+* entity.what.identifier.value = "v1:google-health-api|acct-7f3a9c|heart-rate|content|2026-08-20T16:03:00Z|2026-08-20T16:03:00Z|71"
+
+Instance: OuraDailyStepCountExample
+InstanceOf: ProviderObservation
+Usage: #example
+Title: "Oura Daily Step Count"
+Description: "One already-obtained Oura daily-activity record converted to the shared step-count contract. Oura documents its document ids as UUIDs unique across every account, so the identifier is that key exactly as Oura supplied it, with nothing joined to it."
+* meta.profile[+] = "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-step-count"
+* identifier[sourceRecordId].system = $providerSourceRecordId
+* identifier[sourceRecordId].value = "8f9a5221-639e-4a85-81cb-4065ef23f979"
+* status = #final
+* category = http://terminology.hl7.org/CodeSystem/observation-category#activity "Activity"
+* code = https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement#step-count-total "Step count total"
+* subject = Reference(ProviderPatientExample)
+* performer = Reference(ProviderPatientExample)
+* effectivePeriod.start = "2026-08-20T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-21T00:00:00-07:00"
+* issued = "2026-08-21T07:00:01Z"
+* valueQuantity = 9218 '{steps}' "steps"
+* extension[provider].valueCode = #oura
+* extension[providerSourceType].valueCode = #oura/daily_activity
 
 Instance: WithingsBloodPressureExample
 InstanceOf: ProviderObservation
@@ -104,9 +120,7 @@ Title: "Withings Grouped Blood Pressure"
 Description: "One already-obtained Withings measure group holding one diastolic (type 9) and one systolic (type 10) value converted into one shared blood-pressure panel."
 * meta.profile[+] = "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-blood-pressure"
 * identifier[sourceRecordId].system = $providerSourceRecordId
-* identifier[sourceRecordId].value = "v1:335d6070863e13e73a8b1a1e7ca87f3517761dd157e5bd4e13824e06b5cb924c"
-* identifier[outputId].system = $providerOutputId
-* identifier[outputId].value = "v1:69164aa34a29ecfcd5b8ffef92b7257d0c5bcd039ae88955c3688b4efab95793"
+* identifier[sourceRecordId].value = "v1:withings|acct-7f3a9c|measure|17348211"
 * status = #final
 * category = http://terminology.hl7.org/CodeSystem/observation-category#vital-signs "Vital Signs"
 * code = http://loinc.org#85354-9 "Blood pressure panel with all children optional"
@@ -132,15 +146,15 @@ Description: "The conversion event linking one Withings measure-group source rec
 * agent[assembler].who.reference = "urn:uuid:f3ec89f2-5381-5b86-a800-c85ef81bdc7c"
 * entity.role = #source
 * entity.what.identifier.system = $providerSourceRecordId
-* entity.what.identifier.value = "v1:335d6070863e13e73a8b1a1e7ca87f3517761dd157e5bd4e13824e06b5cb924c"
+* entity.what.identifier.value = "v1:withings|acct-7f3a9c|measure|17348211"
 
 Instance: WithingsExchangeBundleExample
 InstanceOf: GroveMobileExchangeBundle
 Usage: #example
 Title: "Withings Exchange Bundle"
 Description: "The complete deterministic collection graph for one converted Withings blood-pressure measure group."
-* identifier.system = $providerExchangeId
-* identifier.value = "v1:8e2bafe52854eecf1223dcc706c615348dfe26754f6bc816e479bc1ef22d3f8c"
+* identifier.system = "https://study.example.org/fhir/identifiers/provider-graph"
+* identifier.value = "withings|1|exchange-bundle"
 * type = #collection
 * timestamp = "2026-08-20T17:00:01Z"
 * entry[0].extension[entryIdentifier].valueIdentifier.system = "https://study.example.org/fhir/identifiers/participant"
@@ -151,11 +165,11 @@ Description: "The complete deterministic collection graph for one converted With
 * entry[1].extension[entryIdentifier].valueIdentifier.value = "provider-mapper"
 * entry[1].fullUrl = "urn:uuid:f3ec89f2-5381-5b86-a800-c85ef81bdc7c"
 * entry[1].resource = ProviderApplicationExample
-* entry[2].extension[entryIdentifier].valueIdentifier.system = $providerOutputId
-* entry[2].extension[entryIdentifier].valueIdentifier.value = "v1:69164aa34a29ecfcd5b8ffef92b7257d0c5bcd039ae88955c3688b4efab95793"
+* entry[2].extension[entryIdentifier].valueIdentifier.system = $providerSourceRecordId
+* entry[2].extension[entryIdentifier].valueIdentifier.value = "v1:withings|acct-7f3a9c|measure|17348211"
 * entry[2].fullUrl = "urn:uuid:9bab53d6-0eec-52eb-9425-a556dd9238b4"
 * entry[2].resource = WithingsBloodPressureExample
-* entry[3].extension[entryIdentifier].valueIdentifier.system = $providerConversionId
-* entry[3].extension[entryIdentifier].valueIdentifier.value = "v1:8e2bafe52854eecf1223dcc706c615348dfe26754f6bc816e479bc1ef22d3f8c"
+* entry[3].extension[entryIdentifier].valueIdentifier.system = "https://study.example.org/fhir/identifiers/provider-graph"
+* entry[3].extension[entryIdentifier].valueIdentifier.value = "withings|1|conversion-provenance"
 * entry[3].fullUrl = "urn:uuid:996be494-199d-5a2d-836b-24f45a1c14b8"
 * entry[3].resource = WithingsBloodPressureProvenanceExample

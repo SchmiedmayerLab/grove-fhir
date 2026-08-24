@@ -7,7 +7,6 @@
 //
 
 Alias: $healthKitObjectId = https://grovealliance.org/fhir/healthkit/NamingSystem/healthkit-object-id
-Alias: $healthKitSyncId = https://grovealliance.org/fhir/healthkit/NamingSystem/healthkit-sync-id
 Alias: $healthKitSourceDeviceId = https://grovealliance.org/fhir/healthkit/NamingSystem/healthkit-source-device-id
 Alias: $appleBundleId = https://grovealliance.org/fhir/healthkit/NamingSystem/apple-bundle-id
 Alias: $healthKitMetadataKey = https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-metadata-key
@@ -20,6 +19,7 @@ Alias: $healthKitSymptomSeverity = https://grovealliance.org/fhir/healthkit/Code
 Alias: $healthKitECGAlgorithmVersion = https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-ecg-algorithm-version
 Alias: $groveMobileMeasurement = https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement
 Alias: $groveSleepStage = https://grovealliance.org/fhir/mobile/CodeSystem/grove-sleep-stage
+Alias: $groveWriterRecordId = https://grovealliance.org/fhir/mobile/NamingSystem/grove-writer-record-id
 Alias: $loinc = http://loinc.org
 Alias: $observationCategory = http://terminology.hl7.org/CodeSystem/observation-category
 Alias: $provenanceParticipantType = http://terminology.hl7.org/CodeSystem/provenance-participant-type

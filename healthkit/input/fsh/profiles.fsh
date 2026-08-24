@@ -6,6 +6,11 @@
 // SPDX-License-Identifier: MIT
 //
 
+Invariant: grove-writer-record-id-value-1
+Description: "A writer record identifier scopes the writer's own identifier to the writer: the scheme version, the writing application's reverse-DNS identifier, a vertical bar, then the identifier it assigned. Neither part may contain a vertical bar."
+Expression: "$this.matches('^v1:[A-Za-z0-9._-]+[|].+$')"
+Severity: #error
+
 Invariant: healthkit-motion-context-1
 Description: "Heart-rate motion context is present only on an Observation coded with LOINC 8867-4."
 Expression: "component.where(code.coding.where(system = 'https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-metadata-key' and code = 'HKMetadataKeyHeartRateMotionContext').exists()).empty() or code.coding.where(system = 'http://loinc.org' and code = '8867-4').exists()"
@@ -16,9 +21,9 @@ Description: "A HealthKit object identifier value is lowercase UUID text in 8-4-
 Expression: "value.matches('^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$')"
 Severity: #error
 
-Invariant: healthkit-sync-version-1
+Invariant: healthkit-writer-record-1
 Description: "HealthKit requires a sync version exactly when a sync identifier is present, so the two appear together or not at all. A sync version orders revisions of one logical sample, so it appears only with the sync identifier it versions."
-Expression: "extension('https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-sync-version').exists() = identifier.where(system = 'https://grovealliance.org/fhir/healthkit/NamingSystem/healthkit-sync-id').exists()"
+Expression: "extension('https://grovealliance.org/fhir/mobile/StructureDefinition/grove-writer-record-version').exists() = identifier.where(system = 'https://grovealliance.org/fhir/mobile/NamingSystem/grove-writer-record-id').exists()"
 Severity: #error
 
 Invariant: healthkit-sleep-stage-1
@@ -36,17 +41,18 @@ Parent: GroveMobileObservation
 Id: healthkit-observation
 Title: "HealthKit Observation"
 Description: "The source identity and allowlisted HealthKit context for an Observation that also conforms to an appropriate clinical or research profile."
-* obeys healthkit-motion-context-1 and healthkit-sleep-stage-1 and healthkit-sync-version-1
+* obeys healthkit-motion-context-1 and healthkit-sleep-stage-1 and healthkit-writer-record-1
 * identifier ^slicing.discriminator.type = #value
 * identifier ^slicing.discriminator.path = "system"
 * identifier ^slicing.rules = #open
-* identifier contains healthKitObjectId 1..1 MS and healthKitSyncId 0..1 MS
+* identifier contains healthKitObjectId 1..1 MS and writerRecordId 0..1 MS
 * identifier[healthKitObjectId] obeys healthkit-object-id-1
 * identifier[healthKitObjectId].system = $healthKitObjectId
 * identifier[healthKitObjectId].value 1..1 MS
-* identifier[healthKitSyncId].system = $healthKitSyncId
-* identifier[healthKitSyncId].value 1..1 MS
-* extension contains HealthKitSyncVersion named syncVersion 0..1 MS
+* identifier[writerRecordId].system = $groveWriterRecordId
+* identifier[writerRecordId].value 1..1 MS
+* identifier[writerRecordId].value obeys grove-writer-record-id-value-1
+* extension contains GroveWriterRecordVersion named writerRecordVersion 0..1 MS
 * code.coding ^slicing.discriminator.type = #value
 * code.coding ^slicing.discriminator.path = "system"
 * code.coding ^slicing.rules = #open
@@ -140,18 +146,4 @@ Description: "The FHIR release of the pass-through payload, read from HKFHIRVers
 * valueCode from HealthKitClinicalFHIRReleaseVS (required)
 
 
-Extension: HealthKitSyncVersion
-Id: healthkit-sync-version
-Title: "HealthKit Sync Version"
-Description: "The HKMetadataKeySyncVersion of the sample this Observation was converted from. HealthKit replaces a sample when a writer saves a higher version under the same sync identifier, and the replacement carries a new object UUID; the version orders those revisions so a receiver can supersede rather than double-count."
-* ^context[+].type = #element
-* ^context[=].expression = "Observation"
-* value[x] only string
-* valueString 1..1
-* valueString obeys healthkit-sync-version-value-1
 
-
-Invariant: healthkit-sync-version-value-1
-Description: "A sync version is a canonical non-negative decimal integer, written without a sign, leading zeros, or separators."
-Expression: "$this.matches('^(0|[1-9][0-9]*)$')"
-Severity: #error

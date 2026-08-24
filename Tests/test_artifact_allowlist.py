@@ -422,8 +422,10 @@ class ArtifactAllowlistTests(unittest.TestCase):
         self.assertEqual(
             differential["Observation.identifier:recordId"].get("min"), 1
         )
+        # Optional: a one-to-one conversion emits none, because a second namespace repeating the
+        # record identifier would identify nothing new.
         self.assertEqual(
-            differential["Observation.identifier:outputId"].get("min"), 1
+            differential["Observation.identifier:outputId"].get("min"), 0
         )
         self.assertEqual(differential["Observation.issued"].get("min"), 1)
         self.assertNotIn("Observation.value[x]", differential)
@@ -437,7 +439,7 @@ class ArtifactAllowlistTests(unittest.TestCase):
             "identifier.where(system = "
             "'https://grovealliance.org/fhir/health-connect/"
             "NamingSystem/health-connect-output-id').all("
-            "value.matches('^v1:[0-9a-f]{64}$'))",
+            "value.matches('^v1:[^|]+([|][^|]+)+$'))",
         )
         record_value_constraints = {
             constraint["key"]: constraint["expression"]
@@ -447,7 +449,7 @@ class ArtifactAllowlistTests(unittest.TestCase):
         }
         self.assertEqual(
             record_value_constraints.get("health-connect-record-id-value-1"),
-            "matches('^v1:[0-9a-f]{64}$')",
+            "matches('^v1:[^|]+([|][^|]+)+$')",
         )
 
         provenance = json.loads(provenance_path.read_text(encoding="utf-8"))

@@ -9,7 +9,7 @@
     "mobile/input/fsh/terminology.fsh",
     "mobile/input/fsh/profiles.fsh"
   ],
-  "groundTruthDigest": "sha256:c9e75f1cac5fec5767e65e91ce649f68c28f2ac5abd2d63848174cfdf34f8376",
+  "groundTruthDigest": "sha256:e8d9e99056b5a47c44bde342d8b5a230d37a71cb5bd618ca1b7234a3f4a87e77",
   "bootstrap": "Entries with provenance 'bootstrap' cite the v0.3.0 release review during which their codes, units, and effective semantics shipped, proven byte-identical by the generation parity gate; the bootstrap set is terminal as of v0.3 and every new entry carries a named two-role review with a commit-SHA reviewRef.",
   "entries": {
     "active-energy": {

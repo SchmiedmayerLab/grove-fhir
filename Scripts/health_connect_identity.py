@@ -1,4 +1,4 @@
-"""Deterministic Health Connect 1.1 identity primitives for Grove FHIR 0.3.0."""
+"""Health Connect 1.1 identity composition for Grove FHIR 0.3.0."""
 
 # This source file is part of the Grove FHIR open-source project
 #
@@ -8,9 +8,7 @@
 
 from __future__ import annotations
 
-import hashlib
 import re
-from typing import Any, Iterable
 
 
 UUID = re.compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$")
@@ -57,70 +55,39 @@ class HealthConnectIdentityError(ValueError):
     """A value cannot participate in the closed v1 identity grammar."""
 
 
-def canonical_string(value: str) -> str:
-    escapes = {
-        '"': '\\"',
-        "\\": "\\\\",
-        "\b": "\\b",
-        "\t": "\\t",
-        "\n": "\\n",
-        "\f": "\\f",
-        "\r": "\\r",
-    }
-    output = ['"']
-    for character in value:
-        point = ord(character)
-        if 0xD800 <= point <= 0xDFFF:
-            raise HealthConnectIdentityError("identity input contains an invalid Unicode surrogate")
-        if character in escapes:
-            output.append(escapes[character])
-        elif point <= 0x1F:
-            output.append(f"\\u{point:04x}")
-        else:
-            output.append(character)
-    output.append('"')
-    return "".join(output)
+SEPARATOR = "|"
+SCHEME = "v1"
 
 
-def canonical_json(value: Any) -> str:
-    if isinstance(value, str):
-        return canonical_string(value)
-    if isinstance(value, list):
-        return "[" + ",".join(canonical_json(item) for item in value) + "]"
-    raise HealthConnectIdentityError("identity grammar permits only arrays and strings")
+def compose(*components: str) -> str:
+    """Join components behind the scheme version. Nothing is hashed, escaped, or re-encoded."""
+    return SCHEME + ":" + SEPARATOR.join(_component(component) for component in components)
 
 
-def digest(value: list[Any]) -> str:
-    encoded = canonical_json(value).encode("utf-8")
-    return "v1:" + hashlib.sha256(encoded).hexdigest()
+def _component(value: str) -> str:
+    if not isinstance(value, str) or not value:
+        raise HealthConnectIdentityError("an identity component must be a non-empty string")
+    if SEPARATOR in value:
+        raise HealthConnectIdentityError(
+            "an identity component must not contain a vertical bar; such a value is rejected, never escaped"
+        )
+    if any(0xD800 <= ord(character) <= 0xDFFF for character in value):
+        raise HealthConnectIdentityError("identity input contains an invalid Unicode surrogate")
+    return value
 
 
-def identifier_set(identifiers: Iterable[tuple[str, str]]) -> list[list[str]]:
-    pairs = [_identifier(identifier) for identifier in identifiers]
-    pairs.sort(key=lambda pair: canonical_json(pair).encode("utf-8"))
-    if len({canonical_json(pair) for pair in pairs}) != len(pairs):
-        raise HealthConnectIdentityError("source Identifier set contains a duplicate tuple")
-    if not pairs:
-        raise HealthConnectIdentityError("source Identifier set must not be empty")
-    return pairs
-
-
-def _identifier(identifier: tuple[str, str]) -> list[str]:
-    if len(identifier) != 2 or not all(isinstance(item, str) and item for item in identifier):
-        raise HealthConnectIdentityError("source Identifier must contain a non-empty system and value")
-    pair = list(identifier)
-    canonical_json(pair)
-    return pair
-
-
-def record(repository_scope: str, record_type: str, raw_record_id: str) -> str:
+def _scoped_record(repository_scope: str, record_type: str, raw_record_id: str) -> tuple[str, str, str]:
     if not UUID.fullmatch(repository_scope):
         raise HealthConnectIdentityError("repository scope must be lowercase UUID text")
     if record_type not in RECORD_TYPES:
         raise HealthConnectIdentityError("record type is not in the closed Health Connect 1.1 inventory")
     if not raw_record_id:
         raise HealthConnectIdentityError("raw record id must not be empty")
-    return digest(["health-connect-record-id-v1", repository_scope, record_type, raw_record_id])
+    return repository_scope, record_type, raw_record_id
+
+
+def record(repository_scope: str, record_type: str, raw_record_id: str) -> str:
+    return compose(*_scoped_record(repository_scope, record_type, raw_record_id))
 
 
 NUTRIENT_TOKENS = frozenset({
@@ -242,13 +209,13 @@ WORKOUT_SEGMENT_TOKENS = frozenset({
 })
 
 
-def output(source: tuple[str, str], selector: list[str]) -> str:
-    source_pair = _identifier(source)
+def output(repository_scope: str, record_type: str, raw_record_id: str, selector: list[str]) -> str:
+    scoped = _scoped_record(repository_scope, record_type, raw_record_id)
     if not selector or selector[0] not in {"single", "sample", "sleep-stage", "nutrient", "workout-segment"}:
         raise HealthConnectIdentityError("unsupported output selector")
     if selector[0] == "single" and len(selector) != 1:
         raise HealthConnectIdentityError("single output selector has no additional fields")
-    if selector[0] == "sample" and len(selector) != 4:
+    if selector[0] == "sample" and len(selector) != 3:
         raise HealthConnectIdentityError("sample output selector is incomplete")
     if selector[0] == "sleep-stage" and len(selector) != 5:
         raise HealthConnectIdentityError("sleep-stage output selector is incomplete")
@@ -258,11 +225,8 @@ def output(source: tuple[str, str], selector: list[str]) -> str:
         raise HealthConnectIdentityError("workout-segment output selector is incomplete")
     if selector[0] not in {"single", "nutrient"} and not UNSIGNED.fullmatch(selector[-1]):
         raise HealthConnectIdentityError("output occurrence must be canonical unsigned decimal")
-    if selector[0] == "sample":
-        if not UTC9.fullmatch(selector[1]):
-            raise HealthConnectIdentityError("sample instant must be canonical UTC instant with nine fractional digits")
-        if not UNSIGNED.fullmatch(selector[2]):
-            raise HealthConnectIdentityError("beats per minute must be canonical unsigned decimal")
+    if selector[0] == "sample" and not UTC9.fullmatch(selector[1]):
+        raise HealthConnectIdentityError("sample instant must be canonical UTC instant with nine fractional digits")
     if selector[0] == "sleep-stage":
         if not UTC9.fullmatch(selector[1]) or not UTC9.fullmatch(selector[2]):
             raise HealthConnectIdentityError("sleep stage bounds must be canonical UTC instants with nine fractional digits")
@@ -275,18 +239,27 @@ def output(source: tuple[str, str], selector: list[str]) -> str:
             raise HealthConnectIdentityError("workout segment bounds must be canonical UTC instants with nine fractional digits")
         if selector[3] not in WORKOUT_SEGMENT_TOKENS:
             raise HealthConnectIdentityError("workout segment token is not in the closed Health Connect 1.1 inventory")
-    return digest(["health-connect-output-id-v1", source_pair, *selector])
+    return compose(*scoped, *selector)
 
 
-def specimen(source: tuple[str, str], source_specimen_token: str) -> str:
+def specimen(repository_scope: str, record_type: str, raw_record_id: str, source_specimen_token: str) -> str:
+    scoped = _scoped_record(repository_scope, record_type, raw_record_id)
     if source_specimen_token not in SPECIMEN_TYPES:
-        raise HealthConnectIdentityError("specimen token is not admitted by the Health Connect 0.2 adapter")
-    return digest(["health-connect-specimen-id-v1", _identifier(source), source_specimen_token])
+        raise HealthConnectIdentityError("specimen token is not admitted by the Health Connect adapter")
+    return compose(*scoped, "specimen", source_specimen_token)
 
 
-def event(role: str, sources: Iterable[tuple[str, str]], event_sequence: str) -> str:
-    if role not in {"conversion", "exchange"}:
-        raise HealthConnectIdentityError("event role must be conversion or exchange")
+def writer_record(writer_package_name: str, client_record_id: str) -> str:
+    """The shared writer-record identity, in the Mobile guide's namespace rather than this one."""
+    return compose(writer_package_name, client_record_id)
+
+
+def event(role: str, repository_scope: str, event_sequence: str) -> str:
+    """A deployment-owned graph identity, minted in the deployment's namespace and so unprefixed."""
+    if role not in {"conversion-provenance", "exchange-bundle"}:
+        raise HealthConnectIdentityError("event role must be conversion-provenance or exchange-bundle")
+    if not UUID.fullmatch(repository_scope):
+        raise HealthConnectIdentityError("repository scope must be lowercase UUID text")
     if not POSITIVE.fullmatch(event_sequence):
         raise HealthConnectIdentityError("event sequence must be canonical positive decimal")
-    return digest([f"health-connect-{role}-id-v1", identifier_set(sources), event_sequence])
+    return SEPARATOR.join(_component(part) for part in (repository_scope, event_sequence, role))

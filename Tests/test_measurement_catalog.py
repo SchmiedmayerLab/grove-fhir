@@ -157,40 +157,30 @@ class MeasurementCatalogTests(unittest.TestCase):
         spec.loader.exec_module(validator)
         contract = json.loads((ROOT / "catalog/exchange-identity.json").read_text(encoding="utf-8"))
         for vector in contract["vectors"]:
-            value = validator.canonical_identifier_name(vector["system"], vector["value"])
-            self.assertEqual(value, vector["input"])
-            generated = uuid.uuid5(uuid.UUID(contract["fullUrlAlgorithm"]["namespace"]), value)
-            self.assertEqual(f"urn:uuid:{generated}", vector["fullUrl"])
+            if vector["input"] is None:
+                self.assertIn("|", vector["system"])
+                continue
+            with self.subTest(case=vector["case"]):
+                value = validator.canonical_identifier_name(vector["system"], vector["value"])
+                self.assertEqual(value, vector["input"])
+                generated = uuid.uuid5(uuid.UUID(contract["fullUrlAlgorithm"]["namespace"]), value)
+                self.assertEqual(f"urn:uuid:{generated}", vector["fullUrl"])
 
     def test_recording_device_identity_vectors_are_exact(self) -> None:
-        import importlib.util
-
-        spec = importlib.util.spec_from_file_location(
-            "grove_identity_digest", ROOT / "Scripts/health_connect_identity.py"
-        )
-        assert spec and spec.loader
-        identity = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(identity)
         contract = json.loads((ROOT / "catalog/exchange-identity.json").read_text(encoding="utf-8"))
         device = contract["recordingDeviceIdentity"]
 
         self.assertEqual(
-            device["preimage"],
-            [
-                "grove-recording-device-id-v1",
-                "subjectReference",
-                "adapterId",
-                "manufacturer",
-                "model",
-                "hardwareVersion",
-            ],
+            device["composition"],
+            ["subjectReference", "adapterId", "manufacturer", "model", "hardwareVersion"],
         )
+        self.assertNotIn("digest", device)
 
         self.assertTrue(device["vectors"])
         for vector in device["vectors"]:
-            self.assertEqual(len(vector["input"]), len(device["preimage"]))
-            self.assertEqual(identity.canonical_json(vector["input"]), vector["canonical"])
-            self.assertEqual(identity.digest(vector["input"]), vector["value"])
+            with self.subTest(case=vector["case"]):
+                self.assertEqual(len(vector["components"]), len(device["composition"]))
+                self.assertEqual("v1:" + "|".join(vector["components"]), vector["value"])
 
         # Two participants wearing the same model are two devices; that is the whole point of
         # keying on the subject rather than the product configuration alone.
@@ -201,7 +191,7 @@ class MeasurementCatalogTests(unittest.TestCase):
         contract = json.loads((ROOT / "catalog/exchange-identity.json").read_text(encoding="utf-8"))
         keyed = {
             field
-            for field in contract["recordingDeviceIdentity"]["preimage"]
+            for field in contract["recordingDeviceIdentity"]["composition"]
             if field in {"manufacturer", "model", "hardwareVersion"}
         }
         adapters = {}

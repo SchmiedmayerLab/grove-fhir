@@ -31,12 +31,26 @@ The object UUID is not a deduplication key on its own.
 HealthKit replaces a sample when a writer saves one carrying the same `HKMetadataKeySyncIdentifier` and a higher `HKMetadataKeySyncVersion`, and the replacement is a new object with a new UUID.
 Deduplicating on the UUID alone therefore counts a revised measurement twice, which affects exactly the revisable data: sleep, energy, heart rate, and anything a server-synced third-party application re-imports.
 
+### Availability time
+
+`Observation.issued` is not emitted. It states when this version of the record became available,
+and HealthKit keeps no per-object modification time to answer that. Writing the conversion instant
+instead would make an unchanged sample convert to a different Observation on every run, which
+defeats the deduplication the exchange identity provides. The conversion instant is recorded once,
+on the conversion `Provenance`.
+
 ### Logical identity and revisions
 
 When the sample carries `HKMetadataKeySyncIdentifier`, map it to a second `Observation.identifier`
-with the [HealthKit Sync Identifier](NamingSystem-healthkit-sync-id.html) system, and map
-`HKMetadataKeySyncVersion` to the
-[HealthKit Sync Version](StructureDefinition-healthkit-sync-version.html) extension.
+in the shared
+[Grove Writer Record Identifier](https://grovealliance.org/fhir/mobile/NamingSystem-grove-writer-record-id.html)
+namespace, scoping it to its writer as that namespace requires, and map `HKMetadataKeySyncVersion`
+to the
+[Grove Writer Record Version](https://grovealliance.org/fhir/mobile/StructureDefinition-grove-writer-record-version.html)
+extension.
+The Health Connect adapter maps `clientRecordId` and `clientRecordVersion` into that same namespace
+and extension, so an application writing the same measurement on both platforms produces the same
+value in both.
 
 The two identifiers answer different questions, and a receiver needs both:
 

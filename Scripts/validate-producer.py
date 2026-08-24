@@ -575,8 +575,15 @@ def canonical_json_string(value: str) -> str:
 
 
 def canonical_identifier_name(system: str, value: str) -> str:
-    """Return the RFC 8785 serialization of exactly ``[system, value]``."""
-    return f"[{canonical_json_string(system)},{canonical_json_string(value)}]"
+    """Return the UUID-v5 name for one identifier: the system, a vertical bar, then the value."""
+    if "|" in system:
+        raise ProducerValidationError(
+            "an identifier system must not contain a vertical bar, so the name splits at the first one"
+        )
+    for text in (system, value):
+        if any(0xD800 <= ord(character) <= 0xDFFF for character in text):
+            raise ProducerValidationError("identifier contains an invalid Unicode surrogate")
+    return f"{system}|{value}"
 
 
 def canonical_string_array(values: list[str]) -> str:
@@ -1241,11 +1248,13 @@ def validate_provider_identity(resource: dict[str, Any], label: str) -> None:
 
     source_value = identifier_value(source_system, "source-record")
     output_value = identifier_value(output_system, "output")
-    digest_pattern = r"^v1:[0-9a-f]{64}$"
-    if re.fullmatch(digest_pattern, source_value) is None or re.fullmatch(
-        digest_pattern, output_value
+    composition_pattern = r"^v1:[^|]+(?:\|[^|]+)+$"
+    if re.fullmatch(composition_pattern, source_value) is None or re.fullmatch(
+        composition_pattern, output_value
     ) is None:
-        raise ProducerValidationError(f"{label} has an invalid Provider digest")
+        raise ProducerValidationError(
+            f"{label} has a Provider identifier that is not a v1 composition"
+        )
     if resource.get("id") in {source_value, output_value}:
         raise ProducerValidationError(
             f"{label} must not copy a Provider business identifier into Resource.id"
@@ -1322,8 +1331,7 @@ def validate_provider_identity(resource: dict[str, Any], label: str) -> None:
             if providers[0] == "withings" and claimed[0] == "blood-pressure"
             else claimed[0]
         )
-    preimage = canonical_string_array([source_system, source_value, discriminator])
-    expected = "v1:" + hashlib.sha256(preimage.encode("utf-8")).hexdigest()
+    expected = f"{source_value}|{discriminator}"
     if output_value != expected:
         raise ProducerValidationError(
             f"{label} Provider output identifier does not match its exact "

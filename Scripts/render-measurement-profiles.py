@@ -532,10 +532,23 @@ def example_effective_lines(measurement: dict, owner_key: str) -> list[str]:
     return lines
 
 
-def example_digest(measurement: dict, role: str) -> str:
-    """A well-formed versioned digest, derived so an example's identity never changes by accident."""
-    preimage = f"grove-example-identity-v1|{role}|{measurement['id']}"
-    return "v1:" + hashlib.sha256(preimage.encode("utf-8")).hexdigest()
+EXAMPLE_REPOSITORY_SCOPE = "1f5c58aa-6ec6-4e79-a682-829a9debd3f5"
+EXAMPLE_PROVIDER_ACCOUNT = "acct-7f3a9c"
+
+
+def health_connect_example_identity(measurement: dict, *, output: bool) -> str:
+    """A readable composition, derived so an example's identity never changes by accident."""
+    parts = [EXAMPLE_REPOSITORY_SCOPE, measurement["id"], f"record-{measurement['id']}"]
+    if output:
+        parts.append("single")
+    return "v1:" + "|".join(parts)
+
+
+def provider_example_identity(measurement: dict, *, output: bool) -> str:
+    parts = ["withings", EXAMPLE_PROVIDER_ACCOUNT, measurement["id"], f"record-{measurement['id']}"]
+    if output:
+        parts.append(measurement["id"])
+    return "v1:" + "|".join(parts)
 
 
 def example_uuid(measurement: dict) -> str:
@@ -553,17 +566,15 @@ def example_identifier_lines(measurement: dict, owner_key: str) -> list[str]:
             ]
         case "health-connect":
             return [
+                # One Record, one Observation: a second namespace repeating the record
+                # identifier would identify nothing new.
                 "* identifier[recordId].system = $healthConnectRecordId",
-                f'* identifier[recordId].value = "{example_digest(measurement, "record")}"',
-                "* identifier[outputId].system = $healthConnectOutputId",
-                f'* identifier[outputId].value = "{example_digest(measurement, "output")}"',
+                f'* identifier[recordId].value = "{health_connect_example_identity(measurement, output=False)}"',
             ]
         case "providers":
             return [
                 "* identifier[sourceRecordId].system = $providerSourceRecordId",
-                f'* identifier[sourceRecordId].value = "{example_digest(measurement, "source")}"',
-                "* identifier[outputId].system = $providerOutputId",
-                f'* identifier[outputId].value = "{example_digest(measurement, "output")}"',
+                f'* identifier[sourceRecordId].value = "{provider_example_identity(measurement, output=False)}"',
             ]
         case _:
             return [

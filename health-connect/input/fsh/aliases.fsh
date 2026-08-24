@@ -7,11 +7,8 @@
 //
 
 Alias: $healthConnectRecordId = https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-record-id
-Alias: $healthConnectClientRecordId = https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-client-record-id
 Alias: $healthConnectOutputId = https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-output-id
 Alias: $healthConnectSpecimenId = https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-specimen-id
-Alias: $healthConnectConversionId = https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-conversion-id
-Alias: $healthConnectExchangeId = https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-exchange-id
 Alias: $androidPackageName = https://grovealliance.org/fhir/health-connect/NamingSystem/android-package-name
 Alias: $healthConnectSleepStage = https://grovealliance.org/fhir/health-connect/CodeSystem/health-connect-sleep-stage
 Alias: $healthConnectRelationToMeal = https://grovealliance.org/fhir/health-connect/CodeSystem/health-connect-relation-to-meal
@@ -19,6 +16,7 @@ Alias: $healthConnectMealType = https://grovealliance.org/fhir/health-connect/Co
 Alias: $healthConnectRecordType = https://grovealliance.org/fhir/health-connect/CodeSystem/health-connect-record-type
 Alias: $groveMobileMeasurement = https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement
 Alias: $groveSleepStage = https://grovealliance.org/fhir/mobile/CodeSystem/grove-sleep-stage
+Alias: $groveWriterRecordId = https://grovealliance.org/fhir/mobile/NamingSystem/grove-writer-record-id
 Alias: $loinc = http://loinc.org
 Alias: $sct = http://snomed.info/sct
 Alias: $ucum = http://unitsofmeasure.org

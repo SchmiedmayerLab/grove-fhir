@@ -118,7 +118,6 @@ Description: "A passive HealthKit heart-rate sample with the standard clinical p
 * subject = Reference(HealthKitPatientExample)
 * performer = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00.251-07:00"
-* issued = "2026-08-19T17:30:02.000Z"
 * valueQuantity = 72 '/min' "beats/minute"
 * device = Reference(HealthKitRecordingDeviceExample)
 * extension[researchStudy].valueReference = Reference(HealthKitResearchStudyExample)
@@ -133,9 +132,9 @@ Description: "A body-weight sample a connected scale re-imported after correctin
 * meta.profile[+] = "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-body-weight"
 * identifier[healthKitObjectId].system = $healthKitObjectId
 * identifier[healthKitObjectId].value = "7c3f9b41-58d2-4e6a-9a10-4b8e2f6d05c7"
-* identifier[healthKitSyncId].system = $healthKitSyncId
-* identifier[healthKitSyncId].value = "scale-weighin-2026-08-19"
-* extension[syncVersion].valueString = "2"
+* identifier[writerRecordId].system = $groveWriterRecordId
+* identifier[writerRecordId].value = "v1:com.withings.wiscale2|scale-weighin-2026-08-19"
+* extension[writerRecordVersion].valueString = "2"
 * status = #amended
 * category = $observationCategory#vital-signs "Vital Signs"
 * code = $loinc#29463-7 "Body weight"
@@ -143,7 +142,6 @@ Description: "A body-weight sample a connected scale re-imported after correctin
 * subject = Reference(HealthKitPatientExample)
 * performer = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T07:12:00.000-07:00"
-* issued = "2026-08-20T08:00:00.000Z"
 * valueQuantity = 68.9 'kg' "kg"
 * extension[researchStudy].valueReference = Reference(HealthKitResearchStudyExample)
 
@@ -163,7 +161,6 @@ Description: "A HealthKit interval sample preserving the recorded count of 1,042
 * performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T09:00:00-07:00"
 * effectivePeriod.end = "2026-08-19T10:00:00-07:00"
-* issued = "2026-08-19T17:30:02.000Z"
 * valueQuantity = 1042 '{steps}' "steps"
 * device = Reference(HealthKitRecordingDeviceExample)
 * extension[researchStudy].valueReference = Reference(HealthKitResearchStudyExample)
@@ -183,7 +180,6 @@ Description: "A heart-rate sample imported directly from a supported Bluetooth L
 * subject = Reference(HealthKitPatientExample)
 * performer = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T10:45:00.251-07:00"
-* issued = "2026-08-19T17:45:02.000Z"
 * valueQuantity = 78 '/min' "beats/minute"
 * device = Reference(HealthKitBluetoothSourceDeviceExample)
 * extension[researchStudy].valueReference = Reference(HealthKitResearchStudyExample)
@@ -203,7 +199,6 @@ Description: "A body weight with an explicit HealthKit user-entered indication m
 * subject = Reference(HealthKitPatientExample)
 * performer = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T08:15:00-07:00"
-* issued = "2026-08-19T15:15:01.000Z"
 * valueQuantity = 68.4 'kg' "kg"
 * extension[recordingMethod].valueCoding = GroveRecordingMethodCS#manual-entry "Manual entry"
 * extension[researchStudy].valueReference = Reference(HealthKitResearchStudyExample)
@@ -223,7 +218,6 @@ Description: "A HealthKit blood-pressure correlation whose result is carried by 
 * subject = Reference(HealthKitPatientExample)
 * performer = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T08:20:00-07:00"
-* issued = "2026-08-19T15:20:01Z"
 * component[+].code = $loinc#8480-6 "Systolic blood pressure"
 * component[=].valueQuantity = 118 'mm[Hg]' "mmHg"
 * component[+].code = $loinc#8462-4 "Diastolic blood pressure"
@@ -246,7 +240,6 @@ Description: "A HealthKit asleep-core interval retaining both the shared light-s
 * performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T23:10:00-07:00"
 * effectivePeriod.end = "2026-08-19T23:42:00-07:00"
-* issued = "2026-08-20T07:00:01Z"
 * valueCodeableConcept.coding[+] = $groveSleepStage#light "Light sleep"
 * valueCodeableConcept.coding[+] = $healthKitSleepAnalysis#asleepCore "Asleep, core"
 * device = Reference(HealthKitRecordingDeviceExample)
@@ -267,7 +260,6 @@ Description: "A caller-supplied HealthKit ECG with a complete uniformly sampled 
 * performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T10:50:00.002-07:00"
 * effectivePeriod.end = "2026-08-19T10:50:00.008-07:00"
-* issued = "2026-08-19T17:50:01Z"
 * extension[healthKitECGClassification].valueCode = #sinusRhythm
 * extension[healthKitECGSymptomsStatus].valueCode = #present
 * extension[healthKitECGCorrelatedSymptom][0].extension[sourceIdentifier].valueIdentifier.system = $healthKitObjectId
@@ -394,7 +386,6 @@ Description: "The converter's heart-rate output for one HealthKit sample without
 * subject.reference = "https://study.example.org/fhir/Patient/participant-hk-001"
 * performer.reference = "https://study.example.org/fhir/Patient/participant-hk-001"
 * effectiveDateTime = "2026-08-20T09:12:45.128-07:00"
-* issued = "2026-08-20T16:12:47.000Z"
 * valueQuantity = 76 '/min' "beats/minute"
 
 Instance: HealthKitExchangeConversionProvenanceExample

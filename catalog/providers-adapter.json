@@ -80,8 +80,18 @@
     ]
   },
   "identity": {
-    "canonicalization": "RFC 8785/JCS serialization of arrays and Unicode scalar-value strings; UTF-8; non-ASCII unescaped; short JSON escapes for quote, reverse solidus, backspace, tab, line feed, form feed, and carriage return; other U+0000 through U+001F as lowercase \\u00xx; invalid Unicode surrogates rejected; each source-record Identifier pair serializes as the canonical two-string array [system,value], pairs sort by unsigned lexicographic UTF-8 byte order of those serializations, and duplicate pairs are rejected",
-    "digest": "SHA-256 over the UTF-8 preimage, lowercase hexadecimal, prefixed with v1:",
+    "composition": {
+      "form": "v1:<component>|<component>...",
+      "versionPrefix": "v1",
+      "separator": "|",
+      "rule": "Components join with a vertical bar in the order the composition lists them, behind the scheme version. No component may be empty or contain a vertical bar. Every component is the source's own text, unaltered: nothing is hashed, truncated, normalized, or re-encoded.",
+      "passThrough": "A provider whose native record key is unique across the whole provider carries that key verbatim, with no scheme version and no components joined to it: the system already says which provider and which key space it belongs to. Composition is used only where the key alone would not identify one record, which is why an account-scoped provider carries its account pseudonym."
+    },
+    "identifierScope": {
+      "meaning": "Whether a provider's native record key is unique across the whole provider, or only within one account. A provider scoped to `account` carries its deployment-scoped account pseudonym as a component, so the identifier still stands alone and a receiver deduplicates by comparing system and value with no side channel.",
+      "default": "account",
+      "relaxationRule": "A provider moves to `none` only when the vendor documents that its native record key is unique across all accounts. Inference from the shape of an observed value is not sufficient, because the failure it guards against is silently merging two participants' measurements."
+    },
     "providerAccountIdentifier": {
       "requirement": "A complete deployment-scoped pseudonymous Identifier pair. It must be stable for the provider-account scope needed for deduplication.",
       "prohibitedByDefault": [
@@ -91,32 +101,53 @@
         "OAuth subject or token"
       ],
       "exception": "A raw vendor account value may be used only when an explicit deployment privacy policy authorizes that disclosure; this package grants no such authorization.",
-      "emission": "Digest input only; the pair is not copied to the emitted clinical resource."
+      "emission": "For a provider scoped to `account`, the pseudonymous value is a component of the source-record identifier. It is a deployment-minted pseudonym, never a vendor-side account key, and it discloses nothing the resource's own subject reference does not already carry."
     },
     "sourceNativeId": {
       "requirement": "The exact stable native record or group key supplied by the already-obtained provider payload.",
-      "emission": "Digest input only for FHIR metadata: the raw value must not appear in Resource.id, Identifier.value, extensions, attachment URL/title, or Provenance text. Opaque caller-supplied attachment bytes are not semantically inspected and require separate deployment authorization and minimization."
-    },
-    "derivedDigest": {
-      "meaning": "A deterministic business identity for deduplication and reference resolution.",
-      "notAuthorization": true,
-      "rule": "It is not an access token, credential, proof of authorization, or permission to fetch provider data."
+      "emission": "Carried in the identifier value as the provider supplied it. It is a vendor row key, not participant data.",
+      "absent": "A provider source type that supplies no native key uses the contentDerived strategy below."
     },
     "sourceRecord": {
       "system": "https://grovealliance.org/fhir/providers/NamingSystem/provider-source-record-id",
-      "preimage": [
+      "composition": [
         "providerCode",
-        "providerAccountIdentifier.system",
-        "providerAccountIdentifier.value",
+        "providerAccountPseudonym",
         "sourceType",
         "sourceNativeId"
-      ]
+      ],
+      "appliesWhen": "identifierScope is account",
+      "passThroughWhen": "identifierScope is none: the value is sourceNativeId verbatim."
+    },
+    "contentDerived": {
+      "whenApplicable": "A provider source type that supplies no stable native record key.",
+      "composition": [
+        "providerCode",
+        "providerAccountPseudonym",
+        "sourceType",
+        "content",
+        "startInstant",
+        "endInstant",
+        "measuredValue"
+      ],
+      "discriminator": "content",
+      "accountScopeRequired": true,
+      "accountScopeReason": "Two participants can record identical values over the same window, so content alone collides across people. The account pseudonym is what keeps them apart and must never be omitted for this strategy.",
+      "revisionLimitation": "A corrected value or a corrected time yields a different identifier, so a correction appears as a new Observation rather than a revision. The `content` discriminator makes that visible to a receiver rather than leaving it to be inferred per provider.",
+      "rationale": "The alternative of keying on the time window alone would survive a value correction but silently merge two distinct measurements sharing a window. A missed deduplication is recoverable; a false merge is not."
+    },
+    "writerRecord": {
+      "system": "https://grovealliance.org/fhir/mobile/NamingSystem/grove-writer-record-id",
+      "composition": [
+        "providerCode",
+        "sourceNativeId"
+      ],
+      "note": "Carries no account component on any provider, so it can match the identical measurement arriving through HealthKit or Health Connect. A receiver must not assume the match holds: nothing obliges a vendor to use one identifier space across its app and its API."
     },
     "output": {
       "system": "https://grovealliance.org/fhir/providers/NamingSystem/provider-output-id",
-      "preimage": [
-        "sourceRecordIdentifier.system",
-        "sourceRecordIdentifier.value",
+      "composition": [
+        "<the source-record components>",
         "outputDiscriminator"
       ],
       "outputDiscriminatorRule": {
@@ -124,115 +155,123 @@
         "groupedMapping": "the exact outputDiscriminator declared on that groupedMappings row",
         "mappedStandardRaw": "native-recording",
         "noFallback": true
-      }
+      },
+      "cardinality": "0..1",
+      "appliesWhen": "Only where one source record yields more than one Observation. A one-to-one conversion carries the source-record identifier alone; a second namespace repeating the same value identifies nothing new."
     },
-    "conversion": {
-      "system": "https://grovealliance.org/fhir/providers/NamingSystem/provider-conversion-id",
-      "preimage": [
-        "sortedSourceRecordIdentifiers flattened as system,value per pair in sorted pair order",
-        "positiveEventSequence"
-      ]
+    "deploymentOwnedIdentities": {
+      "rule": "The conversion Provenance and the exchange Bundle are created by the export, not read from the provider, so they are identified in the deployment's own namespace. This retires provider-conversion-id and provider-exchange-id.",
+      "roles": [
+        "conversion-provenance",
+        "exchange-bundle"
+      ],
+      "value": "<providerCode>|<eventSequence>|<role>"
     },
-    "exchange": {
-      "system": "https://grovealliance.org/fhir/providers/NamingSystem/provider-exchange-id",
-      "preimage": [
-        "sortedSourceRecordIdentifiers flattened as system,value per pair in sorted pair order",
-        "positiveEventSequence"
-      ]
-    },
+    "resourceIdPolicy": "Resource.id is optional and repository-assigned; no provider-native key or digest is copied into Resource.id.",
+    "positiveEventSequence": "A durable positive event sequence written as a non-zero ASCII digit followed by zero or more ASCII digits; no sign, no leading zero, no other characters. A byte-identical retry reuses the sequence; changed content allocates a higher value.",
+    "singleConversionRule": "A conversion Provenance has exactly one source-record pair. When a Bundle carries exactly one conversion event, the exchange event is that conversion's emission and reuses its sequence, so the exchange identifier value equals the conversion identifier value byte for byte and only the NamingSystem distinguishes them.",
     "vectors": [
       {
         "role": "sourceRecord",
-        "inputs": [
-          "google-health-api",
-          "https://provider.example.org/accounts",
-          "account-001",
-          "steps",
-          "steps-2026-08-20T16:00:00Z"
+        "scope": "account",
+        "components": [
+          "withings",
+          "acct-7f3a9c",
+          "measure",
+          "17348211"
         ],
-        "canonicalPreimage": "[\"google-health-api\",\"https://provider.example.org/accounts\",\"account-001\",\"steps\",\"steps-2026-08-20T16:00:00Z\"]",
-        "identifierValue": "v1:c698f75a1901b494c9c5a2107a88708dccbd1d5556fc5c85f364c536164fa383"
-      },
-      {
-        "role": "output",
-        "inputs": [
-          "https://grovealliance.org/fhir/providers/NamingSystem/provider-source-record-id",
-          "v1:c698f75a1901b494c9c5a2107a88708dccbd1d5556fc5c85f364c536164fa383",
-          "step-count"
-        ],
-        "canonicalPreimage": "[\"https://grovealliance.org/fhir/providers/NamingSystem/provider-source-record-id\",\"v1:c698f75a1901b494c9c5a2107a88708dccbd1d5556fc5c85f364c536164fa383\",\"step-count\"]",
-        "identifierValue": "v1:dedbeb8d57112a208295dbefd0c2c6a6d16d4205265429567d70808eb73f9477"
+        "identifierValue": "v1:withings|acct-7f3a9c|measure|17348211"
       },
       {
         "role": "sourceRecord",
-        "inputs": [
-          "google-health-api",
-          "https://provider.example.org/accounts",
-          "account-001",
-          "heart-rate",
-          "heart-rate-2026-08-20"
+        "scope": "none",
+        "components": [
+          "oura",
+          "sleep",
+          "8f9a5221-639e-4a85-81cb-4065ef23f979"
         ],
-        "canonicalPreimage": "[\"google-health-api\",\"https://provider.example.org/accounts\",\"account-001\",\"heart-rate\",\"heart-rate-2026-08-20\"]",
-        "identifierValue": "v1:e9174b24826045a9d8bfb85888baea27526e626b5049f7c8d0cb6a1479c965d5"
+        "identifierValue": "v1:oura|sleep|8f9a5221-639e-4a85-81cb-4065ef23f979"
+      },
+      {
+        "role": "sourceRecord",
+        "scope": "account",
+        "components": [
+          "withings",
+          "acct-7f3a9c",
+          "heart-rate",
+          "hr-2026-08-19-001"
+        ],
+        "identifierValue": "v1:withings|acct-7f3a9c|heart-rate|hr-2026-08-19-001"
       },
       {
         "role": "output",
-        "inputs": [
-          "https://grovealliance.org/fhir/providers/NamingSystem/provider-source-record-id",
-          "v1:e9174b24826045a9d8bfb85888baea27526e626b5049f7c8d0cb6a1479c965d5",
+        "scope": "account",
+        "components": [
+          "withings",
+          "acct-7f3a9c",
+          "measure",
+          "17348211",
+          "body-weight"
+        ],
+        "identifierValue": "v1:withings|acct-7f3a9c|measure|17348211|body-weight"
+      },
+      {
+        "role": "output",
+        "scope": "account",
+        "components": [
+          "withings",
+          "acct-7f3a9c",
+          "heart-rate",
+          "hr-2026-08-19-001",
           "native-recording"
         ],
-        "canonicalPreimage": "[\"https://grovealliance.org/fhir/providers/NamingSystem/provider-source-record-id\",\"v1:e9174b24826045a9d8bfb85888baea27526e626b5049f7c8d0cb6a1479c965d5\",\"native-recording\"]",
-        "identifierValue": "v1:10c47e3d537ef755b3f76ebe3dc00626316cc2cbbb58be62e428f6ac53daab54"
+        "identifierValue": "v1:withings|acct-7f3a9c|heart-rate|hr-2026-08-19-001|native-recording"
       },
       {
-        "role": "sourceRecord",
-        "inputs": [
-          "oura",
-          "https://provider.example.org/accounts",
-          "café\n\"\\",
-          "sleep",
-          "résumé-\u0001"
+        "role": "contentDerived",
+        "scope": "account",
+        "components": [
+          "google-health-api",
+          "acct-7f3a9c",
+          "steps",
+          "content",
+          "2026-08-19T00:00:00Z",
+          "2026-08-20T00:00:00Z",
+          "8412"
         ],
-        "canonicalUtf8Hex": "5b226f757261222c2268747470733a2f2f70726f76696465722e6578616d706c652e6f72672f6163636f756e7473222c22636166c3a95c6e5c225c5c222c22736c656570222c2272c3a973756dc3a92d5c7530303031225d",
-        "identifierValue": "v1:05890004d78c74e768503a2aa14e91a66c5f815b41937a2de626fd167d6c59de"
+        "identifierValue": "v1:google-health-api|acct-7f3a9c|steps|content|2026-08-19T00:00:00Z|2026-08-20T00:00:00Z|8412"
       },
       {
-        "role": "conversion",
-        "inputs": [
-          "https://grovealliance.org/fhir/providers/NamingSystem/provider-source-record-id",
-          "v1:335d6070863e13e73a8b1a1e7ca87f3517761dd157e5bd4e13824e06b5cb924c",
-          "1"
+        "role": "writerRecord",
+        "components": [
+          "withings",
+          "17348211"
         ],
-        "canonicalPreimage": "[\"https://grovealliance.org/fhir/providers/NamingSystem/provider-source-record-id\",\"v1:335d6070863e13e73a8b1a1e7ca87f3517761dd157e5bd4e13824e06b5cb924c\",\"1\"]",
-        "identifierValue": "v1:8e2bafe52854eecf1223dcc706c615348dfe26754f6bc816e479bc1ef22d3f8c"
+        "identifierValue": "v1:withings|17348211",
+        "note": "Identical to the value the same measurement carries when it arrives through HealthKit or Health Connect, where the writer slot is the application's own bundle or package name."
       },
       {
-        "role": "exchange",
-        "inputs": [
-          "https://grovealliance.org/fhir/providers/NamingSystem/provider-source-record-id",
-          "v1:335d6070863e13e73a8b1a1e7ca87f3517761dd157e5bd4e13824e06b5cb924c",
-          "1"
+        "role": "deploymentOwnedExchangeBundle",
+        "components": [
+          "withings",
+          "1",
+          "exchange-bundle"
         ],
-        "canonicalPreimage": "[\"https://grovealliance.org/fhir/providers/NamingSystem/provider-source-record-id\",\"v1:335d6070863e13e73a8b1a1e7ca87f3517761dd157e5bd4e13824e06b5cb924c\",\"1\"]",
-        "identifierValue": "v1:8e2bafe52854eecf1223dcc706c615348dfe26754f6bc816e479bc1ef22d3f8c"
+        "identifierValue": "withings|1|exchange-bundle",
+        "note": "Minted in the deployment's namespace, so it carries no scheme-version prefix from this guide."
       },
       {
-        "role": "exchange",
-        "inputs": [
-          "https://grovealliance.org/fhir/providers/NamingSystem/provider-source-record-id",
-          "v1:c698f75a1901b494c9c5a2107a88708dccbd1d5556fc5c85f364c536164fa383",
-          "https://grovealliance.org/fhir/providers/NamingSystem/provider-source-record-id",
-          "v1:e9174b24826045a9d8bfb85888baea27526e626b5049f7c8d0cb6a1479c965d5",
-          "12"
+        "role": "rejectedSeparatorInComponent",
+        "components": [
+          "withings",
+          "acct-7f3a9c",
+          "measure",
+          "173|48211"
         ],
-        "canonicalPreimage": "[\"https://grovealliance.org/fhir/providers/NamingSystem/provider-source-record-id\",\"v1:c698f75a1901b494c9c5a2107a88708dccbd1d5556fc5c85f364c536164fa383\",\"https://grovealliance.org/fhir/providers/NamingSystem/provider-source-record-id\",\"v1:e9174b24826045a9d8bfb85888baea27526e626b5049f7c8d0cb6a1479c965d5\",\"12\"]",
-        "identifierValue": "v1:81c14fff4e338c12d112a93bee860056eaa0fa4dbacf9354c3eda9c97f675587"
+        "identifierValue": null,
+        "note": "A native key containing a vertical bar is rejected, never escaped."
       }
-    ],
-    "resourceIdPolicy": "Resource.id is optional and repository-assigned; no provider-native key or digest is copied into Resource.id.",
-    "positiveEventSequence": "A durable positive event sequence written as a non-zero ASCII digit followed by zero or more ASCII digits; no sign, no leading zero, no other characters. A byte-identical retry reuses the sequence; changed content allocates a higher value.",
-    "singleConversionRule": "A conversion Provenance has exactly one source-record pair. When a Bundle carries exactly one conversion event, the exchange event is that conversion's emission and reuses its sequence, so the exchange identifier value equals the conversion identifier value byte for byte and only the NamingSystem distinguishes them."
+    ]
   },
   "providers": [
     {
@@ -532,7 +571,9 @@
             }
           ]
         }
-      ]
+      ],
+      "identifierScope": "account",
+      "identifierScopeReason": "The dataPoint segment of the record name is documented as unique only within a user and a dataType, and may be client-provided, so two accounts can hold the same key. Most Google data types carry no record key at all and use the contentDerived strategy."
     },
     {
       "id": "oura",
@@ -719,7 +760,9 @@
             }
           ]
         }
-      ]
+      ],
+      "identifierScope": "none",
+      "identifierScopeReason": "Document ids are UUIDs, unique by construction across all accounts."
     },
     {
       "id": "withings",
@@ -1348,7 +1391,9 @@
             }
           ]
         }
-      ]
+      ],
+      "identifierScope": "account",
+      "identifierScopeReason": "grpid is a server-assigned integer that appears to come from a global sequence, but Withings does not document its scope. Scoped by account until they do."
     }
   ],
   "recordingDeviceIdentity": {

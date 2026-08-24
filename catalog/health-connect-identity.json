@@ -1,65 +1,42 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "fhirVersion": "4.0.1",
   "version": "0.3.0",
   "sourceVersion": "androidx.health.connect:connect-client:1.1.0",
-  "digest": {
-    "algorithm": "SHA-256",
-    "output": "v1:<64 lowercase hexadecimal digits>",
-    "input": "UTF-8 without BOM of the RFC 8785/JCS serialization specified below"
-  },
-  "canonicalization": {
-    "jsonTypes": [
-      "array",
-      "string"
-    ],
-    "objectsNumbersBooleansAndNullAllowed": false,
-    "unicode": "Every string contains only Unicode scalar values; isolated UTF-16 surrogates are rejected.",
-    "escaping": "Escape quotation mark and reverse solidus; use \\b, \\t, \\n, \\f, and \\r; encode every other U+0000 through U+001F control as lowercase \\u00xx; do not escape solidus or any other scalar value.",
-    "whitespace": "none",
-    "identifierSetOrder": "Sort each canonical [system,value] serialization by unsigned lexicographic UTF-8 byte order; reject duplicate tuples."
+  "composition": {
+    "form": "v1:<component>|<component>...",
+    "versionPrefix": "v1",
+    "separator": "|",
+    "rule": "Components join with a vertical bar in the order the composition lists them, behind the scheme version. No component may be empty or contain a vertical bar. Every component is the source's own text, unaltered: nothing is hashed, truncated, normalized, or re-encoded.",
+    "versioning": "The prefix versions this guide's composition rule, not the platform's data. A platform that changes what one of its identifiers means is a new naming system, not a new prefix.",
+    "passThrough": "An identifier carried through from the platform unchanged takes no prefix, because it composes nothing. Only the compositions below are prefixed.",
+    "whyComposedHere": "Health Connect's Metadata.id is unique only within one repository on one device, so the raw value cannot identify a record on its own: two participants' phones can both hold the same id for unrelated records. The scope is joined into the value rather than carried in a sibling field because a receiver deduplicates on the complete system and value pair, and a sibling field takes no part in that comparison. Every other Health Connect identifier passes its source value through."
   },
   "namingSystems": {
     "record": "https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-record-id",
-    "clientRecord": "https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-client-record-id",
     "output": "https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-output-id",
     "specimen": "https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-specimen-id",
-    "conversion": "https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-conversion-id",
-    "exchange": "https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-exchange-id",
+    "writerRecord": "https://grovealliance.org/fhir/mobile/NamingSystem/grove-writer-record-id",
     "androidPackage": "https://grovealliance.org/fhir/health-connect/NamingSystem/android-package-name"
   },
-  "preimages": {
+  "compositions": {
     "record": [
-      "health-connect-record-id-v1",
       "repositoryScope",
       "recordTypeToken",
       "rawRecordId"
     ],
-    "singleOutput": [
-      "health-connect-output-id-v1",
-      [
-        "sourceIdentifier.system",
-        "sourceIdentifier.value"
-      ],
-      "single"
-    ],
     "heartRateSampleOutput": [
-      "health-connect-output-id-v1",
-      [
-        "sourceIdentifier.system",
-        "sourceIdentifier.value"
-      ],
+      "repositoryScope",
+      "recordTypeToken",
+      "rawRecordId",
       "sample",
       "sampleInstantUtc9",
-      "beatsPerMinuteUnsignedDecimal",
       "occurrenceUnsignedDecimal"
     ],
     "sleepStageOutput": [
-      "health-connect-output-id-v1",
-      [
-        "sourceIdentifier.system",
-        "sourceIdentifier.value"
-      ],
+      "repositoryScope",
+      "recordTypeToken",
+      "rawRecordId",
       "sleep-stage",
       "startInstantUtc9",
       "endInstantUtc9",
@@ -67,172 +44,132 @@
       "occurrenceUnsignedDecimal"
     ],
     "specimen": [
-      "health-connect-specimen-id-v1",
-      [
-        "sourceIdentifier.system",
-        "sourceIdentifier.value"
-      ],
+      "repositoryScope",
+      "recordTypeToken",
+      "rawRecordId",
+      "specimen",
       "sourceSpecimenToken"
     ],
-    "conversion": [
-      "health-connect-conversion-id-v1",
-      [
-        [
-          "sortedSourceIdentifier.system",
-          "sortedSourceIdentifier.value"
-        ]
-      ],
-      "eventSequencePositiveDecimal"
-    ],
-    "exchange": [
-      "health-connect-exchange-id-v1",
-      [
-        [
-          "sortedSourceIdentifier.system",
-          "sortedSourceIdentifier.value"
-        ]
-      ],
-      "eventSequencePositiveDecimal"
+    "writerRecord": [
+      "writerPackageName",
+      "clientRecordId"
     ]
+  },
+  "measuredValuesExcluded": "No composition takes a measured value as a component. A corrected reading at the same instant keeps its output identifier, so a receiver sees one measurement revised rather than two measurements recorded.",
+  "deploymentOwnedIdentities": {
+    "rule": "The conversion Provenance and the exchange Bundle are created by the export, not read from the platform, so they are identified in the deployment's own namespace rather than a namespace this guide owns. Two deployments converting the same Record agree on every identifier above and are expected to differ on these.",
+    "namespace": "the deployment's graph identifier system",
+    "roles": [
+      "conversion-provenance",
+      "exchange-bundle"
+    ],
+    "value": "<repositoryScope>|<eventSequence>|<role>",
+    "granularity": "One export event covers many Records, so these are keyed by the event rather than by a Record. The per-Record roles a deployment also mints, such as a derived recording Device, take <repositoryScope>|<recordTypeToken>|<rawRecordId>|<role>."
   },
   "lexicalRules": {
     "repositoryScope": "lowercase 8-4-4-4-12 UUID text",
     "recordTypeToken": "an exact token from catalog/health-connect-adapter.json",
     "rawRecordId": "a non-empty Unicode scalar string exactly as supplied by Health Connect",
-    "sourceIdentifier": "a two-item [system,value] array of non-empty Unicode scalar strings",
+    "writerPackageName": "the writing application's Android package name, exactly as supplied by Health Connect",
+    "clientRecordId": "a non-empty Unicode scalar string exactly as the writing application supplied it",
     "sampleInstantUtc9": "UTC FHIR instant YYYY-MM-DDThh:mm:ss.nnnnnnnnnZ with exactly nine fractional digits",
-    "unsignedDecimal": "0 or a non-zero ASCII digit followed by zero or more ASCII digits; no sign or leading zero",
-    "eventSequencePositiveDecimal": "a non-zero ASCII digit followed by zero or more ASCII digits; no sign or leading zero"
+    "startInstantUtc9": "UTC FHIR instant YYYY-MM-DDThh:mm:ss.nnnnnnnnnZ with exactly nine fractional digits",
+    "endInstantUtc9": "UTC FHIR instant YYYY-MM-DDThh:mm:ss.nnnnnnnnnZ with exactly nine fractional digits",
+    "sourceStageToken": "an exact sleep-stage token from catalog/health-connect-adapter.json",
+    "sourceSpecimenToken": "an exact specimen token from catalog/health-connect-adapter.json",
+    "occurrenceUnsignedDecimal": "0 or a non-zero ASCII digit followed by zero or more ASCII digits; no sign or leading zero",
+    "eventSequence": "a non-zero ASCII digit followed by zero or more ASCII digits; no sign or leading zero",
+    "noSeparatorInComponents": "No component may contain U+007C VERTICAL LINE. A source value carrying one is rejected rather than escaped."
   },
   "r4ResourcePlacement": {
     "record": "Observation.identifier source-record slice and Provenance.entity.what.identifier",
     "output": "Observation.identifier output slice",
     "specimen": "Specimen.identifier",
+    "writerRecord": "Observation.identifier writer-record slice",
     "conversion": "Grove exchange entry identifier for the Provenance entry; Provenance has no native identifier in R4",
     "exchange": "Bundle.identifier",
     "androidPackage": "Device.identifier for the source or converting application",
     "resourceId": "optional repository-assigned logical id; never populated from these source or conversion identifiers"
   },
-  "canonicalizationVectors": [
-    {
-      "case": "quote-reverse-solidus-and-solidus",
-      "input": "quote\" reverse\\ solidus/",
-      "canonical": "\"quote\\\" reverse\\\\ solidus/\"",
-      "arrayDigest": "v1:d8563ae3ce8e2d54fc7c4822b28cf56c496a98d45d3101f32fa27687762873f3"
-    },
-    {
-      "case": "short-and-hex-control-escapes",
-      "input": "\b\t\n\f\r\u0000\u0001\u001f",
-      "canonical": "\"\\b\\t\\n\\f\\r\\u0000\\u0001\\u001f\"",
-      "arrayDigest": "v1:bf5fb35a1fb9f98dda5ccbc0cebe1a6f97ab30cd677c36327be8b6625df9f47c"
-    },
-    {
-      "case": "non-ascii-is-not-escaped",
-      "input": "caf\u00e9 \ud83d\udc9a \u2028",
-      "canonical": "\"caf\u00e9 \ud83d\udc9a \u2028\"",
-      "arrayDigest": "v1:a63f97b98e64ea9538a47015494beeddae9743cd70bcd7e3f7d2cbe65677fff4"
-    }
-  ],
   "vectors": [
     {
       "case": "record",
-      "input": [
-        "health-connect-record-id-v1",
+      "components": [
         "1f5c58aa-6ec6-4e79-a682-829a9debd3f5",
         "HeartRateRecord",
         "record-heart-001"
       ],
-      "canonical": "[\"health-connect-record-id-v1\",\"1f5c58aa-6ec6-4e79-a682-829a9debd3f5\",\"HeartRateRecord\",\"record-heart-001\"]",
-      "value": "v1:01deb07850ba71d43d6e8ddc78de08b36a4c5e4c0905511d08ee7d3a9f12dff4"
-    },
-    {
-      "case": "single-output",
-      "input": [
-        "health-connect-output-id-v1",
-        [
-          "https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-record-id",
-          "v1:01deb07850ba71d43d6e8ddc78de08b36a4c5e4c0905511d08ee7d3a9f12dff4"
-        ],
-        "single"
-      ],
-      "canonical": "[\"health-connect-output-id-v1\",[\"https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-record-id\",\"v1:01deb07850ba71d43d6e8ddc78de08b36a4c5e4c0905511d08ee7d3a9f12dff4\"],\"single\"]",
-      "value": "v1:5f20ccaf7c4e804be90daa1739b2ae607ba6060b7d73dd96dfa5ca5e8e05fa32"
+      "value": "v1:1f5c58aa-6ec6-4e79-a682-829a9debd3f5|HeartRateRecord|record-heart-001"
     },
     {
       "case": "heart-rate-sample-output",
-      "input": [
-        "health-connect-output-id-v1",
-        [
-          "https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-record-id",
-          "v1:01deb07850ba71d43d6e8ddc78de08b36a4c5e4c0905511d08ee7d3a9f12dff4"
-        ],
+      "components": [
+        "1f5c58aa-6ec6-4e79-a682-829a9debd3f5",
+        "HeartRateRecord",
+        "record-heart-001",
         "sample",
-        "2026-08-20T17:30:15.000000000Z",
-        "72",
+        "2026-08-19T10:30:00.000000000Z",
         "0"
       ],
-      "canonical": "[\"health-connect-output-id-v1\",[\"https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-record-id\",\"v1:01deb07850ba71d43d6e8ddc78de08b36a4c5e4c0905511d08ee7d3a9f12dff4\"],\"sample\",\"2026-08-20T17:30:15.000000000Z\",\"72\",\"0\"]",
-      "value": "v1:5084f55b849b401293bda218f1a69936ffb0e95c168b402f57de7385a85a5fbc"
+      "value": "v1:1f5c58aa-6ec6-4e79-a682-829a9debd3f5|HeartRateRecord|record-heart-001|sample|2026-08-19T10:30:00.000000000Z|0"
     },
     {
       "case": "sleep-stage-output",
-      "input": [
-        "health-connect-output-id-v1",
-        [
-          "https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-record-id",
-          "v1:01deb07850ba71d43d6e8ddc78de08b36a4c5e4c0905511d08ee7d3a9f12dff4"
-        ],
+      "components": [
+        "1f5c58aa-6ec6-4e79-a682-829a9debd3f5",
+        "SleepSessionRecord",
+        "record-sleep-001",
         "sleep-stage",
-        "2026-08-20T17:30:00.000000000Z",
-        "2026-08-20T18:00:00.000000000Z",
-        "STAGE_TYPE_LIGHT",
+        "2026-08-19T02:10:00.000000000Z",
+        "2026-08-19T02:55:00.000000000Z",
+        "STAGE_TYPE_DEEP",
         "0"
       ],
-      "canonical": "[\"health-connect-output-id-v1\",[\"https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-record-id\",\"v1:01deb07850ba71d43d6e8ddc78de08b36a4c5e4c0905511d08ee7d3a9f12dff4\"],\"sleep-stage\",\"2026-08-20T17:30:00.000000000Z\",\"2026-08-20T18:00:00.000000000Z\",\"STAGE_TYPE_LIGHT\",\"0\"]",
-      "value": "v1:bd2af8db32c5e94ba50352f045ac9e82e668d3105f17034a661883f125b79bce"
+      "value": "v1:1f5c58aa-6ec6-4e79-a682-829a9debd3f5|SleepSessionRecord|record-sleep-001|sleep-stage|2026-08-19T02:10:00.000000000Z|2026-08-19T02:55:00.000000000Z|STAGE_TYPE_DEEP|0"
     },
     {
       "case": "specimen",
-      "input": [
-        "health-connect-specimen-id-v1",
-        [
-          "https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-record-id",
-          "v1:01deb07850ba71d43d6e8ddc78de08b36a4c5e4c0905511d08ee7d3a9f12dff4"
-        ],
-        "SPECIMEN_SOURCE_WHOLE_BLOOD"
+      "components": [
+        "1f5c58aa-6ec6-4e79-a682-829a9debd3f5",
+        "BloodGlucoseRecord",
+        "record-glucose-001",
+        "specimen",
+        "SPECIMEN_SOURCE_CAPILLARY_BLOOD"
       ],
-      "canonical": "[\"health-connect-specimen-id-v1\",[\"https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-record-id\",\"v1:01deb07850ba71d43d6e8ddc78de08b36a4c5e4c0905511d08ee7d3a9f12dff4\"],\"SPECIMEN_SOURCE_WHOLE_BLOOD\"]",
-      "value": "v1:8413b0d259e7dce3e061a886197deafb936d5248cb1b8651d4811233441db8f1"
+      "value": "v1:1f5c58aa-6ec6-4e79-a682-829a9debd3f5|BloodGlucoseRecord|record-glucose-001|specimen|SPECIMEN_SOURCE_CAPILLARY_BLOOD"
     },
     {
-      "case": "conversion",
-      "input": [
-        "health-connect-conversion-id-v1",
-        [
-          [
-            "https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-record-id",
-            "v1:01deb07850ba71d43d6e8ddc78de08b36a4c5e4c0905511d08ee7d3a9f12dff4"
-          ]
-        ],
-        "1"
+      "case": "writer-record",
+      "components": [
+        "com.withings.wiscale2",
+        "scale-weighin-2026-08-19"
       ],
-      "canonical": "[\"health-connect-conversion-id-v1\",[[\"https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-record-id\",\"v1:01deb07850ba71d43d6e8ddc78de08b36a4c5e4c0905511d08ee7d3a9f12dff4\"]],\"1\"]",
-      "value": "v1:95402c870f705567a92c0ca087bc744321a817f6a11a2def986ea3a1482a0e85"
+      "value": "v1:com.withings.wiscale2|scale-weighin-2026-08-19"
     },
     {
-      "case": "exchange",
-      "input": [
-        "health-connect-exchange-id-v1",
-        [
-          [
-            "https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-record-id",
-            "v1:01deb07850ba71d43d6e8ddc78de08b36a4c5e4c0905511d08ee7d3a9f12dff4"
-          ]
-        ],
-        "1"
+      "case": "deployment-owned-exchange-bundle",
+      "components": [
+        "1f5c58aa-6ec6-4e79-a682-829a9debd3f5",
+        "1",
+        "exchange-bundle"
       ],
-      "canonical": "[\"health-connect-exchange-id-v1\",[[\"https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-record-id\",\"v1:01deb07850ba71d43d6e8ddc78de08b36a4c5e4c0905511d08ee7d3a9f12dff4\"]],\"1\"]",
-      "value": "v1:369f8146f2c4052f64ad205aa01cb7395f4f977e602263dfd197f15356a962b8"
+      "value": "1f5c58aa-6ec6-4e79-a682-829a9debd3f5|1|exchange-bundle",
+      "note": "Minted in the deployment's own graph namespace, so it carries no scheme-version prefix from this guide."
+    },
+    {
+      "case": "rejected-separator-in-component",
+      "components": [
+        "1f5c58aa-6ec6-4e79-a682-829a9debd3f5",
+        "WeightRecord",
+        "record|weight"
+      ],
+      "value": null,
+      "note": "A raw record id containing a vertical bar is rejected. It is never escaped, because an escaping rule is the conformance surface this scheme exists to remove."
     }
-  ]
+  ],
+  "outputIdentity": {
+    "cardinality": "0..1",
+    "appliesWhen": "Only where one Record yields more than one Observation, such as a HeartRateRecord's samples or a SleepSessionRecord's stages.",
+    "oneToOne": "A one-to-one conversion carries the record identifier alone. A second namespace repeating the same value identifies nothing new."
+  }
 }

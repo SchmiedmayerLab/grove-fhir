@@ -148,13 +148,14 @@ not apply to Sensor or ECG `SampledData`, whose exact Decimal timing contract is
 by the Sensor guide. When the source also supplies an IANA time-zone name, attach the
 standard `timezone` extension; the name must agree with the offset at that instant.
 
-`Observation.issued` states when this version of the record became available. Take it from the
-source platform's own timestamp for the version wherever the platform keeps one, and only fall
-back to the conversion instant where it does not; each adapter guide names which it uses.
+`Observation.issued` states when this version of the record became available, and it comes from the
+source platform's own timestamp for that version. A producer whose platform keeps no such timestamp
+omits the element rather than substituting a clock reading: an unchanged source record has to
+convert to an identical Observation, or a re-read stops deduplicating against what was already
+sent. Each adapter guide states which it does.
 
-Preferring the source timestamp is what keeps a conversion reproducible: an unchanged source
-record has to convert to an identical graph, or a re-read stops deduplicating against what was
-already sent. A wall-clock `issued` would make every re-conversion look like new data.
+The conversion event has its own home on the conversion `Provenance`, so omitting `issued` loses
+nothing.
 
 Ordering *revisions of the same measurement* is a separate question, and `issued` does not answer
 it — a replaced record can carry an earlier timestamp than the one it supersedes. Where a platform

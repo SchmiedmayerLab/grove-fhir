@@ -50,6 +50,8 @@ RuleSet: GroveMobileObservationRules
 * insert CompleteIdentifierPairs
 * identifier 1..* MS
 * identifier ^short = "Stable business identifier used to deduplicate this exchanged record"
+* extension contains GroveWriterRecordVersion named writerRecordVersion 0..1 MS
+* extension[writerRecordVersion] ^short = "Writer's version of the logical record this measurement came from"
 * status 1..1 MS
 * category MS
 * code 1..1 MS
@@ -201,3 +203,15 @@ Description: "Provenance for the application that transformed one or more source
 * entity.role 1..1 MS
 * entity.role = #source
 * entity.what MS
+
+
+Invariant: grove-writer-record-version-value-1
+Description: "A writer record version is a canonical non-negative decimal integer, written without a sign, leading zeros, or separators."
+Expression: "$this.matches('^(0|[1-9][0-9]*)$')"
+Severity: #error
+
+
+Invariant: grove-writer-record-id-value-1
+Description: "A writer record identifier scopes the writer's own identifier to the writer: the scheme version, the writing application's reverse-DNS identifier, a vertical bar, then the identifier it assigned. Neither part may contain a vertical bar."
+Expression: "$this.matches('^v1:[A-Za-z0-9._-]+[|].+$')"
+Severity: #error

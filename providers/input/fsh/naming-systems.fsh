@@ -38,38 +38,6 @@ Description: "The identifier namespace for one source-neutral Observation emitte
 * uniqueId.value = $providerOutputId
 * uniqueId.preferred = true
 
-Instance: ProviderConversionIdentifier
-InstanceOf: NamingSystem
-Usage: #definition
-Title: "Provider Conversion Identifier"
-Description: "The identifier namespace for one durable connected-provider conversion event."
-* id = "provider-conversion-id"
-* name = "ProviderConversionIdentifier"
-* status = #active
-* kind = #identifier
-* date = "2026-08-20"
-* publisher = "Schmiedmayer Lab"
-* description = "Identifies one conversion event over an exact source-record identifier set and durable positive event sequence. FHIR R4 Provenance has no native identifier, so the pair is carried by the enclosing exchange entry-identifier extension."
-* uniqueId.type = #uri
-* uniqueId.value = $providerConversionId
-* uniqueId.preferred = true
-
-Instance: ProviderExchangeIdentifier
-InstanceOf: NamingSystem
-Usage: #definition
-Title: "Provider Exchange Identifier"
-Description: "The identifier namespace for one acknowledged connected-provider collection Bundle."
-* id = "provider-exchange-id"
-* name = "ProviderExchangeIdentifier"
-* status = #active
-* kind = #identifier
-* date = "2026-08-20"
-* publisher = "Schmiedmayer Lab"
-* description = "Identifies one Grove Mobile collection Bundle event. The value is carried in Bundle.identifier and does not define transport, receiver, storage, or authentication policy."
-* uniqueId.type = #uri
-* uniqueId.value = $providerExchangeId
-* uniqueId.preferred = true
-
 Instance: ProviderProviderAccountIdentifier
 InstanceOf: NamingSystem
 Usage: #definition

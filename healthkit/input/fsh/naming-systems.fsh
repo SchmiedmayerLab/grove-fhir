@@ -22,21 +22,6 @@ Description: "The identifier namespace for HKObject.uuid values carried by Healt
 * uniqueId.value = $healthKitObjectId
 * uniqueId.preferred = true
 
-Instance: HealthKitSyncIdentifier
-InstanceOf: NamingSystem
-Usage: #definition
-Title: "HealthKit Sync Identifier"
-Description: "The identifier namespace for HKMetadataKeySyncIdentifier values carried by HealthKit-derived Observations."
-* id = "healthkit-sync-id"
-* name = "HealthKitSyncIdentifier"
-* status = #active
-* kind = #identifier
-* date = "2026-08-24"
-* publisher = "Schmiedmayer Lab"
-* description = "Identifies the writer-assigned logical sample behind a HealthKit object, taken from HKMetadataKeySyncIdentifier. HealthKit replaces a sample when a writer saves a higher HKMetadataKeySyncVersion under the same sync identifier, and the replacement carries a new HKObject.uuid, so this namespace names the measurement while the object namespace names the exact row it was read from. The value is opaque writer text; compare the complete system and value pair."
-* uniqueId.type = #uri
-* uniqueId.value = $healthKitSyncId
-* uniqueId.preferred = true
 
 Instance: AppleBundleIdentifier
 InstanceOf: NamingSystem

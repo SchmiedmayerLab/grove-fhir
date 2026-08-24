@@ -38,16 +38,17 @@ that re-imports a measurement reuses its `clientRecordId` and raises its `client
 and the stored Record then carries a new `metadata.id`. Deduplicating on `metadata.id` alone
 therefore counts a revised measurement twice.
 
-When the Record carries `clientRecordId`, map it to a second `Observation.identifier` with the
-[Health Connect Client Record Identifier](NamingSystem-health-connect-client-record-id.html)
-system, and map `clientRecordVersion` to the
-[Health Connect Client Record Version](StructureDefinition-health-connect-client-record-version.html)
+When the Record carries `clientRecordId`, map it to a second `Observation.identifier` in the shared
+[Grove Writer Record Identifier](https://grovealliance.org/fhir/mobile/NamingSystem-grove-writer-record-id.html)
+namespace, scoping it to its writer as that namespace requires, and map `clientRecordVersion` to the
+[Grove Writer Record Version](https://grovealliance.org/fhir/mobile/StructureDefinition-grove-writer-record-version.html)
 extension. A Record without a `clientRecordId` carries neither; do not synthesize one, because a
 writer that assigns no client record identity has not promised that any two of its Records are the
 same measurement.
 
-This is the same contract the HealthKit adapter states for `HKMetadataKeySyncIdentifier` and
-`HKMetadataKeySyncVersion`, so a receiver applies one supersession rule to both platforms.
+The HealthKit adapter maps `HKMetadataKeySyncIdentifier` and `HKMetadataKeySyncVersion` into that
+same namespace and extension, so a receiver applies one supersession rule to both platforms — and
+an application writing the same measurement on both produces the same value in both.
 
 ### Identity
 

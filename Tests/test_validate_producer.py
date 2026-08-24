@@ -273,11 +273,20 @@ class ProducerConformanceTests(unittest.TestCase):
     def test_cli_requires_official_validator_outside_structural_mode(self) -> None:
         self.assertEqual(VALIDATOR.main(["--manifest", str(self.example)]), 1)
 
-    def test_identifier_canonicalization_uses_jcs_string_escaping(self) -> None:
+    def test_identifier_name_composes_without_escaping(self) -> None:
         self.assertEqual(
-            VALIDATOR.canonical_identifier_name('https://example.org/"quoted"', "line\nback\\slash\u0001"),
-            '["https://example.org/\\"quoted\\"","line\\nback\\\\slash\\u0001"]',
+            VALIDATOR.canonical_identifier_name('https://example.org/"quoted"', "line\nback\\slash"),
+            'https://example.org/"quoted"|line\nback\\slash',
         )
+
+    def test_identifier_name_admits_a_composed_value_but_not_a_composed_system(self) -> None:
+        writer = "https://grovealliance.org/fhir/mobile/NamingSystem/grove-writer-record-id"
+        self.assertEqual(
+            VALIDATOR.canonical_identifier_name(writer, "v1:com.withings.wiscale2|17348211"),
+            writer + "|v1:com.withings.wiscale2|17348211",
+        )
+        with self.assertRaisesRegex(VALIDATOR.ProducerValidationError, "vertical bar"):
+            VALIDATOR.canonical_identifier_name("https://example.org/a|b", "x")
 
     def test_mobile_exchange_corpus_is_closed_and_reason_specific(self) -> None:
         corpus_root = ROOT / "Conformance/corpora/mobile-exchange"
@@ -520,11 +529,11 @@ class ProducerConformanceTests(unittest.TestCase):
         )
         source_vector = next(
             vector for vector in connected_catalog["identity"]["vectors"]
-            if vector["role"] == "sourceRecord" and vector["inputs"][3] == "heart-rate"
+            if vector["role"] == "sourceRecord" and "heart-rate" in vector["components"]
         )
         output_vector = next(
             vector for vector in connected_catalog["identity"]["vectors"]
-            if vector["role"] == "output" and vector["inputs"][-1] == "native-recording"
+            if vector["role"] == "output" and vector["components"][-1] == "native-recording"
         )
         connected = {
             "resourceType": "DocumentReference",

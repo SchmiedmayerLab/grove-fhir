@@ -88,7 +88,8 @@ The [conversion Provenance](Provenance-HealthKitExchangeConversionProvenanceExam
 "target": [{ "reference": "urn:uuid:697f6d32-7fb0-54d3-ba0e-8d933f6e5457" }]
 ```
 
-No source author appears because the caller did not classify `HKSourceRevision`; the adapter never guesses whether the source was an app or a device.
+The writing application appears alongside it as the `author` agent.
+An `HKSource` always carries a bundle identifier and is an application, so the adapter records it rather than guessing at hardware from a name or product type; hardware attribution is `HKDevice`'s job, and it travels as the recording device.
 
 ### 6. The exchange Bundle
 

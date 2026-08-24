@@ -22,21 +22,6 @@ Description: "The identifier namespace for the repository-scoped identity of a H
 * uniqueId.value = $healthConnectRecordId
 * uniqueId.preferred = true
 
-Instance: HealthConnectClientRecordIdentifier
-InstanceOf: NamingSystem
-Usage: #definition
-Title: "Health Connect Client Record Identifier"
-Description: "The identifier namespace for the writer-assigned logical record behind a Health Connect Record, taken from metadata.clientRecordId."
-* id = "health-connect-client-record-id"
-* name = "HealthConnectClientRecordIdentifier"
-* status = #active
-* kind = #identifier
-* date = "2026-08-24"
-* publisher = "Schmiedmayer Lab"
-* description = "Identifies the writer-assigned logical record behind a Health Connect Record, taken from metadata.clientRecordId. A writer that re-imports a measurement reuses this value and raises its clientRecordVersion, and the stored Record then carries a new metadata.id, so this namespace names the measurement while the record namespace names the exact row it was read from. The value is opaque writer text; compare the complete system and value pair."
-* uniqueId.type = #uri
-* uniqueId.value = $healthConnectClientRecordId
-* uniqueId.preferred = true
 
 Instance: HealthConnectOutputIdentifier
 InstanceOf: NamingSystem
@@ -68,38 +53,6 @@ Description: "The identifier namespace for a specimen node deterministically der
 * description = "Identifies one synthesized Specimen resource by the complete source Record identifier and exact supported Health Connect specimen-source token. It is a business identifier, never a FHIR Resource.id."
 * uniqueId.type = #uri
 * uniqueId.value = $healthConnectSpecimenId
-* uniqueId.preferred = true
-
-Instance: HealthConnectConversionIdentifier
-InstanceOf: NamingSystem
-Usage: #definition
-Title: "Health Connect Conversion Identifier"
-Description: "The identifier namespace for one durable conversion event represented by a Provenance Bundle entry."
-* id = "health-connect-conversion-id"
-* name = "HealthConnectConversionIdentifier"
-* status = #active
-* kind = #identifier
-* date = "2026-08-20"
-* publisher = "Schmiedmayer Lab"
-* description = "Identifies one conversion event from a nonempty sorted set of complete source Record identifiers and a durable positive event sequence. In FHIR R4 Provenance has no native identifier, so this complete pair is carried by the enclosing Grove exchange entry-identifier extension."
-* uniqueId.type = #uri
-* uniqueId.value = $healthConnectConversionId
-* uniqueId.preferred = true
-
-Instance: HealthConnectExchangeIdentifier
-InstanceOf: NamingSystem
-Usage: #definition
-Title: "Health Connect Exchange Identifier"
-Description: "The identifier namespace for one acknowledged Health Connect exchange event Bundle."
-* id = "health-connect-exchange-id"
-* name = "HealthConnectExchangeIdentifier"
-* status = #active
-* kind = #identifier
-* date = "2026-08-20"
-* publisher = "Schmiedmayer Lab"
-* description = "Identifies the Grove Mobile collection Bundle for one event from a nonempty sorted set of complete source Record identifiers and a durable positive event sequence. It is carried in Bundle.identifier, not Resource.id."
-* uniqueId.type = #uri
-* uniqueId.value = $healthConnectExchangeId
 * uniqueId.preferred = true
 
 Instance: AndroidPackageName

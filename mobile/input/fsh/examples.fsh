@@ -227,3 +227,24 @@ Description: "A collection graph with deterministic UUID URN fullUrls and comple
 * entry[3].extension[entryIdentifier].valueIdentifier.value = "conversion-20260820-001"
 * entry[3].fullUrl = "urn:uuid:a0c89770-d357-5e23-aa5c-35ce7b249de7"
 * entry[3].resource = GroveMobileExchangeProvenanceExample
+
+Instance: GroveMobileWriterRecordIdentityExample
+InstanceOf: GroveMobileHeartRate
+Usage: #example
+Title: "Writer Record Identity and Version"
+Description: "One measurement carrying the writer's own identity for it alongside the deployment's identifier. The same application writing the same logical record on another platform produces the identical writer value, which is what lets a receiver recognise one measurement arriving by more than one route."
+* identifier[+].system = "https://study.example.org/fhir/identifiers/mobile-observation"
+* identifier[=].value = "heart-rate-20260819-014"
+* identifier[+].system = $groveWriterRecordId
+* identifier[=].value = "v1:com.withings.wiscale2|17348211"
+* status = #final
+* category = $observationCategory#vital-signs "Vital Signs"
+* code = $loinc#8867-4 "Heart rate"
+* subject = Reference(GroveMobilePatientExample)
+* performer = Reference(GroveMobilePatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00.251-07:00"
+* effectiveDateTime.extension[timezone].valueCode = #America/Los_Angeles
+* issued = "2026-08-19T17:30:02.000Z"
+* valueQuantity = 72 '/min' "beats/minute"
+* extension[recordingMethod].valueCoding = GroveRecordingMethodCS#automatically-recorded "Automatically recorded"
+* extension[writerRecordVersion].valueString = "3"

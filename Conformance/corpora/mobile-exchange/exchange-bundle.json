@@ -22,7 +22,7 @@
           }
         }
       ],
-      "fullUrl": "urn:uuid:2068bbaf-f65a-5386-9b8e-58119d6e33d3",
+      "fullUrl": "urn:uuid:37bd8f5c-ab8a-5f09-81ef-e1d6740e31ba",
       "resource": {
         "resourceType": "Patient",
         "identifier": [
@@ -43,7 +43,7 @@
           }
         }
       ],
-      "fullUrl": "urn:uuid:f60aa6a4-7dd9-502e-b4a5-b8f060dcaf3c",
+      "fullUrl": "urn:uuid:f028256c-4312-5b8b-a6d6-cd3594073478",
       "resource": {
         "resourceType": "Observation",
         "meta": {
@@ -77,7 +77,7 @@
           ]
         },
         "subject": {
-          "reference": "urn:uuid:2068bbaf-f65a-5386-9b8e-58119d6e33d3"
+          "reference": "urn:uuid:37bd8f5c-ab8a-5f09-81ef-e1d6740e31ba"
         },
         "effectiveDateTime": "2026-08-20T08:30:00.251-07:00",
         "valueQuantity": {

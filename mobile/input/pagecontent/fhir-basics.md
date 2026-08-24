@@ -48,7 +48,6 @@ A heart rate, trimmed to the fields that carry meaning:
   },
   "subject": { "reference": "Patient/participant-01" },
   "effectiveDateTime": "2026-08-19T10:30:00-07:00",
-  "issued": "2026-08-20T08:00:00Z",
   "valueQuantity": {
     "value": 72,
     "unit": "beats/minute",
@@ -73,8 +72,8 @@ A number without a UCUM code is not comparable data.
 
 **`effective` and `issued` are different times, and both matter.**
 `effective` is when the measurement happened — the moment the heart beat.
-`issued` is when this version of the record became available — the source platform's own timestamp for it where there is one, and the conversion instant where there is not.
-Converting last month's samples today leaves `effective` in the past; `issued` says when the record itself became available, which is why converting the same unchanged data twice produces the same document rather than looking like something new.
+`issued` is when this version of the record became available, taken from the source platform's own timestamp for it.
+A platform that keeps no such timestamp leaves `issued` out rather than substituting a clock reading, so converting the same unchanged data twice produces the same document instead of looking like something new.
 A receiver uses `effective` for the clinical timeline. Ordering *revisions of the same measurement* is a third question again, and the adapter guides answer it with a writer-assigned version.
 
 **`subject` is a reference, not a person.**

@@ -112,9 +112,7 @@ Usage: #example
 Title: "Body Fat Mass Example"
 Description: "A conformant Body Fat Mass instance."
 * identifier[sourceRecordId].system = $providerSourceRecordId
-* identifier[sourceRecordId].value = "v1:abc6a7f4a60be193b3fdc39c93aeeab6bd1c472f673a078ac554960114a14882"
-* identifier[outputId].system = $providerOutputId
-* identifier[outputId].value = "v1:97346a7be297df20ff6cf03e5afff55ca25b0f027d28fe5fe657ea6f350d1da1"
+* identifier[sourceRecordId].value = "v1:withings|acct-7f3a9c|body-fat-mass|record-body-fat-mass"
 * status = #final
 * code = $loinc#73708-0 "Body fat [Mass] Calculated"
 * extension[provider].valueCode = #withings
@@ -131,9 +129,7 @@ Usage: #example
 Title: "Extracellular Water Mass Example"
 Description: "A conformant Extracellular Water Mass instance."
 * identifier[sourceRecordId].system = $providerSourceRecordId
-* identifier[sourceRecordId].value = "v1:7a26245a81bdc837ca1f96ad882293148687f99c0d99daaf67dcb15b2dfcbadf"
-* identifier[outputId].system = $providerOutputId
-* identifier[outputId].value = "v1:15afe9ce860d34f9732fd1b2c20fd971acbe44cbace2566ecd6aa08c7ad6b24f"
+* identifier[sourceRecordId].value = "v1:withings|acct-7f3a9c|extracellular-water-mass|record-extracellular-water-mass"
 * status = #final
 * code = ProviderMeasurementCS#extracellular-water-mass
 * extension[provider].valueCode = #withings
@@ -150,9 +146,7 @@ Usage: #example
 Title: "Intracellular Water Mass Example"
 Description: "A conformant Intracellular Water Mass instance."
 * identifier[sourceRecordId].system = $providerSourceRecordId
-* identifier[sourceRecordId].value = "v1:18d7cb4f4a835433d698586571c346b13053e1603d4ed6e99e69a8450447278d"
-* identifier[outputId].system = $providerOutputId
-* identifier[outputId].value = "v1:3e297e22fd6c3ee657f8f57c270ccdb0f75ffc6a1404a31e6a0dd6f0dff0b7a0"
+* identifier[sourceRecordId].value = "v1:withings|acct-7f3a9c|intracellular-water-mass|record-intracellular-water-mass"
 * status = #final
 * code = ProviderMeasurementCS#intracellular-water-mass
 * extension[provider].valueCode = #withings
@@ -169,9 +163,7 @@ Usage: #example
 Title: "Muscle Mass Example"
 Description: "A conformant Muscle Mass instance."
 * identifier[sourceRecordId].system = $providerSourceRecordId
-* identifier[sourceRecordId].value = "v1:c67cf823fd0eb4a5974af31b4ac2e217314e6fdbd413bf9a02db08cdd76a3134"
-* identifier[outputId].system = $providerOutputId
-* identifier[outputId].value = "v1:91afb64241c71d49ea80e44466964c693a7d8fba952988c980e67f954b698ae6"
+* identifier[sourceRecordId].value = "v1:withings|acct-7f3a9c|muscle-mass|record-muscle-mass"
 * status = #final
 * code = $loinc#73964-9 "Body muscle mass Calculated"
 * extension[provider].valueCode = #withings
@@ -188,9 +180,7 @@ Usage: #example
 Title: "Sleeping Heart Rate Average Example"
 Description: "A conformant Sleeping Heart Rate Average instance."
 * identifier[sourceRecordId].system = $providerSourceRecordId
-* identifier[sourceRecordId].value = "v1:1c3a40ad3439d8794bd8c8d9c6634ff9d0bff2f850130f9091fb4bc38a15a2c0"
-* identifier[outputId].system = $providerOutputId
-* identifier[outputId].value = "v1:e575642678b543e54b470558f874a2455d7df7c8d4d97b9832697fbb36441ee9"
+* identifier[sourceRecordId].value = "v1:withings|acct-7f3a9c|sleeping-heart-rate-average|record-sleeping-heart-rate-average"
 * status = #final
 * code = ProviderMeasurementCS#sleeping-heart-rate-average
 * extension[provider].valueCode = #withings

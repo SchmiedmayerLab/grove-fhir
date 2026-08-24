@@ -6,20 +6,25 @@
 // SPDX-License-Identifier: MIT
 //
 
-Invariant: health-connect-output-id-1
-Description: "The Health Connect output identifier uses the versioned lowercase SHA-256 form defined by this guide."
+Invariant: grove-writer-record-id-value-1
+Description: "A writer record identifier scopes the writer's own identifier to the writer: the scheme version, the writing application's reverse-DNS identifier, a vertical bar, then the identifier it assigned. Neither part may contain a vertical bar."
+Expression: "$this.matches('^v1:[A-Za-z0-9._-]+[|].+$')"
 Severity: #error
-Expression: "identifier.where(system = 'https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-output-id').all(value.matches('^v1:[0-9a-f]{64}$'))"
+
+Invariant: health-connect-output-id-1
+Description: "The Health Connect output identifier is a versioned composition: the scheme version, then the repository scope, the Record class, the raw Record id and the output discriminant, joined by vertical bars."
+Severity: #error
+Expression: "identifier.where(system = 'https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-output-id').all(value.matches('^v1:[^|]+([|][^|]+)+$'))"
 
 Invariant: health-connect-record-id-value-1
-Description: "The Health Connect record identifier uses the repository-scoped lowercase SHA-256 form defined by this guide."
+Description: "The Health Connect record identifier is a versioned composition of the repository scope, the Record class and the raw Record id, joined by vertical bars. No component may contain a vertical bar."
 Severity: #error
-Expression: "matches('^v1:[0-9a-f]{64}$')"
+Expression: "matches('^v1:[^|]+([|][^|]+)+$')"
 
 Invariant: health-connect-specimen-id-value-1
-Description: "A Health Connect specimen identifier uses the versioned lowercase SHA-256 form defined by this guide."
+Description: "A Health Connect specimen identifier is a versioned composition of the Record identity, the specimen discriminant and the source specimen token, joined by vertical bars."
 Severity: #error
-Expression: "matches('^v1:[0-9a-f]{64}$')"
+Expression: "matches('^v1:[^|]+([|][^|]+)+$')"
 
 Invariant: health-connect-specimen-type-1
 Description: "A synthesized glucose specimen carries exactly one admitted standard SNOMED CT specimen concept."
@@ -51,9 +56,9 @@ Description: "A shared sleep-stage output carries exactly one exact Health Conne
 Severity: #error
 Expression: "(code.coding.where(system = 'https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement' and code = 'sleep-stage').exists() and value.ofType(CodeableConcept).coding.where(system = 'https://grovealliance.org/fhir/health-connect/CodeSystem/health-connect-sleep-stage').count() = 1) or (code.coding.where(system = 'https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement' and code = 'sleep-stage').empty() and value.ofType(CodeableConcept).coding.where(system = 'https://grovealliance.org/fhir/health-connect/CodeSystem/health-connect-sleep-stage').empty())"
 
-Invariant: health-connect-client-record-version-1
+Invariant: health-connect-writer-record-1
 Description: "Health Connect always carries a clientRecordVersion for a Record that has a clientRecordId, so the two appear together or not at all. A client record version orders revisions of one writer-assigned record, so it appears only with the client record identifier it versions."
-Expression: "extension('https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-client-record-version').exists() = identifier.where(system = 'https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-client-record-id').exists()"
+Expression: "extension('https://grovealliance.org/fhir/mobile/StructureDefinition/grove-writer-record-version').exists() = identifier.where(system = 'https://grovealliance.org/fhir/mobile/NamingSystem/grove-writer-record-id').exists()"
 Severity: #error
 
 
@@ -68,16 +73,17 @@ Description: "The source and output identities plus allowlisted source context f
 * identifier ^slicing.rules = #open
 * identifier contains
     recordId 1..1 MS and
-    outputId 1..1 MS and
-    clientRecordId 0..1 MS
+    outputId 0..1 MS and
+    writerRecordId 0..1 MS
 * identifier[recordId].system = $healthConnectRecordId
 * identifier[recordId].value 1..1 MS
 * identifier[recordId].value obeys health-connect-record-id-value-1
 * identifier[outputId].system = $healthConnectOutputId
 * identifier[outputId].value 1..1 MS
-* identifier[clientRecordId].system = $healthConnectClientRecordId
-* identifier[clientRecordId].value 1..1 MS
-* obeys health-connect-output-id-1 and health-connect-client-record-version-1
+* identifier[writerRecordId].system = $groveWriterRecordId
+* identifier[writerRecordId].value 1..1 MS
+* identifier[writerRecordId].value obeys grove-writer-record-id-value-1
+* obeys health-connect-output-id-1 and health-connect-writer-record-1
 * issued 1..1 MS
 * specimen only Reference(HealthConnectSpecimen)
 * extension contains
@@ -85,7 +91,7 @@ Description: "The source and output identities plus allowlisted source context f
     $bodyPosition named bodyPosition 0..1 MS and
     HealthConnectGlucoseMealContext named glucoseMealContext 0..1 MS and
     HealthConnectSleepTitle named sleepTitle 0..1 MS and
-    HealthConnectClientRecordVersion named clientRecordVersion 0..1 MS
+    GroveWriterRecordVersion named writerRecordVersion 0..1 MS
 * note MS
 
 Profile: HealthConnectWholeBloodGlucose
@@ -196,18 +202,4 @@ Description: "Provenance for transforming one Health Connect source Record into 
 * entity.agent.who only Reference(Device)
 
 
-Extension: HealthConnectClientRecordVersion
-Id: health-connect-client-record-version
-Title: "Health Connect Client Record Version"
-Description: "The clientRecordVersion of the Record this Observation was converted from. A writer that re-imports a measurement reuses its clientRecordId and raises this version, and Health Connect keeps the higher one; the version orders those revisions so a receiver can supersede rather than double-count."
-* ^context[+].type = #element
-* ^context[=].expression = "Observation"
-* value[x] only string
-* valueString 1..1
-* valueString obeys health-connect-client-record-version-value-1
 
-
-Invariant: health-connect-client-record-version-value-1
-Description: "A client record version is a canonical non-negative decimal integer, written without a sign, leading zeros, or separators."
-Expression: "$this.matches('^(0|[1-9][0-9]*)$')"
-Severity: #error
