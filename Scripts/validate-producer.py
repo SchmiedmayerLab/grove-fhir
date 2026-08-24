@@ -1235,11 +1235,13 @@ def validate_provider_identity(resource: dict[str, Any], label: str) -> None:
     if not isinstance(identifiers, list):
         raise ProducerValidationError(f"{label} has invalid identifier")
 
-    def identifier_value(system: str, role: str) -> str:
+    def identifier_value(system: str, role: str, required: bool = True) -> str | None:
         matches = [
             item for item in identifiers
             if isinstance(item, dict) and item.get("system") == system
         ]
+        if not matches and not required:
+            return None
         if len(matches) != 1:
             raise ProducerValidationError(
                 f"{label} must carry exactly one Provider {role} identifier"
@@ -1247,15 +1249,20 @@ def validate_provider_identity(resource: dict[str, Any], label: str) -> None:
         return complete_identifier(matches[0], f"{label} {role} identifier")[1]
 
     source_value = identifier_value(source_system, "source-record")
-    output_value = identifier_value(output_system, "output")
-    composition_pattern = r"^v1:[^|]+(?:\|[^|]+)+$"
-    if re.fullmatch(composition_pattern, source_value) is None or re.fullmatch(
-        composition_pattern, output_value
-    ) is None:
-        raise ProducerValidationError(
-            f"{label} has a Provider identifier that is not a v1 composition"
-        )
-    if resource.get("id") in {source_value, output_value}:
+    # A one-to-one conversion emits no output identifier: the source record already identifies the
+    # single Observation it produced.
+    output_value = identifier_value(output_system, "output", required=False)
+    # Either the provider's own key passed through, or a versioned composition where that key
+    # alone would not identify one record.
+    identifier_pattern = r"^(?:v1:[^|]+(?:\|[^|]+)+|[^|]+)$"
+    for candidate in (value for value in (source_value, output_value) if value is not None):
+        if re.fullmatch(identifier_pattern, candidate) is None:
+            raise ProducerValidationError(
+                f"{label} has a Provider identifier that is neither a passed-through key "
+                "nor a v1 composition"
+            )
+    business_values = {value for value in (source_value, output_value) if value is not None}
+    if resource.get("id") in business_values:
         raise ProducerValidationError(
             f"{label} must not copy a Provider business identifier into Resource.id"
         )
@@ -1331,12 +1338,16 @@ def validate_provider_identity(resource: dict[str, Any], label: str) -> None:
             if providers[0] == "withings" and claimed[0] == "blood-pressure"
             else claimed[0]
         )
-    expected = f"{source_value}|{discriminator}"
-    if output_value != expected:
-        raise ProducerValidationError(
-            f"{label} Provider output identifier does not match its exact "
-            "source and discriminator"
-        )
+    if output_value is not None:
+        # An output identity always composes, even where its source key passed through: it exists
+        # precisely to tell several Observations of one record apart.
+        base = source_value[3:] if source_value.startswith("v1:") else source_value
+        expected = f"v1:{base}|{discriminator}"
+        if output_value != expected:
+            raise ProducerValidationError(
+                f"{label} Provider output identifier does not match its exact "
+                "source and discriminator"
+            )
 
 
 def validate_sensorkit_identity(resource: dict[str, Any], label: str) -> None:
@@ -1839,7 +1850,10 @@ PROVIDER_CONVERSION_PROVENANCE_PROFILE = (
     "https://grovealliance.org/fhir/providers/StructureDefinition/"
     "provider-conversion-provenance"
 )
-V1_DIGEST = re.compile(r"^v1:[0-9a-f]{64}$")
+# The export creates these nodes, so the deployment owns their namespace and this guide fixes only
+# the role-suffixed shape of the value.
+PROVIDER_CONVERSION_VALUE = re.compile(r"^[^|]+\|[1-9][0-9]*\|conversion-provenance$")
+PROVIDER_EXCHANGE_VALUE = re.compile(r"^[^|]+\|[1-9][0-9]*\|exchange-bundle$")
 
 
 def validate_provider_exchange_identity(
@@ -1847,7 +1861,7 @@ def validate_provider_exchange_identity(
     entry_identities: list[tuple[str, str, dict[str, Any]]],
     label: str,
 ) -> None:
-    """Enforce the frozen provider conversion/exchange identity encoding."""
+    """Enforce the provider conversion and exchange identity encoding."""
     conversion_values: list[str] = []
     for index, (system, value, entry_resource) in enumerate(entry_identities):
         profiles = entry_resource.get("meta", {}).get("profile", [])
@@ -1855,43 +1869,41 @@ def validate_provider_exchange_identity(
             isinstance(profiles, list)
             and PROVIDER_CONVERSION_PROVENANCE_PROFILE in profiles
         )
-        if system == PROVIDER_CONVERSION_ID:
-            if not V1_DIGEST.match(value):
-                raise ProducerValidationError(
-                    f"{label} entry[{index}] provider conversion identifier is not "
-                    "a v1 digest"
-                )
-            if not claims_profile:
-                raise ProducerValidationError(
-                    f"{label} entry[{index}] uses the provider conversion "
-                    "namespace without claiming the provider conversion "
-                    "provenance profile"
-                )
-            conversion_values.append(value)
-        elif claims_profile:
+        if not claims_profile:
+            continue
+        if not system:
             raise ProducerValidationError(
-                f"{label} entry[{index}] claims the provider conversion "
-                "provenance profile without the provider conversion namespace"
+                f"{label} entry[{index}] provider conversion identifier states no namespace"
             )
+        if not PROVIDER_CONVERSION_VALUE.match(value):
+            raise ProducerValidationError(
+                f"{label} entry[{index}] provider conversion identifier is not a "
+                "deployment-namespaced conversion-provenance value"
+            )
+        conversion_values.append(value)
     if not conversion_values:
         return
     identifier = bundle.get("identifier", {})
-    if identifier.get("system") != PROVIDER_EXCHANGE_ID or not V1_DIGEST.match(
+    if not identifier.get("system") or not PROVIDER_EXCHANGE_VALUE.match(
         str(identifier.get("value"))
     ):
         raise ProducerValidationError(
-            f"{label} provider exchange Bundle.identifier must be a v1 digest in "
-            "the provider exchange namespace"
+            f"{label} provider exchange Bundle.identifier must be a "
+            "deployment-namespaced exchange-bundle value"
         )
     if len(conversion_values) != len(set(conversion_values)):
         raise ProducerValidationError(
             f"{label} repeats a provider conversion identifier value"
         )
-    if len(conversion_values) == 1 and identifier.get("value") != conversion_values[0]:
-        raise ProducerValidationError(
-            f"{label} single-conversion exchange identifier must equal the "
-            "conversion identifier byte for byte"
-        )
+    # One export event, so the conversion and the Bundle name the same event and differ only in
+    # the role they carry.
+    if len(conversion_values) == 1:
+        expected = conversion_values[0].rsplit("|", 1)[0] + "|exchange-bundle"
+        if identifier.get("value") != expected:
+            raise ProducerValidationError(
+                f"{label} single-conversion exchange identifier must name the same "
+                "event as its conversion identifier"
+            )
 
 
 def validate_exchange_bundle(
