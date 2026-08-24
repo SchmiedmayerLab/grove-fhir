@@ -16,6 +16,10 @@ conforms to two independent contracts:
 2. A clinical or research profile defines what the result means and which units are
    valid.
 
+New to FHIR?
+[Start with the FHIR basics page](https://grovealliance.org/fhir/mobile/fhir-basics.html) in the Mobile guide.
+It covers the resources these guides use, identifiers and references, and how to read a profile page.
+
 Both profile canonicals appear in `Observation.meta.profile`, and the resource must
 validate against both.
 
@@ -31,6 +35,7 @@ The [study exchange Bundle](Bundle-HealthKitStudyBundleExample.html) puts the pa
 versioned protocol, study enrollment, devices, Observation, and Provenance together.
 Its [JSON representation](Bundle-HealthKitStudyBundleExample.json) is a complete fixture
 for an importer.
+The [walkthrough](walkthrough.html) follows one heart-rate sample from `HKQuantitySample` to the uploaded exchange Bundle.
 
 ### What the adapter adds
 
@@ -48,12 +53,11 @@ for an importer.
 - The optional `heartRateMotionContext` component preserves one allowlisted HealthKit
   metadata value. An invariant permits it only on LOINC `8867-4` heart-rate records.
 
-The HealthKit sample type selects the mapping profile in converter code; it is not added
-as a second coding beside the clinical code. This avoids placing non-equivalent source
-and clinical concepts in one CodeableConcept.
+The HealthKit sample type selects the mapping profile and is retained as one additional
+adapter-lineage coding beside the normative shared or standard clinical coding.
 
 Continue with [Mapping](mapping.html) for field-by-field rules, or open
 [Artifacts](artifacts.html) for every profile, naming system, terminology resource, and
 example in the package. [Terminology provenance](terminology-provenance.html) records
 the SDK baseline, selection method, source-file hashes, ownership, and publication scope
-for the HealthKit names retained by version 0.1.0.
+for the HealthKit names retained by version 0.3.0.

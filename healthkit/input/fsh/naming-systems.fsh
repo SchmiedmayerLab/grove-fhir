@@ -22,6 +22,7 @@ Description: "The identifier namespace for HKObject.uuid values carried by Healt
 * uniqueId.value = $healthKitObjectId
 * uniqueId.preferred = true
 
+
 Instance: AppleBundleIdentifier
 InstanceOf: NamingSystem
 Usage: #definition

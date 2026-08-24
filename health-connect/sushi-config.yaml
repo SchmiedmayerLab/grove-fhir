@@ -7,31 +7,49 @@
 #
 
 id: org.grovealliance.fhir.health-connect
-canonical: https://schmiedmayerlab.github.io/grove-fhir/fhir/health-connect
+canonical: https://grovealliance.org/fhir/health-connect
 name: GroveFHIRHealthConnect
 title: Grove FHIR Health Connect Adapter
 description: >-
   FHIR R4 mappings for Android Health Connect records exchanged through the Grove Mobile contract.
 status: draft
-version: 0.1.0
+version: 0.3.0
 fhirVersion: 4.0.1
 copyrightYear: 2026+
 releaseLabel: ci-build
 publisher:
   name: Schmiedmayer Lab
   url: https://github.com/SchmiedmayerLab
-jurisdiction: http://unstats.un.org/unsd/methods/m49/m49.htm#001 "World"
 license: MIT
+copyright: >-
+  Grove-authored profiles, extensions, terminology, and examples in this guide are published by the Schmiedmayer Lab under the MIT license.
+
+  FHIR® is the registered trademark of HL7 and is used with the permission of HL7. HL7 R4 material is copyright © HL7 International.
+
+  This material contains content from LOINC (https://loinc.org). LOINC is copyright © 1995-2026 Regenstrief Institute, Inc. and the Logical Observation Identifiers Names and Codes (LOINC) Committee and is available at no cost under the license at https://loinc.org/license. LOINC® is a registered United States trademark of Regenstrief Institute, Inc.
+
+  This material contains UCUM unit codes. UCUM is copyright © 1999-2026 Regenstrief Institute, Inc. and available under the license at https://ucum.org/trac.
+
+  ISO/IEEE 11073-10101 nomenclature codes are copyright © IEEE and ISO and are used here only to identify standard concepts.
+
+  This material includes SNOMED Clinical Terms® (SNOMED CT®), which is copyright © SNOMED International. Implementers must hold a valid SNOMED CT affiliate licence in their territory; this guide grants no rights in SNOMED CT.
+
+  AndroidX Health Connect API identifiers and type names originate from Google LLC and are used here only to identify source API concepts for interoperability. The MIT license applies to Grove-authored definitions; it does not grant rights in Google material.
 
 dependencies:
   hl7.terminology.r4: 7.3.0
+  # Used directly by the version-pinned standard body-position extension slice.
+  hl7.fhir.uv.extensions.r4: 5.3.0
   org.grovealliance.fhir.mobile:
-    version: 0.1.0
-    uri: https://schmiedmayerlab.github.io/grove-fhir/fhir/mobile/ImplementationGuide/org.grovealliance.fhir.mobile
+    version: 0.3.0
+    uri: https://grovealliance.org/fhir/mobile/ImplementationGuide/org.grovealliance.fhir.mobile
 
 menu:
   Overview: index.html
+  Guides: https://grovealliance.org/fhir/mobile/guides.html
   Mapping: mapping.html
+  Status matrix: status-matrix.html
+  Concept properties: concept-properties.html
   Synchronization: synchronization.html
   Implement and validate: implementation.html
   Artifacts: artifacts.html
@@ -41,6 +59,10 @@ pages:
     title: Overview
   mapping.md:
     title: Mapping
+  status-matrix.md:
+    title: Authoritative status matrix
+  concept-properties.md:
+    title: Concept properties
   synchronization.md:
     title: Synchronization
   implementation.md:

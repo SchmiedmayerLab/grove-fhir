@@ -22,6 +22,7 @@ Description: "The identifier namespace for the repository-scoped identity of a H
 * uniqueId.value = $healthConnectRecordId
 * uniqueId.preferred = true
 
+
 Instance: HealthConnectOutputIdentifier
 InstanceOf: NamingSystem
 Usage: #definition
@@ -36,6 +37,22 @@ Description: "The identifier namespace for the stable identity of one FHIR Obser
 * description = "Identifies one logical FHIR Observation emitted from a Health Connect Record. A one-to-one conversion and every element of a one-to-many conversion receive distinct stable values. Values use the versioned digest algorithm defined by this guide so clinical values are not exposed directly in identifier indexes. The digest is a business identifier for synchronization and deduplication, not a FHIR Resource.id, version id, access-control mechanism, or confidentiality boundary."
 * uniqueId.type = #uri
 * uniqueId.value = $healthConnectOutputId
+* uniqueId.preferred = true
+
+Instance: HealthConnectSpecimenIdentifier
+InstanceOf: NamingSystem
+Usage: #definition
+Title: "Health Connect Specimen Identifier"
+Description: "The identifier namespace for a specimen node deterministically derived from one Health Connect BloodGlucoseRecord and its admitted specimen-source token."
+* id = "health-connect-specimen-id"
+* name = "HealthConnectSpecimenIdentifier"
+* status = #active
+* kind = #identifier
+* date = "2026-08-20"
+* publisher = "Schmiedmayer Lab"
+* description = "Identifies one synthesized Specimen resource by the complete source Record identifier and exact supported Health Connect specimen-source token. It is a business identifier, never a FHIR Resource.id."
+* uniqueId.type = #uri
+* uniqueId.value = $healthConnectSpecimenId
 * uniqueId.preferred = true
 
 Instance: AndroidPackageName

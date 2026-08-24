@@ -12,19 +12,27 @@ fields and established domain profiles. Grove profiles make record identity, cap
 mode, device roles, conversion provenance, and research-study context consistent across
 source platforms.
 
+Grove FHIR is a family of seven guides; [the guide family page](guides.html) maps them, their catalogs, and the shared status vocabulary.
+
+New to FHIR?
+[Start here](fhir-basics.html).
+It covers the five resources these guides use, the difference between an id and an identifier, and how to read a profile page — enough to follow everything below.
+
 ### Choose your starting point
 
 | Goal | Read | Working example |
 |---|---|---|
+| Understand FHIR well enough to read this guide | [New to FHIR](fhir-basics.html) | [Heart-rate JSON](Observation-GroveMobileHeartRateExample.json) |
 | Encode or consume a measurement | [Observations](observations.html) | [Heart rate](Observation-GroveMobileHeartRateExample.html) |
+| Exchange a complete resource graph | [Observations](observations.html#exchange-graph) | [Collection Bundle](Bundle-GroveMobileExchangeBundleExample.html) |
 | Distinguish the sensor from the app | [Devices and provenance](devices.html) | [Conversion provenance](Provenance-GroveMobileConversionProvenanceExample.html) |
 | Connect data to a study revision | [Study context](study.html) | [Study protocol](PlanDefinition-GroveMobileStudyPlanExample.html) |
 | Add the package and validate JSON | [Implement and validate](implementation.html) | [Heart-rate JSON](Observation-GroveMobileHeartRateExample.json) |
 
 ### The exchange model
 
-The Observation is the clinical record. Other resources describe the context needed
-to interpret and audit that record.
+The collection Bundle is the exchange unit. Its Observation entries are the clinical
+records; other entries describe the context needed to interpret and audit them.
 
 ```text
 Patient <--------- Observation ---------> recording Device
@@ -66,3 +74,8 @@ application developer.
 Start with the [heart-rate JSON](Observation-GroveMobileHeartRateExample.json), then
 compare it with the [Mobile envelope](StructureDefinition-grove-mobile-observation.html)
 and the [FHIR R4 Heart Rate profile](https://hl7.org/fhir/R4/heartrate.html).
+
+Every profile carries an example.
+The hand-written ones show a measurement in the context a producer actually emits it, with the device, study, and platform metadata that surround it.
+The rest are projected from the same catalog entry as the profile itself, so they state the minimum a conformant instance needs and cannot drift from the rules they satisfy.
+A projected example is not a template for a rich record; read a hand-written one for that.

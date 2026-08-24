@@ -6,18 +6,31 @@ path = [
     "LICENSE.md",
     "LICENSES/MIT.txt",
     "Gemfile.lock",
+    "Conformance/README.md",
     "Conformance/**/*.json",
-    "Integration/sources.json",
+    "catalog/*.json",
+    "catalog/terminology/*.json",
+    "catalog/schemas/*.json",
+    "providers/ig.ini",
+    "providers/input/ignoreWarnings.txt",
     "health-connect/ig.ini",
     "health-connect/input/ignoreWarnings.txt",
     "healthkit/ig.ini",
     "healthkit/input/data/terminology-provenance.json",
+    "mobile/input/data/terminology-reviews.json",
+    "*/input/data/*-inventory.json",
     "healthkit/input/ignoreWarnings.txt",
     "mobile/ig.ini",
     "mobile/input/ignoreWarnings.txt",
     "questionnaire/ig.ini",
     "questionnaire/fixtures/**/*.json",
     "questionnaire/input/ignoreWarnings.txt",
+    "questionnaire/input/expectedBrokenLinks.txt",
+    "sensor/ig.ini",
+    "sensor/input/ignoreWarnings.txt",
+    "sensorkit/ig.ini",
+    "sensorkit/input/ignoreWarnings.txt",
+    "sensorkit/sushi-config.yaml",
     "package-lock.json",
     "package.json",
     "publication/artifact-allowlist.json",
@@ -26,7 +39,11 @@ path = [
 SPDX-FileCopyrightText = "2026 Schmiedmayer Lab and the project authors (see CONTRIBUTORS.md)"
 SPDX-License-Identifier = "MIT"
 
+# The semantic baseline is a snapshot of built package content, including the guides' own
+# copyright statements. REUSE would otherwise read those as this file's own copyright and fail
+# to parse the JSON that follows them.
 [[annotations]]
-path = ["Integration/Patches/**/*.patch"]
+path = ["publication/mobile-semantic-baseline.json"]
+precedence = "override"
 SPDX-FileCopyrightText = "2026 Schmiedmayer Lab and the project authors (see CONTRIBUTORS.md)"
 SPDX-License-Identifier = "MIT"

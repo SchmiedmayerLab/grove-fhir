@@ -16,29 +16,49 @@ SPDX-License-Identifier: MIT
 [![REUSE status](https://api.reuse.software/badge/github.com/SchmiedmayerLab/grove-fhir)](https://api.reuse.software/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE.md)
 
-Grove FHIR defines reusable FHIR R4 contracts for mobile health data. The Mobile Data
+Grove FHIR 0.3.0 defines international, reusable FHIR R4 contracts for mobile health data. The Mobile Data
 Exchange guide describes source-neutral Observations, recording and application Device
 roles, study context, and conversion provenance. Platform adapters add the identifiers and
 mappings needed by a specific source without changing the shared resource shape.
-[Grove Swift](https://github.com/SchmiedmayerLab/Grove) is the reference implementation for
-the HealthKit adapter. The Health Connect adapter defines the corresponding Android exchange
-and synchronization contract. The Questionnaire Exchange guide defines a separate SDC-based
-contract for versioned instruments and responses.
+Implementations in Swift, TypeScript, Kotlin, or another language are independent
+producers of these contracts. This repository owns the guides, examples, negative
+corpora, and a producer-neutral validation kit; it never clones or executes an
+implementation repository.
+
+The canonical namespace is `https://grovealliance.org/fhir`. Canonical identity does
+not imply that the guides are currently hosted on that domain. During development,
+GitHub Pages remains the documentation preview.
 
 ## Documentation
 
 Start with the [Mobile Data Exchange guide](https://schmiedmayerlab.github.io/grove-fhir/)
-to understand the common resource model and copy a complete example. Use the
-[HealthKit adapter guide](https://schmiedmayerlab.github.io/grove-fhir/healthkit/) when
-converting Apple HealthKit samples. Use the
-[Health Connect adapter guide](https://schmiedmayerlab.github.io/grove-fhir/health-connect/)
-when converting and synchronizing Android Health Connect records. Use the
+to understand the common resource model and copy a complete example. The exact 0.3.0
+package graph is:
+
+| Package | Layer and dependency |
+|---|---|
+| `org.grovealliance.fhir.mobile` | Source-neutral mobile measurements, exchange graphs, Devices, and conversion provenance; foundation package |
+| `org.grovealliance.fhir.questionnaire` | International Questionnaire and QuestionnaireResponse exchange; independent of the measurement graph and based on SDC R4 |
+| `org.grovealliance.fhir.sensor` | Source-neutral SampledData, ECG, immutable raw Recording Documents, and Sensor conversion provenance; depends on Mobile |
+| `org.grovealliance.fhir.healthkit` | Apple HealthKit adapter; depends on Mobile and Sensor |
+| `org.grovealliance.fhir.health-connect` | Android Health Connect 1.1 adapter; depends on Mobile |
+| `org.grovealliance.fhir.sensorkit` | Apple SensorKit adapter; depends on Mobile and Sensor |
+| `org.grovealliance.fhir.providers` | Google Health API, Oura, and Withings mappings; depends on Mobile and Sensor |
+
+Use the [HealthKit adapter](https://schmiedmayerlab.github.io/grove-fhir/healthkit/),
+[Health Connect adapter](https://schmiedmayerlab.github.io/grove-fhir/health-connect/),
+[Sensor and waveform guide](https://schmiedmayerlab.github.io/grove-fhir/sensor/),
+[SensorKit adapter](https://schmiedmayerlab.github.io/grove-fhir/sensorkit/), or
+[connected-provider adapter](https://schmiedmayerlab.github.io/grove-fhir/providers/)
+for the applicable already-obtained source data. Use the
 [Questionnaire Exchange guide](https://schmiedmayerlab.github.io/grove-fhir/questionnaire/)
-to publish instruments and exchange their responses.
+to publish instruments and exchange their responses. Adapter packages define mappings
+and conformance; they do not fetch provider or platform data, authenticate to provider
+APIs, or specify receiver storage.
 
 ## Development
 
-The build requires Node.js 22, Ruby 3.3, and Java 21. It uses lockfile-pinned SUSHI and Jekyll
+The build requires Node.js 24, Ruby 3.3, and Java 21. It uses lockfile-pinned SUSHI and Jekyll
 dependencies and downloads checksum-pinned FHIR Publisher and Validator releases.
 
 ```sh
@@ -49,9 +69,8 @@ npm run pages:build
 
 `pages:build` builds and validates the guides in dependency order, rejects
 Publisher QA errors or warnings, and assembles a guide-only local preview under
-`.build/pages`. The full evidence-bearing site additionally requires all exact platform
-proposal outputs; [Conformance/README.md](Conformance/README.md) documents that fail-closed
-inventory and the reproducible lock commands.
+`.build/pages`. [Conformance/README.md](Conformance/README.md) documents how a producer
+validates emitted resources against packages built from the same Grove FHIR revision.
 
 The [publication model](PUBLICATION.md) documents canonical routes, package checksums, and the
 release process.

@@ -20,7 +20,7 @@ Usage: #example
 Title: "Weekly Symptom Check-In"
 Description: "A versioned instrument with a conditional follow-up question."
 * extension[versionAlgorithm].valueCoding = $versionAlgorithm#semver
-* url = "https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/Questionnaire/GroveWeeklySymptomCheckInExample"
+* url = "https://grovealliance.org/fhir/questionnaire/Questionnaire/GroveWeeklySymptomCheckInExample"
 * version = "1.0.0"
 * name = "GroveWeeklySymptomCheckIn"
 * title = "Weekly Symptom Check-In"
@@ -50,7 +50,7 @@ InstanceOf: GroveQuestionnaireResponse
 Usage: #example
 Title: "Weekly Symptom Check-In Response"
 Description: "A completed response whose follow-up answer is nested beneath the answer that enabled it."
-* questionnaire = "https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/Questionnaire/GroveWeeklySymptomCheckInExample|1.0.0"
+* questionnaire = "https://grovealliance.org/fhir/questionnaire/Questionnaire/GroveWeeklySymptomCheckInExample|1.0.0"
 * identifier.system = "https://example.org/research/questionnaire-response-id"
 * identifier.value = "weekly-check-in-0001"
 * status = #completed

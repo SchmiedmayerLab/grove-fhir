@@ -6,61 +6,69 @@ SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTR
 SPDX-License-Identifier: MIT
 -->
 
-The Grove Health Connect Adapter maps Android Health Connect Records to FHIR R4. It
-uses established FHIR profiles and terminology for clinical meaning and adds only the
-source identities needed to synchronize converted resources.
+The Grove Health Connect Adapter maps AndroidX Health Connect 1.1 Records that have already
+been read by an application into international FHIR R4. It does not request permissions,
+fetch Records, or define a receiving service.
 
-Every converted result conforms to two independent contracts:
+New to FHIR?
+[Start with the FHIR basics page](https://grovealliance.org/fhir/mobile/fhir-basics.html) in the Mobile guide.
+It covers the resources these guides use, identifiers and references, and how to read a profile page.
 
-1. [Health Connect Observation](StructureDefinition-health-connect-observation.html)
-   identifies the source Record and the individual FHIR output.
-2. A clinical or research profile defines what was measured, its unit, and its time
-   semantics.
+Every emitted Observation declares exactly two direct profiles:
 
-Both profile canonicals appear in `Observation.meta.profile`, and the resource must
-validate against both.
+1. the exact source-neutral Grove Mobile measurement profile; and
+2. [Health Connect Observation](StructureDefinition-health-connect-observation.html).
 
-### Start with a record type
+The shared profile defines clinical meaning, result shape, unit, and time semantics. The
+adapter profile defines source and output identities plus the small allowlist of
+Health-Connect-specific context. Inherited Mobile and core standard profiles are not
+repeated in `meta.profile`.
 
-| Health Connect input | FHIR representation | Complete example |
-|---|---|---|
-| `HeartRateRecord` | One FHIR R4 Heart Rate Observation per `Sample`; LOINC `8867-4`; UCUM `/min` | [First sample](Observation-HealthConnectHeartRateSampleOneExample.html) and [second sample](Observation-HealthConnectHeartRateSampleTwoExample.html) |
-| `WeightRecord` | FHIR R4 Body Weight; LOINC `29463-7`; UCUM `kg` | [Body weight](Observation-HealthConnectBodyWeightExample.html) |
-| `StepsRecord` | Grove Mobile Step Count; Grove `step-count-total`; UCUM `{steps}` over the exact source interval | [Step count](Observation-HealthConnectStepCountExample.html) |
+### Supported conversion surface
 
-The [documentation Bundle](Bundle-HealthConnectStudyBundleExample.html) aggregates every
-resource referenced by these examples: participant, protocol, enrollment, recording
-device, applications, Observations, and conversion Provenance. Its
-[JSON representation](Bundle-HealthConnectStudyBundleExample.json) is useful for profile
-validation and reference inspection. It combines several source records and is therefore
-not an operational synchronization event; each event follows the single-source envelope
-defined in [Synchronization](synchronization.html).
+| Record family | Shared output |
+|---|---|
+| `ActiveCaloriesBurnedRecord` | active energy |
+| `BasalBodyTemperatureRecord` | basal body temperature |
+| `BloodGlucoseRecord` | specimen-specific whole-blood, capillary-blood, serum/plasma, or interstitial glucose |
+| `BloodPressureRecord` | blood-pressure panel |
+| `BodyTemperatureRecord` | body temperature |
+| `DistanceRecord` | distance traveled |
+| `HeartRateRecord` | one heart-rate Observation per sample |
+| `HeightRecord` | body height |
+| `OxygenSaturationRecord` | oxygen saturation |
+| `RespiratoryRateRecord` | respiratory rate |
+| `SleepSessionRecord` | one duration summary plus zero or more stage Observations |
+| `StepsRecord` | step-count interval total |
+| `WeightRecord` | body weight |
 
-### Read the identifiers correctly
+[`catalog/health-connect-adapter.json`](https://grovealliance.org/fhir/catalog/health-connect-adapter.json) is the authoritative closed inventory.
+It lists all 41 `RecordType.all` members with one definitive status, their output cardinality, and exact context mappings.
+A type omitted from the table above is not silently admitted.
 
-Each Observation carries two identifiers with different jobs:
+### Identity and source context
 
-- [Health Connect Record Identifier](NamingSystem-health-connect-record-id.html) is the
-  repository- and Record-class-scoped digest derived from `Record.metadata.id`. It does not
-  disclose the raw platform id. All outputs from one source Record repeat this identifier.
-- [Health Connect Output Identifier](NamingSystem-health-connect-output-id.html) identifies
-  one emitted Observation. Outputs from a multi-sample `HeartRateRecord` have distinct
-  output identifiers.
+The source-record identifier is repository-scoped and does not disclose
+`Record.metadata.id`. A Record yielding several Observations repeats that source pair and gives
+each output a distinct identifier; a one-to-one conversion carries the Record identifier alone. A synthesized glucose Specimen, conversion Provenance, and exchange Bundle
+also have complete business identifiers. The compositions, lexical rules, naming
+systems, and cross-language vectors are normative in
+[`catalog/health-connect-identity.json`](https://grovealliance.org/fhir/catalog/health-connect-identity.json). None of these values becomes `Resource.id`.
 
-Neither value is a FHIR `Resource.id`. A receiving FHIR server controls `Resource.id` and
-`meta.versionId`; synchronization uses the complete business-identifier pairs.
+Supported source context is represented explicitly:
 
-[Health Connect Conversion Provenance](StructureDefinition-health-connect-conversion-provenance.html)
-links all outputs from one Record to that source identifier, the converting application,
-and the application reported by `DataOrigin.packageName` as the source-system enterer.
-Application identifiers use the
-[Android Package Name](NamingSystem-android-package-name.html) namespace.
+- standard SNOMED CT specimen types select the glucose profile;
+- standard body-position and body-site elements retain admitted blood-pressure and
+  temperature context;
+- a typed extension retains non-unknown meal context;
+- the sleep summary retains an optional title and notes; and
+- each sleep-stage result carries the shared Grove coding first and the exact Health
+  Connect stage coding second.
 
-The adapter publishes no Health Connect CodeSystem and no generic metadata extension.
-LOINC, UCUM, standard FHIR profiles, the Mobile recording-method extension, and standard
-Provenance roles already express the supported facts. A platform field that has no defined
-FHIR meaning is not copied into an opaque extension.
+Unknown context is omitted when it does not change the clinical meaning. A source value
+that is required to select an exact clinical profile, such as glucose specimen, fails
+closed when it is unknown or unsupported.
 
-Continue with [Mapping](mapping.html) for field-level rules and
-[Synchronization](synchronization.html) for updates, deletions, and change-token recovery.
-Open [Artifacts](artifacts.html) for the complete conformance surface.
+Continue with [Mapping](mapping.html), [Synchronization](synchronization.html), and
+[Implementation](implementation.html). Open [Artifacts](artifacts.html) for the complete
+package surface.

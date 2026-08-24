@@ -12,6 +12,14 @@ set -euo pipefail
 REPOSITORY_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 readonly REPOSITORY_ROOT
 readonly TOOLS_DIRECTORY="$REPOSITORY_ROOT/.build/fhir-tools"
+readonly FHIR_TOOL_HOME="$REPOSITORY_ROOT/.build/fhir-home"
+readonly FHIR_PACKAGE_CACHE="$FHIR_TOOL_HOME/.fhir/packages"
+JAVA_COMMAND="java"
+if [[ -x "$REPOSITORY_ROOT/.build/jdk21/Contents/Home/bin/java" ]]; then
+  JAVA_COMMAND="$REPOSITORY_ROOT/.build/jdk21/Contents/Home/bin/java"
+fi
+readonly JAVA_COMMAND
+readonly JAVA_MEMORY_ARGUMENTS=("-Xmx4g" "-XX:MaxMetaspaceSize=512m")
 
 cd "$REPOSITORY_ROOT"
 export PATH="$REPOSITORY_ROOT/node_modules/.bin:$PATH"
@@ -46,17 +54,68 @@ for guide in "${guides[@]}"; do
   test -f "$guide/sushi-config.yaml"
   echo "Building $guide"
   clean_generated_guide_content "$guide"
-  publisher_arguments=(-ig ig.ini)
+  # The Publisher validates codings against a terminology server. The server's cache lives in
+  # each guide's input-cache, which is never committed: it holds thousands of SNOMED and LOINC
+  # concepts this project has no licence to redistribute, and it is not ours to relicense under
+  # the repository's MIT terms.
+  #
+  # GROVE_TX_OFFLINE=1 builds without a server. That cannot validate any coding, so it reports
+  # every one as unvalidatable; use it only to check structure when no network is available.
+  if [[ -n "${GROVE_TX_OFFLINE:-}" ]]; then
+    publisher_arguments=(-ig ig.ini -tx n/a -no-network)
+  else
+    publisher_arguments=(-ig ig.ini -tx "${GROVE_TX_SERVER:-https://tx.fhir.org}")
+  fi
+  guide_package_directory="$REPOSITORY_ROOT/.build/guide-packages/$guide"
+  if [[ -d "$guide_package_directory" ]]; then
+    find "$guide_package_directory" -depth -delete
+  fi
+  mkdir -p "$guide_package_directory"
+  has_local_guide_packages=false
   if grep -q '^  org\.grovealliance\.fhir\.mobile:' "$guide/sushi-config.yaml"; then
     test -f "$REPOSITORY_ROOT/mobile/output/package.tgz"
     node "$REPOSITORY_ROOT/Scripts/cache-fhir-package.cjs" \
+      --cache-root "$FHIR_PACKAGE_CACHE" \
       "$REPOSITORY_ROOT/mobile/output/package.tgz"
+    cp "$REPOSITORY_ROOT/mobile/output/package.tgz" \
+      "$guide_package_directory/org.grovealliance.fhir.mobile-0.3.0.tgz"
+    has_local_guide_packages=true
+  fi
+  if grep -q '^  org\.grovealliance\.fhir\.sensor:' "$guide/sushi-config.yaml"; then
+    test -f "$REPOSITORY_ROOT/sensor/output/package.tgz"
+    node "$REPOSITORY_ROOT/Scripts/cache-fhir-package.cjs" \
+      --cache-root "$FHIR_PACKAGE_CACHE" \
+      "$REPOSITORY_ROOT/sensor/output/package.tgz"
+    cp "$REPOSITORY_ROOT/sensor/output/package.tgz" \
+      "$guide_package_directory/org.grovealliance.fhir.sensor-0.3.0.tgz"
+    has_local_guide_packages=true
+  fi
+  if [[ "$has_local_guide_packages" == "true" ]]; then
     publisher_arguments+=(
       -packages
-      "$REPOSITORY_ROOT/mobile/output"
+      "$guide_package_directory"
     )
   fi
-  (cd "$guide" && java -jar "$TOOLS_DIRECTORY/publisher.jar" "${publisher_arguments[@]}")
+  (
+    cd "$guide"
+    GROVE_FHIR_TOOL_HOME="$FHIR_TOOL_HOME" \
+    NODE_OPTIONS="--require=$REPOSITORY_ROOT/Scripts/sushi-cache-home.cjs" \
+      "$JAVA_COMMAND" "${JAVA_MEMORY_ARGUMENTS[@]}" -Djava.awt.headless=true \
+      -Duser.home="$FHIR_TOOL_HOME" -jar "$TOOLS_DIRECTORY/publisher.jar" \
+      "${publisher_arguments[@]}"
+  ) || {
+    # Publisher 2.3.x can report a transient combined-package write failure before
+    # Jekyll creates output/, or return nonzero for the pinned offline MIME defect
+    # even though every finding is an exact reviewed suppression. Accept only a
+    # fully materialized package whose raw/exact/unsuppressed QA ledger passes the
+    # same fail-closed audit used below; every other nonzero exit remains fatal.
+    test -f "$REPOSITORY_ROOT/$guide/output/package.tgz"
+    test -f "$REPOSITORY_ROOT/$guide/output/qa.json"
+    python3 "$REPOSITORY_ROOT/Scripts/check-guide-qa.py" "$REPOSITORY_ROOT/$guide"
+  }
+  if [[ "$guide" == "mobile" ]]; then
+    python3 "$REPOSITORY_ROOT/Scripts/check-semantic-baseline.py"
+  fi
 done
 
 python3 Scripts/check-guide-qa.py "${guides[@]}"

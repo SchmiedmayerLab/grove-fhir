@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://grovealliance.org/fhir/conformance/producer-manifest.schema.json",
+  "title": "Grove FHIR producer conformance manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "fhirVersion", "producer", "packages", "resources", "semanticVectors"],
+  "properties": {
+    "schemaVersion": {"const": 1},
+    "fhirVersion": {"const": "4.0.1"},
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "version": {"type": "string", "minLength": 1},
+        "revision": {"type": "string", "minLength": 1}
+      }
+    },
+    "packages": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["alias", "packageId", "version"],
+        "properties": {
+          "alias": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$"},
+          "packageId": {"type": "string", "pattern": "^[a-z0-9.-]+$"},
+          "version": {"const": "0.3.0"}
+        }
+      }
+    },
+    "resources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "requiredProfiles"],
+        "properties": {
+          "path": {"type": "string", "pattern": "^[^/].*[.]json$"},
+          "requiredProfiles": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {"type": "string", "pattern": "^https://grovealliance[.]org/fhir/"}
+          }
+        }
+      }
+    },
+    "semanticVectors": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "path", "resourcePointer"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "path": {"type": "string", "pattern": "^[^/].*[.]json$"},
+          "resourcePointer": {"type": "string", "pattern": "^(|/.*)$"}
+        }
+      }
+    }
+  }
+}

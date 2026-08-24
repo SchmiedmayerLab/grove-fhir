@@ -31,6 +31,16 @@ Description: "A populated step count is not negative."
 Expression: "value.empty() or value.ofType(Quantity).value >= 0"
 Severity: #error
 
+Invariant: grove-exchange-full-url-1
+Description: "Every exchange entry has a distinct lowercase RFC 4122 UUID URN fullUrl."
+Expression: "entry.all(fullUrl.matches('^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-5[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$')) and entry.fullUrl.isDistinct()"
+Severity: #error
+
+Invariant: grove-exchange-entry-identity-1
+Description: "Exchange entry business identifier system and value pairs are distinct."
+Expression: "entry.extension('https://grovealliance.org/fhir/mobile/StructureDefinition/grove-exchange-entry-identifier').value.ofType(Identifier).select(system.length().toString() & ':' & system & value.length().toString() & ':' & value).isDistinct()"
+Severity: #error
+
 RuleSet: CompleteIdentifierPairs
 * identifier.system 1..1 MS
 * identifier.value 1..1 MS
@@ -40,6 +50,8 @@ RuleSet: GroveMobileObservationRules
 * insert CompleteIdentifierPairs
 * identifier 1..* MS
 * identifier ^short = "Stable business identifier used to deduplicate this exchanged record"
+* extension contains GroveWriterRecordVersion named writerRecordVersion 0..1 MS
+* extension[writerRecordVersion] ^short = "Writer's version of the logical record this measurement came from"
 * status 1..1 MS
 * category MS
 * code 1..1 MS
@@ -69,6 +81,54 @@ RuleSet: GroveMobileObservationRules
     $researchStudy named researchStudy 0..* MS
 * extension[gatewayDevice].valueReference only Reference(GroveApplicationDevice)
 * extension[researchStudy].valueReference only Reference(ResearchStudy)
+
+RuleSet: GroveMobilePointObservationContextRules
+* obeys grove-identifier-token-1
+* insert CompleteIdentifierPairs
+* identifier 1..* MS
+* identifier ^short = "Stable business identifier used to deduplicate this exchanged record"
+* subject 1..1 MS
+* subject only Reference(Patient)
+* effectiveDateTime 1..1 MS
+* effectiveDateTime.extension contains $timezone named timezone 0..1 MS
+* issued MS
+* device MS
+* derivedFrom MS
+* extension contains
+    GroveRecordingMethod named recordingMethod 0..1 MS and
+    $gatewayDevice named gatewayDevice 0..1 MS and
+    $researchStudy named researchStudy 0..* MS
+* extension[gatewayDevice].valueReference only Reference(GroveApplicationDevice)
+* extension[researchStudy].valueReference only Reference(ResearchStudy)
+
+Extension: GroveExchangeEntryIdentifier
+Id: grove-exchange-entry-identifier
+Title: "Grove Exchange Entry Identifier"
+Description: "The complete business identifier from which an exchange Bundle entry fullUrl is deterministically derived. It identifies the graph node and does not replace a resource's native identifier or canonical URL."
+Context: Bundle.entry
+* value[x] only Identifier
+* valueIdentifier 1..1
+* valueIdentifier.system 1..1 MS
+* valueIdentifier.value 1..1 MS
+
+Profile: GroveMobileExchangeBundle
+Parent: Bundle
+Id: grove-mobile-exchange-bundle
+Title: "Grove Mobile Exchange Bundle"
+Description: "A source-neutral collection Bundle carrying one internally consistent mobile health resource graph. Entry UUID URNs are deterministic from complete entry business identifiers; Resource.id is not used for source identity."
+* obeys grove-exchange-full-url-1 and grove-exchange-entry-identity-1
+* identifier 1..1 MS
+* identifier.system 1..1 MS
+* identifier.value 1..1 MS
+* type = #collection
+* timestamp 1..1 MS
+* entry 1..* MS
+* entry.extension contains GroveExchangeEntryIdentifier named entryIdentifier 1..1 MS
+* entry.fullUrl 1..1 MS
+* entry.resource 1..1 MS
+* entry.search 0..0
+* entry.request 0..0
+* entry.response 0..0
 
 Profile: GroveRecordingDevice
 Parent: Device
@@ -119,26 +179,6 @@ Title: "Grove Mobile Observation"
 Description: "A source-neutral FHIR R4 exchange envelope for a measurement collected through a mobile application or connected device. Combine it with an appropriate clinical or research profile."
 * insert GroveMobileObservationRules
 
-Profile: GroveMobileStepCount
-Parent: GroveMobileObservation
-Id: grove-mobile-step-count
-Title: "Grove Mobile Step Count"
-Description: "The number of steps recorded during an exact effective Period."
-* obeys grove-step-count-result-1 and grove-step-count-period-1 and grove-step-count-value-1
-* code = GroveMobileMeasurementCS#step-count-total
-* code from GroveMobileMeasurementVS (required)
-* effectiveDateTime 0..0
-* effectivePeriod 1..1 MS
-* effectivePeriod.end 1..1 MS
-* value[x] only Quantity
-* valueQuantity.value 1..1 MS
-* valueQuantity.comparator 0..0
-* valueQuantity.unit MS
-* valueQuantity.system 1..1 MS
-* valueQuantity.system = $ucum (exactly)
-* valueQuantity.code 1..1 MS
-* valueQuantity.code = #{steps} (exactly)
-
 Profile: GroveMobileConversionProvenance
 Parent: Provenance
 Id: grove-mobile-conversion-provenance
@@ -163,3 +203,15 @@ Description: "Provenance for the application that transformed one or more source
 * entity.role 1..1 MS
 * entity.role = #source
 * entity.what MS
+
+
+Invariant: grove-writer-record-version-value-1
+Description: "A writer record version is a canonical non-negative decimal integer, written without a sign, leading zeros, or separators."
+Expression: "$this.matches('^(0|[1-9][0-9]*)$')"
+Severity: #error
+
+
+Invariant: grove-writer-record-id-value-1
+Description: "A writer record identifier scopes the writer's own identifier to the writer: the scheme version, the writing application's reverse-DNS identifier, a vertical bar, then the identifier it assigned. Neither part may contain a vertical bar."
+Expression: "$this.matches('^v1:[A-Za-z0-9._-]+[|].+$')"
+Severity: #error

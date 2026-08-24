@@ -14,6 +14,10 @@ its answers as FHIR R4. It uses two standard resources:
 - a `QuestionnaireResponse` is one administration of that instrument: who or what the
   answers concern, when they were recorded, and the answers themselves.
 
+New to FHIR?
+[Start with the FHIR basics page](https://grovealliance.org/fhir/mobile/fhir-basics.html) in the Mobile guide.
+It covers the resources these guides use, identifiers and references, and how to read a profile page.
+
 The profiles build on the
 [HL7 Structured Data Capture Implementation Guide](https://hl7.org/fhir/uv/sdc/).
 Applications exchange ordinary FHIR JSON; the profiles make the parts that affect

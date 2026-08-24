@@ -12,9 +12,15 @@ set -euo pipefail
 REPOSITORY_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 readonly REPOSITORY_ROOT
 readonly TOOLS_DIRECTORY="$REPOSITORY_ROOT/.build/fhir-tools"
+readonly FHIR_TOOL_HOME="$REPOSITORY_ROOT/.build/fhir-home"
+JAVA_COMMAND="java"
+if [[ -x "$REPOSITORY_ROOT/.build/jdk21/Contents/Home/bin/java" ]]; then
+  JAVA_COMMAND="$REPOSITORY_ROOT/.build/jdk21/Contents/Home/bin/java"
+fi
+readonly JAVA_COMMAND
 
-if [[ "$#" -ne 1 || ("$1" != "mobile" && "$1" != "healthkit" && "$1" != "health-connect" && "$1" != "questionnaire") ]]; then
-  echo "Usage: $0 <mobile|healthkit|health-connect|questionnaire>" >&2
+if [[ "$#" -ne 1 || ("$1" != "mobile" && "$1" != "sensor" && "$1" != "sensorkit" && "$1" != "healthkit" && "$1" != "health-connect" && "$1" != "providers" && "$1" != "questionnaire") ]]; then
+  echo "Usage: $0 <mobile|sensor|sensorkit|healthkit|health-connect|providers|questionnaire>" >&2
   exit 2
 fi
 
@@ -28,6 +34,8 @@ fi
 cd "$REPOSITORY_ROOT"
 if [[ "$GUIDE" == "mobile" ]]; then
   ./Scripts/build-guides.sh mobile
+elif grep -q '^  org\.grovealliance\.fhir\.sensor:' "$GUIDE/sushi-config.yaml"; then
+  ./Scripts/build-guides.sh mobile sensor "$GUIDE"
 elif grep -q '^  org\.grovealliance\.fhir\.mobile:' "$GUIDE/sushi-config.yaml"; then
   ./Scripts/build-guides.sh mobile "$GUIDE"
 else
@@ -36,15 +44,22 @@ fi
 
 publication_path="$(python3 -c 'import json, sys; print(json.load(open(sys.argv[1], encoding="utf-8"))["path"])' "$REQUEST")"
 readonly publication_path
-if [[ "$publication_path" != https://schmiedmayerlab.github.io/grove-fhir/fhir/* ]]; then
-  echo "publication request path is outside the configured draft canonical host" >&2
+if [[ "$publication_path" != https://grovealliance.org/fhir/* ]]; then
+  echo "publication request path is outside the configured canonical namespace" >&2
   exit 1
 fi
 
 export PATH="$REPOSITORY_ROOT/node_modules/.bin:$REPOSITORY_ROOT/.build/bin:$PATH"
+
+# The pull-request suite only proves each catalog matches the evidence committed beside
+# it. Re-read the platforms before publishing, so a symbol written into both files
+# cannot reach a released code system that calls itself complete.
+python3 Scripts/render-platform-inventories.py --check
+
 echo "Building publication-mode output for $GUIDE at $publication_path"
-(cd "$GUIDE" && java -jar "$TOOLS_DIRECTORY/publisher.jar" \
+(cd "$GUIDE" && "$JAVA_COMMAND" -Duser.home="$FHIR_TOOL_HOME" -jar "$TOOLS_DIRECTORY/publisher.jar" \
   -ig ig.ini \
+  -tx n/a \
   -publish "$publication_path")
 
 python3 Scripts/check-guide-qa.py "$GUIDE"

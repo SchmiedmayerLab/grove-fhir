@@ -22,3 +22,6 @@ __pycache__/
 **/publish-temp/
 .bundle/
 **/Requirements-fromNarrative.json
+
+# Local editor and agent scratch configuration
+.claude/

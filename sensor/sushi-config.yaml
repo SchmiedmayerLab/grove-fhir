@@ -1,0 +1,63 @@
+#
+# This source file is part of the Grove FHIR open-source project
+#
+# SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTRIBUTORS.md)
+#
+# SPDX-License-Identifier: MIT
+#
+
+id: org.grovealliance.fhir.sensor
+canonical: https://grovealliance.org/fhir/sensor
+name: GroveFHIRSensor
+title: Grove FHIR Sensor and Waveform
+description: >-
+  Source-neutral FHIR R4 contracts for sampled sensor time series, ECG waveforms,
+  and externally encoded sensor recordings.
+status: draft
+version: 0.3.0
+fhirVersion: 4.0.1
+copyrightYear: 2026+
+releaseLabel: ci-build
+publisher:
+  name: Schmiedmayer Lab
+  url: https://github.com/SchmiedmayerLab
+license: MIT
+copyright: >-
+  Grove-authored profiles, extensions, terminology, and examples in this guide are published by the Schmiedmayer Lab under the MIT license.
+
+  FHIR® is the registered trademark of HL7 and is used with the permission of HL7. HL7 R4 material is copyright © HL7 International.
+
+  This material contains content from LOINC (https://loinc.org). LOINC is copyright © 1995-2026 Regenstrief Institute, Inc. and the Logical Observation Identifiers Names and Codes (LOINC) Committee and is available at no cost under the license at https://loinc.org/license. LOINC® is a registered United States trademark of Regenstrief Institute, Inc.
+
+  This material contains UCUM unit codes. UCUM is copyright © 1999-2026 Regenstrief Institute, Inc. and available under the license at https://ucum.org/trac.
+
+  ISO/IEEE 11073-10101 nomenclature codes are copyright © IEEE and ISO and are used here only to identify standard concepts.
+
+dependencies:
+  hl7.terminology.r4: 7.3.0
+  hl7.fhir.uv.extensions.r4: 5.3.0
+  org.grovealliance.fhir.mobile:
+    version: 0.3.0
+    uri: https://grovealliance.org/fhir/mobile/ImplementationGuide/org.grovealliance.fhir.mobile
+
+parameters:
+  special-url:
+    - urn:ietf:bcp:13
+
+menu:
+  Overview: index.html
+  Guides: https://grovealliance.org/fhir/mobile/guides.html
+  Time series and ECG: waveforms.html
+  Formats: formats.html
+  Implement and validate: implementation.html
+  Artifacts: artifacts.html
+
+pages:
+  index.md:
+    title: Overview
+  waveforms.md:
+    title: Time series and ECG
+  formats.md:
+    title: Recording formats
+  implementation.md:
+    title: Implement and validate

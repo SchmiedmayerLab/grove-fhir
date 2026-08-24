@@ -1,0 +1,115 @@
+{
+  "schemaVersion": 1,
+  "version": "0.3.0",
+  "fhirVersion": "4.0.1",
+  "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle",
+  "entryIdentifierExtension": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-exchange-entry-identifier",
+  "fullUrlAlgorithm": {
+    "name": "uuid-v5-composed-identifier-v1",
+    "namespace": "a9a39cf1-c944-5d15-a3c2-c395969ea101",
+    "input": "UTF-8 bytes of the system, one U+007C VERTICAL LINE, then the value",
+    "rejects": "The system must not contain a vertical bar, so the input splits unambiguously at the first one. The value may contain vertical bars, because a composed identifier is built from them. An isolated UTF-16 surrogate in either is rejected. Nothing is escaped: an escaping rule is the conformance surface this scheme exists to remove.",
+    "output": "urn:uuid:<lowercase RFC 4122 UUID version 5>",
+    "whyADigestHere": "Version 5 turns an identifier into the URN a Bundle fullUrl must be. It is a format conversion, not concealment: the identifier it is built from travels in the clear on the same resource."
+  },
+  "resourceId": {
+    "role": "repository logical id",
+    "required": false,
+    "sourceIdentityAllowed": false
+  },
+  "internalReferences": {
+    "containedReferencesAllowed": true,
+    "bundleEntryReferences": "must use an entry fullUrl UUID URN",
+    "unresolvedUuidUrnsAllowed": false
+  },
+  "recordingDeviceIdentity": {
+    "purpose": "A recording Device deduplicates across every Observation it produced, so one participant's recorder is stored once instead of once per sample.",
+    "subjectParticipates": "A wearable belongs to a person, so the subject partitions the key: two participants wearing the same model are two devices, which is what Device means in R4. This is the one identity in the family that admits a subject reference; every other identity derives from source data alone and must not.",
+    "versionsExcluded": "Firmware and software change over a recorder's life and are therefore not part of its identity. They are not carried on the deduplicated Device either, because a backfill converts samples out of order and would leave an arbitrary value behind. Each Observation states the versions in force when it was recorded.",
+    "failClosed": "The key requires a non-empty manufacturer and at least one of model or hardwareVersion. A source that states less has no admitted device identity; the producer emits its per-sample derived identity instead of asserting a shared device.",
+    "prohibitedInputs": [
+      "vendor per-unit identifiers and serial numbers, including a digest of one",
+      "firmware, software, Resource.id, repository ids, and processing timestamps"
+    ],
+    "lexicalRules": {
+      "absentField": "An absent source field is the empty string; it is never omitted from the composition.",
+      "normalization": "Source strings are used exactly as the platform states them; no trimming, case folding, or Unicode normalization is applied.",
+      "noSeparatorInComponents": "No component may contain U+007C VERTICAL LINE. A source value carrying one is rejected rather than escaped."
+    },
+    "vectors": [
+      {
+        "case": "apple-watch",
+        "components": [
+          "Patient/1a2b3c",
+          "healthkit",
+          "Apple Inc.",
+          "Watch",
+          "Watch7,12"
+        ],
+        "value": "v1:Patient/1a2b3c|healthkit|Apple Inc.|Watch|Watch7,12"
+      },
+      {
+        "case": "no-hardware-version",
+        "components": [
+          "Patient/1a2b3c",
+          "health-connect",
+          "Google",
+          "Pixel Watch",
+          ""
+        ],
+        "value": "v1:Patient/1a2b3c|health-connect|Google|Pixel Watch|"
+      },
+      {
+        "case": "different-participant-same-model",
+        "components": [
+          "Patient/9z8y7x",
+          "healthkit",
+          "Apple Inc.",
+          "Watch",
+          "Watch7,12"
+        ],
+        "value": "v1:Patient/9z8y7x|healthkit|Apple Inc.|Watch|Watch7,12"
+      }
+    ],
+    "composition": [
+      "subjectReference",
+      "adapterId",
+      "manufacturer",
+      "model",
+      "hardwareVersion"
+    ],
+    "form": "v1:<subjectReference>|<adapterId>|<manufacturer>|<model>|<hardwareVersion>",
+    "fixedArity": "Exactly five components, so an absent source field is an empty component rather than an omitted one. The arity is fixed, so an empty component is unambiguous."
+  },
+  "vectors": [
+    {
+      "case": "ascii",
+      "system": "https://study.example.org/fhir/identifiers/mobile-observation",
+      "value": "heart-rate-20260820-001",
+      "input": "https://study.example.org/fhir/identifiers/mobile-observation|heart-rate-20260820-001",
+      "fullUrl": "urn:uuid:72a64652-0bad-517d-8a36-39e3b6adccac"
+    },
+    {
+      "case": "non-ascii",
+      "system": "https://例.example/識別子",
+      "value": "café-東京",
+      "input": "https://例.example/識別子|café-東京",
+      "fullUrl": "urn:uuid:31acad95-5e9a-5b0f-b5b7-4f4627825b6b"
+    },
+    {
+      "case": "composed-value",
+      "system": "https://grovealliance.org/fhir/mobile/NamingSystem/grove-writer-record-id",
+      "value": "v1:com.withings.wiscale2|17348211",
+      "input": "https://grovealliance.org/fhir/mobile/NamingSystem/grove-writer-record-id|v1:com.withings.wiscale2|17348211",
+      "fullUrl": "urn:uuid:68db0fd4-0146-59c9-86cf-934f00881095"
+    },
+    {
+      "case": "rejected-separator-in-system",
+      "system": "https://example.org/a|b",
+      "value": "x",
+      "input": null,
+      "fullUrl": null,
+      "note": "A vertical bar in the system would make the split ambiguous, so it is rejected. A bar in the value is ordinary, as the composed-value case shows."
+    }
+  ]
+}

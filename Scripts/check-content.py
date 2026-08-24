@@ -18,8 +18,22 @@ from urllib.parse import urlparse
 
 
 ROOT = Path(__file__).resolve().parent.parent
-EXPECTED_GUIDE_SOURCES = ("mobile", "healthkit", "health-connect", "questionnaire")
-MOBILE_ADAPTER_SOURCES = ("healthkit", "health-connect")
+EXPECTED_GUIDE_SOURCES = (
+    "mobile",
+    "sensor",
+    "sensorkit",
+    "healthkit",
+    "health-connect",
+    "providers",
+    "questionnaire",
+)
+MOBILE_ADAPTER_SOURCES = (
+    "sensor",
+    "sensorkit",
+    "healthkit",
+    "health-connect",
+    "providers",
+)
 GUIDES = tuple(ROOT / source for source in EXPECTED_GUIDE_SOURCES)
 REQUIRED_CONFIGURATION_KEYS = {"id", "canonical", "version", "fhirVersion", "license"}
 
@@ -159,7 +173,12 @@ def main() -> int:
 
     for path in tracked_files():
         relative = path.relative_to(ROOT)
-        if any(part in {"output", "temp", "input-cache", "node_modules", ".build"} for part in relative.parts):
+        if (
+            any(
+                part in {"output", "temp", "input-cache", "node_modules", ".build"}
+                for part in relative.parts
+            )
+        ):
             failures.append(f"generated file is tracked: {relative}")
         if path.suffix == ".json":
             try:

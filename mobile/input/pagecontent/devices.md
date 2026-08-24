@@ -32,6 +32,29 @@ Use a study- or deployment-scoped identifier unless a broader hardware identifie
 both necessary and authorized; serial numbers and globally linkable hardware
 identifiers are not exchange defaults.
 
+#### One recorder, one Device
+
+A recording device rarely states a per-unit identifier, so a producer that mints a fresh
+identity per sample stores one wearable thousands of times. Every adapter therefore derives
+one identity per participant's recorder, using the composition published in
+[`catalog/exchange-identity.json`](https://grovealliance.org/fhir/catalog/exchange-identity.json)
+over the subject reference, the adapter, and the manufacturer, model, and hardware version.
+
+The subject participates because a wearable belongs to a person: two participants wearing the
+same model are two devices, which is what `Device` means in R4. A manufacturer alone is not
+enough to identify a recorder, so a source that states no model and no hardware version has no
+admitted device identity and its producer keeps a per-sample identity rather than merging
+unrelated hardware.
+
+Firmware and software versions are deliberately outside that key, and outside the deduplicated
+Device. They change over a recorder's life, and a producer converting historical records
+reaches them out of order, so a shared Device would end up asserting whichever value happened to
+convert last. Each Observation states the versions in force when it was recorded instead.
+
+A vendor per-unit identifier is never the key, and never reaches the wire — not in any form.
+Where a platform exposes one it is dropped, exactly as the connected-provider adapter
+drops `deviceid`.
+
 See the [recording-device example](Device-GroveRecordingDeviceExample.html).
 
 ### Application device

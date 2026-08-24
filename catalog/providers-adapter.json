@@ -1,0 +1,1405 @@
+{
+  "schemaVersion": 1,
+  "fhirVersion": "4.0.1",
+  "version": "0.3.0",
+  "packageId": "org.grovealliance.fhir.providers",
+  "canonical": "https://grovealliance.org/fhir/providers",
+  "adapterProfile": "https://grovealliance.org/fhir/providers/StructureDefinition/provider-observation",
+  "sourceTypeExtension": {
+    "url": "https://grovealliance.org/fhir/providers/StructureDefinition/provider-source-type",
+    "codeSystem": "https://grovealliance.org/fhir/providers/CodeSystem/provider-source-type",
+    "r4Element": "Observation.extension.valueCode or DocumentReference.extension.valueCode",
+    "cardinality": "exactly one",
+    "codeRule": "provider id + '/' + exact source token; the atomic Withings blood-pressure output uses withings/getmeas:9+10",
+    "rule": "Every admitted output states the exact catalog dispatch token in its own identifier value."
+  },
+  "recordingDocument": {
+    "sourceNeutralProfile": "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document",
+    "adapterProfile": "https://grovealliance.org/fhir/providers/StructureDefinition/provider-recording-document",
+    "claimMode": "exactly-source-neutral-plus-adapter",
+    "outputDiscriminator": "native-recording",
+    "encoding": "caller-supplied exact already-obtained provider bytes"
+  },
+  "rawPayloadAdmission": {
+    "contract": "https://grovealliance.org/fhir/sensor#recording-document.payloadAdmission",
+    "allowedAssertions": [
+      "caller-authorized-opaque-payload",
+      "verified-sanitized-input"
+    ],
+    "failureRule": "The producer fails closed before emission unless the caller supplies exactly one assertion.",
+    "notFHIRAuthorization": true
+  },
+  "conversionProvenanceProfile": "https://grovealliance.org/fhir/providers/StructureDefinition/provider-conversion-provenance",
+  "statusVocabulary": [
+    "supported",
+    "mapped-standard",
+    "platform-exclusive",
+    "unmodeled",
+    "deferred",
+    "intentionally-unsupported"
+  ],
+  "statusDefinitions": {
+    "supported": "Version 0.3.0 defines an exact conversion to every shared profile listed for the source element.",
+    "mapped-standard": "Version 0.3.0 admits only the listed source-neutral Sensor recording contract and does not assert a scalar clinical result.",
+    "platform-exclusive": "Version 0.3.0 defines the listed provider-scoped structured profile because no exact shared profile exists.",
+    "unmodeled": "The source element is inventoried, but no shared or provider-scoped profile models it in version 0.3.0 and no output is admitted.",
+    "deferred": "A plausible shared mapping is known, but the source evidence, time semantics, or result shape is insufficient for a conformant version 0.3.0 output.",
+    "intentionally-unsupported": "Version 0.3.0 deliberately refuses a normalized conversion because doing so would be misleading or diagnostic-adjacent."
+  },
+  "sourceEvidence": {
+    "accessed": "2026-08-20",
+    "scope": "Exact provider data-type tokens and consumed fields frozen in providers[].sourceTypes; conversion operates only on already-obtained payloads and defines no provider fetching.",
+    "tokenBinding": "Each providers[].sourceTypes[].token and elements[].path is part of the exact v0.3.0 consumed source surface.",
+    "providers": [
+      {
+        "id": "google-health-api",
+        "surface": "Google Health API REST",
+        "version": "v4",
+        "documentation": [
+          "https://developers.google.com/health/data-types",
+          "https://developers.google.com/health/reference/rest/v4/users.dataTypes.dataPoints"
+        ]
+      },
+      {
+        "id": "oura",
+        "surface": "Oura API",
+        "version": "2.0",
+        "documentation": [
+          "https://cloud.ouraring.com/v2/docs"
+        ]
+      },
+      {
+        "id": "withings",
+        "surface": "Withings Health Data API",
+        "version": "2.0",
+        "documentation": [
+          "https://developer.withings.com/api-reference/",
+          "https://developer.withings.com/developer-guide/v3/integration-guide/public-health-data-api/data-api/all-available-health-data/"
+        ]
+      }
+    ]
+  },
+  "identity": {
+    "composition": {
+      "form": "v1:<component>|<component>...",
+      "versionPrefix": "v1",
+      "separator": "|",
+      "rule": "Components join with a vertical bar in the order the composition lists them, behind the scheme version. No component may be empty or contain a vertical bar. Every component is the source's own text, unaltered: nothing is hashed, truncated, normalized, or re-encoded.",
+      "passThrough": "A provider whose native record key is unique across the whole provider carries that key verbatim, with no scheme version and no components joined to it: the system already says which provider and which key space it belongs to. Composition is used only where the key alone would not identify one record, which is why an account-scoped provider carries its account pseudonym."
+    },
+    "identifierScope": {
+      "meaning": "Whether a provider's native record key is unique across the whole provider, or only within one account. A provider scoped to `account` carries its deployment-scoped account pseudonym as a component, so the identifier still stands alone and a receiver deduplicates by comparing system and value with no side channel.",
+      "default": "account",
+      "relaxationRule": "A provider moves to `none` only when the vendor documents that its native record key is unique across all accounts. Inference from the shape of an observed value is not sufficient, because the failure it guards against is silently merging two participants' measurements."
+    },
+    "providerAccountIdentifier": {
+      "requirement": "A complete deployment-scoped pseudonymous Identifier pair. It must be stable for the provider-account scope needed for deduplication.",
+      "prohibitedByDefault": [
+        "vendor email address",
+        "vendor account id",
+        "vendor member id",
+        "OAuth subject or token"
+      ],
+      "exception": "A raw vendor account value may be used only when an explicit deployment privacy policy authorizes that disclosure; this package grants no such authorization.",
+      "emission": "For a provider scoped to `account`, the pseudonymous value is a component of the source-record identifier. It is a deployment-minted pseudonym, never a vendor-side account key, and it discloses nothing the resource's own subject reference does not already carry."
+    },
+    "sourceNativeId": {
+      "requirement": "The exact stable native record or group key supplied by the already-obtained provider payload.",
+      "emission": "Carried in the identifier value as the provider supplied it. It is a vendor row key, not participant data.",
+      "absent": "A provider source type that supplies no native key uses the contentDerived strategy below."
+    },
+    "sourceRecord": {
+      "system": "https://grovealliance.org/fhir/providers/NamingSystem/provider-source-record-id",
+      "composition": [
+        "providerCode",
+        "providerAccountPseudonym",
+        "sourceType",
+        "sourceNativeId"
+      ],
+      "appliesWhen": "identifierScope is account",
+      "passThroughWhen": "identifierScope is none: the value is sourceNativeId verbatim."
+    },
+    "contentDerived": {
+      "whenApplicable": "A provider source type that supplies no stable native record key.",
+      "composition": [
+        "providerCode",
+        "providerAccountPseudonym",
+        "sourceType",
+        "content",
+        "startInstant",
+        "endInstant",
+        "measuredValue"
+      ],
+      "discriminator": "content",
+      "accountScopeRequired": true,
+      "accountScopeReason": "Two participants can record identical values over the same window, so content alone collides across people. The account pseudonym is what keeps them apart and must never be omitted for this strategy.",
+      "revisionLimitation": "A corrected value or a corrected time yields a different identifier, so a correction appears as a new Observation rather than a revision. The `content` discriminator makes that visible to a receiver rather than leaving it to be inferred per provider.",
+      "rationale": "The alternative of keying on the time window alone would survive a value correction but silently merge two distinct measurements sharing a window. A missed deduplication is recoverable; a false merge is not."
+    },
+    "writerRecord": {
+      "system": "https://grovealliance.org/fhir/mobile/NamingSystem/grove-writer-record-id",
+      "composition": [
+        "providerCode",
+        "sourceNativeId"
+      ],
+      "note": "Carries no account component on any provider, so it can match the identical measurement arriving through HealthKit or Health Connect. A receiver must not assume the match holds: nothing obliges a vendor to use one identifier space across its app and its API."
+    },
+    "output": {
+      "system": "https://grovealliance.org/fhir/providers/NamingSystem/provider-output-id",
+      "composition": [
+        "<the source-record components>",
+        "outputDiscriminator"
+      ],
+      "outputDiscriminatorRule": {
+        "ordinarySupportedMeasurement": "the exact measurementId string from the supported element mapping",
+        "groupedMapping": "the exact outputDiscriminator declared on that groupedMappings row",
+        "mappedStandardRaw": "native-recording",
+        "noFallback": true
+      },
+      "cardinality": "0..1",
+      "appliesWhen": "Only where one source record yields more than one Observation. A one-to-one conversion carries the source-record identifier alone; a second namespace repeating the same value identifies nothing new."
+    },
+    "deploymentOwnedIdentities": {
+      "rule": "The conversion Provenance and the exchange Bundle are created by the export, not read from the provider, so they are identified in the deployment's own namespace. This retires provider-conversion-id and provider-exchange-id.",
+      "roles": [
+        "conversion-provenance",
+        "exchange-bundle"
+      ],
+      "value": "<providerCode>|<eventSequence>|<role>"
+    },
+    "resourceIdPolicy": "Resource.id is optional and repository-assigned; no business identifier is copied into Resource.id.",
+    "positiveEventSequence": "A durable positive event sequence written as a non-zero ASCII digit followed by zero or more ASCII digits; no sign, no leading zero, no other characters. A byte-identical retry reuses the sequence; changed content allocates a higher value.",
+    "singleConversionRule": "A conversion Provenance has exactly one source-record pair. When a Bundle carries exactly one conversion event, the exchange event is that conversion's emission and reuses its sequence, so the exchange identifier value equals the conversion identifier value byte for byte and only the NamingSystem distinguishes them.",
+    "vectors": [
+      {
+        "role": "sourceRecord",
+        "scope": "account",
+        "components": [
+          "withings",
+          "acct-7f3a9c",
+          "measure",
+          "17348211"
+        ],
+        "identifierValue": "v1:withings|acct-7f3a9c|measure|17348211"
+      },
+      {
+        "role": "sourceRecord",
+        "scope": "none",
+        "components": [
+          "oura",
+          "sleep",
+          "8f9a5221-639e-4a85-81cb-4065ef23f979"
+        ],
+        "identifierValue": "v1:oura|sleep|8f9a5221-639e-4a85-81cb-4065ef23f979"
+      },
+      {
+        "role": "sourceRecord",
+        "scope": "account",
+        "components": [
+          "withings",
+          "acct-7f3a9c",
+          "heart-rate",
+          "hr-2026-08-19-001"
+        ],
+        "identifierValue": "v1:withings|acct-7f3a9c|heart-rate|hr-2026-08-19-001"
+      },
+      {
+        "role": "output",
+        "scope": "account",
+        "components": [
+          "withings",
+          "acct-7f3a9c",
+          "measure",
+          "17348211",
+          "body-weight"
+        ],
+        "identifierValue": "v1:withings|acct-7f3a9c|measure|17348211|body-weight"
+      },
+      {
+        "role": "output",
+        "scope": "account",
+        "components": [
+          "withings",
+          "acct-7f3a9c",
+          "heart-rate",
+          "hr-2026-08-19-001",
+          "native-recording"
+        ],
+        "identifierValue": "v1:withings|acct-7f3a9c|heart-rate|hr-2026-08-19-001|native-recording"
+      },
+      {
+        "role": "contentDerived",
+        "scope": "account",
+        "components": [
+          "google-health-api",
+          "acct-7f3a9c",
+          "steps",
+          "content",
+          "2026-08-19T00:00:00Z",
+          "2026-08-20T00:00:00Z",
+          "8412"
+        ],
+        "identifierValue": "v1:google-health-api|acct-7f3a9c|steps|content|2026-08-19T00:00:00Z|2026-08-20T00:00:00Z|8412"
+      },
+      {
+        "role": "writerRecord",
+        "components": [
+          "withings",
+          "17348211"
+        ],
+        "identifierValue": "v1:withings|17348211",
+        "note": "Identical to the value the same measurement carries when it arrives through HealthKit or Health Connect, where the writer slot is the application's own bundle or package name."
+      },
+      {
+        "role": "deploymentOwnedExchangeBundle",
+        "components": [
+          "withings",
+          "1",
+          "exchange-bundle"
+        ],
+        "identifierValue": "withings|1|exchange-bundle",
+        "note": "Minted in the deployment's namespace, so it carries no scheme-version prefix from this guide."
+      },
+      {
+        "role": "rejectedSeparatorInComponent",
+        "components": [
+          "withings",
+          "acct-7f3a9c",
+          "measure",
+          "173|48211"
+        ],
+        "identifierValue": null,
+        "note": "A native key containing a vertical bar is rejected, never escaped."
+      }
+    ]
+  },
+  "providers": [
+    {
+      "id": "google-health-api",
+      "title": "Google Health API",
+      "sourceTypeCount": 18,
+      "sourceTypes": [
+        {
+          "token": "steps",
+          "status": "supported",
+          "elements": [
+            {
+              "path": "steps.count",
+              "status": "supported",
+              "measurementIds": [
+                "step-count"
+              ],
+              "unitConversion": "integer count to UCUM {steps}",
+              "effective": "steps.interval"
+            }
+          ]
+        },
+        {
+          "token": "distance",
+          "status": "supported",
+          "elements": [
+            {
+              "path": "distance.millimeters",
+              "status": "supported",
+              "measurementIds": [
+                "distance"
+              ],
+              "unitConversion": "millimetres divided by 1000 to UCUM m",
+              "effective": "distance.interval"
+            }
+          ]
+        },
+        {
+          "token": "active-energy-burned",
+          "status": "supported",
+          "elements": [
+            {
+              "path": "activeEnergyBurned.kcal",
+              "status": "supported",
+              "measurementIds": [
+                "active-energy"
+              ],
+              "unitConversion": "identity UCUM kcal",
+              "effective": "activeEnergyBurned.interval"
+            }
+          ]
+        },
+        {
+          "token": "weight",
+          "status": "supported",
+          "elements": [
+            {
+              "path": "weight.weightGrams",
+              "status": "supported",
+              "measurementIds": [
+                "body-weight"
+              ],
+              "unitConversion": "grams divided by 1000 to UCUM kg",
+              "effective": "weight.sampleTime.physicalTime"
+            }
+          ]
+        },
+        {
+          "token": "body-fat",
+          "status": "supported",
+          "elements": [
+            {
+              "path": "bodyFat.percentage",
+              "status": "supported",
+              "measurementIds": [
+                "body-fat-percentage"
+              ]
+            }
+          ]
+        },
+        {
+          "token": "height",
+          "status": "supported",
+          "elements": [
+            {
+              "path": "height.heightMillimeters",
+              "status": "supported",
+              "measurementIds": [
+                "body-height"
+              ],
+              "unitConversion": "millimetres divided by 10 to UCUM cm",
+              "effective": "height.sampleTime.physicalTime"
+            }
+          ]
+        },
+        {
+          "token": "vo2-max",
+          "status": "supported",
+          "elements": [
+            {
+              "path": "vo2Max.vo2Max",
+              "status": "supported",
+              "measurementIds": [
+                "vo2-max"
+              ]
+            }
+          ]
+        },
+        {
+          "token": "daily-oxygen-saturation",
+          "status": "supported",
+          "elements": [
+            {
+              "path": "dailyOxygenSaturation.averagePercentage",
+              "status": "supported",
+              "measurementIds": [
+                "oxygen-saturation-daily-average"
+              ]
+            }
+          ]
+        },
+        {
+          "token": "heart-rate-variability",
+          "status": "supported",
+          "elements": [
+            {
+              "path": "heartRateVariability.rootMeanSquareOfSuccessiveDifferencesMilliseconds",
+              "status": "supported",
+              "measurementIds": [
+                "heart-rate-variability-rmssd"
+              ]
+            },
+            {
+              "path": "heartRateVariability.standardDeviationMilliseconds",
+              "status": "supported",
+              "measurementIds": [
+                "heart-rate-variability-rmssd",
+                "heart-rate-variability-sdnn"
+              ]
+            }
+          ]
+        },
+        {
+          "token": "daily-resting-heart-rate",
+          "status": "supported",
+          "elements": [
+            {
+              "path": "dailyRestingHeartRate.beatsPerMinute",
+              "status": "supported",
+              "measurementIds": [
+                "resting-heart-rate"
+              ]
+            }
+          ]
+        },
+        {
+          "token": "daily-respiratory-rate",
+          "status": "supported",
+          "elements": [
+            {
+              "path": "dailyRespiratoryRate.breathsPerMinute",
+              "status": "supported",
+              "measurementIds": [
+                "respiratory-rate-average"
+              ],
+              "aggregationMethod": {
+                "respiratory-rate-average": "daily-mean"
+              }
+            }
+          ]
+        },
+        {
+          "token": "blood-glucose",
+          "status": "supported",
+          "elements": [
+            {
+              "path": "bloodGlucose.bloodGlucoseMilligramsPerDeciliter",
+              "status": "supported",
+              "measurementIds": [
+                "blood-glucose-unspecified-specimen"
+              ]
+            }
+          ]
+        },
+        {
+          "token": "core-body-temperature",
+          "status": "supported",
+          "elements": [
+            {
+              "path": "coreBodyTemperature.temperatureCelsius",
+              "status": "supported",
+              "measurementIds": [
+                "body-temperature"
+              ],
+              "unitConversion": "identity UCUM Cel",
+              "effective": "coreBodyTemperature.sampleTime.physicalTime"
+            }
+          ]
+        },
+        {
+          "token": "floors",
+          "status": "supported",
+          "elements": [
+            {
+              "path": "floors.count",
+              "status": "supported",
+              "measurementIds": [
+                "flights-climbed"
+              ]
+            }
+          ]
+        },
+        {
+          "token": "basal-energy-burned",
+          "status": "supported",
+          "elements": [
+            {
+              "path": "basalEnergyBurned.kcal",
+              "status": "supported",
+              "measurementIds": [
+                "basal-energy"
+              ]
+            }
+          ]
+        },
+        {
+          "token": "sleep",
+          "status": "supported",
+          "elements": [
+            {
+              "path": "sleep.summary.minutesAsleep",
+              "status": "supported",
+              "measurementIds": [
+                "sleep-duration"
+              ],
+              "unitConversion": "minutes divided by 60 to UCUM h",
+              "effective": "sleep.interval"
+            },
+            {
+              "path": "sleep.summary.stagesSummary[type=DEEP].minutes",
+              "status": "supported",
+              "measurementIds": [
+                "deep-sleep-duration"
+              ]
+            },
+            {
+              "path": "sleep.summary.stagesSummary[type=REM].minutes",
+              "status": "supported",
+              "measurementIds": [
+                "rem-sleep-duration"
+              ]
+            },
+            {
+              "path": "sleep.summary.stagesSummary[type=LIGHT].minutes",
+              "status": "supported",
+              "measurementIds": [
+                "light-sleep-duration"
+              ]
+            },
+            {
+              "path": "sleep.summary.stagesSummary[type=AWAKE].minutes",
+              "status": "supported",
+              "measurementIds": [
+                "sleep-awake-duration"
+              ]
+            }
+          ]
+        },
+        {
+          "token": "exercise",
+          "status": "supported",
+          "elements": [
+            {
+              "path": "exercise.interval",
+              "status": "supported",
+              "measurementIds": [
+                "workout"
+              ]
+            }
+          ]
+        },
+        {
+          "token": "heart-rate",
+          "status": "mapped-standard",
+          "archiveDataType": "heartRate",
+          "raw": {
+            "sourceNeutralProfile": "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document",
+            "adapterProfile": "https://grovealliance.org/fhir/providers/StructureDefinition/provider-recording-document",
+            "outputDiscriminator": "native-recording"
+          },
+          "elements": [
+            {
+              "path": "payload",
+              "status": "mapped-standard",
+              "sensorProfile": "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document",
+              "reason": "The source points may be irregular; retain the provider-native recording rather than resample or invent a uniform SampledData period."
+            }
+          ]
+        }
+      ],
+      "identifierScope": "account",
+      "identifierScopeReason": "The dataPoint segment of the record name is documented as unique only within a user and a dataType, and may be client-provided, so two accounts can hold the same key. Most Google data types carry no record key at all and use the contentDerived strategy."
+    },
+    {
+      "id": "oura",
+      "title": "Oura",
+      "sourceTypeCount": 8,
+      "sourceTypes": [
+        {
+          "token": "daily_activity",
+          "status": "supported",
+          "elements": [
+            {
+              "path": "steps",
+              "status": "supported",
+              "measurementIds": [
+                "step-count"
+              ],
+              "unitConversion": "integer count to UCUM {steps}",
+              "effective": "the source civil day represented as a complete day Period; midpoint substitution is forbidden"
+            },
+            {
+              "path": "active_calories",
+              "status": "supported",
+              "measurementIds": [
+                "active-energy"
+              ],
+              "unitConversion": "identity UCUM kcal",
+              "effective": "the source civil day represented as a complete day Period; midpoint substitution is forbidden"
+            },
+            {
+              "path": "equivalent_walking_distance",
+              "status": "supported",
+              "measurementIds": [
+                "distance"
+              ],
+              "unitConversion": "identity UCUM m",
+              "effective": "the source civil day represented as a complete day Period; midpoint substitution is forbidden"
+            }
+          ]
+        },
+        {
+          "token": "sleep",
+          "status": "supported",
+          "elements": [
+            {
+              "path": "total_sleep_duration",
+              "status": "supported",
+              "measurementIds": [
+                "sleep-duration"
+              ],
+              "unitConversion": "seconds divided by 3600 to UCUM h",
+              "effective": "bedtime_start through bedtime_end; output deferred when either boundary is absent"
+            },
+            {
+              "path": "deep_sleep_duration",
+              "status": "supported",
+              "measurementIds": [
+                "deep-sleep-duration"
+              ]
+            },
+            {
+              "path": "rem_sleep_duration",
+              "status": "supported",
+              "measurementIds": [
+                "rem-sleep-duration"
+              ]
+            },
+            {
+              "path": "light_sleep_duration",
+              "status": "supported",
+              "measurementIds": [
+                "light-sleep-duration"
+              ]
+            },
+            {
+              "path": "awake_time",
+              "status": "supported",
+              "measurementIds": [
+                "sleep-awake-duration"
+              ]
+            },
+            {
+              "path": "lowest_heart_rate",
+              "status": "supported",
+              "measurementIds": [
+                "sleep-heart-rate"
+              ],
+              "aggregationMethod": {
+                "sleep-heart-rate": "session-minimum"
+              }
+            },
+            {
+              "path": "average_hrv",
+              "status": "unmodeled",
+              "reason": "Oura reports this as an RMSSD average over the sleep session, which the shared heart-rate-variability-rmssd measurement represents. Unmodelled only until the session-window effective rule for it is settled."
+            },
+            {
+              "path": "average_breath",
+              "status": "supported",
+              "measurementIds": [
+                "respiratory-rate-average"
+              ],
+              "aggregationMethod": {
+                "respiratory-rate-average": "session-mean"
+              }
+            }
+          ]
+        },
+        {
+          "token": "daily_spo2",
+          "status": "supported",
+          "elements": [
+            {
+              "path": "spo2_percentage.average",
+              "status": "supported",
+              "measurementIds": [
+                "oxygen-saturation-daily-average"
+              ]
+            }
+          ]
+        },
+        {
+          "token": "workout",
+          "status": "supported",
+          "elements": [
+            {
+              "path": "start_datetime/end_datetime",
+              "status": "supported",
+              "measurementIds": [
+                "workout"
+              ]
+            }
+          ]
+        },
+        {
+          "token": "vO2_max",
+          "status": "supported",
+          "elements": [
+            {
+              "path": "vo2_max",
+              "status": "supported",
+              "measurementIds": [
+                "vo2-max"
+              ]
+            }
+          ]
+        },
+        {
+          "token": "daily_cardiovascular_age",
+          "status": "intentionally-unsupported",
+          "elements": [
+            {
+              "path": "vascular_age",
+              "status": "intentionally-unsupported",
+              "reason": "Although two providers report it, each value is the output of an undisclosed proprietary algorithm over different inputs (Withings pulse-wave velocity versus Oura PPG features), so the numbers are not comparable and no shared physiological definition exists; normalizing them under one code would fabricate clinical comparability, and the diagnostic-adjacent 'age' framing makes a shared measurement unsafe. Both provider catalog rows already record this refusal."
+            }
+          ]
+        },
+        {
+          "token": "daily_readiness",
+          "status": "intentionally-unsupported",
+          "elements": [
+            {
+              "path": "score",
+              "status": "intentionally-unsupported",
+              "reason": "A proprietary vendor score with no physiologic unit is not a comparable measurement; normalizing it as a dimensionless quantity would misrepresent an undisclosed composite algorithm as an observable. The same verdict applies to Oura's daily sleep and activity scores, which are not yet inventoried in providers-adapter.json."
+            }
+          ]
+        },
+        {
+          "token": "heartrate",
+          "status": "mapped-standard",
+          "archiveDataType": "heartRate",
+          "raw": {
+            "sourceNeutralProfile": "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document",
+            "adapterProfile": "https://grovealliance.org/fhir/providers/StructureDefinition/provider-recording-document",
+            "outputDiscriminator": "native-recording"
+          },
+          "elements": [
+            {
+              "path": "payload",
+              "status": "mapped-standard",
+              "sensorProfile": "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document",
+              "reason": "Timestamped points may be irregular; retain the provider-native recording rather than resample or invent a uniform SampledData period."
+            }
+          ]
+        }
+      ],
+      "identifierScope": "none",
+      "identifierScopeReason": "Document ids are UUIDs, unique by construction across all accounts."
+    },
+    {
+      "id": "withings",
+      "title": "Withings",
+      "sourceTypeCount": 42,
+      "groupedMappings": [
+        {
+          "token": "getmeas:9+10",
+          "status": "supported",
+          "members": [
+            "getmeas:9",
+            "getmeas:10"
+          ],
+          "sourceNativeId": "the common measure-group grpid",
+          "measurementIds": [
+            "blood-pressure"
+          ],
+          "outputDiscriminator": "blood-pressure-panel",
+          "rule": "Emit exactly one panel only when one type 9 value and one type 10 value occur in the same measure group; otherwise emit neither component as a normalized Observation. Use getmeas:9+10, not either member token, in the source-record identity preimage."
+        }
+      ],
+      "sourceTypes": [
+        {
+          "token": "getmeas:1",
+          "status": "supported",
+          "elements": [
+            {
+              "path": "measure.value*10^unit",
+              "status": "supported",
+              "measurementIds": [
+                "body-weight"
+              ],
+              "unitConversion": "provider SI value to UCUM kg",
+              "effective": "measure group date"
+            }
+          ]
+        },
+        {
+          "token": "getmeas:4",
+          "status": "supported",
+          "elements": [
+            {
+              "path": "measure.value*10^unit",
+              "status": "supported",
+              "measurementIds": [
+                "body-height"
+              ],
+              "unitConversion": "provider SI value to UCUM cm",
+              "effective": "measure group date"
+            }
+          ]
+        },
+        {
+          "token": "getmeas:6",
+          "status": "supported",
+          "elements": [
+            {
+              "path": "measure.value*10^unit",
+              "status": "supported",
+              "measurementIds": [
+                "body-fat-percentage"
+              ]
+            }
+          ]
+        },
+        {
+          "token": "getmeas:9",
+          "status": "supported",
+          "elements": [
+            {
+              "path": "measure.value*10^unit",
+              "status": "supported",
+              "measurementIds": [
+                "blood-pressure"
+              ],
+              "component": "diastolic",
+              "groupedMapping": "getmeas:9+10",
+              "unitConversion": "provider SI value to UCUM mm[Hg]",
+              "effective": "measure group date"
+            }
+          ]
+        },
+        {
+          "token": "getmeas:10",
+          "status": "supported",
+          "elements": [
+            {
+              "path": "measure.value*10^unit",
+              "status": "supported",
+              "measurementIds": [
+                "blood-pressure"
+              ],
+              "component": "systolic",
+              "groupedMapping": "getmeas:9+10",
+              "unitConversion": "provider SI value to UCUM mm[Hg]",
+              "effective": "measure group date"
+            }
+          ]
+        },
+        {
+          "token": "getmeas:11",
+          "status": "supported",
+          "elements": [
+            {
+              "path": "measure.value*10^unit",
+              "status": "supported",
+              "measurementIds": [
+                "heart-rate"
+              ],
+              "unitConversion": "provider value to UCUM /min",
+              "effective": "measure group date"
+            }
+          ]
+        },
+        {
+          "token": "getmeas:54",
+          "status": "supported",
+          "elements": [
+            {
+              "path": "measure.value*10^unit",
+              "status": "supported",
+              "measurementIds": [
+                "oxygen-saturation"
+              ],
+              "unitConversion": "provider value to UCUM %",
+              "effective": "measure group date"
+            }
+          ]
+        },
+        {
+          "token": "getmeas:71",
+          "status": "supported",
+          "elements": [
+            {
+              "path": "measure.value*10^unit",
+              "status": "supported",
+              "measurementIds": [
+                "body-temperature"
+              ],
+              "unitConversion": "provider value to UCUM Cel",
+              "effective": "measure group date"
+            }
+          ]
+        },
+        {
+          "token": "getmeas:123",
+          "status": "supported",
+          "elements": [
+            {
+              "path": "measure.value*10^unit",
+              "status": "supported",
+              "measurementIds": [
+                "vo2-max"
+              ]
+            }
+          ]
+        },
+        {
+          "token": "getmeas:155",
+          "status": "intentionally-unsupported",
+          "elements": [
+            {
+              "path": "measure.value*10^unit",
+              "status": "intentionally-unsupported",
+              "reason": "Although two providers report it, each value is the output of an undisclosed proprietary algorithm over different inputs (Withings pulse-wave velocity versus Oura PPG features), so the numbers are not comparable and no shared physiological definition exists; normalizing them under one code would fabricate clinical comparability, and the diagnostic-adjacent 'age' framing makes a shared measurement unsafe. Both provider catalog rows already record this refusal."
+            }
+          ]
+        },
+        {
+          "token": "getactivity:steps",
+          "status": "supported",
+          "elements": [
+            {
+              "path": "steps",
+              "status": "supported",
+              "measurementIds": [
+                "step-count"
+              ],
+              "unitConversion": "integer count to UCUM {steps}",
+              "effective": "the source civil day represented as a complete day Period; midpoint substitution is forbidden"
+            }
+          ]
+        },
+        {
+          "token": "getactivity:distance",
+          "status": "supported",
+          "elements": [
+            {
+              "path": "distance",
+              "status": "supported",
+              "measurementIds": [
+                "distance"
+              ],
+              "unitConversion": "identity UCUM m",
+              "effective": "the source civil day represented as a complete day Period; midpoint substitution is forbidden"
+            }
+          ]
+        },
+        {
+          "token": "getactivity:calories",
+          "status": "supported",
+          "elements": [
+            {
+              "path": "calories",
+              "status": "supported",
+              "measurementIds": [
+                "active-energy"
+              ],
+              "unitConversion": "identity UCUM kcal",
+              "effective": "the source civil day represented as a complete day Period; midpoint substitution is forbidden"
+            }
+          ]
+        },
+        {
+          "token": "getsummary:deepsleepduration",
+          "status": "supported",
+          "elements": [
+            {
+              "path": "data.deepsleepduration",
+              "status": "supported",
+              "measurementIds": [
+                "deep-sleep-duration"
+              ]
+            }
+          ]
+        },
+        {
+          "token": "getsummary:remsleepduration",
+          "status": "supported",
+          "elements": [
+            {
+              "path": "data.remsleepduration",
+              "status": "supported",
+              "measurementIds": [
+                "rem-sleep-duration"
+              ]
+            }
+          ]
+        },
+        {
+          "token": "getsummary:lightsleepduration",
+          "status": "supported",
+          "elements": [
+            {
+              "path": "data.lightsleepduration",
+              "status": "supported",
+              "measurementIds": [
+                "light-sleep-duration"
+              ]
+            }
+          ]
+        },
+        {
+          "token": "getsummary:wakeupduration",
+          "status": "supported",
+          "elements": [
+            {
+              "path": "data.wakeupduration",
+              "status": "supported",
+              "measurementIds": [
+                "sleep-awake-duration"
+              ]
+            }
+          ]
+        },
+        {
+          "token": "getsummary:hr_average",
+          "status": "supported",
+          "elements": [
+            {
+              "path": "data.hr_average",
+              "status": "supported",
+              "measurementIds": [
+                "sleep-heart-rate",
+                "sleeping-heart-rate-average"
+              ],
+              "aggregationMethod": {
+                "sleep-heart-rate": "session-mean"
+              }
+            }
+          ]
+        },
+        {
+          "token": "getsummary:rr_average",
+          "status": "supported",
+          "elements": [
+            {
+              "path": "data.rr_average",
+              "status": "supported",
+              "measurementIds": [
+                "respiratory-rate-average"
+              ],
+              "aggregationMethod": {
+                "respiratory-rate-average": "session-mean"
+              }
+            }
+          ]
+        },
+        {
+          "token": "getworkouts:interval",
+          "status": "supported",
+          "elements": [
+            {
+              "path": "startdate/enddate",
+              "status": "supported",
+              "measurementIds": [
+                "workout"
+              ]
+            }
+          ]
+        },
+        {
+          "token": "activityIntraday",
+          "status": "mapped-standard",
+          "archiveDataType": "activityIntraday",
+          "raw": {
+            "sourceNeutralProfile": "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document",
+            "adapterProfile": "https://grovealliance.org/fhir/providers/StructureDefinition/provider-recording-document",
+            "outputDiscriminator": "native-recording"
+          },
+          "elements": [
+            {
+              "path": "steps",
+              "status": "mapped-standard",
+              "sensorProfile": "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document"
+            },
+            {
+              "path": "calories",
+              "status": "mapped-standard",
+              "sensorProfile": "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document"
+            },
+            {
+              "path": "distance",
+              "status": "mapped-standard",
+              "sensorProfile": "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document"
+            },
+            {
+              "path": "elevation",
+              "status": "mapped-standard",
+              "sensorProfile": "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document"
+            },
+            {
+              "path": "heart_rate",
+              "status": "mapped-standard",
+              "sensorProfile": "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document"
+            },
+            {
+              "path": "spo2_auto",
+              "status": "mapped-standard",
+              "sensorProfile": "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document"
+            }
+          ]
+        },
+        {
+          "token": "sleepIntraday",
+          "status": "mapped-standard",
+          "archiveDataType": "sleepIntraday",
+          "raw": {
+            "sourceNeutralProfile": "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document",
+            "adapterProfile": "https://grovealliance.org/fhir/providers/StructureDefinition/provider-recording-document",
+            "outputDiscriminator": "native-recording"
+          },
+          "elements": [
+            {
+              "path": "hr",
+              "status": "mapped-standard",
+              "sensorProfile": "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document"
+            },
+            {
+              "path": "rr",
+              "status": "mapped-standard",
+              "sensorProfile": "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document"
+            },
+            {
+              "path": "snoring",
+              "status": "mapped-standard",
+              "sensorProfile": "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document"
+            },
+            {
+              "path": "sdnn_1",
+              "status": "mapped-standard",
+              "sensorProfile": "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document"
+            },
+            {
+              "path": "rmssd",
+              "status": "mapped-standard",
+              "sensorProfile": "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document"
+            }
+          ]
+        },
+        {
+          "token": "getmeas:5",
+          "status": "supported",
+          "elements": [
+            {
+              "path": "measure.value*10^unit",
+              "status": "supported",
+              "measurementIds": [
+                "lean-body-mass"
+              ]
+            }
+          ]
+        },
+        {
+          "token": "getmeas:8",
+          "status": "supported",
+          "elements": [
+            {
+              "path": "measure.value*10^unit",
+              "status": "supported",
+              "measurementIds": [
+                "body-fat-mass"
+              ]
+            }
+          ]
+        },
+        {
+          "token": "getmeas:73",
+          "status": "supported",
+          "elements": [
+            {
+              "path": "measure.value*10^unit",
+              "status": "supported",
+              "measurementIds": [
+                "skin-temperature"
+              ]
+            }
+          ]
+        },
+        {
+          "token": "getmeas:76",
+          "status": "supported",
+          "elements": [
+            {
+              "path": "measure.value*10^unit",
+              "status": "supported",
+              "measurementIds": [
+                "muscle-mass"
+              ]
+            }
+          ]
+        },
+        {
+          "token": "getmeas:77",
+          "status": "supported",
+          "elements": [
+            {
+              "path": "measure.value*10^unit",
+              "status": "supported",
+              "measurementIds": [
+                "body-water-mass"
+              ]
+            }
+          ]
+        },
+        {
+          "token": "getmeas:88",
+          "status": "supported",
+          "elements": [
+            {
+              "path": "measure.value*10^unit",
+              "status": "supported",
+              "measurementIds": [
+                "bone-mass"
+              ]
+            }
+          ]
+        },
+        {
+          "token": "getmeas:91",
+          "status": "intentionally-unsupported",
+          "elements": [
+            {
+              "path": "measure.value*10^unit",
+              "status": "intentionally-unsupported",
+              "reason": "Diagnostic-adjacent cardiovascular assessment: Withings PWV is an aortic-stiffness screening value produced by a proprietary single-vendor scale algorithm (and was subject to regulatory withdrawal and reintroduction), with no second evidencing source and no safe wellness normalization, so admitting it as a normalized measurement would misrepresent a clinical vascular assessment."
+            }
+          ]
+        },
+        {
+          "token": "getmeas:130",
+          "status": "intentionally-unsupported",
+          "elements": [
+            {
+              "path": "measure.value",
+              "status": "intentionally-unsupported",
+              "reason": "An AFib classification is diagnostic-adjacent and is not represented as an untyped scalar Observation."
+            }
+          ]
+        },
+        {
+          "token": "getmeas:135",
+          "status": "intentionally-unsupported",
+          "elements": [
+            {
+              "path": "measure.value*10^unit",
+              "status": "intentionally-unsupported",
+              "reason": "A QRS interval requires an ECG-specific interpretation contract not present in version 0.3.0."
+            }
+          ]
+        },
+        {
+          "token": "getmeas:136",
+          "status": "intentionally-unsupported",
+          "elements": [
+            {
+              "path": "measure.value*10^unit",
+              "status": "intentionally-unsupported",
+              "reason": "A PR interval requires an ECG-specific interpretation contract not present in version 0.3.0."
+            }
+          ]
+        },
+        {
+          "token": "getmeas:137",
+          "status": "intentionally-unsupported",
+          "elements": [
+            {
+              "path": "measure.value*10^unit",
+              "status": "intentionally-unsupported",
+              "reason": "A QT interval requires an ECG-specific interpretation contract not present in version 0.3.0."
+            }
+          ]
+        },
+        {
+          "token": "getmeas:138",
+          "status": "intentionally-unsupported",
+          "elements": [
+            {
+              "path": "measure.value*10^unit",
+              "status": "intentionally-unsupported",
+              "reason": "A corrected QT interval requires an ECG-specific interpretation contract not present in version 0.3.0."
+            }
+          ]
+        },
+        {
+          "token": "getmeas:139",
+          "status": "intentionally-unsupported",
+          "elements": [
+            {
+              "path": "measure.value",
+              "status": "intentionally-unsupported",
+              "reason": "An AFib classification is diagnostic-adjacent and is not represented as an untyped scalar Observation."
+            }
+          ]
+        },
+        {
+          "token": "getmeas:167",
+          "status": "intentionally-unsupported",
+          "elements": [
+            {
+              "path": "measure.value*10^unit",
+              "status": "intentionally-unsupported",
+              "reason": "A proprietary vendor score with no physiologic unit, and additionally diagnostic-adjacent: Withings positions it as small-fiber-neuropathy screening, so an untyped scalar Observation would be misleading."
+            }
+          ]
+        },
+        {
+          "token": "getmeas:168",
+          "status": "supported",
+          "elements": [
+            {
+              "path": "measure.value*10^unit",
+              "status": "supported",
+              "measurementIds": [
+                "extracellular-water-mass"
+              ]
+            }
+          ]
+        },
+        {
+          "token": "getmeas:169",
+          "status": "supported",
+          "elements": [
+            {
+              "path": "measure.value*10^unit",
+              "status": "supported",
+              "measurementIds": [
+                "intracellular-water-mass"
+              ]
+            }
+          ]
+        },
+        {
+          "token": "getmeas:170",
+          "status": "intentionally-unsupported",
+          "elements": [
+            {
+              "path": "measure.value*10^unit",
+              "status": "intentionally-unsupported",
+              "reason": "The value is a unitless proprietary rating, not a mass or area; emitting it as a dimensionless UCUM quantity would assert a measurand and comparability the vendor does not define."
+            }
+          ]
+        },
+        {
+          "token": "getmeas:174",
+          "status": "intentionally-unsupported",
+          "elements": [
+            {
+              "path": "measure.value*10^unit",
+              "status": "intentionally-unsupported",
+              "reason": "The consumed source shape (measure.value*10^unit) does not recover which body segment a value belongs to, and the shared model has no body-segment site; emitting a segment mass under whole-body fat-mass or muscle-mass semantics would be wrong, so conversion is refused rather than mislabeled."
+            }
+          ]
+        },
+        {
+          "token": "getmeas:175",
+          "status": "intentionally-unsupported",
+          "elements": [
+            {
+              "path": "measure.value*10^unit",
+              "status": "intentionally-unsupported",
+              "reason": "The consumed source shape (measure.value*10^unit) does not recover which body segment a value belongs to, and the shared model has no body-segment site; emitting a segment mass under whole-body fat-mass or muscle-mass semantics would be wrong, so conversion is refused rather than mislabeled."
+            }
+          ]
+        },
+        {
+          "token": "getmeas:196",
+          "status": "supported",
+          "elements": [
+            {
+              "path": "measure.value*10^unit",
+              "status": "supported",
+              "measurementIds": [
+                "electrodermal-activity"
+              ]
+            }
+          ]
+        }
+      ],
+      "identifierScope": "account",
+      "identifierScopeReason": "grpid is a server-assigned integer that appears to come from a global sequence, but Withings does not document its scope. Scoped by account until they do."
+    }
+  ],
+  "recordingDeviceIdentity": {
+    "adapterId": "providers",
+    "note": "A connected provider's device metadata lives on a separate vendor endpoint the adapter does not consume, and its per-unit identifiers are refused outright. Provider Observations therefore carry a per-sample recording Device until that input exists.",
+    "sourceFields": {},
+    "status": "unavailable"
+  }
+}

@@ -5,11 +5,8 @@ WARNING: 2: An HTML fragment from the set [cross-version-analysis.xhtml, cross-v
 # The guide intentionally defines no global profiles; an empty generated table adds no implementation guidance.
 WARNING: 4: The HTML fragment 'globals-table.xhtml' is not included anywhere in the produced implementation guide
 
-# SDC 4.0.0 is the selected stable SDC release and pins this exact extension-package version; using a different direct version would create an unreviewed mixed dependency graph.
-WARNING: ImplementationGuide/org.grovealliance.fhir.questionnaire: ImplementationGuide.dependsOn[2]: The ImplementationGuide uses package hl7.fhir.uv.extensions.r4#5.3.0-ballot-tc1 released on 2025-08-03, but the most recent appropriate version is 5.3.0. This reference is getting old and the more recent version should be considered
-
 # Publisher does not resolve a versioned canonical to an example Questionnaire during single-resource validation. Repository tests resolve the pair and verify its exact canonical, hierarchy, linkIds, and item text.
-WARNING: QuestionnaireResponse/GroveWeeklySymptomCheckInResponseExample: QuestionnaireResponse: The questionnaire 'https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/Questionnaire/GroveWeeklySymptomCheckInExample|1.0.0' could not be resolved, so no validation can be performed against the base questionnaire
+WARNING: QuestionnaireResponse/GroveWeeklySymptomCheckInResponseExample: QuestionnaireResponse: The questionnaire 'https://grovealliance.org/fhir/questionnaire/Questionnaire/GroveWeeklySymptomCheckInExample|1.0.0' could not be resolved, so no validation can be performed against the base questionnaire
 
 # The standard artifact-versionAlgorithm extension binds to the trial-use version-algorithm value set. This contract intentionally requires semver.
 WARNING: StructureDefinition/grove-questionnaire: StructureDefinition.snapshot.element[14].binding: The definition for the element 'Questionnaire.extension.value[x]' binds to the value set 'http://hl7.org/fhir/ValueSet/version-algorithm' which is experimental, but this structure is not labeled as experimental
@@ -17,11 +14,3 @@ WARNING: StructureDefinition/grove-questionnaire: StructureDefinition.snapshot.e
 # The standard mimeType extension inherits a computable binding-definition link to BCP 13. The extension package does not ship that external document as a FHIR canonical resource.
 WARNING: StructureDefinition/grove-questionnaire: StructureDefinition.snapshot.element[35].binding.extension[0].value.ofType(canonical): A definition could not be found for Canonical URL 'http://www.rfc-editor.org/bcp/bcp13.txt'
 WARNING: StructureDefinition/grove-questionnaire: StructureDefinition.snapshot.element[83].binding.extension[0].value.ofType(canonical): A definition could not be found for Canonical URL 'http://www.rfc-editor.org/bcp/bcp13.txt'
-
-# These links are inherited verbatim from SDC 4.0.0 element definitions and point to retired anchors in that published dependency; Grove does not own or reproduce those definitions.
-ERROR: en/StructureDefinition-grove-questionnaire-definitions.html#/html/body/div/div/div/div/div/div/div/table/tr/td/p/a at Line 313, column 93: The link 'http://hl7.org/fhir/uv/sdc/2025Jan/behavior.html#variable' for "SDC implementation guide" cannot be resolved
-ERROR: en/StructureDefinition-grove-questionnaire-definitions.html#/html/body/div/div/div/div/div/div/div/table/tr/td/p/a at Line 357, column 281: The link 'http://hl7.org/fhir/uv/sdc/2025Jan/rendering.html#hidden' for "SDC implementation guide" cannot be resolved
-ERROR: en/StructureDefinition-grove-questionnaire-definitions.html#/html/body/div/div/div/div/div/div/div/table/tr/td/p/a at Line 384, column 93: The link 'http://hl7.org/fhir/uv/sdc/2025Jan/behavior.html#variable' for "SDC implementation guide" cannot be resolved
-ERROR: en/StructureDefinition-grove-questionnaire-definitions.html#/html/body/div/div/div/div/div/div/div/table/tr/td/p/a at Line 674, column 93: The link 'http://hl7.org/fhir/uv/sdc/2025Jan/behavior.html#variable' for "SDC implementation guide" cannot be resolved
-ERROR: en/StructureDefinition-grove-questionnaire-definitions.html#/html/body/div/div/div/div/div/div/div/table/tr/td/p/a at Line 808, column 281: The link 'http://hl7.org/fhir/uv/sdc/2025Jan/rendering.html#hidden' for "SDC implementation guide" cannot be resolved
-ERROR: en/StructureDefinition-grove-questionnaire-definitions.html#/html/body/div/div/div/div/div/div/div/table/tr/td/p/a at Line 835, column 93: The link 'http://hl7.org/fhir/uv/sdc/2025Jan/behavior.html#variable' for "SDC implementation guide" cannot be resolved

@@ -3,7 +3,7 @@
   "id": "validator-questionnaire",
   "meta": {
     "profile": [
-      "https://schmiedmayerlab.github.io/grove-fhir/fhir/questionnaire/StructureDefinition/grove-questionnaire"
+      "https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire"
     ]
   },
   "extension": [

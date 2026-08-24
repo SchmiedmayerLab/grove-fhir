@@ -1,0 +1,507 @@
+{
+  "schemaVersion": 1,
+  "copyright": "This material contains content from LOINC (http://loinc.org). LOINC is copyright © 1995-2026, Regenstrief Institute, Inc. and the Logical Observation Identifiers Names and Codes (LOINC) Committee and is available at no cost under the license at http://loinc.org/license. LOINC® is a registered United States trademark of Regenstrief Institute, Inc.",
+  "loincVersion": "2.82",
+  "loincVersionReason": "Ratified against LOINC 2.82 (released February 2026, https://www.regenstrief.org/article/loinc-version-2-82-concept-release/); all 17 rows verified against LOINC 2.82 content on public FHIR terminology servers.",
+  "ratification": "ratified",
+  "propertyDimensions": {
+    "EngRat": null,
+    "Find": null,
+    "Len": {
+      "m": 1
+    },
+    "MCnc": {
+      "g": 1,
+      "m": -3
+    },
+    "MFr": {},
+    "Mass": {
+      "g": 1
+    },
+    "NRat": {
+      "s": -1
+    },
+    "Num": {},
+    "PrThr": null,
+    "Prctl": {},
+    "Pres": {
+      "g": 1,
+      "m": -1,
+      "s": -2
+    },
+    "Ratio": null,
+    "SFr": {},
+    "Score": null,
+    "Temp": {
+      "K": 1
+    },
+    "Time": {
+      "s": 1
+    },
+    "Type": null,
+    "VRat": {
+      "m": 3,
+      "s": -1
+    },
+    "Vel": {
+      "m": 1,
+      "s": -1
+    },
+    "VelRto": null,
+    "Vol": {
+      "m": 3
+    },
+    "-": null
+  },
+  "concepts": {
+    "100304-5": {
+      "display": "Flights climbed [#] Reporting Period",
+      "property": "Num",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "v0.3 sweep, web-verified 2026-08-21 (flights-climbed)"
+    },
+    "10160-0": {
+      "display": "History of Medication use Narrative",
+      "property": "Find",
+      "scale": "Ord",
+      "status": "ACTIVE",
+      "verification": "v0.3 sweep, web-verified 2026-08-21 (clinical-medication-record)"
+    },
+    "101683-1": {
+      "display": "Body water mass",
+      "property": "Mass",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "v0.3 sweep, web-verified 2026-08-21 (body-water-mass)"
+    },
+    "101685-6": {
+      "display": "Body bone mass",
+      "property": "Mass",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "v0.3 sweep, web-verified 2026-08-21 (bone-mass)"
+    },
+    "103208-5": {
+      "display": "Distance traveled",
+      "property": "Len",
+      "scale": "Qn",
+      "status": "ACTIVE"
+    },
+    "103209-3": {
+      "display": "Mean oxygen saturation",
+      "property": "NRat",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "v0.3 sweep, web-verified 2026-08-21 (oxygen-saturation-daily-average)"
+    },
+    "103217-6": {
+      "display": "Mean respiratory rate",
+      "property": "NRat",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "v0.3 sweep, web-verified 2026-08-21 (respiratory-rate-average)"
+    },
+    "112429-6": {
+      "display": "Heart rate variability SDNN [Time]",
+      "property": "Time",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "v0.3 sweep, web-verified 2026-08-21 (heart-rate-variability-sdnn)"
+    },
+    "112430-4": {
+      "display": "Stair descent speed [Velocity]",
+      "property": "Vel",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "v0.3 sweep, web-verified 2026-08-21 (stair-descent-speed)"
+    },
+    "112431-2": {
+      "display": "Stair ascent speed [Velocity]",
+      "property": "Vel",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "v0.3 sweep, web-verified 2026-08-21 (stair-ascent-speed)"
+    },
+    "112432-0": {
+      "display": "Walking asymmetry",
+      "property": "Prctl",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "v0.3 sweep, web-verified 2026-08-21 (walking-asymmetry)"
+    },
+    "112434-6": {
+      "display": "Walking double support [Percentile]",
+      "property": "Prctl",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "v0.3 sweep, web-verified 2026-08-21 (walking-double-support)"
+    },
+    "11369-6": {
+      "display": "History of Immunization note",
+      "property": "Find",
+      "scale": "Ord",
+      "status": "ACTIVE",
+      "verification": "v0.3 sweep, web-verified 2026-08-21 (clinical-immunization-record)"
+    },
+    "11450-4": {
+      "display": "Problem list - Reported",
+      "property": "Find",
+      "scale": "Ord",
+      "status": "ACTIVE",
+      "verification": "v0.3 sweep, web-verified 2026-08-21 (clinical-condition-record)"
+    },
+    "11502-2": {
+      "display": "Laboratory report",
+      "property": "Find",
+      "scale": "Ord",
+      "status": "ACTIVE",
+      "verification": "v0.3 sweep, web-verified 2026-08-21 (clinical-lab-result-record)"
+    },
+    "11524-6": {
+      "display": "EKG study",
+      "property": "Find",
+      "scale": "Doc",
+      "status": "ACTIVE"
+    },
+    "19868-9": {
+      "display": "Forced vital capacity [Volume] Respiratory system by Spirometry",
+      "property": "Vol",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "v0.3 sweep, web-verified 2026-08-21 (forced-vital-capacity)"
+    },
+    "20150-9": {
+      "display": "FEV1",
+      "property": "Vol",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "v0.3 sweep, web-verified 2026-08-21 (forced-expiratory-volume-1)"
+    },
+    "2106-3": {
+      "display": "Choriogonadotropin [Presence] in Urine",
+      "property": "PrThr",
+      "scale": "Ord",
+      "status": "ACTIVE",
+      "verification": "v0.3 sweep, web-verified 2026-08-21 (pregnancy-test-result)"
+    },
+    "2339-0": {
+      "display": "Glucose [Mass/volume] in Blood",
+      "property": "MCnc",
+      "scale": "Qn",
+      "status": "ACTIVE"
+    },
+    "2345-7": {
+      "display": "Glucose [Mass/volume] in Serum or Plasma",
+      "property": "MCnc",
+      "scale": "Qn",
+      "status": "ACTIVE"
+    },
+    "2708-6": {
+      "display": "Oxygen saturation in Arterial blood",
+      "property": "MFr",
+      "scale": "Qn",
+      "status": "ACTIVE"
+    },
+    "29463-7": {
+      "display": "Body weight",
+      "property": "Mass",
+      "scale": "Qn",
+      "status": "ACTIVE"
+    },
+    "32016-8": {
+      "display": "Glucose [Mass/volume] in Capillary blood",
+      "property": "MCnc",
+      "scale": "Qn",
+      "status": "ACTIVE"
+    },
+    "33452-4": {
+      "display": "Maximum expiratory gas flow Respiratory system airway",
+      "property": "VRat",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "v0.3 sweep, web-verified 2026-08-21 (peak-expiratory-flow-rate)"
+    },
+    "34109-9": {
+      "display": "Note",
+      "property": "Find",
+      "scale": "Ord",
+      "status": "ACTIVE",
+      "verification": "v0.3 sweep, web-verified 2026-08-21 (clinical-note-record)"
+    },
+    "39156-5": {
+      "display": "Body mass index (BMI) [Ratio]",
+      "property": "Ratio",
+      "scale": "Qn",
+      "status": "ACTIVE"
+    },
+    "40443-4": {
+      "display": "Heart rate --resting",
+      "property": "NRat",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "v0.3 sweep, web-verified 2026-08-21 (resting-heart-rate)"
+    },
+    "41982-0": {
+      "display": "Percentage of body fat Measured",
+      "property": "MFr",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "v0.3 sweep, web-verified 2026-08-21 (body-fat-percentage)"
+    },
+    "44261-6": {
+      "display": "Patient Health Questionnaire 9 item (PHQ-9) total score [Reported]",
+      "property": "Score",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "v0.3 sweep, web-verified 2026-08-21 (phq9-assessment)"
+    },
+    "47519-4": {
+      "display": "History of Procedures Document",
+      "property": "Find",
+      "scale": "Ord",
+      "status": "ACTIVE",
+      "verification": "v0.3 sweep, web-verified 2026-08-21 (clinical-procedure-record)"
+    },
+    "48765-2": {
+      "display": "Allergies and adverse reactions Document",
+      "property": "Find",
+      "scale": "Ord",
+      "status": "ACTIVE",
+      "verification": "v0.3 sweep, web-verified 2026-08-21 (clinical-allergy-record)"
+    },
+    "48768-6": {
+      "display": "Payment sources Document",
+      "property": "Find",
+      "scale": "Ord",
+      "status": "ACTIVE",
+      "verification": "v0.3 sweep, web-verified 2026-08-21 (clinical-coverage-record)"
+    },
+    "61006-3": {
+      "display": "Perfusion index Tissue by Pulse oximetry",
+      "property": "VelRto",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "v0.3 sweep, web-verified 2026-08-21 (peripheral-perfusion-index)"
+    },
+    "61008-9": {
+      "display": "Body surface temperature",
+      "property": "Temp",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "v0.3 sweep, web-verified 2026-08-21 (skin-temperature)"
+    },
+    "63895-7": {
+      "display": "Breastfeeding status",
+      "property": "Find",
+      "scale": "Ord",
+      "status": "ACTIVE",
+      "verification": "v0.3 sweep, web-verified 2026-08-21 (lactation-status)"
+    },
+    "64098-7": {
+      "display": "Six minute walk test",
+      "property": "Len",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "v0.3 sweep, web-verified 2026-08-21 (six-minute-walk-test-distance)"
+    },
+    "70274-6": {
+      "display": "Generalized anxiety disorder 7 item (GAD-7) total score [Reported.PHQ]",
+      "property": "Score",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "v0.3 sweep, web-verified 2026-08-21 (gad7-assessment)"
+    },
+    "73708-0": {
+      "display": "Body fat [Mass] Calculated",
+      "property": "Mass",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "v0.3 sweep, web-verified 2026-08-21 (body-fat-mass)"
+    },
+    "73964-9": {
+      "display": "Body muscle mass Calculated",
+      "property": "Mass",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "v0.3 sweep, web-verified 2026-08-21 (muscle-mass)"
+    },
+    "81660-3": {
+      "display": "Nausea [Presence]",
+      "property": "PrThr",
+      "scale": "Ord",
+      "status": "ACTIVE",
+      "verification": "v0.3 sweep, web-verified 2026-08-21 (symptom-nausea)"
+    },
+    "8280-0": {
+      "display": "Waist Circumference at umbilicus by Tape measure",
+      "property": "Len",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "v0.3 sweep, web-verified 2026-08-21 (waist-circumference)"
+    },
+    "82810-3": {
+      "display": "Pregnancy status",
+      "property": "Find",
+      "scale": "Ord",
+      "status": "ACTIVE",
+      "verification": "v0.3 sweep, web-verified 2026-08-21 (pregnancy-status)"
+    },
+    "8302-2": {
+      "display": "Body height",
+      "property": "Len",
+      "scale": "Qn",
+      "status": "ACTIVE"
+    },
+    "8310-5": {
+      "display": "Body temperature",
+      "property": "Temp",
+      "scale": "Qn",
+      "status": "ACTIVE"
+    },
+    "8462-4": {
+      "display": "Diastolic blood pressure",
+      "property": "Pres",
+      "scale": "Qn",
+      "status": "ACTIVE"
+    },
+    "8480-6": {
+      "display": "Systolic blood pressure",
+      "property": "Pres",
+      "scale": "Qn",
+      "status": "ACTIVE"
+    },
+    "85354-9": {
+      "display": "Blood pressure panel with all children optional",
+      "property": "-",
+      "scale": "Qn",
+      "status": "ACTIVE"
+    },
+    "8659-5": {
+      "display": "Birth control method - Reported",
+      "property": "Type",
+      "scale": "Ord",
+      "status": "ACTIVE",
+      "verification": "v0.3 sweep, web-verified 2026-08-21 (contraceptive-use)"
+    },
+    "8716-3": {
+      "display": "Vital signs note",
+      "property": "Find",
+      "scale": "Ord",
+      "status": "ACTIVE",
+      "verification": "v0.3 sweep, web-verified 2026-08-21 (clinical-vital-sign-record)"
+    },
+    "882-1": {
+      "display": "ABO and Rh group [Type] in Blood",
+      "property": "Type",
+      "scale": "Ord",
+      "status": "ACTIVE",
+      "verification": "v0.3 sweep, web-verified 2026-08-21 (blood-type)"
+    },
+    "8867-4": {
+      "display": "Heart rate",
+      "property": "NRat",
+      "scale": "Qn",
+      "status": "ACTIVE"
+    },
+    "8985-4": {
+      "display": "Fluid intake Measured",
+      "property": "Vol",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "v0.3 sweep, web-verified 2026-08-21 (fluid-intake)"
+    },
+    "9052-2": {
+      "display": "Calorie intake total",
+      "property": "EngRat",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "v0.3 sweep, web-verified 2026-08-21 (dietary-energy)"
+    },
+    "9060-5": {
+      "display": "Carbohydrate intake Measured",
+      "property": "Mass",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "v0.3 sweep, web-verified 2026-08-21 (dietary-carbohydrates)"
+    },
+    "9067-0": {
+      "display": "Fat intake Measured",
+      "property": "Mass",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "v0.3 sweep, web-verified 2026-08-21 (dietary-fat-total)"
+    },
+    "9080-3": {
+      "display": "Protein intake Measured",
+      "property": "Mass",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "v0.3 sweep, web-verified 2026-08-21 (dietary-protein)"
+    },
+    "91557-9": {
+      "display": "Lean body weight",
+      "property": "Mass",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "v0.3 sweep, web-verified 2026-08-21 (lean-body-mass)"
+    },
+    "9279-1": {
+      "display": "Respiratory rate",
+      "property": "NRat",
+      "scale": "Qn",
+      "status": "ACTIVE"
+    },
+    "93828-2": {
+      "display": "Nighttime awakening duration",
+      "property": "Time",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "v0.3 sweep, web-verified 2026-08-21 (sleep-awake-duration)"
+    },
+    "93829-0": {
+      "display": "REM sleep duration",
+      "property": "Time",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "v0.3 sweep, web-verified 2026-08-21 (rem-sleep-duration)"
+    },
+    "93830-8": {
+      "display": "Light sleep duration",
+      "property": "Time",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "v0.3 sweep, web-verified 2026-08-21 (light-sleep-duration)"
+    },
+    "93831-6": {
+      "display": "Deep sleep duration",
+      "property": "Time",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "v0.3 sweep, web-verified 2026-08-21 (deep-sleep-duration)"
+    },
+    "93832-4": {
+      "display": "Sleep duration",
+      "property": "Time",
+      "scale": "Qn",
+      "status": "ACTIVE"
+    },
+    "96502-0": {
+      "display": "Number of wheelchair pushes per time period",
+      "property": "Num",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "v0.3 sweep, web-verified 2026-08-21 (wheelchair-push-count)"
+    },
+    "99504-3": {
+      "display": "Glucose [Mass/volume] in Interstitial fluid",
+      "property": "MCnc",
+      "scale": "Qn",
+      "status": "ACTIVE"
+    }
+  },
+  "ratifiedBy": "v0.3 terminology panel, two independent verifications (tx.fhir.org r4 and r4.ontoserver.csiro.au, both serving LOINC 2.82), 2026-08-21; standing-reviewer confirmation via pull-request review",
+  "propertyExceptions": {
+    "103209-3": "LOINC 2.82 assigns PROPERTY NRat to this percent-valued mean (verified via NLM Clinical Tables 2026-08-21); the dimension cross-check is waived for this code with that citation."
+  }
+}
