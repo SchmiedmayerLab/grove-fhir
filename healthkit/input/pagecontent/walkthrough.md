@@ -107,7 +107,7 @@ Its [JSON representation](Bundle-HealthKitExchangeBundleExample.json) is the com
 
 The Observation reuses the sample's own `HKObject.uuid` under the [HealthKit Object Identifier](NamingSystem-healthkit-object-id.html) namespace, and the application reuses its Apple bundle identifier: both identities exist independently of this export.
 The Provenance and the Bundle exist only because of this export, so their values are minted deterministically in the caller's `graphIdentifierSystem` from the object UUID plus a role suffix.
-Each fullUrl is the UUIDv5 of the RFC 8785 canonical `["system","value"]` pair under the frozen namespace `a9a39cf1-c944-5d15-a3c2-c395969ea101`, so converting the same sample twice yields byte-identical identities and re-sends deduplicate on the server.
+Each fullUrl is the UUIDv5 of the identifier's system, a vertical bar, then its value, under the frozen namespace `a9a39cf1-c944-5d15-a3c2-c395969ea101`, so converting the same sample twice yields byte-identical identities and re-sends deduplicate on the server.
 `Resource.id` plays no part in source identity; a logical id appears only when a FHIR repository assigns one.
 
 ### Validate the output

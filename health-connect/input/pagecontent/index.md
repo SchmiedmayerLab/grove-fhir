@@ -49,9 +49,9 @@ A type omitted from the table above is not silently admitted.
 ### Identity and source context
 
 The source-record identifier is repository-scoped and does not disclose
-`Record.metadata.id`. Multi-output Records repeat that source pair and use distinct output
-identifiers. A synthesized glucose Specimen, conversion Provenance, and exchange Bundle
-also have complete business identifiers. The JCS/SHA-256 preimages, lexical rules, naming
+`Record.metadata.id`. A Record yielding several Observations repeats that source pair and gives
+each output a distinct identifier; a one-to-one conversion carries the Record identifier alone. A synthesized glucose Specimen, conversion Provenance, and exchange Bundle
+also have complete business identifiers. The compositions, lexical rules, naming
 systems, and cross-language vectors are normative in
 [`catalog/health-connect-identity.json`](https://grovealliance.org/fhir/catalog/health-connect-identity.json). None of these values becomes `Resource.id`.
 

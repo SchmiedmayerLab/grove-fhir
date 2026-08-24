@@ -52,16 +52,18 @@ an application writing the same measurement on both produces the same value in b
 
 ### Identity
 
-[`catalog/health-connect-identity.json`](https://grovealliance.org/fhir/catalog/health-connect-identity.json) is the complete normative identity contract. It
-defines the seven NamingSystem URLs, JCS string and array canonicalization, SHA-256 preimages,
-lexical rules, and test vectors for source Records, single and multi-output Observations,
-sleep stages, Specimens, conversion Provenance, and exchange Bundles.
+[`catalog/health-connect-identity.json`](https://grovealliance.org/fhir/catalog/health-connect-identity.json) is the complete normative identity contract.
+It defines the NamingSystem URLs, the component order of each composition, the lexical rules,
+and test vectors for source Records, multi-output Observations, sleep stages, Specimens, and the
+deployment-owned nodes an export creates.
 
-Every digest is `v1:` followed by 64 lowercase hexadecimal digits. The preimage is the
-UTF-8 encoding, without BOM, of the specified RFC 8785-compatible array serialization.
-Strings contain only Unicode scalar values; invalid surrogates are rejected. Do not replace
-the catalog algorithm with locale-sensitive JSON, object serialization, length-prefixed
-text, or concatenation. Implementations must pass every published vector.
+An identifier carries the source's own value, verbatim. Components join only where the source's
+value would not identify one record on its own, which here is the Record identity: `Metadata.id`
+is unique only inside one repository, so the value is the scheme version `v1:`, the repository
+scope, the Record class and the raw Record id, joined by vertical bars. No component may contain
+a vertical bar; a source value carrying one is rejected rather than escaped, because an escaping
+rule is exactly the conformance surface this scheme exists to remove. Nothing is hashed.
+Implementations must reproduce every published vector.
 
 Business identifiers do not populate `Resource.id`. A producer graph uses the Mobile
 entry-identity algorithm to derive deterministic `urn:uuid` fullUrls from complete entry

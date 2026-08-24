@@ -49,15 +49,15 @@ The group `date` becomes `effectiveDateTime` in the payload's `timezone`, here `
 ### Identity from the grpid
 
 The `grpid` is the stable native key shared by both measures, so it is the `sourceNativeId` of one source record covering the whole group.
-The source-record digest preimage uses the grouped token `getmeas:9+10`, never `getmeas:9` or `getmeas:10` alone:
+Withings does not document `grpid` as unique across accounts, so this provider is account-scoped and its identifier composes; the grouped token `getmeas:9+10` is used, never `getmeas:9` or `getmeas:10` alone:
 
 ```
-["withings","https://provider.example.org/accounts","account-001","getmeas:9+10","4759723856"]
+v1:withings|acct-7f3a9c|getmeas:9+10|4759723856
 ```
 
-Its SHA-256 yields the source-record identifier `v1:335d6070...b5cb924c`; the raw `grpid` and provider-account pair are digest inputs only and never appear in the emitted FHIR.
-The output identifier hashes the source-record pair with the grouped mapping's declared discriminator `blood-pressure-panel`.
-The source-type extension carries `withings/getmeas:9+10`, keeping the exact catalog dispatch token recoverable without reversing any digest.
+Every component is the value the source gave us, joined by vertical bars and nothing else: the `grpid` is a vendor row key, not participant data, and the account component is a deployment-minted pseudonym rather than a vendor-side account key.
+One measure group yields one blood-pressure panel, so this conversion is one-to-one and carries no separate output identifier; a group that fanned out into several Observations would give each one the grouped mapping's declared discriminator, such as `blood-pressure-panel`.
+The source-type extension carries `withings/getmeas:9+10`, keeping the exact catalog dispatch token recoverable directly from the resource.
 
 ### What the adapter refuses
 

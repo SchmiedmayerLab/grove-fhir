@@ -36,7 +36,7 @@ identifiers are not exchange defaults.
 
 A recording device rarely states a per-unit identifier, so a producer that mints a fresh
 identity per sample stores one wearable thousands of times. Every adapter therefore derives
-one identity per participant's recorder, using the digest published in
+one identity per participant's recorder, using the composition published in
 [`catalog/exchange-identity.json`](https://grovealliance.org/fhir/catalog/exchange-identity.json)
 over the subject reference, the adapter, and the manufacturer, model, and hardware version.
 
@@ -51,8 +51,8 @@ Device. They change over a recorder's life, and a producer converting historical
 reaches them out of order, so a shared Device would end up asserting whichever value happened to
 convert last. Each Observation states the versions in force when it was recorded instead.
 
-A vendor per-unit identifier is never the key, and never reaches the wire — not even as a
-digest. Where a platform exposes one it is dropped, exactly as the connected-provider adapter
+A vendor per-unit identifier is never the key, and never reaches the wire — not in any form.
+Where a platform exposes one it is dropped, exactly as the connected-provider adapter
 drops `deviceid`.
 
 See the [recording-device example](Device-GroveRecordingDeviceExample.html).

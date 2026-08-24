@@ -128,8 +128,9 @@ a FHIR `collection` Bundle. Every entry carries one complete
 `grove-exchange-entry-identifier`; its `fullUrl` is the UUID version 5 value defined by
 [`catalog/exchange-identity.json`](https://grovealliance.org/fhir/catalog/exchange-identity.json). References between Bundle entries use those UUID URNs.
 
-The RFC 8785 JSON Canonicalization Scheme serialization of exactly `[system,value]` is
-the UUID name under namespace `a9a39cf1-c944-5d15-a3c2-c395969ea101`. This works for
+The UUID name is the identifier's system, one vertical bar, then its value, under namespace
+`a9a39cf1-c944-5d15-a3c2-c395969ea101`. Only the system is barred from carrying a vertical bar,
+so the name splits at the first one; a composed value carries its own bars freely. This works for
 resources without a native
 `identifier`, such as Provenance, without turning `Resource.id` into source identity.
 The entry identifier supplements rather than replaces a resource's native identifier,
