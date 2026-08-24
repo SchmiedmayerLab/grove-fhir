@@ -1,0 +1,152 @@
+#
+# This source file is part of the Grove FHIR open-source project
+#
+# SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTRIBUTORS.md)
+#
+# SPDX-License-Identifier: MIT
+#
+
+name: Deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Bare semantic version to release, for example 0.3.0. It must equal the version every guide declares.
+        required: true
+        type: string
+      dryRun:
+        description: Build and verify the release without creating a tag or a GitHub release.
+        required: false
+        type: boolean
+        default: false
+
+concurrency:
+  group: deployment-${{ inputs.version }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    name: Publish the R4 Guides
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Refuse a version the guides do not declare
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          if ! printf '%s' "$VERSION" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z]+([.-][0-9A-Za-z]+)*)?$'; then
+            echo "::error::'$VERSION' is not a bare semantic version."
+            exit 1
+          fi
+          # Every guide ships one version. A release that disagrees with the sources would publish
+          # packages whose own metadata contradicts the tag.
+          mismatched=0
+          while IFS= read -r configuration; do
+            declared="$(python3 -c "import sys,yaml;print(yaml.safe_load(open(sys.argv[1]))['version'])" "$configuration")"
+            if [ "$declared" != "$VERSION" ]; then
+              echo "::error::$configuration declares $declared, not $VERSION."
+              mismatched=1
+            fi
+          done < <(find . -mindepth 2 -maxdepth 2 -name sushi-config.yaml | sort)
+          [ "$mismatched" -eq 0 ]
+      - name: Refuse a tag that already exists
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          if git rev-parse -q --verify "refs/tags/$VERSION" >/dev/null; then
+            echo "::error::Tag $VERSION already exists; a published version is never rewritten."
+            exit 1
+          fi
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+          cache: npm
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13.15"
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21.0.10+7.0.LTS"
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3.12"
+          bundler-cache: false
+      - name: Select the locked Bundler
+        run: gem install bundler -v 4.0.16 --no-document
+      - run: npm ci
+      - name: Build and assemble every guide
+        run: npm run pages:build
+      - name: Verify the repository and tooling contract
+        run: python3 -m pytest Tests -q
+      - name: Verify the assembled site
+        run: >-
+          python3 Scripts/check-publication.py
+          --site .build/pages
+          --repository-root .
+          --config publication/config.json
+          --base-url https://schmiedmayerlab.github.io/grove-fhir
+      - name: Collect the published packages
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          mkdir -p .build/release
+          while IFS= read -r configuration; do
+            guide="$(dirname "$configuration")"
+            guide="${guide#./}"
+            package="$guide/output/package.tgz"
+            if [ ! -f "$package" ]; then
+              echo "::error::$guide produced no package.tgz."
+              exit 1
+            fi
+            identifier="$(python3 -c "import sys,yaml;print(yaml.safe_load(open(sys.argv[1]))['id'])" "$configuration")"
+            cp "$package" ".build/release/$identifier-$VERSION.tgz"
+          done < <(find . -mindepth 2 -maxdepth 2 -name sushi-config.yaml | sort)
+          ls -la .build/release
+      - name: Report a dry run
+        if: inputs.dryRun
+        run: echo "Dry run verified ${{ inputs.version }} without tagging or releasing."
+      - name: Tag the exact released revision
+        if: '!inputs.dryRun'
+        env:
+          VERSION: ${{ inputs.version }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api "repos/$GITHUB_REPOSITORY/git/refs" \
+            -f "ref=refs/tags/$VERSION" \
+            -f "sha=$GITHUB_SHA" >/dev/null
+      - name: Create the GitHub release
+        if: '!inputs.dryRun'
+        env:
+          VERSION: ${{ inputs.version }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$VERSION" \
+            --repo "$GITHUB_REPOSITORY" \
+            --target "$GITHUB_SHA" \
+            --title "$VERSION" \
+            --generate-notes \
+            --latest \
+            .build/release/*.tgz
+      - name: Report where the guides are published
+        if: '!inputs.dryRun'
+        run: |
+          {
+            echo "### Grove FHIR ${{ inputs.version }}"
+            echo
+            echo "Guides: https://schmiedmayerlab.github.io/grove-fhir/"
+            echo
+            echo "The canonical host is not served yet, so this release publishes the browsable"
+            echo "guides to GitHub Pages and attaches every FHIR package to the release. The"
+            echo "canonical immutable publication stays gated behind publication/config.json."
+          } >> "$GITHUB_STEP_SUMMARY"
