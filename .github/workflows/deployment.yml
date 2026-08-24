@@ -141,15 +141,6 @@ jobs:
       - name: Report a dry run
         if: inputs.dryRun
         run: echo "Dry run verified ${{ steps.release.outputs.version }} without tagging or releasing."
-      - name: Tag the exact released revision
-        if: ${{ !inputs.dryRun && steps.release.outputs.owns-tag == 'true' }}
-        env:
-          VERSION: ${{ steps.release.outputs.version }}
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          gh api "repos/$GITHUB_REPOSITORY/git/refs" \
-            -f "ref=refs/tags/$VERSION" \
-            -f "sha=$GITHUB_SHA" >/dev/null
       - name: Publish the release and its packages
         if: ${{ !inputs.dryRun }}
         env:
@@ -158,6 +149,8 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           if [ "$OWNS_TAG" = "true" ]; then
+            # --target creates the tag together with the release, so a failure here leaves no
+            # orphan tag behind and the version stays free to retry.
             gh release create "$VERSION" \
               --repo "$GITHUB_REPOSITORY" \
               --target "$GITHUB_SHA" \
