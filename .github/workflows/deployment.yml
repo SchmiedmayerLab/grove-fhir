@@ -109,6 +109,15 @@ jobs:
           bundler-cache: false
       - name: Select the locked Bundler
         run: gem install bundler -v 4.0.16 --no-document
+      - uses: actions/cache@v5
+        with:
+          path: |
+            .build/fhir-home
+            .build/fhir-tools
+            .build/bundle
+          key: fhir-guides-${{ runner.os }}-${{ hashFiles('Gemfile.lock', 'package-lock.json', 'Scripts/download-fhir-tools.sh') }}
+          restore-keys: |
+            fhir-guides-${{ runner.os }}-
       - run: npm ci
       - name: Build and assemble every guide
         run: npm run pages:build
