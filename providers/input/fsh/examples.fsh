@@ -117,10 +117,12 @@ Instance: WithingsBloodPressureExample
 InstanceOf: ProviderObservation
 Usage: #example
 Title: "Withings Grouped Blood Pressure"
-Description: "One already-obtained Withings measure group holding one diastolic (type 9) and one systolic (type 10) value converted into one shared blood-pressure panel."
+Description: "One already-obtained Withings measure group holding one diastolic (type 9) and one systolic (type 10) value converted into one shared blood-pressure panel. It also carries the shared writer-record identity, which names the measurement as Withings itself does; the identical value appears when the Withings application writes the same measurement into HealthKit or Health Connect, so a deployment that has confirmed those key spaces agree can recognise one measurement arriving by more than one route."
 * meta.profile[+] = "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-blood-pressure"
 * identifier[sourceRecordId].system = $providerSourceRecordId
 * identifier[sourceRecordId].value = "v1:withings|acct-7f3a9c|measure|17348211"
+* identifier[writerRecordId].system = $groveWriterRecordId
+* identifier[writerRecordId].value = "v1:withings|17348211"
 * status = #final
 * category = http://terminology.hl7.org/CodeSystem/observation-category#vital-signs "Vital Signs"
 * code = http://loinc.org#85354-9 "Blood pressure panel with all children optional"
