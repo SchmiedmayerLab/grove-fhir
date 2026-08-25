@@ -14,7 +14,7 @@ description: >-
   FHIR R4 profiles and examples for exchanging measurements collected by mobile
   applications and connected devices.
 status: draft
-version: 0.3.0
+version: 0.4.0
 fhirVersion: 4.0.1
 copyrightYear: 2026+
 releaseLabel: ci-build

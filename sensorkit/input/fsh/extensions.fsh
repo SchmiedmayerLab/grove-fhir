@@ -23,3 +23,14 @@ Context: Observation
 * value[x] 1..1 MS
 * value[x] only code
 * valueCode from SensorKitECGSessionGuidanceVS (required)
+
+Extension: SensorKitVisitLocation
+Id: sensorkit-visit-location
+Title: "SensorKit Visit Location"
+Description: "The place a visit was to, as SensorKit's own opaque identifier. It recurs across visits to the same place and never names or positions it, so it is carried as a business identifier rather than a Location resource: a Location holding nothing but this value would add a resource without adding a fact. Its recurrence is both the analytic value and the linkability risk, so a producer emits it only under explicit disclosure authorization. It belongs on a SensorKit visit Observation and nowhere else: the content-free SensorKit profiles must never carry it. Without it a visit still converts; repeat visits to one unnamed place simply cannot be recognised."
+Context: Observation
+* value[x] 1..1 MS
+* value[x] only Identifier
+* valueIdentifier.system 1..1 MS
+* valueIdentifier.system = "https://grovealliance.org/fhir/sensorkit/NamingSystem/sensorkit-visit-location-id" (exactly)
+* valueIdentifier.value 1..1 MS

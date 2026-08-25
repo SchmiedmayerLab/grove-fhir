@@ -23,7 +23,7 @@ class SensorCatalogTests(unittest.TestCase):
         claims = json.loads((ROOT / "catalog/profile-claims.json").read_text(encoding="utf-8"))
         package = next(item for item in graph["packages"] if item["source"] == "sensor")
         self.assertEqual(catalog["fhirVersion"], "4.0.1")
-        self.assertEqual(catalog["version"], "0.3.0")
+        self.assertEqual(catalog["version"], "0.4.0")
         self.assertEqual(catalog["packageId"], package["packageId"])
         profile_ids = {item["profile"].rsplit("/", 1)[-1] for item in catalog["contracts"]}
         self.assertEqual(profile_ids, set(package["profiles"]))
@@ -70,7 +70,7 @@ class SensorCatalogTests(unittest.TestCase):
 
     def test_sensor_pins_mobile_and_terminology_dependencies(self) -> None:
         configuration = (ROOT / "sensor/sushi-config.yaml").read_text(encoding="utf-8")
-        self.assertIn("org.grovealliance.fhir.mobile:\n    version: 0.3.0", configuration)
+        self.assertIn("org.grovealliance.fhir.mobile:\n    version: 0.4.0", configuration)
         self.assertIn("hl7.terminology.r4: 7.3.0", configuration)
         # PHD is an alignment described in prose, not a package dependency.
         self.assertNotIn("hl7.fhir.uv.phd", configuration)

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "fhirVersion": "4.0.1",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "source": {
     "platform": "Apple HealthKit",
     "sdkBaseline": {
@@ -49,12 +49,12 @@
   },
   "conversionProvenanceProfile": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-conversion-provenance",
   "statusVocabulary": {
-    "supported": "The 0.3.0 HealthKit adapter defines and validates emitted FHIR output.",
+    "supported": "The 0.4.0 HealthKit adapter defines and validates emitted FHIR output.",
     "mapped-standard": "The source is represented by another exact Grove or authoritative standard package rather than a Mobile measurement profile.",
-    "platform-exclusive": "The 0.3.0 adapter defines output through a platform-exclusive HealthKit profile whose meaning remains HealthKit-specific.",
+    "platform-exclusive": "The 0.4.0 adapter defines output through a platform-exclusive HealthKit profile whose meaning remains HealthKit-specific.",
     "unmodeled": "The source type is inventoried, but no shared or HealthKit-scoped profile models it and no output is admitted.",
-    "deferred": "No FHIR output for this source type is admitted by the 0.3.0 adapter.",
-    "intentionally-unsupported": "The 0.3.0 contract explicitly rejects this source meaning rather than approximating it."
+    "deferred": "No FHIR output for this source type is admitted by the 0.4.0 adapter.",
+    "intentionally-unsupported": "The 0.4.0 contract explicitly rejects this source meaning rather than approximating it."
   },
   "standardAdapterClaims": {
     "body-mass-index": {
@@ -203,7 +203,7 @@
       "profiles": [
         "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-sleep-duration"
       ],
-      "requirement": "This is not a HealthKit platform source identifier. Version 0.3.0 does not define the session-boundary aggregation contract; individual admitted samples map only to sleep stage."
+      "requirement": "This is not a HealthKit platform source identifier. Version 0.4.0 does not define the session-boundary aggregation contract; individual admitted samples map only to sleep stage."
     }
   ],
   "rows": [
@@ -274,10 +274,13 @@
         "HKCategoryTypeIdentifierAppleWalkingSteadinessEvent"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/applewalkingsteadinessevent",
-      "status": "intentionally-unsupported",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "Device alert: the enum encodes notification cadence (initial vs repeat) crossed with an Apple-defined banding of the appleWalkingSteadiness percent score, which is the actual measurement and is handled as a quantity type. The alert adds no measurement content beyond that score."
+      "status": "supported",
+      "measurementIDs": [
+        "walking-steadiness-notification"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-walking-steadiness-notification"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierAudioExposureEvent",
@@ -287,10 +290,13 @@
         "HKCategoryTypeIdentifierEnvironmentalAudioExposureEvent"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/environmentalaudioexposureevent",
-      "status": "intentionally-unsupported",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "Device alert: a threshold-crossing notification against a user-configurable limit, not a measurement. The measurement is the environmentalAudioExposure dB(A) quantity type, which carries the actual exposure level."
+      "status": "supported",
+      "measurementIDs": [
+        "environmental-audio-exposure-notification"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-environmental-audio-exposure-notification"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierBladderIncontinence",
@@ -614,10 +620,13 @@
         "HKCategoryTypeIdentifierHeadphoneAudioExposureEvent"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/headphoneaudioexposureevent",
-      "status": "intentionally-unsupported",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "Device alert over an OS-computed rolling seven-day dose limit; not a measurement. The headphoneAudioExposure quantity type carries the measured levels."
+      "status": "supported",
+      "measurementIDs": [
+        "headphone-audio-exposure-notification"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-headphone-audio-exposure-notification"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierHeartburn",
@@ -641,10 +650,13 @@
         "HKCategoryTypeIdentifierHighHeartRateEvent"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/highheartrateevent",
-      "status": "intentionally-unsupported",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "Device alert against a user-configurable threshold; not a measurement. Heart-rate quantities remain the measurement surface."
+      "status": "supported",
+      "measurementIDs": [
+        "high-heart-rate-notification"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-high-heart-rate-notification"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierHotFlashes",
@@ -680,10 +692,13 @@
         "HKCategoryTypeIdentifierInfrequentMenstrualCycles"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/infrequentmenstrualcycles",
-      "status": "intentionally-unsupported",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "Algorithmic screening alert over derived cycle history; not a measurement."
+      "status": "supported",
+      "measurementIDs": [
+        "infrequent-menstrual-cycles"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-infrequent-menstrual-cycles"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierIntermenstrualBleeding",
@@ -707,10 +722,13 @@
         "HKCategoryTypeIdentifierIrregularHeartRhythmEvent"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/irregularheartrhythmevent",
-      "status": "intentionally-unsupported",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "FDA-cleared screening notification from a proprietary algorithm, valueless and read-only. Grove admits the ECG itself (sensor ECG adapter claim, HKDataTypeIdentifierElectrocardiogram) and the atrial-fibrillation burden percentage (HKQuantityTypeIdentifierAtrialFibrillationBurden) as the rhythm evidence surfaces; re-emitting the alert would present a screening trigger as a rhythm finding without any waveform or classification payload."
+      "status": "supported",
+      "measurementIDs": [
+        "irregular-heart-rhythm-notification"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-irregular-heart-rhythm-notification"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierIrregularMenstrualCycles",
@@ -719,10 +737,13 @@
         "HKCategoryTypeIdentifierIrregularMenstrualCycles"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/irregularmenstrualcycles",
-      "status": "intentionally-unsupported",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "Algorithmic screening alert over derived cycle history; not a measurement."
+      "status": "supported",
+      "measurementIDs": [
+        "irregular-menstrual-cycles"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-irregular-menstrual-cycles"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierLactation",
@@ -776,10 +797,13 @@
         "HKCategoryTypeIdentifierLowCardioFitnessEvent"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/lowcardiofitnessevent",
-      "status": "intentionally-unsupported",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "Device alert over an Apple-defined classification band of the VO2Max quantity, which is the measurement. Single enum case lowFitness carries no additional measurement meaning."
+      "status": "supported",
+      "measurementIDs": [
+        "low-cardio-fitness-notification"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-low-cardio-fitness-notification"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierLowHeartRateEvent",
@@ -788,10 +812,13 @@
         "HKCategoryTypeIdentifierLowHeartRateEvent"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/lowheartrateevent",
-      "status": "intentionally-unsupported",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "Device alert against a user-configurable threshold; the heart-rate quantity series is the admitted measurement. An alert Observation would encode a preference-dependent trigger, not a physiologic result."
+      "status": "supported",
+      "measurementIDs": [
+        "low-heart-rate-notification"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-low-heart-rate-notification"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierLowerBackPain",
@@ -935,10 +962,13 @@
         "HKCategoryTypeIdentifierPersistentIntermenstrualBleeding"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/persistentintermenstrualbleeding",
-      "status": "intentionally-unsupported",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "Algorithmic screening alert derived from user-entered cycle data, not a measurement. The primary data (intermenstrualBleeding and menstrualFlow samples) is admitted through the cycle-tracking enum-absorption design; re-emitting HealthKit's derived possible-pathology flag would present a screening notification as a clinical finding."
+      "status": "supported",
+      "measurementIDs": [
+        "persistent-intermenstrual-bleeding"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-persistent-intermenstrual-bleeding"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierPregnancy",
@@ -992,10 +1022,13 @@
         "HKCategoryTypeIdentifierProlongedMenstrualPeriods"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/prolongedmenstrualperiods",
-      "status": "intentionally-unsupported",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "Algorithmic screening alert over derived cycle history; the underlying menstrualFlow data is the measurement and is covered by the cycle-tracking design."
+      "status": "supported",
+      "measurementIDs": [
+        "prolonged-menstrual-periods"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-prolonged-menstrual-periods"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierRapidPoundingOrFlutteringHeartbeat",
@@ -1109,10 +1142,13 @@
         "HKCategoryTypeIdentifierSleepApneaEvent"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/sleepapneaevent",
-      "status": "intentionally-unsupported",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "Device alert, not a measurement: an Apple proprietary screening algorithm's notification of possible pathology. The underlying signal (HKQuantityTypeIdentifierAppleSleepingBreathingDisturbances) is the measurement surface; emitting the alert as an Observation would misrepresent a screening notification as a clinical finding."
+      "status": "supported",
+      "measurementIDs": [
+        "sleep-apnea-notification"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-sleep-apnea-notification"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierSleepChanges",
@@ -1226,7 +1262,7 @@
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
-      "requirement": "Version 0.3.0 publishes no reviewed contract for this characteristic. LOINC 76689-9 'Sex assigned at birth' represents it faithfully, and the supported blood-type and wheelchair-use rows show a characteristic can carry an Observation, so this is unfinished work rather than a modelling refusal."
+      "requirement": "Version 0.4.0 publishes no reviewed contract for this characteristic. LOINC 76689-9 'Sex assigned at birth' represents it faithfully, and the supported blood-type and wheelchair-use rows show a characteristic can carry an Observation, so this is unfinished work rather than a modelling refusal."
     },
     {
       "sourceTypeIdentifier": "HKCharacteristicTypeIdentifierBloodType",
@@ -1474,10 +1510,13 @@
         "HKDataTypeIdentifierStateOfMind"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkdatatypeidentifierstateofmind",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or HealthKit-adapter output contract is published for this sample type."
+      "status": "supported",
+      "measurementIDs": [
+        "state-of-mind"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-state-of-mind"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKDataTypeUserAnnotatedMedicationConcept",

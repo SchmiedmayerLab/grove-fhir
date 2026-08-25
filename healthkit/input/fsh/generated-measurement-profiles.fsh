@@ -25,20 +25,32 @@ Description: "Measurement concepts defined by the HealthKit adapter for platform
 * #blood-alcohol-content "Blood alcohol content" "The blood alcohol concentration expressed as a percent, as reported by the source at the Observation effective instant."
 * #cycling-functional-threshold-power "Cycling functional threshold power" "The source-estimated highest cycling power output the subject can sustain for approximately one hour."
 * #environmental-audio-exposure "Environmental audio exposure" "The A-weighted equivalent continuous sound pressure level of environmental sound the user was exposed to during the exact Observation effective Period."
+* #environmental-audio-exposure-notification "Environmental Audio Exposure Notification" "A device notification that environmental sound reached the momentary exposure limit."
 * #environmental-sound-reduction "Environmental sound reduction" "The difference in equivalent continuous sound pressure level attenuated by the user's noise-reducing headphones during the exact Observation effective Period."
 * #handwashing-session "Handwashing session" "The duration of one handwashing event during the exact Observation effective Period."
 * #headphone-audio-exposure "Headphone audio exposure" "The A-weighted equivalent continuous sound pressure level of headphone audio the user was exposed to during the exact Observation effective Period."
+* #headphone-audio-exposure-notification "Headphone Audio Exposure Notification" "A device notification that headphone audio exposure reached the seven-day limit."
 * #heart-rate-recovery-one-minute "Heart rate recovery one minute" "The decrease in heart rate, in beats per minute, from peak exercise to one minute after the end of exercise."
+* #high-heart-rate-notification "High Heart Rate Notification" "A device notification that heart rate stayed above the wearer's configured threshold while apparently inactive."
+* #infrequent-menstrual-cycles "Infrequent menstrual cycles" "Cycles occurring less often than expected, derived from the participant's logged cycle records. Corresponds to SNOMED CT 52073004 (Oligomenorrhea); the concept is cited rather than bound, because this guide carries no SNOMED dependency."
 * #inhaler-usage "Inhaler usage" "The total number of inhaler puffs the user took during the exact Observation effective Period."
 * #insulin-delivery "Insulin delivery" "The amount of insulin delivered during the exact Observation effective Period, qualified by a required basal or bolus delivery reason."
+* #irregular-heart-rhythm-notification "Irregular Heart Rhythm Notification" "A device notification of a heart rhythm irregularity consistent with atrial fibrillation."
+* #irregular-menstrual-cycles "Irregular menstrual cycles" "Cycle lengths outside the expected range, derived from the participant's logged cycle records. Corresponds to SNOMED CT 80182007 (Irregular periods); the concept is cited rather than bound, because this guide carries no SNOMED dependency."
+* #low-cardio-fitness-notification "Low Cardio Fitness Notification" "A device notification that estimated cardio fitness fell below the configured threshold."
+* #low-heart-rate-notification "Low Heart Rate Notification" "A device notification that heart rate stayed below the wearer's configured threshold while apparently inactive."
 * #number-of-alcoholic-beverages "Number of alcoholic beverages" "The number of standard alcoholic drinks attributed to the exact Observation effective Period."
 * #number-of-times-fallen "Number of times fallen" "The total number of falls attributed to the exact Observation effective Period."
+* #persistent-intermenstrual-bleeding "Persistent intermenstrual bleeding" "Bleeding between periods persisting across cycles, derived from logged cycle records."
 * #physical-effort "Physical effort" "Estimated exertion intensity, in energy per body mass per time, over the exact Observation effective Period."
 * #progesterone-test-result "Progesterone (PdG) test result" "Qualitative result of a home urine pregnanediol-3-glucuronide test."
+* #prolonged-menstrual-periods "Prolonged menstrual periods" "Periods lasting longer than expected, derived from logged cycle records."
 * #running-ground-contact-time "Running ground contact time" "The ground contact time of one running stride at the sample instant."
 * #running-stride-length "Running stride length" "The distance covered by one running stride at the sample instant."
 * #running-vertical-oscillation "Running vertical oscillation" "The vertical oscillation of the torso during running at the sample instant."
+* #sleep-apnea-notification "Sleep Apnea Notification" "A device notification of breathing disturbances consistent with sleep apnea."
 * #sleeping-breathing-disturbances "Sleeping breathing disturbances" "The number of accelerometer-detected breathing disturbance events per hour of sleep during the exact nightly Observation effective Period."
+* #state-of-mind "State of mind" "A self-reported reflection on felt experience, valenced from unpleasant to pleasant."
 * #swimming-stroke-count "Swimming stroke count" "The total number of swimming strokes attributed to the exact Observation effective Period."
 * #symptom-abdominal-cramps "Abdominal cramps" "Presence and severity of abdominal cramps as reported by the user."
 * #symptom-acne "Acne" "Presence and severity of acne as reported by the user."
@@ -84,10 +96,19 @@ Description: "Measurement concepts defined by the HealthKit adapter for platform
 * #walking-heart-rate-average "Walking heart rate average" "The mean heart rate during periods classified as walking within the exact Observation effective Period."
 * #walking-speed "Walking speed" "The speed at which the subject walks, sampled by the source during ordinary walking bouts."
 * #walking-steadiness "Walking steadiness" "A windowed percentage score summarizing the stability of the subject's gait over the aggregation period."
+* #walking-steadiness-notification "Walking Steadiness Notification" "A device notification that walking steadiness reached a low or very low classification."
 * #walking-step-length "Walking step length" "The distance covered by a single step during ordinary walking, as sampled by the source."
 * #water-temperature "Water temperature" "The temperature of the water surrounding the wearer during a water activity, as sampled by the device."
 * #wheelchair-use "Wheelchair use" "Whether the subject uses a wheelchair, as recorded in the HealthKit wheelchair-use characteristic."
 * #workout-effort-score "Workout effort score" "An Apple-proprietary 1-10 rating of perceived or estimated workout effort for the exact associated workout Period."
+* #high-heart-rate-threshold "Notification threshold" "The wearer-configured heart rate above which the device raises this notification."
+* #low-cardio-fitness-threshold "Notification threshold" "The cardio fitness estimate below which the device raises this notification."
+* #low-heart-rate-threshold "Notification threshold" "The wearer-configured heart rate below which the device raises this notification."
+* #kind "Reflection kind" "HKStateOfMind.Kind: whether the reflection describes a momentary feeling or a longer period."
+* #valence-classification "Valence classification" "HKStateOfMind.ValenceClassification: the coarse band the reported valence falls in."
+* #state-of-mind-label "Label" "HKStateOfMind.Label: a word the participant chose for the feeling. Repeats once per chosen label."
+* #state-of-mind-association "Association" "HKStateOfMind.Association: a life area the participant attributed the feeling to. Repeats once per association."
+* #walking-steadiness-notification-occurrence "Notification occurrence" "Whether this is the first notification at the classification or a repeat."
 
 ValueSet: HealthKitMeasurementVS
 Id: healthkit-measurement
@@ -198,6 +219,104 @@ Description: "Every admitted result code of the Contraceptive Use measurement."
 * ^experimental = false
 * include codes from system HealthkitContraceptiveUseCS
 
+CodeSystem: HealthkitEnvironmentalAudioExposureNotificationCS
+Id: healthkit-environmental-audio-exposure-notification
+Title: "Environmental Audio Exposure Notification Result"
+Description: "The closed result codes of the Environmental Audio Exposure Notification measurement."
+* ^experimental = false
+* ^caseSensitive = true
+* ^content = #complete
+* #momentary-limit "Momentary limit" "HKCategoryValueEnvironmentalAudioExposureEvent.momentaryLimit: the momentary exposure limit was reached."
+
+ValueSet: HealthkitEnvironmentalAudioExposureNotificationVS
+Id: healthkit-environmental-audio-exposure-notification
+Title: "Environmental Audio Exposure Notification Result"
+Description: "Every admitted result code of the Environmental Audio Exposure Notification measurement."
+* ^experimental = false
+* include codes from system HealthkitEnvironmentalAudioExposureNotificationCS
+
+CodeSystem: HealthkitHeadphoneAudioExposureNotificationCS
+Id: healthkit-headphone-audio-exposure-notification
+Title: "Headphone Audio Exposure Notification Result"
+Description: "The closed result codes of the Headphone Audio Exposure Notification measurement."
+* ^experimental = false
+* ^caseSensitive = true
+* ^content = #complete
+* #seven-day-limit "Seven day limit" "HKCategoryValueHeadphoneAudioExposureEvent.sevenDayLimit: the rolling seven-day exposure limit was reached."
+
+ValueSet: HealthkitHeadphoneAudioExposureNotificationVS
+Id: healthkit-headphone-audio-exposure-notification
+Title: "Headphone Audio Exposure Notification Result"
+Description: "Every admitted result code of the Headphone Audio Exposure Notification measurement."
+* ^experimental = false
+* include codes from system HealthkitHeadphoneAudioExposureNotificationCS
+
+CodeSystem: HealthkitHighHeartRateNotificationCS
+Id: healthkit-high-heart-rate-notification
+Title: "High Heart Rate Notification Result"
+Description: "The closed result codes of the High Heart Rate Notification measurement."
+* ^experimental = false
+* ^caseSensitive = true
+* ^content = #complete
+* #occurred "Occurred" "The device raised this notification over the stated Period. HealthKit carries no further value for it."
+
+ValueSet: HealthkitHighHeartRateNotificationVS
+Id: healthkit-high-heart-rate-notification
+Title: "High Heart Rate Notification Result"
+Description: "Every admitted result code of the High Heart Rate Notification measurement."
+* ^experimental = false
+* include codes from system HealthkitHighHeartRateNotificationCS
+
+CodeSystem: HealthkitInfrequentMenstrualCyclesCS
+Id: healthkit-infrequent-menstrual-cycles
+Title: "Infrequent Menstrual Cycles Result"
+Description: "The closed result codes of the Infrequent Menstrual Cycles measurement."
+* ^experimental = false
+* ^caseSensitive = true
+* ^content = #complete
+* #present "Present" "The pattern was detected over the stated Period from the wearer's own logged cycle records."
+* #not-present "Not present" "The pattern was evaluated over the stated Period and not detected."
+
+ValueSet: HealthkitInfrequentMenstrualCyclesVS
+Id: healthkit-infrequent-menstrual-cycles
+Title: "Infrequent Menstrual Cycles Result"
+Description: "Every admitted result code of the Infrequent Menstrual Cycles measurement."
+* ^experimental = false
+* include codes from system HealthkitInfrequentMenstrualCyclesCS
+
+CodeSystem: HealthkitIrregularHeartRhythmNotificationCS
+Id: healthkit-irregular-heart-rhythm-notification
+Title: "Irregular Heart Rhythm Notification Result"
+Description: "The closed result codes of the Irregular Heart Rhythm Notification measurement."
+* ^experimental = false
+* ^caseSensitive = true
+* ^content = #complete
+* #occurred "Occurred" "The device raised this notification over the stated Period. HealthKit carries no further value for it."
+
+ValueSet: HealthkitIrregularHeartRhythmNotificationVS
+Id: healthkit-irregular-heart-rhythm-notification
+Title: "Irregular Heart Rhythm Notification Result"
+Description: "Every admitted result code of the Irregular Heart Rhythm Notification measurement."
+* ^experimental = false
+* include codes from system HealthkitIrregularHeartRhythmNotificationCS
+
+CodeSystem: HealthkitIrregularMenstrualCyclesCS
+Id: healthkit-irregular-menstrual-cycles
+Title: "Irregular Menstrual Cycles Result"
+Description: "The closed result codes of the Irregular Menstrual Cycles measurement."
+* ^experimental = false
+* ^caseSensitive = true
+* ^content = #complete
+* #present "Present" "The pattern was detected over the stated Period from the wearer's own logged cycle records."
+* #not-present "Not present" "The pattern was evaluated over the stated Period and not detected."
+
+ValueSet: HealthkitIrregularMenstrualCyclesVS
+Id: healthkit-irregular-menstrual-cycles
+Title: "Irregular Menstrual Cycles Result"
+Description: "Every admitted result code of the Irregular Menstrual Cycles measurement."
+* ^experimental = false
+* include codes from system HealthkitIrregularMenstrualCyclesCS
+
 CodeSystem: HealthkitLactationStatusCS
 Id: healthkit-lactation-status
 Title: "Lactation Status Result"
@@ -213,6 +332,55 @@ Title: "Lactation Status Result"
 Description: "Every admitted result code of the Lactation Status measurement."
 * ^experimental = false
 * include codes from system HealthkitLactationStatusCS
+
+CodeSystem: HealthkitLowCardioFitnessNotificationCS
+Id: healthkit-low-cardio-fitness-notification
+Title: "Low Cardio Fitness Notification Result"
+Description: "The closed result codes of the Low Cardio Fitness Notification measurement."
+* ^experimental = false
+* ^caseSensitive = true
+* ^content = #complete
+* #low-fitness "Low fitness" "HKCategoryValueLowCardioFitnessEvent.lowFitness: the cardio fitness estimate is below the threshold."
+
+ValueSet: HealthkitLowCardioFitnessNotificationVS
+Id: healthkit-low-cardio-fitness-notification
+Title: "Low Cardio Fitness Notification Result"
+Description: "Every admitted result code of the Low Cardio Fitness Notification measurement."
+* ^experimental = false
+* include codes from system HealthkitLowCardioFitnessNotificationCS
+
+CodeSystem: HealthkitLowHeartRateNotificationCS
+Id: healthkit-low-heart-rate-notification
+Title: "Low Heart Rate Notification Result"
+Description: "The closed result codes of the Low Heart Rate Notification measurement."
+* ^experimental = false
+* ^caseSensitive = true
+* ^content = #complete
+* #occurred "Occurred" "The device raised this notification over the stated Period. HealthKit carries no further value for it."
+
+ValueSet: HealthkitLowHeartRateNotificationVS
+Id: healthkit-low-heart-rate-notification
+Title: "Low Heart Rate Notification Result"
+Description: "Every admitted result code of the Low Heart Rate Notification measurement."
+* ^experimental = false
+* include codes from system HealthkitLowHeartRateNotificationCS
+
+CodeSystem: HealthkitPersistentIntermenstrualBleedingCS
+Id: healthkit-persistent-intermenstrual-bleeding
+Title: "Persistent Intermenstrual Bleeding Result"
+Description: "The closed result codes of the Persistent Intermenstrual Bleeding measurement."
+* ^experimental = false
+* ^caseSensitive = true
+* ^content = #complete
+* #present "Present" "The pattern was detected over the stated Period from the wearer's own logged cycle records."
+* #not-present "Not present" "The pattern was evaluated over the stated Period and not detected."
+
+ValueSet: HealthkitPersistentIntermenstrualBleedingVS
+Id: healthkit-persistent-intermenstrual-bleeding
+Title: "Persistent Intermenstrual Bleeding Result"
+Description: "Every admitted result code of the Persistent Intermenstrual Bleeding measurement."
+* ^experimental = false
+* include codes from system HealthkitPersistentIntermenstrualBleedingCS
 
 CodeSystem: HealthkitPregnancyStatusCS
 Id: healthkit-pregnancy-status
@@ -266,6 +434,164 @@ Description: "Every admitted result code of the Progesterone Test Result measure
 * ^experimental = false
 * include codes from system HealthkitProgesteroneTestResultCS
 
+CodeSystem: HealthkitProlongedMenstrualPeriodsCS
+Id: healthkit-prolonged-menstrual-periods
+Title: "Prolonged Menstrual Periods Result"
+Description: "The closed result codes of the Prolonged Menstrual Periods measurement."
+* ^experimental = false
+* ^caseSensitive = true
+* ^content = #complete
+* #present "Present" "The pattern was detected over the stated Period from the wearer's own logged cycle records."
+* #not-present "Not present" "The pattern was evaluated over the stated Period and not detected."
+
+ValueSet: HealthkitProlongedMenstrualPeriodsVS
+Id: healthkit-prolonged-menstrual-periods
+Title: "Prolonged Menstrual Periods Result"
+Description: "Every admitted result code of the Prolonged Menstrual Periods measurement."
+* ^experimental = false
+* include codes from system HealthkitProlongedMenstrualPeriodsCS
+
+CodeSystem: HealthkitSleepApneaNotificationCS
+Id: healthkit-sleep-apnea-notification
+Title: "Sleep Apnea Notification Result"
+Description: "The closed result codes of the Sleep Apnea Notification measurement."
+* ^experimental = false
+* ^caseSensitive = true
+* ^content = #complete
+* #occurred "Occurred" "The device raised this notification over the stated Period. HealthKit carries no further value for it."
+
+ValueSet: HealthkitSleepApneaNotificationVS
+Id: healthkit-sleep-apnea-notification
+Title: "Sleep Apnea Notification Result"
+Description: "Every admitted result code of the Sleep Apnea Notification measurement."
+* ^experimental = false
+* include codes from system HealthkitSleepApneaNotificationCS
+
+CodeSystem: HealthkitStateOfMindKindCS
+Id: healthkit-state-of-mind-kind
+Title: "Reflection kind Result"
+Description: "The closed result codes of the Reflection kind measurement."
+* ^experimental = false
+* ^caseSensitive = true
+* ^content = #complete
+* #momentary-emotion "Momentary emotion" "HKStateOfMind.Kind.momentaryEmotion: how the participant felt at the moment of reflection."
+* #daily-mood "Daily mood" "HKStateOfMind.Kind.dailyMood: how the participant felt over the day."
+
+ValueSet: HealthkitStateOfMindKindVS
+Id: healthkit-state-of-mind-kind
+Title: "Reflection kind Result"
+Description: "Every admitted result code of the Reflection kind measurement."
+* ^experimental = false
+* include codes from system HealthkitStateOfMindKindCS
+
+CodeSystem: HealthkitStateOfMindValenceClassificationCS
+Id: healthkit-state-of-mind-valence-classification
+Title: "Valence classification Result"
+Description: "The closed result codes of the Valence classification measurement."
+* ^experimental = false
+* ^caseSensitive = true
+* ^content = #complete
+* #very-unpleasant "Very unpleasant" "HKStateOfMind.ValenceClassification.veryUnpleasant."
+* #unpleasant "Unpleasant" "HKStateOfMind.ValenceClassification.unpleasant."
+* #slightly-unpleasant "Slightly unpleasant" "HKStateOfMind.ValenceClassification.slightlyUnpleasant."
+* #neutral "Neutral" "HKStateOfMind.ValenceClassification.neutral."
+* #slightly-pleasant "Slightly pleasant" "HKStateOfMind.ValenceClassification.slightlyPleasant."
+* #pleasant "Pleasant" "HKStateOfMind.ValenceClassification.pleasant."
+* #very-pleasant "Very pleasant" "HKStateOfMind.ValenceClassification.veryPleasant."
+
+ValueSet: HealthkitStateOfMindValenceClassificationVS
+Id: healthkit-state-of-mind-valence-classification
+Title: "Valence classification Result"
+Description: "Every admitted result code of the Valence classification measurement."
+* ^experimental = false
+* include codes from system HealthkitStateOfMindValenceClassificationCS
+
+CodeSystem: HealthkitStateOfMindLabelCS
+Id: healthkit-state-of-mind-label
+Title: "Label Result"
+Description: "The closed result codes of the Label measurement."
+* ^experimental = false
+* ^caseSensitive = true
+* ^content = #complete
+* #amazed "Amazed" "HKStateOfMind.Label.amazed."
+* #amused "Amused" "HKStateOfMind.Label.amused."
+* #angry "Angry" "HKStateOfMind.Label.angry."
+* #anxious "Anxious" "HKStateOfMind.Label.anxious."
+* #ashamed "Ashamed" "HKStateOfMind.Label.ashamed."
+* #brave "Brave" "HKStateOfMind.Label.brave."
+* #calm "Calm" "HKStateOfMind.Label.calm."
+* #content "Content" "HKStateOfMind.Label.content."
+* #disappointed "Disappointed" "HKStateOfMind.Label.disappointed."
+* #discouraged "Discouraged" "HKStateOfMind.Label.discouraged."
+* #disgusted "Disgusted" "HKStateOfMind.Label.disgusted."
+* #embarrassed "Embarrassed" "HKStateOfMind.Label.embarrassed."
+* #excited "Excited" "HKStateOfMind.Label.excited."
+* #frustrated "Frustrated" "HKStateOfMind.Label.frustrated."
+* #grateful "Grateful" "HKStateOfMind.Label.grateful."
+* #guilty "Guilty" "HKStateOfMind.Label.guilty."
+* #happy "Happy" "HKStateOfMind.Label.happy."
+* #hopeless "Hopeless" "HKStateOfMind.Label.hopeless."
+* #irritated "Irritated" "HKStateOfMind.Label.irritated."
+* #jealous "Jealous" "HKStateOfMind.Label.jealous."
+* #joyful "Joyful" "HKStateOfMind.Label.joyful."
+* #lonely "Lonely" "HKStateOfMind.Label.lonely."
+* #passionate "Passionate" "HKStateOfMind.Label.passionate."
+* #peaceful "Peaceful" "HKStateOfMind.Label.peaceful."
+* #proud "Proud" "HKStateOfMind.Label.proud."
+* #relieved "Relieved" "HKStateOfMind.Label.relieved."
+* #sad "Sad" "HKStateOfMind.Label.sad."
+* #scared "Scared" "HKStateOfMind.Label.scared."
+* #stressed "Stressed" "HKStateOfMind.Label.stressed."
+* #surprised "Surprised" "HKStateOfMind.Label.surprised."
+* #worried "Worried" "HKStateOfMind.Label.worried."
+* #annoyed "Annoyed" "HKStateOfMind.Label.annoyed."
+* #confident "Confident" "HKStateOfMind.Label.confident."
+* #drained "Drained" "HKStateOfMind.Label.drained."
+* #hopeful "Hopeful" "HKStateOfMind.Label.hopeful."
+* #indifferent "Indifferent" "HKStateOfMind.Label.indifferent."
+* #overwhelmed "Overwhelmed" "HKStateOfMind.Label.overwhelmed."
+* #satisfied "Satisfied" "HKStateOfMind.Label.satisfied."
+
+ValueSet: HealthkitStateOfMindLabelVS
+Id: healthkit-state-of-mind-label
+Title: "Label Result"
+Description: "Every admitted result code of the Label measurement."
+* ^experimental = false
+* include codes from system HealthkitStateOfMindLabelCS
+
+CodeSystem: HealthkitStateOfMindAssociationCS
+Id: healthkit-state-of-mind-association
+Title: "Association Result"
+Description: "The closed result codes of the Association measurement."
+* ^experimental = false
+* ^caseSensitive = true
+* ^content = #complete
+* #community "Community" "HKStateOfMind.Association.community."
+* #current-events "Current events" "HKStateOfMind.Association.currentEvents."
+* #dating "Dating" "HKStateOfMind.Association.dating."
+* #education "Education" "HKStateOfMind.Association.education."
+* #family "Family" "HKStateOfMind.Association.family."
+* #fitness "Fitness" "HKStateOfMind.Association.fitness."
+* #friends "Friends" "HKStateOfMind.Association.friends."
+* #health "Health" "HKStateOfMind.Association.health."
+* #hobbies "Hobbies" "HKStateOfMind.Association.hobbies."
+* #identity "Identity" "HKStateOfMind.Association.identity."
+* #money "Money" "HKStateOfMind.Association.money."
+* #partner "Partner" "HKStateOfMind.Association.partner."
+* #self-care "Self care" "HKStateOfMind.Association.selfCare."
+* #spirituality "Spirituality" "HKStateOfMind.Association.spirituality."
+* #tasks "Tasks" "HKStateOfMind.Association.tasks."
+* #travel "Travel" "HKStateOfMind.Association.travel."
+* #work "Work" "HKStateOfMind.Association.work."
+* #weather "Weather" "HKStateOfMind.Association.weather."
+
+ValueSet: HealthkitStateOfMindAssociationVS
+Id: healthkit-state-of-mind-association
+Title: "Association Result"
+Description: "Every admitted result code of the Association measurement."
+* ^experimental = false
+* include codes from system HealthkitStateOfMindAssociationCS
+
 CodeSystem: HealthkitSymptomAppetiteChangesCS
 Id: healthkit-symptom-appetite-changes
 Title: "Symptom: Appetite Changes Result"
@@ -284,6 +610,40 @@ Title: "Symptom: Appetite Changes Result"
 Description: "Every admitted result code of the Symptom: Appetite Changes measurement."
 * ^experimental = false
 * include codes from system HealthkitSymptomAppetiteChangesCS
+
+CodeSystem: HealthkitWalkingSteadinessNotificationCS
+Id: healthkit-walking-steadiness-notification
+Title: "Walking Steadiness Notification Result"
+Description: "The closed result codes of the Walking Steadiness Notification measurement."
+* ^experimental = false
+* ^caseSensitive = true
+* ^content = #complete
+* #low "Low" "HKCategoryValueAppleWalkingSteadinessEvent low classification."
+* #very-low "Very low" "HKCategoryValueAppleWalkingSteadinessEvent very low classification."
+
+ValueSet: HealthkitWalkingSteadinessNotificationVS
+Id: healthkit-walking-steadiness-notification
+Title: "Walking Steadiness Notification Result"
+Description: "Every admitted result code of the Walking Steadiness Notification measurement."
+* ^experimental = false
+* include codes from system HealthkitWalkingSteadinessNotificationCS
+
+CodeSystem: HealthkitNotificationOccurrenceCS
+Id: healthkit-notification-occurrence
+Title: "Notification occurrence Result"
+Description: "The closed result codes of the Notification occurrence measurement."
+* ^experimental = false
+* ^caseSensitive = true
+* ^content = #complete
+* #initial "Initial" "HKCategoryValueAppleWalkingSteadinessEvent initial notification."
+* #repeat "Repeat" "HKCategoryValueAppleWalkingSteadinessEvent repeat notification."
+
+ValueSet: HealthkitNotificationOccurrenceVS
+Id: healthkit-notification-occurrence
+Title: "Notification occurrence Result"
+Description: "Every admitted result code of the Notification occurrence measurement."
+* ^experimental = false
+* include codes from system HealthkitNotificationOccurrenceCS
 
 CodeSystem: HealthkitWheelchairUseCS
 Id: healthkit-wheelchair-use
@@ -493,6 +853,19 @@ Description: "The A-weighted equivalent continuous sound pressure level of envir
 * valueQuantity.code 1..1 MS
 * valueQuantity.code = #dB[SPL] (exactly)
 
+Profile: HealthkitEnvironmentalAudioExposureNotification
+Parent: HealthKitObservation
+Id: healthkit-environmental-audio-exposure-notification
+Title: "Environmental Audio Exposure Notification"
+Description: "HKCategoryTypeIdentifierAudioExposureEvent: raised when environmental sound reaches the momentary limit. The environmental audio exposure quantity remains the measurement surface."
+* code = HealthKitMeasurementCS#environmental-audio-exposure-notification
+* code from HealthKitMeasurementVS (required)
+* effective[x] only Period
+* effectivePeriod.end 1..1 MS
+* value[x] only CodeableConcept
+* valueCodeableConcept 1..1 MS
+* valueCodeableConcept from HealthkitEnvironmentalAudioExposureNotificationVS (required)
+
 Profile: HealthkitEnvironmentalSoundReduction
 Parent: HealthKitObservation
 Id: healthkit-environmental-sound-reduction
@@ -589,6 +962,19 @@ Description: "The A-weighted equivalent continuous sound pressure level delivere
 * valueQuantity.code 1..1 MS
 * valueQuantity.code = #dB[SPL] (exactly)
 
+Profile: HealthkitHeadphoneAudioExposureNotification
+Parent: HealthKitObservation
+Id: healthkit-headphone-audio-exposure-notification
+Title: "Headphone Audio Exposure Notification"
+Description: "HKCategoryTypeIdentifierHeadphoneAudioExposureEvent: raised when headphone exposure reaches the seven-day limit. The headphone audio exposure quantity remains the measurement surface."
+* code = HealthKitMeasurementCS#headphone-audio-exposure-notification
+* code from HealthKitMeasurementVS (required)
+* effective[x] only Period
+* effectivePeriod.end 1..1 MS
+* value[x] only CodeableConcept
+* valueCodeableConcept 1..1 MS
+* valueCodeableConcept from HealthkitHeadphoneAudioExposureNotificationVS (required)
+
 Profile: HealthkitHeartRateRecoveryOneMinute
 Parent: HealthKitObservation
 Id: healthkit-heart-rate-recovery-one-minute
@@ -604,6 +990,41 @@ Description: "The reduction in heart rate from workout peak to exactly one minut
 * valueQuantity.system = $ucum (exactly)
 * valueQuantity.code 1..1 MS
 * valueQuantity.code = #/min (exactly)
+
+Profile: HealthkitHighHeartRateNotification
+Parent: HealthKitObservation
+Id: healthkit-high-heart-rate-notification
+Title: "High Heart Rate Notification"
+Description: "HKCategoryTypeIdentifierHighHeartRateEvent: an Apple Watch notification raised against a user-configurable threshold. This is the notification, not a rhythm finding; the heart-rate quantities remain the measurement surface, and the threshold that raised it is carried as a component so the notification can be interpreted at all."
+* code = HealthKitMeasurementCS#high-heart-rate-notification
+* code from HealthKitMeasurementVS (required)
+* effective[x] only Period
+* effectivePeriod.end 1..1 MS
+* value[x] only CodeableConcept
+* valueCodeableConcept 1..1 MS
+* valueCodeableConcept from HealthkitHighHeartRateNotificationVS (required)
+* component ^slicing.discriminator.type = #pattern
+* component ^slicing.discriminator.path = "code"
+* component ^slicing.rules = #open
+* component contains threshold 0..1 MS
+* component[threshold].code = https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-measurement#high-heart-rate-threshold
+* component[threshold].value[x] only Quantity
+* component[threshold].valueQuantity.value 1..1 MS
+* component[threshold].valueQuantity.system = $ucum (exactly)
+* component[threshold].valueQuantity.code = #/min (exactly)
+
+Profile: HealthkitInfrequentMenstrualCycles
+Parent: HealthKitObservation
+Id: healthkit-infrequent-menstrual-cycles
+Title: "Infrequent Menstrual Cycles"
+Description: "HKCategoryTypeIdentifierInfrequentMenstrualCycles: a deviation derived from the wearer's own logged cycle records over the stated Period."
+* code = HealthKitMeasurementCS#infrequent-menstrual-cycles
+* code from HealthKitMeasurementVS (required)
+* effective[x] only Period
+* effectivePeriod.end 1..1 MS
+* value[x] only CodeableConcept
+* valueCodeableConcept 1..1 MS
+* valueCodeableConcept from HealthkitInfrequentMenstrualCyclesVS (required)
 
 Profile: HealthkitInhalerUsage
 Parent: HealthKitObservation
@@ -639,6 +1060,32 @@ Description: "The quantity of insulin delivered during the exact effective Perio
 * valueQuantity.code 1..1 MS
 * valueQuantity.code = #[iU] (exactly)
 
+Profile: HealthkitIrregularHeartRhythmNotification
+Parent: HealthKitObservation
+Id: healthkit-irregular-heart-rhythm-notification
+Title: "Irregular Heart Rhythm Notification"
+Description: "HKCategoryTypeIdentifierIrregularHeartRhythmEvent: an FDA-cleared screening notification from a proprietary algorithm. It is emitted as a notification and never as a rhythm finding: the electrocardiogram and the atrial-fibrillation burden percentage remain the rhythm evidence, and this Observation links to them through derivedFrom."
+* code = HealthKitMeasurementCS#irregular-heart-rhythm-notification
+* code from HealthKitMeasurementVS (required)
+* effective[x] only Period
+* effectivePeriod.end 1..1 MS
+* value[x] only CodeableConcept
+* valueCodeableConcept 1..1 MS
+* valueCodeableConcept from HealthkitIrregularHeartRhythmNotificationVS (required)
+
+Profile: HealthkitIrregularMenstrualCycles
+Parent: HealthKitObservation
+Id: healthkit-irregular-menstrual-cycles
+Title: "Irregular Menstrual Cycles"
+Description: "HKCategoryTypeIdentifierIrregularMenstrualCycles: a deviation derived from the wearer's own logged cycle records over the stated Period. This is a finding, not a device notification: nothing was sensed, and the pattern is computed from data the participant entered."
+* code = HealthKitMeasurementCS#irregular-menstrual-cycles
+* code from HealthKitMeasurementVS (required)
+* effective[x] only Period
+* effectivePeriod.end 1..1 MS
+* value[x] only CodeableConcept
+* valueCodeableConcept 1..1 MS
+* valueCodeableConcept from HealthkitIrregularMenstrualCyclesVS (required)
+
 Profile: HealthkitLactationStatus
 Parent: HealthKitObservation
 Id: healthkit-lactation-status
@@ -650,6 +1097,50 @@ Description: "HKCategoryTypeIdentifierLactation: an interval flag (notApplicable
 * value[x] only CodeableConcept
 * valueCodeableConcept 1..1 MS
 * valueCodeableConcept from HealthkitLactationStatusVS (required)
+
+Profile: HealthkitLowCardioFitnessNotification
+Parent: HealthKitObservation
+Id: healthkit-low-cardio-fitness-notification
+Title: "Low Cardio Fitness Notification"
+Description: "HKCategoryTypeIdentifierLowCardioFitnessEvent: raised when the VO2 max estimate falls below a threshold. The threshold is carried as a component."
+* code = HealthKitMeasurementCS#low-cardio-fitness-notification
+* code from HealthKitMeasurementVS (required)
+* effective[x] only Period
+* effectivePeriod.end 1..1 MS
+* value[x] only CodeableConcept
+* valueCodeableConcept 1..1 MS
+* valueCodeableConcept from HealthkitLowCardioFitnessNotificationVS (required)
+* component ^slicing.discriminator.type = #pattern
+* component ^slicing.discriminator.path = "code"
+* component ^slicing.rules = #open
+* component contains threshold 0..1 MS
+* component[threshold].code = https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-measurement#low-cardio-fitness-threshold
+* component[threshold].value[x] only Quantity
+* component[threshold].valueQuantity.value 1..1 MS
+* component[threshold].valueQuantity.system = $ucum (exactly)
+* component[threshold].valueQuantity.code = #mL/kg/min (exactly)
+
+Profile: HealthkitLowHeartRateNotification
+Parent: HealthKitObservation
+Id: healthkit-low-heart-rate-notification
+Title: "Low Heart Rate Notification"
+Description: "HKCategoryTypeIdentifierLowHeartRateEvent: an Apple Watch notification raised against a user-configurable threshold. The threshold is carried as a component; the heart-rate quantities remain the measurement surface."
+* code = HealthKitMeasurementCS#low-heart-rate-notification
+* code from HealthKitMeasurementVS (required)
+* effective[x] only Period
+* effectivePeriod.end 1..1 MS
+* value[x] only CodeableConcept
+* valueCodeableConcept 1..1 MS
+* valueCodeableConcept from HealthkitLowHeartRateNotificationVS (required)
+* component ^slicing.discriminator.type = #pattern
+* component ^slicing.discriminator.path = "code"
+* component ^slicing.rules = #open
+* component contains threshold 0..1 MS
+* component[threshold].code = https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-measurement#low-heart-rate-threshold
+* component[threshold].value[x] only Quantity
+* component[threshold].valueQuantity.value 1..1 MS
+* component[threshold].valueQuantity.system = $ucum (exactly)
+* component[threshold].valueQuantity.code = #/min (exactly)
 
 Profile: HealthkitNumberOfAlcoholicBeverages
 Parent: HealthKitObservation
@@ -714,6 +1205,19 @@ Description: "The pulse-oximetry perfusion index — the ratio of pulsatile to n
 * valueQuantity.system = $ucum (exactly)
 * valueQuantity.code 1..1 MS
 * valueQuantity.code = #% (exactly)
+
+Profile: HealthkitPersistentIntermenstrualBleeding
+Parent: HealthKitObservation
+Id: healthkit-persistent-intermenstrual-bleeding
+Title: "Persistent Intermenstrual Bleeding"
+Description: "HKCategoryTypeIdentifierPersistentIntermenstrualBleeding: a deviation derived from the wearer's own logged cycle records over the stated Period. No verified SNOMED concept is bound; the adapter code system carries the meaning rather than approximating a clinical concept."
+* code = HealthKitMeasurementCS#persistent-intermenstrual-bleeding
+* code from HealthKitMeasurementVS (required)
+* effective[x] only Period
+* effectivePeriod.end 1..1 MS
+* value[x] only CodeableConcept
+* valueCodeableConcept 1..1 MS
+* valueCodeableConcept from HealthkitPersistentIntermenstrualBleedingVS (required)
 
 Profile: HealthkitPhq9Assessment
 Parent: HealthKitObservation
@@ -782,6 +1286,19 @@ Description: "HKCategoryTypeIdentifierProgesteroneTestResult: the result of a ho
 * valueCodeableConcept 1..1 MS
 * valueCodeableConcept from HealthkitProgesteroneTestResultVS (required)
 
+Profile: HealthkitProlongedMenstrualPeriods
+Parent: HealthKitObservation
+Id: healthkit-prolonged-menstrual-periods
+Title: "Prolonged Menstrual Periods"
+Description: "HKCategoryTypeIdentifierProlongedMenstrualPeriods: a deviation derived from the wearer's own logged cycle records over the stated Period. No verified SNOMED concept is bound; the adapter code system carries the meaning rather than approximating a clinical concept."
+* code = HealthKitMeasurementCS#prolonged-menstrual-periods
+* code from HealthKitMeasurementVS (required)
+* effective[x] only Period
+* effectivePeriod.end 1..1 MS
+* value[x] only CodeableConcept
+* valueCodeableConcept 1..1 MS
+* valueCodeableConcept from HealthkitProlongedMenstrualPeriodsVS (required)
+
 Profile: HealthkitRunningGroundContactTime
 Parent: HealthKitObservation
 Id: healthkit-running-ground-contact-time
@@ -848,6 +1365,19 @@ Description: "The distance walked (or estimated walkable) in six minutes, using 
 * valueQuantity.code 1..1 MS
 * valueQuantity.code = #m (exactly)
 
+Profile: HealthkitSleepApneaNotification
+Parent: HealthKitObservation
+Id: healthkit-sleep-apnea-notification
+Title: "Sleep Apnea Notification"
+Description: "HKCategoryTypeIdentifierSleepApneaEvent: a proprietary screening notification. The sleeping breathing disturbances quantity remains the measurement surface; this records that the notification was raised."
+* code = HealthKitMeasurementCS#sleep-apnea-notification
+* code from HealthKitMeasurementVS (required)
+* effective[x] only Period
+* effectivePeriod.end 1..1 MS
+* value[x] only CodeableConcept
+* valueCodeableConcept 1..1 MS
+* valueCodeableConcept from HealthkitSleepApneaNotificationVS (required)
+
 Profile: HealthkitSleepingBreathingDisturbances
 Parent: HealthKitObservation
 Id: healthkit-sleeping-breathing-disturbances
@@ -896,6 +1426,43 @@ Description: "The vertical speed at which the subject descends stairs, recorded 
 * valueQuantity.system = $ucum (exactly)
 * valueQuantity.code 1..1 MS
 * valueQuantity.code = #m/s (exactly)
+
+Profile: HealthkitStateOfMind
+Parent: HealthKitObservation
+Id: healthkit-state-of-mind
+Title: "State of Mind"
+Description: "HKStateOfMind: a self-reported reflection on how the participant felt. Valence is the one numeric axis and carries the Observation value, reported on HealthKit's closed −1.0 to 1.0 scale; the reflection's kind, its classification, and its labels and associations are coded components. Every axis is the participant's own report, not a measurement."
+* code = HealthKitMeasurementCS#state-of-mind
+* code from HealthKitMeasurementVS (required)
+* effective[x] only Period
+* effectivePeriod.end 1..1 MS
+* value[x] only Quantity
+* valueQuantity.value 1..1 MS
+* valueQuantity.comparator 0..0
+* valueQuantity.system 1..1 MS
+* valueQuantity.system = $ucum (exactly)
+* valueQuantity.code 1..1 MS
+* valueQuantity.code = #1 (exactly)
+* component ^slicing.discriminator.type = #pattern
+* component ^slicing.discriminator.path = "code"
+* component ^slicing.rules = #open
+* component contains kind 1..1 MS and valence-classification 0..1 MS and label 0..* MS and association 0..* MS
+* component[kind].code = https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-measurement#kind
+* component[kind].value[x] only CodeableConcept
+* component[kind].valueCodeableConcept 1..1 MS
+* component[kind].valueCodeableConcept from HealthkitStateOfMindKindVS (required)
+* component[valence-classification].code = https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-measurement#valence-classification
+* component[valence-classification].value[x] only CodeableConcept
+* component[valence-classification].valueCodeableConcept MS
+* component[valence-classification].valueCodeableConcept from HealthkitStateOfMindValenceClassificationVS (required)
+* component[label].code = https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-measurement#state-of-mind-label
+* component[label].value[x] only CodeableConcept
+* component[label].valueCodeableConcept MS
+* component[label].valueCodeableConcept from HealthkitStateOfMindLabelVS (required)
+* component[association].code = https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-measurement#state-of-mind-association
+* component[association].value[x] only CodeableConcept
+* component[association].valueCodeableConcept MS
+* component[association].valueCodeableConcept from HealthkitStateOfMindAssociationVS (required)
 
 Profile: HealthkitSwimmingStrokeCount
 Parent: HealthKitObservation
@@ -1572,6 +2139,27 @@ Description: "Apple's windowed walking-steadiness score, a rolling multi-day per
 * valueQuantity.code 1..1 MS
 * valueQuantity.code = #% (exactly)
 
+Profile: HealthkitWalkingSteadinessNotification
+Parent: HealthKitObservation
+Id: healthkit-walking-steadiness-notification
+Title: "Walking Steadiness Notification"
+Description: "HKCategoryTypeIdentifierAppleWalkingSteadinessEvent: raised when the walking steadiness classification is low or very low, distinguishing a first occurrence from a repeat. The walking steadiness percentage remains the measurement surface."
+* code = HealthKitMeasurementCS#walking-steadiness-notification
+* code from HealthKitMeasurementVS (required)
+* effective[x] only Period
+* effectivePeriod.end 1..1 MS
+* value[x] only CodeableConcept
+* valueCodeableConcept 1..1 MS
+* valueCodeableConcept from HealthkitWalkingSteadinessNotificationVS (required)
+* component ^slicing.discriminator.type = #pattern
+* component ^slicing.discriminator.path = "code"
+* component ^slicing.rules = #open
+* component contains notification-occurrence 1..1 MS
+* component[notification-occurrence].code = https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-measurement#walking-steadiness-notification-occurrence
+* component[notification-occurrence].value[x] only CodeableConcept
+* component[notification-occurrence].valueCodeableConcept 1..1 MS
+* component[notification-occurrence].valueCodeableConcept from HealthkitNotificationOccurrenceVS (required)
+
 Profile: HealthkitWalkingStepLength
 Parent: HealthKitObservation
 Id: healthkit-walking-step-length
@@ -1848,6 +2436,23 @@ Description: "A conformant Environmental Audio Exposure instance."
 * issued = "2026-08-20T08:00:00Z"
 * valueQuantity = 68 'dB[SPL]' "dB(SPL)"
 
+Instance: HealthkitEnvironmentalAudioExposureNotificationExample
+InstanceOf: HealthkitEnvironmentalAudioExposureNotification
+Usage: #example
+Title: "Environmental Audio Exposure Notification Example"
+Description: "A conformant Environmental Audio Exposure Notification instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "3c82ea81-cc2f-9294-908e-2fa2cb9a8a15"
+* status = #final
+* code = HealthKitMeasurementCS#environmental-audio-exposure-notification
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierAudioExposureEvent
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = HealthkitEnvironmentalAudioExposureNotificationCS#momentary-limit "Momentary limit"
+
 Instance: HealthkitEnvironmentalSoundReductionExample
 InstanceOf: HealthkitEnvironmentalSoundReduction
 Usage: #example
@@ -1947,6 +2552,23 @@ Description: "A conformant Headphone Audio Exposure instance."
 * issued = "2026-08-20T08:00:00Z"
 * valueQuantity = 74 'dB[SPL]' "dB(SPL)"
 
+Instance: HealthkitHeadphoneAudioExposureNotificationExample
+InstanceOf: HealthkitHeadphoneAudioExposureNotification
+Usage: #example
+Title: "Headphone Audio Exposure Notification Example"
+Description: "A conformant Headphone Audio Exposure Notification instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "85a721cc-e5ab-12b3-3ac8-24880f8dc365"
+* status = #final
+* code = HealthKitMeasurementCS#headphone-audio-exposure-notification
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierHeadphoneAudioExposureEvent
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = HealthkitHeadphoneAudioExposureNotificationCS#seven-day-limit "Seven day limit"
+
 Instance: HealthkitHeartRateRecoveryOneMinuteExample
 InstanceOf: HealthkitHeartRateRecoveryOneMinute
 Usage: #example
@@ -1962,6 +2584,40 @@ Description: "A conformant Heart Rate Recovery (One Minute) instance."
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * issued = "2026-08-20T08:00:00Z"
 * valueQuantity = 24 '/min' "beats/minute"
+
+Instance: HealthkitHighHeartRateNotificationExample
+InstanceOf: HealthkitHighHeartRateNotification
+Usage: #example
+Title: "High Heart Rate Notification Example"
+Description: "A conformant High Heart Rate Notification instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "3cdac854-140a-1619-7fa0-e8de5872dc0c"
+* status = #final
+* code = HealthKitMeasurementCS#high-heart-rate-notification
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierHighHeartRateEvent
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = HealthkitHighHeartRateNotificationCS#occurred "Occurred"
+
+Instance: HealthkitInfrequentMenstrualCyclesExample
+InstanceOf: HealthkitInfrequentMenstrualCycles
+Usage: #example
+Title: "Infrequent Menstrual Cycles Example"
+Description: "A conformant Infrequent Menstrual Cycles instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "7c141fd3-30f4-c74b-9bfd-e8be43140179"
+* status = #final
+* code = HealthKitMeasurementCS#infrequent-menstrual-cycles
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierInfrequentMenstrualCycles
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = HealthkitInfrequentMenstrualCyclesCS#present "Present"
 
 Instance: HealthkitInhalerUsageExample
 InstanceOf: HealthkitInhalerUsage
@@ -1997,6 +2653,40 @@ Description: "A conformant Insulin Delivery instance."
 * issued = "2026-08-20T08:00:00Z"
 * valueQuantity = 6 '[iU]' "IU"
 
+Instance: HealthkitIrregularHeartRhythmNotificationExample
+InstanceOf: HealthkitIrregularHeartRhythmNotification
+Usage: #example
+Title: "Irregular Heart Rhythm Notification Example"
+Description: "A conformant Irregular Heart Rhythm Notification instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "52e65704-703b-2de5-8a5c-30c48dbc78fc"
+* status = #final
+* code = HealthKitMeasurementCS#irregular-heart-rhythm-notification
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierIrregularHeartRhythmEvent
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = HealthkitIrregularHeartRhythmNotificationCS#occurred "Occurred"
+
+Instance: HealthkitIrregularMenstrualCyclesExample
+InstanceOf: HealthkitIrregularMenstrualCycles
+Usage: #example
+Title: "Irregular Menstrual Cycles Example"
+Description: "A conformant Irregular Menstrual Cycles instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "0e8a3b6f-b29a-c3f3-e691-fb4f110216dd"
+* status = #final
+* code = HealthKitMeasurementCS#irregular-menstrual-cycles
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierIrregularMenstrualCycles
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = HealthkitIrregularMenstrualCyclesCS#present "Present"
+
 Instance: HealthkitLactationStatusExample
 InstanceOf: HealthkitLactationStatus
 Usage: #example
@@ -2013,6 +2703,40 @@ Description: "A conformant Lactation Status instance."
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * issued = "2026-08-20T08:00:00Z"
 * valueCodeableConcept = HealthkitLactationStatusCS#lactating "Lactating"
+
+Instance: HealthkitLowCardioFitnessNotificationExample
+InstanceOf: HealthkitLowCardioFitnessNotification
+Usage: #example
+Title: "Low Cardio Fitness Notification Example"
+Description: "A conformant Low Cardio Fitness Notification instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "7e803d05-1956-3c9d-51e6-180d67031799"
+* status = #final
+* code = HealthKitMeasurementCS#low-cardio-fitness-notification
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierLowCardioFitnessEvent
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = HealthkitLowCardioFitnessNotificationCS#low-fitness "Low fitness"
+
+Instance: HealthkitLowHeartRateNotificationExample
+InstanceOf: HealthkitLowHeartRateNotification
+Usage: #example
+Title: "Low Heart Rate Notification Example"
+Description: "A conformant Low Heart Rate Notification instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "36877cfb-6a81-f457-0024-5f1db197e93e"
+* status = #final
+* code = HealthKitMeasurementCS#low-heart-rate-notification
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierLowHeartRateEvent
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = HealthkitLowHeartRateNotificationCS#occurred "Occurred"
 
 Instance: HealthkitNumberOfAlcoholicBeveragesExample
 InstanceOf: HealthkitNumberOfAlcoholicBeverages
@@ -2079,6 +2803,23 @@ Description: "A conformant Peripheral Perfusion Index instance."
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * issued = "2026-08-20T08:00:00Z"
 * valueQuantity = 3.5 '%'
+
+Instance: HealthkitPersistentIntermenstrualBleedingExample
+InstanceOf: HealthkitPersistentIntermenstrualBleeding
+Usage: #example
+Title: "Persistent Intermenstrual Bleeding Example"
+Description: "A conformant Persistent Intermenstrual Bleeding instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "460676fa-505e-a8f7-d0f9-96e0f1631c68"
+* status = #final
+* code = HealthKitMeasurementCS#persistent-intermenstrual-bleeding
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierPersistentIntermenstrualBleeding
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = HealthkitPersistentIntermenstrualBleedingCS#present "Present"
 
 Instance: HealthkitPhq9AssessmentExample
 InstanceOf: HealthkitPhq9Assessment
@@ -2162,6 +2903,23 @@ Description: "A conformant Progesterone Test Result instance."
 * issued = "2026-08-20T08:00:00Z"
 * valueCodeableConcept = HealthkitProgesteroneTestResultCS#negative "Negative"
 
+Instance: HealthkitProlongedMenstrualPeriodsExample
+InstanceOf: HealthkitProlongedMenstrualPeriods
+Usage: #example
+Title: "Prolonged Menstrual Periods Example"
+Description: "A conformant Prolonged Menstrual Periods instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "30598784-5c1c-853b-d382-4c5171230a52"
+* status = #final
+* code = HealthKitMeasurementCS#prolonged-menstrual-periods
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierProlongedMenstrualPeriods
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = HealthkitProlongedMenstrualPeriodsCS#present "Present"
+
 Instance: HealthkitRunningGroundContactTimeExample
 InstanceOf: HealthkitRunningGroundContactTime
 Usage: #example
@@ -2227,6 +2985,23 @@ Description: "A conformant Six-Minute Walk Test Distance instance."
 * issued = "2026-08-20T08:00:00Z"
 * valueQuantity = 540 'm'
 
+Instance: HealthkitSleepApneaNotificationExample
+InstanceOf: HealthkitSleepApneaNotification
+Usage: #example
+Title: "Sleep Apnea Notification Example"
+Description: "A conformant Sleep Apnea Notification instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "336e8710-d979-e166-4f64-7d5691583e60"
+* status = #final
+* code = HealthKitMeasurementCS#sleep-apnea-notification
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierSleepApneaEvent
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = HealthkitSleepApneaNotificationCS#occurred "Occurred"
+
 Instance: HealthkitSleepingBreathingDisturbancesExample
 InstanceOf: HealthkitSleepingBreathingDisturbances
 Usage: #example
@@ -2275,6 +3050,25 @@ Description: "A conformant Stair Descent Speed instance."
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * issued = "2026-08-20T08:00:00Z"
 * valueQuantity = 0.52 'm/s'
+
+Instance: HealthkitStateOfMindExample
+InstanceOf: HealthkitStateOfMind
+Usage: #example
+Title: "State of Mind Example"
+Description: "A conformant State of Mind instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "4e4e55d7-ae47-052c-0670-c2fa46e779df"
+* status = #final
+* code = HealthKitMeasurementCS#state-of-mind
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKDataTypeStateOfMind
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueQuantity = 0.4 '1' "valence"
+* component[kind].code = https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-measurement#kind
+* component[kind].valueCodeableConcept = HealthkitStateOfMindKindCS#momentary-emotion "Momentary emotion"
 
 Instance: HealthkitSwimmingStrokeCountExample
 InstanceOf: HealthkitSwimmingStrokeCount
@@ -3102,6 +3896,25 @@ Description: "A conformant Walking Steadiness instance."
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * issued = "2026-08-20T08:00:00Z"
 * valueQuantity = 82 '%'
+
+Instance: HealthkitWalkingSteadinessNotificationExample
+InstanceOf: HealthkitWalkingSteadinessNotification
+Usage: #example
+Title: "Walking Steadiness Notification Example"
+Description: "A conformant Walking Steadiness Notification instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "c89ff44a-8082-70b1-dde8-150cc12b17a7"
+* status = #final
+* code = HealthKitMeasurementCS#walking-steadiness-notification
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierAppleWalkingSteadinessEvent
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = HealthkitWalkingSteadinessNotificationCS#low "Low"
+* component[notification-occurrence].code = https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-measurement#walking-steadiness-notification-occurrence
+* component[notification-occurrence].valueCodeableConcept = HealthkitNotificationOccurrenceCS#initial "Initial"
 
 Instance: HealthkitWalkingStepLengthExample
 InstanceOf: HealthkitWalkingStepLength
