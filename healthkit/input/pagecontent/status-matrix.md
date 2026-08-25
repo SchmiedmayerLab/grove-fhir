@@ -11,7 +11,7 @@ GENERATED FILE. Edit the corresponding catalog JSON and run
 
 # Authoritative HealthKit status matrix
 
-This table is the complete, closed v0.3.0 inventory of all 218 Apple HealthKit platform source types frozen against iPhoneOS 26.5 from Xcode 26.6 build `17F113`. The evidence is the official Apple platform documentation and the exact SDK provenance declared by the catalog. Each row has one definitive contract status; this is a release contract, not a roadmap. `supported` means v0.3.0 admits a conformant output contract. All other rows are not admitted and producers fail closed.
+This table is the complete, closed v0.4.0 inventory of all 218 Apple HealthKit platform source types frozen against iPhoneOS 26.5 from Xcode 26.6 build `17F113`. The evidence is the official Apple platform documentation and the exact SDK provenance declared by the catalog. Each row has one definitive contract status; this is a release contract, not a roadmap. `supported` means v0.4.0 admits a conformant output contract. All other rows are not admitted and producers fail closed.
 
 | HealthKit type | Title | Contract status | Measurement | Direct profile claim(s) | Binding reason / requirement |
 | --- | --- | --- | --- | --- | --- |
@@ -19,8 +19,8 @@ This table is the complete, closed v0.3.0 inventory of all 218 Apple HealthKit p
 | `HKCategoryTypeIdentifierAcne` | Acne | `supported` | symptom-acne | healthkit-symptom-acne | — |
 | `HKCategoryTypeIdentifierAppetiteChanges` | Appetite Changes | `supported` | symptom-appetite-changes | healthkit-symptom-appetite-changes | — |
 | `HKCategoryTypeIdentifierAppleStandHour` | Apple Stand Hour | `supported` | apple-stand-hour | healthkit-apple-stand-hour | — |
-| `HKCategoryTypeIdentifierAppleWalkingSteadinessEvent` | Apple Walking Steadiness Event | `intentionally-unsupported` | — | — | Device alert: the enum encodes notification cadence (initial vs repeat) crossed with an Apple-defined banding of the appleWalkingSteadiness percent score, which is the actual measurement and is handled as a quantity type. The alert adds no measurement content beyond that score. |
-| `HKCategoryTypeIdentifierAudioExposureEvent` | Audio Exposure Event | `intentionally-unsupported` | — | — | Device alert: a threshold-crossing notification against a user-configurable limit, not a measurement. The measurement is the environmentalAudioExposure dB(A) quantity type, which carries the actual exposure level. |
+| `HKCategoryTypeIdentifierAppleWalkingSteadinessEvent` | Apple Walking Steadiness Event | `supported` | walking-steadiness-notification | healthkit-walking-steadiness-notification | — |
+| `HKCategoryTypeIdentifierAudioExposureEvent` | Audio Exposure Event | `supported` | environmental-audio-exposure-notification | healthkit-environmental-audio-exposure-notification | — |
 | `HKCategoryTypeIdentifierBladderIncontinence` | Bladder Incontinence | `supported` | bladder-incontinence | healthkit-bladder-incontinence | — |
 | `HKCategoryTypeIdentifierBleedingAfterPregnancy` | Bleeding After Pregnancy | `supported` | bleeding-after-pregnancy | healthkit-bleeding-after-pregnancy | — |
 | `HKCategoryTypeIdentifierBleedingDuringPregnancy` | Bleeding During Pregnancy | `supported` | bleeding-during-pregnancy | healthkit-bleeding-during-pregnancy | — |
@@ -42,20 +42,20 @@ This table is the complete, closed v0.3.0 inventory of all 218 Apple HealthKit p
 | `HKCategoryTypeIdentifierHairLoss` | Hair Loss | `supported` | symptom-hair-loss | healthkit-symptom-hair-loss | — |
 | `HKCategoryTypeIdentifierHandwashingEvent` | Handwashing Event | `supported` | handwashing-session | healthkit-handwashing-session | — |
 | `HKCategoryTypeIdentifierHeadache` | Headache | `supported` | symptom-headache | healthkit-symptom-headache | — |
-| `HKCategoryTypeIdentifierHeadphoneAudioExposureEvent` | Headphone Audio Exposure Event | `intentionally-unsupported` | — | — | Device alert over an OS-computed rolling seven-day dose limit; not a measurement. The headphoneAudioExposure quantity type carries the measured levels. |
+| `HKCategoryTypeIdentifierHeadphoneAudioExposureEvent` | Headphone Audio Exposure Event | `supported` | headphone-audio-exposure-notification | healthkit-headphone-audio-exposure-notification | — |
 | `HKCategoryTypeIdentifierHeartburn` | Heartburn | `supported` | symptom-heartburn | healthkit-symptom-heartburn | — |
-| `HKCategoryTypeIdentifierHighHeartRateEvent` | High Heart Rate Event | `intentionally-unsupported` | — | — | Device alert against a user-configurable threshold; not a measurement. Heart-rate quantities remain the measurement surface. |
+| `HKCategoryTypeIdentifierHighHeartRateEvent` | High Heart Rate Event | `supported` | high-heart-rate-notification | healthkit-high-heart-rate-notification | — |
 | `HKCategoryTypeIdentifierHotFlashes` | Hot Flashes | `supported` | symptom-hot-flashes | healthkit-symptom-hot-flashes | — |
 | `HKCategoryTypeIdentifierHypertensionEvent` | Hypertension Event | `intentionally-unsupported` | — | — | Device alert from a proprietary screening algorithm asserting possible pathology without any pressure measurement; emitting it as an Observation would fabricate a blood-pressure-adjacent finding with no quantity. Cuff blood-pressure quantities remain the measurement surface. |
-| `HKCategoryTypeIdentifierInfrequentMenstrualCycles` | Infrequent Menstrual Cycles | `intentionally-unsupported` | — | — | Algorithmic screening alert over derived cycle history; not a measurement. |
+| `HKCategoryTypeIdentifierInfrequentMenstrualCycles` | Infrequent Menstrual Cycles | `supported` | infrequent-menstrual-cycles | healthkit-infrequent-menstrual-cycles | — |
 | `HKCategoryTypeIdentifierIntermenstrualBleeding` | Intermenstrual Bleeding | `supported` | intermenstrual-bleeding | grove-mobile-intermenstrual-bleeding | — |
-| `HKCategoryTypeIdentifierIrregularHeartRhythmEvent` | Irregular Heart Rhythm Event | `intentionally-unsupported` | — | — | FDA-cleared screening notification from a proprietary algorithm, valueless and read-only. Grove admits the ECG itself (sensor ECG adapter claim, HKDataTypeIdentifierElectrocardiogram) and the atrial-fibrillation burden percentage (HKQuantityTypeIdentifierAtrialFibrillationBurden) as the rhythm evidence surfaces; re-emitting the alert would present a screening trigger as a rhythm finding without any waveform or classification payload. |
-| `HKCategoryTypeIdentifierIrregularMenstrualCycles` | Irregular Menstrual Cycles | `intentionally-unsupported` | — | — | Algorithmic screening alert over derived cycle history; not a measurement. |
+| `HKCategoryTypeIdentifierIrregularHeartRhythmEvent` | Irregular Heart Rhythm Event | `supported` | irregular-heart-rhythm-notification | healthkit-irregular-heart-rhythm-notification | — |
+| `HKCategoryTypeIdentifierIrregularMenstrualCycles` | Irregular Menstrual Cycles | `supported` | irregular-menstrual-cycles | healthkit-irregular-menstrual-cycles | — |
 | `HKCategoryTypeIdentifierLactation` | Lactation | `supported` | lactation-status | healthkit-lactation-status | — |
 | `HKCategoryTypeIdentifierLossOfSmell` | Loss of Smell | `supported` | symptom-loss-of-smell | healthkit-symptom-loss-of-smell | — |
 | `HKCategoryTypeIdentifierLossOfTaste` | Loss of Taste | `supported` | symptom-loss-of-taste | healthkit-symptom-loss-of-taste | — |
-| `HKCategoryTypeIdentifierLowCardioFitnessEvent` | Low Cardio Fitness Event | `intentionally-unsupported` | — | — | Device alert over an Apple-defined classification band of the VO2Max quantity, which is the measurement. Single enum case lowFitness carries no additional measurement meaning. |
-| `HKCategoryTypeIdentifierLowHeartRateEvent` | Low Heart Rate Event | `intentionally-unsupported` | — | — | Device alert against a user-configurable threshold; the heart-rate quantity series is the admitted measurement. An alert Observation would encode a preference-dependent trigger, not a physiologic result. |
+| `HKCategoryTypeIdentifierLowCardioFitnessEvent` | Low Cardio Fitness Event | `supported` | low-cardio-fitness-notification | healthkit-low-cardio-fitness-notification | — |
+| `HKCategoryTypeIdentifierLowHeartRateEvent` | Low Heart Rate Event | `supported` | low-heart-rate-notification | healthkit-low-heart-rate-notification | — |
 | `HKCategoryTypeIdentifierLowerBackPain` | Lower Back Pain | `supported` | symptom-lower-back-pain | healthkit-symptom-lower-back-pain | — |
 | `HKCategoryTypeIdentifierMemoryLapse` | Memory Lapse | `supported` | symptom-memory-lapse | healthkit-symptom-memory-lapse | — |
 | `HKCategoryTypeIdentifierMenstrualFlow` | Menstrual Flow | `supported` | menstruation-flow | grove-mobile-menstruation-flow | — |
@@ -65,11 +65,11 @@ This table is the complete, closed v0.3.0 inventory of all 218 Apple HealthKit p
 | `HKCategoryTypeIdentifierNightSweats` | Night Sweats | `supported` | symptom-night-sweats | healthkit-symptom-night-sweats | — |
 | `HKCategoryTypeIdentifierOvulationTestResult` | Ovulation Test Result | `supported` | ovulation-test-result | grove-mobile-ovulation-test-result | — |
 | `HKCategoryTypeIdentifierPelvicPain` | Pelvic Pain | `supported` | symptom-pelvic-pain | healthkit-symptom-pelvic-pain | — |
-| `HKCategoryTypeIdentifierPersistentIntermenstrualBleeding` | Persistent Intermenstrual Bleeding | `intentionally-unsupported` | — | — | Algorithmic screening alert derived from user-entered cycle data, not a measurement. The primary data (intermenstrualBleeding and menstrualFlow samples) is admitted through the cycle-tracking enum-absorption design; re-emitting HealthKit's derived possible-pathology flag would present a screening notification as a clinical finding. |
+| `HKCategoryTypeIdentifierPersistentIntermenstrualBleeding` | Persistent Intermenstrual Bleeding | `supported` | persistent-intermenstrual-bleeding | healthkit-persistent-intermenstrual-bleeding | — |
 | `HKCategoryTypeIdentifierPregnancy` | Pregnancy | `supported` | pregnancy-status | healthkit-pregnancy-status | — |
 | `HKCategoryTypeIdentifierPregnancyTestResult` | Pregnancy Test Result | `supported` | pregnancy-test-result | healthkit-pregnancy-test-result | — |
 | `HKCategoryTypeIdentifierProgesteroneTestResult` | Progesterone Test Result | `supported` | progesterone-test-result | healthkit-progesterone-test-result | — |
-| `HKCategoryTypeIdentifierProlongedMenstrualPeriods` | Prolonged Menstrual Periods | `intentionally-unsupported` | — | — | Algorithmic screening alert over derived cycle history; the underlying menstrualFlow data is the measurement and is covered by the cycle-tracking design. |
+| `HKCategoryTypeIdentifierProlongedMenstrualPeriods` | Prolonged Menstrual Periods | `supported` | prolonged-menstrual-periods | healthkit-prolonged-menstrual-periods | — |
 | `HKCategoryTypeIdentifierRapidPoundingOrFlutteringHeartbeat` | Rapid/Pounding/Fluttering Heartbeat | `supported` | symptom-rapid-pounding-or-fluttering-heartbeat | healthkit-symptom-rapid-pounding-or-fluttering-heartbeat | — |
 | `HKCategoryTypeIdentifierRunnyNose` | Runny Nose | `supported` | symptom-runny-nose | healthkit-symptom-runny-nose | — |
 | `HKCategoryTypeIdentifierSexualActivity` | Sexual Activity | `supported` | sexual-activity | grove-mobile-sexual-activity | — |
@@ -77,7 +77,7 @@ This table is the complete, closed v0.3.0 inventory of all 218 Apple HealthKit p
 | `HKCategoryTypeIdentifierSinusCongestion` | Sinus Congestion | `supported` | symptom-sinus-congestion | healthkit-symptom-sinus-congestion | — |
 | `HKCategoryTypeIdentifierSkippedHeartbeat` | Skipped Heartbeat | `supported` | symptom-skipped-heartbeat | healthkit-symptom-skipped-heartbeat | — |
 | `HKCategoryTypeIdentifierSleepAnalysis` | Sleep Analysis | `supported` | sleep-stage | grove-mobile-sleep-stage | — |
-| `HKCategoryTypeIdentifierSleepApneaEvent` | Sleep Apnea Event | `intentionally-unsupported` | — | — | Device alert, not a measurement: an Apple proprietary screening algorithm's notification of possible pathology. The underlying signal (HKQuantityTypeIdentifierAppleSleepingBreathingDisturbances) is the measurement surface; emitting the alert as an Observation would misrepresent a screening notification as a clinical finding. |
+| `HKCategoryTypeIdentifierSleepApneaEvent` | Sleep Apnea Event | `supported` | sleep-apnea-notification | healthkit-sleep-apnea-notification | — |
 | `HKCategoryTypeIdentifierSleepChanges` | Sleep Changes | `supported` | symptom-sleep-changes | healthkit-symptom-sleep-changes | — |
 | `HKCategoryTypeIdentifierSoreThroat` | Sore Throat | `supported` | symptom-sore-throat | healthkit-symptom-sore-throat | — |
 | `HKCategoryTypeIdentifierToothbrushingEvent` | Toothbrushing Event | `supported` | toothbrushing-session | healthkit-toothbrushing-session | — |
@@ -85,7 +85,7 @@ This table is the complete, closed v0.3.0 inventory of all 218 Apple HealthKit p
 | `HKCategoryTypeIdentifierVomiting` | Vomiting | `supported` | symptom-vomiting | healthkit-symptom-vomiting | — |
 | `HKCategoryTypeIdentifierWheezing` | Wheezing | `supported` | symptom-wheezing | healthkit-symptom-wheezing | — |
 | `HKCharacteristicTypeIdentifierActivityMoveMode` | Activity Move Mode | `intentionally-unsupported` | — | — | A ring-display preference has no semantically exact Mobile meaning, and converting it would encode an Apple product configuration as clinical data. The mode is interpretive context for the Apple move-time and active-energy rows, which carry their own units and are converted in their own right; it adds no measurement content of its own. |
-| `HKCharacteristicTypeIdentifierBiologicalSex` | Biological Sex | `deferred` | — | — | Version 0.3.0 publishes no reviewed contract for this characteristic. LOINC 76689-9 'Sex assigned at birth' represents it faithfully, and the supported blood-type and wheelchair-use rows show a characteristic can carry an Observation, so this is unfinished work rather than a modelling refusal. |
+| `HKCharacteristicTypeIdentifierBiologicalSex` | Biological Sex | `deferred` | — | — | Version 0.4.0 publishes no reviewed contract for this characteristic. LOINC 76689-9 'Sex assigned at birth' represents it faithfully, and the supported blood-type and wheelchair-use rows show a characteristic can carry an Observation, so this is unfinished work rather than a modelling refusal. |
 | `HKCharacteristicTypeIdentifierBloodType` | Blood Type | `supported` | blood-type | healthkit-blood-type | — |
 | `HKCharacteristicTypeIdentifierDateOfBirth` | Date of Birth | `deferred` | — | — | A date of birth is a direct identifier, and the exchange's Patient node is deliberately pseudonymous. Publishing it needs a privacy decision, not a mapping; age at observation is the research-safe alternative. |
 | `HKCharacteristicTypeIdentifierFitzpatrickSkinType` | Fitzpatrick Skin Type | `intentionally-unsupported` | — | — | A single-platform self-reported phenotype outside the measurement contract, with no consumer in the exchange set. LOINC 66555-4 represents it exactly, so this is a scope decision rather than a terminology gap. |
@@ -104,7 +104,7 @@ This table is the complete, closed v0.3.0 inventory of all 218 Apple HealthKit p
 | `HKDataTypeIdentifierAudiogram` | Audiogram | `deferred` | — | — | No shared or HealthKit-adapter output contract is published for this sample type. |
 | `HKDataTypeIdentifierElectrocardiogram` | ECG | `supported` | electrocardiogram | grove-sensor-ecg-observation; healthkit-ecg-observation | The caller supplies the HKElectrocardiogram, every voltage measurement with its exact timeSinceSampleStart, and each associated HKCategorySample when symptomsStatus is present. The adapter preserves symptom UUID/timing/type/severity and complete HKSourceRevision fields, classification, average heart rate, sampling frequency, reported count, Apple ECG algorithm-version metadata when present, source and waveform intervals, lead, offsets, and voltages without fetching or resampling. Explicit caller authorization for linkable symptom-source disclosure is required; otherwise conversion fails closed. |
 | `HKDataTypeIdentifierHeartbeatSeries` | Heartbeat Series | `deferred` | — | — | The beat-to-beat interval series has a published grove-csv-1 column schema, but the HealthKit adapter has no recording-document profile to carry it yet, so no output is admitted. |
-| `HKDataTypeStateOfMind` | State of Mind | `deferred` | — | — | No shared or HealthKit-adapter output contract is published for this sample type. |
+| `HKDataTypeStateOfMind` | State of Mind | `supported` | state-of-mind | healthkit-state-of-mind | — |
 | `HKDataTypeUserAnnotatedMedicationConcept` | User Annotated Medication Concept | `deferred` | — | — | No shared or adapter-specific output contract is published for this type. |
 | `HKDocumentTypeIdentifierCDA` | CDA Document | `deferred` | — | — | No shared or adapter-specific output contract is published for this type. |
 | `HKMedicationDoseEventTypeIdentifierMedicationDoseEvent` | Medication Dose Event | `deferred` | — | — | No shared or adapter-specific output contract is published for this type. |
@@ -240,4 +240,4 @@ These rows are derived mappings, not HealthKit platform source identifiers, and 
 
 | Aggregate | Title | Input source type(s) | Contract status | Measurement | Target profile | Binding reason / requirement |
 | --- | --- | --- | --- | --- | --- | --- |
-| `sleep-duration-session-aggregate` | Sleep Duration Session Aggregate | `HKCategoryTypeIdentifierSleepAnalysis` | `deferred` | sleep-duration | grove-mobile-sleep-duration | This is not a HealthKit platform source identifier. Version 0.3.0 does not define the session-boundary aggregation contract; individual admitted samples map only to sleep stage. |
+| `sleep-duration-session-aggregate` | Sleep Duration Session Aggregate | `HKCategoryTypeIdentifierSleepAnalysis` | `deferred` | sleep-duration | grove-mobile-sleep-duration | This is not a HealthKit platform source identifier. Version 0.4.0 does not define the session-boundary aggregation contract; individual admitted samples map only to sleep stage. |

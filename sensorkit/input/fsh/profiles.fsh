@@ -172,6 +172,7 @@ Parent: SensorKitObservation
 Id: sensorkit-visit-observation
 Title: "SensorKit Visit Observation"
 Description: "A platform-exclusive SensorKit visit summary preserving the category, distance from home, and uncertain arrival and departure windows without asserting a clinical Encounter."
+* extension contains SensorKitVisitLocation named visitLocation 0..1 MS
 * extension[sensorKitSourceType].valueCode = #visits
 * code = $sensorKitConcept#visit-summary "Visit summary"
 * effective[x] 1..1 MS

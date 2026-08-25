@@ -148,6 +148,22 @@ def main() -> int:
                 f"LOINC {code['code']} PROPERTY {row['property']} requires {expected}"
             )
 
+    # A declared dimension is checked against its own UCUM code for every entry, not only the
+    # LOINC-coded ones. The catalog carried mL/kg/min with two different vectors until this ran.
+    for measurement_id, code, quantity, suffix in quantified:
+        if not quantity or "dimension" not in quantity:
+            continue
+        parsed = parsed_units.get(quantity["code"])
+        if parsed is None:
+            continue  # unparseable unit already reported above
+        declared = {axis: power for axis, power in quantity["dimension"].items() if power}
+        if parsed.dimension != declared:
+            problems.append(
+                f"measurement-catalog.json:{measurement_id}{suffix}: declared dimension "
+                f"{declared} does not match unit {quantity['code']!r}, which parses as "
+                f"{parsed.dimension}"
+            )
+
     for problem in problems:
         print(problem)
     print(

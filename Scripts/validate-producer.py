@@ -86,33 +86,45 @@ ADAPTER_PACKAGE_PROFILES = {
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-cycling-functional-threshold-power",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-observation",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-environmental-audio-exposure",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-environmental-audio-exposure-notification",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-environmental-sound-reduction",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-forced-expiratory-volume-1",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-forced-vital-capacity",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-gad7-assessment",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-handwashing-session",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-headphone-audio-exposure",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-headphone-audio-exposure-notification",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-heart-rate-recovery-one-minute",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-high-heart-rate-notification",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-infrequent-menstrual-cycles",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-inhaler-usage",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-insulin-delivery",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-irregular-heart-rhythm-notification",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-irregular-menstrual-cycles",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-lactation-status",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-low-cardio-fitness-notification",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-low-heart-rate-notification",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-number-of-alcoholic-beverages",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-number-of-times-fallen",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-observation",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-peak-expiratory-flow-rate",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-peripheral-perfusion-index",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-persistent-intermenstrual-bleeding",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-phq9-assessment",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-physical-effort",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-pregnancy-status",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-pregnancy-test-result",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-progesterone-test-result",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-prolonged-menstrual-periods",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-running-ground-contact-time",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-running-stride-length",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-running-vertical-oscillation",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-six-minute-walk-test-distance",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-sleep-apnea-notification",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-sleeping-breathing-disturbances",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-stair-ascent-speed",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-stair-descent-speed",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-state-of-mind",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-swimming-stroke-count",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-abdominal-cramps",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-acne",
@@ -162,10 +174,11 @@ ADAPTER_PACKAGE_PROFILES = {
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-walking-heart-rate-average",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-walking-speed",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-walking-steadiness",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-walking-steadiness-notification",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-walking-step-length",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-water-temperature",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-wheelchair-use",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-workout-effort-score",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-workout-effort-score"
     },
     "org.grovealliance.fhir.health-connect": {
         "https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-basal-metabolic-rate",
@@ -2197,8 +2210,8 @@ def validate_manifest(path: Path) -> tuple[dict[str, Any], list[Path]]:
             raise ProducerValidationError(f"invalid package alias: {alias!r}")
         if not isinstance(package_id, str) or not PACKAGE_ID.fullmatch(package_id):
             raise ProducerValidationError(f"invalid package id: {package_id!r}")
-        if package["version"] != "0.3.0":
-            raise ProducerValidationError("Grove FHIR producer manifests must use package version 0.3.0")
+        if package["version"] != "0.4.0":
+            raise ProducerValidationError("Grove FHIR producer manifests must use package version 0.4.0")
         if alias in aliases or package_id in package_ids:
             raise ProducerValidationError("package aliases and ids must be unique")
         aliases.add(alias)

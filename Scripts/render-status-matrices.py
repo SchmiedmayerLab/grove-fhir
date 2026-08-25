@@ -82,12 +82,12 @@ def healthkit() -> str:
     result = (
         HEADER
         + "# Authoritative HealthKit status matrix\n\n"
-        + f"This table is the complete, closed v0.3.0 inventory of all {source['rowCount']} "
+        + f"This table is the complete, closed v{catalog['version']} inventory of all {source['rowCount']} "
         f"Apple HealthKit platform source types frozen against {sdk['platform']} "
         f"{sdk['version']} from Xcode {sdk['xcodeVersion']} build `{sdk['xcodeBuild']}`. "
         "The evidence is the official Apple platform documentation and the exact SDK "
         "provenance declared by the catalog. Each row has one definitive contract status; "
-        "this is a release contract, not a roadmap. `supported` means v0.3.0 admits a "
+        f"this is a release contract, not a roadmap. `supported` means v{catalog['version']} admits a "
         "conformant output contract. All other rows are not admitted and producers fail "
         "closed.\n\n"
         + table(
@@ -159,7 +159,7 @@ def health_connect() -> str:
         + "# Authoritative Health Connect status matrix\n\n"
         + "This table is the complete, closed AndroidX Health Connect 1.1.0 "
         "`RecordType.all` inventory. Each of the 41 record classes has exactly one "
-        "definitive v0.3.0 status. An empty output cell means this release admits no "
+        f"definitive v{catalog['version']} status. An empty output cell means this release admits no "
         "FHIR producer output for that class; it is not an implementation queue.\n\n"
         + table(
             ["Record class", "Status", "Admitted output(s)", "Exact context mapping(s)"],
@@ -198,7 +198,7 @@ def sensorkit() -> str:
     return (
         HEADER
         + "# Authoritative SensorKit status matrix\n\n"
-        + "This table is the complete v0.3.0 SensorKit inventory: "
+        + f"This table is the complete v{catalog['version']} SensorKit inventory: "
         f"{scope_counts.get('catalog-baseline', 0)} catalog-baseline platform symbols and "
         f"{scope_counts.get('stable-addition', 0)} stable additions in the stated Apple SDK "
         f"baseline. Each of the {len(entries)} rows has one definitive status. Native "
@@ -254,7 +254,7 @@ def providers() -> str:
     result = (
         HEADER
         + "# Authoritative connected-provider status matrix\n\n"
-        + "This table enumerates every provider field in the closed v0.3.0 Google "
+        + f"This table enumerates every provider field in the closed v{catalog['version']} Google "
         "Health API, Oura, and Withings source catalogs. Each field has one definitive "
         "status. This adapter maps data already obtained by its caller; it contains no "
         "provider authentication, network, pagination, or fetching implementation.\n\n"

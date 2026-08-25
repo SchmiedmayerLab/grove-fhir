@@ -264,6 +264,10 @@ Description: "A platform-exclusive visit summary that preserves uncertain arriva
 * identifier[sensorKitOutputId].system = $sensorKitOutputId
 * identifier[sensorKitOutputId].value = "v1:d75fc337-6aac-4edf-931d-bbf1b24736aa|visit-summary"
 * extension[sensorKitSourceType].valueCode = #visits
+// Present because this example's deployment authorized disclosure; without that authorization the
+// visit still converts and this extension is simply absent.
+* extension[visitLocation].valueIdentifier.system = "https://grovealliance.org/fhir/sensorkit/NamingSystem/sensorkit-visit-location-id"
+* extension[visitLocation].valueIdentifier.value = "0f1f2c48-2b45-4a2a-9a2a-8b4d3a2f61c7"
 * status = #final
 * code = $sensorKitConcept#visit-summary "Visit summary"
 * subject = Reference(SensorKitPatientExample)

@@ -1556,6 +1556,27 @@
       "reviewRef": "pending-integration-commit",
       "notes": "Apple docs verified: samples use sound pressure units and 'measure discrete values of the equivalent continuous sound pressure level' (Leq, A-weighted dBASPL), which is an interval-averaged level, hence effectivePeriod. LOINC searches ('sound exposure', 'noise', 'decibel', 'sound level') surface only PhenX questionnaire items, none a faithful measured exposure level, so a Grove code is defined. dB[SPL] parses in the pinned UCUM table as the d prefix on the metric special unit B[SPL]; dimension {g:1,m:-1,s:-2} as decided. A-weighting is not expressible in UCUM and is carried by the concept definition per the pinned convention."
     },
+    "environmental-audio-exposure-notification": {
+      "status": "approved",
+      "approvedBy": [
+        {
+          "name": "v0.4.0 release review",
+          "role": "terminology-verification"
+        }
+      ],
+      "approvedOn": "2026-08-24",
+      "digest": "sha256:2d7513e41984fb31fda822979ec068616f1dbd422945edca473ec4439fc7786a",
+      "provenance": "v0.4.0 adoption-gap closure",
+      "reviewedOn": "2026-08-24",
+      "notes": "HKCategoryValueEnvironmentalAudioExposureEvent.momentaryLimit. The environmental audio exposure quantity remains the measurement surface.",
+      "preparedBy": [
+        {
+          "name": "v0.4.0 adoption-gap closure",
+          "role": "engineering"
+        }
+      ],
+      "ratification": "pending-pull-request-review"
+    },
     "environmental-sound-reduction": {
       "status": "approved",
       "provenance": "reviewed",
@@ -1754,6 +1775,27 @@
       "reviewRef": "pending-integration-commit",
       "notes": "Apple docs verified: identical semantics to environmental audio exposure ('discrete values of the equivalent continuous sound pressure level' in sound pressure units), so the same dB[SPL] convention, dimension {g:1,m:-1,s:-2}, and effectivePeriod apply. No faithful LOINC exists (LOINC noise content is PhenX questionnaire material), so a Grove code is defined. The sibling HKCategoryTypeIdentifierHeadphoneAudioExposureEvent is deliberately excluded from this concept's sources: it is an OS limit-alert event, not a level measurement (see notes)."
     },
+    "headphone-audio-exposure-notification": {
+      "status": "approved",
+      "approvedBy": [
+        {
+          "name": "v0.4.0 release review",
+          "role": "terminology-verification"
+        }
+      ],
+      "approvedOn": "2026-08-24",
+      "digest": "sha256:d8b2e50ddea619581e4d8e33f5eaff2c7b723677cf9e27e41e9a20baa65f39a0",
+      "provenance": "v0.4.0 adoption-gap closure",
+      "reviewedOn": "2026-08-24",
+      "notes": "HKCategoryValueHeadphoneAudioExposureEvent.sevenDayLimit. The headphone audio exposure quantity remains the measurement surface.",
+      "preparedBy": [
+        {
+          "name": "v0.4.0 adoption-gap closure",
+          "role": "engineering"
+        }
+      ],
+      "ratification": "pending-pull-request-review"
+    },
     "heart-rate": {
       "status": "approved",
       "approvedBy": [
@@ -1829,6 +1871,48 @@
       "recordedOn": "2026-08-21",
       "reviewRef": "pending-integration-commit",
       "notes": "HealthKit and Google Health API both carry SDNN, meeting the two-source bar. Verified 112429-6 'Heart rate variability SDNN [Time]' ACTIVE, PROPERTY Time, SCALE Qn on tx.fhir.org (LOINC 2.82); chosen over 80404-7 (R-R interval.standard deviation) because it names the SDNN statistic exactly and method-neutrally. ms is a prefixed UCUM second with dimension {s:1}; sources timestamp each SDNN result, hence effectiveDateTime, with the measurement window as source context. Adjudicated across batch conflict per policy (LOINC exactness / fail-closed); see integration commit."
+    },
+    "high-heart-rate-notification": {
+      "status": "approved",
+      "approvedBy": [
+        {
+          "name": "v0.4.0 release review",
+          "role": "terminology-verification"
+        }
+      ],
+      "approvedOn": "2026-08-24",
+      "digest": "sha256:5cf2862c1a557be0bfdb2d1e1d7efc8c89034f41680465b289245410b9d64cdf",
+      "provenance": "v0.4.0 adoption-gap closure",
+      "reviewedOn": "2026-08-24",
+      "notes": "Apple raises this against a wearer-configured threshold while apparently inactive; it is a device notification, not a rhythm measurement, so it takes an adapter code rather than a LOINC concept. The threshold component carries HKMetadataKeyHeartRateEventThreshold in /min, dimension {s:-1}, matching the heart-rate entries. Notification instants take effective Period.",
+      "preparedBy": [
+        {
+          "name": "v0.4.0 adoption-gap closure",
+          "role": "engineering"
+        }
+      ],
+      "ratification": "pending-pull-request-review"
+    },
+    "infrequent-menstrual-cycles": {
+      "status": "approved",
+      "approvedBy": [
+        {
+          "name": "v0.4.0 release review",
+          "role": "terminology-verification"
+        }
+      ],
+      "approvedOn": "2026-08-24",
+      "digest": "sha256:4be244420351b9fb374ae28a5cb911907078467c87ed84bccc4357d285041557",
+      "provenance": "v0.4.0 adoption-gap closure",
+      "reviewedOn": "2026-08-24",
+      "notes": "Derived from logged cycle records. SNOMED CT 52073004 (Oligomenorrhea) is the corresponding concept, cited rather than bound, for the same reason as irregular cycles. Unverified offline; confirm ACTIVE before publication.",
+      "preparedBy": [
+        {
+          "name": "v0.4.0 adoption-gap closure",
+          "role": "engineering"
+        }
+      ],
+      "ratification": "pending-pull-request-review"
     },
     "inhaler-usage": {
       "status": "approved",
@@ -1918,6 +2002,48 @@
       "reviewRef": "pending-integration-commit",
       "notes": "Single-source (Withings getmeas:169), so platform-exclusive. Searched NLM Clinical Tables for 'intracellular water' and found no LOINC, so a Grove code is defined, mirroring the extracellular concept. kg, dimension {g:1}; point BIA reading, effectiveDateTime."
     },
+    "irregular-heart-rhythm-notification": {
+      "status": "approved",
+      "approvedBy": [
+        {
+          "name": "v0.4.0 release review",
+          "role": "terminology-verification"
+        }
+      ],
+      "approvedOn": "2026-08-24",
+      "digest": "sha256:c933bcf5fba963ba92ceb4505cac3d75740922cb9e4124f0b7ea1ac89c3af332",
+      "provenance": "v0.4.0 adoption-gap closure",
+      "reviewedOn": "2026-08-24",
+      "notes": "An FDA-cleared screening notification from a proprietary algorithm. Deliberately coded from the adapter system so no receiver can read it as a rhythm finding; the electrocardiogram and atrial-fibrillation burden remain the measurement surface.",
+      "preparedBy": [
+        {
+          "name": "v0.4.0 adoption-gap closure",
+          "role": "engineering"
+        }
+      ],
+      "ratification": "pending-pull-request-review"
+    },
+    "irregular-menstrual-cycles": {
+      "status": "approved",
+      "approvedBy": [
+        {
+          "name": "v0.4.0 release review",
+          "role": "terminology-verification"
+        }
+      ],
+      "approvedOn": "2026-08-24",
+      "digest": "sha256:f17b8002d5db25601340d8dec9cff64bbf81158488f0481c4f2ff7541c67de13",
+      "provenance": "v0.4.0 adoption-gap closure",
+      "reviewedOn": "2026-08-24",
+      "notes": "Derived from the participant's own logged cycle records, not sensed, so this is a finding rather than a device notification. SNOMED CT 80182007 (Irregular periods) is the corresponding concept and is cited in the definition; it is not bound because this guide declares no SNOMED dependency and binding an undeclared system would not validate. The SNOMED code is unverified offline and must be confirmed ACTIVE before publication.",
+      "preparedBy": [
+        {
+          "name": "v0.4.0 adoption-gap closure",
+          "role": "engineering"
+        }
+      ],
+      "ratification": "pending-pull-request-review"
+    },
     "lactation-status": {
       "status": "approved",
       "provenance": "reviewed",
@@ -1983,6 +2109,48 @@
       "recordedOn": "2026-08-21",
       "reviewRef": "pending-integration-commit",
       "notes": "Three provider stage-total rows with no stage intervals, hence aggregate-family. Verified 93830-8 'Light sleep duration' ACTIVE, PROPERTY Time, SCALE Qn on NLM Clinical Tables. min, dimension {s:1}; sleep-session effective Period."
+    },
+    "low-cardio-fitness-notification": {
+      "status": "approved",
+      "approvedBy": [
+        {
+          "name": "v0.4.0 release review",
+          "role": "terminology-verification"
+        }
+      ],
+      "approvedOn": "2026-08-24",
+      "digest": "sha256:5a87f70b6b93d0c10fad450e5cc76d61e0977fad6e10a87b9bffb76fce9b2283",
+      "provenance": "v0.4.0 adoption-gap closure",
+      "reviewedOn": "2026-08-24",
+      "notes": "Raised when the VO2max estimate falls below a threshold. The threshold shares vo2-max's UCUM code mL/kg/min, so it carries the identical dimension {g:-1, m:3, s:-1}; the example is 30, inside Apple's low-fitness band, not a value no human has recorded. Value code from HKCategoryValueLowCardioFitnessEvent.lowFitness.",
+      "preparedBy": [
+        {
+          "name": "v0.4.0 adoption-gap closure",
+          "role": "engineering"
+        }
+      ],
+      "ratification": "pending-pull-request-review"
+    },
+    "low-heart-rate-notification": {
+      "status": "approved",
+      "approvedBy": [
+        {
+          "name": "v0.4.0 release review",
+          "role": "terminology-verification"
+        }
+      ],
+      "approvedOn": "2026-08-24",
+      "digest": "sha256:8d0f679652ae373661debee9ab095ea74c850e8640f8d519fbad15c023873711",
+      "provenance": "v0.4.0 adoption-gap closure",
+      "reviewedOn": "2026-08-24",
+      "notes": "As the high-rate notification, against the wearer's low threshold. Apple's configurable low range is 40-50 bpm, so the example is 40. Unit /min, dimension {s:-1}.",
+      "preparedBy": [
+        {
+          "name": "v0.4.0 adoption-gap closure",
+          "role": "engineering"
+        }
+      ],
+      "ratification": "pending-pull-request-review"
     },
     "menstruation-flow": {
       "status": "approved",
@@ -2214,6 +2382,27 @@
       "reviewRef": "pending-integration-commit",
       "notes": "61006-3 verified via NLM Clinical Tables and tx.fhir.org lookup (ACTIVE, PROPERTY VelRto, SCALE Qn, METHOD Pulse oximetry), matching HealthKit's pulse-oximeter perfusion index exactly; the pre/postductal variants 73794-0/73798-1 are neonatal-site-specific and were rejected. VelRto is a ratio, so the dimensionless UCUM % is consistent (VelRto is not yet in the pinned propertyDimensions map and needs a null-safe entry when adopted). effective dateTime for a point sample."
     },
+    "persistent-intermenstrual-bleeding": {
+      "status": "approved",
+      "approvedBy": [
+        {
+          "name": "v0.4.0 release review",
+          "role": "terminology-verification"
+        }
+      ],
+      "approvedOn": "2026-08-24",
+      "digest": "sha256:73bd2c351cd579d7e5765542a5a64e56182d5f95523250c3edc4fc2db453021c",
+      "provenance": "v0.4.0 adoption-gap closure",
+      "reviewedOn": "2026-08-24",
+      "notes": "Derived from logged cycle records. No SNOMED concept was located that matches the HealthKit meaning exactly; the adapter code carries it rather than approximating one.",
+      "preparedBy": [
+        {
+          "name": "v0.4.0 adoption-gap closure",
+          "role": "engineering"
+        }
+      ],
+      "ratification": "pending-pull-request-review"
+    },
     "phq9-assessment": {
       "status": "approved",
       "provenance": "reviewed",
@@ -2345,6 +2534,27 @@
       "recordedOn": "2026-08-21",
       "reviewRef": "pending-integration-commit",
       "notes": "Structurally identical to pregnancy-test-result but without a LOINC code; revisit if LOINC ratifies a qualitative urine PdG concept."
+    },
+    "prolonged-menstrual-periods": {
+      "status": "approved",
+      "approvedBy": [
+        {
+          "name": "v0.4.0 release review",
+          "role": "terminology-verification"
+        }
+      ],
+      "approvedOn": "2026-08-24",
+      "digest": "sha256:0d6528cfb8c97e1bbe1f1ddea741d2ceac1600da883ee2a9637955418a44af1d",
+      "provenance": "v0.4.0 adoption-gap closure",
+      "reviewedOn": "2026-08-24",
+      "notes": "Derived from logged cycle records. No SNOMED concept was located that matches the HealthKit meaning exactly, so the adapter code carries it rather than approximating a clinical concept.",
+      "preparedBy": [
+        {
+          "name": "v0.4.0 adoption-gap closure",
+          "role": "engineering"
+        }
+      ],
+      "ratification": "pending-pull-request-review"
     },
     "rem-sleep-duration": {
       "status": "approved",
@@ -2554,6 +2764,27 @@
       "reviewRef": "pending-integration-commit",
       "notes": "Decided design confirmed by evidence: three sources (HealthKit wrist, Health Connect skin, Withings measure type 73) join one shared measurement, and the providers catalog already refuses relabeling skin temperature as body temperature. Health Connect's baseline+delta form is resolved by the adapter: each SkinTemperatureRecord delta is added to the record baseline to yield an absolute reading effective at the delta time, so only absolute Celsius values reach the profile. LOINC 61008-9 verified on tx.fhir.org (LOINC 2.82): display 'Body surface temperature', PROPERTY Temp (LP6872-8), SCALE Qn, ACTIVE, matching the pinned Temp dimension {K:1}; UCUM Cel is pinned. HealthKit's nightly wrist value is admitted at its sample endpoint as a point reading."
     },
+    "sleep-apnea-notification": {
+      "status": "approved",
+      "approvedBy": [
+        {
+          "name": "v0.4.0 release review",
+          "role": "terminology-verification"
+        }
+      ],
+      "approvedOn": "2026-08-24",
+      "digest": "sha256:f4e7ab230c4d74a103c638af57dbd3d562a27c54707162c90731107545e6c44c",
+      "provenance": "v0.4.0 adoption-gap closure",
+      "reviewedOn": "2026-08-24",
+      "notes": "A proprietary screening notification. HKQuantityTypeIdentifierAppleSleepingBreathingDisturbances remains the measurement surface; this records only that the notification fired.",
+      "preparedBy": [
+        {
+          "name": "v0.4.0 adoption-gap closure",
+          "role": "engineering"
+        }
+      ],
+      "ratification": "pending-pull-request-review"
+    },
     "sleep-awake-duration": {
       "status": "approved",
       "provenance": "reviewed",
@@ -2727,6 +2958,27 @@
       "recordedOn": "2026-08-21",
       "reviewRef": "pending-integration-commit",
       "notes": "LOINC 112430-4 'Stair descent speed [Velocity]' verified ACTIVE on tx.fhir.org and Ontoserver (LOINC 2.82): PROPERTY Vel (LP6888-4), SCALE Qn (LP7753-9), EXAMPLE_UCUM_UNITS m/s — an exact match. UCUM m/s parses with dimension {m:1,s:-1}. HealthKit-only evidence keeps it platform-exclusive; discrete samples take effectiveDateTime."
+    },
+    "state-of-mind": {
+      "status": "approved",
+      "approvedBy": [
+        {
+          "name": "v0.4.0 release review",
+          "role": "terminology-verification"
+        }
+      ],
+      "approvedOn": "2026-08-24",
+      "digest": "sha256:9b6e0c638d1c1b740c95084b38a02204f770e35da735f2ae388840493838d552",
+      "provenance": "v0.4.0 adoption-gap closure",
+      "reviewedOn": "2026-08-24",
+      "notes": "Self-reported, not measured. Valence is the one numeric axis on HealthKit's closed -1.0 to 1.0 scale and takes UCUM 1, dimensionless, displayed as 'valence'; the annotation is kept out of the code so the closed ucum-annotations allowlist is not bypassed. Kind, valence classification, labels and associations are coded components from HKStateOfMind's own enumerations.",
+      "preparedBy": [
+        {
+          "name": "v0.4.0 adoption-gap closure",
+          "role": "engineering"
+        }
+      ],
+      "ratification": "pending-pull-request-review"
     },
     "step-cadence": {
       "status": "approved",
@@ -3881,6 +4133,27 @@
       "recordedOn": "2026-08-21",
       "reviewRef": "pending-integration-commit",
       "notes": "LOINC 2.82 has no steadiness concept (NLM Clinical Tables and tx.fhir.org expansions for 'steadiness' return nothing relevant), so a Grove code carries the terminology for the phase-2 aggregate design. The metric is a rolling window over roughly a week of gait data, which places it in the aggregate family with an effective Period per policy. The companion HKCategoryTypeIdentifierAppleWalkingSteadinessEvent classification event is a separate category signal and is not folded into this quantity. UCUM % parses with an empty dimension vector."
+    },
+    "walking-steadiness-notification": {
+      "status": "approved",
+      "approvedBy": [
+        {
+          "name": "v0.4.0 release review",
+          "role": "terminology-verification"
+        }
+      ],
+      "approvedOn": "2026-08-24",
+      "digest": "sha256:8c32e09a72b3d4e0ee4639d54b9fb034294ea2ce63bed31aa04587590cb3b352",
+      "provenance": "v0.4.0 adoption-gap closure",
+      "reviewedOn": "2026-08-24",
+      "notes": "Value is the severity classification and the notification-occurrence component is whether it is a first or repeat notification. HealthKit crosses the two axes in one enum; separating them keeps 'was steadiness ever very low' a single-code query and remains lossless with respect to HKCategoryValueAppleWalkingSteadinessEvent.",
+      "preparedBy": [
+        {
+          "name": "v0.4.0 adoption-gap closure",
+          "role": "engineering"
+        }
+      ],
+      "ratification": "pending-pull-request-review"
     },
     "walking-step-length": {
       "status": "approved",

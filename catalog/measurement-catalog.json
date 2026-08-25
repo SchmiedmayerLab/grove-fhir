@@ -2,7 +2,7 @@
   "$schema": "https://grovealliance.org/fhir/catalog/schemas/measurement-catalog.schema.json",
   "schemaVersion": 1,
   "fhirVersion": "4.0.1",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "canonicalRoot": "https://grovealliance.org/fhir/mobile/StructureDefinition",
   "statusVocabulary": [
     "supported",
@@ -48,12 +48,12 @@
     }
   ],
   "statusDefinitions": {
-    "supported": "The named adapter emits and validates this exact Mobile profile in version 0.3.0.",
+    "supported": "The named adapter emits and validates this exact Mobile profile in version 0.4.0.",
     "mapped-standard": "Related source data is admitted only in the coverageDetails alternate representation. It does not implement or claim this Mobile profile.",
     "platform-exclusive": "The source meaning is admitted only by a platform-exclusive adapter profile and does not implement this Mobile profile.",
     "unmodeled": "The source element is inventoried by its adapter, but nothing models this Mobile meaning and no output is admitted.",
-    "deferred": "The source has related data, but version 0.3.0 admits no output for this Mobile meaning.",
-    "intentionally-unsupported": "The source has no semantically exact mapping to this Mobile meaning in the closed version 0.3.0 contract."
+    "deferred": "The source has related data, but version 0.4.0 admits no output for this Mobile meaning.",
+    "intentionally-unsupported": "The source has no semantically exact mapping to this Mobile meaning in the closed version 0.4.0 contract."
   },
   "effectiveCanonicalization": {
     "scope": "Every Mobile scalar or aggregate effectiveDateTime and effectivePeriod endpoint; Sensor and ECG SampledData timing is excluded.",
@@ -2929,6 +2929,46 @@
       }
     },
     {
+      "id": "environmental-audio-exposure-notification",
+      "profile": "healthkit-environmental-audio-exposure-notification",
+      "standardProfile": null,
+      "title": "Environmental Audio Exposure Notification",
+      "description": "HKCategoryTypeIdentifierAudioExposureEvent: raised when environmental sound reaches the momentary limit. The environmental audio exposure quantity remains the measurement surface.",
+      "code": {
+        "system": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-measurement",
+        "code": "environmental-audio-exposure-notification",
+        "display": "Environmental Audio Exposure Notification",
+        "definition": "A device notification that environmental sound reached the momentary exposure limit."
+      },
+      "valueKind": "codeableConcept",
+      "owner": "healthkit",
+      "quantity": null,
+      "valueSet": "https://grovealliance.org/fhir/healthkit/ValueSet/healthkit-environmental-audio-exposure-notification",
+      "resultCodeSystem": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-environmental-audio-exposure-notification",
+      "allowedValues": [
+        "momentary-limit"
+      ],
+      "resultCodes": [
+        {
+          "code": "momentary-limit",
+          "display": "Momentary limit",
+          "definition": "HKCategoryValueEnvironmentalAudioExposureEvent.momentaryLimit: the momentary exposure limit was reached."
+        }
+      ],
+      "effective": "Period",
+      "generation": {
+        "emit": true
+      },
+      "coverage": {
+        "healthkit": "supported",
+        "health-connect": "unmodeled",
+        "sensorkit": "unmodeled",
+        "google-health-api": "unmodeled",
+        "oura": "unmodeled",
+        "withings": "unmodeled"
+      }
+    },
+    {
       "id": "environmental-sound-reduction",
       "profile": "healthkit-environmental-sound-reduction",
       "standardProfile": null,
@@ -3246,6 +3286,46 @@
       }
     },
     {
+      "id": "headphone-audio-exposure-notification",
+      "profile": "healthkit-headphone-audio-exposure-notification",
+      "standardProfile": null,
+      "title": "Headphone Audio Exposure Notification",
+      "description": "HKCategoryTypeIdentifierHeadphoneAudioExposureEvent: raised when headphone exposure reaches the seven-day limit. The headphone audio exposure quantity remains the measurement surface.",
+      "code": {
+        "system": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-measurement",
+        "code": "headphone-audio-exposure-notification",
+        "display": "Headphone Audio Exposure Notification",
+        "definition": "A device notification that headphone audio exposure reached the seven-day limit."
+      },
+      "valueKind": "codeableConcept",
+      "owner": "healthkit",
+      "quantity": null,
+      "valueSet": "https://grovealliance.org/fhir/healthkit/ValueSet/healthkit-headphone-audio-exposure-notification",
+      "resultCodeSystem": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-headphone-audio-exposure-notification",
+      "allowedValues": [
+        "seven-day-limit"
+      ],
+      "resultCodes": [
+        {
+          "code": "seven-day-limit",
+          "display": "Seven day limit",
+          "definition": "HKCategoryValueHeadphoneAudioExposureEvent.sevenDayLimit: the rolling seven-day exposure limit was reached."
+        }
+      ],
+      "effective": "Period",
+      "generation": {
+        "emit": true
+      },
+      "coverage": {
+        "healthkit": "supported",
+        "health-connect": "unmodeled",
+        "sensorkit": "unmodeled",
+        "google-health-api": "unmodeled",
+        "oura": "unmodeled",
+        "withings": "unmodeled"
+      }
+    },
+    {
       "id": "heart-rate",
       "profile": "grove-mobile-heart-rate",
       "standardProfile": "http://hl7.org/fhir/StructureDefinition/heartrate",
@@ -3407,6 +3487,112 @@
       }
     },
     {
+      "id": "high-heart-rate-notification",
+      "profile": "healthkit-high-heart-rate-notification",
+      "standardProfile": null,
+      "title": "High Heart Rate Notification",
+      "description": "HKCategoryTypeIdentifierHighHeartRateEvent: an Apple Watch notification raised against a user-configurable threshold. This is the notification, not a rhythm finding; the heart-rate quantities remain the measurement surface, and the threshold that raised it is carried as a component so the notification can be interpreted at all.",
+      "code": {
+        "system": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-measurement",
+        "code": "high-heart-rate-notification",
+        "display": "High Heart Rate Notification",
+        "definition": "A device notification that heart rate stayed above the wearer's configured threshold while apparently inactive."
+      },
+      "valueKind": "codeableConcept",
+      "owner": "healthkit",
+      "quantity": null,
+      "valueSet": "https://grovealliance.org/fhir/healthkit/ValueSet/healthkit-high-heart-rate-notification",
+      "resultCodeSystem": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-high-heart-rate-notification",
+      "allowedValues": [
+        "occurred"
+      ],
+      "resultCodes": [
+        {
+          "code": "occurred",
+          "display": "Occurred",
+          "definition": "The device raised this notification over the stated Period. HealthKit carries no further value for it."
+        }
+      ],
+      "effective": "Period",
+      "generation": {
+        "emit": true
+      },
+      "coverage": {
+        "healthkit": "supported",
+        "health-connect": "unmodeled",
+        "sensorkit": "unmodeled",
+        "google-health-api": "unmodeled",
+        "oura": "unmodeled",
+        "withings": "unmodeled"
+      },
+      "components": [
+        {
+          "id": "threshold",
+          "system": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-measurement",
+          "code": "high-heart-rate-threshold",
+          "display": "Notification threshold",
+          "title": "Notification threshold",
+          "definition": "The wearer-configured heart rate above which the device raises this notification.",
+          "cardinality": "0..1",
+          "quantity": {
+            "system": "http://unitsofmeasure.org",
+            "code": "/min",
+            "unit": "beats/minute",
+            "example": 120,
+            "dimension": {
+              "s": -1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "infrequent-menstrual-cycles",
+      "profile": "healthkit-infrequent-menstrual-cycles",
+      "standardProfile": null,
+      "title": "Infrequent Menstrual Cycles",
+      "description": "HKCategoryTypeIdentifierInfrequentMenstrualCycles: a deviation derived from the wearer's own logged cycle records over the stated Period.",
+      "code": {
+        "system": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-measurement",
+        "code": "infrequent-menstrual-cycles",
+        "display": "Infrequent menstrual cycles",
+        "definition": "Cycles occurring less often than expected, derived from the participant's logged cycle records. Corresponds to SNOMED CT 52073004 (Oligomenorrhea); the concept is cited rather than bound, because this guide carries no SNOMED dependency."
+      },
+      "valueKind": "codeableConcept",
+      "owner": "healthkit",
+      "quantity": null,
+      "valueSet": "https://grovealliance.org/fhir/healthkit/ValueSet/healthkit-infrequent-menstrual-cycles",
+      "resultCodeSystem": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-infrequent-menstrual-cycles",
+      "allowedValues": [
+        "present",
+        "not-present"
+      ],
+      "resultCodes": [
+        {
+          "code": "present",
+          "display": "Present",
+          "definition": "The pattern was detected over the stated Period from the wearer's own logged cycle records."
+        },
+        {
+          "code": "not-present",
+          "display": "Not present",
+          "definition": "The pattern was evaluated over the stated Period and not detected."
+        }
+      ],
+      "effective": "Period",
+      "generation": {
+        "emit": true
+      },
+      "coverage": {
+        "healthkit": "supported",
+        "health-connect": "unmodeled",
+        "sensorkit": "unmodeled",
+        "google-health-api": "unmodeled",
+        "oura": "unmodeled",
+        "withings": "unmodeled"
+      }
+    },
+    {
       "id": "inhaler-usage",
       "profile": "healthkit-inhaler-usage",
       "standardProfile": null,
@@ -3550,6 +3736,92 @@
       }
     },
     {
+      "id": "irregular-heart-rhythm-notification",
+      "profile": "healthkit-irregular-heart-rhythm-notification",
+      "standardProfile": null,
+      "title": "Irregular Heart Rhythm Notification",
+      "description": "HKCategoryTypeIdentifierIrregularHeartRhythmEvent: an FDA-cleared screening notification from a proprietary algorithm. It is emitted as a notification and never as a rhythm finding: the electrocardiogram and the atrial-fibrillation burden percentage remain the rhythm evidence, and this Observation links to them through derivedFrom.",
+      "code": {
+        "system": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-measurement",
+        "code": "irregular-heart-rhythm-notification",
+        "display": "Irregular Heart Rhythm Notification",
+        "definition": "A device notification of a heart rhythm irregularity consistent with atrial fibrillation."
+      },
+      "valueKind": "codeableConcept",
+      "owner": "healthkit",
+      "quantity": null,
+      "valueSet": "https://grovealliance.org/fhir/healthkit/ValueSet/healthkit-irregular-heart-rhythm-notification",
+      "resultCodeSystem": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-irregular-heart-rhythm-notification",
+      "allowedValues": [
+        "occurred"
+      ],
+      "resultCodes": [
+        {
+          "code": "occurred",
+          "display": "Occurred",
+          "definition": "The device raised this notification over the stated Period. HealthKit carries no further value for it."
+        }
+      ],
+      "effective": "Period",
+      "generation": {
+        "emit": true
+      },
+      "coverage": {
+        "healthkit": "supported",
+        "health-connect": "unmodeled",
+        "sensorkit": "unmodeled",
+        "google-health-api": "unmodeled",
+        "oura": "unmodeled",
+        "withings": "unmodeled"
+      }
+    },
+    {
+      "id": "irregular-menstrual-cycles",
+      "profile": "healthkit-irregular-menstrual-cycles",
+      "standardProfile": null,
+      "title": "Irregular Menstrual Cycles",
+      "description": "HKCategoryTypeIdentifierIrregularMenstrualCycles: a deviation derived from the wearer's own logged cycle records over the stated Period. This is a finding, not a device notification: nothing was sensed, and the pattern is computed from data the participant entered.",
+      "code": {
+        "system": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-measurement",
+        "code": "irregular-menstrual-cycles",
+        "display": "Irregular menstrual cycles",
+        "definition": "Cycle lengths outside the expected range, derived from the participant's logged cycle records. Corresponds to SNOMED CT 80182007 (Irregular periods); the concept is cited rather than bound, because this guide carries no SNOMED dependency."
+      },
+      "valueKind": "codeableConcept",
+      "owner": "healthkit",
+      "quantity": null,
+      "valueSet": "https://grovealliance.org/fhir/healthkit/ValueSet/healthkit-irregular-menstrual-cycles",
+      "resultCodeSystem": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-irregular-menstrual-cycles",
+      "allowedValues": [
+        "present",
+        "not-present"
+      ],
+      "resultCodes": [
+        {
+          "code": "present",
+          "display": "Present",
+          "definition": "The pattern was detected over the stated Period from the wearer's own logged cycle records."
+        },
+        {
+          "code": "not-present",
+          "display": "Not present",
+          "definition": "The pattern was evaluated over the stated Period and not detected."
+        }
+      ],
+      "effective": "Period",
+      "generation": {
+        "emit": true
+      },
+      "coverage": {
+        "healthkit": "supported",
+        "health-connect": "unmodeled",
+        "sensorkit": "unmodeled",
+        "google-health-api": "unmodeled",
+        "oura": "unmodeled",
+        "withings": "unmodeled"
+      }
+    },
+    {
       "id": "lactation-status",
       "profile": "healthkit-lactation-status",
       "standardProfile": null,
@@ -3659,6 +3931,128 @@
         "oura": "supported",
         "withings": "supported"
       }
+    },
+    {
+      "id": "low-cardio-fitness-notification",
+      "profile": "healthkit-low-cardio-fitness-notification",
+      "standardProfile": null,
+      "title": "Low Cardio Fitness Notification",
+      "description": "HKCategoryTypeIdentifierLowCardioFitnessEvent: raised when the VO2 max estimate falls below a threshold. The threshold is carried as a component.",
+      "code": {
+        "system": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-measurement",
+        "code": "low-cardio-fitness-notification",
+        "display": "Low Cardio Fitness Notification",
+        "definition": "A device notification that estimated cardio fitness fell below the configured threshold."
+      },
+      "valueKind": "codeableConcept",
+      "owner": "healthkit",
+      "quantity": null,
+      "valueSet": "https://grovealliance.org/fhir/healthkit/ValueSet/healthkit-low-cardio-fitness-notification",
+      "resultCodeSystem": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-low-cardio-fitness-notification",
+      "allowedValues": [
+        "low-fitness"
+      ],
+      "resultCodes": [
+        {
+          "code": "low-fitness",
+          "display": "Low fitness",
+          "definition": "HKCategoryValueLowCardioFitnessEvent.lowFitness: the cardio fitness estimate is below the threshold."
+        }
+      ],
+      "effective": "Period",
+      "generation": {
+        "emit": true
+      },
+      "coverage": {
+        "healthkit": "supported",
+        "health-connect": "unmodeled",
+        "sensorkit": "unmodeled",
+        "google-health-api": "unmodeled",
+        "oura": "unmodeled",
+        "withings": "unmodeled"
+      },
+      "components": [
+        {
+          "id": "threshold",
+          "system": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-measurement",
+          "code": "low-cardio-fitness-threshold",
+          "display": "Notification threshold",
+          "title": "Notification threshold",
+          "definition": "The cardio fitness estimate below which the device raises this notification.",
+          "cardinality": "0..1",
+          "quantity": {
+            "system": "http://unitsofmeasure.org",
+            "code": "mL/kg/min",
+            "unit": "mL/kg/min",
+            "example": 30,
+            "dimension": {
+              "g": -1,
+              "m": 3,
+              "s": -1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "low-heart-rate-notification",
+      "profile": "healthkit-low-heart-rate-notification",
+      "standardProfile": null,
+      "title": "Low Heart Rate Notification",
+      "description": "HKCategoryTypeIdentifierLowHeartRateEvent: an Apple Watch notification raised against a user-configurable threshold. The threshold is carried as a component; the heart-rate quantities remain the measurement surface.",
+      "code": {
+        "system": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-measurement",
+        "code": "low-heart-rate-notification",
+        "display": "Low Heart Rate Notification",
+        "definition": "A device notification that heart rate stayed below the wearer's configured threshold while apparently inactive."
+      },
+      "valueKind": "codeableConcept",
+      "owner": "healthkit",
+      "quantity": null,
+      "valueSet": "https://grovealliance.org/fhir/healthkit/ValueSet/healthkit-low-heart-rate-notification",
+      "resultCodeSystem": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-low-heart-rate-notification",
+      "allowedValues": [
+        "occurred"
+      ],
+      "resultCodes": [
+        {
+          "code": "occurred",
+          "display": "Occurred",
+          "definition": "The device raised this notification over the stated Period. HealthKit carries no further value for it."
+        }
+      ],
+      "effective": "Period",
+      "generation": {
+        "emit": true
+      },
+      "coverage": {
+        "healthkit": "supported",
+        "health-connect": "unmodeled",
+        "sensorkit": "unmodeled",
+        "google-health-api": "unmodeled",
+        "oura": "unmodeled",
+        "withings": "unmodeled"
+      },
+      "components": [
+        {
+          "id": "threshold",
+          "system": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-measurement",
+          "code": "low-heart-rate-threshold",
+          "display": "Notification threshold",
+          "title": "Notification threshold",
+          "definition": "The wearer-configured heart rate below which the device raises this notification.",
+          "cardinality": "0..1",
+          "quantity": {
+            "system": "http://unitsofmeasure.org",
+            "code": "/min",
+            "unit": "beats/minute",
+            "example": 40,
+            "dimension": {
+              "s": -1
+            }
+          }
+        }
+      ]
     },
     {
       "id": "menstruation-flow",
@@ -4119,6 +4513,52 @@
       }
     },
     {
+      "id": "persistent-intermenstrual-bleeding",
+      "profile": "healthkit-persistent-intermenstrual-bleeding",
+      "standardProfile": null,
+      "title": "Persistent Intermenstrual Bleeding",
+      "description": "HKCategoryTypeIdentifierPersistentIntermenstrualBleeding: a deviation derived from the wearer's own logged cycle records over the stated Period. No verified SNOMED concept is bound; the adapter code system carries the meaning rather than approximating a clinical concept.",
+      "code": {
+        "system": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-measurement",
+        "code": "persistent-intermenstrual-bleeding",
+        "display": "Persistent intermenstrual bleeding",
+        "definition": "Bleeding between periods persisting across cycles, derived from logged cycle records."
+      },
+      "valueKind": "codeableConcept",
+      "owner": "healthkit",
+      "quantity": null,
+      "valueSet": "https://grovealliance.org/fhir/healthkit/ValueSet/healthkit-persistent-intermenstrual-bleeding",
+      "resultCodeSystem": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-persistent-intermenstrual-bleeding",
+      "allowedValues": [
+        "present",
+        "not-present"
+      ],
+      "resultCodes": [
+        {
+          "code": "present",
+          "display": "Present",
+          "definition": "The pattern was detected over the stated Period from the wearer's own logged cycle records."
+        },
+        {
+          "code": "not-present",
+          "display": "Not present",
+          "definition": "The pattern was evaluated over the stated Period and not detected."
+        }
+      ],
+      "effective": "Period",
+      "generation": {
+        "emit": true
+      },
+      "coverage": {
+        "healthkit": "supported",
+        "health-connect": "unmodeled",
+        "sensorkit": "unmodeled",
+        "google-health-api": "unmodeled",
+        "oura": "unmodeled",
+        "withings": "unmodeled"
+      }
+    },
+    {
       "id": "phq9-assessment",
       "profile": "healthkit-phq9-assessment",
       "standardProfile": null,
@@ -4355,6 +4795,52 @@
         }
       ],
       "effective": "dateTime",
+      "generation": {
+        "emit": true
+      },
+      "coverage": {
+        "healthkit": "supported",
+        "health-connect": "unmodeled",
+        "sensorkit": "unmodeled",
+        "google-health-api": "unmodeled",
+        "oura": "unmodeled",
+        "withings": "unmodeled"
+      }
+    },
+    {
+      "id": "prolonged-menstrual-periods",
+      "profile": "healthkit-prolonged-menstrual-periods",
+      "standardProfile": null,
+      "title": "Prolonged Menstrual Periods",
+      "description": "HKCategoryTypeIdentifierProlongedMenstrualPeriods: a deviation derived from the wearer's own logged cycle records over the stated Period. No verified SNOMED concept is bound; the adapter code system carries the meaning rather than approximating a clinical concept.",
+      "code": {
+        "system": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-measurement",
+        "code": "prolonged-menstrual-periods",
+        "display": "Prolonged menstrual periods",
+        "definition": "Periods lasting longer than expected, derived from logged cycle records."
+      },
+      "valueKind": "codeableConcept",
+      "owner": "healthkit",
+      "quantity": null,
+      "valueSet": "https://grovealliance.org/fhir/healthkit/ValueSet/healthkit-prolonged-menstrual-periods",
+      "resultCodeSystem": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-prolonged-menstrual-periods",
+      "allowedValues": [
+        "present",
+        "not-present"
+      ],
+      "resultCodes": [
+        {
+          "code": "present",
+          "display": "Present",
+          "definition": "The pattern was detected over the stated Period from the wearer's own logged cycle records."
+        },
+        {
+          "code": "not-present",
+          "display": "Not present",
+          "definition": "The pattern was evaluated over the stated Period and not detected."
+        }
+      ],
+      "effective": "Period",
       "generation": {
         "emit": true
       },
@@ -4748,6 +5234,46 @@
       }
     },
     {
+      "id": "sleep-apnea-notification",
+      "profile": "healthkit-sleep-apnea-notification",
+      "standardProfile": null,
+      "title": "Sleep Apnea Notification",
+      "description": "HKCategoryTypeIdentifierSleepApneaEvent: a proprietary screening notification. The sleeping breathing disturbances quantity remains the measurement surface; this records that the notification was raised.",
+      "code": {
+        "system": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-measurement",
+        "code": "sleep-apnea-notification",
+        "display": "Sleep Apnea Notification",
+        "definition": "A device notification of breathing disturbances consistent with sleep apnea."
+      },
+      "valueKind": "codeableConcept",
+      "owner": "healthkit",
+      "quantity": null,
+      "valueSet": "https://grovealliance.org/fhir/healthkit/ValueSet/healthkit-sleep-apnea-notification",
+      "resultCodeSystem": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-sleep-apnea-notification",
+      "allowedValues": [
+        "occurred"
+      ],
+      "resultCodes": [
+        {
+          "code": "occurred",
+          "display": "Occurred",
+          "definition": "The device raised this notification over the stated Period. HealthKit carries no further value for it."
+        }
+      ],
+      "effective": "Period",
+      "generation": {
+        "emit": true
+      },
+      "coverage": {
+        "healthkit": "supported",
+        "health-connect": "unmodeled",
+        "sensorkit": "unmodeled",
+        "google-health-api": "unmodeled",
+        "oura": "unmodeled",
+        "withings": "unmodeled"
+      }
+    },
+    {
       "id": "sleep-awake-duration",
       "profile": "grove-mobile-sleep-awake-duration",
       "standardProfile": null,
@@ -5078,6 +5604,415 @@
       "generation": {
         "emit": true
       },
+      "coverage": {
+        "healthkit": "supported",
+        "health-connect": "unmodeled",
+        "sensorkit": "unmodeled",
+        "google-health-api": "unmodeled",
+        "oura": "unmodeled",
+        "withings": "unmodeled"
+      }
+    },
+    {
+      "id": "state-of-mind",
+      "profile": "healthkit-state-of-mind",
+      "standardProfile": null,
+      "title": "State of Mind",
+      "description": "HKStateOfMind: a self-reported reflection on how the participant felt. Valence is the one numeric axis and carries the Observation value, reported on HealthKit's closed −1.0 to 1.0 scale; the reflection's kind, its classification, and its labels and associations are coded components. Every axis is the participant's own report, not a measurement.",
+      "code": {
+        "system": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-measurement",
+        "code": "state-of-mind",
+        "display": "State of mind",
+        "definition": "A self-reported reflection on felt experience, valenced from unpleasant to pleasant."
+      },
+      "valueKind": "quantity",
+      "owner": "healthkit",
+      "quantity": {
+        "system": "http://unitsofmeasure.org",
+        "code": "1",
+        "unit": "valence",
+        "example": 0.4,
+        "dimension": {}
+      },
+      "effective": "Period",
+      "generation": {
+        "emit": true
+      },
+      "components": [
+        {
+          "id": "kind",
+          "system": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-measurement",
+          "code": "kind",
+          "display": "Reflection kind",
+          "title": "Reflection kind",
+          "definition": "HKStateOfMind.Kind: whether the reflection describes a momentary feeling or a longer period.",
+          "cardinality": "1..1",
+          "valueSet": "https://grovealliance.org/fhir/healthkit/ValueSet/healthkit-state-of-mind-kind",
+          "resultCodes": [
+            {
+              "code": "momentary-emotion",
+              "display": "Momentary emotion",
+              "definition": "HKStateOfMind.Kind.momentaryEmotion: how the participant felt at the moment of reflection."
+            },
+            {
+              "code": "daily-mood",
+              "display": "Daily mood",
+              "definition": "HKStateOfMind.Kind.dailyMood: how the participant felt over the day."
+            }
+          ]
+        },
+        {
+          "id": "valence-classification",
+          "system": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-measurement",
+          "code": "valence-classification",
+          "display": "Valence classification",
+          "title": "Valence classification",
+          "definition": "HKStateOfMind.ValenceClassification: the coarse band the reported valence falls in.",
+          "cardinality": "0..1",
+          "valueSet": "https://grovealliance.org/fhir/healthkit/ValueSet/healthkit-state-of-mind-valence-classification",
+          "resultCodes": [
+            {
+              "code": "very-unpleasant",
+              "display": "Very unpleasant",
+              "definition": "HKStateOfMind.ValenceClassification.veryUnpleasant."
+            },
+            {
+              "code": "unpleasant",
+              "display": "Unpleasant",
+              "definition": "HKStateOfMind.ValenceClassification.unpleasant."
+            },
+            {
+              "code": "slightly-unpleasant",
+              "display": "Slightly unpleasant",
+              "definition": "HKStateOfMind.ValenceClassification.slightlyUnpleasant."
+            },
+            {
+              "code": "neutral",
+              "display": "Neutral",
+              "definition": "HKStateOfMind.ValenceClassification.neutral."
+            },
+            {
+              "code": "slightly-pleasant",
+              "display": "Slightly pleasant",
+              "definition": "HKStateOfMind.ValenceClassification.slightlyPleasant."
+            },
+            {
+              "code": "pleasant",
+              "display": "Pleasant",
+              "definition": "HKStateOfMind.ValenceClassification.pleasant."
+            },
+            {
+              "code": "very-pleasant",
+              "display": "Very pleasant",
+              "definition": "HKStateOfMind.ValenceClassification.veryPleasant."
+            }
+          ]
+        },
+        {
+          "id": "label",
+          "system": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-measurement",
+          "code": "state-of-mind-label",
+          "display": "Label",
+          "title": "Label",
+          "definition": "HKStateOfMind.Label: a word the participant chose for the feeling. Repeats once per chosen label.",
+          "cardinality": "0..*",
+          "valueSet": "https://grovealliance.org/fhir/healthkit/ValueSet/healthkit-state-of-mind-label",
+          "resultCodes": [
+            {
+              "code": "amazed",
+              "display": "Amazed",
+              "definition": "HKStateOfMind.Label.amazed."
+            },
+            {
+              "code": "amused",
+              "display": "Amused",
+              "definition": "HKStateOfMind.Label.amused."
+            },
+            {
+              "code": "angry",
+              "display": "Angry",
+              "definition": "HKStateOfMind.Label.angry."
+            },
+            {
+              "code": "anxious",
+              "display": "Anxious",
+              "definition": "HKStateOfMind.Label.anxious."
+            },
+            {
+              "code": "ashamed",
+              "display": "Ashamed",
+              "definition": "HKStateOfMind.Label.ashamed."
+            },
+            {
+              "code": "brave",
+              "display": "Brave",
+              "definition": "HKStateOfMind.Label.brave."
+            },
+            {
+              "code": "calm",
+              "display": "Calm",
+              "definition": "HKStateOfMind.Label.calm."
+            },
+            {
+              "code": "content",
+              "display": "Content",
+              "definition": "HKStateOfMind.Label.content."
+            },
+            {
+              "code": "disappointed",
+              "display": "Disappointed",
+              "definition": "HKStateOfMind.Label.disappointed."
+            },
+            {
+              "code": "discouraged",
+              "display": "Discouraged",
+              "definition": "HKStateOfMind.Label.discouraged."
+            },
+            {
+              "code": "disgusted",
+              "display": "Disgusted",
+              "definition": "HKStateOfMind.Label.disgusted."
+            },
+            {
+              "code": "embarrassed",
+              "display": "Embarrassed",
+              "definition": "HKStateOfMind.Label.embarrassed."
+            },
+            {
+              "code": "excited",
+              "display": "Excited",
+              "definition": "HKStateOfMind.Label.excited."
+            },
+            {
+              "code": "frustrated",
+              "display": "Frustrated",
+              "definition": "HKStateOfMind.Label.frustrated."
+            },
+            {
+              "code": "grateful",
+              "display": "Grateful",
+              "definition": "HKStateOfMind.Label.grateful."
+            },
+            {
+              "code": "guilty",
+              "display": "Guilty",
+              "definition": "HKStateOfMind.Label.guilty."
+            },
+            {
+              "code": "happy",
+              "display": "Happy",
+              "definition": "HKStateOfMind.Label.happy."
+            },
+            {
+              "code": "hopeless",
+              "display": "Hopeless",
+              "definition": "HKStateOfMind.Label.hopeless."
+            },
+            {
+              "code": "irritated",
+              "display": "Irritated",
+              "definition": "HKStateOfMind.Label.irritated."
+            },
+            {
+              "code": "jealous",
+              "display": "Jealous",
+              "definition": "HKStateOfMind.Label.jealous."
+            },
+            {
+              "code": "joyful",
+              "display": "Joyful",
+              "definition": "HKStateOfMind.Label.joyful."
+            },
+            {
+              "code": "lonely",
+              "display": "Lonely",
+              "definition": "HKStateOfMind.Label.lonely."
+            },
+            {
+              "code": "passionate",
+              "display": "Passionate",
+              "definition": "HKStateOfMind.Label.passionate."
+            },
+            {
+              "code": "peaceful",
+              "display": "Peaceful",
+              "definition": "HKStateOfMind.Label.peaceful."
+            },
+            {
+              "code": "proud",
+              "display": "Proud",
+              "definition": "HKStateOfMind.Label.proud."
+            },
+            {
+              "code": "relieved",
+              "display": "Relieved",
+              "definition": "HKStateOfMind.Label.relieved."
+            },
+            {
+              "code": "sad",
+              "display": "Sad",
+              "definition": "HKStateOfMind.Label.sad."
+            },
+            {
+              "code": "scared",
+              "display": "Scared",
+              "definition": "HKStateOfMind.Label.scared."
+            },
+            {
+              "code": "stressed",
+              "display": "Stressed",
+              "definition": "HKStateOfMind.Label.stressed."
+            },
+            {
+              "code": "surprised",
+              "display": "Surprised",
+              "definition": "HKStateOfMind.Label.surprised."
+            },
+            {
+              "code": "worried",
+              "display": "Worried",
+              "definition": "HKStateOfMind.Label.worried."
+            },
+            {
+              "code": "annoyed",
+              "display": "Annoyed",
+              "definition": "HKStateOfMind.Label.annoyed."
+            },
+            {
+              "code": "confident",
+              "display": "Confident",
+              "definition": "HKStateOfMind.Label.confident."
+            },
+            {
+              "code": "drained",
+              "display": "Drained",
+              "definition": "HKStateOfMind.Label.drained."
+            },
+            {
+              "code": "hopeful",
+              "display": "Hopeful",
+              "definition": "HKStateOfMind.Label.hopeful."
+            },
+            {
+              "code": "indifferent",
+              "display": "Indifferent",
+              "definition": "HKStateOfMind.Label.indifferent."
+            },
+            {
+              "code": "overwhelmed",
+              "display": "Overwhelmed",
+              "definition": "HKStateOfMind.Label.overwhelmed."
+            },
+            {
+              "code": "satisfied",
+              "display": "Satisfied",
+              "definition": "HKStateOfMind.Label.satisfied."
+            }
+          ]
+        },
+        {
+          "id": "association",
+          "system": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-measurement",
+          "code": "state-of-mind-association",
+          "display": "Association",
+          "title": "Association",
+          "definition": "HKStateOfMind.Association: a life area the participant attributed the feeling to. Repeats once per association.",
+          "cardinality": "0..*",
+          "valueSet": "https://grovealliance.org/fhir/healthkit/ValueSet/healthkit-state-of-mind-association",
+          "resultCodes": [
+            {
+              "code": "community",
+              "display": "Community",
+              "definition": "HKStateOfMind.Association.community."
+            },
+            {
+              "code": "current-events",
+              "display": "Current events",
+              "definition": "HKStateOfMind.Association.currentEvents."
+            },
+            {
+              "code": "dating",
+              "display": "Dating",
+              "definition": "HKStateOfMind.Association.dating."
+            },
+            {
+              "code": "education",
+              "display": "Education",
+              "definition": "HKStateOfMind.Association.education."
+            },
+            {
+              "code": "family",
+              "display": "Family",
+              "definition": "HKStateOfMind.Association.family."
+            },
+            {
+              "code": "fitness",
+              "display": "Fitness",
+              "definition": "HKStateOfMind.Association.fitness."
+            },
+            {
+              "code": "friends",
+              "display": "Friends",
+              "definition": "HKStateOfMind.Association.friends."
+            },
+            {
+              "code": "health",
+              "display": "Health",
+              "definition": "HKStateOfMind.Association.health."
+            },
+            {
+              "code": "hobbies",
+              "display": "Hobbies",
+              "definition": "HKStateOfMind.Association.hobbies."
+            },
+            {
+              "code": "identity",
+              "display": "Identity",
+              "definition": "HKStateOfMind.Association.identity."
+            },
+            {
+              "code": "money",
+              "display": "Money",
+              "definition": "HKStateOfMind.Association.money."
+            },
+            {
+              "code": "partner",
+              "display": "Partner",
+              "definition": "HKStateOfMind.Association.partner."
+            },
+            {
+              "code": "self-care",
+              "display": "Self care",
+              "definition": "HKStateOfMind.Association.selfCare."
+            },
+            {
+              "code": "spirituality",
+              "display": "Spirituality",
+              "definition": "HKStateOfMind.Association.spirituality."
+            },
+            {
+              "code": "tasks",
+              "display": "Tasks",
+              "definition": "HKStateOfMind.Association.tasks."
+            },
+            {
+              "code": "travel",
+              "display": "Travel",
+              "definition": "HKStateOfMind.Association.travel."
+            },
+            {
+              "code": "work",
+              "display": "Work",
+              "definition": "HKStateOfMind.Association.work."
+            },
+            {
+              "code": "weather",
+              "display": "Weather",
+              "definition": "HKStateOfMind.Association.weather."
+            }
+          ]
+        }
+      ],
       "coverage": {
         "healthkit": "supported",
         "health-connect": "unmodeled",
@@ -7058,6 +7993,76 @@
         "oura": "unmodeled",
         "withings": "unmodeled"
       }
+    },
+    {
+      "id": "walking-steadiness-notification",
+      "profile": "healthkit-walking-steadiness-notification",
+      "standardProfile": null,
+      "title": "Walking Steadiness Notification",
+      "description": "HKCategoryTypeIdentifierAppleWalkingSteadinessEvent: raised when the walking steadiness classification is low or very low, distinguishing a first occurrence from a repeat. The walking steadiness percentage remains the measurement surface.",
+      "code": {
+        "system": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-measurement",
+        "code": "walking-steadiness-notification",
+        "display": "Walking Steadiness Notification",
+        "definition": "A device notification that walking steadiness reached a low or very low classification."
+      },
+      "valueKind": "codeableConcept",
+      "owner": "healthkit",
+      "quantity": null,
+      "valueSet": "https://grovealliance.org/fhir/healthkit/ValueSet/healthkit-walking-steadiness-notification",
+      "resultCodeSystem": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-walking-steadiness-notification",
+      "allowedValues": [
+        "low",
+        "very-low"
+      ],
+      "resultCodes": [
+        {
+          "code": "low",
+          "display": "Low",
+          "definition": "HKCategoryValueAppleWalkingSteadinessEvent low classification."
+        },
+        {
+          "code": "very-low",
+          "display": "Very low",
+          "definition": "HKCategoryValueAppleWalkingSteadinessEvent very low classification."
+        }
+      ],
+      "effective": "Period",
+      "generation": {
+        "emit": true
+      },
+      "coverage": {
+        "healthkit": "supported",
+        "health-connect": "unmodeled",
+        "sensorkit": "unmodeled",
+        "google-health-api": "unmodeled",
+        "oura": "unmodeled",
+        "withings": "unmodeled"
+      },
+      "components": [
+        {
+          "id": "notification-occurrence",
+          "system": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-measurement",
+          "code": "walking-steadiness-notification-occurrence",
+          "display": "Notification occurrence",
+          "title": "Notification occurrence",
+          "cardinality": "1..1",
+          "definition": "Whether this is the first notification at the classification or a repeat.",
+          "valueSet": "https://grovealliance.org/fhir/healthkit/ValueSet/healthkit-notification-occurrence",
+          "resultCodes": [
+            {
+              "code": "initial",
+              "display": "Initial",
+              "definition": "HKCategoryValueAppleWalkingSteadinessEvent initial notification."
+            },
+            {
+              "code": "repeat",
+              "display": "Repeat",
+              "definition": "HKCategoryValueAppleWalkingSteadinessEvent repeat notification."
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "walking-step-length",

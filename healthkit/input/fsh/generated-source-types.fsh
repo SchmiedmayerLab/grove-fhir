@@ -42,10 +42,10 @@ Description: "The 218 source-type identifiers the iPhoneOS 26.5 SDK baseline (Xc
 * #HKCategoryTypeIdentifierAppleStandHour "Apple Stand Hour" "The HealthKit HKCategoryTypeIdentifierAppleStandHour source type. Grove converts it to healthkit-apple-stand-hour."
 * #HKCategoryTypeIdentifierAppleStandHour ^property[0].code = #documentation
 * #HKCategoryTypeIdentifierAppleStandHour ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/applestandhour"
-* #HKCategoryTypeIdentifierAppleWalkingSteadinessEvent "Apple Walking Steadiness Event" "The HealthKit HKCategoryTypeIdentifierAppleWalkingSteadinessEvent source type. Grove admits no output for it. Device alert: the enum encodes notification cadence (initial vs repeat) crossed with an Apple-defined banding of the appleWalkingSteadiness percent score, which is the actual measurement and is handled as a quantity type. The alert adds no measurement content beyond that score."
+* #HKCategoryTypeIdentifierAppleWalkingSteadinessEvent "Apple Walking Steadiness Event" "The HealthKit HKCategoryTypeIdentifierAppleWalkingSteadinessEvent source type. Grove converts it to healthkit-walking-steadiness-notification."
 * #HKCategoryTypeIdentifierAppleWalkingSteadinessEvent ^property[0].code = #documentation
 * #HKCategoryTypeIdentifierAppleWalkingSteadinessEvent ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/applewalkingsteadinessevent"
-* #HKCategoryTypeIdentifierAudioExposureEvent "Audio Exposure Event" "The HealthKit HKCategoryTypeIdentifierAudioExposureEvent source type. Grove admits no output for it. Device alert: a threshold-crossing notification against a user-configurable limit, not a measurement. The measurement is the environmentalAudioExposure dB(A) quantity type, which carries the actual exposure level."
+* #HKCategoryTypeIdentifierAudioExposureEvent "Audio Exposure Event" "The HealthKit HKCategoryTypeIdentifierAudioExposureEvent source type. Grove converts it to healthkit-environmental-audio-exposure-notification."
 * #HKCategoryTypeIdentifierAudioExposureEvent ^property[0].code = #documentation
 * #HKCategoryTypeIdentifierAudioExposureEvent ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/environmentalaudioexposureevent"
 * #HKCategoryTypeIdentifierBladderIncontinence "Bladder Incontinence" "The HealthKit HKCategoryTypeIdentifierBladderIncontinence source type. Grove converts it to healthkit-bladder-incontinence."
@@ -111,13 +111,13 @@ Description: "The 218 source-type identifiers the iPhoneOS 26.5 SDK baseline (Xc
 * #HKCategoryTypeIdentifierHeadache "Headache" "The HealthKit HKCategoryTypeIdentifierHeadache source type. Grove converts it to healthkit-symptom-headache."
 * #HKCategoryTypeIdentifierHeadache ^property[0].code = #documentation
 * #HKCategoryTypeIdentifierHeadache ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/headache"
-* #HKCategoryTypeIdentifierHeadphoneAudioExposureEvent "Headphone Audio Exposure Event" "The HealthKit HKCategoryTypeIdentifierHeadphoneAudioExposureEvent source type. Grove admits no output for it. Device alert over an OS-computed rolling seven-day dose limit; not a measurement. The headphoneAudioExposure quantity type carries the measured levels."
+* #HKCategoryTypeIdentifierHeadphoneAudioExposureEvent "Headphone Audio Exposure Event" "The HealthKit HKCategoryTypeIdentifierHeadphoneAudioExposureEvent source type. Grove converts it to healthkit-headphone-audio-exposure-notification."
 * #HKCategoryTypeIdentifierHeadphoneAudioExposureEvent ^property[0].code = #documentation
 * #HKCategoryTypeIdentifierHeadphoneAudioExposureEvent ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/headphoneaudioexposureevent"
 * #HKCategoryTypeIdentifierHeartburn "Heartburn" "The HealthKit HKCategoryTypeIdentifierHeartburn source type. Grove converts it to healthkit-symptom-heartburn."
 * #HKCategoryTypeIdentifierHeartburn ^property[0].code = #documentation
 * #HKCategoryTypeIdentifierHeartburn ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/heartburn"
-* #HKCategoryTypeIdentifierHighHeartRateEvent "High Heart Rate Event" "The HealthKit HKCategoryTypeIdentifierHighHeartRateEvent source type. Grove admits no output for it. Device alert against a user-configurable threshold; not a measurement. Heart-rate quantities remain the measurement surface."
+* #HKCategoryTypeIdentifierHighHeartRateEvent "High Heart Rate Event" "The HealthKit HKCategoryTypeIdentifierHighHeartRateEvent source type. Grove converts it to healthkit-high-heart-rate-notification."
 * #HKCategoryTypeIdentifierHighHeartRateEvent ^property[0].code = #documentation
 * #HKCategoryTypeIdentifierHighHeartRateEvent ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/highheartrateevent"
 * #HKCategoryTypeIdentifierHotFlashes "Hot Flashes" "The HealthKit HKCategoryTypeIdentifierHotFlashes source type. Grove converts it to healthkit-symptom-hot-flashes."
@@ -126,16 +126,16 @@ Description: "The 218 source-type identifiers the iPhoneOS 26.5 SDK baseline (Xc
 * #HKCategoryTypeIdentifierHypertensionEvent "Hypertension Event" "The HealthKit HKCategoryTypeIdentifierHypertensionEvent source type. Grove admits no output for it. Device alert from a proprietary screening algorithm asserting possible pathology without any pressure measurement; emitting it as an Observation would fabricate a blood-pressure-adjacent finding with no quantity. Cuff blood-pressure quantities remain the measurement surface."
 * #HKCategoryTypeIdentifierHypertensionEvent ^property[0].code = #documentation
 * #HKCategoryTypeIdentifierHypertensionEvent ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/hypertensionevent"
-* #HKCategoryTypeIdentifierInfrequentMenstrualCycles "Infrequent Menstrual Cycles" "The HealthKit HKCategoryTypeIdentifierInfrequentMenstrualCycles source type. Grove admits no output for it. Algorithmic screening alert over derived cycle history; not a measurement."
+* #HKCategoryTypeIdentifierInfrequentMenstrualCycles "Infrequent Menstrual Cycles" "The HealthKit HKCategoryTypeIdentifierInfrequentMenstrualCycles source type. Grove converts it to healthkit-infrequent-menstrual-cycles."
 * #HKCategoryTypeIdentifierInfrequentMenstrualCycles ^property[0].code = #documentation
 * #HKCategoryTypeIdentifierInfrequentMenstrualCycles ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/infrequentmenstrualcycles"
 * #HKCategoryTypeIdentifierIntermenstrualBleeding "Intermenstrual Bleeding" "The HealthKit HKCategoryTypeIdentifierIntermenstrualBleeding source type. Grove converts it to grove-mobile-intermenstrual-bleeding."
 * #HKCategoryTypeIdentifierIntermenstrualBleeding ^property[0].code = #documentation
 * #HKCategoryTypeIdentifierIntermenstrualBleeding ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/intermenstrualbleeding"
-* #HKCategoryTypeIdentifierIrregularHeartRhythmEvent "Irregular Heart Rhythm Event" "The HealthKit HKCategoryTypeIdentifierIrregularHeartRhythmEvent source type. Grove admits no output for it. FDA-cleared screening notification from a proprietary algorithm, valueless and read-only. Grove admits the ECG itself (sensor ECG adapter claim, HKDataTypeIdentifierElectrocardiogram) and the atrial-fibrillation burden percentage (HKQuantityTypeIdentifierAtrialFibrillationBurden) as the rhythm evidence surfaces; re-emitting the alert would present a screening trigger as a rhythm finding without any waveform or classification payload."
+* #HKCategoryTypeIdentifierIrregularHeartRhythmEvent "Irregular Heart Rhythm Event" "The HealthKit HKCategoryTypeIdentifierIrregularHeartRhythmEvent source type. Grove converts it to healthkit-irregular-heart-rhythm-notification."
 * #HKCategoryTypeIdentifierIrregularHeartRhythmEvent ^property[0].code = #documentation
 * #HKCategoryTypeIdentifierIrregularHeartRhythmEvent ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/irregularheartrhythmevent"
-* #HKCategoryTypeIdentifierIrregularMenstrualCycles "Irregular Menstrual Cycles" "The HealthKit HKCategoryTypeIdentifierIrregularMenstrualCycles source type. Grove admits no output for it. Algorithmic screening alert over derived cycle history; not a measurement."
+* #HKCategoryTypeIdentifierIrregularMenstrualCycles "Irregular Menstrual Cycles" "The HealthKit HKCategoryTypeIdentifierIrregularMenstrualCycles source type. Grove converts it to healthkit-irregular-menstrual-cycles."
 * #HKCategoryTypeIdentifierIrregularMenstrualCycles ^property[0].code = #documentation
 * #HKCategoryTypeIdentifierIrregularMenstrualCycles ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/irregularmenstrualcycles"
 * #HKCategoryTypeIdentifierLactation "Lactation" "The HealthKit HKCategoryTypeIdentifierLactation source type. Grove converts it to healthkit-lactation-status."
@@ -147,10 +147,10 @@ Description: "The 218 source-type identifiers the iPhoneOS 26.5 SDK baseline (Xc
 * #HKCategoryTypeIdentifierLossOfTaste "Loss of Taste" "The HealthKit HKCategoryTypeIdentifierLossOfTaste source type. Grove converts it to healthkit-symptom-loss-of-taste."
 * #HKCategoryTypeIdentifierLossOfTaste ^property[0].code = #documentation
 * #HKCategoryTypeIdentifierLossOfTaste ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/lossoftaste"
-* #HKCategoryTypeIdentifierLowCardioFitnessEvent "Low Cardio Fitness Event" "The HealthKit HKCategoryTypeIdentifierLowCardioFitnessEvent source type. Grove admits no output for it. Device alert over an Apple-defined classification band of the VO2Max quantity, which is the measurement. Single enum case lowFitness carries no additional measurement meaning."
+* #HKCategoryTypeIdentifierLowCardioFitnessEvent "Low Cardio Fitness Event" "The HealthKit HKCategoryTypeIdentifierLowCardioFitnessEvent source type. Grove converts it to healthkit-low-cardio-fitness-notification."
 * #HKCategoryTypeIdentifierLowCardioFitnessEvent ^property[0].code = #documentation
 * #HKCategoryTypeIdentifierLowCardioFitnessEvent ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/lowcardiofitnessevent"
-* #HKCategoryTypeIdentifierLowHeartRateEvent "Low Heart Rate Event" "The HealthKit HKCategoryTypeIdentifierLowHeartRateEvent source type. Grove admits no output for it. Device alert against a user-configurable threshold; the heart-rate quantity series is the admitted measurement. An alert Observation would encode a preference-dependent trigger, not a physiologic result."
+* #HKCategoryTypeIdentifierLowHeartRateEvent "Low Heart Rate Event" "The HealthKit HKCategoryTypeIdentifierLowHeartRateEvent source type. Grove converts it to healthkit-low-heart-rate-notification."
 * #HKCategoryTypeIdentifierLowHeartRateEvent ^property[0].code = #documentation
 * #HKCategoryTypeIdentifierLowHeartRateEvent ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/lowheartrateevent"
 * #HKCategoryTypeIdentifierLowerBackPain "Lower Back Pain" "The HealthKit HKCategoryTypeIdentifierLowerBackPain source type. Grove converts it to healthkit-symptom-lower-back-pain."
@@ -180,7 +180,7 @@ Description: "The 218 source-type identifiers the iPhoneOS 26.5 SDK baseline (Xc
 * #HKCategoryTypeIdentifierPelvicPain "Pelvic Pain" "The HealthKit HKCategoryTypeIdentifierPelvicPain source type. Grove converts it to healthkit-symptom-pelvic-pain."
 * #HKCategoryTypeIdentifierPelvicPain ^property[0].code = #documentation
 * #HKCategoryTypeIdentifierPelvicPain ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/pelvicpain"
-* #HKCategoryTypeIdentifierPersistentIntermenstrualBleeding "Persistent Intermenstrual Bleeding" "The HealthKit HKCategoryTypeIdentifierPersistentIntermenstrualBleeding source type. Grove admits no output for it. Algorithmic screening alert derived from user-entered cycle data, not a measurement. The primary data (intermenstrualBleeding and menstrualFlow samples) is admitted through the cycle-tracking enum-absorption design; re-emitting HealthKit's derived possible-pathology flag would present a screening notification as a clinical finding."
+* #HKCategoryTypeIdentifierPersistentIntermenstrualBleeding "Persistent Intermenstrual Bleeding" "The HealthKit HKCategoryTypeIdentifierPersistentIntermenstrualBleeding source type. Grove converts it to healthkit-persistent-intermenstrual-bleeding."
 * #HKCategoryTypeIdentifierPersistentIntermenstrualBleeding ^property[0].code = #documentation
 * #HKCategoryTypeIdentifierPersistentIntermenstrualBleeding ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/persistentintermenstrualbleeding"
 * #HKCategoryTypeIdentifierPregnancy "Pregnancy" "The HealthKit HKCategoryTypeIdentifierPregnancy source type. Grove converts it to healthkit-pregnancy-status."
@@ -192,7 +192,7 @@ Description: "The 218 source-type identifiers the iPhoneOS 26.5 SDK baseline (Xc
 * #HKCategoryTypeIdentifierProgesteroneTestResult "Progesterone Test Result" "The HealthKit HKCategoryTypeIdentifierProgesteroneTestResult source type. Grove converts it to healthkit-progesterone-test-result."
 * #HKCategoryTypeIdentifierProgesteroneTestResult ^property[0].code = #documentation
 * #HKCategoryTypeIdentifierProgesteroneTestResult ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/progesteronetestresult"
-* #HKCategoryTypeIdentifierProlongedMenstrualPeriods "Prolonged Menstrual Periods" "The HealthKit HKCategoryTypeIdentifierProlongedMenstrualPeriods source type. Grove admits no output for it. Algorithmic screening alert over derived cycle history; the underlying menstrualFlow data is the measurement and is covered by the cycle-tracking design."
+* #HKCategoryTypeIdentifierProlongedMenstrualPeriods "Prolonged Menstrual Periods" "The HealthKit HKCategoryTypeIdentifierProlongedMenstrualPeriods source type. Grove converts it to healthkit-prolonged-menstrual-periods."
 * #HKCategoryTypeIdentifierProlongedMenstrualPeriods ^property[0].code = #documentation
 * #HKCategoryTypeIdentifierProlongedMenstrualPeriods ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/prolongedmenstrualperiods"
 * #HKCategoryTypeIdentifierRapidPoundingOrFlutteringHeartbeat "Rapid/Pounding/Fluttering Heartbeat" "The HealthKit HKCategoryTypeIdentifierRapidPoundingOrFlutteringHeartbeat source type. Grove converts it to healthkit-symptom-rapid-pounding-or-fluttering-heartbeat."
@@ -216,7 +216,7 @@ Description: "The 218 source-type identifiers the iPhoneOS 26.5 SDK baseline (Xc
 * #HKCategoryTypeIdentifierSleepAnalysis "Sleep Analysis" "The HealthKit HKCategoryTypeIdentifierSleepAnalysis source type. Grove converts it to grove-mobile-sleep-stage."
 * #HKCategoryTypeIdentifierSleepAnalysis ^property[0].code = #documentation
 * #HKCategoryTypeIdentifierSleepAnalysis ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/sleepanalysis"
-* #HKCategoryTypeIdentifierSleepApneaEvent "Sleep Apnea Event" "The HealthKit HKCategoryTypeIdentifierSleepApneaEvent source type. Grove admits no output for it. Device alert, not a measurement: an Apple proprietary screening algorithm's notification of possible pathology. The underlying signal (HKQuantityTypeIdentifierAppleSleepingBreathingDisturbances) is the measurement surface; emitting the alert as an Observation would misrepresent a screening notification as a clinical finding."
+* #HKCategoryTypeIdentifierSleepApneaEvent "Sleep Apnea Event" "The HealthKit HKCategoryTypeIdentifierSleepApneaEvent source type. Grove converts it to healthkit-sleep-apnea-notification."
 * #HKCategoryTypeIdentifierSleepApneaEvent ^property[0].code = #documentation
 * #HKCategoryTypeIdentifierSleepApneaEvent ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/sleepapneaevent"
 * #HKCategoryTypeIdentifierSleepChanges "Sleep Changes" "The HealthKit HKCategoryTypeIdentifierSleepChanges source type. Grove converts it to healthkit-symptom-sleep-changes."
@@ -240,7 +240,7 @@ Description: "The 218 source-type identifiers the iPhoneOS 26.5 SDK baseline (Xc
 * #HKCharacteristicTypeIdentifierActivityMoveMode "Activity Move Mode" "The HealthKit HKCharacteristicTypeIdentifierActivityMoveMode source type. Grove admits no output for it. A ring-display preference has no semantically exact Mobile meaning, and converting it would encode an Apple product configuration as clinical data. The mode is interpretive context for the Apple move-time and active-energy rows, which carry their own units and are converted in their own right; it adds no measurement content of its own."
 * #HKCharacteristicTypeIdentifierActivityMoveMode ^property[0].code = #documentation
 * #HKCharacteristicTypeIdentifierActivityMoveMode ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkcharacteristictypeidentifier/activitymovemode"
-* #HKCharacteristicTypeIdentifierBiologicalSex "Biological Sex" "The HealthKit HKCharacteristicTypeIdentifierBiologicalSex source type. Grove admits no output for it. Version 0.3.0 publishes no reviewed contract for this characteristic. LOINC 76689-9 'Sex assigned at birth' represents it faithfully, and the supported blood-type and wheelchair-use rows show a characteristic can carry an Observation, so this is unfinished work rather than a modelling refusal."
+* #HKCharacteristicTypeIdentifierBiologicalSex "Biological Sex" "The HealthKit HKCharacteristicTypeIdentifierBiologicalSex source type. Grove admits no output for it. Version 0.4.0 publishes no reviewed contract for this characteristic. LOINC 76689-9 'Sex assigned at birth' represents it faithfully, and the supported blood-type and wheelchair-use rows show a characteristic can carry an Observation, so this is unfinished work rather than a modelling refusal."
 * #HKCharacteristicTypeIdentifierBiologicalSex ^property[0].code = #documentation
 * #HKCharacteristicTypeIdentifierBiologicalSex ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkcharacteristictypeidentifier/biologicalsex"
 * #HKCharacteristicTypeIdentifierBloodType "Blood Type" "The HealthKit HKCharacteristicTypeIdentifierBloodType source type. Grove converts it to healthkit-blood-type."
@@ -297,7 +297,7 @@ Description: "The 218 source-type identifiers the iPhoneOS 26.5 SDK baseline (Xc
 * #HKDataTypeIdentifierHeartbeatSeries "Heartbeat Series" "The HealthKit HKDataTypeIdentifierHeartbeatSeries source type. Grove admits no output for it. The beat-to-beat interval series has a published grove-csv-1 column schema, but the HealthKit adapter has no recording-document profile to carry it yet, so no output is admitted."
 * #HKDataTypeIdentifierHeartbeatSeries ^property[0].code = #documentation
 * #HKDataTypeIdentifierHeartbeatSeries ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkdatatypeidentifierheartbeatseries"
-* #HKDataTypeStateOfMind "State of Mind" "The HealthKit HKDataTypeStateOfMind source type. Grove admits no output for it. No shared or HealthKit-adapter output contract is published for this sample type."
+* #HKDataTypeStateOfMind "State of Mind" "The HealthKit HKDataTypeStateOfMind source type. Grove converts it to healthkit-state-of-mind."
 * #HKDataTypeStateOfMind ^property[0].code = #documentation
 * #HKDataTypeStateOfMind ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkdatatypeidentifierstateofmind"
 * #HKDataTypeUserAnnotatedMedicationConcept "User Annotated Medication Concept" "The HealthKit HKDataTypeUserAnnotatedMedicationConcept source type. Grove admits no output for it. No shared or adapter-specific output contract is published for this type."
