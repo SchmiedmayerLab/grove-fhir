@@ -49,7 +49,7 @@
   "sourceEvidence": {
     "accessed": "2026-08-20",
     "scope": "Exact provider data-type tokens and consumed fields frozen in providers[].sourceTypes; conversion operates only on already-obtained payloads and defines no provider fetching.",
-    "tokenBinding": "Each providers[].sourceTypes[].token and elements[].path is part of the exact v0.3.0 consumed source surface.",
+    "tokenBinding": "Each providers[].sourceTypes[].token and elements[].path is part of the exact v0.4.0 consumed source surface.",
     "providers": [
       {
         "id": "google-health-api",

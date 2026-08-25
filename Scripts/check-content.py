@@ -35,6 +35,16 @@ MOBILE_ADAPTER_SOURCES = (
     "providers",
 )
 GUIDES = tuple(ROOT / source for source in EXPECTED_GUIDE_SOURCES)
+CATALOGS = ROOT / "catalog"
+# Grove writes its own version in prose as "vX.Y.Z" or "Version X.Y.Z"; pinned third-party
+# versions never take either form, so the pattern separates the two without an exclusion list.
+OWN_VERSION_IN_PROSE = re.compile(r"\bv(\d+\.\d+\.\d+)\b|\b[Vv]ersion (\d+\.\d+\.\d+)\b")
+# Fields that state when a set was first frozen, and so name the release that froze it rather
+# than the current one. Every other prose mention must track the catalog's own version.
+HISTORICAL_VERSION_FIELDS = {
+    ("sensorkit-adapter.json", "sourceEvidence.scope"),
+    ("sensorkit-adapter.json", "inventoryScopes.catalog-baseline"),
+}
 REQUIRED_CONFIGURATION_KEYS = {"id", "canonical", "version", "fhirVersion", "license"}
 
 
@@ -53,6 +63,24 @@ def tracked_files() -> list[Path]:
     )
     paths = [ROOT / item.decode() for item in result.stdout.split(b"\0") if item]
     return [path for path in paths if path.is_file()]
+
+
+def stale_version_prose(name: str, node: object, own: str, path: tuple[str, ...] = ()) -> list[str]:
+    if isinstance(node, dict):
+        return [f for key, value in node.items() for f in stale_version_prose(name, value, own, path + (key,))]
+    if isinstance(node, list):
+        return [f for index, value in enumerate(node) for f in stale_version_prose(name, value, own, path + (str(index),))]
+    if not isinstance(node, str):
+        return []
+    field = ".".join(path)
+    if (name, field) in HISTORICAL_VERSION_FIELDS:
+        return []
+    return [
+        f"catalog/{name} field {field} names version {found}, but the catalog is {own}"
+        for match in OWN_VERSION_IN_PROSE.findall(node)
+        for found in [match[0] or match[1]]
+        if found != own
+    ]
 
 
 def main() -> int:
@@ -81,6 +109,12 @@ def main() -> int:
             failures.append(
                 f"{source}/sushi-config.yaml does not pin the current Mobile guide version"
             )
+
+    for catalog_path in sorted(CATALOGS.glob("*.json")):
+        catalog = json.loads(catalog_path.read_text(encoding="utf-8"))
+        catalog_version = catalog.get("version")
+        if isinstance(catalog_version, str):
+            failures.extend(stale_version_prose(catalog_path.name, catalog, catalog_version))
 
     publication_path = ROOT / "publication/config.json"
     publication = json.loads(publication_path.read_text(encoding="utf-8"))
