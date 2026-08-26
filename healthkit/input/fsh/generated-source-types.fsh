@@ -240,7 +240,7 @@ Description: "The 218 source-type identifiers the iPhoneOS 26.5 SDK baseline (Xc
 * #HKCharacteristicTypeIdentifierActivityMoveMode "Activity Move Mode" "The HealthKit HKCharacteristicTypeIdentifierActivityMoveMode source type. Grove admits no output for it. A ring-display preference has no semantically exact Mobile meaning, and converting it would encode an Apple product configuration as clinical data. The mode is interpretive context for the Apple move-time and active-energy rows, which carry their own units and are converted in their own right; it adds no measurement content of its own."
 * #HKCharacteristicTypeIdentifierActivityMoveMode ^property[0].code = #documentation
 * #HKCharacteristicTypeIdentifierActivityMoveMode ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkcharacteristictypeidentifier/activitymovemode"
-* #HKCharacteristicTypeIdentifierBiologicalSex "Biological Sex" "The HealthKit HKCharacteristicTypeIdentifierBiologicalSex source type. Grove admits no output for it. Version 0.4.0 publishes no reviewed contract for this characteristic. LOINC 76689-9 'Sex assigned at birth' represents it faithfully, and the supported blood-type and wheelchair-use rows show a characteristic can carry an Observation, so this is unfinished work rather than a modelling refusal."
+* #HKCharacteristicTypeIdentifierBiologicalSex "Biological Sex" "The HealthKit HKCharacteristicTypeIdentifierBiologicalSex source type. Grove admits no output for it. Version 0.5.0 publishes no reviewed contract for this characteristic. LOINC 76689-9 'Sex assigned at birth' represents it faithfully, and the supported blood-type and wheelchair-use rows show a characteristic can carry an Observation, so this is unfinished work rather than a modelling refusal."
 * #HKCharacteristicTypeIdentifierBiologicalSex ^property[0].code = #documentation
 * #HKCharacteristicTypeIdentifierBiologicalSex ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkcharacteristictypeidentifier/biologicalsex"
 * #HKCharacteristicTypeIdentifierBloodType "Blood Type" "The HealthKit HKCharacteristicTypeIdentifierBloodType source type. Grove converts it to healthkit-blood-type."
@@ -294,7 +294,7 @@ Description: "The 218 source-type identifiers the iPhoneOS 26.5 SDK baseline (Xc
 * #HKDataTypeIdentifierElectrocardiogram "ECG" "The HealthKit HKDataTypeIdentifierElectrocardiogram source type. Grove converts it to grove-sensor-ecg-observation and healthkit-ecg-observation."
 * #HKDataTypeIdentifierElectrocardiogram ^property[0].code = #documentation
 * #HKDataTypeIdentifierElectrocardiogram ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkelectrocardiogramtype"
-* #HKDataTypeIdentifierHeartbeatSeries "Heartbeat Series" "The HealthKit HKDataTypeIdentifierHeartbeatSeries source type. Grove admits no output for it. The beat-to-beat interval series has a published grove-csv-1 column schema, but the HealthKit adapter has no recording-document profile to carry it yet, so no output is admitted."
+* #HKDataTypeIdentifierHeartbeatSeries "Heartbeat Series" "The HealthKit HKDataTypeIdentifierHeartbeatSeries source type. Grove admits no output for it. The beat-to-beat interval series has a published beat-interval-series column schema, but the HealthKit adapter has no recording-document profile to carry it yet, so no output is admitted."
 * #HKDataTypeIdentifierHeartbeatSeries ^property[0].code = #documentation
 * #HKDataTypeIdentifierHeartbeatSeries ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkdatatypeidentifierheartbeatseries"
 * #HKDataTypeStateOfMind "State of Mind" "The HealthKit HKDataTypeStateOfMind source type. Grove converts it to healthkit-state-of-mind."
@@ -688,6 +688,6 @@ Description: "The 218 source-type identifiers the iPhoneOS 26.5 SDK baseline (Xc
 ValueSet: HealthKitSourceTypeVS
 Id: healthkit-source-type
 Title: "HealthKit Source Types"
-Description: "The complete closed set of HealthKit platform source types in the version 0.3.0 catalog."
+Description: "The complete closed set of HealthKit platform source types in the version 0.5.0 catalog."
 * ^experimental = false
 * include codes from system HealthKitSourceTypeCS

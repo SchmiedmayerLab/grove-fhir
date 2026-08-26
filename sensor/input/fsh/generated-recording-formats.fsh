@@ -16,13 +16,20 @@ Description: "The closed registry of payload formats a Grove recording DocumentR
 * ^experimental = false
 * ^caseSensitive = true
 * ^content = #complete
-* #grove-csv-1 "Grove CSV 1" "One header row naming every column in order, then one row per source sample in source order."
-* #fhir-json-1 "FHIR JSON Array 1" "A single JSON array; each element is one complete FHIR R4 resource in FHIR JSON representation, in source sample order."
-* #native-json-1 "Native JSON 1" "The producer's exact native JSON serialization of one source batch, byte-preserved."
-* #provider-json-1 "Provider JSON 1" "The verbatim JSON payload returned by the provider API call that produced the batch, byte-preserved apart from transport framing."
-* #grove-ppg-1 "Grove PPG Binary 1" "Varint record count, then that many PPG records."
-* #grove-batch-archive-1 "Grove Batch Archive 1" "A POSIX ustar tar stream, optionally compressed as one whole; every archived file is itself a registry-format payload or a documented sidecar of one."
-* #fhir-resource-1 "FHIR Resource 1" "One complete provider-issued FHIR resource in FHIR JSON representation, byte-preserved exactly as the source platform delivered it."
+* #heart-rate-samples "Heart Rate Samples" "One header row naming every column in order, then one row per source sample in source order. Columns: timestamp, value, confidence, device."
+* #triaxial-acceleration-samples "Triaxial Acceleration Samples" "One header row naming every column in order, then one row per source sample in source order. Columns: timestamp, identifier, x, y, z, device."
+* #ambient-light-samples "Ambient Light Samples" "One header row naming every column in order, then one row per source sample in source order. Columns: timestamp, lux, placement, chromacityX, chromacityY, device."
+* #ambient-pressure-samples "Ambient Pressure Samples" "One header row naming every column in order, then one row per source sample in source order. Columns: timestamp, identifier, pressure, temperature, device."
+* #pedometer-samples "Pedometer Samples" "One header row naming every column in order, then one row per source sample in source order. Columns: start, end, steps, distance, floorsUp, floorsDown, currentPace, currentCadence, avgActivePace, device."
+* #wrist-temperature-samples "Wrist Temperature Samples" "One header row naming every column in order, then one row per source sample in source order. Columns: timestamp, value, errorEstimate, condition."
+* #triaxial-rotation-samples "Triaxial Rotation Samples" "One header row naming every column in order, then one row per source sample in source order. Columns: timestamp, x, y, z, device."
+* #odometer-samples "Odometer Samples" "One header row naming every column in order, then one row per source sample in source order. Columns: start, end, gpsDate, speed, speedAccuracy, slope, maxAbsSlope, deltaDistance, deltaDistanceAccuracy, deltaAltitude, verticalAccuracy, originDevice, device."
+* #beat-interval-series "Beat Interval Series" "One header row naming every column in order, then one row per source sample in source order. Columns: timestamp, precededByGap."
+* #fhir-resource-array "FHIR Resource Array" "A single JSON array; each element is one complete FHIR R4 resource in FHIR JSON representation, in source sample order."
+* #fhir-resource "FHIR Resource" "One complete provider-issued FHIR R4 resource in FHIR JSON representation, byte-preserved exactly as the source platform delivered it."
+* #native-recording "Native Recording" "The producer's exact native JSON serialization of one source batch, byte-preserved."
+* #provider-recording "Provider Recording" "The verbatim JSON payload returned by the provider API call that produced the batch, byte-preserved apart from transport framing."
+* #photoplethysmogram-samples "Photoplethysmogram Samples" "Varint record count, then that many PPG records."
 
 ValueSet: GroveRecordingFormatVS
 Id: grove-recording-format

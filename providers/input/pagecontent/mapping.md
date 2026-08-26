@@ -11,15 +11,15 @@ SPDX-License-Identifier: MIT
 The normative status-vocabulary definitions live on the [guide family page](https://grovealliance.org/fhir/mobile/guides.html#status-vocabulary).
 The machine catalog uses exactly these meanings:
 
-- `supported`: v0.3.0 defines an exact conversion to a listed shared profile.
-- `mapped-standard`: v0.3.0 maps the provider-native payload to the exact source-neutral
+- `supported`: v0.5.0 defines an exact conversion to a listed shared profile.
+- `mapped-standard`: v0.5.0 maps the provider-native payload to the exact source-neutral
   Sensor plus Provider Recording Document profile pair without asserting a
   scalar clinical meaning.
 - `unmodeled`: the source element is known and inventoried, but no shared or provider-scoped profile models it in this release.
-- `platform-exclusive`: a reviewed provider-scoped structured profile represents the source semantics because no exact shared profile does; v0.3.0 declares no such rows.
+- `platform-exclusive`: a reviewed provider-scoped structured profile represents the source semantics because no exact shared profile does; v0.5.0 declares no such rows.
 - `deferred`: a plausible shared mapping exists, but source evidence or time/result
-  semantics are insufficient for a conformant v0.3.0 conversion.
-- `intentionally-unsupported`: v0.3.0 deliberately refuses the conversion because it
+  semantics are insufficient for a conformant v0.5.0 conversion.
+- `intentionally-unsupported`: v0.5.0 deliberately refuses the conversion because it
   would create a misleading or diagnostic-adjacent result.
 
 Only `supported` rows may produce a scalar normalized Observation. `mapped-standard`

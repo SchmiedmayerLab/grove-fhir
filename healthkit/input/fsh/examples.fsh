@@ -438,7 +438,8 @@ Description: "One provider-issued clinical resource surfaced by HealthKit and by
 * subject = Reference(HealthKitPatientExample)
 * date = "2026-08-20T17:05:01Z"
 * content.attachment.contentType = #application/fhir+json
-* content.format = $recordingFormat#fhir-resource-1 "FHIR Resource 1"
+* content.format = $recordingFormat#fhir-resource "FHIR Resource"
+* content.format.version = "0.5.0"
 * content.attachment.title = "Provider-issued AllergyIntolerance"
 * content.attachment.data = "eyJyZXNvdXJjZVR5cGUiOiJBbGxlcmd5SW50b2xlcmFuY2UiLCJpZCI6InByb3ZpZGVyLWlzc3VlZC0xIiwiY2xpbmljYWxTdGF0dXMiOnsiY29kaW5nIjpbeyJzeXN0ZW0iOiJodHRwOi8vdGVybWlub2xvZ3kuaGw3Lm9yZy9Db2RlU3lzdGVtL2FsbGVyZ3lpbnRvbGVyYW5jZS1jbGluaWNhbCIsImNvZGUiOiJhY3RpdmUifV19LCJwYXRpZW50Ijp7InJlZmVyZW5jZSI6IlBhdGllbnQvcGFydGljaXBhbnQtaGstMDAxIn19"
 * content.attachment.size = 240

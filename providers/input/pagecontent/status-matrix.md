@@ -11,7 +11,7 @@ GENERATED FILE. Edit the corresponding catalog JSON and run
 
 # Authoritative connected-provider status matrix
 
-This table enumerates every provider field in the closed v0.4.0 Google Health API, Oura, and Withings source catalogs. Each field has one definitive status. This adapter maps data already obtained by its caller; it contains no provider authentication, network, pagination, or fetching implementation.
+This table enumerates every provider field in the closed v0.5.0 Google Health API, Oura, and Withings source catalogs. Each field has one definitive status. This adapter maps data already obtained by its caller; it contains no provider authentication, network, pagination, or fetching implementation.
 
 | Provider | Source type | Source status | Provider field | Field status | Measurement | Representation / conversion | Binding reason / effective time |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -94,10 +94,10 @@ This table enumerates every provider field in the closed v0.4.0 Google Health AP
 | `withings` | `getmeas:88` | `supported` | `measure.value*10^unit` | `supported` | bone-mass | — | — |
 | `withings` | `getmeas:91` | `intentionally-unsupported` | `measure.value*10^unit` | `intentionally-unsupported` | — | — | Diagnostic-adjacent cardiovascular assessment: Withings PWV is an aortic-stiffness screening value produced by a proprietary single-vendor scale algorithm (and was subject to regulatory withdrawal and reintroduction), with no second evidencing source and no safe wellness normalization, so admitting it as a normalized measurement would misrepresent a clinical vascular assessment. |
 | `withings` | `getmeas:130` | `intentionally-unsupported` | `measure.value` | `intentionally-unsupported` | — | — | An AFib classification is diagnostic-adjacent and is not represented as an untyped scalar Observation. |
-| `withings` | `getmeas:135` | `intentionally-unsupported` | `measure.value*10^unit` | `intentionally-unsupported` | — | — | A QRS interval requires an ECG-specific interpretation contract not present in version 0.4.0. |
-| `withings` | `getmeas:136` | `intentionally-unsupported` | `measure.value*10^unit` | `intentionally-unsupported` | — | — | A PR interval requires an ECG-specific interpretation contract not present in version 0.4.0. |
-| `withings` | `getmeas:137` | `intentionally-unsupported` | `measure.value*10^unit` | `intentionally-unsupported` | — | — | A QT interval requires an ECG-specific interpretation contract not present in version 0.4.0. |
-| `withings` | `getmeas:138` | `intentionally-unsupported` | `measure.value*10^unit` | `intentionally-unsupported` | — | — | A corrected QT interval requires an ECG-specific interpretation contract not present in version 0.4.0. |
+| `withings` | `getmeas:135` | `intentionally-unsupported` | `measure.value*10^unit` | `intentionally-unsupported` | — | — | A QRS interval requires an ECG-specific interpretation contract not present in version 0.5.0. |
+| `withings` | `getmeas:136` | `intentionally-unsupported` | `measure.value*10^unit` | `intentionally-unsupported` | — | — | A PR interval requires an ECG-specific interpretation contract not present in version 0.5.0. |
+| `withings` | `getmeas:137` | `intentionally-unsupported` | `measure.value*10^unit` | `intentionally-unsupported` | — | — | A QT interval requires an ECG-specific interpretation contract not present in version 0.5.0. |
+| `withings` | `getmeas:138` | `intentionally-unsupported` | `measure.value*10^unit` | `intentionally-unsupported` | — | — | A corrected QT interval requires an ECG-specific interpretation contract not present in version 0.5.0. |
 | `withings` | `getmeas:139` | `intentionally-unsupported` | `measure.value` | `intentionally-unsupported` | — | — | An AFib classification is diagnostic-adjacent and is not represented as an untyped scalar Observation. |
 | `withings` | `getmeas:167` | `intentionally-unsupported` | `measure.value*10^unit` | `intentionally-unsupported` | — | — | A proprietary vendor score with no physiologic unit, and additionally diagnostic-adjacent: Withings positions it as small-fiber-neuropathy screening, so an untyped scalar Observation would be misleading. |
 | `withings` | `getmeas:168` | `supported` | `measure.value*10^unit` | `supported` | extracellular-water-mass | — | — |

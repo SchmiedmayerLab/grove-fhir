@@ -928,14 +928,15 @@ class ProducerConformanceTests(unittest.TestCase):
             "extension": [{"url": source_type_url, "valueCode": "device-usage"}],
             "content": [{
                 "attachment": {
-                    "contentType": "application/json",
+                    "contentType": "application/vnd.grovealliance.native+json",
                     "data": "e30=",
                     "size": 2,
                     "hash": "vyGp6PvFo4RvsFtPoIWeCReyIC8=",
                 },
                 "format": {
                     "system": "https://grovealliance.org/fhir/sensor/CodeSystem/grove-recording-format",
-                    "code": "native-json-1",
+                    "code": "native-recording",
+                    "version": "0.5.0",
                 },
             }],
             "context": {"related": [{

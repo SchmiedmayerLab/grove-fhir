@@ -15,7 +15,7 @@ available for a measurement governed by another established profile.
 ### Shared measurement contract
 
 Every profile in this table has at least two independently supported source adapters
-in version 0.3.0. A meaning implemented by only one source stays in that adapter guide.
+in version 0.5.0. A meaning implemented by only one source stays in that adapter guide.
 Accordingly, HealthKit BMI claims the authoritative R4 BMI profile directly alongside
 the HealthKit adapter profile, while specimen-specific glucose profiles are defined in
 Health Connect, whose source record supplies the required specimen evidence.

@@ -26,6 +26,15 @@ CHECK = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(CHECK)
 
 
+
+def registered_media_types() -> set[str]:
+    """Every media type the format registry admits, read from the registry itself."""
+    registry = json.loads(
+        (ROOT / "catalog/format-registry.json").read_text(encoding="utf-8")
+    )
+    return {fmt["contentType"] for fmt in registry["formats"].values()}
+
+
 class GuideQATests(unittest.TestCase):
     def test_no_generated_terminology_transaction_is_tracked(self) -> None:
         tracked = subprocess.run(
@@ -81,13 +90,13 @@ class GuideQATests(unittest.TestCase):
         self.assertEqual(
             source_content_types,
             {
-                "sensor": {"application/json"},
-                "sensorkit": {"application/json"},
-                "providers": {"application/json"},
+                "sensor": {"application/vnd.grovealliance.native+json"},
+                "sensorkit": {"application/vnd.grovealliance.native+json", "text/csv"},
+                "providers": {"application/vnd.grovealliance.provider+json"},
             },
         )
 
-        terminology = (ROOT / "sensor/input/fsh/terminology.fsh").read_text(
+        terminology = (ROOT / "sensor/input/fsh/generated-recording-mime-types.fsh").read_text(
             encoding="utf-8"
         )
         self.assertIn("ValueSet: GroveNativeRecordingMimeTypeVS", terminology)
@@ -99,7 +108,7 @@ class GuideQATests(unittest.TestCase):
                     r"^\* urn:ietf:bcp:13#([^\s]+)", terminology, re.MULTILINE
                 )
             ),
-            {"application/json", "application/octet-stream", "text/csv", "application/fhir+json"},
+            registered_media_types(),
         )
         self.assertEqual(
             set(
@@ -109,7 +118,7 @@ class GuideQATests(unittest.TestCase):
                     re.MULTILINE,
                 )
             ),
-            {"application/json", "application/octet-stream", "text/csv", "application/fhir+json"},
+            registered_media_types(),
         )
         self.assertIn(
             '* ^expansion.parameter[=].valueUri = "urn:ietf:bcp:13"',

@@ -102,6 +102,10 @@ Description: "An externally encoded or embedded sensor recording whose native re
 * content.attachment.contentType from GroveNativeRecordingMimeTypeVS (required)
 * content.format 1..1 MS
 * content.format from GroveRecordingFormatVS (required)
+// Required but not fixed: the release travels in the instance, so a literal here would make the
+// profile wrong the moment the guide version moves. Every recording document inherits this, so
+// the rule holds for the adapter guides rather than being restated in each.
+* content.format.version 1..1 MS
 * content.attachment.title 1..1 MS
 * content.attachment.size 1..1 MS
 * content.attachment.hash 1..1 MS

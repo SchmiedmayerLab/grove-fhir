@@ -1,377 +1,406 @@
 {
   "schemaVersion": 1,
   "fhirVersion": "4.0.1",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "canonical": "https://grovealliance.org/fhir/sensor",
   "codeSystem": "https://grovealliance.org/fhir/sensor/CodeSystem/grove-recording-format",
   "valueSet": "https://grovealliance.org/fhir/sensor/ValueSet/grove-recording-format",
-  "description": "The closed registry of payload formats a Grove recording DocumentReference may carry. Every content entry declares exactly one registry format in DocumentReference.content.format, and a receiver can parse any admitted payload from this registry alone; an unregistered payload format is nonconformant.",
+  "description": "The closed registry of payload formats a Grove recording DocumentReference may carry. Every content entry declares exactly one registry format in DocumentReference.content.format, and a receiver can parse any admitted payload from that code alone; an unregistered payload format is nonconformant. A format code names the payload's schema — the shape of the table or record it carries — never its encoding and never the platform that produced it. The encoding is carried by the entry's media type, and the producing platform by the carrying document's source type.",
+  "encodings": {
+    "csv": {
+      "encoding": "UTF-8 without a byte-order mark.",
+      "structure": "One header row naming every column in order, then one row per source sample in source order.",
+      "rowTerminator": "LF (0x0A) after every row, including the last.",
+      "separator": "Comma (0x2C).",
+      "quoting": "A field is enclosed in double quotes exactly when it contains a comma, a double quote, or a line break; embedded double quotes are doubled; all other fields are unquoted.",
+      "numbers": "Decimal numbers use the shortest representation that round-trips an IEEE-754 binary64 value; integral values may carry a trailing .0.",
+      "timestamps": "Seconds since the Unix epoch as a decimal number in the numbers form above; the column documentation states which columns are timestamps."
+    }
+  },
+  "mediaTypes": {
+    "text/csv": "Comma-separated values",
+    "application/fhir+json": "FHIR JSON",
+    "application/vnd.grovealliance.fhir-array+json": "Grove FHIR resource array",
+    "application/vnd.grovealliance.native+json": "Grove native recording JSON",
+    "application/vnd.grovealliance.provider+json": "Grove provider recording JSON",
+    "application/vnd.grovealliance.ppg": "Grove photoplethysmogram binary"
+  },
   "formats": {
-    "grove-csv-1": {
-      "title": "Grove CSV 1",
+    "heart-rate-samples": {
+      "title": "Heart Rate Samples",
       "contentType": "text/csv",
       "status": "active",
-      "specification": {
-        "encoding": "UTF-8 without a byte-order mark.",
-        "structure": "One header row naming every column in order, then one row per source sample in source order.",
-        "rowTerminator": "LF (0x0A) after every row, including the last.",
-        "separator": "Comma (0x2C).",
-        "quoting": "A field is enclosed in double quotes exactly when it contains a comma, a double quote, or a line break; embedded double quotes are doubled; all other fields are unquoted.",
-        "numbers": "Decimal numbers use the shortest representation that round-trips an IEEE-754 binary64 value; integral values may carry a trailing .0.",
-        "timestamps": "Seconds since the Unix epoch as a decimal number in the numbers form above; the column documentation states which columns are timestamps.",
-        "columns": "The column set for a stream is closed and declared in columnSchemas; a producer emits every declared column and no others."
-      },
-      "columnSchemas": {
-        "heart-rate": {
-          "source": "SRSensor.heartRate (CMHighFrequencyHeartRateData)",
-          "columns": [
-            {
-              "name": "timestamp",
-              "type": "timestamp",
-              "meaning": "Sample instant."
-            },
-            {
-              "name": "value",
-              "type": "number",
-              "unit": "/min",
-              "meaning": "Heart rate in beats per minute."
-            },
-            {
-              "name": "confidence",
-              "type": "integer",
-              "meaning": "CMHighFrequencyHeartRateDataConfidence raw value: 0 low, 1 medium, 2 high, 3 highest."
-            },
-            {
-              "name": "device",
-              "type": "string",
-              "meaning": "Source device description for the batch."
-            }
-          ]
+      "encoding": "csv",
+      "columns": [
+        {
+          "name": "timestamp",
+          "type": "timestamp",
+          "meaning": "Sample instant."
         },
-        "accelerometer": {
-          "source": "SRSensor.accelerometer (CMRecordedAccelerometerData)",
-          "columns": [
-            {
-              "name": "timestamp",
-              "type": "timestamp",
-              "meaning": "Sample instant."
-            },
-            {
-              "name": "identifier",
-              "type": "integer",
-              "meaning": "The CoreMotion batch identifier the sample belongs to."
-            },
-            {
-              "name": "x",
-              "type": "number",
-              "unit": "[g]",
-              "meaning": "Acceleration along x in G."
-            },
-            {
-              "name": "y",
-              "type": "number",
-              "unit": "[g]",
-              "meaning": "Acceleration along y in G."
-            },
-            {
-              "name": "z",
-              "type": "number",
-              "unit": "[g]",
-              "meaning": "Acceleration along z in G."
-            },
-            {
-              "name": "device",
-              "type": "string",
-              "meaning": "Source device description for the batch."
-            }
-          ]
+        {
+          "name": "value",
+          "type": "number",
+          "unit": "/min",
+          "meaning": "Heart rate in beats per minute."
         },
-        "ambient-light": {
-          "source": "SRSensor.ambientLightSensor (SRAmbientLightSample)",
-          "columns": [
-            {
-              "name": "timestamp",
-              "type": "timestamp",
-              "meaning": "Sample instant."
-            },
-            {
-              "name": "lux",
-              "type": "number",
-              "unit": "lx",
-              "meaning": "Illuminance in lux."
-            },
-            {
-              "name": "placement",
-              "type": "string",
-              "meaning": "SRAmbientLightSample.SensorPlacement textual description."
-            },
-            {
-              "name": "chromacityX",
-              "type": "number",
-              "meaning": "CIE 1931 x chromaticity coordinate."
-            },
-            {
-              "name": "chromacityY",
-              "type": "number",
-              "meaning": "CIE 1931 y chromaticity coordinate."
-            },
-            {
-              "name": "device",
-              "type": "string",
-              "meaning": "Source device description for the batch."
-            }
-          ]
+        {
+          "name": "confidence",
+          "type": "integer",
+          "meaning": "CMHighFrequencyHeartRateDataConfidence raw value: 0 low, 1 medium, 2 high, 3 highest."
         },
-        "ambient-pressure": {
-          "source": "SRSensor.ambientPressure (CMRecordedPressureData)",
-          "columns": [
-            {
-              "name": "timestamp",
-              "type": "timestamp",
-              "meaning": "Sample instant."
-            },
-            {
-              "name": "identifier",
-              "type": "integer",
-              "meaning": "The CoreMotion batch identifier the sample belongs to."
-            },
-            {
-              "name": "pressure",
-              "type": "number",
-              "unit": "kPa",
-              "meaning": "Ambient pressure in kilopascals as provided by CoreMotion."
-            },
-            {
-              "name": "temperature",
-              "type": "number",
-              "unit": "Cel",
-              "meaning": "Sensor temperature in degrees Celsius as provided by CoreMotion."
-            },
-            {
-              "name": "device",
-              "type": "string",
-              "meaning": "Source device description for the batch."
-            }
-          ]
-        },
-        "pedometer": {
-          "source": "SRSensor.pedometerData (CMPedometerData)",
-          "columns": [
-            {
-              "name": "start",
-              "type": "timestamp",
-              "meaning": "Interval start."
-            },
-            {
-              "name": "end",
-              "type": "timestamp",
-              "meaning": "Interval end."
-            },
-            {
-              "name": "steps",
-              "type": "integer",
-              "unit": "{steps}",
-              "meaning": "Steps taken in the interval."
-            },
-            {
-              "name": "distance",
-              "type": "number",
-              "unit": "m",
-              "meaning": "Estimated distance in metres; empty when unavailable."
-            },
-            {
-              "name": "floorsUp",
-              "type": "integer",
-              "meaning": "Floors ascended; empty when unavailable."
-            },
-            {
-              "name": "floorsDown",
-              "type": "integer",
-              "meaning": "Floors descended; empty when unavailable."
-            },
-            {
-              "name": "currentPace",
-              "type": "number",
-              "unit": "s/m",
-              "meaning": "Current pace in seconds per metre; empty when unavailable."
-            },
-            {
-              "name": "currentCadence",
-              "type": "number",
-              "unit": "/s",
-              "meaning": "Current cadence in steps per second; empty when unavailable."
-            },
-            {
-              "name": "avgActivePace",
-              "type": "number",
-              "unit": "s/m",
-              "meaning": "Average active pace in seconds per metre; empty when unavailable."
-            },
-            {
-              "name": "device",
-              "type": "string",
-              "meaning": "Source device description for the batch."
-            }
-          ]
-        },
-        "wrist-temperature": {
-          "source": "SRSensor.wristTemperature (SRWristTemperatureSession)",
-          "columns": [
-            {
-              "name": "timestamp",
-              "type": "timestamp",
-              "meaning": "Temperature sample instant."
-            },
-            {
-              "name": "value",
-              "type": "number",
-              "unit": "Cel",
-              "meaning": "Wrist temperature converted to degrees Celsius."
-            },
-            {
-              "name": "errorEstimate",
-              "type": "number",
-              "unit": "Cel",
-              "meaning": "Estimated error converted to degrees Celsius."
-            },
-            {
-              "name": "condition",
-              "type": "string",
-              "meaning": "SRWristTemperature.Condition textual value for the sample."
-            }
-          ]
-        },
-        "rotation-rate": {
-          "source": "SRSensor.rotationRate (CMRecordedRotationRateData)",
-          "columns": [
-            {
-              "name": "timestamp",
-              "type": "timestamp",
-              "meaning": "Sample instant (CMRecordedRotationRateData.startDate)."
-            },
-            {
-              "name": "x",
-              "type": "number",
-              "unit": "rad/s",
-              "meaning": "Rotation rate about x in radians per second."
-            },
-            {
-              "name": "y",
-              "type": "number",
-              "unit": "rad/s",
-              "meaning": "Rotation rate about y in radians per second."
-            },
-            {
-              "name": "z",
-              "type": "number",
-              "unit": "rad/s",
-              "meaning": "Rotation rate about z in radians per second."
-            },
-            {
-              "name": "device",
-              "type": "string",
-              "meaning": "Source device description for the batch."
-            }
-          ]
-        },
-        "odometer": {
-          "source": "SRSensor.odometer (CMOdometerData)",
-          "columns": [
-            {
-              "name": "start",
-              "type": "timestamp",
-              "meaning": "Recording interval start (startDate)."
-            },
-            {
-              "name": "end",
-              "type": "timestamp",
-              "meaning": "Recording interval end (endDate)."
-            },
-            {
-              "name": "gpsDate",
-              "type": "timestamp",
-              "meaning": "Time of the GPS measurement associated with the location."
-            },
-            {
-              "name": "speed",
-              "type": "number",
-              "unit": "m/s",
-              "meaning": "Instantaneous device velocity in metres per second."
-            },
-            {
-              "name": "speedAccuracy",
-              "type": "number",
-              "unit": "m/s",
-              "meaning": "Accuracy of the speed value."
-            },
-            {
-              "name": "slope",
-              "type": "number",
-              "unit": "deg",
-              "meaning": "Slope toward the direction of travel in degrees; empty when unavailable."
-            },
-            {
-              "name": "maxAbsSlope",
-              "type": "number",
-              "unit": "deg",
-              "meaning": "Maximum absolute slope toward all directions in degrees; empty when unavailable."
-            },
-            {
-              "name": "deltaDistance",
-              "type": "number",
-              "unit": "m",
-              "meaning": "Distance travelled since the last location in metres."
-            },
-            {
-              "name": "deltaDistanceAccuracy",
-              "type": "number",
-              "unit": "m",
-              "meaning": "Accuracy of the delta distance in metres."
-            },
-            {
-              "name": "deltaAltitude",
-              "type": "number",
-              "unit": "m",
-              "meaning": "Change in altitude above mean sea level in metres."
-            },
-            {
-              "name": "verticalAccuracy",
-              "type": "number",
-              "unit": "m",
-              "meaning": "Validity and estimated uncertainty of the altitude values in metres."
-            },
-            {
-              "name": "originDevice",
-              "type": "string",
-              "meaning": "CMOdometerOriginDevice case name: unknown, local, or remote."
-            },
-            {
-              "name": "device",
-              "type": "string",
-              "meaning": "Source device description for the batch."
-            }
-          ]
-        },
-        "heartbeat-series": {
-          "source": "HKDataTypeIdentifierHeartbeatSeries (HKHeartbeatSeriesSample)",
-          "columns": [
-            {
-              "name": "timestamp",
-              "type": "timestamp",
-              "meaning": "Beat instant as seconds since the series start anchor stated by the document."
-            },
-            {
-              "name": "precededByGap",
-              "type": "integer",
-              "meaning": "1 when a gap in beat detection precedes this beat, else 0."
-            }
-          ]
+        {
+          "name": "device",
+          "type": "string",
+          "meaning": "Source device description for the batch."
         }
-      }
+      ]
     },
-    "fhir-json-1": {
-      "title": "FHIR JSON Array 1",
-      "contentType": "application/json",
+    "triaxial-acceleration-samples": {
+      "title": "Triaxial Acceleration Samples",
+      "contentType": "text/csv",
+      "status": "active",
+      "encoding": "csv",
+      "columns": [
+        {
+          "name": "timestamp",
+          "type": "timestamp",
+          "meaning": "Sample instant."
+        },
+        {
+          "name": "identifier",
+          "type": "integer",
+          "meaning": "The CoreMotion batch identifier the sample belongs to."
+        },
+        {
+          "name": "x",
+          "type": "number",
+          "unit": "[g]",
+          "meaning": "Acceleration along x in G."
+        },
+        {
+          "name": "y",
+          "type": "number",
+          "unit": "[g]",
+          "meaning": "Acceleration along y in G."
+        },
+        {
+          "name": "z",
+          "type": "number",
+          "unit": "[g]",
+          "meaning": "Acceleration along z in G."
+        },
+        {
+          "name": "device",
+          "type": "string",
+          "meaning": "Source device description for the batch."
+        }
+      ]
+    },
+    "ambient-light-samples": {
+      "title": "Ambient Light Samples",
+      "contentType": "text/csv",
+      "status": "active",
+      "encoding": "csv",
+      "columns": [
+        {
+          "name": "timestamp",
+          "type": "timestamp",
+          "meaning": "Sample instant."
+        },
+        {
+          "name": "lux",
+          "type": "number",
+          "unit": "lx",
+          "meaning": "Illuminance in lux."
+        },
+        {
+          "name": "placement",
+          "type": "string",
+          "meaning": "SRAmbientLightSample.SensorPlacement textual description."
+        },
+        {
+          "name": "chromacityX",
+          "type": "number",
+          "meaning": "CIE 1931 x chromaticity coordinate."
+        },
+        {
+          "name": "chromacityY",
+          "type": "number",
+          "meaning": "CIE 1931 y chromaticity coordinate."
+        },
+        {
+          "name": "device",
+          "type": "string",
+          "meaning": "Source device description for the batch."
+        }
+      ]
+    },
+    "ambient-pressure-samples": {
+      "title": "Ambient Pressure Samples",
+      "contentType": "text/csv",
+      "status": "active",
+      "encoding": "csv",
+      "columns": [
+        {
+          "name": "timestamp",
+          "type": "timestamp",
+          "meaning": "Sample instant."
+        },
+        {
+          "name": "identifier",
+          "type": "integer",
+          "meaning": "The CoreMotion batch identifier the sample belongs to."
+        },
+        {
+          "name": "pressure",
+          "type": "number",
+          "unit": "kPa",
+          "meaning": "Ambient pressure in kilopascals as provided by CoreMotion."
+        },
+        {
+          "name": "temperature",
+          "type": "number",
+          "unit": "Cel",
+          "meaning": "Sensor temperature in degrees Celsius as provided by CoreMotion."
+        },
+        {
+          "name": "device",
+          "type": "string",
+          "meaning": "Source device description for the batch."
+        }
+      ]
+    },
+    "pedometer-samples": {
+      "title": "Pedometer Samples",
+      "contentType": "text/csv",
+      "status": "active",
+      "encoding": "csv",
+      "columns": [
+        {
+          "name": "start",
+          "type": "timestamp",
+          "meaning": "Interval start."
+        },
+        {
+          "name": "end",
+          "type": "timestamp",
+          "meaning": "Interval end."
+        },
+        {
+          "name": "steps",
+          "type": "integer",
+          "unit": "{steps}",
+          "meaning": "Steps taken in the interval."
+        },
+        {
+          "name": "distance",
+          "type": "number",
+          "unit": "m",
+          "meaning": "Estimated distance in metres; empty when unavailable."
+        },
+        {
+          "name": "floorsUp",
+          "type": "integer",
+          "meaning": "Floors ascended; empty when unavailable."
+        },
+        {
+          "name": "floorsDown",
+          "type": "integer",
+          "meaning": "Floors descended; empty when unavailable."
+        },
+        {
+          "name": "currentPace",
+          "type": "number",
+          "unit": "s/m",
+          "meaning": "Current pace in seconds per metre; empty when unavailable."
+        },
+        {
+          "name": "currentCadence",
+          "type": "number",
+          "unit": "/s",
+          "meaning": "Current cadence in steps per second; empty when unavailable."
+        },
+        {
+          "name": "avgActivePace",
+          "type": "number",
+          "unit": "s/m",
+          "meaning": "Average active pace in seconds per metre; empty when unavailable."
+        },
+        {
+          "name": "device",
+          "type": "string",
+          "meaning": "Source device description for the batch."
+        }
+      ]
+    },
+    "wrist-temperature-samples": {
+      "title": "Wrist Temperature Samples",
+      "contentType": "text/csv",
+      "status": "active",
+      "encoding": "csv",
+      "columns": [
+        {
+          "name": "timestamp",
+          "type": "timestamp",
+          "meaning": "Temperature sample instant."
+        },
+        {
+          "name": "value",
+          "type": "number",
+          "unit": "Cel",
+          "meaning": "Wrist temperature converted to degrees Celsius."
+        },
+        {
+          "name": "errorEstimate",
+          "type": "number",
+          "unit": "Cel",
+          "meaning": "Estimated error converted to degrees Celsius."
+        },
+        {
+          "name": "condition",
+          "type": "string",
+          "meaning": "SRWristTemperature.Condition for the sample. The source is an option set, so zero or more conditions apply: the value is the set's members joined with a comma in the declared order offWrist, onCharger, inMotion, and the field is empty when no condition applies. A value carrying a comma is quoted by the encoding rules above."
+        }
+      ]
+    },
+    "triaxial-rotation-samples": {
+      "title": "Triaxial Rotation Samples",
+      "contentType": "text/csv",
+      "status": "active",
+      "encoding": "csv",
+      "columns": [
+        {
+          "name": "timestamp",
+          "type": "timestamp",
+          "meaning": "Sample instant (CMRecordedRotationRateData.startDate)."
+        },
+        {
+          "name": "x",
+          "type": "number",
+          "unit": "rad/s",
+          "meaning": "Rotation rate about x in radians per second."
+        },
+        {
+          "name": "y",
+          "type": "number",
+          "unit": "rad/s",
+          "meaning": "Rotation rate about y in radians per second."
+        },
+        {
+          "name": "z",
+          "type": "number",
+          "unit": "rad/s",
+          "meaning": "Rotation rate about z in radians per second."
+        },
+        {
+          "name": "device",
+          "type": "string",
+          "meaning": "Source device description for the batch."
+        }
+      ]
+    },
+    "odometer-samples": {
+      "title": "Odometer Samples",
+      "contentType": "text/csv",
+      "status": "active",
+      "encoding": "csv",
+      "columns": [
+        {
+          "name": "start",
+          "type": "timestamp",
+          "meaning": "Recording interval start (startDate)."
+        },
+        {
+          "name": "end",
+          "type": "timestamp",
+          "meaning": "Recording interval end (endDate)."
+        },
+        {
+          "name": "gpsDate",
+          "type": "timestamp",
+          "meaning": "Time of the GPS measurement associated with the location."
+        },
+        {
+          "name": "speed",
+          "type": "number",
+          "unit": "m/s",
+          "meaning": "Instantaneous device velocity in metres per second."
+        },
+        {
+          "name": "speedAccuracy",
+          "type": "number",
+          "unit": "m/s",
+          "meaning": "Accuracy of the speed value."
+        },
+        {
+          "name": "slope",
+          "type": "number",
+          "unit": "deg",
+          "meaning": "Slope toward the direction of travel in degrees; empty when unavailable."
+        },
+        {
+          "name": "maxAbsSlope",
+          "type": "number",
+          "unit": "deg",
+          "meaning": "Maximum absolute slope toward all directions in degrees; empty when unavailable."
+        },
+        {
+          "name": "deltaDistance",
+          "type": "number",
+          "unit": "m",
+          "meaning": "Distance travelled since the last location in metres."
+        },
+        {
+          "name": "deltaDistanceAccuracy",
+          "type": "number",
+          "unit": "m",
+          "meaning": "Accuracy of the delta distance in metres."
+        },
+        {
+          "name": "deltaAltitude",
+          "type": "number",
+          "unit": "m",
+          "meaning": "Change in altitude above mean sea level in metres."
+        },
+        {
+          "name": "verticalAccuracy",
+          "type": "number",
+          "unit": "m",
+          "meaning": "Validity and estimated uncertainty of the altitude values in metres."
+        },
+        {
+          "name": "originDevice",
+          "type": "string",
+          "meaning": "CMOdometerOriginDevice case name: unknown, local, or remote."
+        },
+        {
+          "name": "device",
+          "type": "string",
+          "meaning": "Source device description for the batch."
+        }
+      ]
+    },
+    "beat-interval-series": {
+      "title": "Beat Interval Series",
+      "contentType": "text/csv",
+      "status": "active",
+      "encoding": "csv",
+      "columns": [
+        {
+          "name": "timestamp",
+          "type": "timestamp",
+          "meaning": "Beat instant as seconds since the series start anchor stated by the document."
+        },
+        {
+          "name": "precededByGap",
+          "type": "integer",
+          "meaning": "1 when a gap in beat detection precedes this beat, else 0."
+        }
+      ]
+    },
+    "fhir-resource-array": {
+      "title": "FHIR Resource Array",
+      "contentType": "application/vnd.grovealliance.fhir-array+json",
       "status": "active",
       "specification": {
         "encoding": "UTF-8.",
@@ -380,9 +409,21 @@
         "emptyBatch": "An empty batch emits no document rather than an empty array."
       }
     },
-    "native-json-1": {
-      "title": "Native JSON 1",
-      "contentType": "application/json",
+    "fhir-resource": {
+      "title": "FHIR Resource",
+      "contentType": "application/fhir+json",
+      "status": "active",
+      "specification": {
+        "encoding": "UTF-8.",
+        "structure": "One complete provider-issued FHIR R4 resource in FHIR JSON representation, byte-preserved exactly as the source platform delivered it.",
+        "fhirVersion": "R4 only. A payload in another release is not admitted under this code: its media type would misdeclare the release to any receiver that reads only the media type. A release other than R4 needs its own registered format before it can be carried.",
+        "provenance": "The carrying document records the issuing source; Grove never asserts conformance over another issuer's resource.",
+        "scope": "One document carries exactly one clinical record's FHIR payload."
+      }
+    },
+    "native-recording": {
+      "title": "Native Recording",
+      "contentType": "application/vnd.grovealliance.native+json",
       "status": "active",
       "specification": {
         "encoding": "UTF-8.",
@@ -391,9 +432,9 @@
         "scope": "One document carries one stream and one batch."
       }
     },
-    "provider-json-1": {
-      "title": "Provider JSON 1",
-      "contentType": "application/json",
+    "provider-recording": {
+      "title": "Provider Recording",
+      "contentType": "application/vnd.grovealliance.provider+json",
       "status": "active",
       "specification": {
         "encoding": "UTF-8.",
@@ -402,9 +443,9 @@
         "scope": "One document carries one API response for one account and one source element batch."
       }
     },
-    "grove-ppg-1": {
-      "title": "Grove PPG Binary 1",
-      "contentType": "application/octet-stream",
+    "photoplethysmogram-samples": {
+      "title": "Photoplethysmogram Samples",
+      "contentType": "application/vnd.grovealliance.ppg",
       "status": "active",
       "specification": {
         "primitives": {
@@ -554,29 +595,6 @@
             "meaning": "Acceleration along z in G."
           }
         ]
-      }
-    },
-    "grove-batch-archive-1": {
-      "title": "Grove Batch Archive 1",
-      "contentType": "application/octet-stream",
-      "status": "active",
-      "specification": {
-        "structure": "A POSIX ustar tar stream, optionally compressed as one whole; every archived file is itself a registry-format payload or a documented sidecar of one.",
-        "tar": "ustar magic; entry paths are relative, at most 100 UTF-8 bytes, without leading slash or dot segments; file mode 0644, directory mode 0755; owner, group, and device ids 0; modification time 0; contents padded to 512-byte blocks; the archive ends with two zero blocks.",
-        "compression": "The whole tar stream is stored uncompressed, gzip-compressed, or Zstandard-compressed; receivers detect the compression from the leading magic bytes (0x1F 0x8B gzip, 0x28 0xB5 0x2F 0xFD Zstandard, otherwise uncompressed).",
-        "determinism": "Entry order, header fields, and compression parameters are producer-deterministic: archiving the same files twice yields identical bytes for the uncompressed tar stream."
-      }
-    },
-    "fhir-resource-1": {
-      "title": "FHIR Resource 1",
-      "contentType": "application/fhir+json",
-      "status": "active",
-      "specification": {
-        "encoding": "UTF-8.",
-        "structure": "One complete provider-issued FHIR resource in FHIR JSON representation, byte-preserved exactly as the source platform delivered it.",
-        "fhirVersion": "The payload's FHIR release (DSTU2 or R4) is declared by the carrying DocumentReference and never inferred; the payload is never converted between releases.",
-        "provenance": "The carrying document records the issuing source; Grove never asserts conformance over another issuer's resource.",
-        "scope": "One document carries exactly one clinical record's FHIR payload."
       }
     }
   }

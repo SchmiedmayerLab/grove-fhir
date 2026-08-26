@@ -2,7 +2,7 @@
   "$schema": "https://grovealliance.org/fhir/catalog/schemas/package-graph.schema.json",
   "schemaVersion": 1,
   "fhirVersion": "4.0.1",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "canonicalRoot": "https://grovealliance.org/fhir",
   "packages": [
     {
@@ -124,7 +124,7 @@
       "canonical": "https://grovealliance.org/fhir/sensor",
       "dependencies": [
         "hl7.terminology.r4#7.3.0",
-        "org.grovealliance.fhir.mobile#0.4.0"
+        "org.grovealliance.fhir.mobile#0.5.0"
       ],
       "profiles": [
         "grove-sensor-conversion-provenance",
@@ -139,8 +139,8 @@
       "canonical": "https://grovealliance.org/fhir/sensorkit",
       "dependencies": [
         "hl7.terminology.r4#7.3.0",
-        "org.grovealliance.fhir.mobile#0.4.0",
-        "org.grovealliance.fhir.sensor#0.4.0"
+        "org.grovealliance.fhir.mobile#0.5.0",
+        "org.grovealliance.fhir.sensor#0.5.0"
       ],
       "profiles": [
         "sensorkit-accelerometer-observation",
@@ -155,7 +155,8 @@
         "sensorkit-ppg-observation",
         "sensorkit-recording-document",
         "sensorkit-sleep-session-observation",
-        "sensorkit-visit-observation"
+        "sensorkit-visit-observation",
+        "sensorkit-wrist-temperature-observation"
       ]
     },
     {
@@ -164,8 +165,8 @@
       "canonical": "https://grovealliance.org/fhir/healthkit",
       "dependencies": [
         "hl7.terminology.r4#7.3.0",
-        "org.grovealliance.fhir.mobile#0.4.0",
-        "org.grovealliance.fhir.sensor#0.4.0"
+        "org.grovealliance.fhir.mobile#0.5.0",
+        "org.grovealliance.fhir.sensor#0.5.0"
       ],
       "profiles": [
         "healthkit-apple-exercise-time",
@@ -286,7 +287,7 @@
       "dependencies": [
         "hl7.terminology.r4#7.3.0",
         "hl7.fhir.uv.extensions.r4#5.3.0",
-        "org.grovealliance.fhir.mobile#0.4.0"
+        "org.grovealliance.fhir.mobile#0.5.0"
       ],
       "profiles": [
         "health-connect-basal-metabolic-rate",
@@ -312,8 +313,8 @@
       "packageId": "org.grovealliance.fhir.providers",
       "canonical": "https://grovealliance.org/fhir/providers",
       "dependencies": [
-        "org.grovealliance.fhir.mobile#0.4.0",
-        "org.grovealliance.fhir.sensor#0.4.0"
+        "org.grovealliance.fhir.mobile#0.5.0",
+        "org.grovealliance.fhir.sensor#0.5.0"
       ],
       "profiles": [
         "provider-body-fat-mass",

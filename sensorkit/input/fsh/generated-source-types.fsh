@@ -40,12 +40,12 @@ Description: "The 22 public SensorKit sensors published by the iPhoneOS 26.5 SDK
 * #accelerometer ^property[0].valueString = "com.apple.SensorKit.motion.accelerometer"
 * #accelerometer ^property[1].code = #documentation
 * #accelerometer ^property[1].valueString = "https://developer.apple.com/documentation/sensorkit/srsensor/accelerometer"
-* #acoustic-settings "Acoustic settings" "The SensorKit SRSensor.acousticSettings source type. Grove admits no output for it. Version 0.4.0 publishes no reviewed output contract for this stable platform symbol."
+* #acoustic-settings "Acoustic settings" "The SensorKit SRSensor.acousticSettings source type. Grove admits no output for it. Version 0.5.0 publishes no reviewed output contract for this stable platform symbol."
 * #acoustic-settings ^property[0].code = #identifier
 * #acoustic-settings ^property[0].valueString = "com.apple.SensorKit.hearing.acousticSettings"
 * #acoustic-settings ^property[1].code = #documentation
 * #acoustic-settings ^property[1].valueString = "https://developer.apple.com/documentation/sensorkit/srsensor/acousticsettings"
-* #ambient-light "Ambient light" "The SensorKit SRSensor.ambientLightSensor source type. Grove admits no output for it. The source contains heterogeneous light fields for which version 0.4.0 does not publish a lossless component profile."
+* #ambient-light "Ambient light" "The SensorKit SRSensor.ambientLightSensor source type. Grove admits no output for it. The source contains heterogeneous light fields for which version 0.5.0 does not publish a lossless component profile."
 * #ambient-light ^property[0].code = #identifier
 * #ambient-light ^property[0].valueString = "com.apple.SensorKit.als"
 * #ambient-light ^property[1].code = #documentation
@@ -65,7 +65,7 @@ Description: "The 22 public SensorKit sensors published by the iPhoneOS 26.5 SDK
 * #ecg ^property[0].valueString = "com.apple.SensorKit.ECG"
 * #ecg ^property[1].code = #documentation
 * #ecg ^property[1].valueString = "https://developer.apple.com/documentation/sensorkit/srsensor/electrocardiogram"
-* #face-metrics "Face metrics" "The SensorKit SRSensor.faceMetrics source type. Grove admits no output for it. Version 0.4.0 publishes no reviewed structured profile for the heterogeneous face metrics."
+* #face-metrics "Face metrics" "The SensorKit SRSensor.faceMetrics source type. Grove admits no output for it. Version 0.5.0 publishes no reviewed structured profile for the heterogeneous face metrics."
 * #face-metrics ^property[0].code = #identifier
 * #face-metrics ^property[0].valueString = "com.apple.SensorKit.faceMetrics"
 * #face-metrics ^property[1].code = #documentation
@@ -80,7 +80,7 @@ Description: "The 22 public SensorKit sensors published by the iPhoneOS 26.5 SDK
 * #keyboard-metrics ^property[0].valueString = "com.apple.SensorKit.keyboardMetrics"
 * #keyboard-metrics ^property[1].code = #documentation
 * #keyboard-metrics ^property[1].valueString = "https://developer.apple.com/documentation/sensorkit/srsensor/keyboardmetrics"
-* #media-events "Media events" "The SensorKit SRSensor.mediaEvents source type. Grove admits no output for it. Media interactions do not have a reviewed source-neutral clinical Observation representation in version 0.4.0."
+* #media-events "Media events" "The SensorKit SRSensor.mediaEvents source type. Grove admits no output for it. Media interactions do not have a reviewed source-neutral clinical Observation representation in version 0.5.0."
 * #media-events ^property[0].code = #identifier
 * #media-events ^property[0].valueString = "com.apple.SensorKit.mediaEvents"
 * #media-events ^property[1].code = #documentation
@@ -120,7 +120,7 @@ Description: "The 22 public SensorKit sensors published by the iPhoneOS 26.5 SDK
 * #rotation-rate ^property[0].valueString = "com.apple.SensorKit.motion.gyroscope"
 * #rotation-rate ^property[1].code = #documentation
 * #rotation-rate ^property[1].valueString = "https://developer.apple.com/documentation/sensorkit/srsensor/rotationrate"
-* #siri-speech-metrics "Siri speech metrics" "The SensorKit SRSensor.siriSpeechMetrics source type. Grove admits no output for it. Speech metrics have no reviewed source-neutral clinical Observation representation in version 0.4.0."
+* #siri-speech-metrics "Siri speech metrics" "The SensorKit SRSensor.siriSpeechMetrics source type. Grove admits no output for it. Speech metrics have no reviewed source-neutral clinical Observation representation in version 0.5.0."
 * #siri-speech-metrics ^property[0].code = #identifier
 * #siri-speech-metrics ^property[0].valueString = "com.apple.SensorKit.speechMetrics.siri"
 * #siri-speech-metrics ^property[1].code = #documentation
@@ -130,7 +130,7 @@ Description: "The 22 public SensorKit sensors published by the iPhoneOS 26.5 SDK
 * #sleep-sessions ^property[0].valueString = "com.apple.SensorKit.sleep.sessions"
 * #sleep-sessions ^property[1].code = #documentation
 * #sleep-sessions ^property[1].valueString = "https://developer.apple.com/documentation/sensorkit/srsensor/sleepsessions"
-* #telephony-speech-metrics "Telephony speech metrics" "The SensorKit SRSensor.telephonySpeechMetrics source type. Grove admits no output for it. Speech metrics have no reviewed source-neutral clinical Observation representation in version 0.4.0."
+* #telephony-speech-metrics "Telephony speech metrics" "The SensorKit SRSensor.telephonySpeechMetrics source type. Grove admits no output for it. Speech metrics have no reviewed source-neutral clinical Observation representation in version 0.5.0."
 * #telephony-speech-metrics ^property[0].code = #identifier
 * #telephony-speech-metrics ^property[0].valueString = "com.apple.SensorKit.speechMetrics.telephony"
 * #telephony-speech-metrics ^property[1].code = #documentation
@@ -140,7 +140,7 @@ Description: "The 22 public SensorKit sensors published by the iPhoneOS 26.5 SDK
 * #visits ^property[0].valueString = "com.apple.SensorKit.visits"
 * #visits ^property[1].code = #documentation
 * #visits ^property[1].valueString = "https://developer.apple.com/documentation/sensorkit/srsensor/visits"
-* #wrist-temperature "Wrist temperature" "The SensorKit SRSensor.wristTemperature source type. Grove admits no output for it. A wrist-temperature session is not automatically the shared body-temperature or basal-body-temperature meaning."
+* #wrist-temperature "Wrist temperature" "The SensorKit SRSensor.wristTemperature source type. Grove converts it to sensorkit-wrist-temperature-observation."
 * #wrist-temperature ^property[0].code = #identifier
 * #wrist-temperature ^property[0].valueString = "com.apple.SensorKit.wristTemperature"
 * #wrist-temperature ^property[1].code = #documentation

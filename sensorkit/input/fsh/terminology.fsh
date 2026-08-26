@@ -35,6 +35,7 @@ Description: "Provider-specific SensorKit concepts for which no exact internatio
 * #total-pauses "Total pauses" "How many typing pauses the keyboard detected."
 * #total-typing-episodes "Total typing episodes" "How many distinct typing episodes the interval contained."
 * #typing-speed "Typing speed" "Typing rate over the summarised interval, in words per minute."
+* #wrist-temperature-recording-summary "Wrist temperature recording summary" "One SRWristTemperatureSession covering a stated sleep interval. This is a wrist skin measurement, not body or basal body temperature."
 * #sleep-session "Sleep session" "One contiguous sleep period the platform inferred."
 * #accelerometer-recording-summary "Accelerometer recording summary" "Counts describing one accelerometer recording, without its samples."
 * #sample-count "Sample count" "How many samples the summarised recording contains."

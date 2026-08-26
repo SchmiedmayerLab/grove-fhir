@@ -24,23 +24,33 @@ class FormatRegistryTests(unittest.TestCase):
         self.assertEqual(
             list(REGISTRY["formats"]),
             [
-                "grove-csv-1",
-                "fhir-json-1",
-                "native-json-1",
-                "provider-json-1",
-                "grove-ppg-1",
-                "grove-batch-archive-1",
-                "fhir-resource-1",
+                "heart-rate-samples",
+                "triaxial-acceleration-samples",
+                "ambient-light-samples",
+                "ambient-pressure-samples",
+                "pedometer-samples",
+                "wrist-temperature-samples",
+                "triaxial-rotation-samples",
+                "odometer-samples",
+                "beat-interval-series",
+                "fhir-resource-array",
+                "fhir-resource",
+                "native-recording",
+                "provider-recording",
+                "photoplethysmogram-samples",
             ],
         )
         for code, fmt in REGISTRY["formats"].items():
             self.assertEqual(fmt["status"], "active", code)
             self.assertTrue(fmt["title"], code)
             self.assertIn("contentType", fmt, code)
-            self.assertTrue(fmt["specification"], code)
+            self.assertTrue(fmt.get("specification") or fmt.get("encoding"), code)
+            if "encoding" in fmt:
+                self.assertIn(fmt["encoding"], REGISTRY["encodings"], code)
+                self.assertTrue(fmt["columns"], code)
 
     def test_format_content_types_are_admitted_mime_codes(self) -> None:
-        terminology = (ROOT / "sensor/input/fsh/terminology.fsh").read_text(
+        terminology = (ROOT / "sensor/input/fsh/generated-recording-mime-types.fsh").read_text(
             encoding="utf-8"
         )
         expected = {fmt["contentType"] for fmt in REGISTRY["formats"].values()}
@@ -60,28 +70,37 @@ class FormatRegistryTests(unittest.TestCase):
         self.assertEqual(expanded, expected)
 
     def test_csv_column_schemas_are_closed(self) -> None:
-        schemas = REGISTRY["formats"]["grove-csv-1"]["columnSchemas"]
+        schemas = {
+            code: fmt
+            for code, fmt in REGISTRY["formats"].items()
+            if fmt.get("encoding") == "csv"
+        }
         self.assertEqual(
             set(schemas),
             {
-                "heart-rate",
-                "accelerometer",
-                "ambient-light",
-                "ambient-pressure",
-                "pedometer",
-                "wrist-temperature",
-                "rotation-rate",
-                "odometer",
-                "heartbeat-series",
+                "heart-rate-samples",
+                "triaxial-acceleration-samples",
+                "ambient-light-samples",
+                "ambient-pressure-samples",
+                "pedometer-samples",
+                "wrist-temperature-samples",
+                "triaxial-rotation-samples",
+                "odometer-samples",
+                "beat-interval-series",
             },
         )
         for stream, schema in schemas.items():
-            self.assertTrue(schema["source"], stream)
             names = [column["name"] for column in schema["columns"]]
             self.assertEqual(len(names), len(set(names)), stream)
             for column in schema["columns"]:
                 self.assertIn(column["type"], {"timestamp", "number", "integer", "string"})
                 self.assertTrue(column["meaning"], f"{stream}.{column['name']}")
+
+    def test_a_format_code_never_names_its_encoding(self) -> None:
+        # The code names the payload's schema; the encoding is the media type's job.
+        for code in REGISTRY["formats"]:
+            for encoding in ("csv", "json", "binary", "octet"):
+                self.assertNotIn(encoding, code.split("-"), code)
 
     def test_sensorkit_streams_reference_registered_formats(self) -> None:
         adapter = json.loads(
@@ -100,17 +119,18 @@ class FormatRegistryTests(unittest.TestCase):
             if not raw["formats"]:
                 self.assertTrue(raw.get("formatsReason"), entry["sourceTypeCode"])
         self.assertGreaterEqual(raw_rows, 20)
-        streams_with_csv = {
-            entry["sourceTypeCode"]
+        csv_codes = {
+            code for code, fmt in REGISTRY["formats"].items() if fmt.get("encoding") == "csv"
+        }
+        cited = {
+            code
             for entry in adapter["entries"]
             if isinstance(entry.get("raw"), dict)
-            and "grove-csv-1" in entry["raw"].get("formats", [])
+            for code in entry["raw"].get("formats", [])
+            if code in csv_codes
         }
         # heartbeat-series is a HealthKit recording schema, not a SensorKit stream.
-        self.assertEqual(
-            streams_with_csv,
-            set(REGISTRY["formats"]["grove-csv-1"]["columnSchemas"]) - {"heartbeat-series"},
-        )
+        self.assertEqual(cited, csv_codes - {"beat-interval-series"})
 
     def test_rendered_outputs_are_current(self) -> None:
         result = subprocess.run(
@@ -123,3 +143,29 @@ class FormatRegistryTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class RegistryIsPlatformNeutralTests(unittest.TestCase):
+    """The shared registry names payload schemas, never the platforms that produce them.
+
+    A column's meaning may still name the platform enumeration that defines its values: that is
+    what the value means, and dropping it would make the column unreadable. What may not appear
+    is a claim about which platform the format itself belongs to.
+    """
+
+    def test_no_format_declares_a_producing_platform(self) -> None:
+        for code, fmt in REGISTRY["formats"].items():
+            self.assertNotIn("source", fmt, code)
+
+    def test_no_concept_definition_names_a_platform_symbol(self) -> None:
+        fsh = (ROOT / "sensor/input/fsh/generated-recording-formats.fsh").read_text(encoding="utf-8")
+        for line in fsh.splitlines():
+            if not line.startswith("* #"):
+                continue
+            for symbol in ("SRSensor.", "CMRecorded", "CMHighFrequency", "HKDataTypeIdentifier"):
+                self.assertNotIn(symbol, line, f"{symbol} in {line[:60]}")
+
+    def test_the_formats_page_states_no_format_level_provenance(self) -> None:
+        page = (ROOT / "sensor/input/pagecontent/formats.md").read_text(encoding="utf-8")
+        for lead in ("Source:", "First defined for:"):
+            self.assertNotIn(lead, page, lead)

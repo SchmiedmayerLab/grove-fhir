@@ -377,11 +377,39 @@ Description: "A platform-exclusive assertion of one SensorKit sleep session inte
 * derivedFrom only Reference(SensorKitRecordingDocument)
 
 
+Profile: SensorKitWristTemperatureObservation
+Parent: SensorKitObservation
+Id: sensorkit-wrist-temperature-observation
+Title: "SensorKit Wrist Temperature Observation"
+Description: "A platform-exclusive coverage summary of one SensorKit wrist-temperature session; the wrist-temperature-samples recording document carries the samples and is mandatory. This is a wrist skin measurement: it deliberately binds to no body-temperature or basal-body-temperature meaning, because a sleep-interval wrist reading is neither."
+* extension[sensorKitSourceType].valueCode = #wrist-temperature
+* code = $sensorKitConcept#wrist-temperature-recording-summary "Wrist temperature recording summary"
+* effective[x] 1..1 MS
+* effective[x] only Period
+* value[x] 0..0
+* dataAbsentReason 0..0
+* derivedFrom 1..1 MS
+* derivedFrom only Reference(SensorKitRecordingDocument)
+* component ^slicing.discriminator.type = #pattern
+* component ^slicing.discriminator.path = "code"
+* component ^slicing.rules = #closed
+* component contains sampleCount 1..1 MS
+* component[sampleCount].code = $sensorKitConcept#sample-count "Sample count"
+* component[sampleCount].value[x] 1..1 MS
+* component[sampleCount].value[x] only Quantity
+* component[sampleCount].valueQuantity.system = $ucum (exactly)
+* component[sampleCount].valueQuantity.code = #{count} (exactly)
+* component[sampleCount].dataAbsentReason 0..0
+// The algorithm version describes how the samples were produced, not a result of its own, so it
+// is an extension — matching how the same concept is modelled for the HealthKit ECG.
+* extension contains SensorKitWristTemperatureAlgorithmVersion named algorithmVersion 1..1 MS
+
+
 Profile: SensorKitAccelerometerObservation
 Parent: SensorKitObservation
 Id: sensorkit-accelerometer-observation
 Title: "SensorKit Accelerometer Observation"
-Description: "A platform-exclusive coverage summary of one SensorKit accelerometer batch; the grove-csv-1 recording document carries the signal and is mandatory."
+Description: "A platform-exclusive coverage summary of one SensorKit accelerometer batch; the triaxial-acceleration-samples recording document carries the signal and is mandatory."
 * extension[sensorKitSourceType].valueCode = #accelerometer
 * code = $sensorKitConcept#accelerometer-recording-summary "Accelerometer recording summary"
 * effective[x] 1..1 MS
@@ -411,7 +439,7 @@ Profile: SensorKitPpgObservation
 Parent: SensorKitObservation
 Id: sensorkit-ppg-observation
 Title: "SensorKit PPG Observation"
-Description: "A platform-exclusive coverage summary of one SensorKit photoplethysmogram batch; the grove-ppg-1 recording document carries the signal and is mandatory."
+Description: "A platform-exclusive coverage summary of one SensorKit photoplethysmogram batch; the photoplethysmogram-samples recording document carries the signal and is mandatory."
 * extension[sensorKitSourceType].valueCode = #ppg
 * code = $sensorKitConcept#ppg-recording-summary "PPG recording summary"
 * effective[x] 1..1 MS

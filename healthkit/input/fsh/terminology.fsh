@@ -87,7 +87,7 @@ Description: "Exact HKElectrocardiogram.Classification cases retained on a lossl
 ValueSet: HealthKitECGClassificationVS
 Id: healthkit-ecg-classification
 Title: "HealthKit ECG Classification"
-Description: "The closed HealthKit ECG classification cases admitted by version 0.3.0."
+Description: "The closed HealthKit ECG classification cases admitted by version 0.5.0."
 * ^experimental = false
 * include codes from system HealthKitECGClassificationCS
 
@@ -106,7 +106,7 @@ Description: "Exact HKElectrocardiogram.SymptomsStatus cases retained on a lossl
 ValueSet: HealthKitECGSymptomsStatusVS
 Id: healthkit-ecg-symptoms-status
 Title: "HealthKit ECG Symptoms Status"
-Description: "The closed HealthKit ECG symptoms-status cases admitted by version 0.3.0."
+Description: "The closed HealthKit ECG symptoms-status cases admitted by version 0.5.0."
 * ^experimental = false
 * include codes from system HealthKitECGSymptomsStatusCS
 
@@ -127,7 +127,7 @@ Description: "Exact HKCategoryValueSeverity cases retained for a correlated Heal
 ValueSet: HealthKitSymptomSeverityVS
 Id: healthkit-symptom-severity
 Title: "HealthKit Symptom Severity"
-Description: "The closed HealthKit symptom severity cases admitted by version 0.3.0."
+Description: "The closed HealthKit symptom severity cases admitted by version 0.5.0."
 * ^experimental = false
 * include codes from system HealthKitSymptomSeverityCS
 
@@ -158,7 +158,7 @@ Description: "Exact HKAppleECGAlgorithmVersion cases retained when the HealthKit
 ValueSet: HealthKitECGAlgorithmVersionVS
 Id: healthkit-ecg-algorithm-version
 Title: "HealthKit ECG Algorithm Version"
-Description: "The closed Apple ECG algorithm versions admitted by version 0.3.0."
+Description: "The closed Apple ECG algorithm versions admitted by version 0.5.0."
 * ^experimental = false
 * include codes from system HealthKitECGAlgorithmVersionCS
 

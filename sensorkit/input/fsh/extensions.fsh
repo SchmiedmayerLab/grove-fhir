@@ -34,3 +34,12 @@ Context: Observation
 * valueIdentifier.system 1..1 MS
 * valueIdentifier.system = "https://grovealliance.org/fhir/sensorkit/NamingSystem/sensorkit-visit-location-id" (exactly)
 * valueIdentifier.value 1..1 MS
+
+
+Extension: SensorKitWristTemperatureAlgorithmVersion
+Id: sensorkit-wrist-temperature-algorithm-version
+Title: "SensorKit Wrist Temperature Algorithm Version"
+Description: "The SRWristTemperatureSession version: the on-device algorithm that produced the session. It describes how the samples were derived rather than being a result of its own, which is why it is an extension and not a component."
+Context: Observation
+* value[x] 1..1 MS
+* value[x] only string

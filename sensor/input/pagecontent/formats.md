@@ -13,7 +13,7 @@ Every Grove recording DocumentReference content entry declares exactly one paylo
 A receiver can parse every admitted payload from this page and the machine registry alone; an unregistered payload format is nonconformant.
 The machine registry is [`catalog/format-registry.json`](https://grovealliance.org/fhir/catalog/format-registry.json); this page renders it.
 
-### `grove-csv-1` — Grove CSV 1
+### `heart-rate-samples` — Heart Rate Samples
 
 Media type: `text/csv`.
 UTF-8 without a byte-order mark.
@@ -23,11 +23,6 @@ Comma (0x2C).
 A field is enclosed in double quotes exactly when it contains a comma, a double quote, or a line break; embedded double quotes are doubled; all other fields are unquoted.
 Decimal numbers use the shortest representation that round-trips an IEEE-754 binary64 value; integral values may carry a trailing .0.
 Seconds since the Unix epoch as a decimal number in the numbers form above; the column documentation states which columns are timestamps.
-The column set for a stream is closed and declared in columnSchemas; a producer emits every declared column and no others.
-
-#### Columns for `heart-rate`
-
-Source: `SRSensor.heartRate (CMHighFrequencyHeartRateData)`.
 
 | Column | Type | Unit | Meaning |
 |---|---|---|---|
@@ -36,9 +31,16 @@ Source: `SRSensor.heartRate (CMHighFrequencyHeartRateData)`.
 | `confidence` | integer | — | CMHighFrequencyHeartRateDataConfidence raw value: 0 low, 1 medium, 2 high, 3 highest. |
 | `device` | string | — | Source device description for the batch. |
 
-#### Columns for `accelerometer`
+### `triaxial-acceleration-samples` — Triaxial Acceleration Samples
 
-Source: `SRSensor.accelerometer (CMRecordedAccelerometerData)`.
+Media type: `text/csv`.
+UTF-8 without a byte-order mark.
+One header row naming every column in order, then one row per source sample in source order.
+LF (0x0A) after every row, including the last.
+Comma (0x2C).
+A field is enclosed in double quotes exactly when it contains a comma, a double quote, or a line break; embedded double quotes are doubled; all other fields are unquoted.
+Decimal numbers use the shortest representation that round-trips an IEEE-754 binary64 value; integral values may carry a trailing .0.
+Seconds since the Unix epoch as a decimal number in the numbers form above; the column documentation states which columns are timestamps.
 
 | Column | Type | Unit | Meaning |
 |---|---|---|---|
@@ -49,9 +51,16 @@ Source: `SRSensor.accelerometer (CMRecordedAccelerometerData)`.
 | `z` | number | `[g]` | Acceleration along z in G. |
 | `device` | string | — | Source device description for the batch. |
 
-#### Columns for `ambient-light`
+### `ambient-light-samples` — Ambient Light Samples
 
-Source: `SRSensor.ambientLightSensor (SRAmbientLightSample)`.
+Media type: `text/csv`.
+UTF-8 without a byte-order mark.
+One header row naming every column in order, then one row per source sample in source order.
+LF (0x0A) after every row, including the last.
+Comma (0x2C).
+A field is enclosed in double quotes exactly when it contains a comma, a double quote, or a line break; embedded double quotes are doubled; all other fields are unquoted.
+Decimal numbers use the shortest representation that round-trips an IEEE-754 binary64 value; integral values may carry a trailing .0.
+Seconds since the Unix epoch as a decimal number in the numbers form above; the column documentation states which columns are timestamps.
 
 | Column | Type | Unit | Meaning |
 |---|---|---|---|
@@ -62,9 +71,16 @@ Source: `SRSensor.ambientLightSensor (SRAmbientLightSample)`.
 | `chromacityY` | number | — | CIE 1931 y chromaticity coordinate. |
 | `device` | string | — | Source device description for the batch. |
 
-#### Columns for `ambient-pressure`
+### `ambient-pressure-samples` — Ambient Pressure Samples
 
-Source: `SRSensor.ambientPressure (CMRecordedPressureData)`.
+Media type: `text/csv`.
+UTF-8 without a byte-order mark.
+One header row naming every column in order, then one row per source sample in source order.
+LF (0x0A) after every row, including the last.
+Comma (0x2C).
+A field is enclosed in double quotes exactly when it contains a comma, a double quote, or a line break; embedded double quotes are doubled; all other fields are unquoted.
+Decimal numbers use the shortest representation that round-trips an IEEE-754 binary64 value; integral values may carry a trailing .0.
+Seconds since the Unix epoch as a decimal number in the numbers form above; the column documentation states which columns are timestamps.
 
 | Column | Type | Unit | Meaning |
 |---|---|---|---|
@@ -74,9 +90,16 @@ Source: `SRSensor.ambientPressure (CMRecordedPressureData)`.
 | `temperature` | number | `Cel` | Sensor temperature in degrees Celsius as provided by CoreMotion. |
 | `device` | string | — | Source device description for the batch. |
 
-#### Columns for `pedometer`
+### `pedometer-samples` — Pedometer Samples
 
-Source: `SRSensor.pedometerData (CMPedometerData)`.
+Media type: `text/csv`.
+UTF-8 without a byte-order mark.
+One header row naming every column in order, then one row per source sample in source order.
+LF (0x0A) after every row, including the last.
+Comma (0x2C).
+A field is enclosed in double quotes exactly when it contains a comma, a double quote, or a line break; embedded double quotes are doubled; all other fields are unquoted.
+Decimal numbers use the shortest representation that round-trips an IEEE-754 binary64 value; integral values may carry a trailing .0.
+Seconds since the Unix epoch as a decimal number in the numbers form above; the column documentation states which columns are timestamps.
 
 | Column | Type | Unit | Meaning |
 |---|---|---|---|
@@ -91,20 +114,34 @@ Source: `SRSensor.pedometerData (CMPedometerData)`.
 | `avgActivePace` | number | `s/m` | Average active pace in seconds per metre; empty when unavailable. |
 | `device` | string | — | Source device description for the batch. |
 
-#### Columns for `wrist-temperature`
+### `wrist-temperature-samples` — Wrist Temperature Samples
 
-Source: `SRSensor.wristTemperature (SRWristTemperatureSession)`.
+Media type: `text/csv`.
+UTF-8 without a byte-order mark.
+One header row naming every column in order, then one row per source sample in source order.
+LF (0x0A) after every row, including the last.
+Comma (0x2C).
+A field is enclosed in double quotes exactly when it contains a comma, a double quote, or a line break; embedded double quotes are doubled; all other fields are unquoted.
+Decimal numbers use the shortest representation that round-trips an IEEE-754 binary64 value; integral values may carry a trailing .0.
+Seconds since the Unix epoch as a decimal number in the numbers form above; the column documentation states which columns are timestamps.
 
 | Column | Type | Unit | Meaning |
 |---|---|---|---|
 | `timestamp` | timestamp | — | Temperature sample instant. |
 | `value` | number | `Cel` | Wrist temperature converted to degrees Celsius. |
 | `errorEstimate` | number | `Cel` | Estimated error converted to degrees Celsius. |
-| `condition` | string | — | SRWristTemperature.Condition textual value for the sample. |
+| `condition` | string | — | SRWristTemperature.Condition for the sample. The source is an option set, so zero or more conditions apply: the value is the set's members joined with a comma in the declared order offWrist, onCharger, inMotion, and the field is empty when no condition applies. A value carrying a comma is quoted by the encoding rules above. |
 
-#### Columns for `rotation-rate`
+### `triaxial-rotation-samples` — Triaxial Rotation Samples
 
-Source: `SRSensor.rotationRate (CMRecordedRotationRateData)`.
+Media type: `text/csv`.
+UTF-8 without a byte-order mark.
+One header row naming every column in order, then one row per source sample in source order.
+LF (0x0A) after every row, including the last.
+Comma (0x2C).
+A field is enclosed in double quotes exactly when it contains a comma, a double quote, or a line break; embedded double quotes are doubled; all other fields are unquoted.
+Decimal numbers use the shortest representation that round-trips an IEEE-754 binary64 value; integral values may carry a trailing .0.
+Seconds since the Unix epoch as a decimal number in the numbers form above; the column documentation states which columns are timestamps.
 
 | Column | Type | Unit | Meaning |
 |---|---|---|---|
@@ -114,9 +151,16 @@ Source: `SRSensor.rotationRate (CMRecordedRotationRateData)`.
 | `z` | number | `rad/s` | Rotation rate about z in radians per second. |
 | `device` | string | — | Source device description for the batch. |
 
-#### Columns for `odometer`
+### `odometer-samples` — Odometer Samples
 
-Source: `SRSensor.odometer (CMOdometerData)`.
+Media type: `text/csv`.
+UTF-8 without a byte-order mark.
+One header row naming every column in order, then one row per source sample in source order.
+LF (0x0A) after every row, including the last.
+Comma (0x2C).
+A field is enclosed in double quotes exactly when it contains a comma, a double quote, or a line break; embedded double quotes are doubled; all other fields are unquoted.
+Decimal numbers use the shortest representation that round-trips an IEEE-754 binary64 value; integral values may carry a trailing .0.
+Seconds since the Unix epoch as a decimal number in the numbers form above; the column documentation states which columns are timestamps.
 
 | Column | Type | Unit | Meaning |
 |---|---|---|---|
@@ -134,41 +178,56 @@ Source: `SRSensor.odometer (CMOdometerData)`.
 | `originDevice` | string | — | CMOdometerOriginDevice case name: unknown, local, or remote. |
 | `device` | string | — | Source device description for the batch. |
 
-#### Columns for `heartbeat-series`
+### `beat-interval-series` — Beat Interval Series
 
-Source: `HKDataTypeIdentifierHeartbeatSeries (HKHeartbeatSeriesSample)`.
+Media type: `text/csv`.
+UTF-8 without a byte-order mark.
+One header row naming every column in order, then one row per source sample in source order.
+LF (0x0A) after every row, including the last.
+Comma (0x2C).
+A field is enclosed in double quotes exactly when it contains a comma, a double quote, or a line break; embedded double quotes are doubled; all other fields are unquoted.
+Decimal numbers use the shortest representation that round-trips an IEEE-754 binary64 value; integral values may carry a trailing .0.
+Seconds since the Unix epoch as a decimal number in the numbers form above; the column documentation states which columns are timestamps.
 
 | Column | Type | Unit | Meaning |
 |---|---|---|---|
 | `timestamp` | timestamp | — | Beat instant as seconds since the series start anchor stated by the document. |
 | `precededByGap` | integer | — | 1 when a gap in beat detection precedes this beat, else 0. |
 
-### `fhir-json-1` — FHIR JSON Array 1
+### `fhir-resource-array` — FHIR Resource Array
 
-Media type: `application/json`.
+Media type: `application/vnd.grovealliance.fhir-array+json`.
 UTF-8.
 A single JSON array; each element is one complete FHIR R4 resource in FHIR JSON representation, in source sample order.
 Every element conforms to the profile set the emitting adapter declares for its stream; the array carries resources of one stream and one batch only.
 An empty batch emits no document rather than an empty array.
 
-### `native-json-1` — Native JSON 1
+### `fhir-resource` — FHIR Resource
 
-Media type: `application/json`.
+Media type: `application/fhir+json`.
+UTF-8.
+One complete provider-issued FHIR R4 resource in FHIR JSON representation, byte-preserved exactly as the source platform delivered it.
+The carrying document records the issuing source; Grove never asserts conformance over another issuer's resource.
+One document carries exactly one clinical record's FHIR payload.
+
+### `native-recording` — Native Recording
+
+Media type: `application/vnd.grovealliance.native+json`.
 UTF-8.
 The producer's exact native JSON serialization of one source batch, byte-preserved.
 One document carries one stream and one batch.
 
-### `provider-json-1` — Provider JSON 1
+### `provider-recording` — Provider Recording
 
-Media type: `application/json`.
+Media type: `application/vnd.grovealliance.provider+json`.
 UTF-8.
 The verbatim JSON payload returned by the provider API call that produced the batch, byte-preserved apart from transport framing.
 The emitting adapter documents the provider, API, and endpoint per stream; the payload is never rewritten, reordered, or reserialized.
 One document carries one API response for one account and one source element batch.
 
-### `grove-ppg-1` — Grove PPG Binary 1
+### `photoplethysmogram-samples` — Photoplethysmogram Samples
 
-Media type: `application/octet-stream`.
+Media type: `application/vnd.grovealliance.ppg`.
 Varint record count, then that many PPG records.
 
 **Primitive encodings**
@@ -227,19 +286,3 @@ Varint record count, then that many PPG records.
 | `x` | `float64` | `[g]` | Acceleration along x in G. |
 | `y` | `float64` | `[g]` | Acceleration along y in G. |
 | `z` | `float64` | `[g]` | Acceleration along z in G. |
-
-### `grove-batch-archive-1` — Grove Batch Archive 1
-
-Media type: `application/octet-stream`.
-A POSIX ustar tar stream, optionally compressed as one whole; every archived file is itself a registry-format payload or a documented sidecar of one.
-ustar magic; entry paths are relative, at most 100 UTF-8 bytes, without leading slash or dot segments; file mode 0644, directory mode 0755; owner, group, and device ids 0; modification time 0; contents padded to 512-byte blocks; the archive ends with two zero blocks.
-The whole tar stream is stored uncompressed, gzip-compressed, or Zstandard-compressed; receivers detect the compression from the leading magic bytes (0x1F 0x8B gzip, 0x28 0xB5 0x2F 0xFD Zstandard, otherwise uncompressed).
-Entry order, header fields, and compression parameters are producer-deterministic: archiving the same files twice yields identical bytes for the uncompressed tar stream.
-
-### `fhir-resource-1` — FHIR Resource 1
-
-Media type: `application/fhir+json`.
-UTF-8.
-One complete provider-issued FHIR resource in FHIR JSON representation, byte-preserved exactly as the source platform delivered it.
-The carrying document records the issuing source; Grove never asserts conformance over another issuer's resource.
-One document carries exactly one clinical record's FHIR payload.
