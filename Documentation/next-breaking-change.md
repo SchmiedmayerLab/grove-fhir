@@ -1,3 +1,13 @@
+<!--
+
+This source file is part of the Grove FHIR open-source project
+
+SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTRIBUTORS.md)
+
+SPDX-License-Identifier: MIT
+
+-->
+
 # Findings for the Next Breaking Change
 
 A review of the seven guides, the four adapter catalogs, and the three implementations that consume them, written after the 0.5.0 release.
