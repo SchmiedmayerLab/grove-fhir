@@ -38,7 +38,12 @@ GUIDES = tuple(ROOT / source for source in EXPECTED_GUIDE_SOURCES)
 CATALOGS = ROOT / "catalog"
 # Grove writes its own version in prose as "vX.Y.Z" or "Version X.Y.Z"; pinned third-party
 # versions never take either form, so the pattern separates the two without an exclusion list.
-OWN_VERSION_IN_PROSE = re.compile(r"\bv(\d+\.\d+\.\d+)\b|\b[Vv]ersion (\d+\.\d+\.\d+)\b")
+OWN_VERSION_IN_PROSE = re.compile(
+    r"\bv(\d+\.\d+\.\d+)\b"
+    r"|\b[Vv]ersion (\d+\.\d+\.\d+)\b"
+    # A package pin names the release without the word: `…fhir.mobile#0.3.0`, `…fhir.mobile: 0.3.0`.
+    r"|org\.grovealliance\.fhir\.[a-z-]+[#:]\s?(\d+\.\d+\.\d+)\b"
+)
 # Fields that state when a set was first frozen, and so name the release that froze it rather
 # than the current one. Every other prose mention must track the catalog's own version.
 # The FHIR release is not Grove's version and never moves with it.
@@ -49,6 +54,12 @@ THIRD_PARTY_PIN = re.compile(
     r"\b(hl7\.[a-z0-9.]+|Zstandard|SUSHI|IG Publisher|Node\.js|npm|Swift|Xcode|zod)\b",
     re.IGNORECASE,
 )
+
+# Prose that records when something was frozen names the release that froze it, not the current
+# one. Bumping these would falsify the record they exist to keep.
+HISTORICAL_PROSE_FILES = {
+    "healthkit/input/pagecontent/terminology-provenance.md",
+}
 
 HISTORICAL_VERSION_FIELDS = {
     ("sensorkit-adapter.json", "sourceEvidence.scope"),
@@ -87,7 +98,7 @@ def stale_version_prose(name: str, node: object, own: str, path: tuple[str, ...]
     return [
         f"catalog/{name} field {field} names version {found}, but the catalog is {own}"
         for match in OWN_VERSION_IN_PROSE.findall(node)
-        for found in [match[0] or match[1]]
+        for found in [match[0] or match[1] or match[2]]
         if found != own
     ]
 
@@ -142,9 +153,11 @@ def main() -> int:
         for pattern in ("input/fsh/*.fsh", "input/pagecontent/*.md"):
             for path in sorted(guide.glob(pattern)):
                 relative = str(path.relative_to(ROOT))
+                if relative in HISTORICAL_PROSE_FILES:
+                    continue
                 for number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
                     for match in OWN_VERSION_IN_PROSE.finditer(line):
-                        found = match.group(1) or match.group(2)
+                        found = match.group(1) or match.group(2) or match.group(3)
                         if found in {mobile_version, FHIR_VERSION}:
                             continue
                         # A pinned third-party version is not Grove's and does not move with it.
