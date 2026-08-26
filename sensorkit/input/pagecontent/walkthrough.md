@@ -71,8 +71,8 @@ Trimmed to the load-bearing elements:
   "subject": {"reference": "urn:uuid:d66ce444-2f05-5661-ac7c-86f080cf3be4"},
   "date": "2026-08-20T15:15:01Z",
   "author": [{"reference": "urn:uuid:7b38448e-4b35-5813-979a-65f2b724c703"}],
-  "content": [{"format": {"system": "https://grovealliance.org/fhir/sensor/CodeSystem/grove-recording-format", "code": "native-json-1"}, "attachment": {
-    "contentType": "application/json",
+  "content": [{"format": {"system": "https://grovealliance.org/fhir/sensor/CodeSystem/grove-recording-format", "code": "native-recording", "version": "0.5.0"}, "attachment": {
+    "contentType": "application/vnd.grovealliance.native+json",
     "title": "SensorKit device usage report",
     "data": "eyJ2ZXJzaW9uIjoiMSJ9",
     "size": 15,
@@ -82,7 +82,7 @@ Trimmed to the load-bearing elements:
 }
 ```
 
-The payload format identity is `content.format` from the [recording format registry](https://grovealliance.org/fhir/sensor/formats.html) — here `native-json-1` — and the `contentType` comes from the [Grove Native Recording MIME Types](https://grovealliance.org/fhir/sensor/ValueSet-grove-native-recording-mime-type.html) value set; the caller-encoded bytes are `application/json`.
+The payload format identity is `content.format` from the [recording format registry](https://grovealliance.org/fhir/sensor/formats.html) — here `native-recording` — and the `contentType` comes from the [Grove Native Recording MIME Types](https://grovealliance.org/fhir/sensor/ValueSet-grove-native-recording-mime-type.html) value set; the caller-encoded bytes are `application/vnd.grovealliance.native+json`.
 The attachment holds exactly one of embedded `data` or a retrievable `url`, and always the required `title`, `size`, and R4 SHA-1 `hash`, which is change detection only, never authorization.
 The producer emits the document only after the caller asserts `caller-authorized-opaque-payload` or `verified-sanitized-input`; the mapper itself never fetches, inspects, or re-encodes the bytes.
 

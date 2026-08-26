@@ -139,7 +139,7 @@ class HealthKitCatalogTests(unittest.TestCase):
                     "grove-mobile-sleep-duration"
                 ],
                 "requirement": (
-                    "This is not a HealthKit platform source identifier. Version 0.4.0 "
+                    "This is not a HealthKit platform source identifier. Version 0.5.0 "
                     "does not define the session-boundary aggregation contract; "
                     "individual admitted samples map only to sleep stage."
                 ),

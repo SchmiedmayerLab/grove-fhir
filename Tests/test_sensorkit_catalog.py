@@ -34,7 +34,7 @@ class SensorKitCatalogTests(unittest.TestCase):
     def test_release_package_and_profile_graph_are_exact(self) -> None:
         self.assertEqual(self.catalog["schemaVersion"], 1)
         self.assertEqual(self.catalog["fhirVersion"], "4.0.1")
-        self.assertEqual(self.catalog["version"], "0.4.0")
+        self.assertEqual(self.catalog["version"], "0.5.0")
         package = next(
             package for package in self.graph["packages"]
             if package["source"] == "sensorkit"
@@ -45,13 +45,14 @@ class SensorKitCatalogTests(unittest.TestCase):
             package["dependencies"],
             [
                 "hl7.terminology.r4#7.3.0",
-                "org.grovealliance.fhir.mobile#0.4.0",
-                "org.grovealliance.fhir.sensor#0.4.0",
+                "org.grovealliance.fhir.mobile#0.5.0",
+                "org.grovealliance.fhir.sensor#0.5.0",
             ],
         )
         self.assertEqual(
             set(package["profiles"]),
-            {"sensorkit-accelerometer-observation", "sensorkit-conversion-provenance", "sensorkit-device-usage-observation", "sensorkit-ecg-observation", "sensorkit-keyboard-metrics-observation", "sensorkit-messages-usage-observation", "sensorkit-observation", "sensorkit-on-wrist-observation", "sensorkit-phone-usage-observation", "sensorkit-ppg-observation", "sensorkit-recording-document", "sensorkit-sleep-session-observation", "sensorkit-visit-observation"},
+            {"sensorkit-accelerometer-observation", "sensorkit-conversion-provenance", "sensorkit-device-usage-observation", "sensorkit-ecg-observation", "sensorkit-keyboard-metrics-observation", "sensorkit-messages-usage-observation", "sensorkit-observation", "sensorkit-on-wrist-observation", "sensorkit-phone-usage-observation", "sensorkit-ppg-observation", "sensorkit-recording-document", "sensorkit-sleep-session-observation", "sensorkit-visit-observation",
+                "sensorkit-wrist-temperature-observation"},
         )
 
     def test_current_platform_inventory_is_closed_and_scope_complete(self) -> None:
@@ -165,7 +166,7 @@ class SensorKitCatalogTests(unittest.TestCase):
             elif entry["status"] == "platform-exclusive":
                 self.assertRegex(
                     entry["structured"]["profile"],
-                    r"/StructureDefinition/sensorkit-(on-wrist|device-usage|visit|messages-usage|phone-usage|keyboard-metrics|sleep-session|accelerometer|ppg)-observation$",
+                    r"/StructureDefinition/sensorkit-(on-wrist|device-usage|visit|messages-usage|phone-usage|keyboard-metrics|sleep-session|accelerometer|ppg|wrist-temperature)-observation$",
                 )
             elif entry["status"] == "mapped-standard":
                 self.assertTrue(
@@ -230,7 +231,11 @@ class SensorKitCatalogTests(unittest.TestCase):
             by_token["SRSensor.photoplethysmogram"]["status"], "platform-exclusive"
         )
         self.assertEqual(by_token["SRSensor.pedometerData"]["status"], "mapped-standard")
-        self.assertEqual(by_token["SRSensor.wristTemperature"]["status"], "mapped-standard")
+        # Wrist temperature gained a platform-scoped structured contract in 0.5.0, so its
+        # top-level status matches its siblings rather than claiming a recording document only.
+        self.assertEqual(
+            by_token["SRSensor.wristTemperature"]["status"], "platform-exclusive"
+        )
         self.assertIn("must not bracket", by_token["SRSensor.onWristState"]["structured"]["rule"])
         self.assertIn("does not assert a clinical Encounter", by_token["SRSensor.visits"]["structured"]["rule"])
         graph = by_token["SRSensor.deviceUsageReport"]["structured"]["graphContract"]

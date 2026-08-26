@@ -119,8 +119,9 @@ Description: "The caller-supplied exact native encoding that retains session ide
 * subject = Reference(SensorKitPatientExample)
 * date = "2026-08-20T16:10:01Z"
 * author = Reference(SensorKitDeviceExample)
-* content.attachment.contentType = #application/json
-* content.format = $recordingFormat#native-json-1 "Native JSON 1"
+* content.attachment.contentType = #application/vnd.grovealliance.native+json
+* content.format = $recordingFormat#native-recording "Native Recording"
+* content.format.version = "0.5.0"
 * content.attachment.title = "SensorKit ECG native recording"
 * content.attachment.data = "eyJndWlkYW5jZSI6Imd1aWRlZCIsImZsYWdzIjpbMCwyLDEsMF19"
 * content.attachment.size = 39
@@ -185,8 +186,9 @@ Description: "The caller-supplied exact native encoding paired with the inverse-
 * subject = Reference(SensorKitPatientExample)
 * date = "2026-08-20T16:12:01Z"
 * author = Reference(SensorKitDeviceExample)
-* content.attachment.contentType = #application/json
-* content.format = $recordingFormat#native-json-1 "Native JSON 1"
+* content.attachment.contentType = #application/vnd.grovealliance.native+json
+* content.format = $recordingFormat#native-recording "Native Recording"
+* content.format.version = "0.5.0"
 * content.attachment.title = "SensorKit inverse-lead ECG native recording"
 * content.attachment.data = "eyJndWlkYW5jZSI6InVuZ3VpZGVkIiwiZmxhZ3MiOlswLDAsMCwwXX0="
 * content.attachment.size = 41
@@ -302,8 +304,9 @@ Description: "The complete caller-encoded SensorKit device-usage report related 
 * subject = Reference(SensorKitPatientExample)
 * date = "2026-08-20T15:15:01Z"
 * author = Reference(SensorKitDeviceExample)
-* content.attachment.contentType = #application/json
-* content.format = $recordingFormat#native-json-1 "Native JSON 1"
+* content.attachment.contentType = #application/vnd.grovealliance.native+json
+* content.format = $recordingFormat#native-recording "Native Recording"
+* content.format.version = "0.5.0"
 * content.attachment.title = "SensorKit device usage report"
 * content.attachment.data = "eyJ2ZXJzaW9uIjoiMSJ9"
 * content.attachment.size = 15
@@ -394,8 +397,9 @@ Description: "The raw device-usage output whose internal references use determin
 * subject.reference = "urn:uuid:d66ce444-2f05-5661-ac7c-86f080cf3be4"
 * date = "2026-08-20T15:15:01Z"
 * author.reference = "urn:uuid:7b38448e-4b35-5813-979a-65f2b724c703"
-* content.attachment.contentType = #application/json
-* content.format = $recordingFormat#native-json-1 "Native JSON 1"
+* content.attachment.contentType = #application/vnd.grovealliance.native+json
+* content.format = $recordingFormat#native-recording "Native Recording"
+* content.format.version = "0.5.0"
 * content.attachment.title = "SensorKit device usage report"
 * content.attachment.data = "eyJ2ZXJzaW9uIjoiMSJ9"
 * content.attachment.size = 15
@@ -466,8 +470,9 @@ Description: "The caller-supplied native recording the summary counts, retained 
 * subject = Reference(SensorKitPatientExample)
 * date = "2026-08-20T17:05:01Z"
 * author = Reference(SensorKitDeviceExample)
-* content.attachment.contentType = #application/json
-* content.format = $recordingFormat#native-json-1 "Native JSON 1"
+* content.attachment.contentType = #application/vnd.grovealliance.native+json
+* content.format = $recordingFormat#native-recording "Native Recording"
+* content.format.version = "0.5.0"
 * content.attachment.title = "SensorKit Accelerometer Native Recording"
 * content.attachment.data = "eyJiYXRjaGVzIjoxMiwic2FtcGxlcyI6Mzg0MDB9"
 * content.attachment.size = 30
@@ -512,8 +517,9 @@ Description: "The caller-supplied native recording the summary counts, retained 
 * subject = Reference(SensorKitPatientExample)
 * date = "2026-08-20T17:05:01Z"
 * author = Reference(SensorKitDeviceExample)
-* content.attachment.contentType = #application/json
-* content.format = $recordingFormat#native-json-1 "Native JSON 1"
+* content.attachment.contentType = #application/vnd.grovealliance.native+json
+* content.format = $recordingFormat#native-recording "Native Recording"
+* content.format.version = "0.5.0"
 * content.attachment.title = "SensorKit PPG Native Recording"
 * content.attachment.data = "eyJyZWNvcmRzIjo0LCJvcHRpY2FsIjoyMDQ4MCwiYWNjZWxlcm9tZXRlciI6NTEyMH0="
 * content.attachment.size = 50
@@ -666,9 +672,56 @@ Description: "The caller-supplied native recording the summary counts, retained 
 * subject = Reference(SensorKitPatientExample)
 * date = "2026-08-20T17:05:01Z"
 * author = Reference(SensorKitDeviceExample)
-* content.attachment.contentType = #application/json
-* content.format = $recordingFormat#native-json-1 "Native JSON 1"
+* content.attachment.contentType = #application/vnd.grovealliance.native+json
+* content.format = $recordingFormat#native-recording "Native Recording"
+* content.format.version = "0.5.0"
 * content.attachment.title = "SensorKit Keyboard Metrics Native Recording"
 * content.attachment.data = "eyJlcGlzb2RlcyI6MzEsIndvcmRzIjoxODQwLCJ0YXBzIjo5ODIwfQ=="
 * content.attachment.size = 40
 * content.attachment.hash = "+Txt/nnCONsThnkqlptxXARG9Ig="
+
+Instance: SensorKitWristTemperatureDocumentExample
+InstanceOf: SensorKitRecordingDocument
+Usage: #example
+Title: "SensorKit Wrist Temperature Recording"
+Description: "The session's samples as the tabular recording the registry publishes for this stream."
+* meta.profile[+] = "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document"
+* identifier[sensorKitRecordId].system = $sensorKitRecordId
+* identifier[sensorKitRecordId].value = "3f0a1c77-52b8-5d41-9a6e-7c1e58d0b2aa"
+* identifier[sensorKitOutputId].system = $sensorKitOutputId
+* identifier[sensorKitOutputId].value = "v1:3f0a1c77-52b8-5d41-9a6e-7c1e58d0b2aa|sensorkit-wrist-temperature"
+* extension[sensorKitSourceType].valueCode = #wrist-temperature
+* status = #current
+* type = $sensorKitSourceType#wrist-temperature "Wrist temperature"
+* subject = Reference(SensorKitPatientExample)
+* date = "2026-08-20T17:05:01Z"
+* author = Reference(SensorKitDeviceExample)
+* content.attachment.contentType = #text/csv
+* content.format = $recordingFormat#sensorkit-wrist-temperature "SensorKit Wrist Temperature"
+* content.format.version = "0.5.0"
+* content.attachment.title = "SensorKit Wrist Temperature Recording"
+* content.attachment.data = "dGltZXN0YW1wLHZhbHVlLGVycm9yRXN0aW1hdGUsY29uZGl0aW9uCjE3ODcwMDk0MDAuMCwzMy40LDAuMSwKMTc4NzAxMzAwMC4wLDMzLjcsMC4xLCJvZmZXcmlzdCxpbk1vdGlvbiIK"
+* content.attachment.size = 105
+* content.attachment.hash = "V1AsMqJkY8eDvsdWWR7YIUR/LsQ="
+
+Instance: SensorKitWristTemperatureExample
+InstanceOf: SensorKitWristTemperatureObservation
+Usage: #example
+Title: "SensorKit Wrist Temperature Recording Summary"
+Description: "A platform-exclusive coverage summary of one wrist-temperature session; the recording document carries the samples."
+* identifier[sensorKitRecordId].system = $sensorKitRecordId
+* identifier[sensorKitRecordId].value = "3f0a1c77-52b8-5d41-9a6e-7c1e58d0b2aa"
+* identifier[sensorKitOutputId].system = $sensorKitOutputId
+* identifier[sensorKitOutputId].value = "v1:3f0a1c77-52b8-5d41-9a6e-7c1e58d0b2aa|wrist-temperature-recording-summary"
+* extension[sensorKitSourceType].valueCode = #wrist-temperature
+* status = #final
+* code = $sensorKitConcept#wrist-temperature-recording-summary "Wrist temperature recording summary"
+* subject = Reference(SensorKitPatientExample)
+* performer = Reference(SensorKitPatientExample)
+* effectivePeriod.start = "2026-08-20T23:10:00-07:00"
+* effectivePeriod.end = "2026-08-21T06:40:00-07:00"
+* derivedFrom = Reference(SensorKitWristTemperatureDocumentExample)
+* component[sampleCount].code = $sensorKitConcept#sample-count "Sample count"
+* component[sampleCount].valueQuantity = 2 '{count}' "{count}"
+* extension[algorithmVersion].valueString = "1"
+* device = Reference(SensorKitDeviceExample)

@@ -450,7 +450,7 @@ class QuestionnaireContractTests(unittest.TestCase):
             self.assertIsNotNone(package_file)
             package = json.load(package_file)
         self.assertEqual(package["name"], "org.grovealliance.fhir.questionnaire")
-        self.assertEqual(package["version"], "0.4.0")
+        self.assertEqual(package["version"], "0.5.0")
         self.assertEqual(package["dependencies"].get("hl7.fhir.uv.sdc"), "4.0.0")
         self.assertEqual(
             package["dependencies"].get("hl7.fhir.uv.extensions.r4"),

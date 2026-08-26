@@ -41,6 +41,12 @@ CATALOGS = ROOT / "catalog"
 OWN_VERSION_IN_PROSE = re.compile(r"\bv(\d+\.\d+\.\d+)\b|\b[Vv]ersion (\d+\.\d+\.\d+)\b")
 # Fields that state when a set was first frozen, and so name the release that froze it rather
 # than the current one. Every other prose mention must track the catalog's own version.
+# Guide sources that legitimately name an earlier release, because they state when something was
+# first frozen rather than what the current release defines.
+FHIR_VERSION = "4.0.1"
+
+HISTORICAL_GUIDE_VERSIONS: set[tuple[str, str]] = set()
+
 HISTORICAL_VERSION_FIELDS = {
     ("sensorkit-adapter.json", "sourceEvidence.scope"),
     ("sensorkit-adapter.json", "inventoryScopes.catalog-baseline"),
@@ -96,25 +102,65 @@ def main() -> int:
         if configuration.get("license") != "MIT":
             failures.append(f"{configuration_path.relative_to(ROOT)} must declare the MIT license")
 
-    mobile_configuration = configurations[ROOT / "mobile"]
-    expected_dependency = (
-        "org.grovealliance.fhir.mobile:\n"
-        f"    version: {mobile_configuration.get('version', '<missing>')}"
-    )
-    for source in MOBILE_ADAPTER_SOURCES:
-        adapter_configuration_text = (ROOT / source / "sushi-config.yaml").read_text(
-            encoding="utf-8"
-        )
-        if expected_dependency not in adapter_configuration_text:
-            failures.append(
-                f"{source}/sushi-config.yaml does not pin the current Mobile guide version"
-            )
+    # Every guide that depends on another Grove guide must pin that guide's current version.
+    # Checking only one of them let an adapter keep a stale Sensor pin through a release.
+    published = {
+        configuration["id"]: configuration.get("version", "<missing>")
+        for configuration in configurations.values()
+        if "id" in configuration
+    }
+    for guide in GUIDES:
+        source = guide.name
+        text = (guide / "sushi-config.yaml").read_text(encoding="utf-8")
+        for package, pinned in re.findall(
+            r"^  (org\.grovealliance\.fhir\.[a-z-]+):\n    version: (\S+)$", text, re.MULTILINE
+        ):
+            current = published.get(package)
+            if current is None:
+                failures.append(f"{source}/sushi-config.yaml depends on unknown guide {package}")
+            elif pinned != current:
+                failures.append(
+                    f"{source}/sushi-config.yaml pins {package} at {pinned}, but it is {current}"
+                )
 
     for catalog_path in sorted(CATALOGS.glob("*.json")):
         catalog = json.loads(catalog_path.read_text(encoding="utf-8"))
         catalog_version = catalog.get("version")
         if isinstance(catalog_version, str):
             failures.extend(stale_version_prose(catalog_path.name, catalog, catalog_version))
+
+    # FSH examples pin the release in content.format.version; a stale literal there would
+    # ship an instance claiming a generation the guide no longer publishes.
+    mobile_version = configurations[ROOT / "mobile"].get("version")
+
+    # Prose in a guide's own sources names the release too, and several of those strings ship
+    # inside published ValueSet and CodeSystem descriptions. The catalog guard cannot see them.
+    for guide in GUIDES:
+        for pattern in ("input/fsh/*.fsh", "input/pagecontent/*.md"):
+            for path in sorted(guide.glob(pattern)):
+                relative = str(path.relative_to(ROOT))
+                for number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+                    for match in OWN_VERSION_IN_PROSE.finditer(line):
+                        found = match.group(1) or match.group(2)
+                        # The FHIR release is not Grove's version and never moves with it.
+                        if found in {mobile_version, FHIR_VERSION}:
+                            continue
+                        if (relative, found) in HISTORICAL_GUIDE_VERSIONS:
+                            continue
+                        failures.append(
+                            f"{relative}:{number} names version {found}, but the release "
+                            f"is {mobile_version}"
+                        )
+
+    for guide in GUIDES:
+        for path in sorted((guide / "input/fsh").glob("*.fsh")):
+            for number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+                match = re.match(r'^\* content\.format\.version = "(\S+)"$', line.strip())
+                if match and match.group(1) != mobile_version:
+                    failures.append(
+                        f"{path.relative_to(ROOT)}:{number} pins format version "
+                        f"{match.group(1)}, but the release is {mobile_version}"
+                    )
 
     publication_path = ROOT / "publication/config.json"
     publication = json.loads(publication_path.read_text(encoding="utf-8"))

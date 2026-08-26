@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "fhirVersion": "4.0.1",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "observationAdapterClaim": {
     "cardinality": 2,
     "members": [
@@ -119,7 +119,8 @@
         "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-ppg-observation",
         "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-recording-document",
         "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-sleep-session-observation",
-        "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-visit-observation"
+        "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-visit-observation",
+        "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-wrist-temperature-observation"
       ],
       "rule": "One Provenance in the exchange graph targets every SensorKit structured and raw output carrying its exact sole source-record Identifier; every target is an internal UUID reference. A bundle whose outputs for a source record are all entered-in-error records a retraction rather than a conversion and carries no conversion Provenance."
     }
@@ -135,7 +136,8 @@
       "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-phone-usage-observation",
       "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-ppg-observation",
       "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-sleep-session-observation",
-      "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-visit-observation"
+      "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-visit-observation",
+      "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-wrist-temperature-observation"
     ],
     "otherProfilesAllowed": false
   },

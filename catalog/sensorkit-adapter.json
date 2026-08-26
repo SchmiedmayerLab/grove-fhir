@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "fhirVersion": "4.0.1",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "packageId": "org.grovealliance.fhir.sensorkit",
   "canonical": "https://grovealliance.org/fhir/sensorkit",
   "statusVocabulary": [
@@ -13,12 +13,12 @@
     "intentionally-unsupported"
   ],
   "statusDefinitions": {
-    "supported": "Version 0.4.0 defines a lossless structured mapping to the listed source-neutral Sensor profile plus the SensorKit adapter profile. A row may require the listed linked native Recording Document when exact source fields cannot be carried in the structured projection alone.",
-    "mapped-standard": "Version 0.4.0 admits the stream as the listed source-neutral Sensor Recording Document and does not invent a structured scalar or waveform meaning.",
-    "platform-exclusive": "Version 0.4.0 defines the listed platform-exclusive SensorKit structured profile because no exact source-neutral or international profile exists.",
+    "supported": "Version 0.5.0 defines a lossless structured mapping to the listed source-neutral Sensor profile plus the SensorKit adapter profile. A row may require the listed linked native Recording Document when exact source fields cannot be carried in the structured projection alone.",
+    "mapped-standard": "Version 0.5.0 admits the stream as the listed source-neutral Sensor Recording Document and does not invent a structured scalar or waveform meaning.",
+    "platform-exclusive": "Version 0.5.0 defines the listed platform-exclusive SensorKit structured profile because no exact source-neutral or international profile exists.",
     "unmodeled": "The platform stream is inventoried, but no shared or SensorKit-scoped profile models it and no output is admitted.",
-    "deferred": "The platform stream is inventoried, but version 0.4.0 publishes no admitted output contract.",
-    "intentionally-unsupported": "Version 0.4.0 deliberately refuses the stream because any available representation would create a misleading or unsafe meaning."
+    "deferred": "The platform stream is inventoried, but version 0.5.0 publishes no admitted output contract.",
+    "intentionally-unsupported": "Version 0.5.0 deliberately refuses the stream because any available representation would create a misleading or unsafe meaning."
   },
   "sourceEvidence": {
     "platform": "Apple SensorKit",
@@ -175,7 +175,7 @@
         "outputDiscriminator": "native-recording",
         "encoding": "caller-supplied exact bytes",
         "formats": [
-          "grove-csv-1"
+          "sensorkit-accelerometer"
         ]
       }
     },
@@ -189,7 +189,7 @@
       "minimumIOS": "26.0",
       "scope": "stable-addition",
       "status": "deferred",
-      "reason": "Version 0.4.0 publishes no reviewed output contract for this stable platform symbol."
+      "reason": "Version 0.5.0 publishes no reviewed output contract for this stable platform symbol."
     },
     {
       "sourceToken": "SRSensor.ambientLightSensor",
@@ -203,7 +203,7 @@
       "status": "mapped-standard",
       "structured": {
         "status": "deferred",
-        "reason": "The source contains heterogeneous light fields for which version 0.4.0 does not publish a lossless component profile."
+        "reason": "The source contains heterogeneous light fields for which version 0.5.0 does not publish a lossless component profile."
       },
       "raw": {
         "status": "mapped-standard",
@@ -211,7 +211,7 @@
         "outputDiscriminator": "native-recording",
         "encoding": "caller-supplied exact bytes",
         "formats": [
-          "grove-csv-1"
+          "sensorkit-ambient-light"
         ]
       }
     },
@@ -235,7 +235,7 @@
         "outputDiscriminator": "native-recording",
         "encoding": "caller-supplied exact bytes",
         "formats": [
-          "grove-csv-1"
+          "sensorkit-ambient-pressure"
         ]
       }
     },
@@ -279,8 +279,8 @@
         ],
         "encoding": "caller-supplied exact bytes",
         "formats": [
-          "fhir-json-1",
-          "native-json-1"
+          "fhir-resource-array",
+          "native-recording"
         ]
       }
     },
@@ -329,8 +329,8 @@
         ],
         "encoding": "caller-supplied exact bytes",
         "formats": [
-          "fhir-json-1",
-          "native-json-1"
+          "fhir-resource-array",
+          "native-recording"
         ]
       }
     },
@@ -346,7 +346,7 @@
       "status": "mapped-standard",
       "structured": {
         "status": "deferred",
-        "reason": "Version 0.4.0 publishes no reviewed structured profile for the heterogeneous face metrics."
+        "reason": "Version 0.5.0 publishes no reviewed structured profile for the heterogeneous face metrics."
       },
       "raw": {
         "status": "mapped-standard",
@@ -354,7 +354,7 @@
         "outputDiscriminator": "native-recording",
         "encoding": "caller-supplied exact bytes",
         "formats": [
-          "native-json-1"
+          "native-recording"
         ],
         "jsonSchema": {
           "schemaId": "sensorkit-face-metrics-json",
@@ -421,7 +421,7 @@
         "outputDiscriminator": "native-recording",
         "encoding": "caller-supplied exact bytes",
         "formats": [
-          "grove-csv-1"
+          "sensorkit-heart-rate"
         ]
       }
     },
@@ -446,7 +446,7 @@
         "outputDiscriminator": "native-recording",
         "encoding": "caller-supplied exact bytes",
         "formats": [
-          "native-json-1"
+          "native-recording"
         ],
         "jsonSchema": {
           "schemaId": "sensorkit-keyboard-metrics-json",
@@ -467,7 +467,7 @@
       "status": "mapped-standard",
       "structured": {
         "status": "deferred",
-        "reason": "Media interactions do not have a reviewed source-neutral clinical Observation representation in version 0.4.0."
+        "reason": "Media interactions do not have a reviewed source-neutral clinical Observation representation in version 0.5.0."
       },
       "raw": {
         "status": "mapped-standard",
@@ -475,7 +475,7 @@
         "outputDiscriminator": "native-recording",
         "encoding": "caller-supplied exact bytes",
         "formats": [
-          "native-json-1"
+          "native-recording"
         ],
         "jsonSchema": {
           "schemaId": "sensorkit-media-events-json",
@@ -525,7 +525,7 @@
         "outputDiscriminator": "native-recording",
         "encoding": "caller-supplied exact bytes",
         "formats": [
-          "native-json-1"
+          "native-recording"
         ],
         "jsonSchema": {
           "schemaId": "sensorkit-messages-usage-json",
@@ -587,7 +587,7 @@
         "outputDiscriminator": "native-recording",
         "encoding": "caller-supplied exact bytes",
         "formats": [
-          "grove-csv-1"
+          "sensorkit-odometer"
         ]
       }
     },
@@ -619,8 +619,8 @@
         "outputDiscriminator": "native-recording",
         "encoding": "caller-supplied exact bytes",
         "formats": [
-          "fhir-json-1",
-          "native-json-1"
+          "fhir-resource-array",
+          "native-recording"
         ]
       }
     },
@@ -644,7 +644,7 @@
         "outputDiscriminator": "native-recording",
         "encoding": "caller-supplied exact bytes",
         "formats": [
-          "grove-csv-1"
+          "sensorkit-pedometer"
         ]
       }
     },
@@ -669,7 +669,7 @@
         "outputDiscriminator": "native-recording",
         "encoding": "caller-supplied exact bytes",
         "formats": [
-          "native-json-1"
+          "native-recording"
         ],
         "jsonSchema": {
           "schemaId": "sensorkit-phone-usage-json",
@@ -739,7 +739,7 @@
         "outputDiscriminator": "native-recording",
         "encoding": "caller-supplied exact bytes",
         "formats": [
-          "grove-ppg-1"
+          "sensorkit-photoplethysmogram"
         ]
       }
     },
@@ -767,7 +767,7 @@
         "outputDiscriminator": "native-recording",
         "encoding": "caller-supplied exact bytes",
         "formats": [
-          "grove-csv-1"
+          "sensorkit-rotation-rate"
         ]
       }
     },
@@ -783,7 +783,7 @@
       "status": "mapped-standard",
       "structured": {
         "status": "deferred",
-        "reason": "Speech metrics have no reviewed source-neutral clinical Observation representation in version 0.4.0."
+        "reason": "Speech metrics have no reviewed source-neutral clinical Observation representation in version 0.5.0."
       },
       "raw": {
         "status": "mapped-standard",
@@ -791,7 +791,7 @@
         "outputDiscriminator": "native-recording",
         "encoding": "caller-supplied exact bytes",
         "formats": [
-          "native-json-1"
+          "native-recording"
         ],
         "jsonSchema": {
           "schemaId": "sensorkit-speech-metrics-json",
@@ -886,7 +886,7 @@
       "status": "mapped-standard",
       "structured": {
         "status": "deferred",
-        "reason": "Speech metrics have no reviewed source-neutral clinical Observation representation in version 0.4.0."
+        "reason": "Speech metrics have no reviewed source-neutral clinical Observation representation in version 0.5.0."
       },
       "raw": {
         "status": "mapped-standard",
@@ -894,7 +894,7 @@
         "outputDiscriminator": "native-recording",
         "encoding": "caller-supplied exact bytes",
         "formats": [
-          "native-json-1"
+          "native-recording"
         ]
       }
     },
@@ -926,8 +926,8 @@
         "outputDiscriminator": "native-recording",
         "encoding": "caller-supplied exact bytes",
         "formats": [
-          "fhir-json-1",
-          "native-json-1"
+          "fhir-resource-array",
+          "native-recording"
         ]
       }
     },
@@ -940,10 +940,12 @@
       "documentation": "https://developer.apple.com/documentation/sensorkit/srsensor/wristtemperature",
       "minimumIOS": "17.0",
       "scope": "catalog-baseline",
-      "status": "mapped-standard",
+      "status": "platform-exclusive",
       "structured": {
-        "status": "deferred",
-        "reason": "A wrist-temperature session is not automatically the shared body-temperature or basal-body-temperature meaning."
+        "status": "platform-exclusive",
+        "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-wrist-temperature-observation",
+        "outputDiscriminator": "wrist-temperature-recording-summary",
+        "reason": "A sleep-interval wrist skin reading is neither body nor basal body temperature, so version 0.5.0 publishes a platform-scoped summary rather than binding it to a shared clinical meaning."
       },
       "raw": {
         "status": "mapped-standard",
@@ -951,7 +953,7 @@
         "outputDiscriminator": "native-recording",
         "encoding": "caller-supplied exact bytes",
         "formats": [
-          "grove-csv-1"
+          "sensorkit-wrist-temperature"
         ]
       }
     }

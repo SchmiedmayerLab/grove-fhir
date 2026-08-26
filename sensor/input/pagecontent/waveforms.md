@@ -11,7 +11,7 @@ SPDX-License-Identifier: MIT
 `grove-sensor-sampled-data-observation` carries one uniformly sampled numeric series.
 `SampledData.period` is the strictly positive number of milliseconds between frames,
 and `dimensions` is the strictly positive number of interlaced decimal values in each
-frame. At least two complete frames are required. Version 0.3.0 admits direct numeric values only: `factor`, `lowerLimit`, and
+frame. At least two complete frames are required. Version 0.5.0 admits direct numeric values only: `factor`, `lowerLimit`, and
 `upperLimit` are absent, and `E`, `U`, `L`, and omitted-value tokens are not admitted.
 The data token count is an exact multiple of `dimensions`.
 
@@ -41,11 +41,13 @@ Observation. There is deliberately no universal inline-size cutoff: transport an
 repository capacity are deployment policy, while the FHIR representation remains
 stable.
 
-The Grove ValueSet admits only `application/json` and `application/octet-stream` from
-the standard BCP 13 namespace and carries the same two-code closed expansion for
-offline membership checks. The IANA registry remains authoritative: Grove neither
-publishes nor versions that external CodeSystem and does not define or reassign its
-codes.
+The Grove ValueSet admits one media type per registered payload format and carries a
+closed expansion for offline membership checks. Standard types such as `text/csv` and
+`application/fhir+json` are identified by their IANA registration; the formats Grove
+defines itself use the vendor tree, and those are Grove's own types rather than
+registered ones. The IANA registry remains authoritative for the standard types: Grove
+neither publishes nor versions that external CodeSystem and does not define or reassign
+its codes.
 
 Before emitting any native Recording Document, a producer requires exactly one explicit
 caller assertion: either `caller-authorized-opaque-payload` or

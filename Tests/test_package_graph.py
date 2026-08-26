@@ -26,7 +26,7 @@ class PackageGraphTests(unittest.TestCase):
         )
         self.assertEqual(graph["schemaVersion"], 1)
         self.assertEqual(graph["fhirVersion"], "4.0.1")
-        self.assertEqual(graph["version"], "0.4.0")
+        self.assertEqual(graph["version"], "0.5.0")
         self.assertEqual(graph["canonicalRoot"], "https://grovealliance.org/fhir")
         sources = [package["source"] for package in graph["packages"]]
         self.assertEqual(

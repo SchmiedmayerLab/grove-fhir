@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "fhirVersion": "4.0.1",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "source": {
     "platform": "Apple HealthKit",
     "sdkBaseline": {
@@ -203,7 +203,7 @@
       "profiles": [
         "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-sleep-duration"
       ],
-      "requirement": "This is not a HealthKit platform source identifier. Version 0.4.0 does not define the session-boundary aggregation contract; individual admitted samples map only to sleep stage."
+      "requirement": "This is not a HealthKit platform source identifier. Version 0.5.0 does not define the session-boundary aggregation contract; individual admitted samples map only to sleep stage."
     }
   ],
   "rows": [
@@ -1262,7 +1262,7 @@
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
-      "requirement": "Version 0.4.0 publishes no reviewed contract for this characteristic. LOINC 76689-9 'Sex assigned at birth' represents it faithfully, and the supported blood-type and wheelchair-use rows show a characteristic can carry an Observation, so this is unfinished work rather than a modelling refusal."
+      "requirement": "Version 0.5.0 publishes no reviewed contract for this characteristic. LOINC 76689-9 'Sex assigned at birth' represents it faithfully, and the supported blood-type and wheelchair-use rows show a characteristic can carry an Observation, so this is unfinished work rather than a modelling refusal."
     },
     {
       "sourceTypeIdentifier": "HKCharacteristicTypeIdentifierBloodType",
@@ -1501,7 +1501,7 @@
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
-      "requirement": "The beat-to-beat interval series has a published grove-csv-1 column schema, but the HealthKit adapter has no recording-document profile to carry it yet, so no output is admitted."
+      "requirement": "The beat-to-beat interval series has a published healthkit-heartbeat-series column schema, but the HealthKit adapter has no recording-document profile to carry it yet, so no output is admitted."
     },
     {
       "sourceTypeIdentifier": "HKDataTypeStateOfMind",

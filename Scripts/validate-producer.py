@@ -53,6 +53,12 @@ TOP_LEVEL_KEYS = {
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 CATALOG_ROOT = REPOSITORY_ROOT / "catalog"
 FHIR_TOOL_HOME = REPOSITORY_ROOT / ".build" / "fhir-home"
+# Read from the graph rather than restated: a literal here has to be remembered at every
+# release, and was left at 0.4.0 through the 0.5.0 bump.
+RELEASE_VERSION = json.loads(
+    (CATALOG_ROOT / "package-graph.json").read_text(encoding="utf-8")
+)["version"]
+
 ADAPTER_PACKAGE_PROFILES = {
     "org.grovealliance.fhir.sensorkit": {
         "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-accelerometer-observation",
@@ -68,6 +74,7 @@ ADAPTER_PACKAGE_PROFILES = {
         "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-recording-document",
         "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-sleep-session-observation",
         "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-visit-observation",
+        "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-wrist-temperature-observation",
     },
     "org.grovealliance.fhir.healthkit": {
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-apple-exercise-time",
@@ -1705,6 +1712,14 @@ def validate_recording_format(resource: dict[str, Any], label: str) -> None:
             raise ProducerValidationError(
                 f"{label} content[{index}] declares unregistered format {code!r}"
             )
+        # The code names the schema and never carries a version; the release travels in
+        # Coding.version, so a payload always states which registry generation defined it.
+        declared_version = format_coding.get("version")
+        if declared_version != registry["version"]:
+            raise ProducerValidationError(
+                f"{label} content[{index}] format version {declared_version!r} is not the "
+                f"registry version {registry['version']!r}"
+            )
         content_type = content.get("attachment", {}).get("contentType")
         if content_type != entry["contentType"]:
             raise ProducerValidationError(
@@ -2210,8 +2225,10 @@ def validate_manifest(path: Path) -> tuple[dict[str, Any], list[Path]]:
             raise ProducerValidationError(f"invalid package alias: {alias!r}")
         if not isinstance(package_id, str) or not PACKAGE_ID.fullmatch(package_id):
             raise ProducerValidationError(f"invalid package id: {package_id!r}")
-        if package["version"] != "0.4.0":
-            raise ProducerValidationError("Grove FHIR producer manifests must use package version 0.4.0")
+        if package["version"] != RELEASE_VERSION:
+            raise ProducerValidationError(
+                f"Grove FHIR producer manifests must use package version {RELEASE_VERSION}"
+            )
         if alias in aliases or package_id in package_ids:
             raise ProducerValidationError("package aliases and ids must be unique")
         aliases.add(alias)

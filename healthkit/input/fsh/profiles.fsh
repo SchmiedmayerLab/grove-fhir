@@ -127,7 +127,7 @@ Description: "A pass-through envelope for one provider-issued clinical FHIR reso
 * date 1..1 MS
 * content 1..1 MS
 * content.format 1..1 MS
-* content.format = $recordingFormat#fhir-resource-1 "FHIR Resource 1"
+* content.format = $recordingFormat#fhir-resource "FHIR Resource"
 * content.attachment.contentType 1..1 MS
 * content.attachment.contentType = #application/fhir+json (exactly)
 * content.attachment.title 1..1 MS

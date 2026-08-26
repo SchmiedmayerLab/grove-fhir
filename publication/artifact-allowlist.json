@@ -1645,6 +1645,13 @@
       "canonical": "https://grovealliance.org/fhir/sensorkit",
       "artifacts": [
         {
+          "fshName": "SensorKitAccelerometerObservation",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "sensorkit-accelerometer-observation",
+          "classification": "definition"
+        },
+        {
           "fshName": "SensorKitConceptCS",
           "fshType": "CodeSystem",
           "resourceType": "CodeSystem",
@@ -1659,6 +1666,20 @@
           "classification": "definition"
         },
         {
+          "fshName": "SensorKitConversionProvenance",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "sensorkit-conversion-provenance",
+          "classification": "definition"
+        },
+        {
+          "fshName": "SensorKitDeviceUsageObservation",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "sensorkit-device-usage-observation",
+          "classification": "definition"
+        },
+        {
           "fshName": "SensorKitECGLeadCS",
           "fshType": "CodeSystem",
           "resourceType": "CodeSystem",
@@ -1666,9 +1687,128 @@
           "classification": "definition"
         },
         {
+          "fshName": "SensorKitECGLeadVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "sensorkit-ecg-lead",
+          "classification": "definition"
+        },
+        {
+          "fshName": "SensorKitECGObservation",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "sensorkit-ecg-observation",
+          "classification": "definition"
+        },
+        {
+          "fshName": "SensorKitECGSessionGuidance",
+          "fshType": "Extension",
+          "resourceType": "StructureDefinition",
+          "id": "sensorkit-ecg-session-guidance",
+          "classification": "definition"
+        },
+        {
+          "fshName": "SensorKitECGSessionGuidanceVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "sensorkit-ecg-session-guidance",
+          "classification": "definition"
+        },
+        {
+          "fshName": "SensorKitKeyboardMetricsObservation",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "sensorkit-keyboard-metrics-observation",
+          "classification": "definition"
+        },
+        {
+          "fshName": "SensorKitMessagesUsageObservation",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "sensorkit-messages-usage-observation",
+          "classification": "definition"
+        },
+        {
+          "fshName": "SensorKitObservation",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "sensorkit-observation",
+          "classification": "definition"
+        },
+        {
+          "fshName": "SensorKitOnWristObservation",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "sensorkit-on-wrist-observation",
+          "classification": "definition"
+        },
+        {
+          "fshName": "SensorKitOutputIdentifier",
+          "fshType": "Instance",
+          "resourceType": "NamingSystem",
+          "id": "sensorkit-output-id",
+          "classification": "definition"
+        },
+        {
+          "fshName": "SensorKitPhoneUsageObservation",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "sensorkit-phone-usage-observation",
+          "classification": "definition"
+        },
+        {
+          "fshName": "SensorKitPpgObservation",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "sensorkit-ppg-observation",
+          "classification": "definition"
+        },
+        {
+          "fshName": "SensorKitRecordIdentifier",
+          "fshType": "Instance",
+          "resourceType": "NamingSystem",
+          "id": "sensorkit-record-id",
+          "classification": "definition"
+        },
+        {
+          "fshName": "SensorKitRecordingDocument",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "sensorkit-recording-document",
+          "classification": "definition"
+        },
+        {
+          "fshName": "SensorKitSideVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "sensorkit-side",
+          "classification": "definition"
+        },
+        {
+          "fshName": "SensorKitSleepSessionObservation",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "sensorkit-sleep-session-observation",
+          "classification": "definition"
+        },
+        {
+          "fshName": "SensorKitSourceType",
+          "fshType": "Extension",
+          "resourceType": "StructureDefinition",
+          "id": "sensorkit-source-type",
+          "classification": "definition"
+        },
+        {
           "fshName": "SensorKitSourceTypeCS",
           "fshType": "CodeSystem",
           "resourceType": "CodeSystem",
+          "id": "sensorkit-source-type",
+          "classification": "definition"
+        },
+        {
+          "fshName": "SensorKitSourceTypeVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
           "id": "sensorkit-source-type",
           "classification": "definition"
         },
@@ -1680,24 +1820,52 @@
           "classification": "definition"
         },
         {
-          "fshName": "SensorKitECGSessionGuidance",
-          "fshType": "Extension",
-          "resourceType": "StructureDefinition",
-          "id": "sensorkit-ecg-session-guidance",
-          "classification": "definition"
-        },
-        {
-          "fshName": "SensorKitSourceType",
-          "fshType": "Extension",
-          "resourceType": "StructureDefinition",
-          "id": "sensorkit-source-type",
-          "classification": "definition"
-        },
-        {
           "fshName": "SensorKitVisitLocation",
           "fshType": "Extension",
           "resourceType": "StructureDefinition",
           "id": "sensorkit-visit-location",
+          "classification": "definition"
+        },
+        {
+          "fshName": "SensorKitVisitLocationCategoryVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "sensorkit-visit-location-category",
+          "classification": "definition"
+        },
+        {
+          "fshName": "SensorKitVisitLocationIdentifier",
+          "fshType": "Instance",
+          "resourceType": "NamingSystem",
+          "id": "sensorkit-visit-location-id",
+          "classification": "definition"
+        },
+        {
+          "fshName": "SensorKitVisitObservation",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "sensorkit-visit-observation",
+          "classification": "definition"
+        },
+        {
+          "fshName": "SensorKitWearStateVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "sensorkit-wear-state",
+          "classification": "definition"
+        },
+        {
+          "fshName": "SensorKitWristTemperatureAlgorithmVersion",
+          "fshType": "Extension",
+          "resourceType": "StructureDefinition",
+          "id": "sensorkit-wrist-temperature-algorithm-version",
+          "classification": "definition"
+        },
+        {
+          "fshName": "SensorKitWristTemperatureObservation",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "sensorkit-wrist-temperature-observation",
           "classification": "definition"
         },
         {
@@ -1869,13 +2037,6 @@
           "classification": "example"
         },
         {
-          "fshName": "SensorKitOutputIdentifier",
-          "fshType": "Instance",
-          "resourceType": "NamingSystem",
-          "id": "sensorkit-output-id",
-          "classification": "definition"
-        },
-        {
           "fshName": "SensorKitPPGDocumentExample",
           "fshType": "Instance",
           "resourceType": "DocumentReference",
@@ -1902,13 +2063,6 @@
           "resourceType": "Observation",
           "id": "SensorKitPhoneUsageExample",
           "classification": "example"
-        },
-        {
-          "fshName": "SensorKitRecordIdentifier",
-          "fshType": "Instance",
-          "resourceType": "NamingSystem",
-          "id": "sensorkit-record-id",
-          "classification": "definition"
         },
         {
           "fshName": "SensorKitRotationRateExample",
@@ -1939,144 +2093,18 @@
           "classification": "example"
         },
         {
-          "fshName": "SensorKitVisitLocationIdentifier",
+          "fshName": "SensorKitWristTemperatureDocumentExample",
           "fshType": "Instance",
-          "resourceType": "NamingSystem",
-          "id": "sensorkit-visit-location-id",
-          "classification": "definition"
+          "resourceType": "DocumentReference",
+          "id": "SensorKitWristTemperatureDocumentExample",
+          "classification": "example"
         },
         {
-          "fshName": "SensorKitAccelerometerObservation",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "sensorkit-accelerometer-observation",
-          "classification": "definition"
-        },
-        {
-          "fshName": "SensorKitConversionProvenance",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "sensorkit-conversion-provenance",
-          "classification": "definition"
-        },
-        {
-          "fshName": "SensorKitDeviceUsageObservation",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "sensorkit-device-usage-observation",
-          "classification": "definition"
-        },
-        {
-          "fshName": "SensorKitECGObservation",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "sensorkit-ecg-observation",
-          "classification": "definition"
-        },
-        {
-          "fshName": "SensorKitKeyboardMetricsObservation",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "sensorkit-keyboard-metrics-observation",
-          "classification": "definition"
-        },
-        {
-          "fshName": "SensorKitMessagesUsageObservation",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "sensorkit-messages-usage-observation",
-          "classification": "definition"
-        },
-        {
-          "fshName": "SensorKitObservation",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "sensorkit-observation",
-          "classification": "definition"
-        },
-        {
-          "fshName": "SensorKitOnWristObservation",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "sensorkit-on-wrist-observation",
-          "classification": "definition"
-        },
-        {
-          "fshName": "SensorKitPhoneUsageObservation",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "sensorkit-phone-usage-observation",
-          "classification": "definition"
-        },
-        {
-          "fshName": "SensorKitPpgObservation",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "sensorkit-ppg-observation",
-          "classification": "definition"
-        },
-        {
-          "fshName": "SensorKitRecordingDocument",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "sensorkit-recording-document",
-          "classification": "definition"
-        },
-        {
-          "fshName": "SensorKitSleepSessionObservation",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "sensorkit-sleep-session-observation",
-          "classification": "definition"
-        },
-        {
-          "fshName": "SensorKitVisitObservation",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "sensorkit-visit-observation",
-          "classification": "definition"
-        },
-        {
-          "fshName": "SensorKitECGLeadVS",
-          "fshType": "ValueSet",
-          "resourceType": "ValueSet",
-          "id": "sensorkit-ecg-lead",
-          "classification": "definition"
-        },
-        {
-          "fshName": "SensorKitECGSessionGuidanceVS",
-          "fshType": "ValueSet",
-          "resourceType": "ValueSet",
-          "id": "sensorkit-ecg-session-guidance",
-          "classification": "definition"
-        },
-        {
-          "fshName": "SensorKitSideVS",
-          "fshType": "ValueSet",
-          "resourceType": "ValueSet",
-          "id": "sensorkit-side",
-          "classification": "definition"
-        },
-        {
-          "fshName": "SensorKitSourceTypeVS",
-          "fshType": "ValueSet",
-          "resourceType": "ValueSet",
-          "id": "sensorkit-source-type",
-          "classification": "definition"
-        },
-        {
-          "fshName": "SensorKitVisitLocationCategoryVS",
-          "fshType": "ValueSet",
-          "resourceType": "ValueSet",
-          "id": "sensorkit-visit-location-category",
-          "classification": "definition"
-        },
-        {
-          "fshName": "SensorKitWearStateVS",
-          "fshType": "ValueSet",
-          "resourceType": "ValueSet",
-          "id": "sensorkit-wear-state",
-          "classification": "definition"
+          "fshName": "SensorKitWristTemperatureExample",
+          "fshType": "Instance",
+          "resourceType": "Observation",
+          "id": "SensorKitWristTemperatureExample",
+          "classification": "example"
         }
       ]
     },

@@ -16,13 +16,21 @@ Description: "The closed registry of payload formats a Grove recording DocumentR
 * ^experimental = false
 * ^caseSensitive = true
 * ^content = #complete
-* #grove-csv-1 "Grove CSV 1" "One header row naming every column in order, then one row per source sample in source order."
-* #fhir-json-1 "FHIR JSON Array 1" "A single JSON array; each element is one complete FHIR R4 resource in FHIR JSON representation, in source sample order."
-* #native-json-1 "Native JSON 1" "The producer's exact native JSON serialization of one source batch, byte-preserved."
-* #provider-json-1 "Provider JSON 1" "The verbatim JSON payload returned by the provider API call that produced the batch, byte-preserved apart from transport framing."
-* #grove-ppg-1 "Grove PPG Binary 1" "Varint record count, then that many PPG records."
-* #grove-batch-archive-1 "Grove Batch Archive 1" "A POSIX ustar tar stream, optionally compressed as one whole; every archived file is itself a registry-format payload or a documented sidecar of one."
-* #fhir-resource-1 "FHIR Resource 1" "One complete provider-issued FHIR resource in FHIR JSON representation, byte-preserved exactly as the source platform delivered it."
+* #sensorkit-heart-rate "SensorKit Heart Rate" "One header row naming every column in order, then one row per source sample in source order. Columns: timestamp, value, confidence, device. Source: SRSensor.heartRate (CMHighFrequencyHeartRateData)."
+* #sensorkit-accelerometer "SensorKit Accelerometer" "One header row naming every column in order, then one row per source sample in source order. Columns: timestamp, identifier, x, y, z, device. Source: SRSensor.accelerometer (CMRecordedAccelerometerData)."
+* #sensorkit-ambient-light "SensorKit Ambient Light" "One header row naming every column in order, then one row per source sample in source order. Columns: timestamp, lux, placement, chromacityX, chromacityY, device. Source: SRSensor.ambientLightSensor (SRAmbientLightSample)."
+* #sensorkit-ambient-pressure "SensorKit Ambient Pressure" "One header row naming every column in order, then one row per source sample in source order. Columns: timestamp, identifier, pressure, temperature, device. Source: SRSensor.ambientPressure (CMRecordedPressureData)."
+* #sensorkit-pedometer "SensorKit Pedometer" "One header row naming every column in order, then one row per source sample in source order. Columns: start, end, steps, distance, floorsUp, floorsDown, currentPace, currentCadence, avgActivePace, device. Source: SRSensor.pedometerData (CMPedometerData)."
+* #sensorkit-wrist-temperature "SensorKit Wrist Temperature" "One header row naming every column in order, then one row per source sample in source order. Columns: timestamp, value, errorEstimate, condition. Source: SRSensor.wristTemperature (SRWristTemperatureSession)."
+* #sensorkit-rotation-rate "SensorKit Rotation Rate" "One header row naming every column in order, then one row per source sample in source order. Columns: timestamp, x, y, z, device. Source: SRSensor.rotationRate (CMRecordedRotationRateData)."
+* #sensorkit-odometer "SensorKit Odometer" "One header row naming every column in order, then one row per source sample in source order. Columns: start, end, gpsDate, speed, speedAccuracy, slope, maxAbsSlope, deltaDistance, deltaDistanceAccuracy, deltaAltitude, verticalAccuracy, originDevice, device. Source: SRSensor.odometer (CMOdometerData)."
+* #healthkit-heartbeat-series "HealthKit Heartbeat Series" "One header row naming every column in order, then one row per source sample in source order. Columns: timestamp, precededByGap. Source: HKDataTypeIdentifierHeartbeatSeries (HKHeartbeatSeriesSample)."
+* #fhir-resource-array "FHIR Resource Array" "A single JSON array; each element is one complete FHIR R4 resource in FHIR JSON representation, in source sample order."
+* #fhir-resource "FHIR Resource" "One complete provider-issued FHIR resource in FHIR JSON representation, byte-preserved exactly as the source platform delivered it."
+* #native-recording "Native Recording" "The producer's exact native JSON serialization of one source batch, byte-preserved."
+* #provider-recording "Provider Recording" "The verbatim JSON payload returned by the provider API call that produced the batch, byte-preserved apart from transport framing."
+* #sensorkit-photoplethysmogram "SensorKit Photoplethysmogram" "Varint record count, then that many PPG records."
+* #batch-archive "Batch Archive" "A POSIX ustar tar stream compressed as one whole with Zstandard; every archived file is itself a registry-format payload or a documented sidecar of one."
 
 ValueSet: GroveRecordingFormatVS
 Id: grove-recording-format

@@ -33,11 +33,11 @@ class CatalogVersionProseTests(unittest.TestCase):
             CHECK_CONTENT.stale_version_prose(
                 "providers-adapter.json",
                 {"sourceEvidence": {"tokenBinding": "the exact v0.3.0 consumed source surface"}},
-                "0.4.0",
+                "0.5.0",
             ),
             [
                 "catalog/providers-adapter.json field sourceEvidence.tokenBinding "
-                "names version 0.3.0, but the catalog is 0.4.0"
+                "names version 0.3.0, but the catalog is 0.5.0"
             ],
         )
 
@@ -46,7 +46,7 @@ class CatalogVersionProseTests(unittest.TestCase):
             CHECK_CONTENT.stale_version_prose(
                 "package-graph.json",
                 {"packages": [{"dependencies": ["hl7.fhir.uv.extensions#7.3.0"]}]},
-                "0.4.0",
+                "0.5.0",
             ),
             [],
         )
@@ -56,7 +56,7 @@ class CatalogVersionProseTests(unittest.TestCase):
             CHECK_CONTENT.stale_version_prose(
                 "sensorkit-adapter.json",
                 {"inventoryScopes": {"catalog-baseline": "the initial closed v0.3.0 catalog baseline"}},
-                "0.4.0",
+                "0.5.0",
             ),
             [],
         )

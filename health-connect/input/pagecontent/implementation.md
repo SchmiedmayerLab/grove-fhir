@@ -6,7 +6,7 @@ SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTR
 SPDX-License-Identifier: MIT
 -->
 
-Version 0.3.0 is a producer mapping contract. It does not define a server, receiver,
+Version 0.5.0 is a producer mapping contract. It does not define a server, receiver,
 database, authentication scheme, transport envelope, or payload-size limit. A producer
 converts Records it has already read from Health Connect and returns a FHIR R4 collection
 Bundle conforming to the Mobile exchange contract.

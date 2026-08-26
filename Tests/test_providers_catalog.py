@@ -31,7 +31,7 @@ class ProviderCatalogTests(unittest.TestCase):
     def test_release_and_package_identity_are_exact(self) -> None:
         self.assertEqual(self.catalog["schemaVersion"], 1)
         self.assertEqual(self.catalog["fhirVersion"], "4.0.1")
-        self.assertEqual(self.catalog["version"], "0.4.0")
+        self.assertEqual(self.catalog["version"], "0.5.0")
         self.assertEqual(
             self.catalog["packageId"], "org.grovealliance.fhir.providers"
         )
@@ -59,8 +59,8 @@ class ProviderCatalogTests(unittest.TestCase):
         self.assertEqual(
             package["dependencies"],
             [
-                "org.grovealliance.fhir.mobile#0.4.0",
-                "org.grovealliance.fhir.sensor#0.4.0",
+                "org.grovealliance.fhir.mobile#0.5.0",
+                "org.grovealliance.fhir.sensor#0.5.0",
             ],
         )
         self.assertEqual(

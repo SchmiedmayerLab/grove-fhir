@@ -13,7 +13,7 @@ title: Grove FHIR Questionnaire Exchange
 description: >-
   A FHIR R4 contract for exchanging versioned questionnaires and their responses.
 status: draft
-version: 0.4.0
+version: 0.5.0
 fhirVersion: 4.0.1
 copyrightYear: 2026+
 releaseLabel: ci-build
