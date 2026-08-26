@@ -35,7 +35,7 @@ established terminology.
 FHIR package tooling identifies this guide as:
 
 ```text
-org.grovealliance.fhir.mobile#0.3.0
+org.grovealliance.fhir.mobile#0.5.0
 ```
 
 The Grove canonical is an identifier, not a package-download promise. Version 0.5.0 is
@@ -47,19 +47,19 @@ would remain:
 
 ```sh
 cache_backup="$(mktemp -d)"
-test ! -e "$HOME/.fhir/packages/org.grovealliance.fhir.mobile#0.3.0" || \
-  mv "$HOME/.fhir/packages/org.grovealliance.fhir.mobile#0.3.0" \
+test ! -e "$HOME/.fhir/packages/org.grovealliance.fhir.mobile#0.5.0" || \
+  mv "$HOME/.fhir/packages/org.grovealliance.fhir.mobile#0.5.0" \
      "$cache_backup/"
-mkdir -p "$HOME/.fhir/packages/org.grovealliance.fhir.mobile#0.3.0"
-tar -xzf path/to/org.grovealliance.fhir.mobile-0.3.0.tgz \
-  -C "$HOME/.fhir/packages/org.grovealliance.fhir.mobile#0.3.0"
+mkdir -p "$HOME/.fhir/packages/org.grovealliance.fhir.mobile#0.5.0"
+tar -xzf path/to/org.grovealliance.fhir.mobile-0.5.0.tgz \
+  -C "$HOME/.fhir/packages/org.grovealliance.fhir.mobile#0.5.0"
 ```
 
 After caching it, a FHIR Shorthand project can declare the exact dependency:
 
 ```yaml
 dependencies:
-  org.grovealliance.fhir.mobile: 0.3.0
+  org.grovealliance.fhir.mobile: 0.5.0
 ```
 
 ### Validate a resource

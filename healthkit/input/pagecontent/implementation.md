@@ -21,30 +21,30 @@ Each published guide exposes its archive and checksum from its [Artifacts page](
 ```
 
 To use the profiles from FHIR Shorthand, unpack both archives into the standard FHIR
-package cache and declare `org.grovealliance.fhir.healthkit#0.3.0`. The HealthKit package
+package cache and declare `org.grovealliance.fhir.healthkit#0.5.0`. The HealthKit package
 already declares its exact Mobile dependency. These continuous builds retain their
 pre-1.0 version while their checksums change. Move aside each exact cache directory
 before extracting an update; never overlay a new archive on an older copy.
 
 ```sh
 cache_backup="$(mktemp -d)"
-test ! -e "$HOME/.fhir/packages/org.grovealliance.fhir.mobile#0.3.0" || \
-  mv "$HOME/.fhir/packages/org.grovealliance.fhir.mobile#0.3.0" \
+test ! -e "$HOME/.fhir/packages/org.grovealliance.fhir.mobile#0.5.0" || \
+  mv "$HOME/.fhir/packages/org.grovealliance.fhir.mobile#0.5.0" \
      "$cache_backup/"
-test ! -e "$HOME/.fhir/packages/org.grovealliance.fhir.healthkit#0.3.0" || \
-  mv "$HOME/.fhir/packages/org.grovealliance.fhir.healthkit#0.3.0" \
+test ! -e "$HOME/.fhir/packages/org.grovealliance.fhir.healthkit#0.5.0" || \
+  mv "$HOME/.fhir/packages/org.grovealliance.fhir.healthkit#0.5.0" \
      "$cache_backup/"
-mkdir -p "$HOME/.fhir/packages/org.grovealliance.fhir.mobile#0.3.0"
-mkdir -p "$HOME/.fhir/packages/org.grovealliance.fhir.healthkit#0.3.0"
+mkdir -p "$HOME/.fhir/packages/org.grovealliance.fhir.mobile#0.5.0"
+mkdir -p "$HOME/.fhir/packages/org.grovealliance.fhir.healthkit#0.5.0"
 tar -xzf grove-packages/mobile/package.tgz \
-  -C "$HOME/.fhir/packages/org.grovealliance.fhir.mobile#0.3.0"
+  -C "$HOME/.fhir/packages/org.grovealliance.fhir.mobile#0.5.0"
 tar -xzf grove-packages/healthkit/package.tgz \
-  -C "$HOME/.fhir/packages/org.grovealliance.fhir.healthkit#0.3.0"
+  -C "$HOME/.fhir/packages/org.grovealliance.fhir.healthkit#0.5.0"
 ```
 
 ```yaml
 dependencies:
-  org.grovealliance.fhir.healthkit: 0.3.0
+  org.grovealliance.fhir.healthkit: 0.5.0
 ```
 
 ### Validate an Observation
