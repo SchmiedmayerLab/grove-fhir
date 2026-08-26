@@ -32,6 +32,7 @@ Description: "Measurement concepts defined by the HealthKit adapter for platform
 * #headphone-audio-exposure-notification "Headphone Audio Exposure Notification" "A device notification that headphone audio exposure reached the seven-day limit."
 * #heart-rate-recovery-one-minute "Heart rate recovery one minute" "The decrease in heart rate, in beats per minute, from peak exercise to one minute after the end of exercise."
 * #high-heart-rate-notification "High Heart Rate Notification" "A device notification that heart rate stayed above the wearer's configured threshold while apparently inactive."
+* #hypertension-notification "Hypertension Notification" "A device notification of blood-pressure readings consistent with hypertension."
 * #infrequent-menstrual-cycles "Infrequent menstrual cycles" "Cycles occurring less often than expected, derived from the participant's logged cycle records. Corresponds to SNOMED CT 52073004 (Oligomenorrhea); the concept is cited rather than bound, because this guide carries no SNOMED dependency."
 * #inhaler-usage "Inhaler usage" "The total number of inhaler puffs the user took during the exact Observation effective Period."
 * #insulin-delivery "Insulin delivery" "The amount of insulin delivered during the exact Observation effective Period, qualified by a required basal or bolus delivery reason."
@@ -266,6 +267,22 @@ Title: "High Heart Rate Notification Result"
 Description: "Every admitted result code of the High Heart Rate Notification measurement."
 * ^experimental = false
 * include codes from system HealthkitHighHeartRateNotificationCS
+
+CodeSystem: HealthkitHypertensionNotificationCS
+Id: healthkit-hypertension-notification
+Title: "Hypertension Notification Result"
+Description: "The closed result codes of the Hypertension Notification measurement."
+* ^experimental = false
+* ^caseSensitive = true
+* ^content = #complete
+* #occurred "Occurred" "The device raised this notification over the stated Period. HealthKit carries no further value for it."
+
+ValueSet: HealthkitHypertensionNotificationVS
+Id: healthkit-hypertension-notification
+Title: "Hypertension Notification Result"
+Description: "Every admitted result code of the Hypertension Notification measurement."
+* ^experimental = false
+* include codes from system HealthkitHypertensionNotificationCS
 
 CodeSystem: HealthkitInfrequentMenstrualCyclesCS
 Id: healthkit-infrequent-menstrual-cycles
@@ -1012,6 +1029,19 @@ Description: "HKCategoryTypeIdentifierHighHeartRateEvent: an Apple Watch notific
 * component[threshold].valueQuantity.value 1..1 MS
 * component[threshold].valueQuantity.system = $ucum (exactly)
 * component[threshold].valueQuantity.code = #/min (exactly)
+
+Profile: HealthkitHypertensionNotification
+Parent: HealthKitObservation
+Id: healthkit-hypertension-notification
+Title: "Hypertension Notification"
+Description: "HKCategoryTypeIdentifierHypertensionEvent: a proprietary screening notification. Blood pressure remains the measurement surface; this records only that the notification was raised, and never asserts a hypertension diagnosis."
+* code = HealthKitMeasurementCS#hypertension-notification
+* code from HealthKitMeasurementVS (required)
+* effective[x] only Period
+* effectivePeriod.end 1..1 MS
+* value[x] only CodeableConcept
+* valueCodeableConcept 1..1 MS
+* valueCodeableConcept from HealthkitHypertensionNotificationVS (required)
 
 Profile: HealthkitInfrequentMenstrualCycles
 Parent: HealthKitObservation
@@ -2601,6 +2631,23 @@ Description: "A conformant High Heart Rate Notification instance."
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * issued = "2026-08-20T08:00:00Z"
 * valueCodeableConcept = HealthkitHighHeartRateNotificationCS#occurred "Occurred"
+
+Instance: HealthkitHypertensionNotificationExample
+InstanceOf: HealthkitHypertensionNotification
+Usage: #example
+Title: "Hypertension Notification Example"
+Description: "A conformant Hypertension Notification instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "31e82952-1009-4687-128e-4252470d7bd4"
+* status = #final
+* code = HealthKitMeasurementCS#hypertension-notification
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierHypertensionEvent
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = HealthkitHypertensionNotificationCS#occurred "Occurred"
 
 Instance: HealthkitInfrequentMenstrualCyclesExample
 InstanceOf: HealthkitInfrequentMenstrualCycles

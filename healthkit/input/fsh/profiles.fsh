@@ -113,6 +113,30 @@ Description: "Provenance for transforming one HealthKit object into one or more 
 * entity.what.identifier.value 1..1 MS
 * entity.what.identifier.value obeys healthkit-object-id-1
 
+Profile: HealthKitRecordingDocument
+Parent: GroveSensorRecordingDocument
+Id: healthkit-recording-document
+Title: "HealthKit Recording Document"
+Description: "A HealthKit series whose native representation is a recording rather than a scalar result. A beat-to-beat interval series and a workout route are sequences with their own column schemas, published in the recording format registry; converting either to a single Observation value would discard every sample but one. The Observation states what the series is and links here for the samples themselves."
+* identifier ^slicing.discriminator.type = #value
+* identifier ^slicing.discriminator.path = "system"
+* identifier ^slicing.rules = #open
+* identifier contains healthKitObjectId 1..1 MS
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value 1..1 MS
+* identifier[healthKitObjectId].value obeys healthkit-object-id-1
+// The source type rides in `type`, the way every other HealthKit artifact carries it as a coding
+// rather than an extension; a DocumentReference has no `code` to slice.
+* type 1..1 MS
+* type.coding ^slicing.discriminator.type = #value
+* type.coding ^slicing.discriminator.path = "system"
+* type.coding ^slicing.rules = #open
+* type.coding contains healthKitSourceType 1..1 MS
+* type.coding[healthKitSourceType].system = $healthKitSourceType
+* type.coding[healthKitSourceType].code 1..1 MS
+* type.coding[healthKitSourceType] from HealthKitSourceTypeVS (required)
+
+
 Profile: HealthKitClinicalRecordDocument
 Parent: DocumentReference
 Id: healthkit-clinical-record-document

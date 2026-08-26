@@ -33,6 +33,7 @@ class FormatRegistryTests(unittest.TestCase):
                 "triaxial-rotation-samples",
                 "odometer-samples",
                 "beat-interval-series",
+                "location-track-samples",
                 "fhir-resource-array",
                 "fhir-resource",
                 "native-recording",
@@ -87,6 +88,7 @@ class FormatRegistryTests(unittest.TestCase):
                 "triaxial-rotation-samples",
                 "odometer-samples",
                 "beat-interval-series",
+                "location-track-samples",
             },
         )
         for stream, schema in schemas.items():
@@ -129,8 +131,9 @@ class FormatRegistryTests(unittest.TestCase):
             for code in entry["raw"].get("formats", [])
             if code in csv_codes
         }
-        # heartbeat-series is a HealthKit recording schema, not a SensorKit stream.
-        self.assertEqual(cited, csv_codes - {"beat-interval-series"})
+        # Both are HealthKit recording schemas rather than SensorKit streams: a beat-to-beat
+        # interval series and a workout route are HealthKit series, so no SensorKit row cites them.
+        self.assertEqual(cited, csv_codes - {"beat-interval-series", "location-track-samples"})
 
     def test_rendered_outputs_are_current(self) -> None:
         result = subprocess.run(

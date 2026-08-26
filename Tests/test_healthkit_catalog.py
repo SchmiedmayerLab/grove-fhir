@@ -107,14 +107,12 @@ class HealthKitCatalogTests(unittest.TestCase):
 
     def test_platform_additions_and_derived_aggregate_are_explicit(self) -> None:
         rows = {row["sourceTypeIdentifier"]: row for row in self.catalog["rows"]}
-        expected_additions = {
-            "HKCategoryTypeIdentifierHypertensionEvent",
-        }
-        self.assertTrue(expected_additions <= set(rows))
-        for identifier in expected_additions:
-            self.assertEqual(rows[identifier]["status"], "intentionally-unsupported")
-            self.assertEqual(rows[identifier]["measurementIDs"], [])
-            self.assertEqual(rows[identifier]["profiles"], [])
+        # Admitted in 0.6.0. It was the one screening notification refused while its eleven peers
+        # were supported, and the row carried no rationale for the difference; the notification
+        # contract states only that the notification was raised, never a diagnosis.
+        hypertension = rows["HKCategoryTypeIdentifierHypertensionEvent"]
+        self.assertEqual(hypertension["status"], "supported")
+        self.assertEqual(hypertension["measurementIDs"], ["hypertension-notification"])
 
         renamed = rows["HKCategoryTypeIdentifierAudioExposureEvent"]
         self.assertEqual(renamed["title"], "Audio Exposure Event")

@@ -25,6 +25,7 @@ Description: "The closed registry of payload formats a Grove recording DocumentR
 * #triaxial-rotation-samples "Triaxial Rotation Samples" "One header row naming every column in order, then one row per source sample in source order. Columns: timestamp, x, y, z, device."
 * #odometer-samples "Odometer Samples" "One header row naming every column in order, then one row per source sample in source order. Columns: start, end, gpsDate, speed, speedAccuracy, slope, maxAbsSlope, deltaDistance, deltaDistanceAccuracy, deltaAltitude, verticalAccuracy, originDevice, device."
 * #beat-interval-series "Beat Interval Series" "One header row naming every column in order, then one row per source sample in source order. Columns: timestamp, precededByGap."
+* #location-track-samples "Location Track Samples" "One header row naming every column in order, then one row per source sample in source order. Columns: timestamp, latitude, longitude, altitude, horizontalAccuracy, verticalAccuracy, speed, speedAccuracy, course, courseAccuracy."
 * #fhir-resource-array "FHIR Resource Array" "A single JSON array; each element is one complete FHIR R4 resource in FHIR JSON representation, in source sample order."
 * #fhir-resource "FHIR Resource" "One complete provider-issued FHIR R4 resource in FHIR JSON representation, byte-preserved exactly as the source platform delivered it."
 * #native-recording "Native Recording" "The producer's exact native JSON serialization of one source batch, byte-preserved."

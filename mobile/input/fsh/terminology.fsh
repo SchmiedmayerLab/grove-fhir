@@ -171,3 +171,22 @@ Description: "The per-interval statistic concepts a workout or workout-segment O
 * #set-index "Set index" "The one-based index of the segment's exercise set."
 * #rating-of-perceived-exertion "Rating of perceived exertion" "The 0-10 rating of perceived exertion of the segment."
 * #lap-length "Lap length" "The length of the lap in metres."
+
+
+CodeSystem: GroveApplicationVersionTypeCS
+Id: grove-application-version-type
+Title: "Grove Application Version Type"
+Description: "The revisions a producing application states about itself. Each names a distinct fact, so a consumer reads the one it needs rather than parsing a composite string. The marketing version is carried by its ISO/IEEE 11073 code rather than a code here, because a standard code for it already exists."
+* ^experimental = false
+* ^caseSensitive = true
+* ^content = #complete
+* #build "Build" "The build that produced the resource, as the producing platform reports it. Distinct from the marketing version: one marketing version is released from many builds, and only the build identifies which one converted a given record."
+* #os-version "Operating system version" "The operating system release the conversion ran on."
+
+
+ValueSet: GroveApplicationVersionTypeVS
+Id: grove-application-version-type
+Title: "Grove Application Version Type"
+Description: "Every revision a producing application may state about itself beyond its marketing version."
+* ^experimental = false
+* include codes from system GroveApplicationVersionTypeCS

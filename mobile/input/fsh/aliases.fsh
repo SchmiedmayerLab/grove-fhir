@@ -25,3 +25,4 @@ Alias: $oxygenSaturation = http://hl7.org/fhir/StructureDefinition/oxygensat
 Alias: $bodyHeight = http://hl7.org/fhir/StructureDefinition/bodyheight
 Alias: $bodyMassIndex = http://hl7.org/fhir/StructureDefinition/bmi
 Alias: $imposeProfile = http://hl7.org/fhir/StructureDefinition/structuredefinition-imposeProfile
+Alias: $groveApplicationVersionType = https://grovealliance.org/fhir/mobile/CodeSystem/grove-application-version-type

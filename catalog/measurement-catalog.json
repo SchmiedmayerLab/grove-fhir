@@ -3547,6 +3547,46 @@
       ]
     },
     {
+      "id": "hypertension-notification",
+      "profile": "healthkit-hypertension-notification",
+      "standardProfile": null,
+      "title": "Hypertension Notification",
+      "description": "HKCategoryTypeIdentifierHypertensionEvent: a proprietary screening notification. Blood pressure remains the measurement surface; this records only that the notification was raised, and never asserts a hypertension diagnosis.",
+      "code": {
+        "system": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-measurement",
+        "code": "hypertension-notification",
+        "display": "Hypertension Notification",
+        "definition": "A device notification of blood-pressure readings consistent with hypertension."
+      },
+      "valueKind": "codeableConcept",
+      "owner": "healthkit",
+      "quantity": null,
+      "valueSet": "https://grovealliance.org/fhir/healthkit/ValueSet/healthkit-hypertension-notification",
+      "resultCodeSystem": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-hypertension-notification",
+      "allowedValues": [
+        "occurred"
+      ],
+      "resultCodes": [
+        {
+          "code": "occurred",
+          "display": "Occurred",
+          "definition": "The device raised this notification over the stated Period. HealthKit carries no further value for it."
+        }
+      ],
+      "effective": "Period",
+      "generation": {
+        "emit": true
+      },
+      "coverage": {
+        "healthkit": "supported",
+        "health-connect": "unmodeled",
+        "sensorkit": "unmodeled",
+        "google-health-api": "unmodeled",
+        "oura": "unmodeled",
+        "withings": "unmodeled"
+      }
+    },
+    {
       "id": "infrequent-menstrual-cycles",
       "profile": "healthkit-infrequent-menstrual-cycles",
       "standardProfile": null,

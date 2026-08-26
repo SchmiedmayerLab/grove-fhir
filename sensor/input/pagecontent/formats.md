@@ -194,6 +194,30 @@ Seconds since the Unix epoch as a decimal number in the numbers form above; the 
 | `timestamp` | timestamp | — | Beat instant as seconds since the series start anchor stated by the document. |
 | `precededByGap` | integer | — | 1 when a gap in beat detection precedes this beat, else 0. |
 
+### `location-track-samples` — Location Track Samples
+
+Media type: `text/csv`.
+UTF-8 without a byte-order mark.
+One header row naming every column in order, then one row per source sample in source order.
+LF (0x0A) after every row, including the last.
+Comma (0x2C).
+A field is enclosed in double quotes exactly when it contains a comma, a double quote, or a line break; embedded double quotes are doubled; all other fields are unquoted.
+Decimal numbers use the shortest representation that round-trips an IEEE-754 binary64 value; integral values may carry a trailing .0.
+Seconds since the Unix epoch as a decimal number in the numbers form above; the column documentation states which columns are timestamps.
+
+| Column | Type | Unit | Meaning |
+|---|---|---|---|
+| `timestamp` | timestamp | — | Location fix instant. |
+| `latitude` | number | `deg` | WGS 84 latitude in degrees. |
+| `longitude` | number | `deg` | WGS 84 longitude in degrees. |
+| `altitude` | number | `m` | Altitude above the WGS 84 reference ellipsoid in metres. |
+| `horizontalAccuracy` | number | `m` | Radius of uncertainty for the horizontal position in metres. |
+| `verticalAccuracy` | number | `m` | Uncertainty of the altitude in metres; empty when altitude is invalid. |
+| `speed` | number | `m/s` | Instantaneous speed in metres per second; empty when unavailable. |
+| `speedAccuracy` | number | `m/s` | Uncertainty of the speed in metres per second; empty when unavailable. |
+| `course` | number | `deg` | Direction of travel in degrees clockwise from true north; empty when unavailable. |
+| `courseAccuracy` | number | `deg` | Uncertainty of the course in degrees; empty when unavailable. |
+
 ### `fhir-resource-array` — FHIR Resource Array
 
 Media type: `application/vnd.grovealliance.fhir-array+json`.

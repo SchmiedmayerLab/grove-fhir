@@ -14,6 +14,13 @@
           "classification": "definition"
         },
         {
+          "fshName": "GroveApplicationVersionTypeCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "grove-application-version-type",
+          "classification": "definition"
+        },
+        {
           "fshName": "GroveCervicalMucusQualityCS",
           "fshType": "CodeSystem",
           "resourceType": "CodeSystem",
@@ -1449,6 +1456,13 @@
           "classification": "definition"
         },
         {
+          "fshName": "GroveApplicationVersionTypeVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "grove-application-version-type",
+          "classification": "definition"
+        },
+        {
           "fshName": "GroveCervicalMucusQualityVS",
           "fshType": "ValueSet",
           "resourceType": "ValueSet",
@@ -2331,6 +2345,13 @@
           "classification": "definition"
         },
         {
+          "fshName": "HealthkitHypertensionNotificationCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "healthkit-hypertension-notification",
+          "classification": "definition"
+        },
+        {
           "fshName": "HealthkitInfrequentMenstrualCyclesCS",
           "fshType": "CodeSystem",
           "resourceType": "CodeSystem",
@@ -2625,6 +2646,13 @@
           "classification": "example"
         },
         {
+          "fshName": "HealthKitHeartbeatSeriesRecordingExample",
+          "fshType": "Instance",
+          "resourceType": "DocumentReference",
+          "id": "HealthKitHeartbeatSeriesRecordingExample",
+          "classification": "example"
+        },
+        {
           "fshName": "HealthKitManuallyEnteredBodyWeightExample",
           "fshType": "Instance",
           "resourceType": "Observation",
@@ -2881,6 +2909,13 @@
           "fshType": "Instance",
           "resourceType": "Observation",
           "id": "HealthkitHighHeartRateNotificationExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "HealthkitHypertensionNotificationExample",
+          "fshType": "Instance",
+          "resourceType": "Observation",
+          "id": "HealthkitHypertensionNotificationExample",
           "classification": "example"
         },
         {
@@ -3486,6 +3521,13 @@
           "classification": "definition"
         },
         {
+          "fshName": "HealthKitRecordingDocument",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-recording-document",
+          "classification": "definition"
+        },
+        {
           "fshName": "HealthkitAppleExerciseTime",
           "fshType": "Profile",
           "resourceType": "StructureDefinition",
@@ -3644,6 +3686,13 @@
           "fshType": "Profile",
           "resourceType": "StructureDefinition",
           "id": "healthkit-high-heart-rate-notification",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitHypertensionNotification",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-hypertension-notification",
           "classification": "definition"
         },
         {
@@ -4372,6 +4421,13 @@
           "fshType": "ValueSet",
           "resourceType": "ValueSet",
           "id": "healthkit-high-heart-rate-notification",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitHypertensionNotificationVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "healthkit-hypertension-notification",
           "classification": "definition"
         },
         {

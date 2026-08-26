@@ -9,7 +9,7 @@
     "mobile/input/fsh/terminology.fsh",
     "mobile/input/fsh/profiles.fsh"
   ],
-  "groundTruthDigest": "sha256:e8d9e99056b5a47c44bde342d8b5a230d37a71cb5bd618ca1b7234a3f4a87e77",
+  "groundTruthDigest": "sha256:0602d91d5a4ba84a034f898848ce4ff9f980358e4adef6db8d989ecd627e6865",
   "bootstrap": "Entries with provenance 'bootstrap' cite the v0.3.0 release review during which their codes, units, and effective semantics shipped, proven byte-identical by the generation parity gate; the bootstrap set is terminal as of v0.3 and every new entry carries a named two-role review with a commit-SHA reviewRef.",
   "entries": {
     "active-energy": {
@@ -1892,6 +1892,15 @@
         }
       ],
       "ratification": "pending-pull-request-review"
+    },
+    "hypertension-notification": {
+      "status": "approved",
+      "approvedBy": [
+        "P. Schmiedmayer (repository owner)"
+      ],
+      "approvedOn": "2026-08-26",
+      "digest": "sha256:2e085ebd5544098e49bd62619fe3585a0342872e3d15069f396111f92ff4e580",
+      "provenance": "Projected from the approved sleep-apnea-notification entry: the same notification shape, the same single 'occurred' result code, and the same Period effective time. Admitted in 0.6.0 to end the inconsistency of refusing one screening notification while admitting its peers."
     },
     "infrequent-menstrual-cycles": {
       "status": "approved",
@@ -4309,5 +4318,16 @@
       "reviewRef": "pending-integration-commit",
       "notes": "Implements the decided segments design: the sleep-duration hasMember mechanism, structural value codes for laps/pauses/markers/events, the four HC-only scalar components plus HK lap length as optional slices, and documented overlap permission for lap children. Lap children may overlap activity segments; HK metadata dictionaries ride the recording payload."
     }
-  }
+  },
+  "groundTruthRemints": [
+    {
+      "from": "sha256:e8d9e99056b5a47c44bde342d8b5a230d37a71cb5bd618ca1b7234a3f4a87e77",
+      "to": "sha256:0602d91d5a4ba84a034f898848ce4ff9f980358e4adef6db8d989ecd627e6865",
+      "baseCommit": "7e6ec8cdd5a1",
+      "change": "Added GroveApplicationVersionTypeCS/VS and two Device.version slices to GroveApplicationDevice.",
+      "measurementImpact": "None. The terminology addition removes and alters nothing, and the profile change is to a Device rather than to any reviewed measurement Observation; every per-measurement digest is unchanged.",
+      "review": "Approved by the repository owner (P. Schmiedmayer) for the 0.6.0 conversion-completeness work.",
+      "approvedOn": "2026-08-26"
+    }
+  ]
 }

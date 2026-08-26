@@ -164,6 +164,11 @@ Description: "A HealthKit interval sample preserving the recorded count of 1,042
 * valueQuantity = 1042 '{steps}' "steps"
 * device = Reference(HealthKitRecordingDeviceExample)
 * extension[researchStudy].valueReference = Reference(HealthKitResearchStudyExample)
+// A metadata key no contract models, retained rather than discarded so the conversion stays lossless.
+// The key space is open, so the key travels as text: no code system can enumerate what a third-party
+// writer may set.
+* component[+].code.text = "ThirdPartyPedometerFirmware"
+* component[=].valueString = "2.4.1"
 
 Instance: HealthKitBluetoothHeartRateObservationExample
 InstanceOf: HealthKitObservation
@@ -444,3 +449,24 @@ Description: "One provider-issued clinical resource surfaced by HealthKit and by
 * content.attachment.data = "eyJyZXNvdXJjZVR5cGUiOiJBbGxlcmd5SW50b2xlcmFuY2UiLCJpZCI6InByb3ZpZGVyLWlzc3VlZC0xIiwiY2xpbmljYWxTdGF0dXMiOnsiY29kaW5nIjpbeyJzeXN0ZW0iOiJodHRwOi8vdGVybWlub2xvZ3kuaGw3Lm9yZy9Db2RlU3lzdGVtL2FsbGVyZ3lpbnRvbGVyYW5jZS1jbGluaWNhbCIsImNvZGUiOiJhY3RpdmUifV19LCJwYXRpZW50Ijp7InJlZmVyZW5jZSI6IlBhdGllbnQvcGFydGljaXBhbnQtaGstMDAxIn19"
 * content.attachment.size = 240
 * content.attachment.hash = "0c+dHXDzCV5zPy4cApwAoV9evYc="
+
+Instance: HealthKitHeartbeatSeriesRecordingExample
+InstanceOf: HealthKitRecordingDocument
+Usage: #example
+Title: "HealthKit Heartbeat Series Recording"
+Description: "A beat-to-beat interval series carried as its published column schema. Reducing the series to one Observation value would keep a single beat and discard the rest."
+* meta.profile[+] = "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document"
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "9c1f4b62-2d77-4a51-9d0e-6b3a5c8e2f14"
+* status = #current
+* type.coding[healthKitSourceType] = $healthKitSourceType#HKDataTypeIdentifierHeartbeatSeries "Heartbeat Series"
+* subject = Reference(HealthKitPatientExample)
+* date = "2026-08-19T10:05:00Z"
+* author = Reference(HealthKitApplicationDeviceExample)
+* content.attachment.contentType = #text/csv
+* content.format = $recordingFormat#beat-interval-series "Beat Interval Series"
+* content.format.version = "0.5.0"
+* content.attachment.title = "Heartbeat series beat intervals"
+* content.attachment.data = "dGltZXN0YW1wLHByZWNlZGVkQnlHYXAKMTc1NTYyNDAwMC4wLDAKMTc1NTYyNDAwMC44NCwwCjE3NTU2MjQwMDEuNzEsMQo="
+* content.attachment.size = 71
+* content.attachment.hash = "lpe4Lz8znQwYfaYZt3i6kWBo+JM="

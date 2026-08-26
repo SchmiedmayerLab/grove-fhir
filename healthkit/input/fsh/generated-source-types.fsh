@@ -123,7 +123,7 @@ Description: "The 218 source-type identifiers the iPhoneOS 26.5 SDK baseline (Xc
 * #HKCategoryTypeIdentifierHotFlashes "Hot Flashes" "The HealthKit HKCategoryTypeIdentifierHotFlashes source type. Grove converts it to healthkit-symptom-hot-flashes."
 * #HKCategoryTypeIdentifierHotFlashes ^property[0].code = #documentation
 * #HKCategoryTypeIdentifierHotFlashes ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/hotflashes"
-* #HKCategoryTypeIdentifierHypertensionEvent "Hypertension Event" "The HealthKit HKCategoryTypeIdentifierHypertensionEvent source type. Grove admits no output for it. Device alert from a proprietary screening algorithm asserting possible pathology without any pressure measurement; emitting it as an Observation would fabricate a blood-pressure-adjacent finding with no quantity. Cuff blood-pressure quantities remain the measurement surface."
+* #HKCategoryTypeIdentifierHypertensionEvent "Hypertension Event" "The HealthKit HKCategoryTypeIdentifierHypertensionEvent source type. Grove converts it to healthkit-hypertension-notification."
 * #HKCategoryTypeIdentifierHypertensionEvent ^property[0].code = #documentation
 * #HKCategoryTypeIdentifierHypertensionEvent ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/hypertensionevent"
 * #HKCategoryTypeIdentifierInfrequentMenstrualCycles "Infrequent Menstrual Cycles" "The HealthKit HKCategoryTypeIdentifierInfrequentMenstrualCycles source type. Grove converts it to healthkit-infrequent-menstrual-cycles."
@@ -294,7 +294,7 @@ Description: "The 218 source-type identifiers the iPhoneOS 26.5 SDK baseline (Xc
 * #HKDataTypeIdentifierElectrocardiogram "ECG" "The HealthKit HKDataTypeIdentifierElectrocardiogram source type. Grove converts it to grove-sensor-ecg-observation and healthkit-ecg-observation."
 * #HKDataTypeIdentifierElectrocardiogram ^property[0].code = #documentation
 * #HKDataTypeIdentifierElectrocardiogram ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkelectrocardiogramtype"
-* #HKDataTypeIdentifierHeartbeatSeries "Heartbeat Series" "The HealthKit HKDataTypeIdentifierHeartbeatSeries source type. Grove admits no output for it. The beat-to-beat interval series has a published beat-interval-series column schema, but the HealthKit adapter has no recording-document profile to carry it yet, so no output is admitted."
+* #HKDataTypeIdentifierHeartbeatSeries "Heartbeat Series" "The HealthKit HKDataTypeIdentifierHeartbeatSeries source type. Grove converts it to healthkit-recording-document."
 * #HKDataTypeIdentifierHeartbeatSeries ^property[0].code = #documentation
 * #HKDataTypeIdentifierHeartbeatSeries ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkdatatypeidentifierheartbeatseries"
 * #HKDataTypeStateOfMind "State of Mind" "The HealthKit HKDataTypeStateOfMind source type. Grove converts it to healthkit-state-of-mind."
