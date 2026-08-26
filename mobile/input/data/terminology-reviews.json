@@ -9,7 +9,7 @@
     "mobile/input/fsh/terminology.fsh",
     "mobile/input/fsh/profiles.fsh"
   ],
-  "groundTruthDigest": "sha256:0602d91d5a4ba84a034f898848ce4ff9f980358e4adef6db8d989ecd627e6865",
+  "groundTruthDigest": "sha256:fe83b754eaf293bd9dea197119aa63ee14c626dcd009902d0dcb630642aa332f",
   "bootstrap": "Entries with provenance 'bootstrap' cite the v0.3.0 release review during which their codes, units, and effective semantics shipped, proven byte-identical by the generation parity gate; the bootstrap set is terminal as of v0.3 and every new entry carries a named two-role review with a commit-SHA reviewRef.",
   "entries": {
     "active-energy": {
@@ -4326,6 +4326,16 @@
       "baseCommit": "7e6ec8cdd5a1",
       "change": "Added GroveApplicationVersionTypeCS/VS and two Device.version slices to GroveApplicationDevice.",
       "measurementImpact": "None. The terminology addition removes and alters nothing, and the profile change is to a Device rather than to any reviewed measurement Observation; every per-measurement digest is unchanged.",
+      "review": "Approved by the repository owner (P. Schmiedmayer) for the 0.6.0 conversion-completeness work.",
+      "approvedOn": "2026-08-26"
+    },
+    {
+      "from": "sha256:0602d91d5a4ba84a034f898848ce4ff9f980358e4adef6db8d989ecd627e6865",
+      "to": "sha256:fe83b754eaf293bd9dea197119aa63ee14c626dcd009902d0dcb630642aa332f",
+      "baseCommit": "1e53487bcdbc",
+      "change": "Pinned 23 LOINC audiogram concepts: the pure tone air conduction panel 89015-2 and the 22 per-ear, per-frequency hearing-threshold codes.",
+      "measurementImpact": "None yet. The concepts are pinned but no measurement binds them; every existing per-measurement digest is unchanged.",
+      "verification": "tx.fhir.org r4 and r4.ontoserver.csiro.au, both serving LOINC 2.82, 2026-08-26. The panel 100653-5 that a secondary source named as current is deprecated and was rejected.",
       "review": "Approved by the repository owner (P. Schmiedmayer) for the 0.6.0 conversion-completeness work.",
       "approvedOn": "2026-08-26"
     }
