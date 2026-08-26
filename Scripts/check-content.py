@@ -41,11 +41,14 @@ CATALOGS = ROOT / "catalog"
 OWN_VERSION_IN_PROSE = re.compile(r"\bv(\d+\.\d+\.\d+)\b|\b[Vv]ersion (\d+\.\d+\.\d+)\b")
 # Fields that state when a set was first frozen, and so name the release that froze it rather
 # than the current one. Every other prose mention must track the catalog's own version.
-# Guide sources that legitimately name an earlier release, because they state when something was
-# first frozen rather than what the current release defines.
+# The FHIR release is not Grove's version and never moves with it.
 FHIR_VERSION = "4.0.1"
 
-HISTORICAL_GUIDE_VERSIONS: set[tuple[str, str]] = set()
+# Prose naming someone else's pinned version: the package or product is named right beside it.
+THIRD_PARTY_PIN = re.compile(
+    r"\b(hl7\.[a-z0-9.]+|Zstandard|SUSHI|IG Publisher|Node\.js|npm|Swift|Xcode|zod)\b",
+    re.IGNORECASE,
+)
 
 HISTORICAL_VERSION_FIELDS = {
     ("sensorkit-adapter.json", "sourceEvidence.scope"),
@@ -142,10 +145,10 @@ def main() -> int:
                 for number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
                     for match in OWN_VERSION_IN_PROSE.finditer(line):
                         found = match.group(1) or match.group(2)
-                        # The FHIR release is not Grove's version and never moves with it.
                         if found in {mobile_version, FHIR_VERSION}:
                             continue
-                        if (relative, found) in HISTORICAL_GUIDE_VERSIONS:
+                        # A pinned third-party version is not Grove's and does not move with it.
+                        if THIRD_PARTY_PIN.search(line):
                             continue
                         failures.append(
                             f"{relative}:{number} names version {found}, but the release "

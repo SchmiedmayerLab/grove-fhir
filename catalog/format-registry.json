@@ -5,7 +5,7 @@
   "canonical": "https://grovealliance.org/fhir/sensor",
   "codeSystem": "https://grovealliance.org/fhir/sensor/CodeSystem/grove-recording-format",
   "valueSet": "https://grovealliance.org/fhir/sensor/ValueSet/grove-recording-format",
-  "description": "The closed registry of payload formats a Grove recording DocumentReference may carry. Every content entry declares exactly one registry format in DocumentReference.content.format, and a receiver can parse any admitted payload from that code alone; an unregistered payload format is nonconformant. A format code names the payload's schema, never its encoding: the encoding is carried by the entry's media type.",
+  "description": "The closed registry of payload formats a Grove recording DocumentReference may carry. Every content entry declares exactly one registry format in DocumentReference.content.format, and a receiver can parse any admitted payload from that code alone; an unregistered payload format is nonconformant. A format code names the payload's schema — the shape of the table or record it carries — never its encoding and never the platform that produced it. The encoding is carried by the entry's media type, and the producing platform by the carrying document's source type.",
   "encodings": {
     "csv": {
       "encoding": "UTF-8 without a byte-order mark.",
@@ -23,16 +23,14 @@
     "application/vnd.grovealliance.fhir-array+json": "Grove FHIR resource array",
     "application/vnd.grovealliance.native+json": "Grove native recording JSON",
     "application/vnd.grovealliance.provider+json": "Grove provider recording JSON",
-    "application/vnd.grovealliance.ppg": "Grove photoplethysmogram binary",
-    "application/vnd.grovealliance.batch-archive+zstd": "Grove batch archive, Zstandard-compressed"
+    "application/vnd.grovealliance.ppg": "Grove photoplethysmogram binary"
   },
   "formats": {
-    "sensorkit-heart-rate": {
-      "title": "SensorKit Heart Rate",
+    "heart-rate-samples": {
+      "title": "Heart Rate Samples",
       "contentType": "text/csv",
       "status": "active",
       "encoding": "csv",
-      "source": "SRSensor.heartRate (CMHighFrequencyHeartRateData)",
       "columns": [
         {
           "name": "timestamp",
@@ -57,12 +55,11 @@
         }
       ]
     },
-    "sensorkit-accelerometer": {
-      "title": "SensorKit Accelerometer",
+    "triaxial-acceleration-samples": {
+      "title": "Triaxial Acceleration Samples",
       "contentType": "text/csv",
       "status": "active",
       "encoding": "csv",
-      "source": "SRSensor.accelerometer (CMRecordedAccelerometerData)",
       "columns": [
         {
           "name": "timestamp",
@@ -99,12 +96,11 @@
         }
       ]
     },
-    "sensorkit-ambient-light": {
-      "title": "SensorKit Ambient Light",
+    "ambient-light-samples": {
+      "title": "Ambient Light Samples",
       "contentType": "text/csv",
       "status": "active",
       "encoding": "csv",
-      "source": "SRSensor.ambientLightSensor (SRAmbientLightSample)",
       "columns": [
         {
           "name": "timestamp",
@@ -139,12 +135,11 @@
         }
       ]
     },
-    "sensorkit-ambient-pressure": {
-      "title": "SensorKit Ambient Pressure",
+    "ambient-pressure-samples": {
+      "title": "Ambient Pressure Samples",
       "contentType": "text/csv",
       "status": "active",
       "encoding": "csv",
-      "source": "SRSensor.ambientPressure (CMRecordedPressureData)",
       "columns": [
         {
           "name": "timestamp",
@@ -175,12 +170,11 @@
         }
       ]
     },
-    "sensorkit-pedometer": {
-      "title": "SensorKit Pedometer",
+    "pedometer-samples": {
+      "title": "Pedometer Samples",
       "contentType": "text/csv",
       "status": "active",
       "encoding": "csv",
-      "source": "SRSensor.pedometerData (CMPedometerData)",
       "columns": [
         {
           "name": "start",
@@ -239,12 +233,11 @@
         }
       ]
     },
-    "sensorkit-wrist-temperature": {
-      "title": "SensorKit Wrist Temperature",
+    "wrist-temperature-samples": {
+      "title": "Wrist Temperature Samples",
       "contentType": "text/csv",
       "status": "active",
       "encoding": "csv",
-      "source": "SRSensor.wristTemperature (SRWristTemperatureSession)",
       "columns": [
         {
           "name": "timestamp",
@@ -270,12 +263,11 @@
         }
       ]
     },
-    "sensorkit-rotation-rate": {
-      "title": "SensorKit Rotation Rate",
+    "triaxial-rotation-samples": {
+      "title": "Triaxial Rotation Samples",
       "contentType": "text/csv",
       "status": "active",
       "encoding": "csv",
-      "source": "SRSensor.rotationRate (CMRecordedRotationRateData)",
       "columns": [
         {
           "name": "timestamp",
@@ -307,12 +299,11 @@
         }
       ]
     },
-    "sensorkit-odometer": {
-      "title": "SensorKit Odometer",
+    "odometer-samples": {
+      "title": "Odometer Samples",
       "contentType": "text/csv",
       "status": "active",
       "encoding": "csv",
-      "source": "SRSensor.odometer (CMOdometerData)",
       "columns": [
         {
           "name": "start",
@@ -389,12 +380,11 @@
         }
       ]
     },
-    "healthkit-heartbeat-series": {
-      "title": "HealthKit Heartbeat Series",
+    "beat-interval-series": {
+      "title": "Beat Interval Series",
       "contentType": "text/csv",
       "status": "active",
       "encoding": "csv",
-      "source": "HKDataTypeIdentifierHeartbeatSeries (HKHeartbeatSeriesSample)",
       "columns": [
         {
           "name": "timestamp",
@@ -425,8 +415,8 @@
       "status": "active",
       "specification": {
         "encoding": "UTF-8.",
-        "structure": "One complete provider-issued FHIR resource in FHIR JSON representation, byte-preserved exactly as the source platform delivered it.",
-        "fhirVersion": "The payload's FHIR release (DSTU2 or R4) is declared by the carrying DocumentReference and never inferred; the payload is never converted between releases.",
+        "structure": "One complete provider-issued FHIR R4 resource in FHIR JSON representation, byte-preserved exactly as the source platform delivered it.",
+        "fhirVersion": "R4 only. A payload in another release is not admitted under this code: its media type would misdeclare the release to any receiver that reads only the media type. A release other than R4 needs its own registered format before it can be carried.",
         "provenance": "The carrying document records the issuing source; Grove never asserts conformance over another issuer's resource.",
         "scope": "One document carries exactly one clinical record's FHIR payload."
       }
@@ -453,8 +443,8 @@
         "scope": "One document carries one API response for one account and one source element batch."
       }
     },
-    "sensorkit-photoplethysmogram": {
-      "title": "SensorKit Photoplethysmogram",
+    "photoplethysmogram-samples": {
+      "title": "Photoplethysmogram Samples",
       "contentType": "application/vnd.grovealliance.ppg",
       "status": "active",
       "specification": {
@@ -605,17 +595,6 @@
             "meaning": "Acceleration along z in G."
           }
         ]
-      }
-    },
-    "batch-archive": {
-      "title": "Batch Archive",
-      "contentType": "application/vnd.grovealliance.batch-archive+zstd",
-      "status": "active",
-      "specification": {
-        "structure": "A POSIX ustar tar stream compressed as one whole with Zstandard; every archived file is itself a registry-format payload or a documented sidecar of one.",
-        "tar": "ustar magic; entry paths are relative, at most 100 UTF-8 bytes, without leading slash or dot segments; file mode 0644, directory mode 0755; owner, group, and device ids 0; modification time 0; contents padded to 512-byte blocks; the archive ends with two zero blocks.",
-        "compression": "The whole tar stream is Zstandard-compressed, as the format's media type suffix declares. One code admits exactly one encoding, so a receiver never sniffs for it.",
-        "determinism": "Entry order, header fields, and compression parameters are producer-deterministic: archiving the same files twice yields identical bytes for the uncompressed tar stream."
       }
     }
   }

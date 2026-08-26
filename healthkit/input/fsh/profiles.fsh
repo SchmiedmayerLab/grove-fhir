@@ -128,6 +128,9 @@ Description: "A pass-through envelope for one provider-issued clinical FHIR reso
 * content 1..1 MS
 * content.format 1..1 MS
 * content.format = $recordingFormat#fhir-resource "FHIR Resource"
+// Stated here rather than inherited: this profile's parent is DocumentReference, not
+// GroveSensorRecordingDocument, so it is outside the chain that carries the shared rule.
+* content.format.version 1..1 MS
 * content.attachment.contentType 1..1 MS
 * content.attachment.contentType = #application/fhir+json (exactly)
 * content.attachment.title 1..1 MS

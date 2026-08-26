@@ -689,7 +689,7 @@ Description: "The session's samples as the tabular recording the registry publis
 * identifier[sensorKitRecordId].system = $sensorKitRecordId
 * identifier[sensorKitRecordId].value = "3f0a1c77-52b8-5d41-9a6e-7c1e58d0b2aa"
 * identifier[sensorKitOutputId].system = $sensorKitOutputId
-* identifier[sensorKitOutputId].value = "v1:3f0a1c77-52b8-5d41-9a6e-7c1e58d0b2aa|sensorkit-wrist-temperature"
+* identifier[sensorKitOutputId].value = "v1:3f0a1c77-52b8-5d41-9a6e-7c1e58d0b2aa|native-recording"
 * extension[sensorKitSourceType].valueCode = #wrist-temperature
 * status = #current
 * type = $sensorKitSourceType#wrist-temperature "Wrist temperature"
@@ -697,7 +697,7 @@ Description: "The session's samples as the tabular recording the registry publis
 * date = "2026-08-20T17:05:01Z"
 * author = Reference(SensorKitDeviceExample)
 * content.attachment.contentType = #text/csv
-* content.format = $recordingFormat#sensorkit-wrist-temperature "SensorKit Wrist Temperature"
+* content.format = $recordingFormat#wrist-temperature-samples "Wrist Temperature Samples"
 * content.format.version = "0.5.0"
 * content.attachment.title = "SensorKit Wrist Temperature Recording"
 * content.attachment.data = "dGltZXN0YW1wLHZhbHVlLGVycm9yRXN0aW1hdGUsY29uZGl0aW9uCjE3ODcwMDk0MDAuMCwzMy40LDAuMSwKMTc4NzAxMzAwMC4wLDMzLjcsMC4xLCJvZmZXcmlzdCxpbk1vdGlvbiIK"

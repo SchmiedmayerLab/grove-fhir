@@ -59,6 +59,16 @@ RELEASE_VERSION = json.loads(
     (CATALOG_ROOT / "package-graph.json").read_text(encoding="utf-8")
 )["version"]
 
+# The registry generations in which each format code was defined. 0.X releases are breaking and
+# the code sets are disjoint, so today this is one generation per code; it becomes a real history
+# the first time a code survives a release.
+REGISTRY_GENERATIONS = {
+    code: (RELEASE_VERSION,)
+    for code in json.loads(
+        (CATALOG_ROOT / "format-registry.json").read_text(encoding="utf-8")
+    )["formats"]
+}
+
 ADAPTER_PACKAGE_PROFILES = {
     "org.grovealliance.fhir.sensorkit": {
         "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-accelerometer-observation",
@@ -1715,10 +1725,14 @@ def validate_recording_format(resource: dict[str, Any], label: str) -> None:
         # The code names the schema and never carries a version; the release travels in
         # Coding.version, so a payload always states which registry generation defined it.
         declared_version = format_coding.get("version")
-        if declared_version != registry["version"]:
+        # A stored document records the generation it was written under; requiring it to equal
+        # the current one would invalidate every archive the moment the registry is republished,
+        # which is the opposite of this guide's byte-preservation posture. A generation that
+        # never defined this code is still rejected.
+        if declared_version not in REGISTRY_GENERATIONS.get(code, ()):
             raise ProducerValidationError(
-                f"{label} content[{index}] format version {declared_version!r} is not the "
-                f"registry version {registry['version']!r}"
+                f"{label} content[{index}] format version {declared_version!r} is not a "
+                f"registry generation that defines {code}"
             )
         content_type = content.get("attachment", {}).get("contentType")
         if content_type != entry["contentType"]:

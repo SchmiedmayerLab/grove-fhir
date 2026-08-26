@@ -1501,7 +1501,7 @@
       "status": "deferred",
       "measurementIDs": [],
       "profiles": [],
-      "requirement": "The beat-to-beat interval series has a published healthkit-heartbeat-series column schema, but the HealthKit adapter has no recording-document profile to carry it yet, so no output is admitted."
+      "requirement": "The beat-to-beat interval series has a published beat-interval-series column schema, but the HealthKit adapter has no recording-document profile to carry it yet, so no output is admitted."
     },
     {
       "sourceTypeIdentifier": "HKDataTypeStateOfMind",

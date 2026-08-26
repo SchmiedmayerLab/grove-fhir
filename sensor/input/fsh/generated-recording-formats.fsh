@@ -16,21 +16,20 @@ Description: "The closed registry of payload formats a Grove recording DocumentR
 * ^experimental = false
 * ^caseSensitive = true
 * ^content = #complete
-* #sensorkit-heart-rate "SensorKit Heart Rate" "One header row naming every column in order, then one row per source sample in source order. Columns: timestamp, value, confidence, device. Source: SRSensor.heartRate (CMHighFrequencyHeartRateData)."
-* #sensorkit-accelerometer "SensorKit Accelerometer" "One header row naming every column in order, then one row per source sample in source order. Columns: timestamp, identifier, x, y, z, device. Source: SRSensor.accelerometer (CMRecordedAccelerometerData)."
-* #sensorkit-ambient-light "SensorKit Ambient Light" "One header row naming every column in order, then one row per source sample in source order. Columns: timestamp, lux, placement, chromacityX, chromacityY, device. Source: SRSensor.ambientLightSensor (SRAmbientLightSample)."
-* #sensorkit-ambient-pressure "SensorKit Ambient Pressure" "One header row naming every column in order, then one row per source sample in source order. Columns: timestamp, identifier, pressure, temperature, device. Source: SRSensor.ambientPressure (CMRecordedPressureData)."
-* #sensorkit-pedometer "SensorKit Pedometer" "One header row naming every column in order, then one row per source sample in source order. Columns: start, end, steps, distance, floorsUp, floorsDown, currentPace, currentCadence, avgActivePace, device. Source: SRSensor.pedometerData (CMPedometerData)."
-* #sensorkit-wrist-temperature "SensorKit Wrist Temperature" "One header row naming every column in order, then one row per source sample in source order. Columns: timestamp, value, errorEstimate, condition. Source: SRSensor.wristTemperature (SRWristTemperatureSession)."
-* #sensorkit-rotation-rate "SensorKit Rotation Rate" "One header row naming every column in order, then one row per source sample in source order. Columns: timestamp, x, y, z, device. Source: SRSensor.rotationRate (CMRecordedRotationRateData)."
-* #sensorkit-odometer "SensorKit Odometer" "One header row naming every column in order, then one row per source sample in source order. Columns: start, end, gpsDate, speed, speedAccuracy, slope, maxAbsSlope, deltaDistance, deltaDistanceAccuracy, deltaAltitude, verticalAccuracy, originDevice, device. Source: SRSensor.odometer (CMOdometerData)."
-* #healthkit-heartbeat-series "HealthKit Heartbeat Series" "One header row naming every column in order, then one row per source sample in source order. Columns: timestamp, precededByGap. Source: HKDataTypeIdentifierHeartbeatSeries (HKHeartbeatSeriesSample)."
+* #heart-rate-samples "Heart Rate Samples" "One header row naming every column in order, then one row per source sample in source order. Columns: timestamp, value, confidence, device."
+* #triaxial-acceleration-samples "Triaxial Acceleration Samples" "One header row naming every column in order, then one row per source sample in source order. Columns: timestamp, identifier, x, y, z, device."
+* #ambient-light-samples "Ambient Light Samples" "One header row naming every column in order, then one row per source sample in source order. Columns: timestamp, lux, placement, chromacityX, chromacityY, device."
+* #ambient-pressure-samples "Ambient Pressure Samples" "One header row naming every column in order, then one row per source sample in source order. Columns: timestamp, identifier, pressure, temperature, device."
+* #pedometer-samples "Pedometer Samples" "One header row naming every column in order, then one row per source sample in source order. Columns: start, end, steps, distance, floorsUp, floorsDown, currentPace, currentCadence, avgActivePace, device."
+* #wrist-temperature-samples "Wrist Temperature Samples" "One header row naming every column in order, then one row per source sample in source order. Columns: timestamp, value, errorEstimate, condition."
+* #triaxial-rotation-samples "Triaxial Rotation Samples" "One header row naming every column in order, then one row per source sample in source order. Columns: timestamp, x, y, z, device."
+* #odometer-samples "Odometer Samples" "One header row naming every column in order, then one row per source sample in source order. Columns: start, end, gpsDate, speed, speedAccuracy, slope, maxAbsSlope, deltaDistance, deltaDistanceAccuracy, deltaAltitude, verticalAccuracy, originDevice, device."
+* #beat-interval-series "Beat Interval Series" "One header row naming every column in order, then one row per source sample in source order. Columns: timestamp, precededByGap."
 * #fhir-resource-array "FHIR Resource Array" "A single JSON array; each element is one complete FHIR R4 resource in FHIR JSON representation, in source sample order."
-* #fhir-resource "FHIR Resource" "One complete provider-issued FHIR resource in FHIR JSON representation, byte-preserved exactly as the source platform delivered it."
+* #fhir-resource "FHIR Resource" "One complete provider-issued FHIR R4 resource in FHIR JSON representation, byte-preserved exactly as the source platform delivered it."
 * #native-recording "Native Recording" "The producer's exact native JSON serialization of one source batch, byte-preserved."
 * #provider-recording "Provider Recording" "The verbatim JSON payload returned by the provider API call that produced the batch, byte-preserved apart from transport framing."
-* #sensorkit-photoplethysmogram "SensorKit Photoplethysmogram" "Varint record count, then that many PPG records."
-* #batch-archive "Batch Archive" "A POSIX ustar tar stream compressed as one whole with Zstandard; every archived file is itself a registry-format payload or a documented sidecar of one."
+* #photoplethysmogram-samples "Photoplethysmogram Samples" "Varint record count, then that many PPG records."
 
 ValueSet: GroveRecordingFormatVS
 Id: grove-recording-format

@@ -111,7 +111,7 @@ def concept_definition(fmt: dict, specification: dict) -> str:
     if "columns" not in fmt:
         return summary
     names = ", ".join(column["name"] for column in fmt["columns"])
-    return f"{summary} Columns: {names}. Source: {fmt['source']}."
+    return f"{summary} Columns: {names}."
 
 
 def render_fsh(registry: dict) -> str:
@@ -150,8 +150,6 @@ def render_fsh(registry: dict) -> str:
 
 def render_column_table(fmt: dict) -> list[str]:
     lines = [
-        "",
-        f"Source: `{fmt['source']}`.",
         "",
         "| Column | Type | Unit | Meaning |",
         "|---|---|---|---|",

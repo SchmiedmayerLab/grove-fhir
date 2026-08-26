@@ -381,7 +381,7 @@ Profile: SensorKitWristTemperatureObservation
 Parent: SensorKitObservation
 Id: sensorkit-wrist-temperature-observation
 Title: "SensorKit Wrist Temperature Observation"
-Description: "A platform-exclusive coverage summary of one SensorKit wrist-temperature session; the sensorkit-wrist-temperature recording document carries the samples and is mandatory. This is a wrist skin measurement: it deliberately binds to no body-temperature or basal-body-temperature meaning, because a sleep-interval wrist reading is neither."
+Description: "A platform-exclusive coverage summary of one SensorKit wrist-temperature session; the wrist-temperature-samples recording document carries the samples and is mandatory. This is a wrist skin measurement: it deliberately binds to no body-temperature or basal-body-temperature meaning, because a sleep-interval wrist reading is neither."
 * extension[sensorKitSourceType].valueCode = #wrist-temperature
 * code = $sensorKitConcept#wrist-temperature-recording-summary "Wrist temperature recording summary"
 * effective[x] 1..1 MS
@@ -409,7 +409,7 @@ Profile: SensorKitAccelerometerObservation
 Parent: SensorKitObservation
 Id: sensorkit-accelerometer-observation
 Title: "SensorKit Accelerometer Observation"
-Description: "A platform-exclusive coverage summary of one SensorKit accelerometer batch; the sensorkit-accelerometer recording document carries the signal and is mandatory."
+Description: "A platform-exclusive coverage summary of one SensorKit accelerometer batch; the triaxial-acceleration-samples recording document carries the signal and is mandatory."
 * extension[sensorKitSourceType].valueCode = #accelerometer
 * code = $sensorKitConcept#accelerometer-recording-summary "Accelerometer recording summary"
 * effective[x] 1..1 MS
@@ -439,7 +439,7 @@ Profile: SensorKitPpgObservation
 Parent: SensorKitObservation
 Id: sensorkit-ppg-observation
 Title: "SensorKit PPG Observation"
-Description: "A platform-exclusive coverage summary of one SensorKit photoplethysmogram batch; the sensorkit-photoplethysmogram recording document carries the signal and is mandatory."
+Description: "A platform-exclusive coverage summary of one SensorKit photoplethysmogram batch; the photoplethysmogram-samples recording document carries the signal and is mandatory."
 * extension[sensorKitSourceType].valueCode = #ppg
 * code = $sensorKitConcept#ppg-recording-summary "PPG recording summary"
 * effective[x] 1..1 MS

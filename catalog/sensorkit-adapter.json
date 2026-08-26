@@ -175,7 +175,7 @@
         "outputDiscriminator": "native-recording",
         "encoding": "caller-supplied exact bytes",
         "formats": [
-          "sensorkit-accelerometer"
+          "triaxial-acceleration-samples"
         ]
       }
     },
@@ -211,7 +211,7 @@
         "outputDiscriminator": "native-recording",
         "encoding": "caller-supplied exact bytes",
         "formats": [
-          "sensorkit-ambient-light"
+          "ambient-light-samples"
         ]
       }
     },
@@ -235,7 +235,7 @@
         "outputDiscriminator": "native-recording",
         "encoding": "caller-supplied exact bytes",
         "formats": [
-          "sensorkit-ambient-pressure"
+          "ambient-pressure-samples"
         ]
       }
     },
@@ -421,7 +421,7 @@
         "outputDiscriminator": "native-recording",
         "encoding": "caller-supplied exact bytes",
         "formats": [
-          "sensorkit-heart-rate"
+          "heart-rate-samples"
         ]
       }
     },
@@ -587,7 +587,7 @@
         "outputDiscriminator": "native-recording",
         "encoding": "caller-supplied exact bytes",
         "formats": [
-          "sensorkit-odometer"
+          "odometer-samples"
         ]
       }
     },
@@ -644,7 +644,7 @@
         "outputDiscriminator": "native-recording",
         "encoding": "caller-supplied exact bytes",
         "formats": [
-          "sensorkit-pedometer"
+          "pedometer-samples"
         ]
       }
     },
@@ -739,7 +739,7 @@
         "outputDiscriminator": "native-recording",
         "encoding": "caller-supplied exact bytes",
         "formats": [
-          "sensorkit-photoplethysmogram"
+          "photoplethysmogram-samples"
         ]
       }
     },
@@ -767,7 +767,7 @@
         "outputDiscriminator": "native-recording",
         "encoding": "caller-supplied exact bytes",
         "formats": [
-          "sensorkit-rotation-rate"
+          "triaxial-rotation-samples"
         ]
       }
     },
@@ -953,7 +953,7 @@
         "outputDiscriminator": "native-recording",
         "encoding": "caller-supplied exact bytes",
         "formats": [
-          "sensorkit-wrist-temperature"
+          "wrist-temperature-samples"
         ]
       }
     }
