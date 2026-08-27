@@ -43,7 +43,7 @@ jobs:
           upload: ${{ github.event.repository.private && 'never' || 'always' }}
       - name: Upload CodeQL results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: codeql-results
           if-no-files-found: error

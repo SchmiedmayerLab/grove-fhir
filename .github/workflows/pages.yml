@@ -42,12 +42,12 @@ jobs:
           ref: ${{ github.event.workflow_run.head_sha }}
           fetch-depth: 1
           persist-credentials: false
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.13.15"
       - name: Locate the unique verified Pages artifact
         id: artifact
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             const artifacts = await github.paginate(
@@ -67,7 +67,7 @@ jobs:
               return;
             }
             core.setOutput("present", matches.length === 1 ? "true" : "false");
-      - uses: actions/download-artifact@v5
+      - uses: actions/download-artifact@v8
         if: steps.artifact.outputs.present == 'true'
         with:
           name: pages-site
@@ -91,7 +91,7 @@ jobs:
       - name: Deploy documentation
         if: steps.artifact.outputs.present == 'true'
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
       - name: Verify the deployed preview
         if: steps.artifact.outputs.present == 'true'
         run: >-
