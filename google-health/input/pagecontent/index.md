@@ -1,3 +1,13 @@
+<!--
+
+This source file is part of the Grove FHIR open-source project
+
+SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTRIBUTORS.md)
+
+SPDX-License-Identifier: MIT
+
+-->
+
 Every Google Health API element this adapter admits that no other source reports.
 
 A measurement two or more connected providers report is source-neutral and belongs to the
