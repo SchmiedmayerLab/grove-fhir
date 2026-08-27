@@ -638,7 +638,12 @@ def example_result_lines(measurement: dict) -> list[str]:
     # some: an instance with no value, no component and no member fails grove-mobile-result-1, and
     # an example that carries nothing would not demonstrate the shape either. The first pair stands
     # for the rest, the way a workout example states the statistics that workout actually recorded.
-    exemplary = required or components[: measurement.get("exampleComponentCount", 2)]
+    # Only a measurement whose value *is* its components needs the fallback. Everywhere else the
+    # optional components stay out, so a running workout does not also report swimming strokes.
+    if kind == "components" and not required:
+        exemplary = components[: measurement.get("exampleComponentCount", 2)]
+    else:
+        exemplary = required
     for component in components:
         if component not in exemplary:
             continue

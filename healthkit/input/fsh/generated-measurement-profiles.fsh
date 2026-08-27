@@ -2804,8 +2804,6 @@ Description: "A conformant High Heart Rate Notification instance."
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * issued = "2026-08-20T08:00:00Z"
 * valueCodeableConcept = HealthkitHighHeartRateNotificationCS#occurred "Occurred"
-* component[threshold].code = https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-measurement#high-heart-rate-threshold
-* component[threshold].valueQuantity = 120 '/min' "beats/minute"
 
 Instance: HealthkitHypertensionNotificationExample
 InstanceOf: HealthkitHypertensionNotification
@@ -2942,8 +2940,6 @@ Description: "A conformant Low Cardio Fitness Notification instance."
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * issued = "2026-08-20T08:00:00Z"
 * valueCodeableConcept = HealthkitLowCardioFitnessNotificationCS#low-fitness "Low fitness"
-* component[threshold].code = https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-measurement#low-cardio-fitness-threshold
-* component[threshold].valueQuantity = 30 'mL/kg/min'
 
 Instance: HealthkitLowHeartRateNotificationExample
 InstanceOf: HealthkitLowHeartRateNotification
@@ -2961,8 +2957,6 @@ Description: "A conformant Low Heart Rate Notification instance."
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * issued = "2026-08-20T08:00:00Z"
 * valueCodeableConcept = HealthkitLowHeartRateNotificationCS#occurred "Occurred"
-* component[threshold].code = https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-measurement#low-heart-rate-threshold
-* component[threshold].valueQuantity = 40 '/min' "beats/minute"
 
 Instance: HealthkitNumberOfAlcoholicBeveragesExample
 InstanceOf: HealthkitNumberOfAlcoholicBeverages
