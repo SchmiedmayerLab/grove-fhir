@@ -56,6 +56,9 @@ for guide in "${guides[@]}"; do
   test -f "$guide/sushi-config.yaml"
   echo "Building $guide"
   clean_generated_guide_content "$guide"
+  # The Publisher writes the combined package before Jekyll creates output/, so the clean
+  # above leaves it nowhere to write and the package is silently never produced.
+  mkdir -p "$REPOSITORY_ROOT/$guide/output"
   # The Publisher validates codings against a terminology server. The server's cache lives in
   # each guide's input-cache, which is never committed: it holds thousands of SNOMED and LOINC
   # concepts this project has no licence to redistribute, and it is not ours to relicense under
