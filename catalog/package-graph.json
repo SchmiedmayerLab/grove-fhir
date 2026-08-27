@@ -175,6 +175,7 @@
         "healthkit-apple-stand-time",
         "healthkit-atrial-fibrillation-burden",
         "healthkit-audiogram-panel",
+        "healthkit-biological-sex",
         "healthkit-bladder-incontinence",
         "healthkit-bleeding-after-pregnancy",
         "healthkit-bleeding-during-pregnancy",
@@ -184,10 +185,12 @@
         "healthkit-contraceptive-use",
         "healthkit-conversion-provenance",
         "healthkit-cycling-functional-threshold-power",
+        "healthkit-date-of-birth",
         "healthkit-ecg-observation",
         "healthkit-environmental-audio-exposure",
         "healthkit-environmental-audio-exposure-notification",
         "healthkit-environmental-sound-reduction",
+        "healthkit-fitzpatrick-skin-type",
         "healthkit-food-correlation",
         "healthkit-forced-expiratory-volume-1",
         "healthkit-forced-vital-capacity",
@@ -206,6 +209,7 @@
         "healthkit-lactation-status",
         "healthkit-low-cardio-fitness-notification",
         "healthkit-low-heart-rate-notification",
+        "healthkit-medication-dose-event",
         "healthkit-number-of-alcoholic-beverages",
         "healthkit-number-of-times-fallen",
         "healthkit-observation",
@@ -269,8 +273,10 @@
         "healthkit-time-in-daylight",
         "healthkit-toothbrushing-session",
         "healthkit-underwater-depth",
+        "healthkit-user-annotated-medication",
         "healthkit-uv-exposure",
         "healthkit-vaginal-dryness",
+        "healthkit-vision-prescription",
         "healthkit-waist-circumference",
         "healthkit-walking-asymmetry",
         "healthkit-walking-double-support",
@@ -321,14 +327,65 @@
         "org.grovealliance.fhir.sensor#0.5.0"
       ],
       "profiles": [
-        "provider-body-fat-mass",
-        "provider-conversion-provenance",
-        "provider-extracellular-water-mass",
-        "provider-intracellular-water-mass",
-        "provider-muscle-mass",
-        "provider-observation",
-        "provider-recording-document",
-        "provider-sleeping-heart-rate-average"
+        "providers-conversion-provenance",
+        "providers-observation",
+        "providers-recording-document"
+      ]
+    },
+    {
+      "source": "withings",
+      "packageId": "org.grovealliance.fhir.withings",
+      "canonical": "https://grovealliance.org/fhir/withings",
+      "dependencies": [
+        "org.grovealliance.fhir.mobile#0.5.0",
+        "org.grovealliance.fhir.providers#0.5.0",
+        "org.grovealliance.fhir.sensor#0.5.0"
+      ],
+      "profiles": [
+        "withings-atrial-fibrillation-notification-ecg",
+        "withings-atrial-fibrillation-notification-ppg",
+        "withings-body-fat-mass",
+        "withings-corrected-qt-interval",
+        "withings-extracellular-water-mass",
+        "withings-intracellular-water-mass",
+        "withings-muscle-mass",
+        "withings-nerve-health-score",
+        "withings-observation",
+        "withings-pr-interval",
+        "withings-pulse-wave-velocity",
+        "withings-qrs-duration",
+        "withings-qt-interval",
+        "withings-sleeping-heart-rate-average",
+        "withings-vascular-age",
+        "withings-visceral-fat-index"
+      ]
+    },
+    {
+      "source": "oura",
+      "packageId": "org.grovealliance.fhir.oura",
+      "canonical": "https://grovealliance.org/fhir/oura",
+      "dependencies": [
+        "org.grovealliance.fhir.mobile#0.5.0",
+        "org.grovealliance.fhir.providers#0.5.0",
+        "org.grovealliance.fhir.sensor#0.5.0"
+      ],
+      "profiles": [
+        "oura-cardiovascular-age",
+        "oura-observation",
+        "oura-readiness-score"
+      ]
+    },
+    {
+      "source": "google-health",
+      "packageId": "org.grovealliance.fhir.google-health",
+      "canonical": "https://grovealliance.org/fhir/google-health",
+      "dependencies": [
+        "org.grovealliance.fhir.mobile#0.5.0",
+        "org.grovealliance.fhir.providers#0.5.0",
+        "org.grovealliance.fhir.sensor#0.5.0"
+      ],
+      "profiles": [
+        "google-health-observation"
       ]
     }
   ]

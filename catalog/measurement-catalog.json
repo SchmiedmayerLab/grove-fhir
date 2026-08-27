@@ -719,6 +719,57 @@
       }
     },
     {
+      "id": "biological-sex",
+      "profile": "healthkit-biological-sex",
+      "standardProfile": null,
+      "title": "Grove HealthKit Biological Sex",
+      "description": "Biological sex as a coded Observation. LOINC 46098-0 'Sex' is the context-free concept (verified ACTIVE, PROPERTY LP6886-8 Type, SCALE_TYP LP7750-5 Nom). 76689-9 'Sex assigned at birth' was rejected: the HealthKit characteristic states only a sex, never that it is the one assigned at birth, and adopting that code would fabricate a provenance the source does not carry. Value is a Grove-coded concept with the HKBiologicalSex token retained as secondary coding per the sleep-stage absorption pattern. HKBiologicalSex.notSet emits no Observation.",
+      "code": {
+        "system": "http://loinc.org",
+        "code": "46098-0",
+        "display": "Sex"
+      },
+      "valueKind": "codeableConcept",
+      "owner": "healthkit",
+      "quantity": null,
+      "valueSet": "https://grovealliance.org/fhir/healthkit/ValueSet/healthkit-biological-sex",
+      "resultCodeSystem": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-biological-sex",
+      "allowedValues": [
+        "female",
+        "male",
+        "other"
+      ],
+      "resultCodes": [
+        {
+          "code": "female",
+          "display": "Female",
+          "definition": "HKBiologicalSex female."
+        },
+        {
+          "code": "male",
+          "display": "Male",
+          "definition": "HKBiologicalSex male."
+        },
+        {
+          "code": "other",
+          "display": "Other",
+          "definition": "HKBiologicalSex other."
+        }
+      ],
+      "effective": "dateTime",
+      "generation": {
+        "emit": true
+      },
+      "coverage": {
+        "healthkit": "supported",
+        "health-connect": "unmodeled",
+        "sensorkit": "unmodeled",
+        "google-health-api": "unmodeled",
+        "oura": "unmodeled",
+        "withings": "unmodeled"
+      }
+    },
+    {
       "id": "bladder-incontinence",
       "profile": "healthkit-bladder-incontinence",
       "standardProfile": null,
@@ -1094,7 +1145,7 @@
     },
     {
       "id": "body-fat-mass",
-      "profile": "provider-body-fat-mass",
+      "profile": "withings-body-fat-mass",
       "standardProfile": null,
       "title": "Body Fat Mass",
       "description": "Absolute fat mass computed by a body-composition scale, normalized to UCUM kilograms. Distinct from body-fat percentage; only Withings evidences an absolute fat-mass output, so the profile is provider-scoped.",
@@ -1104,7 +1155,7 @@
         "display": "Body fat [Mass] Calculated"
       },
       "valueKind": "quantity",
-      "owner": "providers",
+      "owner": "withings",
       "quantity": {
         "system": "http://unitsofmeasure.org",
         "code": "kg",
@@ -1506,6 +1557,41 @@
       }
     },
     {
+      "id": "corrected-qt-interval",
+      "profile": "withings-corrected-qt-interval",
+      "standardProfile": null,
+      "title": "Corrected QT Interval",
+      "description": "The rate-corrected QT interval a Withings device reports alongside its own electrocardiogram, normalized to UCUM milliseconds. Only Withings reports the correction as a discrete measure, so the profile is provider-scoped. The interval is the vendor algorithm's reading of its own recording; no rhythm interpretation, repolarization finding, or diagnosis is asserted, and the correction formula the vendor applied is not published, so the value is not interchangeable with a QTc read from a clinical twelve-lead electrocardiogram.",
+      "code": {
+        "system": "http://loinc.org",
+        "code": "8636-3",
+        "display": "Q-T interval corrected"
+      },
+      "valueKind": "quantity",
+      "owner": "withings",
+      "quantity": {
+        "system": "http://unitsofmeasure.org",
+        "code": "ms",
+        "unit": "ms",
+        "example": 410,
+        "dimension": {
+          "s": 1
+        }
+      },
+      "effective": "dateTime",
+      "generation": {
+        "emit": true
+      },
+      "coverage": {
+        "healthkit": "unmodeled",
+        "health-connect": "unmodeled",
+        "sensorkit": "unmodeled",
+        "google-health-api": "unmodeled",
+        "oura": "unmodeled",
+        "withings": "platform-exclusive"
+      }
+    },
+    {
       "id": "cycling-cadence",
       "profile": "grove-mobile-cycling-cadence",
       "standardProfile": null,
@@ -1577,6 +1663,34 @@
         "oura": "unmodeled",
         "withings": "unmodeled"
       }
+    },
+    {
+      "id": "date-of-birth",
+      "profile": "healthkit-date-of-birth",
+      "standardProfile": null,
+      "title": "Grove HealthKit Date of Birth",
+      "description": "Date of birth as an Observation. LOINC 21112-8 'Birth date' is the exact concept (verified ACTIVE, PROPERTY LP6882-7 TmStp, SCALE_TYP LP7753-9 Qn). A date of birth identifies a person across systems, so the adapter withholds it unless the deployment authorizes disclosure; a deployment that already knows its participant's demographics from enrollment should prefer that authoritative record over this assertion.",
+      "code": {
+        "system": "http://loinc.org",
+        "code": "21112-8",
+        "display": "Birth date"
+      },
+      "valueKind": "dateTime",
+      "owner": "healthkit",
+      "quantity": null,
+      "effective": "dateTime",
+      "generation": {
+        "emit": true
+      },
+      "coverage": {
+        "healthkit": "supported",
+        "health-connect": "unmodeled",
+        "sensorkit": "unmodeled",
+        "google-health-api": "unmodeled",
+        "oura": "unmodeled",
+        "withings": "unmodeled"
+      },
+      "example": "1985-04-12"
     },
     {
       "id": "deep-sleep-duration",
@@ -3324,18 +3438,18 @@
     },
     {
       "id": "extracellular-water-mass",
-      "profile": "provider-extracellular-water-mass",
+      "profile": "withings-extracellular-water-mass",
       "standardProfile": null,
       "title": "Extracellular Water Mass",
       "description": "Mass of extracellular body water estimated by bioelectrical impedance, normalized to UCUM kilograms. Only Withings evidences the compartmentalized value, so the profile is provider-scoped and is distinct from total body-water mass.",
       "code": {
-        "system": "https://grovealliance.org/fhir/providers/CodeSystem/provider-measurement",
+        "system": "https://grovealliance.org/fhir/withings/CodeSystem/withings-measurement",
         "code": "extracellular-water-mass",
         "display": "Extracellular water mass",
         "definition": "The mass of body water outside cells as estimated by bioelectrical impedance analysis."
       },
       "valueKind": "quantity",
-      "owner": "providers",
+      "owner": "withings",
       "quantity": {
         "system": "http://unitsofmeasure.org",
         "code": "kg",
@@ -3356,6 +3470,75 @@
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
         "withings": "supported"
+      }
+    },
+    {
+      "id": "fitzpatrick-skin-type",
+      "profile": "healthkit-fitzpatrick-skin-type",
+      "standardProfile": null,
+      "title": "Grove HealthKit Fitzpatrick Skin Type",
+      "description": "Fitzpatrick sun-reactive skin type as a coded Observation. LOINC 66555-4 'Skin type [Fitzpatrick Classification Scale]' is the exact concept (verified ACTIVE, PROPERTY LP6886-8 Type, SCALE_TYP LP7750-5 Nom). The scale materially conditions UV-exposure interpretation, which is why it is modelled rather than left to the deployment. HKFitzpatrickSkinType.notSet emits no Observation.",
+      "code": {
+        "system": "http://loinc.org",
+        "code": "66555-4",
+        "display": "Skin type [Fitzpatrick Classification Scale]"
+      },
+      "valueKind": "codeableConcept",
+      "owner": "healthkit",
+      "quantity": null,
+      "valueSet": "https://grovealliance.org/fhir/healthkit/ValueSet/healthkit-fitzpatrick-skin-type",
+      "resultCodeSystem": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-fitzpatrick-skin-type",
+      "allowedValues": [
+        "type-i",
+        "type-ii",
+        "type-iii",
+        "type-iv",
+        "type-v",
+        "type-vi"
+      ],
+      "resultCodes": [
+        {
+          "code": "type-i",
+          "display": "Type I",
+          "definition": "Always burns, never tans."
+        },
+        {
+          "code": "type-ii",
+          "display": "Type II",
+          "definition": "Usually burns, tans minimally."
+        },
+        {
+          "code": "type-iii",
+          "display": "Type III",
+          "definition": "Sometimes burns mildly, tans uniformly."
+        },
+        {
+          "code": "type-iv",
+          "display": "Type IV",
+          "definition": "Burns minimally, always tans well."
+        },
+        {
+          "code": "type-v",
+          "display": "Type V",
+          "definition": "Very rarely burns, tans very easily."
+        },
+        {
+          "code": "type-vi",
+          "display": "Type VI",
+          "definition": "Never burns, deeply pigmented."
+        }
+      ],
+      "effective": "dateTime",
+      "generation": {
+        "emit": true
+      },
+      "coverage": {
+        "healthkit": "supported",
+        "health-connect": "unmodeled",
+        "sensorkit": "unmodeled",
+        "google-health-api": "unmodeled",
+        "oura": "unmodeled",
+        "withings": "unmodeled"
       }
     },
     {
@@ -3716,14 +3899,14 @@
           "sourceTokens": [
             "heart-rate"
           ],
-          "alternateRepresentation": "https://grovealliance.org/fhir/providers/StructureDefinition/provider-recording-document",
+          "alternateRepresentation": "https://grovealliance.org/fhir/providers/StructureDefinition/providers-recording-document",
           "reason": "Irregular provider points are retained as an exact raw recording; it does not implement the Mobile heart-rate profile."
         },
         "oura": {
           "sourceTokens": [
             "heartrate"
           ],
-          "alternateRepresentation": "https://grovealliance.org/fhir/providers/StructureDefinition/provider-recording-document",
+          "alternateRepresentation": "https://grovealliance.org/fhir/providers/StructureDefinition/providers-recording-document",
           "reason": "Irregular provider points are retained as an exact raw recording; it does not implement the Mobile heart-rate profile."
         }
       }
@@ -4088,18 +4271,18 @@
     },
     {
       "id": "intracellular-water-mass",
-      "profile": "provider-intracellular-water-mass",
+      "profile": "withings-intracellular-water-mass",
       "standardProfile": null,
       "title": "Intracellular Water Mass",
       "description": "Mass of intracellular body water estimated by bioelectrical impedance, normalized to UCUM kilograms. Only Withings evidences the compartmentalized value, so the profile is provider-scoped and is distinct from total body-water mass.",
       "code": {
-        "system": "https://grovealliance.org/fhir/providers/CodeSystem/provider-measurement",
+        "system": "https://grovealliance.org/fhir/withings/CodeSystem/withings-measurement",
         "code": "intracellular-water-mass",
         "display": "Intracellular water mass",
         "definition": "The mass of body water inside cells as estimated by bioelectrical impedance analysis."
       },
       "valueKind": "quantity",
-      "owner": "providers",
+      "owner": "withings",
       "quantity": {
         "system": "http://unitsofmeasure.org",
         "code": "kg",
@@ -4605,7 +4788,7 @@
     },
     {
       "id": "muscle-mass",
-      "profile": "provider-muscle-mass",
+      "profile": "withings-muscle-mass",
       "standardProfile": null,
       "title": "Muscle Mass",
       "description": "A providers-exclusive whole-body muscle mass calculated by bioimpedance analysis, normalized to UCUM kilograms. It is distinct from lean body mass (which additionally includes bone, water, and organ mass) and is not folded into that shared measurement.",
@@ -4615,7 +4798,7 @@
         "display": "Body muscle mass Calculated"
       },
       "valueKind": "quantity",
-      "owner": "providers",
+      "owner": "withings",
       "quantity": {
         "system": "http://unitsofmeasure.org",
         "code": "kg",
@@ -4703,6 +4886,76 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
+        "withings": "unmodeled"
+      }
+    },
+    {
+      "id": "oura-cardiovascular-age",
+      "profile": "oura-cardiovascular-age",
+      "standardProfile": null,
+      "title": "Oura Cardiovascular Age",
+      "description": "Oura's proprietary cardiovascular-age figure over a civil-day effective Period, reported on an age scale in UCUM years. It is a vendor score expressed in years, not a chronological age and not a vascular assessment. It is deliberately a separate measurement from the Withings vascular age: the two are undisclosed algorithms over different inputs, so a shared code would fabricate a comparability neither vendor defines.",
+      "code": {
+        "system": "https://grovealliance.org/fhir/oura/CodeSystem/oura-measurement",
+        "code": "oura-cardiovascular-age",
+        "display": "Oura cardiovascular age",
+        "definition": "The age-scaled figure Oura's proprietary cardiovascular-age algorithm derives from its own photoplethysmography features over the exact civil-day effective Period."
+      },
+      "valueKind": "quantity",
+      "owner": "oura",
+      "quantity": {
+        "system": "http://unitsofmeasure.org",
+        "code": "a",
+        "unit": "years",
+        "example": 38,
+        "dimension": {
+          "s": 1
+        }
+      },
+      "effective": "Period",
+      "generation": {
+        "emit": true
+      },
+      "coverage": {
+        "healthkit": "unmodeled",
+        "health-connect": "unmodeled",
+        "sensorkit": "unmodeled",
+        "google-health-api": "unmodeled",
+        "oura": "platform-exclusive",
+        "withings": "unmodeled"
+      }
+    },
+    {
+      "id": "oura-readiness-score",
+      "profile": "oura-readiness-score",
+      "standardProfile": null,
+      "title": "Oura Readiness Score",
+      "description": "Oura's proprietary daily readiness figure over a civil-day effective Period. The vendor publishes no physical unit for it and it measures no observable quantity, so it carries the dimensionless UCUM {score} annotation rather than an invented unit, and the profile description is the only statement of its scale. It is a vendor composite, not a physiological measurement, and nothing about the inputs, weighting, or comparability across people or firmware versions is asserted.",
+      "code": {
+        "system": "https://grovealliance.org/fhir/oura/CodeSystem/oura-measurement",
+        "code": "oura-readiness-score",
+        "display": "Oura readiness score",
+        "definition": "The bounded composite figure Oura's proprietary readiness algorithm reports for the exact civil-day effective Period."
+      },
+      "valueKind": "quantity",
+      "owner": "oura",
+      "quantity": {
+        "system": "http://unitsofmeasure.org",
+        "code": "{score}",
+        "unit": "score",
+        "example": 78,
+        "dimension": {}
+      },
+      "effective": "Period",
+      "generation": {
+        "emit": true
+      },
+      "coverage": {
+        "healthkit": "unmodeled",
+        "health-connect": "unmodeled",
+        "sensorkit": "unmodeled",
+        "google-health-api": "unmodeled",
+        "oura": "platform-exclusive",
         "withings": "unmodeled"
       }
     },
@@ -5053,6 +5306,41 @@
       }
     },
     {
+      "id": "pr-interval",
+      "profile": "withings-pr-interval",
+      "standardProfile": null,
+      "title": "PR Interval",
+      "description": "The PR interval a Withings device measures from its own electrocardiogram, normalized to UCUM milliseconds. Only Withings reports it as a discrete measure, so the profile is provider-scoped. The interval is the vendor algorithm's reading of its own recording; no conduction finding, rhythm interpretation, or diagnosis is asserted.",
+      "code": {
+        "system": "http://loinc.org",
+        "code": "8625-6",
+        "display": "P-R Interval"
+      },
+      "valueKind": "quantity",
+      "owner": "withings",
+      "quantity": {
+        "system": "http://unitsofmeasure.org",
+        "code": "ms",
+        "unit": "ms",
+        "example": 160,
+        "dimension": {
+          "s": 1
+        }
+      },
+      "effective": "dateTime",
+      "generation": {
+        "emit": true
+      },
+      "coverage": {
+        "healthkit": "unmodeled",
+        "health-connect": "unmodeled",
+        "sensorkit": "unmodeled",
+        "google-health-api": "unmodeled",
+        "oura": "unmodeled",
+        "withings": "platform-exclusive"
+      }
+    },
+    {
       "id": "pregnancy-status",
       "profile": "healthkit-pregnancy-status",
       "standardProfile": null,
@@ -5238,6 +5526,76 @@
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
         "withings": "unmodeled"
+      }
+    },
+    {
+      "id": "qrs-duration",
+      "profile": "withings-qrs-duration",
+      "standardProfile": null,
+      "title": "QRS Duration",
+      "description": "The QRS complex duration a Withings device measures from its own electrocardiogram, normalized to UCUM milliseconds. Only Withings reports it as a discrete measure, so the profile is provider-scoped. The interval is the vendor algorithm's reading of its own recording; no conduction finding, rhythm interpretation, or diagnosis is asserted.",
+      "code": {
+        "system": "http://loinc.org",
+        "code": "8633-0",
+        "display": "QRS duration"
+      },
+      "valueKind": "quantity",
+      "owner": "withings",
+      "quantity": {
+        "system": "http://unitsofmeasure.org",
+        "code": "ms",
+        "unit": "ms",
+        "example": 92,
+        "dimension": {
+          "s": 1
+        }
+      },
+      "effective": "dateTime",
+      "generation": {
+        "emit": true
+      },
+      "coverage": {
+        "healthkit": "unmodeled",
+        "health-connect": "unmodeled",
+        "sensorkit": "unmodeled",
+        "google-health-api": "unmodeled",
+        "oura": "unmodeled",
+        "withings": "platform-exclusive"
+      }
+    },
+    {
+      "id": "qt-interval",
+      "profile": "withings-qt-interval",
+      "standardProfile": null,
+      "title": "QT Interval",
+      "description": "The uncorrected QT interval a Withings device measures from its own electrocardiogram, normalized to UCUM milliseconds. Only Withings reports it as a discrete measure, so the profile is provider-scoped. The interval is the vendor algorithm's reading of its own recording; no repolarization finding, rhythm interpretation, or diagnosis is asserted, and the rate correction is a separate measurement.",
+      "code": {
+        "system": "http://loinc.org",
+        "code": "8634-8",
+        "display": "Q-T interval"
+      },
+      "valueKind": "quantity",
+      "owner": "withings",
+      "quantity": {
+        "system": "http://unitsofmeasure.org",
+        "code": "ms",
+        "unit": "ms",
+        "example": 390,
+        "dimension": {
+          "s": 1
+        }
+      },
+      "effective": "dateTime",
+      "generation": {
+        "emit": true
+      },
+      "coverage": {
+        "healthkit": "unmodeled",
+        "health-connect": "unmodeled",
+        "sensorkit": "unmodeled",
+        "google-health-api": "unmodeled",
+        "oura": "unmodeled",
+        "withings": "platform-exclusive"
       }
     },
     {
@@ -5854,18 +6212,18 @@
     },
     {
       "id": "sleeping-heart-rate-average",
-      "profile": "provider-sleeping-heart-rate-average",
+      "profile": "withings-sleeping-heart-rate-average",
       "standardProfile": null,
       "title": "Sleeping Heart Rate Average",
       "description": "The average heart rate across one sleep session, normalized to UCUM beats per minute. It is a session-windowed average, distinct from both the shared point heart-rate measurement and the daily resting-heart-rate estimate, and is implemented by the phase-2 aggregate design.",
       "code": {
-        "system": "https://grovealliance.org/fhir/providers/CodeSystem/provider-measurement",
+        "system": "https://grovealliance.org/fhir/withings/CodeSystem/withings-measurement",
         "code": "sleeping-heart-rate-average",
         "display": "Sleeping heart rate average",
         "definition": "The mean heart rate across the exact sleep-session Observation effective Period."
       },
       "valueKind": "quantity",
-      "owner": "providers",
+      "owner": "withings",
       "quantity": {
         "system": "http://unitsofmeasure.org",
         "code": "/min",
@@ -8599,6 +8957,227 @@
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
         "withings": "unmodeled"
+      }
+    },
+    {
+      "id": "withings-atrial-fibrillation-notification-ecg",
+      "profile": "withings-atrial-fibrillation-notification-ecg",
+      "standardProfile": null,
+      "title": "Withings Atrial Fibrillation Notification (ECG)",
+      "description": "Withings meastype 130: a screening notification from the vendor's proprietary electrocardiogram algorithm. It is emitted as a notification and never as a rhythm finding, exactly as the HealthKit irregular-heart-rhythm notification is: the recording itself remains the rhythm evidence. The adapter admits an Observation only for the vendor's positive screening classification; Withings publishes no encoding for the numeric measure.value, so no negative result, no inconclusive result, and no diagnosis is asserted. The code is deliberately taken from the providers code system so no receiver can read it as an atrial-fibrillation finding.",
+      "code": {
+        "system": "https://grovealliance.org/fhir/withings/CodeSystem/withings-measurement",
+        "code": "withings-atrial-fibrillation-notification-ecg",
+        "display": "Withings atrial fibrillation notification (ECG)",
+        "definition": "A Withings screening notification stating that the vendor's electrocardiogram algorithm flagged signs of atrial fibrillation in the recording taken at the Observation effective instant."
+      },
+      "valueKind": "codeableConcept",
+      "owner": "withings",
+      "quantity": null,
+      "valueSet": "https://grovealliance.org/fhir/withings/ValueSet/withings-atrial-fibrillation-notification-ecg",
+      "resultCodeSystem": "https://grovealliance.org/fhir/withings/CodeSystem/withings-atrial-fibrillation-notification-ecg",
+      "allowedValues": [
+        "signs-detected"
+      ],
+      "resultCodes": [
+        {
+          "code": "signs-detected",
+          "display": "Signs Detected",
+          "definition": "The vendor's electrocardiogram screening algorithm flagged signs of atrial fibrillation in this recording. Nothing beyond the notification is asserted."
+        }
+      ],
+      "effective": "dateTime",
+      "generation": {
+        "emit": true
+      },
+      "coverage": {
+        "healthkit": "unmodeled",
+        "health-connect": "unmodeled",
+        "sensorkit": "unmodeled",
+        "google-health-api": "unmodeled",
+        "oura": "unmodeled",
+        "withings": "platform-exclusive"
+      }
+    },
+    {
+      "id": "withings-atrial-fibrillation-notification-ppg",
+      "profile": "withings-atrial-fibrillation-notification-ppg",
+      "standardProfile": null,
+      "title": "Withings Atrial Fibrillation Notification (PPG)",
+      "description": "Withings meastype 139: a screening notification from the vendor's proprietary photoplethysmography algorithm, kept separate from the electrocardiogram notification because it screens a different signal. It is emitted as a notification and never as a rhythm finding. The adapter admits an Observation only for the vendor's positive screening classification; Withings publishes no encoding for the numeric measure.value, so no negative result, no inconclusive result, and no diagnosis is asserted. The code is deliberately taken from the providers code system so no receiver can read it as an atrial-fibrillation finding.",
+      "code": {
+        "system": "https://grovealliance.org/fhir/withings/CodeSystem/withings-measurement",
+        "code": "withings-atrial-fibrillation-notification-ppg",
+        "display": "Withings atrial fibrillation notification (PPG)",
+        "definition": "A Withings screening notification stating that the vendor's photoplethysmography algorithm flagged signs of atrial fibrillation in the reading taken at the Observation effective instant."
+      },
+      "valueKind": "codeableConcept",
+      "owner": "withings",
+      "quantity": null,
+      "valueSet": "https://grovealliance.org/fhir/withings/ValueSet/withings-atrial-fibrillation-notification-ppg",
+      "resultCodeSystem": "https://grovealliance.org/fhir/withings/CodeSystem/withings-atrial-fibrillation-notification-ppg",
+      "allowedValues": [
+        "signs-detected"
+      ],
+      "resultCodes": [
+        {
+          "code": "signs-detected",
+          "display": "Signs Detected",
+          "definition": "The vendor's photoplethysmography screening algorithm flagged signs of atrial fibrillation in this reading. Nothing beyond the notification is asserted."
+        }
+      ],
+      "effective": "dateTime",
+      "generation": {
+        "emit": true
+      },
+      "coverage": {
+        "healthkit": "unmodeled",
+        "health-connect": "unmodeled",
+        "sensorkit": "unmodeled",
+        "google-health-api": "unmodeled",
+        "oura": "unmodeled",
+        "withings": "platform-exclusive"
+      }
+    },
+    {
+      "id": "withings-nerve-health-score",
+      "profile": "withings-nerve-health-score",
+      "standardProfile": null,
+      "title": "Withings Nerve Health Score",
+      "description": "Withings meastype 167: the vendor's nerve-health figure, computed by an undisclosed algorithm from electrochemical skin conductance measured at the feet. The vendor publishes no physical unit for it, so it carries the dimensionless UCUM {score} annotation rather than an invented unit or the conductance it derives from, and the profile description is the only statement of its scale. Withings positions the figure as small-fiber-neuropathy screening, so it is deliberately coded from the providers code system: it is a vendor screening figure and never a neuropathy finding or a diagnosis.",
+      "code": {
+        "system": "https://grovealliance.org/fhir/withings/CodeSystem/withings-measurement",
+        "code": "withings-nerve-health-score",
+        "display": "Withings nerve health score",
+        "definition": "The bounded figure Withings' proprietary nerve-health algorithm computes from electrochemical skin conductance at the feet, at the Observation effective instant."
+      },
+      "valueKind": "quantity",
+      "owner": "withings",
+      "quantity": {
+        "system": "http://unitsofmeasure.org",
+        "code": "{score}",
+        "unit": "score",
+        "example": 80,
+        "dimension": {}
+      },
+      "effective": "dateTime",
+      "generation": {
+        "emit": true
+      },
+      "coverage": {
+        "healthkit": "unmodeled",
+        "health-connect": "unmodeled",
+        "sensorkit": "unmodeled",
+        "google-health-api": "unmodeled",
+        "oura": "unmodeled",
+        "withings": "platform-exclusive"
+      }
+    },
+    {
+      "id": "withings-pulse-wave-velocity",
+      "profile": "withings-pulse-wave-velocity",
+      "standardProfile": null,
+      "title": "Withings Pulse Wave Velocity",
+      "description": "Withings meastype 91: the vendor's aortic pulse-wave velocity estimate, produced by an undisclosed single-vendor scale algorithm and normalized to UCUM metres per second. It is deliberately coded from the providers code system rather than a shared arterial-stiffness code, because no second source evidences it and the estimate is not interchangeable with a tonometric pulse-wave velocity measured in clinic. It is a wellness estimate and never an arterial-stiffness diagnosis.",
+      "code": {
+        "system": "https://grovealliance.org/fhir/withings/CodeSystem/withings-measurement",
+        "code": "withings-pulse-wave-velocity",
+        "display": "Withings pulse wave velocity",
+        "definition": "The aortic pulse-wave velocity Withings' proprietary scale algorithm estimates at the Observation effective instant, in metres per second."
+      },
+      "valueKind": "quantity",
+      "owner": "withings",
+      "quantity": {
+        "system": "http://unitsofmeasure.org",
+        "code": "m/s",
+        "unit": "m/s",
+        "example": 7.5,
+        "dimension": {
+          "m": 1,
+          "s": -1
+        }
+      },
+      "effective": "dateTime",
+      "generation": {
+        "emit": true
+      },
+      "coverage": {
+        "healthkit": "unmodeled",
+        "health-connect": "unmodeled",
+        "sensorkit": "unmodeled",
+        "google-health-api": "unmodeled",
+        "oura": "unmodeled",
+        "withings": "platform-exclusive"
+      }
+    },
+    {
+      "id": "withings-vascular-age",
+      "profile": "withings-vascular-age",
+      "standardProfile": null,
+      "title": "Withings Vascular Age",
+      "description": "Withings meastype 155: the vendor's vascular-age figure, derived by an undisclosed algorithm from the pulse-wave velocity the same scale estimates, and reported on an age scale in UCUM years. It is a vendor score expressed in years, not a chronological age and not a vascular assessment. It is deliberately a separate measurement from the Oura cardiovascular age: the two are undisclosed algorithms over different inputs, so a shared code would fabricate a comparability neither vendor defines.",
+      "code": {
+        "system": "https://grovealliance.org/fhir/withings/CodeSystem/withings-measurement",
+        "code": "withings-vascular-age",
+        "display": "Withings vascular age",
+        "definition": "The age-scaled figure Withings' proprietary vascular-age algorithm derives from its own pulse-wave velocity estimate, at the Observation effective instant."
+      },
+      "valueKind": "quantity",
+      "owner": "withings",
+      "quantity": {
+        "system": "http://unitsofmeasure.org",
+        "code": "a",
+        "unit": "years",
+        "example": 45,
+        "dimension": {
+          "s": 1
+        }
+      },
+      "effective": "dateTime",
+      "generation": {
+        "emit": true
+      },
+      "coverage": {
+        "healthkit": "unmodeled",
+        "health-connect": "unmodeled",
+        "sensorkit": "unmodeled",
+        "google-health-api": "unmodeled",
+        "oura": "unmodeled",
+        "withings": "platform-exclusive"
+      }
+    },
+    {
+      "id": "withings-visceral-fat-index",
+      "profile": "withings-visceral-fat-index",
+      "standardProfile": null,
+      "title": "Withings Visceral Fat Index",
+      "description": "Withings meastype 170: the vendor's visceral-fat figure, which the API returns without a unit. It is a bounded rating on the vendor's own scale rather than a mass or an area, so it carries the dimensionless UCUM {score} annotation instead of an invented mass or area unit, and it is kept apart from every shared body-composition measurement. The profile description is the only statement of its scale, and no comparability with another vendor's visceral-fat figure is asserted.",
+      "code": {
+        "system": "https://grovealliance.org/fhir/withings/CodeSystem/withings-measurement",
+        "code": "withings-visceral-fat-index",
+        "display": "Withings visceral fat index",
+        "definition": "The bounded figure Withings' proprietary body-composition algorithm reports for abdominal visceral fat at the Observation effective instant."
+      },
+      "valueKind": "quantity",
+      "owner": "withings",
+      "quantity": {
+        "system": "http://unitsofmeasure.org",
+        "code": "{score}",
+        "unit": "score",
+        "example": 8,
+        "dimension": {}
+      },
+      "effective": "dateTime",
+      "generation": {
+        "emit": true
+      },
+      "coverage": {
+        "healthkit": "unmodeled",
+        "health-connect": "unmodeled",
+        "sensorkit": "unmodeled",
+        "google-health-api": "unmodeled",
+        "oura": "unmodeled",
+        "withings": "platform-exclusive"
       }
     },
     {

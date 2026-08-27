@@ -54,3 +54,19 @@ Description: "The identifier namespace for a device UUID supplied through HKSour
 * uniqueId.type = #uri
 * uniqueId.value = $healthKitSourceDeviceId
 * uniqueId.preferred = true
+
+Instance: HealthKitHealthConceptIdentifier
+InstanceOf: NamingSystem
+Usage: #definition
+Title: "HealthKit Health Concept Identifier"
+Description: "The identifier namespace for HKHealthConceptIdentifier values that name a medication concept a person tracks."
+* id = "healthkit-health-concept-id"
+* name = "HealthKitHealthConceptIdentifier"
+* status = #active
+* kind = #identifier
+* date = "2026-08-26"
+* publisher = "Schmiedmayer Lab"
+* description = "Identifies a medication concept by the opaque value HealthKit exposes through HKHealthConceptIdentifier. A logged dose event names its medication with this namespace and nothing else, because HealthKit publishes no resolvable medication record. Compare the complete system and value pair; the namespace does not assert identity of a universal drug concept."
+* uniqueId.type = #uri
+* uniqueId.value = $healthKitHealthConceptId
+* uniqueId.preferred = true

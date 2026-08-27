@@ -346,7 +346,10 @@
             "mobile",
             "healthkit",
             "health-connect",
-            "providers"
+            "providers",
+            "withings",
+            "oura",
+            "google-health"
           ]
         },
         "code": {
@@ -356,6 +359,7 @@
           "enum": [
             "quantity",
             "codeableConcept",
+            "dateTime",
             "components",
             "grouping"
           ]
@@ -476,6 +480,9 @@
             "type": "string"
           },
           "description": "Literal references a grouping measurement's example carries as members."
+        },
+        "example": {
+          "type": "string"
         }
       },
       "allOf": [

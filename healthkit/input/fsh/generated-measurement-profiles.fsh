@@ -136,6 +136,24 @@ Description: "Every admitted result code of the Apple Stand Hour measurement."
 * ^experimental = false
 * include codes from system HealthkitAppleStandHourCS
 
+CodeSystem: HealthkitBiologicalSexCS
+Id: healthkit-biological-sex
+Title: "Grove HealthKit Biological Sex Result"
+Description: "The closed result codes of the Grove HealthKit Biological Sex measurement."
+* ^experimental = false
+* ^caseSensitive = true
+* ^content = #complete
+* #female "Female" "HKBiologicalSex female."
+* #male "Male" "HKBiologicalSex male."
+* #other "Other" "HKBiologicalSex other."
+
+ValueSet: HealthkitBiologicalSexVS
+Id: healthkit-biological-sex
+Title: "Grove HealthKit Biological Sex Result"
+Description: "Every admitted result code of the Grove HealthKit Biological Sex measurement."
+* ^experimental = false
+* include codes from system HealthkitBiologicalSexCS
+
 CodeSystem: HealthkitBleedingAfterPregnancyCS
 Id: healthkit-bleeding-after-pregnancy
 Title: "Bleeding After Pregnancy Result"
@@ -236,6 +254,27 @@ Title: "Environmental Audio Exposure Notification Result"
 Description: "Every admitted result code of the Environmental Audio Exposure Notification measurement."
 * ^experimental = false
 * include codes from system HealthkitEnvironmentalAudioExposureNotificationCS
+
+CodeSystem: HealthkitFitzpatrickSkinTypeCS
+Id: healthkit-fitzpatrick-skin-type
+Title: "Grove HealthKit Fitzpatrick Skin Type Result"
+Description: "The closed result codes of the Grove HealthKit Fitzpatrick Skin Type measurement."
+* ^experimental = false
+* ^caseSensitive = true
+* ^content = #complete
+* #type-i "Type I" "Always burns, never tans."
+* #type-ii "Type II" "Usually burns, tans minimally."
+* #type-iii "Type III" "Sometimes burns mildly, tans uniformly."
+* #type-iv "Type IV" "Burns minimally, always tans well."
+* #type-v "Type V" "Very rarely burns, tans very easily."
+* #type-vi "Type VI" "Never burns, deeply pigmented."
+
+ValueSet: HealthkitFitzpatrickSkinTypeVS
+Id: healthkit-fitzpatrick-skin-type
+Title: "Grove HealthKit Fitzpatrick Skin Type Result"
+Description: "Every admitted result code of the Grove HealthKit Fitzpatrick Skin Type measurement."
+* ^experimental = false
+* include codes from system HealthkitFitzpatrickSkinTypeCS
 
 CodeSystem: HealthkitHeadphoneAudioExposureNotificationCS
 Id: healthkit-headphone-audio-exposure-notification
@@ -886,6 +925,17 @@ Description: "HKAudiogramSample: a hearing test reporting an air conduction thre
 * component[right-8000].valueQuantity.system = $ucum (exactly)
 * component[right-8000].valueQuantity.code = #dB (exactly)
 
+Profile: HealthkitBiologicalSex
+Parent: HealthKitObservation
+Id: healthkit-biological-sex
+Title: "Grove HealthKit Biological Sex"
+Description: "Biological sex as a coded Observation. LOINC 46098-0 'Sex' is the context-free concept (verified ACTIVE, PROPERTY LP6886-8 Type, SCALE_TYP LP7750-5 Nom). 76689-9 'Sex assigned at birth' was rejected: the HealthKit characteristic states only a sex, never that it is the one assigned at birth, and adopting that code would fabricate a provenance the source does not carry. Value is a Grove-coded concept with the HKBiologicalSex token retained as secondary coding per the sleep-stage absorption pattern. HKBiologicalSex.notSet emits no Observation."
+* code = $loinc#46098-0
+* effective[x] only dateTime
+* value[x] only CodeableConcept
+* valueCodeableConcept 1..1 MS
+* valueCodeableConcept from HealthkitBiologicalSexVS (required)
+
 Profile: HealthkitBladderIncontinence
 Parent: HealthKitObservation
 Id: healthkit-bladder-incontinence
@@ -977,6 +1027,16 @@ Description: "The estimated maximum cycling power output the subject can sustain
 * valueQuantity.code 1..1 MS
 * valueQuantity.code = #W (exactly)
 
+Profile: HealthkitDateOfBirth
+Parent: HealthKitObservation
+Id: healthkit-date-of-birth
+Title: "Grove HealthKit Date of Birth"
+Description: "Date of birth as an Observation. LOINC 21112-8 'Birth date' is the exact concept (verified ACTIVE, PROPERTY LP6882-7 TmStp, SCALE_TYP LP7753-9 Qn). A date of birth identifies a person across systems, so the adapter withholds it unless the deployment authorizes disclosure; a deployment that already knows its participant's demographics from enrollment should prefer that authoritative record over this assertion."
+* code = $loinc#21112-8
+* effective[x] only dateTime
+* value[x] only dateTime
+* valueDateTime 1..1 MS
+
 Profile: HealthkitEnvironmentalAudioExposure
 Parent: HealthKitObservation
 Id: healthkit-environmental-audio-exposure
@@ -1023,6 +1083,17 @@ Description: "The reduction in equivalent continuous sound pressure level provid
 * valueQuantity.system = $ucum (exactly)
 * valueQuantity.code 1..1 MS
 * valueQuantity.code = #dB[SPL] (exactly)
+
+Profile: HealthkitFitzpatrickSkinType
+Parent: HealthKitObservation
+Id: healthkit-fitzpatrick-skin-type
+Title: "Grove HealthKit Fitzpatrick Skin Type"
+Description: "Fitzpatrick sun-reactive skin type as a coded Observation. LOINC 66555-4 'Skin type [Fitzpatrick Classification Scale]' is the exact concept (verified ACTIVE, PROPERTY LP6886-8 Type, SCALE_TYP LP7750-5 Nom). The scale materially conditions UV-exposure interpretation, which is why it is modelled rather than left to the deployment. HKFitzpatrickSkinType.notSet emits no Observation."
+* code = $loinc#66555-4
+* effective[x] only dateTime
+* value[x] only CodeableConcept
+* valueCodeableConcept 1..1 MS
+* valueCodeableConcept from HealthkitFitzpatrickSkinTypeVS (required)
 
 Profile: HealthkitFoodCorrelation
 Parent: HealthKitObservation
@@ -2492,6 +2563,22 @@ Description: "A conformant Audiogram Panel instance."
 * component[right-250].code = $loinc#91374-9
 * component[right-250].valueQuantity = 25 'dB'
 
+Instance: HealthkitBiologicalSexExample
+InstanceOf: HealthkitBiologicalSex
+Usage: #example
+Title: "Grove HealthKit Biological Sex Example"
+Description: "A conformant Grove HealthKit Biological Sex instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "4b70dfd1-944a-f3a5-12e0-826e93720936"
+* status = #final
+* code = $loinc#46098-0 "Sex"
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCharacteristicTypeIdentifierBiologicalSex
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = HealthkitBiologicalSexCS#female "Female"
+
 Instance: HealthkitBladderIncontinenceExample
 InstanceOf: HealthkitBladderIncontinence
 Usage: #example
@@ -2605,6 +2692,22 @@ Description: "A conformant Cycling Functional Threshold Power instance."
 * issued = "2026-08-20T08:00:00Z"
 * valueQuantity = 235 'W'
 
+Instance: HealthkitDateOfBirthExample
+InstanceOf: HealthkitDateOfBirth
+Usage: #example
+Title: "Grove HealthKit Date of Birth Example"
+Description: "A conformant Grove HealthKit Date of Birth instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "2458f8e0-f1e8-bee2-f9f9-eece6cbfdd8a"
+* status = #final
+* code = $loinc#21112-8 "Birth date"
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCharacteristicTypeIdentifierDateOfBirth
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueDateTime = "1985-04-12"
+
 Instance: HealthkitEnvironmentalAudioExposureExample
 InstanceOf: HealthkitEnvironmentalAudioExposure
 Usage: #example
@@ -2655,6 +2758,22 @@ Description: "A conformant Environmental Sound Reduction instance."
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * issued = "2026-08-20T08:00:00Z"
 * valueQuantity = 22 'dB[SPL]' "dB(SPL)"
+
+Instance: HealthkitFitzpatrickSkinTypeExample
+InstanceOf: HealthkitFitzpatrickSkinType
+Usage: #example
+Title: "Grove HealthKit Fitzpatrick Skin Type Example"
+Description: "A conformant Grove HealthKit Fitzpatrick Skin Type instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "9b3ae0f2-7de9-b5de-be5c-b29ffd399e36"
+* status = #final
+* code = $loinc#66555-4 "Skin type [Fitzpatrick Classification Scale]"
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCharacteristicTypeIdentifierFitzpatrickSkinType
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = HealthkitFitzpatrickSkinTypeCS#type-i "Type I"
 
 Instance: HealthkitFoodCorrelationExample
 InstanceOf: HealthkitFoodCorrelation

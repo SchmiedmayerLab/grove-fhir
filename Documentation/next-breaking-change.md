@@ -147,15 +147,20 @@ Admitted as clinical resources other than Observation, the first the guides emit
 and `HKDataTypeUserAnnotatedMedicationConcept` as `MedicationStatement`.
 `GroveMobileExchangeBundle` never constrained `entry.resource` to a type, so the exchange bundle carries them unchanged.
 
-**Open.** `HKCharacteristicTypeIdentifierDateOfBirth` and `…BiologicalSex` remain deferred.
-They are `Patient.birthDate` and `Patient.gender`, not Observations, so admitting them means deciding whether Grove writes demographics at all — a deployment already knows its participant's demographics from enrollment, and a second assertion invites conflict with the authoritative record.
+**Closed in 0.6.0.** `HKCharacteristicTypeIdentifierDateOfBirth`, `…BiologicalSex`, and `…FitzpatrickSkinType` are admitted, and HealthKit now defers nothing.
+The framing that held them back — that they are `Patient.birthDate` and `Patient.gender` rather than Observations — was wrong on this guide's own precedent: `BloodType` and `WheelchairUse` are peer characteristics already carried as Observations on their own profiles.
+They follow that pattern.
+A date of birth identifies a person across systems, so the adapter withholds it unless the deployment authorizes disclosure; a deployment that already knows its participant's demographics from enrollment should prefer that authoritative record over this assertion.
+
+`biological-sex` binds LOINC 46098-0 `Sex` rather than 76689-9 `Sex assigned at birth`.
+The HealthKit characteristic asserts a sex, never that it is the one assigned at birth, and the stronger code would fabricate a provenance the source does not carry — the same reasoning that kept `wheelchair-use` off the CMS-context code.
 
 `SensorKit` still defers 1 of 22: `SRSensor.acousticSettings`, a device setting rather than a measurement.
 
 Health Connect defers 1 of 41: `PlannedExerciseSessionRecord`, correctly — a planned session states future intent, not an observed measurement, and belongs to a workflow resource rather than a measurement contract.
 
 Every remaining refusal states its reason in the catalog row.
-That was checked: the three `intentionally-unsupported` HealthKit types each argue the case — a ring-display preference is an Apple product configuration rather than clinical data, Fitzpatrick skin type is a scope decision with LOINC 66555-4 noted as existing, and NikeFuel is an opaque vendor index with an unpublished formula.
+That was checked: the two remaining `intentionally-unsupported` HealthKit types each argue the case — a ring-display preference is an Apple product configuration rather than clinical data, and NikeFuel is an opaque vendor index with an unpublished formula that Apple has itself deprecated.
 
 ## Leftovers removed in this pass
 

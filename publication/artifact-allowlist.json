@@ -2226,6 +2226,27 @@
           "classification": "definition"
         },
         {
+          "fshName": "HealthKitMedicationDoseLogStatusCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "healthkit-medication-dose-log-status",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthKitMedicationGeneralFormCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "healthkit-medication-general-form",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthKitMedicationScheduleTypeCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "healthkit-medication-schedule-type",
+          "classification": "definition"
+        },
+        {
           "fshName": "HealthKitMetadataKeyCS",
           "fshType": "CodeSystem",
           "resourceType": "CodeSystem",
@@ -2555,6 +2576,76 @@
           "classification": "definition"
         },
         {
+          "fshName": "HealthKitLensFarPupillaryDistance",
+          "fshType": "Extension",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-lens-far-pupillary-distance",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthKitLensNearPupillaryDistance",
+          "fshType": "Extension",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-lens-near-pupillary-distance",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthKitLensVertexDistance",
+          "fshType": "Extension",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-lens-vertex-distance",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthKitMedicationDoseLogStatus",
+          "fshType": "Extension",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-medication-dose-log-status",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthKitMedicationDoseSchedule",
+          "fshType": "Extension",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-medication-dose-schedule",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthKitMedicationGeneralForm",
+          "fshType": "Extension",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-medication-general-form",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthKitMedicationHasSchedule",
+          "fshType": "Extension",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-medication-has-schedule",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthKitMedicationNickname",
+          "fshType": "Extension",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-medication-nickname",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthKitSourceType",
+          "fshType": "Extension",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-source-type-extension",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthKitVisionPrescriptionExpiration",
+          "fshType": "Extension",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-vision-prescription-expiration",
+          "classification": "definition"
+        },
+        {
           "fshName": "AppleBundleIdentifier",
           "fshType": "Instance",
           "resourceType": "NamingSystem",
@@ -2639,6 +2730,13 @@
           "classification": "example"
         },
         {
+          "fshName": "HealthKitHealthConceptIdentifier",
+          "fshType": "Instance",
+          "resourceType": "NamingSystem",
+          "id": "healthkit-health-concept-id",
+          "classification": "definition"
+        },
+        {
           "fshName": "HealthKitHeartRateObservationExample",
           "fshType": "Instance",
           "resourceType": "Observation",
@@ -2657,6 +2755,13 @@
           "fshType": "Instance",
           "resourceType": "Observation",
           "id": "HealthKitManuallyEnteredBodyWeightExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "HealthKitMedicationDoseEventExample",
+          "fshType": "Instance",
+          "resourceType": "MedicationAdministration",
+          "id": "HealthKitMedicationDoseEventExample",
           "classification": "example"
         },
         {
@@ -2748,6 +2853,20 @@
           "fshType": "Instance",
           "resourceType": "PlanDefinition",
           "id": "HealthKitStudyPlanExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "HealthKitUserAnnotatedMedicationExample",
+          "fshType": "Instance",
+          "resourceType": "MedicationStatement",
+          "id": "HealthKitUserAnnotatedMedicationExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "HealthKitVisionPrescriptionExample",
+          "fshType": "Instance",
+          "resourceType": "VisionPrescription",
+          "id": "HealthKitVisionPrescriptionExample",
           "classification": "example"
         },
         {
@@ -3528,6 +3647,13 @@
           "classification": "definition"
         },
         {
+          "fshName": "HealthKitMedicationDoseEvent",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-medication-dose-event",
+          "classification": "definition"
+        },
+        {
           "fshName": "HealthKitObservation",
           "fshType": "Profile",
           "resourceType": "StructureDefinition",
@@ -3539,6 +3665,20 @@
           "fshType": "Profile",
           "resourceType": "StructureDefinition",
           "id": "healthkit-recording-document",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthKitUserAnnotatedMedication",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-user-annotated-medication",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthKitVisionPrescription",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-vision-prescription",
           "classification": "definition"
         },
         {
@@ -4368,6 +4508,27 @@
           "classification": "definition"
         },
         {
+          "fshName": "HealthKitMedicationDoseLogStatusVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "healthkit-medication-dose-log-status",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthKitMedicationGeneralFormVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "healthkit-medication-general-form",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthKitMedicationScheduleTypeVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "healthkit-medication-schedule-type",
+          "classification": "definition"
+        },
+        {
           "fshName": "HealthKitMetadataKeyVS",
           "fshType": "ValueSet",
           "resourceType": "ValueSet",
@@ -4393,6 +4554,13 @@
           "fshType": "ValueSet",
           "resourceType": "ValueSet",
           "id": "healthkit-symptom-severity",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthKitTrackedMedicationStatusVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "healthkit-tracked-medication-status",
           "classification": "definition"
         },
         {
@@ -4597,6 +4765,76 @@
           "resourceType": "ValueSet",
           "id": "healthkit-wheelchair-use",
           "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitBiologicalSexCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "healthkit-biological-sex",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitBiologicalSexVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "healthkit-biological-sex",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitFitzpatrickSkinTypeCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "healthkit-fitzpatrick-skin-type",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitFitzpatrickSkinTypeVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "healthkit-fitzpatrick-skin-type",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitBiologicalSex",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-biological-sex",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitDateOfBirth",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-date-of-birth",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitFitzpatrickSkinType",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-fitzpatrick-skin-type",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitBiologicalSexExample",
+          "fshType": "Instance",
+          "resourceType": "Observation",
+          "id": "HealthkitBiologicalSexExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "HealthkitDateOfBirthExample",
+          "fshType": "Instance",
+          "resourceType": "Observation",
+          "id": "HealthkitDateOfBirthExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "HealthkitFitzpatrickSkinTypeExample",
+          "fshType": "Instance",
+          "resourceType": "Observation",
+          "id": "HealthkitFitzpatrickSkinTypeExample",
+          "classification": "example"
         }
       ]
     },
@@ -5180,13 +5418,6 @@
       "canonical": "https://grovealliance.org/fhir/providers",
       "artifacts": [
         {
-          "fshName": "ProviderMeasurementCS",
-          "fshType": "CodeSystem",
-          "resourceType": "CodeSystem",
-          "id": "provider-measurement",
-          "classification": "definition"
-        },
-        {
           "fshName": "ProviderProviderCS",
           "fshType": "CodeSystem",
           "resourceType": "CodeSystem",
@@ -5257,34 +5488,6 @@
           "classification": "example"
         },
         {
-          "fshName": "ProviderBodyFatMassExample",
-          "fshType": "Instance",
-          "resourceType": "Observation",
-          "id": "ProviderBodyFatMassExample",
-          "classification": "example"
-        },
-        {
-          "fshName": "ProviderExtracellularWaterMassExample",
-          "fshType": "Instance",
-          "resourceType": "Observation",
-          "id": "ProviderExtracellularWaterMassExample",
-          "classification": "example"
-        },
-        {
-          "fshName": "ProviderIntracellularWaterMassExample",
-          "fshType": "Instance",
-          "resourceType": "Observation",
-          "id": "ProviderIntracellularWaterMassExample",
-          "classification": "example"
-        },
-        {
-          "fshName": "ProviderMuscleMassExample",
-          "fshType": "Instance",
-          "resourceType": "Observation",
-          "id": "ProviderMuscleMassExample",
-          "classification": "example"
-        },
-        {
           "fshName": "ProviderOutputIdentifier",
           "fshType": "Instance",
           "resourceType": "NamingSystem",
@@ -5304,13 +5507,6 @@
           "resourceType": "NamingSystem",
           "id": "provider-account-id",
           "classification": "definition"
-        },
-        {
-          "fshName": "ProviderSleepingHeartRateAverageExample",
-          "fshType": "Instance",
-          "resourceType": "Observation",
-          "id": "ProviderSleepingHeartRateAverageExample",
-          "classification": "example"
         },
         {
           "fshName": "ProviderSourceRecordIdentifier",
@@ -5341,66 +5537,24 @@
           "classification": "example"
         },
         {
-          "fshName": "ProviderBodyFatMass",
+          "fshName": "ProvidersConversionProvenance",
           "fshType": "Profile",
           "resourceType": "StructureDefinition",
-          "id": "provider-body-fat-mass",
+          "id": "providers-conversion-provenance",
           "classification": "definition"
         },
         {
-          "fshName": "ProviderConversionProvenance",
+          "fshName": "ProvidersObservation",
           "fshType": "Profile",
           "resourceType": "StructureDefinition",
-          "id": "provider-conversion-provenance",
+          "id": "providers-observation",
           "classification": "definition"
         },
         {
-          "fshName": "ProviderExtracellularWaterMass",
+          "fshName": "ProvidersRecordingDocument",
           "fshType": "Profile",
           "resourceType": "StructureDefinition",
-          "id": "provider-extracellular-water-mass",
-          "classification": "definition"
-        },
-        {
-          "fshName": "ProviderIntracellularWaterMass",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "provider-intracellular-water-mass",
-          "classification": "definition"
-        },
-        {
-          "fshName": "ProviderMuscleMass",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "provider-muscle-mass",
-          "classification": "definition"
-        },
-        {
-          "fshName": "ProviderObservation",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "provider-observation",
-          "classification": "definition"
-        },
-        {
-          "fshName": "ProviderRecordingDocument",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "provider-recording-document",
-          "classification": "definition"
-        },
-        {
-          "fshName": "ProviderSleepingHeartRateAverage",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "provider-sleeping-heart-rate-average",
-          "classification": "definition"
-        },
-        {
-          "fshName": "ProviderMeasurementVS",
-          "fshType": "ValueSet",
-          "resourceType": "ValueSet",
-          "id": "provider-measurement",
+          "id": "providers-recording-document",
           "classification": "definition"
         },
         {
@@ -5457,6 +5611,356 @@
           "fshType": "Profile",
           "resourceType": "StructureDefinition",
           "id": "grove-questionnaire-response",
+          "classification": "definition"
+        }
+      ]
+    },
+    {
+      "source": "withings",
+      "packageId": "org.grovealliance.fhir.withings",
+      "canonical": "https://grovealliance.org/fhir/withings",
+      "artifacts": [
+        {
+          "fshName": "WithingsAtrialFibrillationNotificationEcgCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "withings-atrial-fibrillation-notification-ecg",
+          "classification": "definition"
+        },
+        {
+          "fshName": "WithingsAtrialFibrillationNotificationPpgCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "withings-atrial-fibrillation-notification-ppg",
+          "classification": "definition"
+        },
+        {
+          "fshName": "WithingsMeasurementCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "withings-measurement",
+          "classification": "definition"
+        },
+        {
+          "fshName": "WithingsAtrialFibrillationNotificationEcgExample",
+          "fshType": "Instance",
+          "resourceType": "Observation",
+          "id": "WithingsAtrialFibrillationNotificationEcgExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "WithingsAtrialFibrillationNotificationPpgExample",
+          "fshType": "Instance",
+          "resourceType": "Observation",
+          "id": "WithingsAtrialFibrillationNotificationPpgExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "WithingsBodyFatMassExample",
+          "fshType": "Instance",
+          "resourceType": "Observation",
+          "id": "WithingsBodyFatMassExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "WithingsCorrectedQtIntervalExample",
+          "fshType": "Instance",
+          "resourceType": "Observation",
+          "id": "WithingsCorrectedQtIntervalExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "WithingsExtracellularWaterMassExample",
+          "fshType": "Instance",
+          "resourceType": "Observation",
+          "id": "WithingsExtracellularWaterMassExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "WithingsIntracellularWaterMassExample",
+          "fshType": "Instance",
+          "resourceType": "Observation",
+          "id": "WithingsIntracellularWaterMassExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "WithingsMuscleMassExample",
+          "fshType": "Instance",
+          "resourceType": "Observation",
+          "id": "WithingsMuscleMassExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "WithingsNerveHealthScoreExample",
+          "fshType": "Instance",
+          "resourceType": "Observation",
+          "id": "WithingsNerveHealthScoreExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "WithingsPatientExample",
+          "fshType": "Instance",
+          "resourceType": "Patient",
+          "id": "WithingsPatientExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "WithingsPrIntervalExample",
+          "fshType": "Instance",
+          "resourceType": "Observation",
+          "id": "WithingsPrIntervalExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "WithingsPulseWaveVelocityExample",
+          "fshType": "Instance",
+          "resourceType": "Observation",
+          "id": "WithingsPulseWaveVelocityExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "WithingsQrsDurationExample",
+          "fshType": "Instance",
+          "resourceType": "Observation",
+          "id": "WithingsQrsDurationExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "WithingsQtIntervalExample",
+          "fshType": "Instance",
+          "resourceType": "Observation",
+          "id": "WithingsQtIntervalExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "WithingsSleepingHeartRateAverageExample",
+          "fshType": "Instance",
+          "resourceType": "Observation",
+          "id": "WithingsSleepingHeartRateAverageExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "WithingsVascularAgeExample",
+          "fshType": "Instance",
+          "resourceType": "Observation",
+          "id": "WithingsVascularAgeExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "WithingsVisceralFatIndexExample",
+          "fshType": "Instance",
+          "resourceType": "Observation",
+          "id": "WithingsVisceralFatIndexExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "WithingsAtrialFibrillationNotificationEcg",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "withings-atrial-fibrillation-notification-ecg",
+          "classification": "definition"
+        },
+        {
+          "fshName": "WithingsAtrialFibrillationNotificationPpg",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "withings-atrial-fibrillation-notification-ppg",
+          "classification": "definition"
+        },
+        {
+          "fshName": "WithingsBodyFatMass",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "withings-body-fat-mass",
+          "classification": "definition"
+        },
+        {
+          "fshName": "WithingsCorrectedQtInterval",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "withings-corrected-qt-interval",
+          "classification": "definition"
+        },
+        {
+          "fshName": "WithingsExtracellularWaterMass",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "withings-extracellular-water-mass",
+          "classification": "definition"
+        },
+        {
+          "fshName": "WithingsIntracellularWaterMass",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "withings-intracellular-water-mass",
+          "classification": "definition"
+        },
+        {
+          "fshName": "WithingsMuscleMass",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "withings-muscle-mass",
+          "classification": "definition"
+        },
+        {
+          "fshName": "WithingsNerveHealthScore",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "withings-nerve-health-score",
+          "classification": "definition"
+        },
+        {
+          "fshName": "WithingsObservation",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "withings-observation",
+          "classification": "definition"
+        },
+        {
+          "fshName": "WithingsPrInterval",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "withings-pr-interval",
+          "classification": "definition"
+        },
+        {
+          "fshName": "WithingsPulseWaveVelocity",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "withings-pulse-wave-velocity",
+          "classification": "definition"
+        },
+        {
+          "fshName": "WithingsQrsDuration",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "withings-qrs-duration",
+          "classification": "definition"
+        },
+        {
+          "fshName": "WithingsQtInterval",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "withings-qt-interval",
+          "classification": "definition"
+        },
+        {
+          "fshName": "WithingsSleepingHeartRateAverage",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "withings-sleeping-heart-rate-average",
+          "classification": "definition"
+        },
+        {
+          "fshName": "WithingsVascularAge",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "withings-vascular-age",
+          "classification": "definition"
+        },
+        {
+          "fshName": "WithingsVisceralFatIndex",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "withings-visceral-fat-index",
+          "classification": "definition"
+        },
+        {
+          "fshName": "WithingsAtrialFibrillationNotificationEcgVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "withings-atrial-fibrillation-notification-ecg",
+          "classification": "definition"
+        },
+        {
+          "fshName": "WithingsAtrialFibrillationNotificationPpgVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "withings-atrial-fibrillation-notification-ppg",
+          "classification": "definition"
+        },
+        {
+          "fshName": "WithingsMeasurementVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "withings-measurement",
+          "classification": "definition"
+        }
+      ]
+    },
+    {
+      "source": "oura",
+      "packageId": "org.grovealliance.fhir.oura",
+      "canonical": "https://grovealliance.org/fhir/oura",
+      "artifacts": [
+        {
+          "fshName": "OuraMeasurementCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "oura-measurement",
+          "classification": "definition"
+        },
+        {
+          "fshName": "OuraCardiovascularAgeExample",
+          "fshType": "Instance",
+          "resourceType": "Observation",
+          "id": "OuraCardiovascularAgeExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "OuraPatientExample",
+          "fshType": "Instance",
+          "resourceType": "Patient",
+          "id": "OuraPatientExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "OuraReadinessScoreExample",
+          "fshType": "Instance",
+          "resourceType": "Observation",
+          "id": "OuraReadinessScoreExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "OuraCardiovascularAge",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "oura-cardiovascular-age",
+          "classification": "definition"
+        },
+        {
+          "fshName": "OuraObservation",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "oura-observation",
+          "classification": "definition"
+        },
+        {
+          "fshName": "OuraReadinessScore",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "oura-readiness-score",
+          "classification": "definition"
+        },
+        {
+          "fshName": "OuraMeasurementVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "oura-measurement",
+          "classification": "definition"
+        }
+      ]
+    },
+    {
+      "source": "google-health",
+      "packageId": "org.grovealliance.fhir.google-health",
+      "canonical": "https://grovealliance.org/fhir/google-health",
+      "artifacts": [
+        {
+          "fshName": "GoogleHealthObservation",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "google-health-observation",
           "classification": "definition"
         }
       ]

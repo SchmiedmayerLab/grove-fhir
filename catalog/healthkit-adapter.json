@@ -1263,9 +1263,13 @@
         "HKCharacteristicTypeIdentifierBiologicalSex"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcharacteristictypeidentifier/biologicalsex",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
+      "status": "supported",
+      "measurementIDs": [
+        "biological-sex"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-biological-sex"
+      ],
       "requirement": "Version 0.5.0 publishes no reviewed contract for this characteristic. LOINC 76689-9 'Sex assigned at birth' represents it faithfully, and the supported blood-type and wheelchair-use rows show a characteristic can carry an Observation, so this is unfinished work rather than a modelling refusal."
     },
     {
@@ -1290,9 +1294,13 @@
         "HKCharacteristicTypeIdentifierDateOfBirth"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcharacteristictypeidentifier/dateofbirth",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
+      "status": "supported",
+      "measurementIDs": [
+        "date-of-birth"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-date-of-birth"
+      ],
       "requirement": "A date of birth is a direct identifier, and the exchange's Patient node is deliberately pseudonymous. Publishing it needs a privacy decision, not a mapping; age at observation is the research-safe alternative."
     },
     {
@@ -1302,9 +1310,13 @@
         "HKCharacteristicTypeIdentifierFitzpatrickSkinType"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcharacteristictypeidentifier/fitzpatrickskintype",
-      "status": "intentionally-unsupported",
-      "measurementIDs": [],
-      "profiles": [],
+      "status": "supported",
+      "measurementIDs": [
+        "fitzpatrick-skin-type"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-fitzpatrick-skin-type"
+      ],
       "requirement": "A single-platform self-reported phenotype outside the measurement contract, with no consumer in the exchange set. LOINC 66555-4 represents it exactly, so this is a scope decision rather than a terminology gap."
     },
     {
@@ -1537,10 +1549,12 @@
         "HKDataTypeIdentifierUserAnnotatedMedicationConcept"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkdatatypeidentifieruserannotatedmedicationconcept",
-      "status": "deferred",
+      "status": "platform-exclusive",
       "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific output contract is published for this type."
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-user-annotated-medication"
+      ],
+      "requirement": "A tracked medication is admitted as a MedicationStatement identified by the HKHealthConceptIdentifier of its concept, carrying the person's nickname, the platform's general form, and whether a schedule exists. An archived medication is completed and a tracked one is active."
     },
     {
       "sourceTypeIdentifier": "HKDocumentTypeIdentifierCDA",
@@ -1563,10 +1577,12 @@
         "HKMedicationDoseEventTypeIdentifierMedicationDoseEvent"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkmedicationdoseeventtypeidentifiermedicationdoseevent",
-      "status": "deferred",
+      "status": "platform-exclusive",
       "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific output contract is published for this type."
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-medication-dose-event"
+      ],
+      "requirement": "A logged dose is admitted as a MedicationAdministration that keeps the exact HKMedicationDoseEvent.LogStatus and the schedule it was logged against beside the R4 status, which collapses six source cases onto three codes. The medication is named by the same HKHealthConceptIdentifier the tracked-medication statement carries."
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierActiveEnergyBurned",
@@ -3403,10 +3419,12 @@
         "HKVisionPrescriptionTypeIdentifier"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkvisionprescriptiontypeidentifier",
-      "status": "deferred",
+      "status": "platform-exclusive",
       "measurementIDs": [],
-      "profiles": [],
-      "requirement": "R4 VisionPrescription represents the structured glasses and contacts prescriptions faithfully, but it requires a prescriber the platform does not supply, and the vertex and pupillary distances need extensions to stay lossless. Deferred pending that design, not because the data is unmodellable."
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-vision-prescription"
+      ],
+      "requirement": "A glasses or contacts prescription is admitted as a structured R4 VisionPrescription: the lens specifications map natively, one HKVisionPrism resolves into its vertical and horizontal components, and vertex distance, the two pupillary distances, and the expiration date ride as extensions. HealthKit supplies no prescriber, so the mandatory reference is stated absent rather than invented."
     },
     {
       "sourceTypeIdentifier": "HKWorkoutRouteTypeIdentifier",

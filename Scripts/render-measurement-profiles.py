@@ -71,22 +71,58 @@ OWNERS = {
             "platform-exclusive profiles."
         ),
     },
-    "providers": {
-        "patientExample": "ProviderPatientExample",
-        "parent": "ProviderObservation",
-        "generated": "providers/input/fsh/generated-measurement-profiles.fsh",
-        "measurementSystemTail": "/CodeSystem/provider-measurement",
-        "codeSystem": "ProviderMeasurementCS",
-        "valueSet": "ProviderMeasurementVS",
-        "terminologyId": "provider-measurement",
-        "terminologyTitle": "Provider Measurement",
+    "withings": {
+        "patientExample": "WithingsPatientExample",
+        "parent": "WithingsObservation",
+        "generated": "withings/input/fsh/generated-measurement-profiles.fsh",
+        "measurementSystemTail": "/CodeSystem/withings-measurement",
+        "codeSystem": "WithingsMeasurementCS",
+        "valueSet": "WithingsMeasurementVS",
+        "terminologyId": "withings-measurement",
+        "terminologyTitle": "Withings Measurement",
         "codeSystemDescription": (
-            "Measurement concepts defined by the providers adapter for "
-            "provider-scoped results no established code represents faithfully."
+            "Measurement concepts defined by the Withings adapter for "
+            "vendor-exclusive results no established code represents faithfully."
         ),
         "valueSetDescription": (
-            "Measurement concepts defined by the providers adapter for its "
-            "provider-scoped profiles."
+            "Measurement concepts defined by the Withings adapter for its "
+            "vendor-exclusive profiles."
+        ),
+    },
+    "oura": {
+        "patientExample": "OuraPatientExample",
+        "parent": "OuraObservation",
+        "generated": "oura/input/fsh/generated-measurement-profiles.fsh",
+        "measurementSystemTail": "/CodeSystem/oura-measurement",
+        "codeSystem": "OuraMeasurementCS",
+        "valueSet": "OuraMeasurementVS",
+        "terminologyId": "oura-measurement",
+        "terminologyTitle": "Oura Measurement",
+        "codeSystemDescription": (
+            "Measurement concepts defined by the Oura adapter for "
+            "vendor-exclusive results no established code represents faithfully."
+        ),
+        "valueSetDescription": (
+            "Measurement concepts defined by the Oura adapter for its "
+            "vendor-exclusive profiles."
+        ),
+    },
+    "google-health": {
+        "patientExample": "GoogleHealthPatientExample",
+        "parent": "GoogleHealthObservation",
+        "generated": "google-health/input/fsh/generated-measurement-profiles.fsh",
+        "measurementSystemTail": "/CodeSystem/google-health-measurement",
+        "codeSystem": "GoogleHealthMeasurementCS",
+        "valueSet": "GoogleHealthMeasurementVS",
+        "terminologyId": "google-health-measurement",
+        "terminologyTitle": "Google Health Measurement",
+        "codeSystemDescription": (
+            "Measurement concepts defined by the Google Health adapter for "
+            "vendor-exclusive results no established code represents faithfully."
+        ),
+        "valueSetDescription": (
+            "Measurement concepts defined by the Google Health adapter for its "
+            "vendor-exclusive profiles."
         ),
     },
     "health-connect": {
@@ -288,6 +324,9 @@ def render_profile(measurement: dict, aliases: dict[str, str], by_id: dict) -> s
         lines.append(
             f"* valueCodeableConcept from {value_set_name(measurement['valueSet'])} (required)"
         )
+    elif kind == "dateTime":
+        lines.append("* value[x] only dateTime")
+        lines.append("* valueDateTime 1..1 MS")
     elif kind == "components":
         lines.append("* value[x] 0..0")
     elif kind == "grouping":
@@ -356,10 +395,19 @@ def load_catalog(name: str) -> dict:
     return json.loads((REPOSITORY_ROOT / "catalog" / name).read_text(encoding="utf-8"))
 
 
+# Each connected provider publishes its exclusive measurements in its own guide, but they all
+# share the Provider adapter's lineage extensions, source-type terminology, and identity namespaces.
+PROVIDER_GUIDES = {
+    "google-health-api": "google-health",
+    "oura": "oura",
+    "withings": "withings",
+}
+PROVIDER_OWNERS = frozenset(PROVIDER_GUIDES.values())
+
 SOURCE_TYPE_MARKERS = {
     "healthkit": "* code.coding[healthKitSourceType] = $healthKitSourceType#{token}",
     "health-connect": "* extension[healthConnectRecordType].valueCode = #{token}",
-    "providers": "* extension[providerSourceType].valueCode = #{token}",
+    **{owner: "* extension[providerSourceType].valueCode = #{token}" for owner in PROVIDER_OWNERS},
 }
 
 
@@ -383,10 +431,11 @@ def source_type_tokens() -> dict[str, dict[str, str]]:
 
     providers = load_catalog("providers-adapter.json")
     for provider in providers["providers"]:
+        guide = PROVIDER_GUIDES[provider["id"]]
         for source_type in provider.get("sourceTypes", []):
             for element in source_type.get("elements", []):
                 for measurement in element.get("measurementIds", []):
-                    tokens["providers"].setdefault(
+                    tokens[guide].setdefault(
                         measurement, f"{provider['id']}/{source_type['token']}"
                     )
     return tokens
@@ -550,8 +599,9 @@ def health_connect_example_identity(measurement: dict, *, output: bool) -> str:
     return "v1:" + "|".join(parts)
 
 
-def provider_example_identity(measurement: dict, *, output: bool) -> str:
-    parts = ["withings", EXAMPLE_PROVIDER_ACCOUNT, measurement["id"], f"record-{measurement['id']}"]
+def provider_example_identity(measurement: dict, owner_key: str, *, output: bool) -> str:
+    provider = SOURCE_TYPE_TOKENS[owner_key][measurement["id"]].split("/", 1)[0]
+    parts = [provider, EXAMPLE_PROVIDER_ACCOUNT, measurement["id"], f"record-{measurement['id']}"]
     if output:
         parts.append(measurement["id"])
     return "v1:" + "|".join(parts)
@@ -577,10 +627,10 @@ def example_identifier_lines(measurement: dict, owner_key: str) -> list[str]:
                 "* identifier[recordId].system = $healthConnectRecordId",
                 f'* identifier[recordId].value = "{health_connect_example_identity(measurement, output=False)}"',
             ]
-        case "providers":
+        case owner if owner in PROVIDER_OWNERS:
             return [
                 "* identifier[sourceRecordId].system = $providerSourceRecordId",
-                f'* identifier[sourceRecordId].value = "{provider_example_identity(measurement, output=False)}"',
+                f'* identifier[sourceRecordId].value = "{provider_example_identity(measurement, owner, output=False)}"',
             ]
         case _:
             return [
@@ -598,7 +648,7 @@ def example_source_type_lines(measurement: dict, owner_key: str) -> list[str]:
     if token is None:
         raise SystemExit(f"{measurement['id']}: {owner_key} states no source type for its example")
     lines = [marker.format(token=token)]
-    if owner_key == "providers":
+    if owner_key in PROVIDER_OWNERS:
         lines.insert(0, f"* extension[provider].valueCode = #{token.split('/', 1)[0]}")
     return lines
 
@@ -632,6 +682,8 @@ def example_result_lines(measurement: dict) -> list[str]:
     elif kind == "codeableConcept":
         system, code, display = coded_example(measurement)
         lines.append(f'* valueCodeableConcept = {system}#{code} "{display}"')
+    elif kind == "dateTime":
+        lines.append(f'* valueDateTime = "{measurement["example"]}"')
     components = measurement.get("components", [])
     required = [c for c in components if not c.get("cardinality", "1..1").startswith("0")]
     # A components-valued measurement whose components are every one optional still has to show

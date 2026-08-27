@@ -96,15 +96,18 @@ ADAPTER_PACKAGE_PROFILES = {
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-bleeding-after-pregnancy",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-bleeding-during-pregnancy",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-blood-alcohol-content",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-biological-sex",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-blood-type",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-contraceptive-use",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-conversion-provenance",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-cycling-functional-threshold-power",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-date-of-birth",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-observation",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-environmental-audio-exposure",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-environmental-audio-exposure-notification",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-environmental-sound-reduction",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-fitzpatrick-skin-type",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-forced-expiratory-volume-1",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-forced-vital-capacity",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-gad7-assessment",
@@ -121,6 +124,7 @@ ADAPTER_PACKAGE_PROFILES = {
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-lactation-status",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-low-cardio-fitness-notification",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-low-heart-rate-notification",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-medication-dose-event",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-number-of-alcoholic-beverages",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-number-of-times-fallen",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-observation",
@@ -187,8 +191,10 @@ ADAPTER_PACKAGE_PROFILES = {
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-time-in-daylight",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-toothbrushing-session",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-underwater-depth",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-user-annotated-medication",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-uv-exposure",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-vaginal-dryness",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-vision-prescription",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-waist-circumference",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-walking-asymmetry",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-walking-double-support",
@@ -220,14 +226,35 @@ ADAPTER_PACKAGE_PROFILES = {
         "https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-whole-blood-glucose",
     },
     "org.grovealliance.fhir.providers": {
-        "https://grovealliance.org/fhir/providers/StructureDefinition/provider-body-fat-mass",
-        "https://grovealliance.org/fhir/providers/StructureDefinition/provider-conversion-provenance",
-        "https://grovealliance.org/fhir/providers/StructureDefinition/provider-extracellular-water-mass",
-        "https://grovealliance.org/fhir/providers/StructureDefinition/provider-intracellular-water-mass",
-        "https://grovealliance.org/fhir/providers/StructureDefinition/provider-muscle-mass",
-        "https://grovealliance.org/fhir/providers/StructureDefinition/provider-observation",
-        "https://grovealliance.org/fhir/providers/StructureDefinition/provider-recording-document",
-        "https://grovealliance.org/fhir/providers/StructureDefinition/provider-sleeping-heart-rate-average",
+        "https://grovealliance.org/fhir/providers/StructureDefinition/providers-conversion-provenance",
+        "https://grovealliance.org/fhir/providers/StructureDefinition/providers-observation",
+        "https://grovealliance.org/fhir/providers/StructureDefinition/providers-recording-document",
+    },
+    "org.grovealliance.fhir.withings": {
+        "https://grovealliance.org/fhir/withings/StructureDefinition/withings-atrial-fibrillation-notification-ecg",
+        "https://grovealliance.org/fhir/withings/StructureDefinition/withings-atrial-fibrillation-notification-ppg",
+        "https://grovealliance.org/fhir/withings/StructureDefinition/withings-body-fat-mass",
+        "https://grovealliance.org/fhir/withings/StructureDefinition/withings-corrected-qt-interval",
+        "https://grovealliance.org/fhir/withings/StructureDefinition/withings-extracellular-water-mass",
+        "https://grovealliance.org/fhir/withings/StructureDefinition/withings-intracellular-water-mass",
+        "https://grovealliance.org/fhir/withings/StructureDefinition/withings-muscle-mass",
+        "https://grovealliance.org/fhir/withings/StructureDefinition/withings-nerve-health-score",
+        "https://grovealliance.org/fhir/withings/StructureDefinition/withings-observation",
+        "https://grovealliance.org/fhir/withings/StructureDefinition/withings-pr-interval",
+        "https://grovealliance.org/fhir/withings/StructureDefinition/withings-pulse-wave-velocity",
+        "https://grovealliance.org/fhir/withings/StructureDefinition/withings-qrs-duration",
+        "https://grovealliance.org/fhir/withings/StructureDefinition/withings-qt-interval",
+        "https://grovealliance.org/fhir/withings/StructureDefinition/withings-sleeping-heart-rate-average",
+        "https://grovealliance.org/fhir/withings/StructureDefinition/withings-vascular-age",
+        "https://grovealliance.org/fhir/withings/StructureDefinition/withings-visceral-fat-index",
+    },
+    "org.grovealliance.fhir.oura": {
+        "https://grovealliance.org/fhir/oura/StructureDefinition/oura-cardiovascular-age",
+        "https://grovealliance.org/fhir/oura/StructureDefinition/oura-observation",
+        "https://grovealliance.org/fhir/oura/StructureDefinition/oura-readiness-score",
+    },
+    "org.grovealliance.fhir.google-health": {
+        "https://grovealliance.org/fhir/google-health/StructureDefinition/google-health-observation",
     },
 }
 KNOWN_ADAPTER_PROFILES = {
@@ -1245,6 +1272,17 @@ def validate_adapter_conversion_provenance(
         )
 
 
+# Every connected-provider guide narrows the same adapter Observation, so an output of any of
+# them carries the shared provider lineage and source/output business identity checked below.
+PROVIDER_IDENTITY_PROFILES = {
+    "https://grovealliance.org/fhir/providers/StructureDefinition/providers-observation",
+    "https://grovealliance.org/fhir/providers/StructureDefinition/providers-recording-document",
+    "https://grovealliance.org/fhir/withings/StructureDefinition/withings-observation",
+    "https://grovealliance.org/fhir/oura/StructureDefinition/oura-observation",
+    "https://grovealliance.org/fhir/google-health/StructureDefinition/google-health-observation",
+}
+
+
 def validate_provider_identity(resource: dict[str, Any], label: str) -> None:
     """Validate provider lineage and deterministic source/output business identity."""
     if resource.get("resourceType") not in {"Observation", "DocumentReference"}:
@@ -1252,15 +1290,7 @@ def validate_provider_identity(resource: dict[str, Any], label: str) -> None:
     profiles = resource.get("meta", {}).get("profile", [])
     if not isinstance(profiles, list):
         return
-    adapter = (
-        "https://grovealliance.org/fhir/providers/StructureDefinition/"
-        "provider-observation"
-    )
-    document_adapter = (
-        "https://grovealliance.org/fhir/providers/StructureDefinition/"
-        "provider-recording-document"
-    )
-    if adapter not in profiles and document_adapter not in profiles:
+    if not set(profiles) & PROVIDER_IDENTITY_PROFILES:
         return
     catalog = read_json(CATALOG_ROOT / "providers-adapter.json")
     source_system = catalog["identity"]["sourceRecord"]["system"]
@@ -1896,7 +1926,7 @@ PROVIDER_EXCHANGE_ID = (
 )
 PROVIDER_CONVERSION_PROVENANCE_PROFILE = (
     "https://grovealliance.org/fhir/providers/StructureDefinition/"
-    "provider-conversion-provenance"
+    "providers-conversion-provenance"
 )
 # The export creates these nodes, so the deployment owns their namespace and this guide fixes only
 # the role-suffixed shape of the value.

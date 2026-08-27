@@ -186,6 +186,13 @@
       "status": "ACTIVE",
       "verification": "v0.3 sweep, web-verified 2026-08-21 (pregnancy-test-result)"
     },
+    "21112-8": {
+      "display": "Birth date",
+      "property": "TmStp",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "0.6.0 characteristic sweep, verified 2026-08-26 on tx.fhir.org r4 and r4.ontoserver.csiro.au, both serving LOINC 2.82 (date-of-birth)"
+    },
     "2339-0": {
       "display": "Glucose [Mass/volume] in Blood",
       "property": "MCnc",
@@ -257,6 +264,13 @@
       "status": "ACTIVE",
       "verification": "v0.3 sweep, web-verified 2026-08-21 (phq9-assessment)"
     },
+    "46098-0": {
+      "display": "Sex",
+      "property": "Type",
+      "scale": "Nom",
+      "status": "ACTIVE",
+      "verification": "0.6.0 characteristic sweep, verified 2026-08-26 on tx.fhir.org r4 and r4.ontoserver.csiro.au, both serving LOINC 2.82 (biological-sex)"
+    },
     "47519-4": {
       "display": "History of Procedures Document",
       "property": "Find",
@@ -305,6 +319,13 @@
       "scale": "Qn",
       "status": "ACTIVE",
       "verification": "v0.3 sweep, web-verified 2026-08-21 (six-minute-walk-test-distance)"
+    },
+    "66555-4": {
+      "display": "Skin type [Fitzpatrick Classification Scale]",
+      "property": "Type",
+      "scale": "Nom",
+      "status": "ACTIVE",
+      "verification": "0.6.0 characteristic sweep, verified 2026-08-26 on tx.fhir.org r4 and r4.ontoserver.csiro.au, both serving LOINC 2.82 (fitzpatrick-skin-type)"
     },
     "70274-6": {
       "display": "Generalized anxiety disorder 7 item (GAD-7) total score [Reported.PHQ]",
@@ -377,6 +398,34 @@
       "property": "-",
       "scale": "Qn",
       "status": "ACTIVE"
+    },
+    "8625-6": {
+      "display": "P-R Interval",
+      "property": "Time",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "0.6.0 conversion-completeness sweep, verified 2026-08-26 on tx.fhir.org r4 and r4.ontoserver.csiro.au, both serving LOINC 2.82 (pr-interval)"
+    },
+    "8633-0": {
+      "display": "QRS duration",
+      "property": "Time",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "0.6.0 conversion-completeness sweep, verified 2026-08-26 on tx.fhir.org r4 and r4.ontoserver.csiro.au, both serving LOINC 2.82 (qrs-duration)"
+    },
+    "8634-8": {
+      "display": "Q-T interval",
+      "property": "Time",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "0.6.0 conversion-completeness sweep, verified 2026-08-26 on tx.fhir.org r4 and r4.ontoserver.csiro.au, both serving LOINC 2.82 (qt-interval)"
+    },
+    "8636-3": {
+      "display": "Q-T interval corrected",
+      "property": "Time",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "0.6.0 conversion-completeness sweep, verified 2026-08-26 on tx.fhir.org r4 and r4.ontoserver.csiro.au, both serving LOINC 2.82 (corrected-qt-interval)"
     },
     "8659-5": {
       "display": "Birth control method - Reported",
