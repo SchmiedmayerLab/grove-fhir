@@ -234,6 +234,11 @@ One complete provider-issued FHIR R4 resource in FHIR JSON representation, byte-
 The carrying document records the issuing source; Grove never asserts conformance over another issuer's resource.
 One document carries exactly one clinical record's FHIR payload.
 
+### `clinical-document` — Clinical Document
+
+Media type: `application/hl7-cda+xml`.
+One HL7 Clinical Document Architecture Release 2 document, byte-preserved exactly as the source platform delivered it. Grove never rewrites, reserializes, or asserts conformance over another issuer's document; the carrying document records the issuer.
+
 ### `native-recording` — Native Recording
 
 Media type: `application/vnd.grovealliance.native+json`.

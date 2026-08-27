@@ -1767,6 +1767,8 @@ Description: "A conformant Cervical Mucus Quality instance."
 * performer = Reference(GroveMobilePatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueCodeableConcept = GroveCervicalMucusQualityCS#dry "Dry"
+* component[sensation].code = https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement#cervical-mucus-sensation
+* component[sensation].valueCodeableConcept = GroveCervicalMucusSensationCS#light "Light"
 
 Instance: GroveMobileCyclingCadenceExample
 InstanceOf: GroveMobileCyclingCadence
@@ -2495,6 +2497,8 @@ Description: "A conformant Menstruation Flow instance."
 * performer = Reference(GroveMobilePatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueCodeableConcept = GroveMenstruationFlowCS#unspecified "Unspecified"
+* component[cycleStart].code = https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement#menstrual-cycle-start
+* component[cycleStart].valueCodeableConcept = GroveMenstrualCycleStartCS#cycle-start "Cycle start"
 
 Instance: GroveMobileMindfulnessSessionExample
 InstanceOf: GroveMobileMindfulnessSession
@@ -2716,6 +2720,10 @@ Description: "A conformant Workout instance."
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = GroveWorkoutActivityCS#running "Running"
+* component[active-duration].code = https://grovealliance.org/fhir/mobile/CodeSystem/grove-workout-statistic#active-duration
+* component[active-duration].valueQuantity = 2700 's'
+* component[distance-sum].code = https://grovealliance.org/fhir/mobile/CodeSystem/grove-workout-statistic#distance-sum
+* component[distance-sum].valueQuantity = 8400 'm'
 
 Instance: GroveMobileWorkoutSegmentExample
 InstanceOf: GroveMobileWorkoutSegment
@@ -2731,3 +2739,7 @@ Description: "A conformant Workout Segment instance."
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = GroveWorkoutSegmentTypeCS#lap "Lap"
+* component[repetitions].code = https://grovealliance.org/fhir/mobile/CodeSystem/grove-workout-statistic#repetitions
+* component[repetitions].valueQuantity = 12 '{count}' "repetitions"
+* component[set-weight].code = https://grovealliance.org/fhir/mobile/CodeSystem/grove-workout-statistic#set-weight
+* component[set-weight].valueQuantity = 20 'kg'

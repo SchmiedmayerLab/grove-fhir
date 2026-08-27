@@ -2786,6 +2786,13 @@
           "classification": "example"
         },
         {
+          "fshName": "HealthkitAudiogramPanelExample",
+          "fshType": "Instance",
+          "resourceType": "Observation",
+          "id": "HealthkitAudiogramPanelExample",
+          "classification": "example"
+        },
+        {
           "fshName": "HealthkitBladderIncontinenceExample",
           "fshType": "Instance",
           "resourceType": "Observation",
@@ -2853,6 +2860,13 @@
           "fshType": "Instance",
           "resourceType": "Observation",
           "id": "HealthkitEnvironmentalSoundReductionExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "HealthkitFoodCorrelationExample",
+          "fshType": "Instance",
+          "resourceType": "Observation",
+          "id": "HealthkitFoodCorrelationExample",
           "classification": "example"
         },
         {
@@ -3563,6 +3577,13 @@
           "classification": "definition"
         },
         {
+          "fshName": "HealthkitAudiogramPanel",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-audiogram-panel",
+          "classification": "definition"
+        },
+        {
           "fshName": "HealthkitBladderIncontinence",
           "fshType": "Profile",
           "resourceType": "StructureDefinition",
@@ -3630,6 +3651,13 @@
           "fshType": "Profile",
           "resourceType": "StructureDefinition",
           "id": "healthkit-environmental-sound-reduction",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitFoodCorrelation",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-food-correlation",
           "classification": "definition"
         },
         {

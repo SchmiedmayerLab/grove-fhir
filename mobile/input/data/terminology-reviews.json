@@ -9,7 +9,7 @@
     "mobile/input/fsh/terminology.fsh",
     "mobile/input/fsh/profiles.fsh"
   ],
-  "groundTruthDigest": "sha256:fe83b754eaf293bd9dea197119aa63ee14c626dcd009902d0dcb630642aa332f",
+  "groundTruthDigest": "sha256:7f4588324d599409aa5190f2bd0c3b800b3c9e79a299e5bbb2b3367536f721b5",
   "bootstrap": "Entries with provenance 'bootstrap' cite the v0.3.0 release review during which their codes, units, and effective semantics shipped, proven byte-identical by the generation parity gate; the bootstrap set is terminal as of v0.3 and every new entry carries a named two-role review with a commit-SHA reviewRef.",
   "entries": {
     "active-energy": {
@@ -131,6 +131,15 @@
       "recordedOn": "2026-08-21",
       "reviewRef": "pending-integration-commit",
       "notes": "NLM Clinical Tables returns zero LOINC results for 'atrial fibrillation burden', so a Grove code is defined. Explicitly named in the aggregate-family policy list; HealthKit is the only evidencing source (Withings getmeas:130/139 are diagnostic-adjacent AFib classifications, already intentionally-unsupported in the providers catalog, not burden percentages). % parses under pinned UCUM 2.2 as dimensionless; effective Period covers the exact multi-day estimation window."
+    },
+    "audiogram-panel": {
+      "status": "approved",
+      "approvedBy": [
+        "P. Schmiedmayer (repository owner)"
+      ],
+      "approvedOn": "2026-08-26",
+      "digest": "sha256:45eb47dac73f4e4d480ef9a6e4c025adad3c9897260424f829370abcc770595c",
+      "provenance": "LOINC 89015-2 for the test and the 22 per-ear, per-frequency air conduction threshold codes for its components, all verified 2026-08-26 on tx.fhir.org r4 and r4.ontoserver.csiro.au (LOINC 2.82). The panel 100653-5 that a secondary source named as current is deprecated and was rejected. Thresholds are components rather than member Observations because they are parts of one test: a single-frequency threshold is not recorded on its own. The unit is dB, which is what LOINC states for these codes; UCUM 2.2 defines no hearing-level bel, and the hearing-level reference is carried by the concept."
     },
     "basal-body-temperature": {
       "status": "approved",
@@ -1664,6 +1673,15 @@
       "recordedOn": "2026-08-21",
       "reviewRef": "pending-integration-commit",
       "notes": "Re-verified: 8985-4 ACTIVE, Pt, Property Vol (LP6893-4), example unit mL; 8990-4 is the 24-hour variant and 75300-4 is DEPRECATED (both confirmed). Apple doc JSON confirms DietaryWater uses volume units, cumulative. Pinning requires adding Vol -> {m:3} to propertyDimensions. HC hydration is a separate record type, so these observations never join a dietary-intake summary on the HC path."
+    },
+    "food-correlation": {
+      "status": "approved",
+      "approvedBy": [
+        "P. Schmiedmayer (repository owner)"
+      ],
+      "approvedOn": "2026-08-26",
+      "digest": "sha256:9a0a10b38e3ff24a75e6988e4e9ef8a12820c794f62c3efc62a3fecc2afbc382",
+      "provenance": "Grove-owned code; the occasion groups nutrient measurements whose own terminology is already approved, and introduces no external concept."
     },
     "forced-expiratory-volume-1": {
       "status": "approved",
@@ -4336,6 +4354,15 @@
       "change": "Pinned 23 LOINC audiogram concepts: the pure tone air conduction panel 89015-2 and the 22 per-ear, per-frequency hearing-threshold codes.",
       "measurementImpact": "None yet. The concepts are pinned but no measurement binds them; every existing per-measurement digest is unchanged.",
       "verification": "tx.fhir.org r4 and r4.ontoserver.csiro.au, both serving LOINC 2.82, 2026-08-26. The panel 100653-5 that a secondary source named as current is deprecated and was rejected.",
+      "review": "Approved by the repository owner (P. Schmiedmayer) for the 0.6.0 conversion-completeness work.",
+      "approvedOn": "2026-08-26"
+    },
+    {
+      "from": "sha256:fe83b754eaf293bd9dea197119aa63ee14c626dcd009902d0dcb630642aa332f",
+      "to": "sha256:7f4588324d599409aa5190f2bd0c3b800b3c9e79a299e5bbb2b3367536f721b5",
+      "baseCommit": "903432dd2ee6",
+      "change": "Mapped the LOINC RelSoundInt property to a dimensionless quantity, which the audiogram threshold components need.",
+      "measurementImpact": "None. A property-dimension mapping constrains how a unit is checked; it changes no measurement's codes, units, or semantics, and every per-measurement digest is unchanged.",
       "review": "Approved by the repository owner (P. Schmiedmayer) for the 0.6.0 conversion-completeness work.",
       "approvedOn": "2026-08-26"
     }

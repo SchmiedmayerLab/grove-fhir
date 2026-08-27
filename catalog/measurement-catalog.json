@@ -293,6 +293,322 @@
       }
     },
     {
+      "id": "audiogram-panel",
+      "profile": "healthkit-audiogram-panel",
+      "standardProfile": null,
+      "title": "Audiogram Panel",
+      "description": "HKAudiogramSample: a hearing test reporting an air conduction threshold per ear at each frequency it measured. The thresholds are parts of one test rather than results that stand alone, so they are components. Every component is optional: a test states the frequencies it measured and no others, and a frequency outside this set is carried by its own component keyed to the frequency rather than forced onto a neighbouring code.",
+      "code": {
+        "system": "http://loinc.org",
+        "code": "89015-2",
+        "display": "Pure tone air conduction threshold audiometry panel",
+        "definition": "A hearing test reporting air conduction thresholds across frequencies for each ear."
+      },
+      "valueKind": "components",
+      "owner": "healthkit",
+      "quantity": null,
+      "effective": "dateTime",
+      "generation": {
+        "emit": true
+      },
+      "coverage": {
+        "google-health-api": "unmodeled",
+        "health-connect": "unmodeled",
+        "healthkit": "supported",
+        "oura": "unmodeled",
+        "sensorkit": "unmodeled",
+        "withings": "unmodeled"
+      },
+      "components": [
+        {
+          "id": "left-250",
+          "system": "http://loinc.org",
+          "code": "91375-6",
+          "cardinality": "0..1",
+          "quantity": {
+            "system": "http://unitsofmeasure.org",
+            "code": "dB",
+            "unit": "dB",
+            "example": 20,
+            "dimension": {}
+          }
+        },
+        {
+          "id": "right-250",
+          "system": "http://loinc.org",
+          "code": "91374-9",
+          "cardinality": "0..1",
+          "quantity": {
+            "system": "http://unitsofmeasure.org",
+            "code": "dB",
+            "unit": "dB",
+            "example": 25,
+            "dimension": {}
+          }
+        },
+        {
+          "id": "left-500",
+          "system": "http://loinc.org",
+          "code": "89024-4",
+          "cardinality": "0..1",
+          "quantity": {
+            "system": "http://unitsofmeasure.org",
+            "code": "dB",
+            "unit": "dB",
+            "example": 20,
+            "dimension": {}
+          }
+        },
+        {
+          "id": "right-500",
+          "system": "http://loinc.org",
+          "code": "89025-1",
+          "cardinality": "0..1",
+          "quantity": {
+            "system": "http://unitsofmeasure.org",
+            "code": "dB",
+            "unit": "dB",
+            "example": 25,
+            "dimension": {}
+          }
+        },
+        {
+          "id": "left-750",
+          "system": "http://loinc.org",
+          "code": "91379-8",
+          "cardinality": "0..1",
+          "quantity": {
+            "system": "http://unitsofmeasure.org",
+            "code": "dB",
+            "unit": "dB",
+            "example": 20,
+            "dimension": {}
+          }
+        },
+        {
+          "id": "right-750",
+          "system": "http://loinc.org",
+          "code": "91378-0",
+          "cardinality": "0..1",
+          "quantity": {
+            "system": "http://unitsofmeasure.org",
+            "code": "dB",
+            "unit": "dB",
+            "example": 25,
+            "dimension": {}
+          }
+        },
+        {
+          "id": "left-1000",
+          "system": "http://loinc.org",
+          "code": "89016-0",
+          "cardinality": "0..1",
+          "quantity": {
+            "system": "http://unitsofmeasure.org",
+            "code": "dB",
+            "unit": "dB",
+            "example": 20,
+            "dimension": {}
+          }
+        },
+        {
+          "id": "right-1000",
+          "system": "http://loinc.org",
+          "code": "89017-8",
+          "cardinality": "0..1",
+          "quantity": {
+            "system": "http://unitsofmeasure.org",
+            "code": "dB",
+            "unit": "dB",
+            "example": 25,
+            "dimension": {}
+          }
+        },
+        {
+          "id": "left-1500",
+          "system": "http://loinc.org",
+          "code": "91373-1",
+          "cardinality": "0..1",
+          "quantity": {
+            "system": "http://unitsofmeasure.org",
+            "code": "dB",
+            "unit": "dB",
+            "example": 20,
+            "dimension": {}
+          }
+        },
+        {
+          "id": "right-1500",
+          "system": "http://loinc.org",
+          "code": "91372-3",
+          "cardinality": "0..1",
+          "quantity": {
+            "system": "http://unitsofmeasure.org",
+            "code": "dB",
+            "unit": "dB",
+            "example": 25,
+            "dimension": {}
+          }
+        },
+        {
+          "id": "left-2000",
+          "system": "http://loinc.org",
+          "code": "89018-6",
+          "cardinality": "0..1",
+          "quantity": {
+            "system": "http://unitsofmeasure.org",
+            "code": "dB",
+            "unit": "dB",
+            "example": 20,
+            "dimension": {}
+          }
+        },
+        {
+          "id": "right-2000",
+          "system": "http://loinc.org",
+          "code": "89019-4",
+          "cardinality": "0..1",
+          "quantity": {
+            "system": "http://unitsofmeasure.org",
+            "code": "dB",
+            "unit": "dB",
+            "example": 25,
+            "dimension": {}
+          }
+        },
+        {
+          "id": "left-3000",
+          "system": "http://loinc.org",
+          "code": "89020-2",
+          "cardinality": "0..1",
+          "quantity": {
+            "system": "http://unitsofmeasure.org",
+            "code": "dB",
+            "unit": "dB",
+            "example": 20,
+            "dimension": {}
+          }
+        },
+        {
+          "id": "right-3000",
+          "system": "http://loinc.org",
+          "code": "89021-0",
+          "cardinality": "0..1",
+          "quantity": {
+            "system": "http://unitsofmeasure.org",
+            "code": "dB",
+            "unit": "dB",
+            "example": 25,
+            "dimension": {}
+          }
+        },
+        {
+          "id": "left-4000",
+          "system": "http://loinc.org",
+          "code": "89022-8",
+          "cardinality": "0..1",
+          "quantity": {
+            "system": "http://unitsofmeasure.org",
+            "code": "dB",
+            "unit": "dB",
+            "example": 20,
+            "dimension": {}
+          }
+        },
+        {
+          "id": "right-4000",
+          "system": "http://loinc.org",
+          "code": "89023-6",
+          "cardinality": "0..1",
+          "quantity": {
+            "system": "http://unitsofmeasure.org",
+            "code": "dB",
+            "unit": "dB",
+            "example": 25,
+            "dimension": {}
+          }
+        },
+        {
+          "id": "left-5000",
+          "system": "http://loinc.org",
+          "code": "91377-2",
+          "cardinality": "0..1",
+          "quantity": {
+            "system": "http://unitsofmeasure.org",
+            "code": "dB",
+            "unit": "dB",
+            "example": 20,
+            "dimension": {}
+          }
+        },
+        {
+          "id": "right-5000",
+          "system": "http://loinc.org",
+          "code": "91376-4",
+          "cardinality": "0..1",
+          "quantity": {
+            "system": "http://unitsofmeasure.org",
+            "code": "dB",
+            "unit": "dB",
+            "example": 25,
+            "dimension": {}
+          }
+        },
+        {
+          "id": "left-6000",
+          "system": "http://loinc.org",
+          "code": "89026-9",
+          "cardinality": "0..1",
+          "quantity": {
+            "system": "http://unitsofmeasure.org",
+            "code": "dB",
+            "unit": "dB",
+            "example": 20,
+            "dimension": {}
+          }
+        },
+        {
+          "id": "right-6000",
+          "system": "http://loinc.org",
+          "code": "89027-7",
+          "cardinality": "0..1",
+          "quantity": {
+            "system": "http://unitsofmeasure.org",
+            "code": "dB",
+            "unit": "dB",
+            "example": 25,
+            "dimension": {}
+          }
+        },
+        {
+          "id": "left-8000",
+          "system": "http://loinc.org",
+          "code": "89028-5",
+          "cardinality": "0..1",
+          "quantity": {
+            "system": "http://unitsofmeasure.org",
+            "code": "dB",
+            "unit": "dB",
+            "example": 20,
+            "dimension": {}
+          }
+        },
+        {
+          "id": "right-8000",
+          "system": "http://loinc.org",
+          "code": "89029-3",
+          "cardinality": "0..1",
+          "quantity": {
+            "system": "http://unitsofmeasure.org",
+            "code": "dB",
+            "unit": "dB",
+            "example": 25,
+            "dimension": {}
+          }
+        }
+      ]
+    },
+    {
       "id": "basal-body-temperature",
       "profile": "grove-mobile-basal-body-temperature",
       "standardProfile": null,
@@ -3107,6 +3423,37 @@
         "oura": "unmodeled",
         "withings": "unmodeled"
       }
+    },
+    {
+      "id": "food-correlation",
+      "profile": "healthkit-food-correlation",
+      "standardProfile": null,
+      "title": "Food Correlation",
+      "description": "One eating occasion, whose members are the nutrient Observations recorded for it. The nutrients are independently meaningful and are already modelled one by one, so the occasion groups them rather than restating them as components.",
+      "code": {
+        "system": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-measurement",
+        "code": "food-correlation",
+        "display": "Food correlation",
+        "definition": "One eating occasion grouping the nutrient results recorded for it."
+      },
+      "valueKind": "grouping",
+      "quantity": null,
+      "effective": "Period",
+      "generation": {
+        "emit": true
+      },
+      "coverage": {
+        "google-health-api": "unmodeled",
+        "health-connect": "unmodeled",
+        "healthkit": "supported",
+        "oura": "unmodeled",
+        "sensorkit": "unmodeled",
+        "withings": "unmodeled"
+      },
+      "owner": "healthkit",
+      "exampleMembers": [
+        "Observation/GroveMobileDietaryEnergyExample"
+      ]
     },
     {
       "id": "forced-expiratory-volume-1",

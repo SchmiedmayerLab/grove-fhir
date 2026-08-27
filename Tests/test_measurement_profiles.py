@@ -89,7 +89,7 @@ class MeasurementProfileProjectionTests(unittest.TestCase):
     def test_generated_profiles_are_current(self) -> None:
         code, output = self.run_renderer(ROOT, "--check")
         self.assertEqual(code, 0, output)
-        self.assertIn("204 emitted, 0 parity-checked, problems=0", output)
+        self.assertIn("206 emitted, 0 parity-checked, problems=0", output)
 
     def test_projection_still_reproduces_hand_written_profiles(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

@@ -100,13 +100,13 @@ This table is the complete, closed v0.5.0 inventory of all 218 Apple HealthKit p
 | `HKClinicalTypeIdentifierProcedureRecord` | Procedure Record | `platform-exclusive` | — | healthkit-clinical-record-document | — |
 | `HKClinicalTypeIdentifierVitalSignRecord` | Vital Sign Record | `platform-exclusive` | — | healthkit-clinical-record-document | — |
 | `HKCorrelationTypeIdentifierBloodPressure` | Blood Pressure | `supported` | blood-pressure | grove-mobile-blood-pressure | — |
-| `HKCorrelationTypeIdentifierFood` | Food | `deferred` | — | — | No shared or adapter-specific output contract is published for this type. |
-| `HKDataTypeIdentifierAudiogram` | Audiogram | `deferred` | — | — | No shared or HealthKit-adapter output contract is published for this sample type. |
+| `HKCorrelationTypeIdentifierFood` | Food | `supported` | food-correlation | healthkit-food-correlation | — |
+| `HKDataTypeIdentifierAudiogram` | Audiogram | `supported` | audiogram-panel | healthkit-audiogram-panel | — |
 | `HKDataTypeIdentifierElectrocardiogram` | ECG | `supported` | electrocardiogram | grove-sensor-ecg-observation; healthkit-ecg-observation | The caller supplies the HKElectrocardiogram, every voltage measurement with its exact timeSinceSampleStart, and each associated HKCategorySample when symptomsStatus is present. The adapter preserves symptom UUID/timing/type/severity and complete HKSourceRevision fields, classification, average heart rate, sampling frequency, reported count, Apple ECG algorithm-version metadata when present, source and waveform intervals, lead, offsets, and voltages without fetching or resampling. Explicit caller authorization for linkable symptom-source disclosure is required; otherwise conversion fails closed. |
 | `HKDataTypeIdentifierHeartbeatSeries` | Heartbeat Series | `platform-exclusive` | — | healthkit-recording-document | The beat-to-beat interval series is admitted as a recording document carrying the published beat-interval-series column schema. No shared measurement models a beat series, so the samples are carried rather than reduced to a scalar. |
 | `HKDataTypeStateOfMind` | State of Mind | `supported` | state-of-mind | healthkit-state-of-mind | — |
 | `HKDataTypeUserAnnotatedMedicationConcept` | User Annotated Medication Concept | `deferred` | — | — | No shared or adapter-specific output contract is published for this type. |
-| `HKDocumentTypeIdentifierCDA` | CDA Document | `deferred` | — | — | No shared or adapter-specific output contract is published for this type. |
+| `HKDocumentTypeIdentifierCDA` | CDA Document | `platform-exclusive` | — | healthkit-recording-document | A CDA document is carried byte-for-byte as a recording document. Grove never asserts conformance over another issuer's document, the same treatment a provider-issued clinical record receives. |
 | `HKMedicationDoseEventTypeIdentifierMedicationDoseEvent` | Medication Dose Event | `deferred` | — | — | No shared or adapter-specific output contract is published for this type. |
 | `HKQuantityTypeIdentifierActiveEnergyBurned` | Active Energy Burned | `supported` | active-energy | grove-mobile-active-energy | — |
 | `HKQuantityTypeIdentifierAppleExerciseTime` | Apple Exercise Time | `supported` | apple-exercise-time | healthkit-apple-exercise-time | — |
@@ -231,7 +231,7 @@ This table is the complete, closed v0.5.0 inventory of all 218 Apple HealthKit p
 | `HKScoredAssessmentTypeIdentifierGAD7` | GAD-7 | `supported` | gad7-assessment | healthkit-gad7-assessment | — |
 | `HKScoredAssessmentTypeIdentifierPHQ9` | PHQ-9 | `supported` | phq9-assessment | healthkit-phq9-assessment | — |
 | `HKVisionPrescriptionTypeIdentifier` | Vision Prescription | `deferred` | — | — | R4 VisionPrescription represents the structured glasses and contacts prescriptions faithfully, but it requires a prescriber the platform does not supply, and the vertex and pupillary distances need extensions to stay lossless. Deferred pending that design, not because the data is unmodellable. |
-| `HKWorkoutRouteTypeIdentifier` | Workout Route | `deferred` | — | — | No shared or HealthKit-adapter output contract is published for this sample type. |
+| `HKWorkoutRouteTypeIdentifier` | Workout Route | `platform-exclusive` | — | healthkit-recording-document | The recorded route is admitted as a recording document carrying the published location-track-samples column schema. A route re-identifies readily, so a producer discloses it only under an explicit route-disclosure authorization. |
 | `HKWorkoutTypeIdentifier` | Workout | `supported` | workout, workout-segment | grove-mobile-workout; grove-mobile-workout-segment | — |
 
 ## Derived aggregate contracts

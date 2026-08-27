@@ -1,0 +1,101 @@
+#
+# This source file is part of the Grove FHIR open-source project
+#
+# SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTRIBUTORS.md)
+#
+# SPDX-License-Identifier: MIT
+#
+
+name: Build One Guide Wave
+
+# One wave of the guide build. Every guide in a wave is independent of the others, so each gets its
+# own runner; a wave starts only once the waves it depends on have finished, because a guide reads
+# the built package of every guide it depends on.
+#
+# The caller passes the wave's guides and the guides already built. Nothing here names a guide, so
+# adding one changes only Scripts/guide-build-plan.py.
+on:
+  workflow_call:
+    inputs:
+      guides:
+        description: The guides to build concurrently, as a JSON array.
+        required: true
+        type: string
+      built:
+        description: The guides earlier waves built, as a JSON array; their outputs are restored.
+        required: true
+        type: string
+      ref:
+        description: The commit to build.
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    # An empty wave has nothing to build, and a matrix over an empty list is an error.
+    if: inputs.guides != '[]'
+    name: ${{ matrix.guide }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        guide: ${{ fromJSON(inputs.guides) }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.ref }}
+          fetch-depth: 1
+          persist-credentials: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+          cache: npm
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13.15"
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21.0.10+7.0.LTS"
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3.12"
+          bundler-cache: false
+      - name: Select the locked Bundler
+        run: gem install bundler -v 4.0.16 --no-document
+      - uses: actions/cache@v5
+        with:
+          path: |
+            .build/fhir-home
+            .build/fhir-tools
+            .build/bundle
+          key: fhir-guides-${{ runner.os }}-${{ hashFiles('Gemfile.lock', 'package-lock.json', 'Scripts/download-fhir-tools.sh') }}
+          restore-keys: |
+            fhir-guides-${{ runner.os }}-
+      - run: npm ci
+      # Every earlier wave's output, restored into the tree where a dependent guide expects it.
+      - uses: actions/download-artifact@v4
+        if: inputs.built != '[]'
+        with:
+          pattern: guide-output-*
+          path: .build/restored
+      - name: Restore the guides earlier waves built
+        if: inputs.built != '[]'
+        run: |
+          for guide in $(printf '%s' '${{ inputs.built }}' | python3 -c 'import json,sys; print(" ".join(json.load(sys.stdin)))'); do
+            mkdir -p "$guide/output"
+            cp -R ".build/restored/guide-output-$guide/." "$guide/output/"
+          done
+      - name: Build ${{ matrix.guide }}
+        run: ./Scripts/build-guides.sh "${{ matrix.guide }}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: guide-output-${{ matrix.guide }}
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 1
+          path: ${{ matrix.guide }}/output

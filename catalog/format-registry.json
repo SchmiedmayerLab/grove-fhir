@@ -23,7 +23,8 @@
     "application/vnd.grovealliance.fhir-array+json": "Grove FHIR resource array",
     "application/vnd.grovealliance.native+json": "Grove native recording JSON",
     "application/vnd.grovealliance.provider+json": "Grove provider recording JSON",
-    "application/vnd.grovealliance.ppg": "Grove photoplethysmogram binary"
+    "application/vnd.grovealliance.ppg": "Grove photoplethysmogram binary",
+    "application/hl7-cda+xml": "HL7 Clinical Document Architecture"
   },
   "formats": {
     "heart-rate-samples": {
@@ -486,6 +487,14 @@
         "fhirVersion": "R4 only. A payload in another release is not admitted under this code: its media type would misdeclare the release to any receiver that reads only the media type. A release other than R4 needs its own registered format before it can be carried.",
         "provenance": "The carrying document records the issuing source; Grove never asserts conformance over another issuer's resource.",
         "scope": "One document carries exactly one clinical record's FHIR payload."
+      }
+    },
+    "clinical-document": {
+      "title": "Clinical Document",
+      "contentType": "application/hl7-cda+xml",
+      "status": "active",
+      "specification": {
+        "file": "One HL7 Clinical Document Architecture Release 2 document, byte-preserved exactly as the source platform delivered it. Grove never rewrites, reserializes, or asserts conformance over another issuer's document; the carrying document records the issuer."
       }
     },
     "native-recording": {

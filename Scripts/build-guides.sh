@@ -12,7 +12,9 @@ set -euo pipefail
 REPOSITORY_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 readonly REPOSITORY_ROOT
 readonly TOOLS_DIRECTORY="$REPOSITORY_ROOT/.build/fhir-tools"
-readonly FHIR_TOOL_HOME="$REPOSITORY_ROOT/.build/fhir-home"
+# Overridable so concurrent builds can each own a cloned cache; two Publishers writing one cache
+# corrupt it. Defaults to the shared warm cache for an ordinary single-guide build.
+readonly FHIR_TOOL_HOME="${GROVE_FHIR_HOME_OVERRIDE:-$REPOSITORY_ROOT/.build/fhir-home}"
 readonly FHIR_PACKAGE_CACHE="$FHIR_TOOL_HOME/.fhir/packages"
 JAVA_COMMAND="java"
 if [[ -x "$REPOSITORY_ROOT/.build/jdk21/Contents/Home/bin/java" ]]; then

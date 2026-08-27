@@ -1461,10 +1461,13 @@
         "HKCorrelationTypeIdentifierFood"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcorrelationtypeidentifier/food",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "food-correlation"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-food-correlation"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKDataTypeIdentifierAudiogram",
@@ -1473,10 +1476,13 @@
         "HKSampleType.audiogramSampleType()"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkaudiogramsampletype",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or HealthKit-adapter output contract is published for this sample type."
+      "status": "supported",
+      "measurementIDs": [
+        "audiogram-panel"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-audiogram-panel"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKDataTypeIdentifierElectrocardiogram",
@@ -1543,10 +1549,12 @@
         "HKDocumentTypeIdentifierCDA"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkdocumenttypeidentifier/cda",
-      "status": "deferred",
+      "status": "platform-exclusive",
       "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific output contract is published for this type."
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-recording-document"
+      ],
+      "requirement": "A CDA document is carried byte-for-byte as a recording document. Grove never asserts conformance over another issuer's document, the same treatment a provider-issued clinical record receives."
     },
     {
       "sourceTypeIdentifier": "HKMedicationDoseEventTypeIdentifierMedicationDoseEvent",
@@ -3407,10 +3415,12 @@
         "HKWorkoutRouteTypeIdentifier"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkworkoutroutetypeidentifier",
-      "status": "deferred",
+      "status": "platform-exclusive",
       "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or HealthKit-adapter output contract is published for this sample type."
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-recording-document"
+      ],
+      "requirement": "The recorded route is admitted as a recording document carrying the published location-track-samples column schema. A route re-identifies readily, so a producer discloses it only under an explicit route-disclosure authorization."
     },
     {
       "sourceTypeIdentifier": "HKWorkoutTypeIdentifier",

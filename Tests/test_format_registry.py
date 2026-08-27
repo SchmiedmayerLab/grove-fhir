@@ -36,6 +36,7 @@ class FormatRegistryTests(unittest.TestCase):
                 "location-track-samples",
                 "fhir-resource-array",
                 "fhir-resource",
+                "clinical-document",
                 "native-recording",
                 "provider-recording",
                 "photoplethysmogram-samples",

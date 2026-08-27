@@ -356,7 +356,8 @@
           "enum": [
             "quantity",
             "codeableConcept",
-            "components"
+            "components",
+            "grouping"
           ]
         },
         "quantity": {
@@ -468,6 +469,13 @@
           "items": {
             "type": "string"
           }
+        },
+        "exampleMembers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Literal references a grouping measurement's example carries as members."
         }
       },
       "allOf": [
@@ -476,6 +484,13 @@
             "properties": {
               "valueKind": {
                 "const": "codeableConcept"
+              },
+              "exampleMembers": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Literal references a grouping measurement's example carries as members."
               }
             },
             "required": [
@@ -498,6 +513,13 @@
             "properties": {
               "valueKind": {
                 "const": "components"
+              },
+              "exampleMembers": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Literal references a grouping measurement's example carries as members."
               }
             },
             "required": [

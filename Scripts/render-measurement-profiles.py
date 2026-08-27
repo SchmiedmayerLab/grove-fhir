@@ -290,6 +290,12 @@ def render_profile(measurement: dict, aliases: dict[str, str], by_id: dict) -> s
         )
     elif kind == "components":
         lines.append("* value[x] 0..0")
+    elif kind == "grouping":
+        # A panel states what its members are, not a value of its own: the members are complete
+        # Observations that stand alone, so repeating them here would publish the same fact twice.
+        lines.append("* value[x] 0..0")
+        lines.append("* hasMember 1..* MS")
+        lines.append("* hasMember only Reference(Observation)")
     else:
         raise SystemExit(f"{measurement['id']}: unsupported valueKind {kind}")
     if measurement.get("components"):
@@ -616,13 +622,25 @@ def example_result_lines(measurement: dict) -> list[str]:
     """
     kind = measurement.get("valueKind", "quantity")
     lines: list[str] = []
+    if kind == "grouping":
+        # A panel example must carry a member: the profile requires one, and an example without
+        # members would not show what the panel is for.
+        for member in measurement["exampleMembers"]:
+            lines.append(f"* hasMember[+] = Reference({member})")
     if kind == "quantity":
         lines.append(f"* valueQuantity = {example_quantity(measurement['quantity'])}")
     elif kind == "codeableConcept":
         system, code, display = coded_example(measurement)
         lines.append(f'* valueCodeableConcept = {system}#{code} "{display}"')
-    for component in measurement.get("components", []):
-        if component.get("cardinality", "1..1").startswith("0"):
+    components = measurement.get("components", [])
+    required = [c for c in components if not c.get("cardinality", "1..1").startswith("0")]
+    # A components-valued measurement whose components are every one optional still has to show
+    # some: an instance with no value, no component and no member fails grove-mobile-result-1, and
+    # an example that carries nothing would not demonstrate the shape either. The first pair stands
+    # for the rest, the way a workout example states the statistics that workout actually recorded.
+    exemplary = required or components[: measurement.get("exampleComponentCount", 2)]
+    for component in components:
+        if component not in exemplary:
             continue
         slice_name = component["id"]
         if component["system"] == LOINC:

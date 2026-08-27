@@ -138,6 +138,8 @@ ADAPTER_PACKAGE_PROFILES = {
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-running-vertical-oscillation",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-six-minute-walk-test-distance",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-hypertension-notification",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-audiogram-panel",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-food-correlation",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-recording-document",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-sleep-apnea-notification",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-sleeping-breathing-disturbances",

@@ -5,6 +5,7 @@
   "loincVersionReason": "Ratified against LOINC 2.82 (released February 2026, https://www.regenstrief.org/article/loinc-version-2-82-concept-release/); every row verified against LOINC 2.82 content on public FHIR terminology servers. The 0.6.0 audiogram rows were verified on tx.fhir.org r4 and r4.ontoserver.csiro.au on 2026-08-26; the deprecated panel 100653-5 was rejected in favour of the active 89015-2 during that check.",
   "ratification": "ratified",
   "propertyDimensions": {
+    "-": null,
     "EngRat": null,
     "Find": null,
     "Len": {
@@ -30,6 +31,7 @@
       "s": -2
     },
     "Ratio": null,
+    "RelSoundInt": {},
     "SFr": {},
     "Score": null,
     "Temp": {
@@ -50,8 +52,7 @@
     "VelRto": null,
     "Vol": {
       "m": 3
-    },
-    "-": null
+    }
   },
   "concepts": {
     "100304-5": {
