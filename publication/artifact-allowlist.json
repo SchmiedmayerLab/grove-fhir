@@ -5885,6 +5885,13 @@
           "resourceType": "ValueSet",
           "id": "withings-measurement",
           "classification": "definition"
+        },
+        {
+          "fshName": "WithingsBodyWeightExample",
+          "fshType": "Instance",
+          "resourceType": "Observation",
+          "id": "WithingsBodyWeightExample",
+          "classification": "example"
         }
       ]
     },
@@ -5948,6 +5955,13 @@
           "resourceType": "ValueSet",
           "id": "oura-measurement",
           "classification": "definition"
+        },
+        {
+          "fshName": "OuraStepCountExample",
+          "fshType": "Instance",
+          "resourceType": "Observation",
+          "id": "OuraStepCountExample",
+          "classification": "example"
         }
       ]
     },
@@ -5962,6 +5976,20 @@
           "resourceType": "StructureDefinition",
           "id": "google-health-observation",
           "classification": "definition"
+        },
+        {
+          "fshName": "GoogleHealthPatientExample",
+          "fshType": "Instance",
+          "resourceType": "Patient",
+          "id": "GoogleHealthPatientExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "GoogleHealthStepCountExample",
+          "fshType": "Instance",
+          "resourceType": "Observation",
+          "id": "GoogleHealthStepCountExample",
+          "classification": "example"
         }
       ]
     }

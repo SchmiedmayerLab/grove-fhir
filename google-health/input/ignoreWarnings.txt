@@ -4,3 +4,6 @@ WARNING: 2: An HTML fragment from the set [cross-version-analysis.xhtml, cross-v
 
 # The guide intentionally defines no global profiles; an empty generated table adds no implementation guidance.
 WARNING: 4: The HTML fragment 'globals-table.xhtml' is not included anywhere in the produced implementation guide
+
+# The annotation names what the dimensionless number counts. UCUM ignores it when comparing units, which is correct: the value is a count, not a physical quantity.
+WARNING: Observation/GoogleHealthStepCountExample: Observation.value.ofType(Quantity): UCUM Codes that contain human readable annotations like {steps} can be misleading (e.g. they are ignored when comparing units). Best Practice is not to depend on annotations in the UCUM code, so this usage should be checked
