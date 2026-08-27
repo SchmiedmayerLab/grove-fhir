@@ -25,6 +25,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 PUBLICATION = ROOT / "publication/artifact-allowlist.json"
 DEPENDENCY = re.compile(r"^  org\.grovealliance\.fhir\.([a-z-]+):", re.MULTILINE)
+PINNED = re.compile(
+    r"^  org\.grovealliance\.fhir\.([a-z-]+):\s*\n\s+version:\s*(\S+)", re.MULTILINE
+)
 
 
 def guides() -> list[str]:
@@ -37,6 +40,12 @@ def dependencies(guide: str) -> set[str]:
     """The Grove guides this guide reads, as its own SUSHI configuration states them."""
     configuration = (ROOT / guide / "sushi-config.yaml").read_text(encoding="utf-8")
     return set(DEPENDENCY.findall(configuration)) - {guide}
+
+
+def pinned(guide: str) -> list[tuple[str, str]]:
+    """Each Grove guide this guide depends on, with the version it pins."""
+    configuration = (ROOT / guide / "sushi-config.yaml").read_text(encoding="utf-8")
+    return [pin for pin in PINNED.findall(configuration) if pin[0] != guide]
 
 
 def waves() -> list[list[str]]:
@@ -68,11 +77,20 @@ def main() -> int:
         help="lines prints one wave per line for a shell; json emits the waves for a CI matrix",
     )
     parser.add_argument(
+        "--dependencies",
+        metavar="GUIDE",
+        help="print each Grove guide this guide depends on, as 'name version', one per line",
+    )
+    parser.add_argument(
         "--wave",
         type=int,
         help="print only this wave, counted from 1; prints nothing when the plan has no such wave",
     )
     arguments = parser.parse_args()
+    if arguments.dependencies:
+        for name, version in pinned(arguments.dependencies):
+            print(f"{name} {version}")
+        return 0
     plan = waves()
     if arguments.wave is not None:
         wave = plan[arguments.wave - 1] if arguments.wave <= len(plan) else []

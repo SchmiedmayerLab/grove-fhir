@@ -74,24 +74,20 @@ for guide in "${guides[@]}"; do
   fi
   mkdir -p "$guide_package_directory"
   has_local_guide_packages=false
-  if grep -q '^  org\.grovealliance\.fhir\.mobile:' "$guide/sushi-config.yaml"; then
-    test -f "$REPOSITORY_ROOT/mobile/output/package.tgz"
+  # The dependencies, and the version each one is pinned at, come from the guide's own
+  # sushi-config.yaml. A name or a version written here as well would be a second place to
+  # forget: the staged file has to carry the pinned version, or the Publisher ignores it and
+  # falls back to the network, where these packages are not published.
+  while read -r dependency version; do
+    [[ -z "$dependency" ]] && continue
+    test -f "$REPOSITORY_ROOT/$dependency/output/package.tgz"
     node "$REPOSITORY_ROOT/Scripts/cache-fhir-package.cjs" \
       --cache-root "$FHIR_PACKAGE_CACHE" \
-      "$REPOSITORY_ROOT/mobile/output/package.tgz"
-    cp "$REPOSITORY_ROOT/mobile/output/package.tgz" \
-      "$guide_package_directory/org.grovealliance.fhir.mobile-0.3.0.tgz"
+      "$REPOSITORY_ROOT/$dependency/output/package.tgz"
+    cp "$REPOSITORY_ROOT/$dependency/output/package.tgz" \
+      "$guide_package_directory/org.grovealliance.fhir.$dependency-$version.tgz"
     has_local_guide_packages=true
-  fi
-  if grep -q '^  org\.grovealliance\.fhir\.sensor:' "$guide/sushi-config.yaml"; then
-    test -f "$REPOSITORY_ROOT/sensor/output/package.tgz"
-    node "$REPOSITORY_ROOT/Scripts/cache-fhir-package.cjs" \
-      --cache-root "$FHIR_PACKAGE_CACHE" \
-      "$REPOSITORY_ROOT/sensor/output/package.tgz"
-    cp "$REPOSITORY_ROOT/sensor/output/package.tgz" \
-      "$guide_package_directory/org.grovealliance.fhir.sensor-0.3.0.tgz"
-    has_local_guide_packages=true
-  fi
+  done < <(python3 "$REPOSITORY_ROOT/Scripts/guide-build-plan.py" --dependencies "$guide")
   if [[ "$has_local_guide_packages" == "true" ]]; then
     publisher_arguments+=(
       -packages
