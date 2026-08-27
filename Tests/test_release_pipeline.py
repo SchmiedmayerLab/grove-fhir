@@ -337,17 +337,35 @@ class ReleaseWorkflowTests(unittest.TestCase):
         )
         self.assertIn("sha256sum --check SHA256SUMS", publish)
 
-    def test_release_action_dependencies_are_immutable_sha_pins(self) -> None:
-        action_lines = [
-            line.strip() for line in self.workflow.splitlines() if "uses:" in line
+    def test_release_action_dependencies_use_reviewed_major_tags(self) -> None:
+        action_references = [
+            line.split("uses:", maxsplit=1)[1].strip()
+            for line in self.workflow.splitlines()
+            if "uses:" in line
         ]
-        self.assertGreaterEqual(len(action_lines), 6)
-        for line in action_lines:
-            with self.subTest(line=line):
-                self.assertRegex(line, r"uses: [A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+@[0-9a-f]{40}")
-                self.assertNotRegex(line, r"@v[0-9]")
+        self.assertCountEqual(
+            action_references,
+            [
+                "actions/checkout@v7",
+                "actions/setup-node@v7",
+                "actions/setup-python@v7",
+                "actions/setup-java@v6",
+                "ruby/setup-ruby@v1",
+                "actions/cache@v6",
+                "actions/upload-artifact@v7",
+                "actions/download-artifact@v8",
+            ],
+        )
+        self.assertTrue(all(re.search(r"@v[0-9]+$", ref) for ref in action_references))
         self.assertIn('node-version: "24.16.0"', self.workflow)
         self.assertNotIn("runs-on: ubuntu-latest", self.workflow)
+
+    def test_artifact_boundary_uses_reviewed_major_tags_in_separate_jobs(self) -> None:
+        verify, publish = self.workflow.split("\n  publish:\n", maxsplit=1)
+        self.assertIn("uses: actions/upload-artifact@v7", verify)
+        self.assertNotIn("actions/download-artifact@", verify)
+        self.assertIn("uses: actions/download-artifact@v8", publish)
+        self.assertNotIn("actions/upload-artifact@", publish)
 
     def test_online_bootstrap_precedes_and_is_replayed_offline(self) -> None:
         online = self.workflow.index("Bootstrap the checksum-pinned dependency closure online")
@@ -380,11 +398,6 @@ class ReleaseWorkflowTests(unittest.TestCase):
             "GROVE_TX_SERVER is prohibited when GROVE_TX_OFFLINE=1",
             self.build_guides,
         )
-
-    def test_action_sha_pins_are_annotated_with_reviewed_versions(self) -> None:
-        action_lines = [line for line in self.workflow.splitlines() if "uses:" in line]
-        self.assertTrue(all(re.search(r" # v[0-9]", line) for line in action_lines))
-
 
 if __name__ == "__main__":
     unittest.main()
