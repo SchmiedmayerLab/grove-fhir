@@ -11,7 +11,6 @@ from __future__ import annotations
 import copy
 import json
 import subprocess
-import tempfile
 import unittest
 from pathlib import Path
 from typing import Any
@@ -35,16 +34,14 @@ class CatalogContractSchemaTests(unittest.TestCase):
         document: dict[str, Any],
         schema: Path = CONTRACT_SCHEMA,
     ) -> subprocess.CompletedProcess[str]:
-        with tempfile.TemporaryDirectory() as directory:
-            instance = Path(directory) / "instance.json"
-            instance.write_text(json.dumps(document), encoding="utf-8")
-            return subprocess.run(
-                ["node", str(VALIDATOR), str(schema), str(instance)],
-                cwd=ROOT,
-                capture_output=True,
-                text=True,
-                check=False,
-            )
+        return subprocess.run(
+            ["node", str(VALIDATOR), str(schema), "-"],
+            cwd=ROOT,
+            input=json.dumps(document),
+            capture_output=True,
+            text=True,
+            check=False,
+        )
 
     def _assert_valid(
         self,

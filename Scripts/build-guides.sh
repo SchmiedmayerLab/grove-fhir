@@ -138,6 +138,11 @@ for guide in "${guides[@]}"; do
     test -f "$REPOSITORY_ROOT/$guide/output/qa.json"
     python3 "$REPOSITORY_ROOT/Scripts/check-guide-qa.py" "$REPOSITORY_ROOT/$guide"
   }
+  # The exact SUSHI index is ignored and remains only on the runner that built
+  # this guide. Verify it here so local, draft, release, and deployment builds
+  # all enforce the same reviewed artifact surface before output can be reused.
+  python3 "$REPOSITORY_ROOT/Scripts/render-artifact-allowlist.py" \
+    --check-generated "$guide"
   if [[ "$guide" == "mobile" ]]; then
     python3 "$REPOSITORY_ROOT/Scripts/check-semantic-baseline.py"
   fi

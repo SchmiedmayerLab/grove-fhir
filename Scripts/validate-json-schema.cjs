@@ -16,7 +16,8 @@ const addFormats = require("ajv-formats");
 
 function usage() {
   console.error(
-    "usage: validate-json-schema.cjs SCHEMA INSTANCE [INSTANCE ...]"
+    "usage: validate-json-schema.cjs SCHEMA INSTANCE [INSTANCE ...]\n" +
+      "       INSTANCE may be - to read one JSON document from standard input"
   );
   process.exit(2);
 }
@@ -27,14 +28,20 @@ if (process.argv.length < 4) {
 
 function readJson(filename) {
   try {
-    return JSON.parse(fs.readFileSync(filename, "utf8"));
+    return JSON.parse(fs.readFileSync(filename === "-" ? 0 : filename, "utf8"));
   } catch (error) {
-    throw new Error(`unable to read JSON ${filename}: ${error.message}`);
+    const label = filename === "-" ? "<stdin>" : filename;
+    throw new Error(`unable to read JSON ${label}: ${error.message}`);
   }
 }
 
 const schemaPath = path.resolve(process.argv[2]);
-const instancePaths = process.argv.slice(3).map((value) => path.resolve(value));
+const instancePaths = process.argv
+  .slice(3)
+  .map((value) => (value === "-" ? value : path.resolve(value)));
+if (instancePaths.filter((value) => value === "-").length > 1) {
+  usage();
+}
 
 try {
   const ajv = new Ajv2020({
@@ -48,7 +55,8 @@ try {
   for (const instancePath of instancePaths) {
     if (!validate(readJson(instancePath))) {
       valid = false;
-      console.error(`${instancePath} does not satisfy ${schemaPath}:`);
+      const label = instancePath === "-" ? "<stdin>" : instancePath;
+      console.error(`${label} does not satisfy ${schemaPath}:`);
       for (const error of validate.errors || []) {
         const location = error.instancePath || "/";
         console.error(`- ${location}: ${error.message}`);
