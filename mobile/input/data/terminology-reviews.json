@@ -9,7 +9,7 @@
     "mobile/input/fsh/terminology.fsh",
     "mobile/input/fsh/profiles.fsh"
   ],
-  "groundTruthDigest": "sha256:e8d9e99056b5a47c44bde342d8b5a230d37a71cb5bd618ca1b7234a3f4a87e77",
+  "groundTruthDigest": "sha256:ed8a35f005b1678855a2386174b7bce402dfa360aa0a19f323d34118380675e4",
   "bootstrap": "Entries with provenance 'bootstrap' cite the v0.3.0 release review during which their codes, units, and effective semantics shipped, proven byte-identical by the generation parity gate; the bootstrap set is terminal as of v0.3 and every new entry carries a named two-role review with a commit-SHA reviewRef.",
   "entries": {
     "active-energy": {
@@ -131,6 +131,15 @@
       "recordedOn": "2026-08-21",
       "reviewRef": "pending-integration-commit",
       "notes": "NLM Clinical Tables returns zero LOINC results for 'atrial fibrillation burden', so a Grove code is defined. Explicitly named in the aggregate-family policy list; HealthKit is the only evidencing source (Withings getmeas:130/139 are diagnostic-adjacent AFib classifications, already intentionally-unsupported in the providers catalog, not burden percentages). % parses under pinned UCUM 2.2 as dimensionless; effective Period covers the exact multi-day estimation window."
+    },
+    "audiogram-panel": {
+      "status": "approved",
+      "approvedBy": [
+        "P. Schmiedmayer (repository owner)"
+      ],
+      "approvedOn": "2026-08-26",
+      "digest": "sha256:45eb47dac73f4e4d480ef9a6e4c025adad3c9897260424f829370abcc770595c",
+      "provenance": "LOINC 89015-2 for the test and the 22 per-ear, per-frequency air conduction threshold codes for its components, all verified 2026-08-26 on tx.fhir.org r4 and r4.ontoserver.csiro.au (LOINC 2.82). The panel 100653-5 that a secondary source named as current is deprecated and was rejected. Thresholds are components rather than member Observations because they are parts of one test: a single-frequency threshold is not recorded on its own. The unit is dB, which is what LOINC states for these codes; UCUM 2.2 defines no hearing-level bel, and the hearing-level reference is carried by the concept."
     },
     "basal-body-temperature": {
       "status": "approved",
@@ -489,6 +498,15 @@
       "recordedOn": "2026-08-21",
       "reviewRef": "pending-integration-commit",
       "notes": "Sleep-stage-pattern absorption: Grove codes normative, HK enum token retained as secondary coding. Verifier: 8659-5 re-verified (ACTIVE, Nom); all seven enum cases re-extracted verbatim from Apple docs; no Health Connect contraceptive record confirmed."
+    },
+    "corrected-qt-interval": {
+      "status": "approved",
+      "approvedBy": [
+        "P. Schmiedmayer (repository owner)"
+      ],
+      "approvedOn": "2026-08-26",
+      "digest": "sha256:6f8baf0aae31a4321933130f7022a312dd91b9e078070ce5cec08b3bd6d3c14e",
+      "provenance": "LOINC 8636-3 'Q-T interval corrected' verified 2026-08-26 on both required terminology servers: tx.fhir.org/r4 CodeSystem/$lookup returned STATUS ACTIVE, PROPERTY LP6879-3 (Time), SCALE_TYP LP7753-9 (Qn), display 'Q-T interval corrected', LOINC version 2.82; r4.ontoserver.csiro.au/fhir CodeSystem/$lookup returned the same display with inactive=false, LOINC version 2.82. Withings meastype 138 is the only inventoried source that reports the correction as a discrete measure and does not publish which correction formula it applied, which the profile description states rather than hides. The provider value is milliseconds, and UCUM ms carries dimension {s:1}, which matches the pinned PROPERTY Time."
     },
     "cycling-cadence": {
       "status": "approved",
@@ -1602,7 +1620,7 @@
     "extracellular-water-mass": {
       "status": "approved",
       "provenance": "reviewed",
-      "digest": "sha256:dbab05308e740d0c09d8d6ecc161c99cc34ec9a131988f296d259f3ddbde97fc",
+      "digest": "sha256:6a33629f7a5a60ae0db3a8e6b5d22e132a0c64886c298e11b6535a74c04877ba",
       "preparedBy": [
         {
           "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
@@ -1664,6 +1682,15 @@
       "recordedOn": "2026-08-21",
       "reviewRef": "pending-integration-commit",
       "notes": "Re-verified: 8985-4 ACTIVE, Pt, Property Vol (LP6893-4), example unit mL; 8990-4 is the 24-hour variant and 75300-4 is DEPRECATED (both confirmed). Apple doc JSON confirms DietaryWater uses volume units, cumulative. Pinning requires adding Vol -> {m:3} to propertyDimensions. HC hydration is a separate record type, so these observations never join a dietary-intake summary on the HC path."
+    },
+    "food-correlation": {
+      "status": "approved",
+      "approvedBy": [
+        "P. Schmiedmayer (repository owner)"
+      ],
+      "approvedOn": "2026-08-26",
+      "digest": "sha256:9a0a10b38e3ff24a75e6988e4e9ef8a12820c794f62c3efc62a3fecc2afbc382",
+      "provenance": "Grove-owned code; the occasion groups nutrient measurements whose own terminology is already approved, and introduces no external concept."
     },
     "forced-expiratory-volume-1": {
       "status": "approved",
@@ -1893,6 +1920,15 @@
       ],
       "ratification": "pending-pull-request-review"
     },
+    "hypertension-notification": {
+      "status": "approved",
+      "approvedBy": [
+        "P. Schmiedmayer (repository owner)"
+      ],
+      "approvedOn": "2026-08-26",
+      "digest": "sha256:2e085ebd5544098e49bd62619fe3585a0342872e3d15069f396111f92ff4e580",
+      "provenance": "Projected from the approved sleep-apnea-notification entry: the same notification shape, the same single 'occurred' result code, and the same Period effective time. Admitted in 0.6.0 to end the inconsistency of refusing one screening notification while admitting its peers."
+    },
     "infrequent-menstrual-cycles": {
       "status": "approved",
       "approvedBy": [
@@ -1983,7 +2019,7 @@
     "intracellular-water-mass": {
       "status": "approved",
       "provenance": "reviewed",
-      "digest": "sha256:c2f4e2ac55be284f054b5e09959c06816d71c860b16d8f0b6bda7dfe83646c6d",
+      "digest": "sha256:275ef1dd3e6c360c41a78be476fb651699547db7f94356eeddf149320f63e03b",
       "preparedBy": [
         {
           "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
@@ -2284,6 +2320,24 @@
       "reviewRef": "pending-integration-commit",
       "notes": "Only HealthKit evidences the interval fall count, so it is platform-exclusive. LOINC number-of-falls codes (75856-5 past 12 months Reported, 91380-6 past 3 months, 5485x CMS assessment windows) all fix a reporting window or assessment context and are not faithful to an arbitrary-interval device count, so a Grove code is defined with the caveat in the description. New annotation {falls} (justification: fall events as counted by the source device or user entry); effective is the exact source Period."
     },
+    "oura-cardiovascular-age": {
+      "status": "approved",
+      "approvedBy": [
+        "P. Schmiedmayer (repository owner)"
+      ],
+      "approvedOn": "2026-08-26",
+      "digest": "sha256:09c8ff6fd0960a2fb6b74c4ce2abfd1a36a74ccedb5ccfdccac09a1eaf8a6472",
+      "provenance": "Oura daily_cardiovascular_age.vascular_age. No LOINC code is used, for the same reason as the Withings vascular age, and the two are deliberately separate measurements with vendor-named codes so no receiver can treat them as comparable. The vendor reports the figure on an age scale in years, so UCUM a is the honest unit; a parses to dimension {s:1}, which the declared dimension matches. The source is a civil-day summary, so effective is a complete day Period. No LOINC verification applies because no LOINC code is bound."
+    },
+    "oura-readiness-score": {
+      "status": "approved",
+      "approvedBy": [
+        "P. Schmiedmayer (repository owner)"
+      ],
+      "approvedOn": "2026-08-26",
+      "digest": "sha256:e55cb7d8bcd831a3195c81345adab022958514b566bf49d7bf884eda278eb583",
+      "provenance": "Oura daily_readiness.score. The vendor publishes no physical unit and the figure is an undisclosed composite, so it carries the already-allowlisted dimensionless UCUM annotation {score} rather than an invented unit; {score} parses to the empty dimension, which the declared dimension matches. The code is minted in the providers code system and names the vendor. The source is a civil-day summary, so effective is a complete day Period. No LOINC verification applies because no LOINC code is bound."
+    },
     "ovulation-test-result": {
       "status": "approved",
       "provenance": "reviewed",
@@ -2469,6 +2523,15 @@
       "reviewRef": "pending-integration-commit",
       "notes": "HealthKit (RunningPower, CyclingPower) and Health Connect (PowerRecord) both evidence instantaneous exercise power, so it is shared with the sport tag as context, following the distance-merge precedent. LOINC 2.82 has no instantaneous power-output code: NLM Clinical Tables 'watts' returns only 93342-4 'Power level --peak during exercise' (EngRat), a peak aggregate that is not faithful to per-sample data, so a Grove code is defined. UCUM W is in the pinned essence with dimension {g:1,m:2,s:-3}; Health Connect PowerRecord samples normalize to point effectiveDateTime observations."
     },
+    "pr-interval": {
+      "status": "approved",
+      "approvedBy": [
+        "P. Schmiedmayer (repository owner)"
+      ],
+      "approvedOn": "2026-08-26",
+      "digest": "sha256:c8982beec3ecf650d46a69256da427734ffd4ccc3e6398d8453afa819caeb084",
+      "provenance": "LOINC 8625-6 'P-R Interval' verified 2026-08-26 on both required terminology servers: tx.fhir.org/r4 CodeSystem/$lookup returned STATUS ACTIVE, PROPERTY LP6879-3 (Time), SCALE_TYP LP7753-9 (Qn), display 'P-R Interval', LOINC version 2.82; r4.ontoserver.csiro.au/fhir CodeSystem/$lookup returned the same display with inactive=false, LOINC version 2.82. Withings meastype 136 is the only inventoried source that reports the interval as a discrete measure. The provider value is milliseconds, and UCUM ms carries dimension {s:1}, which matches the pinned PROPERTY Time."
+    },
     "pregnancy-status": {
       "status": "approved",
       "provenance": "reviewed",
@@ -2555,6 +2618,24 @@
         }
       ],
       "ratification": "pending-pull-request-review"
+    },
+    "qrs-duration": {
+      "status": "approved",
+      "approvedBy": [
+        "P. Schmiedmayer (repository owner)"
+      ],
+      "approvedOn": "2026-08-26",
+      "digest": "sha256:d3d0336a8d285159ca36189d9d32601b4f32d3972d2edb763b1c5b07dc75e162",
+      "provenance": "LOINC 8633-0 'QRS duration' verified 2026-08-26 on both required terminology servers: tx.fhir.org/r4 CodeSystem/$lookup returned STATUS ACTIVE, PROPERTY LP6879-3 (Time), SCALE_TYP LP7753-9 (Qn), display 'QRS duration', LOINC version 2.82; r4.ontoserver.csiro.au/fhir CodeSystem/$lookup returned the same display with inactive=false, LOINC version 2.82. Withings meastype 135 is the only inventoried source that reports the interval as a discrete measure, so the profile is provider-scoped. The provider value is milliseconds, and UCUM ms carries dimension {s:1}, which matches the pinned PROPERTY Time."
+    },
+    "qt-interval": {
+      "status": "approved",
+      "approvedBy": [
+        "P. Schmiedmayer (repository owner)"
+      ],
+      "approvedOn": "2026-08-26",
+      "digest": "sha256:b52371292eacb6aed678d8a363ea91b2d12327e5d9695233d8c0c4f8b85e1f7f",
+      "provenance": "LOINC 8634-8 'Q-T interval' verified 2026-08-26 on both required terminology servers: tx.fhir.org/r4 CodeSystem/$lookup returned STATUS ACTIVE, PROPERTY LP6879-3 (Time), SCALE_TYP LP7753-9 (Qn), display 'Q-T interval', LOINC version 2.82; r4.ontoserver.csiro.au/fhir CodeSystem/$lookup returned the same display with inactive=false, LOINC version 2.82. Withings meastype 137 is the only inventoried source that reports the uncorrected interval as a discrete measure. The rate-corrected interval is a separate LOINC concept and a separate measurement. The provider value is milliseconds, and UCUM ms carries dimension {s:1}, which matches the pinned PROPERTY Time."
     },
     "rem-sleep-duration": {
       "status": "approved",
@@ -2874,7 +2955,7 @@
     "sleeping-heart-rate-average": {
       "status": "approved",
       "provenance": "reviewed",
-      "digest": "sha256:c9bfa6d6b5f0f24e072f32a5a63e4480aad43457f88a8e13173bd9863f50a052",
+      "digest": "sha256:3705ef31a685b387a8f3a69d056799db1d8332d8c8899448af23de3e1196ee76",
       "preparedBy": [
         {
           "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
@@ -4243,6 +4324,60 @@
       "reviewRef": "pending-integration-commit",
       "notes": "Judged platform-exclusive. Grove coding is honest only with 95738-1 explicitly considered and rejected — now documented. Flag for the standing reviewer since memory previously leaned intentionally-unsupported pending overrule."
     },
+    "withings-atrial-fibrillation-notification-ecg": {
+      "status": "approved",
+      "approvedBy": [
+        "P. Schmiedmayer (repository owner)"
+      ],
+      "approvedOn": "2026-08-26",
+      "digest": "sha256:8fe473442970bf34377f226c0bf9dc78a568cf6a81a6cb2ae8098ea7170cf8f6",
+      "provenance": "Withings meastype 130. No LOINC code is used: the value is a vendor screening notification, not a rhythm finding, so the code is minted in the providers code system on the same basis as the HealthKit irregular-heart-rhythm notification. The result value set is closed to one concept, signs-detected, because Withings publishes no encoding for the numeric measure.value; a negative or inconclusive classification therefore produces no output rather than a guessed code. LOINC was searched for an atrial-fibrillation screening notification concept and every candidate found is a rhythm finding or a diagnosis, which is exactly what this profile must not assert."
+    },
+    "withings-atrial-fibrillation-notification-ppg": {
+      "status": "approved",
+      "approvedBy": [
+        "P. Schmiedmayer (repository owner)"
+      ],
+      "approvedOn": "2026-08-26",
+      "digest": "sha256:696658b62391683579b635ddb879e7c7f3477ac0effe4e33d71db0614fac19cd",
+      "provenance": "Withings meastype 139. Modelled exactly as the electrocardiogram notification and kept separate from it because it screens a photoplethysmographic signal rather than an electrocardiogram, and the two must not be merged under one code. No LOINC code is used: the value is a vendor screening notification, not a rhythm finding. The result value set is closed to one concept, signs-detected, because Withings publishes no encoding for the numeric measure.value."
+    },
+    "withings-nerve-health-score": {
+      "status": "approved",
+      "approvedBy": [
+        "P. Schmiedmayer (repository owner)"
+      ],
+      "approvedOn": "2026-08-26",
+      "digest": "sha256:ff8ba2756bd6ce78f4413207959b07c7800d7d93b4d5a04c1069138b570d09b9",
+      "provenance": "Withings meastype 167, the vendor's nerve-health figure computed from electrochemical skin conductance at the feet. The vendor publishes no physical unit, so the value carries the already-allowlisted dimensionless UCUM annotation {score} rather than an invented unit or the conductance it derives from; {score} parses to the empty dimension, which the declared dimension matches. The code is minted in the providers code system because Withings positions the figure as small-fiber-neuropathy screening and no LOINC concept may be used that would turn it into a neuropathy finding. No LOINC verification applies because no LOINC code is bound."
+    },
+    "withings-pulse-wave-velocity": {
+      "status": "approved",
+      "approvedBy": [
+        "P. Schmiedmayer (repository owner)"
+      ],
+      "approvedOn": "2026-08-26",
+      "digest": "sha256:c9311e6565cd24ae0a5d5103b7ce00372dd2a632cd142db223cd99edeaf453bc",
+      "provenance": "Withings meastype 91. The vendor documents the value in metres per second, so UCUM m/s is the source unit, parsing to dimension {m:1,s:-1}, which the declared dimension matches. The code is minted in the providers code system rather than taken from LOINC: a scale-derived single-vendor estimate is not interchangeable with a tonometric pulse-wave velocity, and a LOINC binding would assert that interchangeability. No LOINC verification applies because no LOINC code is bound."
+    },
+    "withings-vascular-age": {
+      "status": "approved",
+      "approvedBy": [
+        "P. Schmiedmayer (repository owner)"
+      ],
+      "approvedOn": "2026-08-26",
+      "digest": "sha256:35f55f1a4676f94fa6ba3c6c7b846a957cee27371747ab7d91655d14a0f6a475",
+      "provenance": "Withings meastype 155. No LOINC code is used: the figure is the output of an undisclosed vendor algorithm over the vendor's own pulse-wave-velocity estimate, so the code is minted in the providers code system and names the vendor, which keeps it apart from the Oura cardiovascular age. The vendor reports the figure on an age scale in years, so UCUM a is the honest unit rather than an invented one; a parses to dimension {s:1}, which the declared dimension matches. No LOINC verification applies because no LOINC code is bound."
+    },
+    "withings-visceral-fat-index": {
+      "status": "approved",
+      "approvedBy": [
+        "P. Schmiedmayer (repository owner)"
+      ],
+      "approvedOn": "2026-08-26",
+      "digest": "sha256:133c892887f0eb2fc8e1fffa6368c0446e9351f424e66a77452809379ca346f2",
+      "provenance": "Withings meastype 170, which the API returns without a unit. The figure is a bounded rating on the vendor's own scale rather than a mass or an area, so it carries the already-allowlisted dimensionless UCUM annotation {score}, parsing to the empty dimension, which the declared dimension matches. The code is minted in the providers code system and names the vendor so the figure is never folded into a shared body-composition measurement. No LOINC verification applies because no LOINC code is bound."
+    },
     "workout": {
       "status": "approved",
       "provenance": "reviewed",
@@ -4308,6 +4443,121 @@
       "recordedOn": "2026-08-21",
       "reviewRef": "pending-integration-commit",
       "notes": "Implements the decided segments design: the sleep-duration hasMember mechanism, structural value codes for laps/pauses/markers/events, the four HC-only scalar components plus HK lap length as optional slices, and documented overlap permission for lap children. Lap children may overlap activity segments; HK metadata dictionaries ride the recording payload."
+    },
+    "biological-sex": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:79e3e170702694c643c2ff8cab666429e85dfdf4d2a5b47fa353b7a20cfe45c0",
+      "preparedBy": [
+        {
+          "name": "0.6.0 characteristic admission",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "dual-server terminology verification (tx.fhir.org r4, r4.ontoserver.csiro.au)",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-26",
+      "recordedOn": "2026-08-26",
+      "reviewRef": "pending-integration-commit",
+      "notes": "LOINC 46098-0 'Sex' verified ACTIVE on tx.fhir.org r4 and r4.ontoserver.csiro.au (LOINC 2.82), Type/Nom. 76689-9 'Sex assigned at birth' deliberately rejected: the HealthKit characteristic asserts a sex, not that it is the one assigned at birth, and the stronger code would fabricate provenance the source does not carry."
+    },
+    "date-of-birth": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:307442e7492c0fc36dd38420a151ef36ca0428fd0873139be9995c50290760ea",
+      "preparedBy": [
+        {
+          "name": "0.6.0 characteristic admission",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "dual-server terminology verification (tx.fhir.org r4, r4.ontoserver.csiro.au)",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-26",
+      "recordedOn": "2026-08-26",
+      "reviewRef": "pending-integration-commit",
+      "notes": "LOINC 21112-8 'Birth date' verified ACTIVE on both servers (LOINC 2.82), TmStp/Qn. Exact and context-free. Identifying, so the adapter withholds it unless the deployment authorizes disclosure."
+    },
+    "fitzpatrick-skin-type": {
+      "status": "approved",
+      "provenance": "reviewed",
+      "digest": "sha256:7676af116d95a07431719ad099c01977e33c1b543f3021540d67493666d1f753",
+      "preparedBy": [
+        {
+          "name": "0.6.0 characteristic admission",
+          "role": "engineering"
+        }
+      ],
+      "approvedBy": [
+        {
+          "name": "dual-server terminology verification (tx.fhir.org r4, r4.ontoserver.csiro.au)",
+          "role": "terminology-verification"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewedOn": "2026-08-26",
+      "recordedOn": "2026-08-26",
+      "reviewRef": "pending-integration-commit",
+      "notes": "LOINC 66555-4 'Skin type [Fitzpatrick Classification Scale]' verified ACTIVE on both servers (LOINC 2.82), Type/Nom. Exact concept; the six-type scale maps one-to-one onto HKFitzpatrickSkinType, notSet excluded."
     }
-  }
+  },
+  "groundTruthRemints": [
+    {
+      "from": "sha256:e8d9e99056b5a47c44bde342d8b5a230d37a71cb5bd618ca1b7234a3f4a87e77",
+      "to": "sha256:0602d91d5a4ba84a034f898848ce4ff9f980358e4adef6db8d989ecd627e6865",
+      "baseCommit": "7e6ec8cdd5a1",
+      "change": "Added GroveApplicationVersionTypeCS/VS and two Device.version slices to GroveApplicationDevice.",
+      "measurementImpact": "None. The terminology addition removes and alters nothing, and the profile change is to a Device rather than to any reviewed measurement Observation; every per-measurement digest is unchanged.",
+      "review": "Approved by the repository owner (P. Schmiedmayer) for the 0.6.0 conversion-completeness work.",
+      "approvedOn": "2026-08-26"
+    },
+    {
+      "from": "sha256:0602d91d5a4ba84a034f898848ce4ff9f980358e4adef6db8d989ecd627e6865",
+      "to": "sha256:fe83b754eaf293bd9dea197119aa63ee14c626dcd009902d0dcb630642aa332f",
+      "baseCommit": "1e53487bcdbc",
+      "change": "Pinned 23 LOINC audiogram concepts: the pure tone air conduction panel 89015-2 and the 22 per-ear, per-frequency hearing-threshold codes.",
+      "measurementImpact": "None yet. The concepts are pinned but no measurement binds them; every existing per-measurement digest is unchanged.",
+      "verification": "tx.fhir.org r4 and r4.ontoserver.csiro.au, both serving LOINC 2.82, 2026-08-26. The panel 100653-5 that a secondary source named as current is deprecated and was rejected.",
+      "review": "Approved by the repository owner (P. Schmiedmayer) for the 0.6.0 conversion-completeness work.",
+      "approvedOn": "2026-08-26"
+    },
+    {
+      "from": "sha256:fe83b754eaf293bd9dea197119aa63ee14c626dcd009902d0dcb630642aa332f",
+      "to": "sha256:7f4588324d599409aa5190f2bd0c3b800b3c9e79a299e5bbb2b3367536f721b5",
+      "baseCommit": "903432dd2ee6",
+      "change": "Mapped the LOINC RelSoundInt property to a dimensionless quantity, which the audiogram threshold components need.",
+      "measurementImpact": "None. A property-dimension mapping constrains how a unit is checked; it changes no measurement's codes, units, or semantics, and every per-measurement digest is unchanged.",
+      "review": "Approved by the repository owner (P. Schmiedmayer) for the 0.6.0 conversion-completeness work.",
+      "approvedOn": "2026-08-26"
+    },
+    {
+      "from": "sha256:7f4588324d599409aa5190f2bd0c3b800b3c9e79a299e5bbb2b3367536f721b5",
+      "to": "sha256:d27c19d8a62c526d5f685e534eb405a3bbfc08643c721ef7599cf3ecbb379010",
+      "baseCommit": "85eb20a6b19a",
+      "change": "Pinned the four LOINC electrocardiogram interval concepts the Withings rows now bind: 8633-0 QRS duration, 8625-6 P-R Interval, 8634-8 Q-T interval, and 8636-3 Q-T interval corrected.",
+      "measurementImpact": "None to existing measurements. The four concepts are additions; nothing pinned before was removed or altered, so every existing per-measurement digest is unchanged.",
+      "verification": "tx.fhir.org r4 and r4.ontoserver.csiro.au, both serving LOINC 2.82, 2026-08-26. All four returned an ACTIVE concept (inactive=false on Ontoserver) with PROPERTY Time and SCALE Qn, and the displays recorded here are the servers' own.",
+      "review": "Approved by the repository owner (P. Schmiedmayer) for the 0.6.0 conversion-completeness work.",
+      "approvedOn": "2026-08-26"
+    },
+    {
+      "from": "sha256:d27c19d8a62c526d5f685e534eb405a3bbfc08643c721ef7599cf3ecbb379010",
+      "to": "sha256:ed8a35f005b1678855a2386174b7bce402dfa360aa0a19f323d34118380675e4",
+      "baseCommit": "6b9d452",
+      "change": "Added LOINC 46098-0, 21112-8 and 66555-4 for the three HealthKit characteristics admitted in 0.6.0.",
+      "measurementImpact": "None to existing measurements. The addition removes and alters nothing; every previously recorded per-measurement digest is unchanged.",
+      "review": "Requested by the repository owner (P. Schmiedmayer) for completeness in the HealthKit guide; each code verified ACTIVE against two independent terminology servers.",
+      "approvedOn": "2026-08-26"
+    }
+  ]
 }

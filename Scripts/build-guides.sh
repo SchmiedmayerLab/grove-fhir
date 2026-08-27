@@ -12,7 +12,9 @@ set -euo pipefail
 REPOSITORY_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 readonly REPOSITORY_ROOT
 readonly TOOLS_DIRECTORY="$REPOSITORY_ROOT/.build/fhir-tools"
-readonly FHIR_TOOL_HOME="$REPOSITORY_ROOT/.build/fhir-home"
+# Overridable so concurrent builds can each own a cloned cache; two Publishers writing one cache
+# corrupt it. Defaults to the shared warm cache for an ordinary single-guide build.
+readonly FHIR_TOOL_HOME="${GROVE_FHIR_HOME_OVERRIDE:-$REPOSITORY_ROOT/.build/fhir-home}"
 readonly FHIR_PACKAGE_CACHE="$FHIR_TOOL_HOME/.fhir/packages"
 JAVA_COMMAND="java"
 if [[ -x "$REPOSITORY_ROOT/.build/jdk21/Contents/Home/bin/java" ]]; then
@@ -54,6 +56,9 @@ for guide in "${guides[@]}"; do
   test -f "$guide/sushi-config.yaml"
   echo "Building $guide"
   clean_generated_guide_content "$guide"
+  # The Publisher writes the combined package before Jekyll creates output/, so the clean
+  # above leaves it nowhere to write and the package is silently never produced.
+  mkdir -p "$REPOSITORY_ROOT/$guide/output"
   # The Publisher validates codings against a terminology server. The server's cache lives in
   # each guide's input-cache, which is never committed: it holds thousands of SNOMED and LOINC
   # concepts this project has no licence to redistribute, and it is not ours to relicense under
@@ -72,24 +77,20 @@ for guide in "${guides[@]}"; do
   fi
   mkdir -p "$guide_package_directory"
   has_local_guide_packages=false
-  if grep -q '^  org\.grovealliance\.fhir\.mobile:' "$guide/sushi-config.yaml"; then
-    test -f "$REPOSITORY_ROOT/mobile/output/package.tgz"
+  # The dependencies, and the version each one is pinned at, come from the guide's own
+  # sushi-config.yaml. A name or a version written here as well would be a second place to
+  # forget: the staged file has to carry the pinned version, or the Publisher ignores it and
+  # falls back to the network, where these packages are not published.
+  while read -r dependency version; do
+    [[ -z "$dependency" ]] && continue
+    test -f "$REPOSITORY_ROOT/$dependency/output/package.tgz"
     node "$REPOSITORY_ROOT/Scripts/cache-fhir-package.cjs" \
       --cache-root "$FHIR_PACKAGE_CACHE" \
-      "$REPOSITORY_ROOT/mobile/output/package.tgz"
-    cp "$REPOSITORY_ROOT/mobile/output/package.tgz" \
-      "$guide_package_directory/org.grovealliance.fhir.mobile-0.3.0.tgz"
+      "$REPOSITORY_ROOT/$dependency/output/package.tgz"
+    cp "$REPOSITORY_ROOT/$dependency/output/package.tgz" \
+      "$guide_package_directory/org.grovealliance.fhir.$dependency-$version.tgz"
     has_local_guide_packages=true
-  fi
-  if grep -q '^  org\.grovealliance\.fhir\.sensor:' "$guide/sushi-config.yaml"; then
-    test -f "$REPOSITORY_ROOT/sensor/output/package.tgz"
-    node "$REPOSITORY_ROOT/Scripts/cache-fhir-package.cjs" \
-      --cache-root "$FHIR_PACKAGE_CACHE" \
-      "$REPOSITORY_ROOT/sensor/output/package.tgz"
-    cp "$REPOSITORY_ROOT/sensor/output/package.tgz" \
-      "$guide_package_directory/org.grovealliance.fhir.sensor-0.3.0.tgz"
-    has_local_guide_packages=true
-  fi
+  done < <(python3 "$REPOSITORY_ROOT/Scripts/guide-build-plan.py" --dependencies "$guide")
   if [[ "$has_local_guide_packages" == "true" ]]; then
     publisher_arguments+=(
       -packages

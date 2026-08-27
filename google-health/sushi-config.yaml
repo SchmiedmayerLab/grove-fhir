@@ -1,0 +1,59 @@
+#
+# This source file is part of the Grove FHIR open-source project
+#
+# SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTRIBUTORS.md)
+#
+# SPDX-License-Identifier: MIT
+#
+
+id: org.grovealliance.fhir.google-health
+canonical: https://grovealliance.org/fhir/google-health
+name: GroveFHIRGoogleHealth
+title: Grove FHIR Google Health Adapter
+description: >-
+  FHIR R4 mappings for Google Health API elements that no other source reports, exchanged through Grove
+  source-neutral contracts. Shared measurements that two or more connected providers report are
+  published by the Grove FHIR Connected Provider Adapter, which this guide depends on.
+status: draft
+version: 0.5.0
+fhirVersion: 4.0.1
+copyrightYear: 2026+
+releaseLabel: ci-build
+publisher:
+  name: Schmiedmayer Lab
+  url: https://github.com/SchmiedmayerLab
+license: MIT
+copyright: >-
+  Grove-authored profiles, extensions, terminology, and examples in this guide are published by the Schmiedmayer Lab under the MIT license.
+
+  FHIR® is the registered trademark of HL7 and is used with the permission of HL7. HL7 R4 material is copyright © HL7 International.
+
+  This material contains content from LOINC (https://loinc.org). LOINC is copyright © 1995-2026 Regenstrief Institute, Inc. and the Logical Observation Identifiers Names and Codes (LOINC) Committee and is available at no cost under the license at https://loinc.org/license. LOINC® is a registered United States trademark of Regenstrief Institute, Inc.
+
+  This material contains UCUM unit codes. UCUM is copyright © 1999-2026 Regenstrief Institute, Inc. and available under the license at https://ucum.org/trac.
+
+  Google Health API, Oura, and Withings API identifiers and field names originate from their respective owners and are used here only to identify source API concepts for interoperability. The MIT license applies to Grove-authored definitions; it does not grant rights in that material.
+
+dependencies:
+  hl7.terminology.r4: 7.3.0
+  hl7.fhir.uv.extensions.r4: 5.3.0
+  org.grovealliance.fhir.mobile:
+    version: 0.5.0
+    uri: https://grovealliance.org/fhir/mobile/ImplementationGuide/org.grovealliance.fhir.mobile
+  org.grovealliance.fhir.providers:
+    version: 0.5.0
+    uri: https://grovealliance.org/fhir/providers/ImplementationGuide/org.grovealliance.fhir.providers
+    id: groveProviders
+  org.grovealliance.fhir.sensor:
+    version: 0.5.0
+    uri: https://grovealliance.org/fhir/sensor/ImplementationGuide/org.grovealliance.fhir.sensor
+menu:
+  Overview: index.html
+  Status matrix: status-matrix.html
+  Artifacts: artifacts.html
+
+pages:
+  index.md:
+    title: Overview
+  status-matrix.md:
+    title: Status matrix

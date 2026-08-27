@@ -44,6 +44,11 @@ dependencies:
     version: 0.5.0
     uri: https://grovealliance.org/fhir/sensor/ImplementationGuide/org.grovealliance.fhir.sensor
 
+# The extension pack ships several versions of data-absent-reason and the guide pins one
+# dependency version; pinning the canonical too states which the profile actually means.
+parameters:
+  pin-canonicals: pin-multiples
+
 menu:
   Overview: index.html
   Guides: https://grovealliance.org/fhir/mobile/guides.html

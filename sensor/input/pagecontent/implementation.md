@@ -24,3 +24,11 @@ conversion graph shape. `grove-sensor-conversion-provenance` identifies the asse
 targets every produced representation, and carries the complete source Identifier as a
 source entity. Adapter packages narrow that source identity and require internal UUID
 targets when the resources are exchanged in a Mobile collection Bundle.
+
+## Dependencies and terminology notices
+
+The generated tables identify this guide's package dependencies and the notices for terminology used by its artifacts and examples.
+
+{% include dependency-table-nontech.xhtml %}
+
+{% include ip-statements.xhtml %}

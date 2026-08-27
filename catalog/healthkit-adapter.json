@@ -49,12 +49,12 @@
   },
   "conversionProvenanceProfile": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-conversion-provenance",
   "statusVocabulary": {
-    "supported": "The 0.4.0 HealthKit adapter defines and validates emitted FHIR output.",
+    "supported": "The 0.5.0 HealthKit adapter defines and validates emitted FHIR output.",
     "mapped-standard": "The source is represented by another exact Grove or authoritative standard package rather than a Mobile measurement profile.",
-    "platform-exclusive": "The 0.4.0 adapter defines output through a platform-exclusive HealthKit profile whose meaning remains HealthKit-specific.",
+    "platform-exclusive": "The 0.5.0 adapter defines output through a platform-exclusive HealthKit profile whose meaning remains HealthKit-specific.",
     "unmodeled": "The source type is inventoried, but no shared or HealthKit-scoped profile models it and no output is admitted.",
-    "deferred": "No FHIR output for this source type is admitted by the 0.4.0 adapter.",
-    "intentionally-unsupported": "The 0.4.0 contract explicitly rejects this source meaning rather than approximating it."
+    "deferred": "No FHIR output for this source type is admitted by the 0.5.0 adapter.",
+    "intentionally-unsupported": "The 0.5.0 contract explicitly rejects this source meaning rather than approximating it."
   },
   "standardAdapterClaims": {
     "body-mass-index": {
@@ -680,9 +680,13 @@
         "HKCategoryTypeIdentifierHypertensionEvent"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/hypertensionevent",
-      "status": "intentionally-unsupported",
-      "measurementIDs": [],
-      "profiles": [],
+      "status": "supported",
+      "measurementIDs": [
+        "hypertension-notification"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-hypertension-notification"
+      ],
       "requirement": "Device alert from a proprietary screening algorithm asserting possible pathology without any pressure measurement; emitting it as an Observation would fabricate a blood-pressure-adjacent finding with no quantity. Cuff blood-pressure quantities remain the measurement surface."
     },
     {
@@ -1259,9 +1263,13 @@
         "HKCharacteristicTypeIdentifierBiologicalSex"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcharacteristictypeidentifier/biologicalsex",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
+      "status": "supported",
+      "measurementIDs": [
+        "biological-sex"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-biological-sex"
+      ],
       "requirement": "Version 0.5.0 publishes no reviewed contract for this characteristic. LOINC 76689-9 'Sex assigned at birth' represents it faithfully, and the supported blood-type and wheelchair-use rows show a characteristic can carry an Observation, so this is unfinished work rather than a modelling refusal."
     },
     {
@@ -1286,9 +1294,13 @@
         "HKCharacteristicTypeIdentifierDateOfBirth"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcharacteristictypeidentifier/dateofbirth",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
+      "status": "supported",
+      "measurementIDs": [
+        "date-of-birth"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-date-of-birth"
+      ],
       "requirement": "A date of birth is a direct identifier, and the exchange's Patient node is deliberately pseudonymous. Publishing it needs a privacy decision, not a mapping; age at observation is the research-safe alternative."
     },
     {
@@ -1298,9 +1310,13 @@
         "HKCharacteristicTypeIdentifierFitzpatrickSkinType"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcharacteristictypeidentifier/fitzpatrickskintype",
-      "status": "intentionally-unsupported",
-      "measurementIDs": [],
-      "profiles": [],
+      "status": "supported",
+      "measurementIDs": [
+        "fitzpatrick-skin-type"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-fitzpatrick-skin-type"
+      ],
       "requirement": "A single-platform self-reported phenotype outside the measurement contract, with no consumer in the exchange set. LOINC 66555-4 represents it exactly, so this is a scope decision rather than a terminology gap."
     },
     {
@@ -1457,10 +1473,13 @@
         "HKCorrelationTypeIdentifierFood"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcorrelationtypeidentifier/food",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific output contract is published for this type."
+      "status": "supported",
+      "measurementIDs": [
+        "food-correlation"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-food-correlation"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKDataTypeIdentifierAudiogram",
@@ -1469,10 +1488,13 @@
         "HKSampleType.audiogramSampleType()"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkaudiogramsampletype",
-      "status": "deferred",
-      "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or HealthKit-adapter output contract is published for this sample type."
+      "status": "supported",
+      "measurementIDs": [
+        "audiogram-panel"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-audiogram-panel"
+      ]
     },
     {
       "sourceTypeIdentifier": "HKDataTypeIdentifierElectrocardiogram",
@@ -1498,10 +1520,12 @@
         "HKDataTypeIdentifierHeartbeatSeries"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkdatatypeidentifierheartbeatseries",
-      "status": "deferred",
+      "status": "platform-exclusive",
       "measurementIDs": [],
-      "profiles": [],
-      "requirement": "The beat-to-beat interval series has a published beat-interval-series column schema, but the HealthKit adapter has no recording-document profile to carry it yet, so no output is admitted."
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-recording-document"
+      ],
+      "requirement": "The beat-to-beat interval series is admitted as a recording document carrying the published beat-interval-series column schema. No shared measurement models a beat series, so the samples are carried rather than reduced to a scalar."
     },
     {
       "sourceTypeIdentifier": "HKDataTypeStateOfMind",
@@ -1525,10 +1549,12 @@
         "HKDataTypeIdentifierUserAnnotatedMedicationConcept"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkdatatypeidentifieruserannotatedmedicationconcept",
-      "status": "deferred",
+      "status": "platform-exclusive",
       "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific output contract is published for this type."
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-user-annotated-medication"
+      ],
+      "requirement": "A tracked medication is admitted as a MedicationStatement identified by the HKHealthConceptIdentifier of its concept, carrying the person's nickname, the platform's general form, and whether a schedule exists. An archived medication is completed and a tracked one is active."
     },
     {
       "sourceTypeIdentifier": "HKDocumentTypeIdentifierCDA",
@@ -1537,10 +1563,12 @@
         "HKDocumentTypeIdentifierCDA"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkdocumenttypeidentifier/cda",
-      "status": "deferred",
+      "status": "platform-exclusive",
       "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific output contract is published for this type."
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-recording-document"
+      ],
+      "requirement": "A CDA document is carried byte-for-byte as a recording document. Grove never asserts conformance over another issuer's document, the same treatment a provider-issued clinical record receives."
     },
     {
       "sourceTypeIdentifier": "HKMedicationDoseEventTypeIdentifierMedicationDoseEvent",
@@ -1549,10 +1577,12 @@
         "HKMedicationDoseEventTypeIdentifierMedicationDoseEvent"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkmedicationdoseeventtypeidentifiermedicationdoseevent",
-      "status": "deferred",
+      "status": "platform-exclusive",
       "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or adapter-specific output contract is published for this type."
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-medication-dose-event"
+      ],
+      "requirement": "A logged dose is admitted as a MedicationAdministration that keeps the exact HKMedicationDoseEvent.LogStatus and the schedule it was logged against beside the R4 status, which collapses six source cases onto three codes. The medication is named by the same HKHealthConceptIdentifier the tracked-medication statement carries."
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierActiveEnergyBurned",
@@ -3389,10 +3419,12 @@
         "HKVisionPrescriptionTypeIdentifier"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkvisionprescriptiontypeidentifier",
-      "status": "deferred",
+      "status": "platform-exclusive",
       "measurementIDs": [],
-      "profiles": [],
-      "requirement": "R4 VisionPrescription represents the structured glasses and contacts prescriptions faithfully, but it requires a prescriber the platform does not supply, and the vertex and pupillary distances need extensions to stay lossless. Deferred pending that design, not because the data is unmodellable."
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-vision-prescription"
+      ],
+      "requirement": "A glasses or contacts prescription is admitted as a structured R4 VisionPrescription: the lens specifications map natively, one HKVisionPrism resolves into its vertical and horizontal components, and vertex distance, the two pupillary distances, and the expiration date ride as extensions. HealthKit supplies no prescriber, so the mandatory reference is stated absent rather than invented."
     },
     {
       "sourceTypeIdentifier": "HKWorkoutRouteTypeIdentifier",
@@ -3401,10 +3433,12 @@
         "HKWorkoutRouteTypeIdentifier"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkworkoutroutetypeidentifier",
-      "status": "deferred",
+      "status": "platform-exclusive",
       "measurementIDs": [],
-      "profiles": [],
-      "requirement": "No shared or HealthKit-adapter output contract is published for this sample type."
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-recording-document"
+      ],
+      "requirement": "The recorded route is admitted as a recording document carrying the published location-track-samples column schema. A route re-identifies readily, so a producer discloses it only under an explicit route-disclosure authorization."
     },
     {
       "sourceTypeIdentifier": "HKWorkoutTypeIdentifier",

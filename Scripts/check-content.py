@@ -25,6 +25,9 @@ EXPECTED_GUIDE_SOURCES = (
     "healthkit",
     "health-connect",
     "providers",
+    "withings",
+    "oura",
+    "google-health",
     "questionnaire",
 )
 MOBILE_ADAPTER_SOURCES = (
@@ -33,6 +36,9 @@ MOBILE_ADAPTER_SOURCES = (
     "healthkit",
     "health-connect",
     "providers",
+    "withings",
+    "oura",
+    "google-health",
 )
 GUIDES = tuple(ROOT / source for source in EXPECTED_GUIDE_SOURCES)
 CATALOGS = ROOT / "catalog"
@@ -43,6 +49,12 @@ OWN_VERSION_IN_PROSE = re.compile(
     r"|\b[Vv]ersion (\d+\.\d+\.\d+)\b"
     # A package pin names the release without the word: `…fhir.mobile#0.3.0`, `…fhir.mobile: 0.3.0`.
     r"|org\.grovealliance\.fhir\.[a-z-]+[#:]\s?(\d+\.\d+\.\d+)\b"
+    # So does a bare number qualifying one of Grove's own nouns — "the 0.4.0 adapter". Matching every
+    # bare number instead would flood on the instrument and app versions the examples legitimately
+    # carry; this form is the one that let two catalogs sit a release behind.
+    r"|\b(\d+\.\d+\.\d+) (?:adapter|contract|guide|registry|catalog|release)\b"
+    # And a bare number qualified by the product name — "Grove FHIR HealthKit 0.3.0".
+    r"|Grove(?:\s+\S+){0,3}\s(\d+\.\d+\.\d+)\b"
 )
 # Fields that state when a set was first frozen, and so name the release that froze it rather
 # than the current one. Every other prose mention must track the catalog's own version.
@@ -98,7 +110,7 @@ def stale_version_prose(name: str, node: object, own: str, path: tuple[str, ...]
     return [
         f"catalog/{name} field {field} names version {found}, but the catalog is {own}"
         for match in OWN_VERSION_IN_PROSE.findall(node)
-        for found in [match[0] or match[1] or match[2]]
+        for found in [next(g for g in match if g)]
         if found != own
     ]
 
@@ -157,7 +169,7 @@ def main() -> int:
                     continue
                 for number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
                     for match in OWN_VERSION_IN_PROSE.finditer(line):
-                        found = match.group(1) or match.group(2) or match.group(3)
+                        found = next(g for g in match.groups() if g)
                         if found in {mobile_version, FHIR_VERSION}:
                             continue
                         # A pinned third-party version is not Grove's and does not move with it.

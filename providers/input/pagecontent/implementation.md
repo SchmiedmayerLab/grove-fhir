@@ -18,7 +18,7 @@ A producer must:
 3. normalize units without changing the source interval or inventing an instant;
 4. assign complete source and output business identifiers;
 5. declare exactly the catalogued profile pair for a shared Observation or native Recording Document; and
-6. include one `provider-conversion-provenance` whose sole source entity is the
+6. include one `providers-conversion-provenance` whose sole source entity is the
    complete connected-provider source-record Identifier and whose internal UUID targets
    cover every structured and raw output for that source record; and
 7. exchange a complete resource graph in a Grove Mobile collection Bundle using
@@ -61,3 +61,11 @@ repository does not run consumer implementations.
 
 Canonical URLs identify artifacts. They do not promise that Grove hosts a package or a
 FHIR endpoint at the canonical origin.
+
+## Dependencies and terminology notices
+
+The generated tables identify this guide's package dependencies and the notices for terminology used by its artifacts and examples.
+
+{% include dependency-table-nontech.xhtml %}
+
+{% include ip-statements.xhtml %}

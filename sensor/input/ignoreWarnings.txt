@@ -5,9 +5,6 @@ WARNING: 2: An HTML fragment from the set [cross-version-analysis.xhtml, cross-v
 # The guide intentionally defines no global profiles; an empty generated table adds no implementation guidance.
 WARNING: 4: The HTML fragment 'globals-table.xhtml' is not included anywhere in the produced implementation guide
 
-# The narrative explains the conditional PHD relationship directly; generated dependency and IP boilerplate fragments add no contract detail.
-WARNING: 1: The HTML fragment 'ip-statements.xhtml' is not included anywhere in the produced implementation guide
-WARNING: 3: An HTML fragment from the set [dependency-table.xhtml, dependency-table-short.xhtml, dependency-table-nontech.xhtml] is not included anywhere in the produced implementation guide
 
 # Grove constrains but does not publish the external IANA BCP 13 CodeSystem; only the locally owned ValueSet can receive a Grove OID.
 WARNING: Resource: The resource ValueSet/grove-native-recording-mime-type should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/fhir-tools-ig/CodeSystem-ig-parameters.html#ig-parameters-auto-oid-root)

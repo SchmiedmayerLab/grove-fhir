@@ -123,7 +123,7 @@ Description: "The 218 source-type identifiers the iPhoneOS 26.5 SDK baseline (Xc
 * #HKCategoryTypeIdentifierHotFlashes "Hot Flashes" "The HealthKit HKCategoryTypeIdentifierHotFlashes source type. Grove converts it to healthkit-symptom-hot-flashes."
 * #HKCategoryTypeIdentifierHotFlashes ^property[0].code = #documentation
 * #HKCategoryTypeIdentifierHotFlashes ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/hotflashes"
-* #HKCategoryTypeIdentifierHypertensionEvent "Hypertension Event" "The HealthKit HKCategoryTypeIdentifierHypertensionEvent source type. Grove admits no output for it. Device alert from a proprietary screening algorithm asserting possible pathology without any pressure measurement; emitting it as an Observation would fabricate a blood-pressure-adjacent finding with no quantity. Cuff blood-pressure quantities remain the measurement surface."
+* #HKCategoryTypeIdentifierHypertensionEvent "Hypertension Event" "The HealthKit HKCategoryTypeIdentifierHypertensionEvent source type. Grove converts it to healthkit-hypertension-notification."
 * #HKCategoryTypeIdentifierHypertensionEvent ^property[0].code = #documentation
 * #HKCategoryTypeIdentifierHypertensionEvent ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/hypertensionevent"
 * #HKCategoryTypeIdentifierInfrequentMenstrualCycles "Infrequent Menstrual Cycles" "The HealthKit HKCategoryTypeIdentifierInfrequentMenstrualCycles source type. Grove converts it to healthkit-infrequent-menstrual-cycles."
@@ -240,16 +240,16 @@ Description: "The 218 source-type identifiers the iPhoneOS 26.5 SDK baseline (Xc
 * #HKCharacteristicTypeIdentifierActivityMoveMode "Activity Move Mode" "The HealthKit HKCharacteristicTypeIdentifierActivityMoveMode source type. Grove admits no output for it. A ring-display preference has no semantically exact Mobile meaning, and converting it would encode an Apple product configuration as clinical data. The mode is interpretive context for the Apple move-time and active-energy rows, which carry their own units and are converted in their own right; it adds no measurement content of its own."
 * #HKCharacteristicTypeIdentifierActivityMoveMode ^property[0].code = #documentation
 * #HKCharacteristicTypeIdentifierActivityMoveMode ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkcharacteristictypeidentifier/activitymovemode"
-* #HKCharacteristicTypeIdentifierBiologicalSex "Biological Sex" "The HealthKit HKCharacteristicTypeIdentifierBiologicalSex source type. Grove admits no output for it. Version 0.5.0 publishes no reviewed contract for this characteristic. LOINC 76689-9 'Sex assigned at birth' represents it faithfully, and the supported blood-type and wheelchair-use rows show a characteristic can carry an Observation, so this is unfinished work rather than a modelling refusal."
+* #HKCharacteristicTypeIdentifierBiologicalSex "Biological Sex" "The HealthKit HKCharacteristicTypeIdentifierBiologicalSex source type. Grove converts it to healthkit-biological-sex."
 * #HKCharacteristicTypeIdentifierBiologicalSex ^property[0].code = #documentation
 * #HKCharacteristicTypeIdentifierBiologicalSex ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkcharacteristictypeidentifier/biologicalsex"
 * #HKCharacteristicTypeIdentifierBloodType "Blood Type" "The HealthKit HKCharacteristicTypeIdentifierBloodType source type. Grove converts it to healthkit-blood-type."
 * #HKCharacteristicTypeIdentifierBloodType ^property[0].code = #documentation
 * #HKCharacteristicTypeIdentifierBloodType ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkcharacteristictypeidentifier/bloodtype"
-* #HKCharacteristicTypeIdentifierDateOfBirth "Date of Birth" "The HealthKit HKCharacteristicTypeIdentifierDateOfBirth source type. Grove admits no output for it. A date of birth is a direct identifier, and the exchange's Patient node is deliberately pseudonymous. Publishing it needs a privacy decision, not a mapping; age at observation is the research-safe alternative."
+* #HKCharacteristicTypeIdentifierDateOfBirth "Date of Birth" "The HealthKit HKCharacteristicTypeIdentifierDateOfBirth source type. Grove converts it to healthkit-date-of-birth."
 * #HKCharacteristicTypeIdentifierDateOfBirth ^property[0].code = #documentation
 * #HKCharacteristicTypeIdentifierDateOfBirth ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkcharacteristictypeidentifier/dateofbirth"
-* #HKCharacteristicTypeIdentifierFitzpatrickSkinType "Fitzpatrick Skin Type" "The HealthKit HKCharacteristicTypeIdentifierFitzpatrickSkinType source type. Grove admits no output for it. A single-platform self-reported phenotype outside the measurement contract, with no consumer in the exchange set. LOINC 66555-4 represents it exactly, so this is a scope decision rather than a terminology gap."
+* #HKCharacteristicTypeIdentifierFitzpatrickSkinType "Fitzpatrick Skin Type" "The HealthKit HKCharacteristicTypeIdentifierFitzpatrickSkinType source type. Grove converts it to healthkit-fitzpatrick-skin-type."
 * #HKCharacteristicTypeIdentifierFitzpatrickSkinType ^property[0].code = #documentation
 * #HKCharacteristicTypeIdentifierFitzpatrickSkinType ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkcharacteristictypeidentifier/fitzpatrickskintype"
 * #HKCharacteristicTypeIdentifierWheelchairUse "Wheelchair Use" "The HealthKit HKCharacteristicTypeIdentifierWheelchairUse source type. Grove converts it to healthkit-wheelchair-use."
@@ -285,28 +285,28 @@ Description: "The 218 source-type identifiers the iPhoneOS 26.5 SDK baseline (Xc
 * #HKCorrelationTypeIdentifierBloodPressure "Blood Pressure" "The HealthKit HKCorrelationTypeIdentifierBloodPressure source type. Grove converts it to grove-mobile-blood-pressure."
 * #HKCorrelationTypeIdentifierBloodPressure ^property[0].code = #documentation
 * #HKCorrelationTypeIdentifierBloodPressure ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkcorrelationtypeidentifier/bloodpressure"
-* #HKCorrelationTypeIdentifierFood "Food" "The HealthKit HKCorrelationTypeIdentifierFood source type. Grove admits no output for it. No shared or adapter-specific output contract is published for this type."
+* #HKCorrelationTypeIdentifierFood "Food" "The HealthKit HKCorrelationTypeIdentifierFood source type. Grove converts it to healthkit-food-correlation."
 * #HKCorrelationTypeIdentifierFood ^property[0].code = #documentation
 * #HKCorrelationTypeIdentifierFood ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkcorrelationtypeidentifier/food"
-* #HKDataTypeIdentifierAudiogram "Audiogram" "The HealthKit HKDataTypeIdentifierAudiogram source type. Grove admits no output for it. No shared or HealthKit-adapter output contract is published for this sample type."
+* #HKDataTypeIdentifierAudiogram "Audiogram" "The HealthKit HKDataTypeIdentifierAudiogram source type. Grove converts it to healthkit-audiogram-panel."
 * #HKDataTypeIdentifierAudiogram ^property[0].code = #documentation
 * #HKDataTypeIdentifierAudiogram ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkaudiogramsampletype"
 * #HKDataTypeIdentifierElectrocardiogram "ECG" "The HealthKit HKDataTypeIdentifierElectrocardiogram source type. Grove converts it to grove-sensor-ecg-observation and healthkit-ecg-observation."
 * #HKDataTypeIdentifierElectrocardiogram ^property[0].code = #documentation
 * #HKDataTypeIdentifierElectrocardiogram ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkelectrocardiogramtype"
-* #HKDataTypeIdentifierHeartbeatSeries "Heartbeat Series" "The HealthKit HKDataTypeIdentifierHeartbeatSeries source type. Grove admits no output for it. The beat-to-beat interval series has a published beat-interval-series column schema, but the HealthKit adapter has no recording-document profile to carry it yet, so no output is admitted."
+* #HKDataTypeIdentifierHeartbeatSeries "Heartbeat Series" "The HealthKit HKDataTypeIdentifierHeartbeatSeries source type. Grove converts it to healthkit-recording-document."
 * #HKDataTypeIdentifierHeartbeatSeries ^property[0].code = #documentation
 * #HKDataTypeIdentifierHeartbeatSeries ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkdatatypeidentifierheartbeatseries"
 * #HKDataTypeStateOfMind "State of Mind" "The HealthKit HKDataTypeStateOfMind source type. Grove converts it to healthkit-state-of-mind."
 * #HKDataTypeStateOfMind ^property[0].code = #documentation
 * #HKDataTypeStateOfMind ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkdatatypeidentifierstateofmind"
-* #HKDataTypeUserAnnotatedMedicationConcept "User Annotated Medication Concept" "The HealthKit HKDataTypeUserAnnotatedMedicationConcept source type. Grove admits no output for it. No shared or adapter-specific output contract is published for this type."
+* #HKDataTypeUserAnnotatedMedicationConcept "User Annotated Medication Concept" "The HealthKit HKDataTypeUserAnnotatedMedicationConcept source type. Grove converts it to healthkit-user-annotated-medication."
 * #HKDataTypeUserAnnotatedMedicationConcept ^property[0].code = #documentation
 * #HKDataTypeUserAnnotatedMedicationConcept ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkdatatypeidentifieruserannotatedmedicationconcept"
-* #HKDocumentTypeIdentifierCDA "CDA Document" "The HealthKit HKDocumentTypeIdentifierCDA source type. Grove admits no output for it. No shared or adapter-specific output contract is published for this type."
+* #HKDocumentTypeIdentifierCDA "CDA Document" "The HealthKit HKDocumentTypeIdentifierCDA source type. Grove converts it to healthkit-recording-document."
 * #HKDocumentTypeIdentifierCDA ^property[0].code = #documentation
 * #HKDocumentTypeIdentifierCDA ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkdocumenttypeidentifier/cda"
-* #HKMedicationDoseEventTypeIdentifierMedicationDoseEvent "Medication Dose Event" "The HealthKit HKMedicationDoseEventTypeIdentifierMedicationDoseEvent source type. Grove admits no output for it. No shared or adapter-specific output contract is published for this type."
+* #HKMedicationDoseEventTypeIdentifierMedicationDoseEvent "Medication Dose Event" "The HealthKit HKMedicationDoseEventTypeIdentifierMedicationDoseEvent source type. Grove converts it to healthkit-medication-dose-event."
 * #HKMedicationDoseEventTypeIdentifierMedicationDoseEvent ^property[0].code = #documentation
 * #HKMedicationDoseEventTypeIdentifierMedicationDoseEvent ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkmedicationdoseeventtypeidentifiermedicationdoseevent"
 * #HKQuantityTypeIdentifierActiveEnergyBurned "Active Energy Burned" "The HealthKit HKQuantityTypeIdentifierActiveEnergyBurned source type. Grove converts it to grove-mobile-active-energy."
@@ -675,10 +675,10 @@ Description: "The 218 source-type identifiers the iPhoneOS 26.5 SDK baseline (Xc
 * #HKScoredAssessmentTypeIdentifierPHQ9 "PHQ-9" "The HealthKit HKScoredAssessmentTypeIdentifierPHQ9 source type. Grove converts it to healthkit-phq9-assessment."
 * #HKScoredAssessmentTypeIdentifierPHQ9 ^property[0].code = #documentation
 * #HKScoredAssessmentTypeIdentifierPHQ9 ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkscoredassessmenttypeidentifier/phq9"
-* #HKVisionPrescriptionTypeIdentifier "Vision Prescription" "The HealthKit HKVisionPrescriptionTypeIdentifier source type. Grove admits no output for it. R4 VisionPrescription represents the structured glasses and contacts prescriptions faithfully, but it requires a prescriber the platform does not supply, and the vertex and pupillary distances need extensions to stay lossless. Deferred pending that design, not because the data is unmodellable."
+* #HKVisionPrescriptionTypeIdentifier "Vision Prescription" "The HealthKit HKVisionPrescriptionTypeIdentifier source type. Grove converts it to healthkit-vision-prescription."
 * #HKVisionPrescriptionTypeIdentifier ^property[0].code = #documentation
 * #HKVisionPrescriptionTypeIdentifier ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkvisionprescriptiontypeidentifier"
-* #HKWorkoutRouteTypeIdentifier "Workout Route" "The HealthKit HKWorkoutRouteTypeIdentifier source type. Grove admits no output for it. No shared or HealthKit-adapter output contract is published for this sample type."
+* #HKWorkoutRouteTypeIdentifier "Workout Route" "The HealthKit HKWorkoutRouteTypeIdentifier source type. Grove converts it to healthkit-recording-document."
 * #HKWorkoutRouteTypeIdentifier ^property[0].code = #documentation
 * #HKWorkoutRouteTypeIdentifier ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkworkoutroutetypeidentifier"
 * #HKWorkoutTypeIdentifier "Workout" "The HealthKit HKWorkoutTypeIdentifier source type. Grove converts it to grove-mobile-workout and grove-mobile-workout-segment."

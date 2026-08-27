@@ -19,6 +19,9 @@ excludedDirs:
   - sensor/input/pagecontent
   - sensorkit/input/pagecontent
   - providers/input/pagecontent
+  - withings/input/pagecontent
+  - oura/input/pagecontent
+  - google-health/input/pagecontent
 ignorePatterns:
   - pattern: '^doc:.*$'
   - pattern: '^http://localhost.*$'

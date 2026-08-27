@@ -36,11 +36,11 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 1
           persist-credentials: false
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: "24"
           cache: npm
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.13.15"
       - run: npm ci
@@ -99,7 +99,7 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 1
           persist-credentials: false
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.13.15"
       # The identifiers are read from the SDK the catalogs are frozen on, so select that
@@ -140,14 +140,14 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
           persist-credentials: false
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: "24"
           cache: npm
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.13.15"
-      - uses: actions/setup-java@v5
+      - uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: "21.0.10+7.0.LTS"
@@ -157,7 +157,7 @@ jobs:
           bundler-cache: false
       - name: Select the locked Bundler
         run: gem install bundler -v 4.0.16 --no-document
-      - uses: actions/cache@v5
+      - uses: actions/cache@v6
         with:
           path: |
             .build/fhir-home
@@ -181,36 +181,146 @@ jobs:
         if: steps.scope.outputs.guides == ''
         run: echo 'No guide inputs or package dependencies changed.'
 
-  guides:
-    name: Build and Validate All R4 Guides
+  guide-plan:
+    name: Plan the Guide Build Waves
     if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
     needs: tooling
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 5
+    outputs:
+      wave1: ${{ steps.plan.outputs.wave1 }}
+      wave2: ${{ steps.plan.outputs.wave2 }}
+      wave3: ${{ steps.plan.outputs.wave3 }}
+      wave4: ${{ steps.plan.outputs.wave4 }}
+      wave5: ${{ steps.plan.outputs.wave5 }}
+      wave6: ${{ steps.plan.outputs.wave6 }}
+      built1: ${{ steps.plan.outputs.built1 }}
+      built2: ${{ steps.plan.outputs.built2 }}
+      built3: ${{ steps.plan.outputs.built3 }}
+      built4: ${{ steps.plan.outputs.built4 }}
+      built5: ${{ steps.plan.outputs.built5 }}
     steps:
       - uses: actions/checkout@v7
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 1
           persist-credentials: false
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13.15"
+      # The waves come from each guide's own dependencies, so adding a guide needs no edit here.
+      # `builtN` is everything the waves before N produced, which wave N restores before building.
+      - id: plan
+        run: |
+          python3 - <<'PLAN' >> "$GITHUB_OUTPUT"
+          import json, subprocess
+          # The number of wave jobs defined below. A plan deeper than this fails loudly
+          # rather than silently dropping a wave; add a job and raise this together.
+          WAVE_JOBS = 6
+          plan = json.loads(subprocess.run(
+              ["python3", "Scripts/guide-build-plan.py", "--format", "json"],
+              capture_output=True, text=True, check=True).stdout)
+          if len(plan) > WAVE_JOBS:
+              raise SystemExit(
+                  f"::error::the guide graph now has {len(plan)} waves; add a wave job")
+          built = []
+          for index in range(WAVE_JOBS):
+              wave = plan[index] if index < len(plan) else []
+              print(f"wave{index + 1}={json.dumps(wave)}")
+              built.extend(wave)
+              # `builtN` is everything available to wave N+1, so it includes wave N itself.
+              if index < WAVE_JOBS - 1:
+                  print(f"built{index + 1}={json.dumps(sorted(built))}")
+          PLAN
+
+  guide-wave-1:
+    name: Guides
+    needs: guide-plan
+    uses: ./.github/workflows/build-guide-wave.yml
+    with:
+      guides: ${{ needs.guide-plan.outputs.wave1 }}
+      built: "[]"
+      ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+  guide-wave-2:
+    name: Guides
+    needs: [guide-plan, guide-wave-1]
+    uses: ./.github/workflows/build-guide-wave.yml
+    with:
+      guides: ${{ needs.guide-plan.outputs.wave2 }}
+      built: ${{ needs.guide-plan.outputs.built1 }}
+      ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+  guide-wave-3:
+    name: Guides
+    needs: [guide-plan, guide-wave-2]
+    uses: ./.github/workflows/build-guide-wave.yml
+    with:
+      guides: ${{ needs.guide-plan.outputs.wave3 }}
+      built: ${{ needs.guide-plan.outputs.built2 }}
+      ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+  guide-wave-4:
+    name: Guides
+    needs: [guide-plan, guide-wave-3]
+    uses: ./.github/workflows/build-guide-wave.yml
+    with:
+      guides: ${{ needs.guide-plan.outputs.wave4 }}
+      built: ${{ needs.guide-plan.outputs.built3 }}
+      ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+  guide-wave-5:
+    name: Guides
+    needs: [guide-plan, guide-wave-4]
+    uses: ./.github/workflows/build-guide-wave.yml
+    with:
+      guides: ${{ needs.guide-plan.outputs.wave5 }}
+      built: ${{ needs.guide-plan.outputs.built4 }}
+      ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+  guide-wave-6:
+    name: Guides
+    needs: [guide-plan, guide-wave-5]
+    uses: ./.github/workflows/build-guide-wave.yml
+    with:
+      guides: ${{ needs.guide-plan.outputs.wave6 }}
+      built: ${{ needs.guide-plan.outputs.built5 }}
+      ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+  guides:
+    name: Build and Validate All R4 Guides
+    # Every wave, including one the plan left empty: a skipped wave still has to be accounted for
+    # rather than letting the ledger run against a partial set.
+    needs: [guide-wave-1, guide-wave-2, guide-wave-3, guide-wave-4, guide-wave-5, guide-wave-6]
+    # Runs even when a wave fails, so this required check fails rather than being skipped: a skipped
+    # required check can read as neutral, which would let a broken guide build merge. A wave the plan
+    # left empty is `skipped`, which is not a failure.
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Require every wave to have succeeded
+        if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
+        run: |
+          echo "::error::a guide wave did not succeed; the ledger cannot audit a partial build"
+          exit 1
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 1
+          persist-credentials: false
+      - uses: actions/setup-node@v7
         with:
           node-version: "24"
           cache: npm
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.13.15"
-      - uses: actions/setup-java@v5
+      - uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: "21.0.10+7.0.LTS"
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: "3.3.12"
-          bundler-cache: false
-      - name: Select the locked Bundler
-        run: gem install bundler -v 4.0.16 --no-document
-      - uses: actions/cache@v5
+      - uses: actions/cache@v6
         with:
           path: |
             .build/fhir-home
@@ -220,7 +330,22 @@ jobs:
           restore-keys: |
             fhir-guides-${{ runner.os }}-
       - run: npm ci
-      - run: npm run pages:build
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: guide-output-*
+          path: .build/restored
+      - name: Restore every built guide
+        run: |
+          for guide in $(python3 Scripts/guide-build-plan.py | tr '\n' ' '); do
+            test -d ".build/restored/guide-output-$guide"
+            mkdir -p "$guide/output"
+            cp -R ".build/restored/guide-output-$guide/." "$guide/output/"
+          done
+      - name: Audit the QA ledger of every guide
+        run: |
+          python3 Scripts/guide-build-plan.py | tr '\n' ' ' \
+            | xargs python3 Scripts/check-guide-qa.py
+      - run: ./Scripts/assemble-pages.sh
       - run: python3 -m unittest Tests.test_artifact_allowlist -v
       - run: python3 Scripts/validate-questionnaire-fhir.py
       - name: Validate the example producer with the official Validator
@@ -229,7 +354,7 @@ jobs:
           --manifest Conformance/example-producer/manifest.json
           --validator .build/fhir-tools/validator_cli.jar
           --package mobile=mobile/output/package.tgz
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: pages-site
           include-hidden-files: true

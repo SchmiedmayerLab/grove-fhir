@@ -23,7 +23,9 @@ readonly OFFLINE="$offline"
 readonly TOOLS_DIRECTORY="${1:-.build/fhir-tools}"
 REPOSITORY_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 readonly REPOSITORY_ROOT
-readonly FHIR_PACKAGE_CACHE="$REPOSITORY_ROOT/.build/fhir-home/.fhir/packages"
+# Honours the same override as the guide build: concurrent builds each seed their own clone, and
+# two of them warming one cache is what corrupts it.
+readonly FHIR_PACKAGE_CACHE="${GROVE_FHIR_HOME_OVERRIDE:-$REPOSITORY_ROOT/.build/fhir-home}/.fhir/packages"
 readonly PUBLISHER_VERSION="2.3.2"
 readonly PUBLISHER_SHA256="07c576024df917cc1f879b6b5a64147cd0222d5b4129688e8f0ad9ccce58b1d5"
 readonly VALIDATOR_VERSION="6.10.2"

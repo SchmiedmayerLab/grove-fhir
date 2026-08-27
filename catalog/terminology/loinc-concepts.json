@@ -2,9 +2,10 @@
   "schemaVersion": 1,
   "copyright": "This material contains content from LOINC (http://loinc.org). LOINC is copyright © 1995-2026, Regenstrief Institute, Inc. and the Logical Observation Identifiers Names and Codes (LOINC) Committee and is available at no cost under the license at http://loinc.org/license. LOINC® is a registered United States trademark of Regenstrief Institute, Inc.",
   "loincVersion": "2.82",
-  "loincVersionReason": "Ratified against LOINC 2.82 (released February 2026, https://www.regenstrief.org/article/loinc-version-2-82-concept-release/); all 17 rows verified against LOINC 2.82 content on public FHIR terminology servers.",
+  "loincVersionReason": "Ratified against LOINC 2.82 (released February 2026, https://www.regenstrief.org/article/loinc-version-2-82-concept-release/); every row verified against LOINC 2.82 content on public FHIR terminology servers. The 0.6.0 audiogram rows were verified on tx.fhir.org r4 and r4.ontoserver.csiro.au on 2026-08-26; the deprecated panel 100653-5 was rejected in favour of the active 89015-2 during that check.",
   "ratification": "ratified",
   "propertyDimensions": {
+    "-": null,
     "EngRat": null,
     "Find": null,
     "Len": {
@@ -30,6 +31,7 @@
       "s": -2
     },
     "Ratio": null,
+    "RelSoundInt": {},
     "SFr": {},
     "Score": null,
     "Temp": {
@@ -50,8 +52,7 @@
     "VelRto": null,
     "Vol": {
       "m": 3
-    },
-    "-": null
+    }
   },
   "concepts": {
     "100304-5": {
@@ -185,6 +186,13 @@
       "status": "ACTIVE",
       "verification": "v0.3 sweep, web-verified 2026-08-21 (pregnancy-test-result)"
     },
+    "21112-8": {
+      "display": "Birth date",
+      "property": "TmStp",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "0.6.0 characteristic sweep, verified 2026-08-26 on tx.fhir.org r4 and r4.ontoserver.csiro.au, both serving LOINC 2.82 (date-of-birth)"
+    },
     "2339-0": {
       "display": "Glucose [Mass/volume] in Blood",
       "property": "MCnc",
@@ -256,6 +264,13 @@
       "status": "ACTIVE",
       "verification": "v0.3 sweep, web-verified 2026-08-21 (phq9-assessment)"
     },
+    "46098-0": {
+      "display": "Sex",
+      "property": "Type",
+      "scale": "Nom",
+      "status": "ACTIVE",
+      "verification": "0.6.0 characteristic sweep, verified 2026-08-26 on tx.fhir.org r4 and r4.ontoserver.csiro.au, both serving LOINC 2.82 (biological-sex)"
+    },
     "47519-4": {
       "display": "History of Procedures Document",
       "property": "Find",
@@ -304,6 +319,13 @@
       "scale": "Qn",
       "status": "ACTIVE",
       "verification": "v0.3 sweep, web-verified 2026-08-21 (six-minute-walk-test-distance)"
+    },
+    "66555-4": {
+      "display": "Skin type [Fitzpatrick Classification Scale]",
+      "property": "Type",
+      "scale": "Nom",
+      "status": "ACTIVE",
+      "verification": "0.6.0 characteristic sweep, verified 2026-08-26 on tx.fhir.org r4 and r4.ontoserver.csiro.au, both serving LOINC 2.82 (fitzpatrick-skin-type)"
     },
     "70274-6": {
       "display": "Generalized anxiety disorder 7 item (GAD-7) total score [Reported.PHQ]",
@@ -377,6 +399,34 @@
       "scale": "Qn",
       "status": "ACTIVE"
     },
+    "8625-6": {
+      "display": "P-R Interval",
+      "property": "Time",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "0.6.0 conversion-completeness sweep, verified 2026-08-26 on tx.fhir.org r4 and r4.ontoserver.csiro.au, both serving LOINC 2.82 (pr-interval)"
+    },
+    "8633-0": {
+      "display": "QRS duration",
+      "property": "Time",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "0.6.0 conversion-completeness sweep, verified 2026-08-26 on tx.fhir.org r4 and r4.ontoserver.csiro.au, both serving LOINC 2.82 (qrs-duration)"
+    },
+    "8634-8": {
+      "display": "Q-T interval",
+      "property": "Time",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "0.6.0 conversion-completeness sweep, verified 2026-08-26 on tx.fhir.org r4 and r4.ontoserver.csiro.au, both serving LOINC 2.82 (qt-interval)"
+    },
+    "8636-3": {
+      "display": "Q-T interval corrected",
+      "property": "Time",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "0.6.0 conversion-completeness sweep, verified 2026-08-26 on tx.fhir.org r4 and r4.ontoserver.csiro.au, both serving LOINC 2.82 (corrected-qt-interval)"
+    },
     "8659-5": {
       "display": "Birth control method - Reported",
       "property": "Type",
@@ -403,6 +453,111 @@
       "property": "NRat",
       "scale": "Qn",
       "status": "ACTIVE"
+    },
+    "89015-2": {
+      "display": "Pure tone air conduction threshold audiometry panel",
+      "property": "-",
+      "scale": "-",
+      "status": "ACTIVE",
+      "verification": "0.6.0 audiogram sweep, verified 2026-08-26 on tx.fhir.org r4 and r4.ontoserver.csiro.au, both serving LOINC 2.82"
+    },
+    "89016-0": {
+      "display": "Hearing threshold Ear - left --1000 Hz",
+      "property": "RelSoundInt",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "0.6.0 audiogram sweep, verified 2026-08-26 on tx.fhir.org r4 and r4.ontoserver.csiro.au, both serving LOINC 2.82"
+    },
+    "89017-8": {
+      "display": "Hearing threshold Ear - right --1000 Hz",
+      "property": "RelSoundInt",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "0.6.0 audiogram sweep, verified 2026-08-26 on tx.fhir.org r4 and r4.ontoserver.csiro.au, both serving LOINC 2.82"
+    },
+    "89018-6": {
+      "display": "Hearing threshold Ear - left --2000 Hz",
+      "property": "RelSoundInt",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "0.6.0 audiogram sweep, verified 2026-08-26 on tx.fhir.org r4 and r4.ontoserver.csiro.au, both serving LOINC 2.82"
+    },
+    "89019-4": {
+      "display": "Hearing threshold Ear - right --2000 Hz",
+      "property": "RelSoundInt",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "0.6.0 audiogram sweep, verified 2026-08-26 on tx.fhir.org r4 and r4.ontoserver.csiro.au, both serving LOINC 2.82"
+    },
+    "89020-2": {
+      "display": "Hearing threshold Ear - left --3000 Hz",
+      "property": "RelSoundInt",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "0.6.0 audiogram sweep, verified 2026-08-26 on tx.fhir.org r4 and r4.ontoserver.csiro.au, both serving LOINC 2.82"
+    },
+    "89021-0": {
+      "display": "Hearing threshold Ear - right --3000 Hz",
+      "property": "RelSoundInt",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "0.6.0 audiogram sweep, verified 2026-08-26 on tx.fhir.org r4 and r4.ontoserver.csiro.au, both serving LOINC 2.82"
+    },
+    "89022-8": {
+      "display": "Hearing threshold Ear - left --4000 Hz",
+      "property": "RelSoundInt",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "0.6.0 audiogram sweep, verified 2026-08-26 on tx.fhir.org r4 and r4.ontoserver.csiro.au, both serving LOINC 2.82"
+    },
+    "89023-6": {
+      "display": "Hearing threshold Ear - right --4000 Hz",
+      "property": "RelSoundInt",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "0.6.0 audiogram sweep, verified 2026-08-26 on tx.fhir.org r4 and r4.ontoserver.csiro.au, both serving LOINC 2.82"
+    },
+    "89024-4": {
+      "display": "Hearing threshold Ear - left --500 Hz",
+      "property": "RelSoundInt",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "0.6.0 audiogram sweep, verified 2026-08-26 on tx.fhir.org r4 and r4.ontoserver.csiro.au, both serving LOINC 2.82"
+    },
+    "89025-1": {
+      "display": "Hearing threshold Ear - right --500 Hz",
+      "property": "RelSoundInt",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "0.6.0 audiogram sweep, verified 2026-08-26 on tx.fhir.org r4 and r4.ontoserver.csiro.au, both serving LOINC 2.82"
+    },
+    "89026-9": {
+      "display": "Hearing threshold Ear - left --6000 Hz",
+      "property": "RelSoundInt",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "0.6.0 audiogram sweep, verified 2026-08-26 on tx.fhir.org r4 and r4.ontoserver.csiro.au, both serving LOINC 2.82"
+    },
+    "89027-7": {
+      "display": "Hearing threshold Ear - right --6000 Hz",
+      "property": "RelSoundInt",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "0.6.0 audiogram sweep, verified 2026-08-26 on tx.fhir.org r4 and r4.ontoserver.csiro.au, both serving LOINC 2.82"
+    },
+    "89028-5": {
+      "display": "Hearing threshold Ear - left --8000 Hz",
+      "property": "RelSoundInt",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "0.6.0 audiogram sweep, verified 2026-08-26 on tx.fhir.org r4 and r4.ontoserver.csiro.au, both serving LOINC 2.82"
+    },
+    "89029-3": {
+      "display": "Hearing threshold Ear - right --8000 Hz",
+      "property": "RelSoundInt",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "0.6.0 audiogram sweep, verified 2026-08-26 on tx.fhir.org r4 and r4.ontoserver.csiro.au, both serving LOINC 2.82"
     },
     "8985-4": {
       "display": "Fluid intake Measured",
@@ -438,6 +593,62 @@
       "scale": "Qn",
       "status": "ACTIVE",
       "verification": "v0.3 sweep, web-verified 2026-08-21 (dietary-protein)"
+    },
+    "91372-3": {
+      "display": "Hearing threshold Ear - right --1500 Hz",
+      "property": "RelSoundInt",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "0.6.0 audiogram sweep, verified 2026-08-26 on tx.fhir.org r4 and r4.ontoserver.csiro.au, both serving LOINC 2.82"
+    },
+    "91373-1": {
+      "display": "Hearing threshold Ear - left --1500 Hz",
+      "property": "RelSoundInt",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "0.6.0 audiogram sweep, verified 2026-08-26 on tx.fhir.org r4 and r4.ontoserver.csiro.au, both serving LOINC 2.82"
+    },
+    "91374-9": {
+      "display": "Hearing threshold Ear - right --250 Hz",
+      "property": "RelSoundInt",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "0.6.0 audiogram sweep, verified 2026-08-26 on tx.fhir.org r4 and r4.ontoserver.csiro.au, both serving LOINC 2.82"
+    },
+    "91375-6": {
+      "display": "Hearing threshold Ear - left --250 Hz",
+      "property": "RelSoundInt",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "0.6.0 audiogram sweep, verified 2026-08-26 on tx.fhir.org r4 and r4.ontoserver.csiro.au, both serving LOINC 2.82"
+    },
+    "91376-4": {
+      "display": "Hearing threshold Ear - right --5000 Hz",
+      "property": "RelSoundInt",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "0.6.0 audiogram sweep, verified 2026-08-26 on tx.fhir.org r4 and r4.ontoserver.csiro.au, both serving LOINC 2.82"
+    },
+    "91377-2": {
+      "display": "Hearing threshold Ear - left --5000 Hz",
+      "property": "RelSoundInt",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "0.6.0 audiogram sweep, verified 2026-08-26 on tx.fhir.org r4 and r4.ontoserver.csiro.au, both serving LOINC 2.82"
+    },
+    "91378-0": {
+      "display": "Hearing threshold Ear - right --750 Hz",
+      "property": "RelSoundInt",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "0.6.0 audiogram sweep, verified 2026-08-26 on tx.fhir.org r4 and r4.ontoserver.csiro.au, both serving LOINC 2.82"
+    },
+    "91379-8": {
+      "display": "Hearing threshold Ear - left --750 Hz",
+      "property": "RelSoundInt",
+      "scale": "Qn",
+      "status": "ACTIVE",
+      "verification": "0.6.0 audiogram sweep, verified 2026-08-26 on tx.fhir.org r4 and r4.ontoserver.csiro.au, both serving LOINC 2.82"
     },
     "91557-9": {
       "display": "Lean body weight",

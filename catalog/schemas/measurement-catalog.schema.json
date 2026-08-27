@@ -346,7 +346,10 @@
             "mobile",
             "healthkit",
             "health-connect",
-            "providers"
+            "providers",
+            "withings",
+            "oura",
+            "google-health"
           ]
         },
         "code": {
@@ -356,7 +359,9 @@
           "enum": [
             "quantity",
             "codeableConcept",
-            "components"
+            "dateTime",
+            "components",
+            "grouping"
           ]
         },
         "quantity": {
@@ -468,6 +473,16 @@
           "items": {
             "type": "string"
           }
+        },
+        "exampleMembers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Literal references a grouping measurement's example carries as members."
+        },
+        "example": {
+          "type": "string"
         }
       },
       "allOf": [
@@ -476,6 +491,13 @@
             "properties": {
               "valueKind": {
                 "const": "codeableConcept"
+              },
+              "exampleMembers": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Literal references a grouping measurement's example carries as members."
               }
             },
             "required": [
@@ -498,6 +520,13 @@
             "properties": {
               "valueKind": {
                 "const": "components"
+              },
+              "exampleMembers": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Literal references a grouping measurement's example carries as members."
               }
             },
             "required": [

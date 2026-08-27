@@ -34,13 +34,24 @@ class DraftGuideSelectionTests(unittest.TestCase):
                 "healthkit",
                 "health-connect",
                 "providers",
+                "withings",
+                "oura",
+                "google-health",
             ],
         )
 
     def test_sensor_change_builds_sensor_consumers_only(self) -> None:
         self.assertEqual(
             MODULE.select(["sensor/input/fsh/profiles.fsh"]),
-            ["sensor", "sensorkit", "healthkit", "providers"],
+            [
+                "sensor",
+                "sensorkit",
+                "healthkit",
+                "providers",
+                "withings",
+                "oura",
+                "google-health",
+            ],
         )
 
     def test_adapter_and_questionnaire_changes_remain_scoped(self) -> None:
@@ -62,6 +73,9 @@ class DraftGuideSelectionTests(unittest.TestCase):
             "healthkit",
             "health-connect",
             "providers",
+            "withings",
+            "oura",
+            "google-health",
         ]
         self.assertEqual(MODULE.select(["Scripts/build-guides.sh"]), all_guides)
         self.assertEqual(MODULE.select(["catalog/profile-claims.json"]), all_guides)

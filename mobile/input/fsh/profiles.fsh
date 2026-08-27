@@ -165,10 +165,16 @@ Description: "The software application that saved, routed, or converted a mobile
 * version ^slicing.discriminator.type = #pattern
 * version ^slicing.discriminator.path = "type"
 * version ^slicing.rules = #open
-* version contains applicationVersion 0..1 MS
+* version contains applicationVersion 0..1 MS and applicationBuild 0..1 MS and operatingSystemVersion 0..1 MS
 * version[applicationVersion].type 1..1 MS
 * version[applicationVersion].type = $mdc#531975
 * version[applicationVersion].value 1..1 MS
+* version[applicationBuild].type 1..1 MS
+* version[applicationBuild].type = $groveApplicationVersionType#build
+* version[applicationBuild].value 1..1 MS
+* version[operatingSystemVersion].type 1..1 MS
+* version[operatingSystemVersion].type = $groveApplicationVersionType#os-version
+* version[operatingSystemVersion].value 1..1 MS
 * parent MS
 * parent only Reference(Device)
 

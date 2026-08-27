@@ -164,6 +164,11 @@ Description: "A HealthKit interval sample preserving the recorded count of 1,042
 * valueQuantity = 1042 '{steps}' "steps"
 * device = Reference(HealthKitRecordingDeviceExample)
 * extension[researchStudy].valueReference = Reference(HealthKitResearchStudyExample)
+// A metadata key no contract models, retained rather than discarded so the conversion stays lossless.
+// The key space is open, so the key travels as text: no code system can enumerate what a third-party
+// writer may set.
+* component[+].code.text = "ThirdPartyPedometerFirmware"
+* component[=].valueString = "2.4.1"
 
 Instance: HealthKitBluetoothHeartRateObservationExample
 InstanceOf: HealthKitObservation
@@ -444,3 +449,97 @@ Description: "One provider-issued clinical resource surfaced by HealthKit and by
 * content.attachment.data = "eyJyZXNvdXJjZVR5cGUiOiJBbGxlcmd5SW50b2xlcmFuY2UiLCJpZCI6InByb3ZpZGVyLWlzc3VlZC0xIiwiY2xpbmljYWxTdGF0dXMiOnsiY29kaW5nIjpbeyJzeXN0ZW0iOiJodHRwOi8vdGVybWlub2xvZ3kuaGw3Lm9yZy9Db2RlU3lzdGVtL2FsbGVyZ3lpbnRvbGVyYW5jZS1jbGluaWNhbCIsImNvZGUiOiJhY3RpdmUifV19LCJwYXRpZW50Ijp7InJlZmVyZW5jZSI6IlBhdGllbnQvcGFydGljaXBhbnQtaGstMDAxIn19"
 * content.attachment.size = 240
 * content.attachment.hash = "0c+dHXDzCV5zPy4cApwAoV9evYc="
+
+Instance: HealthKitHeartbeatSeriesRecordingExample
+InstanceOf: HealthKitRecordingDocument
+Usage: #example
+Title: "HealthKit Heartbeat Series Recording"
+Description: "A beat-to-beat interval series carried as its published column schema. Reducing the series to one Observation value would keep a single beat and discard the rest."
+* meta.profile[+] = "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document"
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "9c1f4b62-2d77-4a51-9d0e-6b3a5c8e2f14"
+* status = #current
+* type.coding[healthKitSourceType] = $healthKitSourceType#HKDataTypeIdentifierHeartbeatSeries "Heartbeat Series"
+* subject = Reference(HealthKitPatientExample)
+* date = "2026-08-19T10:05:00Z"
+* author = Reference(HealthKitApplicationDeviceExample)
+* content.attachment.contentType = #text/csv
+* content.format = $recordingFormat#beat-interval-series "Beat Interval Series"
+* content.format.version = "0.5.0"
+* content.attachment.title = "Heartbeat series beat intervals"
+* content.attachment.data = "dGltZXN0YW1wLHByZWNlZGVkQnlHYXAKMTc1NTYyNDAwMC4wLDAKMTc1NTYyNDAwMC44NCwwCjE3NTU2MjQwMDEuNzEsMQo="
+* content.attachment.size = 71
+* content.attachment.hash = "lpe4Lz8znQwYfaYZt3i6kWBo+JM="
+
+Instance: HealthKitVisionPrescriptionExample
+InstanceOf: HealthKitVisionPrescription
+Usage: #example
+Title: "HealthKit Glasses Prescription"
+Description: "A glasses prescription entered in Health, with both lens specifications, the prism resolved into its vertical and horizontal components, and the fit measurements R4 has no element for."
+* extension[healthKitSourceType].valueCode = #HKVisionPrescriptionTypeIdentifier
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "4b18c0d7-5e2a-4c93-8f61-7a0d2e5b9c34"
+* extension[expiration].valueDateTime = "2028-03-14"
+* status = #active
+* created = "2026-03-14"
+* dateWritten = "2026-03-14"
+* patient = Reference(HealthKitPatientExample)
+* prescriber.extension[dataAbsentReason].valueCode = #unknown
+* lensSpecification[0].product = $visionProduct#lens "Lens"
+* lensSpecification[0].eye = #right
+* lensSpecification[0].sphere = -2.25
+* lensSpecification[0].cylinder = -0.75
+* lensSpecification[0].axis = 175
+* lensSpecification[0].add = 1.5
+* lensSpecification[0].prism[0].amount = 0.5
+* lensSpecification[0].prism[0].base = #up
+* lensSpecification[0].prism[1].amount = 0.25
+* lensSpecification[0].prism[1].base = #in
+* lensSpecification[0].extension[vertexDistance].valueQuantity = 12 'mm'
+* lensSpecification[0].extension[farPupillaryDistance].valueQuantity = 32 'mm'
+* lensSpecification[0].extension[nearPupillaryDistance].valueQuantity = 30 'mm'
+* lensSpecification[1].product = $visionProduct#lens "Lens"
+* lensSpecification[1].eye = #left
+* lensSpecification[1].sphere = -2
+* lensSpecification[1].cylinder = -0.5
+* lensSpecification[1].axis = 5
+* lensSpecification[1].add = 1.5
+* lensSpecification[1].extension[vertexDistance].valueQuantity = 12 'mm'
+* lensSpecification[1].extension[farPupillaryDistance].valueQuantity = 31 'mm'
+* lensSpecification[1].extension[nearPupillaryDistance].valueQuantity = 29 'mm'
+
+Instance: HealthKitUserAnnotatedMedicationExample
+InstanceOf: HealthKitUserAnnotatedMedication
+Usage: #example
+Title: "HealthKit Tracked Medication"
+Description: "A medication the person still tracks, carrying the nickname they gave it, the platform's general form, and the concept identifier a logged dose event points at."
+* extension[healthKitSourceType].valueCode = #HKDataTypeUserAnnotatedMedicationConcept
+* identifier[healthConceptId].system = $healthKitHealthConceptId
+* identifier[healthConceptId].value = "2f8a51c6-9d34-4e07-b2f1-63c8ad905e12"
+* extension[nickname].valueString = "Evening statin"
+* extension[hasSchedule].valueBoolean = true
+* extension[generalForm].valueCode = #tablet
+* status = #active
+* medicationCodeableConcept.coding[0] = $rxnorm#617312 "Atorvastatin 10 MG Oral Tablet"
+* medicationCodeableConcept.text = "Atorvastatin 10 MG Oral Tablet"
+* subject = Reference(HealthKitPatientExample)
+
+Instance: HealthKitMedicationDoseEventExample
+InstanceOf: HealthKitMedicationDoseEvent
+Usage: #example
+Title: "HealthKit Medication Dose Event"
+Description: "A scheduled dose logged as taken. The exact log status and the schedule it was logged against ride beside the administration status, which alone could not tell a taken dose from one the person never acted on."
+* extension[healthKitSourceType].valueCode = #HKMedicationDoseEventTypeIdentifierMedicationDoseEvent
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "7d40e91b-6c25-4a18-90f3-1b5e8c27da64"
+* extension[logStatus].valueCode = #taken
+* extension[schedule].extension[type].valueCode = #schedule
+* extension[schedule].extension[expectedDate].valueDateTime = "2026-08-20T21:00:00-07:00"
+* extension[schedule].extension[expectedQuantity].valueQuantity = 10 'mg'
+* status = #completed
+* medicationReference.identifier.system = $healthKitHealthConceptId
+* medicationReference.identifier.value = "2f8a51c6-9d34-4e07-b2f1-63c8ad905e12"
+* subject = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-20T21:07:12-07:00"
+* effectivePeriod.end = "2026-08-20T21:07:12-07:00"
+* dosage.dose = 10 'mg'

@@ -12,6 +12,7 @@ from __future__ import annotations
 import argparse
 import json
 from collections import Counter
+from functools import partial
 import sys
 from pathlib import Path
 from typing import Any
@@ -281,11 +282,80 @@ def providers() -> str:
     return result
 
 
+# Each vendor guide publishes the slice of the provider catalog it profiles, so the guide's own
+# status matrix answers "what does this vendor carry" without the reader filtering three vendors.
+VENDOR_GUIDES = {
+    "withings": ("withings", "Withings Health Mate"),
+    "oura": ("oura", "Oura"),
+    "google-health": ("google-health-api", "Google Health API"),
+}
+
+
+def vendor(guide: str) -> str:
+    provider_id, label = VENDOR_GUIDES[guide]
+    catalog = load("providers-adapter.json")
+    provider = next(p for p in catalog["providers"] if p["id"] == provider_id)
+    rows = [
+        [
+            f"`{source['token']}`",
+            f"`{source['status']}`",
+            f"`{element['path']}`",
+            f"`{element['status']}`",
+            element.get("measurementIds"),
+            element.get("unitConversion") or element.get("sensorProfile"),
+            element.get("reason") or element.get("effective"),
+        ]
+        for source in provider["sourceTypes"]
+        for element in source["elements"]
+    ]
+    result = (
+        HEADER
+        + f"# Authoritative {label} status matrix\n\n"
+        + f"This table enumerates every {label} field in the closed v{catalog['version']} source "
+        "catalog. Each field has one definitive status. This guide profiles data already obtained "
+        "by its caller; it contains no authentication, network, pagination, or fetching "
+        "implementation.\n\n"
+        + table(
+            [
+                "Source type",
+                "Source status",
+                "Provider field",
+                "Field status",
+                "Measurement",
+                "Representation / conversion",
+                "Binding reason / effective time",
+            ],
+            rows,
+        )
+    )
+    grouped = provider.get("groupedMappings", [])
+    if grouped:
+        result += "\n## Atomic grouped mappings\n\n"
+        result += table(
+            ["Grouped source token", "Required members", "Measurement", "Output discriminator", "Rule"],
+            [
+                [
+                    f"`{item['token']}`",
+                    [f"`{member}`" for member in item["members"]],
+                    item["measurementIds"],
+                    item["outputDiscriminator"],
+                    item["rule"],
+                ]
+                for item in grouped
+            ],
+        )
+    return result
+
+
 OUTPUTS = {
     ROOT / "healthkit/input/pagecontent/status-matrix.md": healthkit,
     ROOT / "health-connect/input/pagecontent/status-matrix.md": health_connect,
     ROOT / "sensorkit/input/pagecontent/status-matrix.md": sensorkit,
     ROOT / "providers/input/pagecontent/status-matrix.md": providers,
+    **{
+        ROOT / f"{guide}/input/pagecontent/status-matrix.md": partial(vendor, guide)
+        for guide in VENDOR_GUIDES
+    },
 }
 
 

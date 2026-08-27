@@ -1,0 +1,14 @@
+== Suppressed Messages ==
+# This adapter targets FHIR R4. It does not publish the generated R4B package claim.
+WARNING: 2: An HTML fragment from the set [cross-version-analysis.xhtml, cross-version-analysis-inline.xhtml] is not included anywhere in the produced implementation guide
+
+# The guide intentionally defines no global profiles; an empty generated table adds no implementation guidance.
+WARNING: 4: The HTML fragment 'globals-table.xhtml' is not included anywhere in the produced implementation guide
+
+# Grove has no assigned stable OID root. Canonical URLs are the authoritative identifiers; inventing OIDs would create unstable aliases.
+WARNING: Resource: The resource CodeSystem/oura-measurement should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/fhir-tools-ig/CodeSystem-ig-parameters.html#ig-parameters-auto-oid-root)
+WARNING: Resource: The resource ValueSet/oura-measurement should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/fhir-tools-ig/CodeSystem-ig-parameters.html#ig-parameters-auto-oid-root)
+
+# The annotation names what the dimensionless number counts. UCUM ignores it when comparing units, which is correct: the value is a count, not a physical quantity.
+WARNING: Observation/OuraReadinessScoreExample: Observation.value.ofType(Quantity): UCUM Codes that contain human readable annotations like {score} can be misleading (e.g. they are ignored when comparing units). Best Practice is not to depend on annotations in the UCUM code, so this usage should be checked
+WARNING: Observation/OuraStepCountExample: Observation.value.ofType(Quantity): UCUM Codes that contain human readable annotations like {steps} can be misleading (e.g. they are ignored when comparing units). Best Practice is not to depend on annotations in the UCUM code, so this usage should be checked

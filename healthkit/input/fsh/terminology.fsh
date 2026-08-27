@@ -9,7 +9,7 @@
 CodeSystem: HealthKitMetadataKeyCS
 Id: healthkit-metadata-key
 Title: "HealthKit Metadata Keys"
-Description: "HealthKit metadata keys retained by Grove FHIR HealthKit 0.3.0 after standard FHIR mappings have been applied."
+Description: "HealthKit metadata keys retained by Grove FHIR HealthKit 0.5.0 after standard FHIR mappings have been applied."
 * ^experimental = false
 * ^caseSensitive = true
 * ^content = #complete
@@ -22,14 +22,14 @@ Description: "HealthKit metadata keys retained by Grove FHIR HealthKit 0.3.0 aft
 ValueSet: HealthKitMetadataKeyVS
 Id: healthkit-metadata-key
 Title: "HealthKit Metadata Keys"
-Description: "The HealthKit 0.3.0 allowlist of retained metadata keys. Each key maps to its published representation: a named Observation component, a named extension, or a named identifier slice."
+Description: "The HealthKit 0.5.0 allowlist of retained metadata keys. Each key maps to its published representation: a named Observation component, a named extension, or a named identifier slice."
 * ^experimental = false
 * include codes from system HealthKitMetadataKeyCS
 
 CodeSystem: HealthKitHeartRateMotionContextCS
 Id: healthkit-heart-rate-motion-context
 Title: "HealthKit Heart Rate Motion Context"
-Description: "Adapter codes for the HKHeartRateMotionContext raw values retained by Grove FHIR HealthKit 0.3.0. The mapping to HealthKit source cases is documented separately."
+Description: "Adapter codes for the HKHeartRateMotionContext raw values retained by Grove FHIR HealthKit 0.5.0. The mapping to HealthKit source cases is documented separately."
 * ^experimental = false
 * ^caseSensitive = true
 * ^content = #complete
@@ -41,7 +41,7 @@ Description: "Adapter codes for the HKHeartRateMotionContext raw values retained
 ValueSet: HealthKitHeartRateMotionContextVS
 Id: healthkit-heart-rate-motion-context
 Title: "HealthKit Heart Rate Motion Context"
-Description: "Motion contexts permitted by the HealthKit 0.3.0 heart-rate metadata mapping."
+Description: "Motion contexts permitted by the HealthKit 0.5.0 heart-rate metadata mapping."
 * ^experimental = false
 * include codes from system HealthKitHeartRateMotionContextCS
 
@@ -439,3 +439,85 @@ Description: "Exact HealthKit HKWorkoutActivityType cases retained alongside the
 * #wheelchairWalkPace "Wheelchair walk pace" "HealthKit HKWorkoutActivityType.wheelchairWalkPace."
 * #wrestling "Wrestling" "HealthKit HKWorkoutActivityType.wrestling."
 * #yoga "Yoga" "HealthKit HKWorkoutActivityType.yoga."
+
+CodeSystem: HealthKitMedicationDoseLogStatusCS
+Id: healthkit-medication-dose-log-status
+Title: "HealthKit Medication Dose Log Status"
+Description: "Exact HealthKit HKMedicationDoseEvent.LogStatus cases. The R4 administration status collapses several of them onto one code, so the source case is retained beside it."
+* ^experimental = false
+* ^caseSensitive = true
+* ^content = #complete
+* ^copyright = "HealthKit API identifiers and type names originate from Apple Inc. and are used here only to identify source API concepts for interoperability. The MIT license applies to Grove-authored definitions; it does not grant rights in Apple material."
+* #notInteracted "Not interacted" "HealthKit HKMedicationDoseEvent.LogStatus.notInteracted."
+* #notificationNotSent "Notification not sent" "HealthKit HKMedicationDoseEvent.LogStatus.notificationNotSent."
+* #snoozed "Snoozed" "HealthKit HKMedicationDoseEvent.LogStatus.snoozed."
+* #taken "Taken" "HealthKit HKMedicationDoseEvent.LogStatus.taken."
+* #skipped "Skipped" "HealthKit HKMedicationDoseEvent.LogStatus.skipped."
+* #notLogged "Not logged" "HealthKit HKMedicationDoseEvent.LogStatus.notLogged."
+
+ValueSet: HealthKitMedicationDoseLogStatusVS
+Id: healthkit-medication-dose-log-status
+Title: "HealthKit Medication Dose Log Status"
+Description: "Every HealthKit log status a dose event may carry."
+* ^experimental = false
+* include codes from system HealthKitMedicationDoseLogStatusCS
+
+CodeSystem: HealthKitMedicationScheduleTypeCS
+Id: healthkit-medication-schedule-type
+Title: "HealthKit Medication Schedule Type"
+Description: "Exact HealthKit HKMedicationDoseEvent.ScheduleType cases, stating whether the logged dose belonged to a schedule."
+* ^experimental = false
+* ^caseSensitive = true
+* ^content = #complete
+* ^copyright = "HealthKit API identifiers and type names originate from Apple Inc. and are used here only to identify source API concepts for interoperability. The MIT license applies to Grove-authored definitions; it does not grant rights in Apple material."
+* #asNeeded "As needed" "HealthKit HKMedicationDoseEvent.ScheduleType.asNeeded."
+* #schedule "Schedule" "HealthKit HKMedicationDoseEvent.ScheduleType.schedule."
+
+ValueSet: HealthKitMedicationScheduleTypeVS
+Id: healthkit-medication-schedule-type
+Title: "HealthKit Medication Schedule Type"
+Description: "Every scheduling context a logged dose event may carry."
+* ^experimental = false
+* include codes from system HealthKitMedicationScheduleTypeCS
+
+CodeSystem: HealthKitMedicationGeneralFormCS
+Id: healthkit-medication-general-form
+Title: "HealthKit Medication General Form"
+Description: "Exact HealthKit HKMedicationGeneralForm cases. R4 states a medication form only on a Medication resource, which HealthKit does not publish."
+* ^experimental = false
+* ^caseSensitive = true
+* ^content = #complete
+* ^copyright = "HealthKit API identifiers and type names originate from Apple Inc. and are used here only to identify source API concepts for interoperability. The MIT license applies to Grove-authored definitions; it does not grant rights in Apple material."
+* #capsule "Capsule" "HealthKit HKMedicationGeneralForm.capsule."
+* #cream "Cream" "HealthKit HKMedicationGeneralForm.cream."
+* #device "Device" "HealthKit HKMedicationGeneralForm.device."
+* #drops "Drops" "HealthKit HKMedicationGeneralForm.drops."
+* #foam "Foam" "HealthKit HKMedicationGeneralForm.foam."
+* #gel "Gel" "HealthKit HKMedicationGeneralForm.gel."
+* #inhaler "Inhaler" "HealthKit HKMedicationGeneralForm.inhaler."
+* #injection "Injection" "HealthKit HKMedicationGeneralForm.injection."
+* #liquid "Liquid" "HealthKit HKMedicationGeneralForm.liquid."
+* #lotion "Lotion" "HealthKit HKMedicationGeneralForm.lotion."
+* #ointment "Ointment" "HealthKit HKMedicationGeneralForm.ointment."
+* #patch "Patch" "HealthKit HKMedicationGeneralForm.patch."
+* #powder "Powder" "HealthKit HKMedicationGeneralForm.powder."
+* #spray "Spray" "HealthKit HKMedicationGeneralForm.spray."
+* #suppository "Suppository" "HealthKit HKMedicationGeneralForm.suppository."
+* #tablet "Tablet" "HealthKit HKMedicationGeneralForm.tablet."
+* #topical "Topical" "HealthKit HKMedicationGeneralForm.topical."
+* #unknown "Unknown" "HealthKit HKMedicationGeneralForm.unknown."
+
+ValueSet: HealthKitMedicationGeneralFormVS
+Id: healthkit-medication-general-form
+Title: "HealthKit Medication General Form"
+Description: "Every general form a tracked medication may carry, including the platform's own unknown case."
+* ^experimental = false
+* include codes from system HealthKitMedicationGeneralFormCS
+
+ValueSet: HealthKitTrackedMedicationStatusVS
+Id: healthkit-tracked-medication-status
+Title: "HealthKit Tracked Medication Status"
+Description: "The two medication statement statuses a tracked HealthKit medication takes. An archived medication is completed and a medication the person still tracks is active; HealthKit publishes no third state, so no other status may be asserted."
+* ^experimental = false
+* $medicationStatementStatus#active "Active"
+* $medicationStatementStatus#completed "Completed"

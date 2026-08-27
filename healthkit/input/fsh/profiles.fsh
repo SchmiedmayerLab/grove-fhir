@@ -113,6 +113,30 @@ Description: "Provenance for transforming one HealthKit object into one or more 
 * entity.what.identifier.value 1..1 MS
 * entity.what.identifier.value obeys healthkit-object-id-1
 
+Profile: HealthKitRecordingDocument
+Parent: GroveSensorRecordingDocument
+Id: healthkit-recording-document
+Title: "HealthKit Recording Document"
+Description: "A HealthKit series whose native representation is a recording rather than a scalar result. A beat-to-beat interval series and a workout route are sequences with their own column schemas, published in the recording format registry; converting either to a single Observation value would discard every sample but one. The Observation states what the series is and links here for the samples themselves."
+* identifier ^slicing.discriminator.type = #value
+* identifier ^slicing.discriminator.path = "system"
+* identifier ^slicing.rules = #open
+* identifier contains healthKitObjectId 1..1 MS
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value 1..1 MS
+* identifier[healthKitObjectId].value obeys healthkit-object-id-1
+// The source type rides in `type`, the way every other HealthKit artifact carries it as a coding
+// rather than an extension; a DocumentReference has no `code` to slice.
+* type 1..1 MS
+* type.coding ^slicing.discriminator.type = #value
+* type.coding ^slicing.discriminator.path = "system"
+* type.coding ^slicing.rules = #open
+* type.coding contains healthKitSourceType 1..1 MS
+* type.coding[healthKitSourceType].system = $healthKitSourceType
+* type.coding[healthKitSourceType].code 1..1 MS
+* type.coding[healthKitSourceType] from HealthKitSourceTypeVS (required)
+
+
 Profile: HealthKitClinicalRecordDocument
 Parent: DocumentReference
 Id: healthkit-clinical-record-document
@@ -150,3 +174,120 @@ Description: "The FHIR release of the pass-through payload, read from HKFHIRVers
 
 
 
+
+
+Profile: HealthKitVisionPrescription
+Parent: VisionPrescription
+Id: healthkit-vision-prescription
+Title: "HealthKit Vision Prescription"
+Description: "A glasses or contacts prescription a person entered in Health, carried as the structured lens specification HealthKit publishes rather than as an opaque document. HealthKit exposes no separate record-creation instant, so `created` and `dateWritten` both carry HKVisionPrescription.dateIssued. It exposes no prescriber either, and R4 makes that reference mandatory, so the reference is stated absent rather than invented."
+* identifier ^slicing.discriminator.type = #value
+* identifier ^slicing.discriminator.path = "system"
+* identifier ^slicing.rules = #open
+* identifier contains healthKitObjectId 1..1 MS
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value 1..1 MS
+* identifier[healthKitObjectId].value obeys healthkit-object-id-1
+// No classifying element exists on this resource, and a tag may be ignored when a resource is
+// interpreted, so the source type is stated as an extension.
+* extension contains HealthKitSourceType named healthKitSourceType 1..1 MS
+* extension contains HealthKitVisionPrescriptionExpiration named expiration 0..1 MS
+* status = #active (exactly)
+* created 1..1 MS
+* patient 1..1 MS
+* patient only Reference(Patient)
+* dateWritten 1..1 MS
+* prescriber.reference 0..0
+* prescriber.identifier 0..0
+* prescriber.display 0..0
+* prescriber.extension contains $dataAbsentReason named dataAbsentReason 1..1 MS
+* prescriber.extension[dataAbsentReason].valueCode = #unknown (exactly)
+* lensSpecification 1..2 MS
+* lensSpecification.extension contains
+    HealthKitLensVertexDistance named vertexDistance 0..1 MS and
+    HealthKitLensFarPupillaryDistance named farPupillaryDistance 0..1 MS and
+    HealthKitLensNearPupillaryDistance named nearPupillaryDistance 0..1 MS
+* lensSpecification.product 1..1 MS
+* lensSpecification.eye 1..1 MS
+* lensSpecification.sphere 1..1 MS
+// One HKVisionPrism resolves into its vertical and horizontal components, each an R4 prism entry.
+* lensSpecification.prism 0..2 MS
+// HealthKit reports one sphere for glasses and contacts alike; `power` would state it twice.
+* lensSpecification.power 0..0
+* lensSpecification.duration 0..0
+* lensSpecification.color 0..0
+* lensSpecification.note 0..0
+
+Profile: HealthKitMedicationDoseEvent
+Parent: MedicationAdministration
+Id: healthkit-medication-dose-event
+Title: "HealthKit Medication Dose Event"
+Description: "One dose a person logged against a medication they track in Health. The R4 administration status collapses the six HealthKit log statuses onto three codes, so the exact HKMedicationDoseEvent.LogStatus is retained beside it together with the schedule the dose was logged against. HealthKit publishes no medication record, so the medication is named by the same HKHealthConceptIdentifier the tracked-medication statement carries and by nothing else."
+* identifier ^slicing.discriminator.type = #value
+* identifier ^slicing.discriminator.path = "system"
+* identifier ^slicing.rules = #open
+* identifier contains healthKitObjectId 1..1 MS
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value 1..1 MS
+* identifier[healthKitObjectId].value obeys healthkit-object-id-1
+// No classifying element exists on this resource, and a tag may be ignored when a resource is
+// interpreted, so the source type is stated as an extension.
+* extension contains
+    HealthKitSourceType named healthKitSourceType 1..1 MS and
+    HealthKitMedicationDoseLogStatus named logStatus 1..1 MS and
+    HealthKitMedicationDoseSchedule named schedule 1..1 MS
+* status MS
+* medication[x] 1..1 MS
+* medication[x] only Reference
+* medicationReference.reference 0..0
+* medicationReference.identifier 1..1 MS
+* medicationReference.identifier.system = $healthKitHealthConceptId (exactly)
+* medicationReference.identifier.value 1..1 MS
+* subject 1..1 MS
+* subject only Reference(Patient)
+* effective[x] 1..1 MS
+* effective[x] only Period
+* effectivePeriod.start 1..1 MS
+* effectivePeriod.end 1..1 MS
+* dosage 0..1 MS
+* dosage.dose 1..1 MS
+* dosage.dose.value 1..1 MS
+* dosage.dose.system 1..1 MS
+* dosage.dose.system = $ucum (exactly)
+* dosage.dose.code 1..1 MS
+* dosage.rate[x] 0..0
+// HealthKit reports the amount and its unit and nothing about how the dose was given.
+* dosage.site 0..0
+* dosage.route 0..0
+* dosage.method 0..0
+* dosage.text 0..0
+* performer 0..0
+* request 0..0
+
+Profile: HealthKitUserAnnotatedMedication
+Parent: MedicationStatement
+Id: healthkit-user-annotated-medication
+Title: "HealthKit User Annotated Medication"
+Description: "A medication a person tracks in Health, with the annotations they added while adding it. HealthKit publishes no sample identity for a tracked medication, so the HKHealthConceptIdentifier of the underlying concept is the identity a dose event refers to. The archived flag is the whole of what the R4 status carries: an archived medication is completed and a medication the person still tracks is active."
+* identifier ^slicing.discriminator.type = #value
+* identifier ^slicing.discriminator.path = "system"
+* identifier ^slicing.rules = #open
+* identifier contains healthConceptId 1..1 MS
+* identifier[healthConceptId].system = $healthKitHealthConceptId
+* identifier[healthConceptId].value 1..1 MS
+// No classifying element exists on this resource, and a tag may be ignored when a resource is
+// interpreted, so the source type is stated as an extension.
+* extension contains
+    HealthKitSourceType named healthKitSourceType 1..1 MS and
+    HealthKitMedicationNickname named nickname 0..1 MS and
+    HealthKitMedicationHasSchedule named hasSchedule 1..1 MS and
+    HealthKitMedicationGeneralForm named generalForm 1..1 MS
+* status from HealthKitTrackedMedicationStatusVS (required)
+* medication[x] only CodeableConcept
+* medicationCodeableConcept 1..1 MS
+* medicationCodeableConcept.text 1..1 MS
+* medicationCodeableConcept.coding 0..* MS
+* subject 1..1 MS
+* subject only Reference(Patient)
+// HealthKit states that a schedule exists, never its times or amounts.
+* dosage 0..0

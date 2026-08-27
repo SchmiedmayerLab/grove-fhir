@@ -27,11 +27,13 @@ Description: "Measurement concepts defined by the HealthKit adapter for platform
 * #environmental-audio-exposure "Environmental audio exposure" "The A-weighted equivalent continuous sound pressure level of environmental sound the user was exposed to during the exact Observation effective Period."
 * #environmental-audio-exposure-notification "Environmental Audio Exposure Notification" "A device notification that environmental sound reached the momentary exposure limit."
 * #environmental-sound-reduction "Environmental sound reduction" "The difference in equivalent continuous sound pressure level attenuated by the user's noise-reducing headphones during the exact Observation effective Period."
+* #food-correlation "Food correlation" "One eating occasion grouping the nutrient results recorded for it."
 * #handwashing-session "Handwashing session" "The duration of one handwashing event during the exact Observation effective Period."
 * #headphone-audio-exposure "Headphone audio exposure" "The A-weighted equivalent continuous sound pressure level of headphone audio the user was exposed to during the exact Observation effective Period."
 * #headphone-audio-exposure-notification "Headphone Audio Exposure Notification" "A device notification that headphone audio exposure reached the seven-day limit."
 * #heart-rate-recovery-one-minute "Heart rate recovery one minute" "The decrease in heart rate, in beats per minute, from peak exercise to one minute after the end of exercise."
 * #high-heart-rate-notification "High Heart Rate Notification" "A device notification that heart rate stayed above the wearer's configured threshold while apparently inactive."
+* #hypertension-notification "Hypertension Notification" "A device notification of blood-pressure readings consistent with hypertension."
 * #infrequent-menstrual-cycles "Infrequent menstrual cycles" "Cycles occurring less often than expected, derived from the participant's logged cycle records. Corresponds to SNOMED CT 52073004 (Oligomenorrhea); the concept is cited rather than bound, because this guide carries no SNOMED dependency."
 * #inhaler-usage "Inhaler usage" "The total number of inhaler puffs the user took during the exact Observation effective Period."
 * #insulin-delivery "Insulin delivery" "The amount of insulin delivered during the exact Observation effective Period, qualified by a required basal or bolus delivery reason."
@@ -134,6 +136,24 @@ Description: "Every admitted result code of the Apple Stand Hour measurement."
 * ^experimental = false
 * include codes from system HealthkitAppleStandHourCS
 
+CodeSystem: HealthkitBiologicalSexCS
+Id: healthkit-biological-sex
+Title: "Grove HealthKit Biological Sex Result"
+Description: "The closed result codes of the Grove HealthKit Biological Sex measurement."
+* ^experimental = false
+* ^caseSensitive = true
+* ^content = #complete
+* #female "Female" "HKBiologicalSex female."
+* #male "Male" "HKBiologicalSex male."
+* #other "Other" "HKBiologicalSex other."
+
+ValueSet: HealthkitBiologicalSexVS
+Id: healthkit-biological-sex
+Title: "Grove HealthKit Biological Sex Result"
+Description: "Every admitted result code of the Grove HealthKit Biological Sex measurement."
+* ^experimental = false
+* include codes from system HealthkitBiologicalSexCS
+
 CodeSystem: HealthkitBleedingAfterPregnancyCS
 Id: healthkit-bleeding-after-pregnancy
 Title: "Bleeding After Pregnancy Result"
@@ -235,6 +255,27 @@ Description: "Every admitted result code of the Environmental Audio Exposure Not
 * ^experimental = false
 * include codes from system HealthkitEnvironmentalAudioExposureNotificationCS
 
+CodeSystem: HealthkitFitzpatrickSkinTypeCS
+Id: healthkit-fitzpatrick-skin-type
+Title: "Grove HealthKit Fitzpatrick Skin Type Result"
+Description: "The closed result codes of the Grove HealthKit Fitzpatrick Skin Type measurement."
+* ^experimental = false
+* ^caseSensitive = true
+* ^content = #complete
+* #type-i "Type I" "Always burns, never tans."
+* #type-ii "Type II" "Usually burns, tans minimally."
+* #type-iii "Type III" "Sometimes burns mildly, tans uniformly."
+* #type-iv "Type IV" "Burns minimally, always tans well."
+* #type-v "Type V" "Very rarely burns, tans very easily."
+* #type-vi "Type VI" "Never burns, deeply pigmented."
+
+ValueSet: HealthkitFitzpatrickSkinTypeVS
+Id: healthkit-fitzpatrick-skin-type
+Title: "Grove HealthKit Fitzpatrick Skin Type Result"
+Description: "Every admitted result code of the Grove HealthKit Fitzpatrick Skin Type measurement."
+* ^experimental = false
+* include codes from system HealthkitFitzpatrickSkinTypeCS
+
 CodeSystem: HealthkitHeadphoneAudioExposureNotificationCS
 Id: healthkit-headphone-audio-exposure-notification
 Title: "Headphone Audio Exposure Notification Result"
@@ -266,6 +307,22 @@ Title: "High Heart Rate Notification Result"
 Description: "Every admitted result code of the High Heart Rate Notification measurement."
 * ^experimental = false
 * include codes from system HealthkitHighHeartRateNotificationCS
+
+CodeSystem: HealthkitHypertensionNotificationCS
+Id: healthkit-hypertension-notification
+Title: "Hypertension Notification Result"
+Description: "The closed result codes of the Hypertension Notification measurement."
+* ^experimental = false
+* ^caseSensitive = true
+* ^content = #complete
+* #occurred "Occurred" "The device raised this notification over the stated Period. HealthKit carries no further value for it."
+
+ValueSet: HealthkitHypertensionNotificationVS
+Id: healthkit-hypertension-notification
+Title: "Hypertension Notification Result"
+Description: "Every admitted result code of the Hypertension Notification measurement."
+* ^experimental = false
+* include codes from system HealthkitHypertensionNotificationCS
 
 CodeSystem: HealthkitInfrequentMenstrualCyclesCS
 Id: healthkit-infrequent-menstrual-cycles
@@ -745,6 +802,140 @@ Description: "The estimated percentage of analyzed time showing atrial fibrillat
 * valueQuantity.code 1..1 MS
 * valueQuantity.code = #% (exactly)
 
+Profile: HealthkitAudiogramPanel
+Parent: HealthKitObservation
+Id: healthkit-audiogram-panel
+Title: "Audiogram Panel"
+Description: "HKAudiogramSample: a hearing test reporting an air conduction threshold per ear at each frequency it measured. The thresholds are parts of one test rather than results that stand alone, so they are components. Every component is optional: a test states the frequencies it measured and no others, and a frequency outside this set is carried by its own component keyed to the frequency rather than forced onto a neighbouring code."
+* code = $loinc#89015-2
+* effective[x] only dateTime
+* value[x] 0..0
+* component ^slicing.discriminator.type = #pattern
+* component ^slicing.discriminator.path = "code"
+* component ^slicing.rules = #open
+* component contains left-250 0..1 MS and right-250 0..1 MS and left-500 0..1 MS and right-500 0..1 MS and left-750 0..1 MS and right-750 0..1 MS and left-1000 0..1 MS and right-1000 0..1 MS and left-1500 0..1 MS and right-1500 0..1 MS and left-2000 0..1 MS and right-2000 0..1 MS and left-3000 0..1 MS and right-3000 0..1 MS and left-4000 0..1 MS and right-4000 0..1 MS and left-5000 0..1 MS and right-5000 0..1 MS and left-6000 0..1 MS and right-6000 0..1 MS and left-8000 0..1 MS and right-8000 0..1 MS
+* component[left-250].code = $loinc#91375-6
+* component[left-250].value[x] only Quantity
+* component[left-250].valueQuantity.value 1..1 MS
+* component[left-250].valueQuantity.system = $ucum (exactly)
+* component[left-250].valueQuantity.code = #dB (exactly)
+* component[right-250].code = $loinc#91374-9
+* component[right-250].value[x] only Quantity
+* component[right-250].valueQuantity.value 1..1 MS
+* component[right-250].valueQuantity.system = $ucum (exactly)
+* component[right-250].valueQuantity.code = #dB (exactly)
+* component[left-500].code = $loinc#89024-4
+* component[left-500].value[x] only Quantity
+* component[left-500].valueQuantity.value 1..1 MS
+* component[left-500].valueQuantity.system = $ucum (exactly)
+* component[left-500].valueQuantity.code = #dB (exactly)
+* component[right-500].code = $loinc#89025-1
+* component[right-500].value[x] only Quantity
+* component[right-500].valueQuantity.value 1..1 MS
+* component[right-500].valueQuantity.system = $ucum (exactly)
+* component[right-500].valueQuantity.code = #dB (exactly)
+* component[left-750].code = $loinc#91379-8
+* component[left-750].value[x] only Quantity
+* component[left-750].valueQuantity.value 1..1 MS
+* component[left-750].valueQuantity.system = $ucum (exactly)
+* component[left-750].valueQuantity.code = #dB (exactly)
+* component[right-750].code = $loinc#91378-0
+* component[right-750].value[x] only Quantity
+* component[right-750].valueQuantity.value 1..1 MS
+* component[right-750].valueQuantity.system = $ucum (exactly)
+* component[right-750].valueQuantity.code = #dB (exactly)
+* component[left-1000].code = $loinc#89016-0
+* component[left-1000].value[x] only Quantity
+* component[left-1000].valueQuantity.value 1..1 MS
+* component[left-1000].valueQuantity.system = $ucum (exactly)
+* component[left-1000].valueQuantity.code = #dB (exactly)
+* component[right-1000].code = $loinc#89017-8
+* component[right-1000].value[x] only Quantity
+* component[right-1000].valueQuantity.value 1..1 MS
+* component[right-1000].valueQuantity.system = $ucum (exactly)
+* component[right-1000].valueQuantity.code = #dB (exactly)
+* component[left-1500].code = $loinc#91373-1
+* component[left-1500].value[x] only Quantity
+* component[left-1500].valueQuantity.value 1..1 MS
+* component[left-1500].valueQuantity.system = $ucum (exactly)
+* component[left-1500].valueQuantity.code = #dB (exactly)
+* component[right-1500].code = $loinc#91372-3
+* component[right-1500].value[x] only Quantity
+* component[right-1500].valueQuantity.value 1..1 MS
+* component[right-1500].valueQuantity.system = $ucum (exactly)
+* component[right-1500].valueQuantity.code = #dB (exactly)
+* component[left-2000].code = $loinc#89018-6
+* component[left-2000].value[x] only Quantity
+* component[left-2000].valueQuantity.value 1..1 MS
+* component[left-2000].valueQuantity.system = $ucum (exactly)
+* component[left-2000].valueQuantity.code = #dB (exactly)
+* component[right-2000].code = $loinc#89019-4
+* component[right-2000].value[x] only Quantity
+* component[right-2000].valueQuantity.value 1..1 MS
+* component[right-2000].valueQuantity.system = $ucum (exactly)
+* component[right-2000].valueQuantity.code = #dB (exactly)
+* component[left-3000].code = $loinc#89020-2
+* component[left-3000].value[x] only Quantity
+* component[left-3000].valueQuantity.value 1..1 MS
+* component[left-3000].valueQuantity.system = $ucum (exactly)
+* component[left-3000].valueQuantity.code = #dB (exactly)
+* component[right-3000].code = $loinc#89021-0
+* component[right-3000].value[x] only Quantity
+* component[right-3000].valueQuantity.value 1..1 MS
+* component[right-3000].valueQuantity.system = $ucum (exactly)
+* component[right-3000].valueQuantity.code = #dB (exactly)
+* component[left-4000].code = $loinc#89022-8
+* component[left-4000].value[x] only Quantity
+* component[left-4000].valueQuantity.value 1..1 MS
+* component[left-4000].valueQuantity.system = $ucum (exactly)
+* component[left-4000].valueQuantity.code = #dB (exactly)
+* component[right-4000].code = $loinc#89023-6
+* component[right-4000].value[x] only Quantity
+* component[right-4000].valueQuantity.value 1..1 MS
+* component[right-4000].valueQuantity.system = $ucum (exactly)
+* component[right-4000].valueQuantity.code = #dB (exactly)
+* component[left-5000].code = $loinc#91377-2
+* component[left-5000].value[x] only Quantity
+* component[left-5000].valueQuantity.value 1..1 MS
+* component[left-5000].valueQuantity.system = $ucum (exactly)
+* component[left-5000].valueQuantity.code = #dB (exactly)
+* component[right-5000].code = $loinc#91376-4
+* component[right-5000].value[x] only Quantity
+* component[right-5000].valueQuantity.value 1..1 MS
+* component[right-5000].valueQuantity.system = $ucum (exactly)
+* component[right-5000].valueQuantity.code = #dB (exactly)
+* component[left-6000].code = $loinc#89026-9
+* component[left-6000].value[x] only Quantity
+* component[left-6000].valueQuantity.value 1..1 MS
+* component[left-6000].valueQuantity.system = $ucum (exactly)
+* component[left-6000].valueQuantity.code = #dB (exactly)
+* component[right-6000].code = $loinc#89027-7
+* component[right-6000].value[x] only Quantity
+* component[right-6000].valueQuantity.value 1..1 MS
+* component[right-6000].valueQuantity.system = $ucum (exactly)
+* component[right-6000].valueQuantity.code = #dB (exactly)
+* component[left-8000].code = $loinc#89028-5
+* component[left-8000].value[x] only Quantity
+* component[left-8000].valueQuantity.value 1..1 MS
+* component[left-8000].valueQuantity.system = $ucum (exactly)
+* component[left-8000].valueQuantity.code = #dB (exactly)
+* component[right-8000].code = $loinc#89029-3
+* component[right-8000].value[x] only Quantity
+* component[right-8000].valueQuantity.value 1..1 MS
+* component[right-8000].valueQuantity.system = $ucum (exactly)
+* component[right-8000].valueQuantity.code = #dB (exactly)
+
+Profile: HealthkitBiologicalSex
+Parent: HealthKitObservation
+Id: healthkit-biological-sex
+Title: "Grove HealthKit Biological Sex"
+Description: "Biological sex as a coded Observation. LOINC 46098-0 'Sex' is the context-free concept (verified ACTIVE, PROPERTY LP6886-8 Type, SCALE_TYP LP7750-5 Nom). 76689-9 'Sex assigned at birth' was rejected: the HealthKit characteristic states only a sex, never that it is the one assigned at birth, and adopting that code would fabricate a provenance the source does not carry. Value is a Grove-coded concept with the HKBiologicalSex token retained as secondary coding per the sleep-stage absorption pattern. HKBiologicalSex.notSet emits no Observation."
+* code = $loinc#46098-0
+* effective[x] only dateTime
+* value[x] only CodeableConcept
+* valueCodeableConcept 1..1 MS
+* valueCodeableConcept from HealthkitBiologicalSexVS (required)
+
 Profile: HealthkitBladderIncontinence
 Parent: HealthKitObservation
 Id: healthkit-bladder-incontinence
@@ -836,6 +1027,16 @@ Description: "The estimated maximum cycling power output the subject can sustain
 * valueQuantity.code 1..1 MS
 * valueQuantity.code = #W (exactly)
 
+Profile: HealthkitDateOfBirth
+Parent: HealthKitObservation
+Id: healthkit-date-of-birth
+Title: "Grove HealthKit Date of Birth"
+Description: "Date of birth as an Observation. LOINC 21112-8 'Birth date' is the exact concept (verified ACTIVE, PROPERTY LP6882-7 TmStp, SCALE_TYP LP7753-9 Qn). A date of birth identifies a person across systems, so the adapter withholds it unless the deployment authorizes disclosure; a deployment that already knows its participant's demographics from enrollment should prefer that authoritative record over this assertion."
+* code = $loinc#21112-8
+* effective[x] only dateTime
+* value[x] only dateTime
+* valueDateTime 1..1 MS
+
 Profile: HealthkitEnvironmentalAudioExposure
 Parent: HealthKitObservation
 Id: healthkit-environmental-audio-exposure
@@ -882,6 +1083,30 @@ Description: "The reduction in equivalent continuous sound pressure level provid
 * valueQuantity.system = $ucum (exactly)
 * valueQuantity.code 1..1 MS
 * valueQuantity.code = #dB[SPL] (exactly)
+
+Profile: HealthkitFitzpatrickSkinType
+Parent: HealthKitObservation
+Id: healthkit-fitzpatrick-skin-type
+Title: "Grove HealthKit Fitzpatrick Skin Type"
+Description: "Fitzpatrick sun-reactive skin type as a coded Observation. LOINC 66555-4 'Skin type [Fitzpatrick Classification Scale]' is the exact concept (verified ACTIVE, PROPERTY LP6886-8 Type, SCALE_TYP LP7750-5 Nom). The scale materially conditions UV-exposure interpretation, which is why it is modelled rather than left to the deployment. HKFitzpatrickSkinType.notSet emits no Observation."
+* code = $loinc#66555-4
+* effective[x] only dateTime
+* value[x] only CodeableConcept
+* valueCodeableConcept 1..1 MS
+* valueCodeableConcept from HealthkitFitzpatrickSkinTypeVS (required)
+
+Profile: HealthkitFoodCorrelation
+Parent: HealthKitObservation
+Id: healthkit-food-correlation
+Title: "Food Correlation"
+Description: "One eating occasion, whose members are the nutrient Observations recorded for it. The nutrients are independently meaningful and are already modelled one by one, so the occasion groups them rather than restating them as components."
+* code = HealthKitMeasurementCS#food-correlation
+* code from HealthKitMeasurementVS (required)
+* effective[x] only Period
+* effectivePeriod.end 1..1 MS
+* value[x] 0..0
+* hasMember 1..* MS
+* hasMember only Reference(Observation)
 
 Profile: HealthkitForcedExpiratoryVolume1
 Parent: HealthKitObservation
@@ -1012,6 +1237,19 @@ Description: "HKCategoryTypeIdentifierHighHeartRateEvent: an Apple Watch notific
 * component[threshold].valueQuantity.value 1..1 MS
 * component[threshold].valueQuantity.system = $ucum (exactly)
 * component[threshold].valueQuantity.code = #/min (exactly)
+
+Profile: HealthkitHypertensionNotification
+Parent: HealthKitObservation
+Id: healthkit-hypertension-notification
+Title: "Hypertension Notification"
+Description: "HKCategoryTypeIdentifierHypertensionEvent: a proprietary screening notification. Blood pressure remains the measurement surface; this records only that the notification was raised, and never asserts a hypertension diagnosis."
+* code = HealthKitMeasurementCS#hypertension-notification
+* code from HealthKitMeasurementVS (required)
+* effective[x] only Period
+* effectivePeriod.end 1..1 MS
+* value[x] only CodeableConcept
+* valueCodeableConcept 1..1 MS
+* valueCodeableConcept from HealthkitHypertensionNotificationVS (required)
 
 Profile: HealthkitInfrequentMenstrualCycles
 Parent: HealthKitObservation
@@ -2306,6 +2544,41 @@ Description: "A conformant Atrial Fibrillation Burden instance."
 * issued = "2026-08-20T08:00:00Z"
 * valueQuantity = 2 '%'
 
+Instance: HealthkitAudiogramPanelExample
+InstanceOf: HealthkitAudiogramPanel
+Usage: #example
+Title: "Audiogram Panel Example"
+Description: "A conformant Audiogram Panel instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "b1a53c57-f0fc-efe4-cf64-b0a53f65b58b"
+* status = #final
+* code = $loinc#89015-2 "Pure tone air conduction threshold audiometry panel"
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKDataTypeIdentifierAudiogram
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* component[left-250].code = $loinc#91375-6
+* component[left-250].valueQuantity = 20 'dB'
+* component[right-250].code = $loinc#91374-9
+* component[right-250].valueQuantity = 25 'dB'
+
+Instance: HealthkitBiologicalSexExample
+InstanceOf: HealthkitBiologicalSex
+Usage: #example
+Title: "Grove HealthKit Biological Sex Example"
+Description: "A conformant Grove HealthKit Biological Sex instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "4b70dfd1-944a-f3a5-12e0-826e93720936"
+* status = #final
+* code = $loinc#46098-0 "Sex"
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCharacteristicTypeIdentifierBiologicalSex
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = HealthkitBiologicalSexCS#female "Female"
+
 Instance: HealthkitBladderIncontinenceExample
 InstanceOf: HealthkitBladderIncontinence
 Usage: #example
@@ -2419,6 +2692,22 @@ Description: "A conformant Cycling Functional Threshold Power instance."
 * issued = "2026-08-20T08:00:00Z"
 * valueQuantity = 235 'W'
 
+Instance: HealthkitDateOfBirthExample
+InstanceOf: HealthkitDateOfBirth
+Usage: #example
+Title: "Grove HealthKit Date of Birth Example"
+Description: "A conformant Grove HealthKit Date of Birth instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "2458f8e0-f1e8-bee2-f9f9-eece6cbfdd8a"
+* status = #final
+* code = $loinc#21112-8 "Birth date"
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCharacteristicTypeIdentifierDateOfBirth
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueDateTime = "1985-04-12"
+
 Instance: HealthkitEnvironmentalAudioExposureExample
 InstanceOf: HealthkitEnvironmentalAudioExposure
 Usage: #example
@@ -2469,6 +2758,39 @@ Description: "A conformant Environmental Sound Reduction instance."
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * issued = "2026-08-20T08:00:00Z"
 * valueQuantity = 22 'dB[SPL]' "dB(SPL)"
+
+Instance: HealthkitFitzpatrickSkinTypeExample
+InstanceOf: HealthkitFitzpatrickSkinType
+Usage: #example
+Title: "Grove HealthKit Fitzpatrick Skin Type Example"
+Description: "A conformant Grove HealthKit Fitzpatrick Skin Type instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "9b3ae0f2-7de9-b5de-be5c-b29ffd399e36"
+* status = #final
+* code = $loinc#66555-4 "Skin type [Fitzpatrick Classification Scale]"
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCharacteristicTypeIdentifierFitzpatrickSkinType
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = HealthkitFitzpatrickSkinTypeCS#type-i "Type I"
+
+Instance: HealthkitFoodCorrelationExample
+InstanceOf: HealthkitFoodCorrelation
+Usage: #example
+Title: "Food Correlation Example"
+Description: "A conformant Food Correlation instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "45decf2a-7b41-3823-e98b-0f2582f45e0f"
+* status = #final
+* code = HealthKitMeasurementCS#food-correlation
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCorrelationTypeIdentifierFood
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* hasMember[+] = Reference(Observation/GroveMobileDietaryEnergyExample)
 
 Instance: HealthkitForcedExpiratoryVolume1Example
 InstanceOf: HealthkitForcedExpiratoryVolume1
@@ -2601,6 +2923,23 @@ Description: "A conformant High Heart Rate Notification instance."
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * issued = "2026-08-20T08:00:00Z"
 * valueCodeableConcept = HealthkitHighHeartRateNotificationCS#occurred "Occurred"
+
+Instance: HealthkitHypertensionNotificationExample
+InstanceOf: HealthkitHypertensionNotification
+Usage: #example
+Title: "Hypertension Notification Example"
+Description: "A conformant Hypertension Notification instance."
+* identifier[healthKitObjectId].system = $healthKitObjectId
+* identifier[healthKitObjectId].value = "31e82952-1009-4687-128e-4252470d7bd4"
+* status = #final
+* code = HealthKitMeasurementCS#hypertension-notification
+* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierHypertensionEvent
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* issued = "2026-08-20T08:00:00Z"
+* valueCodeableConcept = HealthkitHypertensionNotificationCS#occurred "Occurred"
 
 Instance: HealthkitInfrequentMenstrualCyclesExample
 InstanceOf: HealthkitInfrequentMenstrualCycles

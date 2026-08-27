@@ -13,12 +13,17 @@ SPDX-License-Identifier: MIT
 A review of the seven guides, the four adapter catalogs, and the three implementations that consume them, written after the 0.5.0 release.
 Every item states what was checked and how, so a reader can disagree with the conclusion rather than only with the summary.
 
-The guides currently publish 242 profiles, 22 extensions, and 337 examples across mobile, sensor, sensorkit, healthkit, health-connect, providers, and questionnaire.
+Each finding carries its disposition.
+**Closed in 0.6.0** means this release fixed it and a guard or test now holds it closed.
+**Open** means it is still true and still needs deciding.
+
+The guides currently publish 264 profiles, 32 extensions, and 344 examples across mobile, sensor, sensorkit, healthkit, health-connect, providers, questionnaire, and the three vendor guides this release adds: withings, oura, and google-health.
 
 ## Conversion completeness
 
 The lossless rule is that a conversion never drops what the source provided.
-Three findings break it, and one of them is currently reported as complete.
+Three findings broke it, and one of them was reported as complete.
+All three are **closed in 0.6.0**.
 
 ### Workout conversion is partial but declared `supported`
 
@@ -29,6 +34,9 @@ A triathlon converts to one undifferentiated Observation.
 
 This is worse than a gap, because the status matrix asserts otherwise.
 Either the events and activities are modelled, or the row states what it omits.
+
+**Closed in 0.6.0.** Events and activities are emitted as segment Observations on `grove-mobile-workout-segment`, linked from the session through `hasMember`.
+The segment vocabulary already published every `HKWorkoutEventType` case, so the guide had modelled this before the converter emitted it.
 
 `distanceType(for:)` is a good counterexample within the same file: it selects the distance type the activity actually records, precisely so that cycling, swimming, wheelchair, and snow-sport distances are not dropped.
 The same care has not been applied to events.
@@ -44,16 +52,20 @@ Any key a third-party writer sets, and any key Apple adds in a future SDK, is si
 The adapter is careful in the adjacent case: `@unknown default` appears 3 times in the HealthKit converter and 5 times in SensorKit, and **every one of them throws** rather than substituting a default.
 Unknown *enumeration cases* fail closed; unknown *metadata keys* vanish. The asymmetry looks unintended.
 
-A `healthkit-retained-metadata` extension carrying unmodelled key/value pairs would close it.
+**Closed in 0.6.0**, as components rather than the extension this proposed.
+The guide already carried modelled metadata keys as components against `HealthKitMetadataKeyCS`, so an extension would have been a second mechanism for one job.
+A retained key travels as `component.code.text`, because a complete code system cannot enumerate what a third-party writer may set.
+`HealthKitLinkableMetadataPolicy` withholds the keys that identify a record across systems — an external UUID, a device serial — unless the deployment authorizes them.
+A test asserts the modelled and retained key sets stay disjoint.
 
 ### Application build number is concatenated into a version string
 
 `HealthKitApplication.main` composes `version` as `"4.2.1 (123)"` from `CFBundleShortVersionString` and `CFBundleVersion`.
 The build number is therefore present but not separately addressable: a consumer must parse a parenthesis convention to recover it, and no profile documents that convention.
 
-This is the subject of the `Device.version` proposal below.
+**Closed in 0.6.0** by the proposal below.
 
-## Proposal: coded `Device.version` entries
+## Coded `Device.version` entries — implemented in 0.6.0
 
 Grove already emits the producing application as a `Device` on the `GroveApplicationDevice` profile, carrying the bundle identifier, the display name, and a `version` coded with MDC `531975` (`MDC_ID_PROD_SPEC_SW`).
 `Device.version` is a list of `DeviceVersion`, each with its own `type` CodeableConcept, so more than one revision can be carried without inventing an extension.
@@ -66,7 +78,7 @@ Add a `GroveApplicationVersionType` code system with three codes, and emit one `
 | `build` | The build that produced the resource, e.g. `123` | `CFBundleVersion` |
 | `os-version` | The operating system the conversion ran on | `ProcessInfo.operatingSystemVersion` |
 
-Keep MDC `531975` on the marketing version so existing consumers are unaffected, and stop concatenating build into it.
+MDC `531975` stays on the marketing version, and the concatenation is gone.
 
 This is the right shape for three reasons.
 It removes a parsing convention that was never specified.
@@ -91,7 +103,10 @@ The removal is blocked on the proposal, not on the app.
 Four paths — clinical-record passthrough, manually entered quantity samples, timed-walk results, and questionnaire responses — are authored by the app rather than converted by Grove, and the extensions are their only provenance.
 Deleting them before Grove exposes a public application-`Device` builder would lose data rather than deduplicate it.
 
-Order: publish the code system, expose the builder, wire the app-authored paths to it, then delete all three.
+**Partly closed in 0.6.0.** The code system is published and the `Device` now carries all four fields.
+**Open:** Grove still keeps `applicationDevice(_:)` internal, so an app that authors its own resources cannot reach it, and the three extensions cannot be deleted without losing provenance on the four app-authored paths.
+
+Order for the remaining work: expose the builder, wire the app-authored paths to it, then delete all three.
 
 ## Identity derivation is duplicated and inconsistent
 
@@ -102,7 +117,8 @@ My Heart Counts invented two anyway — an `Insecure.SHA1` digest for raw stream
 Neither agrees with Grove's SHA-256 derivation, so the same recording uploaded by two producers yields two records.
 
 Grove covers the payload case but has no field-based derivation for structured samples that carry no payload bytes, which is why the app wrote one.
-Adding `derived(fromFields:)` to Grove would let both schemes be deleted.
+**Open.** Adding `derived(fromFields:)` to Grove would let both schemes be deleted.
+Until it exists, the app keeps a scheme that no other producer agrees with.
 
 Two defects found in the app's own scheme while reviewing it, now fixed, are the argument for centralising it:
 the device-usage identity hashed only the *counts* of its three usage breakdowns, so two reports differing inside them collided — and the id also names the sidecar file, so the second upload overwrote the first;
@@ -110,22 +126,52 @@ and the same report encoded to different bytes on different runs, because the br
 
 ## Deferred and refused source types
 
-These are documented decisions rather than defects, listed so the next release can revisit them deliberately.
+**Largely closed in 0.6.0.**
+HealthKit deferred 10 and refused 4 of 218 types when this was written; it now defers 2 and refuses 3.
 
-HealthKit defers 10 and refuses 4 of 218 types.
-The deferrals with the clearest analytic value are `HKWorkoutRouteTypeIdentifier`, `HKDataTypeIdentifierHeartbeatSeries`, `HKDataTypeIdentifierAudiogram`, and `HKCorrelationTypeIdentifierFood`.
-`HKCharacteristicTypeIdentifierDateOfBirth` and `…BiologicalSex` are deferred but are ordinary `Patient` elements rather than Observations, so they need a decision about whether Grove writes demographics at all.
-`HKDocumentTypeIdentifierCDA` and `HKVisionPrescriptionTypeIdentifier` are whole documents, closer to the clinical-record passthrough than to a measurement.
+Admitted in this release, each through the `healthkit-recording-document` profile the adapter previously lacked:
+`HKDataTypeIdentifierHeartbeatSeries` on the `beat-interval-series` schema the registry already published,
+`HKWorkoutRouteTypeIdentifier` on a new `location-track-samples` schema behind a route-disclosure policy,
+and `HKDocumentTypeIdentifierCDA` byte-preserved as a new `clinical-document` format.
 
-SensorKit defers 1 of 22: `SRSensor.acousticSettings`.
+Admitted as measurements: `HKDataTypeIdentifierAudiogram`, carrying the 22 per-ear, per-frequency air conduction thresholds as components,
+and `HKCorrelationTypeIdentifierFood`, grouping the nutrient Observations already modelled.
+
+`HKCategoryTypeIdentifierHypertensionEvent` moved from refused to supported.
+It was the only screening notification refused while its eleven peers were supported, and neither the row nor the test that pinned the refusal recorded a reason for the difference.
+A test now fails if any screening-notification event is refused while its peers are not, so the inconsistency cannot recur silently.
+
+Admitted as clinical resources other than Observation, the first the guides emit:
+`HKVisionPrescriptionTypeIdentifier` as `VisionPrescription`,
+`HKMedicationDoseEventTypeIdentifierMedicationDoseEvent` as `MedicationAdministration`,
+and `HKDataTypeUserAnnotatedMedicationConcept` as `MedicationStatement`.
+`GroveMobileExchangeBundle` never constrained `entry.resource` to a type, so the exchange bundle carries them unchanged.
+
+**Closed in 0.6.0.** `HKCharacteristicTypeIdentifierDateOfBirth`, `…BiologicalSex`, and `…FitzpatrickSkinType` are admitted, and HealthKit now defers nothing.
+The framing that held them back — that they are `Patient.birthDate` and `Patient.gender` rather than Observations — was wrong on this guide's own precedent: `BloodType` and `WheelchairUse` are peer characteristics already carried as Observations on their own profiles.
+They follow that pattern.
+A date of birth identifies a person across systems, so the adapter withholds it unless the deployment authorizes disclosure; a deployment that already knows its participant's demographics from enrollment should prefer that authoritative record over this assertion.
+
+`biological-sex` binds LOINC 46098-0 `Sex` rather than 76689-9 `Sex assigned at birth`.
+The HealthKit characteristic asserts a sex, never that it is the one assigned at birth, and the stronger code would fabricate a provenance the source does not carry — the same reasoning that kept `wheelchair-use` off the CMS-context code.
+
+`SensorKit` still defers 1 of 22: `SRSensor.acousticSettings`, a device setting rather than a measurement.
 
 Health Connect defers 1 of 41: `PlannedExerciseSessionRecord`, correctly — a planned session states future intent, not an observed measurement, and belongs to a workflow resource rather than a measurement contract.
+
+Every remaining refusal states its reason in the catalog row.
+That was checked: the two remaining `intentionally-unsupported` HealthKit types each argue the case — a ring-display preference is an Apple product configuration rather than clinical data, and NikeFuel is an opaque vendor index with an unpublished formula that Apple has itself deprecated.
 
 ## Leftovers removed in this pass
 
 Stale `0.3.0` package pins survived two releases in the installation documentation of four guides.
 The version-prose guard did not catch them because its expression matched only `v0.3.0` and `version 0.3.0`, never `org.grovealliance.fhir.mobile#0.3.0` — which is exactly how a pin is written in an installation instruction.
 The expression now covers the package-pin form, and found them immediately.
+
+It grew twice more in this release, each time because the previous fix let the next phrasing through:
+a bare number qualifying one of Grove's own nouns — "the 0.4.0 adapter" — which two adapter catalogs had been carrying a release behind,
+and a bare number qualified by the product name — "Grove FHIR HealthKit 0.3.0" — in a code system description.
+The expression stays precise rather than broad: matching every bare version number instead produced 57 hits, almost all of them the instrument and app versions the examples legitimately carry.
 
 One match was a false positive worth recording: `healthkit/input/pagecontent/terminology-provenance.md` names `0.3.0` as the release the terminology was extracted against, alongside the SDK baseline and extraction date.
 That is a historical record, and bumping it would falsify the provenance it exists to keep.

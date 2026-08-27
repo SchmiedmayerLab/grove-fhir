@@ -61,3 +61,11 @@ When a previously converted source record is retracted, publish a bundle whose o
 Each stub keeps the profile claims, the normative code, and the complete business identifiers of the output it retracts, sets `status` to `entered-in-error`, and carries `dataAbsentReason` in place of a value.
 A bundle whose outputs for a source record are all entered-in-error records a retraction rather than a conversion and carries no conversion Provenance.
 The repository conformance validator enforces both directions: a retraction claiming a conversion Provenance and a conversion missing one are each rejected.
+
+## Dependencies and terminology notices
+
+The generated tables identify this guide's package dependencies and the notices for terminology used by its artifacts and examples.
+
+{% include dependency-table-nontech.xhtml %}
+
+{% include ip-statements.xhtml %}

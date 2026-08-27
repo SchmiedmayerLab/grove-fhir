@@ -20,6 +20,7 @@ Description: "The exact media types admitted for a Grove native sensor recording
 * urn:ietf:bcp:13#application/vnd.grovealliance.native+json "Grove native recording JSON"
 * urn:ietf:bcp:13#application/vnd.grovealliance.provider+json "Grove provider recording JSON"
 * urn:ietf:bcp:13#application/vnd.grovealliance.ppg "Grove photoplethysmogram binary"
+* urn:ietf:bcp:13#application/hl7-cda+xml "HL7 Clinical Document Architecture"
 * ^expansion.timestamp = "2026-08-20T00:00:00Z"
 * ^expansion.parameter[+].name = "used-codesystem"
 * ^expansion.parameter[=].valueUri = "urn:ietf:bcp:13"
@@ -43,3 +44,6 @@ Description: "The exact media types admitted for a Grove native sensor recording
 * ^expansion.contains[+].system = "urn:ietf:bcp:13"
 * ^expansion.contains[=].code = #application/vnd.grovealliance.ppg
 * ^expansion.contains[=].display = "Grove photoplethysmogram binary"
+* ^expansion.contains[+].system = "urn:ietf:bcp:13"
+* ^expansion.contains[=].code = #application/hl7-cda+xml
+* ^expansion.contains[=].display = "HL7 Clinical Document Architecture"

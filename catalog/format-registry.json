@@ -23,7 +23,8 @@
     "application/vnd.grovealliance.fhir-array+json": "Grove FHIR resource array",
     "application/vnd.grovealliance.native+json": "Grove native recording JSON",
     "application/vnd.grovealliance.provider+json": "Grove provider recording JSON",
-    "application/vnd.grovealliance.ppg": "Grove photoplethysmogram binary"
+    "application/vnd.grovealliance.ppg": "Grove photoplethysmogram binary",
+    "application/hl7-cda+xml": "HL7 Clinical Document Architecture"
   },
   "formats": {
     "heart-rate-samples": {
@@ -398,6 +399,73 @@
         }
       ]
     },
+    "location-track-samples": {
+      "title": "Location Track Samples",
+      "contentType": "text/csv",
+      "status": "active",
+      "encoding": "csv",
+      "columns": [
+        {
+          "name": "timestamp",
+          "type": "timestamp",
+          "meaning": "Location fix instant."
+        },
+        {
+          "name": "latitude",
+          "type": "number",
+          "unit": "deg",
+          "meaning": "WGS 84 latitude in degrees."
+        },
+        {
+          "name": "longitude",
+          "type": "number",
+          "unit": "deg",
+          "meaning": "WGS 84 longitude in degrees."
+        },
+        {
+          "name": "altitude",
+          "type": "number",
+          "unit": "m",
+          "meaning": "Altitude above the WGS 84 reference ellipsoid in metres."
+        },
+        {
+          "name": "horizontalAccuracy",
+          "type": "number",
+          "unit": "m",
+          "meaning": "Radius of uncertainty for the horizontal position in metres."
+        },
+        {
+          "name": "verticalAccuracy",
+          "type": "number",
+          "unit": "m",
+          "meaning": "Uncertainty of the altitude in metres; empty when altitude is invalid."
+        },
+        {
+          "name": "speed",
+          "type": "number",
+          "unit": "m/s",
+          "meaning": "Instantaneous speed in metres per second; empty when unavailable."
+        },
+        {
+          "name": "speedAccuracy",
+          "type": "number",
+          "unit": "m/s",
+          "meaning": "Uncertainty of the speed in metres per second; empty when unavailable."
+        },
+        {
+          "name": "course",
+          "type": "number",
+          "unit": "deg",
+          "meaning": "Direction of travel in degrees clockwise from true north; empty when unavailable."
+        },
+        {
+          "name": "courseAccuracy",
+          "type": "number",
+          "unit": "deg",
+          "meaning": "Uncertainty of the course in degrees; empty when unavailable."
+        }
+      ]
+    },
     "fhir-resource-array": {
       "title": "FHIR Resource Array",
       "contentType": "application/vnd.grovealliance.fhir-array+json",
@@ -419,6 +487,14 @@
         "fhirVersion": "R4 only. A payload in another release is not admitted under this code: its media type would misdeclare the release to any receiver that reads only the media type. A release other than R4 needs its own registered format before it can be carried.",
         "provenance": "The carrying document records the issuing source; Grove never asserts conformance over another issuer's resource.",
         "scope": "One document carries exactly one clinical record's FHIR payload."
+      }
+    },
+    "clinical-document": {
+      "title": "Clinical Document",
+      "contentType": "application/hl7-cda+xml",
+      "status": "active",
+      "specification": {
+        "file": "One HL7 Clinical Document Architecture Release 2 document, byte-preserved exactly as the source platform delivered it. Grove never rewrites, reserializes, or asserts conformance over another issuer's document; the carrying document records the issuer."
       }
     },
     "native-recording": {

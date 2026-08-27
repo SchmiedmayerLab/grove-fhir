@@ -16,12 +16,12 @@
     "rule": "Every admitted output preserves the exact AndroidX Health Connect 1.1 Record class token; the token is lineage and does not replace Observation.code."
   },
   "statusVocabulary": {
-    "supported": "The 0.4.0 adapter defines and validates emitted FHIR output.",
+    "supported": "The 0.5.0 adapter defines and validates emitted FHIR output.",
     "mapped-standard": "The source maps directly to an established external FHIR profile without a Grove semantic profile.",
-    "platform-exclusive": "The 0.4.0 adapter defines output through a platform-exclusive Health Connect profile whose meaning remains source-specific.",
+    "platform-exclusive": "The 0.5.0 adapter defines output through a platform-exclusive Health Connect profile whose meaning remains source-specific.",
     "unmodeled": "The source type is inventoried, but no shared or Health Connect-scoped profile models it and no output is admitted.",
-    "deferred": "No FHIR output for this source type is admitted by the 0.4.0 adapter.",
-    "intentionally-unsupported": "The 0.4.0 contract explicitly rejects this source meaning rather than approximating it."
+    "deferred": "No FHIR output for this source type is admitted by the 0.5.0 adapter.",
+    "intentionally-unsupported": "The 0.5.0 contract explicitly rejects this source meaning rather than approximating it."
   },
   "adapterMeasurements": [
     {
