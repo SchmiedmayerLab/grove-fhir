@@ -41,12 +41,12 @@ class ProviderCatalogTests(unittest.TestCase):
         )
         self.assertTrue(
             self.catalog["recordingDocument"]["adapterProfile"].endswith(
-                "/provider-recording-document"
+                "/providers-recording-document"
             )
         )
         self.assertTrue(
             self.catalog["conversionProvenanceProfile"].endswith(
-                "/provider-conversion-provenance"
+                "/providers-conversion-provenance"
             )
         )
         package = next(
@@ -65,7 +65,11 @@ class ProviderCatalogTests(unittest.TestCase):
         )
         self.assertEqual(
             set(package["profiles"]),
-            {"provider-body-fat-mass", "provider-conversion-provenance", "provider-extracellular-water-mass", "provider-intracellular-water-mass", "provider-muscle-mass", "provider-observation", "provider-recording-document", "provider-sleeping-heart-rate-average"},
+            {
+                "providers-conversion-provenance",
+                "providers-observation",
+                "providers-recording-document",
+            },
         )
         provenance = next(
             claim for claim in self.claims["adapterConversionProvenanceClaims"]
@@ -293,7 +297,14 @@ class ProviderCatalogTests(unittest.TestCase):
             withings["getmeas:10"]["elements"][0]["groupedMapping"],
             "getmeas:9+10",
         )
+        # The electrocardiogram intervals and the two atrial-fibrillation screening notifications
+        # are carried under provider-scoped profiles that name exactly what they are; only the body
+        # segment masses stay refused, because their consumed shape loses the segment.
         for code in (130, 135, 136, 137, 138, 139):
+            row = withings[f"getmeas:{code}"]
+            self.assertEqual(row["status"], "platform-exclusive")
+            self.assertTrue(row["profiles"])
+        for code in (174, 175):
             self.assertEqual(
                 withings[f"getmeas:{code}"]["status"],
                 "intentionally-unsupported",

@@ -44,6 +44,9 @@ package graph is:
 | `org.grovealliance.fhir.health-connect` | Android Health Connect 1.1 adapter; depends on Mobile |
 | `org.grovealliance.fhir.sensorkit` | Apple SensorKit adapter; depends on Mobile and Sensor |
 | `org.grovealliance.fhir.providers` | Google Health API, Oura, and Withings mappings; depends on Mobile and Sensor |
+| `org.grovealliance.fhir.withings` | Withings-exclusive mappings; depends on Mobile, Sensor, and the Connected Provider Adapter |
+| `org.grovealliance.fhir.oura` | Oura-exclusive mappings; depends on Mobile, Sensor, and the Connected Provider Adapter |
+| `org.grovealliance.fhir.google-health` | Google Health API-exclusive mappings; depends on Mobile, Sensor, and the Connected Provider Adapter |
 
 Use the [HealthKit adapter](https://schmiedmayerlab.github.io/grove-fhir/healthkit/),
 [Health Connect adapter](https://schmiedmayerlab.github.io/grove-fhir/health-connect/),

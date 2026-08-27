@@ -25,6 +25,9 @@ EXPECTED_GUIDE_SOURCES = (
     "healthkit",
     "health-connect",
     "providers",
+    "withings",
+    "oura",
+    "google-health",
     "questionnaire",
 )
 MOBILE_ADAPTER_SOURCES = (
@@ -33,6 +36,9 @@ MOBILE_ADAPTER_SOURCES = (
     "healthkit",
     "health-connect",
     "providers",
+    "withings",
+    "oura",
+    "google-health",
 )
 GUIDES = tuple(ROOT / source for source in EXPECTED_GUIDE_SOURCES)
 CATALOGS = ROOT / "catalog"

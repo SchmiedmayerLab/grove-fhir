@@ -18,7 +18,18 @@ SPEC = importlib.util.spec_from_file_location("vp", ROOT / "Scripts/validate-pro
 VALIDATOR = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(VALIDATOR)
 
-GUIDES = ("mobile", "sensor", "sensorkit", "healthkit", "health-connect", "providers", "questionnaire")
+GUIDES = (
+    "mobile",
+    "sensor",
+    "sensorkit",
+    "healthkit",
+    "health-connect",
+    "providers",
+    "withings",
+    "oura",
+    "google-health",
+    "questionnaire",
+)
 
 
 def declared_profiles(guide: str) -> set[str]:
@@ -61,7 +72,15 @@ class ProfileRegistrationTests(unittest.TestCase):
             for profiles in VALIDATOR.ADAPTER_PACKAGE_PROFILES.values()
             for profile in profiles
         }
-        for guide in ("sensorkit", "healthkit", "health-connect", "providers"):
+        for guide in (
+            "sensorkit",
+            "healthkit",
+            "health-connect",
+            "providers",
+            "withings",
+            "oura",
+            "google-health",
+        ):
             canonical_root = f"https://grovealliance.org/fhir/{guide}/StructureDefinition/"
             for profile in declared_profiles(guide):
                 if not profile.endswith("-observation"):

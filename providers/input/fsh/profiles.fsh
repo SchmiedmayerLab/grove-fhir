@@ -16,9 +16,9 @@ Description: "A connected-provider identifier is either the provider's own recor
 Severity: #error
 Expression: "matches('^(v1:[^|]+([|][^|]+)+|[^|]+)$')"
 
-Profile: ProviderObservation
+Profile: ProvidersObservation
 Parent: GroveMobileObservation
-Id: provider-observation
+Id: providers-observation
 Title: "Provider Observation"
 Description: "Source lineage and deterministic business identity for a shared Mobile or Sensor Observation converted from already-obtained Google Health API, Oura, or Withings data. Every output also declares exactly one exact source-neutral semantic profile."
 * identifier ^slicing.discriminator.type = #value
@@ -42,9 +42,9 @@ Description: "Source lineage and deterministic business identity for a shared Mo
     ProviderProvider named provider 1..1 MS and
     ProviderSourceType named providerSourceType 1..1 MS
 
-Profile: ProviderRecordingDocument
+Profile: ProvidersRecordingDocument
 Parent: GroveSensorRecordingDocument
-Id: provider-recording-document
+Id: providers-recording-document
 Title: "Provider Recording Document"
 Description: "A provider-native payload already obtained from Google Health API, Oura, or Withings and retained without inventing uniform timing or scalar semantics."
 * identifier ^slicing.discriminator.type = #value
@@ -67,13 +67,13 @@ Description: "A provider-native payload already obtained from Google Health API,
     ProviderProvider named provider 1..1 MS and
     ProviderSourceType named providerSourceType 1..1 MS
 
-Profile: ProviderConversionProvenance
+Profile: ProvidersConversionProvenance
 Parent: GroveSensorConversionProvenance
-Id: provider-conversion-provenance
+Id: providers-conversion-provenance
 Title: "Provider Conversion Provenance"
 Description: "Provenance for converting one already-obtained connected-provider record into one or more source-neutral Observations or native Recording Documents."
 * target 1..* MS
-* target only Reference(ProviderObservation or ProviderRecordingDocument)
+* target only Reference(ProvidersObservation or ProvidersRecordingDocument)
 * entity 1..1 MS
 * entity.role = #source
 * entity.what.reference 0..0

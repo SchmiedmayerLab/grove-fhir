@@ -16,15 +16,17 @@ The machine catalog uses exactly these meanings:
   Sensor plus Provider Recording Document profile pair without asserting a
   scalar clinical meaning.
 - `unmodeled`: the source element is known and inventoried, but no shared or provider-scoped profile models it in this release.
-- `platform-exclusive`: a reviewed provider-scoped structured profile represents the source semantics because no exact shared profile does; v0.5.0 declares no such rows.
+- `platform-exclusive`: a reviewed provider-scoped structured profile represents the source semantics because no exact shared profile does.
 - `deferred`: a plausible shared mapping exists, but source evidence or time/result
   semantics are insufficient for a conformant v0.5.0 conversion.
 - `intentionally-unsupported`: v0.5.0 deliberately refuses the conversion because it
   would create a misleading or diagnostic-adjacent result.
 
-Only `supported` rows may produce a scalar normalized Observation. `mapped-standard`
-rows may produce only the listed two-profile Recording Document contract. The other statuses do not authorize a
-FHIR output under this adapter profile.
+Only `supported` rows may produce a scalar normalized Observation against a shared Mobile profile.
+A `platform-exclusive` row produces only the provider-scoped profile its catalog entry names, which states the vendor and the exact nature of the value so nothing reads as a comparable shared measurement.
+That profile is published by the reporting provider's own guide, which narrows Provider Observation to that vendor.
+`mapped-standard` rows may produce only the listed two-profile Recording Document contract.
+The other statuses do not authorize a FHIR output under this adapter profile.
 
 Important fail-closed boundaries include:
 
@@ -33,7 +35,13 @@ Important fail-closed boundaries include:
 - daily and sleep-session averages are not relabeled as point-in-time vital signs.
 - sleep-stage duration summaries are not relabeled as stage intervals when the source
   does not provide their boundaries.
-- Oura/Withings scores and body-composition measures remain unmodeled in this release.
+- proprietary vendor scores are carried only under provider-scoped profiles that name the
+  vendor. Withings vascular age and Oura cardiovascular age are separate measurements, because
+  they are undisclosed algorithms over different inputs and are not comparable.
+- a Withings atrial-fibrillation screening result is carried as a notification and never as a
+  rhythm finding, on the same basis as the HealthKit irregular-heart-rhythm notification.
+- Withings body-segment fat and muscle masses stay refused: the consumed shape does not recover
+  which segment a value belongs to.
 - Withings systolic and diastolic values become one blood-pressure panel only when both
   occur in the same provider measure group.
 

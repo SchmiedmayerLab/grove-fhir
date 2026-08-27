@@ -68,6 +68,6 @@ The source-type extension carries `withings/getmeas:9+10`, keeping the exact cat
 
 ### The emitted graph
 
-The conversion emits one [Observation](Observation-WithingsBloodPressureExample.html) claiming exactly the shared blood-pressure profile plus [Provider Observation](StructureDefinition-provider-observation.html), and one [conversion Provenance](Provenance-WithingsBloodPressureProvenanceExample.html) whose sole source entity is the source-record identifier pair.
+The conversion emits one [Observation](Observation-WithingsBloodPressureExample.html) claiming exactly the shared blood-pressure profile plus [Provider Observation](StructureDefinition-providers-observation.html), and one [conversion Provenance](Provenance-WithingsBloodPressureProvenanceExample.html) whose sole source entity is the source-record identifier pair.
 The [Withings Exchange Bundle](Bundle-WithingsExchangeBundleExample.html) carries the complete graph as a [Grove Mobile Exchange Bundle](https://grovealliance.org/fhir/mobile/StructureDefinition-grove-mobile-exchange-bundle.html): every entry `fullUrl` is the UUID version 5 of its complete business identifier, and all internal references use those UUID URNs.
 See the [authoritative status matrix](status-matrix.html) and [`catalog/providers-adapter.json`](https://grovealliance.org/fhir/catalog/providers-adapter.json) for the definitive grouped-mapping contract.

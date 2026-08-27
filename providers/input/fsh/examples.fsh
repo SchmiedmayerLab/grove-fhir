@@ -26,7 +26,7 @@ Description: "The application that converted already-obtained provider records i
 * deviceName[applicationName].type = #user-friendly-name
 
 Instance: GoogleHealthStepsExample
-InstanceOf: ProviderObservation
+InstanceOf: ProvidersObservation
 Usage: #example
 Title: "Google Health Step Count"
 Description: "An already-obtained Google Health API steps interval converted to the shared step-count contract."
@@ -46,7 +46,7 @@ Description: "An already-obtained Google Health API steps interval converted to 
 * extension[providerSourceType].valueCode = #google-health-api/steps
 
 Instance: GoogleHealthStepsProvenanceExample
-InstanceOf: ProviderConversionProvenance
+InstanceOf: ProvidersConversionProvenance
 Usage: #example
 Title: "Google Health Step Conversion Provenance"
 Description: "The conversion event linking one already-obtained Google Health steps source record to its shared step-count output."
@@ -59,7 +59,7 @@ Description: "The conversion event linking one already-obtained Google Health st
 * entity.what.identifier.value = "v1:google-health-api|acct-7f3a9c|steps|content|2026-08-20T16:00:00Z|2026-08-20T17:00:00Z|1042"
 
 Instance: GoogleHealthHeartRateRecordingExample
-InstanceOf: ProviderRecordingDocument
+InstanceOf: ProvidersRecordingDocument
 Usage: #example
 Title: "Google Health Native Heart-rate Recording"
 Description: "An explicitly authorized caller encoding of already-obtained irregular heart-rate points, retained without resampling."
@@ -82,7 +82,7 @@ Description: "An explicitly authorized caller encoding of already-obtained irreg
 * content.format.version = "0.5.0"
 
 Instance: GoogleHealthHeartRateRecordingProvenanceExample
-InstanceOf: ProviderConversionProvenance
+InstanceOf: ProvidersConversionProvenance
 Usage: #example
 Title: "Google Health Native Heart-rate Conversion Provenance"
 Description: "The conversion event linking one already-obtained source record to its native Recording Document."
@@ -95,7 +95,7 @@ Description: "The conversion event linking one already-obtained source record to
 * entity.what.identifier.value = "v1:google-health-api|acct-7f3a9c|heart-rate|content|2026-08-20T16:03:00Z|2026-08-20T16:03:00Z|71"
 
 Instance: OuraDailyStepCountExample
-InstanceOf: ProviderObservation
+InstanceOf: ProvidersObservation
 Usage: #example
 Title: "Oura Daily Step Count"
 Description: "One already-obtained Oura daily-activity record converted to the shared step-count contract. Oura documents its document ids as UUIDs unique across every account, so the identifier is that key exactly as Oura supplied it, with nothing joined to it."
@@ -115,7 +115,7 @@ Description: "One already-obtained Oura daily-activity record converted to the s
 * extension[providerSourceType].valueCode = #oura/daily_activity
 
 Instance: WithingsBloodPressureExample
-InstanceOf: ProviderObservation
+InstanceOf: ProvidersObservation
 Usage: #example
 Title: "Withings Grouped Blood Pressure"
 Description: "One already-obtained Withings measure group holding one diastolic (type 9) and one systolic (type 10) value converted into one shared blood-pressure panel. It also carries the shared writer-record identity, which names the measurement as Withings itself does; the identical value appears when the Withings application writes the same measurement into HealthKit or Health Connect, so a deployment that has confirmed those key spaces agree can recognise one measurement arriving by more than one route."
@@ -139,7 +139,7 @@ Description: "One already-obtained Withings measure group holding one diastolic 
 * extension[providerSourceType].valueCode = #withings/getmeas:9+10
 
 Instance: WithingsBloodPressureProvenanceExample
-InstanceOf: ProviderConversionProvenance
+InstanceOf: ProvidersConversionProvenance
 Usage: #example
 Title: "Withings Grouped Blood Pressure Conversion Provenance"
 Description: "The conversion event linking one Withings measure-group source record to its single grouped blood-pressure output."

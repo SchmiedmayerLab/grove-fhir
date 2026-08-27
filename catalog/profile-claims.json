@@ -13,7 +13,10 @@
       "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-observation",
       "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-observation",
       "https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-observation",
-      "https://grovealliance.org/fhir/providers/StructureDefinition/provider-observation",
+      "https://grovealliance.org/fhir/providers/StructureDefinition/providers-observation",
+      "https://grovealliance.org/fhir/withings/StructureDefinition/withings-observation",
+      "https://grovealliance.org/fhir/oura/StructureDefinition/oura-observation",
+      "https://grovealliance.org/fhir/google-health/StructureDefinition/google-health-observation",
       "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-observation",
       "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-ecg-observation"
     ],
@@ -65,7 +68,7 @@
     "cardinality": 2,
     "profiles": [
       "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document",
-      "https://grovealliance.org/fhir/providers/StructureDefinition/provider-recording-document"
+      "https://grovealliance.org/fhir/providers/StructureDefinition/providers-recording-document"
     ],
     "otherProfilesAllowed": false
   },
@@ -95,11 +98,14 @@
     },
     {
       "adapter": "providers",
-      "profile": "https://grovealliance.org/fhir/providers/StructureDefinition/provider-conversion-provenance",
+      "profile": "https://grovealliance.org/fhir/providers/StructureDefinition/providers-conversion-provenance",
       "sourceIdentifierSystem": "https://grovealliance.org/fhir/providers/NamingSystem/provider-source-record-id",
       "targetAdapterProfiles": [
-        "https://grovealliance.org/fhir/providers/StructureDefinition/provider-observation",
-        "https://grovealliance.org/fhir/providers/StructureDefinition/provider-recording-document"
+        "https://grovealliance.org/fhir/providers/StructureDefinition/providers-observation",
+        "https://grovealliance.org/fhir/providers/StructureDefinition/providers-recording-document",
+        "https://grovealliance.org/fhir/withings/StructureDefinition/withings-observation",
+        "https://grovealliance.org/fhir/oura/StructureDefinition/oura-observation",
+        "https://grovealliance.org/fhir/google-health/StructureDefinition/google-health-observation"
       ],
       "rule": "One Provenance in the exchange graph targets every connected-provider Observation and Recording Document carrying its exact sole source-record Identifier; every target is an internal UUID reference. A bundle whose outputs for a source record are all entered-in-error records a retraction rather than a conversion and carries no conversion Provenance."
     },

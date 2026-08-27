@@ -41,13 +41,31 @@
       "source": "providers",
       "canonicalPath": "providers",
       "aliases": [],
-      "representativeResource": "StructureDefinition/provider-observation"
+      "representativeResource": "StructureDefinition/providers-observation"
     },
     {
       "source": "questionnaire",
       "canonicalPath": "questionnaire",
       "aliases": [],
       "representativeResource": "StructureDefinition/grove-questionnaire"
+    },
+    {
+      "source": "withings",
+      "canonicalPath": "withings",
+      "aliases": [],
+      "representativeResource": "StructureDefinition/withings-observation"
+    },
+    {
+      "source": "oura",
+      "canonicalPath": "oura",
+      "aliases": [],
+      "representativeResource": "StructureDefinition/oura-observation"
+    },
+    {
+      "source": "google-health",
+      "canonicalPath": "google-health",
+      "aliases": [],
+      "representativeResource": "StructureDefinition/google-health-observation"
     }
   ],
   "retiredPreviewPaths": [

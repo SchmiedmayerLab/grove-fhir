@@ -31,7 +31,18 @@ class PackageGraphTests(unittest.TestCase):
         sources = [package["source"] for package in graph["packages"]]
         self.assertEqual(
             sources,
-            ["mobile", "questionnaire", "sensor", "sensorkit", "healthkit", "health-connect", "providers"],
+            [
+                "mobile",
+                "questionnaire",
+                "sensor",
+                "sensorkit",
+                "healthkit",
+                "health-connect",
+                "providers",
+                "withings",
+                "oura",
+                "google-health",
+            ],
         )
         self.assertEqual(len(sources), len(set(sources)))
         for package in graph["packages"]:
