@@ -308,9 +308,9 @@ jobs:
             cp -R ".build/restored/guide-output-$guide/." "$guide/output/"
           done
       - name: Audit the QA ledger of every guide
-        run: >-
-          python3 Scripts/check-guide-qa.py
-          $(python3 Scripts/guide-build-plan.py | tr '\n' ' ')
+        run: |
+          python3 Scripts/guide-build-plan.py | tr '\n' ' ' \
+            | xargs python3 Scripts/check-guide-qa.py
       - run: ./Scripts/assemble-pages.sh
       - run: python3 -m unittest Tests.test_artifact_allowlist -v
       - run: python3 Scripts/validate-questionnaire-fhir.py

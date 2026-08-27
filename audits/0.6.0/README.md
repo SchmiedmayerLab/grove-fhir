@@ -1,3 +1,13 @@
+<!--
+
+This source file is part of the Grove FHIR open-source project
+
+SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTRIBUTORS.md)
+
+SPDX-License-Identifier: MIT
+
+-->
+
 # Grove FHIR 0.6.0 audit index
 
 This directory contains the read-only FHIR audit requested on 2026-08-26. No implementation or remote PR state was changed.

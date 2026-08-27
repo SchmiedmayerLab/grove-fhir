@@ -1,3 +1,13 @@
+<!--
+
+This source file is part of the Grove FHIR open-source project
+
+SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTRIBUTORS.md)
+
+SPDX-License-Identifier: MIT
+
+-->
+
 # MyHeartCounts iOS PR #204 — FHIR audit for Grove 0.6.0
 
 - Audit date: 2026-08-26
