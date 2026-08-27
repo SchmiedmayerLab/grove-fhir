@@ -192,9 +192,13 @@ jobs:
       wave2: ${{ steps.plan.outputs.wave2 }}
       wave3: ${{ steps.plan.outputs.wave3 }}
       wave4: ${{ steps.plan.outputs.wave4 }}
+      wave5: ${{ steps.plan.outputs.wave5 }}
+      wave6: ${{ steps.plan.outputs.wave6 }}
       built1: ${{ steps.plan.outputs.built1 }}
       built2: ${{ steps.plan.outputs.built2 }}
       built3: ${{ steps.plan.outputs.built3 }}
+      built4: ${{ steps.plan.outputs.built4 }}
+      built5: ${{ steps.plan.outputs.built5 }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -210,19 +214,22 @@ jobs:
         run: |
           python3 - <<'PLAN' >> "$GITHUB_OUTPUT"
           import json, subprocess
+          # The number of wave jobs defined below. A plan deeper than this fails loudly
+          # rather than silently dropping a wave; add a job and raise this together.
+          WAVE_JOBS = 6
           plan = json.loads(subprocess.run(
               ["python3", "Scripts/guide-build-plan.py", "--format", "json"],
               capture_output=True, text=True, check=True).stdout)
-          if len(plan) > 4:
+          if len(plan) > WAVE_JOBS:
               raise SystemExit(
                   f"::error::the guide graph now has {len(plan)} waves; add a wave job")
           built = []
-          for index in range(4):
+          for index in range(WAVE_JOBS):
               wave = plan[index] if index < len(plan) else []
               print(f"wave{index + 1}={json.dumps(wave)}")
               built.extend(wave)
               # `builtN` is everything available to wave N+1, so it includes wave N itself.
-              if index < 3:
+              if index < WAVE_JOBS - 1:
                   print(f"built{index + 1}={json.dumps(sorted(built))}")
           PLAN
 
@@ -262,11 +269,29 @@ jobs:
       built: ${{ needs.guide-plan.outputs.built3 }}
       ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
+  guide-wave-5:
+    name: Guides
+    needs: [guide-plan, guide-wave-4]
+    uses: ./.github/workflows/build-guide-wave.yml
+    with:
+      guides: ${{ needs.guide-plan.outputs.wave5 }}
+      built: ${{ needs.guide-plan.outputs.built4 }}
+      ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+  guide-wave-6:
+    name: Guides
+    needs: [guide-plan, guide-wave-5]
+    uses: ./.github/workflows/build-guide-wave.yml
+    with:
+      guides: ${{ needs.guide-plan.outputs.wave6 }}
+      built: ${{ needs.guide-plan.outputs.built5 }}
+      ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
   guides:
     name: Build and Validate All R4 Guides
     # Every wave, including one the plan left empty: a skipped wave still has to be accounted for
     # rather than letting the ledger run against a partial set.
-    needs: [guide-wave-1, guide-wave-2, guide-wave-3, guide-wave-4]
+    needs: [guide-wave-1, guide-wave-2, guide-wave-3, guide-wave-4, guide-wave-5, guide-wave-6]
     # Runs even when a wave fails, so this required check fails rather than being skipped: a skipped
     # required check can read as neutral, which would let a broken guide build merge. A wave the plan
     # left empty is `skipped`, which is not a failure.
