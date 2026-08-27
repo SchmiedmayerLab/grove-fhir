@@ -220,9 +220,10 @@ jobs:
           for index in range(4):
               wave = plan[index] if index < len(plan) else []
               print(f"wave{index + 1}={json.dumps(wave)}")
+              built.extend(wave)
+              # `builtN` is everything available to wave N+1, so it includes wave N itself.
               if index < 3:
                   print(f"built{index + 1}={json.dumps(sorted(built))}")
-              built.extend(wave)
           PLAN
 
   guide-wave-1:
@@ -266,10 +267,18 @@ jobs:
     # Every wave, including one the plan left empty: a skipped wave still has to be accounted for
     # rather than letting the ledger run against a partial set.
     needs: [guide-wave-1, guide-wave-2, guide-wave-3, guide-wave-4]
-    if: always() && !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled')
+    # Runs even when a wave fails, so this required check fails rather than being skipped: a skipped
+    # required check can read as neutral, which would let a broken guide build merge. A wave the plan
+    # left empty is `skipped`, which is not a failure.
+    if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
+      - name: Require every wave to have succeeded
+        if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
+        run: |
+          echo "::error::a guide wave did not succeed; the ledger cannot audit a partial build"
+          exit 1
       - uses: actions/checkout@v7
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
