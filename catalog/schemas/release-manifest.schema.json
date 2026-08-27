@@ -1,0 +1,135 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://grovealliance.org/fhir/catalog/schemas/release-manifest.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schemaVersion", "releaseVersion", "fhirVersion", "canonicalRoot", "toolchain", "publication", "guides", "normativeCatalogs"],
+  "properties": {
+    "$schema": {"const": "https://grovealliance.org/fhir/catalog/schemas/release-manifest.schema.json"},
+    "schemaVersion": {"const": 1},
+    "releaseVersion": {"const": "0.6.0"},
+    "fhirVersion": {"const": "4.0.1"},
+    "canonicalRoot": {"const": "https://grovealliance.org/fhir"},
+    "toolchain": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["igPublisher", "fhirValidator", "sushi", "template"],
+      "properties": {
+        "igPublisher": {
+          "allOf": [
+            {"$ref": "#/$defs/checksummedTool"},
+            {"type": "object", "properties": {"version": {"const": "2.3.3"}, "sha256": {"const": "7821631325c60b17b8832a15ed4299563265e72cfe5af12457ab7f23628400d2"}}}
+          ]
+        },
+        "fhirValidator": {
+          "allOf": [
+            {"$ref": "#/$defs/checksummedTool"},
+            {"type": "object", "properties": {"version": {"const": "6.10.3"}, "sha256": {"const": "b2cd1c761dbb79722d7a1ccb149c3c522195c37c9f1b8951b23b1340828b691b"}}}
+          ]
+        },
+        "sushi": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["version"],
+          "properties": {
+            "version": {"const": "3.20.1"}
+          }
+        },
+        "template": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["packageId", "version", "sha256"],
+          "properties": {
+            "packageId": {"const": "fhir2.base.template"},
+            "version": {"const": "0.1.0"},
+            "sha256": {"const": "b351fa5fcc8edd76f491e129de4aeb35c888265ae0f7b33ea2af0571a7533fed"}
+          }
+        }
+      }
+    },
+    "publication": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sourceState", "previewMode", "releaseMode", "nonOverwrite", "sourceRevisionPolicy"],
+      "properties": {
+        "sourceState": {"enum": ["development", "release-candidate", "released"]},
+        "previewMode": {"const": "ci-build-only"},
+        "releaseMode": {"const": "immutable-releases"},
+        "nonOverwrite": {"const": true},
+        "sourceRevisionPolicy": {"type": "string", "minLength": 1}
+      }
+    },
+    "guides": {
+      "type": "array",
+      "minItems": 10,
+      "maxItems": 10,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["source", "packageId", "canonical", "directDependencies"],
+        "properties": {
+          "source": {"type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"},
+          "packageId": {"type": "string", "pattern": "^org\\.grovealliance\\.fhir\\.[a-z0-9-]+$"},
+          "canonical": {"type": "string", "format": "uri", "pattern": "^https://grovealliance\\.org/fhir/"},
+          "directDependencies": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {"type": "string", "pattern": "^[a-z0-9.-]+#[0-9]+\\.[0-9]+\\.[0-9]+$"}
+          }
+        },
+        "oneOf": [
+          {"const": {"source": "mobile", "packageId": "org.grovealliance.fhir.mobile", "canonical": "https://grovealliance.org/fhir/mobile", "directDependencies": ["hl7.terminology.r4#7.3.0", "hl7.fhir.uv.extensions.r4#5.3.0"]}},
+          {"const": {"source": "questionnaire", "packageId": "org.grovealliance.fhir.questionnaire", "canonical": "https://grovealliance.org/fhir/questionnaire", "directDependencies": ["hl7.fhir.uv.sdc#4.0.0", "hl7.fhir.uv.extensions.r4#5.3.0"]}},
+          {"const": {"source": "sensor", "packageId": "org.grovealliance.fhir.sensor", "canonical": "https://grovealliance.org/fhir/sensor", "directDependencies": ["hl7.terminology.r4#7.3.0", "hl7.fhir.uv.extensions.r4#5.3.0", "org.grovealliance.fhir.mobile#0.6.0"]}},
+          {"const": {"source": "sensorkit", "packageId": "org.grovealliance.fhir.sensorkit", "canonical": "https://grovealliance.org/fhir/sensorkit", "directDependencies": ["hl7.terminology.r4#7.3.0", "hl7.fhir.uv.extensions.r4#5.3.0", "org.grovealliance.fhir.mobile#0.6.0", "org.grovealliance.fhir.sensor#0.6.0"]}},
+          {"const": {"source": "healthkit", "packageId": "org.grovealliance.fhir.healthkit", "canonical": "https://grovealliance.org/fhir/healthkit", "directDependencies": ["hl7.terminology.r4#7.3.0", "hl7.fhir.uv.extensions.r4#5.3.0", "org.grovealliance.fhir.mobile#0.6.0", "org.grovealliance.fhir.sensor#0.6.0"]}},
+          {"const": {"source": "health-connect", "packageId": "org.grovealliance.fhir.health-connect", "canonical": "https://grovealliance.org/fhir/health-connect", "directDependencies": ["hl7.terminology.r4#7.3.0", "hl7.fhir.uv.extensions.r4#5.3.0", "org.grovealliance.fhir.mobile#0.6.0"]}},
+          {"const": {"source": "providers", "packageId": "org.grovealliance.fhir.providers", "canonical": "https://grovealliance.org/fhir/providers", "directDependencies": ["hl7.terminology.r4#7.3.0", "hl7.fhir.uv.extensions.r4#5.3.0", "org.grovealliance.fhir.mobile#0.6.0", "org.grovealliance.fhir.sensor#0.6.0"]}},
+          {"const": {"source": "withings", "packageId": "org.grovealliance.fhir.withings", "canonical": "https://grovealliance.org/fhir/withings", "directDependencies": ["hl7.terminology.r4#7.3.0", "hl7.fhir.uv.extensions.r4#5.3.0", "org.grovealliance.fhir.mobile#0.6.0", "org.grovealliance.fhir.providers#0.6.0", "org.grovealliance.fhir.sensor#0.6.0"]}},
+          {"const": {"source": "oura", "packageId": "org.grovealliance.fhir.oura", "canonical": "https://grovealliance.org/fhir/oura", "directDependencies": ["hl7.terminology.r4#7.3.0", "hl7.fhir.uv.extensions.r4#5.3.0", "org.grovealliance.fhir.mobile#0.6.0", "org.grovealliance.fhir.providers#0.6.0", "org.grovealliance.fhir.sensor#0.6.0"]}},
+          {"const": {"source": "google-health", "packageId": "org.grovealliance.fhir.google-health", "canonical": "https://grovealliance.org/fhir/google-health", "directDependencies": ["hl7.terminology.r4#7.3.0", "hl7.fhir.uv.extensions.r4#5.3.0", "org.grovealliance.fhir.mobile#0.6.0", "org.grovealliance.fhir.providers#0.6.0", "org.grovealliance.fhir.sensor#0.6.0"]}}
+        ]
+      }
+    },
+    "normativeCatalogs": {
+      "type": "array",
+      "minItems": 10,
+      "maxItems": 10,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "schema", "schemaVersion"],
+        "properties": {
+          "path": {"type": "string", "pattern": "^catalog/[a-z0-9-]+\\.json$"},
+          "schema": {"type": "string", "pattern": "^catalog/schemas/[a-z0-9-]+\\.schema\\.json$"},
+          "schemaVersion": {"type": "integer", "minimum": 1}
+        },
+        "oneOf": [
+          {"const": {"path": "catalog/exchange-protocol.json", "schema": "catalog/schemas/exchange-protocol.schema.json", "schemaVersion": 1}},
+          {"const": {"path": "catalog/measurement-catalog.json", "schema": "catalog/schemas/measurement-catalog.schema.json", "schemaVersion": 1}},
+          {"const": {"path": "catalog/package-graph.json", "schema": "catalog/schemas/package-graph.schema.json", "schemaVersion": 1}},
+          {"const": {"path": "catalog/format-registry.json", "schema": "catalog/schemas/catalog-contracts.schema.json", "schemaVersion": 1}},
+          {"const": {"path": "catalog/health-connect-adapter.json", "schema": "catalog/schemas/catalog-contracts.schema.json", "schemaVersion": 1}},
+          {"const": {"path": "catalog/healthkit-adapter.json", "schema": "catalog/schemas/catalog-contracts.schema.json", "schemaVersion": 1}},
+          {"const": {"path": "catalog/providers-adapter.json", "schema": "catalog/schemas/catalog-contracts.schema.json", "schemaVersion": 1}},
+          {"const": {"path": "catalog/sensor-catalog.json", "schema": "catalog/schemas/catalog-contracts.schema.json", "schemaVersion": 1}},
+          {"const": {"path": "catalog/sensorkit-adapter.json", "schema": "catalog/schemas/catalog-contracts.schema.json", "schemaVersion": 1}},
+          {"const": {"path": "catalog/profile-claims.json", "schema": "catalog/schemas/catalog-contracts.schema.json", "schemaVersion": 1}}
+        ]
+      }
+    }
+  },
+  "$defs": {
+    "checksummedTool": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["version", "sha256"],
+      "properties": {
+        "version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    }
+  }
+}

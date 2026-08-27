@@ -1,0 +1,443 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://grovealliance.org/fhir/catalog/schemas/exchange-protocol.schema.json",
+  "title": "Grove FHIR exchange protocol",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schemaVersion",
+    "version",
+    "protocolVersion",
+    "releaseVersion",
+    "fhirVersion",
+    "profiles",
+    "extensions",
+    "codeSystems",
+    "conformanceLevels",
+    "event",
+    "opaqueIdentity",
+    "entryIdentity",
+    "lifecycle",
+    "referencePolicy",
+    "outputModes",
+    "outputCountRules",
+    "recordingDevice",
+    "payload",
+    "testVectors"
+  ],
+  "properties": {
+    "$schema": { "const": "https://grovealliance.org/fhir/catalog/schemas/exchange-protocol.schema.json" },
+    "schemaVersion": { "const": 1 },
+    "version": { "const": "0.6.0" },
+    "protocolVersion": { "const": 2 },
+    "releaseVersion": { "const": "0.6.0" },
+    "fhirVersion": { "const": "4.0.1" },
+    "profiles": { "$ref": "#/$defs/profiles" },
+    "extensions": { "$ref": "#/$defs/extensions" },
+    "codeSystems": { "$ref": "#/$defs/codeSystems" },
+    "conformanceLevels": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": { "$ref": "#/$defs/conformanceLevel" }
+    },
+    "event": { "$ref": "#/$defs/event" },
+    "opaqueIdentity": { "$ref": "#/$defs/opaqueIdentity" },
+    "entryIdentity": { "$ref": "#/$defs/entryIdentity" },
+    "lifecycle": { "$ref": "#/$defs/lifecycle" },
+    "referencePolicy": { "$ref": "#/$defs/referencePolicy" },
+    "outputModes": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": { "$ref": "#/$defs/codeMeaning" }
+    },
+    "outputCountRules": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "pattern": "^[a-z]+(?:-[a-z]+)*$" }
+    },
+    "recordingDevice": { "$ref": "#/$defs/recordingDevice" },
+    "payload": { "$ref": "#/$defs/payload" },
+    "testVectors": { "$ref": "#/$defs/testVectors" }
+  },
+  "$defs": {
+    "nonempty": { "type": "string", "minLength": 1 },
+    "uri": { "type": "string", "pattern": "^https?://[^\\s]+$" },
+    "code": { "type": "string", "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$" },
+    "profiles": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["activeBundle", "conversionProvenance", "retractionBundle", "retractionProvenance"],
+      "properties": {
+        "activeBundle": { "$ref": "#/$defs/uri" },
+        "conversionProvenance": { "$ref": "#/$defs/uri" },
+        "retractionBundle": { "$ref": "#/$defs/uri" },
+        "retractionProvenance": { "$ref": "#/$defs/uri" }
+      }
+    },
+    "extensions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["entryNodeKey", "retractionTargetRole"],
+      "properties": {
+        "entryNodeKey": { "$ref": "#/$defs/uri" },
+        "retractionTargetRole": { "$ref": "#/$defs/uri" }
+      }
+    },
+    "codeSystems": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["identifierRole", "lifecycleEvent", "retractionTargetRole"],
+      "properties": {
+        "identifierRole": { "$ref": "#/$defs/uri" },
+        "lifecycleEvent": { "$ref": "#/$defs/uri" },
+        "retractionTargetRole": { "$ref": "#/$defs/uri" }
+      }
+    },
+    "conformanceLevel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "authority", "validator"],
+      "properties": {
+        "code": { "enum": ["fhir-r4", "grove-profile", "grove-producer"] },
+        "authority": { "$ref": "#/$defs/nonempty" },
+        "validator": { "$ref": "#/$defs/nonempty" }
+      }
+    },
+    "event": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["semanticUnit", "bundleIdentifier", "times", "retry", "transport"],
+      "properties": {
+        "semanticUnit": { "$ref": "#/$defs/nonempty" },
+        "bundleIdentifier": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["system", "valueForm", "soleEventBusinessIdentifier"],
+          "properties": {
+            "system": { "$ref": "#/$defs/nonempty" },
+            "valueForm": { "$ref": "#/$defs/nonempty" },
+            "soleEventBusinessIdentifier": { "const": true }
+          }
+        },
+        "times": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["occurred", "recorded", "assembled"],
+          "properties": {
+            "occurred": { "$ref": "#/$defs/nonempty" },
+            "recorded": { "$ref": "#/$defs/nonempty" },
+            "assembled": { "$ref": "#/$defs/nonempty" }
+          }
+        },
+        "retry": { "$ref": "#/$defs/nonempty" },
+        "transport": { "$ref": "#/$defs/nonempty" }
+      }
+    },
+    "opaqueIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "domain", "preimage", "valueForm", "identifierSystem", "keyRequirements", "privacy", "rotation", "identityKinds"],
+      "properties": {
+        "algorithm": { "const": "HMAC-SHA-256" },
+        "domain": { "const": "org.grovealliance.fhir.identity.v2" },
+        "preimage": { "$ref": "#/$defs/nonempty" },
+        "valueForm": { "$ref": "#/$defs/nonempty" },
+        "identifierSystem": { "$ref": "#/$defs/nonempty" },
+        "keyRequirements": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["minimumBytes", "managedSecret", "testKeysProhibited"],
+          "properties": {
+            "minimumBytes": { "type": "integer", "minimum": 32 },
+            "managedSecret": { "const": true },
+            "testKeysProhibited": { "const": true }
+          }
+        },
+        "privacy": { "$ref": "#/$defs/nonempty" },
+        "rotation": { "$ref": "#/$defs/nonempty" },
+        "identityKinds": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/identityKind" }
+        }
+      }
+    },
+    "identityKind": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "identifierRole", "components"],
+      "properties": {
+        "kind": { "$ref": "#/$defs/code" },
+        "identifierRole": { "$ref": "#/$defs/code" },
+        "components": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/code" }
+        }
+      }
+    },
+    "entryIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["selection", "resourceIdentifierPriority", "entryNode", "fullUrl"],
+      "properties": {
+        "selection": { "$ref": "#/$defs/nonempty" },
+        "resourceIdentifierPriority": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/code" }
+        },
+        "entryNode": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["system", "domain", "components", "valueForm", "digest"],
+          "properties": {
+            "system": { "$ref": "#/$defs/nonempty" },
+            "domain": { "const": "org.grovealliance.fhir.entry-node.v2" },
+            "components": {
+              "type": "array",
+              "minItems": 4,
+              "maxItems": 4,
+              "items": { "$ref": "#/$defs/code" }
+            },
+            "valueForm": { "$ref": "#/$defs/nonempty" },
+            "digest": { "$ref": "#/$defs/nonempty" }
+          }
+        },
+        "fullUrl": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["algorithm", "namespace", "output", "privacy"],
+          "properties": {
+            "algorithm": { "$ref": "#/$defs/nonempty" },
+            "namespace": { "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-5[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$" },
+            "output": { "$ref": "#/$defs/nonempty" },
+            "privacy": { "$ref": "#/$defs/nonempty" }
+          }
+        }
+      }
+    },
+    "lifecycle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["active", "retraction"],
+      "properties": {
+        "active": { "$ref": "#/$defs/lifecycleShape" },
+        "retraction": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["activitySystem", "activityCode", "codingCardinality", "meaning", "target", "targetRoles", "sink"],
+          "properties": {
+            "activitySystem": { "$ref": "#/$defs/uri" },
+            "activityCode": { "const": "source-record-retracted" },
+            "codingCardinality": { "$ref": "#/$defs/nonempty" },
+            "meaning": { "$ref": "#/$defs/nonempty" },
+            "target": { "$ref": "#/$defs/nonempty" },
+            "targetRoles": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["primary-output", "source-artifact", "child-output", "specimen", "device-snapshot"],
+              "properties": {
+                "primary-output": { "const": { "identifierRole": "source-output", "resourceTypes": ["Observation", "VisionPrescription", "MedicationAdministration", "MedicationStatement"] } },
+                "source-artifact": { "const": { "identifierRole": "source-output", "resourceTypes": ["DocumentReference"] } },
+                "child-output": { "const": { "identifierRole": "source-output", "resourceTypes": ["Observation"] } },
+                "specimen": { "const": { "identifierRole": "source-output", "resourceTypes": ["Specimen"] } },
+                "device-snapshot": { "const": { "identifierRole": "device-snapshot", "resourceTypes": ["Device"] } }
+              }
+            },
+            "sink": { "$ref": "#/$defs/nonempty" }
+          }
+        }
+      }
+    },
+    "lifecycleShape": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["activitySystem", "activityCode", "codingCardinality", "shape", "entryResourcePolicy", "adapterOnlyOutputProfileClaims"],
+      "properties": {
+        "activitySystem": { "$ref": "#/$defs/uri" },
+        "activityCode": { "const": "transform" },
+        "codingCardinality": { "$ref": "#/$defs/nonempty" },
+        "shape": { "$ref": "#/$defs/nonempty" },
+        "entryResourcePolicy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["outputResourceTypes", "supportingResourceTypes", "lifecycleResourceType", "otherResourceTypesAllowed", "containedResourcesAllowed", "supportingResourcesMustBeConnected", "profileClaimAuthority", "rule"],
+          "properties": {
+            "outputResourceTypes": { "const": ["Observation", "DocumentReference", "Specimen", "VisionPrescription", "MedicationAdministration", "MedicationStatement"] },
+            "supportingResourceTypes": { "const": ["Patient", "Device", "ResearchStudy", "ResearchSubject", "PlanDefinition", "QuestionnaireResponse"] },
+            "lifecycleResourceType": { "const": "Provenance" },
+            "otherResourceTypesAllowed": { "const": false },
+            "containedResourcesAllowed": { "const": false },
+            "supportingResourcesMustBeConnected": { "const": true },
+            "profileClaimAuthority": { "const": "catalog/profile-claims.json" },
+            "rule": { "$ref": "#/$defs/nonempty" }
+          }
+        },
+        "adapterOnlyOutputProfileClaims": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["authority", "resourceTypes", "rule"],
+          "properties": {
+            "authority": { "const": "catalog/profile-claims.json" },
+            "resourceTypes": { "const": ["Specimen", "VisionPrescription", "MedicationAdministration", "MedicationStatement"] },
+            "rule": { "$ref": "#/$defs/nonempty" }
+          }
+        }
+      }
+    },
+    "referencePolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["literalClosure", "declaredType", "governedShape", "paths", "extensionTargets"],
+      "properties": {
+        "literalClosure": { "$ref": "#/$defs/nonempty" },
+        "declaredType": { "$ref": "#/$defs/nonempty" },
+        "governedShape": { "$ref": "#/$defs/nonempty" },
+        "paths": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/referencePath" }
+        },
+        "extensionTargets": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/extensionTarget" }
+        }
+      }
+    },
+    "referencePath": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["resourceType", "path", "targetTypes"],
+      "properties": {
+        "resourceType": { "type": "string", "pattern": "^[A-Z][A-Za-z]+$" },
+        "path": { "type": "string", "pattern": "^[a-z][A-Za-z]+$" },
+        "targetTypes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^[A-Z][A-Za-z]+$" }
+        }
+      }
+    },
+    "extensionTarget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["url", "targetTypes"],
+      "properties": {
+        "url": { "$ref": "#/$defs/uri" },
+        "targetTypes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^[A-Z][A-Za-z]+$" }
+        }
+      }
+    },
+    "codeMeaning": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "meaning"],
+      "properties": {
+        "code": { "enum": ["semantic-only", "source-only", "hybrid-required", "choice"] },
+        "meaning": { "$ref": "#/$defs/nonempty" }
+      }
+    },
+    "recordingDevice": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["instanceRule", "unknownInstance", "snapshots", "roles"],
+      "properties": {
+        "instanceRule": { "$ref": "#/$defs/nonempty" },
+        "unknownInstance": { "$ref": "#/$defs/nonempty" },
+        "snapshots": { "$ref": "#/$defs/nonempty" },
+        "roles": { "$ref": "#/$defs/nonempty" }
+      }
+    },
+    "payload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["attachmentSize", "attachmentHash", "semanticComparison", "byteComparison"],
+      "properties": {
+        "attachmentSize": { "$ref": "#/$defs/nonempty" },
+        "attachmentHash": { "$ref": "#/$defs/nonempty" },
+        "semanticComparison": { "$ref": "#/$defs/nonempty" },
+        "byteComparison": { "$ref": "#/$defs/nonempty" }
+      }
+    },
+    "testVectors": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["keyHex", "keyId", "epoch", "warning", "identities", "event", "entryNode", "fullUrls"],
+      "properties": {
+        "keyHex": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "keyId": { "type": "string", "pattern": "^[A-Za-z0-9._-]+$" },
+        "epoch": { "type": "string", "pattern": "^[1-9][0-9]*$" },
+        "warning": { "$ref": "#/$defs/nonempty" },
+        "identities": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/identityVector" }
+        },
+        "event": { "$ref": "#/$defs/eventVector" },
+        "entryNode": { "$ref": "#/$defs/entryNodeVector" },
+        "fullUrls": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/fullUrlVector" }
+        }
+      }
+    },
+    "identityVector": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "identityKind", "components", "value"],
+      "properties": {
+        "id": { "$ref": "#/$defs/code" },
+        "identityKind": { "$ref": "#/$defs/code" },
+        "components": { "type": "array", "items": { "type": "string" } },
+        "value": { "type": "string", "pattern": "^v2:[A-Za-z0-9._-]+:[1-9][0-9]*:[A-Za-z0-9_-]{43}$" }
+      }
+    },
+    "eventVector": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["system", "producerInstance", "sequence", "value"],
+      "properties": {
+        "system": { "$ref": "#/$defs/uri" },
+        "producerInstance": { "type": "string", "pattern": "^[0-9a-f-]{36}$" },
+        "sequence": { "type": "string", "pattern": "^[1-9][0-9]*$" },
+        "value": { "type": "string", "pattern": "^e2:[0-9a-f-]{36}:[1-9][0-9]*$" }
+      }
+    },
+    "entryNodeVector": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["system", "role", "ordinal", "value", "fullUrl"],
+      "properties": {
+        "system": { "$ref": "#/$defs/uri" },
+        "role": { "$ref": "#/$defs/code" },
+        "ordinal": { "type": "string", "pattern": "^(0|[1-9][0-9]*)$" },
+        "value": { "type": "string", "pattern": "^n2:[a-z][a-z0-9-]*:(0|[1-9][0-9]*):[A-Za-z0-9_-]{43}$" },
+        "fullUrl": { "type": "string", "pattern": "^urn:uuid:[0-9a-f-]{36}$" }
+      }
+    },
+    "fullUrlVector": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "system", "value", "fullUrl"],
+      "properties": {
+        "id": { "$ref": "#/$defs/code" },
+        "system": { "$ref": "#/$defs/uri" },
+        "value": { "$ref": "#/$defs/nonempty" },
+        "fullUrl": { "type": "string", "pattern": "^urn:uuid:[0-9a-f-]{36}$" }
+      }
+    }
+  }
+}

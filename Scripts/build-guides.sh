@@ -27,10 +27,34 @@ cd "$REPOSITORY_ROOT"
 export PATH="$REPOSITORY_ROOT/node_modules/.bin:$PATH"
 bundle config set --local path "$REPOSITORY_ROOT/.build/bundle"
 bundle config set --local bin "$REPOSITORY_ROOT/.build/bin"
-bundle install --jobs 4 --retry 3
+case "${GROVE_TX_OFFLINE:-0}" in
+  0|"") offline_build=false ;;
+  1) offline_build=true ;;
+  *) echo "GROVE_TX_OFFLINE must be 0 or 1" >&2; exit 2 ;;
+esac
+readonly offline_build
+if [[ "$offline_build" == "true" ]]; then
+  if [[ -n "${GROVE_TX_SERVER:-}" ]]; then
+    echo "GROVE_TX_SERVER is prohibited when GROVE_TX_OFFLINE=1" >&2
+    exit 2
+  fi
+  export BUNDLE_FROZEN=true
+  # Release builds bootstrap these dependencies in an explicit online phase. Re-resolve the
+  # complete bundle locally here so a missing gem fails instead of falling back to RubyGems.
+  bundle install --local --jobs 4
+  bundle check
+else
+  bundle install --jobs 4 --retry 3
+fi
 bundle binstubs jekyll
 export PATH="$REPOSITORY_ROOT/.build/bin:$PATH"
-./Scripts/download-fhir-tools.sh "$TOOLS_DIRECTORY"
+if [[ "$offline_build" == "true" ]]; then
+  # This re-hashes Publisher, Validator, the template, and the external FHIR package closure,
+  # then seeds the isolated package cache exclusively from those verified local archives.
+  ./Scripts/download-fhir-tools.sh --offline "$TOOLS_DIRECTORY"
+else
+  ./Scripts/download-fhir-tools.sh "$TOOLS_DIRECTORY"
+fi
 
 if [[ "$#" -eq 0 ]]; then
   guides=()
@@ -64,9 +88,9 @@ for guide in "${guides[@]}"; do
   # concepts this project has no licence to redistribute, and it is not ours to relicense under
   # the repository's MIT terms.
   #
-  # GROVE_TX_OFFLINE=1 builds without a server. That cannot validate any coding, so it reports
-  # every one as unvalidatable; use it only to check structure when no network is available.
-  if [[ -n "${GROVE_TX_OFFLINE:-}" ]]; then
+  # GROVE_TX_OFFLINE=1 builds without a server. That cannot validate every external coding, so it
+  # is the structural/package lane only; an approved online terminology attestation is separate.
+  if [[ "$offline_build" == "true" ]]; then
     publisher_arguments=(-ig ig.ini -tx n/a -no-network)
   else
     publisher_arguments=(-ig ig.ini -tx "${GROVE_TX_SERVER:-https://tx.fhir.org}")

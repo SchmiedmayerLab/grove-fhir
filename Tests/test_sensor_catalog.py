@@ -23,7 +23,7 @@ class SensorCatalogTests(unittest.TestCase):
         claims = json.loads((ROOT / "catalog/profile-claims.json").read_text(encoding="utf-8"))
         package = next(item for item in graph["packages"] if item["source"] == "sensor")
         self.assertEqual(catalog["fhirVersion"], "4.0.1")
-        self.assertEqual(catalog["version"], "0.5.0")
+        self.assertEqual(catalog["version"], "0.6.0")
         self.assertEqual(catalog["packageId"], package["packageId"])
         profile_ids = {item["profile"].rsplit("/", 1)[-1] for item in catalog["contracts"]}
         self.assertEqual(profile_ids, set(package["profiles"]))
@@ -55,6 +55,21 @@ class SensorCatalogTests(unittest.TestCase):
         self.assertIn("fail closed", admission["failureRule"])
         self.assertIn("does not inspect", admission["scope"])
 
+    def test_recording_attachment_title_is_optional_presentation_text(self) -> None:
+        sensor_profiles = (ROOT / "sensor/input/fsh/profiles.fsh").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("* content.attachment.title 0..1 MS", sensor_profiles)
+        self.assertNotIn("* content.attachment.title 1..1 MS", sensor_profiles)
+
+        healthkit_profiles = (ROOT / "healthkit/input/fsh/profiles.fsh").read_text(
+            encoding="utf-8"
+        )
+        clinical_profile = healthkit_profiles.split(
+            "Profile: HealthKitClinicalRecordDocument", 1
+        )[1].split("Extension: HealthKitClinicalFHIRRelease", 1)[0]
+        self.assertNotIn("content.attachment.title", clinical_profile)
+
     def test_sampled_data_timing_contract_is_exact(self) -> None:
         catalog = json.loads((ROOT / "catalog/sensor-catalog.json").read_text(encoding="utf-8"))
         sampled = next(item for item in catalog["contracts"] if item["id"] == "sampled-data")
@@ -70,7 +85,7 @@ class SensorCatalogTests(unittest.TestCase):
 
     def test_sensor_pins_mobile_and_terminology_dependencies(self) -> None:
         configuration = (ROOT / "sensor/sushi-config.yaml").read_text(encoding="utf-8")
-        self.assertIn("org.grovealliance.fhir.mobile:\n    version: 0.5.0", configuration)
+        self.assertIn("org.grovealliance.fhir.mobile:\n    version: 0.6.0", configuration)
         self.assertIn("hl7.terminology.r4: 7.3.0", configuration)
         # PHD is an alignment described in prose, not a package dependency.
         self.assertNotIn("hl7.fhir.uv.phd", configuration)

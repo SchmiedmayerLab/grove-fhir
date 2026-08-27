@@ -2,7 +2,7 @@
   "$schema": "https://grovealliance.org/fhir/catalog/schemas/measurement-catalog.schema.json",
   "schemaVersion": 1,
   "fhirVersion": "4.0.1",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "canonicalRoot": "https://grovealliance.org/fhir/mobile/StructureDefinition",
   "statusVocabulary": [
     "supported",
@@ -48,12 +48,12 @@
     }
   ],
   "statusDefinitions": {
-    "supported": "The named adapter emits and validates this exact Mobile profile in version 0.5.0.",
+    "supported": "The named adapter emits and validates this exact Mobile profile in version 0.6.0.",
     "mapped-standard": "Related source data is admitted only in the coverageDetails alternate representation. It does not implement or claim this Mobile profile.",
     "platform-exclusive": "The source meaning is admitted only by a platform-exclusive adapter profile and does not implement this Mobile profile.",
     "unmodeled": "The source element is inventoried by its adapter, but nothing models this Mobile meaning and no output is admitted.",
-    "deferred": "The source has related data, but version 0.5.0 admits no output for this Mobile meaning.",
-    "intentionally-unsupported": "The source has no semantically exact mapping to this Mobile meaning in the closed version 0.5.0 contract."
+    "deferred": "The source has related data, but version 0.6.0 admits no output for this Mobile meaning.",
+    "intentionally-unsupported": "The source has no semantically exact mapping to this Mobile meaning in the closed version 0.6.0 contract."
   },
   "effectiveCanonicalization": {
     "scope": "Every Mobile scalar or aggregate effectiveDateTime and effectivePeriod endpoint; Sensor and ECG SampledData timing is excluded.",
@@ -273,7 +273,12 @@
         "code": "%",
         "unit": "%",
         "example": 2,
-        "dimension": {}
+        "dimension": {},
+        "valueDomain": {
+          "minimum": { "value": 0, "inclusive": true },
+          "maximum": { "value": 100, "inclusive": true },
+          "integerOnly": false
+        }
       },
       "method": {
         "code": "percentage-of-time",
@@ -953,7 +958,12 @@
         "code": "%",
         "unit": "%",
         "example": 0.04,
-        "dimension": {}
+        "dimension": {},
+        "valueDomain": {
+          "minimum": { "value": 0, "inclusive": true },
+          "maximum": { "value": 100, "inclusive": true },
+          "integerOnly": false
+        }
       },
       "effective": "dateTime",
       "generation": {
@@ -991,6 +1001,9 @@
         }
       },
       "effective": "dateTime",
+      "forbiddenElements": [
+        "specimen"
+      ],
       "generation": {
         "emit": true
       },
@@ -1012,6 +1025,11 @@
       "code": {
         "system": "http://loinc.org",
         "code": "85354-9"
+      },
+      "category": {
+        "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+        "code": "vital-signs",
+        "display": "Vital Signs"
       },
       "valueKind": "components",
       "components": [
@@ -1195,7 +1213,12 @@
         "code": "%",
         "unit": "%",
         "example": 22,
-        "dimension": {}
+        "dimension": {},
+        "valueDomain": {
+          "minimum": { "value": 0, "inclusive": true },
+          "maximum": { "value": 100, "inclusive": true },
+          "integerOnly": false
+        }
       },
       "effective": "dateTime",
       "generation": {
@@ -1219,6 +1242,11 @@
       "code": {
         "system": "http://loinc.org",
         "code": "8302-2"
+      },
+      "category": {
+        "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+        "code": "vital-signs",
+        "display": "Vital Signs"
       },
       "valueKind": "quantity",
       "quantity": {
@@ -1252,6 +1280,11 @@
       "code": {
         "system": "http://loinc.org",
         "code": "8310-5"
+      },
+      "category": {
+        "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+        "code": "vital-signs",
+        "display": "Vital Signs"
       },
       "valueKind": "quantity",
       "quantity": {
@@ -1319,6 +1352,11 @@
       "code": {
         "system": "http://loinc.org",
         "code": "29463-7"
+      },
+      "category": {
+        "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+        "code": "vital-signs",
+        "display": "Vital Signs"
       },
       "valueKind": "quantity",
       "quantity": {
@@ -3558,7 +3596,11 @@
         "code": "{flights}",
         "unit": "flights",
         "example": 12,
-        "dimension": {}
+        "dimension": {},
+        "valueDomain": {
+          "minimum": { "value": 0, "inclusive": true },
+          "integerOnly": true
+        }
       },
       "effective": "Period",
       "generation": {
@@ -3864,6 +3906,11 @@
       "code": {
         "system": "http://loinc.org",
         "code": "8867-4"
+      },
+      "category": {
+        "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+        "code": "vital-signs",
+        "display": "Vital Signs"
       },
       "valueKind": "quantity",
       "quantity": {
@@ -4181,7 +4228,11 @@
         "code": "{puff}",
         "unit": "puffs",
         "example": 2,
-        "dimension": {}
+        "dimension": {},
+        "valueDomain": {
+          "minimum": { "value": 0, "inclusive": true },
+          "integerOnly": true
+        }
       },
       "effective": "Period",
       "generation": {
@@ -4840,7 +4891,11 @@
         "code": "{drinks}",
         "unit": "drinks",
         "example": 2,
-        "dimension": {}
+        "dimension": {},
+        "valueDomain": {
+          "minimum": { "value": 0, "inclusive": true },
+          "integerOnly": true
+        }
       },
       "effective": "Period",
       "generation": {
@@ -4874,7 +4929,11 @@
         "code": "{falls}",
         "unit": "falls",
         "example": 1,
-        "dimension": {}
+        "dimension": {},
+        "valueDomain": {
+          "minimum": { "value": 0, "inclusive": true },
+          "integerOnly": true
+        }
       },
       "effective": "Period",
       "generation": {
@@ -5026,13 +5085,23 @@
         "system": "http://loinc.org",
         "code": "2708-6"
       },
+      "category": {
+        "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+        "code": "vital-signs",
+        "display": "Vital Signs"
+      },
       "valueKind": "quantity",
       "quantity": {
         "system": "http://unitsofmeasure.org",
         "code": "%",
         "unit": "%",
         "example": 97,
-        "dimension": {}
+        "dimension": {},
+        "valueDomain": {
+          "minimum": { "value": 0, "inclusive": true },
+          "maximum": { "value": 100, "inclusive": true },
+          "integerOnly": false
+        }
       },
       "effective": "dateTime",
       "generation": {
@@ -5064,7 +5133,12 @@
         "code": "%",
         "unit": "%",
         "example": 96,
-        "dimension": {}
+        "dimension": {},
+        "valueDomain": {
+          "minimum": { "value": 0, "inclusive": true },
+          "maximum": { "value": 100, "inclusive": true },
+          "integerOnly": false
+        }
       },
       "method": {
         "code": "daily-mean",
@@ -5137,7 +5211,12 @@
         "code": "%",
         "unit": "%",
         "example": 3.5,
-        "dimension": {}
+        "dimension": {},
+        "valueDomain": {
+          "minimum": { "value": 0, "inclusive": true },
+          "maximum": { "value": 100, "inclusive": true },
+          "integerOnly": false
+        }
       },
       "effective": "dateTime",
       "generation": {
@@ -5646,6 +5725,11 @@
         "system": "http://loinc.org",
         "code": "9279-1"
       },
+      "category": {
+        "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+        "code": "vital-signs",
+        "display": "Vital Signs"
+      },
       "valueKind": "quantity",
       "quantity": {
         "system": "http://unitsofmeasure.org",
@@ -5710,14 +5794,62 @@
     {
       "id": "resting-heart-rate",
       "profile": "grove-mobile-resting-heart-rate",
-      "standardProfile": null,
+      "standardProfile": "http://hl7.org/fhir/StructureDefinition/heartrate",
       "title": "Resting Heart Rate",
-      "description": "A windowed estimate of the heart rate while at rest, normalized to UCUM beats per minute over the exact estimation window. It is semantically distinct from the shared point heart-rate measurement and is implemented by the phase-2 aggregate design. LOINC 40443-4 is deliberately not used: it denotes a heart rate measured at rest, which R4 classifies as a vital sign, whereas this result is a derived daily estimate that must not be surfaced as a measured vital sign.",
+      "description": "One instantaneous heart-rate measurement explicitly classified by its source as taken at rest, normalized to UCUM beats per minute. This is not an aggregate result: any daily or windowed estimate uses the separate resting-heart-rate-daily-average profile.",
       "code": {
-        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
-        "code": "resting-heart-rate",
-        "display": "Resting heart rate",
-        "definition": "The estimated heart rate at rest across the exact Observation effective Period."
+        "system": "http://loinc.org",
+        "code": "40443-4",
+        "display": "Heart rate --resting"
+      },
+      "requiredCodings": [
+        {
+          "slice": "heartRate",
+          "system": "http://loinc.org",
+          "code": "8867-4",
+          "display": "Heart rate"
+        }
+      ],
+      "category": {
+        "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+        "code": "vital-signs",
+        "display": "Vital Signs"
+      },
+      "valueKind": "quantity",
+      "quantity": {
+        "system": "http://unitsofmeasure.org",
+        "code": "/min",
+        "unit": "beats/minute",
+        "example": 58,
+        "dimension": {
+          "s": -1
+        }
+      },
+      "effective": "dateTime",
+      "generation": {
+        "emit": true
+      },
+      "coverage": {
+        "healthkit": "supported",
+        "health-connect": "supported",
+        "sensorkit": "unmodeled",
+        "google-health-api": "unmodeled",
+        "oura": "unmodeled",
+        "withings": "unmodeled"
+      }
+    },
+    {
+      "id": "resting-heart-rate-daily-average",
+      "profile": "google-health-daily-resting-heart-rate",
+      "owner": "google-health",
+      "standardProfile": null,
+      "title": "Resting Heart Rate Daily Average",
+      "description": "A source-supplied mean resting heart rate over an exact civil-day Period, normalized to UCUM beats per minute. It is an aggregate estimate and is never substituted for a point RestingHeartRateRecord or HealthKit resting-heart-rate sample.",
+      "code": {
+        "system": "https://grovealliance.org/fhir/google-health/CodeSystem/google-health-measurement",
+        "code": "resting-heart-rate-daily-average",
+        "display": "Resting heart rate daily average",
+        "definition": "The mean resting heart-rate estimate reported for the exact civil-day Period."
       },
       "valueKind": "quantity",
       "quantity": {
@@ -5738,8 +5870,8 @@
         "emit": true
       },
       "coverage": {
-        "healthkit": "supported",
-        "health-connect": "supported",
+        "healthkit": "unmodeled",
+        "health-connect": "unmodeled",
         "sensorkit": "unmodeled",
         "google-health-api": "supported",
         "oura": "unmodeled",
@@ -6377,7 +6509,12 @@
         "code": "1",
         "unit": "valence",
         "example": 0.4,
-        "dimension": {}
+        "dimension": {},
+        "valueDomain": {
+          "minimum": { "value": -1, "inclusive": true },
+          "maximum": { "value": 1, "inclusive": true },
+          "integerOnly": false
+        }
       },
       "effective": "Period",
       "generation": {
@@ -6822,13 +6959,16 @@
         "unit": "steps",
         "example": 8432,
         "dimension": {},
+        "valueDomain": {
+          "minimum": { "value": 0, "inclusive": true },
+          "integerOnly": true
+        },
         "unitMustSupport": true
       },
       "effective": "Period",
       "obeys": [
         "grove-step-count-result-1",
-        "grove-step-count-period-1",
-        "grove-step-count-value-1"
+        "grove-step-count-period-1"
       ],
       "generation": {
         "emit": true
@@ -6870,7 +7010,11 @@
         "code": "{strokes}",
         "unit": "strokes",
         "example": 640,
-        "dimension": {}
+        "dimension": {},
+        "valueDomain": {
+          "minimum": { "value": 0, "inclusive": true },
+          "integerOnly": true
+        }
       },
       "effective": "Period",
       "generation": {
@@ -8576,7 +8720,12 @@
         "code": "%",
         "unit": "%",
         "example": 1.4,
-        "dimension": {}
+        "dimension": {},
+        "valueDomain": {
+          "minimum": { "value": 0, "inclusive": true },
+          "maximum": { "value": 100, "inclusive": true },
+          "integerOnly": false
+        }
       },
       "effective": "dateTime",
       "generation": {
@@ -8609,7 +8758,12 @@
         "code": "%",
         "unit": "%",
         "example": 27,
-        "dimension": {}
+        "dimension": {},
+        "valueDomain": {
+          "minimum": { "value": 0, "inclusive": true },
+          "maximum": { "value": 100, "inclusive": true },
+          "integerOnly": false
+        }
       },
       "effective": "dateTime",
       "generation": {
@@ -8720,7 +8874,12 @@
         "code": "%",
         "unit": "%",
         "example": 82,
-        "dimension": {}
+        "dimension": {},
+        "valueDomain": {
+          "minimum": { "value": 0, "inclusive": true },
+          "maximum": { "value": 100, "inclusive": true },
+          "integerOnly": false
+        }
       },
       "method": {
         "code": "rolling-mean",
@@ -8898,7 +9057,11 @@
         "code": "{pushes}",
         "unit": "pushes",
         "example": 1240,
-        "dimension": {}
+        "dimension": {},
+        "valueDomain": {
+          "minimum": { "value": 0, "inclusive": true },
+          "integerOnly": true
+        }
       },
       "effective": "Period",
       "generation": {

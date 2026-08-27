@@ -29,6 +29,50 @@ Description: "Exact source stage tokens admitted as the second coding of a Healt
 * ^experimental = false
 * include codes from system HealthConnectSleepStageCS
 
+CodeSystem: HealthConnectMindfulnessSessionTypeCS
+Id: health-connect-mindfulness-session-type
+Title: "Health Connect Mindfulness Session Type"
+Description: "The complete AndroidX Health Connect 1.1 MindfulnessSessionRecord type domain retained without reclassification."
+* ^experimental = false
+* ^caseSensitive = true
+* ^content = #complete
+* ^copyright = "AndroidX Health Connect API identifiers and type names originate from Google LLC and are used here only to identify source API concepts for interoperability. The MIT license applies to Grove-authored definitions; it does not grant rights in Google material."
+* #MINDFULNESS_SESSION_TYPE_UNKNOWN "Unknown" "A generic or otherwise unknown mindfulness session."
+* #MINDFULNESS_SESSION_TYPE_MEDITATION "Meditation" "A meditation mindfulness session."
+* #MINDFULNESS_SESSION_TYPE_BREATHING "Guided breathing" "A guided breathing mindfulness session."
+* #MINDFULNESS_SESSION_TYPE_MUSIC "Music or soundscapes" "A music or soundscape mindfulness session."
+* #MINDFULNESS_SESSION_TYPE_MOVEMENT "Movement" "A stretching or movement mindfulness session."
+* #MINDFULNESS_SESSION_TYPE_UNGUIDED "Unguided" "An unguided mindfulness session."
+
+ValueSet: HealthConnectMindfulnessSessionTypeVS
+Id: health-connect-mindfulness-session-type
+Title: "Health Connect Mindfulness Session Type"
+Description: "Every exact AndroidX Health Connect 1.1 mindfulness-session type admitted by the adapter."
+* ^experimental = false
+* include codes from system HealthConnectMindfulnessSessionTypeCS
+
+CodeSystem: HealthConnectVo2MaxMeasurementMethodCS
+Id: health-connect-vo2-max-measurement-method
+Title: "Health Connect VO2 Max Measurement Method"
+Description: "The complete AndroidX Health Connect 1.1 Vo2MaxRecord measurement-method domain retained in Observation.method."
+* ^experimental = false
+* ^caseSensitive = true
+* ^content = #complete
+* ^copyright = "AndroidX Health Connect API identifiers and type names originate from Google LLC and are used here only to identify source API concepts for interoperability. The MIT license applies to Grove-authored definitions; it does not grant rights in Google material."
+* #MEASUREMENT_METHOD_OTHER "Other" "A method not represented by another AndroidX token."
+* #MEASUREMENT_METHOD_METABOLIC_CART "Metabolic cart" "Measurement by metabolic cart."
+* #MEASUREMENT_METHOD_HEART_RATE_RATIO "Heart-rate ratio" "Estimation from a heart-rate ratio."
+* #MEASUREMENT_METHOD_COOPER_TEST "Cooper test" "Estimation from a Cooper test."
+* #MEASUREMENT_METHOD_MULTISTAGE_FITNESS_TEST "Multistage fitness test" "Estimation from a multistage fitness test."
+* #MEASUREMENT_METHOD_ROCKPORT_FITNESS_TEST "Rockport fitness test" "Estimation from a Rockport fitness test."
+
+ValueSet: HealthConnectVo2MaxMeasurementMethodVS
+Id: health-connect-vo2-max-measurement-method
+Title: "Health Connect VO2 Max Measurement Method"
+Description: "Every exact AndroidX Health Connect 1.1 VO2 max measurement method admitted by the adapter."
+* ^experimental = false
+* include codes from system HealthConnectVo2MaxMeasurementMethodCS
+
 CodeSystem: HealthConnectRelationToMealCS
 Id: health-connect-relation-to-meal
 Title: "Health Connect Relation to Meal"
@@ -80,6 +124,13 @@ Description: "Exact AndroidX MenstruationFlowRecord flow constants retained alon
 * #FLOW_MEDIUM "Medium" "The flow was recorded as medium."
 * #FLOW_HEAVY "Heavy" "The flow was recorded as heavy."
 
+ValueSet: HealthConnectMenstruationFlowVS
+Id: health-connect-menstruation-flow
+Title: "Health Connect Menstruation Flow"
+Description: "The complete AndroidX MenstruationFlowRecord flow domain admitted by Grove 0.6.0."
+* ^experimental = false
+* include codes from system HealthConnectMenstruationFlowCS
+
 CodeSystem: HealthConnectOvulationTestResultCS
 Id: health-connect-ovulation-test-result
 Title: "Health Connect Ovulation Test Result"
@@ -90,7 +141,15 @@ Description: "Exact AndroidX OvulationTestRecord result constants retained along
 * ^copyright = "AndroidX Health Connect API identifiers and type names originate from Google LLC and are used here only to identify source API concepts for interoperability. The MIT license applies to Grove-authored definitions; it does not grant rights in Google material."
 * #RESULT_NEGATIVE "Negative" "The test did not indicate the fertile window."
 * #RESULT_HIGH "High" "The test indicated the fertile window."
+* #RESULT_POSITIVE "Positive" "The test detected a luteinizing-hormone surge."
 * #RESULT_INCONCLUSIVE "Inconclusive" "The test produced no readable result."
+
+ValueSet: HealthConnectOvulationTestResultVS
+Id: health-connect-ovulation-test-result
+Title: "Health Connect Ovulation Test Result"
+Description: "The complete AndroidX OvulationTestRecord result domain admitted by Grove 0.6.0."
+* ^experimental = false
+* include codes from system HealthConnectOvulationTestResultCS
 
 CodeSystem: HealthConnectSexualActivityProtectionCS
 Id: health-connect-sexual-activity-protection
@@ -102,6 +161,14 @@ Description: "Exact AndroidX SexualActivityRecord protection constants retained 
 * ^copyright = "AndroidX Health Connect API identifiers and type names originate from Google LLC and are used here only to identify source API concepts for interoperability. The MIT license applies to Grove-authored definitions; it does not grant rights in Google material."
 * #PROTECTION_USED_UNKNOWN "Unknown" "The record states nothing about protection."
 * #PROTECTION_USED_PROTECTED "Protected" "The record states that protection was used."
+* #PROTECTION_USED_UNPROTECTED "Unprotected" "The record states that protection was not used."
+
+ValueSet: HealthConnectSexualActivityProtectionVS
+Id: health-connect-sexual-activity-protection
+Title: "Health Connect Sexual Activity Protection"
+Description: "The complete AndroidX SexualActivityRecord protection-use domain admitted by Grove 0.6.0."
+* ^experimental = false
+* include codes from system HealthConnectSexualActivityProtectionCS
 
 CodeSystem: HealthConnectCervicalMucusAppearanceCS
 Id: health-connect-cervical-mucus-appearance
@@ -119,6 +186,13 @@ Description: "Exact AndroidX CervicalMucusRecord appearance constants retained a
 * #APPEARANCE_EGG_WHITE "Egg white" "The appearance was recorded as egg white."
 * #APPEARANCE_UNUSUAL "Unusual" "The appearance was recorded as unusual for the person."
 
+ValueSet: HealthConnectCervicalMucusAppearanceVS
+Id: health-connect-cervical-mucus-appearance
+Title: "Health Connect Cervical Mucus Appearance"
+Description: "The complete AndroidX CervicalMucusRecord appearance domain admitted by Grove 0.6.0."
+* ^experimental = false
+* include codes from system HealthConnectCervicalMucusAppearanceCS
+
 CodeSystem: HealthConnectCervicalMucusSensationCS
 Id: health-connect-cervical-mucus-sensation
 Title: "Health Connect Cervical Mucus Sensation"
@@ -130,6 +204,13 @@ Description: "Exact AndroidX CervicalMucusRecord sensation constants retained al
 * #SENSATION_LIGHT "Light" "The sensation was recorded as light."
 * #SENSATION_MEDIUM "Medium" "The sensation was recorded as medium."
 * #SENSATION_HEAVY "Heavy" "The sensation was recorded as heavy."
+
+ValueSet: HealthConnectCervicalMucusSensationVS
+Id: health-connect-cervical-mucus-sensation
+Title: "Health Connect Cervical Mucus Sensation"
+Description: "The non-UNKNOWN AndroidX CervicalMucusRecord sensation domain retained by Grove 0.6.0; UNKNOWN is represented by omission."
+* ^experimental = false
+* include codes from system HealthConnectCervicalMucusSensationCS
 
 CodeSystem: HealthConnectExerciseTypeCS
 Id: health-connect-exercise-type
@@ -200,6 +281,13 @@ Description: "Exact AndroidX ExerciseSessionRecord exercise-type constants retai
 * #EXERCISE_TYPE_WEIGHTLIFTING "Weightlifting" "The AndroidX ExerciseSessionRecord EXERCISE_TYPE_WEIGHTLIFTING constant, retained as the exact source activity behind the shared Grove workout coding."
 * #EXERCISE_TYPE_WHEELCHAIR "Wheelchair" "The AndroidX ExerciseSessionRecord EXERCISE_TYPE_WHEELCHAIR constant, retained as the exact source activity behind the shared Grove workout coding."
 * #EXERCISE_TYPE_YOGA "Yoga" "The AndroidX ExerciseSessionRecord EXERCISE_TYPE_YOGA constant, retained as the exact source activity behind the shared Grove workout coding."
+
+ValueSet: HealthConnectExerciseTypeVS
+Id: health-connect-exercise-type
+Title: "Health Connect Exercise Type"
+Description: "The complete AndroidX ExerciseSessionRecord exercise-type domain admitted by Grove 0.6.0."
+* ^experimental = false
+* include codes from system HealthConnectExerciseTypeCS
 
 CodeSystem: HealthConnectExerciseSegmentTypeCS
 Id: health-connect-exercise-segment-type
@@ -278,3 +366,10 @@ Description: "Exact AndroidX ExerciseSegment type constants retained alongside t
 * #EXERCISE_SEGMENT_TYPE_WHEELCHAIR "Wheelchair" "The AndroidX ExerciseSegment EXERCISE_SEGMENT_TYPE_WHEELCHAIR constant, retained as the exact source segment behind the shared Grove segment coding."
 * #EXERCISE_SEGMENT_TYPE_YOGA "Yoga" "The AndroidX ExerciseSegment EXERCISE_SEGMENT_TYPE_YOGA constant, retained as the exact source segment behind the shared Grove segment coding."
 * #EXERCISE_LAP "Exercise lap" "The AndroidX ExerciseSegment EXERCISE_LAP constant, retained as the exact source segment behind the shared Grove segment coding."
+
+ValueSet: HealthConnectExerciseSegmentTypeVS
+Id: health-connect-exercise-segment-type
+Title: "Health Connect Exercise Segment Type"
+Description: "The complete AndroidX ExerciseSegment type domain plus Grove's structural EXERCISE_LAP token admitted by Grove 0.6.0."
+* ^experimental = false
+* include codes from system HealthConnectExerciseSegmentTypeCS

@@ -9,7 +9,7 @@ WARNING: 4: The HTML fragment 'globals-table.xhtml' is not included anywhere in 
 # Grove constrains but does not publish the external IANA BCP 13 CodeSystem; only the locally owned ValueSet can receive a Grove OID.
 WARNING: Resource: The resource ValueSet/grove-native-recording-mime-type should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/fhir-tools-ig/CodeSystem-ig-parameters.html#ig-parameters-auto-oid-root)
 
-# Publisher 2.3.2 cannot expand the required core MIME binding with -tx n/a. The Grove-owned ValueSet carries its own closed expansion, but Grove does not publish an external CodeSystem or carry a terminology transaction cache.
+# Publisher 2.3.3 cannot expand the required core MIME binding with -tx n/a. The Grove-owned ValueSet carries its own closed expansion, but Grove does not publish an external CodeSystem or carry a terminology transaction cache.
 WARNING: Grove Sensor Recording Document.attachment.DocumentReference.content.attachment.contentType: Binding http://hl7.org/fhir/ValueSet/mimetypes|4.0.1 could not be expanded
 WARNING: ValueSet/grove-native-recording-mime-type: ValueSet.expansion: Because the expansion uses system 'urn:ietf:bcp:13' without a version, it should list the system using the expansion parameter 'used-codesystem'
 

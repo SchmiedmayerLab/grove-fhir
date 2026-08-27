@@ -20,10 +20,12 @@ Usage: #example
 Title: "Withings Body Weight"
 Description: "An already-obtained Withings weight measure on the Withings narrowing of the provider contract."
 * meta.profile[+] = "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-body-weight"
-* identifier[sourceRecordId].system = "https://grovealliance.org/fhir/providers/NamingSystem/provider-source-record-id"
-* identifier[sourceRecordId].value = "v1:withings|acct-7f3a9c|getmeas:1|record-body-weight"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* identifier[sourceRecord].value = "v2:test-key:1:v_LvUBZOa15LA0p5kXQXNZcARLmPPt7FiVgibReTE4o"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
+* identifier[sourceOutput].value = "v2:test-key:1:7-b5T3TLWURN3kGgXY8JSaNkTU8SAIwcMrKVWxRoLN4"
 * status = #final
-* category = http://terminology.hl7.org/CodeSystem/observation-category#vital-signs
+* category = http://terminology.hl7.org/CodeSystem/observation-category#vital-signs "Vital Signs"
 * code = $loinc#29463-7 "Body weight"
 * subject = Reference(WithingsPatientExample)
 * performer = Reference(WithingsPatientExample)

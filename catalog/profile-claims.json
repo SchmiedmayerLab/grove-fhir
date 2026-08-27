@@ -1,7 +1,8 @@
 {
+  "$schema": "https://grovealliance.org/fhir/catalog/schemas/catalog-contracts.schema.json",
   "schemaVersion": 1,
   "fhirVersion": "4.0.1",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "observationAdapterClaim": {
     "cardinality": 2,
     "members": [
@@ -44,6 +45,194 @@
       "http://hl7.org/fhir/StructureDefinition/resprate"
     ]
   },
+  "healthKitSingleProfileObservationClaims": {
+    "cardinality": 1,
+    "profiles": [
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-apple-exercise-time",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-apple-move-time",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-apple-stand-hour",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-apple-stand-time",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-atrial-fibrillation-burden",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-audiogram-panel",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-biological-sex",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-bladder-incontinence",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-bleeding-after-pregnancy",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-bleeding-during-pregnancy",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-blood-alcohol-content",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-blood-type",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-contraceptive-use",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-cycling-functional-threshold-power",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-date-of-birth",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-environmental-audio-exposure",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-environmental-audio-exposure-notification",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-environmental-sound-reduction",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-fitzpatrick-skin-type",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-food-correlation",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-forced-expiratory-volume-1",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-forced-vital-capacity",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-gad7-assessment",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-handwashing-session",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-headphone-audio-exposure",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-headphone-audio-exposure-notification",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-heart-rate-recovery-one-minute",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-high-heart-rate-notification",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-hypertension-notification",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-infrequent-menstrual-cycles",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-inhaler-usage",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-insulin-delivery",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-irregular-heart-rhythm-notification",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-irregular-menstrual-cycles",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-lactation-status",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-low-cardio-fitness-notification",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-low-heart-rate-notification",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-number-of-alcoholic-beverages",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-number-of-times-fallen",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-peak-expiratory-flow-rate",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-peripheral-perfusion-index",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-persistent-intermenstrual-bleeding",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-phq9-assessment",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-physical-effort",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-pregnancy-status",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-pregnancy-test-result",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-progesterone-test-result",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-prolonged-menstrual-periods",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-running-ground-contact-time",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-running-stride-length",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-running-vertical-oscillation",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-six-minute-walk-test-distance",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-sleep-apnea-notification",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-sleeping-breathing-disturbances",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-stair-ascent-speed",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-stair-descent-speed",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-state-of-mind",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-swimming-stroke-count",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-abdominal-cramps",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-acne",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-appetite-changes",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-bloating",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-breast-pain",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-chest-tightness-or-pain",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-chills",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-constipation",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-coughing",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-diarrhea",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-dizziness",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-dry-skin",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-fainting",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-fatigue",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-fever",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-generalized-body-ache",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-hair-loss",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-headache",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-heartburn",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-hot-flashes",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-loss-of-smell",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-loss-of-taste",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-lower-back-pain",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-memory-lapse",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-mood-changes",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-nausea",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-night-sweats",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-pelvic-pain",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-rapid-pounding-or-fluttering-heartbeat",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-runny-nose",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-shortness-of-breath",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-sinus-congestion",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-skipped-heartbeat",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-sleep-changes",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-sore-throat",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-vomiting",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-wheezing",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-time-in-daylight",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-toothbrushing-session",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-underwater-depth",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-uv-exposure",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-vaginal-dryness",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-waist-circumference",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-walking-asymmetry",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-walking-double-support",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-walking-heart-rate-average",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-walking-speed",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-walking-steadiness",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-walking-steadiness-notification",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-walking-step-length",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-water-temperature",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-wheelchair-use",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-workout-effort-score"
+    ],
+    "otherProfilesAllowed": false
+  },
+  "sensorRecordingDocumentClaim": {
+    "resourceType": "DocumentReference",
+    "cardinality": 1,
+    "profiles": [
+      "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document"
+    ],
+    "otherProfilesAllowed": false,
+    "requiredIdentifierRoles": [
+      "source-record",
+      "source-output",
+      "source-artifact"
+    ]
+  },
+  "healthKitRecordingDocumentClaim": {
+    "cardinality": 2,
+    "profiles": [
+      "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-recording-document"
+    ],
+    "otherProfilesAllowed": false,
+    "requiredIdentifierRoles": [
+      "source-record",
+      "source-output",
+      "source-artifact"
+    ]
+  },
+  "healthKitClinicalRecordDocumentClaim": {
+    "cardinality": 1,
+    "profiles": [
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document"
+    ],
+    "otherProfilesAllowed": false,
+    "requiredIdentifierRoles": [
+      "source-record",
+      "source-output",
+      "source-artifact"
+    ]
+  },
+  "healthKitPlatformExclusiveResourceClaims": [
+    {
+      "resourceType": "VisionPrescription",
+      "profile": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-vision-prescription",
+      "cardinality": 1,
+      "otherProfilesAllowed": false,
+      "requiredIdentifierRoles": [
+        "source-record",
+        "source-output"
+      ]
+    },
+    {
+      "resourceType": "MedicationAdministration",
+      "profile": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-medication-dose-event",
+      "cardinality": 1,
+      "otherProfilesAllowed": false,
+      "requiredIdentifierRoles": [
+        "source-record",
+        "source-output"
+      ]
+    },
+    {
+      "resourceType": "MedicationStatement",
+      "profile": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-user-annotated-medication",
+      "cardinality": 1,
+      "otherProfilesAllowed": false,
+      "requiredIdentifierRoles": [
+        "source-record",
+        "source-output",
+        "source-context"
+      ]
+    }
+  ],
   "healthConnectPlatformExclusiveClaims": {
     "cardinality": 1,
     "profiles": [
@@ -55,20 +244,87 @@
     "otherProfilesAllowed": false
   },
   "sensorKitRecordingDocumentClaim": {
-    "identifierSystem": "https://grovealliance.org/fhir/sensorkit/NamingSystem/sensorkit-record-id",
     "cardinality": 2,
     "profiles": [
       "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document",
       "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-recording-document"
     ],
-    "otherProfilesAllowed": false
+    "otherProfilesAllowed": false,
+    "requiredIdentifierRoles": [
+      "source-record",
+      "source-output",
+      "source-artifact"
+    ]
   },
   "providerRecordingDocumentClaim": {
-    "identifierSystem": "https://grovealliance.org/fhir/providers/NamingSystem/provider-source-record-id",
     "cardinality": 2,
     "profiles": [
       "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document",
       "https://grovealliance.org/fhir/providers/StructureDefinition/providers-recording-document"
+    ],
+    "otherProfilesAllowed": false,
+    "requiredIdentifierRoles": [
+      "source-record",
+      "source-output",
+      "source-artifact"
+    ]
+  },
+  "activeDeviceClaims": [
+    {
+      "id": "mobile-recording-device",
+      "resourceType": "Device",
+      "cardinality": 1,
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-recording-device"
+      ],
+      "otherProfilesAllowed": false,
+      "requiredIdentifierRoles": [
+        "recording-device",
+        "device-snapshot"
+      ]
+    },
+    {
+      "id": "mobile-application-device",
+      "resourceType": "Device",
+      "cardinality": 1,
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-application-device"
+      ],
+      "otherProfilesAllowed": false,
+      "requiredIdentifierRoles": [
+        "device-snapshot"
+      ]
+    },
+    {
+      "id": "mobile-host-device",
+      "resourceType": "Device",
+      "cardinality": 1,
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-host-device"
+      ],
+      "otherProfilesAllowed": false,
+      "requiredIdentifierRoles": [
+        "device-snapshot"
+      ]
+    },
+    {
+      "id": "healthkit-application-device",
+      "resourceType": "Device",
+      "cardinality": 1,
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-application-device"
+      ],
+      "otherProfilesAllowed": false,
+      "requiredIdentifierRoles": [
+        "device-snapshot"
+      ]
+    }
+  ],
+  "activeQuestionnaireResponseClaim": {
+    "resourceType": "QuestionnaireResponse",
+    "cardinality": 1,
+    "profiles": [
+      "https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire-response"
     ],
     "otherProfilesAllowed": false
   },
@@ -76,30 +332,148 @@
     {
       "adapter": "healthkit",
       "profile": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-conversion-provenance",
-      "sourceIdentifierSystem": "https://grovealliance.org/fhir/healthkit/NamingSystem/healthkit-object-id",
       "targetAdapterProfiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-apple-exercise-time",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-apple-move-time",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-apple-stand-hour",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-apple-stand-time",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-atrial-fibrillation-burden",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-audiogram-panel",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-biological-sex",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-bladder-incontinence",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-bleeding-after-pregnancy",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-bleeding-during-pregnancy",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-blood-alcohol-content",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-blood-type",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-contraceptive-use",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-cycling-functional-threshold-power",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-date-of-birth",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-observation",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-environmental-audio-exposure",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-environmental-audio-exposure-notification",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-environmental-sound-reduction",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-fitzpatrick-skin-type",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-food-correlation",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-forced-expiratory-volume-1",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-forced-vital-capacity",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-gad7-assessment",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-handwashing-session",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-headphone-audio-exposure",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-headphone-audio-exposure-notification",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-heart-rate-recovery-one-minute",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-high-heart-rate-notification",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-hypertension-notification",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-infrequent-menstrual-cycles",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-inhaler-usage",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-insulin-delivery",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-irregular-heart-rhythm-notification",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-irregular-menstrual-cycles",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-lactation-status",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-low-cardio-fitness-notification",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-low-heart-rate-notification",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-medication-dose-event",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-number-of-alcoholic-beverages",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-number-of-times-fallen",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-observation",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-observation"
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-peak-expiratory-flow-rate",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-peripheral-perfusion-index",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-persistent-intermenstrual-bleeding",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-phq9-assessment",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-physical-effort",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-pregnancy-status",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-pregnancy-test-result",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-progesterone-test-result",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-prolonged-menstrual-periods",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-recording-document",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-running-ground-contact-time",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-running-stride-length",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-running-vertical-oscillation",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-six-minute-walk-test-distance",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-sleep-apnea-notification",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-sleeping-breathing-disturbances",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-stair-ascent-speed",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-stair-descent-speed",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-state-of-mind",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-swimming-stroke-count",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-abdominal-cramps",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-acne",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-appetite-changes",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-bloating",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-breast-pain",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-chest-tightness-or-pain",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-chills",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-constipation",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-coughing",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-diarrhea",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-dizziness",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-dry-skin",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-fainting",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-fatigue",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-fever",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-generalized-body-ache",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-hair-loss",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-headache",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-heartburn",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-hot-flashes",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-loss-of-smell",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-loss-of-taste",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-lower-back-pain",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-memory-lapse",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-mood-changes",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-nausea",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-night-sweats",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-pelvic-pain",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-rapid-pounding-or-fluttering-heartbeat",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-runny-nose",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-shortness-of-breath",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-sinus-congestion",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-skipped-heartbeat",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-sleep-changes",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-sore-throat",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-vomiting",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-wheezing",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-time-in-daylight",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-toothbrushing-session",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-underwater-depth",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-user-annotated-medication",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-uv-exposure",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-vaginal-dryness",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-vision-prescription",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-waist-circumference",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-walking-asymmetry",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-walking-double-support",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-walking-heart-rate-average",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-walking-speed",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-walking-steadiness",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-walking-steadiness-notification",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-walking-step-length",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-water-temperature",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-wheelchair-use",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-workout-effort-score"
       ],
-      "rule": "One Provenance in the exchange graph targets every HealthKit Observation produced from its exact sole source-object Identifier; every target is an internal UUID reference. A bundle whose outputs for a source record are all entered-in-error records a retraction rather than a conversion and carries no conversion Provenance."
+      "rule": "One Provenance in the active exchange graph targets every admitted HealthKit structured or byte-preserving output produced from its exact sole typed source-record Identifier, including child-only Observation, recording, clinical-document, vision, dose, and tracked-medication resources; every target is an internal UUID reference. An active conversion graph never encodes retraction by mutating output status. A separate retraction Bundle with retraction Provenance asserts source removal and carries no conversion Provenance.",
+      "sourceIdentifierRole": "source-record",
+      "sourceIdentityKind": "source-record"
     },
     {
       "adapter": "health-connect",
       "profile": "https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-conversion-provenance",
-      "sourceIdentifierSystem": "https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-record-id",
       "targetAdapterProfiles": [
         "https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-observation",
         "https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-whole-blood-glucose",
         "https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-capillary-blood-glucose",
         "https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-serum-plasma-glucose",
-        "https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-interstitial-glucose"
+        "https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-interstitial-glucose",
+        "https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-specimen"
       ],
-      "rule": "One Provenance in the exchange graph targets every Health Connect Observation produced from its exact sole source-record Identifier; every target is an internal UUID reference. The Provenance directly declares only the Health Connect conversion profile; its inherited Mobile profile is not repeated. A bundle whose outputs for a source record are all entered-in-error records a retraction rather than a conversion and carries no conversion Provenance."
+      "rule": "One Provenance in the active exchange graph targets every Health Connect Observation and synthesized Specimen produced from its exact sole typed source-record Identifier; every target is an internal UUID reference. The Provenance directly declares only the Health Connect conversion profile; its inherited Mobile profile is not repeated. An active conversion graph never encodes retraction by mutating output status. A separate retraction Bundle with retraction Provenance asserts source removal and carries no conversion Provenance.",
+      "sourceIdentifierRole": "source-record",
+      "sourceIdentityKind": "source-record"
     },
     {
       "adapter": "providers",
       "profile": "https://grovealliance.org/fhir/providers/StructureDefinition/providers-conversion-provenance",
-      "sourceIdentifierSystem": "https://grovealliance.org/fhir/providers/NamingSystem/provider-source-record-id",
       "targetAdapterProfiles": [
         "https://grovealliance.org/fhir/providers/StructureDefinition/providers-observation",
         "https://grovealliance.org/fhir/providers/StructureDefinition/providers-recording-document",
@@ -107,12 +481,13 @@
         "https://grovealliance.org/fhir/oura/StructureDefinition/oura-observation",
         "https://grovealliance.org/fhir/google-health/StructureDefinition/google-health-observation"
       ],
-      "rule": "One Provenance in the exchange graph targets every connected-provider Observation and Recording Document carrying its exact sole source-record Identifier; every target is an internal UUID reference. A bundle whose outputs for a source record are all entered-in-error records a retraction rather than a conversion and carries no conversion Provenance."
+      "rule": "One Provenance in the active exchange graph targets every connected-provider Observation and Recording Document carrying its exact sole typed source-record Identifier; every target is an internal UUID reference. An active conversion graph never encodes retraction by mutating output status. A separate retraction Bundle with retraction Provenance asserts source removal and carries no conversion Provenance.",
+      "sourceIdentifierRole": "source-record",
+      "sourceIdentityKind": "provider-record"
     },
     {
       "adapter": "sensorkit",
       "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-conversion-provenance",
-      "sourceIdentifierSystem": "https://grovealliance.org/fhir/sensorkit/NamingSystem/sensorkit-record-id",
       "targetAdapterProfiles": [
         "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-accelerometer-observation",
         "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-device-usage-observation",
@@ -128,7 +503,9 @@
         "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-visit-observation",
         "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-wrist-temperature-observation"
       ],
-      "rule": "One Provenance in the exchange graph targets every SensorKit structured and raw output carrying its exact sole source-record Identifier; every target is an internal UUID reference. A bundle whose outputs for a source record are all entered-in-error records a retraction rather than a conversion and carries no conversion Provenance."
+      "rule": "One Provenance in the active exchange graph targets every SensorKit structured and raw output carrying its exact sole typed source-record Identifier; every target is an internal UUID reference. An active conversion graph never encodes retraction by mutating output status. A separate retraction Bundle with retraction Provenance asserts source removal and carries no conversion Provenance.",
+      "sourceIdentifierRole": "source-record",
+      "sourceIdentityKind": "source-record"
     }
   ],
   "sensorKitPlatformExclusiveClaims": {
@@ -157,9 +534,13 @@
     "rule": "The ECG Observation and exact native Recording Document are linked in one exchange graph, share the exact source-record Identifier, and are both targeted by one SensorKit conversion Provenance."
   },
   "healthConnectSpecimenClaim": {
-    "identifierSystem": "https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-specimen-id",
+    "resourceType": "Specimen",
     "cardinality": 1,
     "profile": "https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-specimen",
-    "otherProfilesAllowed": false
+    "otherProfilesAllowed": false,
+    "requiredIdentifierRoles": [
+      "source-record",
+      "source-output"
+    ]
   }
 }

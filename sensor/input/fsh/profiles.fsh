@@ -21,9 +21,19 @@ Description: "A sampled-data frame contains at least one dimension."
 Expression: "dimensions > 0"
 Severity: #error
 
+Invariant: sensor-complete-frames-1
+Description: "SampledData contains at least two complete frames and its token count is divisible by dimensions."
+Expression: "data.split(' ').count() >= dimensions.toInteger() * 2 and data.split(' ').count() mod dimensions.toInteger() = 0"
+Severity: #error
+
 Invariant: sensor-document-payload-1
 Description: "A sensor recording attachment contains exactly one of embedded data or a retrievable URL."
 Expression: "data.exists() xor url.exists()"
+Severity: #error
+
+Invariant: sensor-opaque-identifier-value-1
+Description: "A sensor source, output, or writer identifier is a canonical deployment-scoped Grove v2 HMAC value."
+Expression: "$this.matches('^v2:[A-Za-z0-9._-]+:[1-9][0-9]*:[A-Za-z0-9_-]{43}$')"
 Severity: #error
 
 Profile: GroveSensorSampledDataObservation
@@ -40,6 +50,7 @@ Description: "A source-neutral uniformly sampled numeric time series represented
 * valueSampledData obeys sensor-inline-data-1
 * valueSampledData obeys sensor-period-positive-1
 * valueSampledData obeys sensor-dimensions-positive-1
+* valueSampledData obeys sensor-complete-frames-1
 * valueSampledData.origin.value 1..1 MS
 * valueSampledData.origin.system 1..1 MS
 * valueSampledData.origin.system = $ucum (exactly)
@@ -57,7 +68,7 @@ Parent: GroveMobileObservation
 Id: grove-sensor-ecg-observation
 Title: "Grove Sensor ECG Observation"
 Description: "An ECG recording whose lead channels are uniformly sampled FHIR R4 SampledData components."
-* code = $loinc#11524-6 "EKG study"
+* code = $loinc#11524-6
 * effective[x] 1..1 MS
 * effective[x] only Period
 * effectivePeriod.start 1..1 MS
@@ -71,6 +82,7 @@ Description: "An ECG recording whose lead channels are uniformly sampled FHIR R4
 * component.valueSampledData obeys sensor-inline-data-1
 * component.valueSampledData obeys sensor-period-positive-1
 * component.valueSampledData obeys sensor-dimensions-positive-1
+* component.valueSampledData obeys sensor-complete-frames-1
 * component.valueSampledData.origin.value 1..1 MS
 * component.valueSampledData.origin.system 1..1 MS
 * component.valueSampledData.origin.system = $ucum (exactly)
@@ -90,13 +102,33 @@ Parent: DocumentReference
 Id: grove-sensor-recording-document
 Title: "Grove Sensor Recording Document"
 Description: "An externally encoded or embedded sensor recording whose native representation is not losslessly expressed as FHIR SampledData."
-* identifier 1..* MS
+* identifier 3..* MS
+* identifier ^slicing.discriminator.type = #pattern
+* identifier ^slicing.discriminator.path = "type"
+* identifier ^slicing.rules = #open
+* identifier contains sourceRecord 1..1 MS and sourceOutput 1..1 MS and sourceArtifact 1..1 MS and writerRecord 0..1 MS
+* identifier[sourceRecord].type = $groveIdentifierRole#source-record
+* identifier[sourceRecord].system 1..1 MS
+* identifier[sourceRecord].value 1..1 MS
+* identifier[sourceRecord].value obeys sensor-opaque-identifier-value-1
+* identifier[sourceOutput].type = $groveIdentifierRole#source-output
+* identifier[sourceOutput].system 1..1 MS
+* identifier[sourceOutput].value 1..1 MS
+* identifier[sourceOutput].value obeys sensor-opaque-identifier-value-1
+* identifier[sourceArtifact].type = $groveIdentifierRole#source-artifact
+* identifier[sourceArtifact].system 1..1 MS
+* identifier[sourceArtifact].value 1..1 MS
+* identifier[sourceArtifact].value obeys sensor-opaque-identifier-value-1
+* identifier[writerRecord].type = $groveIdentifierRole#writer-record
+* identifier[writerRecord].system 1..1 MS
+* identifier[writerRecord].value 1..1 MS
+* identifier[writerRecord].value obeys sensor-opaque-identifier-value-1
 * status MS
 * type 1..1 MS
 * subject 1..1 MS
 * subject only Reference(Patient)
 * date 1..1 MS
-* content 1..* MS
+* content 1..1 MS
 * content.attachment obeys sensor-document-payload-1
 * content.attachment.contentType 1..1 MS
 * content.attachment.contentType from GroveNativeRecordingMimeTypeVS (required)
@@ -106,32 +138,15 @@ Description: "An externally encoded or embedded sensor recording whose native re
 // profile wrong the moment the guide version moves. Every recording document inherits this, so
 // the rule holds for the adapter guides rather than being restated in each.
 * content.format.version 1..1 MS
-* content.attachment.title 1..1 MS
+* content.attachment.title 0..1 MS
 * content.attachment.size 1..1 MS
 * content.attachment.hash 1..1 MS
 * context.related MS
 
 Profile: GroveSensorConversionProvenance
-Parent: Provenance
+Parent: GroveMobileConversionProvenance
 Id: grove-sensor-conversion-provenance
 Title: "Grove Sensor Conversion Provenance"
 Description: "Source-neutral provenance for an application transformation that produces one or more Mobile/Sensor Observations or native Sensor Recording Documents."
 * target 1..* MS
 * target only Reference(GroveMobileObservation or GroveSensorRecordingDocument)
-* occurred[x] MS
-* recorded 1..1 MS
-* activity 1..1 MS
-* activity = $recordLifecycleEvent#transform
-* agent 1..* MS
-* agent ^slicing.discriminator.type = #pattern
-* agent ^slicing.discriminator.path = "type"
-* agent ^slicing.rules = #open
-* agent contains assembler 1..1 MS
-* agent[assembler].type 1..1 MS
-* agent[assembler].type = $provenanceParticipantType#assembler
-* agent[assembler].who 1..1 MS
-* agent[assembler].who only Reference(GroveApplicationDevice)
-* entity 1..* MS
-* entity.role 1..1 MS
-* entity.role = #source
-* entity.what MS

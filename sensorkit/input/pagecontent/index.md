@@ -15,7 +15,7 @@ New to FHIR?
 [Start with the FHIR basics page](https://grovealliance.org/fhir/mobile/fhir-basics.html) in the Mobile guide.
 It covers the resources these guides use, identifiers and references, and how to read a profile page.
 
-The authoritative v0.5.0 inventory contains all 22 streams in the stated Apple `SRSensor` baseline: 20 catalog-baseline symbols and two stable additions.
+The authoritative v0.6.0 inventory contains all 22 streams in the stated Apple `SRSensor` baseline: 20 catalog-baseline symbols and two stable additions.
 Every row has one definitive status in [`catalog/sensorkit-adapter.json`](https://grovealliance.org/fhir/catalog/sensorkit-adapter.json).
 The [device-usage walkthrough](walkthrough.html) demonstrates the dual-output contract that pairs each structured summary with its required native Recording Document.
 

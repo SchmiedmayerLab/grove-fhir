@@ -23,8 +23,10 @@ class CatalogVersionProseTests(unittest.TestCase):
         for path in sorted((ROOT / "catalog").glob("*.json")):
             catalog = json.loads(path.read_text(encoding="utf-8"))
             with self.subTest(catalog=path.name):
+                version = catalog.get("version", catalog.get("releaseVersion"))
+                self.assertIsInstance(version, str)
                 self.assertEqual(
-                    CHECK_CONTENT.stale_version_prose(path.name, catalog, catalog["version"]),
+                    CHECK_CONTENT.stale_version_prose(path.name, catalog, version),
                     [],
                 )
 

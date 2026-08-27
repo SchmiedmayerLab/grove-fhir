@@ -32,6 +32,11 @@ import json
 import re
 from pathlib import Path
 
+try:
+    from Scripts.exchange_protocol import derive_hmac_identity
+except ModuleNotFoundError:  # Direct execution places Scripts itself on sys.path.
+    from exchange_protocol import derive_hmac_identity
+
 REPOSITORY_ROOT = Path(__file__).resolve().parent.parent
 
 OWNERS = {
@@ -184,6 +189,7 @@ PROJECTION_KEYS = (
     "methodChoice",
     "obeys",
     "quantity",
+    "requiredCodings",
     "standardProfile",
     "valueKind",
     "valueSet",
@@ -245,7 +251,9 @@ def alias_map(layout: Layout) -> dict[str, str]:
     return aliases
 
 
-def quantity_rules(prefix: str, quantity: dict, strict: bool) -> list[str]:
+def quantity_rules(
+    prefix: str, quantity: dict, strict: bool, value_domain: dict | None = None
+) -> list[str]:
     rules = [
         f"* {prefix}value[x] only Quantity",
         f"* {prefix}valueQuantity.value 1..1 MS",
@@ -259,10 +267,64 @@ def quantity_rules(prefix: str, quantity: dict, strict: bool) -> list[str]:
     if strict:
         rules.append(f"* {prefix}valueQuantity.code 1..1 MS")
     rules.append(f"* {prefix}valueQuantity.code = #{quantity['code']} (exactly)")
+    if value_domain:
+        minimum = value_domain.get("minimum")
+        maximum = value_domain.get("maximum")
+        if minimum and minimum["inclusive"]:
+            rules.append(
+                f"* {prefix}valueQuantity.value ^minValueDecimal = {minimum['value']}"
+            )
+        if maximum and maximum["inclusive"]:
+            rules.append(
+                f"* {prefix}valueQuantity.value ^maxValueDecimal = {maximum['value']}"
+            )
     return rules
 
 
-def render_profile(measurement: dict, aliases: dict[str, str], by_id: dict) -> str:
+def quantity_domain_invariant(measurement: dict) -> tuple[str, str] | None:
+    domain = measurement["quantity"].get("valueDomain")
+    if not domain:
+        return None
+    key = f"{measurement['profile']}-value-domain-1"
+    value = "value.ofType(Quantity).value"
+    conditions: list[str] = []
+    descriptions: list[str] = []
+    minimum = domain.get("minimum")
+    if minimum:
+        operator = ">=" if minimum["inclusive"] else ">"
+        conditions.append(f"{value} {operator} {minimum['value']}")
+        descriptions.append(
+            f"{operator} {minimum['value']}"
+        )
+    maximum = domain.get("maximum")
+    if maximum:
+        operator = "<=" if maximum["inclusive"] else "<"
+        conditions.append(f"{value} {operator} {maximum['value']}")
+        descriptions.append(
+            f"{operator} {maximum['value']}"
+        )
+    if domain["integerOnly"]:
+        conditions.append(f"({value} mod 1) = 0")
+        descriptions.append("an integer")
+    description = ", ".join(descriptions)
+    expression = " and ".join(conditions)
+    invariant = "\n".join(
+        [
+            f"Invariant: {key}",
+            f'Description: "A populated {measurement["title"]} value is {description}."',
+            f'Expression: "value.empty() or ({expression})"',
+            "Severity: #error",
+        ]
+    )
+    return key, invariant
+
+
+def render_profile(
+    measurement: dict,
+    aliases: dict[str, str],
+    by_id: dict,
+    include_domain_definition: bool = True,
+) -> str:
     owner = OWNERS[measurement.get("owner", "mobile")]
     name = fsh_name(measurement["profile"])
     lines = [
@@ -272,8 +334,16 @@ def render_profile(measurement: dict, aliases: dict[str, str], by_id: dict) -> s
         f'Title: "{measurement["title"]}"',
         f'Description: "{measurement["description"]}"',
     ]
-    if measurement.get("obeys"):
-        lines.append("* obeys " + " and ".join(measurement["obeys"]))
+    domain_invariant = (
+        quantity_domain_invariant(measurement)
+        if measurement["valueKind"] == "quantity"
+        else None
+    )
+    invariants = list(measurement.get("obeys", []))
+    if domain_invariant:
+        invariants.append(domain_invariant[0])
+    if invariants:
+        lines.append("* obeys " + " and ".join(invariants))
     standard = measurement.get("standardProfile")
     if standard is not None:
         alias = aliases.get(standard)
@@ -289,6 +359,33 @@ def render_profile(measurement: dict, aliases: dict[str, str], by_id: dict) -> s
         lines.append(f"* code from {owner['valueSet']} (required)")
     else:
         raise SystemExit(f"{measurement['id']}: unsupported code system {code['system']}")
+    required_codings = measurement.get("requiredCodings", [])
+    if required_codings:
+        lines.append("* code.coding ^slicing.discriminator.type = #pattern")
+        lines.append('* code.coding ^slicing.discriminator.path = "$this"')
+        lines.append("* code.coding ^slicing.rules = #open")
+        lines.append(
+            "* code.coding contains "
+            + " and ".join(f"{coding['slice']} 1..1 MS" for coding in required_codings)
+        )
+        for required_coding in required_codings:
+            system = "$loinc" if required_coding["system"] == LOINC else required_coding["system"]
+            lines.append(
+                f"* code.coding[{required_coding['slice']}] = "
+                f"{system}#{required_coding['code']}"
+            )
+    category = measurement.get("category")
+    if category:
+        category_system = (
+            "$observationCategory"
+            if category["system"]
+            == "http://terminology.hl7.org/CodeSystem/observation-category"
+            else category["system"]
+        )
+        # Display text is presentation metadata, may be localized, and can change in the
+        # authoritative terminology without changing the code. Profiles constrain the
+        # semantic system/code pair; generated examples retain the reviewed display.
+        lines.append(f"* category = {category_system}#{category['code']}")
     if measurement["effective"] == "Period":
         lines.append("* effective[x] only Period")
         lines.append("* effectivePeriod.end 1..1 MS")
@@ -308,16 +405,24 @@ def render_profile(measurement: dict, aliases: dict[str, str], by_id: dict) -> s
     )
     if method:
         lines.append("* method 1..1 MS")
-        lines.append(
-            f"* method = {method_cs}#{method['code']} "
-            f'"{method["display"]}"'
-        )
+        lines.append(f"* method = {method_cs}#{method['code']}")
     elif measurement.get("methodChoice"):
         lines.append("* method 1..1 MS")
         lines.append(f"* method from {method_vs} (required)")
     kind = measurement["valueKind"]
     if kind == "quantity":
-        lines.extend(quantity_rules("", measurement["quantity"], standard is None))
+        # The imposed R4 Vital Signs profiles establish their clinical family, but Grove still
+        # exchanges one exact source numeric value. Keep the local system/code cardinalities and
+        # prohibit a comparator even when a standard profile is imposed; otherwise adding the
+        # authoritative profile would accidentally weaken the adapter contract.
+        lines.extend(
+            quantity_rules(
+                "",
+                measurement["quantity"],
+                True,
+                measurement["quantity"].get("valueDomain"),
+            )
+        )
     elif kind == "codeableConcept":
         lines.append("* value[x] only CodeableConcept")
         lines.append("* valueCodeableConcept 1..1 MS")
@@ -337,6 +442,8 @@ def render_profile(measurement: dict, aliases: dict[str, str], by_id: dict) -> s
         lines.append("* hasMember only Reference(Observation)")
     else:
         raise SystemExit(f"{measurement['id']}: unsupported valueKind {kind}")
+    for element in measurement.get("forbiddenElements", []):
+        lines.append(f"* {element} 0..0")
     if measurement.get("components"):
         lines.append("* component ^slicing.discriminator.type = #pattern")
         lines.append('* component ^slicing.discriminator.path = "code"')
@@ -380,7 +487,10 @@ def render_profile(measurement: dict, aliases: dict[str, str], by_id: dict) -> s
         lines.append(
             f"* hasMember only Reference({fsh_name(by_id[member]['profile'])})"
         )
-    return "\n".join(lines) + "\n"
+    rendered = "\n".join(lines) + "\n"
+    if domain_invariant and include_domain_definition:
+        return domain_invariant[1] + "\n\n" + rendered
+    return rendered
 
 
 # One fixed instant and window so every generated example is byte-stable across runs.
@@ -388,7 +498,16 @@ EXAMPLE_INSTANT = "2026-08-19T10:30:00-07:00"
 EXAMPLE_ISSUED = "2026-08-20T08:00:00Z"
 EXAMPLE_PERIOD_START = "2026-08-19T00:00:00-07:00"
 EXAMPLE_PERIOD_END = "2026-08-20T00:00:00-07:00"
-EXAMPLE_IDENTIFIER_SYSTEM = "https://study.example.org/fhir/identifiers/{owner}-observation"
+EXAMPLE_KEY = bytes(range(32))
+EXAMPLE_KEY_ID = "test-key"
+EXAMPLE_KEY_EPOCH = 1
+EXAMPLE_SOURCE_RECORD_SYSTEM = (
+    "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+)
+EXAMPLE_SOURCE_OUTPUT_SYSTEM = (
+    "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
+)
+EXAMPLE_SCOPE_SYSTEM = "https://study.example.org/fhir/NamingSystem/source-repository"
 
 
 def load_catalog(name: str) -> dict:
@@ -547,6 +666,8 @@ def render_example(measurement: dict) -> str:
         *example_identifier_lines(measurement, owner_key),
         "* status = #final",
         f"* code = {example_code(measurement, owner)}",
+        *example_required_coding_lines(measurement),
+        *example_category_lines(measurement),
         *example_source_type_lines(measurement, owner_key),
         f"* subject = Reference({owner['patientExample']})",
         # Consumer health data is self-recorded, so the participant is also the performer.
@@ -573,6 +694,31 @@ def example_code(measurement: dict, owner: dict) -> str:
     return f"{owner['codeSystem']}#{code['code']}"
 
 
+def example_required_coding_lines(measurement: dict) -> list[str]:
+    lines: list[str] = []
+    for coding in measurement.get("requiredCodings", []):
+        system = "$loinc" if coding["system"] == LOINC else coding["system"]
+        display = f' "{coding["display"]}"' if coding.get("display") else ""
+        lines.append(
+            f"* code.coding[{coding['slice']}] = {system}#{coding['code']}{display}"
+        )
+    return lines
+
+
+def example_category_lines(measurement: dict) -> list[str]:
+    category = measurement.get("category")
+    if not category:
+        return []
+    system = (
+        "$observationCategory"
+        if category["system"]
+        == "http://terminology.hl7.org/CodeSystem/observation-category"
+        else category["system"]
+    )
+    display = f' "{category["display"]}"' if category.get("display") else ""
+    return [f"* category = {system}#{category['code']}{display}"]
+
+
 def example_effective_lines(measurement: dict, owner_key: str) -> list[str]:
     if measurement["effective"] == "Period":
         lines = [
@@ -589,54 +735,83 @@ def example_effective_lines(measurement: dict, owner_key: str) -> list[str]:
 
 EXAMPLE_REPOSITORY_SCOPE = "1f5c58aa-6ec6-4e79-a682-829a9debd3f5"
 EXAMPLE_PROVIDER_ACCOUNT = "acct-7f3a9c"
+EXAMPLE_PROVIDER_ACCOUNT_SYSTEM = (
+    "https://study.example.org/fhir/NamingSystem/provider-account"
+)
 
 
-def health_connect_example_identity(measurement: dict, *, output: bool) -> str:
-    """A readable composition, derived so an example's identity never changes by accident."""
-    parts = [EXAMPLE_REPOSITORY_SCOPE, measurement["id"], f"record-{measurement['id']}"]
-    if output:
-        parts.append("single")
-    return "v1:" + "|".join(parts)
-
-
-def provider_example_identity(measurement: dict, owner_key: str, *, output: bool) -> str:
-    provider = SOURCE_TYPE_TOKENS[owner_key][measurement["id"]].split("/", 1)[0]
-    parts = [provider, EXAMPLE_PROVIDER_ACCOUNT, measurement["id"], f"record-{measurement['id']}"]
-    if output:
-        parts.append(measurement["id"])
-    return "v1:" + "|".join(parts)
-
-
-def example_uuid(measurement: dict) -> str:
-    digest = hashlib.sha256(f"grove-example-object-id-v1|{measurement['id']}".encode()).hexdigest()
-    return f"{digest[:8]}-{digest[8:12]}-{digest[12:16]}-{digest[16:20]}-{digest[20:32]}"
+def example_identity_components(
+    measurement: dict, owner_key: str
+) -> tuple[str, list[str], list[str]]:
+    """Return the identity kind and exact source/output component tuples."""
+    source_type = SOURCE_TYPE_TOKENS.get(owner_key, {}).get(
+        measurement["id"], measurement["id"]
+    )
+    native_id = f"record-{measurement['id']}"
+    if owner_key in PROVIDER_OWNERS:
+        provider = source_type.split("/", 1)[0]
+        source_components = [
+            provider,
+            source_type,
+            EXAMPLE_PROVIDER_ACCOUNT_SYSTEM,
+            EXAMPLE_PROVIDER_ACCOUNT,
+            native_id,
+        ]
+        output_components = [
+            provider,
+            source_type,
+            EXAMPLE_PROVIDER_ACCOUNT_SYSTEM,
+            EXAMPLE_PROVIDER_ACCOUNT,
+            native_id,
+            "primary-output",
+            measurement["id"],
+        ]
+        return "provider-record", source_components, output_components
+    adapter_id = owner_key if owner_key != "mobile" else "example-mobile"
+    source_components = [
+        adapter_id,
+        source_type,
+        EXAMPLE_SCOPE_SYSTEM,
+        EXAMPLE_REPOSITORY_SCOPE,
+        native_id,
+    ]
+    output_components = [
+        adapter_id,
+        source_type,
+        EXAMPLE_SCOPE_SYSTEM,
+        EXAMPLE_REPOSITORY_SCOPE,
+        native_id,
+        "primary-output",
+        measurement["id"],
+    ]
+    return "source-record", source_components, output_components
 
 
 def example_identifier_lines(measurement: dict, owner_key: str) -> list[str]:
     """The business identity each guide's Observation profile requires of an instance."""
-    match owner_key:
-        case "healthkit":
-            return [
-                "* identifier[healthKitObjectId].system = $healthKitObjectId",
-                f'* identifier[healthKitObjectId].value = "{example_uuid(measurement)}"',
-            ]
-        case "health-connect":
-            return [
-                # One Record, one Observation: a second namespace repeating the record
-                # identifier would identify nothing new.
-                "* identifier[recordId].system = $healthConnectRecordId",
-                f'* identifier[recordId].value = "{health_connect_example_identity(measurement, output=False)}"',
-            ]
-        case owner if owner in PROVIDER_OWNERS:
-            return [
-                "* identifier[sourceRecordId].system = $providerSourceRecordId",
-                f'* identifier[sourceRecordId].value = "{provider_example_identity(measurement, owner, output=False)}"',
-            ]
-        case _:
-            return [
-                f'* identifier.system = "{EXAMPLE_IDENTIFIER_SYSTEM.format(owner=owner_key)}"',
-                f'* identifier.value = "{measurement["id"]}-example"',
-            ]
+    source_kind, source_components, output_components = example_identity_components(
+        measurement, owner_key
+    )
+    source_value = derive_hmac_identity(
+        key=EXAMPLE_KEY,
+        key_id=EXAMPLE_KEY_ID,
+        epoch=EXAMPLE_KEY_EPOCH,
+        identity_kind=source_kind,
+        components=source_components,
+    )
+    output_value = derive_hmac_identity(
+        key=EXAMPLE_KEY,
+        key_id=EXAMPLE_KEY_ID,
+        epoch=EXAMPLE_KEY_EPOCH,
+        identity_kind="source-output",
+        components=output_components,
+    )
+    return [
+        f'* identifier[sourceRecord].system = "{EXAMPLE_SOURCE_RECORD_SYSTEM}"',
+        f'* identifier[sourceRecord].value = "{source_value}"',
+        f'* identifier[sourceOutput].system = "{EXAMPLE_SOURCE_OUTPUT_SYSTEM}"',
+        f'* identifier[sourceOutput].value = "{output_value}"',
+    ]
 
 
 def example_source_type_lines(measurement: dict, owner_key: str) -> list[str]:
@@ -889,9 +1064,15 @@ def main() -> int:
     problems = 0
     emitted: dict[str, list[str]] = {}
     for measurement in measurements:
-        rendered = render_profile(measurement, aliases, by_id)
+        emitted_profile = measurement.get("generation", {}).get("emit", False)
+        rendered = render_profile(
+            measurement,
+            aliases,
+            by_id,
+            include_domain_definition=emitted_profile,
+        )
         owner_key = measurement.get("owner", "mobile")
-        if measurement.get("generation", {}).get("emit"):
+        if emitted_profile:
             if owner_key == "mobile" and hand_block(
                 layout, fsh_name(measurement["profile"])
             ) is not None:

@@ -10,18 +10,18 @@ Instance: ProviderPatientExample
 InstanceOf: Patient
 Usage: #example
 Title: "Provider Example Participant"
-Description: "The Patient referenced by the Provider adapter examples."
+Description: "The Patient referenced by the connected-provider examples."
 * identifier.system = "https://study.example.org/fhir/identifiers/participant"
 * identifier.value = "participant-connected-001"
 
 Instance: ProviderApplicationExample
 InstanceOf: GroveApplicationDevice
 Usage: #example
-Title: "Provider Converting Application"
-Description: "The application that converted already-obtained provider records into source-neutral FHIR resources."
+Title: "Provider Converter Snapshot"
+Description: "The immutable event-time application snapshot that converted one already-obtained provider record."
+* identifier[applicationSnapshot].system = "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v2/test-key/1"
+* identifier[applicationSnapshot].value = "v2:test-key:1:UGzHY2SuM3Fy_2XiJrLUV5avqMwtZBJRRGoL-m6GBhE"
 * status = #active
-* identifier.system = "https://study.example.org/fhir/identifiers/application"
-* identifier.value = "provider-mapper"
 * deviceName[applicationName].name = "Provider Mapper"
 * deviceName[applicationName].type = #user-friendly-name
 
@@ -31,8 +31,10 @@ Usage: #example
 Title: "Google Health Step Count"
 Description: "An already-obtained Google Health API steps interval converted to the shared step-count contract."
 * meta.profile[+] = "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-step-count"
-* identifier[sourceRecordId].system = $providerSourceRecordId
-* identifier[sourceRecordId].value = "v1:google-health-api|acct-7f3a9c|steps|content|2026-08-20T16:00:00Z|2026-08-20T17:00:00Z|1042"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* identifier[sourceRecord].value = "v2:test-key:1:qgrk2z3ezCQPDLCievOnUDQm089yVRjCSaUp7uc3vU0"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
+* identifier[sourceOutput].value = "v2:test-key:1:Xm1OIJA5vuDwPrAXzRR1229vsyVVNYidsYw_zf3dPA8"
 * status = #final
 * category = http://terminology.hl7.org/CodeSystem/observation-category#activity "Activity"
 * code = https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement#step-count-total "Step count total"
@@ -49,23 +51,29 @@ Instance: GoogleHealthStepsProvenanceExample
 InstanceOf: ProvidersConversionProvenance
 Usage: #example
 Title: "Google Health Step Conversion Provenance"
-Description: "The conversion event linking one already-obtained Google Health steps source record to its shared step-count output."
+Description: "The conversion event linking exactly one provider source record revision to all of its outputs."
 * target = Reference(GoogleHealthStepsExample)
+* occurredDateTime = "2026-08-20T17:00:00Z"
 * recorded = "2026-08-20T17:00:01Z"
 * agent[assembler].type = $provenanceParticipantType#assembler
 * agent[assembler].who = Reference(ProviderApplicationExample)
 * entity.role = #source
-* entity.what.identifier.system = $providerSourceRecordId
-* entity.what.identifier.value = "v1:google-health-api|acct-7f3a9c|steps|content|2026-08-20T16:00:00Z|2026-08-20T17:00:00Z|1042"
+* entity.what.identifier.type = $groveIdentifierRole#source-record "Source record"
+* entity.what.identifier.system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* entity.what.identifier.value = "v2:test-key:1:qgrk2z3ezCQPDLCievOnUDQm089yVRjCSaUp7uc3vU0"
 
 Instance: GoogleHealthHeartRateRecordingExample
 InstanceOf: ProvidersRecordingDocument
 Usage: #example
 Title: "Google Health Native Heart-rate Recording"
-Description: "An explicitly authorized caller encoding of already-obtained irregular heart-rate points, retained without resampling."
+Description: "An authorized exact source artifact for irregular heart-rate points, retained without resampling or invented scalar semantics."
 * meta.profile[+] = "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document"
-* identifier[sourceRecordId].system = $providerSourceRecordId
-* identifier[sourceRecordId].value = "v1:google-health-api|acct-7f3a9c|heart-rate|content|2026-08-20T16:03:00Z|2026-08-20T16:03:00Z|71"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* identifier[sourceRecord].value = "v2:test-key:1:wZpU3mAbk81CexNeSe82tMi6UzJqUOef7g0vUQAatEo"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
+* identifier[sourceOutput].value = "v2:test-key:1:fGKVshiEwT6r_6b940qrh_jQoETX2yXRyvleBsiV7tY"
+* identifier[sourceArtifact].system = "https://study.example.org/fhir/NamingSystem/grove-source-artifact-v2/test-key/1"
+* identifier[sourceArtifact].value = "v2:test-key:1:rTWgo0M-JFztgaUs9275SV126DALfHiBjY79mMCYAc0"
 * extension[provider].valueCode = #google-health-api
 * extension[providerSourceType].valueCode = #google-health-api/heart-rate
 * status = #current
@@ -79,29 +87,18 @@ Description: "An explicitly authorized caller encoding of already-obtained irreg
 * content.attachment.size = 157
 * content.attachment.hash = "W77rFQFjzMqkuSpq6pY7XVnlw8A="
 * content.format = $recordingFormat#provider-recording "Provider Recording"
-* content.format.version = "0.5.0"
-
-Instance: GoogleHealthHeartRateRecordingProvenanceExample
-InstanceOf: ProvidersConversionProvenance
-Usage: #example
-Title: "Google Health Native Heart-rate Conversion Provenance"
-Description: "The conversion event linking one already-obtained source record to its native Recording Document."
-* target = Reference(GoogleHealthHeartRateRecordingExample)
-* recorded = "2026-08-20T17:00:01Z"
-* agent[assembler].type = $provenanceParticipantType#assembler
-* agent[assembler].who = Reference(ProviderApplicationExample)
-* entity.role = #source
-* entity.what.identifier.system = $providerSourceRecordId
-* entity.what.identifier.value = "v1:google-health-api|acct-7f3a9c|heart-rate|content|2026-08-20T16:03:00Z|2026-08-20T16:03:00Z|71"
+* content.format.version = "0.6.0"
 
 Instance: OuraDailyStepCountExample
 InstanceOf: ProvidersObservation
 Usage: #example
 Title: "Oura Daily Step Count"
-Description: "One already-obtained Oura daily-activity record converted to the shared step-count contract. Oura documents its document ids as UUIDs unique across every account, so the identifier is that key exactly as Oura supplied it, with nothing joined to it."
+Description: "An Oura daily-activity record whose globally unique native UUID is still HMAC input rather than a clear wire identifier."
 * meta.profile[+] = "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-step-count"
-* identifier[sourceRecordId].system = $providerSourceRecordId
-* identifier[sourceRecordId].value = "8f9a5221-639e-4a85-81cb-4065ef23f979"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* identifier[sourceRecord].value = "v2:test-key:1:LXyniwcDxftNTHseMuLu9TRIUPKgIyGWNz95_Kl6H_M"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
+* identifier[sourceOutput].value = "v2:test-key:1:PPhgR8OERaB2BMlHSGBGTCkKucBwxCcqTA3cyqQCA14"
 * status = #final
 * category = http://terminology.hl7.org/CodeSystem/observation-category#activity "Activity"
 * code = https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement#step-count-total "Step count total"
@@ -118,17 +115,20 @@ Instance: WithingsBloodPressureExample
 InstanceOf: ProvidersObservation
 Usage: #example
 Title: "Withings Grouped Blood Pressure"
-Description: "One already-obtained Withings measure group holding one diastolic (type 9) and one systolic (type 10) value converted into one shared blood-pressure panel. It also carries the shared writer-record identity, which names the measurement as Withings itself does; the identical value appears when the Withings application writes the same measurement into HealthKit or Health Connect, so a deployment that has confirmed those key spaces agree can recognise one measurement arriving by more than one route."
+Description: "One Withings measure group converted to one blood-pressure panel, with opaque provider and cross-route writer identities."
 * meta.profile[+] = "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-blood-pressure"
-* identifier[sourceRecordId].system = $providerSourceRecordId
-* identifier[sourceRecordId].value = "v1:withings|acct-7f3a9c|measure|17348211"
-* identifier[writerRecordId].system = $groveWriterRecordId
-* identifier[writerRecordId].value = "v1:withings|17348211"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* identifier[sourceRecord].value = "v2:test-key:1:zYsyvBapI-3CLhIPYgWoFNvkxOZ1vY2FgrIwzdE339A"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
+* identifier[sourceOutput].value = "v2:test-key:1:bvcLuxdpOMk3XTRHdhQxY8QLqijlsN4XlQJx3gLBAWk"
+* identifier[writerRecord].system = "https://study.example.org/fhir/NamingSystem/grove-writer-record-v2/test-key/1"
+* identifier[writerRecord].value = "v2:test-key:1:b6CrOt2Bn8qBpBi_0IesPTPhIzN5DbRQLPz_Di3GfSQ"
+* extension[writerRecordVersion].valueString = "1"
 * status = #final
 * category = http://terminology.hl7.org/CodeSystem/observation-category#vital-signs "Vital Signs"
 * code = http://loinc.org#85354-9 "Blood pressure panel with all children optional"
-* subject.reference = "urn:uuid:8e270383-7562-584e-a754-972a899031f8"
-* performer.reference = "urn:uuid:8e270383-7562-584e-a754-972a899031f8"
+* subject = Reference(ProviderPatientExample)
+* performer = Reference(ProviderPatientExample)
 * effectiveDateTime = "2026-08-20T07:45:00-07:00"
 * issued = "2026-08-20T17:00:01Z"
 * component[0].code = http://loinc.org#8480-6 "Systolic blood pressure"
@@ -141,38 +141,14 @@ Description: "One already-obtained Withings measure group holding one diastolic 
 Instance: WithingsBloodPressureProvenanceExample
 InstanceOf: ProvidersConversionProvenance
 Usage: #example
-Title: "Withings Grouped Blood Pressure Conversion Provenance"
-Description: "The conversion event linking one Withings measure-group source record to its single grouped blood-pressure output."
-* target.reference = "urn:uuid:9bab53d6-0eec-52eb-9425-a556dd9238b4"
+Title: "Withings Blood Pressure Conversion Provenance"
+Description: "The one-source conversion event for the grouped blood-pressure output."
+* target = Reference(WithingsBloodPressureExample)
+* occurredDateTime = "2026-08-20T17:00:00Z"
 * recorded = "2026-08-20T17:00:01Z"
 * agent[assembler].type = $provenanceParticipantType#assembler
-* agent[assembler].who.reference = "urn:uuid:f3ec89f2-5381-5b86-a800-c85ef81bdc7c"
+* agent[assembler].who = Reference(ProviderApplicationExample)
 * entity.role = #source
-* entity.what.identifier.system = $providerSourceRecordId
-* entity.what.identifier.value = "v1:withings|acct-7f3a9c|measure|17348211"
-
-Instance: WithingsExchangeBundleExample
-InstanceOf: GroveMobileExchangeBundle
-Usage: #example
-Title: "Withings Exchange Bundle"
-Description: "The complete deterministic collection graph for one converted Withings blood-pressure measure group."
-* identifier.system = "https://study.example.org/fhir/identifiers/provider-graph"
-* identifier.value = "withings|1|exchange-bundle"
-* type = #collection
-* timestamp = "2026-08-20T17:00:01Z"
-* entry[0].extension[entryIdentifier].valueIdentifier.system = "https://study.example.org/fhir/identifiers/participant"
-* entry[0].extension[entryIdentifier].valueIdentifier.value = "participant-connected-001"
-* entry[0].fullUrl = "urn:uuid:8e270383-7562-584e-a754-972a899031f8"
-* entry[0].resource = ProviderPatientExample
-* entry[1].extension[entryIdentifier].valueIdentifier.system = "https://study.example.org/fhir/identifiers/application"
-* entry[1].extension[entryIdentifier].valueIdentifier.value = "provider-mapper"
-* entry[1].fullUrl = "urn:uuid:f3ec89f2-5381-5b86-a800-c85ef81bdc7c"
-* entry[1].resource = ProviderApplicationExample
-* entry[2].extension[entryIdentifier].valueIdentifier.system = $providerSourceRecordId
-* entry[2].extension[entryIdentifier].valueIdentifier.value = "v1:withings|acct-7f3a9c|measure|17348211"
-* entry[2].fullUrl = "urn:uuid:9bab53d6-0eec-52eb-9425-a556dd9238b4"
-* entry[2].resource = WithingsBloodPressureExample
-* entry[3].extension[entryIdentifier].valueIdentifier.system = "https://study.example.org/fhir/identifiers/provider-graph"
-* entry[3].extension[entryIdentifier].valueIdentifier.value = "withings|1|conversion-provenance"
-* entry[3].fullUrl = "urn:uuid:996be494-199d-5a2d-836b-24f45a1c14b8"
-* entry[3].resource = WithingsBloodPressureProvenanceExample
+* entity.what.identifier.type = $groveIdentifierRole#source-record "Source record"
+* entity.what.identifier.system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* entity.what.identifier.value = "v2:test-key:1:zYsyvBapI-3CLhIPYgWoFNvkxOZ1vY2FgrIwzdE339A"

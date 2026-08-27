@@ -12,11 +12,11 @@ catalog and fail closed unless that row admits the requested representation.
 For a source-neutral Observation it declares exactly two direct `meta.profile` values:
 the listed Sensor profile and `sensorkit-observation`. For a native payload it declares
 exactly the Sensor Recording Document and `sensorkit-recording-document`.
-Provider-specific on-wrist, device-usage, and visit summaries declare only their exact
+Platform-specific on-wrist, device-usage, and visit summaries declare only their exact
 SensorKit profile, which inherits the adapter envelope.
 
 Every output carries one complete SensorKit record business Identifier and one exact
-source-type extension. Because SensorKit publishes no durable sample identifier, the
+source-type extension whose URL and code system are fixed by the machine catalog. Because SensorKit publishes no durable sample identifier, the
 SensorKit-facing producer assigns a stable lowercase UUID: re-fetching unchanged content
 reuses it, while distinct or changed records use different values. It is not copied into
 `Resource.id`, and it does not assert equality across independent producers.
@@ -55,12 +55,13 @@ optional/repository-assigned, and all business identifier pairs are complete. No
 receiver capacity, authentication, storage, retention, or transport rule is defined
 here.
 
-### Retracting an entered-in-error record
+### Retracting a source record
 
-When a previously converted source record is retracted, publish a bundle whose outputs for that source are all `entered-in-error` stubs.
-Each stub keeps the profile claims, the normative code, and the complete business identifiers of the output it retracts, sets `status` to `entered-in-error`, and carries `dataAbsentReason` in place of a value.
-A bundle whose outputs for a source record are all entered-in-error records a retraction rather than a conversion and carries no conversion Provenance.
-The repository conformance validator enforces both directions: a retraction claiming a conversion Provenance and a conversion missing one are each rejected.
+Emit the dedicated Grove Mobile Retraction Bundle when the producer can establish that a prior
+SensorKit source record is no longer exposed. Its sole source-record-retracted Provenance targets
+the exact prior structured outputs, artifacts, and device snapshot by complete typed Identifier
+pairs and closed roles. Do not copy prior clinical resources or relabel them
+`entered-in-error`; receiver lifecycle application is separate sink policy.
 
 ## Dependencies and terminology notices
 

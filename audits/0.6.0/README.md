@@ -10,11 +10,13 @@ SPDX-License-Identifier: MIT
 
 # Grove FHIR 0.6.0 audit index
 
-This directory contains the read-only FHIR audit requested on 2026-08-26. No implementation or remote PR state was changed.
+This directory contains the original read-only FHIR audit requested on 2026-08-26 and
+the subsequent implementation disposition for the second 0.6.0 change set.
 
 Start with the cross-repository decision and sequencing document:
 
 - [0.6.0 cross-repository audit and release blueprint](release-0.6.0-cross-repo-audit.md)
+- [0.6.0 contract-completion resolution](contract-completion-resolution.md)
 
 Detailed evidence and repository-specific backlogs:
 

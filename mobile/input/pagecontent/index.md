@@ -12,7 +12,7 @@ fields and established domain profiles. Grove profiles make record identity, cap
 mode, device roles, conversion provenance, and research-study context consistent across
 source platforms.
 
-Grove FHIR is a family of seven guides; [the guide family page](guides.html) maps them, their catalogs, and the shared status vocabulary.
+Grove FHIR 0.6.0 is a family of ten guide packages; [the guide family page](guides.html) maps them, their catalogs, and the shared status vocabulary.
 
 New to FHIR?
 [Start here](fhir-basics.html).

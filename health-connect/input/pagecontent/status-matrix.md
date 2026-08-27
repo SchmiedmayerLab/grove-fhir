@@ -11,48 +11,48 @@ GENERATED FILE. Edit the corresponding catalog JSON and run
 
 # Authoritative Health Connect status matrix
 
-This table is the complete, closed AndroidX Health Connect 1.1.0 `RecordType.all` inventory. Each of the 41 record classes has exactly one definitive v0.5.0 status. An empty output cell means this release admits no FHIR producer output for that class; it is not an implementation queue.
+This table is the complete, closed AndroidX Health Connect 1.1.0 `RecordType.all` inventory. Each of the 41 record classes has exactly one definitive v0.6.0 status. An empty output cell means this release admits no FHIR producer output for that class; it is not an implementation queue.
 
 | Record class | Status | Admitted output(s) | Exact context mapping(s) |
 | --- | --- | --- | --- |
 | `ActiveCaloriesBurnedRecord` | `supported` | active-energy (1) | — |
 | `BasalBodyTemperatureRecord` | `supported` | basal-body-temperature (1) | `temperatureMeasurementLocation` |
-| `BasalMetabolicRateRecord` | `supported` | basal-metabolic-rate (0..*; one per record) | — |
-| `BloodGlucoseRecord` | `supported` | blood-glucose (1; SPECIMEN_SOURCE_WHOLE_BLOOD); capillary-blood-glucose (1; SPECIMEN_SOURCE_CAPILLARY_BLOOD); serum-plasma-glucose (1; SPECIMEN_SOURCE_PLASMA or SPECIMEN_SOURCE_SERUM); interstitial-glucose (1; SPECIMEN_SOURCE_INTERSTITIAL_FLUID) | `bloodGlucoseSpecimen`; `bloodGlucoseMealContext` |
+| `BasalMetabolicRateRecord` | `supported` | basal-metabolic-rate (1) | — |
+| `BloodGlucoseRecord` | `supported` | blood-glucose (1 Observation + 1 Specimen; SPECIMEN_SOURCE_WHOLE_BLOOD); capillary-blood-glucose (1 Observation + 1 Specimen; SPECIMEN_SOURCE_CAPILLARY_BLOOD); serum-plasma-glucose (1 Observation + 1 Specimen; SPECIMEN_SOURCE_PLASMA or SPECIMEN_SOURCE_SERUM); interstitial-glucose (1 Observation + 1 Specimen; SPECIMEN_SOURCE_INTERSTITIAL_FLUID) | `bloodGlucoseSpecimen`; `bloodGlucoseMealContext` |
 | `BloodPressureRecord` | `supported` | blood-pressure (1) | `bloodPressureBodyPosition`; `bloodPressureMeasurementLocation` |
-| `BodyFatRecord` | `supported` | body-fat-percentage (0..*; one per record) | — |
+| `BodyFatRecord` | `supported` | body-fat-percentage (1) | — |
 | `BodyTemperatureRecord` | `supported` | body-temperature (1) | `temperatureMeasurementLocation` |
-| `BodyWaterMassRecord` | `supported` | body-water-mass (0..*; one per record) | — |
-| `BoneMassRecord` | `supported` | bone-mass (0..*; one per record) | — |
-| `CervicalMucusRecord` | `supported` | cervical-mucus-quality (0..*; one per record) | — |
-| `CyclingPedalingCadenceRecord` | `supported` | cycling-cadence (0..*; one per record) | — |
+| `BodyWaterMassRecord` | `supported` | body-water-mass (1) | — |
+| `BoneMassRecord` | `supported` | bone-mass (1) | — |
+| `CervicalMucusRecord` | `supported` | cervical-mucus-quality (1) | `cervicalMucusAppearance`; `cervicalMucusSensation` |
+| `CyclingPedalingCadenceRecord` | `supported` | cycling-cadence (0..*; one per sample) | — |
 | `DistanceRecord` | `supported` | distance (1) | — |
-| `ElevationGainedRecord` | `supported` | elevation-gained (0..*; one per record) | — |
-| `ExerciseSessionRecord` | `supported` | workout (0..*; one per record); workout-segment (0..*; one per segment) | — |
-| `FloorsClimbedRecord` | `supported` | flights-climbed (0..*; one per record) | — |
+| `ElevationGainedRecord` | `supported` | elevation-gained (1) | — |
+| `ExerciseSessionRecord` | `supported` | workout (1); workout-segment (0..*; one per segment or lap) | `exerciseType`; `exerciseSegmentType`; `exerciseTitle`; `exerciseNotes` |
+| `FloorsClimbedRecord` | `supported` | flights-climbed (1) | — |
 | `HeartRateRecord` | `supported` | heart-rate (0..*; one per sample) | — |
-| `HeartRateVariabilityRmssdRecord` | `supported` | heart-rate-variability-rmssd (0..*; one per record) | — |
+| `HeartRateVariabilityRmssdRecord` | `supported` | heart-rate-variability-rmssd (1) | — |
 | `HeightRecord` | `supported` | body-height (1) | — |
-| `HydrationRecord` | `supported` | fluid-intake (0..*; one per record) | — |
-| `IntermenstrualBleedingRecord` | `supported` | intermenstrual-bleeding (0..*; one per record) | — |
-| `LeanBodyMassRecord` | `supported` | lean-body-mass (0..*; one per record) | — |
-| `MenstruationFlowRecord` | `supported` | menstruation-flow (0..*; one per record) | — |
-| `MenstruationPeriodRecord` | `supported` | menstruation-period (0..*; one per record) | — |
-| `MindfulnessSessionRecord` | `supported` | mindfulness-session (0..*; one per record) | — |
-| `NutritionRecord` | `supported` | dietary-biotin (0..*; one per record); dietary-caffeine (0..1; one per record); dietary-calcium (0..1; one per record); dietary-carbohydrates (0..1; one per record); dietary-chloride (0..1; one per record); dietary-cholesterol (0..1; one per record); dietary-chromium (0..1; one per record); dietary-copper (0..1; one per record); dietary-energy (0..1; one per record); dietary-energy-from-fat (0..1; one per record); dietary-fat-monounsaturated (0..1; one per record); dietary-fat-polyunsaturated (0..1; one per record); dietary-fat-saturated (0..1; one per record); dietary-fat-total (0..1; one per record); dietary-fat-trans (0..1; one per record); dietary-fat-unsaturated (0..1; one per record); dietary-fiber (0..1; one per record); dietary-folate (0..1; one per record); dietary-folic-acid (0..1; one per record); dietary-iodine (0..1; one per record); dietary-iron (0..1; one per record); dietary-magnesium (0..1; one per record); dietary-manganese (0..1; one per record); dietary-molybdenum (0..1; one per record); dietary-niacin (0..1; one per record); dietary-pantothenic-acid (0..1; one per record); dietary-phosphorus (0..1; one per record); dietary-potassium (0..1; one per record); dietary-protein (0..1; one per record); dietary-riboflavin (0..1; one per record); dietary-selenium (0..1; one per record); dietary-sodium (0..1; one per record); dietary-sugar (0..1; one per record); dietary-thiamin (0..1; one per record); dietary-vitamin-a (0..1; one per record); dietary-vitamin-b12 (0..1; one per record); dietary-vitamin-b6 (0..1; one per record); dietary-vitamin-c (0..1; one per record); dietary-vitamin-d (0..1; one per record); dietary-vitamin-e (0..1; one per record); dietary-vitamin-k (0..1; one per record); dietary-zinc (0..1; one per record) | — |
-| `OvulationTestRecord` | `supported` | ovulation-test-result (0..*; one per record) | — |
+| `HydrationRecord` | `supported` | fluid-intake (1) | — |
+| `IntermenstrualBleedingRecord` | `supported` | intermenstrual-bleeding (1) | — |
+| `LeanBodyMassRecord` | `supported` | lean-body-mass (1) | — |
+| `MenstruationFlowRecord` | `supported` | menstruation-flow (1) | `menstruationFlow` |
+| `MenstruationPeriodRecord` | `supported` | menstruation-period (1) | — |
+| `MindfulnessSessionRecord` | `supported` | mindfulness-session (1) | `mindfulnessSessionType`; `mindfulnessTitle`; `mindfulnessNotes` |
+| `NutritionRecord` | `supported` | dietary-biotin (0..*; one per present field); dietary-caffeine (0..*; one per present field); dietary-calcium (0..*; one per present field); dietary-carbohydrates (0..*; one per present field); dietary-chloride (0..*; one per present field); dietary-cholesterol (0..*; one per present field); dietary-chromium (0..*; one per present field); dietary-copper (0..*; one per present field); dietary-energy (0..*; one per present field); dietary-energy-from-fat (0..*; one per present field); dietary-fat-monounsaturated (0..*; one per present field); dietary-fat-polyunsaturated (0..*; one per present field); dietary-fat-saturated (0..*; one per present field); dietary-fat-total (0..*; one per present field); dietary-fat-trans (0..*; one per present field); dietary-fat-unsaturated (0..*; one per present field); dietary-fiber (0..*; one per present field); dietary-folate (0..*; one per present field); dietary-folic-acid (0..*; one per present field); dietary-iodine (0..*; one per present field); dietary-iron (0..*; one per present field); dietary-magnesium (0..*; one per present field); dietary-manganese (0..*; one per present field); dietary-molybdenum (0..*; one per present field); dietary-niacin (0..*; one per present field); dietary-pantothenic-acid (0..*; one per present field); dietary-phosphorus (0..*; one per present field); dietary-potassium (0..*; one per present field); dietary-protein (0..*; one per present field); dietary-riboflavin (0..*; one per present field); dietary-selenium (0..*; one per present field); dietary-sodium (0..*; one per present field); dietary-sugar (0..*; one per present field); dietary-thiamin (0..*; one per present field); dietary-vitamin-a (0..*; one per present field); dietary-vitamin-b12 (0..*; one per present field); dietary-vitamin-b6 (0..*; one per present field); dietary-vitamin-c (0..*; one per present field); dietary-vitamin-d (0..*; one per present field); dietary-vitamin-e (0..*; one per present field); dietary-vitamin-k (0..*; one per present field); dietary-zinc (0..*; one per present field) | — |
+| `OvulationTestRecord` | `supported` | ovulation-test-result (1) | `ovulationTestResult` |
 | `OxygenSaturationRecord` | `supported` | oxygen-saturation (1) | — |
 | `PlannedExerciseSessionRecord` | `deferred` | — | — |
-| `PowerRecord` | `supported` | power (0..*; one per record) | — |
+| `PowerRecord` | `supported` | power (0..*; one per sample) | — |
 | `RespiratoryRateRecord` | `supported` | respiratory-rate (1) | — |
-| `RestingHeartRateRecord` | `supported` | resting-heart-rate (0..*; one per record) | — |
-| `SexualActivityRecord` | `supported` | sexual-activity (0..*; one per record) | — |
-| `SkinTemperatureRecord` | `supported` | skin-temperature (0..*; one per record) | — |
+| `RestingHeartRateRecord` | `supported` | resting-heart-rate (1) | — |
+| `SexualActivityRecord` | `supported` | sexual-activity (1) | `sexualActivityProtection` |
+| `SkinTemperatureRecord` | `supported` | skin-temperature (0..*; one per delta) | `skinTemperatureMeasurementLocation` |
 | `SleepSessionRecord` | `supported` | sleep-duration (1); sleep-stage (0..*; one per stage) | `sleepStage`; `sleepTitle`; `sleepNotes` |
-| `SpeedRecord` | `supported` | speed (0..*; one per record) | — |
-| `StepsCadenceRecord` | `supported` | step-cadence (0..*; one per record) | — |
+| `SpeedRecord` | `supported` | speed (0..*; one per sample) | — |
+| `StepsCadenceRecord` | `supported` | step-cadence (0..*; one per sample) | — |
 | `StepsRecord` | `supported` | step-count (1) | — |
-| `TotalCaloriesBurnedRecord` | `supported` | total-energy (0..*; one per record) | — |
-| `Vo2MaxRecord` | `supported` | vo2-max (0..*; one per record) | — |
+| `TotalCaloriesBurnedRecord` | `supported` | total-energy (1) | — |
+| `Vo2MaxRecord` | `supported` | vo2-max (1) | `vo2MaxMeasurementMethod` |
 | `WeightRecord` | `supported` | body-weight (1) | — |
-| `WheelchairPushesRecord` | `supported` | wheelchair-push-count (0..*; one per record) | — |
+| `WheelchairPushesRecord` | `supported` | wheelchair-push-count (1) | — |

@@ -39,9 +39,11 @@ and is not constrained.
 
 ### Item and answer structure
 
-Every response item repeats the matching Questionnaire `linkId` and text. Text makes a
-response readable, but it does not replace the resolved instrument: choices,
-conditions, and constraints remain in the Questionnaire.
+Every response item repeats the matching Questionnaire `linkId`. Response item `text`
+is optional presentation content: a producer may omit it or carry the wording shown to
+the user in a different locale. A receiver must neither require it nor compare it with
+the Questionnaire prompt. Resolve the exact instrument to obtain authoritative prompts,
+choices, conditions, and constraints.
 
 Groups place child response items directly in `item`. A child defined beneath a question
 belongs beneath the particular `answer.item` that created its context. Do not move that

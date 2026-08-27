@@ -1,7 +1,8 @@
 {
+  "$schema": "https://grovealliance.org/fhir/catalog/schemas/catalog-contracts.schema.json",
   "schemaVersion": 1,
   "fhirVersion": "4.0.1",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "source": {
     "package": "androidx.health.connect:connect-client",
     "version": "1.1.0",
@@ -15,13 +16,76 @@
     "cardinality": "exactly one",
     "rule": "Every admitted output preserves the exact AndroidX Health Connect 1.1 Record class token; the token is lineage and does not replace Observation.code."
   },
+  "dataOriginApplication": {
+    "sourceField": "Metadata.dataOrigin.packageName",
+    "r4Element": "Provenance.entity.agent.who",
+    "referenceType": "Device",
+    "referenceMode": "identifier-only",
+    "identifierSystem": "https://grovealliance.org/fhir/health-connect/NamingSystem/android-package-name",
+    "identifierValue": "exact non-blank Metadata.dataOrigin.packageName",
+    "literalReferenceAllowed": false,
+    "eventBundleEntryRequired": false,
+    "profileClaimRequired": false,
+    "rule": "Carry one complete absolute-system Identifier on the typed logical Device Reference. The package name identifies an application product, not an installation, host, account, person, or physical recording device."
+  },
   "statusVocabulary": {
-    "supported": "The 0.5.0 adapter defines and validates emitted FHIR output.",
+    "supported": "The 0.6.0 adapter defines and validates emitted FHIR output.",
     "mapped-standard": "The source maps directly to an established external FHIR profile without a Grove semantic profile.",
-    "platform-exclusive": "The 0.5.0 adapter defines output through a platform-exclusive Health Connect profile whose meaning remains source-specific.",
+    "platform-exclusive": "The 0.6.0 adapter defines output through a platform-exclusive Health Connect profile whose meaning remains source-specific.",
     "unmodeled": "The source type is inventoried, but no shared or Health Connect-scoped profile models it and no output is admitted.",
-    "deferred": "No FHIR output for this source type is admitted by the 0.5.0 adapter.",
-    "intentionally-unsupported": "The 0.5.0 contract explicitly rejects this source meaning rather than approximating it."
+    "deferred": "No FHIR output for this source type is admitted by the 0.6.0 adapter.",
+    "intentionally-unsupported": "The 0.6.0 contract explicitly rejects this source meaning rather than approximating it."
+  },
+  "outputCountRules": {
+    "exactly-one": "Emit exactly one output for the source record.",
+    "zero-or-one": "Emit no more than one output, under the named source-presence condition.",
+    "one-per-sample": "Emit exactly one output for every source sample and no others.",
+    "one-per-stage": "Emit exactly one output for every source sleep stage and no others.",
+    "one-per-present-field": "Emit exactly one output for every present named source field and none for absent fields.",
+    "graph-specific": "Apply the closed graphRule named on the output; no free-text counting interpretation is permitted."
+  },
+  "graphRules": {
+    "exactly-one-admitted-specimen-output": {
+      "cardinality": "For exactly one admitted BloodGlucoseRecord specimen source, emit exactly one matching glucose Observation and exactly one synthesized Specimen; emit no other output for that source record.",
+      "shortCardinality": "1 Observation + 1 Specimen",
+      "projectionRule": "The Observation references the Specimen, both carry the same source-record identifier, each has a distinct source-output identifier, and the one conversion Provenance targets both resources.",
+      "outputs": [
+        {
+          "resourceRole": "structured-observation",
+          "outputRole": "single",
+          "discriminator": "the exact selected adapter measurement id"
+        },
+        {
+          "resourceRole": "synthesized-specimen",
+          "outputRole": "specimen",
+          "discriminator": "the exact admitted source specimen token"
+        }
+      ]
+    },
+    "one-per-source-segment-or-lap": {
+      "cardinality": "Emit exactly one workout-segment Observation for every ExerciseSegment and every ExerciseLap in their preserved source-list order; emit no other workout child.",
+      "shortCardinality": "0..*; one per segment or lap",
+      "projectionRule": "Every interval is within the parent session. ExerciseLap uses the exact synthetic source token EXERCISE_LAP; ExerciseSegment uses its exact AndroidX token.",
+      "outputs": [
+        {
+          "resourceRole": "workout-child",
+          "outputRole": "workout-segment",
+          "discriminator": "<canonical UTC start with nine fractional digits>|<canonical UTC end with nine fractional digits>|<exact source segment token or EXERCISE_LAP>|<canonical zero-based occurrence among identical coordinates in preserved source-list order>"
+        }
+      ]
+    },
+    "one-per-source-delta": {
+      "cardinality": "Emit exactly one skin-temperature Observation for every source delta and no others; reject a record containing deltas when its baseline is absent.",
+      "shortCardinality": "0..*; one per delta",
+      "projectionRule": "The value is the exact baseline plus delta in degrees Celsius; identity never includes that measured value.",
+      "outputs": [
+        {
+          "resourceRole": "skin-temperature-sample",
+          "outputRole": "sample",
+          "discriminator": "<canonical UTC delta instant with nine fractional digits>|<canonical zero-based occurrence among identical instants in preserved source-list order>"
+        }
+      ]
+    }
   },
   "adapterMeasurements": [
     {
@@ -128,7 +192,7 @@
       "outputs": [
         {
           "measurement": "active-energy",
-          "cardinality": "1"
+          "countRule": "exactly-one"
         }
       ]
     },
@@ -143,7 +207,7 @@
       "outputs": [
         {
           "measurement": "basal-body-temperature",
-          "cardinality": "1"
+          "countRule": "exactly-one"
         }
       ]
     },
@@ -156,8 +220,7 @@
       "outputs": [
         {
           "measurement": "basal-metabolic-rate",
-          "cardinality": "0..*",
-          "onePer": "record"
+          "countRule": "exactly-one"
         }
       ]
     },
@@ -174,22 +237,26 @@
         {
           "measurement": "blood-glucose",
           "when": "SPECIMEN_SOURCE_WHOLE_BLOOD",
-          "cardinality": "1"
+          "countRule": "graph-specific",
+          "graphRule": "exactly-one-admitted-specimen-output"
         },
         {
           "measurement": "capillary-blood-glucose",
           "when": "SPECIMEN_SOURCE_CAPILLARY_BLOOD",
-          "cardinality": "1"
+          "countRule": "graph-specific",
+          "graphRule": "exactly-one-admitted-specimen-output"
         },
         {
           "measurement": "serum-plasma-glucose",
           "when": "SPECIMEN_SOURCE_PLASMA or SPECIMEN_SOURCE_SERUM",
-          "cardinality": "1"
+          "countRule": "graph-specific",
+          "graphRule": "exactly-one-admitted-specimen-output"
         },
         {
           "measurement": "interstitial-glucose",
           "when": "SPECIMEN_SOURCE_INTERSTITIAL_FLUID",
-          "cardinality": "1"
+          "countRule": "graph-specific",
+          "graphRule": "exactly-one-admitted-specimen-output"
         }
       ]
     },
@@ -205,7 +272,7 @@
       "outputs": [
         {
           "measurement": "blood-pressure",
-          "cardinality": "1"
+          "countRule": "exactly-one"
         }
       ]
     },
@@ -218,8 +285,7 @@
       "outputs": [
         {
           "measurement": "body-fat-percentage",
-          "cardinality": "0..*",
-          "onePer": "record"
+          "countRule": "exactly-one"
         }
       ]
     },
@@ -234,7 +300,7 @@
       "outputs": [
         {
           "measurement": "body-temperature",
-          "cardinality": "1"
+          "countRule": "exactly-one"
         }
       ]
     },
@@ -247,8 +313,7 @@
       "outputs": [
         {
           "measurement": "body-water-mass",
-          "cardinality": "0..*",
-          "onePer": "record"
+          "countRule": "exactly-one"
         }
       ]
     },
@@ -261,8 +326,7 @@
       "outputs": [
         {
           "measurement": "bone-mass",
-          "cardinality": "0..*",
-          "onePer": "record"
+          "countRule": "exactly-one"
         }
       ]
     },
@@ -271,12 +335,14 @@
       "title": "Cervical Mucus",
       "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/CervicalMucusRecord",
       "status": "supported",
-      "context": [],
+      "context": [
+        "cervicalMucusAppearance",
+        "cervicalMucusSensation"
+      ],
       "outputs": [
         {
           "measurement": "cervical-mucus-quality",
-          "cardinality": "0..*",
-          "onePer": "record"
+          "countRule": "exactly-one"
         }
       ]
     },
@@ -289,8 +355,7 @@
       "outputs": [
         {
           "measurement": "cycling-cadence",
-          "cardinality": "0..*",
-          "onePer": "record"
+          "countRule": "one-per-sample"
         }
       ]
     },
@@ -303,7 +368,7 @@
       "outputs": [
         {
           "measurement": "distance",
-          "cardinality": "1"
+          "countRule": "exactly-one"
         }
       ]
     },
@@ -316,8 +381,7 @@
       "outputs": [
         {
           "measurement": "elevation-gained",
-          "cardinality": "0..*",
-          "onePer": "record"
+          "countRule": "exactly-one"
         }
       ]
     },
@@ -326,17 +390,21 @@
       "title": "Exercise Session",
       "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/ExerciseSessionRecord",
       "status": "supported",
-      "context": [],
+      "context": [
+        "exerciseType",
+        "exerciseSegmentType",
+        "exerciseTitle",
+        "exerciseNotes"
+      ],
       "outputs": [
         {
           "measurement": "workout",
-          "cardinality": "0..*",
-          "onePer": "record"
+          "countRule": "exactly-one"
         },
         {
           "measurement": "workout-segment",
-          "cardinality": "0..*",
-          "onePer": "segment"
+          "countRule": "graph-specific",
+          "graphRule": "one-per-source-segment-or-lap"
         }
       ]
     },
@@ -349,8 +417,7 @@
       "outputs": [
         {
           "measurement": "flights-climbed",
-          "cardinality": "0..*",
-          "onePer": "record"
+          "countRule": "exactly-one"
         }
       ]
     },
@@ -363,8 +430,7 @@
       "outputs": [
         {
           "measurement": "heart-rate",
-          "cardinality": "0..*",
-          "onePer": "sample"
+          "countRule": "one-per-sample"
         }
       ]
     },
@@ -377,8 +443,7 @@
       "outputs": [
         {
           "measurement": "heart-rate-variability-rmssd",
-          "cardinality": "0..*",
-          "onePer": "record"
+          "countRule": "exactly-one"
         }
       ]
     },
@@ -391,7 +456,7 @@
       "outputs": [
         {
           "measurement": "body-height",
-          "cardinality": "1"
+          "countRule": "exactly-one"
         }
       ]
     },
@@ -404,8 +469,7 @@
       "outputs": [
         {
           "measurement": "fluid-intake",
-          "cardinality": "0..*",
-          "onePer": "record"
+          "countRule": "exactly-one"
         }
       ]
     },
@@ -418,8 +482,7 @@
       "outputs": [
         {
           "measurement": "intermenstrual-bleeding",
-          "cardinality": "0..*",
-          "onePer": "record"
+          "countRule": "exactly-one"
         }
       ]
     },
@@ -432,8 +495,7 @@
       "outputs": [
         {
           "measurement": "lean-body-mass",
-          "cardinality": "0..*",
-          "onePer": "record"
+          "countRule": "exactly-one"
         }
       ]
     },
@@ -442,12 +504,13 @@
       "title": "Menstruation Flow",
       "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/MenstruationFlowRecord",
       "status": "supported",
-      "context": [],
+      "context": [
+        "menstruationFlow"
+      ],
       "outputs": [
         {
           "measurement": "menstruation-flow",
-          "cardinality": "0..*",
-          "onePer": "record"
+          "countRule": "exactly-one"
         }
       ]
     },
@@ -460,8 +523,7 @@
       "outputs": [
         {
           "measurement": "menstruation-period",
-          "cardinality": "0..*",
-          "onePer": "record"
+          "countRule": "exactly-one"
         }
       ]
     },
@@ -470,12 +532,15 @@
       "title": "Mindfulness Session",
       "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/MindfulnessSessionRecord",
       "status": "supported",
-      "context": [],
+      "context": [
+        "mindfulnessSessionType",
+        "mindfulnessTitle",
+        "mindfulnessNotes"
+      ],
       "outputs": [
         {
           "measurement": "mindfulness-session",
-          "cardinality": "0..*",
-          "onePer": "record"
+          "countRule": "exactly-one"
         }
       ]
     },
@@ -488,213 +553,171 @@
       "outputs": [
         {
           "measurement": "dietary-biotin",
-          "cardinality": "0..*",
-          "onePer": "record"
+          "countRule": "one-per-present-field"
         },
         {
           "measurement": "dietary-caffeine",
-          "cardinality": "0..1",
-          "onePer": "record"
+          "countRule": "one-per-present-field"
         },
         {
           "measurement": "dietary-calcium",
-          "cardinality": "0..1",
-          "onePer": "record"
+          "countRule": "one-per-present-field"
         },
         {
           "measurement": "dietary-carbohydrates",
-          "cardinality": "0..1",
-          "onePer": "record"
+          "countRule": "one-per-present-field"
         },
         {
           "measurement": "dietary-chloride",
-          "cardinality": "0..1",
-          "onePer": "record"
+          "countRule": "one-per-present-field"
         },
         {
           "measurement": "dietary-cholesterol",
-          "cardinality": "0..1",
-          "onePer": "record"
+          "countRule": "one-per-present-field"
         },
         {
           "measurement": "dietary-chromium",
-          "cardinality": "0..1",
-          "onePer": "record"
+          "countRule": "one-per-present-field"
         },
         {
           "measurement": "dietary-copper",
-          "cardinality": "0..1",
-          "onePer": "record"
+          "countRule": "one-per-present-field"
         },
         {
           "measurement": "dietary-energy",
-          "cardinality": "0..1",
-          "onePer": "record"
+          "countRule": "one-per-present-field"
         },
         {
           "measurement": "dietary-energy-from-fat",
-          "cardinality": "0..1",
-          "onePer": "record"
+          "countRule": "one-per-present-field"
         },
         {
           "measurement": "dietary-fat-monounsaturated",
-          "cardinality": "0..1",
-          "onePer": "record"
+          "countRule": "one-per-present-field"
         },
         {
           "measurement": "dietary-fat-polyunsaturated",
-          "cardinality": "0..1",
-          "onePer": "record"
+          "countRule": "one-per-present-field"
         },
         {
           "measurement": "dietary-fat-saturated",
-          "cardinality": "0..1",
-          "onePer": "record"
+          "countRule": "one-per-present-field"
         },
         {
           "measurement": "dietary-fat-total",
-          "cardinality": "0..1",
-          "onePer": "record"
+          "countRule": "one-per-present-field"
         },
         {
           "measurement": "dietary-fat-trans",
-          "cardinality": "0..1",
-          "onePer": "record"
+          "countRule": "one-per-present-field"
         },
         {
           "measurement": "dietary-fat-unsaturated",
-          "cardinality": "0..1",
-          "onePer": "record"
+          "countRule": "one-per-present-field"
         },
         {
           "measurement": "dietary-fiber",
-          "cardinality": "0..1",
-          "onePer": "record"
+          "countRule": "one-per-present-field"
         },
         {
           "measurement": "dietary-folate",
-          "cardinality": "0..1",
-          "onePer": "record"
+          "countRule": "one-per-present-field"
         },
         {
           "measurement": "dietary-folic-acid",
-          "cardinality": "0..1",
-          "onePer": "record"
+          "countRule": "one-per-present-field"
         },
         {
           "measurement": "dietary-iodine",
-          "cardinality": "0..1",
-          "onePer": "record"
+          "countRule": "one-per-present-field"
         },
         {
           "measurement": "dietary-iron",
-          "cardinality": "0..1",
-          "onePer": "record"
+          "countRule": "one-per-present-field"
         },
         {
           "measurement": "dietary-magnesium",
-          "cardinality": "0..1",
-          "onePer": "record"
+          "countRule": "one-per-present-field"
         },
         {
           "measurement": "dietary-manganese",
-          "cardinality": "0..1",
-          "onePer": "record"
+          "countRule": "one-per-present-field"
         },
         {
           "measurement": "dietary-molybdenum",
-          "cardinality": "0..1",
-          "onePer": "record"
+          "countRule": "one-per-present-field"
         },
         {
           "measurement": "dietary-niacin",
-          "cardinality": "0..1",
-          "onePer": "record"
+          "countRule": "one-per-present-field"
         },
         {
           "measurement": "dietary-pantothenic-acid",
-          "cardinality": "0..1",
-          "onePer": "record"
+          "countRule": "one-per-present-field"
         },
         {
           "measurement": "dietary-phosphorus",
-          "cardinality": "0..1",
-          "onePer": "record"
+          "countRule": "one-per-present-field"
         },
         {
           "measurement": "dietary-potassium",
-          "cardinality": "0..1",
-          "onePer": "record"
+          "countRule": "one-per-present-field"
         },
         {
           "measurement": "dietary-protein",
-          "cardinality": "0..1",
-          "onePer": "record"
+          "countRule": "one-per-present-field"
         },
         {
           "measurement": "dietary-riboflavin",
-          "cardinality": "0..1",
-          "onePer": "record"
+          "countRule": "one-per-present-field"
         },
         {
           "measurement": "dietary-selenium",
-          "cardinality": "0..1",
-          "onePer": "record"
+          "countRule": "one-per-present-field"
         },
         {
           "measurement": "dietary-sodium",
-          "cardinality": "0..1",
-          "onePer": "record"
+          "countRule": "one-per-present-field"
         },
         {
           "measurement": "dietary-sugar",
-          "cardinality": "0..1",
-          "onePer": "record"
+          "countRule": "one-per-present-field"
         },
         {
           "measurement": "dietary-thiamin",
-          "cardinality": "0..1",
-          "onePer": "record"
+          "countRule": "one-per-present-field"
         },
         {
           "measurement": "dietary-vitamin-a",
-          "cardinality": "0..1",
-          "onePer": "record"
+          "countRule": "one-per-present-field"
         },
         {
           "measurement": "dietary-vitamin-b12",
-          "cardinality": "0..1",
-          "onePer": "record"
+          "countRule": "one-per-present-field"
         },
         {
           "measurement": "dietary-vitamin-b6",
-          "cardinality": "0..1",
-          "onePer": "record"
+          "countRule": "one-per-present-field"
         },
         {
           "measurement": "dietary-vitamin-c",
-          "cardinality": "0..1",
-          "onePer": "record"
+          "countRule": "one-per-present-field"
         },
         {
           "measurement": "dietary-vitamin-d",
-          "cardinality": "0..1",
-          "onePer": "record"
+          "countRule": "one-per-present-field"
         },
         {
           "measurement": "dietary-vitamin-e",
-          "cardinality": "0..1",
-          "onePer": "record"
+          "countRule": "one-per-present-field"
         },
         {
           "measurement": "dietary-vitamin-k",
-          "cardinality": "0..1",
-          "onePer": "record"
+          "countRule": "one-per-present-field"
         },
         {
           "measurement": "dietary-zinc",
-          "cardinality": "0..1",
-          "onePer": "record"
+          "countRule": "one-per-present-field"
         }
       ]
     },
@@ -703,12 +726,13 @@
       "title": "Ovulation Test",
       "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/OvulationTestRecord",
       "status": "supported",
-      "context": [],
+      "context": [
+        "ovulationTestResult"
+      ],
       "outputs": [
         {
           "measurement": "ovulation-test-result",
-          "cardinality": "0..*",
-          "onePer": "record"
+          "countRule": "exactly-one"
         }
       ]
     },
@@ -721,7 +745,7 @@
       "outputs": [
         {
           "measurement": "oxygen-saturation",
-          "cardinality": "1"
+          "countRule": "exactly-one"
         }
       ]
     },
@@ -743,8 +767,7 @@
       "outputs": [
         {
           "measurement": "power",
-          "cardinality": "0..*",
-          "onePer": "record"
+          "countRule": "one-per-sample"
         }
       ]
     },
@@ -757,7 +780,7 @@
       "outputs": [
         {
           "measurement": "respiratory-rate",
-          "cardinality": "1"
+          "countRule": "exactly-one"
         }
       ]
     },
@@ -770,8 +793,7 @@
       "outputs": [
         {
           "measurement": "resting-heart-rate",
-          "cardinality": "0..*",
-          "onePer": "record"
+          "countRule": "exactly-one"
         }
       ]
     },
@@ -780,12 +802,13 @@
       "title": "Sexual Activity",
       "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/SexualActivityRecord",
       "status": "supported",
-      "context": [],
+      "context": [
+        "sexualActivityProtection"
+      ],
       "outputs": [
         {
           "measurement": "sexual-activity",
-          "cardinality": "0..*",
-          "onePer": "record"
+          "countRule": "exactly-one"
         }
       ]
     },
@@ -794,12 +817,14 @@
       "title": "Skin Temperature",
       "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/SkinTemperatureRecord",
       "status": "supported",
-      "context": [],
+      "context": [
+        "skinTemperatureMeasurementLocation"
+      ],
       "outputs": [
         {
           "measurement": "skin-temperature",
-          "cardinality": "0..*",
-          "onePer": "record"
+          "countRule": "graph-specific",
+          "graphRule": "one-per-source-delta"
         }
       ]
     },
@@ -816,12 +841,11 @@
       "outputs": [
         {
           "measurement": "sleep-duration",
-          "cardinality": "1"
+          "countRule": "exactly-one"
         },
         {
           "measurement": "sleep-stage",
-          "cardinality": "0..*",
-          "onePer": "stage"
+          "countRule": "one-per-stage"
         }
       ]
     },
@@ -834,8 +858,7 @@
       "outputs": [
         {
           "measurement": "speed",
-          "cardinality": "0..*",
-          "onePer": "record"
+          "countRule": "one-per-sample"
         }
       ]
     },
@@ -848,8 +871,7 @@
       "outputs": [
         {
           "measurement": "step-cadence",
-          "cardinality": "0..*",
-          "onePer": "record"
+          "countRule": "one-per-sample"
         }
       ]
     },
@@ -862,7 +884,7 @@
       "outputs": [
         {
           "measurement": "step-count",
-          "cardinality": "1"
+          "countRule": "exactly-one"
         }
       ]
     },
@@ -875,8 +897,7 @@
       "outputs": [
         {
           "measurement": "total-energy",
-          "cardinality": "0..*",
-          "onePer": "record"
+          "countRule": "exactly-one"
         }
       ]
     },
@@ -885,12 +906,13 @@
       "title": "VO2 Max",
       "documentation": "https://developer.android.com/reference/androidx/health/connect/client/records/Vo2MaxRecord",
       "status": "supported",
-      "context": [],
+      "context": [
+        "vo2MaxMeasurementMethod"
+      ],
       "outputs": [
         {
           "measurement": "vo2-max",
-          "cardinality": "0..*",
-          "onePer": "record"
+          "countRule": "exactly-one"
         }
       ]
     },
@@ -903,7 +925,7 @@
       "outputs": [
         {
           "measurement": "body-weight",
-          "cardinality": "1"
+          "countRule": "exactly-one"
         }
       ]
     },
@@ -916,8 +938,7 @@
       "outputs": [
         {
           "measurement": "wheelchair-push-count",
-          "cardinality": "0..*",
-          "onePer": "record"
+          "countRule": "exactly-one"
         }
       ]
     }
@@ -1256,9 +1277,284 @@
         }
       ]
     },
+    "skinTemperatureMeasurementLocation": {
+      "r4Element": "Observation.bodySite",
+      "unknownPolicy": "omit",
+      "appliesTo": [
+        "SkinTemperatureRecord"
+      ],
+      "values": [
+        {
+          "source": "MEASUREMENT_LOCATION_UNKNOWN",
+          "coding": null
+        },
+        {
+          "source": "MEASUREMENT_LOCATION_FINGER",
+          "coding": {
+            "system": "http://snomed.info/sct",
+            "code": "7569003",
+            "display": "Finger structure"
+          }
+        },
+        {
+          "source": "MEASUREMENT_LOCATION_TOE",
+          "coding": {
+            "system": "http://snomed.info/sct",
+            "code": "29707007",
+            "display": "Toe structure"
+          }
+        },
+        {
+          "source": "MEASUREMENT_LOCATION_WRIST",
+          "coding": {
+            "system": "http://snomed.info/sct",
+            "code": "8205005",
+            "display": "Wrist region structure"
+          }
+        }
+      ]
+    },
+    "menstruationFlow": {
+      "sourceCodeSystem": "https://grovealliance.org/fhir/health-connect/CodeSystem/health-connect-menstruation-flow",
+      "valueSet": "https://grovealliance.org/fhir/health-connect/ValueSet/health-connect-menstruation-flow",
+      "r4Element": "Observation.valueCodeableConcept.coding (additional exact-source coding after the shared Grove flow coding)",
+      "appliesToMeasurement": "menstruation-flow",
+      "outputCardinality": "1..1",
+      "unknownPolicy": "preserve FLOW_UNKNOWN; reject integers outside the closed AndroidX 1.1 domain",
+      "values": [
+        {"source": "FLOW_UNKNOWN", "code": "FLOW_UNKNOWN", "display": "Unknown", "shared": "unspecified"},
+        {"source": "FLOW_LIGHT", "code": "FLOW_LIGHT", "display": "Light", "shared": "light"},
+        {"source": "FLOW_MEDIUM", "code": "FLOW_MEDIUM", "display": "Medium", "shared": "medium"},
+        {"source": "FLOW_HEAVY", "code": "FLOW_HEAVY", "display": "Heavy", "shared": "heavy"}
+      ]
+    },
+    "ovulationTestResult": {
+      "sourceCodeSystem": "https://grovealliance.org/fhir/health-connect/CodeSystem/health-connect-ovulation-test-result",
+      "valueSet": "https://grovealliance.org/fhir/health-connect/ValueSet/health-connect-ovulation-test-result",
+      "r4Element": "Observation.valueCodeableConcept.coding (additional exact-source coding after the shared Grove result coding)",
+      "appliesToMeasurement": "ovulation-test-result",
+      "outputCardinality": "1..1",
+      "unknownPolicy": "reject integers outside the closed AndroidX 1.1 domain",
+      "values": [
+        {"source": "RESULT_NEGATIVE", "code": "RESULT_NEGATIVE", "display": "Negative", "shared": "negative"},
+        {"source": "RESULT_HIGH", "code": "RESULT_HIGH", "display": "High", "shared": "high-fertility"},
+        {"source": "RESULT_POSITIVE", "code": "RESULT_POSITIVE", "display": "Positive", "shared": "luteinizing-hormone-surge"},
+        {"source": "RESULT_INCONCLUSIVE", "code": "RESULT_INCONCLUSIVE", "display": "Inconclusive", "shared": "indeterminate"}
+      ]
+    },
+    "sexualActivityProtection": {
+      "sourceCodeSystem": "https://grovealliance.org/fhir/health-connect/CodeSystem/health-connect-sexual-activity-protection",
+      "valueSet": "https://grovealliance.org/fhir/health-connect/ValueSet/health-connect-sexual-activity-protection",
+      "r4Element": "Observation.valueCodeableConcept.coding (additional exact-source coding after the shared Grove protection coding)",
+      "appliesToMeasurement": "sexual-activity",
+      "outputCardinality": "1..1",
+      "unknownPolicy": "preserve PROTECTION_USED_UNKNOWN; reject integers outside the closed AndroidX 1.1 domain",
+      "values": [
+        {"source": "PROTECTION_USED_UNKNOWN", "code": "PROTECTION_USED_UNKNOWN", "display": "Unknown", "shared": "unknown"},
+        {"source": "PROTECTION_USED_PROTECTED", "code": "PROTECTION_USED_PROTECTED", "display": "Protected", "shared": "protected"},
+        {"source": "PROTECTION_USED_UNPROTECTED", "code": "PROTECTION_USED_UNPROTECTED", "display": "Unprotected", "shared": "unprotected"}
+      ]
+    },
+    "cervicalMucusAppearance": {
+      "sourceCodeSystem": "https://grovealliance.org/fhir/health-connect/CodeSystem/health-connect-cervical-mucus-appearance",
+      "valueSet": "https://grovealliance.org/fhir/health-connect/ValueSet/health-connect-cervical-mucus-appearance",
+      "r4Element": "Observation.valueCodeableConcept.coding (additional exact-source coding after the shared Grove appearance coding)",
+      "appliesToMeasurement": "cervical-mucus-quality",
+      "outputCardinality": "1..1",
+      "unknownPolicy": "preserve APPEARANCE_UNKNOWN; reject integers outside the closed AndroidX 1.1 domain",
+      "values": [
+        {"source": "APPEARANCE_UNKNOWN", "code": "APPEARANCE_UNKNOWN", "display": "Unknown", "shared": "unknown"},
+        {"source": "APPEARANCE_DRY", "code": "APPEARANCE_DRY", "display": "Dry", "shared": "dry"},
+        {"source": "APPEARANCE_STICKY", "code": "APPEARANCE_STICKY", "display": "Sticky", "shared": "sticky"},
+        {"source": "APPEARANCE_CREAMY", "code": "APPEARANCE_CREAMY", "display": "Creamy", "shared": "creamy"},
+        {"source": "APPEARANCE_WATERY", "code": "APPEARANCE_WATERY", "display": "Watery", "shared": "watery"},
+        {"source": "APPEARANCE_EGG_WHITE", "code": "APPEARANCE_EGG_WHITE", "display": "Egg white", "shared": "egg-white"},
+        {"source": "APPEARANCE_UNUSUAL", "code": "APPEARANCE_UNUSUAL", "display": "Unusual", "shared": "unusual"}
+      ]
+    },
+    "cervicalMucusSensation": {
+      "sourceCodeSystem": "https://grovealliance.org/fhir/health-connect/CodeSystem/health-connect-cervical-mucus-sensation",
+      "valueSet": "https://grovealliance.org/fhir/health-connect/ValueSet/health-connect-cervical-mucus-sensation",
+      "r4Element": "Observation.component[cervical-mucus-sensation].valueCodeableConcept.coding (additional exact-source coding after the shared Grove sensation coding)",
+      "appliesToMeasurement": "cervical-mucus-quality",
+      "outputCardinality": "0..1",
+      "unknownPolicy": "omit SENSATION_UNKNOWN; reject integers outside the closed AndroidX 1.1 domain",
+      "values": [
+        {"source": "SENSATION_LIGHT", "code": "SENSATION_LIGHT", "display": "Light", "shared": "light"},
+        {"source": "SENSATION_MEDIUM", "code": "SENSATION_MEDIUM", "display": "Medium", "shared": "medium"},
+        {"source": "SENSATION_HEAVY", "code": "SENSATION_HEAVY", "display": "Heavy", "shared": "heavy"}
+      ]
+    },
+    "exerciseType": {
+      "sourceCodeSystem": "https://grovealliance.org/fhir/health-connect/CodeSystem/health-connect-exercise-type",
+      "valueSet": "https://grovealliance.org/fhir/health-connect/ValueSet/health-connect-exercise-type",
+      "r4Element": "workout summary Observation.valueCodeableConcept.coding (additional exact-source coding after the shared Grove activity coding)",
+      "appliesToMeasurement": "workout",
+      "outputCardinality": "1..1",
+      "unknownPolicy": "reject integers outside the closed AndroidX 1.1 domain",
+      "allowedSourceCodes": [
+        "EXERCISE_TYPE_BADMINTON",
+        "EXERCISE_TYPE_BASEBALL",
+        "EXERCISE_TYPE_BASKETBALL",
+        "EXERCISE_TYPE_BIKING",
+        "EXERCISE_TYPE_BIKING_STATIONARY",
+        "EXERCISE_TYPE_BOOT_CAMP",
+        "EXERCISE_TYPE_BOXING",
+        "EXERCISE_TYPE_CALISTHENICS",
+        "EXERCISE_TYPE_CRICKET",
+        "EXERCISE_TYPE_DANCING",
+        "EXERCISE_TYPE_ELLIPTICAL",
+        "EXERCISE_TYPE_EXERCISE_CLASS",
+        "EXERCISE_TYPE_FENCING",
+        "EXERCISE_TYPE_FOOTBALL_AMERICAN",
+        "EXERCISE_TYPE_FOOTBALL_AUSTRALIAN",
+        "EXERCISE_TYPE_FRISBEE_DISC",
+        "EXERCISE_TYPE_GOLF",
+        "EXERCISE_TYPE_GUIDED_BREATHING",
+        "EXERCISE_TYPE_GYMNASTICS",
+        "EXERCISE_TYPE_HANDBALL",
+        "EXERCISE_TYPE_HIGH_INTENSITY_INTERVAL_TRAINING",
+        "EXERCISE_TYPE_HIKING",
+        "EXERCISE_TYPE_ICE_HOCKEY",
+        "EXERCISE_TYPE_ICE_SKATING",
+        "EXERCISE_TYPE_MARTIAL_ARTS",
+        "EXERCISE_TYPE_OTHER_WORKOUT",
+        "EXERCISE_TYPE_PADDLING",
+        "EXERCISE_TYPE_PARAGLIDING",
+        "EXERCISE_TYPE_PILATES",
+        "EXERCISE_TYPE_RACQUETBALL",
+        "EXERCISE_TYPE_ROCK_CLIMBING",
+        "EXERCISE_TYPE_ROLLER_HOCKEY",
+        "EXERCISE_TYPE_ROWING",
+        "EXERCISE_TYPE_ROWING_MACHINE",
+        "EXERCISE_TYPE_RUGBY",
+        "EXERCISE_TYPE_RUNNING",
+        "EXERCISE_TYPE_RUNNING_TREADMILL",
+        "EXERCISE_TYPE_SAILING",
+        "EXERCISE_TYPE_SCUBA_DIVING",
+        "EXERCISE_TYPE_SKATING",
+        "EXERCISE_TYPE_SKIING",
+        "EXERCISE_TYPE_SNOWBOARDING",
+        "EXERCISE_TYPE_SNOWSHOEING",
+        "EXERCISE_TYPE_SOCCER",
+        "EXERCISE_TYPE_SOFTBALL",
+        "EXERCISE_TYPE_SQUASH",
+        "EXERCISE_TYPE_STAIR_CLIMBING",
+        "EXERCISE_TYPE_STAIR_CLIMBING_MACHINE",
+        "EXERCISE_TYPE_STRENGTH_TRAINING",
+        "EXERCISE_TYPE_STRETCHING",
+        "EXERCISE_TYPE_SURFING",
+        "EXERCISE_TYPE_SWIMMING_OPEN_WATER",
+        "EXERCISE_TYPE_SWIMMING_POOL",
+        "EXERCISE_TYPE_TABLE_TENNIS",
+        "EXERCISE_TYPE_TENNIS",
+        "EXERCISE_TYPE_VOLLEYBALL",
+        "EXERCISE_TYPE_WALKING",
+        "EXERCISE_TYPE_WATER_POLO",
+        "EXERCISE_TYPE_WEIGHTLIFTING",
+        "EXERCISE_TYPE_WHEELCHAIR",
+        "EXERCISE_TYPE_YOGA"
+      ]
+    },
+    "exerciseSegmentType": {
+      "sourceCodeSystem": "https://grovealliance.org/fhir/health-connect/CodeSystem/health-connect-exercise-segment-type",
+      "valueSet": "https://grovealliance.org/fhir/health-connect/ValueSet/health-connect-exercise-segment-type",
+      "r4Element": "workout-segment Observation.valueCodeableConcept.coding (additional exact-source coding after the shared Grove segment coding)",
+      "appliesToMeasurement": "workout-segment",
+      "outputCardinality": "1..1",
+      "unknownPolicy": "preserve EXERCISE_SEGMENT_TYPE_UNKNOWN; use EXERCISE_LAP for structural laps; reject every other out-of-domain integer or token",
+      "allowedSourceCodes": [
+        "EXERCISE_SEGMENT_TYPE_ARM_CURL",
+        "EXERCISE_SEGMENT_TYPE_BACK_EXTENSION",
+        "EXERCISE_SEGMENT_TYPE_BALL_SLAM",
+        "EXERCISE_SEGMENT_TYPE_BARBELL_SHOULDER_PRESS",
+        "EXERCISE_SEGMENT_TYPE_BENCH_PRESS",
+        "EXERCISE_SEGMENT_TYPE_BENCH_SIT_UP",
+        "EXERCISE_SEGMENT_TYPE_BIKING",
+        "EXERCISE_SEGMENT_TYPE_BIKING_STATIONARY",
+        "EXERCISE_SEGMENT_TYPE_BURPEE",
+        "EXERCISE_SEGMENT_TYPE_CRUNCH",
+        "EXERCISE_SEGMENT_TYPE_DEADLIFT",
+        "EXERCISE_SEGMENT_TYPE_DOUBLE_ARM_TRICEPS_EXTENSION",
+        "EXERCISE_SEGMENT_TYPE_DUMBBELL_CURL_LEFT_ARM",
+        "EXERCISE_SEGMENT_TYPE_DUMBBELL_CURL_RIGHT_ARM",
+        "EXERCISE_SEGMENT_TYPE_DUMBBELL_FRONT_RAISE",
+        "EXERCISE_SEGMENT_TYPE_DUMBBELL_LATERAL_RAISE",
+        "EXERCISE_SEGMENT_TYPE_DUMBBELL_ROW",
+        "EXERCISE_SEGMENT_TYPE_DUMBBELL_TRICEPS_EXTENSION_LEFT_ARM",
+        "EXERCISE_SEGMENT_TYPE_DUMBBELL_TRICEPS_EXTENSION_RIGHT_ARM",
+        "EXERCISE_SEGMENT_TYPE_DUMBBELL_TRICEPS_EXTENSION_TWO_ARM",
+        "EXERCISE_SEGMENT_TYPE_ELLIPTICAL",
+        "EXERCISE_SEGMENT_TYPE_FORWARD_TWIST",
+        "EXERCISE_SEGMENT_TYPE_FRONT_RAISE",
+        "EXERCISE_SEGMENT_TYPE_HIGH_INTENSITY_INTERVAL_TRAINING",
+        "EXERCISE_SEGMENT_TYPE_HIP_THRUST",
+        "EXERCISE_SEGMENT_TYPE_HULA_HOOP",
+        "EXERCISE_SEGMENT_TYPE_JUMPING_JACK",
+        "EXERCISE_SEGMENT_TYPE_JUMP_ROPE",
+        "EXERCISE_SEGMENT_TYPE_KETTLEBELL_SWING",
+        "EXERCISE_SEGMENT_TYPE_LATERAL_RAISE",
+        "EXERCISE_SEGMENT_TYPE_LAT_PULL_DOWN",
+        "EXERCISE_SEGMENT_TYPE_LEG_CURL",
+        "EXERCISE_SEGMENT_TYPE_LEG_EXTENSION",
+        "EXERCISE_SEGMENT_TYPE_LEG_PRESS",
+        "EXERCISE_SEGMENT_TYPE_LEG_RAISE",
+        "EXERCISE_SEGMENT_TYPE_LUNGE",
+        "EXERCISE_SEGMENT_TYPE_MOUNTAIN_CLIMBER",
+        "EXERCISE_SEGMENT_TYPE_OTHER_WORKOUT",
+        "EXERCISE_SEGMENT_TYPE_PAUSE",
+        "EXERCISE_SEGMENT_TYPE_PILATES",
+        "EXERCISE_SEGMENT_TYPE_PLANK",
+        "EXERCISE_SEGMENT_TYPE_PULL_UP",
+        "EXERCISE_SEGMENT_TYPE_PUNCH",
+        "EXERCISE_SEGMENT_TYPE_REST",
+        "EXERCISE_SEGMENT_TYPE_ROWING_MACHINE",
+        "EXERCISE_SEGMENT_TYPE_RUNNING",
+        "EXERCISE_SEGMENT_TYPE_RUNNING_TREADMILL",
+        "EXERCISE_SEGMENT_TYPE_SHOULDER_PRESS",
+        "EXERCISE_SEGMENT_TYPE_SINGLE_ARM_TRICEPS_EXTENSION",
+        "EXERCISE_SEGMENT_TYPE_SIT_UP",
+        "EXERCISE_SEGMENT_TYPE_SQUAT",
+        "EXERCISE_SEGMENT_TYPE_STAIR_CLIMBING",
+        "EXERCISE_SEGMENT_TYPE_STAIR_CLIMBING_MACHINE",
+        "EXERCISE_SEGMENT_TYPE_STRETCHING",
+        "EXERCISE_SEGMENT_TYPE_SWIMMING_BACKSTROKE",
+        "EXERCISE_SEGMENT_TYPE_SWIMMING_BREASTSTROKE",
+        "EXERCISE_SEGMENT_TYPE_SWIMMING_BUTTERFLY",
+        "EXERCISE_SEGMENT_TYPE_SWIMMING_FREESTYLE",
+        "EXERCISE_SEGMENT_TYPE_SWIMMING_MIXED",
+        "EXERCISE_SEGMENT_TYPE_SWIMMING_OPEN_WATER",
+        "EXERCISE_SEGMENT_TYPE_SWIMMING_OTHER",
+        "EXERCISE_SEGMENT_TYPE_SWIMMING_POOL",
+        "EXERCISE_SEGMENT_TYPE_UNKNOWN",
+        "EXERCISE_SEGMENT_TYPE_UPPER_TWIST",
+        "EXERCISE_SEGMENT_TYPE_WALKING",
+        "EXERCISE_SEGMENT_TYPE_WEIGHTLIFTING",
+        "EXERCISE_SEGMENT_TYPE_WHEELCHAIR",
+        "EXERCISE_SEGMENT_TYPE_YOGA",
+        "EXERCISE_LAP"
+      ]
+    },
+    "exerciseTitle": {
+      "extension": "https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-exercise-title",
+      "valueType": "string",
+      "appliesTo": "workout summary Observation only",
+      "appliesToMeasurement": "workout",
+      "retentionPolicy": "preserve only when the producer explicitly selects RETAIN; otherwise omit",
+      "blankPolicy": "omit"
+    },
+    "exerciseNotes": {
+      "r4Element": "workout summary Observation.note.text",
+      "appliesToMeasurement": "workout",
+      "authorAndTime": "omit because Health Connect supplies neither",
+      "retentionPolicy": "preserve only when the producer explicitly selects RETAIN; otherwise omit",
+      "blankPolicy": "omit"
+    },
     "sleepStage": {
       "sourceCodeSystem": "https://grovealliance.org/fhir/health-connect/CodeSystem/health-connect-sleep-stage",
       "r4Element": "Observation.valueCodeableConcept.coding (additional coding after the shared Grove stage coding)",
+      "appliesToMeasurement": "sleep-stage",
+      "outputCardinality": "1..1",
       "values": [
         {
           "source": "STAGE_TYPE_UNKNOWN",
@@ -1314,22 +1610,185 @@
       "extension": "https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-sleep-title",
       "valueType": "string",
       "appliesTo": "sleep-duration summary Observation only",
+      "appliesToMeasurement": "sleep-duration",
+      "retentionPolicy": "preserve only when the producer explicitly selects RETAIN; otherwise omit",
       "blankPolicy": "omit"
     },
     "sleepNotes": {
       "r4Element": "Observation.note.text",
+      "appliesToMeasurement": "sleep-duration",
       "authorAndTime": "omit because Health Connect supplies neither",
+      "retentionPolicy": "preserve only when the producer explicitly selects RETAIN; otherwise omit",
       "blankPolicy": "omit"
+    },
+    "mindfulnessSessionType": {
+      "extension": "https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-mindfulness-session-type",
+      "valueType": "Coding",
+      "codeSystem": "https://grovealliance.org/fhir/health-connect/CodeSystem/health-connect-mindfulness-session-type",
+      "unknownPolicy": "preserve the AndroidX UNKNOWN token; reject integers outside the closed AndroidX 1.1 domain",
+      "values": [
+        {
+          "source": "MINDFULNESS_SESSION_TYPE_UNKNOWN",
+          "code": "MINDFULNESS_SESSION_TYPE_UNKNOWN",
+          "display": "Unknown"
+        },
+        {
+          "source": "MINDFULNESS_SESSION_TYPE_MEDITATION",
+          "code": "MINDFULNESS_SESSION_TYPE_MEDITATION",
+          "display": "Meditation"
+        },
+        {
+          "source": "MINDFULNESS_SESSION_TYPE_BREATHING",
+          "code": "MINDFULNESS_SESSION_TYPE_BREATHING",
+          "display": "Guided breathing"
+        },
+        {
+          "source": "MINDFULNESS_SESSION_TYPE_MUSIC",
+          "code": "MINDFULNESS_SESSION_TYPE_MUSIC",
+          "display": "Music or soundscapes"
+        },
+        {
+          "source": "MINDFULNESS_SESSION_TYPE_MOVEMENT",
+          "code": "MINDFULNESS_SESSION_TYPE_MOVEMENT",
+          "display": "Movement"
+        },
+        {
+          "source": "MINDFULNESS_SESSION_TYPE_UNGUIDED",
+          "code": "MINDFULNESS_SESSION_TYPE_UNGUIDED",
+          "display": "Unguided"
+        }
+      ]
+    },
+    "mindfulnessTitle": {
+      "extension": "https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-mindfulness-title",
+      "valueType": "string",
+      "appliesToMeasurement": "mindfulness-session",
+      "retentionPolicy": "preserve only when the producer explicitly selects RETAIN; otherwise omit",
+      "blankPolicy": "omit"
+    },
+    "mindfulnessNotes": {
+      "r4Element": "Observation.note.text",
+      "appliesToMeasurement": "mindfulness-session",
+      "authorAndTime": "omit because Health Connect supplies neither",
+      "retentionPolicy": "preserve only when the producer explicitly selects RETAIN; otherwise omit",
+      "blankPolicy": "omit"
+    },
+    "vo2MaxMeasurementMethod": {
+      "r4Element": "Observation.method",
+      "valueType": "CodeableConcept with exactly one Coding",
+      "codeSystem": "https://grovealliance.org/fhir/health-connect/CodeSystem/health-connect-vo2-max-measurement-method",
+      "unknownPolicy": "reject integers outside the closed AndroidX 1.1 domain",
+      "values": [
+        {
+          "source": "MEASUREMENT_METHOD_OTHER",
+          "code": "MEASUREMENT_METHOD_OTHER",
+          "display": "Other"
+        },
+        {
+          "source": "MEASUREMENT_METHOD_METABOLIC_CART",
+          "code": "MEASUREMENT_METHOD_METABOLIC_CART",
+          "display": "Metabolic cart"
+        },
+        {
+          "source": "MEASUREMENT_METHOD_HEART_RATE_RATIO",
+          "code": "MEASUREMENT_METHOD_HEART_RATE_RATIO",
+          "display": "Heart-rate ratio"
+        },
+        {
+          "source": "MEASUREMENT_METHOD_COOPER_TEST",
+          "code": "MEASUREMENT_METHOD_COOPER_TEST",
+          "display": "Cooper test"
+        },
+        {
+          "source": "MEASUREMENT_METHOD_MULTISTAGE_FITNESS_TEST",
+          "code": "MEASUREMENT_METHOD_MULTISTAGE_FITNESS_TEST",
+          "display": "Multistage fitness test"
+        },
+        {
+          "source": "MEASUREMENT_METHOD_ROCKPORT_FITNESS_TEST",
+          "code": "MEASUREMENT_METHOD_ROCKPORT_FITNESS_TEST",
+          "display": "Rockport fitness test"
+        }
+      ]
     }
   },
   "recordingDeviceIdentity": {
     "adapterId": "health-connect",
-    "note": "Health Connect states no hardware version, so the key rests on manufacturer and model.",
-    "sourceFields": {
-      "manufacturer": "Metadata.device.manufacturer",
-      "model": "Metadata.device.model",
-      "hardwareVersion": ""
+    "status": "stable-token-required",
+    "sourceDescriptionFields": [
+      "Metadata.device.manufacturer",
+      "Metadata.device.model",
+      "Metadata.device.type"
+    ],
+    "stableUnitToken": "Health Connect 1.1 exposes no per-unit device identifier. A producer may emit Observation.device only when its caller supplies a separately governed stable per-unit token.",
+    "fallback": "Omit Observation.device when that token is absent. Manufacturer, model, device type, repository scope, and their digest do not establish a physical instance.",
+    "snapshot": "When emitted, the Device carries both recording-device and event-scoped device-snapshot v2 identifiers."
+  },
+  "identity": {
+    "contract": "catalog/exchange-protocol.json",
+    "protocolVersion": 2,
+    "adapterId": "health-connect",
+    "sourceRecord": {
+      "identityKind": "source-record",
+      "identifierRole": "source-record",
+      "components": [
+        "adapter-id",
+        "source-type",
+        "repository-scope-system",
+        "repository-scope-value",
+        "native-record-id"
+      ],
+      "bindings": {
+        "adapter-id": "health-connect",
+        "source-type": "exact AndroidX Record class token",
+        "repository-scope-system": "deployment-owned URI naming the Health Connect repository scope",
+        "repository-scope-value": "stable pseudonymous value for one on-device Health Connect repository",
+        "native-record-id": "Metadata.id exactly as returned by Health Connect"
+      }
     },
-    "status": "derived"
+    "sourceOutput": {
+      "identityKind": "source-output",
+      "identifierRole": "source-output",
+      "components": [
+        "adapter-id",
+        "source-type",
+        "repository-scope-system",
+        "repository-scope-value",
+        "native-record-id",
+        "output-role",
+        "output-discriminator"
+      ],
+      "outputRoleRule": "Use exactly one role from outputRoles. A non-graph count rule selects its named role; a graph-specific rule declares the role for every graph output.",
+      "outputRoles": [
+        "single",
+        "sample",
+        "sleep-stage",
+        "present-field",
+        "specimen",
+        "workout-segment"
+      ],
+      "outputDiscriminatorRules": {
+        "exactly-one": "output-role single; discriminator is the exact measurement id",
+        "one-per-sample": "output-role sample; discriminator is <canonical UTC instant with nine fractional digits>|<canonical zero-based occurrence>",
+        "one-per-stage": "output-role sleep-stage; discriminator is <canonical UTC start with nine fractional digits>|<canonical UTC end with nine fractional digits>|<exact source stage token>|<canonical zero-based occurrence>",
+        "one-per-present-field": "output-role present-field; discriminator is the exact measurement id",
+        "specimen": "output-role specimen; discriminator is the exact admitted source specimen token",
+        "graph-specific": "the named graph rule must declare an exact output role and delimiter-safe canonical discriminator"
+      },
+    "canonicalOccurrence": "0 or a non-zero ASCII digit followed by zero or more ASCII digits; no sign or leading zero.",
+    "ordering": "For an ordered Health Connect sample or stage list, preserve the exact platform list order and assign the zero-based occurrence among entries with identical canonical non-value coordinates in that order. Never sort by a measured value and never use unordered map, set, or runtime iteration. If the source list order was not retained, reject duplicate coordinates rather than mint unstable identities."
+    },
+    "writerRecord": {
+      "identityKind": "writer-record",
+      "identifierRole": "writer-record",
+      "condition": "Metadata.clientRecordId is present.",
+      "components": {
+        "writer-application-system": "deployment-owned URI naming Android application package identifiers",
+        "writer-application-value": "Metadata.dataOrigin.packageName",
+        "writer-record-id": "Metadata.clientRecordId"
+      },
+      "version": "Metadata.clientRecordVersion is carried only when supplied by the writer and never synthesized from export order."
+    },
+    "resourceIdPolicy": "Resource.id is optional and repository-assigned. Platform, output, writer, specimen, and event business identifiers are never copied into Resource.id."
   }
 }

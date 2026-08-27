@@ -19,22 +19,19 @@
   ],
   "properties": {
     "$schema": {
-      "type": "string"
+      "const": "https://grovealliance.org/fhir/catalog/schemas/measurement-catalog.schema.json"
     },
     "schemaVersion": {
-      "type": "integer",
-      "minimum": 1
+      "const": 1
     },
     "fhirVersion": {
       "const": "4.0.1"
     },
     "version": {
-      "type": "string",
-      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+      "const": "0.6.0"
     },
     "canonicalRoot": {
-      "type": "string",
-      "format": "uri"
+      "const": "https://grovealliance.org/fhir/mobile/StructureDefinition"
     },
     "statusVocabulary": {
       "type": "array",
@@ -47,6 +44,7 @@
     "sources": {
       "type": "array",
       "minItems": 1,
+      "uniqueItems": true,
       "items": {
         "type": "object",
         "additionalProperties": false,
@@ -61,8 +59,7 @@
             "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
           },
           "kind": {
-            "type": "string",
-            "minLength": 1
+            "enum": ["adapter", "provider"]
           },
           "catalog": {
             "type": "string",
@@ -73,14 +70,27 @@
             "description": "The adapter guide that publishes this provider's profiles.",
             "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
           }
-        }
+        },
+        "allOf": [
+          {
+            "if": {"properties": {"kind": {"const": "provider"}}, "required": ["kind"]},
+            "then": {"required": ["ownerAdapter"], "properties": {"ownerAdapter": {"const": "providers"}}},
+            "else": {"not": {"required": ["ownerAdapter"]}}
+          }
+        ]
       }
     },
     "statusDefinitions": {
       "type": "object",
-      "additionalProperties": {
-        "type": "string",
-        "minLength": 1
+      "additionalProperties": false,
+      "required": ["supported", "mapped-standard", "platform-exclusive", "unmodeled", "deferred", "intentionally-unsupported"],
+      "properties": {
+        "supported": {"type": "string", "minLength": 1},
+        "mapped-standard": {"type": "string", "minLength": 1},
+        "platform-exclusive": {"type": "string", "minLength": 1},
+        "unmodeled": {"type": "string", "minLength": 1},
+        "deferred": {"type": "string", "minLength": 1},
+        "intentionally-unsupported": {"type": "string", "minLength": 1}
       }
     },
     "effectiveCanonicalization": {
@@ -167,6 +177,68 @@
         }
       }
     },
+    "requiredCoding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "slice",
+        "system",
+        "code"
+      ],
+      "properties": {
+        "slice": {
+          "type": "string",
+          "pattern": "^[a-z][A-Za-z0-9]*$"
+        },
+        "system": {
+          "type": "string",
+          "format": "uri"
+        },
+        "code": {
+          "type": "string",
+          "minLength": 1
+        },
+        "display": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "numericBoundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "value",
+        "inclusive"
+      ],
+      "properties": {
+        "value": {
+          "type": "number"
+        },
+        "inclusive": {
+          "type": "boolean"
+        }
+      }
+    },
+    "quantityValueDomain": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "minimum",
+        "integerOnly"
+      ],
+      "properties": {
+        "minimum": {
+          "$ref": "#/$defs/numericBoundary"
+        },
+        "maximum": {
+          "$ref": "#/$defs/numericBoundary"
+        },
+        "integerOnly": {
+          "type": "boolean"
+        }
+      }
+    },
     "quantity": {
       "type": "object",
       "additionalProperties": false,
@@ -196,9 +268,17 @@
         },
         "dimension": {
           "type": "object",
-          "additionalProperties": {
-            "type": "integer"
+          "additionalProperties": false,
+          "properties": {
+            "m": {"type": "integer"},
+            "s": {"type": "integer"},
+            "g": {"type": "integer"},
+            "K": {"type": "integer"},
+            "C": {"type": "integer"}
           }
+        },
+        "valueDomain": {
+          "$ref": "#/$defs/quantityValueDomain"
         },
         "unitMustSupport": {
           "type": "boolean"
@@ -217,10 +297,39 @@
             ]
           },
           "then": {
+            "required": [
+              "valueDomain"
+            ],
             "properties": {
               "example": {
                 "type": "number",
                 "maximum": 100
+              },
+              "valueDomain": {
+                "allOf": [
+                  {
+                    "$ref": "#/$defs/quantityValueDomain"
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "minimum": {
+                        "const": { "value": 0, "inclusive": true }
+                      },
+                      "maximum": {
+                        "const": { "value": 100, "inclusive": true }
+                      },
+                      "integerOnly": {
+                        "const": false
+                      }
+                    },
+                    "required": [
+                      "minimum",
+                      "maximum",
+                      "integerOnly"
+                    ]
+                  }
+                ]
               }
             }
           }
@@ -355,6 +464,17 @@
         "code": {
           "$ref": "#/$defs/coding"
         },
+        "requiredCodings": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/requiredCoding"
+          }
+        },
+        "category": {
+          "$ref": "#/$defs/coding"
+        },
         "valueKind": {
           "enum": [
             "quantity",
@@ -380,6 +500,16 @@
             "dateTime"
           ]
         },
+        "forbiddenElements": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "specimen"
+            ]
+          }
+        },
         "generation": {
           "type": "object",
           "additionalProperties": false,
@@ -394,34 +524,28 @@
         },
         "coverage": {
           "type": "object",
-          "minProperties": 1,
-          "additionalProperties": {
-            "$ref": "#/$defs/status"
+          "additionalProperties": false,
+          "required": ["healthkit", "health-connect", "sensorkit", "google-health-api", "oura", "withings"],
+          "properties": {
+            "healthkit": {"$ref": "#/$defs/status"},
+            "health-connect": {"$ref": "#/$defs/status"},
+            "sensorkit": {"$ref": "#/$defs/status"},
+            "google-health-api": {"$ref": "#/$defs/status"},
+            "oura": {"$ref": "#/$defs/status"},
+            "withings": {"$ref": "#/$defs/status"}
           }
         },
         "coverageDetails": {
           "type": "object",
           "description": "Per-source notes explaining a coverage status that needs more than its label.",
-          "additionalProperties": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-              "sourceTokens": {
-                "type": "array",
-                "items": {
-                  "type": "string",
-                  "minLength": 1
-                }
-              },
-              "alternateRepresentation": {
-                "type": "string",
-                "format": "uri"
-              },
-              "reason": {
-                "type": "string",
-                "minLength": 1
-              }
-            }
+          "additionalProperties": false,
+          "properties": {
+            "healthkit": {"$ref": "#/$defs/coverageDetail"},
+            "health-connect": {"$ref": "#/$defs/coverageDetail"},
+            "sensorkit": {"$ref": "#/$defs/coverageDetail"},
+            "google-health-api": {"$ref": "#/$defs/coverageDetail"},
+            "oura": {"$ref": "#/$defs/coverageDetail"},
+            "withings": {"$ref": "#/$defs/coverageDetail"}
           }
         },
         "valueSet": {
@@ -543,8 +667,23 @@
               }
             }
           }
+        },
+        {
+          "if": {"properties": {"valueKind": {"const": "quantity"}}, "required": ["valueKind"]},
+          "then": {"properties": {"quantity": {"$ref": "#/$defs/quantity"}}},
+          "else": {"properties": {"quantity": {"type": "null"}}}
         }
       ]
+    },
+    "coverageDetail": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sourceTokens", "alternateRepresentation", "reason"],
+      "properties": {
+        "sourceTokens": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "alternateRepresentation": {"type": "string", "format": "uri"},
+        "reason": {"type": "string", "minLength": 1}
+      }
     }
   }
 }

@@ -168,4 +168,4 @@ A good first path: read the [heart-rate example JSON](Observation-GroveMobileHea
 | Understand the device split and the audit trail | [Devices and provenance](devices.html) |
 | Attach data to a study | [Study context](study.html) |
 | Install the package and validate your JSON | [Implement and validate](implementation.html) |
-| See how the seven guides fit together | [The Grove FHIR guides](guides.html) |
+| See how the ten guide packages fit together | [The Grove FHIR guides](guides.html) |

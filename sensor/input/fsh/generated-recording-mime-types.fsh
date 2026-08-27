@@ -16,7 +16,6 @@ Description: "The exact media types admitted for a Grove native sensor recording
 * ^experimental = false
 * urn:ietf:bcp:13#text/csv "Comma-separated values"
 * urn:ietf:bcp:13#application/fhir+json "FHIR JSON"
-* urn:ietf:bcp:13#application/vnd.grovealliance.fhir-array+json "Grove FHIR resource array"
 * urn:ietf:bcp:13#application/vnd.grovealliance.native+json "Grove native recording JSON"
 * urn:ietf:bcp:13#application/vnd.grovealliance.provider+json "Grove provider recording JSON"
 * urn:ietf:bcp:13#application/vnd.grovealliance.ppg "Grove photoplethysmogram binary"
@@ -32,9 +31,6 @@ Description: "The exact media types admitted for a Grove native sensor recording
 * ^expansion.contains[+].system = "urn:ietf:bcp:13"
 * ^expansion.contains[=].code = #application/fhir+json
 * ^expansion.contains[=].display = "FHIR JSON"
-* ^expansion.contains[+].system = "urn:ietf:bcp:13"
-* ^expansion.contains[=].code = #application/vnd.grovealliance.fhir-array+json
-* ^expansion.contains[=].display = "Grove FHIR resource array"
 * ^expansion.contains[+].system = "urn:ietf:bcp:13"
 * ^expansion.contains[=].code = #application/vnd.grovealliance.native+json
 * ^expansion.contains[=].display = "Grove native recording JSON"

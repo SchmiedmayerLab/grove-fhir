@@ -6,7 +6,6 @@
 
 from __future__ import annotations
 
-import hashlib
 import json
 import unittest
 from pathlib import Path
@@ -31,13 +30,23 @@ class ProviderCatalogTests(unittest.TestCase):
     def test_release_and_package_identity_are_exact(self) -> None:
         self.assertEqual(self.catalog["schemaVersion"], 1)
         self.assertEqual(self.catalog["fhirVersion"], "4.0.1")
-        self.assertEqual(self.catalog["version"], "0.5.0")
+        self.assertEqual(self.catalog["version"], "0.6.0")
         self.assertEqual(
             self.catalog["packageId"], "org.grovealliance.fhir.providers"
         )
         self.assertEqual(
             self.catalog["sourceTypeExtension"]["codeRule"],
             "provider id + '/' + exact source token; the atomic Withings blood-pressure output uses withings/getmeas:9+10",
+        )
+        self.assertEqual(
+            self.catalog["providerExtension"],
+            {
+                "url": "https://grovealliance.org/fhir/providers/StructureDefinition/provider",
+                "codeSystem": "https://grovealliance.org/fhir/providers/CodeSystem/provider",
+                "r4Element": "Observation.extension.valueCode or DocumentReference.extension.valueCode",
+                "cardinality": "exactly one",
+                "rule": "Every admitted connected-provider output states the exact provider id that owns its catalog row.",
+            },
         )
         self.assertTrue(
             self.catalog["recordingDocument"]["adapterProfile"].endswith(
@@ -59,8 +68,10 @@ class ProviderCatalogTests(unittest.TestCase):
         self.assertEqual(
             package["dependencies"],
             [
-                "org.grovealliance.fhir.mobile#0.5.0",
-                "org.grovealliance.fhir.sensor#0.5.0",
+                "hl7.terminology.r4#7.3.0",
+                "hl7.fhir.uv.extensions.r4#5.3.0",
+                "org.grovealliance.fhir.mobile#0.6.0",
+                "org.grovealliance.fhir.sensor#0.6.0",
             ],
         )
         self.assertEqual(
@@ -76,10 +87,8 @@ class ProviderCatalogTests(unittest.TestCase):
             if claim["adapter"] == "providers"
         )
         self.assertEqual(provenance["profile"], self.catalog["conversionProvenanceProfile"])
-        self.assertEqual(
-            provenance["sourceIdentifierSystem"],
-            self.catalog["identity"]["sourceRecord"]["system"],
-        )
+        self.assertEqual(provenance["sourceIdentifierRole"], "source-record")
+        self.assertEqual(provenance["sourceIdentityKind"], "provider-record")
         self.assertIn(
             self.catalog["recordingDocument"]["adapterProfile"],
             provenance["targetAdapterProfiles"],
@@ -312,53 +321,39 @@ class ProviderCatalogTests(unittest.TestCase):
 
     def test_identity_compositions_and_resource_id_policy_are_exact(self) -> None:
         identity = self.catalog["identity"]
-        self.assertNotIn("canonicalization", identity)
-        self.assertNotIn("digest", identity)
-        self.assertEqual(identity["composition"]["separator"], "|")
-        self.assertEqual(identity["composition"]["versionPrefix"], "v1")
+        self.assertEqual(identity["contract"], "catalog/exchange-protocol.json")
+        self.assertEqual(identity["protocolVersion"], 2)
+        self.assertEqual(identity["adapterId"], "providers")
         self.assertEqual(
-            identity["sourceRecord"]["composition"],
-            ["providerCode", "providerAccountPseudonym", "sourceType", "sourceNativeId"],
+            identity["sourceRecord"]["components"],
+            [
+                "provider-code",
+                "source-type",
+                "provider-scope-system",
+                "provider-scope-value",
+                "native-record-id",
+            ],
         )
         self.assertEqual(
-            identity["output"]["composition"],
-            ["<the source-record components>", "outputDiscriminator"],
+            identity["sourceOutput"]["components"],
+            [
+                "provider-code",
+                "source-type",
+                "provider-scope-system",
+                "provider-scope-value",
+                "native-record-id",
+                "output-role",
+                "output-discriminator",
+            ],
         )
-        # A one-to-one conversion carries the source-record identifier alone.
-        self.assertEqual(identity["output"]["cardinality"], "0..1")
-        self.assertIn("more than one Observation", identity["output"]["appliesWhen"])
-        self.assertIn("verbatim", identity["sourceRecord"]["passThroughWhen"])
-        self.assertEqual(
-            identity["output"]["outputDiscriminatorRule"],
-            {
-                "ordinarySupportedMeasurement": (
-                    "the exact measurementId string from the supported element mapping"
-                ),
-                "groupedMapping": (
-                    "the exact outputDiscriminator declared on that groupedMappings row"
-                ),
-                "mappedStandardRaw": "native-recording",
-                "noFallback": True,
-            },
-        )
+        self.assertEqual(identity["sourceRecord"]["identityKind"], "provider-record")
+        self.assertEqual(identity["sourceOutput"]["identityKind"], "source-output")
+        self.assertIn("complete Identifier pair", identity["sourceRecord"]["scopeRule"])
+        self.assertIn("never omit the system", identity["sourceRecord"]["scopeRule"].lower())
+        self.assertIn("single", identity["sourceOutput"]["outputDiscriminatorRule"])
+        self.assertIn("No fallback", identity["sourceOutput"]["outputDiscriminatorRule"])
         self.assertIn("optional and repository-assigned", identity["resourceIdPolicy"])
-        self.assertIn(
-            "deployment-scoped pseudonymous",
-            identity["providerAccountIdentifier"]["requirement"],
-        )
-        self.assertIn(
-            "vendor email address",
-            identity["providerAccountIdentifier"]["prohibitedByDefault"],
-        )
-        self.assertIn("as the provider supplied it", identity["sourceNativeId"]["emission"])
-        for vector in identity["vectors"]:
-            with self.subTest(role=vector["role"]):
-                if vector["identifierValue"] is None:
-                    self.assertTrue(any("|" in part for part in vector["components"]))
-                    continue
-                joined = "|".join(vector["components"])
-                expected = joined if vector["role"].startswith("deploymentOwned") else "v1:" + joined
-                self.assertEqual(expected, vector["identifierValue"])
+        self.assertEqual(identity["sourceArtifact"]["identityKind"], "source-artifact")
 
     def test_every_provider_declares_an_identifier_scope_with_a_reason(self) -> None:
         for provider in self.catalog["providers"]:
@@ -367,26 +362,25 @@ class ProviderCatalogTests(unittest.TestCase):
                 self.assertTrue(provider["identifierScopeReason"].strip())
 
     def test_an_unscoped_provider_documents_global_uniqueness(self) -> None:
-        relaxation = self.catalog["identity"]["identifierScope"]["relaxationRule"]
-        self.assertIn("documents", relaxation)
+        scope_rule = self.catalog["identity"]["sourceRecord"]["scopeRule"]
+        self.assertIn("documented global key-space pair", scope_rule)
         for provider in self.catalog["providers"]:
             if provider["identifierScope"] == "none":
                 with self.subTest(provider=provider["id"]):
                     self.assertIn("unique", provider["identifierScopeReason"])
 
-    def test_content_derived_identity_always_carries_the_account_scope(self) -> None:
-        content = self.catalog["identity"]["contentDerived"]
-        self.assertTrue(content["accountScopeRequired"])
-        self.assertIn("providerAccountPseudonym", content["composition"])
-        self.assertEqual(content["discriminator"], "content")
+    def test_missing_native_ids_receive_persistent_import_keys_not_content_hashes(self) -> None:
+        rule = self.catalog["identity"]["sourceRecord"]["absentNativeId"]
+        self.assertIn("Assign and persist", rule)
+        self.assertIn("Never derive", rule)
+        self.assertIn("serialized content", rule)
 
-    def test_the_writer_record_identity_carries_no_account(self) -> None:
+    def test_writer_record_identity_requires_source_supplied_cross_channel_evidence(self) -> None:
         writer = self.catalog["identity"]["writerRecord"]
-        self.assertEqual(writer["composition"], ["providerCode", "sourceNativeId"])
-        self.assertEqual(
-            writer["system"],
-            "https://grovealliance.org/fhir/mobile/NamingSystem/grove-writer-record-id",
-        )
+        self.assertEqual(writer["identityKind"], "writer-record")
+        self.assertEqual(writer["identifierRole"], "writer-record")
+        self.assertIn("only when", writer["rule"])
+        self.assertIn("not evidence", writer["rule"])
 
 
 if __name__ == "__main__":

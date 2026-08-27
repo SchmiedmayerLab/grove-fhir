@@ -61,16 +61,6 @@
       }
     },
     {
-      "id": "pair-response-text",
-      "target": "response",
-      "expectedRule": "pair-response-text",
-      "mutation": {
-        "op": "replace",
-        "path": "/item/2/text",
-        "value": "How are you feeling?"
-      }
-    },
-    {
       "id": "pair-nonrepeating-answer",
       "target": "response",
       "expectedRule": "pair-repeats",

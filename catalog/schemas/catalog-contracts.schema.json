@@ -1,0 +1,433 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://grovealliance.org/fhir/catalog/schemas/catalog-contracts.schema.json",
+  "title": "Grove normative catalog contracts",
+  "oneOf": [
+    {"$ref": "#/$defs/formatRegistry"},
+    {"$ref": "#/$defs/healthConnect"},
+    {"$ref": "#/$defs/healthKit"},
+    {"$ref": "#/$defs/providers"},
+    {"$ref": "#/$defs/sensor"},
+    {"$ref": "#/$defs/sensorKit"},
+    {"$ref": "#/$defs/profileClaims"}
+  ],
+  "$defs": {
+    "schemaUri": {"const": "https://grovealliance.org/fhir/catalog/schemas/catalog-contracts.schema.json"},
+    "releaseVersion": {"const": "0.6.0"},
+    "nonEmptyText": {"type": "string", "minLength": 1},
+    "uri": {"type": "string", "format": "uri"},
+    "slug": {"type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"},
+    "date": {"type": "string", "format": "date"},
+    "status": {"enum": ["supported", "mapped-standard", "platform-exclusive", "unmodeled", "deferred", "intentionally-unsupported"]},
+    "textArray": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/nonEmptyText"}},
+    "possiblyEmptyTextArray": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/nonEmptyText"}},
+    "uriArray": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/uri"}},
+    "statusVocabularyArray": {"const": ["supported", "mapped-standard", "platform-exclusive", "unmodeled", "deferred", "intentionally-unsupported"]},
+    "statusVocabularyObject": {
+      "type": "object", "additionalProperties": false,
+      "required": ["supported", "mapped-standard", "platform-exclusive", "unmodeled", "deferred", "intentionally-unsupported"],
+      "properties": {
+        "supported": {"$ref": "#/$defs/nonEmptyText"}, "mapped-standard": {"$ref": "#/$defs/nonEmptyText"},
+        "platform-exclusive": {"$ref": "#/$defs/nonEmptyText"}, "unmodeled": {"$ref": "#/$defs/nonEmptyText"},
+        "deferred": {"$ref": "#/$defs/nonEmptyText"}, "intentionally-unsupported": {"$ref": "#/$defs/nonEmptyText"}
+      }
+    },
+    "coding": {
+      "type": "object", "additionalProperties": false, "required": ["system", "code"],
+      "properties": {"system": {"$ref": "#/$defs/uri"}, "code": {"$ref": "#/$defs/nonEmptyText"}, "display": {"$ref": "#/$defs/nonEmptyText"}}
+    },
+    "codingWithoutSystem": {
+      "type": "object", "additionalProperties": false, "required": ["code", "display"],
+      "properties": {"code": {"$ref": "#/$defs/nonEmptyText"}, "display": {"$ref": "#/$defs/nonEmptyText"}}
+    },
+    "quantity": {
+      "type": "object", "additionalProperties": false, "required": ["system", "code", "unit"],
+      "properties": {"system": {"const": "http://unitsofmeasure.org"}, "code": {"$ref": "#/$defs/nonEmptyText"}, "unit": {"$ref": "#/$defs/nonEmptyText"}}
+    },
+    "markerExtension": {
+      "type": "object", "additionalProperties": false, "required": ["url", "codeSystem", "r4Element", "cardinality", "rule"],
+      "properties": {"url": {"$ref": "#/$defs/uri"}, "codeSystem": {"$ref": "#/$defs/uri"}, "r4Element": {"$ref": "#/$defs/nonEmptyText"}, "cardinality": {"const": "exactly one"}, "codeRule": {"$ref": "#/$defs/nonEmptyText"}, "rule": {"$ref": "#/$defs/nonEmptyText"}}
+    },
+    "rawPayloadAdmission": {
+      "type": "object", "additionalProperties": false, "required": ["contract", "allowedAssertions", "failureRule", "notFHIRAuthorization"],
+      "properties": {"contract": {"$ref": "#/$defs/nonEmptyText"}, "allowedAssertions": {"const": ["caller-authorized-opaque-payload", "verified-sanitized-input"]}, "failureRule": {"$ref": "#/$defs/nonEmptyText"}, "notFHIRAuthorization": {"const": true}}
+    },
+    "identityBindings": {
+      "type": "object", "additionalProperties": false,
+      "required": ["adapter-id", "source-type", "repository-scope-system", "repository-scope-value", "native-record-id"],
+      "properties": {"adapter-id": {"$ref": "#/$defs/nonEmptyText"}, "source-type": {"$ref": "#/$defs/nonEmptyText"}, "repository-scope-system": {"$ref": "#/$defs/nonEmptyText"}, "repository-scope-value": {"$ref": "#/$defs/nonEmptyText"}, "native-record-id": {"$ref": "#/$defs/nonEmptyText"}}
+    },
+    "sourceRecordIdentity": {
+      "type": "object", "additionalProperties": false, "required": ["identityKind", "identifierRole", "components"],
+      "properties": {"identityKind": {"enum": ["source-record", "provider-record"]}, "identifierRole": {"const": "source-record"}, "components": {"$ref": "#/$defs/textArray"}, "bindings": {"$ref": "#/$defs/identityBindings"}, "scopeRule": {"$ref": "#/$defs/nonEmptyText"}, "absentNativeId": {"$ref": "#/$defs/nonEmptyText"}, "nativeRecordRule": {"$ref": "#/$defs/nonEmptyText"}}
+    },
+    "outputDiscriminatorRules": {
+      "type": "object", "additionalProperties": false,
+      "required": ["exactly-one", "graph-specific", "one-per-present-field", "one-per-sample", "one-per-stage", "specimen"],
+      "properties": {"exactly-one": {"$ref": "#/$defs/nonEmptyText"}, "graph-specific": {"$ref": "#/$defs/nonEmptyText"}, "one-per-present-field": {"$ref": "#/$defs/nonEmptyText"}, "one-per-sample": {"$ref": "#/$defs/nonEmptyText"}, "one-per-stage": {"$ref": "#/$defs/nonEmptyText"}, "specimen": {"$ref": "#/$defs/nonEmptyText"}}
+    },
+    "sourceOutputIdentity": {
+      "type": "object", "additionalProperties": false, "required": ["identityKind", "identifierRole", "components", "outputRoleRule"],
+      "properties": {"identityKind": {"const": "source-output"}, "identifierRole": {"const": "source-output"}, "components": {"$ref": "#/$defs/textArray"}, "outputRoleRule": {"$ref": "#/$defs/nonEmptyText"}, "outputDiscriminatorRule": {"$ref": "#/$defs/nonEmptyText"}, "outputDiscriminatorRules": {"$ref": "#/$defs/outputDiscriminatorRules"}, "outputRoles": {"$ref": "#/$defs/textArray"}, "canonicalOccurrence": {"$ref": "#/$defs/nonEmptyText"}, "ordering": {"$ref": "#/$defs/nonEmptyText"}},
+      "oneOf": [
+        {"type": "object", "required": ["outputDiscriminatorRule"], "properties": {"outputDiscriminatorRule": {"$ref": "#/$defs/nonEmptyText"}}},
+        {"type": "object", "required": ["outputDiscriminatorRules"], "properties": {"outputDiscriminatorRules": {"$ref": "#/$defs/outputDiscriminatorRules"}}}
+      ]
+    },
+    "writerComponents": {
+      "type": "object", "additionalProperties": false, "required": ["writer-application-system", "writer-application-value", "writer-record-id"],
+      "properties": {"writer-application-system": {"$ref": "#/$defs/nonEmptyText"}, "writer-application-value": {"$ref": "#/$defs/nonEmptyText"}, "writer-record-id": {"$ref": "#/$defs/nonEmptyText"}}
+    },
+    "writerRecordIdentity": {
+      "type": "object", "additionalProperties": false, "required": ["identityKind", "identifierRole"],
+      "properties": {"identityKind": {"const": "writer-record"}, "identifierRole": {"const": "writer-record"}, "condition": {"$ref": "#/$defs/nonEmptyText"}, "components": {"$ref": "#/$defs/writerComponents"}, "rule": {"$ref": "#/$defs/nonEmptyText"}, "version": {"$ref": "#/$defs/nonEmptyText"}}
+    },
+    "sourceArtifactIdentity": {
+      "type": "object", "additionalProperties": false, "required": ["identityKind", "identifierRole", "rule"],
+      "properties": {"identityKind": {"const": "source-artifact"}, "identifierRole": {"const": "source-artifact"}, "rule": {"$ref": "#/$defs/nonEmptyText"}}
+    },
+    "sourceContextIdentity": {
+      "type": "object", "additionalProperties": false, "required": ["identityKind", "identifierRole", "components", "rule"],
+      "properties": {"identityKind": {"const": "source-context"}, "identifierRole": {"const": "source-context"}, "components": {"$ref": "#/$defs/textArray"}, "rule": {"$ref": "#/$defs/nonEmptyText"}}
+    },
+    "exchangeIdentity": {
+      "type": "object", "additionalProperties": false, "required": ["contract", "protocolVersion", "adapterId", "sourceRecord", "sourceOutput", "resourceIdPolicy"],
+      "properties": {"contract": {"const": "catalog/exchange-protocol.json"}, "protocolVersion": {"const": 2}, "adapterId": {"$ref": "#/$defs/slug"}, "sourceRecord": {"$ref": "#/$defs/sourceRecordIdentity"}, "sourceOutput": {"$ref": "#/$defs/sourceOutputIdentity"}, "writerRecord": {"$ref": "#/$defs/writerRecordIdentity"}, "sourceArtifact": {"$ref": "#/$defs/sourceArtifactIdentity"}, "sourceContext": {"$ref": "#/$defs/sourceContextIdentity"}, "resourceIdPolicy": {"$ref": "#/$defs/nonEmptyText"}}
+    },
+    "recordingDeviceIdentity": {
+      "type": "object", "additionalProperties": false, "required": ["adapterId", "status", "fallback", "snapshot"],
+      "properties": {"adapterId": {"$ref": "#/$defs/slug"}, "status": {"const": "stable-token-required"}, "stableUnitToken": {"$ref": "#/$defs/nonEmptyText"}, "preferredStableUnitEvidence": {"$ref": "#/$defs/nonEmptyText"}, "sourceDescriptionFields": {"$ref": "#/$defs/textArray"}, "prohibitedIdentityInputs": {"$ref": "#/$defs/textArray"}, "fallback": {"$ref": "#/$defs/nonEmptyText"}, "snapshot": {"$ref": "#/$defs/nonEmptyText"}}
+    },
+    "applicationDeviceIdentity": {
+      "type": "object", "additionalProperties": false, "required": ["profile", "snapshotIdentifierRole", "bundleIdentifier", "classificationRule"],
+      "properties": {"profile": {"$ref": "#/$defs/uri"}, "snapshotIdentifierRole": {"const": "device-snapshot"}, "bundleIdentifier": {"type": "object", "additionalProperties": false, "required": ["system", "typeSystem", "typeCode", "cardinality", "meaning"], "properties": {"system": {"$ref": "#/$defs/uri"}, "typeSystem": {"$ref": "#/$defs/uri"}, "typeCode": {"const": "apple-bundle-id"}, "cardinality": {"const": "1..1"}, "meaning": {"$ref": "#/$defs/nonEmptyText"}}}, "classificationRule": {"$ref": "#/$defs/nonEmptyText"}}
+    },
+
+    "csvEncoding": {
+      "type": "object", "additionalProperties": false, "required": ["encoding", "structure", "rowTerminator", "separator", "quoting", "numbers", "timestamps"],
+      "properties": {"encoding": {"$ref": "#/$defs/nonEmptyText"}, "structure": {"$ref": "#/$defs/nonEmptyText"}, "rowTerminator": {"$ref": "#/$defs/nonEmptyText"}, "separator": {"$ref": "#/$defs/nonEmptyText"}, "quoting": {"$ref": "#/$defs/nonEmptyText"}, "numbers": {"$ref": "#/$defs/nonEmptyText"}, "timestamps": {"$ref": "#/$defs/nonEmptyText"}}
+    },
+    "formatColumn": {
+      "type": "object", "additionalProperties": false, "required": ["name", "type", "meaning"],
+      "properties": {"name": {"$ref": "#/$defs/nonEmptyText"}, "type": {"enum": ["timestamp", "number", "integer", "string"]}, "unit": {"$ref": "#/$defs/nonEmptyText"}, "meaning": {"$ref": "#/$defs/nonEmptyText"}}
+    },
+    "tabularFormat": {
+      "type": "object", "additionalProperties": false, "required": ["title", "contentType", "status", "encoding", "columns"],
+      "properties": {"title": {"$ref": "#/$defs/nonEmptyText"}, "contentType": {"const": "text/csv"}, "status": {"const": "active"}, "encoding": {"const": "csv"}, "columns": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/formatColumn"}}}
+    },
+    "fhirCollectionSpecification": {"type": "object", "additionalProperties": false, "required": ["encoding", "structure", "resources", "emptyBatch"], "properties": {"encoding": {"$ref": "#/$defs/nonEmptyText"}, "structure": {"$ref": "#/$defs/nonEmptyText"}, "resources": {"$ref": "#/$defs/nonEmptyText"}, "emptyBatch": {"$ref": "#/$defs/nonEmptyText"}}},
+    "fhirResourceSpecification": {"type": "object", "additionalProperties": false, "required": ["encoding", "structure", "fhirVersion", "provenance", "scope"], "properties": {"encoding": {"$ref": "#/$defs/nonEmptyText"}, "structure": {"$ref": "#/$defs/nonEmptyText"}, "fhirVersion": {"$ref": "#/$defs/nonEmptyText"}, "provenance": {"$ref": "#/$defs/nonEmptyText"}, "scope": {"$ref": "#/$defs/nonEmptyText"}}},
+    "nativeSpecification": {"type": "object", "additionalProperties": false, "required": ["encoding", "structure", "schema", "scope"], "properties": {"encoding": {"$ref": "#/$defs/nonEmptyText"}, "structure": {"$ref": "#/$defs/nonEmptyText"}, "schema": {"$ref": "#/$defs/nonEmptyText"}, "scope": {"$ref": "#/$defs/nonEmptyText"}}},
+    "providerSpecification": {"type": "object", "additionalProperties": false, "required": ["encoding", "structure", "provenance", "scope"], "properties": {"encoding": {"$ref": "#/$defs/nonEmptyText"}, "structure": {"$ref": "#/$defs/nonEmptyText"}, "provenance": {"$ref": "#/$defs/nonEmptyText"}, "scope": {"$ref": "#/$defs/nonEmptyText"}}},
+    "simpleSpecifiedFormat": {"type": "object", "additionalProperties": false, "required": ["title", "contentType", "status", "specification"], "properties": {"title": {"$ref": "#/$defs/nonEmptyText"}, "contentType": {"$ref": "#/$defs/nonEmptyText"}, "status": {"const": "active"}, "specification": {"type": "object"}}},
+    "binaryField": {"type": "object", "additionalProperties": false, "required": ["field", "encoding"], "properties": {"field": {"$ref": "#/$defs/nonEmptyText"}, "encoding": {"$ref": "#/$defs/nonEmptyText"}, "unit": {"$ref": "#/$defs/nonEmptyText"}, "meaning": {"$ref": "#/$defs/nonEmptyText"}}},
+    "ppgSpecification": {
+      "type": "object", "additionalProperties": false, "required": ["primitives", "file", "record", "opticalSample", "noiseTerms", "accelerometerSample"],
+      "properties": {
+        "primitives": {"type": "object", "additionalProperties": false, "required": ["varint", "float64", "boolean", "string", "array", "set", "optional"], "properties": {"varint": {"$ref": "#/$defs/nonEmptyText"}, "float64": {"$ref": "#/$defs/nonEmptyText"}, "boolean": {"$ref": "#/$defs/nonEmptyText"}, "string": {"$ref": "#/$defs/nonEmptyText"}, "array": {"$ref": "#/$defs/nonEmptyText"}, "set": {"$ref": "#/$defs/nonEmptyText"}, "optional": {"$ref": "#/$defs/nonEmptyText"}}},
+        "file": {"$ref": "#/$defs/nonEmptyText"}, "record": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/binaryField"}}, "opticalSample": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/binaryField"}}, "noiseTerms": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/binaryField"}}, "accelerometerSample": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/binaryField"}}
+      }
+    },
+    "formatRegistry": {
+      "type": "object", "additionalProperties": false,
+      "required": ["$schema", "schemaVersion", "fhirVersion", "version", "canonical", "codeSystem", "valueSet", "description", "encodings", "mediaTypes", "formats"],
+      "properties": {
+        "$schema": {"$ref": "#/$defs/schemaUri"}, "schemaVersion": {"const": 1}, "fhirVersion": {"const": "4.0.1"}, "version": {"$ref": "#/$defs/releaseVersion"}, "canonical": {"const": "https://grovealliance.org/fhir/sensor"}, "codeSystem": {"const": "https://grovealliance.org/fhir/sensor/CodeSystem/grove-recording-format"}, "valueSet": {"const": "https://grovealliance.org/fhir/sensor/ValueSet/grove-recording-format"}, "description": {"$ref": "#/$defs/nonEmptyText"},
+        "encodings": {"type": "object", "additionalProperties": false, "required": ["csv"], "properties": {"csv": {"$ref": "#/$defs/csvEncoding"}}},
+        "mediaTypes": {"type": "object", "additionalProperties": false, "required": ["text/csv", "application/fhir+json", "application/vnd.grovealliance.native+json", "application/vnd.grovealliance.provider+json", "application/vnd.grovealliance.ppg", "application/hl7-cda+xml"], "properties": {"text/csv": {"$ref": "#/$defs/nonEmptyText"}, "application/fhir+json": {"$ref": "#/$defs/nonEmptyText"}, "application/vnd.grovealliance.native+json": {"$ref": "#/$defs/nonEmptyText"}, "application/vnd.grovealliance.provider+json": {"$ref": "#/$defs/nonEmptyText"}, "application/vnd.grovealliance.ppg": {"$ref": "#/$defs/nonEmptyText"}, "application/hl7-cda+xml": {"$ref": "#/$defs/nonEmptyText"}}},
+        "formats": {
+          "type": "object", "additionalProperties": false,
+          "required": ["heart-rate-samples", "triaxial-acceleration-samples", "ambient-light-samples", "ambient-pressure-samples", "pedometer-samples", "wrist-temperature-samples", "triaxial-rotation-samples", "odometer-samples", "beat-interval-series", "location-track-samples", "fhir-collection-bundle", "fhir-r4-resource", "clinical-document", "native-recording", "provider-recording", "photoplethysmogram-samples"],
+          "properties": {
+            "heart-rate-samples": {"$ref": "#/$defs/tabularFormat"}, "triaxial-acceleration-samples": {"$ref": "#/$defs/tabularFormat"}, "ambient-light-samples": {"$ref": "#/$defs/tabularFormat"}, "ambient-pressure-samples": {"$ref": "#/$defs/tabularFormat"}, "pedometer-samples": {"$ref": "#/$defs/tabularFormat"}, "wrist-temperature-samples": {"$ref": "#/$defs/tabularFormat"}, "triaxial-rotation-samples": {"$ref": "#/$defs/tabularFormat"}, "odometer-samples": {"$ref": "#/$defs/tabularFormat"}, "beat-interval-series": {"$ref": "#/$defs/tabularFormat"}, "location-track-samples": {"$ref": "#/$defs/tabularFormat"},
+            "fhir-collection-bundle": {"allOf": [{"$ref": "#/$defs/simpleSpecifiedFormat"}, {"type": "object", "properties": {"contentType": {"const": "application/fhir+json"}, "specification": {"$ref": "#/$defs/fhirCollectionSpecification"}}}]},
+            "fhir-r4-resource": {"allOf": [{"$ref": "#/$defs/simpleSpecifiedFormat"}, {"type": "object", "properties": {"contentType": {"const": "application/fhir+json"}, "specification": {"$ref": "#/$defs/fhirResourceSpecification"}}}]},
+            "clinical-document": {"allOf": [{"$ref": "#/$defs/simpleSpecifiedFormat"}, {"type": "object", "properties": {"contentType": {"const": "application/hl7-cda+xml"}, "specification": {"type": "object", "additionalProperties": false, "required": ["file"], "properties": {"file": {"$ref": "#/$defs/nonEmptyText"}}}}}]},
+            "native-recording": {"allOf": [{"$ref": "#/$defs/simpleSpecifiedFormat"}, {"type": "object", "properties": {"contentType": {"const": "application/vnd.grovealliance.native+json"}, "specification": {"$ref": "#/$defs/nativeSpecification"}}}]},
+            "provider-recording": {"allOf": [{"$ref": "#/$defs/simpleSpecifiedFormat"}, {"type": "object", "properties": {"contentType": {"const": "application/vnd.grovealliance.provider+json"}, "specification": {"$ref": "#/$defs/providerSpecification"}}}]},
+            "photoplethysmogram-samples": {"allOf": [{"$ref": "#/$defs/simpleSpecifiedFormat"}, {"type": "object", "properties": {"contentType": {"const": "application/vnd.grovealliance.ppg"}, "specification": {"$ref": "#/$defs/ppgSpecification"}}}]}
+          }
+        }
+      }
+    },
+
+    "graphOutput": {"type": "object", "additionalProperties": false, "required": ["resourceRole", "outputRole", "discriminator"], "properties": {"resourceRole": {"$ref": "#/$defs/nonEmptyText"}, "outputRole": {"$ref": "#/$defs/nonEmptyText"}, "discriminator": {"$ref": "#/$defs/nonEmptyText"}}},
+    "graphRule": {"type": "object", "additionalProperties": false, "required": ["cardinality", "shortCardinality", "projectionRule", "outputs"], "properties": {"cardinality": {"$ref": "#/$defs/nonEmptyText"}, "shortCardinality": {"$ref": "#/$defs/nonEmptyText"}, "projectionRule": {"$ref": "#/$defs/nonEmptyText"}, "outputs": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/graphOutput"}}}},
+    "adapterMeasurement": {
+      "type": "object", "additionalProperties": false, "required": ["id", "scope", "profile", "claimMode", "code", "quantity", "effective"],
+      "properties": {"id": {"$ref": "#/$defs/slug"}, "scope": {"const": "health-connect-adapter"}, "profile": {"$ref": "#/$defs/uri"}, "claimMode": {"const": "exactly-one-adapter-specific-profile"}, "code": {"$ref": "#/$defs/coding"}, "quantity": {"$ref": "#/$defs/quantity"}, "specimen": {"$ref": "#/$defs/coding"}, "specimenAlternatives": {"type": "array", "minItems": 1, "items": {"type": "object", "additionalProperties": false, "required": ["id", "system", "code", "display"], "properties": {"id": {"$ref": "#/$defs/slug"}, "system": {"$ref": "#/$defs/uri"}, "code": {"$ref": "#/$defs/nonEmptyText"}, "display": {"$ref": "#/$defs/nonEmptyText"}}}}, "effective": {"const": "dateTime"}},
+      "oneOf": [
+        {"type": "object", "required": ["specimen"], "properties": {"specimen": {"$ref": "#/$defs/coding"}}},
+        {"type": "object", "required": ["specimenAlternatives"], "properties": {"specimenAlternatives": {"type": "array", "minItems": 1}}}
+      ]
+    },
+    "recordOutput": {
+      "type": "object", "additionalProperties": false, "required": ["measurement", "countRule"],
+      "properties": {"measurement": {"$ref": "#/$defs/slug"}, "countRule": {"enum": ["exactly-one", "zero-or-one", "one-per-sample", "one-per-stage", "one-per-present-field", "graph-specific"]}, "graphRule": {"$ref": "#/$defs/slug"}, "when": {"$ref": "#/$defs/nonEmptyText"}},
+      "allOf": [{"if": {"type": "object", "properties": {"countRule": {"const": "graph-specific"}}, "required": ["countRule"]}, "then": {"type": "object", "required": ["graphRule"], "properties": {"graphRule": {"$ref": "#/$defs/slug"}}}, "else": {"type": "object", "properties": {"graphRule": false}}}]
+    },
+    "healthConnectRecord": {
+      "type": "object", "additionalProperties": false, "required": ["token", "title", "documentation", "status", "context", "outputs"],
+      "properties": {"token": {"$ref": "#/$defs/nonEmptyText"}, "title": {"$ref": "#/$defs/nonEmptyText"}, "documentation": {"$ref": "#/$defs/uri"}, "status": {"enum": ["supported", "deferred"]}, "context": {"$ref": "#/$defs/possiblyEmptyTextArray"}, "outputs": {"type": "array", "items": {"$ref": "#/$defs/recordOutput"}}, "reason": {"$ref": "#/$defs/nonEmptyText"}},
+      "allOf": [{"if": {"type": "object", "properties": {"status": {"const": "deferred"}}, "required": ["status"]}, "then": {"type": "object", "required": ["reason"], "properties": {"reason": {"$ref": "#/$defs/nonEmptyText"}, "outputs": {"type": "array", "maxItems": 0}}}, "else": {"type": "object", "properties": {"outputs": {"type": "array", "minItems": 1}, "reason": false}}}]
+    },
+    "sourceCodingValue": {"type": "object", "additionalProperties": false, "required": ["source", "coding"], "properties": {"source": {"$ref": "#/$defs/nonEmptyText"}, "coding": {"oneOf": [{"$ref": "#/$defs/coding"}, {"type": "null"}]}, "policy": {"$ref": "#/$defs/nonEmptyText"}}},
+    "sourceCodingValueWithoutSystem": {"type": "object", "additionalProperties": false, "required": ["source", "coding"], "properties": {"source": {"$ref": "#/$defs/nonEmptyText"}, "coding": {"oneOf": [{"$ref": "#/$defs/codingWithoutSystem"}, {"type": "null"}]}, "policy": {"$ref": "#/$defs/nonEmptyText"}}},
+    "sourceCodeValue": {"type": "object", "additionalProperties": false, "required": ["source", "code", "display"], "properties": {"source": {"$ref": "#/$defs/nonEmptyText"}, "code": {"$ref": "#/$defs/nonEmptyText"}, "display": {"$ref": "#/$defs/nonEmptyText"}, "shared": {"$ref": "#/$defs/nonEmptyText"}}},
+    "specimenContext": {
+      "type": "object", "additionalProperties": false, "required": ["r4Element", "unknownPolicy", "values"],
+      "properties": {"r4Element": {"$ref": "#/$defs/nonEmptyText"}, "unknownPolicy": {"$ref": "#/$defs/nonEmptyText"}, "values": {"type": "array", "minItems": 1, "items": {"type": "object", "additionalProperties": false, "required": ["id", "source", "status", "measurement", "coding"], "properties": {"id": {"$ref": "#/$defs/slug"}, "source": {"$ref": "#/$defs/nonEmptyText"}, "status": {"$ref": "#/$defs/status"}, "measurement": {"oneOf": [{"$ref": "#/$defs/slug"}, {"type": "null"}]}, "coding": {"oneOf": [{"$ref": "#/$defs/coding"}, {"type": "null"}]}}}}}
+    },
+    "mealSubcontext": {"type": "object", "additionalProperties": false, "required": ["codeSystem", "values"], "properties": {"codeSystem": {"$ref": "#/$defs/uri"}, "values": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/sourceCodingValueWithoutSystem"}}}},
+    "mealContext": {"type": "object", "additionalProperties": false, "required": ["extension", "unknownPolicy", "relationToMeal", "mealType"], "properties": {"extension": {"$ref": "#/$defs/uri"}, "unknownPolicy": {"$ref": "#/$defs/nonEmptyText"}, "relationToMeal": {"$ref": "#/$defs/mealSubcontext"}, "mealType": {"$ref": "#/$defs/mealSubcontext"}}},
+    "locationContext": {"type": "object", "additionalProperties": false, "required": ["r4Element", "unknownPolicy", "values"], "properties": {"r4Element": {"$ref": "#/$defs/nonEmptyText"}, "unknownPolicy": {"$ref": "#/$defs/nonEmptyText"}, "appliesTo": {"$ref": "#/$defs/textArray"}, "values": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/sourceCodingValue"}}}},
+    "sharedCodeContext": {"type": "object", "additionalProperties": false, "required": ["sourceCodeSystem", "r4Element", "appliesToMeasurement", "outputCardinality", "values"], "properties": {"sourceCodeSystem": {"$ref": "#/$defs/uri"}, "valueSet": {"$ref": "#/$defs/uri"}, "r4Element": {"$ref": "#/$defs/nonEmptyText"}, "appliesToMeasurement": {"$ref": "#/$defs/slug"}, "outputCardinality": {"$ref": "#/$defs/nonEmptyText"}, "unknownPolicy": {"$ref": "#/$defs/nonEmptyText"}, "values": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/sourceCodeValue"}}}},
+    "codeDomainContext": {"type": "object", "additionalProperties": false, "required": ["sourceCodeSystem", "valueSet", "r4Element", "appliesToMeasurement", "outputCardinality", "unknownPolicy", "allowedSourceCodes"], "properties": {"sourceCodeSystem": {"$ref": "#/$defs/uri"}, "valueSet": {"$ref": "#/$defs/uri"}, "r4Element": {"$ref": "#/$defs/nonEmptyText"}, "appliesToMeasurement": {"$ref": "#/$defs/slug"}, "outputCardinality": {"$ref": "#/$defs/nonEmptyText"}, "unknownPolicy": {"$ref": "#/$defs/nonEmptyText"}, "allowedSourceCodes": {"$ref": "#/$defs/textArray"}}},
+    "titleContext": {"type": "object", "additionalProperties": false, "required": ["extension", "valueType", "appliesToMeasurement", "retentionPolicy", "blankPolicy"], "properties": {"extension": {"$ref": "#/$defs/uri"}, "valueType": {"const": "string"}, "appliesTo": {"$ref": "#/$defs/nonEmptyText"}, "appliesToMeasurement": {"$ref": "#/$defs/slug"}, "retentionPolicy": {"$ref": "#/$defs/nonEmptyText"}, "blankPolicy": {"const": "omit"}}},
+    "noteContext": {"type": "object", "additionalProperties": false, "required": ["r4Element", "appliesToMeasurement", "authorAndTime", "retentionPolicy", "blankPolicy"], "properties": {"r4Element": {"$ref": "#/$defs/nonEmptyText"}, "appliesToMeasurement": {"$ref": "#/$defs/slug"}, "authorAndTime": {"$ref": "#/$defs/nonEmptyText"}, "retentionPolicy": {"$ref": "#/$defs/nonEmptyText"}, "blankPolicy": {"const": "omit"}}},
+    "simpleCodeContext": {"type": "object", "additionalProperties": false, "required": ["valueType", "codeSystem", "unknownPolicy", "values"], "properties": {"extension": {"$ref": "#/$defs/uri"}, "r4Element": {"$ref": "#/$defs/nonEmptyText"}, "valueType": {"$ref": "#/$defs/nonEmptyText"}, "codeSystem": {"$ref": "#/$defs/uri"}, "unknownPolicy": {"$ref": "#/$defs/nonEmptyText"}, "values": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/sourceCodeValue"}}}},
+    "healthConnectContexts": {
+      "type": "object", "additionalProperties": false,
+      "required": ["bloodGlucoseSpecimen", "bloodGlucoseMealContext", "bloodPressureBodyPosition", "bloodPressureMeasurementLocation", "temperatureMeasurementLocation", "skinTemperatureMeasurementLocation", "menstruationFlow", "ovulationTestResult", "sexualActivityProtection", "cervicalMucusAppearance", "cervicalMucusSensation", "exerciseType", "exerciseSegmentType", "exerciseTitle", "exerciseNotes", "sleepStage", "sleepTitle", "sleepNotes", "mindfulnessSessionType", "mindfulnessTitle", "mindfulnessNotes", "vo2MaxMeasurementMethod"],
+      "properties": {
+        "bloodGlucoseSpecimen": {"$ref": "#/$defs/specimenContext"}, "bloodGlucoseMealContext": {"$ref": "#/$defs/mealContext"}, "bloodPressureBodyPosition": {"$ref": "#/$defs/locationContext"}, "bloodPressureMeasurementLocation": {"$ref": "#/$defs/locationContext"}, "temperatureMeasurementLocation": {"$ref": "#/$defs/locationContext"}, "skinTemperatureMeasurementLocation": {"$ref": "#/$defs/locationContext"}, "menstruationFlow": {"$ref": "#/$defs/sharedCodeContext"}, "ovulationTestResult": {"$ref": "#/$defs/sharedCodeContext"}, "sexualActivityProtection": {"$ref": "#/$defs/sharedCodeContext"}, "cervicalMucusAppearance": {"$ref": "#/$defs/sharedCodeContext"}, "cervicalMucusSensation": {"$ref": "#/$defs/sharedCodeContext"}, "exerciseType": {"$ref": "#/$defs/codeDomainContext"}, "exerciseSegmentType": {"$ref": "#/$defs/codeDomainContext"}, "exerciseTitle": {"$ref": "#/$defs/titleContext"}, "exerciseNotes": {"$ref": "#/$defs/noteContext"}, "sleepStage": {"$ref": "#/$defs/sharedCodeContext"}, "sleepTitle": {"$ref": "#/$defs/titleContext"}, "sleepNotes": {"$ref": "#/$defs/noteContext"}, "mindfulnessSessionType": {"$ref": "#/$defs/simpleCodeContext"}, "mindfulnessTitle": {"$ref": "#/$defs/titleContext"}, "mindfulnessNotes": {"$ref": "#/$defs/noteContext"}, "vo2MaxMeasurementMethod": {"$ref": "#/$defs/simpleCodeContext"}
+      }
+    },
+    "healthConnect": {
+      "type": "object", "additionalProperties": false,
+      "required": ["$schema", "schemaVersion", "fhirVersion", "version", "source", "sourceTypeExtension", "dataOriginApplication", "statusVocabulary", "outputCountRules", "graphRules", "adapterMeasurements", "recordTypes", "contextMappings", "recordingDeviceIdentity", "identity"],
+      "properties": {
+        "$schema": {"$ref": "#/$defs/schemaUri"}, "schemaVersion": {"const": 1}, "fhirVersion": {"const": "4.0.1"}, "version": {"$ref": "#/$defs/releaseVersion"},
+        "source": {"type": "object", "additionalProperties": false, "required": ["package", "version", "inventory", "recordTypeCount"], "properties": {"package": {"const": "androidx.health.connect:connect-client"}, "version": {"const": "1.1.0"}, "inventory": {"$ref": "#/$defs/nonEmptyText"}, "recordTypeCount": {"const": 41}}},
+        "sourceTypeExtension": {"$ref": "#/$defs/markerExtension"},
+        "dataOriginApplication": {
+          "type": "object", "additionalProperties": false,
+          "required": ["sourceField", "r4Element", "referenceType", "referenceMode", "identifierSystem", "identifierValue", "literalReferenceAllowed", "eventBundleEntryRequired", "profileClaimRequired", "rule"],
+          "properties": {
+            "sourceField": {"const": "Metadata.dataOrigin.packageName"}, "r4Element": {"const": "Provenance.entity.agent.who"},
+            "referenceType": {"const": "Device"}, "referenceMode": {"const": "identifier-only"},
+            "identifierSystem": {"const": "https://grovealliance.org/fhir/health-connect/NamingSystem/android-package-name"},
+            "identifierValue": {"$ref": "#/$defs/nonEmptyText"}, "literalReferenceAllowed": {"const": false},
+            "eventBundleEntryRequired": {"const": false}, "profileClaimRequired": {"const": false}, "rule": {"$ref": "#/$defs/nonEmptyText"}
+          }
+        },
+        "statusVocabulary": {"$ref": "#/$defs/statusVocabularyObject"},
+        "outputCountRules": {"type": "object", "additionalProperties": false, "required": ["exactly-one", "zero-or-one", "one-per-sample", "one-per-stage", "one-per-present-field", "graph-specific"], "properties": {"exactly-one": {"$ref": "#/$defs/nonEmptyText"}, "zero-or-one": {"$ref": "#/$defs/nonEmptyText"}, "one-per-sample": {"$ref": "#/$defs/nonEmptyText"}, "one-per-stage": {"$ref": "#/$defs/nonEmptyText"}, "one-per-present-field": {"$ref": "#/$defs/nonEmptyText"}, "graph-specific": {"$ref": "#/$defs/nonEmptyText"}}},
+        "graphRules": {"type": "object", "additionalProperties": false, "required": ["exactly-one-admitted-specimen-output", "one-per-source-segment-or-lap", "one-per-source-delta"], "properties": {"exactly-one-admitted-specimen-output": {"$ref": "#/$defs/graphRule"}, "one-per-source-segment-or-lap": {"$ref": "#/$defs/graphRule"}, "one-per-source-delta": {"$ref": "#/$defs/graphRule"}}},
+        "adapterMeasurements": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/adapterMeasurement"}}, "recordTypes": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/healthConnectRecord"}}, "contextMappings": {"$ref": "#/$defs/healthConnectContexts"}, "recordingDeviceIdentity": {"$ref": "#/$defs/recordingDeviceIdentity"}, "identity": {"$ref": "#/$defs/exchangeIdentity"}
+      }
+    },
+
+    "sdkBaseline": {"type": "object", "additionalProperties": false, "required": ["platform", "version", "xcodeVersion", "xcodeBuild"], "properties": {"platform": {"const": "iPhoneOS"}, "version": {"$ref": "#/$defs/nonEmptyText"}, "xcodeVersion": {"$ref": "#/$defs/nonEmptyText"}, "xcodeBuild": {"$ref": "#/$defs/nonEmptyText"}}},
+    "healthKitEvidence": {
+      "type": "object", "additionalProperties": false, "required": ["kind", "scope"],
+      "properties": {"kind": {"enum": ["platform-documentation", "platform-runtime-inventory", "sdk-provenance"]}, "url": {"$ref": "#/$defs/uri"}, "path": {"type": "string", "pattern": "^[a-z0-9-]+/"}, "scope": {"$ref": "#/$defs/nonEmptyText"}},
+      "oneOf": [
+        {"type": "object", "required": ["url"], "properties": {"url": {"$ref": "#/$defs/uri"}}},
+        {"type": "object", "required": ["path"], "properties": {"path": {"type": "string", "pattern": "^[a-z0-9-]+/"}}}
+      ]
+    },
+    "healthKitClinicalFHIRRepresentation": {
+      "type": "object", "additionalProperties": false, "required": ["resourceType", "extensionUrl", "valueElement", "cardinality", "fixedValue"],
+      "properties": {
+        "resourceType": {"const": "DocumentReference"},
+        "extensionUrl": {"const": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-fhir-release"},
+        "valueElement": {"const": "valueCode"},
+        "cardinality": {"type": "object", "additionalProperties": false, "required": ["min", "max"], "properties": {"min": {"const": 1}, "max": {"const": 1}}},
+        "fixedValue": {"const": "r4"}
+      }
+    },
+    "healthKitClinicalAdmission": {
+      "type": "object", "additionalProperties": false, "required": ["profile", "payloadFormat", "sourceFHIRReleaseField", "admittedFHIRRelease", "fhirRepresentation", "rejectedFHIRReleases", "rule"],
+      "properties": {"profile": {"const": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document"}, "payloadFormat": {"const": "fhir-r4-resource"}, "sourceFHIRReleaseField": {"const": "HKFHIRVersion.fhirRelease"}, "admittedFHIRRelease": {"const": "r4"}, "fhirRepresentation": {"$ref": "#/$defs/healthKitClinicalFHIRRepresentation"}, "rejectedFHIRReleases": {"const": ["dstu2", "unknown"]}, "rule": {"$ref": "#/$defs/nonEmptyText"}}
+    },
+    "healthKitClaim": {"type": "object", "additionalProperties": false, "required": ["claimMode", "profiles", "code", "quantity", "effective", "reason"], "properties": {"claimMode": {"const": "exactly-standard-plus-adapter"}, "profiles": {"$ref": "#/$defs/uriArray"}, "code": {"$ref": "#/$defs/coding"}, "quantity": {"$ref": "#/$defs/quantity"}, "effective": {"const": "dateTime"}, "reason": {"$ref": "#/$defs/nonEmptyText"}}},
+    "ecgEvidenceChild": {"type": "object", "additionalProperties": false, "required": ["url", "type", "meaning"], "properties": {"url": {"$ref": "#/$defs/nonEmptyText"}, "type": {"$ref": "#/$defs/nonEmptyText"}, "cardinality": {"$ref": "#/$defs/nonEmptyText"}, "meaning": {"$ref": "#/$defs/nonEmptyText"}}},
+    "healthKitEcgClaim": {
+      "type": "object", "additionalProperties": false,
+      "required": ["claimMode", "profiles", "sourceTypeIdentifier", "sourceLead", "leadCode", "quantity", "callerEvidence", "requiredContext", "optionalContext", "correlatedSymptomEvidence", "sourceRevisionDisclosure", "effectiveRule", "admissionRule"],
+      "properties": {
+        "claimMode": {"const": "exactly-sensor-plus-adapter"}, "profiles": {"$ref": "#/$defs/uriArray"}, "sourceTypeIdentifier": {"const": "HKDataTypeIdentifierElectrocardiogram"}, "sourceLead": {"$ref": "#/$defs/nonEmptyText"}, "leadCode": {"$ref": "#/$defs/coding"}, "quantity": {"$ref": "#/$defs/quantity"}, "callerEvidence": {"$ref": "#/$defs/textArray"}, "requiredContext": {"$ref": "#/$defs/textArray"}, "optionalContext": {"$ref": "#/$defs/textArray"},
+        "correlatedSymptomEvidence": {"type": "object", "additionalProperties": false, "required": ["url", "cardinality", "children"], "properties": {"url": {"$ref": "#/$defs/uri"}, "cardinality": {"$ref": "#/$defs/nonEmptyText"}, "children": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/ecgEvidenceChild"}}}},
+        "sourceRevisionDisclosure": {"type": "object", "additionalProperties": false, "required": ["requiredProducerInput", "failureRule", "scope"], "properties": {"requiredProducerInput": {"const": "explicitly-authorized"}, "failureRule": {"$ref": "#/$defs/nonEmptyText"}, "scope": {"$ref": "#/$defs/nonEmptyText"}}},
+        "effectiveRule": {"$ref": "#/$defs/nonEmptyText"}, "admissionRule": {"$ref": "#/$defs/nonEmptyText"}
+      }
+    },
+    "healthKitRow": {
+      "type": "object", "additionalProperties": false, "required": ["sourceTypeIdentifier", "title", "symbols", "documentation", "status", "measurementIDs", "profiles"],
+      "properties": {"sourceTypeIdentifier": {"$ref": "#/$defs/nonEmptyText"}, "title": {"$ref": "#/$defs/nonEmptyText"}, "symbols": {"$ref": "#/$defs/textArray"}, "documentation": {"$ref": "#/$defs/uri"}, "status": {"enum": ["supported", "platform-exclusive", "intentionally-unsupported"]}, "clinicalAdmissionContract": {"const": "clinicalRecordAdmission"}, "measurementIDs": {"$ref": "#/$defs/possiblyEmptyTextArray"}, "profiles": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/uri"}}, "requirement": {"$ref": "#/$defs/nonEmptyText"}},
+      "allOf": [{
+        "if": {"type": "object", "properties": {"sourceTypeIdentifier": {"type": "string", "pattern": "^HKClinicalTypeIdentifier"}}, "required": ["sourceTypeIdentifier"]},
+        "then": {"type": "object", "required": ["clinicalAdmissionContract"], "properties": {"status": {"const": "platform-exclusive"}, "profiles": {"const": ["https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document"]}, "clinicalAdmissionContract": {"const": "clinicalRecordAdmission"}}},
+        "else": {"type": "object", "properties": {"profiles": {"type": "array", "not": {"contains": {"const": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document"}}}, "clinicalAdmissionContract": false}}
+      }]
+    },
+    "derivedAggregate": {"type": "object", "additionalProperties": false, "required": ["id", "title", "sourceTypeIdentifiers", "scope", "status", "measurementIDs", "profiles", "requirement"], "properties": {"id": {"$ref": "#/$defs/slug"}, "title": {"$ref": "#/$defs/nonEmptyText"}, "sourceTypeIdentifiers": {"$ref": "#/$defs/textArray"}, "scope": {"$ref": "#/$defs/nonEmptyText"}, "status": {"$ref": "#/$defs/status"}, "measurementIDs": {"$ref": "#/$defs/textArray"}, "profiles": {"$ref": "#/$defs/uriArray"}, "requirement": {"$ref": "#/$defs/nonEmptyText"}}},
+    "healthKit": {
+      "type": "object", "additionalProperties": false,
+      "required": ["$schema", "schemaVersion", "fhirVersion", "version", "source", "producerCanonicalization", "sourceTypeCoding", "clinicalRecordAdmission", "conversionProvenanceProfile", "statusVocabulary", "standardAdapterClaims", "sensorAdapterClaims", "derivedAggregates", "rows", "recordingDeviceIdentity", "applicationDeviceIdentity", "identity"],
+      "properties": {
+        "$schema": {"$ref": "#/$defs/schemaUri"}, "schemaVersion": {"const": 1}, "fhirVersion": {"const": "4.0.1"}, "version": {"$ref": "#/$defs/releaseVersion"},
+        "source": {"type": "object", "additionalProperties": false, "required": ["platform", "sdkBaseline", "accessed", "inventory", "rowScope", "evidence", "rowCount", "derivedAggregateCount"], "properties": {"platform": {"const": "Apple HealthKit"}, "sdkBaseline": {"$ref": "#/$defs/sdkBaseline"}, "accessed": {"$ref": "#/$defs/date"}, "inventory": {"$ref": "#/$defs/nonEmptyText"}, "rowScope": {"$ref": "#/$defs/nonEmptyText"}, "evidence": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/healthKitEvidence"}}, "rowCount": {"type": "integer", "minimum": 1}, "derivedAggregateCount": {"type": "integer", "minimum": 0}}},
+        "producerCanonicalization": {"type": "object", "additionalProperties": false, "required": ["mobileEffectiveContract", "effectivePrecision", "effectiveRounding", "scalarQuantityDecimal", "identityPreimages", "sensorAndEcgTiming"], "properties": {"mobileEffectiveContract": {"const": "catalog/measurement-catalog.json#effectiveCanonicalization"}, "effectivePrecision": {"const": "millisecond"}, "effectiveRounding": {"const": "half-even"}, "scalarQuantityDecimal": {"const": "shortest-round-trip"}, "identityPreimages": {"const": "unmodified"}, "sensorAndEcgTiming": {"const": "excluded"}}},
+        "sourceTypeCoding": {"type": "object", "additionalProperties": false, "required": ["system", "r4Element", "cardinality", "rule"], "properties": {"system": {"$ref": "#/$defs/uri"}, "r4Element": {"$ref": "#/$defs/nonEmptyText"}, "cardinality": {"const": "exactly one"}, "rule": {"$ref": "#/$defs/nonEmptyText"}}},
+        "clinicalRecordAdmission": {"$ref": "#/$defs/healthKitClinicalAdmission"}, "conversionProvenanceProfile": {"$ref": "#/$defs/uri"}, "statusVocabulary": {"$ref": "#/$defs/statusVocabularyObject"},
+        "standardAdapterClaims": {"type": "object", "additionalProperties": false, "required": ["body-mass-index"], "properties": {"body-mass-index": {"$ref": "#/$defs/healthKitClaim"}}},
+        "sensorAdapterClaims": {"type": "object", "additionalProperties": false, "required": ["electrocardiogram"], "properties": {"electrocardiogram": {"$ref": "#/$defs/healthKitEcgClaim"}}},
+        "derivedAggregates": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/derivedAggregate"}}, "rows": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/healthKitRow"}}, "recordingDeviceIdentity": {"$ref": "#/$defs/recordingDeviceIdentity"}, "applicationDeviceIdentity": {"$ref": "#/$defs/applicationDeviceIdentity"}, "identity": {"$ref": "#/$defs/exchangeIdentity"}
+      }
+    },
+
+    "providerEvidence": {"type": "object", "additionalProperties": false, "required": ["id", "surface", "version", "documentation"], "properties": {"id": {"enum": ["google-health-api", "oura", "withings"]}, "surface": {"$ref": "#/$defs/nonEmptyText"}, "version": {"$ref": "#/$defs/nonEmptyText"}, "documentation": {"$ref": "#/$defs/uriArray"}}},
+    "providerRaw": {"type": "object", "additionalProperties": false, "required": ["sourceNeutralProfile", "adapterProfile", "outputDiscriminator"], "properties": {"sourceNeutralProfile": {"$ref": "#/$defs/uri"}, "adapterProfile": {"$ref": "#/$defs/uri"}, "outputDiscriminator": {"$ref": "#/$defs/nonEmptyText"}}},
+    "aggregationMethod": {"type": "object", "additionalProperties": false, "minProperties": 1, "properties": {"respiratory-rate-average": {"$ref": "#/$defs/nonEmptyText"}, "sleep-heart-rate": {"$ref": "#/$defs/nonEmptyText"}}},
+    "providerElement": {
+      "type": "object", "additionalProperties": false, "required": ["path", "status"],
+      "properties": {"path": {"$ref": "#/$defs/nonEmptyText"}, "status": {"$ref": "#/$defs/status"}, "measurementIds": {"$ref": "#/$defs/textArray"}, "sensorProfile": {"$ref": "#/$defs/uri"}, "reason": {"$ref": "#/$defs/nonEmptyText"}, "unitConversion": {"$ref": "#/$defs/nonEmptyText"}, "component": {"enum": ["systolic", "diastolic"]}, "effective": {"$ref": "#/$defs/nonEmptyText"}, "groupedMapping": {"$ref": "#/$defs/nonEmptyText"}, "aggregationMethod": {"$ref": "#/$defs/aggregationMethod"}},
+      "allOf": [
+        {"if": {"type": "object", "properties": {"status": {"const": "supported"}}, "required": ["status"]}, "then": {"type": "object", "required": ["measurementIds"], "properties": {"measurementIds": {"$ref": "#/$defs/textArray"}}}},
+        {"if": {"type": "object", "properties": {"status": {"const": "mapped-standard"}}, "required": ["status"]}, "then": {"type": "object", "required": ["sensorProfile"], "properties": {"sensorProfile": {"$ref": "#/$defs/uri"}}}},
+        {"if": {"type": "object", "properties": {"status": {"enum": ["unmodeled", "intentionally-unsupported"]}}, "required": ["status"]}, "then": {"type": "object", "required": ["reason"], "properties": {"reason": {"$ref": "#/$defs/nonEmptyText"}}}}
+      ]
+    },
+    "providerSourceType": {
+      "type": "object", "additionalProperties": false, "required": ["token", "status", "elements"],
+      "properties": {"token": {"$ref": "#/$defs/nonEmptyText"}, "status": {"$ref": "#/$defs/status"}, "archiveDataType": {"$ref": "#/$defs/nonEmptyText"}, "raw": {"$ref": "#/$defs/providerRaw"}, "profiles": {"$ref": "#/$defs/uriArray"}, "elements": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/providerElement"}}},
+      "allOf": [
+        {"if": {"type": "object", "properties": {"status": {"const": "mapped-standard"}}, "required": ["status"]}, "then": {"type": "object", "required": ["archiveDataType", "raw"], "properties": {"archiveDataType": {"$ref": "#/$defs/nonEmptyText"}, "raw": {"$ref": "#/$defs/providerRaw"}}}},
+        {"if": {"type": "object", "properties": {"status": {"const": "platform-exclusive"}}, "required": ["status"]}, "then": {"type": "object", "required": ["profiles"], "properties": {"profiles": {"$ref": "#/$defs/uriArray"}}}}
+      ]
+    },
+    "groupedMapping": {"type": "object", "additionalProperties": false, "required": ["token", "status", "members", "sourceNativeId", "measurementIds", "outputDiscriminator", "rule"], "properties": {"token": {"$ref": "#/$defs/nonEmptyText"}, "status": {"const": "supported"}, "members": {"$ref": "#/$defs/textArray"}, "sourceNativeId": {"$ref": "#/$defs/nonEmptyText"}, "measurementIds": {"$ref": "#/$defs/textArray"}, "outputDiscriminator": {"$ref": "#/$defs/nonEmptyText"}, "rule": {"$ref": "#/$defs/nonEmptyText"}}},
+    "providerRow": {"type": "object", "additionalProperties": false, "required": ["id", "title", "identifierScope", "identifierScopeReason", "sourceTypeCount", "sourceTypes"], "properties": {"id": {"enum": ["google-health-api", "oura", "withings"]}, "title": {"$ref": "#/$defs/nonEmptyText"}, "identifierScope": {"enum": ["account", "none"]}, "identifierScopeReason": {"$ref": "#/$defs/nonEmptyText"}, "sourceTypeCount": {"type": "integer", "minimum": 1}, "sourceTypes": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/providerSourceType"}}, "groupedMappings": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/groupedMapping"}}}},
+    "providers": {
+      "type": "object", "additionalProperties": false,
+      "required": ["$schema", "schemaVersion", "fhirVersion", "version", "packageId", "canonical", "adapterProfile", "sourceTypeExtension", "providerExtension", "recordingDocument", "rawPayloadAdmission", "conversionProvenanceProfile", "statusVocabulary", "statusDefinitions", "sourceEvidence", "identity", "recordingDeviceIdentity", "providers"],
+      "properties": {
+        "$schema": {"$ref": "#/$defs/schemaUri"}, "schemaVersion": {"const": 1}, "fhirVersion": {"const": "4.0.1"}, "version": {"$ref": "#/$defs/releaseVersion"}, "packageId": {"const": "org.grovealliance.fhir.providers"}, "canonical": {"const": "https://grovealliance.org/fhir/providers"}, "adapterProfile": {"const": "https://grovealliance.org/fhir/providers/StructureDefinition/providers-observation"},
+        "sourceTypeExtension": {"$ref": "#/$defs/markerExtension"}, "providerExtension": {"$ref": "#/$defs/markerExtension"},
+        "recordingDocument": {"type": "object", "additionalProperties": false, "required": ["sourceNeutralProfile", "adapterProfile", "claimMode", "outputDiscriminator", "encoding"], "properties": {"sourceNeutralProfile": {"$ref": "#/$defs/uri"}, "adapterProfile": {"$ref": "#/$defs/uri"}, "claimMode": {"const": "exactly-source-neutral-plus-adapter"}, "outputDiscriminator": {"const": "native-recording"}, "encoding": {"$ref": "#/$defs/nonEmptyText"}}},
+        "rawPayloadAdmission": {"$ref": "#/$defs/rawPayloadAdmission"}, "conversionProvenanceProfile": {"$ref": "#/$defs/uri"}, "statusVocabulary": {"$ref": "#/$defs/statusVocabularyArray"}, "statusDefinitions": {"$ref": "#/$defs/statusVocabularyObject"},
+        "sourceEvidence": {"type": "object", "additionalProperties": false, "required": ["accessed", "scope", "tokenBinding", "providers"], "properties": {"accessed": {"$ref": "#/$defs/date"}, "scope": {"$ref": "#/$defs/nonEmptyText"}, "tokenBinding": {"$ref": "#/$defs/nonEmptyText"}, "providers": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/providerEvidence"}}}},
+        "identity": {"$ref": "#/$defs/exchangeIdentity"}, "recordingDeviceIdentity": {"$ref": "#/$defs/recordingDeviceIdentity"}, "providers": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/providerRow"}}
+      }
+    },
+
+    "sampledDataContract": {
+      "type": "object", "additionalProperties": false, "required": ["id", "profile", "resourceType", "payload", "timing", "standardBasis", "phdProfileApplicability"],
+      "properties": {"id": {"const": "sampled-data"}, "profile": {"$ref": "#/$defs/uri"}, "resourceType": {"const": "Observation"}, "payload": {"const": "valueSampledData"}, "timing": {"type": "object", "additionalProperties": false, "required": ["effectiveType", "startRule", "endRule", "periodRule", "dimensionsRule", "frameCountRule", "dataTokens", "exceptionalTokensAdmitted", "factorAdmitted", "lowerLimitAdmitted", "upperLimitAdmitted", "vectors"], "properties": {"effectiveType": {"const": "Period"}, "startRule": {"$ref": "#/$defs/nonEmptyText"}, "endRule": {"$ref": "#/$defs/nonEmptyText"}, "periodRule": {"$ref": "#/$defs/nonEmptyText"}, "dimensionsRule": {"$ref": "#/$defs/nonEmptyText"}, "frameCountRule": {"$ref": "#/$defs/nonEmptyText"}, "dataTokens": {"const": "decimal-only"}, "exceptionalTokensAdmitted": {"const": []}, "factorAdmitted": {"const": false}, "lowerLimitAdmitted": {"const": false}, "upperLimitAdmitted": {"const": false}, "vectors": {"type": "array", "minItems": 1, "items": {"type": "object", "additionalProperties": false, "required": ["start", "end", "periodMilliseconds", "dimensions", "data", "frameCount"], "properties": {"start": {"type": "string", "format": "date-time"}, "end": {"type": "string", "format": "date-time"}, "periodMilliseconds": {"type": "number", "exclusiveMinimum": 0}, "dimensions": {"type": "integer", "minimum": 1}, "data": {"$ref": "#/$defs/nonEmptyText"}, "frameCount": {"type": "integer", "minimum": 2}}}}}}, "standardBasis": {"$ref": "#/$defs/textArray"}, "phdProfileApplicability": {"$ref": "#/$defs/nonEmptyText"}}
+    },
+    "ecgContract": {"type": "object", "additionalProperties": false, "required": ["id", "profile", "resourceType", "code", "payload", "timingContract", "channelUnit", "channelDimensions", "standardBasis"], "properties": {"id": {"const": "ecg"}, "profile": {"$ref": "#/$defs/uri"}, "resourceType": {"const": "Observation"}, "code": {"$ref": "#/$defs/coding"}, "payload": {"const": "component.valueSampledData"}, "timingContract": {"const": "sampled-data"}, "channelUnit": {"type": "object", "additionalProperties": false, "required": ["system", "code"], "properties": {"system": {"const": "http://unitsofmeasure.org"}, "code": {"const": "mV"}}}, "channelDimensions": {"const": 1}, "standardBasis": {"$ref": "#/$defs/textArray"}}},
+    "recordingContract": {
+      "type": "object", "additionalProperties": false, "required": ["id", "profile", "resourceType", "payload", "integrity", "payloadAdmission", "sizeThreshold", "sizeThresholdPolicy"],
+      "properties": {"id": {"const": "recording-document"}, "profile": {"$ref": "#/$defs/uri"}, "resourceType": {"const": "DocumentReference"}, "payload": {"$ref": "#/$defs/nonEmptyText"}, "integrity": {"type": "object", "additionalProperties": false, "required": ["sizeRequired", "hashRequired", "hashAlgorithm", "embeddedRule", "urlRule", "securityRule"], "properties": {"sizeRequired": {"const": true}, "hashRequired": {"const": true}, "hashAlgorithm": {"$ref": "#/$defs/nonEmptyText"}, "embeddedRule": {"$ref": "#/$defs/nonEmptyText"}, "urlRule": {"$ref": "#/$defs/nonEmptyText"}, "securityRule": {"$ref": "#/$defs/nonEmptyText"}}}, "payloadAdmission": {"type": "object", "additionalProperties": false, "required": ["requiredProducerInput", "allowedAssertions", "failureRule", "scope"], "properties": {"requiredProducerInput": {"$ref": "#/$defs/nonEmptyText"}, "allowedAssertions": {"const": ["caller-authorized-opaque-payload", "verified-sanitized-input"]}, "failureRule": {"$ref": "#/$defs/nonEmptyText"}, "scope": {"$ref": "#/$defs/nonEmptyText"}}}, "sizeThreshold": {"type": "null"}, "sizeThresholdPolicy": {"const": "deployment-specific"}}
+    },
+    "provenanceContract": {"type": "object", "additionalProperties": false, "required": ["id", "profile", "resourceType", "targets", "rule"], "properties": {"id": {"const": "conversion-provenance"}, "profile": {"$ref": "#/$defs/uri"}, "resourceType": {"const": "Provenance"}, "targets": {"$ref": "#/$defs/uriArray"}, "rule": {"$ref": "#/$defs/nonEmptyText"}}},
+    "sensor": {"type": "object", "additionalProperties": false, "required": ["$schema", "schemaVersion", "fhirVersion", "version", "packageId", "canonical", "contracts"], "properties": {"$schema": {"$ref": "#/$defs/schemaUri"}, "schemaVersion": {"const": 1}, "fhirVersion": {"const": "4.0.1"}, "version": {"$ref": "#/$defs/releaseVersion"}, "packageId": {"const": "org.grovealliance.fhir.sensor"}, "canonical": {"const": "https://grovealliance.org/fhir/sensor"}, "contracts": {"type": "array", "minItems": 4, "maxItems": 4, "items": {"oneOf": [{"$ref": "#/$defs/sampledDataContract"}, {"$ref": "#/$defs/ecgContract"}, {"$ref": "#/$defs/recordingContract"}, {"$ref": "#/$defs/provenanceContract"}]}}}},
+
+    "sensorKitGraphContract": {"type": "object", "additionalProperties": false, "required": ["requiredResources", "relationship", "sharedSourceIdentity"], "properties": {"requiredResources": {"$ref": "#/$defs/textArray"}, "relationship": {"$ref": "#/$defs/nonEmptyText"}, "sharedSourceIdentity": {"const": true}}},
+    "sensorKitStructured": {
+      "type": "object", "additionalProperties": false,
+      "properties": {"profile": {"$ref": "#/$defs/uri"}, "adapterProfile": {"$ref": "#/$defs/uri"}, "sourceNeutralProfile": {"$ref": "#/$defs/uri"}, "status": {"$ref": "#/$defs/status"}, "reason": {"$ref": "#/$defs/nonEmptyText"}, "rule": {"$ref": "#/$defs/nonEmptyText"}, "representedFields": {"$ref": "#/$defs/textArray"}, "outputDiscriminator": {"$ref": "#/$defs/nonEmptyText"}, "condition": {"$ref": "#/$defs/nonEmptyText"}, "dimensions": {"type": "integer", "minimum": 1}, "ucumCode": {"$ref": "#/$defs/nonEmptyText"}, "admissionRule": {"$ref": "#/$defs/nonEmptyText"}, "graphContract": {"$ref": "#/$defs/sensorKitGraphContract"}},
+      "anyOf": [
+        {"type": "object", "required": ["profile"], "properties": {"profile": {"$ref": "#/$defs/uri"}}},
+        {"type": "object", "required": ["adapterProfile"], "properties": {"adapterProfile": {"$ref": "#/$defs/uri"}}},
+        {"type": "object", "required": ["status", "reason"], "properties": {"status": {"$ref": "#/$defs/status"}, "reason": {"$ref": "#/$defs/nonEmptyText"}}}
+      ]
+    },
+    "jsonField": {"type": "object", "additionalProperties": false, "required": ["name", "type", "optional", "meaning"], "properties": {"name": {"$ref": "#/$defs/nonEmptyText"}, "type": {"$ref": "#/$defs/nonEmptyText"}, "optional": {"type": "boolean"}, "unit": {"$ref": "#/$defs/nonEmptyText"}, "meaning": {"$ref": "#/$defs/nonEmptyText"}}},
+    "sensorKitRaw": {
+      "type": "object", "additionalProperties": false,
+      "required": ["profile", "status", "outputDiscriminator", "formats", "encoding"],
+      "properties": {
+        "profile": {"$ref": "#/$defs/uri"}, "status": {"$ref": "#/$defs/status"},
+        "outputDiscriminator": {"$ref": "#/$defs/nonEmptyText"}, "formats": {"$ref": "#/$defs/textArray"},
+        "encoding": {"$ref": "#/$defs/nonEmptyText"}, "requiredForFields": {"$ref": "#/$defs/textArray"},
+        "jsonSchema": {
+          "type": "object", "additionalProperties": false, "required": ["schemaId", "structure", "fields"],
+          "properties": {
+            "schemaId": {"$ref": "#/$defs/nonEmptyText"}, "structure": {"$ref": "#/$defs/nonEmptyText"},
+            "fields": {"oneOf": [{"$ref": "#/$defs/nonEmptyText"}, {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/jsonField"}}]}
+          }
+        }
+      }
+    },
+    "sensorKitEntry": {
+      "type": "object", "additionalProperties": false, "required": ["sourceToken", "sourceTypeCode", "symbol", "identifier", "title", "documentation", "minimumIOS", "scope", "status"],
+      "properties": {"sourceToken": {"$ref": "#/$defs/nonEmptyText"}, "sourceTypeCode": {"$ref": "#/$defs/nonEmptyText"}, "symbol": {"$ref": "#/$defs/nonEmptyText"}, "identifier": {"$ref": "#/$defs/nonEmptyText"}, "title": {"$ref": "#/$defs/nonEmptyText"}, "documentation": {"$ref": "#/$defs/uri"}, "minimumIOS": {"$ref": "#/$defs/nonEmptyText"}, "scope": {"enum": ["catalog-baseline", "stable-addition"]}, "status": {"$ref": "#/$defs/status"}, "reason": {"$ref": "#/$defs/nonEmptyText"}, "structured": {"$ref": "#/$defs/sensorKitStructured"}, "raw": {"$ref": "#/$defs/sensorKitRaw"}},
+      "allOf": [
+        {"if": {"type": "object", "properties": {"status": {"const": "deferred"}}, "required": ["status"]}, "then": {"type": "object", "required": ["reason"], "properties": {"reason": {"$ref": "#/$defs/nonEmptyText"}, "structured": false, "raw": false}}, "else": {"type": "object", "required": ["structured"], "properties": {"structured": {"$ref": "#/$defs/sensorKitStructured"}}}},
+        {"if": {"type": "object", "properties": {"status": {"const": "mapped-standard"}}, "required": ["status"]}, "then": {"type": "object", "required": ["raw"], "properties": {"raw": {"$ref": "#/$defs/sensorKitRaw"}}}}
+      ]
+    },
+    "sensorKitProfileClaims": {
+      "type": "object", "additionalProperties": false, "required": ["sharedObservation", "hybridObservation", "recordingDocument", "providerSpecificObservation", "conversionProvenance"],
+      "properties": {
+        "sharedObservation": {"type": "object", "additionalProperties": false, "required": ["rule", "adapterProfile"], "properties": {"rule": {"$ref": "#/$defs/nonEmptyText"}, "adapterProfile": {"$ref": "#/$defs/uri"}}},
+        "hybridObservation": {"type": "object", "additionalProperties": false, "required": ["rule", "adapterProfile"], "properties": {"rule": {"$ref": "#/$defs/nonEmptyText"}, "adapterProfile": {"$ref": "#/$defs/uri"}}},
+        "recordingDocument": {"type": "object", "additionalProperties": false, "required": ["rule", "sourceNeutralProfile", "adapterProfile", "defaultOutputDiscriminator", "defaultRule"], "properties": {"rule": {"$ref": "#/$defs/nonEmptyText"}, "sourceNeutralProfile": {"$ref": "#/$defs/uri"}, "adapterProfile": {"$ref": "#/$defs/uri"}, "defaultOutputDiscriminator": {"$ref": "#/$defs/nonEmptyText"}, "defaultRule": {"$ref": "#/$defs/nonEmptyText"}}},
+        "providerSpecificObservation": {"type": "object", "additionalProperties": false, "required": ["rule"], "properties": {"rule": {"$ref": "#/$defs/nonEmptyText"}}},
+        "conversionProvenance": {"type": "object", "additionalProperties": false, "required": ["profile", "rule"], "properties": {"profile": {"$ref": "#/$defs/uri"}, "rule": {"$ref": "#/$defs/nonEmptyText"}}}
+      }
+    },
+    "sensorKit": {
+      "type": "object", "additionalProperties": false,
+      "required": ["$schema", "schemaVersion", "fhirVersion", "version", "packageId", "canonical", "sourceTypeExtension", "statusVocabulary", "statusDefinitions", "sourceEvidence", "inventoryScopes", "profileClaims", "rawPayloadAdmission", "identity", "recordingDeviceIdentity", "entries"],
+      "properties": {
+        "$schema": {"$ref": "#/$defs/schemaUri"}, "schemaVersion": {"const": 1}, "fhirVersion": {"const": "4.0.1"}, "version": {"$ref": "#/$defs/releaseVersion"}, "packageId": {"const": "org.grovealliance.fhir.sensorkit"}, "canonical": {"const": "https://grovealliance.org/fhir/sensorkit"},
+        "sourceTypeExtension": {"$ref": "#/$defs/markerExtension"}, "statusVocabulary": {"$ref": "#/$defs/statusVocabularyArray"}, "statusDefinitions": {"$ref": "#/$defs/statusVocabularyObject"},
+        "sourceEvidence": {"type": "object", "additionalProperties": false, "required": ["platform", "sdkBaseline", "accessed", "appleSensorInventory", "appleFrameworkDocumentation", "scope"], "properties": {"platform": {"const": "Apple SensorKit"}, "sdkBaseline": {"$ref": "#/$defs/sdkBaseline"}, "accessed": {"$ref": "#/$defs/date"}, "appleSensorInventory": {"$ref": "#/$defs/uri"}, "appleFrameworkDocumentation": {"$ref": "#/$defs/uri"}, "scope": {"$ref": "#/$defs/nonEmptyText"}}},
+        "inventoryScopes": {"type": "object", "additionalProperties": false, "required": ["catalog-baseline", "stable-addition"], "properties": {"catalog-baseline": {"$ref": "#/$defs/nonEmptyText"}, "stable-addition": {"$ref": "#/$defs/nonEmptyText"}}},
+        "profileClaims": {"$ref": "#/$defs/sensorKitProfileClaims"}, "rawPayloadAdmission": {"$ref": "#/$defs/rawPayloadAdmission"}, "identity": {"$ref": "#/$defs/exchangeIdentity"}, "recordingDeviceIdentity": {"$ref": "#/$defs/recordingDeviceIdentity"}, "entries": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/sensorKitEntry"}}
+      }
+    },
+
+    "profileSetClaim": {"type": "object", "additionalProperties": false, "required": ["cardinality", "profiles", "otherProfilesAllowed"], "properties": {"resourceType": {"type": "string", "pattern": "^[A-Z][A-Za-z]+$"}, "cardinality": {"type": "integer", "minimum": 1}, "profiles": {"$ref": "#/$defs/uriArray"}, "otherProfilesAllowed": {"const": false}, "requiredIdentifierRoles": {"$ref": "#/$defs/textArray"}}},
+    "singularResourceClaim": {"type": "object", "additionalProperties": false, "required": ["resourceType", "profile", "cardinality", "otherProfilesAllowed", "requiredIdentifierRoles"], "properties": {"resourceType": {"type": "string", "pattern": "^[A-Z][A-Za-z]+$"}, "profile": {"$ref": "#/$defs/uri"}, "cardinality": {"const": 1}, "otherProfilesAllowed": {"const": false}, "requiredIdentifierRoles": {"$ref": "#/$defs/textArray"}}},
+    "deviceClaim": {"type": "object", "additionalProperties": false, "required": ["id", "resourceType", "cardinality", "profiles", "otherProfilesAllowed", "requiredIdentifierRoles"], "properties": {"id": {"$ref": "#/$defs/slug"}, "resourceType": {"const": "Device"}, "cardinality": {"const": 1}, "profiles": {"type": "array", "minItems": 1, "maxItems": 1, "items": {"$ref": "#/$defs/uri"}}, "otherProfilesAllowed": {"const": false}, "requiredIdentifierRoles": {"$ref": "#/$defs/textArray"}}},
+    "mobileRecordingDeviceClaim": {"allOf": [{"$ref": "#/$defs/deviceClaim"}, {"type": "object", "properties": {"id": {"const": "mobile-recording-device"}, "profiles": {"const": ["https://grovealliance.org/fhir/mobile/StructureDefinition/grove-recording-device"]}, "requiredIdentifierRoles": {"const": ["recording-device", "device-snapshot"]}}}]},
+    "mobileApplicationDeviceClaim": {"allOf": [{"$ref": "#/$defs/deviceClaim"}, {"type": "object", "properties": {"id": {"const": "mobile-application-device"}, "profiles": {"const": ["https://grovealliance.org/fhir/mobile/StructureDefinition/grove-application-device"]}, "requiredIdentifierRoles": {"const": ["device-snapshot"]}}}]},
+    "mobileHostDeviceClaim": {"allOf": [{"$ref": "#/$defs/deviceClaim"}, {"type": "object", "properties": {"id": {"const": "mobile-host-device"}, "profiles": {"const": ["https://grovealliance.org/fhir/mobile/StructureDefinition/grove-host-device"]}, "requiredIdentifierRoles": {"const": ["device-snapshot"]}}}]},
+    "healthKitApplicationDeviceClaim": {"allOf": [{"$ref": "#/$defs/deviceClaim"}, {"type": "object", "properties": {"id": {"const": "healthkit-application-device"}, "profiles": {"const": ["https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-application-device"]}, "requiredIdentifierRoles": {"const": ["device-snapshot"]}}}]},
+    "activeDeviceClaimSet": {
+      "type": "array", "minItems": 4, "maxItems": 4, "uniqueItems": true,
+      "items": {"oneOf": [{"$ref": "#/$defs/mobileRecordingDeviceClaim"}, {"$ref": "#/$defs/mobileApplicationDeviceClaim"}, {"$ref": "#/$defs/mobileHostDeviceClaim"}, {"$ref": "#/$defs/healthKitApplicationDeviceClaim"}]},
+      "allOf": [
+        {"contains": {"$ref": "#/$defs/mobileRecordingDeviceClaim"}, "minContains": 1, "maxContains": 1},
+        {"contains": {"$ref": "#/$defs/mobileApplicationDeviceClaim"}, "minContains": 1, "maxContains": 1},
+        {"contains": {"$ref": "#/$defs/mobileHostDeviceClaim"}, "minContains": 1, "maxContains": 1},
+        {"contains": {"$ref": "#/$defs/healthKitApplicationDeviceClaim"}, "minContains": 1, "maxContains": 1}
+      ]
+    },
+    "observationAdapterClaim": {
+      "type": "object", "additionalProperties": false, "required": ["cardinality", "members", "inheritedProfilesAreNotDeclared", "adapterProfiles", "sharedSensorProfiles", "standardAdapterClaims", "forbiddenExplicitProfiles"],
+      "properties": {"cardinality": {"const": 2}, "members": {"type": "array", "minItems": 2, "maxItems": 2, "items": {"$ref": "#/$defs/nonEmptyText"}}, "inheritedProfilesAreNotDeclared": {"const": true}, "adapterProfiles": {"$ref": "#/$defs/uriArray"}, "sharedSensorProfiles": {"$ref": "#/$defs/uriArray"}, "standardAdapterClaims": {"type": "array", "minItems": 1, "items": {"type": "object", "additionalProperties": false, "required": ["id", "semanticProfile", "adapterProfile", "cardinality", "reason"], "properties": {"id": {"$ref": "#/$defs/slug"}, "semanticProfile": {"$ref": "#/$defs/uri"}, "adapterProfile": {"$ref": "#/$defs/uri"}, "cardinality": {"const": 2}, "reason": {"$ref": "#/$defs/nonEmptyText"}}}}, "forbiddenExplicitProfiles": {"$ref": "#/$defs/uriArray"}}
+    },
+    "hybridClaim": {"type": "object", "additionalProperties": false, "required": ["cardinality", "profiles", "requiredCompanionProfile", "rule"], "properties": {"cardinality": {"const": 2}, "profiles": {"$ref": "#/$defs/uriArray"}, "requiredCompanionProfile": {"$ref": "#/$defs/uri"}, "rule": {"$ref": "#/$defs/nonEmptyText"}}},
+    "provenanceClaim": {"type": "object", "additionalProperties": false, "required": ["adapter", "profile", "targetAdapterProfiles", "rule", "sourceIdentifierRole", "sourceIdentityKind"], "properties": {"adapter": {"enum": ["healthkit", "health-connect", "providers", "sensorkit"]}, "profile": {"$ref": "#/$defs/uri"}, "targetAdapterProfiles": {"$ref": "#/$defs/uriArray"}, "rule": {"$ref": "#/$defs/nonEmptyText"}, "sourceIdentifierRole": {"const": "source-record"}, "sourceIdentityKind": {"enum": ["source-record", "provider-record"]}}},
+    "healthKitProvenanceClaim": {"allOf": [{"$ref": "#/$defs/provenanceClaim"}, {"type": "object", "properties": {"adapter": {"const": "healthkit"}, "profile": {"const": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-conversion-provenance"}, "sourceIdentityKind": {"const": "source-record"}}}]},
+    "healthConnectProvenanceClaim": {"allOf": [{"$ref": "#/$defs/provenanceClaim"}, {"type": "object", "properties": {"adapter": {"const": "health-connect"}, "profile": {"const": "https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-conversion-provenance"}, "sourceIdentityKind": {"const": "source-record"}}}]},
+    "providersProvenanceClaim": {"allOf": [{"$ref": "#/$defs/provenanceClaim"}, {"type": "object", "properties": {"adapter": {"const": "providers"}, "profile": {"const": "https://grovealliance.org/fhir/providers/StructureDefinition/providers-conversion-provenance"}, "sourceIdentityKind": {"const": "provider-record"}}}]},
+    "sensorKitProvenanceClaim": {"allOf": [{"$ref": "#/$defs/provenanceClaim"}, {"type": "object", "properties": {"adapter": {"const": "sensorkit"}, "profile": {"const": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-conversion-provenance"}, "sourceIdentityKind": {"const": "source-record"}}}]},
+    "adapterConversionProvenanceClaimSet": {
+      "type": "array", "minItems": 4, "maxItems": 4, "uniqueItems": true,
+      "items": {"oneOf": [{"$ref": "#/$defs/healthKitProvenanceClaim"}, {"$ref": "#/$defs/healthConnectProvenanceClaim"}, {"$ref": "#/$defs/providersProvenanceClaim"}, {"$ref": "#/$defs/sensorKitProvenanceClaim"}]},
+      "allOf": [
+        {"contains": {"$ref": "#/$defs/healthKitProvenanceClaim"}, "minContains": 1, "maxContains": 1},
+        {"contains": {"$ref": "#/$defs/healthConnectProvenanceClaim"}, "minContains": 1, "maxContains": 1},
+        {"contains": {"$ref": "#/$defs/providersProvenanceClaim"}, "minContains": 1, "maxContains": 1},
+        {"contains": {"$ref": "#/$defs/sensorKitProvenanceClaim"}, "minContains": 1, "maxContains": 1}
+      ]
+    },
+    "profileClaims": {
+      "type": "object", "additionalProperties": false,
+      "required": ["$schema", "schemaVersion", "fhirVersion", "version", "observationAdapterClaim", "sensorRecordingDocumentClaim", "activeDeviceClaims", "activeQuestionnaireResponseClaim", "healthKitSingleProfileObservationClaims", "healthKitRecordingDocumentClaim", "healthKitClinicalRecordDocumentClaim", "healthKitPlatformExclusiveResourceClaims", "healthConnectPlatformExclusiveClaims", "healthConnectSpecimenClaim", "sensorKitPlatformExclusiveClaims", "sensorKitHybridObservationClaims", "sensorKitRecordingDocumentClaim", "providerRecordingDocumentClaim", "adapterConversionProvenanceClaims"],
+      "properties": {
+        "$schema": {"$ref": "#/$defs/schemaUri"}, "schemaVersion": {"const": 1}, "fhirVersion": {"const": "4.0.1"}, "version": {"$ref": "#/$defs/releaseVersion"},
+        "observationAdapterClaim": {"$ref": "#/$defs/observationAdapterClaim"}, "sensorRecordingDocumentClaim": {"$ref": "#/$defs/profileSetClaim"}, "activeDeviceClaims": {"$ref": "#/$defs/activeDeviceClaimSet"}, "activeQuestionnaireResponseClaim": {"$ref": "#/$defs/profileSetClaim"},
+        "healthKitSingleProfileObservationClaims": {"$ref": "#/$defs/profileSetClaim"}, "healthKitRecordingDocumentClaim": {"$ref": "#/$defs/profileSetClaim"}, "healthKitClinicalRecordDocumentClaim": {"$ref": "#/$defs/profileSetClaim"}, "healthKitPlatformExclusiveResourceClaims": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/singularResourceClaim"}},
+        "healthConnectPlatformExclusiveClaims": {"$ref": "#/$defs/profileSetClaim"}, "healthConnectSpecimenClaim": {"$ref": "#/$defs/singularResourceClaim"}, "sensorKitPlatformExclusiveClaims": {"$ref": "#/$defs/profileSetClaim"}, "sensorKitHybridObservationClaims": {"$ref": "#/$defs/hybridClaim"}, "sensorKitRecordingDocumentClaim": {"$ref": "#/$defs/profileSetClaim"}, "providerRecordingDocumentClaim": {"$ref": "#/$defs/profileSetClaim"}, "adapterConversionProvenanceClaims": {"$ref": "#/$defs/adapterConversionProvenanceClaimSet"}
+      }
+    }
+  }
+}

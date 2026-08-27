@@ -9,7 +9,7 @@
     {
       "alias": "mobile",
       "packageId": "org.grovealliance.fhir.mobile",
-      "version": "0.5.0"
+      "version": "0.6.0"
     }
   ],
   "resources": [
@@ -24,7 +24,7 @@
     {
       "id": "heart-rate",
       "path": "resources/exchange-bundle.json",
-      "resourcePointer": "/entry/1/resource"
+      "resourcePointer": "/entry/2/resource"
     }
   ]
 }

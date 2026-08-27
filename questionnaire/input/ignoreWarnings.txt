@@ -5,7 +5,7 @@ WARNING: 2: An HTML fragment from the set [cross-version-analysis.xhtml, cross-v
 # The guide intentionally defines no global profiles; an empty generated table adds no implementation guidance.
 WARNING: 4: The HTML fragment 'globals-table.xhtml' is not included anywhere in the produced implementation guide
 
-# Publisher does not resolve a versioned canonical to an example Questionnaire during single-resource validation. Repository tests resolve the pair and verify its exact canonical, hierarchy, linkIds, and item text.
+# Publisher does not resolve a versioned canonical to an example Questionnaire during single-resource validation. Repository tests resolve the pair and verify its exact canonical, hierarchy, linkIds, and answer constraints.
 WARNING: QuestionnaireResponse/GroveWeeklySymptomCheckInResponseExample: QuestionnaireResponse: The questionnaire 'https://grovealliance.org/fhir/questionnaire/Questionnaire/GroveWeeklySymptomCheckInExample|1.0.0' could not be resolved, so no validation can be performed against the base questionnaire
 
 # The standard artifact-versionAlgorithm extension binds to the trial-use version-algorithm value set. This contract intentionally requires semver.

@@ -97,19 +97,14 @@ Severity: #error
 Expression: "extension('http://hl7.org/fhir/StructureDefinition/rendering-styleSensitive').empty() and repeat(item).extension('http://hl7.org/fhir/StructureDefinition/rendering-styleSensitive').empty()"
 
 Invariant: gqr-canonical-1
-Description: "The response names the exact instrument version with a url|version canonical and neither component contains a fragment or an extra separator."
+Description: "The response names the exact instrument with an absolute url|Semantic-Version canonical; neither component contains a fragment or an extra separator."
 Severity: #error
-Expression: "questionnaire.matches('^[^|#]+[|][^|#]+$')"
+Expression: "questionnaire.matches('^https?://[^|#]+[|](0|[1-9][0-9]*)[.](0|[1-9][0-9]*)[.](0|[1-9][0-9]*)(-((0|[1-9][0-9]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*)([.](0|[1-9][0-9]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*))*))?([+]([0-9A-Za-z-]+)([.][0-9A-Za-z-]+)*)?$')"
 
 Invariant: gqr-identifier-1
 Description: "The response has one business identifier with a complete system and value pair."
 Severity: #error
 Expression: "identifier.count() = 1 and identifier.system.exists() and identifier.value.exists()"
-
-Invariant: gqr-text-1
-Description: "Every response item that carries an answer repeats the question text."
-Severity: #error
-Expression: "item.where(answer.exists()).all(text.exists()) and item.repeat(item | answer.item).where(answer.exists()).all(text.exists())"
 
 Invariant: gqr-completion-mode-1
 Description: "The response declares exactly one electronic ParticipationMode coding."
@@ -182,7 +177,7 @@ Parent: http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaireresponse
 Id: grove-questionnaire-response
 Title: "Grove Questionnaire Response"
 Description: "A response to one exact version of a Grove Questionnaire, with a stable submission identifier and electronic completion mode."
-* obeys gqr-canonical-1 and gqr-identifier-1 and gqr-text-1 and gqr-completion-mode-1
+* obeys gqr-canonical-1 and gqr-identifier-1 and gqr-completion-mode-1
 * questionnaire 1..1 MS
 * questionnaire only Canonical(GroveQuestionnaire)
 * identifier 1..1 MS

@@ -23,7 +23,7 @@ The [authoritative status matrix](status-matrix.html) renders all 41 record clas
 | `metadata.clientRecordVersion` | client record version extension |
 | `metadata.recordingMethod` | Grove recording-method extension; unknown is omitted |
 | `metadata.device` | recording Device when supplied; no invented hardware identifier |
-| `metadata.dataOrigin.packageName` | source application Device and Provenance enterer |
+| `metadata.dataOrigin.packageName` | identifier-only logical Device Reference in `Provenance.entity.agent.who`; no Bundle Device entry or Grove Device profile |
 
 The converter must operate on a Record read from Health Connect. It does not invent
 platform-assigned ids, last-modified times, DataOrigin, or Device metadata. Neither
@@ -38,32 +38,30 @@ that re-imports a measurement reuses its `clientRecordId` and raises its `client
 and the stored Record then carries a new `metadata.id`. Deduplicating on `metadata.id` alone
 therefore counts a revised measurement twice.
 
-When the Record carries `clientRecordId`, map it to a second `Observation.identifier` in the shared
-[Grove Writer Record Identifier](https://grovealliance.org/fhir/mobile/NamingSystem-grove-writer-record-id.html)
-namespace, scoping it to its writer as that namespace requires, and map `clientRecordVersion` to the
+When the Record carries `clientRecordId`, map it to a typed `writer-record`
+`Observation.identifier`, deriving it from the complete writer-application Identifier pair and
+logical writer record id as the exchange protocol requires, and map `clientRecordVersion` to the
 [Grove Writer Record Version](https://grovealliance.org/fhir/mobile/StructureDefinition-grove-writer-record-version.html)
 extension. A Record without a `clientRecordId` carries neither; do not synthesize one, because a
 writer that assigns no client record identity has not promised that any two of its Records are the
 same measurement.
 
-The HealthKit adapter maps `HKMetadataKeySyncIdentifier` and `HKMetadataKeySyncVersion` into that
-same namespace and extension, so a receiver applies one supersession rule to both platforms — and
-an application writing the same measurement on both produces the same value in both.
+The HealthKit adapter maps `HKMetadataKeySyncIdentifier` and `HKMetadataKeySyncVersion` into the
+same typed role and extension only when it can supply the same complete writer-application pair.
+Cross-platform equality is asserted only when all three writer-record preimage components are
+identical.
 
 ### Identity
 
-[`catalog/health-connect-identity.json`](https://grovealliance.org/fhir/catalog/health-connect-identity.json) is the complete normative identity contract.
-It defines the NamingSystem URLs, the component order of each composition, the lexical rules,
-and test vectors for source Records, multi-output Observations, sleep stages, Specimens, and the
-deployment-owned nodes an export creates.
+[`catalog/exchange-protocol.json`](https://grovealliance.org/fhir/catalog/exchange-protocol.json)
+is the complete normative identity and lifecycle algorithm. The Health Connect adapter catalog
+binds `Metadata.id`, the exact Record class, and a complete deployment-owned repository-scope pair
+to its source-record components, and publishes closed multi-output discriminator grammars.
 
-An identifier carries the source's own value, verbatim. Components join only where the source's
-value would not identify one record on its own, which here is the Record identity: `Metadata.id`
-is unique only inside one repository, so the value is the scheme version `v1:`, the repository
-scope, the Record class and the raw Record id, joined by vertical bars. No component may contain
-a vertical bar; a source value carrying one is rejected rather than escaped, because an escaping
-rule is exactly the conformance surface this scheme exists to remove. Nothing is hashed.
-Implementations must reproduce every published vector.
+Values are HMAC-SHA-256 over typed, unsigned 32-bit length-framed UTF-8 fields. Delimiters and
+Unicode are therefore unambiguous, native ids are not disclosed, and independent deployments are
+not silently linkable. Implementations must reproduce every published vector and must retain old
+key epochs while an identifier can be replayed or retracted.
 
 Business identifiers do not populate `Resource.id`. A producer graph uses the Mobile
 entry-identity algorithm to derive deterministic `urn:uuid` fullUrls from complete entry
@@ -105,7 +103,7 @@ declares that adapter profile directly and carries exactly one admitted SNOMED C
 | `SPECIMEN_SOURCE_SERUM` | serum/plasma glucose | `119364003` |
 | `SPECIMEN_SOURCE_INTERSTITIAL_FLUID` | interstitial glucose | `258479004` |
 
-Tears and unknown are intentionally unsupported because no shared 0.3.0 profile can be
+Tears and unknown are intentionally unsupported because no shared 0.6.0 profile can be
 stamped without changing or guessing specimen semantics. Non-unknown relation-to-meal and
 meal-type values use the typed meal-context extension and exact adapter CodeSystems.
 
@@ -117,22 +115,55 @@ Map admitted body position with the standard
 blood pressure, body temperature, and basal body temperature. Unknown values are omitted;
 implementations do not create independent mappings.
 
+Skin temperature has its own narrower location domain: finger, toe, and wrist only. A
+present body-position or body-site concept contains exactly one admitted SNOMED CT coding;
+equivalent translations may accompany it in other systems, but a foreign-only or text-only
+concept is not an admitted source projection.
+
+### Exact source-coded values
+
+Menstruation flow, ovulation-test result, sexual-activity protection use, cervical-mucus
+appearance and sensation, exercise type, and exercise segment type carry two codings: the
+source-neutral Grove result first and the exact AndroidX 1.1 token second. The complete
+source domains, their shared projections, and their output locations are normative in the
+adapter catalog and published complete CodeSystems. Out-of-domain integers fail conversion.
+Cervical `SENSATION_UNKNOWN` alone maps to omission; the other UNKNOWN constants are retained
+when the catalog says they are semantically distinct source assertions.
+
+An exercise session emits exactly one workout summary plus one workout-segment member for
+every source segment and lap. A lap uses the exact structural token `EXERCISE_LAP`. The
+summary alone may carry the typed exercise title and one source note; children carry neither.
+
 ### Sleep
 
 Emit one sleep-duration summary for the source session and one sleep-stage Observation per
-admitted stage. The summary may retain a non-blank source title through the typed string
-extension and source notes through `Annotation.text`. Each stage carries exactly two result
+admitted stage. When the producer explicitly selects the `RETAIN` user-authored-text policy,
+the summary retains a non-blank source title through the typed string extension and one source
+note through `Annotation.text`; the default minimization policy omits both. Each stage carries exactly two result
 codings in this order: the source-neutral Grove sleep class, then the exact Health Connect
 stage token from
 `https://grovealliance.org/fhir/health-connect/CodeSystem/health-connect-sleep-stage`.
 Known source states are never collapsed into `unknown`; sleeping, out-of-bed, and
 awake-in-bed retain their exact second coding.
 
+### Mindfulness
+
+Emit one point-to-point mindfulness-session Observation for each
+`MindfulnessSessionRecord`. Preserve the exact closed AndroidX session type through the
+typed Coding extension. When the producer explicitly selects the `RETAIN` policy, it also
+preserves a non-blank title through the mindfulness-title extension and one non-blank note
+through `Annotation.text`; the minimization policy omits both. These fields are admitted only on an output
+whose record-type extension is `MindfulnessSessionRecord`; they are not inferred for other
+records.
+
 ### Provenance and applications
 
 The converting application is a Grove Application Device and the assembler in conversion
 Provenance. `DataOrigin.packageName` identifies the application that inserted the Record
-into Health Connect and is represented as an enterer. It does not prove which hardware
+into Health Connect and is represented as the enterer's identifier-only logical Device
+Reference. It is not a Bundle Device node, does not claim a Grove Device profile, and does not
+invent an installation or event snapshot. The Reference fixes `type` to `Device`, prohibits a
+literal `reference`, and carries the complete Android package-name Identifier. It does not prove which hardware
 measured the value or which person performed it. Capture mode does not populate
 `Observation.method` or justify a performer.
 

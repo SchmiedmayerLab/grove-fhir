@@ -18,9 +18,12 @@ Instance: GroveSensorDeviceExample
 InstanceOf: GroveRecordingDevice
 Usage: #example
 Title: "Grove Sensor Example Device"
-Description: "The physical sensor that captured the example recordings."
-* identifier.system = "https://study.example.org/fhir/identifiers/sensor-device"
-* identifier.value = "sensor-device-001"
+Description: "An event-time snapshot of the physical sensor that captured the examples, backed by a governed stable per-unit token."
+* identifier[physicalUnit].system = "https://study.example.org/fhir/NamingSystem/grove-recording-device-v2/test-key/1"
+* identifier[physicalUnit].value = "v2:test-key:1:HQjIZYaSzp4zsKNVAPF7N4dqtR4SiHgtIJ1KRP5GBdA"
+* identifier[eventSnapshot].system = "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v2/test-key/1"
+* identifier[eventSnapshot].value = "v2:test-key:1:K75t_yY3jXVxTrghJZiPKUNqd9vFouKruI6dPoJEZfU"
+* status = #active
 * manufacturer = "Example Devices"
 * modelNumber = "Wave 2"
 * type.text = "Wearable sensor"
@@ -31,8 +34,8 @@ Usage: #example
 Title: "Grove Sensor Example Converter"
 Description: "The already-running application that transformed the caller-supplied sensor recording into FHIR resources."
 * status = #active
-* identifier.system = "https://study.example.org/fhir/identifiers/application"
-* identifier.value = "org.example.sensor-converter"
+* identifier[applicationSnapshot].system = "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v2/test-key/1"
+* identifier[applicationSnapshot].value = "v2:test-key:1:78jo5OnrgJho8Yegun81wOVI6IzPn9APDC4BngsOiF0"
 * deviceName[applicationName].name = "Sensor Converter"
 * deviceName[applicationName].type = #user-friendly-name
 
@@ -40,9 +43,11 @@ Instance: GroveSensorSampledDataExample
 InstanceOf: GroveSensorSampledDataObservation
 Usage: #example
 Title: "Grove Sensor Sampled Plethysmogram"
-Description: "A single-channel uniformly sampled waveform represented inline."
-* identifier.system = "https://study.example.org/fhir/identifiers/sensor-observation"
-* identifier.value = "pleth-20260820-001"
+Description: "A single-channel uniformly sampled waveform represented inline with typed source and output identities."
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* identifier[sourceRecord].value = "v2:test-key:1:i3E3NTKyKZcbxH8Q3b2WRE0PtdkwRZGi5szYPJu484c"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
+* identifier[sourceOutput].value = "v2:test-key:1:AuiphEa1XmMZ7wf-PesYWIRL0NpAP-rV0znbenObz6k"
 * status = #final
 * code = $mdc#150452 "MDC_PULS_OXIM_PLETH"
 * subject = Reference(GroveSensorPatientExample)
@@ -61,9 +66,11 @@ Instance: GroveSensorECGExample
 InstanceOf: GroveSensorECGObservation
 Usage: #example
 Title: "Grove Sensor Lead I ECG"
-Description: "A Lead I ECG channel using the ISO/IEEE 11073 MDC lead code and UCUM millivolts."
-* identifier.system = "https://study.example.org/fhir/identifiers/sensor-observation"
-* identifier.value = "ecg-20260820-001"
+Description: "A Lead I ECG channel using the ISO/IEEE 11073 MDC lead code, UCUM millivolts, and the same logical source-record identity as its native artifact."
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* identifier[sourceRecord].value = "v2:test-key:1:VddCPUESa0W18eKINfRr886_g58Li7DFO9ifLf-RQaI"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
+* identifier[sourceOutput].value = "v2:test-key:1:yFgh11zDqkamOUj_mfHZvPE1Tmob1NrvgPwRvGOno-g"
 * status = #final
 * subject = Reference(GroveSensorPatientExample)
 * performer = Reference(GroveSensorPatientExample)
@@ -82,9 +89,13 @@ Instance: GroveSensorRecordingDocumentExample
 InstanceOf: GroveSensorRecordingDocument
 Usage: #example
 Title: "Grove Native Sensor Recording"
-Description: "A compact embedded native recording linked to the parsed ECG Observation."
-* identifier.system = "https://study.example.org/fhir/identifiers/sensor-document"
-* identifier.value = "ecg-native-20260820-001"
+Description: "A compact embedded native recording linked to the parsed ECG Observation and sharing its logical source-record identity."
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* identifier[sourceRecord].value = "v2:test-key:1:VddCPUESa0W18eKINfRr886_g58Li7DFO9ifLf-RQaI"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
+* identifier[sourceOutput].value = "v2:test-key:1:9PCDIACWEWPfChVosr-1ik9ZlxPCAeHSADjLIgku3r4"
+* identifier[sourceArtifact].system = "https://study.example.org/fhir/NamingSystem/grove-source-artifact-v2/test-key/1"
+* identifier[sourceArtifact].value = "v2:test-key:1:ZOqHGEisMrEHljh_I91_oUEwfZbuLxa6AbAWeu1Jjn0"
 * status = #current
 * type = $loinc#11524-6 "EKG study"
 * subject = Reference(GroveSensorPatientExample)
@@ -96,7 +107,7 @@ Description: "A compact embedded native recording linked to the parsed ECG Obser
 * content.attachment.size = 48
 * content.attachment.hash = "mzgiyiPRcgwlAYq6ZhFBwSs26gw="
 * content.format = GroveRecordingFormatCS#native-recording "Native Recording"
-* content.format.version = "0.5.0"
+* content.format.version = "0.6.0"
 * context.related = Reference(GroveSensorECGExample)
 
 Instance: GroveSensorConversionProvenanceExample
@@ -106,10 +117,13 @@ Title: "Grove Sensor Conversion Provenance"
 Description: "The source-neutral conversion event that targets both the structured ECG and its native Recording Document."
 * target[+] = Reference(GroveSensorECGExample)
 * target[+] = Reference(GroveSensorRecordingDocumentExample)
+* occurredDateTime = "2026-08-20T17:31:00Z"
 * recorded = "2026-08-20T17:31:01Z"
+* activity = $recordLifecycleEvent#transform "Transform/Translate Record Lifecycle Event"
 * agent[assembler].type = $provenanceParticipantType#assembler
 * agent[assembler].who = Reference(GroveSensorConverterExample)
-* entity[0].role = #source
-* entity[0].what.identifier.system = "https://study.example.org/fhir/identifiers/native-sensor-record"
-* entity[0].what.identifier.value = "native-ecg-20260820-001"
-* entity[0].what.display = "Caller-supplied native ECG record"
+* entity.role = #source
+* entity.what.identifier.type = $groveIdentifierRole#source-record "Source record"
+* entity.what.identifier.system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* entity.what.identifier.value = "v2:test-key:1:VddCPUESa0W18eKINfRr886_g58Li7DFO9ifLf-RQaI"
+* entity.what.display = "Caller-supplied native ECG record"

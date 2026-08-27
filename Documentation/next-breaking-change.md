@@ -10,6 +10,11 @@ SPDX-License-Identifier: MIT
 
 # Findings for the Next Breaking Change
 
+> **Historical design record.** This document captures the earlier 0.5-to-0.6 design
+> pass and is not the current release disposition. The authoritative 0.6.0 decisions,
+> including changes that supersede proposals below, are in
+> [`audits/0.6.0/contract-completion-resolution.md`](../audits/0.6.0/contract-completion-resolution.md).
+
 A review of the seven guides, the four adapter catalogs, and the three implementations that consume them, written after the 0.5.0 release.
 Every item states what was checked and how, so a reader can disagree with the conclusion rather than only with the summary.
 
@@ -41,22 +46,25 @@ The segment vocabulary already published every `HKWorkoutEventType` case, so the
 `distanceType(for:)` is a good counterexample within the same file: it selects the distance type the activity actually records, precisely so that cycling, swimming, wheelchair, and snow-sport distances are not dropped.
 The same care has not been applied to events.
 
-### Unrecognised HealthKit metadata is dropped
+### Open-ended HealthKit metadata was incorrectly treated as lossless
 
 The converter reads `sample.metadata` only through specific known keys — sync identifier, sync version, time zone, was-user-entered, sexual-activity protection, ECG algorithm version, menstrual cycle start.
 No code path iterates the dictionary, and the IG defines no extension for retaining what is not modelled.
 
-`HKSample.metadata` is an open dictionary.
-Any key a third-party writer sets, and any key Apple adds in a future SDK, is silently discarded.
+`HKSample.metadata` is an open dictionary. That does not make every key safe, clinically
+meaningful, or interoperable to exchange. A generic pass-through would also create an
+unbounded privacy and identity channel.
 
 The adapter is careful in the adjacent case: `@unknown default` appears 3 times in the HealthKit converter and 5 times in SensorKit, and **every one of them throws** rather than substituting a default.
-Unknown *enumeration cases* fail closed; unknown *metadata keys* vanish. The asymmetry looks unintended.
+Unknown enumeration cases fail closed. Unknown metadata keys are rejected or omitted by
+an explicit producer policy and are never described as losslessly retained.
 
-**Closed in 0.6.0**, as components rather than the extension this proposed.
-The guide already carried modelled metadata keys as components against `HealthKitMetadataKeyCS`, so an extension would have been a second mechanism for one job.
-A retained key travels as `component.code.text`, because a complete code system cannot enumerate what a third-party writer may set.
-`HealthKitLinkableMetadataPolicy` withholds the keys that identify a record across systems — an external UUID, a device serial — unless the deployment authorizes them.
-A test asserts the modelled and retained key sets stay disjoint.
+**Superseded and closed by the second 0.6.0 contract-completion pass.** The generic
+`component.code.text` proposal was removed. The final adapter admits only four reviewed,
+typed metadata dispositions, has no generic metadata extension or component channel, and
+makes no blanket losslessness claim. Adding a key is a contract change that requires a
+defined semantic purpose, typed FHIR representation, privacy review, allowlist update,
+and positive/negative validation evidence.
 
 ### Application build number is concatenated into a version string
 

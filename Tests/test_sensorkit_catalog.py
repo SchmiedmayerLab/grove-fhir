@@ -11,7 +11,6 @@ from __future__ import annotations
 import json
 import re
 import unittest
-import uuid
 from pathlib import Path
 
 
@@ -34,7 +33,7 @@ class SensorKitCatalogTests(unittest.TestCase):
     def test_release_package_and_profile_graph_are_exact(self) -> None:
         self.assertEqual(self.catalog["schemaVersion"], 1)
         self.assertEqual(self.catalog["fhirVersion"], "4.0.1")
-        self.assertEqual(self.catalog["version"], "0.5.0")
+        self.assertEqual(self.catalog["version"], "0.6.0")
         package = next(
             package for package in self.graph["packages"]
             if package["source"] == "sensorkit"
@@ -45,14 +44,25 @@ class SensorKitCatalogTests(unittest.TestCase):
             package["dependencies"],
             [
                 "hl7.terminology.r4#7.3.0",
-                "org.grovealliance.fhir.mobile#0.5.0",
-                "org.grovealliance.fhir.sensor#0.5.0",
+                "hl7.fhir.uv.extensions.r4#5.3.0",
+                "org.grovealliance.fhir.mobile#0.6.0",
+                "org.grovealliance.fhir.sensor#0.6.0",
             ],
         )
         self.assertEqual(
             set(package["profiles"]),
             {"sensorkit-accelerometer-observation", "sensorkit-conversion-provenance", "sensorkit-device-usage-observation", "sensorkit-ecg-observation", "sensorkit-keyboard-metrics-observation", "sensorkit-messages-usage-observation", "sensorkit-observation", "sensorkit-on-wrist-observation", "sensorkit-phone-usage-observation", "sensorkit-ppg-observation", "sensorkit-recording-document", "sensorkit-sleep-session-observation", "sensorkit-visit-observation",
                 "sensorkit-wrist-temperature-observation"},
+        )
+        self.assertEqual(
+            self.catalog["sourceTypeExtension"],
+            {
+                "url": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-source-type",
+                "codeSystem": "https://grovealliance.org/fhir/sensorkit/CodeSystem/sensorkit-source-type",
+                "r4Element": "Observation.extension.valueCode or DocumentReference.extension.valueCode",
+                "cardinality": "exactly one",
+                "rule": "Every admitted SensorKit output states the exact sourceTypeCode from its one catalog entry.",
+            },
         )
 
     def test_current_platform_inventory_is_closed_and_scope_complete(self) -> None:
@@ -231,7 +241,7 @@ class SensorKitCatalogTests(unittest.TestCase):
             by_token["SRSensor.photoplethysmogram"]["status"], "platform-exclusive"
         )
         self.assertEqual(by_token["SRSensor.pedometerData"]["status"], "mapped-standard")
-        # Wrist temperature gained a platform-scoped structured contract in 0.5.0, so its
+        # Wrist temperature gained a platform-scoped structured contract in 0.6.0, so its
         # top-level status matches its siblings rather than claiming a recording document only.
         self.assertEqual(
             by_token["SRSensor.wristTemperature"]["status"], "platform-exclusive"
@@ -285,17 +295,28 @@ class SensorKitCatalogTests(unittest.TestCase):
     def test_business_identity_and_profile_claim_rules_are_closed(self) -> None:
         identity = self.catalog["identity"]
         self.assertEqual(
-            identity["sourceRecord"]["system"],
-            "https://grovealliance.org/fhir/sensorkit/NamingSystem/sensorkit-record-id",
+            identity["contract"],
+            "catalog/exchange-protocol.json",
         )
+        self.assertEqual(identity["protocolVersion"], 2)
+        self.assertEqual(identity["adapterId"], "sensorkit")
+        self.assertEqual(identity["sourceRecord"]["identityKind"], "source-record")
         self.assertEqual(
-            identity["output"]["system"],
-            "https://grovealliance.org/fhir/sensorkit/NamingSystem/sensorkit-output-id",
+            identity["sourceRecord"]["components"],
+            [
+                "adapter-id",
+                "source-type",
+                "repository-scope-system",
+                "repository-scope-value",
+                "native-record-id",
+            ],
         )
-        self.assertEqual(identity["output"]["separator"], "|")
-        self.assertEqual(identity["output"]["versionPrefix"], "v1")
-        self.assertNotIn("namespace", identity["output"])
-        self.assertIsNotNone(re.fullmatch(identity["valuePattern"], "879d9ea2-21cb-4527-b59b-2831dc4c84ab"))
+        self.assertIn("assigns and persists", identity["sourceRecord"]["nativeRecordRule"])
+        self.assertIn("measured values", identity["sourceRecord"]["nativeRecordRule"])
+        self.assertEqual(identity["sourceOutput"]["identityKind"], "source-output")
+        self.assertIn("length framing", identity["sourceOutput"]["outputDiscriminatorRule"])
+        self.assertIn("there is no fallback", identity["sourceOutput"]["outputDiscriminatorRule"])
+        self.assertEqual(identity["sourceArtifact"]["identityKind"], "source-artifact")
         self.assertIn("Resource.id is optional", identity["resourceIdPolicy"])
         self.assertIn("exactly two direct", self.catalog["profileClaims"]["sharedObservation"]["rule"])
         self.assertIn("exactly one direct", self.catalog["profileClaims"]["providerSpecificObservation"]["rule"])
@@ -307,26 +328,17 @@ class SensorKitCatalogTests(unittest.TestCase):
             provenance["profile"],
             self.catalog["profileClaims"]["conversionProvenance"]["profile"],
         )
-        self.assertEqual(
-            provenance["sourceIdentifierSystem"],
-            identity["sourceRecord"]["system"],
-        )
+        self.assertEqual(provenance["sourceIdentifierRole"], "source-record")
+        self.assertEqual(provenance["sourceIdentityKind"], "source-record")
         self.assertIn(
             self.catalog["profileClaims"]["recordingDocument"]["adapterProfile"],
             provenance["targetAdapterProfiles"],
         )
-        for vector in identity["output"]["vectors"]:
-            expected = None if "|" in vector["outputDiscriminator"] else (
-                "v1:" + "|".join(vector["components"])
-            )
-            self.assertEqual(expected, vector["identifierValue"])
-        # Quotes, backslashes and control characters need no escaping now: they travel verbatim.
-        verbatim = next(v for v in identity["output"]["vectors"] if "résumé" in v["outputDiscriminator"])
-        self.assertIsNotNone(verbatim["identifierValue"])
-        self.assertIn("résumé", verbatim["identifierValue"])
-        # Only the separator itself has no representation, and it is rejected rather than escaped.
-        edge = next(v for v in identity["output"]["vectors"] if v["identifierValue"] is None)
-        self.assertIn("|", edge["outputDiscriminator"])
+        recording_claim = self.claims["sensorKitRecordingDocumentClaim"]
+        self.assertEqual(
+            recording_claim["requiredIdentifierRoles"],
+            ["source-record", "source-output", "source-artifact"],
+        )
 
     def test_raw_payload_admission_is_explicit_and_fail_closed(self) -> None:
         admission = self.catalog["rawPayloadAdmission"]

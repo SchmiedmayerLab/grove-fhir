@@ -31,6 +31,7 @@ FIXTURE_FILES = (
     "health-connect/input/fsh/generated-measurement-profiles.fsh",
     "withings/input/fsh/generated-measurement-profiles.fsh",
     "oura/input/fsh/generated-measurement-profiles.fsh",
+    "google-health/input/fsh/generated-measurement-profiles.fsh",
 )
 
 
@@ -90,7 +91,21 @@ class MeasurementProfileProjectionTests(unittest.TestCase):
     def test_generated_profiles_are_current(self) -> None:
         code, output = self.run_renderer(ROOT, "--check")
         self.assertEqual(code, 0, output)
-        self.assertIn("221 emitted, 0 parity-checked, problems=0", output)
+        self.assertIn("222 emitted, 0 parity-checked, problems=0", output)
+
+    def test_quantity_domains_project_to_fhir_constraints(self) -> None:
+        mobile = (ROOT / "mobile/input/fsh/generated-measurement-profiles.fsh").read_text(
+            encoding="utf-8"
+        )
+        healthkit = (
+            ROOT / "healthkit/input/fsh/generated-measurement-profiles.fsh"
+        ).read_text(encoding="utf-8")
+        self.assertIn("* valueQuantity.value ^minValueDecimal = 0", mobile)
+        self.assertIn("* valueQuantity.value ^maxValueDecimal = 100", mobile)
+        self.assertIn("(value.ofType(Quantity).value mod 1) = 0", mobile)
+        self.assertIn("* valueQuantity.value ^minValueDecimal = -1", healthkit)
+        self.assertIn("* valueQuantity.value ^maxValueDecimal = 1", healthkit)
+        self.assertIn("(value.ofType(Quantity).value mod 1) = 0", healthkit)
 
     def test_projection_still_reproduces_hand_written_profiles(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

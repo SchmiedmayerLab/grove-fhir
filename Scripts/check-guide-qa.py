@@ -43,7 +43,7 @@ def finding_counts(
 ) -> FindingCounts:
     """Normalize Publisher's asymmetric treatment of ignored errors/warnings.
 
-    Publisher 2.3.2 removes ignored warnings and HTML-link errors from the JSON
+    Publisher 2.3.3 removes ignored warnings and HTML-link errors from the JSON
     totals, but keeps ignored resource-validation errors in ``qa.json.errs``. The
     HTML suppressed section is therefore the authoritative exact count for both
     severities. ``validate_suppressions`` separately requires each configured

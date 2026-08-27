@@ -6,10 +6,19 @@
 // SPDX-License-Identifier: MIT
 //
 
+CodeSystem: HealthKitIdentifierTypeCS
+Id: healthkit-identifier-type
+Title: "HealthKit Identifier Types"
+Description: "Identifier roles used only by the HealthKit adapter when a standard Identifier type does not express the source concept."
+* ^experimental = false
+* ^caseSensitive = true
+* ^content = #complete
+* #apple-bundle-id "Apple Bundle Identifier" "A clear Apple application product bundle identifier. It does not identify an installation, host, account, or person."
+
 CodeSystem: HealthKitMetadataKeyCS
 Id: healthkit-metadata-key
 Title: "HealthKit Metadata Keys"
-Description: "HealthKit metadata keys retained by Grove FHIR HealthKit 0.5.0 after standard FHIR mappings have been applied."
+Description: "HealthKit metadata keys retained by Grove FHIR HealthKit 0.6.0 after standard FHIR mappings have been applied."
 * ^experimental = false
 * ^caseSensitive = true
 * ^content = #complete
@@ -22,14 +31,14 @@ Description: "HealthKit metadata keys retained by Grove FHIR HealthKit 0.5.0 aft
 ValueSet: HealthKitMetadataKeyVS
 Id: healthkit-metadata-key
 Title: "HealthKit Metadata Keys"
-Description: "The HealthKit 0.5.0 allowlist of retained metadata keys. Each key maps to its published representation: a named Observation component, a named extension, or a named identifier slice."
+Description: "The HealthKit 0.6.0 allowlist of retained metadata keys. Each key maps to its published representation: a named Observation component, a named extension, or a named identifier slice."
 * ^experimental = false
 * include codes from system HealthKitMetadataKeyCS
 
 CodeSystem: HealthKitHeartRateMotionContextCS
 Id: healthkit-heart-rate-motion-context
 Title: "HealthKit Heart Rate Motion Context"
-Description: "Adapter codes for the HKHeartRateMotionContext raw values retained by Grove FHIR HealthKit 0.5.0. The mapping to HealthKit source cases is documented separately."
+Description: "Adapter codes for the HKHeartRateMotionContext raw values retained by Grove FHIR HealthKit 0.6.0. The mapping to HealthKit source cases is documented separately."
 * ^experimental = false
 * ^caseSensitive = true
 * ^content = #complete
@@ -41,7 +50,7 @@ Description: "Adapter codes for the HKHeartRateMotionContext raw values retained
 ValueSet: HealthKitHeartRateMotionContextVS
 Id: healthkit-heart-rate-motion-context
 Title: "HealthKit Heart Rate Motion Context"
-Description: "Motion contexts permitted by the HealthKit 0.5.0 heart-rate metadata mapping."
+Description: "Motion contexts permitted by the HealthKit 0.6.0 heart-rate metadata mapping."
 * ^experimental = false
 * include codes from system HealthKitHeartRateMotionContextCS
 
@@ -87,7 +96,7 @@ Description: "Exact HKElectrocardiogram.Classification cases retained on a lossl
 ValueSet: HealthKitECGClassificationVS
 Id: healthkit-ecg-classification
 Title: "HealthKit ECG Classification"
-Description: "The closed HealthKit ECG classification cases admitted by version 0.5.0."
+Description: "The closed HealthKit ECG classification cases admitted by version 0.6.0."
 * ^experimental = false
 * include codes from system HealthKitECGClassificationCS
 
@@ -106,7 +115,7 @@ Description: "Exact HKElectrocardiogram.SymptomsStatus cases retained on a lossl
 ValueSet: HealthKitECGSymptomsStatusVS
 Id: healthkit-ecg-symptoms-status
 Title: "HealthKit ECG Symptoms Status"
-Description: "The closed HealthKit ECG symptoms-status cases admitted by version 0.5.0."
+Description: "The closed HealthKit ECG symptoms-status cases admitted by version 0.6.0."
 * ^experimental = false
 * include codes from system HealthKitECGSymptomsStatusCS
 
@@ -127,7 +136,7 @@ Description: "Exact HKCategoryValueSeverity cases retained for a correlated Heal
 ValueSet: HealthKitSymptomSeverityVS
 Id: healthkit-symptom-severity
 Title: "HealthKit Symptom Severity"
-Description: "The closed HealthKit symptom severity cases admitted by version 0.5.0."
+Description: "The closed HealthKit symptom severity cases admitted by version 0.6.0."
 * ^experimental = false
 * include codes from system HealthKitSymptomSeverityCS
 
@@ -158,7 +167,7 @@ Description: "Exact HKAppleECGAlgorithmVersion cases retained when the HealthKit
 ValueSet: HealthKitECGAlgorithmVersionVS
 Id: healthkit-ecg-algorithm-version
 Title: "HealthKit ECG Algorithm Version"
-Description: "The closed Apple ECG algorithm versions admitted by version 0.5.0."
+Description: "The closed Apple ECG algorithm versions admitted by version 0.6.0."
 * ^experimental = false
 * include codes from system HealthKitECGAlgorithmVersionCS
 
@@ -230,7 +239,7 @@ Id: healthkit-clinical-fhir-release
 Title: "HealthKit Clinical FHIR Release"
 Description: "Every admitted pass-through payload FHIR release; HKFHIRRelease.unknown fails closed and is never emitted."
 * ^experimental = false
-* include codes from system HealthKitClinicalFHIRReleaseCS
+* HealthKitClinicalFHIRReleaseCS#r4 "R4"
 
 CodeSystem: HealthKitPresenceCS
 Id: healthkit-presence

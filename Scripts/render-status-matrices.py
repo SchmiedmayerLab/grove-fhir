@@ -68,6 +68,10 @@ def healthkit() -> str:
     catalog = load("healthkit-adapter.json")
     rows = []
     for item in catalog["rows"]:
+        requirement = item.get("requirement")
+        admission_contract = item.get("clinicalAdmissionContract")
+        if admission_contract is not None:
+            requirement = catalog[admission_contract]["rule"]
         rows.append(
             [
                 f"`{item['sourceTypeIdentifier']}`",
@@ -75,7 +79,7 @@ def healthkit() -> str:
                 f"`{item['status']}`",
                 ", ".join(item["measurementIDs"]),
                 profile_names(item["profiles"]),
-                item.get("requirement"),
+                requirement,
             ]
         )
     source = catalog["source"]
@@ -137,15 +141,26 @@ def healthkit() -> str:
 
 def health_connect() -> str:
     catalog = load("health-connect-adapter.json")
+    count_cardinalities = {
+        "exactly-one": "1",
+        "zero-or-one": "0..1",
+        "one-per-sample": "0..*; one per sample",
+        "one-per-stage": "0..*; one per stage",
+        "one-per-present-field": "0..*; one per present field",
+    }
     rows = []
     for item in catalog["recordTypes"]:
         outputs = []
         for output in item["outputs"]:
-            detail = f"{output['measurement']} ({output['cardinality']}"
+            if output["countRule"] == "graph-specific":
+                cardinality = catalog["graphRules"][output["graphRule"]][
+                    "shortCardinality"
+                ]
+            else:
+                cardinality = count_cardinalities[output["countRule"]]
+            detail = f"{output['measurement']} ({cardinality}"
             if output.get("when"):
                 detail += f"; {output['when']}"
-            if output.get("onePer"):
-                detail += f"; one per {output['onePer']}"
             outputs.append(detail + ")")
         rows.append(
             [

@@ -54,7 +54,7 @@ class MobileSemanticVectorTests(unittest.TestCase):
         )
         self.assertEqual(self.corpus["schemaVersion"], 1)
         self.assertEqual(self.corpus["fhirVersion"], "4.0.1")
-        self.assertEqual(self.corpus["version"], "0.5.0")
+        self.assertEqual(self.corpus["version"], "0.6.0")
         self.assertIn("execute no producer implementation", self.corpus["purpose"])
         expected = [
             measurement["id"]
@@ -134,14 +134,17 @@ class MobileSemanticVectorTests(unittest.TestCase):
                 vector["profile"],
                 f"{self.catalog['canonicalRoot']}/{measurement['profile']}",
             )
-            self.assertEqual(
-                vector["code"],
-                {
-                    key: measurement["code"][key]
-                    for key in ("system", "code")
-                    if key in measurement["code"]
-                },
-            )
+            expected_code = {
+                key: measurement["code"][key]
+                for key in ("system", "code")
+                if key in measurement["code"]
+            }
+            if measurement.get("requiredCodings"):
+                expected_code["requiredCodings"] = [
+                    {key: coding[key] for key in ("system", "code")}
+                    for coding in measurement["requiredCodings"]
+                ]
+            self.assertEqual(vector["code"], expected_code)
             self.assertEqual(vector["effective"]["type"], measurement["effective"])
             if measurement["effective"] == "Period":
                 self.assertLess(

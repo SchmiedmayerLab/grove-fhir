@@ -29,6 +29,7 @@ class FHIRFixtureCorpusTests(unittest.TestCase):
         }
         self.manifest = {
             "schemaVersion": 1,
+            "version": "0.6.0",
             "bases": [{"id": "heart-rate", "path": "base.json"}],
             "cases": [
                 {

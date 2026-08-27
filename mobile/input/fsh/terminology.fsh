@@ -17,6 +17,66 @@ Description: "The positively established mode by which a mobile source captured 
 * #actively-recorded "Actively recorded" "A person deliberately initiated or participated in recording the result."
 * #automatically-recorded "Automatically recorded" "The source recorded the result without a person initiating that individual measurement."
 
+CodeSystem: GroveIdentifierRoleCS
+Id: grove-identifier-role
+Title: "Grove Identifier Role"
+Description: "The semantic role of a complete Identifier pair in the Grove exchange protocol. The code selects identity semantics; the deployment-owned system selects the key space and key epoch."
+* ^experimental = false
+* ^caseSensitive = true
+* ^content = #complete
+* #source-record "Source record" "The exact source record revision from which an event was derived."
+* #source-output "Source output" "One exact output node derived from a source record, including its closed output discriminator."
+* #writer-record "Writer record" "The logical record identity assigned by the application that originally wrote the source record."
+* #source-artifact "Source artifact" "One exact preserved source payload or payload part."
+* #source-context "Source context" "A deployment-scoped opaque identity for a source-native concept or context node referenced by more than one source record."
+* #recording-device "Recording device" "A physical recording-device instance established by a stable per-unit token."
+* #device-snapshot "Device snapshot" "An immutable event-time application, host, firmware, software, or operating-system snapshot."
+* #event "Event" "One immutable active conversion or retraction event."
+* #entry-node "Entry node" "An event-scoped graph node that has no independent business identifier."
+
+ValueSet: GroveIdentifierRoleVS
+Id: grove-identifier-role
+Title: "Grove Identifier Role"
+Description: "Every typed Identifier role admitted by the Grove exchange protocol."
+* ^experimental = false
+* include codes from system GroveIdentifierRoleCS
+
+CodeSystem: GroveLifecycleEventCS
+Id: grove-lifecycle-event
+Title: "Grove Lifecycle Event"
+Description: "Grove-specific lifecycle assertions whose meaning is not a FHIR repository operation. Standard ISO 21089 transform remains the activity for active conversion Provenance."
+* ^experimental = false
+* ^caseSensitive = true
+* ^content = #complete
+* #source-record-retracted "Source record retracted" "The producer records that its source no longer exposes a previously converted record and identifies the exact prior outputs. This does not assert clinical error and does not instruct a FHIR server to delete them."
+
+ValueSet: GroveLifecycleEventVS
+Id: grove-lifecycle-event
+Title: "Grove Lifecycle Event"
+Description: "Lifecycle assertions defined by Grove rather than by a FHIR repository operation."
+* ^experimental = false
+* include codes from system GroveLifecycleEventCS
+
+CodeSystem: GroveRetractionTargetRoleCS
+Id: grove-retraction-target-role
+Title: "Grove Retraction Target Role"
+Description: "The closed roles a prior output may play in a source-derived graph targeted by a retraction assertion."
+* ^experimental = false
+* ^caseSensitive = true
+* ^content = #complete
+* #primary-output "Primary output" "The primary semantic output for the source record."
+* #source-artifact "Source artifact" "An exact source-preservation DocumentReference or payload part."
+* #child-output "Child output" "A sample, stage, workout segment, or other child output."
+* #specimen "Specimen" "A synthesized Specimen node used by a prior output."
+* #device-snapshot "Device snapshot" "An event-time Device snapshot that must be retired with the source-derived graph under receiver policy."
+
+ValueSet: GroveRetractionTargetRoleVS
+Id: grove-retraction-target-role
+Title: "Grove Retraction Target Role"
+Description: "Every graph role admitted on a Grove retraction target."
+* ^experimental = false
+* include codes from system GroveRetractionTargetRoleCS
+
 ValueSet: GroveRecordingMethodVS
 Id: grove-recording-method
 Title: "Grove Recording Method"
@@ -47,7 +107,7 @@ Description: "Source-neutral sleep stages admitted by the Grove Mobile sleep-sta
 * ^experimental = false
 * include codes from system GroveSleepStageCS
 
-// No ConceptMap is published for 0.3.0 because the potential HL7 PHR stepCount
+// No ConceptMap is published in this release because the potential HL7 PHR stepCount
 // target is not a stable package dependency. Any future mapping from
 // step-count-total to that target must be wider, never equal.
 

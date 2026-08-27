@@ -42,7 +42,7 @@ A vendor score is not comparable across vendors even when two vendors give it th
 A source graduates to its own adapter only when its profile shape genuinely diverges — its own evidence rules, identity contract, or resource structure — which is why HealthKit, SensorKit, and Health Connect are separate adapters and the connected providers all share this one.
 The vendor is never the axis of the adapter: the same company can ship data through several source APIs, and each API follows the contract of the adapter it arrives through.
 
-[`catalog/providers-adapter.json`](https://grovealliance.org/fhir/catalog/providers-adapter.json) is the authoritative v0.5.0 inventory.
+[`catalog/providers-adapter.json`](https://grovealliance.org/fhir/catalog/providers-adapter.json) is the authoritative v0.6.0 inventory.
 Every source type and consumed source element from the closed provider source catalogs has exactly one status.
 The catalog is a closed release contract, not a roadmap.
 

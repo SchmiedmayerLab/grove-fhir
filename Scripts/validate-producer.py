@@ -26,22 +26,57 @@ from decimal import Decimal, InvalidOperation, ROUND_HALF_EVEN
 from pathlib import Path, PurePosixPath
 from typing import Any
 
+try:
+    from Scripts.exchange_protocol import (
+        ENTRY_NODE_IDENTITY,
+        EVENT_IDENTITY,
+        HMAC_IDENTITY,
+        ExchangeProtocolError,
+        entry_full_url,
+        entry_node_identity,
+        require_absolute_uri,
+    )
+except ModuleNotFoundError:  # Direct `python Scripts/validate-producer.py` execution.
+    from exchange_protocol import (  # type: ignore[no-redef]
+        ENTRY_NODE_IDENTITY,
+        EVENT_IDENTITY,
+        HMAC_IDENTITY,
+        ExchangeProtocolError,
+        entry_full_url,
+        entry_node_identity,
+        require_absolute_uri,
+    )
+
 
 PACKAGE_ALIAS = re.compile(r"^[a-z][a-z0-9-]*$")
 PACKAGE_ID = re.compile(r"^[a-z0-9.-]+$")
+FHIR_ID = re.compile(r"^[A-Za-z0-9\-.]{1,64}$")
 GROVE_PROFILE = "https://grovealliance.org/fhir/"
 EXCHANGE_BUNDLE_PROFILE = (
     "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle"
 )
-ENTRY_IDENTIFIER_EXTENSION = (
-    "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-exchange-entry-identifier"
+RETRACTION_BUNDLE_PROFILE = (
+    "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-retraction-bundle"
 )
-ENTRY_UUID_NAMESPACE = uuid.UUID("a9a39cf1-c944-5d15-a3c2-c395969ea101")
+ENTRY_IDENTIFIER_EXTENSION = (
+    "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-exchange-entry-node-key"
+)
+IDENTIFIER_ROLE_SYSTEM = (
+    "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role"
+)
+LIFECYCLE_EVENT_SYSTEM = (
+    "https://grovealliance.org/fhir/mobile/CodeSystem/grove-lifecycle-event"
+)
+RETRACTION_TARGET_ROLE_EXTENSION = (
+    "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-retraction-target-role"
+)
+SOURCE_RECORD_RETRACTED = "source-record-retracted"
 VALIDATOR_FILE_EXTENSION = (
     "http://hl7.org/fhir/StructureDefinition/operationoutcome-file"
 )
 VALIDATOR_ATTEMPTS = 2
 VALIDATOR_LOG_LIMIT = 4000
+VALIDATOR_TIMEOUT_SECONDS = 180
 TOP_LEVEL_KEYS = {
     "schemaVersion",
     "fhirVersion",
@@ -53,6 +88,39 @@ TOP_LEVEL_KEYS = {
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 CATALOG_ROOT = REPOSITORY_ROOT / "catalog"
 FHIR_TOOL_HOME = REPOSITORY_ROOT / ".build" / "fhir-home"
+EXCHANGE_PROTOCOL = json.loads(
+    (CATALOG_ROOT / "exchange-protocol.json").read_text(encoding="utf-8")
+)
+ACTIVE_ENTRY_POLICY = EXCHANGE_PROTOCOL["lifecycle"]["active"][
+    "entryResourcePolicy"
+]
+ACTIVE_OUTPUT_RESOURCE_TYPES = frozenset(
+    ACTIVE_ENTRY_POLICY["outputResourceTypes"]
+)
+ACTIVE_SUPPORTING_RESOURCE_TYPES = frozenset(
+    ACTIVE_ENTRY_POLICY["supportingResourceTypes"]
+)
+ACTIVE_ENTRY_RESOURCE_TYPES = frozenset(
+    {
+        *ACTIVE_OUTPUT_RESOURCE_TYPES,
+        *ACTIVE_SUPPORTING_RESOURCE_TYPES,
+        ACTIVE_ENTRY_POLICY["lifecycleResourceType"],
+    }
+)
+RETRACTION_TARGET_CONTRACTS = EXCHANGE_PROTOCOL["lifecycle"]["retraction"][
+    "targetRoles"
+]
+RETRACTION_TARGET_ROLES = frozenset(RETRACTION_TARGET_CONTRACTS)
+REFERENCE_POLICY = EXCHANGE_PROTOCOL["referencePolicy"]
+# The normative protocol is the only priority authority. In particular, a Device snapshot is
+# the immutable event node and therefore outranks the same Device's stable physical-unit key.
+IDENTIFIER_PRIORITY = tuple(
+    EXCHANGE_PROTOCOL["entryIdentity"]["resourceIdentifierPriority"]
+)
+OPAQUE_IDENTIFIER_ROLES = frozenset(
+    identity["identifierRole"]
+    for identity in EXCHANGE_PROTOCOL["opaqueIdentity"]["identityKinds"]
+)
 # Read from the graph rather than restated: a literal here has to be remembered at every
 # release, and was left at 0.4.0 through the 0.5.0 bump.
 RELEASE_VERSION = json.loads(
@@ -69,193 +137,27 @@ REGISTRY_GENERATIONS = {
     )["formats"]
 }
 
+# Adapter package/profile membership is projected from the release graph. Keeping a second,
+# hand-written list here previously allowed a new profile to bypass package-presence checks.
+_PACKAGE_GRAPH = json.loads(
+    (CATALOG_ROOT / "package-graph.json").read_text(encoding="utf-8")
+)
+_MEASUREMENT_CATALOG = json.loads(
+    (CATALOG_ROOT / "measurement-catalog.json").read_text(encoding="utf-8")
+)
+MEASUREMENT_BY_PROFILE = {
+    f"https://grovealliance.org/fhir/{entry.get('owner', 'mobile')}"
+    f"/StructureDefinition/{entry['profile']}": entry
+    for entry in _MEASUREMENT_CATALOG["measurements"]
+}
+_NON_ADAPTER_SOURCES = {"mobile", "questionnaire", "sensor"}
 ADAPTER_PACKAGE_PROFILES = {
-    "org.grovealliance.fhir.sensorkit": {
-        "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-accelerometer-observation",
-        "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-conversion-provenance",
-        "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-device-usage-observation",
-        "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-ecg-observation",
-        "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-keyboard-metrics-observation",
-        "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-messages-usage-observation",
-        "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-observation",
-        "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-on-wrist-observation",
-        "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-phone-usage-observation",
-        "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-ppg-observation",
-        "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-recording-document",
-        "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-sleep-session-observation",
-        "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-visit-observation",
-        "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-wrist-temperature-observation",
-    },
-    "org.grovealliance.fhir.healthkit": {
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-apple-exercise-time",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-apple-move-time",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-apple-stand-hour",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-apple-stand-time",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-atrial-fibrillation-burden",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-bladder-incontinence",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-bleeding-after-pregnancy",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-bleeding-during-pregnancy",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-blood-alcohol-content",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-biological-sex",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-blood-type",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-contraceptive-use",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-conversion-provenance",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-cycling-functional-threshold-power",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-date-of-birth",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-observation",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-environmental-audio-exposure",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-environmental-audio-exposure-notification",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-environmental-sound-reduction",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-fitzpatrick-skin-type",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-forced-expiratory-volume-1",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-forced-vital-capacity",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-gad7-assessment",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-handwashing-session",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-headphone-audio-exposure",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-headphone-audio-exposure-notification",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-heart-rate-recovery-one-minute",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-high-heart-rate-notification",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-infrequent-menstrual-cycles",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-inhaler-usage",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-insulin-delivery",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-irregular-heart-rhythm-notification",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-irregular-menstrual-cycles",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-lactation-status",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-low-cardio-fitness-notification",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-low-heart-rate-notification",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-medication-dose-event",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-number-of-alcoholic-beverages",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-number-of-times-fallen",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-observation",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-peak-expiratory-flow-rate",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-peripheral-perfusion-index",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-persistent-intermenstrual-bleeding",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-phq9-assessment",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-physical-effort",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-pregnancy-status",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-pregnancy-test-result",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-progesterone-test-result",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-prolonged-menstrual-periods",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-running-ground-contact-time",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-running-stride-length",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-running-vertical-oscillation",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-six-minute-walk-test-distance",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-hypertension-notification",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-audiogram-panel",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-food-correlation",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-recording-document",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-sleep-apnea-notification",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-sleeping-breathing-disturbances",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-stair-ascent-speed",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-stair-descent-speed",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-state-of-mind",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-swimming-stroke-count",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-abdominal-cramps",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-acne",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-appetite-changes",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-bloating",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-breast-pain",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-chest-tightness-or-pain",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-chills",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-constipation",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-coughing",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-diarrhea",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-dizziness",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-dry-skin",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-fainting",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-fatigue",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-fever",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-generalized-body-ache",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-hair-loss",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-headache",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-heartburn",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-hot-flashes",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-loss-of-smell",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-loss-of-taste",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-lower-back-pain",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-memory-lapse",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-mood-changes",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-nausea",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-night-sweats",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-pelvic-pain",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-rapid-pounding-or-fluttering-heartbeat",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-runny-nose",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-shortness-of-breath",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-sinus-congestion",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-skipped-heartbeat",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-sleep-changes",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-sore-throat",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-vomiting",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-wheezing",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-time-in-daylight",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-toothbrushing-session",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-underwater-depth",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-user-annotated-medication",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-uv-exposure",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-vaginal-dryness",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-vision-prescription",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-waist-circumference",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-walking-asymmetry",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-walking-double-support",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-walking-heart-rate-average",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-walking-speed",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-walking-steadiness",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-walking-steadiness-notification",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-walking-step-length",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-water-temperature",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-wheelchair-use",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-workout-effort-score"
-    },
-    "org.grovealliance.fhir.health-connect": {
-        "https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-basal-metabolic-rate",
-        "https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-capillary-blood-glucose",
-        "https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-conversion-provenance",
-        "https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-dietary-energy-from-fat",
-        "https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-dietary-fat-trans",
-        "https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-dietary-fat-unsaturated",
-        "https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-dietary-folic-acid",
-        "https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-elevation-gained",
-        "https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-interstitial-glucose",
-        "https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-menstruation-period",
-        "https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-observation",
-        "https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-serum-plasma-glucose",
-        "https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-specimen",
-        "https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-step-cadence",
-        "https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-total-energy",
-        "https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-whole-blood-glucose",
-    },
-    "org.grovealliance.fhir.providers": {
-        "https://grovealliance.org/fhir/providers/StructureDefinition/providers-conversion-provenance",
-        "https://grovealliance.org/fhir/providers/StructureDefinition/providers-observation",
-        "https://grovealliance.org/fhir/providers/StructureDefinition/providers-recording-document",
-    },
-    "org.grovealliance.fhir.withings": {
-        "https://grovealliance.org/fhir/withings/StructureDefinition/withings-atrial-fibrillation-notification-ecg",
-        "https://grovealliance.org/fhir/withings/StructureDefinition/withings-atrial-fibrillation-notification-ppg",
-        "https://grovealliance.org/fhir/withings/StructureDefinition/withings-body-fat-mass",
-        "https://grovealliance.org/fhir/withings/StructureDefinition/withings-corrected-qt-interval",
-        "https://grovealliance.org/fhir/withings/StructureDefinition/withings-extracellular-water-mass",
-        "https://grovealliance.org/fhir/withings/StructureDefinition/withings-intracellular-water-mass",
-        "https://grovealliance.org/fhir/withings/StructureDefinition/withings-muscle-mass",
-        "https://grovealliance.org/fhir/withings/StructureDefinition/withings-nerve-health-score",
-        "https://grovealliance.org/fhir/withings/StructureDefinition/withings-observation",
-        "https://grovealliance.org/fhir/withings/StructureDefinition/withings-pr-interval",
-        "https://grovealliance.org/fhir/withings/StructureDefinition/withings-pulse-wave-velocity",
-        "https://grovealliance.org/fhir/withings/StructureDefinition/withings-qrs-duration",
-        "https://grovealliance.org/fhir/withings/StructureDefinition/withings-qt-interval",
-        "https://grovealliance.org/fhir/withings/StructureDefinition/withings-sleeping-heart-rate-average",
-        "https://grovealliance.org/fhir/withings/StructureDefinition/withings-vascular-age",
-        "https://grovealliance.org/fhir/withings/StructureDefinition/withings-visceral-fat-index",
-    },
-    "org.grovealliance.fhir.oura": {
-        "https://grovealliance.org/fhir/oura/StructureDefinition/oura-cardiovascular-age",
-        "https://grovealliance.org/fhir/oura/StructureDefinition/oura-observation",
-        "https://grovealliance.org/fhir/oura/StructureDefinition/oura-readiness-score",
-    },
-    "org.grovealliance.fhir.google-health": {
-        "https://grovealliance.org/fhir/google-health/StructureDefinition/google-health-observation",
-    },
+    package["packageId"]: {
+        f"{package['canonical']}/StructureDefinition/{profile}"
+        for profile in package["profiles"]
+    }
+    for package in _PACKAGE_GRAPH["packages"]
+    if package["source"] not in _NON_ADAPTER_SOURCES
 }
 KNOWN_ADAPTER_PROFILES = {
     profile
@@ -274,9 +176,17 @@ SENSOR_RECORDING_PROFILE = (
     "https://grovealliance.org/fhir/sensor/StructureDefinition/"
     "grove-sensor-recording-document"
 )
-HEALTHKIT_ECG_PROFILE = (
+RECORDING_DOCUMENT_PROFILE_TAIL = "-recording-document"
+HEALTHKIT_PROFILE_PREFIX = (
     "https://grovealliance.org/fhir/healthkit/StructureDefinition/"
-    "healthkit-ecg-observation"
+)
+HEALTHKIT_OBSERVATION_PROFILE = HEALTHKIT_PROFILE_PREFIX + "healthkit-observation"
+HEALTHKIT_RECORDING_PROFILE = HEALTHKIT_PROFILE_PREFIX + "healthkit-recording-document"
+HEALTHKIT_CLINICAL_RECORD_PROFILE = (
+    HEALTHKIT_PROFILE_PREFIX + "healthkit-clinical-record-document"
+)
+HEALTHKIT_ECG_PROFILE = (
+    HEALTHKIT_PROFILE_PREFIX + "healthkit-ecg-observation"
 )
 SAMPLED_DECIMAL = re.compile(r"-?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?")
 FHIR_INSTANT = re.compile(
@@ -287,8 +197,99 @@ FHIR_INSTANT = re.compile(
 )
 
 
+PRODUCER_RULE_REASONS = {
+    "mobile-exchange.entry-node-key":
+        "Every Bundle entry must carry exactly one complete Grove exchange entry node key.",
+    "mobile-exchange.deterministic-full-url":
+        "Bundle.entry.fullUrl must be the UUID version 5 value derived from its complete entry identifier.",
+    "mobile-exchange.resolved-reference":
+        "Every internal UUID URN reference must resolve to a Bundle entry fullUrl.",
+    "mobile-exchange.event-identity":
+        "Bundle.identifier.value must be the canonical e2 producer UUID and positive sequence form.",
+    "mobile-exchange.entry-node-digest":
+        "An entry-node digest must be derived from the enclosing event identifier, role, and ordinal.",
+    "mobile-output.source-output-required":
+        "Every active clinical output must carry its exact typed source-output identity in addition to source-record identity.",
+    "mobile-exchange.transform-provenance":
+        "An active event must contain exactly one transform Provenance and no retraction Provenance.",
+    "mobile-retraction.logical-target":
+        "A retraction target must be a typed logical Reference without a literal reference.",
+    "mobile-retraction.target-role":
+        "Every retraction target must carry exactly one closed Grove target-role code.",
+    "mobile-retraction.opaque-target":
+        "A retraction target must use the exact canonical v2 HMAC identity previously emitted.",
+    "mobile-retraction.no-clinical-copy":
+        "A retraction event contains its lifecycle Provenance and optional Device agents, never a copied or mutilated clinical resource.",
+    "mobile-exchange.lifecycle-coding":
+        "A lifecycle Provenance must carry exactly one coding across the ISO transform and Grove retraction lifecycle systems; translations from other systems remain open.",
+    "mobile-output.semantic-profile":
+        "Every active Observation must directly claim one admitted Grove semantic profile shape; an empty claim cannot bypass semantic validation.",
+    "mobile-exchange.reference-target-type":
+        "An Observation subject resolves to a Patient entry, not merely to any existing fullUrl.",
+    "mobile-exchange.reference-declared-type":
+        "When Reference.type is present it must equal the referenced entry's actual resourceType token.",
+    "mobile-exchange.logical-source-entity":
+        "Lifecycle Provenance carries exactly one logical source-record Identifier entity and never a literal source Reference.",
+    "mobile-retraction.role-target-type":
+        "Every retraction target role fixes its admitted resource type and Identifier role.",
+    "mobile-exchange.single-source-entity":
+        "A lifecycle Provenance identifies exactly one source-record entity.",
+    "mobile-exchange.reference-shape":
+        "A governed Reference is exclusively resolving-literal or identifier-only logical, never both.",
+    "mobile-exchange.logical-patient-reference":
+        "An identifier-only logical Patient Reference carries the exact Patient type and one complete absolute-system pseudonym Identifier.",
+    "mobile-output.adapter-only-profile":
+        "An adapter-only active output type must directly claim exactly its one admitted adapter profile.",
+    "mobile-exchange.entry-resource-type":
+        "An active event admits only its closed output, supporting, and lifecycle resource type set.",
+    "mobile-exchange.contained-resource-prohibited":
+        "Mobile exchange events prohibit contained resources; every graph node must be an addressable Bundle entry.",
+    "mobile-output.document-profile":
+        "Every active DocumentReference must directly claim exactly one admitted recording or clinical-document profile mode.",
+    "mobile-support.device-profile":
+        "Every active Device must directly claim exactly one admitted Grove Device profile mode.",
+    "mobile-support.connected":
+        "Every supporting resource must be connected to an output or the lifecycle Provenance.",
+    "mobile-exchange.provenance-profile":
+        "The sole active lifecycle Provenance must directly claim exactly one admitted Mobile or adapter conversion profile.",
+}
+
+
 class ProducerValidationError(ValueError):
-    """A deterministic producer-contract validation failure."""
+    """A deterministic producer-contract validation failure with an optional rule diagnostic."""
+
+    def __init__(
+        self,
+        message: str,
+        *,
+        code: str | None = None,
+        reason: str | None = None,
+        location: str | None = None,
+        severity: str = "error",
+    ) -> None:
+        super().__init__(message)
+        self.diagnostic = None if code is None else {
+            "code": code,
+            "reason": reason if reason is not None else PRODUCER_RULE_REASONS[code],
+            "location": location,
+            "severity": severity,
+        }
+
+
+def contract_failure(
+    code: str,
+    location: str,
+    message: str,
+    *,
+    reason: str | None = None,
+) -> ProducerValidationError:
+    """Construct one machine-comparable producer diagnostic without replacing human detail."""
+    return ProducerValidationError(
+        message,
+        code=code,
+        reason=reason,
+        location=location,
+    )
 
 
 def unlinked_path(path: Path, label: str) -> Path:
@@ -466,6 +467,19 @@ def mobile_semantic_projection(
         raise ProducerValidationError(
             f"{label} must contain exactly one normalized semantic code"
         )
+    for required_coding in expected_code.get("requiredCodings", []):
+        required_matches = [
+            coding
+            for coding in codings
+            if isinstance(coding, dict)
+            and coding.get("system") == required_coding["system"]
+            and coding.get("code") == required_coding["code"]
+        ]
+        if len(required_matches) != 1:
+            raise ProducerValidationError(
+                f"{label} must contain exactly one required profile coding "
+                f"{required_coding['system']}#{required_coding['code']}"
+            )
 
     expected_effective = vector["effective"]
     if expected_effective["type"] == "dateTime":
@@ -599,6 +613,164 @@ def all_references(value: Any) -> list[str]:
     return references
 
 
+def all_reference_nodes(value: Any) -> list[dict[str, Any]]:
+    """Return every Reference-shaped object carrying a literal reference."""
+    nodes: list[dict[str, Any]] = []
+    if isinstance(value, dict):
+        if isinstance(value.get("reference"), str):
+            nodes.append(value)
+        for child in value.values():
+            nodes.extend(all_reference_nodes(child))
+    elif isinstance(value, list):
+        for child in value:
+            nodes.extend(all_reference_nodes(child))
+    return nodes
+
+
+def all_reference_nodes_with_paths(
+    value: Any, path: str = ""
+) -> list[tuple[str, dict[str, Any]]]:
+    """Return literal Reference-shaped objects with stable FHIR-style element paths."""
+    nodes: list[tuple[str, dict[str, Any]]] = []
+    if isinstance(value, dict):
+        if isinstance(value.get("reference"), str):
+            nodes.append((path, value))
+        for key, child in value.items():
+            child_path = f"{path}.{key}" if path else key
+            nodes.extend(all_reference_nodes_with_paths(child, child_path))
+    elif isinstance(value, list):
+        for index, child in enumerate(value):
+            nodes.extend(all_reference_nodes_with_paths(child, f"{path}[{index}]"))
+    return nodes
+
+
+def reference_target(
+    reference: dict[str, Any],
+    resources_by_full_url: dict[str, dict[str, Any]],
+    label: str,
+) -> dict[str, Any] | None:
+    """Resolve one literal reference and enforce an exact declared resource type."""
+    literal = reference.get("reference")
+    if not isinstance(literal, str):
+        return None
+    target = resources_by_full_url.get(literal)
+    if not isinstance(target, dict):
+        raise ProducerValidationError(f"{label} does not resolve inside its exchange graph")
+    actual_type = target.get("resourceType")
+    declared_type = reference.get("type")
+    if declared_type is not None and declared_type != actual_type:
+        raise contract_failure(
+            "mobile-exchange.reference-declared-type",
+            f"{label}.type",
+            f"{label}.type must equal the referenced resource type {actual_type}",
+        )
+    return target
+
+
+def validate_governed_reference(
+    reference: dict[str, Any],
+    allowed: set[str],
+    resources_by_full_url: dict[str, dict[str, Any]],
+    label: str,
+) -> None:
+    """Validate the protocol's exclusive literal-or-logical Reference shape."""
+    literal = reference.get("reference")
+    identifier = reference.get("identifier")
+    if isinstance(literal, str):
+        if identifier is not None:
+            raise contract_failure(
+                "mobile-exchange.reference-shape",
+                label,
+                f"{label} must not mix a resolving literal with a logical identifier",
+            )
+        target = reference_target(reference, resources_by_full_url, label)
+        if target is not None and target.get("resourceType") not in allowed:
+            if label == "Observation.subject":
+                raise contract_failure(
+                    "mobile-exchange.reference-target-type",
+                    "Observation.subject.reference",
+                    f"{label} must reference " + " or ".join(sorted(allowed)),
+                )
+            raise ProducerValidationError(
+                f"{label} must reference " + " or ".join(sorted(allowed))
+            )
+        return
+    if literal is not None:
+        raise ProducerValidationError(f"{label}.reference must be a string when present")
+    complete_identifier(identifier, f"{label}.identifier")
+    declared_type = reference.get("type")
+    if declared_type not in allowed:
+        if label == "Observation.subject":
+            raise contract_failure(
+                "mobile-exchange.logical-patient-reference",
+                "Observation.subject",
+                f"{label} logical reference type must be "
+                + " or ".join(sorted(allowed)),
+            )
+        raise ProducerValidationError(
+            f"{label} logical reference type must be " + " or ".join(sorted(allowed))
+        )
+
+
+def reference_values_at_path(resource: dict[str, Any], path: str) -> list[dict[str, Any]]:
+    value = resource.get(path)
+    if isinstance(value, dict):
+        return [value]
+    if isinstance(value, list):
+        return [item for item in value if isinstance(item, dict)]
+    return []
+
+
+def all_extensions(value: Any) -> list[dict[str, Any]]:
+    """Return extensions recursively so governed Reference extensions cannot hide."""
+    extensions: list[dict[str, Any]] = []
+    if isinstance(value, dict):
+        nested = value.get("extension")
+        if isinstance(nested, list):
+            extensions.extend(item for item in nested if isinstance(item, dict))
+        for child in value.values():
+            extensions.extend(all_extensions(child))
+    elif isinstance(value, list):
+        for child in value:
+            extensions.extend(all_extensions(child))
+    return extensions
+
+
+def validate_reference_policy(
+    resource: dict[str, Any],
+    resources_by_full_url: dict[str, dict[str, Any]],
+    label: str,
+) -> None:
+    """Enforce the protocol's closed internal-reference target-type table."""
+    resource_type = resource.get("resourceType")
+    for rule in REFERENCE_POLICY["paths"]:
+        if rule["resourceType"] != resource_type:
+            continue
+        allowed = set(rule["targetTypes"])
+        for reference in reference_values_at_path(resource, rule["path"]):
+            validate_governed_reference(
+                reference,
+                allowed,
+                resources_by_full_url,
+                f"{resource_type}.{rule['path']}",
+            )
+    extension_rules = {
+        rule["url"]: set(rule["targetTypes"])
+        for rule in REFERENCE_POLICY["extensionTargets"]
+    }
+    for index, extension in enumerate(all_extensions(resource)):
+        allowed = extension_rules.get(extension.get("url"))
+        reference = extension.get("valueReference")
+        if allowed is None or not isinstance(reference, dict):
+            continue
+        validate_governed_reference(
+            reference,
+            allowed,
+            resources_by_full_url,
+            f"{label}.extension[{index}].valueReference",
+        )
+
+
 def complete_identifier(value: Any, label: str) -> tuple[str, str]:
     if not isinstance(value, dict):
         raise ProducerValidationError(f"{label} must be an Identifier")
@@ -606,6 +778,10 @@ def complete_identifier(value: Any, label: str) -> tuple[str, str]:
     identifier_value = value.get("value")
     if not isinstance(system, str) or not system or not isinstance(identifier_value, str) or not identifier_value:
         raise ProducerValidationError(f"{label} must have a complete system and value")
+    try:
+        require_absolute_uri(system, f"{label}.system")
+    except ExchangeProtocolError as error:
+        raise ProducerValidationError(str(error)) from error
     return system, identifier_value
 
 
@@ -636,11 +812,7 @@ def canonical_json_string(value: str) -> str:
 
 
 def canonical_identifier_name(system: str, value: str) -> str:
-    """Return the UUID-v5 name for one identifier: the system, a vertical bar, then the value."""
-    if "|" in system:
-        raise ProducerValidationError(
-            "an identifier system must not contain a vertical bar, so the name splits at the first one"
-        )
+    """Return a readable diagnostic form; fullUrl derivation uses framed UTF-8 fields."""
     for text in (system, value):
         if any(0xD800 <= ord(character) <= 0xDFFF for character in text):
             raise ProducerValidationError("identifier contains an invalid Unicode surrogate")
@@ -655,8 +827,82 @@ def canonical_string_array(values: list[str]) -> str:
 
 
 def expected_entry_full_url(system: str, value: str) -> str:
-    name = canonical_identifier_name(system, value)
-    return f"urn:uuid:{uuid.uuid5(ENTRY_UUID_NAMESPACE, name)}"
+    try:
+        return entry_full_url(system, value)
+    except ValueError as error:
+        raise ProducerValidationError(str(error)) from error
+
+
+def identifier_role(identifier: Any, label: str) -> str:
+    """Read exactly one Grove role Coding from a complete Identifier."""
+    complete_identifier(identifier, label)
+    codings = identifier.get("type", {}).get("coding", [])
+    matches = [
+        coding.get("code")
+        for coding in codings
+        if isinstance(coding, dict)
+        and coding.get("system") == IDENTIFIER_ROLE_SYSTEM
+        and isinstance(coding.get("code"), str)
+    ] if isinstance(codings, list) else []
+    if len(matches) != 1:
+        raise ProducerValidationError(
+            f"{label} must carry exactly one Grove identifier-role Coding"
+        )
+    return matches[0]
+
+
+def typed_resource_identifiers(resource: dict[str, Any], label: str) -> dict[str, tuple[str, str]]:
+    """Return the resource's unique typed Grove business identifiers by role."""
+    identifiers = resource.get("identifier", [])
+    if identifiers is None:
+        return {}
+    # R4 uses Identifier 0..1 on resources such as QuestionnaireResponse and Bundle,
+    # while most exchange output/support resources use Identifier 0..*. Normalize the
+    # wire cardinality here so a legitimate singular non-Grove identifier cannot make an
+    # otherwise governed QuestionnaireResponse fail before its profile claim is checked.
+    if isinstance(identifiers, dict):
+        identifiers = [identifiers]
+    elif not isinstance(identifiers, list):
+        raise ProducerValidationError(
+            f"{label}.identifier must be an Identifier or Identifier array"
+        )
+    result: dict[str, tuple[str, str]] = {}
+    for index, identifier in enumerate(identifiers):
+        if not isinstance(identifier, dict):
+            raise ProducerValidationError(f"{label}.identifier[{index}] must be an Identifier")
+        codings = identifier.get("type", {}).get("coding", [])
+        roles = [
+            coding.get("code")
+            for coding in codings
+            if isinstance(coding, dict)
+            and coding.get("system") == IDENTIFIER_ROLE_SYSTEM
+            and isinstance(coding.get("code"), str)
+        ] if isinstance(codings, list) else []
+        if not roles:
+            continue
+        if len(roles) != 1 or roles[0] not in OPAQUE_IDENTIFIER_ROLES:
+            raise ProducerValidationError(
+                f"{label}.identifier[{index}] has an unknown or repeated Grove identifier role"
+            )
+        role = roles[0]
+        if role in result:
+            raise ProducerValidationError(f"{label} repeats the {role} identifier role")
+        pair = complete_identifier(identifier, f"{label}.identifier[{index}]")
+        if HMAC_IDENTITY.fullmatch(pair[1]) is None:
+            raise ProducerValidationError(
+                f"{label}.identifier[{index}] is not a canonical Grove v2 HMAC identity"
+            )
+        result[role] = pair
+    return result
+
+
+def selected_entry_identifier(resource: dict[str, Any], label: str) -> tuple[str, tuple[str, str]] | None:
+    """Select the deterministic resource business identifier required by protocol v2."""
+    by_role = typed_resource_identifiers(resource, label)
+    for role in IDENTIFIER_PRIORITY:
+        if role in by_role:
+            return role, by_role[role]
+    return None
 
 
 def adapter_profile_contract() -> tuple[set[str], set[str]]:
@@ -677,12 +923,65 @@ def adapter_profile_contract() -> tuple[set[str], set[str]]:
     return shared, adapters
 
 
+def validate_quantity_value_domain(
+    resource: dict[str, Any], label: str, semantic_profile: str
+) -> None:
+    """Enforce a reviewed representational domain without inventing clinical ranges."""
+    measurement = MEASUREMENT_BY_PROFILE.get(semantic_profile)
+    quantity_contract = measurement.get("quantity") if measurement else None
+    domain = (
+        quantity_contract.get("valueDomain")
+        if isinstance(quantity_contract, dict)
+        else None
+    )
+    if not isinstance(domain, dict):
+        return
+    quantity = resource.get("valueQuantity")
+    if not isinstance(quantity, dict) or quantity.get("value") is None:
+        return
+    raw_value = quantity["value"]
+    if isinstance(raw_value, bool) or not isinstance(raw_value, (int, float, Decimal)):
+        raise ProducerValidationError(f"{label}.valueQuantity.value must be a number")
+    try:
+        value = Decimal(str(raw_value))
+    except InvalidOperation as error:
+        raise ProducerValidationError(
+            f"{label}.valueQuantity.value is not a finite decimal"
+        ) from error
+    if not value.is_finite():
+        raise ProducerValidationError(
+            f"{label}.valueQuantity.value is not a finite decimal"
+        )
+    for name, lower in (("minimum", True), ("maximum", False)):
+        boundary = domain.get(name)
+        if not isinstance(boundary, dict):
+            continue
+        expected = Decimal(str(boundary["value"]))
+        admitted = (
+            value >= expected if lower and boundary["inclusive"]
+            else value > expected if lower
+            else value <= expected if boundary["inclusive"]
+            else value < expected
+        )
+        if not admitted:
+            relation = "minimum" if lower else "maximum"
+            qualifier = "inclusive" if boundary["inclusive"] else "exclusive"
+            raise ProducerValidationError(
+                f"{label}.valueQuantity.value violates the {qualifier} {relation} "
+                f"{boundary['value']} for {measurement['id']}"
+            )
+    if domain["integerOnly"] and value != value.to_integral_value():
+        raise ProducerValidationError(
+            f"{label}.valueQuantity.value must be an integer for {measurement['id']}"
+        )
+
+
 def validate_adapter_profile_claim(
     resource: dict[str, Any],
     label: str,
     active_adapter_profiles: set[str] | None = None,
 ) -> None:
-    """Require an adapter Observation to claim exactly shared metric + adapter."""
+    """Require an explicitly claimed adapter Observation to claim shared + adapter."""
     if resource.get("resourceType") != "Observation":
         return
     profiles = resource.get("meta", {}).get("profile", [])
@@ -698,10 +997,6 @@ def validate_adapter_profile_claim(
                 f"{label} claims an adapter profile whose exact package is absent: "
                 + ", ".join(sorted(inactive))
             )
-        if claimed_shared and active_adapter_profiles and not claimed_adapters:
-            raise ProducerValidationError(
-                f"{label} shared Observation is missing the applicable adapter profile"
-            )
     if not claimed_adapters:
         return
     if (
@@ -714,6 +1009,335 @@ def validate_adapter_profile_claim(
             f"{label} adapter Observation must claim exactly one shared semantic profile "
             "and exactly one adapter profile"
         )
+
+
+def validate_active_observation_profile_claim(
+    resource: dict[str, Any],
+    label: str,
+    active_adapter_profiles: set[str] | None,
+) -> None:
+    """Reject unprofiled or arbitrarily profiled active Observation outputs."""
+    if resource.get("resourceType") != "Observation":
+        return
+    profiles = resource.get("meta", {}).get("profile", [])
+    if (
+        not isinstance(profiles, list)
+        or not profiles
+        or any(not isinstance(profile, str) for profile in profiles)
+        or len(profiles) != len(set(profiles))
+    ):
+        raise contract_failure(
+            "mobile-output.semantic-profile",
+            "Observation.meta.profile",
+            f"{label} active Observation must carry a non-repeated direct profile claim",
+        )
+    claims = read_json(CATALOG_ROOT / "profile-claims.json")
+    direct = set(profiles)
+    healthkit_single = set(
+        claims["healthKitSingleProfileObservationClaims"]["profiles"]
+    )
+    if len(direct) == 1 and direct <= healthkit_single:
+        validate_quantity_value_domain(resource, label, next(iter(direct)))
+        return
+    health_connect_exclusive = set(
+        claims["healthConnectPlatformExclusiveClaims"]["profiles"]
+    )
+    if len(direct) == 1 and direct <= health_connect_exclusive:
+        validate_quantity_value_domain(resource, label, next(iter(direct)))
+        return
+    platform_exclusive = set(claims["sensorKitPlatformExclusiveClaims"]["profiles"])
+    if len(direct) == 1 and direct <= platform_exclusive:
+        return
+    hybrid = set(claims["sensorKitHybridObservationClaims"]["profiles"])
+    if direct == hybrid:
+        return
+    shared_profiles, adapter_profiles = adapter_profile_contract()
+    shared = direct & shared_profiles
+    adapters = direct & adapter_profiles
+    expected = shared | adapters
+    if len(shared) != 1 or direct != expected:
+        raise ProducerValidationError(
+            f"{label} active Observation must claim exactly one admitted shared semantic "
+            "profile and no arbitrary direct profile"
+        )
+    validate_quantity_value_domain(resource, label, next(iter(shared)))
+    if adapters and len(adapters) != 1:
+        raise ProducerValidationError(
+            f"{label} active Observation must claim at most one adapter profile"
+        )
+    if active_adapter_profiles is not None and adapters:
+        if len(adapters) != 1 or not adapters <= active_adapter_profiles:
+            raise ProducerValidationError(
+                f"{label} active Observation claims a profile from an absent adapter package"
+            )
+
+
+def validate_active_adapter_only_output_profile_claim(
+    resource: dict[str, Any], label: str
+) -> None:
+    """Reject source-neutral or unprofiled use of adapter-only active output types."""
+    claims = read_json(CATALOG_ROOT / "profile-claims.json")
+    specimen = claims["healthConnectSpecimenClaim"]
+    expected_by_type = {
+        specimen["resourceType"]: specimen["profile"],
+        **{
+            claim["resourceType"]: claim["profile"]
+            for claim in claims["healthKitPlatformExclusiveResourceClaims"]
+        },
+    }
+    expected = expected_by_type.get(resource.get("resourceType"))
+    if expected is None:
+        return
+    profiles = resource.get("meta", {}).get("profile", [])
+    if profiles != [expected]:
+        raise contract_failure(
+            "mobile-output.adapter-only-profile",
+            f"{resource.get('resourceType')}.meta.profile",
+            f"{label} active {resource.get('resourceType')} must directly claim exactly "
+            f"its adapter-only profile {expected}",
+        )
+
+
+def validate_active_document_reference_profile_claim(
+    resource: dict[str, Any], label: str
+) -> None:
+    """Require every active source artifact to match one exact document claim mode."""
+    if resource.get("resourceType") != "DocumentReference":
+        return
+    claims = read_json(CATALOG_ROOT / "profile-claims.json")
+    admitted = [
+        claims["sensorRecordingDocumentClaim"],
+        claims["healthKitRecordingDocumentClaim"],
+        claims["healthKitClinicalRecordDocumentClaim"],
+        claims["sensorKitRecordingDocumentClaim"],
+        claims["providerRecordingDocumentClaim"],
+    ]
+    profiles = resource.get("meta", {}).get("profile", [])
+    matches = [
+        claim
+        for claim in admitted
+        if (
+            isinstance(profiles, list)
+            and len(profiles) == claim["cardinality"]
+            and len(profiles) == len(set(profiles))
+            and set(profiles) == set(claim["profiles"])
+        )
+    ]
+    if len(matches) != 1:
+        raise contract_failure(
+            "mobile-output.document-profile",
+            "DocumentReference.meta.profile",
+            f"{label} active DocumentReference must directly claim exactly one "
+            "admitted recording or clinical-document profile mode",
+        )
+    typed = typed_resource_identifiers(resource, label)
+    required = set(matches[0]["requiredIdentifierRoles"])
+    unexpected = set(typed) - required - {"writer-record"}
+    if required - set(typed) or unexpected:
+        raise ProducerValidationError(
+            f"{label} active DocumentReference has invalid identifier roles"
+        )
+
+
+def validate_exchange_supporting_profile_claim(
+    resource: dict[str, Any], label: str
+) -> None:
+    """Close direct-profile modes for supporting resources with Grove semantics."""
+    resource_type = resource.get("resourceType")
+    if resource_type not in {"Device", "QuestionnaireResponse"}:
+        return
+    claims = read_json(CATALOG_ROOT / "profile-claims.json")
+    admitted = (
+        claims["activeDeviceClaims"]
+        if resource_type == "Device"
+        else [claims["activeQuestionnaireResponseClaim"]]
+    )
+    profiles = resource.get("meta", {}).get("profile", [])
+    matches = [
+        claim
+        for claim in admitted
+        if (
+            isinstance(profiles, list)
+            and len(profiles) == claim["cardinality"]
+            and len(profiles) == len(set(profiles))
+            and set(profiles) == set(claim["profiles"])
+        )
+    ]
+    if len(matches) != 1:
+        if resource_type == "Device":
+            raise contract_failure(
+                "mobile-support.device-profile",
+                "Device.meta.profile",
+                f"{label} active Device must directly claim exactly one admitted "
+                "supporting-resource profile mode",
+            )
+        raise ProducerValidationError(
+            f"{label} active {resource_type} must directly claim exactly one admitted "
+            "supporting-resource profile mode"
+        )
+    required_roles = set(matches[0].get("requiredIdentifierRoles", []))
+    if required_roles:
+        typed = typed_resource_identifiers(resource, label)
+        if set(typed) != required_roles:
+            raise ProducerValidationError(
+                f"{label} active {resource_type} has invalid Grove identifier roles"
+            )
+
+
+def validate_active_provenance_profile_claim(
+    resource: dict[str, Any], label: str
+) -> None:
+    """Require the sole active lifecycle assertion to declare one exact direct profile."""
+    if resource.get("resourceType") != "Provenance":
+        return
+    claims = read_json(CATALOG_ROOT / "profile-claims.json")
+    admitted = {
+        EXCHANGE_PROTOCOL["profiles"]["conversionProvenance"],
+        *(claim["profile"] for claim in claims["adapterConversionProvenanceClaims"]),
+    }
+    profiles = resource.get("meta", {}).get("profile", [])
+    if not isinstance(profiles, list) or len(profiles) != 1 or profiles[0] not in admitted:
+        raise contract_failure(
+            "mobile-exchange.provenance-profile",
+            "Provenance.meta.profile",
+            f"{label} conversion Provenance must directly claim exactly one admitted "
+            "Mobile or adapter conversion profile",
+        )
+
+
+def validate_retraction_provenance_profile_claim(
+    resource: dict[str, Any], label: str
+) -> None:
+    """Require the sole retraction assertion to declare only its Mobile profile."""
+    if resource.get("resourceType") != "Provenance":
+        return
+    expected = EXCHANGE_PROTOCOL["profiles"]["retractionProvenance"]
+    if resource.get("meta", {}).get("profile", []) != [expected]:
+        raise ProducerValidationError(
+            f"{label} retraction Provenance must directly claim exactly {expected}"
+        )
+
+
+def validate_active_measurement_fixed_semantics(
+    resource: dict[str, Any], label: str
+) -> None:
+    """Enforce catalog-fixed quantity system/code pairs in the producer lane."""
+    if resource.get("resourceType") != "Observation":
+        return
+    profiles = resource.get("meta", {}).get("profile", [])
+    if not isinstance(profiles, list):
+        return
+    matches = [MEASUREMENT_BY_PROFILE[profile] for profile in profiles if profile in MEASUREMENT_BY_PROFILE]
+    if len(matches) != 1:
+        return
+    measurement = matches[0]
+    quantity_contract = measurement.get("quantity")
+    quantity = resource.get("valueQuantity")
+    if not isinstance(quantity_contract, dict) or not isinstance(quantity, dict):
+        return
+    if (
+        quantity.get("system") != quantity_contract["system"]
+        or quantity.get("code") != quantity_contract["code"]
+    ):
+        reason = (
+            f"A Grove Mobile {measurement['id']} result must use the fixed UCUM code "
+            f"{quantity_contract['code']}."
+        )
+        entry_match = re.search(r"entry\[([0-9]+)\]", label)
+        location = (
+            f"Bundle.entry[{entry_match.group(1)}].resource.valueQuantity.code"
+            if entry_match is not None
+            else "Observation.valueQuantity.code"
+        )
+        raise contract_failure(
+            f"mobile-{measurement['id']}.fixed-unit",
+            location,
+            f"{label} {measurement['id']} must use fixed quantity "
+            f"{quantity_contract['system']}#{quantity_contract['code']}",
+            reason=reason,
+        )
+
+
+def validate_adapter_source_marker_claim(resource: dict[str, Any], label: str) -> None:
+    """Reject adapter source markers on an Observation without that adapter's profile."""
+    if resource.get("resourceType") != "Observation":
+        return
+    profiles = resource.get("meta", {}).get("profile", [])
+    if not isinstance(profiles, list) or any(
+        not isinstance(profile, str) for profile in profiles
+    ):
+        raise ProducerValidationError(f"{label} has invalid meta.profile")
+    profile_set = set(profiles)
+    extensions = resource.get("extension", [])
+    extension_urls = {
+        extension.get("url")
+        for extension in extensions
+        if isinstance(extension, dict) and isinstance(extension.get("url"), str)
+    } if isinstance(extensions, list) else set()
+
+    healthkit = read_json(CATALOG_ROOT / "healthkit-adapter.json")
+    healthkit_system = healthkit["sourceTypeCoding"]["system"]
+    codings = resource.get("code", {}).get("coding", [])
+    has_healthkit_marker = any(
+        isinstance(coding, dict) and coding.get("system") == healthkit_system
+        for coding in codings
+    ) if isinstance(codings, list) else False
+    healthkit_profiles = {
+        profile for profile in KNOWN_ADAPTER_PROFILES
+        if profile.startswith(
+            "https://grovealliance.org/fhir/healthkit/StructureDefinition/"
+        )
+    }
+
+    health_connect = read_json(CATALOG_ROOT / "health-connect-adapter.json")
+    has_health_connect_marker = (
+        health_connect["sourceTypeExtension"]["url"] in extension_urls
+    )
+    health_connect_profiles = {
+        profile for profile in KNOWN_ADAPTER_PROFILES
+        if profile.startswith(
+            "https://grovealliance.org/fhir/health-connect/StructureDefinition/"
+        )
+    }
+
+    providers = read_json(CATALOG_ROOT / "providers-adapter.json")
+    has_provider_marker = bool(
+        {
+            providers["sourceTypeExtension"]["url"],
+            providers["providerExtension"]["url"],
+        }
+        & extension_urls
+    )
+    provider_profiles = {
+        profile for profile in KNOWN_ADAPTER_PROFILES
+        if any(
+            profile.startswith(
+                f"https://grovealliance.org/fhir/{guide}/StructureDefinition/"
+            )
+            for guide in ("providers", "withings", "oura", "google-health")
+        )
+    }
+
+    sensorkit = read_json(CATALOG_ROOT / "sensorkit-adapter.json")
+    sensorkit_marker = sensorkit["sourceTypeExtension"]["url"]
+    has_sensorkit_marker = sensorkit_marker in extension_urls
+    sensorkit_profiles = {
+        profile for profile in KNOWN_ADAPTER_PROFILES
+        if profile.startswith(
+            "https://grovealliance.org/fhir/sensorkit/StructureDefinition/"
+        )
+    }
+
+    for present, admitted, name in (
+        (has_healthkit_marker, healthkit_profiles, "HealthKit"),
+        (has_health_connect_marker, health_connect_profiles, "Health Connect"),
+        (has_provider_marker, provider_profiles, "Provider"),
+        (has_sensorkit_marker, sensorkit_profiles, "SensorKit"),
+    ):
+        if present and not profile_set & admitted:
+            raise ProducerValidationError(
+                f"{label} carries a {name} source marker without an exact {name} adapter profile"
+            )
 
 
 def validate_active_adapter_package_claims(
@@ -743,20 +1367,45 @@ def validate_health_connect_specimen_claim(resource: dict[str, Any], label: str)
     if resource.get("resourceType") != "Specimen":
         return
     claims = read_json(CATALOG_ROOT / "profile-claims.json")["healthConnectSpecimenClaim"]
-    identifiers = resource.get("identifier", [])
-    if not isinstance(identifiers, list):
-        raise ProducerValidationError(f"{label} has invalid identifier")
-    if not any(
-        isinstance(identifier, dict)
-        and identifier.get("system") == claims["identifierSystem"]
-        for identifier in identifiers
-    ):
-        return
     profiles = resource.get("meta", {}).get("profile", [])
+    if not isinstance(profiles, list):
+        raise ProducerValidationError(f"{label} has invalid meta.profile")
+    if claims["profile"] not in profiles:
+        return
     if profiles != [claims["profile"]]:
         raise ProducerValidationError(
             f"{label} synthesized Health Connect Specimen must directly claim exactly "
             f"{claims['profile']}"
+        )
+    identifiers = resource.get("identifier")
+    if not isinstance(identifiers, list) or len(identifiers) != 2:
+        raise ProducerValidationError(
+            f"{label} synthesized Health Connect Specimen must carry exactly two identifiers"
+        )
+    roles = typed_resource_identifiers(resource, label)
+    if len(roles) != len(identifiers) or set(roles) != set(claims["requiredIdentifierRoles"]):
+        raise ProducerValidationError(
+            f"{label} synthesized Health Connect Specimen must carry exactly the "
+            "source-record and source-output identifier roles"
+        )
+    catalog = read_json(CATALOG_ROOT / "health-connect-adapter.json")
+    admitted_types = {
+        (coding["system"], coding["code"])
+        for item in catalog["contextMappings"]["bloodGlucoseSpecimen"]["values"]
+        if item.get("status") == "supported"
+        and isinstance((coding := item.get("coding")), dict)
+    }
+    specimen_type = resource.get("type")
+    codings = specimen_type.get("coding", []) if isinstance(specimen_type, dict) else []
+    snomed = [
+        (coding.get("system"), coding.get("code"))
+        for coding in codings
+        if isinstance(coding, dict) and coding.get("system") == "http://snomed.info/sct"
+    ] if isinstance(codings, list) else []
+    if len(snomed) != 1 or snomed[0] not in admitted_types:
+        raise ProducerValidationError(
+            f"{label} synthesized Health Connect Specimen must carry exactly one admitted "
+            "SNOMED CT specimen type"
         )
 
 
@@ -791,14 +1440,7 @@ def validate_sensorkit_profile_claim(resource: dict[str, Any], label: str) -> No
     if resource.get("resourceType") != "DocumentReference":
         return
     document_claim = claims["sensorKitRecordingDocumentClaim"]
-    identifiers = resource.get("identifier", [])
-    if not isinstance(identifiers, list):
-        raise ProducerValidationError(f"{label} has invalid identifier")
-    if not any(
-        isinstance(identifier, dict)
-        and identifier.get("system") == document_claim["identifierSystem"]
-        for identifier in identifiers
-    ):
+    if document_claim["profiles"][1] not in profiles:
         return
     if len(profiles) != document_claim["cardinality"] or set(profiles) != set(
         document_claim["profiles"]
@@ -832,13 +1474,21 @@ def validate_healthkit_source_type(resource: dict[str, Any], label: str) -> None
     if resource.get("resourceType") != "Observation":
         return
     profiles = resource.get("meta", {}).get("profile", [])
-    generic_adapter = (
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/"
-        "healthkit-observation"
+    claims = read_json(CATALOG_ROOT / "profile-claims.json")
+    single_profiles = set(
+        claims["healthKitSingleProfileObservationClaims"]["profiles"]
     )
-    healthkit_adapters = {generic_adapter, HEALTHKIT_ECG_PROFILE}
-    if not isinstance(profiles, list) or not set(profiles) & healthkit_adapters:
+    healthkit_observation_profiles = {
+        HEALTHKIT_OBSERVATION_PROFILE,
+        HEALTHKIT_ECG_PROFILE,
+        *single_profiles,
+    }
+    if not isinstance(profiles, list) or not set(profiles) & healthkit_observation_profiles:
         return
+    if any(not isinstance(profile, str) for profile in profiles) or len(profiles) != len(
+        set(profiles)
+    ):
+        raise ProducerValidationError(f"{label} has invalid or repeated meta.profile")
     catalog = read_json(CATALOG_ROOT / "healthkit-adapter.json")
     coding_system = catalog["sourceTypeCoding"]["system"]
     codings = resource.get("code", {}).get("coding", [])
@@ -859,13 +1509,98 @@ def validate_healthkit_source_type(resource: dict[str, Any], label: str) -> None
         raise ProducerValidationError(
             f"{label} uses a HealthKit source type without an admitted output contract"
         )
-    expected_profiles = set(row["profiles"])
-    if not expected_profiles & healthkit_adapters:
-        expected_profiles.add(generic_adapter)
-    if set(profiles) != expected_profiles or len(profiles) != len(expected_profiles):
+    row_profiles = set(row["profiles"])
+    if HEALTHKIT_OBSERVATION_PROFILE in row_profiles or HEALTHKIT_ECG_PROFILE in row_profiles:
+        admitted_claims = [row_profiles]
+    else:
+        admitted_claims = [
+            {profile}
+            if profile in single_profiles
+            else {profile, HEALTHKIT_OBSERVATION_PROFILE}
+            for profile in row["profiles"]
+        ]
+    if set(profiles) not in admitted_claims:
         raise ProducerValidationError(
             f"{label} HealthKit source type does not match its exact direct profile claims"
         )
+
+
+def validate_healthkit_resource_claims(resource: dict[str, Any], label: str) -> None:
+    """Close HealthKit direct claims for native documents and structured-only outputs."""
+    claims = read_json(CATALOG_ROOT / "profile-claims.json")
+    profiles = resource.get("meta", {}).get("profile", [])
+    if not isinstance(profiles, list) or any(not isinstance(profile, str) for profile in profiles):
+        raise ProducerValidationError(f"{label} has invalid meta.profile")
+
+    def require_claim(claim: dict[str, Any], name: str) -> None:
+        expected = claim["profiles"]
+        # The adapter-specific child is last; the first member may be the shared Sensor
+        # recording parent and therefore cannot identify which adapter claim applies.
+        if expected[-1] not in profiles:
+            return
+        if len(profiles) != claim["cardinality"] or set(profiles) != set(expected):
+            raise ProducerValidationError(
+                f"{label} {name} must directly claim exactly its admitted profile set"
+            )
+        identities = typed_resource_identifiers(resource, label)
+        required = set(claim["requiredIdentifierRoles"])
+        missing = required - set(identities)
+        unexpected = set(identities) - required - {"writer-record"}
+        if missing or unexpected:
+            raise ProducerValidationError(
+                f"{label} {name} has invalid identifier roles "
+                f"(missing={sorted(missing)}, unexpected={sorted(unexpected)})"
+            )
+
+    recording_claim = claims["healthKitRecordingDocumentClaim"]
+    require_claim(recording_claim, "HealthKit Recording Document")
+    require_claim(
+        claims["healthKitClinicalRecordDocumentClaim"],
+        "HealthKit Clinical Record Document",
+    )
+
+    if HEALTHKIT_RECORDING_PROFILE in profiles:
+        catalog = read_json(CATALOG_ROOT / "healthkit-adapter.json")
+        source_system = catalog["sourceTypeCoding"]["system"]
+        codings = resource.get("type", {}).get("coding", [])
+        source_codes = [
+            coding.get("code")
+            for coding in codings
+            if isinstance(coding, dict) and coding.get("system") == source_system
+        ] if isinstance(codings, list) else []
+        admitted = {
+            row["sourceTypeIdentifier"]
+            for row in catalog["rows"]
+            if row["status"] == "platform-exclusive"
+            and HEALTHKIT_RECORDING_PROFILE in row.get("profiles", [])
+        }
+        if len(source_codes) != 1 or source_codes[0] not in admitted:
+            raise ProducerValidationError(
+                f"{label} must carry exactly one admitted HealthKit recording source type"
+            )
+
+    for claim in claims["healthKitPlatformExclusiveResourceClaims"]:
+        if claim["profile"] not in profiles:
+            continue
+        if resource.get("resourceType") != claim["resourceType"]:
+            raise ProducerValidationError(
+                f"{label} {claim['profile']} is not valid on {resource.get('resourceType')}"
+            )
+        if profiles != [claim["profile"]]:
+            raise ProducerValidationError(
+                f"{label} HealthKit platform-exclusive output must directly claim exactly "
+                f"{claim['profile']}"
+            )
+        identities = typed_resource_identifiers(resource, label)
+        missing = set(claim["requiredIdentifierRoles"]) - set(identities)
+        unexpected = (
+            set(identities) - set(claim["requiredIdentifierRoles"]) - {"writer-record"}
+        )
+        if missing or unexpected:
+            raise ProducerValidationError(
+                f"{label} HealthKit platform-exclusive output has invalid identifier roles "
+                f"(missing={sorted(missing)}, unexpected={sorted(unexpected)})"
+            )
 
 
 def validate_healthkit_ecg_contract(resource: dict[str, Any], label: str) -> None:
@@ -1004,18 +1739,18 @@ def validate_healthkit_ecg_contract(resource: dict[str, Any], label: str) -> Non
             raise ProducerValidationError(
                 f"{label} HealthKit ECG correlated symptom[{index}] uses an unknown code"
             )
-        symptom_system, symptom_identifier = complete_identifier(
-            by_url["sourceIdentifier"].get("valueIdentifier"),
+        source_identifier = by_url["sourceIdentifier"].get("valueIdentifier")
+        symptom_role = identifier_role(
+            source_identifier,
+            f"{label} HealthKit ECG correlated symptom[{index}] source",
+        )
+        _, symptom_identifier = complete_identifier(
+            source_identifier,
             f"{label} HealthKit ECG correlated symptom[{index}] source",
         )
         if (
-            symptom_system
-            != "https://grovealliance.org/fhir/healthkit/NamingSystem/healthkit-object-id"
-            or re.fullmatch(
-                r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                symptom_identifier,
-            )
-            is None
+            symptom_role != "source-record"
+            or HMAC_IDENTITY.fullmatch(symptom_identifier) is None
             or symptom_identifier in seen_symptom_identifiers
         ):
             raise ProducerValidationError(
@@ -1147,6 +1882,81 @@ def validate_healthkit_ecg_contract(resource: dict[str, Any], label: str) -> Non
         )
 
 
+def codeable_concept_codings(value: Any, label: str) -> list[dict[str, Any]]:
+    """Return a CodeableConcept's Coding objects without accepting malformed shapes."""
+    if not isinstance(value, dict):
+        raise ProducerValidationError(f"{label} must be a CodeableConcept")
+    codings = value.get("coding")
+    if not isinstance(codings, list):
+        raise ProducerValidationError(f"{label}.coding must be an array")
+    if any(not isinstance(coding, dict) for coding in codings):
+        raise ProducerValidationError(f"{label}.coding must contain only Coding objects")
+    return codings
+
+
+def health_connect_context_pairs(mapping: dict[str, Any]) -> tuple[str, set[tuple[str, str]]]:
+    """Resolve one catalog context mapping into its exact source-system code pairs."""
+    source_system = mapping.get("sourceCodeSystem", mapping.get("codeSystem"))
+    pairs: set[tuple[str, str]] = set()
+    values = mapping.get("values", [])
+    if isinstance(values, list):
+        for item in values:
+            if not isinstance(item, dict):
+                continue
+            coding = item.get("coding")
+            if isinstance(coding, dict):
+                system = coding.get("system", source_system)
+                code = coding.get("code")
+                if isinstance(system, str) and isinstance(code, str):
+                    pairs.add((system, code))
+            elif isinstance(source_system, str) and isinstance(item.get("code"), str):
+                pairs.add((source_system, item["code"]))
+    allowed_codes = mapping.get("allowedSourceCodes", [])
+    if isinstance(source_system, str) and isinstance(allowed_codes, list):
+        pairs.update(
+            (source_system, code) for code in allowed_codes if isinstance(code, str)
+        )
+    systems = {system for system, _ in pairs}
+    if len(systems) != 1:
+        raise ProducerValidationError("Health Connect context catalog has no single coding system")
+    return next(iter(systems)), pairs
+
+
+def validate_health_connect_context_concept(
+    value: Any,
+    mapping: dict[str, Any],
+    label: str,
+) -> None:
+    """Require one admitted exact-source coding while allowing other-system translations."""
+    system, admitted = health_connect_context_pairs(mapping)
+    codings = codeable_concept_codings(value, label)
+    exact = [
+        (coding.get("system"), coding.get("code"))
+        for coding in codings
+        if coding.get("system") == system
+    ]
+    if len(exact) != 1 or exact[0] not in admitted:
+        raise ProducerValidationError(
+            f"{label} must carry exactly one admitted {system} coding"
+        )
+
+
+def coding_pairs_recursive(value: Any) -> list[tuple[str, str]]:
+    """Collect system/code pairs from every Coding-shaped object in a resource."""
+    result: list[tuple[str, str]] = []
+    if isinstance(value, dict):
+        system = value.get("system")
+        code = value.get("code")
+        if isinstance(system, str) and isinstance(code, str):
+            result.append((system, code))
+        for child in value.values():
+            result.extend(coding_pairs_recursive(child))
+    elif isinstance(value, list):
+        for child in value:
+            result.extend(coding_pairs_recursive(child))
+    return result
+
+
 def validate_health_connect_source_type(resource: dict[str, Any], label: str) -> None:
     """Bind one exact Health Connect Record class to its output measurement."""
     if resource.get("resourceType") != "Observation":
@@ -1195,6 +2005,244 @@ def validate_health_connect_source_type(resource: dict[str, Any], label: str) ->
         raise ProducerValidationError(
             f"{label} Health Connect Record type does not admit its claimed measurement"
         )
+    measurement = next(iter(claimed))
+
+    identifiers = resource.get("identifier")
+    if not isinstance(identifiers, list) or len(identifiers) not in {2, 3}:
+        raise ProducerValidationError(
+            f"{label} Health Connect Observation must carry exactly two or three identifiers"
+        )
+    roles = typed_resource_identifiers(resource, label)
+    if len(roles) != len(identifiers):
+        raise ProducerValidationError(
+            f"{label} Health Connect Observation identifiers must all use admitted Grove roles"
+        )
+    required_roles = {"source-record", "source-output"}
+    if not required_roles <= set(roles) or set(roles) - required_roles - {"writer-record"}:
+        raise ProducerValidationError(
+            f"{label} Health Connect Observation must carry source-record, source-output, "
+            "and only the optional writer-record identifier"
+        )
+
+    contexts = set(row["context"])
+    mappings = catalog["contextMappings"]
+
+    body_position_url = (
+        "http://hl7.org/fhir/StructureDefinition/observation-bodyPosition"
+    )
+    body_positions = [
+        item.get("valueCodeableConcept")
+        for item in extensions
+        if isinstance(item, dict) and item.get("url") == body_position_url
+    ] if isinstance(extensions, list) else []
+    if len(body_positions) > 1:
+        raise ProducerValidationError(f"{label} repeats Health Connect body position")
+    if body_positions:
+        if "bloodPressureBodyPosition" not in contexts:
+            raise ProducerValidationError(
+                f"{label} Record type does not admit Health Connect body position"
+            )
+        validate_health_connect_context_concept(
+            body_positions[0], mappings["bloodPressureBodyPosition"],
+            f"{label} body position",
+        )
+
+    body_site_contexts = [
+        name for name in (
+            "bloodPressureMeasurementLocation",
+            "temperatureMeasurementLocation",
+            "skinTemperatureMeasurementLocation",
+        )
+        if name in contexts
+    ]
+    body_site = resource.get("bodySite")
+    if body_site is not None:
+        if len(body_site_contexts) != 1:
+            raise ProducerValidationError(
+                f"{label} Record type does not admit Health Connect body site"
+            )
+        validate_health_connect_context_concept(
+            body_site, mappings[body_site_contexts[0]], f"{label} bodySite"
+        )
+
+    notes = resource.get("note", [])
+    if not isinstance(notes, list) or len(notes) > 1:
+        raise ProducerValidationError(f"{label} Health Connect note must occur at most once")
+    if notes:
+        note_contexts = [
+            name for name in contexts
+            if name.endswith("Notes")
+            and mappings[name].get("appliesToMeasurement") == measurement
+        ]
+        if len(note_contexts) != 1:
+            raise ProducerValidationError(
+                f"{label} output does not admit source-authored notes"
+            )
+        note = notes[0]
+        if (
+            not isinstance(note, dict)
+            or not isinstance(note.get("text"), str)
+            or not note["text"].strip()
+            or "authorReference" in note
+            or "authorString" in note
+            or "time" in note
+        ):
+            raise ProducerValidationError(
+                f"{label} source note must contain only non-blank text, without invented author or time"
+            )
+
+    for context_name, mapping in mappings.items():
+        if not isinstance(mapping, dict) or mapping.get("valueType") != "string":
+            continue
+        context_url = mapping.get("extension")
+        if not isinstance(context_url, str):
+            continue
+        matches = [
+            item for item in extensions
+            if isinstance(item, dict) and item.get("url") == context_url
+        ] if isinstance(extensions, list) else []
+        if len(matches) > 1:
+            raise ProducerValidationError(f"{label} repeats {context_name}")
+        if matches:
+            if (
+                context_name not in contexts
+                or mapping.get("appliesToMeasurement") != measurement
+                or not isinstance(matches[0].get("valueString"), str)
+                or not matches[0]["valueString"].strip()
+            ):
+                raise ProducerValidationError(
+                    f"{label} carries {context_name} outside its admitted summary output"
+                )
+
+    meal_mapping = mappings["bloodGlucoseMealContext"]
+    meal_url = meal_mapping["extension"]
+    meal_extensions = [
+        item for item in extensions
+        if isinstance(item, dict) and item.get("url") == meal_url
+    ] if isinstance(extensions, list) else []
+    if len(meal_extensions) > 1:
+        raise ProducerValidationError(f"{label} repeats Health Connect glucose meal context")
+    if meal_extensions:
+        if "bloodGlucoseMealContext" not in contexts:
+            raise ProducerValidationError(
+                f"{label} Record type does not admit Health Connect glucose meal context"
+            )
+        outer = meal_extensions[0]
+        nested = outer.get("extension")
+        if not isinstance(nested, list) or not nested:
+            raise ProducerValidationError(
+                f"{label} glucose meal context must contain at least one admitted field"
+            )
+        nested_by_url: dict[str, dict[str, Any]] = {}
+        for index, item in enumerate(nested):
+            if not isinstance(item, dict) or item.get("url") not in {
+                "relationToMeal", "mealType"
+            }:
+                raise ProducerValidationError(
+                    f"{label} glucose meal context has an unknown nested extension"
+                )
+            nested_url = item["url"]
+            if nested_url in nested_by_url:
+                raise ProducerValidationError(
+                    f"{label} glucose meal context repeats {nested_url}"
+                )
+            nested_by_url[nested_url] = item
+            mapping_name = (
+                "relationToMeal" if nested_url == "relationToMeal" else "mealType"
+            )
+            validate_health_connect_context_concept(
+                {"coding": [item.get("valueCoding")]},
+                meal_mapping[mapping_name],
+                f"{label} glucose meal context {mapping_name}",
+            )
+
+    mindfulness_mapping = mappings["mindfulnessSessionType"]
+    mindfulness_url = mindfulness_mapping["extension"]
+    mindfulness_extensions = [
+        item for item in extensions
+        if isinstance(item, dict) and item.get("url") == mindfulness_url
+    ] if isinstance(extensions, list) else []
+    mindfulness_expected = "mindfulnessSessionType" in contexts
+    if len(mindfulness_extensions) != (1 if mindfulness_expected else 0):
+        raise ProducerValidationError(
+            f"{label} must carry mindfulness session type exactly when its Record type admits it"
+        )
+    if mindfulness_extensions:
+        validate_health_connect_context_concept(
+            {"coding": [mindfulness_extensions[0].get("valueCoding")]},
+            mindfulness_mapping,
+            f"{label} mindfulness session type",
+        )
+
+    vo2_mapping = mappings["vo2MaxMeasurementMethod"]
+    vo2_expected = "vo2MaxMeasurementMethod" in contexts
+    method = resource.get("method")
+    vo2_system = vo2_mapping["codeSystem"]
+    method_pairs = coding_pairs_recursive(method)
+    if vo2_expected:
+        validate_health_connect_context_concept(method, vo2_mapping, f"{label} VO2 method")
+        if len(codeable_concept_codings(method, f"{label} VO2 method")) != 1:
+            raise ProducerValidationError(
+                f"{label} VO2 method must contain exactly one exact-source Coding"
+            )
+    elif any(system == vo2_system for system, _ in method_pairs):
+        raise ProducerValidationError(
+            f"{label} carries Health Connect VO2 method outside a Vo2MaxRecord"
+        )
+
+    source_coded_contexts = {
+        name: mapping
+        for name, mapping in mappings.items()
+        if isinstance(mapping, dict)
+        and isinstance(mapping.get("sourceCodeSystem"), str)
+        and isinstance(mapping.get("appliesToMeasurement"), str)
+    }
+    resource_pairs = coding_pairs_recursive(resource)
+    for name, mapping in source_coded_contexts.items():
+        system, _ = health_connect_context_pairs(mapping)
+        applies = name in contexts and mapping["appliesToMeasurement"] == measurement
+        if not applies:
+            if any(pair[0] == system for pair in resource_pairs):
+                raise ProducerValidationError(
+                    f"{label} carries {name} coding outside its admitted output"
+                )
+            continue
+        if name == "cervicalMucusSensation":
+            components = resource.get("component", [])
+            sensation_components = [
+                component for component in components
+                if isinstance(component, dict)
+                and (
+                    "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
+                    "cervical-mucus-sensation",
+                ) in coding_pairs_recursive(component.get("code"))
+            ] if isinstance(components, list) else []
+            if len(sensation_components) > 1:
+                raise ProducerValidationError(
+                    f"{label} repeats the cervical-mucus sensation component"
+                )
+            if sensation_components:
+                validate_health_connect_context_concept(
+                    sensation_components[0].get("valueCodeableConcept"), mapping,
+                    f"{label} cervical-mucus sensation",
+                )
+                if sum(pair[0] == system for pair in resource_pairs) != 1:
+                    raise ProducerValidationError(
+                        f"{label} must carry its one exact cervical-mucus sensation "
+                        "coding only in the named component"
+                    )
+            elif any(pair[0] == system for pair in resource_pairs):
+                raise ProducerValidationError(
+                    f"{label} carries cervical-mucus sensation outside its named component"
+                )
+            continue
+        validate_health_connect_context_concept(
+            resource.get("valueCodeableConcept"), mapping, f"{label} {name}"
+        )
+        if sum(pair[0] == system for pair in resource_pairs) != 1:
+            raise ProducerValidationError(
+                f"{label} must carry exactly one {name} source coding in its value"
+            )
 
 
 def validate_provider_claim(resource: dict[str, Any], label: str) -> None:
@@ -1263,13 +2311,52 @@ def validate_adapter_conversion_provenance(
         raise ProducerValidationError(
             f"{label} must carry its source as exactly one Identifier entity"
         )
-    system, _ = complete_identifier(
-        what.get("identifier"), f"{label} source entity"
-    )
-    if system != claim["sourceIdentifierSystem"]:
+    identifier = what.get("identifier")
+    _, value = complete_identifier(identifier, f"{label} source entity")
+    if identifier_role(identifier, f"{label} source entity") != "source-record":
         raise ProducerValidationError(
-            f"{label} source entity uses the wrong adapter identifier system"
+            f"{label} source entity must carry the source-record role"
         )
+    if HMAC_IDENTITY.fullmatch(value) is None:
+        raise ProducerValidationError(
+            f"{label} source entity must use a canonical Grove v2 HMAC identity"
+        )
+    if claim["adapter"] == "health-connect":
+        agents = entity.get("agent")
+        if not isinstance(agents, list) or len(agents) != 1:
+            raise ProducerValidationError(
+                f"{label} Health Connect source entity must carry exactly one enterer agent"
+            )
+        agent = agents[0]
+        who = agent.get("who") if isinstance(agent, dict) else None
+        enterer_codings = [
+            code
+            for system, code in coding_pairs_recursive(agent.get("type"))
+            if system
+            == "http://terminology.hl7.org/CodeSystem/provenance-participant-type"
+        ] if isinstance(agent, dict) else []
+        if (
+            not isinstance(agent, dict)
+            or not isinstance(who, dict)
+            or enterer_codings != ["enterer"]
+            or "reference" in who
+            or "resource" in who
+            or who.get("type") != "Device"
+        ):
+            raise ProducerValidationError(
+                f"{label} Health Connect DataOrigin must be an identifier-only Device Reference"
+            )
+        system, package_name = complete_identifier(
+            who.get("identifier"), f"{label} Health Connect DataOrigin"
+        )
+        if (
+            system
+            != "https://grovealliance.org/fhir/health-connect/NamingSystem/android-package-name"
+            or not package_name.strip()
+        ):
+            raise ProducerValidationError(
+                f"{label} Health Connect DataOrigin must carry its non-blank Android package name"
+            )
 
 
 # Every connected-provider guide narrows the same adapter Observation, so an output of any of
@@ -1293,39 +2380,12 @@ def validate_provider_identity(resource: dict[str, Any], label: str) -> None:
     if not set(profiles) & PROVIDER_IDENTITY_PROFILES:
         return
     catalog = read_json(CATALOG_ROOT / "providers-adapter.json")
-    source_system = catalog["identity"]["sourceRecord"]["system"]
-    output_system = catalog["identity"]["output"]["system"]
-    identifiers = resource.get("identifier", [])
-    if not isinstance(identifiers, list):
-        raise ProducerValidationError(f"{label} has invalid identifier")
-
-    def identifier_value(system: str, role: str, required: bool = True) -> str | None:
-        matches = [
-            item for item in identifiers
-            if isinstance(item, dict) and item.get("system") == system
-        ]
-        if not matches and not required:
-            return None
-        if len(matches) != 1:
-            raise ProducerValidationError(
-                f"{label} must carry exactly one Provider {role} identifier"
-            )
-        return complete_identifier(matches[0], f"{label} {role} identifier")[1]
-
-    source_value = identifier_value(source_system, "source-record")
-    # A one-to-one conversion emits no output identifier: the source record already identifies the
-    # single Observation it produced.
-    output_value = identifier_value(output_system, "output", required=False)
-    # Either the provider's own key passed through, or a versioned composition where that key
-    # alone would not identify one record.
-    identifier_pattern = r"^(?:v1:[^|]+(?:\|[^|]+)+|[^|]+)$"
-    for candidate in (value for value in (source_value, output_value) if value is not None):
-        if re.fullmatch(identifier_pattern, candidate) is None:
-            raise ProducerValidationError(
-                f"{label} has a Provider identifier that is neither a passed-through key "
-                "nor a v1 composition"
-            )
-    business_values = {value for value in (source_value, output_value) if value is not None}
+    typed = typed_resource_identifiers(resource, label)
+    if "source-record" not in typed or "source-output" not in typed:
+        raise ProducerValidationError(
+            f"{label} must carry typed source-record and source-output identifiers"
+        )
+    business_values = {typed["source-record"][1], typed["source-output"][1]}
     if resource.get("id") in business_values:
         raise ProducerValidationError(
             f"{label} must not copy a Provider business identifier into Resource.id"
@@ -1373,7 +2433,6 @@ def validate_provider_identity(resource: dict[str, Any], label: str) -> None:
             raise ProducerValidationError(
                 f"{label} source type does not admit a native Recording Document"
             )
-        discriminator = catalog["recordingDocument"]["outputDiscriminator"]
     else:
         measurement_profiles = {
             f"https://grovealliance.org/fhir/mobile/StructureDefinition/{item['profile']}": item["id"]
@@ -1397,21 +2456,6 @@ def validate_provider_identity(resource: dict[str, Any], label: str) -> None:
             raise ProducerValidationError(
                 f"{label} Provider source type does not admit its claimed measurement"
             )
-        discriminator = (
-            "blood-pressure-panel"
-            if providers[0] == "withings" and claimed[0] == "blood-pressure"
-            else claimed[0]
-        )
-    if output_value is not None:
-        # An output identity always composes, even where its source key passed through: it exists
-        # precisely to tell several Observations of one record apart.
-        base = source_value[3:] if source_value.startswith("v1:") else source_value
-        expected = f"v1:{base}|{discriminator}"
-        if output_value != expected:
-            raise ProducerValidationError(
-                f"{label} Provider output identifier does not match its exact "
-                "source and discriminator"
-            )
 
 
 def validate_sensorkit_identity(resource: dict[str, Any], label: str) -> None:
@@ -1431,32 +2475,13 @@ def validate_sensorkit_identity(resource: dict[str, Any], label: str) -> None:
         return
 
     catalog = read_json(CATALOG_ROOT / "sensorkit-adapter.json")
-    identity = catalog["identity"]
-    source_system = identity["sourceRecord"]["system"]
-    output_system = identity["output"]["system"]
-    identifiers = resource.get("identifier", [])
-    if not isinstance(identifiers, list):
-        raise ProducerValidationError(f"{label} has invalid identifier")
-
-    def exact_identifier(system: str, role: str) -> tuple[str, str]:
-        matches = [
-            identifier for identifier in identifiers
-            if isinstance(identifier, dict) and identifier.get("system") == system
-        ]
-        if len(matches) != 1:
-            raise ProducerValidationError(
-                f"{label} must carry exactly one SensorKit {role} identifier"
-            )
-        return complete_identifier(matches[0], f"{label} SensorKit {role} identifier")
-
-    source_pair = exact_identifier(source_system, "source-record")
-    output_pair = exact_identifier(output_system, "output")
-    if not re.fullmatch(identity["valuePattern"], source_pair[1]):
-        raise ProducerValidationError(f"{label} has an invalid SensorKit source-record UUID")
-    if not re.fullmatch(r"^v1:[^|]+(?:\|[^|]+)+$", output_pair[1]):
+    typed = typed_resource_identifiers(resource, label)
+    if "source-record" not in typed or "source-output" not in typed:
         raise ProducerValidationError(
-            f"{label} SensorKit output identifier is not a v1 composition"
+            f"{label} must carry typed source-record and source-output identifiers"
         )
+    source_pair = typed["source-record"]
+    output_pair = typed["source-output"]
     if resource.get("id") in {source_pair[1], output_pair[1]}:
         raise ProducerValidationError(
             f"{label} must not copy a SensorKit business identifier into Resource.id"
@@ -1503,15 +2528,6 @@ def validate_sensorkit_identity(resource: dict[str, Any], label: str) -> None:
     if not isinstance(discriminator, str) or not discriminator:
         raise ProducerValidationError(
             f"{label} admitted SensorKit representation has no output discriminator"
-        )
-    if "|" in discriminator or "|" in source_pair[1]:
-        raise ProducerValidationError(
-            f"{label} SensorKit identity component must not contain a vertical bar"
-        )
-    expected = f"v1:{source_pair[1]}|{discriminator}"
-    if output_pair[1] != expected:
-        raise ProducerValidationError(
-            f"{label} SensorKit output identifier does not match its exact source and discriminator"
         )
 
 
@@ -1612,7 +2628,7 @@ def validate_sampled_data(
     effective: Any,
     label: str,
 ) -> None:
-    """Enforce the exact v0.3 uniform-frame and interval semantics."""
+    """Enforce the exact registered uniform-frame and interval semantics."""
     if not isinstance(sampled, dict):
         raise ProducerValidationError(f"{label} must be SampledData")
     for forbidden in ("factor", "lowerLimit", "upperLimit"):
@@ -1711,17 +2727,30 @@ def validate_sensor_contract(resource: dict[str, Any], label: str) -> None:
             validate_sampled_data(
                 sampled, resource.get("effectivePeriod"), f"{label}.component[{index}]"
             )
-    if SENSOR_RECORDING_PROFILE in profiles:
+    is_recording_document = (
+        resource.get("resourceType") == "DocumentReference"
+        and any(profile.endswith(RECORDING_DOCUMENT_PROFILE_TAIL) for profile in profiles)
+    )
+    if is_recording_document:
         contents = resource.get("content")
-        if not isinstance(contents, list) or not contents:
-            raise ProducerValidationError(f"{label} Recording Document must contain content")
+        if not isinstance(contents, list) or len(contents) != 1:
+            raise ProducerValidationError(
+                f"{label} Recording Document must contain exactly one content entry"
+            )
+        identities = typed_resource_identifiers(resource, label)
+        required = {"source-record", "source-output", "source-artifact"}
+        present = set(identities)
+        missing = required - present
+        unexpected = present - required - {"writer-record"}
+        if missing or unexpected:
+            raise ProducerValidationError(
+                f"{label} Recording Document must carry source-record, source-output, "
+                "and source-artifact; only writer-record is an additional typed Grove role "
+                f"(missing={sorted(missing)}, unexpected={sorted(unexpected)})"
+            )
         for index, content in enumerate(contents):
             attachment = content.get("attachment") if isinstance(content, dict) else None
             validate_recording_attachment(attachment, f"{label}.content[{index}].attachment")
-
-
-RECORDING_DOCUMENT_PROFILE_TAIL = "-recording-document"
-
 
 def validate_recording_format(resource: dict[str, Any], label: str) -> None:
     """Require one registered payload format per recording content entry."""
@@ -1806,8 +2835,10 @@ def validate_resource_profile_claims(
 ) -> None:
     validate_active_adapter_package_claims(resource, label, active_adapter_profiles)
     validate_adapter_profile_claim(resource, label, active_adapter_profiles)
+    validate_adapter_source_marker_claim(resource, label)
     validate_health_connect_specimen_claim(resource, label)
     validate_health_connect_provider_claim(resource, label)
+    validate_healthkit_resource_claims(resource, label)
     validate_healthkit_source_type(resource, label)
     validate_healthkit_ecg_contract(resource, label)
     validate_health_connect_source_type(resource, label)
@@ -1831,49 +2862,42 @@ def validate_adapter_provenance_graph(
         "adapterConversionProvenanceClaims"
     ]
 
-    def source_value(resource: dict[str, Any], system: str, role: str) -> str:
-        identifiers = resource.get("identifier", [])
-        matches = [
-            identifier
-            for identifier in identifiers
-            if isinstance(identifier, dict) and identifier.get("system") == system
-        ] if isinstance(identifiers, list) else []
-        if len(matches) != 1:
+    def source_value(resource: dict[str, Any], role: str) -> tuple[str, str]:
+        identity = typed_resource_identifiers(resource, f"{label} {role}").get(
+            "source-record"
+        )
+        if identity is None:
             raise ProducerValidationError(
-                f"{label} {role} must carry exactly one adapter source-record Identifier"
+                f"{label} {role} must carry exactly one typed source-record Identifier"
             )
-        return complete_identifier(matches[0], f"{label} {role} source identifier")[1]
+        return identity
 
     url_by_resource = {id(resource): url for url, resource in resources_by_full_url.items()}
     for claim in claims:
         target_profiles = set(claim["targetAdapterProfiles"])
-        outputs_by_source: dict[str, set[str]] = {}
-        provenances_by_source: dict[str, list[dict[str, Any]]] = {}
-        # A bundle whose outputs for a source are all retractions records a lifecycle event
-        # rather than a conversion, so it carries no conversion Provenance to describe.
-        converted_sources: set[str] = set()
+        outputs_by_source: dict[tuple[str, str], set[str]] = {}
+        provenances_by_source: dict[tuple[str, str], list[dict[str, Any]]] = {}
         for resource in entry_resources:
             profiles = resource.get("meta", {}).get("profile", [])
             profile_set = set(profiles) if isinstance(profiles, list) else set()
             if profile_set & target_profiles:
-                source = source_value(resource, claim["sourceIdentifierSystem"], "output")
+                source = source_value(resource, "output")
                 outputs_by_source.setdefault(source, set()).add(url_by_resource[id(resource)])
-                if resource.get("status") != "entered-in-error":
-                    converted_sources.add(source)
             if claim["profile"] in profile_set:
                 entity = resource["entity"][0]["what"]["identifier"]
-                source = complete_identifier(entity, f"{label} Provenance source entity")[1]
+                if identifier_role(entity, f"{label} Provenance source entity") != "source-record":
+                    raise ProducerValidationError(
+                        f"{label} Provenance source entity must carry the source-record role"
+                    )
+                source = complete_identifier(entity, f"{label} Provenance source entity")
+                if HMAC_IDENTITY.fullmatch(source[1]) is None:
+                    raise ProducerValidationError(
+                        f"{label} Provenance source entity must be a canonical v2 HMAC identity"
+                    )
                 provenances_by_source.setdefault(source, []).append(resource)
 
         for source, output_urls in outputs_by_source.items():
             provenances = provenances_by_source.get(source, [])
-            if source not in converted_sources:
-                if provenances:
-                    raise ProducerValidationError(
-                        f"{label} {claim['adapter']} retraction must not claim a conversion "
-                        "Provenance"
-                    )
-                continue
             if len(provenances) != 1:
                 raise ProducerValidationError(
                     f"{label} {claim['adapter']} source record must have exactly one "
@@ -1901,7 +2925,7 @@ def validate_adapter_provenance_graph(
                         f"{label} adapter conversion Provenance targets a resource "
                         "outside its adapter output contract"
                     )
-                if source_value(target, claim["sourceIdentifierSystem"], "target") != source:
+                if source_value(target, "target") != source:
                     raise ProducerValidationError(
                         f"{label} adapter conversion Provenance source entity and target "
                         "must carry the same source-record Identifier"
@@ -1918,70 +2942,193 @@ def validate_adapter_provenance_graph(
             )
 
 
-PROVIDER_CONVERSION_ID = (
-    "https://grovealliance.org/fhir/providers/NamingSystem/provider-conversion-id"
-)
-PROVIDER_EXCHANGE_ID = (
-    "https://grovealliance.org/fhir/providers/NamingSystem/provider-exchange-id"
-)
-PROVIDER_CONVERSION_PROVENANCE_PROFILE = (
-    "https://grovealliance.org/fhir/providers/StructureDefinition/"
-    "providers-conversion-provenance"
-)
-# The export creates these nodes, so the deployment owns their namespace and this guide fixes only
-# the role-suffixed shape of the value.
-PROVIDER_CONVERSION_VALUE = re.compile(r"^[^|]+\|[1-9][0-9]*\|conversion-provenance$")
-PROVIDER_EXCHANGE_VALUE = re.compile(r"^[^|]+\|[1-9][0-9]*\|exchange-bundle$")
-
-
-def validate_provider_exchange_identity(
-    bundle: dict[str, Any],
-    entry_identities: list[tuple[str, str, dict[str, Any]]],
+def validate_health_connect_output_graph(
+    entry_resources: list[dict[str, Any]],
+    resources_by_full_url: dict[str, dict[str, Any]],
     label: str,
 ) -> None:
-    """Enforce the provider conversion and exchange identity encoding."""
-    conversion_values: list[str] = []
-    for index, (system, value, entry_resource) in enumerate(entry_identities):
-        profiles = entry_resource.get("meta", {}).get("profile", [])
-        claims_profile = (
-            isinstance(profiles, list)
-            and PROVIDER_CONVERSION_PROVENANCE_PROFILE in profiles
-        )
-        if not claims_profile:
+    """Enforce Health Connect cardinalities visible in one active exchange event."""
+    catalog = read_json(CATALOG_ROOT / "health-connect-adapter.json")
+    observation_profile = (
+        "https://grovealliance.org/fhir/health-connect/StructureDefinition/"
+        "health-connect-observation"
+    )
+    specimen_profile = (
+        "https://grovealliance.org/fhir/health-connect/StructureDefinition/"
+        "health-connect-specimen"
+    )
+    record_type_url = catalog["sourceTypeExtension"]["url"]
+    measurement_profiles = {
+        f"https://grovealliance.org/fhir/mobile/StructureDefinition/{item['profile']}": item["id"]
+        for item in read_json(CATALOG_ROOT / "measurement-catalog.json")["measurements"]
+    }
+    measurement_profiles.update(
+        {item["profile"]: item["id"] for item in catalog["adapterMeasurements"]}
+    )
+    health_connect_observation_profiles = {
+        observation_profile,
+        *{item["profile"] for item in catalog["adapterMeasurements"]},
+    }
+    row_by_type = {row["token"]: row for row in catalog["recordTypes"]}
+    url_by_resource = {id(resource): url for url, resource in resources_by_full_url.items()}
+    observations: dict[tuple[str, str], list[tuple[str, str, dict[str, Any]]]] = {}
+    specimens: dict[tuple[str, str], list[tuple[str, dict[str, Any]]]] = {}
+    record_types_by_source: dict[tuple[str, str], set[str]] = {}
+
+    for resource in entry_resources:
+        profiles = resource.get("meta", {}).get("profile", [])
+        profile_set = set(profiles) if isinstance(profiles, list) else set()
+        if profile_set & health_connect_observation_profiles:
+            source = typed_resource_identifiers(resource, f"{label} Health Connect output").get(
+                "source-record"
+            )
+            if source is None:
+                raise ProducerValidationError(
+                    f"{label} Health Connect output has no source-record identity"
+                )
+            extensions = resource.get("extension", [])
+            record_types = [
+                extension.get("valueCode")
+                for extension in extensions
+                if isinstance(extension, dict) and extension.get("url") == record_type_url
+            ] if isinstance(extensions, list) else []
+            if len(record_types) != 1 or not isinstance(record_types[0], str):
+                raise ProducerValidationError(
+                    f"{label} Health Connect output has no unique Record type"
+                )
+            record_type = record_types[0]
+            record_types_by_source.setdefault(source, set()).add(record_type)
+            measurements = {
+                measurement_profiles[profile]
+                for profile in profile_set if profile in measurement_profiles
+            }
+            if len(measurements) != 1:
+                raise ProducerValidationError(
+                    f"{label} Health Connect output has no unique measurement claim"
+                )
+            observations.setdefault(source, []).append(
+                (record_type, next(iter(measurements)), resource)
+            )
+        if specimen_profile in profile_set:
+            source = typed_resource_identifiers(resource, f"{label} Health Connect specimen").get(
+                "source-record"
+            )
+            if source is None:
+                raise ProducerValidationError(
+                    f"{label} Health Connect specimen has no source-record identity"
+                )
+            specimens.setdefault(source, []).append((url_by_resource[id(resource)], resource))
+
+    for source, record_types in record_types_by_source.items():
+        if len(record_types) != 1:
+            raise ProducerValidationError(
+                f"{label} one Health Connect source-record identity cannot name multiple Record types"
+            )
+        record_type = next(iter(record_types))
+        row = row_by_type[record_type]
+        measurement_counts: dict[str, int] = {}
+        for _, measurement, _ in observations[source]:
+            measurement_counts[measurement] = measurement_counts.get(measurement, 0) + 1
+        for output in row["outputs"]:
+            if output["countRule"] == "exactly-one" and measurement_counts.get(
+                output["measurement"], 0
+            ) != 1:
+                raise ProducerValidationError(
+                    f"{label} {record_type} must emit exactly one {output['measurement']} output"
+                )
+
+        source_specimens = specimens.get(source, [])
+        if record_type != "BloodGlucoseRecord":
+            if source_specimens:
+                raise ProducerValidationError(
+                    f"{label} only a BloodGlucoseRecord may synthesize a Health Connect Specimen"
+                )
             continue
-        if not system:
+        if len(observations[source]) != 1 or len(source_specimens) != 1:
             raise ProducerValidationError(
-                f"{label} entry[{index}] provider conversion identifier states no namespace"
+                f"{label} BloodGlucoseRecord must emit exactly one Observation and one Specimen"
             )
-        if not PROVIDER_CONVERSION_VALUE.match(value):
+        _, measurement, observation = observations[source][0]
+        specimen_url, specimen = source_specimens[0]
+        specimen_reference = observation.get("specimen", {}).get("reference")
+        if specimen_reference != specimen_url:
             raise ProducerValidationError(
-                f"{label} entry[{index}] provider conversion identifier is not a "
-                "deployment-namespaced conversion-provenance value"
+                f"{label} BloodGlucoseRecord Observation must reference its one synthesized Specimen"
             )
-        conversion_values.append(value)
-    if not conversion_values:
-        return
-    identifier = bundle.get("identifier", {})
-    if not identifier.get("system") or not PROVIDER_EXCHANGE_VALUE.match(
-        str(identifier.get("value"))
+        observation_subject = observation.get("subject", {}).get("reference")
+        specimen_subject = specimen.get("subject", {}).get("reference")
+        if (
+            not isinstance(observation_subject, str)
+            or specimen_subject != observation_subject
+        ):
+            raise ProducerValidationError(
+                f"{label} BloodGlucoseRecord Observation and Specimen must reference the same Patient"
+            )
+        snomed_codes = {
+            code
+            for system, code in coding_pairs_recursive(specimen.get("type"))
+            if system == "http://snomed.info/sct"
+        }
+        expected_measurements = {
+            "258580003": "blood-glucose",
+            "122554006": "capillary-blood-glucose",
+            "119361006": "serum-plasma-glucose",
+            "119364003": "serum-plasma-glucose",
+            "258479004": "interstitial-glucose",
+        }
+        expected = {
+            expected_measurements[code]
+            for code in snomed_codes if code in expected_measurements
+        }
+        if expected != {measurement}:
+            raise ProducerValidationError(
+                f"{label} BloodGlucoseRecord measurement profile and Specimen type disagree"
+            )
+
+    extra_specimen_sources = set(specimens) - set(observations)
+    if extra_specimen_sources:
+        raise ProducerValidationError(
+            f"{label} Health Connect Specimen has no Observation for its source record"
+        )
+
+
+def exact_source_entity(
+    provenance: dict[str, Any],
+    label: str,
+) -> tuple[str, str]:
+    """Return the sole logical source-record identity of a lifecycle Provenance."""
+    entities = provenance.get("entity")
+    if not isinstance(entities, list) or len(entities) != 1:
+        raise contract_failure(
+            "mobile-exchange.single-source-entity",
+            "Provenance.entity",
+            f"{label} must identify exactly one source record",
+        )
+    entity = entities[0]
+    what = entity.get("what") if isinstance(entity, dict) else None
+    if (
+        not isinstance(entity, dict)
+        or entity.get("role") != "source"
+        or not isinstance(what, dict)
+        or "reference" in what
+        or "resource" in what
     ):
-        raise ProducerValidationError(
-            f"{label} provider exchange Bundle.identifier must be a "
-            "deployment-namespaced exchange-bundle value"
+        raise contract_failure(
+            "mobile-exchange.logical-source-entity",
+            "Provenance.entity[0].what",
+            f"{label} source must be exactly one logical Identifier entity with role source",
         )
-    if len(conversion_values) != len(set(conversion_values)):
+    identifier = what.get("identifier")
+    if identifier_role(identifier, f"{label} source identifier") != "source-record":
         raise ProducerValidationError(
-            f"{label} repeats a provider conversion identifier value"
+            f"{label} source must carry the source-record role"
         )
-    # One export event, so the conversion and the Bundle name the same event and differ only in
-    # the role they carry.
-    if len(conversion_values) == 1:
-        expected = conversion_values[0].rsplit("|", 1)[0] + "|exchange-bundle"
-        if identifier.get("value") != expected:
-            raise ProducerValidationError(
-                f"{label} single-conversion exchange identifier must name the same "
-                "event as its conversion identifier"
-            )
+    pair = complete_identifier(identifier, f"{label} source identifier")
+    if HMAC_IDENTITY.fullmatch(pair[1]) is None:
+        raise ProducerValidationError(
+            f"{label} source identifier is not a canonical Grove v2 HMAC identity"
+        )
+    return pair
 
 
 def validate_exchange_bundle(
@@ -1990,22 +3137,76 @@ def validate_exchange_bundle(
     active_adapter_profiles: set[str] | None = None,
 ) -> None:
     profiles = resource.get("meta", {}).get("profile", [])
-    if EXCHANGE_BUNDLE_PROFILE not in profiles:
+    is_active = EXCHANGE_BUNDLE_PROFILE in profiles
+    is_retraction = RETRACTION_BUNDLE_PROFILE in profiles
+    if not is_active and not is_retraction:
         return
+    if is_active and is_retraction:
+        raise ProducerValidationError(
+            f"{label} cannot claim both active and retraction exchange profiles"
+        )
     if resource.get("type") != "collection":
         raise ProducerValidationError(f"{label} exchange Bundle must have type collection")
-    complete_identifier(resource.get("identifier"), f"{label} Bundle.identifier")
+    event_system, event_value = complete_identifier(
+        resource.get("identifier"), f"{label} Bundle.identifier"
+    )
+    if identifier_role(resource["identifier"], f"{label} Bundle.identifier") != "event":
+        raise ProducerValidationError(
+            f"{label} Bundle.identifier must carry the event role"
+        )
+    if EVENT_IDENTITY.fullmatch(event_value) is None:
+        raise contract_failure(
+            "mobile-exchange.event-identity",
+            "Bundle.identifier.value",
+            f"{label} Bundle.identifier is not a canonical Grove v2 event identity",
+        )
     entries = resource.get("entry")
     if not isinstance(entries, list) or not entries:
         raise ProducerValidationError(f"{label} exchange Bundle must contain entries")
     full_urls: set[str] = set()
-    internal_logical_references: set[str] = set()
     entry_resources: list[dict[str, Any]] = []
     entry_identities: list[tuple[str, str, dict[str, Any]]] = []
     resources_by_full_url: dict[str, dict[str, Any]] = {}
     for index, entry in enumerate(entries):
         if not isinstance(entry, dict) or not isinstance(entry.get("resource"), dict):
             raise ProducerValidationError(f"{label} entry[{index}] must contain a resource")
+        entry_resource = entry["resource"]
+        resource_type = entry_resource.get("resourceType")
+        admitted_types = (
+            ACTIVE_ENTRY_RESOURCE_TYPES if is_active else frozenset({"Provenance", "Device"})
+        )
+        if resource_type not in admitted_types:
+            if is_retraction:
+                raise contract_failure(
+                    "mobile-retraction.no-clinical-copy",
+                    f"Bundle.entry[{index}].resource",
+                    f"{label} entry[{index}] resource type {resource_type!r} is not "
+                    "admitted by the retraction event profile",
+                )
+            raise contract_failure(
+                "mobile-exchange.entry-resource-type",
+                f"Bundle.entry[{index}].resource.resourceType",
+                f"{label} entry[{index}] resource type {resource_type!r} is not admitted "
+                "by the active exchange event profile",
+            )
+        if "contained" in entry_resource:
+            raise contract_failure(
+                "mobile-exchange.contained-resource-prohibited",
+                f"Bundle.entry[{index}].resource.contained",
+                f"{label} entry[{index}] contains a Resource; Mobile event graphs require "
+                "addressable Bundle entries",
+            )
+        if is_active and resource_type in ACTIVE_OUTPUT_RESOURCE_TYPES:
+            output_identifiers = typed_resource_identifiers(
+                entry_resource, f"{label} entry[{index}].resource"
+            )
+            if not {"source-record", "source-output"} <= set(output_identifiers):
+                raise contract_failure(
+                    "mobile-output.source-output-required",
+                    f"Bundle.entry[{index}].resource.identifier",
+                    f"{label} entry[{index}] active output must carry typed source-record "
+                    "and source-output identities",
+                )
         extensions = entry.get("extension", [])
         identities = [
             extension.get("valueIdentifier")
@@ -2013,35 +3214,332 @@ def validate_exchange_bundle(
             if isinstance(extension, dict) and extension.get("url") == ENTRY_IDENTIFIER_EXTENSION
         ] if isinstance(extensions, list) else []
         if len(identities) != 1:
-            raise ProducerValidationError(f"{label} entry[{index}] must have one entry identifier")
+            raise contract_failure(
+                "mobile-exchange.entry-node-key",
+                f"Bundle.entry[{index}]",
+                f"{label} entry[{index}] must have one entry node key",
+            )
         system, value = complete_identifier(identities[0], f"{label} entry[{index}] identity")
+        role = identifier_role(identities[0], f"{label} entry[{index}] identity")
+        selected = selected_entry_identifier(
+            entry_resource, f"{label} entry[{index}].resource"
+        )
+        if selected is None:
+            if role != "entry-node" or ENTRY_NODE_IDENTITY.fullmatch(value) is None:
+                raise ProducerValidationError(
+                    f"{label} entry[{index}] resource without typed business identity "
+                    "must use a canonical entry-node key"
+                )
+            match = ENTRY_NODE_IDENTITY.fullmatch(value)
+            assert match is not None
+            try:
+                expected_node = entry_node_identity(
+                    event_system=event_system,
+                    event_value=event_value,
+                    role=match.group("role"),
+                    ordinal=match.group("ordinal"),
+                )
+            except ValueError as error:
+                raise ProducerValidationError(str(error)) from error
+            if value != expected_node:
+                raise contract_failure(
+                    "mobile-exchange.entry-node-digest",
+                    f"Bundle.entry[{index}].extension.valueIdentifier.value",
+                    f"{label} entry[{index}] entry-node digest does not match its event, "
+                    "role, and ordinal",
+                )
+        else:
+            selected_role, selected_pair = selected
+            if role != selected_role or (system, value) != selected_pair:
+                raise ProducerValidationError(
+                    f"{label} entry[{index}] node key is not the resource's highest-priority typed identifier"
+                )
         expected = expected_entry_full_url(system, value)
         if entry.get("fullUrl") != expected:
-            raise ProducerValidationError(f"{label} entry[{index}] fullUrl is not the deterministic UUID URN")
+            raise contract_failure(
+                "mobile-exchange.deterministic-full-url",
+                f"Bundle.entry[{index}].fullUrl",
+                f"{label} entry[{index}] fullUrl is not the deterministic UUID URN",
+            )
         if expected in full_urls:
             raise ProducerValidationError(f"{label} repeats entry fullUrl {expected}")
         full_urls.add(expected)
-        entry_resource = entry["resource"]
         validate_resource_profile_claims(
             entry_resource,
             f"{label} entry[{index}].resource",
             active_adapter_profiles,
         )
+        if is_active:
+            validate_active_observation_profile_claim(
+                entry_resource,
+                f"{label} entry[{index}].resource",
+                active_adapter_profiles,
+            )
+            validate_active_adapter_only_output_profile_claim(
+                entry_resource,
+                f"{label} entry[{index}].resource",
+            )
+            validate_active_document_reference_profile_claim(
+                entry_resource,
+                f"{label} entry[{index}].resource",
+            )
+            validate_active_provenance_profile_claim(
+                entry_resource,
+                f"{label} entry[{index}].resource",
+            )
+            validate_active_measurement_fixed_semantics(
+                entry_resource,
+                f"{label} entry[{index}].resource",
+            )
+        else:
+            validate_retraction_provenance_profile_claim(
+                entry_resource,
+                f"{label} entry[{index}].resource",
+            )
+        validate_exchange_supporting_profile_claim(
+            entry_resource,
+            f"{label} entry[{index}].resource",
+        )
         entry_resources.append(entry_resource)
         entry_identities.append((system, value, entry_resource))
         resources_by_full_url[expected] = entry_resource
-        resource_type = entry_resource.get("resourceType")
-        resource_id = entry_resource.get("id")
-        if isinstance(resource_type, str) and isinstance(resource_id, str):
-            internal_logical_references.add(f"{resource_type}/{resource_id}")
-    for reference in all_references(entry_resources):
-        if reference.startswith("urn:uuid:") and reference not in full_urls:
-            raise ProducerValidationError(f"{label} has unresolved internal UUID reference {reference}")
-        if reference in internal_logical_references:
-            raise ProducerValidationError(f"{label} internal entry reference must use its UUID URN: {reference}")
 
-    validate_adapter_provenance_graph(entry_resources, resources_by_full_url, label)
-    validate_provider_exchange_identity(resource, entry_identities, label)
+    if is_retraction:
+        for candidate in entry_resources:
+            if candidate.get("resourceType") != "Provenance":
+                continue
+            targets = candidate.get("target", [])
+            if not isinstance(targets, list):
+                continue
+            for target_index, target in enumerate(targets):
+                if isinstance(target, dict) and "reference" in target:
+                    raise contract_failure(
+                        "mobile-retraction.logical-target",
+                        f"Provenance.target[{target_index}]",
+                        f"{label} retraction target[{target_index}] must be a typed logical "
+                        "Reference without a literal reference",
+                    )
+    for index, entry_resource in enumerate(entry_resources):
+        for reference_path, reference in all_reference_nodes_with_paths(entry_resource):
+            literal = reference["reference"]
+            if literal not in full_urls:
+                raise contract_failure(
+                    "mobile-exchange.resolved-reference",
+                    f"Bundle.entry[{index}].resource.{reference_path}.reference",
+                    f"{label} entry[{index}] reference must resolve to an entry UUID URN: "
+                    f"{literal}",
+                )
+            reference_target(
+                reference,
+                resources_by_full_url,
+                f"{entry_resource.get('resourceType')}.{reference_path}",
+            )
+        validate_reference_policy(
+            entry_resource,
+            resources_by_full_url,
+            f"{label} entry[{index}].resource",
+        )
+
+    if is_active and ACTIVE_ENTRY_POLICY["supportingResourcesMustBeConnected"]:
+        full_url_by_resource = {
+            id(candidate): full_url
+            for full_url, candidate in resources_by_full_url.items()
+        }
+        adjacency = {full_url: set() for full_url in resources_by_full_url}
+        for candidate in entry_resources:
+            source_url = full_url_by_resource[id(candidate)]
+            for reference in all_reference_nodes(candidate):
+                target_url = reference.get("reference")
+                if target_url in resources_by_full_url:
+                    adjacency[source_url].add(target_url)
+                    adjacency[target_url].add(source_url)
+        reachable = {
+            full_url
+            for full_url, candidate in resources_by_full_url.items()
+            if candidate.get("resourceType") in ACTIVE_OUTPUT_RESOURCE_TYPES
+            or candidate.get("resourceType") == ACTIVE_ENTRY_POLICY["lifecycleResourceType"]
+        }
+        pending = list(reachable)
+        while pending:
+            current = pending.pop()
+            for connected in adjacency[current] - reachable:
+                reachable.add(connected)
+                pending.append(connected)
+        disconnected = [
+            full_url
+            for full_url, candidate in resources_by_full_url.items()
+            if candidate.get("resourceType") in ACTIVE_SUPPORTING_RESOURCE_TYPES
+            and full_url not in reachable
+        ]
+        if disconnected:
+            raise contract_failure(
+                "mobile-support.connected",
+                "Bundle.entry",
+                f"{label} supporting resources are disconnected from every output and "
+                f"lifecycle assertion: {', '.join(sorted(disconnected))}",
+            )
+
+    provenances = [
+        candidate for candidate in entry_resources
+        if candidate.get("resourceType") == "Provenance"
+    ]
+    transform_provenances: list[dict[str, object]] = []
+    retraction_provenances: list[dict[str, object]] = []
+    iso_lifecycle_system = (
+        "http://terminology.hl7.org/CodeSystem/iso-21089-lifecycle"
+    )
+    for provenance_index, candidate in enumerate(provenances):
+        activity = candidate.get("activity", {})
+        codings = activity.get("coding", []) if isinstance(activity, dict) else []
+        codings = codings if isinstance(codings, list) else []
+        iso_codings = [
+            coding for coding in codings
+            if isinstance(coding, dict)
+            and coding.get("system") == iso_lifecycle_system
+        ]
+        grove_codings = [
+            coding for coding in codings
+            if isinstance(coding, dict)
+            and coding.get("system") == LIFECYCLE_EVENT_SYSTEM
+        ]
+        if not iso_codings and not grove_codings:
+            continue
+        lifecycle_label = f"{label} Provenance[{provenance_index}] activity"
+        if len(iso_codings) + len(grove_codings) != 1:
+            raise contract_failure(
+                "mobile-exchange.lifecycle-coding",
+                "Provenance.activity.coding",
+                f"{lifecycle_label} must contain exactly one coding across the ISO "
+                "transform and Grove retraction lifecycle systems",
+            )
+        if iso_codings:
+            if iso_codings[0].get("code") != "transform":
+                raise ProducerValidationError(
+                    f"{lifecycle_label} has an unadmitted ISO lifecycle code"
+                )
+            transform_provenances.append(candidate)
+        else:
+            if grove_codings[0].get("code") != SOURCE_RECORD_RETRACTED:
+                raise ProducerValidationError(
+                    f"{lifecycle_label} has an unadmitted Grove lifecycle code"
+                )
+            retraction_provenances.append(candidate)
+    if is_active:
+        if (
+            len(provenances) != 1
+            or len(transform_provenances) != 1
+            or retraction_provenances
+        ):
+            raise contract_failure(
+                "mobile-exchange.transform-provenance",
+                "Bundle.entry",
+                f"{label} active event must contain exactly one transform Provenance and no retraction",
+            )
+        output_urls: set[str] = set()
+        source_pairs: set[tuple[str, str]] = set()
+        for full_url, candidate in resources_by_full_url.items():
+            if candidate.get("resourceType") not in ACTIVE_OUTPUT_RESOURCE_TYPES:
+                continue
+            typed = typed_resource_identifiers(candidate, f"{label} output {full_url}")
+            if "source-record" not in typed or "source-output" not in typed:
+                raise ProducerValidationError(
+                    f"{label} active output {full_url} must carry typed source-record and source-output identities"
+                )
+            output_urls.add(full_url)
+            source_pairs.add(typed["source-record"])
+        if not output_urls or len(source_pairs) != 1:
+            raise ProducerValidationError(
+                f"{label} active event must contain outputs for exactly one source record"
+            )
+        provenance = transform_provenances[0]
+        if exact_source_entity(provenance, f"{label} transform Provenance") not in source_pairs:
+            raise ProducerValidationError(
+                f"{label} transform source must equal the event output source-record identity"
+            )
+        targets = provenance.get("target")
+        target_urls = [
+            target.get("reference") for target in targets
+            if isinstance(target, dict) and isinstance(target.get("reference"), str)
+        ] if isinstance(targets, list) else []
+        if len(target_urls) != len(set(target_urls)) or set(target_urls) != output_urls:
+            raise ProducerValidationError(
+                f"{label} transform Provenance must target every and only source-derived output"
+            )
+        validate_health_connect_output_graph(entry_resources, resources_by_full_url, label)
+        validate_adapter_provenance_graph(entry_resources, resources_by_full_url, label)
+    else:
+        if (
+            len(provenances) != 1
+            or len(retraction_provenances) != 1
+            or transform_provenances
+        ):
+            raise ProducerValidationError(
+                f"{label} retraction event must contain exactly one retraction Provenance and no transform"
+            )
+        if any(
+            candidate.get("resourceType") not in {"Provenance", "Device"}
+            for candidate in entry_resources
+        ):
+            raise ProducerValidationError(
+                f"{label} retraction event may contain only its Provenance and Device agents"
+            )
+        provenance = retraction_provenances[0]
+        targets = provenance.get("target")
+        if not isinstance(targets, list) or not targets:
+            raise ProducerValidationError(f"{label} retraction must identify at least one target")
+        seen_targets: set[tuple[str, str]] = set()
+        for target_index, target in enumerate(targets):
+            target_label = f"{label} retraction target[{target_index}]"
+            if not isinstance(target, dict) or "reference" in target:
+                raise ProducerValidationError(
+                    f"{target_label} must be a logical Reference without a literal reference"
+                )
+            if not isinstance(target.get("type"), str) or not target["type"]:
+                raise ProducerValidationError(f"{target_label} must state its resource type")
+            identifier = target.get("identifier")
+            role = identifier_role(identifier, f"{target_label}.identifier")
+            if role not in OPAQUE_IDENTIFIER_ROLES:
+                raise ProducerValidationError(f"{target_label} has an invalid identifier role")
+            pair = complete_identifier(identifier, f"{target_label}.identifier")
+            if HMAC_IDENTITY.fullmatch(pair[1]) is None:
+                raise contract_failure(
+                    "mobile-retraction.opaque-target",
+                    f"Provenance.target[{target_index}].identifier.value",
+                    f"{target_label} identity is not a canonical v2 HMAC value",
+                )
+            if pair in seen_targets:
+                raise ProducerValidationError(f"{label} repeats a retraction target")
+            seen_targets.add(pair)
+            extensions = target.get("extension", [])
+            role_extensions = [
+                extension for extension in extensions
+                if isinstance(extension, dict)
+                and extension.get("url") == RETRACTION_TARGET_ROLE_EXTENSION
+            ] if isinstance(extensions, list) else []
+            if (
+                len(role_extensions) != 1
+                or role_extensions[0].get("valueCode") not in RETRACTION_TARGET_ROLES
+            ):
+                raise contract_failure(
+                    "mobile-retraction.target-role",
+                    f"Provenance.target[{target_index}].extension",
+                    f"{target_label} must carry exactly one admitted retraction-target role",
+                )
+            target_role = role_extensions[0]["valueCode"]
+            target_contract = RETRACTION_TARGET_CONTRACTS[target_role]
+            if role != target_contract["identifierRole"]:
+                raise ProducerValidationError(
+                    f"{target_label} role {target_role} requires the "
+                    f"{target_contract['identifierRole']} identifier role"
+                )
+            if target["type"] not in target_contract["resourceTypes"]:
+                raise contract_failure(
+                    "mobile-retraction.role-target-type",
+                    f"Provenance.target[{target_index}].type",
+                    f"{target_label} role {target_role} does not admit resource type "
+                    f"{target['type']}",
+                )
+        exact_source_entity(provenance, f"{label} retraction Provenance")
 
     sensorkit_hybrid_profiles = {
         (
@@ -2053,9 +3551,6 @@ def validate_exchange_bundle(
             "sensorkit-ecg-observation"
         ): "ECG",
     }
-    sensorkit_record_system = (
-        "https://grovealliance.org/fhir/sensorkit/NamingSystem/sensorkit-record-id"
-    )
     full_url_by_resource = {
         id(entry_resource): full_url
         for full_url, entry_resource in resources_by_full_url.items()
@@ -2085,17 +3580,9 @@ def validate_exchange_bundle(
             )
 
         def matching_identifier(candidate: dict[str, Any]) -> tuple[str, str] | None:
-            identifiers = candidate.get("identifier", [])
-            if not isinstance(identifiers, list):
-                return None
-            matches = [
-                identifier for identifier in identifiers
-                if isinstance(identifier, dict)
-                and identifier.get("system") == sensorkit_record_system
-            ]
-            if len(matches) != 1:
-                return None
-            return complete_identifier(matches[0], "SensorKit source-record identifier")
+            return typed_resource_identifiers(
+                candidate, "SensorKit output"
+            ).get("source-record")
 
         observation_identity = matching_identifier(observation)
         document_identity = matching_identifier(document)
@@ -2161,6 +3648,28 @@ def validate_exchange_bundle(
                 f"{label} Health Connect glucose entry[{index}] Specimen meaning "
                 "does not match its exact adapter-specific profile"
             )
+
+
+def exchange_bundle_diagnostics(
+    resource: dict[str, Any],
+    label: str = "exchange Bundle",
+    active_adapter_profiles: set[str] | None = None,
+) -> list[dict[str, str]]:
+    """Return the one stable structural diagnostic used by the cross-SDK corpus."""
+    try:
+        validate_exchange_bundle(resource, label, active_adapter_profiles)
+    except ProducerValidationError as error:
+        if error.diagnostic is not None:
+            return [error.diagnostic]
+        return [
+            {
+                "code": "mobile-exchange.unclassified",
+                "reason": str(error),
+                "location": "Bundle",
+                "severity": "error",
+            }
+        ]
+    return []
 
 
 def validate_mobile_semantic_vectors(
@@ -2474,17 +3983,25 @@ def reject_validator_errors(outcome: dict[str, Any], label: str) -> None:
         )
 
 
-def truncated_validator_log(value: str | None) -> str:
+def truncated_validator_log(value: str | bytes | None) -> str:
     """Return a bounded, printable process log for a terminal infrastructure failure."""
     if not value:
         return "<empty>"
+    if isinstance(value, bytes):
+        value = value.decode("utf-8", errors="replace")
     normalized = value.replace("\x00", "\\0").strip()
     if len(normalized) <= VALIDATOR_LOG_LIMIT:
         return normalized
     return "…" + normalized[-VALIDATOR_LOG_LIMIT:]
 
 
-def run_validator(validator: Path, packages: list[Path], resources: list[Path]) -> None:
+def run_validator(
+    validator: Path,
+    packages: list[Path],
+    resources: list[Path],
+    *,
+    allow_example_urls: bool = False,
+) -> None:
     validator = resolve_unlinked_regular_file(validator, "Validator JAR")
     packages = [
         resolve_unlinked_regular_file(package, "FHIR package")
@@ -2506,6 +4023,8 @@ def run_validator(validator: Path, packages: list[Path], resources: list[Path]) 
         ]
         for package in packages:
             command.extend(("-ig", str(package)))
+        if allow_example_urls:
+            command.extend(("-allow-example-urls", "true"))
         command.extend(("-output", str(output)))
         command.extend(str(resource) for resource in ordered_resources)
 
@@ -2513,13 +4032,24 @@ def run_validator(validator: Path, packages: list[Path], resources: list[Path]) 
         for attempt in range(1, VALIDATOR_ATTEMPTS + 1):
             if output.exists() or output.is_symlink():
                 output.unlink()
-            result = subprocess.run(
-                command,
-                check=False,
-                text=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
-            )
+            try:
+                result = subprocess.run(
+                    command,
+                    check=False,
+                    text=True,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT,
+                    timeout=VALIDATOR_TIMEOUT_SECONDS,
+                )
+            except subprocess.TimeoutExpired as error:
+                process_log = truncated_validator_log(error.stdout)
+                last_failure = (
+                    "FHIR Validator timed out after "
+                    f"{VALIDATOR_TIMEOUT_SECONDS} seconds; log: {process_log}"
+                )
+                if attempt < VALIDATOR_ATTEMPTS:
+                    continue
+                raise ProducerValidationError(last_failure) from error
             process_log = truncated_validator_log(result.stdout)
             if not output.is_file() or output.is_symlink():
                 last_failure = (
@@ -2560,19 +4090,39 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--package", action="append", default=[])
     parser.add_argument("--validator", type=Path)
     parser.add_argument("--structural-only", action="store_true")
+    parser.add_argument(
+        "--allow-example-urls",
+        action="store_true",
+        help=(
+            "allow example.org identifiers in demonstration fixtures; omitted by "
+            "default so producer validation fails closed"
+        ),
+    )
     arguments = parser.parse_args(argv)
     try:
         manifest_path = resolve_unlinked_regular_file(arguments.manifest, "manifest")
         manifest, resources = validate_manifest(manifest_path)
         if arguments.structural_only:
-            if arguments.package or arguments.validator is not None:
-                raise ProducerValidationError("--structural-only cannot be combined with package or Validator arguments")
+            if (
+                arguments.package
+                or arguments.validator is not None
+                or arguments.allow_example_urls
+            ):
+                raise ProducerValidationError(
+                    "--structural-only cannot be combined with package, Validator, "
+                    "or example-URL arguments"
+                )
         else:
             if arguments.validator is None:
                 raise ProducerValidationError("--validator is required unless --structural-only is used")
             supplied = parse_package_arguments(arguments.package)
             packages = validate_packages(manifest, supplied)
-            run_validator(arguments.validator, packages, resources)
+            run_validator(
+                arguments.validator,
+                packages,
+                resources,
+                allow_example_urls=arguments.allow_example_urls,
+            )
     except ProducerValidationError as error:
         print(f"Producer conformance failed: {error}", file=sys.stderr)
         return 1

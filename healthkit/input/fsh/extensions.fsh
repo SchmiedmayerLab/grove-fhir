@@ -49,9 +49,10 @@ Context: Observation
 * extension[sourceIdentifier].value[x] 1..1 MS
 * extension[sourceIdentifier].value[x] only Identifier
 * extension[sourceIdentifier].valueIdentifier.system 1..1 MS
-* extension[sourceIdentifier].valueIdentifier.system = $healthKitObjectId (exactly)
 * extension[sourceIdentifier].valueIdentifier.value 1..1 MS
-* extension[sourceIdentifier].valueIdentifier.value obeys healthkit-object-id-1
+* extension[sourceIdentifier].valueIdentifier.type 1..1 MS
+* extension[sourceIdentifier].valueIdentifier.type = $groveIdentifierRole#source-record
+* extension[sourceIdentifier].valueIdentifier.value obeys healthkit-opaque-identifier-value-1
 * extension[effectivePeriod].value[x] 1..1 MS
 * extension[effectivePeriod].value[x] only Period
 * extension[effectivePeriod].valuePeriod.start 1..1 MS

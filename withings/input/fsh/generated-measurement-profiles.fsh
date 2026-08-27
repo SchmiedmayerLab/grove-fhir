@@ -195,7 +195,7 @@ Description: "The average heart rate across one sleep session, normalized to UCU
 * effective[x] only Period
 * effectivePeriod.end 1..1 MS
 * method 1..1 MS
-* method = https://grovealliance.org/fhir/mobile/CodeSystem/grove-aggregation-method#session-mean "Session mean"
+* method = https://grovealliance.org/fhir/mobile/CodeSystem/grove-aggregation-method#session-mean
 * value[x] only Quantity
 * valueQuantity.value 1..1 MS
 * valueQuantity.comparator 0..0
@@ -297,8 +297,10 @@ InstanceOf: WithingsBodyFatMass
 Usage: #example
 Title: "Body Fat Mass Example"
 Description: "A conformant Body Fat Mass instance."
-* identifier[sourceRecordId].system = $providerSourceRecordId
-* identifier[sourceRecordId].value = "v1:withings|acct-7f3a9c|body-fat-mass|record-body-fat-mass"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* identifier[sourceRecord].value = "v2:test-key:1:Vwkv702Z7L9xjzeO1-N0NTndYtIbwDWiDk4AuaXyRCY"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
+* identifier[sourceOutput].value = "v2:test-key:1:AdNe9RgYeWnHkgmqobHSyjtN1QMPJ7lR4n5luDCWIkU"
 * status = #final
 * code = $loinc#73708-0 "Body fat [Mass] Calculated"
 * extension[provider].valueCode = #withings
@@ -314,8 +316,10 @@ InstanceOf: WithingsCorrectedQtInterval
 Usage: #example
 Title: "Corrected QT Interval Example"
 Description: "A conformant Corrected QT Interval instance."
-* identifier[sourceRecordId].system = $providerSourceRecordId
-* identifier[sourceRecordId].value = "v1:withings|acct-7f3a9c|corrected-qt-interval|record-corrected-qt-interval"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* identifier[sourceRecord].value = "v2:test-key:1:ipyraMUDWQPtUAZdO-bbV_taluarfA3gt5kFgoTnINY"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
+* identifier[sourceOutput].value = "v2:test-key:1:VsCkzjM37Iv4QL0bC0rcBK9NN7Ip5iwGti-kvXJVh2U"
 * status = #final
 * code = $loinc#8636-3 "Q-T interval corrected"
 * extension[provider].valueCode = #withings
@@ -331,8 +335,10 @@ InstanceOf: WithingsExtracellularWaterMass
 Usage: #example
 Title: "Extracellular Water Mass Example"
 Description: "A conformant Extracellular Water Mass instance."
-* identifier[sourceRecordId].system = $providerSourceRecordId
-* identifier[sourceRecordId].value = "v1:withings|acct-7f3a9c|extracellular-water-mass|record-extracellular-water-mass"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* identifier[sourceRecord].value = "v2:test-key:1:FU04KQYT7DrmFyeFsdGKu5eBcJ9TtZzVgX4vOusxHgg"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
+* identifier[sourceOutput].value = "v2:test-key:1:FLsUqj9XpC3sjuk6PCls7d2181MF3QVKJZLE_-mYB4k"
 * status = #final
 * code = WithingsMeasurementCS#extracellular-water-mass
 * extension[provider].valueCode = #withings
@@ -348,8 +354,10 @@ InstanceOf: WithingsIntracellularWaterMass
 Usage: #example
 Title: "Intracellular Water Mass Example"
 Description: "A conformant Intracellular Water Mass instance."
-* identifier[sourceRecordId].system = $providerSourceRecordId
-* identifier[sourceRecordId].value = "v1:withings|acct-7f3a9c|intracellular-water-mass|record-intracellular-water-mass"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* identifier[sourceRecord].value = "v2:test-key:1:AR14k-HpR_IQgi48gW8ljtONhd866Cp3R3MrczJJ0Ic"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
+* identifier[sourceOutput].value = "v2:test-key:1:gWCoLm3cEqg3Xk7OvH9ZbImVDvlHs665ac85TK0wD_g"
 * status = #final
 * code = WithingsMeasurementCS#intracellular-water-mass
 * extension[provider].valueCode = #withings
@@ -365,8 +373,10 @@ InstanceOf: WithingsMuscleMass
 Usage: #example
 Title: "Muscle Mass Example"
 Description: "A conformant Muscle Mass instance."
-* identifier[sourceRecordId].system = $providerSourceRecordId
-* identifier[sourceRecordId].value = "v1:withings|acct-7f3a9c|muscle-mass|record-muscle-mass"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* identifier[sourceRecord].value = "v2:test-key:1:kEJhLFrsqoIsUMleb6vqb8P8EEGC3-gDGdRo54dDmAc"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
+* identifier[sourceOutput].value = "v2:test-key:1:9VHC4aS3PvM58bsbazPQGjsZaVjZur1GQG2Zi4puwng"
 * status = #final
 * code = $loinc#73964-9 "Body muscle mass Calculated"
 * extension[provider].valueCode = #withings
@@ -382,8 +392,10 @@ InstanceOf: WithingsPrInterval
 Usage: #example
 Title: "PR Interval Example"
 Description: "A conformant PR Interval instance."
-* identifier[sourceRecordId].system = $providerSourceRecordId
-* identifier[sourceRecordId].value = "v1:withings|acct-7f3a9c|pr-interval|record-pr-interval"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* identifier[sourceRecord].value = "v2:test-key:1:iMaccDo5L_wTiEHOqSdwRWq4P8bHCLokLHsYnNPIufY"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
+* identifier[sourceOutput].value = "v2:test-key:1:pwIS6QkboHqXwxXzGumQE0quV58kE__BqCa6r14vdYg"
 * status = #final
 * code = $loinc#8625-6 "P-R Interval"
 * extension[provider].valueCode = #withings
@@ -399,8 +411,10 @@ InstanceOf: WithingsQrsDuration
 Usage: #example
 Title: "QRS Duration Example"
 Description: "A conformant QRS Duration instance."
-* identifier[sourceRecordId].system = $providerSourceRecordId
-* identifier[sourceRecordId].value = "v1:withings|acct-7f3a9c|qrs-duration|record-qrs-duration"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* identifier[sourceRecord].value = "v2:test-key:1:8esSeUlxsV6sOehKByO_JJOWYDr77i473m_k37JQagM"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
+* identifier[sourceOutput].value = "v2:test-key:1:okaKcYZRhsIx5YGxE9udu1mgFH6BL2AR4iyc6ypyXWI"
 * status = #final
 * code = $loinc#8633-0 "QRS duration"
 * extension[provider].valueCode = #withings
@@ -416,8 +430,10 @@ InstanceOf: WithingsQtInterval
 Usage: #example
 Title: "QT Interval Example"
 Description: "A conformant QT Interval instance."
-* identifier[sourceRecordId].system = $providerSourceRecordId
-* identifier[sourceRecordId].value = "v1:withings|acct-7f3a9c|qt-interval|record-qt-interval"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* identifier[sourceRecord].value = "v2:test-key:1:RiI5_y0dCuuz8XWtBbVGaBPBhh_7zRG4Mil5_cCKZpM"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
+* identifier[sourceOutput].value = "v2:test-key:1:tBCA8FQ84uM_RcKud5CQrR7zTPCLTCzNy2YqIgBH0Cw"
 * status = #final
 * code = $loinc#8634-8 "Q-T interval"
 * extension[provider].valueCode = #withings
@@ -433,8 +449,10 @@ InstanceOf: WithingsSleepingHeartRateAverage
 Usage: #example
 Title: "Sleeping Heart Rate Average Example"
 Description: "A conformant Sleeping Heart Rate Average instance."
-* identifier[sourceRecordId].system = $providerSourceRecordId
-* identifier[sourceRecordId].value = "v1:withings|acct-7f3a9c|sleeping-heart-rate-average|record-sleeping-heart-rate-average"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* identifier[sourceRecord].value = "v2:test-key:1:o_uaZ4W2IlyxRudLrd3SG2GVBUmkG4yHxNj_CpS1YXM"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
+* identifier[sourceOutput].value = "v2:test-key:1:8n709WfUanvlFzfOAo4JoZgA5kBVfOQwI1jLlypAXfw"
 * status = #final
 * code = WithingsMeasurementCS#sleeping-heart-rate-average
 * extension[provider].valueCode = #withings
@@ -451,8 +469,10 @@ InstanceOf: WithingsAtrialFibrillationNotificationEcg
 Usage: #example
 Title: "Withings Atrial Fibrillation Notification (ECG) Example"
 Description: "A conformant Withings Atrial Fibrillation Notification (ECG) instance."
-* identifier[sourceRecordId].system = $providerSourceRecordId
-* identifier[sourceRecordId].value = "v1:withings|acct-7f3a9c|withings-atrial-fibrillation-notification-ecg|record-withings-atrial-fibrillation-notification-ecg"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* identifier[sourceRecord].value = "v2:test-key:1:jRdJqsj7pHI_u9ope9su7Iq4l_7Cjqi4uy_SyYFLXnU"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
+* identifier[sourceOutput].value = "v2:test-key:1:mO5eKwovRQr2yULkGU2Nnty9hkNqfQeS6lwdW6Nse9o"
 * status = #final
 * code = WithingsMeasurementCS#withings-atrial-fibrillation-notification-ecg
 * extension[provider].valueCode = #withings
@@ -468,8 +488,10 @@ InstanceOf: WithingsAtrialFibrillationNotificationPpg
 Usage: #example
 Title: "Withings Atrial Fibrillation Notification (PPG) Example"
 Description: "A conformant Withings Atrial Fibrillation Notification (PPG) instance."
-* identifier[sourceRecordId].system = $providerSourceRecordId
-* identifier[sourceRecordId].value = "v1:withings|acct-7f3a9c|withings-atrial-fibrillation-notification-ppg|record-withings-atrial-fibrillation-notification-ppg"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* identifier[sourceRecord].value = "v2:test-key:1:I2wsGiDwoiyWCttfuse2BJme_51UvJUdfURsBPZhSq0"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
+* identifier[sourceOutput].value = "v2:test-key:1:s18Rd4n70ssDBE2S-pZ7ocC_CzdkOfO0OsOifCJgMgY"
 * status = #final
 * code = WithingsMeasurementCS#withings-atrial-fibrillation-notification-ppg
 * extension[provider].valueCode = #withings
@@ -485,8 +507,10 @@ InstanceOf: WithingsNerveHealthScore
 Usage: #example
 Title: "Withings Nerve Health Score Example"
 Description: "A conformant Withings Nerve Health Score instance."
-* identifier[sourceRecordId].system = $providerSourceRecordId
-* identifier[sourceRecordId].value = "v1:withings|acct-7f3a9c|withings-nerve-health-score|record-withings-nerve-health-score"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* identifier[sourceRecord].value = "v2:test-key:1:KECZMdHd6w0rg0tY2bHebn2DSD5Xz-UuLTx_S-kQDBM"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
+* identifier[sourceOutput].value = "v2:test-key:1:w3_I_PRpca1xtqioFU4HYy2nNwYhoK_WeFzS7e93x_c"
 * status = #final
 * code = WithingsMeasurementCS#withings-nerve-health-score
 * extension[provider].valueCode = #withings
@@ -502,8 +526,10 @@ InstanceOf: WithingsPulseWaveVelocity
 Usage: #example
 Title: "Withings Pulse Wave Velocity Example"
 Description: "A conformant Withings Pulse Wave Velocity instance."
-* identifier[sourceRecordId].system = $providerSourceRecordId
-* identifier[sourceRecordId].value = "v1:withings|acct-7f3a9c|withings-pulse-wave-velocity|record-withings-pulse-wave-velocity"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* identifier[sourceRecord].value = "v2:test-key:1:ZF4zytXzUDTAY4l-JlCz7k9kj96Y8ew9DSGf58dTcik"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
+* identifier[sourceOutput].value = "v2:test-key:1:qrwH5eVRGmnACZazDULUVEmkPzGx1TmEyoqTlxeANko"
 * status = #final
 * code = WithingsMeasurementCS#withings-pulse-wave-velocity
 * extension[provider].valueCode = #withings
@@ -519,8 +545,10 @@ InstanceOf: WithingsVascularAge
 Usage: #example
 Title: "Withings Vascular Age Example"
 Description: "A conformant Withings Vascular Age instance."
-* identifier[sourceRecordId].system = $providerSourceRecordId
-* identifier[sourceRecordId].value = "v1:withings|acct-7f3a9c|withings-vascular-age|record-withings-vascular-age"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* identifier[sourceRecord].value = "v2:test-key:1:bPy8ntyAYbNJq9Md-93oAR0ToZYG7tKNVEk17SO1DTA"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
+* identifier[sourceOutput].value = "v2:test-key:1:LBrfGk5tXLxdZXzaER8g0H7S33r7IFkRy8LFqjywgok"
 * status = #final
 * code = WithingsMeasurementCS#withings-vascular-age
 * extension[provider].valueCode = #withings
@@ -536,8 +564,10 @@ InstanceOf: WithingsVisceralFatIndex
 Usage: #example
 Title: "Withings Visceral Fat Index Example"
 Description: "A conformant Withings Visceral Fat Index instance."
-* identifier[sourceRecordId].system = $providerSourceRecordId
-* identifier[sourceRecordId].value = "v1:withings|acct-7f3a9c|withings-visceral-fat-index|record-withings-visceral-fat-index"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* identifier[sourceRecord].value = "v2:test-key:1:0jMzJc3sj32tX5ikXIXCxbSXkG8T65Vs8qDIre4qK4s"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
+* identifier[sourceOutput].value = "v2:test-key:1:sPTu7LZM1preDTXb3lcJOQZ_Yr15xTox6zvhr3m1RgQ"
 * status = #final
 * code = WithingsMeasurementCS#withings-visceral-fat-index
 * extension[provider].valueCode = #withings

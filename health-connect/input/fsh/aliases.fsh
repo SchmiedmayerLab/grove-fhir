@@ -6,17 +6,19 @@
 // SPDX-License-Identifier: MIT
 //
 
-Alias: $healthConnectRecordId = https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-record-id
-Alias: $healthConnectOutputId = https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-output-id
-Alias: $healthConnectSpecimenId = https://grovealliance.org/fhir/health-connect/NamingSystem/health-connect-specimen-id
 Alias: $androidPackageName = https://grovealliance.org/fhir/health-connect/NamingSystem/android-package-name
 Alias: $healthConnectSleepStage = https://grovealliance.org/fhir/health-connect/CodeSystem/health-connect-sleep-stage
 Alias: $healthConnectRelationToMeal = https://grovealliance.org/fhir/health-connect/CodeSystem/health-connect-relation-to-meal
 Alias: $healthConnectMealType = https://grovealliance.org/fhir/health-connect/CodeSystem/health-connect-meal-type
 Alias: $healthConnectRecordType = https://grovealliance.org/fhir/health-connect/CodeSystem/health-connect-record-type
+Alias: $healthConnectMindfulnessSessionType = https://grovealliance.org/fhir/health-connect/CodeSystem/health-connect-mindfulness-session-type
+Alias: $healthConnectVo2MaxMeasurementMethod = https://grovealliance.org/fhir/health-connect/CodeSystem/health-connect-vo2-max-measurement-method
+Alias: $healthConnectExerciseType = https://grovealliance.org/fhir/health-connect/CodeSystem/health-connect-exercise-type
+Alias: $groveIdentifierRole = https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role
+Alias: $groveApplicationVersionType = https://grovealliance.org/fhir/mobile/CodeSystem/grove-application-version-type
 Alias: $groveMobileMeasurement = https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement
 Alias: $groveSleepStage = https://grovealliance.org/fhir/mobile/CodeSystem/grove-sleep-stage
-Alias: $groveWriterRecordId = https://grovealliance.org/fhir/mobile/NamingSystem/grove-writer-record-id
+Alias: $groveWorkoutActivity = https://grovealliance.org/fhir/mobile/CodeSystem/grove-workout-activity
 Alias: $loinc = http://loinc.org
 Alias: $sct = http://snomed.info/sct
 Alias: $ucum = http://unitsofmeasure.org

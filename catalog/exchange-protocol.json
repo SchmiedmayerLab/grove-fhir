@@ -1,0 +1,328 @@
+{
+  "$schema": "https://grovealliance.org/fhir/catalog/schemas/exchange-protocol.schema.json",
+  "schemaVersion": 1,
+  "version": "0.6.0",
+  "protocolVersion": 2,
+  "releaseVersion": "0.6.0",
+  "fhirVersion": "4.0.1",
+  "profiles": {
+    "activeBundle": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle",
+    "conversionProvenance": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-conversion-provenance",
+    "retractionBundle": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-retraction-bundle",
+    "retractionProvenance": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-retraction-provenance"
+  },
+  "extensions": {
+    "entryNodeKey": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-exchange-entry-node-key",
+    "retractionTargetRole": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-retraction-target-role"
+  },
+  "codeSystems": {
+    "identifierRole": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+    "lifecycleEvent": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-lifecycle-event",
+    "retractionTargetRole": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-retraction-target-role"
+  },
+  "conformanceLevels": [
+    {
+      "code": "fhir-r4",
+      "authority": "FHIR R4 and the exact packages in the release manifest",
+      "validator": "HL7 FHIR Validator"
+    },
+    {
+      "code": "grove-profile",
+      "authority": "Published Grove StructureDefinitions, ValueSets, CodeSystems, and FHIRPath invariants",
+      "validator": "HL7 FHIR Validator with the exact Grove packages"
+    },
+    {
+      "code": "grove-producer",
+      "authority": "This protocol, its closed catalogs, and the shared positive and negative corpora",
+      "validator": "Any implementation that reports the exact stable Grove rule identifiers"
+    }
+  ],
+  "event": {
+    "semanticUnit": "Exactly one immutable source record revision or one retraction assertion. A transport may batch complete event Bundles without changing this unit.",
+    "bundleIdentifier": {
+      "system": "A deployment-owned absolute URI, stable for the producer instance and never reused for another key space.",
+      "valueForm": "e2:<lowercase-producer-instance-uuid>:<positive-monotonic-sequence>",
+      "soleEventBusinessIdentifier": true
+    },
+    "times": {
+      "occurred": "The source activity or retraction-detection time, carried on Provenance.occurred[x].",
+      "recorded": "The time the Provenance assertion was recorded; mandatory Provenance.recorded.",
+      "assembled": "The time the immutable exchange graph was assembled; mandatory Bundle.timestamp."
+    },
+    "retry": "An exact retry reuses the Bundle identifier, all three times, entry keys, and payload. Any source revision or content change receives a new sequence.",
+    "transport": "Bundle.type is collection. Bundle.entry.request and Bundle.entry.response are prohibited; repository application and atomicity are separate sink behavior."
+  },
+  "opaqueIdentity": {
+    "algorithm": "HMAC-SHA-256",
+    "domain": "org.grovealliance.fhir.identity.v2",
+    "preimage": "The domain, one identity kind from the closed identityKinds list, and exactly that kind's typed components in declared order. Missing, additional, or reordered components are errors. Every field is encoded as an unsigned 32-bit big-endian byte length followed by its exact UTF-8 bytes.",
+    "valueForm": "v2:<key-id>:<positive-key-epoch>:<43-character-base64url-digest-without-padding>",
+    "identifierSystem": "Deployment-owned and immutable for one identity kind, deployment scope, key id, and key epoch. A rotated key uses a new system and epoch.",
+    "keyRequirements": {
+      "minimumBytes": 32,
+      "managedSecret": true,
+      "testKeysProhibited": true
+    },
+    "privacy": "HMAC reduces disclosure of native identifiers. It does not de-identify subjects, times, clinical data, graph relationships, or attachments.",
+    "rotation": "A deployment must retain old key epochs while identifiers from them can be replayed or retracted. Losing a key ends deterministic reconciliation for that epoch; a new key must never be presented under the old system.",
+    "identityKinds": [
+      {
+        "kind": "source-record",
+        "identifierRole": "source-record",
+        "components": ["adapter-id", "source-type", "repository-scope-system", "repository-scope-value", "native-record-id"]
+      },
+      {
+        "kind": "source-output",
+        "identifierRole": "source-output",
+        "components": ["adapter-id", "source-type", "repository-scope-system", "repository-scope-value", "native-record-id", "output-role", "output-discriminator"]
+      },
+      {
+        "kind": "writer-record",
+        "identifierRole": "writer-record",
+        "components": ["writer-application-system", "writer-application-value", "writer-record-id"]
+      },
+      {
+        "kind": "provider-record",
+        "identifierRole": "source-record",
+        "components": ["provider-code", "source-type", "provider-scope-system", "provider-scope-value", "native-record-id"]
+      },
+      {
+        "kind": "source-artifact",
+        "identifierRole": "source-artifact",
+        "components": ["adapter-id", "source-type", "repository-scope-system", "repository-scope-value", "native-record-id", "format-code", "part-index"]
+      },
+      {
+        "kind": "source-context",
+        "identifierRole": "source-context",
+        "components": ["adapter-id", "context-type", "repository-scope-system", "repository-scope-value", "native-context-id"]
+      },
+      {
+        "kind": "recording-device",
+        "identifierRole": "recording-device",
+        "components": ["adapter-id", "subject-system", "subject-value", "stable-unit-token"]
+      },
+      {
+        "kind": "device-snapshot",
+        "identifierRole": "device-snapshot",
+        "components": ["event-system", "event-value", "device-role", "source-device-token"]
+      }
+    ]
+  },
+  "entryIdentity": {
+    "selection": "Use the selected complete business Identifier pair for a resource that has one. Otherwise use the entry-node Identifier carried by the Grove entry-node-key extension.",
+    "resourceIdentifierPriority": [
+      "source-output",
+      "source-artifact",
+      "source-record",
+      "writer-record",
+      "device-snapshot",
+      "recording-device"
+    ],
+    "entryNode": {
+      "system": "A deployment-owned absolute URI for event-scoped graph nodes.",
+      "domain": "org.grovealliance.fhir.entry-node.v2",
+      "components": ["event-system", "event-value", "node-role", "zero-based-ordinal"],
+      "valueForm": "n2:<node-role>:<zero-based-ordinal>:<43-character-base64url-sha256-without-padding>",
+      "digest": "Unkeyed SHA-256 over the same unsigned 32-bit length-framed UTF-8 encoding. It is a deterministic graph key, not a privacy control."
+    },
+    "fullUrl": {
+      "algorithm": "UUID version 5 over the unsigned 32-bit length-framed UTF-8 fields [Identifier.system, Identifier.value]. Identifier.system is an absolute ASCII RFC 3986 URI; an IRI must first be represented as its canonical URI form (for example IDNA plus percent-encoding) before it enters FHIR or the identity preimage.",
+      "namespace": "43df4575-bff7-5a57-9a80-2472cd2b0623",
+      "output": "urn:uuid:<lowercase RFC 4122 UUID version 5>",
+      "privacy": "UUID version 5 is formatting only and makes no concealment claim."
+    }
+  },
+  "lifecycle": {
+    "active": {
+      "activitySystem": "http://terminology.hl7.org/CodeSystem/iso-21089-lifecycle",
+      "activityCode": "transform",
+      "codingCardinality": "Exactly one coding from the ISO lifecycle system and zero codings from the Grove lifecycle system; translations from unrelated systems remain open.",
+      "shape": "One active Bundle contains every output derived from exactly one source record revision and exactly one conversion Provenance targeting every output.",
+      "entryResourcePolicy": {
+        "outputResourceTypes": [
+          "Observation",
+          "DocumentReference",
+          "Specimen",
+          "VisionPrescription",
+          "MedicationAdministration",
+          "MedicationStatement"
+        ],
+        "supportingResourceTypes": [
+          "Patient",
+          "Device",
+          "ResearchStudy",
+          "ResearchSubject",
+          "PlanDefinition",
+          "QuestionnaireResponse"
+        ],
+        "lifecycleResourceType": "Provenance",
+        "otherResourceTypesAllowed": false,
+        "containedResourcesAllowed": false,
+        "supportingResourcesMustBeConnected": true,
+        "profileClaimAuthority": "catalog/profile-claims.json",
+        "rule": "Every top-level entry is one admitted source-derived output, the sole conversion Provenance, or a connected supporting resource. Every output and each Device or QuestionnaireResponse matches one exact direct-profile mode. Contained resources are prohibited so clinical output cannot bypass event identity and Provenance targeting."
+      },
+      "adapterOnlyOutputProfileClaims": {
+        "authority": "catalog/profile-claims.json",
+        "resourceTypes": [
+          "Specimen",
+          "VisionPrescription",
+          "MedicationAdministration",
+          "MedicationStatement"
+        ],
+        "rule": "Each listed active output type is admitted only under the exact one-profile adapter claim for that resourceType. An unprofiled or source-neutral output of one of these types is prohibited."
+      }
+    },
+    "retraction": {
+      "activitySystem": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-lifecycle-event",
+      "activityCode": "source-record-retracted",
+      "codingCardinality": "Exactly one coding from the Grove lifecycle system and zero codings from the ISO lifecycle system; translations from unrelated systems remain open.",
+      "meaning": "The producer records that its source no longer exposes the record and identifies the exact previously emitted graph nodes. It neither asserts clinical error nor instructs a FHIR server to delete anything.",
+      "target": "Each Provenance.target is a typed logical Reference with exactly one complete Identifier and one Grove target-role extension. Literal references and copied active clinical resources are prohibited.",
+      "targetRoles": {
+        "primary-output": {
+          "identifierRole": "source-output",
+          "resourceTypes": ["Observation", "VisionPrescription", "MedicationAdministration", "MedicationStatement"]
+        },
+        "source-artifact": {
+          "identifierRole": "source-output",
+          "resourceTypes": ["DocumentReference"]
+        },
+        "child-output": {
+          "identifierRole": "source-output",
+          "resourceTypes": ["Observation"]
+        },
+        "specimen": {
+          "identifierRole": "source-output",
+          "resourceTypes": ["Specimen"]
+        },
+        "device-snapshot": {
+          "identifierRole": "device-snapshot",
+          "resourceTypes": ["Device"]
+        }
+      },
+      "sink": "A receiver must resolve every target unambiguously under its indexed complete Identifier pair before applying its separately configured idempotent and atomic lifecycle policy."
+    }
+  },
+  "referencePolicy": {
+    "literalClosure": "Every literal Reference in an exchange Bundle resolves to exactly one Bundle.entry.fullUrl. Contained resources and #id references are prohibited in Mobile active and retraction event Bundles.",
+    "declaredType": "When Reference.type is present on a literal reference, it is the exact target resourceType token.",
+    "governedShape": "Every reference at a governed path is either one resolving Bundle fullUrl with no logical identifier, or one identifier-only logical reference with no literal, an exact allowed Reference.type, and one complete absolute-system Identifier. Identifier-only Patient references carry a deployment-scoped pseudonym and are not fabricated Bundle nodes.",
+    "paths": [
+      {"resourceType": "Observation", "path": "subject", "targetTypes": ["Patient"]},
+      {"resourceType": "Observation", "path": "device", "targetTypes": ["Device"]},
+      {"resourceType": "Observation", "path": "specimen", "targetTypes": ["Specimen"]},
+      {"resourceType": "Observation", "path": "hasMember", "targetTypes": ["Observation"]},
+      {"resourceType": "Observation", "path": "derivedFrom", "targetTypes": ["DocumentReference", "QuestionnaireResponse"]},
+      {"resourceType": "DocumentReference", "path": "subject", "targetTypes": ["Patient"]},
+      {"resourceType": "Specimen", "path": "subject", "targetTypes": ["Patient"]},
+      {"resourceType": "MedicationAdministration", "path": "subject", "targetTypes": ["Patient"]},
+      {"resourceType": "MedicationStatement", "path": "subject", "targetTypes": ["Patient"]},
+      {"resourceType": "VisionPrescription", "path": "patient", "targetTypes": ["Patient"]},
+      {"resourceType": "ResearchSubject", "path": "individual", "targetTypes": ["Patient"]},
+      {"resourceType": "ResearchSubject", "path": "study", "targetTypes": ["ResearchStudy"]},
+      {"resourceType": "ResearchStudy", "path": "protocol", "targetTypes": ["PlanDefinition"]},
+      {"resourceType": "Device", "path": "parent", "targetTypes": ["Device"]}
+    ],
+    "extensionTargets": [
+      {"url": "http://hl7.org/fhir/StructureDefinition/observation-gatewayDevice", "targetTypes": ["Device"]},
+      {"url": "http://hl7.org/fhir/StructureDefinition/workflow-researchStudy", "targetTypes": ["ResearchStudy"]}
+    ]
+  },
+  "outputModes": [
+    {
+      "code": "semantic-only",
+      "meaning": "A reviewed FHIR semantic projection is the complete admitted output."
+    },
+    {
+      "code": "source-only",
+      "meaning": "No safe semantic projection is admitted; emit the registered source-preservation artifact."
+    },
+    {
+      "code": "hybrid-required",
+      "meaning": "Emit both the semantic projection and exact source-preservation artifact in one validated graph."
+    },
+    {
+      "code": "choice",
+      "meaning": "The catalog explicitly admits equivalent alternatives and names every allowed choice."
+    }
+  ],
+  "outputCountRules": ["exactly-one", "zero-or-one", "one-per-sample", "one-per-stage", "one-per-present-field", "graph-specific"],
+  "recordingDevice": {
+    "instanceRule": "A shared FHIR Device requires a deployment-governed stable per-unit token. Manufacturer, model, hardware version, subject, or their digest cannot establish physical-instance identity.",
+    "unknownInstance": "If no stable per-unit token is available, omit the shared Device and retain model/source description only where the selected resource permits it.",
+    "snapshots": "A Grove recording Device carries both its stable per-unit recording-device identifier and a distinct event-scoped device-snapshot identifier. The snapshot is the selected entry key. Event-time firmware, software, operating-system, and application build facts are immutable snapshot data; never mutate one shared Device while importing historical events out of order.",
+    "roles": "The device-snapshot component device-role is the resource kind only: application, host, or recording-device. Participation roles such as assembler, enterer, gateway, or author never enter identity. One Device resource may participate in several roles; graph construction deduplicates the resource and retains every role relationship."
+  },
+  "payload": {
+    "attachmentSize": "When a Grove profile requires Attachment.size it is the exact pre-base64 byte count and must be between 0 and 2147483647 inclusive. Larger payloads are rejected unless a future segmented manifest profile is used.",
+    "attachmentHash": "FHIR R4 Attachment.hash is base64 SHA-1 over the pre-base64 payload bytes. Stronger integrity uses a separately defined manifest element and never changes Attachment.hash semantics.",
+    "semanticComparison": "FHIR graphs compare semantically through lossless JSON tokens that preserve decimal lexemes. Whole-Bundle byte equality is not required.",
+    "byteComparison": "Exact bytes are required for identity preimages and registered opaque, CSV, or binary payloads."
+  },
+  "testVectors": {
+    "keyHex": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+    "keyId": "test-key",
+    "epoch": "1",
+    "warning": "Public conformance key only. A production deployment must reject this key.",
+    "identities": [
+      {
+        "id": "unicode-and-separator-source-record",
+        "identityKind": "source-record",
+        "components": ["health-connect", "RestingHeartRateRecord", "urn:uuid:1f5c58aa-6ec6-4e79-a682-829a9debd3f5", "default", "record|東京"],
+        "value": "v2:test-key:1:UKY2qgzSB8--SueGxEfOhpElzHTVJ6usIUWV_KUTD6o"
+      },
+      {
+        "id": "multi-output-sample",
+        "identityKind": "source-output",
+        "components": ["health-connect", "HeartRateRecord", "urn:uuid:1f5c58aa-6ec6-4e79-a682-829a9debd3f5", "default", "record-heart-001", "sample", "2026-08-19T10:30:00.000000000Z|0"],
+        "value": "v2:test-key:1:PQCWz9dZSrJm-KrbhbkckGeowkjhSSwWDRCVuF3VfXw"
+      },
+      {
+        "id": "provider-account-complete-pair",
+        "identityKind": "provider-record",
+        "components": ["withings", "measure", "https://accounts.example.org", "patient|α", "17348211"],
+        "value": "v2:test-key:1:p3NFdQ-hmHon98JG7cmCbLncbAmNkjkBa5sYocSr6pw"
+      },
+      {
+        "id": "writer-record-complete-application-pair",
+        "identityKind": "writer-record",
+        "components": ["https://applications.example.org", "com.withings.wiscale2", "logical-record-001"],
+        "value": "v2:test-key:1:N4QSlWU6sNp9ahfyfSRTUO0K_VIZZoy-Lw3JTNrDzP4"
+      },
+      {
+        "id": "healthkit-medication-source-context",
+        "identityKind": "source-context",
+        "components": ["healthkit", "medication-health-concept", "urn:uuid:1f5c58aa-6ec6-4e79-a682-829a9debd3f5", "default", "2f8a51c6-9d34-4e07-b2f1-63c8ad905e12"],
+        "value": "v2:test-key:1:nq3ZogmXHSznC1LC1wNMm7KTQChgapPzmjmGeB9RHcw"
+      },
+      {
+        "id": "recording-device-per-unit",
+        "identityKind": "recording-device",
+        "components": ["healthkit", "https://study.example.org/participants", "participant-001", "watch-unit-token-001"],
+        "value": "v2:test-key:1:MWGV3Vfk0jfLIr0nowr_I7TAwoqGtpSkxUi1d8FxTnE"
+      }
+    ],
+    "event": {
+      "system": "https://study.example.org/fhir/NamingSystem/grove-event-v2",
+      "producerInstance": "1f5c58aa-6ec6-4e79-a682-829a9debd3f5",
+      "sequence": "42",
+      "value": "e2:1f5c58aa-6ec6-4e79-a682-829a9debd3f5:42"
+    },
+    "entryNode": {
+      "system": "https://study.example.org/fhir/NamingSystem/grove-entry-node-v2",
+      "role": "conversion-provenance",
+      "ordinal": "0",
+      "value": "n2:conversion-provenance:0:SwGD7C4DT5_9kgIOQ9h7W8I4UdwJPuEOnkh2TgQVwko",
+      "fullUrl": "urn:uuid:9908feb7-0370-5f06-a689-f8afa210eb41"
+    },
+    "fullUrls": [
+      {
+        "id": "unicode-value-and-escaped-system",
+        "system": "https://xn--fsq.example/%E8%AD%98%E5%88%A5%E5%AD%90",
+        "value": "café|東京",
+        "fullUrl": "urn:uuid:d35e4203-71f6-595c-bd1b-306b8414974e"
+      }
+    ]
+  }
+}

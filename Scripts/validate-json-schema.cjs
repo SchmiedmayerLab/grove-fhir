@@ -12,6 +12,7 @@
 const fs = require("node:fs");
 const path = require("node:path");
 const Ajv2020 = require("ajv/dist/2020");
+const addFormats = require("ajv-formats");
 
 function usage() {
   console.error(
@@ -39,8 +40,9 @@ try {
   const ajv = new Ajv2020({
     allErrors: true,
     strict: true,
-    validateFormats: false,
+    validateFormats: true,
   });
+  addFormats(ajv);
   const validate = ajv.compile(readJson(schemaPath));
   let valid = true;
   for (const instancePath of instancePaths) {

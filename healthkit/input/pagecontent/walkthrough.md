@@ -6,121 +6,109 @@ SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTR
 SPDX-License-Identifier: MIT
 -->
 
-This walkthrough follows one HealthKit heart-rate sample from `HKQuantitySample` to the uploaded exchange Bundle.
-Every value below comes from the linked example instances, so a first producer run can be diffed against them field by field.
+This walkthrough follows one HealthKit heart-rate sample into one Grove 0.6.0 source-record
+event. The linked adapter examples are readable documentation fixtures; the exact operational
+Bundle shape is the [Mobile exchange example](https://grovealliance.org/fhir/mobile/Bundle-GroveMobileExchangeBundleExample.html).
 
-### 1. The sample and the conversion context
+### 1. Establish conversion context
 
-The app has already fetched the sample; the converter never queries HealthKit itself.
+The application fetches the HealthKit object before conversion. The producer supplies facts the
+sample cannot establish: the receiving-system Patient reference, a stable HealthKit-store scope,
+the converting application and host snapshots, an event-system/producer sequence, and a managed
+v2 HMAC key identifier and positive epoch. The public conformance key used by examples is forbidden
+in production.
 
-```swift
-// HKQuantitySample fetched by the app:
-//   uuid       9A2F4D6E-1C3B-4F8A-B7D0-5E6A8C9B0D1F
-//   type       HKQuantityTypeIdentifierHeartRate
-//   quantity   76 count/min
-//   startDate  2026-08-20 09:12:45.128 -07:00 (equal to endDate: a point result)
-//   device     nil
+For the illustrated record, the source coordinates are:
 
-let context = HealthKitFHIRConversionContext(
-    subject: Reference(reference: "https://study.example.org/fhir/Patient/participant-hk-001"),
-    converter: HealthKitFHIRApplication(
-        name: "Grove Study",
-        bundleIdentifier: "org.grovealliance.example",
-        version: "1.4.0"
-    ),
-    graphIdentifierSystem: "https://study.example.org/fhir/identifiers/mobile-graph"
-)
-let converter = HealthKitFHIRConverter()
-let conversion = try converter.convert(sample, context: context)
-upload(conversion.bundle)
+```text
+adapter-id:             healthkit
+source-type:            HKQuantityTypeIdentifierHeartRate
+repository-scope:       <complete deployment-owned Identifier pair>
+native-record-id:       lowercase canonical HKObject.uuid
+output-role:            primary-output
+output-discriminator:   heart-rate
 ```
 
-Three inputs cannot be derived from the sample: the subject as the receiving system knows the participant, the converting application's identity, and the deployment-owned `graphIdentifierSystem` namespace for the graph nodes that exist only because of this export.
+Every field is length-framed as exact UTF-8 under the domain and identity kind in
+`catalog/exchange-protocol.json`; no delimiter grammar or clear native UUID crosses the wire.
 
-### 2. The catalog row that admits it
+### 2. Require an admitted catalog row
 
-Conversion is admitted only when the frozen adapter catalog carries a `supported` row for the exact sample type.
-The [status matrix](status-matrix.html) row for `HKQuantityTypeIdentifierHeartRate` is `supported`, maps to measurement `heart-rate`, and requires the [Grove Mobile Heart Rate](https://grovealliance.org/fhir/mobile/StructureDefinition-grove-mobile-heart-rate.html) profile beside [HealthKit Observation](StructureDefinition-healthkit-observation.html).
-Any type without a `supported` row fails closed; no best-effort Observation is emitted.
+The [status matrix](status-matrix.html) row for
+`HKQuantityTypeIdentifierHeartRate` is `supported`, selects measurement `heart-rate`, and requires
+both [FHIR R4 Heart Rate](http://hl7.org/fhir/R4/heartrate.html) and
+[HealthKit Observation](StructureDefinition-healthkit-observation.html). An absent, deferred, or
+intentionally unsupported row fails closed; it never falls back to a generic Observation.
 
-### 3. The Observation
+### 3. Emit separate source and output identities
 
-The [exchange heart-rate Observation](Observation-HealthKitExchangeHeartRateObservationExample.html) claims both profile canonicals, keeps LOINC `8867-4` as the normative meaning, and retains the exact sample type as one adapter-lineage coding.
+The [heart-rate Observation](Observation-HealthKitHeartRateObservationExample.html) carries exactly
+one source-record identity and one source-output identity. Their deployment-owned systems bind the
+kind, key id, and epoch; their values are canonical v2 HMAC results:
 
 ```json
-"identifier": [{
-  "system": "https://grovealliance.org/fhir/healthkit/NamingSystem/healthkit-object-id",
-  "value": "9a2f4d6e-1c3b-4f8a-b7d0-5e6a8c9b0d1f"
-}],
-"effectiveDateTime": "2026-08-20T09:12:45.128-07:00",
-"issued": "2026-08-20T16:12:47.000Z",
-"valueQuantity": { "value": 76, "code": "/min", "system": "http://unitsofmeasure.org", "unit": "beats/minute" }
+"identifier": [
+  {
+    "type": { "coding": [{
+      "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+      "code": "source-record"
+    }]},
+    "system": "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1",
+    "value": "v2:test-key:1:2LnL2_8DgGsZjeX6FiAKlO9JhhFmX7GYJxaMvLGay9k"
+  },
+  {
+    "type": { "coding": [{
+      "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+      "code": "source-output"
+    }]},
+    "system": "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1",
+    "value": "v2:test-key:1:T_TL24HHsbiJz6bM9kC7_uu59s4qFbTtxtRaOwfBFF4"
+  }
+]
 ```
 
-`effectiveDateTime` is the sample's own measurement instant, millisecond-rounded with the source offset preserved; `issued` is the conversion instant.
-The sample has no `HKDevice`, so no recording Device is emitted and `Observation.device` stays absent rather than guessed.
+`Resource.id` remains optional and repository-assigned. `effectiveDateTime` is the source
+measurement instant, not conversion time. The exact source type remains an adapter-lineage coding
+beside LOINC `8867-4`; the optional motion-context component is admitted only for this result.
 
-### 4. The application Device
+### 4. Snapshot devices honestly
 
-The [converting application](Device-HealthKitApplicationDeviceExample.html) is a [Grove Application Device](https://grovealliance.org/fhir/mobile/StructureDefinition-grove-application-device.html), not a recording device.
+The [recording Device](Device-HealthKitRecordingDeviceExample.html) exists only because the caller
+supplied a governed stable per-unit token. It carries both a stable `recording-device` identity and
+an event-scoped `device-snapshot` identity. Descriptive manufacturer/model/version fields alone
+would require the Device to be omitted.
 
-```json
-"identifier": [{
-  "system": "https://grovealliance.org/fhir/healthkit/NamingSystem/apple-bundle-id",
-  "value": "org.grovealliance.example"
-}],
-"deviceName": [{ "type": "user-friendly-name", "name": "Grove Study" }]
-```
+The [converting application](Device-HealthKitApplicationDeviceExample.html) and
+[host](Device-HealthKitHostDeviceExample.html) are distinct immutable snapshots linked through
+`Device.parent`. Application release and build are separate typed versions; operating-system
+version belongs to the host. An Apple bundle-identifier pair names the application product but is
+not an installation, host, account, or physical-device identity.
 
-Its MDC-typed software-version slice carries the exact converter version `1.4.0`.
+### 5. Record the transform once
 
-### 5. The conversion Provenance
+The [conversion Provenance](Provenance-HealthKitConversionProvenanceExample.html) targets the
+output, records the source activity time separately from mandatory `recorded`, names the converter
+as assembler, and carries the same typed source-record Identifier as its source entity. In an
+operational event its entry gets an event-scoped `n2:` node key; Provenance does not invent a
+second event business identifier.
 
-The [conversion Provenance](Provenance-HealthKitExchangeConversionProvenanceExample.html) records the transform: the application is the `assembler` agent, and the HealthKit object identifier is the sole source entity.
+### 6. Assemble one immutable event
 
-```json
-"agent": [{ "type": { "coding": [{ "code": "assembler" }] },
-            "who": { "reference": "urn:uuid:88912f8b-fd4e-51f9-8a72-ab97fde584d9" } }],
-"entity": [{ "role": "source",
-             "what": { "identifier": {
-               "system": "https://grovealliance.org/fhir/healthkit/NamingSystem/healthkit-object-id",
-               "value": "9a2f4d6e-1c3b-4f8a-b7d0-5e6a8c9b0d1f" } } }],
-"target": [{ "reference": "urn:uuid:697f6d32-7fb0-54d3-ba0e-8d933f6e5457" }]
-```
+The operational Bundle conforms to
+[Grove Mobile Exchange Bundle](https://grovealliance.org/fhir/mobile/StructureDefinition-grove-mobile-exchange-bundle.html):
 
-The writing application appears alongside it as the `author` agent.
-An `HKSource` always carries a bundle identifier and is an application, so the adapter records it rather than guessing at hardware from a name or product type; hardware attribution is `HKDevice`'s job, and it travels as the recording device.
+- `Bundle.identifier` alone owns `e2:<producer-instance-uuid>:<positive-sequence>`;
+- the Bundle contains every output for exactly this source-record revision and exactly one
+  conversion Provenance;
+- every entry has one selected complete entry key and a deterministic lowercase UUIDv5 `fullUrl`;
+- `Bundle.timestamp`, `Provenance.occurred[x]`, and `Provenance.recorded` keep their separate
+  meanings; and
+- collection entries contain no FHIR request/response operations.
 
-### 6. The exchange Bundle
+An exact retry reuses the event identity, all three times, entry keys, and payload. Changed source
+content or revision receives a new event. A later source deletion produces a separate
+[retraction Bundle](https://grovealliance.org/fhir/mobile/Bundle-GroveMobileRetractionBundleExample.html)
+that identifies prior outputs without copying their clinical values or issuing a server DELETE.
 
-The [exchange Bundle](Bundle-HealthKitExchangeBundleExample.html) is a [Grove Mobile Exchange Bundle](https://grovealliance.org/fhir/mobile/StructureDefinition-grove-mobile-exchange-bundle.html): a `collection` whose three entries each carry one complete entry business identifier and a fullUrl derived from it.
-Its [JSON representation](Bundle-HealthKitExchangeBundleExample.json) is the complete upload payload.
-
-### Why each identifier is what it is
-
-| Graph node | Identifier system | Value | Entry fullUrl |
-|---|---|---|---|
-| Observation | HealthKit object namespace | `9a2f4d6e-1c3b-4f8a-b7d0-5e6a8c9b0d1f` | `urn:uuid:697f6d32-7fb0-54d3-ba0e-8d933f6e5457` |
-| Application Device | Apple bundle namespace | `org.grovealliance.example` | `urn:uuid:88912f8b-fd4e-51f9-8a72-ab97fde584d9` |
-| Provenance | caller graph namespace | `9a2f4d6e-…\|conversion-provenance` | `urn:uuid:16d49bf9-a6dc-58da-bc29-7146da34831c` |
-| Bundle | caller graph namespace | `9a2f4d6e-…\|exchange-bundle` | none; the Bundle is the payload |
-
-The Observation reuses the sample's own `HKObject.uuid` under the [HealthKit Object Identifier](NamingSystem-healthkit-object-id.html) namespace, and the application reuses its Apple bundle identifier: both identities exist independently of this export.
-The Provenance and the Bundle exist only because of this export, so their values are minted deterministically in the caller's `graphIdentifierSystem` from the object UUID plus a role suffix.
-Each fullUrl is the UUIDv5 of the identifier's system, a vertical bar, then its value, under the frozen namespace `a9a39cf1-c944-5d15-a3c2-c395969ea101`, so converting the same sample twice yields byte-identical identities and re-sends deduplicate on the server.
-`Resource.id` plays no part in source identity; a logical id appears only when a FHIR repository assigns one.
-
-### Validate the output
-
-Validate the extracted Observation with both packages and both profile canonicals, exactly as described in [Implement and validate](implementation.html):
-
-```sh
-java -jar validator_cli.jar observation.json \
-  -version 4.0.1 \
-  -ig grove-packages/mobile/package.tgz \
-  -ig grove-packages/healthkit/package.tgz \
-  -profile https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-observation \
-  -profile https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-heart-rate
-```
-
-Validation proves the shape, identifiers, and terminology; it cannot prove the catalog admitted the type or that identifier disclosure was authorized, so test those against representative source fixtures.
+The [HealthKit study documentation Bundle](Bundle-HealthKitStudyBundleExample.html) collects more
+examples for human inspection. It is explicitly not the operational exchange unit.

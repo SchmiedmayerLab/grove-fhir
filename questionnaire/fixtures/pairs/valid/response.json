@@ -71,7 +71,7 @@
     },
     {
       "linkId": "mood",
-      "text": "Mood",
+      "text": "Stimmung",
       "answer": [
         {
           "valueCoding": {

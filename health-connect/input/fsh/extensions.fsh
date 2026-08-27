@@ -47,3 +47,19 @@ Context: Observation
 * value[x] 1..1 MS
 * value[x] only string
 
+Extension: HealthConnectMindfulnessSessionType
+Id: health-connect-mindfulness-session-type
+Title: "Health Connect Mindfulness Session Type"
+Description: "The exact closed AndroidX Health Connect 1.1 mindfulness-session type, including UNKNOWN when that is the source value."
+Context: Observation
+* value[x] 1..1 MS
+* value[x] only Coding
+* valueCoding from HealthConnectMindfulnessSessionTypeVS (required)
+
+Extension: HealthConnectMindfulnessTitle
+Id: health-connect-mindfulness-title
+Title: "Health Connect Mindfulness Title"
+Description: "The non-blank title supplied by a Health Connect MindfulnessSessionRecord. Blank source strings are omitted."
+Context: Observation
+* value[x] 1..1 MS
+* value[x] only string

@@ -1,7 +1,8 @@
 {
+  "$schema": "https://grovealliance.org/fhir/catalog/schemas/catalog-contracts.schema.json",
   "schemaVersion": 1,
   "fhirVersion": "4.0.1",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "canonical": "https://grovealliance.org/fhir/sensor",
   "codeSystem": "https://grovealliance.org/fhir/sensor/CodeSystem/grove-recording-format",
   "valueSet": "https://grovealliance.org/fhir/sensor/ValueSet/grove-recording-format",
@@ -20,7 +21,6 @@
   "mediaTypes": {
     "text/csv": "Comma-separated values",
     "application/fhir+json": "FHIR JSON",
-    "application/vnd.grovealliance.fhir-array+json": "Grove FHIR resource array",
     "application/vnd.grovealliance.native+json": "Grove native recording JSON",
     "application/vnd.grovealliance.provider+json": "Grove provider recording JSON",
     "application/vnd.grovealliance.ppg": "Grove photoplethysmogram binary",
@@ -466,25 +466,25 @@
         }
       ]
     },
-    "fhir-resource-array": {
-      "title": "FHIR Resource Array",
-      "contentType": "application/vnd.grovealliance.fhir-array+json",
+    "fhir-collection-bundle": {
+      "title": "FHIR R4 Collection Bundle",
+      "contentType": "application/fhir+json",
       "status": "active",
       "specification": {
         "encoding": "UTF-8.",
-        "structure": "A single JSON array; each element is one complete FHIR R4 resource in FHIR JSON representation, in source sample order.",
-        "resources": "Every element conforms to the profile set the emitting adapter declares for its stream; the array carries resources of one stream and one batch only.",
-        "emptyBatch": "An empty batch emits no document rather than an empty array."
+        "structure": "One complete FHIR R4 Bundle in JSON representation with Bundle.type = collection, a mandatory timestamp, and one entry per source sample in source order. Every entry has a fullUrl and resource; request, response, and search are absent.",
+        "resources": "Every entry resource conforms to the profile set the emitting adapter declares for its stream; one Bundle carries one stream and one source batch only.",
+        "emptyBatch": "An empty batch emits no document rather than an empty Bundle."
       }
     },
-    "fhir-resource": {
-      "title": "FHIR Resource",
+    "fhir-r4-resource": {
+      "title": "FHIR R4 Resource",
       "contentType": "application/fhir+json",
       "status": "active",
       "specification": {
         "encoding": "UTF-8.",
         "structure": "One complete provider-issued FHIR R4 resource in FHIR JSON representation, byte-preserved exactly as the source platform delivered it.",
-        "fhirVersion": "R4 only. A payload in another release is not admitted under this code: its media type would misdeclare the release to any receiver that reads only the media type. A release other than R4 needs its own registered format before it can be carried.",
+        "fhirVersion": "FHIR R4 (4.0.x) only. DSTU2 and every other release are rejected before a DocumentReference is emitted; a future admitted release requires its own format code and media contract.",
         "provenance": "The carrying document records the issuing source; Grove never asserts conformance over another issuer's resource.",
         "scope": "One document carries exactly one clinical record's FHIR payload."
       }
@@ -525,12 +525,12 @@
       "status": "active",
       "specification": {
         "primitives": {
-          "varint": "Unsigned LEB128: little-endian groups of 7 bits, high bit set on every byte except the last; signed integers are first truncated to their 64-bit two's-complement pattern, so negative values occupy ten bytes.",
-          "float64": "IEEE-754 binary64 bit pattern, big-endian (network byte order), eight bytes.",
+          "varint": "Canonical unsigned LEB128: little-endian groups of 7 bits, high bit set on every byte except the last, using the shortest possible encoding. Signed integers are first converted to their 64-bit two's-complement bit pattern, so negative values occupy exactly ten bytes. Decoders reject overlong encodings and values outside 64 bits.",
+          "float64": "Finite IEEE-754 binary64 bit pattern, big-endian (network byte order), eight bytes. NaN and infinities are prohibited; negative zero is canonicalized to positive zero before encoding.",
           "boolean": "One byte: 0x00 false, 0x01 true.",
-          "string": "Varint UTF-8 byte count, then the UTF-8 bytes.",
+          "string": "Varint UTF-8 byte count, then exact well-formed UTF-8 bytes. Unicode normalization is not performed; unpaired surrogate code points and malformed UTF-8 are rejected.",
           "array": "Varint element count, then the elements in order.",
-          "set": "Varint element count, then the elements; element order is not significant and receivers must not rely on it.",
+          "set": "Canonical set: reject duplicate logical values, sort unique values in ascending numeric order, then encode the count and elements. Decoders reject duplicate or non-ascending elements.",
           "optional": "One boolean presence byte; when true, the value follows."
         },
         "file": "Varint record count, then that many PPG records.",

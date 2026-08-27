@@ -17,6 +17,7 @@ import tarfile
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -59,6 +60,142 @@ def load_generated(filename: str) -> dict:
 
 
 class QuestionnaireContractTests(unittest.TestCase):
+    def test_official_validator_fails_closed_on_malformed_or_crashed_output(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            validator_path = root / "validator.jar"
+            package_path = root / "package.tgz"
+            resource_path = root / "questionnaire.json"
+            outcome_path = root / "outcome.json"
+            fhir_home = root / "fhir-home"
+            validator_path.write_bytes(b"validator")
+            package_path.write_bytes(b"package")
+            resource_path.write_text(
+                '{"resourceType":"Questionnaire"}\n', encoding="utf-8"
+            )
+            fhir_home.mkdir()
+
+            def malformed(
+                command: list[str], **_: object
+            ) -> subprocess.CompletedProcess[str]:
+                output = Path(command[command.index("-output") + 1])
+                output.write_text("{}\n", encoding="utf-8")
+                return subprocess.CompletedProcess(command, 0, stdout="", stderr="")
+
+            with mock.patch.object(
+                fhir_validator.subprocess, "run", side_effect=malformed
+            ) as run:
+                with self.assertRaisesRegex(RuntimeError, "not an OperationOutcome"):
+                    fhir_validator.validate_one(
+                        validator_path,
+                        package_path,
+                        resource_path,
+                        outcome_path,
+                        False,
+                        fhir_home,
+                    )
+                self.assertEqual(run.call_count, 2)
+
+            def crashed(
+                command: list[str], **_: object
+            ) -> subprocess.CompletedProcess[str]:
+                output = Path(command[command.index("-output") + 1])
+                output.write_text(
+                    json.dumps(
+                        {
+                            "resourceType": "OperationOutcome",
+                            "issue": [
+                                {
+                                    "severity": "information",
+                                    "code": "informational",
+                                }
+                            ],
+                        }
+                    ),
+                    encoding="utf-8",
+                )
+                return subprocess.CompletedProcess(
+                    command, 2, stdout="", stderr="validator crashed"
+                )
+
+            with mock.patch.object(
+                fhir_validator.subprocess, "run", side_effect=crashed
+            ) as run:
+                with self.assertRaisesRegex(RuntimeError, "unexpected exit code"):
+                    fhir_validator.validate_one(
+                        validator_path,
+                        package_path,
+                        resource_path,
+                        outcome_path,
+                        False,
+                        fhir_home,
+                    )
+                self.assertEqual(run.call_count, 2)
+
+            with mock.patch.object(
+                fhir_validator.subprocess,
+                "run",
+                side_effect=subprocess.TimeoutExpired(
+                    cmd=["java"],
+                    timeout=fhir_validator.VALIDATOR_TIMEOUT_SECONDS,
+                    output=b"partial validator log",
+                ),
+            ) as run:
+                with self.assertRaisesRegex(RuntimeError, "timed out after 180 seconds"):
+                    fhir_validator.validate_one(
+                        validator_path,
+                        package_path,
+                        resource_path,
+                        outcome_path,
+                        False,
+                        fhir_home,
+                    )
+                self.assertEqual(run.call_count, 2)
+
+    def test_official_validator_accepts_a_trustworthy_negative_outcome(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            resource_path = root / "questionnaire.json"
+            outcome_path = root / "outcome.json"
+            resource_path.write_text(
+                '{"resourceType":"Questionnaire"}\n', encoding="utf-8"
+            )
+
+            def rejected(
+                command: list[str], **_: object
+            ) -> subprocess.CompletedProcess[str]:
+                output = Path(command[command.index("-output") + 1])
+                output.write_text(
+                    json.dumps(
+                        {
+                            "resourceType": "OperationOutcome",
+                            "issue": [
+                                {
+                                    "severity": "error",
+                                    "code": "invariant",
+                                    "diagnostics": "expected rejection",
+                                }
+                            ],
+                        }
+                    ),
+                    encoding="utf-8",
+                )
+                return subprocess.CompletedProcess(command, 1, stdout="", stderr="")
+
+            with mock.patch.object(
+                fhir_validator.subprocess, "run", side_effect=rejected
+            ) as run:
+                errors, _ = fhir_validator.validate_one(
+                    root / "validator.jar",
+                    root / "package.tgz",
+                    resource_path,
+                    outcome_path,
+                    False,
+                    root / "fhir-home",
+                )
+            self.assertEqual([issue["diagnostics"] for issue in errors], ["expected rejection"])
+            self.assertEqual(run.call_count, 1)
+
     def test_fixture_writer_preserves_exact_decimal_values(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             source = Path(temporary) / "source.json"
@@ -145,7 +282,6 @@ class QuestionnaireContractTests(unittest.TestCase):
             {
                 "gqr-canonical-1",
                 "gqr-identifier-1",
-                "gqr-text-1",
                 "gqr-completion-mode-1",
             },
         )
@@ -155,7 +291,11 @@ class QuestionnaireContractTests(unittest.TestCase):
             for constraint in element.get("constraint", [])
         }
         self.assertIn(
-            "^[^|#]+[|][^|#]+$",
+            "^https?://[^|#]+[|]",
+            response_constraints["gqr-canonical-1"],
+        )
+        self.assertIn(
+            "(0|[1-9][0-9]*)[.]",
             response_constraints["gqr-canonical-1"],
         )
 
@@ -237,6 +377,41 @@ class QuestionnaireContractTests(unittest.TestCase):
             },
         )
         self.assertEqual(validator.validate_pair(questionnaire, response), [])
+
+    def test_response_item_text_is_optional_and_locale_neutral(self) -> None:
+        questionnaire = load_json(PAIR_FIXTURES / "valid/questionnaire.json")
+        response = load_json(PAIR_FIXTURES / "valid/response.json")
+        value_sets = [load_json(PAIR_FIXTURES / "valid/value-set.json")]
+
+        without_text = copy.deepcopy(response)
+        for item in validator.response_items(without_text.get("item", [])):
+            item.pop("text", None)
+        self.assertEqual(validator.validate_response(without_text), [])
+        self.assertEqual(
+            validator.validate_pair(questionnaire, without_text, value_sets),
+            [],
+        )
+
+        localized = copy.deepcopy(response)
+        localized["item"][0]["text"] = "Identität"
+        localized["item"][0]["item"][0]["text"] = "Wie heißen Sie?"
+        self.assertEqual(validator.validate_response(localized), [])
+        self.assertEqual(
+            validator.validate_pair(questionnaire, localized, value_sets),
+            [],
+        )
+
+        questionnaire_without_prompt = copy.deepcopy(questionnaire)
+        questionnaire_without_prompt["item"][0]["item"][0].pop("text")
+        self.assertIn(
+            "qg-item-text-1",
+            {
+                issue.rule
+                for issue in validator.validate_questionnaire(
+                    questionnaire_without_prompt
+                )
+            },
+        )
 
     def test_static_validator_corpus_has_one_mutation_and_expected_rule(self) -> None:
         manifest = load_json(VALIDATOR_FIXTURES / "cases.json")
@@ -340,7 +515,6 @@ class QuestionnaireContractTests(unittest.TestCase):
                 "pair-answer-type",
                 "pair-inline-option",
                 "pair-valueset-membership",
-                "pair-response-text",
                 "pair-repeats",
                 "pair-answer-occurrence",
                 "pair-required-item",
@@ -450,7 +624,7 @@ class QuestionnaireContractTests(unittest.TestCase):
             self.assertIsNotNone(package_file)
             package = json.load(package_file)
         self.assertEqual(package["name"], "org.grovealliance.fhir.questionnaire")
-        self.assertEqual(package["version"], "0.5.0")
+        self.assertEqual(package["version"], "0.6.0")
         self.assertEqual(package["dependencies"].get("hl7.fhir.uv.sdc"), "4.0.0")
         self.assertEqual(
             package["dependencies"].get("hl7.fhir.uv.extensions.r4"),

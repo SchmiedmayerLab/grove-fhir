@@ -11,55 +11,72 @@ set -euo pipefail
 
 REPOSITORY_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 readonly REPOSITORY_ROOT
-readonly TOOLS_DIRECTORY="$REPOSITORY_ROOT/.build/fhir-tools"
-readonly FHIR_TOOL_HOME="$REPOSITORY_ROOT/.build/fhir-home"
-JAVA_COMMAND="java"
-if [[ -x "$REPOSITORY_ROOT/.build/jdk21/Contents/Home/bin/java" ]]; then
-  JAVA_COMMAND="$REPOSITORY_ROOT/.build/jdk21/Contents/Home/bin/java"
-fi
-readonly JAVA_COMMAND
 
-if [[ "$#" -ne 1 || ("$1" != "mobile" && "$1" != "sensor" && "$1" != "sensorkit" && "$1" != "healthkit" && "$1" != "health-connect" && "$1" != "providers" && "$1" != "questionnaire") ]]; then
-  echo "Usage: $0 <mobile|sensor|sensorkit|healthkit|health-connect|providers|questionnaire>" >&2
+if [[ "$#" -ne 0 && "$#" -ne 2 ]]; then
+  echo "Usage: $0 [--output <directory-under-.build>]" >&2
+  exit 2
+fi
+if [[ "$#" -eq 2 && "$1" != "--output" ]]; then
+  echo "Usage: $0 [--output <directory-under-.build>]" >&2
   exit 2
 fi
 
-readonly GUIDE="$1"
-readonly REQUEST="$REPOSITORY_ROOT/$GUIDE/publication-request.json"
-if [[ ! -f "$REQUEST" ]]; then
-  echo "$GUIDE has no reviewed publication-request.json" >&2
-  exit 1
-fi
-
 cd "$REPOSITORY_ROOT"
-if [[ "$GUIDE" == "mobile" ]]; then
-  ./Scripts/build-guides.sh mobile
-elif grep -q '^  org\.grovealliance\.fhir\.sensor:' "$GUIDE/sushi-config.yaml"; then
-  ./Scripts/build-guides.sh mobile sensor "$GUIDE"
-elif grep -q '^  org\.grovealliance\.fhir\.mobile:' "$GUIDE/sushi-config.yaml"; then
-  ./Scripts/build-guides.sh mobile "$GUIDE"
-else
-  ./Scripts/build-guides.sh "$GUIDE"
-fi
-
-publication_path="$(python3 -c 'import json, sys; print(json.load(open(sys.argv[1], encoding="utf-8"))["path"])' "$REQUEST")"
-readonly publication_path
-if [[ "$publication_path" != https://grovealliance.org/fhir/* ]]; then
-  echo "publication request path is outside the configured canonical namespace" >&2
+if [[ -n "$(git status --porcelain=v1 --untracked-files=all)" ]]; then
+  echo "Release candidates must be built from a clean source tree." >&2
   exit 1
 fi
+version="$(python3 -c 'import json; print(json.load(open("catalog/release-manifest.json"))["releaseVersion"])')"
+readonly version
+output="${2:-$REPOSITORY_ROOT/.build/release-candidate-$version}"
+readonly output
+source_revision="$(git rev-parse HEAD)"
+readonly source_revision
 
-export PATH="$REPOSITORY_ROOT/node_modules/.bin:$REPOSITORY_ROOT/.build/bin:$PATH"
+case "$(python3 -c 'from pathlib import Path; import sys; root=Path(".build").resolve(); target=Path(sys.argv[1]).resolve(); print(target.is_relative_to(root) and target != root)' "$output")" in
+  True) ;;
+  *) echo "Release output must be a dedicated directory under .build: $output" >&2; exit 2 ;;
+esac
 
-# The pull-request suite only proves each catalog matches the evidence committed beside
-# it. Re-read the platforms before publishing, so a symbol written into both files
-# cannot reach a released code system that calls itself complete.
-python3 Scripts/render-platform-inventories.py --check
+# Phase 1 is the only network-enabled phase. npm and Bundler are integrity/checksum locked, while
+# download-fhir-tools.sh verifies explicit SHA-256 pins for Publisher, Validator, the template,
+# and every external FHIR package before admitting them to the bootstrap cache.
+echo "Bootstrapping the checksum-pinned release dependency closure (network enabled)"
+npm ci
+export BUNDLE_FROZEN=true
+bundle config set --local path "$REPOSITORY_ROOT/.build/bundle"
+bundle config set --local bin "$REPOSITORY_ROOT/.build/bin"
+bundle install --jobs 4 --retry 3
+./Scripts/download-fhir-tools.sh "$REPOSITORY_ROOT/.build/fhir-tools"
 
-echo "Building publication-mode output for $GUIDE at $publication_path"
-(cd "$GUIDE" && "$JAVA_COMMAND" -Duser.home="$FHIR_TOOL_HOME" -jar "$TOOLS_DIRECTORY/publisher.jar" \
-  -ig ig.ini \
-  -tx n/a \
-  -publish "$publication_path")
+# Phase 2 consumes only that bootstrap. npm must reconstruct node_modules from its local cache;
+# Bundler and every FHIR archive are rechecked locally by build-guides.sh; Publisher itself gets
+# both -tx n/a and -no-network. No online terminology claim can be produced by this lane.
+echo "Replaying the verified dependency closure in the offline structural/package lane"
+npm ci --offline
+export npm_config_offline=true
+export GROVE_TX_OFFLINE=1
+bundle check
+./Scripts/download-fhir-tools.sh --offline "$REPOSITORY_ROOT/.build/fhir-tools"
+npm run inventory:check
+npm run pages:build
+npm test
+python3 Scripts/validate-questionnaire-fhir.py
+python3 Scripts/validate-producer.py \
+  --manifest Conformance/corpora/mobile-exchange/official-validator-manifest.json \
+  --validator .build/fhir-tools/validator_cli.jar \
+  --package mobile=mobile/output/package.tgz \
+  --allow-example-urls
+python3 Scripts/check-publication.py \
+  --site .build/pages \
+  --repository-root . \
+  --config publication/config.json \
+  --base-url https://schmiedmayerlab.github.io/grove-fhir
+python3 Scripts/collect-release-evidence.py \
+  --output "$output" \
+  --source-revision "$source_revision" \
+  --lane offline-structural
+(cd "$output" && shasum -a 256 --check SHA256SUMS)
 
-python3 Scripts/check-guide-qa.py "$GUIDE"
+echo "Release-candidate evidence collected at $output"
+echo "No canonical publication was performed."

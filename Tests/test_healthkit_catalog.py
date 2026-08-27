@@ -32,6 +32,109 @@ class HealthKitCatalogTests(unittest.TestCase):
         cls.mobile = json.loads(
             (ROOT / "catalog/measurement-catalog.json").read_text(encoding="utf-8")
         )
+        cls.protocol = json.loads(
+            (ROOT / "catalog/exchange-protocol.json").read_text(encoding="utf-8")
+        )
+        cls.claims = json.loads(
+            (ROOT / "catalog/profile-claims.json").read_text(encoding="utf-8")
+        )
+
+    def test_every_active_output_and_direct_claim_is_machine_closed(self) -> None:
+        prefix = "https://grovealliance.org/fhir/healthkit/StructureDefinition/"
+        generic = prefix + "healthkit-observation"
+        ecg = prefix + "healthkit-ecg-observation"
+        active_rows = [
+            row for row in self.catalog["rows"]
+            if row["status"] in {"supported", "platform-exclusive"}
+        ]
+        active_healthkit_profiles = {
+            profile
+            for row in active_rows
+            for profile in row["profiles"]
+            if profile.startswith(prefix)
+        }
+        provenance = next(
+            claim for claim in self.claims["adapterConversionProvenanceClaims"]
+            if claim["adapter"] == "healthkit"
+        )
+        self.assertEqual(
+            provenance["targetAdapterProfiles"], sorted(active_healthkit_profiles)
+        )
+        self.assertEqual(len(active_healthkit_profiles), 118)
+
+        single_profiles = {
+            profile
+            for row in self.catalog["rows"]
+            if row["status"] == "supported"
+            for profile in row["profiles"]
+            if profile.startswith(prefix) and profile not in {generic, ecg}
+        }
+        single_claim = self.claims["healthKitSingleProfileObservationClaims"]
+        self.assertEqual(single_claim["cardinality"], 1)
+        self.assertFalse(single_claim["otherProfilesAllowed"])
+        self.assertEqual(single_claim["profiles"], sorted(single_profiles))
+        self.assertEqual(len(single_profiles), 111)
+
+        self.assertEqual(
+            self.claims["healthKitRecordingDocumentClaim"]["profiles"],
+            [
+                "https://grovealliance.org/fhir/sensor/StructureDefinition/"
+                "grove-sensor-recording-document",
+                prefix + "healthkit-recording-document",
+            ],
+        )
+        self.assertEqual(
+            self.claims["healthKitClinicalRecordDocumentClaim"]["profiles"],
+            [prefix + "healthkit-clinical-record-document"],
+        )
+        self.assertEqual(
+            {
+                (claim["resourceType"], claim["profile"])
+                for claim in self.claims["healthKitPlatformExclusiveResourceClaims"]
+            },
+            {
+                ("VisionPrescription", prefix + "healthkit-vision-prescription"),
+                ("MedicationAdministration", prefix + "healthkit-medication-dose-event"),
+                ("MedicationStatement", prefix + "healthkit-user-annotated-medication"),
+            },
+        )
+
+    def test_health_concept_links_use_the_shared_opaque_context_identity(self) -> None:
+        kinds = {
+            row["kind"]: row for row in self.protocol["opaqueIdentity"]["identityKinds"]
+        }
+        context = self.catalog["identity"]["sourceContext"]
+        self.assertEqual(context["identityKind"], "source-context")
+        self.assertEqual(context["identifierRole"], "source-context")
+        self.assertEqual(context["components"], kinds["source-context"]["components"])
+        self.assertIn("HKHealthConceptIdentifier", context["rule"])
+        self.assertIn("HMAC", context["rule"])
+
+    def test_clinical_release_representation_matches_the_profile(self) -> None:
+        representation = self.catalog["clinicalRecordAdmission"]["fhirRepresentation"]
+        profiles = (ROOT / "healthkit/input/fsh/profiles.fsh").read_text(
+            encoding="utf-8"
+        )
+        extension_id = representation["extensionUrl"].rsplit("/", 1)[1]
+        self.assertEqual(representation["resourceType"], "DocumentReference")
+        self.assertEqual(representation["valueElement"], "valueCode")
+        self.assertEqual(representation["cardinality"], {"min": 1, "max": 1})
+        self.assertEqual(representation["fixedValue"], "r4")
+        self.assertIn(f"Id: {extension_id}", profiles)
+        self.assertIn('* ^context[=].expression = "DocumentReference"', profiles)
+        self.assertIn(
+            "* extension contains HealthKitClinicalFHIRRelease named fhirRelease 1..1 MS",
+            profiles,
+        )
+        self.assertIn("* extension[fhirRelease].valueCode = #r4 (exactly)", profiles)
+
+    def test_examples_do_not_reintroduce_a_generic_metadata_channel(self) -> None:
+        examples = (ROOT / "healthkit/input/fsh/examples.fsh").read_text(
+            encoding="utf-8"
+        )
+        self.assertNotIn("component[+].code.text", examples)
+        self.assertNotIn("ThirdPartyPedometerFirmware", examples)
+        self.assertNotIn("stays lossless", examples)
 
     def test_inventory_is_exact_closed_and_unique(self) -> None:
         rows = self.catalog["rows"]
@@ -73,7 +176,12 @@ class HealthKitCatalogTests(unittest.TestCase):
                     "measurementIDs",
                     "profiles",
                 }
-                | ({"requirement"} if "requirement" in row else set()),
+                | ({"requirement"} if "requirement" in row else set())
+                | (
+                    {"clinicalAdmissionContract"}
+                    if "clinicalAdmissionContract" in row
+                    else set()
+                ),
             )
             self.assertIn(row["status"], statuses)
             self.assertEqual(len(row["profiles"]), len(set(row["profiles"])))
@@ -104,6 +212,30 @@ class HealthKitCatalogTests(unittest.TestCase):
         self.assertEqual(
             self.mobile["effectiveCanonicalization"]["rounding"], "half-even"
         )
+
+    def test_application_device_separates_opaque_snapshot_from_bundle_product(self) -> None:
+        contract = self.catalog["applicationDeviceIdentity"]
+        self.assertEqual(
+            contract["profile"],
+            "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-application-device",
+        )
+        self.assertEqual(contract["snapshotIdentifierRole"], "device-snapshot")
+        self.assertEqual(
+            contract["bundleIdentifier"],
+            {
+                "system": "https://grovealliance.org/fhir/healthkit/NamingSystem/apple-bundle-id",
+                "typeSystem": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-identifier-type",
+                "typeCode": "apple-bundle-id",
+                "cardinality": "1..1",
+                "meaning": "Exact Apple application product bundle identifier; never an installation, host, account, or person identifier.",
+            },
+        )
+        self.assertIn("caller explicitly classifies", contract["classificationRule"])
+        profiles = (ROOT / "healthkit/input/fsh/profiles.fsh").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("Profile: HealthKitApplicationDevice", profiles)
+        self.assertIn("identifier[appleBundleId].type", profiles)
 
     def test_platform_additions_and_derived_aggregate_are_explicit(self) -> None:
         rows = {row["sourceTypeIdentifier"]: row for row in self.catalog["rows"]}
@@ -137,7 +269,7 @@ class HealthKitCatalogTests(unittest.TestCase):
                     "grove-mobile-sleep-duration"
                 ],
                 "requirement": (
-                    "This is not a HealthKit platform source identifier. Version 0.5.0 "
+                    "This is not a HealthKit platform source identifier. Version 0.6.0 "
                     "does not define the session-boundary aggregation contract; "
                     "individual admitted samples map only to sleep stage."
                 ),

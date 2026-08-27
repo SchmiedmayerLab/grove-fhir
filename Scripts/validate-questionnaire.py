@@ -491,9 +491,6 @@ def validate_response(response: dict[str, Any]) -> list[Issue]:
         )
     if not completion_valid:
         issues.append(Issue("gqr-completion-mode-1", "QuestionnaireResponse.extension", "Completion mode must contain exactly one ELECTRONIC ParticipationMode coding"))
-    for index, item in enumerate(response_items(response.get("item", []))):
-        if item.get("answer") and not item.get("text"):
-            issues.append(Issue("gqr-text-1", f"QuestionnaireResponse.item[{index}].text", "Answered response items require text"))
     return sorted(set(issues))
 
 
@@ -782,8 +779,6 @@ def validate_pair(
                 issues.append(Issue("pair-required-item", path, f"Required enabled item {link_id!r} is missing"))
 
             for actual, actual_path in present:
-                if actual.get("text") != definition.get("text"):
-                    issues.append(Issue("pair-response-text", f"{actual_path}.text", "Response text must equal the Questionnaire item text"))
                 item_type = definition.get("type")
                 answers = actual.get("answer", [])
                 if item_type in {"group", "display"} and answers:

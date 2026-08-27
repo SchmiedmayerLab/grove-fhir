@@ -307,12 +307,6 @@
       "mutation": {"op": "remove", "path": "/identifier"}
     },
     {
-      "id": "response-text-missing",
-      "base": "valid/questionnaire-response.json",
-      "expectedRule": "gqr-text-1",
-      "mutation": {"op": "remove", "path": "/item/0/text"}
-    },
-    {
       "id": "response-completion-mode-contradictory",
       "base": "valid/questionnaire-response.json",
       "expectedRule": "gqr-completion-mode-1",

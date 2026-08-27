@@ -27,6 +27,10 @@ administration or acceptance. Silently discarding a behavior-changing condition,
 constraint, answer, hidden state, or identity is not conformant.
 
 Must Support does not change cardinality. An optional `0..1 MS` element remains optional.
+The inherited SDC Must Support flag on `QuestionnaireResponse.item.text` requires actors
+to handle and preserve the text when supplied; it does not require a producer to copy a
+Questionnaire prompt into the response. Omission is conformant even when the exact
+Questionnaire is available.
 
 ### Resource validation
 
@@ -66,10 +70,13 @@ The paired validator checks:
 3. group children versus answer-context children;
 4. answer datatype;
 5. inline option and resolved, versioned ValueSet membership;
-6. response text equality;
-7. repeated-answer and selection-count limits;
-8. enabled and required items according to response status; and
-9. unknown, duplicate, misplaced, disabled, or entered-in-error content.
+6. repeated-answer and selection-count limits;
+7. enabled and required items according to response status; and
+8. unknown, duplicate, misplaced, disabled, or entered-in-error content.
+
+`QuestionnaireResponse.item.text` is optional presentation content and is deliberately
+not compared with the Questionnaire prompt. The response `linkId`, hierarchy, and exact
+versioned Questionnaire canonical provide the machine contract across locales.
 
 These checks require both resources. The profile deliberately does not call `resolve()`
 against an unspecified validation environment.
@@ -106,11 +113,11 @@ The non-published fixtures under `questionnaire/fixtures` cover valid resources 
 mutation per invalid case. The static corpus includes SemVer, version algorithm,
 reference answers, repeats, condition forms, variables, expression shape, root and item
 target constraints, initial values, completion mode, canonical form, response identity
-and text, extension placement, and bound relationships.
+and optional presentation text, extension placement, and bound relationships.
 
 The paired corpus covers exact resolution, hierarchy, datatype, inline and versioned
-ValueSet membership, text equality, repeats and limits, status-aware required items,
-and unknown, duplicate, misplaced, and disabled items. Each invalid case declares the
+ValueSet membership, locale-neutral optional text, repeats and limits, status-aware
+required items, and unknown, duplicate, misplaced, and disabled items. Each invalid case declares the
 stable expected rule, and the tests require that rule to be the complete local error
 set. The `Conformance/corpora` live-FSH inventory references both Questionnaire-owned
 manifests by corpus ID and ownership; it does not copy or redefine their cases.

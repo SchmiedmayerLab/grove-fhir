@@ -351,9 +351,10 @@ jobs:
       - name: Validate the example producer with the official Validator
         run: >-
           python3 Scripts/validate-producer.py
-          --manifest Conformance/example-producer/manifest.json
+          --manifest Conformance/corpora/mobile-exchange/official-validator-manifest.json
           --validator .build/fhir-tools/validator_cli.jar
           --package mobile=mobile/output/package.tgz
+          --allow-example-urls
       - uses: actions/upload-artifact@v7
         with:
           name: pages-site

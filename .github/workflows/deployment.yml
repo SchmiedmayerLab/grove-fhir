@@ -9,15 +9,12 @@
 name: Deployment
 
 on:
-  # Two paths, one job. Publishing a release from the UI creates the tag first and this run
-  # attaches the verified packages to it. Dispatching by version verifies everything before any
-  # tag exists, so a failed build leaves nothing behind to delete.
-  release:
-    types: [published]
+  # A release can only be created at the end of this workflow. In particular, an already-public
+  # release is never treated as input to a validation job.
   workflow_dispatch:
     inputs:
       version:
-        description: Bare semantic version to release, for example 0.3.0. It must equal the version every guide declares.
+        description: Bare semantic version to release, for example 0.6.0. It must equal the release manifest and every guide.
         required: true
         type: string
       dryRun:
@@ -27,43 +24,45 @@ on:
         default: false
 
 concurrency:
-  group: deployment-${{ inputs.version || github.event.release.tag_name }}
+  group: deployment-${{ inputs.version }}
   cancel-in-progress: false
 
 permissions:
   contents: read
 
 jobs:
-  release:
-    name: Publish the R4 Guides
-    runs-on: ubuntu-latest
+  verify:
+    name: Verify the R4 Guides
+    runs-on: ubuntu-24.04
     timeout-minutes: 90
-    permissions:
-      contents: write
+    env:
+      BUNDLE_FROZEN: "true"
+    outputs:
+      version: ${{ steps.release.outputs.version }}
+      source_revision: ${{ steps.release.outputs.source_revision }}
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ github.event.release.tag_name || github.ref }}
+          ref: ${{ github.sha }}
           fetch-depth: 0
           persist-credentials: false
       - name: Resolve the version being released
         id: release
         env:
           DISPATCH_VERSION: ${{ inputs.version }}
-          RELEASE_TAG: ${{ github.event.release.tag_name }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
         run: |
-          version="${DISPATCH_VERSION:-$RELEASE_TAG}"
+          if [ "$GITHUB_REF" != "refs/heads/$DEFAULT_BRANCH" ]; then
+            echo "::error::Releases must be dispatched from the default branch ($DEFAULT_BRANCH), not $GITHUB_REF."
+            exit 1
+          fi
+          version="$DISPATCH_VERSION"
           if [ -z "$version" ]; then
             echo "::error::No version was supplied."
             exit 1
           fi
           echo "version=$version" >> "$GITHUB_OUTPUT"
-          # A release published from the UI already owns its tag, so this run only attaches to it.
-          if [ "$GITHUB_EVENT_NAME" = "release" ]; then
-            echo "owns-tag=false" >> "$GITHUB_OUTPUT"
-          else
-            echo "owns-tag=true" >> "$GITHUB_OUTPUT"
-          fi
+          echo "source_revision=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
       - name: Refuse a version the guides do not declare
         env:
           VERSION: ${{ steps.release.outputs.version }}
@@ -83,8 +82,12 @@ jobs:
             fi
           done < <(find . -mindepth 2 -maxdepth 2 -name sushi-config.yaml | sort)
           [ "$mismatched" -eq 0 ]
+          manifest_version="$(python3 -c 'import json; print(json.load(open("catalog/release-manifest.json"))["releaseVersion"])')"
+          if [ "$manifest_version" != "$VERSION" ]; then
+            echo "::error::Release manifest declares $manifest_version, not $VERSION."
+            exit 1
+          fi
       - name: Refuse a tag that already exists
-        if: steps.release.outputs.owns-tag == 'true'
         env:
           VERSION: ${{ steps.release.outputs.version }}
         run: |
@@ -92,37 +95,56 @@ jobs:
             echo "::error::Tag $VERSION already exists; a published version is never rewritten."
             exit 1
           fi
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
-          node-version: "24"
+          node-version: "24.16.0"
           cache: npm
-      - uses: actions/setup-python@v7
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: "3.13.15"
-      - uses: actions/setup-java@v6
+      - uses: actions/setup-java@dd06d9cba3e5552c54d9f8ea23572deb30010f7c # v6.0.0
         with:
           distribution: temurin
           java-version: "21.0.10+7.0.LTS"
-      - uses: ruby/setup-ruby@v1
+      - uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1.321.0
         with:
           ruby-version: "3.3.12"
           bundler-cache: false
       - name: Select the locked Bundler
         run: gem install bundler -v 4.0.16 --no-document
-      - uses: actions/cache@v6
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: |
             .build/fhir-home
             .build/fhir-tools
             .build/bundle
           key: fhir-guides-${{ runner.os }}-${{ hashFiles('Gemfile.lock', 'package-lock.json', 'Scripts/download-fhir-tools.sh') }}
-          restore-keys: |
-            fhir-guides-${{ runner.os }}-
-      - run: npm ci
-      - name: Build and assemble every guide
-        run: npm run pages:build
+      - name: Bootstrap the checksum-pinned dependency closure online
+        run: |
+          npm ci
+          bundle config set --local path "$GITHUB_WORKSPACE/.build/bundle"
+          bundle config set --local bin "$GITHUB_WORKSPACE/.build/bin"
+          bundle install --jobs 4 --retry 3
+          ./Scripts/download-fhir-tools.sh "$GITHUB_WORKSPACE/.build/fhir-tools"
+      - name: Replay the verified closure and build in the offline lane
+        env:
+          GROVE_TX_OFFLINE: "1"
+          NPM_CONFIG_OFFLINE: "true"
+        run: |
+          npm ci --offline
+          bundle check
+          ./Scripts/download-fhir-tools.sh --offline "$GITHUB_WORKSPACE/.build/fhir-tools"
+          npm run pages:build
       - name: Verify the repository and tooling contract
         run: npm test
+      - name: Verify the normative corpora with the official FHIR Validator
+        run: |
+          python3 Scripts/validate-questionnaire-fhir.py
+          python3 Scripts/validate-producer.py \
+            --manifest Conformance/corpora/mobile-exchange/official-validator-manifest.json \
+            --validator .build/fhir-tools/validator_cli.jar \
+            --package mobile=mobile/output/package.tgz \
+            --allow-example-urls
       - name: Verify the assembled site
         run: >-
           python3 Scripts/check-publication.py
@@ -130,59 +152,85 @@ jobs:
           --repository-root .
           --config publication/config.json
           --base-url https://schmiedmayerlab.github.io/grove-fhir
-      - name: Collect the published packages
+      - name: Collect checksum-bound release-candidate evidence
         env:
-          VERSION: ${{ steps.release.outputs.version }}
+          SOURCE_REVISION: ${{ steps.release.outputs.source_revision }}
         run: |
-          mkdir -p .build/release
-          while IFS= read -r configuration; do
-            guide="$(dirname "$configuration")"
-            guide="${guide#./}"
-            package="$guide/output/package.tgz"
-            if [ ! -f "$package" ]; then
-              echo "::error::$guide produced no package.tgz."
-              exit 1
-            fi
-            identifier="$(awk -F': *' '/^id:/{gsub(/"/,"",$2); print $2; exit}' "$configuration")"
-            cp "$package" ".build/release/$identifier-$VERSION.tgz"
-          done < <(find . -mindepth 2 -maxdepth 2 -name sushi-config.yaml | sort)
+          python3 Scripts/collect-release-evidence.py \
+            --output .build/release \
+            --source-revision "$SOURCE_REVISION" \
+            --lane offline-structural
+          (cd .build/release && sha256sum --check SHA256SUMS)
           ls -la .build/release
       - name: Report a dry run
         if: inputs.dryRun
         run: echo "Dry run verified ${{ steps.release.outputs.version }} without tagging or releasing."
-      - name: Publish the release and its packages
+      - name: Transfer verified evidence to the isolated publication job
         if: ${{ !inputs.dryRun }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: grove-fhir-${{ steps.release.outputs.version }}-evidence
+          path: .build/release/
+          if-no-files-found: error
+          retention-days: 1
+
+  publish:
+    name: Create the GitHub Release
+    if: ${{ !inputs.dryRun }}
+    needs: verify
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      actions: read
+      contents: write
+    steps:
+      # This job never checks out or executes repository code. Its write token is available only
+      # after the read-only verification job has completed successfully.
+      - name: Retrieve verified release evidence
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: grove-fhir-${{ needs.verify.outputs.version }}-evidence
+          path: .build/release
+      - name: Recheck transferred evidence
+        run: (cd .build/release && sha256sum --check SHA256SUMS)
+      - name: Create the immutable release tag at the verified source
         env:
-          VERSION: ${{ steps.release.outputs.version }}
-          OWNS_TAG: ${{ steps.release.outputs.owns-tag }}
+          VERSION: ${{ needs.verify.outputs.version }}
+          SOURCE_REVISION: ${{ needs.verify.outputs.source_revision }}
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          gh api --method POST
+          "repos/$GITHUB_REPOSITORY/git/refs"
+          -f "ref=refs/tags/$VERSION"
+          -f "sha=$SOURCE_REVISION"
+      - name: Publish the release and its packages
+        env:
+          VERSION: ${{ needs.verify.outputs.version }}
           GH_TOKEN: ${{ github.token }}
         run: |
-          if [ "$OWNS_TAG" = "true" ]; then
-            # --target creates the tag together with the release, so a failure here leaves no
-            # orphan tag behind and the version stays free to retry.
-            gh release create "$VERSION" \
-              --repo "$GITHUB_REPOSITORY" \
-              --target "$GITHUB_SHA" \
-              --title "$VERSION" \
-              --generate-notes \
-              --latest \
-              .build/release/*.tgz
-          else
-            # The release already exists and owns its tag; attach the verified packages to it.
-            gh release upload "$VERSION" \
-              --repo "$GITHUB_REPOSITORY" \
-              --clobber \
-              .build/release/*.tgz
-          fi
+          # --verify-tag makes the public release consume only the exact ref created above.
+          # Assets are uploaded while the release is a draft. A failed upload therefore cannot
+          # expose a partial release; only the final edit makes the complete draft public.
+          gh release create "$VERSION" \
+            --repo "$GITHUB_REPOSITORY" \
+            --verify-tag \
+            --title "$VERSION" \
+            --generate-notes \
+            --draft \
+            .build/release/*
+          gh release edit "$VERSION" \
+            --repo "$GITHUB_REPOSITORY" \
+            --draft=false \
+            --latest
       - name: Report where the guides are published
-        if: ${{ !inputs.dryRun }}
         run: |
           {
-            echo "### Grove FHIR ${{ steps.release.outputs.version }}"
+            echo "### Grove FHIR ${{ needs.verify.outputs.version }}"
             echo
             echo "Guides: https://schmiedmayerlab.github.io/grove-fhir/"
             echo
-            echo "The canonical host is not served yet, so this release publishes the browsable"
-            echo "guides to GitHub Pages and attaches every FHIR package to the release. The"
-            echo "canonical immutable publication stays gated behind publication/config.json."
+            echo "This attaches checksum-bound packages, Publisher QA, semantic snapshot, release"
+            echo "manifest, and source/toolchain provenance. It does not claim canonical publication."
+            echo "The canonical host is not served yet; immutable canonical promotion remains gated"
+            echo "behind publication/config.json plus live-host and governance approval."
           } >> "$GITHUB_STEP_SUMMARY"

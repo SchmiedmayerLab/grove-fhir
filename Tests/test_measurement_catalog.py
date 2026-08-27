@@ -23,7 +23,7 @@ class MeasurementCatalogTests(unittest.TestCase):
         catalog = json.loads((ROOT / "catalog/measurement-catalog.json").read_text(encoding="utf-8"))
         graph = json.loads((ROOT / "catalog/package-graph.json").read_text(encoding="utf-8"))
         self.assertEqual(catalog["fhirVersion"], "4.0.1")
-        self.assertEqual(catalog["version"], "0.5.0")
+        self.assertEqual(catalog["version"], "0.6.0")
         package_profiles = {
             package["source"]: set(package["profiles"]) for package in graph["packages"]
         }
@@ -60,6 +60,19 @@ class MeasurementCatalogTests(unittest.TestCase):
             self.assertIn(measurement["effective"], {"dateTime", "Period"})
             code = measurement["code"]
             self.assertTrue(code["system"].startswith(("http://loinc.org", "https://grovealliance.org/fhir/")))
+            required_codings = measurement.get("requiredCodings", [])
+            self.assertEqual(
+                len({coding["slice"] for coding in required_codings}),
+                len(required_codings),
+            )
+            self.assertEqual(
+                len({(coding["system"], coding["code"]) for coding in required_codings}),
+                len(required_codings),
+            )
+            self.assertNotIn(
+                (code["system"], code["code"]),
+                {(coding["system"], coding["code"]) for coding in required_codings},
+            )
             if measurement["quantity"] is not None:
                 self.assertEqual(measurement["quantity"]["system"], "http://unitsofmeasure.org")
                 self.assertIsInstance(measurement["quantity"]["unit"], str)
@@ -80,8 +93,64 @@ class MeasurementCatalogTests(unittest.TestCase):
         )
         self.assertEqual(
             identifiers,
-            {"active-energy", "apple-exercise-time", "apple-move-time", "apple-stand-hour", "apple-stand-time", "atrial-fibrillation-burden", "audiogram-panel", "basal-body-temperature", "basal-energy", "basal-metabolic-rate", "bladder-incontinence", "bleeding-after-pregnancy", "bleeding-during-pregnancy", "blood-alcohol-content", "blood-glucose-unspecified-specimen", "blood-pressure", "biological-sex", "blood-type", "body-fat-mass", "body-fat-percentage", "body-height", "body-temperature", "body-water-mass", "body-weight", "bone-mass", "cervical-mucus-quality", "contraceptive-use", "date-of-birth", "corrected-qt-interval", "cycling-cadence", "cycling-functional-threshold-power", "deep-sleep-duration", "dietary-biotin", "dietary-caffeine", "dietary-calcium", "dietary-carbohydrates", "dietary-chloride", "dietary-cholesterol", "dietary-chromium", "dietary-copper", "dietary-energy", "dietary-energy-from-fat", "dietary-fat-monounsaturated", "dietary-fat-polyunsaturated", "dietary-fat-saturated", "dietary-fat-total", "dietary-fat-trans", "dietary-fat-unsaturated", "dietary-fiber", "dietary-folate", "dietary-folic-acid", "dietary-iodine", "dietary-iron", "dietary-magnesium", "dietary-manganese", "dietary-molybdenum", "dietary-niacin", "dietary-pantothenic-acid", "dietary-phosphorus", "dietary-potassium", "dietary-protein", "dietary-riboflavin", "dietary-selenium", "dietary-sodium", "dietary-sugar", "dietary-thiamin", "dietary-vitamin-a", "dietary-vitamin-b12", "dietary-vitamin-b6", "dietary-vitamin-c", "dietary-vitamin-d", "dietary-vitamin-e", "dietary-vitamin-k", "dietary-zinc", "distance", "electrodermal-activity", "elevation-gained", "environmental-audio-exposure", "environmental-audio-exposure-notification", "environmental-sound-reduction", "extracellular-water-mass", "flights-climbed", "fitzpatrick-skin-type", "fluid-intake", "food-correlation", "forced-expiratory-volume-1", "forced-vital-capacity", "gad7-assessment", "handwashing-session", "headphone-audio-exposure", "headphone-audio-exposure-notification", "heart-rate", "heart-rate-recovery-one-minute", "heart-rate-variability-rmssd", "heart-rate-variability-sdnn", "high-heart-rate-notification", "hypertension-notification", "infrequent-menstrual-cycles", "inhaler-usage", "insulin-delivery", "intermenstrual-bleeding", "intracellular-water-mass", "irregular-heart-rhythm-notification", "irregular-menstrual-cycles", "lactation-status", "lean-body-mass", "light-sleep-duration", "low-cardio-fitness-notification", "low-heart-rate-notification", "menstruation-flow", "menstruation-period", "mindfulness-session", "muscle-mass", "number-of-alcoholic-beverages", "number-of-times-fallen", "oura-cardiovascular-age", "oura-readiness-score", "ovulation-test-result", "oxygen-saturation", "oxygen-saturation-daily-average", "peak-expiratory-flow-rate", "peripheral-perfusion-index", "persistent-intermenstrual-bleeding", "phq9-assessment", "physical-effort", "power", "pr-interval", "pregnancy-status", "pregnancy-test-result", "progesterone-test-result", "prolonged-menstrual-periods", "qrs-duration", "qt-interval", "rem-sleep-duration", "respiratory-rate", "respiratory-rate-average", "resting-heart-rate", "running-ground-contact-time", "running-stride-length", "running-vertical-oscillation", "sexual-activity", "six-minute-walk-test-distance", "skin-temperature", "sleep-apnea-notification", "sleep-awake-duration", "sleep-duration", "sleep-heart-rate", "sleep-stage", "sleeping-breathing-disturbances", "sleeping-heart-rate-average", "speed", "stair-ascent-speed", "stair-descent-speed", "state-of-mind", "step-cadence", "step-count", "swimming-stroke-count", "symptom-abdominal-cramps", "symptom-acne", "symptom-appetite-changes", "symptom-bloating", "symptom-breast-pain", "symptom-chest-tightness-or-pain", "symptom-chills", "symptom-constipation", "symptom-coughing", "symptom-diarrhea", "symptom-dizziness", "symptom-dry-skin", "symptom-fainting", "symptom-fatigue", "symptom-fever", "symptom-generalized-body-ache", "symptom-hair-loss", "symptom-headache", "symptom-heartburn", "symptom-hot-flashes", "symptom-loss-of-smell", "symptom-loss-of-taste", "symptom-lower-back-pain", "symptom-memory-lapse", "symptom-mood-changes", "symptom-nausea", "symptom-night-sweats", "symptom-pelvic-pain", "symptom-rapid-pounding-or-fluttering-heartbeat", "symptom-runny-nose", "symptom-shortness-of-breath", "symptom-sinus-congestion", "symptom-skipped-heartbeat", "symptom-sleep-changes", "symptom-sore-throat", "symptom-vomiting", "symptom-wheezing", "time-in-daylight", "toothbrushing-session", "total-energy", "underwater-depth", "uv-exposure", "vaginal-dryness", "vo2-max", "waist-circumference", "walking-asymmetry", "walking-double-support", "walking-heart-rate-average", "walking-speed", "walking-steadiness", "walking-steadiness-notification", "walking-step-length", "water-temperature", "wheelchair-push-count", "wheelchair-use", "withings-atrial-fibrillation-notification-ecg", "withings-atrial-fibrillation-notification-ppg", "withings-nerve-health-score", "withings-pulse-wave-velocity", "withings-vascular-age", "withings-visceral-fat-index", "workout", "workout-effort-score", "workout-segment"},
+            {"active-energy", "apple-exercise-time", "apple-move-time", "apple-stand-hour", "apple-stand-time", "atrial-fibrillation-burden", "audiogram-panel", "basal-body-temperature", "basal-energy", "basal-metabolic-rate", "bladder-incontinence", "bleeding-after-pregnancy", "bleeding-during-pregnancy", "blood-alcohol-content", "blood-glucose-unspecified-specimen", "blood-pressure", "biological-sex", "blood-type", "body-fat-mass", "body-fat-percentage", "body-height", "body-temperature", "body-water-mass", "body-weight", "bone-mass", "cervical-mucus-quality", "contraceptive-use", "date-of-birth", "corrected-qt-interval", "cycling-cadence", "cycling-functional-threshold-power", "deep-sleep-duration", "dietary-biotin", "dietary-caffeine", "dietary-calcium", "dietary-carbohydrates", "dietary-chloride", "dietary-cholesterol", "dietary-chromium", "dietary-copper", "dietary-energy", "dietary-energy-from-fat", "dietary-fat-monounsaturated", "dietary-fat-polyunsaturated", "dietary-fat-saturated", "dietary-fat-total", "dietary-fat-trans", "dietary-fat-unsaturated", "dietary-fiber", "dietary-folate", "dietary-folic-acid", "dietary-iodine", "dietary-iron", "dietary-magnesium", "dietary-manganese", "dietary-molybdenum", "dietary-niacin", "dietary-pantothenic-acid", "dietary-phosphorus", "dietary-potassium", "dietary-protein", "dietary-riboflavin", "dietary-selenium", "dietary-sodium", "dietary-sugar", "dietary-thiamin", "dietary-vitamin-a", "dietary-vitamin-b12", "dietary-vitamin-b6", "dietary-vitamin-c", "dietary-vitamin-d", "dietary-vitamin-e", "dietary-vitamin-k", "dietary-zinc", "distance", "electrodermal-activity", "elevation-gained", "environmental-audio-exposure", "environmental-audio-exposure-notification", "environmental-sound-reduction", "extracellular-water-mass", "flights-climbed", "fitzpatrick-skin-type", "fluid-intake", "food-correlation", "forced-expiratory-volume-1", "forced-vital-capacity", "gad7-assessment", "handwashing-session", "headphone-audio-exposure", "headphone-audio-exposure-notification", "heart-rate", "heart-rate-recovery-one-minute", "heart-rate-variability-rmssd", "heart-rate-variability-sdnn", "high-heart-rate-notification", "hypertension-notification", "infrequent-menstrual-cycles", "inhaler-usage", "insulin-delivery", "intermenstrual-bleeding", "intracellular-water-mass", "irregular-heart-rhythm-notification", "irregular-menstrual-cycles", "lactation-status", "lean-body-mass", "light-sleep-duration", "low-cardio-fitness-notification", "low-heart-rate-notification", "menstruation-flow", "menstruation-period", "mindfulness-session", "muscle-mass", "number-of-alcoholic-beverages", "number-of-times-fallen", "oura-cardiovascular-age", "oura-readiness-score", "ovulation-test-result", "oxygen-saturation", "oxygen-saturation-daily-average", "peak-expiratory-flow-rate", "peripheral-perfusion-index", "persistent-intermenstrual-bleeding", "phq9-assessment", "physical-effort", "power", "pr-interval", "pregnancy-status", "pregnancy-test-result", "progesterone-test-result", "prolonged-menstrual-periods", "qrs-duration", "qt-interval", "rem-sleep-duration", "respiratory-rate", "respiratory-rate-average", "resting-heart-rate", "resting-heart-rate-daily-average", "running-ground-contact-time", "running-stride-length", "running-vertical-oscillation", "sexual-activity", "six-minute-walk-test-distance", "skin-temperature", "sleep-apnea-notification", "sleep-awake-duration", "sleep-duration", "sleep-heart-rate", "sleep-stage", "sleeping-breathing-disturbances", "sleeping-heart-rate-average", "speed", "stair-ascent-speed", "stair-descent-speed", "state-of-mind", "step-cadence", "step-count", "swimming-stroke-count", "symptom-abdominal-cramps", "symptom-acne", "symptom-appetite-changes", "symptom-bloating", "symptom-breast-pain", "symptom-chest-tightness-or-pain", "symptom-chills", "symptom-constipation", "symptom-coughing", "symptom-diarrhea", "symptom-dizziness", "symptom-dry-skin", "symptom-fainting", "symptom-fatigue", "symptom-fever", "symptom-generalized-body-ache", "symptom-hair-loss", "symptom-headache", "symptom-heartburn", "symptom-hot-flashes", "symptom-loss-of-smell", "symptom-loss-of-taste", "symptom-lower-back-pain", "symptom-memory-lapse", "symptom-mood-changes", "symptom-nausea", "symptom-night-sweats", "symptom-pelvic-pain", "symptom-rapid-pounding-or-fluttering-heartbeat", "symptom-runny-nose", "symptom-shortness-of-breath", "symptom-sinus-congestion", "symptom-skipped-heartbeat", "symptom-sleep-changes", "symptom-sore-throat", "symptom-vomiting", "symptom-wheezing", "time-in-daylight", "toothbrushing-session", "total-energy", "underwater-depth", "uv-exposure", "vaginal-dryness", "vo2-max", "waist-circumference", "walking-asymmetry", "walking-double-support", "walking-heart-rate-average", "walking-speed", "walking-steadiness", "walking-steadiness-notification", "walking-step-length", "water-temperature", "wheelchair-push-count", "wheelchair-use", "withings-atrial-fibrillation-notification-ecg", "withings-atrial-fibrillation-notification-ppg", "withings-nerve-health-score", "withings-pulse-wave-velocity", "withings-vascular-age", "withings-visceral-fat-index", "workout", "workout-effort-score", "workout-segment"},
         )
+
+    def test_resting_heart_rate_is_a_point_vital_sign_with_specific_and_r4_codes(self) -> None:
+        catalog = json.loads(
+            (ROOT / "catalog/measurement-catalog.json").read_text(encoding="utf-8")
+        )
+        measurement = next(
+            item for item in catalog["measurements"]
+            if item["id"] == "resting-heart-rate"
+        )
+        self.assertEqual(measurement["effective"], "dateTime")
+        self.assertEqual(
+            measurement["standardProfile"],
+            "http://hl7.org/fhir/StructureDefinition/heartrate",
+        )
+        self.assertEqual(
+            (measurement["code"]["system"], measurement["code"]["code"]),
+            ("http://loinc.org", "40443-4"),
+        )
+        self.assertEqual(
+            [
+                (coding["system"], coding["code"])
+                for coding in measurement["requiredCodings"]
+            ],
+            [("http://loinc.org", "8867-4")],
+        )
+
+    def test_every_imposed_r4_vital_sign_exposes_its_effective_category(self) -> None:
+        catalog = json.loads(
+            (ROOT / "catalog/measurement-catalog.json").read_text(encoding="utf-8")
+        )
+        vital_profiles = {
+            "http://hl7.org/fhir/StructureDefinition/bp",
+            "http://hl7.org/fhir/StructureDefinition/bodyheight",
+            "http://hl7.org/fhir/StructureDefinition/bodytemp",
+            "http://hl7.org/fhir/StructureDefinition/bodyweight",
+            "http://hl7.org/fhir/StructureDefinition/heartrate",
+            "http://hl7.org/fhir/StructureDefinition/oxygensat",
+            "http://hl7.org/fhir/StructureDefinition/resprate",
+        }
+        expected = {
+            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+            "code": "vital-signs",
+            "display": "Vital Signs",
+        }
+        imposed_vitals = [
+            measurement
+            for measurement in catalog["measurements"]
+            if measurement.get("standardProfile") in vital_profiles
+        ]
+        self.assertEqual(
+            {measurement["standardProfile"] for measurement in imposed_vitals},
+            vital_profiles,
+        )
+        for measurement in imposed_vitals:
+            with self.subTest(measurement=measurement["id"]):
+                self.assertEqual(measurement.get("category"), expected)
 
     def test_mapped_standard_coverage_is_backed_by_exact_raw_adapter_rows(self) -> None:
         catalog = json.loads(
@@ -140,55 +209,46 @@ class MeasurementCatalogTests(unittest.TestCase):
                 f"{measurement['id']} is adapter-only and must not be a Mobile profile",
             )
 
-    def test_uuid_vector_uses_the_normative_entry_identity_algorithm(self) -> None:
-        import importlib.util
-        import uuid
+    def test_full_url_vectors_use_the_normative_framed_identifier_pair(self) -> None:
+        from Scripts import exchange_protocol
 
-        spec = importlib.util.spec_from_file_location(
-            "validate_producer", ROOT / "Scripts/validate-producer.py"
+        contract = json.loads(
+            (ROOT / "catalog/exchange-protocol.json").read_text(encoding="utf-8")
         )
-        assert spec and spec.loader
-        validator = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(validator)
-        contract = json.loads((ROOT / "catalog/exchange-identity.json").read_text(encoding="utf-8"))
-        for vector in contract["vectors"]:
-            if vector["input"] is None:
-                self.assertIn("|", vector["system"])
-                continue
-            with self.subTest(case=vector["case"]):
-                value = validator.canonical_identifier_name(vector["system"], vector["value"])
-                self.assertEqual(value, vector["input"])
-                generated = uuid.uuid5(uuid.UUID(contract["fullUrlAlgorithm"]["namespace"]), value)
-                self.assertEqual(f"urn:uuid:{generated}", vector["fullUrl"])
-
-    def test_recording_device_identity_vectors_are_exact(self) -> None:
-        contract = json.loads((ROOT / "catalog/exchange-identity.json").read_text(encoding="utf-8"))
-        device = contract["recordingDeviceIdentity"]
-
         self.assertEqual(
-            device["composition"],
-            ["subjectReference", "adapterId", "manufacturer", "model", "hardwareVersion"],
+            str(exchange_protocol.FULL_URL_NAMESPACE),
+            contract["entryIdentity"]["fullUrl"]["namespace"],
         )
-        self.assertNotIn("digest", device)
+        for vector in contract["testVectors"]["fullUrls"]:
+            with self.subTest(case=vector["id"]):
+                self.assertEqual(
+                    exchange_protocol.entry_full_url(vector["system"], vector["value"]),
+                    vector["fullUrl"],
+                )
 
-        self.assertTrue(device["vectors"])
-        for vector in device["vectors"]:
-            with self.subTest(case=vector["case"]):
-                self.assertEqual(len(vector["components"]), len(device["composition"]))
-                self.assertEqual("v1:" + "|".join(vector["components"]), vector["value"])
-
-        # Two participants wearing the same model are two devices; that is the whole point of
-        # keying on the subject rather than the product configuration alone.
-        by_case = {vector["case"]: vector["value"] for vector in device["vectors"]}
-        self.assertNotEqual(by_case["apple-watch"], by_case["different-participant-same-model"])
+    def test_recording_device_identity_is_per_unit_and_snapshot_identity_is_event_scoped(self) -> None:
+        contract = json.loads(
+            (ROOT / "catalog/exchange-protocol.json").read_text(encoding="utf-8")
+        )
+        kinds = {
+            row["kind"]: row for row in contract["opaqueIdentity"]["identityKinds"]
+        }
+        self.assertEqual(
+            kinds["recording-device"]["components"],
+            ["adapter-id", "subject-system", "subject-value", "stable-unit-token"],
+        )
+        self.assertEqual(
+            kinds["device-snapshot"]["components"],
+            ["event-system", "event-value", "device-role", "source-device-token"],
+        )
+        recording = contract["recordingDevice"]
+        self.assertIn("stable per-unit token", recording["instanceRule"])
+        self.assertIn("omit", recording["unknownInstance"].lower())
+        self.assertIn("application, host, or recording-device", recording["roles"])
+        for forbidden in ("manufacturer", "model", "hardware version"):
+            self.assertIn(forbidden, recording["instanceRule"].lower())
 
     def test_every_adapter_declares_its_recording_device_identity(self) -> None:
-        contract = json.loads((ROOT / "catalog/exchange-identity.json").read_text(encoding="utf-8"))
-        keyed = {
-            field
-            for field in contract["recordingDeviceIdentity"]["composition"]
-            if field in {"manufacturer", "model", "hardwareVersion"}
-        }
         adapters = {}
         for name in ("healthkit", "sensorkit", "health-connect", "providers"):
             catalog = json.loads(
@@ -196,14 +256,10 @@ class MeasurementCatalogTests(unittest.TestCase):
             )
             declaration = catalog.get("recordingDeviceIdentity")
             self.assertIsNotNone(declaration, f"{name} declares no recording-device identity")
-            self.assertIn(declaration["status"], {"derived", "unavailable"}, name)
-            # A deriving adapter maps every keyed field, so a source that silently stops
-            # supplying one cannot quietly change the identity it mints.
-            if declaration["status"] == "derived":
-                self.assertEqual(set(declaration["sourceFields"]), keyed, name)
-            else:
-                self.assertFalse(declaration["sourceFields"], name)
-                self.assertTrue(declaration.get("note"), f"{name} must say why it cannot derive one")
+            self.assertEqual(declaration["status"], "stable-token-required", name)
+            self.assertIn("Omit", declaration["fallback"], name)
+            self.assertIn("stable", json.dumps(declaration).lower(), name)
+            self.assertIn("device-snapshot", declaration["snapshot"], name)
             adapters[name] = declaration["adapterId"]
         self.assertEqual(len(set(adapters.values())), len(adapters), "adapter ids must be distinct")
 
@@ -232,6 +288,73 @@ class MeasurementCatalogTests(unittest.TestCase):
                     low, high = int(declared.group(1)), int(declared.group(2))
                     self.assertGreaterEqual(example, low, f"{name} is below its declared range")
                     self.assertLessEqual(example, high, f"{name} is above its declared range")
+
+    def test_reviewed_quantity_value_domains_are_closed_and_self_consistent(self) -> None:
+        catalog = json.loads(
+            (ROOT / "catalog/measurement-catalog.json").read_text(encoding="utf-8")
+        )
+        integer_totals = {
+            "flights-climbed",
+            "inhaler-usage",
+            "number-of-alcoholic-beverages",
+            "number-of-times-fallen",
+            "step-count",
+            "swimming-stroke-count",
+            "wheelchair-push-count",
+        }
+        actual_integer_totals: set[str] = set()
+        for measurement in catalog["measurements"]:
+            quantity = measurement.get("quantity")
+            if not isinstance(quantity, dict):
+                continue
+            domain = quantity.get("valueDomain")
+            if quantity["code"] == "%":
+                self.assertEqual(
+                    domain,
+                    {
+                        "minimum": {"value": 0, "inclusive": True},
+                        "maximum": {"value": 100, "inclusive": True},
+                        "integerOnly": False,
+                    },
+                    measurement["id"],
+                )
+            if measurement["id"] in integer_totals:
+                self.assertEqual(
+                    domain,
+                    {
+                        "minimum": {"value": 0, "inclusive": True},
+                        "integerOnly": True,
+                    },
+                    measurement["id"],
+                )
+                actual_integer_totals.add(measurement["id"])
+            if domain is None:
+                continue
+            minimum = domain.get("minimum")
+            maximum = domain.get("maximum")
+            if minimum and maximum:
+                self.assertLessEqual(minimum["value"], maximum["value"], measurement["id"])
+            value = quantity["example"]
+            if minimum:
+                assertion = self.assertGreaterEqual if minimum["inclusive"] else self.assertGreater
+                assertion(value, minimum["value"], measurement["id"])
+            if maximum:
+                assertion = self.assertLessEqual if maximum["inclusive"] else self.assertLess
+                assertion(value, maximum["value"], measurement["id"])
+            if domain["integerOnly"]:
+                self.assertEqual(value, int(value), measurement["id"])
+        self.assertEqual(actual_integer_totals, integer_totals)
+        state_of_mind = next(
+            item for item in catalog["measurements"] if item["id"] == "state-of-mind"
+        )
+        self.assertEqual(
+            state_of_mind["quantity"]["valueDomain"],
+            {
+                "minimum": {"value": -1, "inclusive": True},
+                "maximum": {"value": 1, "inclusive": True},
+                "integerOnly": False,
+            },
+        )
 
 
     def test_every_fhir_element_path_declares_the_version_it_belongs_to(self) -> None:

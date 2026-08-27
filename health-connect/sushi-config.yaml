@@ -13,7 +13,7 @@ title: Grove FHIR Health Connect Adapter
 description: >-
   FHIR R4 mappings for Android Health Connect records exchanged through the Grove Mobile contract.
 status: draft
-version: 0.5.0
+version: 0.6.0
 fhirVersion: 4.0.1
 copyrightYear: 2026+
 releaseLabel: ci-build
@@ -41,7 +41,7 @@ dependencies:
   # Used directly by the version-pinned standard body-position extension slice.
   hl7.fhir.uv.extensions.r4: 5.3.0
   org.grovealliance.fhir.mobile:
-    version: 0.5.0
+    version: 0.6.0
     uri: https://grovealliance.org/fhir/mobile/ImplementationGuide/org.grovealliance.fhir.mobile
 
 menu:

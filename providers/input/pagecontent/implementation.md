@@ -17,11 +17,12 @@ A producer must:
 2. fail closed unless its status admits the listed output;
 3. normalize units without changing the source interval or inventing an instant;
 4. assign complete source and output business identifiers;
-5. declare exactly the catalogued profile pair for a shared Observation or native Recording Document; and
-6. include one `providers-conversion-provenance` whose sole source entity is the
+5. carry exactly one catalogued provider extension and provider-qualified source-type extension;
+6. declare exactly the catalogued profile pair for a shared Observation or native Recording Document;
+7. include one `providers-conversion-provenance` whose sole source entity is the
    complete connected-provider source-record Identifier and whose internal UUID targets
    cover every structured and raw output for that source record; and
-7. exchange a complete resource graph in a Grove Mobile collection Bundle using
+8. exchange a complete resource graph in a Grove Mobile collection Bundle using
    deterministic `urn:uuid` full URLs for internal references.
 
 `providerAccountIdentifier` is a complete, deployment-scoped pseudonymous Identifier.
@@ -42,18 +43,28 @@ disclosure; URL access control, consent, minimization, retention, and deletion r
 deployment policy.
 
 `Resource.id` remains optional and repository-assigned. Business identifiers are never copied
-into it. ### Conversion and exchange identity
+into it.
 
-A conversion Provenance and an exchange Bundle record an export event rather than anything read
-from the provider, so they are named in the namespace the deployment owns rather than one this
-guide owns, and they carry no scheme version from this guide.
-The value is the provider code, the durable event sequence and the role, joined by vertical bars:
-`withings|1|conversion-provenance` and `withings|1|exchange-bundle`.
-`positiveEventSequence` is the durable positive event sequence of the identified event written as a non-zero ASCII digit followed by zero or more ASCII digits; no sign, no leading zero, no other characters.
-A byte-identical retry reuses the sequence; changed content allocates a higher value.
-One export event produces one conversion and one Bundle, so the two values name the same event and differ only in the role they carry.
-Two deployments converting the same provider record agree on every identifier derived from that record and are expected to differ on these.
-The published vectors in [`catalog/providers-adapter.json`](https://grovealliance.org/fhir/catalog/providers-adapter.json) are normative.
+### Conversion and exchange identity
+
+Provider source-record identity is the v2 HMAC over provider code, exact source type, the complete
+provider-scope Identifier pair, and stable native/import record id. A documented global provider
+key space still supplies an explicit scope pair; account scope is never inferred from the shape of
+an observed key. If the provider supplies no native key, the connector assigns and persists an
+opaque import-record key before conversion rather than hashing measured values or serialized
+content.
+
+Every output has its own source-output identity. A native Recording Document also carries a
+source-artifact identity for its exact registered format and part. Writer identity is emitted only
+when the payload supplies a complete writer-application pair and logical writer record id; provider
+code plus native id is not evidence that two ingestion channels name the same logical record.
+
+The Bundle owns the event Identifier `e2:<producer-instance-uuid>:<positive-sequence>`; Provenance
+is an event-scoped entry node rather than a second event business identifier. A byte-identical
+retry reuses the event identity, times, graph keys, and payload. New or corrected content receives
+a new event sequence. The protocol and cross-language vectors in
+[`catalog/exchange-protocol.json`](https://grovealliance.org/fhir/catalog/exchange-protocol.json)
+are normative.
 
 Business identifiers are not copied into `Resource.id`. Implementations validate their own emitted
 resources with the generic producer kit under `Scripts/validate-producer.py`; this

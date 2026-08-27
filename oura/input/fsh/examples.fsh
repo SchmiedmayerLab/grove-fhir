@@ -20,8 +20,10 @@ Usage: #example
 Title: "Oura Step Count"
 Description: "An already-obtained Oura daily activity step total on the Oura narrowing of the provider contract."
 * meta.profile[+] = "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-step-count"
-* identifier[sourceRecordId].system = "https://grovealliance.org/fhir/providers/NamingSystem/provider-source-record-id"
-* identifier[sourceRecordId].value = "v1:oura|acct-7f3a9c|daily_activity|content|2026-08-20T00:00:00Z|2026-08-21T00:00:00Z|8241"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* identifier[sourceRecord].value = "v2:test-key:1:Zofi3xnTdelKg_LgfYMQeYFX4mDhnqahavDa9GGNF8g"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
+* identifier[sourceOutput].value = "v2:test-key:1:tWi_TSYR4fvtqb6WwycRSS271YBJ-zxWTQhlwclxyIM"
 * status = #final
 * category = http://terminology.hl7.org/CodeSystem/observation-category#activity
 * code = https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement#step-count-total "Step count total"

@@ -28,6 +28,7 @@ from typing import Any, Callable, Iterable, Mapping, Sequence
 
 IDENTIFIER = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 RULE_CODE = re.compile(r"^[a-z][a-z0-9]*(?:[.-][a-z0-9]+)*$")
+RELEASE_VERSION = re.compile(r"^[0-9]+\.[0-9]+\.[0-9]+$")
 PATCH_OPERATIONS = frozenset({"add", "remove", "replace", "move", "copy"})
 SEVERITIES = frozenset({"fatal", "error", "warning", "information"})
 
@@ -309,13 +310,16 @@ def validate_manifest(manifest: Any) -> list[str]:
     if not isinstance(manifest, dict):
         return ["fixture corpus manifest must be a JSON object"]
     failures: list[str] = []
-    unknown = sorted(set(manifest) - {"schemaVersion", "bases", "cases"})
+    unknown = sorted(set(manifest) - {"schemaVersion", "version", "bases", "cases"})
     if unknown:
         failures.append(
             "fixture corpus manifest contains unsupported fields: " + ", ".join(unknown)
         )
     if manifest.get("schemaVersion") != 1:
         failures.append("fixture corpus schemaVersion must be 1")
+    version = manifest.get("version")
+    if not isinstance(version, str) or RELEASE_VERSION.fullmatch(version) is None:
+        failures.append("fixture corpus version must be a semantic release version")
 
     bases = manifest.get("bases")
     base_ids: set[str] = set()

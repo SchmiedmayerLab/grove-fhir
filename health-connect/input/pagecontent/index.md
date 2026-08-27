@@ -49,11 +49,13 @@ A type omitted from the table above is not silently admitted.
 ### Identity and source context
 
 The source-record identifier is repository-scoped and does not disclose
-`Record.metadata.id`. A Record yielding several Observations repeats that source pair and gives
-each output a distinct identifier; a one-to-one conversion carries the Record identifier alone. A synthesized glucose Specimen, conversion Provenance, and exchange Bundle
-also have complete business identifiers. The compositions, lexical rules, naming
-systems, and cross-language vectors are normative in
-[`catalog/health-connect-identity.json`](https://grovealliance.org/fhir/catalog/health-connect-identity.json). None of these values becomes `Resource.id`.
+`Record.metadata.id`. Every output, including a one-to-one conversion, carries a distinct typed
+source-output identifier; a synthesized glucose Specimen uses the specimen output role. The HMAC
+algorithm, event/node identities, fullUrl derivation, lifecycle rules, and cross-language vectors
+are normative in
+[`catalog/exchange-protocol.json`](https://grovealliance.org/fhir/catalog/exchange-protocol.json),
+while the exact Health Connect component bindings are in the adapter catalog. None of these values
+becomes `Resource.id`.
 
 Supported source context is represented explicitly:
 
@@ -61,7 +63,8 @@ Supported source context is represented explicitly:
 - standard body-position and body-site elements retain admitted blood-pressure and
   temperature context;
 - a typed extension retains non-unknown meal context;
-- the sleep summary retains an optional title and notes; and
+- an explicit `RETAIN` policy may preserve one non-blank title and note on a sleep,
+  mindfulness, or exercise summary; the minimization policy omits them; and
 - each sleep-stage result carries the shared Grove coding first and the exact Health
   Connect stage coding second.
 

@@ -63,8 +63,10 @@ InstanceOf: OuraCardiovascularAge
 Usage: #example
 Title: "Oura Cardiovascular Age Example"
 Description: "A conformant Oura Cardiovascular Age instance."
-* identifier[sourceRecordId].system = $providerSourceRecordId
-* identifier[sourceRecordId].value = "v1:oura|acct-7f3a9c|oura-cardiovascular-age|record-oura-cardiovascular-age"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* identifier[sourceRecord].value = "v2:test-key:1:pgwzCFk8dUQm_AB8_nMxWZK0Elud1y8VdenFtf115iM"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
+* identifier[sourceOutput].value = "v2:test-key:1:HBzgZpoU3pDCLsZXq9ZD3XK0Aq6KCmMIaw_2d2lCPP4"
 * status = #final
 * code = OuraMeasurementCS#oura-cardiovascular-age
 * extension[provider].valueCode = #oura
@@ -81,8 +83,10 @@ InstanceOf: OuraReadinessScore
 Usage: #example
 Title: "Oura Readiness Score Example"
 Description: "A conformant Oura Readiness Score instance."
-* identifier[sourceRecordId].system = $providerSourceRecordId
-* identifier[sourceRecordId].value = "v1:oura|acct-7f3a9c|oura-readiness-score|record-oura-readiness-score"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* identifier[sourceRecord].value = "v2:test-key:1:lS6Q5pNJc2J35RHDkDrmTM9Ya48fvmHdyeHjeo7-Qus"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
+* identifier[sourceOutput].value = "v2:test-key:1:1P1D8Z4pMgSy5aZo3SfpctEWRODDN5wBv_nPaNumn8w"
 * status = #final
 * code = OuraMeasurementCS#oura-readiness-score
 * extension[provider].valueCode = #oura

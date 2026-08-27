@@ -1,7 +1,8 @@
 {
+  "$schema": "https://grovealliance.org/fhir/catalog/schemas/catalog-contracts.schema.json",
   "schemaVersion": 1,
   "fhirVersion": "4.0.1",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "source": {
     "platform": "Apple HealthKit",
     "sdkBaseline": {
@@ -47,14 +48,35 @@
     "cardinality": "exactly one",
     "rule": "Every admitted HealthKit Observation preserves its exact sourceTypeIdentifier as an additional provider coding; the shared or authoritative standard coding remains the normative result meaning."
   },
+  "clinicalRecordAdmission": {
+    "profile": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document",
+    "payloadFormat": "fhir-r4-resource",
+    "sourceFHIRReleaseField": "HKFHIRVersion.fhirRelease",
+    "admittedFHIRRelease": "r4",
+    "fhirRepresentation": {
+      "resourceType": "DocumentReference",
+      "extensionUrl": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-fhir-release",
+      "valueElement": "valueCode",
+      "cardinality": {
+        "min": 1,
+        "max": 1
+      },
+      "fixedValue": "r4"
+    },
+    "rejectedFHIRReleases": [
+      "dstu2",
+      "unknown"
+    ],
+    "rule": "Admit a HealthKit clinical record only when HKFHIRVersion.fhirRelease is r4. Reject dstu2, unknown, a missing release, and every future release before emitting a DocumentReference; the payload is preserved byte-for-byte and never upgraded, downgraded, or inferred from its JSON shape."
+  },
   "conversionProvenanceProfile": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-conversion-provenance",
   "statusVocabulary": {
-    "supported": "The 0.5.0 HealthKit adapter defines and validates emitted FHIR output.",
+    "supported": "The 0.6.0 HealthKit adapter defines and validates emitted FHIR output.",
     "mapped-standard": "The source is represented by another exact Grove or authoritative standard package rather than a Mobile measurement profile.",
-    "platform-exclusive": "The 0.5.0 adapter defines output through a platform-exclusive HealthKit profile whose meaning remains HealthKit-specific.",
+    "platform-exclusive": "The 0.6.0 adapter defines output through a platform-exclusive HealthKit profile whose meaning remains HealthKit-specific.",
     "unmodeled": "The source type is inventoried, but no shared or HealthKit-scoped profile models it and no output is admitted.",
-    "deferred": "No FHIR output for this source type is admitted by the 0.5.0 adapter.",
-    "intentionally-unsupported": "The 0.5.0 contract explicitly rejects this source meaning rather than approximating it."
+    "deferred": "No FHIR output for this source type is admitted by the 0.6.0 adapter.",
+    "intentionally-unsupported": "The 0.6.0 contract explicitly rejects this source meaning rather than approximating it."
   },
   "standardAdapterClaims": {
     "body-mass-index": {
@@ -118,7 +140,7 @@
           {
             "url": "sourceIdentifier",
             "type": "Identifier",
-            "meaning": "Exact HKCategorySample UUID under the HealthKit object NamingSystem"
+            "meaning": "Typed source-record v2 HMAC over the exact HKCategorySample UUID and HealthKit-store scope; the native UUID is not exchanged"
           },
           {
             "url": "effectivePeriod",
@@ -203,7 +225,7 @@
       "profiles": [
         "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-sleep-duration"
       ],
-      "requirement": "This is not a HealthKit platform source identifier. Version 0.5.0 does not define the session-boundary aggregation contract; individual admitted samples map only to sleep stage."
+      "requirement": "This is not a HealthKit platform source identifier. Version 0.6.0 does not define the session-boundary aggregation contract; individual admitted samples map only to sleep stage."
     }
   ],
   "rows": [
@@ -687,7 +709,7 @@
       "profiles": [
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-hypertension-notification"
       ],
-      "requirement": "Device alert from a proprietary screening algorithm asserting possible pathology without any pressure measurement; emitting it as an Observation would fabricate a blood-pressure-adjacent finding with no quantity. Cuff blood-pressure quantities remain the measurement surface."
+      "requirement": "Admit only the occurrence of the source platform's proprietary screening notification. The Observation code and result remain HealthKit-specific; no blood-pressure quantity, hypertension diagnosis, clinical finding, threshold, or algorithmic interpretation may be inferred. Cuff blood-pressure quantities remain a separate measurement surface."
     },
     {
       "sourceTypeIdentifier": "HKCategoryTypeIdentifierInfrequentMenstrualCycles",
@@ -1270,7 +1292,7 @@
       "profiles": [
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-biological-sex"
       ],
-      "requirement": "Version 0.5.0 publishes no reviewed contract for this characteristic. LOINC 76689-9 'Sex assigned at birth' represents it faithfully, and the supported blood-type and wheelchair-use rows show a characteristic can carry an Observation, so this is unfinished work rather than a modelling refusal."
+      "requirement": "Emit the reviewed healthkit-biological-sex Observation only for HKBiologicalSex.female, .male, or .other. LOINC 46098-0 'Sex' identifies the observation concept; do not relabel the source as LOINC 76689-9 'Sex assigned at birth', because HealthKit does not assert that provenance. Preserve the exact HealthKit result in the required Grove value set, and emit no Observation for .notSet."
     },
     {
       "sourceTypeIdentifier": "HKCharacteristicTypeIdentifierBloodType",
@@ -1301,7 +1323,7 @@
       "profiles": [
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-date-of-birth"
       ],
-      "requirement": "A date of birth is a direct identifier, and the exchange's Patient node is deliberately pseudonymous. Publishing it needs a privacy decision, not a mapping; age at observation is the research-safe alternative."
+      "requirement": "The mapping is defined, but disclosure is fail-closed: emit the reviewed healthkit-date-of-birth Observation only when deployment policy explicitly authorizes exchanging this direct identifier. Otherwise emit no resource. Never substitute an inferred date, silently reduce precision, or place the value on the pseudonymous exchange Patient; deployments that only require age must derive it under their own approved policy."
     },
     {
       "sourceTypeIdentifier": "HKCharacteristicTypeIdentifierFitzpatrickSkinType",
@@ -1317,7 +1339,7 @@
       "profiles": [
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-fitzpatrick-skin-type"
       ],
-      "requirement": "A single-platform self-reported phenotype outside the measurement contract, with no consumer in the exchange set. LOINC 66555-4 represents it exactly, so this is a scope decision rather than a terminology gap."
+      "requirement": "Emit the reviewed healthkit-fitzpatrick-skin-type Observation only for HealthKit's six stated Fitzpatrick categories, preserving the exact category in the required Grove value set. Treat the value as source-reported classification, not a measured or inferred skin phenotype, and emit no Observation for .notSet."
     },
     {
       "sourceTypeIdentifier": "HKCharacteristicTypeIdentifierWheelchairUse",
@@ -1342,6 +1364,7 @@
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkclinicaltypeidentifier/allergyrecord",
       "status": "platform-exclusive",
+      "clinicalAdmissionContract": "clinicalRecordAdmission",
       "measurementIDs": [],
       "profiles": [
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document"
@@ -1355,6 +1378,7 @@
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkclinicaltypeidentifier/clinicalnoterecord",
       "status": "platform-exclusive",
+      "clinicalAdmissionContract": "clinicalRecordAdmission",
       "measurementIDs": [],
       "profiles": [
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document"
@@ -1368,6 +1392,7 @@
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkclinicaltypeidentifier/conditionrecord",
       "status": "platform-exclusive",
+      "clinicalAdmissionContract": "clinicalRecordAdmission",
       "measurementIDs": [],
       "profiles": [
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document"
@@ -1381,6 +1406,7 @@
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkclinicaltypeidentifier/coveragerecord",
       "status": "platform-exclusive",
+      "clinicalAdmissionContract": "clinicalRecordAdmission",
       "measurementIDs": [],
       "profiles": [
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document"
@@ -1394,6 +1420,7 @@
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkclinicaltypeidentifier/immunizationrecord",
       "status": "platform-exclusive",
+      "clinicalAdmissionContract": "clinicalRecordAdmission",
       "measurementIDs": [],
       "profiles": [
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document"
@@ -1407,6 +1434,7 @@
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkclinicaltypeidentifier/labresultrecord",
       "status": "platform-exclusive",
+      "clinicalAdmissionContract": "clinicalRecordAdmission",
       "measurementIDs": [],
       "profiles": [
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document"
@@ -1420,6 +1448,7 @@
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkclinicaltypeidentifier/medicationrecord",
       "status": "platform-exclusive",
+      "clinicalAdmissionContract": "clinicalRecordAdmission",
       "measurementIDs": [],
       "profiles": [
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document"
@@ -1433,6 +1462,7 @@
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkclinicaltypeidentifier/procedurerecord",
       "status": "platform-exclusive",
+      "clinicalAdmissionContract": "clinicalRecordAdmission",
       "measurementIDs": [],
       "profiles": [
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document"
@@ -1446,6 +1476,7 @@
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkclinicaltypeidentifier/vitalsignrecord",
       "status": "platform-exclusive",
+      "clinicalAdmissionContract": "clinicalRecordAdmission",
       "measurementIDs": [],
       "profiles": [
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document"
@@ -3460,11 +3491,90 @@
   ],
   "recordingDeviceIdentity": {
     "adapterId": "healthkit",
-    "sourceFields": {
-      "manufacturer": "HKDevice.manufacturer",
-      "model": "HKDevice.model",
-      "hardwareVersion": "HKDevice.hardwareVersion"
+    "status": "stable-token-required",
+    "preferredStableUnitEvidence": "HKDevice.localIdentifier when nonempty and the deployment has verified its stability for the acquisition scope; otherwise a caller-governed stable per-unit token.",
+    "prohibitedIdentityInputs": [
+      "HKDevice.name",
+      "HKDevice.manufacturer",
+      "HKDevice.model",
+      "HKDevice.hardwareVersion",
+      "HKDevice.softwareVersion"
+    ],
+    "fallback": "Omit Observation.device when no governed stable per-unit token exists. Descriptive and version fields alone cannot establish a physical instance.",
+    "snapshot": "When emitted, the Device carries both recording-device and event-scoped device-snapshot v2 identifiers; descriptive and version fields are event-time snapshot data."
+  },
+  "applicationDeviceIdentity": {
+    "profile": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-application-device",
+    "snapshotIdentifierRole": "device-snapshot",
+    "bundleIdentifier": {
+      "system": "https://grovealliance.org/fhir/healthkit/NamingSystem/apple-bundle-id",
+      "typeSystem": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-identifier-type",
+      "typeCode": "apple-bundle-id",
+      "cardinality": "1..1",
+      "meaning": "Exact Apple application product bundle identifier; never an installation, host, account, or person identifier."
     },
-    "status": "derived"
+    "classificationRule": "The converting application always uses this profile. An HKSourceRevision author uses it only when the caller explicitly classifies that source as an application; never infer actor class from name, bundle text, UUID shape, or productType."
+  },
+  "identity": {
+    "contract": "catalog/exchange-protocol.json",
+    "protocolVersion": 2,
+    "adapterId": "healthkit",
+    "sourceRecord": {
+      "identityKind": "source-record",
+      "identifierRole": "source-record",
+      "components": [
+        "adapter-id",
+        "source-type",
+        "repository-scope-system",
+        "repository-scope-value",
+        "native-record-id"
+      ],
+      "bindings": {
+        "adapter-id": "healthkit",
+        "source-type": "exact HealthKit source-type identifier",
+        "repository-scope-system": "deployment-owned URI naming the HealthKit store scope",
+        "repository-scope-value": "stable pseudonymous value for one HealthKit store",
+        "native-record-id": "lowercase canonical HKObject.uuid text"
+      }
+    },
+    "sourceOutput": {
+      "identityKind": "source-output",
+      "identifierRole": "source-output",
+      "components": [
+        "adapter-id",
+        "source-type",
+        "repository-scope-system",
+        "repository-scope-value",
+        "native-record-id",
+        "output-role",
+        "output-discriminator"
+      ],
+      "outputRoleRule": "Use the exact measurement id, native-recording, clinical-record, or other output role declared by the catalog row.",
+      "outputDiscriminatorRule": "Use single for a sole output. Multi-output rows use their exact catalog output discriminator plus canonical source coordinates; stable source coordinates take precedence over array order."
+    },
+    "writerRecord": {
+      "identityKind": "writer-record",
+      "identifierRole": "writer-record",
+      "condition": "HealthKit source metadata supplies a stable writer application Identifier pair and logical writer record id.",
+      "rule": "Do not infer cross-channel writer identity from source name, bundle display text, or HKObject.uuid."
+    },
+    "sourceArtifact": {
+      "identityKind": "source-artifact",
+      "identifierRole": "source-artifact",
+      "rule": "A clinical or native recording uses its registered format code and zero-based part index in addition to the source-record coordinates."
+    },
+    "sourceContext": {
+      "identityKind": "source-context",
+      "identifierRole": "source-context",
+      "components": [
+        "adapter-id",
+        "context-type",
+        "repository-scope-system",
+        "repository-scope-value",
+        "native-context-id"
+      ],
+      "rule": "HKHealthConceptIdentifier is HMAC-protected as medication-health-concept context under the same deployment-owned repository scope and key epoch as its source records. A tracked medication and every dose reference use the same complete opaque Identifier pair."
+    },
+    "resourceIdPolicy": "Resource.id is optional and repository-assigned. HealthKit source, output, writer, artifact, context, and event business identifiers are never copied into Resource.id."
   }
 }
