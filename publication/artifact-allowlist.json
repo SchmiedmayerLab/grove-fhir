@@ -1778,24 +1778,10 @@
           "classification": "definition"
         },
         {
-          "fshName": "SensorKitECGSessionGuidance",
-          "fshType": "Extension",
-          "resourceType": "StructureDefinition",
-          "id": "sensorkit-ecg-session-guidance",
-          "classification": "definition"
-        },
-        {
           "fshName": "SensorKitSourceType",
           "fshType": "Extension",
           "resourceType": "StructureDefinition",
           "id": "sensorkit-source-type",
-          "classification": "definition"
-        },
-        {
-          "fshName": "SensorKitVisitLocation",
-          "fshType": "Extension",
-          "resourceType": "StructureDefinition",
-          "id": "sensorkit-visit-location",
           "classification": "definition"
         },
         {
@@ -1979,13 +1965,6 @@
           "resourceType": "Observation",
           "id": "SensorKitVisitExample",
           "classification": "example"
-        },
-        {
-          "fshName": "SensorKitVisitLocationIdentifier",
-          "fshType": "Instance",
-          "resourceType": "NamingSystem",
-          "id": "sensorkit-visit-location-id",
-          "classification": "definition"
         },
         {
           "fshName": "SensorKitWristTemperatureDocumentExample",
@@ -2562,41 +2541,6 @@
           "classification": "definition"
         },
         {
-          "fshName": "HealthKitECGAlgorithmVersion",
-          "fshType": "Extension",
-          "resourceType": "StructureDefinition",
-          "id": "healthkit-ecg-algorithm-version",
-          "classification": "definition"
-        },
-        {
-          "fshName": "HealthKitECGAverageHeartRate",
-          "fshType": "Extension",
-          "resourceType": "StructureDefinition",
-          "id": "healthkit-ecg-average-heart-rate",
-          "classification": "definition"
-        },
-        {
-          "fshName": "HealthKitECGClassification",
-          "fshType": "Extension",
-          "resourceType": "StructureDefinition",
-          "id": "healthkit-ecg-classification",
-          "classification": "definition"
-        },
-        {
-          "fshName": "HealthKitECGCorrelatedSymptom",
-          "fshType": "Extension",
-          "resourceType": "StructureDefinition",
-          "id": "healthkit-ecg-correlated-symptom",
-          "classification": "definition"
-        },
-        {
-          "fshName": "HealthKitECGSamplingFrequency",
-          "fshType": "Extension",
-          "resourceType": "StructureDefinition",
-          "id": "healthkit-ecg-sampling-frequency",
-          "classification": "definition"
-        },
-        {
           "fshName": "HealthKitECGSourcePeriod",
           "fshType": "Extension",
           "resourceType": "StructureDefinition",
@@ -2608,13 +2552,6 @@
           "fshType": "Extension",
           "resourceType": "StructureDefinition",
           "id": "healthkit-ecg-symptoms-status",
-          "classification": "definition"
-        },
-        {
-          "fshName": "HealthKitECGVoltageMeasurementCount",
-          "fshType": "Extension",
-          "resourceType": "StructureDefinition",
-          "id": "healthkit-ecg-voltage-measurement-count",
           "classification": "definition"
         },
         {
@@ -2751,10 +2688,38 @@
           "classification": "example"
         },
         {
+          "fshName": "HealthKitECGAverageHeartRateExample",
+          "fshType": "Instance",
+          "resourceType": "Observation",
+          "id": "HealthKitECGAverageHeartRateExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "HealthKitECGConversionProvenanceExample",
+          "fshType": "Instance",
+          "resourceType": "Provenance",
+          "id": "HealthKitECGConversionProvenanceExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "HealthKitECGCorrelatedDizzinessExample",
+          "fshType": "Instance",
+          "resourceType": "Observation",
+          "id": "HealthKitECGCorrelatedDizzinessExample",
+          "classification": "example"
+        },
+        {
           "fshName": "HealthKitECGObservationExample",
           "fshType": "Instance",
           "resourceType": "Observation",
           "id": "HealthKitECGObservationExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "HealthKitECGSymptomProvenanceExample",
+          "fshType": "Instance",
+          "resourceType": "Provenance",
+          "id": "HealthKitECGSymptomProvenanceExample",
           "classification": "example"
         },
         {
@@ -3682,6 +3647,13 @@
           "classification": "definition"
         },
         {
+          "fshName": "HealthKitECGAverageHeartRateObservation",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-ecg-average-heart-rate-observation",
+          "classification": "definition"
+        },
+        {
           "fshName": "HealthKitECGObservation",
           "fshType": "Profile",
           "resourceType": "StructureDefinition",
@@ -4543,13 +4515,6 @@
           "classification": "definition"
         },
         {
-          "fshName": "HealthKitECGCorrelatedSymptomTypeVS",
-          "fshType": "ValueSet",
-          "resourceType": "ValueSet",
-          "id": "healthkit-ecg-correlated-symptom-type",
-          "classification": "definition"
-        },
-        {
           "fshName": "HealthKitECGSymptomsStatusVS",
           "fshType": "ValueSet",
           "resourceType": "ValueSet",
@@ -4963,31 +4928,10 @@
           "classification": "definition"
         },
         {
-          "fshName": "HealthConnectExerciseTitle",
-          "fshType": "Extension",
-          "resourceType": "StructureDefinition",
-          "id": "health-connect-exercise-title",
-          "classification": "definition"
-        },
-        {
           "fshName": "HealthConnectGlucoseMealContext",
           "fshType": "Extension",
           "resourceType": "StructureDefinition",
           "id": "health-connect-glucose-meal-context",
-          "classification": "definition"
-        },
-        {
-          "fshName": "HealthConnectMindfulnessSessionType",
-          "fshType": "Extension",
-          "resourceType": "StructureDefinition",
-          "id": "health-connect-mindfulness-session-type",
-          "classification": "definition"
-        },
-        {
-          "fshName": "HealthConnectMindfulnessTitle",
-          "fshType": "Extension",
-          "resourceType": "StructureDefinition",
-          "id": "health-connect-mindfulness-title",
           "classification": "definition"
         },
         {
@@ -4998,10 +4942,10 @@
           "classification": "definition"
         },
         {
-          "fshName": "HealthConnectSleepTitle",
+          "fshName": "HealthConnectSessionTitle",
           "fshType": "Extension",
           "resourceType": "StructureDefinition",
-          "id": "health-connect-sleep-title",
+          "id": "health-connect-session-title",
           "classification": "definition"
         },
         {
@@ -5467,24 +5411,10 @@
           "classification": "example"
         },
         {
-          "fshName": "GoogleHealthStepsExample",
-          "fshType": "Instance",
-          "resourceType": "Observation",
-          "id": "GoogleHealthStepsExample",
-          "classification": "example"
-        },
-        {
-          "fshName": "GoogleHealthStepsProvenanceExample",
+          "fshName": "GoogleHealthHeartRateRecordingProvenanceExample",
           "fshType": "Instance",
           "resourceType": "Provenance",
-          "id": "GoogleHealthStepsProvenanceExample",
-          "classification": "example"
-        },
-        {
-          "fshName": "OuraDailyStepCountExample",
-          "fshType": "Instance",
-          "resourceType": "Observation",
-          "id": "OuraDailyStepCountExample",
+          "id": "GoogleHealthHeartRateRecordingProvenanceExample",
           "classification": "example"
         },
         {
@@ -5499,20 +5429,6 @@
           "fshType": "Instance",
           "resourceType": "Patient",
           "id": "ProviderPatientExample",
-          "classification": "example"
-        },
-        {
-          "fshName": "WithingsBloodPressureExample",
-          "fshType": "Instance",
-          "resourceType": "Observation",
-          "id": "WithingsBloodPressureExample",
-          "classification": "example"
-        },
-        {
-          "fshName": "WithingsBloodPressureProvenanceExample",
-          "fshType": "Instance",
-          "resourceType": "Provenance",
-          "id": "WithingsBloodPressureProvenanceExample",
           "classification": "example"
         },
         {
@@ -5621,6 +5537,13 @@
           "classification": "definition"
         },
         {
+          "fshName": "WithingsApplicationExample",
+          "fshType": "Instance",
+          "resourceType": "Device",
+          "id": "WithingsApplicationExample",
+          "classification": "example"
+        },
+        {
           "fshName": "WithingsAtrialFibrillationNotificationEcgExample",
           "fshType": "Instance",
           "resourceType": "Observation",
@@ -5632,6 +5555,20 @@
           "fshType": "Instance",
           "resourceType": "Observation",
           "id": "WithingsAtrialFibrillationNotificationPpgExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "WithingsBloodPressureExample",
+          "fshType": "Instance",
+          "resourceType": "Observation",
+          "id": "WithingsBloodPressureExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "WithingsBloodPressureProvenanceExample",
+          "fshType": "Instance",
+          "resourceType": "Provenance",
+          "id": "WithingsBloodPressureProvenanceExample",
           "classification": "example"
         },
         {

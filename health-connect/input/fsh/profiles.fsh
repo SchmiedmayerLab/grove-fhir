@@ -47,9 +47,9 @@ Severity: #error
 Expression: "extension.where(url = 'https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-glucose-meal-context').empty() or code.coding.where(system = 'http://loinc.org' and (code = '2339-0' or code = '32016-8' or code = '2345-7' or code = '99504-3')).exists()"
 
 Invariant: health-connect-user-authored-text-1
-Description: "Typed source titles and source notes occur only on their exact SleepSessionRecord, MindfulnessSessionRecord, or ExerciseSessionRecord summary output."
+Description: "Source notes occur only on their exact SleepSessionRecord, MindfulnessSessionRecord, or ExerciseSessionRecord summary output; the shared title extension has its own applicability invariant."
 Severity: #error
-Expression: "(extension.where(url = 'https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-sleep-title').empty() or (extension.where(url = 'https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-record-type').value.ofType(code) = 'SleepSessionRecord' and code.coding.where(system = 'http://loinc.org' and code = '93832-4').exists())) and (extension.where(url = 'https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-exercise-title').empty() or (extension.where(url = 'https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-record-type').value.ofType(code) = 'ExerciseSessionRecord' and code.coding.where(system = 'https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement' and code = 'workout').exists())) and (note.empty() or (extension.where(url = 'https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-record-type').value.ofType(code) = 'SleepSessionRecord' and code.coding.where(system = 'http://loinc.org' and code = '93832-4').exists()) or extension.where(url = 'https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-record-type').value.ofType(code) = 'MindfulnessSessionRecord' or (extension.where(url = 'https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-record-type').value.ofType(code) = 'ExerciseSessionRecord' and code.coding.where(system = 'https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement' and code = 'workout').exists()))"
+Expression: "note.empty() or (extension.where(url = 'https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-record-type').value.ofType(code) = 'SleepSessionRecord' and code.coding.where(system = 'http://loinc.org' and code = '93832-4').exists()) or extension.where(url = 'https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-record-type').value.ofType(code) = 'MindfulnessSessionRecord' or (extension.where(url = 'https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-record-type').value.ofType(code) = 'ExerciseSessionRecord' and code.coding.where(system = 'https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement' and code = 'workout').exists())"
 
 Invariant: health-connect-source-coded-value-1
 Description: "Every source-coded menstrual, ovulation, sexual-activity, and cervical-mucus value carries exactly one admitted exact Health Connect coding; those code systems occur nowhere else."
@@ -72,9 +72,19 @@ Severity: #error
 Expression: "(code.coding.where(system = 'https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement' and code = 'sleep-stage').exists() and value.ofType(CodeableConcept).coding.where(system = 'https://grovealliance.org/fhir/health-connect/CodeSystem/health-connect-sleep-stage').count() = 1) or (code.coding.where(system = 'https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement' and code = 'sleep-stage').empty() and value.ofType(CodeableConcept).coding.where(system = 'https://grovealliance.org/fhir/health-connect/CodeSystem/health-connect-sleep-stage').empty())"
 
 Invariant: health-connect-mindfulness-context-1
-Description: "Only MindfulnessSessionRecord output carries the mandatory exact session type and its optional title/notes; other source records carry none of that context."
+Description: "Only a MindfulnessSessionRecord output carries one exact mindfulness method coding; no other source record carries that method system."
 Severity: #error
-Expression: "(extension.where(url = 'https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-record-type').value.ofType(code) = 'MindfulnessSessionRecord' and extension.where(url = 'https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-mindfulness-session-type').count() = 1) or (extension.where(url = 'https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-record-type').value.ofType(code) != 'MindfulnessSessionRecord' and extension.where(url = 'https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-mindfulness-session-type' or url = 'https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-mindfulness-title').empty())"
+Expression: "(extension.where(url = 'https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-record-type').value.ofType(code) = 'MindfulnessSessionRecord' and method.coding.where(system = 'https://grovealliance.org/fhir/health-connect/CodeSystem/health-connect-mindfulness-session-type').count() = 1 and method.coding.count() = 1) or (extension.where(url = 'https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-record-type').value.ofType(code) != 'MindfulnessSessionRecord' and method.coding.where(system = 'https://grovealliance.org/fhir/health-connect/CodeSystem/health-connect-mindfulness-session-type').empty())"
+
+Invariant: health-connect-session-title-1
+Description: "The shared session-title extension occurs only on the primary workout, sleep-duration, or mindfulness-session summary produced by its matching Health Connect session record."
+Severity: #error
+Expression: "extension.where(url = 'https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-session-title').empty() or (extension.where(url = 'https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-session-title').count() = 1 and ((extension.where(url = 'https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-record-type').value.ofType(code) = 'ExerciseSessionRecord' and meta.profile.where($this = 'https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-workout').exists() and code.coding.where(system = 'https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement' and code = 'workout').exists()) or (extension.where(url = 'https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-record-type').value.ofType(code) = 'SleepSessionRecord' and meta.profile.where($this = 'https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-sleep-duration').exists() and code.coding.where(system = 'http://loinc.org' and code = '93832-4').exists()) or (extension.where(url = 'https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-record-type').value.ofType(code) = 'MindfulnessSessionRecord' and meta.profile.where($this = 'https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-mindfulness-session').exists() and code.coding.where(system = 'https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement' and code = 'mindfulness-session-duration').exists())))"
+
+Invariant: health-connect-session-text-nonblank-1
+Description: "Every retained source title and note contains at least one non-whitespace character. Blank source strings are omitted, not emitted."
+Severity: #error
+Expression: "extension.where(url = 'https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-session-title').all(value.ofType(string).matches('(?s).*\\\\S.*')) and note.all(text.toString().matches('(?s).*\\\\S.*'))"
 
 Invariant: health-connect-vo2-method-1
 Description: "A Vo2MaxRecord carries exactly one exact AndroidX measurement-method Coding, and no other source record carries that method system."
@@ -96,20 +106,17 @@ Profile: HealthConnectObservation
 Parent: GroveMobileObservation
 Id: health-connect-observation
 Title: "Health Connect Observation"
-Description: "The source and output identities plus allowlisted source context for a result converted from an AndroidX Health Connect 1.1 Record. Every output also declares exactly one shared Grove measurement profile."
-* obeys health-connect-glucose-specimen-1 and health-connect-body-position-1 and health-connect-body-site-applicability-1 and health-connect-blood-pressure-site-1 and health-connect-temperature-site-1 and health-connect-skin-temperature-site-1 and health-connect-meal-context-1 and health-connect-user-authored-text-1 and health-connect-source-coded-value-1 and health-connect-cervical-mucus-sensation-1 and health-connect-exercise-context-1 and health-connect-sleep-stage-1 and health-connect-mindfulness-context-1 and health-connect-vo2-method-1 and health-connect-writer-record-1
+Description: "The source and output identities plus allowlisted source context for a result converted from an AndroidX Health Connect 1.1 Record. Each output uses one exact profile-claim mode admitted by the shared profile-claims catalog: this adapter envelope with a shared Grove measurement profile, or a more specific Health Connect result profile."
+* obeys health-connect-glucose-specimen-1 and health-connect-body-position-1 and health-connect-body-site-applicability-1 and health-connect-blood-pressure-site-1 and health-connect-temperature-site-1 and health-connect-skin-temperature-site-1 and health-connect-meal-context-1 and health-connect-user-authored-text-1 and health-connect-source-coded-value-1 and health-connect-cervical-mucus-sensation-1 and health-connect-exercise-context-1 and health-connect-sleep-stage-1 and health-connect-mindfulness-context-1 and health-connect-session-title-1 and health-connect-session-text-nonblank-1 and health-connect-vo2-method-1 and health-connect-writer-record-1
 * issued 1..1 MS
-* identifier 2..3 MS
-* identifier ^slicing.rules = #closed
+* identifier 2..* MS
+* identifier ^slicing.rules = #open
 * specimen only Reference(HealthConnectSpecimen)
 * extension contains
     HealthConnectRecordType named healthConnectRecordType 1..1 MS and
     $bodyPosition named bodyPosition 0..1 MS and
     HealthConnectGlucoseMealContext named glucoseMealContext 0..1 MS and
-    HealthConnectSleepTitle named sleepTitle 0..1 MS and
-    HealthConnectExerciseTitle named exerciseTitle 0..1 MS and
-    HealthConnectMindfulnessSessionType named mindfulnessSessionType 0..1 MS and
-    HealthConnectMindfulnessTitle named mindfulnessTitle 0..1 MS
+    HealthConnectSessionTitle named sessionTitle 0..1 MS
 * note 0..1 MS
 * note.author[x] 0..0
 * note.time 0..0

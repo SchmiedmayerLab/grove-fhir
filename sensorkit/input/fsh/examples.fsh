@@ -89,7 +89,7 @@ Description: "The complete uniform voltage projection of one SensorKit ECG recor
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
 * identifier[sourceOutput].value = "v2:test-key:1:GV8ntg6BUwB9gzp_p7-yXghTfdQxrr8jklm0dMNyq10"
 * extension[sensorKitSourceType].valueCode = #ecg
-* extension[sensorKitECGSessionGuidance].valueCode = #guided
+* method = $sensorKitValue#guided "Guided"
 * status = #final
 * code = $loinc#11524-6 "EKG study"
 * subject = Reference(SensorKitPatientExample)
@@ -161,7 +161,7 @@ Description: "A complete right-arm-minus-left-arm voltage projection. The exact 
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
 * identifier[sourceOutput].value = "v2:test-key:1:R4qVfHx16m6XqwZAaIQypVGaXs0jM9LDHmIEj69-3MI"
 * extension[sensorKitSourceType].valueCode = #ecg
-* extension[sensorKitECGSessionGuidance].valueCode = #unguided
+* method = $sensorKitValue#unguided "Unguided"
 * status = #final
 * code = $loinc#11524-6 "EKG study"
 * subject = Reference(SensorKitPatientExample)
@@ -278,10 +278,9 @@ Description: "A platform-exclusive visit summary that preserves uncertain arriva
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
 * identifier[sourceOutput].value = "v2:test-key:1:85uYi-Nuuw3FayWI5QOwrbzTKez6mf42VPaqcaXgQis"
 * extension[sensorKitSourceType].valueCode = #visits
-// Present because this example's deployment authorized disclosure; without that authorization the
-// visit still converts and this extension is simply absent.
-* extension[visitLocation].valueIdentifier.system = "https://grovealliance.org/fhir/sensorkit/NamingSystem/sensorkit-visit-location-id"
-* extension[visitLocation].valueIdentifier.value = "0f1f2c48-2b45-4a2a-9a2a-8b4d3a2f61c7"
+* focus.type = "Location"
+* focus.identifier.system = "https://study.example.org/fhir/NamingSystem/sensorkit-visit-location/example-store"
+* focus.identifier.value = "0f1f2c48-2b45-4a2a-9a2a-8b4d3a2f61c7"
 * status = #final
 * code = $sensorKitConcept#visit-summary "Visit summary"
 * subject = Reference(SensorKitPatientExample)

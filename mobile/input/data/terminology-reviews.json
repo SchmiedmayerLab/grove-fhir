@@ -9,7 +9,7 @@
     "mobile/input/fsh/terminology.fsh",
     "mobile/input/fsh/profiles.fsh"
   ],
-  "groundTruthDigest": "sha256:9ccbb538e34958aaed072b47c5da5746c720702ed53925c3736f25e0f9dde2d6",
+  "groundTruthDigest": "sha256:39c21059acb17a657f4eedcc328a307639dbe495ddbd5819e06af661b5f1ceb6",
   "valueDomainReview": {
     "status": "prepared-pending-release-ratification",
     "preparedOn": "2026-08-27",
@@ -1832,12 +1832,24 @@
     "heart-rate": {
       "status": "approved",
       "approvedBy": [
-        "v0.3.0 release review"
+        {
+          "name": "0.6.0 FHIR R4 heart-rate profile follow-up",
+          "role": "FHIR-profile-verification"
+        }
       ],
-      "approvedOn": "2026-08-21",
-      "digest": "sha256:6638a130e87e6fc546291361a91713baf92a0b8131e47b2396417d471ce2cec4",
-      "provenance": "bootstrap",
-      "reviewedOn": "2026-08-21"
+      "approvedOn": "2026-08-27",
+      "digest": "sha256:103add77a6e20645344bcba4784cb8af92a8f20fd358dc26d6d407432323d159",
+      "provenance": "reviewed",
+      "reviewedOn": "2026-08-27",
+      "preparedBy": [
+        {
+          "name": "0.6.0 ECG native-R4 remediation",
+          "role": "engineering"
+        }
+      ],
+      "ratification": "pending-pull-request-review",
+      "reviewRef": "pending-integration-commit",
+      "notes": "LOINC 8867-4 and UCUM /min are unchanged. The effective choice now follows the official R4 Heart Rate/Vital Signs allowance of dateTime or Period so an average over an ECG interval can claim the shared heart-rate profile without losing the interval. Ordinary point samples continue to emit effectiveDateTime."
     },
     "heart-rate-recovery-one-minute": {
       "status": "approved",

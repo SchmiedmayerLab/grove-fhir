@@ -234,6 +234,9 @@ class SensorKitCatalogTests(unittest.TestCase):
         ecg = by_token["SRSensor.electrocardiogram"]
         self.assertEqual(ecg["status"], "supported")
         self.assertIn("uniform series", ecg["structured"]["admissionRule"])
+        guidance = ecg["structured"]["nativeR4Mappings"][0]
+        self.assertEqual(guidance["r4Element"], "Observation.method")
+        self.assertEqual(guidance["allowedCodes"], ["guided", "unguided"])
         self.assertTrue(
             any("signalInvalid" in field for field in ecg["raw"]["requiredForFields"])
         )
@@ -248,6 +251,14 @@ class SensorKitCatalogTests(unittest.TestCase):
         )
         self.assertIn("must not bracket", by_token["SRSensor.onWristState"]["structured"]["rule"])
         self.assertIn("does not assert a clinical Encounter", by_token["SRSensor.visits"]["structured"]["rule"])
+        visit_location = by_token["SRSensor.visits"]["structured"]["nativeR4Mappings"][0]
+        self.assertEqual(visit_location["valueKind"], "identifier-reference")
+        self.assertEqual(visit_location["referenceType"], "Location")
+        self.assertIn("source-store-scoped", visit_location["identifierSystemRule"])
+        wrist_version = by_token["SRSensor.wristTemperature"]["structured"]["extensionMappings"][0]
+        self.assertEqual(wrist_version["valueElement"], "valueString")
+        self.assertIn("Coding.version", wrist_version["nativeR4Gap"])
+        self.assertTrue(wrist_version["exactSourceValue"])
         graph = by_token["SRSensor.deviceUsageReport"]["structured"]["graphContract"]
         self.assertEqual(
             graph["requiredResources"],
@@ -313,6 +324,23 @@ class SensorKitCatalogTests(unittest.TestCase):
         )
         self.assertIn("assigns and persists", identity["sourceRecord"]["nativeRecordRule"])
         self.assertIn("measured values", identity["sourceRecord"]["nativeRecordRule"])
+        acquisition = identity["sourceRecord"]["acquisitionCoordinate"]
+        self.assertIn("monotonic delivery ordinal", acquisition["record"])
+        self.assertIn("pending start ordinal", acquisition["pendingBatch"])
+        self.assertIn("splits or combines", acquisition["retry"])
+        vectors = {vector["id"]: vector for vector in acquisition["vectors"]}
+        self.assertEqual(
+            vectors["equal-coordinate-cross-batch"]["expectedCoordinates"],
+            [
+                {"generation": 4, "deliveryOrdinal": 40},
+                {"generation": 4, "deliveryOrdinal": 41},
+            ],
+        )
+        rebatch = vectors["crash-retry-rebatch"]
+        self.assertEqual(
+            [attempt["resolvedOrdinals"] for attempt in rebatch["attempts"]],
+            [[120, 121], [120], [121]],
+        )
         self.assertEqual(identity["sourceOutput"]["identityKind"], "source-output")
         self.assertIn("length framing", identity["sourceOutput"]["outputDiscriminatorRule"])
         self.assertIn("there is no fallback", identity["sourceOutput"]["outputDiscriminatorRule"])
@@ -338,6 +366,30 @@ class SensorKitCatalogTests(unittest.TestCase):
         self.assertEqual(
             recording_claim["requiredIdentifierRoles"],
             ["source-record", "source-output", "source-artifact"],
+        )
+
+    def test_platform_summary_quantity_domains_are_closed_and_proportionate(self) -> None:
+        domains = self.catalog["quantityValueDomains"]
+        nonnegative = set(domains["nonNegativeProfiles"])
+        integer_counts = set(domains["integerCountProfiles"])
+        self.assertEqual(len(nonnegative), 9)
+        self.assertEqual(len(integer_counts), 7)
+        self.assertTrue(integer_counts < nonnegative)
+        self.assertEqual(
+            domains["countQuantity"],
+            {"system": "http://unitsofmeasure.org", "code": "{count}"},
+        )
+        self.assertIn("no physiologic upper range", domains["rule"])
+        source = (ROOT / "sensorkit/input/fsh/profiles.fsh").read_text(
+            encoding="utf-8"
+        )
+        self.assertEqual(
+            source.count("sensorkit-summary-quantity-nonnegative-1") - 1,
+            len(nonnegative),
+        )
+        self.assertEqual(
+            source.count("sensorkit-summary-count-integer-1") - 1,
+            len(integer_counts),
         )
 
     def test_raw_payload_admission_is_explicit_and_fail_closed(self) -> None:

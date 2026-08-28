@@ -28,6 +28,13 @@ class ExchangeProtocolTests(unittest.TestCase):
         cls.key = bytes.fromhex(cls.vectors["keyHex"])
 
     def test_every_hmac_vector_is_exact(self) -> None:
+        self.assertEqual(
+            {vector["identityKind"] for vector in self.vectors["identities"]},
+            {
+                item["kind"]
+                for item in self.catalog["opaqueIdentity"]["identityKinds"]
+            },
+        )
         for vector in self.vectors["identities"]:
             with self.subTest(vector=vector["id"]):
                 actual = PROTOCOL.derive_hmac_identity(
@@ -43,27 +50,101 @@ class ExchangeProtocolTests(unittest.TestCase):
                     (self.vectors["keyId"], self.vectors["epoch"], actual.rsplit(":", 1)[1]),
                 )
 
+    def test_every_identity_kind_has_one_distinct_example_system(self) -> None:
+        kinds = {
+            item["kind"] for item in self.catalog["opaqueIdentity"]["identityKinds"]
+        }
+        rows = self.vectors["identitySystems"]
+        self.assertEqual({row["identityKind"] for row in rows}, kinds)
+        self.assertEqual(len(rows), len(kinds))
+        self.assertEqual(len({row["system"] for row in rows}), len(kinds))
+
+    def test_invalid_hmac_vectors_fail_closed(self) -> None:
+        expected_messages = {
+            "empty-component": "must not be empty",
+            "provider-kind-required": "provider components require identity kind",
+        }
+        for vector in self.vectors["invalidIdentities"]:
+            with self.subTest(vector=vector["id"]), self.assertRaisesRegex(
+                PROTOCOL.ExchangeProtocolError,
+                expected_messages[vector["expectedError"]],
+            ):
+                PROTOCOL.derive_hmac_identity(
+                    key=self.key,
+                    key_id=self.vectors["keyId"],
+                    epoch=self.vectors["epoch"],
+                    identity_kind=vector["identityKind"],
+                    components=vector["components"],
+                )
+
     def test_length_frames_are_unambiguous_and_preserve_unicode(self) -> None:
         self.assertNotEqual(
             PROTOCOL.frame_fields(["ab", "c"]),
             PROTOCOL.frame_fields(["a", "bc"]),
         )
+        self.assertEqual(PROTOCOL.frame_fields([""]), b"\x00\x00\x00\x00")
         self.assertNotEqual(
             PROTOCOL.derive_hmac_identity(
                 key=self.key,
                 key_id="test-key",
                 epoch=1,
                 identity_kind="source-record",
-                components=["adapter", "ab", "c", "", "record|東京"],
+                components=["adapter", "ab", "c", "scope", "record|東京"],
             ),
             PROTOCOL.derive_hmac_identity(
                 key=self.key,
                 key_id="test-key",
                 epoch=1,
                 identity_kind="source-record",
-                components=["adapter", "a", "bc", "", "record|東京"],
+                components=["adapter", "a", "bc", "scope", "record|東京"],
             ),
         )
+
+    def test_typed_identity_components_are_nonempty_unicode_scalar_strings(self) -> None:
+        requirements = self.catalog["opaqueIdentity"]["componentRequirements"]
+        self.assertEqual(
+            requirements,
+            {
+                "valueType": "unicode-scalar-string",
+                "nonEmpty": True,
+                "arity": "exactly-kind-components",
+            },
+        )
+        catalog_names = {
+            item["kind"]: tuple(item["components"])
+            for item in self.catalog["opaqueIdentity"]["identityKinds"]
+        }
+        self.assertEqual(PROTOCOL.IDENTITY_KIND_COMPONENT_NAMES, catalog_names)
+        for kind, names in catalog_names.items():
+            valid = [f"component-{index}" for index in range(len(names))]
+            if kind.startswith("provider-"):
+                valid[0] = "withings"
+            for index, name in enumerate(names):
+                components = valid.copy()
+                components[index] = ""
+                with self.subTest(kind=kind, component=name), self.assertRaisesRegex(
+                    PROTOCOL.ExchangeProtocolError,
+                    rf"{kind}[.]{name} must not be empty",
+                ):
+                    PROTOCOL.derive_hmac_identity(
+                        key=self.key,
+                        key_id="test-key",
+                        epoch=1,
+                        identity_kind=kind,
+                        components=components,
+                    )
+        invalid_scalar = ["adapter", "source", "https://scope.example", "scope", "\ud800"]
+        with self.assertRaisesRegex(
+            PROTOCOL.ExchangeProtocolError,
+            "source-record[.]native-record-id must contain Unicode scalar values",
+        ):
+            PROTOCOL.derive_hmac_identity(
+                key=self.key,
+                key_id="test-key",
+                epoch=1,
+                identity_kind="source-record",
+                components=invalid_scalar,
+            )
 
     def test_key_kind_and_epoch_fail_closed(self) -> None:
         with self.assertRaisesRegex(PROTOCOL.ExchangeProtocolError, "at least 32"):
@@ -247,6 +328,48 @@ class ExchangeProtocolTests(unittest.TestCase):
         provider = next(item for item in kinds if item["kind"] == "provider-record")
         self.assertIn("provider-scope-system", provider["components"])
         self.assertIn("provider-scope-value", provider["components"])
+        by_kind = {item["kind"]: item for item in kinds}
+        for generic_kind, provider_kind in (
+            ("source-record", "provider-record"),
+            ("source-output", "provider-output"),
+            ("source-artifact", "provider-artifact"),
+        ):
+            with self.subTest(provider_kind=provider_kind):
+                self.assertEqual(
+                    by_kind[provider_kind]["identifierRole"],
+                    by_kind[generic_kind]["identifierRole"],
+                )
+                self.assertNotEqual(
+                    by_kind[provider_kind]["components"],
+                    by_kind[generic_kind]["components"],
+                )
+
+    def test_every_adapter_identity_declaration_matches_protocol_exactly(self) -> None:
+        protocol_kinds = {
+            item["kind"]: item
+            for item in self.catalog["opaqueIdentity"]["identityKinds"]
+        }
+        for filename in (
+            "healthkit-adapter.json",
+            "health-connect-adapter.json",
+            "sensorkit-adapter.json",
+            "providers-adapter.json",
+        ):
+            catalog = json.loads((ROOT / "catalog" / filename).read_text(encoding="utf-8"))
+            for declaration_name, declaration in catalog["identity"].items():
+                if not isinstance(declaration, dict) or "identityKind" not in declaration:
+                    continue
+                kind = declaration["identityKind"]
+                with self.subTest(catalog=filename, declaration=declaration_name):
+                    self.assertIn(kind, protocol_kinds)
+                    self.assertEqual(
+                        declaration["identifierRole"],
+                        protocol_kinds[kind]["identifierRole"],
+                    )
+                    self.assertEqual(
+                        declaration["components"],
+                        protocol_kinds[kind]["components"],
+                    )
 
     def test_test_key_is_explicitly_forbidden_in_production(self) -> None:
         self.assertIn("Public conformance key", self.vectors["warning"])

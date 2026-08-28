@@ -6,6 +6,11 @@
 // SPDX-License-Identifier: MIT
 //
 
+Invariant: qg-canonical-1
+Description: "Questionnaire.url is one absolute HTTP(S) canonical URL without a version separator or fragment."
+Severity: #error
+Expression: "url.matches('^https?://[^\\\\s/?#|]+[^\\\\s|#]*$')"
+
 Invariant: qg-version-1
 Description: "Questionnaire.version is a valid Semantic Versioning 2.0.0 version."
 Severity: #error
@@ -99,7 +104,7 @@ Expression: "extension('http://hl7.org/fhir/StructureDefinition/rendering-styleS
 Invariant: gqr-canonical-1
 Description: "The response names the exact instrument with an absolute url|Semantic-Version canonical; neither component contains a fragment or an extra separator."
 Severity: #error
-Expression: "questionnaire.matches('^https?://[^|#]+[|](0|[1-9][0-9]*)[.](0|[1-9][0-9]*)[.](0|[1-9][0-9]*)(-((0|[1-9][0-9]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*)([.](0|[1-9][0-9]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*))*))?([+]([0-9A-Za-z-]+)([.][0-9A-Za-z-]+)*)?$')"
+Expression: "questionnaire.matches('^https?://[^\\\\s/?#|]+[^\\\\s|#]*[|](0|[1-9][0-9]*)[.](0|[1-9][0-9]*)[.](0|[1-9][0-9]*)(-((0|[1-9][0-9]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*)([.](0|[1-9][0-9]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*))*))?([+]([0-9A-Za-z-]+)([.][0-9A-Za-z-]+)*)?$')"
 
 Invariant: gqr-identifier-1
 Description: "The response has one business identifier with a complete system and value pair."
@@ -116,7 +121,7 @@ Parent: http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire
 Id: grove-questionnaire
 Title: "Grove Questionnaire"
 Description: "A versioned SDC Questionnaire that can be administered and answered without relying on renderer-specific semantics."
-* obeys qg-version-1 and qg-version-algorithm-1 and qg-item-text-1 and qg-reference-1 and qg-repeats-1 and qg-enable-1 and qg-expression-1 and qg-variable-name-1 and qg-initial-1 and qg-length-1 and qg-decimal-1 and qg-value-bounds-1 and qg-quantity-1 and qg-unit-1 and qg-attachment-1 and qg-occurrence-1 and qg-min-max-1 and qg-style-sensitive-1
+* obeys qg-canonical-1 and qg-version-1 and qg-version-algorithm-1 and qg-item-text-1 and qg-reference-1 and qg-repeats-1 and qg-enable-1 and qg-expression-1 and qg-variable-name-1 and qg-initial-1 and qg-length-1 and qg-decimal-1 and qg-value-bounds-1 and qg-quantity-1 and qg-unit-1 and qg-attachment-1 and qg-occurrence-1 and qg-min-max-1 and qg-style-sensitive-1
 * extension contains
     $variable named variable 0..* MS and
     $targetConstraint named targetConstraint 0..* MS
@@ -127,6 +132,7 @@ Description: "A versioned SDC Questionnaire that can be administered and answere
 * extension[versionAlgorithm].valueCoding.code 1..1
 * extension[versionAlgorithm].valueCoding.code = #semver (exactly)
 * extension[variable].valueExpression.name 1..1 MS
+* url 1..1 MS
 * version 1..1 MS
 * status 1..1 MS
 * subjectType MS

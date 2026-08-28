@@ -50,7 +50,7 @@
   "sourceContextRules": {
     "healthkit.default": {
       "required": [
-        "Observation.code.coding[system=https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-source-type]"
+        "Observation.extension[url=https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-source-type-extension].valueCode"
       ],
       "allowedAdditions": [
         "Observation.identifier[healthKitObjectId]",
@@ -104,7 +104,7 @@
     "health-connect.sleep-duration": {
       "inherits": "health-connect.default",
       "allowedAdditions": [
-        "Observation.extension[health-connect-sleep-title]",
+        "Observation.extension[health-connect-session-title]",
         "Observation.note",
         "Observation.hasMember"
       ]

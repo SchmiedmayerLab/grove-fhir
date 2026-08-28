@@ -11,7 +11,7 @@ canonical: https://grovealliance.org/fhir/providers
 name: GroveFHIRProvider
 title: Grove FHIR Connected Provider Adapter
 description: >-
-  FHIR R4 mappings for already-obtained Google Health API, Oura, and Withings data exchanged through Grove source-neutral contracts.
+  FHIR R4 mappings for already-obtained Google Health API, Oura, and Withings data exchanged through exact Grove semantic and provider-lineage contracts.
 status: draft
 version: 0.6.0
 fhirVersion: 4.0.1

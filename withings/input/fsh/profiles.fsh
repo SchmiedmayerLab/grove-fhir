@@ -10,5 +10,5 @@ Profile: WithingsObservation
 Parent: ProvidersObservation
 Id: withings-observation
 Title: "Withings Observation"
-Description: "The connected-provider Observation contract narrowed to Withings, for a value Withings' own algorithm produced over Withings' own inputs. A measurement two or more connected providers report stays source-neutral and is carried under the shared Provider Observation instead. The adapter does not authorize or fetch Withings data."
+Description: "The connected-provider lineage and identity envelope narrowed to Withings. It is directly paired with either a shared semantic profile or a Withings-owned semantic profile; it does not replace that clinical claim. The adapter does not authorize or fetch Withings data."
 * extension[provider].valueCode = #withings (exactly)

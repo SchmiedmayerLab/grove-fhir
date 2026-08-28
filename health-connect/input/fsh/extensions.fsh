@@ -31,35 +31,10 @@ Context: Observation
 * extension[mealType].valueCoding from HealthConnectMealTypeVS (required)
 * value[x] 0..0
 
-Extension: HealthConnectSleepTitle
-Id: health-connect-sleep-title
-Title: "Health Connect Sleep Title"
-Description: "The non-blank title supplied by a Health Connect SleepSessionRecord, represented only on the source-neutral sleep-duration summary Observation."
-Context: Observation
-* value[x] 1..1 MS
-* value[x] only string
-
-Extension: HealthConnectExerciseTitle
-Id: health-connect-exercise-title
-Title: "Health Connect Exercise Title"
-Description: "The caller-supplied title of a Health Connect exercise session, which the shared workout profile has no element for."
-Context: Observation
-* value[x] 1..1 MS
-* value[x] only string
-
-Extension: HealthConnectMindfulnessSessionType
-Id: health-connect-mindfulness-session-type
-Title: "Health Connect Mindfulness Session Type"
-Description: "The exact closed AndroidX Health Connect 1.1 mindfulness-session type, including UNKNOWN when that is the source value."
-Context: Observation
-* value[x] 1..1 MS
-* value[x] only Coding
-* valueCoding from HealthConnectMindfulnessSessionTypeVS (required)
-
-Extension: HealthConnectMindfulnessTitle
-Id: health-connect-mindfulness-title
-Title: "Health Connect Mindfulness Title"
-Description: "The non-blank title supplied by a Health Connect MindfulnessSessionRecord. Blank source strings are omitted."
+Extension: HealthConnectSessionTitle
+Id: health-connect-session-title
+Title: "Health Connect Session Title"
+Description: "A non-blank title supplied by a Health Connect ExerciseSessionRecord, SleepSessionRecord, or MindfulnessSessionRecord, represented only on that record's primary summary Observation."
 Context: Observation
 * value[x] 1..1 MS
 * value[x] only string

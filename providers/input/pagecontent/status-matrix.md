@@ -111,4 +111,4 @@ This table enumerates every provider field in the closed v0.6.0 Google Health AP
 
 | Provider | Grouped source token | Required members | Measurement | Output discriminator | Rule |
 | --- | --- | --- | --- | --- | --- |
-| `withings` | `getmeas:9+10` | `getmeas:9`; `getmeas:10` | blood-pressure | blood-pressure-panel | Emit exactly one panel only when one type 9 value and one type 10 value occur in the same measure group; otherwise emit neither component as a normalized Observation. Use getmeas:9+10, not either member token, in the source-record identity preimage. |
+| `withings` | `getmeas:9+10` | `getmeas:9`; `getmeas:10` | blood-pressure | single | Emit exactly one panel only when one type 9 value and one type 10 value occur in the same measure group; otherwise emit neither component as a normalized Observation. Use getmeas:9+10, not either member token, in the source-record identity preimage. |

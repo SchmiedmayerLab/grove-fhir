@@ -140,19 +140,6 @@ Description: "The closed HealthKit symptom severity cases admitted by version 0.
 * ^experimental = false
 * include codes from system HealthKitSymptomSeverityCS
 
-ValueSet: HealthKitECGCorrelatedSymptomTypeVS
-Id: healthkit-ecg-correlated-symptom-type
-Title: "HealthKit ECG Correlated Symptom Type"
-Description: "The seven HealthKit category types that the HealthKit API associates with an ECG."
-* ^experimental = false
-* $healthKitSourceType#HKCategoryTypeIdentifierRapidPoundingOrFlutteringHeartbeat
-* $healthKitSourceType#HKCategoryTypeIdentifierSkippedHeartbeat
-* $healthKitSourceType#HKCategoryTypeIdentifierFatigue
-* $healthKitSourceType#HKCategoryTypeIdentifierShortnessOfBreath
-* $healthKitSourceType#HKCategoryTypeIdentifierChestTightnessOrPain
-* $healthKitSourceType#HKCategoryTypeIdentifierFainting
-* $healthKitSourceType#HKCategoryTypeIdentifierDizziness
-
 CodeSystem: HealthKitECGAlgorithmVersionCS
 Id: healthkit-ecg-algorithm-version
 Title: "HealthKit ECG Algorithm Version"

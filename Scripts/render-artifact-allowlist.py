@@ -34,9 +34,6 @@ INSTANCE_BLOCK = re.compile(
     re.MULTILINE | re.DOTALL,
 )
 USAGE = re.compile(r"^Usage:\s+#(definition|example)\s*$", re.MULTILINE)
-FHIR_ID = re.compile(r"^[A-Za-z0-9.-]{1,64}$")
-PACKAGE_KEYS = {"source", "packageId", "canonical", "artifacts"}
-ARTIFACT_KEYS = {"fshName", "fshType", "resourceType", "id", "classification"}
 
 
 def load_json(path: Path) -> Any:
@@ -142,12 +139,6 @@ def validate_authored_allowlist(
     document: Any, publication: Any, root: Path = ROOT
 ) -> None:
     """Validate everything knowable from tracked authored files alone."""
-    if not isinstance(document, dict) or set(document) != {"schemaVersion", "packages"}:
-        raise ValueError("artifact allowlist must contain only schemaVersion and packages")
-    if document.get("schemaVersion") != 1 or not isinstance(
-        document.get("packages"), list
-    ):
-        raise ValueError("artifact allowlist must use schemaVersion 1 and list packages")
     if not isinstance(publication, dict) or not isinstance(publication.get("guides"), list):
         raise ValueError("publication config must list guides")
 
@@ -176,8 +167,6 @@ def validate_authored_allowlist(
 
     for guide, package in zip(guides, packages, strict=True):
         source = guide["source"]
-        if set(package) != PACKAGE_KEYS:
-            raise ValueError(f"{source}: package must contain exactly {sorted(PACKAGE_KEYS)}")
         configuration = scalar_configuration(root / source / "sushi-config.yaml")
         if package.get("packageId") != configuration.get("id"):
             raise ValueError(f"{source}: packageId differs from sushi-config.yaml")
@@ -190,8 +179,6 @@ def validate_authored_allowlist(
             raise ValueError(f"{source}: canonical differs from publication config")
 
         artifacts = package.get("artifacts")
-        if not isinstance(artifacts, list) or not artifacts:
-            raise ValueError(f"{source}: artifacts must be a non-empty list")
         expected_order = sorted(
             artifacts,
             key=lambda row: (
@@ -205,21 +192,6 @@ def validate_authored_allowlist(
         allowlisted: dict[tuple[str, str], str] = {}
         resource_identities: set[tuple[str, str]] = set()
         for artifact in artifacts:
-            if not isinstance(artifact, dict) or set(artifact) != ARTIFACT_KEYS:
-                raise ValueError(
-                    f"{source}: every artifact must contain exactly "
-                    f"{sorted(ARTIFACT_KEYS)}"
-                )
-            string_keys = ("fshName", "fshType", "resourceType", "id", "classification")
-            if not all(
-                isinstance(artifact.get(key), str) and artifact[key]
-                for key in string_keys
-            ):
-                raise ValueError(f"{source}: artifact fields must be non-empty strings")
-            if artifact["classification"] not in {"definition", "example"}:
-                raise ValueError(f"{source}: unsupported artifact classification")
-            if FHIR_ID.fullmatch(artifact["id"]) is None:
-                raise ValueError(f"{source}: invalid FHIR id {artifact['id']!r}")
             declaration = (artifact["fshType"], artifact["fshName"])
             if declaration in allowlisted:
                 raise ValueError(f"{source}: duplicate allowlisted declaration {declaration}")

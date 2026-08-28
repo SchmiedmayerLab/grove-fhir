@@ -73,8 +73,8 @@
         }
       ],
       "expectedRule": {
-        "code": "mobile-heart-rate.fixed-unit",
-        "reason": "A Grove Mobile heart-rate result must use the fixed UCUM code /min.",
+        "code": "mobile-output.fixed-quantity-unit",
+        "reason": "Every Quantity-valued catalog measurement uses the exact fixed system and code declared by its semantic profile contract.",
         "location": "Bundle.entry[2].resource.valueQuantity.code",
         "severity": "error"
       }
@@ -126,6 +126,23 @@
         "code": "mobile-output.source-output-required",
         "reason": "Every active clinical output must carry its exact typed source-output identity in addition to source-record identity.",
         "location": "Bundle.entry[2].resource.identifier",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "identity-system-changes-role",
+      "base": "mobile-exchange",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/entry/2/resource/identifier/1/system",
+          "value": "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+        }
+      ],
+      "expectedRule": {
+        "code": "mobile-exchange.identity-system-role",
+        "reason": "Within one event graph, each Grove Identifier.system names exactly one Grove identifier role; one namespace cannot change meaning between nodes.",
+        "location": "Bundle",
         "severity": "error"
       }
     },

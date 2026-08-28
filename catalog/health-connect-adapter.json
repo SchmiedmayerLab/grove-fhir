@@ -36,6 +36,11 @@
     "deferred": "No FHIR output for this source type is admitted by the 0.6.0 adapter.",
     "intentionally-unsupported": "The 0.6.0 contract explicitly rejects this source meaning rather than approximating it."
   },
+  "observationIssued": {
+    "cardinality": "1..1",
+    "source": "Metadata.lastModifiedTime",
+    "rule": "Map the exact Health Connect Metadata.lastModifiedTime to Observation.issued as the source store's availability time for this current Record version. Never substitute conversion, fetch, assembly, or upload time."
+  },
   "outputCountRules": {
     "exactly-one": "Emit exactly one output for the source record.",
     "zero-or-one": "Emit no more than one output, under the named source-presence condition.",
@@ -393,7 +398,7 @@
       "context": [
         "exerciseType",
         "exerciseSegmentType",
-        "exerciseTitle",
+        "sessionTitle",
         "exerciseNotes"
       ],
       "outputs": [
@@ -534,7 +539,7 @@
       "status": "supported",
       "context": [
         "mindfulnessSessionType",
-        "mindfulnessTitle",
+        "sessionTitle",
         "mindfulnessNotes"
       ],
       "outputs": [
@@ -835,7 +840,7 @@
       "status": "supported",
       "context": [
         "sleepStage",
-        "sleepTitle",
+        "sessionTitle",
         "sleepNotes"
       ],
       "outputs": [
@@ -1535,19 +1540,23 @@
         "EXERCISE_LAP"
       ]
     },
-    "exerciseTitle": {
-      "extension": "https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-exercise-title",
+    "sessionTitle": {
+      "extension": "https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-session-title",
       "valueType": "string",
-      "appliesTo": "workout summary Observation only",
-      "appliesToMeasurement": "workout",
-      "retentionPolicy": "preserve only when the producer explicitly selects RETAIN; otherwise omit",
+      "appliesTo": "the primary workout, sleep-duration, or mindfulness-session summary Observation only",
+      "appliesToMeasurements": [
+        "workout",
+        "sleep-duration",
+        "mindfulness-session"
+      ],
+      "retentionPolicy": "RETAIN preserves the non-blank source field; OMIT deliberately omits it; the producer must explicitly select one",
       "blankPolicy": "omit"
     },
     "exerciseNotes": {
       "r4Element": "workout summary Observation.note.text",
       "appliesToMeasurement": "workout",
       "authorAndTime": "omit because Health Connect supplies neither",
-      "retentionPolicy": "preserve only when the producer explicitly selects RETAIN; otherwise omit",
+      "retentionPolicy": "RETAIN preserves the non-blank source field; OMIT deliberately omits it; the producer must explicitly select one",
       "blankPolicy": "omit"
     },
     "sleepStage": {
@@ -1606,24 +1615,16 @@
         }
       ]
     },
-    "sleepTitle": {
-      "extension": "https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-sleep-title",
-      "valueType": "string",
-      "appliesTo": "sleep-duration summary Observation only",
-      "appliesToMeasurement": "sleep-duration",
-      "retentionPolicy": "preserve only when the producer explicitly selects RETAIN; otherwise omit",
-      "blankPolicy": "omit"
-    },
     "sleepNotes": {
       "r4Element": "Observation.note.text",
       "appliesToMeasurement": "sleep-duration",
       "authorAndTime": "omit because Health Connect supplies neither",
-      "retentionPolicy": "preserve only when the producer explicitly selects RETAIN; otherwise omit",
+      "retentionPolicy": "RETAIN preserves the non-blank source field; OMIT deliberately omits it; the producer must explicitly select one",
       "blankPolicy": "omit"
     },
     "mindfulnessSessionType": {
-      "extension": "https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-mindfulness-session-type",
-      "valueType": "Coding",
+      "r4Element": "Observation.method",
+      "valueType": "CodeableConcept with exactly one Coding",
       "codeSystem": "https://grovealliance.org/fhir/health-connect/CodeSystem/health-connect-mindfulness-session-type",
       "unknownPolicy": "preserve the AndroidX UNKNOWN token; reject integers outside the closed AndroidX 1.1 domain",
       "values": [
@@ -1659,18 +1660,11 @@
         }
       ]
     },
-    "mindfulnessTitle": {
-      "extension": "https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-mindfulness-title",
-      "valueType": "string",
-      "appliesToMeasurement": "mindfulness-session",
-      "retentionPolicy": "preserve only when the producer explicitly selects RETAIN; otherwise omit",
-      "blankPolicy": "omit"
-    },
     "mindfulnessNotes": {
       "r4Element": "Observation.note.text",
       "appliesToMeasurement": "mindfulness-session",
       "authorAndTime": "omit because Health Connect supplies neither",
-      "retentionPolicy": "preserve only when the producer explicitly selects RETAIN; otherwise omit",
+      "retentionPolicy": "RETAIN preserves the non-blank source field; OMIT deliberately omits it; the producer must explicitly select one",
       "blankPolicy": "omit"
     },
     "vo2MaxMeasurementMethod": {
@@ -1782,12 +1776,28 @@
       "identityKind": "writer-record",
       "identifierRole": "writer-record",
       "condition": "Metadata.clientRecordId is present.",
-      "components": {
+      "components": [
+        "writer-application-system",
+        "writer-application-value",
+        "writer-record-id"
+      ],
+      "bindings": {
         "writer-application-system": "deployment-owned URI naming Android application package identifiers",
         "writer-application-value": "Metadata.dataOrigin.packageName",
         "writer-record-id": "Metadata.clientRecordId"
       },
-      "version": "Metadata.clientRecordVersion is carried only when supplied by the writer and never synthesized from export order."
+      "version": "When Metadata.clientRecordId is present, carry Metadata.clientRecordVersion exactly, including the AndroidX default 0; never infer presence or synthesize a value from export order.",
+      "revision": {
+        "sourceIdentifier": "Metadata.clientRecordId",
+        "sourceVersion": "Metadata.clientRecordVersion",
+        "presenceRule": "identifier-controls-pair",
+        "identifierRule": "A present clientRecordId must be non-blank and is used exactly as the writer-record-id component; an absent id omits both writer identity and version.",
+        "versionMinimum": 0,
+        "versionMaximum": 9223372036854775807,
+        "versionRule": "The AndroidX Long is always available and defaults to 0; with a present clientRecordId emit its canonical unsigned decimal text, including 0.",
+        "fhirVersionExtension": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-writer-record-version",
+        "invalidDisposition": "reject-source-record"
+      }
     },
     "resourceIdPolicy": "Resource.id is optional and repository-assigned. Platform, output, writer, specimen, and event business identifiers are never copied into Resource.id."
   }

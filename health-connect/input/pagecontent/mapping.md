@@ -38,11 +38,12 @@ that re-imports a measurement reuses its `clientRecordId` and raises its `client
 and the stored Record then carries a new `metadata.id`. Deduplicating on `metadata.id` alone
 therefore counts a revised measurement twice.
 
-When the Record carries `clientRecordId`, map it to a typed `writer-record`
+When the Record carries a non-blank `clientRecordId`, map it to a typed `writer-record`
 `Observation.identifier`, deriving it from the complete writer-application Identifier pair and
 logical writer record id as the exchange protocol requires, and map `clientRecordVersion` to the
 [Grove Writer Record Version](https://grovealliance.org/fhir/mobile/StructureDefinition-grove-writer-record-version.html)
-extension. A Record without a `clientRecordId` carries neither; do not synthesize one, because a
+extension, including the AndroidX `Long` default `0`. Reject a negative version or a present blank
+id. A Record without a `clientRecordId` carries neither; do not synthesize one, because a
 writer that assigns no client record identity has not promised that any two of its Records are the
 same measurement.
 
@@ -58,10 +59,15 @@ is the complete normative identity and lifecycle algorithm. The Health Connect a
 binds `Metadata.id`, the exact Record class, and a complete deployment-owned repository-scope pair
 to its source-record components, and publishes closed multi-output discriminator grammars.
 
-Values are HMAC-SHA-256 over typed, unsigned 32-bit length-framed UTF-8 fields. Delimiters and
-Unicode are therefore unambiguous, native ids are not disclosed, and independent deployments are
-not silently linkable. Implementations must reproduce every published vector and must retain old
-key epochs while an identifier can be replayed or retracted.
+Values are HMAC-SHA-256 over typed, non-empty Unicode-scalar strings using unsigned 32-bit
+length-framed UTF-8 fields. Delimiters and Unicode are therefore unambiguous, and independent
+deployments are not silently linkable.
+Implementations must reproduce every published vector and must retain old key epochs while an
+identifier can be replayed or retracted. When native round-trip genuinely requires `Metadata.id`,
+a deployment may additionally disclose it on the one-to-one primary Observation under an explicit
+absolute repository namespace. That optional Identifier never replaces Grove identity, is not
+repeated on graph children or supporting Specimens, and is not copied into `Resource.id`, entry
+keys, arbitrary components, untyped metadata, attachment names, or logs.
 
 Business identifiers do not populate `Resource.id`. A producer graph uses the Mobile
 entry-identity algorithm to derive deterministic `urn:uuid` fullUrls from complete entry
@@ -132,14 +138,15 @@ when the catalog says they are semantically distinct source assertions.
 
 An exercise session emits exactly one workout summary plus one workout-segment member for
 every source segment and lap. A lap uses the exact structural token `EXERCISE_LAP`. The
-summary alone may carry the typed exercise title and one source note; children carry neither.
+producer explicitly selects `RETAIN` to preserve a non-blank title and one source note on the
+summary, or `OMIT` to deliberately omit both; children carry neither.
 
 ### Sleep
 
 Emit one sleep-duration summary for the source session and one sleep-stage Observation per
-admitted stage. When the producer explicitly selects the `RETAIN` user-authored-text policy,
-the summary retains a non-blank source title through the typed string extension and one source
-note through `Annotation.text`; the default minimization policy omits both. Each stage carries exactly two result
+admitted stage. The producer explicitly selects `RETAIN` to preserve a non-blank source title
+through the typed string extension and one source note through `Annotation.text`, or `OMIT` to
+deliberately omit both. Each stage carries exactly two result
 codings in this order: the source-neutral Grove sleep class, then the exact Health Connect
 stage token from
 `https://grovealliance.org/fhir/health-connect/CodeSystem/health-connect-sleep-stage`.
@@ -149,10 +156,10 @@ awake-in-bed retain their exact second coding.
 ### Mindfulness
 
 Emit one point-to-point mindfulness-session Observation for each
-`MindfulnessSessionRecord`. Preserve the exact closed AndroidX session type through the
-typed Coding extension. When the producer explicitly selects the `RETAIN` policy, it also
-preserves a non-blank title through the mindfulness-title extension and one non-blank note
-through `Annotation.text`; the minimization policy omits both. These fields are admitted only on an output
+`MindfulnessSessionRecord`. Preserve the exact closed AndroidX session type in
+`Observation.method`. The producer explicitly selects `RETAIN` to preserve a non-blank title
+through the shared session-title extension and one non-blank note through `Annotation.text`, or
+`OMIT` to deliberately omit both. These fields are admitted only on an output
 whose record-type extension is `MindfulnessSessionRecord`; they are not inferred for other
 records.
 

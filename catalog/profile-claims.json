@@ -6,15 +6,15 @@
   "observationAdapterClaim": {
     "cardinality": 2,
     "members": [
-      "exactly one shared semantic profile from catalog/measurement-catalog.json, sharedSensorProfiles, or standardAdapterClaims",
+      "exactly one semantic profile from catalog/measurement-catalog.json (shared or owner-specific), sharedSensorProfiles, or standardAdapterClaims",
       "exactly one adapter profile listed below"
     ],
     "inheritedProfilesAreNotDeclared": true,
     "adapterProfiles": [
       "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-observation",
       "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-observation",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-average-heart-rate-observation",
       "https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-observation",
-      "https://grovealliance.org/fhir/providers/StructureDefinition/providers-observation",
       "https://grovealliance.org/fhir/withings/StructureDefinition/withings-observation",
       "https://grovealliance.org/fhir/oura/StructureDefinition/oura-observation",
       "https://grovealliance.org/fhir/google-health/StructureDefinition/google-health-observation",
@@ -161,6 +161,81 @@
       "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-workout-effort-score"
     ],
     "otherProfilesAllowed": false
+  },
+  "healthKitEcgGraphClaim": {
+    "waveform": {
+      "cardinality": {"min": 1, "max": 1},
+      "profiles": [
+        "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-ecg-observation",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-observation"
+      ],
+      "outputIdentity": {
+        "role": "electrocardiogram",
+        "discriminator": "single"
+      }
+    },
+    "averageHeartRate": {
+      "cardinality": {"min": 0, "max": 1},
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-heart-rate",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-average-heart-rate-observation"
+      ],
+      "code": {
+        "system": "http://loinc.org",
+        "code": "8867-4",
+        "display": "Heart rate"
+      },
+      "quantity": {
+        "system": "http://unitsofmeasure.org",
+        "code": "/min",
+        "unit": "beats/minute"
+      },
+      "outputIdentity": {
+        "role": "average-heart-rate",
+        "discriminator": "single"
+      },
+      "sameSourceRecord": true,
+      "sameEffectivePeriod": true,
+      "reference": {
+        "sourceOutput": "average-heart-rate",
+        "r4Path": "Observation.derivedFrom",
+        "targetOutput": "electrocardiogram",
+        "targetType": "Observation",
+        "referenceShape": "resolving-literal",
+        "min": 1,
+        "max": 1
+      }
+    },
+    "correlatedSymptoms": {
+      "sourceOutput": "electrocardiogram",
+      "r4Path": "Observation.hasMember",
+      "targetOutputClass": "admitted-healthkit-symptom",
+      "targetProfiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-chest-tightness-or-pain",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-dizziness",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-fainting",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-fatigue",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-rapid-pounding-or-fluttering-heartbeat",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-shortness-of-breath",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-skipped-heartbeat"
+      ],
+      "targetType": "Observation",
+      "referenceShape": "identifier-only",
+      "identifierRole": "source-output",
+      "sameEventBundle": false,
+      "cardinality": {"min": 0, "max": "*"},
+      "statusConditionedCardinality": [
+        {"status": "notSet", "min": 0, "max": 0},
+        {"status": "none", "min": 0, "max": 0},
+        {"status": "present", "min": 1, "max": "*"}
+      ],
+      "distinctIdentifiers": true,
+      "preserveDuplicateSourceSamples": true
+    },
+    "provenance": {
+      "profile": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-conversion-provenance",
+      "rule": "The ECG conversion Provenance targets the waveform and the optional average-heart-rate output. Each correlated symptom has its own source-record event and normal HealthKit conversion Provenance."
+    }
   },
   "sensorRecordingDocumentClaim": {
     "resourceType": "DocumentReference",
@@ -349,6 +424,7 @@
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-contraceptive-use",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-cycling-functional-threshold-power",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-date-of-birth",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-average-heart-rate-observation",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-observation",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-environmental-audio-exposure",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-environmental-audio-exposure-notification",
@@ -475,13 +551,12 @@
       "adapter": "providers",
       "profile": "https://grovealliance.org/fhir/providers/StructureDefinition/providers-conversion-provenance",
       "targetAdapterProfiles": [
-        "https://grovealliance.org/fhir/providers/StructureDefinition/providers-observation",
         "https://grovealliance.org/fhir/providers/StructureDefinition/providers-recording-document",
         "https://grovealliance.org/fhir/withings/StructureDefinition/withings-observation",
         "https://grovealliance.org/fhir/oura/StructureDefinition/oura-observation",
         "https://grovealliance.org/fhir/google-health/StructureDefinition/google-health-observation"
       ],
-      "rule": "One Provenance in the active exchange graph targets every connected-provider Observation and Recording Document carrying its exact sole typed source-record Identifier; every target is an internal UUID reference. An active conversion graph never encodes retraction by mutating output status. A separate retraction Bundle with retraction Provenance asserts source removal and carries no conversion Provenance.",
+      "rule": "One Provenance in the active exchange graph targets every connected-provider Observation carrying its exact provider-owned adapter envelope and every Provider Recording Document carrying its exact sole typed source-record Identifier; the abstract ProvidersObservation parent is never a direct claim. Every target is an internal UUID reference. An active conversion graph never encodes retraction by mutating output status. A separate retraction Bundle with retraction Provenance asserts source removal and carries no conversion Provenance.",
       "sourceIdentifierRole": "source-record",
       "sourceIdentityKind": "provider-record"
     },

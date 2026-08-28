@@ -141,6 +141,11 @@ Description: "Every retraction role fixes its logical target resource type and I
 Expression: "target.all((extension('https://grovealliance.org/fhir/mobile/StructureDefinition/grove-retraction-target-role').where(value = 'primary-output').exists() implies ((type = 'Observation' or type = 'VisionPrescription' or type = 'MedicationAdministration' or type = 'MedicationStatement') and identifier.type.coding.where(system = 'https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role' and code = 'source-output').count() = 1)) and (extension('https://grovealliance.org/fhir/mobile/StructureDefinition/grove-retraction-target-role').where(value = 'source-artifact').exists() implies (type = 'DocumentReference' and identifier.type.coding.where(system = 'https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role' and code = 'source-output').count() = 1)) and (extension('https://grovealliance.org/fhir/mobile/StructureDefinition/grove-retraction-target-role').where(value = 'child-output').exists() implies (type = 'Observation' and identifier.type.coding.where(system = 'https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role' and code = 'source-output').count() = 1)) and (extension('https://grovealliance.org/fhir/mobile/StructureDefinition/grove-retraction-target-role').where(value = 'specimen').exists() implies (type = 'Specimen' and identifier.type.coding.where(system = 'https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role' and code = 'source-output').count() = 1)) and (extension('https://grovealliance.org/fhir/mobile/StructureDefinition/grove-retraction-target-role').where(value = 'device-snapshot').exists() implies (type = 'Device' and identifier.type.coding.where(system = 'https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role' and code = 'device-snapshot').count() = 1)))"
 Severity: #error
 
+Invariant: grove-writer-version-requires-identity-1
+Description: "A writer record version never appears without the typed writer-record identity it versions; an identity may stand alone when the source supplies no revision number."
+Expression: "extension('https://grovealliance.org/fhir/mobile/StructureDefinition/grove-writer-record-version').exists() implies identifier.where(type.coding.where(system = 'https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role' and code = 'writer-record').exists()).exists()"
+Severity: #error
+
 RuleSet: CompleteIdentifierPairs
 * identifier.system 1..1 MS
 * identifier.value 1..1 MS
@@ -153,6 +158,7 @@ RuleSet: GroveOpaqueIdentifier(path, role)
 * {path}.value obeys grove-opaque-identifier-value-1
 
 RuleSet: GroveOutputIdentitySlices
+* obeys grove-writer-version-requires-identity-1
 * identifier ^slicing.discriminator.type = #pattern
 * identifier ^slicing.discriminator.path = "type"
 * identifier ^slicing.rules = #open

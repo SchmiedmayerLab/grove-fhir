@@ -9,6 +9,28 @@
   ],
   "invalid": [
     {
+      "id": "questionnaire-canonical-fragment",
+      "base": "valid/questionnaire.json",
+      "expectedRule": "qg-canonical-1",
+      "fhirValidator": false,
+      "mutation": {
+        "op": "replace",
+        "path": "/url",
+        "value": "https://example.org/fhir/Questionnaire/validator-questionnaire#section"
+      }
+    },
+    {
+      "id": "questionnaire-canonical-empty-authority",
+      "base": "valid/questionnaire.json",
+      "expectedRule": "qg-canonical-1",
+      "fhirValidator": false,
+      "mutation": {
+        "op": "replace",
+        "path": "/url",
+        "value": "https:///fhir/Questionnaire/validator-questionnaire"
+      }
+    },
+    {
       "id": "questionnaire-version-missing",
       "base": "valid/questionnaire.json",
       "expectedRule": "qg-version-1",
@@ -298,6 +320,39 @@
         "op": "replace",
         "path": "/questionnaire",
         "value": "https://example.org/fhir/Questionnaire/validator-questionnaire#section|1.0.0"
+      }
+    },
+    {
+      "id": "response-non-http-canonical",
+      "base": "valid/questionnaire-response.json",
+      "expectedRule": "gqr-canonical-1",
+      "fhirValidator": false,
+      "mutation": {
+        "op": "replace",
+        "path": "/questionnaire",
+        "value": "urn:example:questionnaire|1.0.0"
+      }
+    },
+    {
+      "id": "response-non-semver-canonical",
+      "base": "valid/questionnaire-response.json",
+      "expectedRule": "gqr-canonical-1",
+      "fhirValidator": false,
+      "mutation": {
+        "op": "replace",
+        "path": "/questionnaire",
+        "value": "https://example.org/fhir/Questionnaire/validator-questionnaire|latest"
+      }
+    },
+    {
+      "id": "response-canonical-empty-authority",
+      "base": "valid/questionnaire-response.json",
+      "expectedRule": "gqr-canonical-1",
+      "fhirValidator": false,
+      "mutation": {
+        "op": "replace",
+        "path": "/questionnaire",
+        "value": "https:///fhir/Questionnaire/validator-questionnaire|1.0.0"
       }
     },
     {

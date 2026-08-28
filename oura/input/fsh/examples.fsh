@@ -20,10 +20,10 @@ Usage: #example
 Title: "Oura Step Count"
 Description: "An already-obtained Oura daily activity step total on the Oura narrowing of the provider contract."
 * meta.profile[+] = "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-step-count"
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:Zofi3xnTdelKg_LgfYMQeYFX4mDhnqahavDa9GGNF8g"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:tWi_TSYR4fvtqb6WwycRSS271YBJ-zxWTQhlwclxyIM"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-provider-record-v2/test-key/1"
+* identifier[sourceRecord].value = "v2:test-key:1:W93IcvTZkGdlJFCzeohtA_2xSuJD729FQTCRL7Gi9OI"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-provider-output-v2/test-key/1"
+* identifier[sourceOutput].value = "v2:test-key:1:PjcyiJIJrutw-WWQDm2wDaJgCBn1hPcvnVyD9S5uDIo"
 * status = #final
 * category = http://terminology.hl7.org/CodeSystem/observation-category#activity
 * code = https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement#step-count-total "Step count total"
@@ -31,6 +31,5 @@ Description: "An already-obtained Oura daily activity step total on the Oura nar
 * performer = Reference(OuraPatientExample)
 * effectivePeriod.start = "2026-08-20T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-21T00:00:00-07:00"
-* issued = "2026-08-20T17:00:01Z"
 * valueQuantity = 8241 '{steps}' "steps"
 * extension[providerSourceType].valueCode = #oura/daily_activity

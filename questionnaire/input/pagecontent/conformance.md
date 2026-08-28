@@ -115,7 +115,9 @@ reference answers, repeats, condition forms, variables, expression shape, root a
 target constraints, initial values, completion mode, canonical form, response identity
 and optional presentation text, extension placement, and bound relationships.
 
-The paired corpus covers exact resolution, hierarchy, datatype, inline and versioned
+The paired corpus covers exact canonical resolution, Questionnaire `subjectType` versus
+response `subject` across relative, absolute, versioned, contained, and typed logical
+references (including rejection of unrecognized declared-type URIs), hierarchy, datatype, inline and versioned
 ValueSet membership, locale-neutral optional text, repeats and limits, status-aware
 required items, and unknown, duplicate, misplaced, and disabled items. Each invalid case declares the
 stable expected rule, and the tests require that rule to be the complete local error

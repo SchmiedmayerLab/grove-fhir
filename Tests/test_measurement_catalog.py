@@ -57,7 +57,10 @@ class MeasurementCatalogTests(unittest.TestCase):
                         "https://grovealliance.org/fhir/"
                     )
                 )
-            self.assertIn(measurement["effective"], {"dateTime", "Period"})
+            self.assertIn(
+                measurement["effective"],
+                {"dateTime", "Period", "dateTime-or-Period"},
+            )
             code = measurement["code"]
             self.assertTrue(code["system"].startswith(("http://loinc.org", "https://grovealliance.org/fhir/")))
             required_codings = measurement.get("requiredCodings", [])
@@ -400,16 +403,14 @@ class MeasurementCatalogTests(unittest.TestCase):
 
 
     def test_uuid_algorithm_rejects_invalid_unicode(self) -> None:
-        import importlib.util
+        from Scripts.producer_validation import diagnostics, identity
 
-        spec = importlib.util.spec_from_file_location(
-            "validate_producer_invalid_unicode", ROOT / "Scripts/validate-producer.py"
-        )
-        assert spec and spec.loader
-        validator = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(validator)
-        with self.assertRaisesRegex(validator.ProducerValidationError, "invalid Unicode surrogate"):
-            validator.canonical_identifier_name("https://example.org", "bad\ud800value")
+        with self.assertRaisesRegex(
+            diagnostics.ProducerValidationError, "invalid Unicode surrogate"
+        ):
+            identity.canonical_identifier_name(
+                "https://example.org", "bad\ud800value"
+            )
 
 
 if __name__ == "__main__":

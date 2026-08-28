@@ -145,7 +145,7 @@ Description: "A passive HealthKit heart-rate sample with the standard clinical p
 * status = #final
 * category = $observationCategory#vital-signs "Vital Signs"
 * code = $loinc#8867-4 "Heart rate"
-* code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierHeartRate "Heart Rate"
+* extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierHeartRate
 * subject = Reference(HealthKitPatientExample)
 * performer = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00.251-07:00"
@@ -171,7 +171,7 @@ Description: "A body-weight sample a connected scale re-imported after correctin
 * status = #amended
 * category = $observationCategory#vital-signs "Vital Signs"
 * code = $loinc#29463-7 "Body weight"
-* code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierBodyMass "Body Mass"
+* extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierBodyMass
 * subject = Reference(HealthKitPatientExample)
 * performer = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T07:12:00.000-07:00"
@@ -191,7 +191,7 @@ Description: "A HealthKit interval sample preserving the recorded count of 1,042
 * status = #final
 * category = $observationCategory#activity "Activity"
 * code = $groveMobileMeasurement#step-count-total "Step count total"
-* code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierStepCount "Step Count"
+* extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierStepCount
 * subject = Reference(HealthKitPatientExample)
 * performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T09:00:00-07:00"
@@ -213,7 +213,7 @@ Description: "A heart-rate sample imported directly from a supported Bluetooth L
 * status = #final
 * category = $observationCategory#vital-signs "Vital Signs"
 * code = $loinc#8867-4 "Heart rate"
-* code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierHeartRate "Heart Rate"
+* extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierHeartRate
 * subject = Reference(HealthKitPatientExample)
 * performer = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T10:45:00.251-07:00"
@@ -234,7 +234,7 @@ Description: "A body weight with an explicit HealthKit user-entered indication m
 * status = #final
 * category = $observationCategory#vital-signs "Vital Signs"
 * code = $loinc#29463-7 "Body weight"
-* code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierBodyMass "Body Mass"
+* extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierBodyMass
 * subject = Reference(HealthKitPatientExample)
 * performer = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T08:15:00-07:00"
@@ -255,7 +255,7 @@ Description: "A HealthKit blood-pressure correlation whose result is carried by 
 * status = #final
 * category = $observationCategory#vital-signs "Vital Signs"
 * code = $loinc#85354-9 "Blood pressure panel with all children optional"
-* code.coding[healthKitSourceType] = $healthKitSourceType#HKCorrelationTypeIdentifierBloodPressure "Blood Pressure"
+* extension[healthKitSourceType].valueCode = #HKCorrelationTypeIdentifierBloodPressure
 * subject = Reference(HealthKitPatientExample)
 * performer = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T08:20:00-07:00"
@@ -278,7 +278,7 @@ Description: "A HealthKit asleep-core interval retaining both the shared light-s
 * status = #final
 * category = $observationCategory#activity "Activity"
 * code = $groveMobileMeasurement#sleep-stage "Sleep stage"
-* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierSleepAnalysis "Sleep Analysis"
+* extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierSleepAnalysis
 * subject = Reference(HealthKitPatientExample)
 * performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T23:10:00-07:00"
@@ -291,40 +291,27 @@ Instance: HealthKitECGObservationExample
 InstanceOf: HealthKitECGObservation
 Usage: #example
 Title: "HealthKit Lead-I-like ECG"
-Description: "A caller-supplied HealthKit ECG with a complete uniformly sampled voltage series and exact classification, symptom, sampling, and count context. The adapter performs no HealthKit query."
+Description: "A caller-supplied HealthKit ECG with a complete uniformly sampled voltage series, exact interpretation and method, and an identifier-only link to a separately exchanged symptom Observation. Sampling frequency and reported count were checked before emission rather than duplicated on the wire."
 * meta.profile[+] = "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-ecg-observation"
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:6iXl5fm82RN3CV4qd-y8VdUKlCs9HrQLukhEL2QaobI"
+* identifier[sourceRecord].value = "v2:test-key:1:nyNKt1mYyaINq_T62N3dSYQIdxf8jf3lYIAY-eX6N_g"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:D0lEAEhoiBIlIm3KBQxP1rR5HnP3LK_V4ahwSG4qImk"
+* identifier[sourceOutput].value = "v2:test-key:1:KFlseYWwJpMwCUJRaW9ETUfjXuUsplQCtV9AVkoqmD8"
 * status = #final
 * category = $observationCategory#procedure "Procedure"
 * code = $loinc#11524-6 "EKG study"
-* code.coding[healthKitSourceType] = $healthKitSourceType#HKDataTypeIdentifierElectrocardiogram "ECG"
+* extension[healthKitSourceType].valueCode = #HKDataTypeIdentifierElectrocardiogram
 * subject = Reference(HealthKitPatientExample)
 * performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T10:50:00.002-07:00"
 * effectivePeriod.end = "2026-08-19T10:50:00.008-07:00"
-* extension[healthKitECGClassification].valueCode = #sinusRhythm
+* interpretation = $healthKitECGClassification#sinusRhythm "Sinus rhythm"
 * extension[healthKitECGSymptomsStatus].valueCode = #present
-* extension[healthKitECGCorrelatedSymptom][0].extension[sourceIdentifier].valueIdentifier.type = $groveIdentifierRole#source-record "Source record"
-* extension[healthKitECGCorrelatedSymptom][0].extension[sourceIdentifier].valueIdentifier.system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* extension[healthKitECGCorrelatedSymptom][0].extension[sourceIdentifier].valueIdentifier.value = "v2:test-key:1:XC0dz7P4AOySisiHBJa6uq7Zjcx7vMOa4WqW4Aui1ok"
-* extension[healthKitECGCorrelatedSymptom][0].extension[effectivePeriod].valuePeriod.start = "2026-08-19T10:49:55-07:00"
-* extension[healthKitECGCorrelatedSymptom][0].extension[effectivePeriod].valuePeriod.end = "2026-08-19T10:50:05-07:00"
-* extension[healthKitECGCorrelatedSymptom][0].extension[symptomType].valueCode = #HKCategoryTypeIdentifierDizziness
-* extension[healthKitECGCorrelatedSymptom][0].extension[severity].valueCode = #mild
-* extension[healthKitECGCorrelatedSymptom][0].extension[sourceName].valueString = "Grove Health"
-* extension[healthKitECGCorrelatedSymptom][0].extension[sourceBundleIdentifier].valueString = "org.grovealliance.health"
-* extension[healthKitECGCorrelatedSymptom][0].extension[sourceVersion].valueString = "2.0.0"
-* extension[healthKitECGCorrelatedSymptom][0].extension[sourceProductType].valueString = "Watch6,4"
-* extension[healthKitECGCorrelatedSymptom][0].extension[sourceOperatingSystemMajorVersion].valueInteger = 12
-* extension[healthKitECGCorrelatedSymptom][0].extension[sourceOperatingSystemMinorVersion].valueInteger = 0
-* extension[healthKitECGCorrelatedSymptom][0].extension[sourceOperatingSystemPatchVersion].valueInteger = 1
-* extension[healthKitECGAverageHeartRate].valueQuantity = 72 '/min' "beats/minute"
-* extension[healthKitECGSamplingFrequency].valueQuantity = 500 'Hz' "Hz"
-* extension[healthKitECGVoltageMeasurementCount].valueInteger = 4
-* extension[healthKitECGAlgorithmVersion].valueCode = #version2
+* method = $healthKitECGAlgorithmVersion#version2 "Version 2"
+* hasMember.type = "Observation"
+* hasMember.identifier.type = $groveIdentifierRole#source-output "Source output"
+* hasMember.identifier.system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
+* hasMember.identifier.value = "v2:test-key:1:SSxdtfmPMTXYfPMTUDcISGHNrCSOym3X5irIB0GU0NA"
 * extension[healthKitECGSourcePeriod].valuePeriod.start = "2026-08-19T10:50:00.000-07:00"
 * extension[healthKitECGSourcePeriod].valuePeriod.end = "2026-08-19T10:50:00.010-07:00"
 * component[voltage].code = $mdc#131329 "MDC_ECG_ELEC_POTL_I"
@@ -335,6 +322,81 @@ Description: "A caller-supplied HealthKit ECG with a complete uniformly sampled 
 * component[voltage].valueSampledData.dimensions = 1
 * component[voltage].valueSampledData.data = "0.012 0.021 -0.004 0.016"
 * device = Reference(HealthKitRecordingDeviceExample)
+
+Instance: HealthKitECGAverageHeartRateExample
+InstanceOf: HealthKitECGAverageHeartRateObservation
+Usage: #example
+Title: "HealthKit ECG Average Heart Rate"
+Description: "The user's average heart rate during the ECG, represented as its own clinical Observation and derived from the waveform."
+* meta.profile[+] = "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-heart-rate"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* identifier[sourceRecord].value = "v2:test-key:1:nyNKt1mYyaINq_T62N3dSYQIdxf8jf3lYIAY-eX6N_g"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
+* identifier[sourceOutput].value = "v2:test-key:1:RkWDF40b0s_1fMa_stV-Ceps5mAEJdrN-uJwQYI6PjE"
+* status = #final
+* code = $loinc#8867-4 "Heart rate"
+* category = $observationCategory#vital-signs "Vital Signs"
+* extension[healthKitSourceType].valueCode = #HKDataTypeIdentifierElectrocardiogram
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T10:50:00.002-07:00"
+* effectivePeriod.end = "2026-08-19T10:50:00.008-07:00"
+* valueQuantity = 72 '/min' "beats/minute"
+* derivedFrom = Reference(HealthKitECGObservationExample)
+* device = Reference(HealthKitRecordingDeviceExample)
+
+Instance: HealthKitECGCorrelatedDizzinessExample
+InstanceOf: HealthkitSymptomDizziness
+Usage: #example
+Title: "HealthKit ECG-associated Dizziness"
+Description: "The independently identifiable HealthKit category sample associated with the ECG. It is exchanged in its own source-record event and referenced from the ECG by source-output Identifier."
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* identifier[sourceRecord].value = "v2:test-key:1:Khsgeufen1doBTxrQGVskE_FPU2Nmhx14AWRkp9lXes"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
+* identifier[sourceOutput].value = "v2:test-key:1:SSxdtfmPMTXYfPMTUDcISGHNrCSOym3X5irIB0GU0NA"
+* status = #final
+* code = HealthKitMeasurementCS#symptom-dizziness "Dizziness"
+* extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierDizziness
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T10:49:55-07:00"
+* effectivePeriod.end = "2026-08-19T10:50:05-07:00"
+* valueCodeableConcept = GroveSymptomSeverityCS#mild "Mild"
+
+Instance: HealthKitECGConversionProvenanceExample
+InstanceOf: HealthKitConversionProvenance
+Usage: #example
+Title: "HealthKit ECG Conversion Provenance"
+Description: "One conversion event targets both outputs derived from the same HealthKit ECG source record."
+* target[+] = Reference(HealthKitECGObservationExample)
+* target[+] = Reference(HealthKitECGAverageHeartRateExample)
+* occurredDateTime = "2026-08-19T10:50:01-07:00"
+* recorded = "2026-08-19T17:50:01.000Z"
+* activity = $recordLifecycleEvent#transform "Transform/Translate Record Lifecycle Event"
+* agent[assembler].type = $provenanceParticipantType#assembler "Assembler"
+* agent[assembler].who = Reference(HealthKitApplicationDeviceExample)
+* entity.role = #source
+* entity.what.identifier.type = $groveIdentifierRole#source-record "Source record"
+* entity.what.identifier.system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* entity.what.identifier.value = "v2:test-key:1:nyNKt1mYyaINq_T62N3dSYQIdxf8jf3lYIAY-eX6N_g"
+
+Instance: HealthKitECGSymptomProvenanceExample
+InstanceOf: HealthKitConversionProvenance
+Usage: #example
+Title: "HealthKit ECG-associated Symptom Provenance"
+Description: "The separately exchanged symptom event retains its own source identity and source-revision author graph."
+* target = Reference(HealthKitECGCorrelatedDizzinessExample)
+* occurredDateTime = "2026-08-19T10:50:06-07:00"
+* recorded = "2026-08-19T17:50:06.000Z"
+* activity = $recordLifecycleEvent#transform "Transform/Translate Record Lifecycle Event"
+* agent[assembler].type = $provenanceParticipantType#assembler "Assembler"
+* agent[assembler].who = Reference(HealthKitApplicationDeviceExample)
+* entity.role = #source
+* entity.what.identifier.type = $groveIdentifierRole#source-record "Source record"
+* entity.what.identifier.system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* entity.what.identifier.value = "v2:test-key:1:Khsgeufen1doBTxrQGVskE_FPU2Nmhx14AWRkp9lXes"
+* entity.agent.type = $provenanceParticipantType#author "Author"
+* entity.agent.who = Reference(HealthKitSourceApplicationDeviceExample)
 
 Instance: HealthKitConversionProvenanceExample
 InstanceOf: HealthKitConversionProvenance
@@ -437,6 +499,7 @@ Description: "One provider-issued clinical resource surfaced by HealthKit and by
 * identifier[sourceOutput].value = "v2:test-key:1:mTgNSwt0kt5Uf623ktK3kYsnJ53GWwh0-ffb7JSHcFw"
 * identifier[sourceArtifact].system = "https://study.example.org/fhir/NamingSystem/grove-source-artifact-v2/test-key/1"
 * identifier[sourceArtifact].value = "v2:test-key:1:luW8iF7i93xoJ8biaOBN1tQdUBfkdBF5ZloC0VUx690"
+* extension[healthKitSourceType].valueCode = #HKClinicalTypeIdentifierAllergyRecord
 * extension[fhirRelease].valueCode = #r4
 * status = #current
 * type = HealthKitClinicalRecordTypeCS#allergy-record "Allergy record"
@@ -479,7 +542,8 @@ Description: "A beat-to-beat interval series carried as its published column sch
 * identifier[sourceArtifact].system = "https://study.example.org/fhir/NamingSystem/grove-source-artifact-v2/test-key/1"
 * identifier[sourceArtifact].value = "v2:test-key:1:8vG9fzykFSfl04NwO0gG4uQR_kQIa9uNtmM6a14fn5I"
 * status = #current
-* type.coding[healthKitSourceType] = $healthKitSourceType#HKDataTypeIdentifierHeartbeatSeries "Heartbeat Series"
+* type.text = "Heartbeat series recording"
+* extension[healthKitSourceType].valueCode = #HKDataTypeIdentifierHeartbeatSeries
 * subject = Reference(HealthKitPatientExample)
 * date = "2026-08-19T10:05:00Z"
 * author = Reference(HealthKitApplicationDeviceExample)

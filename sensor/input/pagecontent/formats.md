@@ -29,7 +29,7 @@ Seconds since the Unix epoch as a decimal number in the numbers form above; the 
 | `timestamp` | timestamp | — | Sample instant. |
 | `value` | number | `/min` | Heart rate in beats per minute. |
 | `confidence` | integer | — | CMHighFrequencyHeartRateDataConfidence raw value: 0 low, 1 medium, 2 high, 3 highest. |
-| `device` | string | — | Source device description for the batch. |
+| `device` | string | — | Exact SensorKit SRDevice.productType token for the source-device partition that supplied every row in the batch. It is not SRDevice.description, a user-assigned name, a system name/version, or a stable physical-unit identifier. |
 
 ### `triaxial-acceleration-samples` — Triaxial Acceleration Samples
 
@@ -49,7 +49,7 @@ Seconds since the Unix epoch as a decimal number in the numbers form above; the 
 | `x` | number | `[g]` | Acceleration along x in G. |
 | `y` | number | `[g]` | Acceleration along y in G. |
 | `z` | number | `[g]` | Acceleration along z in G. |
-| `device` | string | — | Source device description for the batch. |
+| `device` | string | — | Exact SensorKit SRDevice.productType token for the source-device partition that supplied every row in the batch. It is not SRDevice.description, a user-assigned name, a system name/version, or a stable physical-unit identifier. |
 
 ### `ambient-light-samples` — Ambient Light Samples
 
@@ -69,7 +69,7 @@ Seconds since the Unix epoch as a decimal number in the numbers form above; the 
 | `placement` | string | — | SRAmbientLightSample.SensorPlacement textual description. |
 | `chromacityX` | number | — | CIE 1931 x chromaticity coordinate. |
 | `chromacityY` | number | — | CIE 1931 y chromaticity coordinate. |
-| `device` | string | — | Source device description for the batch. |
+| `device` | string | — | Exact SensorKit SRDevice.productType token for the source-device partition that supplied every row in the batch. It is not SRDevice.description, a user-assigned name, a system name/version, or a stable physical-unit identifier. |
 
 ### `ambient-pressure-samples` — Ambient Pressure Samples
 
@@ -88,7 +88,7 @@ Seconds since the Unix epoch as a decimal number in the numbers form above; the 
 | `identifier` | integer | — | The CoreMotion batch identifier the sample belongs to. |
 | `pressure` | number | `kPa` | Ambient pressure in kilopascals as provided by CoreMotion. |
 | `temperature` | number | `Cel` | Sensor temperature in degrees Celsius as provided by CoreMotion. |
-| `device` | string | — | Source device description for the batch. |
+| `device` | string | — | Exact SensorKit SRDevice.productType token for the source-device partition that supplied every row in the batch. It is not SRDevice.description, a user-assigned name, a system name/version, or a stable physical-unit identifier. |
 
 ### `pedometer-samples` — Pedometer Samples
 
@@ -112,7 +112,7 @@ Seconds since the Unix epoch as a decimal number in the numbers form above; the 
 | `currentPace` | number | `s/m` | Current pace in seconds per metre; empty when unavailable. |
 | `currentCadence` | number | `/s` | Current cadence in steps per second; empty when unavailable. |
 | `avgActivePace` | number | `s/m` | Average active pace in seconds per metre; empty when unavailable. |
-| `device` | string | — | Source device description for the batch. |
+| `device` | string | — | Exact SensorKit SRDevice.productType token for the source-device partition that supplied every row in the batch. It is not SRDevice.description, a user-assigned name, a system name/version, or a stable physical-unit identifier. |
 
 ### `wrist-temperature-samples` — Wrist Temperature Samples
 
@@ -149,7 +149,7 @@ Seconds since the Unix epoch as a decimal number in the numbers form above; the 
 | `x` | number | `rad/s` | Rotation rate about x in radians per second. |
 | `y` | number | `rad/s` | Rotation rate about y in radians per second. |
 | `z` | number | `rad/s` | Rotation rate about z in radians per second. |
-| `device` | string | — | Source device description for the batch. |
+| `device` | string | — | Exact SensorKit SRDevice.productType token for the source-device partition that supplied every row in the batch. It is not SRDevice.description, a user-assigned name, a system name/version, or a stable physical-unit identifier. |
 
 ### `odometer-samples` — Odometer Samples
 
@@ -176,7 +176,7 @@ Seconds since the Unix epoch as a decimal number in the numbers form above; the 
 | `deltaAltitude` | number | `m` | Change in altitude above mean sea level in metres. |
 | `verticalAccuracy` | number | `m` | Validity and estimated uncertainty of the altitude values in metres. |
 | `originDevice` | string | — | CMOdometerOriginDevice case name: unknown, local, or remote. |
-| `device` | string | — | Source device description for the batch. |
+| `device` | string | — | Exact SensorKit SRDevice.productType token for the source-device partition that supplied every row in the batch. It is not SRDevice.description, a user-assigned name, a system name/version, or a stable physical-unit identifier. |
 
 ### `beat-interval-series` — Beat Interval Series
 

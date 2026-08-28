@@ -20,10 +20,10 @@ Usage: #example
 Title: "Google Health Step Count"
 Description: "An already-obtained Google Health API steps interval on the Google Health narrowing of the provider contract."
 * meta.profile[+] = "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-step-count"
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:Du7c9mRSc_fCuQW7iGjpBiJeDIqwVrDcICSFcObFKLw"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:2lXSlUkA6BQcP5ze6E5fx6RHYcQg7ng_3KYJsp3_HfQ"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-provider-record-v2/test-key/1"
+* identifier[sourceRecord].value = "v2:test-key:1:N0eoeAizxv2r52-apeG3hX1hFBXfsmuIPjQEcpf8x_8"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-provider-output-v2/test-key/1"
+* identifier[sourceOutput].value = "v2:test-key:1:WnlDcVrpqbr59z48UBWz6kbAk54f1i1F6VvwH_hVv9U"
 * status = #final
 * category = http://terminology.hl7.org/CodeSystem/observation-category#activity "Activity"
 * code = https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement#step-count-total "Step count total"
@@ -31,6 +31,5 @@ Description: "An already-obtained Google Health API steps interval on the Google
 * performer = Reference(GoogleHealthPatientExample)
 * effectivePeriod.start = "2026-08-20T09:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T10:00:00-07:00"
-* issued = "2026-08-20T17:00:01Z"
 * valueQuantity = 1042 '{steps}' "steps"
 * extension[providerSourceType].valueCode = #google-health-api/steps

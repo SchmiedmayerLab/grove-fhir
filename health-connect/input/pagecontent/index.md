@@ -48,9 +48,12 @@ A type omitted from the table above is not silently admitted.
 
 ### Identity and source context
 
-The source-record identifier is repository-scoped and does not disclose
+The mandatory source-record identifier is repository-scoped and does not disclose
 `Record.metadata.id`. Every output, including a one-to-one conversion, carries a distinct typed
-source-output identifier; a synthesized glucose Specimen uses the specimen output role. The HMAC
+source-output identifier; a synthesized glucose Specimen uses the specimen output role. When exact
+upstream traceability is deliberately enabled, the raw metadata id may additionally appear once
+under a deployment-governed non-Grove Identifier system on the catalog-designated primary output;
+it never substitutes for either Grove HMAC identifier. The HMAC
 algorithm, event/node identities, fullUrl derivation, lifecycle rules, and cross-language vectors
 are normative in
 [`catalog/exchange-protocol.json`](https://grovealliance.org/fhir/catalog/exchange-protocol.json),
@@ -63,8 +66,8 @@ Supported source context is represented explicitly:
 - standard body-position and body-site elements retain admitted blood-pressure and
   temperature context;
 - a typed extension retains non-unknown meal context;
-- an explicit `RETAIN` policy may preserve one non-blank title and note on a sleep,
-  mindfulness, or exercise summary; the minimization policy omits them; and
+- the producer explicitly selects `RETAIN` to preserve one non-blank title and note on a sleep,
+  mindfulness, or exercise summary, or `OMIT` to deliberately omit them; and
 - each sleep-stage result carries the shared Grove coding first and the exact Health
   Connect stage coding second.
 

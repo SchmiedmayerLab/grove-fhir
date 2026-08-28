@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://grovealliance.org/fhir/catalog/schemas/artifact-allowlist.schema.json",
+  "title": "Grove published artifact allowlist",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "packages"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "packages": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/package" }
+    }
+  },
+  "$defs": {
+    "nonempty": { "type": "string", "minLength": 1 },
+    "fhirId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9.-]{1,64}$"
+    },
+    "package": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source", "packageId", "canonical", "artifacts"],
+      "properties": {
+        "source": { "$ref": "#/$defs/nonempty" },
+        "packageId": { "$ref": "#/$defs/nonempty" },
+        "canonical": { "type": "string", "format": "uri" },
+        "artifacts": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/artifact" }
+        }
+      }
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fshName", "fshType", "resourceType", "id", "classification"],
+      "properties": {
+        "fshName": { "$ref": "#/$defs/nonempty" },
+        "fshType": {
+          "enum": ["Profile", "Extension", "Logical", "Resource", "CodeSystem", "ValueSet", "Instance"]
+        },
+        "resourceType": { "$ref": "#/$defs/fhirId" },
+        "id": { "$ref": "#/$defs/fhirId" },
+        "classification": { "enum": ["definition", "example"] }
+      }
+    }
+  }
+}

@@ -14,11 +14,17 @@ A measurement two or more connected providers report is source-neutral and belon
 [Grove FHIR Connected Provider Adapter](https://grovealliance.org/fhir/providers), which this guide depends on.
 What remains here is Oura-exclusive: a value produced by Oura's own algorithm over Oura's own inputs.
 
-Such a value is carried under a Oura-scoped profile rather than a shared one, and never under a code another
-vendor also uses.
+Such a value directly claims an Oura-scoped semantic profile rather than a shared one, together with the
+Oura Observation provider-lineage envelope. A shared Oura result uses the same envelope but pairs it with
+the exact shared semantic profile. Neither claim is inferred from the other.
 A vendor score is not comparable across vendors even when two vendors give it the same name, so publishing it
 under a shared code would assert a comparability that does not exist.
 The profile states what the value is and whose algorithm produced it, and asserts nothing further.
+
+Oura rows use the catalog's `global` identifier scope and
+`documented-global-key-space` mode: the complete provider-scope pair names the documented
+global document-id key space and never contains an account pseudonym. The conformance examples
+use a deployment-owned test pair for that key space; deployments govern their own stable pair.
 
 ## Dependencies and terminology notices
 

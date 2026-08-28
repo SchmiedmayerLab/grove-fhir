@@ -93,6 +93,12 @@ class ProviderCatalogTests(unittest.TestCase):
             self.catalog["recordingDocument"]["adapterProfile"],
             provenance["targetAdapterProfiles"],
         )
+        abstract_profile = self.catalog["adapterProfile"]
+        self.assertNotIn(
+            abstract_profile,
+            self.claims["observationAdapterClaim"]["adapterProfiles"],
+        )
+        self.assertNotIn(abstract_profile, provenance["targetAdapterProfiles"])
         admission = self.catalog["rawPayloadAdmission"]
         self.assertEqual(
             admission["allowedAssertions"],
@@ -124,6 +130,28 @@ class ProviderCatalogTests(unittest.TestCase):
         providers = {provider["id"]: provider for provider in self.catalog["providers"]}
         self.assertEqual(set(providers), {"google-health-api", "oura", "withings"})
         self.assertEqual(set(evidence_providers), set(providers))
+        self.assertEqual(
+            {
+                provider_id: (
+                    provider["measurementOwner"], provider["observationProfile"]
+                )
+                for provider_id, provider in providers.items()
+            },
+            {
+                "google-health-api": (
+                    "google-health",
+                    "https://grovealliance.org/fhir/google-health/StructureDefinition/google-health-observation",
+                ),
+                "oura": (
+                    "oura",
+                    "https://grovealliance.org/fhir/oura/StructureDefinition/oura-observation",
+                ),
+                "withings": (
+                    "withings",
+                    "https://grovealliance.org/fhir/withings/StructureDefinition/withings-observation",
+                ),
+            },
+        )
 
         expected_google = {
             "steps",
@@ -203,9 +231,9 @@ class ProviderCatalogTests(unittest.TestCase):
                     self.assertIn(status, statuses)
                     for measurement_id in element.get("measurementIds", []):
                         self.assertIn(measurement_id, measurement_ids)
-                    if status == "supported":
+                    if status in {"supported", "platform-exclusive"}:
                         self.assertGreater(len(element.get("measurementIds", [])), 0)
-                    elif status == "mapped-standard":
+                    if status == "mapped-standard":
                         self.assertEqual(
                             element.get("sensorProfile"),
                             "https://grovealliance.org/fhir/sensor/StructureDefinition/"
@@ -216,10 +244,45 @@ class ProviderCatalogTests(unittest.TestCase):
                             raw["adapterProfile"],
                             self.catalog["recordingDocument"]["adapterProfile"],
                         )
-                        self.assertEqual(raw["outputDiscriminator"], "native-recording")
-                    else:
+                        self.assertEqual(raw["outputRole"], "native-recording")
+                        self.assertEqual(raw["outputDiscriminator"], "single")
+                    elif status != "supported":
                         self.assertIsInstance(element.get("reason"), str)
                         self.assertTrue(element["reason"])
+
+    def test_admitted_semantic_profiles_match_status_owner_and_source_row(self) -> None:
+        by_id = {
+            measurement["id"]: measurement
+            for measurement in self.measurements["measurements"]
+        }
+        for provider in self.catalog["providers"]:
+            for source_type in provider["sourceTypes"]:
+                for element in source_type["elements"]:
+                    if element["status"] not in {"supported", "platform-exclusive"}:
+                        continue
+                    for measurement_id in element["measurementIds"]:
+                        measurement = by_id[measurement_id]
+                        label = (
+                            f"{provider['id']}/{source_type['token']}/"
+                            f"{element['path']}/{measurement_id}"
+                        )
+                        self.assertEqual(
+                            measurement["coverage"][provider["id"]],
+                            element["status"],
+                            label,
+                        )
+                        owner = measurement.get("owner", "mobile")
+                        self.assertIn(
+                            owner,
+                            {"mobile", provider["measurementOwner"]},
+                            label,
+                        )
+                        if element["status"] == "platform-exclusive":
+                            canonical = (
+                                f"https://grovealliance.org/fhir/{owner}/"
+                                f"StructureDefinition/{measurement['profile']}"
+                            )
+                            self.assertIn(canonical, source_type["profiles"], label)
 
     def test_method_choice_measurements_declare_their_aggregation(self) -> None:
         choices = {
@@ -347,27 +410,37 @@ class ProviderCatalogTests(unittest.TestCase):
             ],
         )
         self.assertEqual(identity["sourceRecord"]["identityKind"], "provider-record")
-        self.assertEqual(identity["sourceOutput"]["identityKind"], "source-output")
+        self.assertEqual(identity["sourceOutput"]["identityKind"], "provider-output")
         self.assertIn("complete Identifier pair", identity["sourceRecord"]["scopeRule"])
         self.assertIn("never omit the system", identity["sourceRecord"]["scopeRule"].lower())
         self.assertIn("single", identity["sourceOutput"]["outputDiscriminatorRule"])
         self.assertIn("No fallback", identity["sourceOutput"]["outputDiscriminatorRule"])
         self.assertIn("optional and repository-assigned", identity["resourceIdPolicy"])
-        self.assertEqual(identity["sourceArtifact"]["identityKind"], "source-artifact")
+        self.assertEqual(identity["sourceArtifact"]["identityKind"], "provider-artifact")
 
     def test_every_provider_declares_an_identifier_scope_with_a_reason(self) -> None:
+        expected_modes = {
+            "account": "deployment-scoped-account-pseudonym",
+            "global": "documented-global-key-space",
+        }
         for provider in self.catalog["providers"]:
             with self.subTest(provider=provider["id"]):
-                self.assertIn(provider["identifierScope"], {"none", "account"})
+                self.assertIn(provider["identifierScope"], {"account", "global"})
+                self.assertEqual(
+                    provider["providerScopeMode"],
+                    expected_modes[provider["identifierScope"]],
+                )
                 self.assertTrue(provider["identifierScopeReason"].strip())
+        self.assertNotIn("contentDerived", json.dumps(self.catalog))
 
-    def test_an_unscoped_provider_documents_global_uniqueness(self) -> None:
+    def test_a_global_provider_documents_global_uniqueness(self) -> None:
         scope_rule = self.catalog["identity"]["sourceRecord"]["scopeRule"]
         self.assertIn("documented global key-space pair", scope_rule)
         for provider in self.catalog["providers"]:
-            if provider["identifierScope"] == "none":
+            if provider["identifierScope"] == "global":
                 with self.subTest(provider=provider["id"]):
                     self.assertIn("unique", provider["identifierScopeReason"])
+                    self.assertIn("never replaced with a per-account", provider["identifierScopeReason"])
 
     def test_missing_native_ids_receive_persistent_import_keys_not_content_hashes(self) -> None:
         rule = self.catalog["identity"]["sourceRecord"]["absentNativeId"]

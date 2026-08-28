@@ -41,20 +41,23 @@ the profiled one-source-record exchange event.
 ### What the adapter adds
 
 - [HealthKit Observation](StructureDefinition-healthkit-observation.html) requires typed
-  deployment-scoped v2 source-record and source-output HMAC identifiers. The native
-  `HKObject.uuid` is only one framed preimage component and is never exchanged in clear.
+  deployment-scoped v2 source-record and source-output HMAC identifiers. A deployment may also
+  disclose `HKObject.uuid` on the one-to-one primary output under an explicit, governed absolute
+  HealthKit-store namespace when native round-trip is required; it never replaces Grove identity.
 - [HealthKit Application Device](StructureDefinition-healthkit-application-device.html)
   carries exactly one typed [Apple Bundle Identifier](NamingSystem-apple-bundle-id.html)
   in addition to the shared opaque event snapshot. The bundle namespace identifies an
   application product; it does not identify an installation, host, account, or person.
 - A physical source Device is emitted only with a governed stable per-unit token and the
-  shared `recording-device` plus `device-snapshot` identities. A clear HealthKit source
-  UUID is never exchanged.
+  shared `recording-device` plus `device-snapshot` identities. Any deliberate disclosure of a
+  HealthKit source UUID uses its own governed Identifier namespace and deployment purpose;
+  descriptive source metadata alone is not physical-device identity.
 - The optional `heartRateMotionContext` component preserves one allowlisted HealthKit
   metadata value. An invariant permits it only on LOINC `8867-4` heart-rate records.
 
-The HealthKit sample type selects the mapping profile and is retained as one additional
-adapter-lineage coding beside the normative shared or standard clinical coding.
+The HealthKit sample type selects the mapping profile and is retained in the dedicated
+source-type lineage extension. It is not asserted as an equivalent coding beside the normative
+shared or standard clinical concept.
 
 Continue with [Mapping](mapping.html) for field-by-field rules, or open
 [Artifacts](artifacts.html) for every profile, naming system, terminology resource, and

@@ -7,6 +7,7 @@
 #
 
 import json
+import importlib.util
 import re
 import shutil
 import subprocess
@@ -19,6 +20,10 @@ ROOT = Path(__file__).resolve().parent.parent
 RENDERER = ROOT / "Scripts/render-measurement-profiles.py"
 
 FIXTURE_FILES = (
+    "catalog/exchange-protocol.json",
+    "catalog/healthkit-adapter.json",
+    "catalog/health-connect-adapter.json",
+    "catalog/providers-adapter.json",
     "catalog/measurement-catalog.json",
     "catalog/terminology/loinc-concepts.json",
     "catalog/terminology/ucum-units.json",
@@ -28,21 +33,61 @@ FIXTURE_FILES = (
     "mobile/input/fsh/profiles.fsh",
     "mobile/input/fsh/generated-measurement-profiles.fsh",
     "healthkit/input/fsh/generated-measurement-profiles.fsh",
+    "healthkit/input/fsh/terminology.fsh",
     "health-connect/input/fsh/generated-measurement-profiles.fsh",
     "withings/input/fsh/generated-measurement-profiles.fsh",
     "oura/input/fsh/generated-measurement-profiles.fsh",
     "google-health/input/fsh/generated-measurement-profiles.fsh",
 )
 
+EXCHANGE_PROTOCOL_SPEC = importlib.util.spec_from_file_location(
+    "exchange_protocol", ROOT / "Scripts/exchange_protocol.py"
+)
+assert EXCHANGE_PROTOCOL_SPEC is not None and EXCHANGE_PROTOCOL_SPEC.loader is not None
+EXCHANGE_PROTOCOL = importlib.util.module_from_spec(EXCHANGE_PROTOCOL_SPEC)
+EXCHANGE_PROTOCOL_SPEC.loader.exec_module(EXCHANGE_PROTOCOL)
+
+RENDERER_SPEC = importlib.util.spec_from_file_location(
+    "render_measurement_profiles", RENDERER
+)
+assert RENDERER_SPEC is not None and RENDERER_SPEC.loader is not None
+RENDERER_MODULE = importlib.util.module_from_spec(RENDERER_SPEC)
+RENDERER_SPEC.loader.exec_module(RENDERER_MODULE)
+
 
 class MeasurementProfileProjectionTests(unittest.TestCase):
+    def projected_example_identities(self) -> tuple[dict, list[dict]]:
+        """Recompute generated-example projections in memory from their catalogs."""
+        contract = RENDERER_MODULE.example_contract(ROOT)
+        projections = RENDERER_MODULE.source_identity_projections(ROOT, contract)
+        catalog = json.loads(
+            (ROOT / "catalog/measurement-catalog.json").read_text(encoding="utf-8")
+        )
+        rows: list[dict] = []
+        for owner_key in RENDERER_MODULE.OWNERS:
+            handwritten = RENDERER_MODULE.handwritten_instances(ROOT, owner_key)
+            for measurement in catalog["measurements"]:
+                if measurement.get("owner", "mobile") != owner_key:
+                    continue
+                if not measurement.get("generation", {}).get("emit"):
+                    continue
+                instance = f"{RENDERER_MODULE.fsh_name(measurement['profile'])}Example"
+                if instance in handwritten:
+                    continue
+                rows.append(
+                    RENDERER_MODULE.example_identity_record(
+                        measurement, owner_key, projections, contract
+                    )
+                )
+        return contract, rows
+
     def run_renderer(self, root: Path, *extra: str) -> tuple[int, str]:
         result = subprocess.run(
             [sys.executable, str(RENDERER), "--root", str(root), *extra],
             capture_output=True,
             text=True,
         )
-        return result.returncode, result.stdout
+        return result.returncode, result.stdout + result.stderr
 
     def make_fixture(self, directory: Path) -> Path:
         for name in FIXTURE_FILES:
@@ -87,11 +132,194 @@ class MeasurementProfileProjectionTests(unittest.TestCase):
             ],
         )
         self.remint_ground_truth(root)
+        code, output = self.run_renderer(root)
+        self.assertEqual(code, 0, output)
 
     def test_generated_profiles_are_current(self) -> None:
         code, output = self.run_renderer(ROOT, "--check")
         self.assertEqual(code, 0, output)
         self.assertIn("222 emitted, 0 parity-checked, problems=0", output)
+
+    def test_root_controls_shared_value_set_example_sources(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = self.make_fixture(Path(directory))
+            terminology = root / "healthkit/input/fsh/terminology.fsh"
+            authored = terminology.read_text(encoding="utf-8")
+            fixture_display = "Fixture-only not-present display"
+            changed = authored.replace(
+                '#not-present "Not present"',
+                f'#not-present "{fixture_display}"',
+                1,
+            )
+            self.assertNotEqual(changed, authored)
+            terminology.write_text(changed, encoding="utf-8")
+
+            code, output = self.run_renderer(root)
+            self.assertEqual(code, 0, output)
+            generated = (
+                root / "healthkit/input/fsh/generated-measurement-profiles.fsh"
+            ).read_text(encoding="utf-8")
+            self.assertIn(
+                "* valueCodeableConcept = "
+                f'GroveSymptomSeverityCS#not-present "{fixture_display}"',
+                generated,
+            )
+
+    def test_every_generated_example_identity_recomputes_and_matches_fsh(self) -> None:
+        contract, examples = self.projected_example_identities()
+        for example in examples:
+            for field in ("sourceRecord", "sourceOutput"):
+                identity = example[field]
+                with self.subTest(instance=example["instance"], identity=field):
+                    self.assertEqual(
+                        identity["value"],
+                        EXCHANGE_PROTOCOL.derive_hmac_identity(
+                            key=contract["key"],
+                            key_id=contract["keyId"],
+                            epoch=contract["epoch"],
+                            identity_kind=identity["identityKind"],
+                            components=identity["components"],
+                        ),
+                    )
+            generated = (
+                ROOT / RENDERER_MODULE.OWNERS[example["guide"]]["generated"]
+            ).read_text(encoding="utf-8")
+            match = re.search(
+                rf"^Instance: {re.escape(example['instance'])}\n.*?(?=\n\n|\Z)",
+                generated,
+                re.M | re.S,
+            )
+            self.assertIsNotNone(match, example["instance"])
+            block = match.group(0)
+            for slice_name, identity_name in (
+                ("sourceRecord", "sourceRecord"),
+                ("sourceOutput", "sourceOutput"),
+            ):
+                identity = example[identity_name]
+                self.assertIn(
+                    f'* identifier[{slice_name}].system = "{identity["system"]}"',
+                    block,
+                )
+                self.assertIn(
+                    f'* identifier[{slice_name}].value = "{identity["value"]}"',
+                    block,
+                )
+
+    def test_example_identity_systems_are_kind_specific_and_distinct(self) -> None:
+        contract, examples = self.projected_example_identities()
+        systems = contract["identitySystemsByKind"]
+        self.assertEqual(
+            set(systems),
+            {
+                row["kind"]
+                for row in json.loads(
+                    (ROOT / "catalog/exchange-protocol.json").read_text(encoding="utf-8")
+                )["opaqueIdentity"]["identityKinds"]
+            },
+        )
+        self.assertEqual(len(set(systems.values())), len(systems))
+        for example in examples:
+            for identity in (example["sourceRecord"], example["sourceOutput"]):
+                self.assertEqual(
+                    identity["system"], systems[identity["identityKind"]], example["instance"]
+                )
+            if example["guide"] in {"withings", "oura", "google-health"}:
+                source_type = example["sourceType"]
+                self.assertEqual(
+                    example["sourceRecord"]["identityKind"], "provider-record"
+                )
+                self.assertEqual(
+                    example["sourceOutput"]["identityKind"], "provider-output"
+                )
+                self.assertNotIn("/", source_type["preimageToken"])
+                self.assertEqual(
+                    source_type["wireCode"],
+                    f"{source_type['providerCode']}/{source_type['preimageToken']}",
+                )
+                expected_scope = (
+                    contract["globalProviderScope"]
+                    if example["guide"] == "oura"
+                    else contract["providerScope"]
+                )
+                self.assertEqual(
+                    example["sourceRecord"]["components"][2:4],
+                    [expected_scope["system"], expected_scope["value"]],
+                )
+
+    def test_provider_owned_semantics_are_separate_from_provider_envelopes(self) -> None:
+        catalog = json.loads(
+            (ROOT / "catalog/measurement-catalog.json").read_text(encoding="utf-8")
+        )
+        providers = json.loads(
+            (ROOT / "catalog/providers-adapter.json").read_text(encoding="utf-8")
+        )
+        envelope_by_owner = {
+            provider["measurementOwner"]: provider["observationProfile"]
+            for provider in providers["providers"]
+        }
+        for owner, envelope in envelope_by_owner.items():
+            generated = (
+                ROOT / RENDERER_MODULE.OWNERS[owner]["generated"]
+            ).read_text(encoding="utf-8")
+            measurements = [
+                measurement
+                for measurement in catalog["measurements"]
+                if measurement.get("owner", "mobile") == owner
+            ]
+            self.assertEqual(
+                generated.count("Parent: GroveMobileObservation"),
+                len(measurements),
+                owner,
+            )
+            self.assertNotIn(f"Parent: {RENDERER_MODULE.fsh_name(owner)}Observation", generated)
+            for measurement in measurements:
+                instance = (
+                    f"Instance: {RENDERER_MODULE.fsh_name(measurement['profile'])}Example"
+                )
+                block = generated.split(instance, 1)[1].split("\n\n", 1)[0]
+                self.assertIn(f'* meta.profile[+] = "{envelope}"', block)
+
+    def test_example_output_preimages_follow_adapter_catalog_roles(self) -> None:
+        _, examples = self.projected_example_identities()
+        for example in examples:
+            role, discriminator = example["sourceOutput"]["components"][-2:]
+            with self.subTest(instance=example["instance"]):
+                if example["guide"] == "healthkit":
+                    self.assertEqual(role, example["measurementId"])
+                    self.assertEqual(discriminator, "single")
+                elif example["guide"] == "health-connect":
+                    count_rule = example["countRule"]
+                    if count_rule in {"exactly-one", "zero-or-one"}:
+                        self.assertEqual((role, discriminator), ("single", example["measurementId"]))
+                    elif count_rule == "one-per-present-field":
+                        self.assertEqual((role, discriminator), ("present-field", example["measurementId"]))
+                    elif count_rule == "one-per-sample":
+                        self.assertEqual(role, "sample")
+                        self.assertIn("|", discriminator)
+                    else:
+                        self.assertIn(example.get("graphRule"), {"sleep-session-graph", "exercise-session-graph", "mindfulness-session-graph"})
+
+    def test_only_health_connect_examples_emit_source_availability(self) -> None:
+        _, examples = self.projected_example_identities()
+        for example in examples:
+            expected = (
+                "Metadata.lastModifiedTime"
+                if example["guide"] == "health-connect"
+                else "omitted"
+            )
+            self.assertEqual(example["availability"]["sourceField"], expected)
+
+    def test_duplicate_identity_system_fails_with_kind_aware_diagnostic(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = self.make_fixture(Path(directory))
+            path = root / "catalog/exchange-protocol.json"
+            protocol = json.loads(path.read_text(encoding="utf-8"))
+            systems = protocol["testVectors"]["identitySystems"]
+            systems[1]["system"] = systems[0]["system"]
+            path.write_text(json.dumps(protocol, indent=2) + "\n", encoding="utf-8")
+            code, output = self.run_renderer(root, "--check")
+            self.assertEqual(code, 1, output)
+            self.assertIn("identity systems must be distinct by identity kind", output)
 
     def test_quantity_domains_project_to_fhir_constraints(self) -> None:
         mobile = (ROOT / "mobile/input/fsh/generated-measurement-profiles.fsh").read_text(

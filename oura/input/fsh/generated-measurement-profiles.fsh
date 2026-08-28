@@ -25,7 +25,7 @@ Description: "Measurement concepts defined by the Oura adapter for its vendor-ex
 * include codes from system OuraMeasurementCS
 
 Profile: OuraCardiovascularAge
-Parent: OuraObservation
+Parent: GroveMobileObservation
 Id: oura-cardiovascular-age
 Title: "Oura Cardiovascular Age"
 Description: "Oura's proprietary cardiovascular-age figure over a civil-day effective Period, reported on an age scale in UCUM years. It is a vendor score expressed in years, not a chronological age and not a vascular assessment. It is deliberately a separate measurement from the Withings vascular age: the two are undisclosed algorithms over different inputs, so a shared code would fabricate a comparability neither vendor defines."
@@ -42,7 +42,7 @@ Description: "Oura's proprietary cardiovascular-age figure over a civil-day effe
 * valueQuantity.code = #a (exactly)
 
 Profile: OuraReadinessScore
-Parent: OuraObservation
+Parent: GroveMobileObservation
 Id: oura-readiness-score
 Title: "Oura Readiness Score"
 Description: "Oura's proprietary daily readiness figure over a civil-day effective Period. The vendor publishes no physical unit for it and it measures no observable quantity, so it carries the dimensionless UCUM {score} annotation rather than an invented unit, and the profile description is the only statement of its scale. It is a vendor composite, not a physiological measurement, and nothing about the inputs, weighting, or comparability across people or firmware versions is asserted."
@@ -63,19 +63,21 @@ InstanceOf: OuraCardiovascularAge
 Usage: #example
 Title: "Oura Cardiovascular Age Example"
 Description: "A conformant Oura Cardiovascular Age instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:pgwzCFk8dUQm_AB8_nMxWZK0Elud1y8VdenFtf115iM"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:HBzgZpoU3pDCLsZXq9ZD3XK0Aq6KCmMIaw_2d2lCPP4"
+* meta.profile[+] = "https://grovealliance.org/fhir/oura/StructureDefinition/oura-observation"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-provider-record-v2/test-key/1"
+* identifier[sourceRecord].value = "v2:test-key:1:pjibWQPMUxxrUX-FHs-7TpaYYFJ7d0NIp4pUIJ8IqJg"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-provider-output-v2/test-key/1"
+* identifier[sourceOutput].value = "v2:test-key:1:WKx79td79XtDxE_iPEDzR5Lko3bhZAeSPsW3yWn_Zeg"
 * status = #final
 * code = OuraMeasurementCS#oura-cardiovascular-age
-* extension[provider].valueCode = #oura
-* extension[providerSourceType].valueCode = #oura/daily_cardiovascular_age
+* extension[+].url = "https://grovealliance.org/fhir/providers/StructureDefinition/provider"
+* extension[=].valueCode = #oura
+* extension[+].url = "https://grovealliance.org/fhir/providers/StructureDefinition/provider-source-type"
+* extension[=].valueCode = #oura/daily_cardiovascular_age
 * subject = Reference(OuraPatientExample)
 * performer = Reference(OuraPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
-* issued = "2026-08-20T08:00:00Z"
 * valueQuantity = 38 'a' "years"
 
 Instance: OuraReadinessScoreExample
@@ -83,17 +85,19 @@ InstanceOf: OuraReadinessScore
 Usage: #example
 Title: "Oura Readiness Score Example"
 Description: "A conformant Oura Readiness Score instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:lS6Q5pNJc2J35RHDkDrmTM9Ya48fvmHdyeHjeo7-Qus"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:1P1D8Z4pMgSy5aZo3SfpctEWRODDN5wBv_nPaNumn8w"
+* meta.profile[+] = "https://grovealliance.org/fhir/oura/StructureDefinition/oura-observation"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-provider-record-v2/test-key/1"
+* identifier[sourceRecord].value = "v2:test-key:1:IXKGDapcsD57e8ZrijBqSNqf71Fe2Lvn_5-N0UbS0G0"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-provider-output-v2/test-key/1"
+* identifier[sourceOutput].value = "v2:test-key:1:IXWL1QHLNNxGqGwIlavLZqLhCA13C-Ci_W7M0-ptOx4"
 * status = #final
 * code = OuraMeasurementCS#oura-readiness-score
-* extension[provider].valueCode = #oura
-* extension[providerSourceType].valueCode = #oura/daily_readiness
+* extension[+].url = "https://grovealliance.org/fhir/providers/StructureDefinition/provider"
+* extension[=].valueCode = #oura
+* extension[+].url = "https://grovealliance.org/fhir/providers/StructureDefinition/provider-source-type"
+* extension[=].valueCode = #oura/daily_readiness
 * subject = Reference(OuraPatientExample)
 * performer = Reference(OuraPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
-* issued = "2026-08-20T08:00:00Z"
 * valueQuantity = 78 '{score}' "score"

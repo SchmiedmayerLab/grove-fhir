@@ -13,7 +13,8 @@ screens.
 
 ### Identity and versioning
 
-`Questionnaire.url` identifies the instrument across systems. `Questionnaire.version`
+`Questionnaire.url` identifies the instrument across systems. It is required to be one
+absolute HTTP(S) canonical URL without `|` or a fragment. `Questionnaire.version`
 identifies one immutable definition of that instrument. This profile requires a valid
 Semantic Versioning 2.0.0 value and the standard `artifact-versionAlgorithm` extension
 fixed to `semver`.

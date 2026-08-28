@@ -10,5 +10,5 @@ Profile: OuraObservation
 Parent: ProvidersObservation
 Id: oura-observation
 Title: "Oura Observation"
-Description: "The connected-provider Observation contract narrowed to Oura, for a value Oura's own algorithm produced over Oura's own inputs. A measurement two or more connected providers report stays source-neutral and is carried under the shared Provider Observation instead. The adapter does not authorize or fetch Oura data."
+Description: "The connected-provider lineage and identity envelope narrowed to Oura. It is directly paired with either a shared semantic profile or an Oura-owned semantic profile; it does not replace that clinical claim. The adapter does not authorize or fetch Oura data."
 * extension[provider].valueCode = #oura (exactly)

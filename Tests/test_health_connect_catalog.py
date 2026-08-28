@@ -268,7 +268,11 @@ class HealthConnectCatalogTests(unittest.TestCase):
         self.assertEqual(
             {row["source"] for row in sleep["values"]}, SLEEP_STAGE_TYPES
         )
-        self.assertEqual(contexts["sleepTitle"]["valueType"], "string")
+        self.assertEqual(contexts["sessionTitle"]["valueType"], "string")
+        self.assertEqual(
+            contexts["sessionTitle"]["appliesToMeasurements"],
+            ["workout", "sleep-duration", "mindfulness-session"],
+        )
         self.assertEqual(
             contexts["sleepNotes"]["r4Element"], "Observation.note.text"
         )
@@ -278,7 +282,7 @@ class HealthConnectCatalogTests(unittest.TestCase):
                 "cervicalMucusAppearance", "cervicalMucusSensation",
             ],
             "ExerciseSessionRecord": [
-                "exerciseType", "exerciseSegmentType", "exerciseTitle",
+                "exerciseType", "exerciseSegmentType", "sessionTitle",
                 "exerciseNotes",
             ],
             "MenstruationFlowRecord": ["menstruationFlow"],
@@ -344,20 +348,66 @@ class HealthConnectCatalogTests(unittest.TestCase):
         specimen = profiles.split("Profile: HealthConnectSpecimen", 1)[1].split(
             "\nProfile:", 1
         )[0]
-        self.assertIn("* identifier 2..3 MS", observation)
-        self.assertIn("* identifier ^slicing.rules = #closed", observation)
+        self.assertIn("* identifier 2..* MS", observation)
+        self.assertIn("* identifier ^slicing.rules = #open", observation)
         self.assertIn("* note 0..1 MS", observation)
         self.assertIn("* note.author[x] 0..0", observation)
         self.assertIn("* note.time 0..0", observation)
         self.assertIn("* identifier 2..2 MS", specimen)
         self.assertIn("* identifier ^slicing.rules = #closed", specimen)
 
+    def test_session_title_is_profile_scoped_to_three_primary_summaries(self) -> None:
+        profiles = (ROOT / "health-connect/input/fsh/profiles.fsh").read_text(
+            encoding="utf-8"
+        )
+        invariant = profiles.split(
+            "Invariant: health-connect-session-title-1", 1
+        )[1].split("\nInvariant:", 1)[0]
+        self.assertIn("count() = 1", invariant)
+        for record_type, profile, code in (
+            ("ExerciseSessionRecord", "grove-mobile-workout", "workout"),
+            ("SleepSessionRecord", "grove-mobile-sleep-duration", "93832-4"),
+            (
+                "MindfulnessSessionRecord",
+                "grove-mobile-mindfulness-session",
+                "mindfulness-session-duration",
+            ),
+        ):
+            with self.subTest(record_type=record_type):
+                self.assertIn(record_type, invariant)
+                self.assertIn(profile, invariant)
+                self.assertIn(code, invariant)
+
+        observation = profiles.split(
+            "Profile: HealthConnectObservation", 1
+        )[1].split("\nProfile:", 1)[0]
+        self.assertIn("health-connect-session-title-1", observation)
+        self.assertIn("HealthConnectSessionTitle named sessionTitle 0..1 MS", observation)
+        nonblank = profiles.split(
+            "Invariant: health-connect-session-text-nonblank-1", 1
+        )[1].split("\nInvariant:", 1)[0]
+        # This suite runs before SUSHI in a clean CI checkout, so lock the tracked
+        # FSH escape layer rather than depending on ignored fsh-generated output.
+        # SUSHI consumes each four-backslash FSH token as the intended two-character
+        # FHIRPath regular-expression escape (\\S).
+        self.assertEqual(nonblank.count(r"(?s).*\\\\S.*"), 2)
+        self.assertIn("note.all(text.toString().matches(", nonblank)
+        self.assertNotIn("Every output also declares exactly one shared", profiles)
+        self.assertIn("one exact profile-claim mode", profiles)
+        retention_policy = (
+            "RETAIN preserves the non-blank source field; OMIT deliberately omits it; "
+            "the producer must explicitly select one"
+        )
+        for key in ("sessionTitle", "exerciseNotes", "sleepNotes", "mindfulnessNotes"):
+            self.assertEqual(self.adapter["contextMappings"][key]["retentionPolicy"], retention_policy)
+
     def test_mindfulness_and_vo2_context_is_exact(self) -> None:
         self.assertEqual(
             self.rows["MindfulnessSessionRecord"]["context"],
-            ["mindfulnessSessionType", "mindfulnessTitle", "mindfulnessNotes"],
+            ["mindfulnessSessionType", "sessionTitle", "mindfulnessNotes"],
         )
         mindfulness = self.adapter["contextMappings"]["mindfulnessSessionType"]
+        self.assertEqual(mindfulness["r4Element"], "Observation.method")
         self.assertEqual(len(mindfulness["values"]), 6)
         self.assertEqual(
             {row["source"] for row in mindfulness["values"]},
@@ -441,7 +491,15 @@ class HealthConnectCatalogTests(unittest.TestCase):
     def test_writer_identity_is_source_supplied_only(self) -> None:
         writer = self.adapter["identity"]["writerRecord"]
         self.assertEqual(writer["condition"], "Metadata.clientRecordId is present.")
-        self.assertIn("never synthesized", writer["version"])
+        revision = writer["revision"]
+        self.assertEqual(revision["presenceRule"], "identifier-controls-pair")
+        self.assertEqual(revision["versionMinimum"], 0)
+        self.assertEqual(revision["versionMaximum"], 9223372036854775807)
+        self.assertIn("defaults to 0", revision["versionRule"])
+        self.assertIn("non-blank", revision["identifierRule"])
+        self.assertEqual(revision["invalidDisposition"], "reject-source-record")
+        self.assertIn("never infer", writer["version"])
+        self.assertIn("synthesize", writer["version"])
 
     def test_recording_device_requires_true_per_unit_evidence(self) -> None:
         device = self.adapter["recordingDeviceIdentity"]

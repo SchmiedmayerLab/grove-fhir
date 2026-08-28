@@ -11,7 +11,8 @@ SPDX-License-Identifier: MIT
 The normative status-vocabulary definitions live on the [guide family page](https://grovealliance.org/fhir/mobile/guides.html#status-vocabulary).
 The machine catalog uses exactly these meanings:
 
-- `supported`: v0.6.0 defines an exact conversion to a listed shared profile.
+- `supported`: v0.6.0 defines an exact conversion to every listed semantic profile,
+  whether shared or provider-owned.
 - `mapped-standard`: v0.6.0 maps the provider-native payload to the exact source-neutral
   Sensor plus Provider Recording Document profile pair without asserting a
   scalar clinical meaning.
@@ -22,9 +23,9 @@ The machine catalog uses exactly these meanings:
 - `intentionally-unsupported`: v0.6.0 deliberately refuses the conversion because it
   would create a misleading or diagnostic-adjacent result.
 
-Only `supported` rows may produce a scalar normalized Observation against a shared Mobile profile.
-A `platform-exclusive` row produces only the provider-scoped profile its catalog entry names, which states the vendor and the exact nature of the value so nothing reads as a comparable shared measurement.
-That profile is published by the reporting provider's own guide, which narrows Provider Observation to that vendor.
+`supported` rows may produce the exact listed shared or provider-owned semantic Observation.
+A `platform-exclusive` row produces the provider-owned semantic profile its catalog entry names, which states the vendor and exact nature of the value so nothing reads as a comparable shared measurement.
+Every such Observation directly claims that semantic profile together with the reporting provider's exact adapter envelope; neither profile substitutes for the other.
 `mapped-standard` rows may produce only the listed two-profile Recording Document contract.
 The other statuses do not authorize a FHIR output under this adapter profile.
 
@@ -46,7 +47,7 @@ Important fail-closed boundaries include:
   occur in the same provider measure group.
 
 See [`catalog/providers-adapter.json`](https://grovealliance.org/fhir/catalog/providers-adapter.json) for every exact source token, element, unit
-conversion, grouping rule, shared profile, and definitive status.
+conversion, grouping rule, semantic profile, and definitive status.
 The [authoritative status matrix](status-matrix.html) renders every provider field and
 the atomic Withings grouped mapping from that machine catalog.
 The [Withings walkthrough](walkthrough.html) shows the grouped blood-pressure mapping end to end, from measure-group JSON to the emitted exchange Bundle.

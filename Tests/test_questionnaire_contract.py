@@ -252,6 +252,7 @@ class QuestionnaireContractTests(unittest.TestCase):
         self.assertEqual(
             questionnaire_rules,
             {
+                "qg-canonical-1",
                 "qg-version-1",
                 "qg-version-algorithm-1",
                 "qg-item-text-1",
@@ -285,13 +286,22 @@ class QuestionnaireContractTests(unittest.TestCase):
                 "gqr-completion-mode-1",
             },
         )
+        questionnaire_constraints = {
+            constraint["key"]: constraint["expression"]
+            for element in questionnaire["differential"]["element"]
+            for constraint in element.get("constraint", [])
+        }
         response_constraints = {
             constraint["key"]: constraint["expression"]
             for element in response["differential"]["element"]
             for constraint in element.get("constraint", [])
         }
         self.assertIn(
-            "^https?://[^|#]+[|]",
+            r"^https?://[^\\s/?#|]+[^\\s|#]*$",
+            questionnaire_constraints["qg-canonical-1"],
+        )
+        self.assertIn(
+            r"^https?://[^\\s/?#|]+[^\\s|#]*[|]",
             response_constraints["gqr-canonical-1"],
         )
         self.assertIn(
@@ -305,6 +315,10 @@ class QuestionnaireContractTests(unittest.TestCase):
             element["id"]: element
             for element in questionnaire["differential"]["element"]
         }
+        profile_fsh = (ROOT / "questionnaire/input/fsh/profiles.fsh").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("* url 1..1 MS", profile_fsh)
         self.assertIn("Questionnaire.extension:targetConstraint", elements)
         self.assertIn("Questionnaire.item.extension:targetConstraint", elements)
         self.assertEqual(
@@ -495,6 +509,15 @@ class QuestionnaireContractTests(unittest.TestCase):
         value_sets = [load_json(PAIR_FIXTURES / path) for path in manifest["valueSets"]]
         self.assertEqual(validator.validate_pair(questionnaire, response, value_sets), [])
         self.assertEqual(validator.validate_pair(questionnaire, in_progress, value_sets), [])
+        for case in manifest["additionalValidSubjectCases"]:
+            valid = response
+            mutations = case.get("mutations", [case.get("mutation")])
+            for mutation in mutations:
+                valid = apply_mutation(valid, mutation)
+            with self.subTest(case=case["id"]):
+                self.assertEqual(
+                    validator.validate_pair(questionnaire, valid, value_sets), []
+                )
 
         expected_rules: set[str] = set()
         for case in manifest["invalid"]:
@@ -511,6 +534,7 @@ class QuestionnaireContractTests(unittest.TestCase):
             expected_rules,
             {
                 "pair-questionnaire-canonical",
+                "pair-subject-type",
                 "pair-item-nesting",
                 "pair-answer-type",
                 "pair-inline-option",

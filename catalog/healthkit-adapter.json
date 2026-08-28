@@ -42,11 +42,19 @@
     "identityPreimages": "unmodified",
     "sensorAndEcgTiming": "excluded"
   },
-  "sourceTypeCoding": {
-    "system": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-source-type",
-    "r4Element": "Observation.code.coding",
+  "sourceTypeExtension": {
+    "url": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-source-type-extension",
+    "valueSystem": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-source-type",
+    "valueElement": "valueCode",
     "cardinality": "exactly one",
-    "rule": "Every admitted HealthKit Observation preserves its exact sourceTypeIdentifier as an additional provider coding; the shared or authoritative standard coding remains the normative result meaning."
+    "contexts": [
+      "Observation",
+      "DocumentReference",
+      "VisionPrescription",
+      "MedicationAdministration",
+      "MedicationStatement"
+    ],
+    "rule": "Every admitted HealthKit output preserves its exact sourceTypeIdentifier in this lineage extension. Observation.code and DocumentReference.type remain clinical or document concepts; the HealthKit SDK source class is not asserted as an equivalent coding of either meaning."
   },
   "clinicalRecordAdmission": {
     "profile": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document",
@@ -78,6 +86,11 @@
     "deferred": "No FHIR output for this source type is admitted by the 0.6.0 adapter.",
     "intentionally-unsupported": "The 0.6.0 contract explicitly rejects this source meaning rather than approximating it."
   },
+  "observationIssued": {
+    "cardinality": "0..0",
+    "source": "none",
+    "rule": "HealthKit exposes no per-object result-availability or modification instant. Omit Observation.issued; conversion, fetch, and upload times belong to Provenance.recorded or Bundle.timestamp and must not be substituted."
+  },
   "standardAdapterClaims": {
     "body-mass-index": {
       "claimMode": "exactly-standard-plus-adapter",
@@ -104,6 +117,38 @@
       "profiles": [
         "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-ecg-observation",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-observation"
+      ],
+      "outputs": [
+        {
+          "outputRole": "electrocardiogram",
+          "outputDiscriminator": "single",
+          "cardinality": "1..1",
+          "profiles": [
+            "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-ecg-observation",
+            "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-observation"
+          ]
+        },
+        {
+          "outputRole": "average-heart-rate",
+          "outputDiscriminator": "single",
+          "cardinality": "0..1 when HKElectrocardiogram.averageHeartRate is present",
+          "profiles": [
+            "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-heart-rate",
+            "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-average-heart-rate-observation"
+          ],
+          "code": {
+            "system": "http://loinc.org",
+            "code": "8867-4",
+            "display": "Heart rate"
+          },
+          "quantity": {
+            "system": "http://unitsofmeasure.org",
+            "code": "/min",
+            "unit": "beats/minute"
+          },
+          "effective": "the exact same waveform effectivePeriod as the ECG Observation",
+          "relationship": "average-heart-rate Observation.derivedFrom references the ECG Observation"
+        }
       ],
       "sourceTypeIdentifier": "HKDataTypeIdentifierElectrocardiogram",
       "sourceLead": "HKElectrocardiogram.Lead.appleWatchSimilarToLeadI",
@@ -133,81 +178,69 @@
         "samplingFrequency",
         "HKMetadataKeyAppleECGAlgorithmVersion"
       ],
-      "correlatedSymptomEvidence": {
-        "url": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-correlated-symptom",
-        "cardinality": "0..7",
-        "children": [
-          {
-            "url": "sourceIdentifier",
-            "type": "Identifier",
-            "meaning": "Typed source-record v2 HMAC over the exact HKCategorySample UUID and HealthKit-store scope; the native UUID is not exchanged"
-          },
-          {
-            "url": "effectivePeriod",
-            "type": "Period",
-            "meaning": "Exact HKCategorySample startDate/endDate"
-          },
-          {
-            "url": "symptomType",
-            "type": "code",
-            "meaning": "Exact admitted HealthKit symptom category identifier"
-          },
-          {
-            "url": "severity",
-            "type": "code",
-            "meaning": "Exact admitted HealthKit symptom severity"
-          },
-          {
-            "url": "sourceName",
-            "type": "string",
-            "cardinality": "1..1",
-            "meaning": "Exact HKSourceRevision.source.name"
-          },
-          {
-            "url": "sourceBundleIdentifier",
-            "type": "string",
-            "cardinality": "1..1",
-            "meaning": "Exact HKSourceRevision.source.bundleIdentifier"
-          },
-          {
-            "url": "sourceVersion",
-            "type": "string",
-            "cardinality": "0..1",
-            "meaning": "Exact HKSourceRevision.version when present"
-          },
-          {
-            "url": "sourceProductType",
-            "type": "string",
-            "cardinality": "0..1",
-            "meaning": "Exact HKSourceRevision.productType when present"
-          },
-          {
-            "url": "sourceOperatingSystemMajorVersion",
-            "type": "integer",
-            "cardinality": "1..1",
-            "meaning": "Exact HKSourceRevision.operatingSystemVersion.majorVersion"
-          },
-          {
-            "url": "sourceOperatingSystemMinorVersion",
-            "type": "integer",
-            "cardinality": "1..1",
-            "meaning": "Exact HKSourceRevision.operatingSystemVersion.minorVersion"
-          },
-          {
-            "url": "sourceOperatingSystemPatchVersion",
-            "type": "integer",
-            "cardinality": "1..1",
-            "meaning": "Exact HKSourceRevision.operatingSystemVersion.patchVersion"
-          }
-        ]
+      "closedValueMappings": {
+        "classification": {
+          "sourceField": "HKElectrocardiogram.classification",
+          "r4Element": "Observation.interpretation",
+          "system": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-ecg-classification",
+          "values": [
+            {"sourceValue": "notSet", "code": "notSet"},
+            {"sourceValue": "sinusRhythm", "code": "sinusRhythm"},
+            {"sourceValue": "atrialFibrillation", "code": "atrialFibrillation"},
+            {"sourceValue": "inconclusiveLowHeartRate", "code": "inconclusiveLowHeartRate"},
+            {"sourceValue": "inconclusiveHighHeartRate", "code": "inconclusiveHighHeartRate"},
+            {"sourceValue": "inconclusivePoorReading", "code": "inconclusivePoorReading"},
+            {"sourceValue": "inconclusiveOther", "code": "inconclusiveOther"},
+            {"sourceValue": "unrecognized", "code": "unrecognized"}
+          ]
+        },
+        "symptomsStatus": {
+          "sourceField": "HKElectrocardiogram.symptomsStatus",
+          "r4Element": "healthkit-ecg-symptoms-status.valueCode",
+          "system": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-ecg-symptoms-status",
+          "values": [
+            {"sourceValue": "notSet", "code": "notSet"},
+            {"sourceValue": "none", "code": "none"},
+            {"sourceValue": "present", "code": "present"}
+          ]
+        },
+        "algorithmVersion": {
+          "sourceField": "HKMetadataKeyAppleECGAlgorithmVersion",
+          "r4Element": "Observation.method",
+          "system": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-ecg-algorithm-version",
+          "values": [
+            {"sourceValue": "1", "code": "version1"},
+            {"sourceValue": "2", "code": "version2"}
+          ]
+        }
       },
-      "sourceRevisionDisclosure": {
-        "requiredProducerInput": "explicitly-authorized",
-        "failureRule": "Without explicit caller authorization to disclose every correlated symptom HKSourceRevision field, the structured HealthKit ECG output is not admitted and conversion fails closed.",
-        "scope": "Authorization is producer input and is not encoded as a FHIR consent or authorization assertion."
+      "correlatedSymptomEvidence": {
+        "cardinality": "0..*",
+        "r4Element": "Observation.hasMember as identifier-only logical Reference(Observation)",
+        "sourceTypes": [
+          "HKCategoryTypeIdentifierRapidPoundingOrFlutteringHeartbeat",
+          "HKCategoryTypeIdentifierSkippedHeartbeat",
+          "HKCategoryTypeIdentifierFatigue",
+          "HKCategoryTypeIdentifierShortnessOfBreath",
+          "HKCategoryTypeIdentifierChestTightnessOrPain",
+          "HKCategoryTypeIdentifierFainting",
+          "HKCategoryTypeIdentifierDizziness"
+        ],
+        "rule": "Each supplied HKCategorySample is converted through its existing HealthKit symptom Observation profile with its own source-record and source-output identities, exact effectivePeriod, and severity. The ECG hasMember Reference carries type Observation and that symptom's complete source-output Identifier. Duplicate References and samples outside the admitted seven source types fail closed; the number of associated samples is not capped by the number of admitted types.",
+        "exchangeRule": "A Mobile Exchange Bundle contains exactly one source-record revision, so a symptom Observation travels in its own event Bundle and normal conversion Provenance. The ECG uses an identifier-only logical hasMember Reference; it never embeds or relabels the symptom as an ECG child output.",
+        "sourceRevisionRule": "Each symptom event represents its HKSourceRevision through the normal HealthKit application/recording Device and conversion Provenance policy. Source-revision fields are not copied into a complex ECG extension."
+      },
+      "wireMapping": {
+        "classification": "Observation.interpretation with exactly one coding from HealthKitECGClassificationVS",
+        "symptomsStatus": "required healthkit-ecg-symptoms-status extension because notSet and none are not recoverable from hasMember count",
+        "algorithmVersion": "Observation.method with exactly one coding from HealthKitECGAlgorithmVersionVS when present",
+        "averageHeartRate": "separate healthkit-ecg-average-heart-rate-observation when present",
+        "samplingFrequency": "validation input only; never emitted because SampledData.period carries the wire sampling interval",
+        "numberOfVoltageMeasurements": "validation input only; never emitted because SampledData dimensions and data carry the wire frame count",
+        "sourcePeriod": "required healthkit-ecg-source-period extension because waveform effectivePeriod may be narrower"
       },
       "effectiveRule": "Observation.effectivePeriod starts at HKElectrocardiogram.startDate plus the exact first timeSinceSampleStart and ends at the exact last supplied voltage instant. The required healthkit-ecg-source-period extension separately preserves the HKElectrocardiogram startDate/endDate.",
-      "admissionRule": "The caller supplies already-obtained evidence. The supplied voltage count equals numberOfVoltageMeasurements; offsets are complete, unique, sorted, and satisfy offset[i] = offset[0] + i * SampledData.period exactly; every voltage is present; and samplingFrequency, when reported, equals 1000 / period in milliseconds exactly. Every associated symptom is supplied as its exact HKCategorySample UUID, start/end, type, severity, and complete HKSourceRevision fields. Symptom UUIDs are unique; distinct samples with the same symptom type remain distinct and are admitted. Missing, non-uniform, duplicate-UUID, resampled, or inconsistent evidence fails closed; the adapter performs no HealthKit query."
+      "admissionRule": "The caller supplies already-obtained evidence. The supplied voltage array length and SampledData whitespace-token frame count both equal numberOfVoltageMeasurements exactly; offsets are complete, unique, sorted, and satisfy offset[i] = offset[0] + i * SampledData.period exactly; every voltage is present. Canonicalize samplingFrequency and computed 1000 / SampledData.period to the producer's shortest round-trip base-10 decimal representation and require exact decimal equality (tolerance zero). Every associated symptom is supplied as its exact HKCategorySample and converted as its own admitted HealthKit Observation event. Missing, non-uniform, repeated-symptom-identity, resampled, or inconsistent evidence fails closed; the adapter performs no HealthKit query."
     }
   },
   "derivedAggregates": [
@@ -1542,7 +1575,7 @@
         "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-ecg-observation",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-observation"
       ],
-      "requirement": "The caller supplies the HKElectrocardiogram, every voltage measurement with its exact timeSinceSampleStart, and each associated HKCategorySample when symptomsStatus is present. The adapter preserves symptom UUID/timing/type/severity and complete HKSourceRevision fields, classification, average heart rate, sampling frequency, reported count, Apple ECG algorithm-version metadata when present, source and waveform intervals, lead, offsets, and voltages without fetching or resampling. Explicit caller authorization for linkable symptom-source disclosure is required; otherwise conversion fails closed."
+      "requirement": "The caller supplies the HKElectrocardiogram, every voltage measurement with its exact timeSinceSampleStart, and each associated HKCategorySample when symptomsStatus is present. Classification is Observation.interpretation; Apple ECG algorithm version is Observation.method; optional average heart rate is a separate LOINC 8867-4 Observation derived from the waveform. Each supplied symptom is converted through its existing HealthKit symptom Observation profile as a separate source event, and the ECG hasMember carries that Observation's opaque source-output Identifier. Sampling frequency and reported count are validated against SampledData but are not duplicated on the wire. The adapter preserves source and waveform intervals, lead, offsets, and voltages without fetching or resampling."
     },
     {
       "sourceTypeIdentifier": "HKDataTypeIdentifierHeartbeatSeries",
@@ -3555,12 +3588,36 @@
     "writerRecord": {
       "identityKind": "writer-record",
       "identifierRole": "writer-record",
+      "components": [
+        "writer-application-system",
+        "writer-application-value",
+        "writer-record-id"
+      ],
       "condition": "HealthKit source metadata supplies a stable writer application Identifier pair and logical writer record id.",
-      "rule": "Do not infer cross-channel writer identity from source name, bundle display text, or HKObject.uuid."
+      "rule": "Do not infer cross-channel writer identity from source name, bundle display text, or HKObject.uuid.",
+      "revision": {
+        "sourceIdentifier": "HKMetadataKeySyncIdentifier",
+        "sourceVersion": "HKMetadataKeySyncVersion",
+        "presenceRule": "both-or-neither",
+        "identifierRule": "The sync identifier must be a non-empty String and is used exactly as the writer-record-id component.",
+        "versionMinimum": 0,
+        "versionRule": "The NSNumber must represent an integral non-negative value; emit its canonical unsigned decimal text with zero represented as 0.",
+        "fhirVersionExtension": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-writer-record-version",
+        "invalidDisposition": "reject-source-record"
+      }
     },
     "sourceArtifact": {
       "identityKind": "source-artifact",
       "identifierRole": "source-artifact",
+      "components": [
+        "adapter-id",
+        "source-type",
+        "repository-scope-system",
+        "repository-scope-value",
+        "native-record-id",
+        "format-code",
+        "part-index"
+      ],
       "rule": "A clinical or native recording uses its registered format code and zero-based part index in addition to the source-record coordinates."
     },
     "sourceContext": {

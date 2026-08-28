@@ -18,19 +18,23 @@ A producer must:
 3. normalize units without changing the source interval or inventing an instant;
 4. assign complete source and output business identifiers;
 5. carry exactly one catalogued provider extension and provider-qualified source-type extension;
-6. declare exactly the catalogued profile pair for a shared Observation or native Recording Document;
+6. declare exactly the catalogued semantic-plus-provider profile pair for a structured Observation, or the catalogued Sensor-plus-Provider pair for a native Recording Document;
 7. include one `providers-conversion-provenance` whose sole source entity is the
    complete connected-provider source-record Identifier and whose internal UUID targets
    cover every structured and raw output for that source record; and
 8. exchange a complete resource graph in a Grove Mobile collection Bundle using
    deterministic `urn:uuid` full URLs for internal references.
 
-`providerAccountIdentifier` is a complete, deployment-scoped pseudonymous Identifier.
-A vendor email, account/member id, OAuth subject, or token is prohibited unless an
-explicit deployment privacy policy separately authorizes that disclosure; this package
-does not. The provider's own record key travels in the identifier value: it is a vendor row key,
-not participant data, and the identical value is already public whenever the vendor's own
-application writes it into HealthKit or Health Connect.
+The provider-scope Identifier pair is a complete identity input. Account-scoped rows require the
+catalog mode `deployment-scoped-account-pseudonym`; globally keyed rows require
+`documented-global-key-space`. The Grove graph does not disclose either scope pair as a business
+Identifier. A vendor email, account/member id, OAuth subject, token, or per-account value for a
+globally keyed row is not an interchangeable substitute for the catalogued scope.
+If a deployment deliberately needs exact upstream traceability, the provider's own record key may
+additionally appear once as the governed source `Identifier` on the catalog-designated one-to-one
+primary output. Its absolute non-Grove system defines the upstream namespace, its value is exact,
+and its disclosure policy belongs to the deployment. This optional Identifier neither replaces
+the mandatory Grove HMAC identities nor belongs on child, artifact, or support nodes.
 An opaque native attachment can itself contain sensitive provider fields. Before
 emission, the producer therefore requires exactly one explicit caller assertion:
 `caller-authorized-opaque-payload` or `verified-sanitized-input`; absent, ambiguous, or
@@ -49,13 +53,17 @@ into it.
 
 Provider source-record identity is the v2 HMAC over provider code, exact source type, the complete
 provider-scope Identifier pair, and stable native/import record id. A documented global provider
-key space still supplies an explicit scope pair; account scope is never inferred from the shape of
-an observed key. If the provider supplies no native key, the connector assigns and persists an
+key space still supplies an explicit scope pair under mode `documented-global-key-space`; it never
+uses a per-account value. An account-scoped row uses mode
+`deployment-scoped-account-pseudonym` and a deployment-governed pseudonymous account pair; scope
+is never inferred from the shape of an observed key. If the provider supplies no native key, the connector assigns and persists an
 opaque import-record key before conversion rather than hashing measured values or serialized
 content.
 
-Every output has its own source-output identity. A native Recording Document also carries a
-source-artifact identity for its exact registered format and part. Writer identity is emitted only
+Every output has its own `provider-output` identity under the FHIR Identifier role
+`source-output`. A native Recording Document also carries a `provider-artifact` identity under the
+role `source-artifact` for its exact registered format and part. These provider-specific HMAC kinds
+cannot alias the adapter-scoped `source-output` and `source-artifact` kinds. Writer identity is emitted only
 when the payload supplies a complete writer-application pair and logical writer record id; provider
 code plus native id is not evidence that two ingestion channels name the same logical record.
 

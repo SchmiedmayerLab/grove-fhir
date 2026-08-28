@@ -16,11 +16,27 @@ Description: "Right-arm-minus-left-arm SensorKit ECG data is not mislabeled as s
 Expression: "component.code.coding.where(system = 'https://grovealliance.org/fhir/sensorkit/CodeSystem/sensorkit-ecg-lead' and code = 'rightArmMinusLeftArm').empty() or component.code.coding.where(system = 'urn:iso:std:iso:11073:10101' and code = '131329').empty()"
 Severity: #error
 
+Invariant: sensorkit-visit-focus-identifier-1
+Description: "A SensorKit visit Location reference uses a complete deployment-governed native namespace and never claims a Grove graph-identity role."
+Expression: "focus.empty() or (focus.identifier.system.exists() and focus.identifier.value.exists() and focus.identifier.type.coding.where(system = 'https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role').empty())"
+Severity: #error
+
+Invariant: sensorkit-summary-quantity-nonnegative-1
+Description: "Every Quantity in a SensorKit-only summary carries a present non-negative source-domain value; no clinical upper range is asserted."
+Expression: "value.ofType(Quantity).all(value.exists() and value >= 0) and component.value.ofType(Quantity).all(value.exists() and value >= 0)"
+Severity: #error
+
+Invariant: sensorkit-summary-count-integer-1
+Description: "Every UCUM {count} component in a SensorKit-only summary is a canonical non-negative integer."
+Expression: "component.value.ofType(Quantity).where(system = 'http://unitsofmeasure.org' and code = '{count}').all(value.exists() and value.toString().matches('^(0|[1-9][0-9]*)$'))"
+Severity: #error
+
 Profile: SensorKitObservation
 Parent: GroveMobileObservation
 Id: sensorkit-observation
 Title: "SensorKit Observation"
 Description: "SensorKit source and output identity for an Observation. A shared Sensor mapping directly claims this adapter plus its source-neutral profile; a SensorKit-only child directly claims only that exact child profile. The adapter does not authorize or fetch SensorKit data."
+* issued 0..0
 * extension contains SensorKitSourceType named sensorKitSourceType 1..1 MS
 
 Profile: SensorKitRecordingDocument
@@ -80,8 +96,11 @@ Title: "SensorKit ECG Observation"
 Description: "The uniformly sampled voltage projection of one SensorKit ECG source record. It is lossless only as the required hybrid graph with a linked exact native Recording Document that retains per-point signalInvalid/crownTouched flags, session identifiers/states, and any source detail not carried by the Observation."
 * obeys sensorkit-ecg-lead-standard-1 and sensorkit-ecg-inverse-lead-1
 * extension[sensorKitSourceType].valueCode = #ecg
-* extension contains SensorKitECGSessionGuidance named sensorKitECGSessionGuidance 1..1 MS
 * code = $loinc#11524-6
+* method 1..1 MS
+* method.coding 1..1 MS
+* method.coding.system = $sensorKitValue (exactly)
+* method from SensorKitECGSessionGuidanceVS (required)
 * effective[x] 1..1 MS
 * effective[x] only Period
 * value[x] 0..0
@@ -107,6 +126,7 @@ Parent: SensorKitObservation
 Id: sensorkit-device-usage-observation
 Title: "SensorKit Device Usage Observation"
 Description: "A platform-exclusive summary of unlock duration, screen wakes, and unlock count over one SensorKit device-usage reporting interval. Per-application, notification, and web detail remains in a related native Recording Document."
+* obeys sensorkit-summary-quantity-nonnegative-1 and sensorkit-summary-count-integer-1
 * extension[sensorKitSourceType].valueCode = #device-usage
 * code = $sensorKitConcept#device-usage-summary
 * effective[x] 1..1 MS
@@ -142,9 +162,17 @@ Parent: SensorKitObservation
 Id: sensorkit-visit-observation
 Title: "SensorKit Visit Observation"
 Description: "A platform-exclusive SensorKit visit summary preserving the category, distance from home, and uncertain arrival and departure windows without asserting a clinical Encounter."
-* extension contains SensorKitVisitLocation named visitLocation 0..1 MS
+* obeys sensorkit-visit-focus-identifier-1 and sensorkit-summary-quantity-nonnegative-1
 * extension[sensorKitSourceType].valueCode = #visits
 * code = $sensorKitConcept#visit-summary
+* focus 0..1 MS
+* focus only Reference(Location)
+* focus.reference 0..0
+* focus.type 1..1 MS
+* focus.type = "Location" (exactly)
+* focus.identifier 1..1 MS
+* focus.identifier.system 1..1 MS
+* focus.identifier.value 1..1 MS
 * effective[x] 1..1 MS
 * effective[x] only Period
 * value[x] 0..0
@@ -178,6 +206,7 @@ Parent: SensorKitObservation
 Id: sensorkit-messages-usage-observation
 Title: "SensorKit Messages Usage Observation"
 Description: "A platform-exclusive, content-free summary of one SensorKit messages-usage reporting interval: message and distinct-contact counts only, never content or identities."
+* obeys sensorkit-summary-quantity-nonnegative-1 and sensorkit-summary-count-integer-1
 * extension[sensorKitSourceType].valueCode = #messages-usage
 * code = $sensorKitConcept#messages-usage-summary
 * effective[x] 1..1 MS
@@ -214,6 +243,7 @@ Parent: SensorKitObservation
 Id: sensorkit-phone-usage-observation
 Title: "SensorKit Phone Usage Observation"
 Description: "A platform-exclusive, content-free summary of one SensorKit phone-usage reporting interval: the total call duration as the value plus call and distinct-contact counts, never identities."
+* obeys sensorkit-summary-quantity-nonnegative-1 and sensorkit-summary-count-integer-1
 * extension[sensorKitSourceType].valueCode = #phone-usage
 * code = $sensorKitConcept#phone-usage-summary
 * effective[x] 1..1 MS
@@ -255,6 +285,7 @@ Parent: SensorKitObservation
 Id: sensorkit-keyboard-metrics-observation
 Title: "SensorKit Keyboard Metrics Observation"
 Description: "A platform-exclusive, content-free summary of one SensorKit keyboard-metrics reporting interval: the total typing duration as the value plus typing-event counts; the summary is lossy, so the native recording is mandatory. No typed content, emoji identity, or sentiment is ever represented."
+* obeys sensorkit-summary-quantity-nonnegative-1 and sensorkit-summary-count-integer-1
 * extension[sensorKitSourceType].valueCode = #keyboard-metrics
 * code = $sensorKitConcept#keyboard-metrics-summary
 * effective[x] 1..1 MS
@@ -332,6 +363,7 @@ Parent: SensorKitObservation
 Id: sensorkit-sleep-session-observation
 Title: "SensorKit Sleep Session Observation"
 Description: "A platform-exclusive assertion of one SensorKit sleep session interval. The source publishes only the session bounds, so the result is the exact length of that interval and no stage, efficiency, or quality result may be invented."
+* obeys sensorkit-summary-quantity-nonnegative-1
 * extension[sensorKitSourceType].valueCode = #sleep-sessions
 * code = $sensorKitConcept#sleep-session
 * effective[x] 1..1 MS
@@ -352,6 +384,7 @@ Parent: SensorKitObservation
 Id: sensorkit-wrist-temperature-observation
 Title: "SensorKit Wrist Temperature Observation"
 Description: "A platform-exclusive coverage summary of one SensorKit wrist-temperature session; the wrist-temperature-samples recording document carries the samples and is mandatory. This is a wrist skin measurement: it deliberately binds to no body-temperature or basal-body-temperature meaning, because a sleep-interval wrist reading is neither."
+* obeys sensorkit-summary-quantity-nonnegative-1 and sensorkit-summary-count-integer-1
 * extension[sensorKitSourceType].valueCode = #wrist-temperature
 * code = $sensorKitConcept#wrist-temperature-recording-summary
 * effective[x] 1..1 MS
@@ -370,8 +403,8 @@ Description: "A platform-exclusive coverage summary of one SensorKit wrist-tempe
 * component[sampleCount].valueQuantity.system = $ucum (exactly)
 * component[sampleCount].valueQuantity.code = #{count} (exactly)
 * component[sampleCount].dataAbsentReason 0..0
-// The algorithm version describes how the samples were produced, not a result of its own, so it
-// is an extension — matching how the same concept is modelled for the HealthKit ECG.
+// A version string alone is not a self-describing method concept, and Coding.version is the
+// version of a code system. Preserve this opaque source fact without inventing either meaning.
 * extension contains SensorKitWristTemperatureAlgorithmVersion named algorithmVersion 1..1 MS
 
 
@@ -380,6 +413,7 @@ Parent: SensorKitObservation
 Id: sensorkit-accelerometer-observation
 Title: "SensorKit Accelerometer Observation"
 Description: "A platform-exclusive coverage summary of one SensorKit accelerometer batch; the triaxial-acceleration-samples recording document carries the signal and is mandatory."
+* obeys sensorkit-summary-quantity-nonnegative-1 and sensorkit-summary-count-integer-1
 * extension[sensorKitSourceType].valueCode = #accelerometer
 * code = $sensorKitConcept#accelerometer-recording-summary
 * effective[x] 1..1 MS
@@ -410,6 +444,7 @@ Parent: SensorKitObservation
 Id: sensorkit-ppg-observation
 Title: "SensorKit PPG Observation"
 Description: "A platform-exclusive coverage summary of one SensorKit photoplethysmogram batch; the photoplethysmogram-samples recording document carries the signal and is mandatory."
+* obeys sensorkit-summary-quantity-nonnegative-1 and sensorkit-summary-count-integer-1
 * extension[sensorKitSourceType].valueCode = #ppg
 * code = $sensorKitConcept#ppg-recording-summary
 * effective[x] 1..1 MS

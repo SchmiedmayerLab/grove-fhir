@@ -52,7 +52,7 @@
         {
           "name": "device",
           "type": "string",
-          "meaning": "Source device description for the batch."
+          "meaning": "Exact SensorKit SRDevice.productType token for the source-device partition that supplied every row in the batch. It is not SRDevice.description, a user-assigned name, a system name/version, or a stable physical-unit identifier."
         }
       ]
     },
@@ -93,7 +93,7 @@
         {
           "name": "device",
           "type": "string",
-          "meaning": "Source device description for the batch."
+          "meaning": "Exact SensorKit SRDevice.productType token for the source-device partition that supplied every row in the batch. It is not SRDevice.description, a user-assigned name, a system name/version, or a stable physical-unit identifier."
         }
       ]
     },
@@ -132,7 +132,7 @@
         {
           "name": "device",
           "type": "string",
-          "meaning": "Source device description for the batch."
+          "meaning": "Exact SensorKit SRDevice.productType token for the source-device partition that supplied every row in the batch. It is not SRDevice.description, a user-assigned name, a system name/version, or a stable physical-unit identifier."
         }
       ]
     },
@@ -167,7 +167,7 @@
         {
           "name": "device",
           "type": "string",
-          "meaning": "Source device description for the batch."
+          "meaning": "Exact SensorKit SRDevice.productType token for the source-device partition that supplied every row in the batch. It is not SRDevice.description, a user-assigned name, a system name/version, or a stable physical-unit identifier."
         }
       ]
     },
@@ -230,7 +230,7 @@
         {
           "name": "device",
           "type": "string",
-          "meaning": "Source device description for the batch."
+          "meaning": "Exact SensorKit SRDevice.productType token for the source-device partition that supplied every row in the batch. It is not SRDevice.description, a user-assigned name, a system name/version, or a stable physical-unit identifier."
         }
       ]
     },
@@ -296,7 +296,7 @@
         {
           "name": "device",
           "type": "string",
-          "meaning": "Source device description for the batch."
+          "meaning": "Exact SensorKit SRDevice.productType token for the source-device partition that supplied every row in the batch. It is not SRDevice.description, a user-assigned name, a system name/version, or a stable physical-unit identifier."
         }
       ]
     },
@@ -377,7 +377,7 @@
         {
           "name": "device",
           "type": "string",
-          "meaning": "Source device description for the batch."
+          "meaning": "Exact SensorKit SRDevice.productType token for the source-device partition that supplied every row in the batch. It is not SRDevice.description, a user-assigned name, a system name/version, or a stable physical-unit identifier."
         }
       ]
     },

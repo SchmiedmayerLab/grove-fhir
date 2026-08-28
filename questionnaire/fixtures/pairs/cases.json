@@ -3,6 +3,69 @@
   "response": "valid/response.json",
   "valueSets": ["valid/value-set.json"],
   "additionalValidResponses": ["valid/response-in-progress.json"],
+  "additionalValidSubjectCases": [
+    {
+      "id": "patient-literal-without-declared-type",
+      "mutation": {
+        "op": "add",
+        "path": "/subject",
+        "value": {"reference": "Patient/participant-001"}
+      }
+    },
+    {
+      "id": "contained-patient-without-declared-type",
+      "mutations": [
+        {
+          "op": "add",
+          "path": "/contained",
+          "value": [{"resourceType": "Patient", "id": "participant-001"}]
+        },
+        {
+          "op": "add",
+          "path": "/subject",
+          "value": {"reference": "#participant-001"}
+        }
+      ]
+    },
+    {
+      "id": "absolute-versioned-patient-literal-without-declared-type",
+      "mutation": {
+        "op": "add",
+        "path": "/subject",
+        "value": {
+          "reference": "https://repository.example.org/fhir/Patient/participant-001/_history/7"
+        }
+      }
+    },
+    {
+      "id": "logical-patient-with-relative-declared-type",
+      "mutation": {
+        "op": "add",
+        "path": "/subject",
+        "value": {
+          "type": "Patient",
+          "identifier": {
+            "system": "https://example.org/fhir/NamingSystem/participant",
+            "value": "participant-001"
+          }
+        }
+      }
+    },
+    {
+      "id": "logical-patient-with-core-canonical-declared-type",
+      "mutation": {
+        "op": "add",
+        "path": "/subject",
+        "value": {
+          "type": "http://hl7.org/fhir/StructureDefinition/Patient",
+          "identifier": {
+            "system": "https://example.org/fhir/NamingSystem/participant",
+            "value": "participant-001"
+          }
+        }
+      }
+    }
+  ],
   "invalid": [
     {
       "id": "pair-questionnaire-version",
@@ -12,6 +75,72 @@
         "op": "replace",
         "path": "/questionnaire",
         "value": "https://example.org/fhir/Questionnaire/paired-questionnaire|1.1.0"
+      }
+    },
+    {
+      "id": "pair-subject-type",
+      "target": "response",
+      "expectedRule": "pair-subject-type",
+      "mutation": {
+        "op": "add",
+        "path": "/subject",
+        "value": {"reference": "Observation/not-a-patient"}
+      }
+    },
+    {
+      "id": "pair-subject-declared-type-conflict",
+      "target": "response",
+      "expectedRule": "pair-subject-type",
+      "mutation": {
+        "op": "add",
+        "path": "/subject",
+        "value": {
+          "type": "Patient",
+          "reference": "Observation/not-a-patient"
+        }
+      }
+    },
+    {
+      "id": "pair-subject-unrecognized-declared-type-uri",
+      "target": "response",
+      "expectedRule": "pair-subject-type",
+      "mutation": {
+        "op": "add",
+        "path": "/subject",
+        "value": {
+          "type": "https://not-hl7.example/Patient",
+          "identifier": {
+            "system": "https://example.org/fhir/NamingSystem/participant",
+            "value": "participant-001"
+          }
+        }
+      }
+    },
+    {
+      "id": "pair-subject-unresolved-logical-reference",
+      "target": "response",
+      "expectedRule": "pair-subject-type",
+      "mutation": {
+        "op": "add",
+        "path": "/subject",
+        "value": {
+          "identifier": {
+            "system": "https://example.org/fhir/NamingSystem/participant",
+            "value": "participant-001"
+          }
+        }
+      }
+    },
+    {
+      "id": "pair-subject-malformed-absolute-reference",
+      "target": "response",
+      "expectedRule": "pair-subject-type",
+      "mutation": {
+        "op": "add",
+        "path": "/subject",
+        "value": {
+          "reference": "https://repository.example.org/fhir/Patient"
+        }
       }
     },
     {

@@ -116,11 +116,33 @@ systems are deployment-owned and immutable for one identity kind, scope, HMAC ke
 epoch; their values use the `v2:<key-id>:<epoch>:<digest>` form. The exact component order and
 unsigned 32-bit length-framed UTF-8 preimage are normative in
 [`catalog/exchange-protocol.json`](https://grovealliance.org/fhir/catalog/exchange-protocol.json).
+Each catalog-named identity component is a non-empty Unicode-scalar string; missing, empty,
+additional, reordered, or non-scalar components are errors.
 
-Native HealthKit UUIDs, Health Connect record ids, provider keys, subject identifiers, and other
-identity inputs are therefore not disclosed directly. HMAC reduces that disclosure but does not
-de-identify clinical content, timestamps, references, or attachments. Never copy a business
-identifier into `Resource.id`; a repository may assign or replace that logical id.
+The opaque Grove identifiers are mandatory even when a deployment intentionally discloses a
+source-native identifier for round-trip or traceability. That optional identifier belongs only on
+the designated one-to-one primary output (or on the source Recording Document when no structured
+output exists). Its `Identifier.system` must be an absolute, governed namespace scoped tightly
+enough for the exact nonempty value; `Identifier.type` is unnecessary when the namespace is known.
+If a type is present, it must not claim a Grove graph role. Child outputs, specimens, artifacts,
+and support resources do not repeat one source identifier that does not identify them.
+
+The HMAC is intentionally non-reversible. It preserves equality, deterministic retry,
+deduplication, and retraction addressing; it does not let a receiver recover the original native
+identifier. When exact upstream round-trip matters, the optional governed Identifier on the
+catalog-designated primary output carries that exact value without weakening the mandatory Grove
+graph identities. Output role, output discriminator, or a child index may remain internal to the
+HMAC preimage only when it has no independent source or clinical meaning. Meaningful source order,
+time, multiplicity, or ordinal is always preserved separately in a FHIR element or the registered
+source payload—never only hidden inside the digest input.
+
+Intentional source-identifier disclosure is separate from accidental propagation. A source-native
+value is never `Resource.id`, a Bundle entry key, a retraction address, an arbitrary Observation
+component, or untyped metadata. Do not incidentally copy it into Attachment titles or URLs,
+transport/object names, or logs. A deployment may deliberately use the value in a separately
+governed non-FHIR storage contract. HMAC reduces identifier disclosure but does not de-identify
+clinical content, timestamps, references, or attachments; a repository may assign or replace
+`Resource.id` independently.
 
 ### Codes and quantities
 

@@ -10,8 +10,9 @@ Profile: ProvidersObservation
 Parent: GroveMobileObservation
 Id: providers-observation
 Title: "Provider Observation"
-Description: "Source lineage and deterministic business identity for a shared Mobile or Sensor Observation converted from already-obtained Google Health API, Oura, or Withings data. Every output also declares exactly one exact source-neutral semantic profile."
-* issued 1..1 MS
+Description: "Source lineage and deterministic business identity for an Observation converted from already-obtained Google Health API, Oura, or Withings data. Every output also declares exactly one exact semantic profile, either shared or provider-owned."
+* ^abstract = true
+* issued 0..0
 * extension contains
     ProviderProvider named provider 1..1 MS and
     ProviderSourceType named providerSourceType 1..1 MS
@@ -29,7 +30,7 @@ Profile: ProvidersConversionProvenance
 Parent: GroveSensorConversionProvenance
 Id: providers-conversion-provenance
 Title: "Provider Conversion Provenance"
-Description: "Provenance for converting one already-obtained connected-provider record into one or more source-neutral Observations or native Recording Documents."
+Description: "Provenance for converting one already-obtained connected-provider record into one or more shared or provider-owned semantic Observations, or native Recording Documents."
 * target 1..* MS
 * target only Reference(ProvidersObservation or ProvidersRecordingDocument)
 * entity 1..1 MS

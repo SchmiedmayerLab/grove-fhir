@@ -103,8 +103,8 @@ Description: "A bounded mindfulness session preserving its exact AndroidX type, 
 * issued = "2026-08-19T14:12:01Z"
 * valueQuantity = 12 'min' "min"
 * extension[healthConnectRecordType].valueCode = #MindfulnessSessionRecord
-* extension[mindfulnessSessionType].valueCoding = $healthConnectMindfulnessSessionType#MINDFULNESS_SESSION_TYPE_MEDITATION "Meditation"
-* extension[mindfulnessTitle].valueString = "Morning practice"
+* method = $healthConnectMindfulnessSessionType#MINDFULNESS_SESSION_TYPE_MEDITATION "Meditation"
+* extension[sessionTitle].valueString = "Morning practice"
 * note.text = "Guided attention exercise."
 
 Instance: HealthConnectVo2MaxExample
@@ -149,7 +149,7 @@ Description: "A bounded workout summary retaining the shared activity, exact And
 * valueCodeableConcept.coding[0] = $groveWorkoutActivity#running "Running"
 * valueCodeableConcept.coding[1] = $healthConnectExerciseType#EXERCISE_TYPE_RUNNING "Running"
 * extension[healthConnectRecordType].valueCode = #ExerciseSessionRecord
-* extension[exerciseTitle].valueString = "Evening run"
+* extension[sessionTitle].valueString = "Evening run"
 * note.text = "Steady outdoor effort."
 
 Instance: HealthConnectCapillaryGlucoseSpecimenExample
@@ -290,7 +290,7 @@ Instance: HealthConnectSleepDurationExample
 InstanceOf: HealthConnectObservation
 Usage: #example
 Title: "Health Connect Titled Sleep Session"
-Description: "A SleepSessionRecord summary that preserves the non-blank caller title only through the typed Health Connect sleep-title extension."
+Description: "A SleepSessionRecord summary that preserves the non-blank caller title only through the shared Health Connect session-title extension."
 * meta.profile[+] = "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-sleep-duration"
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:HPJquAHiADGaatDS33VJedCuuWarufYLRoQ8KwUVrWE"
@@ -305,7 +305,7 @@ Description: "A SleepSessionRecord summary that preserves the non-blank caller t
 * issued = "2026-08-20T13:30:01Z"
 * valueQuantity = 7.5 'h' "h"
 * extension[healthConnectRecordType].valueCode = #SleepSessionRecord
-* extension[sleepTitle].valueString = "Overnight sleep"
+* extension[sessionTitle].valueString = "Overnight sleep"
 
 Instance: HealthConnectCapillaryGlucoseProvenanceExample
 InstanceOf: HealthConnectConversionProvenance

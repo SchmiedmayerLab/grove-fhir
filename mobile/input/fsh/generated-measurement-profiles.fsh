@@ -1183,7 +1183,7 @@ Description: "A source-neutral mobile heart rate that is required to conform to 
 * ^extension[=].valueCanonical = $heartRate
 * code = $loinc#8867-4
 * category = $observationCategory#vital-signs
-* effective[x] only dateTime
+* effective[x] only dateTime or Period
 * value[x] only Quantity
 * valueQuantity.value 1..1 MS
 * valueQuantity.comparator 0..0
@@ -1764,7 +1764,7 @@ Description: "A conformant Basal Energy Burned instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:b0h-Tv159OxMNwMqEYAAgMW42STfSndEoD6m_2u2tf8"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:dc7obvGWEcDxWbCUj-c180vq-1jvpSYTlFTmR8SSOlA"
+* identifier[sourceOutput].value = "v2:test-key:1:xtvK4rJpnbSWJhddddLqT8BbX5TLDMosEdKl6K_VwzA"
 * status = #final
 * code = GroveMobileMeasurementCS#basal-energy-burned
 * subject = Reference(GroveMobilePatientExample)
@@ -1781,7 +1781,7 @@ Description: "A conformant Blood Glucose (Unspecified Specimen) instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:L1XBuBTK3gXIJKQUAkrCSiyaWe-ziGY9BTf7vMO-kcs"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:01LEuvwWOJeIpjN1rb1YEoDwHu9QLcqEkaURpGJ0FD0"
+* identifier[sourceOutput].value = "v2:test-key:1:Zrbw41y8yt3t-yKCIvt5Wqz8MRkl1-OpPqoHr0PLOlI"
 * status = #final
 * code = $loinc#2339-0 "Glucose [Mass/volume] in Blood"
 * subject = Reference(GroveMobilePatientExample)
@@ -1797,7 +1797,7 @@ Description: "A conformant Body Fat Percentage instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:J6eqTG1RKl_vcw8AK9HDqTygo1sJeqRydgE_KLemgz4"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:V5e0baUn45WsQe21QpDZ0zJ1dhe9Bw-DkttLD_YWzzQ"
+* identifier[sourceOutput].value = "v2:test-key:1:mNgI2tiikqfqjEAi0ZncfjtzJyM-O2uw4G4ZdAeJH1Y"
 * status = #final
 * code = $loinc#41982-0 "Percentage of body fat Measured"
 * subject = Reference(GroveMobilePatientExample)
@@ -1813,7 +1813,7 @@ Description: "A conformant Body Water Mass instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:PZdqjQCkfQrrDuYxbZtD6Io4d5xde9CpxX9y-4bveGw"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:kPfNeUQv66MSzvE1wXLADxWD0vKK9MQXv2eXw3VRxHE"
+* identifier[sourceOutput].value = "v2:test-key:1:67s11hpaGPdtYQAq9bUrRLMmmBolYbXOETzkz9dqMLM"
 * status = #final
 * code = $loinc#101683-1 "Body water mass"
 * subject = Reference(GroveMobilePatientExample)
@@ -1829,7 +1829,7 @@ Description: "A conformant Bone Mass instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:bDm9l2Xv02AgAJAlP3M0y2_mdNCmHN5QmltsO2KUS70"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:E2SWqU1AXMrAamtaAtuwIDb97oNEy6E-YZ1yxUrfF-w"
+* identifier[sourceOutput].value = "v2:test-key:1:Bq8j9DQKnL8sWvvpNcPZki88krCMXK03BX1Wcj5R5k4"
 * status = #final
 * code = $loinc#101685-6 "Body bone mass"
 * subject = Reference(GroveMobilePatientExample)
@@ -1845,7 +1845,7 @@ Description: "A conformant Cervical Mucus Quality instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:VGMM94JzSK-xO-g-HRr8clV-RILwY4WYhqGIBOcgE08"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:AnbAK31Gg7zs69We0vehn9yF3qtxT8W-omLBYtGzfxw"
+* identifier[sourceOutput].value = "v2:test-key:1:TiKE6NDj3n8QoOBFkFTYv1HkcBn75GvSo67wYu-xdh8"
 * status = #final
 * code = GroveMobileMeasurementCS#cervical-mucus-quality
 * subject = Reference(GroveMobilePatientExample)
@@ -1861,7 +1861,7 @@ Description: "A conformant Cycling Cadence instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:5ZQh_hjggElq4WxYxeraFLavHZvPf6_b6qsMSZjkUJA"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:bJ1w6cEweZ1oeWBSTRpxCY_wWW-NBZJfO05hsckf7fs"
+* identifier[sourceOutput].value = "v2:test-key:1:xW-o8zgTF_Oa1Ligj9vTXPq04jzrO3iytdq9GXTudqo"
 * status = #final
 * code = GroveMobileMeasurementCS#cycling-cadence
 * subject = Reference(GroveMobilePatientExample)
@@ -1877,7 +1877,7 @@ Description: "A conformant Deep Sleep Duration instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:srb7Ja2wDKEr3iwJUrvV4ZhpDEyZ2N8Y_3TQiWakXVI"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:yEUtO4cZQf1QJtxOcdiBjgh91NcIe_PnPjbYf8ZP2vM"
+* identifier[sourceOutput].value = "v2:test-key:1:iP79PHlckpYBBUM3A2jjjbQQVcHOvr3YzjYlzvjghAY"
 * status = #final
 * code = $loinc#93831-6 "Deep sleep duration"
 * subject = Reference(GroveMobilePatientExample)
@@ -1894,7 +1894,7 @@ Description: "A conformant Grove Mobile Dietary Biotin instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:X9twDnAAql7qNNf6GXV4WZilYoyaqI_hsrT_WMcpDAE"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:AEVZgWltES1M4NiUTBEDVlXdZBGCsY8PyrOaN5odO2k"
+* identifier[sourceOutput].value = "v2:test-key:1:a6WbjuY2HjndVi4nyLjjNfXKdS13UGmMFDoaj0QsEQY"
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-biotin
 * subject = Reference(GroveMobilePatientExample)
@@ -1911,7 +1911,7 @@ Description: "A conformant Grove Mobile Dietary Caffeine instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:sNBQ8bfxLu3NQxRdyCJyfcmK1f4HHL55G5aeCXyuFjM"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:lDw9HDgFEkj6NjLWuU79GqGsbnC-wL1VoNloY6npPLo"
+* identifier[sourceOutput].value = "v2:test-key:1:hNhLwKu7lxoBZCsBGH1gZi8jWJGXuA4YfOL2DfqHJpk"
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-caffeine
 * subject = Reference(GroveMobilePatientExample)
@@ -1928,7 +1928,7 @@ Description: "A conformant Grove Mobile Dietary Calcium instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:NByNNOekeXsWNpCmjiuaU6xiWOpP2VGmpTgXg3fYTFY"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:o7H2vSbC4K86BqhiofnJLmtpnmE1gsDSZ4Pd_85Ymqo"
+* identifier[sourceOutput].value = "v2:test-key:1:waSpA_mKHWIlo41wzbIavH9dPBdWEPIOzOdan1ceZsY"
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-calcium
 * subject = Reference(GroveMobilePatientExample)
@@ -1945,7 +1945,7 @@ Description: "A conformant Grove Mobile Dietary Carbohydrates instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:k6W8iGPQStIW9xcM_NcT_Gt980Rf0jqsADkHn7ENUb8"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:cVNs7kJCza3jimQXl4WqxhHIACGmFgH8ukk5KQLp2Yk"
+* identifier[sourceOutput].value = "v2:test-key:1:-jaXUNj3FNmmpoIPsdQnqn_7RZOIcFLCpK2fAYdPY_Q"
 * status = #final
 * code = $loinc#9060-5 "Carbohydrate intake Measured"
 * subject = Reference(GroveMobilePatientExample)
@@ -1962,7 +1962,7 @@ Description: "A conformant Grove Mobile Dietary Chloride instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:n2W4-F_Hpu4DvVC4jryXQrmIk9Tt8j4RKk8WvGEptas"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:z54DC90-uDVlkCcH1m_LDtA9w-fEXDMTGoxnK8ULmfQ"
+* identifier[sourceOutput].value = "v2:test-key:1:PlYil3uOM6M361ZNnSuTifUduGMmMAHw4LElEflTT-c"
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-chloride
 * subject = Reference(GroveMobilePatientExample)
@@ -1979,7 +1979,7 @@ Description: "A conformant Grove Mobile Dietary Cholesterol instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:-lj2FC_x2-ws9Sq3204jXMg9RkCdr5MxPnXtD54Xhlo"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:496B1FKZorlwRk0pMs9WRbkUhTyZquyNZoy0tq7qAjw"
+* identifier[sourceOutput].value = "v2:test-key:1:VgE_1OGAeaRJljgxLrWatSR7MotVQ-IA2JA0KrIzUG4"
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-cholesterol
 * subject = Reference(GroveMobilePatientExample)
@@ -1996,7 +1996,7 @@ Description: "A conformant Grove Mobile Dietary Chromium instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:NaWeVvG-3H08hBs2FaUy7a4Z8QINpHvcPhyCpGS53jI"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:Dr4ekqyamF1CshVs6_d2ba77bX1xet477zSqM73la28"
+* identifier[sourceOutput].value = "v2:test-key:1:HGVKG6WXz-vgOyCxsL7SIwQHiqdI8T3C7555QHltmAI"
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-chromium
 * subject = Reference(GroveMobilePatientExample)
@@ -2013,7 +2013,7 @@ Description: "A conformant Grove Mobile Dietary Copper instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:n8jszaQfy1EPvyCml6bjy1-hfAKoxaKd13-xkrgsC9k"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:WoY-aaJx6-nvHWKtFZ7HvxIQ-yWjX5XL71r6p4BcPRE"
+* identifier[sourceOutput].value = "v2:test-key:1:ZXSOhQdu-9amgsmkW5PJW5KLAgwtS87LPHe38AY-0vs"
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-copper
 * subject = Reference(GroveMobilePatientExample)
@@ -2030,7 +2030,7 @@ Description: "A conformant Grove Mobile Dietary Energy instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:fAMrwUoCsLAM20PPNIF8vS1BJT-r75UXFpLN8n_xqfA"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:Wm_Ukv5aVJTRfQTQ8PE32WAh4Nl2YN4e6z6bwcYSZ2A"
+* identifier[sourceOutput].value = "v2:test-key:1:U31eSnzCkQ2beH_ps4PVuGj76HERM9o4OexAHaTpO3M"
 * status = #final
 * code = $loinc#9052-2 "Calorie intake total"
 * subject = Reference(GroveMobilePatientExample)
@@ -2047,7 +2047,7 @@ Description: "A conformant Grove Mobile Dietary Monounsaturated Fat instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:w_rMNASnogtx9-Rf1rXWnmWA1ev7CbMquLmHK6nuMI4"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:jcQXxjl9LBElaZ95fOyvPDOcEhyXHDLTJsFIFbp82-0"
+* identifier[sourceOutput].value = "v2:test-key:1:RighmIFWO_fT6mBPOHY7sJofuZnXz754esKVvoJq6vc"
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-fat-monounsaturated
 * subject = Reference(GroveMobilePatientExample)
@@ -2064,7 +2064,7 @@ Description: "A conformant Grove Mobile Dietary Polyunsaturated Fat instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:DlqmhPeED1cfGGJl9K0C4-MPiUjInZ4Mrne530TwHvg"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:IfSQyW6edTIw8xvWDm3k9eRGx0iRlQVenMqsqNcN0_o"
+* identifier[sourceOutput].value = "v2:test-key:1:Z_vxOBhn3ySSOfUukZKpzTyLaM_TfdhQHGMw_FOc7pc"
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-fat-polyunsaturated
 * subject = Reference(GroveMobilePatientExample)
@@ -2081,7 +2081,7 @@ Description: "A conformant Grove Mobile Dietary Saturated Fat instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:kxx60GVz_qTVXW-MI0D4sz6n1X7tfz4f5oiLzGlF-ec"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:tjsOUlYygx6XT6Z8M9mc25cvquNClhxMP2APaJEjHEY"
+* identifier[sourceOutput].value = "v2:test-key:1:JMbjr6WG7Gnmq_SqR69VgSAa7CPrN3wsQPBtzbMyP7E"
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-fat-saturated
 * subject = Reference(GroveMobilePatientExample)
@@ -2098,7 +2098,7 @@ Description: "A conformant Grove Mobile Dietary Fat instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:y-Z5c1oRB5x3VnBMENLdzdXaY890N0MBtD8nOWQdwts"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:byIyShBeiVSjbabnbA1Z8e0S41LfFaNSo8BIPsWY9go"
+* identifier[sourceOutput].value = "v2:test-key:1:O3lATbEFT2kDl04tB94Mnn7Szigx1f2RY2zpRo1tH3Y"
 * status = #final
 * code = $loinc#9067-0 "Fat intake Measured"
 * subject = Reference(GroveMobilePatientExample)
@@ -2115,7 +2115,7 @@ Description: "A conformant Grove Mobile Dietary Fiber instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:8S7TuqwKgE2ClEjZrBH7c07pVcATVgz_-Hzxaa84BIY"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:J9zxgJxR0n5iR2uiOmbXQzNiXnFpQqy4dijy_f8efcQ"
+* identifier[sourceOutput].value = "v2:test-key:1:6C5xZ3LcNTa7oV_sNVhPokhWkSPzPhJmOZygk6XIJfg"
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-fiber
 * subject = Reference(GroveMobilePatientExample)
@@ -2132,7 +2132,7 @@ Description: "A conformant Grove Mobile Dietary Folate instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:PcX3mh9niQwtpPx9jy98EI4ihy_8a_1JK_8qnXtksxA"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:hGakUbwdAYs5IW3OYgfSRoQuGYmievKhhKpA194Dru0"
+* identifier[sourceOutput].value = "v2:test-key:1:1DYELStGJEFRDBBUHkNStJoFdYsajUgWQCT4qsM3oY0"
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-folate
 * subject = Reference(GroveMobilePatientExample)
@@ -2149,7 +2149,7 @@ Description: "A conformant Grove Mobile Dietary Iodine instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:KDiEwmKaaseLsoNdG07w4rcwC79pKDV7blcO_0TZywg"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:UJxh5lH75gPwFW3RaJoDtMJWFI6OPCyyNH1zqeR9TFI"
+* identifier[sourceOutput].value = "v2:test-key:1:L28t5l9VkxAvpA1qKnH3F6xGwVlLhV4o9jPFwASBKik"
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-iodine
 * subject = Reference(GroveMobilePatientExample)
@@ -2166,7 +2166,7 @@ Description: "A conformant Grove Mobile Dietary Iron instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:mYXREMZ7uBhoegb_Szzth6AsEWKdMoaiwNiH9r8IRPU"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:-0VEGzOMc3vhCOAX4uiGQiT9qMwgFB7kjwHuBG-cIbE"
+* identifier[sourceOutput].value = "v2:test-key:1:MHFgqIZuSFIUt89kuoCQpWpKAbSUw2cfqqXPrsfnorQ"
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-iron
 * subject = Reference(GroveMobilePatientExample)
@@ -2183,7 +2183,7 @@ Description: "A conformant Grove Mobile Dietary Magnesium instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:ekPySoOojc7c4DxBVM7fiwXTssqAJN4r5IjcruEZZ4A"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:XCffh9PiYnZXpdzlCU1K5OFXmALhy2_nPJCS_4ZfgUk"
+* identifier[sourceOutput].value = "v2:test-key:1:_vdgAyBT3hhGD6qaraTQa0E5tNxtQC6j9fGauy0HALQ"
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-magnesium
 * subject = Reference(GroveMobilePatientExample)
@@ -2200,7 +2200,7 @@ Description: "A conformant Grove Mobile Dietary Manganese instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:H864g9AtvusNDo4vOITBIOczPeaCW1N6v8jC3v6zpls"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:71t7BWyt-ZRILuNg_0yJNYky3qs32pXUKzjX74bSKBA"
+* identifier[sourceOutput].value = "v2:test-key:1:YJyXU9_p_8l-AKJKuPBOo1esAmWSVaFpRu96smfm4kY"
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-manganese
 * subject = Reference(GroveMobilePatientExample)
@@ -2217,7 +2217,7 @@ Description: "A conformant Grove Mobile Dietary Molybdenum instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:cqKk1hg3NfSGXwrJynmDeQqsR9RB0J1BaXTcfxnC0ok"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:7IK2jpewqM_tK63uw96dEl3AiPWaV5vQAcPN714X188"
+* identifier[sourceOutput].value = "v2:test-key:1:V_UD6xeHU1VCoZYq5Uv5H7cIidbLKsB9qrneOrNvgvE"
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-molybdenum
 * subject = Reference(GroveMobilePatientExample)
@@ -2234,7 +2234,7 @@ Description: "A conformant Grove Mobile Dietary Niacin instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:RAQCt3XU5OoslAOWFiooYmbPWCgw83c456Xi7f8mZFY"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:v9l2pSlbund-3JblJzeRlroEZH6JUkriHE93_4b7p8Q"
+* identifier[sourceOutput].value = "v2:test-key:1:hLJqksJH8hoLKSr2ep4pxHpZBIE6c5_5ycdTWVA84Zg"
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-niacin
 * subject = Reference(GroveMobilePatientExample)
@@ -2251,7 +2251,7 @@ Description: "A conformant Grove Mobile Dietary Pantothenic Acid instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:y8hu9ppyRpKuMAQZHrjH83Ss5v42jTT_rmJDmgbA0LI"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:rGusHCi5gdGXrc3fU7J5Ck2zfet4m6TjQZsej2kvbPc"
+* identifier[sourceOutput].value = "v2:test-key:1:_QpmlrjqWiWUeLSxft_yyNtf3UNEkOHpJdtDjCP6IeQ"
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-pantothenic-acid
 * subject = Reference(GroveMobilePatientExample)
@@ -2268,7 +2268,7 @@ Description: "A conformant Grove Mobile Dietary Phosphorus instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:-5XMU46YCaabTejCotEMCFXWuC8OVeCW3q7TdkMVzvA"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:GNLaHBR6kKhtYPJzzAEbaqLqwYsQSuaJdKWA2raBC-o"
+* identifier[sourceOutput].value = "v2:test-key:1:Sgvuqch4UGRW8OvTFJCDN2bBr5oPYGWecvY3UR-cyvY"
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-phosphorus
 * subject = Reference(GroveMobilePatientExample)
@@ -2285,7 +2285,7 @@ Description: "A conformant Grove Mobile Dietary Potassium instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:Y-TmkzHPuIUv0Puk-4wohSUEkW4jkp33w53zo-FIEOk"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:P1JWb1aCAFzxK5wLvpt6Lz8goJd5KgEvQ-51Q0MUG-g"
+* identifier[sourceOutput].value = "v2:test-key:1:X5vGe6cHdSMvktuoFO8gyN80Sf395AL0E4xeRnSsPLU"
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-potassium
 * subject = Reference(GroveMobilePatientExample)
@@ -2302,7 +2302,7 @@ Description: "A conformant Grove Mobile Dietary Protein instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:1C-bRPIJa3IOM8mOTAyJyAijSrnXnO_Kl0UXjocJe9E"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:ydOxF2hfycyqJnCt1mWqFCYKjvWoQRAb47oBczV3Ksc"
+* identifier[sourceOutput].value = "v2:test-key:1:TiZbrUuzLA2eGq5Nz5sN5eFgmbSzDChGKx3QHyoQYoY"
 * status = #final
 * code = $loinc#9080-3 "Protein intake Measured"
 * subject = Reference(GroveMobilePatientExample)
@@ -2319,7 +2319,7 @@ Description: "A conformant Grove Mobile Dietary Riboflavin instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:xkQ5FVUWzRZ1lzJN6iuS0ItzKLZ8DLOvpAtC8JJ1azo"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:ys9A0B1QjLbU_2fvTzwSPl--q8ls7MIL-uD5vr5sLZo"
+* identifier[sourceOutput].value = "v2:test-key:1:FtmvTfm--Q5I8vydMeKSvw5kRV8sz4Uyr-xbXRH9Gto"
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-riboflavin
 * subject = Reference(GroveMobilePatientExample)
@@ -2336,7 +2336,7 @@ Description: "A conformant Grove Mobile Dietary Selenium instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:b8Hweo1ibHXxjV6hcTFNd8YCYBsS6WblYPb0obIqHzY"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:L2_NtfhLs9vQ6jA24kLHw5mZomdbwBXgJmtyGGxIwsk"
+* identifier[sourceOutput].value = "v2:test-key:1:_zuu54ZNhIGgXyBHqyU_fO9Di65TMfUtXPv09UQHn5s"
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-selenium
 * subject = Reference(GroveMobilePatientExample)
@@ -2353,7 +2353,7 @@ Description: "A conformant Grove Mobile Dietary Sodium instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:1_7z5xKT3MOKzuJgduBDZCGaIZeKQNxOl8oCbm1ox5I"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:a0LzVNryrXD2qENGJEwg16SyY-77l0tu1Visv8eX9fU"
+* identifier[sourceOutput].value = "v2:test-key:1:mMN9kY3psQr8_dp7bduOruykW30KpoTkelNHMhLyNHc"
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-sodium
 * subject = Reference(GroveMobilePatientExample)
@@ -2370,7 +2370,7 @@ Description: "A conformant Grove Mobile Dietary Sugar instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:HM4yOKAZ20NAgRT93L1XlI0YrY5kQSOcgHCSuMek49c"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:tOZkWKJlO5FTXC4-YdYvyyM_tIWTooaRnDrbdCkmSKo"
+* identifier[sourceOutput].value = "v2:test-key:1:ulfpzxyBBt3-1yoU6_bD9nY3z5JKRnK7VOIWyl-ALjI"
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-sugar
 * subject = Reference(GroveMobilePatientExample)
@@ -2387,7 +2387,7 @@ Description: "A conformant Grove Mobile Dietary Thiamin instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:mn8hehXlLTT4iIViCiOVn8wJjje6F4b6FVszoVGzPyE"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:hf-pXhqv5h8xWKk_IRnkNTZntQrXR53GNSK2tzeLiAo"
+* identifier[sourceOutput].value = "v2:test-key:1:tvQ4VYvKPp_NS7Z-X7I9J-OEU9ECzhRcz6_n2UUpVOs"
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-thiamin
 * subject = Reference(GroveMobilePatientExample)
@@ -2404,7 +2404,7 @@ Description: "A conformant Grove Mobile Dietary Vitamin A instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:nS5QCqL8MXTd0VUQdx9cgxxC-khCc4ZvZVrqGmL35sM"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:8wC8cAHPqqQp9SbbEpsEBGMJ9fl8frxyo3PRh-gASik"
+* identifier[sourceOutput].value = "v2:test-key:1:ZjQB6Q2DRl2cfXhLfGvwSl6UWy8lc1tkPcNDdWEChPc"
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-vitamin-a
 * subject = Reference(GroveMobilePatientExample)
@@ -2421,7 +2421,7 @@ Description: "A conformant Grove Mobile Dietary Vitamin B12 instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:BRqKBl7gOp_0xFuvOaB2ifmoxRaQoBtxyV6LVKvPOsc"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:8P_YmGDZgRKlxXjrQcFhCKLgtAaLgZnUFgcGqx1OnrQ"
+* identifier[sourceOutput].value = "v2:test-key:1:tQ_1S4DVLKmVWKa0Jkk6TPUZjIMx8bWBb8Bk6ZB9mgM"
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-vitamin-b12
 * subject = Reference(GroveMobilePatientExample)
@@ -2438,7 +2438,7 @@ Description: "A conformant Grove Mobile Dietary Vitamin B6 instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:VUW1UahCOdREe1lviTzp73xYbX1T9xPymuxGxvJddKA"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:L6KDc4tjLMqalr3lRDLnuwsWfD5tVlQE0Tpqk6PyqN4"
+* identifier[sourceOutput].value = "v2:test-key:1:9CNfB75H1hpv7vKn0cx7x0sZh-jHuSLhL92ccg1rokc"
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-vitamin-b6
 * subject = Reference(GroveMobilePatientExample)
@@ -2455,7 +2455,7 @@ Description: "A conformant Grove Mobile Dietary Vitamin C instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:ceq6O2dCQ2XDztajkHbNO4dbODGYEA-NbTG0cMiFB7I"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:snPBUW5fY3F2RBRg-4oj9x0wdGnDRv_ImWpJsDzJJwA"
+* identifier[sourceOutput].value = "v2:test-key:1:4fiuMmnruQRWjfCMy-tlmd3cCvaZ7tsbwEyUob39uY4"
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-vitamin-c
 * subject = Reference(GroveMobilePatientExample)
@@ -2472,7 +2472,7 @@ Description: "A conformant Grove Mobile Dietary Vitamin D instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:o9jzXdva8yvQrnPHdP4gfqLyTAoVEyXOd87OyqV4gbw"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:nTzPW6_iC5KdIF1B4_U9FuwOOAwmVsC6bqJ8UkNq-cM"
+* identifier[sourceOutput].value = "v2:test-key:1:yT8sxxanN5Qe2HUoQER2kCSwwxNVMdTijLhObJb3dNc"
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-vitamin-d
 * subject = Reference(GroveMobilePatientExample)
@@ -2489,7 +2489,7 @@ Description: "A conformant Grove Mobile Dietary Vitamin E instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:UdW11d-g6rFNaGwSyKq_lQc6b4EwjADYAM9KwbhlOAw"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:I95Hr4MnQk8kfzVaUtYSRA53mhPvZoWpNhs4PBhrtPk"
+* identifier[sourceOutput].value = "v2:test-key:1:Iyn8l8EIg1ZC0VtIcAm9OqZ5CUmgW4FO7YIt9db4cuI"
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-vitamin-e
 * subject = Reference(GroveMobilePatientExample)
@@ -2506,7 +2506,7 @@ Description: "A conformant Grove Mobile Dietary Vitamin K instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:WoVd1WJy89mfDw4bgdE_HC7PI62q16kn3d41WHL4Row"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:puJ4JIqfz51ItYLSRnGgPBKBoJGHCUe_ZjdHiGqnlvA"
+* identifier[sourceOutput].value = "v2:test-key:1:9W4pjwv_s2VjJtwOlGzil3v2QkBa1IFZOyWKMtwh9KU"
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-vitamin-k
 * subject = Reference(GroveMobilePatientExample)
@@ -2523,7 +2523,7 @@ Description: "A conformant Grove Mobile Dietary Zinc instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:HqMGR5p9oQKk5auHQjU-ygEKF2GlB9mSSbDx-qmFLiE"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:6iNTd0DkG-0RIt9_Le-i_w6KVr1TUt0qjeaB3_aJmtw"
+* identifier[sourceOutput].value = "v2:test-key:1:hZLvZ8VZcKHhaO_qPYiH1YTKVX9zhWwKC7dX3iZt9lA"
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-zinc
 * subject = Reference(GroveMobilePatientExample)
@@ -2540,7 +2540,7 @@ Description: "A conformant Electrodermal Activity instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:K7i8m1h-K94_qZhvyNd1NxmeywKGCJX99utvYSua__4"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:mGH_1QsInj_xvSWHTejEVfmyFGTrhpxuwWXH8Dzw45o"
+* identifier[sourceOutput].value = "v2:test-key:1:pNxvVKhdE8x5Eq09a36chMFn9kdMXjpAdtndLoOBrXE"
 * status = #final
 * code = GroveMobileMeasurementCS#electrodermal-activity
 * subject = Reference(GroveMobilePatientExample)
@@ -2556,7 +2556,7 @@ Description: "A conformant Flights Climbed instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:dViQny2b3xBum5JORCy1x1kWUoZ39IDGGt1Z2abVeT0"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:ZZnV9LD8DH4M1GB1Fpn5mXyJl9XX20UnmwQmAiS8O50"
+* identifier[sourceOutput].value = "v2:test-key:1:3SMnKhWPsOp2xjaydR7L5aWGmzkiG7p8fkjXUpdr5_o"
 * status = #final
 * code = $loinc#100304-5 "Flights climbed [#] Reporting Period"
 * subject = Reference(GroveMobilePatientExample)
@@ -2573,7 +2573,7 @@ Description: "A conformant Grove Mobile Fluid Intake instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:A1ENaiugF8jxoIbxuiw1kHief3NT0D8pt6HRHwgiqR4"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:7yUONCdERFSFLSGXDbndfvnVm-lDbSHhW2tKaDAEWIA"
+* identifier[sourceOutput].value = "v2:test-key:1:CKqalY-OzvgQJ_t8bbMPY7uIE_siHYaGNEwNm-uhoTw"
 * status = #final
 * code = $loinc#8985-4 "Fluid intake Measured"
 * subject = Reference(GroveMobilePatientExample)
@@ -2590,7 +2590,7 @@ Description: "A conformant Heart Rate Variability RMSSD instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:M5tezfFiBy-hxMfdua0j4VRq2jOBMTii3IB398C8zGI"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:0UzjRH35Hh8aAe0c8DVUbLad_owdl5Fj-ePGxybgm_E"
+* identifier[sourceOutput].value = "v2:test-key:1:XeUKbW7pTo8Re3JT_UmGkBYDLCXbB8NcBZzq2GmVcQg"
 * status = #final
 * code = GroveMobileMeasurementCS#heart-rate-variability-rmssd
 * subject = Reference(GroveMobilePatientExample)
@@ -2606,7 +2606,7 @@ Description: "A conformant Heart Rate Variability SDNN instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:MGZr9sI3IR_-IZ0oBd9_rVpCFDz6uj3xWGMLkDGVmfs"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:mneF3weGMMrcyQL7DYkKaDDYFmAFgacovrMnJIChoVU"
+* identifier[sourceOutput].value = "v2:test-key:1:4d3Dt8L8JbbCEyX2FxHqthtJsxBttxsvp0yXjSu63WU"
 * status = #final
 * code = $loinc#112429-6 "Heart rate variability SDNN [Time]"
 * subject = Reference(GroveMobilePatientExample)
@@ -2622,7 +2622,7 @@ Description: "A conformant Intermenstrual Bleeding instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:c4Ub2nGjkMx4MXkE7KcBV3cIaO-EolM1tJvDwjhymfQ"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:mpxI3RelNwexfXLVS048jy0Vj2eF2kG1iHQEEoNnNXM"
+* identifier[sourceOutput].value = "v2:test-key:1:V0YdlDrwO2KaHP2Wc9ueR8g1WuTadZ_mVqRG904UmmY"
 * status = #final
 * code = GroveMobileMeasurementCS#intermenstrual-bleeding
 * subject = Reference(GroveMobilePatientExample)
@@ -2638,7 +2638,7 @@ Description: "A conformant Lean Body Mass instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:2xU2bXM74wzwhdAdrW_Is6gD-aq_ooaBQIE0SSaBf1g"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:YYL7Ryml6-HAu0RHjfvG_DXT6AU7O0FHP8r94IlVdCo"
+* identifier[sourceOutput].value = "v2:test-key:1:B6jF9DkEL22Va85R6szCy12UzsnyujSPIIKpcRqrPAQ"
 * status = #final
 * code = $loinc#91557-9 "Lean body weight"
 * subject = Reference(GroveMobilePatientExample)
@@ -2654,7 +2654,7 @@ Description: "A conformant Light Sleep Duration instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:GBNHVKU3Lf9N_HlopzOJyXj2nqIQlUU51BUtOyNiHJ0"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:8sv7s_zrzo4Vrw8mJJEoOYKEVBs9NAvCMHRNp_z9gyU"
+* identifier[sourceOutput].value = "v2:test-key:1:GhJkieGOY_DaYGuTIeGXYZYW5LfthRtjX6OQ-BuDcD0"
 * status = #final
 * code = $loinc#93830-8 "Light sleep duration"
 * subject = Reference(GroveMobilePatientExample)
@@ -2671,7 +2671,7 @@ Description: "A conformant Menstruation Flow instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:1pA76E_AAXu-LKwmbc55MlXDWNjlApEKvFFES3ScVZ4"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:GUaG4Oaiu9gOdoARYKbwrpVZYgX2kXJ0FPUsMp-ywc8"
+* identifier[sourceOutput].value = "v2:test-key:1:K2xYEIsRm9Jw6W_ZDXU1VbWGzdTcY8_5oF7tuXO5s6E"
 * status = #final
 * code = GroveMobileMeasurementCS#menstruation-flow
 * subject = Reference(GroveMobilePatientExample)
@@ -2687,7 +2687,7 @@ Description: "A conformant Mindfulness Session instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:AaJkyMlm-PhHkYlhfGP4qtrZvz7WJrwbDq7NwuF9Hqw"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:RrqKpHosPa05zKinaDLn4P0NpIbBwhKY9G6D3_w348w"
+* identifier[sourceOutput].value = "v2:test-key:1:HE4s9A7suhyBuI17QMtOT3dw3fih8CykMkvR7mBy1MQ"
 * status = #final
 * code = GroveMobileMeasurementCS#mindfulness-session-duration
 * subject = Reference(GroveMobilePatientExample)
@@ -2704,7 +2704,7 @@ Description: "A conformant Ovulation Test Result instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:j7paCkeKFTwFnbRdD-KTgbsIL2x1awqvWn8d4yDOIK4"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:Pp6cP-ZyWSMhfQW_47NWqEQmP4SemTQgNaTYDtmT6W0"
+* identifier[sourceOutput].value = "v2:test-key:1:75VKX6LlqsW5VUfNIrthT-ZBhQI-SF3ETKZQxfgVXsY"
 * status = #final
 * code = GroveMobileMeasurementCS#ovulation-test-result
 * subject = Reference(GroveMobilePatientExample)
@@ -2720,7 +2720,7 @@ Description: "A conformant Oxygen Saturation Daily Average instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:XIBI774mmTxqXa6CaKMFaCj0BKqGNBonys5Ly51UJjo"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:4pMsfNenE2UIDoSGnjBknlDCL1j_Qav116u0e38GyJE"
+* identifier[sourceOutput].value = "v2:test-key:1:PeAbzLPdL1zZ5X-9Miz54Rio1Txl_8MyFgToh5Wevvw"
 * status = #final
 * code = $loinc#103209-3 "Mean oxygen saturation"
 * subject = Reference(GroveMobilePatientExample)
@@ -2737,7 +2737,7 @@ Description: "A conformant Power instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:de27AT_tTkWI_OnXLLl7Ln8RLAZ0mjLF-hK9vbTYMCM"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:-6G6w58lzKPpntqp2nZgn4mpJ3lFHXvvBCvXCwtvo2o"
+* identifier[sourceOutput].value = "v2:test-key:1:UJe0ZTUMCPJjyOlDtzwdaMHYhAs_bw8u9_7pxcjXJfY"
 * status = #final
 * code = GroveMobileMeasurementCS#power
 * subject = Reference(GroveMobilePatientExample)
@@ -2753,7 +2753,7 @@ Description: "A conformant REM Sleep Duration instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:_8sJGAE0NX_v6CLxeoEzVSs9Pu48VzOFwN58hvFF9Ec"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:uOSl16jr6tfatNQ9j3hVyU8gVhK7PFCfJHbhSgAxDyc"
+* identifier[sourceOutput].value = "v2:test-key:1:IXS9ZabRqYZfr12xj7n439URo1ZoyAkxltGzE4z4_JA"
 * status = #final
 * code = $loinc#93829-0 "REM sleep duration"
 * subject = Reference(GroveMobilePatientExample)
@@ -2770,7 +2770,7 @@ Description: "A conformant Respiratory Rate Average instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:iX253wwpQhtHcAKUFRsFnsMCVsly_VCLvcXfUF9COvg"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:NTmpY802bbH8DbqmE2hsBgLC_9hfTOcDBu46mHkpaPA"
+* identifier[sourceOutput].value = "v2:test-key:1:gMEXEl8oZk5veVTsVp3EQFd_6MlryjHoClPrh0F0XDs"
 * status = #final
 * code = $loinc#103217-6 "Mean respiratory rate"
 * subject = Reference(GroveMobilePatientExample)
@@ -2788,7 +2788,7 @@ Description: "A conformant Resting Heart Rate instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:JlZcRJRneNAdPRWy9w13Os5Or4Guccm-UDAYxFtO86Y"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:NAOAcvRMtUVc7icm2tknxaKxS6ik7pOV4JnYq5CpQAE"
+* identifier[sourceOutput].value = "v2:test-key:1:4OwQ-rPzuaPV3YIU_QOU2kfOetrnQVSC8W1H8pYHMjA"
 * status = #final
 * code = $loinc#40443-4 "Heart rate --resting"
 * code.coding[heartRate] = $loinc#8867-4 "Heart rate"
@@ -2806,7 +2806,7 @@ Description: "A conformant Sexual Activity instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:minvQLb6ftFLRlrlVtlnK1qtIt8WefDtRsh8q4C8Jxg"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:Tatu2iZ9uJqY2n1pmafW930VjmidsmzofGtAALKeB_g"
+* identifier[sourceOutput].value = "v2:test-key:1:6_zmpT7paKOUjXu-r9vTWqsRUkrPrAH_nGDWTsegWfI"
 * status = #final
 * code = GroveMobileMeasurementCS#sexual-activity
 * subject = Reference(GroveMobilePatientExample)
@@ -2822,7 +2822,7 @@ Description: "A conformant Skin Temperature instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:4hSAhYPUMbvZvQ2_s16G7rA2XZl23WTTXejSh0vr2to"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:Pe2SnbFGe8T1tzYRtbBtTPKnkJuWwsPc2wZ8hKuiM7s"
+* identifier[sourceOutput].value = "v2:test-key:1:_pu8QaPhdNf-yBZx8EboGkpT9GsMXfH_SkgeHi6x1KE"
 * status = #final
 * code = $loinc#61008-9 "Body surface temperature"
 * subject = Reference(GroveMobilePatientExample)
@@ -2838,7 +2838,7 @@ Description: "A conformant Awake Duration During Sleep instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:2ggk7tdHYlAweKTH_ZlOpT1hWNrNxJxNXxuoFyq74KU"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:k2H1Ghx0z3kOm2XCKjZwyORKQJROKyShdEt0lXuy4yE"
+* identifier[sourceOutput].value = "v2:test-key:1:JFzAGXcTm7gtvpovs60ru_lKKw_l1_mxE04Jdw8XzXw"
 * status = #final
 * code = $loinc#93828-2 "Nighttime awakening duration"
 * subject = Reference(GroveMobilePatientExample)
@@ -2855,7 +2855,7 @@ Description: "A conformant Sleep Heart Rate instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:yIQoN_ABnNnB91-zEsN_LG13PNx0mi9kUSJBB_PxPP0"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:Gxs72ZIB5zUfKAsfrfYhofU11CZ-pdeoIbicMyhirU8"
+* identifier[sourceOutput].value = "v2:test-key:1:AGn7h916nAYvR1gUKlomDUjneFpLPT8g7w59EZeXoyc"
 * status = #final
 * code = GroveMobileMeasurementCS#sleep-heart-rate
 * subject = Reference(GroveMobilePatientExample)
@@ -2873,7 +2873,7 @@ Description: "A conformant Speed instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:VL2S9xJJUz5DoKnjjH3uvupsAGmibrdXq9H7qmNf-gQ"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:XNd13lyIdBTuVQ9LlBAAGwwraSvDGROTThjNJEUUKZU"
+* identifier[sourceOutput].value = "v2:test-key:1:Jss6l_AfaoEMU4VsoF8WodLv0ZajEzblRSrPHSHAuco"
 * status = #final
 * code = GroveMobileMeasurementCS#speed
 * subject = Reference(GroveMobilePatientExample)
@@ -2889,7 +2889,7 @@ Description: "A conformant VO2 Max instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:fhLIVrrk5dF2Nyr131fcWheKgezEUgTG6G1ORL99TVo"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:HLutSQXGq-8KneeeapIpQ6jMk8ABPN7E8to2BgzAgmE"
+* identifier[sourceOutput].value = "v2:test-key:1:EbMhpCGhsNlMFcN3nP39MlX49Kse5nVabb3fJpzFPDE"
 * status = #final
 * code = GroveMobileMeasurementCS#vo2-max
 * subject = Reference(GroveMobilePatientExample)
@@ -2905,7 +2905,7 @@ Description: "A conformant Wheelchair Push Count instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:-Qiyxh_EMBQENZqnHA1bhF6__XnrsPYxp61iGofBHMA"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:nDzf2HKdAUGnJzBNTDJrvYPwWoTZfJSxZonXOdr1vrA"
+* identifier[sourceOutput].value = "v2:test-key:1:ggiS89m2AzS6BxMxzBv9fPyTcJYhi8jyLkBBapZd0RA"
 * status = #final
 * code = $loinc#96502-0 "Number of wheelchair pushes per time period"
 * subject = Reference(GroveMobilePatientExample)
@@ -2922,7 +2922,7 @@ Description: "A conformant Workout instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:dDG_oDGF72FIPxbm1fcFJXagQr0M77n1ll-NKinfsC4"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:pmnM1wnVeTsmHk6m_1n7WZoqYWv5TxDTzgV0-9VMi5U"
+* identifier[sourceOutput].value = "v2:test-key:1:bWS3B3IzVM_p7VysM22LPfyA4Jt8m9_en9XwPmRJdfE"
 * status = #final
 * code = GroveMobileMeasurementCS#workout
 * subject = Reference(GroveMobilePatientExample)
@@ -2939,7 +2939,7 @@ Description: "A conformant Workout Segment instance."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
 * identifier[sourceRecord].value = "v2:test-key:1:Ee7ab8zwXqNdrqqxRhY-AFHVVVxbhCt_ck4d3Q37b0w"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:YfCUtUengVFi2iACbkMjByvRV8QRpigWdmG4JI-rtd4"
+* identifier[sourceOutput].value = "v2:test-key:1:ZPqZgkOkGv-iSM5yYtxoHhUnEtACfqm1kbu-D9qapiI"
 * status = #final
 * code = GroveMobileMeasurementCS#workout-segment
 * subject = Reference(GroveMobilePatientExample)

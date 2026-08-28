@@ -22,6 +22,7 @@ Expression: "extension('https://grovealliance.org/fhir/mobile/StructureDefinitio
 Severity: #error
 
 RuleSet: HealthKitOutputIdentitySlices
+* obeys healthkit-writer-record-1
 * identifier 2..* MS
 * identifier ^slicing.discriminator.type = #pattern
 * identifier ^slicing.discriminator.path = "type"
@@ -46,8 +47,8 @@ Expression: "(code.coding.where(system = 'https://grovealliance.org/fhir/mobile/
 Severity: #error
 
 Invariant: healthkit-ecg-symptom-state-1
-Description: "A present symptoms status has at least one caller-supplied correlated symptom; none and not-set have no correlated symptom."
-Expression: "(extension('https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-symptoms-status').value.first() = 'present' and extension('https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-correlated-symptom').exists()) or (extension('https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-symptoms-status').value.first() != 'present' and extension('https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-correlated-symptom').empty())"
+Description: "A present symptoms status has at least one separately identified symptom Observation member; none and not-set have no member."
+Expression: "(extension('https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-symptoms-status').value.first() = 'present' and hasMember.exists()) or (extension('https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-symptoms-status').value.first() != 'present' and hasMember.empty())"
 Severity: #error
 
 Invariant: healthkit-medication-concept-identity-1
@@ -73,13 +74,8 @@ Id: healthkit-observation
 Title: "HealthKit Observation"
 Description: "The source identity and allowlisted HealthKit context for an Observation that also conforms to an appropriate clinical or research profile."
 * obeys healthkit-motion-context-1 and healthkit-sleep-stage-1 and healthkit-writer-record-1
-* code.coding ^slicing.discriminator.type = #value
-* code.coding ^slicing.discriminator.path = "system"
-* code.coding ^slicing.rules = #open
-* code.coding contains healthKitSourceType 1..1 MS
-* code.coding[healthKitSourceType].system = $healthKitSourceType
-* code.coding[healthKitSourceType].code 1..1 MS
-* code.coding[healthKitSourceType] from HealthKitSourceTypeVS (required)
+* issued 0..0
+* extension contains HealthKitSourceType named healthKitSourceType 1..1 MS
 * component ^slicing.discriminator.type = #pattern
 * component ^slicing.discriminator.path = "code"
 * component ^slicing.rules = #open
@@ -94,23 +90,36 @@ Profile: HealthKitECGObservation
 Parent: HealthKitObservation
 Id: healthkit-ecg-observation
 Title: "HealthKit ECG Observation"
-Description: "A lossless HealthKit ECG adapter result that is directly claimed together with the source-neutral Grove Sensor ECG profile. It retains the exact HealthKit classification, symptom evidence, optional average heart rate and sampling frequency, reported voltage count, and complete Lead-I-like voltage series supplied by the caller; it performs no HealthKit query."
+Description: "A HealthKit Lead-I-like waveform that directly claims the source-neutral Grove Sensor ECG profile. Native R4 elements carry classification, classification method, and references to separately exchanged symptom Observations; validation inputs such as reported count and sampling frequency are not duplicated on the wire."
 * obeys healthkit-ecg-symptom-state-1
-* code.coding[healthKitSourceType] = $healthKitSourceType#HKDataTypeIdentifierElectrocardiogram
+* extension[healthKitSourceType].valueCode = #HKDataTypeIdentifierElectrocardiogram
 * extension contains
-    HealthKitECGClassification named healthKitECGClassification 1..1 MS and
     HealthKitECGSymptomsStatus named healthKitECGSymptomsStatus 1..1 MS and
-    HealthKitECGCorrelatedSymptom named healthKitECGCorrelatedSymptom 0..7 MS and
-    HealthKitECGAverageHeartRate named healthKitECGAverageHeartRate 0..1 MS and
-    HealthKitECGSamplingFrequency named healthKitECGSamplingFrequency 0..1 MS and
-    HealthKitECGVoltageMeasurementCount named healthKitECGVoltageMeasurementCount 1..1 MS and
-    HealthKitECGAlgorithmVersion named healthKitECGAlgorithmVersion 0..1 MS and
     HealthKitECGSourcePeriod named healthKitECGSourcePeriod 1..1 MS
 * code = $loinc#11524-6
+* interpretation 1..1 MS
+* interpretation.coding 1..1 MS
+* interpretation.coding.system = $healthKitECGClassification (exactly)
+* interpretation from HealthKitECGClassificationVS (required)
+* method 0..1 MS
+* method.coding 1..1 MS
+* method.coding.system = $healthKitECGAlgorithmVersion (exactly)
+* method from HealthKitECGAlgorithmVersionVS (required)
 * effective[x] 1..1 MS
 * effective[x] only Period
 * value[x] 0..0
 * dataAbsentReason 0..0
+* hasMember 0..* MS
+* hasMember only Reference(Observation)
+* hasMember.reference 0..0
+* hasMember.type 1..1 MS
+* hasMember.type = "Observation" (exactly)
+* hasMember.identifier 1..1 MS
+* hasMember.identifier.type 1..1 MS
+* hasMember.identifier.type = $groveIdentifierRole#source-output
+* hasMember.identifier.system 1..1 MS
+* hasMember.identifier.value 1..1 MS
+* hasMember.identifier.value obeys healthkit-opaque-identifier-value-1
 * component 1..1 MS
 * component contains voltage 1..1 MS
 * component[voltage].code = $mdc#131329
@@ -118,13 +127,45 @@ Description: "A lossless HealthKit ECG adapter result that is directly claimed t
 * component[voltage].value[x] only SampledData
 * component[voltage].dataAbsentReason 0..0
 
+Profile: HealthKitECGAverageHeartRateObservation
+Parent: HealthKitObservation
+Id: healthkit-ecg-average-heart-rate-observation
+Title: "HealthKit ECG Average Heart Rate Observation"
+Description: "The user's average heart rate during one HealthKit ECG, represented as an independently identifiable LOINC Observation over the exact ECG waveform Period."
+* code.coding 1..1 MS
+* code.coding.system 1..1 MS
+* code.coding.system = $loinc (exactly)
+* code.coding.code 1..1 MS
+* code.coding.code = #8867-4 (exactly)
+* extension[healthKitSourceType].valueCode = #HKDataTypeIdentifierElectrocardiogram
+* category 1..1 MS
+* category.coding 1..1 MS
+* category.coding.system 1..1 MS
+* category.coding.system = $observationCategory (exactly)
+* category.coding.code 1..1 MS
+* category.coding.code = #vital-signs (exactly)
+* effective[x] 1..1 MS
+* effective[x] only Period
+* value[x] 1..1 MS
+* value[x] only Quantity
+* valueQuantity.value 1..1 MS
+* valueQuantity.system 1..1 MS
+* valueQuantity.system = $ucum (exactly)
+* valueQuantity.code 1..1 MS
+* valueQuantity.code = #/min (exactly)
+* dataAbsentReason 0..0
+* derivedFrom 1..1 MS
+* derivedFrom only Reference(HealthKitECGObservation)
+* derivedFrom.reference 1..1 MS
+* derivedFrom.identifier 0..0
+
 Profile: HealthKitConversionProvenance
 Parent: GroveMobileConversionProvenance
 Id: healthkit-conversion-provenance
 Title: "HealthKit Conversion Provenance"
 Description: "Provenance for transforming or byte-preserving one HealthKit object into every admitted HealthKit adapter output without fetching source data."
 * target 1..* MS
-* target only Reference(HealthKitObservation or HealthKitRecordingDocument or HealthKitClinicalRecordDocument or HealthKitVisionPrescription or HealthKitMedicationDoseEvent or HealthKitUserAnnotatedMedication)
+* target only Reference(HealthKitObservation or HealthKitRecordingDocument or HealthKitVisionPrescription or HealthKitMedicationDoseEvent or HealthKitUserAnnotatedMedication)
 * entity 1..1 MS
 * entity.role = #source
 * entity.what.reference 0..0
@@ -137,21 +178,14 @@ Profile: HealthKitRecordingDocument
 Parent: GroveSensorRecordingDocument
 Id: healthkit-recording-document
 Title: "HealthKit Recording Document"
-Description: "A HealthKit series whose native representation is a recording rather than a scalar result. A beat-to-beat interval series and a workout route are sequences with their own column schemas, published in the recording format registry; converting either to a single Observation value would discard every sample but one. The Observation states what the series is and links here for the samples themselves."
-// The source type rides in `type`, the way every other HealthKit artifact carries it as a coding
-// rather than an extension; a DocumentReference has no `code` to slice.
+Description: "A byte-preserved HealthKit source document or series whose native representation is not a scalar result. Beat-to-beat intervals and workout routes use registered column schemas; provider-issued clinical resources use a stricter derived profile that fixes their FHIR release and payload format."
+// The SDK source class is lineage, not a document-type coding.
+* extension contains HealthKitSourceType named healthKitSourceType 1..1 MS
 * type 1..1 MS
-* type.coding ^slicing.discriminator.type = #value
-* type.coding ^slicing.discriminator.path = "system"
-* type.coding ^slicing.rules = #open
-* type.coding contains healthKitSourceType 1..1 MS
-* type.coding[healthKitSourceType].system = $healthKitSourceType
-* type.coding[healthKitSourceType].code 1..1 MS
-* type.coding[healthKitSourceType] from HealthKitSourceTypeVS (required)
 
 
 Profile: HealthKitClinicalRecordDocument
-Parent: GroveSensorRecordingDocument
+Parent: HealthKitRecordingDocument
 Id: healthkit-clinical-record-document
 Title: "HealthKit Clinical Record Document"
 Description: "A pass-through envelope for one provider-issued clinical FHIR resource surfaced by HealthKit. The payload is byte-preserved in the declared source FHIR release; Grove asserts identity and provenance, never conformance over the issuer's resource."
@@ -164,7 +198,7 @@ Description: "A pass-through envelope for one provider-issued clinical FHIR reso
 * content 1..1 MS
 * content.format 1..1 MS
 * content.format = $recordingFormat#fhir-r4-resource
-// Required by the source-neutral recording parent and repeated here for clinical clarity.
+// Required by the inherited HealthKit recording parent and repeated here for clinical clarity.
 * content.format.version 1..1 MS
 * content.attachment.contentType 1..1 MS
 * content.attachment.contentType = #application/fhir+json (exactly)

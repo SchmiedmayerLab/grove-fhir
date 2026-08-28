@@ -16,10 +16,24 @@ Platform-specific on-wrist, device-usage, and visit summaries declare only their
 SensorKit profile, which inherits the adapter envelope.
 
 Every output carries one complete SensorKit record business Identifier and one exact
-source-type extension whose URL and code system are fixed by the machine catalog. Because SensorKit publishes no durable sample identifier, the
-SensorKit-facing producer assigns a stable lowercase UUID: re-fetching unchanged content
-reuses it, while distinct or changed records use different values. It is not copied into
-`Resource.id`, and it does not assert equality across independent producers.
+source-type extension whose URL and code system are fixed by the machine catalog. Because
+SensorKit publishes no durable sample identifier, the producer maintains a durable acquisition
+ledger per authorized SensorKit stream. Before conversion it atomically assigns an opaque record
+key to `[reset generation, monotonic delivery ordinal]`. The generation changes only for an
+explicit cursor reset after the prior generation has no unresolved delivery; the ordinal increases
+across callback batches and never restarts for equal timestamps. Before yielding records, persist
+the exact pending start ordinal and count, ordered keys and verification evidence, source bytes,
+and pre-yield cursor boundary. The cursor advances only after the whole pending delivery is handed
+off durably. Retrying that delivery reuses the same coordinates even if SensorKit splits or combines
+callback batches differently; a different acquisition receives a different key even when its bytes
+and source timestamp are identical.
+
+Measured values, serialized-content hashes, and sorting by measured timestamps are prohibited as
+identity inputs. Callback order and multiplicity are preserved: no `Set`, payload-based
+deduplication, or `compactMap` may collapse byte-equal records. A payload digest
+may verify retry consistency for an existing coordinate, but a mismatch fails closed and never
+selects a different identity. The opaque key is not copied into `Resource.id`, and it does not
+assert equality across independent producers.
 
 The native Recording Document contains bytes already supplied by the caller, either
 inline or through a resolvable attachment URL. Before emission, the producer requires
@@ -45,8 +59,11 @@ Profiles, canonicals, business identifiers, and Attachment hashes never
 grant access, express consent, or authorize disclosure. The deployment separately
 governs consent and authorization, access control, pseudonym scope and linkability,
 data minimization, retention and deletion, and authorization for immutable attachment
-URLs. A visit summary deliberately omits `locationId`; its related native attachment
-can still contain that and other sensitive source fields. The R4 SHA-1 Attachment hash
+URLs. A visit summary preserves a supplied `locationId` in `Observation.focus` as an
+identifier-only logical Location reference. Its absolute Identifier system is owned by the
+deployment or exact source-store scope; the value is source context for recurrence analysis, not
+a Grove graph key, entry key, or retraction address. It must not be incidentally copied into logs
+or object names. The R4 SHA-1 Attachment hash
 is change detection only, not a signature, credential, or authorization token.
 
 When resources are exchanged as a graph, the Mobile collection Bundle contract applies:

@@ -6,7 +6,7 @@
 #
 # SPDX-License-Identifier: MIT
 #
-"""Project the shared Mobile measurement profiles from the measurement catalog.
+"""Project Grove semantic measurement profiles from the measurement catalog.
 
 Every measurement's FSH profile is a deterministic projection of its catalog
 entry. A measurement with generation.emit true is written into the generated
@@ -78,7 +78,7 @@ OWNERS = {
     },
     "withings": {
         "patientExample": "WithingsPatientExample",
-        "parent": "WithingsObservation",
+        "parent": "GroveMobileObservation",
         "generated": "withings/input/fsh/generated-measurement-profiles.fsh",
         "measurementSystemTail": "/CodeSystem/withings-measurement",
         "codeSystem": "WithingsMeasurementCS",
@@ -96,7 +96,7 @@ OWNERS = {
     },
     "oura": {
         "patientExample": "OuraPatientExample",
-        "parent": "OuraObservation",
+        "parent": "GroveMobileObservation",
         "generated": "oura/input/fsh/generated-measurement-profiles.fsh",
         "measurementSystemTail": "/CodeSystem/oura-measurement",
         "codeSystem": "OuraMeasurementCS",
@@ -114,7 +114,7 @@ OWNERS = {
     },
     "google-health": {
         "patientExample": "GoogleHealthPatientExample",
-        "parent": "GoogleHealthObservation",
+        "parent": "GroveMobileObservation",
         "generated": "google-health/input/fsh/generated-measurement-profiles.fsh",
         "measurementSystemTail": "/CodeSystem/google-health-measurement",
         "codeSystem": "GoogleHealthMeasurementCS",
@@ -389,6 +389,8 @@ def render_profile(
     if measurement["effective"] == "Period":
         lines.append("* effective[x] only Period")
         lines.append("* effectivePeriod.end 1..1 MS")
+    elif measurement["effective"] == "dateTime-or-Period":
+        lines.append("* effective[x] only dateTime or Period")
     else:
         lines.append("* effective[x] only dateTime")
     method = measurement.get("method")
@@ -493,25 +495,8 @@ def render_profile(
     return rendered
 
 
-# One fixed instant and window so every generated example is byte-stable across runs.
-EXAMPLE_INSTANT = "2026-08-19T10:30:00-07:00"
-EXAMPLE_ISSUED = "2026-08-20T08:00:00Z"
-EXAMPLE_PERIOD_START = "2026-08-19T00:00:00-07:00"
-EXAMPLE_PERIOD_END = "2026-08-20T00:00:00-07:00"
-EXAMPLE_KEY = bytes(range(32))
-EXAMPLE_KEY_ID = "test-key"
-EXAMPLE_KEY_EPOCH = 1
-EXAMPLE_SOURCE_RECORD_SYSTEM = (
-    "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-)
-EXAMPLE_SOURCE_OUTPUT_SYSTEM = (
-    "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-)
-EXAMPLE_SCOPE_SYSTEM = "https://study.example.org/fhir/NamingSystem/source-repository"
-
-
-def load_catalog(name: str) -> dict:
-    return json.loads((REPOSITORY_ROOT / "catalog" / name).read_text(encoding="utf-8"))
+def load_catalog(root: Path, name: str) -> dict:
+    return json.loads((root / "catalog" / name).read_text(encoding="utf-8"))
 
 
 # Each connected provider publishes its exclusive measurements in its own guide, but they all
@@ -524,48 +509,210 @@ PROVIDER_GUIDES = {
 PROVIDER_OWNERS = frozenset(PROVIDER_GUIDES.values())
 
 SOURCE_TYPE_MARKERS = {
-    "healthkit": "* code.coding[healthKitSourceType] = $healthKitSourceType#{token}",
+    "healthkit": "* extension[healthKitSourceType].valueCode = #{token}",
     "health-connect": "* extension[healthConnectRecordType].valueCode = #{token}",
     **{owner: "* extension[providerSourceType].valueCode = #{token}" for owner in PROVIDER_OWNERS},
 }
 
 
-def source_type_tokens() -> dict[str, dict[str, str]]:
-    """Each adapter's first admitted source type per measurement.
+def example_contract(root: Path) -> dict:
+    """Catalog-owned inputs shared by every generated identity example."""
+    protocol = load_catalog(root, "exchange-protocol.json")
+    vectors = protocol["testVectors"]
+    examples = vectors["measurementExamples"]
+    system_rows = vectors["identitySystems"]
+    systems = {row["identityKind"]: row["system"] for row in system_rows}
+    if len(systems) != len(system_rows):
+        raise SystemExit("measurement example identitySystems repeat an identity kind")
+    if len(set(systems.values())) != len(systems):
+        raise SystemExit(
+            "measurement example identity systems must be distinct by identity kind"
+        )
+    required = {row["kind"] for row in protocol["opaqueIdentity"]["identityKinds"]}
+    if set(systems) != required:
+        missing = sorted(required - set(systems))
+        extra = sorted(set(systems) - required)
+        raise SystemExit(
+            f"measurement example identitySystems mismatch: missing={missing}, extra={extra}"
+        )
+    return {
+        **examples,
+        "key": bytes.fromhex(vectors["keyHex"]),
+        "keyHex": vectors["keyHex"],
+        "keyId": vectors["keyId"],
+        "epoch": vectors["epoch"],
+        "identitySystemsByKind": systems,
+    }
 
-    An adapter profile requires the exact platform type its Observation came from, so an example
-    for one of its profiles has to name one. The adapter catalogs already record that link.
-    """
-    tokens: dict[str, dict[str, str]] = {owner: {} for owner in SOURCE_TYPE_MARKERS}
 
-    healthkit = load_catalog("healthkit-adapter.json")
+def health_connect_output_identity(
+    catalog: dict, output: dict, contract: dict
+) -> tuple[str, str]:
+    """Project one concrete example tuple from the catalog's count/graph rule."""
+    measurement = output["measurement"]
+    count_rule = output["countRule"]
+    coordinates = contract["coordinates"]
+    if count_rule in {"exactly-one", "zero-or-one"}:
+        return "single", measurement
+    if count_rule == "one-per-present-field":
+        return "present-field", measurement
+    if count_rule == "one-per-sample":
+        return (
+            "sample",
+            f"{coordinates['canonicalInstant']}|{coordinates['occurrence']}",
+        )
+    if count_rule == "one-per-stage":
+        return (
+            "sleep-stage",
+            f"{coordinates['canonicalPeriodStart']}|{coordinates['canonicalPeriodEnd']}|"
+            f"{coordinates['sleepStageToken']}|{coordinates['occurrence']}",
+        )
+    if count_rule != "graph-specific":
+        raise SystemExit(f"{measurement}: unsupported Health Connect count rule {count_rule}")
+
+    graph_name = output["graphRule"]
+    graph_outputs = catalog["graphRules"][graph_name]["outputs"]
+    selected = next(
+        (row for row in graph_outputs if row["resourceRole"] == "structured-observation"),
+        graph_outputs[0],
+    )
+    role = selected["outputRole"]
+    if graph_name == "exactly-one-admitted-specimen-output":
+        discriminator = measurement
+    elif graph_name == "one-per-source-segment-or-lap":
+        discriminator = (
+            f"{coordinates['canonicalPeriodStart']}|{coordinates['canonicalPeriodEnd']}|"
+            f"{coordinates['exerciseSegmentToken']}|{coordinates['occurrence']}"
+        )
+    elif graph_name == "one-per-source-delta":
+        discriminator = (
+            f"{coordinates['canonicalInstant']}|{coordinates['occurrence']}"
+        )
+    else:
+        raise SystemExit(f"{measurement}: unsupported Health Connect graph rule {graph_name}")
+    return role, discriminator
+
+
+def source_identity_projections(root: Path, contract: dict) -> dict[str, dict[str, dict]]:
+    """Project wire source codes and HMAC output tuples from each adapter catalog."""
+    projections: dict[str, dict[str, dict]] = {
+        owner: {} for owner in SOURCE_TYPE_MARKERS
+    }
+
+    healthkit = load_catalog(root, "healthkit-adapter.json")
     for row in healthkit["rows"]:
+        source_type = row["sourceTypeIdentifier"]
         for measurement in row.get("measurementIDs", []):
-            tokens["healthkit"].setdefault(measurement, row["sourceTypeIdentifier"])
+            projections["healthkit"].setdefault(
+                measurement,
+                {
+                    "adapterId": "healthkit",
+                    "sourceIdentityKind": "source-record",
+                    "preimageSourceType": source_type,
+                    "wireSourceType": source_type,
+                    "outputRole": measurement,
+                    "outputDiscriminator": "single",
+                    "countRule": "exactly-one",
+                },
+            )
 
-    health_connect = load_catalog("health-connect-adapter.json")
+    health_connect = load_catalog(root, "health-connect-adapter.json")
     for record in health_connect["recordTypes"]:
         for output in record.get("outputs", []):
-            tokens["health-connect"].setdefault(output["measurement"], record["token"])
+            role, discriminator = health_connect_output_identity(
+                health_connect, output, contract
+            )
+            projections["health-connect"].setdefault(
+                output["measurement"],
+                {
+                    "adapterId": "health-connect",
+                    "sourceIdentityKind": "source-record",
+                    "preimageSourceType": record["token"],
+                    "wireSourceType": record["token"],
+                    "outputRole": role,
+                    "outputDiscriminator": discriminator,
+                    "countRule": output["countRule"],
+                    **(
+                        {"graphRule": output["graphRule"]}
+                        if output["countRule"] == "graph-specific"
+                        else {}
+                    ),
+                },
+            )
 
-    providers = load_catalog("providers-adapter.json")
+    providers = load_catalog(root, "providers-adapter.json")
     for provider in providers["providers"]:
-        guide = PROVIDER_GUIDES[provider["id"]]
+        provider_code = provider["id"]
+        guide = PROVIDER_GUIDES[provider_code]
+        if provider["measurementOwner"] != guide:
+            raise SystemExit(
+                f"{provider_code}: measurementOwner must be {guide!r}"
+            )
+        # Atomic grouped mappings own their source token and output role; process them before
+        # their member rows so a component token can never leak into the example preimage.
+        for group in provider.get("groupedMappings", []):
+            for measurement in group["measurementIds"]:
+                projections[guide][measurement] = {
+                    "adapterId": "providers",
+                    "providerCode": provider_code,
+                    "providerScopeMode": provider["providerScopeMode"],
+                    "adapterProfile": provider["observationProfile"],
+                    "sourceIdentityKind": "provider-record",
+                    "preimageSourceType": group["token"],
+                    "wireSourceType": f"{provider_code}/{group['token']}",
+                    "outputRole": group["outputRole"],
+                    "outputDiscriminator": group["outputDiscriminator"],
+                    "countRule": "exactly-one",
+                }
         for source_type in provider.get("sourceTypes", []):
             for element in source_type.get("elements", []):
+                if element.get("groupedMapping"):
+                    continue
                 for measurement in element.get("measurementIds", []):
-                    tokens[guide].setdefault(
-                        measurement, f"{provider['id']}/{source_type['token']}"
+                    projections[guide].setdefault(
+                        measurement,
+                        {
+                            "adapterId": "providers",
+                            "providerCode": provider_code,
+                            "providerScopeMode": provider["providerScopeMode"],
+                            "adapterProfile": provider["observationProfile"],
+                            "sourceIdentityKind": "provider-record",
+                            "preimageSourceType": source_type["token"],
+                            "wireSourceType": f"{provider_code}/{source_type['token']}",
+                            "outputRole": measurement,
+                            "outputDiscriminator": "single",
+                            "countRule": "exactly-one",
+                        },
                     )
-    return tokens
+    return projections
 
 
-SOURCE_TYPE_TOKENS = source_type_tokens()
+def example_projection(
+    measurement: dict, owner_key: str, projections: dict[str, dict[str, dict]]
+) -> dict:
+    if owner_key == "mobile":
+        # The source-neutral guide deliberately uses a fictional adapter. Its tuple still follows
+        # the same sole-output convention as a real adapter and is recorded in the manifest.
+        return {
+            "adapterId": "example-mobile",
+            "sourceIdentityKind": "source-record",
+            "preimageSourceType": measurement["id"],
+            "wireSourceType": measurement["id"],
+            "outputRole": measurement["id"],
+            "outputDiscriminator": "single",
+            "countRule": "exactly-one",
+        }
+    projection = projections.get(owner_key, {}).get(measurement["id"])
+    if projection is None:
+        raise SystemExit(
+            f"{measurement['id']}: {owner_key} has no catalog-owned example identity projection"
+        )
+    return projection
 
 
-def handwritten_instances(owner_key: str) -> set[str]:
+def handwritten_instances(root: Path, owner_key: str) -> set[str]:
     """Every Instance a guide already defines by hand."""
-    generated = REPOSITORY_ROOT / OWNERS[owner_key]["generated"]
+    generated = root / OWNERS[owner_key]["generated"]
     directory = generated.parent
     names: set[str] = set()
     for source in directory.glob("*.fsh"):
@@ -577,10 +724,10 @@ def handwritten_instances(owner_key: str) -> set[str]:
     return names
 
 
-def fsh_definitions() -> dict[str, list[str]]:
+def fsh_definitions(root: Path) -> dict[str, list[str]]:
     """Every hand-written FSH definition, keyed by its `Id`, as its own block of lines."""
     definitions: dict[str, list[str]] = {}
-    for source in sorted(REPOSITORY_ROOT.glob("*/input/fsh/*.fsh")):
+    for source in sorted(root.glob("*/input/fsh/*.fsh")):
         block: list[str] = []
         for line in source.read_text(encoding="utf-8").splitlines():
             if re.match(r"^[A-Za-z]+:\s", line) and not line.startswith(("Id:", "Title:", "Description:")):
@@ -602,13 +749,15 @@ def block_identifier(block: list[str]) -> str:
     return ""
 
 
-def shared_value_set_example(canonical: str) -> tuple[str, str, str] | None:
+def shared_value_set_example(
+    canonical: str, root: Path
+) -> tuple[str, str, str] | None:
     """A real concept from the terminology a hand-written value set draws on.
 
     A measurement that binds a shared value set carries no result codes of its own, so its example
     takes a concept the binding actually admits rather than inventing one.
     """
-    definitions = fsh_definitions()
+    definitions = fsh_definitions(root)
     block = definitions.get(canonical.rsplit("/", 1)[-1])
     if block is None:
         return None
@@ -647,7 +796,12 @@ def concept_display(definitions: dict[str, list[str]], system: str, code: str) -
     return None
 
 
-def render_example(measurement: dict) -> str:
+def render_example(
+    measurement: dict,
+    projections: dict[str, dict[str, dict]],
+    contract: dict,
+    root: Path,
+) -> str:
     """One minimal, conformant example per generated profile.
 
     A profile that ships no instance leaves every reader guessing, and the Publisher reports it
@@ -663,16 +817,17 @@ def render_example(measurement: dict) -> str:
         "Usage: #example",
         f'Title: "{measurement["title"]} Example"',
         f'Description: "A conformant {measurement["title"]} instance."',
-        *example_identifier_lines(measurement, owner_key),
+        *example_adapter_profile_lines(measurement, owner_key, projections),
+        *example_identifier_lines(measurement, owner_key, projections, contract),
         "* status = #final",
         f"* code = {example_code(measurement, owner)}",
         *example_required_coding_lines(measurement),
         *example_category_lines(measurement),
-        *example_source_type_lines(measurement, owner_key),
+        *example_source_type_lines(measurement, owner_key, projections),
         f"* subject = Reference({owner['patientExample']})",
         # Consumer health data is self-recorded, so the participant is also the performer.
         f"* performer = Reference({owner['patientExample']})",
-        *example_effective_lines(measurement, owner_key),
+        *example_effective_lines(measurement, owner_key, contract),
     ]
     method = example_method(measurement)
     if method:
@@ -682,8 +837,20 @@ def render_example(measurement: dict) -> str:
             else "https://grovealliance.org/fhir/mobile/CodeSystem/grove-aggregation-method"
         )
         lines.append(f"* method = {method_system}#{method}")
-    lines.extend(example_result_lines(measurement))
+    lines.extend(example_result_lines(measurement, root))
     return "\n".join(lines) + "\n"
+
+
+def example_adapter_profile_lines(
+    measurement: dict,
+    owner_key: str,
+    projections: dict[str, dict[str, dict]],
+) -> list[str]:
+    """Declare a provider envelope separately from its semantic profile."""
+    if owner_key not in PROVIDER_OWNERS:
+        return []
+    projection = example_projection(measurement, owner_key, projections)
+    return [f'* meta.profile[+] = "{projection["adapterProfile"]}"']
 
 
 def example_code(measurement: dict, owner: dict) -> str:
@@ -719,113 +886,156 @@ def example_category_lines(measurement: dict) -> list[str]:
     return [f"* category = {system}#{category['code']}{display}"]
 
 
-def example_effective_lines(measurement: dict, owner_key: str) -> list[str]:
+def example_effective_lines(
+    measurement: dict, owner_key: str, contract: dict
+) -> list[str]:
     if measurement["effective"] == "Period":
         lines = [
-            f'* effectivePeriod.start = "{EXAMPLE_PERIOD_START}"',
-            f'* effectivePeriod.end = "{EXAMPLE_PERIOD_END}"',
+            f'* effectivePeriod.start = "{contract["effectivePeriodStart"]}"',
+            f'* effectivePeriod.end = "{contract["effectivePeriodEnd"]}"',
         ]
     else:
-        lines = [f'* effectiveDateTime = "{EXAMPLE_INSTANT}"']
-    # Every adapter records when it produced the result; only the source-neutral guide leaves it out.
-    if owner_key != "mobile":
-        lines.append(f'* issued = "{EXAMPLE_ISSUED}"')
+        lines = [f'* effectiveDateTime = "{contract["effectiveInstant"]}"']
+    # Health Connect exposes the current source Record's store-availability time. HealthKit has no
+    # equivalent, and no provider row in 0.6 names one; converter time is never Observation.issued.
+    if owner_key == "health-connect":
+        lines.append(
+            f'* issued = "{contract["healthConnectLastModifiedTime"]}"'
+        )
     return lines
 
 
-EXAMPLE_REPOSITORY_SCOPE = "1f5c58aa-6ec6-4e79-a682-829a9debd3f5"
-EXAMPLE_PROVIDER_ACCOUNT = "acct-7f3a9c"
-EXAMPLE_PROVIDER_ACCOUNT_SYSTEM = (
-    "https://study.example.org/fhir/NamingSystem/provider-account"
-)
-
-
-def example_identity_components(
-    measurement: dict, owner_key: str
-) -> tuple[str, list[str], list[str]]:
-    """Return the identity kind and exact source/output component tuples."""
-    source_type = SOURCE_TYPE_TOKENS.get(owner_key, {}).get(
-        measurement["id"], measurement["id"]
-    )
-    native_id = f"record-{measurement['id']}"
-    if owner_key in PROVIDER_OWNERS:
-        provider = source_type.split("/", 1)[0]
+def example_identity_record(
+    measurement: dict,
+    owner_key: str,
+    projections: dict[str, dict[str, dict]],
+    contract: dict,
+) -> dict:
+    """Build the manifest row and exact FSH identity pairs for one example."""
+    projection = example_projection(measurement, owner_key, projections)
+    native_id = f"{contract['nativeRecordPrefix']}{measurement['id']}"
+    source_kind = projection["sourceIdentityKind"]
+    if source_kind == "provider-record":
+        scope = (
+            contract["providerScope"]
+            if projection["providerScopeMode"]
+            == "deployment-scoped-account-pseudonym"
+            else contract["globalProviderScope"]
+        )
         source_components = [
-            provider,
-            source_type,
-            EXAMPLE_PROVIDER_ACCOUNT_SYSTEM,
-            EXAMPLE_PROVIDER_ACCOUNT,
+            projection["providerCode"],
+            projection["preimageSourceType"],
+            scope["system"],
+            scope["value"],
             native_id,
         ]
-        output_components = [
-            provider,
-            source_type,
-            EXAMPLE_PROVIDER_ACCOUNT_SYSTEM,
-            EXAMPLE_PROVIDER_ACCOUNT,
+    else:
+        scope = contract["repositoryScope"]
+        source_components = [
+            projection["adapterId"],
+            projection["preimageSourceType"],
+            scope["system"],
+            scope["value"],
             native_id,
-            "primary-output",
-            measurement["id"],
         ]
-        return "provider-record", source_components, output_components
-    adapter_id = owner_key if owner_key != "mobile" else "example-mobile"
-    source_components = [
-        adapter_id,
-        source_type,
-        EXAMPLE_SCOPE_SYSTEM,
-        EXAMPLE_REPOSITORY_SCOPE,
-        native_id,
-    ]
     output_components = [
-        adapter_id,
-        source_type,
-        EXAMPLE_SCOPE_SYSTEM,
-        EXAMPLE_REPOSITORY_SCOPE,
-        native_id,
-        "primary-output",
-        measurement["id"],
+        *source_components,
+        projection["outputRole"],
+        projection["outputDiscriminator"],
     ]
-    return "source-record", source_components, output_components
-
-
-def example_identifier_lines(measurement: dict, owner_key: str) -> list[str]:
-    """The business identity each guide's Observation profile requires of an instance."""
-    source_kind, source_components, output_components = example_identity_components(
-        measurement, owner_key
+    output_kind = (
+        "provider-output" if source_kind == "provider-record" else "source-output"
     )
     source_value = derive_hmac_identity(
-        key=EXAMPLE_KEY,
-        key_id=EXAMPLE_KEY_ID,
-        epoch=EXAMPLE_KEY_EPOCH,
+        key=contract["key"],
+        key_id=contract["keyId"],
+        epoch=contract["epoch"],
         identity_kind=source_kind,
         components=source_components,
     )
     output_value = derive_hmac_identity(
-        key=EXAMPLE_KEY,
-        key_id=EXAMPLE_KEY_ID,
-        epoch=EXAMPLE_KEY_EPOCH,
-        identity_kind="source-output",
+        key=contract["key"],
+        key_id=contract["keyId"],
+        epoch=contract["epoch"],
+        identity_kind=output_kind,
         components=output_components,
     )
+    source_type = {
+        "preimageToken": projection["preimageSourceType"],
+        "wireCode": projection["wireSourceType"],
+    }
+    if "providerCode" in projection:
+        source_type["providerCode"] = projection["providerCode"]
+    availability = (
+        {
+            "fhirElement": "Observation.issued",
+            "sourceField": "Metadata.lastModifiedTime",
+            "value": contract["healthConnectLastModifiedTime"],
+        }
+        if owner_key == "health-connect"
+        else {"fhirElement": "Observation.issued", "sourceField": "omitted"}
+    )
+    return {
+        "guide": owner_key,
+        "instance": f"{fsh_name(measurement['profile'])}Example",
+        "measurementId": measurement["id"],
+        "sourceType": source_type,
+        "countRule": projection["countRule"],
+        **({"graphRule": projection["graphRule"]} if "graphRule" in projection else {}),
+        "sourceRecord": {
+            "identityKind": source_kind,
+            "identifierRole": "source-record",
+            "system": contract["identitySystemsByKind"][source_kind],
+            "components": source_components,
+            "value": source_value,
+        },
+        "sourceOutput": {
+            "identityKind": output_kind,
+            "identifierRole": "source-output",
+            "system": contract["identitySystemsByKind"][output_kind],
+            "components": output_components,
+            "value": output_value,
+        },
+        "availability": availability,
+    }
+
+
+def example_identifier_lines(
+    measurement: dict,
+    owner_key: str,
+    projections: dict[str, dict[str, dict]],
+    contract: dict,
+) -> list[str]:
+    """The business identity each guide's Observation profile requires of an instance."""
+    record = example_identity_record(measurement, owner_key, projections, contract)
     return [
-        f'* identifier[sourceRecord].system = "{EXAMPLE_SOURCE_RECORD_SYSTEM}"',
-        f'* identifier[sourceRecord].value = "{source_value}"',
-        f'* identifier[sourceOutput].system = "{EXAMPLE_SOURCE_OUTPUT_SYSTEM}"',
-        f'* identifier[sourceOutput].value = "{output_value}"',
+        f'* identifier[sourceRecord].system = "{record["sourceRecord"]["system"]}"',
+        f'* identifier[sourceRecord].value = "{record["sourceRecord"]["value"]}"',
+        f'* identifier[sourceOutput].system = "{record["sourceOutput"]["system"]}"',
+        f'* identifier[sourceOutput].value = "{record["sourceOutput"]["value"]}"',
     ]
 
 
-def example_source_type_lines(measurement: dict, owner_key: str) -> list[str]:
+def example_source_type_lines(
+    measurement: dict,
+    owner_key: str,
+    projections: dict[str, dict[str, dict]],
+) -> list[str]:
     """The exact platform type an adapter Observation came from, which its profile requires."""
-    marker = SOURCE_TYPE_MARKERS.get(owner_key)
-    if not marker:
-        return []
-    token = SOURCE_TYPE_TOKENS[owner_key].get(measurement["id"])
-    if token is None:
-        raise SystemExit(f"{measurement['id']}: {owner_key} states no source type for its example")
-    lines = [marker.format(token=token)]
+    projection = example_projection(measurement, owner_key, projections)
+    token = projection["wireSourceType"]
     if owner_key in PROVIDER_OWNERS:
-        lines.insert(0, f"* extension[provider].valueCode = #{token.split('/', 1)[0]}")
-    return lines
+        # The semantic profile deliberately does not inherit the provider envelope, so its
+        # InstanceOf has no named adapter slices. Add the canonical extensions directly; the
+        # explicit adapter meta.profile claim makes Publisher validate their cardinality/value.
+        return [
+            '* extension[+].url = "https://grovealliance.org/fhir/providers/StructureDefinition/provider"',
+            f"* extension[=].valueCode = #{projection['providerCode']}",
+            '* extension[+].url = "https://grovealliance.org/fhir/providers/StructureDefinition/provider-source-type"',
+            f"* extension[=].valueCode = #{token}",
+        ]
+    marker = SOURCE_TYPE_MARKERS.get(owner_key)
+    return [marker.format(token=token)] if marker else []
 
 
 def example_method(measurement: dict) -> str | None:
@@ -838,7 +1048,7 @@ def example_method(measurement: dict) -> str | None:
     return choice[0] if choice else None
 
 
-def example_result_lines(measurement: dict) -> list[str]:
+def example_result_lines(measurement: dict, root: Path) -> list[str]:
     """The value the profile requires, in the exact shape the profile admits.
 
     Only components the profile requires are rendered. A workout declares every statistic any
@@ -855,7 +1065,7 @@ def example_result_lines(measurement: dict) -> list[str]:
     if kind == "quantity":
         lines.append(f"* valueQuantity = {example_quantity(measurement['quantity'])}")
     elif kind == "codeableConcept":
-        system, code, display = coded_example(measurement)
+        system, code, display = coded_example(measurement, root)
         lines.append(f'* valueCodeableConcept = {system}#{code} "{display}"')
     elif kind == "dateTime":
         lines.append(f'* valueDateTime = "{measurement["example"]}"')
@@ -887,7 +1097,7 @@ def example_result_lines(measurement: dict) -> list[str]:
                 f"{example_quantity(component['quantity'])}"
             )
         elif component.get("valueSet"):
-            system, code, display = coded_example(component)
+            system, code, display = coded_example(component, root)
             lines.append(
                 f"* component[{slice_name}].valueCodeableConcept = "
                 f'{system}#{code} "{display}"'
@@ -895,12 +1105,12 @@ def example_result_lines(measurement: dict) -> list[str]:
     return lines
 
 
-def coded_example(source: dict) -> tuple[str, str, str]:
+def coded_example(source: dict, root: Path) -> tuple[str, str, str]:
     """The code system, code, and display an example uses for one coded value."""
     results = source.get("resultCodes")
     if results:
         return value_set_name(source["valueSet"])[:-2] + "CS", results[0]["code"], results[0]["display"]
-    shared = shared_value_set_example(source["valueSet"])
+    shared = shared_value_set_example(source["valueSet"], root)
     if shared is None:
         raise SystemExit(f"no example concept available for value set {source['valueSet']}")
     return shared
@@ -1018,6 +1228,8 @@ def main() -> int:
     parser.add_argument("--root", type=Path, default=REPOSITORY_ROOT)
     arguments = parser.parse_args()
     layout = Layout(arguments.root.resolve())
+    contract = example_contract(layout.root)
+    projections = source_identity_projections(layout.root, contract)
 
     catalog = json.loads(layout.catalog.read_text(encoding="utf-8"))
     review_file = json.loads(layout.reviews.read_text(encoding="utf-8"))
@@ -1118,12 +1330,16 @@ def main() -> int:
         blocks.extend(emitted.get(owner_key, []))
         # Every generated profile ships one instance, so no profile reaches a reader unexemplified.
         # A hand-written example is richer than anything projected from the catalog, so it wins.
-        handwritten = handwritten_instances(owner_key)
-        blocks.extend(
-            render_example(measurement)
+        handwritten = handwritten_instances(layout.root, owner_key)
+        example_measurements = [
+            measurement
             for measurement in owner_measurements
             if measurement.get("generation", {}).get("emit")
             and f"{fsh_name(measurement['profile'])}Example" not in handwritten
+        ]
+        blocks.extend(
+            render_example(measurement, projections, contract, layout.root)
+            for measurement in example_measurements
         )
         if blocks:
             rendered_file = HEADER + "\n".join(blocks)

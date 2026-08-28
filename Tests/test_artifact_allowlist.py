@@ -491,45 +491,37 @@ class ArtifactAllowlistTests(unittest.TestCase):
             ],
         )
 
-    def test_health_connect_heart_rate_outputs_share_only_source_identity(self) -> None:
+    def test_health_connect_glucose_outputs_share_only_source_identity(self) -> None:
         output = ROOT / "health-connect/output"
         paths = (
-            output / "Observation-HealthConnectHeartRateSampleOneExample.json",
-            output / "Observation-HealthConnectHeartRateSampleTwoExample.json",
+            output / "Observation-HealthConnectCapillaryGlucoseExample.json",
+            output / "Specimen-HealthConnectCapillaryGlucoseSpecimenExample.json",
         )
         if not all(path.is_file() for path in paths):
             self.skipTest("Health Connect Publisher examples are not present")
-        observations = [json.loads(path.read_text(encoding="utf-8")) for path in paths]
-        source_records = [identifiers_with_role(observation, "source-record") for observation in observations]
-        source_outputs = [identifiers_with_role(observation, "source-output") for observation in observations]
+        outputs = [json.loads(path.read_text(encoding="utf-8")) for path in paths]
+        source_records = [identifiers_with_role(resource, "source-record") for resource in outputs]
+        source_outputs = [identifiers_with_role(resource, "source-output") for resource in outputs]
         self.assertEqual([len(values) for values in source_records], [1, 1])
         self.assertEqual([len(values) for values in source_outputs], [1, 1])
         self.assertEqual(source_records[0][0], source_records[1][0])
         self.assertNotEqual(source_outputs[0][0], source_outputs[1][0])
         for identifier in (source_records[0][0], *[values[0] for values in source_outputs]):
             self.assertIsNotNone(V2_IDENTITY.fullmatch(identifier["value"]))
-        self.assertTrue(
-            all(observation["effectiveDateTime"].endswith("Z") for observation in observations)
-        )
-        self.assertTrue(all("_effectiveDateTime" not in observation for observation in observations))
 
     def test_health_connect_provenance_uses_each_observations_source_identity(self) -> None:
         output = ROOT / "health-connect/output"
         cases = (
             (
-                output / "Provenance-HealthConnectHeartRateProvenanceExample.json",
+                output / "Provenance-HealthConnectRestingHeartRateProvenanceExample.json",
+                (output / "Observation-HealthConnectRestingHeartRateExample.json",),
+            ),
+            (
+                output / "Provenance-HealthConnectCapillaryGlucoseProvenanceExample.json",
                 (
-                    output / "Observation-HealthConnectHeartRateSampleOneExample.json",
-                    output / "Observation-HealthConnectHeartRateSampleTwoExample.json",
+                    output / "Observation-HealthConnectCapillaryGlucoseExample.json",
+                    output / "Specimen-HealthConnectCapillaryGlucoseSpecimenExample.json",
                 ),
-            ),
-            (
-                output / "Provenance-HealthConnectBodyWeightProvenanceExample.json",
-                (output / "Observation-HealthConnectBodyWeightExample.json",),
-            ),
-            (
-                output / "Provenance-HealthConnectStepCountProvenanceExample.json",
-                (output / "Observation-HealthConnectStepCountExample.json",),
             ),
         )
         if not all(
@@ -550,25 +542,39 @@ class ArtifactAllowlistTests(unittest.TestCase):
             for observation_path in observation_paths:
                 observation = json.loads(observation_path.read_text(encoding="utf-8"))
                 source_identifiers = identifiers_with_role(observation, "source-record")
-                self.assertEqual(source_identifiers, [provenance_source])
+                self.assertEqual(
+                    [
+                        (identifier["system"], identifier["value"])
+                        for identifier in source_identifiers
+                    ],
+                    [(provenance_source["system"], provenance_source["value"])],
+                )
 
     def test_health_connect_does_not_invent_data_origin_metadata(self) -> None:
-        path = ROOT / "health-connect/output/Device-HealthConnectSourceApplicationExample.json"
+        path = (
+            ROOT
+            / "health-connect/output/Provenance-HealthConnectRestingHeartRateProvenanceExample.json"
+        )
         if not path.is_file():
             self.skipTest("Health Connect Publisher examples are not present")
-        source = json.loads(path.read_text(encoding="utf-8"))
+        provenance = json.loads(path.read_text(encoding="utf-8"))
         self.assertEqual(
-            source.get("identifier"),
-            [
-                {
+            provenance["entity"][0]["agent"][0]["who"],
+            {
+                "type": "Device",
+                "identifier": {
                     "system": "https://grovealliance.org/fhir/"
                     "health-connect/NamingSystem/android-package-name",
                     "value": "com.example.wearable",
-                }
-            ],
+                },
+            },
         )
-        self.assertNotIn("deviceName", source)
-        self.assertNotIn("version", source)
+        self.assertFalse(
+            (
+                ROOT
+                / "health-connect/output/Device-HealthConnectSourceApplicationExample.json"
+            ).exists()
+        )
 
 if __name__ == "__main__":
     unittest.main()

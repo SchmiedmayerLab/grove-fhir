@@ -25,12 +25,19 @@ adapter-id:             healthkit
 source-type:            HKQuantityTypeIdentifierHeartRate
 repository-scope:       <complete deployment-owned Identifier pair>
 native-record-id:       lowercase canonical HKObject.uuid
-output-role:            primary-output
-output-discriminator:   heart-rate
+output-role:            heart-rate
+output-discriminator:   single
 ```
 
 Every field is length-framed as exact UTF-8 under the domain and identity kind in
-`catalog/exchange-protocol.json`; no delimiter grammar or clear native UUID crosses the wire.
+`catalog/exchange-protocol.json`; no delimiter grammar is inferred. The opaque Grove identities are
+always present. They are deliberately non-reversible: equality supports retry, reconciliation, and
+retraction, but the digest cannot recover the UUID. When exact upstream round-trip is required, a
+deployment may additionally place the clear UUID on this catalog-designated primary Observation as
+a governed Identifier under its own absolute HealthKit-store namespace. That optional identifier is
+not a Grove graph key and is not repeated on child or support resources. The `single` discriminator
+has no independent clinical meaning; any meaningful source order, time, multiplicity, or ordinal
+would also have to appear in a FHIR element or registered payload rather than only in the preimage.
 
 ### 2. Require an admitted catalog row
 
@@ -68,7 +75,7 @@ kind, key id, and epoch; their values are canonical v2 HMAC results:
 ```
 
 `Resource.id` remains optional and repository-assigned. `effectiveDateTime` is the source
-measurement instant, not conversion time. The exact source type remains an adapter-lineage coding
+measurement instant, not conversion time. The exact source type remains in the adapter-lineage extension
 beside LOINC `8867-4`; the optional motion-context component is admitted only for this result.
 
 ### 4. Snapshot devices honestly

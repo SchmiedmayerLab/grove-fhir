@@ -109,7 +109,7 @@ class CatalogContractSchemaTests(unittest.TestCase):
                 ("contextMappings", "bloodGlucoseSpecimen", "values", 0),
                 ("contextMappings", "bloodGlucoseSpecimen", "values", 0, "coding"),
                 ("contextMappings", "bloodGlucoseMealContext", "relationToMeal"),
-                ("contextMappings", "exerciseTitle"),
+                ("contextMappings", "sessionTitle"),
                 ("recordingDeviceIdentity",),
                 ("identity",),
                 ("identity", "sourceRecord"),
@@ -123,7 +123,7 @@ class CatalogContractSchemaTests(unittest.TestCase):
                 ("source", "sdkBaseline"),
                 ("source", "evidence", 0),
                 ("producerCanonicalization",),
-                ("sourceTypeCoding",),
+                ("sourceTypeExtension",),
                 ("clinicalRecordAdmission",),
                 ("statusVocabulary",),
                 ("standardAdapterClaims",),
@@ -131,8 +131,8 @@ class CatalogContractSchemaTests(unittest.TestCase):
                 ("sensorAdapterClaims", "electrocardiogram"),
                 ("sensorAdapterClaims", "electrocardiogram", "leadCode"),
                 ("sensorAdapterClaims", "electrocardiogram", "correlatedSymptomEvidence"),
-                ("sensorAdapterClaims", "electrocardiogram", "correlatedSymptomEvidence", "children", 0),
-                ("sensorAdapterClaims", "electrocardiogram", "sourceRevisionDisclosure"),
+                ("sensorAdapterClaims", "electrocardiogram", "outputs", 0),
+                ("sensorAdapterClaims", "electrocardiogram", "closedValueMappings", "classification", "values", 0),
                 ("derivedAggregates", 0),
                 ("rows", 0),
                 ("recordingDeviceIdentity",),
@@ -395,6 +395,57 @@ class CatalogContractSchemaTests(unittest.TestCase):
             "sensorkit-conversion-provenance"
         )
         self._assert_invalid(mismatched_provenance_mode)
+
+    def test_governed_source_identifier_primary_and_disclosure_rules_are_closed(self) -> None:
+        protocol = _read("catalog/exchange-protocol.json")
+        governed = protocol["governedSourceIdentifier"]["validation"]
+        self.assertEqual(
+            governed["designatedNode"]["designationMode"],
+            "catalog-output-selector",
+        )
+        self.assertEqual(
+            governed["identifier"]["classification"]["activeOutputNonGroveIdentifier"],
+            "governed-source-identifier",
+        )
+        source_type = governed["identifier"]["type"]
+        self.assertTrue(source_type["textOnlyAllowed"])
+        self.assertTrue(source_type["coding"]["systemAbsoluteUri"])
+        self.assertEqual(source_type["coding"]["codeLexicalForm"], "fhir-code")
+        self.assertFalse(source_type["coding"]["groveRoleCodingAllowed"])
+        enforcement = governed["forbiddenIdentityUseEnforcement"]
+        self.assertEqual(
+            enforcement["observationComponent"]["r4Paths"],
+            ["Observation.component.value[x]"],
+        )
+        self.assertEqual(
+            enforcement["untypedMetadata"]["matchRule"],
+            "no-generic-carrier-admitted",
+        )
+        information = protocol["opaqueIdentity"]["informationPreservation"]
+        self.assertFalse(information["reversible"])
+        self.assertEqual(
+            information["exactNativeRoundTrip"],
+            "optional-governed-source-identifier-on-catalog-designated-primary",
+        )
+
+        selectors = governed["designatedNode"]["adapterSelectors"]
+        healthkit = _read(selectors["healthkit"]["catalog"])
+        self.assertTrue(healthkit[selectors["healthkit"]["rowCollection"]])
+        self.assertIn(
+            "https://grovealliance.org/fhir/mobile/StructureDefinition/"
+            "grove-mobile-workout-segment",
+            selectors["healthkit"]["excludedProfiles"],
+        )
+        health_connect = _read(selectors["health-connect"]["catalog"])
+        admitted_count_rules = {
+            output["countRule"]
+            for row in health_connect[selectors["health-connect"]["rowCollection"]]
+            for output in row.get("outputs", [])
+        }
+        self.assertTrue(
+            set(selectors["health-connect"]["eligibleCountRules"])
+            <= admitted_count_rules
+        )
 
     def test_health_connect_data_origin_is_identifier_only_and_not_an_event_node(self) -> None:
         catalog = _read("catalog/health-connect-adapter.json")

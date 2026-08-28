@@ -40,16 +40,89 @@ ENTRY_NODE_IDENTITY = re.compile(
     r"(?P<digest>[A-Za-z0-9_-]{43})$"
 )
 
-IDENTITY_KIND_COMPONENTS = {
-    "source-record": 5,
-    "source-output": 7,
-    "writer-record": 3,
-    "provider-record": 5,
-    "source-artifact": 7,
-    "source-context": 5,
-    "recording-device": 4,
-    "device-snapshot": 4,
+IDENTITY_KIND_COMPONENT_NAMES = {
+    "source-record": (
+        "adapter-id",
+        "source-type",
+        "repository-scope-system",
+        "repository-scope-value",
+        "native-record-id",
+    ),
+    "source-output": (
+        "adapter-id",
+        "source-type",
+        "repository-scope-system",
+        "repository-scope-value",
+        "native-record-id",
+        "output-role",
+        "output-discriminator",
+    ),
+    "writer-record": (
+        "writer-application-system",
+        "writer-application-value",
+        "writer-record-id",
+    ),
+    "provider-record": (
+        "provider-code",
+        "source-type",
+        "provider-scope-system",
+        "provider-scope-value",
+        "native-record-id",
+    ),
+    "provider-output": (
+        "provider-code",
+        "source-type",
+        "provider-scope-system",
+        "provider-scope-value",
+        "native-record-id",
+        "output-role",
+        "output-discriminator",
+    ),
+    "source-artifact": (
+        "adapter-id",
+        "source-type",
+        "repository-scope-system",
+        "repository-scope-value",
+        "native-record-id",
+        "format-code",
+        "part-index",
+    ),
+    "provider-artifact": (
+        "provider-code",
+        "source-type",
+        "provider-scope-system",
+        "provider-scope-value",
+        "native-record-id",
+        "format-code",
+        "part-index",
+    ),
+    "source-context": (
+        "adapter-id",
+        "context-type",
+        "repository-scope-system",
+        "repository-scope-value",
+        "native-context-id",
+    ),
+    "recording-device": (
+        "adapter-id",
+        "subject-system",
+        "subject-value",
+        "stable-unit-token",
+    ),
+    "device-snapshot": (
+        "event-system",
+        "event-value",
+        "device-role",
+        "source-device-token",
+    ),
 }
+IDENTITY_KIND_COMPONENTS = {
+    kind: len(names) for kind, names in IDENTITY_KIND_COMPONENT_NAMES.items()
+}
+
+# The provider namespace is closed for 0.6. Provider-scoped inputs deliberately use
+# provider-* identity kinds so the same tuple can never alias an adapter-scoped identity.
+PROVIDER_CODES = frozenset({"google-health-api", "oura", "withings"})
 
 
 class ExchangeProtocolError(ValueError):
@@ -111,12 +184,51 @@ def derive_hmac_identity(
         raise ExchangeProtocolError("identity_kind must be a nonempty ASCII token")
     if not isinstance(components, Sequence) or isinstance(components, (str, bytes)):
         raise ExchangeProtocolError("components must be a sequence of strings")
-    expected_components = IDENTITY_KIND_COMPONENTS.get(identity_kind)
-    if expected_components is None:
+    component_names = IDENTITY_KIND_COMPONENT_NAMES.get(identity_kind)
+    if component_names is None:
         raise ExchangeProtocolError("identity_kind is not admitted by Grove 0.6")
-    if len(components) != expected_components:
+    if len(components) != len(component_names):
         raise ExchangeProtocolError(
-            f"{identity_kind} requires exactly {expected_components} components"
+            f"{identity_kind} requires exactly {len(component_names)} components"
+        )
+    for component_name, component in zip(component_names, components, strict=True):
+        if not isinstance(component, str):
+            raise ExchangeProtocolError(
+                f"{identity_kind}.{component_name} must be a string"
+            )
+        if component == "":
+            raise ExchangeProtocolError(
+                f"{identity_kind}.{component_name} must not be empty"
+            )
+        try:
+            _utf8(component)
+        except ExchangeProtocolError as error:
+            raise ExchangeProtocolError(
+                f"{identity_kind}.{component_name} must contain Unicode scalar values"
+            ) from error
+    provider_scoped_kinds = {
+        "provider-record",
+        "provider-output",
+        "provider-artifact",
+    }
+    generic_source_kinds = {
+        "source-record",
+        "source-output",
+        "source-artifact",
+    }
+    first_component = components[0]
+    if identity_kind in provider_scoped_kinds and first_component not in PROVIDER_CODES:
+        raise ExchangeProtocolError(
+            f"{identity_kind}.provider-code is not admitted by Grove 0.6"
+        )
+    if identity_kind in generic_source_kinds and first_component in PROVIDER_CODES:
+        expected_kind = {
+            "source-record": "provider-record",
+            "source-output": "provider-output",
+            "source-artifact": "provider-artifact",
+        }[identity_kind]
+        raise ExchangeProtocolError(
+            f"provider components require identity kind {expected_kind}"
         )
     preimage = frame_fields([IDENTITY_DOMAIN, identity_kind, *components])
     digest = hmac.new(key, preimage, hashlib.sha256).digest()

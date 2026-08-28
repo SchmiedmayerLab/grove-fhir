@@ -19,7 +19,6 @@ The [walkthrough](walkthrough.html) applies the rules below to one concrete hear
 
 ### Source-record and output identity
 
-Never exchange `HKObject.uuid` in the clear and never copy it into `Resource.id`.
 Derive one typed `source-record` v2 HMAC Identifier from the exact component order in
 `catalog/exchange-protocol.json`: adapter id, exact HealthKit source type, complete
 deployment-owned HealthKit-store scope pair, and lowercase canonical UUID text. The
@@ -31,6 +30,14 @@ catalog discriminator. This matters even for a single output: source-record iden
 answers which source revision was consumed, while source-output identity names the exact
 FHIR graph node previously emitted and later retracted. A FHIR repository controls
 `Resource.id`; Grove business identifiers never do.
+
+When native round-trip or traceability genuinely requires `HKObject.uuid`, a deployment may opt in
+to one additional Identifier on the designated one-to-one primary output. Its absolute system is a
+governed HealthKit-store namespace and its value is the exact lowercase UUID. `Identifier.type` is
+optional; if present it must not use a Grove graph-role coding. This disclosure does not replace or
+alter either HMAC identity, and the UUID is not repeated on child outputs or support resources.
+Never copy it into `Resource.id`, Bundle entry keys, retraction addresses, arbitrary components, or
+untyped metadata, and do not incidentally propagate it into attachment names, URLs, or logs.
 
 HealthKit replaces a sample when a writer saves the same `HKMetadataKeySyncIdentifier`
 with a higher `HKMetadataKeySyncVersion`, and that replacement has a new object UUID.
@@ -47,7 +54,9 @@ on the conversion `Provenance`.
 
 ### Logical identity and revisions
 
-When the sample carries `HKMetadataKeySyncIdentifier`, derive a typed `writer-record`
+`HKMetadataKeySyncIdentifier` and `HKMetadataKeySyncVersion` are an exact pair. A producer
+MUST reject either half-pair, a blank or non-String identifier, or a version that is not an
+integral non-negative number; it MUST NOT fabricate version `0`. For a valid pair, derive a typed `writer-record`
 v2 HMAC Identifier from the complete writing-application Identifier pair and exact sync
 identifier. Map `HKMetadataKeySyncVersion` to the
 [Grove Writer Record Version](https://grovealliance.org/fhir/mobile/StructureDefinition-grove-writer-record-version.html)
@@ -63,14 +72,14 @@ The two identifiers answer different questions, and a receiver needs both:
 - the sync identifier names the measurement, so a revision of it is recognised as the same
   measurement and the higher sync version supersedes the lower.
 
-A sample without a sync identifier omits writer identity and writer version. It still
+A sample with neither sync field omits writer identity and writer version. It still
 carries mandatory source-record and source-output identities. Do not synthesize writer
 identity: a writer that did not assign one has not promised cross-revision correlation.
 
 The sample-type identifier dispatches converter code and is preserved as exactly one
-additional coding from the adapter's `healthkit-source-type` CodeSystem. The shared or
-authoritative standard coding remains the normative clinical meaning; the HealthKit
-coding preserves adapter lineage and is not a substitute clinical code.
+`healthkit-source-type-extension` value. This is adapter lineage, not a second expression
+of the observed clinical concept: `Observation.code` and `DocumentReference.type` retain
+only codings that actually mean the result or document type.
 
 ### Electrocardiograms
 
@@ -81,13 +90,20 @@ symptom `HKCategorySample`; the adapter performs no query and never resamples. V
 offsets must form one exact uniform sequence, the reported count must match, and an
 optional sampling frequency must agree exactly with the SampledData period.
 
-Each correlated symptom preserves a typed source-record v2 HMAC identity, exact Period, type, severity, and complete
-`HKSourceRevision` source name, bundle identifier, optional version/product type, and
-operating-system version components. These fields are linkable. The producer therefore
-requires explicit caller authorization for their disclosure; without it, the lossless
-structured ECG claim is not admitted and conversion fails closed. This authorization
-is producer input, not a FHIR consent or authorization assertion. Distinct symptom
-samples may have the same type; their opaque source-record identities, not their types, are unique.
+Classification is carried in `Observation.interpretation`, and the optional Apple ECG
+algorithm version is carried in `Observation.method`. The reported sampling frequency and
+voltage count are admission inputs: they must match `SampledData.period` and the exact data
+frame count, but they are not duplicated as extensions. When average heart rate is present,
+emit a separate LOINC 8867-4 `/min` Observation over the exact waveform Period; it has its own
+`average-heart-rate` source-output identity and `derivedFrom` points to the waveform.
+
+Each correlated symptom is converted through its existing HealthKit symptom Observation
+profile, retaining its own source-record and source-output identity, exact Period, severity,
+source Device, and conversion Provenance. Because one Mobile Exchange Bundle represents one
+source-record revision, each symptom is exchanged as its own event. The ECG groups the
+separately available observations with identifier-only `hasMember` references carrying the
+symptoms' opaque `source-output` Identifiers. Distinct equal-type samples remain distinct;
+`present` requires at least one distinct member, while `none` and `notSet` require none.
 
 ### Clinical FHIR records
 
@@ -178,10 +194,11 @@ When the source is a caller-classified application, represent it as a HealthKit 
 `HKSource.bundleIdentifier`, and copy `HKSourceRevision.version` into the typed
 application-version slice when HealthKit supplies it. When HealthKit reports a supported
 Bluetooth Low Energy source, represent the author as a Grove Recording Device only when
-the caller supplies a governed stable per-unit token and the use case authorizes that
-linkability. HMAC-protect it with the deployment-scoped `recording-device` and
-`device-snapshot` identities defined by the Mobile exchange protocol; never exchange the
-clear HealthKit source UUID. HealthKit does not specify that its UUID is a serial number,
+the caller supplies a governed stable per-unit token under the deployment's source-actor
+identity policy. HMAC-protect it with the deployment-scoped `recording-device` and
+`device-snapshot` identities defined by the Mobile exchange protocol. If native source-actor
+round-trip requires the clear HealthKit source UUID, disclose it only as a separately governed,
+system-qualified Identifier under that policy. HealthKit does not specify that its UUID is a serial number,
 a globally stable hardware identity, or stable outside the contexts in which the exact
 value recurs. If the adapter cannot establish whether the source is an application or a device, omit the
 source-author agent rather than guessing its identity. `HKSourceRevision` does not expose
@@ -193,7 +210,7 @@ and version are copied from that same sample's `HKSourceRevision` and must not b
 with independently supplied identity data.
 The [Bluetooth heart-rate example](Observation-HealthKitBluetoothHeartRateObservationExample.html)
 and its [source Provenance](Provenance-HealthKitBluetoothSourceProvenanceExample.html)
-shows this explicit, privacy-gated branch without treating the source identifier as a
+shows this explicit governed branch without treating the source identifier as a
 serial number.
 
 Link an included source application or device through `Provenance.entity.agent` with

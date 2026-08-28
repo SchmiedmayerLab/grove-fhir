@@ -48,9 +48,9 @@
     }
   ],
   "statusDefinitions": {
-    "supported": "The named adapter emits and validates this exact Mobile profile in version 0.6.0.",
+    "supported": "The named adapter emits and validates this exact catalog semantic profile in version 0.6.0.",
     "mapped-standard": "Related source data is admitted only in the coverageDetails alternate representation. It does not implement or claim this Mobile profile.",
-    "platform-exclusive": "The source meaning is admitted only by a platform-exclusive adapter profile and does not implement this Mobile profile.",
+    "platform-exclusive": "The source meaning is admitted only by a platform-exclusive owner profile and does not implement a shared Mobile profile.",
     "unmodeled": "The source element is inventoried by its adapter, but nothing models this Mobile meaning and no output is admitted.",
     "deferred": "The source has related data, but version 0.6.0 admits no output for this Mobile meaning.",
     "intentionally-unsupported": "The source has no semantically exact mapping to this Mobile meaning in the closed version 0.6.0 contract."
@@ -3922,7 +3922,7 @@
           "s": -1
         }
       },
-      "effective": "dateTime",
+      "effective": "dateTime-or-Period",
       "generation": {
         "emit": true
       },

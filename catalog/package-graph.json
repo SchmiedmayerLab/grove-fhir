@@ -193,6 +193,7 @@
         "healthkit-conversion-provenance",
         "healthkit-cycling-functional-threshold-power",
         "healthkit-date-of-birth",
+        "healthkit-ecg-average-heart-rate-observation",
         "healthkit-ecg-observation",
         "healthkit-environmental-audio-exposure",
         "healthkit-environmental-audio-exposure-notification",

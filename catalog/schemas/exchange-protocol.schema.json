@@ -15,8 +15,10 @@
     "extensions",
     "codeSystems",
     "conformanceLevels",
+    "producerDiagnostics",
     "event",
     "opaqueIdentity",
+    "governedSourceIdentifier",
     "entryIdentity",
     "lifecycle",
     "referencePolicy",
@@ -42,8 +44,14 @@
       "maxItems": 3,
       "items": { "$ref": "#/$defs/conformanceLevel" }
     },
+    "producerDiagnostics": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/producerDiagnostic" }
+    },
     "event": { "$ref": "#/$defs/event" },
     "opaqueIdentity": { "$ref": "#/$defs/opaqueIdentity" },
+    "governedSourceIdentifier": { "$ref": "#/$defs/governedSourceIdentifier" },
     "entryIdentity": { "$ref": "#/$defs/entryIdentity" },
     "lifecycle": { "$ref": "#/$defs/lifecycle" },
     "referencePolicy": { "$ref": "#/$defs/referencePolicy" },
@@ -67,6 +75,15 @@
     "nonempty": { "type": "string", "minLength": 1 },
     "uri": { "type": "string", "pattern": "^https?://[^\\s]+$" },
     "code": { "type": "string", "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$" },
+    "producerDiagnostic": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "reason"],
+      "properties": {
+        "code": { "type": "string", "pattern": "^[a-z][a-z0-9-]*(?:[.][a-z][a-z0-9-]*)+$" },
+        "reason": { "$ref": "#/$defs/nonempty" }
+      }
+    },
     "profiles": {
       "type": "object",
       "additionalProperties": false,
@@ -81,10 +98,11 @@
     "extensions": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["entryNodeKey", "retractionTargetRole"],
+      "required": ["entryNodeKey", "retractionTargetRole", "writerRecordVersion"],
       "properties": {
         "entryNodeKey": { "$ref": "#/$defs/uri" },
-        "retractionTargetRole": { "$ref": "#/$defs/uri" }
+        "retractionTargetRole": { "$ref": "#/$defs/uri" },
+        "writerRecordVersion": { "$ref": "#/$defs/uri" }
       }
     },
     "codeSystems": {
@@ -140,7 +158,7 @@
     "opaqueIdentity": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["algorithm", "domain", "preimage", "valueForm", "identifierSystem", "keyRequirements", "privacy", "rotation", "identityKinds"],
+      "required": ["algorithm", "domain", "preimage", "valueForm", "identifierSystem", "keyRequirements", "componentRequirements", "privacy", "informationPreservation", "rotation", "identityKinds"],
       "properties": {
         "algorithm": { "const": "HMAC-SHA-256" },
         "domain": { "const": "org.grovealliance.fhir.identity.v2" },
@@ -157,7 +175,29 @@
             "testKeysProhibited": { "const": true }
           }
         },
+        "componentRequirements": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["valueType", "nonEmpty", "arity"],
+          "properties": {
+            "valueType": { "const": "unicode-scalar-string" },
+            "nonEmpty": { "const": true },
+            "arity": { "const": "exactly-kind-components" }
+          }
+        },
         "privacy": { "$ref": "#/$defs/nonempty" },
+        "informationPreservation": {
+          "type": "object", "additionalProperties": false,
+          "required": ["hmacGuarantee", "reversible", "exactNativeRoundTrip", "potentiallyInternalCoordinates", "internalCoordinateRule", "semanticSourceFactRule"],
+          "properties": {
+            "hmacGuarantee": { "const": "equality-and-reconciliation" },
+            "reversible": { "const": false },
+            "exactNativeRoundTrip": { "const": "optional-governed-source-identifier-on-catalog-designated-primary" },
+            "potentiallyInternalCoordinates": { "const": ["output-role", "output-discriminator", "child-index"] },
+            "internalCoordinateRule": { "$ref": "#/$defs/nonempty" },
+            "semanticSourceFactRule": { "$ref": "#/$defs/nonempty" }
+          }
+        },
         "rotation": { "$ref": "#/$defs/nonempty" },
         "identityKinds": {
           "type": "array",
@@ -178,6 +218,151 @@
           "minItems": 1,
           "items": { "$ref": "#/$defs/code" }
         }
+      }
+    },
+    "governedSourceIdentifier": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["purpose", "placement", "system", "value", "type", "prohibitions", "closedProfiles", "validation"],
+      "properties": {
+        "purpose": { "$ref": "#/$defs/nonempty" },
+        "placement": { "$ref": "#/$defs/nonempty" },
+        "system": { "$ref": "#/$defs/nonempty" },
+        "value": { "$ref": "#/$defs/nonempty" },
+        "type": { "$ref": "#/$defs/nonempty" },
+        "prohibitions": { "$ref": "#/$defs/nonempty" },
+        "closedProfiles": { "$ref": "#/$defs/nonempty" },
+        "validation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["optionality", "designatedNode", "identifier", "forbiddenIdentityUses", "forbiddenIdentityUseEnforcement", "duplicateElsewhereInEventAllowed", "neverResourceTypes", "neverProfiles", "healthConnectChildCountRules", "healthConnectChildGraphRules", "recordingDocumentRule"],
+          "properties": {
+            "optionality": { "const": "optional" },
+            "designatedNode": {
+              "type": "object", "additionalProperties": false,
+              "required": ["lifecycle", "r4Element", "designationMode", "maxPerPrimaryOutput", "maxPrimaryOutputsPerEvent", "ambiguityRule", "outputModeRules", "adapterSelectors"],
+              "properties": {
+                "lifecycle": { "const": "active" },
+                "r4Element": { "const": "Resource.identifier" },
+                "designationMode": { "const": "catalog-output-selector" },
+                "maxPerPrimaryOutput": { "const": 1 },
+                "maxPrimaryOutputsPerEvent": { "const": 1 },
+                "ambiguityRule": { "const": "omit-native-identifier" },
+                "outputModeRules": {
+                  "const": {
+                    "semantic-only": "sole-source-derived-output",
+                    "source-only": "sole-document-reference-output",
+                    "hybrid-required": "one-structured-primary-never-companion-artifact",
+                    "choice": "one-selected-one-to-one-output"
+                  }
+                },
+                "adapterSelectors": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["healthkit", "health-connect", "providers", "sensorkit"],
+                  "properties": {
+                    "healthkit": { "$ref": "#/$defs/governedHealthKitSelector" },
+                    "health-connect": { "$ref": "#/$defs/governedHealthConnectSelector" },
+                    "providers": { "$ref": "#/$defs/governedProviderSelector" },
+                    "sensorkit": { "$ref": "#/$defs/governedSensorKitSelector" }
+                  }
+                }
+              }
+            },
+            "identifier": {
+              "type": "object", "additionalProperties": false,
+              "required": ["classification", "system", "value", "type"],
+              "properties": {
+                "classification": { "const": {"activeOutputNonGroveIdentifier": "governed-source-identifier", "supportNodeIdentifier": "profile-defined-non-source-identifier", "supportLeakageDetection": "exact-system-and-value-pair-match-to-active-governed-identifier"} },
+                "system": { "const": {"required": true, "absoluteUri": true, "scope": "deployment-or-exact-source-authority-key-space"} },
+                "value": { "const": {"required": true, "nonEmpty": true, "exactSourceValue": true} },
+                "type": {
+                  "const": {
+                    "required": false,
+                    "textOnlyAllowed": true,
+                    "coding": {
+                      "systemRequired": true,
+                      "systemAbsoluteUri": true,
+                      "codeRequired": true,
+                      "codeLexicalForm": "fhir-code",
+                      "groveRoleCodingAllowed": false
+                    }
+                  }
+                }
+              }
+            },
+            "forbiddenIdentityUses": {
+              "const": ["resource-id", "bundle-entry-key", "retraction-address", "observation-component", "untyped-metadata", "attachment-title", "attachment-url"]
+            },
+            "forbiddenIdentityUseEnforcement": {
+              "const": {
+                "exactIdentifierPair": {"r4Paths": ["**.Identifier"], "matchRule": "exact-system-and-value", "enforcement": "event-validator"},
+                "resourceId": {"r4Paths": ["**.Resource.id"], "matchRule": "no-value-only-heuristic", "enforcement": "producer-obligation-and-profile-review"},
+                "bundleEntryKey": {"r4Paths": ["Bundle.entry.fullUrl", "Bundle.entry.extension.valueIdentifier.value"], "matchRule": "identifier-pair-structural-validation; no-fullUrl-value-heuristic", "enforcement": "exchange-entry-key-validator-and-producer-obligation"},
+                "retractionAddress": {"r4Paths": ["Provenance.target.reference", "Provenance.target.identifier.value"], "matchRule": "identifier-pair-structural-validation; no-reference-value-heuristic", "enforcement": "retraction-profile-validator-and-producer-obligation"},
+                "observationComponent": {"r4Paths": ["Observation.component.value[x]"], "matchRule": "no-value-only-heuristic", "enforcement": "closed-adapter-component-semantics-and-producer-obligation"},
+                "untypedMetadata": {"r4Paths": [], "matchRule": "no-generic-carrier-admitted", "enforcement": "closed-adapter-metadata-allowlists-and-no-grove-generic-extension"},
+                "attachmentPresentation": {"r4Paths": ["DocumentReference.content.attachment.title", "DocumentReference.content.attachment.url"], "matchRule": "no-substring-heuristic", "enforcement": "deployment-governance-and-producer-obligation"}
+              }
+            },
+            "duplicateElsewhereInEventAllowed": { "const": false },
+            "neverResourceTypes": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/nonempty" } },
+            "neverProfiles": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/uri" } },
+            "healthConnectChildCountRules": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/code" } },
+            "healthConnectChildGraphRules": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/code" } },
+            "recordingDocumentRule": { "$ref": "#/$defs/nonempty" }
+          }
+        }
+      }
+    },
+    "governedExtensionMarker": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "url", "valueElement"],
+      "properties": {
+        "kind": { "const": "extension" },
+        "url": { "$ref": "#/$defs/uri" },
+        "valueElement": { "const": "valueCode" }
+      }
+    },
+    "governedHealthKitSelector": {
+      "type": "object", "additionalProperties": false,
+      "required": ["catalog", "rowCollection", "rowKey", "sourceMarker", "strategy", "excludedProfiles"],
+      "properties": {
+        "catalog": { "const": "catalog/healthkit-adapter.json" }, "rowCollection": { "const": "rows" }, "rowKey": { "const": "sourceTypeIdentifier" },
+        "sourceMarker": { "$ref": "#/$defs/governedExtensionMarker" },
+        "strategy": { "const": "unique-output-intersecting-source-row-profiles" },
+        "excludedProfiles": { "const": ["https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-average-heart-rate-observation", "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-workout-segment"] }
+      }
+    },
+    "governedHealthConnectSelector": {
+      "type": "object", "additionalProperties": false,
+      "required": ["catalog", "rowCollection", "rowKey", "sourceMarker", "strategy", "eligibleCountRules", "eligibleGraphRules", "excludedResourceTypes"],
+      "properties": {
+        "catalog": { "const": "catalog/health-connect-adapter.json" }, "rowCollection": { "const": "recordTypes" }, "rowKey": { "const": "token" },
+        "sourceMarker": { "$ref": "#/$defs/governedExtensionMarker" },
+        "strategy": { "const": "unique-output-selected-by-source-row-output-contract" },
+        "eligibleCountRules": { "const": ["exactly-one"] },
+        "eligibleGraphRules": { "const": ["exactly-one-admitted-specimen-output"] },
+        "excludedResourceTypes": { "const": ["Specimen"] }
+      }
+    },
+    "governedProviderSelector": {
+      "type": "object", "additionalProperties": false,
+      "required": ["catalog", "rowCollection", "rowKey", "sourceMarker", "providerMarker", "strategy"],
+      "properties": {
+        "catalog": { "const": "catalog/providers-adapter.json" }, "rowCollection": { "const": "providers.sourceTypes" }, "rowKey": { "const": "provider-id+token" },
+        "sourceMarker": { "$ref": "#/$defs/governedExtensionMarker" }, "providerMarker": { "$ref": "#/$defs/governedExtensionMarker" },
+        "strategy": { "const": "unique-supported-measurement-or-sole-source-document" }
+      }
+    },
+    "governedSensorKitSelector": {
+      "type": "object", "additionalProperties": false,
+      "required": ["catalog", "rowCollection", "rowKey", "sourceMarker", "strategy"],
+      "properties": {
+        "catalog": { "const": "catalog/sensorkit-adapter.json" }, "rowCollection": { "const": "entries" }, "rowKey": { "const": "sourceTypeCode" },
+        "sourceMarker": { "$ref": "#/$defs/governedExtensionMarker" },
+        "strategy": { "const": "unique-structured-row-profile-or-sole-source-document" }
       }
     },
     "entryIdentity": {
@@ -374,16 +559,28 @@
     "testVectors": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["keyHex", "keyId", "epoch", "warning", "identities", "event", "entryNode", "fullUrls"],
+      "required": ["keyHex", "keyId", "epoch", "warning", "identitySystems", "measurementExamples", "identities", "invalidIdentities", "event", "entryNode", "fullUrls"],
       "properties": {
         "keyHex": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
         "keyId": { "type": "string", "pattern": "^[A-Za-z0-9._-]+$" },
         "epoch": { "type": "string", "pattern": "^[1-9][0-9]*$" },
         "warning": { "$ref": "#/$defs/nonempty" },
+        "identitySystems": {
+          "type": "array",
+          "minItems": 10,
+          "maxItems": 10,
+          "items": { "$ref": "#/$defs/exampleIdentitySystem" }
+        },
+        "measurementExamples": { "$ref": "#/$defs/measurementExamples" },
         "identities": {
           "type": "array",
           "minItems": 1,
           "items": { "$ref": "#/$defs/identityVector" }
+        },
+        "invalidIdentities": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/invalidIdentityVector" }
         },
         "event": { "$ref": "#/$defs/eventVector" },
         "entryNode": { "$ref": "#/$defs/entryNodeVector" },
@@ -394,6 +591,52 @@
         }
       }
     },
+    "measurementExamples": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["effectiveInstant", "effectivePeriodStart", "effectivePeriodEnd", "healthConnectLastModifiedTime", "nativeRecordPrefix", "repositoryScope", "providerScope", "globalProviderScope", "coordinates"],
+      "properties": {
+        "effectiveInstant": { "type": "string", "format": "date-time" },
+        "effectivePeriodStart": { "type": "string", "format": "date-time" },
+        "effectivePeriodEnd": { "type": "string", "format": "date-time" },
+        "healthConnectLastModifiedTime": { "type": "string", "format": "date-time" },
+        "nativeRecordPrefix": { "$ref": "#/$defs/nonempty" },
+        "repositoryScope": { "$ref": "#/$defs/exampleScope" },
+        "providerScope": { "$ref": "#/$defs/exampleScope" },
+        "globalProviderScope": { "$ref": "#/$defs/exampleScope" },
+        "coordinates": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["canonicalInstant", "canonicalPeriodStart", "canonicalPeriodEnd", "occurrence", "sleepStageToken", "exerciseSegmentToken"],
+          "properties": {
+            "canonicalInstant": { "$ref": "#/$defs/nonempty" },
+            "canonicalPeriodStart": { "$ref": "#/$defs/nonempty" },
+            "canonicalPeriodEnd": { "$ref": "#/$defs/nonempty" },
+            "occurrence": { "type": "string", "pattern": "^(0|[1-9][0-9]*)$" },
+            "sleepStageToken": { "$ref": "#/$defs/nonempty" },
+            "exerciseSegmentToken": { "$ref": "#/$defs/nonempty" }
+          }
+        }
+      }
+    },
+    "exampleScope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["system", "value"],
+      "properties": {
+        "system": { "$ref": "#/$defs/uri" },
+        "value": { "$ref": "#/$defs/nonempty" }
+      }
+    },
+    "exampleIdentitySystem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["identityKind", "system"],
+      "properties": {
+        "identityKind": { "enum": ["source-record", "source-output", "writer-record", "provider-record", "provider-output", "source-artifact", "provider-artifact", "source-context", "recording-device", "device-snapshot"] },
+        "system": { "$ref": "#/$defs/uri" }
+      }
+    },
     "identityVector": {
       "type": "object",
       "additionalProperties": false,
@@ -401,8 +644,19 @@
       "properties": {
         "id": { "$ref": "#/$defs/code" },
         "identityKind": { "$ref": "#/$defs/code" },
-        "components": { "type": "array", "items": { "type": "string" } },
+        "components": { "type": "array", "items": { "$ref": "#/$defs/nonempty" } },
         "value": { "type": "string", "pattern": "^v2:[A-Za-z0-9._-]+:[1-9][0-9]*:[A-Za-z0-9_-]{43}$" }
+      }
+    },
+    "invalidIdentityVector": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "identityKind", "components", "expectedError"],
+      "properties": {
+        "id": { "$ref": "#/$defs/code" },
+        "identityKind": { "$ref": "#/$defs/code" },
+        "components": { "type": "array", "items": { "type": "string" } },
+        "expectedError": { "enum": ["empty-component", "provider-kind-required"] }
       }
     },
     "eventVector": {

@@ -18,6 +18,7 @@ from pathlib import Path
 
 
 SCRIPT = Path(__file__).parents[1] / "Scripts/render-artifact-allowlist.py"
+PACKAGE = SCRIPT.parents[1] / "package.json"
 SPECIFICATION = importlib.util.spec_from_file_location(
     "render_artifact_allowlist", SCRIPT
 )
@@ -143,6 +144,15 @@ class RenderArtifactAllowlistTests(unittest.TestCase):
         self.assertEqual(status, 0, output)
         self.assertFalse((self.root / "mobile/fsh-generated").exists())
         self.assertIn("matches authored FSH declarations", output)
+
+    def test_standalone_check_validates_schema_before_cross_references(self) -> None:
+        scripts = json.loads(PACKAGE.read_text(encoding="utf-8"))["scripts"]
+
+        self.assertEqual(
+            scripts["artifacts:check"],
+            "npm run artifacts:schema && "
+            "python3 Scripts/render-artifact-allowlist.py --check",
+        )
 
     def test_clean_check_still_rejects_authored_declaration_drift(self) -> None:
         self.fsh.write_text(

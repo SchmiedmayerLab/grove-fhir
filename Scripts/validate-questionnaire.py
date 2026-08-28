@@ -71,15 +71,22 @@ COMPLETION_MODE = (
 )
 PARTICIPATION_MODE = "http://terminology.hl7.org/CodeSystem/v3-ParticipationMode"
 
-SEMVER = re.compile(
-    r"^(0|[1-9][0-9]*)\."
+SEMVER_PATTERN = (
+    r"(0|[1-9][0-9]*)\."
     r"(0|[1-9][0-9]*)\."
     r"(0|[1-9][0-9]*)"
     r"(?:-((?:0|[1-9][0-9]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*)"
     r"(?:\.(?:0|[1-9][0-9]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*))*))?"
-    r"(?:\+([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?$"
+    r"(?:\+([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?"
 )
-CANONICAL_WITH_VERSION = re.compile(r"^[^|#]+\|[^|#]+$")
+SEMVER = re.compile(rf"^{SEMVER_PATTERN}$")
+QUESTIONNAIRE_CANONICAL_URL_PATTERN = r"https?://[^\s/?#|]+[^\s|#]*"
+QUESTIONNAIRE_CANONICAL_URL = re.compile(
+    rf"^{QUESTIONNAIRE_CANONICAL_URL_PATTERN}$"
+)
+CANONICAL_WITH_VERSION = re.compile(
+    rf"^{QUESTIONNAIRE_CANONICAL_URL_PATTERN}\|{SEMVER_PATTERN}$"
+)
 EXPRESSION_NAME = re.compile(r"^[A-Za-z][A-Za-z0-9_]*$")
 RESERVED_VARIABLES = {
     "context",
@@ -300,6 +307,19 @@ def validate_questionnaire(questionnaire: dict[str, Any]) -> list[Issue]:
     if questionnaire.get("resourceType") != "Questionnaire":
         return [Issue("qg-resource-type", "Questionnaire", "Expected a Questionnaire resource")]
 
+    canonical_url = questionnaire.get("url")
+    if (
+        not isinstance(canonical_url, str)
+        or QUESTIONNAIRE_CANONICAL_URL.fullmatch(canonical_url) is None
+    ):
+        issues.append(
+            Issue(
+                "qg-canonical-1",
+                "Questionnaire.url",
+                "Use one absolute HTTP(S) canonical URL without a version separator or fragment",
+            )
+        )
+
     version = questionnaire.get("version")
     if not isinstance(version, str) or not SEMVER.fullmatch(version):
         issues.append(Issue("qg-version-1", "Questionnaire.version", "Version is not valid SemVer 2.0.0"))
@@ -472,7 +492,14 @@ def validate_response(response: dict[str, Any]) -> list[Issue]:
         return [Issue("gqr-resource-type", "QuestionnaireResponse", "Expected a QuestionnaireResponse resource")]
     canonical = response.get("questionnaire")
     if not isinstance(canonical, str) or not CANONICAL_WITH_VERSION.fullmatch(canonical):
-        issues.append(Issue("gqr-canonical-1", "QuestionnaireResponse.questionnaire", "Use one url|version canonical without fragments"))
+        issues.append(
+            Issue(
+                "gqr-canonical-1",
+                "QuestionnaireResponse.questionnaire",
+                "Use one absolute HTTP(S) canonical URL with a non-blank authority, "
+                "followed by one separator and an exact SemVer version",
+            )
+        )
     identifier = response.get("identifier")
     if not isinstance(identifier, dict) or not identifier.get("system") or not identifier.get("value"):
         issues.append(Issue("gqr-identifier-1", "QuestionnaireResponse.identifier", "A complete business identifier is required"))
@@ -728,6 +755,58 @@ def validate_answer_constraints(
         issues.append(Issue("pair-answer-occurrence", path, "Answer count exceeds maxOccurs"))
 
 
+def reference_resource_type(
+    reference: Any, containing_resource: dict[str, Any]
+) -> str | None:
+    """Return a Reference target type when it is explicit or locally resolvable."""
+    if not isinstance(reference, dict):
+        return None
+    declared_type = reference.get("type")
+    declared_resource_type: str | None = None
+    if isinstance(declared_type, str):
+        if re.fullmatch(r"[A-Z][A-Za-z0-9]*", declared_type):
+            declared_resource_type = declared_type
+        else:
+            canonical_prefix = "http://hl7.org/fhir/StructureDefinition/"
+            if declared_type.startswith(canonical_prefix):
+                candidate = declared_type[len(canonical_prefix) :]
+                if re.fullmatch(r"[A-Z][A-Za-z0-9]*", candidate):
+                    declared_resource_type = candidate
+    if "type" in reference and declared_resource_type is None:
+        # R4 Reference.type names a resource by its relative resource code or by
+        # the canonical core StructureDefinition URL. An arbitrary URI whose
+        # final path segment happens to look like a resource type proves nothing.
+        return None
+
+    literal = reference.get("reference")
+    if not isinstance(literal, str) or not literal:
+        return declared_resource_type
+    literal_resource_type: str | None = None
+    if literal.startswith("#"):
+        contained_id = literal[1:]
+        matches = [
+            resource
+            for resource in containing_resource.get("contained", [])
+            if isinstance(resource, dict) and resource.get("id") == contained_id
+        ]
+        if len(matches) == 1 and isinstance(matches[0].get("resourceType"), str):
+            literal_resource_type = matches[0]["resourceType"]
+    else:
+        match = re.search(
+            r"(?:^|/)([A-Z][A-Za-z0-9]*)/[^/?#]+(?:/_history/[^/?#]+)?$",
+            literal,
+        )
+        literal_resource_type = match.group(1) if match else None
+
+    if (
+        declared_resource_type is not None
+        and literal_resource_type is not None
+        and declared_resource_type != literal_resource_type
+    ):
+        return None
+    return declared_resource_type or literal_resource_type
+
+
 def validate_pair(
     questionnaire: dict[str, Any],
     response: dict[str, Any],
@@ -737,6 +816,20 @@ def validate_pair(
     expected_canonical = f"{questionnaire.get('url', '')}|{questionnaire.get('version', '')}"
     if response.get("questionnaire") != expected_canonical:
         issues.append(Issue("pair-questionnaire-canonical", "QuestionnaireResponse.questionnaire", f"Expected exact canonical {expected_canonical!r}"))
+    subject = response.get("subject")
+    admitted_subject_types = questionnaire.get("subjectType", [])
+    if subject is not None and admitted_subject_types:
+        actual_subject_type = reference_resource_type(subject, response)
+        if actual_subject_type not in admitted_subject_types:
+            issues.append(
+                Issue(
+                    "pair-subject-type",
+                    "QuestionnaireResponse.subject",
+                    "QuestionnaireResponse.subject must target one of "
+                    f"Questionnaire.subjectType {sorted(admitted_subject_types)!r}; "
+                    f"found {actual_subject_type!r}",
+                )
+            )
     if response.get("status") == "entered-in-error":
         issues.append(Issue("pair-response-entered-in-error", "QuestionnaireResponse.status", "An entered-in-error response must not be accepted as answer data"))
 

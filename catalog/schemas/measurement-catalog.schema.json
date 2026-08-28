@@ -497,7 +497,8 @@
         "effective": {
           "enum": [
             "Period",
-            "dateTime"
+            "dateTime",
+            "dateTime-or-Period"
           ]
         },
         "forbiddenElements": {

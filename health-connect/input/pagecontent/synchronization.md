@@ -16,10 +16,15 @@ Keep a durable synchronization scope for one Health Connect repository, Record c
 source filter, retained time range, and conversion-contract version. Persist its opaque
 repository scope, change token, and a ledger keyed by the raw Record id. The ledger retains
 the derived source identifier and every output identifier previously produced for that
-Record. Raw ids, tokens, filter fingerprints, and repository scope are local operational
-state; they are never copied into FHIR resources except through the opaque identifiers defined by
+Record. Change tokens and filter fingerprints remain local operational state. Grove's mandatory
+graph identities are the opaque identifiers defined by
 [`catalog/exchange-protocol.json`](https://grovealliance.org/fhir/catalog/exchange-protocol.json)
-and the Health Connect adapter binding.
+and the Health Connect adapter binding; they are stable for equality and reconciliation but are
+not reversible. When a deployment has an explicit traceability need, the exact raw Record id may
+additionally appear once as the governed source `Identifier` on the catalog-designated one-to-one
+primary output. That optional Identifier uses an absolute, deployment-governed, non-Grove system
+and never replaces the mandatory graph identity. It is not copied to child or support resources,
+entry addressing, retraction keys, arbitrary components, or untyped metadata.
 
 When a Record maps to several Observations, derive the complete replacement set before
 publishing it. An update can add, retain, or remove output identifiers. A deletion resolves

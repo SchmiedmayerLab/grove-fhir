@@ -92,7 +92,7 @@ def repository_source_text() -> list[Path]:
         check=True,
         capture_output=True,
     )
-    ignored_prefixes = ("audits/", "releases/", "publication/mobile-semantic-baseline.json")
+    ignored_prefixes = ("releases/", "publication/mobile-semantic-baseline.json")
     paths: list[Path] = []
     for raw in result.stdout.split(b"\0"):
         if not raw:

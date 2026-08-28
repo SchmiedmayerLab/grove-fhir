@@ -53,6 +53,13 @@ class HealthKitCatalogTests(unittest.TestCase):
             for profile in row["profiles"]
             if profile.startswith(prefix)
         }
+        ecg_output_profiles = {
+            profile
+            for output in self.catalog["sensorAdapterClaims"]["electrocardiogram"]["outputs"]
+            for profile in output["profiles"]
+            if profile.startswith(prefix)
+        }
+        active_healthkit_profiles.update(ecg_output_profiles)
         provenance = next(
             claim for claim in self.claims["adapterConversionProvenanceClaims"]
             if claim["adapter"] == "healthkit"
@@ -60,7 +67,7 @@ class HealthKitCatalogTests(unittest.TestCase):
         self.assertEqual(
             provenance["targetAdapterProfiles"], sorted(active_healthkit_profiles)
         )
-        self.assertEqual(len(active_healthkit_profiles), 118)
+        self.assertEqual(len(active_healthkit_profiles), 119)
 
         single_profiles = {
             profile
@@ -127,6 +134,22 @@ class HealthKitCatalogTests(unittest.TestCase):
             profiles,
         )
         self.assertIn("* extension[fhirRelease].valueCode = #r4 (exactly)", profiles)
+
+    def test_clinical_document_has_one_provenance_target_hierarchy(self) -> None:
+        profiles = (ROOT / "healthkit/input/fsh/profiles.fsh").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn(
+            "Profile: HealthKitClinicalRecordDocument\n"
+            "Parent: HealthKitRecordingDocument",
+            profiles,
+        )
+        target_rule = next(
+            line for line in profiles.splitlines()
+            if line.startswith("* target only Reference(")
+        )
+        self.assertIn("HealthKitRecordingDocument", target_rule)
+        self.assertNotIn("HealthKitClinicalRecordDocument", target_rule)
 
     def test_examples_do_not_reintroduce_a_generic_metadata_channel(self) -> None:
         examples = (ROOT / "healthkit/input/fsh/examples.fsh").read_text(
@@ -278,12 +301,20 @@ class HealthKitCatalogTests(unittest.TestCase):
 
     def test_profile_relocation_and_standard_bmi_claim_are_exact(self) -> None:
         self.assertEqual(
-            self.catalog["sourceTypeCoding"],
+            self.catalog["sourceTypeExtension"],
             {
-                "system": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-source-type",
-                "r4Element": "Observation.code.coding",
+                "url": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-source-type-extension",
+                "valueSystem": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-source-type",
+                "valueElement": "valueCode",
                 "cardinality": "exactly one",
-                "rule": "Every admitted HealthKit Observation preserves its exact sourceTypeIdentifier as an additional provider coding; the shared or authoritative standard coding remains the normative result meaning.",
+                "contexts": [
+                    "Observation",
+                    "DocumentReference",
+                    "VisionPrescription",
+                    "MedicationAdministration",
+                    "MedicationStatement",
+                ],
+                "rule": "Every admitted HealthKit output preserves its exact sourceTypeIdentifier in this lineage extension. Observation.code and DocumentReference.type remain clinical or document concepts; the HealthKit SDK source class is not asserted as an equivalent coding of either meaning.",
             },
         )
         self.assertEqual(
@@ -333,47 +364,82 @@ class HealthKitCatalogTests(unittest.TestCase):
         )
         self.assertIn("every voltage is present", contract["admissionRule"])
         symptom = contract["correlatedSymptomEvidence"]
-        self.assertEqual(symptom["cardinality"], "0..7")
+        self.assertEqual(symptom["cardinality"], "0..*")
+        self.assertIn("Observation.hasMember", symptom["r4Element"])
+        self.assertEqual(len(symptom["sourceTypes"]), 7)
+        self.assertIn("source-output Identifier", symptom["rule"])
+        self.assertIn("own event Bundle", symptom["exchangeRule"])
+        self.assertIn("normal HealthKit", symptom["sourceRevisionRule"])
+        self.assertNotIn("authorization", json.dumps(contract).lower())
         self.assertEqual(
-            [child["url"] for child in symptom["children"]],
-            [
-                "sourceIdentifier",
-                "effectivePeriod",
-                "symptomType",
-                "severity",
-                "sourceName",
-                "sourceBundleIdentifier",
-                "sourceVersion",
-                "sourceProductType",
-                "sourceOperatingSystemMajorVersion",
-                "sourceOperatingSystemMinorVersion",
-                "sourceOperatingSystemPatchVersion",
-            ],
+            [item["outputRole"] for item in contract["outputs"]],
+            ["electrocardiogram", "average-heart-rate"],
         )
         self.assertEqual(
-            [child["type"] for child in symptom["children"]],
+            contract["outputs"][1]["code"],
+            {"system": "http://loinc.org", "code": "8867-4", "display": "Heart rate"},
+        )
+        self.assertIn("validation input only", contract["wireMapping"]["samplingFrequency"])
+        self.assertIn(
+            "validation input only", contract["wireMapping"]["numberOfVoltageMeasurements"]
+        )
+        graph = self.claims["healthKitEcgGraphClaim"]
+        self.assertEqual(
+            graph["averageHeartRate"]["reference"],
+            {
+                "sourceOutput": "average-heart-rate",
+                "r4Path": "Observation.derivedFrom",
+                "targetOutput": "electrocardiogram",
+                "targetType": "Observation",
+                "referenceShape": "resolving-literal",
+                "min": 1,
+                "max": 1,
+            },
+        )
+        self.assertFalse(graph["correlatedSymptoms"]["sameEventBundle"])
+        self.assertEqual(
+            graph["correlatedSymptoms"]["statusConditionedCardinality"],
             [
-                "Identifier",
-                "Period",
-                "code",
-                "code",
-                "string",
-                "string",
-                "string",
-                "string",
-                "integer",
-                "integer",
-                "integer",
+                {"status": "notSet", "min": 0, "max": 0},
+                {"status": "none", "min": 0, "max": 0},
+                {"status": "present", "min": 1, "max": "*"},
             ],
         )
-        self.assertIn("complete HKSourceRevision", contract["admissionRule"])
-        self.assertIn("same symptom type", contract["admissionRule"])
-        self.assertIn("Symptom UUIDs are unique", contract["admissionRule"])
-        disclosure = contract["sourceRevisionDisclosure"]
-        self.assertEqual(disclosure["requiredProducerInput"], "explicitly-authorized")
-        self.assertIn("fails closed", disclosure["failureRule"])
-        self.assertIn("not encoded as a FHIR", disclosure["scope"])
+        examples = (ROOT / "healthkit/input/fsh/examples.fsh").read_text(
+            encoding="utf-8"
+        )
+        average_example = examples.split(
+            "Instance: HealthKitECGAverageHeartRateExample", 1
+        )[1].split("\nInstance:", 1)[0]
+        self.assertIn(
+            '* category = $observationCategory#vital-signs "Vital Signs"',
+            average_example,
+        )
+        self.assertIn(
+            "* derivedFrom = Reference(HealthKitECGObservationExample)",
+            average_example,
+        )
+        terminology = (ROOT / "healthkit/input/fsh/terminology.fsh").read_text(encoding="utf-8")
+        for mapping in contract["closedValueMappings"].values():
+            for value in mapping["values"]:
+                self.assertIn(f"* #{value['code']} ", terminology)
         self.assertIn("startDate/endDate", contract["effectiveRule"])
+
+    def test_sync_revision_metadata_is_an_exact_fail_closed_pair(self) -> None:
+        revision = self.catalog["identity"]["writerRecord"]["revision"]
+        self.assertEqual(revision["sourceIdentifier"], "HKMetadataKeySyncIdentifier")
+        self.assertEqual(revision["sourceVersion"], "HKMetadataKeySyncVersion")
+        self.assertEqual(revision["presenceRule"], "both-or-neither")
+        self.assertEqual(revision["versionMinimum"], 0)
+        self.assertNotIn("versionMaximum", revision)
+        self.assertEqual(revision["invalidDisposition"], "reject-source-record")
+        self.assertIn("non-empty String", revision["identifierRule"])
+        self.assertIn("canonical unsigned decimal", revision["versionRule"])
+        mapping = (ROOT / "healthkit/input/pagecontent/mapping.md").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("MUST reject either half-pair", mapping)
+        self.assertIn("MUST NOT fabricate version `0`", mapping)
 
     def test_mobile_healthkit_coverage_is_bidirectional(self) -> None:
         supported_rows: dict[str, list[str]] = {}
