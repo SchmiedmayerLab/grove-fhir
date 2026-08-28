@@ -50,7 +50,6 @@ Description: "Provider-specific SensorKit concepts for which no exact internatio
 * #distance-from-home "Distance from home" "Straight-line distance from the wearer's home category to the visited place."
 * #arrival-window "Arrival window" "The uncertainty window the platform gives for the arrival time."
 * #departure-window "Departure window" "The uncertainty window the platform gives for the departure time."
-* #ecg-session-guidance "ECG session guidance" "Whether the electrocardiogram session was taken under on-screen guidance."
 
 CodeSystem: SensorKitValueCS
 Id: sensorkit-value

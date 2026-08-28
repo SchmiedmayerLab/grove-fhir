@@ -20,6 +20,6 @@ Description: "The upstream provider whose already-obtained source record was con
 ValueSet: ProviderProviderVS
 Id: provider
 Title: "Provider"
-Description: "The closed v0.5.0 set of connected providers admitted by this adapter package."
+Description: "The closed v0.6.0 set of connected providers admitted by this adapter package."
 * include codes from system ProviderProviderCS
 * ^experimental = false

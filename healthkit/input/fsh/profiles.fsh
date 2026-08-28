@@ -6,25 +6,40 @@
 // SPDX-License-Identifier: MIT
 //
 
-Invariant: grove-writer-record-id-value-1
-Description: "A writer record identifier scopes the writer's own identifier to the writer: the scheme version, the writing application's reverse-DNS identifier, a vertical bar, then the identifier it assigned. Neither part may contain a vertical bar."
-Expression: "$this.matches('^v1:[A-Za-z0-9._-]+[|].+$')"
-Severity: #error
-
 Invariant: healthkit-motion-context-1
 Description: "Heart-rate motion context is present only on an Observation coded with LOINC 8867-4."
 Expression: "component.where(code.coding.where(system = 'https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-metadata-key' and code = 'HKMetadataKeyHeartRateMotionContext').exists()).empty() or code.coding.where(system = 'http://loinc.org' and code = '8867-4').exists()"
 Severity: #error
 
-Invariant: healthkit-object-id-1
-Description: "A HealthKit object identifier value is lowercase UUID text in 8-4-4-4-12 hyphenated form."
-Expression: "value.matches('^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$')"
+Invariant: healthkit-opaque-identifier-value-1
+Description: "A HealthKit source, output, or writer identifier is a canonical deployment-scoped Grove v2 HMAC value."
+Expression: "$this.matches('^v2:[A-Za-z0-9._-]+:[1-9][0-9]*:[A-Za-z0-9_-]{43}$')"
 Severity: #error
 
 Invariant: healthkit-writer-record-1
 Description: "HealthKit requires a sync version exactly when a sync identifier is present, so the two appear together or not at all. A sync version orders revisions of one logical sample, so it appears only with the sync identifier it versions."
-Expression: "extension('https://grovealliance.org/fhir/mobile/StructureDefinition/grove-writer-record-version').exists() = identifier.where(system = 'https://grovealliance.org/fhir/mobile/NamingSystem/grove-writer-record-id').exists()"
+Expression: "extension('https://grovealliance.org/fhir/mobile/StructureDefinition/grove-writer-record-version').exists() = identifier.where(type.coding.where(system = 'https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role' and code = 'writer-record').exists()).exists()"
 Severity: #error
+
+RuleSet: HealthKitOutputIdentitySlices
+* obeys healthkit-writer-record-1
+* identifier 2..* MS
+* identifier ^slicing.discriminator.type = #pattern
+* identifier ^slicing.discriminator.path = "type"
+* identifier ^slicing.rules = #open
+* identifier contains sourceRecord 1..1 MS and sourceOutput 1..1 MS and writerRecord 0..1 MS
+* identifier[sourceRecord].type = $groveIdentifierRole#source-record
+* identifier[sourceRecord].system 1..1 MS
+* identifier[sourceRecord].value 1..1 MS
+* identifier[sourceRecord].value obeys healthkit-opaque-identifier-value-1
+* identifier[sourceOutput].type = $groveIdentifierRole#source-output
+* identifier[sourceOutput].system 1..1 MS
+* identifier[sourceOutput].value 1..1 MS
+* identifier[sourceOutput].value obeys healthkit-opaque-identifier-value-1
+* identifier[writerRecord].type = $groveIdentifierRole#writer-record
+* identifier[writerRecord].system 1..1 MS
+* identifier[writerRecord].value 1..1 MS
+* identifier[writerRecord].value obeys healthkit-opaque-identifier-value-1
 
 Invariant: healthkit-sleep-stage-1
 Description: "A shared sleep-stage output carries exactly one exact HealthKit sleep-analysis source coding, and no other output carries one."
@@ -32,9 +47,26 @@ Expression: "(code.coding.where(system = 'https://grovealliance.org/fhir/mobile/
 Severity: #error
 
 Invariant: healthkit-ecg-symptom-state-1
-Description: "A present symptoms status has at least one caller-supplied correlated symptom; none and not-set have no correlated symptom."
-Expression: "(extension('https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-symptoms-status').value.first() = 'present' and extension('https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-correlated-symptom').exists()) or (extension('https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-symptoms-status').value.first() != 'present' and extension('https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-correlated-symptom').empty())"
+Description: "A present symptoms status has at least one separately identified symptom Observation member; none and not-set have no member."
+Expression: "(extension('https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-symptoms-status').value.first() = 'present' and hasMember.exists()) or (extension('https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-symptoms-status').value.first() != 'present' and hasMember.empty())"
 Severity: #error
+
+Invariant: healthkit-medication-concept-identity-1
+Description: "A tracked medication has exactly one deployment-scoped opaque source-context identity in addition to its source and output identities."
+Expression: "identifier.where(type.coding.where(system = 'https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role' and code = 'source-context').exists()).count() = 1"
+Severity: #error
+
+Profile: HealthKitApplicationDevice
+Parent: GroveApplicationDevice
+Id: healthkit-application-device
+Title: "HealthKit Application Device"
+Description: "An immutable Grove application snapshot with exactly one typed Apple bundle identifier for either the converting application or a caller-classified HKSourceRevision application. The bundle identifier names an application product, never an installation or host."
+* identifier contains appleBundleId 1..1 MS
+* identifier[appleBundleId].type 1..1 MS
+* identifier[appleBundleId].type = $healthKitIdentifierType#apple-bundle-id
+* identifier[appleBundleId].system 1..1 MS
+* identifier[appleBundleId].system = $appleBundleId (exactly)
+* identifier[appleBundleId].value 1..1 MS
 
 Profile: HealthKitObservation
 Parent: GroveMobileObservation
@@ -42,24 +74,8 @@ Id: healthkit-observation
 Title: "HealthKit Observation"
 Description: "The source identity and allowlisted HealthKit context for an Observation that also conforms to an appropriate clinical or research profile."
 * obeys healthkit-motion-context-1 and healthkit-sleep-stage-1 and healthkit-writer-record-1
-* identifier ^slicing.discriminator.type = #value
-* identifier ^slicing.discriminator.path = "system"
-* identifier ^slicing.rules = #open
-* identifier contains healthKitObjectId 1..1 MS and writerRecordId 0..1 MS
-* identifier[healthKitObjectId] obeys healthkit-object-id-1
-* identifier[healthKitObjectId].system = $healthKitObjectId
-* identifier[healthKitObjectId].value 1..1 MS
-* identifier[writerRecordId].system = $groveWriterRecordId
-* identifier[writerRecordId].value 1..1 MS
-* identifier[writerRecordId].value obeys grove-writer-record-id-value-1
-* extension contains GroveWriterRecordVersion named writerRecordVersion 0..1 MS
-* code.coding ^slicing.discriminator.type = #value
-* code.coding ^slicing.discriminator.path = "system"
-* code.coding ^slicing.rules = #open
-* code.coding contains healthKitSourceType 1..1 MS
-* code.coding[healthKitSourceType].system = $healthKitSourceType
-* code.coding[healthKitSourceType].code 1..1 MS
-* code.coding[healthKitSourceType] from HealthKitSourceTypeVS (required)
+* issued 0..0
+* extension contains HealthKitSourceType named healthKitSourceType 1..1 MS
 * component ^slicing.discriminator.type = #pattern
 * component ^slicing.discriminator.path = "code"
 * component ^slicing.rules = #open
@@ -74,75 +90,105 @@ Profile: HealthKitECGObservation
 Parent: HealthKitObservation
 Id: healthkit-ecg-observation
 Title: "HealthKit ECG Observation"
-Description: "A lossless HealthKit ECG adapter result that is directly claimed together with the source-neutral Grove Sensor ECG profile. It retains the exact HealthKit classification, symptom evidence, optional average heart rate and sampling frequency, reported voltage count, and complete Lead-I-like voltage series supplied by the caller; it performs no HealthKit query."
+Description: "A HealthKit Lead-I-like waveform that directly claims the source-neutral Grove Sensor ECG profile. Native R4 elements carry classification, classification method, and references to separately exchanged symptom Observations; validation inputs such as reported count and sampling frequency are not duplicated on the wire."
 * obeys healthkit-ecg-symptom-state-1
-* code.coding[healthKitSourceType] = $healthKitSourceType#HKDataTypeIdentifierElectrocardiogram "ECG"
+* extension[healthKitSourceType].valueCode = #HKDataTypeIdentifierElectrocardiogram
 * extension contains
-    HealthKitECGClassification named healthKitECGClassification 1..1 MS and
     HealthKitECGSymptomsStatus named healthKitECGSymptomsStatus 1..1 MS and
-    HealthKitECGCorrelatedSymptom named healthKitECGCorrelatedSymptom 0..7 MS and
-    HealthKitECGAverageHeartRate named healthKitECGAverageHeartRate 0..1 MS and
-    HealthKitECGSamplingFrequency named healthKitECGSamplingFrequency 0..1 MS and
-    HealthKitECGVoltageMeasurementCount named healthKitECGVoltageMeasurementCount 1..1 MS and
-    HealthKitECGAlgorithmVersion named healthKitECGAlgorithmVersion 0..1 MS and
     HealthKitECGSourcePeriod named healthKitECGSourcePeriod 1..1 MS
-* code = $loinc#11524-6 "EKG study"
+* code = $loinc#11524-6
+* interpretation 1..1 MS
+* interpretation.coding 1..1 MS
+* interpretation.coding.system = $healthKitECGClassification (exactly)
+* interpretation from HealthKitECGClassificationVS (required)
+* method 0..1 MS
+* method.coding 1..1 MS
+* method.coding.system = $healthKitECGAlgorithmVersion (exactly)
+* method from HealthKitECGAlgorithmVersionVS (required)
 * effective[x] 1..1 MS
 * effective[x] only Period
 * value[x] 0..0
 * dataAbsentReason 0..0
+* hasMember 0..* MS
+* hasMember only Reference(Observation)
+* hasMember.reference 0..0
+* hasMember.type 1..1 MS
+* hasMember.type = "Observation" (exactly)
+* hasMember.identifier 1..1 MS
+* hasMember.identifier.type 1..1 MS
+* hasMember.identifier.type = $groveIdentifierRole#source-output
+* hasMember.identifier.system 1..1 MS
+* hasMember.identifier.value 1..1 MS
+* hasMember.identifier.value obeys healthkit-opaque-identifier-value-1
 * component 1..1 MS
 * component contains voltage 1..1 MS
-* component[voltage].code = $mdc#131329 "MDC_ECG_ELEC_POTL_I"
+* component[voltage].code = $mdc#131329
 * component[voltage].value[x] 1..1 MS
 * component[voltage].value[x] only SampledData
 * component[voltage].dataAbsentReason 0..0
+
+Profile: HealthKitECGAverageHeartRateObservation
+Parent: HealthKitObservation
+Id: healthkit-ecg-average-heart-rate-observation
+Title: "HealthKit ECG Average Heart Rate Observation"
+Description: "The user's average heart rate during one HealthKit ECG, represented as an independently identifiable LOINC Observation over the exact ECG waveform Period."
+* code.coding 1..1 MS
+* code.coding.system 1..1 MS
+* code.coding.system = $loinc (exactly)
+* code.coding.code 1..1 MS
+* code.coding.code = #8867-4 (exactly)
+* extension[healthKitSourceType].valueCode = #HKDataTypeIdentifierElectrocardiogram
+* category 1..1 MS
+* category.coding 1..1 MS
+* category.coding.system 1..1 MS
+* category.coding.system = $observationCategory (exactly)
+* category.coding.code 1..1 MS
+* category.coding.code = #vital-signs (exactly)
+* effective[x] 1..1 MS
+* effective[x] only Period
+* value[x] 1..1 MS
+* value[x] only Quantity
+* valueQuantity.value 1..1 MS
+* valueQuantity.system 1..1 MS
+* valueQuantity.system = $ucum (exactly)
+* valueQuantity.code 1..1 MS
+* valueQuantity.code = #/min (exactly)
+* dataAbsentReason 0..0
+* derivedFrom 1..1 MS
+* derivedFrom only Reference(HealthKitECGObservation)
+* derivedFrom.reference 1..1 MS
+* derivedFrom.identifier 0..0
 
 Profile: HealthKitConversionProvenance
 Parent: GroveMobileConversionProvenance
 Id: healthkit-conversion-provenance
 Title: "HealthKit Conversion Provenance"
-Description: "Provenance for transforming one HealthKit object into one or more HealthKit adapter Observations without fetching source data."
+Description: "Provenance for transforming or byte-preserving one HealthKit object into every admitted HealthKit adapter output without fetching source data."
 * target 1..* MS
-* target only Reference(HealthKitObservation)
+* target only Reference(HealthKitObservation or HealthKitRecordingDocument or HealthKitVisionPrescription or HealthKitMedicationDoseEvent or HealthKitUserAnnotatedMedication)
 * entity 1..1 MS
 * entity.role = #source
 * entity.what.reference 0..0
 * entity.what.identifier 1..1 MS
-* entity.what.identifier.system = $healthKitObjectId
+* entity.what.identifier.type = $groveIdentifierRole#source-record
+* entity.what.identifier.system 1..1 MS
 * entity.what.identifier.value 1..1 MS
-* entity.what.identifier.value obeys healthkit-object-id-1
 
 Profile: HealthKitRecordingDocument
 Parent: GroveSensorRecordingDocument
 Id: healthkit-recording-document
 Title: "HealthKit Recording Document"
-Description: "A HealthKit series whose native representation is a recording rather than a scalar result. A beat-to-beat interval series and a workout route are sequences with their own column schemas, published in the recording format registry; converting either to a single Observation value would discard every sample but one. The Observation states what the series is and links here for the samples themselves."
-* identifier ^slicing.discriminator.type = #value
-* identifier ^slicing.discriminator.path = "system"
-* identifier ^slicing.rules = #open
-* identifier contains healthKitObjectId 1..1 MS
-* identifier[healthKitObjectId].system = $healthKitObjectId
-* identifier[healthKitObjectId].value 1..1 MS
-* identifier[healthKitObjectId].value obeys healthkit-object-id-1
-// The source type rides in `type`, the way every other HealthKit artifact carries it as a coding
-// rather than an extension; a DocumentReference has no `code` to slice.
+Description: "A byte-preserved HealthKit source document or series whose native representation is not a scalar result. Beat-to-beat intervals and workout routes use registered column schemas; provider-issued clinical resources use a stricter derived profile that fixes their FHIR release and payload format."
+// The SDK source class is lineage, not a document-type coding.
+* extension contains HealthKitSourceType named healthKitSourceType 1..1 MS
 * type 1..1 MS
-* type.coding ^slicing.discriminator.type = #value
-* type.coding ^slicing.discriminator.path = "system"
-* type.coding ^slicing.rules = #open
-* type.coding contains healthKitSourceType 1..1 MS
-* type.coding[healthKitSourceType].system = $healthKitSourceType
-* type.coding[healthKitSourceType].code 1..1 MS
-* type.coding[healthKitSourceType] from HealthKitSourceTypeVS (required)
 
 
 Profile: HealthKitClinicalRecordDocument
-Parent: DocumentReference
+Parent: HealthKitRecordingDocument
 Id: healthkit-clinical-record-document
 Title: "HealthKit Clinical Record Document"
 Description: "A pass-through envelope for one provider-issued clinical FHIR resource surfaced by HealthKit. The payload is byte-preserved in the declared source FHIR release; Grove asserts identity and provenance, never conformance over the issuer's resource."
-* identifier 1..* MS
 * status MS
 * type 1..1 MS
 * type from HealthKitClinicalRecordTypeVS (required)
@@ -151,16 +197,15 @@ Description: "A pass-through envelope for one provider-issued clinical FHIR reso
 * date 1..1 MS
 * content 1..1 MS
 * content.format 1..1 MS
-* content.format = $recordingFormat#fhir-resource "FHIR Resource"
-// Stated here rather than inherited: this profile's parent is DocumentReference, not
-// GroveSensorRecordingDocument, so it is outside the chain that carries the shared rule.
+* content.format = $recordingFormat#fhir-r4-resource
+// Required by the inherited HealthKit recording parent and repeated here for clinical clarity.
 * content.format.version 1..1 MS
 * content.attachment.contentType 1..1 MS
 * content.attachment.contentType = #application/fhir+json (exactly)
-* content.attachment.title 1..1 MS
 * content.attachment.size 1..1 MS
 * content.attachment.hash 1..1 MS
 * extension contains HealthKitClinicalFHIRRelease named fhirRelease 1..1 MS
+* extension[fhirRelease].valueCode = #r4 (exactly)
 
 Extension: HealthKitClinicalFHIRRelease
 Id: healthkit-clinical-fhir-release
@@ -181,13 +226,7 @@ Parent: VisionPrescription
 Id: healthkit-vision-prescription
 Title: "HealthKit Vision Prescription"
 Description: "A glasses or contacts prescription a person entered in Health, carried as the structured lens specification HealthKit publishes rather than as an opaque document. HealthKit exposes no separate record-creation instant, so `created` and `dateWritten` both carry HKVisionPrescription.dateIssued. It exposes no prescriber either, and R4 makes that reference mandatory, so the reference is stated absent rather than invented."
-* identifier ^slicing.discriminator.type = #value
-* identifier ^slicing.discriminator.path = "system"
-* identifier ^slicing.rules = #open
-* identifier contains healthKitObjectId 1..1 MS
-* identifier[healthKitObjectId].system = $healthKitObjectId
-* identifier[healthKitObjectId].value 1..1 MS
-* identifier[healthKitObjectId].value obeys healthkit-object-id-1
+* insert HealthKitOutputIdentitySlices
 // No classifying element exists on this resource, and a tag may be ignored when a resource is
 // interpreted, so the source type is stated as an extension.
 * extension contains HealthKitSourceType named healthKitSourceType 1..1 MS
@@ -223,13 +262,7 @@ Parent: MedicationAdministration
 Id: healthkit-medication-dose-event
 Title: "HealthKit Medication Dose Event"
 Description: "One dose a person logged against a medication they track in Health. The R4 administration status collapses the six HealthKit log statuses onto three codes, so the exact HKMedicationDoseEvent.LogStatus is retained beside it together with the schedule the dose was logged against. HealthKit publishes no medication record, so the medication is named by the same HKHealthConceptIdentifier the tracked-medication statement carries and by nothing else."
-* identifier ^slicing.discriminator.type = #value
-* identifier ^slicing.discriminator.path = "system"
-* identifier ^slicing.rules = #open
-* identifier contains healthKitObjectId 1..1 MS
-* identifier[healthKitObjectId].system = $healthKitObjectId
-* identifier[healthKitObjectId].value 1..1 MS
-* identifier[healthKitObjectId].value obeys healthkit-object-id-1
+* insert HealthKitOutputIdentitySlices
 // No classifying element exists on this resource, and a tag may be ignored when a resource is
 // interpreted, so the source type is stated as an extension.
 * extension contains
@@ -241,8 +274,11 @@ Description: "One dose a person logged against a medication they track in Health
 * medication[x] only Reference
 * medicationReference.reference 0..0
 * medicationReference.identifier 1..1 MS
-* medicationReference.identifier.system = $healthKitHealthConceptId (exactly)
+* medicationReference.identifier.type 1..1 MS
+* medicationReference.identifier.type = $groveIdentifierRole#source-context
+* medicationReference.identifier.system 1..1 MS
 * medicationReference.identifier.value 1..1 MS
+* medicationReference.identifier.value obeys healthkit-opaque-identifier-value-1
 * subject 1..1 MS
 * subject only Reference(Patient)
 * effective[x] 1..1 MS
@@ -269,12 +305,14 @@ Parent: MedicationStatement
 Id: healthkit-user-annotated-medication
 Title: "HealthKit User Annotated Medication"
 Description: "A medication a person tracks in Health, with the annotations they added while adding it. HealthKit publishes no sample identity for a tracked medication, so the HKHealthConceptIdentifier of the underlying concept is the identity a dose event refers to. The archived flag is the whole of what the R4 status carries: an archived medication is completed and a medication the person still tracks is active."
-* identifier ^slicing.discriminator.type = #value
-* identifier ^slicing.discriminator.path = "system"
-* identifier ^slicing.rules = #open
-* identifier contains healthConceptId 1..1 MS
-* identifier[healthConceptId].system = $healthKitHealthConceptId
-* identifier[healthConceptId].value 1..1 MS
+* insert HealthKitOutputIdentitySlices
+* identifier 3..* MS
+* identifier contains healthConcept 1..1 MS
+* identifier[healthConcept].type = $groveIdentifierRole#source-context
+* identifier[healthConcept].system 1..1 MS
+* identifier[healthConcept].value 1..1 MS
+* identifier[healthConcept].value obeys healthkit-opaque-identifier-value-1
+* obeys healthkit-medication-concept-identity-1
 // No classifying element exists on this resource, and a tag may be ignored when a resource is
 // interpreted, so the source type is stated as an extension.
 * extension contains

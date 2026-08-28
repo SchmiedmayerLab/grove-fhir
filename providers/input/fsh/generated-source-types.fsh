@@ -12,7 +12,7 @@
 CodeSystem: ProviderSourceTypeCS
 Id: provider-source-type
 Title: "Provider Source Types"
-Description: "The complete provider-qualified Google Health API, Oura, and Withings source inventory admitted or explicitly classified by version 0.5.0. The code is source lineage, not a clinical result code or fetch instruction."
+Description: "The complete provider-qualified Google Health API, Oura, and Withings source inventory admitted or explicitly classified by version 0.6.0. The code is source lineage, not a clinical result code or fetch instruction."
 * ^experimental = false
 * ^caseSensitive = true
 * ^content = #complete
@@ -23,7 +23,7 @@ Description: "The complete provider-qualified Google Health API, Oura, and Withi
 * #google-health-api/core-body-temperature "Google Health API: core-body-temperature" "The Google Health API core-body-temperature source type. Grove converts it to body-temperature."
 * #google-health-api/daily-oxygen-saturation "Google Health API: daily-oxygen-saturation" "The Google Health API daily-oxygen-saturation source type. Grove converts it to oxygen-saturation-daily-average."
 * #google-health-api/daily-respiratory-rate "Google Health API: daily-respiratory-rate" "The Google Health API daily-respiratory-rate source type. Grove converts it to respiratory-rate-average."
-* #google-health-api/daily-resting-heart-rate "Google Health API: daily-resting-heart-rate" "The Google Health API daily-resting-heart-rate source type. Grove converts it to resting-heart-rate."
+* #google-health-api/daily-resting-heart-rate "Google Health API: daily-resting-heart-rate" "The Google Health API daily-resting-heart-rate source type. Grove converts it to resting-heart-rate-daily-average."
 * #google-health-api/distance "Google Health API: distance" "The Google Health API distance source type. Grove converts it to distance."
 * #google-health-api/exercise "Google Health API: exercise" "The Google Health API exercise source type. Grove converts it to workout."
 * #google-health-api/floors "Google Health API: floors" "The Google Health API floors source type. Grove converts it to flights-climbed."
@@ -89,6 +89,6 @@ Description: "The complete provider-qualified Google Health API, Oura, and Withi
 ValueSet: ProviderSourceTypeVS
 Id: provider-source-type
 Title: "Provider Source Types"
-Description: "The complete closed provider-qualified source-type inventory for the Provider 0.5.0 adapter."
+Description: "The complete closed provider-qualified source-type inventory for the Provider 0.6.0 adapter."
 * ^experimental = false
 * include codes from system ProviderSourceTypeCS

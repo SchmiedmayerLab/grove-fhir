@@ -199,8 +199,10 @@ InstanceOf: HealthConnectBasalMetabolicRate
 Usage: #example
 Title: "Basal Metabolic Rate Example"
 Description: "A conformant Basal Metabolic Rate instance."
-* identifier[recordId].system = $healthConnectRecordId
-* identifier[recordId].value = "v1:1f5c58aa-6ec6-4e79-a682-829a9debd3f5|basal-metabolic-rate|record-basal-metabolic-rate"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* identifier[sourceRecord].value = "v2:test-key:1:vYaeDJowQfbyyWy53rCPMHiyhrgfcYD_3GVPcCXzk9E"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
+* identifier[sourceOutput].value = "v2:test-key:1:dUbFKDHglylLvGnY14T9HSs0WSOHQyN8f5pJnBau3-8"
 * status = #final
 * code = HealthConnectMeasurementCS#basal-metabolic-rate
 * extension[healthConnectRecordType].valueCode = #BasalMetabolicRateRecord
@@ -215,8 +217,10 @@ InstanceOf: HealthConnectDietaryEnergyFromFat
 Usage: #example
 Title: "Health Connect Dietary Energy from Fat Example"
 Description: "A conformant Health Connect Dietary Energy from Fat instance."
-* identifier[recordId].system = $healthConnectRecordId
-* identifier[recordId].value = "v1:1f5c58aa-6ec6-4e79-a682-829a9debd3f5|dietary-energy-from-fat|record-dietary-energy-from-fat"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* identifier[sourceRecord].value = "v2:test-key:1:KY5afLGTwH74v6jyZz0YRsjSIla1Peeso1ltNmXBrzE"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
+* identifier[sourceOutput].value = "v2:test-key:1:-ihnn0OnV6Ftn4eoUHmN7z33vvsvoODzMKJZFvRTkPs"
 * status = #final
 * code = HealthConnectMeasurementCS#dietary-energy-from-fat
 * extension[healthConnectRecordType].valueCode = #NutritionRecord
@@ -232,8 +236,10 @@ InstanceOf: HealthConnectDietaryFatTrans
 Usage: #example
 Title: "Health Connect Dietary Trans Fat Example"
 Description: "A conformant Health Connect Dietary Trans Fat instance."
-* identifier[recordId].system = $healthConnectRecordId
-* identifier[recordId].value = "v1:1f5c58aa-6ec6-4e79-a682-829a9debd3f5|dietary-fat-trans|record-dietary-fat-trans"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* identifier[sourceRecord].value = "v2:test-key:1:RSgOHa_kKD_aslV3aafWZzharGboNRGlUPIycPf3iko"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
+* identifier[sourceOutput].value = "v2:test-key:1:jICJgMpDzu7LLBvgiWGR_pJDZn3kfBmYExM953C3l-o"
 * status = #final
 * code = HealthConnectMeasurementCS#dietary-fat-trans
 * extension[healthConnectRecordType].valueCode = #NutritionRecord
@@ -249,8 +255,10 @@ InstanceOf: HealthConnectDietaryFatUnsaturated
 Usage: #example
 Title: "Health Connect Dietary Unsaturated Fat Example"
 Description: "A conformant Health Connect Dietary Unsaturated Fat instance."
-* identifier[recordId].system = $healthConnectRecordId
-* identifier[recordId].value = "v1:1f5c58aa-6ec6-4e79-a682-829a9debd3f5|dietary-fat-unsaturated|record-dietary-fat-unsaturated"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* identifier[sourceRecord].value = "v2:test-key:1:GfPv-5rLdU-J5iBTjdsFEb-fA4Uvn9uiYF3RidP1_u0"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
+* identifier[sourceOutput].value = "v2:test-key:1:5zXLUchruOQPQhHLZEBBPUpnZNmW7zdBkjaU5fF_qkI"
 * status = #final
 * code = HealthConnectMeasurementCS#dietary-fat-unsaturated
 * extension[healthConnectRecordType].valueCode = #NutritionRecord
@@ -266,8 +274,10 @@ InstanceOf: HealthConnectDietaryFolicAcid
 Usage: #example
 Title: "Health Connect Dietary Folic Acid Example"
 Description: "A conformant Health Connect Dietary Folic Acid instance."
-* identifier[recordId].system = $healthConnectRecordId
-* identifier[recordId].value = "v1:1f5c58aa-6ec6-4e79-a682-829a9debd3f5|dietary-folic-acid|record-dietary-folic-acid"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* identifier[sourceRecord].value = "v2:test-key:1:FRbaSGQ7pSfmKUOpfseV1Tp7-Nc8CbyJ5oIwrC-b5Q8"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
+* identifier[sourceOutput].value = "v2:test-key:1:nS8c8GQI3S4ruUnhKrOTKqQmO92Q_SVN8cTPbunBCN4"
 * status = #final
 * code = HealthConnectMeasurementCS#dietary-folic-acid
 * extension[healthConnectRecordType].valueCode = #NutritionRecord
@@ -283,8 +293,10 @@ InstanceOf: HealthConnectElevationGained
 Usage: #example
 Title: "Elevation Gained Example"
 Description: "A conformant Elevation Gained instance."
-* identifier[recordId].system = $healthConnectRecordId
-* identifier[recordId].value = "v1:1f5c58aa-6ec6-4e79-a682-829a9debd3f5|elevation-gained|record-elevation-gained"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* identifier[sourceRecord].value = "v2:test-key:1:V6QsinJVPSjbnx_zjSPlPKF_2sqHSZRQsUWZ9_yWxwU"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
+* identifier[sourceOutput].value = "v2:test-key:1:EGFPDUS9JFvXG7yr1krUg9ZWwHBob4KFF6r0FB4cKds"
 * status = #final
 * code = HealthConnectMeasurementCS#elevation-gained
 * extension[healthConnectRecordType].valueCode = #ElevationGainedRecord
@@ -300,8 +312,10 @@ InstanceOf: HealthConnectMenstruationPeriod
 Usage: #example
 Title: "Menstruation Period Example"
 Description: "A conformant Menstruation Period instance."
-* identifier[recordId].system = $healthConnectRecordId
-* identifier[recordId].value = "v1:1f5c58aa-6ec6-4e79-a682-829a9debd3f5|menstruation-period|record-menstruation-period"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* identifier[sourceRecord].value = "v2:test-key:1:YyYWSJXYKVXzYjc-4HXX0CF5s1BhQUVjRao03HMD_hU"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
+* identifier[sourceOutput].value = "v2:test-key:1:tAqnivDyI2QkzwHKIEFwvZMgZIW1GvCAlm9nAFvX0Mw"
 * status = #final
 * code = HealthConnectMeasurementCS#menstruation-period
 * extension[healthConnectRecordType].valueCode = #MenstruationPeriodRecord
@@ -317,8 +331,10 @@ InstanceOf: HealthConnectStepCadence
 Usage: #example
 Title: "Step Cadence Example"
 Description: "A conformant Step Cadence instance."
-* identifier[recordId].system = $healthConnectRecordId
-* identifier[recordId].value = "v1:1f5c58aa-6ec6-4e79-a682-829a9debd3f5|step-cadence|record-step-cadence"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* identifier[sourceRecord].value = "v2:test-key:1:UvsZj4IoPl2PMM8LZU-luMPQzIvJjz6RkEdT_Fixvbc"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
+* identifier[sourceOutput].value = "v2:test-key:1:G5Drw0KxVhk84CV64_LrFygJ4Ps4cVAodHhDID9QwO8"
 * status = #final
 * code = HealthConnectMeasurementCS#step-cadence
 * extension[healthConnectRecordType].valueCode = #StepsCadenceRecord
@@ -333,8 +349,10 @@ InstanceOf: HealthConnectTotalEnergy
 Usage: #example
 Title: "Total Energy Burned Example"
 Description: "A conformant Total Energy Burned instance."
-* identifier[recordId].system = $healthConnectRecordId
-* identifier[recordId].value = "v1:1f5c58aa-6ec6-4e79-a682-829a9debd3f5|total-energy|record-total-energy"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* identifier[sourceRecord].value = "v2:test-key:1:tXuqbDO6MUoKF7Qtc1djtJ46dfTj1R__9hkHIZR191g"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
+* identifier[sourceOutput].value = "v2:test-key:1:JRZTIZat6h1Du_w9plXJzP4xcKjVuPeMJhh1uhGrmRY"
 * status = #final
 * code = HealthConnectMeasurementCS#total-energy-burned
 * extension[healthConnectRecordType].valueCode = #TotalCaloriesBurnedRecord

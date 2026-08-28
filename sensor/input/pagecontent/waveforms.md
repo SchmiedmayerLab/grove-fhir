@@ -11,7 +11,7 @@ SPDX-License-Identifier: MIT
 `grove-sensor-sampled-data-observation` carries one uniformly sampled numeric series.
 `SampledData.period` is the strictly positive number of milliseconds between frames,
 and `dimensions` is the strictly positive number of interlaced decimal values in each
-frame. At least two complete frames are required. Version 0.5.0 admits direct numeric values only: `factor`, `lowerLimit`, and
+frame. At least two complete frames are required. Version 0.6.0 admits direct numeric values only: `factor`, `lowerLimit`, and
 `upperLimit` are absent, and `E`, `U`, `L`, and omitted-value tokens are not admitted.
 The data token count is an exact multiple of `dimensions`.
 
@@ -32,8 +32,10 @@ known lead.
 ## Native and large recordings
 
 `grove-sensor-recording-document` carries exactly one embedded payload or retrievable
-URL per attachment. `contentType`, title, byte size, and the FHIR R4 Attachment SHA-1
-hash are mandatory. For embedded data, size and hash match the decoded bytes exactly.
+URL per attachment. `contentType`, byte size, and the FHIR R4 Attachment SHA-1 hash are
+mandatory. `title` is an optional presentation label; consumers must not use its
+presence or wording as recording identity or semantics. For embedded data, size and
+hash match the decoded bytes exactly.
 A retrievable URL is immutable and version-specific; changed bytes use a new URL and
 business identity. The R4 SHA-1 hash detects changed content only: it is not a digital
 signature, authorization decision, or security credential. `context.related` can link a parsed or summary

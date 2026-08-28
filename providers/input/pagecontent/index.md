@@ -17,12 +17,17 @@ It covers the resources these guides use, identifiers and references, and how to
 
 Every normalized Observation declares exactly two direct profiles:
 
-1. the exact source-neutral Grove Mobile measurement profile; and
-2. [Provider Observation](StructureDefinition-providers-observation.html).
+1. the exact semantic measurement profile: a shared Grove Mobile profile when the
+   meaning is genuinely shared, or a provider-owned profile when it is not; and
+2. the exact provider envelope for the source (Google Health, Oura, or Withings),
+   which specializes [Provider Observation](StructureDefinition-providers-observation.html).
 
-The shared profile owns clinical meaning, result shape, unit, and time semantics. The
-adapter profile owns provider lineage and deterministic business identity. Inherited
-Mobile and core standard profiles are not repeated in `meta.profile`. Provider-native
+The semantic profile owns clinical meaning, result shape, unit, and time semantics. The
+adapter profile owns provider lineage and deterministic business identity. Provider
+Observation is an abstract common parent; concrete Observations and examples live in the
+Google Health, Oura, or Withings package that owns the exact provider envelope. Inherited
+Mobile and core standard profiles are not repeated in `meta.profile`; the semantic and
+adapter claims are both explicit and are never inferred from each other. Provider-native
 irregular recordings marked `mapped-standard` declare exactly the source-neutral Grove
 Sensor Recording Document and Provider Recording Document profiles. The adapter
 document preserves provider lineage and exact source/output identity without pretending
@@ -35,14 +40,14 @@ One adapter guide serves every connected provider because the providers share on
 This guide owns that shared shape, the provider and source-type terminology, the identifier namespaces, and the complete source inventory.
 A new provider therefore lands as a section of [`catalog/providers-adapter.json`](https://grovealliance.org/fhir/catalog/providers-adapter.json) by default.
 
-A measurement only one connected provider reports is not source-neutral, so it is published by that provider's own guide: [Withings](https://grovealliance.org/fhir/withings), [Oura](https://grovealliance.org/fhir/oura), and [Google Health](https://grovealliance.org/fhir/google-health).
+A measurement only one connected provider reports is not source-neutral, so its semantic profile is published by that provider's own guide: [Withings](https://grovealliance.org/fhir/withings), [Oura](https://grovealliance.org/fhir/oura), or [Google Health](https://grovealliance.org/fhir/google-health). The emitted resource still carries that profile together with its provider envelope.
 Each of those guides narrows Provider Observation to one vendor and carries only what no other source reports.
 A vendor score is not comparable across vendors even when two vendors give it the same name, so publishing it here under a shared code would assert a comparability that does not exist.
 
 A source graduates to its own adapter only when its profile shape genuinely diverges — its own evidence rules, identity contract, or resource structure — which is why HealthKit, SensorKit, and Health Connect are separate adapters and the connected providers all share this one.
 The vendor is never the axis of the adapter: the same company can ship data through several source APIs, and each API follows the contract of the adapter it arrives through.
 
-[`catalog/providers-adapter.json`](https://grovealliance.org/fhir/catalog/providers-adapter.json) is the authoritative v0.5.0 inventory.
+[`catalog/providers-adapter.json`](https://grovealliance.org/fhir/catalog/providers-adapter.json) is the authoritative v0.6.0 inventory.
 Every source type and consumed source element from the closed provider source catalogs has exactly one status.
 The catalog is a closed release contract, not a roadmap.
 

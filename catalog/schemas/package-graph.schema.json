@@ -7,14 +7,28 @@
   "additionalProperties": false,
   "required": ["$schema", "schemaVersion", "fhirVersion", "version", "canonicalRoot", "packages"],
   "properties": {
-    "$schema": { "type": "string" },
-    "schemaVersion": { "type": "integer", "minimum": 1 },
+    "$schema": { "const": "https://grovealliance.org/fhir/catalog/schemas/package-graph.schema.json" },
+    "schemaVersion": { "const": 1 },
     "fhirVersion": { "const": "4.0.1" },
-    "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
-    "canonicalRoot": { "type": "string", "format": "uri" },
+    "version": { "const": "0.6.0" },
+    "canonicalRoot": { "const": "https://grovealliance.org/fhir" },
     "packages": {
       "type": "array",
-      "minItems": 1,
+      "minItems": 10,
+      "maxItems": 10,
+      "uniqueItems": true,
+      "allOf": [
+        { "contains": { "type": "object", "properties": { "source": { "const": "mobile" } }, "required": ["source"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "type": "object", "properties": { "source": { "const": "questionnaire" } }, "required": ["source"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "type": "object", "properties": { "source": { "const": "sensor" } }, "required": ["source"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "type": "object", "properties": { "source": { "const": "sensorkit" } }, "required": ["source"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "type": "object", "properties": { "source": { "const": "healthkit" } }, "required": ["source"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "type": "object", "properties": { "source": { "const": "health-connect" } }, "required": ["source"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "type": "object", "properties": { "source": { "const": "providers" } }, "required": ["source"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "type": "object", "properties": { "source": { "const": "withings" } }, "required": ["source"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "type": "object", "properties": { "source": { "const": "oura" } }, "required": ["source"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "type": "object", "properties": { "source": { "const": "google-health" } }, "required": ["source"] }, "minContains": 1, "maxContains": 1 }
+      ],
       "items": {
         "type": "object",
         "additionalProperties": false,
@@ -34,11 +48,45 @@
           },
           "profiles": {
             "type": "array",
+            "minItems": 1,
             "uniqueItems": true,
             "items": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$" }
           }
-        }
+        },
+        "oneOf": [
+          { "$ref": "#/$defs/mobilePackage" },
+          { "$ref": "#/$defs/questionnairePackage" },
+          { "$ref": "#/$defs/sensorPackage" },
+          { "$ref": "#/$defs/sensorKitPackage" },
+          { "$ref": "#/$defs/healthKitPackage" },
+          { "$ref": "#/$defs/healthConnectPackage" },
+          { "$ref": "#/$defs/providersPackage" },
+          { "$ref": "#/$defs/withingsPackage" },
+          { "$ref": "#/$defs/ouraPackage" },
+          { "$ref": "#/$defs/googleHealthPackage" }
+        ]
       }
     }
+  },
+  "$defs": {
+    "packageIdentity": {
+      "type": "object",
+      "required": ["source", "packageId", "canonical"],
+      "properties": {
+        "source": { "type": "string" },
+        "packageId": { "type": "string" },
+        "canonical": { "type": "string" }
+      }
+    },
+    "mobilePackage": { "allOf": [{ "$ref": "#/$defs/packageIdentity" }, { "type": "object", "properties": { "source": { "const": "mobile" }, "packageId": { "const": "org.grovealliance.fhir.mobile" }, "canonical": { "const": "https://grovealliance.org/fhir/mobile" } } }] },
+    "questionnairePackage": { "allOf": [{ "$ref": "#/$defs/packageIdentity" }, { "type": "object", "properties": { "source": { "const": "questionnaire" }, "packageId": { "const": "org.grovealliance.fhir.questionnaire" }, "canonical": { "const": "https://grovealliance.org/fhir/questionnaire" } } }] },
+    "sensorPackage": { "allOf": [{ "$ref": "#/$defs/packageIdentity" }, { "type": "object", "properties": { "source": { "const": "sensor" }, "packageId": { "const": "org.grovealliance.fhir.sensor" }, "canonical": { "const": "https://grovealliance.org/fhir/sensor" } } }] },
+    "sensorKitPackage": { "allOf": [{ "$ref": "#/$defs/packageIdentity" }, { "type": "object", "properties": { "source": { "const": "sensorkit" }, "packageId": { "const": "org.grovealliance.fhir.sensorkit" }, "canonical": { "const": "https://grovealliance.org/fhir/sensorkit" } } }] },
+    "healthKitPackage": { "allOf": [{ "$ref": "#/$defs/packageIdentity" }, { "type": "object", "properties": { "source": { "const": "healthkit" }, "packageId": { "const": "org.grovealliance.fhir.healthkit" }, "canonical": { "const": "https://grovealliance.org/fhir/healthkit" } } }] },
+    "healthConnectPackage": { "allOf": [{ "$ref": "#/$defs/packageIdentity" }, { "type": "object", "properties": { "source": { "const": "health-connect" }, "packageId": { "const": "org.grovealliance.fhir.health-connect" }, "canonical": { "const": "https://grovealliance.org/fhir/health-connect" } } }] },
+    "providersPackage": { "allOf": [{ "$ref": "#/$defs/packageIdentity" }, { "type": "object", "properties": { "source": { "const": "providers" }, "packageId": { "const": "org.grovealliance.fhir.providers" }, "canonical": { "const": "https://grovealliance.org/fhir/providers" } } }] },
+    "withingsPackage": { "allOf": [{ "$ref": "#/$defs/packageIdentity" }, { "type": "object", "properties": { "source": { "const": "withings" }, "packageId": { "const": "org.grovealliance.fhir.withings" }, "canonical": { "const": "https://grovealliance.org/fhir/withings" } } }] },
+    "ouraPackage": { "allOf": [{ "$ref": "#/$defs/packageIdentity" }, { "type": "object", "properties": { "source": { "const": "oura" }, "packageId": { "const": "org.grovealliance.fhir.oura" }, "canonical": { "const": "https://grovealliance.org/fhir/oura" } } }] },
+    "googleHealthPackage": { "allOf": [{ "$ref": "#/$defs/packageIdentity" }, { "type": "object", "properties": { "source": { "const": "google-health" }, "packageId": { "const": "org.grovealliance.fhir.google-health" }, "canonical": { "const": "https://grovealliance.org/fhir/google-health" } } }] }
   }
 }

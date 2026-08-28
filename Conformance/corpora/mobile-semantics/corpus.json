@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "fhirVersion": "4.0.1",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "catalog": "catalog/measurement-catalog.json",
   "purpose": "Implementation-neutral normalized clinical projections used by Swift, Kotlin, and TypeScript producer CI. These vectors contain no source business identity and execute no producer implementation.",
   "comparisonRule": "Compare exactly profile, code, effective, and result after removing adapter lineage/context. Every Mobile scalar or aggregate effective endpoint is first rounded to the nearest millisecond with ties to even, then serialized with the caller/source numeric UTC offset when available; Sensor and ECG SampledData timing is excluded. Parse offset-bearing FHIR endpoints without precision loss, require the emitted endpoint already to be millisecond-canonical, and normalize equal instants to the vector representation. Compare the remaining projection using RFC 8785/JCS JSON. Adapter context is admitted only by the referenced closed sourceContextRules and is not part of the source-neutral clinical projection.",
@@ -50,7 +50,7 @@
   "sourceContextRules": {
     "healthkit.default": {
       "required": [
-        "Observation.code.coding[system=https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-source-type]"
+        "Observation.extension[url=https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-source-type-extension].valueCode"
       ],
       "allowedAdditions": [
         "Observation.identifier[healthKitObjectId]",
@@ -104,7 +104,7 @@
     "health-connect.sleep-duration": {
       "inherits": "health-connect.default",
       "allowedAdditions": [
-        "Observation.extension[health-connect-sleep-title]",
+        "Observation.extension[health-connect-session-title]",
         "Observation.note",
         "Observation.hasMember"
       ]
@@ -2131,13 +2131,18 @@
       "id": "resting-heart-rate",
       "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-resting-heart-rate",
       "code": {
-        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
-        "code": "resting-heart-rate"
+        "system": "http://loinc.org",
+        "code": "40443-4",
+        "requiredCodings": [
+          {
+            "system": "http://loinc.org",
+            "code": "8867-4"
+          }
+        ]
       },
       "effective": {
-        "type": "Period",
-        "start": "2026-08-19T22:40:00-07:00",
-        "end": "2026-08-20T06:55:00-07:00"
+        "type": "dateTime",
+        "value": "2026-08-19T10:30:00-07:00"
       },
       "result": {
         "type": "Quantity",
@@ -2147,13 +2152,13 @@
         "unit": "beats/minute"
       },
       "edgeRules": [
-        "The effective Period has an exact start and end.",
-        "The method coding asserts the aggregation window; the value is never a point Resting Heart Rate sample."
+        "The source explicitly classifies one instantaneous measurement as resting heart rate; the effective value is a dateTime, never an aggregation Period.",
+        "Observation.code contains LOINC 40443-4 for the specific resting meaning and LOINC 8867-4 exactly once to satisfy the authoritative FHIR R4 Heart Rate profile.",
+        "A daily or windowed resting-heart-rate estimate is not admitted by this shared profile."
       ],
       "admittedSourceContext": {
         "healthkit": "healthkit.default",
-        "health-connect": "health-connect.default",
-        "google-health-api": "providers.default"
+        "health-connect": "health-connect.default"
       }
     },
     {
@@ -2260,7 +2265,7 @@
       },
       "edgeRules": [
         "Duration and effective Period are both required and must describe the same admitted source summary semantics.",
-        "HealthKit has no admitted v0.3.0 aggregate rule and must not synthesize this projection."
+        "HealthKit has no admitted 0.6.0 aggregate rule and must not synthesize this projection."
       ],
       "admittedSourceContext": {
         "health-connect": "health-connect.sleep-duration",

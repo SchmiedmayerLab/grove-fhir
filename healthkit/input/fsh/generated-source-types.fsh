@@ -21,7 +21,7 @@ Description: "The concept properties the HealthKit source-type code system carri
 CodeSystem: HealthKitSourceTypeCS
 Id: healthkit-source-type
 Title: "HealthKit Source Types"
-Description: "The 218 source-type identifiers the iPhoneOS 26.5 SDK baseline (Xcode 26.6, build 17F113) hands back at runtime. A code is the identifier a producer reads from the sample, not the name of the constant that holds it. Membership is derived from, and verified against, healthkit/input/data/healthkit-inventory.json; the derived sleep-duration session aggregate is a Grove transformation contract rather than a platform source type and is excluded. A coding preserves exact source semantics and does not replace the shared or standard clinical coding."
+Description: "The 218 source-type identifiers the iPhoneOS 26.5 SDK baseline (Xcode 26.6, build 17F113) hands back at runtime. A code is the identifier a producer reads from the sample, not the name of the constant that holds it. Membership is derived from, and verified against, healthkit/input/data/healthkit-inventory.json; the derived sleep-duration session aggregate is a Grove transformation contract rather than a platform source type and is excluded. The exact code is carried in the HealthKit source-type lineage extension and never asserted as an equivalent clinical result coding."
 * ^experimental = false
 * ^caseSensitive = true
 * ^content = #complete
@@ -688,6 +688,6 @@ Description: "The 218 source-type identifiers the iPhoneOS 26.5 SDK baseline (Xc
 ValueSet: HealthKitSourceTypeVS
 Id: healthkit-source-type
 Title: "HealthKit Source Types"
-Description: "The complete closed set of HealthKit platform source types in the version 0.5.0 catalog."
+Description: "The complete closed set of HealthKit platform source types in the version 0.6.0 catalog."
 * ^experimental = false
 * include codes from system HealthKitSourceTypeCS

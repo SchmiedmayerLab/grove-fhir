@@ -8,4 +8,3 @@
 
 Alias: $ucum = http://unitsofmeasure.org
 Alias: $loinc = http://loinc.org
-Alias: $providerSourceRecordId = https://grovealliance.org/fhir/providers/NamingSystem/provider-source-record-id

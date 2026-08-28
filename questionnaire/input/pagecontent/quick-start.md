@@ -43,9 +43,11 @@ Resolve this exact pair before rendering or accepting answers.
 
 ### 2. Follow one item through the pair
 
-Each Questionnaire item has a durable `linkId`. The response repeats the same `linkId`,
-text, and hierarchy. A follow-up defined under a question belongs under the particular
-answer that supplied its context:
+Each Questionnaire item has a durable `linkId`. The response repeats the same `linkId`
+and hierarchy. Its optional `text` may repeat the prompt for readability or carry the
+wording shown in another locale; conformance and matching never depend on that text. A
+follow-up defined under a question belongs under the particular answer that supplied
+its context:
 
 ```json
 {

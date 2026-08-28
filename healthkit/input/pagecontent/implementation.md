@@ -6,73 +6,90 @@ SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTR
 SPDX-License-Identifier: MIT
 -->
 
-A HealthKit Observation conforms to the HealthKit adapter profile, the Mobile envelope,
-and the profile that defines the clinical or research result. Install both Grove
-packages and validate all applicable profile canonicals together.
+A shared HealthKit Observation directly claims the generic HealthKit adapter profile and
+the one Mobile or standard profile that defines the result. A HealthKit-specific child
+Observation directly claims only that exact child; inherited profiles are not repeated.
+The ECG hybrid directly claims the Sensor ECG and HealthKit ECG profiles. Native recording,
+clinical-record, vision-prescription, medication-dose, and tracked-medication outputs use
+the exact direct claim modes published in `catalog/profile-claims.json`. Install Mobile,
+Sensor, and HealthKit and validate every direct profile together.
 
 ### Download the packages
 
 This pre-1.0 continuous build is not published in a FHIR package registry, and the canonical namespace is deliberately not hosted.
-Each published guide exposes its archive and checksum from its [Artifacts page](artifacts.html); download this guide's `package.tgz` and `package.tgz.sha256` there, plus the Mobile guide's pair from its own Artifacts page, then verify both checksums:
+Each published guide exposes its archive and checksum from its [Artifacts page](artifacts.html); download this guide's `package.tgz` and `package.tgz.sha256` there, plus the Mobile and Sensor guide pairs from their Artifacts pages, then verify all three checksums:
 
 ```sh
 (cd grove-packages/mobile && shasum -a 256 --check package.tgz.sha256)
+(cd grove-packages/sensor && shasum -a 256 --check package.tgz.sha256)
 (cd grove-packages/healthkit && shasum -a 256 --check package.tgz.sha256)
 ```
 
-To use the profiles from FHIR Shorthand, unpack both archives into the standard FHIR
-package cache and declare `org.grovealliance.fhir.healthkit#0.5.0`. The HealthKit package
-already declares its exact Mobile dependency. These continuous builds retain their
+To use the profiles from FHIR Shorthand, unpack all three archives into the standard FHIR
+package cache and declare `org.grovealliance.fhir.healthkit#0.6.0`. The HealthKit package
+already declares its exact Mobile and Sensor dependencies. These continuous builds retain their
 pre-1.0 version while their checksums change. Move aside each exact cache directory
 before extracting an update; never overlay a new archive on an older copy.
 
 ```sh
 cache_backup="$(mktemp -d)"
-test ! -e "$HOME/.fhir/packages/org.grovealliance.fhir.mobile#0.5.0" || \
-  mv "$HOME/.fhir/packages/org.grovealliance.fhir.mobile#0.5.0" \
+test ! -e "$HOME/.fhir/packages/org.grovealliance.fhir.mobile#0.6.0" || \
+  mv "$HOME/.fhir/packages/org.grovealliance.fhir.mobile#0.6.0" \
      "$cache_backup/"
-test ! -e "$HOME/.fhir/packages/org.grovealliance.fhir.healthkit#0.5.0" || \
-  mv "$HOME/.fhir/packages/org.grovealliance.fhir.healthkit#0.5.0" \
+test ! -e "$HOME/.fhir/packages/org.grovealliance.fhir.healthkit#0.6.0" || \
+  mv "$HOME/.fhir/packages/org.grovealliance.fhir.healthkit#0.6.0" \
      "$cache_backup/"
-mkdir -p "$HOME/.fhir/packages/org.grovealliance.fhir.mobile#0.5.0"
-mkdir -p "$HOME/.fhir/packages/org.grovealliance.fhir.healthkit#0.5.0"
+test ! -e "$HOME/.fhir/packages/org.grovealliance.fhir.sensor#0.6.0" || \
+  mv "$HOME/.fhir/packages/org.grovealliance.fhir.sensor#0.6.0" \
+     "$cache_backup/"
+mkdir -p "$HOME/.fhir/packages/org.grovealliance.fhir.mobile#0.6.0"
+mkdir -p "$HOME/.fhir/packages/org.grovealliance.fhir.sensor#0.6.0"
+mkdir -p "$HOME/.fhir/packages/org.grovealliance.fhir.healthkit#0.6.0"
 tar -xzf grove-packages/mobile/package.tgz \
-  -C "$HOME/.fhir/packages/org.grovealliance.fhir.mobile#0.5.0"
+  -C "$HOME/.fhir/packages/org.grovealliance.fhir.mobile#0.6.0"
+tar -xzf grove-packages/sensor/package.tgz \
+  -C "$HOME/.fhir/packages/org.grovealliance.fhir.sensor#0.6.0"
 tar -xzf grove-packages/healthkit/package.tgz \
-  -C "$HOME/.fhir/packages/org.grovealliance.fhir.healthkit#0.5.0"
+  -C "$HOME/.fhir/packages/org.grovealliance.fhir.healthkit#0.6.0"
 ```
 
 ```yaml
 dependencies:
-  org.grovealliance.fhir.healthkit: 0.5.0
+  org.grovealliance.fhir.healthkit: 0.6.0
 ```
 
 ### Validate an Observation
 
-Pass both local package archives to the official FHIR Validator. Add the HealthKit
-profile and the profile that defines the result. For a heart-rate Observation:
+Pass all three local package archives to the official FHIR Validator. Add the exact
+direct HealthKit and result profiles. For a heart-rate Observation:
 
 ```sh
 java -jar validator_cli.jar observation.json \
   -version 4.0.1 \
   -ig grove-packages/mobile/package.tgz \
+  -ig grove-packages/sensor/package.tgz \
   -ig grove-packages/healthkit/package.tgz \
   -profile https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-observation \
-  -profile http://hl7.org/fhir/StructureDefinition/heartrate
+  -profile https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-heart-rate
 ```
 
 Validation checks the resource shape, identifier format, terminology bindings, profile
-intersection, and Mobile rules. It cannot prove that a HealthKit sample type was mapped
-to the correct clinical profile, that an attributed Device performed the claimed role,
+intersection, and inherited Mobile/Sensor rules. The structural producer gate additionally
+binds the exact source-type coding to its one per-resource direct claim and requires one
+HealthKit conversion Provenance to target every output for the source record. Neither layer
+can prove that a HealthKit sample type was mapped to the correct clinical profile, that an
+attributed Device performed the claimed role,
 or that disclosing a source identifier is authorized. Test those adapter semantics and
 privacy decisions against representative source fixtures.
 
 Start with the [heart-rate JSON](Observation-HealthKitHeartRateObservationExample.json),
 then compare it with the field-by-field [mapping rules](mapping.html).
 
-### Retracting an entered-in-error record
+### Retracting a source record
 
-When a previously converted source record is retracted, publish a bundle whose outputs for that source are all `entered-in-error` stubs.
-Each stub keeps the profile claims, the normative code, and the complete business identifiers of the output it retracts, sets `status` to `entered-in-error`, and carries `dataAbsentReason` in place of a value.
-A bundle whose outputs for a source record are all entered-in-error records a retraction rather than a conversion and carries no conversion Provenance.
-The repository conformance validator enforces both directions: a retraction claiming a conversion Provenance and a conversion missing one are each rejected.
+When HealthKit reports a deleted source object, emit the dedicated Grove Mobile Retraction Bundle.
+Its sole source-record-retracted Provenance identifies the exact prior output graph through typed
+logical References carrying complete business Identifier pairs and closed target roles. Do not
+copy the former resources, relabel them `entered-in-error`, or encode a FHIR DELETE transaction.
+The assertion records source removal; receiver resolution and lifecycle application remain sink
+policy.

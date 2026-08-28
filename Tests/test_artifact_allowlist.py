@@ -30,14 +30,22 @@ INSTANCE_BLOCK = re.compile(
 USAGE = re.compile(r"^Usage:\s+#(definition|example)\s*$", re.MULTILINE)
 FHIR_ID = re.compile(r"^[A-Za-z0-9.-]{1,64}$")
 ARTIFACT_KEYS = {"fshName", "fshType", "resourceType", "id", "classification"}
-HEALTH_CONNECT_RECORD_SYSTEM = (
-    "https://grovealliance.org/fhir/health-connect/"
-    "NamingSystem/health-connect-record-id"
+IDENTIFIER_ROLE_SYSTEM = (
+    "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role"
 )
-HEALTH_CONNECT_OUTPUT_SYSTEM = (
-    "https://grovealliance.org/fhir/health-connect/"
-    "NamingSystem/health-connect-output-id"
-)
+V2_IDENTITY = re.compile(r"^v2:[A-Za-z0-9._-]+:[1-9][0-9]*:[A-Za-z0-9_-]{43}$")
+
+
+def identifiers_with_role(resource: dict[str, Any], role: str) -> list[dict[str, Any]]:
+    """Select typed identifiers without coupling identity to a global NamingSystem."""
+    return [
+        identifier
+        for identifier in resource.get("identifier", [])
+        if any(
+            coding.get("system") == IDENTIFIER_ROLE_SYSTEM and coding.get("code") == role
+            for coding in identifier.get("type", {}).get("coding", [])
+        )
+    ]
 
 
 def scalar_configuration(path: Path) -> dict[str, str]:
@@ -381,31 +389,32 @@ class ArtifactAllowlistTests(unittest.TestCase):
                         (resource_type, identifier)
                         for resource_type in ("CodeSystem", "ValueSet")
                         for identifier in (
+                            "health-connect-cervical-mucus-appearance",
+                            "health-connect-cervical-mucus-sensation",
+                            "health-connect-exercise-segment-type",
+                            "health-connect-exercise-type",
                             "health-connect-meal-type",
                             "health-connect-measurement",
+                            "health-connect-menstruation-flow",
                             "health-connect-menstruation-period",
+                            "health-connect-mindfulness-session-type",
+                            "health-connect-ovulation-test-result",
                             "health-connect-record-type",
                             "health-connect-relation-to-meal",
+                            "health-connect-sexual-activity-protection",
                             "health-connect-sleep-stage",
+                            "health-connect-vo2-max-measurement-method",
                         )
                     }
-                    # Retained platform codings are defined, never bound, so they have no value set.
                     | {
-                        ("CodeSystem", "health-connect-cervical-mucus-appearance"),
-                        ("CodeSystem", "health-connect-cervical-mucus-sensation"),
                         ("CodeSystem", "health-connect-concept-property"),
-                        ("CodeSystem", "health-connect-exercise-segment-type"),
-                        ("CodeSystem", "health-connect-exercise-type"),
-                        ("CodeSystem", "health-connect-menstruation-flow"),
-                        ("CodeSystem", "health-connect-ovulation-test-result"),
-                        ("CodeSystem", "health-connect-sexual-activity-protection"),
                     },
                 )
 
-    def test_health_connect_profiles_preserve_both_identity_layers(self) -> None:
+    def test_health_connect_profiles_preserve_typed_v2_record_and_output_identity(self) -> None:
         profile_path = (
             ROOT
-            / "health-connect/output/StructureDefinition-health-connect-observation.json"
+            / "mobile/output/StructureDefinition-grove-mobile-observation.json"
         )
         provenance_path = (
             ROOT
@@ -414,63 +423,50 @@ class ArtifactAllowlistTests(unittest.TestCase):
         if not profile_path.is_file() or not provenance_path.is_file():
             self.skipTest("Health Connect Publisher output is not present")
 
-        profile = json.loads(profile_path.read_text(encoding="utf-8"))
+        mobile_profile = json.loads(profile_path.read_text(encoding="utf-8"))
         differential = {
             element["id"]: element
-            for element in profile["differential"]["element"]
+            for element in mobile_profile["differential"]["element"]
         }
-        self.assertEqual(
-            differential["Observation.identifier:recordId"].get("min"), 1
-        )
-        # Optional: a one-to-one conversion emits none, because a second namespace repeating the
-        # record identifier would identify nothing new.
-        self.assertEqual(
-            differential["Observation.identifier:outputId"].get("min"), 0
-        )
-        self.assertEqual(differential["Observation.issued"].get("min"), 1)
-        self.assertNotIn("Observation.value[x]", differential)
-        self.assertNotIn("Observation.dataAbsentReason", differential)
-        constraints = {
-            constraint["key"]: constraint["expression"]
-            for constraint in differential["Observation"].get("constraint", [])
-        }
-        self.assertEqual(
-            constraints.get("health-connect-output-id-1"),
-            "identifier.where(system = "
-            "'https://grovealliance.org/fhir/health-connect/"
-            "NamingSystem/health-connect-output-id').all("
-            "value.matches('^v1:[^|]+([|][^|]+)+$'))",
-        )
-        record_value_constraints = {
-            constraint["key"]: constraint["expression"]
-            for constraint in differential[
-                "Observation.identifier:recordId.value"
-            ].get("constraint", [])
-        }
-        self.assertEqual(
-            record_value_constraints.get("health-connect-record-id-value-1"),
-            "matches('^v1:[^|]+([|][^|]+)+$')",
-        )
+        for slice_name, role in (("sourceRecord", "source-record"), ("sourceOutput", "source-output")):
+            self.assertEqual(differential[f"Observation.identifier:{slice_name}"].get("min"), 1)
+            self.assertEqual(
+                differential[f"Observation.identifier:{slice_name}.type"].get(
+                    "patternCodeableConcept"
+                ),
+                {"coding": [{"system": IDENTIFIER_ROLE_SYSTEM, "code": role}]},
+            )
+            constraints = {
+                constraint["key"]: constraint["expression"]
+                for constraint in differential[
+                    f"Observation.identifier:{slice_name}.value"
+                ].get("constraint", [])
+            }
+            self.assertEqual(
+                constraints.get("grove-opaque-identifier-value-1"),
+                "$this.matches('^v2:[A-Za-z0-9._-]+:[1-9][0-9]*:[A-Za-z0-9_-]{43}$')",
+            )
 
         provenance = json.loads(provenance_path.read_text(encoding="utf-8"))
-        provenance_differential = {
+        provenance_snapshot = {
             element["id"]: element
-            for element in provenance["differential"]["element"]
+            for element in provenance["snapshot"]["element"]
         }
-        source_system = provenance_differential[
-            "Provenance.entity.what.identifier.system"
-        ]
+        source_system = provenance_snapshot["Provenance.entity.what.identifier.system"]
+        self.assertEqual(source_system.get("min"), 1)
+        self.assertNotIn("patternUri", source_system)
         self.assertEqual(
-            source_system.get("patternUri"),
-            "https://grovealliance.org/fhir/health-connect/"
-            "NamingSystem/health-connect-record-id",
+            provenance_snapshot["Provenance.entity.what.identifier.type"].get(
+                "patternCodeableConcept"
+            ),
+            {"coding": [{"system": IDENTIFIER_ROLE_SYSTEM, "code": "source-record"}]},
         )
         self.assertEqual(
-            provenance_differential["Provenance.entity.what.reference"].get("max"),
+            provenance_snapshot["Provenance.entity.what.reference"].get("max"),
             "0",
         )
         self.assertEqual(
-            provenance_differential["Provenance.entity.agent.type"].get(
+            provenance_snapshot["Provenance.entity.agent.type"].get(
                 "patternCodeableConcept"
             ),
             {
@@ -484,7 +480,7 @@ class ArtifactAllowlistTests(unittest.TestCase):
             },
         )
         self.assertEqual(
-            provenance_differential["Provenance.entity.agent.who"]["type"],
+            provenance_snapshot["Provenance.entity.agent.who"]["type"],
             [
                 {
                     "code": "Reference",
@@ -495,51 +491,37 @@ class ArtifactAllowlistTests(unittest.TestCase):
             ],
         )
 
-    def test_health_connect_heart_rate_outputs_share_only_source_identity(self) -> None:
+    def test_health_connect_glucose_outputs_share_only_source_identity(self) -> None:
         output = ROOT / "health-connect/output"
         paths = (
-            output / "Observation-HealthConnectHeartRateSampleOneExample.json",
-            output / "Observation-HealthConnectHeartRateSampleTwoExample.json",
+            output / "Observation-HealthConnectCapillaryGlucoseExample.json",
+            output / "Specimen-HealthConnectCapillaryGlucoseSpecimenExample.json",
         )
         if not all(path.is_file() for path in paths):
             self.skipTest("Health Connect Publisher examples are not present")
-        observations = [json.loads(path.read_text(encoding="utf-8")) for path in paths]
-        by_system = [
-            {identifier["system"]: identifier["value"] for identifier in observation["identifier"]}
-            for observation in observations
-        ]
-        record_system = (
-            "https://grovealliance.org/fhir/health-connect/"
-            "NamingSystem/health-connect-record-id"
-        )
-        output_system = (
-            "https://grovealliance.org/fhir/health-connect/"
-            "NamingSystem/health-connect-output-id"
-        )
-        self.assertEqual(by_system[0][record_system], by_system[1][record_system])
-        self.assertNotEqual(by_system[0][output_system], by_system[1][output_system])
-        self.assertTrue(
-            all(observation["effectiveDateTime"].endswith("Z") for observation in observations)
-        )
-        self.assertTrue(all("_effectiveDateTime" not in observation for observation in observations))
+        outputs = [json.loads(path.read_text(encoding="utf-8")) for path in paths]
+        source_records = [identifiers_with_role(resource, "source-record") for resource in outputs]
+        source_outputs = [identifiers_with_role(resource, "source-output") for resource in outputs]
+        self.assertEqual([len(values) for values in source_records], [1, 1])
+        self.assertEqual([len(values) for values in source_outputs], [1, 1])
+        self.assertEqual(source_records[0][0], source_records[1][0])
+        self.assertNotEqual(source_outputs[0][0], source_outputs[1][0])
+        for identifier in (source_records[0][0], *[values[0] for values in source_outputs]):
+            self.assertIsNotNone(V2_IDENTITY.fullmatch(identifier["value"]))
 
     def test_health_connect_provenance_uses_each_observations_source_identity(self) -> None:
         output = ROOT / "health-connect/output"
         cases = (
             (
-                output / "Provenance-HealthConnectHeartRateProvenanceExample.json",
+                output / "Provenance-HealthConnectRestingHeartRateProvenanceExample.json",
+                (output / "Observation-HealthConnectRestingHeartRateExample.json",),
+            ),
+            (
+                output / "Provenance-HealthConnectCapillaryGlucoseProvenanceExample.json",
                 (
-                    output / "Observation-HealthConnectHeartRateSampleOneExample.json",
-                    output / "Observation-HealthConnectHeartRateSampleTwoExample.json",
+                    output / "Observation-HealthConnectCapillaryGlucoseExample.json",
+                    output / "Specimen-HealthConnectCapillaryGlucoseSpecimenExample.json",
                 ),
-            ),
-            (
-                output / "Provenance-HealthConnectBodyWeightProvenanceExample.json",
-                (output / "Observation-HealthConnectBodyWeightExample.json",),
-            ),
-            (
-                output / "Provenance-HealthConnectStepCountProvenanceExample.json",
-                (output / "Observation-HealthConnectStepCountExample.json",),
             ),
         )
         if not all(
@@ -552,33 +534,47 @@ class ArtifactAllowlistTests(unittest.TestCase):
         for provenance_path, observation_paths in cases:
             provenance = json.loads(provenance_path.read_text(encoding="utf-8"))
             provenance_source = provenance["entity"][0]["what"]["identifier"]
-            self.assertEqual(provenance_source["system"], HEALTH_CONNECT_RECORD_SYSTEM)
+            self.assertEqual(
+                identifiers_with_role({"identifier": [provenance_source]}, "source-record"),
+                [provenance_source],
+            )
+            self.assertIsNotNone(V2_IDENTITY.fullmatch(provenance_source["value"]))
             for observation_path in observation_paths:
                 observation = json.loads(observation_path.read_text(encoding="utf-8"))
-                source_identifiers = [
-                    identifier
-                    for identifier in observation["identifier"]
-                    if identifier["system"] == HEALTH_CONNECT_RECORD_SYSTEM
-                ]
-                self.assertEqual(source_identifiers, [provenance_source])
+                source_identifiers = identifiers_with_role(observation, "source-record")
+                self.assertEqual(
+                    [
+                        (identifier["system"], identifier["value"])
+                        for identifier in source_identifiers
+                    ],
+                    [(provenance_source["system"], provenance_source["value"])],
+                )
 
     def test_health_connect_does_not_invent_data_origin_metadata(self) -> None:
-        path = ROOT / "health-connect/output/Device-HealthConnectSourceApplicationExample.json"
+        path = (
+            ROOT
+            / "health-connect/output/Provenance-HealthConnectRestingHeartRateProvenanceExample.json"
+        )
         if not path.is_file():
             self.skipTest("Health Connect Publisher examples are not present")
-        source = json.loads(path.read_text(encoding="utf-8"))
+        provenance = json.loads(path.read_text(encoding="utf-8"))
         self.assertEqual(
-            source.get("identifier"),
-            [
-                {
+            provenance["entity"][0]["agent"][0]["who"],
+            {
+                "type": "Device",
+                "identifier": {
                     "system": "https://grovealliance.org/fhir/"
                     "health-connect/NamingSystem/android-package-name",
                     "value": "com.example.wearable",
-                }
-            ],
+                },
+            },
         )
-        self.assertNotIn("deviceName", source)
-        self.assertNotIn("version", source)
+        self.assertFalse(
+            (
+                ROOT
+                / "health-connect/output/Device-HealthConnectSourceApplicationExample.json"
+            ).exists()
+        )
 
 if __name__ == "__main__":
     unittest.main()

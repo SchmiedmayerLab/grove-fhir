@@ -37,12 +37,16 @@ def seed_for_path(path: str, guides: set[str]) -> set[str]:
     first = path.split("/", 1)[0]
     if first in guides:
         return {first}
+    if path in {
+        "catalog/exchange-protocol.json",
+        "catalog/release-manifest.json",
+    }:
+        return set(guides)
     catalog_seeds = {
         "catalog/measurement-catalog.json": {"mobile"},
         "catalog/sensor-catalog.json": {"sensor"},
         "catalog/healthkit-adapter.json": {"healthkit"},
         "catalog/health-connect-adapter.json": {"health-connect"},
-        "catalog/health-connect-identity.json": {"health-connect"},
         "catalog/providers-adapter.json": {"providers"},
         "catalog/sensorkit-adapter.json": {"sensorkit"},
     }

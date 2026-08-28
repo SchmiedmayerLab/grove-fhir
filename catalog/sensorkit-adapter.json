@@ -1,9 +1,17 @@
 {
+  "$schema": "https://grovealliance.org/fhir/catalog/schemas/catalog-contracts.schema.json",
   "schemaVersion": 1,
   "fhirVersion": "4.0.1",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "packageId": "org.grovealliance.fhir.sensorkit",
   "canonical": "https://grovealliance.org/fhir/sensorkit",
+  "sourceTypeExtension": {
+    "url": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-source-type",
+    "codeSystem": "https://grovealliance.org/fhir/sensorkit/CodeSystem/sensorkit-source-type",
+    "r4Element": "Observation.extension.valueCode or DocumentReference.extension.valueCode",
+    "cardinality": "exactly one",
+    "rule": "Every admitted SensorKit output states the exact sourceTypeCode from its one catalog entry."
+  },
   "statusVocabulary": [
     "supported",
     "mapped-standard",
@@ -13,12 +21,17 @@
     "intentionally-unsupported"
   ],
   "statusDefinitions": {
-    "supported": "Version 0.5.0 defines a lossless structured mapping to the listed source-neutral Sensor profile plus the SensorKit adapter profile. A row may require the listed linked native Recording Document when exact source fields cannot be carried in the structured projection alone.",
-    "mapped-standard": "Version 0.5.0 admits the stream as the listed source-neutral Sensor Recording Document and does not invent a structured scalar or waveform meaning.",
-    "platform-exclusive": "Version 0.5.0 defines the listed platform-exclusive SensorKit structured profile because no exact source-neutral or international profile exists.",
+    "supported": "Version 0.6.0 defines a lossless structured mapping to the listed source-neutral Sensor profile plus the SensorKit adapter profile. A row may require the listed linked native Recording Document when exact source fields cannot be carried in the structured projection alone.",
+    "mapped-standard": "Version 0.6.0 admits the stream as the listed source-neutral Sensor Recording Document and does not invent a structured scalar or waveform meaning.",
+    "platform-exclusive": "Version 0.6.0 defines the listed platform-exclusive SensorKit structured profile because no exact source-neutral or international profile exists.",
     "unmodeled": "The platform stream is inventoried, but no shared or SensorKit-scoped profile models it and no output is admitted.",
-    "deferred": "The platform stream is inventoried, but version 0.5.0 publishes no admitted output contract.",
-    "intentionally-unsupported": "Version 0.5.0 deliberately refuses the stream because any available representation would create a misleading or unsafe meaning."
+    "deferred": "The platform stream is inventoried, but version 0.6.0 publishes no admitted output contract.",
+    "intentionally-unsupported": "Version 0.6.0 deliberately refuses the stream because any available representation would create a misleading or unsafe meaning."
+  },
+  "observationIssued": {
+    "cardinality": "0..0",
+    "source": "none",
+    "rule": "SensorKit supplies measurement times but no distinct current-result availability instant. Omit Observation.issued; conversion, fetch, assembly, and upload times must not be substituted."
   },
   "sourceEvidence": {
     "platform": "Apple SensorKit",
@@ -31,10 +44,10 @@
     "accessed": "2026-08-20",
     "appleSensorInventory": "https://developer.apple.com/documentation/sensorkit/srsensor",
     "appleFrameworkDocumentation": "https://developer.apple.com/documentation/sensorkit",
-    "scope": "The exact 22 public Apple SRSensor symbols frozen by the v0.3.0 catalog."
+    "scope": "The exact 22 public Apple SRSensor symbols frozen by the version 0.6.0 catalog."
   },
   "inventoryScopes": {
-    "catalog-baseline": "One of the 20 platform symbols in the initial closed v0.3.0 catalog baseline.",
+    "catalog-baseline": "One of the 20 platform symbols in the initial closed catalog baseline.",
     "stable-addition": "A stable platform symbol added to complete the stated SDK baseline."
   },
   "profileClaims": {
@@ -61,6 +74,33 @@
       "rule": "The adapter-specific Provenance targets every structured and raw output from the source record and carries that exact source-record Identifier as its sole source entity."
     }
   },
+  "quantityValueDomains": {
+    "rule": "Every Quantity in the listed SensorKit-only summary profiles is a source-domain non-negative value. A component Quantity coded as UCUM {count} in the listed count profiles is additionally an integer; no physiologic upper range is invented.",
+    "nonNegativeProfiles": [
+      "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-device-usage-observation",
+      "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-visit-observation",
+      "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-messages-usage-observation",
+      "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-phone-usage-observation",
+      "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-keyboard-metrics-observation",
+      "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-sleep-session-observation",
+      "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-wrist-temperature-observation",
+      "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-accelerometer-observation",
+      "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-ppg-observation"
+    ],
+    "integerCountProfiles": [
+      "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-device-usage-observation",
+      "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-messages-usage-observation",
+      "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-phone-usage-observation",
+      "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-keyboard-metrics-observation",
+      "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-wrist-temperature-observation",
+      "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-accelerometer-observation",
+      "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-ppg-observation"
+    ],
+    "countQuantity": {
+      "system": "http://unitsofmeasure.org",
+      "code": "{count}"
+    }
+  },
   "rawPayloadAdmission": {
     "contract": "https://grovealliance.org/fhir/sensor#recording-document.payloadAdmission",
     "allowedAssertions": [
@@ -71,87 +111,83 @@
     "notFHIRAuthorization": true
   },
   "identity": {
+    "contract": "catalog/exchange-protocol.json",
+    "protocolVersion": 2,
+    "adapterId": "sensorkit",
     "sourceRecord": {
-      "system": "https://grovealliance.org/fhir/sensorkit/NamingSystem/sensorkit-record-id",
-      "assignmentRule": "The SensorKit-facing producer assigns one stable lowercase UUID to one exact source stream record. Re-fetching unchanged content must reuse it; changed content or a distinct source record must use a different value. Cross-producer equality is not asserted because SensorKit supplies no durable sample identifier."
-    },
-    "output": {
-      "system": "https://grovealliance.org/fhir/sensorkit/NamingSystem/sensorkit-output-id",
-      "algorithm": "The scheme version v1:, the source record identifier's value and the outputDiscriminator, joined by vertical bars. No component may contain a vertical bar; a value carrying one is rejected rather than escaped. Nothing is hashed.",
-      "rule": "Use the exact outputDiscriminator on the admitted structured or raw representation; there is no fallback.",
-      "vectors": [
-        {
-          "outputDiscriminator": "sampled-data",
-          "components": [
-            "879d9ea2-21cb-4527-b59b-2831dc4c84ab",
-            "sampled-data"
-          ],
-          "identifierValue": "v1:879d9ea2-21cb-4527-b59b-2831dc4c84ab|sampled-data"
-        },
-        {
-          "outputDiscriminator": "native-recording",
-          "components": [
-            "879d9ea2-21cb-4527-b59b-2831dc4c84ab",
-            "native-recording"
-          ],
-          "identifierValue": "v1:879d9ea2-21cb-4527-b59b-2831dc4c84ab|native-recording"
-        },
-        {
-          "outputDiscriminator": "on-wrist",
-          "components": [
-            "879d9ea2-21cb-4527-b59b-2831dc4c84ab",
-            "on-wrist"
-          ],
-          "identifierValue": "v1:879d9ea2-21cb-4527-b59b-2831dc4c84ab|on-wrist"
-        },
-        {
-          "outputDiscriminator": "device-usage-summary",
-          "components": [
-            "879d9ea2-21cb-4527-b59b-2831dc4c84ab",
-            "device-usage-summary"
-          ],
-          "identifierValue": "v1:879d9ea2-21cb-4527-b59b-2831dc4c84ab|device-usage-summary"
-        },
-        {
-          "outputDiscriminator": "ecg-waveform",
-          "components": [
-            "879d9ea2-21cb-4527-b59b-2831dc4c84ab",
-            "ecg-waveform"
-          ],
-          "identifierValue": "v1:879d9ea2-21cb-4527-b59b-2831dc4c84ab|ecg-waveform"
-        },
-        {
-          "outputDiscriminator": "visit-summary",
-          "components": [
-            "879d9ea2-21cb-4527-b59b-2831dc4c84ab",
-            "visit-summary"
-          ],
-          "identifierValue": "v1:879d9ea2-21cb-4527-b59b-2831dc4c84ab|visit-summary"
-        },
-        {
-          "outputDiscriminator": "native-\n\"\\résumé\u0001",
-          "components": [
-            "879d9ea2-21cb-4527-b59b-2831dc4c84ab",
-            "native-\n\"\\résumé\u0001"
-          ],
-          "identifierValue": "v1:879d9ea2-21cb-4527-b59b-2831dc4c84ab|native-\n\"\\résumé\u0001"
-        },
-        {
-          "outputDiscriminator": "native|recording",
-          "components": [
-            "879d9ea2-21cb-4527-b59b-2831dc4c84ab",
-            "native|recording"
-          ],
-          "identifierValue": null,
-          "note": "A discriminator carrying the separator has no representation here and is rejected, never escaped."
-        }
+      "identityKind": "source-record",
+      "identifierRole": "source-record",
+      "components": [
+        "adapter-id",
+        "source-type",
+        "repository-scope-system",
+        "repository-scope-value",
+        "native-record-id"
       ],
-      "separator": "|",
-      "versionPrefix": "v1"
+      "nativeRecordRule": "SensorKit does not expose a durable sample identifier. The producer atomically assigns and persists an opaque acquisition-record key while staging each source record, before FHIR conversion. Exact delivery retries reuse the staged key; every distinct callback record receives a distinct key even when its bytes and measured values are equal. Measured values, serialized payload digests, subject references, Resource.id, and processing times are prohibited key-selection inputs.",
+      "acquisitionCoordinate": {
+        "stream": "Partition the durable acquisition ledger by repository scope, exact SRSensor token, and a producer-stable opaque source-stream partition. SRDevice.productType is descriptive partition evidence, not by itself physical-unit identity.",
+        "resetGeneration": "Persist a non-negative reset generation per stream. Increment it only for an explicit source-cursor reset after the prior generation has no unresolved pending delivery; retries, callback rebatching, process restarts, and ordinary cursor advancement never increment it.",
+        "record": "At first staging, assign the next monotonic delivery ordinal within the reset generation to every delivered source record in its preserved source order. The durable acquisition coordinate is [reset-generation, delivery-ordinal]. A source time or interval is verification evidence only; no occurrence counter resets at a callback boundary.",
+        "pendingBatch": "Before yielding any converted record, atomically persist the reset generation, pending start ordinal, exact pending record count, each ordered opaque acquisition key, source verification coordinates/bytes, and the pre-yield cursor boundary. Cursor advancement commits only after every pending record is durably handed off.",
+        "ordering": "Preserve source delivery order across callback batches. Never sort by measured values or timestamps, use a Set or map iteration order, reset an equal-coordinate occurrence per callback, or collapse byte-equal records; duplicate multiplicity is part of the acquired source stream.",
+        "retry": "After a crash or retry, reconcile deliveries in order against the durable pending batch and reuse its acquisition keys and delivery ordinals even if the platform splits or combines callback batches differently. Only deliveries beyond the resolved pending boundary receive new ordinals.",
+        "conflict": "A payload digest may verify staged bytes but never selects identity. If retry evidence cannot reconcile exactly to the durable pending sequence and the source exposes no revision semantics, fail closed as an acquisition conflict instead of minting a content-derived identity.",
+        "vectors": [
+          {
+            "id": "equal-coordinate-cross-batch",
+            "resetGeneration": 4,
+            "attempts": [
+              {"deliveryBatch": "callback-a", "pendingStartOrdinal": 40, "pendingCount": 1, "sourceCoordinates": ["2026-08-20T09:00:00.000Z"], "resolvedOrdinals": [40], "disposition": "first-stage"},
+              {"deliveryBatch": "callback-b", "pendingStartOrdinal": 41, "pendingCount": 1, "sourceCoordinates": ["2026-08-20T09:00:00.000Z"], "resolvedOrdinals": [41], "disposition": "first-stage"}
+            ],
+            "expectedCoordinates": [{"generation": 4, "deliveryOrdinal": 40}, {"generation": 4, "deliveryOrdinal": 41}],
+            "assertion": "Equal timestamps delivered in different callbacks remain two distinct acquisition records; callback-local occurrence zero must not collide."
+          },
+          {
+            "id": "crash-retry-rebatch",
+            "resetGeneration": 9,
+            "attempts": [
+              {"deliveryBatch": "callback-before-crash", "pendingStartOrdinal": 120, "pendingCount": 2, "sourceCoordinates": ["2026-08-20T10:00:00.000Z", "2026-08-20T10:00:00.000Z"], "resolvedOrdinals": [120, 121], "disposition": "first-stage"},
+              {"deliveryBatch": "retry-callback-a", "pendingStartOrdinal": 120, "pendingCount": 2, "sourceCoordinates": ["2026-08-20T10:00:00.000Z"], "resolvedOrdinals": [120], "disposition": "retry-stage"},
+              {"deliveryBatch": "retry-callback-b", "pendingStartOrdinal": 120, "pendingCount": 2, "sourceCoordinates": ["2026-08-20T10:00:00.000Z"], "resolvedOrdinals": [121], "disposition": "retry-stage"}
+            ],
+            "expectedCoordinates": [{"generation": 9, "deliveryOrdinal": 120}, {"generation": 9, "deliveryOrdinal": 121}],
+            "assertion": "A two-record pending delivery retried as two callbacks reuses both persisted coordinates and does not mint ordinals 122 or 123."
+          }
+        ]
+      }
     },
-    "valuePattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-    "contentRule": "Every source field represented in the structured resource or native recording must participate in the producer's stable identity input; Resource.id, repository ids, subject references, and processing timestamps must not participate. The recording-device identity in exchange-identity.json is the one exception: a wearable belongs to a person, so its key admits the subject reference to keep one participant's recorder distinct from another's identical model.",
-    "resourceIdPolicy": "Resource.id is optional and repository-assigned. SensorKit source-record and output identifiers are complete business Identifiers and are never copied into Resource.id."
+    "sourceOutput": {
+      "identityKind": "source-output",
+      "identifierRole": "source-output",
+      "components": [
+        "adapter-id",
+        "source-type",
+        "repository-scope-system",
+        "repository-scope-value",
+        "native-record-id",
+        "output-role",
+        "output-discriminator"
+      ],
+      "outputRoleRule": "Use structured or native-recording according to the selected catalog representation.",
+      "outputDiscriminatorRule": "Use the exact outputDiscriminator on the admitted structured or raw representation. The HMAC length framing accepts arbitrary Unicode without a separator grammar; there is no fallback."
+    },
+    "sourceArtifact": {
+      "identityKind": "source-artifact",
+      "identifierRole": "source-artifact",
+      "components": [
+        "adapter-id",
+        "source-type",
+        "repository-scope-system",
+        "repository-scope-value",
+        "native-record-id",
+        "format-code",
+        "part-index"
+      ],
+      "rule": "A raw recording uses its registered format code and zero-based part index in addition to the source-record coordinates."
+    },
+    "resourceIdPolicy": "Resource.id is optional and repository-assigned. SensorKit business identifiers are never copied into Resource.id."
   },
   "entries": [
     {
@@ -189,7 +225,7 @@
       "minimumIOS": "26.0",
       "scope": "stable-addition",
       "status": "deferred",
-      "reason": "Version 0.5.0 publishes no reviewed output contract for this stable platform symbol."
+      "reason": "Version 0.6.0 publishes no reviewed output contract for this stable platform symbol."
     },
     {
       "sourceToken": "SRSensor.ambientLightSensor",
@@ -203,7 +239,7 @@
       "status": "mapped-standard",
       "structured": {
         "status": "deferred",
-        "reason": "The source contains heterogeneous light fields for which version 0.5.0 does not publish a lossless component profile."
+        "reason": "The source contains heterogeneous light fields for which version 0.6.0 does not publish a lossless component profile."
       },
       "raw": {
         "status": "mapped-standard",
@@ -279,7 +315,7 @@
         ],
         "encoding": "caller-supplied exact bytes",
         "formats": [
-          "fhir-resource-array",
+          "fhir-collection-bundle",
           "native-recording"
         ]
       }
@@ -307,6 +343,18 @@
           "voltage values",
           "derived sample times"
         ],
+        "nativeR4Mappings": [
+          {
+            "sourceField": "SRElectrocardiogramSample.session.guidance",
+            "r4Element": "Observation.method",
+            "cardinality": "1..1",
+            "valueKind": "coding",
+            "exactSourceValue": true,
+            "codingSystem": "https://grovealliance.org/fhir/sensorkit/CodeSystem/sensorkit-value",
+            "allowedCodes": ["guided", "unguided"],
+            "rule": "Emit exactly one SensorKitValueCS coding, guided or unguided. Per-voltage flags and native session state remain in the required Recording Document."
+          }
+        ],
         "admissionRule": "All batches form one complete uniform series at the exact reported frequency, one exact lead orientation is retained, and no voltage sample is omitted. Non-uniform, incomplete, mixed-lead, or inconsistent input fails closed.",
         "graphContract": {
           "requiredResources": [
@@ -329,7 +377,7 @@
         ],
         "encoding": "caller-supplied exact bytes",
         "formats": [
-          "fhir-resource-array",
+          "fhir-collection-bundle",
           "native-recording"
         ]
       }
@@ -346,7 +394,7 @@
       "status": "mapped-standard",
       "structured": {
         "status": "deferred",
-        "reason": "Version 0.5.0 publishes no reviewed structured profile for the heterogeneous face metrics."
+        "reason": "Version 0.6.0 publishes no reviewed structured profile for the heterogeneous face metrics."
       },
       "raw": {
         "status": "mapped-standard",
@@ -467,7 +515,7 @@
       "status": "mapped-standard",
       "structured": {
         "status": "deferred",
-        "reason": "Media interactions do not have a reviewed source-neutral clinical Observation representation in version 0.5.0."
+        "reason": "Media interactions do not have a reviewed source-neutral clinical Observation representation in version 0.6.0."
       },
       "raw": {
         "status": "mapped-standard",
@@ -619,7 +667,7 @@
         "outputDiscriminator": "native-recording",
         "encoding": "caller-supplied exact bytes",
         "formats": [
-          "fhir-resource-array",
+          "fhir-collection-bundle",
           "native-recording"
         ]
       }
@@ -783,7 +831,7 @@
       "status": "mapped-standard",
       "structured": {
         "status": "deferred",
-        "reason": "Speech metrics have no reviewed source-neutral clinical Observation representation in version 0.5.0."
+        "reason": "Speech metrics have no reviewed source-neutral clinical Observation representation in version 0.6.0."
       },
       "raw": {
         "status": "mapped-standard",
@@ -886,7 +934,7 @@
       "status": "mapped-standard",
       "structured": {
         "status": "deferred",
-        "reason": "Speech metrics have no reviewed source-neutral clinical Observation representation in version 0.5.0."
+        "reason": "Speech metrics have no reviewed source-neutral clinical Observation representation in version 0.6.0."
       },
       "raw": {
         "status": "mapped-standard",
@@ -918,7 +966,20 @@
           "departureDateInterval",
           "locationId"
         ],
-        "rule": "The widest arrival-start through departure-end Period is the effective interval; exact arrival and departure uncertainty windows remain separate Period components. This output does not assert a clinical Encounter. SensorKit's locationId is emitted only under explicit disclosure authorization, as a business identifier in the sensorkit-visit-location extension, because its recurrence across visits to one place is what makes it both analytically useful and linkable."
+        "nativeR4Mappings": [
+          {
+            "sourceField": "SRVisit.locationId",
+            "r4Element": "Observation.focus.identifier on an identifier-only logical Reference(Location)",
+            "cardinality": "0..1; present exactly when source locationId is present",
+            "valueKind": "identifier-reference",
+            "exactSourceValue": true,
+            "referenceType": "Location",
+            "referenceMode": "identifier-only",
+            "identifierSystemRule": "deployment- or exact source-store-scoped absolute URI; no Grove identifier-role coding",
+            "rule": "Preserve the exact native locationId under a deployment- or source-store-scoped absolute Identifier.system. Set Reference.type to Location, omit Reference.reference, and do not assign a Grove graph-identity role. The identifier is source context for recurrence analysis, never an entry key or retraction address."
+          }
+        ],
+        "rule": "The widest arrival-start through departure-end Period is the effective interval; exact arrival and departure uncertainty windows remain separate Period components. This output does not assert a clinical Encounter. When SensorKit supplies locationId, preserve it exactly as Observation.focus on an identifier-only logical Location Reference under the deployment's source-store-scoped namespace; no content-empty Location resource is created."
       },
       "raw": {
         "status": "mapped-standard",
@@ -926,7 +987,7 @@
         "outputDiscriminator": "native-recording",
         "encoding": "caller-supplied exact bytes",
         "formats": [
-          "fhir-resource-array",
+          "fhir-collection-bundle",
           "native-recording"
         ]
       }
@@ -945,7 +1006,24 @@
         "status": "platform-exclusive",
         "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-wrist-temperature-observation",
         "outputDiscriminator": "wrist-temperature-recording-summary",
-        "reason": "A sleep-interval wrist skin reading is neither body nor basal body temperature, so version 0.5.0 publishes a platform-scoped summary rather than binding it to a shared clinical meaning."
+        "reason": "A sleep-interval wrist skin reading is neither body nor basal body temperature, so version 0.6.0 publishes a platform-scoped summary rather than binding it to a shared clinical meaning.",
+        "representedFields": [
+          "startDate",
+          "duration",
+          "version",
+          "sample count"
+        ],
+        "extensionMappings": [
+          {
+            "sourceField": "SRWristTemperatureSession.version",
+            "url": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-wrist-temperature-algorithm-version",
+            "valueElement": "valueString",
+            "cardinality": "1..1",
+            "exactSourceValue": true,
+            "nativeR4Gap": "The source supplies only an opaque algorithm-version string, not a method code or complete method concept. Observation.method.text = '1' is not self-describing, and Coding.version means the version of a code system rather than an arbitrary source algorithm version.",
+            "rule": "Preserve the exact non-blank source string in valueString. Do not normalize it, invent a method code, or reinterpret it as Coding.version."
+          }
+        ]
       },
       "raw": {
         "status": "mapped-standard",
@@ -960,11 +1038,14 @@
   ],
   "recordingDeviceIdentity": {
     "adapterId": "sensorkit",
-    "sourceFields": {
-      "manufacturer": "recordingDevice.manufacturer",
-      "model": "recordingDevice.model",
-      "hardwareVersion": "recordingDevice.hardwareVersion"
-    },
-    "status": "derived"
+    "status": "stable-token-required",
+    "stableUnitToken": "A caller-governed, deployment-scoped stable token for the physical acquisition unit.",
+    "sourceDescriptionFields": [
+      "recordingDevice.manufacturer",
+      "recordingDevice.model",
+      "recordingDevice.hardwareVersion"
+    ],
+    "fallback": "Omit Observation.device when no stable per-unit token exists; descriptive fields cannot establish instance identity.",
+    "snapshot": "When emitted, the Device carries both recording-device and event-scoped device-snapshot v2 identifiers."
   }
 }

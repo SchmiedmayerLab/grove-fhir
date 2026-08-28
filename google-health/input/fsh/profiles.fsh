@@ -10,5 +10,5 @@ Profile: GoogleHealthObservation
 Parent: ProvidersObservation
 Id: google-health-observation
 Title: "Google Health Observation"
-Description: "The connected-provider Observation contract narrowed to the Google Health API, for a value Google's own algorithm produced over Google's own inputs. A measurement two or more connected providers report stays source-neutral and is carried under the shared Provider Observation instead. The adapter does not authorize or fetch Google Health API data."
+Description: "The connected-provider lineage and identity envelope narrowed to the Google Health API. It is directly paired with either a shared semantic profile or a Google Health-owned semantic profile; it does not replace that clinical claim. The adapter does not authorize or fetch Google Health API data."
 * extension[provider].valueCode = #google-health-api (exactly)

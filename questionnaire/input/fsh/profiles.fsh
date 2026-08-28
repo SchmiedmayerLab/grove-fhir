@@ -6,6 +6,11 @@
 // SPDX-License-Identifier: MIT
 //
 
+Invariant: qg-canonical-1
+Description: "Questionnaire.url is one absolute HTTP(S) canonical URL without a version separator or fragment."
+Severity: #error
+Expression: "url.matches('^https?://[^\\\\s/?#|]+[^\\\\s|#]*$')"
+
 Invariant: qg-version-1
 Description: "Questionnaire.version is a valid Semantic Versioning 2.0.0 version."
 Severity: #error
@@ -97,19 +102,14 @@ Severity: #error
 Expression: "extension('http://hl7.org/fhir/StructureDefinition/rendering-styleSensitive').empty() and repeat(item).extension('http://hl7.org/fhir/StructureDefinition/rendering-styleSensitive').empty()"
 
 Invariant: gqr-canonical-1
-Description: "The response names the exact instrument version with a url|version canonical and neither component contains a fragment or an extra separator."
+Description: "The response names the exact instrument with an absolute url|Semantic-Version canonical; neither component contains a fragment or an extra separator."
 Severity: #error
-Expression: "questionnaire.matches('^[^|#]+[|][^|#]+$')"
+Expression: "questionnaire.matches('^https?://[^\\\\s/?#|]+[^\\\\s|#]*[|](0|[1-9][0-9]*)[.](0|[1-9][0-9]*)[.](0|[1-9][0-9]*)(-((0|[1-9][0-9]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*)([.](0|[1-9][0-9]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*))*))?([+]([0-9A-Za-z-]+)([.][0-9A-Za-z-]+)*)?$')"
 
 Invariant: gqr-identifier-1
 Description: "The response has one business identifier with a complete system and value pair."
 Severity: #error
 Expression: "identifier.count() = 1 and identifier.system.exists() and identifier.value.exists()"
-
-Invariant: gqr-text-1
-Description: "Every response item that carries an answer repeats the question text."
-Severity: #error
-Expression: "item.where(answer.exists()).all(text.exists()) and item.repeat(item | answer.item).where(answer.exists()).all(text.exists())"
 
 Invariant: gqr-completion-mode-1
 Description: "The response declares exactly one electronic ParticipationMode coding."
@@ -121,7 +121,7 @@ Parent: http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire
 Id: grove-questionnaire
 Title: "Grove Questionnaire"
 Description: "A versioned SDC Questionnaire that can be administered and answered without relying on renderer-specific semantics."
-* obeys qg-version-1 and qg-version-algorithm-1 and qg-item-text-1 and qg-reference-1 and qg-repeats-1 and qg-enable-1 and qg-expression-1 and qg-variable-name-1 and qg-initial-1 and qg-length-1 and qg-decimal-1 and qg-value-bounds-1 and qg-quantity-1 and qg-unit-1 and qg-attachment-1 and qg-occurrence-1 and qg-min-max-1 and qg-style-sensitive-1
+* obeys qg-canonical-1 and qg-version-1 and qg-version-algorithm-1 and qg-item-text-1 and qg-reference-1 and qg-repeats-1 and qg-enable-1 and qg-expression-1 and qg-variable-name-1 and qg-initial-1 and qg-length-1 and qg-decimal-1 and qg-value-bounds-1 and qg-quantity-1 and qg-unit-1 and qg-attachment-1 and qg-occurrence-1 and qg-min-max-1 and qg-style-sensitive-1
 * extension contains
     $variable named variable 0..* MS and
     $targetConstraint named targetConstraint 0..* MS
@@ -132,6 +132,7 @@ Description: "A versioned SDC Questionnaire that can be administered and answere
 * extension[versionAlgorithm].valueCoding.code 1..1
 * extension[versionAlgorithm].valueCoding.code = #semver (exactly)
 * extension[variable].valueExpression.name 1..1 MS
+* url 1..1 MS
 * version 1..1 MS
 * status 1..1 MS
 * subjectType MS
@@ -182,7 +183,7 @@ Parent: http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaireresponse
 Id: grove-questionnaire-response
 Title: "Grove Questionnaire Response"
 Description: "A response to one exact version of a Grove Questionnaire, with a stable submission identifier and electronic completion mode."
-* obeys gqr-canonical-1 and gqr-identifier-1 and gqr-text-1 and gqr-completion-mode-1
+* obeys gqr-canonical-1 and gqr-identifier-1 and gqr-completion-mode-1
 * questionnaire 1..1 MS
 * questionnaire only Canonical(GroveQuestionnaire)
 * identifier 1..1 MS

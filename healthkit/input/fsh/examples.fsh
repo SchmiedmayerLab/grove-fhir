@@ -57,49 +57,78 @@ InstanceOf: GroveRecordingDevice
 Usage: #example
 Title: "HealthKit Recording Device"
 Description: "The watch reported by HealthKit as the physical recorder for the passive examples."
+* identifier[physicalUnit].system = "https://study.example.org/fhir/NamingSystem/grove-recording-device-v2/test-key/1"
+* identifier[physicalUnit].value = "v2:test-key:1:Gc-nfLagscJENC57Nb98pCgbEYL9yc05MhJmZ1ZcMQs"
+* identifier[eventSnapshot].system = "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v2/test-key/1"
+* identifier[eventSnapshot].value = "v2:test-key:1:a_nrcw7QmbxwDdFGGKMkaoNN2UKFgLL_kD3ccDWMQV0"
 * status = #active
 * deviceName.name = "Study Watch"
 * deviceName.type = #user-friendly-name
 * manufacturer = "Apple Inc."
 * modelNumber = "Watch"
 * type.text = "Wrist-worn sensor"
-* version.type = $mdc#531975 "MDC_ID_PROD_SPEC_SW"
+* version.type = $mdc#531976 "MDC_ID_PROD_SPEC_FW"
 * version.value = "11.2"
 
 Instance: HealthKitApplicationDeviceExample
-InstanceOf: GroveApplicationDevice
+InstanceOf: HealthKitApplicationDevice
 Usage: #example
 Title: "HealthKit Converting Application"
 Description: "The application that read the HealthKit objects and transformed them into FHIR resources. It is a Provenance agent, not the recording device."
 * status = #active
-* identifier.system = $appleBundleId
-* identifier.value = "org.grovealliance.example"
+* identifier[applicationSnapshot].system = "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v2/test-key/1"
+* identifier[applicationSnapshot].value = "v2:test-key:1:Kuh8jiUIXu00ygR0PaXKv913Ng1pvnx1QmUT8dGIFT8"
+* identifier[appleBundleId].system = $appleBundleId
+* identifier[appleBundleId].value = "org.grovealliance.example"
 * deviceName[applicationName].name = "Grove Study"
 * deviceName[applicationName].type = #user-friendly-name
 * version[applicationVersion].type = $mdc#531975 "MDC_ID_PROD_SPEC_SW"
 * version[applicationVersion].value = "1.4.0"
+* version[applicationBuild].type = $groveApplicationVersionType#build "Build"
+* version[applicationBuild].value = "140"
+* parent = Reference(HealthKitHostDeviceExample)
+
+Instance: HealthKitHostDeviceExample
+InstanceOf: GroveHostDevice
+Usage: #example
+Title: "HealthKit Host Device Snapshot"
+Description: "The immutable event-time phone hardware and operating-system snapshot hosting the converting application."
+* identifier.system = "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v2/test-key/1"
+* identifier.value = "v2:test-key:1:yKtvFq9rJwWlXpqWr1uD3ACh3dz7qah2BH_QnQ2d_7U"
+* status = #active
+* manufacturer = "Apple Inc."
+* modelNumber = "Example Phone"
+* deviceName.name = "Study Phone"
+* deviceName.type = #user-friendly-name
+* type.text = "iOS host device"
+* version[operatingSystemVersion].type = $groveApplicationVersionType#os-version "Operating system version"
+* version[operatingSystemVersion].value = "20.1"
 
 Instance: HealthKitSourceApplicationDeviceExample
-InstanceOf: GroveApplicationDevice
+InstanceOf: HealthKitApplicationDevice
 Usage: #example
 Title: "HealthKit Source Application"
 Description: "The application reported by HKSourceRevision as the author of the source HealthKit object. It is distinct from the application that converted the object to FHIR."
 * status = #active
-* identifier.system = $appleBundleId
-* identifier.value = "com.example.health-source"
+* identifier[applicationSnapshot].system = "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v2/test-key/1"
+* identifier[applicationSnapshot].value = "v2:test-key:1:0jm5gNEShO3LSNkKzxMTMtht2wAfvtDuuuxf3RFE0VI"
+* identifier[appleBundleId].system = $appleBundleId
+* identifier[appleBundleId].value = "com.example.health-source"
 * deviceName[applicationName].name = "Example Health Source"
 * deviceName[applicationName].type = #user-friendly-name
 * version[applicationVersion].type = $mdc#531975 "MDC_ID_PROD_SPEC_SW"
 * version[applicationVersion].value = "4.7.2"
 
 Instance: HealthKitBluetoothSourceDeviceExample
-InstanceOf: Device
+InstanceOf: GroveRecordingDevice
 Usage: #example
 Title: "HealthKit Bluetooth Source Device"
-Description: "A supported Bluetooth Low Energy source explicitly classified by the producer. Its opaque HealthKit source identifier is included only under an authorized exchange policy."
+Description: "A supported Bluetooth Low Energy source explicitly classified by the producer after the caller supplied an authorized stable per-unit token. Only deployment-scoped HMAC identities are exchanged."
 * status = #active
-* identifier.system = $healthKitSourceDeviceId
-* identifier.value = "c614cf5b-8a89-4a50-a5c8-78c1a8397f63"
+* identifier[physicalUnit].system = "https://study.example.org/fhir/NamingSystem/grove-recording-device-v2/test-key/1"
+* identifier[physicalUnit].value = "v2:test-key:1:0Fu9Y-KoyDjbxu2PwfDuZB8Erhsh8gphm6Tt5FbKnNU"
+* identifier[eventSnapshot].system = "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v2/test-key/1"
+* identifier[eventSnapshot].value = "v2:test-key:1:h84aFtuFuX1HgXDVFFcaaMNNvZI8t8Oks5Spfh374lU"
 * deviceName.name = "Example Bluetooth Source"
 * deviceName.type = #user-friendly-name
 
@@ -109,12 +138,14 @@ Usage: #example
 Title: "HealthKit Heart Rate"
 Description: "A passive HealthKit heart-rate sample with the standard clinical profile and an allowlisted motion-context value."
 * meta.profile[+] = "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-heart-rate"
-* identifier[healthKitObjectId].system = $healthKitObjectId
-* identifier[healthKitObjectId].value = "1e091e2a-9f3e-49cd-b237-2ef5a3d0f213"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* identifier[sourceRecord].value = "v2:test-key:1:2LnL2_8DgGsZjeX6FiAKlO9JhhFmX7GYJxaMvLGay9k"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
+* identifier[sourceOutput].value = "v2:test-key:1:T_TL24HHsbiJz6bM9kC7_uu59s4qFbTtxtRaOwfBFF4"
 * status = #final
 * category = $observationCategory#vital-signs "Vital Signs"
 * code = $loinc#8867-4 "Heart rate"
-* code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierHeartRate "Heart Rate"
+* extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierHeartRate
 * subject = Reference(HealthKitPatientExample)
 * performer = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00.251-07:00"
@@ -130,15 +161,17 @@ Usage: #example
 Title: "HealthKit Revised Body Weight"
 Description: "A body-weight sample a connected scale re-imported after correcting it. HealthKit replaced the earlier object, so this Observation carries a new object identifier, the unchanged sync identifier that names the measurement, and the higher sync version that supersedes the previous one."
 * meta.profile[+] = "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-body-weight"
-* identifier[healthKitObjectId].system = $healthKitObjectId
-* identifier[healthKitObjectId].value = "7c3f9b41-58d2-4e6a-9a10-4b8e2f6d05c7"
-* identifier[writerRecordId].system = $groveWriterRecordId
-* identifier[writerRecordId].value = "v1:com.withings.wiscale2|scale-weighin-2026-08-19"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* identifier[sourceRecord].value = "v2:test-key:1:JqoK2ok7RY8ioRdSmitZxfJP5dP8QHkTisJN7Fy8C14"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
+* identifier[sourceOutput].value = "v2:test-key:1:ghrfu1IHSwoJoNZPFICuMdEsrvMnjQVS56vFp7DJE9Y"
+* identifier[writerRecord].system = "https://study.example.org/fhir/NamingSystem/grove-writer-record-v2/test-key/1"
+* identifier[writerRecord].value = "v2:test-key:1:b6CrOt2Bn8qBpBi_0IesPTPhIzN5DbRQLPz_Di3GfSQ"
 * extension[writerRecordVersion].valueString = "2"
 * status = #amended
 * category = $observationCategory#vital-signs "Vital Signs"
 * code = $loinc#29463-7 "Body weight"
-* code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierBodyMass "Body Mass"
+* extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierBodyMass
 * subject = Reference(HealthKitPatientExample)
 * performer = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T07:12:00.000-07:00"
@@ -151,12 +184,14 @@ Usage: #example
 Title: "HealthKit Step Count"
 Description: "A HealthKit interval sample preserving the recorded count of 1,042 steps over one hour."
 * meta.profile[+] = "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-step-count"
-* identifier[healthKitObjectId].system = $healthKitObjectId
-* identifier[healthKitObjectId].value = "f1e2d3c4-4b5a-4c6d-8e9f-1234567890ab"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* identifier[sourceRecord].value = "v2:test-key:1:WE2iuX55Ut-MR8aQ6B3LSsxOnf5PIY_m5G4jcj2proo"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
+* identifier[sourceOutput].value = "v2:test-key:1:r7g26sWzU-JpvzbKhTmtnwkdCnvgy7upa1Nn3WmGYwk"
 * status = #final
 * category = $observationCategory#activity "Activity"
 * code = $groveMobileMeasurement#step-count-total "Step count total"
-* code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierStepCount "Step Count"
+* extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierStepCount
 * subject = Reference(HealthKitPatientExample)
 * performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T09:00:00-07:00"
@@ -164,24 +199,21 @@ Description: "A HealthKit interval sample preserving the recorded count of 1,042
 * valueQuantity = 1042 '{steps}' "steps"
 * device = Reference(HealthKitRecordingDeviceExample)
 * extension[researchStudy].valueReference = Reference(HealthKitResearchStudyExample)
-// A metadata key no contract models, retained rather than discarded so the conversion stays lossless.
-// The key space is open, so the key travels as text: no code system can enumerate what a third-party
-// writer may set.
-* component[+].code.text = "ThirdPartyPedometerFirmware"
-* component[=].valueString = "2.4.1"
 
 Instance: HealthKitBluetoothHeartRateObservationExample
 InstanceOf: HealthKitObservation
 Usage: #example
 Title: "HealthKit Bluetooth Heart Rate"
-Description: "A heart-rate sample imported directly from a supported Bluetooth Low Energy heart-rate monitor under an exchange policy that permits the source identifier."
+Description: "A heart-rate sample imported directly from a supported Bluetooth Low Energy heart-rate monitor after the caller supplied a governed stable per-unit token."
 * meta.profile[+] = "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-heart-rate"
-* identifier[healthKitObjectId].system = $healthKitObjectId
-* identifier[healthKitObjectId].value = "d7f395c0-7e4a-4eb8-943d-5e32dc70071a"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* identifier[sourceRecord].value = "v2:test-key:1:0Z6JoM3DXxuJfA6Lmkv43yDbz34bc_OVIoF3DFZH-ec"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
+* identifier[sourceOutput].value = "v2:test-key:1:BcBbbcBhR0HYMiioTjbNsfoWBrQkr8w7TIAiBn9kfw4"
 * status = #final
 * category = $observationCategory#vital-signs "Vital Signs"
 * code = $loinc#8867-4 "Heart rate"
-* code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierHeartRate "Heart Rate"
+* extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierHeartRate
 * subject = Reference(HealthKitPatientExample)
 * performer = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T10:45:00.251-07:00"
@@ -195,12 +227,14 @@ Usage: #example
 Title: "HealthKit Manually Entered Body Weight"
 Description: "A body weight with an explicit HealthKit user-entered indication mapped to manual-entry."
 * meta.profile[+] = "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-body-weight"
-* identifier[healthKitObjectId].system = $healthKitObjectId
-* identifier[healthKitObjectId].value = "a4b6fbcd-a358-4b2b-bea5-eb1ed80a8a63"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* identifier[sourceRecord].value = "v2:test-key:1:Fue0YmKy-5yUztQhASEkI1Q9GkXoIBF4H7th7M_sDdo"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
+* identifier[sourceOutput].value = "v2:test-key:1:WK3OsUNKjSl93laduHQS9JNEeoFxgG45FC07pxdtwuo"
 * status = #final
 * category = $observationCategory#vital-signs "Vital Signs"
 * code = $loinc#29463-7 "Body weight"
-* code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierBodyMass "Body Mass"
+* extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierBodyMass
 * subject = Reference(HealthKitPatientExample)
 * performer = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T08:15:00-07:00"
@@ -214,12 +248,14 @@ Usage: #example
 Title: "HealthKit Blood Pressure"
 Description: "A HealthKit blood-pressure correlation whose result is carried by the required systolic and diastolic components rather than Observation.value."
 * meta.profile[+] = "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-blood-pressure"
-* identifier[healthKitObjectId].system = $healthKitObjectId
-* identifier[healthKitObjectId].value = "b2081271-af21-4aac-9c43-921e536e0742"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* identifier[sourceRecord].value = "v2:test-key:1:ewKtQcrS1NgeoSqX76ti_buVscMJVcfExaUed-Z9fzI"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
+* identifier[sourceOutput].value = "v2:test-key:1:ZMSrcBVUgi8r9L8x2OpHfYH2sed1FVHZLzS-C0-eI3Y"
 * status = #final
 * category = $observationCategory#vital-signs "Vital Signs"
 * code = $loinc#85354-9 "Blood pressure panel with all children optional"
-* code.coding[healthKitSourceType] = $healthKitSourceType#HKCorrelationTypeIdentifierBloodPressure "Blood Pressure"
+* extension[healthKitSourceType].valueCode = #HKCorrelationTypeIdentifierBloodPressure
 * subject = Reference(HealthKitPatientExample)
 * performer = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T08:20:00-07:00"
@@ -235,12 +271,14 @@ Usage: #example
 Title: "HealthKit Sleep Stage"
 Description: "A HealthKit asleep-core interval retaining both the shared light-sleep meaning and the exact HealthKit source case."
 * meta.profile[+] = "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-sleep-stage"
-* identifier[healthKitObjectId].system = $healthKitObjectId
-* identifier[healthKitObjectId].value = "6d4e94ef-0cdb-4930-982f-6fa4501b3e8b"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* identifier[sourceRecord].value = "v2:test-key:1:_a7IXBkaf-Gx-b-uRjE5RNmtvMDYBnirchWWI0EQ0t0"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
+* identifier[sourceOutput].value = "v2:test-key:1:xJTbRQ8qlCIFYlCxR6Wm9UkxRzRm3TFYVh3avnYkLBE"
 * status = #final
 * category = $observationCategory#activity "Activity"
 * code = $groveMobileMeasurement#sleep-stage "Sleep stage"
-* code.coding[healthKitSourceType] = $healthKitSourceType#HKCategoryTypeIdentifierSleepAnalysis "Sleep Analysis"
+* extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierSleepAnalysis
 * subject = Reference(HealthKitPatientExample)
 * performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T23:10:00-07:00"
@@ -253,37 +291,27 @@ Instance: HealthKitECGObservationExample
 InstanceOf: HealthKitECGObservation
 Usage: #example
 Title: "HealthKit Lead-I-like ECG"
-Description: "A caller-supplied HealthKit ECG with a complete uniformly sampled voltage series and exact classification, symptom, sampling, and count context. The adapter performs no HealthKit query."
+Description: "A caller-supplied HealthKit ECG with a complete uniformly sampled voltage series, exact interpretation and method, and an identifier-only link to a separately exchanged symptom Observation. Sampling frequency and reported count were checked before emission rather than duplicated on the wire."
 * meta.profile[+] = "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-ecg-observation"
-* identifier[healthKitObjectId].system = $healthKitObjectId
-* identifier[healthKitObjectId].value = "055f8cb3-e48f-445b-a629-388c3e38caa9"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* identifier[sourceRecord].value = "v2:test-key:1:nyNKt1mYyaINq_T62N3dSYQIdxf8jf3lYIAY-eX6N_g"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
+* identifier[sourceOutput].value = "v2:test-key:1:KFlseYWwJpMwCUJRaW9ETUfjXuUsplQCtV9AVkoqmD8"
 * status = #final
 * category = $observationCategory#procedure "Procedure"
 * code = $loinc#11524-6 "EKG study"
-* code.coding[healthKitSourceType] = $healthKitSourceType#HKDataTypeIdentifierElectrocardiogram "ECG"
+* extension[healthKitSourceType].valueCode = #HKDataTypeIdentifierElectrocardiogram
 * subject = Reference(HealthKitPatientExample)
 * performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T10:50:00.002-07:00"
 * effectivePeriod.end = "2026-08-19T10:50:00.008-07:00"
-* extension[healthKitECGClassification].valueCode = #sinusRhythm
+* interpretation = $healthKitECGClassification#sinusRhythm "Sinus rhythm"
 * extension[healthKitECGSymptomsStatus].valueCode = #present
-* extension[healthKitECGCorrelatedSymptom][0].extension[sourceIdentifier].valueIdentifier.system = $healthKitObjectId
-* extension[healthKitECGCorrelatedSymptom][0].extension[sourceIdentifier].valueIdentifier.value = "ad32cfc5-025a-493e-bc1b-85378817ac1c"
-* extension[healthKitECGCorrelatedSymptom][0].extension[effectivePeriod].valuePeriod.start = "2026-08-19T10:49:55-07:00"
-* extension[healthKitECGCorrelatedSymptom][0].extension[effectivePeriod].valuePeriod.end = "2026-08-19T10:50:05-07:00"
-* extension[healthKitECGCorrelatedSymptom][0].extension[symptomType].valueCode = #HKCategoryTypeIdentifierDizziness
-* extension[healthKitECGCorrelatedSymptom][0].extension[severity].valueCode = #mild
-* extension[healthKitECGCorrelatedSymptom][0].extension[sourceName].valueString = "Grove Health"
-* extension[healthKitECGCorrelatedSymptom][0].extension[sourceBundleIdentifier].valueString = "org.grovealliance.health"
-* extension[healthKitECGCorrelatedSymptom][0].extension[sourceVersion].valueString = "2.0.0"
-* extension[healthKitECGCorrelatedSymptom][0].extension[sourceProductType].valueString = "Watch6,4"
-* extension[healthKitECGCorrelatedSymptom][0].extension[sourceOperatingSystemMajorVersion].valueInteger = 12
-* extension[healthKitECGCorrelatedSymptom][0].extension[sourceOperatingSystemMinorVersion].valueInteger = 0
-* extension[healthKitECGCorrelatedSymptom][0].extension[sourceOperatingSystemPatchVersion].valueInteger = 1
-* extension[healthKitECGAverageHeartRate].valueQuantity = 72 '/min' "beats/minute"
-* extension[healthKitECGSamplingFrequency].valueQuantity = 500 'Hz' "Hz"
-* extension[healthKitECGVoltageMeasurementCount].valueInteger = 4
-* extension[healthKitECGAlgorithmVersion].valueCode = #version2
+* method = $healthKitECGAlgorithmVersion#version2 "Version 2"
+* hasMember.type = "Observation"
+* hasMember.identifier.type = $groveIdentifierRole#source-output "Source output"
+* hasMember.identifier.system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
+* hasMember.identifier.value = "v2:test-key:1:SSxdtfmPMTXYfPMTUDcISGHNrCSOym3X5irIB0GU0NA"
 * extension[healthKitECGSourcePeriod].valuePeriod.start = "2026-08-19T10:50:00.000-07:00"
 * extension[healthKitECGSourcePeriod].valuePeriod.end = "2026-08-19T10:50:00.010-07:00"
 * component[voltage].code = $mdc#131329 "MDC_ECG_ELEC_POTL_I"
@@ -294,6 +322,81 @@ Description: "A caller-supplied HealthKit ECG with a complete uniformly sampled 
 * component[voltage].valueSampledData.dimensions = 1
 * component[voltage].valueSampledData.data = "0.012 0.021 -0.004 0.016"
 * device = Reference(HealthKitRecordingDeviceExample)
+
+Instance: HealthKitECGAverageHeartRateExample
+InstanceOf: HealthKitECGAverageHeartRateObservation
+Usage: #example
+Title: "HealthKit ECG Average Heart Rate"
+Description: "The user's average heart rate during the ECG, represented as its own clinical Observation and derived from the waveform."
+* meta.profile[+] = "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-heart-rate"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* identifier[sourceRecord].value = "v2:test-key:1:nyNKt1mYyaINq_T62N3dSYQIdxf8jf3lYIAY-eX6N_g"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
+* identifier[sourceOutput].value = "v2:test-key:1:RkWDF40b0s_1fMa_stV-Ceps5mAEJdrN-uJwQYI6PjE"
+* status = #final
+* code = $loinc#8867-4 "Heart rate"
+* category = $observationCategory#vital-signs "Vital Signs"
+* extension[healthKitSourceType].valueCode = #HKDataTypeIdentifierElectrocardiogram
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T10:50:00.002-07:00"
+* effectivePeriod.end = "2026-08-19T10:50:00.008-07:00"
+* valueQuantity = 72 '/min' "beats/minute"
+* derivedFrom = Reference(HealthKitECGObservationExample)
+* device = Reference(HealthKitRecordingDeviceExample)
+
+Instance: HealthKitECGCorrelatedDizzinessExample
+InstanceOf: HealthkitSymptomDizziness
+Usage: #example
+Title: "HealthKit ECG-associated Dizziness"
+Description: "The independently identifiable HealthKit category sample associated with the ECG. It is exchanged in its own source-record event and referenced from the ECG by source-output Identifier."
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* identifier[sourceRecord].value = "v2:test-key:1:Khsgeufen1doBTxrQGVskE_FPU2Nmhx14AWRkp9lXes"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
+* identifier[sourceOutput].value = "v2:test-key:1:SSxdtfmPMTXYfPMTUDcISGHNrCSOym3X5irIB0GU0NA"
+* status = #final
+* code = HealthKitMeasurementCS#symptom-dizziness "Dizziness"
+* extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierDizziness
+* subject = Reference(HealthKitPatientExample)
+* performer = Reference(HealthKitPatientExample)
+* effectivePeriod.start = "2026-08-19T10:49:55-07:00"
+* effectivePeriod.end = "2026-08-19T10:50:05-07:00"
+* valueCodeableConcept = GroveSymptomSeverityCS#mild "Mild"
+
+Instance: HealthKitECGConversionProvenanceExample
+InstanceOf: HealthKitConversionProvenance
+Usage: #example
+Title: "HealthKit ECG Conversion Provenance"
+Description: "One conversion event targets both outputs derived from the same HealthKit ECG source record."
+* target[+] = Reference(HealthKitECGObservationExample)
+* target[+] = Reference(HealthKitECGAverageHeartRateExample)
+* occurredDateTime = "2026-08-19T10:50:01-07:00"
+* recorded = "2026-08-19T17:50:01.000Z"
+* activity = $recordLifecycleEvent#transform "Transform/Translate Record Lifecycle Event"
+* agent[assembler].type = $provenanceParticipantType#assembler "Assembler"
+* agent[assembler].who = Reference(HealthKitApplicationDeviceExample)
+* entity.role = #source
+* entity.what.identifier.type = $groveIdentifierRole#source-record "Source record"
+* entity.what.identifier.system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* entity.what.identifier.value = "v2:test-key:1:nyNKt1mYyaINq_T62N3dSYQIdxf8jf3lYIAY-eX6N_g"
+
+Instance: HealthKitECGSymptomProvenanceExample
+InstanceOf: HealthKitConversionProvenance
+Usage: #example
+Title: "HealthKit ECG-associated Symptom Provenance"
+Description: "The separately exchanged symptom event retains its own source identity and source-revision author graph."
+* target = Reference(HealthKitECGCorrelatedDizzinessExample)
+* occurredDateTime = "2026-08-19T10:50:06-07:00"
+* recorded = "2026-08-19T17:50:06.000Z"
+* activity = $recordLifecycleEvent#transform "Transform/Translate Record Lifecycle Event"
+* agent[assembler].type = $provenanceParticipantType#assembler "Assembler"
+* agent[assembler].who = Reference(HealthKitApplicationDeviceExample)
+* entity.role = #source
+* entity.what.identifier.type = $groveIdentifierRole#source-record "Source record"
+* entity.what.identifier.system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* entity.what.identifier.value = "v2:test-key:1:Khsgeufen1doBTxrQGVskE_FPU2Nmhx14AWRkp9lXes"
+* entity.agent.type = $provenanceParticipantType#author "Author"
+* entity.agent.who = Reference(HealthKitSourceApplicationDeviceExample)
 
 Instance: HealthKitConversionProvenanceExample
 InstanceOf: HealthKitConversionProvenance
@@ -307,8 +410,9 @@ Description: "The application transformed the HealthKit object identified as the
 * agent[assembler].type = $provenanceParticipantType#assembler "Assembler"
 * agent[assembler].who = Reference(HealthKitApplicationDeviceExample)
 * entity.role = #source
-* entity.what.identifier.system = $healthKitObjectId
-* entity.what.identifier.value = "1e091e2a-9f3e-49cd-b237-2ef5a3d0f213"
+* entity.what.identifier.type = $groveIdentifierRole#source-record "Source record"
+* entity.what.identifier.system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* entity.what.identifier.value = "v2:test-key:1:2LnL2_8DgGsZjeX6FiAKlO9JhhFmX7GYJxaMvLGay9k"
 * entity.agent.type = $provenanceParticipantType#author "Author"
 * entity.agent.who = Reference(HealthKitSourceApplicationDeviceExample)
 
@@ -324,8 +428,9 @@ Description: "The application transformed the exact HealthKit step-count object 
 * agent[assembler].type = $provenanceParticipantType#assembler "Assembler"
 * agent[assembler].who = Reference(HealthKitApplicationDeviceExample)
 * entity.role = #source
-* entity.what.identifier.system = $healthKitObjectId
-* entity.what.identifier.value = "f1e2d3c4-4b5a-4c6d-8e9f-1234567890ab"
+* entity.what.identifier.type = $groveIdentifierRole#source-record "Source record"
+* entity.what.identifier.system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* entity.what.identifier.value = "v2:test-key:1:WE2iuX55Ut-MR8aQ6B3LSsxOnf5PIY_m5G4jcj2proo"
 * entity.agent.type = $provenanceParticipantType#author "Author"
 * entity.agent.who = Reference(HealthKitSourceApplicationDeviceExample)
 
@@ -341,8 +446,9 @@ Description: "A producer-supplied Bluetooth heart-rate monitor authored the Heal
 * agent[assembler].type = $provenanceParticipantType#assembler "Assembler"
 * agent[assembler].who = Reference(HealthKitApplicationDeviceExample)
 * entity.role = #source
-* entity.what.identifier.system = $healthKitObjectId
-* entity.what.identifier.value = "d7f395c0-7e4a-4eb8-943d-5e32dc70071a"
+* entity.what.identifier.type = $groveIdentifierRole#source-record "Source record"
+* entity.what.identifier.system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* entity.what.identifier.value = "v2:test-key:1:0Z6JoM3DXxuJfA6Lmkv43yDbz34bc_OVIoF3DFZH-ec"
 * entity.agent.type = $provenanceParticipantType#author "Author"
 * entity.agent.who = Reference(HealthKitBluetoothSourceDeviceExample)
 
@@ -365,6 +471,8 @@ Description: "A documentation collection of the participant, versioned protocol,
 * entry[=].resource = HealthKitRecordingDeviceExample
 * entry[+].fullUrl = "https://study.example.org/fhir/Device/HealthKitApplicationDeviceExample"
 * entry[=].resource = HealthKitApplicationDeviceExample
+* entry[+].fullUrl = "https://study.example.org/fhir/Device/HealthKitHostDeviceExample"
+* entry[=].resource = HealthKitHostDeviceExample
 * entry[+].fullUrl = "https://study.example.org/fhir/Device/HealthKitSourceApplicationDeviceExample"
 * entry[=].resource = HealthKitSourceApplicationDeviceExample
 * entry[+].fullUrl = "https://study.example.org/fhir/Observation/HealthKitHeartRateObservationExample"
@@ -375,80 +483,51 @@ Description: "A documentation collection of the participant, versioned protocol,
 * entry[=].resource = HealthKitConversionProvenanceExample
 * entry[+].fullUrl = "https://study.example.org/fhir/Provenance/HealthKitStepCountConversionProvenanceExample"
 * entry[=].resource = HealthKitStepCountConversionProvenanceExample
-
-Instance: HealthKitExchangeHeartRateObservationExample
-InstanceOf: HealthKitObservation
-Usage: #example
-Title: "Exchange Heart Rate Observation"
-Description: "The converter's heart-rate output for one HealthKit sample without an HKDevice. The subject is the caller-supplied literal Patient reference; the object UUID is the sole business identifier."
-* meta.profile[+] = "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-heart-rate"
-* identifier[healthKitObjectId].system = $healthKitObjectId
-* identifier[healthKitObjectId].value = "9a2f4d6e-1c3b-4f8a-b7d0-5e6a8c9b0d1f"
-* status = #final
-* category = $observationCategory#vital-signs "Vital Signs"
-* code = $loinc#8867-4 "Heart rate"
-* code.coding[healthKitSourceType] = $healthKitSourceType#HKQuantityTypeIdentifierHeartRate "Heart Rate"
-* subject.reference = "https://study.example.org/fhir/Patient/participant-hk-001"
-* performer.reference = "https://study.example.org/fhir/Patient/participant-hk-001"
-* effectiveDateTime = "2026-08-20T09:12:45.128-07:00"
-* valueQuantity = 76 '/min' "beats/minute"
-
-Instance: HealthKitExchangeConversionProvenanceExample
-InstanceOf: HealthKitConversionProvenance
-Usage: #example
-Title: "Exchange Conversion Provenance"
-Description: "Conversion provenance whose target and assembler resolve through the deterministic Bundle UUID URNs and whose sole source entity is the HealthKit object identifier."
-* target.reference = "urn:uuid:697f6d32-7fb0-54d3-ba0e-8d933f6e5457"
-* occurredDateTime = "2026-08-20T09:12:47-07:00"
-* recorded = "2026-08-20T16:12:47.000Z"
-* activity = $recordLifecycleEvent#transform "Transform/Translate Record Lifecycle Event"
-* agent[assembler].type = $provenanceParticipantType#assembler "Assembler"
-* agent[assembler].who.reference = "urn:uuid:88912f8b-fd4e-51f9-8a72-ab97fde584d9"
-* entity.role = #source
-* entity.what.identifier.system = $healthKitObjectId
-* entity.what.identifier.value = "9a2f4d6e-1c3b-4f8a-b7d0-5e6a8c9b0d1f"
-
-Instance: HealthKitExchangeBundleExample
-InstanceOf: GroveMobileExchangeBundle
-Usage: #example
-Title: "HealthKit Exchange Bundle"
-Description: "The complete graph one heart-rate conversion uploads: the Observation, the converting application, and the conversion Provenance under deterministic UUIDv5 full URLs and graph-namespace identifiers."
-* identifier.system = "https://study.example.org/fhir/identifiers/mobile-graph"
-* identifier.value = "9a2f4d6e-1c3b-4f8a-b7d0-5e6a8c9b0d1f|exchange-bundle"
-* type = #collection
-* timestamp = "2026-08-20T16:12:47.000Z"
-* entry[0].extension[entryIdentifier].valueIdentifier.system = $healthKitObjectId
-* entry[0].extension[entryIdentifier].valueIdentifier.value = "9a2f4d6e-1c3b-4f8a-b7d0-5e6a8c9b0d1f"
-* entry[0].fullUrl = "urn:uuid:697f6d32-7fb0-54d3-ba0e-8d933f6e5457"
-* entry[0].resource = HealthKitExchangeHeartRateObservationExample
-* entry[1].extension[entryIdentifier].valueIdentifier.system = $appleBundleId
-* entry[1].extension[entryIdentifier].valueIdentifier.value = "org.grovealliance.example"
-* entry[1].fullUrl = "urn:uuid:88912f8b-fd4e-51f9-8a72-ab97fde584d9"
-* entry[1].resource = HealthKitApplicationDeviceExample
-* entry[2].extension[entryIdentifier].valueIdentifier.system = "https://study.example.org/fhir/identifiers/mobile-graph"
-* entry[2].extension[entryIdentifier].valueIdentifier.value = "9a2f4d6e-1c3b-4f8a-b7d0-5e6a8c9b0d1f|conversion-provenance"
-* entry[2].fullUrl = "urn:uuid:16d49bf9-a6dc-58da-bc29-7146da34831c"
-* entry[2].resource = HealthKitExchangeConversionProvenanceExample
+* entry[+].fullUrl = "https://study.example.org/fhir/DocumentReference/HealthKitClinicalRecordDocumentExample"
+* entry[=].resource = HealthKitClinicalRecordDocumentExample
+* entry[+].fullUrl = "https://study.example.org/fhir/Provenance/HealthKitClinicalRecordProvenanceExample"
+* entry[=].resource = HealthKitClinicalRecordProvenanceExample
 
 Instance: HealthKitClinicalRecordDocumentExample
 InstanceOf: HealthKitClinicalRecordDocument
 Usage: #example
 Title: "HealthKit Clinical Record Pass-Through"
 Description: "One provider-issued clinical resource surfaced by HealthKit and byte-preserved in its declared FHIR release. Grove asserts identity and provenance over the envelope, never conformance over the issuer's resource."
-* identifier[+].system = $healthKitObjectId
-* identifier[=].value = "3c7f1a90-24f6-4a2c-9d55-6f1c0a1de4b7"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* identifier[sourceRecord].value = "v2:test-key:1:EO21jT4OY_rLcPTZGCJUkT3hsz8ftbZgzvOI1gBtq3I"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
+* identifier[sourceOutput].value = "v2:test-key:1:mTgNSwt0kt5Uf623ktK3kYsnJ53GWwh0-ffb7JSHcFw"
+* identifier[sourceArtifact].system = "https://study.example.org/fhir/NamingSystem/grove-source-artifact-v2/test-key/1"
+* identifier[sourceArtifact].value = "v2:test-key:1:luW8iF7i93xoJ8biaOBN1tQdUBfkdBF5ZloC0VUx690"
+* extension[healthKitSourceType].valueCode = #HKClinicalTypeIdentifierAllergyRecord
 * extension[fhirRelease].valueCode = #r4
 * status = #current
 * type = HealthKitClinicalRecordTypeCS#allergy-record "Allergy record"
 * subject = Reference(HealthKitPatientExample)
 * date = "2026-08-20T17:05:01Z"
 * content.attachment.contentType = #application/fhir+json
-* content.format = $recordingFormat#fhir-resource "FHIR Resource"
-* content.format.version = "0.5.0"
+* content.format = $recordingFormat#fhir-r4-resource "FHIR R4 Resource"
+* content.format.version = "0.6.0"
 * content.attachment.title = "Provider-issued AllergyIntolerance"
 * content.attachment.data = "eyJyZXNvdXJjZVR5cGUiOiJBbGxlcmd5SW50b2xlcmFuY2UiLCJpZCI6InByb3ZpZGVyLWlzc3VlZC0xIiwiY2xpbmljYWxTdGF0dXMiOnsiY29kaW5nIjpbeyJzeXN0ZW0iOiJodHRwOi8vdGVybWlub2xvZ3kuaGw3Lm9yZy9Db2RlU3lzdGVtL2FsbGVyZ3lpbnRvbGVyYW5jZS1jbGluaWNhbCIsImNvZGUiOiJhY3RpdmUifV19LCJwYXRpZW50Ijp7InJlZmVyZW5jZSI6IlBhdGllbnQvcGFydGljaXBhbnQtaGstMDAxIn19"
 * content.attachment.size = 240
 * content.attachment.hash = "0c+dHXDzCV5zPy4cApwAoV9evYc="
+
+Instance: HealthKitClinicalRecordProvenanceExample
+InstanceOf: HealthKitConversionProvenance
+Usage: #example
+Title: "HealthKit Clinical Record Source Provenance"
+Description: "The converter byte-preserved one provider-issued R4 resource in its profiled DocumentReference envelope; it did not reinterpret or reserialize the payload."
+* target = Reference(HealthKitClinicalRecordDocumentExample)
+* occurredDateTime = "2026-08-20T17:05:00Z"
+* recorded = "2026-08-20T17:05:01Z"
+* activity = $recordLifecycleEvent#transform "Transform/Translate Record Lifecycle Event"
+* agent[assembler].type = $provenanceParticipantType#assembler "Assembler"
+* agent[assembler].who = Reference(HealthKitApplicationDeviceExample)
+* entity.role = #source
+* entity.what.identifier.type = $groveIdentifierRole#source-record "Source record"
+* entity.what.identifier.system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* entity.what.identifier.value = "v2:test-key:1:EO21jT4OY_rLcPTZGCJUkT3hsz8ftbZgzvOI1gBtq3I"
 
 Instance: HealthKitHeartbeatSeriesRecordingExample
 InstanceOf: HealthKitRecordingDocument
@@ -456,16 +535,21 @@ Usage: #example
 Title: "HealthKit Heartbeat Series Recording"
 Description: "A beat-to-beat interval series carried as its published column schema. Reducing the series to one Observation value would keep a single beat and discard the rest."
 * meta.profile[+] = "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document"
-* identifier[healthKitObjectId].system = $healthKitObjectId
-* identifier[healthKitObjectId].value = "9c1f4b62-2d77-4a51-9d0e-6b3a5c8e2f14"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* identifier[sourceRecord].value = "v2:test-key:1:hKO3Ce6Zmei7W0yk4X00HsST9JhRJNg07pzAzcSIGJc"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
+* identifier[sourceOutput].value = "v2:test-key:1:fwNA8TGMgYVH2cw_lR-5qTsPb3rwxvweoIVtY0nozII"
+* identifier[sourceArtifact].system = "https://study.example.org/fhir/NamingSystem/grove-source-artifact-v2/test-key/1"
+* identifier[sourceArtifact].value = "v2:test-key:1:8vG9fzykFSfl04NwO0gG4uQR_kQIa9uNtmM6a14fn5I"
 * status = #current
-* type.coding[healthKitSourceType] = $healthKitSourceType#HKDataTypeIdentifierHeartbeatSeries "Heartbeat Series"
+* type.text = "Heartbeat series recording"
+* extension[healthKitSourceType].valueCode = #HKDataTypeIdentifierHeartbeatSeries
 * subject = Reference(HealthKitPatientExample)
 * date = "2026-08-19T10:05:00Z"
 * author = Reference(HealthKitApplicationDeviceExample)
 * content.attachment.contentType = #text/csv
 * content.format = $recordingFormat#beat-interval-series "Beat Interval Series"
-* content.format.version = "0.5.0"
+* content.format.version = "0.6.0"
 * content.attachment.title = "Heartbeat series beat intervals"
 * content.attachment.data = "dGltZXN0YW1wLHByZWNlZGVkQnlHYXAKMTc1NTYyNDAwMC4wLDAKMTc1NTYyNDAwMC44NCwwCjE3NTU2MjQwMDEuNzEsMQo="
 * content.attachment.size = 71
@@ -477,8 +561,10 @@ Usage: #example
 Title: "HealthKit Glasses Prescription"
 Description: "A glasses prescription entered in Health, with both lens specifications, the prism resolved into its vertical and horizontal components, and the fit measurements R4 has no element for."
 * extension[healthKitSourceType].valueCode = #HKVisionPrescriptionTypeIdentifier
-* identifier[healthKitObjectId].system = $healthKitObjectId
-* identifier[healthKitObjectId].value = "4b18c0d7-5e2a-4c93-8f61-7a0d2e5b9c34"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* identifier[sourceRecord].value = "v2:test-key:1:JkbeCK5TOY--h9bxhY-FKVuTO9b_tVndQcVFPcTiYXc"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
+* identifier[sourceOutput].value = "v2:test-key:1:DRqGf6zqqSOypChdAIfkKHvj7nMqe6ZNPgwhKgy5_q8"
 * extension[expiration].valueDateTime = "2028-03-14"
 * status = #active
 * created = "2026-03-14"
@@ -514,8 +600,12 @@ Usage: #example
 Title: "HealthKit Tracked Medication"
 Description: "A medication the person still tracks, carrying the nickname they gave it, the platform's general form, and the concept identifier a logged dose event points at."
 * extension[healthKitSourceType].valueCode = #HKDataTypeUserAnnotatedMedicationConcept
-* identifier[healthConceptId].system = $healthKitHealthConceptId
-* identifier[healthConceptId].value = "2f8a51c6-9d34-4e07-b2f1-63c8ad905e12"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* identifier[sourceRecord].value = "v2:test-key:1:dYPsaAi_7N_fxtxlGHQUjx_U5R3l0cRamoivN1cttpI"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
+* identifier[sourceOutput].value = "v2:test-key:1:jME-IMod-S7Q2Xs7qKzqZMSqALN-t3wD-Xf7j3xvLmI"
+* identifier[healthConcept].system = "https://study.example.org/fhir/NamingSystem/grove-source-context-v2/test-key/1"
+* identifier[healthConcept].value = "v2:test-key:1:nq3ZogmXHSznC1LC1wNMm7KTQChgapPzmjmGeB9RHcw"
 * extension[nickname].valueString = "Evening statin"
 * extension[hasSchedule].valueBoolean = true
 * extension[generalForm].valueCode = #tablet
@@ -530,15 +620,17 @@ Usage: #example
 Title: "HealthKit Medication Dose Event"
 Description: "A scheduled dose logged as taken. The exact log status and the schedule it was logged against ride beside the administration status, which alone could not tell a taken dose from one the person never acted on."
 * extension[healthKitSourceType].valueCode = #HKMedicationDoseEventTypeIdentifierMedicationDoseEvent
-* identifier[healthKitObjectId].system = $healthKitObjectId
-* identifier[healthKitObjectId].value = "7d40e91b-6c25-4a18-90f3-1b5e8c27da64"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
+* identifier[sourceRecord].value = "v2:test-key:1:YZvOO4dNIgxxVYsu1OCBBnh6ape7UF-3S8sF3VVluGQ"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
+* identifier[sourceOutput].value = "v2:test-key:1:NTPRctM8xb3nuHjM2dYovO0LzuvWJJQcv7dZnd6P8mg"
 * extension[logStatus].valueCode = #taken
 * extension[schedule].extension[type].valueCode = #schedule
 * extension[schedule].extension[expectedDate].valueDateTime = "2026-08-20T21:00:00-07:00"
 * extension[schedule].extension[expectedQuantity].valueQuantity = 10 'mg'
 * status = #completed
-* medicationReference.identifier.system = $healthKitHealthConceptId
-* medicationReference.identifier.value = "2f8a51c6-9d34-4e07-b2f1-63c8ad905e12"
+* medicationReference.identifier.system = "https://study.example.org/fhir/NamingSystem/grove-source-context-v2/test-key/1"
+* medicationReference.identifier.value = "v2:test-key:1:nq3ZogmXHSznC1LC1wNMm7KTQChgapPzmjmGeB9RHcw"
 * subject = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-20T21:07:12-07:00"
 * effectivePeriod.end = "2026-08-20T21:07:12-07:00"

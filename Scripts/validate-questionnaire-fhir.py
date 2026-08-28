@@ -38,6 +38,9 @@ PROFILES = {
         "StructureDefinition/grove-questionnaire-response"
     ),
 }
+VALIDATOR_ATTEMPTS = 2
+VALIDATOR_LOG_LIMIT = 4_000
+VALIDATOR_TIMEOUT_SECONDS = 180
 
 
 def resolve_corpus_file(root: Path, value: Any, label: str) -> Path:
@@ -59,12 +62,83 @@ def resolve_corpus_file(root: Path, value: Any, label: str) -> Path:
     return path
 
 
-def error_issues(outcome: dict[str, Any]) -> list[dict[str, Any]]:
+def operation_outcome_issues(
+    outcome: Any, resource_path: Path
+) -> list[dict[str, Any]]:
+    """Require the official Validator's populated R4 OperationOutcome shape."""
+
+    if not isinstance(outcome, dict) or outcome.get("resourceType") != "OperationOutcome":
+        raise ValueError(
+            f"FHIR Validator output for {resource_path} is not an OperationOutcome"
+        )
+    issues = outcome.get("issue")
+    if not isinstance(issues, list) or not issues:
+        raise ValueError(
+            f"FHIR Validator OperationOutcome for {resource_path} has no populated issue array"
+        )
+    for index, issue in enumerate(issues):
+        if not isinstance(issue, dict):
+            raise ValueError(
+                f"FHIR Validator OperationOutcome.issue[{index}] for {resource_path} "
+                "is not an object"
+            )
+        severity = issue.get("severity")
+        if severity not in {"fatal", "error", "warning", "information"}:
+            raise ValueError(
+                f"FHIR Validator OperationOutcome.issue[{index}] for {resource_path} "
+                f"has invalid severity {severity!r}"
+            )
+        code = issue.get("code")
+        if not isinstance(code, str) or not code:
+            raise ValueError(
+                f"FHIR Validator OperationOutcome.issue[{index}] for {resource_path} "
+                "has no code"
+            )
+        for field in ("expression", "location"):
+            values = issue.get(field)
+            if values is not None and (
+                not isinstance(values, list)
+                or not all(isinstance(value, str) and value for value in values)
+            ):
+                raise ValueError(
+                    f"FHIR Validator OperationOutcome.issue[{index}].{field} for "
+                    f"{resource_path} is invalid"
+                )
+        extensions = issue.get("extension")
+        if extensions is not None and (
+            not isinstance(extensions, list)
+            or not all(isinstance(extension, dict) for extension in extensions)
+        ):
+            raise ValueError(
+                f"FHIR Validator OperationOutcome.issue[{index}].extension for "
+                f"{resource_path} is invalid"
+            )
+    return issues
+
+
+def error_issues(issues: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return [
         issue
-        for issue in outcome.get("issue", [])
+        for issue in issues
         if issue.get("severity") in {"error", "fatal"}
     ]
+
+
+def truncated_validator_log(
+    stdout: str | bytes | None, stderr: str | bytes | None
+) -> str:
+    def text(value: str | bytes | None) -> str:
+        if isinstance(value, bytes):
+            return value.decode("utf-8", errors="replace")
+        return value or ""
+
+    value = f"{text(stdout)}\n{text(stderr)}".strip()
+    if not value:
+        return "<empty>"
+    value = value.replace("\x00", "\\0")
+    if len(value) <= VALIDATOR_LOG_LIMIT:
+        return value
+    return "…" + value[-VALIDATOR_LOG_LIMIT:]
 
 
 def issue_text(issues: list[dict[str, Any]]) -> str:
@@ -177,14 +251,64 @@ def validate_one(
     profile = PROFILES.get(resource.get("resourceType"))
     if profile:
         command.extend(["-profile", profile])
-    result = subprocess.run(command, cwd=ROOT, capture_output=True, text=True)
-    logs = f"{result.stdout}\n{result.stderr}".strip()
-    if not outcome_path.is_file():
-        raise RuntimeError(
-            f"FHIR Validator did not write {outcome_path} for {resource_path}\n{logs}"
+    last_failure = ""
+    for attempt in range(1, VALIDATOR_ATTEMPTS + 1):
+        if outcome_path.exists() or outcome_path.is_symlink():
+            outcome_path.unlink()
+        try:
+            result = subprocess.run(
+                command,
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+                timeout=VALIDATOR_TIMEOUT_SECONDS,
+            )
+        except subprocess.TimeoutExpired as error:
+            logs = truncated_validator_log(error.stdout, error.stderr)
+            last_failure = (
+                f"FHIR Validator timed out after {VALIDATOR_TIMEOUT_SECONDS} seconds "
+                f"for {resource_path}; log: {logs}"
+            )
+            if attempt < VALIDATOR_ATTEMPTS:
+                continue
+            raise RuntimeError(last_failure) from error
+        logs = truncated_validator_log(result.stdout, result.stderr)
+        if not outcome_path.is_file() or outcome_path.is_symlink():
+            last_failure = (
+                f"FHIR Validator produced no trustworthy OperationOutcome for "
+                f"{resource_path} (exit {result.returncode}); log: {logs}"
+            )
+            if attempt < VALIDATOR_ATTEMPTS:
+                continue
+            raise RuntimeError(last_failure)
+        try:
+            issues = operation_outcome_issues(load_json(outcome_path), resource_path)
+        except (ValueError, OSError) as error:
+            last_failure = (
+                f"untrustworthy FHIR Validator output for {resource_path}: {error} "
+                f"(exit {result.returncode}); log: {logs}"
+            )
+            if attempt < VALIDATOR_ATTEMPTS:
+                continue
+            raise RuntimeError(last_failure) from error
+
+        errors = error_issues(issues)
+        # The pinned Validator uses exit 1 for genuine validation errors. A populated,
+        # well-formed error outcome from exit 0/1 is authoritative and the caller compares
+        # it to the exact negative-corpus expectation. Every other exit is infrastructure
+        # failure, even when a stale or partial outcome file happens to exist.
+        if (errors and result.returncode in {0, 1}) or (
+            not errors and result.returncode == 0
+        ):
+            return errors, logs
+        last_failure = (
+            f"FHIR Validator process failed for {resource_path} with an unexpected "
+            f"exit code after producing a trustworthy outcome (exit "
+            f"{result.returncode}, errors={len(errors)}); log: {logs}"
         )
-    outcome = load_json(outcome_path)
-    return error_issues(outcome), logs
+        if attempt == VALIDATOR_ATTEMPTS:
+            raise RuntimeError(last_failure)
+    raise RuntimeError(last_failure)
 
 
 def main(argv: Sequence[str] | None = None) -> int:

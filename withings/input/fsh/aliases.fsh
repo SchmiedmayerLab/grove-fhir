@@ -8,4 +8,5 @@
 
 Alias: $ucum = http://unitsofmeasure.org
 Alias: $loinc = http://loinc.org
-Alias: $providerSourceRecordId = https://grovealliance.org/fhir/providers/NamingSystem/provider-source-record-id
+Alias: $groveIdentifierRole = https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role
+Alias: $provenanceParticipantType = http://terminology.hl7.org/CodeSystem/provenance-participant-type

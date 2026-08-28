@@ -35,10 +35,24 @@
           "classification": "definition"
         },
         {
+          "fshName": "GroveIdentifierRoleCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "grove-identifier-role",
+          "classification": "definition"
+        },
+        {
           "fshName": "GroveIntermenstrualBleedingCS",
           "fshType": "CodeSystem",
           "resourceType": "CodeSystem",
           "id": "grove-intermenstrual-bleeding",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveLifecycleEventCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "grove-lifecycle-event",
           "classification": "definition"
         },
         {
@@ -77,6 +91,13 @@
           "classification": "definition"
         },
         {
+          "fshName": "GroveRetractionTargetRoleCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "grove-retraction-target-role",
+          "classification": "definition"
+        },
+        {
           "fshName": "GroveSexualActivityCS",
           "fshType": "CodeSystem",
           "resourceType": "CodeSystem",
@@ -112,10 +133,10 @@
           "classification": "definition"
         },
         {
-          "fshName": "GroveExchangeEntryIdentifier",
+          "fshName": "GroveExchangeEntryNodeKey",
           "fshType": "Extension",
           "resourceType": "StructureDefinition",
-          "id": "grove-exchange-entry-identifier",
+          "id": "grove-exchange-entry-node-key",
           "classification": "definition"
         },
         {
@@ -123,6 +144,13 @@
           "fshType": "Extension",
           "resourceType": "StructureDefinition",
           "id": "grove-recording-method",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveRetractionTargetRole",
+          "fshType": "Extension",
+          "resourceType": "StructureDefinition",
+          "id": "grove-retraction-target-role",
           "classification": "definition"
         },
         {
@@ -137,6 +165,13 @@
           "fshType": "Instance",
           "resourceType": "Device",
           "id": "GroveApplicationDeviceExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "GroveHostDeviceExample",
+          "fshType": "Instance",
+          "resourceType": "Device",
+          "id": "GroveHostDeviceExample",
           "classification": "example"
         },
         {
@@ -707,6 +742,20 @@
           "classification": "example"
         },
         {
+          "fshName": "GroveMobileRetractionBundleExample",
+          "fshType": "Instance",
+          "resourceType": "Bundle",
+          "id": "GroveMobileRetractionBundleExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "GroveMobileRetractionProvenanceExample",
+          "fshType": "Instance",
+          "resourceType": "Provenance",
+          "id": "GroveMobileRetractionProvenanceExample",
+          "classification": "example"
+        },
+        {
           "fshName": "GroveMobileSexualActivityExample",
           "fshType": "Instance",
           "resourceType": "Observation",
@@ -812,17 +861,10 @@
           "classification": "example"
         },
         {
-          "fshName": "GroveWriterRecordIdentifier",
+          "fshName": "MobileSourceRecordIdentifierExample",
           "fshType": "Instance",
           "resourceType": "NamingSystem",
-          "id": "grove-writer-record-id",
-          "classification": "definition"
-        },
-        {
-          "fshName": "MobileObservationIdentifierExample",
-          "fshType": "Instance",
-          "resourceType": "NamingSystem",
-          "id": "MobileObservationIdentifierExample",
+          "id": "MobileSourceRecordIdentifierExample",
           "classification": "example"
         },
         {
@@ -830,6 +872,13 @@
           "fshType": "Profile",
           "resourceType": "StructureDefinition",
           "id": "grove-application-device",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveHostDevice",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-host-device",
           "classification": "definition"
         },
         {
@@ -1358,6 +1407,20 @@
           "classification": "definition"
         },
         {
+          "fshName": "GroveMobileRetractionBundle",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-retraction-bundle",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveMobileRetractionProvenance",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-mobile-retraction-provenance",
+          "classification": "definition"
+        },
+        {
           "fshName": "GroveMobileSexualActivity",
           "fshType": "Profile",
           "resourceType": "StructureDefinition",
@@ -1477,10 +1540,24 @@
           "classification": "definition"
         },
         {
+          "fshName": "GroveIdentifierRoleVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "grove-identifier-role",
+          "classification": "definition"
+        },
+        {
           "fshName": "GroveIntermenstrualBleedingVS",
           "fshType": "ValueSet",
           "resourceType": "ValueSet",
           "id": "grove-intermenstrual-bleeding",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveLifecycleEventVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "grove-lifecycle-event",
           "classification": "definition"
         },
         {
@@ -1516,6 +1593,13 @@
           "fshType": "ValueSet",
           "resourceType": "ValueSet",
           "id": "grove-recording-method",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveRetractionTargetRoleVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "grove-retraction-target-role",
           "classification": "definition"
         },
         {
@@ -1659,13 +1743,6 @@
       "canonical": "https://grovealliance.org/fhir/sensorkit",
       "artifacts": [
         {
-          "fshName": "SensorKitAccelerometerObservation",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "sensorkit-accelerometer-observation",
-          "classification": "definition"
-        },
-        {
           "fshName": "SensorKitConceptCS",
           "fshType": "CodeSystem",
           "resourceType": "CodeSystem",
@@ -1680,20 +1757,6 @@
           "classification": "definition"
         },
         {
-          "fshName": "SensorKitConversionProvenance",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "sensorkit-conversion-provenance",
-          "classification": "definition"
-        },
-        {
-          "fshName": "SensorKitDeviceUsageObservation",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "sensorkit-device-usage-observation",
-          "classification": "definition"
-        },
-        {
           "fshName": "SensorKitECGLeadCS",
           "fshType": "CodeSystem",
           "resourceType": "CodeSystem",
@@ -1701,128 +1764,9 @@
           "classification": "definition"
         },
         {
-          "fshName": "SensorKitECGLeadVS",
-          "fshType": "ValueSet",
-          "resourceType": "ValueSet",
-          "id": "sensorkit-ecg-lead",
-          "classification": "definition"
-        },
-        {
-          "fshName": "SensorKitECGObservation",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "sensorkit-ecg-observation",
-          "classification": "definition"
-        },
-        {
-          "fshName": "SensorKitECGSessionGuidance",
-          "fshType": "Extension",
-          "resourceType": "StructureDefinition",
-          "id": "sensorkit-ecg-session-guidance",
-          "classification": "definition"
-        },
-        {
-          "fshName": "SensorKitECGSessionGuidanceVS",
-          "fshType": "ValueSet",
-          "resourceType": "ValueSet",
-          "id": "sensorkit-ecg-session-guidance",
-          "classification": "definition"
-        },
-        {
-          "fshName": "SensorKitKeyboardMetricsObservation",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "sensorkit-keyboard-metrics-observation",
-          "classification": "definition"
-        },
-        {
-          "fshName": "SensorKitMessagesUsageObservation",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "sensorkit-messages-usage-observation",
-          "classification": "definition"
-        },
-        {
-          "fshName": "SensorKitObservation",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "sensorkit-observation",
-          "classification": "definition"
-        },
-        {
-          "fshName": "SensorKitOnWristObservation",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "sensorkit-on-wrist-observation",
-          "classification": "definition"
-        },
-        {
-          "fshName": "SensorKitOutputIdentifier",
-          "fshType": "Instance",
-          "resourceType": "NamingSystem",
-          "id": "sensorkit-output-id",
-          "classification": "definition"
-        },
-        {
-          "fshName": "SensorKitPhoneUsageObservation",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "sensorkit-phone-usage-observation",
-          "classification": "definition"
-        },
-        {
-          "fshName": "SensorKitPpgObservation",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "sensorkit-ppg-observation",
-          "classification": "definition"
-        },
-        {
-          "fshName": "SensorKitRecordIdentifier",
-          "fshType": "Instance",
-          "resourceType": "NamingSystem",
-          "id": "sensorkit-record-id",
-          "classification": "definition"
-        },
-        {
-          "fshName": "SensorKitRecordingDocument",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "sensorkit-recording-document",
-          "classification": "definition"
-        },
-        {
-          "fshName": "SensorKitSideVS",
-          "fshType": "ValueSet",
-          "resourceType": "ValueSet",
-          "id": "sensorkit-side",
-          "classification": "definition"
-        },
-        {
-          "fshName": "SensorKitSleepSessionObservation",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "sensorkit-sleep-session-observation",
-          "classification": "definition"
-        },
-        {
-          "fshName": "SensorKitSourceType",
-          "fshType": "Extension",
-          "resourceType": "StructureDefinition",
-          "id": "sensorkit-source-type",
-          "classification": "definition"
-        },
-        {
           "fshName": "SensorKitSourceTypeCS",
           "fshType": "CodeSystem",
           "resourceType": "CodeSystem",
-          "id": "sensorkit-source-type",
-          "classification": "definition"
-        },
-        {
-          "fshName": "SensorKitSourceTypeVS",
-          "fshType": "ValueSet",
-          "resourceType": "ValueSet",
           "id": "sensorkit-source-type",
           "classification": "definition"
         },
@@ -1834,38 +1778,10 @@
           "classification": "definition"
         },
         {
-          "fshName": "SensorKitVisitLocation",
+          "fshName": "SensorKitSourceType",
           "fshType": "Extension",
           "resourceType": "StructureDefinition",
-          "id": "sensorkit-visit-location",
-          "classification": "definition"
-        },
-        {
-          "fshName": "SensorKitVisitLocationCategoryVS",
-          "fshType": "ValueSet",
-          "resourceType": "ValueSet",
-          "id": "sensorkit-visit-location-category",
-          "classification": "definition"
-        },
-        {
-          "fshName": "SensorKitVisitLocationIdentifier",
-          "fshType": "Instance",
-          "resourceType": "NamingSystem",
-          "id": "sensorkit-visit-location-id",
-          "classification": "definition"
-        },
-        {
-          "fshName": "SensorKitVisitObservation",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "sensorkit-visit-observation",
-          "classification": "definition"
-        },
-        {
-          "fshName": "SensorKitWearStateVS",
-          "fshType": "ValueSet",
-          "resourceType": "ValueSet",
-          "id": "sensorkit-wear-state",
+          "id": "sensorkit-source-type",
           "classification": "definition"
         },
         {
@@ -1873,13 +1789,6 @@
           "fshType": "Extension",
           "resourceType": "StructureDefinition",
           "id": "sensorkit-wrist-temperature-algorithm-version",
-          "classification": "definition"
-        },
-        {
-          "fshName": "SensorKitWristTemperatureObservation",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "sensorkit-wrist-temperature-observation",
           "classification": "definition"
         },
         {
@@ -1925,13 +1834,6 @@
           "classification": "example"
         },
         {
-          "fshName": "SensorKitDeviceUsageExchangeBundleExample",
-          "fshType": "Instance",
-          "resourceType": "Bundle",
-          "id": "SensorKitDeviceUsageExchangeBundleExample",
-          "classification": "example"
-        },
-        {
           "fshName": "SensorKitDeviceUsageProvenanceExample",
           "fshType": "Instance",
           "resourceType": "Provenance",
@@ -1957,48 +1859,6 @@
           "fshType": "Instance",
           "resourceType": "Provenance",
           "id": "SensorKitECGProvenanceExample",
-          "classification": "example"
-        },
-        {
-          "fshName": "SensorKitExchangeApplicationExample",
-          "fshType": "Instance",
-          "resourceType": "Device",
-          "id": "SensorKitExchangeApplicationExample",
-          "classification": "example"
-        },
-        {
-          "fshName": "SensorKitExchangeDeviceExample",
-          "fshType": "Instance",
-          "resourceType": "Device",
-          "id": "SensorKitExchangeDeviceExample",
-          "classification": "example"
-        },
-        {
-          "fshName": "SensorKitExchangeDeviceUsageDocumentExample",
-          "fshType": "Instance",
-          "resourceType": "DocumentReference",
-          "id": "SensorKitExchangeDeviceUsageDocumentExample",
-          "classification": "example"
-        },
-        {
-          "fshName": "SensorKitExchangeDeviceUsageExample",
-          "fshType": "Instance",
-          "resourceType": "Observation",
-          "id": "SensorKitExchangeDeviceUsageExample",
-          "classification": "example"
-        },
-        {
-          "fshName": "SensorKitExchangeDeviceUsageProvenanceExample",
-          "fshType": "Instance",
-          "resourceType": "Provenance",
-          "id": "SensorKitExchangeDeviceUsageProvenanceExample",
-          "classification": "example"
-        },
-        {
-          "fshName": "SensorKitExchangePatientExample",
-          "fshType": "Instance",
-          "resourceType": "Patient",
-          "id": "SensorKitExchangePatientExample",
           "classification": "example"
         },
         {
@@ -2119,6 +1979,146 @@
           "resourceType": "Observation",
           "id": "SensorKitWristTemperatureExample",
           "classification": "example"
+        },
+        {
+          "fshName": "SensorKitAccelerometerObservation",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "sensorkit-accelerometer-observation",
+          "classification": "definition"
+        },
+        {
+          "fshName": "SensorKitConversionProvenance",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "sensorkit-conversion-provenance",
+          "classification": "definition"
+        },
+        {
+          "fshName": "SensorKitDeviceUsageObservation",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "sensorkit-device-usage-observation",
+          "classification": "definition"
+        },
+        {
+          "fshName": "SensorKitECGObservation",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "sensorkit-ecg-observation",
+          "classification": "definition"
+        },
+        {
+          "fshName": "SensorKitKeyboardMetricsObservation",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "sensorkit-keyboard-metrics-observation",
+          "classification": "definition"
+        },
+        {
+          "fshName": "SensorKitMessagesUsageObservation",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "sensorkit-messages-usage-observation",
+          "classification": "definition"
+        },
+        {
+          "fshName": "SensorKitObservation",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "sensorkit-observation",
+          "classification": "definition"
+        },
+        {
+          "fshName": "SensorKitOnWristObservation",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "sensorkit-on-wrist-observation",
+          "classification": "definition"
+        },
+        {
+          "fshName": "SensorKitPhoneUsageObservation",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "sensorkit-phone-usage-observation",
+          "classification": "definition"
+        },
+        {
+          "fshName": "SensorKitPpgObservation",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "sensorkit-ppg-observation",
+          "classification": "definition"
+        },
+        {
+          "fshName": "SensorKitRecordingDocument",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "sensorkit-recording-document",
+          "classification": "definition"
+        },
+        {
+          "fshName": "SensorKitSleepSessionObservation",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "sensorkit-sleep-session-observation",
+          "classification": "definition"
+        },
+        {
+          "fshName": "SensorKitVisitObservation",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "sensorkit-visit-observation",
+          "classification": "definition"
+        },
+        {
+          "fshName": "SensorKitWristTemperatureObservation",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "sensorkit-wrist-temperature-observation",
+          "classification": "definition"
+        },
+        {
+          "fshName": "SensorKitECGLeadVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "sensorkit-ecg-lead",
+          "classification": "definition"
+        },
+        {
+          "fshName": "SensorKitECGSessionGuidanceVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "sensorkit-ecg-session-guidance",
+          "classification": "definition"
+        },
+        {
+          "fshName": "SensorKitSideVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "sensorkit-side",
+          "classification": "definition"
+        },
+        {
+          "fshName": "SensorKitSourceTypeVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "sensorkit-source-type",
+          "classification": "definition"
+        },
+        {
+          "fshName": "SensorKitVisitLocationCategoryVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "sensorkit-visit-location-category",
+          "classification": "definition"
+        },
+        {
+          "fshName": "SensorKitWearStateVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "sensorkit-wear-state",
+          "classification": "definition"
         }
       ]
     },
@@ -2209,6 +2209,13 @@
           "fshType": "CodeSystem",
           "resourceType": "CodeSystem",
           "id": "healthkit-heart-rate-motion-context",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthKitIdentifierTypeCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "healthkit-identifier-type",
           "classification": "definition"
         },
         {
@@ -2317,6 +2324,13 @@
           "classification": "definition"
         },
         {
+          "fshName": "HealthkitBiologicalSexCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "healthkit-biological-sex",
+          "classification": "definition"
+        },
+        {
           "fshName": "HealthkitBleedingAfterPregnancyCS",
           "fshType": "CodeSystem",
           "resourceType": "CodeSystem",
@@ -2349,6 +2363,13 @@
           "fshType": "CodeSystem",
           "resourceType": "CodeSystem",
           "id": "healthkit-environmental-audio-exposure-notification",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitFitzpatrickSkinTypeCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "healthkit-fitzpatrick-skin-type",
           "classification": "definition"
         },
         {
@@ -2520,41 +2541,6 @@
           "classification": "definition"
         },
         {
-          "fshName": "HealthKitECGAlgorithmVersion",
-          "fshType": "Extension",
-          "resourceType": "StructureDefinition",
-          "id": "healthkit-ecg-algorithm-version",
-          "classification": "definition"
-        },
-        {
-          "fshName": "HealthKitECGAverageHeartRate",
-          "fshType": "Extension",
-          "resourceType": "StructureDefinition",
-          "id": "healthkit-ecg-average-heart-rate",
-          "classification": "definition"
-        },
-        {
-          "fshName": "HealthKitECGClassification",
-          "fshType": "Extension",
-          "resourceType": "StructureDefinition",
-          "id": "healthkit-ecg-classification",
-          "classification": "definition"
-        },
-        {
-          "fshName": "HealthKitECGCorrelatedSymptom",
-          "fshType": "Extension",
-          "resourceType": "StructureDefinition",
-          "id": "healthkit-ecg-correlated-symptom",
-          "classification": "definition"
-        },
-        {
-          "fshName": "HealthKitECGSamplingFrequency",
-          "fshType": "Extension",
-          "resourceType": "StructureDefinition",
-          "id": "healthkit-ecg-sampling-frequency",
-          "classification": "definition"
-        },
-        {
           "fshName": "HealthKitECGSourcePeriod",
           "fshType": "Extension",
           "resourceType": "StructureDefinition",
@@ -2566,13 +2552,6 @@
           "fshType": "Extension",
           "resourceType": "StructureDefinition",
           "id": "healthkit-ecg-symptoms-status",
-          "classification": "definition"
-        },
-        {
-          "fshName": "HealthKitECGVoltageMeasurementCount",
-          "fshType": "Extension",
-          "resourceType": "StructureDefinition",
-          "id": "healthkit-ecg-voltage-measurement-count",
           "classification": "definition"
         },
         {
@@ -2695,10 +2674,38 @@
           "classification": "example"
         },
         {
+          "fshName": "HealthKitClinicalRecordProvenanceExample",
+          "fshType": "Instance",
+          "resourceType": "Provenance",
+          "id": "HealthKitClinicalRecordProvenanceExample",
+          "classification": "example"
+        },
+        {
           "fshName": "HealthKitConversionProvenanceExample",
           "fshType": "Instance",
           "resourceType": "Provenance",
           "id": "HealthKitConversionProvenanceExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "HealthKitECGAverageHeartRateExample",
+          "fshType": "Instance",
+          "resourceType": "Observation",
+          "id": "HealthKitECGAverageHeartRateExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "HealthKitECGConversionProvenanceExample",
+          "fshType": "Instance",
+          "resourceType": "Provenance",
+          "id": "HealthKitECGConversionProvenanceExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "HealthKitECGCorrelatedDizzinessExample",
+          "fshType": "Instance",
+          "resourceType": "Observation",
+          "id": "HealthKitECGCorrelatedDizzinessExample",
           "classification": "example"
         },
         {
@@ -2709,32 +2716,11 @@
           "classification": "example"
         },
         {
-          "fshName": "HealthKitExchangeBundleExample",
-          "fshType": "Instance",
-          "resourceType": "Bundle",
-          "id": "HealthKitExchangeBundleExample",
-          "classification": "example"
-        },
-        {
-          "fshName": "HealthKitExchangeConversionProvenanceExample",
+          "fshName": "HealthKitECGSymptomProvenanceExample",
           "fshType": "Instance",
           "resourceType": "Provenance",
-          "id": "HealthKitExchangeConversionProvenanceExample",
+          "id": "HealthKitECGSymptomProvenanceExample",
           "classification": "example"
-        },
-        {
-          "fshName": "HealthKitExchangeHeartRateObservationExample",
-          "fshType": "Instance",
-          "resourceType": "Observation",
-          "id": "HealthKitExchangeHeartRateObservationExample",
-          "classification": "example"
-        },
-        {
-          "fshName": "HealthKitHealthConceptIdentifier",
-          "fshType": "Instance",
-          "resourceType": "NamingSystem",
-          "id": "healthkit-health-concept-id",
-          "classification": "definition"
         },
         {
           "fshName": "HealthKitHeartRateObservationExample",
@@ -2751,6 +2737,13 @@
           "classification": "example"
         },
         {
+          "fshName": "HealthKitHostDeviceExample",
+          "fshType": "Instance",
+          "resourceType": "Device",
+          "id": "HealthKitHostDeviceExample",
+          "classification": "example"
+        },
+        {
           "fshName": "HealthKitManuallyEnteredBodyWeightExample",
           "fshType": "Instance",
           "resourceType": "Observation",
@@ -2763,13 +2756,6 @@
           "resourceType": "MedicationAdministration",
           "id": "HealthKitMedicationDoseEventExample",
           "classification": "example"
-        },
-        {
-          "fshName": "HealthKitObjectIdentifier",
-          "fshType": "Instance",
-          "resourceType": "NamingSystem",
-          "id": "healthkit-object-id",
-          "classification": "definition"
         },
         {
           "fshName": "HealthKitPatientExample",
@@ -2819,13 +2805,6 @@
           "resourceType": "Device",
           "id": "HealthKitSourceApplicationDeviceExample",
           "classification": "example"
-        },
-        {
-          "fshName": "HealthKitSourceDeviceIdentifier",
-          "fshType": "Instance",
-          "resourceType": "NamingSystem",
-          "id": "healthkit-source-device-id",
-          "classification": "definition"
         },
         {
           "fshName": "HealthKitStepCountConversionProvenanceExample",
@@ -2912,6 +2891,13 @@
           "classification": "example"
         },
         {
+          "fshName": "HealthkitBiologicalSexExample",
+          "fshType": "Instance",
+          "resourceType": "Observation",
+          "id": "HealthkitBiologicalSexExample",
+          "classification": "example"
+        },
+        {
           "fshName": "HealthkitBladderIncontinenceExample",
           "fshType": "Instance",
           "resourceType": "Observation",
@@ -2961,6 +2947,13 @@
           "classification": "example"
         },
         {
+          "fshName": "HealthkitDateOfBirthExample",
+          "fshType": "Instance",
+          "resourceType": "Observation",
+          "id": "HealthkitDateOfBirthExample",
+          "classification": "example"
+        },
+        {
           "fshName": "HealthkitEnvironmentalAudioExposureExample",
           "fshType": "Instance",
           "resourceType": "Observation",
@@ -2979,6 +2972,13 @@
           "fshType": "Instance",
           "resourceType": "Observation",
           "id": "HealthkitEnvironmentalSoundReductionExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "HealthkitFitzpatrickSkinTypeExample",
+          "fshType": "Instance",
+          "resourceType": "Observation",
+          "id": "HealthkitFitzpatrickSkinTypeExample",
           "classification": "example"
         },
         {
@@ -3626,6 +3626,13 @@
           "classification": "example"
         },
         {
+          "fshName": "HealthKitApplicationDevice",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-application-device",
+          "classification": "definition"
+        },
+        {
           "fshName": "HealthKitClinicalRecordDocument",
           "fshType": "Profile",
           "resourceType": "StructureDefinition",
@@ -3637,6 +3644,13 @@
           "fshType": "Profile",
           "resourceType": "StructureDefinition",
           "id": "healthkit-conversion-provenance",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthKitECGAverageHeartRateObservation",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-ecg-average-heart-rate-observation",
           "classification": "definition"
         },
         {
@@ -3724,6 +3738,13 @@
           "classification": "definition"
         },
         {
+          "fshName": "HealthkitBiologicalSex",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-biological-sex",
+          "classification": "definition"
+        },
+        {
           "fshName": "HealthkitBladderIncontinence",
           "fshType": "Profile",
           "resourceType": "StructureDefinition",
@@ -3773,6 +3794,13 @@
           "classification": "definition"
         },
         {
+          "fshName": "HealthkitDateOfBirth",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-date-of-birth",
+          "classification": "definition"
+        },
+        {
           "fshName": "HealthkitEnvironmentalAudioExposure",
           "fshType": "Profile",
           "resourceType": "StructureDefinition",
@@ -3791,6 +3819,13 @@
           "fshType": "Profile",
           "resourceType": "StructureDefinition",
           "id": "healthkit-environmental-sound-reduction",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitFitzpatrickSkinType",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-fitzpatrick-skin-type",
           "classification": "definition"
         },
         {
@@ -4480,13 +4515,6 @@
           "classification": "definition"
         },
         {
-          "fshName": "HealthKitECGCorrelatedSymptomTypeVS",
-          "fshType": "ValueSet",
-          "resourceType": "ValueSet",
-          "id": "healthkit-ecg-correlated-symptom-type",
-          "classification": "definition"
-        },
-        {
           "fshName": "HealthKitECGSymptomsStatusVS",
           "fshType": "ValueSet",
           "resourceType": "ValueSet",
@@ -4571,6 +4599,13 @@
           "classification": "definition"
         },
         {
+          "fshName": "HealthkitBiologicalSexVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "healthkit-biological-sex",
+          "classification": "definition"
+        },
+        {
           "fshName": "HealthkitBleedingAfterPregnancyVS",
           "fshType": "ValueSet",
           "resourceType": "ValueSet",
@@ -4603,6 +4638,13 @@
           "fshType": "ValueSet",
           "resourceType": "ValueSet",
           "id": "healthkit-environmental-audio-exposure-notification",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitFitzpatrickSkinTypeVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "healthkit-fitzpatrick-skin-type",
           "classification": "definition"
         },
         {
@@ -4765,76 +4807,6 @@
           "resourceType": "ValueSet",
           "id": "healthkit-wheelchair-use",
           "classification": "definition"
-        },
-        {
-          "fshName": "HealthkitBiologicalSexCS",
-          "fshType": "CodeSystem",
-          "resourceType": "CodeSystem",
-          "id": "healthkit-biological-sex",
-          "classification": "definition"
-        },
-        {
-          "fshName": "HealthkitBiologicalSexVS",
-          "fshType": "ValueSet",
-          "resourceType": "ValueSet",
-          "id": "healthkit-biological-sex",
-          "classification": "definition"
-        },
-        {
-          "fshName": "HealthkitFitzpatrickSkinTypeCS",
-          "fshType": "CodeSystem",
-          "resourceType": "CodeSystem",
-          "id": "healthkit-fitzpatrick-skin-type",
-          "classification": "definition"
-        },
-        {
-          "fshName": "HealthkitFitzpatrickSkinTypeVS",
-          "fshType": "ValueSet",
-          "resourceType": "ValueSet",
-          "id": "healthkit-fitzpatrick-skin-type",
-          "classification": "definition"
-        },
-        {
-          "fshName": "HealthkitBiologicalSex",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "healthkit-biological-sex",
-          "classification": "definition"
-        },
-        {
-          "fshName": "HealthkitDateOfBirth",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "healthkit-date-of-birth",
-          "classification": "definition"
-        },
-        {
-          "fshName": "HealthkitFitzpatrickSkinType",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "healthkit-fitzpatrick-skin-type",
-          "classification": "definition"
-        },
-        {
-          "fshName": "HealthkitBiologicalSexExample",
-          "fshType": "Instance",
-          "resourceType": "Observation",
-          "id": "HealthkitBiologicalSexExample",
-          "classification": "example"
-        },
-        {
-          "fshName": "HealthkitDateOfBirthExample",
-          "fshType": "Instance",
-          "resourceType": "Observation",
-          "id": "HealthkitDateOfBirthExample",
-          "classification": "example"
-        },
-        {
-          "fshName": "HealthkitFitzpatrickSkinTypeExample",
-          "fshType": "Instance",
-          "resourceType": "Observation",
-          "id": "HealthkitFitzpatrickSkinTypeExample",
-          "classification": "example"
         }
       ]
     },
@@ -4907,6 +4879,13 @@
           "classification": "definition"
         },
         {
+          "fshName": "HealthConnectMindfulnessSessionTypeCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "health-connect-mindfulness-session-type",
+          "classification": "definition"
+        },
+        {
           "fshName": "HealthConnectOvulationTestResultCS",
           "fshType": "CodeSystem",
           "resourceType": "CodeSystem",
@@ -4942,10 +4921,10 @@
           "classification": "definition"
         },
         {
-          "fshName": "HealthConnectExerciseTitle",
-          "fshType": "Extension",
-          "resourceType": "StructureDefinition",
-          "id": "health-connect-exercise-title",
+          "fshName": "HealthConnectVo2MaxMeasurementMethodCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "health-connect-vo2-max-measurement-method",
           "classification": "definition"
         },
         {
@@ -4963,10 +4942,10 @@
           "classification": "definition"
         },
         {
-          "fshName": "HealthConnectSleepTitle",
+          "fshName": "HealthConnectSessionTitle",
           "fshType": "Extension",
           "resourceType": "StructureDefinition",
-          "id": "health-connect-sleep-title",
+          "id": "health-connect-session-title",
           "classification": "definition"
         },
         {
@@ -4984,38 +4963,17 @@
           "classification": "example"
         },
         {
-          "fshName": "HealthConnectBloodPressureExample",
-          "fshType": "Instance",
-          "resourceType": "Observation",
-          "id": "HealthConnectBloodPressureExample",
-          "classification": "example"
-        },
-        {
-          "fshName": "HealthConnectBodyTemperatureExample",
-          "fshType": "Instance",
-          "resourceType": "Observation",
-          "id": "HealthConnectBodyTemperatureExample",
-          "classification": "example"
-        },
-        {
-          "fshName": "HealthConnectBodyWeightExample",
-          "fshType": "Instance",
-          "resourceType": "Observation",
-          "id": "HealthConnectBodyWeightExample",
-          "classification": "example"
-        },
-        {
-          "fshName": "HealthConnectBodyWeightProvenanceExample",
-          "fshType": "Instance",
-          "resourceType": "Provenance",
-          "id": "HealthConnectBodyWeightProvenanceExample",
-          "classification": "example"
-        },
-        {
           "fshName": "HealthConnectCapillaryGlucoseExample",
           "fshType": "Instance",
           "resourceType": "Observation",
           "id": "HealthConnectCapillaryGlucoseExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "HealthConnectCapillaryGlucoseProvenanceExample",
+          "fshType": "Instance",
+          "resourceType": "Provenance",
+          "id": "HealthConnectCapillaryGlucoseProvenanceExample",
           "classification": "example"
         },
         {
@@ -5068,24 +5026,17 @@
           "classification": "example"
         },
         {
-          "fshName": "HealthConnectHeartRateProvenanceExample",
+          "fshName": "HealthConnectExerciseSessionExample",
           "fshType": "Instance",
-          "resourceType": "Provenance",
-          "id": "HealthConnectHeartRateProvenanceExample",
+          "resourceType": "Observation",
+          "id": "HealthConnectExerciseSessionExample",
           "classification": "example"
         },
         {
-          "fshName": "HealthConnectHeartRateSampleOneExample",
+          "fshName": "HealthConnectHostDeviceExample",
           "fshType": "Instance",
-          "resourceType": "Observation",
-          "id": "HealthConnectHeartRateSampleOneExample",
-          "classification": "example"
-        },
-        {
-          "fshName": "HealthConnectHeartRateSampleTwoExample",
-          "fshType": "Instance",
-          "resourceType": "Observation",
-          "id": "HealthConnectHeartRateSampleTwoExample",
+          "resourceType": "Device",
+          "id": "HealthConnectHostDeviceExample",
           "classification": "example"
         },
         {
@@ -5110,11 +5061,11 @@
           "classification": "example"
         },
         {
-          "fshName": "HealthConnectOutputIdentifier",
+          "fshName": "HealthConnectMindfulnessExample",
           "fshType": "Instance",
-          "resourceType": "NamingSystem",
-          "id": "health-connect-output-id",
-          "classification": "definition"
+          "resourceType": "Observation",
+          "id": "HealthConnectMindfulnessExample",
+          "classification": "example"
         },
         {
           "fshName": "HealthConnectPatientExample",
@@ -5124,11 +5075,18 @@
           "classification": "example"
         },
         {
-          "fshName": "HealthConnectRecordIdentifier",
+          "fshName": "HealthConnectPlasmaGlucoseExample",
           "fshType": "Instance",
-          "resourceType": "NamingSystem",
-          "id": "health-connect-record-id",
-          "classification": "definition"
+          "resourceType": "Observation",
+          "id": "HealthConnectPlasmaGlucoseExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "HealthConnectPlasmaGlucoseSpecimenExample",
+          "fshType": "Instance",
+          "resourceType": "Specimen",
+          "id": "HealthConnectPlasmaGlucoseSpecimenExample",
+          "classification": "example"
         },
         {
           "fshName": "HealthConnectRecordingDeviceExample",
@@ -5138,38 +5096,17 @@
           "classification": "example"
         },
         {
-          "fshName": "HealthConnectResearchStudyExample",
-          "fshType": "Instance",
-          "resourceType": "ResearchStudy",
-          "id": "HealthConnectResearchStudyExample",
-          "classification": "example"
-        },
-        {
-          "fshName": "HealthConnectResearchSubjectExample",
-          "fshType": "Instance",
-          "resourceType": "ResearchSubject",
-          "id": "HealthConnectResearchSubjectExample",
-          "classification": "example"
-        },
-        {
-          "fshName": "HealthConnectRevisedWeightExample",
+          "fshName": "HealthConnectRestingHeartRateExample",
           "fshType": "Instance",
           "resourceType": "Observation",
-          "id": "HealthConnectRevisedWeightExample",
+          "id": "HealthConnectRestingHeartRateExample",
           "classification": "example"
         },
         {
-          "fshName": "HealthConnectSerumGlucoseExample",
+          "fshName": "HealthConnectRestingHeartRateProvenanceExample",
           "fshType": "Instance",
-          "resourceType": "Observation",
-          "id": "HealthConnectSerumGlucoseExample",
-          "classification": "example"
-        },
-        {
-          "fshName": "HealthConnectSerumGlucoseSpecimenExample",
-          "fshType": "Instance",
-          "resourceType": "Specimen",
-          "id": "HealthConnectSerumGlucoseSpecimenExample",
+          "resourceType": "Provenance",
+          "id": "HealthConnectRestingHeartRateProvenanceExample",
           "classification": "example"
         },
         {
@@ -5180,27 +5117,6 @@
           "classification": "example"
         },
         {
-          "fshName": "HealthConnectSleepStageExample",
-          "fshType": "Instance",
-          "resourceType": "Observation",
-          "id": "HealthConnectSleepStageExample",
-          "classification": "example"
-        },
-        {
-          "fshName": "HealthConnectSourceApplicationExample",
-          "fshType": "Instance",
-          "resourceType": "Device",
-          "id": "HealthConnectSourceApplicationExample",
-          "classification": "example"
-        },
-        {
-          "fshName": "HealthConnectSpecimenIdentifier",
-          "fshType": "Instance",
-          "resourceType": "NamingSystem",
-          "id": "health-connect-specimen-id",
-          "classification": "definition"
-        },
-        {
           "fshName": "HealthConnectStepCadenceExample",
           "fshType": "Instance",
           "resourceType": "Observation",
@@ -5208,38 +5124,17 @@
           "classification": "example"
         },
         {
-          "fshName": "HealthConnectStepCountExample",
-          "fshType": "Instance",
-          "resourceType": "Observation",
-          "id": "HealthConnectStepCountExample",
-          "classification": "example"
-        },
-        {
-          "fshName": "HealthConnectStepCountProvenanceExample",
-          "fshType": "Instance",
-          "resourceType": "Provenance",
-          "id": "HealthConnectStepCountProvenanceExample",
-          "classification": "example"
-        },
-        {
-          "fshName": "HealthConnectStudyBundleExample",
-          "fshType": "Instance",
-          "resourceType": "Bundle",
-          "id": "HealthConnectStudyBundleExample",
-          "classification": "example"
-        },
-        {
-          "fshName": "HealthConnectStudyPlanExample",
-          "fshType": "Instance",
-          "resourceType": "PlanDefinition",
-          "id": "HealthConnectStudyPlanExample",
-          "classification": "example"
-        },
-        {
           "fshName": "HealthConnectTotalEnergyExample",
           "fshType": "Instance",
           "resourceType": "Observation",
           "id": "HealthConnectTotalEnergyExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "HealthConnectVo2MaxExample",
+          "fshType": "Instance",
+          "resourceType": "Observation",
+          "id": "HealthConnectVo2MaxExample",
           "classification": "example"
         },
         {
@@ -5369,6 +5264,34 @@
           "classification": "definition"
         },
         {
+          "fshName": "HealthConnectCervicalMucusAppearanceVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "health-connect-cervical-mucus-appearance",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthConnectCervicalMucusSensationVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "health-connect-cervical-mucus-sensation",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthConnectExerciseSegmentTypeVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "health-connect-exercise-segment-type",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthConnectExerciseTypeVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "health-connect-exercise-type",
+          "classification": "definition"
+        },
+        {
           "fshName": "HealthConnectMealTypeVS",
           "fshType": "ValueSet",
           "resourceType": "ValueSet",
@@ -5383,10 +5306,31 @@
           "classification": "definition"
         },
         {
+          "fshName": "HealthConnectMenstruationFlowVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "health-connect-menstruation-flow",
+          "classification": "definition"
+        },
+        {
           "fshName": "HealthConnectMenstruationPeriodVS",
           "fshType": "ValueSet",
           "resourceType": "ValueSet",
           "id": "health-connect-menstruation-period",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthConnectMindfulnessSessionTypeVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "health-connect-mindfulness-session-type",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthConnectOvulationTestResultVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "health-connect-ovulation-test-result",
           "classification": "definition"
         },
         {
@@ -5404,10 +5348,24 @@
           "classification": "definition"
         },
         {
+          "fshName": "HealthConnectSexualActivityProtectionVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "health-connect-sexual-activity-protection",
+          "classification": "definition"
+        },
+        {
           "fshName": "HealthConnectSleepStageVS",
           "fshType": "ValueSet",
           "resourceType": "ValueSet",
           "id": "health-connect-sleep-stage",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthConnectVo2MaxMeasurementMethodVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "health-connect-vo2-max-measurement-method",
           "classification": "definition"
         }
       ]
@@ -5460,27 +5418,6 @@
           "classification": "example"
         },
         {
-          "fshName": "GoogleHealthStepsExample",
-          "fshType": "Instance",
-          "resourceType": "Observation",
-          "id": "GoogleHealthStepsExample",
-          "classification": "example"
-        },
-        {
-          "fshName": "GoogleHealthStepsProvenanceExample",
-          "fshType": "Instance",
-          "resourceType": "Provenance",
-          "id": "GoogleHealthStepsProvenanceExample",
-          "classification": "example"
-        },
-        {
-          "fshName": "OuraDailyStepCountExample",
-          "fshType": "Instance",
-          "resourceType": "Observation",
-          "id": "OuraDailyStepCountExample",
-          "classification": "example"
-        },
-        {
           "fshName": "ProviderApplicationExample",
           "fshType": "Instance",
           "resourceType": "Device",
@@ -5488,52 +5425,10 @@
           "classification": "example"
         },
         {
-          "fshName": "ProviderOutputIdentifier",
-          "fshType": "Instance",
-          "resourceType": "NamingSystem",
-          "id": "provider-output-id",
-          "classification": "definition"
-        },
-        {
           "fshName": "ProviderPatientExample",
           "fshType": "Instance",
           "resourceType": "Patient",
           "id": "ProviderPatientExample",
-          "classification": "example"
-        },
-        {
-          "fshName": "ProviderProviderAccountIdentifier",
-          "fshType": "Instance",
-          "resourceType": "NamingSystem",
-          "id": "provider-account-id",
-          "classification": "definition"
-        },
-        {
-          "fshName": "ProviderSourceRecordIdentifier",
-          "fshType": "Instance",
-          "resourceType": "NamingSystem",
-          "id": "provider-source-record-id",
-          "classification": "definition"
-        },
-        {
-          "fshName": "WithingsBloodPressureExample",
-          "fshType": "Instance",
-          "resourceType": "Observation",
-          "id": "WithingsBloodPressureExample",
-          "classification": "example"
-        },
-        {
-          "fshName": "WithingsBloodPressureProvenanceExample",
-          "fshType": "Instance",
-          "resourceType": "Provenance",
-          "id": "WithingsBloodPressureProvenanceExample",
-          "classification": "example"
-        },
-        {
-          "fshName": "WithingsExchangeBundleExample",
-          "fshType": "Instance",
-          "resourceType": "Bundle",
-          "id": "WithingsExchangeBundleExample",
           "classification": "example"
         },
         {
@@ -5642,6 +5537,13 @@
           "classification": "definition"
         },
         {
+          "fshName": "WithingsApplicationExample",
+          "fshType": "Instance",
+          "resourceType": "Device",
+          "id": "WithingsApplicationExample",
+          "classification": "example"
+        },
+        {
           "fshName": "WithingsAtrialFibrillationNotificationEcgExample",
           "fshType": "Instance",
           "resourceType": "Observation",
@@ -5656,10 +5558,31 @@
           "classification": "example"
         },
         {
+          "fshName": "WithingsBloodPressureExample",
+          "fshType": "Instance",
+          "resourceType": "Observation",
+          "id": "WithingsBloodPressureExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "WithingsBloodPressureProvenanceExample",
+          "fshType": "Instance",
+          "resourceType": "Provenance",
+          "id": "WithingsBloodPressureProvenanceExample",
+          "classification": "example"
+        },
+        {
           "fshName": "WithingsBodyFatMassExample",
           "fshType": "Instance",
           "resourceType": "Observation",
           "id": "WithingsBodyFatMassExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "WithingsBodyWeightExample",
+          "fshType": "Instance",
+          "resourceType": "Observation",
+          "id": "WithingsBodyWeightExample",
           "classification": "example"
         },
         {
@@ -5885,13 +5808,6 @@
           "resourceType": "ValueSet",
           "id": "withings-measurement",
           "classification": "definition"
-        },
-        {
-          "fshName": "WithingsBodyWeightExample",
-          "fshType": "Instance",
-          "resourceType": "Observation",
-          "id": "WithingsBodyWeightExample",
-          "classification": "example"
         }
       ]
     },
@@ -5929,6 +5845,13 @@
           "classification": "example"
         },
         {
+          "fshName": "OuraStepCountExample",
+          "fshType": "Instance",
+          "resourceType": "Observation",
+          "id": "OuraStepCountExample",
+          "classification": "example"
+        },
+        {
           "fshName": "OuraCardiovascularAge",
           "fshType": "Profile",
           "resourceType": "StructureDefinition",
@@ -5955,13 +5878,6 @@
           "resourceType": "ValueSet",
           "id": "oura-measurement",
           "classification": "definition"
-        },
-        {
-          "fshName": "OuraStepCountExample",
-          "fshType": "Instance",
-          "resourceType": "Observation",
-          "id": "OuraStepCountExample",
-          "classification": "example"
         }
       ]
     },
@@ -5971,11 +5887,18 @@
       "canonical": "https://grovealliance.org/fhir/google-health",
       "artifacts": [
         {
-          "fshName": "GoogleHealthObservation",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "google-health-observation",
+          "fshName": "GoogleHealthMeasurementCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "google-health-measurement",
           "classification": "definition"
+        },
+        {
+          "fshName": "GoogleHealthDailyRestingHeartRateExample",
+          "fshType": "Instance",
+          "resourceType": "Observation",
+          "id": "GoogleHealthDailyRestingHeartRateExample",
+          "classification": "example"
         },
         {
           "fshName": "GoogleHealthPatientExample",
@@ -5990,6 +5913,27 @@
           "resourceType": "Observation",
           "id": "GoogleHealthStepCountExample",
           "classification": "example"
+        },
+        {
+          "fshName": "GoogleHealthDailyRestingHeartRate",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "google-health-daily-resting-heart-rate",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GoogleHealthObservation",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "google-health-observation",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GoogleHealthMeasurementVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "google-health-measurement",
+          "classification": "definition"
         }
       ]
     }

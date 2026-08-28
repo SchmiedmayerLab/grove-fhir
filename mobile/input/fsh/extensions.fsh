@@ -25,3 +25,12 @@ Description: "The version the writing application gave this revision of its logi
 * value[x] only string
 * valueString 1..1
 * valueString obeys grove-writer-record-version-value-1
+
+Extension: GroveRetractionTargetRole
+Id: grove-retraction-target-role
+Title: "Grove Retraction Target Role"
+Description: "The role the exact prior output played in the source-derived graph. It disambiguates otherwise similar logical targets and is part of the retraction assertion, not a FHIR server delete instruction."
+Context: Provenance.target
+* value[x] only code
+* valueCode 1..1 MS
+* valueCode from GroveRetractionTargetRoleVS (required)

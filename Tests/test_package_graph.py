@@ -26,7 +26,7 @@ class PackageGraphTests(unittest.TestCase):
         )
         self.assertEqual(graph["schemaVersion"], 1)
         self.assertEqual(graph["fhirVersion"], "4.0.1")
-        self.assertEqual(graph["version"], "0.5.0")
+        self.assertEqual(graph["version"], "0.6.0")
         self.assertEqual(graph["canonicalRoot"], "https://grovealliance.org/fhir")
         sources = [package["source"] for package in graph["packages"]]
         self.assertEqual(
@@ -78,7 +78,7 @@ class PackageGraphTests(unittest.TestCase):
         self.assertIn("specimen-specific glucose", conformance)
         self.assertIn("SensorKit-only", conformance)
         self.assertIn("SensorKit ECG hybrid", conformance)
-        self.assertIn("raw SensorKit or Provider DocumentReference", conformance)
+        self.assertIn("HealthKit, SensorKit, or Provider DocumentReference", conformance)
         self.assertIn("Adapter conversion Provenance", conformance)
         self.assertIn("requiredProfiles", conformance)
         self.assertEqual(
@@ -117,6 +117,22 @@ class PackageGraphTests(unittest.TestCase):
             if base + name != claim["profile"]
         )
         self.assertEqual(claim["targetAdapterProfiles"], expected)
+
+    def test_health_connect_conversion_claim_includes_synthesized_specimens(self) -> None:
+        claims = json.loads(
+            (ROOT / "catalog/profile-claims.json").read_text(encoding="utf-8")
+        )
+        claim = next(
+            entry
+            for entry in claims["adapterConversionProvenanceClaims"]
+            if entry["adapter"] == "health-connect"
+        )
+        specimen = (
+            "https://grovealliance.org/fhir/health-connect/StructureDefinition/"
+            "health-connect-specimen"
+        )
+        self.assertIn(specimen, claim["targetAdapterProfiles"])
+        self.assertIn("Observation and synthesized Specimen", claim["rule"])
 
 
 if __name__ == "__main__":

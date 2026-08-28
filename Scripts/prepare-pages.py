@@ -229,7 +229,7 @@ def normalize_publisher_internals(
 ) -> str:
     """Replace the Publisher's private build clock with the reproducible clock.
 
-    Publisher 2.3.2 renders ``spec.internals`` with a 12-hour clock but omits
+    Publisher 2.3.3 renders ``spec.internals`` with a 12-hour clock but omits
     the meridiem, while ``package.json`` retains the same local wall clock in
     24-hour form. Bind the date, minute, and second exactly and accept only the
     corresponding 12-hour projection before normalizing both fields.

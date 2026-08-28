@@ -1,6 +1,6 @@
 {
   "name": "grove-fhir",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "private": true,
   "description": "Build and validation tooling for the Grove FHIR implementation guides",
   "scripts": {
@@ -14,13 +14,18 @@
     "profiles:check": "python3 Scripts/render-measurement-profiles.py --check",
     "formats:refresh": "python3 Scripts/render-format-registry.py",
     "formats:check": "python3 Scripts/render-format-registry.py --check",
-    "test": "npm run schema:check && python3 Scripts/check-content.py && python3 Scripts/check-terminology.py && python3 Scripts/render-measurement-profiles.py --check && python3 Scripts/render-format-registry.py --check && python3 -m unittest discover -s Tests -v",
-    "schema:check": "node Scripts/validate-json-schema.cjs catalog/schemas/measurement-catalog.schema.json catalog/measurement-catalog.json && node Scripts/validate-json-schema.cjs catalog/schemas/package-graph.schema.json catalog/package-graph.json && node Scripts/validate-json-schema.cjs Conformance/producer-manifest.schema.json Conformance/example-producer/manifest.json"
+    "artifacts:schema": "node Scripts/validate-json-schema.cjs catalog/schemas/artifact-allowlist.schema.json publication/artifact-allowlist.json",
+    "artifacts:refresh": "python3 Scripts/render-artifact-allowlist.py && npm run artifacts:schema",
+    "artifacts:check": "npm run artifacts:schema && python3 Scripts/render-artifact-allowlist.py --check",
+    "release:check": "python3 Scripts/check-release.py",
+    "test": "npm run schema:check && npm run release:check && python3 Scripts/check-content.py && python3 Scripts/check-terminology.py && python3 Scripts/render-measurement-profiles.py --check && python3 Scripts/render-format-registry.py --check && python3 Scripts/render-artifact-allowlist.py --check && python3 -m unittest discover -s Tests -v",
+    "schema:check": "node Scripts/validate-json-schema.cjs catalog/schemas/release-manifest.schema.json catalog/release-manifest.json && node Scripts/validate-json-schema.cjs catalog/schemas/exchange-protocol.schema.json catalog/exchange-protocol.json && node Scripts/validate-json-schema.cjs catalog/schemas/measurement-catalog.schema.json catalog/measurement-catalog.json && node Scripts/validate-json-schema.cjs catalog/schemas/package-graph.schema.json catalog/package-graph.json && node Scripts/validate-json-schema.cjs catalog/schemas/artifact-allowlist.schema.json publication/artifact-allowlist.json && node Scripts/validate-json-schema.cjs catalog/schemas/catalog-contracts.schema.json catalog/format-registry.json catalog/health-connect-adapter.json catalog/healthkit-adapter.json catalog/providers-adapter.json catalog/sensor-catalog.json catalog/sensorkit-adapter.json catalog/profile-claims.json && node Scripts/validate-json-schema.cjs Conformance/producer-manifest.schema.json Conformance/example-producer/manifest.json Conformance/corpora/mobile-exchange/official-validator-manifest.json"
   },
   "devDependencies": {
     "ajv": "8.20.0",
+    "ajv-formats": "3.0.1",
     "fhir-package-loader": "2.2.4",
-    "fsh-sushi": "3.20.0",
+    "fsh-sushi": "3.20.1",
     "tar-stream": "3.2.0"
   },
   "engines": {

@@ -6,7 +6,8 @@ SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTR
 SPDX-License-Identifier: MIT
 -->
 
-Grove FHIR is a family of seven implementation guides that share one exchange model.
+Grove FHIR 0.6.0 is a coordinated family of ten implementation-guide packages that share one
+exchange model.
 This guide, Mobile, is the hub: it defines the source-neutral profiles every adapter emits.
 Each adapter guide binds one platform or provider API to those shared profiles and states exactly which source types convert, which do not, and why.
 
@@ -20,6 +21,9 @@ Each adapter guide binds one platform or provider API to those shared profiles a
 | [Health Connect](https://grovealliance.org/fhir/health-connect/) | The closed Android Health Connect adapter | You convert Health Connect records on Android |
 | [SensorKit](https://grovealliance.org/fhir/sensorkit/) | The closed Apple SensorKit adapter and its dual-output recording pattern | You convert `SRSensor` streams from a study-entitled iOS app |
 | [Providers](https://grovealliance.org/fhir/providers/) | The closed adapter for Google Health, Oura, and Withings server APIs | You convert measurements fetched from a provider cloud API |
+| [Withings](https://grovealliance.org/fhir/withings/) | The Withings specialization of the provider contract | You implement the exact Withings source surface |
+| [Oura](https://grovealliance.org/fhir/oura/) | The Oura specialization of the provider contract | You implement the exact Oura source surface |
+| [Google Health](https://grovealliance.org/fhir/google-health/) | The Google Health API specialization of the provider contract | You implement the exact Google source surface |
 | [Questionnaire](https://grovealliance.org/fhir/questionnaire/) | Instrument definition, response capture, and the validated pair contract | You define instruments or accept questionnaire responses |
 
 ### Choose your route
@@ -47,9 +51,9 @@ Producers generate their conversion tables from these files, and the published g
 | [providers-adapter.json](https://grovealliance.org/fhir/catalog/providers-adapter.json) | The closed Google Health, Oura, and Withings element inventory |
 | [sensor-catalog.json](https://grovealliance.org/fhir/catalog/sensor-catalog.json) | The source-neutral sensor recording and time-series contract |
 | [profile-claims.json](https://grovealliance.org/fhir/catalog/profile-claims.json) | The exact profile sets a conformant resource must claim, per output kind |
-| [package-graph.json](https://grovealliance.org/fhir/catalog/package-graph.json) | The dependency graph between the seven guide packages |
-| [exchange-identity.json](https://grovealliance.org/fhir/catalog/exchange-identity.json) | The frozen deterministic identity algorithm every producer implements |
-| [health-connect-identity.json](https://grovealliance.org/fhir/catalog/health-connect-identity.json) | Health Connect identity derivation vectors |
+| [package-graph.json](https://grovealliance.org/fhir/catalog/package-graph.json) | The dependency graph between the ten guide packages |
+| [exchange-protocol.json](https://grovealliance.org/fhir/catalog/exchange-protocol.json) | The single normative identity, event, lifecycle, graph-key, payload, and cross-language vector contract |
+| [release-manifest.json](https://grovealliance.org/fhir/catalog/release-manifest.json) | The coordinated release version, FHIR release, package identities, exact direct dependencies, catalogs, and publication state |
 
 ### Status vocabulary
 

@@ -5,3 +5,5 @@
 //
 // SPDX-License-Identifier: MIT
 //
+
+Alias: $ucum = http://unitsofmeasure.org

@@ -11,7 +11,6 @@ from __future__ import annotations
 import json
 import re
 import unittest
-import uuid
 from pathlib import Path
 
 
@@ -34,7 +33,7 @@ class SensorKitCatalogTests(unittest.TestCase):
     def test_release_package_and_profile_graph_are_exact(self) -> None:
         self.assertEqual(self.catalog["schemaVersion"], 1)
         self.assertEqual(self.catalog["fhirVersion"], "4.0.1")
-        self.assertEqual(self.catalog["version"], "0.5.0")
+        self.assertEqual(self.catalog["version"], "0.6.0")
         package = next(
             package for package in self.graph["packages"]
             if package["source"] == "sensorkit"
@@ -45,14 +44,25 @@ class SensorKitCatalogTests(unittest.TestCase):
             package["dependencies"],
             [
                 "hl7.terminology.r4#7.3.0",
-                "org.grovealliance.fhir.mobile#0.5.0",
-                "org.grovealliance.fhir.sensor#0.5.0",
+                "hl7.fhir.uv.extensions.r4#5.3.0",
+                "org.grovealliance.fhir.mobile#0.6.0",
+                "org.grovealliance.fhir.sensor#0.6.0",
             ],
         )
         self.assertEqual(
             set(package["profiles"]),
             {"sensorkit-accelerometer-observation", "sensorkit-conversion-provenance", "sensorkit-device-usage-observation", "sensorkit-ecg-observation", "sensorkit-keyboard-metrics-observation", "sensorkit-messages-usage-observation", "sensorkit-observation", "sensorkit-on-wrist-observation", "sensorkit-phone-usage-observation", "sensorkit-ppg-observation", "sensorkit-recording-document", "sensorkit-sleep-session-observation", "sensorkit-visit-observation",
                 "sensorkit-wrist-temperature-observation"},
+        )
+        self.assertEqual(
+            self.catalog["sourceTypeExtension"],
+            {
+                "url": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-source-type",
+                "codeSystem": "https://grovealliance.org/fhir/sensorkit/CodeSystem/sensorkit-source-type",
+                "r4Element": "Observation.extension.valueCode or DocumentReference.extension.valueCode",
+                "cardinality": "exactly one",
+                "rule": "Every admitted SensorKit output states the exact sourceTypeCode from its one catalog entry.",
+            },
         )
 
     def test_current_platform_inventory_is_closed_and_scope_complete(self) -> None:
@@ -224,6 +234,9 @@ class SensorKitCatalogTests(unittest.TestCase):
         ecg = by_token["SRSensor.electrocardiogram"]
         self.assertEqual(ecg["status"], "supported")
         self.assertIn("uniform series", ecg["structured"]["admissionRule"])
+        guidance = ecg["structured"]["nativeR4Mappings"][0]
+        self.assertEqual(guidance["r4Element"], "Observation.method")
+        self.assertEqual(guidance["allowedCodes"], ["guided", "unguided"])
         self.assertTrue(
             any("signalInvalid" in field for field in ecg["raw"]["requiredForFields"])
         )
@@ -231,13 +244,21 @@ class SensorKitCatalogTests(unittest.TestCase):
             by_token["SRSensor.photoplethysmogram"]["status"], "platform-exclusive"
         )
         self.assertEqual(by_token["SRSensor.pedometerData"]["status"], "mapped-standard")
-        # Wrist temperature gained a platform-scoped structured contract in 0.5.0, so its
+        # Wrist temperature gained a platform-scoped structured contract in 0.6.0, so its
         # top-level status matches its siblings rather than claiming a recording document only.
         self.assertEqual(
             by_token["SRSensor.wristTemperature"]["status"], "platform-exclusive"
         )
         self.assertIn("must not bracket", by_token["SRSensor.onWristState"]["structured"]["rule"])
         self.assertIn("does not assert a clinical Encounter", by_token["SRSensor.visits"]["structured"]["rule"])
+        visit_location = by_token["SRSensor.visits"]["structured"]["nativeR4Mappings"][0]
+        self.assertEqual(visit_location["valueKind"], "identifier-reference")
+        self.assertEqual(visit_location["referenceType"], "Location")
+        self.assertIn("source-store-scoped", visit_location["identifierSystemRule"])
+        wrist_version = by_token["SRSensor.wristTemperature"]["structured"]["extensionMappings"][0]
+        self.assertEqual(wrist_version["valueElement"], "valueString")
+        self.assertIn("Coding.version", wrist_version["nativeR4Gap"])
+        self.assertTrue(wrist_version["exactSourceValue"])
         graph = by_token["SRSensor.deviceUsageReport"]["structured"]["graphContract"]
         self.assertEqual(
             graph["requiredResources"],
@@ -285,17 +306,45 @@ class SensorKitCatalogTests(unittest.TestCase):
     def test_business_identity_and_profile_claim_rules_are_closed(self) -> None:
         identity = self.catalog["identity"]
         self.assertEqual(
-            identity["sourceRecord"]["system"],
-            "https://grovealliance.org/fhir/sensorkit/NamingSystem/sensorkit-record-id",
+            identity["contract"],
+            "catalog/exchange-protocol.json",
         )
+        self.assertEqual(identity["protocolVersion"], 2)
+        self.assertEqual(identity["adapterId"], "sensorkit")
+        self.assertEqual(identity["sourceRecord"]["identityKind"], "source-record")
         self.assertEqual(
-            identity["output"]["system"],
-            "https://grovealliance.org/fhir/sensorkit/NamingSystem/sensorkit-output-id",
+            identity["sourceRecord"]["components"],
+            [
+                "adapter-id",
+                "source-type",
+                "repository-scope-system",
+                "repository-scope-value",
+                "native-record-id",
+            ],
         )
-        self.assertEqual(identity["output"]["separator"], "|")
-        self.assertEqual(identity["output"]["versionPrefix"], "v1")
-        self.assertNotIn("namespace", identity["output"])
-        self.assertIsNotNone(re.fullmatch(identity["valuePattern"], "879d9ea2-21cb-4527-b59b-2831dc4c84ab"))
+        self.assertIn("assigns and persists", identity["sourceRecord"]["nativeRecordRule"])
+        self.assertIn("measured values", identity["sourceRecord"]["nativeRecordRule"])
+        acquisition = identity["sourceRecord"]["acquisitionCoordinate"]
+        self.assertIn("monotonic delivery ordinal", acquisition["record"])
+        self.assertIn("pending start ordinal", acquisition["pendingBatch"])
+        self.assertIn("splits or combines", acquisition["retry"])
+        vectors = {vector["id"]: vector for vector in acquisition["vectors"]}
+        self.assertEqual(
+            vectors["equal-coordinate-cross-batch"]["expectedCoordinates"],
+            [
+                {"generation": 4, "deliveryOrdinal": 40},
+                {"generation": 4, "deliveryOrdinal": 41},
+            ],
+        )
+        rebatch = vectors["crash-retry-rebatch"]
+        self.assertEqual(
+            [attempt["resolvedOrdinals"] for attempt in rebatch["attempts"]],
+            [[120, 121], [120], [121]],
+        )
+        self.assertEqual(identity["sourceOutput"]["identityKind"], "source-output")
+        self.assertIn("length framing", identity["sourceOutput"]["outputDiscriminatorRule"])
+        self.assertIn("there is no fallback", identity["sourceOutput"]["outputDiscriminatorRule"])
+        self.assertEqual(identity["sourceArtifact"]["identityKind"], "source-artifact")
         self.assertIn("Resource.id is optional", identity["resourceIdPolicy"])
         self.assertIn("exactly two direct", self.catalog["profileClaims"]["sharedObservation"]["rule"])
         self.assertIn("exactly one direct", self.catalog["profileClaims"]["providerSpecificObservation"]["rule"])
@@ -307,26 +356,41 @@ class SensorKitCatalogTests(unittest.TestCase):
             provenance["profile"],
             self.catalog["profileClaims"]["conversionProvenance"]["profile"],
         )
-        self.assertEqual(
-            provenance["sourceIdentifierSystem"],
-            identity["sourceRecord"]["system"],
-        )
+        self.assertEqual(provenance["sourceIdentifierRole"], "source-record")
+        self.assertEqual(provenance["sourceIdentityKind"], "source-record")
         self.assertIn(
             self.catalog["profileClaims"]["recordingDocument"]["adapterProfile"],
             provenance["targetAdapterProfiles"],
         )
-        for vector in identity["output"]["vectors"]:
-            expected = None if "|" in vector["outputDiscriminator"] else (
-                "v1:" + "|".join(vector["components"])
-            )
-            self.assertEqual(expected, vector["identifierValue"])
-        # Quotes, backslashes and control characters need no escaping now: they travel verbatim.
-        verbatim = next(v for v in identity["output"]["vectors"] if "résumé" in v["outputDiscriminator"])
-        self.assertIsNotNone(verbatim["identifierValue"])
-        self.assertIn("résumé", verbatim["identifierValue"])
-        # Only the separator itself has no representation, and it is rejected rather than escaped.
-        edge = next(v for v in identity["output"]["vectors"] if v["identifierValue"] is None)
-        self.assertIn("|", edge["outputDiscriminator"])
+        recording_claim = self.claims["sensorKitRecordingDocumentClaim"]
+        self.assertEqual(
+            recording_claim["requiredIdentifierRoles"],
+            ["source-record", "source-output", "source-artifact"],
+        )
+
+    def test_platform_summary_quantity_domains_are_closed_and_proportionate(self) -> None:
+        domains = self.catalog["quantityValueDomains"]
+        nonnegative = set(domains["nonNegativeProfiles"])
+        integer_counts = set(domains["integerCountProfiles"])
+        self.assertEqual(len(nonnegative), 9)
+        self.assertEqual(len(integer_counts), 7)
+        self.assertTrue(integer_counts < nonnegative)
+        self.assertEqual(
+            domains["countQuantity"],
+            {"system": "http://unitsofmeasure.org", "code": "{count}"},
+        )
+        self.assertIn("no physiologic upper range", domains["rule"])
+        source = (ROOT / "sensorkit/input/fsh/profiles.fsh").read_text(
+            encoding="utf-8"
+        )
+        self.assertEqual(
+            source.count("sensorkit-summary-quantity-nonnegative-1") - 1,
+            len(nonnegative),
+        )
+        self.assertEqual(
+            source.count("sensorkit-summary-count-integer-1") - 1,
+            len(integer_counts),
+        )
 
     def test_raw_payload_admission_is_explicit_and_fail_closed(self) -> None:
         admission = self.catalog["rawPayloadAdmission"]

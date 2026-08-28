@@ -12,10 +12,10 @@ name: GroveFHIRGoogleHealth
 title: Grove FHIR Google Health Adapter
 description: >-
   FHIR R4 mappings for Google Health API elements that no other source reports, exchanged through Grove
-  source-neutral contracts. Shared measurements that two or more connected providers report are
+  exact semantic and provider-lineage contracts. Shared measurements that two or more connected providers report are
   published by the Grove FHIR Connected Provider Adapter, which this guide depends on.
 status: draft
-version: 0.5.0
+version: 0.6.0
 fhirVersion: 4.0.1
 copyrightYear: 2026+
 releaseLabel: ci-build
@@ -38,14 +38,14 @@ dependencies:
   hl7.terminology.r4: 7.3.0
   hl7.fhir.uv.extensions.r4: 5.3.0
   org.grovealliance.fhir.mobile:
-    version: 0.5.0
+    version: 0.6.0
     uri: https://grovealliance.org/fhir/mobile/ImplementationGuide/org.grovealliance.fhir.mobile
   org.grovealliance.fhir.providers:
-    version: 0.5.0
+    version: 0.6.0
     uri: https://grovealliance.org/fhir/providers/ImplementationGuide/org.grovealliance.fhir.providers
     id: groveProviders
   org.grovealliance.fhir.sensor:
-    version: 0.5.0
+    version: 0.6.0
     uri: https://grovealliance.org/fhir/sensor/ImplementationGuide/org.grovealliance.fhir.sensor
 menu:
   Overview: index.html

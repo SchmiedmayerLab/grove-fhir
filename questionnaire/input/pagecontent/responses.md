@@ -31,7 +31,16 @@ The status describes the response lifecycle:
 `authored` is when answers were gathered or authored, not necessarily upload time.
 `subject` is who or what the answers concern, `author` is who recorded them, and `source`
 is who supplied them. These roles may identify different actors and must not be inferred
-from one another.
+from one another. When the Questionnaire declares `subjectType` and the response has a
+`subject`, the referenced resource type is one of those declared types. The paired
+validator checks this cross-resource rule after resolving the exact instrument and
+rejects a `Reference.type` that contradicts a type visible in the literal or contained
+target. A declared type is either the relative R4 resource code (for example, `Patient`)
+or its exact core canonical (`http://hl7.org/fhir/StructureDefinition/Patient`); an
+arbitrary URI is not accepted merely because its last path segment resembles a resource
+type. The
+official FHIR Validator remains authoritative for the base `author` and `source` target
+constraints.
 
 The standard `questionnaireresponse-completionMode` extension contains exactly one
 Coding with ParticipationMode system and code `ELECTRONIC`. Its display is descriptive
@@ -39,9 +48,11 @@ and is not constrained.
 
 ### Item and answer structure
 
-Every response item repeats the matching Questionnaire `linkId` and text. Text makes a
-response readable, but it does not replace the resolved instrument: choices,
-conditions, and constraints remain in the Questionnaire.
+Every response item repeats the matching Questionnaire `linkId`. Response item `text`
+is optional presentation content: a producer may omit it or carry the wording shown to
+the user in a different locale. A receiver must neither require it nor compare it with
+the Questionnaire prompt. Resolve the exact instrument to obtain authoritative prompts,
+choices, conditions, and constraints.
 
 Groups place child response items directly in `item`. A child defined beneath a question
 belongs beneath the particular `answer.item` that created its context. Do not move that

@@ -31,7 +31,6 @@
   "item": [
     {
       "linkId": "name",
-      "text": "What is your name?",
       "answer": [{"valueString": "Ada"}]
     }
   ]

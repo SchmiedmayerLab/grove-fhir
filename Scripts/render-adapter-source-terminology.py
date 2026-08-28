@@ -179,7 +179,7 @@ def healthkit() -> str:
     return HEADER + properties + f'''CodeSystem: HealthKitSourceTypeCS
 Id: healthkit-source-type
 Title: "HealthKit Source Types"
-Description: "The {len(rows)} source-type identifiers the {baseline["platform"]} {baseline["version"]} SDK baseline (Xcode {baseline["xcodeVersion"]}, build {baseline["xcodeBuild"]}) hands back at runtime. A code is the identifier a producer reads from the sample, not the name of the constant that holds it. Membership is derived from, and verified against, healthkit/input/data/healthkit-inventory.json; the derived sleep-duration session aggregate is a Grove transformation contract rather than a platform source type and is excluded. A coding preserves exact source semantics and does not replace the shared or standard clinical coding."
+Description: "The {len(rows)} source-type identifiers the {baseline["platform"]} {baseline["version"]} SDK baseline (Xcode {baseline["xcodeVersion"]}, build {baseline["xcodeBuild"]}) hands back at runtime. A code is the identifier a producer reads from the sample, not the name of the constant that holds it. Membership is derived from, and verified against, healthkit/input/data/healthkit-inventory.json; the derived sleep-duration session aggregate is a Grove transformation contract rather than a platform source type and is excluded. The exact code is carried in the HealthKit source-type lineage extension and never asserted as an equivalent clinical result coding."
 * ^experimental = false
 * ^caseSensitive = true
 * ^content = #complete

@@ -9,21 +9,14 @@
 from __future__ import annotations
 
 import json
-import importlib.util
 import unittest
 from decimal import Decimal
 from pathlib import Path
 
+from Scripts.producer_validation import payloads
+
 
 ROOT = Path(__file__).parents[1]
-SPEC = importlib.util.spec_from_file_location(
-    "validate_producer", ROOT / "Scripts/validate-producer.py"
-)
-assert SPEC and SPEC.loader
-VALIDATOR = importlib.util.module_from_spec(SPEC)
-SPEC.loader.exec_module(VALIDATOR)
-
-
 class MobileSemanticVectorTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
@@ -54,7 +47,7 @@ class MobileSemanticVectorTests(unittest.TestCase):
         )
         self.assertEqual(self.corpus["schemaVersion"], 1)
         self.assertEqual(self.corpus["fhirVersion"], "4.0.1")
-        self.assertEqual(self.corpus["version"], "0.5.0")
+        self.assertEqual(self.corpus["version"], "0.6.0")
         self.assertIn("execute no producer implementation", self.corpus["purpose"])
         expected = [
             measurement["id"]
@@ -92,13 +85,13 @@ class MobileSemanticVectorTests(unittest.TestCase):
             },
         )
         for vector in contract["vectors"]:
-            actual = VALIDATOR.round_mobile_epoch_milliseconds(
-                VALIDATOR.parse_fhir_instant(vector["input"], vector["id"])
+            actual = payloads.round_mobile_epoch_milliseconds(
+                payloads.parse_fhir_instant(vector["input"], vector["id"])
             )
-            expected = VALIDATOR.parse_fhir_instant(vector["output"], vector["id"])
+            expected = payloads.parse_fhir_instant(vector["output"], vector["id"])
             self.assertEqual(actual, expected)
             self.assertEqual(
-                expected, VALIDATOR.round_mobile_epoch_milliseconds(expected)
+                expected, payloads.round_mobile_epoch_milliseconds(expected)
             )
 
         self.assertEqual(
@@ -134,16 +127,22 @@ class MobileSemanticVectorTests(unittest.TestCase):
                 vector["profile"],
                 f"{self.catalog['canonicalRoot']}/{measurement['profile']}",
             )
-            self.assertEqual(
-                vector["code"],
-                {
-                    key: measurement["code"][key]
-                    for key in ("system", "code")
-                    if key in measurement["code"]
-                },
-            )
-            self.assertEqual(vector["effective"]["type"], measurement["effective"])
-            if measurement["effective"] == "Period":
+            expected_code = {
+                key: measurement["code"][key]
+                for key in ("system", "code")
+                if key in measurement["code"]
+            }
+            if measurement.get("requiredCodings"):
+                expected_code["requiredCodings"] = [
+                    {key: coding[key] for key in ("system", "code")}
+                    for coding in measurement["requiredCodings"]
+                ]
+            self.assertEqual(vector["code"], expected_code)
+            admitted_effective_types = {
+                "dateTime-or-Period": {"dateTime", "Period"},
+            }.get(measurement["effective"], {measurement["effective"]})
+            self.assertIn(vector["effective"]["type"], admitted_effective_types)
+            if vector["effective"]["type"] == "Period":
                 self.assertLess(
                     vector["effective"]["start"], vector["effective"]["end"]
                 )

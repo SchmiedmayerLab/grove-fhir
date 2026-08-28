@@ -12,18 +12,20 @@ phone, and sensor from being collapsed into one ambiguous record.
 
 | Role | Resource | Link from Observation |
 |---|---|---|
-| Physical recorder or metric | Device or DeviceMetric; [Grove Recording Device](StructureDefinition-grove-recording-device.html) when its rules fit | `Observation.device` |
+| Physical recorder | [Grove Recording Device](StructureDefinition-grove-recording-device.html), or an external logical Device reference | `Observation.device` |
 | App that mediated or routed the measurement | [Grove Application Device](StructureDefinition-grove-application-device.html) | Standard `observation-gatewayDevice` extension |
 | App that converted the source record | [Grove Application Device](StructureDefinition-grove-application-device.html) | `Provenance.agent.who` |
-| Host hardware for an app | Base FHIR Device | `GroveApplicationDevice.parent`, when useful |
+| Host hardware for an app | [Grove Host Device](StructureDefinition-grove-host-device.html) | `GroveApplicationDevice.parent`, when useful |
 
 ### Recording device
 
-`Observation.device` identifies the Device or DeviceMetric that actually acquired the
+`Observation.device` identifies the Device that actually acquired the
 measurement. A watch, scale, chest strap, or phone belongs here only when the source
 supports that claim. Do not use this element for an app that merely read or transmitted
-an existing record. The reference remains open to base FHIR Device and DeviceMetric;
-use Grove Recording Device when its shared hardware rules apply.
+an existing record. Grove 0.6.0 deliberately narrows the base R4 choice to Device because
+none of the reviewed producers establishes DeviceMetric identity or lifecycle semantics.
+Use Grove Recording Device for an internal event node. A future DeviceMetric admission
+requires its own profile, identity, reference, corpus, and SDK contract.
 
 Populate the device name, type, manufacturer, model, and versions when the source makes
 them available. Every populated version has a type; the type remains open to an
@@ -32,28 +34,25 @@ Use a study- or deployment-scoped identifier unless a broader hardware identifie
 both necessary and authorized; serial numbers and globally linkable hardware
 identifiers are not exchange defaults.
 
-#### One recorder, one Device
+#### Stable unit and immutable snapshot
 
-A recording device rarely states a per-unit identifier, so a producer that mints a fresh
-identity per sample stores one wearable thousands of times. Every adapter therefore derives
-one identity per participant's recorder, using the composition published in
-[`catalog/exchange-identity.json`](https://grovealliance.org/fhir/catalog/exchange-identity.json)
-over the subject reference, the adapter, and the manufacturer, model, and hardware version.
+A shared recording Device is emitted only when the producer has a governed stable token for the
+physical acquisition unit. Manufacturer, model, hardware version, subject, or any digest of
+those descriptive facts cannot establish that two records came from the same physical unit. If
+the source and caller cannot supply a stable per-unit token, omit `Observation.device`; never mint
+a fresh per-sample Device or merge all devices of one model.
 
-The subject participates because a wearable belongs to a person: two participants wearing the
-same model are two devices, which is what `Device` means in R4. A manufacturer alone is not
-enough to identify a recorder, so a source that states no model and no hardware version has no
-admitted device identity and its producer keeps a per-sample identity rather than merging
-unrelated hardware.
+The per-unit token is never emitted directly. It participates in the deployment-scoped v2 HMAC
+`recording-device` identity defined by
+[`catalog/exchange-protocol.json`](https://grovealliance.org/fhir/catalog/exchange-protocol.json).
+The subject's complete Identifier pair is also in that preimage so independently governed
+participants cannot collide. The deployment decides whether source per-unit evidence may be used
+and manages the HMAC key, epoch, retention, and linkage policy.
 
-Firmware and software versions are deliberately outside that key, and outside the deduplicated
-Device. They change over a recorder's life, and a producer converting historical records
-reaches them out of order, so a shared Device would end up asserting whichever value happened to
-convert last. Each Observation states the versions in force when it was recorded instead.
-
-A vendor per-unit identifier is never the key, and never reaches the wire — not in any form.
-Where a platform exposes one it is dropped, exactly as the connected-provider adapter
-drops `deviceid`.
+Every emitted Grove Recording Device also carries an event-scoped `device-snapshot` identity,
+which is the Bundle entry key. Firmware, software, operating-system, and descriptive facts are
+captured as immutable event-time snapshot data. Importing older events therefore creates older
+snapshots instead of mutating one shared Device according to arrival order.
 
 See the [recording-device example](Device-GroveRecordingDeviceExample.html).
 
@@ -68,13 +67,11 @@ application a Personal Health Device or require a PHD profile. An adapter define
 identifier system; for example, a platform adapter can use the platform's application
 identifier namespace.
 
-The default application identifier names the application product. When present, the
-typed version records one exact software-version string for provenance. A producer with
-separate release and build values defines one deterministic serialization rather than
-placing two ambiguous entries in the application-version slice. Neither the product
-identifier nor the version identifies an installation, host, account, or person. Do not
-generate a per-installation identifier by default. Add one only for an explicit use case,
-under its own identifier namespace, and with the required privacy authorization.
+The required application identity is an immutable event-scoped `device-snapshot` v2 HMAC
+identifier. When present, the marketing version and build occupy distinct typed version slices;
+consumers never parse a composite display convention to recover either value. Neither value
+identifies an installation, host, account, or person. Do not generate a linkable installation
+identifier unless an explicit use case and privacy policy require it.
 
 The standard `observation-gatewayDevice` extension links an app only when it actually
 mediated or routed the measurement. Converting a stored record into FHIR does not by
@@ -95,21 +92,24 @@ records the transformation event itself:
 - `activity` is the standard ISO 21089 lifecycle `transform` code;
 - `agent.type` is the standard provenance participant type `assembler`;
 - `agent.who` identifies the application Device; and
-- `entity` identifies each source record actually consumed by the transformation.
+- `entity` identifies the one source record actually consumed by the transformation.
 
-Use `entity.what.identifier` for a source record that is not itself a FHIR resource;
-use a Reference when the consumed source is a FHIR resource. A PlanDefinition,
+Always use the typed opaque `entity.what.identifier` source-record identity, including
+when the source happens to be FHIR. A literal source Reference is prohibited because it
+would bypass the one deployment-scoped reconciliation identity. A PlanDefinition,
 ResearchStudy, or ResearchSubject is not a Provenance source merely because it provides
 study context. Those links follow the study model described on the
 [Study context](study.html) page.
 
-Use one Provenance resource for one or more Observations assembled in the same operation.
-Create separate Provenance resources when the converting application, source, or event
-time differs. The [conversion example](Provenance-GroveMobileConversionProvenanceExample.html)
-shows a source record transformed into a target. A later transformation keeps the
-Observation's stable business identifier and records a separate Provenance event.
+Use exactly one conversion Provenance for one immutable source-record revision and target every
+output produced from that record. A transport may batch already-complete event Bundles, but it
+must not merge their semantic units. The
+[conversion example](Provenance-GroveMobileConversionProvenanceExample.html) shows one source
+record transformed into its output graph. A later revision receives a new event identity and
+Provenance assertion while stable logical source/output identifiers remain usable for
+reconciliation.
 
 Provenance is the correct place to describe conversion software. The same application
 also appears as a gateway only when it performed that distinct mediation role. Neither
-role changes the meaning of `Observation.device`, which remains the physical recorder
-or DeviceMetric.
+role changes the meaning of `Observation.device`, which remains the physical recording
+Device.

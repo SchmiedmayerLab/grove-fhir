@@ -6,11 +6,9 @@
 // SPDX-License-Identifier: MIT
 //
 
-Alias: $healthKitObjectId = https://grovealliance.org/fhir/healthkit/NamingSystem/healthkit-object-id
-Alias: $healthKitSourceDeviceId = https://grovealliance.org/fhir/healthkit/NamingSystem/healthkit-source-device-id
-Alias: $healthKitHealthConceptId = https://grovealliance.org/fhir/healthkit/NamingSystem/healthkit-health-concept-id
 Alias: $appleBundleId = https://grovealliance.org/fhir/healthkit/NamingSystem/apple-bundle-id
 Alias: $healthKitMetadataKey = https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-metadata-key
+Alias: $healthKitIdentifierType = https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-identifier-type
 Alias: $healthKitHeartRateMotionContext = https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-heart-rate-motion-context
 Alias: $healthKitSleepAnalysis = https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-sleep-analysis
 Alias: $healthKitSourceType = https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-source-type
@@ -23,7 +21,8 @@ Alias: $healthKitMedicationScheduleType = https://grovealliance.org/fhir/healthk
 Alias: $healthKitMedicationGeneralForm = https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-medication-general-form
 Alias: $groveMobileMeasurement = https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement
 Alias: $groveSleepStage = https://grovealliance.org/fhir/mobile/CodeSystem/grove-sleep-stage
-Alias: $groveWriterRecordId = https://grovealliance.org/fhir/mobile/NamingSystem/grove-writer-record-id
+Alias: $groveIdentifierRole = https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role
+Alias: $groveApplicationVersionType = https://grovealliance.org/fhir/mobile/CodeSystem/grove-application-version-type
 Alias: $loinc = http://loinc.org
 Alias: $observationCategory = http://terminology.hl7.org/CodeSystem/observation-category
 Alias: $provenanceParticipantType = http://terminology.hl7.org/CodeSystem/provenance-participant-type

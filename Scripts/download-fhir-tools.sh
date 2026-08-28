@@ -26,15 +26,15 @@ readonly REPOSITORY_ROOT
 # Honours the same override as the guide build: concurrent builds each seed their own clone, and
 # two of them warming one cache is what corrupts it.
 readonly FHIR_PACKAGE_CACHE="${GROVE_FHIR_HOME_OVERRIDE:-$REPOSITORY_ROOT/.build/fhir-home}/.fhir/packages"
-readonly PUBLISHER_VERSION="2.3.2"
-readonly PUBLISHER_SHA256="07c576024df917cc1f879b6b5a64147cd0222d5b4129688e8f0ad9ccce58b1d5"
-readonly VALIDATOR_VERSION="6.10.2"
-readonly VALIDATOR_SHA256="a3addadfa18dfa23146a0a243b6ede68eaad92157a5407738c468bb3d7e4ccd6"
+readonly PUBLISHER_VERSION="2.3.3"
+readonly PUBLISHER_SHA256="7821631325c60b17b8832a15ed4299563265e72cfe5af12457ab7f23628400d2"
+readonly VALIDATOR_VERSION="6.10.3"
+readonly VALIDATOR_SHA256="b2cd1c761dbb79722d7a1ccb149c3c522195c37c9f1b8951b23b1340828b691b"
 readonly TEMPLATE_ID="fhir2.base.template"
 readonly TEMPLATE_VERSION="0.1.0"
 readonly TEMPLATE_SHA256="b351fa5fcc8edd76f491e129de4aeb35c888265ae0f7b33ea2af0571a7533fed"
 
-# Validator 6.10.2 loads the R4 bootstrap packages and the current universal
+# Validator 6.10.3 loads the R4 bootstrap packages and the current universal
 # terminology/extension packages before it can honor a fully offline
 # validation request. Keep the complete, checksum-pinned dependency closure in
 # one place so a fresh runner never depends on mutable package-server state.

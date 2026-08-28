@@ -6,18 +6,15 @@
 
 from __future__ import annotations
 
-import importlib.util
 import json
 import re
 import unittest
 from pathlib import Path
 
+from Scripts.producer_validation import context
+
 
 ROOT = Path(__file__).resolve().parents[1]
-SPEC = importlib.util.spec_from_file_location("vp", ROOT / "Scripts/validate-producer.py")
-VALIDATOR = importlib.util.module_from_spec(SPEC)
-SPEC.loader.exec_module(VALIDATOR)
-
 GUIDES = (
     "mobile",
     "sensor",
@@ -69,7 +66,7 @@ class ProfileRegistrationTests(unittest.TestCase):
     def test_every_adapter_observation_profile_is_known_to_the_validator(self) -> None:
         known = {
             profile
-            for profiles in VALIDATOR.ADAPTER_PACKAGE_PROFILES.values()
+            for profiles in context.ADAPTER_PACKAGE_PROFILES.values()
             for profile in profiles
         }
         for guide in (

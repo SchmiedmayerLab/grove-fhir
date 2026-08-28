@@ -29,7 +29,7 @@ Seconds since the Unix epoch as a decimal number in the numbers form above; the 
 | `timestamp` | timestamp | — | Sample instant. |
 | `value` | number | `/min` | Heart rate in beats per minute. |
 | `confidence` | integer | — | CMHighFrequencyHeartRateDataConfidence raw value: 0 low, 1 medium, 2 high, 3 highest. |
-| `device` | string | — | Source device description for the batch. |
+| `device` | string | — | Exact SensorKit SRDevice.productType token for the source-device partition that supplied every row in the batch. It is not SRDevice.description, a user-assigned name, a system name/version, or a stable physical-unit identifier. |
 
 ### `triaxial-acceleration-samples` — Triaxial Acceleration Samples
 
@@ -49,7 +49,7 @@ Seconds since the Unix epoch as a decimal number in the numbers form above; the 
 | `x` | number | `[g]` | Acceleration along x in G. |
 | `y` | number | `[g]` | Acceleration along y in G. |
 | `z` | number | `[g]` | Acceleration along z in G. |
-| `device` | string | — | Source device description for the batch. |
+| `device` | string | — | Exact SensorKit SRDevice.productType token for the source-device partition that supplied every row in the batch. It is not SRDevice.description, a user-assigned name, a system name/version, or a stable physical-unit identifier. |
 
 ### `ambient-light-samples` — Ambient Light Samples
 
@@ -69,7 +69,7 @@ Seconds since the Unix epoch as a decimal number in the numbers form above; the 
 | `placement` | string | — | SRAmbientLightSample.SensorPlacement textual description. |
 | `chromacityX` | number | — | CIE 1931 x chromaticity coordinate. |
 | `chromacityY` | number | — | CIE 1931 y chromaticity coordinate. |
-| `device` | string | — | Source device description for the batch. |
+| `device` | string | — | Exact SensorKit SRDevice.productType token for the source-device partition that supplied every row in the batch. It is not SRDevice.description, a user-assigned name, a system name/version, or a stable physical-unit identifier. |
 
 ### `ambient-pressure-samples` — Ambient Pressure Samples
 
@@ -88,7 +88,7 @@ Seconds since the Unix epoch as a decimal number in the numbers form above; the 
 | `identifier` | integer | — | The CoreMotion batch identifier the sample belongs to. |
 | `pressure` | number | `kPa` | Ambient pressure in kilopascals as provided by CoreMotion. |
 | `temperature` | number | `Cel` | Sensor temperature in degrees Celsius as provided by CoreMotion. |
-| `device` | string | — | Source device description for the batch. |
+| `device` | string | — | Exact SensorKit SRDevice.productType token for the source-device partition that supplied every row in the batch. It is not SRDevice.description, a user-assigned name, a system name/version, or a stable physical-unit identifier. |
 
 ### `pedometer-samples` — Pedometer Samples
 
@@ -112,7 +112,7 @@ Seconds since the Unix epoch as a decimal number in the numbers form above; the 
 | `currentPace` | number | `s/m` | Current pace in seconds per metre; empty when unavailable. |
 | `currentCadence` | number | `/s` | Current cadence in steps per second; empty when unavailable. |
 | `avgActivePace` | number | `s/m` | Average active pace in seconds per metre; empty when unavailable. |
-| `device` | string | — | Source device description for the batch. |
+| `device` | string | — | Exact SensorKit SRDevice.productType token for the source-device partition that supplied every row in the batch. It is not SRDevice.description, a user-assigned name, a system name/version, or a stable physical-unit identifier. |
 
 ### `wrist-temperature-samples` — Wrist Temperature Samples
 
@@ -149,7 +149,7 @@ Seconds since the Unix epoch as a decimal number in the numbers form above; the 
 | `x` | number | `rad/s` | Rotation rate about x in radians per second. |
 | `y` | number | `rad/s` | Rotation rate about y in radians per second. |
 | `z` | number | `rad/s` | Rotation rate about z in radians per second. |
-| `device` | string | — | Source device description for the batch. |
+| `device` | string | — | Exact SensorKit SRDevice.productType token for the source-device partition that supplied every row in the batch. It is not SRDevice.description, a user-assigned name, a system name/version, or a stable physical-unit identifier. |
 
 ### `odometer-samples` — Odometer Samples
 
@@ -176,7 +176,7 @@ Seconds since the Unix epoch as a decimal number in the numbers form above; the 
 | `deltaAltitude` | number | `m` | Change in altitude above mean sea level in metres. |
 | `verticalAccuracy` | number | `m` | Validity and estimated uncertainty of the altitude values in metres. |
 | `originDevice` | string | — | CMOdometerOriginDevice case name: unknown, local, or remote. |
-| `device` | string | — | Source device description for the batch. |
+| `device` | string | — | Exact SensorKit SRDevice.productType token for the source-device partition that supplied every row in the batch. It is not SRDevice.description, a user-assigned name, a system name/version, or a stable physical-unit identifier. |
 
 ### `beat-interval-series` — Beat Interval Series
 
@@ -218,15 +218,15 @@ Seconds since the Unix epoch as a decimal number in the numbers form above; the 
 | `course` | number | `deg` | Direction of travel in degrees clockwise from true north; empty when unavailable. |
 | `courseAccuracy` | number | `deg` | Uncertainty of the course in degrees; empty when unavailable. |
 
-### `fhir-resource-array` — FHIR Resource Array
+### `fhir-collection-bundle` — FHIR R4 Collection Bundle
 
-Media type: `application/vnd.grovealliance.fhir-array+json`.
+Media type: `application/fhir+json`.
 UTF-8.
-A single JSON array; each element is one complete FHIR R4 resource in FHIR JSON representation, in source sample order.
-Every element conforms to the profile set the emitting adapter declares for its stream; the array carries resources of one stream and one batch only.
-An empty batch emits no document rather than an empty array.
+One complete FHIR R4 Bundle in JSON representation with Bundle.type = collection, a mandatory timestamp, and one entry per source sample in source order. Every entry has a fullUrl and resource; request, response, and search are absent.
+Every entry resource conforms to the profile set the emitting adapter declares for its stream; one Bundle carries one stream and one source batch only.
+An empty batch emits no document rather than an empty Bundle.
 
-### `fhir-resource` — FHIR Resource
+### `fhir-r4-resource` — FHIR R4 Resource
 
 Media type: `application/fhir+json`.
 UTF-8.
@@ -263,12 +263,12 @@ Varint record count, then that many PPG records.
 
 | Primitive | Encoding |
 |---|---|
-| `varint` | Unsigned LEB128: little-endian groups of 7 bits, high bit set on every byte except the last; signed integers are first truncated to their 64-bit two's-complement pattern, so negative values occupy ten bytes. |
-| `float64` | IEEE-754 binary64 bit pattern, big-endian (network byte order), eight bytes. |
+| `varint` | Canonical unsigned LEB128: little-endian groups of 7 bits, high bit set on every byte except the last, using the shortest possible encoding. Signed integers are first converted to their 64-bit two's-complement bit pattern, so negative values occupy exactly ten bytes. Decoders reject overlong encodings and values outside 64 bits. |
+| `float64` | Finite IEEE-754 binary64 bit pattern, big-endian (network byte order), eight bytes. NaN and infinities are prohibited; negative zero is canonicalized to positive zero before encoding. |
 | `boolean` | One byte: 0x00 false, 0x01 true. |
-| `string` | Varint UTF-8 byte count, then the UTF-8 bytes. |
+| `string` | Varint UTF-8 byte count, then exact well-formed UTF-8 bytes. Unicode normalization is not performed; unpaired surrogate code points and malformed UTF-8 are rejected. |
 | `array` | Varint element count, then the elements in order. |
-| `set` | Varint element count, then the elements; element order is not significant and receivers must not rely on it. |
+| `set` | Canonical set: reject duplicate logical values, sort unique values in ascending numeric order, then encode the count and elements. Decoders reject duplicate or non-ascending elements. |
 | `optional` | One boolean presence byte; when true, the value follows. |
 
 **Record layout**

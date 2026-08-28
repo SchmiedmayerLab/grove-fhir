@@ -28,7 +28,7 @@ in the code system description, verified against `sensorkit/input/data/sensorkit
 `content` is therefore `complete` for that baseline. Moving to a later SDK baseline is a version change,
 not an in-place edit.
 
-Whether the v0.3 adapter admits output for a sensor is the `status` column of the
+Whether the 0.6.0 adapter admits output for a sensor is the `status` column of the
 [status matrix](status-matrix.html), and never appears in terminology.
 
 Each property is defined as a concept in [sensorkit-concept-property](CodeSystem-sensorkit-concept-property.html), which is what `CodeSystem.property.uri` names.

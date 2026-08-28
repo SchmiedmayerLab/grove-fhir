@@ -16,14 +16,22 @@ Keep a durable synchronization scope for one Health Connect repository, Record c
 source filter, retained time range, and conversion-contract version. Persist its opaque
 repository scope, change token, and a ledger keyed by the raw Record id. The ledger retains
 the derived source identifier and every output identifier previously produced for that
-Record. Raw ids, tokens, filter fingerprints, and repository scope are local operational
-state; they are never copied into FHIR resources except through the derived identifiers
-defined by [`catalog/health-connect-identity.json`](https://grovealliance.org/fhir/catalog/health-connect-identity.json).
+Record. Change tokens and filter fingerprints remain local operational state. Grove's mandatory
+graph identities are the opaque identifiers defined by
+[`catalog/exchange-protocol.json`](https://grovealliance.org/fhir/catalog/exchange-protocol.json)
+and the Health Connect adapter binding; they are stable for equality and reconciliation but are
+not reversible. When a deployment has an explicit traceability need, the exact raw Record id may
+additionally appear once as the governed source `Identifier` on the catalog-designated one-to-one
+primary output. That optional Identifier uses an absolute, deployment-governed, non-Grove system
+and never replaces the mandatory graph identity. It is not copied to child or support resources,
+entry addressing, retraction keys, arbitrary components, or untyped metadata.
 
 When a Record maps to several Observations, derive the complete replacement set before
 publishing it. An update can add, retain, or remove output identifiers. A deletion resolves
 the prior set from the ledger because Health Connect supplies only the deleted Record id.
-The exchange representation of a retraction is defined by the shared contract: publish the prior output set as `entered-in-error` stubs with no conversion Provenance, as described under "Retracting an entered-in-error record" on the implementation page.
+The exchange representation is the dedicated Retraction Bundle: resolve the exact prior target
+Identifier pairs and roles from the ledger and emit one source-record-retracted Provenance. Do not
+copy or mutate the prior clinical resources.
 Receiver projection and storage lifecycle remain deployment policy.
 
 ### Token advancement boundary
@@ -37,8 +45,8 @@ For each change page:
 
 A retry reuses the same source and output identifiers. If the caller assigns a durable
 positive `eventSequence`, preserve it for byte-identical retries and allocate a higher value
-for a new source event. The identity catalog uses that sequence to derive conversion and
-exchange business identifiers; it does not prescribe an external message format.
+for a new source event. The exchange protocol uses that sequence in the Bundle's `e2:` event
+Identifier; it does not prescribe an external message format.
 
 ### New or expired tokens
 
@@ -54,7 +62,7 @@ Records or normalized inputs and emits FHIR; it does not call Health Connect API
 
 ### Explicit non-goals
 
-Version 0.5.0 defines no receiver, authenticated intake, tenant partition, Firebase or cloud
+Version 0.6.0 defines no receiver, authenticated intake, tenant partition, Firebase or cloud
 storage model, Bundle byte or count limit, replay endpoint, transport acknowledgement
 schema, or downstream merge behavior. Those policies may wrap a conformant Bundle without
 changing its FHIR identities or profile claims.

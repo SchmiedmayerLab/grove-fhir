@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "fhirVersion": "4.0.1",
+  "producer": {
+    "name": "Grove FHIR normative Mobile exchange corpus",
+    "version": "0.6.0"
+  },
+  "packages": [
+    {
+      "alias": "mobile",
+      "packageId": "org.grovealliance.fhir.mobile",
+      "version": "0.6.0"
+    }
+  ],
+  "resources": [
+    {
+      "path": "exchange-bundle.json",
+      "requiredProfiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle"
+      ]
+    },
+    {
+      "path": "retraction-bundle.json",
+      "requiredProfiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-retraction-bundle"
+      ]
+    }
+  ],
+  "semanticVectors": [
+    {
+      "id": "heart-rate",
+      "path": "exchange-bundle.json",
+      "resourcePointer": "/entry/2/resource"
+    }
+  ]
+}

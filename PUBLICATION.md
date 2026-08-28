@@ -8,120 +8,168 @@ SPDX-License-Identifier: MIT
 
 -->
 
-# Publication
+# Publication and release evidence
 
-Grove FHIR currently publishes one mutable pre-1.0 continuous preview. No immutable
-release exists. Version 0.3.0 is the package contract used by the coordinated
-implementation pull requests.
+Grove FHIR 0.6.0 is a release candidate, not yet an immutable canonical publication.
+The ten guides use canonical URLs under `https://grovealliance.org/fhir`, but that host is
+not yet operated as the permanent publication origin. Until ownership, HTTPS availability,
+retention, and correction governance are approved, `publication/config.json` deliberately
+keeps `releaseMode: ci-build-only` and the canonical host must not be described as live.
 
-## Continuous preview
+## Mutable preview
 
-Every default-branch build replaces `ci-build` for all active guides at their current
-pre-1.0 canonical paths:
+Default-branch builds replace one reader-facing preview for each package:
 
-| Package | Mutable preview | Publication metadata |
-|---|---|---|
-| `org.grovealliance.fhir.mobile` | `/fhir/mobile/ci-build/` | `/fhir/mobile/package-list.json` and `/fhir/mobile/history.html` |
-| `org.grovealliance.fhir.sensor` | `/fhir/sensor/ci-build/` | `/fhir/sensor/package-list.json` and `/fhir/sensor/history.html` |
-| `org.grovealliance.fhir.sensorkit` | `/fhir/sensorkit/ci-build/` | `/fhir/sensorkit/package-list.json` and `/fhir/sensorkit/history.html` |
-| `org.grovealliance.fhir.healthkit` | `/fhir/healthkit/ci-build/` | `/fhir/healthkit/package-list.json` and `/fhir/healthkit/history.html` |
-| `org.grovealliance.fhir.health-connect` | `/fhir/health-connect/ci-build/` | `/fhir/health-connect/package-list.json` and `/fhir/health-connect/history.html` |
-| `org.grovealliance.fhir.providers` | `/fhir/providers/ci-build/` | `/fhir/providers/package-list.json` and `/fhir/providers/history.html` |
-| `org.grovealliance.fhir.withings` | `/fhir/withings/ci-build/` | `/fhir/withings/package-list.json` and `/fhir/withings/history.html` |
-| `org.grovealliance.fhir.oura` | `/fhir/oura/ci-build/` | `/fhir/oura/package-list.json` and `/fhir/oura/history.html` |
-| `org.grovealliance.fhir.google-health` | `/fhir/google-health/ci-build/` | `/fhir/google-health/package-list.json` and `/fhir/google-health/history.html` |
-| `org.grovealliance.fhir.questionnaire` | `/fhir/questionnaire/ci-build/` | `/fhir/questionnaire/package-list.json` and `/fhir/questionnaire/history.html` |
+| Package | Preview |
+|---|---|
+| `org.grovealliance.fhir.mobile` | `/mobile/ci-build/` |
+| `org.grovealliance.fhir.questionnaire` | `/questionnaire/ci-build/` |
+| `org.grovealliance.fhir.sensor` | `/sensor/ci-build/` |
+| `org.grovealliance.fhir.sensorkit` | `/sensorkit/ci-build/` |
+| `org.grovealliance.fhir.healthkit` | `/healthkit/ci-build/` |
+| `org.grovealliance.fhir.health-connect` | `/health-connect/ci-build/` |
+| `org.grovealliance.fhir.providers` | `/providers/ci-build/` |
+| `org.grovealliance.fhir.withings` | `/withings/ci-build/` |
+| `org.grovealliance.fhir.oura` | `/oura/ci-build/` |
+| `org.grovealliance.fhir.google-health` | `/google-health/ci-build/` |
 
-The GitHub Pages locations at `/`, `/sensor/`, `/sensorkit/`, `/healthkit/`,
-`/health-connect/`, `/providers/`, `/withings/`, `/oura/`, `/google-health/`, and
-`/questionnaire/` are reader-friendly
-preview aliases. Each
-publication root also exposes the package, its SHA-256 checksum, and HTML plus JSON, XML, and Turtle
-routes for every locally owned canonical resource. `publication/config.json` is the single routing
-configuration, and `npm run pages:build` verifies the assembled surface before deployment.
-That command creates the guide-only local preview. Producer repositories validate
-their own emitted resources with the producer-neutral kit; Grove FHIR does not fetch,
-patch, build, or attest those repositories.
+These paths are relative to `https://schmiedmayerlab.github.io/grove-fhir`. Versionless
+aliases are previews, not canonical resource URLs and not immutable release history.
+`publication/config.json` is the sole route inventory; `npm run pages:build` and
+`Scripts/check-publication.py` verify it.
 
-The canonical namespace is `https://grovealliance.org/fhir`; hosting that namespace is
-deliberately out of scope for this iteration. GitHub Pages is only the mutable preview
-host. Deploying or redirecting the canonical host requires a separate reviewed change.
+## Release-candidate evidence
 
-Only the latest `ci-build` is deployed during pre-1.0 development. The site does not retain
-pre-1.0 version directories, superseded packages, or legacy documentation surfaces.
+`Scripts/build-release.sh` performs an explicit two-phase release-candidate build for all ten
+guides from one clean checked-out revision. The first phase is network-enabled and bootstraps the
+integrity-locked npm and Bundler closures plus the SHA-256-pinned Publisher, Validator, template,
+and external FHIR package archives. The second phase reconstructs or verifies each closure with
+`npm ci --offline`, `bundle install --local`, and `download-fhir-tools.sh --offline`, then runs
+Publisher with `-tx n/a -no-network`. A missing or altered bootstrap input fails the second phase;
+it cannot be downloaded on demand.
 
-## Offline terminology reproducibility
+After building the previews, executing repository and Publisher QA gates, and running the
+producer and Questionnaire corpora through the exact official FHIR Validator, the script calls
+`Scripts/collect-release-evidence.py`. The collector requires a clean source tree, validates
+every input before copying, refuses any existing output path, and emits:
 
-Publisher and Validator runs are pinned to FHIR R4 4.0.1 and execute without network
-access. No generated terminology transaction is tracked or redistributed, and Grove
-does not publish or version an external IANA, LOINC, UCUM, or ISO/IEEE CodeSystem.
-External terminology and language diagnostics that the offline Publisher cannot resolve
-are reviewed only through exact resource-scoped messages in each guide's
-`ignoreWarnings.txt`; the QA gate requires every configured message to be exercised
-exactly once and rejects any unconfigured suppression.
+- every exact-version FHIR package;
+- Publisher `qa.json` and `qa.html` for every guide;
+- the release manifest and Mobile semantic snapshot;
+- a deterministic `grove-fhir-machine-contracts-<version>.tar.gz` and its machine-readable index;
+- source revision, release/FHIR versions, pinned toolchain, observed runtime versions, lane, and
+  raw QA metadata; and
+- `SHA256SUMS` over every evidence artifact.
 
-The QA ledger reports three separate values for each severity: raw Publisher findings,
-exact-suppressed findings, and unsuppressed findings. Readiness requires zero
-unsuppressed errors and warnings. Two pinned Publisher/dependency defect families remain
-visible in the raw error count:
+The machine-contract archive contains every JSON catalog and catalog schema (including every
+instance and schema listed by `normativeCatalogs` plus local terminology evidence), every Mobile
+exchange/semantic corpus index and base resource, and every Questionnaire
+structural/paired-validation index and base resource.
+Archive paths are sorted; tar ownership, modes, and timestamps and the gzip timestamp are fixed.
+The embedded index binds every entry's path, byte size, and SHA-256 digest to the release version
+and source revision. This is the complete language-neutral contract input for producer CI, not a
+selection of representative files.
 
-- with `-tx n/a`, Publisher 2.3.2 can raise the exact `tc is null` error while checking
-  the required R4 MIME binding on the published raw-recording examples; and
-- SDC 4.0.0 generates definition-table links to retired anchors in that frozen
-  dependency's own `2025Jan` pages.
+The Deployment workflow can only be dispatched manually from the default branch. It has no
+`release: published` entry point and cannot accept an already-public release as validation input.
+It verifies the source and evidence while no release tag exists, then creates the tag and public
+GitHub Release as its final two mutations. Tag creation is an atomic Git-ref API call bound to the
+verified source SHA; it fails if the name appeared during the build. Release creation then requires
+that exact pre-existing tag. Every asset is uploaded while the release remains a draft, and only a
+successful complete upload is edited to public/latest. A release-service failure may therefore
+leave a verified orphan tag or draft, which deliberately reserves the version for investigation
+instead of deleting or silently reusing it. Existing tags/releases are never uploaded to, replaced,
+or clobbered. These attachments are release-candidate evidence only; they do not make GitHub Pages
+the canonical publication host.
 
-The MIME errors are accepted only when the resource path, element path, MIME code,
-ValueSet version, and complete diagnostic all match once. The SDC errors are accepted
-only at the exact generated profile, DOM path, line, column, anchor, and link text. The
-documentation never describes either build as having zero raw errors. FSH, package,
-catalog, and producer-corpus tests enforce the normative codes and units independently.
-A suppressed offline lookup diagnostic neither replaces a terminology license nor
-grants access to an attachment.
+## Two validation lanes
 
-## Moving an adapter to a new platform baseline
+The lanes are deliberately distinct and must never silently fall back into one another:
 
-Each adapter catalog enumerates a platform's source concepts exactly, and
-`*/input/data/*-inventory.json` records what the platform published when the catalog was
-frozen. `Tests/test_platform_inventory.py` holds the two to each other offline, and
-`Scripts/build-release.sh` re-reads the platforms before publishing, so an inventory that
-drifts cannot reach a release.
+1. `offline-structural` begins only after the explicit online bootstrap. It consumes the verified
+   Publisher, Validator, template, npm/Bundler closure, external FHIR packages, and locally built
+   Grove dependency packages without dependency resolution over the network. Publisher uses
+   FHIR R4 4.0.1 and `-tx n/a -no-network`. The lane proves structure, package closure, generated
+   artifacts, local terminology pins, examples, producer corpora, and exact QA suppressions. It
+   cannot make a live terminology-server claim.
+2. `online-terminology` is an accountable validation performed with the manifest-pinned FHIR
+   Validator against an explicitly approved terminology endpoint. Its evidence must satisfy the
+   closed `catalog/schemas/terminology-evidence.schema.json` before it is copied. The record binds
+   the exact source revision and every built package checksum to the Validator version/checksum,
+   HTTPS endpoint software/version, licensed terminology systems and editions, validation date,
+   checksum-bound request policy, exact arguments, and passed result/counts. Cross-file checks
+   require all ten package digests, the release Validator pin, unique terminology systems, and a
+   completion timestamp on the declared validation date. Pass it to
+   `collect-release-evidence.py --lane online-terminology --terminology-evidence ...`; an invalid,
+   incomplete, duplicate, stale, or package-drifted record is rejected before evidence output is
+   created. The declared endpoint must be a credential-free HTTPS URL selected by the recorded
+   Validator arguments; credentials and bearer tokens must never be written to evidence. The
+   record must name a sibling JSON Validator report and match its SHA-256 digest; the collector
+   validates and copies that raw report as a separately checksummed release artifact.
 
-A new SDK or artifact version is a version change, not an in-place edit:
+The current repository provides deterministic local LOINC/UCUM checks and reviewed terminology
+records. Selecting the accountable licensed online environment remains an external release
+governance decision; no public terminology server is silently treated as authoritative.
 
-1. Point the baseline at the new platform — `source.sdkBaseline` for the Apple catalogs,
-   `source.version` for `catalog/health-connect-adapter.json`.
-2. `npm run inventory:refresh` to re-record the evidence.
-3. `npm run inventory:verify-sdk` on a Mac, which cross-checks the Apple evidence against
-   the installed SDK headers and re-hashes the recorded header inputs.
-4. Reconcile each catalog against the regenerated evidence; the expected counts in
-   `Tests/test_platform_inventory.py` move with it.
-5. Refresh `healthkit/input/data/terminology-provenance.json` and every count stated in
-   guide prose, then `python3 Scripts/render-adapter-source-terminology.py` and
-   `python3 Scripts/render-status-matrices.py`.
+## CI input hardening and residuals
 
-## Future immutable releases
+The release workflow pins each GitHub Action to a reviewed 40-character commit SHA and annotates
+the corresponding release tag. Node.js, Python, Java, Ruby, Bundler, SUSHI, npm dependencies,
+Ruby dependencies, Publisher, Validator, template, and FHIR package versions are exact; lockfile
+or archive checksums protect the dependency bytes. Cache fallback prefixes are prohibited in the
+release job, so a differently keyed cache is not accepted merely because it is warm.
 
-Immutable-release tooling is present but dormant. It may be activated only through an explicit,
-reviewed decision to publish a release. The activation change must update `releaseMode` and its
-repository validation in the same pull request. At that point, rendered releases would live on the
-orphan `publication` branch under `/fhir/<package>/<version>/`; `Scripts/publish-version.py` refuses
-to overwrite an existing version. The default-branch Pages build can overlay that branch, add the
-current `/ci-build/`, and regenerate the combined history page. Versionless canonical routes would
-then reference the last accepted release rather than a newer CI build.
+Repository checkout and all dependency/build execution occur in a read-only verification job.
+Only checksum-bound evidence crosses into the publication job through pinned artifact actions;
+that job rechecks `SHA256SUMS`, does not check out the repository, and alone receives
+`contents: write`. Consequently an npm/Ruby/Publisher build input never receives the token capable
+of tagging or publishing the repository.
 
-Activating and publishing an immutable release requires a dedicated reviewed PR and all of the
-following:
+Two managed-runner inputs remain outside repository byte pinning: GitHub's rolling
+`ubuntu-24.04` image implementation and its preinstalled GitHub CLI. The runner is restricted to
+an exact OS release family rather than `ubuntu-latest`; the CLI is used only for the final release
+creation after evidence is complete and does not build or validate an artifact. The dependency
+offline phase is enforced by each package/tool consumer and Publisher's `-no-network`; the hosted
+runner itself is not claimed to be packet-filtered. A future hermetic runner image should be
+content-addressed before this document calls the operating-system layer reproducible.
 
-1. The canonical host resolves over HTTPS and passes the live publication check.
-2. The guide contains a reviewed `publication-request.json` whose package ID, version, and path agree
-   with `sushi-config.yaml`.
-3. The release commit is approved, merged, and tagged. Dependencies use exact versions.
-4. `Scripts/build-release.sh <guide>` builds once in FHIR Publisher publication mode.
-5. `Scripts/publish-version.py` adds that exact output to a clean checkout of the `publication`
-   branch. The resulting package, QA report, release notes, and checksums are attached to the matching
-   GitHub Release.
-6. The publication change is reviewed before the protected branch and Pages environment are updated.
+## Publisher QA accounting
 
-The promotion tool rejects local build paths, CI-only package metadata, invalid versions, mismatched
-canonicals, duplicate history entries, and an existing version directory. Release automation may wrap
-these commands later, but it must preserve the same review and immutability gates.
+Offline Publisher diagnostics are reported as raw, exact-suppressed, and unsuppressed counts.
+`Scripts/check-guide-qa.py` requires zero unsuppressed errors and warnings, requires every exact
+suppression to be exercised once, and rejects unexpected broken links. Suppression never proves
+terminology membership or attachment authorization.
+
+## Immutable canonical promotion
+
+Canonical promotion may be activated only by a separately reviewed change that switches
+`publication/config.json` to `immutable-releases` and supplies all of the following:
+
+1. an accountable canonical-host owner and successful live HTTPS checks for owned canonical
+   JSON, XML, Turtle, HTML, package, history, and package-list routes;
+2. approved permanence, correction, withdrawal, key-retention, and security policies;
+3. a clean signed/tagged source revision matching the release manifest and evidence checksums;
+4. complete offline structural and approved online terminology evidence;
+5. reviewed publication requests for all ten packages; and
+6. promotion through `Scripts/publish-version.py`, which refuses an existing version directory
+   or history entry.
+
+The protected publication branch and environment must review the staged diff before deployment.
+Versionless canonical routes may point only to the last accepted immutable release, never to a
+newer CI build. No release asset or version directory may be overwritten; a correction receives a
+new version.
+
+## Moving an adapter baseline
+
+A new SDK or source artifact baseline is a versioned contract change:
+
+1. update the adapter catalog's exact baseline and evidence inputs;
+2. run `npm run inventory:refresh`, then the applicable installed-SDK verification;
+3. reconcile every added, removed, or changed source token explicitly;
+4. refresh terminology provenance, generated source terminology, status matrices, profiles,
+   examples, conformance corpora, and language fixtures; and
+5. rerun both release lanes before promotion.
+
+Grove FHIR does not fetch, modify, build, or attest producer repositories. Swift, Kotlin, and
+TypeScript producers consume the exact packages and shared language-neutral corpora in their own
+CI.
