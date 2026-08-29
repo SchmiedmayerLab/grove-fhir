@@ -1,4 +1,4 @@
-"""Conformance tests for the Grove 0.6 exchange protocol."""
+"""Conformance tests for the Grove exchange protocol."""
 
 # This source file is part of the Grove FHIR open-source project
 #
@@ -297,6 +297,35 @@ class ExchangeProtocolTests(unittest.TestCase):
             len(paths),
             len({(item["resourceType"], item["path"]) for item in paths}),
         )
+        path_targets = {
+            (item["resourceType"], item["path"]): item["targetTypes"]
+            for item in paths
+        }
+        self.assertEqual(
+            path_targets[("QuestionnaireResponse", "subject")],
+            ["Patient"],
+        )
+        self.assertTrue(all(isinstance(item["repeating"], bool) for item in paths))
+        self.assertEqual(
+            {
+                (item["resourceType"], item["path"])
+                for item in paths
+                if item["repeating"]
+            },
+            {
+                ("Observation", "focus"),
+                ("Observation", "hasMember"),
+                ("Observation", "derivedFrom"),
+                ("ResearchStudy", "protocol"),
+            },
+        )
+        patient = self.catalog["referencePolicy"]["identifierOnlyPatient"]
+        self.assertEqual(
+            set(patient["reservedSystems"]),
+            set(self.catalog["codeSystems"].values()),
+        )
+        self.assertIn("exact", patient["valueRule"])
+        self.assertIn("producer/deployment obligations", patient["systemRule"])
         extensions = self.catalog["referencePolicy"]["extensionTargets"]
         self.assertEqual(len(extensions), len({item["url"] for item in extensions}))
 

@@ -10,7 +10,7 @@
 CodeSystem: OuraMeasurementCS
 Id: oura-measurement
 Title: "Oura Measurement"
-Description: "Measurement concepts defined by the Oura adapter for vendor-exclusive results no established code represents faithfully."
+Description: "Measurement concepts defined by the Oura adapter for source-specific results for which no established code is sufficiently precise."
 * ^experimental = false
 * ^caseSensitive = true
 * ^content = #complete
@@ -20,7 +20,7 @@ Description: "Measurement concepts defined by the Oura adapter for vendor-exclus
 ValueSet: OuraMeasurementVS
 Id: oura-measurement
 Title: "Oura Measurement"
-Description: "Measurement concepts defined by the Oura adapter for its vendor-exclusive profiles."
+Description: "Measurement concepts defined by the Oura adapter for its source-specific profiles."
 * ^experimental = false
 * include codes from system OuraMeasurementCS
 
@@ -64,10 +64,10 @@ Usage: #example
 Title: "Oura Cardiovascular Age Example"
 Description: "A conformant Oura Cardiovascular Age instance."
 * meta.profile[+] = "https://grovealliance.org/fhir/oura/StructureDefinition/oura-observation"
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-provider-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:pjibWQPMUxxrUX-FHs-7TpaYYFJ7d0NIp4pUIJ8IqJg"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-provider-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:WKx79td79XtDxE_iPEDzR5Lko3bhZAeSPsW3yWn_Zeg"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-provider-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:8sShnFJZdY3lig52cRyVwGQLRYrAzEnFYBdZvsebuhA"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-provider-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:fWfV53Bqz3Gw7mN6Mxkwzyv2Kfxvc5BHhAAdtLV8YH0"
 * status = #final
 * code = OuraMeasurementCS#oura-cardiovascular-age
 * extension[+].url = "https://grovealliance.org/fhir/providers/StructureDefinition/provider"
@@ -86,10 +86,10 @@ Usage: #example
 Title: "Oura Readiness Score Example"
 Description: "A conformant Oura Readiness Score instance."
 * meta.profile[+] = "https://grovealliance.org/fhir/oura/StructureDefinition/oura-observation"
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-provider-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:IXKGDapcsD57e8ZrijBqSNqf71Fe2Lvn_5-N0UbS0G0"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-provider-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:IXWL1QHLNNxGqGwIlavLZqLhCA13C-Ci_W7M0-ptOx4"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-provider-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:zFkZ_zsR-fbM6WdA58PerSheKlt8y9OnlsBikBxoZv4"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-provider-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:5cNHOnzOZ-VCvKdCI9KjJmvcxgaQBTrRZQQD3620k40"
 * status = #final
 * code = OuraMeasurementCS#oura-readiness-score
 * extension[+].url = "https://grovealliance.org/fhir/providers/StructureDefinition/provider"

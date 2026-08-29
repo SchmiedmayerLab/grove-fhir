@@ -52,7 +52,7 @@ from .references import (
     reference_target, validate_identity_system_role, validate_reference_policy,
 )
 from .sensorkit import (
-    validate_sensor_contract, validate_sensorkit_ecg_contract,
+    exact_sensorkit_source_type, validate_sensor_contract, validate_sensorkit_ecg_contract,
     validate_sensorkit_identity, validate_sensorkit_native_r4_context,
     validate_sensorkit_profile_claim, validate_sensorkit_quantity_domains,
 )
@@ -111,7 +111,7 @@ def validate_exchange_bundle(
         raise contract_failure(
             "mobile-exchange.event-identity",
             "Bundle.identifier.value",
-            f"{label} Bundle.identifier is not a canonical Grove v2 event identity",
+            f"{label} Bundle.identifier is not a canonical Grove v0 event identity",
         )
     validate_identity_system_role(resource, label)
     entries = resource.get("entry")
@@ -460,7 +460,7 @@ def validate_exchange_bundle(
                 raise contract_failure(
                     "mobile-retraction.opaque-target",
                     f"Provenance.target[{target_index}].identifier.value",
-                    f"{target_label} identity is not a canonical v2 HMAC value",
+                    f"{target_label} identity is not a canonical v0 HMAC value",
                 )
             if pair in seen_targets:
                 raise ProducerValidationError(f"{label} repeats a retraction target")
@@ -496,20 +496,29 @@ def validate_exchange_bundle(
                 )
         exact_source_entity(provenance, f"{label} retraction Provenance")
 
-    sensorkit_hybrid_profiles = {
-        (
-            "https://grovealliance.org/fhir/sensorkit/StructureDefinition/"
-            "sensorkit-device-usage-observation"
-        ): "device-usage",
-        (
-            "https://grovealliance.org/fhir/sensorkit/StructureDefinition/"
-            "sensorkit-ecg-observation"
-        ): "ECG",
-    }
+    sensorkit = read_json(CATALOG_ROOT / "sensorkit-adapter.json")
+    sensorkit_hybrid_profiles: dict[str, tuple[str, dict[str, Any]]] = {}
+    sensorkit_hybrid_contracts: dict[str, dict[str, Any]] = {}
+    for entry in sensorkit["entries"]:
+        structured = entry.get("structured")
+        if not isinstance(structured, dict):
+            continue
+        graph_contract = structured.get("graphContract")
+        if not isinstance(graph_contract, dict):
+            continue
+        sensorkit_hybrid_contracts[entry["sourceTypeCode"]] = graph_contract
+        for profile_key in ("profile", "adapterProfile"):
+            profile = structured.get(profile_key)
+            if isinstance(profile, str):
+                sensorkit_hybrid_profiles[profile] = (
+                    entry["sourceTypeCode"],
+                    graph_contract,
+                )
     full_url_by_resource = {
         id(entry_resource): full_url
         for full_url, entry_resource in resources_by_full_url.items()
     }
+    validated_hybrid_documents: set[int] = set()
     for index, observation in enumerate(entry_resources):
         direct_profiles = observation.get("meta", {}).get("profile", [])
         matches = [
@@ -519,13 +528,13 @@ def validate_exchange_bundle(
         ] if isinstance(direct_profiles, list) else []
         if not matches:
             continue
-        _, graph_name = matches[0]
+        _, (graph_name, graph_contract) = matches[0]
         derived_from = observation.get("derivedFrom")
         if not isinstance(derived_from, list) or len(derived_from) != 1:
             raise contract_failure(
                 "mobile-output.hybrid-companion", "Observation.derivedFrom",
                 f"{label} SensorKit {graph_name} entry[{index}] must derive from "
-                "exactly one native Recording Document",
+                "exactly one Recording Document",
             )
         reference = derived_from[0].get("reference") if isinstance(derived_from[0], dict) else None
         document = resources_by_full_url.get(reference) if isinstance(reference, str) else None
@@ -533,7 +542,18 @@ def validate_exchange_bundle(
             raise contract_failure(
                 "mobile-output.hybrid-companion", "Observation.derivedFrom",
                 f"{label} SensorKit {graph_name} entry[{index}] must reference its "
-                "native Recording Document in the same Bundle",
+                "Recording Document in the same Bundle",
+            )
+        if (
+            exact_sensorkit_source_type(observation, f"{label} entry[{index}]")
+            != graph_name
+            or exact_sensorkit_source_type(document, f"{label} linked Recording Document")
+            != graph_name
+        ):
+            raise contract_failure(
+                "mobile-output.hybrid-companion", "Resource.extension",
+                f"{label} SensorKit {graph_name} Observation and Recording Document "
+                "must carry the same matching SensorKit source type",
             )
 
         def matching_identifier(candidate: dict[str, Any]) -> tuple[str, str] | None:
@@ -550,21 +570,53 @@ def validate_exchange_bundle(
         ):
             raise contract_failure(
                 "mobile-output.hybrid-companion", "Resource.identifier",
-                f"{label} SensorKit {graph_name} Observation and native document must "
+                f"{label} SensorKit {graph_name} Observation and Recording Document must "
                 "carry the same source-record identifier",
             )
         related = document.get("context", {}).get("related", [])
         observation_url = full_url_by_resource[id(observation)]
-        related_urls = [
-            item.get("reference")
-            for item in related
-            if isinstance(item, dict)
-        ] if isinstance(related, list) else []
-        if related_urls != [observation_url]:
+        related_reference = (
+            related[0]
+            if isinstance(related, list)
+            and len(related) == 1
+            and isinstance(related[0], dict)
+            else None
+        )
+        valid_backlink = (
+            isinstance(related_reference, dict)
+            and related_reference.get("reference") == observation_url
+            and "identifier" not in related_reference
+            and (
+                "type" not in related_reference
+                or related_reference["type"] == "Observation"
+            )
+        )
+        if graph_contract["bidirectional"] and not valid_backlink:
             raise contract_failure(
                 "mobile-output.hybrid-companion", "DocumentReference.context.related",
-                f"{label} SensorKit {graph_name} native document must relate back to "
+                f"{label} SensorKit {graph_name} Recording Document must relate back to "
                 "exactly its structured Observation",
+            )
+        validated_hybrid_documents.add(id(document))
+
+    sensorkit_document_profile = sensorkit["profileClaims"]["recordingDocument"][
+        "adapterProfile"
+    ]
+    for index, document in enumerate(entry_resources):
+        if document.get("resourceType") != "DocumentReference":
+            continue
+        profiles = document.get("meta", {}).get("profile", [])
+        if not isinstance(profiles, list) or sensorkit_document_profile not in profiles:
+            continue
+        source_type = exact_sensorkit_source_type(document, f"{label} entry[{index}]")
+        if (
+            source_type in sensorkit_hybrid_contracts
+            and id(document) not in validated_hybrid_documents
+        ):
+            raise contract_failure(
+                "mobile-output.hybrid-companion", "DocumentReference.context.related",
+                f"{label} SensorKit {source_type} Recording Document requires exactly "
+                "one linked structured Observation in the same Bundle",
             )
 
     health_connect = read_json(CATALOG_ROOT / "health-connect-adapter.json")

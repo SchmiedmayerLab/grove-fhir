@@ -11,8 +11,8 @@ canonical: https://grovealliance.org/fhir/mobile
 name: GroveFHIRMobile
 title: Grove FHIR Mobile
 description: >-
-  FHIR R4 profiles and examples for exchanging measurements collected by mobile
-  applications and connected devices.
+  FHIR R4 contracts for exchanging source-neutral mobile health measurements,
+  device and application snapshots, lifecycle events, and conversion provenance.
 status: draft
 version: 0.6.0
 fhirVersion: 4.0.1
@@ -56,7 +56,7 @@ pages:
   fhir-basics.md:
     title: New to FHIR
   guides.md:
-    title: The Grove FHIR guides
+    title: Grove FHIR Implementation Guides
   observations.md:
     title: Observations
   devices.md:

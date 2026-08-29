@@ -127,7 +127,7 @@ Description: "Exact AndroidX MenstruationFlowRecord flow constants retained alon
 ValueSet: HealthConnectMenstruationFlowVS
 Id: health-connect-menstruation-flow
 Title: "Health Connect Menstruation Flow"
-Description: "The complete AndroidX MenstruationFlowRecord flow domain admitted by Grove 0.6.0."
+Description: "The complete AndroidX MenstruationFlowRecord flow domain admitted by the relevant Grove FHIR Implementation Guide."
 * ^experimental = false
 * include codes from system HealthConnectMenstruationFlowCS
 
@@ -147,7 +147,7 @@ Description: "Exact AndroidX OvulationTestRecord result constants retained along
 ValueSet: HealthConnectOvulationTestResultVS
 Id: health-connect-ovulation-test-result
 Title: "Health Connect Ovulation Test Result"
-Description: "The complete AndroidX OvulationTestRecord result domain admitted by Grove 0.6.0."
+Description: "The complete AndroidX OvulationTestRecord result domain admitted by the relevant Grove FHIR Implementation Guide."
 * ^experimental = false
 * include codes from system HealthConnectOvulationTestResultCS
 
@@ -166,7 +166,7 @@ Description: "Exact AndroidX SexualActivityRecord protection constants retained 
 ValueSet: HealthConnectSexualActivityProtectionVS
 Id: health-connect-sexual-activity-protection
 Title: "Health Connect Sexual Activity Protection"
-Description: "The complete AndroidX SexualActivityRecord protection-use domain admitted by Grove 0.6.0."
+Description: "The complete AndroidX SexualActivityRecord protection-use domain admitted by the relevant Grove FHIR Implementation Guide."
 * ^experimental = false
 * include codes from system HealthConnectSexualActivityProtectionCS
 
@@ -189,7 +189,7 @@ Description: "Exact AndroidX CervicalMucusRecord appearance constants retained a
 ValueSet: HealthConnectCervicalMucusAppearanceVS
 Id: health-connect-cervical-mucus-appearance
 Title: "Health Connect Cervical Mucus Appearance"
-Description: "The complete AndroidX CervicalMucusRecord appearance domain admitted by Grove 0.6.0."
+Description: "The complete AndroidX CervicalMucusRecord appearance domain admitted by the relevant Grove FHIR Implementation Guide."
 * ^experimental = false
 * include codes from system HealthConnectCervicalMucusAppearanceCS
 
@@ -208,7 +208,7 @@ Description: "Exact AndroidX CervicalMucusRecord sensation constants retained al
 ValueSet: HealthConnectCervicalMucusSensationVS
 Id: health-connect-cervical-mucus-sensation
 Title: "Health Connect Cervical Mucus Sensation"
-Description: "The non-UNKNOWN AndroidX CervicalMucusRecord sensation domain retained by Grove 0.6.0; UNKNOWN is represented by omission."
+Description: "The non-UNKNOWN AndroidX CervicalMucusRecord sensation domain retained by the relevant Grove FHIR Implementation Guide; UNKNOWN is represented by omission."
 * ^experimental = false
 * include codes from system HealthConnectCervicalMucusSensationCS
 
@@ -285,7 +285,7 @@ Description: "Exact AndroidX ExerciseSessionRecord exercise-type constants retai
 ValueSet: HealthConnectExerciseTypeVS
 Id: health-connect-exercise-type
 Title: "Health Connect Exercise Type"
-Description: "The complete AndroidX ExerciseSessionRecord exercise-type domain admitted by Grove 0.6.0."
+Description: "The complete AndroidX ExerciseSessionRecord exercise-type domain admitted by the relevant Grove FHIR Implementation Guide."
 * ^experimental = false
 * include codes from system HealthConnectExerciseTypeCS
 
@@ -370,6 +370,6 @@ Description: "Exact AndroidX ExerciseSegment type constants retained alongside t
 ValueSet: HealthConnectExerciseSegmentTypeVS
 Id: health-connect-exercise-segment-type
 Title: "Health Connect Exercise Segment Type"
-Description: "The complete AndroidX ExerciseSegment type domain plus Grove's structural EXERCISE_LAP token admitted by Grove 0.6.0."
+Description: "The complete AndroidX ExerciseSegment type domain plus Grove's structural EXERCISE_LAP token admitted by the relevant Grove FHIR Implementation Guide."
 * ^experimental = false
 * include codes from system HealthConnectExerciseSegmentTypeCS

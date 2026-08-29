@@ -43,14 +43,14 @@ Profile: SensorKitRecordingDocument
 Parent: GroveSensorRecordingDocument
 Id: sensorkit-recording-document
 Title: "SensorKit Recording Document"
-Description: "A native SensorKit payload supplied by the producer as an embedded or retrievable recording document."
+Description: "A SensorKit payload in one registered format, supplied by the producer as an embedded or retrievable Recording Document."
 * extension contains SensorKitSourceType named sensorKitSourceType 1..1 MS
 
 Profile: SensorKitConversionProvenance
 Parent: GroveSensorConversionProvenance
 Id: sensorkit-conversion-provenance
 Title: "SensorKit Conversion Provenance"
-Description: "Provenance for transforming one SensorKit source record into structured SensorKit Observations, a native Recording Document, or both."
+Description: "Provenance for transforming one SensorKit source record into structured SensorKit Observations, a registered Recording Document, or both."
 * target 1..* MS
 * target only Reference(SensorKitObservation or SensorKitRecordingDocument)
 * entity 1..1 MS
@@ -93,7 +93,7 @@ Profile: SensorKitECGObservation
 Parent: SensorKitObservation
 Id: sensorkit-ecg-observation
 Title: "SensorKit ECG Observation"
-Description: "The uniformly sampled voltage projection of one SensorKit ECG source record. It is lossless only as the required hybrid graph with a linked exact native Recording Document that retains per-point signalInvalid/crownTouched flags, session identifiers/states, and any source detail not carried by the Observation."
+Description: "The uniformly sampled voltage projection of one SensorKit ECG source record. It is lossless only as the required hybrid graph with a linked exact Recording Document in an admitted format that retains per-point signalInvalid/crownTouched flags, session identifiers/states, and any source detail not carried by the Observation."
 * obeys sensorkit-ecg-lead-standard-1 and sensorkit-ecg-inverse-lead-1
 * extension[sensorKitSourceType].valueCode = #ecg
 * code = $loinc#11524-6
@@ -125,7 +125,7 @@ Profile: SensorKitDeviceUsageObservation
 Parent: SensorKitObservation
 Id: sensorkit-device-usage-observation
 Title: "SensorKit Device Usage Observation"
-Description: "A platform-exclusive summary of unlock duration, screen wakes, and unlock count over one SensorKit device-usage reporting interval. Per-application, notification, and web detail remains in a related native Recording Document."
+Description: "A platform-exclusive summary of unlock duration, screen wakes, and unlock count over one SensorKit device-usage reporting interval. Per-application, notification, and web detail remains in a related Recording Document."
 * obeys sensorkit-summary-quantity-nonnegative-1 and sensorkit-summary-count-integer-1
 * extension[sensorKitSourceType].valueCode = #device-usage
 * code = $sensorKitConcept#device-usage-summary
@@ -412,7 +412,7 @@ Profile: SensorKitAccelerometerObservation
 Parent: SensorKitObservation
 Id: sensorkit-accelerometer-observation
 Title: "SensorKit Accelerometer Observation"
-Description: "A platform-exclusive coverage summary of one SensorKit accelerometer batch; the triaxial-acceleration-samples recording document carries the signal and is mandatory."
+Description: "A platform-exclusive coverage summary of one SensorKit accelerometer recording spanning one or more CoreMotion delivery batches; the triaxial-acceleration-samples recording document carries the signal and is mandatory."
 * obeys sensorkit-summary-quantity-nonnegative-1 and sensorkit-summary-count-integer-1
 * extension[sensorKitSourceType].valueCode = #accelerometer
 * code = $sensorKitConcept#accelerometer-recording-summary

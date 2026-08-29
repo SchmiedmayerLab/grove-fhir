@@ -18,12 +18,12 @@ Instance: GoogleHealthStepCountExample
 InstanceOf: GoogleHealthObservation
 Usage: #example
 Title: "Google Health Step Count"
-Description: "An already-obtained Google Health API steps interval on the Google Health narrowing of the provider contract."
+Description: "An already-obtained Google Health API step-count interval conforming to both the Google Health lineage profile and the shared step-count profile."
 * meta.profile[+] = "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-step-count"
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-provider-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:N0eoeAizxv2r52-apeG3hX1hFBXfsmuIPjQEcpf8x_8"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-provider-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:WnlDcVrpqbr59z48UBWz6kbAk54f1i1F6VvwH_hVv9U"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-provider-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:cgqFmbbaOjUQy_ODPOPu2tARCP6Yljc0OoPoySUjpdE"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-provider-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:kTrVGXL6OJ9m89zrseMUqWnA0G4rghOLlTzcC20sE2M"
 * status = #final
 * category = http://terminology.hl7.org/CodeSystem/observation-category#activity "Activity"
 * code = https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement#step-count-total "Step count total"

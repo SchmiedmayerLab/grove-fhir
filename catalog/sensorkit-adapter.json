@@ -1,6 +1,6 @@
 {
   "$schema": "https://grovealliance.org/fhir/catalog/schemas/catalog-contracts.schema.json",
-  "schemaVersion": 1,
+  "schemaVersion": 0,
   "fhirVersion": "4.0.1",
   "version": "0.6.0",
   "packageId": "org.grovealliance.fhir.sensorkit",
@@ -21,12 +21,12 @@
     "intentionally-unsupported"
   ],
   "statusDefinitions": {
-    "supported": "Version 0.6.0 defines a lossless structured mapping to the listed source-neutral Sensor profile plus the SensorKit adapter profile. A row may require the listed linked native Recording Document when exact source fields cannot be carried in the structured projection alone.",
-    "mapped-standard": "Version 0.6.0 admits the stream as the listed source-neutral Sensor Recording Document and does not invent a structured scalar or waveform meaning.",
-    "platform-exclusive": "Version 0.6.0 defines the listed platform-exclusive SensorKit structured profile because no exact source-neutral or international profile exists.",
+    "supported": "The Grove FHIR contracts define a lossless structured mapping to the listed source-neutral Sensor profile plus the SensorKit adapter profile. A row may require the listed linked Recording Document in an admitted registry format when exact source fields cannot be carried in the structured projection alone.",
+    "mapped-standard": "The Grove FHIR contracts admit the stream as the listed source-neutral Sensor Recording Document and do not invent a structured scalar or waveform meaning.",
+    "platform-exclusive": "The Grove FHIR contracts define the listed platform-exclusive SensorKit structured profile because no exact source-neutral or international profile exists.",
     "unmodeled": "The platform stream is inventoried, but no shared or SensorKit-scoped profile models it and no output is admitted.",
-    "deferred": "The platform stream is inventoried, but version 0.6.0 publishes no admitted output contract.",
-    "intentionally-unsupported": "Version 0.6.0 deliberately refuses the stream because any available representation would create a misleading or unsafe meaning."
+    "deferred": "The platform stream is inventoried, but the Grove FHIR contracts publish no admitted output contract.",
+    "intentionally-unsupported": "The Grove FHIR contracts deliberately refuse the stream because any available representation would create a misleading or unsafe meaning."
   },
   "observationIssued": {
     "cardinality": "0..0",
@@ -44,7 +44,7 @@
     "accessed": "2026-08-20",
     "appleSensorInventory": "https://developer.apple.com/documentation/sensorkit/srsensor",
     "appleFrameworkDocumentation": "https://developer.apple.com/documentation/sensorkit",
-    "scope": "The exact 22 public Apple SRSensor symbols frozen by the version 0.6.0 catalog."
+    "scope": "The exact 22 public Apple SRSensor symbols frozen by the current catalog."
   },
   "inventoryScopes": {
     "catalog-baseline": "One of the 20 platform symbols in the initial closed catalog baseline.",
@@ -56,7 +56,7 @@
       "adapterProfile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-observation"
     },
     "hybridObservation": {
-      "rule": "exactly two direct meta.profile claims: the listed source-neutral Sensor semantic profile and the exact SensorKit hybrid adapter child; one linked exact native Recording Document is mandatory",
+      "rule": "exactly two direct meta.profile claims: the listed source-neutral Sensor semantic profile and the exact SensorKit hybrid adapter child; one linked exact Recording Document in a row-admitted registry format is mandatory",
       "adapterProfile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-ecg-observation"
     },
     "recordingDocument": {
@@ -64,7 +64,7 @@
       "sourceNeutralProfile": "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document",
       "adapterProfile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-recording-document",
       "defaultOutputDiscriminator": "native-recording",
-      "defaultRule": "Every admitted raw representation uses this profile pair and output discriminator unless its row explicitly replaces them."
+      "defaultRule": "Every admitted raw representation uses this profile pair and logical output discriminator unless its row explicitly replaces them. The native-recording discriminator names the raw output role used in deterministic identity input; it does not assert that content.format is native-recording."
     },
     "providerSpecificObservation": {
       "rule": "exactly one direct meta.profile claim: the listed SensorKit-only profile, which inherits the adapter envelope"
@@ -108,11 +108,12 @@
       "verified-sanitized-input"
     ],
     "failureRule": "The producer fails closed before emission unless the caller supplies exactly one assertion.",
+    "payloadCoverageRule": "For an admitted raw-only SensorKit recording whose registered inline payload grammar yields instant bounds, DocumentReference.context.period contains every derived payload instant. The producer fails closed when any derived instant lies outside the asserted effective period; formats without grammar-derived instant bounds retain the producer's exact source-coverage assertion.",
     "notFHIRAuthorization": true
   },
   "identity": {
     "contract": "catalog/exchange-protocol.json",
-    "protocolVersion": 2,
+    "protocolVersion": 0,
     "adapterId": "sensorkit",
     "sourceRecord": {
       "identityKind": "source-record",
@@ -138,21 +139,96 @@
             "id": "equal-coordinate-cross-batch",
             "resetGeneration": 4,
             "attempts": [
-              {"deliveryBatch": "callback-a", "pendingStartOrdinal": 40, "pendingCount": 1, "sourceCoordinates": ["2026-08-20T09:00:00.000Z"], "resolvedOrdinals": [40], "disposition": "first-stage"},
-              {"deliveryBatch": "callback-b", "pendingStartOrdinal": 41, "pendingCount": 1, "sourceCoordinates": ["2026-08-20T09:00:00.000Z"], "resolvedOrdinals": [41], "disposition": "first-stage"}
+              {
+                "deliveryBatch": "callback-a",
+                "pendingStartOrdinal": 40,
+                "pendingCount": 1,
+                "sourceCoordinates": [
+                  "2026-08-20T09:00:00.000Z"
+                ],
+                "resolvedOrdinals": [
+                  40
+                ],
+                "disposition": "first-stage"
+              },
+              {
+                "deliveryBatch": "callback-b",
+                "pendingStartOrdinal": 41,
+                "pendingCount": 1,
+                "sourceCoordinates": [
+                  "2026-08-20T09:00:00.000Z"
+                ],
+                "resolvedOrdinals": [
+                  41
+                ],
+                "disposition": "first-stage"
+              }
             ],
-            "expectedCoordinates": [{"generation": 4, "deliveryOrdinal": 40}, {"generation": 4, "deliveryOrdinal": 41}],
+            "expectedCoordinates": [
+              {
+                "generation": 4,
+                "deliveryOrdinal": 40
+              },
+              {
+                "generation": 4,
+                "deliveryOrdinal": 41
+              }
+            ],
             "assertion": "Equal timestamps delivered in different callbacks remain two distinct acquisition records; callback-local occurrence zero must not collide."
           },
           {
             "id": "crash-retry-rebatch",
             "resetGeneration": 9,
             "attempts": [
-              {"deliveryBatch": "callback-before-crash", "pendingStartOrdinal": 120, "pendingCount": 2, "sourceCoordinates": ["2026-08-20T10:00:00.000Z", "2026-08-20T10:00:00.000Z"], "resolvedOrdinals": [120, 121], "disposition": "first-stage"},
-              {"deliveryBatch": "retry-callback-a", "pendingStartOrdinal": 120, "pendingCount": 2, "sourceCoordinates": ["2026-08-20T10:00:00.000Z"], "resolvedOrdinals": [120], "disposition": "retry-stage"},
-              {"deliveryBatch": "retry-callback-b", "pendingStartOrdinal": 120, "pendingCount": 2, "sourceCoordinates": ["2026-08-20T10:00:00.000Z"], "resolvedOrdinals": [121], "disposition": "retry-stage"}
+              {
+                "deliveryBatch": "callback-before-crash",
+                "pendingStartOrdinal": 120,
+                "pendingCount": 2,
+                "sourceCoordinates": [
+                  "2026-08-20T10:00:00.000Z",
+                  "2026-08-20T10:00:00.000Z"
+                ],
+                "resolvedOrdinals": [
+                  120,
+                  121
+                ],
+                "disposition": "first-stage"
+              },
+              {
+                "deliveryBatch": "retry-callback-a",
+                "pendingStartOrdinal": 120,
+                "pendingCount": 2,
+                "sourceCoordinates": [
+                  "2026-08-20T10:00:00.000Z"
+                ],
+                "resolvedOrdinals": [
+                  120
+                ],
+                "disposition": "retry-stage"
+              },
+              {
+                "deliveryBatch": "retry-callback-b",
+                "pendingStartOrdinal": 120,
+                "pendingCount": 2,
+                "sourceCoordinates": [
+                  "2026-08-20T10:00:00.000Z"
+                ],
+                "resolvedOrdinals": [
+                  121
+                ],
+                "disposition": "retry-stage"
+              }
             ],
-            "expectedCoordinates": [{"generation": 9, "deliveryOrdinal": 120}, {"generation": 9, "deliveryOrdinal": 121}],
+            "expectedCoordinates": [
+              {
+                "generation": 9,
+                "deliveryOrdinal": 120
+              },
+              {
+                "generation": 9,
+                "deliveryOrdinal": 121
+              }
+            ],
             "assertion": "A two-record pending delivery retried as two callbacks reuses both persisted coordinates and does not mint ordinals 122 or 123."
           }
         ]
@@ -170,7 +246,7 @@
         "output-role",
         "output-discriminator"
       ],
-      "outputRoleRule": "Use structured or native-recording according to the selected catalog representation.",
+      "outputRoleRule": "Use structured for a structured representation or native-recording for the catalog's logical raw Recording Document role. This identity component is independent of the selected content.format, which may be CSV, FHIR, binary, or native JSON.",
       "outputDiscriminatorRule": "Use the exact outputDiscriminator on the admitted structured or raw representation. The HMAC length framing accepts arbitrary Unicode without a separator grammar; there is no fallback."
     },
     "sourceArtifact": {
@@ -203,7 +279,18 @@
       "structured": {
         "status": "platform-exclusive",
         "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-accelerometer-observation",
-        "outputDiscriminator": "accelerometer-recording-summary"
+        "outputDiscriminator": "accelerometer-recording-summary",
+        "graphContract": {
+          "requiredResources": [
+            "sensorkit-accelerometer-observation",
+            "sensorkit-recording-document"
+          ],
+          "relationship": "The summary Observation.derivedFrom contains exactly one internal UUID reference to the Recording Document in the same Grove Mobile collection Bundle, and DocumentReference.context.related contains exactly one internal UUID reference back to that summary.",
+          "bidirectional": true,
+          "sharedSourceIdentity": true,
+          "coverageRule": "The caller-supplied acquisition bounds represented by Observation.effectivePeriod contain every instant encoded in the accepted payload.",
+          "summaryDerivationRule": "The sample count is the accepted payload row count, and the batch count is the number of distinct (device, identifier) batch keys in those rows. Both are derived from the accepted payload; duplicate caller-supplied counts are not authoritative inputs."
+        }
       },
       "raw": {
         "status": "mapped-standard",
@@ -225,7 +312,7 @@
       "minimumIOS": "26.0",
       "scope": "stable-addition",
       "status": "deferred",
-      "reason": "Version 0.6.0 publishes no reviewed output contract for this stable platform symbol."
+      "reason": "The Grove FHIR contracts publish no reviewed output contract for this stable platform symbol."
     },
     {
       "sourceToken": "SRSensor.ambientLightSensor",
@@ -239,7 +326,7 @@
       "status": "mapped-standard",
       "structured": {
         "status": "deferred",
-        "reason": "The source contains heterogeneous light fields for which version 0.6.0 does not publish a lossless component profile."
+        "reason": "The source contains heterogeneous light fields for which the Grove FHIR contracts do not publish a lossless component profile."
       },
       "raw": {
         "status": "mapped-standard",
@@ -299,7 +386,8 @@
             "sensorkit-device-usage-observation",
             "sensorkit-recording-document"
           ],
-          "relationship": "The summary Observation.derivedFrom contains exactly one internal UUID reference to the native Recording Document in the same Grove Mobile collection Bundle.",
+          "relationship": "The summary Observation.derivedFrom contains exactly one internal UUID reference to the Recording Document in the same Grove Mobile collection Bundle, and DocumentReference.context.related contains exactly one internal UUID reference back to that summary.",
+          "bidirectional": true,
           "sharedSourceIdentity": true
         }
       },
@@ -351,17 +439,21 @@
             "valueKind": "coding",
             "exactSourceValue": true,
             "codingSystem": "https://grovealliance.org/fhir/sensorkit/CodeSystem/sensorkit-value",
-            "allowedCodes": ["guided", "unguided"],
+            "allowedCodes": [
+              "guided",
+              "unguided"
+            ],
             "rule": "Emit exactly one SensorKitValueCS coding, guided or unguided. Per-voltage flags and native session state remain in the required Recording Document."
           }
         ],
-        "admissionRule": "All batches form one complete uniform series at the exact reported frequency, one exact lead orientation is retained, and no voltage sample is omitted. Non-uniform, incomplete, mixed-lead, or inconsistent input fails closed.",
+      "admissionRule": "All batches form one complete uniform series at the exact reported frequency, one exact lead orientation is retained, and no voltage sample is omitted. The duration ends at the final sample instant: final batch offset + (final batch sample count - 1) / frequency. Non-uniform, incomplete, mixed-lead, or inconsistent input fails closed.",
         "graphContract": {
           "requiredResources": [
             "sensorkit-ecg-observation",
             "sensorkit-recording-document"
           ],
-          "relationship": "The ECG Observation.derivedFrom contains exactly one internal UUID reference to the native Recording Document in the same Grove Mobile collection Bundle.",
+          "relationship": "The ECG Observation.derivedFrom contains exactly one internal UUID reference to the Recording Document in the same Grove Mobile collection Bundle, and DocumentReference.context.related contains exactly one internal UUID reference back to that Observation.",
+          "bidirectional": true,
           "sharedSourceIdentity": true
         }
       },
@@ -394,7 +486,7 @@
       "status": "mapped-standard",
       "structured": {
         "status": "deferred",
-        "reason": "Version 0.6.0 publishes no reviewed structured profile for the heterogeneous face metrics."
+        "reason": "The Grove FHIR contracts publish no reviewed structured profile for the heterogeneous face metrics."
       },
       "raw": {
         "status": "mapped-standard",
@@ -403,50 +495,7 @@
         "encoding": "caller-supplied exact bytes",
         "formats": [
           "native-recording"
-        ],
-        "jsonSchema": {
-          "schemaId": "sensorkit-face-metrics-json",
-          "structure": "UTF-8; one JSON array of face-metrics records in source order; every declared field present; timestamps are seconds since the Unix epoch.",
-          "fields": [
-            {
-              "name": "timestamp",
-              "type": "number",
-              "unit": "s (Unix epoch)",
-              "optional": false,
-              "meaning": "Fetch-record delivery instant."
-            },
-            {
-              "name": "sessionIdentifier",
-              "type": "string",
-              "optional": false,
-              "meaning": "Camera session identifier."
-            },
-            {
-              "name": "version",
-              "type": "string",
-              "optional": false,
-              "meaning": "Face-metrics algorithm version."
-            },
-            {
-              "name": "context",
-              "type": "array(string)",
-              "optional": false,
-              "meaning": "Active SRFaceMetrics.Context option names; closed domain currently deviceUnlock and messagingAppUsage."
-            },
-            {
-              "name": "partialFaceExpressions",
-              "type": "array(object)",
-              "optional": false,
-              "meaning": "[{identifier: string, value: number}] from [SRFaceMetricsExpression]."
-            },
-            {
-              "name": "wholeFaceExpressions",
-              "type": "array(object)",
-              "optional": false,
-              "meaning": "[{identifier: string, value: number}] from [SRFaceMetricsExpression]."
-            }
-          ]
-        }
+        ]
       }
     },
     {
@@ -486,7 +535,16 @@
       "structured": {
         "status": "platform-exclusive",
         "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-keyboard-metrics-observation",
-        "outputDiscriminator": "keyboard-metrics-summary"
+        "outputDiscriminator": "keyboard-metrics-summary",
+        "graphContract": {
+          "requiredResources": [
+            "sensorkit-keyboard-metrics-observation",
+            "sensorkit-recording-document"
+          ],
+          "relationship": "The summary Observation.derivedFrom contains exactly one internal UUID reference to the Recording Document in the same Grove Mobile collection Bundle, and DocumentReference.context.related contains exactly one internal UUID reference back to that summary.",
+          "bidirectional": true,
+          "sharedSourceIdentity": true
+        }
       },
       "raw": {
         "status": "mapped-standard",
@@ -495,12 +553,7 @@
         "encoding": "caller-supplied exact bytes",
         "formats": [
           "native-recording"
-        ],
-        "jsonSchema": {
-          "schemaId": "sensorkit-keyboard-metrics-json",
-          "structure": "UTF-8; one JSON array of per-keyboard report objects in source order; every declared field present; a distribution with no samples encodes an empty values array; timestamps are seconds since the Unix epoch.",
-          "fields": "Designer 1's field list adopted verbatim: timestamp, duration, keyboardIdentifier, version, width (mm), height (mm), inputModes, sessionIdentifiers, counts object with exactly the 19 Int properties, totalPathTime (s), totalPathLength (mm), totalTypingDuration (s), typingSpeed, pathTypingSpeed, durationMetrics object with exactly the 32 scalar ProbabilityMetric<UnitDuration> members, durationMetricArrays with exactly deleteToDeletes/longWordTouchDownUp/longWordTouchDownDown/longWordTouchUpDown, distanceMetrics with exactly the 8 scalar error-distance members, distanceMetricArrays with exactly longWordUpErrorDistance/longWordDownErrorDistance, pathErrorDistanceRatio, sentiments object with exactly the 10 SentimentCategory cases."
-        }
+        ]
       }
     },
     {
@@ -515,7 +568,7 @@
       "status": "mapped-standard",
       "structured": {
         "status": "deferred",
-        "reason": "Media interactions do not have a reviewed source-neutral clinical Observation representation in version 0.6.0."
+        "reason": "Media interactions do not have a reviewed source-neutral clinical Observation representation under the Grove FHIR contracts."
       },
       "raw": {
         "status": "mapped-standard",
@@ -524,32 +577,7 @@
         "encoding": "caller-supplied exact bytes",
         "formats": [
           "native-recording"
-        ],
-        "jsonSchema": {
-          "schemaId": "sensorkit-media-events-json",
-          "structure": "Same array, encoding, and timestamp conventions as sensorkit-messages-usage-json; one event object per source sample.",
-          "fields": [
-            {
-              "name": "timestamp",
-              "type": "number",
-              "unit": "s (Unix epoch)",
-              "optional": false,
-              "meaning": "Event instant from the fetch record."
-            },
-            {
-              "name": "mediaIdentifier",
-              "type": "string",
-              "optional": false,
-              "meaning": "Opaque Apple-assigned identifier correlating on/off-screen pairs; carries no media content or URL, but enables longitudinal linkage of media items and must never leave the raw document."
-            },
-            {
-              "name": "eventType",
-              "type": "string",
-              "optional": false,
-              "meaning": "SRMediaEventType case name; closed domain exactly onScreen or offScreen."
-            }
-          ]
-        }
+        ]
       }
     },
     {
@@ -574,45 +602,7 @@
         "encoding": "caller-supplied exact bytes",
         "formats": [
           "native-recording"
-        ],
-        "jsonSchema": {
-          "schemaId": "sensorkit-messages-usage-json",
-          "structure": "UTF-8; one JSON array of report objects in source order; one document per stream per batch; empty batch emits no document; every declared field present; timestamps are seconds since the Unix epoch as JSON numbers.",
-          "fields": [
-            {
-              "name": "timestamp",
-              "type": "number",
-              "unit": "s (Unix epoch)",
-              "optional": false,
-              "meaning": "Report anchor instant from the SRFetchResult delivery record; the report interval is [timestamp, timestamp + duration]."
-            },
-            {
-              "name": "duration",
-              "type": "number",
-              "unit": "s",
-              "optional": false,
-              "meaning": "Duration the report spans (SRMessagesUsageReport.duration)."
-            },
-            {
-              "name": "totalIncomingMessages",
-              "type": "integer",
-              "optional": false,
-              "meaning": "Messages received in the interval."
-            },
-            {
-              "name": "totalOutgoingMessages",
-              "type": "integer",
-              "optional": false,
-              "meaning": "Messages sent in the interval."
-            },
-            {
-              "name": "totalUniqueContacts",
-              "type": "integer",
-              "optional": false,
-              "meaning": "Distinct contacts messaged in the interval; a count only, no identities."
-            }
-          ]
-        }
+        ]
       }
     },
     {
@@ -718,52 +708,7 @@
         "encoding": "caller-supplied exact bytes",
         "formats": [
           "native-recording"
-        ],
-        "jsonSchema": {
-          "schemaId": "sensorkit-phone-usage-json",
-          "structure": "Same array, encoding, and timestamp conventions as sensorkit-messages-usage-json.",
-          "fields": [
-            {
-              "name": "timestamp",
-              "type": "number",
-              "unit": "s (Unix epoch)",
-              "optional": false,
-              "meaning": "Report anchor instant from the SRFetchResult delivery record."
-            },
-            {
-              "name": "duration",
-              "type": "number",
-              "unit": "s",
-              "optional": false,
-              "meaning": "Duration the report spans."
-            },
-            {
-              "name": "totalIncomingCalls",
-              "type": "integer",
-              "optional": false,
-              "meaning": "Calls received."
-            },
-            {
-              "name": "totalOutgoingCalls",
-              "type": "integer",
-              "optional": false,
-              "meaning": "Calls made."
-            },
-            {
-              "name": "totalPhoneCallDuration",
-              "type": "number",
-              "unit": "s",
-              "optional": false,
-              "meaning": "Total duration of all calls."
-            },
-            {
-              "name": "totalUniqueContacts",
-              "type": "integer",
-              "optional": false,
-              "meaning": "Distinct contacts; a count only."
-            }
-          ]
-        }
+        ]
       }
     },
     {
@@ -779,7 +724,18 @@
       "structured": {
         "status": "platform-exclusive",
         "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-ppg-observation",
-        "outputDiscriminator": "ppg-recording-summary"
+        "outputDiscriminator": "ppg-recording-summary",
+        "graphContract": {
+          "requiredResources": [
+            "sensorkit-ppg-observation",
+            "sensorkit-recording-document"
+          ],
+          "relationship": "The summary Observation.derivedFrom contains exactly one internal UUID reference to the Recording Document in the same Grove Mobile collection Bundle, and DocumentReference.context.related contains exactly one internal UUID reference back to that summary.",
+          "bidirectional": true,
+          "sharedSourceIdentity": true,
+          "coverageRule": "The caller-supplied session bounds represented by Observation.effectivePeriod contain every record's startDate session anchor, every record instant, and every nested sample instant encoded in the accepted payload.",
+          "summaryDerivationRule": "Every emitted record, optical-sample, and accelerometer-sample count is derived from the accepted payload; duplicate caller-supplied counts are not authoritative inputs."
+        }
       },
       "raw": {
         "status": "mapped-standard",
@@ -831,7 +787,7 @@
       "status": "mapped-standard",
       "structured": {
         "status": "deferred",
-        "reason": "Speech metrics have no reviewed source-neutral clinical Observation representation in version 0.6.0."
+        "reason": "Speech metrics have no reviewed source-neutral clinical Observation representation under the Grove FHIR contracts."
       },
       "raw": {
         "status": "mapped-standard",
@@ -840,70 +796,7 @@
         "encoding": "caller-supplied exact bytes",
         "formats": [
           "native-recording"
-        ],
-        "jsonSchema": {
-          "schemaId": "sensorkit-speech-metrics-json",
-          "structure": "UTF-8; one JSON array of speech-metrics records in source order; every declared field present; absent values encode as null; timestamps are seconds since the Unix epoch; CMTimeRange encodes as {\"start\": number s, \"duration\": number s}.",
-          "fields": [
-            {
-              "name": "timestamp",
-              "type": "number",
-              "unit": "s (Unix epoch)",
-              "optional": false,
-              "meaning": "Fetch-record delivery instant (SRFetchResult.timestamp); always present on every supported OS."
-            },
-            {
-              "name": "speechTimestamp",
-              "type": "number|null",
-              "unit": "s (Unix epoch)",
-              "optional": true,
-              "meaning": "When the speech occurs (SRSpeechMetrics.timestamp); null on records from OS versions before its introduction."
-            },
-            {
-              "name": "sessionIdentifier",
-              "type": "string|null",
-              "optional": true,
-              "meaning": "Audio session identifier; null before its introduction."
-            },
-            {
-              "name": "sessionFlags",
-              "type": "array(string)|null",
-              "optional": true,
-              "meaning": "Active SessionFlags option names; closed domain currently exactly [\"bypassVoiceProcessing\"]; null before its introduction."
-            },
-            {
-              "name": "timeSinceAudioStart",
-              "type": "number",
-              "unit": "s",
-              "optional": false,
-              "meaning": "Seconds since the audio stream start."
-            },
-            {
-              "name": "audioLevel",
-              "type": "object|null",
-              "optional": true,
-              "meaning": "{timeRange: {start s, duration s}, loudness: number (decibels, no Apple-defined reference level)}."
-            },
-            {
-              "name": "speechExpression",
-              "type": "object|null",
-              "optional": true,
-              "meaning": "{timeRange, version: string, confidence, mood, valence, activation, dominance: dimensionless model scores}."
-            },
-            {
-              "name": "speechRecognitionMetadata",
-              "type": "object|null",
-              "optional": true,
-              "meaning": "{speakingRate: number (words per minute), averagePauseDuration: number s, speechStartTimestamp: number s, speechDuration: number s, voiceAnalytics: {voicing, pitch, jitter, shimmer: each {frameDuration: number s, values: [number]}}|null} — the content-free projection of SFSpeechRecognitionResult.speechRecognitionMetadata."
-            },
-            {
-              "name": "soundClassification",
-              "type": "object|null",
-              "optional": true,
-              "meaning": "{timeRange, classifications: [{identifier: string, confidence: number}]} — model labels, not audio."
-            }
-          ]
-        }
+        ]
       }
     },
     {
@@ -934,7 +827,7 @@
       "status": "mapped-standard",
       "structured": {
         "status": "deferred",
-        "reason": "Speech metrics have no reviewed source-neutral clinical Observation representation in version 0.6.0."
+        "reason": "Speech metrics have no reviewed source-neutral clinical Observation representation under the Grove FHIR contracts."
       },
       "raw": {
         "status": "mapped-standard",
@@ -1006,7 +899,7 @@
         "status": "platform-exclusive",
         "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-wrist-temperature-observation",
         "outputDiscriminator": "wrist-temperature-recording-summary",
-        "reason": "A sleep-interval wrist skin reading is neither body nor basal body temperature, so version 0.6.0 publishes a platform-scoped summary rather than binding it to a shared clinical meaning.",
+        "reason": "A sleep-interval wrist skin reading is neither body nor basal body temperature, so the Grove FHIR contracts publish a platform-scoped summary rather than binding it to a shared clinical meaning.",
         "representedFields": [
           "startDate",
           "duration",
@@ -1023,7 +916,18 @@
             "nativeR4Gap": "The source supplies only an opaque algorithm-version string, not a method code or complete method concept. Observation.method.text = '1' is not self-describing, and Coding.version means the version of a code system rather than an arbitrary source algorithm version.",
             "rule": "Preserve the exact non-blank source string in valueString. Do not normalize it, invent a method code, or reinterpret it as Coding.version."
           }
-        ]
+        ],
+        "graphContract": {
+          "requiredResources": [
+            "sensorkit-wrist-temperature-observation",
+            "sensorkit-recording-document"
+          ],
+          "relationship": "The summary Observation.derivedFrom contains exactly one internal UUID reference to the Recording Document in the same Grove Mobile collection Bundle, and DocumentReference.context.related contains exactly one internal UUID reference back to that summary.",
+          "bidirectional": true,
+          "sharedSourceIdentity": true,
+          "coverageRule": "The caller-supplied session bounds represented by Observation.effectivePeriod contain every sample instant encoded in the accepted payload.",
+          "summaryDerivationRule": "The emitted sample count is derived from the accepted payload; a duplicate caller-supplied count is not an authoritative input."
+        }
       },
       "raw": {
         "status": "mapped-standard",
@@ -1046,6 +950,6 @@
       "recordingDevice.hardwareVersion"
     ],
     "fallback": "Omit Observation.device when no stable per-unit token exists; descriptive fields cannot establish instance identity.",
-    "snapshot": "When emitted, the Device carries both recording-device and event-scoped device-snapshot v2 identifiers."
+    "snapshot": "When emitted, the Device carries both recording-device and event-scoped device-snapshot v0 identifiers."
   }
 }

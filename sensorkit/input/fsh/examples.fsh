@@ -19,10 +19,10 @@ InstanceOf: GroveRecordingDevice
 Usage: #example
 Title: "SensorKit Example Recording Device"
 Description: "The watch that captured the example SensorKit streams."
-* identifier[physicalUnit].system = "https://study.example.org/fhir/NamingSystem/grove-recording-device-v2/test-key/1"
-* identifier[physicalUnit].value = "v2:test-key:1:pZx5ARahj8YybkJ6Gjp4bsGxqjS8ZCMopkZnaWSYxw8"
-* identifier[eventSnapshot].system = "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v2/test-key/1"
-* identifier[eventSnapshot].value = "v2:test-key:1:Z6nW3akX-P_h7spZl-NPAMbDwSSV4bUdE09Kq4xClPU"
+* identifier[physicalUnit].system = "https://study.example.org/fhir/NamingSystem/grove-recording-device-v0/test-key/1"
+* identifier[physicalUnit].value = "v0:test-key:1:cJAjPtBEVCTnnwsMUKciYeJx6OfRsikB6q-K3SWVFKs"
+* identifier[eventSnapshot].system = "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v0/test-key/1"
+* identifier[eventSnapshot].value = "v0:test-key:1:ATVCLxSureccbQ7AwmvG6NNLUi_ZS4Puw5HD7HonXPI"
 * status = #active
 * manufacturer = "Example Manufacturer"
 * type.text = "Watch"
@@ -33,8 +33,8 @@ Usage: #example
 Title: "SensorKit Converting Application"
 Description: "The application that transforms already-obtained SensorKit records into the FHIR graph."
 * status = #active
-* identifier[applicationSnapshot].system = "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v2/test-key/1"
-* identifier[applicationSnapshot].value = "v2:test-key:1:sGzDek4hAO9SOAmIvnvd32NDtO3UMIwm9nQgw8uV6u4"
+* identifier[applicationSnapshot].system = "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v0/test-key/1"
+* identifier[applicationSnapshot].value = "v0:test-key:1:oPo1uGEd7tR0bTNv5UKq2L-4mHGX86JdNrqB3aYW1LE"
 * deviceName[applicationName].name = "SensorKit Mapper"
 * deviceName[applicationName].type = #user-friendly-name
 
@@ -44,10 +44,10 @@ Usage: #example
 Title: "SensorKit Rotation Rate Sampled Data"
 Description: "A lossless, uniformly sampled three-axis rotation-rate stream that declares exactly the source-neutral SampledData profile and the SensorKit adapter profile."
 * meta.profile[+] = "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-sampled-data-observation"
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:l2gfZ5lmjsq1zyyetPQRKy7Jenb5IDqebysEAZITzgg"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:bfdPkNW0Ktj7fR0jaHCCyFKDlUs8Z-uHOogEZzVcxzc"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:4BxIRTHcopOlCM3qYdI5WAXBsQ4fsPM0f7zkh9yIE3U"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:Wf6QiPG60utBF3pWSe5pdn0_3L069JjNkaHdZT5tsek"
 * extension[sensorKitSourceType].valueCode = #rotation-rate
 * status = #final
 * code = $sensorKitSourceType#rotation-rate "Rotation rate"
@@ -75,8 +75,8 @@ Description: "The transformation event linking one SensorKit source record to it
 * agent[assembler].who = Reference(SensorKitApplicationExample)
 * entity.role = #source
 * entity.what.identifier.type = $groveIdentifierRole#source-record "Source record"
-* entity.what.identifier.system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* entity.what.identifier.value = "v2:test-key:1:l2gfZ5lmjsq1zyyetPQRKy7Jenb5IDqebysEAZITzgg"
+* entity.what.identifier.system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* entity.what.identifier.value = "v0:test-key:1:4BxIRTHcopOlCM3qYdI5WAXBsQ4fsPM0f7zkh9yIE3U"
 
 Instance: SensorKitECGExample
 InstanceOf: SensorKitECGObservation
@@ -84,10 +84,10 @@ Usage: #example
 Title: "SensorKit ECG Waveform Projection"
 Description: "The complete uniform voltage projection of one SensorKit ECG record. The linked native document preserves exact session state and per-voltage flags."
 * meta.profile[+] = "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-ecg-observation"
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:ac2HjtTOXQDORJ2XHpbfgSjGDtg4bGkT2kxWzroHlfY"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:GV8ntg6BUwB9gzp_p7-yXghTfdQxrr8jklm0dMNyq10"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:76FsTE1X6aQawWHO18g8d5XXd5Uz_rdVVv0FmRwYWro"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:Kl4ausf7Z199v2a16mys61TcdDHntBqGXtajOC7EAz8"
 * extension[sensorKitSourceType].valueCode = #ecg
 * method = $sensorKitValue#guided "Guided"
 * status = #final
@@ -111,27 +111,26 @@ Instance: SensorKitECGDocumentExample
 InstanceOf: SensorKitRecordingDocument
 Usage: #example
 Title: "SensorKit Native ECG Recording"
-Description: "The caller-supplied exact native encoding that retains session identifiers/states and each signalInvalid and crownTouched flag."
+Description: "The exact native encoding supplied as input, retaining session identifiers/states and each signalInvalid and crownTouched flag."
 * meta.profile[+] = "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document"
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:ac2HjtTOXQDORJ2XHpbfgSjGDtg4bGkT2kxWzroHlfY"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:G8awxhxHEz8ZFRNusODCHf_ySeVFp4D2NzJ7Y7NHwzQ"
-* identifier[sourceArtifact].system = "https://study.example.org/fhir/NamingSystem/grove-source-artifact-v2/test-key/1"
-* identifier[sourceArtifact].value = "v2:test-key:1:9sarugkGUGjpBWI7jDWFRvKwIXcnellduGuZJIa9BvI"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:76FsTE1X6aQawWHO18g8d5XXd5Uz_rdVVv0FmRwYWro"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:DbNtRutwVjAHgEhLYZW2eQTL_vhcapgBU0RLHEBVlkM"
+* identifier[sourceArtifact].system = "https://study.example.org/fhir/NamingSystem/grove-source-artifact-v0/test-key/1"
+* identifier[sourceArtifact].value = "v0:test-key:1:6fKmMekWJIaGf8AymXhAXaVHBrodZgX7PtzyTWWVfhs"
 * extension[sensorKitSourceType].valueCode = #ecg
 * status = #current
 * type = $sensorKitSourceType#ecg "Electrocardiogram"
 * subject = Reference(SensorKitPatientExample)
 * date = "2026-08-20T16:10:01Z"
 * author = Reference(SensorKitDeviceExample)
-* content.attachment.contentType = #application/vnd.grovealliance.native+json
+* content.attachment.contentType = #application/json
 * content.format = $recordingFormat#native-recording "Native Recording"
-* content.format.version = "0.6.0"
 * content.attachment.title = "SensorKit ECG native recording"
-* content.attachment.data = "eyJndWlkYW5jZSI6Imd1aWRlZCIsImZsYWdzIjpbMCwyLDEsMF19"
-* content.attachment.size = 39
-* content.attachment.hash = "uuvrA7QHOUD+1r204rKEqJg7hY8="
+* content.attachment.data = "W3siZGF0ZSI6MTc4NzI0MjIwMCwiZnJlcXVlbmN5IjoyNTAsInNlc3Npb24iOnsiaWRlbnRpZmllciI6InNlc3Npb24tMSIsInN0YXRlIjoiYmVnaW4iLCJndWlkYW5jZSI6Imd1aWRlZCJ9LCJsZWFkIjoibGVmdEFybU1pbnVzUmlnaHRBcm0iLCJkYXRhIjpbeyJ2YWx1ZU1pY3Jvdm9sdHMiOjExLCJzaWduYWxJbnZhbGlkIjpmYWxzZSwiY3Jvd25Ub3VjaGVkIjpmYWxzZX0seyJ2YWx1ZU1pY3Jvdm9sdHMiOjIzLCJzaWduYWxJbnZhbGlkIjpmYWxzZSwiY3Jvd25Ub3VjaGVkIjp0cnVlfV19LHsiZGF0ZSI6MTc4NzI0MjIwMC4wMDgsImZyZXF1ZW5jeSI6MjUwLCJzZXNzaW9uIjp7ImlkZW50aWZpZXIiOiJzZXNzaW9uLTEiLCJzdGF0ZSI6ImVuZCIsImd1aWRhbmNlIjoiZ3VpZGVkIn0sImxlYWQiOiJsZWZ0QXJtTWludXNSaWdodEFybSIsImRhdGEiOlt7InZhbHVlTWljcm92b2x0cyI6LTUsInNpZ25hbEludmFsaWQiOnRydWUsImNyb3duVG91Y2hlZCI6ZmFsc2V9LHsidmFsdWVNaWNyb3ZvbHRzIjoxNCwic2lnbmFsSW52YWxpZCI6ZmFsc2UsImNyb3duVG91Y2hlZCI6ZmFsc2V9XX1d"
+* content.attachment.size = 561
+* content.attachment.hash = "W4B/lt8nJTh3oDg8TjKFjkU8e8s="
 * context.related = Reference(SensorKitECGExample)
 
 Instance: SensorKitECGProvenanceExample
@@ -147,8 +146,8 @@ Description: "One conversion event targets both the structured waveform and exac
 * agent[assembler].who = Reference(SensorKitApplicationExample)
 * entity.role = #source
 * entity.what.identifier.type = $groveIdentifierRole#source-record "Source record"
-* entity.what.identifier.system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* entity.what.identifier.value = "v2:test-key:1:ac2HjtTOXQDORJ2XHpbfgSjGDtg4bGkT2kxWzroHlfY"
+* entity.what.identifier.system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* entity.what.identifier.value = "v0:test-key:1:76FsTE1X6aQawWHO18g8d5XXd5Uz_rdVVv0FmRwYWro"
 
 Instance: SensorKitInverseECGExample
 InstanceOf: SensorKitECGObservation
@@ -156,10 +155,10 @@ Usage: #example
 Title: "SensorKit Inverse-Lead ECG Waveform Projection"
 Description: "A complete right-arm-minus-left-arm voltage projection. The exact SensorKit orientation is retained without falsely labeling the inverse signal as standard MDC Lead I."
 * meta.profile[+] = "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-ecg-observation"
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:myQG-o3YVMi0V_DUDxq9v9ZoLTqv5h3zA0iKdKDjhLk"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:R4qVfHx16m6XqwZAaIQypVGaXs0jM9LDHmIEj69-3MI"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:FluAVez_GqSsN-wxONF3sTBeHGtcZsVWZjkEq1VOlYw"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:97el2-1gfqhpi_jsiekJ9wIf5EB7gn2ce4icmqB5Yg8"
 * extension[sensorKitSourceType].valueCode = #ecg
 * method = $sensorKitValue#unguided "Unguided"
 * status = #final
@@ -182,27 +181,26 @@ Instance: SensorKitInverseECGDocumentExample
 InstanceOf: SensorKitRecordingDocument
 Usage: #example
 Title: "SensorKit Native Inverse-Lead ECG Recording"
-Description: "The caller-supplied exact native encoding paired with the inverse-lead waveform projection."
+Description: "The exact native encoding supplied as input and paired with the inverse-lead waveform projection."
 * meta.profile[+] = "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document"
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:myQG-o3YVMi0V_DUDxq9v9ZoLTqv5h3zA0iKdKDjhLk"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:_yjlPg27loh2lpj8Btpsv62galfMGDIYf3w5w9r6NwM"
-* identifier[sourceArtifact].system = "https://study.example.org/fhir/NamingSystem/grove-source-artifact-v2/test-key/1"
-* identifier[sourceArtifact].value = "v2:test-key:1:XIWtNdBjvjSOzRLjZzHjpliWPhwO9jMw1VuKFMD_cmY"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:FluAVez_GqSsN-wxONF3sTBeHGtcZsVWZjkEq1VOlYw"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:T8xgXxrTPYnLktrFMRgjnJV7qBPN4hWq_tcfPv8iTYQ"
+* identifier[sourceArtifact].system = "https://study.example.org/fhir/NamingSystem/grove-source-artifact-v0/test-key/1"
+* identifier[sourceArtifact].value = "v0:test-key:1:Ls_eIsD_nwV5bYLJAiea6XwylflrVfM8UmsEYhqLbvg"
 * extension[sensorKitSourceType].valueCode = #ecg
 * status = #current
 * type = $sensorKitSourceType#ecg "Electrocardiogram"
 * subject = Reference(SensorKitPatientExample)
 * date = "2026-08-20T16:12:01Z"
 * author = Reference(SensorKitDeviceExample)
-* content.attachment.contentType = #application/vnd.grovealliance.native+json
+* content.attachment.contentType = #application/json
 * content.format = $recordingFormat#native-recording "Native Recording"
-* content.format.version = "0.6.0"
 * content.attachment.title = "SensorKit inverse-lead ECG native recording"
-* content.attachment.data = "eyJndWlkYW5jZSI6InVuZ3VpZGVkIiwiZmxhZ3MiOlswLDAsMCwwXX0="
-* content.attachment.size = 41
-* content.attachment.hash = "rGAihY2Jsbtsbgf6IgtNSlsW6Cs="
+* content.attachment.data = "W3siZGF0ZSI6MTc4NzI0MjMyMCwiZnJlcXVlbmN5IjoyNTAsInNlc3Npb24iOnsiaWRlbnRpZmllciI6InNlc3Npb24tMiIsInN0YXRlIjoiYmVnaW4iLCJndWlkYW5jZSI6InVuZ3VpZGVkIn0sImxlYWQiOiJyaWdodEFybU1pbnVzTGVmdEFybSIsImRhdGEiOlt7InZhbHVlTWljcm92b2x0cyI6LTExLCJzaWduYWxJbnZhbGlkIjpmYWxzZSwiY3Jvd25Ub3VjaGVkIjpmYWxzZX0seyJ2YWx1ZU1pY3Jvdm9sdHMiOi0yMywic2lnbmFsSW52YWxpZCI6ZmFsc2UsImNyb3duVG91Y2hlZCI6ZmFsc2V9XX0seyJkYXRlIjoxNzg3MjQyMzIwLjAwOCwiZnJlcXVlbmN5IjoyNTAsInNlc3Npb24iOnsiaWRlbnRpZmllciI6InNlc3Npb24tMiIsInN0YXRlIjoiZW5kIiwiZ3VpZGFuY2UiOiJ1bmd1aWRlZCJ9LCJsZWFkIjoicmlnaHRBcm1NaW51c0xlZnRBcm0iLCJkYXRhIjpbeyJ2YWx1ZU1pY3Jvdm9sdHMiOjUsInNpZ25hbEludmFsaWQiOmZhbHNlLCJjcm93blRvdWNoZWQiOmZhbHNlfSx7InZhbHVlTWljcm92b2x0cyI6LTE0LCJzaWduYWxJbnZhbGlkIjpmYWxzZSwiY3Jvd25Ub3VjaGVkIjpmYWxzZX1dfV0="
+* content.attachment.size = 569
+* content.attachment.hash = "LJkRtgfqcnS8o6cMLcTkR6chaMU="
 * context.related = Reference(SensorKitInverseECGExample)
 
 Instance: SensorKitInverseECGProvenanceExample
@@ -218,18 +216,18 @@ Description: "One conversion event targets both inverse-lead ECG representations
 * agent[assembler].who = Reference(SensorKitApplicationExample)
 * entity.role = #source
 * entity.what.identifier.type = $groveIdentifierRole#source-record "Source record"
-* entity.what.identifier.system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* entity.what.identifier.value = "v2:test-key:1:myQG-o3YVMi0V_DUDxq9v9ZoLTqv5h3zA0iKdKDjhLk"
+* entity.what.identifier.system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* entity.what.identifier.value = "v0:test-key:1:FluAVez_GqSsN-wxONF3sTBeHGtcZsVWZjkEq1VOlYw"
 
 Instance: SensorKitOnWristExample
 InstanceOf: SensorKitOnWristObservation
 Usage: #example
 Title: "SensorKit On-Wrist State"
 Description: "A platform-exclusive on-wrist state with wrist and crown placement preserved as coded components."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:76xrc23iIo43pWzlzlRR_UjBx-w7TFxaq0_2kLXdGYA"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:Yr0URSoyUaiOEkhEXsc6PetgVyz29A1yoH_NEv_Tp1c"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:_7eqYcBO_DDk58N5Kz_QQLJ3-GgSmjVTQc0kxUyrB5k"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:kEmAt3XZJHC6iL0gPMgaYapBnqZISF8PeY-R3pAcUQs"
 * extension[sensorKitSourceType].valueCode = #on-wrist
 * status = #final
 * code = $sensorKitConcept#on-wrist-state "On-wrist state"
@@ -249,10 +247,10 @@ InstanceOf: SensorKitDeviceUsageObservation
 Usage: #example
 Title: "SensorKit Device Usage Summary"
 Description: "A platform-exclusive device-usage summary; detailed application, notification, and web usage remains in the native recording."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:ct2xsuoLAjG1lDQTq8kvZ-59YXjBr84LPF8Adi-x6eE"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:ey9U9SGqloQ8RIGcBQLPw1NDNuUovyfwlUcmbKDODcE"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:XfBsB8DhhwPTDdRigZOhN_7GmlkBWaF0veZtk8sEyhg"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:KcWbN61Kb4btfwStg6WyYmqzCp-0-HPfE-pXZzHaXDU"
 * extension[sensorKitSourceType].valueCode = #device-usage
 * status = #final
 * code = $sensorKitConcept#device-usage-summary "Device usage summary"
@@ -273,10 +271,10 @@ InstanceOf: SensorKitVisitObservation
 Usage: #example
 Title: "SensorKit Visit Summary"
 Description: "A platform-exclusive visit summary that preserves uncertain arrival and departure windows without asserting a clinical Encounter."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:Fcp7ZKx7zBfpgWqSKQLonZejqEIADXyD2_PwQ3H3HaU"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:85uYi-Nuuw3FayWI5QOwrbzTKez6mf42VPaqcaXgQis"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:kP5btUbyueJgz9hwgKwSvNNyD1v1fv6Q4l2u8-S0Ezk"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:TbZW_QIQaipAkG9f78z4on1taf1KOiIYhM8l9Zaxng0"
 * extension[sensorKitSourceType].valueCode = #visits
 * focus.type = "Location"
 * focus.identifier.system = "https://study.example.org/fhir/NamingSystem/sensorkit-visit-location/example-store"
@@ -303,27 +301,26 @@ Instance: SensorKitDeviceUsageDocumentExample
 InstanceOf: SensorKitRecordingDocument
 Usage: #example
 Title: "SensorKit Native Device Usage Recording"
-Description: "The complete caller-encoded SensorKit device-usage report related to the structured summary."
+Description: "The complete native SensorKit device-usage report related to the structured summary."
 * meta.profile[+] = "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document"
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:ct2xsuoLAjG1lDQTq8kvZ-59YXjBr84LPF8Adi-x6eE"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:NsQH4D0yoTsbEg9zuUMwbqAKqFbJq808gDQqXlWZJm0"
-* identifier[sourceArtifact].system = "https://study.example.org/fhir/NamingSystem/grove-source-artifact-v2/test-key/1"
-* identifier[sourceArtifact].value = "v2:test-key:1:GrBgxM7stWNYtCREHYwGKKLjcPbW3NWeV_rRZQNqN1o"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:XfBsB8DhhwPTDdRigZOhN_7GmlkBWaF0veZtk8sEyhg"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:Xy0TRPU4svxS-cj-cv0U48zTjvs5nlVF1CYL85p-7nM"
+* identifier[sourceArtifact].system = "https://study.example.org/fhir/NamingSystem/grove-source-artifact-v0/test-key/1"
+* identifier[sourceArtifact].value = "v0:test-key:1:G4Gb_IbIQ7BUhTlwmHngwOrL7Zk1Lx0xMtKXxIikoNw"
 * extension[sensorKitSourceType].valueCode = #device-usage
 * status = #current
 * type = $sensorKitSourceType#device-usage "Device usage report"
 * subject = Reference(SensorKitPatientExample)
 * date = "2026-08-20T15:15:01Z"
 * author = Reference(SensorKitDeviceExample)
-* content.attachment.contentType = #application/vnd.grovealliance.native+json
+* content.attachment.contentType = #application/json
 * content.format = $recordingFormat#native-recording "Native Recording"
-* content.format.version = "0.6.0"
 * content.attachment.title = "SensorKit device usage report"
-* content.attachment.data = "eyJ2ZXJzaW9uIjoiMSJ9"
-* content.attachment.size = 15
-* content.attachment.hash = "sHigu4BMVa0IJ0LR3NDJ5y8l4sc="
+* content.attachment.data = "eyJ0aW1lc3RhbXAiOjE3ODcyMzgwMDAsImR1cmF0aW9uIjo5MDAsInRvdGFsU2NyZWVuV2FrZXMiOjYsInRvdGFsVW5sb2NrcyI6NCwidG90YWxVbmxvY2tEdXJhdGlvbiI6MzcyLCJ2ZXJzaW9uIjoiMSIsImFwcFVzYWdlQnlDYXRlZ29yeSI6W10sIm5vdGlmaWNhdGlvblVzYWdlQnlDYXRlZ29yeSI6W10sIndlYlVzYWdlQnlDYXRlZ29yeSI6W119"
+* content.attachment.size = 198
+* content.attachment.hash = "0lfmvTj5Gabstqo/ss0WoxE9xjY="
 * context.related = Reference(SensorKitDeviceUsageExample)
 
 Instance: SensorKitDeviceUsageProvenanceExample
@@ -339,44 +336,44 @@ Description: "One conversion event targeting both the structured summary and req
 * agent[assembler].who = Reference(SensorKitApplicationExample)
 * entity.role = #source
 * entity.what.identifier.type = $groveIdentifierRole#source-record "Source record"
-* entity.what.identifier.system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* entity.what.identifier.value = "v2:test-key:1:ct2xsuoLAjG1lDQTq8kvZ-59YXjBr84LPF8Adi-x6eE"
+* entity.what.identifier.system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* entity.what.identifier.value = "v0:test-key:1:XfBsB8DhhwPTDdRigZOhN_7GmlkBWaF0veZtk8sEyhg"
 
 Instance: SensorKitAccelerometerDocumentExample
 InstanceOf: SensorKitRecordingDocument
 Usage: #example
-Title: "SensorKit Accelerometer Native Recording"
-Description: "The caller-supplied native recording the summary counts, retained verbatim."
+Title: "SensorKit Accelerometer Recording"
+Description: "The exact registered triaxial-acceleration CSV recording; the summary sample count is its row count and the batch count is its number of distinct (device, identifier) batch keys."
 * meta.profile[+] = "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document"
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:0JhbYSp9rL1xSNT54SvNzZy21A-6hk_6V6bNTMWIWFY"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:MgYzsIbvnOMqCZo62N2hHS5EViq0jj_dcJdpMG6ibvE"
-* identifier[sourceArtifact].system = "https://study.example.org/fhir/NamingSystem/grove-source-artifact-v2/test-key/1"
-* identifier[sourceArtifact].value = "v2:test-key:1:Ab1aDqzRnHWev3hwA6-aA1piCAUjiDow56UYJPmOmN0"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:CW66aVk17hvflRLE5a5jxQDRZcADhAsl72KS5DcFHPk"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:TXEs94g5XfkLxdOmbOtIGj80pfTNx71xoqodcZr7M0E"
+* identifier[sourceArtifact].system = "https://study.example.org/fhir/NamingSystem/grove-source-artifact-v0/test-key/1"
+* identifier[sourceArtifact].value = "v0:test-key:1:Cqoq0yba1Ifpmg4qRYM856KJIaeSnd_jowLobIMoYOs"
 * extension[sensorKitSourceType].valueCode = #accelerometer
 * status = #current
 * type = $sensorKitSourceType#accelerometer "Accelerometer"
 * subject = Reference(SensorKitPatientExample)
-* date = "2026-08-20T17:05:01Z"
+* date = "2026-08-21T07:05:01Z"
 * author = Reference(SensorKitDeviceExample)
-* content.attachment.contentType = #application/vnd.grovealliance.native+json
-* content.format = $recordingFormat#native-recording "Native Recording"
-* content.format.version = "0.6.0"
-* content.attachment.title = "SensorKit Accelerometer Native Recording"
-* content.attachment.data = "eyJiYXRjaGVzIjoxMiwic2FtcGxlcyI6Mzg0MDB9"
-* content.attachment.size = 30
-* content.attachment.hash = "hQFxt+175NpnZIjpgDT0QoDkqH0="
+* content.attachment.contentType = #text/csv
+* content.format = $recordingFormat#triaxial-acceleration-samples "Triaxial Acceleration Samples"
+* content.attachment.title = "SensorKit Accelerometer Recording"
+* content.attachment.data = "dGltZXN0YW1wLGlkZW50aWZpZXIseCx5LHosZGV2aWNlCjE3ODcyMDkyMDAsMTcsMC4xMjUsLTAuMjUsMSwiV2F0Y2g2LDE4IgoxNzg3MjA5MjAxLDE3LDAuNSwwLC0wLjUsIldhdGNoNiwxOCIKMTc4NzIwOTIwMiwxOCwtMSwwLjI1LDAuNzUsIldhdGNoNiwxOCIK"
+* content.attachment.size = 150
+* content.attachment.hash = "bhtlVICnAmczd5WmihC2XNLCqh4="
+* context.related = Reference(SensorKitAccelerometerExample)
 
 Instance: SensorKitAccelerometerExample
 InstanceOf: SensorKitAccelerometerObservation
 Usage: #example
 Title: "SensorKit Accelerometer Recording Summary"
-Description: "A platform-exclusive coverage summary of one accelerometer batch; the recording document carries the signal."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:iqb1xhsDDgfXV8dvC6deRLElb4x1AD4E5JfirNlGZAY"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:nlnKQRmSfCeCAKWQcvhgcCYClkjPzw47i3XxW1gI6e8"
+Description: "A platform-exclusive coverage summary of one accelerometer recording spanning two CoreMotion delivery batches; the recording document carries the signal."
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:CW66aVk17hvflRLE5a5jxQDRZcADhAsl72KS5DcFHPk"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:qOsiHr9nD4PS7UEo-SdztDf9ghKUR3bVnrFsDJgMNAg"
 * extension[sensorKitSourceType].valueCode = #accelerometer
 * status = #final
 * code = $sensorKitConcept#accelerometer-recording-summary "Accelerometer recording summary"
@@ -386,46 +383,46 @@ Description: "A platform-exclusive coverage summary of one accelerometer batch; 
 * effectivePeriod.end = "2026-08-21T00:00:00-07:00"
 * derivedFrom = Reference(SensorKitAccelerometerDocumentExample)
 * component[sampleCount].code = $sensorKitConcept#sample-count "Sample count"
-* component[sampleCount].valueQuantity = 38400 '{count}'
+* component[sampleCount].valueQuantity = 3 '{count}'
 * component[batchCount].code = $sensorKitConcept#batch-count "Batch count"
-* component[batchCount].valueQuantity = 12 '{count}'
+* component[batchCount].valueQuantity = 2 '{count}'
 * device = Reference(SensorKitDeviceExample)
 
 Instance: SensorKitPPGDocumentExample
 InstanceOf: SensorKitRecordingDocument
 Usage: #example
-Title: "SensorKit PPG Native Recording"
-Description: "The caller-supplied native recording the summary counts, retained verbatim."
+Title: "SensorKit PPG Recording"
+Description: "The exact registered Grove PPG binary recording; the summary record and sample counts are derived from its wire structure."
 * meta.profile[+] = "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document"
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:1tbd8L9Z0bPIFyuWU2sbn4vE9ehz7_4O7x-Jpcf07VM"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:5pHXgLN0e_NbLgrZKIiWnDZr0NVz_x6Pr9JAnFiK18Y"
-* identifier[sourceArtifact].system = "https://study.example.org/fhir/NamingSystem/grove-source-artifact-v2/test-key/1"
-* identifier[sourceArtifact].value = "v2:test-key:1:wmMOstcQARC59bJixk40KTFhuZQMxL-3_0lIdtVfbxk"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:lv-YI8qLPCHshC4TUz8qJ2QWPZDRLLApR6xdBQ-ZLL4"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:ip2jjPRDObV174zYvFBjPw0HxOOTxO63VJi_3YpfsQY"
+* identifier[sourceArtifact].system = "https://study.example.org/fhir/NamingSystem/grove-source-artifact-v0/test-key/1"
+* identifier[sourceArtifact].value = "v0:test-key:1:gYk6u2hngAyUkQ1dBsb63ODkIrzcS0RXYaWNplpL9bE"
 * extension[sensorKitSourceType].valueCode = #ppg
 * status = #current
 * type = $sensorKitSourceType#ppg "Photoplethysmogram"
 * subject = Reference(SensorKitPatientExample)
-* date = "2026-08-20T17:05:01Z"
+* date = "2026-08-21T07:05:01Z"
 * author = Reference(SensorKitDeviceExample)
-* content.attachment.contentType = #application/vnd.grovealliance.native+json
-* content.format = $recordingFormat#native-recording "Native Recording"
-* content.format.version = "0.6.0"
-* content.attachment.title = "SensorKit PPG Native Recording"
-* content.attachment.data = "eyJyZWNvcmRzIjo0LCJvcHRpY2FsIjoyMDQ4MCwiYWNjZWxlcm9tZXRlciI6NTEyMH0="
-* content.attachment.size = 50
-* content.attachment.hash = "dDmCExc+PsQ3oVKFE/dphZDJFb4="
+* content.attachment.contentType = #application/octet-stream
+* content.format = $recordingFormat#photoplethysmogram-samples "Photoplethysmogram Samples"
+* content.attachment.title = "SensorKit PPG Recording"
+* content.attachment.data = "AUHaoal8AAAAAgABAXUBAwIBAgQ/8AAAAAAAAEAAAAAAAAAAQBAAAAAAAAAFAQFjAT/wAAAAAAAAv/AAAAAAAABAAAAAAAAAAMAAAAAAAAAAAT/gAAAAAAAAAQZAIAAAAAAAAD/wAAAAAAAAv/AAAAAAAAAAAAAAAAAAAA=="
+* content.attachment.size = 124
+* content.attachment.hash = "EUIYvP3929camULujA1TxHgSHco="
+* context.related = Reference(SensorKitPPGExample)
 
 Instance: SensorKitPPGExample
 InstanceOf: SensorKitPpgObservation
 Usage: #example
 Title: "SensorKit PPG Recording Summary"
 Description: "A platform-exclusive coverage summary of one photoplethysmography recording."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:7g-OWHqFsb_VDw18-ORHuQRy_pbQsOGcZ-loa8rY83Y"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:Gi2GxhmFGtuptw0fDLCo3a6JN46sIActl6tN99Zf578"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:lv-YI8qLPCHshC4TUz8qJ2QWPZDRLLApR6xdBQ-ZLL4"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:CvYcwUuKHWQNYqVo7eJ6tFfsSZzN5nyxkzafY3tfk34"
 * extension[sensorKitSourceType].valueCode = #ppg
 * status = #final
 * code = $sensorKitConcept#ppg-recording-summary "PPG recording summary"
@@ -435,11 +432,11 @@ Description: "A platform-exclusive coverage summary of one photoplethysmography 
 * effectivePeriod.end = "2026-08-21T00:00:00-07:00"
 * derivedFrom = Reference(SensorKitPPGDocumentExample)
 * component[recordCount].code = $sensorKitConcept#record-count "Record count"
-* component[recordCount].valueQuantity = 4 '{count}'
+* component[recordCount].valueQuantity = 1 '{count}'
 * component[opticalSampleCount].code = $sensorKitConcept#optical-sample-count "Optical sample count"
-* component[opticalSampleCount].valueQuantity = 20480 '{count}'
+* component[opticalSampleCount].valueQuantity = 1 '{count}'
 * component[accelerometerSampleCount].code = $sensorKitConcept#accelerometer-sample-count "Accelerometer sample count"
-* component[accelerometerSampleCount].valueQuantity = 5120 '{count}'
+* component[accelerometerSampleCount].valueQuantity = 1 '{count}'
 * device = Reference(SensorKitDeviceExample)
 
 Instance: SensorKitMessagesUsageExample
@@ -447,10 +444,10 @@ InstanceOf: SensorKitMessagesUsageObservation
 Usage: #example
 Title: "SensorKit Messages Usage Summary"
 Description: "A platform-exclusive messaging summary over one day, with no message content exchanged."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:EuQ0wjPlf3WlHAHve789RdIE4hSOuUpDbnvds3gRF9o"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:m4vdB0HZ2L2gCXVs74My4p9kwChOwAV0tfiBYRbEuZ0"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:89hMXwON-GI4HU4F2Yf0GWnrjExd2P5rRUKqZtQe42M"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:8UFB5V29t-MWIv712BKoioygFP5GX-SNH9OSY6klvXI"
 * extension[sensorKitSourceType].valueCode = #messages-usage
 * status = #final
 * code = $sensorKitConcept#messages-usage-summary "Messages usage summary"
@@ -471,10 +468,10 @@ InstanceOf: SensorKitPhoneUsageObservation
 Usage: #example
 Title: "SensorKit Phone Usage Summary"
 Description: "A platform-exclusive call summary over one day, with no call content or correspondent exchanged."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:YabFITOApqbwWJmX4wm2hruN5XoG5Zt-Cu1Uoco5puQ"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:kMJsIpan1DN4kfIVXfzys1Z8xrxTK0dr5_r4WbqHsqs"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:owCR_CUowP_G8XZLKsvzTNZ_hnkKiFwcgEkGIFde4yE"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:nsHR-huO799guEVij2P3R9DwHAY1E8GIrN-vSlCpxL8"
 * extension[sensorKitSourceType].valueCode = #phone-usage
 * status = #final
 * code = $sensorKitConcept#phone-usage-summary "Phone usage summary"
@@ -496,10 +493,10 @@ InstanceOf: SensorKitKeyboardMetricsObservation
 Usage: #example
 Title: "SensorKit Keyboard Metrics Summary"
 Description: "A platform-exclusive typing summary over one day; no typed text is exchanged."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:dF8LX4Kgxqjmpx639kWx8W8mrP618r05Cg7RC7keG50"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:pQajw81Zv2jCxDR_B7lBvxUfF3BM_obAMMO8YKQJe9s"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:hwbq6DQCv0dfJGQ0p5ukI1aHpKkC_0DNrxWA1gEDXVc"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:b3TCfbWFiP7lV5V7zZAw2g08O2QDY3BY6teiVbhJMeE"
 * extension[sensorKitSourceType].valueCode = #keyboard-metrics
 * status = #final
 * code = $sensorKitConcept#keyboard-metrics-summary "Keyboard metrics summary"
@@ -534,10 +531,10 @@ InstanceOf: SensorKitSleepSessionObservation
 Usage: #example
 Title: "SensorKit Sleep Session"
 Description: "A platform-exclusive inferred sleep period, stating the exact length of its own interval."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:-Nz5f9Byc6XFojwdQDQonz_N3hxEYtydeyTnrq7pjLo"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:dtohiYJL5elrXExtE36Faz1k-1VZzYRl_UPnNI3zC38"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:ufvuXYMV4jIwMtsf8xLbLQ__GQLXRtCeT3R0ayaXsCY"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:I0Vio7owRxnIwv-yv65VNyaUuzls7XiZbmeBu2ZdUsY"
 * extension[sensorKitSourceType].valueCode = #sleep-sessions
 * status = #final
 * code = $sensorKitConcept#sleep-session "Sleep session"
@@ -552,27 +549,27 @@ Instance: SensorKitKeyboardMetricsDocumentExample
 InstanceOf: SensorKitRecordingDocument
 Usage: #example
 Title: "SensorKit Keyboard Metrics Native Recording"
-Description: "The caller-supplied native recording the summary counts, retained verbatim; no typed text is included."
+Description: "One deployment-defined native JSON recording retained verbatim alongside the summary, with no typed text. Its member layout is illustrative; native-recording standardizes only the JSON container."
 * meta.profile[+] = "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document"
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:4t4s3c9Gth-bAFbBwSqdvnwG6IlwuBsC-8WH9wF_29Y"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:V2iSB2I08t2seGTD1qNuuW4EJFfU1qr7tE-YsGeicTI"
-* identifier[sourceArtifact].system = "https://study.example.org/fhir/NamingSystem/grove-source-artifact-v2/test-key/1"
-* identifier[sourceArtifact].value = "v2:test-key:1:WzC5ecUhiXzYafh6W6p920RMOd4ooq259CjMnjHytkI"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:hwbq6DQCv0dfJGQ0p5ukI1aHpKkC_0DNrxWA1gEDXVc"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:ENqth_sZIu2arNr1B1g0AiRrsgjwYv4yohUE9VP4Gys"
+* identifier[sourceArtifact].system = "https://study.example.org/fhir/NamingSystem/grove-source-artifact-v0/test-key/1"
+* identifier[sourceArtifact].value = "v0:test-key:1:nE5fDGQkgetCt1_5ReL_VyrQhElonwW9SppWKx9w49U"
 * extension[sensorKitSourceType].valueCode = #keyboard-metrics
 * status = #current
 * type = $sensorKitSourceType#keyboard-metrics "Keyboard Metrics"
 * subject = Reference(SensorKitPatientExample)
-* date = "2026-08-20T17:05:01Z"
+* date = "2026-08-21T07:05:01Z"
 * author = Reference(SensorKitDeviceExample)
-* content.attachment.contentType = #application/vnd.grovealliance.native+json
+* content.attachment.contentType = #application/json
 * content.format = $recordingFormat#native-recording "Native Recording"
-* content.format.version = "0.6.0"
 * content.attachment.title = "SensorKit Keyboard Metrics Native Recording"
-* content.attachment.data = "eyJlcGlzb2RlcyI6MzEsIndvcmRzIjoxODQwLCJ0YXBzIjo5ODIwfQ=="
-* content.attachment.size = 40
-* content.attachment.hash = "+Txt/nnCONsThnkqlptxXARG9Ig="
+* content.attachment.data = "W3sidGltZXN0YW1wIjoxNzg3MjA5MjAwLCJkdXJhdGlvbiI6ODY0MDAsImNvdW50cyI6eyJ0b3RhbFdvcmRzIjoxODQwLCJ0b3RhbEFsdGVyZWRXb3JkcyI6OTYsInRvdGFsVGFwcyI6OTgyMCwidG90YWxEZWxldGVzIjo0MTIsInRvdGFsRW1vamlzIjoyMywidG90YWxBdXRvQ29ycmVjdGlvbnMiOjU3LCJ0b3RhbFBhdXNlcyI6MTQ4LCJ0b3RhbFR5cGluZ0VwaXNvZGVzIjozMX0sInRvdGFsVHlwaW5nRHVyYXRpb24iOjI0MDAsInR5cGluZ1NwZWVkIjo0Ni4yLCJkdXJhdGlvbk1ldHJpY3MiOnsidG91Y2hEb3duVXAiOnsidmFsdWVzIjpbXX19fV0="
+* content.attachment.size = 311
+* content.attachment.hash = "3WCpc/XQYJr8t20BHOEQ7b3gdHQ="
+* context.related = Reference(SensorKitKeyboardMetricsExample)
 
 Instance: SensorKitWristTemperatureDocumentExample
 InstanceOf: SensorKitRecordingDocument
@@ -580,35 +577,35 @@ Usage: #example
 Title: "SensorKit Wrist Temperature Recording"
 Description: "The session's samples as the tabular recording the registry publishes for this stream."
 * meta.profile[+] = "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document"
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:2MTU8Q2G2VrQfESUK5yekG4pDTEfvM0xaS95wHM62uw"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:EDhCEvmB2oD9ou6qWFML1-TZV-A3MOrZommBPTyvteA"
-* identifier[sourceArtifact].system = "https://study.example.org/fhir/NamingSystem/grove-source-artifact-v2/test-key/1"
-* identifier[sourceArtifact].value = "v2:test-key:1:_rPn57PcaIOtFHihenAYBVzistgCkAb1-Vy2SsZXcd4"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:IDoldR5FPgZopz5g1M8zbxOJvT47lhhUSqYX4hHkS48"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:A5bz9a4Cdhiy6FvIU-0V3WJvdoRU9Skn2bho3tZlVtw"
+* identifier[sourceArtifact].system = "https://study.example.org/fhir/NamingSystem/grove-source-artifact-v0/test-key/1"
+* identifier[sourceArtifact].value = "v0:test-key:1:rMp0yG6wJvv_5xyjUUeW0ILCTYKFgHnB0V8ZF9zaX6k"
 * extension[sensorKitSourceType].valueCode = #wrist-temperature
 * status = #current
 * type = $sensorKitSourceType#wrist-temperature "Wrist temperature"
 * subject = Reference(SensorKitPatientExample)
-* date = "2026-08-20T17:05:01Z"
+* date = "2026-08-21T13:45:01Z"
 * author = Reference(SensorKitDeviceExample)
 * content.attachment.contentType = #text/csv
 * content.format = $recordingFormat#wrist-temperature-samples "Wrist Temperature Samples"
-* content.format.version = "0.6.0"
 * content.attachment.title = "SensorKit Wrist Temperature Recording"
-* content.attachment.data = "dGltZXN0YW1wLHZhbHVlLGVycm9yRXN0aW1hdGUsY29uZGl0aW9uCjE3ODcwMDk0MDAuMCwzMy40LDAuMSwKMTc4NzAxMzAwMC4wLDMzLjcsMC4xLCJvZmZXcmlzdCxpbk1vdGlvbiIK"
+* content.attachment.data = "dGltZXN0YW1wLHZhbHVlLGVycm9yRXN0aW1hdGUsY29uZGl0aW9uCjE3ODcyOTI2MDAuMCwzMy40LDAuMSwKMTc4NzMxOTYwMC4wLDMzLjcsMC4xLCJvZmZXcmlzdCxpbk1vdGlvbiIK"
 * content.attachment.size = 105
-* content.attachment.hash = "V1AsMqJkY8eDvsdWWR7YIUR/LsQ="
+* content.attachment.hash = "G/F1UpQcjqnwuE8LjU18aDVYovM="
+* context.related = Reference(SensorKitWristTemperatureExample)
 
 Instance: SensorKitWristTemperatureExample
 InstanceOf: SensorKitWristTemperatureObservation
 Usage: #example
 Title: "SensorKit Wrist Temperature Recording Summary"
 Description: "A platform-exclusive coverage summary of one wrist-temperature session; the recording document carries the samples."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:2MTU8Q2G2VrQfESUK5yekG4pDTEfvM0xaS95wHM62uw"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:9kkL-lpmHyhnjgL7NQnyQ5XK0CYKotPs9v02BHhmRuE"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:IDoldR5FPgZopz5g1M8zbxOJvT47lhhUSqYX4hHkS48"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:GDPMVuQo5y6EUG5lT4fA-FiCmE0CK_nlTVY4W8KFOtU"
 * extension[sensorKitSourceType].valueCode = #wrist-temperature
 * status = #final
 * code = $sensorKitConcept#wrist-temperature-recording-summary "Wrist temperature recording summary"

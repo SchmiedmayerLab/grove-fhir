@@ -22,7 +22,7 @@
     "$schema": {
       "const": "https://grovealliance.org/fhir/catalog/schemas/terminology-evidence.schema.json"
     },
-    "schemaVersion": {"const": 1},
+    "schemaVersion": {"const": 0},
     "releaseVersion": {
       "type": "string",
       "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"

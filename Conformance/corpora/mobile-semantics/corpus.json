@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 0,
   "fhirVersion": "4.0.1",
   "version": "0.6.0",
   "catalog": "catalog/measurement-catalog.json",
@@ -2265,7 +2265,7 @@
       },
       "edgeRules": [
         "Duration and effective Period are both required and must describe the same admitted source summary semantics.",
-        "HealthKit has no admitted 0.6.0 aggregate rule and must not synthesize this projection."
+        "HealthKit has no admitted aggregate rule in the Grove FHIR contracts and must not synthesize this projection."
       ],
       "admittedSourceContext": {
         "health-connect": "health-connect.sleep-duration",

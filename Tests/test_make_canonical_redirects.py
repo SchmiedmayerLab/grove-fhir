@@ -137,7 +137,7 @@ class CanonicalRedirectTests(unittest.TestCase):
             manifest = json.loads(
                 (site / ROUTES.MANIFEST_NAME).read_text(encoding="utf-8")
             )
-            self.assertEqual(manifest["schemaVersion"], 1)
+            self.assertEqual(manifest["schemaVersion"], 0)
             self.assertEqual(manifest["canonical"], self.canonical)
             self.assertEqual(manifest["routes"], rows)
             self.assertNotIn("external", json.dumps(manifest))

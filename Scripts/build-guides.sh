@@ -33,6 +33,10 @@ case "${GROVE_TX_OFFLINE:-0}" in
   *) echo "GROVE_TX_OFFLINE must be 0 or 1" >&2; exit 2 ;;
 esac
 readonly offline_build
+qa_arguments=()
+if [[ "$offline_build" == "true" ]]; then
+  qa_arguments+=(--offline-terminology)
+fi
 if [[ "$offline_build" == "true" ]]; then
   if [[ -n "${GROVE_TX_SERVER:-}" ]]; then
     echo "GROVE_TX_SERVER is prohibited when GROVE_TX_OFFLINE=1" >&2
@@ -129,14 +133,15 @@ for guide in "${guides[@]}"; do
       -Duser.home="$FHIR_TOOL_HOME" -jar "$TOOLS_DIRECTORY/publisher.jar" \
       "${publisher_arguments[@]}"
   ) || {
-    # Publisher 2.3.x can report a transient combined-package write failure before
-    # Jekyll creates output/, or return nonzero for the pinned offline MIME defect
-    # even though every finding is an exact reviewed suppression. Accept only a
-    # fully materialized package whose raw/exact/unsuppressed QA ledger passes the
-    # same fail-closed audit used below; every other nonzero exit remains fatal.
+    # Publisher can report a transient combined-package write failure before Jekyll
+    # creates output/, or Publisher 2.3.3 can return nonzero when its absent offline
+    # terminology client cannot validate a registered MIME code. Accept only a fully
+    # materialized package whose fail-closed QA ledger passes the same audit used
+    # below; --offline-terminology recognizes only that exact registry-backed defect.
     test -f "$REPOSITORY_ROOT/$guide/output/package.tgz"
     test -f "$REPOSITORY_ROOT/$guide/output/qa.json"
-    python3 "$REPOSITORY_ROOT/Scripts/check-guide-qa.py" "$REPOSITORY_ROOT/$guide"
+    python3 "$REPOSITORY_ROOT/Scripts/check-guide-qa.py" \
+      "${qa_arguments[@]}" "$REPOSITORY_ROOT/$guide"
   }
   # The exact SUSHI index is ignored and remains only on the runner that built
   # this guide. Verify it here so local, draft, release, and deployment builds
@@ -148,4 +153,4 @@ for guide in "${guides[@]}"; do
   fi
 done
 
-python3 Scripts/check-guide-qa.py "${guides[@]}"
+python3 Scripts/check-guide-qa.py "${qa_arguments[@]}" "${guides[@]}"

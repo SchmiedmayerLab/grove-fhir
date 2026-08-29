@@ -10,7 +10,7 @@
 CodeSystem: HealthConnectMeasurementCS
 Id: health-connect-measurement
 Title: "Health Connect Measurement"
-Description: "Measurement concepts defined by the Health Connect adapter for platform-exclusive results no established code represents faithfully."
+Description: "Measurement concepts defined by the Health Connect adapter for platform-specific results for which no established code is sufficiently precise."
 * ^experimental = false
 * ^caseSensitive = true
 * ^content = #complete
@@ -199,10 +199,10 @@ InstanceOf: HealthConnectBasalMetabolicRate
 Usage: #example
 Title: "Basal Metabolic Rate Example"
 Description: "A conformant Basal Metabolic Rate instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:vYaeDJowQfbyyWy53rCPMHiyhrgfcYD_3GVPcCXzk9E"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:dUbFKDHglylLvGnY14T9HSs0WSOHQyN8f5pJnBau3-8"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:FohvQ0p6XqWYG8WuwcDXXYAVGIDPBK8jWcYlzUBHWLE"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:ElfXHK-UWHMtZC1o_GXsUjjqBZOMutS_BSjRRgMfoT8"
 * status = #final
 * code = HealthConnectMeasurementCS#basal-metabolic-rate
 * extension[healthConnectRecordType].valueCode = #BasalMetabolicRateRecord
@@ -217,10 +217,10 @@ InstanceOf: HealthConnectDietaryEnergyFromFat
 Usage: #example
 Title: "Health Connect Dietary Energy from Fat Example"
 Description: "A conformant Health Connect Dietary Energy from Fat instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:KY5afLGTwH74v6jyZz0YRsjSIla1Peeso1ltNmXBrzE"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:-ihnn0OnV6Ftn4eoUHmN7z33vvsvoODzMKJZFvRTkPs"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:iIIUXTJIBECP4CoB8uzAmGBusay06zmfYTnph7gnRbU"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:qa_DUwo5JGJU2vNkZKvriWPbOW8mzclAOWqsMKfUoA8"
 * status = #final
 * code = HealthConnectMeasurementCS#dietary-energy-from-fat
 * extension[healthConnectRecordType].valueCode = #NutritionRecord
@@ -236,10 +236,10 @@ InstanceOf: HealthConnectDietaryFatTrans
 Usage: #example
 Title: "Health Connect Dietary Trans Fat Example"
 Description: "A conformant Health Connect Dietary Trans Fat instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:RSgOHa_kKD_aslV3aafWZzharGboNRGlUPIycPf3iko"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:jICJgMpDzu7LLBvgiWGR_pJDZn3kfBmYExM953C3l-o"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:D931Z0w3HQmLbwDFnQrGj2qcK0J3VPztOdhuSfxej0w"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:RYm3Sn3F3dAIbd33IT_Qly5J9NB7PUblc3rt1cVfvUw"
 * status = #final
 * code = HealthConnectMeasurementCS#dietary-fat-trans
 * extension[healthConnectRecordType].valueCode = #NutritionRecord
@@ -255,10 +255,10 @@ InstanceOf: HealthConnectDietaryFatUnsaturated
 Usage: #example
 Title: "Health Connect Dietary Unsaturated Fat Example"
 Description: "A conformant Health Connect Dietary Unsaturated Fat instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:GfPv-5rLdU-J5iBTjdsFEb-fA4Uvn9uiYF3RidP1_u0"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:5zXLUchruOQPQhHLZEBBPUpnZNmW7zdBkjaU5fF_qkI"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:qfiUSqhk3IHPkvFK6ABpAAlvjZrAqlxpZ_96jkmTZzI"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:SNEPzmnphuvD7lTyQUUvO3bFlBsWTV3ID4S9PG6VjOQ"
 * status = #final
 * code = HealthConnectMeasurementCS#dietary-fat-unsaturated
 * extension[healthConnectRecordType].valueCode = #NutritionRecord
@@ -274,10 +274,10 @@ InstanceOf: HealthConnectDietaryFolicAcid
 Usage: #example
 Title: "Health Connect Dietary Folic Acid Example"
 Description: "A conformant Health Connect Dietary Folic Acid instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:FRbaSGQ7pSfmKUOpfseV1Tp7-Nc8CbyJ5oIwrC-b5Q8"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:nS8c8GQI3S4ruUnhKrOTKqQmO92Q_SVN8cTPbunBCN4"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:-MSBTeG7jUDpzp5YJvDBba5qxHwAfJB8eXgxdS_6x8Y"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:hy5rn2gRrGrrncIdn27vx9CrvknYkoJZ_pzVone2k9U"
 * status = #final
 * code = HealthConnectMeasurementCS#dietary-folic-acid
 * extension[healthConnectRecordType].valueCode = #NutritionRecord
@@ -293,10 +293,10 @@ InstanceOf: HealthConnectElevationGained
 Usage: #example
 Title: "Elevation Gained Example"
 Description: "A conformant Elevation Gained instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:V6QsinJVPSjbnx_zjSPlPKF_2sqHSZRQsUWZ9_yWxwU"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:EGFPDUS9JFvXG7yr1krUg9ZWwHBob4KFF6r0FB4cKds"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:HEvHbrO-Qqg9jPBEmFjp3_tFycIGgBcofyZhWJUc7CA"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:OcQHns6PuY78zznYt8-nspHTLFKk_53IbObzDESSfTM"
 * status = #final
 * code = HealthConnectMeasurementCS#elevation-gained
 * extension[healthConnectRecordType].valueCode = #ElevationGainedRecord
@@ -312,10 +312,10 @@ InstanceOf: HealthConnectMenstruationPeriod
 Usage: #example
 Title: "Menstruation Period Example"
 Description: "A conformant Menstruation Period instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:YyYWSJXYKVXzYjc-4HXX0CF5s1BhQUVjRao03HMD_hU"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:tAqnivDyI2QkzwHKIEFwvZMgZIW1GvCAlm9nAFvX0Mw"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:u_gMTV99xMMOgMG0f7LI2j2jpHNRXNycwa5C3upc5rA"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:ab_AeSisfXHRRUobgH6NbJB7ev0NUu8SzYdmXlox9a4"
 * status = #final
 * code = HealthConnectMeasurementCS#menstruation-period
 * extension[healthConnectRecordType].valueCode = #MenstruationPeriodRecord
@@ -331,10 +331,10 @@ InstanceOf: HealthConnectStepCadence
 Usage: #example
 Title: "Step Cadence Example"
 Description: "A conformant Step Cadence instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:UvsZj4IoPl2PMM8LZU-luMPQzIvJjz6RkEdT_Fixvbc"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:G5Drw0KxVhk84CV64_LrFygJ4Ps4cVAodHhDID9QwO8"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:rS7go1dLb9dRzVQC3u9DLY_D_SGYVJPnGPOQ1TEDpMQ"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:4x2T6ukm-7BLJ3lChNXCGJ9DceiZd9BN8oJVfd-fyQs"
 * status = #final
 * code = HealthConnectMeasurementCS#step-cadence
 * extension[healthConnectRecordType].valueCode = #StepsCadenceRecord
@@ -349,10 +349,10 @@ InstanceOf: HealthConnectTotalEnergy
 Usage: #example
 Title: "Total Energy Burned Example"
 Description: "A conformant Total Energy Burned instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:tXuqbDO6MUoKF7Qtc1djtJ46dfTj1R__9hkHIZR191g"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:JRZTIZat6h1Du_w9plXJzP4xcKjVuPeMJhh1uhGrmRY"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:MCypc7QjPdkvF-U7_ZtBDmddzN_P2Yp7RrHeVkwFWyI"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:YNQQdFoyyFGV4_paSviNoRfjXCcxQ0MbMqA2oWVltAc"
 * status = #final
 * code = HealthConnectMeasurementCS#total-energy-burned
 * extension[healthConnectRecordType].valueCode = #TotalCaloriesBurnedRecord

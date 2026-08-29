@@ -1,4 +1,4 @@
-"""Keep SensorKit examples aligned with the opaque v2 identity contract."""
+"""Keep SensorKit examples aligned with the opaque v0 identity contract."""
 
 # This source file is part of the Grove FHIR open-source project
 #
@@ -14,7 +14,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-HMAC_VALUE = re.compile(r"v2:test-key:1:[A-Za-z0-9_-]{43}")
+HMAC_VALUE = re.compile(r"v0:test-key:1:[A-Za-z0-9_-]{43}")
 
 
 class ExampleIdentityTests(unittest.TestCase):
@@ -24,7 +24,7 @@ class ExampleIdentityTests(unittest.TestCase):
             encoding="utf-8"
         )
 
-    def test_every_opaque_example_identity_has_the_canonical_v2_shape(self) -> None:
+    def test_every_opaque_example_identity_has_the_canonical_v0_shape(self) -> None:
         values = re.findall(
             r'^\* identifier\[(?:sourceRecord|sourceOutput|sourceArtifact)\]\.value = "([^"]+)"$',
             self.source,

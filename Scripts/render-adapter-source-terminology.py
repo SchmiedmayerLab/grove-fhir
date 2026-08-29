@@ -139,7 +139,6 @@ def provider_definition(provider: dict[str, Any], source: dict[str, Any], groupe
 
 def healthkit() -> str:
     data = catalog("healthkit-adapter.json")
-    version = data["version"]
     rows = data["rows"]
     evidence = json.loads(
         (ROOT / "healthkit/input/data/healthkit-inventory.json").read_text(encoding="utf-8")
@@ -190,7 +189,7 @@ Description: "The {len(rows)} source-type identifiers the {baseline["platform"]}
 ValueSet: HealthKitSourceTypeVS
 Id: healthkit-source-type
 Title: "HealthKit Source Types"
-Description: "The complete closed set of HealthKit platform source types in the version {version} catalog."
+Description: "The complete closed set of HealthKit platform source types in the authoritative catalog."
 * ^experimental = false
 * include codes from system HealthKitSourceTypeCS
 '''
@@ -321,7 +320,6 @@ Description: "The complete closed Health Connect 1.1.0 source Record class inven
 
 
 def providers() -> str:
-    version = catalog("providers-adapter.json")["version"]
     data = catalog("providers-adapter.json")
     rows: list[tuple[str, str, str]] = []
     for provider in data["providers"]:
@@ -351,7 +349,7 @@ def providers() -> str:
     return HEADER + f'''CodeSystem: ProviderSourceTypeCS
 Id: provider-source-type
 Title: "Provider Source Types"
-Description: "The complete provider-qualified Google Health API, Oura, and Withings source inventory admitted or explicitly classified by version {version}. The code is source lineage, not a clinical result code or fetch instruction."
+Description: "The complete provider-qualified Google Health API, Oura, and Withings source inventory admitted or explicitly classified by the Grove FHIR contracts. The code is source lineage, not a clinical result code or fetch instruction."
 * ^experimental = false
 * ^caseSensitive = true
 * ^content = #complete
@@ -360,7 +358,7 @@ Description: "The complete provider-qualified Google Health API, Oura, and Withi
 ValueSet: ProviderSourceTypeVS
 Id: provider-source-type
 Title: "Provider Source Types"
-Description: "The complete closed provider-qualified source-type inventory for the Provider {version} adapter."
+Description: "The complete closed provider-qualified source-type inventory for the relevant Grove FHIR Implementation Guide."
 * ^experimental = false
 * include codes from system ProviderSourceTypeCS
 '''

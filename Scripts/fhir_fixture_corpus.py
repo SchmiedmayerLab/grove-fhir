@@ -315,8 +315,8 @@ def validate_manifest(manifest: Any) -> list[str]:
         failures.append(
             "fixture corpus manifest contains unsupported fields: " + ", ".join(unknown)
         )
-    if manifest.get("schemaVersion") != 1:
-        failures.append("fixture corpus schemaVersion must be 1")
+    if manifest.get("schemaVersion") != 0:
+        failures.append("fixture corpus schemaVersion must be 0")
     version = manifest.get("version")
     if not isinstance(version, str) or RELEASE_VERSION.fullmatch(version) is None:
         failures.append("fixture corpus version must be a semantic release version")
@@ -488,7 +488,7 @@ def materialize_corpus(manifest_path: Path, output: Path) -> dict[str, Any]:
                 "expectedRule": copy.deepcopy(case["expectedRule"]),
             }
         )
-    index = {"schemaVersion": 1, "bases": base_index, "cases": case_index}
+    index = {"schemaVersion": 0, "bases": base_index, "cases": case_index}
     (output / "corpus-index.json").write_bytes(canonical_json_bytes(index))
     return index
 
@@ -505,8 +505,8 @@ def validate_results(manifest: Mapping[str, Any], results: Any) -> list[str]:
         failures.append(
             "fixture validation results contain unsupported fields: " + ", ".join(unknown)
         )
-    if results.get("schemaVersion") != 1:
-        failures.append("fixture validation results schemaVersion must be 1")
+    if results.get("schemaVersion") != 0:
+        failures.append("fixture validation results schemaVersion must be 0")
 
     expected_bases = {base["id"] for base in manifest["bases"]}
     base_diagnostics = results.get("baseDiagnostics")
@@ -558,7 +558,7 @@ def validate_with(
 ) -> list[str]:
     """Run an in-process domain validator and check reason-specific results."""
     results = {
-        "schemaVersion": 1,
+        "schemaVersion": 0,
         "baseDiagnostics": {
             identifier: list(validator(resource))
             for identifier, resource in sorted(bases.items())

@@ -13,13 +13,16 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
+RELEASE_VERSION = json.loads(
+    (ROOT / "catalog/release-manifest.json").read_text(encoding="utf-8")
+)["releaseVersion"]
 SPEC = importlib.util.spec_from_file_location("check_content", ROOT / "Scripts/check-content.py")
 CHECK_CONTENT = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(CHECK_CONTENT)
 
 
 class CatalogVersionProseTests(unittest.TestCase):
-    def test_every_catalog_states_only_its_own_version(self) -> None:
+    def test_every_catalog_uses_version_neutral_implementation_prose(self) -> None:
         for path in sorted((ROOT / "catalog").glob("*.json")):
             catalog = json.loads(path.read_text(encoding="utf-8"))
             with self.subTest(catalog=path.name):
@@ -30,16 +33,16 @@ class CatalogVersionProseTests(unittest.TestCase):
                     [],
                 )
 
-    def test_a_stale_version_is_reported(self) -> None:
+    def test_a_grove_release_number_in_prose_is_reported(self) -> None:
         self.assertEqual(
             CHECK_CONTENT.stale_version_prose(
                 "providers-adapter.json",
-                {"sourceEvidence": {"tokenBinding": "the exact v0.3.0 consumed source surface"}},
-                "0.5.0",
+                {"sourceEvidence": {"tokenBinding": "the 1.2.3 adapter source surface"}},
+                RELEASE_VERSION,
             ),
             [
-                "catalog/providers-adapter.json field sourceEvidence.tokenBinding "
-                "names version 0.3.0, but the catalog is 0.5.0"
+                "catalog/providers-adapter.json field sourceEvidence.tokenBinding names "
+                "Grove release version 1.2.3; use version-neutral implementation wording"
             ],
         )
 
@@ -48,25 +51,32 @@ class CatalogVersionProseTests(unittest.TestCase):
             CHECK_CONTENT.stale_version_prose(
                 "package-graph.json",
                 {"packages": [{"dependencies": ["hl7.fhir.uv.extensions#7.3.0"]}]},
-                "0.5.0",
+                RELEASE_VERSION,
             ),
             [],
         )
 
-    def test_a_field_declared_historical_may_name_an_earlier_release(self) -> None:
+    def test_a_machine_grove_dependency_pin_is_not_prose(self) -> None:
         self.assertEqual(
             CHECK_CONTENT.stale_version_prose(
-                "sensorkit-adapter.json",
-                {"inventoryScopes": {"catalog-baseline": "the initial closed v0.3.0 catalog baseline"}},
-                "0.5.0",
+                "package-graph.json",
+                {
+                    "packages": [
+                        {
+                            "dependencies": [
+                                f"org.grovealliance.fhir.mobile#{RELEASE_VERSION}"
+                            ]
+                        }
+                    ]
+                },
+                RELEASE_VERSION,
             ),
             [],
         )
 
     def test_the_manifest_schema_pins_the_release_the_graph_states(self) -> None:
-        # The producer-manifest schema states the release as a JSON Schema const, which nothing
-        # else derives. A literal that has to be remembered is how validate-producer.py sat at
-        # 0.4.0 through the 0.5.0 bump.
+        # The producer-manifest schema states the machine release metadata as a JSON Schema const,
+        # so it must remain aligned with the package graph.
         schema = json.loads(
             (ROOT / "Conformance/producer-manifest.schema.json").read_text(encoding="utf-8")
         )

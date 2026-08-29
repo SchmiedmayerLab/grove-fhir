@@ -1,4 +1,7 @@
 == Suppressed Messages ==
+# Publisher 2.3.3 orders the older ballot suffix after the stable release. The HL7 package registry confirms 5.3.0 is the current stable R4 extensions package, so downgrading would be incorrect.
+WARNING: ImplementationGuide/org.grovealliance.fhir.healthkit: ImplementationGuide.dependsOn[1]: The ImplementationGuide uses package hl7.fhir.uv.extensions.r4#5.3.0 released on 2026-05-16, but the most recent appropriate version is 5.3.0-ballot-tc1. This reference is getting old and the more recent version should be considered
+
 # This adapter targets FHIR R4. It does not publish the generated R4B package claim.
 WARNING: 2: An HTML fragment from the set [cross-version-analysis.xhtml, cross-version-analysis-inline.xhtml] is not included anywhere in the produced implementation guide
 
@@ -31,7 +34,7 @@ WARNING: Resource: The resource ValueSet/healthkit-source-type should have an OI
 WARNING: Resource: The resource ValueSet/healthkit-symptom-severity should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/fhir-tools-ig/CodeSystem-ig-parameters.html#ig-parameters-auto-oid-root)
 WARNING: Resource: The resource CodeSystem/healthkit-concept-property should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/fhir-tools-ig/CodeSystem-ig-parameters.html#ig-parameters-auto-oid-root)
 
-# v0.3 sweep: reviewed benign warning families on the generated profiles.
+# terminology sweep: reviewed benign warning families on the generated profiles.
 WARNING: Resource: The resource CodeSystem/grove-symptom-severity should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/fhir-tools-ig/CodeSystem-ig-parameters.html#ig-parameters-auto-oid-root)
 WARNING: Resource: The resource CodeSystem/healthkit-apple-stand-hour should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/fhir-tools-ig/CodeSystem-ig-parameters.html#ig-parameters-auto-oid-root)
 WARNING: Resource: The resource CodeSystem/healthkit-bleeding-after-pregnancy should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/fhir-tools-ig/CodeSystem-ig-parameters.html#ig-parameters-auto-oid-root)

@@ -6,15 +6,14 @@ SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTR
 SPDX-License-Identifier: MIT
 -->
 
-Grove FHIR Sensor and Waveform 0.6.0 is the source-neutral layer for uniformly sampled time series, ECG channels, and native sensor recordings.
+The Grove FHIR Sensor and Waveform Implementation Guide is the source-neutral layer for uniformly sampled time series, ECG channels, and registered sensor recording payloads.
 It does not define how an operating-system framework or provider fetches data.
 An adapter transforms already obtained source objects into these R4 resource shapes.
 
-New to FHIR?
-[Start with the FHIR basics page](https://grovealliance.org/fhir/mobile/fhir-basics.html) in the Mobile guide.
-It covers the resources these guides use, identifiers and references, and how to read a profile page.
+Readers who are new to FHIR can begin with the Mobile guide's [FHIR basics page](https://grovealliance.org/fhir/mobile/fhir-basics.html).
+That page introduces the resources used by these guides, identifiers and references, and the structure of a profile page.
 
-The package is international and uses FHIR R4 `Observation.valueSampledData` for inline numeric sequences and `DocumentReference.content.attachment` for a native or externally encoded recording.
+The package is source-neutral and uses FHIR R4 `Observation.valueSampledData` for inline numeric sequences and `DocumentReference.content.attachment` for a recording in one registered format.
 An admitted attachment must fit the exact FHIR R4 `Attachment.size` unsigned-integer range (0 through 2,147,483,647 pre-base64 bytes); larger payloads require a future segmented-manifest contract rather than an implicit receiver-specific exception.
 
 The HL7 Personal Health Device guide's `PhdRtsaObservation` is the authoritative profile for IEEE 11073 PHD/PHG workflows.

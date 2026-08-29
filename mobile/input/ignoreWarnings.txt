@@ -1,4 +1,7 @@
 == Suppressed Messages ==
+# Publisher 2.3.3 orders the older ballot suffix after the stable release. The HL7 package registry confirms 5.3.0 is the current stable R4 extensions package, so downgrading would be incorrect.
+WARNING: ImplementationGuide/org.grovealliance.fhir.mobile: ImplementationGuide.dependsOn[1]: The ImplementationGuide uses package hl7.fhir.uv.extensions.r4#5.3.0 released on 2026-05-16, but the most recent appropriate version is 5.3.0-ballot-tc1. This reference is getting old and the more recent version should be considered
+
 # This contract targets FHIR R4. It does not publish the generated R4B package claim.
 WARNING: 2: An HTML fragment from the set [cross-version-analysis.xhtml, cross-version-analysis-inline.xhtml] is not included anywhere in the produced implementation guide
 
@@ -22,7 +25,7 @@ WARNING: Resource: The resource ValueSet/grove-sleep-stage should have an OID as
 # The fixed observation code and exact effective Period carry the interval-total semantics. The UCUM annotation is not used for dimensional comparison.
 WARNING: Observation/GroveMobileStepCountExample: Observation.value.ofType(Quantity): UCUM Codes that contain human readable annotations like {steps} can be misleading (e.g. they are ignored when comparing units). Best Practice is not to depend on annotations in the UCUM code, so this usage should be checked
 
-# v0.3 sweep: reviewed benign warning families on the generated profiles.
+# terminology sweep: reviewed benign warning families on the generated profiles.
 WARNING: Resource: The resource CodeSystem/grove-aggregation-method should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/fhir-tools-ig/CodeSystem-ig-parameters.html#ig-parameters-auto-oid-root)
 WARNING: Resource: The resource CodeSystem/grove-cervical-mucus-quality should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/fhir-tools-ig/CodeSystem-ig-parameters.html#ig-parameters-auto-oid-root)
 WARNING: Resource: The resource CodeSystem/grove-cervical-mucus-sensation should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/fhir-tools-ig/CodeSystem-ig-parameters.html#ig-parameters-auto-oid-root)

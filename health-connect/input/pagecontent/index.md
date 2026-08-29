@@ -6,21 +6,20 @@ SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTR
 SPDX-License-Identifier: MIT
 -->
 
-The Grove Health Connect Adapter maps AndroidX Health Connect 1.1 Records that have already been read by an application into international FHIR R4.
+The Grove Health Connect Adapter maps AndroidX Health Connect 1.1 Records that an application has already read into FHIR R4.
 It does not request permissions, fetch Records, or define a receiving service.
 
-New to FHIR?
-[Start with the FHIR basics page](https://grovealliance.org/fhir/mobile/fhir-basics.html) in the Mobile guide.
-It covers the resources these guides use, identifiers and references, and how to read a profile page.
+Readers who are new to FHIR can begin with the Mobile guide's [FHIR basics page](https://grovealliance.org/fhir/mobile/fhir-basics.html).
+That page introduces the resources used by these guides, identifiers and references, and the structure of a profile page.
 
-Every emitted Observation declares exactly two direct profiles:
+Each emitted Observation follows one of two direct profile-claim modes:
 
-1. the exact source-neutral Grove Mobile measurement profile; and
-2. [Health Connect Observation](StructureDefinition-health-connect-observation.html).
+1. A shared measurement declares the exact source-neutral Grove Mobile measurement profile and [Health Connect Observation](StructureDefinition-health-connect-observation.html).
+2. A specimen-specific glucose result declares only its exact Health Connect child profile, which inherits the applicable shared and adapter constraints.
 
-The shared profile defines clinical meaning, result shape, unit, and time semantics.
-The adapter profile defines source and output identities plus the small allowlist of Health-Connect-specific context.
-Inherited Mobile and core standard profiles are not repeated in `meta.profile`.
+The selected profiles define clinical meaning, result shape, unit, time semantics, source and output identities, and the small allowlist of Health-Connect-specific context.
+Inherited Mobile, adapter, and core standard profiles are not repeated in `meta.profile`.
+The adapter catalog fixes the claim mode for every admitted output.
 
 ### Supported conversion surface
 

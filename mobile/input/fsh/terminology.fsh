@@ -68,7 +68,7 @@ Description: "The closed roles a prior output may play in a source-derived graph
 * #source-artifact "Source artifact" "An exact source-preservation DocumentReference or payload part."
 * #child-output "Child output" "A sample, stage, workout segment, or other child output."
 * #specimen "Specimen" "A synthesized Specimen node used by a prior output."
-* #device-snapshot "Device snapshot" "An event-time Device snapshot that must be retired with the source-derived graph under receiver policy."
+* #device-snapshot "Device snapshot" "An event-time Device snapshot that must be retired with the source-derived graph under the deployment's lifecycle policy."
 
 ValueSet: GroveRetractionTargetRoleVS
 Id: grove-retraction-target-role
@@ -236,7 +236,7 @@ Description: "The per-interval statistic concepts a workout or workout-segment O
 CodeSystem: GroveApplicationVersionTypeCS
 Id: grove-application-version-type
 Title: "Grove Application Version Type"
-Description: "The revisions a producing application states about itself. Each names a distinct fact, so a consumer reads the one it needs rather than parsing a composite string. The marketing version is carried by its ISO/IEEE 11073 code rather than a code here, because a standard code for it already exists."
+Description: "The revisions a producing application states about itself. Each names a distinct fact that can be read without parsing a composite string. The marketing version is carried by its ISO/IEEE 11073 code rather than a code here, because a standard code for it already exists."
 * ^experimental = false
 * ^caseSensitive = true
 * ^content = #complete

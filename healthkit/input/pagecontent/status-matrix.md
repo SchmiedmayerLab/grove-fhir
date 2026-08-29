@@ -9,9 +9,9 @@ GENERATED FILE. Edit the corresponding catalog JSON and run
 `python3 Scripts/render-status-matrices.py`.
 -->
 
-# Authoritative HealthKit status matrix
+### Authoritative HealthKit status matrix
 
-This table is the complete, closed v0.6.0 inventory of all 218 Apple HealthKit platform source types frozen against iPhoneOS 26.5 from Xcode 26.6 build `17F113`. The evidence is the official Apple platform documentation and the exact SDK provenance declared by the catalog. Each row has one definitive contract status; this is a release contract, not a roadmap. `supported` means v0.6.0 admits a conformant output contract. All other rows are not admitted and producers fail closed.
+This table is the complete, closed inventory of all 218 Apple HealthKit platform source types frozen against iPhoneOS 26.5 from Xcode 26.6 build `17F113`. The evidence is the official Apple platform documentation and the exact SDK provenance declared by the catalog. Each row has one definitive contract status; this is part of the Grove FHIR contracts, not a roadmap. `supported`, `platform-exclusive`, and `mapped-standard` each admit only the output contract(s) named in that row. `unmodeled`, `deferred`, and `intentionally-unsupported` admit no output; producers fail closed.
 
 | HealthKit type | Title | Contract status | Measurement | Direct profile claim(s) | Binding reason / requirement |
 | --- | --- | --- | --- | --- | --- |
@@ -234,10 +234,10 @@ This table is the complete, closed v0.6.0 inventory of all 218 Apple HealthKit p
 | `HKWorkoutRouteTypeIdentifier` | Workout Route | `platform-exclusive` | — | healthkit-recording-document | The recorded route is admitted as a recording document carrying the published location-track-samples column schema. A route re-identifies readily, so a producer discloses it only under an explicit route-disclosure authorization. |
 | `HKWorkoutTypeIdentifier` | Workout | `supported` | workout, workout-segment | grove-mobile-workout; grove-mobile-workout-segment | — |
 
-## Derived aggregate contracts
+#### Derived aggregate contracts
 
 These rows are derived mappings, not HealthKit platform source identifiers, and are excluded from the source-type count and source-type CodeSystem.
 
 | Aggregate | Title | Input source type(s) | Contract status | Measurement | Target profile | Binding reason / requirement |
 | --- | --- | --- | --- | --- | --- | --- |
-| `sleep-duration-session-aggregate` | Sleep Duration Session Aggregate | `HKCategoryTypeIdentifierSleepAnalysis` | `deferred` | sleep-duration | grove-mobile-sleep-duration | This is not a HealthKit platform source identifier. Version 0.6.0 does not define the session-boundary aggregation contract; individual admitted samples map only to sleep stage. |
+| `sleep-duration-session-aggregate` | Sleep Duration Session Aggregate | `HKCategoryTypeIdentifierSleepAnalysis` | `deferred` | sleep-duration | grove-mobile-sleep-duration | This is not a HealthKit platform source identifier. The Grove FHIR contracts do not define the session-boundary aggregation contract; individual admitted samples map only to sleep stage. |

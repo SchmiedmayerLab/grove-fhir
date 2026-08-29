@@ -229,7 +229,7 @@ class CatalogContractSchemaTests(unittest.TestCase):
             if version_key in document:
                 with self.subTest(path=declaration["path"], key=version_key):
                     mutated = copy.deepcopy(document)
-                    mutated[version_key] = "0.6.1"
+                    mutated[version_key] = "9.9.9"
                     self._assert_invalid(mutated, schema)
 
     def test_package_graph_rows_are_discriminated_by_source(self) -> None:

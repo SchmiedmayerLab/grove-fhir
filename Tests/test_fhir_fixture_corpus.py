@@ -17,6 +17,11 @@ from pathlib import Path
 
 from Scripts import fhir_fixture_corpus as CORPUS
 
+ROOT = Path(__file__).resolve().parents[1]
+RELEASE_VERSION = json.loads(
+    (ROOT / "catalog/release-manifest.json").read_text(encoding="utf-8")
+)["releaseVersion"]
+
 
 class FHIRFixtureCorpusTests(unittest.TestCase):
     def setUp(self) -> None:
@@ -28,8 +33,8 @@ class FHIRFixtureCorpusTests(unittest.TestCase):
             "valueQuantity": {"value": 72, "unit": "beats/min"},
         }
         self.manifest = {
-            "schemaVersion": 1,
-            "version": "0.6.0",
+            "schemaVersion": 0,
+            "version": RELEASE_VERSION,
             "bases": [{"id": "heart-rate", "path": "base.json"}],
             "cases": [
                 {
@@ -242,7 +247,7 @@ class FHIRFixtureCorpusTests(unittest.TestCase):
 
     def test_results_must_match_the_exact_rule_and_reason(self) -> None:
         results = {
-            "schemaVersion": 1,
+            "schemaVersion": 0,
             "baseDiagnostics": {"heart-rate": []},
             "caseDiagnostics": {
                 "missing-status": [deepcopy(self.manifest["cases"][0]["expectedRule"])],
@@ -258,7 +263,7 @@ class FHIRFixtureCorpusTests(unittest.TestCase):
 
     def test_reason_specific_results_reject_cascading_diagnostics(self) -> None:
         results = {
-            "schemaVersion": 1,
+            "schemaVersion": 0,
             "baseDiagnostics": {"heart-rate": []},
             "caseDiagnostics": {
                 "missing-status": [

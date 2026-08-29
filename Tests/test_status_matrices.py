@@ -8,6 +8,7 @@
 
 from __future__ import annotations
 
+import re
 import subprocess
 import sys
 import unittest
@@ -34,6 +35,24 @@ class StatusMatrixTests(unittest.TestCase):
             self.assertNotIn("PR 60", text, path)
             self.assertNotIn("working document", text.lower(), path)
             self.assertNotIn("future published version", text.lower(), path)
+
+    def test_generated_matrix_headings_fit_the_ig_page_hierarchy(self) -> None:
+        for path in ROOT.glob("*/input/pagecontent/status-matrix.md"):
+            headings = re.findall(r"^(#+) ", path.read_text(encoding="utf-8"), re.MULTILINE)
+            self.assertTrue(headings, path)
+            self.assertEqual(headings[0], "###", path)
+            self.assertTrue(all(len(heading) >= 3 for heading in headings), path)
+
+    def test_healthkit_intro_classifies_every_contract_status(self) -> None:
+        text = (
+            ROOT / "healthkit/input/pagecontent/status-matrix.md"
+        ).read_text(encoding="utf-8")
+        for status in ("supported", "platform-exclusive", "mapped-standard"):
+            self.assertIn(f"`{status}`", text)
+        for status in ("unmodeled", "deferred", "intentionally-unsupported"):
+            self.assertIn(f"`{status}`", text)
+        self.assertIn("admit only the output contract(s) named in that row", text)
+        self.assertIn("admit no output", text)
 
 
 if __name__ == "__main__":

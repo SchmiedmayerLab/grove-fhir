@@ -41,7 +41,7 @@ class ReleaseEvidenceTests(unittest.TestCase):
         }
         evidence = {
             "$schema": EVIDENCE.TERMINOLOGY_EVIDENCE_SCHEMA_URL,
-            "schemaVersion": 1,
+            "schemaVersion": 0,
             "releaseVersion": self.manifest["releaseVersion"],
             "fhirVersion": self.manifest["fhirVersion"],
             "sourceRevision": self.revision,

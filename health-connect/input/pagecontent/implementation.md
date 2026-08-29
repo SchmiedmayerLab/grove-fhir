@@ -6,23 +6,23 @@ SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTR
 SPDX-License-Identifier: MIT
 -->
 
-Version 0.6.0 is a producer mapping contract.
-It does not define a server, receiver, database, authentication scheme, transport envelope, or payload-size limit.
+The Grove FHIR contracts define producer mappings.
+They do not define a server, receiver, database, authentication scheme, transport envelope, or payload-size limit.
 A producer converts Records it has already read from Health Connect and returns a FHIR R4 collection Bundle conforming to the Mobile exchange contract.
 
-### Package closure
+### Install the package closure
 
 The canonical URLs identify artifacts; they are not download endpoints.
-Build these exact packages from the reviewed repository revision and install them in an isolated FHIR package cache:
+The Health Connect package and its Mobile dependency use these package IDs:
 
 ```text
-org.grovealliance.fhir.mobile#0.6.0
-org.grovealliance.fhir.health-connect#0.6.0
+org.grovealliance.fhir.mobile
+org.grovealliance.fhir.health-connect
 ```
 
-The Health Connect package pins the Mobile package at `0.6.0`.
-Record the repository revision and archive checksum in producer CI.
-Do not overlay an archive on an existing package directory because removed artifacts would remain.
+Resolve both exact versions from `catalog/release-manifest.json`; the Health Connect package pins the matching Mobile package version.
+Download each archive and checksum from the corresponding Artifacts page, verify the checksum, and install the archive in an isolated FHIR package cache.
+Replace an existing package directory rather than overlaying it, because an overlay can retain artifacts removed by the newer package.
 
 ### Required output contract
 
@@ -48,34 +48,29 @@ Adapter-specific glucose follows the closed child-only mode above.
 
 ### Validate producer output
 
-Use the producer-neutral wrapper from this repository.
-It verifies package identity, profile claims, deterministic graph identity, closed reference resolution, visible exactly-one output cardinalities, and then invokes the official Validator in FHIR R4 offline mode:
+Use the Grove producer validation command for graph-level checks.
+It verifies package identity, profile claims, deterministic graph identity, closed reference resolution, and observable single-output cardinalities before invoking the official FHIR Validator in R4 offline mode:
 
 ```sh
 python3 Scripts/validate-producer.py \
   --manifest path/to/grove-fhir-producer.json \
   --validator path/to/validator_cli.jar \
-  --package mobile=path/to/org.grovealliance.fhir.mobile-0.6.0.tgz \
-  --package health-connect=path/to/org.grovealliance.fhir.health-connect-0.6.0.tgz
+  --package mobile=path/to/mobile-package.tgz \
+  --package health-connect=path/to/health-connect-package.tgz
 ```
 
-The producer repository generates its own fixtures from its public mapping API.
-This IG repository never checks out, patches, or executes producer implementations.
+### Verify converter behavior
 
-### Required converter tests
-
-Test every one of the 41 exact AndroidX Health Connect 1.1 Record classes in the adapter catalog.
-Supported rows need positive conversion fixtures; every other row needs a fail-closed status assertion.
+Verify every one of the 41 exact AndroidX Health Connect 1.1 Record classes in the adapter contract.
+Admitted rows need a positive conversion example; every other row needs a fail-closed assertion.
 Positive coverage includes every supported Record family, all admitted glucose specimens, blood-pressure and temperature context, all eight sleep stage tokens, every exact cycle/exercise source coding, exercise segments and laps, multiple and duplicate-time heart-rate samples, exact point and interval times, and absent optional metadata.
 Negative coverage includes unsupported specimens, unknown source context, invalid identity lexemes, wrong shared profile claims, wrong code/unit/result shape, repeated summary outputs, one source identity claiming two Record types, external or unresolved Bundle references, and incomplete Provenance.
-Completeness of source-dependent `one-per-sample`, `one-per-stage`, `one-per-delta`, and `one-per-present-field` rules cannot be inferred from output alone; converter tests compare each emitted graph with its source fixture, while the producer-neutral validator checks the observable identities, allowed roles, exact summary cardinality, and graph shape.
+Some cardinality rules depend on the source record and cannot be inferred from FHIR output alone.
+For `one-per-sample`, `one-per-stage`, `one-per-delta`, and `one-per-present-field`, compare the emitted graph with the source record.
+Grove producer validation checks only the observable identities, allowed roles, summary cardinality, and graph shape.
 
 Health Connect read permissions, scheduling, and change-token recovery belong to the calling application.
 The adapter may expose producer-owned durable synchronization state, as described in [Synchronization](synchronization.html), but it does not fetch Records or define how a deployment stores or transmits the resulting Bundle.
-
-{% include dependency-table-nontech.xhtml %}
-
-{% include ip-statements.xhtml %}
 
 ### Retracting a source record
 
@@ -83,3 +78,11 @@ When Health Connect reports a deleted source record, emit the dedicated Grove Mo
 Its sole source-record-retracted Provenance identifies every previously emitted output, artifact, specimen, and device snapshot through a typed logical Reference carrying the exact complete business Identifier and target-role extension.
 Do not copy the former clinical resources, set them to `entered-in-error`, or encode FHIR DELETE requests.
 The assertion records source removal; receiver resolution, idempotent atomic application, retention, and deletion remain sink policy.
+
+### Dependencies and terminology notices
+
+The tables below list this guide's package dependencies and the notices for terminology used by its artifacts and examples.
+
+{% include dependency-table-nontech.xhtml %}
+
+{% include ip-statements.xhtml %}

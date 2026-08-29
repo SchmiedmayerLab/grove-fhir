@@ -15,6 +15,9 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).parents[1]
+RELEASE_VERSION = json.loads(
+    (ROOT / "catalog/release-manifest.json").read_text(encoding="utf-8")
+)["releaseVersion"]
 
 
 class PackageGraphTests(unittest.TestCase):
@@ -24,9 +27,9 @@ class PackageGraphTests(unittest.TestCase):
             set(graph),
             {"$schema", "schemaVersion", "fhirVersion", "version", "canonicalRoot", "packages"},
         )
-        self.assertEqual(graph["schemaVersion"], 1)
+        self.assertEqual(graph["schemaVersion"], 0)
         self.assertEqual(graph["fhirVersion"], "4.0.1")
-        self.assertEqual(graph["version"], "0.6.0")
+        self.assertEqual(graph["version"], RELEASE_VERSION)
         self.assertEqual(graph["canonicalRoot"], "https://grovealliance.org/fhir")
         sources = [package["source"] for package in graph["packages"]]
         self.assertEqual(

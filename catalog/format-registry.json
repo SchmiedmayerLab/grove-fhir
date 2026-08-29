@@ -1,29 +1,33 @@
 {
   "$schema": "https://grovealliance.org/fhir/catalog/schemas/catalog-contracts.schema.json",
-  "schemaVersion": 1,
+  "schemaVersion": 0,
   "fhirVersion": "4.0.1",
   "version": "0.6.0",
   "canonical": "https://grovealliance.org/fhir/sensor",
   "codeSystem": "https://grovealliance.org/fhir/sensor/CodeSystem/grove-recording-format",
   "valueSet": "https://grovealliance.org/fhir/sensor/ValueSet/grove-recording-format",
-  "description": "The closed registry of payload formats a Grove recording DocumentReference may carry. Every content entry declares exactly one registry format in DocumentReference.content.format, and a receiver can parse any admitted payload from that code alone; an unregistered payload format is nonconformant. A format code names the payload's schema — the shape of the table or record it carries — never its encoding and never the platform that produced it. The encoding is carried by the entry's media type, and the producing platform by the carrying document's source type.",
+  "description": "The closed registry of payload formats a Grove recording DocumentReference may carry. Every content entry declares exactly one registry format in DocumentReference.content.format, and an unregistered payload format is nonconformant. Each format states the validation a receiver can perform: the bundled producer validator checks registered CSV grammars and strict JSON envelopes, including the FHIR collection Bundle envelope, while external FHIR/profile, CDA, provider-domain, and binary semantic validation remains an explicitly stated producer or receiver responsibility. Most format codes name a source-neutral payload schema. The native-recording code instead names only a generic JSON object-or-array envelope; the carrying document's source type supplies the source category and meaning, not a per-stream field schema. The encoding is carried by the entry's media type, and the producing platform by the carrying document's source type.",
   "encodings": {
     "csv": {
       "encoding": "UTF-8 without a byte-order mark.",
       "structure": "One header row naming every column in order, then one row per source sample in source order.",
-      "rowTerminator": "LF (0x0A) after every row, including the last.",
+      "rowTerminator": "LF (0x0A) after every row, including the last. CR (0x0D) is prohibited anywhere, including inside quoted fields.",
       "separator": "Comma (0x2C).",
-      "quoting": "A field is enclosed in double quotes exactly when it contains a comma, a double quote, or a line break; embedded double quotes are doubled; all other fields are unquoted.",
-      "numbers": "Decimal numbers use the shortest representation that round-trips an IEEE-754 binary64 value; integral values may carry a trailing .0.",
-      "timestamps": "Seconds since the Unix epoch as a decimal number in the numbers form above; the column documentation states which columns are timestamps."
+      "quoting": "A field is enclosed in double quotes exactly when it contains a comma, a double quote, or LF; embedded double quotes are doubled; all other fields are unquoted.",
+      "numbers": "Finite IEEE-754 binary64 values serialized as base-10 decimal lexemes match numberPattern. A plus sign, exponent, leading integer zero, negative zero, and redundant fractional trailing zero are prohibited; a lone fractional .0 remains admitted for integral values.",
+      "numberValueDomain": "finite-ieee754-binary64",
+      "numberPattern": "^(?:0(?:\\.0|\\.[0-9]*[1-9])?|[1-9][0-9]*(?:\\.(?:0|[0-9]*[1-9]))?|-(?:0\\.[0-9]*[1-9]|[1-9][0-9]*(?:\\.(?:0|[0-9]*[1-9]))?))$",
+      "integers": "Base-10 integer lexemes match integerPattern. A plus sign, -0, leading zero, decimal point, and exponent are prohibited.",
+      "integerPattern": "^(?:0|-?[1-9][0-9]*)$",
+      "timestamps": "Seconds since the Unix epoch as a finite IEEE-754 binary64 value in the numbers form above; the column documentation states which columns are timestamps.",
+      "emptyFields": "Every column declares nullable. A false column has a non-empty field in every data row. A true column may use an empty field; its column meaning states whether that represents an unavailable source value or an empty source collection. The literal strings null and NULL have no special meaning."
     }
   },
   "mediaTypes": {
     "text/csv": "Comma-separated values",
     "application/fhir+json": "FHIR JSON",
-    "application/vnd.grovealliance.native+json": "Grove native recording JSON",
-    "application/vnd.grovealliance.provider+json": "Grove provider recording JSON",
-    "application/vnd.grovealliance.ppg": "Grove photoplethysmogram binary",
+    "application/json": "JSON",
+    "application/octet-stream": "Binary octet stream",
     "application/hl7-cda+xml": "HL7 Clinical Document Architecture"
   },
   "formats": {
@@ -36,22 +40,26 @@
         {
           "name": "timestamp",
           "type": "timestamp",
+          "nullable": false,
           "meaning": "Sample instant."
         },
         {
           "name": "value",
           "type": "number",
+          "nullable": false,
           "unit": "/min",
           "meaning": "Heart rate in beats per minute."
         },
         {
           "name": "confidence",
           "type": "integer",
+          "nullable": false,
           "meaning": "CMHighFrequencyHeartRateDataConfidence raw value: 0 low, 1 medium, 2 high, 3 highest."
         },
         {
           "name": "device",
           "type": "string",
+          "nullable": false,
           "meaning": "Exact SensorKit SRDevice.productType token for the source-device partition that supplied every row in the batch. It is not SRDevice.description, a user-assigned name, a system name/version, or a stable physical-unit identifier."
         }
       ]
@@ -65,34 +73,40 @@
         {
           "name": "timestamp",
           "type": "timestamp",
+          "nullable": false,
           "meaning": "Sample instant."
         },
         {
           "name": "identifier",
           "type": "integer",
-          "meaning": "The CoreMotion batch identifier the sample belongs to."
+          "nullable": false,
+          "meaning": "The CoreMotion batch identifier within the row's device partition. A batch key is the exact (device, identifier) pair."
         },
         {
           "name": "x",
           "type": "number",
+          "nullable": false,
           "unit": "[g]",
           "meaning": "Acceleration along x in G."
         },
         {
           "name": "y",
           "type": "number",
+          "nullable": false,
           "unit": "[g]",
           "meaning": "Acceleration along y in G."
         },
         {
           "name": "z",
           "type": "number",
+          "nullable": false,
           "unit": "[g]",
           "meaning": "Acceleration along z in G."
         },
         {
           "name": "device",
           "type": "string",
+          "nullable": false,
           "meaning": "Exact SensorKit SRDevice.productType token for the source-device partition that supplied every row in the batch. It is not SRDevice.description, a user-assigned name, a system name/version, or a stable physical-unit identifier."
         }
       ]
@@ -106,32 +120,38 @@
         {
           "name": "timestamp",
           "type": "timestamp",
+          "nullable": false,
           "meaning": "Sample instant."
         },
         {
           "name": "lux",
           "type": "number",
+          "nullable": false,
           "unit": "lx",
           "meaning": "Illuminance in lux."
         },
         {
           "name": "placement",
           "type": "string",
+          "nullable": false,
           "meaning": "SRAmbientLightSample.SensorPlacement textual description."
         },
         {
-          "name": "chromacityX",
+          "name": "chromaticityX",
           "type": "number",
+          "nullable": false,
           "meaning": "CIE 1931 x chromaticity coordinate."
         },
         {
-          "name": "chromacityY",
+          "name": "chromaticityY",
           "type": "number",
+          "nullable": false,
           "meaning": "CIE 1931 y chromaticity coordinate."
         },
         {
           "name": "device",
           "type": "string",
+          "nullable": false,
           "meaning": "Exact SensorKit SRDevice.productType token for the source-device partition that supplied every row in the batch. It is not SRDevice.description, a user-assigned name, a system name/version, or a stable physical-unit identifier."
         }
       ]
@@ -145,28 +165,33 @@
         {
           "name": "timestamp",
           "type": "timestamp",
+          "nullable": false,
           "meaning": "Sample instant."
         },
         {
           "name": "identifier",
           "type": "integer",
+          "nullable": false,
           "meaning": "The CoreMotion batch identifier the sample belongs to."
         },
         {
           "name": "pressure",
           "type": "number",
+          "nullable": false,
           "unit": "kPa",
           "meaning": "Ambient pressure in kilopascals as provided by CoreMotion."
         },
         {
           "name": "temperature",
           "type": "number",
+          "nullable": false,
           "unit": "Cel",
           "meaning": "Sensor temperature in degrees Celsius as provided by CoreMotion."
         },
         {
           "name": "device",
           "type": "string",
+          "nullable": false,
           "meaning": "Exact SensorKit SRDevice.productType token for the source-device partition that supplied every row in the batch. It is not SRDevice.description, a user-assigned name, a system name/version, or a stable physical-unit identifier."
         }
       ]
@@ -180,56 +205,66 @@
         {
           "name": "start",
           "type": "timestamp",
+          "nullable": false,
           "meaning": "Interval start."
         },
         {
           "name": "end",
           "type": "timestamp",
+          "nullable": false,
           "meaning": "Interval end."
         },
         {
           "name": "steps",
           "type": "integer",
+          "nullable": false,
           "unit": "{steps}",
           "meaning": "Steps taken in the interval."
         },
         {
           "name": "distance",
           "type": "number",
+          "nullable": true,
           "unit": "m",
           "meaning": "Estimated distance in metres; empty when unavailable."
         },
         {
           "name": "floorsUp",
           "type": "integer",
+          "nullable": true,
           "meaning": "Floors ascended; empty when unavailable."
         },
         {
           "name": "floorsDown",
           "type": "integer",
+          "nullable": true,
           "meaning": "Floors descended; empty when unavailable."
         },
         {
           "name": "currentPace",
           "type": "number",
+          "nullable": true,
           "unit": "s/m",
           "meaning": "Current pace in seconds per metre; empty when unavailable."
         },
         {
           "name": "currentCadence",
           "type": "number",
+          "nullable": true,
           "unit": "/s",
           "meaning": "Current cadence in steps per second; empty when unavailable."
         },
         {
           "name": "avgActivePace",
           "type": "number",
+          "nullable": true,
           "unit": "s/m",
           "meaning": "Average active pace in seconds per metre; empty when unavailable."
         },
         {
           "name": "device",
           "type": "string",
+          "nullable": false,
           "meaning": "Exact SensorKit SRDevice.productType token for the source-device partition that supplied every row in the batch. It is not SRDevice.description, a user-assigned name, a system name/version, or a stable physical-unit identifier."
         }
       ]
@@ -243,23 +278,27 @@
         {
           "name": "timestamp",
           "type": "timestamp",
+          "nullable": false,
           "meaning": "Temperature sample instant."
         },
         {
           "name": "value",
           "type": "number",
+          "nullable": false,
           "unit": "Cel",
           "meaning": "Wrist temperature converted to degrees Celsius."
         },
         {
           "name": "errorEstimate",
           "type": "number",
+          "nullable": false,
           "unit": "Cel",
           "meaning": "Estimated error converted to degrees Celsius."
         },
         {
           "name": "condition",
           "type": "string",
+          "nullable": true,
           "meaning": "SRWristTemperature.Condition for the sample. The source is an option set, so zero or more conditions apply: the value is the set's members joined with a comma in the declared order offWrist, onCharger, inMotion, and the field is empty when no condition applies. A value carrying a comma is quoted by the encoding rules above."
         }
       ]
@@ -273,29 +312,34 @@
         {
           "name": "timestamp",
           "type": "timestamp",
+          "nullable": false,
           "meaning": "Sample instant (CMRecordedRotationRateData.startDate)."
         },
         {
           "name": "x",
           "type": "number",
+          "nullable": false,
           "unit": "rad/s",
           "meaning": "Rotation rate about x in radians per second."
         },
         {
           "name": "y",
           "type": "number",
+          "nullable": false,
           "unit": "rad/s",
           "meaning": "Rotation rate about y in radians per second."
         },
         {
           "name": "z",
           "type": "number",
+          "nullable": false,
           "unit": "rad/s",
           "meaning": "Rotation rate about z in radians per second."
         },
         {
           "name": "device",
           "type": "string",
+          "nullable": false,
           "meaning": "Exact SensorKit SRDevice.productType token for the source-device partition that supplied every row in the batch. It is not SRDevice.description, a user-assigned name, a system name/version, or a stable physical-unit identifier."
         }
       ]
@@ -309,74 +353,87 @@
         {
           "name": "start",
           "type": "timestamp",
+          "nullable": false,
           "meaning": "Recording interval start (startDate)."
         },
         {
           "name": "end",
           "type": "timestamp",
+          "nullable": false,
           "meaning": "Recording interval end (endDate)."
         },
         {
           "name": "gpsDate",
           "type": "timestamp",
+          "nullable": false,
           "meaning": "Time of the GPS measurement associated with the location."
         },
         {
           "name": "speed",
           "type": "number",
+          "nullable": false,
           "unit": "m/s",
           "meaning": "Instantaneous device velocity in metres per second."
         },
         {
           "name": "speedAccuracy",
           "type": "number",
+          "nullable": false,
           "unit": "m/s",
           "meaning": "Accuracy of the speed value."
         },
         {
           "name": "slope",
           "type": "number",
+          "nullable": true,
           "unit": "deg",
           "meaning": "Slope toward the direction of travel in degrees; empty when unavailable."
         },
         {
           "name": "maxAbsSlope",
           "type": "number",
+          "nullable": true,
           "unit": "deg",
           "meaning": "Maximum absolute slope toward all directions in degrees; empty when unavailable."
         },
         {
           "name": "deltaDistance",
           "type": "number",
+          "nullable": false,
           "unit": "m",
           "meaning": "Distance travelled since the last location in metres."
         },
         {
           "name": "deltaDistanceAccuracy",
           "type": "number",
+          "nullable": false,
           "unit": "m",
           "meaning": "Accuracy of the delta distance in metres."
         },
         {
           "name": "deltaAltitude",
           "type": "number",
+          "nullable": false,
           "unit": "m",
           "meaning": "Change in altitude above mean sea level in metres."
         },
         {
           "name": "verticalAccuracy",
           "type": "number",
+          "nullable": false,
           "unit": "m",
           "meaning": "Validity and estimated uncertainty of the altitude values in metres."
         },
         {
           "name": "originDevice",
           "type": "string",
+          "nullable": false,
           "meaning": "CMOdometerOriginDevice case name: unknown, local, or remote."
         },
         {
           "name": "device",
           "type": "string",
+          "nullable": false,
           "meaning": "Exact SensorKit SRDevice.productType token for the source-device partition that supplied every row in the batch. It is not SRDevice.description, a user-assigned name, a system name/version, or a stable physical-unit identifier."
         }
       ]
@@ -390,11 +447,13 @@
         {
           "name": "timestamp",
           "type": "timestamp",
-          "meaning": "Beat instant as seconds since the series start anchor stated by the document."
+          "nullable": false,
+          "meaning": "Beat instant as seconds since the Unix epoch."
         },
         {
           "name": "precededByGap",
           "type": "integer",
+          "nullable": false,
           "meaning": "1 when a gap in beat detection precedes this beat, else 0."
         }
       ]
@@ -408,59 +467,69 @@
         {
           "name": "timestamp",
           "type": "timestamp",
+          "nullable": false,
           "meaning": "Location fix instant."
         },
         {
           "name": "latitude",
           "type": "number",
+          "nullable": false,
           "unit": "deg",
           "meaning": "WGS 84 latitude in degrees."
         },
         {
           "name": "longitude",
           "type": "number",
+          "nullable": false,
           "unit": "deg",
           "meaning": "WGS 84 longitude in degrees."
         },
         {
           "name": "altitude",
           "type": "number",
+          "nullable": false,
           "unit": "m",
           "meaning": "Altitude above the WGS 84 reference ellipsoid in metres."
         },
         {
           "name": "horizontalAccuracy",
           "type": "number",
+          "nullable": false,
           "unit": "m",
           "meaning": "Radius of uncertainty for the horizontal position in metres."
         },
         {
           "name": "verticalAccuracy",
           "type": "number",
+          "nullable": true,
           "unit": "m",
           "meaning": "Uncertainty of the altitude in metres; empty when altitude is invalid."
         },
         {
           "name": "speed",
           "type": "number",
+          "nullable": true,
           "unit": "m/s",
           "meaning": "Instantaneous speed in metres per second; empty when unavailable."
         },
         {
           "name": "speedAccuracy",
           "type": "number",
+          "nullable": true,
           "unit": "m/s",
           "meaning": "Uncertainty of the speed in metres per second; empty when unavailable."
         },
         {
           "name": "course",
           "type": "number",
+          "nullable": true,
           "unit": "deg",
           "meaning": "Direction of travel in degrees clockwise from true north; empty when unavailable."
         },
         {
           "name": "courseAccuracy",
           "type": "number",
+          "nullable": true,
           "unit": "deg",
           "meaning": "Uncertainty of the course in degrees; empty when unavailable."
         }
@@ -472,9 +541,10 @@
       "status": "active",
       "specification": {
         "encoding": "UTF-8.",
-        "structure": "One complete FHIR R4 Bundle in JSON representation with Bundle.type = collection, a mandatory timestamp, and one entry per source sample in source order. Every entry has a fullUrl and resource; request, response, and search are absent.",
+        "structure": "One strict UTF-8 JSON resource object with resourceType = Bundle, Bundle.type = collection, a mandatory offset-bearing timestamp, and one entry per source sample in source order. The Bundle has at least one entry. Every entry has a unique absolute non-fragment fullUrl and a resource object with resourceType; request, response, and search are absent.",
         "resources": "Every entry resource conforms to the profile set the emitting adapter declares for its stream; one Bundle carries one stream and one source batch only.",
-        "emptyBatch": "An empty batch emits no document rather than an empty Bundle."
+        "emptyBatch": "An empty batch emits no document rather than an empty Bundle.",
+        "validationScope": "The bundled format validator proves strict JSON syntax and only the collection-Bundle envelope and resource shape described above. It does not execute the official FHIR Validator over embedded resources. Base FHIR R4 conformance, adapter-declared resource profiles, the one-stream/one-source-batch boundary, and preservation of source ordering and source meaning remain producer responsibilities unless a separate validation step explicitly performs them."
       }
     },
     "fhir-r4-resource": {
@@ -486,7 +556,7 @@
         "structure": "One complete provider-issued FHIR R4 resource in FHIR JSON representation, byte-preserved exactly as the source platform delivered it.",
         "fhirVersion": "FHIR R4 (4.0.x) only. DSTU2 and every other release are rejected before a DocumentReference is emitted; a future admitted release requires its own format code and media contract.",
         "provenance": "The carrying document records the issuing source; Grove never asserts conformance over another issuer's resource.",
-        "scope": "One document carries exactly one clinical record's FHIR payload."
+        "scope": "One document carries exactly one clinical record's FHIR payload. The bundled format validator proves strict JSON syntax and a resourceType-bearing object only; it does not determine the FHIR release or execute base/profile validation over the issuer's resource."
       }
     },
     "clinical-document": {
@@ -499,29 +569,29 @@
     },
     "native-recording": {
       "title": "Native Recording",
-      "contentType": "application/vnd.grovealliance.native+json",
+      "contentType": "application/json",
       "status": "active",
       "specification": {
-        "encoding": "UTF-8.",
-        "structure": "The producer's exact native JSON serialization of one source batch, byte-preserved.",
-        "schema": "The emitting adapter documents the per-stream JSON schema; a stream without a documented schema cannot claim this format.",
-        "scope": "One document carries one stream and one batch."
+        "encoding": "UTF-8 without a byte-order mark.",
+        "structure": "The producer's exact native JSON serialization of one source batch, byte-preserved. The payload is well-formed JSON whose top-level value is an object or array; scalar roots are rejected.",
+        "schema": "This format defines no per-stream field schema. The carrying document's source type supplies the source category and meaning; payload members retain their native producer-defined meaning and remain opaque to a generic receiver.",
+        "scope": "One document carries one stream and one source batch. Structural validation proves only UTF-8 JSON syntax and the object-or-array envelope; it does not reinterpret, sanitize, rewrite, or reserialize the bytes."
       }
     },
     "provider-recording": {
       "title": "Provider Recording",
-      "contentType": "application/vnd.grovealliance.provider+json",
+      "contentType": "application/json",
       "status": "active",
       "specification": {
         "encoding": "UTF-8.",
         "structure": "The verbatim JSON payload returned by the provider API call that produced the batch, byte-preserved apart from transport framing.",
         "provenance": "The emitting adapter documents the provider, API, and endpoint per stream; the payload is never rewritten, reordered, or reserialized.",
-        "scope": "One document carries one API response for one account and one source element batch."
+        "scope": "One document carries one API response for one account and one source element batch. The bundled format validator proves strict JSON syntax and an object-or-array envelope only; provider-domain schema and meaning remain the adapter's responsibility."
       }
     },
     "photoplethysmogram-samples": {
       "title": "Photoplethysmogram Samples",
-      "contentType": "application/vnd.grovealliance.ppg",
+      "contentType": "application/octet-stream",
       "status": "active",
       "specification": {
         "primitives": {
@@ -538,12 +608,12 @@
           {
             "field": "startDate",
             "encoding": "float64",
-            "meaning": "Record start as seconds since the Unix epoch."
+            "meaning": "This record's session start anchor as seconds since the Unix epoch."
           },
           {
             "field": "nanosecondsSinceStart",
             "encoding": "varint(int64)",
-            "meaning": "Offset of the record from the batch start in nanoseconds."
+            "meaning": "Offset of this record instant from startDate in nanoseconds."
           },
           {
             "field": "temperature",
@@ -570,18 +640,18 @@
         "opticalSample": [
           {
             "field": "emitter",
-            "encoding": "varint(int)",
-            "meaning": "Active emitter index."
+            "encoding": "varint(int64)",
+            "meaning": "Active emitter index as a signed 64-bit integer."
           },
           {
             "field": "activePhotodiodeIndexes",
-            "encoding": "set(varint(int))",
-            "meaning": "Active photodiode indexes."
+            "encoding": "set(varint(uint64))",
+            "meaning": "Active photodiode indexes as unsigned 64-bit integers."
           },
           {
             "field": "signalIdentifier",
-            "encoding": "varint(int)",
-            "meaning": "Signal identifier."
+            "encoding": "varint(int64)",
+            "meaning": "Signal identifier as a signed 64-bit integer."
           },
           {
             "field": "nominalWavelength",
@@ -604,7 +674,7 @@
           {
             "field": "nanosecondsSinceStart",
             "encoding": "varint(int64)",
-            "meaning": "Offset from the record start in nanoseconds."
+            "meaning": "Offset of this optical sample instant from this record's startDate session anchor in nanoseconds."
           },
           {
             "field": "conditions",
@@ -644,7 +714,7 @@
           {
             "field": "nanosecondsSinceStart",
             "encoding": "varint(int64)",
-            "meaning": "Offset from the record start in nanoseconds."
+            "meaning": "Offset of this accelerometer sample instant from this record's startDate session anchor in nanoseconds."
           },
           {
             "field": "samplingFrequency",

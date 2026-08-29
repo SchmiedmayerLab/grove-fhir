@@ -53,7 +53,7 @@ def _apple_oracle(framework: str, retrieved: str) -> dict[str, Any]:
 
 def healthkit_evidence(retrieved: str) -> dict[str, Any]:
     return {
-        "schemaVersion": 1,
+        "schemaVersion": 0,
         "oracle": _apple_oracle("HealthKit", retrieved),
         "sourceTypes": healthkit_inventory(refresh=True),
     }
@@ -61,7 +61,7 @@ def healthkit_evidence(retrieved: str) -> dict[str, Any]:
 
 def sensorkit_evidence(retrieved: str) -> dict[str, Any]:
     return {
-        "schemaVersion": 1,
+        "schemaVersion": 0,
         "oracle": _apple_oracle("SensorKit", retrieved),
         "sensors": sensorkit_inventory(refresh=True),
     }
@@ -74,7 +74,7 @@ def health_connect_evidence(retrieved: str) -> dict[str, Any]:
     )
     inventory = health_connect_inventory(catalog["source"]["version"])
     return {
-        "schemaVersion": 1,
+        "schemaVersion": 0,
         "oracle": {
             "kind": "androidx-published-artifact",
             "artifact": inventory["artifact"],

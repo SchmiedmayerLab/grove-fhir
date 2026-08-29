@@ -47,7 +47,7 @@
         }
       ],
       "linkId": "body-weight",
-      "text": "What was your weight this morning?",
+      "text": "Measure your weight now.",
       "type": "quantity",
       "code": [
         {
@@ -93,7 +93,7 @@
             }
           ],
           "linkId": "systolic",
-          "text": "Systolic",
+          "text": "Systolic blood pressure",
           "type": "quantity",
           "code": [
             {
@@ -119,7 +119,7 @@
             }
           ],
           "linkId": "diastolic",
-          "text": "Diastolic",
+          "text": "Diastolic blood pressure",
           "type": "quantity",
           "code": [
             {
@@ -128,33 +128,10 @@
               "display": "Diastolic blood pressure"
             }
           ]
-        },
-        {
-          "extension": [
-            {
-              "extension": [
-                {
-                  "url": "definition",
-                  "valueUri": "http://hl7.org/fhir/StructureDefinition/Observation#Observation.effectiveDateTime"
-                },
-                {
-                  "url": "expression",
-                  "valueExpression": {
-                    "language": "text/fhirpath",
-                    "expression": "item.where(linkId = 'measured-at').answer.value"
-                  }
-                }
-              ],
-              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-definitionExtractValue"
-            }
-          ],
-          "linkId": "measured-at",
-          "text": "When did you take this reading?",
-          "type": "dateTime"
         }
       ],
       "linkId": "blood-pressure",
-      "text": "Blood pressure",
+      "text": "Measure your blood pressure now.",
       "type": "group",
       "code": [
         {
@@ -177,42 +154,10 @@
             "system": "http://unitsofmeasure.org",
             "display": "{steps}"
           }
-        },
-        {
-          "extension": [
-            {
-              "url": "definition",
-              "valueUri": "http://hl7.org/fhir/StructureDefinition/Observation#Observation.effectivePeriod.start"
-            },
-            {
-              "url": "expression",
-              "valueExpression": {
-                "language": "text/fhirpath",
-                "expression": "(%resource.authored.toDate() - 1 day).toString() + 'T00:00:00' + %resource.authored.toString().substring(19)"
-              }
-            }
-          ],
-          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-definitionExtractValue"
-        },
-        {
-          "extension": [
-            {
-              "url": "definition",
-              "valueUri": "http://hl7.org/fhir/StructureDefinition/Observation#Observation.effectivePeriod.end"
-            },
-            {
-              "url": "expression",
-              "valueExpression": {
-                "language": "text/fhirpath",
-                "expression": "%resource.authored.toDate().toString() + 'T00:00:00' + %resource.authored.toString().substring(19)"
-              }
-            }
-          ],
-          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-definitionExtractValue"
         }
       ],
       "linkId": "step-count",
-      "text": "How many steps did you take yesterday?",
+      "text": "Enter the step count displayed now.",
       "type": "integer",
       "code": [
         {

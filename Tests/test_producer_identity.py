@@ -26,8 +26,8 @@ from Tests.producer_validation_test_support import (
 class ProducerIdentityTests(ProducerValidationTestCase):
     def test_device_snapshot_outranks_stable_recording_device_identity(self) -> None:
         system = "https://study.example.org/fhir/NamingSystem/device"
-        recording = "v2:test-key:1:" + "A" * 43
-        snapshot = "v2:test-key:1:" + "B" * 43
+        recording = "v0:test-key:1:" + "A" * 43
+        snapshot = "v0:test-key:1:" + "B" * 43
         device = {
             "resourceType": "Device",
             "identifier": [
@@ -126,13 +126,13 @@ class ProducerIdentityTests(ProducerValidationTestCase):
     def test_governed_source_identifier_is_optional_and_primary_only(self) -> None:
         source = typed_identifier(
             "source-record",
-            "https://store.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1",
-            "v2:test-key:1:" + "A" * 43,
+            "https://store.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1",
+            "v0:test-key:1:" + "A" * 43,
         )
         output = typed_identifier(
             "source-output",
-            "https://store.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1",
-            "v2:test-key:1:" + "B" * 43,
+            "https://store.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1",
+            "v0:test-key:1:" + "B" * 43,
         )
         native = {
             "system": "https://store.example.org/fhir/NamingSystem/healthkit-object/store-a",
@@ -220,7 +220,7 @@ class ProducerIdentityTests(ProducerValidationTestCase):
         workout_segment["identifier"] = [
             copy.deepcopy(source),
             typed_identifier(
-                "source-output", output["system"], "v2:test-key:1:" + "W" * 43
+                "source-output", output["system"], "v0:test-key:1:" + "W" * 43
             ),
         ]
         identity.validate_governed_source_identifiers(
@@ -301,12 +301,12 @@ class ProducerIdentityTests(ProducerValidationTestCase):
             "identifier": [
                 copy.deepcopy(source),
                 typed_identifier(
-                    "source-output", output["system"], "v2:test-key:1:" + "C" * 43
+                    "source-output", output["system"], "v0:test-key:1:" + "C" * 43
                 ),
                 typed_identifier(
                     "source-artifact",
-                    "https://store.example.org/fhir/NamingSystem/grove-source-artifact-v2/test-key/1",
-                    "v2:test-key:1:" + "D" * 43,
+                    "https://store.example.org/fhir/NamingSystem/grove-source-artifact-v0/test-key/1",
+                    "v0:test-key:1:" + "D" * 43,
                 ),
                 copy.deepcopy(native),
             ],
@@ -339,7 +339,7 @@ class ProducerIdentityTests(ProducerValidationTestCase):
     def test_governed_source_identifier_uses_health_connect_and_provider_row_output(self) -> None:
         source = typed_identifier(
             "source-record", "https://example.org/source-record",
-            "v2:test-key:1:" + "E" * 43,
+            "v0:test-key:1:" + "E" * 43,
         )
         native = {
             "system": "https://store.example.org/native-record",
@@ -349,7 +349,7 @@ class ProducerIdentityTests(ProducerValidationTestCase):
         def output(fill: str) -> dict[str, object]:
             return typed_identifier(
                 "source-output", "https://example.org/source-output",
-                "v2:test-key:1:" + fill * 43,
+                "v0:test-key:1:" + fill * 43,
             )
 
         hc_marker = {

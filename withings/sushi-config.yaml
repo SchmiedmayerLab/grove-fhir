@@ -11,9 +11,8 @@ canonical: https://grovealliance.org/fhir/withings
 name: GroveFHIRWithings
 title: Grove FHIR Withings Adapter
 description: >-
-  FHIR R4 mappings for Withings Health Mate elements that no other source reports, exchanged through Grove
-  exact semantic and provider-lineage contracts. Shared measurements that two or more connected providers report are
-  published by the Grove FHIR Connected Provider Adapter, which this guide depends on.
+  FHIR R4 mappings for Withings API-specific measurements, layered on the shared
+  semantic and lineage contracts in the Grove FHIR Connected Provider Adapter.
 status: draft
 version: 0.6.0
 fhirVersion: 4.0.1

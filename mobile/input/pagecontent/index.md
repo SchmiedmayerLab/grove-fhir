@@ -10,13 +10,12 @@ Grove Mobile defines a reusable FHIR R4 exchange contract for measurements colle
 Clinical meaning stays in standard FHIR fields and established domain profiles.
 Grove profiles make record identity, capture mode, device roles, conversion provenance, and research-study context consistent across source platforms.
 
-Grove FHIR 0.6.0 is a family of ten guide packages; [the guide family page](guides.html) maps them, their catalogs, and the shared status vocabulary.
+The Grove FHIR Implementation Guides form a family of ten guide packages. The [guide family page](guides.html) maps their responsibilities, catalogs, and shared status vocabulary.
 
-New to FHIR?
-[Start here](fhir-basics.html).
-It covers the five resources these guides use, the difference between an id and an identifier, and how to read a profile page — enough to follow everything below.
+Readers who are new to FHIR can begin with [FHIR basics](fhir-basics.html).
+That page introduces the core resources used by these guides, distinguishes resource IDs from business identifiers, and explains how to read a profile page.
 
-### Choose your starting point
+### Choose a starting point
 
 | Goal | Read | Working example |
 |---|---|---|
@@ -56,15 +55,15 @@ Source-platform identifiers and metadata belong to adapter packages.
 An adapter derives its Observation profile from the Mobile envelope, defines its own identifier systems, and permits only source fields with a documented mapping.
 This keeps the shared contract independent of any mobile operating system or vendor API.
 
-### Reading generated profile pages
+### Reading profile pages
 
 The **Differential Table** on a profile page shows the rules added by this guide.
 The **Snapshot Table** includes all inherited FHIR R4 rules.
-Examples have XML, JSON, and Turtle tabs; the JSON representation is usually the fastest reference for an application developer.
+Examples provide XML, JSON, and Turtle representations; the JSON representation is generally the most direct reference for application development.
 
 Start with the [heart-rate JSON](Observation-GroveMobileHeartRateExample.json), then compare it with the [Mobile envelope](StructureDefinition-grove-mobile-observation.html) and the [FHIR R4 Heart Rate profile](https://hl7.org/fhir/R4/heartrate.html).
 
 Every profile carries an example.
-The hand-written ones show a measurement in the context a producer actually emits it, with the device, study, and platform metadata that surround it.
-The rest are projected from the same catalog entry as the profile itself, so they state the minimum a conformant instance needs and cannot drift from the rules they satisfy.
-A projected example is not a template for a rich record; read a hand-written one for that.
+Worked examples show measurements in the context emitted by a producer, including the associated device, study, and platform metadata.
+The remaining examples demonstrate the minimum content required by their profiles.
+They are conformance references rather than templates for richly populated records.

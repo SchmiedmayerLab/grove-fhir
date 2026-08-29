@@ -12,8 +12,8 @@ Release evidence binds package checksums to the exact Grove FHIR source revision
 python3 Scripts/validate-producer.py \
   --manifest path/to/grove-fhir-producer.json \
   --validator path/to/validator_cli.jar \
-  --package mobile=path/to/org.grovealliance.fhir.mobile-0.6.0.tgz \
-  --package healthkit=path/to/org.grovealliance.fhir.healthkit-0.6.0.tgz
+  --package mobile=path/to/org.grovealliance.fhir.mobile-<version>.tgz \
+  --package healthkit=path/to/org.grovealliance.fhir.healthkit-<version>.tgz
 ```
 
 Real producer output fails official validation when it uses reserved example.org URLs.
@@ -43,7 +43,7 @@ Equal offset-bearing FHIR instants are normalized without losing fractional prec
 Swift, Kotlin, and TypeScript repositories therefore generate these fixtures in their own CI; Grove FHIR still never executes their implementations.
 
 The structural conformance kit rejects graph, closed-reference, deterministic-identity, exact summary-cardinality, and adapter source-context failures without needing an implementation guide build.
-FHIR element cardinality and terminology validation remain the official HL7 FHIR Validator's responsibility with the exact 0.6.0 packages.
+FHIR element cardinality and terminology validation remain the official HL7 FHIR Validator's responsibility with the exact packages selected by the producer manifest.
 Completeness of a source-dependent one-per-sample/stage/delta/present-field projection cannot be proved from an output-only manifest; the producer's source-fixture tests own that comparison.
 A producer test suite must run all three layers; structural-only success is not FHIR conformance.
 
@@ -53,7 +53,7 @@ Active and retraction events reject every contained resource and `#id` reference
 The active graph is also closed by resource class and direct profile claim.
 Observation, DocumentReference, Specimen, VisionPrescription, MedicationAdministration, and MedicationStatement are outputs; Patient, Device, ResearchStudy, ResearchSubject, PlanDefinition, and Grove QuestionnaireResponse are supporting entries; exactly one Provenance is the lifecycle assertion.
 Supporting entries must connect to an output or that Provenance.
-DeviceMetric and every other R4 type fail closed in 0.6.0.
+`DeviceMetric` and every other unlisted R4 type fail closed under the Grove FHIR contracts.
 
 Every adapter output uses one of the closed direct-claim modes in `catalog/profile-claims.json`:
 

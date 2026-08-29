@@ -15,6 +15,9 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).parents[1]
+RELEASE_VERSION = json.loads(
+    (ROOT / "catalog/release-manifest.json").read_text(encoding="utf-8")
+)["releaseVersion"]
 
 
 class SensorKitCatalogTests(unittest.TestCase):
@@ -31,9 +34,9 @@ class SensorKitCatalogTests(unittest.TestCase):
         )
 
     def test_release_package_and_profile_graph_are_exact(self) -> None:
-        self.assertEqual(self.catalog["schemaVersion"], 1)
+        self.assertEqual(self.catalog["schemaVersion"], 0)
         self.assertEqual(self.catalog["fhirVersion"], "4.0.1")
-        self.assertEqual(self.catalog["version"], "0.6.0")
+        self.assertEqual(self.catalog["version"], RELEASE_VERSION)
         package = next(
             package for package in self.graph["packages"]
             if package["source"] == "sensorkit"
@@ -45,8 +48,8 @@ class SensorKitCatalogTests(unittest.TestCase):
             [
                 "hl7.terminology.r4#7.3.0",
                 "hl7.fhir.uv.extensions.r4#5.3.0",
-                "org.grovealliance.fhir.mobile#0.6.0",
-                "org.grovealliance.fhir.sensor#0.6.0",
+                f"org.grovealliance.fhir.mobile#{RELEASE_VERSION}",
+                f"org.grovealliance.fhir.sensor#{RELEASE_VERSION}",
             ],
         )
         self.assertEqual(
@@ -196,7 +199,6 @@ class SensorKitCatalogTests(unittest.TestCase):
                         "requiredForFields",
                         "formats",
                         "formatsReason",
-                        "jsonSchema",
                     }
                 )
                 self.assertEqual(raw["status"], "mapped-standard")
@@ -207,6 +209,7 @@ class SensorKitCatalogTests(unittest.TestCase):
                 )
                 self.assertEqual(raw["outputDiscriminator"], "native-recording")
                 self.assertEqual(raw["encoding"], "caller-supplied exact bytes")
+                self.assertNotIn("jsonSchema", raw)
                 discriminators = {raw["outputDiscriminator"]}
                 structured_discriminator = entry.get("structured", {}).get(
                     "outputDiscriminator"
@@ -244,7 +247,7 @@ class SensorKitCatalogTests(unittest.TestCase):
             by_token["SRSensor.photoplethysmogram"]["status"], "platform-exclusive"
         )
         self.assertEqual(by_token["SRSensor.pedometerData"]["status"], "mapped-standard")
-        # Wrist temperature gained a platform-scoped structured contract in 0.6.0, so its
+        # Wrist temperature has a platform-scoped structured contract, so its
         # top-level status matches its siblings rather than claiming a recording document only.
         self.assertEqual(
             by_token["SRSensor.wristTemperature"]["status"], "platform-exclusive"
@@ -265,6 +268,7 @@ class SensorKitCatalogTests(unittest.TestCase):
             ["sensorkit-device-usage-observation", "sensorkit-recording-document"],
         )
         self.assertIn("same Grove Mobile collection Bundle", graph["relationship"])
+        self.assertTrue(graph["bidirectional"])
         self.assertTrue(graph["sharedSourceIdentity"])
         ecg_graph = ecg["structured"]["graphContract"]
         self.assertEqual(
@@ -272,6 +276,88 @@ class SensorKitCatalogTests(unittest.TestCase):
             ["sensorkit-ecg-observation", "sensorkit-recording-document"],
         )
         self.assertIn("same Grove Mobile collection Bundle", ecg_graph["relationship"])
+        self.assertTrue(ecg_graph["bidirectional"])
+
+        hybrid_graphs = {
+            "SRSensor.accelerometer": (
+                "sensorkit-accelerometer-observation",
+                "acquisition bounds",
+            ),
+            "SRSensor.photoplethysmogram": (
+                "sensorkit-ppg-observation",
+                "session bounds",
+            ),
+            "SRSensor.wristTemperature": (
+                "sensorkit-wrist-temperature-observation",
+                "session bounds",
+            ),
+        }
+        enforced_profiles = {
+            structured[profile_key]
+            for entry in self.catalog["entries"]
+            if isinstance((structured := entry.get("structured")), dict)
+            and "graphContract" in structured
+            for profile_key in ("profile", "adapterProfile")
+            if profile_key in structured
+        }
+        self.assertEqual(
+            enforced_profiles,
+            {
+                "https://grovealliance.org/fhir/sensorkit/StructureDefinition/"
+                "sensorkit-device-usage-observation",
+                "https://grovealliance.org/fhir/sensorkit/StructureDefinition/"
+                "sensorkit-ecg-observation",
+                "https://grovealliance.org/fhir/sensorkit/StructureDefinition/"
+                "sensorkit-accelerometer-observation",
+                "https://grovealliance.org/fhir/sensorkit/StructureDefinition/"
+                "sensorkit-keyboard-metrics-observation",
+                "https://grovealliance.org/fhir/sensorkit/StructureDefinition/"
+                "sensorkit-ppg-observation",
+                "https://grovealliance.org/fhir/sensorkit/StructureDefinition/"
+                "sensorkit-wrist-temperature-observation",
+            },
+        )
+        for source_token, (summary_profile, bounds) in hybrid_graphs.items():
+            with self.subTest(source_token=source_token):
+                graph = by_token[source_token]["structured"]["graphContract"]
+                self.assertEqual(
+                    graph["requiredResources"],
+                    [summary_profile, "sensorkit-recording-document"],
+                )
+                self.assertIn("Observation.derivedFrom", graph["relationship"])
+                self.assertIn("DocumentReference.context.related", graph["relationship"])
+                self.assertIn(bounds, graph["coverageRule"])
+                self.assertIn("every", graph["coverageRule"])
+                self.assertIn("derived from the accepted payload", graph["summaryDerivationRule"])
+                self.assertIn("not", graph["summaryDerivationRule"])
+                self.assertTrue(graph["bidirectional"])
+                self.assertTrue(graph["sharedSourceIdentity"])
+        self.assertIn(
+            "distinct (device, identifier) batch keys",
+            by_token["SRSensor.accelerometer"]["structured"]["graphContract"][
+                "summaryDerivationRule"
+            ],
+        )
+        keyboard_graph = by_token["SRSensor.keyboardMetrics"]["structured"][
+            "graphContract"
+        ]
+        self.assertEqual(
+            keyboard_graph["requiredResources"],
+            [
+                "sensorkit-keyboard-metrics-observation",
+                "sensorkit-recording-document",
+            ],
+        )
+        self.assertTrue(keyboard_graph["bidirectional"])
+        self.assertTrue(keyboard_graph["sharedSourceIdentity"])
+        self.assertNotIn("coverageRule", keyboard_graph)
+        self.assertNotIn("summaryDerivationRule", keyboard_graph)
+        self.assertIn(
+            "every record's startDate session anchor",
+            by_token["SRSensor.photoplethysmogram"]["structured"]["graphContract"][
+                "coverageRule"
+            ],
+        )
 
     def test_ecg_profile_admits_both_exact_orientations_without_false_mdc_label(self) -> None:
         profile = (ROOT / "sensorkit/input/fsh/profiles.fsh").read_text(encoding="utf-8")
@@ -309,7 +395,7 @@ class SensorKitCatalogTests(unittest.TestCase):
             identity["contract"],
             "catalog/exchange-protocol.json",
         )
-        self.assertEqual(identity["protocolVersion"], 2)
+        self.assertEqual(identity["protocolVersion"], 0)
         self.assertEqual(identity["adapterId"], "sensorkit")
         self.assertEqual(identity["sourceRecord"]["identityKind"], "source-record")
         self.assertEqual(
@@ -399,6 +485,11 @@ class SensorKitCatalogTests(unittest.TestCase):
             ["caller-authorized-opaque-payload", "verified-sanitized-input"],
         )
         self.assertIn("exactly one", admission["failureRule"])
+        coverage = admission["payloadCoverageRule"]
+        self.assertIn("raw-only", coverage)
+        self.assertIn("instant bounds", coverage)
+        self.assertIn("contains every derived payload instant", coverage)
+        self.assertIn("fails closed", coverage)
         self.assertTrue(admission["notFHIRAuthorization"])
 
 

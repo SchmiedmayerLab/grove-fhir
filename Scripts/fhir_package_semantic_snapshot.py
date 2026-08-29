@@ -32,7 +32,7 @@ except ModuleNotFoundError:  # Imported as Scripts.fhir_package_semantic_snapsho
     )
 
 
-SNAPSHOT_SCHEMA_VERSION = 1
+SNAPSHOT_SCHEMA_VERSION = 0
 CANONICAL_RESOURCE_SECTIONS = {
     "StructureDefinition": "structureDefinitions",
     "CodeSystem": "codeSystems",
@@ -239,7 +239,7 @@ PUBLISHER_DIAGNOSTIC_MEMBERS = frozenset(
     {"other/.index.json", "other/validation-oo.json", "other/validation-summary.json"}
 )
 NORMALIZATION = {
-    "schemaVersion": 1,
+    "schemaVersion": 0,
     "excluded": [
         "FHIR DomainResource.text at every nesting level",
         "FHIR Meta.lastUpdated at every nesting level",

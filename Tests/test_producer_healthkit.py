@@ -99,7 +99,7 @@ class ProducerHealthkitTests(ProducerValidationTestCase):
             return typed_identifier(
                 role,
                 f"https://example.org/fhir/NamingSystem/{role}/test-key/1",
-                "v2:test-key:1:" + fill * 43,
+                "v0:test-key:1:" + fill * 43,
             )
 
         source = grove("source-record", "A")
@@ -151,6 +151,80 @@ class ProducerHealthkitTests(ProducerValidationTestCase):
             {document_url: document, provenance_url: provenance},
             "HealthKit graph",
         )
+
+    def test_healthkit_clinical_document_runs_shared_payload_pipeline(self) -> None:
+        clinical_profile = context.HEALTHKIT_CLINICAL_RECORD_PROFILE
+        document = {
+            "resourceType": "DocumentReference",
+            "meta": {"profile": [clinical_profile]},
+            "identifier": [
+                typed_identifier(
+                    role,
+                    f"https://example.org/fhir/NamingSystem/{role}/test-key/1",
+                    f"v0:test-key:1:{fill * 43}",
+                )
+                for role, fill in (
+                    ("source-record", "A"),
+                    ("source-output", "B"),
+                    ("source-artifact", "C"),
+                )
+            ],
+            "extension": [{
+                "url": (
+                    "https://grovealliance.org/fhir/healthkit/StructureDefinition/"
+                    "healthkit-source-type-extension"
+                ),
+                "valueCode": "HKClinicalTypeIdentifierAllergyRecord",
+            }],
+            "content": [{
+                "attachment": {
+                    "contentType": "application/fhir+json",
+                    "data": (
+                        "eyJyZXNvdXJjZVR5cGUiOiJBbGxlcmd5SW50b2xlcmFuY2UiLCJpZCI6"
+                        "InByb3ZpZGVyLWlzc3VlZC0xIiwiY2xpbmljYWxTdGF0dXMiOnsiY29k"
+                        "aW5nIjpbeyJzeXN0ZW0iOiJodHRwOi8vdGVybWlub2xvZ3kuaGw3Lm9y"
+                        "Zy9Db2RlU3lzdGVtL2FsbGVyZ3lpbnRvbGVyYW5jZS1jbGluaWNhbCIs"
+                        "ImNvZGUiOiJhY3RpdmUifV19LCJwYXRpZW50Ijp7InJlZmVyZW5jZSI6"
+                        "IlBhdGllbnQvcGFydGljaXBhbnQtaGstMDAxIn19"
+                    ),
+                    "size": 240,
+                    "hash": "0c+dHXDzCV5zPy4cApwAoV9evYc=",
+                },
+                "format": {
+                    "system": (
+                        "https://grovealliance.org/fhir/sensor/CodeSystem/"
+                        "grove-recording-format"
+                    ),
+                    "code": "fhir-r4-resource",
+                },
+            }],
+        }
+
+        exchange_bundle.validate_resource_profile_claims(
+            document, "HealthKit clinical", {clinical_profile}
+        )
+
+        defects = (
+            ("format", "declares no registry payload format"),
+            ("size", "size is required"),
+            ("hash", "hash does not match embedded bytes"),
+        )
+        for defect, message in defects:
+            invalid = copy.deepcopy(document)
+            if defect == "format":
+                del invalid["content"][0]["format"]
+            elif defect == "size":
+                del invalid["content"][0]["attachment"]["size"]
+            else:
+                invalid["content"][0]["attachment"]["hash"] = (
+                    "cDeAcZjCKn0rCAc3HXY3eahP388="
+                )
+            with self.subTest(defect=defect), self.assertRaisesRegex(
+                diagnostics.ProducerValidationError, message
+            ):
+                exchange_bundle.validate_resource_profile_claims(
+                    invalid, "HealthKit clinical", {clinical_profile}
+                )
 
     def test_healthkit_ecg_contract_uses_native_r4_and_closed_graph(self) -> None:
         healthkit_root = "https://grovealliance.org/fhir/healthkit/"
@@ -246,7 +320,7 @@ class ProducerHealthkitTests(ProducerValidationTestCase):
                 "identifier": typed_identifier(
                     "source-output",
                     output_system,
-                    "v2:test-key:1:" + chr(ord("C") + index) * 43,
+                    "v0:test-key:1:" + chr(ord("C") + index) * 43,
                 ),
             }
             for index in range(8)

@@ -31,11 +31,6 @@ Description: "Reference questions and reference-valued answer options are outsid
 Severity: #error
 Expression: "repeat(item).where(type = 'reference').empty() and repeat(item).answerOption.value.ofType(Reference).empty()"
 
-Invariant: qg-repeats-1
-Description: "Repeated answers are limited to choice, open-choice, and attachment questions."
-Severity: #error
-Expression: "repeat(item).where(repeats = true).all(type = 'choice' or type = 'open-choice' or type = 'attachment')"
-
 Invariant: qg-enable-1
 Description: "An item does not combine core enableWhen rules with an enableWhenExpression."
 Severity: #error
@@ -87,9 +82,9 @@ Severity: #error
 Expression: "repeat(item).where(extension('http://hl7.org/fhir/StructureDefinition/mimeType').exists() or extension('http://hl7.org/fhir/StructureDefinition/maxSize').exists()).all(type = 'attachment')"
 
 Invariant: qg-occurrence-1
-Description: "Minimum and maximum occurrence constraints are used only on repeating items."
+Description: "Occurrence constraints are used only on repeating items, and a minimum requires required=true."
 Severity: #error
-Expression: "repeat(item).where(extension('http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs').exists() or extension('http://hl7.org/fhir/StructureDefinition/questionnaire-maxOccurs').exists()).all(repeats = true)"
+Expression: "repeat(item).where(extension('http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs').exists() or extension('http://hl7.org/fhir/StructureDefinition/questionnaire-maxOccurs').exists()).all(repeats = true and (extension('http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs').empty() or (required.exists() and required = true)))"
 
 Invariant: qg-min-max-1
 Description: "Minimum text length and occurrence counts do not exceed their corresponding maxima."
@@ -121,7 +116,7 @@ Parent: http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire
 Id: grove-questionnaire
 Title: "Grove Questionnaire"
 Description: "A versioned SDC Questionnaire that can be administered and answered without relying on renderer-specific semantics."
-* obeys qg-canonical-1 and qg-version-1 and qg-version-algorithm-1 and qg-item-text-1 and qg-reference-1 and qg-repeats-1 and qg-enable-1 and qg-expression-1 and qg-variable-name-1 and qg-initial-1 and qg-length-1 and qg-decimal-1 and qg-value-bounds-1 and qg-quantity-1 and qg-unit-1 and qg-attachment-1 and qg-occurrence-1 and qg-min-max-1 and qg-style-sensitive-1
+* obeys qg-canonical-1 and qg-version-1 and qg-version-algorithm-1 and qg-item-text-1 and qg-reference-1 and qg-enable-1 and qg-expression-1 and qg-variable-name-1 and qg-initial-1 and qg-length-1 and qg-decimal-1 and qg-value-bounds-1 and qg-quantity-1 and qg-unit-1 and qg-attachment-1 and qg-occurrence-1 and qg-min-max-1 and qg-style-sensitive-1
 * extension contains
     $variable named variable 0..* MS and
     $targetConstraint named targetConstraint 0..* MS

@@ -9,9 +9,9 @@ GENERATED FILE. Edit the corresponding catalog JSON and run
 `python3 Scripts/render-status-matrices.py`.
 -->
 
-# Authoritative Google Health API status matrix
+### Authoritative Google Health API status matrix
 
-This table enumerates every Google Health API field in the closed v0.6.0 source catalog. Each field has one definitive status. This guide profiles data already obtained by its caller; it contains no authentication, network, pagination, or fetching implementation.
+This table lists every Google Health API field in the published Grove inventory. Each field has one definitive status. This guide profiles data already obtained before FHIR conversion; it contains no authentication, network, pagination, or fetching implementation.
 
 | Source type | Source status | Provider field | Field status | Measurement | Representation / conversion | Binding reason / effective time |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -24,7 +24,7 @@ This table enumerates every Google Health API field in the closed v0.6.0 source 
 | `vo2-max` | `supported` | `vo2Max.vo2Max` | `supported` | vo2-max | — | — |
 | `daily-oxygen-saturation` | `supported` | `dailyOxygenSaturation.averagePercentage` | `supported` | oxygen-saturation-daily-average | — | — |
 | `heart-rate-variability` | `supported` | `heartRateVariability.rootMeanSquareOfSuccessiveDifferencesMilliseconds` | `supported` | heart-rate-variability-rmssd | — | — |
-| `heart-rate-variability` | `supported` | `heartRateVariability.standardDeviationMilliseconds` | `supported` | heart-rate-variability-rmssd; heart-rate-variability-sdnn | — | — |
+| `heart-rate-variability` | `supported` | `heartRateVariability.standardDeviationMilliseconds` | `supported` | heart-rate-variability-sdnn | — | — |
 | `daily-resting-heart-rate` | `supported` | `dailyRestingHeartRate.beatsPerMinute` | `supported` | resting-heart-rate-daily-average | — | — |
 | `daily-respiratory-rate` | `supported` | `dailyRespiratoryRate.breathsPerMinute` | `supported` | respiratory-rate-average | — | — |
 | `blood-glucose` | `supported` | `bloodGlucose.bloodGlucoseMilligramsPerDeciliter` | `supported` | blood-glucose-unspecified-specimen | — | — |

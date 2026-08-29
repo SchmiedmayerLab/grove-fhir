@@ -25,6 +25,6 @@ The canonical Apple documentation page for that constant, recorded from Apple's 
 The concepts in this code system are exactly the public `SRSensor` constants in the SDK baseline named in the code system description, verified against `sensorkit/input/data/sensorkit-inventory.json`. `content` is therefore `complete` for that baseline.
 Moving to a later SDK baseline is a version change, not an in-place edit.
 
-Whether the 0.6.0 adapter admits output for a sensor is the `status` column of the [status matrix](status-matrix.html), and never appears in terminology.
+The `status` column of the [status matrix](status-matrix.html) defines whether the Grove FHIR contracts admit output for a sensor. Admission status is not part of the terminology.
 
 Each property is defined as a concept in [sensorkit-concept-property](CodeSystem-sensorkit-concept-property.html), which is what `CodeSystem.property.uri` names.

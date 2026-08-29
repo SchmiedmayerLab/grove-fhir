@@ -1,6 +1,6 @@
 {
   "$schema": "https://grovealliance.org/fhir/catalog/schemas/catalog-contracts.schema.json",
-  "schemaVersion": 1,
+  "schemaVersion": 0,
   "fhirVersion": "4.0.1",
   "version": "0.6.0",
   "packageId": "org.grovealliance.fhir.sensor",
@@ -41,6 +41,7 @@
       "timingContract": "sampled-data",
       "channelUnit": {"system": "http://unitsofmeasure.org", "code": "mV"},
       "channelDimensions": 1,
+      "channelIdentityRule": "Each component.code contains one or more complete codings. The channel identity is the unordered set of exact Coding.system and Coding.code pairs; duplicate pairs within a component and duplicate identity sets across components are prohibited. Coding.display is presentation text and never contributes to identity.",
       "standardBasis": ["FHIR R4 SampledData", "LOINC 11524-6", "ISO/IEEE 11073 MDC lead terminology"]
     },
     {
@@ -60,7 +61,7 @@
         "requiredProducerInput": "exactly one explicit caller assertion before emission",
         "allowedAssertions": ["caller-authorized-opaque-payload", "verified-sanitized-input"],
         "failureRule": "Absent, ambiguous, or unsupported assertions fail closed before creating a DocumentReference.",
-        "scope": "This producer preflight is not encoded as a FHIR authorization or consent claim. The IG does not inspect, fetch, or sanitize opaque attachment bytes."
+        "scope": "This producer preflight is not encoded as a FHIR authorization or consent claim. A conformant producer validates supplied bytes against the declared registry grammar and derives grammar-defined summary counts from the accepted payload. For URL payloads, the bundled validator checks required Attachment metadata only and does not fetch or verify the bytes. For inline payloads, it verifies size/hash integrity, validates registered CSV grammars, and applies the strict JSON envelope documented for native, provider, and FHIR formats; the FHIR collection format additionally receives its documented Bundle-envelope and resource-shape checks. It does not execute the official FHIR Validator over embedded resources. Its CSV checks are structural and lexical; they do not enforce per-column source-domain ranges stated in column meanings. It does not parse every binary grammar, recompute summaries, semantically reinterpret, sanitize, rewrite, or reserialize payload bytes. Passing that checker alone therefore does not prove URL-backed payload integrity or grammar, binary-payload grammar, embedded-resource FHIR/profile conformance, summary derivation, clinical meaning, or authorization."
       },
       "sizeThreshold": null,
       "sizeThresholdPolicy": "deployment-specific"

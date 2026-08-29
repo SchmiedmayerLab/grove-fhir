@@ -15,6 +15,9 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).parents[1]
+RELEASE_VERSION = json.loads(
+    (ROOT / "catalog/release-manifest.json").read_text(encoding="utf-8")
+)["releaseVersion"]
 SOURCES = {"healthkit", "health-connect", "sensorkit", "google-health-api", "oura", "withings"}
 
 
@@ -23,7 +26,7 @@ class MeasurementCatalogTests(unittest.TestCase):
         catalog = json.loads((ROOT / "catalog/measurement-catalog.json").read_text(encoding="utf-8"))
         graph = json.loads((ROOT / "catalog/package-graph.json").read_text(encoding="utf-8"))
         self.assertEqual(catalog["fhirVersion"], "4.0.1")
-        self.assertEqual(catalog["version"], "0.6.0")
+        self.assertEqual(catalog["version"], RELEASE_VERSION)
         package_profiles = {
             package["source"]: set(package["profiles"]) for package in graph["packages"]
         }

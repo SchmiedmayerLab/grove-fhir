@@ -12,7 +12,7 @@ The generic [Grove Mobile Observation](StructureDefinition-grove-mobile-observat
 
 ### Shared measurement contract
 
-Every profile in this table has at least two independently supported source adapters in version 0.6.0.
+Every profile in this table has at least two independently supported source adapters in the Grove FHIR contracts.
 A meaning implemented by only one source stays in that adapter guide.
 Accordingly, HealthKit BMI claims the authoritative R4 BMI profile directly alongside the HealthKit adapter profile, while specimen-specific glucose profiles are defined in Health Connect, whose source record supplies the required specimen evidence.
 
@@ -32,9 +32,9 @@ Accordingly, HealthKit BMI claims the authoritative R4 BMI profile directly alon
 | Sleep duration | `grove-mobile-sleep-duration` | LOINC `93832-4` | UCUM `h` | `Period` |
 | Sleep stage | `grove-mobile-sleep-stage` | Grove `sleep-stage` and required Grove stage value set | coded stage | `Period` |
 
-The machine-readable source of this table is [`catalog/measurement-catalog.json`](https://grovealliance.org/fhir/catalog/measurement-catalog.json) in the source repository.
+The complete machine-readable measurement contract is published in [`catalog/measurement-catalog.json`](https://grovealliance.org/fhir/catalog/measurement-catalog.json).
 A standard-first Grove profile declares the standard profile through the R4 `structuredefinition-imposeProfile` extension.
-An instance claiming the Grove profile therefore has to validate against both profiles; a producer declares only the Grove canonical in `meta.profile`.
+An instance claiming the Grove profile must therefore validate against both profiles; a producer declares only the Grove canonical in `meta.profile`.
 
 An adapter output declares exactly two canonicals: this shared measurement profile and the one adapter profile.
 A source-neutral output that carries no adapter source marker declares only the shared measurement profile, even when its producer manifest lists adapter packages used by other resources.
@@ -43,7 +43,7 @@ An adapter source marker without its exact adapter profile is invalid.
 An adapter output does not separately declare Grove Mobile Observation or the imposed core profile; those constraints are inherited.
 This exact-two rule prevents a producer from presenting ambiguous adapter or measurement semantics.
 
-### Fields every mapping addresses
+### Required mapping decisions
 
 | Question | FHIR element | Rule |
 |---|---|---|
@@ -57,7 +57,8 @@ This exact-two rule prevents a producer from presenting ambiguous adapter or mea
 | Which app mediated it? | `observation-gatewayDevice` | Only when the application actually mediated the measurement |
 | Which study applies? | `workflow-researchStudy` | ResearchStudy reference, when applicable |
 
-The [heart-rate example](Observation-GroveMobileHeartRateExample.html) demonstrates a standard-first profile:
+The [heart-rate example](Observation-GroveMobileHeartRateExample.html) demonstrates a standard-first profile.
+The HMAC values in this abbreviated example are schematic; the complete published example contains concrete conformance-key values.
 
 ```json
 {
@@ -70,13 +71,13 @@ The [heart-rate example](Observation-GroveMobileHeartRateExample.html) demonstra
   "identifier": [
     {
       "type": {"coding": [{"system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role", "code": "source-record"}]},
-      "system": "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1",
-      "value": "v2:test-key:1:D2f2lnPlZ6XI5L3uOVJrhpLE55ltpgC6sNXRv8_65D4"
+      "system": "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1",
+      "value": "v0:<key-id>:<epoch>:…"
     },
     {
       "type": {"coding": [{"system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role", "code": "source-output"}]},
-      "system": "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1",
-      "value": "v2:test-key:1:LmIAsdN9oEgV7BHugInyYfqBh5ZfTKlAbeSyLqMvAuA"
+      "system": "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1",
+      "value": "v0:<key-id>:<epoch>:…"
     }
   ],
   "status": "final",
@@ -100,7 +101,7 @@ These are source-representation rules, not invented physiologic plausibility ran
 
 An Observation identifier is a business identifier, not the FHIR server's resource id.
 Every Grove output carries separately typed source-record and source-output Identifiers.
-Their systems are deployment-owned and immutable for one identity kind, scope, HMAC key id, and key epoch; their values use the `v2:<key-id>:<epoch>:<digest>` form.
+Their systems are deployment-owned and immutable for one identity kind, scope, HMAC key id, and key epoch; their values use the `v0:<key-id>:<epoch>:<digest>` form.
 The exact component order and unsigned 32-bit length-framed UTF-8 preimage are normative in [`catalog/exchange-protocol.json`](https://grovealliance.org/fhir/catalog/exchange-protocol.json). Each catalog-named identity component is a non-empty Unicode-scalar string; missing, empty, additional, reordered, or non-scalar components are errors.
 
 The opaque Grove identifiers are mandatory even when a deployment intentionally discloses a source-native identifier for round-trip or traceability.
@@ -139,14 +140,14 @@ Unknown-specimen glucose and any unlisted specimen fail closed; they are never r
 ### Exchange graph
 
 The normative producer output is a [Grove Mobile Exchange Bundle](StructureDefinition-grove-mobile-exchange-bundle.html), a FHIR `collection` Bundle for exactly one immutable source-record revision.
-The Bundle has one typed event Identifier (`e2:<producer-instance-uuid>:<positive-sequence>`), a mandatory assembly timestamp, and exactly one transform Provenance that records source occurrence and assertion times and targets every output.
+The Bundle has one typed event Identifier (`e0:<producer-instance-uuid>:<positive-sequence>`), a mandatory assembly timestamp, and exactly one transform Provenance that records source occurrence and assertion times and targets every output.
 
 Lifecycle semantics are unambiguous: an active event contains exactly one coding from the ISO 21089 lifecycle system, and that code is `transform`; it contains no coding from the Grove lifecycle system.
 A retraction event contains exactly one coding from the Grove lifecycle system, and that code is `source-record-retracted`; it contains no ISO lifecycle coding.
 Additional translations from unrelated coding systems remain open.
 
 Every entry carries one `grove-exchange-entry-node-key` extension.
-A resource with business identity selects the highest-priority typed Identifier defined by the protocol; a resource without one uses an event-scoped `n2:` graph-node key.
+A resource with business identity selects the highest-priority typed Identifier defined by the protocol; a resource without one uses an event-scoped `n0:` graph-node key.
 Its `fullUrl` is UUIDv5 under namespace `43df4575-bff7-5a57-9a80-2472cd2b0623`, derived from the complete selected system/value pair using the same length-framed UTF-8 encoding.
 References between entries use those UUID URNs.
 UUIDv5 is deterministic formatting, not concealment.
@@ -154,14 +155,19 @@ UUIDv5 is deterministic formatting, not concealment.
 Every literal Reference is closed over that graph and resolves to an addressable Bundle entry.
 Contained resources and `#id` references are prohibited in both active and retraction events; allowing them would create a second, owner-local identity and resolution model outside the event-node contract.
 A populated `Reference.type` must equal the target's actual resource type.
-The producer gate also enforces the exact target-type table in `exchange-protocol.json` for subject, device, specimen, member, source-document, study, parent-device, gateway, and research-study paths.
-At those paths a logical Reference instead omits `reference`, carries the exact allowed `type` and one complete absolute-system Identifier, and cannot be mixed with a literal. This permits a deployment-scoped Patient pseudonym without fabricating or copying a Patient Bundle node.
+The producer gate also enforces the exact target-type table in `exchange-protocol.json` for Observation and QuestionnaireResponse subjects, device, specimen, member, source-document, study, parent-device, gateway, and research-study paths.
+At those paths a logical Reference instead omits `reference`, carries the exact allowed `type` and one complete absolute-system Identifier, and cannot be mixed with a literal.
+This permits a deployment-scoped Patient pseudonym without fabricating or copying a Patient Bundle node.
+Its system/value pair is preserved exactly, and its Identifier neither claims a Grove identifier role nor uses a protocol code system as the pseudonym namespace.
+Namespace ownership and deployment scope remain producer/deployment obligations; the bundled validator proves only absolute-URI shape and reserved-system exclusion.
+These logical-reference shape and pseudonym-namespace rules govern Mobile exchange Bundles.
+The standalone Grove QuestionnaireResponse profile independently constrains its subject target to Patient but does not impose this exchange graph's identifier-only policy outside such a Bundle.
 The active entry set is closed.
 Outputs are Observation, DocumentReference, Specimen, VisionPrescription, MedicationAdministration, or MedicationStatement; supporting nodes are Patient, Device, ResearchStudy, ResearchSubject, PlanDefinition, or a Grove-profiled QuestionnaireResponse; and the sole lifecycle node is Provenance.
 Every active output and each Device, QuestionnaireResponse, and Provenance directly claims its exact admitted profile mode.
 DocumentReference cannot enter as an unprofiled generic envelope.
 Supporting entries must be connected to an output or the lifecycle assertion, so the Bundle cannot carry unrelated context.
-DeviceMetric is not admitted in 0.6.0; adding it later requires a governed profile, identity, reference, fixture, and SDK contract.
+DeviceMetric is not admitted under the Grove FHIR contracts; adding it later requires a governed profile, identity, reference, example, and SDK contract.
 
 An exact retry reuses the event Identifier, occurrence/recording/assembly times, entry keys, and payload.
 Changed content or a new source revision receives a new event sequence.
@@ -189,7 +195,7 @@ This rule does not apply to Sensor or ECG `SampledData`, whose exact Decimal tim
 When the source also supplies an IANA time-zone name, attach the standard `timezone` extension; the name must agree with the offset at that instant.
 
 `Observation.issued` states when this version of the record became available, and it comes from the source platform's own timestamp for that version.
-A producer whose platform keeps no such timestamp omits the element rather than substituting a clock reading: an unchanged source record has to convert to an identical Observation, or a re-read stops deduplicating against what was already sent.
+A producer whose platform keeps no such timestamp omits the element rather than substituting a clock reading: an unchanged source record must convert to an identical Observation, or a re-read no longer deduplicates against what was already sent.
 Each adapter guide states which it does.
 
 The conversion event has its own home on the conversion `Provenance`, so omitting `issued` loses nothing.
@@ -200,7 +206,7 @@ Where a platform gives the writer a logical identity and a version, the adapter 
 The [Grove Recording Method extension](StructureDefinition-grove-recording-method.html) describes positively established `manual-entry`, `actively-recorded`, or `automatically-recorded` capture.
 Omit it when unknown. `Observation.method` remains available for the clinical measurement technique and is not a capture-mode field.
 
-### Must Support
+### Must Support obligations
 
 For elements marked **Must Support**, a producer includes the element whenever the source supplies the fact and the mapping is authorized.
 A consumer accepts the element when present and preserves it or exposes its meaning.

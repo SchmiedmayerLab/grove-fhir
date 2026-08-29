@@ -45,9 +45,9 @@ class MobileSemanticVectorTests(unittest.TestCase):
                 "vectors",
             },
         )
-        self.assertEqual(self.corpus["schemaVersion"], 1)
+        self.assertEqual(self.corpus["schemaVersion"], 0)
         self.assertEqual(self.corpus["fhirVersion"], "4.0.1")
-        self.assertEqual(self.corpus["version"], "0.6.0")
+        self.assertEqual(self.corpus["version"], self.catalog["version"])
         self.assertIn("execute no producer implementation", self.corpus["purpose"])
         expected = [
             measurement["id"]

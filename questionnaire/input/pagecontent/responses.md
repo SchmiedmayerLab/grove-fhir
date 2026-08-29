@@ -8,25 +8,31 @@ SPDX-License-Identifier: MIT
 
 A [Grove Questionnaire Response](StructureDefinition-grove-questionnaire-response.html) records one administration of one exact Questionnaire version.
 
-### Identity and lifecycle
+### Response identity and instrument resolution
 
 `QuestionnaireResponse.identifier` is the stable business identifier for the submission.
-Compare the complete `(system, value)` pair. `Resource.id` and `meta.versionId` are server-managed identifiers and do not replace it.
+Compare the complete `(system, value)` pair.
+`Resource.id` identifies a resource within its exchange or persistence context, and `meta.versionId` identifies a stored revision where versioning is used; neither replaces the business identifier.
 
 `QuestionnaireResponse.questionnaire` contains the exact `Questionnaire.url|version`.
 The value has one `|` separator and no fragment.
 Resolve the instrument before processing any answer.
 
-The status describes the response lifecycle:
+### Lifecycle and participation metadata
 
-- `in-progress` may omit required answers and may contain population work still in progress;
-- `completed` and `amended` must satisfy enabled, required, and validation rules;
-- `stopped` may preserve a deliberately incomplete administration; and
-- `entered-in-error` retracts the response as usable answer data.
-  Preserve it for audit when required, but do not analyze or submit its answers as a valid response.
+The response status determines how completeness rules and answer data are interpreted:
 
-`authored` is when answers were gathered or authored, not necessarily upload time. `subject` is who the answers concern and is a required reference to a Patient, `author` is who recorded them, and `source` is who supplied them.
+| Status | Interpretation |
+|---|---|
+| `in-progress` | Required answers may be absent, and population work may remain incomplete. |
+| `completed`, `amended` | Enabled, required, and validation rules must be satisfied. |
+| `stopped` | The resource may preserve a deliberately incomplete administration. |
+| `entered-in-error` | The response is retracted as usable answer data. Preserve it when audit requirements apply, but do not treat its answers as valid for analysis or submission. |
+
+`authored` is when the answers were gathered or authored, not necessarily when the resource was transmitted or stored.
+`subject` identifies who the answers concern and is a required reference to a Patient; `author` identifies who recorded the answers; and `source` identifies who supplied them.
 These roles may identify different actors and must not be inferred from one another.
+
 The instrument declares `Patient` as its subject type, and the response subject matches it.
 The paired validator checks this cross-resource rule after resolving the exact instrument and rejects a `Reference.type` that contradicts a type visible in the literal or contained target.
 A declared type is either the relative R4 resource code (for example, `Patient`) or its exact core canonical (`http://hl7.org/fhir/StructureDefinition/Patient`); an arbitrary URI is not accepted merely because its last path segment resembles a resource type.
@@ -35,16 +41,23 @@ The official FHIR Validator remains authoritative for the base `author` and `sou
 The standard `questionnaireresponse-completionMode` extension contains exactly one Coding with ParticipationMode system and code `ELECTRONIC`.
 Its display is descriptive and is not constrained.
 
-### Item and answer structure
+### Response item structure
 
 Every response item repeats the matching Questionnaire `linkId`.
 Response item `text` is optional presentation content: a producer may omit it or carry the wording shown to the user in a different locale.
 A receiver must neither require it nor compare it with the Questionnaire prompt.
 Resolve the exact instrument to obtain authoritative prompts, choices, conditions, and constraints.
 
-Groups place child response items directly in `item`.
-A child defined beneath a question belongs beneath the particular `answer.item` that created its context.
-Do not move that child beside the parent question.
+The Questionnaire hierarchy determines where child response items are represented:
+
+| Questionnaire relationship | QuestionnaireResponse location |
+|---|---|
+| Child of a group | Directly in the group's `item` array |
+| Child of a question | In `answer.item` for the particular parent answer that established its context |
+
+Moving an answer-context child beside its parent question changes its meaning and is not conformant.
+
+### Answer datatypes
 
 Use the answer field dictated by the Questionnaire item type:
 
@@ -67,17 +80,32 @@ Use the answer field dictated by the Questionnaire item type:
 Reference answers are not accepted by this contract.
 Preserve the full Coding, Quantity, or Attachment instead of flattening it to display text.
 
-### Required, enabled, and repeated answers
+### Comparison semantics
 
-For completed and amended responses, every enabled item marked `required=true` has an answer.
+Temporal answers retain their R4 datatype and lexical precision.
+Comparisons normalize a `dateTime` offset to the represented instant but do not invent a missing month, day, or fractional-second precision.
+When two precision ranges overlap without denoting the same value, the comparison is indeterminate; completion fails closed when a condition depends on that comparison.
+R4 permits second `60` for a leap second. Grove producers emit a leap second only at whole-second precision, and Grove adapters reject a fractional leap second.
+
+For quantities with coded units, equality compares the numeric `value` and the coded unit identity (`system` and `code`).
+The `unit` element is presentation text in that case, so `kg` and `kilogram` remain equal when both carry the same UCUM code.
+When both quantities omit coded unit identity, equality instead compares the numeric value and `unit` text; a coded and an uncoded Quantity are not equal.
+Unit-option membership is a separate Coding comparison against the Quantity's `system` and `code`; it is not equality with the complete Quantity.
+
+### Enablement, required items, and repetition
+
+In a completed or amended response, every enabled item marked `required=true` is present, and every enabled required question has an answer.
 Disabled items are omitted.
 Core `enableWhen` is evaluated against the response; expression-based enablement requires a conforming FHIRPath engine.
 
-When `repeats` is false or absent, an item has at most one answer.
-Repeating choice, open-choice, and attachment items may carry multiple answers, subject to `questionnaire-minOccurs` and `questionnaire-maxOccurs`.
+When `repeats` is false or absent, a question has at most one answer and a group has at most one response occurrence in its parent context.
+A repeating question carries multiple answers in one response item.
+A repeating group is represented by multiple group-item occurrences; each occurrence evaluates its descendants against answers in that occurrence rather than answers from another repetition.
+Both forms are subject to `questionnaire-minOccurs` and `questionnaire-maxOccurs`.
 An option marked exclusive cannot be combined with another answer.
 
-For `answerOption`, the response value matches one inline option.
+When an item declares `answerOption`, a response value matches one inline option.
+An `open-choice` item may instead contain unlisted free text in `valueString`.
 For `answerValueSet`, the Coding belongs to the resolved ValueSet version.
 A display string alone never proves membership.
 

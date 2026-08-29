@@ -6,166 +6,122 @@ SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTR
 SPDX-License-Identifier: MIT
 -->
 
-An instrument can ask for a reading a person takes themselves.
-A server that implements the SDC `$extract` operation turns those answers into Observations, and Grove requires enough of the instrument and the response that the result stands beside one an adapter produced.
+A Questionnaire can capture a measurement entered by a respondent.
+A system that performs the standard [SDC `$extract` operation](https://hl7.org/fhir/uv/sdc/OperationDefinition-QuestionnaireResponse-extract.html) can transform those answers into Observation resources.
+The Questionnaire and QuestionnaireResponse must provide the clinical context that the later Grove projection needs to produce Observations conforming to their target measurement profiles.
 
-Extraction is declared with SDC's own extensions rather than a Grove mechanism.
-`observationExtract` on an item marks it for extraction, and `item.code` supplies the Observation code.
+This page describes SDC Observation-based extraction.
+It does not define a Grove-specific extraction operation or a hybrid extraction mechanism.
+The workflow has two distinct stages:
 
-### One response, several Observations
+1. SDC `$extract` returns one extracted resource or, for multiple resources, a transaction Bundle.
+2. A Grove projection process adds exchange-scoped identity, device snapshots, and conversion Provenance, then packages the complete graph as a Grove Mobile collection Bundle.
 
-`observationExtract` is answered either as `true` or as a relationship code, never as both on one item.
+The collection Bundle shown below is therefore the final Grove exchange artifact, not the literal response returned by `$extract`.
 
-`true` extracts the item as its own Observation.
-An instrument that asks for a weight and a symptom score marks both `true` and yields two unrelated Observations from one response.
+### Extraction declarations
 
-A relationship code says how a child item relates to its parent's Observation.
-`#component` puts the child on the parent as a component, so a blood pressure panel marking its systolic and diastolic children `#component` yields one Observation under LOINC 85354-9 rather than two readings.
-`#member` and `#derived` extract the child separately and link it through `hasMember` or `derivedFrom`, and `#independent` extracts it with no link at all.
+Extraction is declared with standard SDC extensions.
+The source item supplies the clinical or measurement concept in `Questionnaire.item.code`, while `observationExtract` determines how the item contributes to the output:
 
-`observationExtractCategory` supplies `Observation.category`, which the vital-signs profiles require.
-An extracted blood pressure without it does not satisfy the profile the measurement catalog names for it.
+| `observationExtract` value | Result |
+|---|---|
+| `true` | Extract the item as a standalone Observation. |
+| `component` | Add the child item as a component of its parent Observation. |
+| `member` | Extract the child as a separate Observation and reference it from the parent through `hasMember`. |
+| `derived` | Extract the child as a separate Observation and reference the parent from the child's `derivedFrom`. |
+| `independent` | Extract the child separately without a relationship to the parent Observation. |
 
-### What the response has to carry
+One item carries either the Boolean declaration or one relationship code, never both.
+For example, a blood-pressure group marked `true` produces one panel Observation when its systolic and diastolic children are marked `component`.
 
-`subject` is required and references a Patient, matching what an extracted Observation accepts.
+`observationExtractCategory` supplies `Observation.category`.
+When the target profile requires a category, such as `vital-signs`, omitting that declaration produces an Observation that does not conform to the target profile.
 
-`extension[writerContext]` states the application and host that captured the response.
-A writer cannot mint a Grove device snapshot, whose identity is scoped to an exchange event that does not exist when a response is submitted.
-It states plain facts instead, and a projecting system builds the snapshot from them once it holds the event and the key.
+### Response prerequisites
 
-### Where a unit comes from
+The response references the exact versioned Questionnaire and carries the answers in the corresponding hierarchy.
+Its required `subject` references the Patient who becomes the subject of each extracted Observation.
+Its explicit `author` identifies the person who recorded the answers and becomes `Observation.performer`; the example does not infer this role from `subject`.
+Under Observation-based extraction, `QuestionnaireResponse.authored` supplies both the effective time and the issued time described in [Measurement time](#measurement-time).
 
-The instrument states the unit, not the client.
+`extension[writerContext]` records plain facts about the application and host that captured the response.
+The response producer does not create a Grove device snapshot because snapshot identity is scoped to an exchange event that does not yet exist when the response is authored.
+After an exchange event and identity key are available, the Grove conversion creates the application and host snapshots from these facts.
 
-A `quantity` item offers its units through `questionnaire-unitOption`, or through `questionnaire-unitValueSet` when the choice is large.
-A renderer shows those and puts the chosen one in the answer's Quantity, so `Home Vitals` offering `kg` is what makes the weight answer come back in `kg`.
-An `integer` or `decimal` item instead fixes one unit with `questionnaire-unit`, which the renderer displays and the projection asserts.
+### Unit declarations
 
-An item that offers no unit leaves the renderer to invent one, and the answer is then unusable.
-Neither form is bound to the unit a measurement fixes, so an instrument offering `[lb_av]` for a weight extracts into an Observation that fails the body weight profile.
+Unit semantics originate in the Questionnaire; a form filler must not invent them.
 
-### A worked instrument
+| Questionnaire item | Unit declaration | Response representation |
+|---|---|---|
+| `quantity` | `questionnaire-unitOption`, or `questionnaire-unitValueSet` for a maintained set | The selected unit is carried in `valueQuantity.system` and `valueQuantity.code`. |
+| `integer`, `decimal` | One fixed `questionnaire-unit` | The answer remains numeric, and extraction applies the declared unit to the Observation value. |
 
-[Home Vitals](Questionnaire-GroveHomeVitalsExample.html) asks for a weight and a blood pressure, and extracts three ways at once.
+The form filler presents the declared units and preserves the selected coded unit in the response.
+An item without a usable unit declaration cannot safely target a measurement profile that fixes a unit.
+Likewise, a body-weight item that permits only UCUM `[lb_av]` cannot produce an Observation conforming to a body-weight profile fixed to UCUM `kg` without an explicitly defined conversion.
 
-The weight item carries the measurement's own LOINC code and marks itself `true`, so it extracts as a standalone Observation.
+### Home Vitals extraction example
 
-```
-* item[0].linkId = "body-weight"
-* item[0].type = #quantity
-* item[0].code = $loinc#29463-7 "Body weight"
-* item[0].extension[observationExtract].valueBoolean = true
-* item[0].extension[observationExtractCategory].valueCodeableConcept = $observationCategory#vital-signs
-* item[0].extension[unitOption].valueCoding = $ucum#kg "kg"
-```
+#### Questionnaire declaration
 
-The blood pressure group carries the panel code and marks itself `true`; its two children name themselves `#component`.
-That is what puts both readings on one Observation instead of two.
+The [Home Vitals Questionnaire](Questionnaire-GroveHomeVitalsExample.html) and its [JSON representation](Questionnaire-GroveHomeVitalsExample.json) provide the complete extraction declaration.
 
-```
-* item[1].code = $loinc#85354-9 "Blood pressure panel with all children optional"
-* item[1].extension[observationExtract].valueBoolean = true
-* item[1].item[0].code = $loinc#8480-6 "Systolic blood pressure"
-* item[1].item[0].extension[$observationExtract].valueCode = #component
-* item[1].item[0].extension[$unitOption].valueCoding = $ucum#mm[Hg] "mm[Hg]"
-* item[1].item[1].code = $loinc#8462-4 "Diastolic blood pressure"
-* item[1].item[1].extension[$observationExtract].valueCode = #component
-* item[1].item[1].extension[$unitOption].valueCoding = $ucum#mm[Hg] "mm[Hg]"
-```
+{% json fixtures/extraction/questionnaire.json liquid/questionnaire-summary.liquid %}
 
-[The response](QuestionnaireResponse-GroveHomeVitalsResponseExample.html) answers each item as a Quantity in the unit its measurement fixes, names its Patient, and carries the writer context.
+Its hierarchy contains standalone body-weight and step-count items plus a blood-pressure group whose systolic and diastolic children contribute components to one panel Observation.
+The Questionnaire shows the item codes, extraction relationships, categories, and units required for those results.
 
-Extraction yields two Observations.
-The weight becomes `29463-7` with `valueQuantity` 72.5 kg; the panel becomes `85354-9` with no value of its own and two components, `8480-6` at 118 mm[Hg] and `8462-4` at 76 mm[Hg].
-Both take `vital-signs` from `observationExtractCategory` and `effectiveDateTime` from `authored`.
+#### Completed response
 
-The weight arrives like this, with the identifiers, the recording method, and the device reference supplied by the projecting system.
+The [Home Vitals Response](QuestionnaireResponse-GroveHomeVitalsResponseExample.html) and its [JSON representation](QuestionnaireResponse-GroveHomeVitalsResponseExample.json) contain the corresponding answers, Patient subject and author, authored time, and writer context.
 
-```json
-{
-  "resourceType": "Observation",
-  "meta": { "profile": ["…/StructureDefinition/grove-mobile-body-weight"] },
-  "identifier": [
-    { "type": { "coding": [{ "code": "source-record" }] }, "value": "v2:test-key:1:…" },
-    { "type": { "coding": [{ "code": "source-output" }] }, "value": "v2:test-key:1:…" }
-  ],
-  "status": "final",
-  "category": [{ "coding": [{ "code": "vital-signs" }] }],
-  "code": { "coding": [{ "system": "http://loinc.org", "code": "29463-7" }] },
-  "subject": { "reference": "Patient/GroveQuestionnairePatientExample" },
-  "effectiveDateTime": "2026-08-28T08:32:00-07:00",
-  "valueQuantity": { "value": 72.5, "unit": "kg", "system": "http://unitsofmeasure.org", "code": "kg" },
-  "extension": [
-    { "url": "…/grove-recording-method", "valueCodeableConcept": { "coding": [{ "code": "manual-entry" }] } },
-    { "url": "…/observation-gatewayDevice", "valueReference": { "reference": "Device/home-vitals-writer-snapshot" } }
-  ],
-  "derivedFrom": [{ "reference": "QuestionnaireResponse/GroveHomeVitalsResponseExample" }]
-}
-```
+{% json fixtures/extraction/questionnaire-response.json liquid/questionnaire-response-summary.liquid %}
 
-### Where the writer context lands
+The response shows how group children align with the instrument hierarchy and how numeric answers and coded units are represented.
 
-The response states the capturing application as plain facts; the projection turns them into the Device snapshot the Observation points at.
+#### Resulting Grove exchange Bundle
 
-```json
-{
-  "resourceType": "Device",
-  "id": "home-vitals-writer-snapshot",
-  "meta": { "profile": ["…/StructureDefinition/grove-application-device"] },
-  "deviceName": [{ "name": "Grove Questionnaire Client", "type": "user-friendly-name" }],
-  "version": [
-    { "type": { "coding": [{ "system": "urn:iso:std:iso:11073:10101", "code": "531975" }] }, "value": "1.4.0" },
-    { "type": { "coding": [{ "code": "build" }] }, "value": "1402" }
-  ],
-  "parent": { "reference": "Device/home-vitals-host-snapshot" }
-}
-```
+{% json fixtures/extraction/exchange-bundle.json liquid/extraction-bundle.liquid %}
 
-Its parent carries the host, `iPhone17,1` running `26.0`, so an Observation reached from either end names the application build and the hardware it ran on.
+The Grove exchange Bundle contains the Patient and QuestionnaireResponse, application and host Device snapshots, three Observations, and the conversion Provenance that joins the graph.
+The body-weight and step-count items become standalone Observations; systolic and diastolic pressure become components of one blood-pressure Observation.
+The two vital-sign Observations receive `vital-signs` from the Questionnaire declaration.
+All three Observations receive `effectiveDateTime` and `issued` from the response's exact `authored` value, and copy their `performer` from the response's explicit `author`.
 
-### What a projection does not recover
+SDC extraction also places the QuestionnaireResponse in each Observation's `derivedFrom`.
+The subsequent Grove conversion adds the identity, device context, and Provenance required by the target measurement profiles.
+Each Observation receives `source-record` and `source-output` identifiers, `manual-entry` as its recording method, and a gateway-device reference to the application Device.
 
-An adapter reading the same weight from a phone's health store carries three things this route cannot.
+The response's `writerContext` supplies the facts used to create a [Grove Application Device](https://grovealliance.org/fhir/mobile/StructureDefinition-grove-application-device.html) and its parent [Grove Host Device](https://grovealliance.org/fhir/mobile/StructureDefinition-grove-host-device.html).
+The application identifier, name, version, and build populate the application Device; the host model and operating-system version populate its parent.
+Both Devices receive event-scoped snapshot identifiers during Grove conversion.
 
-It carries a writer record identifier and its version, so a later correction supersedes the earlier reading rather than arriving beside it.
-A response has no writer revision to build either from.
+### Information unavailable to questionnaire projection
 
-It carries the exact instant of the reading, at the precision the store recorded it.
-A projection carries `authored`, which is when the answers were gathered.
+Projection from a QuestionnaireResponse cannot reconstruct several facts that may be available to an adapter reading a native health data source:
 
-It carries a source-type marker naming the native type the reading came from, and the recording device when the store names one.
-A projection names manual entry and the capturing application, which is the honest equivalent and not the same fact.
+| Information | Native-source conversion | Questionnaire projection |
+|---|---|---|
+| Writer revision | Can carry a writer record identifier and revision so a later correction supersedes the earlier record. | The response does not provide a writer revision from which to derive that identity. |
+| Measurement time | Can preserve the exact instant or period recorded by the source. | Observation-based extraction uses `QuestionnaireResponse.authored`. |
+| Native source and recording device | Can identify the native record type and a recording device when supplied by the source. | Identifies manual entry and the application that captured the response; these are different facts. |
 
 ### Measurement time
 
-`authored` records when the answers were gathered, which need not be when the reading was taken.
-Observation-based extraction has nowhere to put the second time, so it uses `authored`.
+`QuestionnaireResponse.authored` records when the answers were gathered or authored, which may differ from when a measurement was taken.
+Standard Observation-based extraction uses `authored` as the Observation effective time and should also use it as `Observation.issued`.
+The result is exact when the reading is taken while answering and inaccurate when an earlier reading is entered later.
 
-That is exact for a reading taken while answering and wrong for one entered later.
+Every Observation extracted from one response receives the same time.
+For example, a weight and blood pressure measured twenty minutes apart would both receive the response's authored time.
 
-It also gives every Observation from one response the same time, so a weight and a blood pressure taken twenty minutes apart both claim the instant the answers were gathered.
+`Home Vitals` asks for measurements taken or displayed at the time of the response.
+It remains within standard Observation-based extraction and does not mix in `definitionExtractValue`; all three Observations therefore use the exact `authored` value.
 
-That limit belongs to observation-based extraction rather than to the approach.
-An instrument that asks when a reading was taken can bind that answer straight to `Observation.effective[x]` through SDC's definition-based extraction, and each Observation then carries its own time.
-The same mechanism supplies a period, from two answered boundaries or from an expression over the response.
-An instrument asking how many steps a person took yesterday knows the period from its own wording, and can state it rather than leave a reader to infer it.
+When a distinct measurement instant or period is clinically required, use a separate, complete SDC definition-based extraction design or an explicit StructureMap-based extraction flow.
+That flow must initiate and populate each output resource according to the selected SDC mechanism, including its code, value, subject, status, category, and `effective[x]`.
+A lone `definitionExtractValue` on an Observation-extraction item is not a hybrid shortcut and is not part of this example.
 
-`Home Vitals` shows both.
-The blood pressure group asks when the reading was taken and binds that answer to the panel's own instant, so the panel does not inherit the moment the form was submitted.
-
-```
-* item[1].item[2].linkId = "measured-at"
-* item[1].item[2].type = #dateTime
-* item[1].item[2].extension[$definitionExtractValue].extension[definition].valueUri = "http://hl7.org/fhir/StructureDefinition/Observation#Observation.effectiveDateTime"
-```
-
-The step count asks for yesterday's total and states the day it means, computing both boundaries from the response rather than asking a person to type them.
-
-```
-* item[2].extension[$definitionExtractValue][0].extension[definition].valueUri = "http://hl7.org/fhir/StructureDefinition/Observation#Observation.effectivePeriod.start"
-* item[2].extension[$definitionExtractValue][0].extension[expression].valueExpression.expression = "(%resource.authored.toDate() - 1 day).toString() + 'T00:00:00' + %resource.authored.toString().substring(19)"
-```
-
-Both forms are declared on the instrument, which is what keeps them safe.
-An extractor that has not been told which item carries the time falls back to `authored` and is quietly wrong, so an instrument whose measurement time is not the moment of answering states the binding or does not project.
+Do not use this Observation-based flow when the measurement time differs materially from `authored`; select or define the complete richer extraction flow first.

@@ -1,6 +1,6 @@
 {
   "$schema": "https://grovealliance.org/fhir/catalog/schemas/catalog-contracts.schema.json",
-  "schemaVersion": 1,
+  "schemaVersion": 0,
   "fhirVersion": "4.0.1",
   "version": "0.6.0",
   "source": {
@@ -79,12 +79,12 @@
   },
   "conversionProvenanceProfile": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-conversion-provenance",
   "statusVocabulary": {
-    "supported": "The 0.6.0 HealthKit adapter defines and validates emitted FHIR output.",
+    "supported": "The current HealthKit adapter defines and validates emitted FHIR output.",
     "mapped-standard": "The source is represented by another exact Grove or authoritative standard package rather than a Mobile measurement profile.",
-    "platform-exclusive": "The 0.6.0 adapter defines output through a platform-exclusive HealthKit profile whose meaning remains HealthKit-specific.",
+    "platform-exclusive": "The current adapter defines output through a platform-exclusive HealthKit profile whose meaning remains HealthKit-specific.",
     "unmodeled": "The source type is inventoried, but no shared or HealthKit-scoped profile models it and no output is admitted.",
-    "deferred": "No FHIR output for this source type is admitted by the 0.6.0 adapter.",
-    "intentionally-unsupported": "The 0.6.0 contract explicitly rejects this source meaning rather than approximating it."
+    "deferred": "No FHIR output for this source type is admitted by the current adapter.",
+    "intentionally-unsupported": "The Grove FHIR contracts explicitly reject this source meaning rather than approximating it."
   },
   "observationIssued": {
     "cardinality": "0..0",
@@ -258,7 +258,7 @@
       "profiles": [
         "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-sleep-duration"
       ],
-      "requirement": "This is not a HealthKit platform source identifier. Version 0.6.0 does not define the session-boundary aggregation contract; individual admitted samples map only to sleep stage."
+      "requirement": "This is not a HealthKit platform source identifier. The Grove FHIR contracts do not define the session-boundary aggregation contract; individual admitted samples map only to sleep stage."
     }
   ],
   "rows": [
@@ -3534,7 +3534,7 @@
       "HKDevice.softwareVersion"
     ],
     "fallback": "Omit Observation.device when no governed stable per-unit token exists. Descriptive and version fields alone cannot establish a physical instance.",
-    "snapshot": "When emitted, the Device carries both recording-device and event-scoped device-snapshot v2 identifiers; descriptive and version fields are event-time snapshot data."
+    "snapshot": "When emitted, the Device carries both recording-device and event-scoped device-snapshot v0 identifiers; descriptive and version fields are event-time snapshot data."
   },
   "applicationDeviceIdentity": {
     "profile": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-application-device",
@@ -3550,7 +3550,7 @@
   },
   "identity": {
     "contract": "catalog/exchange-protocol.json",
-    "protocolVersion": 2,
+    "protocolVersion": 0,
     "adapterId": "healthkit",
     "sourceRecord": {
       "identityKind": "source-record",

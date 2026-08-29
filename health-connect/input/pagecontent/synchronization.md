@@ -11,7 +11,8 @@ This page defines only the producer-owned durability boundary needed to avoid lo
 
 ### Durable producer state
 
-Keep a durable synchronization scope for one Health Connect repository, Record class, source filter, retained time range, and conversion-contract version.
+Keep a durable synchronization scope for one Health Connect repository, Record class, source filter, retained time range, and conversion-contract marker.
+The marker identifies the conversion behavior used for the ledger and is independent of package metadata.
 Persist its opaque repository scope, change token, and a ledger keyed by the raw Record id.
 The ledger retains the derived source identifier and every output identifier previously produced for that Record.
 Change tokens and filter fingerprints remain local operational state.
@@ -38,18 +39,18 @@ For each change page:
 
 A retry reuses the same source and output identifiers.
 If the caller assigns a durable positive `eventSequence`, preserve it for byte-identical retries and allocate a higher value for a new source event.
-The exchange protocol uses that sequence in the Bundle's `e2:` event Identifier; it does not prescribe an external message format.
+The exchange protocol uses that sequence in the Bundle's `e0:` event Identifier; it does not prescribe an external message format.
 
 ### New or expired tokens
 
 When no token exists, or a token expires, establish a fresh token boundary, perform a full read for the documented retained range, reconcile it with the ledger, and then drain every change page from that boundary.
 Persist the final token only after reconciliation and replay are durable.
-Reusing a token with a different Record class, filter, range, or contract version is invalid.
+Reusing a token with a different Record class, filter, range, or contract marker is invalid.
 
 The calling Android application owns Health Connect permissions, Record fetching, pagination, scheduling, and its retention guarantee.
 A Grove mapping library accepts typed Records or normalized inputs and emits FHIR; it does not call Health Connect APIs.
 
 ### Explicit non-goals
 
-Version 0.6.0 defines no receiver, authenticated intake, tenant partition, Firebase or cloud storage model, Bundle byte or count limit, replay endpoint, transport acknowledgement schema, or downstream merge behavior.
+The Grove FHIR contracts define no receiver, authenticated intake, tenant partition, cloud storage model, Bundle byte or count limit, replay endpoint, transport acknowledgement schema, or downstream merge behavior.
 Those policies may wrap a conformant Bundle without changing its FHIR identities or profile claims.

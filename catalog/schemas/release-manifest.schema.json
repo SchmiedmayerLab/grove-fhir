@@ -6,7 +6,7 @@
   "required": ["$schema", "schemaVersion", "releaseVersion", "fhirVersion", "canonicalRoot", "toolchain", "publication", "guides", "normativeCatalogs"],
   "properties": {
     "$schema": {"const": "https://grovealliance.org/fhir/catalog/schemas/release-manifest.schema.json"},
-    "schemaVersion": {"const": 1},
+    "schemaVersion": {"const": 0},
     "releaseVersion": {"const": "0.6.0"},
     "fhirVersion": {"const": "4.0.1"},
     "canonicalRoot": {"const": "https://grovealliance.org/fhir"},
@@ -104,19 +104,19 @@
         "properties": {
           "path": {"type": "string", "pattern": "^catalog/[a-z0-9-]+\\.json$"},
           "schema": {"type": "string", "pattern": "^catalog/schemas/[a-z0-9-]+\\.schema\\.json$"},
-          "schemaVersion": {"type": "integer", "minimum": 1}
+          "schemaVersion": {"type": "integer", "minimum": 0}
         },
         "oneOf": [
-          {"const": {"path": "catalog/exchange-protocol.json", "schema": "catalog/schemas/exchange-protocol.schema.json", "schemaVersion": 1}},
-          {"const": {"path": "catalog/measurement-catalog.json", "schema": "catalog/schemas/measurement-catalog.schema.json", "schemaVersion": 1}},
-          {"const": {"path": "catalog/package-graph.json", "schema": "catalog/schemas/package-graph.schema.json", "schemaVersion": 1}},
-          {"const": {"path": "catalog/format-registry.json", "schema": "catalog/schemas/catalog-contracts.schema.json", "schemaVersion": 1}},
-          {"const": {"path": "catalog/health-connect-adapter.json", "schema": "catalog/schemas/catalog-contracts.schema.json", "schemaVersion": 1}},
-          {"const": {"path": "catalog/healthkit-adapter.json", "schema": "catalog/schemas/catalog-contracts.schema.json", "schemaVersion": 1}},
-          {"const": {"path": "catalog/providers-adapter.json", "schema": "catalog/schemas/catalog-contracts.schema.json", "schemaVersion": 1}},
-          {"const": {"path": "catalog/sensor-catalog.json", "schema": "catalog/schemas/catalog-contracts.schema.json", "schemaVersion": 1}},
-          {"const": {"path": "catalog/sensorkit-adapter.json", "schema": "catalog/schemas/catalog-contracts.schema.json", "schemaVersion": 1}},
-          {"const": {"path": "catalog/profile-claims.json", "schema": "catalog/schemas/catalog-contracts.schema.json", "schemaVersion": 1}}
+          {"const": {"path": "catalog/exchange-protocol.json", "schema": "catalog/schemas/exchange-protocol.schema.json", "schemaVersion": 0}},
+          {"const": {"path": "catalog/measurement-catalog.json", "schema": "catalog/schemas/measurement-catalog.schema.json", "schemaVersion": 0}},
+          {"const": {"path": "catalog/package-graph.json", "schema": "catalog/schemas/package-graph.schema.json", "schemaVersion": 0}},
+          {"const": {"path": "catalog/format-registry.json", "schema": "catalog/schemas/catalog-contracts.schema.json", "schemaVersion": 0}},
+          {"const": {"path": "catalog/health-connect-adapter.json", "schema": "catalog/schemas/catalog-contracts.schema.json", "schemaVersion": 0}},
+          {"const": {"path": "catalog/healthkit-adapter.json", "schema": "catalog/schemas/catalog-contracts.schema.json", "schemaVersion": 0}},
+          {"const": {"path": "catalog/providers-adapter.json", "schema": "catalog/schemas/catalog-contracts.schema.json", "schemaVersion": 0}},
+          {"const": {"path": "catalog/sensor-catalog.json", "schema": "catalog/schemas/catalog-contracts.schema.json", "schemaVersion": 0}},
+          {"const": {"path": "catalog/sensorkit-adapter.json", "schema": "catalog/schemas/catalog-contracts.schema.json", "schemaVersion": 0}},
+          {"const": {"path": "catalog/profile-claims.json", "schema": "catalog/schemas/catalog-contracts.schema.json", "schemaVersion": 0}}
         ]
       }
     }

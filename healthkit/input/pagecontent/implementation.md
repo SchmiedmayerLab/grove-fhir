@@ -14,7 +14,7 @@ Install Mobile, Sensor, and HealthKit and validate every direct profile together
 
 ### Download the packages
 
-This pre-1.0 continuous build is not published in a FHIR package registry, and the canonical namespace is deliberately not hosted.
+The packages are not published in a FHIR package registry, and the canonical namespace is deliberately not a package host.
 Each published guide exposes its archive and checksum from its [Artifacts page](artifacts.html); download this guide's `package.tgz` and `package.tgz.sha256` there, plus the Mobile and Sensor guide pairs from their Artifacts pages, then verify all three checksums:
 
 ```sh
@@ -23,37 +23,10 @@ Each published guide exposes its archive and checksum from its [Artifacts page](
 (cd grove-packages/healthkit && shasum -a 256 --check package.tgz.sha256)
 ```
 
-To use the profiles from FHIR Shorthand, unpack all three archives into the standard FHIR package cache and declare `org.grovealliance.fhir.healthkit#0.6.0`.
+To use the profiles from FHIR Shorthand, unpack all three archives into the standard FHIR package cache and declare the `org.grovealliance.fhir.healthkit` package at the exact version in `catalog/release-manifest.json`.
 The HealthKit package already declares its exact Mobile and Sensor dependencies.
-These continuous builds retain their pre-1.0 version while their checksums change.
 Move aside each exact cache directory before extracting an update; never overlay a new archive on an older copy.
-
-```sh
-cache_backup="$(mktemp -d)"
-test ! -e "$HOME/.fhir/packages/org.grovealliance.fhir.mobile#0.6.0" || \
-  mv "$HOME/.fhir/packages/org.grovealliance.fhir.mobile#0.6.0" \
-     "$cache_backup/"
-test ! -e "$HOME/.fhir/packages/org.grovealliance.fhir.healthkit#0.6.0" || \
-  mv "$HOME/.fhir/packages/org.grovealliance.fhir.healthkit#0.6.0" \
-     "$cache_backup/"
-test ! -e "$HOME/.fhir/packages/org.grovealliance.fhir.sensor#0.6.0" || \
-  mv "$HOME/.fhir/packages/org.grovealliance.fhir.sensor#0.6.0" \
-     "$cache_backup/"
-mkdir -p "$HOME/.fhir/packages/org.grovealliance.fhir.mobile#0.6.0"
-mkdir -p "$HOME/.fhir/packages/org.grovealliance.fhir.sensor#0.6.0"
-mkdir -p "$HOME/.fhir/packages/org.grovealliance.fhir.healthkit#0.6.0"
-tar -xzf grove-packages/mobile/package.tgz \
-  -C "$HOME/.fhir/packages/org.grovealliance.fhir.mobile#0.6.0"
-tar -xzf grove-packages/sensor/package.tgz \
-  -C "$HOME/.fhir/packages/org.grovealliance.fhir.sensor#0.6.0"
-tar -xzf grove-packages/healthkit/package.tgz \
-  -C "$HOME/.fhir/packages/org.grovealliance.fhir.healthkit#0.6.0"
-```
-
-```yaml
-dependencies:
-  org.grovealliance.fhir.healthkit: 0.6.0
-```
+Use the same manifest version for the package-cache directory and the FHIR Shorthand dependency.
 
 ### Validate an Observation
 
@@ -74,7 +47,7 @@ java -jar validator_cli.jar observation.json \
 Validation checks the resource shape, identifier format, terminology bindings, profile intersection, and inherited Mobile/Sensor rules.
 The structural producer gate additionally binds the exact source-type coding to its one per-resource direct claim and requires one HealthKit conversion Provenance to target every output for the source record.
 Neither layer can prove that a HealthKit sample type was mapped to the correct clinical profile, that an attributed Device performed the claimed role, or that disclosing a source identifier is authorized.
-Test those adapter semantics and privacy decisions against representative source fixtures.
+Verify those adapter semantics and disclosure decisions against representative source records.
 
 Start with the [heart-rate JSON](Observation-HealthKitHeartRateObservationExample.json), then compare it with the field-by-field [mapping rules](mapping.html).
 

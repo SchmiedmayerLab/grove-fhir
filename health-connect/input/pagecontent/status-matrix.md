@@ -9,9 +9,9 @@ GENERATED FILE. Edit the corresponding catalog JSON and run
 `python3 Scripts/render-status-matrices.py`.
 -->
 
-# Authoritative Health Connect status matrix
+### Authoritative Health Connect status matrix
 
-This table is the complete, closed AndroidX Health Connect 1.1.0 `RecordType.all` inventory. Each of the 41 record classes has exactly one definitive v0.6.0 status. An empty output cell means this release admits no FHIR producer output for that class; it is not an implementation queue.
+This table is the complete, closed AndroidX Health Connect 1.1.0 `RecordType.all` inventory. Each of the 41 record classes has exactly one definitive status under the Grove FHIR contracts. An empty output cell means the relevant Grove FHIR Implementation Guide admits no FHIR producer output for that class; it is not an implementation queue.
 
 | Record class | Status | Admitted output(s) | Exact context mapping(s) |
 | --- | --- | --- | --- |

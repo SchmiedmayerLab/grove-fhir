@@ -6,7 +6,7 @@ SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTR
 SPDX-License-Identifier: MIT
 -->
 
-The HealthKit-specific terminology in version 0.6.0 is case-sensitive.
+The HealthKit-specific terminology in the Grove FHIR contracts is case-sensitive.
 It contains a closed 218-concept platform source-type inventory, four retained metadata keys, and the adapter motion-context codes required by the heart-rate mapping.
 The separately declared sleep duration aggregate is not a platform source type and is excluded from the source-type CodeSystem.
 
@@ -14,13 +14,13 @@ The version-controlled manifest is [`healthkit/input/data/terminology-provenance
 
 | Field | Value |
 |---|---|
-| Package | `org.grovealliance.fhir.healthkit#0.6.0` |
+| Package | `org.grovealliance.fhir.healthkit` (resolve the exact version from `catalog/release-manifest.json`) |
 | SDK baseline | iPhoneOS 26.5, Xcode 26.6 build 17F113 |
 | Extraction date | 2026-08-21 |
-| Selection method | Every declared identifier constant resolved inside an iOS simulator on the SDK baseline, plus the two sample types Apple publishes without a constant, read by `Scripts/platform_inventory.py` |
+| Selection method | Every declared identifier constant resolved inside an iOS simulator on the SDK baseline, plus the two sample types Apple publishes without a constant |
 | SDK inputs | `HKTypeIdentifiers.h`, `HKObjectType.h`, `HKMetadata.h`, and `HKMetadataEnums.h`, with SHA-256 hashes in the manifest |
 | Case sensitivity | Case-sensitive |
-| Content scope | Complete for the 218 source-type identifiers and the adapter terminology frozen by 0.6.0 |
+| Content scope | Complete for the 218 source-type identifiers and the adapter terminology represented by this manifest |
 
 The retained identifiers and type names originate from Apple.
 The SDK baseline, official platform documentation, and catalog together bind the source-type inventory; the hashed metadata headers bind the four retained metadata keys and the three motion-context cases.

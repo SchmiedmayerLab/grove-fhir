@@ -33,7 +33,7 @@ ARTIFACT_KEYS = {"fshName", "fshType", "resourceType", "id", "classification"}
 IDENTIFIER_ROLE_SYSTEM = (
     "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role"
 )
-V2_IDENTITY = re.compile(r"^v2:[A-Za-z0-9._-]+:[1-9][0-9]*:[A-Za-z0-9_-]{43}$")
+V2_IDENTITY = re.compile(r"^v0:[A-Za-z0-9._-]+:[1-9][0-9]*:[A-Za-z0-9_-]{43}$")
 
 
 def identifiers_with_role(resource: dict[str, Any], role: str) -> list[dict[str, Any]]:
@@ -121,8 +121,8 @@ class ArtifactAllowlistTests(unittest.TestCase):
     def setUpClass(cls) -> None:
         cls.allowlist = json.loads(ALLOWLIST.read_text(encoding="utf-8"))
         cls.packages = cls.allowlist.get("packages")
-        if cls.allowlist.get("schemaVersion") != 1 or not isinstance(cls.packages, list):
-            raise AssertionError("artifact allowlist must use schemaVersion 1 and list packages")
+        if cls.allowlist.get("schemaVersion") != 0 or not isinstance(cls.packages, list):
+            raise AssertionError("artifact allowlist must use schemaVersion 0 and list packages")
 
     def test_packages_match_the_active_publication(self) -> None:
         publication = json.loads(
@@ -411,7 +411,7 @@ class ArtifactAllowlistTests(unittest.TestCase):
                     },
                 )
 
-    def test_health_connect_profiles_preserve_typed_v2_record_and_output_identity(self) -> None:
+    def test_health_connect_profiles_preserve_typed_record_and_output_identity(self) -> None:
         profile_path = (
             ROOT
             / "mobile/output/StructureDefinition-grove-mobile-observation.json"
@@ -444,7 +444,7 @@ class ArtifactAllowlistTests(unittest.TestCase):
             }
             self.assertEqual(
                 constraints.get("grove-opaque-identifier-value-1"),
-                "$this.matches('^v2:[A-Za-z0-9._-]+:[1-9][0-9]*:[A-Za-z0-9_-]{43}$')",
+                "$this.matches('^v0:[A-Za-z0-9._-]+:[1-9][0-9]*:[A-Za-z0-9_-]{43}$')",
             )
 
         provenance = json.loads(provenance_path.read_text(encoding="utf-8"))

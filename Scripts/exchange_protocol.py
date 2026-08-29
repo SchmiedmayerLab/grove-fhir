@@ -1,4 +1,4 @@
-"""Reference algorithms for the Grove 0.6 exchange and identity protocol."""
+"""Reference algorithms for the Grove exchange and identity protocol."""
 
 # This source file is part of the Grove FHIR open-source project
 #
@@ -17,8 +17,8 @@ import uuid
 from collections.abc import Iterable, Sequence
 
 
-IDENTITY_DOMAIN = "org.grovealliance.fhir.identity.v2"
-ENTRY_NODE_DOMAIN = "org.grovealliance.fhir.entry-node.v2"
+IDENTITY_DOMAIN = "org.grovealliance.fhir.identity.v0"
+ENTRY_NODE_DOMAIN = "org.grovealliance.fhir.entry-node.v0"
 FULL_URL_NAMESPACE = uuid.UUID("43df4575-bff7-5a57-9a80-2472cd2b0623")
 
 TOKEN = re.compile(r"^[A-Za-z0-9._-]+$")
@@ -28,15 +28,15 @@ ABSOLUTE_URI = re.compile(
     r"(?:[A-Za-z0-9._~:/?#\[\]@!$&'()*+,;=-]|%[0-9A-Fa-f]{2})+$"
 )
 HMAC_IDENTITY = re.compile(
-    r"^v2:(?P<key_id>[A-Za-z0-9._-]+):(?P<epoch>[1-9][0-9]*):"
+    r"^v0:(?P<key_id>[A-Za-z0-9._-]+):(?P<epoch>[1-9][0-9]*):"
     r"(?P<digest>[A-Za-z0-9_-]{43})$"
 )
 EVENT_IDENTITY = re.compile(
-    r"^e2:(?P<producer>[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-"
+    r"^e0:(?P<producer>[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-"
     r"[89ab][0-9a-f]{3}-[0-9a-f]{12}):(?P<sequence>[1-9][0-9]*)$"
 )
 ENTRY_NODE_IDENTITY = re.compile(
-    r"^n2:(?P<role>[a-z][a-z0-9-]*):(?P<ordinal>0|[1-9][0-9]*):"
+    r"^n0:(?P<role>[a-z][a-z0-9-]*):(?P<ordinal>0|[1-9][0-9]*):"
     r"(?P<digest>[A-Za-z0-9_-]{43})$"
 )
 
@@ -120,7 +120,7 @@ IDENTITY_KIND_COMPONENTS = {
     kind: len(names) for kind, names in IDENTITY_KIND_COMPONENT_NAMES.items()
 }
 
-# The provider namespace is closed for 0.6. Provider-scoped inputs deliberately use
+# The provider namespace is closed by the Grove FHIR contracts. Provider-scoped inputs deliberately use
 # provider-* identity kinds so the same tuple can never alias an adapter-scoped identity.
 PROVIDER_CODES = frozenset({"google-health-api", "oura", "withings"})
 
@@ -186,7 +186,7 @@ def derive_hmac_identity(
         raise ExchangeProtocolError("components must be a sequence of strings")
     component_names = IDENTITY_KIND_COMPONENT_NAMES.get(identity_kind)
     if component_names is None:
-        raise ExchangeProtocolError("identity_kind is not admitted by Grove 0.6")
+        raise ExchangeProtocolError("identity_kind is not admitted by the Grove FHIR contracts")
     if len(components) != len(component_names):
         raise ExchangeProtocolError(
             f"{identity_kind} requires exactly {len(component_names)} components"
@@ -219,7 +219,7 @@ def derive_hmac_identity(
     first_component = components[0]
     if identity_kind in provider_scoped_kinds and first_component not in PROVIDER_CODES:
         raise ExchangeProtocolError(
-            f"{identity_kind}.provider-code is not admitted by Grove 0.6"
+            f"{identity_kind}.provider-code is not admitted by the Grove FHIR contracts"
         )
     if identity_kind in generic_source_kinds and first_component in PROVIDER_CODES:
         expected_kind = {
@@ -232,7 +232,7 @@ def derive_hmac_identity(
         )
     preimage = frame_fields([IDENTITY_DOMAIN, identity_kind, *components])
     digest = hmac.new(key, preimage, hashlib.sha256).digest()
-    return f"v2:{key_id}:{epoch_text}:{base64url_no_padding(digest)}"
+    return f"v0:{key_id}:{epoch_text}:{base64url_no_padding(digest)}"
 
 
 def parse_hmac_identity(value: str) -> tuple[str, str, str]:
@@ -240,7 +240,7 @@ def parse_hmac_identity(value: str) -> tuple[str, str, str]:
         raise ExchangeProtocolError("identity must be a string")
     match = HMAC_IDENTITY.fullmatch(value)
     if match is None:
-        raise ExchangeProtocolError("identity is not a canonical Grove v2 HMAC value")
+        raise ExchangeProtocolError("identity is not a canonical Grove v0 HMAC value")
     return match.group("key_id"), match.group("epoch"), match.group("digest")
 
 
@@ -259,7 +259,7 @@ def event_identity(producer_instance: str, sequence: int | str) -> str:
         raise ExchangeProtocolError(
             "event sequence must be a canonical positive decimal integer"
         )
-    return f"e2:{producer}:{sequence_text}"
+    return f"e0:{producer}:{sequence_text}"
 
 
 def entry_node_identity(
@@ -272,7 +272,7 @@ def entry_node_identity(
     """Create an event-scoped node key for a resource without business identity."""
     require_absolute_uri(event_system, "event_system")
     if EVENT_IDENTITY.fullmatch(event_value) is None:
-        raise ExchangeProtocolError("event_value must be a canonical Grove v2 event value")
+        raise ExchangeProtocolError("event_value must be a canonical Grove v0 event value")
     if not isinstance(role, str) or re.fullmatch(r"[a-z][a-z0-9-]*", role) is None:
         raise ExchangeProtocolError("entry-node role must be a lowercase code token")
     ordinal_text = str(ordinal)
@@ -283,7 +283,7 @@ def entry_node_identity(
             [ENTRY_NODE_DOMAIN, event_system, event_value, role, ordinal_text]
         )
     ).digest()
-    return f"n2:{role}:{ordinal_text}:{base64url_no_padding(digest)}"
+    return f"n0:{role}:{ordinal_text}:{base64url_no_padding(digest)}"
 
 
 def _uuid_v5_bytes(namespace: uuid.UUID, name: bytes) -> uuid.UUID:

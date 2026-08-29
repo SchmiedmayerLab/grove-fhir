@@ -172,8 +172,8 @@ def issue_matches(issue: dict[str, Any], matcher: dict[str, str]) -> bool:
 
 def load_expectations(case_ids: set[str]) -> dict[str, list[dict[str, str]]]:
     value = load_json(EXPECTATIONS)
-    if value.get("schemaVersion") != 1 or set(value) != {"schemaVersion", "cases"}:
-        raise ValueError("Questionnaire Validator expectations must use schemaVersion 1")
+    if value.get("schemaVersion") != 0 or set(value) != {"schemaVersion", "cases"}:
+        raise ValueError("Questionnaire Validator expectations must use schemaVersion 0")
     cases = value.get("cases")
     if not isinstance(cases, dict) or set(cases) != case_ids:
         raise ValueError(

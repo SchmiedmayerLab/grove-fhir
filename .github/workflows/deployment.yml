@@ -14,7 +14,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: Bare semantic version to release, for example 0.6.0. It must equal the release manifest and every guide.
+        description: Bare semantic version to release. It must equal the release manifest and every guide.
         required: true
         type: string
       dryRun:

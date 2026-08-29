@@ -188,7 +188,7 @@ def semantic_diff(before: Mapping[str, Any], after: Mapping[str, Any]) -> dict[s
     for change in changes:
         counts[change["kind"]] += 1
     return {
-        "schemaVersion": 1,
+        "schemaVersion": 0,
         "before": {
             "name": before.get("package", {}).get("name"),
             "version": before.get("package", {}).get("version"),

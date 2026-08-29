@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Verify every 0.6 release projection against the authoritative manifest."""
+"""Verify every release projection against the authoritative manifest."""
 
 # This source file is part of the Grove FHIR open-source project
 #
@@ -230,17 +230,6 @@ def main() -> int:
     publication = load_json(ROOT / "publication/config.json")
     if publication.get("releaseMode") != manifest["publication"]["previewMode"]:
         failures.append("publication preview mode differs from release manifest")
-
-    format_version_pattern = re.compile(
-        r'^\* content\.format\.version = "([^"]+)"$', re.MULTILINE
-    )
-    for row in guide_rows:
-        for path in sorted((ROOT / row["source"] / "input/fsh").glob("*.fsh")):
-            for value in format_version_pattern.findall(path.read_text(encoding="utf-8")):
-                if value != release:
-                    failures.append(
-                        f"{path.relative_to(ROOT)} content.format.version is {value}, expected {release}"
-                    )
 
     for path in LEGACY_AUTHORITIES:
         if path.exists():

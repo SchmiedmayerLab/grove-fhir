@@ -86,15 +86,16 @@ def healthkit() -> str:
     sdk = source["sdkBaseline"]
     result = (
         HEADER
-        + "# Authoritative HealthKit status matrix\n\n"
-        + f"This table is the complete, closed v{catalog['version']} inventory of all {source['rowCount']} "
+        + "### Authoritative HealthKit status matrix\n\n"
+        + f"This table is the complete, closed inventory of all {source['rowCount']} "
         f"Apple HealthKit platform source types frozen against {sdk['platform']} "
         f"{sdk['version']} from Xcode {sdk['xcodeVersion']} build `{sdk['xcodeBuild']}`. "
         "The evidence is the official Apple platform documentation and the exact SDK "
         "provenance declared by the catalog. Each row has one definitive contract status; "
-        f"this is a release contract, not a roadmap. `supported` means v{catalog['version']} admits a "
-        "conformant output contract. All other rows are not admitted and producers fail "
-        "closed.\n\n"
+        "this is part of the Grove FHIR contracts, not a roadmap. `supported`, "
+        "`platform-exclusive`, and `mapped-standard` each admit only the output "
+        "contract(s) named in that row. `unmodeled`, `deferred`, and "
+        "`intentionally-unsupported` admit no output; producers fail closed.\n\n"
         + table(
             [
                 "HealthKit type",
@@ -120,7 +121,7 @@ def healthkit() -> str:
         for item in catalog["derivedAggregates"]
     ]
     result += (
-        "\n## Derived aggregate contracts\n\n"
+        "\n#### Derived aggregate contracts\n\n"
         "These rows are derived mappings, not HealthKit platform source identifiers, and "
         "are excluded from the source-type count and source-type CodeSystem.\n\n"
         + table(
@@ -172,10 +173,10 @@ def health_connect() -> str:
         )
     return (
         HEADER
-        + "# Authoritative Health Connect status matrix\n\n"
+        + "### Authoritative Health Connect status matrix\n\n"
         + "This table is the complete, closed AndroidX Health Connect 1.1.0 "
         "`RecordType.all` inventory. Each of the 41 record classes has exactly one "
-        f"definitive v{catalog['version']} status. An empty output cell means this release admits no "
+        "definitive status under the Grove FHIR contracts. An empty output cell means the relevant Grove FHIR Implementation Guide admits no "
         "FHIR producer output for that class; it is not an implementation queue.\n\n"
         + table(
             ["Record class", "Status", "Admitted output(s)", "Exact context mapping(s)"],
@@ -213,13 +214,14 @@ def sensorkit() -> str:
         )
     return (
         HEADER
-        + "# Authoritative SensorKit status matrix\n\n"
-        + f"This table is the complete v{catalog['version']} SensorKit inventory: "
+        + "### Authoritative SensorKit status matrix\n\n"
+        + "This table is the complete SensorKit inventory under the Grove FHIR contracts: "
         f"{scope_counts.get('catalog-baseline', 0)} catalog-baseline platform symbols and "
         f"{scope_counts.get('stable-addition', 0)} stable additions in the stated Apple SDK "
-        f"baseline. Each of the {len(entries)} rows has one definitive status. Native "
-        "Recording Document support is distinct from a "
-        "structured semantic mapping and never implies that fetching occurs in FHIR.\n\n"
+        f"baseline. Each of the {len(entries)} rows has one definitive status. "
+        "Recording Document support is distinct from a structured semantic mapping and "
+        "never implies that fetching occurs in FHIR; `content.format` states whether its "
+        "payload is CSV, FHIR, binary, native JSON, or another admitted format.\n\n"
         + table(
             [
                 "SensorKit source",
@@ -269,10 +271,10 @@ def providers() -> str:
             )
     result = (
         HEADER
-        + "# Authoritative connected-provider status matrix\n\n"
-        + f"This table enumerates every provider field in the closed v{catalog['version']} Google "
-        "Health API, Oura, and Withings source catalogs. Each field has one definitive "
-        "status. This adapter maps data already obtained by its caller; it contains no "
+        + "### Authoritative connected-provider status matrix\n\n"
+        + "This table lists every provider field in the published Google "
+        "Health API, Oura, and Withings inventory. Each field has one definitive "
+        "status. This adapter maps data already obtained before FHIR conversion; it contains no "
         "provider authentication, network, pagination, or fetching implementation.\n\n"
         + table(
             [
@@ -289,7 +291,7 @@ def providers() -> str:
         )
     )
     if grouped_rows:
-        result += "\n## Atomic grouped mappings\n\n"
+        result += "\n#### Atomic grouped mappings\n\n"
         result += table(
             ["Provider", "Grouped source token", "Required members", "Measurement", "Output discriminator", "Rule"],
             grouped_rows,
@@ -325,10 +327,10 @@ def vendor(guide: str) -> str:
     ]
     result = (
         HEADER
-        + f"# Authoritative {label} status matrix\n\n"
-        + f"This table enumerates every {label} field in the closed v{catalog['version']} source "
-        "catalog. Each field has one definitive status. This guide profiles data already obtained "
-        "by its caller; it contains no authentication, network, pagination, or fetching "
+        + f"### Authoritative {label} status matrix\n\n"
+        + f"This table lists every {label} field in the published Grove inventory. "
+        "Each field has one definitive status. This guide profiles data already obtained "
+        "before FHIR conversion; it contains no authentication, network, pagination, or fetching "
         "implementation.\n\n"
         + table(
             [
@@ -345,7 +347,7 @@ def vendor(guide: str) -> str:
     )
     grouped = provider.get("groupedMappings", [])
     if grouped:
-        result += "\n## Atomic grouped mappings\n\n"
+        result += "\n#### Atomic grouped mappings\n\n"
         result += table(
             ["Grouped source token", "Required members", "Measurement", "Output discriminator", "Rule"],
             [

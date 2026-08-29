@@ -6,13 +6,13 @@ SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTR
 SPDX-License-Identifier: MIT
 -->
 
-This walkthrough follows one HealthKit heart-rate sample into one Grove 0.6.0 source-record event.
-The linked adapter examples are readable documentation fixtures; the exact operational Bundle shape is the [Mobile exchange example](https://grovealliance.org/fhir/mobile/Bundle-GroveMobileExchangeBundleExample.html).
+This walkthrough follows one HealthKit heart-rate sample into one source-record event conforming to the relevant Grove FHIR Implementation Guide.
+The linked examples illustrate the individual adapter resources; the [Mobile exchange example](https://grovealliance.org/fhir/mobile/Bundle-GroveMobileExchangeBundleExample.html) shows the complete operational Bundle shape.
 
 ### 1. Establish conversion context
 
 The application fetches the HealthKit object before conversion.
-The producer supplies facts the sample cannot establish: the receiving-system Patient reference, a stable HealthKit-store scope, the converting application and host snapshots, an event-system/producer sequence, and a managed v2 HMAC key identifier and positive epoch.
+The producer supplies facts the sample cannot establish: the receiving-system Patient reference, a stable HealthKit-store scope, the converting application and host snapshots, an event-system/producer sequence, and a managed v0 HMAC key identifier and positive epoch.
 The public conformance key used by examples is forbidden in production.
 
 For the illustrated record, the source coordinates are:
@@ -31,7 +31,7 @@ The opaque Grove identities are always present.
 They are deliberately non-reversible: equality supports retry, reconciliation, and retraction, but the digest cannot recover the UUID.
 When exact upstream round-trip is required, a deployment may additionally place the clear UUID on this catalog-designated primary Observation as a governed Identifier under its own absolute HealthKit-store namespace.
 That optional identifier is not a Grove graph key and is not repeated on child or support resources.
-The `single` discriminator has no independent clinical meaning; any meaningful source order, time, multiplicity, or ordinal would also have to appear in a FHIR element or registered payload rather than only in the preimage.
+The `single` discriminator has no independent clinical meaning; any meaningful source order, time, multiplicity, or ordinal must also appear in a FHIR element or registered payload rather than only in the preimage.
 
 ### 2. Require an admitted catalog row
 
@@ -41,7 +41,9 @@ An absent, deferred, or intentionally unsupported row fails closed; it never fal
 ### 3. Emit separate source and output identities
 
 The [heart-rate Observation](Observation-HealthKitHeartRateObservationExample.html) carries exactly one source-record identity and one source-output identity.
-Their deployment-owned systems bind the kind, key id, and epoch; their values are canonical v2 HMAC results:
+Their deployment-owned systems bind the kind, key id, and epoch; their values are canonical v0 HMAC results:
+
+The HMAC values in this abbreviated example are schematic; the complete published example contains concrete conformance-key values.
 
 ```json
 "identifier": [
@@ -50,16 +52,16 @@ Their deployment-owned systems bind the kind, key id, and epoch; their values ar
       "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
       "code": "source-record"
     }]},
-    "system": "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1",
-    "value": "v2:test-key:1:2LnL2_8DgGsZjeX6FiAKlO9JhhFmX7GYJxaMvLGay9k"
+    "system": "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1",
+    "value": "v0:<key-id>:<epoch>:…"
   },
   {
     "type": { "coding": [{
       "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
       "code": "source-output"
     }]},
-    "system": "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1",
-    "value": "v2:test-key:1:T_TL24HHsbiJz6bM9kC7_uu59s4qFbTtxtRaOwfBFF4"
+    "system": "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1",
+    "value": "v0:<key-id>:<epoch>:…"
   }
 ]
 ```
@@ -67,7 +69,7 @@ Their deployment-owned systems bind the kind, key id, and epoch; their values ar
 `Resource.id` remains optional and repository-assigned. `effectiveDateTime` is the source measurement instant, not conversion time.
 The exact source type remains in the adapter-lineage extension beside LOINC `8867-4`; the optional motion-context component is admitted only for this result.
 
-### 4. Snapshot devices honestly
+### 4. Represent device roles
 
 The [recording Device](Device-HealthKitRecordingDeviceExample.html) exists only because the caller supplied a governed stable per-unit token.
 It carries both a stable `recording-device` identity and an event-scoped `device-snapshot` identity.
@@ -80,13 +82,13 @@ An Apple bundle-identifier pair names the application product but is not an inst
 ### 5. Record the transform once
 
 The [conversion Provenance](Provenance-HealthKitConversionProvenanceExample.html) targets the output, records the source activity time separately from mandatory `recorded`, names the converter as assembler, and carries the same typed source-record Identifier as its source entity.
-In an operational event its entry gets an event-scoped `n2:` node key; Provenance does not invent a second event business identifier.
+In an operational event its entry gets an event-scoped `n0:` node key; Provenance does not invent a second event business identifier.
 
 ### 6. Assemble one immutable event
 
 The operational Bundle conforms to [Grove Mobile Exchange Bundle](https://grovealliance.org/fhir/mobile/StructureDefinition-grove-mobile-exchange-bundle.html):
 
-- `Bundle.identifier` alone owns `e2:<producer-instance-uuid>:<positive-sequence>`;
+- `Bundle.identifier` alone owns `e0:<producer-instance-uuid>:<positive-sequence>`;
 - the Bundle contains every output for exactly this source-record revision and exactly one conversion Provenance;
 - every entry has one selected complete entry key and a deterministic lowercase UUIDv5 `fullUrl`;
 - `Bundle.timestamp`, `Provenance.occurred[x]`, and `Provenance.recorded` keep their separate meanings; and

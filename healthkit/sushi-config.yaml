@@ -11,7 +11,8 @@ canonical: https://grovealliance.org/fhir/healthkit
 name: GroveFHIRHealthKit
 title: Grove FHIR HealthKit Adapter
 description: >-
-  FHIR R4 mappings for HealthKit records exchanged through the Grove Mobile contract.
+  FHIR R4 mappings and lineage contracts for already-obtained HealthKit records,
+  layered on the Grove FHIR Mobile and Sensor contracts.
 status: draft
 version: 0.6.0
 fhirVersion: 4.0.1
@@ -67,7 +68,7 @@ pages:
   walkthrough.md:
     title: Walkthrough
   status-matrix.md:
-    title: Authoritative status matrix
+    title: Status matrix
   concept-properties.md:
     title: Concept properties
   implementation.md:

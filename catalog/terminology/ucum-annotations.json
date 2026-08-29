@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 0,
   "description": "The closed allowlist of UCUM {annotation} tokens Grove units may carry. Annotations are dimensionless by definition, so each admitted token names one reviewed counting semantics; anything else is rejected by the gate.",
   "annotations": {
     "count": "A dimensionless count of the events the component definition states.",

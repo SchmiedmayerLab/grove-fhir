@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 0,
   "packages": [
     {
       "source": "mobile",
@@ -1722,17 +1722,17 @@
           "classification": "definition"
         },
         {
-          "fshName": "GroveNativeRecordingMimeTypeVS",
-          "fshType": "ValueSet",
-          "resourceType": "ValueSet",
-          "id": "grove-native-recording-mime-type",
-          "classification": "definition"
-        },
-        {
           "fshName": "GroveRecordingFormatVS",
           "fshType": "ValueSet",
           "resourceType": "ValueSet",
           "id": "grove-recording-format",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveRecordingMimeTypeVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "grove-recording-mime-type",
           "classification": "definition"
         }
       ]

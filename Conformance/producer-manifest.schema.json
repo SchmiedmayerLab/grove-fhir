@@ -6,7 +6,7 @@
   "additionalProperties": false,
   "required": ["schemaVersion", "fhirVersion", "producer", "packages", "resources", "semanticVectors"],
   "properties": {
-    "schemaVersion": {"const": 1},
+    "schemaVersion": {"const": 0},
     "fhirVersion": {"const": "4.0.1"},
     "producer": {
       "type": "object",

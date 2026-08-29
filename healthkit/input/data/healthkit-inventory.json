@@ -16,7 +16,7 @@
       "xcodeVersion": "26.6"
     }
   },
-  "schemaVersion": 1,
+  "schemaVersion": 0,
   "sourceTypes": {
     "HKCategoryTypeIdentifierAbdominalCramps": {
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/abdominalcramps",

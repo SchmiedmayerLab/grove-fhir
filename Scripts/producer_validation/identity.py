@@ -134,7 +134,7 @@ def typed_resource_identifiers(resource: dict[str, Any], label: str) -> dict[str
         pair = complete_identifier(identifier, f"{label}.identifier[{index}]")
         if HMAC_IDENTITY.fullmatch(pair[1]) is None:
             raise ProducerValidationError(
-                f"{label}.identifier[{index}] is not a canonical Grove v2 HMAC identity"
+                f"{label}.identifier[{index}] is not a canonical Grove v0 HMAC identity"
             )
         result[role] = pair
     return result
@@ -527,7 +527,7 @@ def validate_governed_source_identifiers(
             )
 
 def selected_entry_identifier(resource: dict[str, Any], label: str) -> tuple[str, tuple[str, str]] | None:
-    """Select the deterministic resource business identifier required by protocol v2."""
+    """Select the deterministic resource business identifier required by protocol v0."""
     by_role = typed_resource_identifiers(resource, label)
     for role in IDENTIFIER_PRIORITY:
         if role in by_role:

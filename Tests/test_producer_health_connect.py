@@ -31,7 +31,7 @@ class ProducerHealthConnectTests(ProducerValidationTestCase):
         writer = typed_identifier(
             "writer-record",
             "https://example.org/fhir/NamingSystem/writer-record/test-key/1",
-            "v2:test-key:1:" + "A" * 43,
+            "v0:test-key:1:" + "A" * 43,
         )
         for version in ("0", "9223372036854775807", "9223372036854775808"):
             resource = {
@@ -286,12 +286,12 @@ class ProducerHealthConnectTests(ProducerValidationTestCase):
                 typed_identifier(
                     "source-record",
                     "https://example.org/fhir/NamingSystem/source-record/test-key/1",
-                    "v2:test-key:1:" + "C" * 43,
+                    "v0:test-key:1:" + "C" * 43,
                 ),
                 typed_identifier(
                     "source-output",
                     "https://example.org/fhir/NamingSystem/source-output/test-key/1",
-                    "v2:test-key:1:" + "D" * 43,
+                    "v0:test-key:1:" + "D" * 43,
                 ),
             ],
             "extension": [{
@@ -467,7 +467,7 @@ class ProducerHealthConnectTests(ProducerValidationTestCase):
         source_identifier = typed_identifier(
             "source-record",
             "https://example.org/fhir/NamingSystem/source-record/test-key/1",
-            "v2:test-key:1:" + "E" * 43,
+            "v0:test-key:1:" + "E" * 43,
         )
         record_type_url = json.loads(
             (ROOT / "catalog/health-connect-adapter.json").read_text(encoding="utf-8")
@@ -489,7 +489,7 @@ class ProducerHealthConnectTests(ProducerValidationTestCase):
                     typed_identifier(
                         "source-output",
                         "https://example.org/fhir/NamingSystem/source-output/test-key/1",
-                        "v2:test-key:1:" + output_character * 43,
+                        "v0:test-key:1:" + output_character * 43,
                     ),
                 ],
                 "extension": [{"url": record_type_url, "valueCode": record_type}],

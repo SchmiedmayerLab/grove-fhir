@@ -69,13 +69,13 @@ def render_mime_fsh(registry: dict) -> str:
         raise SystemExit(f"media types declared but used by no format: {sorted(unused)}")
 
     lines = [FSH_HEADER]
-    lines.append("ValueSet: GroveNativeRecordingMimeTypeVS")
-    lines.append("Id: grove-native-recording-mime-type")
-    lines.append('Title: "Grove Native Recording MIME Types"')
+    lines.append("ValueSet: GroveRecordingMimeTypeVS")
+    lines.append("Id: grove-recording-mime-type")
+    lines.append('Title: "Grove Recording MIME Types"')
     lines.append(
-        'Description: "The exact media types admitted for a Grove native sensor recording. '
-        "Standard types are identified by their IANA registration; the vendor-tree types are "
-        "Grove's own and are not IANA-registered. Grove does not publish or version the "
+        'Description: "The exact media types admitted for a Grove sensor recording payload. '
+        "The codes are registered media types identified by their IANA registration. Grove "
+        "does not publish or version the "
         'external code system."'
     )
     lines.append("* ^experimental = false")
@@ -121,9 +121,9 @@ def render_fsh(registry: dict) -> str:
     lines.append('Title: "Grove Recording Format"')
     lines.append(
         'Description: "The closed registry of payload formats a Grove recording '
-        "DocumentReference may declare in content.format. Each code is fully "
-        "specified in the format registry and on the formats page, so a receiver "
-        'can parse any admitted payload from the guide alone."'
+        "DocumentReference may declare in content.format. Each code identifies a wire "
+        "format and structural envelope. Native Recording defines only a JSON object-or-array "
+        'container; the carrying source type supplies its category and meaning."'
     )
     lines.append("* ^experimental = false")
     lines.append("* ^caseSensitive = true")
@@ -151,13 +151,14 @@ def render_fsh(registry: dict) -> str:
 def render_column_table(fmt: dict) -> list[str]:
     lines = [
         "",
-        "| Column | Type | Unit | Meaning |",
-        "|---|---|---|---|",
+        "| Column | Type | Nullable | Unit | Meaning |",
+        "|---|---|---|---|---|",
     ]
     for column in fmt["columns"]:
         unit = f"`{column['unit']}`" if "unit" in column else "—"
+        nullable = "yes" if column["nullable"] else "no"
         lines.append(
-            f"| `{column['name']}` | {column['type']} | {unit} | {column['meaning']} |"
+            f"| `{column['name']}` | {column['type']} | {nullable} | {unit} | {column['meaning']} |"
         )
     return lines
 
@@ -176,13 +177,19 @@ def render_record_table(title: str, fields: list[dict]) -> list[str]:
 def render_page(registry: dict) -> str:
     lines = [PAGE_HEADER]
     lines.append(
-        "Every Grove recording DocumentReference content entry declares exactly one payload format from this closed registry in `content.format`."
+        "Every Grove recording DocumentReference content entry declares exactly one "
+        "payload format from this closed registry in `content.format`."
     )
     lines.append(
-        "A receiver can parse every admitted payload from this page and the machine registry alone; an unregistered payload format is nonconformant."
+        "An unregistered payload format is nonconformant. Each entry below states the "
+        "validation the bundled producer validator actually performs and the checks that "
+        "remain external producer or receiver responsibilities. For `native-recording`, "
+        "the carrying source type selects the source category and meaning; this generic "
+        "format defines no per-stream field schema."
     )
     lines.append(
-        "The machine registry is [`catalog/format-registry.json`](https://grovealliance.org/fhir/catalog/format-registry.json); this page renders it."
+        "The complete machine-readable contract is published in "
+        "[`catalog/format-registry.json`](https://grovealliance.org/fhir/catalog/format-registry.json)."
     )
     for code, fmt in registry["formats"].items():
         spec = resolved_specification(registry, fmt)
@@ -193,14 +200,20 @@ def render_page(registry: dict) -> str:
         for key in (
             "encoding",
             "structure",
+            "schema",
             "rowTerminator",
             "separator",
             "quoting",
             "numbers",
+            "numberPattern",
+            "integers",
+            "integerPattern",
             "timestamps",
+            "emptyFields",
             "columns",
             "resources",
             "emptyBatch",
+            "validationScope",
             "provenance",
             "scope",
             "tar",
@@ -210,7 +223,7 @@ def render_page(registry: dict) -> str:
         ):
             value = spec.get(key)
             if isinstance(value, str):
-                lines.append(value)
+                lines.append(f"`{value}`" if key.endswith("Pattern") else value)
         if "primitives" in spec:
             lines.append("")
             lines.append("**Primitive encodings**")

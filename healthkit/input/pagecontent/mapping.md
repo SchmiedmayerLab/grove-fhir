@@ -10,12 +10,13 @@ Conversion begins by selecting a mapping from the HealthKit sample type.
 The resulting Observation follows [HealthKit Observation](StructureDefinition-healthkit-observation.html) and the applicable clinical or research profile.
 Preserve the facts HealthKit states; do not infer hardware, capture mode, clinical meaning, or study membership from an API type alone.
 
-The normative status-vocabulary definitions live on the [guide family page](https://grovealliance.org/fhir/mobile/guides.html#status-vocabulary). The [authoritative status matrix](status-matrix.html) renders all 218 source-type identifiers from the release's machine catalog, including every admitted and fail-closed row.
+The normative status-vocabulary definitions live on the [guide family page](https://grovealliance.org/fhir/mobile/guides.html#status-vocabulary).
+The [authoritative status matrix](status-matrix.html) lists all 218 source-type identifiers in the published adapter contract, including every admitted and fail-closed row.
 The [walkthrough](walkthrough.html) applies the rules below to one concrete heart-rate sample, from `HKQuantitySample` to the uploaded exchange Bundle.
 
 ### Source-record and output identity
 
-Derive one typed `source-record` v2 HMAC Identifier from the exact component order in `catalog/exchange-protocol.json`: adapter id, exact HealthKit source type, complete deployment-owned HealthKit-store scope pair, and lowercase canonical UUID text.
+Derive one typed `source-record` v0 HMAC Identifier from the exact component order in `catalog/exchange-protocol.json`: adapter id, exact HealthKit source type, complete deployment-owned HealthKit-store scope pair, and lowercase canonical UUID text.
 The Identifier system is deployment-owned and immutable for the identity kind, key id, and positive epoch.
 
 Derive a distinct typed `source-output` Identifier by adding the closed output role and catalog discriminator.
@@ -28,7 +29,7 @@ This disclosure does not replace or alter either HMAC identity, and the UUID is 
 Never copy it into `Resource.id`, Bundle entry keys, retraction addresses, arbitrary components, or untyped metadata, and do not incidentally propagate it into attachment names, URLs, or logs.
 
 HealthKit replaces a sample when a writer saves the same `HKMetadataKeySyncIdentifier` with a higher `HKMetadataKeySyncVersion`, and that replacement has a new object UUID.
-The new source record and output therefore receive new v2 identities.
+The new source record and output therefore receive new v0 identities.
 Logical revision correlation is carried separately as writer identity.
 
 ### Availability time
@@ -42,14 +43,14 @@ The conversion instant is recorded once, on the conversion `Provenance`.
 
 `HKMetadataKeySyncIdentifier` and `HKMetadataKeySyncVersion` are an exact pair.
 A producer MUST reject either half-pair, a blank or non-String identifier, or a version that is not an integral non-negative number; it MUST NOT fabricate version `0`.
-For a valid pair, derive a typed `writer-record` v2 HMAC Identifier from the complete writing-application Identifier pair and exact sync identifier.
+For a valid pair, derive a typed `writer-record` v0 HMAC Identifier from the complete writing-application Identifier pair and exact sync identifier.
 Map `HKMetadataKeySyncVersion` to the [Grove Writer Record Version](https://grovealliance.org/fhir/mobile/StructureDefinition-grove-writer-record-version.html) extension.
 The Health Connect adapter uses the same identity kind and extension for `clientRecordId` and `clientRecordVersion`; equality is meaningful only where the deployment deliberately uses the same complete writer-application pair, identity system, key, and epoch.
 
 The two identifiers answer different questions, and a receiver needs both:
 
-- the source-record identifier names the exact row/revision that was read, so an exact retry is recognised;
-- the sync identifier names the measurement, so a revision of it is recognised as the same measurement and the higher sync version supersedes the lower.
+- the source-record identifier names the exact row/revision that was read, so an exact retry is recognized;
+- the sync identifier names the measurement, so a revision of it is recognized as the same measurement and the higher sync version supersedes the lower.
 
 A sample with neither sync field omits writer identity and writer version.
 It still carries mandatory source-record and source-output identities.
@@ -76,12 +77,12 @@ Distinct equal-type samples remain distinct; `present` requires at least one dis
 ### Clinical FHIR records
 
 HealthKit can expose both DSTU2 and R4 `HKFHIRResource` payloads.
-Grove 0.6.0 is an R4 guide and does not perform cross-version conversion, so a clinical-record row is admitted only when `HKFHIRResource.fhirVersion.fhirRelease` is exactly `r4`.
+The relevant Grove FHIR Implementation Guide targets R4 and does not perform cross-version conversion, so a clinical-record row is admitted only when `HKFHIRResource.fhirVersion.fhirRelease` is exactly `r4`.
 Reject `dstu2`, an unknown or missing release, and every future release before creating the DocumentReference.
 Do not infer the release from JSON shape and do not relabel, upgrade, or downgrade the preserved bytes.
 
 An admitted R4 payload is carried byte-for-byte under the HealthKit Clinical Record Document profile and `fhir-r4-resource` format contract.
-The DocumentReference carries exactly one `healthkit-clinical-fhir-release` extension whose `valueCode` is fixed to `r4`; the exact URL, element, cardinality, and value are machine-published by `catalog/healthkit-adapter.json.clinicalRecordAdmission.fhirRepresentation`.
+The DocumentReference carries exactly one `healthkit-clinical-fhir-release` extension whose `valueCode` is fixed to `r4`; `catalog/healthkit-adapter.json.clinicalRecordAdmission.fhirRepresentation` publishes the exact URL, element, cardinality, and value.
 That envelope does not assert that Grove has validated or endorsed the issuer's clinical content; it asserts only the exact source release, payload integrity, identity, and provenance contract.
 
 ### Values, units, and time
@@ -149,7 +150,7 @@ Study resources are linked through the study model; they are not source entities
 ### Allowlisted metadata
 
 Map source facts to standard FHIR fields and published extensions before retaining adapter-specific metadata.
-Version 0.6.0 permits one residual key: `HKMetadataKeyHeartRateMotionContext`.
+The Grove FHIR contracts permit one residual key: `HKMetadataKeyHeartRateMotionContext`.
 It is represented by the named `Observation.component:heartRateMotionContext` slice and bound to [HealthKit Heart Rate Motion Context](CodeSystem-healthkit-heart-rate-motion-context.html).
 The component is valid only on a LOINC `8867-4` heart-rate Observation.
 
@@ -175,7 +176,7 @@ The [study Bundle](Bundle-HealthKitStudyBundleExample.html) demonstrates the gra
 
 ### Dependencies and terminology notices
 
-The generated tables identify this guide's package dependencies and the notices for terminology used by its artifacts and examples.
+The tables below list this guide's package dependencies and the notices for terminology used by its artifacts and examples.
 
 {% include dependency-table-nontech.xhtml %}
 

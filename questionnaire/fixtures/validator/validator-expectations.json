@@ -1,12 +1,12 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 0,
   "cases": {
     "questionnaire-version-missing": [
       {
         "messageId": "Validation_VAL_Profile_Minimum",
         "code": "structure",
         "expression": "Questionnaire",
-        "detailsContains": "Questionnaire.version: minimum required = 1, but only found 0 (from https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire|0.6.0)"
+        "detailsContains": "Questionnaire.version: minimum required = 1, but only found 0"
       },
       {
         "messageId": "https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire#qg-version-1",
@@ -28,7 +28,7 @@
         "messageId": "_DT_Fixed_Wrong",
         "code": "value",
         "expression": "Questionnaire.extension[0].value.ofType(Coding).code",
-        "detailsContains": "Value is 'date' but is fixed to 'semver' in the profile https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire|0.6.0#Questionnaire.extension:versionAlgorithm.value[x]:valueCoding.code"
+        "detailsContains": "Value is 'date' but is fixed to 'semver'"
       },
       {
         "messageId": "https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire#qg-version-algorithm-1",
@@ -53,14 +53,6 @@
         "detailsContains": "Constraint failed: qg-item-text-1: 'Every question and display item has text; structural groups may use text as an optional heading.' (defined in https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire)"
       }
     ],
-    "questionnaire-prohibited-repeats": [
-      {
-        "messageId": "https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire#qg-repeats-1",
-        "code": "invariant",
-        "expression": "Questionnaire",
-        "detailsContains": "Constraint failed: qg-repeats-1: 'Repeated answers are limited to choice, open-choice, and attachment questions.' (defined in https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire)"
-      }
-    ],
     "questionnaire-enable-forms-combined": [
       {
         "messageId": "https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire#qg-enable-1",
@@ -80,7 +72,7 @@
         "messageId": "Validation_VAL_Profile_Minimum",
         "code": "structure",
         "expression": "Questionnaire.extension[1].value.ofType(Expression)",
-        "detailsContains": "Questionnaire.extension:variable.value[x].name: minimum required = 1, but only found 0 (from https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire|0.6.0)"
+        "detailsContains": "Questionnaire.extension:variable.value[x].name: minimum required = 1, but only found 0"
       },
       {
         "messageId": "https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire#qg-variable-name-1",
@@ -214,7 +206,7 @@
         "messageId": "https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire#qg-occurrence-1",
         "code": "invariant",
         "expression": "Questionnaire",
-        "detailsContains": "Constraint failed: qg-occurrence-1: 'Minimum and maximum occurrence constraints are used only on repeating items.' (defined in https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire)"
+        "detailsContains": "Constraint failed: qg-occurrence-1: 'Occurrence constraints are used only on repeating items, and a minimum requires required=true.' (defined in https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire)"
       }
     ],
     "questionnaire-style-sensitive": [
@@ -246,7 +238,7 @@
         "messageId": "Validation_VAL_Profile_Minimum",
         "code": "structure",
         "expression": "QuestionnaireResponse",
-        "detailsContains": "QuestionnaireResponse.identifier: minimum required = 1, but only found 0 (from https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire-response|0.6.0)"
+        "detailsContains": "QuestionnaireResponse.identifier: minimum required = 1, but only found 0"
       },
       {
         "messageId": "https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire-response#gqr-identifier-1",
@@ -260,13 +252,13 @@
         "messageId": "Validation_VAL_Profile_Maximum",
         "code": "structure",
         "expression": "QuestionnaireResponse.extension[0].value.ofType(CodeableConcept)",
-        "detailsContains": "QuestionnaireResponse.extension:completionMode.value[x].coding: max allowed = 1, but found 2 (from https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire-response|0.6.0)"
+        "detailsContains": "QuestionnaireResponse.extension:completionMode.value[x].coding: max allowed = 1, but found 2"
       },
       {
         "messageId": "_DT_Fixed_Wrong",
         "code": "value",
         "expression": "QuestionnaireResponse.extension[0].value.ofType(CodeableConcept).coding[1].code",
-        "detailsContains": "Value is 'VERBAL' but is fixed to 'ELECTRONIC' in the profile https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire-response|0.6.0#QuestionnaireResponse.extension:completionMode.value[x].coding.code"
+        "detailsContains": "Value is 'VERBAL' but is fixed to 'ELECTRONIC'"
       },
       {
         "messageId": "https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire-response#gqr-completion-mode-1",
