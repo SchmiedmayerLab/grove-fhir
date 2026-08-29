@@ -25,8 +25,14 @@
     {
       "url": "http://hl7.org/fhir/StructureDefinition/targetConstraint",
       "extension": [
-        {"url": "key", "valueId": "question-present"},
-        {"url": "severity", "valueCode": "error"},
+        {
+          "url": "key",
+          "valueId": "question-present"
+        },
+        {
+          "url": "severity",
+          "valueCode": "error"
+        },
         {
           "url": "expression",
           "valueExpression": {
@@ -34,7 +40,10 @@
             "expression": "%resource.repeat(item | answer.item).where(linkId = 'comment').exists()"
           }
         },
-        {"url": "human", "valueString": "The comment question must be present."}
+        {
+          "url": "human",
+          "valueString": "The comment question must be present."
+        }
       ]
     }
   ],
@@ -43,6 +52,9 @@
   "name": "ValidatorQuestionnaireExpressions",
   "title": "Validator Questionnaire Expressions",
   "status": "active",
+  "subjectType": [
+    "Patient"
+  ],
   "item": [
     {
       "extension": [
@@ -64,8 +76,14 @@
         {
           "url": "http://hl7.org/fhir/StructureDefinition/targetConstraint",
           "extension": [
-            {"url": "key", "valueId": "comment-not-blank"},
-            {"url": "severity", "valueCode": "warning"},
+            {
+              "url": "key",
+              "valueId": "comment-not-blank"
+            },
+            {
+              "url": "severity",
+              "valueCode": "warning"
+            },
             {
               "url": "expression",
               "valueExpression": {
@@ -73,7 +91,10 @@
                 "expression": "%resource.repeat(item | answer.item).where(linkId = 'comment').answer.value.ofType(string).all($this.trim().length() > 0)"
               }
             },
-            {"url": "human", "valueString": "Avoid an all-whitespace comment."}
+            {
+              "url": "human",
+              "valueString": "Avoid an all-whitespace comment."
+            }
           ]
         }
       ],

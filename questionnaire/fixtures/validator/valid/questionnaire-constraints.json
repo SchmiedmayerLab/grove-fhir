@@ -20,6 +20,9 @@
   "name": "ValidatorQuestionnaireConstraints",
   "title": "Validator Questionnaire Constraints",
   "status": "active",
+  "subjectType": [
+    "Patient"
+  ],
   "item": [
     {
       "extension": [
