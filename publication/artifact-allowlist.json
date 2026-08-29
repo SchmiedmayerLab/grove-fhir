@@ -5474,6 +5474,27 @@
       "canonical": "https://grovealliance.org/fhir/questionnaire",
       "artifacts": [
         {
+          "fshName": "GroveQuestionnaireWriterContext",
+          "fshType": "Extension",
+          "resourceType": "StructureDefinition",
+          "id": "grove-questionnaire-writer-context",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveHomeVitalsExample",
+          "fshType": "Instance",
+          "resourceType": "Questionnaire",
+          "id": "GroveHomeVitalsExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "GroveHomeVitalsResponseExample",
+          "fshType": "Instance",
+          "resourceType": "QuestionnaireResponse",
+          "id": "GroveHomeVitalsResponseExample",
+          "classification": "example"
+        },
+        {
           "fshName": "GroveQuestionnairePatientExample",
           "fshType": "Instance",
           "resourceType": "Patient",

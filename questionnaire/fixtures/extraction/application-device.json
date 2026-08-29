@@ -1,0 +1,61 @@
+{
+  "resourceType": "Device",
+  "id": "home-vitals-writer-snapshot",
+  "meta": {
+    "profile": [
+      "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-application-device"
+    ]
+  },
+  "identifier": [
+    {
+      "type": {
+        "coding": [
+          {
+            "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+            "code": "device-snapshot"
+          }
+        ]
+      },
+      "system": "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v2/test-key/1",
+      "value": "v2:test-key:1:LoklqBncCvOYXpkYLc8Yva3bcQ1cXgqTvJO35YsNO5E"
+    },
+    {
+      "system": "https://study.example.org/fhir/NamingSystem/application",
+      "value": "org.grovealliance.example.client"
+    }
+  ],
+  "status": "active",
+  "deviceName": [
+    {
+      "name": "Grove Questionnaire Client",
+      "type": "user-friendly-name"
+    }
+  ],
+  "version": [
+    {
+      "type": {
+        "coding": [
+          {
+            "system": "urn:iso:std:iso:11073:10101",
+            "code": "531975"
+          }
+        ]
+      },
+      "value": "1.4.0"
+    },
+    {
+      "type": {
+        "coding": [
+          {
+            "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-application-version-type",
+            "code": "build"
+          }
+        ]
+      },
+      "value": "1402"
+    }
+  ],
+  "parent": {
+    "reference": "Device/home-vitals-host-snapshot"
+  }
+}

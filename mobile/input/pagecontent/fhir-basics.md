@@ -59,32 +59,25 @@ A heart rate, trimmed to the fields that carry meaning:
 
 Four ideas in that document are worth pausing on, because they are where newcomers most often go wrong.
 
-**A code is a coordinate, not a word.**
-`code` says what was measured, and it says it as a `system` plus a `code`.
-The `display` is a human courtesy; receivers match on the pair.
-`8867-4` in the LOINC system means heart rate to every system that reads LOINC.
+**A code is a coordinate, not a word.** `code` says what was measured, and it says it as a `system` plus a `code`.
+The `display` is a human courtesy; receivers match on the pair. `8867-4` in the LOINC system means heart rate to every system that reads LOINC.
 Grove fixes the code for each measurement, so two producers cannot describe the same thing differently.
 
-**A quantity carries its unit as a code too.**
-`unit` is for people; `code` in the UCUM system is what a receiver computes with.
-`/min` is UCUM for "per minute".
+**A quantity carries its unit as a code too.** `unit` is for people; `code` in the UCUM system is what a receiver computes with. `/min` is UCUM for "per minute".
 A number without a UCUM code is not comparable data.
 
-**`effective` and `issued` are different times, and both matter.**
-`effective` is when the measurement happened — the moment the heart beat.
-`issued` is when this version of the record became available, taken from the source platform's own timestamp for it.
+**`effective` and `issued` are different times, and both matter.** `effective` is when the measurement happened — the moment the heart beat. `issued` is when this version of the record became available, taken from the source platform's own timestamp for it.
 A platform that keeps no such timestamp leaves `issued` out rather than substituting a clock reading, so converting the same unchanged data twice produces the same document instead of looking like something new.
-A receiver uses `effective` for the clinical timeline. Ordering *revisions of the same measurement* is a third question again, and the adapter guides answer it with a writer-assigned version.
+A receiver uses `effective` for the clinical timeline.
+Ordering *revisions of the same measurement* is a third question again, and the adapter guides answer it with a writer-assigned version.
 
-**`subject` is a reference, not a person.**
-The next section explains what that means.
+**`subject` is a reference, not a person.** The next section explains what that means.
 
 ### References, identifiers, and ids
 
 This is the part of FHIR that most repays five minutes of attention.
 
-A resource has an `id` — its address on one particular server.
-`Patient/abc123` means "the patient at `abc123` on this server".
+A resource has an `id` — its address on one particular server. `Patient/abc123` means "the patient at `abc123` on this server".
 Move the record elsewhere and the id changes.
 It is not the participant's identity; it is a filing location.
 
@@ -109,10 +102,8 @@ Three practical consequences for a producer:
 - **`subject` on an Observation is a reference to a Patient**, so you need a stable participant identity before you can emit anything.
   Use whatever your study already uses as its enrolment identifier.
   Do not use an email address or a phone number: they change over a study's life, and they identify the person directly, which is what a research exchange is trying to avoid.
-- **You need an identifier `system` of your own.**
-  Pick one URL under a domain you control and keep it forever.
-- **Server-assigned `id`s are not yours to invent.**
-  A producer that has not been given one leaves `id` out and identifies its records by `identifier` instead.
+- **You need an identifier `system` of your own.** Pick one URL under a domain you control and keep it forever.
+- **Server-assigned `id`s are not yours to invent.** A producer that has not been given one leaves `id` out and identifies its records by `identifier` instead.
 
 ### Why two devices
 

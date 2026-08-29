@@ -7,6 +7,7 @@ WARNING: 4: The HTML fragment 'globals-table.xhtml' is not included anywhere in 
 
 # Publisher does not resolve a versioned canonical to an example Questionnaire during single-resource validation. Repository tests resolve the pair and verify its exact canonical, hierarchy, linkIds, and answer constraints.
 WARNING: QuestionnaireResponse/GroveWeeklySymptomCheckInResponseExample: QuestionnaireResponse: The questionnaire 'https://grovealliance.org/fhir/questionnaire/Questionnaire/GroveWeeklySymptomCheckInExample|1.0.0' could not be resolved, so no validation can be performed against the base questionnaire
+WARNING: QuestionnaireResponse/GroveHomeVitalsResponseExample: QuestionnaireResponse: The questionnaire 'https://grovealliance.org/fhir/questionnaire/Questionnaire/GroveHomeVitalsExample|1.0.0' could not be resolved, so no validation can be performed against the base questionnaire
 
 # The standard artifact-versionAlgorithm extension binds to the trial-use version-algorithm value set. This contract intentionally requires semver.
 WARNING: StructureDefinition/grove-questionnaire: StructureDefinition.snapshot.element[14].binding: The definition for the element 'Questionnaire.extension.value[x]' binds to the value set 'http://hl7.org/fhir/ValueSet/version-algorithm' which is experimental, but this structure is not labeled as experimental

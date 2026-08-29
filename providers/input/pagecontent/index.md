@@ -6,10 +6,8 @@ SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTR
 SPDX-License-Identifier: MIT
 -->
 
-The Grove Connected Provider Adapter maps data that an application has already obtained
-from Google Health API, Oura, or Withings into international FHIR R4. It does not define
-OAuth, permissions, subscriptions, webhooks, polling, fetching, transport, storage, or a
-receiving service.
+The Grove Connected Provider Adapter maps data that an application has already obtained from Google Health API, Oura, or Withings into international FHIR R4.
+It does not define OAuth, permissions, subscriptions, webhooks, polling, fetching, transport, storage, or a receiving service.
 
 New to FHIR?
 [Start with the FHIR basics page](https://grovealliance.org/fhir/mobile/fhir-basics.html) in the Mobile guide.
@@ -17,22 +15,16 @@ It covers the resources these guides use, identifiers and references, and how to
 
 Every normalized Observation declares exactly two direct profiles:
 
-1. the exact semantic measurement profile: a shared Grove Mobile profile when the
-   meaning is genuinely shared, or a provider-owned profile when it is not; and
-2. the exact provider envelope for the source (Google Health, Oura, or Withings),
-   which specializes [Provider Observation](StructureDefinition-providers-observation.html).
+1. the exact semantic measurement profile: a shared Grove Mobile profile when the meaning is genuinely shared, or a provider-owned profile when it is not; and
+2. the exact provider envelope for the source (Google Health, Oura, or Withings), which specializes [Provider Observation](StructureDefinition-providers-observation.html).
 
-The semantic profile owns clinical meaning, result shape, unit, and time semantics. The
-adapter profile owns provider lineage and deterministic business identity. Provider
-Observation is an abstract common parent; concrete Observations and examples live in the
-Google Health, Oura, or Withings package that owns the exact provider envelope. Inherited
-Mobile and core standard profiles are not repeated in `meta.profile`; the semantic and
-adapter claims are both explicit and are never inferred from each other. Provider-native
-irregular recordings marked `mapped-standard` declare exactly the source-neutral Grove
-Sensor Recording Document and Provider Recording Document profiles. The adapter
-document preserves provider lineage and exact source/output identity without pretending
-that irregular points are uniform. Structured and raw transformations use the same
-Provider conversion Provenance graph shape.
+The semantic profile owns clinical meaning, result shape, unit, and time semantics.
+The adapter profile owns provider lineage and deterministic business identity.
+Provider Observation is an abstract common parent; concrete Observations and examples live in the Google Health, Oura, or Withings package that owns the exact provider envelope.
+Inherited Mobile and core standard profiles are not repeated in `meta.profile`; the semantic and adapter claims are both explicit and are never inferred from each other.
+Provider-native irregular recordings marked `mapped-standard` declare exactly the source-neutral Grove Sensor Recording Document and Provider Recording Document profiles.
+The adapter document preserves provider lineage and exact source/output identity without pretending that irregular points are uniform.
+Structured and raw transformations use the same Provider conversion Provenance graph shape.
 
 ### What this guide publishes, and what each provider guide publishes
 
@@ -53,5 +45,5 @@ The catalog is a closed release contract, not a roadmap.
 
 The [Withings walkthrough](walkthrough.html) traces one grouped blood-pressure measure group from provider JSON to the emitted FHIR graph.
 
-Continue with [Mapping](mapping.html) and [Implementation](implementation.html). Open
-[Artifacts](artifacts.html) for the package surface.
+Continue with [Mapping](mapping.html) and [Implementation](implementation.html).
+Open [Artifacts](artifacts.html) for the package surface.

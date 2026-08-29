@@ -6,8 +6,7 @@ SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTR
 SPDX-License-Identifier: MIT
 -->
 
-Grove FHIR 0.6.0 is a coordinated family of ten implementation-guide packages that share one
-exchange model.
+Grove FHIR 0.6.0 is a coordinated family of ten implementation-guide packages that share one exchange model.
 This guide, Mobile, is the hub: it defines the source-neutral profiles every adapter emits.
 Each adapter guide binds one platform or provider API to those shared profiles and states exactly which source types convert, which do not, and why.
 

@@ -1,0 +1,38 @@
+{
+  "resourceType": "Device",
+  "id": "home-vitals-host-snapshot",
+  "meta": {
+    "profile": [
+      "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-host-device"
+    ]
+  },
+  "identifier": [
+    {
+      "type": {
+        "coding": [
+          {
+            "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+            "code": "device-snapshot"
+          }
+        ]
+      },
+      "system": "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v2/test-key/1",
+      "value": "v2:test-key:1:k7ClzhCy4MCYUYzROPR7wjTJAau3vQyqRME8ef19r0s"
+    }
+  ],
+  "status": "active",
+  "modelNumber": "iPhone17,1",
+  "version": [
+    {
+      "type": {
+        "coding": [
+          {
+            "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-application-version-type",
+            "code": "os-version"
+          }
+        ]
+      },
+      "value": "26.0"
+    }
+  ]
+}

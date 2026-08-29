@@ -6,7 +6,8 @@ SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTR
 SPDX-License-Identifier: MIT
 -->
 
-This page walks a first-time implementer through converting one `SRDeviceUsageReport` batch into the mandated dual-output graph. The complete resource examples are the [structured summary](Observation-SensorKitDeviceUsageExample.html), [native recording](DocumentReference-SensorKitDeviceUsageDocumentExample.html), and [conversion Provenance](Provenance-SensorKitDeviceUsageProvenanceExample.html); an exchange producer places those resources and their referenced context in one Mobile Exchange Bundle.
+This page walks a first-time implementer through converting one `SRDeviceUsageReport` batch into the mandated dual-output graph.
+The complete resource examples are the [structured summary](Observation-SensorKitDeviceUsageExample.html), [native recording](DocumentReference-SensorKitDeviceUsageDocumentExample.html), and [conversion Provenance](Provenance-SensorKitDeviceUsageProvenanceExample.html); an exchange producer places those resources and their referenced context in one Mobile Exchange Bundle.
 
 ### Why one record becomes two outputs
 
@@ -18,25 +19,16 @@ Real producers already have this shape: the My Heart Counts app uploads each dev
 
 ### What links the two outputs
 
-Both outputs carry the same opaque source-record v2 HMAC identifier,
-`v2:test-key:1:ct2xsuoLAjG1lDQTq8kvZ-59YXjBr84LPF8Adi-x6eE`. SensorKit publishes no
-durable sample identifier, so the producer atomically assigns and persists an opaque
-acquisition-record key from a reset generation and monotonic delivery ordinal that continues
-across callback batches. Before yielding, it persists the pending start ordinal/count, ordered
-keys, verification evidence, and cursor boundary. Exact crash retries reuse those pending
-coordinates even after callback rebatching; byte-equal records at different ordinals remain
-distinct, and measured content or payload digests never select identity.
-Each output additionally carries its own source-output HMAC: the Observation uses
-`v2:test-key:1:ey9U9SGqloQ8RIGcBQLPw1NDNuUovyfwlUcmbKDODcE` and the Recording Document uses
-`v2:test-key:1:NsQH4D0yoTsbEg9zuUMwbqAKqFbJq808gDQqXlWZJm0`. The exact catalog roles and
-discriminators are length-framed into the HMAC preimage, so Unicode and delimiters are unambiguous
-and no native acquisition key is disclosed.
-`Observation.derivedFrom` holds exactly one reference to the document, and `DocumentReference.context.related` points back to exactly the Observation. In an exchange Bundle those internal references use the target entries' UUID `fullUrl` values; the standalone examples use their logical example references.
+Both outputs carry the same opaque source-record v2 HMAC identifier, `v2:test-key:1:ct2xsuoLAjG1lDQTq8kvZ-59YXjBr84LPF8Adi-x6eE`.
+SensorKit publishes no durable sample identifier, so the producer atomically assigns and persists an opaque acquisition-record key from a reset generation and monotonic delivery ordinal that continues across callback batches.
+Before yielding, it persists the pending start ordinal/count, ordered keys, verification evidence, and cursor boundary.
+Exact crash retries reuse those pending coordinates even after callback rebatching; byte-equal records at different ordinals remain distinct, and measured content or payload digests never select identity.
+Each output additionally carries its own source-output HMAC: the Observation uses `v2:test-key:1:ey9U9SGqloQ8RIGcBQLPw1NDNuUovyfwlUcmbKDODcE` and the Recording Document uses `v2:test-key:1:NsQH4D0yoTsbEg9zuUMwbqAKqFbJq808gDQqXlWZJm0`.
+The exact catalog roles and discriminators are length-framed into the HMAC preimage, so Unicode and delimiters are unambiguous and no native acquisition key is disclosed. `Observation.derivedFrom` holds exactly one reference to the document, and `DocumentReference.context.related` points back to exactly the Observation.
+In an exchange Bundle those internal references use the target entries' UUID `fullUrl` values; the standalone examples use their logical example references.
 One [conversion Provenance](StructureDefinition-sensorkit-conversion-provenance.html) targets both outputs and names the record identifier as its sole source entity; omitting the raw target is nonconformant.
-Every Bundle entry `fullUrl` is the UUIDv5 of its selected complete entry key under the Mobile
-exchange namespace. Exact retries therefore preserve graph identity, while a distinct acquired
-record uses a distinct acquisition coordinate and event sequence regardless of whether its bytes
-happen to match another record.
+Every Bundle entry `fullUrl` is the UUIDv5 of its selected complete entry key under the Mobile exchange namespace.
+Exact retries therefore preserve graph identity, while a distinct acquired record uses a distinct acquisition coordinate and event sequence regardless of whether its bytes happen to match another record.
 
 ### The structured summary
 
