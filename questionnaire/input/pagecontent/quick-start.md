@@ -86,10 +86,11 @@ On a profile page:
 
 The canonical URL namespace identifies conformance artifacts; implementations must not depend on each canonical URL being directly retrievable.
 The guide publication instead provides the package archive used by validation tools.
-Download `package.tgz` and `package.tgz.sha256` from the [Artifacts page](artifacts.html), then verify the checksum:
+Download `package.tgz` and `package.tgz.sha256` from the [Artifacts page](artifacts.html).
+Save both files in the same directory, change to that directory, and run:
 
 ```sh
-(cd grove-questionnaire-package && shasum -a 256 --check package.tgz.sha256)
+shasum -a 256 --check package.tgz.sha256
 ```
 
 Run the official FHIR Validator once for each resource:
@@ -97,19 +98,19 @@ Run the official FHIR Validator once for each resource:
 ```sh
 java -jar validator_cli.jar questionnaire.json \
   -version 4.0.1 \
-  -ig grove-questionnaire-package/package.tgz \
+  -ig package.tgz \
   -profile https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire
 
 java -jar validator_cli.jar questionnaire-response.json \
   -version 4.0.1 \
-  -ig grove-questionnaire-package/package.tgz \
+  -ig package.tgz \
   -profile https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire-response
 ```
 
 ### 5. Validate the resource pair
 
 Profile validation cannot prove that response items and answers agree with the referenced Questionnaire.
-Run the paired validator with every ValueSet used by `answerValueSet` or `unitValueSet`:
+From a checkout of the Grove FHIR Implementation Guides source corresponding to the package version, run the paired validator with every ValueSet used by `answerValueSet` or `unitValueSet`:
 
 ```sh
 python3 Scripts/validate-questionnaire.py \

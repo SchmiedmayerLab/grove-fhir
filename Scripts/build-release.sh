@@ -66,6 +66,7 @@ python3 Scripts/validate-producer.py \
   --manifest Conformance/corpora/mobile-exchange/official-validator-manifest.json \
   --validator .build/fhir-tools/validator_cli.jar \
   --package mobile=mobile/output/package.tgz \
+  --package questionnaire=questionnaire/output/package.tgz \
   --allow-example-urls
 python3 Scripts/check-publication.py \
   --site .build/pages \

@@ -42,7 +42,7 @@ The [quick start](quick-start.html#4-validate-each-resource) provides the comple
 ### Cross-resource validation
 
 Individual profile validation cannot determine whether a response agrees with its referenced instrument.
-After resolving `QuestionnaireResponse.questionnaire` to the exact Questionnaire version, run the paired validator with every ValueSet required for answer or unit membership:
+After resolving `QuestionnaireResponse.questionnaire` to the exact Questionnaire version, use a checkout of the Grove FHIR Implementation Guides source corresponding to the package version and run the paired validator with every ValueSet required for answer or unit membership:
 
 ```sh
 python3 Scripts/validate-questionnaire.py \
@@ -66,8 +66,7 @@ The paired validator checks the following cross-resource rules:
 `QuestionnaireResponse.item.text` is optional presentation content and is deliberately not compared with the Questionnaire prompt.
 The response `linkId`, hierarchy, and exact versioned Questionnaire canonical provide the machine contract across locales.
 
-These checks require both resources.
-The profile deliberately does not call `resolve()` against an unspecified validation environment.
+These are pair-level obligations: validators must resolve the exact Questionnaire named by `QuestionnaireResponse.questionnaire`; neither resource can establish them alone.
 
 ### External evaluation dependencies
 

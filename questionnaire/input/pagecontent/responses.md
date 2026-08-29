@@ -85,7 +85,7 @@ Preserve the full Coding, Quantity, or Attachment instead of flattening it to di
 Temporal answers retain their R4 datatype and lexical precision.
 Comparisons normalize a `dateTime` offset to the represented instant but do not invent a missing month, day, or fractional-second precision.
 When two precision ranges overlap without denoting the same value, the comparison is indeterminate; completion fails closed when a condition depends on that comparison.
-R4 permits second `60` for a leap second. Grove producers emit a leap second only at whole-second precision, and Grove adapters reject a fractional leap second.
+The Grove FHIR contracts admit leap-second values only at whole-second precision and reject fractional leap seconds.
 
 For quantities with coded units, equality compares the numeric `value` and the coded unit identity (`system` and `code`).
 The `unit` element is presentation text in that case, so `kg` and `kilogram` remain equal when both carry the same UCUM code.
@@ -101,7 +101,7 @@ Core `enableWhen` is evaluated against the response; expression-based enablement
 When `repeats` is false or absent, a question has at most one answer and a group has at most one response occurrence in its parent context.
 A repeating question carries multiple answers in one response item.
 A repeating group is represented by multiple group-item occurrences; each occurrence evaluates its descendants against answers in that occurrence rather than answers from another repetition.
-Both forms are subject to `questionnaire-minOccurs` and `questionnaire-maxOccurs`.
+For enabled items, `questionnaire-maxOccurs` always limits occurrences; `questionnaire-minOccurs` is enforced when the response is `completed` or `amended`.
 An option marked exclusive cannot be combined with another answer.
 
 When an item declares `answerOption`, a response value matches one inline option.

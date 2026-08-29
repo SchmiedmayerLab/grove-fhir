@@ -17,9 +17,9 @@ SPDX-License-Identifier: MIT
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE.md)
 
 The Grove FHIR Implementation Guides define international, reusable FHIR R4 contracts for mobile health data.
-The Mobile Data Exchange guide describes source-neutral Observations, recording and application Device roles, immutable conversion and retraction graphs, study context, and conversion provenance.
-Platform adapters bind deployment-scoped typed v0 identities and mappings needed by a specific source without changing the shared resource shape.
-Implementations in Swift, TypeScript, Kotlin, or another language are independent producers of these contracts.
+The Grove FHIR Mobile guide describes source-neutral Observations, recording and application Device roles, immutable conversion and retraction graphs, study context, and conversion provenance.
+Platform adapters add source-specific mappings and deployment-scoped typed identifiers without changing shared resource semantics.
+Swift, TypeScript, Kotlin, and other implementations produce FHIR resources conforming to these contracts.
 This repository owns the guides, examples, negative corpora, and a producer-neutral validation kit; it never clones or executes an implementation repository.
 
 The canonical namespace is `https://grovealliance.org/fhir`.
@@ -28,7 +28,7 @@ During development, GitHub Pages remains the documentation preview.
 
 ## Documentation
 
-Start with the [Mobile Data Exchange guide](https://schmiedmayerlab.github.io/grove-fhir/) to understand the common resource model and copy a complete example.
+Start with the [Grove FHIR Mobile guide](https://schmiedmayerlab.github.io/grove-fhir/) to understand the common resource model and copy a complete example.
 The package graph is:
 
 | Package | Layer and dependency |

@@ -181,11 +181,11 @@ def render_page(registry: dict) -> str:
         "payload format from this closed registry in `content.format`."
     )
     lines.append(
-        "An unregistered payload format is nonconformant. Each entry below states the "
-        "validation the bundled producer validator actually performs and the checks that "
-        "remain external producer or receiver responsibilities. For `native-recording`, "
-        "the carrying source type selects the source category and meaning; this generic "
-        "format defines no per-stream field schema."
+        "An unregistered payload format is nonconformant. Each entry defines the payload "
+        "grammar that a conformant producer validates before emission and identifies any "
+        "additional producer or receiver responsibilities. For `native-recording`, the "
+        "carrying source type selects the source category and meaning; this generic format "
+        "defines no per-stream field schema."
     )
     lines.append(
         "The complete machine-readable contract is published in "

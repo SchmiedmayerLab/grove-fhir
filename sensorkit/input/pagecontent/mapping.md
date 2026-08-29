@@ -13,16 +13,16 @@ That row determines whether the stream admits structured output, a Recording Doc
 
 The normative status-vocabulary definitions live on the [guide family page](https://grovealliance.org/fhir/mobile/guides.html#status-vocabulary). The list below states the SensorKit specifics.
 
-- `supported`: a complete, lossless structured mapping exists to a listed source-neutral Sensor profile plus the SensorKit adapter profile.
+- `supported`: the listed source-neutral Sensor profile plus SensorKit adapter represents the primary structured measurement; a row may also require a Recording Document to preserve source details not represented structurally.
 - `mapped-standard`: the exact caller-encoded payload is represented by the source-neutral Sensor Recording Document plus its SensorKit adapter; no scalar or waveform meaning is invented.
-- `platform-exclusive`: a reviewed SensorKit-only structured profile represents the source semantics because no exact shared or established FHIR profile does.
+- `platform-exclusive`: a SensorKit-only structured profile represents the source semantics because no exact shared or established FHIR profile does.
 - `unmodeled`: the stream is inventoried, but no shared or SensorKit-scoped profile models it and no output is admitted.
 - `deferred`: the stream is inventoried, but the Grove FHIR contracts publish no admitted output contract.
 - `intentionally-unsupported`: the Grove FHIR contracts reject an unsafe or misleading representation.
 
 Only rotation rate may use generic SampledData in the Grove FHIR contracts, and only when its complete three-axis values prove one exact uniform period.
 Accelerometer batch identity, high-frequency heart-rate confidence, and ECG guidance/per-voltage flags are not representable by bare SampledData without loss, so those streams retain registered Recording Documents alongside or instead of a structured projection. Their actual wire formats include CSV and native JSON and are declared independently in `content.format`.
-Irregular, incomplete, mixed-unit, opaque, or unreviewed streams likewise remain Recording Documents rather than being resampled or relabeled.
+Streams admitted as `mapped-standard` because they are irregular, incomplete, mixed-unit, or opaque remain Recording Documents rather than being resampled or relabeled.
 
 On-wrist state, the scalar device-usage summary, and visit summary use explicit SensorKit-only profiles.
 A visit is not a clinical Encounter.

@@ -12,7 +12,7 @@ The walkthrough is explanatory; the adapter catalog, profiles, and exchange prot
 
 ### Dual-output rationale
 
-A device-usage report carries a scalar summary plus nested per-category application, notification, and web usage that no reviewed Observation shape represents losslessly.
+A device-usage report carries a scalar summary plus nested per-category application, notification, and web usage that no admitted Grove Observation profile represents losslessly.
 The structured [Device Usage Observation](StructureDefinition-sensorkit-device-usage-observation.html) retains only total unlock duration, screen wakes, and unlocks.
 Everything else stays in the caller-encoded native payload, carried unmodified by a [SensorKit Recording Document](StructureDefinition-sensorkit-recording-document.html).
 The catalog row for `SRSensor.deviceUsageReport` therefore requires both resources in one [Grove Mobile Exchange Bundle](https://grovealliance.org/fhir/mobile/StructureDefinition-grove-mobile-exchange-bundle.html); a summary without its native document is nonconformant.
@@ -34,7 +34,7 @@ Exact retries therefore preserve graph identity, while a distinct acquired recor
 
 ### Structured summary
 
-Trimmed to the load-bearing elements:
+The following excerpt shows the elements that establish profile conformance, identity, result semantics, source linkage, and device attribution:
 
 ```json
 {
@@ -97,7 +97,7 @@ The attachment holds exactly one of embedded `data` or a retrievable `url`, alwa
 The producer emits the document only after the caller asserts `caller-authorized-opaque-payload` or `verified-sanitized-input`.
 It validates the declared format grammar and derives any grammar-defined summary counts from the accepted payload.
 
-For an inline payload, Grove validation checks size and hash integrity together with the generic native-JSON envelope or selected registered CSV grammar.
+For an inline payload, Grove format validation checks size and hash integrity and, when applicable to the declared format, the generic native-JSON envelope or selected registered CSV grammar.
 The CSV checks are structural and lexical; they do not enforce the source-domain ranges described for individual columns.
 For a URL payload, validation checks the required Attachment metadata but does not fetch or verify the referenced bytes.
 

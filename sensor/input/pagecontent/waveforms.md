@@ -6,8 +6,8 @@ SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTR
 SPDX-License-Identifier: MIT
 -->
 
-This page defines the two source-neutral representations for sampled sensor data: inline uniform series and registered recording documents.
-The selected representation must preserve the source timing, channel identity, and payload without inventing regularity or clinical meaning.
+Sampled sensor data has two source-neutral representations: an inline uniformly sampled series and a registered recording document.
+Choose the representation that preserves the source timing, channel identity, and payload without inventing regularity or clinical meaning.
 
 ### Uniform sampled data
 
@@ -42,12 +42,10 @@ The Grove ValueSet admits the registered media types used by the payload formats
 `DocumentReference.content.format` separately identifies the exact Grove payload contract, so two formats may share one media type without losing their distinct semantics.
 The IANA registry remains authoritative for media types: Grove neither publishes nor versions that external CodeSystem and does not define or reassign its codes.
 
-Before emitting any Recording Document, a producer requires exactly one explicit caller assertion: either `caller-authorized-opaque-payload` or `verified-sanitized-input`.
-An absent, ambiguous, or unsupported assertion fails closed.
-This is a producer preflight input, not a FHIR consent or authorization claim.
+Before emitting a Recording Document, the calling application must explicitly state either that the opaque payload is authorized for disclosure as supplied (`caller-authorized-opaque-payload`) or that it has been verified and sanitized (`verified-sanitized-input`).
+Exactly one declaration is required; otherwise conversion fails.
+These declarations are producer preconditions, not FHIR Consent or authorization records.
 A conformant producer validates supplied bytes against the declared registry grammar and derives any grammar-defined summary counts from the accepted payload.
-For URL payloads, the bundled validator checks required Attachment metadata only and does not fetch or verify the bytes.
-For inline payloads, it verifies size/hash integrity, validates registered CSV grammars, and applies the documented strict JSON checks to native, provider, and FHIR formats; the FHIR collection format also receives its Bundle-envelope and resource-shape checks.
-Its CSV checks are structural and lexical; they do not enforce per-column source-domain ranges stated in column meanings.
-It does not execute the official FHIR Validator over embedded resources, parse every binary grammar, recompute summaries, reinterpret, sanitize, rewrite, or reserialize the bytes.
-Passing it alone does not prove URL-backed payload integrity, embedded-resource FHIR/profile conformance, or the remaining payload and derivation obligations, clinical meaning, or authorization.
+Grove format validation checks required Attachment metadata for URL-backed content without retrieving the bytes.
+For inline content, it verifies size and hash integrity and, when applicable to the declared format, its registered CSV grammar or defined JSON envelope.
+It does not replace validation of embedded FHIR resources, binary-format validation, semantic review, authorization, or adapter-specific derivation requirements.

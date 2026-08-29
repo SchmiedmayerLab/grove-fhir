@@ -9,9 +9,9 @@ GENERATED FILE. Edit the corresponding catalog JSON and run
 `python3 Scripts/render-status-matrices.py`.
 -->
 
-### Authoritative connected-provider status matrix
+### Connected-provider support matrix
 
-This table lists every provider field in the published Google Health API, Oura, and Withings inventory. Each field has one definitive status. This adapter maps data already obtained before FHIR conversion; it contains no provider authentication, network, pagination, or fetching implementation.
+This table lists every provider field in the published Google Health API, Oura, and Withings inventory. Each field has one definitive status. This adapter maps data already obtained before FHIR conversion; it contains no provider authentication, network, pagination, or fetching implementation. A field named as a required group member admits no standalone output; only the corresponding grouped mapping below admits the result.
 
 | Provider | Source type | Source status | Provider field | Field status | Measurement | Representation / conversion | Binding reason / effective time |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -26,7 +26,7 @@ This table lists every provider field in the published Google Health API, Oura, 
 | `google-health-api` | `heart-rate-variability` | `supported` | `heartRateVariability.rootMeanSquareOfSuccessiveDifferencesMilliseconds` | `supported` | heart-rate-variability-rmssd | — | — |
 | `google-health-api` | `heart-rate-variability` | `supported` | `heartRateVariability.standardDeviationMilliseconds` | `supported` | heart-rate-variability-sdnn | — | — |
 | `google-health-api` | `daily-resting-heart-rate` | `supported` | `dailyRestingHeartRate.beatsPerMinute` | `supported` | resting-heart-rate-daily-average | — | — |
-| `google-health-api` | `daily-respiratory-rate` | `supported` | `dailyRespiratoryRate.breathsPerMinute` | `supported` | respiratory-rate-average | — | — |
+| `google-health-api` | `daily-respiratory-rate` | `supported` | `dailyRespiratoryRate.breathsPerMinute` | `supported` | respiratory-rate-average | — | method = daily-mean |
 | `google-health-api` | `blood-glucose` | `supported` | `bloodGlucose.bloodGlucoseMilligramsPerDeciliter` | `supported` | blood-glucose-unspecified-specimen | — | — |
 | `google-health-api` | `core-body-temperature` | `supported` | `coreBodyTemperature.temperatureCelsius` | `supported` | body-temperature | identity UCUM Cel | coreBodyTemperature.sampleTime.physicalTime |
 | `google-health-api` | `floors` | `supported` | `floors.count` | `supported` | flights-climbed | — | — |
@@ -37,7 +37,7 @@ This table lists every provider field in the published Google Health API, Oura, 
 | `google-health-api` | `sleep` | `supported` | `sleep.summary.stagesSummary[type=LIGHT].minutes` | `supported` | light-sleep-duration | — | — |
 | `google-health-api` | `sleep` | `supported` | `sleep.summary.stagesSummary[type=AWAKE].minutes` | `supported` | sleep-awake-duration | — | — |
 | `google-health-api` | `exercise` | `supported` | `exercise.interval` | `supported` | workout | — | — |
-| `google-health-api` | `heart-rate` | `mapped-standard` | `payload` | `mapped-standard` | — | https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document | The source points may be irregular; retain the provider-native recording rather than resample or invent a uniform SampledData period. |
+| `google-health-api` | `heart-rate` | `mapped-standard` | `payload` | `mapped-standard` | — | grove-sensor-recording-document; providers-recording-document | The source points may be irregular; retain the provider-native recording rather than resample or invent a uniform SampledData period. |
 | `oura` | `daily_activity` | `supported` | `steps` | `supported` | step-count | integer count to UCUM {steps} | the source civil day represented as a complete day Period; midpoint substitution is forbidden |
 | `oura` | `daily_activity` | `supported` | `active_calories` | `supported` | active-energy | identity UCUM kcal | the source civil day represented as a complete day Period; midpoint substitution is forbidden |
 | `oura` | `daily_activity` | `supported` | `equivalent_walking_distance` | `supported` | distance | identity UCUM m | the source civil day represented as a complete day Period; midpoint substitution is forbidden |
@@ -46,20 +46,20 @@ This table lists every provider field in the published Google Health API, Oura, 
 | `oura` | `sleep` | `supported` | `rem_sleep_duration` | `supported` | rem-sleep-duration | — | — |
 | `oura` | `sleep` | `supported` | `light_sleep_duration` | `supported` | light-sleep-duration | — | — |
 | `oura` | `sleep` | `supported` | `awake_time` | `supported` | sleep-awake-duration | — | — |
-| `oura` | `sleep` | `supported` | `lowest_heart_rate` | `supported` | sleep-heart-rate | — | — |
+| `oura` | `sleep` | `supported` | `lowest_heart_rate` | `supported` | sleep-heart-rate | — | method = session-minimum |
 | `oura` | `sleep` | `supported` | `average_hrv` | `unmodeled` | — | — | Oura reports this as an RMSSD average over the sleep session, but this contract does not define the exact session window to use as Observation.effectivePeriod. No FHIR output is admitted. |
-| `oura` | `sleep` | `supported` | `average_breath` | `supported` | respiratory-rate-average | — | — |
+| `oura` | `sleep` | `supported` | `average_breath` | `supported` | respiratory-rate-average | — | method = session-mean |
 | `oura` | `daily_spo2` | `supported` | `spo2_percentage.average` | `supported` | oxygen-saturation-daily-average | — | — |
 | `oura` | `workout` | `supported` | `start_datetime/end_datetime` | `supported` | workout | — | — |
 | `oura` | `vO2_max` | `supported` | `vo2_max` | `supported` | vo2-max | — | — |
 | `oura` | `daily_cardiovascular_age` | `platform-exclusive` | `vascular_age` | `platform-exclusive` | oura-cardiovascular-age | provider integer years to UCUM a | The Grove FHIR contracts carry the Oura cardiovascular-age figure as the provider-scoped oura-cardiovascular-age profile, on an age scale in UCUM years over the civil-day Period. The profile names the vendor in its code and description, so the figure cannot be mistaken for a chronological age, for a clinical vascular assessment, or for Withings' vascular age, which stays a separate measurement because the two are undisclosed algorithms over different inputs. No comparability between vendors and no diagnosis is asserted. |
 | `oura` | `daily_readiness` | `platform-exclusive` | `score` | `platform-exclusive` | oura-readiness-score | unitless provider value to the dimensionless UCUM {score} annotation | The Grove FHIR contracts carry the Oura readiness figure as the provider-scoped oura-readiness-score profile over the civil-day Period, on the dimensionless UCUM {score} annotation because the vendor publishes no physical unit for it. The code names the vendor and the profile description states the scale, so the figure cannot be read as an observable quantity. Nothing about the composite's inputs, weighting, or comparability across people is asserted, and Oura's daily sleep and activity scores remain outside the inventoried source surface. |
-| `oura` | `heartrate` | `mapped-standard` | `payload` | `mapped-standard` | — | https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document | Timestamped points may be irregular; retain the provider-native recording rather than resample or invent a uniform SampledData period. |
+| `oura` | `heartrate` | `mapped-standard` | `payload` | `mapped-standard` | — | grove-sensor-recording-document; providers-recording-document | Timestamped points may be irregular; retain the provider-native recording rather than resample or invent a uniform SampledData period. |
 | `withings` | `getmeas:1` | `supported` | `measure.value*10^unit` | `supported` | body-weight | provider SI value to UCUM kg | measure group date |
 | `withings` | `getmeas:4` | `supported` | `measure.value*10^unit` | `supported` | body-height | provider SI value to UCUM cm | measure group date |
 | `withings` | `getmeas:6` | `supported` | `measure.value*10^unit` | `supported` | body-fat-percentage | — | — |
-| `withings` | `getmeas:9` | `supported` | `measure.value*10^unit` | `supported` | blood-pressure | provider SI value to UCUM mm[Hg] | measure group date |
-| `withings` | `getmeas:10` | `supported` | `measure.value*10^unit` | `supported` | blood-pressure | provider SI value to UCUM mm[Hg] | measure group date |
+| `withings` | `getmeas:9` | `supported` | `measure.value*10^unit` | `supported` | blood-pressure | required member of `getmeas:9+10`; no standalone output | measure group date |
+| `withings` | `getmeas:10` | `supported` | `measure.value*10^unit` | `supported` | blood-pressure | required member of `getmeas:9+10`; no standalone output | measure group date |
 | `withings` | `getmeas:11` | `supported` | `measure.value*10^unit` | `supported` | heart-rate | provider value to UCUM /min | measure group date |
 | `withings` | `getmeas:54` | `supported` | `measure.value*10^unit` | `supported` | oxygen-saturation | provider value to UCUM % | measure group date |
 | `withings` | `getmeas:71` | `supported` | `measure.value*10^unit` | `supported` | body-temperature | provider value to UCUM Cel | measure group date |
@@ -72,20 +72,20 @@ This table lists every provider field in the published Google Health API, Oura, 
 | `withings` | `getsummary:remsleepduration` | `supported` | `data.remsleepduration` | `supported` | rem-sleep-duration | — | — |
 | `withings` | `getsummary:lightsleepduration` | `supported` | `data.lightsleepduration` | `supported` | light-sleep-duration | — | — |
 | `withings` | `getsummary:wakeupduration` | `supported` | `data.wakeupduration` | `supported` | sleep-awake-duration | — | — |
-| `withings` | `getsummary:hr_average` | `supported` | `data.hr_average` | `supported` | sleep-heart-rate; sleeping-heart-rate-average | — | — |
-| `withings` | `getsummary:rr_average` | `supported` | `data.rr_average` | `supported` | respiratory-rate-average | — | — |
+| `withings` | `getsummary:hr_average` | `supported` | `data.hr_average` | `supported` | sleep-heart-rate | — | exact sleep-session Period; method = session-mean |
+| `withings` | `getsummary:rr_average` | `supported` | `data.rr_average` | `supported` | respiratory-rate-average | — | method = session-mean |
 | `withings` | `getworkouts:interval` | `supported` | `startdate/enddate` | `supported` | workout | — | — |
-| `withings` | `activityIntraday` | `mapped-standard` | `steps` | `mapped-standard` | — | https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document | — |
-| `withings` | `activityIntraday` | `mapped-standard` | `calories` | `mapped-standard` | — | https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document | — |
-| `withings` | `activityIntraday` | `mapped-standard` | `distance` | `mapped-standard` | — | https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document | — |
-| `withings` | `activityIntraday` | `mapped-standard` | `elevation` | `mapped-standard` | — | https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document | — |
-| `withings` | `activityIntraday` | `mapped-standard` | `heart_rate` | `mapped-standard` | — | https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document | — |
-| `withings` | `activityIntraday` | `mapped-standard` | `spo2_auto` | `mapped-standard` | — | https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document | — |
-| `withings` | `sleepIntraday` | `mapped-standard` | `hr` | `mapped-standard` | — | https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document | — |
-| `withings` | `sleepIntraday` | `mapped-standard` | `rr` | `mapped-standard` | — | https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document | — |
-| `withings` | `sleepIntraday` | `mapped-standard` | `snoring` | `mapped-standard` | — | https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document | — |
-| `withings` | `sleepIntraday` | `mapped-standard` | `sdnn_1` | `mapped-standard` | — | https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document | — |
-| `withings` | `sleepIntraday` | `mapped-standard` | `rmssd` | `mapped-standard` | — | https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document | — |
+| `withings` | `activityIntraday` | `mapped-standard` | `steps` | `mapped-standard` | — | grove-sensor-recording-document; providers-recording-document | — |
+| `withings` | `activityIntraday` | `mapped-standard` | `calories` | `mapped-standard` | — | grove-sensor-recording-document; providers-recording-document | — |
+| `withings` | `activityIntraday` | `mapped-standard` | `distance` | `mapped-standard` | — | grove-sensor-recording-document; providers-recording-document | — |
+| `withings` | `activityIntraday` | `mapped-standard` | `elevation` | `mapped-standard` | — | grove-sensor-recording-document; providers-recording-document | — |
+| `withings` | `activityIntraday` | `mapped-standard` | `heart_rate` | `mapped-standard` | — | grove-sensor-recording-document; providers-recording-document | — |
+| `withings` | `activityIntraday` | `mapped-standard` | `spo2_auto` | `mapped-standard` | — | grove-sensor-recording-document; providers-recording-document | — |
+| `withings` | `sleepIntraday` | `mapped-standard` | `hr` | `mapped-standard` | — | grove-sensor-recording-document; providers-recording-document | — |
+| `withings` | `sleepIntraday` | `mapped-standard` | `rr` | `mapped-standard` | — | grove-sensor-recording-document; providers-recording-document | — |
+| `withings` | `sleepIntraday` | `mapped-standard` | `snoring` | `mapped-standard` | — | grove-sensor-recording-document; providers-recording-document | — |
+| `withings` | `sleepIntraday` | `mapped-standard` | `sdnn_1` | `mapped-standard` | — | grove-sensor-recording-document; providers-recording-document | — |
+| `withings` | `sleepIntraday` | `mapped-standard` | `rmssd` | `mapped-standard` | — | grove-sensor-recording-document; providers-recording-document | — |
 | `withings` | `getmeas:5` | `supported` | `measure.value*10^unit` | `supported` | lean-body-mass | — | — |
 | `withings` | `getmeas:8` | `supported` | `measure.value*10^unit` | `supported` | body-fat-mass | — | — |
 | `withings` | `getmeas:73` | `supported` | `measure.value*10^unit` | `supported` | skin-temperature | — | — |
@@ -107,7 +107,9 @@ This table lists every provider field in the published Google Health API, Oura, 
 | `withings` | `getmeas:175` | `intentionally-unsupported` | `measure.value*10^unit` | `intentionally-unsupported` | — | — | The consumed source shape (measure.value*10^unit) does not recover which body segment a value belongs to, and the shared model has no body-segment site; emitting a segment mass under whole-body fat-mass or muscle-mass semantics would be wrong, so conversion is refused rather than mislabeled. |
 | `withings` | `getmeas:196` | `supported` | `measure.value*10^unit` | `supported` | electrodermal-activity | — | — |
 
-#### Atomic grouped mappings
+#### Mappings that require a complete source group
+
+Some results are admitted only when every required provider field occurs in the same source group.
 
 | Provider | Grouped source token | Required members | Measurement | Output discriminator | Rule |
 | --- | --- | --- | --- | --- | --- |

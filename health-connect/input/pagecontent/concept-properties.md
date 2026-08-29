@@ -11,7 +11,7 @@ The Health Connect record-type code system carries one concept property.
 ### `documentation`
 {: #documentation }
 
-The canonical AndroidX reference page for the record class the code names, recorded from the published artifact inventory in `health-connect/input/data/health-connect-inventory.json`.
+This property contains the canonical AndroidX reference URL for the corresponding record class.
 
 ### Membership and versioning
 

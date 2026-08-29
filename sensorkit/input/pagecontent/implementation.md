@@ -30,20 +30,22 @@ The opaque key is not copied into `Resource.id`, and it does not assert equality
 ### Recording payload admission
 
 The Recording Document represents exact bytes already supplied by the caller and exposes them either inline or at an immutable, resolvable attachment URL.
-Before emission, the producer requires exactly one explicit caller assertion: `caller-authorized-opaque-payload` or `verified-sanitized-input`; absent, ambiguous, or unsupported assertions fail closed.
-The assertion is producer input and is not encoded as FHIR consent or authorization.
+Before emission, the calling application must explicitly state either that the opaque payload is authorized for disclosure as supplied (`caller-authorized-opaque-payload`) or that it has been verified and sanitized (`verified-sanitized-input`).
+Exactly one declaration is required; otherwise conversion fails.
+These declarations are producer preconditions, not FHIR Consent or authorization records.
 The mapper does not fetch attachment URLs, semantically reinterpret, sanitize, rewrite, or reserialize SensorKit data.
 A conformant producer validates supplied bytes against the declared registry grammar before emission.
-For URL payloads, the bundled validator checks required Attachment metadata only and does not fetch or verify the bytes.
-For inline payloads, it verifies size/hash integrity and validates either the generic native-JSON envelope or the selected registered CSV grammar.
-Its CSV checks are structural and lexical; they do not enforce per-column source-domain ranges stated in column meanings.
-It does not parse the PPG binary grammar or recompute summaries.
-Passing this validation alone therefore does not prove URL-backed payload integrity or the remaining producer obligations, clinical meaning, or authorization.
+Grove format validation checks required Attachment metadata for URL-backed content without retrieving the bytes.
+For inline content, it verifies size and hash integrity and, when applicable to the declared format, the generic native-JSON envelope or selected registered CSV grammar.
+The CSV checks are structural and lexical; they do not enforce per-column source-domain ranges stated in column meanings.
+These checks do not parse the PPG binary grammar, recompute summaries, or establish URL-backed payload integrity, clinical meaning, or authorization.
 
-`native-recording` defines only well-formed UTF-8 JSON with an object or array at the top level.
+`native-recording` is strict UTF-8 JSON with an object or array root.
+Byte-order marks, duplicate object member names, non-finite numeric values, scalar roots, malformed UTF-8, and malformed JSON are rejected.
+Validation checks only this strict envelope; it does not reinterpret, sanitize, rewrite, or reserialize the bytes.
 The carrying SensorKit source type supplies the source category and meaning; it does not select a per-stream JSON field schema in this guide, and a generic receiver treats payload members as opaque producer-defined data.
 
-### Hybrid output graph
+### Structured summaries with native recordings
 
 The document preserves heterogeneous detail omitted from a structured summary.
 A structured device-usage result retains only total unlock duration, screen wakes, and unlocks, so a conformant conversion contains both that Observation and the Recording Document in one collection Bundle.
@@ -56,7 +58,8 @@ For those three registered-schema graphs, every summary count is derived by pars
 Generic `native-recording` links, such as keyboard metrics, define graph coherence without defining a per-stream JSON member schema or a generic summary algorithm.
 The machine-readable `graphContract` on each catalog row states the exact resource pair, links, and, where applicable, coverage and derivation rules.
 
-The linked FSH pairs are resource-level illustrations, not complete exchange Bundles; the `graphContract` governs their representation nodes.
+The linked Observation and DocumentReference examples illustrate individual resources rather than a complete exchange Bundle.
+The catalog's `graphContract` defines the required resource pair, bidirectional references, coverage bounds, and derivation rules.
 When those resources are assembled into a Mobile exchange event, every transformation graph includes one `sensorkit-conversion-provenance` for each source-record identifier.
 Its sole source entity is that complete SensorKit record Identifier, and its internal UUID targets cover every structured and native output for the record.
 A conversion that emits both a device-usage summary and its required native document uses one Provenance with both targets; omitting the raw target is nonconformant.
@@ -71,7 +74,7 @@ Its absolute Identifier system is owned by the deployment or exact source-store 
 It must not be incidentally copied into logs or object names.
 The R4 SHA-1 Attachment hash is change detection only, not a signature, credential, or authorization token.
 
-### Exchange graph
+### Exchange Bundles
 
 When resources are exchanged as a graph, the Mobile collection Bundle contract applies: internal references use deterministic `urn:uuid` full URLs, `Resource.id` remains optional/repository-assigned, and all business identifier pairs are complete.
 No receiver capacity, authentication, storage, retention, or transport rule is defined here.
@@ -79,8 +82,8 @@ No receiver capacity, authentication, storage, retention, or transport rule is d
 ### Retracting a source record
 
 Emit the dedicated Grove Mobile Retraction Bundle when the producer can establish that a prior SensorKit source record is no longer exposed.
-Its sole source-record-retracted Provenance targets the exact prior structured outputs, artifacts, and device snapshot by complete typed Identifier pairs and closed roles.
-Do not copy prior clinical resources or relabel them `entered-in-error`; receiver lifecycle application is separate sink policy.
+Its sole source-record-retracted Provenance targets the exact prior structured outputs, artifacts, and device snapshot by complete typed Identifier pairs and only the target roles allowed by the retraction profile.
+Do not copy prior clinical resources or relabel them `entered-in-error`; the receiving deployment defines identifier resolution, repeated and all-or-nothing event handling, retention, and deletion.
 
 ### Dependencies and terminology notices
 

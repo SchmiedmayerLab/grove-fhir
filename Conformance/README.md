@@ -5,8 +5,8 @@ A producer repository validates the resources emitted by its real public API.
 The dependency is one-way: this repository never checks out, patches, or executes producer code.
 
 A producer manifest binds emitted files to the Grove FHIR package identities and profiles they claim.
-During coordinated pull-request development, the producer should build or download packages from the selected Grove FHIR branch and keep its manifest version synchronized.
-Release evidence binds package checksums to the exact Grove FHIR source revision; coordinated pre-merge clients should pin the reviewed IG commit.
+During development, build or download all required packages from one exact Grove FHIR source revision and keep the manifest package versions synchronized.
+Release evidence binds package checksums to that revision; implementations should pin the exact source revision or published release from which their packages were built.
 
 ```sh
 python3 Scripts/validate-producer.py \
@@ -38,7 +38,7 @@ Every negative case applies exactly one RFC 6902 JSON Patch operation and names 
 `Conformance/corpora/mobile-semantics/corpus.json` is the implementation-neutral clinical projection corpus.
 It contains exactly one vector for every shared Mobile measurement and binds the exact profile, code, unit, effective shape, result shape, edge rules, and admitted adapter context to `catalog/measurement-catalog.json`.
 A producer manifest binds one generated Observation to every shared Mobile meaning present in its submitted resources through `semanticVectors`.
-The generic kit resolves the declared JSON Pointer and compares the exact normalized clinical projection to the versioned vector.
+The producer validator resolves the declared JSON Pointer and compares the exact normalized clinical projection to the versioned vector.
 Equal offset-bearing FHIR instants are normalized without losing fractional precision before comparison, so a producer retains a real source offset when available and uses UTC when its source API supplies only an instant; it never invents an offset to match a fixture.
 Swift, Kotlin, and TypeScript repositories therefore generate these fixtures in their own CI; Grove FHIR still never executes their implementations.
 
@@ -55,15 +55,15 @@ Observation, DocumentReference, Specimen, VisionPrescription, MedicationAdminist
 Supporting entries must connect to an output or that Provenance.
 `DeviceMetric` and every other unlisted R4 type fail closed under the Grove FHIR contracts.
 
-Every adapter output uses one of the closed direct-claim modes in `catalog/profile-claims.json`:
+Every adapter output uses one of the permitted direct Grove profile-claim sets in `catalog/profile-claims.json`:
 
 - A shared Mobile or Sensor Observation claims exactly the applicable shared semantic profile and its adapter profile.
   Inherited generic or core profiles are not repeated.
 - A HealthKit shared Observation claims exactly one shared semantic profile and the generic HealthKit Observation profile.
   Body-mass index uses the authoritative R4 BMI profile in that pair.
-  A HealthKit-specific Observation child instead claims exactly that child; the ECG hybrid claims exactly the Sensor ECG and HealthKit ECG profiles.
+  A HealthKit-specific Observation child instead claims exactly that child; a HealthKit ECG Observation claims exactly the Sensor ECG and HealthKit ECG profiles.
 - A Health Connect specimen-specific glucose Observation or a SensorKit-only Observation claims exactly its adapter-specific child profile.
-- The SensorKit ECG hybrid claims exactly the source-neutral Sensor ECG profile and the SensorKit ECG profile, and includes its required linked native Recording Document in the same graph.
+- A SensorKit ECG Observation claims exactly the source-neutral Sensor ECG profile and the SensorKit ECG profile, and includes its required linked native Recording Document in the same graph.
 - A source-neutral Sensor Recording Document claims exactly its Sensor profile.
   A raw HealthKit, SensorKit, or Provider DocumentReference claims exactly that source-neutral profile and its adapter Recording Document profile.
   A HealthKit clinical-record envelope claims only its exact child profile, which inherits the Sensor contract; HealthKit VisionPrescription, MedicationAdministration, and MedicationStatement outputs likewise claim only their exact adapter child.

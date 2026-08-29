@@ -6343,46 +6343,6 @@
       }
     },
     {
-      "id": "sleeping-heart-rate-average",
-      "profile": "withings-sleeping-heart-rate-average",
-      "standardProfile": null,
-      "title": "Sleeping Heart Rate Average",
-      "description": "The average heart rate across one sleep session, normalized to UCUM beats per minute. It is a source-supplied session-windowed average whose exact window is carried by effectivePeriod, distinct from both the shared point heart-rate measurement and the daily resting-heart-rate estimate.",
-      "code": {
-        "system": "https://grovealliance.org/fhir/withings/CodeSystem/withings-measurement",
-        "code": "sleeping-heart-rate-average",
-        "display": "Sleeping heart rate average",
-        "definition": "The mean heart rate across the exact sleep-session Observation effective Period."
-      },
-      "valueKind": "quantity",
-      "owner": "withings",
-      "quantity": {
-        "system": "http://unitsofmeasure.org",
-        "code": "/min",
-        "unit": "beats/minute",
-        "example": 55,
-        "dimension": {
-          "s": -1
-        }
-      },
-      "method": {
-        "code": "session-mean",
-        "display": "Session mean"
-      },
-      "effective": "Period",
-      "generation": {
-        "emit": true
-      },
-      "coverage": {
-        "healthkit": "unmodeled",
-        "health-connect": "unmodeled",
-        "sensorkit": "unmodeled",
-        "google-health-api": "unmodeled",
-        "oura": "unmodeled",
-        "withings": "supported"
-      }
-    },
-    {
       "id": "speed",
       "profile": "grove-mobile-speed",
       "standardProfile": null,

@@ -9,17 +9,17 @@ GENERATED FILE. Edit the corresponding catalog JSON and run
 `python3 Scripts/render-status-matrices.py`.
 -->
 
-### Authoritative Withings Health Mate status matrix
+### Withings Health Mate support matrix
 
-This table lists every Withings Health Mate field in the published Grove inventory. Each field has one definitive status. This guide profiles data already obtained before FHIR conversion; it contains no authentication, network, pagination, or fetching implementation.
+This table lists every Withings Health Mate field in the published Grove inventory. Each field has one definitive status. This guide profiles data already obtained before FHIR conversion; it contains no authentication, network, pagination, or fetching implementation. A field named as a required group member admits no standalone output; only the corresponding grouped mapping below admits the result.
 
 | Source type | Source status | Provider field | Field status | Measurement | Representation / conversion | Binding reason / effective time |
 | --- | --- | --- | --- | --- | --- | --- |
 | `getmeas:1` | `supported` | `measure.value*10^unit` | `supported` | body-weight | provider SI value to UCUM kg | measure group date |
 | `getmeas:4` | `supported` | `measure.value*10^unit` | `supported` | body-height | provider SI value to UCUM cm | measure group date |
 | `getmeas:6` | `supported` | `measure.value*10^unit` | `supported` | body-fat-percentage | — | — |
-| `getmeas:9` | `supported` | `measure.value*10^unit` | `supported` | blood-pressure | provider SI value to UCUM mm[Hg] | measure group date |
-| `getmeas:10` | `supported` | `measure.value*10^unit` | `supported` | blood-pressure | provider SI value to UCUM mm[Hg] | measure group date |
+| `getmeas:9` | `supported` | `measure.value*10^unit` | `supported` | blood-pressure | required member of `getmeas:9+10`; no standalone output | measure group date |
+| `getmeas:10` | `supported` | `measure.value*10^unit` | `supported` | blood-pressure | required member of `getmeas:9+10`; no standalone output | measure group date |
 | `getmeas:11` | `supported` | `measure.value*10^unit` | `supported` | heart-rate | provider value to UCUM /min | measure group date |
 | `getmeas:54` | `supported` | `measure.value*10^unit` | `supported` | oxygen-saturation | provider value to UCUM % | measure group date |
 | `getmeas:71` | `supported` | `measure.value*10^unit` | `supported` | body-temperature | provider value to UCUM Cel | measure group date |
@@ -32,20 +32,20 @@ This table lists every Withings Health Mate field in the published Grove invento
 | `getsummary:remsleepduration` | `supported` | `data.remsleepduration` | `supported` | rem-sleep-duration | — | — |
 | `getsummary:lightsleepduration` | `supported` | `data.lightsleepduration` | `supported` | light-sleep-duration | — | — |
 | `getsummary:wakeupduration` | `supported` | `data.wakeupduration` | `supported` | sleep-awake-duration | — | — |
-| `getsummary:hr_average` | `supported` | `data.hr_average` | `supported` | sleep-heart-rate; sleeping-heart-rate-average | — | — |
-| `getsummary:rr_average` | `supported` | `data.rr_average` | `supported` | respiratory-rate-average | — | — |
+| `getsummary:hr_average` | `supported` | `data.hr_average` | `supported` | sleep-heart-rate | — | exact sleep-session Period; method = session-mean |
+| `getsummary:rr_average` | `supported` | `data.rr_average` | `supported` | respiratory-rate-average | — | method = session-mean |
 | `getworkouts:interval` | `supported` | `startdate/enddate` | `supported` | workout | — | — |
-| `activityIntraday` | `mapped-standard` | `steps` | `mapped-standard` | — | https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document | — |
-| `activityIntraday` | `mapped-standard` | `calories` | `mapped-standard` | — | https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document | — |
-| `activityIntraday` | `mapped-standard` | `distance` | `mapped-standard` | — | https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document | — |
-| `activityIntraday` | `mapped-standard` | `elevation` | `mapped-standard` | — | https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document | — |
-| `activityIntraday` | `mapped-standard` | `heart_rate` | `mapped-standard` | — | https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document | — |
-| `activityIntraday` | `mapped-standard` | `spo2_auto` | `mapped-standard` | — | https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document | — |
-| `sleepIntraday` | `mapped-standard` | `hr` | `mapped-standard` | — | https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document | — |
-| `sleepIntraday` | `mapped-standard` | `rr` | `mapped-standard` | — | https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document | — |
-| `sleepIntraday` | `mapped-standard` | `snoring` | `mapped-standard` | — | https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document | — |
-| `sleepIntraday` | `mapped-standard` | `sdnn_1` | `mapped-standard` | — | https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document | — |
-| `sleepIntraday` | `mapped-standard` | `rmssd` | `mapped-standard` | — | https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document | — |
+| `activityIntraday` | `mapped-standard` | `steps` | `mapped-standard` | — | grove-sensor-recording-document; providers-recording-document | — |
+| `activityIntraday` | `mapped-standard` | `calories` | `mapped-standard` | — | grove-sensor-recording-document; providers-recording-document | — |
+| `activityIntraday` | `mapped-standard` | `distance` | `mapped-standard` | — | grove-sensor-recording-document; providers-recording-document | — |
+| `activityIntraday` | `mapped-standard` | `elevation` | `mapped-standard` | — | grove-sensor-recording-document; providers-recording-document | — |
+| `activityIntraday` | `mapped-standard` | `heart_rate` | `mapped-standard` | — | grove-sensor-recording-document; providers-recording-document | — |
+| `activityIntraday` | `mapped-standard` | `spo2_auto` | `mapped-standard` | — | grove-sensor-recording-document; providers-recording-document | — |
+| `sleepIntraday` | `mapped-standard` | `hr` | `mapped-standard` | — | grove-sensor-recording-document; providers-recording-document | — |
+| `sleepIntraday` | `mapped-standard` | `rr` | `mapped-standard` | — | grove-sensor-recording-document; providers-recording-document | — |
+| `sleepIntraday` | `mapped-standard` | `snoring` | `mapped-standard` | — | grove-sensor-recording-document; providers-recording-document | — |
+| `sleepIntraday` | `mapped-standard` | `sdnn_1` | `mapped-standard` | — | grove-sensor-recording-document; providers-recording-document | — |
+| `sleepIntraday` | `mapped-standard` | `rmssd` | `mapped-standard` | — | grove-sensor-recording-document; providers-recording-document | — |
 | `getmeas:5` | `supported` | `measure.value*10^unit` | `supported` | lean-body-mass | — | — |
 | `getmeas:8` | `supported` | `measure.value*10^unit` | `supported` | body-fat-mass | — | — |
 | `getmeas:73` | `supported` | `measure.value*10^unit` | `supported` | skin-temperature | — | — |
@@ -67,7 +67,9 @@ This table lists every Withings Health Mate field in the published Grove invento
 | `getmeas:175` | `intentionally-unsupported` | `measure.value*10^unit` | `intentionally-unsupported` | — | — | The consumed source shape (measure.value*10^unit) does not recover which body segment a value belongs to, and the shared model has no body-segment site; emitting a segment mass under whole-body fat-mass or muscle-mass semantics would be wrong, so conversion is refused rather than mislabeled. |
 | `getmeas:196` | `supported` | `measure.value*10^unit` | `supported` | electrodermal-activity | — | — |
 
-#### Atomic grouped mappings
+#### Mappings that require a complete source group
+
+Some results are admitted only when every required provider field occurs in the same source group.
 
 | Grouped source token | Required members | Measurement | Output discriminator | Rule |
 | --- | --- | --- | --- | --- |

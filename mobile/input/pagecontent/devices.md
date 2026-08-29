@@ -21,9 +21,8 @@ Keeping those roles separate prevents an application, host device, and sensor fr
 `Observation.device` identifies the Device that actually acquired the measurement.
 A watch, scale, chest strap, or phone belongs here only when the source supports that claim.
 Do not use this element for an application that merely read or transmitted an existing record.
-The relevant Grove FHIR Implementation Guide deliberately narrows the base R4 choice to Device because none of the reviewed producers establishes DeviceMetric identity or lifecycle semantics.
-Use Grove Recording Device for an internal event node.
-A future DeviceMetric admission requires a complete profile, identity, and reference contract with corresponding validation requirements.
+The Grove Mobile contract restricts `Observation.device` to `Device`; `DeviceMetric` is not admitted because no Grove DeviceMetric profile, identity contract, or lifecycle rules are defined.
+Use the Grove Recording Device profile when recording hardware is included as a Device entry in the exchange Bundle.
 
 Populate the device name, type, manufacturer, model, and versions when the source makes them available.
 Every populated version has a type; the type remains open to an appropriate terminology.
@@ -34,10 +33,11 @@ Use a study- or deployment-scoped identifier unless a broader hardware identifie
 
 A shared recording Device is emitted only when the producer has a governed stable token for the physical acquisition unit.
 Manufacturer, model, hardware version, subject, or any digest of those descriptive facts cannot establish that two records came from the same physical unit.
-If the source and caller cannot supply a stable per-unit token, omit `Observation.device`; never mint a fresh per-sample Device or merge all devices of one model.
+If no governed stable per-unit token is available, omit `Observation.device`; never mint a fresh per-sample Device or merge all devices of one model.
 
 The per-unit token is never emitted directly.
-It participates in the deployment-scoped v0 HMAC `recording-device` identity defined by [`catalog/exchange-protocol.json`](https://grovealliance.org/fhir/catalog/exchange-protocol.json). The subject's complete Identifier pair is also in that preimage so independently governed participants cannot collide.
+It participates in the deployment-scoped v0 HMAC `recording-device` identity defined by [`catalog/exchange-protocol.json`](https://grovealliance.org/fhir/catalog/exchange-protocol.json).
+The subject's complete Identifier pair is also part of the preimage, preventing the same device token from producing the same identity for different subjects.
 The deployment decides whether source per-unit evidence may be used and manages the HMAC key, epoch, retention, and linkage policy.
 
 Every emitted Grove Recording Device also carries an event-scoped `device-snapshot` identity, which is the Bundle entry key.

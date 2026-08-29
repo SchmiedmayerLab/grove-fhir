@@ -113,7 +113,7 @@
     },
     {
       "code": "mobile-output.quantity-value-domain",
-      "reason": "Every Quantity-valued catalog measurement stays within its reviewed representational minimum, maximum, and integer-only domain without inventing a physiologic range."
+      "reason": "Every Quantity-valued catalog measurement stays within its catalog-declared representational minimum, maximum, and integer-only domain without inventing a physiologic range."
     },
     {
       "code": "mobile-exchange.reference-target-type",
@@ -815,7 +815,7 @@
   "outputModes": [
     {
       "code": "semantic-only",
-      "meaning": "A reviewed FHIR semantic projection is the complete admitted output."
+      "meaning": "A FHIR semantic projection is the complete admitted output."
     },
     {
       "code": "source-only",

@@ -29,12 +29,13 @@ If a deployment deliberately needs exact upstream traceability, the provider's o
 Its absolute non-Grove system defines the upstream namespace, its value is exact, and its disclosure policy belongs to the deployment.
 This optional Identifier neither replaces the mandatory Grove HMAC identities nor belongs on child, artifact, or support nodes.
 
-### Opaque payload admission
+### Requirements for opaque provider payloads
 
 An opaque native attachment can itself contain sensitive provider fields.
-Before emission, the producer therefore requires exactly one explicit caller assertion: `caller-authorized-opaque-payload` or `verified-sanitized-input`; absent, ambiguous, or unsupported assertions fail closed.
-This producer preflight is not encoded as FHIR consent or authorization.
-The generic conformance kit validates metadata and byte integrity but does not claim to inspect opaque payload semantics or secrets.
+Before emission, the calling application must explicitly state either that the opaque payload is authorized for disclosure as supplied (`caller-authorized-opaque-payload`) or that it has been verified and sanitized (`verified-sanitized-input`).
+Exactly one declaration is required; otherwise conversion fails.
+These declarations are producer preconditions, not FHIR Consent or authorization records.
+Grove format validation verifies required Attachment metadata for every payload and byte integrity for inline content; it does not fetch URL-backed content, inspect opaque payload semantics, or detect secrets.
 The resulting identifier is business identity for deduplication and reference resolution, never a credential or authorization to fetch provider data.
 The identifier, profile claim, and Attachment hash do not authorize disclosure; URL access control, consent, minimization, retention, and deletion remain deployment policy.
 
@@ -53,10 +54,11 @@ Writer identity is emitted only when the payload supplies a complete writer-appl
 The Bundle owns the event Identifier `e0:<producer-instance-uuid>:<positive-sequence>`; Provenance is an event-scoped entry node rather than a second event business identifier.
 A byte-identical retry reuses the event identity, times, graph keys, and payload.
 New or corrected content receives a new event sequence.
-The protocol and cross-language vectors in [`catalog/exchange-protocol.json`](https://grovealliance.org/fhir/catalog/exchange-protocol.json) are normative.
+The protocol and language-independent conformance test vectors in [`catalog/exchange-protocol.json`](https://grovealliance.org/fhir/catalog/exchange-protocol.json) are normative.
 
 Business identifiers are not copied into `Resource.id`.
-Implementations validate their emitted resources with the Grove producer conformance kit before exchange.
+Before exchange, follow the Mobile guide's [validation instructions](https://grovealliance.org/fhir/mobile/implementation.html#validate-a-resource), loading the Mobile, Sensor, Provider, and applicable vendor packages.
+Validate emitted resources against their declared Grove profiles and the graph-level identity and reference requirements.
 
 Canonical URLs identify artifacts.
 They do not promise that Grove hosts a package or a FHIR endpoint at the canonical origin.

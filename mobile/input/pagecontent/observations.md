@@ -58,7 +58,7 @@ This exact-two rule prevents a producer from presenting ambiguous adapter or mea
 | Which study applies? | `workflow-researchStudy` | ResearchStudy reference, when applicable |
 
 The [heart-rate example](Observation-GroveMobileHeartRateExample.html) demonstrates a standard-first profile.
-The HMAC values in this abbreviated example are schematic; the complete published example contains concrete conformance-key values.
+The identifier values below are illustrative placeholders, not conformant HMAC values; the linked example contains complete valid values.
 
 ```json
 {
@@ -92,7 +92,7 @@ The HMAC values in this abbreviated example are schematic; the complete publishe
 }
 ```
 
-Quantity profiles fix the UCUM system/code and, where the source semantics make a representational domain unambiguous, publish that domain from the measurement catalog.
+Quantity profiles fix the UCUM system and code and, when source semantics define an unambiguous allowed range or integer constraint, publish that constraint in the measurement catalog.
 All UCUM-percent results admit the inclusive interval 0 through 100; discrete event totals such as steps, wheelchair pushes, flights, puffs, drinks, falls, and swimming strokes are non-negative integers; HealthKit state-of-mind valence admits the inclusive interval -1 through 1.
 Zero is a valid boundary value in each applicable contract.
 These are source-representation rules, not invented physiologic plausibility ranges.
@@ -113,8 +113,8 @@ Child outputs, specimens, artifacts, and support resources do not repeat one sou
 The HMAC is intentionally non-reversible.
 It preserves equality, deterministic retry, deduplication, and retraction addressing; it does not let a receiver recover the original native identifier.
 When exact upstream round-trip matters, the optional governed Identifier on the catalog-designated primary output carries that exact value without weakening the mandatory Grove graph identities.
-Output role, output discriminator, or a child index may remain internal to the HMAC preimage only when it has no independent source or clinical meaning.
-Meaningful source order, time, multiplicity, or ordinal is always preserved separately in a FHIR element or the registered source payload—never only hidden inside the digest input.
+An output role, discriminator, or child index need not appear as a separate FHIR element when it has no independent source or clinical meaning; it remains an input to identifier derivation.
+Preserve meaningful source order, time, multiplicity, or ordinal in a FHIR element or a source payload format explicitly registered by the applicable adapter contract—never only in the HMAC input.
 
 Intentional source-identifier disclosure is separate from accidental propagation.
 A source-native value is never `Resource.id`, a Bundle entry key, a retraction address, an arbitrary Observation component, or untyped metadata.
@@ -134,8 +134,9 @@ Sleep duration uses LOINC `93832-4`; it summarizes total sleep and does not repr
 
 Quantities carry the UCUM system and the catalog code.
 Producers convert supported source units without inventing precision.
-A glucose source selects the profile that fixes both analyte code and specimen: whole blood, capillary blood, serum/plasma, or interstitial fluid.
-Unknown-specimen glucose and any unlisted specimen fail closed; they are never relabeled as blood.
+A glucose source selects a specimen-specific profile when it supplies one of the admitted specimen codings.
+When the source establishes blood glucose but supplies no exact specimen class, use `grove-mobile-blood-glucose-unspecified-specimen` and omit `Observation.specimen`.
+Reject a source that does not establish blood glucose or supplies an unsupported specimen; never relabel it.
 
 ### Exchange graph
 
@@ -155,42 +156,42 @@ UUIDv5 is deterministic formatting, not concealment.
 Every literal Reference is closed over that graph and resolves to an addressable Bundle entry.
 Contained resources and `#id` references are prohibited in both active and retraction events; allowing them would create a second, owner-local identity and resolution model outside the event-node contract.
 A populated `Reference.type` must equal the target's actual resource type.
-The producer gate also enforces the exact target-type table in `exchange-protocol.json` for Observation and QuestionnaireResponse subjects, device, specimen, member, source-document, study, parent-device, gateway, and research-study paths.
+The Grove producer validator also enforces the target-type table in `exchange-protocol.json` for Observation and QuestionnaireResponse subjects, device, specimen, member, source-document, study, parent-device, gateway, and research-study paths.
 At those paths a logical Reference instead omits `reference`, carries the exact allowed `type` and one complete absolute-system Identifier, and cannot be mixed with a literal.
 This permits a deployment-scoped Patient pseudonym without fabricating or copying a Patient Bundle node.
 Its system/value pair is preserved exactly, and its Identifier neither claims a Grove identifier role nor uses a protocol code system as the pseudonym namespace.
-Namespace ownership and deployment scope remain producer/deployment obligations; the bundled validator proves only absolute-URI shape and reserved-system exclusion.
+The Grove producer validator checks only that the namespace is an absolute URI and does not use a reserved Grove protocol system; ownership and deployment scope remain deployment obligations.
 These logical-reference shape and pseudonym-namespace rules govern Mobile exchange Bundles.
 The standalone Grove QuestionnaireResponse profile independently constrains its subject target to Patient but does not impose this exchange graph's identifier-only policy outside such a Bundle.
-The active entry set is closed.
+An active Bundle may contain only the following resource types.
 Outputs are Observation, DocumentReference, Specimen, VisionPrescription, MedicationAdministration, or MedicationStatement; supporting nodes are Patient, Device, ResearchStudy, ResearchSubject, PlanDefinition, or a Grove-profiled QuestionnaireResponse; and the sole lifecycle node is Provenance.
-Every active output and each Device, QuestionnaireResponse, and Provenance directly claims its exact admitted profile mode.
+Every active output and each Device, QuestionnaireResponse, and Provenance must declare exactly the profiles required by `profile-claims.json`.
 DocumentReference cannot enter as an unprofiled generic envelope.
 Supporting entries must be connected to an output or the lifecycle assertion, so the Bundle cannot carry unrelated context.
-DeviceMetric is not admitted under the Grove FHIR contracts; adding it later requires a governed profile, identity, reference, example, and SDK contract.
+`DeviceMetric` is not admitted under the Grove FHIR contracts; admitting it requires a governed profile, identity and reference rules, and validating examples.
 
 An exact retry reuses the event Identifier, occurrence/recording/assembly times, entry keys, and payload.
 Changed content or a new source revision receives a new event sequence.
-Bundle entry order does not request repository operations; `entry.request` and `entry.response` are prohibited, and receiver upsert/atomicity policy remains separate.
+Bundle entry order does not request repository operations; `entry.request` and `entry.response` are prohibited. How a receiving system creates or updates resources, and whether it processes the Bundle atomically, are separate deployment policies.
 
 ### Retraction events
 
 A source removal is represented by the dedicated Grove Mobile Retraction Bundle and exactly one source-record-retracted Provenance.
-It contains typed logical `Reference.identifier` targets for the exact previously emitted graph nodes and their closed target roles; it contains no copied clinical resources and is not a FHIR DELETE transaction.
-A receiver resolves every complete Identifier pair unambiguously and applies its separately governed idempotent, atomic lifecycle policy.
+It contains typed logical `Reference.identifier` targets for the previously emitted graph nodes, using only the target roles allowed by the retraction profile; it contains no copied clinical resources and is not a FHIR DELETE transaction.
+A receiving system resolves every complete Identifier pair unambiguously; the deployment defines how repeated events and all-or-nothing processing are handled.
 Retraction does not assert that the prior clinical statement was erroneous.
 
 Each target role fixes both its resource type and Identifier role: primary outputs are supported clinical result resources, child outputs are Observations, source artifacts are DocumentReferences, specimens are Specimens, and device snapshots are Devices.
 Both active and retraction Provenance carry exactly one logical `source-record` Identifier entity with role `source`; literal source references and additional source entities are rejected.
 
-The Bundle has no receiver byte, resource-count, paging, retry, or storage limits.
+This guide sets no limits on Bundle size, resource count, paging, retry behavior, or storage.
 Those are transport and deployment policy outside this guide.
 
 ### Time, capture mode, and clinical method
 
 Use the effective datatype fixed by the selected profile.
 For every Mobile scalar or aggregate `effectiveDateTime` and `effectivePeriod` endpoint, round the exact instant to the nearest millisecond with ties to even before FHIR serialization.
-Preserve the caller/source numeric UTC offset when it is available; never invent one.
+Preserve the numeric UTC offset supplied by the source when available; never invent one.
 This rule does not apply to Sensor or ECG `SampledData`, whose exact Decimal timing contract is defined by the Sensor guide.
 When the source also supplies an IANA time-zone name, attach the standard `timezone` extension; the name must agree with the offset at that instant.
 
@@ -198,7 +199,7 @@ When the source also supplies an IANA time-zone name, attach the standard `timez
 A producer whose platform keeps no such timestamp omits the element rather than substituting a clock reading: an unchanged source record must convert to an identical Observation, or a re-read no longer deduplicates against what was already sent.
 Each adapter guide states which it does.
 
-The conversion event has its own home on the conversion `Provenance`, so omitting `issued` loses nothing.
+The conversion time belongs on the conversion Provenance and must not be substituted for `Observation.issued`.
 
 Ordering *revisions of the same measurement* is a separate question, and `issued` does not answer it — a replaced record can carry an earlier timestamp than the one it supersedes.
 Where a platform gives the writer a logical identity and a version, the adapter carries both, and a receiver supersedes on the version.

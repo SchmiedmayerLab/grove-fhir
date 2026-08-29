@@ -33,7 +33,7 @@ For each emitted Observation:
    A specimen-specific glucose output instead declares only its exact Health Connect child profile.
    Do not repeat an inherited Mobile or core standard profile.
 3. Populate the typed source-record and source-output business identifiers using the Health Connect binding in [`catalog/health-connect-adapter.json`](https://grovealliance.org/fhir/catalog/health-connect-adapter.json) and the sole normative algorithm in [`catalog/exchange-protocol.json`](https://grovealliance.org/fhir/catalog/exchange-protocol.json).
-4. Apply every required code, unit, effective type, result shape, specimen, and admitted context mapping from the machine catalogs.
+4. Apply every required code, unit, effective type, result shape, specimen, and admitted context mapping from the published adapter and measurement catalogs.
 5. Add conversion Provenance and every internally referenced graph node.
    Conversion Provenance directly declares only Health Connect Conversion Provenance; its inherited Mobile conversion profile is not repeated.
    Its sole source entity Identifier matches the output source-record Identifier, and it targets every output for that source Record.
@@ -44,20 +44,15 @@ For each emitted Observation:
 The source-neutral measurement profile inherits the generic Mobile and applicable core standard constraints.
 The adapter profile adds Health Connect identity and source context.
 Both direct profile claims are required for shared measurements; inherited profiles are not separately declared.
-Adapter-specific glucose follows the closed child-only mode above.
+Adapter-specific glucose declares only its exact child profile as described above.
 
 ### Validate producer output
 
-Use the Grove producer validation command for graph-level checks.
-It verifies package identity, profile claims, deterministic graph identity, closed reference resolution, and observable single-output cardinalities before invoking the official FHIR Validator in R4 offline mode:
-
-```sh
-python3 Scripts/validate-producer.py \
-  --manifest path/to/grove-fhir-producer.json \
-  --validator path/to/validator_cli.jar \
-  --package mobile=path/to/mobile-package.tgz \
-  --package health-connect=path/to/health-connect-package.tgz
-```
+Follow the Mobile guide's [validation instructions](https://grovealliance.org/fhir/mobile/implementation.html#validate-a-resource), loading the exact Mobile and Health Connect packages resolved above.
+Validate each exchange Bundle in two layers.
+First, apply Grove graph validation for package identity, direct profile claims, deterministic identifiers and `urn:uuid` references, output cardinalities, and conversion Provenance.
+Then validate the Bundle and its resources against FHIR R4 and every declared profile with the official HL7 FHIR Validator and the exact Mobile and Health Connect packages.
+Passing either layer alone is insufficient.
 
 ### Verify converter behavior
 
@@ -67,7 +62,7 @@ Positive coverage includes every supported Record family, all admitted glucose s
 Negative coverage includes unsupported specimens, unknown source context, invalid identity lexemes, wrong shared profile claims, wrong code/unit/result shape, repeated summary outputs, one source identity claiming two Record types, external or unresolved Bundle references, and incomplete Provenance.
 Some cardinality rules depend on the source record and cannot be inferred from FHIR output alone.
 For `one-per-sample`, `one-per-stage`, `one-per-delta`, and `one-per-present-field`, compare the emitted graph with the source record.
-Grove producer validation checks only the observable identities, allowed roles, summary cardinality, and graph shape.
+Graph validation can verify only observable identifiers, roles, summary cardinality, and reference structure; source-dependent cardinalities must also be checked against the input Record.
 
 Health Connect read permissions, scheduling, and change-token recovery belong to the calling application.
 The adapter may expose producer-owned durable synchronization state, as described in [Synchronization](synchronization.html), but it does not fetch Records or define how a deployment stores or transmits the resulting Bundle.
@@ -77,7 +72,7 @@ The adapter may expose producer-owned durable synchronization state, as describe
 When Health Connect reports a deleted source record, emit the dedicated Grove Mobile Retraction Bundle.
 Its sole source-record-retracted Provenance identifies every previously emitted output, artifact, specimen, and device snapshot through a typed logical Reference carrying the exact complete business Identifier and target-role extension.
 Do not copy the former clinical resources, set them to `entered-in-error`, or encode FHIR DELETE requests.
-The assertion records source removal; receiver resolution, idempotent atomic application, retention, and deletion remain sink policy.
+The assertion records source removal; the receiving deployment defines identifier resolution, repeated and all-or-nothing event handling, retention, and deletion.
 
 ### Dependencies and terminology notices
 

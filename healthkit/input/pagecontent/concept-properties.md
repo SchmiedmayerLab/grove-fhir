@@ -13,8 +13,8 @@ The catalog records every declaring name alongside the identifier; only the iden
 ### `documentation`
 {: #documentation }
 
-The canonical Apple documentation page for the source type, recorded verbatim from Apple's published symbol index.
-Apple nests a member page beneath its owning type, so a path assembled from the identifier alone does not resolve.
+This property contains the canonical Apple documentation URL for the source type.
+The URL identifies the declaring API member and cannot be derived reliably from the runtime identifier alone.
 
 ### Membership and versioning
 

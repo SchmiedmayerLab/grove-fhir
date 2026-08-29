@@ -35,10 +35,10 @@ Specialized Grove guides add resources for their own use cases, including questi
 | Resource | Answers | In Grove |
 |---|---|---|
 | `Observation` | What was measured, of whom, when, and with what value | One measurement, one Observation |
-| `Patient` | Who the measurement is about | The study participant, referenced but rarely sent by a producer |
+| `Patient` | Who the measurement is about | The study participant; referenced by every Observation and included as a Bundle entry when the exchange supplies the Patient resource |
 | `Device` | What produced the record | Split in two: the recording device and the application |
 | `Provenance` | Where this record came from and who assembled it | The audit trail of the conversion itself |
-| `Bundle` | A set of resources traveling together | The unit an application uploads |
+| `Bundle` | A set of resources traveling together | One immutable exchange event graph |
 
 ### Observation example
 
@@ -111,7 +111,7 @@ These distinctions have three consequences for a producer:
 FHIR uses one `Device` resource type, while a mobile measurement can involve two distinct device roles.
 
 The **recording device** is the hardware that acquired the measurement, such as a wearable sensor or paired blood-pressure cuff.
-The **application device** is the software that read the source record and converted it to FHIR.
+The **application device** is software that mediated the measurement and/or converted the source record; gateway and assembler are asserted as separate roles.
 
 Keeping these roles separate preserves two different claims.
 The recording-device statement supports interpretation of measurement provenance and quality, while the application-device statement documents the software transformation chain.
@@ -133,7 +133,8 @@ A `Bundle` is a resource container.
 Grove uses `type: collection`, which groups resources without assigning transactional meaning.
 
 Inside a Bundle, resources refer to each other by `fullUrl`.
-Grove derives each `fullUrl` from the entry's selected node key. That key is normally a typed business identifier; a resource without business identity receives an event-scoped graph-node key.
+Grove derives each `fullUrl` deterministically from the entry identity selected by the [exchange protocol](https://grovealliance.org/fhir/catalog/exchange-protocol.json).
+An entry without a business identifier instead uses the protocol's event-scoped `n0:` graph key.
 An exact retry therefore preserves graph identity and can be recognized as a duplicate.
 
 ### Reading profile pages

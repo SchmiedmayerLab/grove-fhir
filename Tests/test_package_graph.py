@@ -80,7 +80,7 @@ class PackageGraphTests(unittest.TestCase):
         self.assertIn("authoritative R4 BMI profile", conformance)
         self.assertIn("specimen-specific glucose", conformance)
         self.assertIn("SensorKit-only", conformance)
-        self.assertIn("SensorKit ECG hybrid", conformance)
+        self.assertIn("SensorKit ECG Observation", conformance)
         self.assertIn("HealthKit, SensorKit, or Provider DocumentReference", conformance)
         self.assertIn("Adapter conversion Provenance", conformance)
         self.assertIn("requiredProfiles", conformance)

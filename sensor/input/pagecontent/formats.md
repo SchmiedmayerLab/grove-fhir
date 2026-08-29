@@ -10,7 +10,7 @@ GENERATED FILE. Edit catalog/format-registry.json and run
 -->
 
 Every Grove recording DocumentReference content entry declares exactly one payload format from this closed registry in `content.format`.
-An unregistered payload format is nonconformant. Each entry below states the validation the bundled producer validator actually performs and the checks that remain external producer or receiver responsibilities. For `native-recording`, the carrying source type selects the source category and meaning; this generic format defines no per-stream field schema.
+An unregistered payload format is nonconformant. Each entry defines the payload grammar that a conformant producer validates before emission and identifies any additional producer or receiver responsibilities. For `native-recording`, the carrying source type selects the source category and meaning; this generic format defines no per-stream field schema.
 The complete machine-readable contract is published in [`catalog/format-registry.json`](https://grovealliance.org/fhir/catalog/format-registry.json).
 
 ### `heart-rate-samples` — Heart Rate Samples
@@ -21,12 +21,12 @@ One header row naming every column in order, then one row per source sample in s
 LF (0x0A) after every row, including the last. CR (0x0D) is prohibited anywhere, including inside quoted fields.
 Comma (0x2C).
 A field is enclosed in double quotes exactly when it contains a comma, a double quote, or LF; embedded double quotes are doubled; all other fields are unquoted.
-Finite IEEE-754 binary64 values serialized as base-10 decimal lexemes match numberPattern. A plus sign, exponent, leading integer zero, negative zero, and redundant fractional trailing zero are prohibited; a lone fractional .0 remains admitted for integral values.
+Finite IEEE-754 binary64 values use canonical base-10 lexemes matching the following regular expression. A plus sign, exponent, leading integer zero, negative zero, and redundant fractional trailing zero are prohibited; a lone fractional .0 remains admitted for integral values.
 `^(?:0(?:\.0|\.[0-9]*[1-9])?|[1-9][0-9]*(?:\.(?:0|[0-9]*[1-9]))?|-(?:0\.[0-9]*[1-9]|[1-9][0-9]*(?:\.(?:0|[0-9]*[1-9]))?))$`
-Base-10 integer lexemes match integerPattern. A plus sign, -0, leading zero, decimal point, and exponent are prohibited.
+Integer values use base-10 lexemes matching the following regular expression. A plus sign, -0, leading zero, decimal point, and exponent are prohibited.
 `^(?:0|-?[1-9][0-9]*)$`
 Seconds since the Unix epoch as a finite IEEE-754 binary64 value in the numbers form above; the column documentation states which columns are timestamps.
-Every column declares nullable. A false column has a non-empty field in every data row. A true column may use an empty field; its column meaning states whether that represents an unavailable source value or an empty source collection. The literal strings null and NULL have no special meaning.
+The table's `Nullable` column controls empty fields: `no` requires a non-empty field in every data row; `yes` permits an empty field with the meaning stated for that column. The literal strings `null` and `NULL` have no special meaning.
 
 | Column | Type | Nullable | Unit | Meaning |
 |---|---|---|---|---|
@@ -43,12 +43,12 @@ One header row naming every column in order, then one row per source sample in s
 LF (0x0A) after every row, including the last. CR (0x0D) is prohibited anywhere, including inside quoted fields.
 Comma (0x2C).
 A field is enclosed in double quotes exactly when it contains a comma, a double quote, or LF; embedded double quotes are doubled; all other fields are unquoted.
-Finite IEEE-754 binary64 values serialized as base-10 decimal lexemes match numberPattern. A plus sign, exponent, leading integer zero, negative zero, and redundant fractional trailing zero are prohibited; a lone fractional .0 remains admitted for integral values.
+Finite IEEE-754 binary64 values use canonical base-10 lexemes matching the following regular expression. A plus sign, exponent, leading integer zero, negative zero, and redundant fractional trailing zero are prohibited; a lone fractional .0 remains admitted for integral values.
 `^(?:0(?:\.0|\.[0-9]*[1-9])?|[1-9][0-9]*(?:\.(?:0|[0-9]*[1-9]))?|-(?:0\.[0-9]*[1-9]|[1-9][0-9]*(?:\.(?:0|[0-9]*[1-9]))?))$`
-Base-10 integer lexemes match integerPattern. A plus sign, -0, leading zero, decimal point, and exponent are prohibited.
+Integer values use base-10 lexemes matching the following regular expression. A plus sign, -0, leading zero, decimal point, and exponent are prohibited.
 `^(?:0|-?[1-9][0-9]*)$`
 Seconds since the Unix epoch as a finite IEEE-754 binary64 value in the numbers form above; the column documentation states which columns are timestamps.
-Every column declares nullable. A false column has a non-empty field in every data row. A true column may use an empty field; its column meaning states whether that represents an unavailable source value or an empty source collection. The literal strings null and NULL have no special meaning.
+The table's `Nullable` column controls empty fields: `no` requires a non-empty field in every data row; `yes` permits an empty field with the meaning stated for that column. The literal strings `null` and `NULL` have no special meaning.
 
 | Column | Type | Nullable | Unit | Meaning |
 |---|---|---|---|---|
@@ -67,12 +67,12 @@ One header row naming every column in order, then one row per source sample in s
 LF (0x0A) after every row, including the last. CR (0x0D) is prohibited anywhere, including inside quoted fields.
 Comma (0x2C).
 A field is enclosed in double quotes exactly when it contains a comma, a double quote, or LF; embedded double quotes are doubled; all other fields are unquoted.
-Finite IEEE-754 binary64 values serialized as base-10 decimal lexemes match numberPattern. A plus sign, exponent, leading integer zero, negative zero, and redundant fractional trailing zero are prohibited; a lone fractional .0 remains admitted for integral values.
+Finite IEEE-754 binary64 values use canonical base-10 lexemes matching the following regular expression. A plus sign, exponent, leading integer zero, negative zero, and redundant fractional trailing zero are prohibited; a lone fractional .0 remains admitted for integral values.
 `^(?:0(?:\.0|\.[0-9]*[1-9])?|[1-9][0-9]*(?:\.(?:0|[0-9]*[1-9]))?|-(?:0\.[0-9]*[1-9]|[1-9][0-9]*(?:\.(?:0|[0-9]*[1-9]))?))$`
-Base-10 integer lexemes match integerPattern. A plus sign, -0, leading zero, decimal point, and exponent are prohibited.
+Integer values use base-10 lexemes matching the following regular expression. A plus sign, -0, leading zero, decimal point, and exponent are prohibited.
 `^(?:0|-?[1-9][0-9]*)$`
 Seconds since the Unix epoch as a finite IEEE-754 binary64 value in the numbers form above; the column documentation states which columns are timestamps.
-Every column declares nullable. A false column has a non-empty field in every data row. A true column may use an empty field; its column meaning states whether that represents an unavailable source value or an empty source collection. The literal strings null and NULL have no special meaning.
+The table's `Nullable` column controls empty fields: `no` requires a non-empty field in every data row; `yes` permits an empty field with the meaning stated for that column. The literal strings `null` and `NULL` have no special meaning.
 
 | Column | Type | Nullable | Unit | Meaning |
 |---|---|---|---|---|
@@ -91,12 +91,12 @@ One header row naming every column in order, then one row per source sample in s
 LF (0x0A) after every row, including the last. CR (0x0D) is prohibited anywhere, including inside quoted fields.
 Comma (0x2C).
 A field is enclosed in double quotes exactly when it contains a comma, a double quote, or LF; embedded double quotes are doubled; all other fields are unquoted.
-Finite IEEE-754 binary64 values serialized as base-10 decimal lexemes match numberPattern. A plus sign, exponent, leading integer zero, negative zero, and redundant fractional trailing zero are prohibited; a lone fractional .0 remains admitted for integral values.
+Finite IEEE-754 binary64 values use canonical base-10 lexemes matching the following regular expression. A plus sign, exponent, leading integer zero, negative zero, and redundant fractional trailing zero are prohibited; a lone fractional .0 remains admitted for integral values.
 `^(?:0(?:\.0|\.[0-9]*[1-9])?|[1-9][0-9]*(?:\.(?:0|[0-9]*[1-9]))?|-(?:0\.[0-9]*[1-9]|[1-9][0-9]*(?:\.(?:0|[0-9]*[1-9]))?))$`
-Base-10 integer lexemes match integerPattern. A plus sign, -0, leading zero, decimal point, and exponent are prohibited.
+Integer values use base-10 lexemes matching the following regular expression. A plus sign, -0, leading zero, decimal point, and exponent are prohibited.
 `^(?:0|-?[1-9][0-9]*)$`
 Seconds since the Unix epoch as a finite IEEE-754 binary64 value in the numbers form above; the column documentation states which columns are timestamps.
-Every column declares nullable. A false column has a non-empty field in every data row. A true column may use an empty field; its column meaning states whether that represents an unavailable source value or an empty source collection. The literal strings null and NULL have no special meaning.
+The table's `Nullable` column controls empty fields: `no` requires a non-empty field in every data row; `yes` permits an empty field with the meaning stated for that column. The literal strings `null` and `NULL` have no special meaning.
 
 | Column | Type | Nullable | Unit | Meaning |
 |---|---|---|---|---|
@@ -114,12 +114,12 @@ One header row naming every column in order, then one row per source sample in s
 LF (0x0A) after every row, including the last. CR (0x0D) is prohibited anywhere, including inside quoted fields.
 Comma (0x2C).
 A field is enclosed in double quotes exactly when it contains a comma, a double quote, or LF; embedded double quotes are doubled; all other fields are unquoted.
-Finite IEEE-754 binary64 values serialized as base-10 decimal lexemes match numberPattern. A plus sign, exponent, leading integer zero, negative zero, and redundant fractional trailing zero are prohibited; a lone fractional .0 remains admitted for integral values.
+Finite IEEE-754 binary64 values use canonical base-10 lexemes matching the following regular expression. A plus sign, exponent, leading integer zero, negative zero, and redundant fractional trailing zero are prohibited; a lone fractional .0 remains admitted for integral values.
 `^(?:0(?:\.0|\.[0-9]*[1-9])?|[1-9][0-9]*(?:\.(?:0|[0-9]*[1-9]))?|-(?:0\.[0-9]*[1-9]|[1-9][0-9]*(?:\.(?:0|[0-9]*[1-9]))?))$`
-Base-10 integer lexemes match integerPattern. A plus sign, -0, leading zero, decimal point, and exponent are prohibited.
+Integer values use base-10 lexemes matching the following regular expression. A plus sign, -0, leading zero, decimal point, and exponent are prohibited.
 `^(?:0|-?[1-9][0-9]*)$`
 Seconds since the Unix epoch as a finite IEEE-754 binary64 value in the numbers form above; the column documentation states which columns are timestamps.
-Every column declares nullable. A false column has a non-empty field in every data row. A true column may use an empty field; its column meaning states whether that represents an unavailable source value or an empty source collection. The literal strings null and NULL have no special meaning.
+The table's `Nullable` column controls empty fields: `no` requires a non-empty field in every data row; `yes` permits an empty field with the meaning stated for that column. The literal strings `null` and `NULL` have no special meaning.
 
 | Column | Type | Nullable | Unit | Meaning |
 |---|---|---|---|---|
@@ -142,12 +142,12 @@ One header row naming every column in order, then one row per source sample in s
 LF (0x0A) after every row, including the last. CR (0x0D) is prohibited anywhere, including inside quoted fields.
 Comma (0x2C).
 A field is enclosed in double quotes exactly when it contains a comma, a double quote, or LF; embedded double quotes are doubled; all other fields are unquoted.
-Finite IEEE-754 binary64 values serialized as base-10 decimal lexemes match numberPattern. A plus sign, exponent, leading integer zero, negative zero, and redundant fractional trailing zero are prohibited; a lone fractional .0 remains admitted for integral values.
+Finite IEEE-754 binary64 values use canonical base-10 lexemes matching the following regular expression. A plus sign, exponent, leading integer zero, negative zero, and redundant fractional trailing zero are prohibited; a lone fractional .0 remains admitted for integral values.
 `^(?:0(?:\.0|\.[0-9]*[1-9])?|[1-9][0-9]*(?:\.(?:0|[0-9]*[1-9]))?|-(?:0\.[0-9]*[1-9]|[1-9][0-9]*(?:\.(?:0|[0-9]*[1-9]))?))$`
-Base-10 integer lexemes match integerPattern. A plus sign, -0, leading zero, decimal point, and exponent are prohibited.
+Integer values use base-10 lexemes matching the following regular expression. A plus sign, -0, leading zero, decimal point, and exponent are prohibited.
 `^(?:0|-?[1-9][0-9]*)$`
 Seconds since the Unix epoch as a finite IEEE-754 binary64 value in the numbers form above; the column documentation states which columns are timestamps.
-Every column declares nullable. A false column has a non-empty field in every data row. A true column may use an empty field; its column meaning states whether that represents an unavailable source value or an empty source collection. The literal strings null and NULL have no special meaning.
+The table's `Nullable` column controls empty fields: `no` requires a non-empty field in every data row; `yes` permits an empty field with the meaning stated for that column. The literal strings `null` and `NULL` have no special meaning.
 
 | Column | Type | Nullable | Unit | Meaning |
 |---|---|---|---|---|
@@ -164,12 +164,12 @@ One header row naming every column in order, then one row per source sample in s
 LF (0x0A) after every row, including the last. CR (0x0D) is prohibited anywhere, including inside quoted fields.
 Comma (0x2C).
 A field is enclosed in double quotes exactly when it contains a comma, a double quote, or LF; embedded double quotes are doubled; all other fields are unquoted.
-Finite IEEE-754 binary64 values serialized as base-10 decimal lexemes match numberPattern. A plus sign, exponent, leading integer zero, negative zero, and redundant fractional trailing zero are prohibited; a lone fractional .0 remains admitted for integral values.
+Finite IEEE-754 binary64 values use canonical base-10 lexemes matching the following regular expression. A plus sign, exponent, leading integer zero, negative zero, and redundant fractional trailing zero are prohibited; a lone fractional .0 remains admitted for integral values.
 `^(?:0(?:\.0|\.[0-9]*[1-9])?|[1-9][0-9]*(?:\.(?:0|[0-9]*[1-9]))?|-(?:0\.[0-9]*[1-9]|[1-9][0-9]*(?:\.(?:0|[0-9]*[1-9]))?))$`
-Base-10 integer lexemes match integerPattern. A plus sign, -0, leading zero, decimal point, and exponent are prohibited.
+Integer values use base-10 lexemes matching the following regular expression. A plus sign, -0, leading zero, decimal point, and exponent are prohibited.
 `^(?:0|-?[1-9][0-9]*)$`
 Seconds since the Unix epoch as a finite IEEE-754 binary64 value in the numbers form above; the column documentation states which columns are timestamps.
-Every column declares nullable. A false column has a non-empty field in every data row. A true column may use an empty field; its column meaning states whether that represents an unavailable source value or an empty source collection. The literal strings null and NULL have no special meaning.
+The table's `Nullable` column controls empty fields: `no` requires a non-empty field in every data row; `yes` permits an empty field with the meaning stated for that column. The literal strings `null` and `NULL` have no special meaning.
 
 | Column | Type | Nullable | Unit | Meaning |
 |---|---|---|---|---|
@@ -187,12 +187,12 @@ One header row naming every column in order, then one row per source sample in s
 LF (0x0A) after every row, including the last. CR (0x0D) is prohibited anywhere, including inside quoted fields.
 Comma (0x2C).
 A field is enclosed in double quotes exactly when it contains a comma, a double quote, or LF; embedded double quotes are doubled; all other fields are unquoted.
-Finite IEEE-754 binary64 values serialized as base-10 decimal lexemes match numberPattern. A plus sign, exponent, leading integer zero, negative zero, and redundant fractional trailing zero are prohibited; a lone fractional .0 remains admitted for integral values.
+Finite IEEE-754 binary64 values use canonical base-10 lexemes matching the following regular expression. A plus sign, exponent, leading integer zero, negative zero, and redundant fractional trailing zero are prohibited; a lone fractional .0 remains admitted for integral values.
 `^(?:0(?:\.0|\.[0-9]*[1-9])?|[1-9][0-9]*(?:\.(?:0|[0-9]*[1-9]))?|-(?:0\.[0-9]*[1-9]|[1-9][0-9]*(?:\.(?:0|[0-9]*[1-9]))?))$`
-Base-10 integer lexemes match integerPattern. A plus sign, -0, leading zero, decimal point, and exponent are prohibited.
+Integer values use base-10 lexemes matching the following regular expression. A plus sign, -0, leading zero, decimal point, and exponent are prohibited.
 `^(?:0|-?[1-9][0-9]*)$`
 Seconds since the Unix epoch as a finite IEEE-754 binary64 value in the numbers form above; the column documentation states which columns are timestamps.
-Every column declares nullable. A false column has a non-empty field in every data row. A true column may use an empty field; its column meaning states whether that represents an unavailable source value or an empty source collection. The literal strings null and NULL have no special meaning.
+The table's `Nullable` column controls empty fields: `no` requires a non-empty field in every data row; `yes` permits an empty field with the meaning stated for that column. The literal strings `null` and `NULL` have no special meaning.
 
 | Column | Type | Nullable | Unit | Meaning |
 |---|---|---|---|---|
@@ -218,12 +218,12 @@ One header row naming every column in order, then one row per source sample in s
 LF (0x0A) after every row, including the last. CR (0x0D) is prohibited anywhere, including inside quoted fields.
 Comma (0x2C).
 A field is enclosed in double quotes exactly when it contains a comma, a double quote, or LF; embedded double quotes are doubled; all other fields are unquoted.
-Finite IEEE-754 binary64 values serialized as base-10 decimal lexemes match numberPattern. A plus sign, exponent, leading integer zero, negative zero, and redundant fractional trailing zero are prohibited; a lone fractional .0 remains admitted for integral values.
+Finite IEEE-754 binary64 values use canonical base-10 lexemes matching the following regular expression. A plus sign, exponent, leading integer zero, negative zero, and redundant fractional trailing zero are prohibited; a lone fractional .0 remains admitted for integral values.
 `^(?:0(?:\.0|\.[0-9]*[1-9])?|[1-9][0-9]*(?:\.(?:0|[0-9]*[1-9]))?|-(?:0\.[0-9]*[1-9]|[1-9][0-9]*(?:\.(?:0|[0-9]*[1-9]))?))$`
-Base-10 integer lexemes match integerPattern. A plus sign, -0, leading zero, decimal point, and exponent are prohibited.
+Integer values use base-10 lexemes matching the following regular expression. A plus sign, -0, leading zero, decimal point, and exponent are prohibited.
 `^(?:0|-?[1-9][0-9]*)$`
 Seconds since the Unix epoch as a finite IEEE-754 binary64 value in the numbers form above; the column documentation states which columns are timestamps.
-Every column declares nullable. A false column has a non-empty field in every data row. A true column may use an empty field; its column meaning states whether that represents an unavailable source value or an empty source collection. The literal strings null and NULL have no special meaning.
+The table's `Nullable` column controls empty fields: `no` requires a non-empty field in every data row; `yes` permits an empty field with the meaning stated for that column. The literal strings `null` and `NULL` have no special meaning.
 
 | Column | Type | Nullable | Unit | Meaning |
 |---|---|---|---|---|
@@ -238,12 +238,12 @@ One header row naming every column in order, then one row per source sample in s
 LF (0x0A) after every row, including the last. CR (0x0D) is prohibited anywhere, including inside quoted fields.
 Comma (0x2C).
 A field is enclosed in double quotes exactly when it contains a comma, a double quote, or LF; embedded double quotes are doubled; all other fields are unquoted.
-Finite IEEE-754 binary64 values serialized as base-10 decimal lexemes match numberPattern. A plus sign, exponent, leading integer zero, negative zero, and redundant fractional trailing zero are prohibited; a lone fractional .0 remains admitted for integral values.
+Finite IEEE-754 binary64 values use canonical base-10 lexemes matching the following regular expression. A plus sign, exponent, leading integer zero, negative zero, and redundant fractional trailing zero are prohibited; a lone fractional .0 remains admitted for integral values.
 `^(?:0(?:\.0|\.[0-9]*[1-9])?|[1-9][0-9]*(?:\.(?:0|[0-9]*[1-9]))?|-(?:0\.[0-9]*[1-9]|[1-9][0-9]*(?:\.(?:0|[0-9]*[1-9]))?))$`
-Base-10 integer lexemes match integerPattern. A plus sign, -0, leading zero, decimal point, and exponent are prohibited.
+Integer values use base-10 lexemes matching the following regular expression. A plus sign, -0, leading zero, decimal point, and exponent are prohibited.
 `^(?:0|-?[1-9][0-9]*)$`
 Seconds since the Unix epoch as a finite IEEE-754 binary64 value in the numbers form above; the column documentation states which columns are timestamps.
-Every column declares nullable. A false column has a non-empty field in every data row. A true column may use an empty field; its column meaning states whether that represents an unavailable source value or an empty source collection. The literal strings null and NULL have no special meaning.
+The table's `Nullable` column controls empty fields: `no` requires a non-empty field in every data row; `yes` permits an empty field with the meaning stated for that column. The literal strings `null` and `NULL` have no special meaning.
 
 | Column | Type | Nullable | Unit | Meaning |
 |---|---|---|---|---|
@@ -262,10 +262,10 @@ Every column declares nullable. A false column has a non-empty field in every da
 
 Media type: `application/fhir+json`.
 UTF-8.
-One strict UTF-8 JSON resource object with resourceType = Bundle, Bundle.type = collection, a mandatory offset-bearing timestamp, and one entry per source sample in source order. The Bundle has at least one entry. Every entry has a unique absolute non-fragment fullUrl and a resource object with resourceType; request, response, and search are absent.
+One strict UTF-8 JSON resource with `resourceType` = `Bundle`, `Bundle.type` = `collection`, a required offset-bearing `Bundle.timestamp`, and one `Bundle.entry` for each source sample in source order. The Bundle has at least one entry. Every entry has a unique absolute non-fragment `fullUrl` and a resource object with `resourceType`; `request`, `response`, and `search` are absent.
 Every entry resource conforms to the profile set the emitting adapter declares for its stream; one Bundle carries one stream and one source batch only.
 An empty batch emits no document rather than an empty Bundle.
-The bundled format validator proves strict JSON syntax and only the collection-Bundle envelope and resource shape described above. It does not execute the official FHIR Validator over embedded resources. Base FHIR R4 conformance, adapter-declared resource profiles, the one-stream/one-source-batch boundary, and preservation of source ordering and source meaning remain producer responsibilities unless a separate validation step explicitly performs them.
+Grove format validation verifies strict JSON syntax and only the collection-Bundle envelope and resource shape described above. It does not execute the official FHIR Validator over embedded resources. Base FHIR R4 conformance, adapter-declared resource profiles, the one-stream/one-source-batch boundary, and preservation of source ordering and source meaning remain producer responsibilities unless a separate validation step explicitly performs them.
 
 ### `fhir-r4-resource` — FHIR R4 Resource
 
@@ -273,7 +273,7 @@ Media type: `application/fhir+json`.
 UTF-8.
 One complete provider-issued FHIR R4 resource in FHIR JSON representation, byte-preserved exactly as the source platform delivered it.
 The carrying document records the issuing source; Grove never asserts conformance over another issuer's resource.
-One document carries exactly one clinical record's FHIR payload. The bundled format validator proves strict JSON syntax and a resourceType-bearing object only; it does not determine the FHIR release or execute base/profile validation over the issuer's resource.
+One document carries exactly one clinical record's FHIR payload. Grove format validation verifies strict JSON syntax and a `resourceType`-bearing object only; it does not determine the FHIR release or execute base or profile validation over the issuer's resource.
 
 ### `clinical-document` — Clinical Document
 
@@ -284,17 +284,17 @@ One HL7 Clinical Document Architecture Release 2 document, byte-preserved exactl
 
 Media type: `application/json`.
 UTF-8 without a byte-order mark.
-The producer's exact native JSON serialization of one source batch, byte-preserved. The payload is well-formed JSON whose top-level value is an object or array; scalar roots are rejected.
+The payload is strict UTF-8 JSON with an object or array root. Byte-order marks, duplicate object member names, non-finite numeric values, scalar roots, malformed UTF-8, and malformed JSON are rejected.
 This format defines no per-stream field schema. The carrying document's source type supplies the source category and meaning; payload members retain their native producer-defined meaning and remain opaque to a generic receiver.
-One document carries one stream and one source batch. Structural validation proves only UTF-8 JSON syntax and the object-or-array envelope; it does not reinterpret, sanitize, rewrite, or reserialize the bytes.
+One document carries one stream and one source batch. Validation checks only this strict envelope; it does not reinterpret, sanitize, rewrite, or reserialize the bytes.
 
 ### `provider-recording` — Provider Recording
 
 Media type: `application/json`.
 UTF-8.
-The verbatim JSON payload returned by the provider API call that produced the batch, byte-preserved apart from transport framing.
-The emitting adapter documents the provider, API, and endpoint per stream; the payload is never rewritten, reordered, or reserialized.
-One document carries one API response for one account and one source element batch. The bundled format validator proves strict JSON syntax and an object-or-array envelope only; provider-domain schema and meaning remain the adapter's responsibility.
+The payload is the exact JSON response-body bytes returned by the provider API; HTTP transport framing is not part of the payload.
+The emitting adapter documents the provider, API, and endpoint per stream; the bytes are never rewritten, reordered, or reserialized.
+One document carries one API response for one account and one source element batch. Grove format validation verifies strict JSON syntax and an object-or-array envelope only; provider-domain schema and meaning remain the adapter's responsibility.
 
 ### `photoplethysmogram-samples` — Photoplethysmogram Samples
 
@@ -343,10 +343,10 @@ Varint record count, then that many PPG records.
 
 | Field | Encoding | Unit | Meaning |
 |---|---|---|---|
-| `whiteNoise` | `float64` | — |  |
-| `pinkNoise` | `float64` | — |  |
-| `backgroundNoise` | `float64` | — |  |
-| `backgroundNoiseOffset` | `float64` | — |  |
+| `whiteNoise` | `float64` | `Normalized Units²/Hz` | White-noise variance estimate per hertz in normalizedReflectance; apply the noise-equivalent-bandwidth factor to estimate in-band noise. |
+| `pinkNoise` | `float64` | `Normalized Units²` | Sensor estimate of total pink-noise variance in normalizedReflectance. |
+| `backgroundNoise` | `float64` | `Normalized Units` | Sensor estimate of ambient-noise intrusion in normalizedReflectance. |
+| `backgroundNoiseOffset` | `float64` | `Normalized Units²/Hz` | White-noise variance estimate per hertz in backgroundNoise; apply the noise-equivalent-bandwidth factor when estimating total ambient noise. |
 
 **Accelerometer sample layout**
 

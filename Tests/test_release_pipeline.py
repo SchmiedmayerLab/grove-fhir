@@ -12,6 +12,7 @@ import copy
 import importlib.util
 import json
 import re
+import subprocess
 import tarfile
 import tempfile
 import unittest
@@ -279,9 +280,15 @@ class ReleaseWorkflowTests(unittest.TestCase):
         cls.workflow = (ROOT / ".github/workflows/deployment.yml").read_text(
             encoding="utf-8"
         )
+        cls.build_workflow = (
+            ROOT / ".github/workflows/build-and-test.yml"
+        ).read_text(encoding="utf-8")
         cls.build_guides = (ROOT / "Scripts/build-guides.sh").read_text(
             encoding="utf-8"
         )
+        cls.build_guides_parallel = (
+            ROOT / "Scripts/build-guides-parallel.sh"
+        ).read_text(encoding="utf-8")
         cls.build_release = (ROOT / "Scripts/build-release.sh").read_text(
             encoding="utf-8"
         )
@@ -323,6 +330,19 @@ class ReleaseWorkflowTests(unittest.TestCase):
                 self.assertLess(
                     script.index("Scripts/validate-producer.py"),
                     script.index("Scripts/collect-release-evidence.py"),
+                )
+
+    def test_producer_validation_supplies_the_manifest_package_closure(self) -> None:
+        for label, script in (
+            ("build workflow", self.build_workflow),
+            ("deployment workflow", self.workflow),
+            ("local release script", self.build_release),
+        ):
+            with self.subTest(label=label):
+                self.assertIn("--package mobile=mobile/output/package.tgz", script)
+                self.assertIn(
+                    "--package questionnaire=questionnaire/output/package.tgz",
+                    script,
                 )
 
     def test_write_token_is_isolated_from_repository_code(self) -> None:
@@ -398,6 +418,34 @@ class ReleaseWorkflowTests(unittest.TestCase):
             "GROVE_TX_SERVER is prohibited when GROVE_TX_OFFLINE=1",
             self.build_guides,
         )
+
+    def test_parallel_guide_qa_preserves_offline_terminology_mode(self) -> None:
+        self.assertIn("GROVE_TX_OFFLINE", self.build_guides_parallel)
+        self.assertIn("--offline-terminology", self.build_guides_parallel)
+        self.assertNotIn("qa_arguments", self.build_guides_parallel)
+        branch = r'''
+set -u
+if [[ "${GROVE_TX_OFFLINE:-0}" == "1" ]]; then
+  set -- --offline-terminology mobile questionnaire
+else
+  set -- mobile questionnaire
+fi
+printf '%s\n' "$@"
+'''
+        for offline, expected in (
+            ("0", ["mobile", "questionnaire"]),
+            ("1", ["--offline-terminology", "mobile", "questionnaire"]),
+        ):
+            with self.subTest(offline=offline):
+                result = subprocess.run(
+                    ["/bin/bash", "-uc", branch],
+                    check=False,
+                    capture_output=True,
+                    text=True,
+                    env={"GROVE_TX_OFFLINE": offline},
+                )
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertEqual(result.stdout.splitlines(), expected)
 
 if __name__ == "__main__":
     unittest.main()

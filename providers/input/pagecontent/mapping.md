@@ -17,7 +17,7 @@ The provider contract uses exactly these meanings:
 - `supported`: the Grove FHIR contracts define an exact conversion to every listed semantic profile, whether shared or provider-owned.
 - `mapped-standard`: the Grove FHIR contracts map the provider-native payload to the exact source-neutral Sensor plus Provider Recording Document profile pair without asserting a scalar clinical meaning.
 - `unmodeled`: the source element is known and inventoried, but no current shared or provider-scoped profile models it.
-- `platform-exclusive`: a reviewed provider-scoped structured profile represents the source semantics because no exact shared profile does.
+- `platform-exclusive`: a provider-scoped structured profile represents the source semantics because no exact shared profile does.
 - `deferred`: a plausible shared mapping exists, but source evidence or time/result semantics are insufficient for a conformant conversion under the Grove FHIR contracts.
 - `intentionally-unsupported`: the Grove FHIR contracts refuse the conversion because it would create a misleading or diagnostic-adjacent result.
 

@@ -49,7 +49,7 @@ The group `date` becomes `effectiveDateTime` in the payload's `timezone`, here `
 The adapter omits `Observation.issued`: no provider row declares an authoritative result-availability or current-version modification field.
 Conversion time belongs on `Provenance.recorded`, never in `issued`.
 
-### `grpid` identity
+### Using `grpid` for source-record identity
 
 The `grpid` is the stable native key shared by both measures, so it is the `sourceNativeId` of one source record covering the whole group.
 Withings does not document `grpid` as unique across accounts, so the complete deployment-scoped account Identifier pair participates in identity.
@@ -63,7 +63,8 @@ v0:<key-id>:<epoch>:…
 The concrete example digest is HMAC-SHA-256 over the typed, length-framed provider components; this abbreviated value omits both the account pseudonym and the optional governed exact `grpid` Identifier.
 A deployment with an explicit upstream-traceability purpose may place the exact `grpid` once on this catalog-designated primary Observation under its absolute non-Grove namespace.
 The Observation also carries a distinct source-output value, shown schematically as `v0:<key-id>:<epoch>:…`, derived under the provider-specific `provider-output` identity kind (whose Identifier role remains `source-output`) with output role `blood-pressure-panel` and discriminator `single`.
-Production deployments use a managed key and their own immutable identifier systems; the public test key is prohibited.
+Production deployments use a managed key and their own immutable identifier systems.
+The key published with conformance examples is for testing only and must not be used in production.
 The source-type extension carries `withings/getmeas:9+10`, keeping the exact source mapping token available directly from the resource.
 
 ### Fail-closed cases
@@ -78,4 +79,4 @@ The source-type extension carries `withings/getmeas:9+10`, keeping the exact sou
 The conversion emits one [Observation](https://grovealliance.org/fhir/withings/Observation-WithingsBloodPressureExample.html) claiming exactly the shared blood-pressure semantic profile plus [Withings Observation](https://grovealliance.org/fhir/withings/StructureDefinition-withings-observation.html), and one [conversion Provenance](https://grovealliance.org/fhir/withings/Provenance-WithingsBloodPressureProvenanceExample.html) whose sole source entity is the source-record identifier pair.
 Concrete provider Observations live in the exact provider package; the shared Provider Observation profile is an abstract lineage envelope and cannot be claimed directly.
 The [Withings Exchange Bundle](https://grovealliance.org/fhir/withings/Bundle-WithingsExchangeBundleExample.html) carries the complete graph as a [Grove Mobile Exchange Bundle](https://grovealliance.org/fhir/mobile/StructureDefinition-grove-mobile-exchange-bundle.html): every entry carries its selected typed node key, `fullUrl` is the protocol's length-framed UUID version 5 projection of that complete Identifier pair, and all internal references use those UUID URNs.
-See the [authoritative status matrix](status-matrix.html) and [`catalog/providers-adapter.json`](https://grovealliance.org/fhir/catalog/providers-adapter.json) for the definitive grouped-mapping contract.
+See the [support matrix](status-matrix.html) and [provider adapter catalog](https://grovealliance.org/fhir/catalog/providers-adapter.json) for the complete grouped-mapping requirements.

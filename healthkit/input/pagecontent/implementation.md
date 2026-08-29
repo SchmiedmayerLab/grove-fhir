@@ -8,14 +8,15 @@ SPDX-License-Identifier: MIT
 
 A shared HealthKit Observation directly claims the generic HealthKit adapter profile and the one Mobile or standard profile that defines the result.
 A HealthKit-specific child Observation directly claims only that exact child; inherited profiles are not repeated.
-The ECG hybrid directly claims the Sensor ECG and HealthKit ECG profiles.
-Native recording, clinical-record, vision-prescription, medication-dose, and tracked-medication outputs use the exact direct claim modes published in `catalog/profile-claims.json`.
+The ECG Observation directly declares the Sensor ECG and HealthKit ECG profiles.
+Native recording, clinical-record, vision-prescription, medication-dose, and tracked-medication outputs declare exactly the profile sets published in `catalog/profile-claims.json`.
 Install Mobile, Sensor, and HealthKit and validate every direct profile together.
 
 ### Download the packages
 
 The packages are not published in a FHIR package registry, and the canonical namespace is deliberately not a package host.
-Each published guide exposes its archive and checksum from its [Artifacts page](artifacts.html); download this guide's `package.tgz` and `package.tgz.sha256` there, plus the Mobile and Sensor guide pairs from their Artifacts pages, then verify all three checksums:
+Each published guide exposes its archive and checksum from its [Artifacts page](artifacts.html).
+Create `grove-packages/mobile`, `grove-packages/sensor`, and `grove-packages/healthkit`; save each guide's `package.tgz` and `package.tgz.sha256` in its matching directory, then run:
 
 ```sh
 (cd grove-packages/mobile && shasum -a 256 --check package.tgz.sha256)
@@ -45,7 +46,7 @@ java -jar validator_cli.jar observation.json \
 ```
 
 Validation checks the resource shape, identifier format, terminology bindings, profile intersection, and inherited Mobile/Sensor rules.
-The structural producer gate additionally binds the exact source-type coding to its one per-resource direct claim and requires one HealthKit conversion Provenance to target every output for the source record.
+In addition to FHIR validation, a conformant producer must bind the source-type coding to the permitted direct profile claim and include one HealthKit conversion Provenance that targets every output for the source record.
 Neither layer can prove that a HealthKit sample type was mapped to the correct clinical profile, that an attributed Device performed the claimed role, or that disclosing a source identifier is authorized.
 Verify those adapter semantics and disclosure decisions against representative source records.
 
@@ -54,6 +55,6 @@ Start with the [heart-rate JSON](Observation-HealthKitHeartRateObservationExampl
 ### Retracting a source record
 
 When HealthKit reports a deleted source object, emit the dedicated Grove Mobile Retraction Bundle.
-Its sole source-record-retracted Provenance identifies the exact prior output graph through typed logical References carrying complete business Identifier pairs and closed target roles.
+Its sole source-record-retracted Provenance identifies the exact prior output graph through typed logical References carrying complete business Identifier pairs and only the target roles allowed by the retraction profile.
 Do not copy the former resources, relabel them `entered-in-error`, or encode a FHIR DELETE transaction.
-The assertion records source removal; receiver resolution and lifecycle application remain sink policy.
+The assertion records source removal; the receiving deployment defines identifier resolution, repeated and all-or-nothing event handling, retention, and deletion.

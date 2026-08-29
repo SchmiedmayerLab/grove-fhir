@@ -6,8 +6,8 @@ SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTR
 SPDX-License-Identifier: MIT
 -->
 
-Health Connect change-token handling is application code, not a FHIR transport protocol.
-This page defines only the producer-owned durability boundary needed to avoid losing source changes while converting already-read Records.
+Health Connect change tokens are application state, not part of FHIR transport.
+The following durability rules prevent source changes from being lost while already-read Records are converted.
 
 ### Durable producer state
 
@@ -28,11 +28,11 @@ The exchange representation is the dedicated Retraction Bundle: resolve the exac
 Do not copy or mutate the prior clinical resources.
 Receiver projection and storage lifecycle remain deployment policy.
 
-### Token advancement boundary
+### When to advance the change token
 
 For each change page:
 
-1. Convert every already-read upsertion and resolve every deletion against the ledger.
+1. Convert every created or updated Record already read from Health Connect and resolve every deletion against the ledger.
 2. Persist the new ledger state and any caller-owned durable outbox item atomically.
 3. Advance the change token only after that local transaction is durable.
 4. Retire an outbox item only after the caller-selected sink acknowledges it.
@@ -50,7 +50,7 @@ Reusing a token with a different Record class, filter, range, or contract marker
 The calling Android application owns Health Connect permissions, Record fetching, pagination, scheduling, and its retention guarantee.
 A Grove mapping library accepts typed Records or normalized inputs and emits FHIR; it does not call Health Connect APIs.
 
-### Explicit non-goals
+### Scope boundaries
 
 The Grove FHIR contracts define no receiver, authenticated intake, tenant partition, cloud storage model, Bundle byte or count limit, replay endpoint, transport acknowledgement schema, or downstream merge behavior.
 Those policies may wrap a conformant Bundle without changing its FHIR identities or profile claims.

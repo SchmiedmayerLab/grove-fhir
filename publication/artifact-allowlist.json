@@ -5677,13 +5677,6 @@
           "classification": "example"
         },
         {
-          "fshName": "WithingsSleepingHeartRateAverageExample",
-          "fshType": "Instance",
-          "resourceType": "Observation",
-          "id": "WithingsSleepingHeartRateAverageExample",
-          "classification": "example"
-        },
-        {
           "fshName": "WithingsVascularAgeExample",
           "fshType": "Instance",
           "resourceType": "Observation",
@@ -5786,13 +5779,6 @@
           "fshType": "Profile",
           "resourceType": "StructureDefinition",
           "id": "withings-qt-interval",
-          "classification": "definition"
-        },
-        {
-          "fshName": "WithingsSleepingHeartRateAverage",
-          "fshType": "Profile",
-          "resourceType": "StructureDefinition",
-          "id": "withings-sleeping-heart-rate-average",
           "classification": "definition"
         },
         {

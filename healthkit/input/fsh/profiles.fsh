@@ -304,7 +304,7 @@ Profile: HealthKitUserAnnotatedMedication
 Parent: MedicationStatement
 Id: healthkit-user-annotated-medication
 Title: "HealthKit User Annotated Medication"
-Description: "A medication a person tracks in Health, with the annotations they added while adding it. HealthKit publishes no sample identity for a tracked medication, so the HKHealthConceptIdentifier of the underlying concept is the identity a dose event refers to. The archived flag is the whole of what the R4 status carries: an archived medication is completed and a medication the person still tracks is active."
+Description: "A non-archived medication a person tracks in Health, with the annotations they added while adding it. HealthKit publishes no sample identity for a tracked medication, so the HKHealthConceptIdentifier of the underlying concept is the identity a dose event refers to. The status is active; archived entries are not admitted because archival alone does not establish that medication use was completed or stopped."
 * insert HealthKitOutputIdentitySlices
 * identifier 3..* MS
 * identifier contains healthConcept 1..1 MS

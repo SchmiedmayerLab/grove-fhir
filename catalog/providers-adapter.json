@@ -948,9 +948,9 @@
               "path": "data.hr_average",
               "status": "supported",
               "measurementIds": [
-                "sleep-heart-rate",
-                "sleeping-heart-rate-average"
+                "sleep-heart-rate"
               ],
+              "effective": "exact sleep-session Period",
               "aggregationMethod": {
                 "sleep-heart-rate": "session-mean"
               }

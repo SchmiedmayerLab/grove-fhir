@@ -8,14 +8,14 @@ SPDX-License-Identifier: MIT
 
 A Questionnaire can capture a measurement entered by a respondent.
 A system that performs the standard [SDC `$extract` operation](https://hl7.org/fhir/uv/sdc/OperationDefinition-QuestionnaireResponse-extract.html) can transform those answers into Observation resources.
-The Questionnaire and QuestionnaireResponse must provide the clinical context that the later Grove projection needs to produce Observations conforming to their target measurement profiles.
+The Questionnaire and QuestionnaireResponse must provide the clinical context that the later Grove projection stage needs to produce Observations conforming to their target measurement profiles.
 
 This page describes SDC Observation-based extraction.
 It does not define a Grove-specific extraction operation or a hybrid extraction mechanism.
 The workflow has two distinct stages:
 
 1. SDC `$extract` returns one extracted resource or, for multiple resources, a transaction Bundle.
-2. A Grove projection process adds exchange-scoped identity, device snapshots, and conversion Provenance, then packages the complete graph as a Grove Mobile collection Bundle.
+2. The Grove projection stage adds exchange-scoped identity, device snapshots, and conversion Provenance, then packages the complete graph as a Grove Mobile collection Bundle.
 
 The collection Bundle shown below is therefore the final Grove exchange artifact, not the literal response returned by `$extract`.
 
@@ -45,9 +45,9 @@ Its required `subject` references the Patient who becomes the subject of each ex
 Its explicit `author` identifies the person who recorded the answers and becomes `Observation.performer`; the example does not infer this role from `subject`.
 Under Observation-based extraction, `QuestionnaireResponse.authored` supplies both the effective time and the issued time described in [Measurement time](#measurement-time).
 
-`extension[writerContext]` records plain facts about the application and host that captured the response.
+The [Grove Questionnaire Writer Context extension](StructureDefinition-grove-questionnaire-writer-context.html) records plain facts about the application and host that captured the response.
 The response producer does not create a Grove device snapshot because snapshot identity is scoped to an exchange event that does not yet exist when the response is authored.
-After an exchange event and identity key are available, the Grove conversion creates the application and host snapshots from these facts.
+After an exchange event and identity key are available, the Grove projection stage creates the application and host snapshots from these facts.
 
 ### Unit declarations
 
@@ -91,18 +91,18 @@ The two vital-sign Observations receive `vital-signs` from the Questionnaire dec
 All three Observations receive `effectiveDateTime` and `issued` from the response's exact `authored` value, and copy their `performer` from the response's explicit `author`.
 
 SDC extraction also places the QuestionnaireResponse in each Observation's `derivedFrom`.
-The subsequent Grove conversion adds the identity, device context, and Provenance required by the target measurement profiles.
+The Grove projection stage adds the identity, device context, and Provenance required by the target measurement profiles.
 Each Observation receives `source-record` and `source-output` identifiers, `manual-entry` as its recording method, and a gateway-device reference to the application Device.
 
-The response's `writerContext` supplies the facts used to create a [Grove Application Device](https://grovealliance.org/fhir/mobile/StructureDefinition-grove-application-device.html) and its parent [Grove Host Device](https://grovealliance.org/fhir/mobile/StructureDefinition-grove-host-device.html).
+The Grove Questionnaire Writer Context extension supplies the facts used to create a [Grove Application Device](https://grovealliance.org/fhir/mobile/StructureDefinition-grove-application-device.html) and its parent [Grove Host Device](https://grovealliance.org/fhir/mobile/StructureDefinition-grove-host-device.html).
 The application identifier, name, version, and build populate the application Device; the host model and operating-system version populate its parent.
-Both Devices receive event-scoped snapshot identifiers during Grove conversion.
+Both Devices receive event-scoped snapshot identifiers during the Grove projection stage.
 
-### Information unavailable to questionnaire projection
+### Information unavailable to QuestionnaireResponse projection
 
 Projection from a QuestionnaireResponse cannot reconstruct several facts that may be available to an adapter reading a native health data source:
 
-| Information | Native-source conversion | Questionnaire projection |
+| Information | Native-source conversion | QuestionnaireResponse projection |
 |---|---|---|
 | Writer revision | Can carry a writer record identifier and revision so a later correction supersedes the earlier record. | The response does not provide a writer revision from which to derive that identity. |
 | Measurement time | Can preserve the exact instant or period recorded by the source. | Observation-based extraction uses `QuestionnaireResponse.authored`. |

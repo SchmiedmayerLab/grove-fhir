@@ -127,7 +127,9 @@ class FormatRegistryTests(unittest.TestCase):
         self.assertIn("IEEE-754 binary64", encoding["numbers"])
         self.assertIn("IEEE-754 binary64", encoding["timestamps"])
         self.assertIn("CR (0x0D) is prohibited anywhere", encoding["rowTerminator"])
-        self.assertIn("Every column declares nullable", encoding["emptyFields"])
+        self.assertIn("`Nullable` column controls empty fields", encoding["emptyFields"])
+        self.assertIn("`no` requires a non-empty field", encoding["emptyFields"])
+        self.assertIn("`yes` permits an empty field", encoding["emptyFields"])
 
     def test_ambient_light_uses_the_correct_chromaticity_spelling(self) -> None:
         columns = [
@@ -144,8 +146,10 @@ class FormatRegistryTests(unittest.TestCase):
 
     def test_native_recording_is_a_generic_json_envelope_not_a_schema_gate(self) -> None:
         specification = REGISTRY["formats"]["native-recording"]["specification"]
-        self.assertIn("well-formed JSON", specification["structure"])
-        self.assertIn("top-level value is an object or array", specification["structure"])
+        self.assertIn("strict UTF-8 JSON", specification["structure"])
+        self.assertIn("object or array root", specification["structure"])
+        self.assertIn("duplicate object member names", specification["structure"])
+        self.assertIn("scalar roots", specification["structure"])
         self.assertIn("no per-stream field schema", specification["schema"])
         self.assertIn("source category and meaning", specification["schema"])
         self.assertIn("does not reinterpret, sanitize, rewrite, or reserialize", specification["scope"])
@@ -169,7 +173,7 @@ class FormatRegistryTests(unittest.TestCase):
         validation_scope = REGISTRY["formats"]["fhir-collection-bundle"][
             "specification"
         ]["validationScope"]
-        self.assertIn("proves strict JSON syntax", validation_scope)
+        self.assertIn("Grove format validation verifies strict JSON syntax", validation_scope)
         self.assertIn("does not execute the official FHIR Validator", validation_scope)
         self.assertIn("Base FHIR R4 conformance", validation_scope)
         self.assertIn("adapter-declared resource profiles", validation_scope)
@@ -183,13 +187,13 @@ class FormatRegistryTests(unittest.TestCase):
 
     def test_registry_describes_only_validation_that_is_executed(self) -> None:
         description = REGISTRY["description"]
-        self.assertIn("bundled producer validator checks", description)
-        self.assertIn("external FHIR/profile", description)
+        self.assertIn("Grove format validation checks", description)
+        self.assertIn("FHIR/profile", description)
         self.assertNotIn("receiver can validate the admitted wire format", description)
         fhir_resource_scope = REGISTRY["formats"]["fhir-r4-resource"][
             "specification"
         ]["scope"]
-        self.assertIn("resourceType-bearing object only", fhir_resource_scope)
+        self.assertIn("`resourceType`-bearing object only", fhir_resource_scope)
         self.assertIn("does not determine the FHIR release", fhir_resource_scope)
         provider_scope = REGISTRY["formats"]["provider-recording"][
             "specification"
@@ -207,6 +211,24 @@ class FormatRegistryTests(unittest.TestCase):
         self.assertEqual(
             optical_fields["activePhotodiodeIndexes"],
             "set(varint(uint64))",
+        )
+
+    def test_ppg_noise_terms_define_their_dimensions(self) -> None:
+        specification = REGISTRY["formats"]["photoplethysmogram-samples"]["specification"]
+        noise_fields = {
+            field["field"]: field for field in specification["noiseTerms"]
+        }
+        self.assertEqual(noise_fields["whiteNoise"]["unit"], "Normalized Units²/Hz")
+        self.assertIn("per hertz", noise_fields["whiteNoise"]["meaning"])
+        self.assertEqual(noise_fields["pinkNoise"]["unit"], "Normalized Units²")
+        self.assertEqual(noise_fields["backgroundNoise"]["unit"], "Normalized Units")
+        self.assertEqual(
+            noise_fields["backgroundNoiseOffset"]["unit"],
+            "Normalized Units²/Hz",
+        )
+        self.assertIn(
+            "per hertz",
+            noise_fields["backgroundNoiseOffset"]["meaning"],
         )
 
     def test_heartbeat_timestamps_are_unix_epoch_instants(self) -> None:

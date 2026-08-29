@@ -64,21 +64,83 @@ def profile_names(profiles: list[str]) -> str:
     return "; ".join(profile.rsplit("/", 1)[-1] for profile in profiles) or "—"
 
 
+def provider_binding(element: dict[str, Any]) -> str | None:
+    binding = element.get("reason") or element.get("effective")
+    methods = sorted(set(element.get("aggregationMethod", {}).values()))
+    if not methods:
+        return binding
+    method_text = ", ".join(methods)
+    return f"{binding}; method = {method_text}" if binding else f"method = {method_text}"
+
+
+def provider_representation(source: dict[str, Any], element: dict[str, Any]) -> str | None:
+    grouped_mapping = element.get("groupedMapping")
+    if grouped_mapping:
+        return f"required member of `{grouped_mapping}`; no standalone output"
+    raw = source.get("raw", {})
+    raw_profiles = [
+        profile
+        for profile in (raw.get("sourceNeutralProfile"), raw.get("adapterProfile"))
+        if profile
+    ]
+    if element.get("status") == "mapped-standard" and raw_profiles:
+        return profile_names(raw_profiles)
+    return element.get("unitConversion") or element.get("sensorProfile")
+
+
 def healthkit() -> str:
     catalog = load("healthkit-adapter.json")
+    generic_observation_profile = (
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-observation"
+    )
+    sensor_recording_profile = (
+        "https://grovealliance.org/fhir/sensor/StructureDefinition/"
+        "grove-sensor-recording-document"
+    )
+    healthkit_recording_profile = (
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/"
+        "healthkit-recording-document"
+    )
     rows = []
     for item in catalog["rows"]:
         requirement = item.get("requirement")
         admission_contract = item.get("clinicalAdmissionContract")
         if admission_contract is not None:
             requirement = catalog[admission_contract]["rule"]
+        direct_profiles = list(item["profiles"])
+        mobile_profiles = [
+            profile
+            for profile in direct_profiles
+            if "/mobile/StructureDefinition/" in profile
+        ]
+        if len(mobile_profiles) > 1:
+            if len(mobile_profiles) != len(item["measurementIDs"]):
+                raise ValueError(
+                    f"{item['sourceTypeIdentifier']} must pair each Mobile profile "
+                    "with one measurement ID"
+                )
+            generic_name = generic_observation_profile.rsplit("/", 1)[-1]
+            direct_contract = "; ".join(
+                f"{measurement}: {profile.rsplit('/', 1)[-1]} + {generic_name}"
+                for measurement, profile in zip(
+                    item["measurementIDs"], mobile_profiles, strict=True
+                )
+            )
+        elif mobile_profiles and generic_observation_profile not in direct_profiles:
+            direct_profiles.append(generic_observation_profile)
+            direct_contract = profile_names(direct_profiles)
+        elif direct_profiles == [healthkit_recording_profile]:
+            direct_profiles.insert(0, sensor_recording_profile)
+            direct_contract = profile_names(direct_profiles)
+        else:
+            direct_contract = profile_names(direct_profiles)
         rows.append(
             [
                 f"`{item['sourceTypeIdentifier']}`",
                 item["title"],
                 f"`{item['status']}`",
                 ", ".join(item["measurementIDs"]),
-                profile_names(item["profiles"]),
+                direct_contract,
                 requirement,
             ]
         )
@@ -86,13 +148,12 @@ def healthkit() -> str:
     sdk = source["sdkBaseline"]
     result = (
         HEADER
-        + "### Authoritative HealthKit status matrix\n\n"
-        + f"This table is the complete, closed inventory of all {source['rowCount']} "
-        f"Apple HealthKit platform source types frozen against {sdk['platform']} "
-        f"{sdk['version']} from Xcode {sdk['xcodeVersion']} build `{sdk['xcodeBuild']}`. "
-        "The evidence is the official Apple platform documentation and the exact SDK "
-        "provenance declared by the catalog. Each row has one definitive contract status; "
-        "this is part of the Grove FHIR contracts, not a roadmap. `supported`, "
+        + "### HealthKit support matrix\n\n"
+        + f"This table is the normative support inventory for all {source['rowCount']} "
+        f"Apple HealthKit source types in the {sdk['platform']} {sdk['version']} baseline "
+        f"from Xcode {sdk['xcodeVersion']} build `{sdk['xcodeBuild']}`. "
+        "Each source type has one status, and producers may emit only the output contracts "
+        "named for admitted rows. `supported`, "
         "`platform-exclusive`, and `mapped-standard` each admit only the output "
         "contract(s) named in that row. `unmodeled`, `deferred`, and "
         "`intentionally-unsupported` admit no output; producers fail closed.\n\n"
@@ -173,11 +234,10 @@ def health_connect() -> str:
         )
     return (
         HEADER
-        + "### Authoritative Health Connect status matrix\n\n"
-        + "This table is the complete, closed AndroidX Health Connect 1.1.0 "
-        "`RecordType.all` inventory. Each of the 41 record classes has exactly one "
-        "definitive status under the Grove FHIR contracts. An empty output cell means the relevant Grove FHIR Implementation Guide admits no "
-        "FHIR producer output for that class; it is not an implementation queue.\n\n"
+        + "### Health Connect support matrix\n\n"
+        + "This table is the normative support inventory for all 41 concrete record classes "
+        "in AndroidX Health Connect 1.1.0 `RecordType.all`. Each class has one status. "
+        "An empty output cell means this guide does not admit a FHIR conversion for that class.\n\n"
         + table(
             ["Record class", "Status", "Admitted output(s)", "Exact context mapping(s)"],
             rows,
@@ -187,18 +247,36 @@ def health_connect() -> str:
 
 def sensorkit() -> str:
     catalog = load("sensorkit-adapter.json")
+    sensor_recording_profile = (
+        "https://grovealliance.org/fhir/sensor/StructureDefinition/"
+        "grove-sensor-recording-document"
+    )
     entries = catalog["entries"]
     scope_counts = Counter(entry["scope"] for entry in entries)
     rows = []
     for item in catalog["entries"]:
         structured = item.get("structured", {})
         raw = item.get("raw", {})
+        structured_profiles = [
+            profile
+            for profile in (
+                structured.get("sourceNeutralProfile"),
+                structured.get("profile"),
+                structured.get("adapterProfile"),
+            )
+            if profile
+        ]
         structured_contract = (
-            structured.get("profile")
-            or structured.get("adapterProfile")
-            or structured.get("status")
+            profile_names(structured_profiles)
+            if structured_profiles
+            else None
         )
-        raw_contract = raw.get("profile") or raw.get("status")
+        raw_profile = raw.get("profile")
+        raw_contract = (
+            profile_names([sensor_recording_profile, raw_profile])
+            if raw_profile
+            else None
+        )
         reasons = [item.get("reason"), structured.get("reason")]
         rows.append(
             [
@@ -207,20 +285,20 @@ def sensorkit() -> str:
                 item["scope"],
                 item["minimumIOS"],
                 f"`{item['status']}`",
-                structured_contract.rsplit("/", 1)[-1] if structured_contract else None,
-                raw_contract.rsplit("/", 1)[-1] if raw_contract else None,
+                structured_contract,
+                raw_contract,
                 next((reason for reason in reasons if reason), None),
             ]
         )
     return (
         HEADER
-        + "### Authoritative SensorKit status matrix\n\n"
-        + "This table is the complete SensorKit inventory under the Grove FHIR contracts: "
+        + "### SensorKit support matrix\n\n"
+        + "This table is the normative SensorKit support inventory: "
         f"{scope_counts.get('catalog-baseline', 0)} catalog-baseline platform symbols and "
         f"{scope_counts.get('stable-addition', 0)} stable additions in the stated Apple SDK "
-        f"baseline. Each of the {len(entries)} rows has one definitive status. "
-        "Recording Document support is distinct from a structured semantic mapping and "
-        "never implies that fetching occurs in FHIR; `content.format` states whether its "
+        f"baseline. Each of the {len(entries)} sources has one status, and only the listed "
+        "representations are admitted. Recording Document support preserves a registered "
+        "payload and does not imply that FHIR retrieves it; `content.format` states whether its "
         "payload is CSV, FHIR, binary, native JSON, or another admitted format.\n\n"
         + table(
             [
@@ -229,8 +307,8 @@ def sensorkit() -> str:
                 "Inventory scope",
                 "Minimum iOS",
                 "Status",
-                "Structured contract",
-                "Raw contract",
+                "Structured profile claim(s)",
+                "Raw profile claim(s)",
                 "Binding reason",
             ],
             rows,
@@ -245,7 +323,7 @@ def providers() -> str:
     for provider in catalog["providers"]:
         for source in provider["sourceTypes"]:
             for element in source["elements"]:
-                representation = element.get("unitConversion") or element.get("sensorProfile")
+                representation = provider_representation(source, element)
                 rows.append(
                     [
                         f"`{provider['id']}`",
@@ -255,7 +333,7 @@ def providers() -> str:
                         f"`{element['status']}`",
                         element.get("measurementIds"),
                         representation,
-                        element.get("reason") or element.get("effective"),
+                        provider_binding(element),
                     ]
                 )
         for grouped in provider.get("groupedMappings", []):
@@ -271,11 +349,13 @@ def providers() -> str:
             )
     result = (
         HEADER
-        + "### Authoritative connected-provider status matrix\n\n"
+        + "### Connected-provider support matrix\n\n"
         + "This table lists every provider field in the published Google "
         "Health API, Oura, and Withings inventory. Each field has one definitive "
         "status. This adapter maps data already obtained before FHIR conversion; it contains no "
-        "provider authentication, network, pagination, or fetching implementation.\n\n"
+        "provider authentication, network, pagination, or fetching implementation. A field named "
+        "as a required group member admits no standalone output; only the corresponding grouped "
+        "mapping below admits the result.\n\n"
         + table(
             [
                 "Provider",
@@ -291,7 +371,8 @@ def providers() -> str:
         )
     )
     if grouped_rows:
-        result += "\n#### Atomic grouped mappings\n\n"
+        result += "\n#### Mappings that require a complete source group\n\n"
+        result += "Some results are admitted only when every required provider field occurs in the same source group.\n\n"
         result += table(
             ["Provider", "Grouped source token", "Required members", "Measurement", "Output discriminator", "Rule"],
             grouped_rows,
@@ -319,19 +400,20 @@ def vendor(guide: str) -> str:
             f"`{element['path']}`",
             f"`{element['status']}`",
             element.get("measurementIds"),
-            element.get("unitConversion") or element.get("sensorProfile"),
-            element.get("reason") or element.get("effective"),
+            provider_representation(source, element),
+            provider_binding(element),
         ]
         for source in provider["sourceTypes"]
         for element in source["elements"]
     ]
     result = (
         HEADER
-        + f"### Authoritative {label} status matrix\n\n"
+        + f"### {label} support matrix\n\n"
         + f"This table lists every {label} field in the published Grove inventory. "
         "Each field has one definitive status. This guide profiles data already obtained "
         "before FHIR conversion; it contains no authentication, network, pagination, or fetching "
-        "implementation.\n\n"
+        "implementation. A field named as a required group member admits no standalone output; "
+        "only the corresponding grouped mapping below admits the result.\n\n"
         + table(
             [
                 "Source type",
@@ -347,7 +429,8 @@ def vendor(guide: str) -> str:
     )
     grouped = provider.get("groupedMappings", [])
     if grouped:
-        result += "\n#### Atomic grouped mappings\n\n"
+        result += "\n#### Mappings that require a complete source group\n\n"
+        result += "Some results are admitted only when every required provider field occurs in the same source group.\n\n"
         result += table(
             ["Grouped source token", "Required members", "Measurement", "Output discriminator", "Rule"],
             [

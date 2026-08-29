@@ -11,7 +11,7 @@ A Grove Mobile implementation begins with a valid clinical Observation and adds 
 ### Producer sequence
 
 1. Select the exact shared measurement profile from the normative catalog.
-2. Assign a stable Observation identifier as a complete `(system, value)` pair.
+2. Derive exactly one typed `source-record` Identifier and one typed `source-output` Identifier as complete `(system, value)` pairs using the exchange protocol.
 3. Set the Patient, effective time, status, and result.
    Add category and recording method when they are known.
 4. Link the recording Device only when its acquisition role and admitted Device profile are known.
@@ -22,7 +22,7 @@ A Grove Mobile implementation begins with a valid clinical Observation and adds 
    Every literal reference resolves to an entry in that same Bundle; contained resources and `#id` references are prohibited.
    At a governed path, use either that literal form or an identifier-only logical Reference—never both.
    A logical Reference carries the exact `Reference.type` and one complete Identifier with an absolute system; a logical Patient uses the deployment's pseudonym and does not require a fabricated Patient entry.
-9. Admit only the closed output, supporting, and lifecycle resource types; require every supporting entry to connect to an output or the lifecycle Provenance; and apply the exact direct-profile mode to every output, Device, QuestionnaireResponse, and Provenance.
+9. Allow only the resource types listed for active outputs, supporting entries, and lifecycle entries. Connect every supporting entry to an output or the lifecycle Provenance. Require every output, Device, QuestionnaireResponse, and Provenance to declare exactly the profile set defined in `profile-claims.json`.
 10. Validate the Bundle against FHIR R4, the Grove package, and the applicable graph and lifecycle rules.
 
 Source-platform fields do not pass through a generic metadata container.
@@ -54,14 +54,15 @@ java -jar validator_cli.jar exchange-bundle.json \
   -profile https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle
 ```
 
-Validation checks base FHIR rules, required fields, supported datatypes, terminology bindings, complete identifier pairs, governed reference shapes, reviewed quantity value domains, and the result/member-or-data-absent invariant.
+Validation checks base FHIR rules, required fields, supported datatypes, terminology bindings, complete identifier pairs, governed reference shapes, catalog-declared quantity value domains, and the rule requiring either a result (`value[x]`, `component`, or `hasMember`) or `dataAbsentReason`.
 It cannot prove that a source value was mapped to the correct clinical code or that a device truly recorded a value; implementations test those semantic mappings separately.
 
 At minimum, test one valid example for every supported measurement mapping and one invalid example for each contract rule.
 Include identity collisions, missing results, point and interval timing, exact step-count intervals, source time zones, absent devices, gateway applications, study links, and conversion provenance.
 
-For graph-level validation, use the Grove `Scripts/validate-producer.py` command.
-It verifies package identity, required profile claims, deterministic UUID URNs, and internal graph resolution before invoking the official FHIR Validator.
+For graph-level validation, use a checkout of the Grove FHIR Implementation Guides source corresponding to the package version.
+Run `python3 Scripts/validate-producer.py --manifest <manifest.json> --validator <validator_cli.jar> --package <alias>=<package.tgz>` once per package alias declared by the manifest.
+The command verifies package identity, required profile claims, deterministic UUID URNs, and internal graph resolution before invoking the official FHIR Validator.
 
 The [heart-rate JSON](Observation-GroveMobileHeartRateExample.json) is a compact starting example.
 The [step-count JSON](Observation-GroveMobileStepCountExample.json) demonstrates an interval aggregate.

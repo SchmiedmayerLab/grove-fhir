@@ -2992,28 +2992,6 @@
       "reviewRef": "pending-integration-commit",
       "notes": "Apple's September 2024 white paper 'Estimating Breathing Disturbances and Sleep Apnea Risk from Apple Watch' states the algorithm output 'is expressed as a continuous variable, which has units of events per hour' produced as a nightly measurement, fixing UCUM /h (dimension {s:-1}) over the night's Period. LOINC 90566-1 Respiratory disturbance index exists but was rejected: Apple's metric is a proprietary accelerometry estimate explicitly not equivalent to a polysomnography-derived RDI/AHI, so relabeling would be diagnostic overreach; a Grove code is defined instead. Only HealthKit evidences the concept, so the aggregate family stays adapter-owned."
     },
-    "sleeping-heart-rate-average": {
-      "status": "approved",
-      "provenance": "reviewed",
-      "digest": "sha256:8b271cbaff1a9bd911b6168daef30a58a23d0981e35d914b9b1f9cd76ce95838",
-      "preparedBy": [
-        {
-          "name": "terminology sweep drafting agent (concepts-quantity)",
-          "role": "engineering"
-        }
-      ],
-      "approvedBy": [
-        {
-          "name": "terminology sweep adversarial verifier",
-          "role": "terminology-verification"
-        }
-      ],
-      "ratification": "pending-pull-request-review",
-      "reviewedOn": "2026-08-21",
-      "recordedOn": "2026-08-21",
-      "reviewRef": "pending-integration-commit",
-      "notes": "The catalog marks withings getsummary hr_average unmodeled because 'a sleep-session average is not a point heart-rate measurement' — a windowed average, hence aggregate-family with Withings as the single evidencing source (owner providers). No LOINC concept states a sleep-session heart-rate mean, so a Grove code is defined; it is kept separate from resting-heart-rate (40443-4) because a session mean is not a resting estimate. /min parses with dimension {s:-1}; effective Period is the exact session window."
-    },
     "speed": {
       "status": "approved",
       "provenance": "reviewed",

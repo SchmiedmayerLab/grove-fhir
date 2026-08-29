@@ -16,7 +16,6 @@ Description: "Measurement concepts defined by the Withings adapter for source-sp
 * ^content = #complete
 * #extracellular-water-mass "Extracellular water mass" "The mass of body water outside cells as estimated by bioelectrical impedance analysis."
 * #intracellular-water-mass "Intracellular water mass" "The mass of body water inside cells as estimated by bioelectrical impedance analysis."
-* #sleeping-heart-rate-average "Sleeping heart rate average" "The mean heart rate across the exact sleep-session Observation effective Period."
 * #withings-atrial-fibrillation-notification-ecg "Withings atrial fibrillation notification (ECG)" "A Withings screening notification stating that the vendor's electrocardiogram algorithm flagged signs of atrial fibrillation in the recording taken at the Observation effective instant."
 * #withings-atrial-fibrillation-notification-ppg "Withings atrial fibrillation notification (PPG)" "A Withings screening notification stating that the vendor's photoplethysmography algorithm flagged signs of atrial fibrillation in the reading taken at the Observation effective instant."
 * #withings-nerve-health-score "Withings nerve health score" "The bounded figure Withings' proprietary nerve-health algorithm computes from electrochemical skin conductance at the feet, at the Observation effective instant."
@@ -184,25 +183,6 @@ Description: "The uncorrected QT interval a Withings device measures from its ow
 * valueQuantity.system = $ucum (exactly)
 * valueQuantity.code 1..1 MS
 * valueQuantity.code = #ms (exactly)
-
-Profile: WithingsSleepingHeartRateAverage
-Parent: GroveMobileObservation
-Id: withings-sleeping-heart-rate-average
-Title: "Sleeping Heart Rate Average"
-Description: "The average heart rate across one sleep session, normalized to UCUM beats per minute. It is a source-supplied session-windowed average whose exact window is carried by effectivePeriod, distinct from both the shared point heart-rate measurement and the daily resting-heart-rate estimate."
-* code = WithingsMeasurementCS#sleeping-heart-rate-average
-* code from WithingsMeasurementVS (required)
-* effective[x] only Period
-* effectivePeriod.end 1..1 MS
-* method 1..1 MS
-* method = https://grovealliance.org/fhir/mobile/CodeSystem/grove-aggregation-method#session-mean
-* value[x] only Quantity
-* valueQuantity.value 1..1 MS
-* valueQuantity.comparator 0..0
-* valueQuantity.system 1..1 MS
-* valueQuantity.system = $ucum (exactly)
-* valueQuantity.code 1..1 MS
-* valueQuantity.code = #/min (exactly)
 
 Profile: WithingsAtrialFibrillationNotificationEcg
 Parent: GroveMobileObservation
@@ -459,28 +439,6 @@ Description: "A conformant QT Interval instance."
 * performer = Reference(WithingsPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueQuantity = 390 'ms'
-
-Instance: WithingsSleepingHeartRateAverageExample
-InstanceOf: WithingsSleepingHeartRateAverage
-Usage: #example
-Title: "Sleeping Heart Rate Average Example"
-Description: "A conformant Sleeping Heart Rate Average instance."
-* meta.profile[+] = "https://grovealliance.org/fhir/withings/StructureDefinition/withings-observation"
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-provider-record-v0/test-key/1"
-* identifier[sourceRecord].value = "v0:test-key:1:dsyyhjR_GYG2sD7YaRJXvhsRAAfiByt6kYWUs9GQ5aw"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-provider-output-v0/test-key/1"
-* identifier[sourceOutput].value = "v0:test-key:1:5L6r4kq4tN9BWrkRdRhJgza97GTvd_n-3ngn-fl5txE"
-* status = #final
-* code = WithingsMeasurementCS#sleeping-heart-rate-average
-* extension[+].url = "https://grovealliance.org/fhir/providers/StructureDefinition/provider"
-* extension[=].valueCode = #withings
-* extension[+].url = "https://grovealliance.org/fhir/providers/StructureDefinition/provider-source-type"
-* extension[=].valueCode = #withings/getsummary:hr_average
-* subject = Reference(WithingsPatientExample)
-* performer = Reference(WithingsPatientExample)
-* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
-* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
-* valueQuantity = 55 '/min' "beats/minute"
 
 Instance: WithingsAtrialFibrillationNotificationEcgExample
 InstanceOf: WithingsAtrialFibrillationNotificationEcg

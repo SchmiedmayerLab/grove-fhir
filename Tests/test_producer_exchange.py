@@ -469,8 +469,8 @@ class ProducerExchangeTests(ProducerValidationTestCase):
                     "code": "mobile-output.quantity-value-domain",
                     "reason": (
                         "Every Quantity-valued catalog measurement stays within its "
-                        "reviewed representational minimum, maximum, and integer-only "
-                        "domain without inventing a physiologic range."
+                        "catalog-declared representational minimum, maximum, and "
+                        "integer-only domain without inventing a physiologic range."
                     ),
                     "location": "Bundle.entry[2].resource.valueQuantity.value",
                     "severity": "error",

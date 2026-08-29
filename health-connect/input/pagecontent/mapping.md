@@ -7,7 +7,7 @@ SPDX-License-Identifier: MIT
 -->
 
 Conversion dispatches on the exact AndroidX Health Connect 1.1 Record class.
-The normative inventory, output cardinality, and context mappings are machine-readable in [`catalog/health-connect-adapter.json`](https://grovealliance.org/fhir/catalog/health-connect-adapter.json); prose never expands or overrides that closed table.
+The [Health Connect adapter catalog](https://grovealliance.org/fhir/catalog/health-connect-adapter.json) is normative for record admission, output cardinality, and context mappings.
 The normative status-vocabulary definitions live on the [guide family page](https://grovealliance.org/fhir/mobile/guides.html#status-vocabulary).
 The [authoritative status matrix](status-matrix.html) lists all 41 record classes.
 
@@ -43,7 +43,7 @@ A Record without a `clientRecordId` carries neither; do not synthesize one, beca
 The HealthKit adapter maps `HKMetadataKeySyncIdentifier` and `HKMetadataKeySyncVersion` into the same typed role and extension only when it can supply the same complete writer-application pair.
 Cross-platform equality is asserted only when all three writer-record preimage components are identical.
 
-### Identity
+### Deterministic Grove identifiers
 
 [`catalog/exchange-protocol.json`](https://grovealliance.org/fhir/catalog/exchange-protocol.json) is the complete normative identity and lifecycle algorithm.
 The Health Connect adapter catalog binds `Metadata.id`, the exact Record class, and a complete deployment-owned repository-scope pair to its source-record components, and publishes closed multi-output discriminator grammars.
@@ -140,6 +140,10 @@ Exactly one Provenance per source Record targets every Observation produced from
 
 Study links follow the Mobile study model.
 They are included only when independently known and are not inferred from Health Connect metadata.
+
+### Dependencies and terminology notices
+
+The tables below list this guide's package dependencies and the notices for terminology used by its artifacts and examples.
 
 {% include dependency-table-nontech.xhtml %}
 

@@ -107,15 +107,47 @@ def profile_names(profiles: list[str]) -> list[str]:
     return [profile.rsplit("/", 1)[-1] for profile in profiles]
 
 
-def sensorkit_definition(entry: dict[str, Any]) -> str:
+def direct_profile_claims(profiles: list[str]) -> str:
+    names = profile_names(list(dict.fromkeys(profiles)))
+    noun = "claim" if len(names) == 1 else "claims"
+    return f"the direct `meta.profile` {noun} {human_list(names)}"
+
+
+def sensorkit_definition(
+    entry: dict[str, Any], recording_document_profiles: list[str]
+) -> str:
     structured = entry.get("structured") or {}
-    profiles = [structured["profile"]] if structured.get("profile") else []
-    return source_type_definition(
-        "SensorKit",
-        entry["sourceToken"],
-        profile_names(profiles),
-        structured.get("reason") or entry.get("reason"),
-    )
+    raw = entry.get("raw") or {}
+    structured_profiles = [
+        profile
+        for profile in (
+            structured.get("sourceNeutralProfile"),
+            structured.get("profile"),
+            structured.get("adapterProfile"),
+        )
+        if profile
+    ]
+    outputs: list[str] = []
+    if structured_profiles:
+        outputs.append(
+            f"a structured Observation with {direct_profile_claims(structured_profiles)}"
+        )
+    if raw:
+        raw_profiles = [recording_document_profiles[0]]
+        raw_profiles.append(raw.get("profile") or recording_document_profiles[1])
+        outputs.append(
+            f"a Recording Document with {direct_profile_claims(raw_profiles)}"
+        )
+
+    opening = f'The SensorKit {entry["sourceToken"]} source type.'
+    if len(outputs) == 1:
+        return f"{opening} Grove admits {outputs[0]}."
+    if len(outputs) == 2:
+        return f"{opening} Grove admits {outputs[0]}. It also admits {outputs[1]}."
+    reason = structured.get("reason") or entry.get("reason")
+    if reason:
+        return f"{opening} Grove admits no output for it. {reason}"
+    return f"{opening} Grove admits no output for it."
 
 
 def provider_definition(provider: dict[str, Any], source: dict[str, Any], grouped: bool = False) -> str:
@@ -196,8 +228,14 @@ Description: "The complete closed set of HealthKit platform source types in the 
 
 
 def sensorkit() -> str:
-    entries = catalog("sensorkit-adapter.json")["entries"]
-    baseline = catalog("sensorkit-adapter.json")["sourceEvidence"]["sdkBaseline"]
+    data = catalog("sensorkit-adapter.json")
+    entries = data["entries"]
+    baseline = data["sourceEvidence"]["sdkBaseline"]
+    recording_document = data["profileClaims"]["recordingDocument"]
+    recording_document_profiles = [
+        recording_document["sourceNeutralProfile"],
+        recording_document["adapterProfile"],
+    ]
     definitions = "\n".join(
         [
             property_definition(
@@ -221,7 +259,7 @@ def sensorkit() -> str:
         "\n".join(
             [
                 f'* #{entry["sourceTypeCode"]} "{fsh_text(entry["title"])}" '
-                f'"{fsh_text(sensorkit_definition(entry))}"',
+                f'"{fsh_text(sensorkit_definition(entry, recording_document_profiles))}"',
                 concept_property(
                     entry["sourceTypeCode"], 0, "identifier",
                     f'valueString = "{fsh_text(entry["identifier"])}"',

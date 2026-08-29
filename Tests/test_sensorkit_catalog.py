@@ -219,6 +219,12 @@ class SensorKitCatalogTests(unittest.TestCase):
                     discriminators.add(structured_discriminator)
                 self.assertEqual(len(discriminators), len(set(discriminators)))
 
+    def test_supported_status_describes_the_complete_graph(self) -> None:
+        definition = self.catalog["statusDefinitions"]["supported"]
+        self.assertIn("conformant primary structured mapping", definition)
+        self.assertIn("complete structured-and-recording graph preserves", definition)
+        self.assertNotIn("lossless structured mapping", definition)
+
     def test_fail_closed_structured_boundaries_are_exact(self) -> None:
         by_token = {entry["sourceToken"]: entry for entry in self.catalog["entries"]}
         rotation = by_token["SRSensor.rotationRate"]["structured"]

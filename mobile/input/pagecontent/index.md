@@ -29,7 +29,7 @@ That page introduces the core resources used by these guides, distinguishes reso
 ### The exchange model
 
 The collection Bundle is the exchange unit.
-Its Observation entries are the clinical records; other entries describe the context needed to interpret and audit them.
+Its output entries carry the clinical records—often Observations—while supporting entries provide the context needed to interpret and audit them.
 
 ```text
 Patient <--------- Observation ---------> recording Device

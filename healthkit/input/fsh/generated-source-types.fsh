@@ -345,10 +345,10 @@ Description: "The 218 source-type identifiers the iPhoneOS 26.5 SDK baseline (Xc
 * #HKQuantityTypeIdentifierBloodGlucose "Blood Glucose" "The HealthKit HKQuantityTypeIdentifierBloodGlucose source type. Grove converts it to grove-mobile-blood-glucose-unspecified-specimen."
 * #HKQuantityTypeIdentifierBloodGlucose ^property[0].code = #documentation
 * #HKQuantityTypeIdentifierBloodGlucose ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/bloodglucose"
-* #HKQuantityTypeIdentifierBloodPressureDiastolic "Blood Pressure (Diastolic)" "The HealthKit HKQuantityTypeIdentifierBloodPressureDiastolic source type. Grove converts it to grove-mobile-blood-pressure."
+* #HKQuantityTypeIdentifierBloodPressureDiastolic "Blood Pressure (Diastolic)" "The HealthKit HKQuantityTypeIdentifierBloodPressureDiastolic source type. Grove admits no output for it. A diastolic quantity alone cannot populate the required two-component blood-pressure panel. Convert blood pressure only from HKCorrelationTypeIdentifierBloodPressure."
 * #HKQuantityTypeIdentifierBloodPressureDiastolic ^property[0].code = #documentation
 * #HKQuantityTypeIdentifierBloodPressureDiastolic ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/bloodpressurediastolic"
-* #HKQuantityTypeIdentifierBloodPressureSystolic "Blood Pressure (Systolic)" "The HealthKit HKQuantityTypeIdentifierBloodPressureSystolic source type. Grove converts it to grove-mobile-blood-pressure."
+* #HKQuantityTypeIdentifierBloodPressureSystolic "Blood Pressure (Systolic)" "The HealthKit HKQuantityTypeIdentifierBloodPressureSystolic source type. Grove admits no output for it. A systolic quantity alone cannot populate the required two-component blood-pressure panel. Convert blood pressure only from HKCorrelationTypeIdentifierBloodPressure."
 * #HKQuantityTypeIdentifierBloodPressureSystolic ^property[0].code = #documentation
 * #HKQuantityTypeIdentifierBloodPressureSystolic ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/bloodpressuresystolic"
 * #HKQuantityTypeIdentifierBodyFatPercentage "Body Fat Percentage" "The HealthKit HKQuantityTypeIdentifierBodyFatPercentage source type. Grove converts it to grove-mobile-body-fat-percentage."

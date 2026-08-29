@@ -56,16 +56,16 @@ Put each extension only on the item types for which it is defined:
 | `minLength`, `maxLength` | string, text, url, open-choice; minimum cannot exceed maximum |
 | `minValue`, `maxValue` | integer, decimal, date, dateTime, time; bound datatype matches item datatype |
 | `maxDecimalPlaces` | decimal only; non-negative |
-| SDC `minQuantity`, `maxQuantity` | quantity only; comparable UCUM units and minimum no greater than maximum |
+| SDC `minQuantity`, `maxQuantity` | quantity only; bounds use the same non-empty UCUM system and code, and minimum is no greater than maximum |
 | `questionnaire-unit` | fixed computable unit for integer or decimal |
 | `questionnaire-unitOption`, `questionnaire-unitValueSet` | selectable units for quantity; use inline options or one ValueSet, not both |
 | `questionnaire-minOccurs` | required, repeating question or group (`required=true` and `repeats=true`); counts answers for a question and occurrences for a group |
 | `questionnaire-maxOccurs` | repeating question or group (`repeats=true`); counts answers for a question and occurrences for a group; when both bounds are present, the minimum is no greater than the maximum |
 | `mimeType`, `maxSize` | attachment only; positive maximum size |
 
-The profile enforces relationships that are dependable in single-resource FHIRPath.
-Grove validation also checks datatype-specific bound comparisons, exact UCUM system-and-code comparability for quantity bounds, variable scope, and other relationships that the profile cannot evaluate reliably.
-Bounds expressed in different units require a UCUM-capable validation service; Grove validation does not assume a conversion.
+The Questionnaire profile enforces relationships evaluable from that resource alone.
+The Grove paired validator additionally checks datatype-specific comparisons, exact UCUM system-and-code identity, variable scope, and other pair-level rules.
+Bounds in different units require a UCUM-capable validation service; the paired validator does not convert them.
 
 ### Conditions, expressions, and evaluation context
 

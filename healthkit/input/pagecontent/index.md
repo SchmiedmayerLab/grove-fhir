@@ -7,15 +7,17 @@ SPDX-License-Identifier: MIT
 -->
 
 The Grove HealthKit Adapter maps supported HealthKit objects to FHIR R4 without turning HealthKit API names into clinical terminology.
-Each converted Observation conforms to two independent contracts:
+A shared HealthKit measurement directly declares two profiles:
 
 1. [HealthKit Observation](StructureDefinition-healthkit-observation.html) carries the source-object identity and the small allowlist of HealthKit context retained by this adapter.
 2. A clinical or research profile defines what the result means and which units are valid.
 
+Adapter-specific child Observations and ECG use the exact direct profile sets in [`catalog/profile-claims.json`](https://grovealliance.org/fhir/catalog/profile-claims.json); inherited profiles are not repeated.
+
 Readers who are new to FHIR can begin with the Mobile guide's [FHIR basics page](https://grovealliance.org/fhir/mobile/fhir-basics.html).
 That page introduces the resources used by these guides, identifiers and references, and the structure of a profile page.
 
-Both profile canonicals appear in `Observation.meta.profile`, and the resource must validate against both.
+For shared measurements, both profile canonicals appear in `Observation.meta.profile`, and the resource must validate against both.
 
 ### Worked examples
 
@@ -44,4 +46,4 @@ The HealthKit sample type selects the mapping profile and is retained in the ded
 It is not asserted as an equivalent coding beside the normative shared or standard clinical concept.
 
 Continue with [Mapping](mapping.html) for field-by-field rules, or open [Artifacts](artifacts.html) for every profile, naming system, terminology resource, and example in the package.
-[Terminology provenance](terminology-provenance.html) records the SDK baseline, selection method, source-file hashes, ownership, and publication scope for the HealthKit names retained by the Grove FHIR contracts.
+[Terminology provenance](terminology-provenance.html) records the SDK baseline, selection method, SDK-header hashes, ownership, and publication scope for the HealthKit names retained by the Grove FHIR contracts.

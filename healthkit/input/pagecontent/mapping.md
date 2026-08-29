@@ -12,7 +12,7 @@ Preserve the facts HealthKit states; do not infer hardware, capture mode, clinic
 
 The normative status-vocabulary definitions live on the [guide family page](https://grovealliance.org/fhir/mobile/guides.html#status-vocabulary).
 The [authoritative status matrix](status-matrix.html) lists all 218 source-type identifiers in the published adapter contract, including every admitted and fail-closed row.
-The [walkthrough](walkthrough.html) applies the rules below to one concrete heart-rate sample, from `HKQuantitySample` to the uploaded exchange Bundle.
+The [walkthrough](walkthrough.html) applies the rules below to one concrete heart-rate sample, from `HKQuantitySample` to the operational exchange Bundle.
 
 ### Source-record and output identity
 
@@ -139,7 +139,7 @@ HealthKit does not specify that its UUID is a serial number, a globally stable h
 If the adapter cannot establish whether the source is an application or a device, omit the source-author agent rather than guessing its identity. `HKSourceRevision` does not expose an application-or-device discriminator: do not classify the source from the identifier's string shape, source name, or `productType`.
 A producer therefore needs explicit source actor classification from its caller or adapter context before it emits this author Device.
 The classification is the only caller-supplied part: the author name, identifier, and version are copied from that same sample's `HKSourceRevision` and must not be replaced with independently supplied identity data.
-The [Bluetooth heart-rate example](Observation-HealthKitBluetoothHeartRateObservationExample.html) and its [source Provenance](Provenance-HealthKitBluetoothSourceProvenanceExample.html) shows this explicit governed branch without treating the source identifier as a serial number.
+The [Bluetooth heart-rate example](Observation-HealthKitBluetoothHeartRateObservationExample.html) and its [source Provenance](Provenance-HealthKitBluetoothSourceProvenanceExample.html) show this explicit governed branch without treating the source identifier as a serial number.
 
 Link an included source application or device through `Provenance.entity.agent` with participant type `author`.
 This author role is distinct from the converter's top-level `assembler` role and does not make either Device a gateway.
@@ -147,7 +147,7 @@ When the same application performed both roles, both agents may reference the sa
 
 Study resources are linked through the study model; they are not source entities unless the conversion literally consumed them as inputs.
 
-### Allowlisted metadata
+### Supported HealthKit metadata
 
 Map source facts to standard FHIR fields and published extensions before retaining adapter-specific metadata.
 The Grove FHIR contracts permit one residual key: `HKMetadataKeyHeartRateMotionContext`.
