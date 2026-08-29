@@ -33,10 +33,16 @@ case "${GROVE_TX_OFFLINE:-0}" in
   *) echo "GROVE_TX_OFFLINE must be 0 or 1" >&2; exit 2 ;;
 esac
 readonly offline_build
-qa_arguments=()
-if [[ "$offline_build" == "true" ]]; then
-  qa_arguments+=(--offline-terminology)
-fi
+
+check_guide_qa() {
+  if [[ "$offline_build" == "true" ]]; then
+    python3 "$REPOSITORY_ROOT/Scripts/check-guide-qa.py" \
+      --offline-terminology "$@"
+  else
+    python3 "$REPOSITORY_ROOT/Scripts/check-guide-qa.py" "$@"
+  fi
+}
+
 if [[ "$offline_build" == "true" ]]; then
   if [[ -n "${GROVE_TX_SERVER:-}" ]]; then
     echo "GROVE_TX_SERVER is prohibited when GROVE_TX_OFFLINE=1" >&2
@@ -140,8 +146,7 @@ for guide in "${guides[@]}"; do
     # below; --offline-terminology recognizes only that exact registry-backed defect.
     test -f "$REPOSITORY_ROOT/$guide/output/package.tgz"
     test -f "$REPOSITORY_ROOT/$guide/output/qa.json"
-    python3 "$REPOSITORY_ROOT/Scripts/check-guide-qa.py" \
-      "${qa_arguments[@]}" "$REPOSITORY_ROOT/$guide"
+    check_guide_qa "$REPOSITORY_ROOT/$guide"
   }
   # The exact SUSHI index is ignored and remains only on the runner that built
   # this guide. Verify it here so local, draft, release, and deployment builds
@@ -153,4 +158,4 @@ for guide in "${guides[@]}"; do
   fi
 done
 
-python3 Scripts/check-guide-qa.py "${qa_arguments[@]}" "${guides[@]}"
+check_guide_qa "${guides[@]}"

@@ -42,6 +42,15 @@ SUPPRESSED_MESSAGE = re.compile(
     re.DOTALL,
 )
 
+PACKAGE_AGE_WARNING = re.compile(
+    r"^WARNING: ImplementationGuide/(?P<id>[A-Za-z0-9.-]+): "
+    r"ImplementationGuide\.dependsOn\[(?P<index>[1-9][0-9]*)\]: The "
+    r"ImplementationGuide uses package hl7\.fhir\.uv\.extensions\.r4#5\.3\.0 "
+    r"released on 2026-05-16, but the most recent appropriate version is "
+    r"5\.3\.0-ballot-tc1\. This reference is getting old and the more recent "
+    r"version should be considered$"
+)
+
 RENDERED_TEMPLATE_ERROR = re.compile(
     r"<p>\s*Script\s+[^<\r\n]+:\s*[^<\r\n]+</p>",
     re.IGNORECASE,
@@ -820,8 +829,42 @@ def validate_broken_links(guide: Path) -> list[str]:
     return problems
 
 
-def validate_suppressions(guide: Path) -> list[str]:
-    """Return exact configuration/execution mismatches for one built guide."""
+def online_package_age_suppression_is_applicable(guide: Path, message: str) -> bool:
+    """Recognize Publisher 2.3.3's offline-only stable-version false positive."""
+    match = PACKAGE_AGE_WARNING.fullmatch(message)
+    if match is None:
+        return False
+    qa_html = (guide / "output/qa.html").read_text(encoding="utf-8")
+    if "IG Publisher Version: v2.3.3" not in qa_html:
+        return False
+    index = int(match.group("index"))
+    for path in (guide / "output").glob("ImplementationGuide-*.json"):
+        try:
+            resource = json.loads(path.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            continue
+        if resource.get("id") != match.group("id"):
+            continue
+        dependencies = resource.get("dependsOn")
+        if not isinstance(dependencies, list) or index >= len(dependencies):
+            return False
+        dependency = dependencies[index]
+        return isinstance(dependency, dict) and dependency.get("packageId") == (
+            "hl7.fhir.uv.extensions.r4"
+        ) and dependency.get("version") == "5.3.0"
+    return False
+
+
+def validate_suppressions(
+    guide: Path, *, offline_terminology: bool = False
+) -> list[str]:
+    """Return exact configuration/execution mismatches for one built guide.
+
+    Publisher 2.3.3 misorders one stable-versus-ballot package pair without its
+    online registry view. That one exact suppression must occur offline and may
+    be absent online. Its generated dependency is verified before the exception
+    applies; a changed finding remains unconfigured and fails the ledger.
+    """
     configured_path = guide / "input" / "ignoreWarnings.txt"
     qa_path = guide / "output" / "qa.html"
     if not configured_path.is_file():
@@ -837,6 +880,11 @@ def validate_suppressions(guide: Path) -> list[str]:
         f"configured suppression was not exercised exactly: {message}"
         for message in configured
         if exercised.get(message) != 1
+        and not (
+            not offline_terminology
+            and exercised.get(message) in (None, 0)
+            and online_package_age_suppression_is_applicable(guide, message)
+        )
     ]
     problems.extend(
         f"Publisher exercised an unconfigured suppression: {message}"
@@ -893,7 +941,9 @@ def main() -> int:
             continue
         qa = json.loads(qa_path.read_text(encoding="utf-8"))
         hints = int(qa.get("hints", 0))
-        suppression_problems = validate_suppressions(guide)
+        suppression_problems = validate_suppressions(
+            guide, offline_terminology=arguments.offline_terminology
+        )
         suppression_problems.extend(validate_broken_links(guide))
         suppression_problems.extend(validate_rendered_pages(guide))
         try:

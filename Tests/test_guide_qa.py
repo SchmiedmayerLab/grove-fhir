@@ -204,8 +204,8 @@ class GuideQATests(unittest.TestCase):
     def test_nonzero_publisher_exit_reuses_the_audited_qa_gate(self) -> None:
         script = (ROOT / "Scripts/build-guides.sh").read_text(encoding="utf-8")
         fallback = script.split(") || {", maxsplit=1)[1].split("done", maxsplit=1)[0]
-        self.assertIn('Scripts/check-guide-qa.py"', fallback)
-        self.assertIn('"${qa_arguments[@]}"', fallback)
+        self.assertIn('check_guide_qa "$REPOSITORY_ROOT/$guide"', fallback)
+        self.assertNotIn("qa_arguments", script)
         self.assertNotIn('qa.get("errs"', fallback)
 
     def test_offline_mime_exception_is_exact_registry_backed_and_fail_closed(self) -> None:
@@ -345,6 +345,73 @@ class GuideQATests(unittest.TestCase):
             self.assertIn(
                 "not exercised exactly", CHECK.validate_suppressions(guide)[0]
             )
+
+    def test_exact_package_age_suppression_may_be_absent_online(self) -> None:
+        message = (
+            "WARNING: ImplementationGuide/org.example.fhir.guide: "
+            "ImplementationGuide.dependsOn[2]: The ImplementationGuide uses package "
+            "hl7.fhir.uv.extensions.r4#5.3.0 released on 2026-05-16, but the "
+            "most recent appropriate version is 5.3.0-ballot-tc1. This reference "
+            "is getting old and the more recent version should be considered"
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            guide = Path(directory).resolve()
+            (guide / "input").mkdir()
+            (guide / "output").mkdir()
+            (guide / "output/ImplementationGuide-org.example.fhir.guide.json").write_text(
+                json.dumps(
+                    {
+                        "resourceType": "ImplementationGuide",
+                        "id": "org.example.fhir.guide",
+                        "dependsOn": [
+                            {
+                                "packageId": "hl7.terminology.r4",
+                                "version": "7.3.0",
+                            },
+                            {"packageId": "hl7.fhir.uv.sdc", "version": "4.0.0"},
+                            {
+                                "packageId": "hl7.fhir.uv.extensions.r4",
+                                "version": "5.3.0",
+                            },
+                        ],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            (guide / "input/ignoreWarnings.txt").write_text(
+                f"== Suppressed Messages ==\n{message}\n", encoding="utf-8"
+            )
+            (guide / "output/qa.html").write_text(
+                '<p>IG Publisher Version: v2.3.3</p>'
+                '<a name="suppressed"> </a><ul><li>'
+                f'{message} <span style="color: navy">(0 uses)</span></li></ul>'
+                '<a name="sorted"> </a>',
+                encoding="utf-8",
+            )
+            self.assertEqual(CHECK.validate_suppressions(guide), [])
+            self.assertIn(
+                "not exercised exactly",
+                CHECK.validate_suppressions(
+                    guide, offline_terminology=True
+                )[0],
+            )
+
+            for changed in (
+                message.replace("org.example.fhir.guide", "org.example.fhir.other"),
+                message.replace("dependsOn[2]", "dependsOn[1]"),
+                message.replace("hl7.fhir.uv.extensions.r4", "hl7.fhir.uv.extensions.r5"),
+                message.replace("#5.3.0", "#5.2.0"),
+                message.replace("2026-05-16", "2026-05-17"),
+                message.replace("5.3.0-ballot-tc1", "5.3.0-ballot-tc"),
+            ):
+                with self.subTest(changed=changed):
+                    (guide / "input/ignoreWarnings.txt").write_text(
+                        f"== Suppressed Messages ==\n{changed}\n", encoding="utf-8"
+                    )
+                    self.assertIn(
+                        "not exercised exactly",
+                        CHECK.validate_suppressions(guide)[0],
+                    )
 
     def test_rendered_liquid_failures_are_not_hidden_by_green_publisher_qa(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
