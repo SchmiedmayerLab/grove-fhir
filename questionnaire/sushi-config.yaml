@@ -38,6 +38,7 @@ menu:
   Quick start: quick-start.html
   Define an instrument: instruments.html
   Record answers: responses.html
+  Project measurements: measurements.html
   Conformance: conformance.html
   Artifacts: artifacts.html
 
@@ -50,5 +51,7 @@ pages:
     title: Define an instrument
   responses.md:
     title: Record answers
+  measurements.md:
+    title: Project measurements
   conformance.md:
     title: Conformance

@@ -1,0 +1,231 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "GroveHomeVitalsExample",
+  "meta": {
+    "profile": [
+      "https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire"
+    ]
+  },
+  "subjectType": [
+    "Patient"
+  ],
+  "extension": [
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/artifact-versionAlgorithm",
+      "valueCoding": {
+        "system": "http://hl7.org/fhir/version-algorithm",
+        "code": "semver"
+      }
+    }
+  ],
+  "item": [
+    {
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-observationExtract",
+          "valueBoolean": true
+        },
+        {
+          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-observation-extract-category",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "code": "vital-signs",
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "display": "Vital Signs"
+              }
+            ]
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unitOption",
+          "valueCoding": {
+            "code": "kg",
+            "system": "http://unitsofmeasure.org",
+            "display": "kg"
+          }
+        }
+      ],
+      "linkId": "body-weight",
+      "text": "What was your weight this morning?",
+      "type": "quantity",
+      "code": [
+        {
+          "code": "29463-7",
+          "system": "http://loinc.org",
+          "display": "Body weight"
+        }
+      ]
+    },
+    {
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-observationExtract",
+          "valueBoolean": true
+        },
+        {
+          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-observation-extract-category",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "code": "vital-signs",
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "display": "Vital Signs"
+              }
+            ]
+          }
+        }
+      ],
+      "item": [
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-observationExtract",
+              "valueCode": "component"
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unitOption",
+              "valueCoding": {
+                "code": "mm[Hg]",
+                "system": "http://unitsofmeasure.org",
+                "display": "mm[Hg]"
+              }
+            }
+          ],
+          "linkId": "systolic",
+          "text": "Systolic",
+          "type": "quantity",
+          "code": [
+            {
+              "code": "8480-6",
+              "system": "http://loinc.org",
+              "display": "Systolic blood pressure"
+            }
+          ]
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-observationExtract",
+              "valueCode": "component"
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unitOption",
+              "valueCoding": {
+                "code": "mm[Hg]",
+                "system": "http://unitsofmeasure.org",
+                "display": "mm[Hg]"
+              }
+            }
+          ],
+          "linkId": "diastolic",
+          "text": "Diastolic",
+          "type": "quantity",
+          "code": [
+            {
+              "code": "8462-4",
+              "system": "http://loinc.org",
+              "display": "Diastolic blood pressure"
+            }
+          ]
+        },
+        {
+          "extension": [
+            {
+              "extension": [
+                {
+                  "url": "definition",
+                  "valueUri": "http://hl7.org/fhir/StructureDefinition/Observation#Observation.effectiveDateTime"
+                },
+                {
+                  "url": "expression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "item.where(linkId = 'measured-at').answer.value"
+                  }
+                }
+              ],
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-definitionExtractValue"
+            }
+          ],
+          "linkId": "measured-at",
+          "text": "When did you take this reading?",
+          "type": "dateTime"
+        }
+      ],
+      "linkId": "blood-pressure",
+      "text": "Blood pressure",
+      "type": "group",
+      "code": [
+        {
+          "code": "85354-9",
+          "system": "http://loinc.org",
+          "display": "Blood pressure panel with all children optional"
+        }
+      ]
+    },
+    {
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-observationExtract",
+          "valueBoolean": true
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+          "valueCoding": {
+            "code": "{steps}",
+            "system": "http://unitsofmeasure.org",
+            "display": "{steps}"
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "definition",
+              "valueUri": "http://hl7.org/fhir/StructureDefinition/Observation#Observation.effectivePeriod.start"
+            },
+            {
+              "url": "expression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "(%resource.authored.toDate() - 1 day).toString() + 'T00:00:00' + %resource.authored.toString().substring(19)"
+              }
+            }
+          ],
+          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-definitionExtractValue"
+        },
+        {
+          "extension": [
+            {
+              "url": "definition",
+              "valueUri": "http://hl7.org/fhir/StructureDefinition/Observation#Observation.effectivePeriod.end"
+            },
+            {
+              "url": "expression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%resource.authored.toDate().toString() + 'T00:00:00' + %resource.authored.toString().substring(19)"
+              }
+            }
+          ],
+          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-definitionExtractValue"
+        }
+      ],
+      "linkId": "step-count",
+      "text": "How many steps did you take yesterday?",
+      "type": "integer",
+      "code": [
+        {
+          "code": "step-count-total",
+          "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
+          "display": "Step count total"
+        }
+      ]
+    }
+  ],
+  "url": "https://grovealliance.org/fhir/questionnaire/Questionnaire/GroveHomeVitalsExample",
+  "version": "1.0.0",
+  "name": "GroveHomeVitals",
+  "title": "Home Vitals",
+  "status": "active"
+}

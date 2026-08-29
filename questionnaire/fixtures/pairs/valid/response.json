@@ -20,6 +20,9 @@
   },
   "questionnaire": "https://example.org/fhir/Questionnaire/paired-questionnaire|1.2.0",
   "status": "completed",
+  "subject": {
+    "reference": "Patient/participant-000"
+  },
   "authored": "2026-08-19T12:00:00-07:00",
   "item": [
     {

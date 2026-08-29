@@ -135,7 +135,8 @@ Description: "A versioned SDC Questionnaire that can be administered and answere
 * url 1..1 MS
 * version 1..1 MS
 * status 1..1 MS
-* subjectType MS
+* subjectType 1..1 MS
+* subjectType = #Patient (exactly)
 * item 1..* MS
 * item.linkId 1..1 MS
 * item.definition MS
@@ -165,6 +166,10 @@ Description: "A versioned SDC Questionnaire that can be administered and answere
     $maxQuantity named maxQuantity 0..1 MS and
     $maxDecimalPlaces named maxDecimalPlaces 0..1 MS and
     $questionnaireUnit named unit 0..1 MS and
+    $observationExtract named observationExtract 0..1 MS and
+    $observationExtractCategory named observationExtractCategory 0..* MS and
+    $definitionExtract named definitionExtract 0..1 MS and
+    $definitionExtractValue named definitionExtractValue 0..* MS and
     $unitOption named unitOption 0..* MS and
     $unitValueSet named unitValueSet 0..1 MS and
     $minOccurs named minOccurs 0..1 MS and
@@ -190,10 +195,13 @@ Description: "A response to one exact version of a Grove Questionnaire, with a s
 * identifier.system 1..1 MS
 * identifier.value 1..1 MS
 * status 1..1 MS
-* subject MS
+* subject 1..1 MS
+* subject only Reference(Patient)
 * authored 1..1 MS
 * author MS
 * source MS
+* extension contains GroveQuestionnaireWriterContext named writerContext 0..1 MS
+* extension[writerContext] ^short = "What captured the response, so a projection can rebuild the device snapshot"
 * extension[completionMode] 1..1 MS
 * extension[completionMode].value[x] only CodeableConcept
 * extension[completionMode].valueCodeableConcept.coding 1..1 MS

@@ -1,0 +1,96 @@
+{
+  "resourceType": "Observation",
+  "id": "home-vitals-body-weight",
+  "meta": {
+    "profile": [
+      "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-body-weight"
+    ]
+  },
+  "identifier": [
+    {
+      "type": {
+        "coding": [
+          {
+            "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+            "code": "source-record"
+          }
+        ]
+      },
+      "system": "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1",
+      "value": "v2:test-key:1:nq9DsbrMrmOZeoHmHZjnd-Z4Fa627Gt3Y9zxYdacjw0"
+    },
+    {
+      "type": {
+        "coding": [
+          {
+            "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+            "code": "source-output"
+          }
+        ]
+      },
+      "system": "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1",
+      "value": "v2:test-key:1:O4LjhUAC4S4Y0ekub5Y1UyZw7QKodIb38UeM4TwFXD4"
+    }
+  ],
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "vital-signs",
+          "display": "Vital Signs"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "29463-7",
+        "display": "Body weight"
+      }
+    ]
+  },
+  "subject": {
+    "reference": "Patient/GroveQuestionnairePatientExample"
+  },
+  "performer": [
+    {
+      "reference": "Patient/GroveQuestionnairePatientExample"
+    }
+  ],
+  "effectiveDateTime": "2026-08-28T08:32:00-07:00",
+  "valueQuantity": {
+    "value": 72.5,
+    "unit": "kg",
+    "system": "http://unitsofmeasure.org",
+    "code": "kg"
+  },
+  "extension": [
+    {
+      "url": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-recording-method",
+      "valueCodeableConcept": {
+        "coding": [
+          {
+            "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-recording-method",
+            "code": "manual-entry",
+            "display": "Manual entry"
+          }
+        ]
+      }
+    },
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/observation-gatewayDevice",
+      "valueReference": {
+        "reference": "Device/home-vitals-writer-snapshot"
+      }
+    }
+  ],
+  "derivedFrom": [
+    {
+      "reference": "QuestionnaireResponse/GroveHomeVitalsResponseExample"
+    }
+  ]
+}

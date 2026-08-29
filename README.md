@@ -16,25 +16,20 @@ SPDX-License-Identifier: MIT
 [![REUSE status](https://api.reuse.software/badge/github.com/SchmiedmayerLab/grove-fhir)](https://api.reuse.software/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE.md)
 
-Grove FHIR 0.6.0 defines international, reusable FHIR R4 contracts for mobile health data. The Mobile Data
-Exchange guide describes source-neutral Observations, recording and application Device
-roles, immutable conversion and retraction graphs, study context, and conversion provenance.
-Platform adapters bind deployment-scoped typed v2 identities and
-mappings needed by a specific source without changing the shared resource shape.
-Implementations in Swift, TypeScript, Kotlin, or another language are independent
-producers of these contracts. This repository owns the guides, examples, negative
-corpora, and a producer-neutral validation kit; it never clones or executes an
-implementation repository.
+Grove FHIR 0.6.0 defines international, reusable FHIR R4 contracts for mobile health data.
+The Mobile Data Exchange guide describes source-neutral Observations, recording and application Device roles, immutable conversion and retraction graphs, study context, and conversion provenance.
+Platform adapters bind deployment-scoped typed v2 identities and mappings needed by a specific source without changing the shared resource shape.
+Implementations in Swift, TypeScript, Kotlin, or another language are independent producers of these contracts.
+This repository owns the guides, examples, negative corpora, and a producer-neutral validation kit; it never clones or executes an implementation repository.
 
-The canonical namespace is `https://grovealliance.org/fhir`. Canonical identity does
-not imply that the guides are currently hosted on that domain. During development,
-GitHub Pages remains the documentation preview.
+The canonical namespace is `https://grovealliance.org/fhir`.
+Canonical identity does not imply that the guides are currently hosted on that domain.
+During development, GitHub Pages remains the documentation preview.
 
 ## Documentation
 
-Start with the [Mobile Data Exchange guide](https://schmiedmayerlab.github.io/grove-fhir/)
-to understand the common resource model and copy a complete example. The exact 0.6.0
-package graph is:
+Start with the [Mobile Data Exchange guide](https://schmiedmayerlab.github.io/grove-fhir/) to understand the common resource model and copy a complete example.
+The exact 0.6.0 package graph is:
 
 | Package | Layer and dependency |
 |---|---|
@@ -49,21 +44,14 @@ package graph is:
 | `org.grovealliance.fhir.oura` | Oura-exclusive mappings; depends on Mobile, Sensor, and the Connected Provider Adapter |
 | `org.grovealliance.fhir.google-health` | Google Health API-exclusive mappings; depends on Mobile, Sensor, and the Connected Provider Adapter |
 
-Use the [HealthKit adapter](https://schmiedmayerlab.github.io/grove-fhir/healthkit/),
-[Health Connect adapter](https://schmiedmayerlab.github.io/grove-fhir/health-connect/),
-[Sensor and waveform guide](https://schmiedmayerlab.github.io/grove-fhir/sensor/),
-[SensorKit adapter](https://schmiedmayerlab.github.io/grove-fhir/sensorkit/), or
-[connected-provider adapter](https://schmiedmayerlab.github.io/grove-fhir/providers/)
-for the applicable already-obtained source data. Use the
-[Questionnaire Exchange guide](https://schmiedmayerlab.github.io/grove-fhir/questionnaire/)
-to publish instruments and exchange their responses. Adapter packages define mappings
-and conformance; they do not fetch provider or platform data, authenticate to provider
-APIs, or specify receiver storage.
+Use the [HealthKit adapter](https://schmiedmayerlab.github.io/grove-fhir/healthkit/), [Health Connect adapter](https://schmiedmayerlab.github.io/grove-fhir/health-connect/), [Sensor and waveform guide](https://schmiedmayerlab.github.io/grove-fhir/sensor/), [SensorKit adapter](https://schmiedmayerlab.github.io/grove-fhir/sensorkit/), or [connected-provider adapter](https://schmiedmayerlab.github.io/grove-fhir/providers/) for the applicable already-obtained source data.
+Use the [Questionnaire Exchange guide](https://schmiedmayerlab.github.io/grove-fhir/questionnaire/) to publish instruments and exchange their responses.
+Adapter packages define mappings and conformance; they do not fetch provider or platform data, authenticate to provider APIs, or specify receiver storage.
 
 ## Development
 
-The build requires Node.js 24, Ruby 3.3, and Java 21. It uses lockfile-pinned SUSHI and Jekyll
-dependencies and downloads checksum-pinned FHIR Publisher and Validator releases.
+The build requires Node.js 24, Ruby 3.3, and Java 21.
+It uses lockfile-pinned SUSHI and Jekyll dependencies and downloads checksum-pinned FHIR Publisher and Validator releases.
 
 ```sh
 npm ci
@@ -71,21 +59,21 @@ npm test
 npm run pages:build
 ```
 
-`pages:build` builds and validates the guides in dependency order, rejects
-Publisher QA errors or warnings, and assembles a guide-only local preview under
-`.build/pages`. [Conformance/README.md](Conformance/README.md) documents how a producer
-validates emitted resources against packages built from the same Grove FHIR revision.
+`pages:build` builds and validates the guides in dependency order, rejects Publisher QA errors or warnings, and assembles a guide-only local preview under `.build/pages`.
+[Conformance/README.md](Conformance/README.md) documents how a producer validates emitted resources against packages built from the same Grove FHIR revision.
 
-The [publication model](PUBLICATION.md) documents canonical routes, package checksums, and the
-release process.
+The [publication model](PUBLICATION.md) documents canonical routes, package checksums, and the release process.
 
 ## Contributing
 
-Contributions to this project are welcome. Please make sure to read the [contribution guidelines](https://github.com/SchmiedmayerLab/.github/blob/main/CONTRIBUTING.md) and the [contributor covenant code of conduct](https://github.com/SchmiedmayerLab/.github/blob/main/CODE_OF_CONDUCT.md) first. You can find a list of contributors in the [CONTRIBUTORS.md](CONTRIBUTORS.md) file.
+Contributions to this project are welcome.
+Please make sure to read the [contribution guidelines](https://github.com/SchmiedmayerLab/.github/blob/main/CONTRIBUTING.md) and the [contributor covenant code of conduct](https://github.com/SchmiedmayerLab/.github/blob/main/CODE_OF_CONDUCT.md) first.
+You can find a list of contributors in the [CONTRIBUTORS.md](CONTRIBUTORS.md) file.
 
 ## License
 
-This project is licensed under the MIT License. See [LICENSE.md](LICENSE.md) for more information.
+This project is licensed under the MIT License.
+See [LICENSE.md](LICENSE.md) for more information.
 
 ## Citation
 

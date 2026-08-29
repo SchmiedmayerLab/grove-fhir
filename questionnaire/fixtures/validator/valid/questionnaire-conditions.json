@@ -20,6 +20,9 @@
   "name": "ValidatorQuestionnaireConditions",
   "title": "Validator Questionnaire Conditions",
   "status": "active",
+  "subjectType": [
+    "Patient"
+  ],
   "item": [
     {
       "linkId": "show-detail",
