@@ -19,10 +19,10 @@ InstanceOf: GroveRecordingDevice
 Usage: #example
 Title: "Health Connect Recording Device"
 Description: "A physical watch included only because the deployment has a governed stable per-unit token. Manufacturer and model alone would not establish Device instance identity."
-* identifier[physicalUnit].system = "https://study.example.org/fhir/NamingSystem/grove-recording-device-v2/test-key/1"
-* identifier[physicalUnit].value = "v2:test-key:1:EJUyMyw_i_PnBqP-R7ckX6zAPrzLr3ir47Y7cl_avVw"
-* identifier[eventSnapshot].system = "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v2/test-key/1"
-* identifier[eventSnapshot].value = "v2:test-key:1:fwCxYBipSvO_JdDPe8pcHWjsVm9D1hLDuGFSVIzda7Y"
+* identifier[physicalUnit].system = "https://study.example.org/fhir/NamingSystem/grove-recording-device-v0/test-key/1"
+* identifier[physicalUnit].value = "v0:test-key:1:Hvznmkjvjderchpr-aV8bLB9jk73kIIL1c9b8c7K8-k"
+* identifier[eventSnapshot].system = "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v0/test-key/1"
+* identifier[eventSnapshot].value = "v0:test-key:1:isEfA9plJyk8KFfNHW6M9JbNFeNGGJ8dFIdKA5Vy4TM"
 * status = #active
 * type.text = "Watch"
 * manufacturer = "Example Devices"
@@ -35,8 +35,8 @@ InstanceOf: GroveHostDevice
 Usage: #example
 Title: "Health Connect Host Snapshot"
 Description: "An immutable event-time snapshot of the phone and operating system hosting the converter."
-* identifier.system = "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v2/test-key/1"
-* identifier.value = "v2:test-key:1:FZrVNDHaRCOzkgFOQscxxt2HN_lYjz2bxtYHWf8Hzm0"
+* identifier.system = "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v0/test-key/1"
+* identifier.value = "v0:test-key:1:bu837H0RBwa-hjaS24GEP1f15BM1vTuX8rkOhU-vO9Y"
 * status = #active
 * manufacturer = "Example Devices"
 * modelNumber = "Example Phone"
@@ -50,8 +50,8 @@ InstanceOf: GroveApplicationDevice
 Usage: #example
 Title: "Health Connect Converter Snapshot"
 Description: "An immutable event-time snapshot of the application that converted one source Record."
-* identifier[applicationSnapshot].system = "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v2/test-key/1"
-* identifier[applicationSnapshot].value = "v2:test-key:1:sGzDek4hAO9SOAmIvnvd32NDtO3UMIwm9nQgw8uV6u4"
+* identifier[applicationSnapshot].system = "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v0/test-key/1"
+* identifier[applicationSnapshot].value = "v0:test-key:1:oPo1uGEd7tR0bTNv5UKq2L-4mHGX86JdNrqB3aYW1LE"
 * status = #active
 * deviceName[applicationName].name = "Grove Study"
 * deviceName[applicationName].type = #user-friendly-name
@@ -67,10 +67,10 @@ Usage: #example
 Title: "Point-in-time Health Connect Resting Heart Rate"
 Description: "One instantaneous AndroidX RestingHeartRateRecord. It is never converted into a daily mean or a Period."
 * meta.profile[+] = "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-resting-heart-rate"
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:K4qSTmnZ9b7KJz9yF4UsbHyaxvNVIa1tbRZ9TAaeaS4"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:Ta6IleWrRKQoRN9q85kJSx5-BJ0NpkHknRFnAv7ySQg"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:j61Kz1b341bLg1o21Wf2BqAsbXQQL1WNWfp_O-j5FpI"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:VmG_x4gwSQPPjfttYYV87gqzNUewBUNs1Gjqr19-2co"
 * status = #final
 * category = $observationCategory#vital-signs "Vital Signs"
 * code.coding[0] = $loinc#40443-4 "Heart rate --resting"
@@ -89,10 +89,10 @@ Usage: #example
 Title: "Health Connect Mindfulness Session"
 Description: "A bounded mindfulness session preserving its exact AndroidX type, non-blank title, and source note."
 * meta.profile[+] = "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-mindfulness-session"
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:iIVxXFtB5SbGIRikA73tjHrpqd8ufeofEmCFSoIXg-0"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:CrOiWSVaBqUio2i_X3wERoHbRzRpUNTHwCfBGHDkh18"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:7TGBq76CsfMwZO36O_nWUuVbG2OaVkX1xKEz3ZxGsm0"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:j7ZhSBCjWKYN6y31VrFTtbkbzfrFOAZoiLcuTykEoNA"
 * status = #final
 * category = $observationCategory#activity "Activity"
 * code = $groveMobileMeasurement#mindfulness-session-duration "Mindfulness session duration"
@@ -113,10 +113,10 @@ Usage: #example
 Title: "Health Connect VO2 Max"
 Description: "A point VO2 max result preserving the exact AndroidX measurement method in Observation.method."
 * meta.profile[+] = "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-vo2-max"
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:c4NgACTknAYRGzVz8eDS0aJElb-DTHiLL0SkSgvWI0g"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:cQW07ZS0vbYhMowJ8A0DmGXWhrtCLlkv3DO9xgonNMw"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:fl_4eVmsM0J9R38VUlNwlS1hOem8Ie8WjBDAmRRoWdg"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:NM_pcM1-rUQrxyCisTVzhohgOd1MP0XTKwUilPge6gQ"
 * status = #final
 * category = $observationCategory#activity "Activity"
 * code = $groveMobileMeasurement#vo2-max "VO2 max"
@@ -134,10 +134,10 @@ Usage: #example
 Title: "Health Connect Running Session"
 Description: "A bounded workout summary retaining the shared activity, exact AndroidX exercise type, and explicitly retained non-blank title and note."
 * meta.profile[+] = "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-workout"
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:pkPzHiQ47pB7fo9kez1nwoUxruc62tEp5nLMBx-UhaM"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:rmsyU9Lm1U1Nrq7pQ9HKgpwSaMJsHdB2gLUIFJktbHw"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:jYHWX41KS0bfkVDAbHFdMOeql9qQQtO4rWIhNvcFfJk"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:Aa03TB3A-ePDcIiT213K7zpKRbMpy6UdYCKmtJ-zgtM"
 * status = #final
 * category = $observationCategory#activity "Activity"
 * code = $groveMobileMeasurement#workout "Workout session"
@@ -157,10 +157,10 @@ InstanceOf: HealthConnectSpecimen
 Usage: #example
 Title: "Health Connect Capillary Blood Specimen"
 Description: "A synthesized Specimen with the same source-record identity as its Observation and a distinct source-output identity for the specimen node."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:S9HZl_XazTDuPI2Qw2izroj9BrmVWOhQdMPFpTLYtZA"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:g_5Nfzz7OVc7wN1caeAXSmD1OKsbSlAbdpgC7B9Ms9E"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:DQ7xkzBV_80L09NunAMVzi2cTaiapaI6S1LcQqOnHgE"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:HtebRB2ld9dztAT3foua4au-IxN_GmSz5VpGbL3YCYY"
 * status = #available
 * type = $sct#122554006 "Capillary blood specimen"
 * subject = Reference(HealthConnectPatientExample)
@@ -170,10 +170,10 @@ InstanceOf: HealthConnectCapillaryBloodGlucose
 Usage: #example
 Title: "Health Connect Capillary Blood Glucose"
 Description: "A specimen-specific glucose result retaining non-unknown source meal context."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:S9HZl_XazTDuPI2Qw2izroj9BrmVWOhQdMPFpTLYtZA"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:4pEkisgic0DKgXf926qVOcX_T4oRwc2AgqbEEW4tdRo"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:DQ7xkzBV_80L09NunAMVzi2cTaiapaI6S1LcQqOnHgE"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:mk0U_6VkE1amWPncZw0dsnNoGQjZ30r2WKT9M3QgsVA"
 * status = #final
 * category = $observationCategory#laboratory "Laboratory"
 * code = $loinc#32016-8 "Glucose [Mass/volume] in Capillary blood"
@@ -192,10 +192,10 @@ InstanceOf: HealthConnectSpecimen
 Usage: #example
 Title: "Health Connect Whole-blood Specimen"
 Description: "The standard-coded Specimen synthesized for an admitted whole-blood source token."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:bRaUjs9X-R4hntsff4cSdtawFOiJ8KIcMhfGhUfLzPY"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:2GLg4Fe1As8r7_V1PGJ2KiZ67ZnRsAxxFh-Py3Q91ZU"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:HdxF84mAthi_KMAW1uzGVheQSjbt9tqH2oHL7J0uWgs"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:1TODQJHWLSpw110BdAffSUrUBWb3vLMlI6f9IfrGnbc"
 * status = #available
 * type = $sct#258580003 "Whole blood specimen"
 * subject = Reference(HealthConnectPatientExample)
@@ -205,10 +205,10 @@ InstanceOf: HealthConnectWholeBloodGlucose
 Usage: #example
 Title: "Health Connect Whole-blood Glucose"
 Description: "A BloodGlucoseRecord whose exact whole-blood source token selects the whole-blood LOINC profile and paired standard-coded Specimen."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:bRaUjs9X-R4hntsff4cSdtawFOiJ8KIcMhfGhUfLzPY"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:ptU8eDukm9cI-EiAJb-H0sGSrFGQzZ6Wx6xY6v_shCw"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:HdxF84mAthi_KMAW1uzGVheQSjbt9tqH2oHL7J0uWgs"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:4L4anI_TRMX7xgRDiA4LSboUDU6t8jJXcmcqhId-Jyc"
 * status = #final
 * category = $observationCategory#laboratory "Laboratory"
 * code = $loinc#2339-0 "Glucose [Mass/volume] in Blood"
@@ -225,10 +225,10 @@ InstanceOf: HealthConnectSpecimen
 Usage: #example
 Title: "Health Connect Plasma Specimen"
 Description: "The standard-coded Specimen synthesized for an admitted plasma source token; serum uses the same Observation profile but a distinct SNOMED CT specimen code."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:71VA1gnSJo_LCwvV2REgMhPDgRVD1Qi2Jx7mN9vMgFk"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:8MaAaovE633TGTTqH-MVjOTW9mIpHDDpDTPN-afojMA"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:_YbPSp3bhSHYXNZYe4VX6oqnhpdl1rjwrYjA1ZrdCI8"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:rg5nD-8YK5OTCCQhlET04sTgVifjhwlp6M8-25m-cPY"
 * status = #available
 * type = $sct#119361006 "Plasma specimen"
 * subject = Reference(HealthConnectPatientExample)
@@ -238,10 +238,10 @@ InstanceOf: HealthConnectSerumPlasmaGlucose
 Usage: #example
 Title: "Health Connect Plasma Glucose"
 Description: "A BloodGlucoseRecord whose exact plasma source token is preserved by the referenced Specimen instead of being collapsed with serum."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:71VA1gnSJo_LCwvV2REgMhPDgRVD1Qi2Jx7mN9vMgFk"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:zxYhTVMKHrnLK3E7fkZXVktJ5PjghUdpR6HIhbB3WEk"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:_YbPSp3bhSHYXNZYe4VX6oqnhpdl1rjwrYjA1ZrdCI8"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:22bj19t4jptyP3sDwparDXtWc5gtuRB2mDlTfPFvx94"
 * status = #final
 * category = $observationCategory#laboratory "Laboratory"
 * code = $loinc#2345-7 "Glucose [Mass/volume] in Serum or Plasma"
@@ -258,10 +258,10 @@ InstanceOf: HealthConnectSpecimen
 Usage: #example
 Title: "Health Connect Interstitial-fluid Specimen"
 Description: "The standard-coded Specimen synthesized for an admitted interstitial-fluid source token."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:Z51VJVDh2iLp-g2bxOr9QZg9BXEQxruj_qk6rwPXHKw"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:DFFrG6I31gqN-JyBjs3Ffxt2FK4Su44vDMOF0FQmJ5Y"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:IIvLKtDWB6-O_kBC7D8zVWzyhabSzrmhRTpfXl-JNwY"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:qrqqgQcIf7f7XIs9uSt6yFE9dFGayc6f9do4qXHEwRs"
 * status = #available
 * type = $sct#258479004 "Interstitial fluid specimen"
 * subject = Reference(HealthConnectPatientExample)
@@ -271,10 +271,10 @@ InstanceOf: HealthConnectInterstitialGlucose
 Usage: #example
 Title: "Health Connect Interstitial-fluid Glucose"
 Description: "A BloodGlucoseRecord whose interstitial-fluid source token selects the specific LOINC profile and paired standard-coded Specimen."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:Z51VJVDh2iLp-g2bxOr9QZg9BXEQxruj_qk6rwPXHKw"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:0-xgJ-AL3EPAMn5LG6pm3EdSLaMMm_vVqzAzBDliiSo"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:IIvLKtDWB6-O_kBC7D8zVWzyhabSzrmhRTpfXl-JNwY"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:Zxa-xa01laYzTbPSwnvrg_4Zm3ZZFzzx2v0zClS9wpg"
 * status = #final
 * category = $observationCategory#laboratory "Laboratory"
 * code = $loinc#99504-3 "Glucose [Mass/volume] in Interstitial fluid"
@@ -290,12 +290,12 @@ Instance: HealthConnectSleepDurationExample
 InstanceOf: HealthConnectObservation
 Usage: #example
 Title: "Health Connect Titled Sleep Session"
-Description: "A SleepSessionRecord summary that preserves the non-blank caller title only through the shared Health Connect session-title extension."
+Description: "A SleepSessionRecord summary that preserves the non-blank source title only through the shared Health Connect session-title extension."
 * meta.profile[+] = "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-sleep-duration"
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:HPJquAHiADGaatDS33VJedCuuWarufYLRoQ8KwUVrWE"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:wfgHT_KwgM0DSURsVN5ZRKi4oHpL_SzpfO0-6ICWRyQ"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:553aTCOvvlLm429trvz8_8rbkbLmav8eal3HthdwNGk"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:Xx_b8jtq7GOxmIXmRC13X0jYLIPVMx6oPZ8_ixes9ks"
 * status = #final
 * code = $loinc#93832-4 "Sleep duration"
 * subject = Reference(HealthConnectPatientExample)
@@ -321,8 +321,8 @@ Description: "One conversion Provenance targets both outputs of the admitted glu
 * agent[assembler].who = Reference(HealthConnectConverterApplicationExample)
 * entity.role = #source
 * entity.what.identifier.type = $groveIdentifierRole#source-record "Source record"
-* entity.what.identifier.system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* entity.what.identifier.value = "v2:test-key:1:S9HZl_XazTDuPI2Qw2izroj9BrmVWOhQdMPFpTLYtZA"
+* entity.what.identifier.system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* entity.what.identifier.value = "v0:test-key:1:DQ7xkzBV_80L09NunAMVzi2cTaiapaI6S1LcQqOnHgE"
 * entity.agent.type = $provenanceParticipantType#enterer "Enterer"
 * entity.agent.who.type = "Device"
 * entity.agent.who.identifier.system = $androidPackageName
@@ -341,8 +341,8 @@ Description: "One source Record revision transformed into every output for this 
 * agent[assembler].who = Reference(HealthConnectConverterApplicationExample)
 * entity.role = #source
 * entity.what.identifier.type = $groveIdentifierRole#source-record "Source record"
-* entity.what.identifier.system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* entity.what.identifier.value = "v2:test-key:1:K4qSTmnZ9b7KJz9yF4UsbHyaxvNVIa1tbRZ9TAaeaS4"
+* entity.what.identifier.system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* entity.what.identifier.value = "v0:test-key:1:j61Kz1b341bLg1o21Wf2BqAsbXQQL1WNWfp_O-j5FpI"
 * entity.agent.type = $provenanceParticipantType#enterer "Enterer"
 * entity.agent.who.type = "Device"
 * entity.agent.who.identifier.system = $androidPackageName

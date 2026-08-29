@@ -26,11 +26,11 @@ class ProducerSensorkitProvidersTests(ProducerValidationTestCase):
     def test_provider_identity_kinds_validate_in_active_and_retraction_events(self) -> None:
         source_system = (
             "https://study.example.org/fhir/NamingSystem/"
-            "grove-provider-record-v2/test-key/1"
+            "grove-provider-record-v0/test-key/1"
         )
         output_system = (
             "https://study.example.org/fhir/NamingSystem/"
-            "grove-provider-output-v2/test-key/1"
+            "grove-provider-output-v0/test-key/1"
         )
         components = [
             "withings",
@@ -222,8 +222,8 @@ class ProducerSensorkitProvidersTests(ProducerValidationTestCase):
                 "https://grovealliance.org/fhir/oura/StructureDefinition/oura-observation",
                 "https://grovealliance.org/fhir/oura/CodeSystem/oura-measurement",
                 "oura-cardiovascular-age",
-                "v2:test-key:1:pjibWQPMUxxrUX-FHs-7TpaYYFJ7d0NIp4pUIJ8IqJg",
-                "v2:test-key:1:WKx79td79XtDxE_iPEDzR5Lko3bhZAeSPsW3yWn_Zeg",
+                "v0:test-key:1:8sShnFJZdY3lig52cRyVwGQLRYrAzEnFYBdZvsebuhA",
+                "v0:test-key:1:fWfV53Bqz3Gw7mN6Mxkwzyv2Kfxvc5BHhAAdtLV8YH0",
                 38,
             ),
             (
@@ -236,8 +236,8 @@ class ProducerSensorkitProvidersTests(ProducerValidationTestCase):
                 "https://grovealliance.org/fhir/withings/StructureDefinition/withings-observation",
                 "https://grovealliance.org/fhir/withings/CodeSystem/withings-measurement",
                 "withings-vascular-age",
-                "v2:test-key:1:QP_DdoHLBVsrJm0XRN72DNmhcjcjvKKuzdDdejEuRHQ",
-                "v2:test-key:1:0XKCbltRcaDWMXbwoefbBKWaDyo3VhBxeasEXbVJ3Z4",
+                "v0:test-key:1:rQQgVI9MRynajmjVuAM61ZOh8wZSP1t3LmTNSw5yMu0",
+                "v0:test-key:1:NS29R6m0YYpIT7dj-dPs1o1VNhGGOhBWaqVrrjXkpjE",
                 45,
             ),
         ]
@@ -280,13 +280,13 @@ class ProducerSensorkitProvidersTests(ProducerValidationTestCase):
                         typed_identifier(
                             "source-record",
                             "https://study.example.org/fhir/NamingSystem/"
-                            "grove-provider-record-v2/test-key/1",
+                            "grove-provider-record-v0/test-key/1",
                             source_record,
                         ),
                         typed_identifier(
                             "source-output",
                             "https://study.example.org/fhir/NamingSystem/"
-                            "grove-provider-output-v2/test-key/1",
+                            "grove-provider-output-v0/test-key/1",
                             source_output,
                         ),
                     ],
@@ -455,6 +455,23 @@ class ProducerSensorkitProvidersTests(ProducerValidationTestCase):
                 invalid_document, "DocumentReference"
             )
 
+        marker_without_adapter_profile = copy.deepcopy(document)
+        marker_without_adapter_profile["meta"]["profile"] = document_profiles[:1]
+        marker_without_adapter_profile["extension"] = [{
+            "url": (
+                "https://grovealliance.org/fhir/sensorkit/StructureDefinition/"
+                "sensorkit-source-type"
+            ),
+            "valueCode": "face-metrics",
+        }]
+        with self.assertRaisesRegex(
+            diagnostics.ProducerValidationError,
+            "must directly claim exactly the source-neutral and SensorKit recording profiles",
+        ):
+            sensorkit.validate_sensorkit_identity(
+                marker_without_adapter_profile, "Unprofiled SensorKit document"
+            )
+
     def test_sensorkit_ecg_structured_projection_is_exact(self) -> None:
         catalog = json.loads(
             (ROOT / "catalog/sensorkit-adapter.json").read_text(encoding="utf-8")
@@ -533,6 +550,56 @@ class ProducerSensorkitProvidersTests(ProducerValidationTestCase):
             }],
         }
         exchange_bundle.validate_resource_profile_claims(ecg, "SensorKit ECG")
+
+        source_type_with_element_id = copy.deepcopy(ecg)
+        source_type_with_element_id["extension"][0]["id"] = "source-type"
+        sensorkit.validate_sensorkit_identity(
+            source_type_with_element_id, "SensorKit source type with Element.id"
+        )
+
+        for duplicate_marker in (
+            {"url": ecg["extension"][0]["url"], "valueCode": "ecg"},
+            {"url": ecg["extension"][0]["url"], "valueString": "ecg"},
+        ):
+            with self.subTest(duplicate_marker=duplicate_marker):
+                duplicate_source_type = copy.deepcopy(ecg)
+                duplicate_source_type["extension"].append(duplicate_marker)
+                with self.assertRaisesRegex(
+                    diagnostics.ProducerValidationError,
+                    "exactly one valueCode-only SensorKit source type",
+                ):
+                    sensorkit.validate_sensorkit_identity(
+                        duplicate_source_type, "SensorKit duplicate source type"
+                    )
+
+        ecg_with_rotation_source = copy.deepcopy(ecg)
+        ecg_with_rotation_source["extension"][0]["valueCode"] = "rotation-rate"
+        with self.assertRaisesRegex(
+            diagnostics.ProducerValidationError,
+            "exact source-neutral and SensorKit profiles admitted for its source type",
+        ):
+            exchange_bundle.validate_resource_profile_claims(
+                ecg_with_rotation_source, "SensorKit ECG with rotation source"
+            )
+
+        rotation_rate = copy.deepcopy(ecg)
+        rotation_rate["meta"]["profile"] = [
+            "https://grovealliance.org/fhir/sensor/StructureDefinition/"
+            "grove-sensor-sampled-data-observation",
+            "https://grovealliance.org/fhir/sensorkit/StructureDefinition/"
+            "sensorkit-observation",
+        ]
+        rotation_rate["extension"][0]["valueCode"] = "rotation-rate"
+        sensorkit.validate_sensorkit_identity(rotation_rate, "SensorKit rotation rate")
+        rotation_with_ecg_source = copy.deepcopy(rotation_rate)
+        rotation_with_ecg_source["extension"][0]["valueCode"] = "ecg"
+        with self.assertRaisesRegex(
+            diagnostics.ProducerValidationError,
+            "exact source-neutral and SensorKit profiles admitted for its source type",
+        ):
+            sensorkit.validate_sensorkit_identity(
+                rotation_with_ecg_source, "SensorKit rotation with ECG source"
+            )
 
         missing_guidance = copy.deepcopy(ecg)
         missing_guidance.pop("method")
@@ -636,7 +703,7 @@ class ProducerSensorkitProvidersTests(ProducerValidationTestCase):
             return typed_identifier(
                 role,
                 f"https://example.org/fhir/NamingSystem/{role}/test-key/1",
-                "v2:test-key:1:" + fill * 43,
+                "v0:test-key:1:" + fill * 43,
             )
 
         document = {
@@ -654,7 +721,7 @@ class ProducerSensorkitProvidersTests(ProducerValidationTestCase):
             ],
             "content": [{
                 "attachment": {
-                    "contentType": "application/vnd.grovealliance.native+json",
+                    "contentType": "application/json",
                     "data": "e30=",
                     "size": 2,
                     "hash": "vyGp6PvFo4RvsFtPoIWeCReyIC8=",
@@ -760,7 +827,7 @@ class ProducerSensorkitProvidersTests(ProducerValidationTestCase):
             "extension": [{"url": source_type_url, "valueCode": "device-usage"}],
             "content": [{
                 "attachment": {
-                    "contentType": "application/vnd.grovealliance.native+json",
+                    "contentType": "application/json",
                     "data": "e30=",
                     "size": 2,
                     "hash": "vyGp6PvFo4RvsFtPoIWeCReyIC8=",
@@ -768,7 +835,6 @@ class ProducerSensorkitProvidersTests(ProducerValidationTestCase):
                 "format": {
                     "system": "https://grovealliance.org/fhir/sensor/CodeSystem/grove-recording-format",
                     "code": "native-recording",
-                    "version": context.RELEASE_VERSION,
                 },
             }],
             "context": {"related": [{
@@ -836,6 +902,41 @@ class ProducerSensorkitProvidersTests(ProducerValidationTestCase):
         }
         exchange_bundle.validate_exchange_bundle(bundle, "Bundle")
 
+        raw_only = copy.deepcopy(bundle)
+        raw_only_document = raw_only["entry"][1]["resource"]
+        raw_only_document["extension"][0]["valueCode"] = "face-metrics"
+        raw_only_document.pop("context")
+        raw_only["entry"][2]["resource"]["target"] = [
+            {"reference": document_url}
+        ]
+        raw_only["entry"] = raw_only["entry"][1:]
+        exchange_bundle.validate_exchange_bundle(raw_only, "Raw-only Bundle")
+
+        unprofiled_raw = copy.deepcopy(raw_only)
+        unprofiled_raw["entry"][0]["resource"]["meta"]["profile"] = [
+            "https://grovealliance.org/fhir/sensor/StructureDefinition/"
+            "grove-sensor-recording-document"
+        ]
+        with self.assertRaisesRegex(
+            diagnostics.ProducerValidationError,
+            "must directly claim exactly the source-neutral and SensorKit recording profiles",
+        ):
+            exchange_bundle.validate_exchange_bundle(
+                unprofiled_raw, "Unprofiled raw-only Bundle"
+            )
+
+        orphan_hybrid = copy.deepcopy(raw_only)
+        orphan_hybrid["entry"][0]["resource"]["extension"][0][
+            "valueCode"
+        ] = "device-usage"
+        with self.assertRaisesRegex(
+            diagnostics.ProducerValidationError,
+            "requires exactly one linked structured Observation",
+        ):
+            exchange_bundle.validate_exchange_bundle(
+                orphan_hybrid, "Orphan hybrid Bundle"
+            )
+
         duplicate_transform_system = copy.deepcopy(bundle)
         duplicate_transform_system["entry"][2]["resource"]["activity"]["coding"].append({
             "system": "http://terminology.hl7.org/CodeSystem/iso-21089-lifecycle",
@@ -864,6 +965,36 @@ class ProducerSensorkitProvidersTests(ProducerValidationTestCase):
             "code": "converted",
         })
         exchange_bundle.validate_exchange_bundle(translated_lifecycle, "Bundle")
+
+        cross_stream_document = copy.deepcopy(bundle)
+        cross_stream_document["entry"][1]["resource"]["extension"][0][
+            "valueCode"
+        ] = "keyboard-metrics"
+        with self.assertRaisesRegex(
+            diagnostics.ProducerValidationError,
+            "must carry the same matching SensorKit source type",
+        ):
+            exchange_bundle.validate_exchange_bundle(cross_stream_document, "Bundle")
+
+        for malformed_related in (
+            [{"reference": observation_url}, "ignored"],
+            [{"reference": observation_url}, {}],
+            [{"reference": observation_url, "identifier": {}}],
+            [{"reference": observation_url, "type": "Device"}],
+        ):
+            with self.subTest(related=malformed_related):
+                malformed_backlink = copy.deepcopy(bundle)
+                malformed_backlink["entry"][1]["resource"]["context"][
+                    "related"
+                ] = malformed_related
+                with self.assertRaisesRegex(
+                    diagnostics.ProducerValidationError,
+                    "relate back to exactly its structured Observation|"
+                    "must equal the referenced resource type Observation",
+                ):
+                    exchange_bundle.validate_exchange_bundle(
+                        malformed_backlink, "Bundle"
+                    )
 
         missing_raw_target = copy.deepcopy(bundle)
         missing_raw_target["entry"][2]["resource"]["target"] = [

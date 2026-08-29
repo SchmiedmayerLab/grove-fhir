@@ -6,23 +6,22 @@ SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTR
 SPDX-License-Identifier: MIT
 -->
 
-The Grove Health Connect Adapter maps AndroidX Health Connect 1.1 Records that have already been read by an application into international FHIR R4.
+The Grove Health Connect Adapter maps AndroidX Health Connect 1.1 Records that an application has already read into FHIR R4.
 It does not request permissions, fetch Records, or define a receiving service.
 
-New to FHIR?
-[Start with the FHIR basics page](https://grovealliance.org/fhir/mobile/fhir-basics.html) in the Mobile guide.
-It covers the resources these guides use, identifiers and references, and how to read a profile page.
+Readers who are new to FHIR can begin with the Mobile guide's [FHIR basics page](https://grovealliance.org/fhir/mobile/fhir-basics.html).
+That page introduces the resources used by these guides, identifiers and references, and the structure of a profile page.
 
-Every emitted Observation declares exactly two direct profiles:
+Each emitted Observation follows one of two direct profile-claim modes:
 
-1. the exact source-neutral Grove Mobile measurement profile; and
-2. [Health Connect Observation](StructureDefinition-health-connect-observation.html).
+1. A shared measurement declares the exact source-neutral Grove Mobile measurement profile and [Health Connect Observation](StructureDefinition-health-connect-observation.html).
+2. A specimen-specific glucose result declares only its exact Health Connect child profile, which inherits the applicable shared and adapter constraints.
 
-The shared profile defines clinical meaning, result shape, unit, and time semantics.
-The adapter profile defines source and output identities plus the small allowlist of Health-Connect-specific context.
-Inherited Mobile and core standard profiles are not repeated in `meta.profile`.
+The selected profiles define clinical meaning, result shape, unit, time semantics, source and output identities, and the small allowlist of Health-Connect-specific context.
+Inherited Mobile, adapter, and core standard profiles are not repeated in `meta.profile`.
+The adapter catalog fixes the claim mode for every admitted output.
 
-### Supported conversion surface
+### Selected record conversions
 
 | Record family | Shared output |
 |---|---|
@@ -40,16 +39,16 @@ Inherited Mobile and core standard profiles are not repeated in `meta.profile`.
 | `StepsRecord` | step-count interval total |
 | `WeightRecord` | body weight |
 
-[`catalog/health-connect-adapter.json`](https://grovealliance.org/fhir/catalog/health-connect-adapter.json) is the authoritative closed inventory.
+[`catalog/health-connect-adapter.json`](https://grovealliance.org/fhir/catalog/health-connect-adapter.json) is the normative exhaustive inventory.
 It lists all 41 `RecordType.all` members with one definitive status, their output cardinality, and exact context mappings.
-A type omitted from the table above is not silently admitted.
+The table above is a quick-start subset; the [status matrix](status-matrix.html) and adapter catalog are the exhaustive admission contract, and record types omitted here may still be supported there.
 
 ### Identity and source context
 
 The mandatory source-record identifier is repository-scoped and does not disclose `Record.metadata.id`.
 Every output, including a one-to-one conversion, carries a distinct typed source-output identifier; a synthesized glucose Specimen uses the specimen output role.
 When exact upstream traceability is deliberately enabled, the raw metadata id may additionally appear once under a deployment-governed non-Grove Identifier system on the catalog-designated primary output; it never substitutes for either Grove HMAC identifier.
-The HMAC algorithm, event/node identities, fullUrl derivation, lifecycle rules, and cross-language vectors are normative in [`catalog/exchange-protocol.json`](https://grovealliance.org/fhir/catalog/exchange-protocol.json), while the exact Health Connect component bindings are in the adapter catalog.
+The HMAC algorithm, event/node identities, fullUrl derivation, lifecycle rules, and language-independent conformance test vectors are normative in [`catalog/exchange-protocol.json`](https://grovealliance.org/fhir/catalog/exchange-protocol.json), while the exact Health Connect component bindings are in the adapter catalog.
 None of these values becomes `Resource.id`.
 
 Supported source context is represented explicitly:

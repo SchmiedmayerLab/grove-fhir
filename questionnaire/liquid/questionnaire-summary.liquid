@@ -1,0 +1,109 @@
+<!--
+This source file is part of the Grove FHIR open-source project
+
+SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTRIBUTORS.md)
+
+SPDX-License-Identifier: MIT
+-->
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <strong>Questionnaire: {{ $this.title }}</strong>
+  </div>
+  <div class="panel-body">
+    <dl class="dl-horizontal">
+      <dt>Canonical</dt>
+      <dd><code>{{ $this.url }}|{{ $this.version }}</code></dd>
+      <dt>Status</dt>
+      <dd><code>{{ $this.status }}</code></dd>
+      <dt>Profile</dt>
+      <dd><code>{{ $this.meta.profile.first() }}</code></dd>
+    </dl>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-striped table-condensed">
+      <caption class="sr-only">Questionnaire items and their extraction declarations</caption>
+      <thead>
+        <tr>
+          <th scope="col">Item</th>
+          <th scope="col">Prompt</th>
+          <th scope="col">Type</th>
+          <th scope="col">Concept</th>
+          <th scope="col">Extraction</th>
+          <th scope="col">Category</th>
+          <th scope="col">Unit</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for item in $this.item %}
+        <tr>
+          <th scope="row"><code>{{ item.linkId }}</code></th>
+          <td>{{ item.text }}</td>
+          <td><code>{{ item.type }}</code></td>
+          <td>
+          {% for coding in item.code %}
+            {{ coding.display }}<br /><code>{{ coding.system }}|{{ coding.code }}</code>
+          {% endfor %}
+          </td>
+          <td>
+          {% for extension in item.extension %}
+            {% if extension.url = 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-observationExtract' %}
+              {% if extension.valueBoolean %}standalone Observation{% endif %}
+              {% if extension.valueCode %}<code>{{ extension.valueCode }}</code>{% endif %}
+            {% endif %}
+          {% endfor %}
+          </td>
+          <td>
+          {% for extension in item.extension %}
+            {% if extension.valueCodeableConcept %}
+              {% for coding in extension.valueCodeableConcept.coding %}
+                <code>{{ coding.code }}</code>
+              {% endfor %}
+            {% endif %}
+          {% endfor %}
+          </td>
+          <td>
+          {% for extension in item.extension %}
+            {% if extension.valueCoding %}<code>{{ extension.valueCoding.code }}</code>{% endif %}
+          {% endfor %}
+          </td>
+        </tr>
+        {% for child in item.item %}
+        <tr>
+          <th scope="row"><span class="sr-only">Child item: </span><span aria-hidden="true">&#8627;&nbsp;</span><code>{{ child.linkId }}</code></th>
+          <td>{{ child.text }}</td>
+          <td><code>{{ child.type }}</code></td>
+          <td>
+          {% for coding in child.code %}
+            {{ coding.display }}<br /><code>{{ coding.system }}|{{ coding.code }}</code>
+          {% endfor %}
+          </td>
+          <td>
+          {% for extension in child.extension %}
+            {% if extension.url = 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-observationExtract' %}
+              {% if extension.valueBoolean %}standalone Observation{% endif %}
+              {% if extension.valueCode %}<code>{{ extension.valueCode }}</code>{% endif %}
+            {% endif %}
+          {% endfor %}
+          </td>
+          <td>
+          {% for extension in child.extension %}
+            {% if extension.valueCodeableConcept %}
+              {% for coding in extension.valueCodeableConcept.coding %}
+                <code>{{ coding.code }}</code>
+              {% endfor %}
+            {% endif %}
+          {% endfor %}
+          </td>
+          <td>
+          {% for extension in child.extension %}
+            {% if extension.valueCoding %}<code>{{ extension.valueCoding.code }}</code>{% endif %}
+          {% endfor %}
+          </td>
+        </tr>
+        {% endfor %}
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>

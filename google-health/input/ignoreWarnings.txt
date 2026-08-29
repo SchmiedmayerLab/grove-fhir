@@ -1,4 +1,7 @@
 == Suppressed Messages ==
+# Publisher 2.3.3 orders the older ballot suffix after the stable release. The HL7 package registry confirms 5.3.0 is the current stable R4 extensions package, so downgrading would be incorrect.
+WARNING: ImplementationGuide/org.grovealliance.fhir.google-health: ImplementationGuide.dependsOn[1]: The ImplementationGuide uses package hl7.fhir.uv.extensions.r4#5.3.0 released on 2026-05-16, but the most recent appropriate version is 5.3.0-ballot-tc1. This reference is getting old and the more recent version should be considered
+
 # These adapter-local source terminology artifacts use canonical URLs as their primary identifiers.
 # No CDA/OID interoperability surface is published by this guide.
 WARNING: Resource: The resource CodeSystem/google-health-measurement should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/fhir-tools-ig/CodeSystem-ig-parameters.html#ig-parameters-auto-oid-root)

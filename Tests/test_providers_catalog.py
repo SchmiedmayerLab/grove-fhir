@@ -15,6 +15,9 @@ ROOT = Path(__file__).resolve().parents[1]
 CATALOG_PATH = ROOT / "catalog/providers-adapter.json"
 MEASUREMENT_PATH = ROOT / "catalog/measurement-catalog.json"
 GRAPH_PATH = ROOT / "catalog/package-graph.json"
+RELEASE_VERSION = json.loads(
+    (ROOT / "catalog/release-manifest.json").read_text(encoding="utf-8")
+)["releaseVersion"]
 
 
 class ProviderCatalogTests(unittest.TestCase):
@@ -28,9 +31,9 @@ class ProviderCatalogTests(unittest.TestCase):
         )
 
     def test_release_and_package_identity_are_exact(self) -> None:
-        self.assertEqual(self.catalog["schemaVersion"], 1)
+        self.assertEqual(self.catalog["schemaVersion"], 0)
         self.assertEqual(self.catalog["fhirVersion"], "4.0.1")
-        self.assertEqual(self.catalog["version"], "0.6.0")
+        self.assertEqual(self.catalog["version"], RELEASE_VERSION)
         self.assertEqual(
             self.catalog["packageId"], "org.grovealliance.fhir.providers"
         )
@@ -70,8 +73,8 @@ class ProviderCatalogTests(unittest.TestCase):
             [
                 "hl7.terminology.r4#7.3.0",
                 "hl7.fhir.uv.extensions.r4#5.3.0",
-                "org.grovealliance.fhir.mobile#0.6.0",
-                "org.grovealliance.fhir.sensor#0.6.0",
+                f"org.grovealliance.fhir.mobile#{RELEASE_VERSION}",
+                f"org.grovealliance.fhir.sensor#{RELEASE_VERSION}",
             ],
         )
         self.assertEqual(
@@ -212,6 +215,32 @@ class ProviderCatalogTests(unittest.TestCase):
             self.assertEqual(len(actual), len(set(actual)))
             self.assertEqual(set(actual), expected)
             self.assertEqual(provider["sourceTypeCount"], len(expected))
+
+    def test_google_health_hrv_statistics_are_not_conflated(self) -> None:
+        google = next(
+            provider
+            for provider in self.catalog["providers"]
+            if provider["id"] == "google-health-api"
+        )
+        hrv = next(
+            source
+            for source in google["sourceTypes"]
+            if source["token"] == "heart-rate-variability"
+        )
+        mappings = {
+            element["path"]: element["measurementIds"]
+            for element in hrv["elements"]
+        }
+        self.assertEqual(
+            mappings[
+                "heartRateVariability.rootMeanSquareOfSuccessiveDifferencesMilliseconds"
+            ],
+            ["heart-rate-variability-rmssd"],
+        )
+        self.assertEqual(
+            mappings["heartRateVariability.standardDeviationMilliseconds"],
+            ["heart-rate-variability-sdnn"],
+        )
 
     def test_every_source_element_has_one_definitive_status(self) -> None:
         statuses = set(self.catalog["statusVocabulary"])
@@ -385,7 +414,7 @@ class ProviderCatalogTests(unittest.TestCase):
     def test_identity_compositions_and_resource_id_policy_are_exact(self) -> None:
         identity = self.catalog["identity"]
         self.assertEqual(identity["contract"], "catalog/exchange-protocol.json")
-        self.assertEqual(identity["protocolVersion"], 2)
+        self.assertEqual(identity["protocolVersion"], 0)
         self.assertEqual(identity["adapterId"], "providers")
         self.assertEqual(
             identity["sourceRecord"]["components"],

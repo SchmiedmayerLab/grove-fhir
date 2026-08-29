@@ -18,12 +18,12 @@ Instance: OuraStepCountExample
 InstanceOf: OuraObservation
 Usage: #example
 Title: "Oura Step Count"
-Description: "An already-obtained Oura daily activity step total on the Oura narrowing of the provider contract."
+Description: "An already-obtained Oura daily activity step total conforming to both the Oura lineage profile and the shared step-count profile."
 * meta.profile[+] = "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-step-count"
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-provider-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:W93IcvTZkGdlJFCzeohtA_2xSuJD729FQTCRL7Gi9OI"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-provider-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:PjcyiJIJrutw-WWQDm2wDaJgCBn1hPcvnVyD9S5uDIo"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-provider-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:E6qkZS4jiAXyLaFtKUR15u-HP_aYFfyA4JA5hDEunrU"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-provider-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:Sb7djXcgOyzv7kDd5unYPxQKj8VR3Z6jYbbSFY8H2j4"
 * status = #final
 * category = http://terminology.hl7.org/CodeSystem/observation-category#activity
 * code = https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement#step-count-total "Step count total"

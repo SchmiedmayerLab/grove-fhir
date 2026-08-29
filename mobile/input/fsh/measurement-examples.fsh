@@ -11,10 +11,10 @@ InstanceOf: GroveMobileActiveEnergy
 Usage: #example
 Title: "Source-neutral Mobile Active Energy"
 Description: "An interval total of activity-related energy expenditure."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:CgJR6EVUlWnxOnyiukqmVBJ8ko8YtTsMgRm7s-UNY6E"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:H3fU-ODXFfHnfUbXUBI-DQpfzBfHQCkDb9dmyAuAzeE"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:yGe6KDyVzvGSzueoxgUdq7iS4_OJx9ytlyiB0DcjFos"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:7AuldIGGAR2Wsz3Q3dNqQbsbpyr-svBj_JR9ncLR4dM"
 * status = #final
 * category = $observationCategory#activity "Activity"
 * code = GroveMobileMeasurementCS#active-energy-burned "Active energy burned"
@@ -30,10 +30,10 @@ InstanceOf: GroveMobileBasalBodyTemperature
 Usage: #example
 Title: "Source-neutral Mobile Basal Body Temperature"
 Description: "A basal body temperature normalized to degrees Celsius."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:ew4CVFKZHEpHNqNsw-A8dRLmogxC-Y1xc0FVW9fu8lE"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:OrfDA2z9goXP0DXRBeCX0HfLu7slTvztkEYxvwF8Xuk"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:6AykPv-ckpB_hZvBZf42tZlCFTyFdxYMUTBi8sStA8A"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:SCbojcAqxKO6feQGH_XGjfL5teOCQ9CRI5hRbKE6OQs"
 * status = #final
 * category = $observationCategory#vital-signs "Vital Signs"
 * code = GroveMobileMeasurementCS#basal-body-temperature "Basal body temperature"
@@ -48,10 +48,10 @@ InstanceOf: GroveMobileBloodPressure
 Usage: #example
 Title: "Source-neutral Mobile Blood Pressure"
 Description: "A blood-pressure panel with normalized systolic and diastolic components."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:EOj0LOJpCrmTlMqoGQZKlk1I9pi3Q2B2cBRr0oHRsnM"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:nAZFdvmLuuWfhmn2Wx7e0RIjc43acMY30zbYKCWXpBU"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:MZcxSiVOcCnyGZdLNt0ZIGGYhiS4s0BvF0mk3C2xNBQ"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:XK9Tw0QtuyK9pCXAl5RXFYSsl8wF5bU_sFsaobpb2JM"
 * status = #final
 * category = $observationCategory#vital-signs "Vital Signs"
 * code = $loinc#85354-9 "Blood pressure panel with all children optional"
@@ -69,10 +69,10 @@ InstanceOf: GroveMobileBodyHeight
 Usage: #example
 Title: "Source-neutral Mobile Body Height"
 Description: "A body height normalized to centimetres."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:EomMSvG1D6I2PxXi2kHJjTzv-OJHEp4i-MliBLoeRss"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:PH8AzPMxL-7PMO59h-gB2ktMmOvMWloPfxMQt0U1iV8"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:7GMRoxEYrskAZlk7X61RA01CvVyBxJQQVg5VnZR82sQ"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:fLEOsPu95GWnD-w9OpRoV6H_VtAyuuP278ELMu0ybIw"
 * status = #final
 * category = $observationCategory#vital-signs "Vital Signs"
 * code = $loinc#8302-2 "Body height"
@@ -87,10 +87,10 @@ InstanceOf: GroveMobileBodyTemperature
 Usage: #example
 Title: "Source-neutral Mobile Body Temperature"
 Description: "A body temperature normalized to degrees Celsius."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:tvQXzIZ925fQQqX-RguslTK8CnDZDTdMkB0xvvD-Ai8"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:zyKd7MT0WOCi57SWEN9XCGxZCNTWPw70CRxQdNVuvp8"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:zZ6mbj6vg0JPw09r0XI6SGorZPfSiBPgKagJRO42BUU"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:qd5LVBCUpNKL54W9N8uJktNzs7wMRKGIXpYU6TtqE3A"
 * status = #final
 * category = $observationCategory#vital-signs "Vital Signs"
 * code = $loinc#8310-5 "Body temperature"
@@ -105,10 +105,10 @@ InstanceOf: GroveMobileBodyWeight
 Usage: #example
 Title: "Source-neutral Mobile Body Weight"
 Description: "A body weight normalized to kilograms."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:cYCx6vDFVjZmTE8X8x8Rph0u6eLD6HmLikQp_CuUQyQ"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:UAPDJojd1TWQAac7E8VolZH4xqOe5zFFr_ogKqoW7ks"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:kMnrY36dIWrOc1siPQSlo33KJIneTlBYjqCiACu_Szg"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:isqLm4lzkBL2SxUyCCEQ_EQledYKxU40G_Dh71p8CMk"
 * status = #final
 * category = $observationCategory#vital-signs "Vital Signs"
 * code = $loinc#29463-7 "Body weight"
@@ -123,10 +123,10 @@ InstanceOf: GroveMobileDistance
 Usage: #example
 Title: "Source-neutral Mobile Distance"
 Description: "An interval total of distance traveled."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:pwvJiT77MfG8sY98PROASrWY7N8zdYDapXQ8TNQ-9nk"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:knOcSq4ss9D7ypabt878hFRY7tnjFBTetlI5_8doeh8"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:ps9kiZbdAAGgODsQeMvRSdxdMZ2Vt69NEk0bKvxvcUc"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:O3VR_P2iGFYHZmxKcsnkU4rAm0r9Zizibx1BvJnWDII"
 * status = #final
 * category = $observationCategory#activity "Activity"
 * code = $loinc#103208-5 "Distance traveled"
@@ -142,10 +142,10 @@ InstanceOf: GroveMobileOxygenSaturation
 Usage: #example
 Title: "Source-neutral Mobile Oxygen Saturation"
 Description: "A peripheral oxygen saturation normalized to percent."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:rGvghR-g-p3aKIl3ZPBVzeB7Tu9npcO21X3E2UrJCuE"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:h8pBGMJg6dJUe7lnF-C7Ok5YsdPGGEJq9GsagGGMgI0"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:YFEDhhLWTdiXopijWy8K1GJ_qkzigZbvTOdWZkQRKIo"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:H76mdecriUGFn5Yk40cTqWhmynug32ZhU3kbpDqqh_c"
 * status = #final
 * category = $observationCategory#vital-signs "Vital Signs"
 * code = $loinc#2708-6 "Oxygen saturation in Arterial blood"
@@ -160,10 +160,10 @@ InstanceOf: GroveMobileRespiratoryRate
 Usage: #example
 Title: "Source-neutral Mobile Respiratory Rate"
 Description: "A respiratory rate normalized to breaths per minute."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:2MTgpCH0n7Q53Y7vsPy5Io1meQfbFErUvZGnIIXUo_8"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:7A2Q5yTo-M7eZk5vmI59Do8pjVw8WwuYBexZ127-c6U"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:7CbBvKGGSqyNoRAvuF5y9Mf7XVr7wSc4b21_Uc5bQ7A"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:DyaWNxYfqUAc31DBSJPXW6h0aJkg9sPfvYKRIePxXjw"
 * status = #final
 * category = $observationCategory#vital-signs "Vital Signs"
 * code = $loinc#9279-1 "Respiratory rate"
@@ -178,10 +178,10 @@ InstanceOf: GroveMobileSleepStage
 Usage: #example
 Title: "Source-neutral Mobile Sleep Stage"
 Description: "One classified interval within a sleep session."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:8TTPXp507BaiNyrJck7KWiQimVNMMM8c8fAM4-u9Zwc"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:48FbQsxK0lP-5tJ0-Jldw92XDOGg0gXEE0CIwsg7wWo"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:SUSJfi0zdKdcNxk2zJWHciyqNRljqTTtlA0fkP8nf04"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:duhz86mYGMPiKFHymhOinO5eYGmNK6lYEqpC6UFmQBQ"
 * status = #final
 * category = $observationCategory#activity "Activity"
 * code = GroveMobileMeasurementCS#sleep-stage "Sleep stage"
@@ -197,10 +197,10 @@ InstanceOf: GroveMobileSleepDuration
 Usage: #example
 Title: "Source-neutral Mobile Sleep Duration"
 Description: "A sleep-session summary linked to its stage observations."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:xloSJDkZYn2eR9IDArBKEu4542JNdTSlYEse4u8MUbQ"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:EP1a0ltu4N8LJlbZKUtN9dHFI1inpFL0it9glOvQX2U"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:GO87h82yTSfH2jVPz6Npx7090eQ1NMiPV0e_80RsiY8"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:qla_P5YCyjaHqGwpc3mDpht0TFCIyU8UL3wB86JGIQg"
 * status = #final
 * category = $observationCategory#activity "Activity"
 * code = $loinc#93832-4 "Sleep duration"

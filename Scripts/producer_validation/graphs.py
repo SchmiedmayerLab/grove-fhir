@@ -57,7 +57,7 @@ def validate_adapter_provenance_graph(
                 source = complete_identifier(entity, f"{label} Provenance source entity")
                 if HMAC_IDENTITY.fullmatch(source[1]) is None:
                     raise ProducerValidationError(
-                        f"{label} Provenance source entity must be a canonical v2 HMAC identity"
+                        f"{label} Provenance source entity must be a canonical v0 HMAC identity"
                     )
                 provenances_by_source.setdefault(source, []).append(resource)
 
@@ -140,6 +140,6 @@ def exact_source_entity(
     pair = complete_identifier(identifier, f"{label} source identifier")
     if HMAC_IDENTITY.fullmatch(pair[1]) is None:
         raise ProducerValidationError(
-            f"{label} source identifier is not a canonical Grove v2 HMAC identity"
+            f"{label} source identifier is not a canonical Grove v0 HMAC identity"
         )
     return pair

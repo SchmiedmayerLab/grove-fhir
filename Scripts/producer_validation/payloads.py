@@ -10,14 +10,25 @@ from __future__ import annotations
 
 import base64
 import binascii
+import csv
 import hashlib
+import io
+import json
+import math
 import re
 from datetime import datetime, timezone
 from decimal import Decimal, InvalidOperation, ROUND_HALF_EVEN
 from typing import Any
 
-from .context import FHIR_INSTANT, SAMPLED_DECIMAL
+from .context import CATALOG_ROOT, FHIR_INSTANT, SAMPLED_DECIMAL
 from .diagnostics import ProducerValidationError
+
+
+CSV_ENCODING = json.loads(
+    (CATALOG_ROOT / "format-registry.json").read_text(encoding="utf-8")
+)["encodings"]["csv"]
+CSV_NUMBER = re.compile(CSV_ENCODING["numberPattern"])
+CSV_INTEGER = re.compile(CSV_ENCODING["integerPattern"])
 
 
 def parse_fhir_instant(value: Any, label: str) -> Decimal:
@@ -107,7 +118,7 @@ def validate_sampled_data(
         )
 
 def validate_recording_attachment(attachment: Any, label: str) -> None:
-    """Require verifiable exact bytes for every admitted native recording."""
+    """Require verifiable exact bytes for every admitted recording payload."""
     if not isinstance(attachment, dict):
         raise ProducerValidationError(f"{label} must be an Attachment")
     has_data = isinstance(attachment.get("data"), str)
@@ -135,3 +146,198 @@ def validate_recording_attachment(attachment: Any, label: str) -> None:
             raise ProducerValidationError(f"{label}.size does not match embedded bytes")
         if hashlib.sha1(payload).digest() != digest:  # noqa: S324 -- mandated by FHIR R4 Attachment.hash
             raise ProducerValidationError(f"{label}.hash does not match embedded bytes")
+
+
+def validate_inline_recording_payload(
+    attachment: Any,
+    format_code: str,
+    format_entry: dict[str, Any],
+    label: str,
+) -> None:
+    """Validate the syntax Grove can prove without fetching or interpreting payloads."""
+    if not isinstance(attachment, dict) or not isinstance(attachment.get("data"), str):
+        return
+    try:
+        payload = base64.b64decode(attachment["data"], validate=True)
+    except (binascii.Error, ValueError) as error:
+        raise ProducerValidationError(f"{label}.data must be valid base64") from error
+
+    if format_code == "native-recording":
+        _validate_native_json(payload, label)
+    elif format_code == "provider-recording":
+        _validate_json_container(payload, label, "provider recording")
+    elif format_code == "fhir-r4-resource":
+        _validate_fhir_resource(payload, label)
+    elif format_code == "fhir-collection-bundle":
+        _validate_fhir_collection_bundle(payload, label)
+    elif format_entry.get("encoding") == "csv":
+        _validate_registered_csv(payload, format_entry, label)
+
+
+def _decode_strict_json(payload: bytes, label: str, payload_kind: str) -> Any:
+    if payload.startswith(b"\xef\xbb\xbf"):
+        raise ProducerValidationError(
+            f"{label} {payload_kind} must not carry a byte-order mark"
+        )
+    try:
+        text = payload.decode("utf-8", errors="strict")
+
+        def reject_constant(value: str) -> Any:
+            raise ValueError(f"non-finite JSON number {value}")
+
+        def reject_duplicate_keys(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+            value: dict[str, Any] = {}
+            for key, item in pairs:
+                if key in value:
+                    raise ValueError(f"duplicate JSON object key {key!r}")
+                value[key] = item
+            return value
+
+        return json.loads(
+            text,
+            object_pairs_hook=reject_duplicate_keys,
+            parse_float=Decimal,
+            parse_constant=reject_constant,
+        )
+    except (UnicodeDecodeError, ValueError) as error:
+        raise ProducerValidationError(
+            f"{label} {payload_kind} must be strict well-formed UTF-8 JSON"
+        ) from error
+
+
+def _validate_json_container(payload: bytes, label: str, payload_kind: str) -> Any:
+    value = _decode_strict_json(payload, label, payload_kind)
+    if not isinstance(value, (dict, list)):
+        raise ProducerValidationError(
+            f"{label} {payload_kind} top-level value must be an object or array"
+        )
+    return value
+
+
+def _validate_native_json(payload: bytes, label: str) -> None:
+    _validate_json_container(payload, label, "native recording")
+
+
+def _validate_fhir_resource_shape(value: Any, label: str) -> dict[str, Any]:
+    if not isinstance(value, dict):
+        raise ProducerValidationError(f"{label} must be one FHIR JSON resource object")
+    resource_type = value.get("resourceType")
+    if (
+        not isinstance(resource_type, str)
+        or re.fullmatch(r"[A-Z][A-Za-z0-9]*", resource_type) is None
+    ):
+        raise ProducerValidationError(
+            f"{label}.resourceType must be a non-empty FHIR resource type code"
+        )
+    return value
+
+
+def _validate_fhir_resource(payload: bytes, label: str) -> None:
+    value = _decode_strict_json(payload, label, "FHIR resource")
+    _validate_fhir_resource_shape(value, label)
+
+
+def _validate_fhir_collection_bundle(payload: bytes, label: str) -> None:
+    value = _decode_strict_json(payload, label, "FHIR collection Bundle")
+    bundle = _validate_fhir_resource_shape(value, label)
+    if bundle.get("resourceType") != "Bundle" or bundle.get("type") != "collection":
+        raise ProducerValidationError(
+            f"{label} must have resourceType Bundle and type collection"
+        )
+    parse_fhir_instant(bundle.get("timestamp"), f"{label}.timestamp")
+    entries = bundle.get("entry")
+    if not isinstance(entries, list) or not entries:
+        raise ProducerValidationError(
+            f"{label}.entry must contain at least one source resource"
+        )
+    full_urls: set[str] = set()
+    for index, entry in enumerate(entries):
+        entry_label = f"{label}.entry[{index}]"
+        if not isinstance(entry, dict):
+            raise ProducerValidationError(f"{entry_label} must be an object")
+        forbidden = {name for name in ("request", "response", "search") if name in entry}
+        if forbidden:
+            raise ProducerValidationError(
+                f"{entry_label} collection entry cannot contain {', '.join(sorted(forbidden))}"
+            )
+        full_url = entry.get("fullUrl")
+        if (
+            not isinstance(full_url, str)
+            or re.fullmatch(r"[A-Za-z][A-Za-z0-9+.-]*:[^\s#]+", full_url) is None
+        ):
+            raise ProducerValidationError(
+                f"{entry_label}.fullUrl must be one absolute non-fragment URI"
+            )
+        if full_url in full_urls:
+            raise ProducerValidationError(
+                f"{entry_label}.fullUrl duplicates another collection entry"
+            )
+        full_urls.add(full_url)
+        _validate_fhir_resource_shape(entry.get("resource"), f"{entry_label}.resource")
+
+
+def _validate_registered_csv(
+    payload: bytes,
+    format_entry: dict[str, Any],
+    label: str,
+) -> None:
+    if payload.startswith(b"\xef\xbb\xbf"):
+        raise ProducerValidationError(f"{label} registered CSV must not carry a byte-order mark")
+    try:
+        text = payload.decode("utf-8", errors="strict")
+    except UnicodeDecodeError as error:
+        raise ProducerValidationError(f"{label} registered CSV must be UTF-8") from error
+    if not text.endswith("\n") or "\r" in text:
+        raise ProducerValidationError(
+            f"{label} registered CSV must use LF after every row and no CR"
+        )
+    try:
+        parsed = list(csv.reader(io.StringIO(text, newline=""), strict=True))
+    except csv.Error as error:
+        raise ProducerValidationError(f"{label} registered CSV is malformed") from error
+
+    columns = format_entry["columns"]
+    names = [column["name"] for column in columns]
+    if not parsed or parsed[0] != names:
+        raise ProducerValidationError(
+            f"{label} registered CSV header does not match its format"
+        )
+    if any(len(row) != len(columns) for row in parsed[1:]):
+        raise ProducerValidationError(
+            f"{label} registered CSV row has the wrong number of columns"
+        )
+
+    canonical = io.StringIO(newline="")
+    csv.writer(canonical, lineterminator="\n").writerows(parsed)
+    if canonical.getvalue() != text:
+        raise ProducerValidationError(f"{label} registered CSV is not canonically quoted")
+
+    for row in parsed[1:]:
+        for field, column in zip(row, columns, strict=True):
+            if field == "":
+                if not column["nullable"]:
+                    raise ProducerValidationError(
+                        f"{label} registered CSV has an empty non-nullable "
+                        f"{column['name']} field"
+                    )
+                continue
+            field_type = column["type"]
+            if field_type == "integer":
+                if CSV_INTEGER.fullmatch(field) is None:
+                    raise ProducerValidationError(
+                        f"{label} registered CSV has an invalid integer field"
+                    )
+            elif field_type in {"number", "timestamp"}:
+                try:
+                    number = float(field)
+                except (OverflowError, ValueError) as error:
+                    raise ProducerValidationError(
+                        f"{label} registered CSV has an invalid {field_type} field"
+                    ) from error
+                if (
+                    CSV_NUMBER.fullmatch(field) is None
+                    or not math.isfinite(number)
+                ):
+                    raise ProducerValidationError(
+                        f"{label} registered CSV has an invalid {field_type} field"
+                    )

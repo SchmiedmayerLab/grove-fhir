@@ -281,7 +281,7 @@ def publish_version(
             (transaction_root / "publication-manifest.json").write_text(
                 json.dumps(
                     {
-                        "schemaVersion": 1,
+                        "schemaVersion": 0,
                         "packageId": package_id,
                         "packageVersion": version,
                         "canonical": canonical,

@@ -16,6 +16,7 @@ import sys
 import tarfile
 import tempfile
 import unittest
+from datetime import datetime
 from pathlib import Path
 from unittest import mock
 
@@ -25,6 +26,9 @@ OUTPUT = ROOT / "questionnaire/output"
 GENERATED = ROOT / "questionnaire/fsh-generated/resources"
 VALIDATOR_FIXTURES = ROOT / "questionnaire/fixtures/validator"
 PAIR_FIXTURES = ROOT / "questionnaire/fixtures/pairs"
+RELEASE_VERSION = json.loads(
+    (ROOT / "catalog/release-manifest.json").read_text(encoding="utf-8")
+)["releaseVersion"]
 QUESTIONNAIRE_CANONICAL = (
     "https://grovealliance.org/fhir/questionnaire/"
     "Questionnaire/GroveWeeklySymptomCheckInExample"
@@ -357,46 +361,21 @@ class QuestionnaireContractTests(unittest.TestCase):
         )
         validate_exchange_bundle(bundle, "questionnaire extraction example")
 
-    def test_bound_times_carry_the_value_their_binding_declares(self) -> None:
-        """A bound time is only useful if it is the right time.
-
-        Asserting merely that a bound Observation avoids `authored` would pass on any wrong
-        instant. These check the two declared bindings against what the response actually says:
-        the panel takes the answered reading time, and the step count takes the day its wording
-        names, computed from `authored` rather than typed by anyone.
-        """
-        from datetime import date, timedelta
-
+    def test_observation_extraction_preserves_response_context(self) -> None:
+        """The worked flow follows standard Observation-based extraction context rules."""
         response = load_extraction("questionnaire-response.json")
-        pressure = load_extraction("blood-pressure.json")
-        steps = load_extraction("step-count.json")
         authored = response["authored"]
-        offset = authored[-6:]
-
-        def answered(items: list, link_id: str) -> dict:
-            for item in items:
-                if item["linkId"] == link_id:
-                    return item
-                found = answered(item.get("item", []), link_id)
-                if found:
-                    return found
-            return {}
-
-        # The panel's instant is the answer to its own measurement-time question.
-        measured = answered(response["item"], "measured-at")["answer"][0]["valueDateTime"]
-        self.assertEqual(pressure["effectiveDateTime"], measured)
-        self.assertNotEqual(pressure["effectiveDateTime"], authored)
-
-        # "Yesterday" is the day before the response was authored, in the response's own offset.
-        day = date.fromisoformat(authored[:10])
-        self.assertEqual(
-            steps["effectivePeriod"]["start"], f"{day - timedelta(days=1)}T00:00:00{offset}"
-        )
-        self.assertEqual(steps["effectivePeriod"]["end"], f"{day}T00:00:00{offset}")
-        self.assertNotIn("effectiveDateTime", steps)
-
-        # The weight declares no binding, so it still takes the moment of answering.
-        self.assertEqual(load_extraction("body-weight.json")["effectiveDateTime"], authored)
+        author = response["author"]["reference"]
+        instrument = load_extraction("questionnaire.json")
+        serialized = json.dumps(instrument, sort_keys=True)
+        self.assertNotIn("sdc-questionnaire-definitionExtractValue", serialized)
+        for fixture in ("body-weight.json", "blood-pressure.json", "step-count.json"):
+            with self.subTest(fixture=fixture):
+                observation = load_extraction(fixture)
+                self.assertEqual(observation["effectiveDateTime"], authored)
+                self.assertEqual(observation["issued"], authored)
+                self.assertEqual(observation["performer"], [{"reference": author}])
+                self.assertNotIn("effectivePeriod", observation)
 
     def test_extraction_ships_a_conformant_exchange_bundle(self) -> None:
         """A projection ships a Bundle, so the worked example has to be one.
@@ -418,6 +397,17 @@ class QuestionnaireContractTests(unittest.TestCase):
         )
         self.assertRegex(bundle["identifier"]["value"], module.EVENT_IDENTITY)
         self.assertIn("timestamp", bundle)
+
+        provenance = next(
+            entry["resource"]
+            for entry in bundle["entry"]
+            if entry["resource"]["resourceType"] == "Provenance"
+        )
+        timestamp = datetime.fromisoformat(bundle["timestamp"].replace("Z", "+00:00"))
+        recorded = datetime.fromisoformat(provenance["recorded"].replace("Z", "+00:00"))
+        occurred = datetime.fromisoformat(provenance["occurredDateTime"])
+        self.assertEqual(recorded, timestamp)
+        self.assertGreaterEqual(recorded, occurred)
 
         node_key = "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-exchange-entry-node-key"
         urls = set()
@@ -570,40 +560,30 @@ class QuestionnaireContractTests(unittest.TestCase):
         )
 
     def test_documentation_shows_the_example_it_claims_to_show(self) -> None:
-        """A snippet that has drifted from the example teaches the wrong thing.
-
-        Every instrument line the page prints is checked back against the authored FSH, and
-        the values it states for the extracted Observations are checked against the fixtures.
-        """
+        """The worked page renders its validated resources without copied payloads."""
         page = (ROOT / "questionnaire/input/pagecontent/measurements.md").read_text(
             encoding="utf-8"
         )
-        authored = (ROOT / "questionnaire/input/fsh/examples.fsh").read_text(encoding="utf-8")
-        printed = [
-            line.strip()
-            for line in page.splitlines()
-            if line.startswith("* item[")
-        ]
-        self.assertTrue(printed, "the page prints no instrument lines")
-        for line in printed:
-            self.assertIn(line, authored, f"the page prints a line the example does not have: {line}")
-
-        directory = ROOT / "questionnaire/fixtures/extraction"
-        weight = json.loads((directory / "body-weight.json").read_text(encoding="utf-8"))
-        pressure = json.loads((directory / "blood-pressure.json").read_text(encoding="utf-8"))
-        components = {
-            component["code"]["coding"][0]["code"]: component["valueQuantity"]
-            for component in pressure["component"]
+        renderings = {
+            "questionnaire.json": "questionnaire-summary.liquid",
+            "questionnaire-response.json": "questionnaire-response-summary.liquid",
+            "exchange-bundle.json": "extraction-bundle.liquid",
         }
-        stated = (
-            f"{weight['code']['coding'][0]['code']}",
-            f"{weight['valueQuantity']['value']}",
-            f"{pressure['code']['coding'][0]['code']}",
-            f"{components['8480-6']['value']}",
-            f"{components['8462-4']['value']}",
+        for fixture, template in renderings.items():
+            directive = (
+                "{% json fixtures/extraction/"
+                f"{fixture} liquid/{template} %}}"
+            )
+            self.assertIn(directive, page)
+            template_path = ROOT / "questionnaire/liquid" / template
+            self.assertTrue(template_path.is_file())
+            self.assertIn("$this", template_path.read_text(encoding="utf-8"))
+
+        self.assertNotIn("```json", page)
+        self.assertFalse(
+            any(line.startswith("* item[") for line in page.splitlines()),
+            "the page must not copy FSH statements from the authoritative example",
         )
-        for value in stated:
-            self.assertIn(value, page, f"the page never states {value}")
 
     def test_extraction_derives_the_documented_observations(self) -> None:
         """The chain has to close: instrument, then response, then Observation.
@@ -642,22 +622,8 @@ class QuestionnaireContractTests(unittest.TestCase):
                     declared["valueCodeableConcept"]["coding"][0]["code"] if declared else None
                 ),
                 "subject": response["subject"]["reference"],
+                "effectiveDateTime": response["authored"],
             }
-            # An item that binds a time supplies its own; everything else takes `authored`.
-            bound = [
-                e for e in question.get("extension", [])
-                if e["url"].endswith("sdc-questionnaire-definitionExtractValue")
-            ]
-            timed = [
-                child for child in question.get("item", [])
-                if any(
-                    e["url"].endswith("sdc-questionnaire-definitionExtractValue")
-                    for e in child.get("extension", [])
-                )
-            ]
-            observation["timeIsBound"] = bool(bound or timed)
-            if not observation["timeIsBound"]:
-                observation["effectiveDateTime"] = response["authored"]
             children = [
                 child
                 for child in question.get("item", [])
@@ -702,11 +668,8 @@ class QuestionnaireContractTests(unittest.TestCase):
                 fixture = published[item["code"]]
                 if item["category"] is not None:
                     self.assertEqual(fixture["category"][0]["coding"][0]["code"], item["category"])
-                if item["timeIsBound"]:
-                    # The binding takes the time out of `authored`, which is the whole point.
-                    self.assertNotEqual(fixture.get("effectiveDateTime"), response["authored"])
-                else:
-                    self.assertEqual(fixture["effectiveDateTime"], item["effectiveDateTime"])
+                self.assertEqual(fixture["effectiveDateTime"], item["effectiveDateTime"])
+                self.assertNotIn("effectivePeriod", fixture)
                 self.assertEqual(fixture["subject"]["reference"], item["subject"])
                 self.assertEqual(
                     fixture["derivedFrom"][0]["reference"],
@@ -768,7 +731,7 @@ class QuestionnaireContractTests(unittest.TestCase):
                 roles = {role(identifier) for identifier in observation["identifier"]}
                 self.assertEqual(roles, {"source-record", "source-output"})
                 for identifier in observation["identifier"]:
-                    self.assertRegex(identifier["value"], r"^v2:[^:]+:[1-9][0-9]*:[A-Za-z0-9_-]{43}$")
+                    self.assertRegex(identifier["value"], r"^v0:[^:]+:[1-9][0-9]*:[A-Za-z0-9_-]{43}$")
                     self.assertTrue(identifier["system"].startswith("https://"))
                 self.assertEqual(observation["status"], "final")
                 self.assertIn("subject", observation)
@@ -832,7 +795,6 @@ class QuestionnaireContractTests(unittest.TestCase):
                 "qg-version-algorithm-1",
                 "qg-item-text-1",
                 "qg-reference-1",
-                "qg-repeats-1",
                 "qg-enable-1",
                 "qg-expression-1",
                 "qg-variable-name-1",
@@ -943,6 +905,11 @@ class QuestionnaireContractTests(unittest.TestCase):
         self.assertFalse(
             any("coding.display" in element["id"] for element in elements.values())
         )
+        subject = elements["QuestionnaireResponse.subject"]
+        self.assertEqual(
+            subject["type"][0]["targetProfile"],
+            ["http://hl7.org/fhir/StructureDefinition/Patient"],
+        )
 
     def test_introductory_pair_uses_exact_identity_and_answer_nesting(self) -> None:
         questionnaire = load_generated(
@@ -1000,6 +967,27 @@ class QuestionnaireContractTests(unittest.TestCase):
                     questionnaire_without_prompt
                 )
             },
+        )
+
+    def test_questionnaire_canonical_and_item_text_reject_whitespace(self) -> None:
+        questionnaire = load_json(PAIR_FIXTURES / "valid/questionnaire.json")
+        for canonical in (
+            f" {questionnaire['url']}",
+            f"{questionnaire['url']} ",
+            "https://example.org/fhir/Questionnaire/paired questionnaire",
+        ):
+            invalid = copy.deepcopy(questionnaire)
+            invalid["url"] = canonical
+            self.assertIn(
+                "qg-canonical-1",
+                {issue.rule for issue in validator.validate_questionnaire(invalid)},
+            )
+
+        blank_text = copy.deepcopy(questionnaire)
+        blank_text["item"][0]["item"][0]["text"] = " \n "
+        self.assertIn(
+            "qg-item-text-1",
+            {issue.rule for issue in validator.validate_questionnaire(blank_text)},
         )
 
     def test_static_validator_corpus_has_one_mutation_and_expected_rule(self) -> None:
@@ -1093,6 +1081,12 @@ class QuestionnaireContractTests(unittest.TestCase):
                 self.assertEqual(
                     validator.validate_pair(questionnaire, valid, value_sets), []
                 )
+        for case in manifest["additionalValidResponseCases"]:
+            with self.subTest(case=case["id"]):
+                valid = apply_mutation(response, case["mutation"])
+                self.assertEqual(
+                    validator.validate_pair(questionnaire, valid, value_sets), []
+                )
 
         expected_rules: set[str] = set()
         for case in manifest["invalid"]:
@@ -1122,6 +1116,9 @@ class QuestionnaireContractTests(unittest.TestCase):
                 "pair-item-misplaced",
                 "pair-item-disabled",
                 "pair-response-entered-in-error",
+                "gqr-subject-required",
+                "gqr-authored-required",
+                "gqr-completion-mode-1",
             },
         )
 
@@ -1140,7 +1137,155 @@ class QuestionnaireContractTests(unittest.TestCase):
         result = subprocess.run(command, check=True, capture_output=True, text=True)
         self.assertEqual(json.loads(result.stdout), {"issues": [], "valid": True})
 
-    def test_enable_when_not_equal_uses_any_answer_semantics(self) -> None:
+    def test_enable_when_temporal_comparison_corpus(self) -> None:
+        manifest = load_json(PAIR_FIXTURES / "cases.json")
+        identifiers: set[str] = set()
+        for case in manifest["enableWhenComparisonCases"]:
+            with self.subTest(case=case["id"]):
+                self.assertNotIn(case["id"], identifiers)
+                identifiers.add(case["id"])
+                answers = (
+                    case["sourceAnswers"]
+                    if "sourceAnswers" in case
+                    else [case["sourceAnswer"]]
+                )
+                response = {
+                    "item": [
+                        {
+                            "linkId": "source",
+                            "answer": answers,
+                        }
+                    ]
+                }
+                condition = {
+                    "enableWhen": [
+                        {
+                            "question": "source",
+                            "operator": case["operator"],
+                            **case["conditionAnswer"],
+                        }
+                    ]
+                }
+                self.assertIs(
+                    validator.evaluate_enable_when(
+                        condition,
+                        validator.questionnaire_answer_values(response),
+                    ),
+                    case["expected"],
+                )
+
+    def test_temporal_bound_corpus_is_precision_and_offset_aware(self) -> None:
+        manifest = load_json(PAIR_FIXTURES / "cases.json")
+        questionnaire = load_json(PAIR_FIXTURES / "valid/questionnaire.json")
+        identifiers: set[str] = set()
+        for case in manifest["temporalBoundCases"]:
+            with self.subTest(case=case["id"]):
+                self.assertNotIn(case["id"], identifiers)
+                identifiers.add(case["id"])
+                minimum_key, minimum_value = next(iter(case["minimum"].items()))
+                maximum_key, maximum_value = next(iter(case["maximum"].items()))
+                candidate = copy.deepcopy(questionnaire)
+                candidate["item"] = [
+                    {
+                        "linkId": "bounded",
+                        "text": "Bounded temporal answer",
+                        "type": case["itemType"],
+                        "extension": [
+                            {
+                                "url": "http://hl7.org/fhir/StructureDefinition/minValue",
+                                minimum_key: minimum_value,
+                            },
+                            {
+                                "url": "http://hl7.org/fhir/StructureDefinition/maxValue",
+                                maximum_key: maximum_value,
+                            },
+                        ],
+                    }
+                ]
+                rules = {
+                    issue.rule
+                    for issue in validator.validate_questionnaire(candidate)
+                }
+                self.assertIs(
+                    "qg-value-bounds-order" not in rules,
+                    case["expectedValid"],
+                )
+
+    def test_quantity_equality_uses_coded_unit_not_display_text(self) -> None:
+        quantity = {
+            "value": 1,
+            "unit": "kg",
+            "system": "http://unitsofmeasure.org",
+            "code": "kg",
+        }
+        self.assertTrue(validator.values_equal(quantity, copy.deepcopy(quantity)))
+        presentation_variant = copy.deepcopy(quantity)
+        presentation_variant["unit"] = "kilogram"
+        self.assertTrue(validator.values_equal(quantity, presentation_variant))
+        for field, replacement in (
+            ("value", 2),
+            ("system", "https://example.org/units"),
+            ("code", "g"),
+        ):
+            different = copy.deepcopy(quantity)
+            different[field] = replacement
+            with self.subTest(field=field):
+                self.assertFalse(validator.values_equal(quantity, different))
+
+    def test_completed_pair_skips_constraints_for_absent_items(self) -> None:
+        questionnaire = load_json(PAIR_FIXTURES / "valid/questionnaire.json")
+        response = load_json(PAIR_FIXTURES / "valid/response.json")
+        value_sets = [load_json(PAIR_FIXTURES / "valid/value-set.json")]
+        constrained = {
+            item["linkId"]
+            for item, _ in validator.iter_items(questionnaire["item"])
+            if validator.extensions(item, validator.TARGET_CONSTRAINT)
+        }
+        present = {
+            item["linkId"]
+            for item in validator.response_items(response.get("item", []))
+        }
+        self.assertEqual(constrained, {"note", "optional-review"})
+        self.assertTrue(constrained.isdisjoint(present))
+        self.assertEqual(
+            validator.validate_pair(questionnaire, response, value_sets), []
+        )
+
+    def test_pair_requires_exact_patient_subject_type(self) -> None:
+        questionnaire = load_json(PAIR_FIXTURES / "valid/questionnaire.json")
+        response = load_json(PAIR_FIXTURES / "valid/response.json")
+        value_sets = [load_json(PAIR_FIXTURES / "valid/value-set.json")]
+        for subject_types in (None, [], ["Practitioner"]):
+            invalid = copy.deepcopy(questionnaire)
+            if subject_types is None:
+                invalid.pop("subjectType")
+            else:
+                invalid["subjectType"] = subject_types
+            rules = {
+                issue.rule
+                for issue in validator.validate_pair(invalid, response, value_sets)
+            }
+            self.assertTrue({"qg-subject-type", "pair-subject-type"} <= rules)
+
+    def test_inline_temporal_options_preserve_value_type_and_precision(self) -> None:
+        item = {"answerOption": [{"valueDate": "2026-08"}]}
+        self.assertIsNotNone(
+            validator.selected_inline_option(
+                item, validator.TypedAnswerValue("valueDate", "2026-08")
+            )
+        )
+        self.assertIsNone(
+            validator.selected_inline_option(
+                item, validator.TypedAnswerValue("valueDate", "2026-08-15")
+            )
+        )
+        self.assertIsNone(
+            validator.selected_inline_option(
+                item, validator.TypedAnswerValue("valueDateTime", "2026-08")
+            )
+        )
+
+    def test_enable_when_not_equal_matches_any_repeated_answer(self) -> None:
         condition = {
             "enableWhen": [
                 {
@@ -1158,10 +1303,374 @@ class QuestionnaireContractTests(unittest.TestCase):
 
         self.assertFalse(validator.evaluate_enable_when(condition, {}))
         self.assertFalse(
-            validator.evaluate_enable_when(condition, {"choice": [expected]})
+            validator.evaluate_enable_when(
+                condition,
+                {"choice": [validator.TypedAnswerValue("valueCoding", expected)]},
+            )
         )
         self.assertTrue(
-            validator.evaluate_enable_when(condition, {"choice": [expected, other]})
+            validator.evaluate_enable_when(
+                condition,
+                {
+                    "choice": [
+                        validator.TypedAnswerValue("valueCoding", expected),
+                        validator.TypedAnswerValue("valueCoding", other),
+                    ]
+                },
+            )
+        )
+        self.assertTrue(
+            validator.evaluate_enable_when(
+                condition,
+                {"choice": [validator.TypedAnswerValue("valueCoding", other)]},
+            )
+        )
+
+    def test_repeating_groups_evaluate_enablement_per_occurrence(self) -> None:
+        questionnaire = load_json(PAIR_FIXTURES / "valid/questionnaire.json")
+        response = load_json(PAIR_FIXTURES / "valid/response.json")
+        value_sets = [load_json(PAIR_FIXTURES / "valid/value-set.json")]
+        questionnaire["item"] = [{
+            "linkId": "episode",
+            "text": "Episode",
+            "type": "group",
+            "repeats": True,
+            "item": [
+                {
+                    "linkId": "symptom-present",
+                    "text": "Was a symptom present?",
+                    "type": "boolean",
+                    "required": True,
+                },
+                {
+                    "linkId": "symptom-note",
+                    "text": "Describe the symptom",
+                    "type": "string",
+                    "required": True,
+                    "enableWhen": [{
+                        "question": "symptom-present",
+                        "operator": "=",
+                        "answerBoolean": True,
+                    }],
+                },
+            ],
+        }]
+        response["item"] = [
+            {
+                "linkId": "episode",
+                "item": [
+                    {"linkId": "symptom-present", "answer": [{"valueBoolean": True}]},
+                    {"linkId": "symptom-note", "answer": [{"valueString": "Headache"}]},
+                ],
+            },
+            {
+                "linkId": "episode",
+                "item": [
+                    {"linkId": "symptom-present", "answer": [{"valueBoolean": False}]},
+                ],
+            },
+        ]
+        self.assertEqual(
+            validator.validate_pair(questionnaire, response, value_sets), []
+        )
+
+        invalid = copy.deepcopy(response)
+        invalid["item"][1]["item"].append({
+            "linkId": "symptom-note",
+            "answer": [{"valueString": "Must be absent"}],
+        })
+        self.assertEqual(
+            {issue.rule for issue in validator.validate_pair(questionnaire, invalid, value_sets)},
+            {"pair-item-disabled"},
+        )
+
+    def test_occurrence_minima_apply_only_to_enabled_completed_items(self) -> None:
+        questionnaire = load_json(PAIR_FIXTURES / "valid/questionnaire.json")
+        completed = load_json(PAIR_FIXTURES / "valid/response.json")
+        value_sets = [load_json(PAIR_FIXTURES / "valid/value-set.json")]
+        questionnaire["item"] = [
+            {
+                "linkId": "gate",
+                "text": "Include episodes?",
+                "type": "boolean",
+                "required": True,
+            },
+            {
+                "extension": [
+                    {"url": validator.MIN_OCCURS, "valueInteger": 2},
+                    {"url": validator.MAX_OCCURS, "valueInteger": 2},
+                ],
+                "linkId": "episode",
+                "text": "Episode",
+                "type": "group",
+                "required": True,
+                "repeats": True,
+                "enableWhen": [
+                    {
+                        "question": "gate",
+                        "operator": "=",
+                        "answerBoolean": True,
+                    }
+                ],
+                "item": [
+                    {
+                        "extension": [
+                            {"url": validator.MIN_OCCURS, "valueInteger": 2},
+                            {"url": validator.MAX_OCCURS, "valueInteger": 2},
+                        ],
+                        "linkId": "tag",
+                        "text": "Tags",
+                        "type": "string",
+                        "required": True,
+                        "repeats": True,
+                    }
+                ],
+            },
+        ]
+
+        disabled = copy.deepcopy(completed)
+        disabled["item"] = [
+            {"linkId": "gate", "answer": [{"valueBoolean": False}]}
+        ]
+        self.assertEqual(
+            validator.validate_pair(questionnaire, disabled, value_sets), []
+        )
+
+        in_progress = copy.deepcopy(completed)
+        in_progress["status"] = "in-progress"
+        in_progress["item"] = [
+            {"linkId": "gate", "answer": [{"valueBoolean": True}]},
+            {
+                "linkId": "episode",
+                "item": [
+                    {"linkId": "tag", "answer": [{"valueString": "first"}]}
+                ],
+            },
+        ]
+        self.assertNotIn(
+            "pair-answer-occurrence",
+            {
+                issue.rule
+                for issue in validator.validate_pair(
+                    questionnaire, in_progress, value_sets
+                )
+            },
+        )
+
+        completed_with_minima_unmet = copy.deepcopy(in_progress)
+        completed_with_minima_unmet["status"] = "completed"
+        occurrence_issues = [
+            issue
+            for issue in validator.validate_pair(
+                questionnaire, completed_with_minima_unmet, value_sets
+            )
+            if issue.rule == "pair-answer-occurrence"
+        ]
+        self.assertEqual(len(occurrence_issues), 2)
+
+    def test_absent_repeating_question_minimum_is_deferred_until_completion(self) -> None:
+        questionnaire = load_json(PAIR_FIXTURES / "valid/questionnaire.json")
+        response = load_json(PAIR_FIXTURES / "valid/response.json")
+        value_sets = [load_json(PAIR_FIXTURES / "valid/value-set.json")]
+        questionnaire["item"] = [{
+            "extension": [{"url": validator.MIN_OCCURS, "valueInteger": 2}],
+            "linkId": "tags",
+            "text": "Tags",
+            "type": "string",
+            "required": True,
+            "repeats": True,
+        }]
+        response["item"] = []
+        response["status"] = "in-progress"
+
+        self.assertNotIn(
+            "pair-answer-occurrence",
+            {
+                issue.rule
+                for issue in validator.validate_pair(
+                    questionnaire, response, value_sets
+                )
+            },
+        )
+
+        for status in ("completed", "amended"):
+            completed = copy.deepcopy(response)
+            completed["status"] = status
+            self.assertIn(
+                "pair-answer-occurrence",
+                {
+                    issue.rule
+                    for issue in validator.validate_pair(
+                        questionnaire, completed, value_sets
+                    )
+                },
+            )
+
+    def test_min_occurs_requires_required_item(self) -> None:
+        questionnaire = load_json(PAIR_FIXTURES / "valid/questionnaire.json")
+        questionnaire["item"] = [
+            {
+                "extension": [
+                    {"url": validator.MIN_OCCURS, "valueInteger": 0}
+                ],
+                "linkId": "optional-repetition",
+                "text": "Optional repetition",
+                "type": "string",
+                "repeats": True,
+            }
+        ]
+        self.assertEqual(
+            {issue.rule for issue in validator.validate_questionnaire(questionnaire)},
+            {"qg-occurrence-1"},
+        )
+
+    def test_quantity_bounds_require_exact_ucum_identity(self) -> None:
+        questionnaire = load_json(PAIR_FIXTURES / "valid/questionnaire.json")
+        questionnaire["item"] = [
+            {
+                "extension": [
+                    {
+                        "url": validator.MIN_QUANTITY,
+                        "valueQuantity": {
+                            "value": 1,
+                            "system": "https://example.org/units",
+                            "code": "kg",
+                        },
+                    }
+                ],
+                "linkId": "mass",
+                "text": "Mass",
+                "type": "quantity",
+            }
+        ]
+        self.assertEqual(
+            {issue.rule for issue in validator.validate_questionnaire(questionnaire)},
+            {"qg-quantity-bound-unit"},
+        )
+
+        questionnaire["item"][0]["extension"][0]["valueQuantity"]["system"] = (
+            validator.UCUM_SYSTEM
+        )
+        self.assertEqual(validator.validate_questionnaire(questionnaire), [])
+
+    def test_fractional_leap_seconds_are_rejected_without_a_comparison(self) -> None:
+        questionnaire = load_json(PAIR_FIXTURES / "valid/questionnaire.json")
+        response = load_json(PAIR_FIXTURES / "valid/response.json")
+        questionnaire["item"] = [
+            {
+                "linkId": "captured-at",
+                "text": "Captured at",
+                "type": "dateTime",
+            }
+        ]
+        response["item"] = [
+            {
+                "linkId": "captured-at",
+                "answer": [{"valueDateTime": "2016-12-31T23:59:60.1Z"}],
+            }
+        ]
+        self.assertEqual(
+            {issue.rule for issue in validator.validate_pair(questionnaire, response)},
+            {"pair-answer-temporal"},
+        )
+
+    def test_complete_valueset_expansion_is_definitive(self) -> None:
+        value_set = {
+            "resourceType": "ValueSet",
+            "url": "https://example.org/ValueSet/filtered",
+            "version": "1.0.0",
+            "compose": {
+                "include": [
+                    {
+                        "system": "https://example.org/CodeSystem/source",
+                        "filter": [
+                            {"property": "status", "op": "=", "value": "active"}
+                        ],
+                    }
+                ]
+            },
+            "expansion": {
+                "total": 1,
+                "contains": [
+                    {
+                        "system": "https://example.org/CodeSystem/source",
+                        "code": "included",
+                    }
+                ],
+            },
+        }
+        resolver = validator.ValueSetResolver([value_set])
+        self.assertTrue(
+            resolver.contains(
+                f"{value_set['url']}|{value_set['version']}",
+                {
+                    "system": "https://example.org/CodeSystem/source",
+                    "code": "included",
+                },
+            )
+        )
+        self.assertFalse(
+            resolver.contains(
+                f"{value_set['url']}|{value_set['version']}",
+                {
+                    "system": "https://example.org/CodeSystem/source",
+                    "code": "absent",
+                },
+            )
+        )
+
+        value_set["expansion"]["total"] = 2
+        partial_resolver = validator.ValueSetResolver([value_set])
+        self.assertIsNone(
+            partial_resolver.contains(
+                f"{value_set['url']}|{value_set['version']}",
+                {
+                    "system": "https://example.org/CodeSystem/source",
+                    "code": "absent",
+                },
+            )
+        )
+
+        value_set["expansion"]["total"] = 1
+        value_set["expansion"]["offset"] = False
+        malformed_offset_resolver = validator.ValueSetResolver([value_set])
+        self.assertIsNone(
+            malformed_offset_resolver.contains(
+                f"{value_set['url']}|{value_set['version']}",
+                {
+                    "system": "https://example.org/CodeSystem/source",
+                    "code": "absent",
+                },
+            )
+        )
+
+    def test_json_and_numeric_validation_fail_closed(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            duplicate = Path(directory) / "duplicate.json"
+            duplicate.write_text('{"resourceType":"Questionnaire","resourceType":"Patient"}', encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "duplicate JSON object key"):
+                validator.load_json(duplicate)
+
+            nonfinite = Path(directory) / "nonfinite.json"
+            nonfinite.write_text('{"resourceType":"Questionnaire","value":NaN}', encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "non-finite JSON number"):
+                validator.load_json(nonfinite)
+
+        self.assertIsNone(validator.decimal_value(float("nan")))
+        questionnaire = load_json(PAIR_FIXTURES / "valid/questionnaire.json")
+        response = load_json(PAIR_FIXTURES / "valid/response.json")
+        questionnaire["item"] = [{
+            "linkId": "decimal",
+            "text": "Decimal",
+            "type": "decimal",
+        }]
+        response["item"] = [{
+            "linkId": "decimal",
+            "answer": [{"valueDecimal": float("nan")}],
+        }]
+        self.assertEqual(
+            {issue.rule for issue in validator.validate_pair(questionnaire, response)},
+            {"pair-answer-number"},
         )
 
     def test_target_constraint_evaluation_is_status_and_severity_aware(self) -> None:
@@ -1223,7 +1732,7 @@ class QuestionnaireContractTests(unittest.TestCase):
             self.assertIsNotNone(package_file)
             package = json.load(package_file)
         self.assertEqual(package["name"], "org.grovealliance.fhir.questionnaire")
-        self.assertEqual(package["version"], "0.6.0")
+        self.assertEqual(package["version"], RELEASE_VERSION)
         self.assertEqual(package["dependencies"].get("hl7.fhir.uv.sdc"), "4.0.0")
         self.assertEqual(
             package["dependencies"].get("hl7.fhir.uv.extensions.r4"),

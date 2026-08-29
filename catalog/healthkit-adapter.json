@@ -1,6 +1,6 @@
 {
   "$schema": "https://grovealliance.org/fhir/catalog/schemas/catalog-contracts.schema.json",
-  "schemaVersion": 1,
+  "schemaVersion": 0,
   "fhirVersion": "4.0.1",
   "version": "0.6.0",
   "source": {
@@ -79,12 +79,12 @@
   },
   "conversionProvenanceProfile": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-conversion-provenance",
   "statusVocabulary": {
-    "supported": "The 0.6.0 HealthKit adapter defines and validates emitted FHIR output.",
+    "supported": "The current HealthKit adapter defines and validates emitted FHIR output.",
     "mapped-standard": "The source is represented by another exact Grove or authoritative standard package rather than a Mobile measurement profile.",
-    "platform-exclusive": "The 0.6.0 adapter defines output through a platform-exclusive HealthKit profile whose meaning remains HealthKit-specific.",
+    "platform-exclusive": "The current adapter defines output through a platform-exclusive HealthKit profile whose meaning remains HealthKit-specific.",
     "unmodeled": "The source type is inventoried, but no shared or HealthKit-scoped profile models it and no output is admitted.",
-    "deferred": "No FHIR output for this source type is admitted by the 0.6.0 adapter.",
-    "intentionally-unsupported": "The 0.6.0 contract explicitly rejects this source meaning rather than approximating it."
+    "deferred": "No FHIR output for this source type is admitted by the current adapter.",
+    "intentionally-unsupported": "The Grove FHIR contracts explicitly reject this source meaning rather than approximating it."
   },
   "observationIssued": {
     "cardinality": "0..0",
@@ -258,7 +258,7 @@
       "profiles": [
         "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-sleep-duration"
       ],
-      "requirement": "This is not a HealthKit platform source identifier. Version 0.6.0 does not define the session-boundary aggregation contract; individual admitted samples map only to sleep stage."
+      "requirement": "This is not a HealthKit platform source identifier. The Grove FHIR contracts do not define the session-boundary aggregation contract; individual admitted samples map only to sleep stage."
     }
   ],
   "rows": [
@@ -1325,7 +1325,7 @@
       "profiles": [
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-biological-sex"
       ],
-      "requirement": "Emit the reviewed healthkit-biological-sex Observation only for HKBiologicalSex.female, .male, or .other. LOINC 46098-0 'Sex' identifies the observation concept; do not relabel the source as LOINC 76689-9 'Sex assigned at birth', because HealthKit does not assert that provenance. Preserve the exact HealthKit result in the required Grove value set, and emit no Observation for .notSet."
+      "requirement": "Emit the healthkit-biological-sex Observation only for HKBiologicalSex.female, .male, or .other. LOINC 46098-0 'Sex' identifies the observation concept; do not relabel the source as LOINC 76689-9 'Sex assigned at birth', because HealthKit does not assert that provenance. Preserve the exact HealthKit result in the required Grove value set, and emit no Observation for .notSet."
     },
     {
       "sourceTypeIdentifier": "HKCharacteristicTypeIdentifierBloodType",
@@ -1356,7 +1356,7 @@
       "profiles": [
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-date-of-birth"
       ],
-      "requirement": "The mapping is defined, but disclosure is fail-closed: emit the reviewed healthkit-date-of-birth Observation only when deployment policy explicitly authorizes exchanging this direct identifier. Otherwise emit no resource. Never substitute an inferred date, silently reduce precision, or place the value on the pseudonymous exchange Patient; deployments that only require age must derive it under their own approved policy."
+      "requirement": "The mapping is defined, but disclosure is fail-closed: emit the healthkit-date-of-birth Observation only when deployment policy explicitly authorizes exchanging this direct identifier. Otherwise emit no resource. Never substitute an inferred date, silently reduce precision, or place the value on the pseudonymous exchange Patient; deployments that only require age must derive it under their own approved policy."
     },
     {
       "sourceTypeIdentifier": "HKCharacteristicTypeIdentifierFitzpatrickSkinType",
@@ -1372,7 +1372,7 @@
       "profiles": [
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-fitzpatrick-skin-type"
       ],
-      "requirement": "Emit the reviewed healthkit-fitzpatrick-skin-type Observation only for HealthKit's six stated Fitzpatrick categories, preserving the exact category in the required Grove value set. Treat the value as source-reported classification, not a measured or inferred skin phenotype, and emit no Observation for .notSet."
+      "requirement": "Emit the healthkit-fitzpatrick-skin-type Observation only for HealthKit's six stated Fitzpatrick categories, preserving the exact category in the required Grove value set. Treat the value as source-reported classification, not a measured or inferred skin phenotype, and emit no Observation for .notSet."
     },
     {
       "sourceTypeIdentifier": "HKCharacteristicTypeIdentifierWheelchairUse",
@@ -1618,7 +1618,7 @@
       "profiles": [
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-user-annotated-medication"
       ],
-      "requirement": "A tracked medication is admitted as a MedicationStatement identified by the HKHealthConceptIdentifier of its concept, carrying the person's nickname, the platform's general form, and whether a schedule exists. An archived medication is completed and a tracked one is active."
+      "requirement": "A non-archived tracked medication is admitted as a MedicationStatement identified by the HKHealthConceptIdentifier of its concept, carrying the person's nickname, the platform's general form, whether a schedule exists, and status active. An archived medication is not admitted, because archival alone does not establish that medication use was completed or stopped."
     },
     {
       "sourceTypeIdentifier": "HKDocumentTypeIdentifierCDA",
@@ -1835,13 +1835,10 @@
         "HKQuantityTypeIdentifierBloodPressureDiastolic"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/bloodpressurediastolic",
-      "status": "supported",
-      "measurementIDs": [
-        "blood-pressure"
-      ],
-      "profiles": [
-        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-blood-pressure"
-      ]
+      "status": "intentionally-unsupported",
+      "measurementIDs": [],
+      "profiles": [],
+      "requirement": "A diastolic quantity alone cannot populate the required two-component blood-pressure panel. Convert blood pressure only from HKCorrelationTypeIdentifierBloodPressure."
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierBloodPressureSystolic",
@@ -1850,13 +1847,10 @@
         "HKQuantityTypeIdentifierBloodPressureSystolic"
       ],
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/bloodpressuresystolic",
-      "status": "supported",
-      "measurementIDs": [
-        "blood-pressure"
-      ],
-      "profiles": [
-        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-blood-pressure"
-      ]
+      "status": "intentionally-unsupported",
+      "measurementIDs": [],
+      "profiles": [],
+      "requirement": "A systolic quantity alone cannot populate the required two-component blood-pressure panel. Convert blood pressure only from HKCorrelationTypeIdentifierBloodPressure."
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierBodyFatPercentage",
@@ -3488,7 +3482,7 @@
       "profiles": [
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-vision-prescription"
       ],
-      "requirement": "A glasses or contacts prescription is admitted as a structured R4 VisionPrescription: the lens specifications map natively, one HKVisionPrism resolves into its vertical and horizontal components, and vertex distance, the two pupillary distances, and the expiration date ride as extensions. HealthKit supplies no prescriber, so the mandatory reference is stated absent rather than invented."
+      "requirement": "A glasses or contacts prescription is admitted as a structured R4 VisionPrescription: the lens specifications map natively, one HKVisionPrism resolves into its vertical and horizontal components, and vertex distance, the two pupillary distances, and the expiration date are represented by extensions. HealthKit supplies no prescriber, so the mandatory reference is stated absent rather than invented."
     },
     {
       "sourceTypeIdentifier": "HKWorkoutRouteTypeIdentifier",
@@ -3534,7 +3528,7 @@
       "HKDevice.softwareVersion"
     ],
     "fallback": "Omit Observation.device when no governed stable per-unit token exists. Descriptive and version fields alone cannot establish a physical instance.",
-    "snapshot": "When emitted, the Device carries both recording-device and event-scoped device-snapshot v2 identifiers; descriptive and version fields are event-time snapshot data."
+    "snapshot": "When emitted, the Device carries both recording-device and event-scoped device-snapshot v0 identifiers; descriptive and version fields are event-time snapshot data."
   },
   "applicationDeviceIdentity": {
     "profile": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-application-device",
@@ -3550,7 +3544,7 @@
   },
   "identity": {
     "contract": "catalog/exchange-protocol.json",
-    "protocolVersion": 2,
+    "protocolVersion": 0,
     "adapterId": "healthkit",
     "sourceRecord": {
       "identityKind": "source-record",

@@ -80,6 +80,13 @@ while IFS= read -r wave_line; do
 done < <(python3 "$REPOSITORY_ROOT/Scripts/guide-build-plan.py")
 
 echo "==> QA ledger"
-# shellcheck disable=SC2046 # the plan prints one bare guide name per field, which is the argument list.
-python3 "$REPOSITORY_ROOT/Scripts/check-guide-qa.py" \
-  $(python3 "$REPOSITORY_ROOT/Scripts/guide-build-plan.py" | tr '\n' ' ')
+if [[ "${GROVE_TX_OFFLINE:-0}" == "1" ]]; then
+  # shellcheck disable=SC2046 # the plan prints one bare guide name per field, which is the argument list.
+  python3 "$REPOSITORY_ROOT/Scripts/check-guide-qa.py" \
+    --offline-terminology \
+    $(python3 "$REPOSITORY_ROOT/Scripts/guide-build-plan.py" | tr '\n' ' ')
+else
+  # shellcheck disable=SC2046 # the plan prints one bare guide name per field, which is the argument list.
+  python3 "$REPOSITORY_ROOT/Scripts/check-guide-qa.py" \
+    $(python3 "$REPOSITORY_ROOT/Scripts/guide-build-plan.py" | tr '\n' ' ')
+fi

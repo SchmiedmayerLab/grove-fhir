@@ -138,7 +138,7 @@ class MeasurementProfileProjectionTests(unittest.TestCase):
     def test_generated_profiles_are_current(self) -> None:
         code, output = self.run_renderer(ROOT, "--check")
         self.assertEqual(code, 0, output)
-        self.assertIn("222 emitted, 0 parity-checked, problems=0", output)
+        self.assertIn("221 emitted, 0 parity-checked, problems=0", output)
 
     def test_root_controls_shared_value_set_example_sources(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 0,
+  "system": "urn:iso:std:iso:11073:10101",
+  "standard": "ISO/IEEE 11073-10101",
+  "copyright": "ISO/IEEE 11073-10101 nomenclature codes are copyright © IEEE and ISO. This file records only the identifiers and labels used by the Grove FHIR Implementation Guides and grants no rights in the underlying standard.",
+  "verification": {
+    "verifiedOn": "2026-08-29",
+    "method": "Each system, code, and label was cross-checked against the cited HL7 FHIR R4 or HL7 Personal Health Device R4 material. This closed excerpt supports deterministic offline validation; it is not a republication of the ISO/IEEE terminology."
+  },
+  "concepts": {
+    "131329": {
+      "display": "MDC_ECG_ELEC_POTL_I",
+      "status": "verified",
+      "source": "https://www.hl7.org/fhir/R4/observation-example-sample-data.json.html"
+    },
+    "150452": {
+      "display": "MDC_PULS_OXIM_PLETH",
+      "status": "verified",
+      "source": "https://hl7.org/fhir/uv/phd/STU1/Observation-rtsa-1234.html"
+    },
+    "531975": {
+      "display": "MDC_ID_PROD_SPEC_SW",
+      "status": "verified",
+      "source": "https://hl7.org/fhir/uv/phd/STU1/PhdDeviceProfile.html"
+    },
+    "531976": {
+      "display": "MDC_ID_PROD_SPEC_FW",
+      "status": "verified",
+      "source": "https://hl7.org/fhir/uv/phd/STU1/PhdDeviceProfile.html"
+    }
+  }
+}

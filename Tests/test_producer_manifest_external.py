@@ -27,6 +27,10 @@ from Tests.producer_validation_test_support import (
     tempfile,
 )
 
+RELEASE_VERSION = json.loads(
+    (ROOT / "catalog/release-manifest.json").read_text(encoding="utf-8")
+)["releaseVersion"]
+
 class ProducerManifestExternalTests(ProducerValidationTestCase):
     def test_repository_example_is_structurally_valid(self) -> None:
         manifest, resources = manifest_validation.validate_manifest(self.example)
@@ -40,7 +44,7 @@ class ProducerManifestExternalTests(ProducerValidationTestCase):
             / "Conformance/corpora/mobile-exchange/official-validator-manifest.json"
         )
         manifest, resources = manifest_validation.validate_manifest(path)
-        self.assertEqual(manifest["producer"]["version"], "0.6.0")
+        self.assertEqual(manifest["producer"]["version"], RELEASE_VERSION)
         self.assertEqual(
             [resource.name for resource in resources],
             ["exchange-bundle.json", "retraction-bundle.json"],

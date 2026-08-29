@@ -12,8 +12,8 @@ Expression: "component.where(code.coding.where(system = 'https://grovealliance.o
 Severity: #error
 
 Invariant: healthkit-opaque-identifier-value-1
-Description: "A HealthKit source, output, or writer identifier is a canonical deployment-scoped Grove v2 HMAC value."
-Expression: "$this.matches('^v2:[A-Za-z0-9._-]+:[1-9][0-9]*:[A-Za-z0-9_-]{43}$')"
+Description: "A HealthKit source, output, or writer identifier is a canonical deployment-scoped Grove v0 HMAC value."
+Expression: "$this.matches('^v0:[A-Za-z0-9._-]+:[1-9][0-9]*:[A-Za-z0-9_-]{43}$')"
 Severity: #error
 
 Invariant: healthkit-writer-record-1
@@ -60,7 +60,7 @@ Profile: HealthKitApplicationDevice
 Parent: GroveApplicationDevice
 Id: healthkit-application-device
 Title: "HealthKit Application Device"
-Description: "An immutable Grove application snapshot with exactly one typed Apple bundle identifier for either the converting application or a caller-classified HKSourceRevision application. The bundle identifier names an application product, never an installation or host."
+Description: "An immutable Grove application snapshot with exactly one typed Apple bundle identifier for either the converting application or a producer-classified HKSourceRevision application. The bundle identifier names an application product, never an installation or host."
 * identifier contains appleBundleId 1..1 MS
 * identifier[appleBundleId].type 1..1 MS
 * identifier[appleBundleId].type = $healthKitIdentifierType#apple-bundle-id
@@ -199,7 +199,7 @@ Description: "A pass-through envelope for one provider-issued clinical FHIR reso
 * content.format 1..1 MS
 * content.format = $recordingFormat#fhir-r4-resource
 // Required by the inherited HealthKit recording parent and repeated here for clinical clarity.
-* content.format.version 1..1 MS
+* content.format.version 0..0
 * content.attachment.contentType 1..1 MS
 * content.attachment.contentType = #application/fhir+json (exactly)
 * content.attachment.size 1..1 MS
@@ -304,7 +304,7 @@ Profile: HealthKitUserAnnotatedMedication
 Parent: MedicationStatement
 Id: healthkit-user-annotated-medication
 Title: "HealthKit User Annotated Medication"
-Description: "A medication a person tracks in Health, with the annotations they added while adding it. HealthKit publishes no sample identity for a tracked medication, so the HKHealthConceptIdentifier of the underlying concept is the identity a dose event refers to. The archived flag is the whole of what the R4 status carries: an archived medication is completed and a medication the person still tracks is active."
+Description: "A non-archived medication a person tracks in Health, with the annotations they added while adding it. HealthKit publishes no sample identity for a tracked medication, so the HKHealthConceptIdentifier of the underlying concept is the identity a dose event refers to. The status is active; archived entries are not admitted because archival alone does not establish that medication use was completed or stopped."
 * insert HealthKitOutputIdentitySlices
 * identifier 3..* MS
 * identifier contains healthConcept 1..1 MS

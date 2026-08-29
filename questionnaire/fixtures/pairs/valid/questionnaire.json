@@ -97,6 +97,23 @@
       "type": "boolean",
       "item": [
         {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/targetConstraint",
+              "extension": [
+                {"url": "key", "valueId": "note-must-be-reviewed"},
+                {"url": "severity", "valueCode": "error"},
+                {
+                  "url": "expression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%context.answer.value.exists()"
+                  }
+                },
+                {"url": "human", "valueString": "Review the supplied note."}
+              ]
+            }
+          ],
           "linkId": "note",
           "text": "Note",
           "type": "text",
@@ -110,6 +127,28 @@
           ]
         }
       ]
+    },
+    {
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/targetConstraint",
+          "extension": [
+            {"url": "key", "valueId": "optional-review-must-be-reviewed"},
+            {"url": "severity", "valueCode": "error"},
+            {
+              "url": "expression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%context.answer.value.exists()"
+              }
+            },
+            {"url": "human", "valueString": "Review the supplied optional answer."}
+          ]
+        }
+      ],
+      "linkId": "optional-review",
+      "text": "Optional review",
+      "type": "string"
     }
   ]
 }

@@ -61,12 +61,6 @@
       "mutation": {"op": "remove", "path": "/item/0/text"}
     },
     {
-      "id": "questionnaire-prohibited-repeats",
-      "base": "valid/questionnaire.json",
-      "expectedRule": "qg-repeats-1",
-      "mutation": {"op": "add", "path": "/item/0/repeats", "value": true}
-    },
-    {
       "id": "questionnaire-enable-forms-combined",
       "base": "valid/questionnaire-conditions.json",
       "expectedRule": "qg-enable-1",

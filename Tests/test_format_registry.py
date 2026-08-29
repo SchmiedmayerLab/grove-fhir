@@ -6,6 +6,7 @@
 # SPDX-License-Identifier: MIT
 #
 
+import base64
 import json
 import re
 import subprocess
@@ -97,13 +98,160 @@ class FormatRegistryTests(unittest.TestCase):
             self.assertEqual(len(names), len(set(names)), stream)
             for column in schema["columns"]:
                 self.assertIn(column["type"], {"timestamp", "number", "integer", "string"})
+                self.assertIsInstance(column["nullable"], bool)
                 self.assertTrue(column["meaning"], f"{stream}.{column['name']}")
+                if column["nullable"]:
+                    self.assertIn("empty", column["meaning"].lower())
+
+    def test_csv_lexical_and_empty_field_rules_are_explicit(self) -> None:
+        encoding = REGISTRY["encodings"]["csv"]
+        number_pattern = re.compile(encoding["numberPattern"])
+        integer_pattern = re.compile(encoding["integerPattern"])
+        for value in ("0", "0.0", "0.1", "1", "1.0", "1.01", "-0.1", "-1.0"):
+            with self.subTest(number=value):
+                self.assertIsNotNone(number_pattern.fullmatch(value))
+        for value in ("-0", "-0.0", "00", "01", "1.00", "1.20", "+1", "1e1"):
+            with self.subTest(invalid_number=value):
+                self.assertIsNone(number_pattern.fullmatch(value))
+        for value in ("0", "1", "-1"):
+            with self.subTest(integer=value):
+                self.assertIsNotNone(integer_pattern.fullmatch(value))
+        for value in ("-0", "00", "01", "1.0", "+1", "1e1"):
+            with self.subTest(invalid_integer=value):
+                self.assertIsNone(integer_pattern.fullmatch(value))
+        self.assertIn("-0", encoding["integers"])
+        self.assertIn("leading zero", encoding["integers"])
+        self.assertIn("redundant fractional trailing zero", encoding["numbers"])
+        self.assertIn("lone fractional .0", encoding["numbers"])
+        self.assertEqual(encoding["numberValueDomain"], "finite-ieee754-binary64")
+        self.assertIn("IEEE-754 binary64", encoding["numbers"])
+        self.assertIn("IEEE-754 binary64", encoding["timestamps"])
+        self.assertIn("CR (0x0D) is prohibited anywhere", encoding["rowTerminator"])
+        self.assertIn("`Nullable` column controls empty fields", encoding["emptyFields"])
+        self.assertIn("`no` requires a non-empty field", encoding["emptyFields"])
+        self.assertIn("`yes` permits an empty field", encoding["emptyFields"])
+
+    def test_ambient_light_uses_the_correct_chromaticity_spelling(self) -> None:
+        columns = [
+            column["name"]
+            for column in REGISTRY["formats"]["ambient-light-samples"]["columns"]
+        ]
+        self.assertEqual(columns[3:5], ["chromaticityX", "chromaticityY"])
 
     def test_a_format_code_never_names_its_encoding(self) -> None:
-        # The code names the payload's schema; the encoding is the media type's job.
+        # The code identifies the payload's wire format; the media type carries its encoding.
         for code in REGISTRY["formats"]:
             for encoding in ("csv", "json", "binary", "octet"):
                 self.assertNotIn(encoding, code.split("-"), code)
+
+    def test_native_recording_is_a_generic_json_envelope_not_a_schema_gate(self) -> None:
+        specification = REGISTRY["formats"]["native-recording"]["specification"]
+        self.assertIn("strict UTF-8 JSON", specification["structure"])
+        self.assertIn("object or array root", specification["structure"])
+        self.assertIn("duplicate object member names", specification["structure"])
+        self.assertIn("scalar roots", specification["structure"])
+        self.assertIn("no per-stream field schema", specification["schema"])
+        self.assertIn("source category and meaning", specification["schema"])
+        self.assertIn("does not reinterpret, sanitize, rewrite, or reserialize", specification["scope"])
+
+        adapter = json.loads(
+            (ROOT / "catalog/sensorkit-adapter.json").read_text(encoding="utf-8")
+        )
+        native_rows = [
+            entry["raw"]
+            for entry in adapter["entries"]
+            if "native-recording" in entry.get("raw", {}).get("formats", [])
+        ]
+        self.assertTrue(native_rows)
+        self.assertTrue(all("jsonSchema" not in raw for raw in native_rows))
+
+        page = (ROOT / "sensor/input/pagecontent/formats.md").read_text(encoding="utf-8")
+        self.assertIn("carrying source type", page)
+        self.assertIn("no per-stream field schema", page)
+
+    def test_fhir_collection_generic_validation_scope_is_explicit(self) -> None:
+        validation_scope = REGISTRY["formats"]["fhir-collection-bundle"][
+            "specification"
+        ]["validationScope"]
+        self.assertIn("Grove format validation verifies strict JSON syntax", validation_scope)
+        self.assertIn("does not execute the official FHIR Validator", validation_scope)
+        self.assertIn("Base FHIR R4 conformance", validation_scope)
+        self.assertIn("adapter-declared resource profiles", validation_scope)
+        self.assertIn("one-stream/one-source-batch boundary", validation_scope)
+        self.assertIn("source ordering", validation_scope)
+        self.assertIn("source meaning", validation_scope)
+        self.assertIn("producer responsibilities", validation_scope)
+
+        page = (ROOT / "sensor/input/pagecontent/formats.md").read_text(encoding="utf-8")
+        self.assertIn(validation_scope, page)
+
+    def test_registry_describes_only_validation_that_is_executed(self) -> None:
+        description = REGISTRY["description"]
+        self.assertIn("Grove format validation checks", description)
+        self.assertIn("FHIR/profile", description)
+        self.assertNotIn("receiver can validate the admitted wire format", description)
+        fhir_resource_scope = REGISTRY["formats"]["fhir-r4-resource"][
+            "specification"
+        ]["scope"]
+        self.assertIn("`resourceType`-bearing object only", fhir_resource_scope)
+        self.assertIn("does not determine the FHIR release", fhir_resource_scope)
+        provider_scope = REGISTRY["formats"]["provider-recording"][
+            "specification"
+        ]["scope"]
+        self.assertIn("strict JSON syntax", provider_scope)
+        self.assertIn("provider-domain schema", provider_scope)
+
+    def test_ppg_integer_signedness_is_explicit(self) -> None:
+        specification = REGISTRY["formats"]["photoplethysmogram-samples"]["specification"]
+        optical_fields = {
+            field["field"]: field["encoding"] for field in specification["opticalSample"]
+        }
+        self.assertEqual(optical_fields["emitter"], "varint(int64)")
+        self.assertEqual(optical_fields["signalIdentifier"], "varint(int64)")
+        self.assertEqual(
+            optical_fields["activePhotodiodeIndexes"],
+            "set(varint(uint64))",
+        )
+
+    def test_ppg_noise_terms_define_their_dimensions(self) -> None:
+        specification = REGISTRY["formats"]["photoplethysmogram-samples"]["specification"]
+        noise_fields = {
+            field["field"]: field for field in specification["noiseTerms"]
+        }
+        self.assertEqual(noise_fields["whiteNoise"]["unit"], "Normalized Units²/Hz")
+        self.assertIn("per hertz", noise_fields["whiteNoise"]["meaning"])
+        self.assertEqual(noise_fields["pinkNoise"]["unit"], "Normalized Units²")
+        self.assertEqual(noise_fields["backgroundNoise"]["unit"], "Normalized Units")
+        self.assertEqual(
+            noise_fields["backgroundNoiseOffset"]["unit"],
+            "Normalized Units²/Hz",
+        )
+        self.assertIn(
+            "per hertz",
+            noise_fields["backgroundNoiseOffset"]["meaning"],
+        )
+
+    def test_heartbeat_timestamps_are_unix_epoch_instants(self) -> None:
+        timestamp = REGISTRY["formats"]["beat-interval-series"]["columns"][0]
+        self.assertEqual(timestamp["name"], "timestamp")
+        self.assertIn("Unix epoch", timestamp["meaning"])
+        self.assertNotIn("series start", timestamp["meaning"])
+
+        examples = (ROOT / "healthkit/input/fsh/examples.fsh").read_text(
+            encoding="utf-8"
+        )
+        block = examples.split(
+            "Instance: HealthKitHeartbeatSeriesRecordingExample", 1
+        )[1].split("Instance:", 1)[0]
+        encoded = re.search(
+            r'^\* content\.attachment\.data = "([^"]+)"$',
+            block,
+            re.MULTILINE,
+        )
+        self.assertIsNotNone(encoded)
+        assert encoded is not None
+        rows = base64.b64decode(encoded.group(1), validate=True).decode("utf-8").splitlines()
+        self.assertGreater(float(rows[1].split(",", 1)[0]), 1_000_000_000)
 
     def test_sensorkit_streams_reference_registered_formats(self) -> None:
         adapter = json.loads(

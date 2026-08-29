@@ -7,23 +7,22 @@ SPDX-License-Identifier: MIT
 -->
 
 Grove assigns separate FHIR Device resources to the hardware that measured a result and the software that saved or converted it.
-Keeping those roles separate prevents an app, phone, and sensor from being collapsed into one ambiguous record.
+Keeping those roles separate prevents an application, host device, and sensor from being collapsed into one ambiguous record.
 
 | Role | Resource | Link from Observation |
 |---|---|---|
 | Physical recorder | [Grove Recording Device](StructureDefinition-grove-recording-device.html), or an external logical Device reference | `Observation.device` |
-| App that mediated or routed the measurement | [Grove Application Device](StructureDefinition-grove-application-device.html) | Standard `observation-gatewayDevice` extension |
-| App that converted the source record | [Grove Application Device](StructureDefinition-grove-application-device.html) | `Provenance.agent.who` |
-| Host hardware for an app | [Grove Host Device](StructureDefinition-grove-host-device.html) | `GroveApplicationDevice.parent`, when useful |
+| Application that mediated or routed the measurement | [Grove Application Device](StructureDefinition-grove-application-device.html) | Standard `observation-gatewayDevice` extension |
+| Application that converted the source record | [Grove Application Device](StructureDefinition-grove-application-device.html) | `Provenance.agent.who` |
+| Host hardware for an application | [Grove Host Device](StructureDefinition-grove-host-device.html) | `GroveApplicationDevice.parent`, when useful |
 
 ### Recording device
 
 `Observation.device` identifies the Device that actually acquired the measurement.
 A watch, scale, chest strap, or phone belongs here only when the source supports that claim.
-Do not use this element for an app that merely read or transmitted an existing record.
-Grove 0.6.0 deliberately narrows the base R4 choice to Device because none of the reviewed producers establishes DeviceMetric identity or lifecycle semantics.
-Use Grove Recording Device for an internal event node.
-A future DeviceMetric admission requires its own profile, identity, reference, corpus, and SDK contract.
+Do not use this element for an application that merely read or transmitted an existing record.
+The Grove Mobile contract restricts `Observation.device` to `Device`; `DeviceMetric` is not admitted because no Grove DeviceMetric profile, identity contract, or lifecycle rules are defined.
+Use the Grove Recording Device profile when recording hardware is included as a Device entry in the exchange Bundle.
 
 Populate the device name, type, manufacturer, model, and versions when the source makes them available.
 Every populated version has a type; the type remains open to an appropriate terminology.
@@ -34,10 +33,11 @@ Use a study- or deployment-scoped identifier unless a broader hardware identifie
 
 A shared recording Device is emitted only when the producer has a governed stable token for the physical acquisition unit.
 Manufacturer, model, hardware version, subject, or any digest of those descriptive facts cannot establish that two records came from the same physical unit.
-If the source and caller cannot supply a stable per-unit token, omit `Observation.device`; never mint a fresh per-sample Device or merge all devices of one model.
+If no governed stable per-unit token is available, omit `Observation.device`; never mint a fresh per-sample Device or merge all devices of one model.
 
 The per-unit token is never emitted directly.
-It participates in the deployment-scoped v2 HMAC `recording-device` identity defined by [`catalog/exchange-protocol.json`](https://grovealliance.org/fhir/catalog/exchange-protocol.json). The subject's complete Identifier pair is also in that preimage so independently governed participants cannot collide.
+It participates in the deployment-scoped v0 HMAC `recording-device` identity defined by [`catalog/exchange-protocol.json`](https://grovealliance.org/fhir/catalog/exchange-protocol.json).
+The subject's complete Identifier pair is also part of the preimage, preventing the same device token from producing the same identity for different subjects.
 The deployment decides whether source per-unit evidence may be used and manages the HMAC key, epoch, retention, and linkage policy.
 
 Every emitted Grove Recording Device also carries an event-scoped `device-snapshot` identity, which is the Bundle entry key.
@@ -54,14 +54,14 @@ When an application version is known, the typed application-version slice uses t
 Using this standard version-type code does not make the application a Personal Health Device or require a PHD profile.
 An adapter defines the identifier system; for example, a platform adapter can use the platform's application identifier namespace.
 
-The required application identity is an immutable event-scoped `device-snapshot` v2 HMAC identifier.
+The required application identity is an immutable event-scoped `device-snapshot` v0 HMAC identifier.
 When present, the marketing version and build occupy distinct typed version slices; consumers never parse a composite display convention to recover either value.
 Neither value identifies an installation, host, account, or person.
 Do not generate a linkable installation identifier unless an explicit use case and privacy policy require it.
 
-The standard `observation-gatewayDevice` extension links an app only when it actually mediated or routed the measurement.
+The standard `observation-gatewayDevice` extension links an application only when it actually mediated or routed the measurement.
 Converting a stored record into FHIR does not by itself make the converter a gateway.
-The app's host hardware can be linked through `Device.parent`; it is not folded into the application's identity.
+The application's host hardware can be linked through `Device.parent`; it is not folded into the application's identity.
 See the [application example](Device-GroveApplicationDeviceExample.html).
 
 Operating-system and host-hardware versions belong on a separate host Device referenced through `Device.parent`; do not add them to the application-version slice.
@@ -71,7 +71,7 @@ Operating-system and host-hardware versions belong on a separate host Device ref
 The gateway link records mediation when it occurred.
 A [Grove Mobile Conversion Provenance](StructureDefinition-grove-mobile-conversion-provenance.html) records the transformation event itself:
 
-- `target` identifies the generated Observation;
+- `target` identifies the resulting Observation;
 - `activity` is the standard ISO 21089 lifecycle `transform` code;
 - `agent.type` is the standard provenance participant type `assembler`;
 - `agent.who` identifies the application Device; and

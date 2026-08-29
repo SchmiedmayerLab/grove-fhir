@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 0,
   "copyright": "SNOMED Clinical Terms® (SNOMED CT®) is copyright © SNOMED International. This file records only the codes and preferred terms this guide family references, so an offline build can detect drift. Implementers must hold a valid SNOMED CT affiliate licence in their territory; this file grants no rights in SNOMED CT.",
   "edition": "SNOMED CT International Edition",
   "version": "20250201",
@@ -12,132 +12,132 @@
     "102538003": {
       "display": "Recumbent body position",
       "status": "ACTIVE",
-      "verification": "v0.3 sweep, $lookup 2026-08-22"
+      "verification": "terminology sweep, $lookup 2026-08-22"
     },
     "10904000": {
       "display": "Orthostatic body position",
       "status": "ACTIVE",
-      "verification": "v0.3 sweep, $lookup 2026-08-22"
+      "verification": "terminology sweep, $lookup 2026-08-22"
     },
     "117590005": {
       "display": "Ear structure",
       "status": "ACTIVE",
-      "verification": "v0.3 sweep, $lookup 2026-08-22"
+      "verification": "terminology sweep, $lookup 2026-08-22"
     },
     "119361006": {
       "display": "Plasma specimen",
       "status": "ACTIVE",
-      "verification": "v0.3 sweep, $lookup 2026-08-22"
+      "verification": "terminology sweep, $lookup 2026-08-22"
     },
     "119364003": {
       "display": "Serum specimen",
       "status": "ACTIVE",
-      "verification": "v0.3 sweep, $lookup 2026-08-22"
+      "verification": "terminology sweep, $lookup 2026-08-22"
     },
     "122554006": {
       "display": "Capillary blood specimen",
       "status": "ACTIVE",
-      "verification": "v0.3 sweep, $lookup 2026-08-22"
+      "verification": "terminology sweep, $lookup 2026-08-22"
     },
     "15672000": {
       "display": "Structure of superficial temporal artery",
       "status": "ACTIVE",
-      "verification": "v0.3 sweep, $lookup 2026-08-22"
+      "verification": "terminology sweep, $lookup 2026-08-22"
     },
     "24484000": {
       "display": "Severe",
       "status": "ACTIVE",
-      "verification": "v0.3 sweep, $lookup 2026-08-22"
+      "verification": "terminology sweep, $lookup 2026-08-22"
     },
     "255604002": {
       "display": "Mild",
       "status": "ACTIVE",
-      "verification": "v0.3 sweep, $lookup 2026-08-22"
+      "verification": "terminology sweep, $lookup 2026-08-22"
     },
     "258479004": {
       "display": "Interstitial fluid specimen",
       "status": "ACTIVE",
-      "verification": "v0.3 sweep, $lookup 2026-08-22"
+      "verification": "terminology sweep, $lookup 2026-08-22"
     },
     "258580003": {
       "display": "Whole blood specimen",
       "status": "ACTIVE",
-      "verification": "v0.3 sweep, $lookup 2026-08-22"
+      "verification": "terminology sweep, $lookup 2026-08-22"
     },
     "272580008": {
       "display": "Semi-recumbent position",
       "status": "ACTIVE",
-      "verification": "v0.3 sweep, $lookup 2026-08-22"
+      "verification": "terminology sweep, $lookup 2026-08-22"
     },
     "29707007": {
       "display": "Toe structure",
       "status": "ACTIVE",
-      "verification": "v0.3 sweep, $lookup 2026-08-22"
+      "verification": "terminology sweep, $lookup 2026-08-22"
     },
     "33586001": {
       "display": "Sitting position",
       "status": "ACTIVE",
-      "verification": "v0.3 sweep, $lookup 2026-08-22"
+      "verification": "terminology sweep, $lookup 2026-08-22"
     },
     "34402009": {
       "display": "Rectum structure",
       "status": "ACTIVE",
-      "verification": "v0.3 sweep, $lookup 2026-08-22"
+      "verification": "terminology sweep, $lookup 2026-08-22"
     },
     "368208006": {
       "display": "Left upper arm structure",
       "status": "ACTIVE",
-      "verification": "v0.3 sweep, $lookup 2026-08-22"
+      "verification": "terminology sweep, $lookup 2026-08-22"
     },
     "368209003": {
       "display": "Right upper arm structure",
       "status": "ACTIVE",
-      "verification": "v0.3 sweep, $lookup 2026-08-22"
+      "verification": "terminology sweep, $lookup 2026-08-22"
     },
     "422543003": {
       "display": "Structure of axillary fossa",
       "status": "ACTIVE",
-      "verification": "v0.3 sweep, $lookup 2026-08-22"
+      "verification": "terminology sweep, $lookup 2026-08-22"
     },
     "52795006": {
       "display": "Forehead structure",
       "status": "ACTIVE",
-      "verification": "v0.3 sweep, $lookup 2026-08-22"
+      "verification": "terminology sweep, $lookup 2026-08-22"
     },
     "5951000": {
       "display": "Structure of left wrist region",
       "status": "ACTIVE",
-      "verification": "v0.3 sweep, $lookup 2026-08-22"
+      "verification": "terminology sweep, $lookup 2026-08-22"
     },
     "6736007": {
       "display": "Moderate severity",
       "status": "ACTIVE",
-      "verification": "v0.3 sweep, $lookup 2026-08-22"
+      "verification": "terminology sweep, $lookup 2026-08-22"
     },
     "74262004": {
       "display": "Oral cavity structure",
       "status": "ACTIVE",
-      "verification": "v0.3 sweep, $lookup 2026-08-22"
+      "verification": "terminology sweep, $lookup 2026-08-22"
     },
     "7569003": {
       "display": "Finger structure",
       "status": "ACTIVE",
-      "verification": "v0.3 sweep, $lookup 2026-08-22"
+      "verification": "terminology sweep, $lookup 2026-08-22"
     },
     "76784001": {
       "display": "Vaginal structure",
       "status": "ACTIVE",
-      "verification": "v0.3 sweep, $lookup 2026-08-22"
+      "verification": "terminology sweep, $lookup 2026-08-22"
     },
     "8205005": {
       "display": "Wrist region structure",
       "status": "ACTIVE",
-      "verification": "v0.3 sweep, $lookup 2026-08-22"
+      "verification": "terminology sweep, $lookup 2026-08-22"
     },
     "9736006": {
       "display": "Structure of right wrist region",
       "status": "ACTIVE",
-      "verification": "v0.3 sweep, $lookup 2026-08-22"
+      "verification": "terminology sweep, $lookup 2026-08-22"
     }
   }
 }

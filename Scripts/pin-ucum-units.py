@@ -96,7 +96,7 @@ def derive_table(source: Path) -> dict:
         pending = remaining
 
     return {
-        "schemaVersion": 1,
+        "schemaVersion": 0,
         "ucumVersion": root.attrib["version"],
         "revisionDate": root.attrib["revision-date"],
         "source": {

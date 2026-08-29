@@ -12,7 +12,7 @@
 CodeSystem: ProviderSourceTypeCS
 Id: provider-source-type
 Title: "Provider Source Types"
-Description: "The complete provider-qualified Google Health API, Oura, and Withings source inventory admitted or explicitly classified by version 0.6.0. The code is source lineage, not a clinical result code or fetch instruction."
+Description: "The complete provider-qualified Google Health API, Oura, and Withings source inventory admitted or explicitly classified by the Grove FHIR contracts. The code is source lineage, not a clinical result code or fetch instruction."
 * ^experimental = false
 * ^caseSensitive = true
 * ^content = #complete
@@ -78,7 +78,7 @@ Description: "The complete provider-qualified Google Health API, Oura, and Withi
 * #withings/getmeas:9+10 "Withings: getmeas:9+10 (atomic grouped mapping)" "The Withings getmeas:9+10 grouped mapping. Grove converts it to blood-pressure."
 * #withings/getmeas:91 "Withings: getmeas:91" "The Withings getmeas:91 source type. Grove converts it to withings-pulse-wave-velocity."
 * #withings/getsummary:deepsleepduration "Withings: getsummary:deepsleepduration" "The Withings getsummary:deepsleepduration source type. Grove converts it to deep-sleep-duration."
-* #withings/getsummary:hr_average "Withings: getsummary:hr_average" "The Withings getsummary:hr_average source type. Grove converts it to sleep-heart-rate and sleeping-heart-rate-average."
+* #withings/getsummary:hr_average "Withings: getsummary:hr_average" "The Withings getsummary:hr_average source type. Grove converts it to sleep-heart-rate."
 * #withings/getsummary:lightsleepduration "Withings: getsummary:lightsleepduration" "The Withings getsummary:lightsleepduration source type. Grove converts it to light-sleep-duration."
 * #withings/getsummary:remsleepduration "Withings: getsummary:remsleepduration" "The Withings getsummary:remsleepduration source type. Grove converts it to rem-sleep-duration."
 * #withings/getsummary:rr_average "Withings: getsummary:rr_average" "The Withings getsummary:rr_average source type. Grove converts it to respiratory-rate-average."
@@ -89,6 +89,6 @@ Description: "The complete provider-qualified Google Health API, Oura, and Withi
 ValueSet: ProviderSourceTypeVS
 Id: provider-source-type
 Title: "Provider Source Types"
-Description: "The complete closed provider-qualified source-type inventory for the Provider 0.6.0 adapter."
+Description: "The complete closed provider-qualified source-type inventory for the relevant Grove FHIR Implementation Guide."
 * ^experimental = false
 * include codes from system ProviderSourceTypeCS

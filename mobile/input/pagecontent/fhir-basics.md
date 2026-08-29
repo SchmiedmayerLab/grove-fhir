@@ -6,38 +6,43 @@ SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTR
 SPDX-License-Identifier: MIT
 -->
 
-This page is for readers who are new to FHIR.
-It explains only the parts of the standard Grove actually uses, in the order you meet them, and every term it introduces appears in the guides that follow.
-If you already write FHIR, skip to [Observations](observations.html).
+This page introduces the parts of FHIR used throughout the Grove FHIR Implementation Guides.
+It presents resources, profiles, terminology, identifiers, references, and exchange Bundles in the order required to interpret the remaining pages.
+It is explanatory; the linked profiles and machine-readable catalogs define the normative requirements.
+Readers already familiar with FHIR can continue directly to [Observations](observations.html).
 
-### What FHIR gives you, and what Grove adds
+### FHIR and Grove
 
-FHIR is a standard for exchanging health data as JSON documents called **resources**.
-Each resource has a `resourceType` and a set of fields the standard fixes: an `Observation` always keeps its value in `valueQuantity`, never in `value` or `measurement`.
-That is the whole promise — a receiver that has never heard of your app can still read a heart rate you send it.
+FHIR is a standard for exchanging healthcare information as structured data objects called **resources**.
+FHIR supports several serializations; these guides primarily use JSON, in which each resource has a `resourceType` and a standardized set of elements.
+For example, a quantitative Observation represents its result in `valueQuantity` rather than an application-defined `value` or `measurement` field.
+This common structure allows a receiver with no knowledge of the source application to interpret a standardized heart-rate result.
 
-FHIR is deliberately loose, though.
-It says an Observation *may* have a device, a time, an identifier; it rarely says it *must*.
+FHIR is deliberately flexible.
+The base Observation permits many optional elements and alternative representations.
 Two applications can both emit valid FHIR and still produce records that cannot be compared.
 
-A **profile** is how the standard is tightened.
-It is a named set of extra rules over a base resource, saying which fields are required, which codes are allowed, and what they mean here.
+A **profile** constrains the base standard for a defined use case.
+It is a named set of additional rules that identifies required elements, admitted codes, and their meaning in that context.
 Grove is a family of profiles.
-Everything in these guides is ordinary FHIR R4 plus rules that make records from different phones, watches, and services line up.
+The guides use FHIR R4 with additional rules that align records from different applications, devices, and services.
 
-### The five resources Grove uses
+### Five resources in the core measurement exchange
+
+The core mobile measurement exchange centers on five resource types.
+Specialized Grove guides add resources for their own use cases, including questionnaires, research participation, specimens, and document attachments.
 
 | Resource | Answers | In Grove |
 |---|---|---|
 | `Observation` | What was measured, of whom, when, and with what value | One measurement, one Observation |
-| `Patient` | Who the measurement is about | The study participant, referenced but rarely sent by a producer |
+| `Patient` | Who the measurement is about | The study participant; referenced by every Observation and included as a Bundle entry when the exchange supplies the Patient resource |
 | `Device` | What produced the record | Split in two: the recording device and the application |
 | `Provenance` | Where this record came from and who assembled it | The audit trail of the conversion itself |
-| `Bundle` | A set of resources travelling together | The unit an application uploads |
+| `Bundle` | A set of resources traveling together | One immutable exchange event graph |
 
-### Reading an Observation
+### Observation example
 
-A heart rate, trimmed to the fields that carry meaning:
+The following heart-rate Observation is limited to the elements needed for this introduction:
 
 ```json
 {
@@ -57,32 +62,30 @@ A heart rate, trimmed to the fields that carry meaning:
 }
 ```
 
-Four ideas in that document are worth pausing on, because they are where newcomers most often go wrong.
+Four concepts in this example are fundamental to interoperable FHIR exchange.
 
 **A code is a coordinate, not a word.** `code` says what was measured, and it says it as a `system` plus a `code`.
-The `display` is a human courtesy; receivers match on the pair. `8867-4` in the LOINC system means heart rate to every system that reads LOINC.
-Grove fixes the code for each measurement, so two producers cannot describe the same thing differently.
+The `display` is presentation text; receivers match on the `(system, code)` pair. `8867-4` in the LOINC system represents heart rate consistently across systems that understand LOINC.
+Grove fixes the code for each measurement so producers cannot assign conflicting codes to the same measurement concept.
 
-**A quantity carries its unit as a code too.** `unit` is for people; `code` in the UCUM system is what a receiver computes with. `/min` is UCUM for "per minute".
-A number without a UCUM code is not comparable data.
+**A quantity also carries a coded unit.** `unit` is presentation text; the `code` in the UCUM system supports machine interpretation. `/min` is the UCUM representation for "per minute".
+Grove quantity profiles require the applicable UCUM code so results remain comparable.
 
-**`effective` and `issued` are different times, and both matter.** `effective` is when the measurement happened — the moment the heart beat. `issued` is when this version of the record became available, taken from the source platform's own timestamp for it.
-A platform that keeps no such timestamp leaves `issued` out rather than substituting a clock reading, so converting the same unchanged data twice produces the same document instead of looking like something new.
+**`effective` and `issued` represent different times.** `effective` identifies when the measurement applied. `issued` identifies when this version of the record became available, using the source platform's own timestamp.
+A platform that does not retain such a timestamp omits `issued` rather than substituting the conversion time. This ensures that converting unchanged source data twice does not create an apparent revision.
 A receiver uses `effective` for the clinical timeline.
-Ordering *revisions of the same measurement* is a third question again, and the adapter guides answer it with a writer-assigned version.
+Ordering *revisions of the same measurement* is a separate concern addressed by writer-assigned versions in the adapter guides.
 
-**`subject` is a reference, not a person.** The next section explains what that means.
+**`subject` is a reference to another resource.** The next section distinguishes references from identities.
 
-### References, identifiers, and ids
+### References, identifiers, and resource IDs
 
-This is the part of FHIR that most repays five minutes of attention.
+A resource `id` is its address within a particular repository. `Patient/abc123` identifies the Patient resource stored as `abc123` in that repository.
+The ID can change when the resource moves to another repository.
+It is not the participant's business identity.
 
-A resource has an `id` — its address on one particular server. `Patient/abc123` means "the patient at `abc123` on this server".
-Move the record elsewhere and the id changes.
-It is not the participant's identity; it is a filing location.
-
-A resource also has `identifier` — a **business identifier**, meaningful outside any one server.
-It is always a pair: a `system` naming the namespace, and a `value` unique within it.
+A resource can also carry an `identifier`: a **business identifier** that remains meaningful outside a single repository.
+The Grove exchange contracts require each business identifier to be a complete pair: a `system` naming the namespace and a `value` unique within it.
 
 ```json
 "identifier": [{
@@ -91,72 +94,71 @@ It is always a pair: a `system` naming the namespace, and a `value` unique withi
 }]
 ```
 
-The `system` is a URL you own.
-It does not have to resolve to anything — it is a name, not an address.
-Its whole job is to stop your `participant-01` from colliding with someone else's.
+The `system` is an absolute URL governed by the deployment.
+It serves as a namespace and does not need to resolve as a network address.
+The namespace prevents a local value such as `participant-01` from colliding with the same value assigned by another deployment.
 
 A **reference** points from one resource to another, usually as `"reference": "Patient/abc123"`.
 
-Three practical consequences for a producer:
+These distinctions have three consequences for a producer:
 
-- **`subject` on an Observation is a reference to a Patient**, so you need a stable participant identity before you can emit anything.
-  Use whatever your study already uses as its enrolment identifier.
-  Do not use an email address or a phone number: they change over a study's life, and they identify the person directly, which is what a research exchange is trying to avoid.
-- **You need an identifier `system` of your own.** Pick one URL under a domain you control and keep it forever.
-- **Server-assigned `id`s are not yours to invent.** A producer that has not been given one leaves `id` out and identifies its records by `identifier` instead.
+- **`Observation.subject` references a Patient.** A stable participant identity must therefore exist before a producer emits an Observation. A study enrollment identifier is appropriate; an email address or phone number is not stable and directly identifies the person.
+- **Every business identifier requires a governed `system`.** The deployment selects an absolute URL under a namespace it controls and keeps that namespace stable.
+- **Repository-assigned resource IDs are separate from business identity.** A producer that does not control the repository-assigned `id` omits it and uses `identifier` for the record's business identity.
 
-### Why two devices
+### Device roles
 
-FHIR has one `Device` resource, and a phone measurement has two very different devices behind it.
+FHIR uses one `Device` resource type, while a mobile measurement can involve two distinct device roles.
 
-The **recording device** is the thing that took the measurement: the watch on the wrist, the paired blood-pressure cuff.
-The **application device** is the software that read the measurement out and turned it into FHIR: your application.
+The **recording device** is the hardware that acquired the measurement, such as a wearable sensor or paired blood-pressure cuff.
+The **application device** is software that mediated the measurement and/or converted the source record; gateway and assembler are asserted as separate roles.
 
-Keeping them apart matters.
-"This heart rate came from an Apple Watch Series 9" is a statement about data quality that a researcher will filter on.
-"This record was assembled by MyStudy 2.1" is a statement about the software chain, which is an audit question.
-Collapsing both into one Device makes each of them unanswerable.
+Keeping these roles separate preserves two different claims.
+The recording-device statement supports interpretation of measurement provenance and quality, while the application-device statement documents the software transformation chain.
+Collapsing both roles into one Device makes neither claim precise.
 
-### Why Provenance
+### Conversion provenance
 
-`Provenance` is FHIR's audit record: a separate resource saying that this resource was produced by that activity, at that time, by that actor.
+`Provenance` is FHIR's audit resource. It records that a target resource was produced by a defined activity, at a defined time, by a defined actor.
 
-For Grove it answers a question a reviewer eventually asks: where did this number come from, and what touched it on the way?
-A step count read from a platform store, converted by an application, and uploaded is not the same evidence as one typed in by hand.
-The Provenance carries the source record's own identifier, so a value can always be traced back to the platform row it came from.
+In Grove, Provenance records the origin and transformation path of a result.
+A step count obtained from a platform store and converted by an application has different provenance from a manually entered value.
+The Provenance carries the source-record identifier so the result remains traceable to the source record consumed by the conversion.
 
-It is a separate resource rather than a field because one conversion covers many Observations, and because audit data has a different lifetime from clinical data.
+Provenance is a separate resource because one conversion can cover multiple outputs and because audit information has a lifecycle distinct from clinical data.
 
-### Bundles
+### Bundle exchange
 
-A `Bundle` is a container.
-Grove uses `type: collection` — a plain set of resources travelling together, with no transactional meaning.
+A `Bundle` is a resource container.
+Grove uses `type: collection`, which groups resources without assigning transactional meaning.
 
 Inside a Bundle, resources refer to each other by `fullUrl`.
-Grove derives those from each resource's business identifier, so the same conversion always produces the same Bundle and a re-send can be recognised as a duplicate rather than landing twice.
+Grove derives each `fullUrl` deterministically from the entry identity selected by the [exchange protocol](https://grovealliance.org/fhir/catalog/exchange-protocol.json).
+An entry without a business identifier instead uses the protocol's event-scoped `n0:` graph key.
+An exact retry therefore preserves graph identity and can be recognized as a duplicate.
 
-### Reading the rest of this guide
+### Reading profile pages
 
-Profile pages are generated, and their two tables confuse people:
+Each profile page contains two complementary tables:
 
 - The **Differential Table** shows only what this guide adds to the base resource.
-  Read this one first; it is the actual content of the profile.
+  It is the most direct view of the profile's own constraints.
 - The **Snapshot Table** shows every rule, including the hundreds inherited from FHIR R4.
-  Useful as a reference, overwhelming as an introduction.
+  It is a complete reference that includes all inherited constraints.
 
-Fields marked **Must Support (MS)** have to be populated by a conformant producer whenever it has the data, and have to be readable by a conformant consumer.
+For Grove profiles, a conformant producer populates fields marked **Must Support (MS)** whenever the data is available, and a conformant consumer must be able to read them.
 
-Every profile has at least one example, with JSON, XML, and Turtle tabs.
-For an application developer the JSON tab is almost always the fastest way in.
+Every profile has at least one example with JSON, XML, and Turtle representations.
+The JSON representation is generally the most direct starting point for application development.
 
-A good first path: read the [heart-rate example JSON](Observation-GroveMobileHeartRateExample.json), then the [Mobile envelope](StructureDefinition-grove-mobile-observation.html) that constrains it, then [Observations](observations.html) for the field-by-field rules.
+A useful reading sequence is the [heart-rate example JSON](Observation-GroveMobileHeartRateExample.json), the constraining [Mobile envelope](StructureDefinition-grove-mobile-observation.html), and then [Observations](observations.html) for the field-by-field rules.
 
-### Where to go next
+### Next steps
 
-| You want to | Read |
+| Goal | Read |
 |---|---|
 | Encode a measurement | [Observations](observations.html) |
 | Understand the device split and the audit trail | [Devices and provenance](devices.html) |
 | Attach data to a study | [Study context](study.html) |
-| Install the package and validate your JSON | [Implement and validate](implementation.html) |
+| Install the package and validate JSON | [Implement and validate](implementation.html) |
 | See how the ten guide packages fit together | [The Grove FHIR guides](guides.html) |

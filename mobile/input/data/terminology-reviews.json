@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 0,
   "description": "The per-measurement terminology review record; profile generation refuses any measurement without an approved entry whose digest matches the measurement's current terminology projection.",
   "digestScope": "grove-terminology-projection-3",
   "digestAlgorithm": "sha256 over the UTF-8 canonical JSON (sorted keys, separators ',' ':') of the terminology projection: the measurement's code, components, description, effective, hasMember, obeys, quantity, standardProfile, valueKind, valueSet, resultCodes, resultCodeSystem, and allowedValues fields, omitting null or absent fields.",
@@ -9,19 +9,19 @@
     "mobile/input/fsh/terminology.fsh",
     "mobile/input/fsh/profiles.fsh"
   ],
-  "groundTruthDigest": "sha256:39c21059acb17a657f4eedcc328a307639dbe495ddbd5819e06af661b5f1ceb6",
+  "groundTruthDigest": "sha256:ef26ff7ea1c0e648d50a1cfba7eec75933a520fb9eeaf98db6ac4f08c8c74c47",
   "valueDomainReview": {
     "status": "prepared-pending-release-ratification",
     "preparedOn": "2026-08-27",
     "scope": "Representational domains only: UCUM percent is inclusive 0 through 100; discrete event totals are non-negative integers; HealthKit state-of-mind valence is inclusive -1 through 1. No physiologic plausibility ranges were invented.",
-    "ratification": "The 0.6.0 release pull request must ratify these re-minted per-measurement digests before publication."
+    "ratification": "The release pull request must ratify these re-minted per-measurement digests before publication."
   },
-  "bootstrap": "Entries with provenance 'bootstrap' cite the v0.3.0 release review during which their codes, units, and effective semantics shipped, proven byte-identical by the generation parity gate; the bootstrap set is terminal as of v0.3 and every new entry carries a named two-role review with a commit-SHA reviewRef.",
+  "bootstrap": "Entries with provenance 'bootstrap' cite the initial terminology review during which their codes, units, and effective semantics were approved, proven byte-identical by the generation parity gate; the bootstrap set is closed and every new entry carries a named two-role review with a commit-SHA reviewRef.",
   "entries": {
     "active-energy": {
       "status": "approved",
       "approvedBy": [
-        "v0.3.0 release review"
+        "initial terminology review"
       ],
       "approvedOn": "2026-08-21",
       "digest": "sha256:42427c89d275cdcf36a5b266f10648c11ae2ecc29586c9f3581e3878ad6cc27b",
@@ -34,13 +34,13 @@
       "digest": "sha256:523dede899664815126b3c9fcc8f5af87caf52a12d29fbd0bbebe03ab7207361",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -56,13 +56,13 @@
       "digest": "sha256:dff282112f7954574b0339d6f104c4491f061fd7963a1bf7a092b386f8d199b0",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -78,13 +78,13 @@
       "digest": "sha256:ab269466833ce7711fa70e3645312bd6e3e6e6da464e908d27d93fc6c70d0c66",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "name": "terminology sweep drafting agent (concepts-category)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -100,13 +100,13 @@
       "digest": "sha256:2eadee0450a304d88d3f5e03c9c72c3230fe9594d0142d30bc493ef80e768961",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -119,16 +119,16 @@
     "atrial-fibrillation-burden": {
       "status": "approved",
       "provenance": "reviewed",
-      "digest": "sha256:86fbadf22f583c7e6489c62c100e82b5ec374f2ed22999ccffce0285c4176764",
+      "digest": "sha256:41a6a2406ab0635a36b2f94680e580618996ce982c0ddb7da3e9e8d53744aa4d",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -150,7 +150,7 @@
     "basal-body-temperature": {
       "status": "approved",
       "approvedBy": [
-        "v0.3.0 release review"
+        "initial terminology review"
       ],
       "approvedOn": "2026-08-21",
       "digest": "sha256:fe28a111daedd120132ce72f8b074dc5a207437ba69ac7f915aafdffd1b50090",
@@ -160,16 +160,16 @@
     "basal-energy": {
       "status": "approved",
       "provenance": "reviewed",
-      "digest": "sha256:702959cbf09ae89f54b711d9a64a641dc176825b1a2040ad492301bdf7fa067e",
+      "digest": "sha256:e1793be1a8b9ec62c6e83e462a0bad0847f8dfbea5075ff66ee1566e7659ebb7",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -185,13 +185,13 @@
       "digest": "sha256:92c80c16ffdcc38dfea7e166e660c70bb8aa5518eb396246f3ebb1e753c1d6e7",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -207,13 +207,13 @@
       "digest": "sha256:c707a1bc5a1d9b7b8d79a4e83664d8fe47bbe5b8425072f77fc3625bc88b080b",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "name": "terminology sweep drafting agent (concepts-category)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -229,13 +229,13 @@
       "digest": "sha256:9abbb445a430db3b6226a4848c5f5ec6130b977297346a39b97ae737a0066c11",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "name": "terminology sweep drafting agent (concepts-category)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -251,13 +251,13 @@
       "digest": "sha256:c8dc4dc375969545973a0a58fb4fb4f1c3fd0c9c87b9d4f58c4dcedff5bd1b67",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "name": "terminology sweep drafting agent (concepts-category)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -270,16 +270,16 @@
     "blood-alcohol-content": {
       "status": "approved",
       "provenance": "reviewed",
-      "digest": "sha256:bd32f4ffb68a27f3ea25ccbe607e78aa9ba8d369e1316b1474f3bd3ee4c80110",
+      "digest": "sha256:c1d61ba39d58ac15d7d01d503cd06a73e089c10de793fa53b4b49bb0e2935af4",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -295,13 +295,13 @@
       "digest": "sha256:5240f8145ba0d9cf6e8813ed8c30093ee8598f1c7f45a11d2b312f49b21a3093",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -314,7 +314,7 @@
     "blood-pressure": {
       "status": "approved",
       "approvedBy": [
-        "v0.3.0 release review"
+        "initial terminology review"
       ],
       "approvedOn": "2026-08-21",
       "digest": "sha256:ce8119ec086c1702f7851421d75a8cd4e776a59234ff16e5077919970b2fd8a0",
@@ -324,16 +324,16 @@
     "blood-type": {
       "status": "approved",
       "provenance": "reviewed",
-      "digest": "sha256:9ca0e0595b796482280c82cdfb285791425d06845a91458e7b9fa118911249e5",
+      "digest": "sha256:e017c9eca7882a0de63c0a99fc37da490ddfa9ed470f1f583390d58749811e50",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "name": "terminology sweep drafting agent (concepts-category)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -349,13 +349,13 @@
       "digest": "sha256:58d6e1911f7a5aca998c3235e81bdb77b8f0784aefaf8569559f560342df8afb",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -371,13 +371,13 @@
       "digest": "sha256:eb84a35e69ffd34d6684d974d82a94d97cfdc2b41828dc463055133b9d70073a",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -390,7 +390,7 @@
     "body-height": {
       "status": "approved",
       "approvedBy": [
-        "v0.3.0 release review"
+        "initial terminology review"
       ],
       "approvedOn": "2026-08-21",
       "digest": "sha256:8affc0996bafe7ebd767aa828306f60f4af27cf66859258bd29a3a4ed1d82c9b",
@@ -400,7 +400,7 @@
     "body-temperature": {
       "status": "approved",
       "approvedBy": [
-        "v0.3.0 release review"
+        "initial terminology review"
       ],
       "approvedOn": "2026-08-21",
       "digest": "sha256:4e4e42fd49eb52fef2c9154322a6887826bc9fe624f7c4e6e5c429993ca0fcbd",
@@ -413,13 +413,13 @@
       "digest": "sha256:ed85bf9307e961dd468433f09c3a8b7ee180e64d485156ba28de1007ed9105d5",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -432,7 +432,7 @@
     "body-weight": {
       "status": "approved",
       "approvedBy": [
-        "v0.3.0 release review"
+        "initial terminology review"
       ],
       "approvedOn": "2026-08-21",
       "digest": "sha256:392c955f3d7d17a669a2ec0dab5c773e2c9fa32b535c402c9f8fc163c8ee63b2",
@@ -445,13 +445,13 @@
       "digest": "sha256:8de6fe1da30decc1d74036c85ebeb20cc8cdea501d56f6d8a30e4fd2a66cc510",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -467,13 +467,13 @@
       "digest": "sha256:5b65008410fa4161643505a16924dfdacfd70644e11ee367c6e407d6b40e09dc",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-workout-enums)",
+          "name": "terminology sweep drafting agent (concepts-workout-enums)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -489,13 +489,13 @@
       "digest": "sha256:452b984bc38f716138ab8e1a9d3c6de1336e27ecb40129d022bb31e3fc1fd71e",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "name": "terminology sweep drafting agent (concepts-category)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -520,13 +520,13 @@
       "digest": "sha256:81ae3ba3f287121b3dacae9168f795ed05e9cfe2eff79fce3f382cb0f7a4c2bf",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -542,13 +542,13 @@
       "digest": "sha256:9ec42cbda2060fd593cd33938c352ac825dc95061f4cab18c7eaa45dc68e5bf0",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -561,16 +561,16 @@
     "deep-sleep-duration": {
       "status": "approved",
       "provenance": "reviewed",
-      "digest": "sha256:0147cbf85d87c055a09c7cba265722e21ad54b3de23e018c1dba284fdc2a7599",
+      "digest": "sha256:221cc74fa11a9cd66e1d1afa04eb37123f412b245eb81e77d6c155a3bd875b23",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -586,13 +586,13 @@
       "digest": "sha256:04886508e78308d6c214c9d0df15d386f8e62ca49087ee410201338c952e5d57",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "name": "terminology sweep drafting agent (concepts-nutrition)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -608,13 +608,13 @@
       "digest": "sha256:25498e4a18dc9e69e3e2748905e0b85cf5c20a95d3da5174e6a89a072ed88404",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "name": "terminology sweep drafting agent (concepts-nutrition)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -630,13 +630,13 @@
       "digest": "sha256:26ab703b310fc4bf927cd55237aa1d1d39e04efab5a7d9b0c3a39da048a33ee8",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "name": "terminology sweep drafting agent (concepts-nutrition)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -652,13 +652,13 @@
       "digest": "sha256:54288c311320013c8a75ea921034729222c131b98b019baa131c55a047136f8f",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "name": "terminology sweep drafting agent (concepts-nutrition)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -674,13 +674,13 @@
       "digest": "sha256:9ffb732d6c3fdf1731514a2d8c06c0f35b893c9c6c9a3ab222623d442c8efe88",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "name": "terminology sweep drafting agent (concepts-nutrition)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -696,13 +696,13 @@
       "digest": "sha256:9ff3598f8e0eb8dfd82786b63a0df44199aa288f34effe9f0cdba64fa34b6a26",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "name": "terminology sweep drafting agent (concepts-nutrition)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -718,13 +718,13 @@
       "digest": "sha256:cd3fe18894c7e165f620b5adf15fbbb557dd3e0da8267048438d8cd4c457c162",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "name": "terminology sweep drafting agent (concepts-nutrition)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -740,13 +740,13 @@
       "digest": "sha256:a1a66978014707ea5ac9edbccf6f100af3efe50a6eb9c0f2c76fcdce7bdf63de",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "name": "terminology sweep drafting agent (concepts-nutrition)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -762,13 +762,13 @@
       "digest": "sha256:0ee9a162a4660d9f1619a76763088cc6cac7a18b899b7c8c94fb82842b7801bc",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "name": "terminology sweep drafting agent (concepts-nutrition)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -784,13 +784,13 @@
       "digest": "sha256:a13979e32212b66c45aa8b0596a45b5c329c458b6146ccd1e0fbc37b534dcf00",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "name": "terminology sweep drafting agent (concepts-nutrition)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -806,13 +806,13 @@
       "digest": "sha256:2ab7b29ccc56a61ed791cad4347195f099877765af01d82a37c34e1cbb6caa0a",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "name": "terminology sweep drafting agent (concepts-nutrition)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -828,13 +828,13 @@
       "digest": "sha256:b73727f4e79818ec3ebc3ccca3b2b05821a465a5882c7983821edc58e833b917",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "name": "terminology sweep drafting agent (concepts-nutrition)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -850,13 +850,13 @@
       "digest": "sha256:bc41471fc16ace9caf7951d5fc9c67d8ae23af8e6b351421dc45acfb7e208547",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "name": "terminology sweep drafting agent (concepts-nutrition)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -872,13 +872,13 @@
       "digest": "sha256:e86f5ceb9d5477a1bfb7b215e7506db00fabba5aaa8d0d3ff16c83768272d6d5",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "name": "terminology sweep drafting agent (concepts-nutrition)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -894,13 +894,13 @@
       "digest": "sha256:b8dc6aadb7913b507cdbacebdd53c1c149fe9765b94ff0feb637b825248c8de6",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "name": "terminology sweep drafting agent (concepts-nutrition)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -916,13 +916,13 @@
       "digest": "sha256:c0b094a79770d6163ebcaff3e686cde04f6d3df14ef86ef5255ee347c4164d90",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "name": "terminology sweep drafting agent (concepts-nutrition)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -938,13 +938,13 @@
       "digest": "sha256:d1a32a8f9c70b7fb391ecc6cf9905fe1540d1822ad4a5e96043517a36d913e59",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "name": "terminology sweep drafting agent (concepts-nutrition)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -960,13 +960,13 @@
       "digest": "sha256:7aad3bac840f0b0177cdaf6d9d60ad128075e425a7220d1e3bb85ff0bd199bb9",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "name": "terminology sweep drafting agent (concepts-nutrition)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -982,13 +982,13 @@
       "digest": "sha256:92394b9dba68cf1dbbbfbc9c8f167636d3ba775a498809e531e5fbadb46b0614",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "name": "terminology sweep drafting agent (concepts-nutrition)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -1004,13 +1004,13 @@
       "digest": "sha256:9031f6d3951712c536d93747b4662bb8bb99efbb1047394bfc4a30c1bf15ce10",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "name": "terminology sweep drafting agent (concepts-nutrition)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -1026,13 +1026,13 @@
       "digest": "sha256:1de9a44d641ae783ebaea5cfe85dddf8bdc6824b5d308cc273fe2659f4d6e8c1",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "name": "terminology sweep drafting agent (concepts-nutrition)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -1048,13 +1048,13 @@
       "digest": "sha256:d8f7c6dddebd1c044ac6d642e3c874a15ad000e67c2cf2e1b535d007b1e9675c",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "name": "terminology sweep drafting agent (concepts-nutrition)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -1070,13 +1070,13 @@
       "digest": "sha256:44d68bc69efb8d6597d680d691aceea4d7636c8a2d216074d39d0e74b727a6d8",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "name": "terminology sweep drafting agent (concepts-nutrition)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -1092,13 +1092,13 @@
       "digest": "sha256:7ab191cfab75400ae5a234ce5ac4e20df0c24cbe5402f7a00a414fce89ce1b97",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "name": "terminology sweep drafting agent (concepts-nutrition)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -1114,13 +1114,13 @@
       "digest": "sha256:de7ab256f4bb956909c811ecb0e896de0f8ff1cc0991d0ee99c9e364670b733f",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "name": "terminology sweep drafting agent (concepts-nutrition)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -1136,13 +1136,13 @@
       "digest": "sha256:35a729d51ba87974796424d998da650067389e84045d1780ee7ccb7105980e64",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "name": "terminology sweep drafting agent (concepts-nutrition)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -1158,13 +1158,13 @@
       "digest": "sha256:806b0fd6fc83f3f1b8cc42c31db9fb6bbae30061bbf7f65297263c3c935b56ef",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "name": "terminology sweep drafting agent (concepts-nutrition)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -1180,13 +1180,13 @@
       "digest": "sha256:57772010df8be6396887dca196dafd8179b25c172481811babf8e4e85b6515fb",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "name": "terminology sweep drafting agent (concepts-nutrition)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -1202,13 +1202,13 @@
       "digest": "sha256:b0fea6292e71a6066344c811c0262c9f41bc9013d79dd231ef148188327289ae",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "name": "terminology sweep drafting agent (concepts-nutrition)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -1224,13 +1224,13 @@
       "digest": "sha256:263c28eed55f5f05f501812a322323d5ffb3d58eee1771f93eaec2c9a8ed0337",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "name": "terminology sweep drafting agent (concepts-nutrition)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -1246,13 +1246,13 @@
       "digest": "sha256:16a6423462235ba29ed029dbb82d59a963fc47b2537e2da24b021b06426d6a40",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "name": "terminology sweep drafting agent (concepts-nutrition)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -1268,13 +1268,13 @@
       "digest": "sha256:0ce84501fbdfde32e8a4e50c6491da37deceb7bec43467006571d319679a1401",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "name": "terminology sweep drafting agent (concepts-nutrition)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -1290,13 +1290,13 @@
       "digest": "sha256:3f88b4e431e02cb0b18ab7671d2a27cd3b0933c5f9549f856b9768a9bc156a15",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "name": "terminology sweep drafting agent (concepts-nutrition)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -1312,13 +1312,13 @@
       "digest": "sha256:1f083cfa79c2fefd1c4a23811afd8d98f1d2fd500c3d97ceb351b402178fc7e6",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "name": "terminology sweep drafting agent (concepts-nutrition)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -1334,13 +1334,13 @@
       "digest": "sha256:456e19652124631c6ac4ac9d4d8be1811434cb4174a4b48d6f85705152b7f4e2",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "name": "terminology sweep drafting agent (concepts-nutrition)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -1356,13 +1356,13 @@
       "digest": "sha256:e594211c06696d21aace8656cca40bed540e65572a954d1fc8c2bddf36ac6399",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "name": "terminology sweep drafting agent (concepts-nutrition)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -1378,13 +1378,13 @@
       "digest": "sha256:b10d1ed4ab27ab704b867e7ac79a1930e393dc5b4d7e4ca539be85d151f93bfd",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "name": "terminology sweep drafting agent (concepts-nutrition)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -1400,13 +1400,13 @@
       "digest": "sha256:8e9699d7d000511304b556b62708b3c807572f888bb4f30c9868d0dc8c954296",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "name": "terminology sweep drafting agent (concepts-nutrition)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -1422,13 +1422,13 @@
       "digest": "sha256:f5d0b7a0dc030f0064605a86f80c008e36fb0b46006d7463bee86d63c5ce0334",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "name": "terminology sweep drafting agent (concepts-nutrition)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -1444,13 +1444,13 @@
       "digest": "sha256:ee10fd861defdce9cdb3e807af3ed72986cd729eefe4de1856f7bd2f8093f247",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "name": "terminology sweep drafting agent (concepts-nutrition)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -1466,13 +1466,13 @@
       "digest": "sha256:3f3eec12b3c34ff592cde9d37e390d6281360aaca299dd09413447b20b486a30",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "name": "terminology sweep drafting agent (concepts-nutrition)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -1488,13 +1488,13 @@
       "digest": "sha256:00d8fad532ed9421e054097db67ea571856464b6f97852639164ead015736d33",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "name": "terminology sweep drafting agent (concepts-nutrition)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -1507,7 +1507,7 @@
     "distance": {
       "status": "approved",
       "approvedBy": [
-        "v0.3.0 release review"
+        "initial terminology review"
       ],
       "approvedOn": "2026-08-21",
       "digest": "sha256:210a962467fd87e690b273433b5de09dac03229b8eaf27206a3b73013f631484",
@@ -1520,13 +1520,13 @@
       "digest": "sha256:0d9ad541b3be39cc3f7e9845097b095622711850e993b0053db6f8755247b931",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -1542,13 +1542,13 @@
       "digest": "sha256:42975bb93f832f92f159c38ba53a81e97175168e49c409f408c7b3a8f47ed9f2",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -1564,13 +1564,13 @@
       "digest": "sha256:5e893d3fd7a917fd0b351195d8941e9a2f93f0d182e1c0333851a38bb4060a0a",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -1584,18 +1584,18 @@
       "status": "approved",
       "approvedBy": [
         {
-          "name": "v0.4.0 release review",
+          "name": "adoption-gap terminology review",
           "role": "terminology-verification"
         }
       ],
       "approvedOn": "2026-08-24",
       "digest": "sha256:2d7513e41984fb31fda822979ec068616f1dbd422945edca473ec4439fc7786a",
-      "provenance": "v0.4.0 adoption-gap closure",
+      "provenance": "adoption-gap closure",
       "reviewedOn": "2026-08-24",
       "notes": "HKCategoryValueEnvironmentalAudioExposureEvent.momentaryLimit. The environmental audio exposure quantity remains the measurement surface.",
       "preparedBy": [
         {
-          "name": "v0.4.0 adoption-gap closure",
+          "name": "adoption-gap closure",
           "role": "engineering"
         }
       ],
@@ -1607,13 +1607,13 @@
       "digest": "sha256:33dd03d821cc85f05d3926f279c4b38d5a3ef95d7973d332f49e59aa2c858eb2",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -1629,13 +1629,13 @@
       "digest": "sha256:6a33629f7a5a60ae0db3a8e6b5d22e132a0c64886c298e11b6535a74c04877ba",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -1651,13 +1651,13 @@
       "digest": "sha256:d6d5276d068dcd555963db7ca33c35bec4530f05da4619fef9038041e61231d0",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -1673,13 +1673,13 @@
       "digest": "sha256:42affdb99042dabd4a4e37d7efa155f98f47b6f7a8d524c2912f7240bd4fb143",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-nutrition)",
+          "name": "terminology sweep drafting agent (concepts-nutrition)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -1704,13 +1704,13 @@
       "digest": "sha256:b60b3a92821d44008dbeb6814a4628e545d171f0009aaa2c6e1adb5d97ed490d",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -1726,13 +1726,13 @@
       "digest": "sha256:48c17c495a12ecb7406b4011ac0a57d83354e4c78b61009b659208c127c24741",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -1745,16 +1745,16 @@
     "gad7-assessment": {
       "status": "approved",
       "provenance": "reviewed",
-      "digest": "sha256:d6e58cad04fc07bbd3aff50b91227a786fe89a6deb51e8ec95e167f54edf39c4",
+      "digest": "sha256:0284581506a93ee32268bd34871219b5e71b90b68ddba26ec5c68dde4b48b2ec",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "name": "terminology sweep drafting agent (concepts-category)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -1770,13 +1770,13 @@
       "digest": "sha256:b3e678033538f626fa170471dd955e3036b7c69ae92833fd61035fbdc1dd95c4",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "name": "terminology sweep drafting agent (concepts-category)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -1792,13 +1792,13 @@
       "digest": "sha256:41b7e395105c062360b214746a9f96599495de0be44cad0077bb46c3c07a5446",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -1812,18 +1812,18 @@
       "status": "approved",
       "approvedBy": [
         {
-          "name": "v0.4.0 release review",
+          "name": "adoption-gap terminology review",
           "role": "terminology-verification"
         }
       ],
       "approvedOn": "2026-08-24",
       "digest": "sha256:d8b2e50ddea619581e4d8e33f5eaff2c7b723677cf9e27e41e9a20baa65f39a0",
-      "provenance": "v0.4.0 adoption-gap closure",
+      "provenance": "adoption-gap closure",
       "reviewedOn": "2026-08-24",
       "notes": "HKCategoryValueHeadphoneAudioExposureEvent.sevenDayLimit. The headphone audio exposure quantity remains the measurement surface.",
       "preparedBy": [
         {
-          "name": "v0.4.0 adoption-gap closure",
+          "name": "adoption-gap closure",
           "role": "engineering"
         }
       ],
@@ -1833,7 +1833,7 @@
       "status": "approved",
       "approvedBy": [
         {
-          "name": "0.6.0 FHIR R4 heart-rate profile follow-up",
+          "name": "FHIR R4 heart-rate profile follow-up",
           "role": "FHIR-profile-verification"
         }
       ],
@@ -1843,7 +1843,7 @@
       "reviewedOn": "2026-08-27",
       "preparedBy": [
         {
-          "name": "0.6.0 ECG native-R4 remediation",
+          "name": "ECG native-R4 remediation",
           "role": "engineering"
         }
       ],
@@ -1857,13 +1857,13 @@
       "digest": "sha256:4d56de2baca4b5a13d3a1026aa0835e254aed7620e1e79f4f1307c02da9d087c",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -1879,13 +1879,13 @@
       "digest": "sha256:ebbd47d3472b1792718698ed8cd118796d520982438538128306784e2af6b39d",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -1901,13 +1901,13 @@
       "digest": "sha256:f46319b6dd91ac01db9a712495ea939a50c842f105977ab114cd20cde8e230f4",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -1921,18 +1921,18 @@
       "status": "approved",
       "approvedBy": [
         {
-          "name": "v0.4.0 release review",
+          "name": "adoption-gap terminology review",
           "role": "terminology-verification"
         }
       ],
       "approvedOn": "2026-08-24",
       "digest": "sha256:5cf2862c1a557be0bfdb2d1e1d7efc8c89034f41680465b289245410b9d64cdf",
-      "provenance": "v0.4.0 adoption-gap closure",
+      "provenance": "adoption-gap closure",
       "reviewedOn": "2026-08-24",
       "notes": "Apple raises this against a wearer-configured threshold while apparently inactive; it is a device notification, not a rhythm measurement, so it takes an adapter code rather than a LOINC concept. The threshold component carries HKMetadataKeyHeartRateEventThreshold in /min, dimension {s:-1}, matching the heart-rate entries. Notification instants take effective Period.",
       "preparedBy": [
         {
-          "name": "v0.4.0 adoption-gap closure",
+          "name": "adoption-gap closure",
           "role": "engineering"
         }
       ],
@@ -1945,24 +1945,24 @@
       ],
       "approvedOn": "2026-08-26",
       "digest": "sha256:2e085ebd5544098e49bd62619fe3585a0342872e3d15069f396111f92ff4e580",
-      "provenance": "Projected from the approved sleep-apnea-notification entry: the same notification shape, the same single 'occurred' result code, and the same Period effective time. Admitted in 0.6.0 to end the inconsistency of refusing one screening notification while admitting its peers."
+      "provenance": "Projected from the approved sleep-apnea-notification entry: the same notification shape, the same single 'occurred' result code, and the same Period effective time. Admitted under the Grove FHIR contracts to end the inconsistency of refusing one screening notification while admitting its peers."
     },
     "infrequent-menstrual-cycles": {
       "status": "approved",
       "approvedBy": [
         {
-          "name": "v0.4.0 release review",
+          "name": "adoption-gap terminology review",
           "role": "terminology-verification"
         }
       ],
       "approvedOn": "2026-08-24",
       "digest": "sha256:4be244420351b9fb374ae28a5cb911907078467c87ed84bccc4357d285041557",
-      "provenance": "v0.4.0 adoption-gap closure",
+      "provenance": "adoption-gap closure",
       "reviewedOn": "2026-08-24",
       "notes": "Derived from logged cycle records. SNOMED CT 52073004 (Oligomenorrhea) is the corresponding concept, cited rather than bound, for the same reason as irregular cycles. Unverified offline; confirm ACTIVE before publication.",
       "preparedBy": [
         {
-          "name": "v0.4.0 adoption-gap closure",
+          "name": "adoption-gap closure",
           "role": "engineering"
         }
       ],
@@ -1974,13 +1974,13 @@
       "digest": "sha256:8bcd91290e1bf0b11bc13cf5db1140a579851140f77c23c76d8b6f18b174f51e",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -1993,16 +1993,16 @@
     "insulin-delivery": {
       "status": "approved",
       "provenance": "reviewed",
-      "digest": "sha256:24e51da72e23158a0dfa5c0f2c6c3f8c12cdf3b6614edf2cfba90a94a1881992",
+      "digest": "sha256:bd0b79fa2601737d9095fb9f8b3db86ee50a9180db66d8dea5b4299820bd0fe4",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -2018,13 +2018,13 @@
       "digest": "sha256:25f498366f1828e15ec9162fa75e5ff6ffd602a77f1631193393c7815bd3fa24",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-workout-enums)",
+          "name": "terminology sweep drafting agent (concepts-workout-enums)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -2040,13 +2040,13 @@
       "digest": "sha256:275ef1dd3e6c360c41a78be476fb651699547db7f94356eeddf149320f63e03b",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -2060,18 +2060,18 @@
       "status": "approved",
       "approvedBy": [
         {
-          "name": "v0.4.0 release review",
+          "name": "adoption-gap terminology review",
           "role": "terminology-verification"
         }
       ],
       "approvedOn": "2026-08-24",
       "digest": "sha256:c933bcf5fba963ba92ceb4505cac3d75740922cb9e4124f0b7ea1ac89c3af332",
-      "provenance": "v0.4.0 adoption-gap closure",
+      "provenance": "adoption-gap closure",
       "reviewedOn": "2026-08-24",
       "notes": "An FDA-cleared screening notification from a proprietary algorithm. Deliberately coded from the adapter system so no receiver can read it as a rhythm finding; the electrocardiogram and atrial-fibrillation burden remain the measurement surface.",
       "preparedBy": [
         {
-          "name": "v0.4.0 adoption-gap closure",
+          "name": "adoption-gap closure",
           "role": "engineering"
         }
       ],
@@ -2081,18 +2081,18 @@
       "status": "approved",
       "approvedBy": [
         {
-          "name": "v0.4.0 release review",
+          "name": "adoption-gap terminology review",
           "role": "terminology-verification"
         }
       ],
       "approvedOn": "2026-08-24",
       "digest": "sha256:f17b8002d5db25601340d8dec9cff64bbf81158488f0481c4f2ff7541c67de13",
-      "provenance": "v0.4.0 adoption-gap closure",
+      "provenance": "adoption-gap closure",
       "reviewedOn": "2026-08-24",
       "notes": "Derived from the participant's own logged cycle records, not sensed, so this is a finding rather than a device notification. SNOMED CT 80182007 (Irregular periods) is the corresponding concept and is cited in the definition; it is not bound because this guide declares no SNOMED dependency and binding an undeclared system would not validate. The SNOMED code is unverified offline and must be confirmed ACTIVE before publication.",
       "preparedBy": [
         {
-          "name": "v0.4.0 adoption-gap closure",
+          "name": "adoption-gap closure",
           "role": "engineering"
         }
       ],
@@ -2104,13 +2104,13 @@
       "digest": "sha256:92356d32b7bdbb03b2618cf05519c6816c1180630711184e2a4f39ae9df5c5ed",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "name": "terminology sweep drafting agent (concepts-category)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -2123,16 +2123,16 @@
     "lean-body-mass": {
       "status": "approved",
       "provenance": "reviewed",
-      "digest": "sha256:2f1ec8b9972214c213a4d617f867cd25bbb1fecb2c578cca570c839f8179566a",
+      "digest": "sha256:3eb1ba2126281721a04bfb3401f7c695df4c287803e5cacea5c2cd42625112ac",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -2145,16 +2145,16 @@
     "light-sleep-duration": {
       "status": "approved",
       "provenance": "reviewed",
-      "digest": "sha256:b89c7490f0a0d94a646e0d4183233853b97af05d0291f68566dcad25f81781b5",
+      "digest": "sha256:2501adfff8abbea01afe03add8a3e0367052c4f9a21203e147dee31a0a1fe426",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -2168,18 +2168,18 @@
       "status": "approved",
       "approvedBy": [
         {
-          "name": "v0.4.0 release review",
+          "name": "adoption-gap terminology review",
           "role": "terminology-verification"
         }
       ],
       "approvedOn": "2026-08-24",
       "digest": "sha256:5a87f70b6b93d0c10fad450e5cc76d61e0977fad6e10a87b9bffb76fce9b2283",
-      "provenance": "v0.4.0 adoption-gap closure",
+      "provenance": "adoption-gap closure",
       "reviewedOn": "2026-08-24",
       "notes": "Raised when the VO2max estimate falls below a threshold. The threshold shares vo2-max's UCUM code mL/kg/min, so it carries the identical dimension {g:-1, m:3, s:-1}; the example is 30, inside Apple's low-fitness band, not a value no human has recorded. Value code from HKCategoryValueLowCardioFitnessEvent.lowFitness.",
       "preparedBy": [
         {
-          "name": "v0.4.0 adoption-gap closure",
+          "name": "adoption-gap closure",
           "role": "engineering"
         }
       ],
@@ -2189,18 +2189,18 @@
       "status": "approved",
       "approvedBy": [
         {
-          "name": "v0.4.0 release review",
+          "name": "adoption-gap terminology review",
           "role": "terminology-verification"
         }
       ],
       "approvedOn": "2026-08-24",
       "digest": "sha256:8d0f679652ae373661debee9ab095ea74c850e8640f8d519fbad15c023873711",
-      "provenance": "v0.4.0 adoption-gap closure",
+      "provenance": "adoption-gap closure",
       "reviewedOn": "2026-08-24",
       "notes": "As the high-rate notification, against the wearer's low threshold. Apple's configurable low range is 40-50 bpm, so the example is 40. Unit /min, dimension {s:-1}.",
       "preparedBy": [
         {
-          "name": "v0.4.0 adoption-gap closure",
+          "name": "adoption-gap closure",
           "role": "engineering"
         }
       ],
@@ -2212,13 +2212,13 @@
       "digest": "sha256:705e354f1586d2b55c2921ab12fdceec32edce3700ed7f9fe2075887c16e5cc6",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-workout-enums)",
+          "name": "terminology sweep drafting agent (concepts-workout-enums)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -2234,13 +2234,13 @@
       "digest": "sha256:ba0ac6810c04d5cf593962492a4925461fefb250b78d6575cb8290828fe88fe9",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-workout-enums)",
+          "name": "terminology sweep drafting agent (concepts-workout-enums)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -2256,13 +2256,13 @@
       "digest": "sha256:d1e41654099add9388593f050bff44747d65a575442142ca8b62a8fd955c6d0b",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -2275,16 +2275,16 @@
     "muscle-mass": {
       "status": "approved",
       "provenance": "reviewed",
-      "digest": "sha256:0f38f4547a5ebd0519f0f172ccf17c3de414a1f6ca9f5d47c72b82de57c9a8bd",
+      "digest": "sha256:c8481c484e40f65fa13f0954c5adb11a36f4c710f7de8b7df46f52b3b450219a",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -2300,13 +2300,13 @@
       "digest": "sha256:53d996d7c193cfbd2cfaa2ce3e33aed843367f4c067412f7a9042c11c086840d",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -2322,13 +2322,13 @@
       "digest": "sha256:0915051f9eb0085c74b93bb5408c5a7c990e7f2783d5688f679fa424d26ed2ae",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -2362,13 +2362,13 @@
       "digest": "sha256:3477a459d05c43cdc5990636bf1eaee794ea2a8d251eb30a93752119ae42e93c",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-workout-enums)",
+          "name": "terminology sweep drafting agent (concepts-workout-enums)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -2381,7 +2381,7 @@
     "oxygen-saturation": {
       "status": "approved",
       "approvedBy": [
-        "v0.3.0 release review"
+        "initial terminology review"
       ],
       "approvedOn": "2026-08-21",
       "digest": "sha256:8e1ed34933567373ab2aae93027d48f4ad0f895b0909bac876c9ef2174ece171",
@@ -2391,16 +2391,16 @@
     "oxygen-saturation-daily-average": {
       "status": "approved",
       "provenance": "reviewed",
-      "digest": "sha256:6ef2c4799dc2681ebe8ec8e209b908b36a85ded3d695885e483cd986eec8cb15",
+      "digest": "sha256:986dab0391017269a9ee8b10dfebaa2b13709464575c305f2ddd35b6c7d0ca89",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -2416,13 +2416,13 @@
       "digest": "sha256:aa50d4c9e7a9a55a99f6217a4bc35510cc3afd9bddd3e8ce3e6750fa6a48d534",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -2438,13 +2438,13 @@
       "digest": "sha256:3395088085a15b1e2a8f5649091ae8dcde12aef984781038e1e368fd28f41d8d",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -2458,18 +2458,18 @@
       "status": "approved",
       "approvedBy": [
         {
-          "name": "v0.4.0 release review",
+          "name": "adoption-gap terminology review",
           "role": "terminology-verification"
         }
       ],
       "approvedOn": "2026-08-24",
       "digest": "sha256:73bd2c351cd579d7e5765542a5a64e56182d5f95523250c3edc4fc2db453021c",
-      "provenance": "v0.4.0 adoption-gap closure",
+      "provenance": "adoption-gap closure",
       "reviewedOn": "2026-08-24",
       "notes": "Derived from logged cycle records. No SNOMED concept was located that matches the HealthKit meaning exactly; the adapter code carries it rather than approximating one.",
       "preparedBy": [
         {
-          "name": "v0.4.0 adoption-gap closure",
+          "name": "adoption-gap closure",
           "role": "engineering"
         }
       ],
@@ -2478,16 +2478,16 @@
     "phq9-assessment": {
       "status": "approved",
       "provenance": "reviewed",
-      "digest": "sha256:b40c4ccdd8cccd4be12acfb20fa105fb76a1169144be8cb30590e2d2f318e77a",
+      "digest": "sha256:b0cb887cfb69647be8e842f2ab0e029a50b1f33709513fad9dc42606ffc1debe",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "name": "terminology sweep drafting agent (concepts-category)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -2503,13 +2503,13 @@
       "digest": "sha256:5c93d03188b8f6a7312b78c692dc0195d41234672f7e616a310159830347e7e9",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -2525,13 +2525,13 @@
       "digest": "sha256:7a8b97a651d8b8fd8c17c9e53250c4696d7dc16b0537e5972dcaac4b53b86d6f",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -2556,13 +2556,13 @@
       "digest": "sha256:56c1e17e7b15ff895623884d16690131fec651feb07ad9432b15bd72887a6d6a",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "name": "terminology sweep drafting agent (concepts-category)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -2578,13 +2578,13 @@
       "digest": "sha256:595cb1c28598118555bc37ac9a6cdb267077036501c91c1fe21fb1f869458427",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "name": "terminology sweep drafting agent (concepts-category)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -2600,13 +2600,13 @@
       "digest": "sha256:b2bbd8ade49d624b7b1f137d4c231bf793b8f1e2d21c67bef09ec7337046cd4d",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "name": "terminology sweep drafting agent (concepts-category)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -2620,18 +2620,18 @@
       "status": "approved",
       "approvedBy": [
         {
-          "name": "v0.4.0 release review",
+          "name": "adoption-gap terminology review",
           "role": "terminology-verification"
         }
       ],
       "approvedOn": "2026-08-24",
       "digest": "sha256:0d6528cfb8c97e1bbe1f1ddea741d2ceac1600da883ee2a9637955418a44af1d",
-      "provenance": "v0.4.0 adoption-gap closure",
+      "provenance": "adoption-gap closure",
       "reviewedOn": "2026-08-24",
       "notes": "Derived from logged cycle records. No SNOMED concept was located that matches the HealthKit meaning exactly, so the adapter code carries it rather than approximating a clinical concept.",
       "preparedBy": [
         {
-          "name": "v0.4.0 adoption-gap closure",
+          "name": "adoption-gap closure",
           "role": "engineering"
         }
       ],
@@ -2658,16 +2658,16 @@
     "rem-sleep-duration": {
       "status": "approved",
       "provenance": "reviewed",
-      "digest": "sha256:f0fe45608e704eae7d570b3c631aa8d0fd77e0bb2b7209c854bb136577f23b9b",
+      "digest": "sha256:d0675a3b85f55d7573dc67d4f0d94fa9056d6a1a1ab4c475a61f43db1042fbc8",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -2680,7 +2680,7 @@
     "respiratory-rate": {
       "status": "approved",
       "approvedBy": [
-        "v0.3.0 release review"
+        "initial terminology review"
       ],
       "approvedOn": "2026-08-21",
       "digest": "sha256:107d7f39eea9ab83ab59f30f87fab5dfa8159ec9cd15b11bbfb96f2fe53a019a",
@@ -2690,16 +2690,16 @@
     "respiratory-rate-average": {
       "status": "approved",
       "provenance": "reviewed",
-      "digest": "sha256:ed353014a32a7625a66cc2f8d74d947e79a9389bdcc05e20f85a22d048ff186a",
+      "digest": "sha256:be818ee5b3b8572bc285ea89240ff523e7f156e770ad31778c931fb0cd59cfbc",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -2715,13 +2715,13 @@
       "digest": "sha256:1470817fca4f645a65e9ee208762efbd9b9e96cec6dc0845fc09204b6cc50099",
       "preparedBy": [
         {
-          "name": "v0.6 clinical semantics audit",
+          "name": "clinical semantics audit",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.6 FHIR terminology review",
+          "name": "FHIR terminology review",
           "role": "terminology-verification"
         }
       ],
@@ -2729,7 +2729,7 @@
       "reviewedOn": "2026-08-27",
       "recordedOn": "2026-08-27",
       "reviewRef": "pending-integration-commit",
-      "notes": "Corrected after the 0.6 clinical-semantics audit. LOINC 40443-4 was verified on the official LOINC site as Heart rate --resting with NRat property, matching UCUM /min. AndroidX 1.1 explicitly defines RestingHeartRateRecord as one instantaneous measurement with an Instant time, and HealthKit restingHeartRate quantity samples are point observations. The shared profile therefore uses effectiveDateTime, vital-signs category, and LOINC 40443-4, while requiring LOINC 8867-4 exactly once and imposing the authoritative FHIR R4 Heart Rate profile. It must never receive a source daily/window aggregate."
+      "notes": "Corrected after the clinical-semantics audit. LOINC 40443-4 was verified on the official LOINC site as Heart rate --resting with NRat property, matching UCUM /min. AndroidX 1.1 explicitly defines RestingHeartRateRecord as one instantaneous measurement with an Instant time, and HealthKit restingHeartRate quantity samples are point observations. The shared profile therefore uses effectiveDateTime, vital-signs category, and LOINC 40443-4, while requiring LOINC 8867-4 exactly once and imposing the authoritative FHIR R4 Heart Rate profile. It must never receive a source daily/window aggregate."
     },
     "resting-heart-rate-daily-average": {
       "status": "approved",
@@ -2737,13 +2737,13 @@
       "digest": "sha256:c6700a2cbfc934ecb7b717afdf346e64eee08e5b42fd6ce20f1859e14fb6bd56",
       "preparedBy": [
         {
-          "name": "v0.6 clinical semantics audit",
+          "name": "clinical semantics audit",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.6 FHIR terminology review",
+          "name": "FHIR terminology review",
           "role": "terminology-verification"
         }
       ],
@@ -2759,13 +2759,13 @@
       "digest": "sha256:f00addf48e32cbcedac20279544957dbded81c41078270727cf09cabd713eaf0",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "name": "terminology sweep drafting agent (concepts-category)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -2781,13 +2781,13 @@
       "digest": "sha256:6ed8a34f67a94bfc94ea5db2996b4a0467552290c135ab4f3a4c098a49f906b9",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "name": "terminology sweep drafting agent (concepts-category)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -2803,13 +2803,13 @@
       "digest": "sha256:11f5b6775594488bbeea0d3dae6f58e7d05a277f18afd0db76c5c9d8f4901a02",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "name": "terminology sweep drafting agent (concepts-category)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -2825,13 +2825,13 @@
       "digest": "sha256:b140f8ce30c7b03c9b71dbf07548f20bcc0e48ed905caa89d7b9b8dfb8bbf566",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-workout-enums)",
+          "name": "terminology sweep drafting agent (concepts-workout-enums)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -2844,16 +2844,16 @@
     "six-minute-walk-test-distance": {
       "status": "approved",
       "provenance": "reviewed",
-      "digest": "sha256:f73b67231cbb44ad4305fcfe8f23238915d722712b5b67fe996d906889b816c8",
+      "digest": "sha256:44688949869552815e09593443cc654bc6a821f4878ede49e75659f0a61d4343",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -2869,13 +2869,13 @@
       "digest": "sha256:d0151caaee490c44a598b491eb67eda7152261d22c2a30a3348e93e41dc6ca41",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -2889,18 +2889,18 @@
       "status": "approved",
       "approvedBy": [
         {
-          "name": "v0.4.0 release review",
+          "name": "adoption-gap terminology review",
           "role": "terminology-verification"
         }
       ],
       "approvedOn": "2026-08-24",
       "digest": "sha256:f4e7ab230c4d74a103c638af57dbd3d562a27c54707162c90731107545e6c44c",
-      "provenance": "v0.4.0 adoption-gap closure",
+      "provenance": "adoption-gap closure",
       "reviewedOn": "2026-08-24",
       "notes": "A proprietary screening notification. HKQuantityTypeIdentifierAppleSleepingBreathingDisturbances remains the measurement surface; this records only that the notification fired.",
       "preparedBy": [
         {
-          "name": "v0.4.0 adoption-gap closure",
+          "name": "adoption-gap closure",
           "role": "engineering"
         }
       ],
@@ -2909,16 +2909,16 @@
     "sleep-awake-duration": {
       "status": "approved",
       "provenance": "reviewed",
-      "digest": "sha256:2148d97ded950584dc4bac0456f65b5fa7615fe467e590d8f08141b9f266161a",
+      "digest": "sha256:c3540b1215a8a99ac8238b606126b3f5f411496298ad544a4bb1e68ccb8faa7a",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -2931,7 +2931,7 @@
     "sleep-duration": {
       "status": "approved",
       "approvedBy": [
-        "v0.3.0 release review"
+        "initial terminology review"
       ],
       "approvedOn": "2026-08-21",
       "digest": "sha256:0e05377ada45a5814b0d835f3ea230dbc020bab4025bb5cf180e4907afe2c831",
@@ -2941,16 +2941,16 @@
     "sleep-heart-rate": {
       "status": "approved",
       "provenance": "reviewed",
-      "digest": "sha256:5265254674e301e1b9919c39d672cbe48aec06d3f3795077440fc30f326f1928",
+      "digest": "sha256:a38c120666636d4b8d4f82860620edfdb99ee094dbae06dc5aca4de69bb28c52",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -2963,7 +2963,7 @@
     "sleep-stage": {
       "status": "approved",
       "approvedBy": [
-        "v0.3.0 release review"
+        "initial terminology review"
       ],
       "approvedOn": "2026-08-21",
       "digest": "sha256:ea08a863ed5e7a24906ddab8350c579262cc75a3adb1196e42478108a3a8facf",
@@ -2976,13 +2976,13 @@
       "digest": "sha256:57575df93794f1f164513291d3c90728e5962b523fe1d23b559c82d37283160c",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -2992,41 +2992,19 @@
       "reviewRef": "pending-integration-commit",
       "notes": "Apple's September 2024 white paper 'Estimating Breathing Disturbances and Sleep Apnea Risk from Apple Watch' states the algorithm output 'is expressed as a continuous variable, which has units of events per hour' produced as a nightly measurement, fixing UCUM /h (dimension {s:-1}) over the night's Period. LOINC 90566-1 Respiratory disturbance index exists but was rejected: Apple's metric is a proprietary accelerometry estimate explicitly not equivalent to a polysomnography-derived RDI/AHI, so relabeling would be diagnostic overreach; a Grove code is defined instead. Only HealthKit evidences the concept, so the aggregate family stays adapter-owned."
     },
-    "sleeping-heart-rate-average": {
-      "status": "approved",
-      "provenance": "reviewed",
-      "digest": "sha256:3705ef31a685b387a8f3a69d056799db1d8332d8c8899448af23de3e1196ee76",
-      "preparedBy": [
-        {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
-          "role": "engineering"
-        }
-      ],
-      "approvedBy": [
-        {
-          "name": "v0.3 terminology sweep adversarial verifier",
-          "role": "terminology-verification"
-        }
-      ],
-      "ratification": "pending-pull-request-review",
-      "reviewedOn": "2026-08-21",
-      "recordedOn": "2026-08-21",
-      "reviewRef": "pending-integration-commit",
-      "notes": "The catalog marks withings getsummary hr_average unmodeled because 'a sleep-session average is not a point heart-rate measurement' — a windowed average, hence aggregate-family with Withings as the single evidencing source (owner providers). No LOINC concept states a sleep-session heart-rate mean, so a Grove code is defined; it is kept separate from resting-heart-rate (40443-4) because a session mean is not a resting estimate. /min parses with dimension {s:-1}; effective Period is the exact session window."
-    },
     "speed": {
       "status": "approved",
       "provenance": "reviewed",
       "digest": "sha256:c029446af511b95e0494efac0bf91e14758d2a6bfd5163df034997401d934e47",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -3042,13 +3020,13 @@
       "digest": "sha256:674d1776129168fd50e73a47930b8bd12157d0c0663185fffbb7d3c139b76108",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -3064,13 +3042,13 @@
       "digest": "sha256:4a10c9744e1c9c2ea4718577b9c2c5c24d9619d78ca0f6e9b636978ab6eeb1c5",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -3084,18 +3062,18 @@
       "status": "approved",
       "approvedBy": [
         {
-          "name": "v0.4.0 release review",
+          "name": "adoption-gap terminology review",
           "role": "terminology-verification"
         }
       ],
       "approvedOn": "2026-08-24",
       "digest": "sha256:065e50d32e0cb408b9e07913aa6e4e36be74d3307cf56cd868d46a37afd1571d",
-      "provenance": "v0.4.0 adoption-gap closure",
+      "provenance": "adoption-gap closure",
       "reviewedOn": "2026-08-24",
       "notes": "Self-reported, not measured. Valence is the one numeric axis on HealthKit's closed -1.0 to 1.0 scale and takes UCUM 1, dimensionless, displayed as 'valence'; the annotation is kept out of the code so the closed ucum-annotations allowlist is not bypassed. Kind, valence classification, labels and associations are coded components from HKStateOfMind's own enumerations.",
       "preparedBy": [
         {
-          "name": "v0.4.0 adoption-gap closure",
+          "name": "adoption-gap closure",
           "role": "engineering"
         }
       ],
@@ -3107,13 +3085,13 @@
       "digest": "sha256:18039ac812b9c1241058a730a899848a372e8909eabd109b59214ac40aa21b3f",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -3126,7 +3104,7 @@
     "step-count": {
       "status": "approved",
       "approvedBy": [
-        "v0.3.0 release review"
+        "initial terminology review"
       ],
       "approvedOn": "2026-08-21",
       "digest": "sha256:999e10ad6f19689eb5d36ac3d082081377aac9bca1fb4efcf8fe6bf621ca671e",
@@ -3139,13 +3117,13 @@
       "digest": "sha256:5ef61e634229435fcbe94bd49ceec3ff92c855fdddda59eb3e1ac29a8a2f90fa",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -3161,13 +3139,13 @@
       "digest": "sha256:0adddbc57d9f0afa7418ba25fd7b0aed2ba389af54b5efc265401aa61efe6e6e",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "name": "terminology sweep drafting agent (concepts-category)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -3183,13 +3161,13 @@
       "digest": "sha256:d482f58eb55a5faa94ef58a3e7e8ca05c8d191b5652fd2222ead6888ce1c2396",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "name": "terminology sweep drafting agent (concepts-category)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -3205,13 +3183,13 @@
       "digest": "sha256:25c69f17421642f37f9619eab44f14e4dc11fe7d27015b4272f1088b2cff13cb",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "name": "terminology sweep drafting agent (concepts-category)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -3227,13 +3205,13 @@
       "digest": "sha256:731cf5fdc569c05467a16b4e9452ad19d17a5fb9eadcd9a0988553fb39d194b0",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "name": "terminology sweep drafting agent (concepts-category)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -3249,13 +3227,13 @@
       "digest": "sha256:73ebc12aace6b76ce75d337b980167aa8969822afe599a14bb206ed7e4f31c7d",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "name": "terminology sweep drafting agent (concepts-category)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -3271,13 +3249,13 @@
       "digest": "sha256:8d42fafaf4592f5bb5a041c5715ae947308a5dd6c8a0f3015078a3f0075a3b44",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "name": "terminology sweep drafting agent (concepts-category)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -3293,13 +3271,13 @@
       "digest": "sha256:9aac0912a1d18aa85062305cba530c28957cc87d7eef971cf7c65d920eafb708",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "name": "terminology sweep drafting agent (concepts-category)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -3315,13 +3293,13 @@
       "digest": "sha256:fcd79ebeeff6b7af68d9e50281fd470029863c228cd8836f3e844c48a51d2a0f",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "name": "terminology sweep drafting agent (concepts-category)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -3337,13 +3315,13 @@
       "digest": "sha256:6a3b6ba33e0ff8e14cf12b405f98d073203f5411ea494746257517b2f11daa03",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "name": "terminology sweep drafting agent (concepts-category)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -3359,13 +3337,13 @@
       "digest": "sha256:a1e788c21ffda8741d96a8c65d99e0e6179f071d4ac36dbd2466020d086a9f0b",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "name": "terminology sweep drafting agent (concepts-category)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -3381,13 +3359,13 @@
       "digest": "sha256:52e46b1f2137eb994f6a44302fa00a9d7bef453b15cc29e7985991d0a7bf9df7",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "name": "terminology sweep drafting agent (concepts-category)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -3403,13 +3381,13 @@
       "digest": "sha256:21852f91e1d404f63ac694a60da9bf058a770369c1954a6dadba729f0c9ff5c5",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "name": "terminology sweep drafting agent (concepts-category)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -3425,13 +3403,13 @@
       "digest": "sha256:dc3eca3a6df2a4b3c905e3a82a9349550c641ab89e59be078ac0ccc177e94daa",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "name": "terminology sweep drafting agent (concepts-category)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -3447,13 +3425,13 @@
       "digest": "sha256:7e26dbeb1e26e871b5b4914d7a0893d7d4eba5f13ccec2179d9ebf58d550f01d",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "name": "terminology sweep drafting agent (concepts-category)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -3469,13 +3447,13 @@
       "digest": "sha256:b023c2e1ffe8ace8e20e4679d7cbd351350fea7e26d073c073c08792b6b56017",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "name": "terminology sweep drafting agent (concepts-category)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -3491,13 +3469,13 @@
       "digest": "sha256:aee3476c3fb4f7dd2bcbb8b3b9931a745c104ff1e8d171423b6a0f2f87824e19",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "name": "terminology sweep drafting agent (concepts-category)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -3513,13 +3491,13 @@
       "digest": "sha256:47bf979eef021611eae3b69e5fc3a5891f9f4bea47899c980ebeb16f5a27ffc1",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "name": "terminology sweep drafting agent (concepts-category)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -3535,13 +3513,13 @@
       "digest": "sha256:355e3f4258d6b6bd627b58586d22a81429367ef4ad87b3aa3da695c077543c30",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "name": "terminology sweep drafting agent (concepts-category)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -3557,13 +3535,13 @@
       "digest": "sha256:c707517133e5a4e9e85d38cea8e29f451dc42aa443dac81c7b18fedca64b268b",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "name": "terminology sweep drafting agent (concepts-category)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -3579,13 +3557,13 @@
       "digest": "sha256:34c20fd332c87b93732f88a6701b6670c74c146ec48c3a8c76dec938aa2ca26c",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "name": "terminology sweep drafting agent (concepts-category)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -3601,13 +3579,13 @@
       "digest": "sha256:4064eddc814e1d34c8c2b6d31380802b9a5882d667a10700bd8caa053ff6d310",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "name": "terminology sweep drafting agent (concepts-category)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -3623,13 +3601,13 @@
       "digest": "sha256:4eb057c46087469207269bf7eb2a58547d761cb49d200f0cf1f4987b47041cdd",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "name": "terminology sweep drafting agent (concepts-category)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -3645,13 +3623,13 @@
       "digest": "sha256:f9babc69693d79c025a921120ce333ab52a10dda3b5722ab2ea3e31a48c5bf86",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "name": "terminology sweep drafting agent (concepts-category)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -3667,13 +3645,13 @@
       "digest": "sha256:d04afd55a60c9a4fa28cb97a817c2c87b0739f654dc86d8eaec5c0cba3ed639d",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "name": "terminology sweep drafting agent (concepts-category)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -3689,13 +3667,13 @@
       "digest": "sha256:8d4bdbb87b90f5cb6dd024a03f1cbc1fe70f4c0dea4ee5f88f156a19985e3e3b",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "name": "terminology sweep drafting agent (concepts-category)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -3711,13 +3689,13 @@
       "digest": "sha256:2c3672b4b1f2a612e72417f46e005c86ff77572b3e0321b694de081b837d69f2",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "name": "terminology sweep drafting agent (concepts-category)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -3733,13 +3711,13 @@
       "digest": "sha256:e9a4a493199d3f0f18a10875707a933873bc6cb3beac34e8f9c6da0334cb8f50",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "name": "terminology sweep drafting agent (concepts-category)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -3755,13 +3733,13 @@
       "digest": "sha256:c93e6a5fa1db881795fded1db281efdd3883ddad7d9a0d5fbf8d18fd9e772829",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "name": "terminology sweep drafting agent (concepts-category)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -3777,13 +3755,13 @@
       "digest": "sha256:192e56e8bdfee05277f9f3fab3e266cb08c6248f7ad7bc4883ff5ea8a384611f",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "name": "terminology sweep drafting agent (concepts-category)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -3799,13 +3777,13 @@
       "digest": "sha256:1cc6c4397017ac9095227c58163c991d2aa880df01c35216514679c5026e2210",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "name": "terminology sweep drafting agent (concepts-category)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -3821,13 +3799,13 @@
       "digest": "sha256:cc52787d45c380239305f8f514611276d8f576cab4ee2994f6854e2498dd2a28",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "name": "terminology sweep drafting agent (concepts-category)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -3843,13 +3821,13 @@
       "digest": "sha256:c4a09a6cea83525ab0b8bf3b8f217793bd11b69acff00fc626aeef8f52964124",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "name": "terminology sweep drafting agent (concepts-category)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -3865,13 +3843,13 @@
       "digest": "sha256:441fde5739cfb8fbe27f01d1e6fee8afdce7c1b4663abecd347041794cf1104b",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "name": "terminology sweep drafting agent (concepts-category)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -3887,13 +3865,13 @@
       "digest": "sha256:beff27ddb5befd198db6aaf68b5ecf840e5086af96a2387d24929a58a5112d39",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "name": "terminology sweep drafting agent (concepts-category)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -3909,13 +3887,13 @@
       "digest": "sha256:3e104374f29af84561368e60b94ae9128f55d40d814b5ddd83b1375179790775",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "name": "terminology sweep drafting agent (concepts-category)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -3931,13 +3909,13 @@
       "digest": "sha256:4ec3090931873de3b3aca13e56f4ae07489a8f574ecbf8c390d33c16f0ec3768",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "name": "terminology sweep drafting agent (concepts-category)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -3953,13 +3931,13 @@
       "digest": "sha256:434e1de7ce510d2845256413de9e6edc81ec04b982d3baa59aab533fb5d2cde6",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "name": "terminology sweep drafting agent (concepts-category)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -3975,13 +3953,13 @@
       "digest": "sha256:c35410c358c76871bac7efcffb8176412c282973b8f875d0cf870e921d0dc29c",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -3997,13 +3975,13 @@
       "digest": "sha256:ec8cf6e6bea8ff4c3d1d6c3e40bbddae49e2b49a825963f385ff72837887547a",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "name": "terminology sweep drafting agent (concepts-category)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -4019,13 +3997,13 @@
       "digest": "sha256:d0fa78b3eb5db82e421748b8438660fe209083ae2f0f04f4b94df306a94f8a25",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -4041,13 +4019,13 @@
       "digest": "sha256:0254e82ee7b7c6ed1df4ea296dbe33a95183ae87fcefcd68e6161b2d865db093",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -4063,13 +4041,13 @@
       "digest": "sha256:ca7430133fabde2e49c7e7beff73717db67437b7f0132e6311a9a9908d23db5a",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -4085,13 +4063,13 @@
       "digest": "sha256:59c754dd9c48fe26010d960a4394794bcc73b508ec15c5ee03501185e96ba483",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "name": "terminology sweep drafting agent (concepts-category)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -4107,13 +4085,13 @@
       "digest": "sha256:2a0db33998073b1b541a0513b7ed39f1c1ef0c16373a4bbe92a8893461874129",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -4126,16 +4104,16 @@
     "waist-circumference": {
       "status": "approved",
       "provenance": "reviewed",
-      "digest": "sha256:d0a1883b3045d43b9c086fad81b073f1044355e5722cc8f9bc4f6ca5f2839a98",
+      "digest": "sha256:752693a40911fbc91f0dd9e6f76124b5362116fee588c2a1988f1914741391d5",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -4151,13 +4129,13 @@
       "digest": "sha256:c7444fc7339376101ef1649999899f6660bdc1ddafa581838e49699b3889b326",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -4173,13 +4151,13 @@
       "digest": "sha256:d9a8e0b2ed45d8bfc4168a905ba766b3ef028dd32224da112dbda6d28d6050d5",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -4192,16 +4170,16 @@
     "walking-heart-rate-average": {
       "status": "approved",
       "provenance": "reviewed",
-      "digest": "sha256:9d44a1ac571b533102de3e946c01f717cf303f4496357d43e042eddbd4115817",
+      "digest": "sha256:5cd1dda27f066a5aed5b00703a901b399099d3d7919a5a59666fed6bbe56ba34",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -4217,13 +4195,13 @@
       "digest": "sha256:6a6a84233320a455fadd36caee1181f88f9927fef87e0d55d7dbf11a8d7fdad7",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -4236,16 +4214,16 @@
     "walking-steadiness": {
       "status": "approved",
       "provenance": "reviewed",
-      "digest": "sha256:282911da9834d103023873056931c107bc66477a8b61b1bb5a07c3823d5d6ad2",
+      "digest": "sha256:547f9abe2e05afbaa4d4aaf5ee778975305f7e00730bbcf242414a1cf6589574",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -4259,18 +4237,18 @@
       "status": "approved",
       "approvedBy": [
         {
-          "name": "v0.4.0 release review",
+          "name": "adoption-gap terminology review",
           "role": "terminology-verification"
         }
       ],
       "approvedOn": "2026-08-24",
       "digest": "sha256:8c32e09a72b3d4e0ee4639d54b9fb034294ea2ce63bed31aa04587590cb3b352",
-      "provenance": "v0.4.0 adoption-gap closure",
+      "provenance": "adoption-gap closure",
       "reviewedOn": "2026-08-24",
       "notes": "Value is the severity classification and the notification-occurrence component is whether it is a first or repeat notification. HealthKit crosses the two axes in one enum; separating them keeps 'was steadiness ever very low' a single-code query and remains lossless with respect to HKCategoryValueAppleWalkingSteadinessEvent.",
       "preparedBy": [
         {
-          "name": "v0.4.0 adoption-gap closure",
+          "name": "adoption-gap closure",
           "role": "engineering"
         }
       ],
@@ -4282,13 +4260,13 @@
       "digest": "sha256:9e96823f697c0028f24e11a9161b5bd4b95b25528d2fa7e98faf73c633c6f617",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -4304,13 +4282,13 @@
       "digest": "sha256:5d6009b3484621b61cc0c52d3143d844df2830bde575f03acc9f051ad8c208d3",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -4326,13 +4304,13 @@
       "digest": "sha256:08d63dd5bf13698bdacc70fc8da6ef7d8108ae21d4b5aa7f41cb3a9ab4702162",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -4348,13 +4326,13 @@
       "digest": "sha256:aaafb2bb1abff5c8fbf2fdba414aa690660982775ae883f66dbb015d73be2a57",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-category)",
+          "name": "terminology sweep drafting agent (concepts-category)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -4370,7 +4348,7 @@
         "P. Schmiedmayer (repository owner)"
       ],
       "approvedOn": "2026-08-26",
-      "digest": "sha256:8fe473442970bf34377f226c0bf9dc78a568cf6a81a6cb2ae8098ea7170cf8f6",
+      "digest": "sha256:b30e94553fd80ef80da2d5047a3895bf8556eda844b23b50a2ab68ad3ea8e207",
       "provenance": "Withings meastype 130. No LOINC code is used: the value is a vendor screening notification, not a rhythm finding, so the code is minted in the providers code system on the same basis as the HealthKit irregular-heart-rhythm notification. The result value set is closed to one concept, signs-detected, because Withings publishes no encoding for the numeric measure.value; a negative or inconclusive classification therefore produces no output rather than a guessed code. LOINC was searched for an atrial-fibrillation screening notification concept and every candidate found is a rhythm finding or a diagnosis, which is exactly what this profile must not assert."
     },
     "withings-atrial-fibrillation-notification-ppg": {
@@ -4379,7 +4357,7 @@
         "P. Schmiedmayer (repository owner)"
       ],
       "approvedOn": "2026-08-26",
-      "digest": "sha256:696658b62391683579b635ddb879e7c7f3477ac0effe4e33d71db0614fac19cd",
+      "digest": "sha256:3a0399bb4c2737ea8d0669ffc6815d510f632c0bc9500a498519d5d4b43ef0d1",
       "provenance": "Withings meastype 139. Modelled exactly as the electrocardiogram notification and kept separate from it because it screens a photoplethysmographic signal rather than an electrocardiogram, and the two must not be merged under one code. No LOINC code is used: the value is a vendor screening notification, not a rhythm finding. The result value set is closed to one concept, signs-detected, because Withings publishes no encoding for the numeric measure.value."
     },
     "withings-nerve-health-score": {
@@ -4424,13 +4402,13 @@
       "digest": "sha256:7a395348c183baa813e4f14403f4b34a0ae39477542fb143146730c07c3c0d38",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-workout-enums)",
+          "name": "terminology sweep drafting agent (concepts-workout-enums)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -4446,13 +4424,13 @@
       "digest": "sha256:14484b2d238f3c63070bf7f6d6cb17ed5cfae64a83101d1c050faeec81442b90",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-quantity)",
+          "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -4468,13 +4446,13 @@
       "digest": "sha256:0e38af765f217821db292cff653cf973f14908ba7644ec633ac4124cfa7a35a8",
       "preparedBy": [
         {
-          "name": "v0.3 terminology sweep drafting agent (concepts-workout-enums)",
+          "name": "terminology sweep drafting agent (concepts-workout-enums)",
           "role": "engineering"
         }
       ],
       "approvedBy": [
         {
-          "name": "v0.3 terminology sweep adversarial verifier",
+          "name": "terminology sweep adversarial verifier",
           "role": "terminology-verification"
         }
       ],
@@ -4487,10 +4465,10 @@
     "biological-sex": {
       "status": "approved",
       "provenance": "reviewed",
-      "digest": "sha256:79e3e170702694c643c2ff8cab666429e85dfdf4d2a5b47fa353b7a20cfe45c0",
+      "digest": "sha256:cf892683e319ed3b1ebcdc041a1817e8732450df4ff7f98f447ab3375824644c",
       "preparedBy": [
         {
-          "name": "0.6.0 characteristic admission",
+          "name": "characteristic admission",
           "role": "engineering"
         }
       ],
@@ -4509,10 +4487,10 @@
     "date-of-birth": {
       "status": "approved",
       "provenance": "reviewed",
-      "digest": "sha256:307442e7492c0fc36dd38420a151ef36ca0428fd0873139be9995c50290760ea",
+      "digest": "sha256:d0bfd3ad548f090260571a196319bc67bea9d8416e826a32b0f6e48407411d6b",
       "preparedBy": [
         {
-          "name": "0.6.0 characteristic admission",
+          "name": "characteristic admission",
           "role": "engineering"
         }
       ],
@@ -4531,10 +4509,10 @@
     "fitzpatrick-skin-type": {
       "status": "approved",
       "provenance": "reviewed",
-      "digest": "sha256:7676af116d95a07431719ad099c01977e33c1b543f3021540d67493666d1f753",
+      "digest": "sha256:9adc4653ea23d0ecc686388e45c925e8a34ccde1300a0e07c0cd48670b7fc982",
       "preparedBy": [
         {
-          "name": "0.6.0 characteristic admission",
+          "name": "characteristic admission",
           "role": "engineering"
         }
       ],
@@ -4558,7 +4536,7 @@
       "baseCommit": "7e6ec8cdd5a1",
       "change": "Added GroveApplicationVersionTypeCS/VS and two Device.version slices to GroveApplicationDevice.",
       "measurementImpact": "None. The terminology addition removes and alters nothing, and the profile change is to a Device rather than to any reviewed measurement Observation; every per-measurement digest is unchanged.",
-      "review": "Approved by the repository owner (P. Schmiedmayer) for the 0.6.0 conversion-completeness work.",
+      "review": "Approved by the repository owner (P. Schmiedmayer) for the conversion-completeness work.",
       "approvedOn": "2026-08-26"
     },
     {
@@ -4568,7 +4546,7 @@
       "change": "Pinned 23 LOINC audiogram concepts: the pure tone air conduction panel 89015-2 and the 22 per-ear, per-frequency hearing-threshold codes.",
       "measurementImpact": "None yet. The concepts are pinned but no measurement binds them; every existing per-measurement digest is unchanged.",
       "verification": "tx.fhir.org r4 and r4.ontoserver.csiro.au, both serving LOINC 2.82, 2026-08-26. The panel 100653-5 that a secondary source named as current is deprecated and was rejected.",
-      "review": "Approved by the repository owner (P. Schmiedmayer) for the 0.6.0 conversion-completeness work.",
+      "review": "Approved by the repository owner (P. Schmiedmayer) for the conversion-completeness work.",
       "approvedOn": "2026-08-26"
     },
     {
@@ -4577,7 +4555,7 @@
       "baseCommit": "903432dd2ee6",
       "change": "Mapped the LOINC RelSoundInt property to a dimensionless quantity, which the audiogram threshold components need.",
       "measurementImpact": "None. A property-dimension mapping constrains how a unit is checked; it changes no measurement's codes, units, or semantics, and every per-measurement digest is unchanged.",
-      "review": "Approved by the repository owner (P. Schmiedmayer) for the 0.6.0 conversion-completeness work.",
+      "review": "Approved by the repository owner (P. Schmiedmayer) for the conversion-completeness work.",
       "approvedOn": "2026-08-26"
     },
     {
@@ -4587,14 +4565,14 @@
       "change": "Pinned the four LOINC electrocardiogram interval concepts the Withings rows now bind: 8633-0 QRS duration, 8625-6 P-R Interval, 8634-8 Q-T interval, and 8636-3 Q-T interval corrected.",
       "measurementImpact": "None to existing measurements. The four concepts are additions; nothing pinned before was removed or altered, so every existing per-measurement digest is unchanged.",
       "verification": "tx.fhir.org r4 and r4.ontoserver.csiro.au, both serving LOINC 2.82, 2026-08-26. All four returned an ACTIVE concept (inactive=false on Ontoserver) with PROPERTY Time and SCALE Qn, and the displays recorded here are the servers' own.",
-      "review": "Approved by the repository owner (P. Schmiedmayer) for the 0.6.0 conversion-completeness work.",
+      "review": "Approved by the repository owner (P. Schmiedmayer) for the conversion-completeness work.",
       "approvedOn": "2026-08-26"
     },
     {
       "from": "sha256:d27c19d8a62c526d5f685e534eb405a3bbfc08643c721ef7599cf3ecbb379010",
       "to": "sha256:ed8a35f005b1678855a2386174b7bce402dfa360aa0a19f323d34118380675e4",
       "baseCommit": "6b9d452",
-      "change": "Added LOINC 46098-0, 21112-8 and 66555-4 for the three HealthKit characteristics admitted in 0.6.0.",
+      "change": "Added LOINC 46098-0, 21112-8 and 66555-4 for the three HealthKit characteristics admitted under the Grove FHIR contracts.",
       "measurementImpact": "None to existing measurements. The addition removes and alters nothing; every previously recorded per-measurement digest is unchanged.",
       "review": "Requested by the repository owner (P. Schmiedmayer) for completeness in the HealthKit guide; each code verified ACTIVE against two independent terminology servers.",
       "approvedOn": "2026-08-26"
@@ -4603,9 +4581,9 @@
       "from": "sha256:ed8a35f005b1678855a2386174b7bce402dfa360aa0a19f323d34118380675e4",
       "to": "sha256:9ccbb538e34958aaed072b47c5da5746c720702ed53925c3736f25e0f9dde2d6",
       "baseCommit": "d3b5f942853a8f8b7ea079e3e074db0618cbc9ed",
-      "change": "Added the v2 typed business-identifier slices (including source-context), immutable event and retraction graph constraints, entry-node keys, stable-unit/event-snapshot Device profiles, the closed active resource boundary, containment prohibition, and exact direct-profile claim invariants required by the completed 0.6.0 exchange contract.",
+      "change": "Added the v0 typed business-identifier slices (including source-context), immutable event and retraction graph constraints, entry-node keys, stable-unit/event-snapshot Device profiles, the closed active resource boundary, containment prohibition, and exact direct-profile claim invariants required by the Grove FHIR contracts.",
       "measurementImpact": "No measurement code, unit, result value set, or clinical effective-time meaning changed through this ground-truth remint. Per-measurement digests remain the independent terminology gate; the one Google daily resting-heart-rate ownership change has its own newly reviewed digest.",
-      "review": "Engineering and FHIR contract review prepared for pull-request ratification as part of the second 0.6.0 completion change.",
+      "review": "Engineering and FHIR contract review prepared for pull-request ratification as part of the second contract completion change.",
       "approvedOn": "2026-08-27"
     }
   ]

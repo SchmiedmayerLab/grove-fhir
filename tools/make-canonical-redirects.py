@@ -359,7 +359,7 @@ def generate_routes(
         manifest_rows.append(row)
 
     manifest = {
-        "schemaVersion": 1,
+        "schemaVersion": 0,
         "canonical": normalized_canonical,
         "routes": manifest_rows,
     }

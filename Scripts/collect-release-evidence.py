@@ -213,7 +213,7 @@ def machine_contract_index(
     paths = normative_contract_paths(root, manifest)
     index = {
         "$schema": RELEASE_EVIDENCE_SCHEMA_URL,
-        "schemaVersion": 1,
+        "schemaVersion": 0,
         "kind": "machine-contract-index",
         "releaseVersion": manifest["releaseVersion"],
         "fhirVersion": manifest["fhirVersion"],
@@ -577,7 +577,7 @@ def main() -> int:
         copied.append(terminology_report_target)
 
     provenance = {
-        "schemaVersion": 2,
+        "schemaVersion": 0,
         "releaseVersion": version,
         "fhirVersion": manifest["fhirVersion"],
         "sourceRevision": revision,

@@ -38,7 +38,7 @@ CHECK_SPECIFICATION.loader.exec_module(CHECK_PUBLICATION)
 class PreparePagesTests(unittest.TestCase):
     def test_configuration_rejects_alias_and_canonical_path_collisions(self) -> None:
         configuration = {
-            "schemaVersion": 1,
+            "schemaVersion": 0,
             "releaseMode": "ci-build-only",
             "guides": [
                 {
@@ -440,7 +440,7 @@ class PreparePagesTests(unittest.TestCase):
                 ),
             )
             configuration = {
-                "schemaVersion": 1,
+                "schemaVersion": 0,
                 "previewBaseUrl": "https://pages.example/repository",
                 "canonicalBaseUrl": "https://pages.example/repository",
                 "sourceRepository": "https://github.com/example/repository",
@@ -581,7 +581,7 @@ class PreparePagesTests(unittest.TestCase):
                 "example-profile",
             )
             configuration = {
-                "schemaVersion": 1,
+                "schemaVersion": 0,
                 "previewBaseUrl": "https://pages.example/repository",
                 "canonicalBaseUrl": "https://pages.example/repository",
                 "sourceRepository": "https://github.com/example/repository",

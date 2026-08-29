@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 0,
   "previewBaseUrl": "https://schmiedmayerlab.github.io/grove-fhir",
   "canonicalBaseUrl": "https://grovealliance.org/fhir",
   "sourceRepository": "https://github.com/SchmiedmayerLab/grove-fhir",

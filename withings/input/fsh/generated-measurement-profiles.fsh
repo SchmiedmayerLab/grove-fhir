@@ -10,13 +10,12 @@
 CodeSystem: WithingsMeasurementCS
 Id: withings-measurement
 Title: "Withings Measurement"
-Description: "Measurement concepts defined by the Withings adapter for vendor-exclusive results no established code represents faithfully."
+Description: "Measurement concepts defined by the Withings adapter for source-specific results for which no established code is sufficiently precise."
 * ^experimental = false
 * ^caseSensitive = true
 * ^content = #complete
 * #extracellular-water-mass "Extracellular water mass" "The mass of body water outside cells as estimated by bioelectrical impedance analysis."
 * #intracellular-water-mass "Intracellular water mass" "The mass of body water inside cells as estimated by bioelectrical impedance analysis."
-* #sleeping-heart-rate-average "Sleeping heart rate average" "The mean heart rate across the exact sleep-session Observation effective Period."
 * #withings-atrial-fibrillation-notification-ecg "Withings atrial fibrillation notification (ECG)" "A Withings screening notification stating that the vendor's electrocardiogram algorithm flagged signs of atrial fibrillation in the recording taken at the Observation effective instant."
 * #withings-atrial-fibrillation-notification-ppg "Withings atrial fibrillation notification (PPG)" "A Withings screening notification stating that the vendor's photoplethysmography algorithm flagged signs of atrial fibrillation in the reading taken at the Observation effective instant."
 * #withings-nerve-health-score "Withings nerve health score" "The bounded figure Withings' proprietary nerve-health algorithm computes from electrochemical skin conductance at the feet, at the Observation effective instant."
@@ -27,7 +26,7 @@ Description: "Measurement concepts defined by the Withings adapter for vendor-ex
 ValueSet: WithingsMeasurementVS
 Id: withings-measurement
 Title: "Withings Measurement"
-Description: "Measurement concepts defined by the Withings adapter for its vendor-exclusive profiles."
+Description: "Measurement concepts defined by the Withings adapter for its source-specific profiles."
 * ^experimental = false
 * include codes from system WithingsMeasurementCS
 
@@ -129,7 +128,7 @@ Profile: WithingsMuscleMass
 Parent: GroveMobileObservation
 Id: withings-muscle-mass
 Title: "Muscle Mass"
-Description: "A providers-exclusive whole-body muscle mass calculated by bioimpedance analysis, normalized to UCUM kilograms. It is distinct from lean body mass (which additionally includes bone, water, and organ mass) and is not folded into that shared measurement."
+Description: "A Withings-specific whole-body muscle mass calculated by bioimpedance analysis, normalized to UCUM kilograms. It is distinct from lean body mass (which additionally includes bone, water, and organ mass) and is not folded into that shared measurement."
 * code = $loinc#73964-9
 * effective[x] only dateTime
 * value[x] only Quantity
@@ -185,30 +184,11 @@ Description: "The uncorrected QT interval a Withings device measures from its ow
 * valueQuantity.code 1..1 MS
 * valueQuantity.code = #ms (exactly)
 
-Profile: WithingsSleepingHeartRateAverage
-Parent: GroveMobileObservation
-Id: withings-sleeping-heart-rate-average
-Title: "Sleeping Heart Rate Average"
-Description: "The average heart rate across one sleep session, normalized to UCUM beats per minute. It is a session-windowed average, distinct from both the shared point heart-rate measurement and the daily resting-heart-rate estimate, and is implemented by the phase-2 aggregate design."
-* code = WithingsMeasurementCS#sleeping-heart-rate-average
-* code from WithingsMeasurementVS (required)
-* effective[x] only Period
-* effectivePeriod.end 1..1 MS
-* method 1..1 MS
-* method = https://grovealliance.org/fhir/mobile/CodeSystem/grove-aggregation-method#session-mean
-* value[x] only Quantity
-* valueQuantity.value 1..1 MS
-* valueQuantity.comparator 0..0
-* valueQuantity.system 1..1 MS
-* valueQuantity.system = $ucum (exactly)
-* valueQuantity.code 1..1 MS
-* valueQuantity.code = #/min (exactly)
-
 Profile: WithingsAtrialFibrillationNotificationEcg
 Parent: GroveMobileObservation
 Id: withings-atrial-fibrillation-notification-ecg
 Title: "Withings Atrial Fibrillation Notification (ECG)"
-Description: "Withings meastype 130: a screening notification from the vendor's proprietary electrocardiogram algorithm. It is emitted as a notification and never as a rhythm finding, exactly as the HealthKit irregular-heart-rhythm notification is: the recording itself remains the rhythm evidence. The adapter admits an Observation only for the vendor's positive screening classification; Withings publishes no encoding for the numeric measure.value, so no negative result, no inconclusive result, and no diagnosis is asserted. The code is deliberately taken from the providers code system so no receiver can read it as an atrial-fibrillation finding."
+Description: "Withings meastype 130: a screening notification from the vendor's proprietary electrocardiogram algorithm. It is emitted as a notification and never as a rhythm finding, exactly as the HealthKit irregular-heart-rhythm notification is: the recording itself remains the rhythm evidence. The adapter admits an Observation only for the vendor's positive screening classification; Withings publishes no encoding for the numeric measure.value, so no negative result, no inconclusive result, and no diagnosis is asserted. The code is deliberately taken from the providers code system so it cannot be interpreted as an atrial-fibrillation finding."
 * code = WithingsMeasurementCS#withings-atrial-fibrillation-notification-ecg
 * code from WithingsMeasurementVS (required)
 * effective[x] only dateTime
@@ -220,7 +200,7 @@ Profile: WithingsAtrialFibrillationNotificationPpg
 Parent: GroveMobileObservation
 Id: withings-atrial-fibrillation-notification-ppg
 Title: "Withings Atrial Fibrillation Notification (PPG)"
-Description: "Withings meastype 139: a screening notification from the vendor's proprietary photoplethysmography algorithm, kept separate from the electrocardiogram notification because it screens a different signal. It is emitted as a notification and never as a rhythm finding. The adapter admits an Observation only for the vendor's positive screening classification; Withings publishes no encoding for the numeric measure.value, so no negative result, no inconclusive result, and no diagnosis is asserted. The code is deliberately taken from the providers code system so no receiver can read it as an atrial-fibrillation finding."
+Description: "Withings meastype 139: a screening notification from the vendor's proprietary photoplethysmography algorithm, kept separate from the electrocardiogram notification because it screens a different signal. It is emitted as a notification and never as a rhythm finding. The adapter admits an Observation only for the vendor's positive screening classification; Withings publishes no encoding for the numeric measure.value, so no negative result, no inconclusive result, and no diagnosis is asserted. The code is deliberately taken from the providers code system so it cannot be interpreted as an atrial-fibrillation finding."
 * code = WithingsMeasurementCS#withings-atrial-fibrillation-notification-ppg
 * code from WithingsMeasurementVS (required)
 * effective[x] only dateTime
@@ -298,10 +278,10 @@ Usage: #example
 Title: "Body Fat Mass Example"
 Description: "A conformant Body Fat Mass instance."
 * meta.profile[+] = "https://grovealliance.org/fhir/withings/StructureDefinition/withings-observation"
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-provider-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:AwTunG0SGdP_ecfqflDkQM2AAOaD1iA2z9iqpjR5cEU"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-provider-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:_PMNc-yPJAAHEeC-eNaLiNKS0tHipWKiYjbPZ3LVveg"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-provider-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:TkyNES3JU58CXdkFv3g052Ptk9f0y2vh7SoNNMJTc3Q"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-provider-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:fFBR5DVlmkm7Sjxf3P4rl8RCb8tlzMUaIkVo5rSMm-s"
 * status = #final
 * code = $loinc#73708-0 "Body fat [Mass] Calculated"
 * extension[+].url = "https://grovealliance.org/fhir/providers/StructureDefinition/provider"
@@ -319,10 +299,10 @@ Usage: #example
 Title: "Corrected QT Interval Example"
 Description: "A conformant Corrected QT Interval instance."
 * meta.profile[+] = "https://grovealliance.org/fhir/withings/StructureDefinition/withings-observation"
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-provider-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:rKxqsGpt9acmnoiHsM_hGiAEFadT9zIU5m7ibDybwKg"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-provider-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:Jd8tVkfVXXhEK86BuY5R2Es_Rl4SC6hEWOey1Zewet0"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-provider-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:WMaSKgHnId5UOQJuFIxSazsVElJSVmu72UEfiYGe8gI"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-provider-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:XOxGI-xcUMM5voPowZTkx2PX1A4y2ifVv-_8YwTf47A"
 * status = #final
 * code = $loinc#8636-3 "Q-T interval corrected"
 * extension[+].url = "https://grovealliance.org/fhir/providers/StructureDefinition/provider"
@@ -340,10 +320,10 @@ Usage: #example
 Title: "Extracellular Water Mass Example"
 Description: "A conformant Extracellular Water Mass instance."
 * meta.profile[+] = "https://grovealliance.org/fhir/withings/StructureDefinition/withings-observation"
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-provider-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:bwnobQnWh5xsJ3ryo_KNLUJzUNk-i0aJr10BE_IFPzY"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-provider-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:_miKsu103qIKgacDsRAdEdi_mAwlqnqv3db53Qpah8E"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-provider-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:Nhn8CU_e1Zer_6zoXTOAgEUCebbn_ov9fwBjmpztQY8"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-provider-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:w0KTlDF0JiuXoE_2M_5kP6nAIpVfvzxyhXyjvb_lX_M"
 * status = #final
 * code = WithingsMeasurementCS#extracellular-water-mass
 * extension[+].url = "https://grovealliance.org/fhir/providers/StructureDefinition/provider"
@@ -361,10 +341,10 @@ Usage: #example
 Title: "Intracellular Water Mass Example"
 Description: "A conformant Intracellular Water Mass instance."
 * meta.profile[+] = "https://grovealliance.org/fhir/withings/StructureDefinition/withings-observation"
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-provider-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:4vqSlTXoPO_ywlazSTeZ594vL-XgdVu-26ImP-3Vrio"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-provider-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:A4NCkE8SfniVLr3Ug6J16oooV3-IgSVAK72tF9_F208"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-provider-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:gavUzjBX9hmpNAB5SMDBn7XyvciSOxAz26EAbulJgL4"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-provider-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:AKI8XqcOMDf0ncUr0bgBCLyt6kEq6ljJKGRrOQpfZNU"
 * status = #final
 * code = WithingsMeasurementCS#intracellular-water-mass
 * extension[+].url = "https://grovealliance.org/fhir/providers/StructureDefinition/provider"
@@ -382,10 +362,10 @@ Usage: #example
 Title: "Muscle Mass Example"
 Description: "A conformant Muscle Mass instance."
 * meta.profile[+] = "https://grovealliance.org/fhir/withings/StructureDefinition/withings-observation"
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-provider-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:J8biy45Mw7OnHHLVjDeENER614OsNClB-Y2zjUlOZAk"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-provider-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:29kOq73jxZx0GavVYJhiIXPmjq4py8faG5hRWmPxDQE"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-provider-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:YLdklFxeyq_NLhrm6ZVP6nEsuMjBvmu5hLFqr7WH0Yo"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-provider-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:MgrmyEZm5ldDMaECHjbeceFz4l1Y3aLvr4P5Pajlvcg"
 * status = #final
 * code = $loinc#73964-9 "Body muscle mass Calculated"
 * extension[+].url = "https://grovealliance.org/fhir/providers/StructureDefinition/provider"
@@ -403,10 +383,10 @@ Usage: #example
 Title: "PR Interval Example"
 Description: "A conformant PR Interval instance."
 * meta.profile[+] = "https://grovealliance.org/fhir/withings/StructureDefinition/withings-observation"
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-provider-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:cBA8hUnz_f0c3DUbmNuVN3UImLbfGbAPRMLWyPzHIno"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-provider-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:R-OSbpR-F9qGNSs4lZ8L-BpUIERsPQ0aF99888YfjYM"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-provider-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:lnppWuFmJBhgjq0DUXp5KM6ilIa4sdDPoUz8kv2vrQY"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-provider-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:AjGshlBD8Qri6p8fvHxVSrrOyY3SjFVmR5gYqsYV3NI"
 * status = #final
 * code = $loinc#8625-6 "P-R Interval"
 * extension[+].url = "https://grovealliance.org/fhir/providers/StructureDefinition/provider"
@@ -424,10 +404,10 @@ Usage: #example
 Title: "QRS Duration Example"
 Description: "A conformant QRS Duration instance."
 * meta.profile[+] = "https://grovealliance.org/fhir/withings/StructureDefinition/withings-observation"
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-provider-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:htgYOOgIUgWNX9Ktb1NkvTGw7RNtmMQ9OTN1GpRP4sA"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-provider-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:40d89oZdo12aKXvU2OT8uibSBJQbZoUXeES5h_MtIOU"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-provider-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:9bkUpbLtSsgsZrANfMMk_rVckr6HgSxSZL8zoYUuTjo"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-provider-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:If8ncupWsxxjP-74b9qh6uOhhx9w79ZNNuPi1aicoJs"
 * status = #final
 * code = $loinc#8633-0 "QRS duration"
 * extension[+].url = "https://grovealliance.org/fhir/providers/StructureDefinition/provider"
@@ -445,10 +425,10 @@ Usage: #example
 Title: "QT Interval Example"
 Description: "A conformant QT Interval instance."
 * meta.profile[+] = "https://grovealliance.org/fhir/withings/StructureDefinition/withings-observation"
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-provider-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:DrrDlII0_EOjISBhkMZt_nrjxN_L8amPVzDp-KLH6xU"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-provider-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:9VHO2R8VvQzxzMkztwyCABbqSBYIafrh2RY8W2AnlcI"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-provider-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:TMTHUBbcT3uGtf0ZSN8S-KpYSS6yHnVYeg3_z6mzfV8"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-provider-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:vyos6VSIj0RWwHDfY4EaNgynRDFgQ5QypHYodq-pyNc"
 * status = #final
 * code = $loinc#8634-8 "Q-T interval"
 * extension[+].url = "https://grovealliance.org/fhir/providers/StructureDefinition/provider"
@@ -460,38 +440,16 @@ Description: "A conformant QT Interval instance."
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueQuantity = 390 'ms'
 
-Instance: WithingsSleepingHeartRateAverageExample
-InstanceOf: WithingsSleepingHeartRateAverage
-Usage: #example
-Title: "Sleeping Heart Rate Average Example"
-Description: "A conformant Sleeping Heart Rate Average instance."
-* meta.profile[+] = "https://grovealliance.org/fhir/withings/StructureDefinition/withings-observation"
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-provider-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:7vIAwkzo81rqerXxlUO8mdERXTYtvXPJXRAdwbyK_bE"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-provider-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:RTngVN9KgRS6VRDVKgOiwIGqS-c2UVpeXwvOZT1-F8I"
-* status = #final
-* code = WithingsMeasurementCS#sleeping-heart-rate-average
-* extension[+].url = "https://grovealliance.org/fhir/providers/StructureDefinition/provider"
-* extension[=].valueCode = #withings
-* extension[+].url = "https://grovealliance.org/fhir/providers/StructureDefinition/provider-source-type"
-* extension[=].valueCode = #withings/getsummary:hr_average
-* subject = Reference(WithingsPatientExample)
-* performer = Reference(WithingsPatientExample)
-* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
-* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
-* valueQuantity = 55 '/min' "beats/minute"
-
 Instance: WithingsAtrialFibrillationNotificationEcgExample
 InstanceOf: WithingsAtrialFibrillationNotificationEcg
 Usage: #example
 Title: "Withings Atrial Fibrillation Notification (ECG) Example"
 Description: "A conformant Withings Atrial Fibrillation Notification (ECG) instance."
 * meta.profile[+] = "https://grovealliance.org/fhir/withings/StructureDefinition/withings-observation"
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-provider-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:rF9fMdx-Ek5kuQeY-cdbQKBDRNTAL2hPI-U2l1caakA"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-provider-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:yZ2rWP_zz_vS6hQpPQ6frMSunMcgyJqBn4tfc2C2hLE"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-provider-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:VvS1Snbd-FOoVigtXHtgl4FAVjX05v6A1lcQAu6nj2I"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-provider-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:hTQkGujJGICSa61zKoqO4bvPFtsvYPP21S_4GQyjHGo"
 * status = #final
 * code = WithingsMeasurementCS#withings-atrial-fibrillation-notification-ecg
 * extension[+].url = "https://grovealliance.org/fhir/providers/StructureDefinition/provider"
@@ -509,10 +467,10 @@ Usage: #example
 Title: "Withings Atrial Fibrillation Notification (PPG) Example"
 Description: "A conformant Withings Atrial Fibrillation Notification (PPG) instance."
 * meta.profile[+] = "https://grovealliance.org/fhir/withings/StructureDefinition/withings-observation"
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-provider-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:6va7UmhVvbndtA_vrSkLrxusUVe4zFCD6Gfmap1jhc0"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-provider-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:cxhBVHrrUlnnWzJSlUaPrBUYn44O5FiVF-qJ693tW_8"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-provider-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:9_exE6Jyj5meTQn3uGW0rUanJ879CSsrrf2I5sl3ghU"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-provider-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:e2r323CYzXIK5n2Pd5wWHUiMbfGCN6zQ0S0XAGKxCiQ"
 * status = #final
 * code = WithingsMeasurementCS#withings-atrial-fibrillation-notification-ppg
 * extension[+].url = "https://grovealliance.org/fhir/providers/StructureDefinition/provider"
@@ -530,10 +488,10 @@ Usage: #example
 Title: "Withings Nerve Health Score Example"
 Description: "A conformant Withings Nerve Health Score instance."
 * meta.profile[+] = "https://grovealliance.org/fhir/withings/StructureDefinition/withings-observation"
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-provider-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:DnQt51qMBWQ5Na-tPRcMt0sdU-KJr9yO_eTlchhYGRU"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-provider-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:4olRz2iAdnLuvMbwPKSlIhGEXKOy6PuvMtkhZLrhrsQ"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-provider-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:Rsi77UelojdX6DczUGLUC8E4ROLEFpTos7su57pd6x4"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-provider-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:2K_AIRAzgaGivadqS4eIypzpp_UtfxKbvIrJ-DkJSLA"
 * status = #final
 * code = WithingsMeasurementCS#withings-nerve-health-score
 * extension[+].url = "https://grovealliance.org/fhir/providers/StructureDefinition/provider"
@@ -551,10 +509,10 @@ Usage: #example
 Title: "Withings Pulse Wave Velocity Example"
 Description: "A conformant Withings Pulse Wave Velocity instance."
 * meta.profile[+] = "https://grovealliance.org/fhir/withings/StructureDefinition/withings-observation"
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-provider-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:gT6mD6V27I3E9ta-FXn7hTU2NoovnCtF_4OB8E3x63A"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-provider-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:Mav_JWxNrr9vIuMZiGF3JETuJ6lw4OtuPYv8Cgx1SzM"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-provider-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:tthXDXIsGvTRnoIEQKhRXtmvKV1fFFL4H748Iuk7go8"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-provider-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:V1wm33rLbeJ4OmqplItZNu3lqj5PWY3FfYvjXb3O24U"
 * status = #final
 * code = WithingsMeasurementCS#withings-pulse-wave-velocity
 * extension[+].url = "https://grovealliance.org/fhir/providers/StructureDefinition/provider"
@@ -572,10 +530,10 @@ Usage: #example
 Title: "Withings Vascular Age Example"
 Description: "A conformant Withings Vascular Age instance."
 * meta.profile[+] = "https://grovealliance.org/fhir/withings/StructureDefinition/withings-observation"
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-provider-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:QP_DdoHLBVsrJm0XRN72DNmhcjcjvKKuzdDdejEuRHQ"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-provider-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:0XKCbltRcaDWMXbwoefbBKWaDyo3VhBxeasEXbVJ3Z4"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-provider-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:rQQgVI9MRynajmjVuAM61ZOh8wZSP1t3LmTNSw5yMu0"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-provider-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:NS29R6m0YYpIT7dj-dPs1o1VNhGGOhBWaqVrrjXkpjE"
 * status = #final
 * code = WithingsMeasurementCS#withings-vascular-age
 * extension[+].url = "https://grovealliance.org/fhir/providers/StructureDefinition/provider"
@@ -593,10 +551,10 @@ Usage: #example
 Title: "Withings Visceral Fat Index Example"
 Description: "A conformant Withings Visceral Fat Index instance."
 * meta.profile[+] = "https://grovealliance.org/fhir/withings/StructureDefinition/withings-observation"
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-provider-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:GPEhuGdvgXsxl0ogfD4wJZIGbywa0_9UqKBkw4x3z3A"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-provider-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:iny2HimugWQPbMTvZv9Cnew28fhJjMK0UrcTcPmZzC8"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-provider-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:eZBJKERP7XdZInsisD3unE3bkvn6MGFE31A6IspAGOQ"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-provider-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:EcP-qvAGOeY0D3w9W2yncTSiGMNZ9MXTM9ixqjEwOaA"
 * status = #final
 * code = WithingsMeasurementCS#withings-visceral-fat-index
 * extension[+].url = "https://grovealliance.org/fhir/providers/StructureDefinition/provider"

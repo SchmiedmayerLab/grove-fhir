@@ -262,7 +262,7 @@ class HealthKitCatalogTests(unittest.TestCase):
 
     def test_platform_additions_and_derived_aggregate_are_explicit(self) -> None:
         rows = {row["sourceTypeIdentifier"]: row for row in self.catalog["rows"]}
-        # Admitted in 0.6.0. It was the one screening notification refused while its eleven peers
+        # This was the one screening notification refused while its eleven peers
         # were supported, and the row carried no rationale for the difference; the notification
         # contract states only that the notification was raised, never a diagnosis.
         hypertension = rows["HKCategoryTypeIdentifierHypertensionEvent"]
@@ -292,8 +292,8 @@ class HealthKitCatalogTests(unittest.TestCase):
                     "grove-mobile-sleep-duration"
                 ],
                 "requirement": (
-                    "This is not a HealthKit platform source identifier. Version 0.6.0 "
-                    "does not define the session-boundary aggregation contract; "
+                    "This is not a HealthKit platform source identifier. The Grove "
+                    "FHIR contracts do not define the session-boundary aggregation contract; "
                     "individual admitted samples map only to sleep stage."
                 ),
             },

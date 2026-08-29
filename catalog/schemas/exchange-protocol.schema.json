@@ -30,9 +30,9 @@
   ],
   "properties": {
     "$schema": { "const": "https://grovealliance.org/fhir/catalog/schemas/exchange-protocol.schema.json" },
-    "schemaVersion": { "const": 1 },
+    "schemaVersion": { "const": 0 },
     "version": { "const": "0.6.0" },
-    "protocolVersion": { "const": 2 },
+    "protocolVersion": { "const": 0 },
     "releaseVersion": { "const": "0.6.0" },
     "fhirVersion": { "const": "4.0.1" },
     "profiles": { "$ref": "#/$defs/profiles" },
@@ -161,7 +161,7 @@
       "required": ["algorithm", "domain", "preimage", "valueForm", "identifierSystem", "keyRequirements", "componentRequirements", "privacy", "informationPreservation", "rotation", "identityKinds"],
       "properties": {
         "algorithm": { "const": "HMAC-SHA-256" },
-        "domain": { "const": "org.grovealliance.fhir.identity.v2" },
+        "domain": { "const": "org.grovealliance.fhir.identity.v0" },
         "preimage": { "$ref": "#/$defs/nonempty" },
         "valueForm": { "$ref": "#/$defs/nonempty" },
         "identifierSystem": { "$ref": "#/$defs/nonempty" },
@@ -383,7 +383,7 @@
           "required": ["system", "domain", "components", "valueForm", "digest"],
           "properties": {
             "system": { "$ref": "#/$defs/nonempty" },
-            "domain": { "const": "org.grovealliance.fhir.entry-node.v2" },
+            "domain": { "const": "org.grovealliance.fhir.entry-node.v0" },
             "components": {
               "type": "array",
               "minItems": 4,
@@ -479,11 +479,12 @@
     "referencePolicy": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["literalClosure", "declaredType", "governedShape", "paths", "extensionTargets"],
+      "required": ["literalClosure", "declaredType", "governedShape", "identifierOnlyPatient", "paths", "extensionTargets"],
       "properties": {
         "literalClosure": { "$ref": "#/$defs/nonempty" },
         "declaredType": { "$ref": "#/$defs/nonempty" },
         "governedShape": { "$ref": "#/$defs/nonempty" },
+        "identifierOnlyPatient": { "$ref": "#/$defs/identifierOnlyPatient" },
         "paths": {
           "type": "array",
           "minItems": 1,
@@ -496,13 +497,30 @@
         }
       }
     },
+    "identifierOnlyPatient": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["systemRule", "valueRule", "reservedSystems"],
+      "properties": {
+        "systemRule": { "$ref": "#/$defs/nonempty" },
+        "valueRule": { "$ref": "#/$defs/nonempty" },
+        "reservedSystems": {
+          "const": [
+            "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+            "https://grovealliance.org/fhir/mobile/CodeSystem/grove-lifecycle-event",
+            "https://grovealliance.org/fhir/mobile/CodeSystem/grove-retraction-target-role"
+          ]
+        }
+      }
+    },
     "referencePath": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["resourceType", "path", "targetTypes"],
+      "required": ["resourceType", "path", "repeating", "targetTypes"],
       "properties": {
         "resourceType": { "type": "string", "pattern": "^[A-Z][A-Za-z]+$" },
         "path": { "type": "string", "pattern": "^[a-z][A-Za-z]+$" },
+        "repeating": { "type": "boolean" },
         "targetTypes": {
           "type": "array",
           "minItems": 1,
@@ -645,7 +663,7 @@
         "id": { "$ref": "#/$defs/code" },
         "identityKind": { "$ref": "#/$defs/code" },
         "components": { "type": "array", "items": { "$ref": "#/$defs/nonempty" } },
-        "value": { "type": "string", "pattern": "^v2:[A-Za-z0-9._-]+:[1-9][0-9]*:[A-Za-z0-9_-]{43}$" }
+        "value": { "type": "string", "pattern": "^v0:[A-Za-z0-9._-]+:[1-9][0-9]*:[A-Za-z0-9_-]{43}$" }
       }
     },
     "invalidIdentityVector": {
@@ -667,7 +685,7 @@
         "system": { "$ref": "#/$defs/uri" },
         "producerInstance": { "type": "string", "pattern": "^[0-9a-f-]{36}$" },
         "sequence": { "type": "string", "pattern": "^[1-9][0-9]*$" },
-        "value": { "type": "string", "pattern": "^e2:[0-9a-f-]{36}:[1-9][0-9]*$" }
+        "value": { "type": "string", "pattern": "^e0:[0-9a-f-]{36}:[1-9][0-9]*$" }
       }
     },
     "entryNodeVector": {
@@ -678,7 +696,7 @@
         "system": { "$ref": "#/$defs/uri" },
         "role": { "$ref": "#/$defs/code" },
         "ordinal": { "type": "string", "pattern": "^(0|[1-9][0-9]*)$" },
-        "value": { "type": "string", "pattern": "^n2:[a-z][a-z0-9-]*:(0|[1-9][0-9]*):[A-Za-z0-9_-]{43}$" },
+        "value": { "type": "string", "pattern": "^n0:[a-z][a-z0-9-]*:(0|[1-9][0-9]*):[A-Za-z0-9_-]{43}$" },
         "fullUrl": { "type": "string", "pattern": "^urn:uuid:[0-9a-f-]{36}$" }
       }
     },

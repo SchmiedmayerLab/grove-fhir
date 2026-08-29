@@ -16,8 +16,8 @@
           }
         ]
       },
-      "system": "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v2/test-key/1",
-      "value": "v2:test-key:1:k7ClzhCy4MCYUYzROPR7wjTJAau3vQyqRME8ef19r0s"
+      "system": "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v0/test-key/1",
+      "value": "v0:test-key:1:S7vxbudXlcpCXo2Cz7Xveopm_m6jl6kenRNDkX040ZU"
     }
   ],
   "status": "active",

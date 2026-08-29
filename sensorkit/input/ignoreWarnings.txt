@@ -1,4 +1,7 @@
 == Suppressed Messages ==
+# Publisher 2.3.3 orders the older ballot suffix after the stable release. The HL7 package registry confirms 5.3.0 is the current stable R4 extensions package, so downgrading would be incorrect.
+WARNING: ImplementationGuide/org.grovealliance.fhir.sensorkit: ImplementationGuide.dependsOn[1]: The ImplementationGuide uses package hl7.fhir.uv.extensions.r4#5.3.0 released on 2026-05-16, but the most recent appropriate version is 5.3.0-ballot-tc1. This reference is getting old and the more recent version should be considered
+
 # This contract targets FHIR R4 and intentionally omits generated boilerplate fragments that add no adapter guidance.
 WARNING: 2: An HTML fragment from the set [cross-version-analysis.xhtml, cross-version-analysis-inline.xhtml] is not included anywhere in the produced implementation guide
 WARNING: 4: The HTML fragment 'globals-table.xhtml' is not included anywhere in the produced implementation guide

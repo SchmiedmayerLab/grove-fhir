@@ -1,6 +1,6 @@
 {
   "$schema": "https://grovealliance.org/fhir/catalog/schemas/catalog-contracts.schema.json",
-  "schemaVersion": 1,
+  "schemaVersion": 0,
   "fhirVersion": "4.0.1",
   "version": "0.6.0",
   "packageId": "org.grovealliance.fhir.providers",
@@ -48,22 +48,22 @@
     "intentionally-unsupported"
   ],
   "statusDefinitions": {
-    "supported": "Version 0.6.0 defines an exact conversion to every semantic profile listed for the source element, whether the profile is shared or provider-owned.",
-    "mapped-standard": "Version 0.6.0 admits only the listed source-neutral Sensor recording contract and does not assert a scalar clinical result.",
-    "platform-exclusive": "Version 0.6.0 defines the listed provider-scoped structured profile because no exact shared profile exists.",
-    "unmodeled": "The source element is inventoried, but no shared or provider-scoped profile models it in version 0.6.0 and no output is admitted.",
-    "deferred": "A plausible shared mapping is known, but the source evidence, time semantics, or result shape is insufficient for a conformant version 0.6.0 output.",
-    "intentionally-unsupported": "Version 0.6.0 deliberately refuses a normalized conversion because doing so would be misleading or diagnostic-adjacent."
+    "supported": "The Grove FHIR contracts define an exact conversion to every semantic profile listed for the source element, whether the profile is shared or provider-owned.",
+    "mapped-standard": "The Grove FHIR contracts admit only the listed source-neutral Sensor recording contract and does not assert a scalar clinical result.",
+    "platform-exclusive": "The Grove FHIR contracts define the listed provider-scoped structured profile because no exact shared profile exists.",
+    "unmodeled": "The source element is inventoried, but no shared or provider-scoped profile models it under the Grove FHIR contracts and no output is admitted.",
+    "deferred": "A plausible shared mapping is known, but the source evidence, time semantics, or result shape is insufficient for a conformant output under the Grove FHIR contracts.",
+    "intentionally-unsupported": "The Grove FHIR contracts deliberately refuses a normalized conversion because doing so would be misleading or diagnostic-adjacent."
   },
   "observationIssued": {
     "cardinality": "0..0",
-    "source": "only an exact provider field explicitly declared by its catalog row; no such field is declared in 0.6.0",
-    "rule": "Version 0.6.0 declares no authoritative provider row field for result availability or current-version modification, so every Provider Observation omits Observation.issued. Conversion, retrieval, assembly, and upload times are prohibited substitutes."
+    "source": "only an exact provider field explicitly declared by its catalog row; no such field is declared under the Grove FHIR contracts",
+    "rule": "The Grove FHIR contracts declare no authoritative provider row field for result availability or current-version modification, so every Provider Observation omits Observation.issued. Conversion, retrieval, assembly, and upload times are prohibited substitutes."
   },
   "sourceEvidence": {
     "accessed": "2026-08-20",
     "scope": "Exact provider data-type tokens and consumed fields frozen in providers[].sourceTypes; conversion operates only on already-obtained payloads and defines no provider fetching.",
-    "tokenBinding": "Each providers[].sourceTypes[].token and elements[].path is part of the exact v0.6.0 consumed source surface.",
+    "tokenBinding": "Each providers[].sourceTypes[].token and elements[].path is part of the exact consumed source surface under the Grove FHIR contracts.",
     "providers": [
       {
         "id": "google-health-api",
@@ -95,7 +95,7 @@
   },
   "identity": {
     "contract": "catalog/exchange-protocol.json",
-    "protocolVersion": 2,
+    "protocolVersion": 0,
     "adapterId": "providers",
     "sourceRecord": {
       "identityKind": "provider-record",
@@ -289,7 +289,6 @@
               "path": "heartRateVariability.standardDeviationMilliseconds",
               "status": "supported",
               "measurementIds": [
-                "heart-rate-variability-rmssd",
                 "heart-rate-variability-sdnn"
               ]
             }
@@ -551,7 +550,7 @@
             {
               "path": "average_hrv",
               "status": "unmodeled",
-              "reason": "Oura reports this as an RMSSD average over the sleep session, which the shared heart-rate-variability-rmssd measurement represents. Unmodelled only until the session-window effective rule for it is settled."
+              "reason": "Oura reports this as an RMSSD average over the sleep session, but this contract does not define the exact session window to use as Observation.effectivePeriod. No FHIR output is admitted."
             },
             {
               "path": "average_breath",
@@ -619,7 +618,7 @@
               ],
               "unitConversion": "provider integer years to UCUM a",
               "effective": "the source civil day represented as a complete day Period; midpoint substitution is forbidden",
-              "reason": "Version 0.6.0 carries the Oura cardiovascular-age figure as the provider-scoped oura-cardiovascular-age profile, on an age scale in UCUM years over the civil-day Period. The profile names the vendor in its code and description, so the figure cannot be mistaken for a chronological age, for a clinical vascular assessment, or for Withings' vascular age, which stays a separate measurement because the two are undisclosed algorithms over different inputs. No comparability between vendors and no diagnosis is asserted."
+              "reason": "The Grove FHIR contracts carry the Oura cardiovascular-age figure as the provider-scoped oura-cardiovascular-age profile, on an age scale in UCUM years over the civil-day Period. The profile names the vendor in its code and description, so the figure cannot be mistaken for a chronological age, for a clinical vascular assessment, or for Withings' vascular age, which stays a separate measurement because the two are undisclosed algorithms over different inputs. No comparability between vendors and no diagnosis is asserted."
             }
           ]
         },
@@ -638,7 +637,7 @@
               ],
               "unitConversion": "unitless provider value to the dimensionless UCUM {score} annotation",
               "effective": "the source civil day represented as a complete day Period; midpoint substitution is forbidden",
-              "reason": "Version 0.6.0 carries the Oura readiness figure as the provider-scoped oura-readiness-score profile over the civil-day Period, on the dimensionless UCUM {score} annotation because the vendor publishes no physical unit for it. The code names the vendor and the profile description states the scale, so the figure cannot be read as an observable quantity. Nothing about the composite's inputs, weighting, or comparability across people is asserted, and Oura's daily sleep and activity scores remain outside the inventoried source surface."
+              "reason": "The Grove FHIR contracts carry the Oura readiness figure as the provider-scoped oura-readiness-score profile over the civil-day Period, on the dimensionless UCUM {score} annotation because the vendor publishes no physical unit for it. The code names the vendor and the profile description states the scale, so the figure cannot be read as an observable quantity. Nothing about the composite's inputs, weighting, or comparability across people is asserted, and Oura's daily sleep and activity scores remain outside the inventoried source surface."
             }
           ]
         },
@@ -840,7 +839,7 @@
               ],
               "unitConversion": "provider SI value to UCUM a",
               "effective": "measure group date",
-              "reason": "Version 0.6.0 carries the Withings vascular-age figure as the provider-scoped withings-vascular-age profile, on an age scale in UCUM years. The profile names the vendor in its code and description, so the figure cannot be mistaken for a chronological age, for a clinical vascular assessment, or for Oura's cardiovascular age, which stays a separate measurement because the two are undisclosed algorithms over different inputs. No comparability between vendors and no diagnosis is asserted."
+              "reason": "The Grove FHIR contracts carry the Withings vascular-age figure as the provider-scoped withings-vascular-age profile, on an age scale in UCUM years. The profile names the vendor in its code and description, so the figure cannot be mistaken for a chronological age, for a clinical vascular assessment, or for Oura's cardiovascular age, which stays a separate measurement because the two are undisclosed algorithms over different inputs. No comparability between vendors and no diagnosis is asserted."
             }
           ]
         },
@@ -949,9 +948,9 @@
               "path": "data.hr_average",
               "status": "supported",
               "measurementIds": [
-                "sleep-heart-rate",
-                "sleeping-heart-rate-average"
+                "sleep-heart-rate"
               ],
+              "effective": "exact sleep-session Period",
               "aggregationMethod": {
                 "sleep-heart-rate": "session-mean"
               }
@@ -1161,7 +1160,7 @@
               ],
               "unitConversion": "provider SI value to UCUM m/s",
               "effective": "measure group date",
-              "reason": "Version 0.6.0 carries the Withings aortic pulse-wave velocity estimate as the provider-scoped withings-pulse-wave-velocity profile in UCUM metres per second. The code names the vendor rather than a shared arterial-stiffness concept, because no second inventoried source evidences it and a scale-derived estimate is not interchangeable with a tonometric measurement taken in clinic. No arterial-stiffness finding and no diagnosis is asserted."
+              "reason": "The Grove FHIR contracts carry the Withings aortic pulse-wave velocity estimate as the provider-scoped withings-pulse-wave-velocity profile in UCUM metres per second. The code names the vendor rather than a shared arterial-stiffness concept, because no second inventoried source evidences it and a scale-derived estimate is not interchangeable with a tonometric measurement taken in clinic. No arterial-stiffness finding and no diagnosis is asserted."
             }
           ]
         },
@@ -1179,7 +1178,7 @@
                 "withings-atrial-fibrillation-notification-ecg"
               ],
               "effective": "measure group date",
-              "reason": "Version 0.6.0 carries the fact that Withings' electrocardiogram screening algorithm flagged signs of atrial fibrillation, as the provider-scoped withings-atrial-fibrillation-notification-ecg profile with a closed single-code result, on the same basis as the HealthKit irregular-heart-rhythm notification. An Observation is admitted only for the vendor's positive screening classification: Withings publishes no encoding for the numeric measure.value, so a negative or inconclusive classification produces no output. No rhythm finding, atrial-fibrillation burden, or diagnosis is asserted, and the code is taken from the providers code system so no receiver can read it as one."
+              "reason": "The Grove FHIR contracts carry the fact that Withings' electrocardiogram screening algorithm flagged signs of atrial fibrillation, as the provider-scoped withings-atrial-fibrillation-notification-ecg profile with a closed single-code result, on the same basis as the HealthKit irregular-heart-rhythm notification. An Observation is admitted only for the vendor's positive screening classification: Withings publishes no encoding for the numeric measure.value, so a negative or inconclusive classification produces no output. No rhythm finding, atrial-fibrillation burden, or diagnosis is asserted, and the code is taken from the providers code system so it cannot be interpreted as one."
             }
           ]
         },
@@ -1198,7 +1197,7 @@
               ],
               "unitConversion": "provider SI value to UCUM ms",
               "effective": "measure group date",
-              "reason": "Version 0.6.0 carries the QRS duration the Withings algorithm measured from its own electrocardiogram, as the provider-scoped withings-qrs-duration profile under LOINC 8633-0. The profile is provider-scoped because Withings is the only inventoried source that reports the interval as a discrete measure. No rhythm interpretation, conduction finding, or diagnosis is asserted; the electrocardiogram recording remains the rhythm evidence."
+              "reason": "The Grove FHIR contracts carry the QRS duration the Withings algorithm measured from its own electrocardiogram, as the provider-scoped withings-qrs-duration profile under LOINC 8633-0. The profile is provider-scoped because Withings is the only inventoried source that reports the interval as a discrete measure. No rhythm interpretation, conduction finding, or diagnosis is asserted; the electrocardiogram recording remains the rhythm evidence."
             }
           ]
         },
@@ -1217,7 +1216,7 @@
               ],
               "unitConversion": "provider SI value to UCUM ms",
               "effective": "measure group date",
-              "reason": "Version 0.6.0 carries the PR interval the Withings algorithm measured from its own electrocardiogram, as the provider-scoped withings-pr-interval profile under LOINC 8625-6. The profile is provider-scoped because Withings is the only inventoried source that reports the interval as a discrete measure. No rhythm interpretation, conduction finding, or diagnosis is asserted; the electrocardiogram recording remains the rhythm evidence."
+              "reason": "The Grove FHIR contracts carry the PR interval the Withings algorithm measured from its own electrocardiogram, as the provider-scoped withings-pr-interval profile under LOINC 8625-6. The profile is provider-scoped because Withings is the only inventoried source that reports the interval as a discrete measure. No rhythm interpretation, conduction finding, or diagnosis is asserted; the electrocardiogram recording remains the rhythm evidence."
             }
           ]
         },
@@ -1236,7 +1235,7 @@
               ],
               "unitConversion": "provider SI value to UCUM ms",
               "effective": "measure group date",
-              "reason": "Version 0.6.0 carries the uncorrected QT interval the Withings algorithm measured from its own electrocardiogram, as the provider-scoped withings-qt-interval profile under LOINC 8634-8. The profile is provider-scoped because Withings is the only inventoried source that reports the interval as a discrete measure. No repolarization finding, rhythm interpretation, or diagnosis is asserted, and the value is never substituted for the rate-corrected interval."
+              "reason": "The Grove FHIR contracts carry the uncorrected QT interval the Withings algorithm measured from its own electrocardiogram, as the provider-scoped withings-qt-interval profile under LOINC 8634-8. The profile is provider-scoped because Withings is the only inventoried source that reports the interval as a discrete measure. No repolarization finding, rhythm interpretation, or diagnosis is asserted, and the value is never substituted for the rate-corrected interval."
             }
           ]
         },
@@ -1255,7 +1254,7 @@
               ],
               "unitConversion": "provider SI value to UCUM ms",
               "effective": "measure group date",
-              "reason": "Version 0.6.0 carries the rate-corrected QT interval Withings reports, as the provider-scoped withings-corrected-qt-interval profile under LOINC 8636-3. The profile is provider-scoped because Withings is the only inventoried source that reports the correction as a discrete measure and does not publish which correction formula it applied, so the value is deliberately not asserted to be interchangeable with a QTc read from a clinical twelve-lead electrocardiogram. No repolarization finding and no diagnosis is asserted."
+              "reason": "The Grove FHIR contracts carry the rate-corrected QT interval Withings reports, as the provider-scoped withings-corrected-qt-interval profile under LOINC 8636-3. The profile is provider-scoped because Withings is the only inventoried source that reports the correction as a discrete measure and does not publish which correction formula it applied, so the value is deliberately not asserted to be interchangeable with a QTc read from a clinical twelve-lead electrocardiogram. No repolarization finding and no diagnosis is asserted."
             }
           ]
         },
@@ -1273,7 +1272,7 @@
                 "withings-atrial-fibrillation-notification-ppg"
               ],
               "effective": "measure group date",
-              "reason": "Version 0.6.0 carries the fact that Withings' photoplethysmography screening algorithm flagged signs of atrial fibrillation, as the provider-scoped withings-atrial-fibrillation-notification-ppg profile with a closed single-code result. It is kept separate from the electrocardiogram notification because it screens a different signal. An Observation is admitted only for the vendor's positive screening classification: Withings publishes no encoding for the numeric measure.value, so a negative or inconclusive classification produces no output. No rhythm finding, atrial-fibrillation burden, or diagnosis is asserted."
+              "reason": "The Grove FHIR contracts carry the fact that Withings' photoplethysmography screening algorithm flagged signs of atrial fibrillation, as the provider-scoped withings-atrial-fibrillation-notification-ppg profile with a closed single-code result. It is kept separate from the electrocardiogram notification because it screens a different signal. An Observation is admitted only for the vendor's positive screening classification: Withings publishes no encoding for the numeric measure.value, so a negative or inconclusive classification produces no output. No rhythm finding, atrial-fibrillation burden, or diagnosis is asserted."
             }
           ]
         },
@@ -1292,7 +1291,7 @@
               ],
               "unitConversion": "unitless provider value to the dimensionless UCUM {score} annotation",
               "effective": "measure group date",
-              "reason": "Version 0.6.0 carries the Withings nerve-health figure as the provider-scoped withings-nerve-health-score profile, on the dimensionless UCUM {score} annotation because the vendor publishes no physical unit for it. The code names the vendor and the profile description states the scale. Withings positions the figure as small-fiber-neuropathy screening, so the profile deliberately asserts no neuropathy finding, no nerve-conduction measurement, and no diagnosis."
+              "reason": "The Grove FHIR contracts carry the Withings nerve-health figure as the provider-scoped withings-nerve-health-score profile, on the dimensionless UCUM {score} annotation because the vendor publishes no physical unit for it. The code names the vendor and the profile description states the scale. Withings positions the figure as small-fiber-neuropathy screening, so the profile deliberately asserts no neuropathy finding, no nerve-conduction measurement, and no diagnosis."
             }
           ]
         },
@@ -1337,7 +1336,7 @@
               ],
               "unitConversion": "unitless provider value to the dimensionless UCUM {score} annotation",
               "effective": "measure group date",
-              "reason": "Version 0.6.0 carries the Withings visceral-fat figure as the provider-scoped withings-visceral-fat-index profile, on the dimensionless UCUM {score} annotation because the API returns the value without a unit and it is a rating rather than a mass or an area. The code names the vendor, so the figure cannot be folded into a shared body-composition measurement, and no measurand, no mass, and no comparability with another vendor's visceral-fat figure is asserted."
+              "reason": "The Grove FHIR contracts carry the Withings visceral-fat figure as the provider-scoped withings-visceral-fat-index profile, on the dimensionless UCUM {score} annotation because the API returns the value without a unit and it is a rating rather than a mass or an area. The code names the vendor, so the figure cannot be folded into a shared body-composition measurement, and no measurand, no mass, and no comparability with another vendor's visceral-fat figure is asserted."
             }
           ]
         },
@@ -1387,6 +1386,6 @@
     "status": "stable-token-required",
     "stableUnitToken": "A caller-governed, deployment-scoped per-unit token from already-authorized provider device data.",
     "fallback": "Omit Observation.device when no stable per-unit token exists. Manufacturer, model, payload group, account, and event identity do not prove a physical device instance.",
-    "snapshot": "When emitted, the Device carries both recording-device and event-scoped device-snapshot v2 identifiers."
+    "snapshot": "When emitted, the Device carries both recording-device and event-scoped device-snapshot v0 identifiers."
   }
 }

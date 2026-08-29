@@ -3,6 +3,20 @@
   "response": "valid/response.json",
   "valueSets": ["valid/value-set.json"],
   "additionalValidResponses": ["valid/response-in-progress.json"],
+  "additionalValidResponseCases": [
+    {
+      "id": "response-item-text-may-be-omitted",
+      "mutation": {"op": "remove", "path": "/item/0/item/0/text"}
+    },
+    {
+      "id": "response-item-text-may-be-localized",
+      "mutation": {
+        "op": "replace",
+        "path": "/item/0/text",
+        "value": "Identität"
+      }
+    }
+  ],
   "additionalValidSubjectCases": [
     {
       "id": "patient-literal-without-declared-type",
@@ -66,6 +80,266 @@
       }
     }
   ],
+  "enableWhenComparisonCases": [
+    {
+      "id": "date-time-timezone-equivalence",
+      "sourceAnswer": {"valueDateTime": "2026-08-29T09:00:00-07:00"},
+      "operator": "=",
+      "conditionAnswer": {"answerDateTime": "2026-08-29T16:00:00Z"},
+      "expected": true
+    },
+    {
+      "id": "date-time-timezone-order",
+      "sourceAnswer": {"valueDateTime": "2026-08-29T09:00:00-07:00"},
+      "operator": "<",
+      "conditionAnswer": {"answerDateTime": "2026-08-29T16:00:01Z"},
+      "expected": true
+    },
+    {
+      "id": "date-partial-precision-overlap",
+      "sourceAnswer": {"valueDate": "2026-08"},
+      "operator": "<",
+      "conditionAnswer": {"answerDate": "2026-08-15"},
+      "expected": null
+    },
+    {
+      "id": "date-partial-precision-determinate-order",
+      "sourceAnswer": {"valueDate": "2026-08"},
+      "operator": "<",
+      "conditionAnswer": {"answerDate": "2026-09-01"},
+      "expected": true
+    },
+    {
+      "id": "date-time-fractional-precision-overlap",
+      "sourceAnswer": {"valueDateTime": "2026-08-29T16:00:00Z"},
+      "operator": "=",
+      "conditionAnswer": {"answerDateTime": "2026-08-29T16:00:00.000Z"},
+      "expected": null
+    },
+    {
+      "id": "date-and-date-time-are-not-interchangeable",
+      "sourceAnswer": {"valueDate": "2026-08-29"},
+      "operator": "=",
+      "conditionAnswer": {"answerDateTime": "2026-08-29"},
+      "expected": null
+    },
+    {
+      "id": "strings-do-not-use-lexical-order",
+      "sourceAnswer": {"valueString": "later"},
+      "operator": ">",
+      "conditionAnswer": {"answerString": "earlier"},
+      "expected": null
+    },
+    {
+      "id": "date-equal-at-identical-precision",
+      "sourceAnswer": {"valueDate": "2026-08"},
+      "operator": "=",
+      "conditionAnswer": {"answerDate": "2026-08"},
+      "expected": true
+    },
+    {
+      "id": "date-disjoint-at-different-precision",
+      "sourceAnswer": {"valueDate": "2026-08"},
+      "operator": "=",
+      "conditionAnswer": {"answerDate": "2026-09-01"},
+      "expected": false
+    },
+    {
+      "id": "date-time-partial-precision-overlap",
+      "sourceAnswer": {"valueDateTime": "2026-08"},
+      "operator": "<",
+      "conditionAnswer": {"answerDateTime": "2026-08-15"},
+      "expected": null
+    },
+    {
+      "id": "date-time-partial-precision-determinate-order",
+      "sourceAnswer": {"valueDateTime": "2026-08"},
+      "operator": "<",
+      "conditionAnswer": {"answerDateTime": "2026-09"},
+      "expected": true
+    },
+    {
+      "id": "time-fractional-precision-overlap",
+      "sourceAnswer": {"valueTime": "12:00:00"},
+      "operator": "<",
+      "conditionAnswer": {"answerTime": "12:00:00.001"},
+      "expected": null
+    },
+    {
+      "id": "time-fractional-precision-determinate-order",
+      "sourceAnswer": {"valueTime": "12:00:00.000"},
+      "operator": "<",
+      "conditionAnswer": {"answerTime": "12:00:00.001"},
+      "expected": true
+    },
+    {
+      "id": "date-time-offset-rolls-over-previous-day",
+      "sourceAnswer": {"valueDateTime": "2026-01-01T00:15:00+14:00"},
+      "operator": ">",
+      "conditionAnswer": {"answerDateTime": "2025-12-31T10:14:59Z"},
+      "expected": true
+    },
+    {
+      "id": "date-time-offset-rolls-over-next-day",
+      "sourceAnswer": {"valueDateTime": "2026-12-31T23:45:00-14:00"},
+      "operator": "=",
+      "conditionAnswer": {"answerDateTime": "2027-01-01T13:45:00Z"},
+      "expected": true
+    },
+    {
+      "id": "date-time-leap-second-offset-equivalence",
+      "sourceAnswer": {"valueDateTime": "2016-12-31T23:59:60Z"},
+      "operator": "=",
+      "conditionAnswer": {"answerDateTime": "2017-01-01T00:59:60+01:00"},
+      "expected": true
+    },
+    {
+      "id": "date-time-leap-second-before-next-minute",
+      "sourceAnswer": {"valueDateTime": "2016-12-31T23:59:60Z"},
+      "operator": "<",
+      "conditionAnswer": {"answerDateTime": "2017-01-01T00:00:00Z"},
+      "expected": true
+    },
+    {
+      "id": "time-leap-second-after-previous-second",
+      "sourceAnswer": {"valueTime": "23:59:60"},
+      "operator": ">",
+      "conditionAnswer": {"answerTime": "23:59:59"},
+      "expected": true
+    },
+    {
+      "id": "fractional-leap-second-is-not-admitted",
+      "sourceAnswer": {"valueTime": "23:59:60.1"},
+      "operator": "=",
+      "conditionAnswer": {"answerTime": "23:59:60.1"},
+      "expected": null
+    },
+    {
+      "id": "invalid-calendar-date-is-indeterminate",
+      "sourceAnswer": {"valueDate": "2026-02-29"},
+      "operator": "=",
+      "conditionAnswer": {"answerDate": "2026-02-29"},
+      "expected": null
+    },
+    {
+      "id": "not-equal-unanswered-is-false",
+      "sourceAnswers": [],
+      "operator": "!=",
+      "conditionAnswer": {
+        "answerCoding": {"system": "https://example.org/codes", "code": "a"}
+      },
+      "expected": false
+    },
+    {
+      "id": "not-equal-only-equal-is-false",
+      "sourceAnswer": {
+        "valueCoding": {"system": "https://example.org/codes", "code": "a"}
+      },
+      "operator": "!=",
+      "conditionAnswer": {
+        "answerCoding": {"system": "https://example.org/codes", "code": "a"}
+      },
+      "expected": false
+    },
+    {
+      "id": "not-equal-mixed-repeated-answers-is-true",
+      "sourceAnswers": [
+        {"valueCoding": {"system": "https://example.org/codes", "code": "a"}},
+        {"valueCoding": {"system": "https://example.org/codes", "code": "b"}}
+      ],
+      "operator": "!=",
+      "conditionAnswer": {
+        "answerCoding": {"system": "https://example.org/codes", "code": "a"}
+      },
+      "expected": true
+    },
+    {
+      "id": "quantity-equality-compares-the-value",
+      "sourceAnswer": {
+        "valueQuantity": {
+          "value": 1,
+          "unit": "kg",
+          "system": "http://unitsofmeasure.org",
+          "code": "kg"
+        }
+      },
+      "operator": "=",
+      "conditionAnswer": {
+        "answerQuantity": {
+          "value": 2,
+          "unit": "kg",
+          "system": "http://unitsofmeasure.org",
+          "code": "kg"
+        }
+      },
+      "expected": false
+    },
+    {
+      "id": "quantity-equality-uses-the-coded-unit-not-display-text",
+      "sourceAnswer": {
+        "valueQuantity": {
+          "value": 1,
+          "unit": "kg",
+          "system": "http://unitsofmeasure.org",
+          "code": "kg"
+        }
+      },
+      "operator": "=",
+      "conditionAnswer": {
+        "answerQuantity": {
+          "value": 1,
+          "unit": "kilogram",
+          "system": "http://unitsofmeasure.org",
+          "code": "kg"
+        }
+      },
+      "expected": true
+    }
+  ],
+  "temporalBoundCases": [
+    {
+      "id": "date-month-before-next-month",
+      "itemType": "date",
+      "minimum": {"valueDate": "2026-08"},
+      "maximum": {"valueDate": "2026-09"},
+      "expectedValid": true
+    },
+    {
+      "id": "date-month-overlaps-day",
+      "itemType": "date",
+      "minimum": {"valueDate": "2026-08"},
+      "maximum": {"valueDate": "2026-08-15"},
+      "expectedValid": false
+    },
+    {
+      "id": "date-time-offset-order-crosses-date-boundary",
+      "itemType": "dateTime",
+      "minimum": {"valueDateTime": "2026-01-01T00:00:00+14:00"},
+      "maximum": {"valueDateTime": "2025-12-31T10:00:01Z"},
+      "expectedValid": true
+    },
+    {
+      "id": "date-time-leap-second-precedes-next-minute",
+      "itemType": "dateTime",
+      "minimum": {"valueDateTime": "2016-12-31T23:59:60Z"},
+      "maximum": {"valueDateTime": "2017-01-01T00:00:00Z"},
+      "expectedValid": true
+    },
+    {
+      "id": "time-overlapping-precision-is-not-a-provable-bound",
+      "itemType": "time",
+      "minimum": {"valueTime": "12:00:00"},
+      "maximum": {"valueTime": "12:00:00.001"},
+      "expectedValid": false
+    },
+    {
+      "id": "fractional-leap-second-is-not-a-valid-bound",
+      "itemType": "time",
+      "minimum": {"valueTime": "23:59:60.1"},
+      "maximum": {"valueTime": "23:59:60.1"},
+      "expectedValid": false
+    }
+  ],
   "invalid": [
     {
       "id": "pair-questionnaire-version",
@@ -86,6 +360,24 @@
         "path": "/subject",
         "value": {"reference": "Observation/not-a-patient"}
       }
+    },
+    {
+      "id": "pair-subject-required",
+      "target": "response",
+      "expectedRule": "gqr-subject-required",
+      "mutation": {"op": "remove", "path": "/subject"}
+    },
+    {
+      "id": "pair-authored-required",
+      "target": "response",
+      "expectedRule": "gqr-authored-required",
+      "mutation": {"op": "remove", "path": "/authored"}
+    },
+    {
+      "id": "pair-completion-mode-required",
+      "target": "response",
+      "expectedRule": "gqr-completion-mode-1",
+      "mutation": {"op": "remove", "path": "/extension/0"}
     },
     {
       "id": "pair-subject-declared-type-conflict",

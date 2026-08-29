@@ -103,12 +103,6 @@ OPAQUE_IDENTIFIER_ROLES = frozenset(
 RELEASE_VERSION = json.loads(
     (CATALOG_ROOT / "package-graph.json").read_text(encoding="utf-8")
 )["version"]
-REGISTRY_GENERATIONS = {
-    code: (RELEASE_VERSION,)
-    for code in json.loads(
-        (CATALOG_ROOT / "format-registry.json").read_text(encoding="utf-8")
-    )["formats"]
-}
 PACKAGE_GRAPH = json.loads(
     (CATALOG_ROOT / "package-graph.json").read_text(encoding="utf-8")
 )
@@ -146,7 +140,6 @@ SENSOR_RECORDING_PROFILE = (
     "https://grovealliance.org/fhir/sensor/StructureDefinition/"
     "grove-sensor-recording-document"
 )
-RECORDING_DOCUMENT_PROFILE_TAIL = "-recording-document"
 HEALTHKIT_PROFILE_PREFIX = (
     "https://grovealliance.org/fhir/healthkit/StructureDefinition/"
 )

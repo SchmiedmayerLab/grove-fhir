@@ -106,13 +106,13 @@ def validate_provider_identity(resource: dict[str, Any], label: str) -> None:
     if resource["resourceType"] == "DocumentReference":
         if source_row is None or "raw" not in source_row:
             raise ProducerValidationError(
-                f"{label} source type does not admit a native Recording Document"
+                f"{label} source type does not admit a Recording Document"
             )
     else:
         if "issued" in resource:
             raise ProducerValidationError(
-                f"{label} Provider Observation must omit issued because version 0.6.0 "
-                "declares no authoritative provider availability field"
+                f"{label} Provider Observation must omit issued because the Grove FHIR "
+                "contracts declare no authoritative provider availability field"
             )
         claimed = [
             (profile, MEASUREMENT_BY_PROFILE[profile])

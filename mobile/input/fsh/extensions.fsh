@@ -19,7 +19,7 @@ Context: Observation
 Extension: GroveWriterRecordVersion
 Id: grove-writer-record-version
 Title: "Grove Writer Record Version"
-Description: "The version the writing application gave this revision of its logical record: HKMetadataKeySyncVersion on HealthKit, clientRecordVersion on Health Connect. A platform keeps the higher version when the same writer saves the same logical record again, so a receiver supersedes the lower version rather than counting the measurement twice. Carried as canonical decimal text because the platforms' own values exceed a FHIR integer."
+Description: "The version the writing application gave this revision of its logical record: HKMetadataKeySyncVersion on HealthKit, clientRecordVersion on Health Connect. A platform keeps the higher version when the same writer saves the same logical record again, so the lower version is superseded rather than counted as another measurement. Carried as canonical decimal text because the platforms' own values exceed a FHIR integer."
 * ^context[+].type = #element
 * ^context[=].expression = "Observation"
 * value[x] only string

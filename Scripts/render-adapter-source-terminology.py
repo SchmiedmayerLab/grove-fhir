@@ -107,15 +107,47 @@ def profile_names(profiles: list[str]) -> list[str]:
     return [profile.rsplit("/", 1)[-1] for profile in profiles]
 
 
-def sensorkit_definition(entry: dict[str, Any]) -> str:
+def direct_profile_claims(profiles: list[str]) -> str:
+    names = profile_names(list(dict.fromkeys(profiles)))
+    noun = "claim" if len(names) == 1 else "claims"
+    return f"the direct `meta.profile` {noun} {human_list(names)}"
+
+
+def sensorkit_definition(
+    entry: dict[str, Any], recording_document_profiles: list[str]
+) -> str:
     structured = entry.get("structured") or {}
-    profiles = [structured["profile"]] if structured.get("profile") else []
-    return source_type_definition(
-        "SensorKit",
-        entry["sourceToken"],
-        profile_names(profiles),
-        structured.get("reason") or entry.get("reason"),
-    )
+    raw = entry.get("raw") or {}
+    structured_profiles = [
+        profile
+        for profile in (
+            structured.get("sourceNeutralProfile"),
+            structured.get("profile"),
+            structured.get("adapterProfile"),
+        )
+        if profile
+    ]
+    outputs: list[str] = []
+    if structured_profiles:
+        outputs.append(
+            f"a structured Observation with {direct_profile_claims(structured_profiles)}"
+        )
+    if raw:
+        raw_profiles = [recording_document_profiles[0]]
+        raw_profiles.append(raw.get("profile") or recording_document_profiles[1])
+        outputs.append(
+            f"a Recording Document with {direct_profile_claims(raw_profiles)}"
+        )
+
+    opening = f'The SensorKit {entry["sourceToken"]} source type.'
+    if len(outputs) == 1:
+        return f"{opening} Grove admits {outputs[0]}."
+    if len(outputs) == 2:
+        return f"{opening} Grove admits {outputs[0]}. It also admits {outputs[1]}."
+    reason = structured.get("reason") or entry.get("reason")
+    if reason:
+        return f"{opening} Grove admits no output for it. {reason}"
+    return f"{opening} Grove admits no output for it."
 
 
 def provider_definition(provider: dict[str, Any], source: dict[str, Any], grouped: bool = False) -> str:
@@ -139,7 +171,6 @@ def provider_definition(provider: dict[str, Any], source: dict[str, Any], groupe
 
 def healthkit() -> str:
     data = catalog("healthkit-adapter.json")
-    version = data["version"]
     rows = data["rows"]
     evidence = json.loads(
         (ROOT / "healthkit/input/data/healthkit-inventory.json").read_text(encoding="utf-8")
@@ -190,15 +221,21 @@ Description: "The {len(rows)} source-type identifiers the {baseline["platform"]}
 ValueSet: HealthKitSourceTypeVS
 Id: healthkit-source-type
 Title: "HealthKit Source Types"
-Description: "The complete closed set of HealthKit platform source types in the version {version} catalog."
+Description: "The complete closed set of HealthKit platform source types in the authoritative catalog."
 * ^experimental = false
 * include codes from system HealthKitSourceTypeCS
 '''
 
 
 def sensorkit() -> str:
-    entries = catalog("sensorkit-adapter.json")["entries"]
-    baseline = catalog("sensorkit-adapter.json")["sourceEvidence"]["sdkBaseline"]
+    data = catalog("sensorkit-adapter.json")
+    entries = data["entries"]
+    baseline = data["sourceEvidence"]["sdkBaseline"]
+    recording_document = data["profileClaims"]["recordingDocument"]
+    recording_document_profiles = [
+        recording_document["sourceNeutralProfile"],
+        recording_document["adapterProfile"],
+    ]
     definitions = "\n".join(
         [
             property_definition(
@@ -222,7 +259,7 @@ def sensorkit() -> str:
         "\n".join(
             [
                 f'* #{entry["sourceTypeCode"]} "{fsh_text(entry["title"])}" '
-                f'"{fsh_text(sensorkit_definition(entry))}"',
+                f'"{fsh_text(sensorkit_definition(entry, recording_document_profiles))}"',
                 concept_property(
                     entry["sourceTypeCode"], 0, "identifier",
                     f'valueString = "{fsh_text(entry["identifier"])}"',
@@ -321,7 +358,6 @@ Description: "The complete closed Health Connect 1.1.0 source Record class inven
 
 
 def providers() -> str:
-    version = catalog("providers-adapter.json")["version"]
     data = catalog("providers-adapter.json")
     rows: list[tuple[str, str, str]] = []
     for provider in data["providers"]:
@@ -351,7 +387,7 @@ def providers() -> str:
     return HEADER + f'''CodeSystem: ProviderSourceTypeCS
 Id: provider-source-type
 Title: "Provider Source Types"
-Description: "The complete provider-qualified Google Health API, Oura, and Withings source inventory admitted or explicitly classified by version {version}. The code is source lineage, not a clinical result code or fetch instruction."
+Description: "The complete provider-qualified Google Health API, Oura, and Withings source inventory admitted or explicitly classified by the Grove FHIR contracts. The code is source lineage, not a clinical result code or fetch instruction."
 * ^experimental = false
 * ^caseSensitive = true
 * ^content = #complete
@@ -360,7 +396,7 @@ Description: "The complete provider-qualified Google Health API, Oura, and Withi
 ValueSet: ProviderSourceTypeVS
 Id: provider-source-type
 Title: "Provider Source Types"
-Description: "The complete closed provider-qualified source-type inventory for the Provider {version} adapter."
+Description: "The complete closed provider-qualified source-type inventory for the relevant Grove FHIR Implementation Guide."
 * ^experimental = false
 * include codes from system ProviderSourceTypeCS
 '''

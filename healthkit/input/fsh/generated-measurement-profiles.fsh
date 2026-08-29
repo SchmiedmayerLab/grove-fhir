@@ -10,7 +10,7 @@
 CodeSystem: HealthKitMeasurementCS
 Id: healthkit-measurement
 Title: "HealthKit Measurement"
-Description: "Measurement concepts defined by the HealthKit adapter for platform-exclusive results no established code represents faithfully."
+Description: "Measurement concepts defined by the HealthKit adapter for platform-specific results for which no established code is sufficiently precise."
 * ^experimental = false
 * ^caseSensitive = true
 * ^content = #complete
@@ -792,7 +792,7 @@ Profile: HealthkitAtrialFibrillationBurden
 Parent: HealthKitObservation
 Id: healthkit-atrial-fibrillation-burden
 Title: "Atrial Fibrillation Burden"
-Description: "The estimated percentage of analyzed time showing atrial fibrillation over a multi-day estimation window, normalized to UCUM percent. It is a windowed estimate implemented by the phase-2 aggregate design; the Withings AFib classification scalars remain intentionally unsupported and never join it."
+Description: "The estimated percentage of analyzed time showing atrial fibrillation over a multi-day estimation window, normalized to UCUM percent. It is a source-supplied windowed estimate whose exact analysis window is carried by effectivePeriod; the Withings AFib classification scalars remain intentionally unsupported and never join it."
 * obeys healthkit-atrial-fibrillation-burden-value-domain-1
 * code = HealthKitMeasurementCS#atrial-fibrillation-burden
 * code from HealthKitMeasurementVS (required)
@@ -937,7 +937,7 @@ Profile: HealthkitBiologicalSex
 Parent: HealthKitObservation
 Id: healthkit-biological-sex
 Title: "Grove HealthKit Biological Sex"
-Description: "Biological sex as a coded Observation. LOINC 46098-0 'Sex' is the context-free concept (verified ACTIVE, PROPERTY LP6886-8 Type, SCALE_TYP LP7750-5 Nom). 76689-9 'Sex assigned at birth' was rejected: the HealthKit characteristic states only a sex, never that it is the one assigned at birth, and adopting that code would fabricate a provenance the source does not carry. Value is a Grove-coded concept with the HKBiologicalSex token retained as secondary coding per the sleep-stage absorption pattern. HKBiologicalSex.notSet emits no Observation."
+Description: "Biological sex as a coded Observation using LOINC 46098-0 'Sex'. LOINC 76689-9 'Sex assigned at birth' is not used because the HealthKit characteristic states only sex and does not assert birth-assignment provenance. The value uses a Grove code with the exact HKBiologicalSex token retained as secondary coding; HKBiologicalSex.notSet produces no Observation."
 * code = $loinc#46098-0
 * effective[x] only dateTime
 * value[x] only CodeableConcept
@@ -989,7 +989,7 @@ Profile: HealthkitBloodAlcoholContent
 Parent: HealthKitObservation
 Id: healthkit-blood-alcohol-content
 Title: "Blood Alcohol Content"
-Description: "Blood alcohol content as the mass-percent concentration figure a breathalyzer or user reports, kept as the plain UCUM percent scalar per the decided contract. It is not converted into a laboratory ethanol mass concentration."
+Description: "Blood alcohol content as the mass-percent concentration figure a breathalyzer or user reports, represented as a UCUM percent scalar. It is not converted into a laboratory ethanol mass concentration."
 * obeys healthkit-blood-alcohol-content-value-domain-1
 * code = HealthKitMeasurementCS#blood-alcohol-content
 * code from HealthKitMeasurementVS (required)
@@ -1008,7 +1008,7 @@ Profile: HealthkitBloodType
 Parent: HealthKitObservation
 Id: healthkit-blood-type
 Title: "Grove HealthKit Blood Type"
-Description: "ABO and Rh group as a coded Observation. LOINC 882-1 'ABO and Rh group [Type] in Blood' is the exact concept (re-verified ACTIVE, PROPERTY LP6886-8 Type, SCALE_TYP LP7750-5 Nom). Value is a Grove-coded ABO/Rh concept with the HKBloodType token retained as secondary coding per the sleep-stage absorption pattern."
+Description: "ABO and Rh group as a coded Observation using LOINC 882-1 'ABO and Rh group [Type] in Blood'. The value uses a Grove ABO/Rh code with the exact HKBloodType token retained as secondary coding."
 * code = $loinc#882-1
 * effective[x] only dateTime
 * value[x] only CodeableConcept
@@ -1047,7 +1047,7 @@ Profile: HealthkitDateOfBirth
 Parent: HealthKitObservation
 Id: healthkit-date-of-birth
 Title: "Grove HealthKit Date of Birth"
-Description: "Date of birth as an Observation. LOINC 21112-8 'Birth date' is the exact concept (verified ACTIVE, PROPERTY LP6882-7 TmStp, SCALE_TYP LP7753-9 Qn). A date of birth identifies a person across systems, so the adapter withholds it unless the deployment authorizes disclosure; a deployment that already knows its participant's demographics from enrollment should prefer that authoritative record over this assertion."
+Description: "Date of birth as an Observation using LOINC 21112-8 'Birth date'. A date of birth identifies a person across systems, so the adapter withholds it unless the deployment authorizes disclosure; a deployment that already knows its participant's demographics from enrollment should prefer that authoritative record over this assertion."
 * code = $loinc#21112-8
 * effective[x] only dateTime
 * value[x] only dateTime
@@ -1104,7 +1104,7 @@ Profile: HealthkitFitzpatrickSkinType
 Parent: HealthKitObservation
 Id: healthkit-fitzpatrick-skin-type
 Title: "Grove HealthKit Fitzpatrick Skin Type"
-Description: "Fitzpatrick sun-reactive skin type as a coded Observation. LOINC 66555-4 'Skin type [Fitzpatrick Classification Scale]' is the exact concept (verified ACTIVE, PROPERTY LP6886-8 Type, SCALE_TYP LP7750-5 Nom). The scale materially conditions UV-exposure interpretation, which is why it is modelled rather than left to the deployment. HKFitzpatrickSkinType.notSet emits no Observation."
+Description: "Fitzpatrick sun-reactive skin type as a coded Observation using LOINC 66555-4 'Skin type [Fitzpatrick Classification Scale]'. The scale materially conditions UV-exposure interpretation, which is why it is modelled rather than left to the deployment. HKFitzpatrickSkinType.notSet produces no Observation."
 * code = $loinc#66555-4
 * effective[x] only dateTime
 * value[x] only CodeableConcept
@@ -1158,7 +1158,7 @@ Profile: HealthkitGad7Assessment
 Parent: HealthKitObservation
 Id: healthkit-gad7-assessment
 Title: "Grove HealthKit GAD-7 Score"
-Description: "HKGAD7Assessment (iOS 18, HKScoredAssessment subclass): score 0-21, answers [HKGAD7Assessment.Answer], risk. Routing recommendation: platform-exclusive score Observation on exact LOINC 70274-6 'Generalized anxiety disorder 7 item (GAD-7) total score [Reported.PHQ]' (re-verified ACTIVE, PROPERTY LP185820-0 Score, SCALE_TYP LP7753-9 Qn). The seven answers are retained as components coded with the LOINC GAD-7 item codes under panel 69737-5 (re-verified), each valued with the standard LOINC answer codes (LA6568-5 'Not at all', LA6569-3 'Several days', LA6570-1 'More than half the days', LA6571-9 'Nearly every day' — all four displays re-verified against LOINC 2.82 via tx.fhir.org) absorbing Answer cases notAtAll, severalDays, moreThanHalfTheDays, nearlyEveryDay; Risk (noneToMinimal, mild, moderate, severe — re-verified) is redundant with the published score bands and is carried only as an Observation.interpretation-style Grove coding, not a value."
+Description: "A HealthKit GAD-7 assessment represented by its 0-21 total score using LOINC 70274-6 'Generalized anxiety disorder 7 item (GAD-7) total score [Reported.PHQ]'. The seven item answers are retained as components using the standard LOINC GAD-7 item and answer codes under panel 69737-5. HealthKit's risk classification is redundant with the score bands and is retained as a Grove interpretation coding rather than a second result value."
 * code = $loinc#70274-6
 * effective[x] only dateTime
 * value[x] only Quantity
@@ -1308,7 +1308,7 @@ Profile: HealthkitInsulinDelivery
 Parent: HealthKitObservation
 Id: healthkit-insulin-delivery
 Title: "Insulin Delivery"
-Description: "The quantity of insulin delivered during the exact effective Period, normalized to UCUM international units, with a REQUIRED delivery-reason component distinguishing basal from bolus delivery per the decided contract. A sample without the HKMetadataKeyInsulinDeliveryReason metadata fails closed."
+Description: "The quantity of insulin delivered during the exact effective Period, normalized to UCUM international units. A required delivery-reason component distinguishes basal from bolus delivery; a sample without HKMetadataKeyInsulinDeliveryReason fails closed."
 * code = HealthKitMeasurementCS#insulin-delivery
 * code from HealthKitMeasurementVS (required)
 * effective[x] only Period
@@ -1506,7 +1506,7 @@ Profile: HealthkitPhq9Assessment
 Parent: HealthKitObservation
 Id: healthkit-phq9-assessment
 Title: "Grove HealthKit PHQ-9 Score"
-Description: "HKPHQ9Assessment (iOS 18, HKScoredAssessment subclass): score 0-27, answers [HKPHQ9Assessment.Answer] including preferNotToAnswer, risk. Routing recommendation: platform-exclusive score Observation on exact LOINC 44261-6 'Patient Health Questionnaire 9 item (PHQ-9) total score [Reported]' (re-verified ACTIVE, Score, Qn); item answers retained as components under panel 44249-1 'PHQ-9 quick depression assessment panel [Reported.PHQ]' (re-verified) with the standard LA answer codes; preferNotToAnswer maps to a component with dataAbsentReason asked-declined, which is the semantically exact FHIR mechanism; Risk (noneToMinimal, mild, moderate, moderatelySevere, severe — re-verified) carried as interpretation-style Grove coding only."
+Description: "A HealthKit PHQ-9 assessment represented by its 0-27 total score using LOINC 44261-6 'Patient Health Questionnaire 9 item (PHQ-9) total score [Reported]'. Item answers are retained as components under LOINC panel 44249-1 with the standard answer codes; preferNotToAnswer maps to dataAbsentReason asked-declined. HealthKit's risk classification is retained as a Grove interpretation coding rather than a second result value."
 * code = $loinc#44261-6
 * effective[x] only dateTime
 * value[x] only Quantity
@@ -1634,7 +1634,7 @@ Profile: HealthkitSixMinuteWalkTestDistance
 Parent: HealthKitObservation
 Id: healthkit-six-minute-walk-test-distance
 Title: "Six-Minute Walk Test Distance"
-Description: "The distance walked (or estimated walkable) in six minutes, using LOINC Six minute walk test and normalized to UCUM metres. Apple's samples are predominantly rolling-window mobility estimates rather than administered tests, so the phase-2 aggregate design owns the emission contract."
+Description: "The distance walked (or estimated walkable) in six minutes, using LOINC Six minute walk test and normalized to UCUM metres. Apple's samples are predominantly rolling-window mobility estimates rather than administered tests, so effectivePeriod carries the exact measurement window."
 * code = $loinc#64098-7
 * effective[x] only Period
 * effectivePeriod.end 1..1 MS
@@ -2342,7 +2342,7 @@ Profile: HealthkitWaistCircumference
 Parent: HealthKitObservation
 Id: healthkit-waist-circumference
 Title: "Waist Circumference"
-Description: "A HealthKit-exclusive waist circumference normalized to UCUM centimetres. The LOINC code asserts the umbilicus site and tape-measure method that HealthKit does not itself state; this is the established consumer-health interoperability mapping and the caveat is documented rather than inventing a Grove code."
+Description: "A HealthKit-exclusive waist circumference normalized to UCUM centimetres. The selected LOINC code asserts the umbilicus site and tape-measure method that HealthKit does not itself state; the profile documents that caveat rather than inventing a Grove code."
 * code = $loinc#8280-0
 * effective[x] only dateTime
 * value[x] only Quantity
@@ -2403,7 +2403,7 @@ Profile: HealthkitWalkingHeartRateAverage
 Parent: HealthKitObservation
 Id: healthkit-walking-heart-rate-average
 Title: "Walking Heart Rate Average"
-Description: "The average heart rate during walking activity over a daily window, normalized to UCUM beats per minute. HealthKit-only evidence today; the phase-2 aggregate design implements the windowing."
+Description: "The average heart rate during walking activity over a daily window, normalized to UCUM beats per minute. This is a HealthKit-specific source-supplied aggregate whose exact daily window is carried by effectivePeriod."
 * code = HealthKitMeasurementCS#walking-heart-rate-average
 * code from HealthKitMeasurementVS (required)
 * effective[x] only Period
@@ -2443,7 +2443,7 @@ Profile: HealthkitWalkingSteadiness
 Parent: HealthKitObservation
 Id: healthkit-walking-steadiness
 Title: "Walking Steadiness"
-Description: "Apple's windowed walking-steadiness score, a rolling multi-day percentage summarizing gait stability, normalized to UCUM percent over the exact aggregation Period. As a windowed aggregate it is implemented by the phase-2 aggregate design rather than as a point measurement."
+Description: "Apple's windowed walking-steadiness score, a rolling multi-day percentage summarizing gait stability, normalized to UCUM percent over the exact aggregation Period. It is represented as a source-supplied aggregate with an exact effectivePeriod, not as a point measurement."
 * obeys healthkit-walking-steadiness-value-domain-1
 * code = HealthKitMeasurementCS#walking-steadiness
 * code from HealthKitMeasurementVS (required)
@@ -2548,10 +2548,10 @@ InstanceOf: HealthkitAppleExerciseTime
 Usage: #example
 Title: "Apple Exercise Time Example"
 Description: "A conformant Apple Exercise Time instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:_mpMne35qLzgjJNO4RfuLQocICopGQskSo-7xkBgO1g"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:b7IPpBUTguvSvaM3ogelONUpgofxdPxbEaeJjGmKxHA"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:Z_bjp9zx4TXdsU37sp06fLJBhwl08on002eP1Hb1EuE"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:mqBYiN7MgRepMPyViyRcSUEf3z4S5SohFpX-x3pQA1s"
 * status = #final
 * code = HealthKitMeasurementCS#apple-exercise-time
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierAppleExerciseTime
@@ -2566,10 +2566,10 @@ InstanceOf: HealthkitAppleMoveTime
 Usage: #example
 Title: "Apple Move Time Example"
 Description: "A conformant Apple Move Time instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:wS9patgTiu_Nxfb3j9cS0oHMLYLSKBZ_lZRUEk61Ino"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:8dC2-9HQ5kgnXt4677TiW3jqFX6CWgQGWd0AvAT5TWM"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:fuWn9dCY8HcgRgTeZKQ-BKCWg_8ED5sJqZKQa9nBPKU"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:PVGGFk9CBvJeTLoWQF7x-2Sj2RwQZCoNX-hukqjATzQ"
 * status = #final
 * code = HealthKitMeasurementCS#apple-move-time
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierAppleMoveTime
@@ -2584,10 +2584,10 @@ InstanceOf: HealthkitAppleStandHour
 Usage: #example
 Title: "Apple Stand Hour Example"
 Description: "A conformant Apple Stand Hour instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:9rhxNiREgcvQ3XlHDuhbkXcW9oFm1lNuRq_UwiW2bxk"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:DwBdohiOxfsGGF0JxJkfGs60i4zUe_jGIOcr3mJlsqw"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:65oAdGWPXmNiDFzUlNvPTvv7ulQcW1nTT5Lt0Gw89O4"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:4-stv9sPDDAQMXCUBFWJFGMzPSEhkHxrLQ0KIzPRQGk"
 * status = #final
 * code = HealthKitMeasurementCS#apple-stand-hour
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierAppleStandHour
@@ -2602,10 +2602,10 @@ InstanceOf: HealthkitAppleStandTime
 Usage: #example
 Title: "Apple Stand Time Example"
 Description: "A conformant Apple Stand Time instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:VjOTd-iCDPGmMNJt9vS4v0UVRL285cBU0nII7rlgBlc"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:lSr7VsRsgYlaDyTHa-ag7VHWBdzyJcq6DiDYqFFuk6Y"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:ZTY4yjX_lC17lWmRHP-sT-6Do7SfKP0i5eTuaqTakjE"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:fU5XaHisX2mf7suUE5UVKxdknaDoiPh-F8CHIKlVUeQ"
 * status = #final
 * code = HealthKitMeasurementCS#apple-stand-time
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierAppleStandTime
@@ -2620,10 +2620,10 @@ InstanceOf: HealthkitAtrialFibrillationBurden
 Usage: #example
 Title: "Atrial Fibrillation Burden Example"
 Description: "A conformant Atrial Fibrillation Burden instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:-O1gkP8flSHwMyvuq50CwFcP-LisFz9qULuxmbIB6dw"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:Zl4lkgJ1TuvDd0-2ENMRqr9IYYRI5ccMQRokz_kLmek"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:08zruYiRc3jt0bO3nhKQ5dH77Xm2s0Bgu1pmj1p3N4o"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:BUe-GQ5nU140mBfztz9qQS8R_VntMnFibYYCJMvDi68"
 * status = #final
 * code = HealthKitMeasurementCS#atrial-fibrillation-burden
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierAtrialFibrillationBurden
@@ -2638,10 +2638,10 @@ InstanceOf: HealthkitAudiogramPanel
 Usage: #example
 Title: "Audiogram Panel Example"
 Description: "A conformant Audiogram Panel instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:KdsXHsaAiCjMXiDlGi_7fo4vHsjAiUIFvH9sgLTjTgk"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:OzhjJpcdO04bB6zgazmxO4KHgW9ymu6SRwKdsfJ0PBE"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:uwLiwgk9OTQrv3qkxWF8fpUypKAzzhqhB4Ldn525hWs"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:Oq1zXA2sxeiXD3kRDrcIZH15W_KHI8GbrsRpSHbWoXg"
 * status = #final
 * code = $loinc#89015-2 "Pure tone air conduction threshold audiometry panel"
 * extension[healthKitSourceType].valueCode = #HKDataTypeIdentifierAudiogram
@@ -2658,10 +2658,10 @@ InstanceOf: HealthkitBiologicalSex
 Usage: #example
 Title: "Grove HealthKit Biological Sex Example"
 Description: "A conformant Grove HealthKit Biological Sex instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:UjEwGMPutCKaEz61d-ONo0yM6daFA2JJEsGEzK4C9LU"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:pa89vQw9a6Im_kH1upafArf3MJKCpkfZrpHk7EiOBDI"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:rcc2O8yOH3O8NySRJPr7babrphLU0-KKU_iXwKHcW94"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:iK2bbzaHI8rjcaED2acHt9rab9nyo6UxLxLbRNcEG1o"
 * status = #final
 * code = $loinc#46098-0 "Sex"
 * extension[healthKitSourceType].valueCode = #HKCharacteristicTypeIdentifierBiologicalSex
@@ -2675,10 +2675,10 @@ InstanceOf: HealthkitBladderIncontinence
 Usage: #example
 Title: "Bladder Incontinence Example"
 Description: "A conformant Bladder Incontinence instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:ydNtYo4IOExkwXr9PiHVl2n4yYmWAB1vdSrMo_ad3fs"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:XamkJyQjZ7e-nceYNX-LLl3ezm3JKxfieCt1ZlGLaGc"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:VsHxvkUfXPhOV7q7uT6XbsKyfD-Ztcs35yMlHlLOoJA"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:V22jPOeY1yNW002LRclBGgbb2Wa06W-DKmFSM_2PaHU"
 * status = #final
 * code = HealthKitMeasurementCS#bladder-incontinence
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierBladderIncontinence
@@ -2692,10 +2692,10 @@ InstanceOf: HealthkitBleedingAfterPregnancy
 Usage: #example
 Title: "Bleeding After Pregnancy Example"
 Description: "A conformant Bleeding After Pregnancy instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:0-33m-qJZbaUx8Xq8jJcJfhp_4SoGKrpIvQDaJ7g9AY"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:xS-LAdKpOeD1Jtnl6isqBk5bm7lsj3hd0vvkAnToTrA"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:OVP-phh2gI8PciS8J9m9xCZzAN8L3QhRiSdeEQ43c70"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:UoJnWcE5q8f1ltMN1QvFa5Yxe80C4U8S_rkVYOJ9xHs"
 * status = #final
 * code = HealthKitMeasurementCS#bleeding-after-pregnancy
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierBleedingAfterPregnancy
@@ -2709,10 +2709,10 @@ InstanceOf: HealthkitBleedingDuringPregnancy
 Usage: #example
 Title: "Bleeding During Pregnancy Example"
 Description: "A conformant Bleeding During Pregnancy instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:j9geVPn4TgG_FepWHTexC3HCOK3Q7dXtMnMnyHwYsDM"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:UBiB3dluzcWwIR9mpZwjrfQ2RwJxRuMf12YYqYb6L_Y"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:yQ01zaKR64bqYo0XFc15V4N9HMguSyF_BKhkFMnZuFg"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:D00xJbzwP2WWJNP0G-b5a5GWXsPLhHxCsiyh2GWEcbY"
 * status = #final
 * code = HealthKitMeasurementCS#bleeding-during-pregnancy
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierBleedingDuringPregnancy
@@ -2726,10 +2726,10 @@ InstanceOf: HealthkitBloodAlcoholContent
 Usage: #example
 Title: "Blood Alcohol Content Example"
 Description: "A conformant Blood Alcohol Content instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:yIUTqtCtEemhxUWU71wTuvAd7cK70c2Zq3rSLqByHrU"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:5GfJANyAekftj32OdZgsbRqYrSE307dNAqJcXNulmMU"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:CtQsbzBcK1cL-4gAVVDFLL0ZHuwf1AWlZuOGwbIfsvY"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:Ulr4hwXoVHtSYcUoWKavDZzfE_8QmykjQaF7H6fWgNk"
 * status = #final
 * code = HealthKitMeasurementCS#blood-alcohol-content
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierBloodAlcoholContent
@@ -2743,10 +2743,10 @@ InstanceOf: HealthkitBloodType
 Usage: #example
 Title: "Grove HealthKit Blood Type Example"
 Description: "A conformant Grove HealthKit Blood Type instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:v8wzbEixsKavlEZuvKv1CwpnKuZ78aBiopWyDoHsn8w"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:_zbavGWZ4Rig4Aumf5YNxJfty0_BkcaZ6Svf7K5poIU"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:m6iCgW6uQq8iK7QrncDfqEPJULm7uYYBLlOMwwqA6wY"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:FlCLTNmEmpV3zBbwLNoMD6dtXR9-lRxIDUAxp84qZ08"
 * status = #final
 * code = $loinc#882-1 "ABO and Rh group [Type] in Blood"
 * extension[healthKitSourceType].valueCode = #HKCharacteristicTypeIdentifierBloodType
@@ -2760,10 +2760,10 @@ InstanceOf: HealthkitContraceptiveUse
 Usage: #example
 Title: "Contraceptive Use Example"
 Description: "A conformant Contraceptive Use instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:xV1Nxrabu6cT3w0iblFSL_yIZPygWn8_3vV6uas_HJ0"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:-Qrz7LTUNdm-x51755SfJn590XCbiHNow7xtoPqAzK8"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:XLyeoKjPnh4ZuTkJ1mWydpQ5suqRCcdr5YjJkEHXsIM"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:9cW-5lyTsfWf1U9L0eFof5usFHDsuLBlKD7xDjyulRY"
 * status = #final
 * code = $loinc#8659-5 "Birth control method - Reported"
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierContraceptive
@@ -2778,10 +2778,10 @@ InstanceOf: HealthkitCyclingFunctionalThresholdPower
 Usage: #example
 Title: "Cycling Functional Threshold Power Example"
 Description: "A conformant Cycling Functional Threshold Power instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:7qRELeEKG7L-EqqFo2AacBhguNEokbbbdF3PsQcsnJo"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:ku6wR3Yp_Dp9_2n8XIo9k6ZO9XEhM55Va2CToivxIvQ"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:drI44V4MHp0Ye3eckyRLFzXUkvbtKaQxAta_PrvDLUY"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:ODNYHkyGzzjphNMJikSDtEwf3lb7Bi72jbhHR6SoUXw"
 * status = #final
 * code = HealthKitMeasurementCS#cycling-functional-threshold-power
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierCyclingFunctionalThresholdPower
@@ -2795,10 +2795,10 @@ InstanceOf: HealthkitDateOfBirth
 Usage: #example
 Title: "Grove HealthKit Date of Birth Example"
 Description: "A conformant Grove HealthKit Date of Birth instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:8fZ61ZOn__KqpePTL7Nj15Xct9CvgaJt0RZHC9tJHvI"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:z_6ZZNiUcNT08OH8iy-2r8q-et9j6XbbBXgd9q63hDI"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:SyFqVTn7DBcfrPQ0QaERcO4rQMPgae3utIxL6UcW47I"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:TG_l2S9WAUxvBy3YrpY3aVseb1VyGgYsGuwSADvztjU"
 * status = #final
 * code = $loinc#21112-8 "Birth date"
 * extension[healthKitSourceType].valueCode = #HKCharacteristicTypeIdentifierDateOfBirth
@@ -2812,10 +2812,10 @@ InstanceOf: HealthkitEnvironmentalAudioExposure
 Usage: #example
 Title: "Environmental Audio Exposure Example"
 Description: "A conformant Environmental Audio Exposure instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:3ejgQ3qj_x2ivQRjAKmbnZvVB8dairPmMWKbK_8AXds"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:VW7t1xJPIrmM0myJoQOnu93Ppis5OvWLrjMlWYSllc4"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:stgQnHSz9R_ALunGtGxx7jXTIajQLKTLqxqmzLclCVo"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:EIVMmcBp5ADHugZWdgcoKsXxMNmW_x8FEkSKPmgpUMY"
 * status = #final
 * code = HealthKitMeasurementCS#environmental-audio-exposure
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierEnvironmentalAudioExposure
@@ -2830,10 +2830,10 @@ InstanceOf: HealthkitEnvironmentalAudioExposureNotification
 Usage: #example
 Title: "Environmental Audio Exposure Notification Example"
 Description: "A conformant Environmental Audio Exposure Notification instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:W0FKGlbgPzgslfHuSG-nPke_t8U5GIftlMMEHFZCasA"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:7rBAwtiUSlEiev03FCxOxXuRCWD0bXjNTWMc4u4vLRg"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:rAvVPk9vpw4wlGaDC0tU2cQmo7Sa7h0cbsIIvsQ4BH8"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:LcLwi0lfGsziYRL3Q4r_L6BFfwkZ6JC9HmbkzLdPpzE"
 * status = #final
 * code = HealthKitMeasurementCS#environmental-audio-exposure-notification
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierAudioExposureEvent
@@ -2848,10 +2848,10 @@ InstanceOf: HealthkitEnvironmentalSoundReduction
 Usage: #example
 Title: "Environmental Sound Reduction Example"
 Description: "A conformant Environmental Sound Reduction instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:JqbQy3R3qf6gMhCd9ecDY72KcBe-jnM_6ss11JGvIDU"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:0iiEE3FxXqg44g73VVnxFLJRmZYk-Y90W3YGKaWg2ts"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:3GmkNtHK6qqgqDadPBACGCqYnuCg9ii6vf0CGQJ-Srs"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:BF_m_DZ_LTKA2HDgu8AC2ugAC7TK_OuooFCRjya6tgk"
 * status = #final
 * code = HealthKitMeasurementCS#environmental-sound-reduction
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierEnvironmentalSoundReduction
@@ -2866,10 +2866,10 @@ InstanceOf: HealthkitFitzpatrickSkinType
 Usage: #example
 Title: "Grove HealthKit Fitzpatrick Skin Type Example"
 Description: "A conformant Grove HealthKit Fitzpatrick Skin Type instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:zTKYAxBL7XEFmXSHKUO7j8y75Psf1wqU4y3wV3Y7q9s"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:FPfANYSugjkFpp-1ZTepreQtEJBa-NsMs0AxwnF7VPo"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:mK_VuN5AdFv--zap7QRi4zWOXO3gnL8c2upixq5Eaco"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:MwEyLWWHJTnlITW1P2com4yG43J2n2ne6g4aZi4m79I"
 * status = #final
 * code = $loinc#66555-4 "Skin type [Fitzpatrick Classification Scale]"
 * extension[healthKitSourceType].valueCode = #HKCharacteristicTypeIdentifierFitzpatrickSkinType
@@ -2883,10 +2883,10 @@ InstanceOf: HealthkitFoodCorrelation
 Usage: #example
 Title: "Food Correlation Example"
 Description: "A conformant Food Correlation instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:PSxqeZRzoj603VtaVHDuK9VxKv8DC_WukmRM6S2tWF8"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:SQ8mUNHlVgXTDz8H08xsGxegoT4dl2zIH7BFtnkZ0Eo"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:BoM_Gv2bXf7byvhol_fWfKv04DOYFQ9WT9Ovpdx8mos"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:V16Jt2WEDfHntPn7vCZzIQYx8fOk6VVgpo6QYjMv1UE"
 * status = #final
 * code = HealthKitMeasurementCS#food-correlation
 * extension[healthKitSourceType].valueCode = #HKCorrelationTypeIdentifierFood
@@ -2901,10 +2901,10 @@ InstanceOf: HealthkitForcedExpiratoryVolume1
 Usage: #example
 Title: "Forced Expiratory Volume in 1 Second Example"
 Description: "A conformant Forced Expiratory Volume in 1 Second instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:7NYFTKFEEklQB3rqQX1diVj3AQcdDo-wGJSx0xbhf1c"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:JgewRaOd7IXLJ0DvDHZ5gR1hEBRDWkFnJ7K8M1K27ZM"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:CgLciuL9hopYmoC9yYeBjeq9GCIlTtb5T08GBT7Xry0"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:c7CBvqTKAoKg3hOU1yEk4HARpz-Pr5bLn4x7_7SI24o"
 * status = #final
 * code = $loinc#20150-9 "FEV1"
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierForcedExpiratoryVolume1
@@ -2918,10 +2918,10 @@ InstanceOf: HealthkitForcedVitalCapacity
 Usage: #example
 Title: "Forced Vital Capacity Example"
 Description: "A conformant Forced Vital Capacity instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:bX5u7UaSAWMmURepEhp5do7aPZXY5ZUO1NAbv3YYauI"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:xep0kadHL307lTmBwWvytBw2t2hX1czCLob0YXMjF6U"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:1qO8Qdx9qFAG5sSNFQcTpaYM-DdvMyzuksFq6eMEGMY"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:AXLL_q3T1M_P8kp9WKbmEeLX-E6rZY-n0Nc3osLZQYs"
 * status = #final
 * code = $loinc#19868-9 "Forced vital capacity [Volume] Respiratory system by Spirometry"
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierForcedVitalCapacity
@@ -2935,10 +2935,10 @@ InstanceOf: HealthkitGad7Assessment
 Usage: #example
 Title: "Grove HealthKit GAD-7 Score Example"
 Description: "A conformant Grove HealthKit GAD-7 Score instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:EMp_RqT6gnnSlXkpiELGbM_E5PLE_hlcxDuxaEl7MXY"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:FY2KFAvS3et5JwNzMlR-Sg3RU-wRvFzFdZxyot4deys"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:5x-hPlwYvsMHa-IGnmRAml7woCMzBIJcUmN4kvrGDmg"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:hV7xtNcXFXFjXt6daWrYKtmutoqNe0r8KxyCy-VCi0M"
 * status = #final
 * code = $loinc#70274-6 "Generalized anxiety disorder 7 item (GAD-7) total score [Reported.PHQ]"
 * extension[healthKitSourceType].valueCode = #HKScoredAssessmentTypeIdentifierGAD7
@@ -2952,10 +2952,10 @@ InstanceOf: HealthkitHandwashingSession
 Usage: #example
 Title: "Handwashing Session Example"
 Description: "A conformant Handwashing Session instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:Fzn9_6FC82bvDwNtNEPBEGmArS3oGFq23lfsFCgKJVY"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:oMrfO8LO88z8yYBLTrSoSwwiEnerzwy7n9HB1WQLrCI"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:MtQ_CCWqm1liJsnSjkH5GiNskVG-yVMrRyNUl3H2iYo"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:DFXDFFu9nvD6HyUX0hzfj-GzpzVeIvFQW3wps6Cgb6k"
 * status = #final
 * code = HealthKitMeasurementCS#handwashing-session
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierHandwashingEvent
@@ -2970,10 +2970,10 @@ InstanceOf: HealthkitHeadphoneAudioExposure
 Usage: #example
 Title: "Headphone Audio Exposure Example"
 Description: "A conformant Headphone Audio Exposure instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:mSm8u-xGwabMKWCuZcDnPbDuuNRuuzRLxhUEsqAIn8w"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:wXXVZZ-vwGG-Wzyh5gQN9MmCyF99wS0qP80giBG4DGk"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:SeErBcvyFRrzBzGteBTjeLYgwTeU-Us8ymLShZdxFZk"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:tYTd27G48ziqtq5MdlsiQ0NriKF5OIfn4t02_alT8YU"
 * status = #final
 * code = HealthKitMeasurementCS#headphone-audio-exposure
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierHeadphoneAudioExposure
@@ -2988,10 +2988,10 @@ InstanceOf: HealthkitHeadphoneAudioExposureNotification
 Usage: #example
 Title: "Headphone Audio Exposure Notification Example"
 Description: "A conformant Headphone Audio Exposure Notification instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:A6fMc_bBRDUMCqn7_TTSue8AS7Iriy90Gax65CJSPEk"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:S98-zglrQNUfdKLRG-wuZt_m5QWA0-qpbZIE_s5zHHM"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:lLxrpyrE97UU49NU7wepvgPhSatv5iJt2nDPeEY7KUQ"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:w_rzqt5eFo-19lUw_ypF1dJlNC-gtcw7NRKlbNP8XWk"
 * status = #final
 * code = HealthKitMeasurementCS#headphone-audio-exposure-notification
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierHeadphoneAudioExposureEvent
@@ -3006,10 +3006,10 @@ InstanceOf: HealthkitHeartRateRecoveryOneMinute
 Usage: #example
 Title: "Heart Rate Recovery (One Minute) Example"
 Description: "A conformant Heart Rate Recovery (One Minute) instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:xT9QywtWNlZuDrGxi98VR8G-n1Ri7QyjLYyLTpg7Tlg"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:MzTxhUzwJTwLwRSl2SrJHvqKas56Cu9zOoiFuz-Om4E"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:ozfqq5QEIq3spxfjjeHnh3BJ2T5zAd__uvpJLIN1Ir4"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:CEHQJyf6ZnDE3glevZ-N-baRc1NOWbw_CjWdTYLo__8"
 * status = #final
 * code = HealthKitMeasurementCS#heart-rate-recovery-one-minute
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierHeartRateRecoveryOneMinute
@@ -3023,10 +3023,10 @@ InstanceOf: HealthkitHighHeartRateNotification
 Usage: #example
 Title: "High Heart Rate Notification Example"
 Description: "A conformant High Heart Rate Notification instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:LVhDXxd4xBoeIn-8MIKZz2RSgRTrPZ8DtS49ZgEIMZY"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:X4mGLBjHLsk-5hwy0s_nS28vea3x_XGJkFIaV6Wa060"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:i3ZdhmIU1R1wHK7f9bVnl6B_-zz-3Y6yGVnyDGlHurQ"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:oX0rYqsUetSD6IxA42lyIcET6XoFqX6kmdKG8pJZaAg"
 * status = #final
 * code = HealthKitMeasurementCS#high-heart-rate-notification
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierHighHeartRateEvent
@@ -3041,10 +3041,10 @@ InstanceOf: HealthkitHypertensionNotification
 Usage: #example
 Title: "Hypertension Notification Example"
 Description: "A conformant Hypertension Notification instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:gZHhr7o5okiYMXhtVvumeiAQXw1W4hYmnLGDUNUj03k"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:HcNHfR5iSIh5NgDjGcmPAHBaCypBofRdmeeaYpeRc4g"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:mSGDKM3sdqFGYmgW9gw4zBEiVBNYWk1hKBrkKQ96a_g"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:cN8FJsxTHTRO4h9MkZ8ECDo9Q7_B0DC4qPCOeAwv2zI"
 * status = #final
 * code = HealthKitMeasurementCS#hypertension-notification
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierHypertensionEvent
@@ -3059,10 +3059,10 @@ InstanceOf: HealthkitInfrequentMenstrualCycles
 Usage: #example
 Title: "Infrequent Menstrual Cycles Example"
 Description: "A conformant Infrequent Menstrual Cycles instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:pnfn9yppIHgn_4JxbSseau__dgTS2FpmwmhBvCnxySg"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:zA-u13hBhisY_Bp0iF1SucoPlDsU5lq_p2tM4PGpbAA"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:202Quhpm0Y6FyP0_W5D9r2Wl2QN8VZCnakE_pdtY9sk"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:hkt_B-A0v1SJBdMPH6H5DlgjbY7nzoruHyHZRXgR4Hs"
 * status = #final
 * code = HealthKitMeasurementCS#infrequent-menstrual-cycles
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierInfrequentMenstrualCycles
@@ -3077,10 +3077,10 @@ InstanceOf: HealthkitInhalerUsage
 Usage: #example
 Title: "Inhaler Usage Example"
 Description: "A conformant Inhaler Usage instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:lQXdA3f3Yz_NInpzjG_kUixNrz9h8izAOkMvJb_oBNw"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:n2-FoVEmHUB-gw6QMiCbWF0mj4UvxMVlkfKeqXGY7tY"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:H0Wm0faErLx8zhp286witXZH4h3maaHMHgzRjVyJ7js"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:2bRHVSsoUht_O24YDvCugJWyaHC3vus89oI0pkpa4lE"
 * status = #final
 * code = HealthKitMeasurementCS#inhaler-usage
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierInhalerUsage
@@ -3095,10 +3095,10 @@ InstanceOf: HealthkitInsulinDelivery
 Usage: #example
 Title: "Insulin Delivery Example"
 Description: "A conformant Insulin Delivery instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:aQDmFsQej2Ykea4kNiZFbkfb6pztIb2sCmZn8RvQPcI"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:-92EoBjB3TUaM1AUVV4qwjY3qVKjwuBllVjwwk0QMz4"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:cBCVAOwmOndbXKTkEvuABJ3SOihJN-qHzx41r8f-iPA"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:iXkd4P4yyDhIiPAS-c748bmb3XGtS_ANJCF0CkiPME0"
 * status = #final
 * code = HealthKitMeasurementCS#insulin-delivery
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierInsulinDelivery
@@ -3113,10 +3113,10 @@ InstanceOf: HealthkitIrregularHeartRhythmNotification
 Usage: #example
 Title: "Irregular Heart Rhythm Notification Example"
 Description: "A conformant Irregular Heart Rhythm Notification instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:2ab0mNwUXLnSQvA7u72F6f5FibrSOM_j84jEf4Y_Mno"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:fUnhVHRRyzXEXMidtY3wY8WO0nmTusJaYf4tQzXe7xE"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:uSasK26RUKQCylIsyn29Hd1UsIVCnUrePk3L_u45_JE"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:-sNrJCV_xEFSXASfKP0YMdsgpTTCWrSdi0bbs4b1cT4"
 * status = #final
 * code = HealthKitMeasurementCS#irregular-heart-rhythm-notification
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierIrregularHeartRhythmEvent
@@ -3131,10 +3131,10 @@ InstanceOf: HealthkitIrregularMenstrualCycles
 Usage: #example
 Title: "Irregular Menstrual Cycles Example"
 Description: "A conformant Irregular Menstrual Cycles instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:0SVJV4tKw9IBjbE2tol1HzbX8v8T1GCju4LTyz0fyOs"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:usaheIiCfNWjqNZo7IQORg8MYd-dP8sGpcEIjti_2_I"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:RNM1H5a48klcvTOdJycF94WSO1E6Cv2a4oVhgXDepHQ"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:Kyf0OVT0ajJUeZ2u2yThQEA9Q-JQun0Yz7DCNQZYQ34"
 * status = #final
 * code = HealthKitMeasurementCS#irregular-menstrual-cycles
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierIrregularMenstrualCycles
@@ -3149,10 +3149,10 @@ InstanceOf: HealthkitLactationStatus
 Usage: #example
 Title: "Lactation Status Example"
 Description: "A conformant Lactation Status instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:7a3c9ADCa2v7bII79f_WBUnyJLceJ95un9MiaNJYscY"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:ZrGdPhtTsa3GQXS_WrCSFTKALWjOaqUQECphxHW3mw0"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:zBDLjT-yPwpdIATFyaYXD0n3_B48uniiB3gfcZAHW6U"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:CbQIOoLhWxM9NTYPR-ujoOR_8e2pAfWPREQbHgJEvOk"
 * status = #final
 * code = $loinc#63895-7 "Breastfeeding status"
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierLactation
@@ -3167,10 +3167,10 @@ InstanceOf: HealthkitLowCardioFitnessNotification
 Usage: #example
 Title: "Low Cardio Fitness Notification Example"
 Description: "A conformant Low Cardio Fitness Notification instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:7D__hQVmGH1duIG7MlJox5uu2GM8J1getYes3xmDXw4"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:dEWS_PNcfR1Zh8RXCDmOdfq52NL7ysjoQE2CuxaGzwk"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:TkEQwWalgOKlOpbC6os8N3nyXNkq2uMSWhl5f_8Lyrs"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:v1cyGZ9mV1c7ahmKJIRygw8IMvawKnWze5CtqYk5Edc"
 * status = #final
 * code = HealthKitMeasurementCS#low-cardio-fitness-notification
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierLowCardioFitnessEvent
@@ -3185,10 +3185,10 @@ InstanceOf: HealthkitLowHeartRateNotification
 Usage: #example
 Title: "Low Heart Rate Notification Example"
 Description: "A conformant Low Heart Rate Notification instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:6zynecYOkWqEYscUeXtDiVXjAwFUj7DN7ebWVU2wj9A"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:IANEHGnAjhc9UzGJBTONpBEEUHMmMeWrjTxDl8-3nj4"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:lfyl1dbUSh_HuS_6eHvGWd0lQfHMFDE9i6lqDPHkQt8"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:tJADAhLNsfWi6cMr5-enyq0x-f_MqW7werJ0blqmoeU"
 * status = #final
 * code = HealthKitMeasurementCS#low-heart-rate-notification
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierLowHeartRateEvent
@@ -3203,10 +3203,10 @@ InstanceOf: HealthkitNumberOfAlcoholicBeverages
 Usage: #example
 Title: "Number of Alcoholic Beverages Example"
 Description: "A conformant Number of Alcoholic Beverages instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:C99SQZ9VkVvGpsQnyqAhShBKEJHsZimfyfShOcMdXdY"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:efGCPEWtsqxEzi7mnmNF_sbrzqpVGGpkYXmBKq6Nn6Y"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:NuHF5OE7-NfQN6DjxMvOzX0Hteh--puI2-8XJlQ5kqg"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:gMoUBnLhpQBpvWH2PL8T8XQJ1tjW5sgNV5FRqei-6yE"
 * status = #final
 * code = HealthKitMeasurementCS#number-of-alcoholic-beverages
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierNumberOfAlcoholicBeverages
@@ -3221,10 +3221,10 @@ InstanceOf: HealthkitNumberOfTimesFallen
 Usage: #example
 Title: "Number of Times Fallen Example"
 Description: "A conformant Number of Times Fallen instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:ALGa4xDsq9MvnL8nP38T6gHqltdbyQnqxtV0XcP1xxE"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:FPuNzCvZ3jdkrDnFRdG6t1OZroCgtXTteAe9ZQDHD34"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:5gVCEKoT41FRg1dyfBteMG76WE_He2wrvk2VvNZBp4U"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:stzlELqfgFpVRihlyDEKuiOWK0SqPNTBBKLuPtdSF1I"
 * status = #final
 * code = HealthKitMeasurementCS#number-of-times-fallen
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierNumberOfTimesFallen
@@ -3239,10 +3239,10 @@ InstanceOf: HealthkitPeakExpiratoryFlowRate
 Usage: #example
 Title: "Peak Expiratory Flow Rate Example"
 Description: "A conformant Peak Expiratory Flow Rate instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:0TW6R55vsGvkE5GgJ6ppM-GsC8RBue2Zvmv6kuAIpXQ"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:ASMLCaSQ49rF1LLmtF6qR5UVhTHjasYZ1e-m3yKTwys"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:FLgVjQlipbfhcd3AdLf3u6W2UeG8G2JmnDIVFdULkEs"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:RRr1hssTUpnOfHaw_BBx36YjTAEAAfaC8ZzR9_yLPK0"
 * status = #final
 * code = $loinc#33452-4 "Maximum expiratory gas flow Respiratory system airway"
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierPeakExpiratoryFlowRate
@@ -3256,10 +3256,10 @@ InstanceOf: HealthkitPeripheralPerfusionIndex
 Usage: #example
 Title: "Peripheral Perfusion Index Example"
 Description: "A conformant Peripheral Perfusion Index instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:5ld7xiCAybC-ujCwG_EVf0fcei1VV78douvGkeoDS4k"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:K2yQEpIjvnaHIoBtmnqmuiMux_Y7QseuCfDEKOQ2kEg"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:3-acW_ccSNEJCadc-ypbAj1JmmWUJRS_SbeIUDgLLg4"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:8jy-IBJ0GOZrIkJoqJhm-rGYKob2UvL-AzC-LMXv20s"
 * status = #final
 * code = $loinc#61006-3 "Perfusion index Tissue by Pulse oximetry"
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierPeripheralPerfusionIndex
@@ -3273,10 +3273,10 @@ InstanceOf: HealthkitPersistentIntermenstrualBleeding
 Usage: #example
 Title: "Persistent Intermenstrual Bleeding Example"
 Description: "A conformant Persistent Intermenstrual Bleeding instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:0Dh71a4gs95L8ZsLHh3bRbX6BoRPARPnCGFGxW6Sev0"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:WgHuDgTQr4woKE73S4JJ4xWgUuG61CRZjh8o_TuIVeE"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:p1pBv4aORwehAVo5OItFezQ5WN-rXTQm-J8t7GmO6gk"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:TiT8BqC_eSXZG_Ti8Aa0pNPc9fiC7tWYk6SClKf-C3I"
 * status = #final
 * code = HealthKitMeasurementCS#persistent-intermenstrual-bleeding
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierPersistentIntermenstrualBleeding
@@ -3291,10 +3291,10 @@ InstanceOf: HealthkitPhq9Assessment
 Usage: #example
 Title: "Grove HealthKit PHQ-9 Score Example"
 Description: "A conformant Grove HealthKit PHQ-9 Score instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:nlao98KmJz9FJdNkArcgo-1jHRJIhpSLfIsrI94brGI"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:EbKtXDJdKmfTIKzVPWDQZ0nnKJqmM3hs2WdxWQdTyF8"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:nrlxtecbRkruMacOXNJMwULg3QOoT_dfc-oNN6mZXis"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:EQCWfS7qYnY8tC5SfIBHWsPBklKFE4GkE0xVssoW3Bc"
 * status = #final
 * code = $loinc#44261-6 "Patient Health Questionnaire 9 item (PHQ-9) total score [Reported]"
 * extension[healthKitSourceType].valueCode = #HKScoredAssessmentTypeIdentifierPHQ9
@@ -3308,10 +3308,10 @@ InstanceOf: HealthkitPhysicalEffort
 Usage: #example
 Title: "Physical Effort Example"
 Description: "A conformant Physical Effort instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:RFA8JCJ4CLcr2AQdWkIXWUVkCIKb1zKKFTkAFQZcQy4"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:BLNDQu-6N5lIu23uShmV5NWUMlk4Up2n_nk-Ej7jkNc"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:eVctlMZg7iJUpWn5sOFHLlK77wxt6BMLhI01J-_IBjk"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:-R3WMF3iLW1jRG-mkl1bgeqmCLFWnPYcV4wXYmxKNy4"
 * status = #final
 * code = HealthKitMeasurementCS#physical-effort
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierPhysicalEffort
@@ -3326,10 +3326,10 @@ InstanceOf: HealthkitPregnancyStatus
 Usage: #example
 Title: "Pregnancy Status Example"
 Description: "A conformant Pregnancy Status instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:vKRvAowLOAgSgDg-iaUU1Cx5h-_stJeZj4QUj5qUOoI"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:dVxc1RGvf6VQrqW5iKEUTjgKco0Xv3gHeaO7F0nbSRo"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:xGdfe6UhIpbogYNVPaI45vVe8j_oT_ZaeZEmc4QcT0o"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:UA0T-BNfPYZEK8xcy8ZU2WR4tuzOtQfaW9u-QINn-mY"
 * status = #final
 * code = $loinc#82810-3 "Pregnancy status"
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierPregnancy
@@ -3344,10 +3344,10 @@ InstanceOf: HealthkitPregnancyTestResult
 Usage: #example
 Title: "Pregnancy Test Result Example"
 Description: "A conformant Pregnancy Test Result instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:Is84gA6ZgicWWHrxvHwH51vEovcR2Y6EKAJ31UsmWpY"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:vl0OlxtFKu4cwWyo-zoqME8oJNQJUloBdEimAbN-a1c"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:hr6WPCGrYuBaeb6cIpnCOIFhv3gRj_ZCkCNO_RMO0Wk"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:mPLMiB6H2fUilwvfnZqwLtHaGOKCCRCA1DJ86VPhQpY"
 * status = #final
 * code = $loinc#2106-3 "Choriogonadotropin [Presence] in Urine"
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierPregnancyTestResult
@@ -3361,10 +3361,10 @@ InstanceOf: HealthkitProgesteroneTestResult
 Usage: #example
 Title: "Progesterone Test Result Example"
 Description: "A conformant Progesterone Test Result instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:wsY6f4KLPzEsoOH00Hy-7yO9H4Vm_xHlIdaMt-idTLQ"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:pVidCEiQ7JxxZsKyrLrhRpVQg6NNlq4-2k-4KuV-mEk"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:H5s-uEE0SGdqPWOB0WZLbRQaDflyiqAIg8LMWh1rR98"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:z9nz12n0JQ_RVJLvdFYTkMotdCRyXA2H45nfw73t3ZI"
 * status = #final
 * code = HealthKitMeasurementCS#progesterone-test-result
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierProgesteroneTestResult
@@ -3378,10 +3378,10 @@ InstanceOf: HealthkitProlongedMenstrualPeriods
 Usage: #example
 Title: "Prolonged Menstrual Periods Example"
 Description: "A conformant Prolonged Menstrual Periods instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:3i8F1SBp2SBWPWoLii4KowiYSL1rIB6gLKv7Ks8O1r8"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:HbQnXPWxamhBkocSncPeD8SHL-W4KYIN0EVEg-eIR4o"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:lrj82_L_qm7z2_WXgkHQzXvHJwKD4tZmpPeTYDh0W1M"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:S0g7wtKpGfqUp7SDwj1YcrQZhIhru6z5-BuV19Z7NZ0"
 * status = #final
 * code = HealthKitMeasurementCS#prolonged-menstrual-periods
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierProlongedMenstrualPeriods
@@ -3396,10 +3396,10 @@ InstanceOf: HealthkitRunningGroundContactTime
 Usage: #example
 Title: "Running Ground Contact Time Example"
 Description: "A conformant Running Ground Contact Time instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:CHaVrFZ-kGBuu2jifgqWB1CDzfjRvkAig3gUA5_JyN8"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:pOyWGBVf_DYJJt_gvR48b5Z1cq-G87C1IYh1Yfv2jEA"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:VhRu8SzvlfQPQrZW9Kx_pcw1vevfSeR0JioM1JPWtxY"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:Uos17k1zUNMTuYYUIkph78FcLOnC-UbUytV1tps4pHg"
 * status = #final
 * code = HealthKitMeasurementCS#running-ground-contact-time
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierRunningGroundContactTime
@@ -3413,10 +3413,10 @@ InstanceOf: HealthkitRunningStrideLength
 Usage: #example
 Title: "Running Stride Length Example"
 Description: "A conformant Running Stride Length instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:ZYT_t-D-QfEIxjFh_DmrRRSOd3AeyaVzdMDrHVPN82M"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:EUaewNR_UlvNH3Xak2FMfDqoNV3UCGlIvt-VErEHbUE"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:JJOhw9LBhxUXSGwYR9MH4ELY_tqiR9Ag6htnLGeMbjM"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:gJXwKoTQQwY8nCCP373Qgr1eG7u6mipEDFuL9s6EjlQ"
 * status = #final
 * code = HealthKitMeasurementCS#running-stride-length
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierRunningStrideLength
@@ -3430,10 +3430,10 @@ InstanceOf: HealthkitRunningVerticalOscillation
 Usage: #example
 Title: "Running Vertical Oscillation Example"
 Description: "A conformant Running Vertical Oscillation instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:WZxFxS98CWXgy5P5Ex7k9WpsW1Bz0wIabn4jgWUSsBg"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:PfZ6w9PF4XW7hjYn4YSZQoY1jA4rtK2JZwgZ85WTs0k"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:yOHjpaAwEjlO9yzG5NN-MfG6uydjuUeCp1TGbcJAKzw"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:Yq-dtRUJu8z8MQzbMAHYTYCW04FjVOG4U0AGrmkhiXM"
 * status = #final
 * code = HealthKitMeasurementCS#running-vertical-oscillation
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierRunningVerticalOscillation
@@ -3447,10 +3447,10 @@ InstanceOf: HealthkitSixMinuteWalkTestDistance
 Usage: #example
 Title: "Six-Minute Walk Test Distance Example"
 Description: "A conformant Six-Minute Walk Test Distance instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:bVccmKois5l2BBGvNgDEbjvEonJF7XWgT8fqx-s6IZc"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:ZRIjY2mqNrkSv28QAjkawsz9_Vc2CJSzkd9pZnJ0k14"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:Sq_D4RdjV8Mk2XiaUl48WH9s4ZvtSEPjYUFMNYWdFco"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:yiInKk33sg3RG6pLpZAH53PzocqlL755bgGCsIYYnes"
 * status = #final
 * code = $loinc#64098-7 "Six minute walk test"
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierSixMinuteWalkTestDistance
@@ -3465,10 +3465,10 @@ InstanceOf: HealthkitSleepApneaNotification
 Usage: #example
 Title: "Sleep Apnea Notification Example"
 Description: "A conformant Sleep Apnea Notification instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:fbtym_r87ThOtHJa376CWQZQD7fQqcY3rPL48btZB44"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:19v4Cw0CQ8Ixh2lr-LHZ8hI_aHUPPh4ztKHxE4hywwE"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:c6TeeZYofYYtlCn_-rououOCmBBsukqBO3w-xjf9fMw"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:peWLmAF9OauI5hPNr57SmC1MAX1QzPLd1KzEAJ0L03k"
 * status = #final
 * code = HealthKitMeasurementCS#sleep-apnea-notification
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierSleepApneaEvent
@@ -3483,10 +3483,10 @@ InstanceOf: HealthkitSleepingBreathingDisturbances
 Usage: #example
 Title: "Sleeping Breathing Disturbances Example"
 Description: "A conformant Sleeping Breathing Disturbances instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:Vpfe3IXro68bz1MXSDM8oBf47odyeGK7o9VAN_vms5k"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:4Wbt7x57aov57z_H-prJfhLabdqRCXUC_WqNEIokG_s"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:8RiOmzuyl2dJAn-KyMqozT41S-Lp_UwZHGvXUzoAFwQ"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:FGWUccI-pK9bhURHEFtk4JbwiiT8kx8m97ShW47dV8A"
 * status = #final
 * code = HealthKitMeasurementCS#sleeping-breathing-disturbances
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierAppleSleepingBreathingDisturbances
@@ -3501,10 +3501,10 @@ InstanceOf: HealthkitStairAscentSpeed
 Usage: #example
 Title: "Stair Ascent Speed Example"
 Description: "A conformant Stair Ascent Speed instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:L8U7lRBwDzQtH5Xm4_axUVMYe3V2O0JLCMSqkcJ68Vo"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:QRLfDQhUCx9oarXCTH8nhijX3ee6G9ByuIthPLhXWW0"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:N1ZNOrH876j5i1kcIFQZW0DhyLt1WHEzPW3MiOU3gPs"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:7imzZJjmCT717Kp43K_rD9f2UC76_-QUeuqtI1IRKK0"
 * status = #final
 * code = $loinc#112431-2 "Stair ascent speed [Velocity]"
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierStairAscentSpeed
@@ -3518,10 +3518,10 @@ InstanceOf: HealthkitStairDescentSpeed
 Usage: #example
 Title: "Stair Descent Speed Example"
 Description: "A conformant Stair Descent Speed instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:sA3PCrGSqInkm15L9J0wcw7eXevYQQTWIdooreo3-uI"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:-8VvSG7caFWTCJ922K_iIDc6nelBJNX5UW0kT6Eh-lA"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:RiXOYBDrqHD8J959oP3ay7WQ1olIaKxrOU1jPc8foR4"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:TNzdSA5BxQY33aK86y8jbCsQa0io5Q34v8NV9x_hNek"
 * status = #final
 * code = $loinc#112430-4 "Stair descent speed [Velocity]"
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierStairDescentSpeed
@@ -3535,10 +3535,10 @@ InstanceOf: HealthkitStateOfMind
 Usage: #example
 Title: "State of Mind Example"
 Description: "A conformant State of Mind instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:y6Fz1RPKCq-x4YfLUGjvnMG9FNR-wl-Co3QH4CMEvio"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:ZLPFFgMPYV5wwPd1LCuEokm7GEif1pzlv9wEFOceGT8"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:2r7OBisXZ7xPU6C9VxiORRKJP0ue2pSqhZR-trK4_xE"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:YGRXQRyFSCOKKWnu1cwIbVHB4p6qxfOj0cT9Il7QPjs"
 * status = #final
 * code = HealthKitMeasurementCS#state-of-mind
 * extension[healthKitSourceType].valueCode = #HKDataTypeStateOfMind
@@ -3555,10 +3555,10 @@ InstanceOf: HealthkitSwimmingStrokeCount
 Usage: #example
 Title: "Swimming Stroke Count Example"
 Description: "A conformant Swimming Stroke Count instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:BxZ9DwiPh_v5V64aM5dzAiIkR8Y3SxrHFmqwkKcnVmk"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:pafwoRndqctJ5UgztxID5T3tQiE8hhPxbpNx7bZLFJk"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:w6FT7fXIknjWw87xm8kEI49h5_A6v3GXJBVb65CF1sw"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:YSgjfOd-Mcihq4WxvtNshwxtrNVezW1IsO9wIrmX6W0"
 * status = #final
 * code = HealthKitMeasurementCS#swimming-stroke-count
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierSwimmingStrokeCount
@@ -3573,10 +3573,10 @@ InstanceOf: HealthkitSymptomAbdominalCramps
 Usage: #example
 Title: "Symptom: Abdominal Cramps Example"
 Description: "A conformant Symptom: Abdominal Cramps instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:RvwXVJXQw3XSgPPeNJG2VQB8P2EkKyFEww8z-dwOSMs"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:wnl6T1TIKy_tjjFo-tKTPfPUJ5VtC1g52UjvukoKIH0"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:u02GgMN16NYKaipIn8Q-mNlnAWZge_rvzZuC4GMBduE"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:_UPICU_JqK1jdhhQPJbpKFsKqbD1_gSBbeVjzeb0ioQ"
 * status = #final
 * code = HealthKitMeasurementCS#symptom-abdominal-cramps
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierAbdominalCramps
@@ -3591,10 +3591,10 @@ InstanceOf: HealthkitSymptomAcne
 Usage: #example
 Title: "Symptom: Acne Example"
 Description: "A conformant Symptom: Acne instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:EbfxAim2jJrzPGC6mpXya_S-3B5PD5sbrQo5mN-3XEI"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:VZIc8gIyzBeD4xLO55Y8GVT7dX8sXNZ_9_RsAVRhCyM"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:i_IBy1YXPp_ppKmSrRbl1LIFXb3HGrci4YQLuPd40uM"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:0cZPS1motYNnQYThfEHVnJC4wCemYTYxIA7eCx9KIig"
 * status = #final
 * code = HealthKitMeasurementCS#symptom-acne
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierAcne
@@ -3609,10 +3609,10 @@ InstanceOf: HealthkitSymptomAppetiteChanges
 Usage: #example
 Title: "Symptom: Appetite Changes Example"
 Description: "A conformant Symptom: Appetite Changes instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:BU3Hioo58kkcNjVg8_riDw8Nx8ALPp8d1o5uKC7WqjU"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:Di-TRKE32p8Iw2CbQhY7ppnykZxzI524s4QdA9wY0pw"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:U8sCcAhhSI3LTO-xkXAD80ghGhPtgYiDIxO1RMLmbrU"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:Gpb-gt49G5MD0Qj4s2IGXi8Q-0usA7qw1-ww_UNB_y8"
 * status = #final
 * code = HealthKitMeasurementCS#symptom-appetite-changes
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierAppetiteChanges
@@ -3627,10 +3627,10 @@ InstanceOf: HealthkitSymptomBloating
 Usage: #example
 Title: "Symptom: Bloating Example"
 Description: "A conformant Symptom: Bloating instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:03DxWt3l5Unt2Vk70duBqCc-C2cepNt_tvQ8Olwww5Y"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:WZIeGAbBd88_MY5Y_n-Y6CF2bSW6bA8RXghxm35mWR0"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:HfLkOqVHIcbOLaRQ4kQrK-seuba8ws004SOl2t9WgIc"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:-dnAO39HdFPaftf-e7px5yCBhvPi-lYBUHm08GPYN6c"
 * status = #final
 * code = HealthKitMeasurementCS#symptom-bloating
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierBloating
@@ -3645,10 +3645,10 @@ InstanceOf: HealthkitSymptomBreastPain
 Usage: #example
 Title: "Symptom: Breast Pain Example"
 Description: "A conformant Symptom: Breast Pain instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:WhPdFclx9NKae0a4ziNR64q36suwfO6lIxVtjAlHIL0"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:b4iuxeB7JSH1KsPy5qIlk7KVkaqT-AksfPlIQRnrAls"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:2L1XZcm3c_fxVRg-ECDV3qIuCzJQfTvKn9Ce3UpbuXY"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:i7Pj461B8zBeroS2-nGLxvpV8sAM-nXDHsC88SuCGgU"
 * status = #final
 * code = HealthKitMeasurementCS#symptom-breast-pain
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierBreastPain
@@ -3663,10 +3663,10 @@ InstanceOf: HealthkitSymptomChestTightnessOrPain
 Usage: #example
 Title: "Symptom: Chest Tightness or Pain Example"
 Description: "A conformant Symptom: Chest Tightness or Pain instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:PoZ6vSnMoewzMDWNVBOZIMuKv-RtVOhR94L30-VvHVY"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:lAbwTjfk4B7YCC0P5sfdgWkp6mCmPF3FXZqe8mPiJOM"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:nGkYs07TvHnyefTc2OKosXg2LAq0P50suCxFLY-JFyU"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:frNnZVdnKQBj2SPw7Bu6xsJJ-65eZu21aYCFwzlrjwQ"
 * status = #final
 * code = HealthKitMeasurementCS#symptom-chest-tightness-or-pain
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierChestTightnessOrPain
@@ -3681,10 +3681,10 @@ InstanceOf: HealthkitSymptomChills
 Usage: #example
 Title: "Symptom: Chills Example"
 Description: "A conformant Symptom: Chills instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:CrnIi9Yk_poX2ZRJAeMrEmyqcyubH02bp6J7WA9Xm3k"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:YP8D_S6UEA8ZfFu8mLpQJ6W91jUbA33vmALxXOt7umY"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:B8IoDO5KD4jJUWol0mng5FU4A7NMPGfwC6Jq6R-b4Sc"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:q_v2apm8tI3UYwnk80wtW3e15904CmAVu2SwHkmY0dA"
 * status = #final
 * code = HealthKitMeasurementCS#symptom-chills
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierChills
@@ -3699,10 +3699,10 @@ InstanceOf: HealthkitSymptomConstipation
 Usage: #example
 Title: "Symptom: Constipation Example"
 Description: "A conformant Symptom: Constipation instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:Ec4EZl52RHI1HFGL_wQ1RMIJ4PSCAZip89f2iLl6yyw"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:Reql4mvGHVsdJudkBtM1FMl9RU12PAGTfXngBUvXX3Y"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:aCS1Ck1b51ER7kt3HkXLBD9Rt2_K1Zxw8CVvqxA2tlU"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:ZNE-9XY5Hi-n9miRBafxRx7UmlTi8YGGJH69TEF20WY"
 * status = #final
 * code = HealthKitMeasurementCS#symptom-constipation
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierConstipation
@@ -3717,10 +3717,10 @@ InstanceOf: HealthkitSymptomCoughing
 Usage: #example
 Title: "Symptom: Coughing Example"
 Description: "A conformant Symptom: Coughing instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:siJLRyAM9-BciiEA8wlfDhzc5BpXiYndY2_IN9agPc4"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:C_C0VAkpMzgCik76jwhtRGNPeDp8nXExoafn556DKlY"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:9RfQmHP-RBOgQAb7WEIaIi5y8bzhgMqptUrfbTWlXTw"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:6ae0SKNV_pgEdz7LrvuQ6qj9lZkGFYCIjf-lJViqLDk"
 * status = #final
 * code = HealthKitMeasurementCS#symptom-coughing
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierCoughing
@@ -3735,10 +3735,10 @@ InstanceOf: HealthkitSymptomDiarrhea
 Usage: #example
 Title: "Symptom: Diarrhea Example"
 Description: "A conformant Symptom: Diarrhea instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:eiZXlirx1GtDvvgzEtNnjpikkZczOoZhShVyrKufNug"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:5T1xQ2J9604Zv-83s3zWOAh21HCXZ6SM2UZRPGPIO04"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:TGXuo9NHPrFqGTKAnRttM_7xkqF7Yv6hyTHgWHmSMBk"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:uCjBgV28HP_aUdqMUMamkUbZvMKezAdULtVTD9h7nUY"
 * status = #final
 * code = HealthKitMeasurementCS#symptom-diarrhea
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierDiarrhea
@@ -3753,10 +3753,10 @@ InstanceOf: HealthkitSymptomDizziness
 Usage: #example
 Title: "Symptom: Dizziness Example"
 Description: "A conformant Symptom: Dizziness instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:9kPNdKiphhMOZQZtQI6Wk6wMST5pxOudJkNFXOJ35Dg"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:p9t5diLJN8XjinfdNa28v8j6gBYZ_uPcVgLW_gTRXyk"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:KP5hvgGUWhHVB0WKeYZ7jzzVNaID4u50IAIs7GQzsOc"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:vWG3clcCEyB-5EjjnbWfMmCcuQGSHQwmMoE0AbPwx50"
 * status = #final
 * code = HealthKitMeasurementCS#symptom-dizziness
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierDizziness
@@ -3771,10 +3771,10 @@ InstanceOf: HealthkitSymptomDrySkin
 Usage: #example
 Title: "Symptom: Dry Skin Example"
 Description: "A conformant Symptom: Dry Skin instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:_Eh0SslGBQELkfSpI2xoX5mtNSeBMAXaHSMH8kWymwk"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:OLC12UWXEQPYHVl_o13dF9ezPHt9svWQWVeeJGrHDNc"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:B_iXCTLJyhHerfUp5aJ1FjXwU5Nw61elzgPymffPtCw"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:2KqI66d0sngqtSyBO3KSvod41pzEoF96XuzqDZy743E"
 * status = #final
 * code = HealthKitMeasurementCS#symptom-dry-skin
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierDrySkin
@@ -3789,10 +3789,10 @@ InstanceOf: HealthkitSymptomFainting
 Usage: #example
 Title: "Symptom: Fainting Example"
 Description: "A conformant Symptom: Fainting instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:pkqZTXgOzMzYsOncDz8uanAr5XXsaN6g6lR9yy8cn7g"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:3tut2Awh6PY-Zs5t6em7u0hsEpupsRde7ZY1-dvL4Eo"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:7MgFSPI7dClpHZ-8Cj-_cGcZwcsFkHRKg98WV16iq38"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:P_g65MxlJAdmrN7CZIpF_YlwYCvBPrGtci-NiI03jM8"
 * status = #final
 * code = HealthKitMeasurementCS#symptom-fainting
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierFainting
@@ -3807,10 +3807,10 @@ InstanceOf: HealthkitSymptomFatigue
 Usage: #example
 Title: "Symptom: Fatigue Example"
 Description: "A conformant Symptom: Fatigue instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:e0SzBWVnBowDp7qZTbnCoynIWCMOFlwFcgLfMLPAj5Q"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:L-PVK0WZPzty87mfuzttpR__0KAwxZsjtQHZvfLpV6g"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:IBGLlADpTxtb9Gg7MbJDZ_054hWRhJC87XZZoMRA6rM"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:ALX8Juvukma2hVeopCnVBAyCBNr4VdRXcpFZnkxToIU"
 * status = #final
 * code = HealthKitMeasurementCS#symptom-fatigue
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierFatigue
@@ -3825,10 +3825,10 @@ InstanceOf: HealthkitSymptomFever
 Usage: #example
 Title: "Symptom: Fever Example"
 Description: "A conformant Symptom: Fever instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:Py3QHspjr-otPVPcA9HTdRXSMKUt39M1QRzJHfqdYGw"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:doScedifrVA38f0v5pWZJlQGQ_zcxCH4dveh5YJbXtI"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:IkQKDeFzua5ditNxwBDPwlpIa8Pz5i-K6BcJtiXHKEw"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:-UV4jxgEsBJYjkMdobj4GgNwOX6Fe_id0LfJpCIp3Qw"
 * status = #final
 * code = HealthKitMeasurementCS#symptom-fever
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierFever
@@ -3843,10 +3843,10 @@ InstanceOf: HealthkitSymptomGeneralizedBodyAche
 Usage: #example
 Title: "Symptom: Generalized Body Ache Example"
 Description: "A conformant Symptom: Generalized Body Ache instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:f3v-y8CRQJBa0yh4SDdPCcnEeZmbThsDQTU5KAaYT60"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:HF6woks0L5YHzTUPDcSVmFL8p-rhpxFMt1fCdQwdKl0"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:Q8so_D3PsguJ-mTbE6N491PPv9P0mRJNBY1uISaBwug"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:btm3VAPLCe87141APxu38AzS9KQu2qdOqO9DtDRdhow"
 * status = #final
 * code = HealthKitMeasurementCS#symptom-generalized-body-ache
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierGeneralizedBodyAche
@@ -3861,10 +3861,10 @@ InstanceOf: HealthkitSymptomHairLoss
 Usage: #example
 Title: "Symptom: Hair Loss Example"
 Description: "A conformant Symptom: Hair Loss instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:622mwkVy9IQS7Xh8XpVGnDK2C4JbisD2YrWlYvNkAAs"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:WwEQWS4QAuNgns2yLhX4OHH8QWZc-92_4ke67tCMDn8"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:DKm7Hybpzcmf203LvEXdb5YPIE1_ai3JXskFequN_2I"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:npgkzXbxukuQisPBlU4Y439adgbQPrIUiSNPAzJPNaA"
 * status = #final
 * code = HealthKitMeasurementCS#symptom-hair-loss
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierHairLoss
@@ -3879,10 +3879,10 @@ InstanceOf: HealthkitSymptomHeadache
 Usage: #example
 Title: "Symptom: Headache Example"
 Description: "A conformant Symptom: Headache instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:ujmtVdjPr-VAXYRD0yaND0xwqRjrBi87ZeAKa54OiYc"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:znKbLzFLQHupbU96FIgfKeGRXoNuSeTY6sNodz5l6Xo"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:yFCIUVAEFMN2u81YF-wDun4hIdZoVfbxWM2UyMRxtYo"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:O2aHf5w6F6NxcCl7QjUBm1d1nXItckKzdB8GBMFxtTo"
 * status = #final
 * code = HealthKitMeasurementCS#symptom-headache
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierHeadache
@@ -3897,10 +3897,10 @@ InstanceOf: HealthkitSymptomHeartburn
 Usage: #example
 Title: "Symptom: Heartburn Example"
 Description: "A conformant Symptom: Heartburn instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:RtdfXTt1rKirMmNxL--HUA1_Pyq7AiSeA_gxcFuCkF8"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:9-itsIAHoEYD11tJoPLtPsSYyWiKt2hB0W4stfDOvUc"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:KSBdvwCDbGAhRmGAgbAPhXGHtGK4AN1b_wbPWExu8lo"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:vB7PjoQSH6r3SFRVCauCkp0oGjUbNTbJi2Sr4ymsUcA"
 * status = #final
 * code = HealthKitMeasurementCS#symptom-heartburn
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierHeartburn
@@ -3915,10 +3915,10 @@ InstanceOf: HealthkitSymptomHotFlashes
 Usage: #example
 Title: "Symptom: Hot Flashes Example"
 Description: "A conformant Symptom: Hot Flashes instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:oxwNnk8RxU6pSOwf-4ViCqTf1R6bj7r_xvp6F5myMOA"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:4VhrtXXxRhJjvEPba3cuogK68G7pXk9QJ4219qN-L3o"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:KvveE4E4VW0nKFnOL42p_Kmp7uwco06pyKe9vPUamUU"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:HerxHX4votQoR2I8OFpHfVN4JDkyNLhcCif7ohIoPSM"
 * status = #final
 * code = HealthKitMeasurementCS#symptom-hot-flashes
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierHotFlashes
@@ -3933,10 +3933,10 @@ InstanceOf: HealthkitSymptomLossOfSmell
 Usage: #example
 Title: "Symptom: Loss of Smell Example"
 Description: "A conformant Symptom: Loss of Smell instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:gIxJmHnR0LOmSU67Ph6zk9P07hOSU0QmK5UZl1yg3lk"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:xvbWh43O0TkxgfWiqjUsq1g1dVB9ns_8BMsn9_XfUqs"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:P_u3SM5VprzOsfWAV7jt4KLi7llm4S-Jo8obTEvTcvs"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:312MvShjjDxXwnobQUSU-ag3UGUyra4J2sbCJH7P4Y0"
 * status = #final
 * code = HealthKitMeasurementCS#symptom-loss-of-smell
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierLossOfSmell
@@ -3951,10 +3951,10 @@ InstanceOf: HealthkitSymptomLossOfTaste
 Usage: #example
 Title: "Symptom: Loss of Taste Example"
 Description: "A conformant Symptom: Loss of Taste instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:twFg3zRB3mGON6d0zbSOUGUfZ34RTxroFCh0mA4vlig"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:Ge3exUfnxWhaJWFM0oqK-ZIW5mxYEAeG0Qcw8LCqjHc"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:ZSTigABkBOsa1U9LFNLd0md1vxfFRBFFumb2dJGd16c"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:6IsiEHl_8z2l-l7Nkjmeglo1dV0_1w9WJsBYyA312FU"
 * status = #final
 * code = HealthKitMeasurementCS#symptom-loss-of-taste
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierLossOfTaste
@@ -3969,10 +3969,10 @@ InstanceOf: HealthkitSymptomLowerBackPain
 Usage: #example
 Title: "Symptom: Lower Back Pain Example"
 Description: "A conformant Symptom: Lower Back Pain instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:GvDEqGCqBwBfKliKIsI7LSDnFPNLcnDy52uZy4SlHVI"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:55FVm0XFBNFE00CsT6sx3Xr9iASomd41Jj07huMu9l0"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:JXTkB_7WEZaVaRyyAjcE9z34Jb16MftOV9hrQWph6XU"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:pq74uWPZ8HcHSlHmgGaqAK_ZX0ll9VEkln8YsmEi-5s"
 * status = #final
 * code = HealthKitMeasurementCS#symptom-lower-back-pain
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierLowerBackPain
@@ -3987,10 +3987,10 @@ InstanceOf: HealthkitSymptomMemoryLapse
 Usage: #example
 Title: "Symptom: Memory Lapse Example"
 Description: "A conformant Symptom: Memory Lapse instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:EsIpBho54xNNxJ_rGywIIbv4ruTVulZk33a68B5YnxQ"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:nVXmj90heau7eR4odUUxAYOMLIEKr0yq1FM000IOK-k"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:SEt6mBlvyW9snV7LcbyH3yUKulR4NcLqHpRYgNer68Q"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:Rz97NHKuZYFW-bYQGMQ2hR4afw-d2vBnLfFmRrPzSMQ"
 * status = #final
 * code = HealthKitMeasurementCS#symptom-memory-lapse
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierMemoryLapse
@@ -4005,10 +4005,10 @@ InstanceOf: HealthkitSymptomMoodChanges
 Usage: #example
 Title: "Symptom: Mood Changes Example"
 Description: "A conformant Symptom: Mood Changes instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:6-XgTBup8N82LBIBWzsHBVVejtNmd2dfCBgIIplcp2c"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:nzXtGA-zkHAcj7YblAV0Vhm8CnowCmcleuEFBZ3jBBA"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:vt8GD3KU_gNAbKCuIlj7G-qetGEb4u4grYiMeHpUd_Q"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:NH3zELLMEu_eixpaRfFdoqxkW-eNw7dedRFlU7vx2KA"
 * status = #final
 * code = HealthKitMeasurementCS#symptom-mood-changes
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierMoodChanges
@@ -4023,10 +4023,10 @@ InstanceOf: HealthkitSymptomNausea
 Usage: #example
 Title: "Symptom: Nausea Example"
 Description: "A conformant Symptom: Nausea instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:UZvi5GtpMxZiU3v1SbNUY8OnMaaYo_m8iKFxPaDJ5UA"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:G-eaAne23R_8OBVdeKbg3NvzOqckREuyxtF4H_XgMMk"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:1ITV4oj3BKrIbnSUt2J0U9YUEoUcs0eNzVJjRws-CbU"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:4Y2bCBa8fWAA6fWl2or-5eDdFLvTe7p_AGBa0-OAqFQ"
 * status = #final
 * code = $loinc#81660-3 "Nausea [Presence]"
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierNausea
@@ -4041,10 +4041,10 @@ InstanceOf: HealthkitSymptomNightSweats
 Usage: #example
 Title: "Symptom: Night Sweats Example"
 Description: "A conformant Symptom: Night Sweats instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:cMaR1vtpfKs8n2k8asyH-04sC4reWc3ERWl80gpRM0w"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:9c5V_a7Wpuc882Ovzm_SgVGTziL09SwgzoDjxn6LftA"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:rfzIQDm0RbbLpZUP-l5vAARgYy9pswKEt_OfVAJatPY"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:Wvq6UH0lsV1czV7Dp_XxqOyMTHd6qXMF0fbTg_VNIlg"
 * status = #final
 * code = HealthKitMeasurementCS#symptom-night-sweats
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierNightSweats
@@ -4059,10 +4059,10 @@ InstanceOf: HealthkitSymptomPelvicPain
 Usage: #example
 Title: "Symptom: Pelvic Pain Example"
 Description: "A conformant Symptom: Pelvic Pain instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:CeRcayllw_50vUb8txOl_QBXrDagg_qOlMHvpW1vDl0"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:7jxpAUjW3zuVz_a0OYCY4ntd8ftq56nnHLAW_Aw8jQ8"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:Q7Fooa4cjqw5Kas3wHB1gI6lf9n-4IF4YrKqbYl-tzE"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:ne9MrcIYKfWS8YMeOwurra3Z2mCUbXrki5RZxfxx-d0"
 * status = #final
 * code = HealthKitMeasurementCS#symptom-pelvic-pain
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierPelvicPain
@@ -4077,10 +4077,10 @@ InstanceOf: HealthkitSymptomRapidPoundingOrFlutteringHeartbeat
 Usage: #example
 Title: "Symptom: Rapid, Pounding, or Fluttering Heartbeat Example"
 Description: "A conformant Symptom: Rapid, Pounding, or Fluttering Heartbeat instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:7MPqwmyGtKTGGrKBABjkoIxyktE1pznH4t1-EGuYIzk"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:PH5b7K1Cnhudt36GCaGgDcdg86kMOkas3twb47PjUpg"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:LTLcgSAzC7kFcaLMFQFXHvXhb5ZMYVHht3mf1umfVTs"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:-G1TULTkkROSC3DF7hpGCOwR1uw0uJtOUCOJJ9ADFJk"
 * status = #final
 * code = HealthKitMeasurementCS#symptom-rapid-pounding-or-fluttering-heartbeat
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierRapidPoundingOrFlutteringHeartbeat
@@ -4095,10 +4095,10 @@ InstanceOf: HealthkitSymptomRunnyNose
 Usage: #example
 Title: "Symptom: Runny Nose Example"
 Description: "A conformant Symptom: Runny Nose instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:s-pQ5nzpxdK6xJIBK7OimGWww4Gtz9Cqyf4QowxEVCA"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:wi82EYp0VwZ-fyrQbr8ghG9vhDdgxG40txKZSyNxIN8"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:9tQvJTZIdAiSxrx-6VVWjZU8oSvBDIbWLkQrZQXNn_M"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:LXRE48-JKIbgzWIbo0B-TTvLhDAr2JFtBgMtWuqQdxM"
 * status = #final
 * code = HealthKitMeasurementCS#symptom-runny-nose
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierRunnyNose
@@ -4113,10 +4113,10 @@ InstanceOf: HealthkitSymptomShortnessOfBreath
 Usage: #example
 Title: "Symptom: Shortness of Breath Example"
 Description: "A conformant Symptom: Shortness of Breath instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:YiSPw4Trp0dHfrLEB9o_Xn5vazWS-1JDhg-LZeaPlEY"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:mWj-9VmBK0CCGFNHzhaQJlduJ8m_JHnOSGInjgBLQcs"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:meMpJQc6e-xGLlrkpKCofZ-rd-nul_Frt39GVa92dwA"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:OXNgFNh9ftmhtEmEFAzKfQRNY_OW8gASV8AIqM7o-Fk"
 * status = #final
 * code = HealthKitMeasurementCS#symptom-shortness-of-breath
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierShortnessOfBreath
@@ -4131,10 +4131,10 @@ InstanceOf: HealthkitSymptomSinusCongestion
 Usage: #example
 Title: "Symptom: Sinus Congestion Example"
 Description: "A conformant Symptom: Sinus Congestion instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:4wiIJH5sMB__Q_Gl08OYUP4-YHo6iKm9Mvjcwh3FfzI"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:uCoaHWZf4KgcP5Jrm_ZDrQiwkio15oUCWIlsKYgWvJg"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:XzNFYihUJFgz1j1jyxrPAr-3u1RDUeAheX_gPi39Gi4"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:VFUJymDMiyQZWQI8bXsSHOw_QAJleC84zpv7o3U64o4"
 * status = #final
 * code = HealthKitMeasurementCS#symptom-sinus-congestion
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierSinusCongestion
@@ -4149,10 +4149,10 @@ InstanceOf: HealthkitSymptomSkippedHeartbeat
 Usage: #example
 Title: "Symptom: Skipped Heartbeat Example"
 Description: "A conformant Symptom: Skipped Heartbeat instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:KLcO163btoEIoH-vb04pvOPMOElNKlwB0L2vYXfFhgQ"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:GkivVEath2jgo9a0LNcbCZ-4SzpxoZ7YfgY7J3Etx3M"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:-vwDQ0oQ-BvlL5YNcYDoTkvosBPYERW2pmcCif9pKy8"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:60ELXjRUQFlzqW8JTjhbww-77DGyhRxKjR5yuM4MUAA"
 * status = #final
 * code = HealthKitMeasurementCS#symptom-skipped-heartbeat
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierSkippedHeartbeat
@@ -4167,10 +4167,10 @@ InstanceOf: HealthkitSymptomSleepChanges
 Usage: #example
 Title: "Symptom: Sleep Changes Example"
 Description: "A conformant Symptom: Sleep Changes instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:YFp5wKpmtPcFTgVsdeM21EQKsEDqoGWoV9x_MEuBQ0U"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:fS6V8EGTgcG5TyT5FNaQtNlxSngUkahWoBlNrX8OY6Q"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:eAEguJKfpTgdonV7SAnYoFd852y5CDYgv-mXM1DiHUU"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:QcvuvGGMSnB4O4Yvb8ZlPqPtXe-NK5Ps-aQlkLkQ0oU"
 * status = #final
 * code = HealthKitMeasurementCS#symptom-sleep-changes
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierSleepChanges
@@ -4185,10 +4185,10 @@ InstanceOf: HealthkitSymptomSoreThroat
 Usage: #example
 Title: "Symptom: Sore Throat Example"
 Description: "A conformant Symptom: Sore Throat instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:4d_1U7qxWJVPBeSga5blNIi89sxkiwnmNxfwzoPc7OA"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:EG357vwAwQmetzVcgHecGmm5hRbN0MyP4BVJhdjWcjY"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:zJp9qitmugxtal3noh-ixgcKL5Bu6hp15QfmtHGqnDI"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:aG8tjTp5WHqyW23aTwJvWl9y2mGqz0LxFdnH243rYFQ"
 * status = #final
 * code = HealthKitMeasurementCS#symptom-sore-throat
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierSoreThroat
@@ -4203,10 +4203,10 @@ InstanceOf: HealthkitSymptomVomiting
 Usage: #example
 Title: "Symptom: Vomiting Example"
 Description: "A conformant Symptom: Vomiting instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:_nhy3pIEK3EKatkwd7bSf8R9fxA3LQ6tA40lqDRgFOk"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:ahp73iDPQZgyS3IsPwCssT6wckAVwM_2pkM0RmgcyO4"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:VzRsHRmRvzIWVXtcxAgB5A3vJ6ZumQODUwvmUn7V27M"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:Ucv7kv0BnxsvyVjo1_vSFVFnWVOXbhopgHgvBXxI-5c"
 * status = #final
 * code = HealthKitMeasurementCS#symptom-vomiting
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierVomiting
@@ -4221,10 +4221,10 @@ InstanceOf: HealthkitSymptomWheezing
 Usage: #example
 Title: "Symptom: Wheezing Example"
 Description: "A conformant Symptom: Wheezing instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:r8z_jCVWV1F5lCkdmvQVhS2oggpPwkFkCUWRanaSHdg"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:zBbD8mFDyzjZpu0WhnWTgJ2uFUdD651YWTtyXWb165E"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:Jw_7LqZ3Et4tpt8pjTaayH-Jd2-HRwGrXT-Al0pXYAA"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:APPMJG5FmP0JrvzHCGs285Hpg6UpDxf60bJR6YO1qNg"
 * status = #final
 * code = HealthKitMeasurementCS#symptom-wheezing
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierWheezing
@@ -4239,10 +4239,10 @@ InstanceOf: HealthkitTimeInDaylight
 Usage: #example
 Title: "Time in Daylight Example"
 Description: "A conformant Time in Daylight instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:TSVhpTPMs25wNPYuf922wHPDKH-MOXvBIQH1-qAGbwU"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:Nc1CdQyXeJShy3vgf70w2rkwf16esW6AeM8_8d-VfN0"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:wGN13SxW_TwF0gaSKCy_3A4SDmDp1crrbv82xIluTqE"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:eIzND2efKCGAeizV8pjqW3zzTjUHAPX0SL6TPPOKLYE"
 * status = #final
 * code = HealthKitMeasurementCS#time-in-daylight
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierTimeInDaylight
@@ -4257,10 +4257,10 @@ InstanceOf: HealthkitToothbrushingSession
 Usage: #example
 Title: "Toothbrushing Session Example"
 Description: "A conformant Toothbrushing Session instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:aTNXE7mMovkf3F31GhwEL9VycLOGO_cmJ6oP_wLhGzU"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:e8K-LLQ7wDH-JLViznQ5TLzWWXgei_AX3qNJsUaKLek"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:2t81xUyxWRWLhG-32p9PfBhFnvCEemVIY-9zAOng2Vw"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:mwufbEK-E9WA-f2oGyNk53YG8Z_lbhfE878jA-Zu2i0"
 * status = #final
 * code = HealthKitMeasurementCS#toothbrushing-session
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierToothbrushingEvent
@@ -4275,10 +4275,10 @@ InstanceOf: HealthkitUnderwaterDepth
 Usage: #example
 Title: "Underwater Depth Example"
 Description: "A conformant Underwater Depth instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:1slEmnGJ6pgFDwv_vlU0kUPmnEI_h5akDiD6OCqmPmE"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:ORPnykzTBqEuRUgIa5Ei9rXrvd9Yo7Bzj-D8dTawmX4"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:ax7u4NW7aGdNNWpTRiGx1eeK45viQFLoCVola5LpC3U"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:-2KFaNy2iQEyknNOTQk89UtlNaDMWh_2E1B6G_Ki1GU"
 * status = #final
 * code = HealthKitMeasurementCS#underwater-depth
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierUnderwaterDepth
@@ -4292,10 +4292,10 @@ InstanceOf: HealthkitUvExposure
 Usage: #example
 Title: "UV Exposure Example"
 Description: "A conformant UV Exposure instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:CqLdrj6USN_awSpqaenkm7yrVGzXYjXOiPbuv04uWVQ"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:odNCE2nMacIXr2Vb1k4qDCerR3kFKY0o6k6hAz7hA3o"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:I_qlIdq3oMSiyqIji3-A72PkpBM9EbuNBYMIVd0UheE"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:ka0Z2srDp5UcKs7kFkjR9cnt7fSw5CFMYuk29ZQxH4Q"
 * status = #final
 * code = HealthKitMeasurementCS#uv-exposure
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierUVExposure
@@ -4310,10 +4310,10 @@ InstanceOf: HealthkitVaginalDryness
 Usage: #example
 Title: "Vaginal Dryness Example"
 Description: "A conformant Vaginal Dryness instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:miUi4B7HhhyiaPbJY7-i1npAlFYTfBbqM7IoTAIKY-Y"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:G4HlBCQv6eZMbcMoaKxL8SSVRAbWZGHBDYlMTijKHKc"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:PFke7T7KlPy4YhJnqz8w0kGKG83fGuK-0PUUD-nWx44"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:B6GHRfGtczVtz9hh09-ScE_63TGsaJ6k6W8ZeWOvRvc"
 * status = #final
 * code = HealthKitMeasurementCS#vaginal-dryness
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierVaginalDryness
@@ -4327,10 +4327,10 @@ InstanceOf: HealthkitWaistCircumference
 Usage: #example
 Title: "Waist Circumference Example"
 Description: "A conformant Waist Circumference instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:GPQHLixciaR0B_lbJSHBzUvX5LzFhAN8n4ipLfPTGBQ"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:IG5Ijnp4QoO5YsR7fTpNbLUU5JcCxe6ZwwtnpuIg1d0"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:OB59Rgpzo6-SVJfYsb89Es-E2j9e8CVoNHZ9zDXni6w"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:TXIhgkmhwjibNCtKUEBXkQb6iI4cQjg5L-rhiRhQz40"
 * status = #final
 * code = $loinc#8280-0 "Waist Circumference at umbilicus by Tape measure"
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierWaistCircumference
@@ -4344,10 +4344,10 @@ InstanceOf: HealthkitWalkingAsymmetry
 Usage: #example
 Title: "Walking Asymmetry Example"
 Description: "A conformant Walking Asymmetry instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:eWTTQoi5cOGcI5sbuUDyiQ3orBJ5e-BxTNBoJMglP4Y"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:AGvsjZCpsXjtbaVlS1S2f0ehgISwWAQINIQAJQkAI30"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:yq74Fz1XbZ7bGIyKVTOGvSQ1tV9enmATXcEUwZrsJRM"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:MmjIkq0wz7Y7pGDvF-q_KZxSXfI4T-kxhIGTJmG94W0"
 * status = #final
 * code = $loinc#112432-0 "Walking asymmetry"
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierWalkingAsymmetryPercentage
@@ -4361,10 +4361,10 @@ InstanceOf: HealthkitWalkingDoubleSupport
 Usage: #example
 Title: "Walking Double Support Example"
 Description: "A conformant Walking Double Support instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:yi9KkKB3NoR1dOXNWEbGK7hJ6R0q8QnLeInENxw837M"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:3Nwvf_1lsN3eW6LVOcCTgUOZqYdE9p9lXrZSdgu892s"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:MzwIdsaSoPgjFy2ToisjIL1sJRhaIkhBEHcnWbEx4Eo"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:DbBnCxyfns5hi2vepebv_Ti3rVe0atXXXM0_Lj3giWs"
 * status = #final
 * code = $loinc#112434-6 "Walking double support [Percentile]"
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierWalkingDoubleSupportPercentage
@@ -4378,10 +4378,10 @@ InstanceOf: HealthkitWalkingHeartRateAverage
 Usage: #example
 Title: "Walking Heart Rate Average Example"
 Description: "A conformant Walking Heart Rate Average instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:a4AGZdY0ZvbmvRC62mOSGxocSeLC7BVtkSWAbADxcEE"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:k57bQxePMMpnr-TsJwW6z1smAh4w4MLG1ETDLqWoUKA"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:5gstTOARsy-UL_kKN8aPQINjZUufJWVLl4HEG6KKDXI"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:tl0x8xbTrb5UOyEwQkSn3TS53BPlrlfb1S2RzmZI0tw"
 * status = #final
 * code = HealthKitMeasurementCS#walking-heart-rate-average
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierWalkingHeartRateAverage
@@ -4396,10 +4396,10 @@ InstanceOf: HealthkitWalkingSpeed
 Usage: #example
 Title: "Walking Speed Example"
 Description: "A conformant Walking Speed instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:RR7SMF4aWuJLhZWjRzIozSwmGJRiVB-F7J3HGwQEctU"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:5MH94vLaB8I5xmrugDv8ZAI6gejF6gyaBJbx_5010PQ"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:tFoblU9VVkoTx6JbH53bUwEMrnOoVNG-N31mrW1vkV4"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:3tAKJOCDnUjzW3x8-wdxe20j5tG8SlqhwynMNjqIxgw"
 * status = #final
 * code = HealthKitMeasurementCS#walking-speed
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierWalkingSpeed
@@ -4413,10 +4413,10 @@ InstanceOf: HealthkitWalkingSteadiness
 Usage: #example
 Title: "Walking Steadiness Example"
 Description: "A conformant Walking Steadiness instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:H40f97ZXqYhuA5Mp7DFyy-ZY0jbAx4NfEaL1NfMrqH8"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:ZWlinAYKaaUtG5JamVqymdztEcQngpELgFhQjHagOGM"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:Zixe-VId630LOt0xJIILjSB5bX3fZukDjSSCqZIqlDY"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:eDUdUFU--gJp9Rl7vJlegJjtXdvCO5khldC3aByNiBk"
 * status = #final
 * code = HealthKitMeasurementCS#walking-steadiness
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierAppleWalkingSteadiness
@@ -4431,10 +4431,10 @@ InstanceOf: HealthkitWalkingSteadinessNotification
 Usage: #example
 Title: "Walking Steadiness Notification Example"
 Description: "A conformant Walking Steadiness Notification instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:2bK1KwSEeNyFmyMYBFg-ACUaRBTR2EgOc5TmI3DKVDI"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:7-Gwq8QUXCycA8dZRYgEZxNZmRXvBToMXLZlpkwf6Kc"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:FZju-Vo1_FFPV38NvXiM7se6csfsXyM6vIiLI-aLdX0"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:Q4QmgGKW_wU_tIVIlwBcXrkqEK8V3aWrInJGRGmftSU"
 * status = #final
 * code = HealthKitMeasurementCS#walking-steadiness-notification
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierAppleWalkingSteadinessEvent
@@ -4451,10 +4451,10 @@ InstanceOf: HealthkitWalkingStepLength
 Usage: #example
 Title: "Walking Step Length Example"
 Description: "A conformant Walking Step Length instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:tU9W6S1fPhcUB1kqOGYZ4lBfEvoosDeAXckhKwL3ZQg"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:HwVcE3gNFFFEyAyvI3ViW6NuTlbVegR1sTXYlHMMVls"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:Jj7xSxd5_c9RYVvM2S_Axn2BcgFpDuEFazsxcCtw03I"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:-dy5dm3smddAVn0vrJqdhEr_ui_9240fEsc52yRGnC8"
 * status = #final
 * code = HealthKitMeasurementCS#walking-step-length
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierWalkingStepLength
@@ -4468,10 +4468,10 @@ InstanceOf: HealthkitWaterTemperature
 Usage: #example
 Title: "Water Temperature Example"
 Description: "A conformant Water Temperature instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:qB07Dd1wB2H8oTAk-S7uGssXxiFhsm2hk8a2CEC0bFI"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:XElWus5QMVeAuGmvcOF6SIzIeX_Cf3YuZIfqNp3ileo"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:C_1giMPaaALRFgo70DolOIhYIJGN4saAKcyrs2Ib34k"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:uGDuPYl6UOngzEwXMBB33hlHxW8eH28eADyu4sYAz64"
 * status = #final
 * code = HealthKitMeasurementCS#water-temperature
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierWaterTemperature
@@ -4485,10 +4485,10 @@ InstanceOf: HealthkitWheelchairUse
 Usage: #example
 Title: "Grove HealthKit Wheelchair Use Example"
 Description: "A conformant Grove HealthKit Wheelchair Use instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:p2TgjQu-6eNGsDacvQh-8hgqqp_OVlVCi_JyuMP4SO8"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:kjuxyQF21LZd1Arb7v9UQ6NntLIhqoo2y2hEI9_-kPg"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:nGOmNvMuHcxyHbzR6_z53J9OCnYfy1lgvWe7cRSKSd8"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:_5w9NUIcPgiuzwaP5jQKBAr3fBHCmJPhSVsciS5y2eY"
 * status = #final
 * code = HealthKitMeasurementCS#wheelchair-use
 * extension[healthKitSourceType].valueCode = #HKCharacteristicTypeIdentifierWheelchairUse
@@ -4502,10 +4502,10 @@ InstanceOf: HealthkitWorkoutEffortScore
 Usage: #example
 Title: "Workout Effort Score Example"
 Description: "A conformant Workout Effort Score instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:Kha-ZGVw9ySvq_hSlKhGX5DzUNFz7RFmLI8qpKQ77oA"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:Q96UQL__QDq2gJlf3NRd8FKVScD3Q4r4MOp0EauUwDQ"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:lb9EcqKIla4gqHlSPiMUzSZgkx4moCs3o6PlyEnMg0U"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:wa_fXIm4M5q-LMbrpQWOma9ABeCqkR8wJjJv4pyaAaI"
 * status = #final
 * code = HealthKitMeasurementCS#workout-effort-score
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierEstimatedWorkoutEffortScore

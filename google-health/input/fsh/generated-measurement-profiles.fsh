@@ -10,7 +10,7 @@
 CodeSystem: GoogleHealthMeasurementCS
 Id: google-health-measurement
 Title: "Google Health Measurement"
-Description: "Measurement concepts defined by the Google Health adapter for vendor-exclusive results no established code represents faithfully."
+Description: "Measurement concepts defined by the Google Health adapter for source-specific results for which no established code is sufficiently precise."
 * ^experimental = false
 * ^caseSensitive = true
 * ^content = #complete
@@ -19,7 +19,7 @@ Description: "Measurement concepts defined by the Google Health adapter for vend
 ValueSet: GoogleHealthMeasurementVS
 Id: google-health-measurement
 Title: "Google Health Measurement"
-Description: "Measurement concepts defined by the Google Health adapter for its vendor-exclusive profiles."
+Description: "Measurement concepts defined by the Google Health adapter for its source-specific profiles."
 * ^experimental = false
 * include codes from system GoogleHealthMeasurementCS
 
@@ -48,10 +48,10 @@ Usage: #example
 Title: "Resting Heart Rate Daily Average Example"
 Description: "A conformant Resting Heart Rate Daily Average instance."
 * meta.profile[+] = "https://grovealliance.org/fhir/google-health/StructureDefinition/google-health-observation"
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-provider-record-v2/test-key/1"
-* identifier[sourceRecord].value = "v2:test-key:1:t5hiT7DZ1u93lWURgukgniISuD0-5cIhrNSbWDWW8mA"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-provider-output-v2/test-key/1"
-* identifier[sourceOutput].value = "v2:test-key:1:PdC0BGBTIeaB1hdvwbvGHk8SAqZg6cia6E4TQ9JDRyM"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-provider-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:1I4v57KhXYGzWzHX6u0GYnukIfxEbIfPwISdhS-Amro"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-provider-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:qNO8qqvIfYQJKubQUImEfhtCCmhck9yd9FKNf7T0RLM"
 * status = #final
 * code = GoogleHealthMeasurementCS#resting-heart-rate-daily-average
 * extension[+].url = "https://grovealliance.org/fhir/providers/StructureDefinition/provider"

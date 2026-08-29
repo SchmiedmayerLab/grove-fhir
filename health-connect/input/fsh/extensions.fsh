@@ -9,7 +9,7 @@
 Extension: HealthConnectRecordType
 Id: health-connect-record-type
 Title: "Health Connect Record Type"
-Description: "Identifies the exact AndroidX Health Connect 1.1 Record class already read by the caller. It is source lineage, not a clinical result code, fetch instruction, or authorization grant."
+Description: "Identifies the exact AndroidX Health Connect 1.1 Record class from an already-obtained source record. It is source lineage, not a clinical result code, fetch instruction, or authorization grant."
 Context: Observation
 * value[x] only code
 * valueCode 1..1

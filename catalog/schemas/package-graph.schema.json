@@ -8,7 +8,7 @@
   "required": ["$schema", "schemaVersion", "fhirVersion", "version", "canonicalRoot", "packages"],
   "properties": {
     "$schema": { "const": "https://grovealliance.org/fhir/catalog/schemas/package-graph.schema.json" },
-    "schemaVersion": { "const": 1 },
+    "schemaVersion": { "const": 0 },
     "fhirVersion": { "const": "4.0.1" },
     "version": { "const": "0.6.0" },
     "canonicalRoot": { "const": "https://grovealliance.org/fhir" },

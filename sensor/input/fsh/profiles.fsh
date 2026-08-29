@@ -32,8 +32,8 @@ Expression: "data.exists() xor url.exists()"
 Severity: #error
 
 Invariant: sensor-opaque-identifier-value-1
-Description: "A sensor source, output, or writer identifier is a canonical deployment-scoped Grove v2 HMAC value."
-Expression: "$this.matches('^v2:[A-Za-z0-9._-]+:[1-9][0-9]*:[A-Za-z0-9_-]{43}$')"
+Description: "A sensor source, output, or writer identifier is a canonical deployment-scoped Grove v0 HMAC value."
+Expression: "$this.matches('^v0:[A-Za-z0-9._-]+:[1-9][0-9]*:[A-Za-z0-9_-]{43}$')"
 Severity: #error
 
 Profile: GroveSensorSampledDataObservation
@@ -77,6 +77,9 @@ Description: "An ECG recording whose lead channels are uniformly sampled FHIR R4
 * dataAbsentReason 0..0
 * component 1..* MS
 * component.code 1..1 MS
+* component.code.coding 1..* MS
+* component.code.coding.system 1..1 MS
+* component.code.coding.code 1..1 MS
 * component.value[x] 1..1 MS
 * component.value[x] only SampledData
 * component.valueSampledData obeys sensor-inline-data-1
@@ -101,7 +104,7 @@ Profile: GroveSensorRecordingDocument
 Parent: DocumentReference
 Id: grove-sensor-recording-document
 Title: "Grove Sensor Recording Document"
-Description: "An externally encoded or embedded sensor recording whose native representation is not losslessly expressed as FHIR SampledData."
+Description: "An externally encoded or embedded sensor recording preserved in one registered wire format."
 * identifier 3..* MS
 * identifier ^slicing.discriminator.type = #pattern
 * identifier ^slicing.discriminator.path = "type"
@@ -131,13 +134,12 @@ Description: "An externally encoded or embedded sensor recording whose native re
 * content 1..1 MS
 * content.attachment obeys sensor-document-payload-1
 * content.attachment.contentType 1..1 MS
-* content.attachment.contentType from GroveNativeRecordingMimeTypeVS (required)
+* content.attachment.contentType from GroveRecordingMimeTypeVS (required)
 * content.format 1..1 MS
 * content.format from GroveRecordingFormatVS (required)
-// Required but not fixed: the release travels in the instance, so a literal here would make the
-// profile wrong the moment the guide version moves. Every recording document inherits this, so
-// the rule holds for the adapter guides rather than being restated in each.
-* content.format.version 1..1 MS
+// The stable CodeSystem and code identify the registered wire format. IG release versions do
+// not travel in payload Coding values.
+* content.format.version 0..0
 * content.attachment.title 0..1 MS
 * content.attachment.size 1..1 MS
 * content.attachment.hash 1..1 MS
@@ -147,6 +149,6 @@ Profile: GroveSensorConversionProvenance
 Parent: GroveMobileConversionProvenance
 Id: grove-sensor-conversion-provenance
 Title: "Grove Sensor Conversion Provenance"
-Description: "Source-neutral provenance for an application transformation that produces one or more Mobile/Sensor Observations or native Sensor Recording Documents."
+Description: "Source-neutral provenance for an application transformation that produces one or more Mobile/Sensor Observations or Sensor Recording Documents."
 * target 1..* MS
 * target only Reference(GroveMobileObservation or GroveSensorRecordingDocument)

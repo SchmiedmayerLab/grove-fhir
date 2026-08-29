@@ -69,7 +69,7 @@ OWNERS = {
         "terminologyTitle": "HealthKit Measurement",
         "codeSystemDescription": (
             "Measurement concepts defined by the HealthKit adapter for "
-            "platform-exclusive results no established code represents faithfully."
+            "platform-specific results for which no established code is sufficiently precise."
         ),
         "valueSetDescription": (
             "Measurement concepts defined by the HealthKit adapter for its "
@@ -87,11 +87,11 @@ OWNERS = {
         "terminologyTitle": "Withings Measurement",
         "codeSystemDescription": (
             "Measurement concepts defined by the Withings adapter for "
-            "vendor-exclusive results no established code represents faithfully."
+            "source-specific results for which no established code is sufficiently precise."
         ),
         "valueSetDescription": (
             "Measurement concepts defined by the Withings adapter for its "
-            "vendor-exclusive profiles."
+            "source-specific profiles."
         ),
     },
     "oura": {
@@ -105,11 +105,11 @@ OWNERS = {
         "terminologyTitle": "Oura Measurement",
         "codeSystemDescription": (
             "Measurement concepts defined by the Oura adapter for "
-            "vendor-exclusive results no established code represents faithfully."
+            "source-specific results for which no established code is sufficiently precise."
         ),
         "valueSetDescription": (
             "Measurement concepts defined by the Oura adapter for its "
-            "vendor-exclusive profiles."
+            "source-specific profiles."
         ),
     },
     "google-health": {
@@ -123,11 +123,11 @@ OWNERS = {
         "terminologyTitle": "Google Health Measurement",
         "codeSystemDescription": (
             "Measurement concepts defined by the Google Health adapter for "
-            "vendor-exclusive results no established code represents faithfully."
+            "source-specific results for which no established code is sufficiently precise."
         ),
         "valueSetDescription": (
             "Measurement concepts defined by the Google Health adapter for its "
-            "vendor-exclusive profiles."
+            "source-specific profiles."
         ),
     },
     "health-connect": {
@@ -141,7 +141,7 @@ OWNERS = {
         "terminologyTitle": "Health Connect Measurement",
         "codeSystemDescription": (
             "Measurement concepts defined by the Health Connect adapter for "
-            "platform-exclusive results no established code represents faithfully."
+            "platform-specific results for which no established code is sufficiently precise."
         ),
         "valueSetDescription": (
             "Measurement concepts defined by the Health Connect adapter for its "
@@ -897,7 +897,7 @@ def example_effective_lines(
     else:
         lines = [f'* effectiveDateTime = "{contract["effectiveInstant"]}"']
     # Health Connect exposes the current source Record's store-availability time. HealthKit has no
-    # equivalent, and no provider row in 0.6 names one; converter time is never Observation.issued.
+    # equivalent, and no provider row names one; converter time is never Observation.issued.
     if owner_key == "health-connect":
         lines.append(
             f'* issued = "{contract["healthConnectLastModifiedTime"]}"'

@@ -65,7 +65,7 @@ class RenderArtifactAllowlistTests(unittest.TestCase):
         self.allowlist.write_text(
             json.dumps(
                 {
-                    "schemaVersion": 1,
+                    "schemaVersion": 0,
                     "packages": [
                         {
                             "source": "mobile",

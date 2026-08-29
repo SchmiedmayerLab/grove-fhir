@@ -92,8 +92,8 @@ Severity: #error
 Expression: "(extension.where(url = 'https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-record-type').value.ofType(code) = 'Vo2MaxRecord' and method.coding.where(system = 'https://grovealliance.org/fhir/health-connect/CodeSystem/health-connect-vo2-max-measurement-method').count() = 1 and method.coding.count() = 1) or (extension.where(url = 'https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-record-type').value.ofType(code) != 'Vo2MaxRecord' and method.coding.where(system = 'https://grovealliance.org/fhir/health-connect/CodeSystem/health-connect-vo2-max-measurement-method').empty())"
 
 Invariant: health-connect-opaque-identifier-value-1
-Description: "A Health Connect source or output identifier is a canonical deployment-scoped Grove v2 HMAC value."
-Expression: "$this.matches('^v2:[A-Za-z0-9._-]+:[1-9][0-9]*:[A-Za-z0-9_-]{43}$')"
+Description: "A Health Connect source or output identifier is a canonical deployment-scoped Grove v0 HMAC value."
+Expression: "$this.matches('^v0:[A-Za-z0-9._-]+:[1-9][0-9]*:[A-Za-z0-9_-]{43}$')"
 Severity: #error
 
 Invariant: health-connect-writer-record-1

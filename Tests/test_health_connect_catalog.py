@@ -1,4 +1,4 @@
-"""Lock the Health Connect 1.1 inventory, mappings, and v2 protocol binding."""
+"""Lock the Health Connect 1.1 inventory, mappings, and v0 protocol binding."""
 
 # This source file is part of the Grove FHIR open-source project
 #
@@ -451,7 +451,7 @@ class HealthConnectCatalogTests(unittest.TestCase):
     def test_exchange_identity_binding_matches_protocol_component_order(self) -> None:
         binding = self.adapter["identity"]
         self.assertEqual(binding["contract"], "catalog/exchange-protocol.json")
-        self.assertEqual(binding["protocolVersion"], 2)
+        self.assertEqual(binding["protocolVersion"], 0)
         self.assertEqual(binding["adapterId"], "health-connect")
         kinds = {
             row["kind"]: row["components"]

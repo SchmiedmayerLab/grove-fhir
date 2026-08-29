@@ -7,10 +7,11 @@ SPDX-License-Identifier: MIT
 -->
 
 Conversion dispatches on the exact AndroidX Health Connect 1.1 Record class.
-The normative inventory, output cardinality, and context mappings are machine-readable in [`catalog/health-connect-adapter.json`](https://grovealliance.org/fhir/catalog/health-connect-adapter.json); prose never expands or overrides that closed table.
-The normative status-vocabulary definitions live on the [guide family page](https://grovealliance.org/fhir/mobile/guides.html#status-vocabulary). The [authoritative status matrix](status-matrix.html) renders all 41 record classes.
+The [Health Connect adapter catalog](https://grovealliance.org/fhir/catalog/health-connect-adapter.json) is normative for record admission, output cardinality, and context mappings.
+The normative status-vocabulary definitions live on the [guide family page](https://grovealliance.org/fhir/mobile/guides.html#status-vocabulary).
+The [authoritative status matrix](status-matrix.html) lists all 41 record classes.
 
-### Common Record mapping
+### Common `Record` mapping
 
 | Health Connect fact | FHIR representation |
 |---|---|
@@ -33,14 +34,16 @@ Neither `clientRecordId` nor `clientRecordVersion` replaces `metadata.id`, becom
 It is not a deduplication key on its own: a writer that re-imports a measurement reuses its `clientRecordId` and raises its `clientRecordVersion`, and the stored Record then carries a new `metadata.id`.
 Deduplicating on `metadata.id` alone therefore counts a revised measurement twice.
 
-When the Record carries a non-blank `clientRecordId`, map it to a typed `writer-record` `Observation.identifier`, deriving it from the complete writer-application Identifier pair and logical writer record id as the exchange protocol requires, and map `clientRecordVersion` to the [Grove Writer Record Version](https://grovealliance.org/fhir/mobile/StructureDefinition-grove-writer-record-version.html) extension, including the AndroidX `Long` default `0`.
+When the Record carries a non-blank `clientRecordId`, map it to a typed `writer-record` `Observation.identifier`.
+Derive it from the complete writer-application Identifier pair and logical writer record id as the exchange protocol requires.
+Map `clientRecordVersion`, including the AndroidX `Long` default `0`, to the [Grove Writer Record Version](https://grovealliance.org/fhir/mobile/StructureDefinition-grove-writer-record-version.html) extension.
 Reject a negative version or a present blank id.
 A Record without a `clientRecordId` carries neither; do not synthesize one, because a writer that assigns no client record identity has not promised that any two of its Records are the same measurement.
 
 The HealthKit adapter maps `HKMetadataKeySyncIdentifier` and `HKMetadataKeySyncVersion` into the same typed role and extension only when it can supply the same complete writer-application pair.
 Cross-platform equality is asserted only when all three writer-record preimage components are identical.
 
-### Identity
+### Deterministic Grove identifiers
 
 [`catalog/exchange-protocol.json`](https://grovealliance.org/fhir/catalog/exchange-protocol.json) is the complete normative identity and lifecycle algorithm.
 The Health Connect adapter catalog binds `Metadata.id`, the exact Record class, and a complete deployment-owned repository-scope pair to its source-record components, and publishes closed multi-output discriminator grammars.
@@ -87,7 +90,7 @@ The Specimen declares that adapter profile directly and carries exactly one admi
 | `SPECIMEN_SOURCE_SERUM` | serum/plasma glucose | `119364003` |
 | `SPECIMEN_SOURCE_INTERSTITIAL_FLUID` | interstitial glucose | `258479004` |
 
-Tears and unknown are intentionally unsupported because no shared 0.6.0 profile can be stamped without changing or guessing specimen semantics.
+Tears and unknown are intentionally unsupported because no shared profile under the Grove FHIR contracts can be stamped without changing or guessing specimen semantics.
 Non-unknown relation-to-meal and meal-type values use the typed meal-context extension and exact adapter CodeSystems.
 
 ### Blood pressure and temperature context
@@ -137,6 +140,10 @@ Exactly one Provenance per source Record targets every Observation produced from
 
 Study links follow the Mobile study model.
 They are included only when independently known and are not inferred from Health Connect metadata.
+
+### Dependencies and terminology notices
+
+The tables below list this guide's package dependencies and the notices for terminology used by its artifacts and examples.
 
 {% include dependency-table-nontech.xhtml %}
 

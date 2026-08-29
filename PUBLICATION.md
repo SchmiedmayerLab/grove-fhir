@@ -10,7 +10,7 @@ SPDX-License-Identifier: MIT
 
 # Publication and release evidence
 
-Grove FHIR 0.6.0 is a release candidate, not yet an immutable canonical publication.
+The Grove FHIR Implementation Guides are release candidates, not yet immutable canonical publications.
 The ten guides use canonical URLs under `https://grovealliance.org/fhir`, but that host is not yet operated as the permanent publication origin.
 Until ownership, HTTPS availability, retention, and correction governance are approved, `publication/config.json` deliberately keeps `releaseMode: ci-build-only` and the canonical host must not be described as live.
 
@@ -88,7 +88,7 @@ Selecting the accountable licensed online environment remains an external releas
 
 ## CI input hardening and residuals
 
-The release workflow pins each GitHub Action to a reviewed 40-character commit SHA and annotates the corresponding release tag.
+The release workflow uses reviewed stable-major aliases for each GitHub Action; repository tests enumerate the expected aliases and reject unexpected action references.
 Node.js, Python, Java, Ruby, Bundler, SUSHI, npm dependencies, Ruby dependencies, Publisher, Validator, template, and FHIR package versions are exact; lockfile or archive checksums protect the dependency bytes.
 Cache fallback prefixes are prohibited in the release job, so a differently keyed cache is not accepted merely because it is warm.
 
@@ -99,7 +99,7 @@ Consequently an npm/Ruby/Publisher build input never receives the token capable 
 Two managed-runner inputs remain outside repository byte pinning: GitHub's rolling `ubuntu-24.04` image implementation and its preinstalled GitHub CLI.
 The runner is restricted to an exact OS release family rather than `ubuntu-latest`; the CLI is used only for the final release creation after evidence is complete and does not build or validate an artifact.
 The dependency offline phase is enforced by each package/tool consumer and Publisher's `-no-network`; the hosted runner itself is not claimed to be packet-filtered.
-A future hermetic runner image should be content-addressed before this document calls the operating-system layer reproducible.
+The operating-system layer is not reproducible unless the runner image is content-addressed.
 
 ## Publisher QA accounting
 

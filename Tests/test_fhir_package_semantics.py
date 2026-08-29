@@ -1007,12 +1007,12 @@ class FHIRPackageSemanticTests(unittest.TestCase):
 
     def test_diff_reports_baseline_addition_and_removal_deterministically(self) -> None:
         before = {
-            "schemaVersion": 1,
+            "schemaVersion": 0,
             "package": {"name": "example", "version": "1"},
             "examples": {"Observation/old": {"sha256": "a"}},
         }
         after = {
-            "schemaVersion": 1,
+            "schemaVersion": 0,
             "package": {"name": "example", "version": "2"},
             "examples": {"Observation/new": {"sha256": "b"}},
         }

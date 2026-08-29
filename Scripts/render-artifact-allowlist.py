@@ -227,7 +227,7 @@ def check_generated(
 def render(root: Path = ROOT) -> str:
     publication = load_json(root / "publication/config.json")
     document = {
-        "schemaVersion": 1,
+        "schemaVersion": 0,
         "packages": [
             package_projection(guide["source"], root) for guide in publication["guides"]
         ],

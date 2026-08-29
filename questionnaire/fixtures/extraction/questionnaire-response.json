@@ -60,6 +60,9 @@
   "subject": {
     "reference": "Patient/GroveQuestionnairePatientExample"
   },
+  "author": {
+    "reference": "Patient/GroveQuestionnairePatientExample"
+  },
   "authored": "2026-08-28T08:32:00-07:00",
   "item": [
     {
@@ -101,14 +104,6 @@
                 "system": "http://unitsofmeasure.org",
                 "code": "mm[Hg]"
               }
-            }
-          ]
-        },
-        {
-          "linkId": "measured-at",
-          "answer": [
-            {
-              "valueDateTime": "2026-08-28T08:10:00-07:00"
             }
           ]
         }

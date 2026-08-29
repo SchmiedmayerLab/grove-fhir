@@ -42,23 +42,22 @@ MOBILE_ADAPTER_SOURCES = (
 )
 GUIDES = tuple(ROOT / source for source in EXPECTED_GUIDE_SOURCES)
 CATALOGS = ROOT / "catalog"
-# Grove writes its own version in prose as "vX.Y.Z" or "Version X.Y.Z"; pinned third-party
-# versions never take either form, so the pattern separates the two without an exclusion list.
+# Grove release versions are machine metadata, not implementation-facing product names.
+# This pattern identifies release-number prose while leaving external standards and ordinary
+# example data alone.
 OWN_VERSION_IN_PROSE = re.compile(
     r"\bv(\d+\.\d+\.\d+)\b"
     r"|\b[Vv]ersion (\d+\.\d+\.\d+)\b"
-    # A package pin names the release without the word: `…fhir.mobile#0.3.0`, `…fhir.mobile: 0.3.0`.
+    # A package pin names a release without the word; exact machine dependency references are
+    # filtered separately below.
     r"|org\.grovealliance\.fhir\.[a-z-]+[#:]\s?(\d+\.\d+\.\d+)\b"
-    # So does a bare number qualifying one of Grove's own nouns — "the 0.4.0 adapter". Matching every
-    # bare number instead would flood on the instrument and app versions the examples legitimately
-    # carry; this form is the one that let two catalogs sit a release behind.
+    # So does a bare number qualifying one of Grove's own nouns. Matching every bare number would
+    # flood on instrument and app versions that examples legitimately carry.
     r"|\b(\d+\.\d+\.\d+) (?:adapter|contract|guide|registry|catalog|release)\b"
-    # And a bare number qualified by the product name — "Grove FHIR HealthKit 0.3.0".
+    # A bare number qualified by the product name is also release-number prose.
     r"|Grove(?:\s+\S+){0,3}\s(\d+\.\d+\.\d+)\b"
 )
-# Fields that state when a set was first frozen, and so name the release that froze it rather
-# than the current one. Every other prose mention must track the catalog's own version.
-# The FHIR release is not Grove's version and never moves with it.
+# The FHIR release is external and is not a Grove release version.
 FHIR_VERSION = "4.0.1"
 
 # Prose naming someone else's pinned version: the package or product is named right beside it.
@@ -67,16 +66,6 @@ THIRD_PARTY_PIN = re.compile(
     re.IGNORECASE,
 )
 
-# Prose that records when something was frozen names the release that froze it, not the current
-# one. Bumping these would falsify the record they exist to keep.
-HISTORICAL_PROSE_FILES = {
-    "healthkit/input/pagecontent/terminology-provenance.md",
-}
-
-HISTORICAL_VERSION_FIELDS = {
-    ("sensorkit-adapter.json", "sourceEvidence.scope"),
-    ("sensorkit-adapter.json", "inventoryScopes.catalog-baseline"),
-}
 REQUIRED_CONFIGURATION_KEYS = {"id", "canonical", "version", "fhirVersion", "license"}
 
 
@@ -105,13 +94,17 @@ def stale_version_prose(name: str, node: object, own: str, path: tuple[str, ...]
     if not isinstance(node, str):
         return []
     field = ".".join(path)
-    if (name, field) in HISTORICAL_VERSION_FIELDS:
+    if path and path[-1] in {"version", "releaseVersion"} and re.fullmatch(
+        r"\d+\.\d+\.\d+", node
+    ):
+        return []
+    if re.fullmatch(r"org\.grovealliance\.fhir\.[a-z-]+#\d+\.\d+\.\d+", node):
         return []
     return [
-        f"catalog/{name} field {field} names version {found}, but the catalog is {own}"
+        f"catalog/{name} field {field} names Grove release version {found}; "
+        "use version-neutral implementation wording"
         for match in OWN_VERSION_IN_PROSE.findall(node)
         for found in [next(g for g in match if g)]
-        if found != own
     ]
 
 
@@ -155,40 +148,24 @@ def main() -> int:
         if isinstance(catalog_version, str):
             failures.extend(stale_version_prose(catalog_path.name, catalog, catalog_version))
 
-    # FSH examples pin the release in content.format.version; a stale literal there would
-    # ship an instance claiming a generation the guide no longer publishes.
-    mobile_version = configurations[ROOT / "mobile"].get("version")
-
-    # Prose in a guide's own sources names the release too, and several of those strings ship
-    # inside published ValueSet and CodeSystem descriptions. The catalog guard cannot see them.
+    # Prose in guide sources ships in pages and sometimes inside published conformance resources.
+    # It must name the contracts or the relevant guide, not a Grove release number.
     for guide in GUIDES:
         for pattern in ("input/fsh/*.fsh", "input/pagecontent/*.md"):
             for path in sorted(guide.glob(pattern)):
                 relative = str(path.relative_to(ROOT))
-                if relative in HISTORICAL_PROSE_FILES:
-                    continue
                 for number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
                     for match in OWN_VERSION_IN_PROSE.finditer(line):
                         found = next(g for g in match.groups() if g)
-                        if found in {mobile_version, FHIR_VERSION}:
+                        if found == FHIR_VERSION:
                             continue
                         # A pinned third-party version is not Grove's and does not move with it.
                         if THIRD_PARTY_PIN.search(line):
                             continue
                         failures.append(
-                            f"{relative}:{number} names version {found}, but the release "
-                            f"is {mobile_version}"
+                            f"{relative}:{number} names Grove release version {found}; "
+                            "use version-neutral implementation wording"
                         )
-
-    for guide in GUIDES:
-        for path in sorted((guide / "input/fsh").glob("*.fsh")):
-            for number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
-                match = re.match(r'^\* content\.format\.version = "(\S+)"$', line.strip())
-                if match and match.group(1) != mobile_version:
-                    failures.append(
-                        f"{path.relative_to(ROOT)}:{number} pins format version "
-                        f"{match.group(1)}, but the release is {mobile_version}"
-                    )
 
     publication_path = ROOT / "publication/config.json"
     publication = json.loads(publication_path.read_text(encoding="utf-8"))

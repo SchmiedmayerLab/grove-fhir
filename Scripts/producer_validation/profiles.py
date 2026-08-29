@@ -14,12 +14,12 @@ from typing import Any
 
 from .context import (
     CATALOG_ROOT, EXCHANGE_PROTOCOL, HMAC_IDENTITY, KNOWN_ADAPTER_PROFILES,
-    MEASUREMENT_BY_PROFILE, RECORDING_DOCUMENT_PROFILE_TAIL, REGISTRY_GENERATIONS,
-    WRITER_RECORD_VERSION_EXTENSION,
+    MEASUREMENT_BY_PROFILE, WRITER_RECORD_VERSION_EXTENSION,
 )
 from .diagnostics import ProducerValidationError, contract_failure
 from .identity import identifier_role, typed_resource_identifiers
 from .io import read_json
+from .payloads import validate_inline_recording_payload, validate_recording_attachment
 from .references import complete_identifier, extensions_with_url
 
 
@@ -312,32 +312,48 @@ def validate_active_adapter_only_output_profile_claim(
             f"its adapter-only profile {expected}",
         )
 
+DOCUMENT_REFERENCE_CLAIM_KEYS = (
+    "sensorRecordingDocumentClaim",
+    "healthKitRecordingDocumentClaim",
+    "healthKitClinicalRecordDocumentClaim",
+    "sensorKitRecordingDocumentClaim",
+    "providerRecordingDocumentClaim",
+)
+
+
+def admitted_document_reference_claim(
+    resource: dict[str, Any],
+) -> dict[str, Any] | None:
+    """Return the one exact admitted recording/clinical-document claim, if any."""
+    if resource.get("resourceType") != "DocumentReference":
+        return None
+    profiles = resource.get("meta", {}).get("profile", [])
+    if (
+        not isinstance(profiles, list)
+        or any(not isinstance(profile, str) for profile in profiles)
+        or len(profiles) != len(set(profiles))
+    ):
+        return None
+    claims = read_json(CATALOG_ROOT / "profile-claims.json")
+    matches = [
+        claims[key]
+        for key in DOCUMENT_REFERENCE_CLAIM_KEYS
+        if (
+            len(profiles) == claims[key]["cardinality"]
+            and set(profiles) == set(claims[key]["profiles"])
+        )
+    ]
+    return matches[0] if len(matches) == 1 else None
+
+
 def validate_active_document_reference_profile_claim(
     resource: dict[str, Any], label: str
 ) -> None:
     """Require every active source artifact to match one exact document claim mode."""
     if resource.get("resourceType") != "DocumentReference":
         return
-    claims = read_json(CATALOG_ROOT / "profile-claims.json")
-    admitted = [
-        claims["sensorRecordingDocumentClaim"],
-        claims["healthKitRecordingDocumentClaim"],
-        claims["healthKitClinicalRecordDocumentClaim"],
-        claims["sensorKitRecordingDocumentClaim"],
-        claims["providerRecordingDocumentClaim"],
-    ]
-    profiles = resource.get("meta", {}).get("profile", [])
-    matches = [
-        claim
-        for claim in admitted
-        if (
-            isinstance(profiles, list)
-            and len(profiles) == claim["cardinality"]
-            and len(profiles) == len(set(profiles))
-            and set(profiles) == set(claim["profiles"])
-        )
-    ]
-    if len(matches) != 1:
+    claim = admitted_document_reference_claim(resource)
+    if claim is None:
         raise contract_failure(
             "mobile-output.document-profile",
             "DocumentReference.meta.profile",
@@ -345,7 +361,7 @@ def validate_active_document_reference_profile_claim(
             "admitted recording or clinical-document profile mode",
         )
     typed = typed_resource_identifiers(resource, label)
-    required = set(matches[0]["requiredIdentifierRoles"])
+    required = set(claim["requiredIdentifierRoles"])
     unexpected = set(typed) - required - {"writer-record"}
     if required - set(typed) or unexpected:
         raise ProducerValidationError(
@@ -636,7 +652,7 @@ def validate_adapter_conversion_provenance(
         )
     if HMAC_IDENTITY.fullmatch(value) is None:
         raise ProducerValidationError(
-            f"{label} source entity must use a canonical Grove v2 HMAC identity"
+            f"{label} source entity must use a canonical Grove v0 HMAC identity"
         )
     if claim["adapter"] == "health-connect":
         agents = entity.get("agent")
@@ -677,13 +693,7 @@ def validate_adapter_conversion_provenance(
 
 def validate_recording_format(resource: dict[str, Any], label: str) -> None:
     """Require one registered payload format per recording content entry."""
-    if resource.get("resourceType") != "DocumentReference":
-        return
-    profiles = resource.get("meta", {}).get("profile", [])
-    if not isinstance(profiles, list) or not any(
-        isinstance(profile, str) and profile.endswith(RECORDING_DOCUMENT_PROFILE_TAIL)
-        for profile in profiles
-    ):
+    if admitted_document_reference_claim(resource) is None:
         return
     registry = read_json(CATALOG_ROOT / "format-registry.json")
     formats = registry["formats"]
@@ -708,24 +718,29 @@ def validate_recording_format(resource: dict[str, Any], label: str) -> None:
             raise ProducerValidationError(
                 f"{label} content[{index}] declares unregistered format {code!r}"
             )
-        # The code names the schema and never carries a version; the release travels in
-        # Coding.version, so a payload always states which registry generation defined it.
-        declared_version = format_coding.get("version")
-        # A stored document records the generation it was written under; requiring it to equal
-        # the current one would invalidate every archive the moment the registry is republished,
-        # which is the opposite of this guide's byte-preservation posture. A generation that
-        # never defined this code is still rejected.
-        if declared_version not in REGISTRY_GENERATIONS.get(code, ()):
+        # The stable format CodeSystem and code identify the wire contract. Coupling
+        # each stored payload to an IG release through Coding.version adds no semantic
+        # information and makes otherwise stable formats churn with package releases.
+        if "version" in format_coding:
             raise ProducerValidationError(
-                f"{label} content[{index}] format version {declared_version!r} is not a "
-                f"registry generation that defines {code}"
+                f"{label} content[{index}] format must omit release-coupled Coding.version"
             )
-        content_type = content.get("attachment", {}).get("contentType")
+        attachment = content.get("attachment")
+        content_type = attachment.get("contentType") if isinstance(attachment, dict) else None
         if content_type != entry["contentType"]:
             raise ProducerValidationError(
                 f"{label} content[{index}] contentType {content_type!r} does not "
                 f"match registry format {code} ({entry['contentType']})"
             )
+        validate_recording_attachment(
+            attachment, f"{label}.content[{index}].attachment"
+        )
+        validate_inline_recording_payload(
+            attachment,
+            code,
+            entry,
+            f"{label} content[{index}].attachment",
+        )
         declared_codes.append(code)
 
     sensorkit = read_json(CATALOG_ROOT / "sensorkit-adapter.json")

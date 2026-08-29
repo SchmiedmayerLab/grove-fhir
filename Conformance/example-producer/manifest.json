@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 0,
   "fhirVersion": "4.0.1",
   "producer": {
     "name": "Grove FHIR example producer",
@@ -9,6 +9,11 @@
     {
       "alias": "mobile",
       "packageId": "org.grovealliance.fhir.mobile",
+      "version": "0.6.0"
+    },
+    {
+      "alias": "questionnaire",
+      "packageId": "org.grovealliance.fhir.questionnaire",
       "version": "0.6.0"
     }
   ],

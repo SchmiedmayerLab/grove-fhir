@@ -16,8 +16,8 @@
           }
         ]
       },
-      "system": "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1",
-      "value": "v2:test-key:1:nq9DsbrMrmOZeoHmHZjnd-Z4Fa627Gt3Y9zxYdacjw0"
+      "system": "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1",
+      "value": "v0:test-key:1:4DEMsmBjQf9GnAxySwNujescV3QltnR5ctQIx_vPdGs"
     },
     {
       "type": {
@@ -28,8 +28,8 @@
           }
         ]
       },
-      "system": "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1",
-      "value": "v2:test-key:1:O4LjhUAC4S4Y0ekub5Y1UyZw7QKodIb38UeM4TwFXD4"
+      "system": "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1",
+      "value": "v0:test-key:1:w3wWvpvIXSvVqFFpHNe4hNo-MFtJVf6ZT7uW8Y7bxZY"
     }
   ],
   "status": "final",
@@ -62,6 +62,7 @@
     }
   ],
   "effectiveDateTime": "2026-08-28T08:32:00-07:00",
+  "issued": "2026-08-28T08:32:00-07:00",
   "valueQuantity": {
     "value": 72.5,
     "unit": "kg",

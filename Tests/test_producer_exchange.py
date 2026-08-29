@@ -153,6 +153,27 @@ class ProducerExchangeTests(ProducerValidationTestCase):
         ):
             exchange_bundle.validate_exchange_bundle(mixed_subject, "active")
 
+        reserved_subject = copy.deepcopy(logical_subject)
+        reserved_subject["entry"][observation_index]["resource"]["subject"][
+            "identifier"
+        ]["system"] = context.IDENTIFIER_ROLE_SYSTEM
+        with self.assertRaisesRegex(
+            diagnostics.ProducerValidationError, "protocol-reserved system"
+        ):
+            exchange_bundle.validate_exchange_bundle(reserved_subject, "active")
+
+        role_claiming_subject = copy.deepcopy(logical_subject)
+        role_claiming_subject["entry"][observation_index]["resource"]["subject"][
+            "identifier"
+        ]["type"] = {"coding": [{
+            "system": context.IDENTIFIER_ROLE_SYSTEM,
+            "code": "source-record",
+        }]}
+        with self.assertRaisesRegex(
+            diagnostics.ProducerValidationError, "must not claim a Grove identifier role"
+        ):
+            exchange_bundle.validate_exchange_bundle(role_claiming_subject, "active")
+
         wrong_gateway = copy.deepcopy(active)
         wrong_gateway["entry"][observation_index]["resource"]["extension"][0][
             "valueReference"
@@ -162,6 +183,39 @@ class ProducerExchangeTests(ProducerValidationTestCase):
             r"extension\[[0-9]+\]\.valueReference must reference Device",
         ):
             exchange_bundle.validate_exchange_bundle(wrong_gateway, "active")
+
+        for malformed_value in (None, "Device/not-a-reference-object"):
+            malformed_gateway = copy.deepcopy(active)
+            malformed_gateway["entry"][observation_index]["resource"]["extension"][0][
+                "valueReference"
+            ] = malformed_value
+            with self.subTest(
+                gateway=malformed_value
+            ), self.assertRaisesRegex(
+                diagnostics.ProducerValidationError,
+                "must contain exactly one Reference-shaped valueReference",
+            ):
+                exchange_bundle.validate_exchange_bundle(malformed_gateway, "active")
+
+        missing_gateway_value = copy.deepcopy(active)
+        del missing_gateway_value["entry"][observation_index]["resource"]["extension"][0][
+            "valueReference"
+        ]
+        with self.assertRaisesRegex(
+            diagnostics.ProducerValidationError,
+            "must contain exactly one Reference-shaped valueReference",
+        ):
+            exchange_bundle.validate_exchange_bundle(missing_gateway_value, "active")
+
+        multiple_gateway_values = copy.deepcopy(active)
+        multiple_gateway_values["entry"][observation_index]["resource"]["extension"][0][
+            "valueString"
+        ] = "not-admitted"
+        with self.assertRaisesRegex(
+            diagnostics.ProducerValidationError,
+            "must contain exactly one Reference-shaped valueReference",
+        ):
+            exchange_bundle.validate_exchange_bundle(multiple_gateway_values, "active")
 
         literal_source = copy.deepcopy(active)
         literal_source["entry"][provenance_index]["resource"]["entity"][0]["what"][
@@ -221,6 +275,165 @@ class ProducerExchangeTests(ProducerValidationTestCase):
         ):
             exchange_bundle.validate_exchange_bundle(retraction_literal_source, "retraction")
 
+    def test_questionnaire_response_subject_uses_the_governed_patient_contract(self) -> None:
+        active = json.loads(
+            (ROOT / "Conformance/example-producer/resources/exchange-bundle.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        response_index = next(
+            index
+            for index, entry in enumerate(active["entry"])
+            if entry["resource"].get("resourceType") == "QuestionnaireResponse"
+        )
+        response = active["entry"][response_index]["resource"]
+        self.assertEqual(
+            response["extension"],
+            [{
+                "url": (
+                    "http://hl7.org/fhir/StructureDefinition/"
+                    "questionnaireresponse-completionMode"
+                ),
+                "valueCodeableConcept": {"coding": [{
+                    "system": (
+                        "http://terminology.hl7.org/CodeSystem/"
+                        "v3-ParticipationMode"
+                    ),
+                    "code": "ELECTRONIC",
+                }]},
+            }],
+        )
+        observation = next(
+            entry["resource"]
+            for entry in active["entry"]
+            if entry["resource"].get("resourceType") == "Observation"
+        )
+        self.assertEqual(
+            response["questionnaire"],
+            "https://study.example.org/fhir/Questionnaire/heart-rate-check|1.0.0",
+        )
+        self.assertEqual(
+            response["item"][0]["answer"][0]["valueQuantity"],
+            observation["valueQuantity"],
+        )
+        patient_entry = next(
+            entry
+            for entry in active["entry"]
+            if entry["resource"].get("resourceType") == "Patient"
+        )
+        self.assertIn(
+            response["subject"]["identifier"],
+            patient_entry["resource"]["identifier"],
+        )
+        patient_url = patient_entry["fullUrl"]
+        device_url = next(
+            entry["fullUrl"]
+            for entry in active["entry"]
+            if entry["resource"].get("resourceType") == "Device"
+        )
+        exchange_bundle.validate_exchange_bundle(active, "active")
+
+        logical = copy.deepcopy(active)
+        logical["entry"][response_index]["resource"]["subject"] = {
+            "type": "Patient",
+            "identifier": {
+                "system": "https://deployment.example/fhir/NamingSystem/patient-pseudonym",
+                "value": "participant-42",
+            },
+        }
+        exchange_bundle.validate_exchange_bundle(logical, "active")
+
+        wrong_target = copy.deepcopy(active)
+        wrong_target["entry"][response_index]["resource"]["subject"] = {
+            "reference": device_url
+        }
+        with self.assertRaisesRegex(
+            diagnostics.ProducerValidationError,
+            r"QuestionnaireResponse\.subject must reference Patient",
+        ):
+            exchange_bundle.validate_exchange_bundle(wrong_target, "active")
+
+        reserved = copy.deepcopy(logical)
+        reserved["entry"][response_index]["resource"]["subject"]["identifier"][
+            "system"
+        ] = context.IDENTIFIER_ROLE_SYSTEM
+        with self.assertRaisesRegex(
+            diagnostics.ProducerValidationError, "protocol-reserved system"
+        ):
+            exchange_bundle.validate_exchange_bundle(reserved, "active")
+
+        role_claiming = copy.deepcopy(logical)
+        role_claiming["entry"][response_index]["resource"]["subject"]["identifier"][
+            "type"
+        ] = {"coding": [{
+            "system": context.IDENTIFIER_ROLE_SYSTEM,
+            "code": "source-record",
+        }]}
+        with self.assertRaisesRegex(
+            diagnostics.ProducerValidationError, "must not claim a Grove identifier role"
+        ):
+            exchange_bundle.validate_exchange_bundle(role_claiming, "active")
+
+        for malformed_subject in (
+            "Patient/not-a-reference-object",
+            None,
+            [],
+            [{}],
+        ):
+            malformed = copy.deepcopy(active)
+            malformed["entry"][response_index]["resource"]["subject"] = malformed_subject
+            with self.subTest(subject=malformed_subject), self.assertRaisesRegex(
+                diagnostics.ProducerValidationError, "must be one Reference object"
+            ):
+                exchange_bundle.validate_exchange_bundle(malformed, "active")
+
+        malformed_reference_keys = (
+            (
+                {"reference": patient_url, "identifier": None},
+                "must not mix a resolving literal with a logical identifier",
+            ),
+            (
+                {
+                    "reference": None,
+                    "type": "Patient",
+                    "identifier": copy.deepcopy(response["subject"]["identifier"]),
+                },
+                "reference must be a string when present",
+            ),
+            (
+                {"reference": patient_url, "type": None},
+                "type must equal the referenced resource type Patient",
+            ),
+        )
+        for subject, message in malformed_reference_keys:
+            malformed = copy.deepcopy(active)
+            malformed["entry"][response_index]["resource"]["subject"] = subject
+            with self.subTest(subject=subject), self.assertRaisesRegex(
+                diagnostics.ProducerValidationError, message
+            ):
+                exchange_bundle.validate_exchange_bundle(malformed, "active")
+
+        observation_index = active["entry"].index(next(
+            entry
+            for entry in active["entry"]
+            if entry["resource"] is observation
+        ))
+        for malformed_derived_from in (
+            {"reference": active["entry"][response_index]["fullUrl"]},
+            [None],
+        ):
+            malformed = copy.deepcopy(active)
+            malformed["entry"][observation_index]["resource"][
+                "derivedFrom"
+            ] = malformed_derived_from
+            with self.subTest(
+                derived_from=malformed_derived_from
+            ), self.assertRaisesRegex(
+                diagnostics.ProducerValidationError,
+                "must be an array containing only Reference objects",
+            ):
+                exchange_bundle.validate_exchange_bundle(malformed, "active")
+
     def test_reviewed_quantity_value_domains_accept_boundaries_and_reject_bypasses(self) -> None:
         body_fat = (
             "https://grovealliance.org/fhir/mobile/StructureDefinition/"
@@ -256,8 +469,8 @@ class ProducerExchangeTests(ProducerValidationTestCase):
                     "code": "mobile-output.quantity-value-domain",
                     "reason": (
                         "Every Quantity-valued catalog measurement stays within its "
-                        "reviewed representational minimum, maximum, and integer-only "
-                        "domain without inventing a physiologic range."
+                        "catalog-declared representational minimum, maximum, and "
+                        "integer-only domain without inventing a physiologic range."
                     ),
                     "location": "Bundle.entry[2].resource.valueQuantity.value",
                     "severity": "error",
@@ -323,7 +536,7 @@ class ProducerExchangeTests(ProducerValidationTestCase):
             {case["id"] for case in corpus["cases"]},
         )
         results = {
-            "schemaVersion": 1,
+            "schemaVersion": 0,
             "baseDiagnostics": {
                 base_id: exchange_bundle.exchange_bundle_diagnostics(resource, base_id)
                 for base_id, resource in bases.items()
@@ -593,12 +806,12 @@ class ProducerExchangeTests(ProducerValidationTestCase):
                 typed_identifier(
                     "source-record",
                     "https://example.org/fhir/NamingSystem/source-record/test-key/1",
-                    "v2:test-key:1:" + "A" * 43,
+                    "v0:test-key:1:" + "A" * 43,
                 ),
                 typed_identifier(
                     "source-output",
                     "https://example.org/fhir/NamingSystem/source-output/test-key/1",
-                    "v2:test-key:1:" + "B" * 43,
+                    "v0:test-key:1:" + "B" * 43,
                 ),
             ],
         }

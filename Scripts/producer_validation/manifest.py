@@ -33,8 +33,8 @@ def validate_manifest(path: Path) -> tuple[dict[str, Any], list[Path]]:
     require_keys(manifest, TOP_LEVEL_KEYS, "manifest")
     if set(manifest) != TOP_LEVEL_KEYS:
         raise ProducerValidationError("manifest is missing required fields")
-    if manifest["schemaVersion"] != 1 or manifest["fhirVersion"] != "4.0.1":
-        raise ProducerValidationError("manifest must declare schemaVersion 1 and FHIR 4.0.1")
+    if manifest["schemaVersion"] != 0 or manifest["fhirVersion"] != "4.0.1":
+        raise ProducerValidationError("manifest must declare schemaVersion 0 and FHIR 4.0.1")
 
     producer = manifest["producer"]
     if not isinstance(producer, dict):

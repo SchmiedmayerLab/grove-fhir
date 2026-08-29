@@ -17,8 +17,8 @@
           }
         ]
       },
-      "system": "https://study.example.org/fhir/NamingSystem/grove-source-record-v2/test-key/1",
-      "value": "v2:test-key:1:nq9DsbrMrmOZeoHmHZjnd-Z4Fa627Gt3Y9zxYdacjw0"
+      "system": "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1",
+      "value": "v0:test-key:1:4DEMsmBjQf9GnAxySwNujescV3QltnR5ctQIx_vPdGs"
     },
     {
       "type": {
@@ -30,8 +30,8 @@
           }
         ]
       },
-      "system": "https://study.example.org/fhir/NamingSystem/grove-source-output-v2/test-key/1",
-      "value": "v2:test-key:1:mW06wFtL1F-V7NiSLZzbARcc_iNf8AsZGH3YOePW_eo"
+      "system": "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1",
+      "value": "v0:test-key:1:5E_Q8ZJcq6CSKPggKWjNAauQFzhWAdiBiBl84RrRQp0"
     }
   ],
   "status": "final",
@@ -52,10 +52,8 @@
       "reference": "Patient/GroveQuestionnairePatientExample"
     }
   ],
-  "effectivePeriod": {
-    "start": "2026-08-27T00:00:00-07:00",
-    "end": "2026-08-28T00:00:00-07:00"
-  },
+  "effectiveDateTime": "2026-08-28T08:32:00-07:00",
+  "issued": "2026-08-28T08:32:00-07:00",
   "valueQuantity": {
     "value": 8432,
     "unit": "steps",

@@ -97,8 +97,8 @@ def validate_portable_text(text: str, label: str, suffix: str) -> None:
 
 def load_configuration(path: Path) -> dict[str, Any]:
     configuration = json.loads(path.read_text(encoding="utf-8"))
-    if configuration.get("schemaVersion") != 1:
-        raise ValueError("publication/config.json must use schemaVersion 1")
+    if configuration.get("schemaVersion") != 0:
+        raise ValueError("publication/config.json must use schemaVersion 0")
     if not isinstance(configuration.get("guides"), list) or not configuration["guides"]:
         raise ValueError("publication/config.json must declare at least one guide")
     if configuration.get("releaseMode") not in {"ci-build-only", "immutable-releases"}:
@@ -766,7 +766,7 @@ def assemble_site(
             )
             ci_digest = sha256(stage / "package.tgz")
             ci_manifest = {
-                "schemaVersion": 1,
+                "schemaVersion": 0,
                 "packageId": metadata["name"],
                 "packageVersion": metadata["version"],
                 "canonical": canonical,

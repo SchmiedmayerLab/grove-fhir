@@ -1,6 +1,6 @@
 {
   "$schema": "https://grovealliance.org/fhir/catalog/schemas/measurement-catalog.schema.json",
-  "schemaVersion": 1,
+  "schemaVersion": 0,
   "fhirVersion": "4.0.1",
   "version": "0.6.0",
   "canonicalRoot": "https://grovealliance.org/fhir/mobile/StructureDefinition",
@@ -48,12 +48,12 @@
     }
   ],
   "statusDefinitions": {
-    "supported": "The named adapter emits and validates this exact catalog semantic profile in version 0.6.0.",
+    "supported": "The named adapter emits and validates this exact catalog semantic profile under the Grove FHIR contracts.",
     "mapped-standard": "Related source data is admitted only in the coverageDetails alternate representation. It does not implement or claim this Mobile profile.",
     "platform-exclusive": "The source meaning is admitted only by a platform-exclusive owner profile and does not implement a shared Mobile profile.",
     "unmodeled": "The source element is inventoried by its adapter, but nothing models this Mobile meaning and no output is admitted.",
-    "deferred": "The source has related data, but version 0.6.0 admits no output for this Mobile meaning.",
-    "intentionally-unsupported": "The source has no semantically exact mapping to this Mobile meaning in the closed version 0.6.0 contract."
+    "deferred": "The source has related data, but the Grove FHIR contracts admit no output for this Mobile meaning.",
+    "intentionally-unsupported": "The source has no semantically exact mapping to this Mobile meaning under the Grove FHIR contracts."
   },
   "effectiveCanonicalization": {
     "scope": "Every Mobile scalar or aggregate effectiveDateTime and effectivePeriod endpoint; Sensor and ECG SampledData timing is excluded.",
@@ -259,7 +259,7 @@
       "profile": "healthkit-atrial-fibrillation-burden",
       "standardProfile": null,
       "title": "Atrial Fibrillation Burden",
-      "description": "The estimated percentage of analyzed time showing atrial fibrillation over a multi-day estimation window, normalized to UCUM percent. It is a windowed estimate implemented by the phase-2 aggregate design; the Withings AFib classification scalars remain intentionally unsupported and never join it.",
+      "description": "The estimated percentage of analyzed time showing atrial fibrillation over a multi-day estimation window, normalized to UCUM percent. It is a source-supplied windowed estimate whose exact analysis window is carried by effectivePeriod; the Withings AFib classification scalars remain intentionally unsupported and never join it.",
       "code": {
         "system": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-measurement",
         "code": "atrial-fibrillation-burden",
@@ -653,7 +653,7 @@
       "profile": "grove-mobile-basal-energy",
       "standardProfile": null,
       "title": "Basal Energy Burned",
-      "description": "Resting (basal) energy expenditure accrued during an exact effective Period, normalized to UCUM kilocalories. It is disjoint from active-energy: the two measurements never overlap in meaning and are summed only by consumers.",
+      "description": "Resting (basal) energy expenditure accrued during an exact effective Period, normalized to UCUM kilocalories. It is disjoint from active-energy and may be combined with it only through an explicit derived-total calculation.",
       "code": {
         "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
         "code": "basal-energy-burned",
@@ -728,7 +728,7 @@
       "profile": "healthkit-biological-sex",
       "standardProfile": null,
       "title": "Grove HealthKit Biological Sex",
-      "description": "Biological sex as a coded Observation. LOINC 46098-0 'Sex' is the context-free concept (verified ACTIVE, PROPERTY LP6886-8 Type, SCALE_TYP LP7750-5 Nom). 76689-9 'Sex assigned at birth' was rejected: the HealthKit characteristic states only a sex, never that it is the one assigned at birth, and adopting that code would fabricate a provenance the source does not carry. Value is a Grove-coded concept with the HKBiologicalSex token retained as secondary coding per the sleep-stage absorption pattern. HKBiologicalSex.notSet emits no Observation.",
+      "description": "Biological sex as a coded Observation using LOINC 46098-0 'Sex'. LOINC 76689-9 'Sex assigned at birth' is not used because the HealthKit characteristic states only sex and does not assert birth-assignment provenance. The value uses a Grove code with the exact HKBiologicalSex token retained as secondary coding; HKBiologicalSex.notSet produces no Observation.",
       "code": {
         "system": "http://loinc.org",
         "code": "46098-0",
@@ -944,7 +944,7 @@
       "profile": "healthkit-blood-alcohol-content",
       "standardProfile": null,
       "title": "Blood Alcohol Content",
-      "description": "Blood alcohol content as the mass-percent concentration figure a breathalyzer or user reports, kept as the plain UCUM percent scalar per the decided contract. It is not converted into a laboratory ethanol mass concentration.",
+      "description": "Blood alcohol content as the mass-percent concentration figure a breathalyzer or user reports, represented as a UCUM percent scalar. It is not converted into a laboratory ethanol mass concentration.",
       "code": {
         "system": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-measurement",
         "code": "blood-alcohol-content",
@@ -1085,7 +1085,7 @@
       "profile": "healthkit-blood-type",
       "standardProfile": null,
       "title": "Grove HealthKit Blood Type",
-      "description": "ABO and Rh group as a coded Observation. LOINC 882-1 'ABO and Rh group [Type] in Blood' is the exact concept (re-verified ACTIVE, PROPERTY LP6886-8 Type, SCALE_TYP LP7750-5 Nom). Value is a Grove-coded ABO/Rh concept with the HKBloodType token retained as secondary coding per the sleep-stage absorption pattern.",
+      "description": "ABO and Rh group as a coded Observation using LOINC 882-1 'ABO and Rh group [Type] in Blood'. The value uses a Grove ABO/Rh code with the exact HKBloodType token retained as secondary coding.",
       "code": {
         "system": "http://loinc.org",
         "code": "882-1",
@@ -1707,7 +1707,7 @@
       "profile": "healthkit-date-of-birth",
       "standardProfile": null,
       "title": "Grove HealthKit Date of Birth",
-      "description": "Date of birth as an Observation. LOINC 21112-8 'Birth date' is the exact concept (verified ACTIVE, PROPERTY LP6882-7 TmStp, SCALE_TYP LP7753-9 Qn). A date of birth identifies a person across systems, so the adapter withholds it unless the deployment authorizes disclosure; a deployment that already knows its participant's demographics from enrollment should prefer that authoritative record over this assertion.",
+      "description": "Date of birth as an Observation using LOINC 21112-8 'Birth date'. A date of birth identifies a person across systems, so the adapter withholds it unless the deployment authorizes disclosure; a deployment that already knows its participant's demographics from enrollment should prefer that authoritative record over this assertion.",
       "code": {
         "system": "http://loinc.org",
         "code": "21112-8",
@@ -1735,7 +1735,7 @@
       "profile": "grove-mobile-deep-sleep-duration",
       "standardProfile": null,
       "title": "Deep Sleep Duration",
-      "description": "Total time classified as deep sleep within one sleep session or civil-day summary, normalized to UCUM minutes over the exact session Period. It is a stage-total aggregate without per-stage intervals, distinct from the interval sleep-stage Observation, and is implemented by the phase-2 aggregate design.",
+      "description": "Total time classified as deep sleep within one sleep session or civil-day summary, normalized to UCUM minutes over the exact session Period. It is a stage-total aggregate without per-stage intervals and is distinct from the interval sleep-stage Observation.",
       "code": {
         "system": "http://loinc.org",
         "code": "93831-6",
@@ -3515,7 +3515,7 @@
       "profile": "healthkit-fitzpatrick-skin-type",
       "standardProfile": null,
       "title": "Grove HealthKit Fitzpatrick Skin Type",
-      "description": "Fitzpatrick sun-reactive skin type as a coded Observation. LOINC 66555-4 'Skin type [Fitzpatrick Classification Scale]' is the exact concept (verified ACTIVE, PROPERTY LP6886-8 Type, SCALE_TYP LP7750-5 Nom). The scale materially conditions UV-exposure interpretation, which is why it is modelled rather than left to the deployment. HKFitzpatrickSkinType.notSet emits no Observation.",
+      "description": "Fitzpatrick sun-reactive skin type as a coded Observation using LOINC 66555-4 'Skin type [Fitzpatrick Classification Scale]'. The scale materially conditions UV-exposure interpretation, which is why it is modelled rather than left to the deployment. HKFitzpatrickSkinType.notSet produces no Observation.",
       "code": {
         "system": "http://loinc.org",
         "code": "66555-4",
@@ -3755,7 +3755,7 @@
       "profile": "healthkit-gad7-assessment",
       "standardProfile": null,
       "title": "Grove HealthKit GAD-7 Score",
-      "description": "HKGAD7Assessment (iOS 18, HKScoredAssessment subclass): score 0-21, answers [HKGAD7Assessment.Answer], risk. Routing recommendation: platform-exclusive score Observation on exact LOINC 70274-6 'Generalized anxiety disorder 7 item (GAD-7) total score [Reported.PHQ]' (re-verified ACTIVE, PROPERTY LP185820-0 Score, SCALE_TYP LP7753-9 Qn). The seven answers are retained as components coded with the LOINC GAD-7 item codes under panel 69737-5 (re-verified), each valued with the standard LOINC answer codes (LA6568-5 'Not at all', LA6569-3 'Several days', LA6570-1 'More than half the days', LA6571-9 'Nearly every day' — all four displays re-verified against LOINC 2.82 via tx.fhir.org) absorbing Answer cases notAtAll, severalDays, moreThanHalfTheDays, nearlyEveryDay; Risk (noneToMinimal, mild, moderate, severe — re-verified) is redundant with the published score bands and is carried only as an Observation.interpretation-style Grove coding, not a value.",
+      "description": "A HealthKit GAD-7 assessment represented by its 0-21 total score using LOINC 70274-6 'Generalized anxiety disorder 7 item (GAD-7) total score [Reported.PHQ]'. The seven item answers are retained as components using the standard LOINC GAD-7 item and answer codes under panel 69737-5. HealthKit's risk classification is redundant with the score bands and is retained as a Grove interpretation coding rather than a second result value.",
       "code": {
         "system": "http://loinc.org",
         "code": "70274-6",
@@ -4252,7 +4252,7 @@
       "profile": "healthkit-insulin-delivery",
       "standardProfile": null,
       "title": "Insulin Delivery",
-      "description": "The quantity of insulin delivered during the exact effective Period, normalized to UCUM international units, with a REQUIRED delivery-reason component distinguishing basal from bolus delivery per the decided contract. A sample without the HKMetadataKeyInsulinDeliveryReason metadata fails closed.",
+      "description": "The quantity of insulin delivered during the exact effective Period, normalized to UCUM international units. A required delivery-reason component distinguishes basal from bolus delivery; a sample without HKMetadataKeyInsulinDeliveryReason fails closed.",
       "code": {
         "system": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-measurement",
         "code": "insulin-delivery",
@@ -4486,7 +4486,7 @@
       "profile": "grove-mobile-lean-body-mass",
       "standardProfile": null,
       "title": "Lean Body Mass",
-      "description": "A source-neutral lean body mass normalized to UCUM kilograms. Consumer bioimpedance sources report fat-free mass under this label; the lean-body-mass versus fat-free-mass distinction (essential fat) is not recoverable from any source, so Withings fat-free mass joins this measurement with that caveat rather than forming a separate concept.",
+      "description": "A source-neutral lean body mass normalized to UCUM kilograms. Consumer bioimpedance devices report fat-free mass under this label; the lean-body-mass versus fat-free-mass distinction (essential fat) is not recoverable from any source, so Withings fat-free mass joins this measurement with that caveat rather than forming a separate concept.",
       "code": {
         "system": "http://loinc.org",
         "code": "91557-9",
@@ -4520,7 +4520,7 @@
       "profile": "grove-mobile-light-sleep-duration",
       "standardProfile": null,
       "title": "Light Sleep Duration",
-      "description": "Total time classified as light sleep within one sleep session or civil-day summary, normalized to UCUM minutes over the exact session Period. It is a stage-total aggregate without per-stage intervals and is implemented by the phase-2 aggregate design.",
+      "description": "Total time classified as light sleep within one sleep session or civil-day summary, normalized to UCUM minutes over the exact session Period. It is a stage-total aggregate without per-stage intervals and is distinct from the interval sleep-stage Observation.",
       "code": {
         "system": "http://loinc.org",
         "code": "93830-8",
@@ -4842,7 +4842,7 @@
       "profile": "withings-muscle-mass",
       "standardProfile": null,
       "title": "Muscle Mass",
-      "description": "A providers-exclusive whole-body muscle mass calculated by bioimpedance analysis, normalized to UCUM kilograms. It is distinct from lean body mass (which additionally includes bone, water, and organ mass) and is not folded into that shared measurement.",
+      "description": "A Withings-specific whole-body muscle mass calculated by bioimpedance analysis, normalized to UCUM kilograms. It is distinct from lean body mass (which additionally includes bone, water, and organ mass) and is not folded into that shared measurement.",
       "code": {
         "system": "http://loinc.org",
         "code": "73964-9",
@@ -5121,7 +5121,7 @@
       "profile": "grove-mobile-oxygen-saturation-daily-average",
       "standardProfile": null,
       "title": "Oxygen Saturation Daily Average",
-      "description": "The mean oxygen saturation over a civil-date effective Period, normalized to UCUM percent. It is distinct from the point-in-time shared oxygen-saturation measurement and is implemented by the phase-2 aggregate design.",
+      "description": "The mean oxygen saturation over a civil-date effective Period, normalized to UCUM percent. The exact aggregation window is carried by effectivePeriod, and the result is distinct from the point-in-time shared oxygen-saturation measurement.",
       "code": {
         "system": "http://loinc.org",
         "code": "103209-3",
@@ -5282,7 +5282,7 @@
       "profile": "healthkit-phq9-assessment",
       "standardProfile": null,
       "title": "Grove HealthKit PHQ-9 Score",
-      "description": "HKPHQ9Assessment (iOS 18, HKScoredAssessment subclass): score 0-27, answers [HKPHQ9Assessment.Answer] including preferNotToAnswer, risk. Routing recommendation: platform-exclusive score Observation on exact LOINC 44261-6 'Patient Health Questionnaire 9 item (PHQ-9) total score [Reported]' (re-verified ACTIVE, Score, Qn); item answers retained as components under panel 44249-1 'PHQ-9 quick depression assessment panel [Reported.PHQ]' (re-verified) with the standard LA answer codes; preferNotToAnswer maps to a component with dataAbsentReason asked-declined, which is the semantically exact FHIR mechanism; Risk (noneToMinimal, mild, moderate, moderatelySevere, severe — re-verified) carried as interpretation-style Grove coding only.",
+      "description": "A HealthKit PHQ-9 assessment represented by its 0-27 total score using LOINC 44261-6 'Patient Health Questionnaire 9 item (PHQ-9) total score [Reported]'. Item answers are retained as components under LOINC panel 44249-1 with the standard answer codes; preferNotToAnswer maps to dataAbsentReason asked-declined. HealthKit's risk classification is retained as a Grove interpretation coding rather than a second result value.",
       "code": {
         "system": "http://loinc.org",
         "code": "44261-6",
@@ -5682,7 +5682,7 @@
       "profile": "grove-mobile-rem-sleep-duration",
       "standardProfile": null,
       "title": "REM Sleep Duration",
-      "description": "Total time classified as REM sleep within one sleep session or civil-day summary, normalized to UCUM minutes over the exact session Period. It is a stage-total aggregate without per-stage intervals and is implemented by the phase-2 aggregate design.",
+      "description": "Total time classified as REM sleep within one sleep session or civil-day summary, normalized to UCUM minutes over the exact session Period. It is a stage-total aggregate without per-stage intervals and is distinct from the interval sleep-stage Observation.",
       "code": {
         "system": "http://loinc.org",
         "code": "93829-0",
@@ -5758,7 +5758,7 @@
       "profile": "grove-mobile-respiratory-rate-average",
       "standardProfile": null,
       "title": "Respiratory Rate Average",
-      "description": "The mean respiratory rate over a windowed effective Period, normalized to UCUM breaths per minute; current source windows are a civil date (Google) and a sleep session (Oura, Withings), and the window is carried entirely by the effectivePeriod. It is distinct from the point-in-time shared respiratory-rate measurement and is implemented by the phase-2 aggregate design.",
+      "description": "The mean respiratory rate over a windowed effective Period, normalized to UCUM breaths per minute. Admitted source windows are a civil date (Google Health API) and a sleep session (Oura and Withings), and the exact window is carried by effectivePeriod. The result is distinct from the point-in-time shared respiratory-rate measurement.",
       "code": {
         "system": "http://loinc.org",
         "code": "103217-6",
@@ -6042,7 +6042,7 @@
       "profile": "healthkit-six-minute-walk-test-distance",
       "standardProfile": null,
       "title": "Six-Minute Walk Test Distance",
-      "description": "The distance walked (or estimated walkable) in six minutes, using LOINC Six minute walk test and normalized to UCUM metres. Apple's samples are predominantly rolling-window mobility estimates rather than administered tests, so the phase-2 aggregate design owns the emission contract.",
+      "description": "The distance walked (or estimated walkable) in six minutes, using LOINC Six minute walk test and normalized to UCUM metres. Apple's samples are predominantly rolling-window mobility estimates rather than administered tests, so effectivePeriod carries the exact measurement window.",
       "code": {
         "system": "http://loinc.org",
         "code": "64098-7",
@@ -6155,7 +6155,7 @@
       "profile": "grove-mobile-sleep-awake-duration",
       "standardProfile": null,
       "title": "Awake Duration During Sleep",
-      "description": "Total time awake within one sleep session or civil-day sleep summary, normalized to UCUM minutes over the exact session Period. It is a stage-total aggregate without per-stage intervals and is implemented by the phase-2 aggregate design.",
+      "description": "Total time awake within one sleep session or civil-day sleep summary, normalized to UCUM minutes over the exact session Period. It is a stage-total aggregate without per-stage intervals and is distinct from the interval sleep-stage Observation.",
       "code": {
         "system": "http://loinc.org",
         "code": "93828-2",
@@ -6229,7 +6229,7 @@
       "profile": "grove-mobile-sleep-heart-rate",
       "standardProfile": null,
       "title": "Sleep Heart Rate",
-      "description": "A heart-rate statistic computed over one sleep session (Oura reports the session minimum, Withings the session mean), normalized to UCUM beats per minute over the exact session Period. The statistic is carried by the aggregate design's fixed method coding, never collapsed into the shared point heart-rate measurement.",
+      "description": "A heart-rate statistic computed over one sleep session (Oura reports the session minimum, Withings the session mean), normalized to UCUM beats per minute over the exact session Period. A required method coding distinguishes the statistic, which is never collapsed into the shared point heart-rate measurement.",
       "code": {
         "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
         "code": "sleep-heart-rate",
@@ -6340,46 +6340,6 @@
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
         "withings": "unmodeled"
-      }
-    },
-    {
-      "id": "sleeping-heart-rate-average",
-      "profile": "withings-sleeping-heart-rate-average",
-      "standardProfile": null,
-      "title": "Sleeping Heart Rate Average",
-      "description": "The average heart rate across one sleep session, normalized to UCUM beats per minute. It is a session-windowed average, distinct from both the shared point heart-rate measurement and the daily resting-heart-rate estimate, and is implemented by the phase-2 aggregate design.",
-      "code": {
-        "system": "https://grovealliance.org/fhir/withings/CodeSystem/withings-measurement",
-        "code": "sleeping-heart-rate-average",
-        "display": "Sleeping heart rate average",
-        "definition": "The mean heart rate across the exact sleep-session Observation effective Period."
-      },
-      "valueKind": "quantity",
-      "owner": "withings",
-      "quantity": {
-        "system": "http://unitsofmeasure.org",
-        "code": "/min",
-        "unit": "beats/minute",
-        "example": 55,
-        "dimension": {
-          "s": -1
-        }
-      },
-      "method": {
-        "code": "session-mean",
-        "display": "Session mean"
-      },
-      "effective": "Period",
-      "generation": {
-        "emit": true
-      },
-      "coverage": {
-        "healthkit": "unmodeled",
-        "health-connect": "unmodeled",
-        "sensorkit": "unmodeled",
-        "google-health-api": "unmodeled",
-        "oura": "unmodeled",
-        "withings": "supported"
       }
     },
     {
@@ -8672,7 +8632,7 @@
       "profile": "healthkit-waist-circumference",
       "standardProfile": null,
       "title": "Waist Circumference",
-      "description": "A HealthKit-exclusive waist circumference normalized to UCUM centimetres. The LOINC code asserts the umbilicus site and tape-measure method that HealthKit does not itself state; this is the established consumer-health interoperability mapping and the caveat is documented rather than inventing a Grove code.",
+      "description": "A HealthKit-exclusive waist circumference normalized to UCUM centimetres. The selected LOINC code asserts the umbilicus site and tape-measure method that HealthKit does not itself state; the profile documents that caveat rather than inventing a Grove code.",
       "code": {
         "system": "http://loinc.org",
         "code": "8280-0",
@@ -8783,7 +8743,7 @@
       "profile": "healthkit-walking-heart-rate-average",
       "standardProfile": null,
       "title": "Walking Heart Rate Average",
-      "description": "The average heart rate during walking activity over a daily window, normalized to UCUM beats per minute. HealthKit-only evidence today; the phase-2 aggregate design implements the windowing.",
+      "description": "The average heart rate during walking activity over a daily window, normalized to UCUM beats per minute. This is a HealthKit-specific source-supplied aggregate whose exact daily window is carried by effectivePeriod.",
       "code": {
         "system": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-measurement",
         "code": "walking-heart-rate-average",
@@ -8860,7 +8820,7 @@
       "profile": "healthkit-walking-steadiness",
       "standardProfile": null,
       "title": "Walking Steadiness",
-      "description": "Apple's windowed walking-steadiness score, a rolling multi-day percentage summarizing gait stability, normalized to UCUM percent over the exact aggregation Period. As a windowed aggregate it is implemented by the phase-2 aggregate design rather than as a point measurement.",
+      "description": "Apple's windowed walking-steadiness score, a rolling multi-day percentage summarizing gait stability, normalized to UCUM percent over the exact aggregation Period. It is represented as a source-supplied aggregate with an exact effectivePeriod, not as a point measurement.",
       "code": {
         "system": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-measurement",
         "code": "walking-steadiness",
@@ -9127,7 +9087,7 @@
       "profile": "withings-atrial-fibrillation-notification-ecg",
       "standardProfile": null,
       "title": "Withings Atrial Fibrillation Notification (ECG)",
-      "description": "Withings meastype 130: a screening notification from the vendor's proprietary electrocardiogram algorithm. It is emitted as a notification and never as a rhythm finding, exactly as the HealthKit irregular-heart-rhythm notification is: the recording itself remains the rhythm evidence. The adapter admits an Observation only for the vendor's positive screening classification; Withings publishes no encoding for the numeric measure.value, so no negative result, no inconclusive result, and no diagnosis is asserted. The code is deliberately taken from the providers code system so no receiver can read it as an atrial-fibrillation finding.",
+      "description": "Withings meastype 130: a screening notification from the vendor's proprietary electrocardiogram algorithm. It is emitted as a notification and never as a rhythm finding, exactly as the HealthKit irregular-heart-rhythm notification is: the recording itself remains the rhythm evidence. The adapter admits an Observation only for the vendor's positive screening classification; Withings publishes no encoding for the numeric measure.value, so no negative result, no inconclusive result, and no diagnosis is asserted. The code is deliberately taken from the providers code system so it cannot be interpreted as an atrial-fibrillation finding.",
       "code": {
         "system": "https://grovealliance.org/fhir/withings/CodeSystem/withings-measurement",
         "code": "withings-atrial-fibrillation-notification-ecg",
@@ -9167,7 +9127,7 @@
       "profile": "withings-atrial-fibrillation-notification-ppg",
       "standardProfile": null,
       "title": "Withings Atrial Fibrillation Notification (PPG)",
-      "description": "Withings meastype 139: a screening notification from the vendor's proprietary photoplethysmography algorithm, kept separate from the electrocardiogram notification because it screens a different signal. It is emitted as a notification and never as a rhythm finding. The adapter admits an Observation only for the vendor's positive screening classification; Withings publishes no encoding for the numeric measure.value, so no negative result, no inconclusive result, and no diagnosis is asserted. The code is deliberately taken from the providers code system so no receiver can read it as an atrial-fibrillation finding.",
+      "description": "Withings meastype 139: a screening notification from the vendor's proprietary photoplethysmography algorithm, kept separate from the electrocardiogram notification because it screens a different signal. It is emitted as a notification and never as a rhythm finding. The adapter admits an Observation only for the vendor's positive screening classification; Withings publishes no encoding for the numeric measure.value, so no negative result, no inconclusive result, and no diagnosis is asserted. The code is deliberately taken from the providers code system so it cannot be interpreted as an atrial-fibrillation finding.",
       "code": {
         "system": "https://grovealliance.org/fhir/withings/CodeSystem/withings-measurement",
         "code": "withings-atrial-fibrillation-notification-ppg",

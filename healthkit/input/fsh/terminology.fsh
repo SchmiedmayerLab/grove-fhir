@@ -18,7 +18,7 @@ Description: "Identifier roles used only by the HealthKit adapter when a standar
 CodeSystem: HealthKitMetadataKeyCS
 Id: healthkit-metadata-key
 Title: "HealthKit Metadata Keys"
-Description: "HealthKit metadata keys retained by Grove FHIR HealthKit 0.6.0 after standard FHIR mappings have been applied."
+Description: "HealthKit metadata keys retained by the relevant Grove FHIR Implementation Guide after standard FHIR mappings have been applied."
 * ^experimental = false
 * ^caseSensitive = true
 * ^content = #complete
@@ -31,14 +31,14 @@ Description: "HealthKit metadata keys retained by Grove FHIR HealthKit 0.6.0 aft
 ValueSet: HealthKitMetadataKeyVS
 Id: healthkit-metadata-key
 Title: "HealthKit Metadata Keys"
-Description: "The HealthKit 0.6.0 allowlist of retained metadata keys. Each key maps to its published representation: a named Observation component, a named extension, or a named identifier slice."
+Description: "The HealthKit allowlist of retained metadata keys. Each key maps to its published representation: a named Observation component, a named extension, or a named identifier slice."
 * ^experimental = false
 * include codes from system HealthKitMetadataKeyCS
 
 CodeSystem: HealthKitHeartRateMotionContextCS
 Id: healthkit-heart-rate-motion-context
 Title: "HealthKit Heart Rate Motion Context"
-Description: "Adapter codes for the HKHeartRateMotionContext raw values retained by Grove FHIR HealthKit 0.6.0. The mapping to HealthKit source cases is documented separately."
+Description: "Adapter codes for the HKHeartRateMotionContext raw values retained by the relevant Grove FHIR Implementation Guide. The mapping to HealthKit source cases is documented separately."
 * ^experimental = false
 * ^caseSensitive = true
 * ^content = #complete
@@ -50,7 +50,7 @@ Description: "Adapter codes for the HKHeartRateMotionContext raw values retained
 ValueSet: HealthKitHeartRateMotionContextVS
 Id: healthkit-heart-rate-motion-context
 Title: "HealthKit Heart Rate Motion Context"
-Description: "Motion contexts permitted by the HealthKit 0.6.0 heart-rate metadata mapping."
+Description: "Motion contexts permitted by the HealthKit heart-rate metadata mapping."
 * ^experimental = false
 * include codes from system HealthKitHeartRateMotionContextCS
 
@@ -96,7 +96,7 @@ Description: "Exact HKElectrocardiogram.Classification cases retained on a lossl
 ValueSet: HealthKitECGClassificationVS
 Id: healthkit-ecg-classification
 Title: "HealthKit ECG Classification"
-Description: "The closed HealthKit ECG classification cases admitted by version 0.6.0."
+Description: "The closed HealthKit ECG classification cases admitted by the Grove FHIR contracts."
 * ^experimental = false
 * include codes from system HealthKitECGClassificationCS
 
@@ -115,7 +115,7 @@ Description: "Exact HKElectrocardiogram.SymptomsStatus cases retained on a lossl
 ValueSet: HealthKitECGSymptomsStatusVS
 Id: healthkit-ecg-symptoms-status
 Title: "HealthKit ECG Symptoms Status"
-Description: "The closed HealthKit ECG symptoms-status cases admitted by version 0.6.0."
+Description: "The closed HealthKit ECG symptoms-status cases admitted by the Grove FHIR contracts."
 * ^experimental = false
 * include codes from system HealthKitECGSymptomsStatusCS
 
@@ -136,7 +136,7 @@ Description: "Exact HKCategoryValueSeverity cases retained for a correlated Heal
 ValueSet: HealthKitSymptomSeverityVS
 Id: healthkit-symptom-severity
 Title: "HealthKit Symptom Severity"
-Description: "The closed HealthKit symptom severity cases admitted by version 0.6.0."
+Description: "The closed HealthKit symptom severity cases admitted by the Grove FHIR contracts."
 * ^experimental = false
 * include codes from system HealthKitSymptomSeverityCS
 
@@ -154,7 +154,7 @@ Description: "Exact HKAppleECGAlgorithmVersion cases retained when the HealthKit
 ValueSet: HealthKitECGAlgorithmVersionVS
 Id: healthkit-ecg-algorithm-version
 Title: "HealthKit ECG Algorithm Version"
-Description: "The closed Apple ECG algorithm versions admitted by version 0.6.0."
+Description: "The closed Apple ECG algorithm versions admitted by the Grove FHIR contracts."
 * ^experimental = false
 * include codes from system HealthKitECGAlgorithmVersionCS
 
@@ -513,7 +513,6 @@ Description: "Every general form a tracked medication may carry, including the p
 ValueSet: HealthKitTrackedMedicationStatusVS
 Id: healthkit-tracked-medication-status
 Title: "HealthKit Tracked Medication Status"
-Description: "The two medication statement statuses a tracked HealthKit medication takes. An archived medication is completed and a medication the person still tracks is active; HealthKit publishes no third state, so no other status may be asserted."
+Description: "The active status required for a non-archived medication the person tracks in Health. Archived entries are not admitted because archival alone does not establish that medication use was completed or stopped."
 * ^experimental = false
 * $medicationStatementStatus#active "Active"
-* $medicationStatementStatus#completed "Completed"

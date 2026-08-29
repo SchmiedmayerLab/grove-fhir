@@ -42,18 +42,18 @@ Expression: "entry.extension('https://grovealliance.org/fhir/mobile/StructureDef
 Severity: #error
 
 Invariant: grove-opaque-identifier-value-1
-Description: "A pseudonymous Grove identifier is a canonical v2 HMAC value carrying its key id and positive key epoch."
-Expression: "$this.matches('^v2:[A-Za-z0-9._-]+:[1-9][0-9]*:[A-Za-z0-9_-]{43}$')"
+Description: "A pseudonymous Grove identifier is a canonical v0 HMAC value carrying its key id and positive key epoch."
+Expression: "$this.matches('^v0:[A-Za-z0-9._-]+:[1-9][0-9]*:[A-Za-z0-9_-]{43}$')"
 Severity: #error
 
 Invariant: grove-event-identifier-value-1
 Description: "An exchange event is partitioned by a lowercase producer-instance UUID and canonical positive monotonic sequence."
-Expression: "$this.matches('^e2:[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}:[1-9][0-9]*$')"
+Expression: "$this.matches('^e0:[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}:[1-9][0-9]*$')"
 Severity: #error
 
 Invariant: grove-entry-node-value-1
 Description: "An event-scoped entry node key carries a role, canonical zero-based ordinal, and base64url SHA-256 digest."
-Expression: "$this.matches('^n2:[a-z][a-z0-9-]*:(0|[1-9][0-9]*):[A-Za-z0-9_-]{43}$')"
+Expression: "$this.matches('^n0:[a-z][a-z0-9-]*:(0|[1-9][0-9]*):[A-Za-z0-9_-]{43}$')"
 Severity: #error
 
 Invariant: grove-active-event-provenance-1

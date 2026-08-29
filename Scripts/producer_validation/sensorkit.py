@@ -12,14 +12,13 @@ from decimal import Decimal, InvalidOperation
 from typing import Any
 
 from .context import (
-    CATALOG_ROOT, IDENTIFIER_ROLE_SYSTEM, RECORDING_DOCUMENT_PROFILE_TAIL,
-    SENSOR_ECG_PROFILE, SENSOR_SAMPLED_PROFILE,
+    CATALOG_ROOT, IDENTIFIER_ROLE_SYSTEM, SENSOR_ECG_PROFILE, SENSOR_SAMPLED_PROFILE,
 )
 from .diagnostics import ProducerValidationError
 from .identity import typed_resource_identifiers
 from .io import read_json
-from .payloads import validate_recording_attachment, validate_sampled_data
-from .profiles import codeable_concept_codings
+from .payloads import validate_sampled_data
+from .profiles import admitted_document_reference_claim, codeable_concept_codings
 from .references import complete_identifier, extensions_with_url, validate_governed_reference
 
 
@@ -80,7 +79,7 @@ def validate_sensorkit_quantity_domains(resource: dict[str, Any], label: str) ->
 
 
 def validate_sensorkit_profile_claim(resource: dict[str, Any], label: str) -> None:
-    """Require exact direct claims for SensorKit-only and native-recording outputs."""
+    """Require exact direct claims for SensorKit-only and Recording Document outputs."""
     claims = read_json(CATALOG_ROOT / "profile-claims.json")
     profiles = resource.get("meta", {}).get("profile", [])
     if not isinstance(profiles, list) or any(not isinstance(profile, str) for profile in profiles):
@@ -120,6 +119,30 @@ def validate_sensorkit_profile_claim(resource: dict[str, Any], label: str) -> No
             "source-neutral and SensorKit recording profiles"
         )
 
+def exact_sensorkit_source_type(resource: dict[str, Any], label: str) -> str:
+    """Return the one valueCode-only SensorKit source-type marker."""
+    catalog = read_json(CATALOG_ROOT / "sensorkit-adapter.json")
+    source_extensions = [
+        extension
+        for extension in resource.get("extension", [])
+        if isinstance(extension, dict)
+        and extension.get("url") == catalog["sourceTypeExtension"]["url"]
+    ] if isinstance(resource.get("extension", []), list) else []
+    value_keys = [
+        key for key in source_extensions[0] if key.startswith("value")
+    ] if len(source_extensions) == 1 else []
+    if (
+        len(source_extensions) != 1
+        or value_keys != ["valueCode"]
+        or not isinstance(source_extensions[0].get("valueCode"), str)
+        or not source_extensions[0]["valueCode"]
+    ):
+        raise ProducerValidationError(
+            f"{label} must carry exactly one valueCode-only SensorKit source type"
+        )
+    return source_extensions[0]["valueCode"]
+
+
 def validate_sensorkit_identity(resource: dict[str, Any], label: str) -> None:
     """Bind SensorKit source type, source identity, output identity, and status row."""
     if resource.get("resourceType") not in {"Observation", "DocumentReference"}:
@@ -127,16 +150,41 @@ def validate_sensorkit_identity(resource: dict[str, Any], label: str) -> None:
     profiles = resource.get("meta", {}).get("profile", [])
     if not isinstance(profiles, list):
         raise ProducerValidationError(f"{label} has invalid meta.profile")
+
+    catalog = read_json(CATALOG_ROOT / "sensorkit-adapter.json")
     sensorkit_profile_prefix = (
         "https://grovealliance.org/fhir/sensorkit/StructureDefinition/"
     )
-    if not any(
+    has_sensorkit_profile = any(
         isinstance(profile, str) and profile.startswith(sensorkit_profile_prefix)
         for profile in profiles
-    ):
+    )
+    extensions = resource.get("extension", [])
+    has_sensorkit_marker = isinstance(extensions, list) and any(
+        isinstance(extension, dict)
+        and extension.get("url") == catalog["sourceTypeExtension"]["url"]
+        for extension in extensions
+    )
+    if not has_sensorkit_profile and not has_sensorkit_marker:
         return
 
-    catalog = read_json(CATALOG_ROOT / "sensorkit-adapter.json")
+    if resource["resourceType"] == "DocumentReference":
+        claim = catalog["profileClaims"]["recordingDocument"]
+        expected_profiles = {
+            claim["sourceNeutralProfile"],
+            claim["adapterProfile"],
+        }
+        if len(profiles) != len(expected_profiles) or set(profiles) != expected_profiles:
+            raise ProducerValidationError(
+                f"{label} SensorKit Recording Document must directly claim exactly the "
+                "source-neutral and SensorKit recording profiles"
+            )
+    elif not has_sensorkit_profile:
+        raise ProducerValidationError(
+            f"{label} SensorKit source type requires an admitted SensorKit profile"
+        )
+
+    source_type = exact_sensorkit_source_type(resource, label)
     typed = typed_resource_identifiers(resource, label)
     if "source-record" not in typed or "source-output" not in typed:
         raise ProducerValidationError(
@@ -149,23 +197,10 @@ def validate_sensorkit_identity(resource: dict[str, Any], label: str) -> None:
             f"{label} must not copy a SensorKit business identifier into Resource.id"
         )
 
-    source_type_url = (
-        "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-source-type"
-    )
-    extensions = resource.get("extension", [])
-    source_types = [
-        extension.get("valueCode")
-        for extension in extensions
-        if isinstance(extension, dict) and extension.get("url") == source_type_url
-    ] if isinstance(extensions, list) else []
-    if len(source_types) != 1 or not isinstance(source_types[0], str):
-        raise ProducerValidationError(
-            f"{label} must carry exactly one coded SensorKit source type"
-        )
     rows = {
         row["sourceTypeCode"]: row for row in catalog["entries"]
     }
-    row = rows.get(source_types[0])
+    row = rows.get(source_type)
     if row is None:
         raise ProducerValidationError(f"{label} uses an unknown SensorKit source type")
 
@@ -178,9 +213,20 @@ def validate_sensorkit_identity(resource: dict[str, Any], label: str) -> None:
                 f"{label} source type has no admitted structured SensorKit output"
             )
         expected_profile = representation.get("profile")
-        if expected_profile is not None and profiles != [expected_profile]:
+        expected_shared_profiles = {
+            representation.get("sourceNeutralProfile"),
+            representation.get("adapterProfile"),
+        }
+        if isinstance(expected_profile, str) and profiles != [expected_profile]:
             raise ProducerValidationError(
                 f"{label} must directly claim its exact SensorKit-only profile"
+            )
+        if all(isinstance(profile, str) for profile in expected_shared_profiles) and (
+            len(profiles) != 2 or set(profiles) != expected_shared_profiles
+        ):
+            raise ProducerValidationError(
+                f"{label} must directly claim the exact source-neutral and SensorKit "
+                "profiles admitted for its source type"
             )
     if not isinstance(representation, dict):
         raise ProducerValidationError(
@@ -350,16 +396,45 @@ def validate_sensor_contract(resource: dict[str, Any], label: str) -> None:
         components = resource.get("component")
         if not isinstance(components, list) or not components:
             raise ProducerValidationError(f"{label} ECG must contain sampled-data components")
+        channel_identities: set[tuple[tuple[str, str], ...]] = set()
         for index, component in enumerate(components):
+            component_label = f"{label}.component[{index}]"
+            code = component.get("code") if isinstance(component, dict) else None
+            codings = code.get("coding") if isinstance(code, dict) else None
+            if not isinstance(codings, list) or not codings:
+                raise ProducerValidationError(
+                    f"{component_label}.code must contain at least one complete channel coding"
+                )
+            identity_pairs: list[tuple[str, str]] = []
+            for coding_index, coding in enumerate(codings):
+                system = coding.get("system") if isinstance(coding, dict) else None
+                code_value = coding.get("code") if isinstance(coding, dict) else None
+                if (
+                    not isinstance(system, str)
+                    or not system
+                    or not isinstance(code_value, str)
+                    or not code_value
+                ):
+                    raise ProducerValidationError(
+                        f"{component_label}.code.coding[{coding_index}] must contain "
+                        "non-empty system and code"
+                    )
+                identity_pairs.append((system, code_value))
+            identity = tuple(sorted(identity_pairs))
+            if len(identity) != len(set(identity)):
+                raise ProducerValidationError(
+                    f"{component_label}.code repeats a channel identity coding"
+                )
+            if identity in channel_identities:
+                raise ProducerValidationError(
+                    f"{component_label}.code duplicates another ECG channel identity"
+                )
+            channel_identities.add(identity)
             sampled = component.get("valueSampledData") if isinstance(component, dict) else None
             validate_sampled_data(
-                sampled, resource.get("effectivePeriod"), f"{label}.component[{index}]"
+                sampled, resource.get("effectivePeriod"), component_label
             )
-    is_recording_document = (
-        resource.get("resourceType") == "DocumentReference"
-        and any(profile.endswith(RECORDING_DOCUMENT_PROFILE_TAIL) for profile in profiles)
-    )
-    if is_recording_document:
+    if admitted_document_reference_claim(resource) is not None:
         contents = resource.get("content")
         if not isinstance(contents, list) or len(contents) != 1:
             raise ProducerValidationError(
@@ -376,6 +451,3 @@ def validate_sensor_contract(resource: dict[str, Any], label: str) -> None:
                 "and source-artifact; only writer-record is an additional typed Grove role "
                 f"(missing={sorted(missing)}, unexpected={sorted(unexpected)})"
             )
-        for index, content in enumerate(contents):
-            attachment = content.get("attachment") if isinstance(content, dict) else None
-            validate_recording_attachment(attachment, f"{label}.content[{index}].attachment")

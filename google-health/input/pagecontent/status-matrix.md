@@ -9,9 +9,9 @@ GENERATED FILE. Edit the corresponding catalog JSON and run
 `python3 Scripts/render-status-matrices.py`.
 -->
 
-# Authoritative Google Health API status matrix
+### Google Health API support matrix
 
-This table enumerates every Google Health API field in the closed v0.6.0 source catalog. Each field has one definitive status. This guide profiles data already obtained by its caller; it contains no authentication, network, pagination, or fetching implementation.
+This table lists every Google Health API field in the published Grove inventory. Each field has one definitive status. This guide profiles data already obtained before FHIR conversion; it contains no authentication, network, pagination, or fetching implementation. A field named as a required group member admits no standalone output; only the corresponding grouped mapping below admits the result.
 
 | Source type | Source status | Provider field | Field status | Measurement | Representation / conversion | Binding reason / effective time |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -24,9 +24,9 @@ This table enumerates every Google Health API field in the closed v0.6.0 source 
 | `vo2-max` | `supported` | `vo2Max.vo2Max` | `supported` | vo2-max | — | — |
 | `daily-oxygen-saturation` | `supported` | `dailyOxygenSaturation.averagePercentage` | `supported` | oxygen-saturation-daily-average | — | — |
 | `heart-rate-variability` | `supported` | `heartRateVariability.rootMeanSquareOfSuccessiveDifferencesMilliseconds` | `supported` | heart-rate-variability-rmssd | — | — |
-| `heart-rate-variability` | `supported` | `heartRateVariability.standardDeviationMilliseconds` | `supported` | heart-rate-variability-rmssd; heart-rate-variability-sdnn | — | — |
+| `heart-rate-variability` | `supported` | `heartRateVariability.standardDeviationMilliseconds` | `supported` | heart-rate-variability-sdnn | — | — |
 | `daily-resting-heart-rate` | `supported` | `dailyRestingHeartRate.beatsPerMinute` | `supported` | resting-heart-rate-daily-average | — | — |
-| `daily-respiratory-rate` | `supported` | `dailyRespiratoryRate.breathsPerMinute` | `supported` | respiratory-rate-average | — | — |
+| `daily-respiratory-rate` | `supported` | `dailyRespiratoryRate.breathsPerMinute` | `supported` | respiratory-rate-average | — | method = daily-mean |
 | `blood-glucose` | `supported` | `bloodGlucose.bloodGlucoseMilligramsPerDeciliter` | `supported` | blood-glucose-unspecified-specimen | — | — |
 | `core-body-temperature` | `supported` | `coreBodyTemperature.temperatureCelsius` | `supported` | body-temperature | identity UCUM Cel | coreBodyTemperature.sampleTime.physicalTime |
 | `floors` | `supported` | `floors.count` | `supported` | flights-climbed | — | — |
@@ -37,4 +37,4 @@ This table enumerates every Google Health API field in the closed v0.6.0 source 
 | `sleep` | `supported` | `sleep.summary.stagesSummary[type=LIGHT].minutes` | `supported` | light-sleep-duration | — | — |
 | `sleep` | `supported` | `sleep.summary.stagesSummary[type=AWAKE].minutes` | `supported` | sleep-awake-duration | — | — |
 | `exercise` | `supported` | `exercise.interval` | `supported` | workout | — | — |
-| `heart-rate` | `mapped-standard` | `payload` | `mapped-standard` | — | https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document | The source points may be irregular; retain the provider-native recording rather than resample or invent a uniform SampledData period. |
+| `heart-rate` | `mapped-standard` | `payload` | `mapped-standard` | — | grove-sensor-recording-document; providers-recording-document | The source points may be irregular; retain the provider-native recording rather than resample or invent a uniform SampledData period. |

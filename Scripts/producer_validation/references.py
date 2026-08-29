@@ -75,7 +75,7 @@ def reference_target(
         raise ProducerValidationError(f"{label} does not resolve inside its exchange graph")
     actual_type = target.get("resourceType")
     declared_type = reference.get("type")
-    if declared_type is not None and declared_type != actual_type:
+    if "type" in reference and declared_type != actual_type:
         raise contract_failure(
             "mobile-exchange.reference-declared-type",
             f"{label}.type",
@@ -90,10 +90,18 @@ def validate_governed_reference(
     label: str,
 ) -> None:
     """Validate the protocol's exclusive literal-or-logical Reference shape."""
+    literal_present = "reference" in reference
+    identifier_present = "identifier" in reference
     literal = reference.get("reference")
     identifier = reference.get("identifier")
-    if isinstance(literal, str):
-        if identifier is not None:
+    if literal_present:
+        if not isinstance(literal, str):
+            raise contract_failure(
+                "mobile-exchange.reference-shape",
+                f"{label}.reference",
+                f"{label}.reference must be a string when present",
+            )
+        if identifier_present:
             raise contract_failure(
                 "mobile-exchange.reference-shape",
                 label,
@@ -101,39 +109,95 @@ def validate_governed_reference(
             )
         target = reference_target(reference, resources_by_full_url, label)
         if target is not None and target.get("resourceType") not in allowed:
-            if label == "Observation.subject":
+            if allowed == {"Patient"}:
                 raise contract_failure(
                     "mobile-exchange.reference-target-type",
-                    "Observation.subject.reference",
+                    f"{label}.reference",
                     f"{label} must reference " + " or ".join(sorted(allowed)),
                 )
             raise ProducerValidationError(
                 f"{label} must reference " + " or ".join(sorted(allowed))
             )
         return
-    if literal is not None:
-        raise ProducerValidationError(f"{label}.reference must be a string when present")
-    complete_identifier(identifier, f"{label}.identifier")
+    if not identifier_present or not isinstance(identifier, dict):
+        raise contract_failure(
+            "mobile-exchange.reference-shape",
+            f"{label}.identifier",
+            f"{label} logical reference must contain one Identifier object",
+        )
+    system, _value = complete_identifier(identifier, f"{label}.identifier")
     declared_type = reference.get("type")
     if declared_type not in allowed:
-        if label == "Observation.subject":
+        if allowed == {"Patient"}:
             raise contract_failure(
                 "mobile-exchange.logical-patient-reference",
-                "Observation.subject",
+                label,
                 f"{label} logical reference type must be "
                 + " or ".join(sorted(allowed)),
             )
         raise ProducerValidationError(
             f"{label} logical reference type must be " + " or ".join(sorted(allowed))
         )
+    if declared_type == "Patient":
+        patient_policy = REFERENCE_POLICY["identifierOnlyPatient"]
+        if system in patient_policy["reservedSystems"]:
+            raise contract_failure(
+                "mobile-exchange.logical-patient-reference",
+                f"{label}.identifier.system",
+                f"{label} logical Patient pseudonym uses a protocol-reserved system",
+            )
+        identifier_type = identifier.get("type")
+        if identifier_type is not None:
+            if not isinstance(identifier_type, dict):
+                raise contract_failure(
+                    "mobile-exchange.logical-patient-reference",
+                    f"{label}.identifier.type",
+                    f"{label} logical Patient Identifier.type must be a CodeableConcept",
+                )
+            codings = identifier_type.get("coding", [])
+            if not isinstance(codings, list) or any(
+                not isinstance(coding, dict) for coding in codings
+            ):
+                raise contract_failure(
+                    "mobile-exchange.logical-patient-reference",
+                    f"{label}.identifier.type",
+                    f"{label} logical Patient Identifier.type has invalid coding",
+                )
+            if any(
+                coding.get("system") == IDENTIFIER_ROLE_SYSTEM for coding in codings
+            ):
+                raise contract_failure(
+                    "mobile-exchange.logical-patient-reference",
+                    f"{label}.identifier.type",
+                    f"{label} logical Patient pseudonym must not claim a Grove identifier role",
+                )
 
-def reference_values_at_path(resource: dict[str, Any], path: str) -> list[dict[str, Any]]:
+def reference_values_at_path(
+    resource: dict[str, Any],
+    path: str,
+    repeating: bool,
+    label: str,
+) -> list[dict[str, Any]]:
+    if path not in resource:
+        return []
     value = resource.get(path)
-    if isinstance(value, dict):
-        return [value]
-    if isinstance(value, list):
-        return [item for item in value if isinstance(item, dict)]
-    return []
+    if repeating:
+        if not isinstance(value, list) or any(
+            not isinstance(item, dict) for item in value
+        ):
+            raise contract_failure(
+                "mobile-exchange.reference-shape",
+                label,
+                f"{label} must be an array containing only Reference objects",
+            )
+        return value
+    if not isinstance(value, dict):
+        raise contract_failure(
+            "mobile-exchange.reference-shape",
+            label,
+            f"{label} must be one Reference object",
+        )
+    return [value]
 
 def all_extensions(value: Any) -> list[dict[str, Any]]:
     """Return extensions recursively so governed Reference extensions cannot hide."""
@@ -210,12 +274,18 @@ def validate_reference_policy(
         if rule["resourceType"] != resource_type:
             continue
         allowed = set(rule["targetTypes"])
-        for reference in reference_values_at_path(resource, rule["path"]):
+        path_label = f"{resource_type}.{rule['path']}"
+        for reference in reference_values_at_path(
+            resource,
+            rule["path"],
+            rule["repeating"],
+            path_label,
+        ):
             validate_governed_reference(
                 reference,
                 allowed,
                 resources_by_full_url,
-                f"{resource_type}.{rule['path']}",
+                path_label,
             )
     extension_rules = {
         rule["url"]: set(rule["targetTypes"])
@@ -223,9 +293,17 @@ def validate_reference_policy(
     }
     for index, extension in enumerate(all_extensions(resource)):
         allowed = extension_rules.get(extension.get("url"))
-        reference = extension.get("valueReference")
-        if allowed is None or not isinstance(reference, dict):
+        if allowed is None:
             continue
+        value_keys = [key for key in extension if key.startswith("value")]
+        reference = extension.get("valueReference")
+        if value_keys != ["valueReference"] or not isinstance(reference, dict):
+            raise contract_failure(
+                "mobile-exchange.reference-shape",
+                f"{label}.extension[{index}]",
+                f"{label}.extension[{index}] must contain exactly one "
+                "Reference-shaped valueReference",
+            )
         validate_governed_reference(
             reference,
             allowed,
