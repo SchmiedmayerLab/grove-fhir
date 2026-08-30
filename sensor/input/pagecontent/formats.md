@@ -269,11 +269,11 @@ Grove format validation verifies strict JSON syntax and only the collection-Bund
 
 ### `fhir-resource` — FHIR Resource
 
-Media type: `application/fhir+json`.
+Media types: `application/fhir+json; fhirVersion=1.0`, `application/fhir+json; fhirVersion=4.0`.
 UTF-8.
 One complete provider-issued FHIR DSTU2 or R4 resource in FHIR JSON representation, byte-preserved exactly as the source platform delivered it.
-The carrying HealthKit Clinical Record Document declares exactly one source release, `dstu2` or `r4`, from HKFHIRVersion.fhirRelease. The format code is release-neutral; a missing, unknown, or future release is rejected before emission.
-The carrying document records the issuing source and exact source release. Grove never converts, re-encodes, or asserts conformance over another issuer's resource.
+Attachment.contentType is exactly `application/fhir+json; fhirVersion=1.0` for DSTU2 or `application/fhir+json; fhirVersion=4.0` for R4. The standard media-type parameter is the authoritative release declaration; an unversioned or other value is not admitted.
+The carrying document records the issuing source, while the attachment media type records the exact FHIR release. Grove never converts, re-encodes, or asserts conformance over another issuer's resource.
 One document carries exactly one clinical record's FHIR payload. Grove format validation verifies strict JSON syntax and a `resourceType`-bearing object only; it does not infer the FHIR release or execute base or profile validation over the issuer's resource.
 
 ### `clinical-document` — Clinical Document

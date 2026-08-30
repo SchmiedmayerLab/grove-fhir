@@ -21,6 +21,11 @@ Description: "HealthKit requires a sync version exactly when a sync identifier i
 Expression: "extension('https://grovealliance.org/fhir/mobile/StructureDefinition/grove-writer-record-version').exists() = identifier.where(type.coding.where(system = 'https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role' and code = 'writer-record').exists()).exists()"
 Severity: #error
 
+Invariant: healthkit-clinical-fhir-content-type-1
+Description: "The clinical attachment declares DSTU2 or R4 with the standard FHIR media-type parameter."
+Expression: "content.attachment.contentType.all($this = 'application/fhir+json; fhirVersion=1.0' or $this = 'application/fhir+json; fhirVersion=4.0')"
+Severity: #error
+
 RuleSet: HealthKitOutputIdentitySlices
 * obeys healthkit-writer-record-1
 * identifier 2..* MS
@@ -178,7 +183,7 @@ Profile: HealthKitRecordingDocument
 Parent: GroveSensorRecordingDocument
 Id: healthkit-recording-document
 Title: "HealthKit Recording Document"
-Description: "A byte-preserved HealthKit source document or series whose native representation is not a scalar result. Beat-to-beat intervals and workout routes use registered column schemas; provider-issued clinical resources use a stricter derived profile that declares their source FHIR release and payload format."
+Description: "A byte-preserved HealthKit source document or series whose native representation is not a scalar result. Beat-to-beat intervals and workout routes use registered column schemas; provider-issued clinical resources use a stricter derived profile that declares their source FHIR release in the attachment media type."
 // The SDK source class is lineage, not a document-type coding.
 * extension contains HealthKitSourceType named healthKitSourceType 1..1 MS
 * type 1..1 MS
@@ -201,20 +206,9 @@ Description: "A pass-through envelope for one provider-issued clinical FHIR reso
 // Required by the inherited HealthKit recording parent and repeated here for clinical clarity.
 * content.format.version 0..0
 * content.attachment.contentType 1..1 MS
-* content.attachment.contentType = #application/fhir+json (exactly)
 * content.attachment.size 1..1 MS
 * content.attachment.hash 1..1 MS
-* extension contains HealthKitClinicalFHIRRelease named fhirRelease 1..1 MS
-
-Extension: HealthKitClinicalFHIRRelease
-Id: healthkit-clinical-fhir-release
-Title: "HealthKit Clinical FHIR Release"
-Description: "The FHIR release of the pass-through payload, copied exactly from HKFHIRVersion.fhirRelease and never inferred from or written into the provider-issued bytes."
-* ^context[+].type = #element
-* ^context[=].expression = "DocumentReference"
-* value[x] only code
-* valueCode 1..1
-* valueCode from HealthKitClinicalFHIRReleaseVS (required)
+* obeys healthkit-clinical-fhir-content-type-1
 
 
 

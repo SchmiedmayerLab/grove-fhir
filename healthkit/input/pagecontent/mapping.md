@@ -79,12 +79,13 @@ Distinct equal-type samples remain distinct; `present` requires at least one dis
 HealthKit can expose both DSTU2 and R4 `HKFHIRResource` payloads.
 The Grove exchange Bundle and HealthKit Clinical Record Document envelope remain FHIR R4, while the provider-issued attachment may be either DSTU2 or R4.
 Admit a clinical record only when `HKFHIRResource.fhirVersion.fhirRelease` is exactly `dstu2` or `r4`.
-Copy that source value to the one required `healthkit-clinical-fhir-release` extension; never infer the release from the JSON shape.
+Map that source value directly to `Attachment.contentType`: `application/fhir+json; fhirVersion=1.0` for DSTU2 or `application/fhir+json; fhirVersion=4.0` for R4.
+The standard `fhirVersion` media-type parameter carries the release; never infer it from the JSON shape.
 Reject an unknown or missing release, as well as every future release that the contract does not yet admit, before creating the DocumentReference.
 
 Carry the provider-issued bytes under the release-neutral `fhir-resource` format contract.
 Do not parse and reserialize, relabel, upgrade, downgrade, or otherwise rewrite those bytes.
-Grove validation checks that an inline attachment is strict UTF-8 JSON containing one object with a valid `resourceType` member, but it does not apply R4 rules to a DSTU2 payload or assert conformance to the issuer's FHIR release.
+Grove validation checks that an inline attachment is strict UTF-8 JSON containing one `resourceType`-bearing object, but it does not apply R4 rules to a DSTU2 payload or assert conformance to the issuer's FHIR release.
 The R4 envelope asserts the exact source release, payload integrity, identity, and provenance—not that Grove has validated or endorsed the provider's clinical content.
 
 ### Values, units, and time

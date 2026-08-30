@@ -83,7 +83,7 @@ class SensorCatalogTests(unittest.TestCase):
         )
         clinical_profile = healthkit_profiles.split(
             "Profile: HealthKitClinicalRecordDocument", 1
-        )[1].split("Extension: HealthKitClinicalFHIRRelease", 1)[0]
+        )[1].split("Profile: HealthKitVisionPrescription", 1)[0]
         self.assertNotIn("content.attachment.title", clinical_profile)
 
     def test_sampled_data_timing_contract_is_exact(self) -> None:

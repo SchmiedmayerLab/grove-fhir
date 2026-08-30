@@ -26,6 +26,8 @@
   "mediaTypes": {
     "text/csv": "Comma-separated values",
     "application/fhir+json": "FHIR JSON",
+    "application/fhir+json; fhirVersion=1.0": "FHIR DSTU2 JSON",
+    "application/fhir+json; fhirVersion=4.0": "FHIR R4 JSON",
     "application/json": "JSON",
     "application/octet-stream": "Binary octet stream",
     "application/hl7-cda+xml": "HL7 Clinical Document Architecture"
@@ -549,13 +551,16 @@
     },
     "fhir-resource": {
       "title": "FHIR Resource",
-      "contentType": "application/fhir+json",
+      "contentTypes": [
+        "application/fhir+json; fhirVersion=1.0",
+        "application/fhir+json; fhirVersion=4.0"
+      ],
       "status": "active",
       "specification": {
         "encoding": "UTF-8.",
         "structure": "One complete provider-issued FHIR DSTU2 or R4 resource in FHIR JSON representation, byte-preserved exactly as the source platform delivered it.",
-        "fhirVersion": "The carrying HealthKit Clinical Record Document declares exactly one source release, `dstu2` or `r4`, from HKFHIRVersion.fhirRelease. The format code is release-neutral; a missing, unknown, or future release is rejected before emission.",
-        "provenance": "The carrying document records the issuing source and exact source release. Grove never converts, re-encodes, or asserts conformance over another issuer's resource.",
+        "fhirVersion": "Attachment.contentType is exactly `application/fhir+json; fhirVersion=1.0` for DSTU2 or `application/fhir+json; fhirVersion=4.0` for R4. The standard media-type parameter is the authoritative release declaration; an unversioned or other value is not admitted.",
+        "provenance": "The carrying document records the issuing source, while the attachment media type records the exact FHIR release. Grove never converts, re-encodes, or asserts conformance over another issuer's resource.",
         "scope": "One document carries exactly one clinical record's FHIR payload. Grove format validation verifies strict JSON syntax and a `resourceType`-bearing object only; it does not infer the FHIR release or execute base or profile validation over the issuer's resource."
       }
     },

@@ -32,7 +32,11 @@ def registered_media_types() -> set[str]:
     registry = json.loads(
         (ROOT / "catalog/format-registry.json").read_text(encoding="utf-8")
     )
-    return {fmt["contentType"] for fmt in registry["formats"].values()}
+    return {
+        content_type
+        for fmt in registry["formats"].values()
+        for content_type in fmt.get("contentTypes", [fmt.get("contentType")])
+    }
 
 
 class GuideQATests(unittest.TestCase):
@@ -106,21 +110,22 @@ class GuideQATests(unittest.TestCase):
         self.assertIn("ValueSet: GroveRecordingMimeTypeVS", terminology)
         self.assertNotIn("InstanceOf: CodeSystem", terminology)
         self.assertNotIn("* url = \"urn:ietf:bcp:13\"", terminology)
+
+        def fsh_codes(pattern: str) -> set[str]:
+            return {
+                quoted or bare
+                for quoted, bare in re.findall(pattern, terminology, re.MULTILINE)
+            }
+
         self.assertEqual(
-            set(
-                re.findall(
-                    r"^\* urn:ietf:bcp:13#([^\s]+)", terminology, re.MULTILINE
-                )
+            fsh_codes(
+                r'^\* urn:ietf:bcp:13#(?:"([^"]+)"|([^\s]+))'
             ),
             registered_media_types(),
         )
         self.assertEqual(
-            set(
-                re.findall(
-                    r'^\* \^expansion\.contains\[[^]]+\]\.code = #([^\s]+)',
-                    terminology,
-                    re.MULTILINE,
-                )
+            fsh_codes(
+                r'^\* \^expansion\.contains\[[^]]+\]\.code = #(?:"([^"]+)"|([^\s]+))'
             ),
             registered_media_types(),
         )
@@ -267,6 +272,23 @@ class GuideQATests(unittest.TestCase):
                 return CHECK.offline_mime_error_count(guide)
 
             self.assertEqual(write_case(qa_html()), 1)
+            versioned_content_type = "application/fhir+json; fhirVersion=1.0"
+            versioned_document = json.loads(json.dumps(document))
+            versioned_document["content"][0]["attachment"]["contentType"] = (
+                versioned_content_type
+            )
+            versioned_document["content"][0]["format"]["code"] = "fhir-resource"
+            self.assertEqual(
+                write_case(
+                    qa_html(
+                        finding=message.replace(
+                            "application/json", versioned_content_type
+                        )
+                    ),
+                    versioned_document,
+                ),
+                1,
+            )
             accounted = CHECK.finding_counts(
                 {"errs": 1, "warnings": 0}, {}, offline_terminology_errors=1
             )

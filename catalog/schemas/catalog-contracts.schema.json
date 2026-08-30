@@ -134,7 +134,7 @@
     "fhirResourceSpecification": {"type": "object", "additionalProperties": false, "required": ["encoding", "structure", "fhirVersion", "provenance", "scope"], "properties": {"encoding": {"$ref": "#/$defs/nonEmptyText"}, "structure": {"$ref": "#/$defs/nonEmptyText"}, "fhirVersion": {"$ref": "#/$defs/nonEmptyText"}, "provenance": {"$ref": "#/$defs/nonEmptyText"}, "scope": {"$ref": "#/$defs/nonEmptyText"}}},
     "nativeSpecification": {"type": "object", "additionalProperties": false, "required": ["encoding", "structure", "schema", "scope"], "properties": {"encoding": {"$ref": "#/$defs/nonEmptyText"}, "structure": {"$ref": "#/$defs/nonEmptyText"}, "schema": {"$ref": "#/$defs/nonEmptyText"}, "scope": {"$ref": "#/$defs/nonEmptyText"}}},
     "providerSpecification": {"type": "object", "additionalProperties": false, "required": ["encoding", "structure", "provenance", "scope"], "properties": {"encoding": {"$ref": "#/$defs/nonEmptyText"}, "structure": {"$ref": "#/$defs/nonEmptyText"}, "provenance": {"$ref": "#/$defs/nonEmptyText"}, "scope": {"$ref": "#/$defs/nonEmptyText"}}},
-    "simpleSpecifiedFormat": {"type": "object", "additionalProperties": false, "required": ["title", "contentType", "status", "specification"], "properties": {"title": {"$ref": "#/$defs/nonEmptyText"}, "contentType": {"$ref": "#/$defs/nonEmptyText"}, "status": {"const": "active"}, "specification": {"type": "object"}}},
+    "simpleSpecifiedFormat": {"type": "object", "additionalProperties": false, "required": ["title", "status", "specification"], "properties": {"title": {"$ref": "#/$defs/nonEmptyText"}, "contentType": {"$ref": "#/$defs/nonEmptyText"}, "contentTypes": {"$ref": "#/$defs/textArray"}, "status": {"const": "active"}, "specification": {"type": "object"}}, "oneOf": [{"required": ["contentType"], "properties": {"contentType": {}}}, {"required": ["contentTypes"], "properties": {"contentTypes": {}}}]},
     "binaryField": {"type": "object", "additionalProperties": false, "required": ["field", "encoding"], "properties": {"field": {"$ref": "#/$defs/nonEmptyText"}, "encoding": {"$ref": "#/$defs/nonEmptyText"}, "unit": {"$ref": "#/$defs/nonEmptyText"}, "meaning": {"$ref": "#/$defs/nonEmptyText"}}},
     "ppgSpecification": {
       "type": "object", "additionalProperties": false, "required": ["primitives", "file", "record", "opticalSample", "noiseTerms", "accelerometerSample"],
@@ -149,14 +149,14 @@
       "properties": {
         "$schema": {"$ref": "#/$defs/schemaUri"}, "schemaVersion": {"const": 0}, "fhirVersion": {"const": "4.0.1"}, "version": {"$ref": "#/$defs/releaseVersion"}, "canonical": {"const": "https://grovealliance.org/fhir/sensor"}, "codeSystem": {"const": "https://grovealliance.org/fhir/sensor/CodeSystem/grove-recording-format"}, "valueSet": {"const": "https://grovealliance.org/fhir/sensor/ValueSet/grove-recording-format"}, "description": {"$ref": "#/$defs/nonEmptyText"},
         "encodings": {"type": "object", "additionalProperties": false, "required": ["csv"], "properties": {"csv": {"$ref": "#/$defs/csvEncoding"}}},
-        "mediaTypes": {"type": "object", "additionalProperties": false, "required": ["text/csv", "application/fhir+json", "application/json", "application/octet-stream", "application/hl7-cda+xml"], "properties": {"text/csv": {"$ref": "#/$defs/nonEmptyText"}, "application/fhir+json": {"$ref": "#/$defs/nonEmptyText"}, "application/json": {"$ref": "#/$defs/nonEmptyText"}, "application/octet-stream": {"$ref": "#/$defs/nonEmptyText"}, "application/hl7-cda+xml": {"$ref": "#/$defs/nonEmptyText"}}},
+        "mediaTypes": {"type": "object", "additionalProperties": false, "required": ["text/csv", "application/fhir+json", "application/fhir+json; fhirVersion=1.0", "application/fhir+json; fhirVersion=4.0", "application/json", "application/octet-stream", "application/hl7-cda+xml"], "properties": {"text/csv": {"$ref": "#/$defs/nonEmptyText"}, "application/fhir+json": {"$ref": "#/$defs/nonEmptyText"}, "application/fhir+json; fhirVersion=1.0": {"$ref": "#/$defs/nonEmptyText"}, "application/fhir+json; fhirVersion=4.0": {"$ref": "#/$defs/nonEmptyText"}, "application/json": {"$ref": "#/$defs/nonEmptyText"}, "application/octet-stream": {"$ref": "#/$defs/nonEmptyText"}, "application/hl7-cda+xml": {"$ref": "#/$defs/nonEmptyText"}}},
         "formats": {
           "type": "object", "additionalProperties": false,
           "required": ["heart-rate-samples", "triaxial-acceleration-samples", "ambient-light-samples", "ambient-pressure-samples", "pedometer-samples", "wrist-temperature-samples", "triaxial-rotation-samples", "odometer-samples", "beat-interval-series", "location-track-samples", "fhir-collection-bundle", "fhir-resource", "clinical-document", "native-recording", "provider-recording", "photoplethysmogram-samples"],
           "properties": {
             "heart-rate-samples": {"$ref": "#/$defs/tabularFormat"}, "triaxial-acceleration-samples": {"$ref": "#/$defs/tabularFormat"}, "ambient-light-samples": {"$ref": "#/$defs/tabularFormat"}, "ambient-pressure-samples": {"$ref": "#/$defs/tabularFormat"}, "pedometer-samples": {"$ref": "#/$defs/tabularFormat"}, "wrist-temperature-samples": {"$ref": "#/$defs/tabularFormat"}, "triaxial-rotation-samples": {"$ref": "#/$defs/tabularFormat"}, "odometer-samples": {"$ref": "#/$defs/tabularFormat"}, "beat-interval-series": {"$ref": "#/$defs/tabularFormat"}, "location-track-samples": {"$ref": "#/$defs/tabularFormat"},
             "fhir-collection-bundle": {"allOf": [{"$ref": "#/$defs/simpleSpecifiedFormat"}, {"type": "object", "properties": {"contentType": {"const": "application/fhir+json"}, "specification": {"$ref": "#/$defs/fhirCollectionSpecification"}}}]},
-            "fhir-resource": {"allOf": [{"$ref": "#/$defs/simpleSpecifiedFormat"}, {"type": "object", "properties": {"contentType": {"const": "application/fhir+json"}, "specification": {"$ref": "#/$defs/fhirResourceSpecification"}}}]},
+            "fhir-resource": {"allOf": [{"$ref": "#/$defs/simpleSpecifiedFormat"}, {"type": "object", "required": ["contentTypes"], "properties": {"contentTypes": {"const": ["application/fhir+json; fhirVersion=1.0", "application/fhir+json; fhirVersion=4.0"]}, "specification": {"$ref": "#/$defs/fhirResourceSpecification"}}}]},
             "clinical-document": {"allOf": [{"$ref": "#/$defs/simpleSpecifiedFormat"}, {"type": "object", "properties": {"contentType": {"const": "application/hl7-cda+xml"}, "specification": {"type": "object", "additionalProperties": false, "required": ["file"], "properties": {"file": {"$ref": "#/$defs/nonEmptyText"}}}}}]},
             "native-recording": {"allOf": [{"$ref": "#/$defs/simpleSpecifiedFormat"}, {"type": "object", "properties": {"contentType": {"const": "application/json"}, "specification": {"$ref": "#/$defs/nativeSpecification"}}}]},
             "provider-recording": {"allOf": [{"$ref": "#/$defs/simpleSpecifiedFormat"}, {"type": "object", "properties": {"contentType": {"const": "application/json"}, "specification": {"$ref": "#/$defs/providerSpecification"}}}]},
@@ -243,13 +243,10 @@
       ]
     },
     "healthKitClinicalFHIRRepresentation": {
-      "type": "object", "additionalProperties": false, "required": ["resourceType", "extensionUrl", "valueElement", "cardinality", "allowedValues"],
+      "type": "object", "additionalProperties": false, "required": ["resourceType", "contentTypeByRelease"],
       "properties": {
         "resourceType": {"const": "DocumentReference"},
-        "extensionUrl": {"const": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-fhir-release"},
-        "valueElement": {"const": "valueCode"},
-        "cardinality": {"type": "object", "additionalProperties": false, "required": ["min", "max"], "properties": {"min": {"const": 1}, "max": {"const": 1}}},
-        "allowedValues": {"const": ["dstu2", "r4"]}
+        "contentTypeByRelease": {"const": {"dstu2": "application/fhir+json; fhirVersion=1.0", "r4": "application/fhir+json; fhirVersion=4.0"}}
       }
     },
     "healthKitClinicalAdmission": {

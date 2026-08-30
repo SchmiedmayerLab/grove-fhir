@@ -211,24 +211,6 @@ Description: "Every admitted pass-through clinical record class."
 * ^experimental = false
 * include codes from system HealthKitClinicalRecordTypeCS
 
-CodeSystem: HealthKitClinicalFHIRReleaseCS
-Id: healthkit-clinical-fhir-release
-Title: "HealthKit Clinical FHIR Release"
-Description: "The FHIR releases HealthKit surfaces for provider-issued clinical resources (HKFHIRRelease)."
-* ^experimental = false
-* ^caseSensitive = true
-* ^content = #complete
-* #dstu2 "DSTU2" "The payload is FHIR DSTU2."
-* #r4 "R4" "The payload is FHIR R4."
-
-ValueSet: HealthKitClinicalFHIRReleaseVS
-Id: healthkit-clinical-fhir-release
-Title: "HealthKit Clinical FHIR Release"
-Description: "Every admitted pass-through payload FHIR release; HKFHIRRelease.unknown fails closed and is never emitted."
-* ^experimental = false
-* HealthKitClinicalFHIRReleaseCS#dstu2 "DSTU2"
-* HealthKitClinicalFHIRReleaseCS#r4 "R4"
-
 CodeSystem: HealthKitPresenceCS
 Id: healthkit-presence
 Title: "HealthKit Presence"

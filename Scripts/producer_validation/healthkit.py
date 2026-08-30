@@ -163,25 +163,6 @@ def validate_healthkit_resource_claims(resource: dict[str, Any], label: str) -> 
             raise ProducerValidationError(
                 f"{label} HealthKit clinical record must be a FHIR R4 DocumentReference"
             )
-        release_extensions = extensions_with_url(
-            resource, admission["fhirRepresentation"]["extensionUrl"]
-        )
-        releases = [
-            extension.get("valueCode")
-            for extension in release_extensions
-            if set(extension) == {"url", "valueCode"}
-        ]
-        if (
-            len(release_extensions) != 1
-            or len(releases) != 1
-            or releases[0] not in admission["admittedFHIRReleases"]
-        ):
-            admitted = ", ".join(admission["admittedFHIRReleases"])
-            raise ProducerValidationError(
-                f"{label} must carry exactly one valueCode-only HealthKit clinical "
-                f"FHIR release extension with an admitted HKFHIRVersion.fhirRelease "
-                f"value ({admitted})"
-            )
         contents = resource.get("content")
         if (
             not isinstance(contents, list)
@@ -193,6 +174,24 @@ def validate_healthkit_resource_claims(resource: dict[str, Any], label: str) -> 
             raise ProducerValidationError(
                 f"{label} HealthKit clinical record must carry exactly one "
                 f"{admission['payloadFormat']} payload"
+            )
+        attachment = contents[0].get("attachment")
+        content_types_by_release = admission["fhirRepresentation"][
+            "contentTypeByRelease"
+        ]
+        admitted_content_types = set(content_types_by_release.values())
+        content_type = attachment.get("contentType") if isinstance(attachment, dict) else None
+        if (
+            not isinstance(attachment, dict)
+            or content_type not in admitted_content_types
+        ):
+            rendered_content_types = ", ".join(
+                content_types_by_release[release]
+                for release in admission["admittedFHIRReleases"]
+            )
+            raise ProducerValidationError(
+                f"{label} HealthKit clinical record must use one admitted "
+                f"Attachment.contentType ({rendered_content_types})"
             )
 
     for claim in claims["healthKitPlatformExclusiveResourceClaims"]:

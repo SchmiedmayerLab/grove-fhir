@@ -280,13 +280,10 @@ class CatalogContractSchemaTests(unittest.TestCase):
             admission["fhirRepresentation"],
             {
                 "resourceType": "DocumentReference",
-                "extensionUrl": (
-                    "https://grovealliance.org/fhir/healthkit/StructureDefinition/"
-                    "healthkit-clinical-fhir-release"
-                ),
-                "valueElement": "valueCode",
-                "cardinality": {"min": 1, "max": 1},
-                "allowedValues": ["dstu2", "r4"],
+                "contentTypeByRelease": {
+                    "dstu2": "application/fhir+json; fhirVersion=1.0",
+                    "r4": "application/fhir+json; fhirVersion=4.0",
+                },
             },
         )
         clinical_rows = [
@@ -314,10 +311,7 @@ class CatalogContractSchemaTests(unittest.TestCase):
         self._assert_invalid(omitted)
 
         for path, replacement in (
-            (("extensionUrl",), "https://example.org/wrong"),
-            (("valueElement",), "valueString"),
-            (("cardinality", "min"), 0),
-            (("allowedValues",), ["r4"]),
+            (("contentTypeByRelease", "dstu2"), "application/fhir+json"),
         ):
             with self.subTest(fhirRepresentation=path):
                 mutated = copy.deepcopy(healthkit)

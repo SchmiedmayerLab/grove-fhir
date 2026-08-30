@@ -35,6 +35,10 @@ class ProducerHealthkitTests(ProducerValidationTestCase):
         release: str = "r4",
         payload: bytes = b'{"resourceType":"AllergyIntolerance"}',
     ) -> dict[str, Any]:
+        content_type_by_release = {
+            "dstu2": "application/fhir+json; fhirVersion=1.0",
+            "r4": "application/fhir+json; fhirVersion=4.0",
+        }
         return {
             "resourceType": "DocumentReference",
             "meta": {"profile": [context.HEALTHKIT_CLINICAL_RECORD_PROFILE]},
@@ -50,25 +54,16 @@ class ProducerHealthkitTests(ProducerValidationTestCase):
                     ("source-artifact", "C"),
                 )
             ],
-            "extension": [
-                {
-                    "url": (
-                        "https://grovealliance.org/fhir/healthkit/StructureDefinition/"
-                        "healthkit-source-type-extension"
-                    ),
-                    "valueCode": "HKClinicalTypeIdentifierAllergyRecord",
-                },
-                {
-                    "url": (
-                        "https://grovealliance.org/fhir/healthkit/StructureDefinition/"
-                        "healthkit-clinical-fhir-release"
-                    ),
-                    "valueCode": release,
-                },
-            ],
+            "extension": [{
+                "url": (
+                    "https://grovealliance.org/fhir/healthkit/StructureDefinition/"
+                    "healthkit-source-type-extension"
+                ),
+                "valueCode": "HKClinicalTypeIdentifierAllergyRecord",
+            }],
             "content": [{
                 "attachment": {
-                    "contentType": "application/fhir+json",
+                    "contentType": content_type_by_release[release],
                     "data": base64.b64encode(payload).decode(),
                     "size": len(payload),
                     "hash": base64.b64encode(
@@ -232,39 +227,6 @@ class ProducerHealthkitTests(ProducerValidationTestCase):
                     invalid, "HealthKit clinical", {clinical_profile}
                 )
 
-        release_url = (
-            "https://grovealliance.org/fhir/healthkit/StructureDefinition/"
-            "healthkit-clinical-fhir-release"
-        )
-        release_defects: list[tuple[str, dict[str, Any]]] = []
-        missing_release = self._clinical_document()
-        missing_release["extension"] = [missing_release["extension"][0]]
-        release_defects.append(("missing", missing_release))
-        for release in ("unknown", "r5"):
-            release_defects.append((release, self._clinical_document(release)))
-        duplicate_release = self._clinical_document()
-        duplicate_release["extension"].append(
-            {"url": release_url, "valueCode": "dstu2"}
-        )
-        release_defects.append(("duplicate", duplicate_release))
-        wrong_value_element = self._clinical_document()
-        wrong_value_element["extension"][1] = {
-            "url": release_url,
-            "valueString": "r4",
-        }
-        release_defects.append(("valueString", wrong_value_element))
-        extra_release_member = self._clinical_document()
-        extra_release_member["extension"][1]["extension"] = []
-        release_defects.append(("extra member", extra_release_member))
-        for defect, invalid in release_defects:
-            with self.subTest(release_defect=defect), self.assertRaisesRegex(
-                diagnostics.ProducerValidationError,
-                "exactly one valueCode-only HealthKit clinical FHIR release extension",
-            ):
-                exchange_bundle.validate_resource_profile_claims(
-                    invalid, "HealthKit clinical", {clinical_profile}
-                )
-
         wrong_format = self._clinical_document()
         wrong_format["content"][0]["format"]["code"] = "native-recording"
         with self.assertRaisesRegex(
@@ -273,6 +235,24 @@ class ProducerHealthkitTests(ProducerValidationTestCase):
             exchange_bundle.validate_resource_profile_claims(
                 wrong_format, "HealthKit clinical", {clinical_profile}
             )
+
+        for wrong_content_type in (
+            "application/fhir+json",
+            "application/fhir+json; fhirVersion=5.0",
+        ):
+            invalid_content_type = self._clinical_document()
+            invalid_content_type["content"][0]["attachment"]["contentType"] = (
+                wrong_content_type
+            )
+            with self.subTest(
+                wrong_content_type=wrong_content_type
+            ), self.assertRaisesRegex(
+                diagnostics.ProducerValidationError,
+                "HealthKit clinical record must use one admitted Attachment.contentType",
+            ):
+                exchange_bundle.validate_resource_profile_claims(
+                    invalid_content_type, "HealthKit clinical", {clinical_profile}
+                )
 
         for payload, diagnostic in (
             (b"{}", "resourceType"),

@@ -344,8 +344,10 @@ class SensorKitRecordingExampleTests(unittest.TestCase):
                 )
 
                 self.assertIn(format_code, self.catalog_rows[source_type]["raw"]["formats"])
-                self.assertEqual(
-                    content_type, REGISTRY["formats"][format_code]["contentType"]
+                format_entry = REGISTRY["formats"][format_code]
+                self.assertIn(
+                    content_type,
+                    format_entry.get("contentTypes", [format_entry.get("contentType")]),
                 )
                 self.assertNotIn("* content.format.version =", block)
                 self.assertEqual(declared_size, len(payload))

@@ -504,12 +504,11 @@ Description: "One provider-issued R4 resource surfaced by HealthKit and byte-pre
 * identifier[sourceArtifact].system = "https://study.example.org/fhir/NamingSystem/grove-source-artifact-v0/test-key/1"
 * identifier[sourceArtifact].value = "v0:test-key:1:R7qxjpolL7-0z79P7ZzKC5aM0yU898WAepzic3wPmes"
 * extension[healthKitSourceType].valueCode = #HKClinicalTypeIdentifierAllergyRecord
-* extension[fhirRelease].valueCode = #r4
 * status = #current
 * type = HealthKitClinicalRecordTypeCS#allergy-record "Allergy record"
 * subject = Reference(HealthKitPatientExample)
 * date = "2026-08-20T17:05:01Z"
-* content.attachment.contentType = #application/fhir+json
+* content.attachment.contentType = #"application/fhir+json; fhirVersion=4.0"
 * content.format = $recordingFormat#fhir-resource "FHIR Resource"
 * content.attachment.title = "Provider-issued AllergyIntolerance"
 * content.attachment.data = "eyJyZXNvdXJjZVR5cGUiOiJBbGxlcmd5SW50b2xlcmFuY2UiLCJpZCI6InByb3ZpZGVyLWlzc3VlZC0xIiwiY2xpbmljYWxTdGF0dXMiOnsiY29kaW5nIjpbeyJzeXN0ZW0iOiJodHRwOi8vdGVybWlub2xvZ3kuaGw3Lm9yZy9Db2RlU3lzdGVtL2FsbGVyZ3lpbnRvbGVyYW5jZS1jbGluaWNhbCIsImNvZGUiOiJhY3RpdmUifV19LCJwYXRpZW50Ijp7InJlZmVyZW5jZSI6IlBhdGllbnQvcGFydGljaXBhbnQtaGstMDAxIn19"
@@ -544,12 +543,11 @@ Description: "One provider-issued DSTU2 resource surfaced by HealthKit and byte-
 * identifier[sourceArtifact].system = "https://study.example.org/fhir/NamingSystem/grove-source-artifact-v0/test-key/1"
 * identifier[sourceArtifact].value = "v0:test-key:1:g-a1f691jBmG-Nm40aE-LYrmGQb4AQEWGcVr-OBTRDI"
 * extension[healthKitSourceType].valueCode = #HKClinicalTypeIdentifierAllergyRecord
-* extension[fhirRelease].valueCode = #dstu2
 * status = #current
 * type = HealthKitClinicalRecordTypeCS#allergy-record "Allergy record"
 * subject = Reference(HealthKitPatientExample)
 * date = "2026-08-20T17:06:01Z"
-* content.attachment.contentType = #application/fhir+json
+* content.attachment.contentType = #"application/fhir+json; fhirVersion=1.0"
 * content.format = $recordingFormat#fhir-resource "FHIR Resource"
 * content.attachment.title = "Provider-issued DSTU2 AllergyIntolerance"
 * content.attachment.data = "eyJyZXNvdXJjZVR5cGUiOiJBbGxlcmd5SW50b2xlcmFuY2UiLCJpZCI6InByb3ZpZGVyLWlzc3VlZC1kc3R1Mi0xIiwicGF0aWVudCI6eyJyZWZlcmVuY2UiOiJQYXRpZW50L3BhcnRpY2lwYW50LWhrLTAwMSJ9LCJzdWJzdGFuY2UiOnsidGV4dCI6IlBlbmljaWxsaW4ifSwic3RhdHVzIjoiY29uZmlybWVkIiwiY3JpdGljYWxpdHkiOiJDUklUTCJ9"
