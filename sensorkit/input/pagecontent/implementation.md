@@ -48,8 +48,8 @@ The carrying SensorKit source type supplies the source category and meaning; it 
 ### Structured summaries with native recordings
 
 The document preserves heterogeneous detail omitted from a structured summary.
-A structured device-usage result retains only total unlock duration, screen wakes, and unlocks, so a conformant conversion contains both that Observation and the Recording Document in one collection Bundle.
-The Observation has exactly one internal UUID `derivedFrom` reference to that document; both carry the same source-record identifier and distinct deterministic output identifiers.
+A structured device-usage result retains total unlock duration, screen wakes, and unlocks; the required Recording Document retains the complete application, notification, web-usage, and text-input-session representation.
+The Observation has exactly one internal UUID `derivedFrom` reference to that document; both resources carry the same source-record identifier and distinct deterministic output identifiers.
 
 Every SensorKit hybrid graph is bidirectional: the Observation's `derivedFrom` points to the Recording Document, the document's `context.related` points back, and both resources share one source-record identity.
 The accelerometer, PPG, and wrist-temperature contracts additionally require caller-supplied acquisition or session bounds in `Observation.effectivePeriod` to contain every instant encoded in the accepted payload.
@@ -62,7 +62,7 @@ The linked Observation and DocumentReference examples illustrate individual reso
 The catalog's `graphContract` defines the required resource pair, bidirectional references, coverage bounds, and derivation rules.
 When those resources are assembled into a Mobile exchange event, every transformation graph includes one `sensorkit-conversion-provenance` for each source-record identifier.
 Its sole source entity is that complete SensorKit record Identifier, and its internal UUID targets cover every structured and native output for the record.
-A conversion that emits both a device-usage summary and its required native document uses one Provenance with both targets; omitting the raw target is nonconformant.
+A device-usage conversion uses one Provenance with both the structured summary and required native document as targets; omitting either target is nonconformant.
 
 ### Sensitive source context
 

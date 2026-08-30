@@ -125,7 +125,7 @@ Profile: SensorKitDeviceUsageObservation
 Parent: SensorKitObservation
 Id: sensorkit-device-usage-observation
 Title: "SensorKit Device Usage Observation"
-Description: "A platform-exclusive summary of unlock duration, screen wakes, and unlock count over one SensorKit device-usage reporting interval. Per-application, notification, and web detail remains in a related Recording Document."
+Description: "A platform-exclusive summary of unlock duration, screen wakes, and unlock count over one SensorKit device-usage reporting interval. Per-application, notification, web-usage, and text-input-session detail remains in the required related Recording Document."
 * obeys sensorkit-summary-quantity-nonnegative-1 and sensorkit-summary-count-integer-1
 * extension[sensorKitSourceType].valueCode = #device-usage
 * code = $sensorKitConcept#device-usage-summary
