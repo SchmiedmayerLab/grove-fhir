@@ -16,7 +16,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.head.sha || github.sha }}
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 permissions:
@@ -292,10 +292,12 @@ jobs:
     # Every wave, including one the plan left empty: a skipped wave still has to be accounted for
     # rather than letting the ledger run against a partial set.
     needs: [guide-wave-1, guide-wave-2, guide-wave-3, guide-wave-4, guide-wave-5, guide-wave-6]
-    # Runs even when a wave fails, so this required check fails rather than being skipped: a skipped
-    # required check can read as neutral, which would let a broken guide build merge. A wave the plan
-    # left empty is `skipped`, which is not a failure.
-    if: always()
+    # Runs even when a full-build wave fails, so this required check fails rather than hiding a
+    # partial build. Draft pull requests use `draft-guides` instead; all full-build waves are
+    # intentionally skipped there, so the aggregate must be skipped with them.
+    if: >-
+      always() &&
+      (github.event_name != 'pull_request' || github.event.pull_request.draft == false)
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:

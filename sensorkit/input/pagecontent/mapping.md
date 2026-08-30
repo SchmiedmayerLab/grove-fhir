@@ -27,7 +27,7 @@ Streams admitted as `mapped-standard` because they are irregular, incomplete, mi
 On-wrist state, the scalar device-usage summary, and visit summary use explicit SensorKit-only profiles.
 A visit is not a clinical Encounter.
 A SensorKit wrist temperature session is not automatically body temperature, and a composite pedometer record is not automatically one shared step-count result.
-The [device-usage walkthrough](walkthrough.html) shows the mandated dual-output contract of structured summary plus Recording Document in one exchange Bundle.
+The [device-usage walkthrough](walkthrough.html) shows the required two-resource contract: a structured summary linked to its complete native Recording Document in the same exchange Bundle.
 
 See [`catalog/sensorkit-adapter.json`](https://grovealliance.org/fhir/catalog/sensorkit-adapter.json) for the exact 22 source tokens, platform inventory scope, OS availability, profile claims, represented fields, fail-closed conditions, and status.
 The [authoritative status matrix](status-matrix.html) lists every one of those rows.

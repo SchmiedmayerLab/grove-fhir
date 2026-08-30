@@ -36,7 +36,7 @@ class FormatRegistryTests(unittest.TestCase):
                 "beat-interval-series",
                 "location-track-samples",
                 "fhir-collection-bundle",
-                "fhir-r4-resource",
+                "fhir-resource",
                 "clinical-document",
                 "native-recording",
                 "provider-recording",
@@ -46,7 +46,11 @@ class FormatRegistryTests(unittest.TestCase):
         for code, fmt in REGISTRY["formats"].items():
             self.assertEqual(fmt["status"], "active", code)
             self.assertTrue(fmt["title"], code)
-            self.assertIn("contentType", fmt, code)
+            self.assertEqual(
+                ("contentType" in fmt) + ("contentTypes" in fmt),
+                1,
+                code,
+            )
             self.assertTrue(fmt.get("specification") or fmt.get("encoding"), code)
             if "encoding" in fmt:
                 self.assertIn(fmt["encoding"], REGISTRY["encodings"], code)
@@ -56,21 +60,22 @@ class FormatRegistryTests(unittest.TestCase):
         terminology = (ROOT / "sensor/input/fsh/generated-recording-mime-types.fsh").read_text(
             encoding="utf-8"
         )
-        expected = {fmt["contentType"] for fmt in REGISTRY["formats"].values()}
-        composed = set(
-            re.findall(r"^\* urn:ietf:bcp:13#(\S+) ", terminology, re.MULTILINE)
-        )
-        # The Validator reads the pinned expansion offline, so an admitted code that
-        # never reaches it is rejected at conformance time rather than here.
-        expanded = set(
-            re.findall(
-                r"^\* \^expansion\.contains\[=\]\.code = #(\S+)$",
-                terminology,
-                re.MULTILINE,
+        expected = {
+            content_type
+            for fmt in REGISTRY["formats"].values()
+            for content_type in fmt.get("contentTypes", [fmt.get("contentType")])
+        }
+        for content_type in expected:
+            literal = (
+                f'#"{content_type}"'
+                if any(character.isspace() for character in content_type)
+                else f"#{content_type}"
             )
-        )
-        self.assertEqual(composed, expected)
-        self.assertEqual(expanded, expected)
+            with self.subTest(content_type=content_type):
+                self.assertIn(f"* urn:ietf:bcp:13{literal} ", terminology)
+                self.assertIn(
+                    f"* ^expansion.contains[=].code = {literal}", terminology
+                )
 
     def test_csv_column_schemas_are_closed(self) -> None:
         schemas = {
@@ -190,11 +195,18 @@ class FormatRegistryTests(unittest.TestCase):
         self.assertIn("Grove format validation checks", description)
         self.assertIn("FHIR/profile", description)
         self.assertNotIn("receiver can validate the admitted wire format", description)
-        fhir_resource_scope = REGISTRY["formats"]["fhir-r4-resource"][
+        fhir_resource_scope = REGISTRY["formats"]["fhir-resource"][
             "specification"
         ]["scope"]
         self.assertIn("`resourceType`-bearing object only", fhir_resource_scope)
-        self.assertIn("does not determine the FHIR release", fhir_resource_scope)
+        self.assertIn("does not infer the FHIR release", fhir_resource_scope)
+        fhir_resource = REGISTRY["formats"]["fhir-resource"]["specification"]
+        self.assertIn("FHIR DSTU2 or R4", fhir_resource["structure"])
+        self.assertNotIn("HealthKit", fhir_resource["fhirVersion"])
+        self.assertNotIn("HKFHIRVersion", fhir_resource["fhirVersion"])
+        self.assertIn("fhirVersion=1.0", fhir_resource["fhirVersion"])
+        self.assertIn("fhirVersion=4.0", fhir_resource["fhirVersion"])
+        self.assertIn("never converts, re-encodes", fhir_resource["provenance"])
         provider_scope = REGISTRY["formats"]["provider-recording"][
             "specification"
         ]["scope"]

@@ -276,6 +276,13 @@ class SensorKitCatalogTests(unittest.TestCase):
         self.assertIn("same Grove Mobile collection Bundle", graph["relationship"])
         self.assertTrue(graph["bidirectional"])
         self.assertTrue(graph["sharedSourceIdentity"])
+        device_usage_raw_fields = " ".join(
+            by_token["SRSensor.deviceUsageReport"]["raw"]["requiredForFields"]
+        )
+        self.assertIn("applicationUsageByCategory", device_usage_raw_fields)
+        self.assertIn("every textInputSessions entry", device_usage_raw_fields)
+        self.assertIn("sessionType", device_usage_raw_fields)
+        self.assertIn("sessionIdentifier", device_usage_raw_fields)
         ecg_graph = ecg["structured"]["graphContract"]
         self.assertEqual(
             ecg_graph["requiredResources"],

@@ -26,6 +26,8 @@
   "mediaTypes": {
     "text/csv": "Comma-separated values",
     "application/fhir+json": "FHIR JSON",
+    "application/fhir+json; fhirVersion=1.0": "FHIR DSTU2 JSON",
+    "application/fhir+json; fhirVersion=4.0": "FHIR R4 JSON",
     "application/json": "JSON",
     "application/octet-stream": "Binary octet stream",
     "application/hl7-cda+xml": "HL7 Clinical Document Architecture"
@@ -547,16 +549,19 @@
         "validationScope": "Grove format validation verifies strict JSON syntax and only the collection-Bundle envelope and resource shape described above. It does not execute the official FHIR Validator over embedded resources. Base FHIR R4 conformance, adapter-declared resource profiles, the one-stream/one-source-batch boundary, and preservation of source ordering and source meaning remain producer responsibilities unless a separate validation step explicitly performs them."
       }
     },
-    "fhir-r4-resource": {
-      "title": "FHIR R4 Resource",
-      "contentType": "application/fhir+json",
+    "fhir-resource": {
+      "title": "FHIR Resource",
+      "contentTypes": [
+        "application/fhir+json; fhirVersion=1.0",
+        "application/fhir+json; fhirVersion=4.0"
+      ],
       "status": "active",
       "specification": {
         "encoding": "UTF-8.",
-        "structure": "One complete provider-issued FHIR R4 resource in FHIR JSON representation, byte-preserved exactly as the source platform delivered it.",
-        "fhirVersion": "FHIR R4 (4.0.x) only. DSTU2 and every other release are rejected before a DocumentReference is emitted; a future admitted release requires its own format code and media contract.",
-        "provenance": "The carrying document records the issuing source; Grove never asserts conformance over another issuer's resource.",
-        "scope": "One document carries exactly one clinical record's FHIR payload. Grove format validation verifies strict JSON syntax and a `resourceType`-bearing object only; it does not determine the FHIR release or execute base or profile validation over the issuer's resource."
+        "structure": "One complete provider-issued FHIR DSTU2 or R4 resource in FHIR JSON representation, byte-preserved exactly as the source platform delivered it.",
+        "fhirVersion": "Attachment.contentType is exactly `application/fhir+json; fhirVersion=1.0` for DSTU2 or `application/fhir+json; fhirVersion=4.0` for R4. The standard media-type parameter is the authoritative release declaration; an unversioned or other value is not admitted.",
+        "provenance": "The carrying document records the issuing source, while the attachment media type records the exact FHIR release. Grove never converts, re-encodes, or asserts conformance over another issuer's resource.",
+        "scope": "One document carries exactly one clinical record's FHIR payload. Grove format validation verifies strict JSON syntax and a `resourceType`-bearing object only; it does not infer the FHIR release or execute base or profile validation over the issuer's resource."
       }
     },
     "clinical-document": {

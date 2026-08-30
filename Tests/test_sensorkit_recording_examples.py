@@ -344,8 +344,10 @@ class SensorKitRecordingExampleTests(unittest.TestCase):
                 )
 
                 self.assertIn(format_code, self.catalog_rows[source_type]["raw"]["formats"])
-                self.assertEqual(
-                    content_type, REGISTRY["formats"][format_code]["contentType"]
+                format_entry = REGISTRY["formats"][format_code]
+                self.assertIn(
+                    content_type,
+                    format_entry.get("contentTypes", [format_entry.get("contentType")]),
                 )
                 self.assertNotIn("* content.format.version =", block)
                 self.assertEqual(declared_size, len(payload))
@@ -374,8 +376,75 @@ class SensorKitRecordingExampleTests(unittest.TestCase):
         payload = native_json(document)
         self.assertIsInstance(payload, dict)
         assert isinstance(payload, dict)
-        required_fields = self.catalog_rows["device-usage"]["raw"]["requiredForFields"]
-        self.assertTrue(set(required_fields) <= set(payload))
+        required_fields = " ".join(
+            self.catalog_rows["device-usage"]["raw"]["requiredForFields"]
+        )
+        for field in (
+            "version",
+            "applicationUsageByCategory",
+            "bundleIdentifier",
+            "reportApplicationIdentifier",
+            "relativeStartTime",
+            "usageTime",
+            "supplementalCategories",
+            "textInputSessions",
+            "sessionType",
+            "sessionIdentifier",
+            "notificationUsageByCategory",
+            "event",
+            "webUsageByCategory",
+            "totalUsageTime",
+        ):
+            self.assertIn(field, required_fields)
+
+        app_usages = [
+            usage
+            for usages in payload["appUsageByCategory"].values()
+            for usage in usages
+        ]
+        self.assertGreater(len(app_usages), 0)
+        self.assertTrue(all({
+            "bundleIdentifier",
+            "reportApplicationIdentifier",
+            "relativeStartTime",
+            "usageTime",
+            "supplementalCategories",
+            "textInputSessions",
+        } <= set(usage) for usage in app_usages))
+        supplemental_categories = [
+            category
+            for usage in app_usages
+            for category in usage["supplementalCategories"]
+        ]
+        self.assertGreater(len(supplemental_categories), 0)
+        self.assertTrue(all("identifier" in category for category in supplemental_categories))
+        text_input_sessions = [
+            session
+            for usage in app_usages
+            for session in usage["textInputSessions"]
+        ]
+        self.assertGreater(len(text_input_sessions), 0)
+        self.assertTrue(all({
+            "duration", "sessionTypeRawValue", "identifier"
+        } <= set(session) for session in text_input_sessions))
+
+        notification_usages = [
+            usage
+            for usages in payload["notificationUsageByCategory"].values()
+            for usage in usages
+        ]
+        self.assertGreater(len(notification_usages), 0)
+        self.assertTrue(all({
+            "bundleIdentifier", "eventRawValue"
+        } <= set(usage) for usage in notification_usages))
+
+        web_usages = [
+            usage
+            for usages in payload["webUsageByCategory"].values()
+            for usage in usages
+        ]
+        self.assertGreater(len(web_usages), 0)
+        self.assertTrue(all("totalUsageTime" in usage for usage in web_usages))
         self.assertEqual(
             component_counts(observation),
             {

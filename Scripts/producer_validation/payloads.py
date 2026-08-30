@@ -166,7 +166,7 @@ def validate_inline_recording_payload(
         _validate_native_json(payload, label)
     elif format_code == "provider-recording":
         _validate_json_container(payload, label, "provider recording")
-    elif format_code == "fhir-r4-resource":
+    elif format_code == "fhir-resource":
         _validate_fhir_resource(payload, label)
     elif format_code == "fhir-collection-bundle":
         _validate_fhir_collection_bundle(payload, label)

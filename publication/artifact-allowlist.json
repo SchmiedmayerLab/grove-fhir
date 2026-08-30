@@ -2156,13 +2156,6 @@
           "classification": "definition"
         },
         {
-          "fshName": "HealthKitClinicalFHIRReleaseCS",
-          "fshType": "CodeSystem",
-          "resourceType": "CodeSystem",
-          "id": "healthkit-clinical-fhir-release",
-          "classification": "definition"
-        },
-        {
           "fshName": "HealthKitClinicalRecordTypeCS",
           "fshType": "CodeSystem",
           "resourceType": "CodeSystem",
@@ -2534,13 +2527,6 @@
           "classification": "definition"
         },
         {
-          "fshName": "HealthKitClinicalFHIRRelease",
-          "fshType": "Extension",
-          "resourceType": "StructureDefinition",
-          "id": "healthkit-clinical-fhir-release",
-          "classification": "definition"
-        },
-        {
           "fshName": "HealthKitECGSourcePeriod",
           "fshType": "Extension",
           "resourceType": "StructureDefinition",
@@ -2685,6 +2671,20 @@
           "fshType": "Instance",
           "resourceType": "Provenance",
           "id": "HealthKitConversionProvenanceExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "HealthKitDSTU2ClinicalRecordDocumentExample",
+          "fshType": "Instance",
+          "resourceType": "DocumentReference",
+          "id": "HealthKitDSTU2ClinicalRecordDocumentExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "HealthKitDSTU2ClinicalRecordProvenanceExample",
+          "fshType": "Instance",
+          "resourceType": "Provenance",
+          "id": "HealthKitDSTU2ClinicalRecordProvenanceExample",
           "classification": "example"
         },
         {
@@ -4484,13 +4484,6 @@
           "fshType": "ValueSet",
           "resourceType": "ValueSet",
           "id": "grove-symptom-severity",
-          "classification": "definition"
-        },
-        {
-          "fshName": "HealthKitClinicalFHIRReleaseVS",
-          "fshType": "ValueSet",
-          "resourceType": "ValueSet",
-          "id": "healthkit-clinical-fhir-release",
           "classification": "definition"
         },
         {

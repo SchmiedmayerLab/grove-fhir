@@ -77,13 +77,16 @@ Distinct equal-type samples remain distinct; `present` requires at least one dis
 ### Clinical FHIR records
 
 HealthKit can expose both DSTU2 and R4 `HKFHIRResource` payloads.
-The relevant Grove FHIR Implementation Guide targets R4 and does not perform cross-version conversion, so a clinical-record row is admitted only when `HKFHIRResource.fhirVersion.fhirRelease` is exactly `r4`.
-Reject `dstu2`, an unknown or missing release, and every future release before creating the DocumentReference.
-Do not infer the release from JSON shape and do not relabel, upgrade, or downgrade the preserved bytes.
+The Grove exchange Bundle and HealthKit Clinical Record Document envelope remain FHIR R4, while the provider-issued attachment may be either DSTU2 or R4.
+Admit a clinical record only when `HKFHIRResource.fhirVersion.fhirRelease` is exactly `dstu2` or `r4`.
+Map that source value directly to `Attachment.contentType`: `application/fhir+json; fhirVersion=1.0` for DSTU2 or `application/fhir+json; fhirVersion=4.0` for R4.
+The standard `fhirVersion` media-type parameter carries the release; never infer it from the JSON shape.
+Reject an unknown or missing release, as well as every future release that the contract does not yet admit, before creating the DocumentReference.
 
-An admitted R4 payload is carried byte-for-byte under the HealthKit Clinical Record Document profile and `fhir-r4-resource` format contract.
-The DocumentReference carries exactly one `healthkit-clinical-fhir-release` extension whose `valueCode` is fixed to `r4`; `catalog/healthkit-adapter.json.clinicalRecordAdmission.fhirRepresentation` publishes the exact URL, element, cardinality, and value.
-That envelope does not assert that Grove has validated or endorsed the issuer's clinical content; it asserts only the exact source release, payload integrity, identity, and provenance contract.
+Carry the provider-issued bytes under the release-neutral `fhir-resource` format contract.
+Do not parse and reserialize, relabel, upgrade, downgrade, or otherwise rewrite those bytes.
+Grove validation checks that an inline attachment is strict UTF-8 JSON containing one `resourceType`-bearing object, but it does not apply R4 rules to a DSTU2 payload or assert conformance to the issuer's FHIR release.
+The R4 envelope asserts the exact source release, payload integrity, identity, and provenance—not that Grove has validated or endorsed the provider's clinical content.
 
 ### Values, units, and time
 

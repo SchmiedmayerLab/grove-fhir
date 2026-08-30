@@ -6,17 +6,16 @@ SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTR
 SPDX-License-Identifier: MIT
 -->
 
-This walkthrough demonstrates how one `SRDeviceUsageReport` batch becomes the mandated dual-output graph.
-The complete resource examples are the [structured summary](Observation-SensorKitDeviceUsageExample.html), [native recording](DocumentReference-SensorKitDeviceUsageDocumentExample.html), and [conversion Provenance](Provenance-SensorKitDeviceUsageProvenanceExample.html); an exchange producer places those resources and their referenced context in one Mobile Exchange Bundle.
+This walkthrough demonstrates how one `SRDeviceUsageReport` becomes the required two-resource graph: a structured summary and a linked complete Recording Document.
+The complete resource examples show the [structured summary](Observation-SensorKitDeviceUsageExample.html), [native recording](DocumentReference-SensorKitDeviceUsageDocumentExample.html), and [conversion Provenance](Provenance-SensorKitDeviceUsageProvenanceExample.html). An exchange producer places those resources and their referenced context in one Mobile Exchange Bundle.
 The walkthrough is explanatory; the adapter catalog, profiles, and exchange protocol remain normative.
 
-### Dual-output rationale
+### Why the graph contains two resources
 
-A device-usage report carries a scalar summary plus nested per-category application, notification, and web usage that no admitted Grove Observation profile represents losslessly.
-The structured [Device Usage Observation](StructureDefinition-sensorkit-device-usage-observation.html) retains only total unlock duration, screen wakes, and unlocks.
-Everything else stays in the caller-encoded native payload, carried unmodified by a [SensorKit Recording Document](StructureDefinition-sensorkit-recording-document.html).
-The catalog row for `SRSensor.deviceUsageReport` therefore requires both resources in one [Grove Mobile Exchange Bundle](https://grovealliance.org/fhir/mobile/StructureDefinition-grove-mobile-exchange-bundle.html); a summary without its native document is nonconformant.
-This contract formalizes a common producer pattern in which one encoded source batch is retained alongside a structured summary that references it.
+A device-usage report includes aggregate totals and nested application, notification, web-usage, and text-input-session detail that no admitted Grove Observation profile represents losslessly.
+The [Device Usage Observation](StructureDefinition-sensorkit-device-usage-observation.html) represents total unlock duration, screen wakes, and unlocks.
+The complete caller-encoded representation, including every text-input session, is carried unmodified by a [SensorKit Recording Document](StructureDefinition-sensorkit-recording-document.html).
+The catalog row for `SRSensor.deviceUsageReport` therefore requires both resources in one [Grove Mobile Exchange Bundle](https://grovealliance.org/fhir/mobile/StructureDefinition-grove-mobile-exchange-bundle.html). A partial payload must not be labeled as the native recording, and a structured summary without its Recording Document is nonconformant.
 
 ### Output linkage
 
@@ -28,7 +27,7 @@ Each output additionally carries its own source-output HMAC.
 The `v0:<key-id>:<epoch>:…` forms in the abbreviated examples below are schematic; the complete published examples contain distinct concrete conformance-key values.
 The exact catalog roles and discriminators are length-framed into the HMAC preimage, so Unicode and delimiters are unambiguous and no native acquisition key is disclosed. `Observation.derivedFrom` holds exactly one reference to the document, and `DocumentReference.context.related` points back to exactly the Observation.
 In an exchange Bundle those internal references use the target entries' UUID `fullUrl` values; the standalone examples use their logical example references.
-One [conversion Provenance](StructureDefinition-sensorkit-conversion-provenance.html) targets both outputs and names the record identifier as its sole source entity; omitting the raw target is nonconformant.
+One [conversion Provenance](StructureDefinition-sensorkit-conversion-provenance.html) targets both outputs and names the record identifier as its sole source entity; omitting either target is nonconformant.
 Every Bundle entry `fullUrl` is the UUIDv5 of its selected complete entry key under the Mobile exchange namespace.
 Exact retries therefore preserve graph identity, while a distinct acquired record uses a distinct acquisition coordinate and event sequence regardless of whether its bytes happen to match another record.
 
@@ -83,9 +82,9 @@ The following excerpt shows the elements that establish profile conformance, ide
   "content": [{"format": {"system": "https://grovealliance.org/fhir/sensor/CodeSystem/grove-recording-format", "code": "native-recording"}, "attachment": {
     "contentType": "application/json",
     "title": "SensorKit device usage report",
-    "data": "eyJ0aW1lc3RhbXAiOjE3ODcyMzgwMDAsImR1cmF0aW9uIjo5MDAsInRvdGFsU2NyZWVuV2FrZXMiOjYsInRvdGFsVW5sb2NrcyI6NCwidG90YWxVbmxvY2tEdXJhdGlvbiI6MzcyLCJ2ZXJzaW9uIjoiMSIsImFwcFVzYWdlQnlDYXRlZ29yeSI6W10sIm5vdGlmaWNhdGlvblVzYWdlQnlDYXRlZ29yeSI6W10sIndlYlVzYWdlQnlDYXRlZ29yeSI6W119",
-    "size": 198,
-    "hash": "0lfmvTj5Gabstqo/ss0WoxE9xjY="
+    "data": "eyJ0aW1lc3RhbXAiOjE3ODcyMzgwMDAsImR1cmF0aW9uIjo5MDAsInRvdGFsU2NyZWVuV2FrZXMiOjYsInRvdGFsVW5sb2NrcyI6NCwidG90YWxVbmxvY2tEdXJhdGlvbiI6MzcyLCJ2ZXJzaW9uIjoiMSIsImFwcFVzYWdlQnlDYXRlZ29yeSI6eyJwcm9kdWN0aXZpdHkiOlt7ImJ1bmRsZUlkZW50aWZpZXIiOiJjb20uYXBwbGUubW9iaWxlbm90ZXMiLCJyZXBvcnRBcHBsaWNhdGlvbklkZW50aWZpZXIiOiJyZXBvcnQtYXBwLTEiLCJyZWxhdGl2ZVN0YXJ0VGltZSI6MCwidXNhZ2VUaW1lIjo0ODAsInN1cHBsZW1lbnRhbENhdGVnb3JpZXMiOlt7ImlkZW50aWZpZXIiOiJ3cml0aW5nIn1dLCJ0ZXh0SW5wdXRTZXNzaW9ucyI6W3siZHVyYXRpb24iOjQyLCJzZXNzaW9uVHlwZVJhd1ZhbHVlIjowLCJpZGVudGlmaWVyIjoidGV4dC1zZXNzaW9uLTEifV19XX0sIm5vdGlmaWNhdGlvblVzYWdlQnlDYXRlZ29yeSI6eyJwcm9kdWN0aXZpdHkiOlt7ImJ1bmRsZUlkZW50aWZpZXIiOiJjb20uYXBwbGUubW9iaWxlbm90ZXMiLCJldmVudFJhd1ZhbHVlIjowfV19LCJ3ZWJVc2FnZUJ5Q2F0ZWdvcnkiOnsicHJvZHVjdGl2aXR5IjpbeyJ0b3RhbFVzYWdlVGltZSI6MTIwfV19fQ==",
+    "size": 604,
+    "hash": "G0xkrUr5NvJP9Tj9yjkJfrNRYnE="
   }}],
   "context": {"related": [{"reference": "Observation/SensorKitDeviceUsageExample"}]}
 }
@@ -112,4 +111,4 @@ They therefore do not establish URL-backed payload integrity, authorization, or 
 4. Find the one conversion Provenance whose source entity is that record identifier and confirm its targets cover both outputs.
 5. Recompute the output identifiers and entry `fullUrl` values from the exchange protocol to detect drift; HMAC verification requires the governed key.
 
-A receiver that only consumes structured summaries can still store the paired document, because retention of the native payload is what keeps the conversion lossless.
+A receiver that primarily consumes structured summaries still retains the paired Recording Document because it preserves the report fields that the Observation cannot represent.

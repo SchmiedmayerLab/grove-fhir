@@ -727,10 +727,12 @@ def validate_recording_format(resource: dict[str, Any], label: str) -> None:
             )
         attachment = content.get("attachment")
         content_type = attachment.get("contentType") if isinstance(attachment, dict) else None
-        if content_type != entry["contentType"]:
+        admitted_content_types = entry.get("contentTypes", [entry.get("contentType")])
+        if content_type not in admitted_content_types:
+            rendered_content_types = ", ".join(admitted_content_types)
             raise ProducerValidationError(
                 f"{label} content[{index}] contentType {content_type!r} does not "
-                f"match registry format {code} ({entry['contentType']})"
+                f"match registry format {code} ({rendered_content_types})"
             )
         validate_recording_attachment(
             attachment, f"{label}.content[{index}].attachment"

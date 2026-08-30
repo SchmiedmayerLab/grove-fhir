@@ -288,11 +288,15 @@ def offline_mime_error_count(
                 continue
             format_code = format_coding.get("code")
             registered_format = formats.get(format_code)
+            if not isinstance(registered_format, dict):
+                continue
+            registered_content_types = registered_format.get(
+                "contentTypes", [registered_format.get("contentType")]
+            )
             if (
                 attachment.get("contentType") != code
                 or format_coding.get("system") != format_system
-                or not isinstance(registered_format, dict)
-                or registered_format.get("contentType") != code
+                or code not in registered_content_types
             ):
                 continue
             count += 1

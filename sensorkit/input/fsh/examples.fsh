@@ -246,7 +246,7 @@ Instance: SensorKitDeviceUsageExample
 InstanceOf: SensorKitDeviceUsageObservation
 Usage: #example
 Title: "SensorKit Device Usage Summary"
-Description: "A platform-exclusive device-usage summary; detailed application, notification, and web usage remains in the native recording."
+Description: "A platform-exclusive device-usage summary linked to the complete native representation required to retain the report's detailed fields."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
 * identifier[sourceRecord].value = "v0:test-key:1:XfBsB8DhhwPTDdRigZOhN_7GmlkBWaF0veZtk8sEyhg"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
@@ -301,7 +301,7 @@ Instance: SensorKitDeviceUsageDocumentExample
 InstanceOf: SensorKitRecordingDocument
 Usage: #example
 Title: "SensorKit Native Device Usage Recording"
-Description: "The complete native SensorKit device-usage report related to the structured summary."
+Description: "The complete native SensorKit device-usage report, including text-input-session detail, related to the structured summary."
 * meta.profile[+] = "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document"
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
 * identifier[sourceRecord].value = "v0:test-key:1:XfBsB8DhhwPTDdRigZOhN_7GmlkBWaF0veZtk8sEyhg"
@@ -318,9 +318,9 @@ Description: "The complete native SensorKit device-usage report related to the s
 * content.attachment.contentType = #application/json
 * content.format = $recordingFormat#native-recording "Native Recording"
 * content.attachment.title = "SensorKit device usage report"
-* content.attachment.data = "eyJ0aW1lc3RhbXAiOjE3ODcyMzgwMDAsImR1cmF0aW9uIjo5MDAsInRvdGFsU2NyZWVuV2FrZXMiOjYsInRvdGFsVW5sb2NrcyI6NCwidG90YWxVbmxvY2tEdXJhdGlvbiI6MzcyLCJ2ZXJzaW9uIjoiMSIsImFwcFVzYWdlQnlDYXRlZ29yeSI6W10sIm5vdGlmaWNhdGlvblVzYWdlQnlDYXRlZ29yeSI6W10sIndlYlVzYWdlQnlDYXRlZ29yeSI6W119"
-* content.attachment.size = 198
-* content.attachment.hash = "0lfmvTj5Gabstqo/ss0WoxE9xjY="
+* content.attachment.data = "eyJ0aW1lc3RhbXAiOjE3ODcyMzgwMDAsImR1cmF0aW9uIjo5MDAsInRvdGFsU2NyZWVuV2FrZXMiOjYsInRvdGFsVW5sb2NrcyI6NCwidG90YWxVbmxvY2tEdXJhdGlvbiI6MzcyLCJ2ZXJzaW9uIjoiMSIsImFwcFVzYWdlQnlDYXRlZ29yeSI6eyJwcm9kdWN0aXZpdHkiOlt7ImJ1bmRsZUlkZW50aWZpZXIiOiJjb20uYXBwbGUubW9iaWxlbm90ZXMiLCJyZXBvcnRBcHBsaWNhdGlvbklkZW50aWZpZXIiOiJyZXBvcnQtYXBwLTEiLCJyZWxhdGl2ZVN0YXJ0VGltZSI6MCwidXNhZ2VUaW1lIjo0ODAsInN1cHBsZW1lbnRhbENhdGVnb3JpZXMiOlt7ImlkZW50aWZpZXIiOiJ3cml0aW5nIn1dLCJ0ZXh0SW5wdXRTZXNzaW9ucyI6W3siZHVyYXRpb24iOjQyLCJzZXNzaW9uVHlwZVJhd1ZhbHVlIjowLCJpZGVudGlmaWVyIjoidGV4dC1zZXNzaW9uLTEifV19XX0sIm5vdGlmaWNhdGlvblVzYWdlQnlDYXRlZ29yeSI6eyJwcm9kdWN0aXZpdHkiOlt7ImJ1bmRsZUlkZW50aWZpZXIiOiJjb20uYXBwbGUubW9iaWxlbm90ZXMiLCJldmVudFJhd1ZhbHVlIjowfV19LCJ3ZWJVc2FnZUJ5Q2F0ZWdvcnkiOnsicHJvZHVjdGl2aXR5IjpbeyJ0b3RhbFVzYWdlVGltZSI6MTIwfV19fQ=="
+* content.attachment.size = 604
+* content.attachment.hash = "G0xkrUr5NvJP9Tj9yjkJfrNRYnE="
 * context.related = Reference(SensorKitDeviceUsageExample)
 
 Instance: SensorKitDeviceUsageProvenanceExample

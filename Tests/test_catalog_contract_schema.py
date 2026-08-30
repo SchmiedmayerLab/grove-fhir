@@ -85,7 +85,7 @@ class CatalogContractSchemaTests(unittest.TestCase):
                 ("formats",),
                 ("formats", "heart-rate-samples"),
                 ("formats", "heart-rate-samples", "columns", 0),
-                ("formats", "fhir-r4-resource", "specification"),
+                ("formats", "fhir-resource", "specification"),
                 ("formats", "photoplethysmogram-samples", "specification"),
                 ("formats", "photoplethysmogram-samples", "specification", "primitives"),
                 ("formats", "photoplethysmogram-samples", "specification", "record", 0),
@@ -267,21 +267,23 @@ class CatalogContractSchemaTests(unittest.TestCase):
         )
         self._assert_invalid(invalid_date_time)
 
-    def test_healthkit_clinical_admission_accepts_r4_and_rejects_dstu2(self) -> None:
+    def test_healthkit_clinical_admission_accepts_only_dstu2_and_r4(self) -> None:
         healthkit = _read("catalog/healthkit-adapter.json")
         admission = healthkit["clinicalRecordAdmission"]
-        self.assertEqual(admission["admittedFHIRRelease"], "r4")
+        self.assertEqual(admission["payloadFormat"], "fhir-resource")
+        self.assertEqual(
+            admission["sourceFHIRReleaseField"], "HKFHIRVersion.fhirRelease"
+        )
+        self.assertEqual(admission["admittedFHIRReleases"], ["dstu2", "r4"])
+        self.assertEqual(admission["rejectedFHIRReleases"], ["unknown"])
         self.assertEqual(
             admission["fhirRepresentation"],
             {
                 "resourceType": "DocumentReference",
-                "extensionUrl": (
-                    "https://grovealliance.org/fhir/healthkit/StructureDefinition/"
-                    "healthkit-clinical-fhir-release"
-                ),
-                "valueElement": "valueCode",
-                "cardinality": {"min": 1, "max": 1},
-                "fixedValue": "r4",
+                "contentTypeByRelease": {
+                    "dstu2": "application/fhir+json; fhirVersion=1.0",
+                    "r4": "application/fhir+json; fhirVersion=4.0",
+                },
             },
         )
         clinical_rows = [
@@ -298,19 +300,18 @@ class CatalogContractSchemaTests(unittest.TestCase):
         )
         self._assert_valid(healthkit)
 
-        rejected = copy.deepcopy(healthkit)
-        rejected["clinicalRecordAdmission"]["admittedFHIRRelease"] = "dstu2"
-        self._assert_invalid(rejected)
+        for replacement in (["r4"], ["dstu2"], ["dstu2", "r4", "r5"]):
+            with self.subTest(admittedFHIRReleases=replacement):
+                rejected = copy.deepcopy(healthkit)
+                rejected["clinicalRecordAdmission"]["admittedFHIRReleases"] = replacement
+                self._assert_invalid(rejected)
 
         omitted = copy.deepcopy(healthkit)
-        del omitted["clinicalRecordAdmission"]["admittedFHIRRelease"]
+        del omitted["clinicalRecordAdmission"]["admittedFHIRReleases"]
         self._assert_invalid(omitted)
 
         for path, replacement in (
-            (("extensionUrl",), "https://example.org/wrong"),
-            (("valueElement",), "valueString"),
-            (("cardinality", "min"), 0),
-            (("fixedValue",), "dstu2"),
+            (("contentTypeByRelease", "dstu2"), "application/fhir+json"),
         ):
             with self.subTest(fhirRepresentation=path):
                 mutated = copy.deepcopy(healthkit)

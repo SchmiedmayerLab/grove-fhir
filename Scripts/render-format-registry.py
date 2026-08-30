@@ -58,9 +58,25 @@ GENERATED FILE. Edit catalog/format-registry.json and run
 MIME_EXPANSION_TIMESTAMP = "2026-08-20T00:00:00Z"
 
 
+def format_content_types(fmt: dict) -> list[str]:
+    """Return every exact Attachment.contentType admitted by one format."""
+    if "contentTypes" in fmt:
+        return fmt["contentTypes"]
+    return [fmt["contentType"]]
+
+
+def fsh_code_literal(code: str) -> str:
+    """Quote FSH codes whose MIME parameters contain whitespace."""
+    return f'#"{code}"' if any(character.isspace() for character in code) else f"#{code}"
+
+
 def render_mime_fsh(registry: dict) -> str:
     media_types = registry["mediaTypes"]
-    used = {fmt["contentType"] for fmt in registry["formats"].values()}
+    used = {
+        content_type
+        for fmt in registry["formats"].values()
+        for content_type in format_content_types(fmt)
+    }
     undeclared = used - set(media_types)
     if undeclared:
         raise SystemExit(f"media types used by a format but not declared: {sorted(undeclared)}")
@@ -73,14 +89,14 @@ def render_mime_fsh(registry: dict) -> str:
     lines.append("Id: grove-recording-mime-type")
     lines.append('Title: "Grove Recording MIME Types"')
     lines.append(
-        'Description: "The exact media types admitted for a Grove sensor recording payload. '
-        "The codes are registered media types identified by their IANA registration. Grove "
-        "does not publish or version the "
+        'Description: "The exact MIME content-type values admitted for a Grove sensor recording '
+        "payload. Base media types use their IANA identifiers; parameters follow the standard "
+        "that defines the payload. Grove does not publish or version the "
         'external code system."'
     )
     lines.append("* ^experimental = false")
     for code, display in media_types.items():
-        lines.append(f'* urn:ietf:bcp:13#{code} "{display}"')
+        lines.append(f'* urn:ietf:bcp:13{fsh_code_literal(code)} "{display}"')
     lines.append(f'* ^expansion.timestamp = "{MIME_EXPANSION_TIMESTAMP}"')
     lines.append('* ^expansion.parameter[+].name = "used-codesystem"')
     lines.append('* ^expansion.parameter[=].valueUri = "urn:ietf:bcp:13"')
@@ -88,7 +104,7 @@ def render_mime_fsh(registry: dict) -> str:
     lines.append("* ^expansion.parameter[=].valueBoolean = false")
     for code, display in media_types.items():
         lines.append('* ^expansion.contains[+].system = "urn:ietf:bcp:13"')
-        lines.append(f"* ^expansion.contains[=].code = #{code}")
+        lines.append(f"* ^expansion.contains[=].code = {fsh_code_literal(code)}")
         lines.append(f'* ^expansion.contains[=].display = "{display}"')
     return "\n".join(lines) + "\n"
 
@@ -196,10 +212,16 @@ def render_page(registry: dict) -> str:
         lines.append("")
         lines.append(f"### `{code}` — {fmt['title']}")
         lines.append("")
-        lines.append(f"Media type: `{fmt['contentType']}`.")
+        content_types = format_content_types(fmt)
+        if len(content_types) == 1:
+            lines.append(f"Media type: `{content_types[0]}`.")
+        else:
+            rendered = ", ".join(f"`{content_type}`" for content_type in content_types)
+            lines.append(f"Media types: {rendered}.")
         for key in (
             "encoding",
             "structure",
+            "fhirVersion",
             "schema",
             "rowTerminator",
             "separator",

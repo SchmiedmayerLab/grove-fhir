@@ -117,23 +117,26 @@ class HealthKitCatalogTests(unittest.TestCase):
         self.assertIn("HKHealthConceptIdentifier", context["rule"])
         self.assertIn("HMAC", context["rule"])
 
-    def test_clinical_release_representation_matches_the_profile(self) -> None:
+    def test_clinical_release_representation_uses_standard_mime_parameters(self) -> None:
         representation = self.catalog["clinicalRecordAdmission"]["fhirRepresentation"]
         profiles = (ROOT / "healthkit/input/fsh/profiles.fsh").read_text(
             encoding="utf-8"
         )
-        extension_id = representation["extensionUrl"].rsplit("/", 1)[1]
         self.assertEqual(representation["resourceType"], "DocumentReference")
-        self.assertEqual(representation["valueElement"], "valueCode")
-        self.assertEqual(representation["cardinality"], {"min": 1, "max": 1})
-        self.assertEqual(representation["fixedValue"], "r4")
-        self.assertIn(f"Id: {extension_id}", profiles)
-        self.assertIn('* ^context[=].expression = "DocumentReference"', profiles)
-        self.assertIn(
-            "* extension contains HealthKitClinicalFHIRRelease named fhirRelease 1..1 MS",
-            profiles,
+        self.assertEqual(
+            representation["contentTypeByRelease"],
+            {
+                "dstu2": "application/fhir+json; fhirVersion=1.0",
+                "r4": "application/fhir+json; fhirVersion=4.0",
+            },
         )
-        self.assertIn("* extension[fhirRelease].valueCode = #r4 (exactly)", profiles)
+        self.assertIn("* content.format = $recordingFormat#fhir-resource", profiles)
+        self.assertIn("* obeys healthkit-clinical-fhir-content-type-1", profiles)
+        self.assertNotIn("HealthKitClinicalFHIRRelease", profiles)
+        terminology = (ROOT / "healthkit/input/fsh/terminology.fsh").read_text(
+            encoding="utf-8"
+        )
+        self.assertNotIn("HealthKitClinicalFHIRRelease", terminology)
 
     def test_clinical_document_has_one_provenance_target_hierarchy(self) -> None:
         profiles = (ROOT / "healthkit/input/fsh/profiles.fsh").read_text(

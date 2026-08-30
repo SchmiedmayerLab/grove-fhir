@@ -8,6 +8,10 @@
 
 from __future__ import annotations
 
+import base64
+import hashlib
+from typing import Any
+
 from Scripts.producer_validation import (
     context,
     diagnostics,
@@ -26,6 +30,56 @@ from Tests.producer_validation_test_support import (
 )
 
 class ProducerHealthkitTests(ProducerValidationTestCase):
+    @staticmethod
+    def _clinical_document(
+        release: str = "r4",
+        payload: bytes = b'{"resourceType":"AllergyIntolerance"}',
+    ) -> dict[str, Any]:
+        content_type_by_release = {
+            "dstu2": "application/fhir+json; fhirVersion=1.0",
+            "r4": "application/fhir+json; fhirVersion=4.0",
+        }
+        return {
+            "resourceType": "DocumentReference",
+            "meta": {"profile": [context.HEALTHKIT_CLINICAL_RECORD_PROFILE]},
+            "identifier": [
+                typed_identifier(
+                    role,
+                    f"https://example.org/fhir/NamingSystem/{role}/test-key/1",
+                    f"v0:test-key:1:{fill * 43}",
+                )
+                for role, fill in (
+                    ("source-record", "A"),
+                    ("source-output", "B"),
+                    ("source-artifact", "C"),
+                )
+            ],
+            "extension": [{
+                "url": (
+                    "https://grovealliance.org/fhir/healthkit/StructureDefinition/"
+                    "healthkit-source-type-extension"
+                ),
+                "valueCode": "HKClinicalTypeIdentifierAllergyRecord",
+            }],
+            "content": [{
+                "attachment": {
+                    "contentType": content_type_by_release[release],
+                    "data": base64.b64encode(payload).decode(),
+                    "size": len(payload),
+                    "hash": base64.b64encode(
+                        hashlib.sha1(payload).digest()  # noqa: S324 -- FHIR Attachment.hash
+                    ).decode(),
+                },
+                "format": {
+                    "system": (
+                        "https://grovealliance.org/fhir/sensor/CodeSystem/"
+                        "grove-recording-format"
+                    ),
+                    "code": "fhir-resource",
+                },
+            }],
+        }
+
     def test_healthkit_child_profiles_and_multi_output_rows_are_per_resource(self) -> None:
         catalog = json.loads(
             (ROOT / "catalog/healthkit-adapter.json").read_text(encoding="utf-8")
@@ -104,22 +158,9 @@ class ProducerHealthkitTests(ProducerValidationTestCase):
 
         source = grove("source-record", "A")
         clinical_profile = claims["healthKitClinicalRecordDocumentClaim"]["profiles"][0]
-        document = {
-            "resourceType": "DocumentReference",
-            "meta": {"profile": [clinical_profile]},
-            "identifier": [
-                copy.deepcopy(source),
-                grove("source-output", "B"),
-                grove("source-artifact", "C"),
-            ],
-            "extension": [{
-                "url": (
-                    "https://grovealliance.org/fhir/healthkit/StructureDefinition/"
-                    "healthkit-source-type-extension"
-                ),
-                "valueCode": "HKClinicalTypeIdentifierAllergyRecord",
-            }],
-        }
+        document = self._clinical_document()
+        document["meta"] = {"profile": [clinical_profile]}
+        document["identifier"][0] = copy.deepcopy(source)
         healthkit_validation.validate_healthkit_resource_claims(document, "HealthKit clinical")
 
         extra_profile = copy.deepcopy(document)
@@ -154,58 +195,18 @@ class ProducerHealthkitTests(ProducerValidationTestCase):
 
     def test_healthkit_clinical_document_runs_shared_payload_pipeline(self) -> None:
         clinical_profile = context.HEALTHKIT_CLINICAL_RECORD_PROFILE
-        document = {
-            "resourceType": "DocumentReference",
-            "meta": {"profile": [clinical_profile]},
-            "identifier": [
-                typed_identifier(
-                    role,
-                    f"https://example.org/fhir/NamingSystem/{role}/test-key/1",
-                    f"v0:test-key:1:{fill * 43}",
+        for release in ("dstu2", "r4"):
+            with self.subTest(release=release):
+                exchange_bundle.validate_resource_profile_claims(
+                    self._clinical_document(release),
+                    "HealthKit clinical",
+                    {clinical_profile},
                 )
-                for role, fill in (
-                    ("source-record", "A"),
-                    ("source-output", "B"),
-                    ("source-artifact", "C"),
-                )
-            ],
-            "extension": [{
-                "url": (
-                    "https://grovealliance.org/fhir/healthkit/StructureDefinition/"
-                    "healthkit-source-type-extension"
-                ),
-                "valueCode": "HKClinicalTypeIdentifierAllergyRecord",
-            }],
-            "content": [{
-                "attachment": {
-                    "contentType": "application/fhir+json",
-                    "data": (
-                        "eyJyZXNvdXJjZVR5cGUiOiJBbGxlcmd5SW50b2xlcmFuY2UiLCJpZCI6"
-                        "InByb3ZpZGVyLWlzc3VlZC0xIiwiY2xpbmljYWxTdGF0dXMiOnsiY29k"
-                        "aW5nIjpbeyJzeXN0ZW0iOiJodHRwOi8vdGVybWlub2xvZ3kuaGw3Lm9y"
-                        "Zy9Db2RlU3lzdGVtL2FsbGVyZ3lpbnRvbGVyYW5jZS1jbGluaWNhbCIs"
-                        "ImNvZGUiOiJhY3RpdmUifV19LCJwYXRpZW50Ijp7InJlZmVyZW5jZSI6"
-                        "IlBhdGllbnQvcGFydGljaXBhbnQtaGstMDAxIn19"
-                    ),
-                    "size": 240,
-                    "hash": "0c+dHXDzCV5zPy4cApwAoV9evYc=",
-                },
-                "format": {
-                    "system": (
-                        "https://grovealliance.org/fhir/sensor/CodeSystem/"
-                        "grove-recording-format"
-                    ),
-                    "code": "fhir-r4-resource",
-                },
-            }],
-        }
 
-        exchange_bundle.validate_resource_profile_claims(
-            document, "HealthKit clinical", {clinical_profile}
-        )
+        document = self._clinical_document()
 
         defects = (
-            ("format", "declares no registry payload format"),
+            ("format", "exactly one fhir-resource payload"),
             ("size", "size is required"),
             ("hash", "hash does not match embedded bytes"),
         )
@@ -225,6 +226,52 @@ class ProducerHealthkitTests(ProducerValidationTestCase):
                 exchange_bundle.validate_resource_profile_claims(
                     invalid, "HealthKit clinical", {clinical_profile}
                 )
+
+        wrong_format = self._clinical_document()
+        wrong_format["content"][0]["format"]["code"] = "native-recording"
+        with self.assertRaisesRegex(
+            diagnostics.ProducerValidationError, "exactly one fhir-resource payload"
+        ):
+            exchange_bundle.validate_resource_profile_claims(
+                wrong_format, "HealthKit clinical", {clinical_profile}
+            )
+
+        for wrong_content_type in (
+            "application/fhir+json",
+            "application/fhir+json; fhirVersion=5.0",
+        ):
+            invalid_content_type = self._clinical_document()
+            invalid_content_type["content"][0]["attachment"]["contentType"] = (
+                wrong_content_type
+            )
+            with self.subTest(
+                wrong_content_type=wrong_content_type
+            ), self.assertRaisesRegex(
+                diagnostics.ProducerValidationError,
+                "HealthKit clinical record must use one admitted Attachment.contentType",
+            ):
+                exchange_bundle.validate_resource_profile_claims(
+                    invalid_content_type, "HealthKit clinical", {clinical_profile}
+                )
+
+        for payload, diagnostic in (
+            (b"{}", "resourceType"),
+            (
+                b'{"resourceType":"Observation","resourceType":"Patient"}',
+                "strict well-formed UTF-8 JSON",
+            ),
+        ):
+            for release in ("dstu2", "r4"):
+                with self.subTest(
+                    release=release, payload_diagnostic=diagnostic
+                ), self.assertRaisesRegex(
+                    diagnostics.ProducerValidationError, diagnostic
+                ):
+                    exchange_bundle.validate_resource_profile_claims(
+                        self._clinical_document(release, payload),
+                        "HealthKit clinical",
+                        {clinical_profile},
+                    )
 
     def test_healthkit_ecg_contract_uses_native_r4_and_closed_graph(self) -> None:
         healthkit_root = "https://grovealliance.org/fhir/healthkit/"

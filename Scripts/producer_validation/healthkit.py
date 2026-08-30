@@ -157,6 +157,43 @@ def validate_healthkit_resource_claims(resource: dict[str, Any], label: str) -> 
                 f"{label} must carry exactly one admitted HealthKit source-type extension matching its direct profile"
             )
 
+    if HEALTHKIT_CLINICAL_RECORD_PROFILE in profiles:
+        admission = catalog["clinicalRecordAdmission"]
+        if resource.get("resourceType") != "DocumentReference":
+            raise ProducerValidationError(
+                f"{label} HealthKit clinical record must be a FHIR R4 DocumentReference"
+            )
+        contents = resource.get("content")
+        if (
+            not isinstance(contents, list)
+            or len(contents) != 1
+            or not isinstance(contents[0], dict)
+            or not isinstance(contents[0].get("format"), dict)
+            or contents[0]["format"].get("code") != admission["payloadFormat"]
+        ):
+            raise ProducerValidationError(
+                f"{label} HealthKit clinical record must carry exactly one "
+                f"{admission['payloadFormat']} payload"
+            )
+        attachment = contents[0].get("attachment")
+        content_types_by_release = admission["fhirRepresentation"][
+            "contentTypeByRelease"
+        ]
+        admitted_content_types = set(content_types_by_release.values())
+        content_type = attachment.get("contentType") if isinstance(attachment, dict) else None
+        if (
+            not isinstance(attachment, dict)
+            or content_type not in admitted_content_types
+        ):
+            rendered_content_types = ", ".join(
+                content_types_by_release[release]
+                for release in admission["admittedFHIRReleases"]
+            )
+            raise ProducerValidationError(
+                f"{label} HealthKit clinical record must use one admitted "
+                f"Attachment.contentType ({rendered_content_types})"
+            )
+
     for claim in claims["healthKitPlatformExclusiveResourceClaims"]:
         if claim["profile"] not in profiles:
             continue

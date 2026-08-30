@@ -397,9 +397,9 @@
         "outputDiscriminator": "native-recording",
         "requiredForFields": [
           "version",
-          "appUsageByCategory",
-          "notificationUsageByCategory",
-          "webUsageByCategory"
+          "every applicationUsageByCategory entry, including bundleIdentifier, reportApplicationIdentifier, relativeStartTime, usageTime, every supplementalCategories identifier, and every textInputSessions entry's duration, sessionType, and sessionIdentifier",
+          "every notificationUsageByCategory entry, including bundleIdentifier and event",
+          "every webUsageByCategory entry, including totalUsageTime"
         ],
         "encoding": "caller-supplied exact bytes",
         "formats": [
