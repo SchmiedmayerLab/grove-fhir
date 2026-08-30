@@ -267,13 +267,14 @@ Every entry resource conforms to the profile set the emitting adapter declares f
 An empty batch emits no document rather than an empty Bundle.
 Grove format validation verifies strict JSON syntax and only the collection-Bundle envelope and resource shape described above. It does not execute the official FHIR Validator over embedded resources. Base FHIR R4 conformance, adapter-declared resource profiles, the one-stream/one-source-batch boundary, and preservation of source ordering and source meaning remain producer responsibilities unless a separate validation step explicitly performs them.
 
-### `fhir-r4-resource` — FHIR R4 Resource
+### `fhir-resource` — FHIR Resource
 
 Media type: `application/fhir+json`.
 UTF-8.
-One complete provider-issued FHIR R4 resource in FHIR JSON representation, byte-preserved exactly as the source platform delivered it.
-The carrying document records the issuing source; Grove never asserts conformance over another issuer's resource.
-One document carries exactly one clinical record's FHIR payload. Grove format validation verifies strict JSON syntax and a `resourceType`-bearing object only; it does not determine the FHIR release or execute base or profile validation over the issuer's resource.
+One complete provider-issued FHIR DSTU2 or R4 resource in FHIR JSON representation, byte-preserved exactly as the source platform delivered it.
+The carrying HealthKit Clinical Record Document declares exactly one source release, `dstu2` or `r4`, from HKFHIRVersion.fhirRelease. The format code is release-neutral; a missing, unknown, or future release is rejected before emission.
+The carrying document records the issuing source and exact source release. Grove never converts, re-encodes, or asserts conformance over another issuer's resource.
+One document carries exactly one clinical record's FHIR payload. Grove format validation verifies strict JSON syntax and a `resourceType`-bearing object only; it does not infer the FHIR release or execute base or profile validation over the issuer's resource.
 
 ### `clinical-document` — Clinical Document
 

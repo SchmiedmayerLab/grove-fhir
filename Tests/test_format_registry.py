@@ -36,7 +36,7 @@ class FormatRegistryTests(unittest.TestCase):
                 "beat-interval-series",
                 "location-track-samples",
                 "fhir-collection-bundle",
-                "fhir-r4-resource",
+                "fhir-resource",
                 "clinical-document",
                 "native-recording",
                 "provider-recording",
@@ -190,11 +190,16 @@ class FormatRegistryTests(unittest.TestCase):
         self.assertIn("Grove format validation checks", description)
         self.assertIn("FHIR/profile", description)
         self.assertNotIn("receiver can validate the admitted wire format", description)
-        fhir_resource_scope = REGISTRY["formats"]["fhir-r4-resource"][
+        fhir_resource_scope = REGISTRY["formats"]["fhir-resource"][
             "specification"
         ]["scope"]
         self.assertIn("`resourceType`-bearing object only", fhir_resource_scope)
-        self.assertIn("does not determine the FHIR release", fhir_resource_scope)
+        self.assertIn("does not infer the FHIR release", fhir_resource_scope)
+        fhir_resource = REGISTRY["formats"]["fhir-resource"]["specification"]
+        self.assertIn("FHIR DSTU2 or R4", fhir_resource["structure"])
+        self.assertIn("release-neutral", fhir_resource["fhirVersion"])
+        self.assertIn("HKFHIRVersion.fhirRelease", fhir_resource["fhirVersion"])
+        self.assertIn("never converts, re-encodes", fhir_resource["provenance"])
         provider_scope = REGISTRY["formats"]["provider-recording"][
             "specification"
         ]["scope"]

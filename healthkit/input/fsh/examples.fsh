@@ -487,12 +487,16 @@ Description: "A documentation collection of the participant, versioned protocol,
 * entry[=].resource = HealthKitClinicalRecordDocumentExample
 * entry[+].fullUrl = "https://study.example.org/fhir/Provenance/HealthKitClinicalRecordProvenanceExample"
 * entry[=].resource = HealthKitClinicalRecordProvenanceExample
+* entry[+].fullUrl = "https://study.example.org/fhir/DocumentReference/HealthKitDSTU2ClinicalRecordDocumentExample"
+* entry[=].resource = HealthKitDSTU2ClinicalRecordDocumentExample
+* entry[+].fullUrl = "https://study.example.org/fhir/Provenance/HealthKitDSTU2ClinicalRecordProvenanceExample"
+* entry[=].resource = HealthKitDSTU2ClinicalRecordProvenanceExample
 
 Instance: HealthKitClinicalRecordDocumentExample
 InstanceOf: HealthKitClinicalRecordDocument
 Usage: #example
-Title: "HealthKit Clinical Record Pass-Through"
-Description: "One provider-issued clinical resource surfaced by HealthKit and byte-preserved in its declared FHIR release. Grove asserts identity and provenance over the envelope, never conformance over the issuer's resource."
+Title: "HealthKit R4 Clinical Record Pass-Through"
+Description: "One provider-issued R4 resource surfaced by HealthKit and byte-preserved with its declared source release. Grove asserts identity and provenance over the R4 envelope, never conformance over the issuer's resource."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
 * identifier[sourceRecord].value = "v0:test-key:1:B1KqoWjy3t3ZGjgJgs36zq44-GTIkXFvIr-2gke2dj0"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
@@ -506,7 +510,7 @@ Description: "One provider-issued clinical resource surfaced by HealthKit and by
 * subject = Reference(HealthKitPatientExample)
 * date = "2026-08-20T17:05:01Z"
 * content.attachment.contentType = #application/fhir+json
-* content.format = $recordingFormat#fhir-r4-resource "FHIR R4 Resource"
+* content.format = $recordingFormat#fhir-resource "FHIR Resource"
 * content.attachment.title = "Provider-issued AllergyIntolerance"
 * content.attachment.data = "eyJyZXNvdXJjZVR5cGUiOiJBbGxlcmd5SW50b2xlcmFuY2UiLCJpZCI6InByb3ZpZGVyLWlzc3VlZC0xIiwiY2xpbmljYWxTdGF0dXMiOnsiY29kaW5nIjpbeyJzeXN0ZW0iOiJodHRwOi8vdGVybWlub2xvZ3kuaGw3Lm9yZy9Db2RlU3lzdGVtL2FsbGVyZ3lpbnRvbGVyYW5jZS1jbGluaWNhbCIsImNvZGUiOiJhY3RpdmUifV19LCJwYXRpZW50Ijp7InJlZmVyZW5jZSI6IlBhdGllbnQvcGFydGljaXBhbnQtaGstMDAxIn19"
 * content.attachment.size = 240
@@ -516,7 +520,7 @@ Instance: HealthKitClinicalRecordProvenanceExample
 InstanceOf: HealthKitConversionProvenance
 Usage: #example
 Title: "HealthKit Clinical Record Source Provenance"
-Description: "The converter byte-preserved one provider-issued R4 resource in its profiled DocumentReference envelope; it did not reinterpret or reserialize the payload."
+Description: "The converter byte-preserved one provider-issued R4 resource in its profiled R4 DocumentReference envelope; it did not reinterpret or reserialize the payload."
 * target = Reference(HealthKitClinicalRecordDocumentExample)
 * occurredDateTime = "2026-08-20T17:05:00Z"
 * recorded = "2026-08-20T17:05:01Z"
@@ -527,6 +531,46 @@ Description: "The converter byte-preserved one provider-issued R4 resource in it
 * entity.what.identifier.type = $groveIdentifierRole#source-record "Source record"
 * entity.what.identifier.system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
 * entity.what.identifier.value = "v0:test-key:1:B1KqoWjy3t3ZGjgJgs36zq44-GTIkXFvIr-2gke2dj0"
+
+Instance: HealthKitDSTU2ClinicalRecordDocumentExample
+InstanceOf: HealthKitClinicalRecordDocument
+Usage: #example
+Title: "HealthKit DSTU2 Clinical Record Pass-Through"
+Description: "One provider-issued DSTU2 resource surfaced by HealthKit and byte-preserved with its declared source release inside an R4 DocumentReference envelope."
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:UW5bJTkRJ0UKkw7krpXqdxuXronFcrv0fcxncHrqDsQ"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:znQrk3qim2B70uLiwaJ0m-7sGJiBQtpu6zv2jnopM1A"
+* identifier[sourceArtifact].system = "https://study.example.org/fhir/NamingSystem/grove-source-artifact-v0/test-key/1"
+* identifier[sourceArtifact].value = "v0:test-key:1:g-a1f691jBmG-Nm40aE-LYrmGQb4AQEWGcVr-OBTRDI"
+* extension[healthKitSourceType].valueCode = #HKClinicalTypeIdentifierAllergyRecord
+* extension[fhirRelease].valueCode = #dstu2
+* status = #current
+* type = HealthKitClinicalRecordTypeCS#allergy-record "Allergy record"
+* subject = Reference(HealthKitPatientExample)
+* date = "2026-08-20T17:06:01Z"
+* content.attachment.contentType = #application/fhir+json
+* content.format = $recordingFormat#fhir-resource "FHIR Resource"
+* content.attachment.title = "Provider-issued DSTU2 AllergyIntolerance"
+* content.attachment.data = "eyJyZXNvdXJjZVR5cGUiOiJBbGxlcmd5SW50b2xlcmFuY2UiLCJpZCI6InByb3ZpZGVyLWlzc3VlZC1kc3R1Mi0xIiwicGF0aWVudCI6eyJyZWZlcmVuY2UiOiJQYXRpZW50L3BhcnRpY2lwYW50LWhrLTAwMSJ9LCJzdWJzdGFuY2UiOnsidGV4dCI6IlBlbmljaWxsaW4ifSwic3RhdHVzIjoiY29uZmlybWVkIiwiY3JpdGljYWxpdHkiOiJDUklUTCJ9"
+* content.attachment.size = 198
+* content.attachment.hash = "sDYJit+YpJaTk0nwQWt0M5Xq7QA="
+
+Instance: HealthKitDSTU2ClinicalRecordProvenanceExample
+InstanceOf: HealthKitConversionProvenance
+Usage: #example
+Title: "HealthKit DSTU2 Clinical Record Source Provenance"
+Description: "The converter byte-preserved one provider-issued DSTU2 resource in its profiled R4 DocumentReference envelope; it did not reinterpret or reserialize the payload."
+* target = Reference(HealthKitDSTU2ClinicalRecordDocumentExample)
+* occurredDateTime = "2026-08-20T17:06:00Z"
+* recorded = "2026-08-20T17:06:01Z"
+* activity = $recordLifecycleEvent#transform "Transform/Translate Record Lifecycle Event"
+* agent[assembler].type = $provenanceParticipantType#assembler "Assembler"
+* agent[assembler].who = Reference(HealthKitApplicationDeviceExample)
+* entity.role = #source
+* entity.what.identifier.type = $groveIdentifierRole#source-record "Source record"
+* entity.what.identifier.system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* entity.what.identifier.value = "v0:test-key:1:UW5bJTkRJ0UKkw7krpXqdxuXronFcrv0fcxncHrqDsQ"
 
 Instance: HealthKitHeartbeatSeriesRecordingExample
 InstanceOf: HealthKitRecordingDocument

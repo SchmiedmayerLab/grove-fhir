@@ -126,14 +126,22 @@ class HealthKitCatalogTests(unittest.TestCase):
         self.assertEqual(representation["resourceType"], "DocumentReference")
         self.assertEqual(representation["valueElement"], "valueCode")
         self.assertEqual(representation["cardinality"], {"min": 1, "max": 1})
-        self.assertEqual(representation["fixedValue"], "r4")
+        self.assertEqual(representation["allowedValues"], ["dstu2", "r4"])
         self.assertIn(f"Id: {extension_id}", profiles)
         self.assertIn('* ^context[=].expression = "DocumentReference"', profiles)
         self.assertIn(
             "* extension contains HealthKitClinicalFHIRRelease named fhirRelease 1..1 MS",
             profiles,
         )
-        self.assertIn("* extension[fhirRelease].valueCode = #r4 (exactly)", profiles)
+        self.assertIn("* content.format = $recordingFormat#fhir-resource", profiles)
+        self.assertNotIn("* extension[fhirRelease].valueCode = #r4 (exactly)", profiles)
+        terminology = (ROOT / "healthkit/input/fsh/terminology.fsh").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn(
+            '* HealthKitClinicalFHIRReleaseCS#dstu2 "DSTU2"', terminology
+        )
+        self.assertIn('* HealthKitClinicalFHIRReleaseCS#r4 "R4"', terminology)
 
     def test_clinical_document_has_one_provenance_target_hierarchy(self) -> None:
         profiles = (ROOT / "healthkit/input/fsh/profiles.fsh").read_text(

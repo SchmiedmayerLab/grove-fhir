@@ -200,6 +200,7 @@ def render_page(registry: dict) -> str:
         for key in (
             "encoding",
             "structure",
+            "fhirVersion",
             "schema",
             "rowTerminator",
             "separator",

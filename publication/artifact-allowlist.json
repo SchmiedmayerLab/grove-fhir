@@ -2688,6 +2688,20 @@
           "classification": "example"
         },
         {
+          "fshName": "HealthKitDSTU2ClinicalRecordDocumentExample",
+          "fshType": "Instance",
+          "resourceType": "DocumentReference",
+          "id": "HealthKitDSTU2ClinicalRecordDocumentExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "HealthKitDSTU2ClinicalRecordProvenanceExample",
+          "fshType": "Instance",
+          "resourceType": "Provenance",
+          "id": "HealthKitDSTU2ClinicalRecordProvenanceExample",
+          "classification": "example"
+        },
+        {
           "fshName": "HealthKitECGAverageHeartRateExample",
           "fshType": "Instance",
           "resourceType": "Observation",

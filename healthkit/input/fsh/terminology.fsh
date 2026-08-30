@@ -226,6 +226,7 @@ Id: healthkit-clinical-fhir-release
 Title: "HealthKit Clinical FHIR Release"
 Description: "Every admitted pass-through payload FHIR release; HKFHIRRelease.unknown fails closed and is never emitted."
 * ^experimental = false
+* HealthKitClinicalFHIRReleaseCS#dstu2 "DSTU2"
 * HealthKitClinicalFHIRReleaseCS#r4 "R4"
 
 CodeSystem: HealthKitPresenceCS

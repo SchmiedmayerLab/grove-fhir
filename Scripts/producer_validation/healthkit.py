@@ -157,6 +157,44 @@ def validate_healthkit_resource_claims(resource: dict[str, Any], label: str) -> 
                 f"{label} must carry exactly one admitted HealthKit source-type extension matching its direct profile"
             )
 
+    if HEALTHKIT_CLINICAL_RECORD_PROFILE in profiles:
+        admission = catalog["clinicalRecordAdmission"]
+        if resource.get("resourceType") != "DocumentReference":
+            raise ProducerValidationError(
+                f"{label} HealthKit clinical record must be a FHIR R4 DocumentReference"
+            )
+        release_extensions = extensions_with_url(
+            resource, admission["fhirRepresentation"]["extensionUrl"]
+        )
+        releases = [
+            extension.get("valueCode")
+            for extension in release_extensions
+            if set(extension) == {"url", "valueCode"}
+        ]
+        if (
+            len(release_extensions) != 1
+            or len(releases) != 1
+            or releases[0] not in admission["admittedFHIRReleases"]
+        ):
+            admitted = ", ".join(admission["admittedFHIRReleases"])
+            raise ProducerValidationError(
+                f"{label} must carry exactly one valueCode-only HealthKit clinical "
+                f"FHIR release extension with an admitted HKFHIRVersion.fhirRelease "
+                f"value ({admitted})"
+            )
+        contents = resource.get("content")
+        if (
+            not isinstance(contents, list)
+            or len(contents) != 1
+            or not isinstance(contents[0], dict)
+            or not isinstance(contents[0].get("format"), dict)
+            or contents[0]["format"].get("code") != admission["payloadFormat"]
+        ):
+            raise ProducerValidationError(
+                f"{label} HealthKit clinical record must carry exactly one "
+                f"{admission['payloadFormat']} payload"
+            )
+
     for claim in claims["healthKitPlatformExclusiveResourceClaims"]:
         if claim["profile"] not in profiles:
             continue

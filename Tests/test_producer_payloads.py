@@ -264,7 +264,7 @@ class ProducerPayloadsTests(ProducerValidationTestCase):
         fhir_entry = {"contentType": "application/fhir+json"}
         payloads.validate_inline_recording_payload(
             self.inline(b'{"resourceType":"Observation"}'),
-            "fhir-r4-resource",
+            "fhir-resource",
             fhir_entry,
             "FHIR attachment",
         )
@@ -273,7 +273,7 @@ class ProducerPayloadsTests(ProducerValidationTestCase):
         ):
             payloads.validate_inline_recording_payload(
                 self.inline(b'{}'),
-                "fhir-r4-resource",
+                "fhir-resource",
                 fhir_entry,
                 "FHIR attachment",
             )

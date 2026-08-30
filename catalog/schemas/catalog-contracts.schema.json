@@ -152,11 +152,11 @@
         "mediaTypes": {"type": "object", "additionalProperties": false, "required": ["text/csv", "application/fhir+json", "application/json", "application/octet-stream", "application/hl7-cda+xml"], "properties": {"text/csv": {"$ref": "#/$defs/nonEmptyText"}, "application/fhir+json": {"$ref": "#/$defs/nonEmptyText"}, "application/json": {"$ref": "#/$defs/nonEmptyText"}, "application/octet-stream": {"$ref": "#/$defs/nonEmptyText"}, "application/hl7-cda+xml": {"$ref": "#/$defs/nonEmptyText"}}},
         "formats": {
           "type": "object", "additionalProperties": false,
-          "required": ["heart-rate-samples", "triaxial-acceleration-samples", "ambient-light-samples", "ambient-pressure-samples", "pedometer-samples", "wrist-temperature-samples", "triaxial-rotation-samples", "odometer-samples", "beat-interval-series", "location-track-samples", "fhir-collection-bundle", "fhir-r4-resource", "clinical-document", "native-recording", "provider-recording", "photoplethysmogram-samples"],
+          "required": ["heart-rate-samples", "triaxial-acceleration-samples", "ambient-light-samples", "ambient-pressure-samples", "pedometer-samples", "wrist-temperature-samples", "triaxial-rotation-samples", "odometer-samples", "beat-interval-series", "location-track-samples", "fhir-collection-bundle", "fhir-resource", "clinical-document", "native-recording", "provider-recording", "photoplethysmogram-samples"],
           "properties": {
             "heart-rate-samples": {"$ref": "#/$defs/tabularFormat"}, "triaxial-acceleration-samples": {"$ref": "#/$defs/tabularFormat"}, "ambient-light-samples": {"$ref": "#/$defs/tabularFormat"}, "ambient-pressure-samples": {"$ref": "#/$defs/tabularFormat"}, "pedometer-samples": {"$ref": "#/$defs/tabularFormat"}, "wrist-temperature-samples": {"$ref": "#/$defs/tabularFormat"}, "triaxial-rotation-samples": {"$ref": "#/$defs/tabularFormat"}, "odometer-samples": {"$ref": "#/$defs/tabularFormat"}, "beat-interval-series": {"$ref": "#/$defs/tabularFormat"}, "location-track-samples": {"$ref": "#/$defs/tabularFormat"},
             "fhir-collection-bundle": {"allOf": [{"$ref": "#/$defs/simpleSpecifiedFormat"}, {"type": "object", "properties": {"contentType": {"const": "application/fhir+json"}, "specification": {"$ref": "#/$defs/fhirCollectionSpecification"}}}]},
-            "fhir-r4-resource": {"allOf": [{"$ref": "#/$defs/simpleSpecifiedFormat"}, {"type": "object", "properties": {"contentType": {"const": "application/fhir+json"}, "specification": {"$ref": "#/$defs/fhirResourceSpecification"}}}]},
+            "fhir-resource": {"allOf": [{"$ref": "#/$defs/simpleSpecifiedFormat"}, {"type": "object", "properties": {"contentType": {"const": "application/fhir+json"}, "specification": {"$ref": "#/$defs/fhirResourceSpecification"}}}]},
             "clinical-document": {"allOf": [{"$ref": "#/$defs/simpleSpecifiedFormat"}, {"type": "object", "properties": {"contentType": {"const": "application/hl7-cda+xml"}, "specification": {"type": "object", "additionalProperties": false, "required": ["file"], "properties": {"file": {"$ref": "#/$defs/nonEmptyText"}}}}}]},
             "native-recording": {"allOf": [{"$ref": "#/$defs/simpleSpecifiedFormat"}, {"type": "object", "properties": {"contentType": {"const": "application/json"}, "specification": {"$ref": "#/$defs/nativeSpecification"}}}]},
             "provider-recording": {"allOf": [{"$ref": "#/$defs/simpleSpecifiedFormat"}, {"type": "object", "properties": {"contentType": {"const": "application/json"}, "specification": {"$ref": "#/$defs/providerSpecification"}}}]},
@@ -243,18 +243,18 @@
       ]
     },
     "healthKitClinicalFHIRRepresentation": {
-      "type": "object", "additionalProperties": false, "required": ["resourceType", "extensionUrl", "valueElement", "cardinality", "fixedValue"],
+      "type": "object", "additionalProperties": false, "required": ["resourceType", "extensionUrl", "valueElement", "cardinality", "allowedValues"],
       "properties": {
         "resourceType": {"const": "DocumentReference"},
         "extensionUrl": {"const": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-fhir-release"},
         "valueElement": {"const": "valueCode"},
         "cardinality": {"type": "object", "additionalProperties": false, "required": ["min", "max"], "properties": {"min": {"const": 1}, "max": {"const": 1}}},
-        "fixedValue": {"const": "r4"}
+        "allowedValues": {"const": ["dstu2", "r4"]}
       }
     },
     "healthKitClinicalAdmission": {
-      "type": "object", "additionalProperties": false, "required": ["profile", "payloadFormat", "sourceFHIRReleaseField", "admittedFHIRRelease", "fhirRepresentation", "rejectedFHIRReleases", "rule"],
-      "properties": {"profile": {"const": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document"}, "payloadFormat": {"const": "fhir-r4-resource"}, "sourceFHIRReleaseField": {"const": "HKFHIRVersion.fhirRelease"}, "admittedFHIRRelease": {"const": "r4"}, "fhirRepresentation": {"$ref": "#/$defs/healthKitClinicalFHIRRepresentation"}, "rejectedFHIRReleases": {"const": ["dstu2", "unknown"]}, "rule": {"$ref": "#/$defs/nonEmptyText"}}
+      "type": "object", "additionalProperties": false, "required": ["profile", "payloadFormat", "sourceFHIRReleaseField", "admittedFHIRReleases", "fhirRepresentation", "rejectedFHIRReleases", "rule"],
+      "properties": {"profile": {"const": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document"}, "payloadFormat": {"const": "fhir-resource"}, "sourceFHIRReleaseField": {"const": "HKFHIRVersion.fhirRelease"}, "admittedFHIRReleases": {"const": ["dstu2", "r4"]}, "fhirRepresentation": {"$ref": "#/$defs/healthKitClinicalFHIRRepresentation"}, "rejectedFHIRReleases": {"const": ["unknown"]}, "rule": {"$ref": "#/$defs/nonEmptyText"}}
     },
     "healthKitClaim": {"type": "object", "additionalProperties": false, "required": ["claimMode", "profiles", "code", "quantity", "effective", "reason"], "properties": {"claimMode": {"const": "exactly-standard-plus-adapter"}, "profiles": {"$ref": "#/$defs/uriArray"}, "code": {"$ref": "#/$defs/coding"}, "quantity": {"$ref": "#/$defs/quantity"}, "effective": {"const": "dateTime"}, "reason": {"$ref": "#/$defs/nonEmptyText"}}},
     "healthKitEcgOutput": {"type": "object", "additionalProperties": false, "required": ["outputRole", "outputDiscriminator", "cardinality", "profiles"], "properties": {"outputRole": {"enum": ["electrocardiogram", "average-heart-rate"]}, "outputDiscriminator": {"const": "single"}, "cardinality": {"$ref": "#/$defs/nonEmptyText"}, "profiles": {"$ref": "#/$defs/uriArray"}, "code": {"$ref": "#/$defs/coding"}, "quantity": {"$ref": "#/$defs/quantity"}, "effective": {"$ref": "#/$defs/nonEmptyText"}, "relationship": {"$ref": "#/$defs/nonEmptyText"}}},

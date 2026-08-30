@@ -178,7 +178,7 @@ Profile: HealthKitRecordingDocument
 Parent: GroveSensorRecordingDocument
 Id: healthkit-recording-document
 Title: "HealthKit Recording Document"
-Description: "A byte-preserved HealthKit source document or series whose native representation is not a scalar result. Beat-to-beat intervals and workout routes use registered column schemas; provider-issued clinical resources use a stricter derived profile that fixes their FHIR release and payload format."
+Description: "A byte-preserved HealthKit source document or series whose native representation is not a scalar result. Beat-to-beat intervals and workout routes use registered column schemas; provider-issued clinical resources use a stricter derived profile that declares their source FHIR release and payload format."
 // The SDK source class is lineage, not a document-type coding.
 * extension contains HealthKitSourceType named healthKitSourceType 1..1 MS
 * type 1..1 MS
@@ -197,7 +197,7 @@ Description: "A pass-through envelope for one provider-issued clinical FHIR reso
 * date 1..1 MS
 * content 1..1 MS
 * content.format 1..1 MS
-* content.format = $recordingFormat#fhir-r4-resource
+* content.format = $recordingFormat#fhir-resource
 // Required by the inherited HealthKit recording parent and repeated here for clinical clarity.
 * content.format.version 0..0
 * content.attachment.contentType 1..1 MS
@@ -205,12 +205,11 @@ Description: "A pass-through envelope for one provider-issued clinical FHIR reso
 * content.attachment.size 1..1 MS
 * content.attachment.hash 1..1 MS
 * extension contains HealthKitClinicalFHIRRelease named fhirRelease 1..1 MS
-* extension[fhirRelease].valueCode = #r4 (exactly)
 
 Extension: HealthKitClinicalFHIRRelease
 Id: healthkit-clinical-fhir-release
 Title: "HealthKit Clinical FHIR Release"
-Description: "The FHIR release of the pass-through payload, read from HKFHIRVersion.fhirRelease and never inferred."
+Description: "The FHIR release of the pass-through payload, copied exactly from HKFHIRVersion.fhirRelease and never inferred from or written into the provider-issued bytes."
 * ^context[+].type = #element
 * ^context[=].expression = "DocumentReference"
 * value[x] only code

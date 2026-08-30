@@ -58,9 +58,12 @@
   },
   "clinicalRecordAdmission": {
     "profile": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document",
-    "payloadFormat": "fhir-r4-resource",
+    "payloadFormat": "fhir-resource",
     "sourceFHIRReleaseField": "HKFHIRVersion.fhirRelease",
-    "admittedFHIRRelease": "r4",
+    "admittedFHIRReleases": [
+      "dstu2",
+      "r4"
+    ],
     "fhirRepresentation": {
       "resourceType": "DocumentReference",
       "extensionUrl": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-fhir-release",
@@ -69,13 +72,15 @@
         "min": 1,
         "max": 1
       },
-      "fixedValue": "r4"
+      "allowedValues": [
+        "dstu2",
+        "r4"
+      ]
     },
     "rejectedFHIRReleases": [
-      "dstu2",
       "unknown"
     ],
-    "rule": "Admit a HealthKit clinical record only when HKFHIRVersion.fhirRelease is r4. Reject dstu2, unknown, a missing release, and every future release before emitting a DocumentReference; the payload is preserved byte-for-byte and never upgraded, downgraded, or inferred from its JSON shape."
+    "rule": "Admit a HealthKit clinical record only when HKFHIRVersion.fhirRelease is exactly dstu2 or r4. Copy that value to the one required release extension on the R4 DocumentReference envelope. Reject an unknown, missing, or future release before emission; preserve the provider-issued payload bytes exactly and never convert, re-encode, or infer their release from JSON shape."
   },
   "conversionProvenanceProfile": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-conversion-provenance",
   "statusVocabulary": {
