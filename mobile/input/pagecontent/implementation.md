@@ -45,10 +45,10 @@ Use that same manifest version when declaring the dependency in a FHIR Shorthand
 
 ### Validate a resource
 
-Download the official FHIR Validator and the Grove package, then run:
+Download the official FHIR Validator at the version `toolchain.fhirValidator` pins in `catalog/release-manifest.json`, download the Grove package, then run it against a real file—the [exchange Bundle example](Bundle-GroveMobileExchangeBundleExample.json) this guide publishes:
 
 ```sh
-java -jar validator_cli.jar exchange-bundle.json \
+java -jar validator_cli.jar Bundle-GroveMobileExchangeBundleExample.json \
   -version 4.0.1 \
   -ig grove-mobile-package/package.tgz \
   -profile https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle
@@ -61,8 +61,18 @@ At minimum, test one valid example for every supported measurement mapping and o
 Include identity collisions, missing results, point and interval timing, exact step-count intervals, source time zones, absent devices, gateway applications, study links, and conversion provenance.
 
 For graph-level validation, use a checkout of the Grove FHIR Implementation Guides source corresponding to the package version.
-Run `python3 Scripts/validate-producer.py --manifest <manifest.json> --validator <validator_cli.jar> --package <alias>=<package.tgz>` once per package alias declared by the manifest.
+The structural layer runs green in seconds with no downloads:
+
+```sh
+python3 Scripts/validate-producer.py \
+  --manifest Conformance/example-producer/manifest.json \
+  --structural-only
+```
+
+Copy that manifest, point it at your own emitted files, and run the same command.
+For the full lane, add `--validator <validator_cli.jar>` and one `--package <alias>=<package.tgz>` argument for every alias the manifest declares, all in a single invocation.
 The command verifies package identity, required profile claims, deterministic UUID URNs, and internal graph resolution before invoking the official FHIR Validator.
+`Conformance/README.md` in that checkout is the producer contract: the three mandatory validation layers, the negative corpus, and the semantic-vector binding.
 
 The [heart-rate JSON](Observation-GroveMobileHeartRateExample.json) is a compact starting example.
 The [step-count JSON](Observation-GroveMobileStepCountExample.json) demonstrates an interval aggregate.

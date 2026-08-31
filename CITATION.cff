@@ -12,5 +12,6 @@ authors:
   - given-names: Paul
     family-names: Schmiedmayer
 license: MIT
+version: 0.6.0
 url: https://github.com/SchmiedmayerLab/grove-fhir
 repository-code: https://github.com/SchmiedmayerLab/grove-fhir

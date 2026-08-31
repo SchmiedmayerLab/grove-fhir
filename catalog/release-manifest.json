@@ -23,11 +23,7 @@
     }
   },
   "publication": {
-    "sourceState": "release-candidate",
-    "previewMode": "ci-build-only",
-    "releaseMode": "immutable-releases",
-    "nonOverwrite": true,
-    "sourceRevisionPolicy": "The release tag, package checksums, manifest digest, and source commit must agree before publication."
+    "previewMode": "ci-build-only"
   },
   "guides": [
     {

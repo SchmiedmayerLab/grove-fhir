@@ -27,7 +27,11 @@ The response status determines how completeness rules and answer data are interp
 | `in-progress` | Required answers may be absent, and population work may remain incomplete. |
 | `completed`, `amended` | Enabled, required, and validation rules must be satisfied. |
 | `stopped` | The resource may preserve a deliberately incomplete administration. |
-| `entered-in-error` | The response is retracted as usable answer data. Preserve it when audit requirements apply, but do not treat its answers as valid for analysis or submission. |
+| `entered-in-error` | The response is no longer usable answer data: it asserts that the answers were recorded in error. Preserve it when audit requirements apply, but do not treat its answers as valid for analysis or submission. |
+
+`entered-in-error` is not the same act as a Grove [retraction event](https://grovealliance.org/fhir/mobile/observations.html#retraction-events).
+Retraction says a source record is no longer exposed and deliberately asserts nothing about whether the prior statement was erroneous; `entered-in-error` asserts exactly that it was.
+When a response has been projected into an exchange graph, that graph's outputs are withdrawn through the retraction path against their own source-output identifiers, independently of the response's own status.
 
 `authored` is when the answers were gathered or authored, not necessarily when the resource was transmitted or stored.
 `subject` identifies who the answers concern and is a required reference to a Patient; `author` identifies who recorded the answers; and `source` identifies who supplied them.
