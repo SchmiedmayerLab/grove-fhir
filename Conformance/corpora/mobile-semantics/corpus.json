@@ -50,7 +50,7 @@
   "sourceContextRules": {
     "healthkit.default": {
       "required": [
-        "Observation.extension[url=https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-source-type-extension].valueCode"
+        "Observation.extension[url=https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-source-type].valueCode"
       ],
       "allowedAdditions": [
         "Observation.identifier[healthKitObjectId]",
@@ -137,6 +137,17 @@
         "Observation.extension[provider-source-type].valueCode=withings/getmeas:9+10"
       ],
       "allowedAdditions": []
+    },
+    "questionnaire.default": {
+      "required": [
+        "Observation.derivedFrom"
+      ],
+      "allowedAdditions": [
+        "Observation.performer",
+        "Observation.issued",
+        "Observation.extension[recordingMethod].valueCoding.code=manual-entry",
+        "Observation.extension[gatewayDevice]"
+      ]
     }
   },
   "vectors": [
@@ -195,7 +206,8 @@
       ],
       "admittedSourceContext": {
         "healthkit": "healthkit.default",
-        "health-connect": "health-connect.temperature"
+        "health-connect": "health-connect.temperature",
+        "questionnaire": "questionnaire.default"
       }
     },
     {
@@ -249,7 +261,8 @@
       ],
       "admittedSourceContext": {
         "healthkit": "healthkit.default",
-        "google-health-api": "providers.default"
+        "google-health-api": "providers.default",
+        "questionnaire": "questionnaire.default"
       }
     },
     {
@@ -293,7 +306,8 @@
       "admittedSourceContext": {
         "healthkit": "healthkit.default",
         "health-connect": "health-connect.blood-pressure",
-        "withings": "providers.withings-blood-pressure"
+        "withings": "providers.withings-blood-pressure",
+        "questionnaire": "questionnaire.default"
       }
     },
     {
@@ -322,7 +336,8 @@
         "healthkit": "healthkit.default",
         "health-connect": "health-connect.default",
         "google-health-api": "providers.default",
-        "withings": "providers.default"
+        "withings": "providers.default",
+        "questionnaire": "questionnaire.default"
       }
     },
     {
@@ -350,7 +365,8 @@
         "healthkit": "healthkit.default",
         "health-connect": "health-connect.default",
         "google-health-api": "providers.default",
-        "withings": "providers.default"
+        "withings": "providers.default",
+        "questionnaire": "questionnaire.default"
       }
     },
     {
@@ -379,7 +395,8 @@
         "healthkit": "healthkit.default",
         "health-connect": "health-connect.temperature",
         "google-health-api": "providers.default",
-        "withings": "providers.default"
+        "withings": "providers.default",
+        "questionnaire": "questionnaire.default"
       }
     },
     {
@@ -406,7 +423,8 @@
       ],
       "admittedSourceContext": {
         "health-connect": "health-connect.default",
-        "withings": "providers.default"
+        "withings": "providers.default",
+        "questionnaire": "questionnaire.default"
       }
     },
     {
@@ -434,7 +452,8 @@
         "healthkit": "healthkit.default",
         "health-connect": "health-connect.default",
         "google-health-api": "providers.default",
-        "withings": "providers.default"
+        "withings": "providers.default",
+        "questionnaire": "questionnaire.default"
       }
     },
     {
@@ -460,7 +479,8 @@
       ],
       "admittedSourceContext": {
         "health-connect": "health-connect.default",
-        "withings": "providers.default"
+        "withings": "providers.default",
+        "questionnaire": "questionnaire.default"
       }
     },
     {
@@ -485,7 +505,8 @@
       ],
       "admittedSourceContext": {
         "healthkit": "healthkit.default",
-        "health-connect": "health-connect.default"
+        "health-connect": "health-connect.default",
+        "questionnaire": "questionnaire.default"
       }
     },
     {
@@ -512,7 +533,8 @@
       ],
       "admittedSourceContext": {
         "healthkit": "healthkit.default",
-        "health-connect": "health-connect.default"
+        "health-connect": "health-connect.default",
+        "questionnaire": "questionnaire.default"
       }
     },
     {
@@ -1662,7 +1684,8 @@
       ],
       "admittedSourceContext": {
         "healthkit": "healthkit.default",
-        "withings": "providers.default"
+        "withings": "providers.default",
+        "questionnaire": "questionnaire.default"
       }
     },
     {
@@ -1746,7 +1769,8 @@
       "admittedSourceContext": {
         "healthkit": "healthkit.heart-rate",
         "health-connect": "health-connect.default",
-        "withings": "providers.default"
+        "withings": "providers.default",
+        "questionnaire": "questionnaire.default"
       }
     },
     {
@@ -1772,7 +1796,8 @@
       ],
       "admittedSourceContext": {
         "health-connect": "health-connect.default",
-        "google-health-api": "providers.default"
+        "google-health-api": "providers.default",
+        "questionnaire": "questionnaire.default"
       }
     },
     {
@@ -1798,7 +1823,8 @@
       ],
       "admittedSourceContext": {
         "healthkit": "healthkit.default",
-        "google-health-api": "providers.default"
+        "google-health-api": "providers.default",
+        "questionnaire": "questionnaire.default"
       }
     },
     {
@@ -1823,7 +1849,8 @@
       ],
       "admittedSourceContext": {
         "healthkit": "healthkit.default",
-        "health-connect": "health-connect.default"
+        "health-connect": "health-connect.default",
+        "questionnaire": "questionnaire.default"
       }
     },
     {
@@ -1851,7 +1878,8 @@
       "admittedSourceContext": {
         "healthkit": "healthkit.default",
         "health-connect": "health-connect.default",
-        "withings": "providers.default"
+        "withings": "providers.default",
+        "questionnaire": "questionnaire.default"
       }
     },
     {
@@ -1905,7 +1933,8 @@
       ],
       "admittedSourceContext": {
         "healthkit": "healthkit.default",
-        "health-connect": "health-connect.default"
+        "health-connect": "health-connect.default",
+        "questionnaire": "questionnaire.default"
       }
     },
     {
@@ -1958,7 +1987,8 @@
       ],
       "admittedSourceContext": {
         "healthkit": "healthkit.default",
-        "health-connect": "health-connect.default"
+        "health-connect": "health-connect.default",
+        "questionnaire": "questionnaire.default"
       }
     },
     {
@@ -1985,7 +2015,8 @@
       "admittedSourceContext": {
         "healthkit": "healthkit.default",
         "health-connect": "health-connect.default",
-        "withings": "providers.default"
+        "withings": "providers.default",
+        "questionnaire": "questionnaire.default"
       }
     },
     {
@@ -2040,7 +2071,8 @@
       ],
       "admittedSourceContext": {
         "healthkit": "healthkit.default",
-        "health-connect": "health-connect.default"
+        "health-connect": "health-connect.default",
+        "questionnaire": "questionnaire.default"
       }
     },
     {
@@ -2095,7 +2127,8 @@
       ],
       "admittedSourceContext": {
         "healthkit": "healthkit.default",
-        "health-connect": "health-connect.default"
+        "health-connect": "health-connect.default",
+        "questionnaire": "questionnaire.default"
       }
     },
     {
@@ -2158,7 +2191,8 @@
       ],
       "admittedSourceContext": {
         "healthkit": "healthkit.default",
-        "health-connect": "health-connect.default"
+        "health-connect": "health-connect.default",
+        "questionnaire": "questionnaire.default"
       }
     },
     {
@@ -2183,7 +2217,8 @@
       ],
       "admittedSourceContext": {
         "healthkit": "healthkit.default",
-        "health-connect": "health-connect.default"
+        "health-connect": "health-connect.default",
+        "questionnaire": "questionnaire.default"
       }
     },
     {
@@ -2212,7 +2247,8 @@
       "admittedSourceContext": {
         "healthkit": "healthkit.default",
         "health-connect": "health-connect.default",
-        "withings": "providers.default"
+        "withings": "providers.default",
+        "questionnaire": "questionnaire.default"
       }
     },
     {
@@ -2351,7 +2387,8 @@
       ],
       "admittedSourceContext": {
         "healthkit": "healthkit.default",
-        "health-connect": "health-connect.default"
+        "health-connect": "health-connect.default",
+        "questionnaire": "questionnaire.default"
       }
     },
     {
@@ -2411,7 +2448,8 @@
         "health-connect": "health-connect.default",
         "google-health-api": "providers.default",
         "oura": "providers.default",
-        "withings": "providers.default"
+        "withings": "providers.default",
+        "questionnaire": "questionnaire.default"
       }
     },
     {

@@ -349,6 +349,10 @@ jobs:
             | xargs python3 Scripts/check-guide-qa.py
       - run: ./Scripts/assemble-pages.sh
       - run: python3 -m unittest Tests.test_artifact_allowlist -v
+      # Skips without a build, so it cannot run in the tooling job that has none.
+      - run: >-
+          python3 -m unittest -v
+          Tests.test_questionnaire_contract.QuestionnaireContractTests.test_published_pairs_validate_against_their_own_instrument
       - run: python3 Scripts/validate-questionnaire-fhir.py
       - name: Validate the example producer with the official Validator
         run: >-
@@ -358,6 +362,12 @@ jobs:
           --package mobile=mobile/output/package.tgz
           --package questionnaire=questionnaire/output/package.tgz
           --allow-example-urls
+      - name: Validate every committed fixture with the official Validator
+        run: >-
+          python3 Scripts/validate-fixtures.py
+          --validator .build/fhir-tools/validator_cli.jar
+          --package mobile=mobile/output/package.tgz
+          --package questionnaire=questionnaire/output/package.tgz
       - uses: actions/upload-artifact@v7
         with:
           name: pages-site

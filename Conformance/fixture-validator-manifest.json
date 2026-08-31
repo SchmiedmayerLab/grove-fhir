@@ -1,0 +1,173 @@
+{
+  "schemaVersion": 0,
+  "fhirVersion": "4.0.1",
+  "purpose": "Every committed Grove FHIR fixture outside a guide's input directory goes through the official HL7 FHIR Validator with the exact Grove packages. A guide's own worked examples are validated by the IG Publisher during its build and audited by Scripts/check-guide-qa.py; these fixtures are the ones no build ever sees, so a fixture that contradicts its claimed profile could otherwise ship. Every JSON file beneath the declared roots is either validated here or excluded with a reason, so a new fixture cannot be added unclassified.",
+  "roots": [
+    "Conformance",
+    "questionnaire/fixtures"
+  ],
+  "packages": [
+    {
+      "alias": "mobile",
+      "packageId": "org.grovealliance.fhir.mobile",
+      "version": "0.6.0"
+    },
+    {
+      "alias": "questionnaire",
+      "packageId": "org.grovealliance.fhir.questionnaire",
+      "version": "0.6.0"
+    }
+  ],
+  "resources": [
+    {
+      "path": "Conformance/corpora/mobile-exchange/exchange-bundle.json",
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle"
+      ]
+    },
+    {
+      "path": "Conformance/corpora/mobile-exchange/retraction-bundle.json",
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-retraction-bundle"
+      ]
+    },
+    {
+      "path": "Conformance/example-producer/resources/exchange-bundle.json",
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle"
+      ]
+    },
+    {
+      "path": "questionnaire/fixtures/extraction/application-device.json",
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-application-device"
+      ]
+    },
+    {
+      "path": "questionnaire/fixtures/extraction/blood-pressure.json",
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-blood-pressure"
+      ]
+    },
+    {
+      "path": "questionnaire/fixtures/extraction/body-weight.json",
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-body-weight"
+      ]
+    },
+    {
+      "path": "questionnaire/fixtures/extraction/exchange-bundle.json",
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle"
+      ]
+    },
+    {
+      "path": "questionnaire/fixtures/extraction/host-device.json",
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-host-device"
+      ]
+    },
+    {
+      "path": "questionnaire/fixtures/extraction/questionnaire-response.json",
+      "profiles": [
+        "https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire-response"
+      ]
+    },
+    {
+      "path": "questionnaire/fixtures/extraction/questionnaire.json",
+      "profiles": [
+        "https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire"
+      ]
+    },
+    {
+      "path": "questionnaire/fixtures/validator/valid/questionnaire-conditions.json",
+      "profiles": [
+        "https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire"
+      ]
+    },
+    {
+      "path": "questionnaire/fixtures/validator/valid/questionnaire-constraints.json",
+      "profiles": [
+        "https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire"
+      ]
+    },
+    {
+      "path": "questionnaire/fixtures/validator/valid/questionnaire-expressions.json",
+      "profiles": [
+        "https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire"
+      ]
+    },
+    {
+      "path": "questionnaire/fixtures/validator/valid/questionnaire-response.json",
+      "profiles": [
+        "https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire-response"
+      ]
+    },
+    {
+      "path": "questionnaire/fixtures/validator/valid/questionnaire-typed-constraints.json",
+      "profiles": [
+        "https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire"
+      ]
+    },
+    {
+      "path": "questionnaire/fixtures/validator/valid/questionnaire.json",
+      "profiles": [
+        "https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire"
+      ]
+    }
+  ],
+  "excluded": [
+    {
+      "path": "Conformance/corpora/mobile-exchange/corpus.json",
+      "reason": "The negative producer corpus: a case manifest of JSON Patch mutations, validated by the structural conformance kit."
+    },
+    {
+      "path": "Conformance/corpora/mobile-exchange/official-validator-manifest.json",
+      "reason": "A producer manifest driving the normative-corpus Validator lane, not a FHIR resource."
+    },
+    {
+      "path": "Conformance/corpora/mobile-semantics/corpus.json",
+      "reason": "The implementation-neutral semantic-vector corpus, validated against the measurement catalog."
+    },
+    {
+      "path": "Conformance/example-producer/manifest.json",
+      "reason": "The example producer manifest, validated against Conformance/producer-manifest.schema.json."
+    },
+    {
+      "path": "Conformance/fixture-validator-manifest.json",
+      "reason": "This manifest."
+    },
+    {
+      "path": "Conformance/producer-manifest.schema.json",
+      "reason": "The producer manifest JSON Schema."
+    },
+    {
+      "path": "questionnaire/fixtures/pairs/cases.json",
+      "reason": "A paired-validator case manifest of JSON Patch mutations, not a FHIR resource."
+    },
+    {
+      "path": "questionnaire/fixtures/pairs/valid/questionnaire.json",
+      "reason": "A paired cross-resource validator input, not a profile-conformance example: it claims no Grove profile and deliberately exercises locale-varied response item text and exact occurrence boundaries, which the pinned Validator misreports (\"the maximum number of answers is 2 but this has 2 answers\"). Scripts/validate-questionnaire.py and Tests/test_questionnaire_contract.py own this corpus."
+    },
+    {
+      "path": "questionnaire/fixtures/pairs/valid/response-in-progress.json",
+      "reason": "A paired cross-resource validator input, not a profile-conformance example: it claims no Grove profile and deliberately exercises locale-varied response item text and exact occurrence boundaries, which the pinned Validator misreports (\"the maximum number of answers is 2 but this has 2 answers\"). Scripts/validate-questionnaire.py and Tests/test_questionnaire_contract.py own this corpus."
+    },
+    {
+      "path": "questionnaire/fixtures/pairs/valid/response.json",
+      "reason": "A paired cross-resource validator input, not a profile-conformance example: it claims no Grove profile and deliberately exercises locale-varied response item text and exact occurrence boundaries, which the pinned Validator misreports (\"the maximum number of answers is 2 but this has 2 answers\"). Scripts/validate-questionnaire.py and Tests/test_questionnaire_contract.py own this corpus."
+    },
+    {
+      "path": "questionnaire/fixtures/pairs/valid/value-set.json",
+      "reason": "A paired cross-resource validator input, not a profile-conformance example: it claims no Grove profile and deliberately exercises locale-varied response item text and exact occurrence boundaries, which the pinned Validator misreports (\"the maximum number of answers is 2 but this has 2 answers\"). Scripts/validate-questionnaire.py and Tests/test_questionnaire_contract.py own this corpus."
+    },
+    {
+      "path": "questionnaire/fixtures/validator/cases.json",
+      "reason": "A Questionnaire validator case manifest of JSON Patch mutations, not a FHIR resource."
+    },
+    {
+      "path": "questionnaire/fixtures/validator/validator-expectations.json",
+      "reason": "The exact official-Validator error expectations for the negative Questionnaire cases."
+    }
+  ]
+}

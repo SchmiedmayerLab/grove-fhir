@@ -149,6 +149,8 @@ Additional translations from unrelated coding systems remain open.
 
 Every entry carries one `grove-exchange-entry-node-key` extension.
 A resource with business identity selects the highest-priority typed Identifier defined by the protocol; a resource without one uses an event-scoped `n0:` graph-node key.
+That key's ordinal is zero-based within its own node-role, counted in Bundle entry order across the entries that carry an entry-node key: a role represented once is always `0`, a second entry of that role is `1`, and each role is numbered independently of every other.
+Because the digest is taken over the ordinal the key itself states, a receiver derives the expected ordinal from the Bundle rather than reading it back from the key.
 Its `fullUrl` is UUIDv5 under namespace `43df4575-bff7-5a57-9a80-2472cd2b0623`, derived from the complete selected system/value pair using the same length-framed UTF-8 encoding.
 References between entries use those UUID URNs.
 UUIDv5 is deterministic formatting, not concealment.
@@ -182,6 +184,10 @@ A receiving system resolves every complete Identifier pair unambiguously; the de
 Retraction does not assert that the prior clinical statement was erroneous.
 
 Each target role fixes both its resource type and Identifier role: primary outputs are supported clinical result resources, child outputs are Observations, source artifacts are DocumentReferences, specimens are Specimens, and device snapshots are Devices.
+
+A target may additionally carry one [Grove Retraction Native Record Identifier](StructureDefinition-grove-retraction-target-native-identifier.html), the platform-native record identifier of the record being retracted, so a consumer can delete the exact native records rather than only the projections.
+`Identifier.system` is the adapter's own absolute native key space, scoped to the governed repository, account, or store exactly as it is for the optional governed source identifier on the addition path, and the same explicit deployment disclosure policy governs both; omitting it remains conformant.
+It never addresses the target: the minted `source-output` or `device-snapshot` identity remains the retraction address, and the native Identifier carries no Grove identifier role.
 Both active and retraction Provenance carry exactly one logical `source-record` Identifier entity with role `source`; literal source references and additional source entities are rejected.
 
 This guide sets no limits on Bundle size, resource count, paging, retry behavior, or storage.

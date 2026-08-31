@@ -147,6 +147,13 @@
           "classification": "definition"
         },
         {
+          "fshName": "GroveRetractionTargetNativeIdentifier",
+          "fshType": "Extension",
+          "resourceType": "StructureDefinition",
+          "id": "grove-retraction-target-native-identifier",
+          "classification": "definition"
+        },
+        {
           "fshName": "GroveRetractionTargetRole",
           "fshType": "Extension",
           "resourceType": "StructureDefinition",
@@ -2600,7 +2607,7 @@
           "fshName": "HealthKitSourceType",
           "fshType": "Extension",
           "resourceType": "StructureDefinition",
-          "id": "healthkit-source-type-extension",
+          "id": "healthkit-source-type",
           "classification": "definition"
         },
         {
@@ -4575,13 +4582,6 @@
           "fshType": "ValueSet",
           "resourceType": "ValueSet",
           "id": "healthkit-symptom-severity",
-          "classification": "definition"
-        },
-        {
-          "fshName": "HealthKitTrackedMedicationStatusVS",
-          "fshType": "ValueSet",
-          "resourceType": "ValueSet",
-          "id": "healthkit-tracked-medication-status",
           "classification": "definition"
         },
         {

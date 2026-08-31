@@ -27,7 +27,7 @@ Expression: "value.exists() or dataAbsentReason.exists()"
 Severity: #error
 
 Invariant: grove-step-count-period-1
-Description: "A step-count Observation has a non-zero effective Period."
+Description: "A step or wheelchair-push count Observation has a non-zero effective Period."
 Expression: "effective.ofType(Period).end > effective.ofType(Period).start"
 Severity: #error
 
@@ -129,6 +129,11 @@ Severity: #error
 Invariant: grove-retraction-target-1
 Description: "Every retraction target is a typed logical Reference with one complete identifier, one Grove output role, and no literal reference."
 Expression: "target.all(reference.empty() and type.exists() and identifier.system.exists() and identifier.value.exists() and extension('https://grovealliance.org/fhir/mobile/StructureDefinition/grove-retraction-target-role').count() = 1)"
+Severity: #error
+
+Invariant: grove-native-record-identifier-1
+Description: "A native record identifier names an absolute adapter-owned key space and never carries a Grove identifier-role coding, because it is source-native traceability rather than a Grove graph key."
+Expression: "system.matches('^[A-Za-z][A-Za-z0-9+.-]*:') and value.exists() and type.coding.where(system = 'https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role').empty()"
 Severity: #error
 
 Invariant: grove-lifecycle-source-entity-1
@@ -393,7 +398,9 @@ Description: "An append-only assertion that a source record is no longer exposed
 * target.identifier.system 1..1 MS
 * target.identifier.value 1..1 MS
 * target.identifier.value obeys grove-opaque-identifier-value-1
-* target.extension contains GroveRetractionTargetRole named targetRole 1..1 MS
+* target.extension contains
+    GroveRetractionTargetRole named targetRole 1..1 MS and
+    GroveRetractionTargetNativeIdentifier named nativeIdentifier 0..1 MS
 * occurred[x] 1..1 MS
 * recorded 1..1 MS
 * activity 1..1 MS

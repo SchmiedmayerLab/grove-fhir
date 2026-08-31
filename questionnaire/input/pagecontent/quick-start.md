@@ -24,7 +24,7 @@ The following excerpt highlights the identity fields:
 ```json
 {
   "url": "https://grovealliance.org/fhir/questionnaire/Questionnaire/GroveWeeklySymptomCheckInExample",
-  "version": "1.0.0",
+  "version": "0.6.0",
   "status": "active"
 }
 ```
@@ -33,7 +33,7 @@ The response joins the canonical URL and version with one `|`:
 
 ```json
 {
-  "questionnaire": "https://grovealliance.org/fhir/questionnaire/Questionnaire/GroveWeeklySymptomCheckInExample|1.0.0"
+  "questionnaire": "https://grovealliance.org/fhir/questionnaire/Questionnaire/GroveWeeklySymptomCheckInExample|0.6.0"
 }
 ```
 
@@ -84,40 +84,43 @@ On a profile page:
 
 ### 4. Validate each resource
 
-The canonical URL namespace identifies conformance artifacts; implementations must not depend on each canonical URL being directly retrievable.
-The guide publication instead provides the package archive used by validation tools.
-Download `package.tgz` and `package.tgz.sha256` from the [Artifacts page](artifacts.html).
-Save both files in the same directory, change to that directory, and run:
+This guide is published as the package `org.grovealliance.fhir.questionnaire`; download `package.tgz` and `package.tgz.sha256` from the [Artifacts page](artifacts.html).
+The [Mobile guide states the complete download, checksum, and atomic-install procedure](https://grovealliance.org/fhir/mobile/implementation.html#add-the-package) once for every Grove package, including why a new archive is never extracted over an older copy.
+
+Run the official FHIR Validator, at the version `toolchain.fhirValidator` pins in `catalog/release-manifest.json`, once for each resource:
 
 ```sh
-shasum -a 256 --check package.tgz.sha256
-```
-
-Run the official FHIR Validator once for each resource:
-
-```sh
-java -jar validator_cli.jar questionnaire.json \
+java -jar validator_cli.jar Questionnaire-GroveWeeklySymptomCheckInExample.json \
   -version 4.0.1 \
   -ig package.tgz \
   -profile https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire
 
-java -jar validator_cli.jar questionnaire-response.json \
+java -jar validator_cli.jar QuestionnaireResponse-GroveWeeklySymptomCheckInResponseExample.json \
   -version 4.0.1 \
   -ig package.tgz \
+  -ig Questionnaire-GroveWeeklySymptomCheckInExample.json \
+  -allow-example-urls true \
   -profile https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire-response
 ```
+
+The second command carries two arguments the first does not.
+The Validator rejects reserved `example.org` URLs by default, and this published response uses them for its submission identifier and its application naming system, so it opts in explicitly; real deployment resources use resolvable systems and omit the flag.
+It also names the instrument as a second `-ig` source, because a package's examples are not indexed as resolvable canonicals: without it the Validator reports that it cannot resolve `…GroveWeeklySymptomCheckInExample|0.6.0` and skips every check against the instrument.
+Supply the exact instrument the response names, whatever its source.
 
 ### 5. Validate the resource pair
 
 Profile validation cannot prove that response items and answers agree with the referenced Questionnaire.
-From a checkout of the Grove FHIR Implementation Guides source corresponding to the package version, run the paired validator with every ValueSet used by `answerValueSet` or `unitValueSet`:
+From a checkout of the Grove FHIR Implementation Guides source corresponding to the package version, run the paired validator on the same two files:
 
 ```sh
 python3 Scripts/validate-questionnaire.py \
-  --questionnaire questionnaire.json \
-  --response questionnaire-response.json \
-  --value-set mood-valueset.json
+  --questionnaire Questionnaire-GroveWeeklySymptomCheckInExample.json \
+  --response QuestionnaireResponse-GroveWeeklySymptomCheckInResponseExample.json
 ```
+
+This pair states its answer options inline, so it needs no ValueSet.
+Add one `--value-set <file>` argument for every ValueSet an instrument reaches through `answerValueSet` or `unitValueSet`; membership rules cannot be checked against a set the validator cannot read.
 
 The command exits nonzero for any blocking rule and prints stable rule codes such as `pair-answer-type` and `pair-valueset-membership`.
 Run it in the same acceptance workflow that stores, forwards, or otherwise accepts a completed response.

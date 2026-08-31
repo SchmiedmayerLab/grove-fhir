@@ -56,7 +56,7 @@ A sample with neither sync field omits writer identity and writer version.
 It still carries mandatory source-record and source-output identities.
 Do not synthesize writer identity: a writer that did not assign one has not promised cross-revision correlation.
 
-The sample-type identifier dispatches converter code and is preserved as exactly one `healthkit-source-type-extension` value.
+The sample-type identifier dispatches converter code and is preserved as exactly one `healthkit-source-type` value.
 This is adapter lineage, not a second expression of the observed clinical concept: `Observation.code` and `DocumentReference.type` retain only codings that actually mean the result or document type.
 
 ### Electrocardiograms

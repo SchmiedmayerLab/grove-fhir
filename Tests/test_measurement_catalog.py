@@ -18,7 +18,15 @@ ROOT = Path(__file__).parents[1]
 RELEASE_VERSION = json.loads(
     (ROOT / "catalog/release-manifest.json").read_text(encoding="utf-8")
 )["releaseVersion"]
-SOURCES = {"healthkit", "health-connect", "sensorkit", "google-health-api", "oura", "withings"}
+SOURCES = {
+    "healthkit",
+    "health-connect",
+    "sensorkit",
+    "google-health-api",
+    "oura",
+    "withings",
+    "questionnaire",
+}
 
 
 class MeasurementCatalogTests(unittest.TestCase):
@@ -32,8 +40,7 @@ class MeasurementCatalogTests(unittest.TestCase):
         }
         profiles = package_profiles["mobile"]
         statuses = set(catalog["statusVocabulary"])
-        self.assertEqual(set(catalog["statusDefinitions"]), statuses)
-        for definition in catalog["statusDefinitions"].values():
+        for definition in catalog["statusVocabulary"].values():
             self.assertIsInstance(definition, str)
             self.assertTrue(definition)
         identifiers: set[str] = set()
@@ -207,13 +214,36 @@ class MeasurementCatalogTests(unittest.TestCase):
                 continue
             supported = [
                 source for source, status in measurement["coverage"].items()
-                if status == "supported"
+                if status == "supported" and source != "questionnaire"
             ]
             self.assertGreaterEqual(
                 len(supported),
                 2,
                 f"{measurement['id']} is adapter-only and must not be a Mobile profile",
             )
+
+    def test_questionnaire_coverage_is_confined_to_instant_effective_measurements(self) -> None:
+        """Observation-based extraction has only the response's authored instant to offer.
+
+        A profile that demands a Period can never be satisfied by it, and a profile an adapter
+        owns is not a shared meaning a response can project onto, so neither can carry
+        questionnaire coverage. What an uncovered measurement says instead is a curated
+        judgement about that measurement, not something to re-derive here.
+        """
+        catalog = json.loads(
+            (ROOT / "catalog/measurement-catalog.json").read_text(encoding="utf-8")
+        )
+        vocabulary = catalog["statusVocabulary"]
+        for measurement in catalog["measurements"]:
+            with self.subTest(measurement=measurement["id"]):
+                status = measurement["coverage"]["questionnaire"]
+                self.assertIn(status, vocabulary)
+                if status != "supported":
+                    continue
+                self.assertIn(
+                    measurement["effective"], {"dateTime", "dateTime-or-Period"}
+                )
+                self.assertEqual(measurement.get("owner", "mobile"), "mobile")
 
     def test_full_url_vectors_use_the_normative_framed_identifier_pair(self) -> None:
         from Scripts import exchange_protocol

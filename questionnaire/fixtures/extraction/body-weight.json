@@ -17,7 +17,7 @@
         ]
       },
       "system": "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1",
-      "value": "v0:test-key:1:4DEMsmBjQf9GnAxySwNujescV3QltnR5ctQIx_vPdGs"
+      "value": "v0:test-key:1:7_7dmqTFxPH01QGTycmp8nIPty7WwphH2X0ZaV-p3wk"
     },
     {
       "type": {
@@ -29,7 +29,7 @@
         ]
       },
       "system": "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1",
-      "value": "v0:test-key:1:w3wWvpvIXSvVqFFpHNe4hNo-MFtJVf6ZT7uW8Y7bxZY"
+      "value": "v0:test-key:1:oY5ARo6F_wNj5wVdtFqORMdUwZ__B9kQ6GW1RSaEz10"
     }
   ],
   "status": "final",
@@ -72,14 +72,10 @@
   "extension": [
     {
       "url": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-recording-method",
-      "valueCodeableConcept": {
-        "coding": [
-          {
-            "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-recording-method",
-            "code": "manual-entry",
-            "display": "Manual entry"
-          }
-        ]
+      "valueCoding": {
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-recording-method",
+        "code": "manual-entry",
+        "display": "Manual entry"
       }
     },
     {

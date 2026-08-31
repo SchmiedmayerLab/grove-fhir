@@ -8,13 +8,19 @@
 
 from __future__ import annotations
 
+import json
 import re
+import sys
 import unittest
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
 HMAC_VALUE = re.compile(r"v0:test-key:1:[A-Za-z0-9_-]{43}")
+DERIVABLE_FIXTURE_ROOTS = ("Conformance", "questionnaire/fixtures")
+
+sys.path.insert(0, str(ROOT / "Scripts"))
+import exchange_protocol  # noqa: E402
 
 
 class ExampleIdentityTests(unittest.TestCase):
@@ -67,6 +73,52 @@ class ExampleIdentityTests(unittest.TestCase):
                 self.assertEqual(
                     len(re.findall(r"^\* content\.attachment\.data = ", block, re.MULTILINE)),
                     1,
+                )
+
+
+class DerivableFixtureIdentityTests(unittest.TestCase):
+    """Every conformance identity must be a real mint, not a well-shaped string.
+
+    The retraction rule addresses "the exact canonical v0 HMAC identity previously emitted".
+    That only means something if the corpora teach derivation, so each committed value has to
+    recompute from a published component tuple with the public test key.
+    """
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        contract = json.loads(
+            (ROOT / "catalog/exchange-protocol.json").read_text(encoding="utf-8")
+        )
+        cls.vectors = contract["testVectors"]
+        cls.key = bytes.fromhex(cls.vectors["keyHex"])
+
+    def test_every_committed_fixture_identity_recomputes_from_a_published_tuple(self) -> None:
+        published: dict[str, str] = {}
+        for vector in self.vectors["identities"]:
+            value = exchange_protocol.derive_hmac_identity(
+                key=self.key,
+                key_id=self.vectors["keyId"],
+                epoch=self.vectors["epoch"],
+                identity_kind=vector["identityKind"],
+                components=vector["components"],
+            )
+            self.assertEqual(value, vector["value"], vector["id"])
+            published[value] = vector["id"]
+
+        carried: dict[str, set[str]] = {}
+        for root in DERIVABLE_FIXTURE_ROOTS:
+            for path in sorted((ROOT / root).rglob("*.json")):
+                for value in HMAC_VALUE.findall(path.read_text(encoding="utf-8")):
+                    carried.setdefault(value, set()).add(
+                        path.relative_to(ROOT).as_posix()
+                    )
+        self.assertTrue(carried, "the conformance fixtures carry no opaque identities")
+        for value, files in sorted(carried.items()):
+            with self.subTest(value=value):
+                self.assertIn(
+                    value,
+                    published,
+                    f"{value} in {sorted(files)} has no components in testVectors",
                 )
 
 

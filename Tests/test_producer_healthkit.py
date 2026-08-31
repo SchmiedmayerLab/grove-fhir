@@ -57,7 +57,7 @@ class ProducerHealthkitTests(ProducerValidationTestCase):
             "extension": [{
                 "url": (
                     "https://grovealliance.org/fhir/healthkit/StructureDefinition/"
-                    "healthkit-source-type-extension"
+                    "healthkit-source-type"
                 ),
                 "valueCode": "HKClinicalTypeIdentifierAllergyRecord",
             }],
@@ -325,7 +325,7 @@ class ProducerHealthkitTests(ProducerValidationTestCase):
             "extension": [
                 {
                     "url": healthkit_root
-                    + "StructureDefinition/healthkit-source-type-extension",
+                    + "StructureDefinition/healthkit-source-type",
                     "valueCode": "HKDataTypeIdentifierElectrocardiogram",
                 },
                 {
@@ -410,6 +410,9 @@ class ProducerHealthkitTests(ProducerValidationTestCase):
             "2026-08-20T09:00:00.005000001Z"
         )
         mutations.append((outside_source_period, "must lie within"))
+        double_spaced_channel = copy.deepcopy(ecg)
+        double_spaced_channel["component"][0]["valueSampledData"]["data"] = "0.01  0.02 0.03"
+        mutations.append((double_spaced_channel, "decimal SampledData channel"))
         for invalid, diagnostic in mutations:
             with self.subTest(diagnostic=diagnostic), self.assertRaisesRegex(
                 diagnostics.ProducerValidationError, diagnostic
@@ -435,7 +438,7 @@ class ProducerHealthkitTests(ProducerValidationTestCase):
                 typed_identifier("source-output", output_system, average_output),
             ],
             "extension": [{
-                "url": healthkit_root + "StructureDefinition/healthkit-source-type-extension",
+                "url": healthkit_root + "StructureDefinition/healthkit-source-type",
                 "valueCode": "HKDataTypeIdentifierElectrocardiogram",
             }],
             "code": {"coding": [

@@ -78,10 +78,11 @@
     "producerDiagnostic": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["code", "reason"],
+      "required": ["code", "reason", "emittedBy"],
       "properties": {
         "code": { "type": "string", "pattern": "^[a-z][a-z0-9-]*(?:[.][a-z][a-z0-9-]*)+$" },
-        "reason": { "$ref": "#/$defs/nonempty" }
+        "reason": { "$ref": "#/$defs/nonempty" },
+        "emittedBy": { "enum": ["conformance-kit", "client"] }
       }
     },
     "profiles": {
@@ -98,10 +99,11 @@
     "extensions": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["entryNodeKey", "retractionTargetRole", "writerRecordVersion"],
+      "required": ["entryNodeKey", "retractionTargetRole", "retractionTargetNativeIdentifier", "writerRecordVersion"],
       "properties": {
         "entryNodeKey": { "$ref": "#/$defs/uri" },
         "retractionTargetRole": { "$ref": "#/$defs/uri" },
+        "retractionTargetNativeIdentifier": { "$ref": "#/$defs/uri" },
         "writerRecordVersion": { "$ref": "#/$defs/uri" }
       }
     },
@@ -380,7 +382,7 @@
         "entryNode": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["system", "domain", "components", "valueForm", "digest"],
+          "required": ["system", "domain", "components", "ordinal", "valueForm", "digest"],
           "properties": {
             "system": { "$ref": "#/$defs/nonempty" },
             "domain": { "const": "org.grovealliance.fhir.entry-node.v0" },
@@ -390,6 +392,7 @@
               "maxItems": 4,
               "items": { "$ref": "#/$defs/code" }
             },
+            "ordinal": { "$ref": "#/$defs/nonempty" },
             "valueForm": { "$ref": "#/$defs/nonempty" },
             "digest": { "$ref": "#/$defs/nonempty" }
           }
@@ -416,13 +419,29 @@
         "retraction": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["activitySystem", "activityCode", "codingCardinality", "meaning", "target", "targetRoles", "sink"],
+          "required": ["activitySystem", "activityCode", "codingCardinality", "meaning", "target", "nativeRecordIdentifier", "targetRoles", "sink"],
           "properties": {
             "activitySystem": { "$ref": "#/$defs/uri" },
             "activityCode": { "const": "source-record-retracted" },
             "codingCardinality": { "$ref": "#/$defs/nonempty" },
             "meaning": { "$ref": "#/$defs/nonempty" },
             "target": { "$ref": "#/$defs/nonempty" },
+            "nativeRecordIdentifier": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["optionality", "extension", "valueType", "maxPerTarget", "systemAuthority", "system", "value", "disclosurePolicy", "prohibitions"],
+              "properties": {
+                "optionality": { "const": "optional" },
+                "extension": { "const": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-retraction-target-native-identifier" },
+                "valueType": { "const": "Identifier" },
+                "maxPerTarget": { "const": 1 },
+                "systemAuthority": { "const": "per-adapter" },
+                "system": { "$ref": "#/$defs/nonempty" },
+                "value": { "$ref": "#/$defs/nonempty" },
+                "disclosurePolicy": { "const": "governedSourceIdentifier" },
+                "prohibitions": { "$ref": "#/$defs/nonempty" }
+              }
+            },
             "targetRoles": {
               "type": "object",
               "additionalProperties": false,

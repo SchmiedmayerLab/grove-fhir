@@ -9,7 +9,7 @@
     "mobile/input/fsh/terminology.fsh",
     "mobile/input/fsh/profiles.fsh"
   ],
-  "groundTruthDigest": "sha256:ef26ff7ea1c0e648d50a1cfba7eec75933a520fb9eeaf98db6ac4f08c8c74c47",
+  "groundTruthDigest": "sha256:11d427e4f61793bed3ce168ef53ea32a297faf2197c2ca40de41bb9d6c7db313",
   "valueDomainReview": {
     "status": "prepared-pending-release-ratification",
     "preparedOn": "2026-08-27",
@@ -4301,7 +4301,7 @@
     "wheelchair-push-count": {
       "status": "approved",
       "provenance": "reviewed",
-      "digest": "sha256:08d63dd5bf13698bdacc70fc8da6ef7d8108ae21d4b5aa7f41cb3a9ab4702162",
+      "digest": "sha256:04fe5a6621903538105b67a0f66f790827fc59e01cc26b07be3fc4dc4a331499",
       "preparedBy": [
         {
           "name": "terminology sweep drafting agent (concepts-quantity)",
@@ -4316,9 +4316,9 @@
       ],
       "ratification": "pending-pull-request-review",
       "reviewedOn": "2026-08-21",
-      "recordedOn": "2026-08-21",
+      "recordedOn": "2026-08-30",
       "reviewRef": "pending-integration-commit",
-      "notes": "Two sources (HealthKit PushCount, Health Connect WheelchairPushesRecord) evidence the interval push count, so it is shared. LOINC 96502-0 Number of wheelchair pushes per time period verified via NLM Clinical Tables and tx.fhir.org $lookup on LOINC 2.82: PROPERTY LP6839-7 (Num), SCALE Qn, STATUS ACTIVE - and its per-time-period framing matches effective Period exactly. Num is a dimensionless count, so the pinned propertyDimensions table needs Num -> {}; the unit needs a new annotation {pushes} (justification: wheelchair push events as counted by the source wrist sensor)."
+      "notes": "Two sources (HealthKit PushCount, Health Connect WheelchairPushesRecord) evidence the interval push count, so it is shared. LOINC 96502-0 Number of wheelchair pushes per time period verified via NLM Clinical Tables and tx.fhir.org $lookup on LOINC 2.82: PROPERTY LP6839-7 (Num), SCALE Qn, STATUS ACTIVE - and its per-time-period framing matches effective Period exactly. Num is a dimensionless count, so the pinned propertyDimensions table needs Num -> {}; the unit needs a new annotation {pushes} (justification: wheelchair push events as counted by the source wrist sensor). Re-minted 2026-08-30: the entry now obeys grove-step-count-period-1, so a zero-width Period fails for pushes exactly as it does for steps; the description already claimed that analogy. No code, unit, or value-domain change."
     },
     "wheelchair-use": {
       "status": "approved",
@@ -4585,6 +4585,33 @@
       "measurementImpact": "No measurement code, unit, result value set, or clinical effective-time meaning changed through this ground-truth remint. Per-measurement digests remain the independent terminology gate; the one Google daily resting-heart-rate ownership change has its own newly reviewed digest.",
       "review": "Engineering and FHIR contract review prepared for pull-request ratification as part of the second contract completion change.",
       "approvedOn": "2026-08-27"
+    },
+    {
+      "from": "sha256:ef26ff7ea1c0e648d50a1cfba7eec75933a520fb9eeaf98db6ac4f08c8c74c47",
+      "to": "sha256:99e096d5eddfa3325a650a5480aed955bbb46a5ee5b03217ceb726286a263aab",
+      "baseCommit": "90b23e6",
+      "change": "Added the grove-native-record-identifier-1 invariant and the optional native-record-identifier slice on GroveMobileRetractionProvenance.target.",
+      "measurementImpact": "None. The change is confined to the retraction lifecycle Provenance and adds no terminology; every per-measurement digest is unchanged.",
+      "review": "Pending pull-request review for the 0.6.0 release preparation.",
+      "approvedOn": "2026-08-30"
+    },
+    {
+      "from": "sha256:99e096d5eddfa3325a650a5480aed955bbb46a5ee5b03217ceb726286a263aab",
+      "to": "sha256:7379fdce15d1cbb2f282f37309c086ff684e9a5d684d6029348277238c9bd429",
+      "baseCommit": "90b23e6",
+      "change": "Generalized the grove-step-count-period-1 description so the rule reads correctly for the wheelchair-push analogue that now obeys it.",
+      "measurementImpact": "One. wheelchair-push-count gains grove-step-count-period-1 in its obeys list; its per-measurement digest is re-minted below. No code, unit, or value-domain changes.",
+      "review": "Pending pull-request review for the 0.6.0 release preparation.",
+      "approvedOn": "2026-08-30"
+    },
+    {
+      "from": "sha256:7379fdce15d1cbb2f282f37309c086ff684e9a5d684d6029348277238c9bd429",
+      "to": "sha256:11d427e4f61793bed3ce168ef53ea32a297faf2197c2ca40de41bb9d6c7db313",
+      "baseCommit": "90b23e6",
+      "change": "Renamed the retraction target native-identifier extension to grove-retraction-target-native-identifier, matching the sibling target-role extension and the Grove Swift wire form.",
+      "measurementImpact": "None. The rename is confined to the retraction lifecycle Provenance; every per-measurement digest is unchanged.",
+      "review": "Pending pull-request review for the 0.6.0 release preparation.",
+      "approvedOn": "2026-08-30"
     }
   ]
 }

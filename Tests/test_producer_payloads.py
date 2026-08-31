@@ -11,6 +11,7 @@ from __future__ import annotations
 import base64
 import hashlib
 import json
+import re
 
 from Scripts.producer_validation import (
     context,
@@ -22,6 +23,7 @@ from Scripts.producer_validation import (
 from Tests.producer_validation_test_support import (
     Decimal,
     ProducerValidationTestCase,
+    ROOT,
     copy,
 )
 
@@ -37,6 +39,32 @@ class ProducerPayloadsTests(ProducerValidationTestCase):
             "size": len(payload),
             "hash": base64.b64encode(hashlib.sha1(payload).digest()).decode("ascii"),
         }
+
+    def test_inline_sampled_data_reads_exactly_as_the_published_invariant(self) -> None:
+        """The kit promises that structural success predicts the official Validator's verdict.
+
+        `sensor-inline-data-1` is what the Validator applies. A kit that folded runs of
+        whitespace would pass data the published invariant rejects, inverting that promise,
+        so the two are compared on the strings that separate them.
+        """
+        source = (ROOT / "sensor/input/fsh/profiles.fsh").read_text(encoding="utf-8")
+        expression = re.search(
+            r"Invariant: sensor-inline-data-1.*?"
+            r"Expression: \"data\.exists\(\) and data\.matches\('(.+?)'\)\"",
+            source,
+            re.DOTALL,
+        )
+        self.assertIsNotNone(expression, "sensor-inline-data-1 no longer states a data pattern")
+        published = re.compile(expression.group(1))
+        for data in (
+            "1 2 3", "1", "-0.5 1", "0 0.25",
+            "1  2 3", "1\t2", " 1 2", "1 2 ", "1\n2", "01 2", "1 2 E", "1,2", "",
+        ):
+            with self.subTest(data=data):
+                self.assertEqual(
+                    context.SAMPLED_DATA_SEQUENCE.fullmatch(data) is not None,
+                    published.fullmatch(data) is not None,
+                )
 
     def test_sampled_data_timing_and_numeric_frames_fail_closed(self) -> None:
         sampled = {
@@ -70,6 +98,10 @@ class ProducerPayloadsTests(ProducerValidationTestCase):
             ({"period": 0}, "greater than zero"),
             ({"dimensions": 0}, "positive integer"),
             ({"data": "1 2 E"}, "decimal values"),
+            # sensor-inline-data-1 admits exactly one space between values, so folding a
+            # run of whitespace here would pass output the official Validator rejects.
+            ({"data": "1  2 3 4 5 6 7 8 9"}, "single-space-separated"),
+            ({"data": "1\t2 3 4 5 6 7 8 9"}, "single-space-separated"),
             ({"data": "1 2 3 4"}, "divisible by dimensions"),
             ({"data": "1 2 3"}, "at least two complete"),
         ]

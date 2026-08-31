@@ -20,7 +20,9 @@ from datetime import datetime, timezone
 from decimal import Decimal, InvalidOperation, ROUND_HALF_EVEN
 from typing import Any
 
-from .context import CATALOG_ROOT, FHIR_INSTANT, SAMPLED_DECIMAL
+from .context import (
+    CATALOG_ROOT, FHIR_INSTANT, SAMPLED_DATA_SEPARATOR, SAMPLED_DATA_SEQUENCE,
+)
 from .diagnostics import ProducerValidationError
 
 
@@ -91,11 +93,12 @@ def validate_sampled_data(
     data = sampled.get("data")
     if not isinstance(data, str) or not data or data != data.strip():
         raise ProducerValidationError(f"{label}.data must be a non-empty decimal sequence")
-    tokens = re.split(r"\s+", data)
-    if any(SAMPLED_DECIMAL.fullmatch(token) is None for token in tokens):
+    if SAMPLED_DATA_SEQUENCE.fullmatch(data) is None:
         raise ProducerValidationError(
-            f"{label}.data admits only complete decimal values; E, U, L, and missing tokens fail closed"
+            f"{label}.data admits only single-space-separated complete decimal values; "
+            "E, U, L, and missing tokens fail closed"
         )
+    tokens = data.split(SAMPLED_DATA_SEPARATOR)
     if len(tokens) % dimensions != 0:
         raise ProducerValidationError(
             f"{label}.data token count must be divisible by dimensions"

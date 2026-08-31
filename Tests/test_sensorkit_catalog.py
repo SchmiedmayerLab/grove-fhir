@@ -143,7 +143,6 @@ class SensorKitCatalogTests(unittest.TestCase):
 
     def test_every_row_has_one_definitive_status_and_admitted_contract(self) -> None:
         statuses = set(self.catalog["statusVocabulary"])
-        self.assertEqual(statuses, set(self.catalog["statusDefinitions"]))
         for entry in self.catalog["entries"]:
             self.assertTrue(
                 set(entry)
@@ -220,7 +219,7 @@ class SensorKitCatalogTests(unittest.TestCase):
                 self.assertEqual(len(discriminators), len(set(discriminators)))
 
     def test_supported_status_describes_the_complete_graph(self) -> None:
-        definition = self.catalog["statusDefinitions"]["supported"]
+        definition = self.catalog["statusVocabulary"]["supported"]
         self.assertIn("conformant primary structured mapping", definition)
         self.assertIn("complete structured-and-recording graph preserves", definition)
         self.assertNotIn("lossless structured mapping", definition)

@@ -1623,7 +1623,7 @@ Parent: GroveMobileObservation
 Id: grove-mobile-wheelchair-push-count
 Title: "Wheelchair Push Count"
 Description: "The number of wheelchair pushes recorded during an exact effective Period, using LOINC Number of wheelchair pushes per time period and normalized to the UCUM annotation {pushes}. It is the wheelchair analogue of step-count and never substitutes for it."
-* obeys grove-mobile-wheelchair-push-count-value-domain-1
+* obeys grove-step-count-period-1 and grove-mobile-wheelchair-push-count-value-domain-1
 * code = $loinc#96502-0
 * effective[x] only Period
 * effectivePeriod.end 1..1 MS

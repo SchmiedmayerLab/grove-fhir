@@ -254,7 +254,7 @@ Profile: HealthKitMedicationDoseEvent
 Parent: MedicationAdministration
 Id: healthkit-medication-dose-event
 Title: "HealthKit Medication Dose Event"
-Description: "One dose a person logged against a medication they track in Health. The R4 administration status collapses the six HealthKit log statuses onto three codes, so the exact HKMedicationDoseEvent.LogStatus is retained beside it together with the schedule the dose was logged against. HealthKit publishes no medication record, so the medication is named by the same HKHealthConceptIdentifier the tracked-medication statement carries and by nothing else."
+Description: "One dose a person logged against a medication they track in Health. The R4 administration status is coarser than the source, and this contract states no mapping from it, so the exact HKMedicationDoseEvent.LogStatus is retained beside it together with the schedule the dose was logged against; a consumer reads the log status, not the R4 status, to learn what the person did. HealthKit publishes no medication record, so the medication is named by the same HKHealthConceptIdentifier the tracked-medication statement carries and by nothing else."
 * insert HealthKitOutputIdentitySlices
 // No classifying element exists on this resource, and a tag may be ignored when a resource is
 // interpreted, so the source type is stated as an extension.
@@ -313,7 +313,7 @@ Description: "A non-archived medication a person tracks in Health, with the anno
     HealthKitMedicationNickname named nickname 0..1 MS and
     HealthKitMedicationHasSchedule named hasSchedule 1..1 MS and
     HealthKitMedicationGeneralForm named generalForm 1..1 MS
-* status from HealthKitTrackedMedicationStatusVS (required)
+* status = #active (exactly)
 * medication[x] only CodeableConcept
 * medicationCodeableConcept 1..1 MS
 * medicationCodeableConcept.text 1..1 MS

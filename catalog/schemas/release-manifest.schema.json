@@ -50,13 +50,10 @@
     "publication": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["sourceState", "previewMode", "releaseMode", "nonOverwrite", "sourceRevisionPolicy"],
+      "$comment": "previewMode is the one publication scalar with a reader; the release policy itself lives in PUBLICATION.md.",
+      "required": ["previewMode"],
       "properties": {
-        "sourceState": {"enum": ["development", "release-candidate", "released"]},
-        "previewMode": {"const": "ci-build-only"},
-        "releaseMode": {"const": "immutable-releases"},
-        "nonOverwrite": {"const": true},
-        "sourceRevisionPolicy": {"type": "string", "minLength": 1}
+        "previewMode": {"const": "ci-build-only"}
       }
     },
     "guides": {
