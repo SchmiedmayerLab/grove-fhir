@@ -9,16 +9,15 @@ SPDX-License-Identifier: MIT
 SensorKit conversion begins with an exact row in the published adapter contract.
 That row determines whether the stream admits structured output, a Recording Document, both representations, or no output.
 
-### Definitive status meanings
+### What each status admits here
 
-The normative status-vocabulary definitions live on the [guide family page](https://grovealliance.org/fhir/mobile/guides.html#status-vocabulary). The list below states the SensorKit specifics.
+The normative status-vocabulary definitions live on the [guide family page](https://grovealliance.org/fhir/mobile/guides.html#status-vocabulary) and mean the same thing in every guide.
+What follows is only what admission produces for a SensorKit row.
 
-- `supported`: the listed source-neutral Sensor profile plus SensorKit adapter represents the primary structured measurement; a row may also require a Recording Document to preserve source details not represented structurally.
-- `mapped-standard`: the exact caller-encoded payload is represented by the source-neutral Sensor Recording Document plus its SensorKit adapter; no scalar or waveform meaning is invented.
-- `platform-exclusive`: a SensorKit-only structured profile represents the source semantics because no exact shared or established FHIR profile does.
-- `unmodeled`: the stream is inventoried, but no shared or SensorKit-scoped profile models it and no output is admitted.
-- `deferred`: the stream is inventoried, but the Grove FHIR contracts publish no admitted output contract.
-- `intentionally-unsupported`: the Grove FHIR contracts reject an unsafe or misleading representation.
+A `supported` row produces the listed source-neutral Sensor profile plus its SensorKit adapter as the primary structured measurement, and may additionally require a Recording Document to preserve source details the structured projection cannot carry.
+A `mapped-standard` row produces only the source-neutral Sensor Recording Document plus its SensorKit adapter, carrying the exact caller-encoded payload; no scalar or waveform meaning is invented.
+A `platform-exclusive` row produces the SensorKit-only structured profile its catalog entry names.
+The remaining statuses authorize no output under this adapter.
 
 Only rotation rate may use generic SampledData in the Grove FHIR contracts, and only when its complete three-axis values prove one exact uniform period.
 Accelerometer batch identity, high-frequency heart-rate confidence, and ECG guidance/per-voltage flags are not representable by bare SampledData without loss, so those streams retain registered Recording Documents alongside or instead of a structured projection. Their actual wire formats include CSV and native JSON and are declared independently in `content.format`.

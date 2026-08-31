@@ -6,7 +6,6 @@
 // SPDX-License-Identifier: MIT
 //
 
-Alias: $artifactVersionAlgorithm = http://hl7.org/fhir/StructureDefinition/artifact-versionAlgorithm
 Alias: $variable = http://hl7.org/fhir/StructureDefinition/variable|5.3.0
 Alias: $minLength = http://hl7.org/fhir/StructureDefinition/minLength|5.3.0
 Alias: $minValue = http://hl7.org/fhir/StructureDefinition/minValue|5.3.0
@@ -39,4 +38,3 @@ Alias: $observationCategory = http://terminology.hl7.org/CodeSystem/observation-
 Alias: $ucum = http://unitsofmeasure.org
 Alias: $definitionExtract = http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-definitionExtract
 Alias: $definitionExtractValue = http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-definitionExtractValue
-Alias: $groveMeasurement = https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement

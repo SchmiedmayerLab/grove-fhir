@@ -7,8 +7,8 @@
 //
 
 Invariant: sensor-inline-data-1
-Description: "An inline sampled-data result contains only whitespace-delimited decimal values; exceptional and missing-value tokens are not admitted."
-Expression: "data.exists() and data.matches('^-?(0|[1-9][0-9]*)([.][0-9]+)?( +-?(0|[1-9][0-9]*)([.][0-9]+)?)*$')"
+Description: "An inline sampled-data result contains only single-space-delimited decimal values; exceptional and missing-value tokens are not admitted."
+Expression: "data.exists() and data.matches('^-?(0|[1-9][0-9]*)([.][0-9]+)?( -?(0|[1-9][0-9]*)([.][0-9]+)?)*$')"
 Severity: #error
 
 Invariant: sensor-period-positive-1
@@ -40,7 +40,7 @@ Profile: GroveSensorSampledDataObservation
 Parent: GroveMobileObservation
 Id: grove-sensor-sampled-data-observation
 Title: "Grove Sensor Sampled Data Observation"
-Description: "A source-neutral uniformly sampled numeric time series represented inline with FHIR R4 SampledData."
+Description: "A source-neutral uniformly sampled numeric time series represented inline with FHIR R4 SampledData. The exact end instant, effectivePeriod.end = start + (frames - 1) x period, is delegated to the producer conformance gate; a millisecond-precision FHIRPath comparison is not portable across validators."
 * value[x] 1..1 MS
 * value[x] only SampledData
 * effective[x] 1..1 MS
@@ -67,7 +67,7 @@ Profile: GroveSensorECGObservation
 Parent: GroveMobileObservation
 Id: grove-sensor-ecg-observation
 Title: "Grove Sensor ECG Observation"
-Description: "An ECG recording whose lead channels are uniformly sampled FHIR R4 SampledData components."
+Description: "An ECG recording whose lead channels are uniformly sampled FHIR R4 SampledData components. The exact end instant, effectivePeriod.end = start + (frames - 1) x period, is delegated to the producer conformance gate; a millisecond-precision FHIRPath comparison is not portable across validators."
 * code = $loinc#11524-6
 * effective[x] 1..1 MS
 * effective[x] only Period
