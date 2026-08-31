@@ -13,7 +13,6 @@
     "canonicalRoot",
     "statusVocabulary",
     "sources",
-    "statusDefinitions",
     "effectiveCanonicalization",
     "measurements"
   ],
@@ -34,11 +33,17 @@
       "const": "https://grovealliance.org/fhir/mobile/StructureDefinition"
     },
     "statusVocabulary": {
-      "type": "array",
-      "minItems": 1,
-      "uniqueItems": true,
-      "items": {
-        "$ref": "#/$defs/status"
+      "$comment": "Its keys are the vocabulary; a separate name list would be a second place to forget.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["supported", "mapped-standard", "platform-exclusive", "unmodeled", "deferred", "intentionally-unsupported"],
+      "properties": {
+        "supported": {"type": "string", "minLength": 1},
+        "mapped-standard": {"type": "string", "minLength": 1},
+        "platform-exclusive": {"type": "string", "minLength": 1},
+        "unmodeled": {"type": "string", "minLength": 1},
+        "deferred": {"type": "string", "minLength": 1},
+        "intentionally-unsupported": {"type": "string", "minLength": 1}
       }
     },
     "sources": {
@@ -50,8 +55,7 @@
         "additionalProperties": false,
         "required": [
           "id",
-          "kind",
-          "catalog"
+          "kind"
         ],
         "properties": {
           "id": {
@@ -59,11 +63,16 @@
             "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
           },
           "kind": {
-            "enum": ["adapter", "provider"]
+            "enum": ["adapter", "provider", "instrument"]
           },
           "catalog": {
             "type": "string",
             "pattern": "^catalog/[a-z0-9-]+\\.json$"
+          },
+          "guide": {
+            "type": "string",
+            "description": "The guide that defines this instrument source; an instrument has no adapter inventory to point at.",
+            "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
           },
           "ownerAdapter": {
             "type": "string",
@@ -76,21 +85,13 @@
             "if": {"properties": {"kind": {"const": "provider"}}, "required": ["kind"]},
             "then": {"required": ["ownerAdapter"], "properties": {"ownerAdapter": {"const": "providers"}}},
             "else": {"not": {"required": ["ownerAdapter"]}}
+          },
+          {
+            "if": {"properties": {"kind": {"const": "instrument"}}, "required": ["kind"]},
+            "then": {"required": ["guide"], "properties": {"guide": {"type": "string"}, "catalog": false}},
+            "else": {"required": ["catalog"], "properties": {"catalog": {"type": "string"}, "guide": false}}
           }
         ]
-      }
-    },
-    "statusDefinitions": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["supported", "mapped-standard", "platform-exclusive", "unmodeled", "deferred", "intentionally-unsupported"],
-      "properties": {
-        "supported": {"type": "string", "minLength": 1},
-        "mapped-standard": {"type": "string", "minLength": 1},
-        "platform-exclusive": {"type": "string", "minLength": 1},
-        "unmodeled": {"type": "string", "minLength": 1},
-        "deferred": {"type": "string", "minLength": 1},
-        "intentionally-unsupported": {"type": "string", "minLength": 1}
       }
     },
     "effectiveCanonicalization": {
@@ -526,14 +527,15 @@
         "coverage": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["healthkit", "health-connect", "sensorkit", "google-health-api", "oura", "withings"],
+          "required": ["healthkit", "health-connect", "sensorkit", "google-health-api", "oura", "withings", "questionnaire"],
           "properties": {
             "healthkit": {"$ref": "#/$defs/status"},
             "health-connect": {"$ref": "#/$defs/status"},
             "sensorkit": {"$ref": "#/$defs/status"},
             "google-health-api": {"$ref": "#/$defs/status"},
             "oura": {"$ref": "#/$defs/status"},
-            "withings": {"$ref": "#/$defs/status"}
+            "withings": {"$ref": "#/$defs/status"},
+            "questionnaire": {"$ref": "#/$defs/status"}
           }
         },
         "coverageDetails": {
@@ -673,6 +675,14 @@
           "if": {"properties": {"valueKind": {"const": "quantity"}}, "required": ["valueKind"]},
           "then": {"properties": {"quantity": {"$ref": "#/$defs/quantity"}}},
           "else": {"properties": {"quantity": {"type": "null"}}}
+        },
+        {
+          "$comment": "Observation-based extraction has only QuestionnaireResponse.authored to offer, so a measurement whose profile demands a Period can never carry questionnaire coverage.",
+          "if": {
+            "properties": {"coverage": {"type": "object", "properties": {"questionnaire": {"const": "supported"}}, "required": ["questionnaire"]}},
+            "required": ["coverage"]
+          },
+          "then": {"properties": {"effective": {"enum": ["dateTime", "dateTime-or-Period"]}}}
         }
       ]
     },
