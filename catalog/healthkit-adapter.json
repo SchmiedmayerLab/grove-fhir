@@ -43,7 +43,7 @@
     "sensorAndEcgTiming": "excluded"
   },
   "sourceTypeExtension": {
-    "url": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-source-type-extension",
+    "url": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-source-type",
     "valueSystem": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-source-type",
     "valueElement": "valueCode",
     "cardinality": "exactly one",
@@ -1645,7 +1645,7 @@
       "profiles": [
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-medication-dose-event"
       ],
-      "requirement": "A logged dose is admitted as a MedicationAdministration that keeps the exact HKMedicationDoseEvent.LogStatus and the schedule it was logged against beside the R4 status, which collapses six source cases onto three codes. The medication is named by the same HKHealthConceptIdentifier the tracked-medication statement carries."
+      "requirement": "A logged dose is admitted as a MedicationAdministration that keeps the exact HKMedicationDoseEvent.LogStatus and the schedule it was logged against beside the coarser R4 status; this contract states no mapping from the source case onto an R4 status code, so a consumer reads the log status to learn what the person did. The medication is named by the same HKHealthConceptIdentifier the tracked-medication statement carries."
     },
     {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierActiveEnergyBurned",

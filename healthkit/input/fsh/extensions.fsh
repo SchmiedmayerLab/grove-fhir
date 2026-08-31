@@ -130,7 +130,7 @@ Context: MedicationStatement
 
 
 Extension: HealthKitSourceType
-Id: healthkit-source-type-extension
+Id: healthkit-source-type
 Title: "HealthKit Source Type"
 Description: "The exact HealthKit SDK source type from which this resource was derived. This is lineage, not an alternative coding of the clinical result or document type, so it is kept separate from Observation.code and DocumentReference.type."
 Context: Observation, DocumentReference, VisionPrescription, MedicationAdministration, MedicationStatement

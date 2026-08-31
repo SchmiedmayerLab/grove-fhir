@@ -493,9 +493,3 @@ Description: "Every general form a tracked medication may carry, including the p
 * ^experimental = false
 * include codes from system HealthKitMedicationGeneralFormCS
 
-ValueSet: HealthKitTrackedMedicationStatusVS
-Id: healthkit-tracked-medication-status
-Title: "HealthKit Tracked Medication Status"
-Description: "The active status required for a non-archived medication the person tracks in Health. Archived entries are not admitted because archival alone does not establish that medication use was completed or stopped."
-* ^experimental = false
-* $medicationStatementStatus#active "Active"
