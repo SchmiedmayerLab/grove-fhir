@@ -306,7 +306,7 @@ class HealthKitCatalogTests(unittest.TestCase):
         self.assertEqual(
             self.catalog["sourceTypeExtension"],
             {
-                "url": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-source-type-extension",
+                "url": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-source-type",
                 "valueSystem": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-source-type",
                 "valueElement": "valueCode",
                 "cardinality": "exactly one",
