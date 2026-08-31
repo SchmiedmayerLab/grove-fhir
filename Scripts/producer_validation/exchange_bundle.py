@@ -14,9 +14,11 @@ from .context import (
     ACTIVE_ENTRY_POLICY, ACTIVE_ENTRY_RESOURCE_TYPES, ACTIVE_OUTPUT_RESOURCE_TYPES,
     ACTIVE_SUPPORTING_RESOURCE_TYPES, CATALOG_ROOT, ENTRY_IDENTIFIER_EXTENSION,
     ENTRY_NODE_IDENTITY, EVENT_IDENTITY, EXCHANGE_BUNDLE_PROFILE, HMAC_IDENTITY,
-    LIFECYCLE_EVENT_SYSTEM, OPAQUE_IDENTIFIER_ROLES, RETRACTION_BUNDLE_PROFILE,
+    IDENTIFIER_ROLE_SYSTEM, LIFECYCLE_EVENT_SYSTEM, OPAQUE_IDENTIFIER_ROLES,
+    RETRACTION_BUNDLE_PROFILE, RETRACTION_NATIVE_RECORD_IDENTIFIER_EXTENSION,
     RETRACTION_TARGET_CONTRACTS, RETRACTION_TARGET_ROLES,
-    RETRACTION_TARGET_ROLE_EXTENSION, SOURCE_RECORD_RETRACTED, entry_node_identity,
+    RETRACTION_TARGET_ROLE_EXTENSION, SOURCE_RECORD_RETRACTED, ExchangeProtocolError,
+    entry_node_identity, require_absolute_uri,
 )
 from .diagnostics import (
     PRODUCER_RULE_REASONS,
@@ -56,6 +58,61 @@ from .sensorkit import (
     validate_sensorkit_identity, validate_sensorkit_native_r4_context,
     validate_sensorkit_profile_claim, validate_sensorkit_quantity_domains,
 )
+
+
+def validate_retraction_native_record_identifier(
+    target: dict[str, Any], target_index: int, label: str
+) -> None:
+    """Admit at most one source-native record Identifier beside the minted Grove identity."""
+    extensions = target.get("extension")
+    carried = [
+        extension for extension in extensions
+        if isinstance(extension, dict)
+        and extension.get("url") == RETRACTION_NATIVE_RECORD_IDENTIFIER_EXTENSION
+    ] if isinstance(extensions, list) else []
+    if not carried:
+        return
+    location = f"Provenance.target[{target_index}].extension"
+    if len(carried) != 1:
+        raise contract_failure(
+            "mobile-retraction.native-record-identifier",
+            location,
+            f"{label} may carry at most one native record identifier",
+        )
+    identifier = carried[0].get("valueIdentifier")
+    if not isinstance(identifier, dict) or set(carried[0]) != {"url", "valueIdentifier"}:
+        raise contract_failure(
+            "mobile-retraction.native-record-identifier",
+            location,
+            f"{label} native record identifier must be one valueIdentifier",
+        )
+    system = identifier.get("system")
+    value = identifier.get("value")
+    try:
+        require_absolute_uri(system, "native record identifier system")
+    except ExchangeProtocolError as error:
+        raise contract_failure(
+            "mobile-retraction.native-record-identifier",
+            f"{location}.valueIdentifier.system",
+            f"{label} native record identifier system must be an absolute URI",
+        ) from error
+    if not isinstance(value, str) or not value:
+        raise contract_failure(
+            "mobile-retraction.native-record-identifier",
+            f"{location}.valueIdentifier.value",
+            f"{label} native record identifier must carry the exact native value",
+        )
+    codings = (identifier.get("type") or {}).get("coding") or []
+    if any(
+        isinstance(coding, dict) and coding.get("system") == IDENTIFIER_ROLE_SYSTEM
+        for coding in codings
+    ):
+        raise contract_failure(
+            "mobile-retraction.native-record-identifier",
+            f"{location}.valueIdentifier.type",
+            f"{label} native record identifier is source-native traceability and never "
+            "carries a Grove identifier-role coding",
+        )
 
 
 def validate_resource_profile_claims(
@@ -118,6 +175,7 @@ def validate_exchange_bundle(
     if not isinstance(entries, list) or not entries:
         raise ProducerValidationError(f"{label} exchange Bundle must contain entries")
     full_urls: set[str] = set()
+    node_role_ordinals: dict[str, int] = {}
     entry_resources: list[dict[str, Any]] = []
     entry_identities: list[tuple[str, str, dict[str, Any]]] = []
     resources_by_full_url: dict[str, dict[str, Any]] = {}
@@ -184,6 +242,19 @@ def validate_exchange_bundle(
                 raise ProducerValidationError(
                     f"{label} entry[{index}] resource without typed business identity "
                     "must use a canonical entry-node key"
+                )
+            # Derived from the Bundle rather than read back from the key, which is the
+            # producer's own claim: a self-consistent digest over a wrong ordinal would
+            # otherwise verify against itself and mint a different fullUrl for the same node.
+            node_role = match.group("role")
+            expected_ordinal = node_role_ordinals.get(node_role, 0)
+            node_role_ordinals[node_role] = expected_ordinal + 1
+            if int(match.group("ordinal")) != expected_ordinal:
+                raise contract_failure(
+                    "mobile-exchange.entry-node-ordinal",
+                    f"Bundle.entry[{index}].extension.valueIdentifier.value",
+                    f"{label} entry[{index}] entry-node ordinal is not the zero-based "
+                    f"position of node-role {node_role!r} in Bundle entry order",
                 )
             try:
                 expected_node = entry_node_identity(
@@ -494,6 +565,9 @@ def validate_exchange_bundle(
                     f"{target_label} role {target_role} does not admit resource type "
                     f"{target['type']}",
                 )
+            validate_retraction_native_record_identifier(
+                target, target_index, target_label
+            )
         exact_source_entity(provenance, f"{label} retraction Provenance")
 
     sensorkit = read_json(CATALOG_ROOT / "sensorkit-adapter.json")

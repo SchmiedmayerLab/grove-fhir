@@ -34,3 +34,15 @@ Context: Provenance.target
 * value[x] only code
 * valueCode 1..1 MS
 * valueCode from GroveRetractionTargetRoleVS (required)
+
+
+Extension: GroveRetractionTargetNativeIdentifier
+Id: grove-retraction-target-native-identifier
+Title: "Grove Retraction Target Native Identifier"
+Description: "The platform-native record identifier of the retracted source record, carried beside the minted Grove identity so a consumer can delete the exact native records. Identifier.system names the adapter's own native key space, exactly as it does for a governed source identifier on the addition path, and the value is emitted only under that same explicit deployment disclosure policy. It never addresses the target: the Grove source-output or device-snapshot identity remains the retraction address."
+Context: Provenance.target
+* value[x] only Identifier
+* valueIdentifier 1..1 MS
+* valueIdentifier obeys grove-native-record-identifier-1
+* valueIdentifier.system 1..1 MS
+* valueIdentifier.value 1..1 MS
