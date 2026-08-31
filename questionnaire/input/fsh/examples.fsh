@@ -21,7 +21,10 @@ Title: "Weekly Symptom Check-In"
 Description: "A versioned instrument with a conditional follow-up question."
 * extension[versionAlgorithm].valueCoding = $versionAlgorithm#semver
 * url = "https://grovealliance.org/fhir/questionnaire/Questionnaire/GroveWeeklySymptomCheckInExample"
-* version = "1.0.0"
+// The Publisher stamps the guide version onto every canonical resource it builds, so an
+// example instrument cannot carry a version of its own; a response joining any other value
+// would name an instrument nobody can resolve.
+* version = "0.6.0"
 * name = "GroveWeeklySymptomCheckIn"
 * title = "Weekly Symptom Check-In"
 * status = #active
@@ -50,7 +53,7 @@ InstanceOf: GroveQuestionnaireResponse
 Usage: #example
 Title: "Weekly Symptom Check-In Response"
 Description: "A completed response whose follow-up answer is nested beneath the answer that enabled it."
-* questionnaire = "https://grovealliance.org/fhir/questionnaire/Questionnaire/GroveWeeklySymptomCheckInExample|1.0.0"
+* questionnaire = "https://grovealliance.org/fhir/questionnaire/Questionnaire/GroveWeeklySymptomCheckInExample|0.6.0"
 * identifier.system = "https://example.org/research/questionnaire-response-id"
 * identifier.value = "weekly-check-in-0001"
 * status = #completed
@@ -80,10 +83,10 @@ Instance: GroveHomeVitalsExample
 InstanceOf: GroveQuestionnaire
 Usage: #example
 Title: "Home Vitals"
-Description: "An instrument whose answers extract into body-weight, blood-pressure, and step-count Observations."
+Description: "An instrument whose answers extract into body-weight and blood-pressure Observations."
 * extension[versionAlgorithm].valueCoding = $versionAlgorithm#semver
 * url = "https://grovealliance.org/fhir/questionnaire/Questionnaire/GroveHomeVitalsExample"
-* version = "1.0.0"
+* version = "0.6.0"
 * name = "GroveHomeVitals"
 * title = "Home Vitals"
 * status = #active
@@ -113,12 +116,6 @@ Description: "An instrument whose answers extract into body-weight, blood-pressu
 * item[1].item[1].code = $loinc#8462-4 "Diastolic blood pressure"
 * item[1].item[1].extension[$observationExtract].valueCode = #component
 * item[1].item[1].extension[$unitOption].valueCoding = $ucum#mm[Hg] "mm[Hg]"
-* item[2].linkId = "step-count"
-* item[2].text = "Enter the step count displayed now."
-* item[2].type = #integer
-* item[2].code = $groveMeasurement#step-count-total "Step count total"
-* item[2].extension[observationExtract].valueBoolean = true
-* item[2].extension[$questionnaireUnit].valueCoding = $ucum#{steps} "{steps}"
 
 Instance: GroveHomeVitalsResponseExample
 InstanceOf: GroveQuestionnaireResponse
@@ -135,7 +132,7 @@ Description: "A conformant response to the Home Vitals instrument, carrying the 
 * extension[writerContext].extension[hostOperatingSystemVersion].valueString = "26.0"
 * identifier.system = "https://study.example.org/fhir/NamingSystem/questionnaire-response"
 * identifier.value = "home-vitals-2026-08-28"
-* questionnaire = "https://grovealliance.org/fhir/questionnaire/Questionnaire/GroveHomeVitalsExample|1.0.0"
+* questionnaire = "https://grovealliance.org/fhir/questionnaire/Questionnaire/GroveHomeVitalsExample|0.6.0"
 * status = #completed
 * subject = Reference(GroveQuestionnairePatientExample)
 * author = Reference(GroveQuestionnairePatientExample)
@@ -148,13 +145,11 @@ Description: "A conformant response to the Home Vitals instrument, carrying the 
 * item[1].linkId = "blood-pressure"
 * item[1].item[0].linkId = "systolic"
 * item[1].item[0].answer.valueQuantity.value = 118
-* item[1].item[0].answer.valueQuantity.unit = "mmHg"
+* item[1].item[0].answer.valueQuantity.unit = "mm[Hg]"
 * item[1].item[0].answer.valueQuantity.system = $ucum
 * item[1].item[0].answer.valueQuantity.code = #mm[Hg]
 * item[1].item[1].linkId = "diastolic"
 * item[1].item[1].answer.valueQuantity.value = 76
-* item[1].item[1].answer.valueQuantity.unit = "mmHg"
+* item[1].item[1].answer.valueQuantity.unit = "mm[Hg]"
 * item[1].item[1].answer.valueQuantity.system = $ucum
 * item[1].item[1].answer.valueQuantity.code = #mm[Hg]
-* item[2].linkId = "step-count"
-* item[2].answer.valueInteger = 8432
