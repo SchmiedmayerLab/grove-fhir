@@ -356,6 +356,7 @@ jobs:
           path: |
             */output/qa.html
             */output/qa.json
+            */fsh-generated/resources/ImplementationGuide-*.json
 
   guides:
     name: Build and Validate All R4 Guides
