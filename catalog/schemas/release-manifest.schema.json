@@ -24,7 +24,7 @@
         "fhirValidator": {
           "allOf": [
             {"$ref": "#/$defs/checksummedTool"},
-            {"type": "object", "properties": {"version": {"const": "6.10.3"}, "sha256": {"const": "b2cd1c761dbb79722d7a1ccb149c3c522195c37c9f1b8951b23b1340828b691b"}}}
+            {"type": "object", "properties": {"version": {"const": "6.10.4"}, "sha256": {"const": "1106b9d58f9e363e47bea7c4fc065841e5fc91fe9d062775c3bfdd212bd653cc"}}}
           ]
         },
         "sushi": {

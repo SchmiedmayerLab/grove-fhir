@@ -28,13 +28,13 @@ readonly REPOSITORY_ROOT
 readonly FHIR_PACKAGE_CACHE="${GROVE_FHIR_HOME_OVERRIDE:-$REPOSITORY_ROOT/.build/fhir-home}/.fhir/packages"
 readonly PUBLISHER_VERSION="2.3.3"
 readonly PUBLISHER_SHA256="7821631325c60b17b8832a15ed4299563265e72cfe5af12457ab7f23628400d2"
-readonly VALIDATOR_VERSION="6.10.3"
-readonly VALIDATOR_SHA256="b2cd1c761dbb79722d7a1ccb149c3c522195c37c9f1b8951b23b1340828b691b"
+readonly VALIDATOR_VERSION="6.10.4"
+readonly VALIDATOR_SHA256="1106b9d58f9e363e47bea7c4fc065841e5fc91fe9d062775c3bfdd212bd653cc"
 readonly TEMPLATE_ID="fhir2.base.template"
 readonly TEMPLATE_VERSION="0.1.0"
 readonly TEMPLATE_SHA256="b351fa5fcc8edd76f491e129de4aeb35c888265ae0f7b33ea2af0571a7533fed"
 
-# Validator 6.10.3 loads the R4 bootstrap packages and the current universal
+# Validator 6.10.4 loads the R4 bootstrap packages and the current universal
 # terminology/extension packages before it can honor a fully offline
 # validation request. Keep the complete, checksum-pinned dependency closure in
 # one place so a fresh runner never depends on mutable package-server state.

@@ -1,0 +1,42 @@
+#
+# This source file is part of the Grove FHIR open-source project
+#
+# SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTRIBUTORS.md)
+#
+# SPDX-License-Identifier: MIT
+#
+
+name: Verify Tool Pins
+
+# The guide build restores its tools from a cache keyed on the content of download-fhir-tools.sh, so
+# once they are cached it never downloads them again and never notices an upstream asset that was
+# replaced under a tag that already shipped. This downloads every pinned artifact from scratch and
+# verifies its checksum, on a schedule rather than on a change, because the drift happens upstream.
+on:
+  schedule:
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Verify Pinned Tool Artifacts
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "24"
+      - name: Verify the pinned release assets against the digests upstream reports
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: ./Scripts/check-tool-pins.sh
+      # Deliberately uncached: the point is to fetch what upstream serves today.
+      - name: Download and verify every pinned artifact
+        run: ./Scripts/download-fhir-tools.sh "$RUNNER_TEMP/fhir-tools"
