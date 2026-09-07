@@ -46,6 +46,10 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run producer-kit:check
+      - name: Verify the pinned tool assets still match upstream
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: ./Scripts/check-tool-pins.sh
       - name: Prohibit reverse implementation execution
         run: |
           if test -e .gitmodules || test -e Integration; then
