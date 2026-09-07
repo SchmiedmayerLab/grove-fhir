@@ -14,3 +14,9 @@ WARNING: StructureDefinition/grove-questionnaire: StructureDefinition.snapshot.e
 # The standard mimeType extension inherits a computable binding-definition link to BCP 13. The extension package does not ship that external document as a FHIR canonical resource.
 WARNING: StructureDefinition/grove-questionnaire: StructureDefinition.snapshot.element[35].binding.extension[0].value.ofType(canonical): A definition could not be found for Canonical URL 'http://www.rfc-editor.org/bcp/bcp13.txt'
 WARNING: StructureDefinition/grove-questionnaire: StructureDefinition.snapshot.element[83].binding.extension[0].value.ofType(canonical): A definition could not be found for Canonical URL 'http://www.rfc-editor.org/bcp/bcp13.txt'
+
+# BCP 47 is defined by reference to the IANA subtag registry and enumerates no codes, so an
+# offline validator can never confirm a language tag. Whether the Publisher reports the system
+# as missing or as resolved-but-codeless depends only on whether a dependency shipped the stub,
+# which this guide does not control. The tag itself is the Publisher's own default.
+WARNING: ImplementationGuide/org.grovealliance.fhir.questionnaire: ImplementationGuide.language: Unable to validate code without using server because: Resolved system urn:ietf:bcp:47 (v2.0.1), but the definition doesn't include any codes, so the code has not been validated
