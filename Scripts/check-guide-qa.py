@@ -174,6 +174,17 @@ UNKNOWN_CODE_SYSTEM_MESSAGE = re.compile(
     r"so the code cannot be validated$"
 )
 
+# The Publisher states one offline limit two ways: the CodeSystem is absent, or it resolves to a
+# definition that enumerates nothing. BCP 47 is defined by reference to the IANA subtag registry and
+# never enumerates codes, so which phrasing appears turns only on whether a dependency shipped the
+# stub. Both are the same unverifiable-offline fact and neither is suppressible: the finding does not
+# occur online, and a suppression that goes unexercised there fails the guide.
+RESOLVED_WITHOUT_CODES_MESSAGE = re.compile(
+    r"^Unable to validate code without using server because: Resolved system "
+    r"(?P<system>\S+) \(v[^)]*\), but the definition doesn't include any codes, "
+    r"so the code has not been validated$"
+)
+
 IMPLEMENTATION_LANGUAGE_SYSTEM_PATH = re.compile(
     r"^ImplementationGuide\.language\.system \(l[0-9]+/c[0-9]+\)$"
 )
@@ -571,6 +582,26 @@ def offline_unknown_code_system_warning_count(guide: Path) -> int:
         for raw_row in re.findall(r"<tr[^>]*>.*?</tr>", table, re.DOTALL):
             row = WARNING_ROW.fullmatch(raw_row)
             if row is None:
+                continue
+            resolved_match = RESOLVED_WITHOUT_CODES_MESSAGE.fullmatch(
+                plain_html(row.group("message"))
+            )
+            if resolved_match is not None:
+                # Scoped to the guide's own language element: the tag is the Publisher's default,
+                # and the resource carries no language of its own to disagree with.
+                if resolved_match.group("system") != BCP47:
+                    continue
+                if resource.get("resourceType") != "ImplementationGuide":
+                    continue
+                if resource.get("language") != "en":
+                    continue
+                if not IMPLEMENTATION_LANGUAGE_PATH.fullmatch(
+                    plain_html(row.group("path"))
+                ):
+                    continue
+                if plain_html(row.group("diagnostic")) != "TERMINOLOGY_TX_WARNING":
+                    continue
+                count += 1
                 continue
             message_match = UNKNOWN_CODE_SYSTEM_MESSAGE.fullmatch(
                 plain_html(row.group("message"))
