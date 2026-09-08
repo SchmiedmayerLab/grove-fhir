@@ -33,10 +33,13 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: "24"
+          cache: npm
       - name: Verify the pinned release assets against the digests upstream reports
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: ./Scripts/check-tool-pins.sh
       # Deliberately uncached: the point is to fetch what upstream serves today.
       - name: Download and verify every pinned artifact
-        run: ./Scripts/download-fhir-tools.sh "$RUNNER_TEMP/fhir-tools"
+        run: |
+          npm ci
+          ./Scripts/download-fhir-tools.sh "$RUNNER_TEMP/fhir-tools"
