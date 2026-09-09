@@ -1,0 +1,436 @@
+{
+  "schemaVersion": 0,
+  "events": "events.json",
+  "policy": {
+    "scope": "One authenticated participant and verified source binding; the complete output Identifier includes system and value.",
+    "binding": "The first committed active event or retraction assertion binds its source-output Identifier to the complete source-record Identifier. Subsequent active or retraction events cannot move that output to another record, even with a greater writer version.",
+    "rejection": "A contradictory binding rejects the complete candidate event without receipt, custody, grants or changes to the accepted record. This is contextual admission failure, not an equal-version revision conflict or a standalone FHIR validation error.",
+    "trust": "The receiver cannot reconstruct a producer's secret HMAC preimage. The first binding records the authenticated producer claim; it does not prove that claim is clinically correct. Corrected identity requires a new correctly derived output identity, not rebinding retained history.",
+    "concurrency": "Serialize the binding and event transaction. Concurrent contradictory first claims may commit either one, but never both. Audit or transaction failure must not reserve a binding.",
+    "authorization": "Accepted active events receive exact output grants for purpose-a; retractions receive no clinical grants. Purpose-b has no grants. A rejected event cannot change either purpose or retract the accepted output; a grant never overrides an accepted retraction."
+  },
+  "sequences": [
+    {
+      "id": "multi-v2-binds-output-first",
+      "steps": [
+        {
+          "event": "multi-v2",
+          "expect": {
+            "history": [
+              "multi-v2"
+            ],
+            "bindingEvent": "multi-v2",
+            "current": [
+              "multi-v2"
+            ],
+            "grants": {
+              "purpose-a": [
+                "multi-v2"
+              ],
+              "purpose-b": []
+            },
+            "retractionEvents": [],
+            "disposition": "accepted",
+            "receiptEvent": "multi-v2",
+            "reason": null
+          }
+        },
+        {
+          "event": "changed-source-record",
+          "expect": {
+            "history": [
+              "multi-v2"
+            ],
+            "bindingEvent": "multi-v2",
+            "current": [
+              "multi-v2"
+            ],
+            "grants": {
+              "purpose-a": [
+                "multi-v2"
+              ],
+              "purpose-b": []
+            },
+            "retractionEvents": [],
+            "disposition": "rejected",
+            "receiptEvent": null,
+            "reason": "source-output-record-conflict"
+          }
+        },
+        {
+          "event": "multi-v2",
+          "expect": {
+            "history": [
+              "multi-v2"
+            ],
+            "bindingEvent": "multi-v2",
+            "current": [
+              "multi-v2"
+            ],
+            "grants": {
+              "purpose-a": [
+                "multi-v2"
+              ],
+              "purpose-b": []
+            },
+            "retractionEvents": [],
+            "disposition": "replayed",
+            "receiptEvent": "multi-v2",
+            "reason": null
+          }
+        },
+        {
+          "event": "changed-source-record",
+          "expect": {
+            "history": [
+              "multi-v2"
+            ],
+            "bindingEvent": "multi-v2",
+            "current": [
+              "multi-v2"
+            ],
+            "grants": {
+              "purpose-a": [
+                "multi-v2"
+              ],
+              "purpose-b": []
+            },
+            "retractionEvents": [],
+            "disposition": "rejected",
+            "receiptEvent": null,
+            "reason": "source-output-record-conflict"
+          }
+        }
+      ]
+    },
+    {
+      "id": "changed-source-record-binds-output-first",
+      "steps": [
+        {
+          "event": "changed-source-record",
+          "expect": {
+            "history": [
+              "changed-source-record"
+            ],
+            "bindingEvent": "changed-source-record",
+            "current": [
+              "changed-source-record"
+            ],
+            "grants": {
+              "purpose-a": [
+                "changed-source-record"
+              ],
+              "purpose-b": []
+            },
+            "retractionEvents": [],
+            "disposition": "accepted",
+            "receiptEvent": "changed-source-record",
+            "reason": null
+          }
+        },
+        {
+          "event": "multi-v2",
+          "expect": {
+            "history": [
+              "changed-source-record"
+            ],
+            "bindingEvent": "changed-source-record",
+            "current": [
+              "changed-source-record"
+            ],
+            "grants": {
+              "purpose-a": [
+                "changed-source-record"
+              ],
+              "purpose-b": []
+            },
+            "retractionEvents": [],
+            "disposition": "rejected",
+            "receiptEvent": null,
+            "reason": "source-output-record-conflict"
+          }
+        },
+        {
+          "event": "changed-source-record",
+          "expect": {
+            "history": [
+              "changed-source-record"
+            ],
+            "bindingEvent": "changed-source-record",
+            "current": [
+              "changed-source-record"
+            ],
+            "grants": {
+              "purpose-a": [
+                "changed-source-record"
+              ],
+              "purpose-b": []
+            },
+            "retractionEvents": [],
+            "disposition": "replayed",
+            "receiptEvent": "changed-source-record",
+            "reason": null
+          }
+        },
+        {
+          "event": "multi-v2",
+          "expect": {
+            "history": [
+              "changed-source-record"
+            ],
+            "bindingEvent": "changed-source-record",
+            "current": [
+              "changed-source-record"
+            ],
+            "grants": {
+              "purpose-a": [
+                "changed-source-record"
+              ],
+              "purpose-b": []
+            },
+            "retractionEvents": [],
+            "disposition": "rejected",
+            "receiptEvent": null,
+            "reason": "source-output-record-conflict"
+          }
+        }
+      ]
+    },
+    {
+      "id": "retraction-binds-before-active-claim",
+      "steps": [
+        {
+          "event": "retraction",
+          "expect": {
+            "history": [
+              "retraction"
+            ],
+            "bindingEvent": "retraction",
+            "current": [],
+            "grants": {
+              "purpose-a": [],
+              "purpose-b": []
+            },
+            "retractionEvents": [
+              "retraction"
+            ],
+            "disposition": "accepted",
+            "receiptEvent": "retraction",
+            "reason": null
+          }
+        },
+        {
+          "event": "changed-source-record",
+          "expect": {
+            "history": [
+              "retraction"
+            ],
+            "bindingEvent": "retraction",
+            "current": [],
+            "grants": {
+              "purpose-a": [],
+              "purpose-b": []
+            },
+            "retractionEvents": [
+              "retraction"
+            ],
+            "disposition": "rejected",
+            "receiptEvent": null,
+            "reason": "source-output-record-conflict"
+          }
+        },
+        {
+          "event": "multi-v2",
+          "expect": {
+            "history": [
+              "retraction",
+              "multi-v2"
+            ],
+            "bindingEvent": "retraction",
+            "current": [],
+            "grants": {
+              "purpose-a": [
+                "multi-v2"
+              ],
+              "purpose-b": []
+            },
+            "retractionEvents": [
+              "retraction"
+            ],
+            "disposition": "accepted",
+            "receiptEvent": "multi-v2",
+            "reason": null
+          }
+        },
+        {
+          "event": "multi-v2",
+          "expect": {
+            "history": [
+              "retraction",
+              "multi-v2"
+            ],
+            "bindingEvent": "retraction",
+            "current": [],
+            "grants": {
+              "purpose-a": [
+                "multi-v2"
+              ],
+              "purpose-b": []
+            },
+            "retractionEvents": [
+              "retraction"
+            ],
+            "disposition": "replayed",
+            "receiptEvent": "multi-v2",
+            "reason": null
+          }
+        },
+        {
+          "event": "retraction",
+          "expect": {
+            "history": [
+              "retraction",
+              "multi-v2"
+            ],
+            "bindingEvent": "retraction",
+            "current": [],
+            "grants": {
+              "purpose-a": [
+                "multi-v2"
+              ],
+              "purpose-b": []
+            },
+            "retractionEvents": [
+              "retraction"
+            ],
+            "disposition": "replayed",
+            "receiptEvent": "retraction",
+            "reason": null
+          }
+        },
+        {
+          "event": "changed-source-record",
+          "expect": {
+            "history": [
+              "retraction",
+              "multi-v2"
+            ],
+            "bindingEvent": "retraction",
+            "current": [],
+            "grants": {
+              "purpose-a": [
+                "multi-v2"
+              ],
+              "purpose-b": []
+            },
+            "retractionEvents": [
+              "retraction"
+            ],
+            "disposition": "rejected",
+            "receiptEvent": null,
+            "reason": "source-output-record-conflict"
+          }
+        }
+      ]
+    },
+    {
+      "id": "active-binding-rejects-contradictory-retraction",
+      "steps": [
+        {
+          "event": "changed-source-record",
+          "expect": {
+            "history": [
+              "changed-source-record"
+            ],
+            "bindingEvent": "changed-source-record",
+            "current": [
+              "changed-source-record"
+            ],
+            "grants": {
+              "purpose-a": [
+                "changed-source-record"
+              ],
+              "purpose-b": []
+            },
+            "retractionEvents": [],
+            "disposition": "accepted",
+            "receiptEvent": "changed-source-record",
+            "reason": null
+          }
+        },
+        {
+          "event": "retraction",
+          "expect": {
+            "history": [
+              "changed-source-record"
+            ],
+            "bindingEvent": "changed-source-record",
+            "current": [
+              "changed-source-record"
+            ],
+            "grants": {
+              "purpose-a": [
+                "changed-source-record"
+              ],
+              "purpose-b": []
+            },
+            "retractionEvents": [],
+            "disposition": "rejected",
+            "receiptEvent": null,
+            "reason": "source-output-record-conflict"
+          }
+        },
+        {
+          "event": "changed-source-record",
+          "expect": {
+            "history": [
+              "changed-source-record"
+            ],
+            "bindingEvent": "changed-source-record",
+            "current": [
+              "changed-source-record"
+            ],
+            "grants": {
+              "purpose-a": [
+                "changed-source-record"
+              ],
+              "purpose-b": []
+            },
+            "retractionEvents": [],
+            "disposition": "replayed",
+            "receiptEvent": "changed-source-record",
+            "reason": null
+          }
+        },
+        {
+          "event": "retraction",
+          "expect": {
+            "history": [
+              "changed-source-record"
+            ],
+            "bindingEvent": "changed-source-record",
+            "current": [
+              "changed-source-record"
+            ],
+            "grants": {
+              "purpose-a": [
+                "changed-source-record"
+              ],
+              "purpose-b": []
+            },
+            "retractionEvents": [],
+            "disposition": "rejected",
+            "receiptEvent": null,
+            "reason": "source-output-record-conflict"
+          }
+        }
+      ]
+    }
+  ],
+  "replayWholeSequence": {
+    "repeat": 1,
+    "restartBeforeReplay": true,
+    "preserveFinalState": true,
+    "newlyVisible": []
+  }
+}
