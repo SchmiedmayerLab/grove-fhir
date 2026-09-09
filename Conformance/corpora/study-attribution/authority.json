@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 0,
+  "trustBoundary": "Synthetic receiver-owned records established independently of producer and repository Bundles; never accept these assertions from an upload.",
+  "verifiedSourceBinding": "participant-source",
+  "sourceBindings": {
+    "participant-source": {
+      "participant": {"system": "https://study.example.org/fhir/identifiers/participant", "value": "participant-001"},
+      "eventSystem": "https://study.example.org/fhir/NamingSystem/grove-event-v0",
+      "sourceID": "1f5c58aa-6ec6-4e79-a682-829a9debd3f5"
+    },
+    "other-source": {
+      "participant": {"system": "https://study.example.org/fhir/identifiers/participant", "value": "participant-001"},
+      "eventSystem": "https://study.example.org/fhir/NamingSystem/grove-event-v0",
+      "sourceID": "22222222-2222-4222-8222-222222222222"
+    }
+  },
+  "consentReceipts": {
+    "consent-a1": {
+      "enrollment": "enrollment-a",
+      "protocol": {"url": "https://study.example.org/PlanDefinition/a", "version": "1"},
+      "participant": {"system": "https://study.example.org/fhir/identifiers/participant", "value": "participant-001"},
+      "sourceBinding": "participant-source",
+      "acceptedAt": "2026-08-19T00:00:00Z",
+      "collectionWindow": {"startInclusive": "2026-08-19T00:00:00Z", "endExclusive": "2026-08-21T00:00:00Z"}
+    },
+    "consent-b3": {
+      "enrollment": "enrollment-b",
+      "protocol": {"url": "https://study.example.org/PlanDefinition/b", "version": "3"},
+      "participant": {"system": "https://study.example.org/fhir/identifiers/participant", "value": "participant-001"},
+      "sourceBinding": "participant-source",
+      "acceptedAt": "2026-08-19T12:00:00Z",
+      "collectionWindow": {"startInclusive": "2026-08-20T00:00:00Z", "endExclusive": "2026-08-21T00:00:00Z"}
+    }
+  },
+  "withdrawal": {
+    "enrollment": "enrollment-a",
+    "effectiveAt": "2026-08-23T00:00:00Z",
+    "activeGrantRemoved": "a1",
+    "retainedDecision": {"grant": "a1", "status": "revoked", "reason": "enrollment-withdrawal"},
+    "newGrantAllowed": false,
+    "sourceReplayCanReactivate": false
+  }
+}

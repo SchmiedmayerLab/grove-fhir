@@ -72,6 +72,16 @@ FindingCounts = namedtuple(
 )
 
 
+def required_count(qa: object, field: str) -> int:
+    """Require an actual nonnegative Publisher counter, never a coerced value."""
+    if not isinstance(qa, dict):
+        raise ValueError("Publisher QA must be a JSON object")
+    value = qa.get(field)
+    if type(value) is not int or value < 0:
+        raise ValueError(f"Publisher QA {field!r} must be a nonnegative integer")
+    return value
+
+
 def finding_counts(
     qa: dict[str, object],
     exact_suppressions: dict[str, int],
@@ -88,8 +98,11 @@ def finding_counts(
     families.
     """
 
-    publisher_errors = int(qa.get("errs", qa.get("errors", 0)))
-    publisher_unsuppressed_warnings = int(qa.get("warnings", 0))
+    publisher_errors = required_count(qa, "errs" if "errs" in qa else "errors")
+    if "errs" in qa and "errors" in qa:
+        if publisher_errors != required_count(qa, "errors"):
+            raise ValueError("Publisher QA 'errs' and 'errors' counters disagree")
+    publisher_unsuppressed_warnings = required_count(qa, "warnings")
     suppressed_link_errors = sum(
         count
         for message, count in exact_suppressions.items()
@@ -174,17 +187,6 @@ UNKNOWN_CODE_SYSTEM_MESSAGE = re.compile(
     r"so the code cannot be validated$"
 )
 
-# The Publisher states one offline limit two ways: the CodeSystem is absent, or it resolves to a
-# definition that enumerates nothing. BCP 47 is defined by reference to the IANA subtag registry and
-# never enumerates codes, so which phrasing appears turns only on whether a dependency shipped the
-# stub. Both are the same unverifiable-offline fact and neither is suppressible: the finding does not
-# occur online, and a suppression that goes unexercised there fails the guide.
-RESOLVED_WITHOUT_CODES_MESSAGE = re.compile(
-    r"^Unable to validate code without using server because: Resolved system "
-    r"(?P<system>\S+) \(v[^)]*\), but the definition doesn't include any codes, "
-    r"so the code has not been validated$"
-)
-
 IMPLEMENTATION_LANGUAGE_SYSTEM_PATH = re.compile(
     r"^ImplementationGuide\.language\.system \(l[0-9]+/c[0-9]+\)$"
 )
@@ -220,6 +222,11 @@ OFFLINE_CODEABLE_CONCEPT_MESSAGE = (
 
 BCP47 = "urn:ietf:bcp:47"
 ISO_IEEE_11073 = "urn:iso:std:iso:11073:10101"
+OFFLINE_BCP47_CONTENT_WARNING = (
+    "Unable to validate code without using server because: Resolved system "
+    "urn:ietf:bcp:47 (v2.0.1), but the definition doesn't include any codes, "
+    "so the code has not been validated"
+)
 
 
 def plain_html(fragment: str) -> str:
@@ -583,24 +590,18 @@ def offline_unknown_code_system_warning_count(guide: Path) -> int:
             row = WARNING_ROW.fullmatch(raw_row)
             if row is None:
                 continue
-            resolved_match = RESOLVED_WITHOUT_CODES_MESSAGE.fullmatch(
-                plain_html(row.group("message"))
-            )
-            if resolved_match is not None:
-                # Scoped to the guide's own language element: the tag is the Publisher's default,
-                # and the resource carries no language of its own to disagree with.
-                if resolved_match.group("system") != BCP47:
-                    continue
-                if resource.get("resourceType") != "ImplementationGuide":
-                    continue
-                if resource.get("language") != "en":
-                    continue
-                if not IMPLEMENTATION_LANGUAGE_PATH.fullmatch(
-                    plain_html(row.group("path"))
-                ):
-                    continue
-                if plain_html(row.group("diagnostic")) != "TERMINOLOGY_TX_WARNING":
-                    continue
+            path = plain_html(row.group("path"))
+            diagnostic = plain_html(row.group("diagnostic"))
+            # The pinned BCP 47 definition can be present without enumerating
+            # language tags. Accept only Publisher's injected, literal English
+            # language and this exact offline diagnostic, never arbitrary codes.
+            if (
+                plain_html(row.group("message")) == OFFLINE_BCP47_CONTENT_WARNING
+                and diagnostic == "TERMINOLOGY_TX_WARNING"
+                and IMPLEMENTATION_LANGUAGE_PATH.fullmatch(path)
+                and resource.get("resourceType") == "ImplementationGuide"
+                and resource.get("language") == "en"
+            ):
                 count += 1
                 continue
             message_match = UNKNOWN_CODE_SYSTEM_MESSAGE.fullmatch(
@@ -608,8 +609,6 @@ def offline_unknown_code_system_warning_count(guide: Path) -> int:
             )
             if message_match is None:
                 continue
-            path = plain_html(row.group("path"))
-            diagnostic = plain_html(row.group("diagnostic"))
             system = message_match.group("system")
             if system == BCP47:
                 if resource.get("resourceType") != "ImplementationGuide":
@@ -974,8 +973,14 @@ def main() -> int:
             rows.append((str(guide), None, -1))
             failed = True
             continue
-        qa = json.loads(qa_path.read_text(encoding="utf-8"))
-        hints = int(qa.get("hints", 0))
+        try:
+            qa = json.loads(qa_path.read_text(encoding="utf-8"))
+            hints = required_count(qa, "hints")
+        except (ValueError, OSError) as error:
+            print(f"{guide}: invalid {qa_path}: {error}")
+            rows.append((str(guide), None, -1))
+            failed = True
+            continue
         suppression_problems = validate_suppressions(
             guide, offline_terminology=arguments.offline_terminology
         )

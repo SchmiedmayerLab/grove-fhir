@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 0,
+  "baseline": "Immediately after accept-source-with-grant-a1; evaluate a late b3 grant without changing accepted source bytes or existing decisions.",
+  "cases": [
+    {"id": "missing-consent", "grantChanges": {"consentReceipt": null}, "expectedFailure": "missing-consent"},
+    {"id": "wrong-enrollment-consent", "grantChanges": {"consentReceipt": "consent-a1"}, "expectedFailure": "consent-binding"},
+    {"id": "wrong-protocol-consent", "receiptChanges": {"protocol": {"url": "https://study.example.org/PlanDefinition/b", "version": "4"}}, "expectedFailure": "consent-binding"},
+    {"id": "wrong-subject-consent", "receiptChanges": {"participant": {"system": "https://study.example.org/fhir/identifiers/participant", "value": "participant-other"}}, "expectedFailure": "consent-binding"},
+    {"id": "wrong-verified-source", "grantChanges": {"sourceBinding": "other-source"}, "expectedFailure": "source-binding"},
+    {"id": "wrong-consent-source", "receiptChanges": {"sourceBinding": "other-source"}, "expectedFailure": "consent-binding"},
+    {"id": "consent-after-collection", "receiptChanges": {"acceptedAt": "2026-08-21T00:00:00Z"}, "expectedFailure": "collection-authority"},
+    {"id": "missing-collection-window", "receiptChanges": {"collectionWindow": null}, "expectedFailure": "collection-authority"},
+    {"id": "collection-before-window", "receiptChanges": {"collectionWindow": {"startInclusive": "2026-08-20T15:30:00.252Z", "endExclusive": "2026-08-21T00:00:00Z"}}, "expectedFailure": "collection-authority"},
+    {"id": "collection-at-exclusive-end", "receiptChanges": {"collectionWindow": {"startInclusive": "2026-08-19T12:00:00Z", "endExclusive": "2026-08-20T15:30:00.251Z"}}, "expectedFailure": "collection-authority"}
+  ],
+  "expectAfterEveryRejection": {
+    "storedEvents": 1,
+    "storedClinicalPayloads": 1,
+    "sourceUnchanged": true,
+    "activeGrants": ["a1"],
+    "retainedGrantDecisions": {"a1": "active"},
+    "exports": {"a": "export-a.json", "b": null}
+  }
+}

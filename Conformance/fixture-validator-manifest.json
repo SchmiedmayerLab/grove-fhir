@@ -19,6 +19,31 @@
     }
   ],
   "resources": [
+    {"path": "Conformance/corpora/receiver-lifecycle/resources/changed-source-record.json", "profiles": ["https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle"]},
+    {"path": "Conformance/corpora/receiver-lifecycle/resources/multi-v1.json", "profiles": ["https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle"]},
+    {"path": "Conformance/corpora/receiver-lifecycle/resources/multi-v2.json", "profiles": ["https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle"]},
+    {"path": "Conformance/corpora/receiver-lifecycle/resources/multi-v3.json", "profiles": ["https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle"]},
+    {"path": "Conformance/corpora/receiver-lifecycle/resources/equal-version-conflict.json", "profiles": ["https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle"]},
+    {"path": "Conformance/corpora/receiver-lifecycle/resources/equal-version-reassembly.json", "profiles": ["https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle"]},
+    {"path": "Conformance/corpora/receiver-lifecycle/resources/other-writer.json", "profiles": ["https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle"]},
+    {"path": "Conformance/corpora/receiver-lifecycle/resources/missing-order.json", "profiles": ["https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle"]},
+    {"path": "Conformance/corpora/study-attribution/source-event.json", "profiles": ["https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle"]},
+    {"path": "Conformance/corpora/study-attribution/context-two-studies.json", "profiles": ["https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle"]},
+    {"path": "Conformance/corpora/study-attribution/export-a.json", "profiles": []},
+    {"path": "Conformance/corpora/study-attribution/export-b.json", "profiles": []},
+    {"path": "Conformance/corpora/study-attribution/repository-b.json", "profiles": []},
+    {"path": "Conformance/corpora/study-attribution/revision-a2.json", "profiles": []},
+    {"path": "Conformance/corpora/study-attribution/policy-negative-subject-mismatch.json", "profiles": ["https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle"]},
+    {"path": "Conformance/corpora/study-attribution/policy-negative-lost-historical-revision.json", "profiles": []},
+    {"path": "Conformance/corpora/study-attribution/policy-negative-derived-export-as-event-retry.json", "profiles": []},
+    {"path": "Conformance/corpora/receiver-lifecycle/resources/original.json", "profiles": ["https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle"]},
+    {"path": "Conformance/corpora/receiver-lifecycle/resources/corrected.json", "profiles": ["https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle"]},
+    {"path": "Conformance/corpora/receiver-lifecycle/resources/altered-retry.json", "profiles": ["https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle"]},
+    {"path": "Conformance/corpora/receiver-lifecycle/resources/unordered-a.json", "profiles": ["https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle"]},
+    {"path": "Conformance/corpora/receiver-lifecycle/resources/unordered-b.json", "profiles": ["https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle"]},
+    {"path": "Conformance/corpora/receiver-lifecycle/resources/pending.json", "profiles": ["https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle"]},
+    {"path": "Conformance/corpora/receiver-lifecycle/resources/target.json", "profiles": ["https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle"]},
+    {"path": "Conformance/corpora/receiver-lifecycle/resources/retraction.json", "profiles": ["https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-retraction-bundle"]},
     {
       "path": "Conformance/corpora/mobile-exchange/exchange-bundle.json",
       "profiles": [
@@ -117,6 +142,17 @@
     }
   ],
   "excluded": [
+    {"path": "Conformance/corpora/receiver-lifecycle/identity-sequences.json", "reason": "Receiver-policy expectations for contradictory source-output/source-record bindings, checked by Tests/test_output_record_binding.py; not a FHIR resource."},
+    {"path": "Conformance/corpora/receiver-lifecycle/revision-sequences.json", "reason": "Exact output aliases and receiver-policy expectations for complete-revision membership and ambiguous version claims; checked by Tests/test_revision_membership.py, not a FHIR resource."},
+    {"path": "Conformance/corpora/study-attribution/authority.json", "reason": "Synthetic receiver-owned source bindings, consent receipts and collection windows, not FHIR resources; checked by Tests/test_study_attribution.py."},
+    {"path": "Conformance/corpora/study-attribution/authority-negative-cases.json", "reason": "Mutations of receiver-owned authority, not FHIR resources; each must fail the exact consent/source/window predicate in Tests/test_study_attribution.py."},
+    {"path": "Conformance/corpora/study-attribution/official-validator-manifest.json", "reason": "Producer validation manifest for the multi-study source examples, not a FHIR resource."},
+    {"path": "Conformance/corpora/study-attribution/event-lock.json", "reason": "Pinned source identity, bytes and exact protocol pairs; checked by Tests/test_study_attribution.py."},
+    {"path": "Conformance/corpora/study-attribution/negative-cases.json", "reason": "One-mutation structural and receiver-policy cases; checked by Tests/test_study_attribution.py. Profile-valid policy-negative resources are independently included in the official Validator lane."},
+    {"path": "Conformance/corpora/study-attribution/history.json", "reason": "Expected receiver attribution and visibility transitions, not a FHIR resource; checked by Tests/test_study_attribution.py."},
+    {"path": "Conformance/corpora/receiver-lifecycle/events.json", "reason": "Pinned event identities and SHA-256 fixture digests; checked by Tests/test_receiver_lifecycle.py, not a FHIR resource."},
+    {"path": "Conformance/corpora/receiver-lifecycle/sequences.json", "reason": "Receiver-policy assumptions and expected state after each delivery; checked by Tests/test_receiver_lifecycle.py, not a FHIR resource."},
+    {"path": "Conformance/corpora/receiver-lifecycle/official-validator-manifest.json", "reason": "Producer manifest for the receiver lifecycle event fixtures, not a FHIR resource."},
     {
       "path": "Conformance/corpora/mobile-exchange/corpus.json",
       "reason": "The negative producer corpus: a case manifest of JSON Patch mutations, validated by the structural conformance kit."

@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 0,
+  "fhirVersion": "4.0.1",
+  "producer": {
+    "name": "Grove FHIR multi-study event fixture",
+    "version": "0.6.0"
+  },
+  "packages": [
+    {
+      "alias": "mobile",
+      "packageId": "org.grovealliance.fhir.mobile",
+      "version": "0.6.0"
+    },
+    {
+      "alias": "questionnaire",
+      "packageId": "org.grovealliance.fhir.questionnaire",
+      "version": "0.6.0"
+    }
+  ],
+  "resources": [
+    {
+      "path": "source-event.json",
+      "requiredProfiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle"
+      ]
+    },
+    {
+      "path": "context-two-studies.json",
+      "requiredProfiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle"
+      ]
+    }
+  ],
+  "semanticVectors": [
+    {
+      "id": "heart-rate",
+      "path": "source-event.json",
+      "resourcePointer": "/entry/2/resource"
+    }
+  ]
+}
