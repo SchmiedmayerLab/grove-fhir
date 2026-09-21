@@ -110,6 +110,14 @@ def resources():
     observation(corrected)["issued"] = "2026-08-19T17:30:02Z"
     altered = copy.deepcopy(original)
     observation(altered)["note"] = [{"text": "Different content under an already accepted event identity."}]
+    # Same tokens in another member order: the exact retry, although the bytes differ.
+    reformatted = dict(reversed(list(copy.deepcopy(original).items())))
+    for entry in reformatted["entry"]:
+        if entry["resource"]["resourceType"] == "Observation":
+            entry["resource"] = dict(reversed(list(entry["resource"].items())))
+    # 72.0 is a different decimal lexeme from 72, so this is different content, not a retry.
+    lexeme = copy.deepcopy(original)
+    observation(lexeme)["valueQuantity"]["value"] = 72.0
     pending = active(46)
     questionnaire = next(entry for entry in pending["entry"] if entry["resource"]["resourceType"] == "QuestionnaireResponse")
     observation(pending)["derivedFrom"] = [{
@@ -129,6 +137,7 @@ def resources():
     rekey(target, 47)
     return {
         "original": original, "corrected": corrected, "altered-retry": altered,
+        "reformatted-retry": reformatted, "lexeme-retry": lexeme,
         "unordered-a": active(44, note="First source wording without writer ordering evidence."),
         "unordered-b": active(45, note="Different wording without comparable writer ordering evidence."),
         "pending": pending, "target": target,

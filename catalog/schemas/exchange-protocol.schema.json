@@ -599,12 +599,22 @@
     "payload": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["attachmentSize", "attachmentHash", "semanticComparison", "byteComparison"],
+      "required": ["attachmentSize", "attachmentHash", "semanticComparison", "byteComparison", "equality"],
       "properties": {
         "attachmentSize": { "$ref": "#/$defs/nonempty" },
         "attachmentHash": { "$ref": "#/$defs/nonempty" },
         "semanticComparison": { "$ref": "#/$defs/nonempty" },
-        "byteComparison": { "$ref": "#/$defs/nonempty" }
+        "byteComparison": { "$ref": "#/$defs/nonempty" },
+        "equality": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["formatting", "decimalLexeme", "vectors"],
+          "properties": {
+            "formatting": { "$ref": "#/$defs/nonempty" },
+            "decimalLexeme": { "$ref": "#/$defs/nonempty" },
+            "vectors": { "$ref": "#/$defs/nonempty" }
+          }
+        }
       }
     },
     "testVectors": {

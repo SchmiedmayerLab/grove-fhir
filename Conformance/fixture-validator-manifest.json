@@ -39,6 +39,8 @@
     {"path": "Conformance/corpora/receiver-lifecycle/resources/original.json", "profiles": ["https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle"]},
     {"path": "Conformance/corpora/receiver-lifecycle/resources/corrected.json", "profiles": ["https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle"]},
     {"path": "Conformance/corpora/receiver-lifecycle/resources/altered-retry.json", "profiles": ["https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle"]},
+    {"path": "Conformance/corpora/receiver-lifecycle/resources/reformatted-retry.json", "profiles": ["https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle"]},
+    {"path": "Conformance/corpora/receiver-lifecycle/resources/lexeme-retry.json", "profiles": ["https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle"]},
     {"path": "Conformance/corpora/receiver-lifecycle/resources/unordered-a.json", "profiles": ["https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle"]},
     {"path": "Conformance/corpora/receiver-lifecycle/resources/unordered-b.json", "profiles": ["https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle"]},
     {"path": "Conformance/corpora/receiver-lifecycle/resources/pending.json", "profiles": ["https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle"]},

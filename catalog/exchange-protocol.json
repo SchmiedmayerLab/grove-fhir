@@ -938,7 +938,12 @@
     "attachmentSize": "When a Grove profile requires Attachment.size it is the exact pre-base64 byte count and must be between 0 and 2147483647 inclusive. Larger payloads are rejected unless a future segmented manifest profile is used.",
     "attachmentHash": "FHIR R4 Attachment.hash is base64 SHA-1 over the pre-base64 payload bytes. Stronger integrity uses a separately defined manifest element and never changes Attachment.hash semantics.",
     "semanticComparison": "FHIR graphs compare semantically through lossless JSON tokens that preserve decimal lexemes. Whole-Bundle byte equality is not required.",
-    "byteComparison": "Exact bytes are required for identity preimages and registered opaque, CSV, or binary payloads."
+    "byteComparison": "Exact bytes are required for identity preimages and registered opaque, CSV, or binary payloads.",
+    "equality": {
+      "formatting": "A replay that differs from the accepted event only in JSON member order, whitespace, or string escaping carries the same tokens and is the exact retry.",
+      "decimalLexeme": "A replay whose decimal lexeme differs, such as 72.0 for 72, is different content under a reused event identifier; the receiver retains the accepted event and disregards the replay exactly as any other altered retry.",
+      "vectors": "Conformance/corpora/receiver-lifecycle: reformatted-retry and lexeme-retry"
+    }
   },
   "testVectors": {
     "keyHex": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",

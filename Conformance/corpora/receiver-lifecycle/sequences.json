@@ -89,6 +89,108 @@
       ]
     },
     {
+      "id": "reformatted-replay",
+      "steps": [
+        {
+          "event": "original",
+          "expect": {
+            "history": [
+              "original"
+            ],
+            "versions": [
+              "original"
+            ],
+            "current": [
+              "original"
+            ],
+            "pending": [],
+            "retracted": [],
+            "conflicts": [],
+            "visible": [
+              "original"
+            ],
+            "newlyVisible": [
+              "original"
+            ],
+            "references": {}
+          }
+        },
+        {
+          "event": "reformatted-retry",
+          "expect": {
+            "history": [
+              "original"
+            ],
+            "versions": [
+              "original"
+            ],
+            "current": [
+              "original"
+            ],
+            "pending": [],
+            "retracted": [],
+            "conflicts": [],
+            "visible": [
+              "original"
+            ],
+            "newlyVisible": [],
+            "references": {}
+          }
+        }
+      ]
+    },
+    {
+      "id": "lexeme-replay",
+      "steps": [
+        {
+          "event": "original",
+          "expect": {
+            "history": [
+              "original"
+            ],
+            "versions": [
+              "original"
+            ],
+            "current": [
+              "original"
+            ],
+            "pending": [],
+            "retracted": [],
+            "conflicts": [],
+            "visible": [
+              "original"
+            ],
+            "newlyVisible": [
+              "original"
+            ],
+            "references": {}
+          }
+        },
+        {
+          "event": "lexeme-retry",
+          "expect": {
+            "history": [
+              "original"
+            ],
+            "versions": [
+              "original"
+            ],
+            "current": [
+              "original"
+            ],
+            "pending": [],
+            "retracted": [],
+            "conflicts": [],
+            "visible": [
+              "original"
+            ],
+            "newlyVisible": [],
+            "references": {}
+          }
+        }
+      ]
+    },
+    {
       "id": "correction-before-original",
       "steps": [
         {
