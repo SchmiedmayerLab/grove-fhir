@@ -245,6 +245,7 @@
     "semanticUnit": "Exactly one immutable source record revision or one retraction assertion. A transport may batch complete event Bundles without changing this unit.",
     "bundleIdentifier": {
       "system": "A deployment-owned absolute URI, stable for the producer instance and never reused for another key space.",
+      "recommendedSystemForm": "<deployment-root>/NamingSystem/grove-event-v0",
       "valueForm": "e0:<lowercase-producer-instance-uuid>:<positive-monotonic-sequence>",
       "soleEventBusinessIdentifier": true
     },
@@ -261,7 +262,8 @@
     "domain": "org.grovealliance.fhir.identity.v0",
     "preimage": "The domain, one identity kind from the closed identityKinds list, and exactly that kind's typed components in declared order. Every typed component is a non-empty Unicode-scalar string; missing, empty, additional, reordered, or non-scalar components are errors. Every field is encoded as an unsigned 32-bit big-endian byte length followed by its exact UTF-8 bytes.",
     "valueForm": "v0:<key-id>:<positive-key-epoch>:<43-character-base64url-digest-without-padding>",
-    "identifierSystem": "Deployment-owned and immutable for one identity kind, deployment scope, key id, and key epoch. A rotated key uses a new system and epoch.",
+    "identifierSystem": "Deployment-owned and immutable for one identity kind, deployment scope, key id, and key epoch. A rotated key uses a new system and epoch. A deployment should name it with recommendedSystemForm; a deployment that already governs its own namespaces remains conformant.",
+    "recommendedSystemForm": "<deployment-root>/NamingSystem/grove-<identity-kind>-v0/<key-id>/<epoch>",
     "keyRequirements": {
       "minimumBytes": 32,
       "managedSecret": true,
@@ -619,6 +621,7 @@
     ],
     "entryNode": {
       "system": "A deployment-owned absolute URI for event-scoped graph nodes.",
+      "recommendedSystemForm": "<deployment-root>/NamingSystem/grove-entry-node-v0",
       "domain": "org.grovealliance.fhir.entry-node.v0",
       "components": [
         "event-system",

@@ -136,9 +136,10 @@
         "bundleIdentifier": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["system", "valueForm", "soleEventBusinessIdentifier"],
+          "required": ["system", "recommendedSystemForm", "valueForm", "soleEventBusinessIdentifier"],
           "properties": {
             "system": { "$ref": "#/$defs/nonempty" },
+            "recommendedSystemForm": { "$ref": "#/$defs/nonempty" },
             "valueForm": { "$ref": "#/$defs/nonempty" },
             "soleEventBusinessIdentifier": { "const": true }
           }
@@ -160,13 +161,14 @@
     "opaqueIdentity": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["algorithm", "domain", "preimage", "valueForm", "identifierSystem", "keyRequirements", "componentRequirements", "privacy", "informationPreservation", "rotation", "identityKinds"],
+      "required": ["algorithm", "domain", "preimage", "valueForm", "identifierSystem", "recommendedSystemForm", "keyRequirements", "componentRequirements", "privacy", "informationPreservation", "rotation", "identityKinds"],
       "properties": {
         "algorithm": { "const": "HMAC-SHA-256" },
         "domain": { "const": "org.grovealliance.fhir.identity.v0" },
         "preimage": { "$ref": "#/$defs/nonempty" },
         "valueForm": { "$ref": "#/$defs/nonempty" },
         "identifierSystem": { "$ref": "#/$defs/nonempty" },
+        "recommendedSystemForm": { "$ref": "#/$defs/nonempty" },
         "keyRequirements": {
           "type": "object",
           "additionalProperties": false,
@@ -382,9 +384,10 @@
         "entryNode": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["system", "domain", "components", "ordinal", "valueForm", "digest"],
+          "required": ["system", "recommendedSystemForm", "domain", "components", "ordinal", "valueForm", "digest"],
           "properties": {
             "system": { "$ref": "#/$defs/nonempty" },
+            "recommendedSystemForm": { "$ref": "#/$defs/nonempty" },
             "domain": { "const": "org.grovealliance.fhir.entry-node.v0" },
             "components": {
               "type": "array",

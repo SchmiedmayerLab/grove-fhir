@@ -102,6 +102,9 @@ These are source-representation rules, not invented physiologic plausibility ran
 An Observation identifier is a business identifier, not the FHIR server's resource id.
 Every Grove output carries separately typed source-record and source-output Identifiers.
 Their systems are deployment-owned and immutable for one identity kind, scope, HMAC key id, and key epoch; their values use the `v0:<key-id>:<epoch>:<digest>` form.
+A deployment should name each system `<deployment-root>/NamingSystem/grove-<identity-kind>-v0/<key-id>/<epoch>`, the event Bundle identifier system `<deployment-root>/NamingSystem/grove-event-v0`, and the entry-node system `<deployment-root>/NamingSystem/grove-entry-node-v0`.
+The form carries the identity kind, the protocol version, the key id, and the epoch, so a receiver reads them from the namespace itself and the same key material names the same namespace on every platform.
+The normative test vectors use it under the root `https://study.example.org/fhir`; a deployment that already governs its own namespaces remains conformant.
 The exact component order and unsigned 32-bit length-framed UTF-8 preimage are normative in [`catalog/exchange-protocol.json`](https://grovealliance.org/fhir/catalog/exchange-protocol.json). Each catalog-named identity component is a non-empty Unicode-scalar string; missing, empty, additional, reordered, or non-scalar components are errors.
 
 The opaque Grove identifiers are mandatory even when a deployment intentionally discloses a source-native identifier for round-trip or traceability.

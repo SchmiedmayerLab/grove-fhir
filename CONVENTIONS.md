@@ -16,7 +16,7 @@ These conventions say when a name may still change and how a client is expected 
 
 ## Persisted identifiers are named once
 
-A persisted identifier is any name that outlives the process that produced it: a canonical URL, a CodeSystem or ValueSet URL, an extension URL, a `linkId`, a storage key or key prefix, a schema version, an identity component name, a diagnostic rule code, a package id.
+A persisted identifier is any name that outlives the process that produced it: a canonical URL, a CodeSystem or ValueSet URL, an extension URL, an identifier system, a `linkId`, a storage key or key prefix, a schema version, an identity component name, a diagnostic rule code, a package id.
 
 Name each one once.
 Rename it only with a migration that reads both spellings for a stated period, or with a recorded statement that no data exists under the old name.

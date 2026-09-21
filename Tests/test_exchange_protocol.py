@@ -59,6 +59,27 @@ class ExchangeProtocolTests(unittest.TestCase):
         self.assertEqual(len(rows), len(kinds))
         self.assertEqual(len({row["system"] for row in rows}), len(kinds))
 
+    def test_vectors_use_the_recommended_identifier_system_forms(self) -> None:
+        root = "https://study.example.org/fhir"
+        opaque = self.catalog["opaqueIdentity"]["recommendedSystemForm"]
+        for row in self.vectors["identitySystems"]:
+            with self.subTest(kind=row["identityKind"]):
+                expected = (
+                    opaque.replace("<deployment-root>", root)
+                    .replace("<identity-kind>", row["identityKind"])
+                    .replace("<key-id>", self.vectors["keyId"])
+                    .replace("<epoch>", str(self.vectors["epoch"]))
+                )
+                self.assertEqual(row["system"], expected)
+        event = self.catalog["event"]["bundleIdentifier"]["recommendedSystemForm"]
+        self.assertEqual(
+            self.vectors["event"]["system"], event.replace("<deployment-root>", root)
+        )
+        node = self.catalog["entryIdentity"]["entryNode"]["recommendedSystemForm"]
+        self.assertEqual(
+            self.vectors["entryNode"]["system"], node.replace("<deployment-root>", root)
+        )
+
     def test_invalid_hmac_vectors_fail_closed(self) -> None:
         expected_messages = {
             "empty-component": "must not be empty",
