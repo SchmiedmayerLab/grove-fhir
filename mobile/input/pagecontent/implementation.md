@@ -78,6 +78,23 @@ The [heart-rate JSON](Observation-GroveMobileHeartRateExample.json) is a compact
 The [step-count JSON](Observation-GroveMobileStepCountExample.json) demonstrates an interval aggregate.
 The [HealthKit adapter guide](https://grovealliance.org/fhir/healthkit/) shows how a source package derives from this contract without changing its shared semantics.
 
+### Vocabulary
+
+Implementations name their public types after these terms, in each platform's casing, and add a term here before introducing a new shared concept; the module or package that holds them follows each platform's own conventions.
+
+- **Exchange event**: one immutable source record revision or one retraction assertion, identified by the event Bundle identifier in the `e0:` form.
+- **Exchange graph**: the validated collection Bundle of one exchange event, with its deterministic entry keys and full URLs.
+- **Business identifier**: a complete `Identifier.system` and `Identifier.value` pair; never a repository-assigned resource id.
+- **Identifier role**: the Grove role an identifier carries in `Identifier.type` from the `grove-identifier-role` code system.
+- **Opaque identity**: an HMAC-derived business identifier of one closed identity kind in the `v0:` form, minted under deployment-owned systems for one key id and epoch; the scope that mints it holds the key, its systems and its epoch.
+- **Entry-node key**: the deterministic `n0:` identity of an entry whose resource carries no business identifier.
+- **Subject**: the participant, referenced through a deployment-scoped pseudonym or, when the deployment supplies one, a bundled Patient entry; the word pseudonym is reserved for the subject.
+- **Study enrollment**: one ResearchStudy, its exact-revision PlanDefinition and one ResearchSubject for a known association.
+- **Application device, host device, recording device**: the three immutable Device snapshots that claim the Grove application, host and recording Device profiles.
+- **Retraction event and retraction target**: the lifecycle assertion that names prior graph nodes by typed logical identifier and target role.
+- **Governed source identifier**: the optional clear native identifier a deployment discloses on the designated primary output or a retraction target.
+- **Producer diagnostic**: a registered rule code that a producer or the conformance kit reports.
+
 ### Dependencies and terminology notices
 
 The tables below list this guide's package dependencies and the notices for terminology used by its artifacts and examples.
