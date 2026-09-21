@@ -646,6 +646,12 @@
       "activityCode": "transform",
       "codingCardinality": "Exactly one coding from the ISO lifecycle system and zero codings from the Grove lifecycle system; translations from unrelated systems remain open.",
       "shape": "One active Bundle contains every output derived from exactly one source record revision and exactly one conversion Provenance targeting every output.",
+      "studyContext": {
+        "recommendedShape": "A producer that knows the participant's enrollment should bundle one ResearchStudy, its exact-revision PlanDefinition, and one ResearchSubject as event-scoped entry-node entries, reference the ResearchStudy from each output through workflow-researchStudy, and reference the PlanDefinition from ResearchStudy.protocol. An identifier-only logical ResearchStudy reference remains conformant but carries no protocol revision.",
+        "subject": "Observation.subject is the identifier-only deployment pseudonym unless the deployment supplies a Patient entry; ResearchSubject.individual references the same subject.",
+        "protocol": "ResearchStudy.protocol references a PlanDefinition entry whose url and version are exact; workflow-instantiatesCanonical is not an admitted extension.",
+        "entryNodeRoles": ["patient", "research-study", "research-subject", "plan-definition"]
+      },
       "entryResourcePolicy": {
         "outputResourceTypes": [
           "Observation",

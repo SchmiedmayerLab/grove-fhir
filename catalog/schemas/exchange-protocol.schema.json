@@ -465,12 +465,23 @@
     "lifecycleShape": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["activitySystem", "activityCode", "codingCardinality", "shape", "entryResourcePolicy", "adapterOnlyOutputProfileClaims"],
+      "required": ["activitySystem", "activityCode", "codingCardinality", "shape", "studyContext", "entryResourcePolicy", "adapterOnlyOutputProfileClaims"],
       "properties": {
         "activitySystem": { "$ref": "#/$defs/uri" },
         "activityCode": { "const": "transform" },
         "codingCardinality": { "$ref": "#/$defs/nonempty" },
         "shape": { "$ref": "#/$defs/nonempty" },
+        "studyContext": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["recommendedShape", "subject", "protocol", "entryNodeRoles"],
+          "properties": {
+            "recommendedShape": { "$ref": "#/$defs/nonempty" },
+            "subject": { "$ref": "#/$defs/nonempty" },
+            "protocol": { "$ref": "#/$defs/nonempty" },
+            "entryNodeRoles": { "const": ["patient", "research-study", "research-subject", "plan-definition"] }
+          }
+        },
         "entryResourcePolicy": {
           "type": "object",
           "additionalProperties": false,

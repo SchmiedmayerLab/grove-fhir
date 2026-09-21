@@ -61,6 +61,10 @@ Resolving an old observation only through the latest ResearchStudy representatio
 
 Connected ResearchStudy, ResearchSubject and PlanDefinition resources are permitted supporting entries in a Mobile exchange Bundle.
 Use `workflow-researchStudy` for each known association and keep each study's protocol link distinct.
+A producer that knows the participant's enrollment should include one ResearchStudy, its exact-revision PlanDefinition, and one ResearchSubject as event-scoped entries, reference the ResearchStudy from each output through `workflow-researchStudy`, and reference the PlanDefinition from `ResearchStudy.protocol`.
+An identifier-only logical ResearchStudy reference remains conformant but carries no protocol revision.
+`Observation.subject` stays the identifier-only deployment pseudonym unless the deployment supplies a Patient entry; `ResearchSubject.individual` references the same subject.
+The entry-node roles for these entries are `patient`, `research-study`, `research-subject`, and `plan-definition`, as [`catalog/exchange-protocol.json`](https://grovealliance.org/fhir/catalog/exchange-protocol.json) lists them.
 These supporting resources do not turn the Bundle into a consent document or grant the sender access to a study.
 
 ### Late attribution does not rewrite a producer event

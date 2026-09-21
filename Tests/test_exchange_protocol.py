@@ -80,6 +80,27 @@ class ExchangeProtocolTests(unittest.TestCase):
             self.vectors["entryNode"]["system"], node.replace("<deployment-root>", root)
         )
 
+    def test_study_context_names_the_corpus_entry_node_roles(self) -> None:
+        context = self.catalog["lifecycle"]["active"]["studyContext"]
+        corpus = ROOT / "Conformance/corpora/study-attribution"
+        used = set()
+        for name in ("source-event.json", "context-two-studies.json"):
+            bundle = json.loads((corpus / name).read_text(encoding="utf-8"))
+            for entry in bundle["entry"]:
+                for extension in entry.get("extension", []):
+                    if extension["url"].endswith("entry-node-key"):
+                        value = extension["valueIdentifier"]["value"]
+                        if value.startswith("n0:"):
+                            used.add(value.split(":")[1])
+        self.assertTrue(set(context["entryNodeRoles"]) <= used)
+        admitted = {
+            target["url"] for target in self.catalog["referencePolicy"]["extensionTargets"]
+        }
+        self.assertIn("http://hl7.org/fhir/StructureDefinition/workflow-researchStudy", admitted)
+        self.assertNotIn(
+            "http://hl7.org/fhir/StructureDefinition/workflow-instantiatesCanonical", admitted
+        )
+
     def test_invalid_hmac_vectors_fail_closed(self) -> None:
         expected_messages = {
             "empty-component": "must not be empty",
