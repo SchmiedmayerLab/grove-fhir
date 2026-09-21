@@ -101,6 +101,24 @@ class ExchangeProtocolTests(unittest.TestCase):
             "http://hl7.org/fhir/StructureDefinition/workflow-instantiatesCanonical", admitted
         )
 
+    def test_input_refusals_are_registered_client_rules(self) -> None:
+        rows = self.catalog["producerDiagnostics"]
+        codes = [row["code"] for row in rows]
+        self.assertEqual(len(codes), len(set(codes)))
+        self.assertEqual(
+            {code.split(".")[0] for code in codes},
+            {
+                "mobile-exchange", "mobile-output", "mobile-retraction", "mobile-support",
+                "mobile-device", "mobile-input", "healthkit-clinical", "healthkit-ecg",
+                "healthkit-input", "sensor-recording-document",
+            },
+        )
+        for row in rows:
+            with self.subTest(code=row["code"]):
+                if row["code"].split(".")[0].endswith("-input"):
+                    self.assertEqual(row["emittedBy"], "client")
+        self.assertIn("mobile-input.unclassified", codes)
+
     def test_invalid_hmac_vectors_fail_closed(self) -> None:
         expected_messages = {
             "empty-component": "must not be empty",

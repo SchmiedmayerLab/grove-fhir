@@ -95,6 +95,8 @@ An Observation projected from a QuestionnaireResponse carries no adapter context
 `producerDiagnostics` in `catalog/exchange-protocol.json` is the shared rule-code registry, and the two sides of the contract do not raise the same subset.
 Each entry says which side does: an `emittedBy` of `conformance-kit` means this repository's validator raises it, and `client` means the rule is stated here but enforced in the producer SDKs, whose own source fixtures can see what an output-only manifest cannot.
 A code is never registered without an owner, so an unimplemented rule cannot pass for an enforced one.
+Namespaces ending in `-input` register the reasons a producer refuses a source record before any graph exists; every refusal a producer reports carries exactly one of them, with `mobile-input.unclassified` as the fallback for a reason no more specific rule names.
+One code stands for one countable reason, and the producer's typed failure carries the detail; a deployment fault such as an invalid converter application or identity scope is not a rule, because no record can cause it.
 
 The structural conformance kit rejects graph, closed-reference, deterministic-identity, exact summary-cardinality, and adapter source-context failures without needing an implementation guide build.
 FHIR element cardinality and terminology validation remain the official HL7 FHIR Validator's responsibility with the exact packages selected by the producer manifest.

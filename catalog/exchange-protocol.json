@@ -239,6 +239,111 @@
       "code": "mobile-exchange.provenance-profile",
       "reason": "The sole active lifecycle Provenance must directly claim exactly one admitted Mobile or adapter conversion profile.",
       "emittedBy": "conformance-kit"
+    },
+    {
+      "code": "mobile-input.unclassified",
+      "reason": "A producer refused a source record without a more specific registered input rule; the refusal is reported, never silently dropped.",
+      "emittedBy": "client"
+    },
+    {
+      "code": "mobile-input.unsupported-source-type",
+      "reason": "The source type has no admitted Grove profile in the adapter catalog, so the producer emits nothing for it.",
+      "emittedBy": "client"
+    },
+    {
+      "code": "mobile-input.intentionally-unsupported-source-type",
+      "reason": "The adapter catalog deliberately refuses the source type for its stated reason; the producer emits no best-effort representation.",
+      "emittedBy": "client"
+    },
+    {
+      "code": "mobile-input.not-yet-convertible",
+      "reason": "The adapter catalog admits the source type, but this producer version does not yet emit its graph.",
+      "emittedBy": "client"
+    },
+    {
+      "code": "mobile-input.platform-exclusive-source-type",
+      "reason": "The source type is admitted only as a platform-exclusive recording document, which this conversion path does not emit.",
+      "emittedBy": "client"
+    },
+    {
+      "code": "mobile-input.value-shape-invalid",
+      "reason": "The source value does not have the shape its selected published mapping requires.",
+      "emittedBy": "client"
+    },
+    {
+      "code": "mobile-input.value-outside-domain",
+      "reason": "A numeric source value is nonfinite, outside the measurement's inclusive value domain, or fractional where the contract admits only integers.",
+      "emittedBy": "client"
+    },
+    {
+      "code": "mobile-input.unsupported-source-value",
+      "reason": "A source enumeration, category, or typed metadata value has no published mapping in the selected contract.",
+      "emittedBy": "client"
+    },
+    {
+      "code": "mobile-input.required-metadata-missing",
+      "reason": "A source field the selected contract requires is absent from the record.",
+      "emittedBy": "client"
+    },
+    {
+      "code": "mobile-input.required-component-missing",
+      "reason": "A panel source record does not carry one of its required result components.",
+      "emittedBy": "client"
+    },
+    {
+      "code": "mobile-input.effective-period-invalid",
+      "reason": "The source record's effective instant or period is not a valid FHIR date or time, starts after it ends, or places a sample outside its own interval.",
+      "emittedBy": "client"
+    },
+    {
+      "code": "mobile-input.conversion-instant-precedes-source-version",
+      "reason": "The conversion instant precedes the source record's own last-modified time, so the event would misstate its order.",
+      "emittedBy": "client"
+    },
+    {
+      "code": "mobile-input.text-not-unicode-scalar",
+      "reason": "A source text field contains an unpaired UTF-16 surrogate and cannot enter a FHIR string or an identity preimage.",
+      "emittedBy": "client"
+    },
+    {
+      "code": "mobile-input.native-identifier-invalid",
+      "reason": "The source's native record identifier or writer record version is absent, blank, or negative where the contract requires a value.",
+      "emittedBy": "client"
+    },
+    {
+      "code": "mobile-input.recording-payload-too-large",
+      "reason": "A recording payload exceeds the byte count FHIR Attachment.size can state, and no segmented manifest profile exists yet.",
+      "emittedBy": "client"
+    },
+    {
+      "code": "mobile-input.empty-recording-series",
+      "reason": "A series carried as a recording document was supplied without samples, so an empty series cannot be told from a failed enumeration.",
+      "emittedBy": "client"
+    },
+    {
+      "code": "healthkit-input.ecg-evidence",
+      "reason": "Caller-supplied electrocardiogram evidence is missing, incomplete, internally inconsistent, or cannot be represented losslessly by the adapter contract; the typed failure names the failing check.",
+      "emittedBy": "client"
+    },
+    {
+      "code": "healthkit-input.clinical-release-unsupported",
+      "reason": "A clinical record declares a FHIR release other than DSTU2 or R4, so its bytes cannot be carried under a versioned FHIR JSON media type.",
+      "emittedBy": "client"
+    },
+    {
+      "code": "healthkit-input.clinical-record-empty",
+      "reason": "A clinical record or CDA sample carries no resource or document bytes, which a query that excludes document data returns.",
+      "emittedBy": "client"
+    },
+    {
+      "code": "healthkit-input.component-requires-correlation",
+      "reason": "A blood pressure component sample converts only inside its admitting correlation, never on its own.",
+      "emittedBy": "client"
+    },
+    {
+      "code": "healthkit-input.source-application-invalid",
+      "reason": "A source revision the caller classified as an application carries no valid Apple bundle identifier.",
+      "emittedBy": "client"
     }
   ],
   "event": {
