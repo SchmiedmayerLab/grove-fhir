@@ -48,10 +48,12 @@ This exact-two rule prevents a producer from presenting ambiguous adapter or mea
 | Question | FHIR element | Rule |
 |---|---|---|
 | Which source and exact output is this? | `identifier` | Exactly one typed `source-record` pair and one typed `source-output` pair; optional source-supplied writer identity is separate |
-| What was measured? | `code` | Fixed by the selected profile |
+| What was measured? | `code` | Fixed by the selected profile; every coding is LOINC, MDC, or a Grove code system |
 | Who does the result describe? | `subject` | Exactly one Patient reference |
-| When did it apply? | `effectiveDateTime` or `effectivePeriod` | Fixed by the selected profile |
-| What was the result? | `value[x]`, `component`, or `hasMember` | Required unless `dataAbsentReason` explains absence |
+| When did it apply? | `effectiveDateTime` or `effectivePeriod` | Fixed by the selected profile; every value states a time of day with its UTC offset |
+| What was the result? | `value[x]`, `component`, or `hasMember` | Required unless `dataAbsentReason` explains absence with a FHIR data-absent-reason code |
+| Where on the body? | `bodySite` | SNOMED CT, only when the source states it |
+| Which measurement technique? | `method` | Fixed by aggregate and ECG profiles; otherwise SNOMED CT or a Grove code system, when the source states it |
 | Which hardware measured it? | `device` | Device, when known and governed |
 | How was it captured? | `grove-recording-method` | Only when the source positively establishes the mode |
 | Which app mediated it? | `observation-gatewayDevice` | Only when the application actually mediated the measurement |
@@ -106,6 +108,13 @@ A deployment should name each system `<deployment-root>/NamingSystem/grove-<iden
 The form carries the identity kind, the protocol version, the key id, and the epoch, so a receiver reads them from the namespace itself and the same key material names the same namespace on every platform.
 The normative test vectors use it under the root `https://study.example.org/fhir`; a deployment that already governs its own namespaces remains conformant.
 The exact component order and unsigned 32-bit length-framed UTF-8 preimage are normative in [`catalog/exchange-protocol.json`](https://grovealliance.org/fhir/catalog/exchange-protocol.json). Each catalog-named identity component is a non-empty Unicode-scalar string; missing, empty, additional, reordered, or non-scalar components are errors.
+The three identifier roles answer different questions.
+
+| Role | Names | Derived from | When the platform revises the record in place |
+|---|---|---|---|
+| `source-record` | the exact source record the graph was converted from | adapter id, source type, repository scope, and the native record identifier; a provider adapter uses its provider code and scope | unchanged |
+| `source-output` | one exact output of that record, told apart by output role and discriminator | the source-record components plus the output role and discriminator | unchanged, so a receiver supersedes the output in place |
+| `writer-record` | the logical record identity assigned by the application that wrote the source record | an opaque identity over the writer application and its record identifier, present when the platform supplies them, with the version in the writer-record-version extension | unchanged; the version orders the revisions |
 
 The opaque Grove identifiers are mandatory even when a deployment intentionally discloses a source-native identifier for round-trip or traceability.
 That optional identifier belongs only on the designated one-to-one primary output (or on the source Recording Document when no structured output exists).
@@ -134,6 +143,8 @@ Distance uses active LOINC `103208-5` because its measured patient path-length m
 Step count remains a Grove code: LOINC `41950-7` fixes a 24-hour number-rate meaning and therefore cannot label arbitrary source intervals.
 Active energy also remains a Grove code: LOINC `41981-2` has an energy-rate property and does not faithfully label a total number of kilocalories accumulated over the exact source interval. These Grove definitions are complete and intentionally narrow.
 Sleep duration uses LOINC `93832-4`; it summarizes total sleep and does not represent stages.
+Every `code` coding is LOINC, the IEEE 11073 MDC nomenclature, or a Grove code system.
+[Grove Mobile Measurement Code](ValueSet-grove-mobile-measurement-code.html) lists every code a shared Mobile measurement profile fixes, and each adapter guide's measurement value set lists its own.
 
 Quantities carry the UCUM system and the catalog code.
 Producers convert supported source units without inventing precision.
@@ -200,7 +211,7 @@ Those are transport and deployment policy outside this guide.
 
 Use the effective datatype fixed by the selected profile.
 For every Mobile scalar or aggregate `effectiveDateTime` and `effectivePeriod` endpoint, round the exact instant to the nearest millisecond with ties to even before FHIR serialization.
-Preserve the numeric UTC offset supplied by the source when available; never invent one.
+Every `effectiveDateTime` and `effectivePeriod` bound states a time of day and an offset: the numeric UTC offset the source supplies, otherwise UTC, never an invented one; a calendar date alone is invalid.
 This rule does not apply to Sensor or ECG `SampledData`, whose exact Decimal timing contract is defined by the Sensor guide.
 When the source also supplies an IANA time-zone name, attach the standard `timezone` extension; the name must agree with the offset at that instant.
 
@@ -215,6 +226,7 @@ Where a platform gives the writer a logical identity and a version, the adapter 
 
 The [Grove Recording Method extension](StructureDefinition-grove-recording-method.html) describes positively established `manual-entry`, `actively-recorded`, or `automatically-recorded` capture.
 Omit it when unknown. `Observation.method` remains available for the clinical measurement technique and is not a capture-mode field.
+`Observation.method` is coded in SNOMED CT or a Grove code system.
 
 ### Must Support obligations
 

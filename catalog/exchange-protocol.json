@@ -142,7 +142,7 @@
     },
     {
       "code": "sensor-recording-document.identity-and-content",
-      "reason": "Every Sensor Recording Document carries its source-record, source-output, and source-artifact identities together with exactly one registered attachment payload.",
+      "reason": "Every Sensor Recording Document carries its source-record, source-output, and source-artifact identities together with exactly one attachment payload.",
       "emittedBy": "client"
     },
     {
@@ -344,6 +344,134 @@
       "code": "healthkit-input.source-application-invalid",
       "reason": "A source revision the caller classified as an application carries no valid Apple bundle identifier.",
       "emittedBy": "client"
+    },
+    {
+      "code": "mobile-exchange.bundle-profile",
+      "reason": "An exchange Bundle directly claims exactly the Grove Mobile exchange or retraction Bundle profile for its event kind.",
+      "emittedBy": "conformance-kit"
+    },
+    {
+      "code": "mobile-exchange.entry-required",
+      "reason": "An exchange event carries at least one entry; an empty Bundle is not an event.",
+      "emittedBy": "conformance-kit"
+    },
+    {
+      "code": "mobile-exchange.event-times",
+      "reason": "An event states its Bundle timestamp, and its lifecycle Provenance states occurred[x] and recorded.",
+      "emittedBy": "client"
+    },
+    {
+      "code": "mobile-exchange.distinct-entry-key",
+      "reason": "No two entries of one event carry the same entry key system and value pair.",
+      "emittedBy": "conformance-kit"
+    },
+    {
+      "code": "mobile-exchange.entry-key-selection",
+      "reason": "An entry key is the entry resource's highest-priority typed business identifier, or its entry-node key when the resource carries none.",
+      "emittedBy": "conformance-kit"
+    },
+    {
+      "code": "mobile-exchange.identifier-role",
+      "reason": "A Grove-typed resource Identifier carries exactly one closed Grove identifier-role coding.",
+      "emittedBy": "conformance-kit"
+    },
+    {
+      "code": "mobile-exchange.opaque-resource-identity",
+      "reason": "A resource Identifier typed with an opaque Grove identifier role is one complete pair whose system is absolute and whose value is a canonical v0 HMAC identity.",
+      "emittedBy": "conformance-kit"
+    },
+    {
+      "code": "mobile-exchange.distinct-resource-identity-role",
+      "reason": "A resource carries at most one Identifier for each Grove identifier role.",
+      "emittedBy": "conformance-kit"
+    },
+    {
+      "code": "mobile-exchange.output-required",
+      "reason": "An active event carries at least one clinical or source-artifact output.",
+      "emittedBy": "conformance-kit"
+    },
+    {
+      "code": "mobile-exchange.provenance-assembler",
+      "reason": "A conversion Provenance names exactly one assembler agent, and that agent is the event's application Device snapshot.",
+      "emittedBy": "client"
+    },
+    {
+      "code": "mobile-exchange.provenance-targets",
+      "reason": "A conversion Provenance targets every active clinical output of its event and nothing else.",
+      "emittedBy": "conformance-kit"
+    },
+    {
+      "code": "mobile-exchange.adapter-provenance-graph",
+      "reason": "Every adapter output of an event claims the adapter profile its conversion Provenance governs, and a source-neutral event claims no adapter output.",
+      "emittedBy": "conformance-kit"
+    },
+    {
+      "code": "mobile-output.adapter-source-marker",
+      "reason": "An adapter's source marker appears exactly once on each catalog-owned output of that adapter and never on a source-neutral or different-adapter output.",
+      "emittedBy": "conformance-kit"
+    },
+    {
+      "code": "mobile-device.host-device-identity",
+      "reason": "A host Device carries exactly one event-scoped device-snapshot identity.",
+      "emittedBy": "client"
+    },
+    {
+      "code": "mobile-support.study-context",
+      "reason": "A bundled study context carries one ResearchStudy, its exact-revision PlanDefinition with canonical url and version, and one ResearchSubject linking the subject to the study, each keyed as an entry node with its study-context role.",
+      "emittedBy": "client"
+    },
+    {
+      "code": "healthkit-device.application-bundle-identifier",
+      "reason": "A HealthKit application Device carries exactly one typed Apple bundle identifier.",
+      "emittedBy": "client"
+    },
+    {
+      "code": "health-connect-provenance.data-origin-agent",
+      "reason": "A Health Connect data origin is one enterer agent whose typed identifier-only logical Device Reference names the Android package in the package-name namespace.",
+      "emittedBy": "conformance-kit"
+    },
+    {
+      "code": "sensor-recording-document.embedded-integrity",
+      "reason": "An embedded recording attachment's size and SHA-1 hash match its decoded bytes.",
+      "emittedBy": "conformance-kit"
+    },
+    {
+      "code": "sensor-recording-document.format",
+      "reason": "A recording attachment's format coding and content type match one active entry of the Grove recording-format registry, with no Coding.version.",
+      "emittedBy": "conformance-kit"
+    },
+    {
+      "code": "mobile-retraction.provenance",
+      "reason": "A retraction event carries exactly one retraction Provenance and no transform Provenance.",
+      "emittedBy": "conformance-kit"
+    },
+    {
+      "code": "mobile-retraction.target-required",
+      "reason": "A retraction Provenance names at least one logical target.",
+      "emittedBy": "conformance-kit"
+    },
+    {
+      "code": "mobile-retraction.distinct-target",
+      "reason": "No two retraction targets carry the same Identifier system and value pair.",
+      "emittedBy": "conformance-kit"
+    },
+    {
+      "code": "mobile-omission.recording-device",
+      "reason": "The source names a recording device without a stable per-unit token, so the producer emits no recording Device and the output carries no device reference.",
+      "emittedBy": "client",
+      "severity": "warning"
+    },
+    {
+      "code": "mobile-omission.source-offset",
+      "reason": "The source supplies an effective instant without a UTC offset or time-zone name, so the producer serializes it in UTC and attaches no timezone extension.",
+      "emittedBy": "client",
+      "severity": "warning"
+    },
+    {
+      "code": "mobile-omission.unmodeled-metadata",
+      "reason": "The source record carries metadata outside the adapter's typed allowlist, so the producer withholds those fields.",
+      "emittedBy": "client",
+      "severity": "warning"
     }
   ],
   "event": {
@@ -1274,6 +1402,20 @@
           "2026-08-20T15:30:00.251000000Z|0"
         ],
         "value": "v0:test-key:1:PPULnf0LKpASjIj8mU5TKafPKig_oqWND3_dHFShGd8"
+      },
+      {
+        "id": "normative-corpus-heart-rate-source-artifact",
+        "identityKind": "source-artifact",
+        "components": [
+          "health-connect",
+          "HeartRateRecord",
+          "urn:uuid:1f5c58aa-6ec6-4e79-a682-829a9debd3f5",
+          "default",
+          "record-heart-001",
+          "heart-rate-samples",
+          "0"
+        ],
+        "value": "v0:test-key:1:ZWmx94XtgArrE8XO6W6LQ7QYbkiWCIn-K1JVw8hxwrI"
       },
       {
         "id": "normative-corpus-retraction-application-snapshot",

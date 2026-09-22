@@ -93,7 +93,8 @@ Implementations name their public types after these terms, in each platform's ca
 - **Application device, host device, recording device**: the three immutable Device snapshots that claim the Grove application, host and recording Device profiles.
 - **Retraction event and retraction target**: the lifecycle assertion that names prior graph nodes by typed logical identifier and target role.
 - **Governed source identifier**: the optional clear native identifier a deployment discloses on the designated primary output or a retraction target.
-- **Producer diagnostic**: a registered rule code that a producer or the conformance kit reports.
+- **Writer**: the application or device that wrote the source record at its platform; it is the source agent of the conversion Provenance and, when the platform assigns them, the origin of the writer-record identity and version.
+- **Producer diagnostic**: a registered rule code that a producer or the conformance kit reports, at error severity for a refused record or invalid graph and at warning severity for what an accepted record lost.
 
 ### Dependencies and terminology notices
 

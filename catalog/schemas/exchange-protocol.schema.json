@@ -82,7 +82,8 @@
       "properties": {
         "code": { "type": "string", "pattern": "^[a-z][a-z0-9-]*(?:[.][a-z][a-z0-9-]*)+$" },
         "reason": { "$ref": "#/$defs/nonempty" },
-        "emittedBy": { "enum": ["conformance-kit", "client"] }
+        "emittedBy": { "enum": ["conformance-kit", "client"] },
+        "severity": { "enum": ["error", "warning"], "default": "error" }
       }
     },
     "profiles": {

@@ -48,7 +48,7 @@ class FixtureValidatorLaneTests(unittest.TestCase):
             stray = Path(directory) / "stray.json"
             stray.write_text('{"resourceType":"Basic"}\n', encoding="utf-8")
             with self.assertRaisesRegex(
-                lane.ProducerValidationError, "validated or excluded with a reason"
+                lane.ProducerValidationError, "or excluded with a reason"
             ):
                 lane.validate_coverage(manifest)
 
@@ -92,6 +92,37 @@ class FixtureValidatorLaneTests(unittest.TestCase):
             for profile in entry["profiles"]:
                 with self.subTest(path=entry["path"], profile=profile):
                     self.assertIn(profile, available)
+        for corpus in manifest["negativeCorpora"]:
+            with self.subTest(corpus=corpus):
+                profile = json.loads((ROOT / corpus).read_text(encoding="utf-8"))["profile"]
+                self.assertIn(profile, available)
+
+    def test_a_negative_case_must_fail_for_exactly_its_declared_reason(self) -> None:
+        case = {
+            "path": Path("date-only-effective.json"),
+            "expectedInvariant": "grove-mobile-effective-1",
+        }
+        invariant = {
+            "severity": "error",
+            "code": "invariant",
+            "details": {"text": "Constraint failed: grove-mobile-effective-1: 'A time of day.'"},
+        }
+        stray = {"severity": "error", "code": "value", "details": {"text": "Expected 1 coding"}}
+        clean = {"severity": "information", "code": "informational", "details": {"text": "All OK"}}
+        lane.reject_negative_case(case, {"issue": [invariant]})
+        with self.assertRaisesRegex(lane.ProducerValidationError, "did not reject"):
+            lane.reject_negative_case(case, {"issue": [clean]})
+        with self.assertRaisesRegex(lane.ProducerValidationError, "undeclared reason"):
+            lane.reject_negative_case(case, {"issue": [invariant, stray]})
+        lane.reject_negative_case(
+            {**case, "alsoRejected": ["Expected 1 coding"]}, {"issue": [invariant, stray]}
+        )
+        binding = {
+            "path": Path("foreign-data-absent-reason.json"),
+            "expectedBinding": "http://hl7.org/fhir/ValueSet/data-absent-reason",
+        }
+        with self.assertRaisesRegex(lane.ProducerValidationError, "did not reject"):
+            lane.reject_negative_case(binding, {"issue": [invariant]})
 
 
 class FixtureValidatorLaneToolingTests(unittest.TestCase):

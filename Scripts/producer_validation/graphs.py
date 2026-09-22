@@ -50,7 +50,11 @@ def validate_adapter_provenance_graph(
                 outputs_by_source.setdefault(source, set()).add(url_by_resource[id(resource)])
             if claim["profile"] in profile_set:
                 entity = resource["entity"][0]["what"]["identifier"]
-                if identifier_role(entity, f"{label} Provenance source entity") != "source-record":
+                if identifier_role(
+                    entity,
+                    f"{label} Provenance source entity",
+                    "Provenance.entity[0].what.identifier",
+                ) != "source-record":
                     raise ProducerValidationError(
                         f"{label} Provenance source entity must carry the source-record role"
                     )
@@ -61,49 +65,67 @@ def validate_adapter_provenance_graph(
                     )
                 provenances_by_source.setdefault(source, []).append(resource)
 
+        rule = "mobile-exchange.adapter-provenance-graph"
         for source, output_urls in outputs_by_source.items():
             provenances = provenances_by_source.get(source, [])
             if len(provenances) != 1:
-                raise ProducerValidationError(
+                raise contract_failure(
+                    rule,
+                    "Bundle.entry",
                     f"{label} {claim['adapter']} source record must have exactly one "
-                    "conversion Provenance in the same Bundle"
+                    "conversion Provenance in the same Bundle",
                 )
             provenance = provenances[0]
             target_urls = [target["reference"] for target in provenance["target"]]
             if any(not url.startswith("urn:uuid:") for url in target_urls):
-                raise ProducerValidationError(
-                    f"{label} adapter conversion Provenance targets must be internal UUID references"
+                raise contract_failure(
+                    rule,
+                    "Provenance.target",
+                    f"{label} adapter conversion Provenance targets must be internal UUID "
+                    "references",
                 )
             if len(target_urls) != len(set(target_urls)):
-                raise ProducerValidationError(
-                    f"{label} adapter conversion Provenance repeats a target"
+                raise contract_failure(
+                    rule,
+                    "Provenance.target",
+                    f"{label} adapter conversion Provenance repeats a target",
                 )
             for target_url in target_urls:
                 target = resources_by_full_url.get(target_url)
                 if target is None:
-                    raise ProducerValidationError(
-                        f"{label} adapter conversion Provenance has an unresolved target"
+                    raise contract_failure(
+                        rule,
+                        "Provenance.target",
+                        f"{label} adapter conversion Provenance has an unresolved target",
                     )
                 target_profile_set = set(target.get("meta", {}).get("profile", []))
                 if not target_profile_set & target_profiles:
-                    raise ProducerValidationError(
+                    raise contract_failure(
+                        rule,
+                        "Provenance.target",
                         f"{label} adapter conversion Provenance targets a resource "
-                        "outside its adapter output contract"
+                        "outside its adapter output contract",
                     )
                 if source_value(target, "target") != source:
-                    raise ProducerValidationError(
+                    raise contract_failure(
+                        rule,
+                        "Provenance.target",
                         f"{label} adapter conversion Provenance source entity and target "
-                        "must carry the same source-record Identifier"
+                        "must carry the same source-record Identifier",
                     )
             if set(target_urls) != output_urls:
-                raise ProducerValidationError(
+                raise contract_failure(
+                    rule,
+                    "Provenance.target",
                     f"{label} adapter conversion Provenance must target every structured "
-                    "and raw output for its source record"
+                    "and raw output for its source record",
                 )
         extra_sources = set(provenances_by_source) - set(outputs_by_source)
         if extra_sources:
-            raise ProducerValidationError(
-                f"{label} adapter conversion Provenance has no output for its source record"
+            raise contract_failure(
+                rule,
+                "Provenance.entity",
+                f"{label} adapter conversion Provenance has no output for its source record",
             )
 
 def exact_source_entity(
@@ -133,7 +155,9 @@ def exact_source_entity(
             f"{label} source must be exactly one logical Identifier entity with role source",
         )
     identifier = what.get("identifier")
-    if identifier_role(identifier, f"{label} source identifier") != "source-record":
+    if identifier_role(
+        identifier, f"{label} source identifier", "Provenance.entity[0].what.identifier"
+    ) != "source-record":
         raise ProducerValidationError(
             f"{label} source must carry the source-record role"
         )

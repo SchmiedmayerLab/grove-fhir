@@ -11,7 +11,7 @@ from __future__ import annotations
 from typing import Any
 
 from .context import CATALOG_ROOT
-from .diagnostics import ProducerValidationError
+from .diagnostics import ProducerValidationError, contract_failure
 from .identity import typed_resource_identifiers
 from .io import read_json
 from .profiles import codeable_concept_codings, coding_pairs_recursive
@@ -145,8 +145,10 @@ def validate_health_connect_source_type(resource: dict[str, Any], label: str) ->
         if isinstance(extension, dict) and extension.get("url") == extension_url
     ] if isinstance(extensions, list) else []
     if len(values) != 1 or not isinstance(values[0], str):
-        raise ProducerValidationError(
-            f"{label} must carry exactly one coded Health Connect Record type"
+        raise contract_failure(
+            "mobile-output.adapter-source-marker",
+            "Observation.extension",
+            f"{label} must carry exactly one coded Health Connect Record type",
         )
     row = next(
         (item for item in catalog["recordTypes"] if item["token"] == values[0]),
@@ -522,12 +524,9 @@ def validate_health_connect_output_graph(
             raise ProducerValidationError(
                 f"{label} BloodGlucoseRecord Observation must reference its one synthesized Specimen"
             )
-        observation_subject = observation.get("subject", {}).get("reference")
-        specimen_subject = specimen.get("subject", {}).get("reference")
-        if (
-            not isinstance(observation_subject, str)
-            or specimen_subject != observation_subject
-        ):
+        # A literal entry reference or a logical pseudonym: both name the subject, and both must agree.
+        observation_subject = observation.get("subject")
+        if not isinstance(observation_subject, dict) or specimen.get("subject") != observation_subject:
             raise ProducerValidationError(
                 f"{label} BloodGlucoseRecord Observation and Specimen must reference the same Patient"
             )

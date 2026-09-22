@@ -101,7 +101,7 @@ class ExchangeProtocolTests(unittest.TestCase):
             "http://hl7.org/fhir/StructureDefinition/workflow-instantiatesCanonical", admitted
         )
 
-    def test_input_refusals_are_registered_client_rules(self) -> None:
+    def test_refusals_and_omissions_are_registered_client_rules(self) -> None:
         rows = self.catalog["producerDiagnostics"]
         codes = [row["code"] for row in rows]
         self.assertEqual(len(codes), len(set(codes)))
@@ -109,15 +109,21 @@ class ExchangeProtocolTests(unittest.TestCase):
             {code.split(".")[0] for code in codes},
             {
                 "mobile-exchange", "mobile-output", "mobile-retraction", "mobile-support",
-                "mobile-device", "mobile-input", "healthkit-clinical", "healthkit-ecg",
-                "healthkit-input", "sensor-recording-document",
+                "mobile-device", "mobile-input", "mobile-omission", "healthkit-clinical", "healthkit-ecg",
+                "healthkit-input", "healthkit-device", "health-connect-provenance", "sensor-recording-document",
             },
         )
         for row in rows:
             with self.subTest(code=row["code"]):
-                if row["code"].split(".")[0].endswith("-input"):
+                namespace = row["code"].split(".")[0]
+                if namespace.endswith(("-input", "-omission")):
                     self.assertEqual(row["emittedBy"], "client")
+                if namespace.endswith("-omission"):
+                    self.assertEqual(row.get("severity"), "warning")
+                else:
+                    self.assertNotEqual(row.get("severity"), "warning")
         self.assertIn("mobile-input.unclassified", codes)
+        self.assertEqual(sum(row.get("severity") == "warning" for row in rows), 3)
 
     def test_invalid_hmac_vectors_fail_closed(self) -> None:
         expected_messages = {

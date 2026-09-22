@@ -1582,6 +1582,13 @@
           "classification": "definition"
         },
         {
+          "fshName": "GroveMobileMeasurementCodeVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "grove-mobile-measurement-code",
+          "classification": "definition"
+        },
+        {
           "fshName": "GroveMobileMeasurementVS",
           "fshType": "ValueSet",
           "resourceType": "ValueSet",

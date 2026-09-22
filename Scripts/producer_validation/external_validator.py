@@ -77,7 +77,8 @@ def validator_outcomes(
         result.append((resource, outcome))
     return result
 
-def reject_validator_errors(outcome: dict[str, Any], label: str) -> None:
+def validator_error_messages(outcome: dict[str, Any], label: str) -> list[str]:
+    """Every fatal or error message one attributed OperationOutcome carries."""
     errors: list[str] = []
     issues = outcome.get("issue")
     if not isinstance(issues, list) or not issues:
@@ -104,6 +105,10 @@ def reject_validator_errors(outcome: dict[str, Any], label: str) -> None:
                 if isinstance(diagnostics, str) and diagnostics
                 else "unspecified validation error"
             )
+    return errors
+
+def reject_validator_errors(outcome: dict[str, Any], label: str) -> None:
+    errors = validator_error_messages(outcome, label)
     if errors:
         raise ProducerValidationError(
             f"FHIR Validator rejected {label}: " + " | ".join(errors)
@@ -120,14 +125,15 @@ def truncated_validator_log(value: str | bytes | None) -> str:
         return normalized
     return "…" + normalized[-VALIDATOR_LOG_LIMIT:]
 
-def run_validator(
+def collect_validator_outcomes(
     validator: Path,
     packages: list[Path],
     resources: list[Path],
     *,
     allow_example_urls: bool = False,
     fhir_tool_home: Path = FHIR_TOOL_HOME,
-) -> None:
+) -> list[tuple[Path, dict[str, Any]]]:
+    """Run one offline Validator batch and return its attributed OperationOutcomes as reported."""
     validator = resolve_unlinked_regular_file(validator, "Validator JAR")
     packages = [
         resolve_unlinked_regular_file(package, "FHIR package")
@@ -198,13 +204,32 @@ def run_validator(
                 raise ProducerValidationError(last_failure) from error
 
             # A real FHIR fatal/error is final and is never retried or ignored.
-            for resource, outcome in outcomes:
-                reject_validator_errors(outcome, resource.name)
-            if result.returncode == 0:
-                return
+            if result.returncode == 0 or any(
+                validator_error_messages(outcome, resource.name)
+                for resource, outcome in outcomes
+            ):
+                return outcomes
             last_failure = (
                 "FHIR Validator process failed after producing only error-free, correctly "
                 f"attributed OperationOutcomes (exit {result.returncode}); log: {process_log}"
             )
             if attempt == VALIDATOR_ATTEMPTS:
                 raise ProducerValidationError(last_failure)
+    raise ProducerValidationError(last_failure)
+
+def run_validator(
+    validator: Path,
+    packages: list[Path],
+    resources: list[Path],
+    *,
+    allow_example_urls: bool = False,
+    fhir_tool_home: Path = FHIR_TOOL_HOME,
+) -> None:
+    for resource, outcome in collect_validator_outcomes(
+        validator,
+        packages,
+        resources,
+        allow_example_urls=allow_example_urls,
+        fhir_tool_home=fhir_tool_home,
+    ):
+        reject_validator_errors(outcome, resource.name)
