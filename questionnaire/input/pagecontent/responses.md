@@ -101,6 +101,9 @@ Unit-option membership is a separate Coding comparison against the Quantity's `s
 In a completed or amended response, every enabled item marked `required=true` is present, and every enabled required question has an answer.
 Disabled items are omitted.
 Core `enableWhen` is evaluated against the response; expression-based enablement requires a conforming FHIRPath engine.
+Time-dependent FHIRPath functions (`now()`, `today()`, `timeOfDay()`) are evaluated at an explicit instant in an explicit zone, never at whatever the evaluating device happens to use.
+While a participant answers, that is the current instant in the participant's zone; a stored response is evaluated at `authored`, in the UTC offset `authored` carries.
+Calculated answers are recomputed at `authored` before a completed or amended response is exported, so re-evaluating it later on any device yields the same values and the same enablement.
 
 When `repeats` is false or absent, a question has at most one answer and a group has at most one response occurrence in its parent context.
 A repeating question carries multiple answers in one response item.
