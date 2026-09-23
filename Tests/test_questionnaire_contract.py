@@ -588,6 +588,10 @@ class QuestionnaireContractTests(unittest.TestCase):
                 "QuestionnaireResponse-GroveWeeklySymptomCheckInResponseExample.json",
             ),
             (
+                "Questionnaire-GroveWeeklySymptomCheckInExample.json",
+                "QuestionnaireResponse-GroveWeeklySymptomCheckInSpanishResponseExample.json",
+            ),
+            (
                 "Questionnaire-GroveHomeVitalsExample.json",
                 "QuestionnaireResponse-GroveHomeVitalsResponseExample.json",
             ),
@@ -883,6 +887,7 @@ class QuestionnaireContractTests(unittest.TestCase):
                 "qg-occurrence-1",
                 "qg-min-max-1",
                 "qg-style-sensitive-1",
+                "qg-translation-1",
             },
         )
         response_rules = {
@@ -908,6 +913,14 @@ class QuestionnaireContractTests(unittest.TestCase):
             for element in response["differential"]["element"]
             for constraint in element.get("constraint", [])
         }
+        for profile in (questionnaire, response):
+            language = next(
+                element
+                for element in profile["differential"]["element"]
+                if element["path"].endswith(".language")
+            )
+            self.assertEqual(language["min"], 1)
+            self.assertTrue(language["mustSupport"])
         self.assertIn(
             r"^https?://[^\\s/?#|]+[^\\s|#]*$",
             questionnaire_constraints["qg-canonical-1"],
@@ -1011,7 +1024,54 @@ class QuestionnaireContractTests(unittest.TestCase):
         )
         self.assertEqual(validator.validate_pair(questionnaire, response), [])
 
-    def test_response_item_text_is_optional_and_locale_neutral(self) -> None:
+    def test_translated_example_is_answered_without_item_text(self) -> None:
+        questionnaire = load_generated(
+            "Questionnaire-GroveWeeklySymptomCheckInExample.json"
+        )
+        response = load_generated(
+            "QuestionnaireResponse-GroveWeeklySymptomCheckInSpanishResponseExample.json"
+        )
+        self.assertEqual(questionnaire["language"], "en-US")
+        self.assertEqual(validator.offered_languages(questionnaire), {"en-us", "es"})
+        self.assertEqual(response["language"], "es")
+        self.assertFalse(
+            any("text" in item for item in validator.response_items(response["item"]))
+        )
+        codings = [
+            answer["valueCoding"]
+            for item in validator.response_items(response["item"])
+            for answer in item.get("answer", [])
+            if "valueCoding" in answer
+        ]
+        self.assertEqual(
+            codings, [{"system": "http://snomed.info/sct", "code": "255604002"}]
+        )
+        self.assertEqual(validator.validate_pair(questionnaire, response), [])
+        prompts = [
+            item
+            for item, _ in validator.iter_items(questionnaire["item"])
+            if item["type"] != "group"
+        ]
+        for item in prompts:
+            with self.subTest(linkId=item["linkId"]):
+                self.assertEqual(
+                    validator.translation_languages(item["_text"]), ["es"]
+                )
+                self.assertEqual(
+                    validator.translation_languages(item["_prefix"]), ["es"]
+                )
+        self.assertEqual(validator.translation_languages(questionnaire["_title"]), ["es"])
+        severity = next(
+            item
+            for item, _ in validator.iter_items(questionnaire["item"])
+            if item["linkId"] == "pain-severity"
+        )
+        for option in severity["answerOption"]:
+            self.assertEqual(
+                validator.translation_languages(option["valueCoding"]["_display"]), ["es"]
+            )
+
+    def test_response_item_text_is_optional_but_never_differs_from_the_base(self) -> None:
         questionnaire = load_json(PAIR_FIXTURES / "valid/questionnaire.json")
         response = load_json(PAIR_FIXTURES / "valid/response.json")
         value_sets = [load_json(PAIR_FIXTURES / "valid/value-set.json")]
@@ -1025,13 +1085,39 @@ class QuestionnaireContractTests(unittest.TestCase):
             [],
         )
 
-        localized = copy.deepcopy(response)
-        localized["item"][0]["text"] = "Identität"
-        localized["item"][0]["item"][0]["text"] = "Wie heißen Sie?"
+        translated = copy.deepcopy(without_text)
+        translated["language"] = "es"
+        self.assertEqual(
+            validator.validate_pair(questionnaire, translated, value_sets), []
+        )
+
+        # The translation is what the participant read, but the response text may only repeat the base.
+        localized = copy.deepcopy(translated)
+        localized["item"][0]["text"] = "Identidad"
+        localized["item"][0]["item"][0]["text"] = "Nombre"
         self.assertEqual(validator.validate_response(localized), [])
         self.assertEqual(
-            validator.validate_pair(questionnaire, localized, value_sets),
-            [],
+            [
+                (issue.rule, issue.path)
+                for issue in validator.validate_pair(questionnaire, localized, value_sets)
+            ],
+            [
+                ("pair-item-text", "QuestionnaireResponse.item[0].item[0].text"),
+                ("pair-item-text", "QuestionnaireResponse.item[0].text"),
+            ],
+        )
+
+        unoffered = copy.deepcopy(without_text)
+        unoffered["language"] = "de"
+        self.assertEqual(
+            [
+                issue.rule
+                for issue in validator.validate_pair(questionnaire, unoffered, value_sets)
+            ],
+            ["pair-response-language"],
+        )
+        self.assertEqual(
+            validator.offered_languages(questionnaire), {"en-us", "es"}
         )
 
         questionnaire_without_prompt = copy.deepcopy(questionnaire)
@@ -1160,7 +1246,9 @@ class QuestionnaireContractTests(unittest.TestCase):
                 )
         for case in manifest["additionalValidResponseCases"]:
             with self.subTest(case=case["id"]):
-                valid = apply_mutation(response, case["mutation"])
+                valid = response
+                for mutation in case.get("mutations", [case.get("mutation")]):
+                    valid = apply_mutation(valid, mutation)
                 self.assertEqual(
                     validator.validate_pair(questionnaire, valid, value_sets), []
                 )
@@ -1193,6 +1281,8 @@ class QuestionnaireContractTests(unittest.TestCase):
                 "pair-item-misplaced",
                 "pair-item-disabled",
                 "pair-response-entered-in-error",
+                "pair-item-text",
+                "pair-response-language",
                 "gqr-subject-required",
                 "gqr-authored-required",
                 "gqr-completion-mode-1",

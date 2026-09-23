@@ -27,7 +27,7 @@ class ReceiverLifecycleTests(unittest.TestCase):
             with self.subTest(path=path.name):
                 self.assertEqual(path.read_text(), expected)
         index = json.loads((CORPUS / "events.json").read_text())
-        self.assertEqual(index["contractLock"]["baseSourceRevision"], "444e06fb25680c3af29e5d3ccbebeb0249be7318")
+        self.assertEqual(index["contractLock"]["baseSourceRevision"], "928db16ef8bfd86d2a171727d2d1cb9f8979a442")
         self.assertEqual(index["contractLock"]["releaseVersion"], "0.6.0")
         self.assertEqual(index["contractLock"]["fhirVersion"], "4.0.1")
         self.assertEqual(index["contractLock"]["exchangeProtocolSHA256"], hashlib.sha256((ROOT / "catalog/exchange-protocol.json").read_bytes()).hexdigest())

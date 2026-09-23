@@ -18,6 +18,13 @@ Compare the complete `(system, value)` pair.
 The value has one `|` separator and no fragment.
 Resolve the instrument before processing any answer.
 
+### Response language
+
+`QuestionnaireResponse.language` is required and names the language the participant saw.
+It is the instrument's base language or one of its translation languages, compared case-insensitively.
+A filler that renders the `es` translation for an `es-US` participant records `es`, the language it actually showed; `es-US` would name a translation the instrument does not offer.
+The paired validator reports a language the instrument does not offer as `pair-response-language`.
+
 ### Lifecycle and participation metadata
 
 The response status determines how completeness rules and answer data are interpreted:
@@ -48,9 +55,17 @@ Its display is descriptive and is not constrained.
 ### Response item structure
 
 Every response item repeats the matching Questionnaire `linkId`.
-Response item `text` is optional presentation content: a producer may omit it or carry the wording shown to the user in a different locale.
-A receiver must neither require it nor compare it with the Questionnaire prompt.
+Response item `text` is optional.
+When present, it equals the base `Questionnaire.item.text` of the exact instrument, character for character, which is also what the HL7 FHIR Validator requires.
+The [R5 comment on the element](https://hl7.org/fhir/R5/questionnaireresponse-definitions.html#QuestionnaireResponse.item.text) says the text SHOULD be identical to the Questionnaire item's text and gives one reason it cannot be strictly enforced, a Questionnaire updated after the response; an exact `url|version` removes that reason.
+A producer that rendered a translation therefore omits `text`; `language` records what the participant read, and the instrument's translation into that language recovers the wording.
+Omitted text is never an issue, and text that differs from the base is reported as `pair-item-text`.
 Resolve the exact instrument to obtain authoritative prompts, choices, conditions, and constraints.
+
+Coded answers follow the same rule.
+When `QuestionnaireResponse.language` differs from the instrument's base language, an answer `Coding` carries `system` and `code` and omits `display`, because those two identify the answer.
+In the base language, a display that is present equals the option's base display.
+The paired validator compares `system` and `code` only and never checks a display.
 
 The Questionnaire hierarchy determines where child response items are represented:
 
@@ -82,7 +97,7 @@ Use the answer field dictated by the Questionnaire item type:
 | group, display | no answer value |
 
 Reference answers are not accepted by this contract.
-Preserve the full Coding, Quantity, or Attachment instead of flattening it to display text.
+Preserve the full Coding, Quantity, or Attachment instead of flattening it to display text; a response in a translation omits the Coding's display, as [response item structure](#response-item-structure) explains.
 
 ### Comparison semantics
 
@@ -117,3 +132,4 @@ For `answerValueSet`, the Coding belongs to the resolved ValueSet version.
 A display string alone never proves membership.
 
 The [completed example](QuestionnaireResponse-GroveWeeklySymptomCheckInResponseExample.html) shows group wrapping, a boolean answer, and a coded follow-up nested in `answer.item`.
+The [Spanish example](QuestionnaireResponse-GroveWeeklySymptomCheckInSpanishResponseExample.html) answers the same instrument from its Spanish translation: it names `es` and carries neither item text nor an answer display.

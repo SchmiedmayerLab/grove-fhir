@@ -384,7 +384,7 @@ def generated_files():
     files[CORPUS / "events.json"] = encoded({
         "schemaVersion": 0,
         "contractLock": {
-            "baseSourceRevision": "444e06fb25680c3af29e5d3ccbebeb0249be7318",
+            "baseSourceRevision": "928db16ef8bfd86d2a171727d2d1cb9f8979a442",
             "baseExchangeProtocolSHA256": "bbc9e980c2c674d5ef6f9900958d29c5602031ead8a3b6325cff508799106bb5",
             "releaseVersion": "0.6.0", "fhirVersion": "4.0.1",
             "exchangeProtocolSHA256": hashlib.sha256((ROOT / "catalog/exchange-protocol.json").read_bytes()).hexdigest(),

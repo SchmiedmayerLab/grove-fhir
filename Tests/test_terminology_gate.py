@@ -259,14 +259,17 @@ class SnomedPinTests(unittest.TestCase):
     def test_every_snomed_coding_is_pinned_with_a_matching_display(self) -> None:
         codings = self.codings()
         self.assertTrue(codings, "found no SNOMED codings to check")
+        displayed = {code for _, code, display in codings if display is not None}
         for where, code, display in codings:
             with self.subTest(code=code, where=where):
                 self.assertIn(code, self.pin, f"{where} uses an unpinned SNOMED code")
                 self.assertEqual(self.pin[code]["status"], "ACTIVE", where)
-                # A coding with no display cannot be cross-checked, which is the case most
-                # likely to carry a silently retired concept.
-                self.assertIsNotNone(display, f"{where} states a SNOMED code with no display")
-                self.assertEqual(self.pin[code]["display"], display, where)
+                # A translated response omits answer displays, so a bare code passes only where
+                # the same code is also stated, and cross-checked, with its display.
+                if display is None:
+                    self.assertIn(code, displayed, f"{where} states a SNOMED code with no display")
+                else:
+                    self.assertEqual(self.pin[code]["display"], display, where)
 
     def test_the_pin_carries_no_concept_the_guides_stopped_using(self) -> None:
         used = {code for _, code, _ in self.codings()}

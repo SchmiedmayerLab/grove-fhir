@@ -16,10 +16,35 @@ Treat it as a durable data definition rather than a sequence of screens.
 This profile requires a valid Semantic Versioning 2.0.0 value and the standard `artifact-versionAlgorithm` extension fixed to `semver`.
 
 Increment the version whenever an interpretation-relevant property changes: item meaning, datatype, answer choices, required state, condition, constraint, or hierarchy.
+Translations are content too: adding, removing, or changing one needs a new version.
 Never publish different content with the same `url|version`.
 
 For `answerValueSet` and `unitValueSet`, use a versioned canonical whenever the ValueSet publisher supplies stable versions.
 A response can then be checked against the same terminology content that the respondent saw.
+
+### Languages and translations
+
+`Questionnaire.language` is required and names the BCP 47 language of every base string in the instrument.
+Every other language lives in the same resource, in the standard [`translation` extension](https://hl7.org/fhir/extensions/StructureDefinition-translation.html): `lang` names the language and `content` holds the translated string.
+This is the mechanism [FHIR language support](https://hl7.org/fhir/R4/languages.html) defines for any string, and the one [SDC rendering](https://hl7.org/fhir/uv/sdc/STU4/rendering.html#language) points form fillers to.
+
+Translate the strings a filler renders: `title`, `description`, `item.text`, `item.prefix`, `answerOption.valueCoding.display`, the `display` of a contained ValueSet concept, and the values of the short-text, `entryFormat`, and open-label extensions.
+A translation never repeats the base language, and one string carries at most one translation per language; `qg-translation-1` checks both.
+A `valueString` answer option is data, not display.
+Its base value is what a response stores; a translation attached to it only changes what the participant reads.
+
+One `url|version` names exactly one Questionnaire, and all of its languages live in that resource.
+Never publish a separate resource per language under a shared `url|version`, because a response naming it could no longer be resolved to one content.
+Per-locale Questionnaire files may remain an authoring format, provided the published study content merges each instrument into one multilingual Questionnaire.
+Articles, images, and other study content that is not a FHIR Questionnaire stay per-locale files.
+
+A filler selects the rendering language in three steps, comparing tags case-insensitively:
+
+1. a translation whose `lang` equals the participant's language tag, for example `es-US`;
+2. otherwise a translation in that tag's primary language, for example `es`;
+3. otherwise the base strings.
+
+The [Weekly Symptom Check-In](Questionnaire-GroveWeeklySymptomCheckInExample.html) is written in English and carries a Spanish translation of its title, prompts, prefixes, and answer displays.
 
 ### Item identity and hierarchy
 

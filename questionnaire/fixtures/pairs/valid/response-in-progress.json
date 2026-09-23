@@ -1,6 +1,7 @@
 {
   "resourceType": "QuestionnaireResponse",
   "id": "paired-response-in-progress",
+  "language": "en-US",
   "extension": [
     {
       "url": "http://hl7.org/fhir/StructureDefinition/questionnaireresponse-completionMode",

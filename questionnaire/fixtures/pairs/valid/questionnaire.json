@@ -1,6 +1,7 @@
 {
   "resourceType": "Questionnaire",
   "id": "paired-questionnaire",
+  "language": "en-US",
   "extension": [
     {
       "url": "http://hl7.org/fhir/StructureDefinition/artifact-versionAlgorithm",
@@ -20,11 +21,33 @@
     {
       "linkId": "identity",
       "text": "Identity",
+      "_text": {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/translation",
+            "extension": [
+              {"url": "lang", "valueCode": "es"},
+              {"url": "content", "valueString": "Identidad"}
+            ]
+          }
+        ]
+      },
       "type": "group",
       "item": [
         {
           "linkId": "name",
           "text": "Name",
+          "_text": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                "extension": [
+                  {"url": "lang", "valueCode": "es"},
+                  {"url": "content", "valueString": "Nombre"}
+                ]
+              }
+            ]
+          },
           "type": "string",
           "required": true
         },
