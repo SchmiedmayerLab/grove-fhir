@@ -129,6 +129,7 @@ class ExchangeProtocolTests(unittest.TestCase):
         expected_messages = {
             "empty-component": "must not be empty",
             "provider-kind-required": "provider components require identity kind",
+            "non-canonical-part-index": "must be a canonical unsigned decimal",
         }
         for vector in self.vectors["invalidIdentities"]:
             with self.subTest(vector=vector["id"]), self.assertRaisesRegex(
@@ -142,6 +143,14 @@ class ExchangeProtocolTests(unittest.TestCase):
                     identity_kind=vector["identityKind"],
                     components=vector["components"],
                 )
+
+    def test_unsigned_decimal_components_are_declared_once(self) -> None:
+        requirements = self.catalog["opaqueIdentity"]["componentRequirements"]
+        self.assertEqual(set(requirements["unsignedDecimal"]), PROTOCOL.UNSIGNED_DECIMAL_COMPONENTS)
+        names = {name for kind in self.catalog["opaqueIdentity"]["identityKinds"] for name in kind["components"]}
+        self.assertLessEqual(PROTOCOL.UNSIGNED_DECIMAL_COMPONENTS, names)
+        rejected = {vector["components"][-1] for vector in self.vectors["invalidIdentities"] if vector["expectedError"] == "non-canonical-part-index"}
+        self.assertEqual(rejected, {"-1", "01"})
 
     def test_length_frames_are_unambiguous_and_preserve_unicode(self) -> None:
         self.assertNotEqual(
@@ -174,6 +183,8 @@ class ExchangeProtocolTests(unittest.TestCase):
                 "valueType": "unicode-scalar-string",
                 "nonEmpty": True,
                 "arity": "exactly-kind-components",
+                "unsignedDecimal": ["part-index"],
+                "unsignedDecimalForm": "A canonical unsigned decimal: 0, or a nonzero digit followed by digits, with no sign, whitespace, or leading zero.",
             },
         )
         catalog_names = {

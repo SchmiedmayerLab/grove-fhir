@@ -183,11 +183,13 @@
         "componentRequirements": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["valueType", "nonEmpty", "arity"],
+          "required": ["valueType", "nonEmpty", "arity", "unsignedDecimal", "unsignedDecimalForm"],
           "properties": {
             "valueType": { "const": "unicode-scalar-string" },
             "nonEmpty": { "const": true },
-            "arity": { "const": "exactly-kind-components" }
+            "arity": { "const": "exactly-kind-components" },
+            "unsignedDecimal": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/code" } },
+            "unsignedDecimalForm": { "$ref": "#/$defs/nonempty" }
           }
         },
         "privacy": { "$ref": "#/$defs/nonempty" },
@@ -718,7 +720,7 @@
         "id": { "$ref": "#/$defs/code" },
         "identityKind": { "$ref": "#/$defs/code" },
         "components": { "type": "array", "items": { "type": "string" } },
-        "expectedError": { "enum": ["empty-component", "provider-kind-required"] }
+        "expectedError": { "enum": ["empty-component", "provider-kind-required", "non-canonical-part-index"] }
       }
     },
     "eventVector": {

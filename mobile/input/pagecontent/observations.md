@@ -108,6 +108,7 @@ A deployment should name each system `<deployment-root>/NamingSystem/grove-<iden
 The form carries the identity kind, the protocol version, the key id, and the epoch, so a receiver reads them from the namespace itself and the same key material names the same namespace on every platform.
 The normative test vectors use it under the root `https://study.example.org/fhir`; a deployment that already governs its own namespaces remains conformant.
 The exact component order and unsigned 32-bit length-framed UTF-8 preimage are normative in [`catalog/exchange-protocol.json`](https://grovealliance.org/fhir/catalog/exchange-protocol.json). Each catalog-named identity component is a non-empty Unicode-scalar string; missing, empty, additional, reordered, or non-scalar components are errors.
+A `part-index` component is the zero-based position of a preserved payload part as a canonical unsigned decimal: `0`, or a nonzero digit followed by digits, with no sign or leading zero.
 The three identifier roles answer different questions.
 
 | Role | Names | Derived from | When the platform revises the record in place |
