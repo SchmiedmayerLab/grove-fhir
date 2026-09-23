@@ -1183,6 +1183,95 @@ class GuideQATests(unittest.TestCase):
                         write_case(filename, source, publisher, html_text), 0
                     )
 
+    def test_absent_loinc_warnings_require_enumerated_pinned_codes(self) -> None:
+        not_present = (
+            "The value set references CodeSystem &#39;http://loinc.org&#39; "
+            "which has status &#39;not-present&#39;"
+        )
+        unexpandable = (
+            "A definition for CodeSystem &#39;http://loinc.org&#39; could not be "
+            "found, so the value set cannot be expanded"
+        )
+
+        def qa_html(
+            path: str,
+            finding: str,
+            *,
+            diagnostic: str = "",
+            publisher: str = "2.3.3",
+        ) -> str:
+            return (
+                f"<p>IG Publisher Version: v{publisher}</p>"
+                '<h2><a href="ValueSet-codes.html">fsh-generated/resources/'
+                "ValueSet-codes.json</a></h2><table>"
+                '<tr style="background-color: #ffebcc">'
+                f"<td><b>{path}</b></td><td><b>warning</b></td>"
+                f'<td><b>{finding}</b> <span class="code-value">{diagnostic}</span></td>'
+                "<td>--</td></tr></table>"
+            )
+
+        def value_set(loinc_include: dict[str, object]) -> dict[str, object]:
+            return {
+                "resourceType": "ValueSet",
+                "id": "codes",
+                "compose": {"include": [
+                    {"system": "https://example.org/CodeSystem/local", "concept": [
+                        {"code": "local"},
+                    ]},
+                    loinc_include,
+                ]},
+            }
+
+        pinned = {"system": "http://loinc.org", "concept": [{"code": "8867-4"}]}
+        include_path = "ValueSet.compose.include[1] (l1/c1)"
+        value_set_path = "ValueSet.where(id = &#39;codes&#39;)"
+
+        with tempfile.TemporaryDirectory() as directory:
+            guide = Path(directory).resolve() / "guide"
+            output = guide / "output"
+            output.mkdir(parents=True)
+
+            def count(resource: dict[str, object], html_text: str) -> int:
+                (output / "ValueSet-codes.json").write_text(
+                    json.dumps(resource), encoding="utf-8"
+                )
+                (output / "qa.html").write_text(html_text, encoding="utf-8")
+                return CHECK.offline_absent_code_system_warning_count(guide)
+
+            self.assertEqual(count(value_set(pinned), qa_html(include_path, not_present)), 1)
+            self.assertEqual(
+                count(value_set(pinned), qa_html(value_set_path, unexpandable)), 1
+            )
+
+            near_misses = (
+                (
+                    value_set({"system": "http://loinc.org", "concept": [{"code": "999999-9"}]}),
+                    qa_html(include_path, not_present),
+                ),
+                (
+                    value_set({
+                        "system": "http://loinc.org",
+                        "filter": [{"property": "CLASS", "op": "=", "value": "HRTRATE.ATOM"}],
+                    }),
+                    qa_html(include_path, not_present),
+                ),
+                (
+                    value_set({"system": "http://loinc.org", "concept": [{"code": "999999-9"}]}),
+                    qa_html(value_set_path, unexpandable),
+                ),
+                (value_set(pinned), qa_html("ValueSet.compose.include[0] (l1/c1)", not_present)),
+                (value_set(pinned), qa_html("ValueSet.where(id = &#39;other&#39;)", unexpandable)),
+                (
+                    value_set(pinned),
+                    qa_html(include_path, not_present.replace("loinc.org", "snomed.info/sct")),
+                ),
+                (value_set(pinned), qa_html(include_path, not_present, diagnostic="diagnostic")),
+                (value_set(pinned), qa_html(include_path, not_present, publisher="2.3.4")),
+            )
+            for resource, html_text in near_misses:
+                with self.subTest(html_text=html_text, resource=resource):
+                    self.assertEqual(count(resource, html_text), 0)
+
     def test_broad_substring_suppression_is_rejected(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory).resolve() / "ignoreWarnings.txt"
