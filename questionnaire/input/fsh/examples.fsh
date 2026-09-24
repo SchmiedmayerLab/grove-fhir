@@ -112,6 +112,9 @@ Usage: #example
 Title: "Weekly Symptom Check-In Response in Spanish"
 Description: "A response captured while the participant read the Spanish translation: it names that language and omits item text and answer displays, which could only repeat the English base."
 * language = #es
+// The answer carries no display, so a generated narrative would need a terminology server offline.
+* text.status = #additional
+* text.div = "<div xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"es\" xml:lang=\"es\"><p><b>Síntomas</b></p><p>P1. ¿Ha tenido dolor durante la última semana? Sí</p><p>P1a. ¿Qué tan intenso fue el dolor? Leve</p><p>P2. ¿Hay algo más que quiera contarnos? El dolor empezó después de correr.</p></div>"
 * questionnaire = "https://grovealliance.org/fhir/questionnaire/Questionnaire/GroveWeeklySymptomCheckInExample|0.6.0"
 * identifier.system = "https://example.org/research/questionnaire-response-id"
 * identifier.value = "weekly-check-in-0002"

@@ -193,6 +193,12 @@ IMPLEMENTATION_LANGUAGE_SYSTEM_PATH = re.compile(
     r"^ImplementationGuide\.language\.system \(l[0-9]+/c[0-9]+\)$"
 )
 
+RESOURCE_LANGUAGE_PATH = re.compile(
+    r"^(?P<resource>Questionnaire|QuestionnaireResponse)\.language \(l[0-9]+/c[0-9]+\)$"
+)
+
+BCP47_LANGUAGE_TAG = re.compile(r"^[A-Za-z]{2,3}(?:-[A-Za-z]{4})?(?:-(?:[A-Za-z]{2}|[0-9]{3}))?$")
+
 IMPLEMENTATION_LANGUAGE_PATH = re.compile(
     r"^ImplementationGuide\.language \(l[0-9]+/c[0-9]+\)$"
 )
@@ -572,7 +578,7 @@ def offline_unknown_code_system_warning_count(guide: Path) -> int:
     """Count exact offline lookup failures for two external system identifiers.
 
     BCP 47 is admitted only for the generated ImplementationGuide's literal
-    English language. ISO/IEEE 11073 is admitted only when the warning points to
+    English language and for a well-formed Questionnaire or response language. ISO/IEEE 11073 is admitted only when the warning points to
     the exact Coding.system and its adjacent code is in the pinned terminology
     excerpt. UCUM is admitted only for the exact Quantity path and a code accepted
     by the pinned UCUM tables. Other systems and contexts remain unsuppressed.
@@ -617,6 +623,19 @@ def offline_unknown_code_system_warning_count(guide: Path) -> int:
                 and IMPLEMENTATION_LANGUAGE_PATH.fullmatch(path)
                 and resource.get("resourceType") == "ImplementationGuide"
                 and resource.get("language") == "en"
+            ):
+                count += 1
+                continue
+            # The same lookup fails for the required Questionnaire and response language; accept
+            # it only at that root element and only for a well-formed language tag.
+            resource_language = RESOURCE_LANGUAGE_PATH.fullmatch(path)
+            if (
+                plain_html(row.group("message")) == OFFLINE_BCP47_CONTENT_WARNING
+                and diagnostic == "TERMINOLOGY_TX_WARNING"
+                and resource_language is not None
+                and resource.get("resourceType") == resource_language.group("resource")
+                and isinstance(resource.get("language"), str)
+                and BCP47_LANGUAGE_TAG.fullmatch(resource["language"]) is not None
             ):
                 count += 1
                 continue
