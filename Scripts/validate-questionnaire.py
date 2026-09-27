@@ -75,6 +75,7 @@ COMPLETION_MODE = (
     "http://hl7.org/fhir/StructureDefinition/questionnaireresponse-completionMode"
 )
 PARTICIPATION_MODE = "http://terminology.hl7.org/CodeSystem/v3-ParticipationMode"
+TRANSLATION = "http://hl7.org/fhir/StructureDefinition/translation"
 UCUM_SYSTEM = "http://unitsofmeasure.org"
 
 SEMVER_PATTERN = (
@@ -203,6 +204,42 @@ def iter_items(
         item_path = f"{path}[{index}]"
         yield item, item_path
         yield from iter_items(item.get("item", []), f"{item_path}.item")
+
+
+def translated_elements(node: Any) -> Iterator[dict[str, Any]]:
+    """Yield every element that carries at least one translation extension."""
+    if isinstance(node, list):
+        for child in node:
+            yield from translated_elements(child)
+    elif isinstance(node, dict):
+        if extensions(node, TRANSLATION):
+            yield node
+        for child in node.values():
+            yield from translated_elements(child)
+
+
+def translation_languages(element: dict[str, Any]) -> list[str]:
+    languages = []
+    for translation in extensions(element, TRANSLATION):
+        for part in translation.get("extension", []):
+            if isinstance(part, dict) and part.get("url") == "lang":
+                language = part.get("valueCode")
+                if isinstance(language, str):
+                    languages.append(language)
+    return languages
+
+
+def offered_languages(questionnaire: dict[str, Any]) -> set[str]:
+    """The base and translation languages, lowercased because BCP 47 tags are case-insensitive."""
+    languages = {
+        language.lower()
+        for element in translated_elements(questionnaire)
+        for language in translation_languages(element)
+    }
+    base = questionnaire.get("language")
+    if isinstance(base, str):
+        languages.add(base.lower())
+    return languages
 
 
 def expression_is_valid(value: Any, *, require_name: bool = False) -> bool:
@@ -600,6 +637,28 @@ def validate_questionnaire(questionnaire: dict[str, Any]) -> list[Issue]:
     if not isinstance(version, str) or not SEMVER.fullmatch(version):
         issues.append(Issue("qg-version-1", "Questionnaire.version", "Version is not valid SemVer 2.0.0"))
 
+    base_language = questionnaire.get("language")
+    if not isinstance(base_language, str) or not base_language:
+        issues.append(
+            Issue(
+                "qg-language-required",
+                "Questionnaire.language",
+                "The base language of every human-readable string is required",
+            )
+        )
+    for element in translated_elements(questionnaire):
+        languages = [language.lower() for language in translation_languages(element)]
+        if len(set(languages)) != len(languages) or (
+            isinstance(base_language, str) and base_language.lower() in languages
+        ):
+            issues.append(
+                Issue(
+                    "qg-translation-1",
+                    "Questionnaire",
+                    "A translation repeats the base language or another translation of the same string",
+                )
+            )
+
     if questionnaire.get("subjectType") != ["Patient"]:
         issues.append(
             Issue(
@@ -817,6 +876,15 @@ def validate_response(response: dict[str, Any]) -> list[Issue]:
                 "QuestionnaireResponse.questionnaire",
                 "Use one absolute HTTP(S) canonical URL with a non-blank authority, "
                 "followed by one separator and an exact SemVer version",
+            )
+        )
+    language = response.get("language")
+    if not isinstance(language, str) or not language:
+        issues.append(
+            Issue(
+                "gqr-language-required",
+                "QuestionnaireResponse.language",
+                "The language the participant saw is required",
             )
         )
     identifier = response.get("identifier")
@@ -1322,6 +1390,15 @@ def validate_pair(
                     f"found {actual_subject_type!r}",
                 )
             )
+    language = response.get("language")
+    if isinstance(language, str) and language and language.lower() not in offered_languages(questionnaire):
+        issues.append(
+            Issue(
+                "pair-response-language",
+                "QuestionnaireResponse.language",
+                f"Language {language!r} is neither the Questionnaire's base language nor one of its translations",
+            )
+        )
     if response.get("status") == "entered-in-error":
         issues.append(Issue("pair-response-entered-in-error", "QuestionnaireResponse.status", "An entered-in-error response must not be accepted as answer data"))
 
@@ -1404,6 +1481,15 @@ def validate_pair(
                 issues.append(Issue("pair-required-item", path, f"Required enabled item {link_id!r} is missing"))
 
             for actual, actual_path in present:
+                text = actual.get("text")
+                if text is not None and text != definition.get("text"):
+                    issues.append(
+                        Issue(
+                            "pair-item-text",
+                            f"{actual_path}.text",
+                            f"Text for {link_id!r} must be omitted or equal the base Questionnaire text",
+                        )
+                    )
                 answers = actual.get("answer", [])
                 if item_type in {"group", "display"} and answers:
                     issues.append(Issue("pair-answer-type", f"{actual_path}.answer", f"{item_type} items cannot have answers"))

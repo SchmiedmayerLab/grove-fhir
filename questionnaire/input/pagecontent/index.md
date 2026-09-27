@@ -37,8 +37,9 @@ Within the pair, `linkId` connects each response item to its definition, and the
 
 | Resource | What to look for | JSON |
 |---|---|---|
-| [Weekly Symptom Check-In](Questionnaire-GroveWeeklySymptomCheckInExample.html) | Versioned identity, group, boolean question, coded choices, and conditional follow-up | [Questionnaire JSON](Questionnaire-GroveWeeklySymptomCheckInExample.json) |
+| [Weekly Symptom Check-In](Questionnaire-GroveWeeklySymptomCheckInExample.html) | Versioned identity, English base language with a Spanish translation, group, boolean question, coded choices, and conditional follow-up | [Questionnaire JSON](Questionnaire-GroveWeeklySymptomCheckInExample.json) |
 | [Completed response](QuestionnaireResponse-GroveWeeklySymptomCheckInResponseExample.html) | Stable submission identifier, exact version, electronic completion, and answer-nested follow-up | [QuestionnaireResponse JSON](QuestionnaireResponse-GroveWeeklySymptomCheckInResponseExample.json) |
+| [Response in Spanish](QuestionnaireResponse-GroveWeeklySymptomCheckInSpanishResponseExample.html) | The language the participant read, and no item text beside a translation | [QuestionnaireResponse JSON](QuestionnaireResponse-GroveWeeklySymptomCheckInSpanishResponseExample.json) |
 
 Review both JSON files together.
 The `pain-present` item demonstrates how `linkId` joins the resources and how its `pain-severity` follow-up remains nested under the answer that established its context.
@@ -47,7 +48,7 @@ This example illustrates the identity and nesting rules that prevent most questi
 ### Guide navigation
 
 - [Quick start](quick-start.html) explains IG pages, profiles, packages, and the complete validation command sequence.
-- [Define an instrument](instruments.html) covers versioning, item types, terminology, constraints, conditions, expressions, and hidden items.
+- [Define an instrument](instruments.html) covers versioning, languages and translations, item types, terminology, constraints, conditions, expressions, and hidden items.
 - [Record answers](responses.html) maps each Questionnaire item type to the correct `QuestionnaireResponse.answer.value[x]` field and explains lifecycle and nesting.
 - [Measurement extraction](measurements.html) explains how standard SDC extraction converts responses into profiled Observations and which source context is required.
 - [Conformance](conformance.html) defines producer and consumer obligations, cross-resource validation, and failure behavior.

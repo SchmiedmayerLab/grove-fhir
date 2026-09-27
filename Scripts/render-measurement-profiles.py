@@ -1165,6 +1165,28 @@ def render_owner_terminology(owner_key: str, measurements: list[dict]) -> str | 
     return "\n".join(lines) + "\n"
 
 
+def render_mobile_code_allowlist(measurements: list[dict]) -> str:
+    """Every code a shared Mobile measurement profile fixes, published as one allow-list."""
+    owner = OWNERS["mobile"]
+    lines = [
+        "ValueSet: GroveMobileMeasurementCodeVS",
+        "Id: grove-mobile-measurement-code",
+        'Title: "Grove Mobile Measurement Code"',
+        'Description: "Every Observation code fixed by a shared Mobile measurement profile, so a receiver can allow-list catalog outputs; an adapter guide lists its own measurement codes in its measurement value set."',
+        "* ^experimental = false",
+    ]
+    for measurement in measurements:
+        code = measurement["code"]
+        if code["system"] == LOINC:
+            system = "$loinc"
+        elif code["system"].endswith(owner["measurementSystemTail"]):
+            system = owner["codeSystem"]
+        else:
+            raise SystemExit(f"{measurement['id']}: unsupported code system {code['system']}")
+        lines.append(f"* {system}#{code['code']}")
+    return "\n".join(lines) + "\n"
+
+
 def render_code_set(name: str, terminology_id: str, title: str, codes: list) -> str:
     lines = [
         f"CodeSystem: {name}CS",
@@ -1324,6 +1346,8 @@ def main() -> int:
             m.get("generation", {}).get("emit") for m in owner_measurements
         ):
             blocks.append(terminology)
+            if owner_key == "mobile":
+                blocks.append(render_mobile_code_allowlist(owner_measurements))
         for measurement in owner_measurements:
             if measurement.get("generation", {}).get("emit"):
                 blocks.extend(render_result_terminology(measurement))

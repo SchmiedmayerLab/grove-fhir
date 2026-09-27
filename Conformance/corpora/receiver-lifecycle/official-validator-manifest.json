@@ -37,6 +37,18 @@
       ]
     },
     {
+      "path": "resources/reformatted-retry.json",
+      "requiredProfiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle"
+      ]
+    },
+    {
+      "path": "resources/lexeme-retry.json",
+      "requiredProfiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle"
+      ]
+    },
+    {
       "path": "resources/unordered-a.json",
       "requiredProfiles": [
         "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle"

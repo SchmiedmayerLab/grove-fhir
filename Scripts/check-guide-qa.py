@@ -6,7 +6,9 @@ that say its absent terminology client could not validate external codes. Those
 exceptions are deliberately narrower than Publisher suppressions: MIME errors
 must match a generated DocumentReference and the authoritative format registry;
 no-service warnings must match a coding in the generated resource and Grove's
-pinned terminology evidence. The default/online lane remains strict.
+pinned terminology evidence, and a value set's absent-LOINC warning must name an
+include whose every enumerated code is in that evidence. The default/online lane
+remains strict.
 """
 
 # This source file is part of the Grove FHIR open-source project
@@ -191,6 +193,12 @@ IMPLEMENTATION_LANGUAGE_SYSTEM_PATH = re.compile(
     r"^ImplementationGuide\.language\.system \(l[0-9]+/c[0-9]+\)$"
 )
 
+RESOURCE_LANGUAGE_PATH = re.compile(
+    r"^(?P<resource>Questionnaire|QuestionnaireResponse)\.language \(l[0-9]+/c[0-9]+\)$"
+)
+
+BCP47_LANGUAGE_TAG = re.compile(r"^[A-Za-z]{2,3}(?:-[A-Za-z]{4})?(?:-(?:[A-Za-z]{2}|[0-9]{3}))?$")
+
 IMPLEMENTATION_LANGUAGE_PATH = re.compile(
     r"^ImplementationGuide\.language \(l[0-9]+/c[0-9]+\)$"
 )
@@ -218,6 +226,20 @@ OFFLINE_CODEABLE_CONCEPT_MESSAGE = (
     'Error Cannot invoke "org.hl7.fhir.r5.terminologies.client.'
     'TerminologyClientContext.getAddress()" because "tc" is null validating '
     "CodeableConcept"
+)
+
+VALUE_SET_INCLUDE_PATH = re.compile(
+    r"^ValueSet\.compose\.include\[(?P<index>[0-9]+)\] \(l[0-9]+/c[0-9]+\)$"
+)
+
+ABSENT_CODE_SYSTEM_MESSAGE = re.compile(
+    r"^The value set references CodeSystem '(?P<system>[^']+)' "
+    r"which has status 'not-present'$"
+)
+
+OFFLINE_UNEXPANDABLE_LOINC_MESSAGE = (
+    "A definition for CodeSystem 'http://loinc.org' could not be found, "
+    "so the value set cannot be expanded"
 )
 
 BCP47 = "urn:ietf:bcp:47"
@@ -556,7 +578,7 @@ def offline_unknown_code_system_warning_count(guide: Path) -> int:
     """Count exact offline lookup failures for two external system identifiers.
 
     BCP 47 is admitted only for the generated ImplementationGuide's literal
-    English language. ISO/IEEE 11073 is admitted only when the warning points to
+    English language and for a well-formed Questionnaire or response language. ISO/IEEE 11073 is admitted only when the warning points to
     the exact Coding.system and its adjacent code is in the pinned terminology
     excerpt. UCUM is admitted only for the exact Quantity path and a code accepted
     by the pinned UCUM tables. Other systems and contexts remain unsuppressed.
@@ -601,6 +623,19 @@ def offline_unknown_code_system_warning_count(guide: Path) -> int:
                 and IMPLEMENTATION_LANGUAGE_PATH.fullmatch(path)
                 and resource.get("resourceType") == "ImplementationGuide"
                 and resource.get("language") == "en"
+            ):
+                count += 1
+                continue
+            # The same lookup fails for the required Questionnaire and response language; accept
+            # it only at that root element and only for a well-formed language tag.
+            resource_language = RESOURCE_LANGUAGE_PATH.fullmatch(path)
+            if (
+                plain_html(row.group("message")) == OFFLINE_BCP47_CONTENT_WARNING
+                and diagnostic == "TERMINOLOGY_TX_WARNING"
+                and resource_language is not None
+                and resource.get("resourceType") == resource_language.group("resource")
+                and isinstance(resource.get("language"), str)
+                and BCP47_LANGUAGE_TAG.fullmatch(resource["language"]) is not None
             ):
                 count += 1
                 continue
@@ -785,6 +820,88 @@ def offline_codeable_concept_warning_count(guide: Path) -> int:
             if codeable_concept_is_ratified(
                 concept, loinc, snomed, ucum, ucum_annotations
             ):
+                count += 1
+    return count
+
+
+def offline_absent_code_system_warning_count(guide: Path) -> int:
+    """Count exact absent-LOINC warnings for value sets that enumerate pinned codes.
+
+    Without a terminology client Publisher cannot load LOINC and reports either the
+    include itself or the whole value set, depending on its package cache. Only
+    includes that enumerate concepts, each active in the pinned evidence, are
+    admitted; a filter, a nested value set or another system is not.
+    """
+
+    qa_html = (guide / "output/qa.html").read_text(encoding="utf-8")
+    if "IG Publisher Version: v2.3.3" not in qa_html:
+        return 0
+    loinc, snomed, ucum, ucum_annotations = terminology_evidence()
+
+    def is_pinned_loinc(include: object) -> bool:
+        if not isinstance(include, dict) or set(include) != {"system", "concept"}:
+            return False
+        concepts = include["concept"]
+        return (
+            include["system"] == LOINC
+            and isinstance(concepts, list)
+            and bool(concepts)
+            and all(
+                isinstance(concept, dict)
+                and isinstance(concept.get("code"), str)
+                and ratified_external_code(
+                    LOINC, concept["code"], loinc, snomed, ucum, ucum_annotations
+                )
+                for concept in concepts
+            )
+        )
+
+    count = 0
+    for section in re.split(r"<h2>", qa_html)[1:]:
+        resource_match = re.match(
+            r'\s*<a href="[^"]+">fsh-generated/resources/'
+            r'(?P<filename>[^<]+)\.json</a>',
+            section,
+        )
+        if resource_match is None:
+            continue
+        resource_path = guide / "output" / f"{resource_match.group('filename')}.json"
+        try:
+            resource = json.loads(resource_path.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            continue
+        if resource.get("resourceType") != "ValueSet":
+            continue
+        compose = resource.get("compose")
+        includes = compose.get("include") if isinstance(compose, dict) else None
+        if not isinstance(includes, list):
+            continue
+        loinc_includes = [
+            include
+            for include in includes
+            if isinstance(include, dict) and include.get("system") == LOINC
+        ]
+        table = section.partition("</table>")[0]
+        for raw_row in re.findall(r"<tr[^>]*>.*?</tr>", table, re.DOTALL):
+            row = WARNING_ROW.fullmatch(raw_row)
+            if row is None or plain_html(row.group("diagnostic")):
+                continue
+            message = plain_html(row.group("message"))
+            path = plain_html(row.group("path"))
+            if message == OFFLINE_UNEXPANDABLE_LOINC_MESSAGE:
+                if (
+                    path == f"ValueSet.where(id = '{resource.get('id')}')"
+                    and loinc_includes
+                    and all(is_pinned_loinc(include) for include in loinc_includes)
+                ):
+                    count += 1
+                continue
+            absent = ABSENT_CODE_SYSTEM_MESSAGE.fullmatch(message)
+            include_path = VALUE_SET_INCLUDE_PATH.fullmatch(path)
+            if absent is None or include_path is None or absent.group("system") != LOINC:
+                continue
+            index = int(include_path.group("index"))
+            if index < len(includes) and is_pinned_loinc(includes[index]):
                 count += 1
     return count
 
@@ -997,6 +1114,7 @@ def main() -> int:
                 offline_no_service_warning_count(guide)
                 + offline_unknown_code_system_warning_count(guide)
                 + offline_codeable_concept_warning_count(guide)
+                + offline_absent_code_system_warning_count(guide)
                 if arguments.offline_terminology
                 else 0
             )

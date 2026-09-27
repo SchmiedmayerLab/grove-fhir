@@ -82,7 +82,8 @@
       "properties": {
         "code": { "type": "string", "pattern": "^[a-z][a-z0-9-]*(?:[.][a-z][a-z0-9-]*)+$" },
         "reason": { "$ref": "#/$defs/nonempty" },
-        "emittedBy": { "enum": ["conformance-kit", "client"] }
+        "emittedBy": { "enum": ["conformance-kit", "client"] },
+        "severity": { "enum": ["error", "warning"], "default": "error" }
       }
     },
     "profiles": {
@@ -136,9 +137,10 @@
         "bundleIdentifier": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["system", "valueForm", "soleEventBusinessIdentifier"],
+          "required": ["system", "recommendedSystemForm", "valueForm", "soleEventBusinessIdentifier"],
           "properties": {
             "system": { "$ref": "#/$defs/nonempty" },
+            "recommendedSystemForm": { "$ref": "#/$defs/nonempty" },
             "valueForm": { "$ref": "#/$defs/nonempty" },
             "soleEventBusinessIdentifier": { "const": true }
           }
@@ -160,13 +162,14 @@
     "opaqueIdentity": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["algorithm", "domain", "preimage", "valueForm", "identifierSystem", "keyRequirements", "componentRequirements", "privacy", "informationPreservation", "rotation", "identityKinds"],
+      "required": ["algorithm", "domain", "preimage", "valueForm", "identifierSystem", "recommendedSystemForm", "keyRequirements", "componentRequirements", "privacy", "informationPreservation", "rotation", "identityKinds"],
       "properties": {
         "algorithm": { "const": "HMAC-SHA-256" },
         "domain": { "const": "org.grovealliance.fhir.identity.v0" },
         "preimage": { "$ref": "#/$defs/nonempty" },
         "valueForm": { "$ref": "#/$defs/nonempty" },
         "identifierSystem": { "$ref": "#/$defs/nonempty" },
+        "recommendedSystemForm": { "$ref": "#/$defs/nonempty" },
         "keyRequirements": {
           "type": "object",
           "additionalProperties": false,
@@ -180,11 +183,13 @@
         "componentRequirements": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["valueType", "nonEmpty", "arity"],
+          "required": ["valueType", "nonEmpty", "arity", "unsignedDecimal", "unsignedDecimalForm"],
           "properties": {
             "valueType": { "const": "unicode-scalar-string" },
             "nonEmpty": { "const": true },
-            "arity": { "const": "exactly-kind-components" }
+            "arity": { "const": "exactly-kind-components" },
+            "unsignedDecimal": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/code" } },
+            "unsignedDecimalForm": { "$ref": "#/$defs/nonempty" }
           }
         },
         "privacy": { "$ref": "#/$defs/nonempty" },
@@ -382,9 +387,10 @@
         "entryNode": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["system", "domain", "components", "ordinal", "valueForm", "digest"],
+          "required": ["system", "recommendedSystemForm", "domain", "components", "ordinal", "valueForm", "digest"],
           "properties": {
             "system": { "$ref": "#/$defs/nonempty" },
+            "recommendedSystemForm": { "$ref": "#/$defs/nonempty" },
             "domain": { "const": "org.grovealliance.fhir.entry-node.v0" },
             "components": {
               "type": "array",
@@ -462,12 +468,23 @@
     "lifecycleShape": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["activitySystem", "activityCode", "codingCardinality", "shape", "entryResourcePolicy", "adapterOnlyOutputProfileClaims"],
+      "required": ["activitySystem", "activityCode", "codingCardinality", "shape", "studyContext", "entryResourcePolicy", "adapterOnlyOutputProfileClaims"],
       "properties": {
         "activitySystem": { "$ref": "#/$defs/uri" },
         "activityCode": { "const": "transform" },
         "codingCardinality": { "$ref": "#/$defs/nonempty" },
         "shape": { "$ref": "#/$defs/nonempty" },
+        "studyContext": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["recommendedShape", "subject", "protocol", "entryNodeRoles"],
+          "properties": {
+            "recommendedShape": { "$ref": "#/$defs/nonempty" },
+            "subject": { "$ref": "#/$defs/nonempty" },
+            "protocol": { "$ref": "#/$defs/nonempty" },
+            "entryNodeRoles": { "const": ["patient", "research-study", "research-subject", "plan-definition"] }
+          }
+        },
         "entryResourcePolicy": {
           "type": "object",
           "additionalProperties": false,
@@ -585,12 +602,22 @@
     "payload": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["attachmentSize", "attachmentHash", "semanticComparison", "byteComparison"],
+      "required": ["attachmentSize", "attachmentHash", "semanticComparison", "byteComparison", "equality"],
       "properties": {
         "attachmentSize": { "$ref": "#/$defs/nonempty" },
         "attachmentHash": { "$ref": "#/$defs/nonempty" },
         "semanticComparison": { "$ref": "#/$defs/nonempty" },
-        "byteComparison": { "$ref": "#/$defs/nonempty" }
+        "byteComparison": { "$ref": "#/$defs/nonempty" },
+        "equality": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["formatting", "decimalLexeme", "vectors"],
+          "properties": {
+            "formatting": { "$ref": "#/$defs/nonempty" },
+            "decimalLexeme": { "$ref": "#/$defs/nonempty" },
+            "vectors": { "$ref": "#/$defs/nonempty" }
+          }
+        }
       }
     },
     "testVectors": {
@@ -693,7 +720,7 @@
         "id": { "$ref": "#/$defs/code" },
         "identityKind": { "$ref": "#/$defs/code" },
         "components": { "type": "array", "items": { "type": "string" } },
-        "expectedError": { "enum": ["empty-component", "provider-kind-required"] }
+        "expectedError": { "enum": ["empty-component", "provider-kind-required", "non-canonical-part-index"] }
       }
     },
     "eventVector": {

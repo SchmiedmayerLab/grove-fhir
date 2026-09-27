@@ -18,34 +18,60 @@ Instance: GroveWeeklySymptomCheckInExample
 InstanceOf: GroveQuestionnaire
 Usage: #example
 Title: "Weekly Symptom Check-In"
-Description: "A versioned instrument with a conditional follow-up question."
+Description: "A versioned instrument with a conditional follow-up question, written in English with a Spanish translation of every string it displays."
 * extension[versionAlgorithm].valueCoding = $versionAlgorithm#semver
 * url = "https://grovealliance.org/fhir/questionnaire/Questionnaire/GroveWeeklySymptomCheckInExample"
 // The Publisher stamps the guide version onto every canonical resource it builds, so an
 // example instrument cannot carry a version of its own; a response joining any other value
 // would name an instrument nobody can resolve.
 * version = "0.6.0"
+* language = #en-US
 * name = "GroveWeeklySymptomCheckIn"
 * title = "Weekly Symptom Check-In"
+* title.extension[$translation].extension[lang].valueCode = #es
+* title.extension[$translation].extension[content].valueString = "Control semanal de síntomas"
 * status = #active
 * subjectType = #Patient
 * item[0].linkId = "symptoms"
 * item[0].text = "Symptoms"
+* item[0].text.extension[$translation].extension[lang].valueCode = #es
+* item[0].text.extension[$translation].extension[content].valueString = "Síntomas"
 * item[0].type = #group
 * item[0].item[0].linkId = "pain-present"
+* item[0].item[0].prefix = "Q1."
+* item[0].item[0].prefix.extension[$translation].extension[lang].valueCode = #es
+* item[0].item[0].prefix.extension[$translation].extension[content].valueString = "P1."
 * item[0].item[0].text = "Have you had pain during the last week?"
+* item[0].item[0].text.extension[$translation].extension[lang].valueCode = #es
+* item[0].item[0].text.extension[$translation].extension[content].valueString = "¿Ha tenido dolor durante la última semana?"
 * item[0].item[0].type = #boolean
 * item[0].item[0].item[0].linkId = "pain-severity"
+* item[0].item[0].item[0].prefix = "Q1a."
+* item[0].item[0].item[0].prefix.extension[$translation].extension[lang].valueCode = #es
+* item[0].item[0].item[0].prefix.extension[$translation].extension[content].valueString = "P1a."
 * item[0].item[0].item[0].text = "How severe was the pain?"
+* item[0].item[0].item[0].text.extension[$translation].extension[lang].valueCode = #es
+* item[0].item[0].item[0].text.extension[$translation].extension[content].valueString = "¿Qué tan intenso fue el dolor?"
 * item[0].item[0].item[0].type = #choice
 * item[0].item[0].item[0].enableWhen.question = "pain-present"
 * item[0].item[0].item[0].enableWhen.operator = #=
 * item[0].item[0].item[0].enableWhen.answerBoolean = true
 * item[0].item[0].item[0].answerOption[0].valueCoding = $sct#255604002 "Mild"
+* item[0].item[0].item[0].answerOption[0].valueCoding.display.extension[$translation].extension[lang].valueCode = #es
+* item[0].item[0].item[0].answerOption[0].valueCoding.display.extension[$translation].extension[content].valueString = "Leve"
 * item[0].item[0].item[0].answerOption[1].valueCoding = $sct#6736007 "Moderate severity"
+* item[0].item[0].item[0].answerOption[1].valueCoding.display.extension[$translation].extension[lang].valueCode = #es
+* item[0].item[0].item[0].answerOption[1].valueCoding.display.extension[$translation].extension[content].valueString = "Moderado"
 * item[0].item[0].item[0].answerOption[2].valueCoding = $sct#24484000 "Severe"
+* item[0].item[0].item[0].answerOption[2].valueCoding.display.extension[$translation].extension[lang].valueCode = #es
+* item[0].item[0].item[0].answerOption[2].valueCoding.display.extension[$translation].extension[content].valueString = "Grave"
 * item[0].item[1].linkId = "notes"
+* item[0].item[1].prefix = "Q2."
+* item[0].item[1].prefix.extension[$translation].extension[lang].valueCode = #es
+* item[0].item[1].prefix.extension[$translation].extension[content].valueString = "P2."
 * item[0].item[1].text = "Is there anything else you would like to tell us?"
+* item[0].item[1].text.extension[$translation].extension[lang].valueCode = #es
+* item[0].item[1].text.extension[$translation].extension[content].valueString = "¿Hay algo más que quiera contarnos?"
 * item[0].item[1].type = #string
 
 Instance: GroveWeeklySymptomCheckInResponseExample
@@ -53,6 +79,7 @@ InstanceOf: GroveQuestionnaireResponse
 Usage: #example
 Title: "Weekly Symptom Check-In Response"
 Description: "A completed response whose follow-up answer is nested beneath the answer that enabled it."
+* language = #en-US
 * questionnaire = "https://grovealliance.org/fhir/questionnaire/Questionnaire/GroveWeeklySymptomCheckInExample|0.6.0"
 * identifier.system = "https://example.org/research/questionnaire-response-id"
 * identifier.value = "weekly-check-in-0001"
@@ -79,6 +106,37 @@ Description: "A completed response whose follow-up answer is nested beneath the 
 * item[0].item[1].text = "Is there anything else you would like to tell us?"
 * item[0].item[1].answer.valueString = "The pain was limited to the first two days."
 
+Instance: GroveWeeklySymptomCheckInSpanishResponseExample
+InstanceOf: GroveQuestionnaireResponse
+Usage: #example
+Title: "Weekly Symptom Check-In Response in Spanish"
+Description: "A response captured while the participant read the Spanish translation: it names that language and omits item text and answer displays, which could only repeat the English base."
+* language = #es
+// The answer carries no display, so a generated narrative would need a terminology server offline.
+* text.status = #additional
+* text.div = "<div xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"es\" xml:lang=\"es\"><p><b>Síntomas</b></p><p>P1. ¿Ha tenido dolor durante la última semana? Sí</p><p>P1a. ¿Qué tan intenso fue el dolor? Leve</p><p>P2. ¿Hay algo más que quiera contarnos? El dolor empezó después de correr.</p></div>"
+* questionnaire = "https://grovealliance.org/fhir/questionnaire/Questionnaire/GroveWeeklySymptomCheckInExample|0.6.0"
+* identifier.system = "https://example.org/research/questionnaire-response-id"
+* identifier.value = "weekly-check-in-0002"
+* status = #completed
+* subject = Reference(GroveQuestionnairePatientExample)
+* extension[writerContext].extension[applicationIdentifier].valueIdentifier.system = "https://study.example.org/fhir/NamingSystem/application"
+* extension[writerContext].extension[applicationIdentifier].valueIdentifier.value = "org.grovealliance.example.client"
+* extension[writerContext].extension[applicationName].valueString = "Grove Questionnaire Client"
+* extension[writerContext].extension[applicationVersion].valueString = "1.4.0"
+* extension[writerContext].extension[applicationBuild].valueString = "220"
+* extension[writerContext].extension[hostModel].valueString = "iPhone15,2"
+* extension[writerContext].extension[hostOperatingSystemVersion].valueString = "26.0"
+* authored = "2026-08-26T19:05:00-07:00"
+* extension[completionMode].valueCodeableConcept = $participationMode#ELECTRONIC
+* item[0].linkId = "symptoms"
+* item[0].item[0].linkId = "pain-present"
+* item[0].item[0].answer.valueBoolean = true
+* item[0].item[0].answer.item[0].linkId = "pain-severity"
+* item[0].item[0].answer.item[0].answer.valueCoding = $sct#255604002
+* item[0].item[1].linkId = "notes"
+* item[0].item[1].answer.valueString = "El dolor empezó después de correr."
+
 Instance: GroveHomeVitalsExample
 InstanceOf: GroveQuestionnaire
 Usage: #example
@@ -87,6 +145,7 @@ Description: "An instrument whose answers extract into body-weight and blood-pre
 * extension[versionAlgorithm].valueCoding = $versionAlgorithm#semver
 * url = "https://grovealliance.org/fhir/questionnaire/Questionnaire/GroveHomeVitalsExample"
 * version = "0.6.0"
+* language = #en-US
 * name = "GroveHomeVitals"
 * title = "Home Vitals"
 * status = #active
@@ -132,6 +191,7 @@ Description: "A conformant response to the Home Vitals instrument, carrying the 
 * extension[writerContext].extension[hostOperatingSystemVersion].valueString = "26.0"
 * identifier.system = "https://study.example.org/fhir/NamingSystem/questionnaire-response"
 * identifier.value = "home-vitals-2026-08-28"
+* language = #en-US
 * questionnaire = "https://grovealliance.org/fhir/questionnaire/Questionnaire/GroveHomeVitalsExample|0.6.0"
 * status = #completed
 * subject = Reference(GroveQuestionnairePatientExample)

@@ -39,11 +39,16 @@ The response joins the canonical URL and version with one `|`:
 
 An implementation resolves this exact pair before rendering the instrument or accepting its answers.
 
+Both resources also carry `language`.
+The instrument's `language` names the language of its base strings, here `en-US`; its other languages are `translation` extensions on the same strings.
+The response's `language` names the language the participant read, which is the base language or one of those translations.
+
 ### 2. Trace an item through the pair
 
 Each Questionnaire item has a durable `linkId`.
 The response repeats the same `linkId` and hierarchy.
-Its optional `text` may repeat the prompt for readability or carry the wording shown in another locale; conformance and matching never depend on that text.
+Its optional `text` repeats the base prompt exactly or is omitted; a response captured in a translation omits it and names that language instead.
+A coded answer keeps its `system` and `code`; its `display` repeats the option's base display in a base-language response, as below, and is omitted in a translated one.
 A follow-up defined under a question belongs under the particular answer that supplied its context.
 The example pair represents that structure as follows:
 

@@ -14,7 +14,7 @@ from typing import Any
 from .context import (
     CATALOG_ROOT, IDENTIFIER_ROLE_SYSTEM, SENSOR_ECG_PROFILE, SENSOR_SAMPLED_PROFILE,
 )
-from .diagnostics import ProducerValidationError
+from .diagnostics import ProducerValidationError, contract_failure
 from .identity import typed_resource_identifiers
 from .io import read_json
 from .payloads import validate_sampled_data
@@ -137,8 +137,10 @@ def exact_sensorkit_source_type(resource: dict[str, Any], label: str) -> str:
         or not isinstance(source_extensions[0].get("valueCode"), str)
         or not source_extensions[0]["valueCode"]
     ):
-        raise ProducerValidationError(
-            f"{label} must carry exactly one valueCode-only SensorKit source type"
+        raise contract_failure(
+            "mobile-output.adapter-source-marker",
+            f"{resource.get('resourceType', 'Resource')}.extension",
+            f"{label} must carry exactly one valueCode-only SensorKit source type",
         )
     return source_extensions[0]["valueCode"]
 

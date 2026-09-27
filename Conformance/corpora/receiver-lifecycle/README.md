@@ -7,7 +7,7 @@ SPDX-License-Identifier: MIT
 
 These synthetic sequences exercise a declared receiver policy against grove-fhir 0.6.0.
 They do not add a Bundle field, endpoint, receipt code, storage engine or universal disclosure policy to the IG.
-`events.json` pins the contract and exact fixture bytes. `sequences.json` covers nine single-output lifecycle sequences; `revision-sequences.json` adds thirty-five complete-revision and ordering-conflict sequences.
+`events.json` pins the contract and exact fixture bytes. `sequences.json` covers eleven single-output lifecycle sequences; `revision-sequences.json` adds thirty-five complete-revision and ordering-conflict sequences.
 `identity-sequences.json` adds two arrival orders for a contradictory source-record claim under the same output identity.
 
 The events are derived from the existing Mobile exchange bases using the reference identity algorithms.
@@ -48,7 +48,7 @@ The harness must resolve under verified subject/source scope; matching an Identi
 
 ## Validation Boundaries
 
-The structural producer validator checks the sixteen graphs, identities, source-neutral semantic profile claims and closed references.
+The structural producer validator checks the eighteen graphs, identities, source-neutral semantic profile claims and closed references.
 The all-fixtures manifest sends every generated Bundle through the official FHIR Validator with the exact Mobile and Questionnaire packages.
 The changed-content retry is intentionally profile-valid: only receiver history can identify its conflict.
 
@@ -89,6 +89,7 @@ Its absence from v2 is not a retraction: it may reappear in v3, but the v1 autho
 
 Distinct events claiming equal writer versions remain unresolved under this conservative receiver policy, including a reassembly whose displayed measurements agree.
 Exact event replay proves equality; comparing a few clinical fields or stripping event-scoped metadata does not establish cross-event content equivalence.
+Equality is decided over lossless JSON tokens, never bytes: `reformatted-retry` repeats `original` with the same tokens in another member order and is the exact retry, while `lexeme-retry` repeats it with `72.0` in place of `72`, a different decimal lexeme and therefore different content, and changes nothing, exactly as `altered-retry`.
 Different writer identities and missing comparable writer evidence also leave unresolved candidates; all four conflict cases cover both arrival orders.
 No new access is available during these conflicts, and replay cannot resolve them.
 This is an explicit fixture policy, not a new normative IG rejection rule or a requirement to discard valid events.

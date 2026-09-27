@@ -1,7 +1,7 @@
 {
   "schemaVersion": 0,
   "fhirVersion": "4.0.1",
-  "purpose": "Every committed Grove FHIR fixture outside a guide's input directory goes through the official HL7 FHIR Validator with the exact Grove packages. A guide's own worked examples are validated by the IG Publisher during its build and audited by Scripts/check-guide-qa.py; these fixtures are the ones no build ever sees, so a fixture that contradicts its claimed profile could otherwise ship. Every JSON file beneath the declared roots is either validated here or excluded with a reason, so a new fixture cannot be added unclassified.",
+  "purpose": "Every committed Grove FHIR fixture outside a guide's input directory goes through the official HL7 FHIR Validator with the exact Grove packages. A guide's own worked examples are validated by the IG Publisher during its build and audited by Scripts/check-guide-qa.py; these fixtures are the ones no build ever sees, so a fixture that contradicts its claimed profile could otherwise ship. Every JSON file beneath the declared roots is either validated here, rejected for one declared reason through a negative corpus, or excluded with a reason, so a new fixture cannot be added unclassified.",
   "roots": [
     "Conformance",
     "questionnaire/fixtures"
@@ -39,6 +39,8 @@
     {"path": "Conformance/corpora/receiver-lifecycle/resources/original.json", "profiles": ["https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle"]},
     {"path": "Conformance/corpora/receiver-lifecycle/resources/corrected.json", "profiles": ["https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle"]},
     {"path": "Conformance/corpora/receiver-lifecycle/resources/altered-retry.json", "profiles": ["https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle"]},
+    {"path": "Conformance/corpora/receiver-lifecycle/resources/reformatted-retry.json", "profiles": ["https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle"]},
+    {"path": "Conformance/corpora/receiver-lifecycle/resources/lexeme-retry.json", "profiles": ["https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle"]},
     {"path": "Conformance/corpora/receiver-lifecycle/resources/unordered-a.json", "profiles": ["https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle"]},
     {"path": "Conformance/corpora/receiver-lifecycle/resources/unordered-b.json", "profiles": ["https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle"]},
     {"path": "Conformance/corpora/receiver-lifecycle/resources/pending.json", "profiles": ["https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle"]},
@@ -140,6 +142,9 @@
         "https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire"
       ]
     }
+  ],
+  "negativeCorpora": [
+    "Conformance/corpora/mobile-profile-invariants/corpus.json"
   ],
   "excluded": [
     {"path": "Conformance/corpora/receiver-lifecycle/identity-sequences.json", "reason": "Receiver-policy expectations for contradictory source-output/source-record bindings, checked by Tests/test_output_record_binding.py; not a FHIR resource."},

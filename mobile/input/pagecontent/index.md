@@ -7,6 +7,7 @@ SPDX-License-Identifier: MIT
 -->
 
 Grove Mobile defines a reusable FHIR R4 exchange contract for measurements collected by mobile applications and connected devices.
+Mobile names the data domain, not the writer: a backend that projects a questionnaire response or relays a connected device emits the same Mobile Observation as a phone application.
 Clinical meaning stays in standard FHIR fields and established domain profiles.
 Grove profiles make record identity, capture mode, device roles, conversion provenance, and research-study context consistent across source platforms.
 

@@ -27,7 +27,7 @@ class ReceiverLifecycleTests(unittest.TestCase):
             with self.subTest(path=path.name):
                 self.assertEqual(path.read_text(), expected)
         index = json.loads((CORPUS / "events.json").read_text())
-        self.assertEqual(index["contractLock"]["baseSourceRevision"], "444e06fb25680c3af29e5d3ccbebeb0249be7318")
+        self.assertEqual(index["contractLock"]["baseSourceRevision"], "928db16ef8bfd86d2a171727d2d1cb9f8979a442")
         self.assertEqual(index["contractLock"]["releaseVersion"], "0.6.0")
         self.assertEqual(index["contractLock"]["fhirVersion"], "4.0.1")
         self.assertEqual(index["contractLock"]["exchangeProtocolSHA256"], hashlib.sha256((ROOT / "catalog/exchange-protocol.json").read_bytes()).hexdigest())
@@ -40,16 +40,38 @@ class ReceiverLifecycleTests(unittest.TestCase):
         protocol = json.loads((ROOT / "catalog/exchange-protocol.json").read_text())
         del protocol["testVectors"]
         rules = json.dumps(protocol, sort_keys=True, separators=(",", ":")).encode()
-        self.assertEqual(hashlib.sha256(rules).hexdigest(), "d07e055cbabd12264045306fd215ebc477fa0401ca2a869fe0f7fe29338b5092")
+        self.assertEqual(hashlib.sha256(rules).hexdigest(), "c1d73d0a7ea112182fbb03dbffe784806f0a19c664c0ebc44cb071be120ae9bf")
         for name, digest in {
-            "exchange-bundle.json": "94cc1e1f5d7aade571b2d59cff12ea0438d49e030deb43391e59cc8e9081d2b2",
+            "exchange-bundle.json": "0606a575d494b029838aea451dda726fbc90e389c9c1318bae8e743cf1dc556e",
             "retraction-bundle.json": "54085f51d0d7629bc5a556cb9ea2813b7c7d6defadb8f2d3340270bc88f5d226",
         }.items():
             self.assertEqual(hashlib.sha256((BASE / name).read_bytes()).hexdigest(), digest)
 
+    def test_equality_is_decided_over_lossless_tokens_not_bytes(self):
+        def tokens(name):
+            return json.loads((CORPUS / "resources" / f"{name}.json").read_text(), parse_int=str, parse_float=str)
+
+        def raw(name):
+            return (CORPUS / "resources" / f"{name}.json").read_bytes()
+
+        original, reformatted, lexeme = (tokens(name) for name in ("original", "reformatted-retry", "lexeme-retry"))
+        self.assertNotEqual(raw("original"), raw("reformatted-retry"))
+        self.assertEqual(original, reformatted)
+        self.assertNotEqual(original, lexeme)
+        self.assertEqual(json.loads(raw("original")), json.loads(raw("lexeme-retry")))
+        for name in ("reformatted-retry", "lexeme-retry"):
+            self.assertEqual(json.loads(raw(name))["identifier"], json.loads(raw("original"))["identifier"])
+        corpus = json.loads((CORPUS / "sequences.json").read_text())
+        sequences = {sequence["id"]: sequence["steps"] for sequence in corpus["sequences"]}
+        altered = sequences["exact-and-conflicting-replay"][-1]["expect"]
+        self.assertEqual(sequences["reformatted-replay"][-1]["expect"], altered)
+        self.assertEqual(sequences["lexeme-replay"][-1]["expect"], altered)
+        protocol = json.loads((ROOT / "catalog/exchange-protocol.json").read_text())
+        self.assertEqual(set(protocol["payload"]["equality"]), {"formatting", "decimalLexeme", "vectors"})
+
     def test_every_event_passes_the_existing_structural_contract(self):
         _, paths = validate_manifest(CORPUS / "official-validator-manifest.json")
-        self.assertEqual(len(paths), 16)
+        self.assertEqual(len(paths), 18)
         self.assertEqual(set(paths), set((CORPUS / "resources").glob("*.json")))
 
     def test_writer_order_cannot_be_replaced_by_sequence_time_or_float(self):
@@ -124,7 +146,7 @@ class ReceiverLifecycleTests(unittest.TestCase):
             "sourceEvent": "pending", "referencePointer": "/entry/2/resource/derivedFrom/0",
             "targetEvent": "target", "targetPointer": "/entry/4/resource"
         }})
-        expected_ids = {"exact-and-conflicting-replay", "correction-before-original", "original-before-correction", "unordered-conflict", "pending-reference-resolution", "retraction-before-target", "retraction-after-target", "correction-before-retraction", "retraction-before-correction"}
+        expected_ids = {"exact-and-conflicting-replay", "reformatted-replay", "lexeme-replay", "correction-before-original", "original-before-correction", "unordered-conflict", "pending-reference-resolution", "retraction-before-target", "retraction-after-target", "correction-before-retraction", "retraction-before-correction"}
         self.assertEqual({sequence["id"] for sequence in corpus["sequences"]}, expected_ids)
         self.assertEqual(len(corpus["sequences"]), len(expected_ids))
         fields = {"history", "versions", "current", "pending", "retracted", "conflicts", "visible", "newlyVisible", "references"}

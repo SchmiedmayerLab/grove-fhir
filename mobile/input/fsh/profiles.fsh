@@ -21,6 +21,26 @@ Description: "An Observation subject is either a literal Patient reference or on
 Expression: "(subject.reference.exists() and subject.identifier.empty()) or (subject.reference.empty() and subject.type = 'Patient' and subject.identifier.count() = 1 and subject.identifier.system.matches('^[A-Za-z][A-Za-z0-9+.-]*:') and subject.identifier.value.exists())"
 Severity: #error
 
+Invariant: grove-mobile-effective-1
+Description: "A mobile Observation effective dateTime and every effective Period bound state a time of day, which FHIR requires to carry a UTC offset."
+Expression: "(effective.ofType(dateTime) | effective.ofType(Period).start | effective.ofType(Period).end).all($this.toString().contains('T'))"
+Severity: #error
+
+Invariant: grove-mobile-code-system-1
+Description: "A mobile Observation code is coded in LOINC, the IEEE 11073 MDC nomenclature, or a Grove code system."
+Expression: "code.coding.exists() and code.coding.all(system = 'http://loinc.org' or system = 'urn:iso:std:iso:11073:10101' or (system.startsWith('https://grovealliance.org/fhir/') and system.contains('/CodeSystem/')))"
+Severity: #error
+
+Invariant: grove-mobile-body-site-1
+Description: "A mobile Observation body site is coded in SNOMED CT."
+Expression: "bodySite.all(coding.exists() and coding.all(system = 'http://snomed.info/sct'))"
+Severity: #error
+
+Invariant: grove-mobile-method-1
+Description: "A mobile Observation method is coded in SNOMED CT or a Grove code system."
+Expression: "method.all(coding.exists() and coding.all(system = 'http://snomed.info/sct' or (system.startsWith('https://grovealliance.org/fhir/') and system.contains('/CodeSystem/'))))"
+Severity: #error
+
 Invariant: grove-step-count-result-1
 Description: "A step-count Observation has a count value or a reason why the count is absent."
 Expression: "value.exists() or dataAbsentReason.exists()"
@@ -173,7 +193,7 @@ RuleSet: GroveOutputIdentitySlices
 * insert GroveOpaqueIdentifier(identifier[writerRecord], writer-record)
 
 RuleSet: GroveMobileObservationRules
-* obeys grove-mobile-result-1 and grove-identifier-token-1 and grove-identifier-role-coding-1 and grove-patient-reference-shape-1
+* obeys grove-mobile-result-1 and grove-identifier-token-1 and grove-identifier-role-coding-1 and grove-patient-reference-shape-1 and grove-mobile-effective-1 and grove-mobile-code-system-1 and grove-mobile-body-site-1 and grove-mobile-method-1
 * insert CompleteIdentifierPairs
 * insert GroveOutputIdentitySlices
 * identifier 2..* MS
@@ -197,7 +217,9 @@ RuleSet: GroveMobileObservationRules
 * issued MS
 * value[x] MS
 * dataAbsentReason MS
+* dataAbsentReason from http://hl7.org/fhir/ValueSet/data-absent-reason (required)
 * component MS
+* component.dataAbsentReason from http://hl7.org/fhir/ValueSet/data-absent-reason (required)
 * bodySite MS
 * method MS
 * device MS

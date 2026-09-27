@@ -23,6 +23,8 @@ FULL_URL_NAMESPACE = uuid.UUID("43df4575-bff7-5a57-9a80-2472cd2b0623")
 
 TOKEN = re.compile(r"^[A-Za-z0-9._-]+$")
 POSITIVE_DECIMAL = re.compile(r"^[1-9][0-9]*$")
+UNSIGNED_DECIMAL = re.compile(r"^(?:0|[1-9][0-9]*)$")
+UNSIGNED_DECIMAL_COMPONENTS = frozenset({"part-index"})
 ABSOLUTE_URI = re.compile(
     r"^[A-Za-z][A-Za-z0-9+.-]*:"
     r"(?:[A-Za-z0-9._~:/?#\[\]@!$&'()*+,;=-]|%[0-9A-Fa-f]{2})+$"
@@ -206,6 +208,10 @@ def derive_hmac_identity(
             raise ExchangeProtocolError(
                 f"{identity_kind}.{component_name} must contain Unicode scalar values"
             ) from error
+        if component_name in UNSIGNED_DECIMAL_COMPONENTS and UNSIGNED_DECIMAL.fullmatch(component) is None:
+            raise ExchangeProtocolError(
+                f"{identity_kind}.{component_name} must be a canonical unsigned decimal"
+            )
     provider_scoped_kinds = {
         "provider-record",
         "provider-output",

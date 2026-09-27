@@ -17,7 +17,7 @@ from .context import (
     OPAQUE_IDENTIFIER_ROLES, REPOSITORY_ROOT, ExchangeProtocolError,
     entry_full_url, require_absolute_uri,
 )
-from .diagnostics import ProducerValidationError
+from .diagnostics import ProducerValidationError, contract_failure
 from .io import read_json
 from .references import complete_identifier, extensions_with_url
 
@@ -69,7 +69,7 @@ def expected_entry_full_url(system: str, value: str) -> str:
     except ValueError as error:
         raise ProducerValidationError(str(error)) from error
 
-def identifier_role(identifier: Any, label: str) -> str:
+def identifier_role(identifier: Any, label: str, location: str) -> str:
     """Read exactly one Grove role Coding from a complete Identifier."""
     complete_identifier(identifier, label)
     codings = identifier.get("type", {}).get("coding", [])
@@ -81,8 +81,10 @@ def identifier_role(identifier: Any, label: str) -> str:
         and isinstance(coding.get("code"), str)
     ] if isinstance(codings, list) else []
     if len(matches) != 1:
-        raise ProducerValidationError(
-            f"{label} must carry exactly one Grove identifier-role Coding"
+        raise contract_failure(
+            "mobile-exchange.identifier-role",
+            location,
+            f"{label} must carry exactly one Grove identifier-role Coding",
         )
     return matches[0]
 
@@ -95,16 +97,22 @@ def typed_resource_identifiers(resource: dict[str, Any], label: str) -> dict[str
     # while most exchange output/support resources use Identifier 0..*. Normalize the
     # wire cardinality here so a legitimate singular non-Grove identifier cannot make an
     # otherwise governed QuestionnaireResponse fail before its profile claim is checked.
-    if isinstance(identifiers, dict):
+    singular = isinstance(identifiers, dict)
+    if singular:
         identifiers = [identifiers]
     elif not isinstance(identifiers, list):
         raise ProducerValidationError(
             f"{label}.identifier must be an Identifier or Identifier array"
         )
+    resource_type = resource.get("resourceType", "Resource")
     result: dict[str, tuple[str, str]] = {}
     for index, identifier in enumerate(identifiers):
         if not isinstance(identifier, dict):
             raise ProducerValidationError(f"{label}.identifier[{index}] must be an Identifier")
+        location = (
+            f"{resource_type}.identifier" if singular
+            else f"{resource_type}.identifier[{index}]"
+        )
         identifier_type = identifier.get("type")
         codings = identifier_type.get("coding", []) if isinstance(identifier_type, dict) else []
         grove_codings = [
@@ -125,16 +133,29 @@ def typed_resource_identifiers(resource: dict[str, Any], label: str) -> dict[str
             or len(roles) != 1
             or roles[0] not in OPAQUE_IDENTIFIER_ROLES
         ):
-            raise ProducerValidationError(
-                f"{label}.identifier[{index}] has an unknown or repeated Grove identifier role"
+            raise contract_failure(
+                "mobile-exchange.identifier-role",
+                location,
+                f"{label}.identifier[{index}] has an unknown or repeated Grove identifier role",
             )
         role = roles[0]
         if role in result:
-            raise ProducerValidationError(f"{label} repeats the {role} identifier role")
-        pair = complete_identifier(identifier, f"{label}.identifier[{index}]")
+            raise contract_failure(
+                "mobile-exchange.distinct-resource-identity-role",
+                location,
+                f"{label} repeats the {role} identifier role",
+            )
+        try:
+            pair = complete_identifier(identifier, f"{label}.identifier[{index}]")
+        except ProducerValidationError as error:
+            raise contract_failure(
+                "mobile-exchange.opaque-resource-identity", location, str(error)
+            ) from error
         if HMAC_IDENTITY.fullmatch(pair[1]) is None:
-            raise ProducerValidationError(
-                f"{label}.identifier[{index}] is not a canonical Grove v0 HMAC identity"
+            raise contract_failure(
+                "mobile-exchange.opaque-resource-identity",
+                location,
+                f"{label}.identifier[{index}] is not a canonical Grove v0 HMAC identity",
             )
         result[role] = pair
     return result
