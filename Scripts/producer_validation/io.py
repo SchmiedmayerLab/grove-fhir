@@ -57,7 +57,9 @@ def resolve_unlinked_directory(path: Path, label: str) -> Path:
     try:
         mode = candidate.stat().st_mode
     except OSError as error:
-        raise ProducerValidationError(f"{label} directory is absent: {path}") from error
+        raise ProducerValidationError(
+            f"{label} directory is absent: {path}; run Scripts/download-fhir-tools.sh first"
+        ) from error
     if not stat.S_ISDIR(mode):
         raise ProducerValidationError(f"{label} path is not a directory: {path}")
     try:

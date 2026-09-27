@@ -8,7 +8,6 @@
 
 from __future__ import annotations
 
-import re
 from decimal import Decimal
 from typing import Any
 
@@ -16,7 +15,7 @@ from .context import (
     CATALOG_ROOT, HEALTHKIT_CLINICAL_RECORD_PROFILE,
     HEALTHKIT_ECG_AVERAGE_HEART_RATE_PROFILE, HEALTHKIT_ECG_PROFILE,
     HEALTHKIT_OBSERVATION_PROFILE, HEALTHKIT_RECORDING_PROFILE,
-    HMAC_IDENTITY, SAMPLED_DECIMAL,
+    HMAC_IDENTITY, SAMPLED_DATA_SEQUENCE,
 )
 from .diagnostics import ProducerValidationError, contract_failure
 from .identity import identifier_role, typed_resource_identifiers
@@ -57,8 +56,10 @@ def validate_healthkit_source_type(resource: dict[str, Any], label: str) -> None
         or not source_extensions[0]["valueCode"]
         or set(source_extensions[0]) != {"url", "valueCode"}
     ):
-        raise ProducerValidationError(
-            f"{label} must carry exactly one valueCode-only HealthKit source-type extension"
+        raise contract_failure(
+            "mobile-output.adapter-source-marker",
+            "Observation.extension",
+            f"{label} must carry exactly one valueCode-only HealthKit source-type extension",
         )
     source_type = source_extensions[0]["valueCode"]
     rows = {
@@ -376,7 +377,11 @@ def validate_healthkit_ecg_contract(resource: dict[str, Any], label: str) -> Non
         )
         identifier = member.get("identifier")
         if (
-            identifier_role(identifier, f"{label}.hasMember[{index}].identifier")
+            identifier_role(
+                identifier,
+                f"{label}.hasMember[{index}].identifier",
+                f"Observation.hasMember[{index}].identifier",
+            )
             != symptom_claim["identifierRole"]
         ):
             raise ProducerValidationError(
@@ -430,14 +435,13 @@ def validate_healthkit_ecg_contract(resource: dict[str, Any], label: str) -> Non
     data = sampled.get("data") if isinstance(sampled, dict) else None
     dimensions = sampled.get("dimensions") if isinstance(sampled, dict) else None
     period = sampled.get("period") if isinstance(sampled, dict) else None
-    tokens = re.split(r"\s+", data.strip()) if isinstance(data, str) and data.strip() else []
     if (
         dimensions != 1
         or isinstance(period, bool)
         or not isinstance(period, (int, float, Decimal))
         or Decimal(str(period)) <= 0
-        or not tokens
-        or any(SAMPLED_DECIMAL.fullmatch(token) is None for token in tokens)
+        or not isinstance(data, str)
+        or SAMPLED_DATA_SEQUENCE.fullmatch(data) is None
     ):
         raise ProducerValidationError(
             f"{label} HealthKit ECG must carry one positive-period decimal SampledData channel"

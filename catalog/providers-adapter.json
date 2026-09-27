@@ -39,15 +39,7 @@
     "notFHIRAuthorization": true
   },
   "conversionProvenanceProfile": "https://grovealliance.org/fhir/providers/StructureDefinition/providers-conversion-provenance",
-  "statusVocabulary": [
-    "supported",
-    "mapped-standard",
-    "platform-exclusive",
-    "unmodeled",
-    "deferred",
-    "intentionally-unsupported"
-  ],
-  "statusDefinitions": {
+  "statusVocabulary": {
     "supported": "The Grove FHIR contracts define an exact conversion to every semantic profile listed for the source element, whether the profile is shared or provider-owned.",
     "mapped-standard": "The Grove FHIR contracts admit only the listed source-neutral Sensor recording contract and does not assert a scalar clinical result.",
     "platform-exclusive": "The Grove FHIR contracts define the listed provider-scoped structured profile because no exact shared profile exists.",

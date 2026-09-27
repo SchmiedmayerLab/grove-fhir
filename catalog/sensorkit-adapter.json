@@ -12,15 +12,7 @@
     "cardinality": "exactly one",
     "rule": "Every admitted SensorKit output states the exact sourceTypeCode from its one catalog entry."
   },
-  "statusVocabulary": [
-    "supported",
-    "mapped-standard",
-    "platform-exclusive",
-    "unmodeled",
-    "deferred",
-    "intentionally-unsupported"
-  ],
-  "statusDefinitions": {
+  "statusVocabulary": {
     "supported": "The Grove FHIR contracts define a conformant primary structured mapping to the listed source-neutral Sensor profile plus the SensorKit adapter profile. When a row requires a linked Recording Document, the complete structured-and-recording graph preserves exact source details that the structured projection does not represent.",
     "mapped-standard": "The Grove FHIR contracts admit the stream as the listed source-neutral Sensor Recording Document and do not invent a structured scalar or waveform meaning.",
     "platform-exclusive": "The Grove FHIR contracts define the listed platform-exclusive SensorKit structured profile because no exact source-neutral or international profile exists.",
@@ -446,7 +438,7 @@
             "rule": "Emit exactly one SensorKitValueCS coding, guided or unguided. Per-voltage flags and native session state remain in the required Recording Document."
           }
         ],
-      "admissionRule": "All batches form one complete uniform series at the exact reported frequency, one exact lead orientation is retained, and no voltage sample is omitted. The duration ends at the final sample instant: final batch offset + (final batch sample count - 1) / frequency. Non-uniform, incomplete, mixed-lead, or inconsistent input fails closed.",
+        "admissionRule": "All batches form one complete uniform series at the exact reported frequency, one exact lead orientation is retained, and no voltage sample is omitted. The duration ends at the final sample instant: final batch offset + (final batch sample count - 1) / frequency. Non-uniform, incomplete, mixed-lead, or inconsistent input fails closed.",
         "graphContract": {
           "requiredResources": [
             "sensorkit-ecg-observation",

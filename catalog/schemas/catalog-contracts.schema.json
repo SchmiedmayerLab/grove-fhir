@@ -22,7 +22,6 @@
     "textArray": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/nonEmptyText"}},
     "possiblyEmptyTextArray": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/nonEmptyText"}},
     "uriArray": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/uri"}},
-    "statusVocabularyArray": {"const": ["supported", "mapped-standard", "platform-exclusive", "unmodeled", "deferred", "intentionally-unsupported"]},
     "statusVocabularyObject": {
       "type": "object", "additionalProperties": false,
       "required": ["supported", "mapped-standard", "platform-exclusive", "unmodeled", "deferred", "intentionally-unsupported"],
@@ -332,12 +331,12 @@
     },
     "providers": {
       "type": "object", "additionalProperties": false,
-      "required": ["$schema", "schemaVersion", "fhirVersion", "version", "packageId", "canonical", "adapterProfile", "sourceTypeExtension", "providerExtension", "recordingDocument", "rawPayloadAdmission", "conversionProvenanceProfile", "statusVocabulary", "statusDefinitions", "observationIssued", "sourceEvidence", "identity", "recordingDeviceIdentity", "providers"],
+      "required": ["$schema", "schemaVersion", "fhirVersion", "version", "packageId", "canonical", "adapterProfile", "sourceTypeExtension", "providerExtension", "recordingDocument", "rawPayloadAdmission", "conversionProvenanceProfile", "statusVocabulary", "observationIssued", "sourceEvidence", "identity", "recordingDeviceIdentity", "providers"],
       "properties": {
         "$schema": {"$ref": "#/$defs/schemaUri"}, "schemaVersion": {"const": 0}, "fhirVersion": {"const": "4.0.1"}, "version": {"$ref": "#/$defs/releaseVersion"}, "packageId": {"const": "org.grovealliance.fhir.providers"}, "canonical": {"const": "https://grovealliance.org/fhir/providers"}, "adapterProfile": {"const": "https://grovealliance.org/fhir/providers/StructureDefinition/providers-observation"},
         "sourceTypeExtension": {"$ref": "#/$defs/markerExtension"}, "providerExtension": {"$ref": "#/$defs/markerExtension"},
         "recordingDocument": {"type": "object", "additionalProperties": false, "required": ["sourceNeutralProfile", "adapterProfile", "claimMode", "outputRole", "outputDiscriminator", "encoding"], "properties": {"sourceNeutralProfile": {"$ref": "#/$defs/uri"}, "adapterProfile": {"$ref": "#/$defs/uri"}, "claimMode": {"const": "exactly-source-neutral-plus-adapter"}, "outputRole": {"const": "native-recording"}, "outputDiscriminator": {"const": "single"}, "encoding": {"$ref": "#/$defs/nonEmptyText"}}},
-        "rawPayloadAdmission": {"$ref": "#/$defs/rawPayloadAdmission"}, "conversionProvenanceProfile": {"$ref": "#/$defs/uri"}, "statusVocabulary": {"$ref": "#/$defs/statusVocabularyArray"}, "statusDefinitions": {"$ref": "#/$defs/statusVocabularyObject"}, "observationIssued": {"$ref": "#/$defs/observationIssued"},
+        "rawPayloadAdmission": {"$ref": "#/$defs/rawPayloadAdmission"}, "conversionProvenanceProfile": {"$ref": "#/$defs/uri"}, "statusVocabulary": {"$ref": "#/$defs/statusVocabularyObject"}, "observationIssued": {"$ref": "#/$defs/observationIssued"},
         "sourceEvidence": {"type": "object", "additionalProperties": false, "required": ["accessed", "scope", "tokenBinding", "providers"], "properties": {"accessed": {"$ref": "#/$defs/date"}, "scope": {"$ref": "#/$defs/nonEmptyText"}, "tokenBinding": {"$ref": "#/$defs/nonEmptyText"}, "providers": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/providerEvidence"}}}},
         "identity": {"$ref": "#/$defs/exchangeIdentity"}, "recordingDeviceIdentity": {"$ref": "#/$defs/recordingDeviceIdentity"}, "providers": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/providerRow"}}
       }
@@ -406,10 +405,10 @@
     },
     "sensorKit": {
       "type": "object", "additionalProperties": false,
-      "required": ["$schema", "schemaVersion", "fhirVersion", "version", "packageId", "canonical", "sourceTypeExtension", "statusVocabulary", "statusDefinitions", "observationIssued", "sourceEvidence", "inventoryScopes", "profileClaims", "quantityValueDomains", "rawPayloadAdmission", "identity", "recordingDeviceIdentity", "entries"],
+      "required": ["$schema", "schemaVersion", "fhirVersion", "version", "packageId", "canonical", "sourceTypeExtension", "statusVocabulary", "observationIssued", "sourceEvidence", "inventoryScopes", "profileClaims", "quantityValueDomains", "rawPayloadAdmission", "identity", "recordingDeviceIdentity", "entries"],
       "properties": {
         "$schema": {"$ref": "#/$defs/schemaUri"}, "schemaVersion": {"const": 0}, "fhirVersion": {"const": "4.0.1"}, "version": {"$ref": "#/$defs/releaseVersion"}, "packageId": {"const": "org.grovealliance.fhir.sensorkit"}, "canonical": {"const": "https://grovealliance.org/fhir/sensorkit"},
-        "sourceTypeExtension": {"$ref": "#/$defs/markerExtension"}, "statusVocabulary": {"$ref": "#/$defs/statusVocabularyArray"}, "statusDefinitions": {"$ref": "#/$defs/statusVocabularyObject"}, "observationIssued": {"$ref": "#/$defs/observationIssued"},
+        "sourceTypeExtension": {"$ref": "#/$defs/markerExtension"}, "statusVocabulary": {"$ref": "#/$defs/statusVocabularyObject"}, "observationIssued": {"$ref": "#/$defs/observationIssued"},
         "sourceEvidence": {"type": "object", "additionalProperties": false, "required": ["platform", "sdkBaseline", "accessed", "appleSensorInventory", "appleFrameworkDocumentation", "scope"], "properties": {"platform": {"const": "Apple SensorKit"}, "sdkBaseline": {"$ref": "#/$defs/sdkBaseline"}, "accessed": {"$ref": "#/$defs/date"}, "appleSensorInventory": {"$ref": "#/$defs/uri"}, "appleFrameworkDocumentation": {"$ref": "#/$defs/uri"}, "scope": {"$ref": "#/$defs/nonEmptyText"}}},
         "inventoryScopes": {"type": "object", "additionalProperties": false, "required": ["catalog-baseline", "stable-addition"], "properties": {"catalog-baseline": {"$ref": "#/$defs/nonEmptyText"}, "stable-addition": {"$ref": "#/$defs/nonEmptyText"}}},
         "profileClaims": {"$ref": "#/$defs/sensorKitProfileClaims"}, "quantityValueDomains": {"$ref": "#/$defs/sensorKitQuantityValueDomains"}, "rawPayloadAdmission": {"allOf": [{"$ref": "#/$defs/rawPayloadAdmission"}, {"type": "object", "required": ["payloadCoverageRule"], "properties": {"payloadCoverageRule": {"$ref": "#/$defs/nonEmptyText"}}}]}, "identity": {"$ref": "#/$defs/exchangeIdentity"}, "recordingDeviceIdentity": {"$ref": "#/$defs/recordingDeviceIdentity"}, "entries": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/sensorKitEntry"}}

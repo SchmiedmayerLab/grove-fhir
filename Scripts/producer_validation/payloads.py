@@ -20,8 +20,10 @@ from datetime import datetime, timezone
 from decimal import Decimal, InvalidOperation, ROUND_HALF_EVEN
 from typing import Any
 
-from .context import CATALOG_ROOT, FHIR_INSTANT, SAMPLED_DECIMAL
-from .diagnostics import ProducerValidationError
+from .context import (
+    CATALOG_ROOT, FHIR_INSTANT, SAMPLED_DATA_SEPARATOR, SAMPLED_DATA_SEQUENCE,
+)
+from .diagnostics import ProducerValidationError, contract_failure
 
 
 CSV_ENCODING = json.loads(
@@ -91,11 +93,12 @@ def validate_sampled_data(
     data = sampled.get("data")
     if not isinstance(data, str) or not data or data != data.strip():
         raise ProducerValidationError(f"{label}.data must be a non-empty decimal sequence")
-    tokens = re.split(r"\s+", data)
-    if any(SAMPLED_DECIMAL.fullmatch(token) is None for token in tokens):
+    if SAMPLED_DATA_SEQUENCE.fullmatch(data) is None:
         raise ProducerValidationError(
-            f"{label}.data admits only complete decimal values; E, U, L, and missing tokens fail closed"
+            f"{label}.data admits only single-space-separated complete decimal values; "
+            "E, U, L, and missing tokens fail closed"
         )
+    tokens = data.split(SAMPLED_DATA_SEPARATOR)
     if len(tokens) % dimensions != 0:
         raise ProducerValidationError(
             f"{label}.data token count must be divisible by dimensions"
@@ -117,7 +120,9 @@ def validate_sampled_data(
             "(frameCount - 1) * period milliseconds"
         )
 
-def validate_recording_attachment(attachment: Any, label: str) -> None:
+def validate_recording_attachment(
+    attachment: Any, label: str, location: str = "Attachment"
+) -> None:
     """Require verifiable exact bytes for every admitted recording payload."""
     if not isinstance(attachment, dict):
         raise ProducerValidationError(f"{label} must be an Attachment")
@@ -143,9 +148,17 @@ def validate_recording_attachment(attachment: Any, label: str) -> None:
         except (binascii.Error, ValueError) as error:
             raise ProducerValidationError(f"{label}.data must be valid base64") from error
         if len(payload) != size:
-            raise ProducerValidationError(f"{label}.size does not match embedded bytes")
+            raise contract_failure(
+                "sensor-recording-document.embedded-integrity",
+                f"{location}.size",
+                f"{label}.size does not match embedded bytes",
+            )
         if hashlib.sha1(payload).digest() != digest:  # noqa: S324 -- mandated by FHIR R4 Attachment.hash
-            raise ProducerValidationError(f"{label}.hash does not match embedded bytes")
+            raise contract_failure(
+                "sensor-recording-document.embedded-integrity",
+                f"{location}.hash",
+                f"{label}.hash does not match embedded bytes",
+            )
 
 
 def validate_inline_recording_payload(

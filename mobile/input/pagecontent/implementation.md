@@ -45,10 +45,10 @@ Use that same manifest version when declaring the dependency in a FHIR Shorthand
 
 ### Validate a resource
 
-Download the official FHIR Validator and the Grove package, then run:
+Download the official FHIR Validator at the version `toolchain.fhirValidator` pins in `catalog/release-manifest.json`, download the Grove package, then run it against a real file—the [exchange Bundle example](Bundle-GroveMobileExchangeBundleExample.json) this guide publishes:
 
 ```sh
-java -jar validator_cli.jar exchange-bundle.json \
+java -jar validator_cli.jar Bundle-GroveMobileExchangeBundleExample.json \
   -version 4.0.1 \
   -ig grove-mobile-package/package.tgz \
   -profile https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle
@@ -61,12 +61,40 @@ At minimum, test one valid example for every supported measurement mapping and o
 Include identity collisions, missing results, point and interval timing, exact step-count intervals, source time zones, absent devices, gateway applications, study links, and conversion provenance.
 
 For graph-level validation, use a checkout of the Grove FHIR Implementation Guides source corresponding to the package version.
-Run `python3 Scripts/validate-producer.py --manifest <manifest.json> --validator <validator_cli.jar> --package <alias>=<package.tgz>` once per package alias declared by the manifest.
+The structural layer runs green in seconds with no downloads:
+
+```sh
+python3 Scripts/validate-producer.py \
+  --manifest Conformance/example-producer/manifest.json \
+  --structural-only
+```
+
+Copy that manifest, point it at your own emitted files, and run the same command.
+For the full lane, add `--validator <validator_cli.jar>` and one `--package <alias>=<package.tgz>` argument for every alias the manifest declares, all in a single invocation.
 The command verifies package identity, required profile claims, deterministic UUID URNs, and internal graph resolution before invoking the official FHIR Validator.
+`Conformance/README.md` in that checkout is the producer contract: the three mandatory validation layers, the negative corpus, and the semantic-vector binding.
 
 The [heart-rate JSON](Observation-GroveMobileHeartRateExample.json) is a compact starting example.
 The [step-count JSON](Observation-GroveMobileStepCountExample.json) demonstrates an interval aggregate.
 The [HealthKit adapter guide](https://grovealliance.org/fhir/healthkit/) shows how a source package derives from this contract without changing its shared semantics.
+
+### Vocabulary
+
+Implementations name their public types after these terms, in each platform's casing, and add a term here before introducing a new shared concept; the module or package that holds them follows each platform's own conventions.
+
+- **Exchange event**: one immutable source record revision or one retraction assertion, identified by the event Bundle identifier in the `e0:` form.
+- **Exchange graph**: the validated collection Bundle of one exchange event, with its deterministic entry keys and full URLs.
+- **Business identifier**: a complete `Identifier.system` and `Identifier.value` pair; never a repository-assigned resource id.
+- **Identifier role**: the Grove role an identifier carries in `Identifier.type` from the `grove-identifier-role` code system.
+- **Opaque identity**: an HMAC-derived business identifier of one closed identity kind in the `v0:` form, minted under deployment-owned systems for one key id and epoch; the scope that mints it holds the key, its systems and its epoch.
+- **Entry-node key**: the deterministic `n0:` identity of an entry whose resource carries no business identifier.
+- **Subject**: the participant, referenced through a deployment-scoped pseudonym or, when the deployment supplies one, a bundled Patient entry; the word pseudonym is reserved for the subject.
+- **Study enrollment**: one ResearchStudy, its exact-revision PlanDefinition and one ResearchSubject for a known association.
+- **Application device, host device, recording device**: the three immutable Device snapshots that claim the Grove application, host and recording Device profiles.
+- **Retraction event and retraction target**: the lifecycle assertion that names prior graph nodes by typed logical identifier and target role.
+- **Governed source identifier**: the optional clear native identifier a deployment discloses on the designated primary output or a retraction target.
+- **Writer**: the application or device that wrote the source record at its platform; it is the source agent of the conversion Provenance and, when the platform assigns them, the origin of the writer-record identity and version.
+- **Producer diagnostic**: a registered rule code that a producer or the conformance kit reports, at error severity for a refused record or invalid graph and at warning severity for what an accepted record lost.
 
 ### Dependencies and terminology notices
 

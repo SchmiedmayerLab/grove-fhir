@@ -60,11 +60,15 @@ The paired validator checks the following cross-resource rules:
 5. inline option and resolved, versioned ValueSet membership;
 6. answer and group occurrence limits, including selection counts;
 7. enabled and required items according to response status;
-8. required Patient subject, authored time, and electronic completion metadata; and
-9. unknown, duplicate, misplaced, or disabled items, and any entered-in-error response presented as usable answer data.
+8. required Patient subject, authored time, and electronic completion metadata;
+9. unknown, duplicate, misplaced, or disabled items, and any entered-in-error response presented as usable answer data; and
+10. a response language the instrument offers, and item text that is either omitted or equal to the base prompt.
 
-`QuestionnaireResponse.item.text` is optional presentation content and is deliberately not compared with the Questionnaire prompt.
-The response `linkId`, hierarchy, and exact versioned Questionnaire canonical provide the machine contract across locales.
+Rule 10 applies the [response language rules](responses.html#response-language).
+`QuestionnaireResponse.language` must be the instrument's base language or one of its translation languages; otherwise the paired validator reports `pair-response-language`.
+`QuestionnaireResponse.item.text` may be omitted, but text that differs from the base `Questionnaire.item.text` is reported as `pair-item-text`, as the HL7 FHIR Validator also reports it.
+A coded answer in a response whose language differs from the base language omits `Coding.display`; the paired validator identifies coded answers by `system` and `code` and ignores displays.
+The response `linkId`, hierarchy, exact versioned Questionnaire canonical, and `language` provide the machine contract across languages.
 
 These are pair-level obligations: validators must resolve the exact Questionnaire named by `QuestionnaireResponse.questionnaire`; neither resource can establish them alone.
 

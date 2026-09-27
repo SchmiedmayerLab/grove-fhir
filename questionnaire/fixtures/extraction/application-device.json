@@ -17,7 +17,7 @@
         ]
       },
       "system": "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v0/test-key/1",
-      "value": "v0:test-key:1:1bcHeVj6MTVIkY6rrCwuXx8QAfz6L-Fv-ceXskgfo0E"
+      "value": "v0:test-key:1:W8r_v8DzqOippQF5DUZiyhr_iwyRQk3NTa_sQLF8aM0"
     },
     {
       "system": "https://study.example.org/fhir/NamingSystem/application",

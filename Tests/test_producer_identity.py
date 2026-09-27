@@ -145,7 +145,7 @@ class ProducerIdentityTests(ProducerValidationTestCase):
                 "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-observation",
             ]},
             "extension": [{
-                "url": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-source-type-extension",
+                "url": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-source-type",
                 "valueCode": "HKQuantityTypeIdentifierHeartRate",
             }],
             "identifier": [copy.deepcopy(source), copy.deepcopy(output), copy.deepcopy(native)],

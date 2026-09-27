@@ -9,12 +9,21 @@
       "mutation": {"op": "remove", "path": "/item/0/item/0/text"}
     },
     {
-      "id": "response-item-text-may-be-localized",
-      "mutation": {
-        "op": "replace",
-        "path": "/item/0/text",
-        "value": "Identität"
-      }
+      "id": "response-language-may-differ-in-case",
+      "mutation": {"op": "replace", "path": "/language", "value": "EN-us"}
+    },
+    {
+      "id": "response-rendered-in-a-translation-omits-text",
+      "mutations": [
+        {"op": "replace", "path": "/language", "value": "es"},
+        {"op": "remove", "path": "/item/0/text"},
+        {"op": "remove", "path": "/item/0/item/0/text"},
+        {"op": "remove", "path": "/item/0/item/1/text"},
+        {"op": "remove", "path": "/item/0/item/1/answer/0/item/0/text"},
+        {"op": "remove", "path": "/item/1/text"},
+        {"op": "remove", "path": "/item/2/text"},
+        {"op": "remove", "path": "/item/3/text"}
+      ]
     }
   ],
   "additionalValidSubjectCases": [
@@ -341,6 +350,30 @@
     }
   ],
   "invalid": [
+    {
+      "id": "pair-item-text-translated",
+      "target": "response",
+      "expectedRule": "pair-item-text",
+      "mutation": {"op": "replace", "path": "/item/0/text", "value": "Identidad"}
+    },
+    {
+      "id": "pair-item-text-differs-only-in-whitespace",
+      "target": "response",
+      "expectedRule": "pair-item-text",
+      "mutation": {"op": "replace", "path": "/item/1/text", "value": "Symptoms "}
+    },
+    {
+      "id": "pair-response-language-not-offered",
+      "target": "response",
+      "expectedRule": "pair-response-language",
+      "mutation": {"op": "replace", "path": "/language", "value": "fr"}
+    },
+    {
+      "id": "pair-response-language-regional-variant-not-offered",
+      "target": "response",
+      "expectedRule": "pair-response-language",
+      "mutation": {"op": "replace", "path": "/language", "value": "es-US"}
+    },
     {
       "id": "pair-questionnaire-version",
       "target": "response",

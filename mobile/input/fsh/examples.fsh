@@ -267,12 +267,14 @@ Instance: GroveMobileRetractionProvenanceExample
 InstanceOf: GroveMobileRetractionProvenance
 Usage: #example
 Title: "Example Mobile Retraction Provenance"
-Description: "A later append-only assertion that the source record behind the exchange example is no longer exposed. The logical target identifies the exact prior output without copying it or requesting a FHIR DELETE."
+Description: "A later append-only assertion that the source record behind the exchange example is no longer exposed. The logical target identifies the exact prior output without copying it or requesting a FHIR DELETE, and discloses the native record identifier so the source store can delete the exact record."
 * target.type = "Observation"
 * target.identifier.type = GroveIdentifierRoleCS#source-output "Source output"
 * target.identifier.system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
 * target.identifier.value = "v0:test-key:1:PPULnf0LKpASjIj8mU5TKafPKig_oqWND3_dHFShGd8"
 * target.extension[targetRole].valueCode = #primary-output
+* target.extension[nativeIdentifier].valueIdentifier.system = "https://study.example.org/fhir/NamingSystem/native-record/health-connect/1f5c58aa-6ec6-4e79-a682-829a9debd3f5"
+* target.extension[nativeIdentifier].valueIdentifier.value = "record-heart-001"
 * occurredDateTime = "2026-08-21T08:00:00Z"
 * recorded = "2026-08-21T08:00:01Z"
 * activity = GroveLifecycleEventCS#source-record-retracted "Source record retracted"

@@ -591,9 +591,9 @@ Description: "A beat-to-beat interval series carried as its published column sch
 * content.attachment.contentType = #text/csv
 * content.format = $recordingFormat#beat-interval-series "Beat Interval Series"
 * content.attachment.title = "Heartbeat series beat intervals"
-* content.attachment.data = "dGltZXN0YW1wLHByZWNlZGVkQnlHYXAKMTc1NTYyNDAwMC4wLDAKMTc1NTYyNDAwMC44NCwwCjE3NTU2MjQwMDEuNzEsMQo="
+* content.attachment.data = "dGltZXN0YW1wLHByZWNlZGVkQnlHYXAKMTc4NzEzMzYwMC4wLDAKMTc4NzEzMzYwMC44NCwwCjE3ODcxMzM2MDEuNzEsMQo="
 * content.attachment.size = 71
-* content.attachment.hash = "lpe4Lz8znQwYfaYZt3i6kWBo+JM="
+* content.attachment.hash = "hRPUfJrDsoGXIPige7C51EtpY9E="
 
 Instance: HealthKitVisionPrescriptionExample
 InstanceOf: HealthKitVisionPrescription

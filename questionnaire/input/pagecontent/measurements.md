@@ -59,6 +59,9 @@ Unit semantics originate in the Questionnaire; a form filler must not invent the
 | `integer`, `decimal` | One fixed `questionnaire-unit` | The answer remains numeric, and extraction applies the declared unit to the Observation value. |
 
 The form filler presents the declared units and preserves the selected coded unit in the response.
+A unit option is a Coding, so its display must be one the code system publishes: UCUM `mm[Hg]` displays as `mm[Hg]`, never as `mmHg`.
+The response answer repeats that selected display, and the projection then normalizes it to the `quantity.unit` its measurement records in [`catalog/measurement-catalog.json`](https://grovealliance.org/fhir/catalog/measurement-catalog.json); no Grove profile fixes `Quantity.unit`, so the catalog is the only authority for it.
+The coded unit and the value are carried through untouched.
 An item without a usable unit declaration cannot safely target a measurement profile that fixes a unit.
 Likewise, a body-weight item that permits only UCUM `[lb_av]` cannot produce an Observation conforming to a body-weight profile fixed to UCUM `kg` without an explicitly defined conversion.
 
@@ -70,7 +73,7 @@ The [Home Vitals Questionnaire](Questionnaire-GroveHomeVitalsExample.html) and i
 
 {% json fixtures/extraction/questionnaire.json liquid/questionnaire-summary.liquid %}
 
-Its hierarchy contains standalone body-weight and step-count items plus a blood-pressure group whose systolic and diastolic children contribute components to one panel Observation.
+Its hierarchy contains a standalone body-weight item plus a blood-pressure group whose systolic and diastolic children contribute components to one panel Observation.
 The Questionnaire shows the item codes, extraction relationships, categories, and units required for those results.
 
 #### Completed response
@@ -85,10 +88,16 @@ The response shows how group children align with the instrument hierarchy and ho
 
 {% json fixtures/extraction/exchange-bundle.json liquid/extraction-bundle.liquid %}
 
-The Grove exchange Bundle contains the Patient and QuestionnaireResponse, application and host Device snapshots, three Observations, and the conversion Provenance that joins the graph.
-The body-weight and step-count items become standalone Observations; systolic and diastolic pressure become components of one blood-pressure Observation.
-The two vital-sign Observations receive `vital-signs` from the Questionnaire declaration.
-All three Observations receive `effectiveDateTime` and `issued` from the response's exact `authored` value, and copy their `performer` from the response's explicit `author`.
+The Grove exchange Bundle contains the Patient and QuestionnaireResponse, application and host Device snapshots, two Observations, and the conversion Provenance that joins the graph.
+The body-weight item becomes a standalone Observation; systolic and diastolic pressure become components of one blood-pressure Observation.
+Both Observations receive `vital-signs` from the Questionnaire declaration.
+Both receive `effectiveDateTime` and `issued` from the response's exact `authored` value, and copy their `performer` from the response's explicit `author`.
+
+A producer that emits these Observations binds the mandatory Mobile semantic-vector layer the same way an adapter does.
+A response-sourced Observation carries no adapter context, so it binds the bare source-neutral clinical projection, whose admitted additions are the `questionnaire.default` source-context rule: the `derivedFrom` reference to the QuestionnaireResponse is required, and performer, issued, the manual-entry recording method, and the gateway device are permitted.
+The measurement catalog records that admission as `questionnaire` coverage.
+Two conditions gate it, and both are properties of the measurement rather than of any instrument: the measurement must admit `effectiveDateTime`, and it must be a shared Mobile measurement.
+A measurement an adapter owns is reachable only through that adapter's own profile, so a response cannot project onto it however well an instrument words the question; the catalog marks those `platform-exclusive`.
 
 SDC extraction also places the QuestionnaireResponse in each Observation's `derivedFrom`.
 The Grove projection stage adds the identity, device context, and Provenance required by the target measurement profiles.
@@ -118,10 +127,17 @@ Every Observation extracted from one response receives the same time.
 For example, a weight and blood pressure measured twenty minutes apart would both receive the response's authored time.
 
 `Home Vitals` asks for measurements taken or displayed at the time of the response.
-It remains within standard Observation-based extraction and does not mix in `definitionExtractValue`; all three Observations therefore use the exact `authored` value.
+It remains within standard Observation-based extraction and does not mix in `definitionExtractValue`; both Observations therefore use the exact `authored` value.
+
+A self-reported recall measurement MAY use this flow even when the reading was taken earlier.
+The Observation then carries `authored` as a report-time `effectiveDateTime`, and it MUST declare `manual-entry` as its [recording method](https://grovealliance.org/fhir/mobile/StructureDefinition-grove-recording-method.html).
+Every Observation extracted through this flow carries that same marker, the Home Vitals pair included, so it records that a person keyed the value in rather than distinguishing a recalled reading from a fresh one.
+Under this flow `effectiveDateTime` is always the instant the response was authored; whether that is also the instant of measurement is a property of the instrument's wording, which `derivedFrom` keeps reachable, and of nothing in the Observation itself.
+An instrument that needs the true measurement instant waits for the richer time-capture flow below rather than relabelling `authored` as one.
+
+Only a measurement whose profile admits `effectiveDateTime` can be extracted this way.
+A profile fixing `effective[x]` to a Period with a positive width — a daily step count, for instance — can never be satisfied by one instant, so the measurement catalog admits no questionnaire coverage for it.
 
 When a distinct measurement instant or period is clinically required, use a separate, complete SDC definition-based extraction design or an explicit StructureMap-based extraction flow.
 That flow must initiate and populate each output resource according to the selected SDC mechanism, including its code, value, subject, status, category, and `effective[x]`.
 A lone `definitionExtractValue` on an Observation-extraction item is not a hybrid shortcut and is not part of this example.
-
-Do not use this Observation-based flow when the measurement time differs materially from `authored`; select or define the complete richer extraction flow first.

@@ -9,17 +9,10 @@ SPDX-License-Identifier: MIT
 Provider conversion begins with an exact source element in the published adapter contract.
 Its status determines whether the element admits a shared Observation, a provider-specific Observation, a Recording Document, or no output.
 
-### Definitive status meanings
+### What each status admits here
 
-The normative status-vocabulary definitions live on the [guide family page](https://grovealliance.org/fhir/mobile/guides.html#status-vocabulary).
-The provider contract uses exactly these meanings:
-
-- `supported`: the Grove FHIR contracts define an exact conversion to every listed semantic profile, whether shared or provider-owned.
-- `mapped-standard`: the Grove FHIR contracts map the provider-native payload to the exact source-neutral Sensor plus Provider Recording Document profile pair without asserting a scalar clinical meaning.
-- `unmodeled`: the source element is known and inventoried, but no current shared or provider-scoped profile models it.
-- `platform-exclusive`: a provider-scoped structured profile represents the source semantics because no exact shared profile does.
-- `deferred`: a plausible shared mapping exists, but source evidence or time/result semantics are insufficient for a conformant conversion under the Grove FHIR contracts.
-- `intentionally-unsupported`: the Grove FHIR contracts refuse the conversion because it would create a misleading or diagnostic-adjacent result.
+The normative status-vocabulary definitions live on the [guide family page](https://grovealliance.org/fhir/mobile/guides.html#status-vocabulary) and mean the same thing in every guide.
+What follows is only what admission produces for a provider element.
 
 `supported` rows may produce the exact listed shared or provider-owned semantic Observation.
 A `platform-exclusive` row produces the provider-owned semantic profile its catalog entry names, which states the vendor and exact nature of the value so nothing reads as a comparable shared measurement.

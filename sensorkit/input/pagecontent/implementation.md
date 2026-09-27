@@ -30,15 +30,9 @@ The opaque key is not copied into `Resource.id`, and it does not assert equality
 ### Recording payload admission
 
 The Recording Document represents exact bytes already supplied by the caller and exposes them either inline or at an immutable, resolvable attachment URL.
-Before emission, the calling application must explicitly state either that the opaque payload is authorized for disclosure as supplied (`caller-authorized-opaque-payload`) or that it has been verified and sanitized (`verified-sanitized-input`).
-Exactly one declaration is required; otherwise conversion fails.
-These declarations are producer preconditions, not FHIR Consent or authorization records.
+The [Sensor guide](https://grovealliance.org/fhir/sensor/waveforms.html#recording-documents) states the payload preconditions and the exact scope of Grove format validation; both apply here unchanged.
 The mapper does not fetch attachment URLs, semantically reinterpret, sanitize, rewrite, or reserialize SensorKit data.
-A conformant producer validates supplied bytes against the declared registry grammar before emission.
-Grove format validation checks required Attachment metadata for URL-backed content without retrieving the bytes.
-For inline content, it verifies size and hash integrity and, when applicable to the declared format, the generic native-JSON envelope or selected registered CSV grammar.
-The CSV checks are structural and lexical; they do not enforce per-column source-domain ranges stated in column meanings.
-These checks do not parse the PPG binary grammar, recompute summaries, or establish URL-backed payload integrity, clinical meaning, or authorization.
+Two SensorKit-specific limits apply on top of that scope: the CSV checks are structural and lexical and do not enforce the per-column source-domain ranges stated in column meanings, and nothing parses the PPG binary grammar.
 
 `native-recording` is strict UTF-8 JSON with an object or array root.
 Byte-order marks, duplicate object member names, non-finite numeric values, scalar roots, malformed UTF-8, and malformed JSON are rejected.
@@ -76,14 +70,14 @@ The R4 SHA-1 Attachment hash is change detection only, not a signature, credenti
 
 ### Exchange Bundles
 
-When resources are exchanged as a graph, the Mobile collection Bundle contract applies: internal references use deterministic `urn:uuid` full URLs, `Resource.id` remains optional/repository-assigned, and all business identifier pairs are complete.
+When resources are exchanged as a graph, the [Mobile exchange graph](https://grovealliance.org/fhir/mobile/observations.html#exchange-graph) contract applies unchanged.
+A SensorKit event carries every output derived from one acquisition-ledger record, including a device-usage summary together with its required native document.
 No receiver capacity, authentication, storage, retention, or transport rule is defined here.
 
 ### Retracting a source record
 
-Emit the dedicated Grove Mobile Retraction Bundle when the producer can establish that a prior SensorKit source record is no longer exposed.
-Its sole source-record-retracted Provenance targets the exact prior structured outputs, artifacts, and device snapshot by complete typed Identifier pairs and only the target roles allowed by the retraction profile.
-Do not copy prior clinical resources or relabel them `entered-in-error`; the receiving deployment defines identifier resolution, repeated and all-or-nothing event handling, retention, and deletion.
+Emit the dedicated Grove Mobile Retraction Bundle when the producer can establish that a prior SensorKit source record is no longer exposed; the [Mobile retraction contract](https://grovealliance.org/fhir/mobile/observations.html#retraction-events) governs its shape, target roles, and meaning.
+The SensorKit trigger is the acquisition-ledger record: one retraction event addresses the structured outputs, source artifacts, and device snapshots emitted under that record's identity.
 
 ### Dependencies and terminology notices
 

@@ -19,11 +19,8 @@ The catalog row for `SRSensor.deviceUsageReport` therefore requires both resourc
 
 ### Output linkage
 
-Both outputs carry the same opaque source-record v0 HMAC identifier.
-SensorKit publishes no durable sample identifier, so the producer atomically assigns and persists an opaque acquisition-record key from a reset generation and monotonic delivery ordinal that continues across callback batches.
-Before yielding, it persists the pending start ordinal/count, ordered keys, verification evidence, and cursor boundary.
-Exact crash retries reuse those pending coordinates even after callback rebatching; byte-equal records at different ordinals remain distinct, and measured content or payload digests never select identity.
-Each output additionally carries its own source-output HMAC.
+Both outputs carry the same opaque source-record v0 HMAC identifier, and each additionally carries its own source-output HMAC.
+SensorKit publishes no durable sample identifier, so the producer assigns that record identity from a durable acquisition ledger; [Durable source identity](implementation.html#durable-source-identity) states the complete pre-yield persistence list and the prohibited identity inputs.
 The `v0:<key-id>:<epoch>:…` forms in the abbreviated examples below are schematic; the complete published examples contain distinct concrete conformance-key values.
 The exact catalog roles and discriminators are length-framed into the HMAC preimage, so Unicode and delimiters are unambiguous and no native acquisition key is disclosed. `Observation.derivedFrom` holds exactly one reference to the document, and `DocumentReference.context.related` points back to exactly the Observation.
 In an exchange Bundle those internal references use the target entries' UUID `fullUrl` values; the standalone examples use their logical example references.
@@ -93,15 +90,7 @@ The following excerpt shows the elements that establish profile conformance, ide
 The payload format identity is `content.format` from the [recording format registry](https://grovealliance.org/fhir/sensor/formats.html) — here `native-recording` — and the `contentType` comes from the [Grove Recording MIME Types](https://grovealliance.org/fhir/sensor/ValueSet-grove-recording-mime-type.html) value set; the caller-encoded bytes are `application/json`. The format code, rather than a custom media type, identifies the Grove wire format.
 The example's JSON members are one producer-defined serialization, not a SensorKit stream schema published by this guide. The source-type code supplies the category and meaning; a generic receiver validates only the UTF-8 object-or-array container and otherwise treats the members as opaque.
 The attachment holds exactly one of embedded `data` or a retrievable `url`, always the required `size` and R4 SHA-1 `hash`, and optionally presentation-only `title`. The hash provides change detection only, never authorization.
-The producer emits the document only after the caller asserts `caller-authorized-opaque-payload` or `verified-sanitized-input`.
-It validates the declared format grammar and derives any grammar-defined summary counts from the accepted payload.
-
-For an inline payload, Grove format validation checks size and hash integrity and, when applicable to the declared format, the generic native-JSON envelope or selected registered CSV grammar.
-The CSV checks are structural and lexical; they do not enforce the source-domain ranges described for individual columns.
-For a URL payload, validation checks the required Attachment metadata but does not fetch or verify the referenced bytes.
-
-These checks do not parse the PPG binary grammar, recompute summaries, reinterpret, sanitize, rewrite, or reserialize payloads.
-They therefore do not establish URL-backed payload integrity, authorization, or obligations outside the selected format grammar.
+The producer emits the document only after the caller asserts `caller-authorized-opaque-payload` or `verified-sanitized-input`, and validates the declared format grammar; [Recording payload admission](implementation.html#recording-payload-admission) states those preconditions and exactly how far Grove format validation reaches.
 
 ### Receiver verification
 

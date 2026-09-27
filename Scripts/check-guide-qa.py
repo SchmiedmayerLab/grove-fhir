@@ -6,7 +6,9 @@ that say its absent terminology client could not validate external codes. Those
 exceptions are deliberately narrower than Publisher suppressions: MIME errors
 must match a generated DocumentReference and the authoritative format registry;
 no-service warnings must match a coding in the generated resource and Grove's
-pinned terminology evidence. The default/online lane remains strict.
+pinned terminology evidence, and a value set's absent-LOINC warning must name an
+include whose every enumerated code is in that evidence. The default/online lane
+remains strict.
 """
 
 # This source file is part of the Grove FHIR open-source project
@@ -72,6 +74,16 @@ FindingCounts = namedtuple(
 )
 
 
+def required_count(qa: object, field: str) -> int:
+    """Require an actual nonnegative Publisher counter, never a coerced value."""
+    if not isinstance(qa, dict):
+        raise ValueError("Publisher QA must be a JSON object")
+    value = qa.get(field)
+    if type(value) is not int or value < 0:
+        raise ValueError(f"Publisher QA {field!r} must be a nonnegative integer")
+    return value
+
+
 def finding_counts(
     qa: dict[str, object],
     exact_suppressions: dict[str, int],
@@ -88,8 +100,11 @@ def finding_counts(
     families.
     """
 
-    publisher_errors = int(qa.get("errs", qa.get("errors", 0)))
-    publisher_unsuppressed_warnings = int(qa.get("warnings", 0))
+    publisher_errors = required_count(qa, "errs" if "errs" in qa else "errors")
+    if "errs" in qa and "errors" in qa:
+        if publisher_errors != required_count(qa, "errors"):
+            raise ValueError("Publisher QA 'errs' and 'errors' counters disagree")
+    publisher_unsuppressed_warnings = required_count(qa, "warnings")
     suppressed_link_errors = sum(
         count
         for message, count in exact_suppressions.items()
@@ -178,6 +193,12 @@ IMPLEMENTATION_LANGUAGE_SYSTEM_PATH = re.compile(
     r"^ImplementationGuide\.language\.system \(l[0-9]+/c[0-9]+\)$"
 )
 
+RESOURCE_LANGUAGE_PATH = re.compile(
+    r"^(?P<resource>Questionnaire|QuestionnaireResponse)\.language \(l[0-9]+/c[0-9]+\)$"
+)
+
+BCP47_LANGUAGE_TAG = re.compile(r"^[A-Za-z]{2,3}(?:-[A-Za-z]{4})?(?:-(?:[A-Za-z]{2}|[0-9]{3}))?$")
+
 IMPLEMENTATION_LANGUAGE_PATH = re.compile(
     r"^ImplementationGuide\.language \(l[0-9]+/c[0-9]+\)$"
 )
@@ -207,8 +228,27 @@ OFFLINE_CODEABLE_CONCEPT_MESSAGE = (
     "CodeableConcept"
 )
 
+VALUE_SET_INCLUDE_PATH = re.compile(
+    r"^ValueSet\.compose\.include\[(?P<index>[0-9]+)\] \(l[0-9]+/c[0-9]+\)$"
+)
+
+ABSENT_CODE_SYSTEM_MESSAGE = re.compile(
+    r"^The value set references CodeSystem '(?P<system>[^']+)' "
+    r"which has status 'not-present'$"
+)
+
+OFFLINE_UNEXPANDABLE_LOINC_MESSAGE = (
+    "A definition for CodeSystem 'http://loinc.org' could not be found, "
+    "so the value set cannot be expanded"
+)
+
 BCP47 = "urn:ietf:bcp:47"
 ISO_IEEE_11073 = "urn:iso:std:iso:11073:10101"
+OFFLINE_BCP47_CONTENT_WARNING = (
+    "Unable to validate code without using server because: Resolved system "
+    "urn:ietf:bcp:47 (v2.0.1), but the definition doesn't include any codes, "
+    "so the code has not been validated"
+)
 
 
 def plain_html(fragment: str) -> str:
@@ -538,7 +578,7 @@ def offline_unknown_code_system_warning_count(guide: Path) -> int:
     """Count exact offline lookup failures for two external system identifiers.
 
     BCP 47 is admitted only for the generated ImplementationGuide's literal
-    English language. ISO/IEEE 11073 is admitted only when the warning points to
+    English language and for a well-formed Questionnaire or response language. ISO/IEEE 11073 is admitted only when the warning points to
     the exact Coding.system and its adjacent code is in the pinned terminology
     excerpt. UCUM is admitted only for the exact Quantity path and a code accepted
     by the pinned UCUM tables. Other systems and contexts remain unsuppressed.
@@ -572,13 +612,38 @@ def offline_unknown_code_system_warning_count(guide: Path) -> int:
             row = WARNING_ROW.fullmatch(raw_row)
             if row is None:
                 continue
+            path = plain_html(row.group("path"))
+            diagnostic = plain_html(row.group("diagnostic"))
+            # The pinned BCP 47 definition can be present without enumerating
+            # language tags. Accept only Publisher's injected, literal English
+            # language and this exact offline diagnostic, never arbitrary codes.
+            if (
+                plain_html(row.group("message")) == OFFLINE_BCP47_CONTENT_WARNING
+                and diagnostic == "TERMINOLOGY_TX_WARNING"
+                and IMPLEMENTATION_LANGUAGE_PATH.fullmatch(path)
+                and resource.get("resourceType") == "ImplementationGuide"
+                and resource.get("language") == "en"
+            ):
+                count += 1
+                continue
+            # The same lookup fails for the required Questionnaire and response language; accept
+            # it only at that root element and only for a well-formed language tag.
+            resource_language = RESOURCE_LANGUAGE_PATH.fullmatch(path)
+            if (
+                plain_html(row.group("message")) == OFFLINE_BCP47_CONTENT_WARNING
+                and diagnostic == "TERMINOLOGY_TX_WARNING"
+                and resource_language is not None
+                and resource.get("resourceType") == resource_language.group("resource")
+                and isinstance(resource.get("language"), str)
+                and BCP47_LANGUAGE_TAG.fullmatch(resource["language"]) is not None
+            ):
+                count += 1
+                continue
             message_match = UNKNOWN_CODE_SYSTEM_MESSAGE.fullmatch(
                 plain_html(row.group("message"))
             )
             if message_match is None:
                 continue
-            path = plain_html(row.group("path"))
-            diagnostic = plain_html(row.group("diagnostic"))
             system = message_match.group("system")
             if system == BCP47:
                 if resource.get("resourceType") != "ImplementationGuide":
@@ -755,6 +820,88 @@ def offline_codeable_concept_warning_count(guide: Path) -> int:
             if codeable_concept_is_ratified(
                 concept, loinc, snomed, ucum, ucum_annotations
             ):
+                count += 1
+    return count
+
+
+def offline_absent_code_system_warning_count(guide: Path) -> int:
+    """Count exact absent-LOINC warnings for value sets that enumerate pinned codes.
+
+    Without a terminology client Publisher cannot load LOINC and reports either the
+    include itself or the whole value set, depending on its package cache. Only
+    includes that enumerate concepts, each active in the pinned evidence, are
+    admitted; a filter, a nested value set or another system is not.
+    """
+
+    qa_html = (guide / "output/qa.html").read_text(encoding="utf-8")
+    if "IG Publisher Version: v2.3.3" not in qa_html:
+        return 0
+    loinc, snomed, ucum, ucum_annotations = terminology_evidence()
+
+    def is_pinned_loinc(include: object) -> bool:
+        if not isinstance(include, dict) or set(include) != {"system", "concept"}:
+            return False
+        concepts = include["concept"]
+        return (
+            include["system"] == LOINC
+            and isinstance(concepts, list)
+            and bool(concepts)
+            and all(
+                isinstance(concept, dict)
+                and isinstance(concept.get("code"), str)
+                and ratified_external_code(
+                    LOINC, concept["code"], loinc, snomed, ucum, ucum_annotations
+                )
+                for concept in concepts
+            )
+        )
+
+    count = 0
+    for section in re.split(r"<h2>", qa_html)[1:]:
+        resource_match = re.match(
+            r'\s*<a href="[^"]+">fsh-generated/resources/'
+            r'(?P<filename>[^<]+)\.json</a>',
+            section,
+        )
+        if resource_match is None:
+            continue
+        resource_path = guide / "output" / f"{resource_match.group('filename')}.json"
+        try:
+            resource = json.loads(resource_path.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            continue
+        if resource.get("resourceType") != "ValueSet":
+            continue
+        compose = resource.get("compose")
+        includes = compose.get("include") if isinstance(compose, dict) else None
+        if not isinstance(includes, list):
+            continue
+        loinc_includes = [
+            include
+            for include in includes
+            if isinstance(include, dict) and include.get("system") == LOINC
+        ]
+        table = section.partition("</table>")[0]
+        for raw_row in re.findall(r"<tr[^>]*>.*?</tr>", table, re.DOTALL):
+            row = WARNING_ROW.fullmatch(raw_row)
+            if row is None or plain_html(row.group("diagnostic")):
+                continue
+            message = plain_html(row.group("message"))
+            path = plain_html(row.group("path"))
+            if message == OFFLINE_UNEXPANDABLE_LOINC_MESSAGE:
+                if (
+                    path == f"ValueSet.where(id = '{resource.get('id')}')"
+                    and loinc_includes
+                    and all(is_pinned_loinc(include) for include in loinc_includes)
+                ):
+                    count += 1
+                continue
+            absent = ABSENT_CODE_SYSTEM_MESSAGE.fullmatch(message)
+            include_path = VALUE_SET_INCLUDE_PATH.fullmatch(path)
+            if absent is None or include_path is None or absent.group("system") != LOINC:
+                continue
+            index = int(include_path.group("index"))
+            if index < len(includes) and is_pinned_loinc(includes[index]):
                 count += 1
     return count
 
@@ -943,8 +1090,14 @@ def main() -> int:
             rows.append((str(guide), None, -1))
             failed = True
             continue
-        qa = json.loads(qa_path.read_text(encoding="utf-8"))
-        hints = int(qa.get("hints", 0))
+        try:
+            qa = json.loads(qa_path.read_text(encoding="utf-8"))
+            hints = required_count(qa, "hints")
+        except (ValueError, OSError) as error:
+            print(f"{guide}: invalid {qa_path}: {error}")
+            rows.append((str(guide), None, -1))
+            failed = True
+            continue
         suppression_problems = validate_suppressions(
             guide, offline_terminology=arguments.offline_terminology
         )
@@ -961,6 +1114,7 @@ def main() -> int:
                 offline_no_service_warning_count(guide)
                 + offline_unknown_code_system_warning_count(guide)
                 + offline_codeable_concept_warning_count(guide)
+                + offline_absent_code_system_warning_count(guide)
                 if arguments.offline_terminology
                 else 0
             )

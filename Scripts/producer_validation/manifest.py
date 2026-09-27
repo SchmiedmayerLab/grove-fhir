@@ -26,13 +26,28 @@ from .io import (
 from .mobile_semantics import validate_mobile_semantic_vectors
 
 
+def describe_key_difference(value: dict[str, Any], expected: set[str]) -> str:
+    """Name the exact fields at fault; a first-time author cannot guess them."""
+    missing = sorted(expected - set(value))
+    unknown = sorted(set(value) - expected)
+    parts = []
+    if missing:
+        parts.append("missing " + ", ".join(missing))
+    if unknown:
+        parts.append("unknown " + ", ".join(unknown))
+    return "; ".join(parts)
+
+
 def validate_manifest(path: Path) -> tuple[dict[str, Any], list[Path]]:
     manifest = read_json(path)
     if not isinstance(manifest, dict):
         raise ProducerValidationError("manifest must be a JSON object")
     require_keys(manifest, TOP_LEVEL_KEYS, "manifest")
     if set(manifest) != TOP_LEVEL_KEYS:
-        raise ProducerValidationError("manifest is missing required fields")
+        raise ProducerValidationError(
+            "manifest fields do not match the contract: "
+            + describe_key_difference(manifest, TOP_LEVEL_KEYS)
+        )
     if manifest["schemaVersion"] != 0 or manifest["fhirVersion"] != "4.0.1":
         raise ProducerValidationError("manifest must declare schemaVersion 0 and FHIR 4.0.1")
 
@@ -55,7 +70,10 @@ def validate_manifest(path: Path) -> tuple[dict[str, Any], list[Path]]:
             raise ProducerValidationError(f"packages[{index}] must be an object")
         require_keys(package, {"alias", "packageId", "version"}, f"packages[{index}]")
         if set(package) != {"alias", "packageId", "version"}:
-            raise ProducerValidationError(f"packages[{index}] is incomplete")
+            raise ProducerValidationError(
+                f"packages[{index}] is incomplete: "
+                + describe_key_difference(package, {"alias", "packageId", "version"})
+            )
         alias = package["alias"]
         package_id = package["packageId"]
         if not isinstance(alias, str) or not PACKAGE_ALIAS.fullmatch(alias):
@@ -89,7 +107,10 @@ def validate_manifest(path: Path) -> tuple[dict[str, Any], list[Path]]:
             raise ProducerValidationError(f"resources[{index}] must be an object")
         require_keys(entry, {"path", "requiredProfiles"}, f"resources[{index}]")
         if set(entry) != {"path", "requiredProfiles"}:
-            raise ProducerValidationError(f"resources[{index}] is incomplete")
+            raise ProducerValidationError(
+                f"resources[{index}] is incomplete: "
+                + describe_key_difference(entry, {"path", "requiredProfiles"})
+            )
         relative = entry["path"]
         if relative in relative_paths:
             raise ProducerValidationError(f"duplicate resource path: {relative}")

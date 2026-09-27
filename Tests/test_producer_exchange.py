@@ -571,6 +571,31 @@ class ProducerExchangeTests(ProducerValidationTestCase):
                 reason="A custom reason must not bypass the registry.",
             )
 
+    def test_every_registered_diagnostic_declares_who_emits_it(self) -> None:
+        """Emitted-implies-registered leaves the other direction open.
+
+        A code registered here but raised nowhere reads as a rule this kit enforces. Some
+        genuinely are the clients' to raise, so each entry says which, and a
+        conformance-kit entry has to appear in the kit's own source.
+        """
+        package = ROOT / "Scripts/producer_validation"
+        source = "".join(
+            path.read_text(encoding="utf-8") for path in sorted(package.glob("*.py"))
+        )
+        for row in context.EXCHANGE_PROTOCOL["producerDiagnostics"]:
+            with self.subTest(code=row["code"]):
+                emitted = f'"{row["code"]}"' in source
+                if row["emittedBy"] == "conformance-kit":
+                    self.assertTrue(
+                        emitted,
+                        f"{row['code']} claims a kit emitter but no kit module raises it",
+                    )
+                else:
+                    self.assertFalse(
+                        emitted,
+                        f"{row['code']} is raised by the kit and must not be client-only",
+                    )
+
     def test_adapter_observation_claims_exactly_semantic_plus_adapter(self) -> None:
         shared = (
             "https://grovealliance.org/fhir/mobile/StructureDefinition/"
@@ -647,7 +672,7 @@ class ProducerExchangeTests(ProducerValidationTestCase):
         healthkit = copy.deepcopy(base)
         healthkit["extension"].append(
             {
-                "url": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-source-type-extension",
+                "url": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-source-type",
                 "valueCode": "HKQuantityTypeIdentifierHeartRate",
             }
         )

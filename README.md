@@ -63,6 +63,7 @@ npm run pages:build
 [Conformance/README.md](Conformance/README.md) documents how a producer validates emitted resources against packages built from the same Grove FHIR revision.
 
 The [publication model](PUBLICATION.md) documents canonical routes, package checksums, and the release process.
+The [naming and versioning conventions](CONVENTIONS.md) state when a persisted identifier may still change and how a client is expected to pin a release.
 
 ## Contributing
 

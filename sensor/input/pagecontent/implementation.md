@@ -14,10 +14,7 @@ It never repeats the inherited Grove Mobile Observation, PHD RTSA, or a core pro
 
 Producer implementations consume [`catalog/sensor-catalog.json`](https://grovealliance.org/fhir/catalog/sensor-catalog.json) and [`catalog/profile-claims.json`](https://grovealliance.org/fhir/catalog/profile-claims.json) as normative machine-readable contracts.
 
-A conformant producer validates supplied bytes against the declared registry grammar before emission and derives grammar-defined summary counts from the accepted payload.
-Grove format validation checks required Attachment metadata for URL-backed content without retrieving the bytes.
-For inline content, it verifies size and hash integrity and, when applicable to the declared format, its registered CSV grammar or defined JSON envelope.
-It does not replace validation of embedded FHIR resources, binary-format validation, semantic review, authorization, or adapter-specific derivation requirements.
+[Recording documents](waveforms.html#recording-documents) state the normative payload preconditions and the exact scope of Grove format validation.
 
 Structured Sensor Observations and Recording Documents use the same auditable conversion graph shape. `grove-sensor-conversion-provenance` identifies the assembler, targets every produced representation, and carries the complete source Identifier as a source entity.
 When resources are exchanged in a Mobile collection Bundle, adapter packages require Provenance targets to be literal UUID-URN references that resolve to entries in that Bundle.

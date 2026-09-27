@@ -62,7 +62,17 @@ def main(argv: list[str] | None = None) -> int:
                 allow_example_urls=arguments.allow_example_urls,
             )
     except ProducerValidationError as error:
-        print(f"Producer conformance failed: {error}", file=sys.stderr)
+        diagnostic = getattr(error, "diagnostic", None)
+        detail = (
+            f" [{diagnostic['code']}] at {diagnostic['location']}" if diagnostic else ""
+        )
+        print(f"Producer conformance failed: {error}{detail}", file=sys.stderr)
         return 1
-    print(f"Validated {len(resources)} producer resource(s) against FHIR R4")
+    if arguments.structural_only:
+        print(
+            f"Validated {len(resources)} producer resource(s) against the Grove structural "
+            "contract; FHIR R4 validation did not run"
+        )
+    else:
+        print(f"Validated {len(resources)} producer resource(s) against FHIR R4")
     return 0

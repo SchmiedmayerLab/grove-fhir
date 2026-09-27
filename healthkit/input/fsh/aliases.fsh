@@ -31,6 +31,5 @@ Alias: $mdc = urn:iso:std:iso:11073:10101
 Alias: $rxnorm = http://www.nlm.nih.gov/research/umls/rxnorm
 Alias: $ucum = http://unitsofmeasure.org
 Alias: $recordingFormat = https://grovealliance.org/fhir/sensor/CodeSystem/grove-recording-format
-Alias: $medicationStatementStatus = http://hl7.org/fhir/CodeSystem/medication-statement-status
 Alias: $visionProduct = http://terminology.hl7.org/CodeSystem/ex-visionprescriptionproduct
 Alias: $dataAbsentReason = http://hl7.org/fhir/StructureDefinition/data-absent-reason

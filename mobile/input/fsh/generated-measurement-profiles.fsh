@@ -78,6 +78,96 @@ Description: "Measurement concepts defined by Grove Mobile for use in its focuse
 * ^experimental = false
 * include codes from system GroveMobileMeasurementCS
 
+ValueSet: GroveMobileMeasurementCodeVS
+Id: grove-mobile-measurement-code
+Title: "Grove Mobile Measurement Code"
+Description: "Every Observation code fixed by a shared Mobile measurement profile, so a receiver can allow-list catalog outputs; an adapter guide lists its own measurement codes in its measurement value set."
+* ^experimental = false
+* GroveMobileMeasurementCS#active-energy-burned
+* GroveMobileMeasurementCS#basal-body-temperature
+* GroveMobileMeasurementCS#basal-energy-burned
+* $loinc#2339-0
+* $loinc#85354-9
+* $loinc#41982-0
+* $loinc#8302-2
+* $loinc#8310-5
+* $loinc#101683-1
+* $loinc#29463-7
+* $loinc#101685-6
+* GroveMobileMeasurementCS#cervical-mucus-quality
+* GroveMobileMeasurementCS#cycling-cadence
+* $loinc#93831-6
+* GroveMobileMeasurementCS#dietary-biotin
+* GroveMobileMeasurementCS#dietary-caffeine
+* GroveMobileMeasurementCS#dietary-calcium
+* $loinc#9060-5
+* GroveMobileMeasurementCS#dietary-chloride
+* GroveMobileMeasurementCS#dietary-cholesterol
+* GroveMobileMeasurementCS#dietary-chromium
+* GroveMobileMeasurementCS#dietary-copper
+* $loinc#9052-2
+* GroveMobileMeasurementCS#dietary-fat-monounsaturated
+* GroveMobileMeasurementCS#dietary-fat-polyunsaturated
+* GroveMobileMeasurementCS#dietary-fat-saturated
+* $loinc#9067-0
+* GroveMobileMeasurementCS#dietary-fiber
+* GroveMobileMeasurementCS#dietary-folate
+* GroveMobileMeasurementCS#dietary-iodine
+* GroveMobileMeasurementCS#dietary-iron
+* GroveMobileMeasurementCS#dietary-magnesium
+* GroveMobileMeasurementCS#dietary-manganese
+* GroveMobileMeasurementCS#dietary-molybdenum
+* GroveMobileMeasurementCS#dietary-niacin
+* GroveMobileMeasurementCS#dietary-pantothenic-acid
+* GroveMobileMeasurementCS#dietary-phosphorus
+* GroveMobileMeasurementCS#dietary-potassium
+* $loinc#9080-3
+* GroveMobileMeasurementCS#dietary-riboflavin
+* GroveMobileMeasurementCS#dietary-selenium
+* GroveMobileMeasurementCS#dietary-sodium
+* GroveMobileMeasurementCS#dietary-sugar
+* GroveMobileMeasurementCS#dietary-thiamin
+* GroveMobileMeasurementCS#dietary-vitamin-a
+* GroveMobileMeasurementCS#dietary-vitamin-b12
+* GroveMobileMeasurementCS#dietary-vitamin-b6
+* GroveMobileMeasurementCS#dietary-vitamin-c
+* GroveMobileMeasurementCS#dietary-vitamin-d
+* GroveMobileMeasurementCS#dietary-vitamin-e
+* GroveMobileMeasurementCS#dietary-vitamin-k
+* GroveMobileMeasurementCS#dietary-zinc
+* $loinc#103208-5
+* GroveMobileMeasurementCS#electrodermal-activity
+* $loinc#100304-5
+* $loinc#8985-4
+* $loinc#8867-4
+* GroveMobileMeasurementCS#heart-rate-variability-rmssd
+* $loinc#112429-6
+* GroveMobileMeasurementCS#intermenstrual-bleeding
+* $loinc#91557-9
+* $loinc#93830-8
+* GroveMobileMeasurementCS#menstruation-flow
+* GroveMobileMeasurementCS#mindfulness-session-duration
+* GroveMobileMeasurementCS#ovulation-test-result
+* $loinc#2708-6
+* $loinc#103209-3
+* GroveMobileMeasurementCS#power
+* $loinc#93829-0
+* $loinc#9279-1
+* $loinc#103217-6
+* $loinc#40443-4
+* GroveMobileMeasurementCS#sexual-activity
+* $loinc#61008-9
+* $loinc#93828-2
+* $loinc#93832-4
+* GroveMobileMeasurementCS#sleep-heart-rate
+* GroveMobileMeasurementCS#sleep-stage
+* GroveMobileMeasurementCS#speed
+* GroveMobileMeasurementCS#step-count-total
+* GroveMobileMeasurementCS#vo2-max
+* $loinc#96502-0
+* GroveMobileMeasurementCS#workout
+* GroveMobileMeasurementCS#workout-segment
+
 CodeSystem: GroveCervicalMucusQualityCS
 Id: grove-cervical-mucus-quality
 Title: "Cervical Mucus Quality Result"
@@ -1623,7 +1713,7 @@ Parent: GroveMobileObservation
 Id: grove-mobile-wheelchair-push-count
 Title: "Wheelchair Push Count"
 Description: "The number of wheelchair pushes recorded during an exact effective Period, using LOINC Number of wheelchair pushes per time period and normalized to the UCUM annotation {pushes}. It is the wheelchair analogue of step-count and never substitutes for it."
-* obeys grove-mobile-wheelchair-push-count-value-domain-1
+* obeys grove-step-count-period-1 and grove-mobile-wheelchair-push-count-value-domain-1
 * code = $loinc#96502-0
 * effective[x] only Period
 * effectivePeriod.end 1..1 MS

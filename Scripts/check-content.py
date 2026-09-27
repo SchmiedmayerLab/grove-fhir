@@ -78,9 +78,11 @@ def scalar_configuration(path: Path) -> dict[str, str]:
     return values
 
 
-def tracked_files() -> list[Path]:
+def source_files() -> list[Path]:
+    """Check the same candidate source before staging locally and after checkout in CI."""
     result = subprocess.run(
-        ["git", "ls-files", "-z"], cwd=ROOT, check=True, capture_output=True
+        ["git", "ls-files", "--cached", "--others", "--exclude-standard", "-z"],
+        cwd=ROOT, check=True, capture_output=True
     )
     paths = [ROOT / item.decode() for item in result.stdout.split(b"\0") if item]
     return [path for path in paths if path.is_file()]
@@ -256,7 +258,8 @@ def main() -> int:
                 f"retired publication path overlaps an active path: {retired!r}"
             )
 
-    for path in tracked_files():
+    files = source_files()
+    for path in files:
         relative = path.relative_to(ROOT)
         if (
             any(
@@ -281,7 +284,7 @@ def main() -> int:
         for failure in failures:
             print(f"- {failure}")
         return 1
-    print(f"Checked {len(GUIDES)} guides and {len(tracked_files())} tracked files")
+    print(f"Checked {len(GUIDES)} guides and {len(files)} source files")
     return 0
 
 

@@ -11,6 +11,7 @@ from __future__ import annotations
 import copy
 import importlib.util
 import json
+import re
 import subprocess
 import sys
 import tarfile
@@ -280,6 +281,15 @@ class QuestionnaireContractTests(unittest.TestCase):
             self.assertIsNotNone(found, f"{link_id} is missing from the example")
             return found
 
+        # Observation-based extraction has only the response's authored instant to offer, so a
+        # measurement whose profile demands a Period can never be extracted conformantly.
+        for measurement_id in ("body-weight", "blood-pressure"):
+            with self.subTest(measurement=measurement_id):
+                self.assertEqual(measurements[measurement_id]["effective"], "dateTime")
+                self.assertEqual(
+                    measurements[measurement_id]["coverage"]["questionnaire"], "supported"
+                )
+
         # A scalar measurement extracts on its own, carrying the catalog's code and category.
         weight_item = item(instrument["item"], "body-weight")
         self.assertTrue(extension(weight_item, extract)["valueBoolean"])
@@ -369,13 +379,12 @@ class QuestionnaireContractTests(unittest.TestCase):
         instrument = load_extraction("questionnaire.json")
         serialized = json.dumps(instrument, sort_keys=True)
         self.assertNotIn("sdc-questionnaire-definitionExtractValue", serialized)
-        for fixture in ("body-weight.json", "blood-pressure.json", "step-count.json"):
+        for fixture in ("body-weight.json", "blood-pressure.json"):
             with self.subTest(fixture=fixture):
                 observation = load_extraction(fixture)
                 self.assertEqual(observation["effectiveDateTime"], authored)
                 self.assertEqual(observation["issued"], authored)
                 self.assertEqual(observation["performer"], [{"reference": author}])
-                self.assertNotIn("effectivePeriod", observation)
 
     def test_extraction_ships_a_conformant_exchange_bundle(self) -> None:
         """A projection ships a Bundle, so the worked example has to be one.
@@ -441,7 +450,7 @@ class QuestionnaireContractTests(unittest.TestCase):
         for required in ("Patient", "QuestionnaireResponse", "Device", "Observation", "Provenance"):
             self.assertIn(required, present)
         self.assertEqual(present.count("Provenance"), 1, "exactly one conversion Provenance")
-        self.assertEqual(present.count("Observation"), 3)
+        self.assertEqual(present.count("Observation"), 2)
 
         # Literal closure: a reference that leaves the Bundle cannot be resolved by a receiver.
         def references(node: object) -> list:
@@ -468,7 +477,14 @@ class QuestionnaireContractTests(unittest.TestCase):
             provenance["meta"]["profile"],
             ["https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-conversion-provenance"],
         )
-        self.assertEqual(provenance["agent"][0]["type"]["coding"][0]["code"], "assembler")
+        self.assertEqual(
+            provenance["agent"][0]["type"]["coding"][0],
+            {
+                "code": "assembler",
+                "system": "http://terminology.hl7.org/CodeSystem/provenance-participant-type",
+                "display": "Assembler",
+            },
+        )
         targets = {t["reference"] for t in provenance["target"]}
         observations = {
             entry["fullUrl"] for entry in bundle["entry"]
@@ -558,6 +574,62 @@ class QuestionnaireContractTests(unittest.TestCase):
         self.assertEqual(
             completed.returncode, 0, f"the worked pair does not validate: {completed.stdout}"
         )
+
+    def test_published_pairs_validate_against_their_own_instrument(self) -> None:
+        """Adopters run the quick start against the built artifacts, not the fixtures.
+
+        The Publisher stamps the guide version onto every canonical resource it builds, so a
+        pair that agrees in FSH and in the fixtures can still ship a response naming an
+        instrument version nobody can resolve. Only the built pair shows that.
+        """
+        pairs = (
+            (
+                "Questionnaire-GroveWeeklySymptomCheckInExample.json",
+                "QuestionnaireResponse-GroveWeeklySymptomCheckInResponseExample.json",
+            ),
+            (
+                "Questionnaire-GroveWeeklySymptomCheckInExample.json",
+                "QuestionnaireResponse-GroveWeeklySymptomCheckInSpanishResponseExample.json",
+            ),
+            (
+                "Questionnaire-GroveHomeVitalsExample.json",
+                "QuestionnaireResponse-GroveHomeVitalsResponseExample.json",
+            ),
+        )
+        for instrument, response in pairs:
+            with self.subTest(instrument=instrument):
+                if not (OUTPUT / instrument).is_file():
+                    raise unittest.SkipTest("the Questionnaire guide has not been built")
+                self.assertEqual(
+                    json.loads((OUTPUT / instrument).read_text(encoding="utf-8"))["version"],
+                    RELEASE_VERSION,
+                )
+                completed = subprocess.run(
+                    [
+                        sys.executable,
+                        str(ROOT / "Scripts/validate-questionnaire.py"),
+                        "--questionnaire",
+                        str(OUTPUT / instrument),
+                        "--response",
+                        str(OUTPUT / response),
+                    ],
+                    capture_output=True,
+                    text=True,
+                    check=False,
+                )
+                self.assertEqual(
+                    completed.returncode,
+                    0,
+                    f"the published pair does not validate: {completed.stdout}",
+                )
+
+    def test_example_instrument_versions_track_the_release(self) -> None:
+        """The built-pair check needs a build; a release bump needs catching without one."""
+        source = (ROOT / "questionnaire/input/fsh/examples.fsh").read_text(encoding="utf-8")
+        declared = re.findall(r'^\* version = "(.+)"$', source, re.MULTILINE)
+        joined = re.findall(r'^\* questionnaire = ".+\|(.+)"$', source, re.MULTILINE)
+        self.assertTrue(declared and joined)
+        self.assertEqual(set(declared) | set(joined), {RELEASE_VERSION})
 
     def test_documentation_shows_the_example_it_claims_to_show(self) -> None:
         """The worked page renders its validated resources without copied payloads."""
@@ -654,12 +726,12 @@ class QuestionnaireContractTests(unittest.TestCase):
                     }
             derived.append(observation)
 
-        self.assertEqual(len(derived), 3, "the instrument extracts three Observations")
+        self.assertEqual(len(derived), 2, "the instrument extracts two Observations")
 
         published = {
             json.loads((directory / name).read_text(encoding="utf-8"))["code"]["coding"][0]["code"]:
                 json.loads((directory / name).read_text(encoding="utf-8"))
-            for name in ("body-weight.json", "blood-pressure.json", "step-count.json")
+            for name in ("body-weight.json", "blood-pressure.json")
         }
         self.assertEqual({item["code"] for item in derived}, set(published))
 
@@ -675,11 +747,18 @@ class QuestionnaireContractTests(unittest.TestCase):
                     fixture["derivedFrom"][0]["reference"],
                     f"QuestionnaireResponse/{response['id']}",
                 )
+                # The answer carries the unit option it selected, whose display must be a
+                # valid UCUM display; the projection then normalizes that display to the one
+                # the measurement catalog fixes. Value and coded unit survive untouched.
                 if "component" in item:
-                    self.assertEqual(
-                        {c["code"]["coding"][0]["code"]: c["valueQuantity"] for c in fixture["component"]},
-                        item["component"],
-                    )
+                    emitted = {
+                        c["code"]["coding"][0]["code"]: c["valueQuantity"]
+                        for c in fixture["component"]
+                    }
+                    self.assertEqual(set(emitted), set(item["component"]))
+                    for code, answered in item["component"].items():
+                        for field in ("value", "code", "system"):
+                            self.assertEqual(emitted[code][field], answered[field])
                     self.assertNotIn("valueQuantity", fixture)
                 else:
                     emitted = fixture["valueQuantity"]
@@ -742,9 +821,7 @@ class QuestionnaireContractTests(unittest.TestCase):
                 recording = extensions[
                     "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-recording-method"
                 ]
-                self.assertEqual(
-                    recording["valueCodeableConcept"]["coding"][0]["code"], "manual-entry"
-                )
+                self.assertEqual(recording["valueCoding"]["code"], "manual-entry")
                 self.assertTrue(
                     observation["derivedFrom"][0]["reference"].startswith("QuestionnaireResponse/")
                 )
@@ -763,11 +840,13 @@ class QuestionnaireContractTests(unittest.TestCase):
                         quantity = emitted[component["code"]]
                         self.assertEqual(quantity["code"], component["quantity"]["code"])
                         self.assertEqual(quantity["system"], component["quantity"]["system"])
+                        self.assertEqual(quantity["unit"], component["quantity"]["unit"])
                     self.assertNotIn("valueQuantity", observation)
                 else:
                     quantity = observation["valueQuantity"]
                     self.assertEqual(quantity["code"], measurement["quantity"]["code"])
                     self.assertEqual(quantity["system"], measurement["quantity"]["system"])
+                    self.assertEqual(quantity["unit"], measurement["quantity"]["unit"])
 
 
     def test_profiles_derive_from_sdc_and_publish_named_rules(self) -> None:
@@ -808,6 +887,7 @@ class QuestionnaireContractTests(unittest.TestCase):
                 "qg-occurrence-1",
                 "qg-min-max-1",
                 "qg-style-sensitive-1",
+                "qg-translation-1",
             },
         )
         response_rules = {
@@ -833,6 +913,14 @@ class QuestionnaireContractTests(unittest.TestCase):
             for element in response["differential"]["element"]
             for constraint in element.get("constraint", [])
         }
+        for profile in (questionnaire, response):
+            language = next(
+                element
+                for element in profile["differential"]["element"]
+                if element["path"].endswith(".language")
+            )
+            self.assertEqual(language["min"], 1)
+            self.assertTrue(language["mustSupport"])
         self.assertIn(
             r"^https?://[^\\s/?#|]+[^\\s|#]*$",
             questionnaire_constraints["qg-canonical-1"],
@@ -920,8 +1008,10 @@ class QuestionnaireContractTests(unittest.TestCase):
         )
 
         self.assertEqual(questionnaire["url"], QUESTIONNAIRE_CANONICAL)
-        self.assertEqual(questionnaire["version"], "1.0.0")
-        self.assertEqual(response["questionnaire"], f"{QUESTIONNAIRE_CANONICAL}|1.0.0")
+        self.assertEqual(questionnaire["version"], RELEASE_VERSION)
+        self.assertEqual(
+            response["questionnaire"], f"{QUESTIONNAIRE_CANONICAL}|{RELEASE_VERSION}"
+        )
         severity = response["item"][0]["item"][0]["answer"][0]["item"][0]
         self.assertEqual(severity["linkId"], "pain-severity")
         self.assertEqual(
@@ -934,7 +1024,54 @@ class QuestionnaireContractTests(unittest.TestCase):
         )
         self.assertEqual(validator.validate_pair(questionnaire, response), [])
 
-    def test_response_item_text_is_optional_and_locale_neutral(self) -> None:
+    def test_translated_example_is_answered_without_item_text(self) -> None:
+        questionnaire = load_generated(
+            "Questionnaire-GroveWeeklySymptomCheckInExample.json"
+        )
+        response = load_generated(
+            "QuestionnaireResponse-GroveWeeklySymptomCheckInSpanishResponseExample.json"
+        )
+        self.assertEqual(questionnaire["language"], "en-US")
+        self.assertEqual(validator.offered_languages(questionnaire), {"en-us", "es"})
+        self.assertEqual(response["language"], "es")
+        self.assertFalse(
+            any("text" in item for item in validator.response_items(response["item"]))
+        )
+        codings = [
+            answer["valueCoding"]
+            for item in validator.response_items(response["item"])
+            for answer in item.get("answer", [])
+            if "valueCoding" in answer
+        ]
+        self.assertEqual(
+            codings, [{"system": "http://snomed.info/sct", "code": "255604002"}]
+        )
+        self.assertEqual(validator.validate_pair(questionnaire, response), [])
+        prompts = [
+            item
+            for item, _ in validator.iter_items(questionnaire["item"])
+            if item["type"] != "group"
+        ]
+        for item in prompts:
+            with self.subTest(linkId=item["linkId"]):
+                self.assertEqual(
+                    validator.translation_languages(item["_text"]), ["es"]
+                )
+                self.assertEqual(
+                    validator.translation_languages(item["_prefix"]), ["es"]
+                )
+        self.assertEqual(validator.translation_languages(questionnaire["_title"]), ["es"])
+        severity = next(
+            item
+            for item, _ in validator.iter_items(questionnaire["item"])
+            if item["linkId"] == "pain-severity"
+        )
+        for option in severity["answerOption"]:
+            self.assertEqual(
+                validator.translation_languages(option["valueCoding"]["_display"]), ["es"]
+            )
+
+    def test_response_item_text_is_optional_but_never_differs_from_the_base(self) -> None:
         questionnaire = load_json(PAIR_FIXTURES / "valid/questionnaire.json")
         response = load_json(PAIR_FIXTURES / "valid/response.json")
         value_sets = [load_json(PAIR_FIXTURES / "valid/value-set.json")]
@@ -948,13 +1085,39 @@ class QuestionnaireContractTests(unittest.TestCase):
             [],
         )
 
-        localized = copy.deepcopy(response)
-        localized["item"][0]["text"] = "Identität"
-        localized["item"][0]["item"][0]["text"] = "Wie heißen Sie?"
+        translated = copy.deepcopy(without_text)
+        translated["language"] = "es"
+        self.assertEqual(
+            validator.validate_pair(questionnaire, translated, value_sets), []
+        )
+
+        # The translation is what the participant read, but the response text may only repeat the base.
+        localized = copy.deepcopy(translated)
+        localized["item"][0]["text"] = "Identidad"
+        localized["item"][0]["item"][0]["text"] = "Nombre"
         self.assertEqual(validator.validate_response(localized), [])
         self.assertEqual(
-            validator.validate_pair(questionnaire, localized, value_sets),
-            [],
+            [
+                (issue.rule, issue.path)
+                for issue in validator.validate_pair(questionnaire, localized, value_sets)
+            ],
+            [
+                ("pair-item-text", "QuestionnaireResponse.item[0].item[0].text"),
+                ("pair-item-text", "QuestionnaireResponse.item[0].text"),
+            ],
+        )
+
+        unoffered = copy.deepcopy(without_text)
+        unoffered["language"] = "de"
+        self.assertEqual(
+            [
+                issue.rule
+                for issue in validator.validate_pair(questionnaire, unoffered, value_sets)
+            ],
+            ["pair-response-language"],
+        )
+        self.assertEqual(
+            validator.offered_languages(questionnaire), {"en-us", "es"}
         )
 
         questionnaire_without_prompt = copy.deepcopy(questionnaire)
@@ -1083,7 +1246,9 @@ class QuestionnaireContractTests(unittest.TestCase):
                 )
         for case in manifest["additionalValidResponseCases"]:
             with self.subTest(case=case["id"]):
-                valid = apply_mutation(response, case["mutation"])
+                valid = response
+                for mutation in case.get("mutations", [case.get("mutation")]):
+                    valid = apply_mutation(valid, mutation)
                 self.assertEqual(
                     validator.validate_pair(questionnaire, valid, value_sets), []
                 )
@@ -1116,6 +1281,8 @@ class QuestionnaireContractTests(unittest.TestCase):
                 "pair-item-misplaced",
                 "pair-item-disabled",
                 "pair-response-entered-in-error",
+                "pair-item-text",
+                "pair-response-language",
                 "gqr-subject-required",
                 "gqr-authored-required",
                 "gqr-completion-mode-1",

@@ -58,11 +58,12 @@ Producer implementations use these files to select profiles, map source data, an
 
 Every catalog row carries one status from a single shared vocabulary; a status never means something different in another guide.
 
-- `supported`: the adapter defines and validates an exact conversion to every listed shared profile.
+- `supported`: the adapter defines and validates an exact conversion to every semantic profile its row lists, whether that profile is shared or adapter-owned.
 - `mapped-standard`: the source is admitted only as the listed source-neutral recording contract; no scalar clinical meaning is asserted.
 - `platform-exclusive`: the source is admitted only through the adapter-specific output contract or contracts listed for its row because no shared clinical mapping represents it fully.
 - `unmodeled`: the source element is inventoried, but no shared or platform-scoped profile models it and no output is admitted.
-- `deferred`: a plausible shared mapping exists, but source evidence or semantics are insufficient for a conformant conversion.
-- `intentionally-unsupported`: the contract deliberately refuses the conversion because any available representation would mislead.
+- `deferred`: the source has related data, but the Grove FHIR contracts admit no output for this meaning yet, because source evidence or semantics are insufficient for a conformant conversion.
+- `intentionally-unsupported`: the contract deliberately refuses the conversion because any available representation would mislead or read as diagnostic.
 
-The per-guide mapping pages state the same tokens with the guide's specifics; the definitions here are the normative ones.
+These definitions are the normative ones and are not restated per guide.
+A guide's mapping page adds only what admission means for its own outputs.

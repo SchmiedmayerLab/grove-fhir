@@ -6,10 +6,9 @@
 # SPDX-License-Identifier: MIT
 #
 
-"""Guards for the conversion-completeness work: what a source provides must reach the output."""
+"""Guide-owned conversion-admission checks; real converter behavior belongs to producer tests."""
 
 import json
-import re
 import unittest
 from pathlib import Path
 
@@ -33,23 +32,3 @@ class NotificationEventsAreConsistentTests(unittest.TestCase):
             if status != "supported"
         )
         self.assertEqual(refused, [], "a screening notification is refused while its peers are not")
-
-
-class RetainedMetadataIsDisjointTests(unittest.TestCase):
-    """The retained set and the modelled set never carry the same key."""
-
-    def test_no_modelled_key_is_also_retained(self) -> None:
-        source = (
-            ROOT / "stack/Grove/Sources/GroveHealthKitFHIR/HealthKitConverter+RetainedMetadata.swift"
-        )
-        if not source.exists():
-            self.skipTest("the Grove implementation is not checked out beside the guides")
-        declared = set(re.findall(r"HKMetadataKey[A-Za-z]+", source.read_text(encoding="utf-8")))
-        used = set()
-        for path in (ROOT / "stack/Grove/Sources/GroveHealthKitFHIR").glob("*.swift"):
-            if path == source:
-                continue
-            used.update(re.findall(r"HKMetadataKey[A-Za-z]+", path.read_text(encoding="utf-8")))
-        # Every key the converter reads elsewhere must be declared modelled, or it would be both
-        # read into an element and retained verbatim, letting the two copies disagree.
-        self.assertEqual(used - declared, set())

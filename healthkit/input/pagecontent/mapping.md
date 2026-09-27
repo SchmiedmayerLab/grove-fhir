@@ -56,7 +56,7 @@ A sample with neither sync field omits writer identity and writer version.
 It still carries mandatory source-record and source-output identities.
 Do not synthesize writer identity: a writer that did not assign one has not promised cross-revision correlation.
 
-The sample-type identifier dispatches converter code and is preserved as exactly one `healthkit-source-type-extension` value.
+The sample-type identifier dispatches converter code and is preserved as exactly one `healthkit-source-type` value.
 This is adapter lineage, not a second expression of the observed clinical concept: `Observation.code` and `DocumentReference.type` retain only codings that actually mean the result or document type.
 
 ### Electrocardiograms
@@ -139,7 +139,7 @@ When HealthKit reports a supported Bluetooth Low Energy source, represent the au
 HMAC-protect it with the deployment-scoped `recording-device` and `device-snapshot` identities defined by the Mobile exchange protocol.
 If native source-actor round-trip requires the clear HealthKit source UUID, disclose it only as a separately governed, system-qualified Identifier under that policy.
 HealthKit does not specify that its UUID is a serial number, a globally stable hardware identity, or stable outside the contexts in which the exact value recurs.
-If the adapter cannot establish whether the source is an application or a device, omit the source-author agent rather than guessing its identity. `HKSourceRevision` does not expose an application-or-device discriminator: do not classify the source from the identifier's string shape, source name, or `productType`.
+If the adapter cannot establish whether the source is an application or a device, omit the writer agent rather than guessing its identity. `HKSourceRevision` does not expose an application-or-device discriminator: do not classify the source from the identifier's string shape, source name, or `productType`.
 A producer therefore needs explicit source actor classification from its caller or adapter context before it emits this author Device.
 The classification is the only caller-supplied part: the author name, identifier, and version are copied from that same sample's `HKSourceRevision` and must not be replaced with independently supplied identity data.
 The [Bluetooth heart-rate example](Observation-HealthKitBluetoothHeartRateObservationExample.html) and its [source Provenance](Provenance-HealthKitBluetoothSourceProvenanceExample.html) show this explicit governed branch without treating the source identifier as a serial number.

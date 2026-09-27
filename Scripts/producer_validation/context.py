@@ -9,6 +9,7 @@
 from __future__ import annotations
 
 import json
+import os
 import re
 from pathlib import Path
 
@@ -71,11 +72,21 @@ TOP_LEVEL_KEYS = {
 }
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 CATALOG_ROOT = REPOSITORY_ROOT / "catalog"
-FHIR_TOOL_HOME = REPOSITORY_ROOT / ".build" / "fhir-home"
+# The seeding scripts all write to ${GROVE_FHIR_HOME_OVERRIDE:-.build/fhir-home}; reading the
+# same variable here keeps one configuration value with one home.
+FHIR_TOOL_HOME = Path(
+    os.environ.get("GROVE_FHIR_HOME_OVERRIDE") or REPOSITORY_ROOT / ".build" / "fhir-home"
+)
 EXCHANGE_PROTOCOL = json.loads(
     (CATALOG_ROOT / "exchange-protocol.json").read_text(encoding="utf-8")
 )
 WRITER_RECORD_VERSION_EXTENSION = EXCHANGE_PROTOCOL["extensions"]["writerRecordVersion"]
+RETRACTION_NATIVE_RECORD_IDENTIFIER_EXTENSION = EXCHANGE_PROTOCOL["extensions"][
+    "retractionTargetNativeIdentifier"
+]
+RETRACTION_NATIVE_RECORD_IDENTIFIER = EXCHANGE_PROTOCOL["lifecycle"]["retraction"][
+    "nativeRecordIdentifier"
+]
 ACTIVE_ENTRY_POLICY = EXCHANGE_PROTOCOL["lifecycle"]["active"]["entryResourcePolicy"]
 ACTIVE_OUTPUT_RESOURCE_TYPES = frozenset(ACTIVE_ENTRY_POLICY["outputResourceTypes"])
 ACTIVE_SUPPORTING_RESOURCE_TYPES = frozenset(
@@ -152,7 +163,13 @@ HEALTHKIT_ECG_PROFILE = HEALTHKIT_PROFILE_PREFIX + "healthkit-ecg-observation"
 HEALTHKIT_ECG_AVERAGE_HEART_RATE_PROFILE = (
     HEALTHKIT_PROFILE_PREFIX + "healthkit-ecg-average-heart-rate-observation"
 )
-SAMPLED_DECIMAL = re.compile(r"-?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?")
+SAMPLED_DATA_SEPARATOR = " "
+_SAMPLED_DECIMAL = r"-?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?"
+# The same sequence the sensor-inline-data-1 invariant states: exactly one space between
+# values. Folding runs of whitespace here would admit output the official Validator rejects.
+SAMPLED_DATA_SEQUENCE = re.compile(
+    rf"^{_SAMPLED_DECIMAL}(?:{SAMPLED_DATA_SEPARATOR}{_SAMPLED_DECIMAL})*$"
+)
 FHIR_INSTANT = re.compile(
     r"^(?P<date>[0-9]{4}-[0-9]{2}-[0-9]{2})T"
     r"(?P<time>[0-9]{2}:[0-9]{2}:[0-9]{2})"

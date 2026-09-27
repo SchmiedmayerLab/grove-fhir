@@ -147,7 +147,7 @@ class CatalogContractSchemaTests(unittest.TestCase):
                 ("providerExtension",),
                 ("recordingDocument",),
                 ("rawPayloadAdmission",),
-                ("statusDefinitions",),
+                ("statusVocabulary",),
                 ("sourceEvidence",),
                 ("sourceEvidence", "providers", 0),
                 ("providers", 0),
@@ -173,7 +173,7 @@ class CatalogContractSchemaTests(unittest.TestCase):
             "catalog/sensorkit-adapter.json": (
                 (),
                 ("sourceTypeExtension",),
-                ("statusDefinitions",),
+                ("statusVocabulary",),
                 ("sourceEvidence",),
                 ("sourceEvidence", "sdkBaseline"),
                 ("inventoryScopes",),

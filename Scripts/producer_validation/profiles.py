@@ -546,8 +546,10 @@ def validate_adapter_source_marker_claim(resource: dict[str, Any], label: str) -
         (has_sensorkit_marker, sensorkit_profiles, "SensorKit"),
     ):
         if present and not profile_set & admitted:
-            raise ProducerValidationError(
-                f"{label} carries a {name} source marker without an exact {name} adapter profile"
+            raise contract_failure(
+                "mobile-output.adapter-source-marker",
+                "Observation.extension",
+                f"{label} carries a {name} source marker without an exact {name} adapter profile",
             )
 
 def validate_active_adapter_package_claims(
@@ -646,7 +648,9 @@ def validate_adapter_conversion_provenance(
         )
     identifier = what.get("identifier")
     _, value = complete_identifier(identifier, f"{label} source entity")
-    if identifier_role(identifier, f"{label} source entity") != "source-record":
+    if identifier_role(
+        identifier, f"{label} source entity", "Provenance.entity[0].what.identifier"
+    ) != "source-record":
         raise ProducerValidationError(
             f"{label} source entity must carry the source-record role"
         )
@@ -655,10 +659,14 @@ def validate_adapter_conversion_provenance(
             f"{label} source entity must use a canonical Grove v0 HMAC identity"
         )
     if claim["adapter"] == "health-connect":
+        rule = "health-connect-provenance.data-origin-agent"
+        location = "Provenance.entity[0].agent"
         agents = entity.get("agent")
         if not isinstance(agents, list) or len(agents) != 1:
-            raise ProducerValidationError(
-                f"{label} Health Connect source entity must carry exactly one enterer agent"
+            raise contract_failure(
+                rule,
+                location,
+                f"{label} Health Connect source entity must carry exactly one enterer agent",
             )
         agent = agents[0]
         who = agent.get("who") if isinstance(agent, dict) else None
@@ -676,19 +684,28 @@ def validate_adapter_conversion_provenance(
             or "resource" in who
             or who.get("type") != "Device"
         ):
-            raise ProducerValidationError(
-                f"{label} Health Connect DataOrigin must be an identifier-only Device Reference"
+            raise contract_failure(
+                rule,
+                f"{location}[0].who",
+                f"{label} Health Connect DataOrigin must be an identifier-only Device Reference",
             )
-        system, package_name = complete_identifier(
-            who.get("identifier"), f"{label} Health Connect DataOrigin"
-        )
+        try:
+            system, package_name = complete_identifier(
+                who.get("identifier"), f"{label} Health Connect DataOrigin"
+            )
+        except ProducerValidationError as error:
+            raise contract_failure(
+                rule, f"{location}[0].who.identifier", str(error)
+            ) from error
         if (
             system
             != "https://grovealliance.org/fhir/health-connect/NamingSystem/android-package-name"
             or not package_name.strip()
         ):
-            raise ProducerValidationError(
-                f"{label} Health Connect DataOrigin must carry its non-blank Android package name"
+            raise contract_failure(
+                rule,
+                f"{location}[0].who.identifier",
+                f"{label} Health Connect DataOrigin must carry its non-blank Android package name",
             )
 
 def validate_recording_format(resource: dict[str, Any], label: str) -> None:
@@ -702,40 +719,54 @@ def validate_recording_format(resource: dict[str, Any], label: str) -> None:
         raise ProducerValidationError(f"{label} recording document has no content")
     declared_codes: list[str] = []
     for index, content in enumerate(contents):
+        rule = "sensor-recording-document.format"
+        format_location = f"DocumentReference.content[{index}].format"
         format_coding = content.get("format") if isinstance(content, dict) else None
         if not isinstance(format_coding, dict):
-            raise ProducerValidationError(
-                f"{label} content[{index}] declares no registry payload format"
+            raise contract_failure(
+                rule,
+                format_location,
+                f"{label} content[{index}] declares no registry payload format",
             )
         if format_coding.get("system") != registry["codeSystem"]:
-            raise ProducerValidationError(
+            raise contract_failure(
+                rule,
+                f"{format_location}.system",
                 f"{label} content[{index}] format system is not the Grove "
-                "recording-format registry"
+                "recording-format registry",
             )
         code = format_coding.get("code")
         entry = formats.get(code) if isinstance(code, str) else None
         if entry is None:
-            raise ProducerValidationError(
-                f"{label} content[{index}] declares unregistered format {code!r}"
+            raise contract_failure(
+                rule,
+                f"{format_location}.code",
+                f"{label} content[{index}] declares unregistered format {code!r}",
             )
         # The stable format CodeSystem and code identify the wire contract. Coupling
         # each stored payload to an IG release through Coding.version adds no semantic
         # information and makes otherwise stable formats churn with package releases.
         if "version" in format_coding:
-            raise ProducerValidationError(
-                f"{label} content[{index}] format must omit release-coupled Coding.version"
+            raise contract_failure(
+                rule,
+                f"{format_location}.version",
+                f"{label} content[{index}] format must omit release-coupled Coding.version",
             )
         attachment = content.get("attachment")
         content_type = attachment.get("contentType") if isinstance(attachment, dict) else None
         admitted_content_types = entry.get("contentTypes", [entry.get("contentType")])
         if content_type not in admitted_content_types:
             rendered_content_types = ", ".join(admitted_content_types)
-            raise ProducerValidationError(
+            raise contract_failure(
+                rule,
+                f"DocumentReference.content[{index}].attachment.contentType",
                 f"{label} content[{index}] contentType {content_type!r} does not "
-                f"match registry format {code} ({rendered_content_types})"
+                f"match registry format {code} ({rendered_content_types})",
             )
         validate_recording_attachment(
-            attachment, f"{label}.content[{index}].attachment"
+            attachment,
+            f"{label}.content[{index}].attachment",
+            f"DocumentReference.content[{index}].attachment",
         )
         validate_inline_recording_payload(
             attachment,

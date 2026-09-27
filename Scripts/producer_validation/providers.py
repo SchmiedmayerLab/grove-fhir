@@ -11,7 +11,7 @@ from __future__ import annotations
 from typing import Any
 
 from .context import CATALOG_ROOT, MEASUREMENT_BY_PROFILE
-from .diagnostics import ProducerValidationError
+from .diagnostics import ProducerValidationError, contract_failure
 from .identity import typed_resource_identifiers
 from .io import read_json
 
@@ -85,8 +85,10 @@ def validate_provider_identity(resource: dict[str, Any], label: str) -> None:
         if isinstance(item, dict) and item.get("url") == source_type_url
     ] if isinstance(extensions, list) else []
     if len(source_types) != 1 or not isinstance(source_types[0], str):
-        raise ProducerValidationError(
-            f"{label} must carry exactly one coded Provider source type"
+        raise contract_failure(
+            "mobile-output.adapter-source-marker",
+            "Observation.extension",
+            f"{label} must carry exactly one coded Provider source type",
         )
     provider = next(item for item in catalog["providers"] if item["id"] == providers[0])
     ordinary = {

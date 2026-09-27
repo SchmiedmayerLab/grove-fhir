@@ -3,21 +3,43 @@
 Grove FHIR validates its own R4 packages, examples, and negative corpora.
 A producer repository validates the resources emitted by its real public API.
 The dependency is one-way: this repository never checks out, patches, or executes producer code.
+Tests of conversion behavior belong in the producer's own test target, not in optional
+source scans of a sibling checkout. For example, Grove's `GroveHealthKitFHIRTests`
+checks typed metadata, withheld unmodeled values, and writer-scoped sync identity
+using actual conversions and serialized Bundles. The IG checks the corresponding
+catalogs, profiles and emitted conformance resources independently.
 
 A producer manifest binds emitted files to the Grove FHIR package identities and profiles they claim.
 During development, build or download all required packages from one exact Grove FHIR source revision and keep the manifest package versions synchronized.
 Release evidence binds package checksums to that revision; implementations should pin the exact source revision or published release from which their packages were built.
 
+The fastest first green run needs no downloads at all: the structural layer runs against the example producer in seconds.
+
 ```sh
 python3 Scripts/validate-producer.py \
-  --manifest path/to/grove-fhir-producer.json \
-  --validator path/to/validator_cli.jar \
-  --package mobile=path/to/org.grovealliance.fhir.mobile-<version>.tgz \
-  --package healthkit=path/to/org.grovealliance.fhir.healthkit-<version>.tgz
+  --manifest Conformance/example-producer/manifest.json \
+  --structural-only
 ```
 
+`npm run producer-kit:check` is the same command.
+Structural success is not FHIR conformance; it reports only that the graph, identity, and profile-claim rules hold.
+
+The full lane needs the pinned Validator and the exact packages, and both come from this repository.
+`Scripts/download-fhir-tools.sh .build/fhir-tools` seeds `.build/fhir-home` with the checksum-pinned Validator the release manifest names, and `Scripts/build-guides.sh mobile questionnaire` writes each `<guide>/output/package.tgz`.
+
+```sh
+python3 Scripts/validate-producer.py \
+  --manifest Conformance/example-producer/manifest.json \
+  --validator .build/fhir-tools/validator_cli.jar \
+  --package mobile=mobile/output/package.tgz \
+  --package questionnaire=questionnaire/output/package.tgz \
+  --allow-example-urls
+```
+
+Use the exact Validator version `toolchain.fhirValidator` pins in `catalog/release-manifest.json`; a different build can pass or fail where the release evidence does not.
+
 Real producer output fails official validation when it uses reserved example.org URLs.
-Demonstration fixtures may opt in explicitly with `--allow-example-urls`; the repository's example producer uses that flag in CI, while the default remains fail closed.
+Demonstration fixtures may opt in explicitly with `--allow-example-urls`, which is why the command above carries it and why CI does too; a real producer omits it and the default remains fail closed.
 
 The command verifies the manifest and package metadata, ensures each emitted resource declares its required profiles, and invokes the official HL7 FHIR Validator offline.
 The producer remains responsible for generating the files before this command runs.
@@ -28,10 +50,37 @@ The JSON Schema is useful for editor integration; `validate-producer.py` applies
 `Conformance/corpora/mobile-exchange/official-validator-manifest.json` is the release lane manifest.
 It sends both normative positive bases—the active conversion event and the retraction assertion—through the exact Mobile package and official Validator.
 
+## Every committed fixture
+
+`Conformance/fixture-validator-manifest.json` is the all-fixtures lane.
+A guide's own worked examples are validated by the IG Publisher during its build and audited by `Scripts/check-guide-qa.py`; the fixtures under `Conformance/` and `questionnaire/fixtures/` are the ones no guide build ever sees.
+The QA audit requires explicit nonnegative integer error, warning and hint counts; missing or malformed counts are not evidence of a clean build.
+
+```sh
+python3 Scripts/validate-fixtures.py \
+  --validator .build/fhir-tools/validator_cli.jar \
+  --package mobile=mobile/output/package.tgz \
+  --package questionnaire=questionnaire/output/package.tgz
+```
+
+Every JSON file beneath the declared roots is either validated here or excluded with a stated reason, so a fixture cannot be added without being classified.
+`python3 Scripts/validate-fixtures.py --coverage-only` checks that classification alone and needs neither Java nor a built package.
+`Conformance/corpora/mobile-profile-invariants` is the negative corpus of that lane: one heart-rate Observation per way a Mobile Observation can breach a `GroveMobileObservationRules` invariant or the `dataAbsentReason` binding, named in the manifest's `negativeCorpora`.
+The lane requires the control to pass and each case to fail for exactly the invariant key or value set its `corpus.json` declares, so a rule dropped from the base profile fails here instead of only in a guide build.
+
 ## Positive and negative corpus
+
+`Conformance/corpora/receiver-lifecycle` adds delivery sequences over pinned, immutable event fixtures.
+It covers exact/conflicting replay, writer-ordered corrections in both delivery orders, unordered conflict, logical-reference resolution and retraction before/after its target.
+Its declared receiver policy and step-by-step expectations are separate from FHIR validity; receiver implementations must prove their own authorization, transaction and restart behavior.
+See [Receiver Lifecycle Sequences](corpora/receiver-lifecycle/README.md) for the harness contract and validation boundaries.
+
+The [multi-study attribution corpus](corpora/study-attribution/README.md) complements those sequences with exact protocol references, late receiver-owned association and isolated withdrawal.
+Its derived exports deliberately have new identities and omit the other study's membership; profile-valid policy counterexamples remain in the official fixture lane.
 
 `Conformance/corpora/mobile-exchange` is the normative producer corpus for the Mobile exchange graph.
 Its positive bases cover both one immutable conversion event and one dedicated source-record retraction event.
+The retraction base also carries the optional native record identifier on its target, so a producer can see the exact shape of the disclosure the addition path's governed-source-identifier policy also governs.
 The active Bundle is byte-for-byte equal to the example producer Bundle.
 Every negative case applies exactly one RFC 6902 JSON Patch operation and names the one rule it is intended to violate.
 
@@ -41,6 +90,17 @@ A producer manifest binds one generated Observation to every shared Mobile meani
 The producer validator resolves the declared JSON Pointer and compares the exact normalized clinical projection to the versioned vector.
 Equal offset-bearing FHIR instants are normalized without losing fractional precision before comparison, so a producer retains a real source offset when available and uses UTC when its source API supplies only an instant; it never invents an offset to match a fixture.
 Swift, Kotlin, and TypeScript repositories therefore generate these fixtures in their own CI; Grove FHIR still never executes their implementations.
+
+A response-sourced producer binds vectors through the same mechanism.
+An Observation projected from a QuestionnaireResponse carries no adapter context, so it binds the bare source-neutral clinical projection the `comparisonRule` already accepts; its admitted additions are the `questionnaire.default` source-context rule, which the measurement catalog projects onto every measurement whose questionnaire coverage is `supported`.
+
+`producerDiagnostics` in `catalog/exchange-protocol.json` is the shared rule-code registry, and the two sides of the contract do not raise the same subset.
+Each entry says which side does: an `emittedBy` of `conformance-kit` means this repository's validator raises it, and `client` means the rule is stated here but enforced in the producer SDKs, whose own source fixtures can see what an output-only manifest cannot.
+A code is never registered without an owner, so an unimplemented rule cannot pass for an enforced one.
+Namespaces ending in `-input` register the reasons a producer refuses a source record before any graph exists; every refusal a producer reports carries exactly one of them, with `mobile-input.unclassified` as the fallback for a reason no more specific rule names.
+One code stands for one countable reason, and the producer's typed failure carries the detail; a deployment fault such as an invalid converter application or identity scope is not a rule, because no record can cause it.
+Namespaces ending in `-omission` register what a producer left out of a record it accepted: every such row carries `severity: warning`, the graph stays valid, and an omission a disclosure policy chose is never reported.
+A row without `severity` is an error.
 
 The structural conformance kit rejects graph, closed-reference, deterministic-identity, exact summary-cardinality, and adapter source-context failures without needing an implementation guide build.
 FHIR element cardinality and terminology validation remain the official HL7 FHIR Validator's responsibility with the exact packages selected by the producer manifest.

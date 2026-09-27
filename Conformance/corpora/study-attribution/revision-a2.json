@@ -1,0 +1,38 @@
+{
+  "resourceType": "Bundle",
+  "type": "collection",
+  "id": "StudyARevision2Example",
+  "entry": [
+    {
+      "fullUrl": "https://receiver.example.org/PlanDefinition/a-r2",
+      "resource": {
+        "resourceType": "PlanDefinition",
+        "id": "a-r2",
+        "url": "https://study.example.org/PlanDefinition/a",
+        "version": "2",
+        "status": "active",
+        "title": "Study A Protocol"
+      }
+    },
+    {
+      "fullUrl": "https://receiver.example.org/ResearchStudy/a-r2",
+      "resource": {
+        "resourceType": "ResearchStudy",
+        "id": "a-r2",
+        "status": "active",
+        "title": "Study A",
+        "identifier": [
+          {
+            "system": "https://study.example.org/studies",
+            "value": "a"
+          }
+        ],
+        "protocol": [
+          {
+            "reference": "https://receiver.example.org/PlanDefinition/a-r2"
+          }
+        ]
+      }
+    }
+  ]
+}

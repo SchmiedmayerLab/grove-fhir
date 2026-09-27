@@ -36,7 +36,8 @@ Versionless aliases are previews, not canonical resource URLs and not immutable 
 
 ## Release-candidate evidence
 
-`Scripts/build-release.sh` performs an explicit two-phase release-candidate build for all ten guides from one clean checked-out revision.
+`Scripts/build-release.sh` is the local mirror of the release-candidate build: it performs an explicit two-phase build for all ten guides from one clean checked-out revision.
+The Deployment workflow reimplements the same two phases inline rather than calling the script, and it omits the script's `npm run inventory:check` step; `Tests/test_release_pipeline.py` holds the two lanes to the same steps.
 The first phase is network-enabled and bootstraps the integrity-locked npm and Bundler closures plus the SHA-256-pinned Publisher, Validator, template, and external FHIR package archives.
 The second phase reconstructs or verifies each closure with `npm ci --offline`, `bundle install --local`, and `download-fhir-tools.sh --offline`, then runs Publisher with `-tx n/a -no-network`.
 A missing or altered bootstrap input fails the second phase; it cannot be downloaded on demand.

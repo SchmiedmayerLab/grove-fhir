@@ -4,14 +4,14 @@
   "fhirVersion": "4.0.1",
   "version": "0.6.0",
   "canonicalRoot": "https://grovealliance.org/fhir/mobile/StructureDefinition",
-  "statusVocabulary": [
-    "supported",
-    "mapped-standard",
-    "platform-exclusive",
-    "unmodeled",
-    "deferred",
-    "intentionally-unsupported"
-  ],
+  "statusVocabulary": {
+    "supported": "The named adapter emits and validates this exact catalog semantic profile under the Grove FHIR contracts.",
+    "mapped-standard": "Related source data is admitted only in the coverageDetails alternate representation. It does not implement or claim this Mobile profile.",
+    "platform-exclusive": "The source meaning is admitted only by a platform-exclusive owner profile and does not implement a shared Mobile profile.",
+    "unmodeled": "The source element is inventoried by its adapter, but nothing models this Mobile meaning and no output is admitted.",
+    "deferred": "The source has related data, but the Grove FHIR contracts admit no output for this Mobile meaning.",
+    "intentionally-unsupported": "The source has no semantically exact mapping to this Mobile meaning under the Grove FHIR contracts."
+  },
   "sources": [
     {
       "id": "healthkit",
@@ -45,16 +45,13 @@
       "kind": "provider",
       "ownerAdapter": "providers",
       "catalog": "catalog/providers-adapter.json"
+    },
+    {
+      "id": "questionnaire",
+      "kind": "instrument",
+      "guide": "questionnaire"
     }
   ],
-  "statusDefinitions": {
-    "supported": "The named adapter emits and validates this exact catalog semantic profile under the Grove FHIR contracts.",
-    "mapped-standard": "Related source data is admitted only in the coverageDetails alternate representation. It does not implement or claim this Mobile profile.",
-    "platform-exclusive": "The source meaning is admitted only by a platform-exclusive owner profile and does not implement a shared Mobile profile.",
-    "unmodeled": "The source element is inventoried by its adapter, but nothing models this Mobile meaning and no output is admitted.",
-    "deferred": "The source has related data, but the Grove FHIR contracts admit no output for this Mobile meaning.",
-    "intentionally-unsupported": "The source has no semantically exact mapping to this Mobile meaning under the Grove FHIR contracts."
-  },
   "effectiveCanonicalization": {
     "scope": "Every Mobile scalar or aggregate effectiveDateTime and effectivePeriod endpoint; Sensor and ECG SampledData timing is excluded.",
     "precision": "millisecond",
@@ -97,7 +94,8 @@
         "sensorkit": "intentionally-unsupported",
         "google-health-api": "supported",
         "oura": "supported",
-        "withings": "supported"
+        "withings": "supported",
+        "questionnaire": "deferred"
       }
     },
     {
@@ -133,7 +131,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -169,7 +168,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -215,7 +215,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -251,7 +252,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -294,7 +296,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -322,7 +325,8 @@
         "healthkit": "supported",
         "oura": "unmodeled",
         "sensorkit": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       },
       "components": [
         {
@@ -645,7 +649,8 @@
         "sensorkit": "intentionally-unsupported",
         "google-health-api": "intentionally-unsupported",
         "oura": "intentionally-unsupported",
-        "withings": "intentionally-unsupported"
+        "withings": "intentionally-unsupported",
+        "questionnaire": "supported"
       }
     },
     {
@@ -682,7 +687,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "supported",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "deferred"
       }
     },
     {
@@ -720,7 +726,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -771,7 +778,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -808,7 +816,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -872,7 +881,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -936,7 +946,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -975,7 +986,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -1013,7 +1025,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "supported",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "supported"
       }
     },
     {
@@ -1077,7 +1090,8 @@
         "sensorkit": "intentionally-unsupported",
         "google-health-api": "intentionally-unsupported",
         "oura": "intentionally-unsupported",
-        "withings": "supported"
+        "withings": "supported",
+        "questionnaire": "supported"
       }
     },
     {
@@ -1158,7 +1172,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -1193,7 +1208,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "supported"
+        "withings": "supported",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -1230,7 +1246,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "supported",
         "oura": "unmodeled",
-        "withings": "supported"
+        "withings": "supported",
+        "questionnaire": "supported"
       }
     },
     {
@@ -1268,7 +1285,8 @@
         "sensorkit": "intentionally-unsupported",
         "google-health-api": "supported",
         "oura": "intentionally-unsupported",
-        "withings": "supported"
+        "withings": "supported",
+        "questionnaire": "supported"
       }
     },
     {
@@ -1306,7 +1324,8 @@
         "sensorkit": "deferred",
         "google-health-api": "supported",
         "oura": "intentionally-unsupported",
-        "withings": "supported"
+        "withings": "supported",
+        "questionnaire": "supported"
       }
     },
     {
@@ -1340,7 +1359,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "supported"
+        "withings": "supported",
+        "questionnaire": "supported"
       }
     },
     {
@@ -1378,7 +1398,8 @@
         "sensorkit": "intentionally-unsupported",
         "google-health-api": "supported",
         "oura": "intentionally-unsupported",
-        "withings": "supported"
+        "withings": "supported",
+        "questionnaire": "supported"
       }
     },
     {
@@ -1412,7 +1433,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "supported"
+        "withings": "supported",
+        "questionnaire": "supported"
       }
     },
     {
@@ -1516,7 +1538,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "supported"
       }
     },
     {
@@ -1591,7 +1614,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -1626,7 +1650,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "platform-exclusive"
+        "withings": "platform-exclusive",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -1661,7 +1686,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "supported"
       }
     },
     {
@@ -1699,7 +1725,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -1726,7 +1753,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       },
       "example": "1985-04-12"
     },
@@ -1765,7 +1793,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "supported",
         "oura": "supported",
-        "withings": "supported"
+        "withings": "supported",
+        "questionnaire": "deferred"
       }
     },
     {
@@ -1800,7 +1829,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "deferred"
       }
     },
     {
@@ -1835,7 +1865,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "deferred"
       }
     },
     {
@@ -1870,7 +1901,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "deferred"
       }
     },
     {
@@ -1904,7 +1936,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "deferred"
       }
     },
     {
@@ -1939,7 +1972,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "deferred"
       }
     },
     {
@@ -1974,7 +2008,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "deferred"
       }
     },
     {
@@ -2009,7 +2044,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "deferred"
       }
     },
     {
@@ -2044,7 +2080,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "deferred"
       }
     },
     {
@@ -2080,7 +2117,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "deferred"
       }
     },
     {
@@ -2118,7 +2156,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -2153,7 +2192,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "deferred"
       }
     },
     {
@@ -2188,7 +2228,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "deferred"
       }
     },
     {
@@ -2223,7 +2264,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "deferred"
       }
     },
     {
@@ -2257,7 +2299,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "deferred"
       }
     },
     {
@@ -2293,7 +2336,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -2329,7 +2373,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -2364,7 +2409,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "deferred"
       }
     },
     {
@@ -2399,7 +2445,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "deferred"
       }
     },
     {
@@ -2435,7 +2482,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -2470,7 +2518,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "deferred"
       }
     },
     {
@@ -2505,7 +2554,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "deferred"
       }
     },
     {
@@ -2540,7 +2590,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "deferred"
       }
     },
     {
@@ -2575,7 +2626,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "deferred"
       }
     },
     {
@@ -2610,7 +2662,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "deferred"
       }
     },
     {
@@ -2645,7 +2698,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "deferred"
       }
     },
     {
@@ -2680,7 +2734,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "deferred"
       }
     },
     {
@@ -2715,7 +2770,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "deferred"
       }
     },
     {
@@ -2750,7 +2806,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "deferred"
       }
     },
     {
@@ -2784,7 +2841,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "deferred"
       }
     },
     {
@@ -2819,7 +2877,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "deferred"
       }
     },
     {
@@ -2854,7 +2913,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "deferred"
       }
     },
     {
@@ -2889,7 +2949,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "deferred"
       }
     },
     {
@@ -2924,7 +2985,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "deferred"
       }
     },
     {
@@ -2959,7 +3021,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "deferred"
       }
     },
     {
@@ -2994,7 +3057,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "deferred"
       }
     },
     {
@@ -3029,7 +3093,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "deferred"
       }
     },
     {
@@ -3064,7 +3129,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "deferred"
       }
     },
     {
@@ -3099,7 +3165,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "deferred"
       }
     },
     {
@@ -3134,7 +3201,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "deferred"
       }
     },
     {
@@ -3169,7 +3237,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "deferred"
       }
     },
     {
@@ -3204,7 +3273,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "deferred"
       }
     },
     {
@@ -3239,7 +3309,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "deferred"
       }
     },
     {
@@ -3272,7 +3343,8 @@
         "sensorkit": "mapped-standard",
         "google-health-api": "supported",
         "oura": "supported",
-        "withings": "supported"
+        "withings": "supported",
+        "questionnaire": "deferred"
       },
       "coverageDetails": {
         "sensorkit": {
@@ -3319,7 +3391,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "supported"
+        "withings": "supported",
+        "questionnaire": "supported"
       }
     },
     {
@@ -3355,7 +3428,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -3393,7 +3467,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -3433,7 +3508,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -3471,7 +3547,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -3507,7 +3584,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "supported"
+        "withings": "supported",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -3576,7 +3654,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -3612,7 +3691,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "supported",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "deferred"
       }
     },
     {
@@ -3646,7 +3726,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "deferred"
       }
     },
     {
@@ -3673,7 +3754,8 @@
         "healthkit": "supported",
         "oura": "unmodeled",
         "sensorkit": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       },
       "owner": "healthkit",
       "exampleMembers": [
@@ -3712,7 +3794,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -3747,7 +3830,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -3780,7 +3864,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -3816,7 +3901,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -3854,7 +3940,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -3894,7 +3981,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -3932,7 +4020,8 @@
         "sensorkit": "mapped-standard",
         "google-health-api": "mapped-standard",
         "oura": "mapped-standard",
-        "withings": "supported"
+        "withings": "supported",
+        "questionnaire": "supported"
       },
       "coverageDetails": {
         "sensorkit": {
@@ -3991,7 +4080,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -4026,7 +4116,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "supported",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "supported"
       }
     },
     {
@@ -4060,7 +4151,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "supported",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "supported"
       }
     },
     {
@@ -4100,7 +4192,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       },
       "components": [
         {
@@ -4160,7 +4253,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -4206,7 +4300,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -4244,7 +4339,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -4278,7 +4374,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -4317,7 +4414,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "supported"
       }
     },
     {
@@ -4353,7 +4451,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "supported"
+        "withings": "supported",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -4393,7 +4492,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -4439,7 +4539,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -4478,7 +4579,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -4512,7 +4614,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "supported"
+        "withings": "supported",
+        "questionnaire": "supported"
       }
     },
     {
@@ -4550,7 +4653,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "supported",
         "oura": "supported",
-        "withings": "supported"
+        "withings": "supported",
+        "questionnaire": "deferred"
       }
     },
     {
@@ -4590,7 +4694,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       },
       "components": [
         {
@@ -4652,7 +4757,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       },
       "components": [
         {
@@ -4735,7 +4841,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "supported"
       },
       "components": [
         {
@@ -4799,7 +4906,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -4834,7 +4942,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "deferred"
       }
     },
     {
@@ -4869,7 +4978,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "supported"
+        "withings": "supported",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -4907,7 +5017,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -4945,7 +5056,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -4981,7 +5093,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "platform-exclusive",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -5015,7 +5128,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "platform-exclusive",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -5072,7 +5186,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "supported"
       }
     },
     {
@@ -5113,7 +5228,8 @@
         "sensorkit": "intentionally-unsupported",
         "google-health-api": "deferred",
         "oura": "deferred",
-        "withings": "supported"
+        "withings": "supported",
+        "questionnaire": "supported"
       }
     },
     {
@@ -5154,7 +5270,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "supported",
         "oura": "supported",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "deferred"
       }
     },
     {
@@ -5190,7 +5307,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -5228,7 +5346,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -5274,7 +5393,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -5307,7 +5427,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -5344,7 +5465,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -5381,7 +5503,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "supported"
       }
     },
     {
@@ -5416,7 +5539,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "platform-exclusive"
+        "withings": "platform-exclusive",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -5455,7 +5579,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -5506,7 +5631,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -5558,7 +5684,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -5604,7 +5731,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -5639,7 +5767,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "platform-exclusive"
+        "withings": "platform-exclusive",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -5674,7 +5803,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "platform-exclusive"
+        "withings": "platform-exclusive",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -5712,7 +5842,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "supported",
         "oura": "supported",
-        "withings": "supported"
+        "withings": "supported",
+        "questionnaire": "deferred"
       }
     },
     {
@@ -5750,7 +5881,8 @@
         "sensorkit": "intentionally-unsupported",
         "google-health-api": "deferred",
         "oura": "deferred",
-        "withings": "deferred"
+        "withings": "deferred",
+        "questionnaire": "supported"
       }
     },
     {
@@ -5788,7 +5920,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "supported",
         "oura": "supported",
-        "withings": "supported"
+        "withings": "supported",
+        "questionnaire": "deferred"
       }
     },
     {
@@ -5835,7 +5968,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "supported"
       }
     },
     {
@@ -5875,7 +6009,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "supported",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -5911,7 +6046,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -5947,7 +6083,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -5983,7 +6120,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -6034,7 +6172,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "supported"
       }
     },
     {
@@ -6073,7 +6212,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -6107,7 +6247,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "supported"
+        "withings": "supported",
+        "questionnaire": "supported"
       }
     },
     {
@@ -6147,7 +6288,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -6185,7 +6327,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "supported",
         "oura": "supported",
-        "withings": "supported"
+        "withings": "supported",
+        "questionnaire": "deferred"
       }
     },
     {
@@ -6221,7 +6364,8 @@
         "sensorkit": "deferred",
         "google-health-api": "supported",
         "oura": "supported",
-        "withings": "deferred"
+        "withings": "deferred",
+        "questionnaire": "deferred"
       }
     },
     {
@@ -6260,7 +6404,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "supported",
-        "withings": "supported"
+        "withings": "supported",
+        "questionnaire": "deferred"
       }
     },
     {
@@ -6299,7 +6444,8 @@
         "sensorkit": "deferred",
         "google-health-api": "deferred",
         "oura": "deferred",
-        "withings": "deferred"
+        "withings": "deferred",
+        "questionnaire": "deferred"
       }
     },
     {
@@ -6339,7 +6485,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -6375,7 +6522,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "supported"
       }
     },
     {
@@ -6411,7 +6559,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -6447,7 +6596,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -6861,7 +7011,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -6897,7 +7048,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -6939,7 +7091,8 @@
         "sensorkit": "mapped-standard",
         "google-health-api": "supported",
         "oura": "supported",
-        "withings": "supported"
+        "withings": "supported",
+        "questionnaire": "deferred"
       },
       "coverageDetails": {
         "sensorkit": {
@@ -6986,7 +7139,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -7023,7 +7177,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -7060,7 +7215,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -7118,7 +7274,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -7155,7 +7312,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -7192,7 +7350,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -7229,7 +7388,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -7266,7 +7426,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -7303,7 +7464,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -7340,7 +7502,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -7377,7 +7540,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -7414,7 +7578,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -7451,7 +7616,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -7488,7 +7654,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -7525,7 +7692,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -7562,7 +7730,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -7599,7 +7768,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -7636,7 +7806,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -7673,7 +7844,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -7710,7 +7882,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -7747,7 +7920,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -7784,7 +7958,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -7821,7 +7996,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -7858,7 +8034,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -7895,7 +8072,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -7929,7 +8107,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -7966,7 +8145,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -8003,7 +8183,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -8040,7 +8221,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -8077,7 +8259,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -8114,7 +8297,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -8151,7 +8335,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -8188,7 +8373,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -8225,7 +8411,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -8259,7 +8446,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -8296,7 +8484,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -8333,7 +8522,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -8370,7 +8560,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -8406,7 +8597,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -8442,7 +8634,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -8480,7 +8673,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -8516,7 +8710,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -8550,7 +8745,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -8587,7 +8783,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -8624,7 +8821,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "supported",
         "oura": "supported",
-        "withings": "supported"
+        "withings": "supported",
+        "questionnaire": "supported"
       }
     },
     {
@@ -8659,7 +8857,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -8697,7 +8896,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -8735,7 +8935,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -8775,7 +8976,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -8812,7 +9014,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -8855,7 +9058,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -8901,7 +9105,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       },
       "components": [
         {
@@ -8961,7 +9166,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -8997,7 +9203,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -9024,6 +9231,9 @@
         }
       },
       "effective": "Period",
+      "obeys": [
+        "grove-step-count-period-1"
+      ],
       "generation": {
         "emit": true
       },
@@ -9033,7 +9243,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "deferred"
       }
     },
     {
@@ -9079,7 +9290,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -9119,7 +9331,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "platform-exclusive"
+        "withings": "platform-exclusive",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -9159,7 +9372,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "platform-exclusive"
+        "withings": "platform-exclusive",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -9193,7 +9407,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "platform-exclusive"
+        "withings": "platform-exclusive",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -9230,7 +9445,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "platform-exclusive"
+        "withings": "platform-exclusive",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -9266,7 +9482,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "platform-exclusive"
+        "withings": "platform-exclusive",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -9300,7 +9517,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "platform-exclusive"
+        "withings": "platform-exclusive",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -9539,7 +9757,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "supported",
         "oura": "supported",
-        "withings": "supported"
+        "withings": "supported",
+        "questionnaire": "deferred"
       }
     },
     {
@@ -9573,7 +9792,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
       }
     },
     {
@@ -9686,7 +9906,8 @@
         "sensorkit": "unmodeled",
         "google-health-api": "unmodeled",
         "oura": "unmodeled",
-        "withings": "unmodeled"
+        "withings": "unmodeled",
+        "questionnaire": "deferred"
       }
     }
   ]

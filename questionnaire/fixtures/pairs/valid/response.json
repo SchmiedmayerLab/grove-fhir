@@ -1,6 +1,7 @@
 {
   "resourceType": "QuestionnaireResponse",
   "id": "paired-response",
+  "language": "en-US",
   "extension": [
     {
       "url": "http://hl7.org/fhir/StructureDefinition/questionnaireresponse-completionMode",
@@ -74,7 +75,7 @@
     },
     {
       "linkId": "mood",
-      "text": "Stimmung",
+      "text": "Mood",
       "answer": [
         {
           "valueCoding": {

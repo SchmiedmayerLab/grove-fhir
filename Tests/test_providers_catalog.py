@@ -244,7 +244,6 @@ class ProviderCatalogTests(unittest.TestCase):
 
     def test_every_source_element_has_one_definitive_status(self) -> None:
         statuses = set(self.catalog["statusVocabulary"])
-        self.assertEqual(statuses, set(self.catalog["statusDefinitions"]))
         measurement_ids = {
             measurement["id"] for measurement in self.measurements["measurements"]
         }

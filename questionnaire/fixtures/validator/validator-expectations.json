@@ -217,6 +217,30 @@
         "detailsContains": "Constraint failed: qg-style-sensitive-1: 'This exchange contract does not accept presentation-sensitive semantics.' (defined in https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire)"
       }
     ],
+    "questionnaire-language-missing": [
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "Questionnaire",
+        "detailsContains": "Questionnaire.language: minimum required = 1, but only found 0"
+      }
+    ],
+    "questionnaire-translation-base-language": [
+      {
+        "messageId": "https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire#qg-translation-1",
+        "code": "invariant",
+        "expression": "Questionnaire",
+        "detailsContains": "Constraint failed: qg-translation-1: 'Every translation names a language other than the base language, and no string carries two translations into the same language.' (defined in https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire)"
+      }
+    ],
+    "questionnaire-translation-duplicate-language": [
+      {
+        "messageId": "https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire#qg-translation-1",
+        "code": "invariant",
+        "expression": "Questionnaire",
+        "detailsContains": "Constraint failed: qg-translation-1: 'Every translation names a language other than the base language, and no string carries two translations into the same language.' (defined in https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire)"
+      }
+    ],
     "response-unversioned-canonical": [
       {
         "messageId": "https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire-response#gqr-canonical-1",
@@ -265,6 +289,14 @@
         "code": "invariant",
         "expression": "QuestionnaireResponse",
         "detailsContains": "Constraint failed: gqr-completion-mode-1: 'The response declares exactly one electronic ParticipationMode coding.' (defined in https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire-response)"
+      }
+    ],
+    "response-language-missing": [
+      {
+        "messageId": "Validation_VAL_Profile_Minimum",
+        "code": "structure",
+        "expression": "QuestionnaireResponse",
+        "detailsContains": "QuestionnaireResponse.language: minimum required = 1, but only found 0"
       }
     ]
   }
