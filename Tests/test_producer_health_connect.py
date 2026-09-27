@@ -12,6 +12,7 @@ from Scripts.producer_validation import (
     diagnostics,
     health_connect,
     profiles as profile_validation,
+    references,
 )
 from Tests.producer_validation_test_support import (
     ProducerValidationTestCase,
@@ -462,6 +463,87 @@ class ProducerHealthConnectTests(ProducerValidationTestCase):
             diagnostics.ProducerValidationError, "exactly one admitted"
         ):
             health_connect.validate_health_connect_source_type(mindfulness, "Mindfulness")
+
+    def test_health_connect_glucose_compares_patient_identity(self) -> None:
+        profile_root = "https://grovealliance.org/fhir/health-connect/StructureDefinition/"
+        source = typed_identifier(
+            "source-record", "https://example.org/source-record", "v0:test-key:1:" + "A" * 43
+        )
+        patient_url = "urn:uuid:00000000-0000-5000-8000-000000000001"
+        specimen_url = "urn:uuid:00000000-0000-5000-8000-000000000002"
+        other_patient_url = "urn:uuid:00000000-0000-5000-8000-000000000003"
+        observation = {
+            "resourceType": "Observation",
+            "meta": {"profile": [profile_root + "health-connect-whole-blood-glucose"]},
+            "identifier": [source],
+            "extension": [{
+                "url": profile_root + "health-connect-record-type",
+                "valueCode": "BloodGlucoseRecord",
+            }],
+            "specimen": {"reference": specimen_url},
+        }
+        specimen = {
+            "resourceType": "Specimen",
+            "meta": {"profile": [profile_root + "health-connect-specimen"]},
+            "identifier": [copy.deepcopy(source)],
+            "type": {"coding": [{"system": "http://snomed.info/sct", "code": "258580003"}]},
+        }
+        resources = {
+            patient_url: {"resourceType": "Patient"},
+            other_patient_url: {"resourceType": "Patient"},
+            specimen_url: specimen,
+        }
+        literal = {"reference": patient_url}
+        logical = {
+            "type": "Patient",
+            "identifier": {"system": "https://example.org/participants", "value": "one"},
+        }
+        decorated_logical = copy.deepcopy(logical)
+        decorated_logical["display"] = "Participant one"
+        decorated_logical["identifier"].update({
+            "use": "usual", "type": {"text": "Study pseudonym"},
+        })
+        for name, left, right in (
+            ("same literal", literal, literal),
+            ("optional type", literal, {**literal, "type": "Patient"}),
+            ("optional display", literal, {**literal, "display": "Participant one"}),
+            ("same logical", logical, logical),
+            ("logical metadata", logical, decorated_logical),
+        ):
+            for observation_subject, specimen_subject in ((left, right), (right, left)):
+                with self.subTest(name=name, observation_subject=observation_subject):
+                    observation["subject"] = observation_subject
+                    specimen["subject"] = specimen_subject
+                    for resource in (observation, specimen):
+                        references.validate_governed_reference(
+                            resource["subject"], {"Patient"}, resources, resource["resourceType"]
+                        )
+                    health_connect.validate_health_connect_output_graph(
+                        [observation, specimen], resources, "Glucose"
+                    )
+
+        other_system = copy.deepcopy(logical)
+        other_system["identifier"]["system"] = "https://example.org/other-participants"
+        other_value = copy.deepcopy(logical)
+        other_value["identifier"]["value"] = "two"
+        for name, left, right in (
+            ("different literal", literal, {"reference": other_patient_url}),
+            ("different system", logical, other_system),
+            ("different value", logical, other_value),
+            ("mixed reference forms", literal, logical),
+            ("missing subjects", None, None),
+            ("empty subjects", {}, {}),
+        ):
+            for observation_subject, specimen_subject in ((left, right), (right, left)):
+                with self.subTest(name=name, observation_subject=observation_subject):
+                    observation["subject"] = observation_subject
+                    specimen["subject"] = specimen_subject
+                    with self.assertRaisesRegex(
+                        diagnostics.ProducerValidationError, "must reference the same Patient"
+                    ):
+                        health_connect.validate_health_connect_output_graph(
+                            [observation, specimen], resources, "Glucose"
+                        )
 
     def test_health_connect_exact_output_cardinality_and_record_type_are_closed(self) -> None:
         source_identifier = typed_identifier(
