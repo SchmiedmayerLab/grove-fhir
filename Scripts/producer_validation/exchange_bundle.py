@@ -152,15 +152,19 @@ def validate_exchange_bundle(
     if not is_active and not is_retraction:
         return
     if is_active and is_retraction:
-        raise ProducerValidationError(
-            f"{label} cannot claim both active and retraction exchange profiles"
+        raise contract_failure(
+            "mobile-exchange.bundle-profile",
+            "Bundle.meta.profile",
+            f"{label} cannot claim both active and retraction exchange profiles",
         )
     if resource.get("type") != "collection":
         raise ProducerValidationError(f"{label} exchange Bundle must have type collection")
     event_system, event_value = complete_identifier(
         resource.get("identifier"), f"{label} Bundle.identifier"
     )
-    if identifier_role(resource["identifier"], f"{label} Bundle.identifier") != "event":
+    if identifier_role(
+        resource["identifier"], f"{label} Bundle.identifier", "Bundle.identifier"
+    ) != "event":
         raise ProducerValidationError(
             f"{label} Bundle.identifier must carry the event role"
         )
@@ -173,7 +177,11 @@ def validate_exchange_bundle(
     validate_identity_system_role(resource, label)
     entries = resource.get("entry")
     if not isinstance(entries, list) or not entries:
-        raise ProducerValidationError(f"{label} exchange Bundle must contain entries")
+        raise contract_failure(
+            "mobile-exchange.entry-required",
+            "Bundle.entry",
+            f"{label} exchange Bundle must contain entries",
+        )
     full_urls: set[str] = set()
     node_role_ordinals: dict[str, int] = {}
     entry_resources: list[dict[str, Any]] = []
@@ -231,17 +239,20 @@ def validate_exchange_bundle(
                 f"Bundle.entry[{index}]",
                 f"{label} entry[{index}] must have one entry node key",
             )
+        key_location = f"Bundle.entry[{index}].extension.valueIdentifier"
         system, value = complete_identifier(identities[0], f"{label} entry[{index}] identity")
-        role = identifier_role(identities[0], f"{label} entry[{index}] identity")
+        role = identifier_role(identities[0], f"{label} entry[{index}] identity", key_location)
         selected = selected_entry_identifier(
             entry_resource, f"{label} entry[{index}].resource"
         )
         if selected is None:
             match = ENTRY_NODE_IDENTITY.fullmatch(value)
             if role != "entry-node" or match is None:
-                raise ProducerValidationError(
+                raise contract_failure(
+                    "mobile-exchange.entry-key-selection",
+                    key_location,
                     f"{label} entry[{index}] resource without typed business identity "
-                    "must use a canonical entry-node key"
+                    "must use a canonical entry-node key",
                 )
             # Derived from the Bundle rather than read back from the key, which is the
             # producer's own claim: a self-consistent digest over a wrong ordinal would
@@ -275,8 +286,11 @@ def validate_exchange_bundle(
         else:
             selected_role, selected_pair = selected
             if role != selected_role or (system, value) != selected_pair:
-                raise ProducerValidationError(
-                    f"{label} entry[{index}] node key is not the resource's highest-priority typed identifier"
+                raise contract_failure(
+                    "mobile-exchange.entry-key-selection",
+                    key_location,
+                    f"{label} entry[{index}] node key is not the resource's highest-priority "
+                    "typed identifier",
                 )
         expected = expected_entry_full_url(system, value)
         if entry.get("fullUrl") != expected:
@@ -286,7 +300,11 @@ def validate_exchange_bundle(
                 f"{label} entry[{index}] fullUrl is not the deterministic UUID URN",
             )
         if expected in full_urls:
-            raise ProducerValidationError(f"{label} repeats entry fullUrl {expected}")
+            raise contract_failure(
+                "mobile-exchange.distinct-entry-key",
+                key_location,
+                f"{label} entry[{index}] repeats the entry key behind fullUrl {expected}",
+            )
         full_urls.add(expected)
         validate_resource_profile_claims(
             entry_resource,
@@ -471,7 +489,13 @@ def validate_exchange_bundle(
                 )
             output_urls.add(full_url)
             source_pairs.add(typed["source-record"])
-        if not output_urls or len(source_pairs) != 1:
+        if not output_urls:
+            raise contract_failure(
+                "mobile-exchange.output-required",
+                "Bundle.entry",
+                f"{label} active event must contain at least one output",
+            )
+        if len(source_pairs) != 1:
             raise ProducerValidationError(
                 f"{label} active event must contain outputs for exactly one source record"
             )
@@ -486,8 +510,10 @@ def validate_exchange_bundle(
             if isinstance(target, dict) and isinstance(target.get("reference"), str)
         ] if isinstance(targets, list) else []
         if len(target_urls) != len(set(target_urls)) or set(target_urls) != output_urls:
-            raise ProducerValidationError(
-                f"{label} transform Provenance must target every and only source-derived output"
+            raise contract_failure(
+                "mobile-exchange.provenance-targets",
+                "Provenance.target",
+                f"{label} transform Provenance must target every and only source-derived output",
             )
         validate_governed_source_identifiers(entry_resources, label)
         validate_health_connect_output_graph(entry_resources, resources_by_full_url, label)
@@ -499,8 +525,11 @@ def validate_exchange_bundle(
             or len(retraction_provenances) != 1
             or transform_provenances
         ):
-            raise ProducerValidationError(
-                f"{label} retraction event must contain exactly one retraction Provenance and no transform"
+            raise contract_failure(
+                "mobile-retraction.provenance",
+                "Bundle.entry",
+                f"{label} retraction event must contain exactly one retraction Provenance "
+                "and no transform",
             )
         if any(
             candidate.get("resourceType") not in {"Provenance", "Device"}
@@ -512,7 +541,11 @@ def validate_exchange_bundle(
         provenance = retraction_provenances[0]
         targets = provenance.get("target")
         if not isinstance(targets, list) or not targets:
-            raise ProducerValidationError(f"{label} retraction must identify at least one target")
+            raise contract_failure(
+                "mobile-retraction.target-required",
+                "Provenance.target",
+                f"{label} retraction must identify at least one target",
+            )
         seen_targets: set[tuple[str, str]] = set()
         for target_index, target in enumerate(targets):
             target_label = f"{label} retraction target[{target_index}]"
@@ -523,7 +556,11 @@ def validate_exchange_bundle(
             if not isinstance(target.get("type"), str) or not target["type"]:
                 raise ProducerValidationError(f"{target_label} must state its resource type")
             identifier = target.get("identifier")
-            role = identifier_role(identifier, f"{target_label}.identifier")
+            role = identifier_role(
+                identifier,
+                f"{target_label}.identifier",
+                f"Provenance.target[{target_index}].identifier",
+            )
             if role not in OPAQUE_IDENTIFIER_ROLES:
                 raise ProducerValidationError(f"{target_label} has an invalid identifier role")
             pair = complete_identifier(identifier, f"{target_label}.identifier")
@@ -534,7 +571,11 @@ def validate_exchange_bundle(
                     f"{target_label} identity is not a canonical v0 HMAC value",
                 )
             if pair in seen_targets:
-                raise ProducerValidationError(f"{label} repeats a retraction target")
+                raise contract_failure(
+                    "mobile-retraction.distinct-target",
+                    f"Provenance.target[{target_index}].identifier",
+                    f"{label} repeats a retraction target",
+                )
             seen_targets.add(pair)
             extensions = target.get("extension", [])
             role_extensions = [

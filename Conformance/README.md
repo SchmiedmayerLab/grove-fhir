@@ -3,6 +3,11 @@
 Grove FHIR validates its own R4 packages, examples, and negative corpora.
 A producer repository validates the resources emitted by its real public API.
 The dependency is one-way: this repository never checks out, patches, or executes producer code.
+Tests of conversion behavior belong in the producer's own test target, not in optional
+source scans of a sibling checkout. For example, Grove's `GroveHealthKitFHIRTests`
+checks typed metadata, withheld unmodeled values, and writer-scoped sync identity
+using actual conversions and serialized Bundles. The IG checks the corresponding
+catalogs, profiles and emitted conformance resources independently.
 
 A producer manifest binds emitted files to the Grove FHIR package identities and profiles they claim.
 During development, build or download all required packages from one exact Grove FHIR source revision and keep the manifest package versions synchronized.
@@ -49,6 +54,7 @@ It sends both normative positive bases—the active conversion event and the ret
 
 `Conformance/fixture-validator-manifest.json` is the all-fixtures lane.
 A guide's own worked examples are validated by the IG Publisher during its build and audited by `Scripts/check-guide-qa.py`; the fixtures under `Conformance/` and `questionnaire/fixtures/` are the ones no guide build ever sees.
+The QA audit requires explicit nonnegative integer error, warning and hint counts; missing or malformed counts are not evidence of a clean build.
 
 ```sh
 python3 Scripts/validate-fixtures.py \
@@ -59,8 +65,18 @@ python3 Scripts/validate-fixtures.py \
 
 Every JSON file beneath the declared roots is either validated here or excluded with a stated reason, so a fixture cannot be added without being classified.
 `python3 Scripts/validate-fixtures.py --coverage-only` checks that classification alone and needs neither Java nor a built package.
+`Conformance/corpora/mobile-profile-invariants` is the negative corpus of that lane: one heart-rate Observation per way a Mobile Observation can breach a `GroveMobileObservationRules` invariant or the `dataAbsentReason` binding, named in the manifest's `negativeCorpora`.
+The lane requires the control to pass and each case to fail for exactly the invariant key or value set its `corpus.json` declares, so a rule dropped from the base profile fails here instead of only in a guide build.
 
 ## Positive and negative corpus
+
+`Conformance/corpora/receiver-lifecycle` adds delivery sequences over pinned, immutable event fixtures.
+It covers exact/conflicting replay, writer-ordered corrections in both delivery orders, unordered conflict, logical-reference resolution and retraction before/after its target.
+Its declared receiver policy and step-by-step expectations are separate from FHIR validity; receiver implementations must prove their own authorization, transaction and restart behavior.
+See [Receiver Lifecycle Sequences](corpora/receiver-lifecycle/README.md) for the harness contract and validation boundaries.
+
+The [multi-study attribution corpus](corpora/study-attribution/README.md) complements those sequences with exact protocol references, late receiver-owned association and isolated withdrawal.
+Its derived exports deliberately have new identities and omit the other study's membership; profile-valid policy counterexamples remain in the official fixture lane.
 
 `Conformance/corpora/mobile-exchange` is the normative producer corpus for the Mobile exchange graph.
 Its positive bases cover both one immutable conversion event and one dedicated source-record retraction event.
@@ -81,6 +97,10 @@ An Observation projected from a QuestionnaireResponse carries no adapter context
 `producerDiagnostics` in `catalog/exchange-protocol.json` is the shared rule-code registry, and the two sides of the contract do not raise the same subset.
 Each entry says which side does: an `emittedBy` of `conformance-kit` means this repository's validator raises it, and `client` means the rule is stated here but enforced in the producer SDKs, whose own source fixtures can see what an output-only manifest cannot.
 A code is never registered without an owner, so an unimplemented rule cannot pass for an enforced one.
+Namespaces ending in `-input` register the reasons a producer refuses a source record before any graph exists; every refusal a producer reports carries exactly one of them, with `mobile-input.unclassified` as the fallback for a reason no more specific rule names.
+One code stands for one countable reason, and the producer's typed failure carries the detail; a deployment fault such as an invalid converter application or identity scope is not a rule, because no record can cause it.
+Namespaces ending in `-omission` register what a producer left out of a record it accepted: every such row carries `severity: warning`, the graph stays valid, and an omission a disclosure policy chose is never reported.
+A row without `severity` is an error.
 
 The structural conformance kit rejects graph, closed-reference, deterministic-identity, exact summary-cardinality, and adapter source-context failures without needing an implementation guide build.
 FHIR element cardinality and terminology validation remain the official HL7 FHIR Validator's responsibility with the exact packages selected by the producer manifest.

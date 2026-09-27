@@ -59,10 +59,77 @@ class ExchangeProtocolTests(unittest.TestCase):
         self.assertEqual(len(rows), len(kinds))
         self.assertEqual(len({row["system"] for row in rows}), len(kinds))
 
+    def test_vectors_use_the_recommended_identifier_system_forms(self) -> None:
+        root = "https://study.example.org/fhir"
+        opaque = self.catalog["opaqueIdentity"]["recommendedSystemForm"]
+        for row in self.vectors["identitySystems"]:
+            with self.subTest(kind=row["identityKind"]):
+                expected = (
+                    opaque.replace("<deployment-root>", root)
+                    .replace("<identity-kind>", row["identityKind"])
+                    .replace("<key-id>", self.vectors["keyId"])
+                    .replace("<epoch>", str(self.vectors["epoch"]))
+                )
+                self.assertEqual(row["system"], expected)
+        event = self.catalog["event"]["bundleIdentifier"]["recommendedSystemForm"]
+        self.assertEqual(
+            self.vectors["event"]["system"], event.replace("<deployment-root>", root)
+        )
+        node = self.catalog["entryIdentity"]["entryNode"]["recommendedSystemForm"]
+        self.assertEqual(
+            self.vectors["entryNode"]["system"], node.replace("<deployment-root>", root)
+        )
+
+    def test_study_context_names_the_corpus_entry_node_roles(self) -> None:
+        context = self.catalog["lifecycle"]["active"]["studyContext"]
+        corpus = ROOT / "Conformance/corpora/study-attribution"
+        used = set()
+        for name in ("source-event.json", "context-two-studies.json"):
+            bundle = json.loads((corpus / name).read_text(encoding="utf-8"))
+            for entry in bundle["entry"]:
+                for extension in entry.get("extension", []):
+                    if extension["url"].endswith("entry-node-key"):
+                        value = extension["valueIdentifier"]["value"]
+                        if value.startswith("n0:"):
+                            used.add(value.split(":")[1])
+        self.assertTrue(set(context["entryNodeRoles"]) <= used)
+        admitted = {
+            target["url"] for target in self.catalog["referencePolicy"]["extensionTargets"]
+        }
+        self.assertIn("http://hl7.org/fhir/StructureDefinition/workflow-researchStudy", admitted)
+        self.assertNotIn(
+            "http://hl7.org/fhir/StructureDefinition/workflow-instantiatesCanonical", admitted
+        )
+
+    def test_refusals_and_omissions_are_registered_client_rules(self) -> None:
+        rows = self.catalog["producerDiagnostics"]
+        codes = [row["code"] for row in rows]
+        self.assertEqual(len(codes), len(set(codes)))
+        self.assertEqual(
+            {code.split(".")[0] for code in codes},
+            {
+                "mobile-exchange", "mobile-output", "mobile-retraction", "mobile-support",
+                "mobile-device", "mobile-input", "mobile-omission", "healthkit-clinical", "healthkit-ecg",
+                "healthkit-input", "healthkit-device", "health-connect-provenance", "sensor-recording-document",
+            },
+        )
+        for row in rows:
+            with self.subTest(code=row["code"]):
+                namespace = row["code"].split(".")[0]
+                if namespace.endswith(("-input", "-omission")):
+                    self.assertEqual(row["emittedBy"], "client")
+                if namespace.endswith("-omission"):
+                    self.assertEqual(row.get("severity"), "warning")
+                else:
+                    self.assertNotEqual(row.get("severity"), "warning")
+        self.assertIn("mobile-input.unclassified", codes)
+        self.assertEqual(sum(row.get("severity") == "warning" for row in rows), 3)
+
     def test_invalid_hmac_vectors_fail_closed(self) -> None:
         expected_messages = {
             "empty-component": "must not be empty",
             "provider-kind-required": "provider components require identity kind",
+            "non-canonical-part-index": "must be a canonical unsigned decimal",
         }
         for vector in self.vectors["invalidIdentities"]:
             with self.subTest(vector=vector["id"]), self.assertRaisesRegex(
@@ -76,6 +143,14 @@ class ExchangeProtocolTests(unittest.TestCase):
                     identity_kind=vector["identityKind"],
                     components=vector["components"],
                 )
+
+    def test_unsigned_decimal_components_are_declared_once(self) -> None:
+        requirements = self.catalog["opaqueIdentity"]["componentRequirements"]
+        self.assertEqual(set(requirements["unsignedDecimal"]), PROTOCOL.UNSIGNED_DECIMAL_COMPONENTS)
+        names = {name for kind in self.catalog["opaqueIdentity"]["identityKinds"] for name in kind["components"]}
+        self.assertLessEqual(PROTOCOL.UNSIGNED_DECIMAL_COMPONENTS, names)
+        rejected = {vector["components"][-1] for vector in self.vectors["invalidIdentities"] if vector["expectedError"] == "non-canonical-part-index"}
+        self.assertEqual(rejected, {"-1", "01"})
 
     def test_length_frames_are_unambiguous_and_preserve_unicode(self) -> None:
         self.assertNotEqual(
@@ -108,6 +183,8 @@ class ExchangeProtocolTests(unittest.TestCase):
                 "valueType": "unicode-scalar-string",
                 "nonEmpty": True,
                 "arity": "exactly-kind-components",
+                "unsignedDecimal": ["part-index"],
+                "unsignedDecimalForm": "A canonical unsigned decimal: 0, or a nonzero digit followed by digits, with no sign, whitespace, or leading zero.",
             },
         )
         catalog_names = {

@@ -56,8 +56,10 @@ def validate_healthkit_source_type(resource: dict[str, Any], label: str) -> None
         or not source_extensions[0]["valueCode"]
         or set(source_extensions[0]) != {"url", "valueCode"}
     ):
-        raise ProducerValidationError(
-            f"{label} must carry exactly one valueCode-only HealthKit source-type extension"
+        raise contract_failure(
+            "mobile-output.adapter-source-marker",
+            "Observation.extension",
+            f"{label} must carry exactly one valueCode-only HealthKit source-type extension",
         )
     source_type = source_extensions[0]["valueCode"]
     rows = {
@@ -375,7 +377,11 @@ def validate_healthkit_ecg_contract(resource: dict[str, Any], label: str) -> Non
         )
         identifier = member.get("identifier")
         if (
-            identifier_role(identifier, f"{label}.hasMember[{index}].identifier")
+            identifier_role(
+                identifier,
+                f"{label}.hasMember[{index}].identifier",
+                f"Observation.hasMember[{index}].identifier",
+            )
             != symptom_claim["identifierRole"]
         ):
             raise ProducerValidationError(

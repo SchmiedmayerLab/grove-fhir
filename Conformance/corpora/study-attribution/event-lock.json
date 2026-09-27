@@ -1,0 +1,33 @@
+{
+  "baseSourceRevision": "928db16ef8bfd86d2a171727d2d1cb9f8979a442",
+  "releaseVersion": "0.6.0",
+  "eventIdentity": {
+    "type": {
+      "coding": [
+        {
+          "code": "event",
+          "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+          "display": "Event"
+        }
+      ]
+    },
+    "system": "https://study.example.org/fhir/NamingSystem/grove-event-v0",
+    "value": "e0:1f5c58aa-6ec6-4e79-a682-829a9debd3f5:50"
+  },
+  "sourceEventSHA256": "01d1d25585e25b5452bd6a3543b67b802968bb2bdc501af224b1941659a792bf",
+  "outputPointer": "/entry/2/resource",
+  "protocols": {
+    "a": {
+      "url": "https://study.example.org/PlanDefinition/a",
+      "version": "1"
+    },
+    "b": {
+      "url": "https://study.example.org/PlanDefinition/b",
+      "version": "3"
+    }
+  },
+  "exportLineage": {
+    "a": "study-a-source-1",
+    "b": "study-b-source-1"
+  }
+}

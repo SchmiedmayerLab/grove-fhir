@@ -12,6 +12,7 @@ import importlib.util
 import json
 import re
 import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -186,6 +187,83 @@ class GuideQATests(unittest.TestCase):
         self.assertEqual(link_counts.offline_terminology_errors, 0)
         self.assertEqual(link_counts.offline_terminology_warnings, 0)
         self.assertEqual(link_counts.unsuppressed_errors, 0)
+
+    def test_publisher_counters_require_nonnegative_integers(self) -> None:
+        for field in ("errs", "warnings"):
+            for value in (None, False, True, -1, 0.5, 1.0, "0", [], {}):
+                with self.subTest(field=field, value=value):
+                    report = {"errs": 0, "warnings": 0, field: value}
+                    with self.assertRaisesRegex(ValueError, "nonnegative integer"):
+                        CHECK.finding_counts(report, {})
+            with self.subTest(missing=field):
+                report = {"errs": 0, "warnings": 0}
+                del report[field]
+                with self.assertRaisesRegex(ValueError, "nonnegative integer"):
+                    CHECK.finding_counts(report, {})
+
+        for report in (None, [], 0, "", False):
+            with self.subTest(report=report):
+                with self.assertRaisesRegex(ValueError, "JSON object"):
+                    CHECK.required_count(report, "hints")
+
+    def test_publisher_error_alias_cannot_hide_a_failure(self) -> None:
+        self.assertEqual(
+            CHECK.finding_counts({"errors": 2, "warnings": 0}, {}).unsuppressed_errors,
+            2,
+        )
+        self.assertEqual(
+            CHECK.finding_counts(
+                {"errs": 2, "errors": 2, "warnings": 0}, {}
+            ).unsuppressed_errors,
+            2,
+        )
+        for alias in (1, "0", False, None):
+            with self.subTest(alias=alias):
+                with self.assertRaises(ValueError):
+                    CHECK.finding_counts({"errs": 0, "errors": alias, "warnings": 0}, {})
+
+    def test_invalid_qa_report_fails_cli_without_a_success_summary(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            guide = Path(directory)
+            output = guide / "output"
+            output.mkdir()
+            (guide / "input").mkdir()
+            (guide / "input/ignoreWarnings.txt").write_text("", encoding="utf-8")
+            (output / "qa.html").write_text("<html></html>", encoding="utf-8")
+            contents = ["{", "null", "[]", "{}", '{"hints": false}']
+            for field in ("errs", "warnings", "hints"):
+                report = {"errs": 0, "warnings": 0, "hints": 0}
+                del report[field]
+                contents.append(json.dumps(report))
+                for value in (False, 0.5, "0", None, -1):
+                    contents.append(json.dumps({"errs": 0, "warnings": 0, "hints": 0, field: value}))
+            for content in contents:
+                with self.subTest(content=content):
+                    (output / "qa.json").write_text(content, encoding="utf-8")
+                    result = subprocess.run(
+                        [sys.executable, str(ROOT / "Scripts/check-guide-qa.py"), str(guide)],
+                        capture_output=True,
+                        text=True,
+                        check=False,
+                        timeout=10,
+                    )
+                    self.assertEqual(result.returncode, 1)
+                    self.assertTrue(
+                        "invalid" in result.stdout or "nonnegative integer" in result.stdout,
+                        result.stdout,
+                    )
+                    self.assertNotIn("unsuppressed-errors=0", result.stdout)
+                    self.assertNotIn("Traceback", result.stderr)
+
+            (output / "qa.json").write_text(
+                '{"errs": 0, "warnings": 0, "hints": 0}', encoding="utf-8"
+            )
+            result = subprocess.run(
+                [sys.executable, str(ROOT / "Scripts/check-guide-qa.py"), str(guide)],
+                capture_output=True, text=True, check=False, timeout=10,
+            )
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertIn("unsuppressed-errors=0", result.stdout)
 
     def test_no_error_suppressions_are_configured(self) -> None:
         for guide in (
@@ -604,6 +682,110 @@ class GuideQATests(unittest.TestCase):
                         ).unsuppressed_warnings,
                         1,
                     )
+
+    def test_offline_bcp47_content_warning_requires_exact_generated_language(self) -> None:
+        message = (
+            "Unable to validate code without using server because: Resolved system "
+            "urn:ietf:bcp:47 (v2.0.1), but the definition doesn't include any codes, "
+            "so the code has not been validated"
+        )
+        baseline = {
+            "publisher": "2.3.3",
+            "resourceType": "ImplementationGuide",
+            "language": "en",
+            "path": "ImplementationGuide.language (l1/c98)",
+            "diagnostic": "TERMINOLOGY_TX_WARNING",
+            "message": message,
+        }
+        mutations = (
+            {},
+            {"publisher": "2.3.4"},
+            {"resourceType": "Questionnaire"},
+            {"language": "fr"},
+            {"language": None},
+            {"path": "ImplementationGuide.language.system (l1/c98)"},
+            {"path": "Questionnaire.language (l1/c98)"},
+            {"diagnostic": "UNKNOWN_CODESYSTEM"},
+            {"diagnostic": ""},
+            {"message": message.replace("v2.0.1", "v2.0.2")},
+            {"message": message.replace("urn:ietf:bcp:47", "https://example.org/codes")},
+            {"message": message + " Additional warning"},
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            guide = Path(directory).resolve() / "guide"
+            output = guide / "output"
+            output.mkdir(parents=True)
+            for mutation in mutations:
+                with self.subTest(mutation=mutation):
+                    case = baseline | mutation
+                    resource = {key: case[key] for key in ("resourceType", "language")}
+                    (output / "ImplementationGuide-example.json").write_text(
+                        json.dumps(resource), encoding="utf-8"
+                    )
+                    (output / "qa.html").write_text(
+                        f'<p>IG Publisher Version: v{case["publisher"]}</p>'
+                        '<h2><a href="index.html">fsh-generated/resources/'
+                        'ImplementationGuide-example.json</a></h2><table><tr>'
+                        f'<td><b>{case["path"]}</b></td><td><b>warning</b></td>'
+                        f'<td><b>{case["message"]}</b> '
+                        f'<span class="code-value">{case["diagnostic"]}</span></td>'
+                        '<td>profile</td></tr></table>',
+                        encoding="utf-8",
+                    )
+                    self.assertEqual(
+                        CHECK.offline_unknown_code_system_warning_count(guide),
+                        0 if mutation else 1,
+                    )
+
+    def test_offline_bcp47_content_warning_accepts_only_well_formed_resource_languages(self) -> None:
+        message = (
+            "Unable to validate code without using server because: Resolved system "
+            "urn:ietf:bcp:47 (v2.0.1), but the definition doesn't include any codes, "
+            "so the code has not been validated"
+        )
+        baseline = {
+            "resourceType": "QuestionnaireResponse",
+            "language": "es-US",
+            "path": "QuestionnaireResponse.language (l54/c19)",
+            "diagnostic": "TERMINOLOGY_TX_WARNING",
+            "message": message,
+        }
+        accepted = (
+            {},
+            {"resourceType": "Questionnaire", "path": "Questionnaire.language (l1/c1)"},
+            {"language": "es"},
+            {"language": "zh-Hant-TW"},
+        )
+        rejected = (
+            {"language": "english"},
+            {"language": "es_US"},
+            {"language": None},
+            {"resourceType": "Questionnaire"},
+            {"path": "Observation.language (l1/c1)", "resourceType": "Observation"},
+            {"path": "QuestionnaireResponse.item[0].language (l1/c1)"},
+            {"diagnostic": "UNKNOWN_CODESYSTEM"},
+            {"message": message.replace("urn:ietf:bcp:47", "https://example.org/codes")},
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            guide = Path(directory).resolve() / "guide"
+            output = guide / "output"
+            output.mkdir(parents=True)
+            for mutation, expected in [(m, 1) for m in accepted] + [(m, 0) for m in rejected]:
+                with self.subTest(mutation=mutation):
+                    case = baseline | mutation
+                    resource = {key: case[key] for key in ("resourceType", "language")}
+                    (output / "Resource-example.json").write_text(json.dumps(resource), encoding="utf-8")
+                    (output / "qa.html").write_text(
+                        "<p>IG Publisher Version: v2.3.3</p>"
+                        '<h2><a href="index.html">fsh-generated/resources/'
+                        "Resource-example.json</a></h2><table><tr>"
+                        f'<td><b>{case["path"]}</b></td><td><b>warning</b></td>'
+                        f'<td><b>{case["message"]}</b> '
+                        f'<span class="code-value">{case["diagnostic"]}</span></td>'
+                        "<td>profile</td></tr></table>",
+                        encoding="utf-8",
+                    )
+                    self.assertEqual(CHECK.offline_unknown_code_system_warning_count(guide), expected)
 
     def test_unknown_system_warnings_are_exact_and_resource_backed(self) -> None:
         message = (
@@ -1050,6 +1232,95 @@ class GuideQATests(unittest.TestCase):
                     self.assertEqual(
                         write_case(filename, source, publisher, html_text), 0
                     )
+
+    def test_absent_loinc_warnings_require_enumerated_pinned_codes(self) -> None:
+        not_present = (
+            "The value set references CodeSystem &#39;http://loinc.org&#39; "
+            "which has status &#39;not-present&#39;"
+        )
+        unexpandable = (
+            "A definition for CodeSystem &#39;http://loinc.org&#39; could not be "
+            "found, so the value set cannot be expanded"
+        )
+
+        def qa_html(
+            path: str,
+            finding: str,
+            *,
+            diagnostic: str = "",
+            publisher: str = "2.3.3",
+        ) -> str:
+            return (
+                f"<p>IG Publisher Version: v{publisher}</p>"
+                '<h2><a href="ValueSet-codes.html">fsh-generated/resources/'
+                "ValueSet-codes.json</a></h2><table>"
+                '<tr style="background-color: #ffebcc">'
+                f"<td><b>{path}</b></td><td><b>warning</b></td>"
+                f'<td><b>{finding}</b> <span class="code-value">{diagnostic}</span></td>'
+                "<td>--</td></tr></table>"
+            )
+
+        def value_set(loinc_include: dict[str, object]) -> dict[str, object]:
+            return {
+                "resourceType": "ValueSet",
+                "id": "codes",
+                "compose": {"include": [
+                    {"system": "https://example.org/CodeSystem/local", "concept": [
+                        {"code": "local"},
+                    ]},
+                    loinc_include,
+                ]},
+            }
+
+        pinned = {"system": "http://loinc.org", "concept": [{"code": "8867-4"}]}
+        include_path = "ValueSet.compose.include[1] (l1/c1)"
+        value_set_path = "ValueSet.where(id = &#39;codes&#39;)"
+
+        with tempfile.TemporaryDirectory() as directory:
+            guide = Path(directory).resolve() / "guide"
+            output = guide / "output"
+            output.mkdir(parents=True)
+
+            def count(resource: dict[str, object], html_text: str) -> int:
+                (output / "ValueSet-codes.json").write_text(
+                    json.dumps(resource), encoding="utf-8"
+                )
+                (output / "qa.html").write_text(html_text, encoding="utf-8")
+                return CHECK.offline_absent_code_system_warning_count(guide)
+
+            self.assertEqual(count(value_set(pinned), qa_html(include_path, not_present)), 1)
+            self.assertEqual(
+                count(value_set(pinned), qa_html(value_set_path, unexpandable)), 1
+            )
+
+            near_misses = (
+                (
+                    value_set({"system": "http://loinc.org", "concept": [{"code": "999999-9"}]}),
+                    qa_html(include_path, not_present),
+                ),
+                (
+                    value_set({
+                        "system": "http://loinc.org",
+                        "filter": [{"property": "CLASS", "op": "=", "value": "HRTRATE.ATOM"}],
+                    }),
+                    qa_html(include_path, not_present),
+                ),
+                (
+                    value_set({"system": "http://loinc.org", "concept": [{"code": "999999-9"}]}),
+                    qa_html(value_set_path, unexpandable),
+                ),
+                (value_set(pinned), qa_html("ValueSet.compose.include[0] (l1/c1)", not_present)),
+                (value_set(pinned), qa_html("ValueSet.where(id = &#39;other&#39;)", unexpandable)),
+                (
+                    value_set(pinned),
+                    qa_html(include_path, not_present.replace("loinc.org", "snomed.info/sct")),
+                ),
+                (value_set(pinned), qa_html(include_path, not_present, diagnostic="diagnostic")),
+                (value_set(pinned), qa_html(include_path, not_present, publisher="2.3.4")),
+            )
+            for resource, html_text in near_misses:
+                with self.subTest(html_text=html_text, resource=resource):
+                    self.assertEqual(count(resource, html_text), 0)
 
     def test_broad_substring_suppression_is_rejected(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

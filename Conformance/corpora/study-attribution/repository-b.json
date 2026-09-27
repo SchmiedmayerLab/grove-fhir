@@ -1,0 +1,62 @@
+{
+  "resourceType": "Bundle",
+  "type": "collection",
+  "id": "StudyBRepositoryExample",
+  "entry": [
+    {
+      "fullUrl": "https://receiver.example.org/PlanDefinition/plan-b-r3",
+      "resource": {
+        "resourceType": "PlanDefinition",
+        "id": "plan-b-r3",
+        "url": "https://study.example.org/PlanDefinition/b",
+        "version": "3",
+        "status": "active",
+        "title": "Study B Protocol"
+      }
+    },
+    {
+      "fullUrl": "https://receiver.example.org/ResearchStudy/study-b-r3",
+      "resource": {
+        "resourceType": "ResearchStudy",
+        "id": "study-b-r3",
+        "identifier": [
+          {
+            "system": "https://study.example.org/studies",
+            "value": "b"
+          }
+        ],
+        "status": "active",
+        "title": "Study B",
+        "protocol": [
+          {
+            "reference": "https://receiver.example.org/PlanDefinition/plan-b-r3"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "https://receiver.example.org/ResearchSubject/enrollment-b",
+      "resource": {
+        "resourceType": "ResearchSubject",
+        "id": "enrollment-b",
+        "identifier": [
+          {
+            "system": "https://study.example.org/enrollments",
+            "value": "enrollment-b"
+          }
+        ],
+        "status": "on-study",
+        "study": {
+          "reference": "https://receiver.example.org/ResearchStudy/study-b-r3"
+        },
+        "individual": {
+          "type": "Patient",
+          "identifier": {
+            "system": "https://study.example.org/fhir/identifiers/participant",
+            "value": "participant-001"
+          }
+        }
+      }
+    }
+  ]
+}

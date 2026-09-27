@@ -1582,6 +1582,13 @@
           "classification": "definition"
         },
         {
+          "fshName": "GroveMobileMeasurementCodeVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "grove-mobile-measurement-code",
+          "classification": "definition"
+        },
+        {
           "fshName": "GroveMobileMeasurementVS",
           "fshType": "ValueSet",
           "resourceType": "ValueSet",
@@ -5506,6 +5513,13 @@
           "fshType": "Instance",
           "resourceType": "QuestionnaireResponse",
           "id": "GroveWeeklySymptomCheckInResponseExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "GroveWeeklySymptomCheckInSpanishResponseExample",
+          "fshType": "Instance",
+          "resourceType": "QuestionnaireResponse",
+          "id": "GroveWeeklySymptomCheckInSpanishResponseExample",
           "classification": "example"
         },
         {

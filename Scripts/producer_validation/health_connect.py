@@ -11,10 +11,11 @@ from __future__ import annotations
 from typing import Any
 
 from .context import CATALOG_ROOT
-from .diagnostics import ProducerValidationError
+from .diagnostics import ProducerValidationError, contract_failure
 from .identity import typed_resource_identifiers
 from .io import read_json
 from .profiles import codeable_concept_codings, coding_pairs_recursive
+from .references import complete_identifier
 
 
 def validate_health_connect_specimen_claim(resource: dict[str, Any], label: str) -> None:
@@ -145,8 +146,10 @@ def validate_health_connect_source_type(resource: dict[str, Any], label: str) ->
         if isinstance(extension, dict) and extension.get("url") == extension_url
     ] if isinstance(extensions, list) else []
     if len(values) != 1 or not isinstance(values[0], str):
-        raise ProducerValidationError(
-            f"{label} must carry exactly one coded Health Connect Record type"
+        raise contract_failure(
+            "mobile-output.adapter-source-marker",
+            "Observation.extension",
+            f"{label} must carry exactly one coded Health Connect Record type",
         )
     row = next(
         (item for item in catalog["recordTypes"] if item["token"] == values[0]),
@@ -409,6 +412,21 @@ def validate_health_connect_source_type(resource: dict[str, Any], label: str) ->
                 f"{label} must carry exactly one {name} source coding in its value"
             )
 
+def _patient_reference_identity(reference: Any) -> tuple[str, ...] | None:
+    """Compare Patient identity without optional Reference or Identifier metadata."""
+    if not isinstance(reference, dict):
+        return None
+    if "reference" in reference:
+        literal = reference["reference"]
+        if isinstance(literal, str) and literal and "identifier" not in reference:
+            return ("literal", literal)
+        return None
+    identifier = reference.get("identifier")
+    if reference.get("type") == "Patient" and isinstance(identifier, dict):
+        return ("logical", *complete_identifier(identifier, "Patient subject identifier"))
+    return None
+
+
 def validate_health_connect_output_graph(
     entry_resources: list[dict[str, Any]],
     resources_by_full_url: dict[str, dict[str, Any]],
@@ -522,12 +540,10 @@ def validate_health_connect_output_graph(
             raise ProducerValidationError(
                 f"{label} BloodGlucoseRecord Observation must reference its one synthesized Specimen"
             )
-        observation_subject = observation.get("subject", {}).get("reference")
-        specimen_subject = specimen.get("subject", {}).get("reference")
-        if (
-            not isinstance(observation_subject, str)
-            or specimen_subject != observation_subject
-        ):
+        # Reference shape and target type are validated by the exchange reference policy.
+        observation_subject = _patient_reference_identity(observation.get("subject"))
+        specimen_subject = _patient_reference_identity(specimen.get("subject"))
+        if observation_subject is None or specimen_subject != observation_subject:
             raise ProducerValidationError(
                 f"{label} BloodGlucoseRecord Observation and Specimen must reference the same Patient"
             )

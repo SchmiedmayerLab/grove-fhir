@@ -10,8 +10,8 @@
       "sha256": "7821631325c60b17b8832a15ed4299563265e72cfe5af12457ab7f23628400d2"
     },
     "fhirValidator": {
-      "version": "6.10.3",
-      "sha256": "b2cd1c761dbb79722d7a1ccb149c3c522195c37c9f1b8951b23b1340828b691b"
+      "version": "6.10.4",
+      "sha256": "1106b9d58f9e363e47bea7c4fc065841e5fc91fe9d062775c3bfdd212bd653cc"
     },
     "sushi": {
       "version": "3.20.1"

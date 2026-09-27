@@ -297,6 +297,28 @@
       }
     },
     {
+      "id": "questionnaire-language-missing",
+      "base": "valid/questionnaire-conditions.json",
+      "expectedRule": "qg-language-required",
+      "mutation": {"op": "remove", "path": "/language"}
+    },
+    {
+      "id": "questionnaire-translation-base-language",
+      "base": "valid/questionnaire.json",
+      "expectedRule": "qg-translation-1",
+      "mutation": {"op": "replace", "path": "/_title/extension/0/extension/0/valueCode", "value": "en-us"}
+    },
+    {
+      "id": "questionnaire-translation-duplicate-language",
+      "base": "valid/questionnaire.json",
+      "expectedRule": "qg-translation-1",
+      "mutation": {
+        "op": "copy",
+        "from": "/_title/extension/0",
+        "path": "/_title/extension/-"
+      }
+    },
+    {
       "id": "response-unversioned-canonical",
       "base": "valid/questionnaire-response.json",
       "expectedRule": "gqr-canonical-1",
@@ -367,6 +389,12 @@
           "code": "VERBAL"
         }
       }
+    },
+    {
+      "id": "response-language-missing",
+      "base": "valid/questionnaire-response.json",
+      "expectedRule": "gqr-language-required",
+      "mutation": {"op": "remove", "path": "/language"}
     }
   ]
 }

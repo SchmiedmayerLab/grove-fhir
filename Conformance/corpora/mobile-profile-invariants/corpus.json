@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 0,
+  "purpose": "One heart-rate Observation per way a Mobile Observation can breach a GroveMobileObservationRules invariant or the dataAbsentReason binding. The official Validator must accept the control and reject every case for exactly the declared reason, so a rule dropped from the obeys line fails Scripts/validate-fixtures.py instead of only a guide build. A text-only code also fails the profile's fixed code and the imposed HL7 heart-rate slice, which that case declares.",
+  "profile": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-heart-rate",
+  "control": "control.json",
+  "cases": [
+    {
+      "path": "date-only-effective.json",
+      "expectedInvariant": "grove-mobile-effective-1"
+    },
+    {
+      "path": "date-only-period.json",
+      "expectedInvariant": "grove-mobile-effective-1"
+    },
+    {
+      "path": "text-only-code.json",
+      "expectedInvariant": "grove-mobile-code-system-1",
+      "alsoRejected": [
+        "Expected 1 but found 0 coding elements",
+        "HeartRateCode: magic LOINC code 8867-4 required"
+      ]
+    },
+    {
+      "path": "foreign-code-system.json",
+      "expectedInvariant": "grove-mobile-code-system-1"
+    },
+    {
+      "path": "foreign-body-site.json",
+      "expectedInvariant": "grove-mobile-body-site-1"
+    },
+    {
+      "path": "text-only-body-site.json",
+      "expectedInvariant": "grove-mobile-body-site-1"
+    },
+    {
+      "path": "foreign-method.json",
+      "expectedInvariant": "grove-mobile-method-1"
+    },
+    {
+      "path": "foreign-data-absent-reason.json",
+      "expectedBinding": "http://hl7.org/fhir/ValueSet/data-absent-reason"
+    },
+    {
+      "path": "foreign-component-data-absent-reason.json",
+      "expectedBinding": "http://hl7.org/fhir/ValueSet/data-absent-reason"
+    }
+  ]
+}

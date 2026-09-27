@@ -9,7 +9,7 @@
     "mobile/input/fsh/terminology.fsh",
     "mobile/input/fsh/profiles.fsh"
   ],
-  "groundTruthDigest": "sha256:11d427e4f61793bed3ce168ef53ea32a297faf2197c2ca40de41bb9d6c7db313",
+  "groundTruthDigest": "sha256:af1d548e2252eb4ed4da115ea18836088537915cf33b1cd4cb1a4355d3196554",
   "valueDomainReview": {
     "status": "prepared-pending-release-ratification",
     "preparedOn": "2026-08-27",

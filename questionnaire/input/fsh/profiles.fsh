@@ -96,6 +96,11 @@ Description: "This exchange contract does not accept presentation-sensitive sema
 Severity: #error
 Expression: "extension('http://hl7.org/fhir/StructureDefinition/rendering-styleSensitive').empty() and repeat(item).extension('http://hl7.org/fhir/StructureDefinition/rendering-styleSensitive').empty()"
 
+Invariant: qg-translation-1
+Description: "Every translation names a language other than the base language, and no string carries two translations into the same language."
+Severity: #error
+Expression: "descendants().where(extension('http://hl7.org/fhir/StructureDefinition/translation').exists()).all(extension('http://hl7.org/fhir/StructureDefinition/translation').extension('lang').value.select(lower()).isDistinct() and extension('http://hl7.org/fhir/StructureDefinition/translation').extension('lang').value.all(lower() != %resource.language.lower()))"
+
 Invariant: gqr-canonical-1
 Description: "The response names the exact instrument with an absolute url|Semantic-Version canonical; neither component contains a fragment or an extra separator."
 Severity: #error
@@ -116,7 +121,7 @@ Parent: http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire
 Id: grove-questionnaire
 Title: "Grove Questionnaire"
 Description: "A versioned SDC Questionnaire that can be administered and answered without relying on renderer-specific semantics."
-* obeys qg-canonical-1 and qg-version-1 and qg-version-algorithm-1 and qg-item-text-1 and qg-reference-1 and qg-enable-1 and qg-expression-1 and qg-variable-name-1 and qg-initial-1 and qg-length-1 and qg-decimal-1 and qg-value-bounds-1 and qg-quantity-1 and qg-unit-1 and qg-attachment-1 and qg-occurrence-1 and qg-min-max-1 and qg-style-sensitive-1
+* obeys qg-canonical-1 and qg-version-1 and qg-version-algorithm-1 and qg-item-text-1 and qg-reference-1 and qg-enable-1 and qg-expression-1 and qg-variable-name-1 and qg-initial-1 and qg-length-1 and qg-decimal-1 and qg-value-bounds-1 and qg-quantity-1 and qg-unit-1 and qg-attachment-1 and qg-occurrence-1 and qg-min-max-1 and qg-style-sensitive-1 and qg-translation-1
 * extension contains
     $variable named variable 0..* MS and
     $targetConstraint named targetConstraint 0..* MS
@@ -127,6 +132,8 @@ Description: "A versioned SDC Questionnaire that can be administered and answere
 * extension[versionAlgorithm].valueCoding.code 1..1
 * extension[versionAlgorithm].valueCoding.code = #semver (exactly)
 * extension[variable].valueExpression.name 1..1 MS
+* language 1..1 MS
+* language ^short = "Base language of every human-readable string; other languages are translation extensions"
 * url 1..1 MS
 * version 1..1 MS
 * status 1..1 MS
@@ -184,6 +191,8 @@ Id: grove-questionnaire-response
 Title: "Grove Questionnaire Response"
 Description: "A response to one exact version of a Grove Questionnaire, with a stable submission identifier and electronic completion mode."
 * obeys gqr-canonical-1 and gqr-identifier-1 and gqr-completion-mode-1
+* language 1..1 MS
+* language ^short = "Language the participant saw: the instrument's base language or one of its translations"
 * questionnaire 1..1 MS
 * questionnaire only Canonical(GroveQuestionnaire)
 * identifier 1..1 MS

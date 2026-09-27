@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 0,
+  "eventLock": "event-lock.json",
+  "source": "source-event.json",
+  "authority": "authority.json",
+  "policy": "Explicit verified enrollment, consent and collection eligibility are required for each exact output-version grant. In this example withdrawal ends current study access, not custody required by another authorized purpose.",
+  "steps": [
+    {"operation": "accept-source-with-grant-a1", "expect": {"storedEvents": 1, "storedClinicalPayloads": 1, "sourceUnchanged": true, "activeGrants": ["a1"], "retainedGrantDecisions": {"a1": "active"}, "exports": {"a": "export-a.json", "b": null}}},
+    {"operation": "authorize-late-b3", "repositoryInput": "repository-b.json", "expect": {"storedEvents": 1, "storedClinicalPayloads": 1, "sourceUnchanged": true, "activeGrants": ["a1", "b3"], "retainedGrantDecisions": {"a1": "active", "b3": "active"}, "exports": {"a": "export-a.json", "b": "export-b.json"}}},
+    {"operation": "publish-a2", "repositoryInput": "revision-a2.json", "expect": {"storedEvents": 1, "storedClinicalPayloads": 1, "sourceUnchanged": true, "activeGrants": ["a1", "b3"], "retainedGrantDecisions": {"a1": "active", "b3": "active"}, "exports": {"a": "export-a.json", "b": "export-b.json"}}},
+    {"operation": "withdraw-a", "expect": {"storedEvents": 1, "storedClinicalPayloads": 1, "sourceUnchanged": true, "activeGrants": ["b3"], "retainedGrantDecisions": {"a1": "revoked", "b3": "active"}, "exports": {"a": null, "b": "export-b.json"}}},
+    {"operation": "restart-and-replay-source", "expect": {"storedEvents": 1, "storedClinicalPayloads": 1, "sourceUnchanged": true, "activeGrants": ["b3"], "retainedGrantDecisions": {"a1": "revoked", "b3": "active"}, "exports": {"a": null, "b": "export-b.json"}}}
+  ],
+  "grants": {
+    "a1": {"enrollment": "enrollment-a", "consentReceipt": "consent-a1", "sourceBinding": "participant-source", "protocol": {"url": "https://study.example.org/PlanDefinition/a", "version": "1"}, "output": {"eventLock": "event-lock.json", "pointer": "/entry/2/resource"}},
+    "b3": {"enrollment": "enrollment-b", "consentReceipt": "consent-b3", "sourceBinding": "participant-source", "protocol": {"url": "https://study.example.org/PlanDefinition/b", "version": "3"}, "output": {"eventLock": "event-lock.json", "pointer": "/entry/2/resource"}}
+  }
+}

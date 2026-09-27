@@ -38,3 +38,4 @@ Alias: $observationCategory = http://terminology.hl7.org/CodeSystem/observation-
 Alias: $ucum = http://unitsofmeasure.org
 Alias: $definitionExtract = http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-definitionExtract
 Alias: $definitionExtractValue = http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-definitionExtractValue
+Alias: $translation = http://hl7.org/fhir/StructureDefinition/translation
