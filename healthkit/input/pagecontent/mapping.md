@@ -98,6 +98,7 @@ The R4 envelope asserts the exact source release, payload integrity, identity, a
 
 Use `effectiveDateTime` for a point result.
 Use `effectivePeriod` when HealthKit supplies a start and end that define an interval. Preserve fractional seconds and the numeric offset.
+Where the selected profile admits only `dateTime`, an interval sample states its `startDate` as `effectiveDateTime` and withholds its `endDate`.
 Map an available IANA time-zone name to the standard FHIR `timezone` extension on the corresponding date-time value.
 
 Step count preserves the source interval total with Grove `step-count-total` and UCUM `{steps}`.
