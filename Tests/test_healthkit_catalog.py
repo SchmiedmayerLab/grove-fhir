@@ -543,6 +543,59 @@ class HealthKitCatalogTests(unittest.TestCase):
         self.assertIn("MUST reject either half-pair", mapping)
         self.assertIn("MUST NOT fabricate version `0`", mapping)
 
+    def test_blood_pressure_objects_supply_what_the_correlation_does_not_state(self) -> None:
+        mapping = (ROOT / "healthkit/input/pagecontent/mapping.md").read_text(encoding="utf-8")
+        heading = "Blood-pressure correlation objects"
+        headings = [line[4:] for line in mapping.splitlines() if line.startswith("### ")]
+        index = headings.index(heading)
+        self.assertEqual(
+            headings[index - 1 : index + 2],
+            ["Capture mode and performer", heading, "Device, application, and provenance"],
+        )
+        section = mapping.split(f"### {heading}\n", 1)[1].split("\n### ", 1)[0]
+        quoted = set(section.split("`")[1::2])
+        # Scope: the catalog's two correlation rows, blood pressure in and food out, because a
+        # food correlation's objects convert to Observations of their own.
+        correlations = {
+            row["sourceTypeIdentifier"] for row in self.catalog["rows"]
+            if row["sourceTypeIdentifier"].startswith("HKCorrelationTypeIdentifier")
+        }
+        self.assertEqual({name for name in quoted if name in correlations}, correlations)
+        self.assertIn("does not apply to an `HKCorrelationTypeIdentifierFood` correlation", section)
+        # Every code the section names is registered.
+        registered = {row["code"] for row in self.protocol["producerDiagnostics"]}
+        codes = {name for name in quoted if name.startswith("mobile-")}
+        self.assertEqual(
+            codes,
+            {
+                "mobile-omission.source-offset",
+                "mobile-input.unsupported-source-value",
+                "mobile-omission.recording-method",
+                "mobile-omission.unmodeled-metadata",
+            },
+        )
+        self.assertLessEqual(codes, registered)
+        for rule in (
+            "Use the correlation's `HKMetadataKeyTimeZone` when it carries one, and consult no "
+            "object's.",
+            "every object that carries one carries the same name, compared character for character",
+            "or two objects carry different names, even a link and its target",
+            "when an object's consulted value is not a valid IANA time-zone name, even when other "
+            "objects carry a valid one.",
+            "When the correlation states `HKMetadataKeyWasUserEntered`, its value decides",
+            "Otherwise set `manual-entry` when there is at least one object and every object "
+            "states `true`",
+            "When the correlation or an object states `true` and the Observation carries no "
+            "`grove-recording-method` extension, report `mobile-omission.recording-method`.",
+            "report the keys withheld from the correlation and its objects as "
+            "`mobile-omission.unmodeled-metadata`, naming each key once",
+        ):
+            with self.subTest(rule=rule):
+                self.assertIn(rule, section)
+        # What states the flag is defined once for every sample, so a correlation's 2 defers.
+        capture = mapping.split("### Capture mode and performer\n", 1)[1].split("\n### ", 1)[0]
+        self.assertIn("any other value, such as 2, states nothing", capture)
+
     def test_mobile_healthkit_coverage_is_bidirectional(self) -> None:
         supported_rows: dict[str, list[str]] = {}
         for row in self.catalog["rows"]:

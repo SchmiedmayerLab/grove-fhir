@@ -124,12 +124,32 @@ The Mobile percent domain of 0 through 100 applies to the emitted value.
 ### Capture mode and performer
 
 When `HKMetadataKeyWasUserEntered` is explicitly `true`, set the Mobile `grove-recording-method` extension to `manual-entry`.
+A sample states the flag only through an `NSNumber` equal to 1, which is `true`, or 0, which is `false`; any other value, such as 2, states nothing, even though Objective-C `boolValue` reads it as `true`.
 This flag does not identify the person who entered the value, so it does not justify a Patient performer.
 Populate `Observation.performer` only when separate source evidence identifies a responsible party.
 The [body-weight example](Observation-HealthKitManuallyEnteredBodyWeightExample.html) shows this mapping.
 
 Do not infer `actively-recorded` or `automatically-recorded` when the flag is absent or false; omission means the converter does not know the capture mode.
 Do not add the Patient as performer solely from capture mode. `Observation.method` remains available for a clinical measurement technique and is not used for HealthKit capture mode.
+
+### Blood-pressure correlation objects
+
+An `HKCorrelationTypeIdentifierBloodPressure` correlation converts to one Observation: its identity and effective time come from the `HKCorrelation`, and its systolic and diastolic components from the `HKQuantitySample` objects in `HKCorrelation.objects`.
+The objects' `HKMetadataKeyTimeZone` and `HKMetadataKeyWasUserEntered` count for that Observation as this section defines.
+`HKCorrelation.objects` is a set, so no outcome below depends on the order in which a producer reads the objects.
+This section does not apply to an `HKCorrelationTypeIdentifierFood` correlation, whose objects are nutrient samples converted to Observations of their own.
+
+Use the correlation's `HKMetadataKeyTimeZone` when it carries one, and consult no object's.
+Otherwise consult every object's, and an object that does not carry one abstains: when at least one object carries one and every object that carries one carries the same name, compared character for character, use that name as if the correlation carried it.
+When no object carries one, or two objects carry different names, even a link and its target such as `US/Pacific` and `America/Los_Angeles`, the record supplies no time-zone name: serialize the effective value in UTC without a `timezone` extension and report `mobile-omission.source-offset`.
+Refuse the record with `mobile-input.unsupported-source-value` when an object's consulted value is not a valid IANA time-zone name, even when other objects carry a valid one.
+
+When the correlation states `HKMetadataKeyWasUserEntered`, its value decides as the [capture-mode rule](#capture-mode-and-performer) defines, whatever its objects state.
+Otherwise set `manual-entry` when there is at least one object and every object states `true`, and omit it when any object states `false` or nothing.
+When the correlation or an object states `true` and the Observation carries no `grove-recording-method` extension, report `mobile-omission.recording-method`.
+
+These rules decide what an object's `HKMetadataKeyTimeZone` and `HKMetadataKeyWasUserEntered` contribute, so neither key on an object is reported as `mobile-omission.unmodeled-metadata`.
+An object's other metadata keys are withheld under the same condition as the correlation's own; report the keys withheld from the correlation and its objects as `mobile-omission.unmodeled-metadata`, naming each key once however many of them carry it.
 
 ### Device, application, and provenance
 
