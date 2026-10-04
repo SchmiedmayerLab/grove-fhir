@@ -123,6 +123,7 @@ class CatalogContractSchemaTests(unittest.TestCase):
                 ("source", "sdkBaseline"),
                 ("source", "evidence", 0),
                 ("producerCanonicalization",),
+                ("producerCanonicalization", "percentScalingVectors", 0),
                 ("sourceTypeExtension",),
                 ("clinicalRecordAdmission",),
                 ("statusVocabulary",),
@@ -368,6 +369,27 @@ class CatalogContractSchemaTests(unittest.TestCase):
         ]
         row["clinicalAdmissionContract"] = "clinicalRecordAdmission"
         self._assert_invalid(nonclinical_claiming_clinical_profile)
+
+    def test_healthkit_percent_scaling_is_one_rule_with_plain_decimal_vectors(self) -> None:
+        healthkit = _read("catalog/healthkit-adapter.json")
+        self._assert_valid(healthkit)
+        for member in ("percentScaling", "percentScalingVectors"):
+            with self.subTest(missing=member):
+                mutated = copy.deepcopy(healthkit)
+                del mutated["producerCanonicalization"][member]
+                self._assert_invalid(mutated)
+        for member, value in (("percentScaling", "binary64-multiply"), ("percentScalingVectors", [])):
+            with self.subTest(member=member, value=value):
+                mutated = copy.deepcopy(healthkit)
+                mutated["producerCanonicalization"][member] = value
+                self._assert_invalid(mutated)
+        # Both members are plain positional lexemes that a serializer cannot reformat.
+        for member in ("fraction", "percent"):
+            for lexeme in ("1e-7", "-0", "00.5", ".5", "28.20", 0.5):
+                with self.subTest(member=member, lexeme=lexeme):
+                    mutated = copy.deepcopy(healthkit)
+                    mutated["producerCanonicalization"]["percentScalingVectors"][1][member] = lexeme
+                    self._assert_invalid(mutated)
 
     def test_profile_claim_modes_are_exact_unique_and_complete(self) -> None:
         claims = _read("catalog/profile-claims.json")
