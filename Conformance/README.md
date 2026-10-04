@@ -48,7 +48,7 @@ The producer remains responsible for generating the files before this command ru
 The JSON Schema is useful for editor integration; `validate-producer.py` applies the same fail-closed rules without requiring a third-party Python package.
 
 `Conformance/corpora/mobile-exchange/official-validator-manifest.json` is the release lane manifest.
-It sends both normative positive bases—the active conversion event and the retraction assertion—through the exact Mobile package and official Validator.
+It sends the three normative positive bases—the active conversion event and the retraction assertion in its exact-target and source-record-target forms—through the exact Mobile package and official Validator.
 
 ## Every committed fixture
 
@@ -79,7 +79,7 @@ The [multi-study attribution corpus](corpora/study-attribution/README.md) comple
 Its derived exports deliberately have new identities and omit the other study's membership; profile-valid policy counterexamples remain in the official fixture lane.
 
 `Conformance/corpora/mobile-exchange` is the normative producer corpus for the Mobile exchange graph.
-Its positive bases cover both one immutable conversion event and one dedicated source-record retraction event.
+Its positive bases cover one immutable conversion event and one dedicated source-record retraction event in each target form: one names the prior primary output through an exact typed target, and one addresses the whole source record through its sole, untyped source-record target.
 The retraction base also carries the optional native record identifier on its target, so a producer can see the exact shape of the disclosure the addition path's governed-source-identifier policy also governs.
 The active Bundle is byte-for-byte equal to the example producer Bundle.
 Every negative case applies exactly one RFC 6902 JSON Patch operation and names the one rule it is intended to violate.

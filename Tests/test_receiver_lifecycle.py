@@ -40,10 +40,11 @@ class ReceiverLifecycleTests(unittest.TestCase):
         protocol = json.loads((ROOT / "catalog/exchange-protocol.json").read_text())
         del protocol["testVectors"]
         rules = json.dumps(protocol, sort_keys=True, separators=(",", ":")).encode()
-        self.assertEqual(hashlib.sha256(rules).hexdigest(), "c1d73d0a7ea112182fbb03dbffe784806f0a19c664c0ebc44cb071be120ae9bf")
+        self.assertEqual(hashlib.sha256(rules).hexdigest(), "2574bbece206300e3a294f9d6c1fa90fbc8b05869b55e0a6e9ce2f19e036f851")
         for name, digest in {
             "exchange-bundle.json": "0606a575d494b029838aea451dda726fbc90e389c9c1318bae8e743cf1dc556e",
             "retraction-bundle.json": "54085f51d0d7629bc5a556cb9ea2813b7c7d6defadb8f2d3340270bc88f5d226",
+            "source-record-target-retraction-bundle.json": "5cbddeb671a88c2132129b2d42622dc97b2e9aeffbb5f9046e8ff6c6e7229da9",
         }.items():
             self.assertEqual(hashlib.sha256((BASE / name).read_bytes()).hexdigest(), digest)
 
@@ -71,7 +72,7 @@ class ReceiverLifecycleTests(unittest.TestCase):
 
     def test_every_event_passes_the_existing_structural_contract(self):
         _, paths = validate_manifest(CORPUS / "official-validator-manifest.json")
-        self.assertEqual(len(paths), 18)
+        self.assertEqual(len(paths), 19)
         self.assertEqual(set(paths), set((CORPUS / "resources").glob("*.json")))
 
     def test_writer_order_cannot_be_replaced_by_sequence_time_or_float(self):

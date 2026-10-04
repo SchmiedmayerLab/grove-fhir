@@ -262,6 +262,35 @@ class ProducerExchangeTests(ProducerValidationTestCase):
         ):
             exchange_bundle.validate_exchange_bundle(wrong_target_identifier_role, "retraction")
 
+        # Only the source-record role is untyped; an exact target still states its type.
+        untyped_exact_target = copy.deepcopy(retraction)
+        del untyped_exact_target["entry"][0]["resource"]["target"][0]["type"]
+        with self.assertRaisesRegex(
+            diagnostics.ProducerValidationError, "must state its resource type"
+        ):
+            exchange_bundle.validate_exchange_bundle(untyped_exact_target, "retraction")
+
+        source_record_target_retraction = json.loads(
+            (
+                ROOT
+                / "Conformance/corpora/mobile-exchange/source-record-target-retraction-bundle.json"
+            ).read_text(encoding="utf-8")
+        )
+        exchange_bundle.validate_exchange_bundle(source_record_target_retraction, "retraction")
+        # The sole-target rule holds wherever the source-record target sits.
+        exact_first = copy.deepcopy(source_record_target_retraction)
+        exact_first["entry"][0]["resource"]["target"] = [
+            copy.deepcopy(retraction["entry"][0]["resource"]["target"][0]),
+            copy.deepcopy(source_record_target_retraction["entry"][0]["resource"]["target"][0]),
+        ]
+        self.assertEqual(
+            [
+                (item["code"], item["location"])
+                for item in exchange_bundle.exchange_bundle_diagnostics(exact_first, "retraction")
+            ],
+            [("mobile-retraction.source-record-target", "Provenance.target")],
+        )
+
         retraction_literal_source = copy.deepcopy(retraction)
         retraction_provenance = retraction_literal_source["entry"][0]["resource"]
         retraction_provenance["contained"] = [{

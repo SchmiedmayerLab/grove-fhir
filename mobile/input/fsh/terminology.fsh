@@ -48,7 +48,7 @@ Description: "Grove-specific lifecycle assertions whose meaning is not a FHIR re
 * ^experimental = false
 * ^caseSensitive = true
 * ^content = #complete
-* #source-record-retracted "Source record retracted" "The producer records that its source no longer exposes a previously converted record and identifies the exact prior outputs. This does not assert clinical error and does not instruct a FHIR server to delete them."
+* #source-record-retracted "Source record retracted" "The producer records that its source no longer exposes a record it converted or may have converted, and identifies either the exact prior outputs or, through one source-record target, every prior output of that record. This does not assert clinical error and does not instruct a FHIR server to delete them."
 
 ValueSet: GroveLifecycleEventVS
 Id: grove-lifecycle-event
@@ -69,6 +69,7 @@ Description: "The closed roles a prior output may play in a source-derived graph
 * #child-output "Child output" "A sample, stage, workout segment, or other child output."
 * #specimen "Specimen" "A synthesized Specimen node used by a prior output."
 * #device-snapshot "Device snapshot" "An event-time Device snapshot that must be retired with the source-derived graph under the deployment's lifecycle policy."
+* #source-record "Source record" "The source record as a whole: every node that the conversion Provenance of any active event with this exact source-record entity targets, and the event-time Device snapshots those events carry, whether an event arrives before or after the retraction."
 
 ValueSet: GroveRetractionTargetRoleVS
 Id: grove-retraction-target-role

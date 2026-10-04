@@ -9,11 +9,13 @@ These synthetic sequences exercise a declared receiver policy against grove-fhir
 They do not add a Bundle field, endpoint, receipt code, storage engine or universal disclosure policy to the IG.
 `events.json` pins the contract and exact fixture bytes. `sequences.json` covers eleven single-output lifecycle sequences; `revision-sequences.json` adds thirty-five complete-revision and ordering-conflict sequences.
 `identity-sequences.json` adds two arrival orders for a contradictory source-record claim under the same output identity.
+`source-record-target-retraction-sequences.json` adds four sequences in which one source-record target retracts a whole record.
 
 The events are derived from the existing Mobile exchange bases using the reference identity algorithms.
 Run `python3 -B -m Scripts.receiver_lifecycle_fixtures --check` to detect drift; omit `--check` to regenerate only this corpus's generated files.
 The retraction is the unchanged pinned example. Its complete target Identifier addresses the output in `original`, even when that event has not arrived.
-The lock distinguishes the base source/catalog from this corpus's catalog, whose only additions are reproducible identity test vectors.
+The source-record target retraction is the unchanged pinned source-record target example: its one untyped target repeats the source-record Identifier of `original` and every other `record-heart-001` event.
+The lock distinguishes the base source/catalog from this corpus's catalog, which adds contract rules made after the base, such as the source-record retraction target, and reproducible identity test vectors.
 
 ## Receiver Harness
 
@@ -48,7 +50,7 @@ The harness must resolve under verified subject/source scope; matching an Identi
 
 ## Validation Boundaries
 
-The structural producer validator checks the eighteen graphs, identities, source-neutral semantic profile claims and closed references.
+The structural producer validator checks the nineteen graphs, identities, source-neutral semantic profile claims and closed references.
 The all-fixtures manifest sends every generated Bundle through the official FHIR Validator with the exact Mobile and Questionnaire packages.
 The changed-content retry is intentionally profile-valid: only receiver history can identify its conflict.
 
@@ -72,6 +74,16 @@ The first binding may come from an active event or a retraction assertion. The t
 Each sequence repeats accepted and rejected submissions. `bindingEvent` names the first accepted claiming event, which need not contain an Observation. `current` and `grants` name exact active-event Observations; `retractionEvents` records accepted restrictive assertions in the cross-kind cases. A later matching target can have a retained grant but no current disclosure because of its earlier retraction. `receiptEvent` identifies the particular accepted/replayed event, not always the binding event, and is null for a rejection.
 Purpose-b remains unauthorized. A receiver harness must also interleave concurrent first claims and interrupt the transaction: at most one contradictory claim may commit, and a failed transaction must not reserve the binding.
 Replay after restart preserves the accepted binding and rejected outcome. This is a declared contextual admission policy, not a new FHIR profile constraint.
+
+## Source-Record Target Retraction
+
+`source-record-target-retraction-sequences.json` names each complete source-record Identifier by a record alias, each output by an event and the fullUrl its conversion Provenance targets, and each event-time Device snapshot by an event and entry fullUrl.
+`history` holds accepted event aliases, `versions`, `current`, `visible` and `newlyVisible` hold output aliases, `retractedRecords` holds record aliases, and `retiredDeviceSnapshots` holds Device snapshot aliases.
+The target addresses every node targeted by the conversion Provenance of every accepted active event whose source entity is that record, and the Device snapshots those events carry, whether the event is accepted before or after the retraction.
+A retraction that arrives first is accepted, matches nothing, and keeps later events of its record from becoming current.
+Nodes of every other source record stay current, a rejected event is never addressed, and an addressed output keeps its versions and history.
+A source-record target binds no output, because it names none: in `source-record-target-retraction-binds-no-output`, unlike `retraction-binds-before-active-claim` in `identity-sequences.json`, `changed-source-record` is accepted after the retraction and binds the shared output to `another-record`, so the later `multi-v2` claim is rejected.
+Every output version is authorized for purpose-a, so visibility follows current selection; purpose-b stays empty, and replay or rejection leaves the state unchanged.
 
 ## Complete Source-Record Revisions
 

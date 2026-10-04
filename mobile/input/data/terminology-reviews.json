@@ -9,7 +9,7 @@
     "mobile/input/fsh/terminology.fsh",
     "mobile/input/fsh/profiles.fsh"
   ],
-  "groundTruthDigest": "sha256:af1d548e2252eb4ed4da115ea18836088537915cf33b1cd4cb1a4355d3196554",
+  "groundTruthDigest": "sha256:fc1baf89fb2a043fed2ac96bf552c66171a69955c32458085f6b16e713c281c7",
   "valueDomainReview": {
     "status": "prepared-pending-release-ratification",
     "preparedOn": "2026-08-27",
@@ -4612,6 +4612,15 @@
       "measurementImpact": "None. The rename is confined to the retraction lifecycle Provenance; every per-measurement digest is unchanged.",
       "review": "Pending pull-request review for the 0.6.0 release preparation.",
       "approvedOn": "2026-08-30"
+    },
+    {
+      "from": "sha256:af1d548e2252eb4ed4da115ea18836088537915cf33b1cd4cb1a4355d3196554",
+      "to": "sha256:fc1baf89fb2a043fed2ac96bf552c66171a69955c32458085f6b16e713c281c7",
+      "baseCommit": "e04ab86",
+      "change": "Added the source-record retraction target role to GroveRetractionTargetRoleCS, admitted it in the source-record-retracted definition, relaxed GroveMobileRetractionProvenance.target.type to 0..1 for that untyped role, let grove-retraction-target-1 admit it, and added grove-retraction-source-record-target-1.",
+      "measurementImpact": "None. The change is confined to the retraction lifecycle Provenance and its lifecycle and target-role code systems; every per-measurement digest is unchanged.",
+      "review": "Pending pull-request review of the source-record retraction target.",
+      "approvedOn": "2026-10-04"
     }
   ]
 }

@@ -456,6 +456,11 @@
       "emittedBy": "conformance-kit"
     },
     {
+      "code": "mobile-retraction.source-record-target",
+      "reason": "A source-record retraction target is the Provenance's only target, states no Reference.type, and repeats the exact source-record Identifier of the Provenance source entity.",
+      "emittedBy": "conformance-kit"
+    },
+    {
       "code": "mobile-omission.recording-device",
       "reason": "The source names a recording device without a stable per-unit token, so the producer emits no recording Device and the output carries no device reference.",
       "emittedBy": "client",
@@ -928,8 +933,8 @@
       "activitySystem": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-lifecycle-event",
       "activityCode": "source-record-retracted",
       "codingCardinality": "Exactly one coding from the Grove lifecycle system and zero codings from the ISO lifecycle system; translations from unrelated systems remain open.",
-      "meaning": "The producer records that its source no longer exposes the record and identifies the exact previously emitted graph nodes. It neither asserts clinical error nor instructs a FHIR server to delete anything.",
-      "target": "Each Provenance.target is a typed logical Reference with exactly one complete Identifier, one Grove target-role extension, and at most one Grove native-record-identifier extension. Literal references and copied active clinical resources are prohibited.",
+      "meaning": "The producer records that its source no longer exposes the record and identifies the exact previously emitted graph nodes. It neither asserts clinical error nor instructs a FHIR server to delete anything. Instead of naming those nodes, the producer may address the source record as a whole through one source-record target.",
+      "target": "Each Provenance.target is a logical Reference with exactly one complete Identifier, one Grove target-role extension, and at most one Grove native-record-identifier extension. Literal references and copied active clinical resources are prohibited. Every target except a source-record target states the Reference.type its role admits; a source-record target is the Provenance's only target, states no Reference.type, and repeats the exact source-record Identifier of the Provenance source entity.",
       "nativeRecordIdentifier": {
         "optionality": "optional",
         "extension": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-retraction-target-native-identifier",
@@ -974,9 +979,13 @@
           "resourceTypes": [
             "Device"
           ]
+        },
+        "source-record": {
+          "identifierRole": "source-record",
+          "resourceTypes": []
         }
       },
-      "sink": "A receiver must resolve every target unambiguously under its indexed complete Identifier pair before applying its separately configured idempotent and atomic lifecycle policy."
+      "sink": "A receiver must resolve every target unambiguously under its indexed complete Identifier pair before applying its separately configured idempotent and atomic lifecycle policy. A source-record target resolves to every node that the conversion Provenance of any accepted active event with that source entity targets, and to the event-time Device snapshots those events carry, whether the event is accepted before or after the retraction; it names no output Identifier and so associates no output with the record."
     }
   },
   "referencePolicy": {
@@ -1431,6 +1440,17 @@
           "com.example.app|1.2.3"
         ],
         "value": "v0:test-key:1:JUZooa4NZX-rlMn9-NC8W078xzEuUO9X3Xo1mgk0Vac"
+      },
+      {
+        "id": "normative-corpus-source-record-target-retraction-application-snapshot",
+        "identityKind": "device-snapshot",
+        "components": [
+          "https://study.example.org/fhir/NamingSystem/grove-event-v0",
+          "e0:1f5c58aa-6ec6-4e79-a682-829a9debd3f5:48",
+          "application",
+          "com.example.app|1.2.3"
+        ],
+        "value": "v0:test-key:1:v2S4UaQfgSAXnbRfvHV12rL9HC2qB3MGCe2nLkRlItg"
       },
       {
         "id": "questionnaire-extraction-source-record",

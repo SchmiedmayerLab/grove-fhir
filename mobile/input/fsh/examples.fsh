@@ -304,6 +304,46 @@ Description: "One immutable retraction event containing only its lifecycle Prove
 * entry[0].fullUrl = "urn:uuid:f99194b8-aaf8-5fdb-91fa-19309bdd6716"
 * entry[0].resource = GroveMobileRetractionProvenanceExample
 
+Instance: GroveMobileSourceRecordTargetRetractionProvenanceExample
+InstanceOf: GroveMobileRetractionProvenance
+Usage: #example
+Title: "Example Mobile Source-Record Target Retraction Provenance"
+Description: "Retracts the same source record as the exact retraction example, asserted by a producer that cannot establish which outputs its conversion of the record emitted. Its only target is untyped and repeats the source-record Identifier of Provenance.entity, so it addresses the source record as a whole without naming any of its outputs."
+* target.identifier.type = GroveIdentifierRoleCS#source-record "Source record"
+* target.identifier.system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* target.identifier.value = "v0:test-key:1:ptHr751zWyYfaR2WIvrP1TfnVEK4bInC__ibP_AYfVY"
+* target.extension[targetRole].valueCode = #source-record
+* target.extension[nativeIdentifier].valueIdentifier.system = "https://study.example.org/fhir/NamingSystem/native-record/health-connect/1f5c58aa-6ec6-4e79-a682-829a9debd3f5"
+* target.extension[nativeIdentifier].valueIdentifier.value = "record-heart-001"
+* occurredDateTime = "2026-08-21T08:00:00Z"
+* recorded = "2026-08-21T08:00:01Z"
+* activity = GroveLifecycleEventCS#source-record-retracted "Source record retracted"
+* agent[assembler].type = $provenanceParticipantType#assembler "Assembler"
+* agent[assembler].who.type = "Device"
+* agent[assembler].who.identifier.type = GroveIdentifierRoleCS#device-snapshot "Device snapshot"
+* agent[assembler].who.identifier.system = "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v0/test-key/1"
+* agent[assembler].who.identifier.value = "v0:test-key:1:v2S4UaQfgSAXnbRfvHV12rL9HC2qB3MGCe2nLkRlItg"
+* entity.role = #source
+* entity.what.identifier.type = GroveIdentifierRoleCS#source-record "Source record"
+* entity.what.identifier.system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* entity.what.identifier.value = "v0:test-key:1:ptHr751zWyYfaR2WIvrP1TfnVEK4bInC__ibP_AYfVY"
+
+Instance: GroveMobileSourceRecordTargetRetractionBundleExample
+InstanceOf: GroveMobileRetractionBundle
+Usage: #example
+Title: "Example Mobile Source-Record Target Retraction Bundle"
+Description: "One immutable retraction event whose lifecycle Provenance addresses its source record as a whole through one source-record target. Repository deletion or status projection remains a separate deployment policy."
+* identifier.type = GroveIdentifierRoleCS#event "Event"
+* identifier.system = "https://study.example.org/fhir/NamingSystem/grove-event-v0"
+* identifier.value = "e0:1f5c58aa-6ec6-4e79-a682-829a9debd3f5:48"
+* type = #collection
+* timestamp = "2026-08-21T08:00:01Z"
+* entry[0].extension[entryNodeKey].valueIdentifier.type = GroveIdentifierRoleCS#entry-node "Entry node"
+* entry[0].extension[entryNodeKey].valueIdentifier.system = "https://study.example.org/fhir/NamingSystem/grove-entry-node-v0"
+* entry[0].extension[entryNodeKey].valueIdentifier.value = "n0:retraction-provenance:0:6hlvPfKOTB9--5ewGju7a1GOd2yovK-d4vLMnc5y9dg"
+* entry[0].fullUrl = "urn:uuid:60f3a05d-4c20-5802-a4b9-aff94f7e553c"
+* entry[0].resource = GroveMobileSourceRecordTargetRetractionProvenanceExample
+
 Instance: GroveMobileWriterRecordIdentityExample
 InstanceOf: GroveMobileHeartRate
 Usage: #example
