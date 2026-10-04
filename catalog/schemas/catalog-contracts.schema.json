@@ -113,8 +113,8 @@
       "properties": {"adapterId": {"$ref": "#/$defs/slug"}, "status": {"const": "stable-token-required"}, "stableUnitToken": {"$ref": "#/$defs/nonEmptyText"}, "preferredStableUnitEvidence": {"$ref": "#/$defs/nonEmptyText"}, "sourceDescriptionFields": {"$ref": "#/$defs/textArray"}, "prohibitedIdentityInputs": {"$ref": "#/$defs/textArray"}, "fallback": {"$ref": "#/$defs/nonEmptyText"}, "snapshot": {"$ref": "#/$defs/nonEmptyText"}}
     },
     "applicationDeviceIdentity": {
-      "type": "object", "additionalProperties": false, "required": ["profile", "snapshotIdentifierRole", "bundleIdentifier", "classificationRule"],
-      "properties": {"profile": {"$ref": "#/$defs/uri"}, "snapshotIdentifierRole": {"const": "device-snapshot"}, "bundleIdentifier": {"type": "object", "additionalProperties": false, "required": ["system", "typeSystem", "typeCode", "cardinality", "meaning"], "properties": {"system": {"$ref": "#/$defs/uri"}, "typeSystem": {"$ref": "#/$defs/uri"}, "typeCode": {"const": "apple-bundle-id"}, "cardinality": {"const": "1..1"}, "meaning": {"$ref": "#/$defs/nonEmptyText"}}}, "classificationRule": {"$ref": "#/$defs/nonEmptyText"}}
+      "type": "object", "additionalProperties": false, "required": ["profile", "snapshotIdentifierRole", "bundleIdentifier", "classificationRule", "sourceBuildRule", "sameApplicationRule"],
+      "properties": {"profile": {"$ref": "#/$defs/uri"}, "snapshotIdentifierRole": {"const": "device-snapshot"}, "bundleIdentifier": {"type": "object", "additionalProperties": false, "required": ["system", "typeSystem", "typeCode", "cardinality", "meaning"], "properties": {"system": {"$ref": "#/$defs/uri"}, "typeSystem": {"$ref": "#/$defs/uri"}, "typeCode": {"const": "apple-bundle-id"}, "cardinality": {"const": "1..1"}, "meaning": {"$ref": "#/$defs/nonEmptyText"}}}, "classificationRule": {"$ref": "#/$defs/nonEmptyText"}, "sourceBuildRule": {"$ref": "#/$defs/nonEmptyText"}, "sameApplicationRule": {"$ref": "#/$defs/nonEmptyText"}}
     },
 
     "csvEncoding": {

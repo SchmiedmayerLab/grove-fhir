@@ -9,7 +9,7 @@
     "mobile/input/fsh/terminology.fsh",
     "mobile/input/fsh/profiles.fsh"
   ],
-  "groundTruthDigest": "sha256:fc1baf89fb2a043fed2ac96bf552c66171a69955c32458085f6b16e713c281c7",
+  "groundTruthDigest": "sha256:6c71776297e38900296a852bec2eb3f5261577eb874a512a97708d8c15ef5c02",
   "valueDomainReview": {
     "status": "prepared-pending-release-ratification",
     "preparedOn": "2026-08-27",
@@ -4620,6 +4620,15 @@
       "change": "Added the source-record retraction target role to GroveRetractionTargetRoleCS, admitted it in the source-record-retracted definition, relaxed GroveMobileRetractionProvenance.target.type to 0..1 for that untyped role, let grove-retraction-target-1 admit it, and added grove-retraction-source-record-target-1.",
       "measurementImpact": "None. The change is confined to the retraction lifecycle Provenance and its lifecycle and target-role code systems; every per-measurement digest is unchanged.",
       "review": "Pending pull-request review of the source-record retraction target.",
+      "approvedOn": "2026-10-04"
+    },
+    {
+      "from": "sha256:fc1baf89fb2a043fed2ac96bf552c66171a69955c32458085f6b16e713c281c7",
+      "to": "sha256:6c71776297e38900296a852bec2eb3f5261577eb874a512a97708d8c15ef5c02",
+      "baseCommit": "d8e5661",
+      "change": "Reworded the build definition in GroveApplicationVersionTypeCS so the build slot states the build of the application the Device snapshot describes, including a writer application, rather than only the build that produced the resource.",
+      "measurementImpact": "None. The change rewords one code definition of a Device version-type code system; no code, binding, or per-measurement digest changes.",
+      "review": "Pending pull-request review of the source application build rule.",
       "approvedOn": "2026-10-04"
     }
   ]

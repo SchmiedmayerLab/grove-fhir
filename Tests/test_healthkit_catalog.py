@@ -317,6 +317,51 @@ class HealthKitCatalogTests(unittest.TestCase):
         self.assertIn("Profile: HealthKitApplicationDevice", profiles)
         self.assertIn("identifier[appleBundleId].type", profiles)
 
+    def test_source_application_states_its_build_and_shares_only_the_same_build(self) -> None:
+        # HKSourceRevision.version is the source's CFBundleVersion: a build, never a release.
+        contract = self.catalog["applicationDeviceIdentity"]
+        self.assertIn("CFBundleVersion", contract["sourceBuildRule"])
+        self.assertIn(
+            "applicationBuild slice, never into applicationVersion", contract["sourceBuildRule"]
+        )
+        for condition in (
+            "HKSource.bundleIdentifier equals that Device's Apple bundle identifier",
+            "HKSourceRevision.version is supplied and equals, character for character, "
+            "the build that Device states in applicationBuild",
+            "the producer never reuses a build across releases of that bundle identifier",
+            "every one compared with a converting application Device that states no build",
+        ):
+            with self.subTest(condition=condition):
+                self.assertIn(condition, contract["sameApplicationRule"])
+        mapping = (ROOT / "healthkit/input/pagecontent/mapping.md").read_text(encoding="utf-8")
+        self.assertIn(
+            "copy it unchanged into the typed application-build slice "
+            "(`grove-application-version-type#build`), never into the application-version slice.",
+            mapping,
+        )
+        self.assertNotIn("into the typed application-version slice", mapping)
+        self.assertIn(
+            "- `HKSource.bundleIdentifier` equals the converting application's Apple bundle "
+            "identifier;\n"
+            "- HealthKit supplies `HKSourceRevision.version`, and it equals, character for "
+            "character, the build that the converting application's Device states in its "
+            "application-build slice;\n"
+            "- the producer never reuses a build across releases of that bundle identifier.\n",
+            mapping,
+        )
+        self.assertIn("The same-application rule below is the only exception.", mapping)
+        example = (ROOT / "healthkit/input/fsh/examples.fsh").read_text(encoding="utf-8")
+        example = example.split("Instance: HealthKitSourceApplicationDeviceExample\n", 1)[1]
+        example = example.split("\nInstance: ", 1)[0]
+        self.assertIn(
+            '* version[applicationBuild].type = $groveApplicationVersionType#build "Build"', example
+        )
+        self.assertNotIn("applicationVersion", example)
+        terminology = (ROOT / "mobile/input/fsh/terminology.fsh").read_text(encoding="utf-8")
+        self.assertIn(
+            '#build "Build" "The build of the application the Device snapshot describes', terminology
+        )
+
     def test_platform_additions_and_derived_aggregate_are_explicit(self) -> None:
         rows = {row["sourceTypeIdentifier"]: row for row in self.catalog["rows"]}
         # This was the one screening notification refused while its eleven peers
