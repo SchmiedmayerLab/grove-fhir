@@ -1375,6 +1375,48 @@
         "value": "v0:test-key:1:YTeSyVMN8VDKaIp7rLq6h9HfDIypiKcwO-nFqCJA8Dk"
       },
       {
+        "id": "healthkit-workout-session-output",
+        "identityKind": "source-output",
+        "components": [
+          "healthkit",
+          "HKWorkoutTypeIdentifier",
+          "urn:uuid:1f5c58aa-6ec6-4e79-a682-829a9debd3f5",
+          "default",
+          "4b8d2f0e-6a3c-4e1d-9b57-2c8f1a6e3d90",
+          "workout",
+          "single"
+        ],
+        "value": "v0:test-key:1:_49gdJMoTog6kASPhKHgBSeIr9dUhTbq_khMeUuFPXw"
+      },
+      {
+        "id": "healthkit-workout-event-segment-output",
+        "identityKind": "source-output",
+        "components": [
+          "healthkit",
+          "HKWorkoutTypeIdentifier",
+          "urn:uuid:1f5c58aa-6ec6-4e79-a682-829a9debd3f5",
+          "default",
+          "4b8d2f0e-6a3c-4e1d-9b57-2c8f1a6e3d90",
+          "workout-segment",
+          "2026-08-21T00:00:00.000000000Z|2026-08-21T00:15:00.000000000Z|event|3|0"
+        ],
+        "value": "v0:test-key:1:zHe-FOPpE1CRep1A9TkcdTrzIEo5u2PJD3pC4D38KVw"
+      },
+      {
+        "id": "healthkit-workout-activity-segment-output",
+        "identityKind": "source-output",
+        "components": [
+          "healthkit",
+          "HKWorkoutTypeIdentifier",
+          "urn:uuid:1f5c58aa-6ec6-4e79-a682-829a9debd3f5",
+          "default",
+          "4b8d2f0e-6a3c-4e1d-9b57-2c8f1a6e3d90",
+          "workout-segment",
+          "2026-08-21T00:00:00.000000000Z|2026-08-21T00:45:00.000000000Z|activity|37|0"
+        ],
+        "value": "v0:test-key:1:1sIyU8eD2REPR1ZHAvIcvjEFtRqhm296jUHl-Ya2cIU"
+      },
+      {
         "id": "recording-device-per-unit",
         "identityKind": "recording-device",
         "components": [
