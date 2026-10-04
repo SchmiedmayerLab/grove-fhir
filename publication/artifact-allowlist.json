@@ -4690,6 +4690,13 @@
           "classification": "definition"
         },
         {
+          "fshName": "HealthkitInsulinDeliveryReasonVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "healthkit-insulin-delivery-reason",
+          "classification": "definition"
+        },
+        {
           "fshName": "HealthkitIrregularHeartRhythmNotificationVS",
           "fshType": "ValueSet",
           "resourceType": "ValueSet",

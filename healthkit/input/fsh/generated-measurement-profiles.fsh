@@ -1320,6 +1320,14 @@ Description: "The quantity of insulin delivered during the exact effective Perio
 * valueQuantity.system = $ucum (exactly)
 * valueQuantity.code 1..1 MS
 * valueQuantity.code = #[iU] (exactly)
+* component ^slicing.discriminator.type = #pattern
+* component ^slicing.discriminator.path = "code"
+* component ^slicing.rules = #open
+* component contains insulinDeliveryReason 1..1 MS
+* component[insulinDeliveryReason].code = https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-metadata-key#HKInsulinDeliveryReason
+* component[insulinDeliveryReason].value[x] only CodeableConcept
+* component[insulinDeliveryReason].valueCodeableConcept 1..1 MS
+* component[insulinDeliveryReason].valueCodeableConcept from HealthkitInsulinDeliveryReasonVS (required)
 
 Profile: HealthkitIrregularHeartRhythmNotification
 Parent: HealthKitObservation
@@ -3107,6 +3115,8 @@ Description: "A conformant Insulin Delivery instance."
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 6 '[iU]' "IU"
+* component[insulinDeliveryReason].code = https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-metadata-key#HKInsulinDeliveryReason
+* component[insulinDeliveryReason].valueCodeableConcept = HealthKitInsulinDeliveryReasonCS#basal "Basal"
 
 Instance: HealthkitIrregularHeartRhythmNotificationExample
 InstanceOf: HealthkitIrregularHeartRhythmNotification

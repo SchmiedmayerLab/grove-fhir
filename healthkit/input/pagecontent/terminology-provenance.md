@@ -7,7 +7,7 @@ SPDX-License-Identifier: MIT
 -->
 
 The HealthKit-specific terminology in the Grove FHIR contracts is case-sensitive.
-It contains a complete 218-concept platform source-type inventory, four retained metadata keys, and the adapter motion-context codes required by the heart-rate mapping.
+It contains a complete 218-concept platform source-type inventory, five retained metadata keys, and the adapter motion-context codes required by the heart-rate mapping.
 The separately declared sleep duration aggregate is not a platform source type and is excluded from the source-type CodeSystem.
 
 The [terminology provenance manifest](https://github.com/SchmiedmayerLab/grove-fhir/blob/main/healthkit/input/data/terminology-provenance.json) records the following reproducibility information:
@@ -23,7 +23,8 @@ The [terminology provenance manifest](https://github.com/SchmiedmayerLab/grove-f
 | Content scope | Complete for the 218 source-type identifiers and the adapter terminology represented by this manifest |
 
 The retained identifiers and type names originate from Apple.
-The SDK baseline, official platform documentation, and catalog together bind the source-type inventory; the hashed metadata headers bind the four retained metadata keys and the three motion-context cases.
+The SDK baseline, official platform documentation, and catalog together bind the source-type inventory; the hashed metadata headers bind the five retained metadata keys and the three motion-context cases.
+The headers declare the constant `HKMetadataKeyInsulinDeliveryReason` but not the key it holds; inside an iOS simulator on the SDK baseline it holds `HKInsulinDeliveryReason`, which is the retained code.
 The mapping narrative also refers descriptively to source API fields such as `HKObject.uuid`, `HKSource.bundleIdentifier`, `HKSourceRevision`, `HKDevice`, and `HKMetadataKeyWasUserEntered`.
 All names are used only to identify source API concepts for interoperability; the package does not copy SDK implementation, private API, or documentation prose.
 Grove-authored material is licensed under MIT; the retained Apple names remain attributed in the provenance manifest.

@@ -654,9 +654,9 @@ class HealthKitCatalogTests(unittest.TestCase):
         terminology = (ROOT / "healthkit/input/fsh/terminology.fsh").read_text(encoding="utf-8")
         key_system = terminology.split("CodeSystem: HealthKitMetadataKeyCS\n", 1)[1].split("\n\n", 1)[0]
         codes = {line.split()[1][1:] for line in key_system.splitlines() if line.startswith("* #")}
-        self.assertEqual(len(codes), 4)
+        self.assertEqual(len(codes), 5)
         self.assertLessEqual(codes, set(table))
-        self.assertIn("Of the four keys in [HealthKit Metadata Keys]", mapping)
+        self.assertIn("Of the five keys in [HealthKit Metadata Keys]", mapping)
         self.assertNotIn("residual key", mapping)
         reasons = {row["code"]: row["reason"] for row in self.protocol["producerDiagnostics"]}
         self.assertEqual(
@@ -701,6 +701,89 @@ class HealthKitCatalogTests(unittest.TestCase):
         links = {part.split(")", 1)[0] for part in section.split("](#")[1:]}
         self.assertEqual(len(links), 5)
         self.assertLessEqual(links, anchors)
+
+    def test_insulin_delivery_reason_is_a_required_component_coded_by_its_key(self) -> None:
+        base = "https://grovealliance.org/fhir/healthkit/"
+        key_system = base + "CodeSystem/healthkit-metadata-key"
+        reasons = base + "ValueSet/healthkit-insulin-delivery-reason"
+        terminology = (ROOT / "healthkit/input/fsh/terminology.fsh").read_text(encoding="utf-8")
+        blocks = {block.split("\n", 1)[0]: block.splitlines() for block in terminology.split("\n\n")}
+        # The code is the key the constant holds, and its definition names the constant.
+        concept = [
+            line for line in blocks["CodeSystem: HealthKitMetadataKeyCS"]
+            if line.startswith("* #HKInsulinDeliveryReason ")
+        ]
+        self.assertEqual(len(concept), 1)
+        self.assertIn("the constant HKMetadataKeyInsulinDeliveryReason holds", concept[0])
+        # The bound value set admits exactly the existing delivery-reason codes, under the name
+        # the generated profile binds.
+        value_set = blocks["ValueSet: HealthkitInsulinDeliveryReasonVS"]
+        self.assertIn("Id: healthkit-insulin-delivery-reason", value_set)
+        self.assertEqual(
+            [line for line in value_set if line.startswith("* ")],
+            [
+                "* ^experimental = false",
+                "* include codes from system HealthKitInsulinDeliveryReasonCS",
+            ],
+        )
+        cases = {
+            line.split()[1][1:]: line.split('"')[1]
+            for line in blocks["CodeSystem: HealthKitInsulinDeliveryReasonCS"]
+            if line.startswith("* #")
+        }
+        self.assertEqual(cases, {"basal": "Basal", "bolus": "Bolus"})
+        measurement = next(m for m in self.mobile["measurements"] if m["id"] == "insulin-delivery")
+        self.assertEqual(
+            measurement["components"],
+            [
+                {
+                    "id": "insulinDeliveryReason",
+                    "system": key_system,
+                    "code": "HKInsulinDeliveryReason",
+                    "cardinality": "1..1",
+                    "valueSet": reasons,
+                }
+            ],
+        )
+        generated = (ROOT / "healthkit/input/fsh/generated-measurement-profiles.fsh").read_text(
+            encoding="utf-8"
+        )
+        rendered = {block.split("\n", 1)[0]: block.splitlines() for block in generated.split("\n\n")}
+        coded = f"* component[insulinDeliveryReason].code = {key_system}#HKInsulinDeliveryReason"
+        for rule in (
+            "* component contains insulinDeliveryReason 1..1 MS",
+            coded,
+            "* component[insulinDeliveryReason].valueCodeableConcept 1..1 MS",
+            "* component[insulinDeliveryReason].valueCodeableConcept from "
+            "HealthkitInsulinDeliveryReasonVS (required)",
+        ):
+            with self.subTest(rule=rule):
+                self.assertIn(rule, rendered["Profile: HealthkitInsulinDelivery"])
+        self.assertIn(coded, rendered["Instance: HealthkitInsulinDeliveryExample"])
+        # The page maps each raw value to one of those codes and admits nothing else.
+        mapping = (ROOT / "healthkit/input/pagecontent/mapping.md").read_text(encoding="utf-8")
+        section = mapping.split("### Supported HealthKit metadata\n", 1)[1].split("\n### ", 1)[0]
+        opening = (
+            "Another is carried as an adapter-coded component: "
+            "`HKMetadataKeyInsulinDeliveryReason`.\n"
+        )
+        insulin = section.split(opening, 1)[1]
+        rows = [
+            [cell.strip().strip("`") for cell in line.strip("|").split("|")]
+            for line in insulin.splitlines()
+            if line.startswith("| `") and not line.startswith("| `HK")
+        ]
+        self.assertEqual(rows, [["1", "basal", "Basal"], ["2", "bolus", "Bolus"]])
+        self.assertEqual({code: display for _, code, display in rows}, cases)
+        for rule in (
+            "is represented by the required `Observation.component:insulinDeliveryReason` slice",
+            "The component's code is `HKInsulinDeliveryReason`, the key that the constant "
+            "`HKMetadataKeyInsulinDeliveryReason` holds",
+            "A sample that does not carry the key, or carries a value the table does not map, is "
+            "rejected; the component is never omitted and a reason is never inferred.",
+        ):
+            with self.subTest(rule=rule):
+                self.assertIn(rule, insulin)
 
     def test_mobile_healthkit_coverage_is_bidirectional(self) -> None:
         supported_rows: dict[str, list[str]] = {}

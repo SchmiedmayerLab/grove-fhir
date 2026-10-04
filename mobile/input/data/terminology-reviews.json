@@ -1993,7 +1993,7 @@
     "insulin-delivery": {
       "status": "approved",
       "provenance": "reviewed",
-      "digest": "sha256:bd0b79fa2601737d9095fb9f8b3db86ee50a9180db66d8dea5b4299820bd0fe4",
+      "digest": "sha256:b46588d135f5cb3e1e3f292b1731a4383415f57901de08931dc62f3d2af87e42",
       "preparedBy": [
         {
           "name": "terminology sweep drafting agent (concepts-quantity)",
@@ -2008,9 +2008,9 @@
       ],
       "ratification": "pending-pull-request-review",
       "reviewedOn": "2026-08-21",
-      "recordedOn": "2026-08-21",
+      "recordedOn": "2026-10-04",
       "reviewRef": "pending-integration-commit",
-      "notes": "Implements the DECIDED shape: scalar dose plus a required basal/bolus reason component sourced from HealthKit's HKMetadataKeyInsulinDeliveryReason (HKInsulinDeliveryReason .basal/.bolus). No LOINC observation concept states delivered-insulin-with-reason, so a Grove code is defined; [iU] is the pinned UCUM 2.2 arbitrary international-unit token with an empty dimension vector. effective Period because HealthKit insulin samples span the delivery interval (basal spans especially)."
+      "notes": "Implements the DECIDED shape: scalar dose plus a required basal/bolus reason component sourced from HealthKit's HKMetadataKeyInsulinDeliveryReason (HKInsulinDeliveryReason .basal/.bolus). No LOINC observation concept states delivered-insulin-with-reason, so a Grove code is defined; [iU] is the pinned UCUM 2.2 arbitrary international-unit token with an empty dimension vector. effective Period because HealthKit insulin samples span the delivery interval (basal spans especially). Re-minted 2026-10-04: the required reason is now the 1..1 insulinDeliveryReason component, coded healthkit-metadata-key#HKInsulinDeliveryReason (the key the constant HKMetadataKeyInsulinDeliveryReason holds) and bound to the new healthkit-insulin-delivery-reason ValueSet over the existing basal and bolus codes. No code, unit, effective, or description change."
     },
     "intermenstrual-bleeding": {
       "status": "approved",
