@@ -137,3 +137,12 @@ Context: Observation, DocumentReference, VisionPrescription, MedicationAdministr
 * value[x] 1..1 MS
 * value[x] only code
 * valueCode from HealthKitSourceTypeVS (required)
+
+Extension: HealthKitUnmappedSourceValue
+Id: healthkit-unmapped-source-value
+Title: "HealthKit Unmapped Source Value"
+Description: "The raw SDK integer of a HealthKit enumeration value that the exact HealthKit CodeSystem for that enumeration does not list. It sits on the CodeableConcept the value classifies, which then carries only the shared Grove coding the mapping gives such a value, so the source value is kept until a later guide version names it. Carried as canonical decimal text because an NSUInteger raw value can exceed a FHIR integer."
+Context: Observation.value[x]
+* value[x] 1..1 MS
+* value[x] only string
+* valueString obeys healthkit-unmapped-source-value-1

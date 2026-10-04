@@ -2338,6 +2338,13 @@
           "classification": "definition"
         },
         {
+          "fshName": "HealthKitWorkoutEventTypeCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "healthkit-workout-event-type",
+          "classification": "definition"
+        },
+        {
           "fshName": "HealthkitAppleStandHourCS",
           "fshType": "CodeSystem",
           "resourceType": "CodeSystem",
@@ -2629,6 +2636,13 @@
           "fshType": "Extension",
           "resourceType": "StructureDefinition",
           "id": "healthkit-source-type",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthKitUnmappedSourceValue",
+          "fshType": "Extension",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-unmapped-source-value",
           "classification": "definition"
         },
         {

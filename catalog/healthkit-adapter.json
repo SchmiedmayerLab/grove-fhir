@@ -3531,6 +3531,34 @@
       "profiles": [
         "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-workout",
         "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-workout-segment"
+      ],
+      "outputs": [
+        {
+          "outputRole": "workout",
+          "outputDiscriminator": "single",
+          "cardinality": "1..1",
+          "profiles": [
+            "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-workout",
+            "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-observation"
+          ],
+          "rule": "Emit exactly one session Observation for the HKWorkout; its discriminator stays single whether or not the workout has segments. It lists every segment under hasMember, each once and in emission order, through a resolving literal Reference. Its value classifies HKWorkout.workoutActivityType as an activity segment's value classifies its activity type. The session and every segment carry the same writer-record Identifier and writer record version, or none of them carries either."
+        },
+        {
+          "outputRole": "workout-segment",
+          "outputDiscriminator": "<canonical UTC start with nine fractional digits>|<canonical UTC end with nine fractional digits>|<event or activity>|<canonical decimal raw SDK value of the HKWorkoutEventType or HKWorkoutActivityType>|<canonical zero-based occurrence among identical coordinates in emission order>",
+          "cardinality": "0..*; one per workout event and one per workout activity",
+          "profiles": [
+            "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-workout-segment",
+            "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-observation"
+          ],
+          "rule": "Emit exactly one segment for every HKWorkoutEvent in HKWorkout.workoutEvents order, then exactly one for every HKWorkoutActivity in HKWorkout.workoutActivities order, including the sole activity of a single-activity workout; emit no other workout child, and none for HKWorkoutActivity.workoutEvents. A producer that does not emit every segment this rule defines does not convert the HKWorkout and refuses it with mobile-input.not-yet-convertible. An event segment's value carries the grove-workout-segment-type code that the HealthKit mapping gives its HKWorkoutEventType raw value, then the exact healthkit-workout-event-type code; an activity segment's value carries the grove-workout-activity code, then the exact healthkit-workout-activity code. An HKWorkoutEventType raw value that the mapping does not list, or an HKWorkoutActivityType that healthkit-workout-activity does not list, does not refuse the HKWorkout: on a segment or on the session, that value carries grove-workout-segment-type unknown or grove-workout-activity other, no exact HealthKit coding, and the raw value, as the canonical decimal text of the discriminator's raw value, in one healthkit-unmapped-source-value extension. Refuse the HKWorkout with mobile-input.required-metadata-missing when an activity has no endDate, and with mobile-input.effective-period-invalid when an event or activity lies outside the workout's own interval. A segment's effectivePeriod lies within its session's and uses the session's time zone. A segment states the same subject, recording Device, gateway Device, study associations, and recording method as its session, and carries no governed source identifier.",
+          "discriminatorRule": "Each endpoint is the exact binary64 timeIntervalSinceReferenceDate of the HealthKit NSDate plus 978307200 seconds, added exactly and never as a binary64 sum such as Date.timeIntervalSince1970, then rounded half-even to a whole nanosecond and rendered in UTC as YYYY-MM-DDThh:mm:ss.fffffffffZ with exactly nine fractional digits. The kind is event or activity. The raw value is the HKWorkoutEventType or HKWorkoutActivityType raw SDK integer, whether or not the guide lists it, so a segment keeps its identity when a later version names that value. The raw value and the occurrence are canonical decimal text: 0 or a non-zero ASCII digit followed by zero or more ASCII digits, with a leading - only before a negative raw value. The occurrence is the count of earlier segments, in emission order, with the identical start, end, kind, and raw value.",
+          "instantVectors": [
+            {"timeIntervalSinceReferenceDate": "808963200.0009765625", "canonical": "2026-08-21T00:00:00.000976562Z"},
+            {"timeIntervalSinceReferenceDate": "808963200.0029296875", "canonical": "2026-08-21T00:00:00.002929688Z"},
+            {"timeIntervalSinceReferenceDate": "808963200.10000002384185791015625", "canonical": "2026-08-21T00:00:00.100000024Z"}
+          ]
+        }
       ]
     }
   ],

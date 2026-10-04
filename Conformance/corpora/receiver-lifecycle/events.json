@@ -5,7 +5,7 @@
     "baseExchangeProtocolSHA256": "bbc9e980c2c674d5ef6f9900958d29c5602031ead8a3b6325cff508799106bb5",
     "releaseVersion": "0.6.0",
     "fhirVersion": "4.0.1",
-    "exchangeProtocolSHA256": "abee308aa12971f8963470993702583ff7877d64321538c6c0bb1e7fd86552ee"
+    "exchangeProtocolSHA256": "d09ccff58b1fb227d9164c638666b1ef09390347d51b1c02e28ebdcfa0ce724f"
   },
   "events": {
     "original": {

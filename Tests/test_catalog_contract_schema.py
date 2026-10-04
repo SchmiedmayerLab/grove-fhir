@@ -136,6 +136,8 @@ class CatalogContractSchemaTests(unittest.TestCase):
                 ("sensorAdapterClaims", "electrocardiogram", "closedValueMappings", "classification", "values", 0),
                 ("derivedAggregates", 0),
                 ("rows", 0),
+                ("rows", -1, "outputs", 0),
+                ("rows", -1, "outputs", 1, "instantVectors", 0),
                 ("recordingDeviceIdentity",),
                 ("applicationDeviceIdentity",),
                 ("applicationDeviceIdentity", "bundleIdentifier"),
@@ -390,6 +392,23 @@ class CatalogContractSchemaTests(unittest.TestCase):
                     mutated = copy.deepcopy(healthkit)
                     mutated["producerCanonicalization"]["percentScalingVectors"][1][member] = lexeme
                     self._assert_invalid(mutated)
+
+    def test_healthkit_row_outputs_are_closed_with_exact_instant_lexemes(self) -> None:
+        healthkit = _read("catalog/healthkit-adapter.json")
+        self._assert_valid(healthkit)
+        workout = next(index for index, row in enumerate(healthkit["rows"]) if "outputs" in row)
+        sole_output = copy.deepcopy(healthkit)
+        sole_output["rows"][workout]["outputs"].pop()
+        self._assert_invalid(sole_output)
+        for member, value in (
+            ("timeIntervalSinceReferenceDate", 808963200.0009765625),
+            ("timeIntervalSinceReferenceDate", "8.089632000009765625e8"),
+            ("canonical", "2026-08-21T00:00:00.000Z"),
+        ):
+            with self.subTest(member=member, value=value):
+                mutated = copy.deepcopy(healthkit)
+                mutated["rows"][workout]["outputs"][1]["instantVectors"][0][member] = value
+                self._assert_invalid(mutated)
 
     def test_profile_claim_modes_are_exact_unique_and_complete(self) -> None:
         claims = _read("catalog/profile-claims.json")
