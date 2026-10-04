@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import json
 import unittest
+from decimal import Decimal
 from pathlib import Path
 
 
@@ -21,6 +22,25 @@ OLD_MOBILE = {
     "grove-mobile-serum-plasma-glucose",
     "grove-mobile-interstitial-glucose",
 }
+
+
+def plain_decimal(value: Decimal) -> str:
+    """Write a decimal in plain positional notation without trailing fractional zeros."""
+    text = format(value, "f")
+    return text.rstrip("0").rstrip(".") if "." in text else text
+
+
+def shortest_round_trip(value: float) -> str:
+    """Write a binary64 as its shortest round-trip decimal in plain positional notation."""
+    # repr is the decimal with the fewest significant digits that converts back to the same
+    # binary64, and of several the one nearest it; only the notation is normalized here.
+    return plain_decimal(Decimal(repr(value)))
+
+
+def percent_from_fraction(fraction: float) -> str:
+    """Shift the fraction's shortest round-trip decimal two places exactly, then round once."""
+    # scaleb moves the decimal point exactly, and float() of a decimal is correctly rounded.
+    return shortest_round_trip(float(Decimal(shortest_round_trip(fraction)).scaleb(2)))
 
 
 class HealthKitCatalogTests(unittest.TestCase):
@@ -221,13 +241,18 @@ class HealthKitCatalogTests(unittest.TestCase):
                 self.assertTrue(row["requirement"])
 
     def test_producer_numeric_canonicalization_reuses_the_mobile_contract(self) -> None:
+        # The percent vectors are checked against the rule they pin below.
         self.assertEqual(
-            self.catalog["producerCanonicalization"],
+            {
+                key: value for key, value in self.catalog["producerCanonicalization"].items()
+                if key != "percentScalingVectors"
+            },
             {
                 "mobileEffectiveContract": "catalog/measurement-catalog.json#effectiveCanonicalization",
                 "effectivePrecision": "millisecond",
                 "effectiveRounding": "half-even",
                 "scalarQuantityDecimal": "shortest-round-trip",
+                "percentScaling": "shortest-round-trip-decimal-shift-rounded-once",
                 "identityPreimages": "unmodified",
                 "sensorAndEcgTiming": "excluded",
             },
@@ -238,6 +263,35 @@ class HealthKitCatalogTests(unittest.TestCase):
         self.assertEqual(
             self.mobile["effectiveCanonicalization"]["rounding"], "half-even"
         )
+
+    def test_percent_vectors_follow_the_rounded_decimal_shift(self) -> None:
+        vectors = self.catalog["producerCanonicalization"]["percentScalingVectors"]
+        for vector in vectors:
+            with self.subTest(fraction=vector["fraction"]):
+                # Each fraction is written as its own shortest round-trip decimal, the text step 1
+                # starts from, and each percent is the result of the three steps.
+                fraction = float(vector["fraction"])
+                self.assertEqual(shortest_round_trip(fraction), vector["fraction"])
+                self.assertEqual(percent_from_fraction(fraction), vector["percent"])
+
+        # The vectors tell the rule apart from a binary64 product by 100 and from the shift of
+        # step 2 emitted without the rounding of step 3.
+        product_failures = {
+            vector["fraction"] for vector in vectors
+            if shortest_round_trip(float(vector["fraction"]) * 100) != vector["percent"]
+        }
+        unrounded_failures = {
+            vector["fraction"] for vector in vectors
+            if plain_decimal(Decimal(vector["fraction"]).scaleb(2)) != vector["percent"]
+        }
+        self.assertEqual(
+            product_failures,
+            {
+                "0.0000001", "0.0007", "0.07", "0.14", "0.28", "0.282",
+                "0.29", "0.55", "0.56", "0.57", "0.58",
+            },
+        )
+        self.assertEqual(unrounded_failures, {"0.49543508709194095"})
 
     def test_application_device_separates_opaque_snapshot_from_bundle_product(self) -> None:
         contract = self.catalog["applicationDeviceIdentity"]
