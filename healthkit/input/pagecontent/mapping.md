@@ -203,7 +203,7 @@ Study resources are linked through the study model; they are not source entities
 ### Supported HealthKit metadata
 
 Map source facts to standard FHIR fields and published extensions before retaining adapter-specific metadata.
-The Grove FHIR contracts permit one residual key: `HKMetadataKeyHeartRateMotionContext`.
+Of the four keys in [HealthKit Metadata Keys](CodeSystem-healthkit-metadata-key.html), one is carried as an adapter-coded component: `HKMetadataKeyHeartRateMotionContext`.
 It is represented by the named `Observation.component:heartRateMotionContext` slice and bound to [HealthKit Heart Rate Motion Context](CodeSystem-healthkit-heart-rate-motion-context.html).
 The component is valid only on a LOINC `8867-4` heart-rate Observation.
 
@@ -221,6 +221,36 @@ Never default an unknown value to `not-set`.
 
 There is no generic metadata extension.
 Adding another key requires a defined semantic purpose, a typed FHIR representation, an explicit allowlist update, and validation examples.
+
+### Withheld metadata
+
+A metadata key that a source record carries is represented only by the element that this table gives it, for the source types the table names, and only when an output of the record's graph carries the key's value in that element.
+
+| Runtime key | SDK constant | Source types | Element |
+|---|---|---|---|
+| `HKTimeZone` | `HKMetadataKeyTimeZone` | every type with an Observation output | the `timezone` extension on each `effective[x]` date-time, as the [time rules](#values-units-and-time) define |
+| `HKWasUserEntered` | `HKMetadataKeyWasUserEntered` | every type with an Observation output | the `grove-recording-method` extension, `manual-entry` when the key states `true`, as the [capture-mode rule](#capture-mode-and-performer) defines |
+| `HKMetadataKeySyncIdentifier` | `HKMetadataKeySyncIdentifier` | every type with an Observation output | the `writer-record` Identifier, as the [revision rules](#logical-identity-and-revisions) define |
+| `HKMetadataKeySyncVersion` | `HKMetadataKeySyncVersion` | every type with an Observation output | the Grove Writer Record Version extension beside the `writer-record` Identifier |
+| `HKMetadataKeyHeartRateMotionContext` | `HKMetadataKeyHeartRateMotionContext` | `HKQuantityTypeIdentifierHeartRate` | `Observation.component:heartRateMotionContext`, as [above](#supported-healthkit-metadata) |
+| `HKMetadataKeyAppleECGAlgorithmVersion` | `HKMetadataKeyAppleECGAlgorithmVersion` | `HKDataTypeIdentifierElectrocardiogram` | `Observation.method` of the ECG Observation |
+| `HKInsulinDeliveryReason` | `HKMetadataKeyInsulinDeliveryReason` | `HKQuantityTypeIdentifierInsulinDelivery` | the delivery-reason component that the Insulin Delivery measurement requires |
+| `HKMenstrualCycleStart` | `HKMetadataKeyMenstrualCycleStart` | `HKCategoryTypeIdentifierMenstrualFlow` | `Observation.component:cycleStart` |
+| `HKSexualActivityProtectionUsed` | `HKMetadataKeySexualActivityProtectionUsed` | `HKCategoryTypeIdentifierSexualActivity` | `Observation.valueCodeableConcept`, `protected` or `unprotected` |
+
+Withhold every metadata key that an accepted record carries and that no output of its graph represents, and report those keys as `mobile-omission.unmodeled-metadata`, naming each key once by its runtime key.
+That includes a key the table does not list, a key it lists only for other source types, and a listed key whose element no output carries.
+A runtime key is the string that a metadata dictionary holds as the key, as the table's first column gives it, not the name of the SDK constant that holds it, which can differ: `HKMetadataKeyTimeZone` holds `HKTimeZone`.
+A key that no SDK constant declares is named the same way.
+`HKMetadataKeyWasUserEntered` stating `false`, whether the record or a part of it carries it, maps to no element, as the capture-mode rule defines, and is never reported; a value that states nothing is reported.
+Every element in the table belongs to an Observation, so a [HealthKit Recording Document](StructureDefinition-healthkit-recording-document.html) represents no key, not even a valid sync pair.
+
+A key that a part of the record carries, an object of a blood-pressure correlation or an `HKWorkoutEvent` or `HKWorkoutActivity` of a workout, is represented only when the record itself carries the same key with an equal value that its graph represents; otherwise it is withheld and reported with the record's own keys.
+Two values are equal when they are time-zone names or sync identifiers that match character for character, user-entered flags that state the same thing, or sync versions that are the same number.
+The [correlation-object rules](#blood-pressure-correlation-objects) decide instead what a blood-pressure object's `HKMetadataKeyTimeZone` and `HKMetadataKeyWasUserEntered` contribute.
+
+Reporting never relaxes a rejection: a half or invalid sync pair that the record itself carries rejects the record even when no output could carry the pair.
+As for every omission, a key that a disclosure policy withholds is not reported.
 
 ### Study context
 
