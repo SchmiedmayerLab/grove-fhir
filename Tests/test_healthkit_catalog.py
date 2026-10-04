@@ -264,6 +264,18 @@ class HealthKitCatalogTests(unittest.TestCase):
             self.mobile["effectiveCanonicalization"]["rounding"], "half-even"
         )
 
+    def test_an_interval_under_a_date_time_only_profile_keeps_its_start(self) -> None:
+        mapping = (ROOT / "healthkit/input/pagecontent/mapping.md").read_text(encoding="utf-8")
+        section = mapping.split("### Values, units, and time\n", 1)[1].split("\n### ", 1)[0]
+        # The exception follows the interval rule it narrows, which stays as it was.
+        self.assertIn(
+            "Use `effectivePeriod` when HealthKit supplies a start and end that define an "
+            "interval. Preserve fractional seconds and the numeric offset.\n"
+            "Where the selected profile admits only `dateTime`, an interval sample states its "
+            "`startDate` as `effectiveDateTime` and withholds its `endDate`.\n",
+            section,
+        )
+
     def test_percent_vectors_follow_the_rounded_decimal_shift(self) -> None:
         vectors = self.catalog["producerCanonicalization"]["percentScalingVectors"]
         for vector in vectors:
