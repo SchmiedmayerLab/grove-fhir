@@ -477,6 +477,12 @@
       "reason": "The source record carries metadata outside the adapter's typed allowlist, so the producer withholds those fields.",
       "emittedBy": "client",
       "severity": "warning"
+    },
+    {
+      "code": "mobile-omission.recording-method",
+      "reason": "Part of the source record that the adapter's capture-mode rules read states a capture mode that the record as a whole does not establish, so the producer omits the grove-recording-method extension.",
+      "emittedBy": "client",
+      "severity": "warning"
     }
   ],
   "event": {
