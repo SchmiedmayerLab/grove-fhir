@@ -579,6 +579,112 @@ class HealthKitCatalogTests(unittest.TestCase):
         capture = mapping.split("### Capture mode and performer\n", 1)[1].split("\n### ", 1)[0]
         self.assertIn("any other value, such as 2, states nothing", capture)
 
+    def test_withheld_metadata_follows_what_the_outputs_carry(self) -> None:
+        mapping = (ROOT / "healthkit/input/pagecontent/mapping.md").read_text(encoding="utf-8")
+        heading = "Withheld metadata"
+        headings = [line[4:] for line in mapping.splitlines() if line.startswith("### ")]
+        index = headings.index(heading)
+        self.assertEqual(
+            headings[index - 1 : index + 2],
+            ["Supported HealthKit metadata", heading, "Study context"],
+        )
+        section = mapping.split(f"### {heading}\n", 1)[1].split("\n### ", 1)[0]
+        table, constants = {}, {}
+        for line in section.splitlines():
+            if line.startswith("| `"):
+                key, constant, source_types, _ = (
+                    cell.strip().strip("`") for cell in line.strip("|").split("|")
+                )
+                self.assertNotIn(key, table)
+                table[key] = source_types
+                constants[key] = constant
+        # A row names the key by the string the constant holds in an iOS 26.5 simulator on the SDK
+        # baseline; these five hold another string than their constant's name.
+        self.assertEqual(
+            {key: constant for key, constant in constants.items() if key != constant},
+            {
+                "HKTimeZone": "HKMetadataKeyTimeZone",
+                "HKWasUserEntered": "HKMetadataKeyWasUserEntered",
+                "HKInsulinDeliveryReason": "HKMetadataKeyInsulinDeliveryReason",
+                "HKMenstrualCycleStart": "HKMetadataKeyMenstrualCycleStart",
+                "HKSexualActivityProtectionUsed": "HKMetadataKeySexualActivityProtectionUsed",
+            },
+        )
+        every = "every type with an Observation output"
+        self.assertEqual(
+            {key: source_types for key, source_types in table.items() if source_types != every},
+            {
+                "HKMetadataKeyHeartRateMotionContext": "HKQuantityTypeIdentifierHeartRate",
+                "HKMetadataKeyAppleECGAlgorithmVersion": "HKDataTypeIdentifierElectrocardiogram",
+                "HKInsulinDeliveryReason": "HKQuantityTypeIdentifierInsulinDelivery",
+                "HKMenstrualCycleStart": "HKCategoryTypeIdentifierMenstrualFlow",
+                "HKSexualActivityProtectionUsed": "HKCategoryTypeIdentifierSexualActivity",
+            },
+        )
+        self.assertEqual(
+            {key for key, source_types in table.items() if source_types == every},
+            {
+                "HKTimeZone",
+                "HKWasUserEntered",
+                "HKMetadataKeySyncIdentifier",
+                "HKMetadataKeySyncVersion",
+            },
+        )
+        rows = {row["sourceTypeIdentifier"]: row for row in self.catalog["rows"]}
+        for source_type in set(table.values()) - {every}:
+            self.assertEqual(rows[source_type]["status"], "supported")
+        # Every key of HealthKit Metadata Keys has a row, and the supported-metadata count agrees.
+        terminology = (ROOT / "healthkit/input/fsh/terminology.fsh").read_text(encoding="utf-8")
+        key_system = terminology.split("CodeSystem: HealthKitMetadataKeyCS\n", 1)[1].split("\n\n", 1)[0]
+        codes = {line.split()[1][1:] for line in key_system.splitlines() if line.startswith("* #")}
+        self.assertEqual(len(codes), 4)
+        self.assertLessEqual(codes, set(table))
+        self.assertIn("Of the four keys in [HealthKit Metadata Keys]", mapping)
+        self.assertNotIn("residual key", mapping)
+        reasons = {row["code"]: row["reason"] for row in self.protocol["producerDiagnostics"]}
+        self.assertEqual(
+            reasons["mobile-omission.unmodeled-metadata"],
+            "The source record, or a part of it, carries metadata that no output of its graph "
+            "represents, so the producer withholds those fields.",
+        )
+        for rule in (
+            "is represented only by the element that this table gives it, for the source types the "
+            "table names, and only when an output of the record's graph carries the key's value in "
+            "that element.",
+            "and report those keys as `mobile-omission.unmodeled-metadata`, naming each key once by "
+            "its runtime key.",
+            "A runtime key is the string that a metadata dictionary holds as the key, as the table's "
+            "first column gives it, not the name of the SDK constant that holds it, which can "
+            "differ: `HKMetadataKeyTimeZone` holds `HKTimeZone`.",
+            "A key that no SDK constant declares is named the same way.",
+            "a key it lists only for other source types, and a listed key whose element no output "
+            "carries.",
+            "`HKMetadataKeyWasUserEntered` stating `false`, whether the record or a part of it "
+            "carries it, maps to no element",
+            "and is never reported; a value that states nothing is reported.",
+            "represents no key, not even a valid sync pair.",
+            "an object of a blood-pressure correlation or an `HKWorkoutEvent` or "
+            "`HKWorkoutActivity` of a workout, is represented only when the record itself carries "
+            "the same key with an equal value that its graph represents",
+            "time-zone names or sync identifiers that match character for character, user-entered "
+            "flags that state the same thing, or sync versions that are the same number.",
+            "decide instead what a blood-pressure object's `HKMetadataKeyTimeZone` and "
+            "`HKMetadataKeyWasUserEntered` contribute.",
+            "a half or invalid sync pair that the record itself carries rejects the record even "
+            "when no output could carry the pair.",
+            "a key that a disclosure policy withholds is not reported.",
+        ):
+            with self.subTest(rule=rule):
+                self.assertIn(rule, section)
+        # Every in-page link of the section names a heading of this page.
+        anchors = {
+            "".join(c for c in name.lower() if c.isalnum() or c in " -").replace(" ", "-")
+            for name in headings
+        }
+        links = {part.split(")", 1)[0] for part in section.split("](#")[1:]}
+        self.assertEqual(len(links), 5)
+        self.assertLessEqual(links, anchors)
+
     def test_mobile_healthkit_coverage_is_bidirectional(self) -> None:
         supported_rows: dict[str, list[str]] = {}
         for row in self.catalog["rows"]:

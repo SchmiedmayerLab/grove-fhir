@@ -474,7 +474,7 @@
     },
     {
       "code": "mobile-omission.unmodeled-metadata",
-      "reason": "The source record carries metadata outside the adapter's typed allowlist, so the producer withholds those fields.",
+      "reason": "The source record, or a part of it, carries metadata that no output of its graph represents, so the producer withholds those fields.",
       "emittedBy": "client",
       "severity": "warning"
     },
