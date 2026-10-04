@@ -146,3 +146,32 @@ Context: Observation.value[x]
 * value[x] 1..1 MS
 * value[x] only string
 * valueString obeys healthkit-unmapped-source-value-1
+
+Extension: HealthKitSourceRevision
+Id: healthkit-source-revision
+Title: "HealthKit Source Revision"
+Description: "What the HKSourceRevision of the consumed HealthKit object supplies about its source, on a conversion Provenance source entity that names no author agent. It describes the object rather than an actor: it states neither that the source is an application nor that it is a device, and it is no identity. sourceName and sourceBundleIdentifier are carried only under an explicit deployment disclosure authorization, because they can name and identify a person's device; version, productType, and operatingSystemVersion are carried by default. The two members that hold HKSource properties take a source prefix so that no bare name reads as the converter's; the other three are named as their HKSourceRevision properties."
+Context: Provenance.entity
+* extension contains
+    sourceName 0..1 MS and
+    sourceBundleIdentifier 0..1 MS and
+    version 0..1 MS and
+    productType 0..1 MS and
+    operatingSystemVersion 0..1 MS
+* extension[sourceName] ^short = "HKSourceRevision.source.name"
+* extension[sourceName].value[x] 1..1 MS
+* extension[sourceName].value[x] only string
+* extension[sourceBundleIdentifier] ^short = "HKSourceRevision.source.bundleIdentifier"
+* extension[sourceBundleIdentifier].value[x] 1..1 MS
+* extension[sourceBundleIdentifier].value[x] only string
+* extension[version] ^short = "HKSourceRevision.version"
+* extension[version].value[x] 1..1 MS
+* extension[version].value[x] only string
+* extension[productType] ^short = "HKSourceRevision.productType"
+* extension[productType].value[x] 1..1 MS
+* extension[productType].value[x] only string
+* extension[operatingSystemVersion] ^short = "HKSourceRevision.operatingSystemVersion"
+* extension[operatingSystemVersion].value[x] 1..1 MS
+* extension[operatingSystemVersion].value[x] only string
+* extension[operatingSystemVersion].valueString obeys healthkit-source-revision-os-version-1
+* value[x] 0..0

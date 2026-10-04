@@ -141,3 +141,7 @@ WARNING: VisionPrescription/HealthKitVisionPrescriptionExample: VisionPrescripti
 # The workout mapping specifies this extension on a workout segment's value, and the guide has no
 # worked workout segment example that would carry it.
 WARNING: StructureDefinition.where(url = 'https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-unmapped-source-value'): The Implementation Guide contains no examples for this extension
+
+# The mapping specifies this extension on an author-less conversion Provenance's source entity, and
+# no conversion Provenance example of the guide carries it.
+WARNING: StructureDefinition.where(url = 'https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-source-revision'): The Implementation Guide contains no examples for this extension

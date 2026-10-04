@@ -141,6 +141,8 @@ class CatalogContractSchemaTests(unittest.TestCase):
                 ("recordingDeviceIdentity",),
                 ("applicationDeviceIdentity",),
                 ("applicationDeviceIdentity", "bundleIdentifier"),
+                ("sourceRevisionExtension",),
+                ("sourceRevisionExtension", "members", 0),
                 ("identity",),
                 ("identity", "sourceContext"),
             ),
