@@ -17,8 +17,8 @@ from .context import (
     IDENTIFIER_ROLE_SYSTEM, LIFECYCLE_EVENT_SYSTEM, OPAQUE_IDENTIFIER_ROLES,
     RETRACTION_BUNDLE_PROFILE, RETRACTION_NATIVE_RECORD_IDENTIFIER_EXTENSION,
     RETRACTION_TARGET_CONTRACTS, RETRACTION_TARGET_ROLES,
-    RETRACTION_TARGET_ROLE_EXTENSION, SOURCE_RECORD_RETRACTED, ExchangeProtocolError,
-    entry_node_identity, require_absolute_uri,
+    RETRACTION_TARGET_ROLE_EXTENSION, SOURCE_RECORD_RETRACTED, SOURCE_RECORD_TARGET_ROLE,
+    ExchangeProtocolError, entry_node_identity, require_absolute_uri,
 )
 from .diagnostics import (
     PRODUCER_RULE_REASONS,
@@ -547,14 +547,13 @@ def validate_exchange_bundle(
                 f"{label} retraction must identify at least one target",
             )
         seen_targets: set[tuple[str, str]] = set()
+        source_record_targets: list[tuple[int, tuple[str, str]]] = []
         for target_index, target in enumerate(targets):
             target_label = f"{label} retraction target[{target_index}]"
             if not isinstance(target, dict) or "reference" in target:
                 raise ProducerValidationError(
                     f"{target_label} must be a logical Reference without a literal reference"
                 )
-            if not isinstance(target.get("type"), str) or not target["type"]:
-                raise ProducerValidationError(f"{target_label} must state its resource type")
             identifier = target.get("identifier")
             role = identifier_role(
                 identifier,
@@ -595,11 +594,37 @@ def validate_exchange_bundle(
             target_role = role_extensions[0]["valueCode"]
             target_contract = RETRACTION_TARGET_CONTRACTS[target_role]
             if role != target_contract["identifierRole"]:
+                if target_role == SOURCE_RECORD_TARGET_ROLE:
+                    # Any other identity, an output's included, fails to repeat the source entity.
+                    raise contract_failure(
+                        "mobile-retraction.source-record-target",
+                        f"Provenance.target[{target_index}].identifier",
+                        f"{target_label} role {target_role} requires the "
+                        f"{target_contract['identifierRole']} identifier role",
+                    )
                 raise ProducerValidationError(
                     f"{target_label} role {target_role} requires the "
                     f"{target_contract['identifierRole']} identifier role"
                 )
-            if target["type"] not in target_contract["resourceTypes"]:
+            if target_role == SOURCE_RECORD_TARGET_ROLE:
+                # The source record as a whole is no one resource, so its target is untyped,
+                # stands alone, and is checked against the source entity once that is known.
+                if "type" in target:
+                    raise contract_failure(
+                        "mobile-retraction.source-record-target",
+                        f"Provenance.target[{target_index}].type",
+                        f"{target_label} role {target_role} must not state a resource type",
+                    )
+                if len(targets) != 1:
+                    raise contract_failure(
+                        "mobile-retraction.source-record-target",
+                        "Provenance.target",
+                        f"{target_label} role {target_role} must be the only retraction target",
+                    )
+                source_record_targets.append((target_index, pair))
+            elif not isinstance(target.get("type"), str) or not target["type"]:
+                raise ProducerValidationError(f"{target_label} must state its resource type")
+            elif target["type"] not in target_contract["resourceTypes"]:
                 raise contract_failure(
                     "mobile-retraction.role-target-type",
                     f"Provenance.target[{target_index}].type",
@@ -609,7 +634,15 @@ def validate_exchange_bundle(
             validate_retraction_native_record_identifier(
                 target, target_index, target_label
             )
-        exact_source_entity(provenance, f"{label} retraction Provenance")
+        source = exact_source_entity(provenance, f"{label} retraction Provenance")
+        for target_index, pair in source_record_targets:
+            if pair != source:
+                raise contract_failure(
+                    "mobile-retraction.source-record-target",
+                    f"Provenance.target[{target_index}].identifier",
+                    f"{label} retraction target[{target_index}] must repeat the source-record "
+                    "Identifier of the Provenance source entity",
+                )
 
     sensorkit = read_json(CATALOG_ROOT / "sensorkit-adapter.json")
     sensorkit_hybrid_profiles: dict[str, tuple[str, dict[str, Any]]] = {}

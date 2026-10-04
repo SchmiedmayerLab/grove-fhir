@@ -1,0 +1,474 @@
+{
+  "schemaVersion": 0,
+  "events": "events.json",
+  "records": {
+    "record-heart-001": {
+      "system": "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1",
+      "value": "v0:test-key:1:ptHr751zWyYfaR2WIvrP1TfnVEK4bInC__ibP_AYfVY"
+    },
+    "record-2": {
+      "system": "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1",
+      "value": "v0:test-key:1:TE47APXmta6xbmGufkf8LBv8q3aPR4NDn9bltP7vEn4"
+    },
+    "another-record": {
+      "system": "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1",
+      "value": "v0:test-key:1:WssrtI7oYzcgG0mFxlitvSznCx4esKSDEbK-bOUQpTk"
+    }
+  },
+  "outputs": {
+    "multi-v1.primary": {
+      "event": "multi-v1",
+      "fullUrl": "urn:uuid:a9b76bbc-f523-5ef4-9919-813ec70553e5"
+    },
+    "multi-v1.secondary": {
+      "event": "multi-v1",
+      "fullUrl": "urn:uuid:96934596-b8b3-5623-b026-cb381d6beede"
+    },
+    "multi-v2.primary": {
+      "event": "multi-v2",
+      "fullUrl": "urn:uuid:a9b76bbc-f523-5ef4-9919-813ec70553e5"
+    },
+    "multi-v3.primary": {
+      "event": "multi-v3",
+      "fullUrl": "urn:uuid:a9b76bbc-f523-5ef4-9919-813ec70553e5"
+    },
+    "multi-v3.secondary": {
+      "event": "multi-v3",
+      "fullUrl": "urn:uuid:96934596-b8b3-5623-b026-cb381d6beede"
+    },
+    "target.primary": {
+      "event": "target",
+      "fullUrl": "urn:uuid:a0b3b2a7-a112-5a26-9090-e0b1ee94dcab"
+    },
+    "changed-source-record.primary": {
+      "event": "changed-source-record",
+      "fullUrl": "urn:uuid:a9b76bbc-f523-5ef4-9919-813ec70553e5"
+    }
+  },
+  "deviceSnapshots": {
+    "multi-v1.application": {
+      "event": "multi-v1",
+      "fullUrl": "urn:uuid:0e18ddb5-c122-5cfa-b694-c68f1c1482f1"
+    },
+    "multi-v2.application": {
+      "event": "multi-v2",
+      "fullUrl": "urn:uuid:c0100562-c587-53c1-84db-4c7a00dfdbcb"
+    },
+    "multi-v3.application": {
+      "event": "multi-v3",
+      "fullUrl": "urn:uuid:c4fc6731-fa00-594a-8b16-84bb4a2f41e5"
+    },
+    "target.application": {
+      "event": "target",
+      "fullUrl": "urn:uuid:059b32db-025e-5bce-9d3e-451f14a2bf7a"
+    },
+    "changed-source-record.application": {
+      "event": "changed-source-record",
+      "fullUrl": "urn:uuid:e74f8749-7016-514a-b496-270fcc99a8ae"
+    }
+  },
+  "policy": {
+    "scope": "One verified participant and source repository. A record alias names the complete source-record Identifier, system and value, of an event's conversion Provenance source entity.",
+    "addressing": "A source-record target addresses every node targeted by the conversion Provenance of every accepted active event whose source entity is its complete source-record Identifier, and the event-time Device snapshots those events carry, whether the event is accepted before or after the retraction. A retraction that addresses no accepted event yet is still accepted and applies to later events.",
+    "selection": "An addressed output never becomes current and an addressed Device snapshot is retired, while every accepted event and output version stays in history. Nodes of events attributed to any other source record are unaffected.",
+    "binding": "A source-record target names no output Identifier, so it binds no output to its record. The first accepted active event still binds each of its outputs; a later event that claims a bound output under another record is rejected as source-output-record-conflict, and a rejected event is never addressed.",
+    "authorization": "Every output version is authorized for purpose-a, so visibility follows current selection and a grant never overrides an accepted retraction. Purpose-b has no grants, and replay creates no new access."
+  },
+  "authorizedOutputs": {
+    "purpose-a": [
+      "changed-source-record.primary",
+      "multi-v1.primary",
+      "multi-v1.secondary",
+      "multi-v2.primary",
+      "multi-v3.primary",
+      "multi-v3.secondary",
+      "target.primary"
+    ],
+    "purpose-b": []
+  },
+  "sequences": [
+    {
+      "id": "source-record-target-retraction-after-its-event",
+      "steps": [
+        {
+          "event": "multi-v1",
+          "expect": {
+            "history": [
+              "multi-v1"
+            ],
+            "versions": [
+              "multi-v1.primary",
+              "multi-v1.secondary"
+            ],
+            "current": [
+              "multi-v1.primary",
+              "multi-v1.secondary"
+            ],
+            "retractedRecords": [],
+            "retiredDeviceSnapshots": [],
+            "visible": [
+              "multi-v1.primary",
+              "multi-v1.secondary"
+            ],
+            "newlyVisible": [
+              "multi-v1.primary",
+              "multi-v1.secondary"
+            ],
+            "disposition": "accepted",
+            "receiptEvent": "multi-v1",
+            "reason": null
+          }
+        },
+        {
+          "event": "source-record-target-retraction",
+          "expect": {
+            "history": [
+              "multi-v1",
+              "source-record-target-retraction"
+            ],
+            "versions": [
+              "multi-v1.primary",
+              "multi-v1.secondary"
+            ],
+            "current": [],
+            "retractedRecords": [
+              "record-heart-001"
+            ],
+            "retiredDeviceSnapshots": [
+              "multi-v1.application"
+            ],
+            "visible": [],
+            "newlyVisible": [],
+            "disposition": "accepted",
+            "receiptEvent": "source-record-target-retraction",
+            "reason": null
+          }
+        },
+        {
+          "event": "multi-v1",
+          "expect": {
+            "history": [
+              "multi-v1",
+              "source-record-target-retraction"
+            ],
+            "versions": [
+              "multi-v1.primary",
+              "multi-v1.secondary"
+            ],
+            "current": [],
+            "retractedRecords": [
+              "record-heart-001"
+            ],
+            "retiredDeviceSnapshots": [
+              "multi-v1.application"
+            ],
+            "visible": [],
+            "newlyVisible": [],
+            "disposition": "replayed",
+            "receiptEvent": "multi-v1",
+            "reason": null
+          }
+        },
+        {
+          "event": "source-record-target-retraction",
+          "expect": {
+            "history": [
+              "multi-v1",
+              "source-record-target-retraction"
+            ],
+            "versions": [
+              "multi-v1.primary",
+              "multi-v1.secondary"
+            ],
+            "current": [],
+            "retractedRecords": [
+              "record-heart-001"
+            ],
+            "retiredDeviceSnapshots": [
+              "multi-v1.application"
+            ],
+            "visible": [],
+            "newlyVisible": [],
+            "disposition": "replayed",
+            "receiptEvent": "source-record-target-retraction",
+            "reason": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "source-record-target-retraction-before-any-event",
+      "steps": [
+        {
+          "event": "source-record-target-retraction",
+          "expect": {
+            "history": [
+              "source-record-target-retraction"
+            ],
+            "versions": [],
+            "current": [],
+            "retractedRecords": [
+              "record-heart-001"
+            ],
+            "retiredDeviceSnapshots": [],
+            "visible": [],
+            "newlyVisible": [],
+            "disposition": "accepted",
+            "receiptEvent": "source-record-target-retraction",
+            "reason": null
+          }
+        },
+        {
+          "event": "multi-v1",
+          "expect": {
+            "history": [
+              "source-record-target-retraction",
+              "multi-v1"
+            ],
+            "versions": [
+              "multi-v1.primary",
+              "multi-v1.secondary"
+            ],
+            "current": [],
+            "retractedRecords": [
+              "record-heart-001"
+            ],
+            "retiredDeviceSnapshots": [
+              "multi-v1.application"
+            ],
+            "visible": [],
+            "newlyVisible": [],
+            "disposition": "accepted",
+            "receiptEvent": "multi-v1",
+            "reason": null
+          }
+        },
+        {
+          "event": "multi-v3",
+          "expect": {
+            "history": [
+              "source-record-target-retraction",
+              "multi-v1",
+              "multi-v3"
+            ],
+            "versions": [
+              "multi-v1.primary",
+              "multi-v1.secondary",
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "current": [],
+            "retractedRecords": [
+              "record-heart-001"
+            ],
+            "retiredDeviceSnapshots": [
+              "multi-v1.application",
+              "multi-v3.application"
+            ],
+            "visible": [],
+            "newlyVisible": [],
+            "disposition": "accepted",
+            "receiptEvent": "multi-v3",
+            "reason": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "source-record-target-retraction-leaves-other-records-current",
+      "steps": [
+        {
+          "event": "target",
+          "expect": {
+            "history": [
+              "target"
+            ],
+            "versions": [
+              "target.primary"
+            ],
+            "current": [
+              "target.primary"
+            ],
+            "retractedRecords": [],
+            "retiredDeviceSnapshots": [],
+            "visible": [
+              "target.primary"
+            ],
+            "newlyVisible": [
+              "target.primary"
+            ],
+            "disposition": "accepted",
+            "receiptEvent": "target",
+            "reason": null
+          }
+        },
+        {
+          "event": "source-record-target-retraction",
+          "expect": {
+            "history": [
+              "target",
+              "source-record-target-retraction"
+            ],
+            "versions": [
+              "target.primary"
+            ],
+            "current": [
+              "target.primary"
+            ],
+            "retractedRecords": [
+              "record-heart-001"
+            ],
+            "retiredDeviceSnapshots": [],
+            "visible": [
+              "target.primary"
+            ],
+            "newlyVisible": [],
+            "disposition": "accepted",
+            "receiptEvent": "source-record-target-retraction",
+            "reason": null
+          }
+        },
+        {
+          "event": "multi-v2",
+          "expect": {
+            "history": [
+              "target",
+              "source-record-target-retraction",
+              "multi-v2"
+            ],
+            "versions": [
+              "multi-v2.primary",
+              "target.primary"
+            ],
+            "current": [
+              "target.primary"
+            ],
+            "retractedRecords": [
+              "record-heart-001"
+            ],
+            "retiredDeviceSnapshots": [
+              "multi-v2.application"
+            ],
+            "visible": [
+              "target.primary"
+            ],
+            "newlyVisible": [],
+            "disposition": "accepted",
+            "receiptEvent": "multi-v2",
+            "reason": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "source-record-target-retraction-binds-no-output",
+      "steps": [
+        {
+          "event": "source-record-target-retraction",
+          "expect": {
+            "history": [
+              "source-record-target-retraction"
+            ],
+            "versions": [],
+            "current": [],
+            "retractedRecords": [
+              "record-heart-001"
+            ],
+            "retiredDeviceSnapshots": [],
+            "visible": [],
+            "newlyVisible": [],
+            "disposition": "accepted",
+            "receiptEvent": "source-record-target-retraction",
+            "reason": null
+          }
+        },
+        {
+          "event": "changed-source-record",
+          "expect": {
+            "history": [
+              "source-record-target-retraction",
+              "changed-source-record"
+            ],
+            "versions": [
+              "changed-source-record.primary"
+            ],
+            "current": [
+              "changed-source-record.primary"
+            ],
+            "retractedRecords": [
+              "record-heart-001"
+            ],
+            "retiredDeviceSnapshots": [],
+            "visible": [
+              "changed-source-record.primary"
+            ],
+            "newlyVisible": [
+              "changed-source-record.primary"
+            ],
+            "disposition": "accepted",
+            "receiptEvent": "changed-source-record",
+            "reason": null
+          }
+        },
+        {
+          "event": "multi-v2",
+          "expect": {
+            "history": [
+              "source-record-target-retraction",
+              "changed-source-record"
+            ],
+            "versions": [
+              "changed-source-record.primary"
+            ],
+            "current": [
+              "changed-source-record.primary"
+            ],
+            "retractedRecords": [
+              "record-heart-001"
+            ],
+            "retiredDeviceSnapshots": [],
+            "visible": [
+              "changed-source-record.primary"
+            ],
+            "newlyVisible": [],
+            "disposition": "rejected",
+            "receiptEvent": null,
+            "reason": "source-output-record-conflict"
+          }
+        },
+        {
+          "event": "source-record-target-retraction",
+          "expect": {
+            "history": [
+              "source-record-target-retraction",
+              "changed-source-record"
+            ],
+            "versions": [
+              "changed-source-record.primary"
+            ],
+            "current": [
+              "changed-source-record.primary"
+            ],
+            "retractedRecords": [
+              "record-heart-001"
+            ],
+            "retiredDeviceSnapshots": [],
+            "visible": [
+              "changed-source-record.primary"
+            ],
+            "newlyVisible": [],
+            "disposition": "replayed",
+            "receiptEvent": "source-record-target-retraction",
+            "reason": null
+          }
+        }
+      ]
+    }
+  ],
+  "replayWholeSequence": {
+    "repeat": 1,
+    "restartBeforeReplay": true,
+    "preserveFinalState": true,
+    "newlyVisible": []
+  }
+}

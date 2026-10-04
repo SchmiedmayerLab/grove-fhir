@@ -200,6 +200,12 @@ Retraction does not assert that the prior clinical statement was erroneous.
 
 Each target role fixes both its resource type and Identifier role: primary outputs are supported clinical result resources, child outputs are Observations, source artifacts are DocumentReferences, specimens are Specimens, and device snapshots are Devices.
 
+Instead of those typed targets, the Provenance may address the source record as a whole through one `source-record` target, which is then its only target.
+That target is an untyped logical Reference with role `source-record` whose Identifier repeats the exact `source-record` Identifier of the Provenance source entity; the role states no resource type, and that Identifier is the retraction address.
+It addresses every node that the conversion Provenance of any active event with that source entity targets, and the event-time Device snapshots those events carry, whether an event arrives before or after the retraction.
+It names no output identity, so it associates no output with the source record, and it remains valid when it addresses no node the receiving system holds.
+A receiving system resolves it through the source entity of every conversion Provenance it has accepted or later accepts, never as the identity of one node, and applies it to the addressed nodes exactly as it would apply typed targets naming each of them.
+
 A target may additionally carry one [Grove Retraction Native Record Identifier](StructureDefinition-grove-retraction-target-native-identifier.html), the platform-native record identifier of the record being retracted, so a consumer can delete the exact native records rather than only the projections.
 `Identifier.system` is the adapter's own absolute native key space, scoped to the governed repository, account, or store exactly as it is for the optional governed source identifier on the addition path, and the same explicit deployment disclosure policy governs both; omitting it remains conformant.
 It never addresses the target: the minted `source-output` or `device-snapshot` identity remains the retraction address, and the native Identifier carries no Grove identifier role.

@@ -47,11 +47,15 @@ class ProducerManifestExternalTests(ProducerValidationTestCase):
         self.assertEqual(manifest["producer"]["version"], RELEASE_VERSION)
         self.assertEqual(
             [resource.name for resource in resources],
-            ["exchange-bundle.json", "retraction-bundle.json"],
+            [
+                "exchange-bundle.json",
+                "retraction-bundle.json",
+                "source-record-target-retraction-bundle.json",
+            ],
         )
         self.assertEqual(
             [resource.parent for resource in resources],
-            [path.parent, path.parent],
+            [path.parent, path.parent, path.parent],
         )
 
     def test_path_traversal_is_rejected(self) -> None:

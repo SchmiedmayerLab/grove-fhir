@@ -79,6 +79,12 @@
       ]
     },
     {
+      "path": "resources/source-record-target-retraction.json",
+      "requiredProfiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-retraction-bundle"
+      ]
+    },
+    {
       "path": "resources/multi-v1.json",
       "requiredProfiles": [
         "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle"
