@@ -359,6 +359,129 @@ As for every omission, a key that a disclosure policy withholds is not reported.
 Study linkage follows the Mobile guide's [study model](https://grovealliance.org/fhir/mobile/study.html): a versioned PlanDefinition is referenced by ResearchStudy, ResearchSubject connects the Patient to the study, and `workflow-researchStudy` links the Observation.
 The [study Bundle](Bundle-HealthKitStudyBundleExample.html) demonstrates the graph.
 
+### Source metadata artifact
+
+This section is a draft proposal for owner review and is not yet admitted.
+Until it is admitted, a producer emits no source-metadata artifact, and the [withheld-metadata rules](#withheld-metadata) apply unchanged.
+It proposes a carrier for the metadata keys that those rules withhold; its open questions close the section.
+
+Under a source-metadata disclosure authorization, a producer adds one source-metadata artifact to the graph of a record for which the payload below would carry at least one key: a DocumentReference that claims the proposed HealthKit Source Metadata Document profile, a specialization of the [HealthKit Recording Document](StructureDefinition-healthkit-recording-document.html).
+It is a source artifact: beside the record's `source-record` Identifier it carries a `source-output` Identifier with output role `source-metadata` and discriminator `single`, and a `source-artifact` Identifier with format code `source-metadata` and part index `0`.
+Its `content.format` is the proposed recording format `source-metadata`, its `Attachment.contentType` is `application/json`, and its `Attachment.data` holds the payload below, with `size` and `hash` taken over the payload bytes.
+It references no other output and no other output references it: the shared `source-record` Identifier and the conversion Provenance, which targets it as it targets every output, relate it to the record, so adding or omitting it changes nothing that another output takes from the record and no Identifier that is not event-scoped, such as a `source-record`, `source-output`, or `writer-record` Identifier.
+It is never the designated primary output and never carries a governed source identifier or a `writer-record` Identifier.
+
+The authorization is the deployment's explicit decision to disclose source metadata, and it is never inferred from the converting application, a key's spelling, or a value.
+It names each key it reaches by its runtime key, as the [withheld-metadata rules](#withheld-metadata) define it, or it reaches every ordinary key, or both.
+Every key is ordinary except the identifying keys below, which can identify a person, a device, or a writer's record: an authorization reaches an identifying key only when it names that key, and reaching every ordinary key reaches none of them.
+
+| Runtime key | SDK constant |
+|---|---|
+| `HKMetadataKeySyncIdentifier` | `HKMetadataKeySyncIdentifier` |
+| `HKExternalUUID` | `HKMetadataKeyExternalUUID` |
+| `HKDeviceSerialNumber` | `HKMetadataKeyDeviceSerialNumber` |
+| `HKUDIDeviceIdentifier` | `HKMetadataKeyUDIDeviceIdentifier` |
+| `HKUDIProductionIdentifier` | `HKMetadataKeyUDIProductionIdentifier` |
+| `HKDeviceName` | `HKMetadataKeyDeviceName` |
+| `HKDigitalSignature` | `HKMetadataKeyDigitalSignature` |
+
+Without an authorization, a producer emits no artifact; that is the default.
+A producer also emits no artifact for a record whose payload would carry no key, so a missing artifact never says whether a record carried metadata.
+The deployment's disclosure policy takes precedence over the authorization: a key that the policy withholds is never carried, whatever the authorization reaches, and, as for every omission a disclosure policy chooses, it is not reported.
+A record that the producer refuses has no graph and so no artifact, and a workout route, which is disclosed only under a route-disclosure authorization, has an artifact only when its route is disclosed.
+
+The payload is the RFC 8785 canonical JSON serialization of one object, in UTF-8 without a byte-order mark: no insignificant whitespace, members in the order of their names' UTF-16 code units, and strings escaped as RFC 8785 escapes them.
+Its `metadata` member is always present: it holds every key that the record itself carries and that the payload carries, and it is the empty object when the record itself carries no such key.
+Its `parts` member, left out when empty, holds one entry of `part` and `metadata` for each part of the record that carries such a key, ordered by the UTF-16 code units of `part` and then by the canonical bytes of `metadata`, so no outcome depends on the order of `HKCorrelation.objects`.
+The parts are a blood-pressure correlation's objects, each named by its exact source type identifier, and a workout's events and activities, each named by the discriminator of the segment that the [workout rules](#workouts) emit for it.
+A food correlation's objects are records of their own and carry their keys in their own artifacts.
+The payload names each key by its runtime key and carries the key whether or not an element of the graph also represents it.
+A producer reads the metadata as the `NSDictionary` that HealthKit holds, and each key and each string value as the UTF-16 code units of its `NSString`, never through a type that compares strings by canonical equivalence: two keys whose code units differ are two keys even when Unicode calls them equivalent, so naming a key reaches only the key with the same code units, and a key is identifying only when its code units are those of a runtime key in the table above.
+Swift's `String` compares by canonical equivalence, so bridging the dictionary to `[String: Any]`, as `HKObject.metadata` is bridged in Swift, keeps only one of two such keys: on the SDK baseline, a sample whose metadata holds `é` both as U+00E9 and as U+0065 U+0301 keeps both keys in its `NSDictionary` and one once bridged.
+Each value is an object with exactly one member, chosen by the value's class:
+
+| Value class | Member | Value |
+|---|---|---|
+| `NSString` | `string` | the exact string, its UTF-16 code units without Unicode normalization; a string that is not a sequence of Unicode scalar values, such as one holding an unpaired surrogate, is not carried |
+| `NSDecimalNumber` | `number` | its exact value, the decimal mantissa times ten to the power of its exponent, as plain decimal text without an exponent, a leading zero before another integer digit, or a trailing fractional zero, and `0` for zero; the class is checked before the `objCType`, which is `d`, and the value is never read through `doubleValue`; `NaN` is not carried |
+| `NSNumber` whose `objCType` is `c`, `C`, `s`, `S`, `i`, `I`, `l`, `L`, `q`, `Q`, or `B` | `number` | the exact integer as canonical decimal text, so a Boolean, which reports `c`, is `1` or `0` |
+| `NSNumber` whose `objCType` is `f` or `d` | `number` | the binary64 that `doubleValue` returns, which widens a `float` exactly, as its [shortest round-trip decimal](#percentages) in plain positional notation, choosing the one whose last digit is even when two are equally near it, and as `0` for either zero; a nonfinite value is not carried |
+| `NSDate` | `instant` | the instant as a [workout segment endpoint](#workouts) renders it, `YYYY-MM-DDThh:mm:ss.fffffffffZ` in UTC and the proleptic Gregorian calendar; a nonfinite date, or one whose year falls outside 0001 through 9999, is not carried |
+| `HKQuantity` | `quantity` | an object of `unit`, the UCUM code of the first unit below with which the quantity is compatible, and `value`, the binary64 that `doubleValue(for:)` returns in that unit, written as for a floating `NSNumber`; a quantity compatible with no unit below, or with a nonfinite value, is not carried |
+| `NSData` | `data` | the bytes in base64 with the standard alphabet and padding and without line breaks, as RFC 4648 section 4 defines |
+
+A value of any other class, and a key that is not a sequence of Unicode scalar values, is not carried.
+A number is written as text rather than as a JSON number, so the payload never depends on how a JSON library writes numbers, and an integer whose magnitude exceeds 2^53 keeps every digit, as does a decimal.
+An `NSDecimalNumber` is written from its exact value because its mantissa has a precision of at least 38 decimal digits, more than a binary64 keeps, and because its `doubleValue` is not always correctly rounded: on the SDK baseline it returns `0.12345678901234565` for the decimal `0.123456789012345678`, whose nearest binary64 is `0.12345678901234568`.
+
+`HKQuantity` exposes no unit of its own, so the payload writes each quantity in the first of these HealthKit units with which it is compatible, under its UCUM code, in the order of this table:
+
+| HealthKit unit | UCUM code |
+|---|---|
+| `count` | `1` |
+| `count/min` | `/min` |
+| `s` | `s` |
+| `m` | `m` |
+| `m/s` | `m/s` |
+| `g` | `g` |
+| `L` | `L` |
+| `L/min` | `L/min` |
+| `kcal` | `kcal` |
+| `W` | `W` |
+| `degC` | `Cel` |
+| `mmHg` | `mm[Hg]` |
+| `mg/dL` | `mg/dL` |
+| `mL/(kg*min)` | `mL/kg/min` |
+| `kcal/(kg*hr)` | `kcal/kg/h` |
+| `IU` | `[iU]` |
+| `S` | `S` |
+| `dBASPL` | `dB[SPL]` |
+| `dBHL` | `dB` |
+| `lx` | `lx` |
+| `appleEffortScore` | `{score}` |
+
+On the SDK baseline no two of these units are compatible, so the order decides nothing there; it decides only if a later SDK makes two of them compatible.
+A percentage is therefore written in `1` as the fraction HealthKit holds, because HealthKit's percent and `count` units are compatible.
+
+Once the artifact is admitted, the record itself and each of its parts are decided path by path: a key that the payload carries on a path is represented there by the graph.
+A key that the payload does not carry on a path, because the authorization does not reach it or the payload cannot carry its value, is treated there exactly as the withheld-metadata rules decide without an authorization: it is represented by its element where the table maps it, and is otherwise withheld.
+A key that those rules report on any path where the payload does not carry it is reported as `mobile-omission.unmodeled-metadata` once, even when the payload carries it on another path, and a key that the disclosure policy withholds is neither carried nor reported.
+An authorization only discloses: it is not a disclosure policy that withholds keys, so it never silences a report.
+The artifact never replaces an element: a key that the [withheld-metadata table](#withheld-metadata) maps is still carried in its element, and the artifact never excuses leaving that element out.
+Carrying a key changes no other rule: a half or invalid sync pair that the record itself carries still rejects the record, a sync pair in the payload is never writer identity, and the [revision rules](#logical-identity-and-revisions) still decide which outputs carry writer identity.
+
+The payload depends only on the record's metadata, the authorization, the deployment's disclosure policy, and the unit table above, never on the conversion instant, a locale, or the order in which a dictionary or set is iterated.
+Converting an unchanged record again under the same authorization and disclosure policy therefore yields the same bytes, as an exact retry requires.
+A changed authorization, disclosure policy, or unit table that still yields an artifact changes its content, which the producer delivers as a new event, and the artifact keeps its `source-output` and `source-artifact` Identifiers, so a receiver supersedes it in place.
+A change that leaves the record no carried key yields no artifact, so it neither supersedes nor retracts the delivered one; that is the withdrawal question below.
+An exact retraction names the artifact with target role `source-artifact` when the producer establishes that it emitted the artifact.
+An `HKDeletedObject` carries no metadata beyond the sync pair, so a producer that kept no record of the output set uses the source-record target, which addresses the artifact with the record's other nodes.
+Retraction asserts that the source removed the record, so it is not the means to withdraw an artifact once its authorization ends.
+
+A receiver may store, index, and show the payload's keys as facts that the record's writer stated, read an SDK key's meaning from Apple's HealthKit documentation, and drop or segregate the artifact without changing any other output.
+A receiver must not treat a value as a clinical result or prefer it over the element of the same graph that represents the key, derive identity, deduplication, revision order, or a retraction address from a value such as a sync identifier or an external UUID, read a missing key or a missing artifact as a statement that the record carried no such metadata, or rewrite the payload and present it as the producer's.
+A value can identify a person, a device, or a writer's record, so the artifact carries the deployment's disclosure obligations wherever a receiver keeps it.
+
+#### Rationale
+
+HealthKit metadata is an open dictionary that every writing application fills: besides the keys this guide maps, it holds the identifying keys above, free text, and keys whose meaning only their writer knows, and the SDK header discourages storing the UDI production identifier in HealthKit for user privacy reasons.
+Disclosure is therefore the deployment's explicit decision and is off by default, an identifying key is disclosed only by name, and the withheld-metadata report keeps every loss visible, including that of an origin key such as `HKDeviceManufacturerName`.
+A separate artifact keeps that content off the clinical resources: a receiver can drop, segregate, or retract it on its own, and the authorization changes nothing that another output takes from the record and no Identifier that is not event-scoped.
+In the new event that delivers a changed artifact, another output differs only in what every new event changes, such as a reference to a node with an event-scoped identity.
+An extension would need a context on every output type, repeat itself across a multi-output graph, and change a clinical resource whenever the authorization changes, and this guide admits no generic metadata extension.
+The payload defines a canonical value for each class rather than promising a verbatim copy, because what a copy preserves cannot be checked across platforms; it names its losses instead: an `NSNumber`'s storage class, an `NSDate`'s detail below a nanosecond, a quantity's original unit, which `HKQuantity` does not expose, the sign of a floating zero, and every value it does not carry.
+`HKObject.h` names four value classes, `NSString`, `NSNumber`, `NSDate`, and `HKQuantity`; on the SDK baseline the `HKQuantitySample` initializer also admits `NSData` and `NSDecimalNumber` values and rejects `NSArray` and `NSNull` values.
+
+#### Open questions
+
+- Carrier: is a separate DocumentReference source artifact the carrier the owner wants, rather than an extension on each output?
+- Admission: admitting the artifact also registers `source-metadata` in the Sensor recording-format registry; adds the HealthKit Source Metadata Document profile, with a `type` coding and a `date` that states when the reference was created, as FHIR R4 defines `DocumentReference.date`, and that an exact retry reuses, under a parent whose description says byte-preserved; adds its claim to `catalog/profile-claims.json`, whose HealthKit conversion Provenance claim and ECG claim name the Provenance targets, while HealthKit Conversion Provenance already admits it as a target through that parent; excludes it in the HealthKit selector of the governed source identifier in `catalog/exchange-protocol.json`; amends that identifier's `source-only` output-mode rule and `recordingDocumentRule` there, which let a DocumentReference carry it only as the event's sole DocumentReference or sole source-derived output, and the Mobile statement that it may sit on the source Recording Document when no structured output exists, because twelve HealthKit rows emit a recording document as their only output; adds a `source-artifact` identity vector and producer-kit checks; amends the Mobile statement that source-platform fields do not pass through a generic metadata container and the `untypedMetadata` enforcement in `catalog/exchange-protocol.json`; amends this page's statements that there is no generic metadata extension and that another key needs a typed FHIR representation, that a key is represented only by the element the withheld-metadata table gives it, that a HealthKit Recording Document represents no key, and that the exact targets of a workout retraction are its session and its segments; amends the description of HealthKit Metadata Keys, which calls its keys the ones the guide retains after the standard mappings; amends the HealthKit catalog's identity `outputRoleRule`, which takes every output role from a catalog row, and its `sourceArtifact` rule, which gives a format code only to a clinical or native recording; and amends the conditional outputs that the [implementation page](implementation.html) names for a retracted source record.
+- Source types: should an authorization also be able to name the source types it reaches? If it may, it names a record's own source type identifier and reaches the record with all of its parts, a blood-pressure correlation's objects and a workout's events and activities among them, while a part's type, such as `HKQuantityTypeIdentifierBloodPressureSystolic` for a blood-pressure object, names no record and reaches nothing.
+- `NSNumber` storage class: should the payload state whether a number was stored as a Boolean, an integer, a floating value, or a decimal? An integer whose magnitude exceeds 2^53 keeps every digit when stored as an integer and is rounded when stored as a floating value.
+- `NSData` and `NSDecimalNumber`: the `HKQuantitySample` initializer admits both although `HKObject.h` does not list them; whether the store returns them after a save is not known, and until it is, either could instead stay uncarried and reported.
+- Withdrawal: how does a deployment withdraw an artifact that it delivered before its authorization ended, or before a change left its record no carried key?
+- Units: a quantity compatible with no listed unit is not carried; extending the list changes the payload for such a key, which is then a new event, not a retry.
+
 ### Dependencies and terminology notices
 
 The tables below list this guide's package dependencies and the notices for terminology used by its artifacts and examples.
