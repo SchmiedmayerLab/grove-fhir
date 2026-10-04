@@ -136,3 +136,7 @@ WARNING: Observation/HealthkitGad7AssessmentExample: Observation.value.ofType(Qu
 # The profile forbids prescriber.reference, .identifier and .display and asserts absence with
 # data-absent-reason: HealthKit carries no prescriber, and a display would invent one.
 WARNING: VisionPrescription/HealthKitVisionPrescriptionExample: VisionPrescription.prescriber: A Reference without an actual reference or identifier should have a display
+
+# The mapping specifies this extension on an author-less conversion Provenance's source entity, and
+# no conversion Provenance example of the guide carries it.
+WARNING: StructureDefinition.where(url = 'https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-source-revision'): The Implementation Guide contains no examples for this extension
