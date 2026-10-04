@@ -3559,7 +3559,9 @@
       "cardinality": "1..1",
       "meaning": "Exact Apple application product bundle identifier; never an installation, host, account, or person identifier."
     },
-    "classificationRule": "The converting application always uses this profile. An HKSourceRevision author uses it only when the caller explicitly classifies that source as an application; never infer actor class from name, bundle text, UUID shape, or productType."
+    "classificationRule": "The converting application always uses this profile. An HKSourceRevision author uses it only when the caller explicitly classifies that source as an application; never infer actor class from name, bundle text, UUID shape, or productType.",
+    "sourceBuildRule": "HKSourceRevision.version is the source's CFBundleVersion: when HealthKit supplies it, copy it unchanged into the applicationBuild slice, never into applicationVersion.",
+    "sameApplicationRule": "An application-classified source's author may reference the converting application's Device only when HKSource.bundleIdentifier equals that Device's Apple bundle identifier, HKSourceRevision.version is supplied and equals, character for character, the build that Device states in applicationBuild, and the producer never reuses a build across releases of that bundle identifier. The shared Device keeps the converting application's name, release, build, and parent, and the producer emits no other Device for the source. Every application-classified source whose author does not reference the converting application's Device, including one without HKSourceRevision.version, one of another build, and every one compared with a converting application Device that states no build, is a distinct application snapshot."
   },
   "identity": {
     "contract": "catalog/exchange-protocol.json",
