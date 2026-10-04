@@ -192,7 +192,7 @@ Study resources are linked through the study model; they are not source entities
 ### Supported HealthKit metadata
 
 Map source facts to standard FHIR fields and published extensions before retaining adapter-specific metadata.
-Of the four keys in [HealthKit Metadata Keys](CodeSystem-healthkit-metadata-key.html), one is carried as an adapter-coded component: `HKMetadataKeyHeartRateMotionContext`.
+Of the five keys in [HealthKit Metadata Keys](CodeSystem-healthkit-metadata-key.html), one is carried as an adapter-coded component: `HKMetadataKeyHeartRateMotionContext`.
 It is represented by the named `Observation.component:heartRateMotionContext` slice and bound to [HealthKit Heart Rate Motion Context](CodeSystem-healthkit-heart-rate-motion-context.html).
 The component is valid only on a LOINC `8867-4` heart-rate Observation.
 
@@ -207,6 +207,19 @@ Map the source `NSNumber` without renumbering or inferring a context:
 The lower-case values in the second column are codes in the adapter's FHIR CodeSystem; the integer in the first column is the value supplied by HealthKit.
 For any other integer, reject the unsupported value or omit the component according to the importer's policy.
 Never default an unknown value to `not-set`.
+
+Another is carried as an adapter-coded component: `HKMetadataKeyInsulinDeliveryReason`.
+It is represented by the required `Observation.component:insulinDeliveryReason` slice of [Insulin Delivery](StructureDefinition-healthkit-insulin-delivery.html) and bound to [HealthKit Insulin Delivery Reason](ValueSet-healthkit-insulin-delivery-reason.html).
+The component's code is `HKInsulinDeliveryReason`, the key that the constant `HKMetadataKeyInsulinDeliveryReason` holds and a sample's metadata carries.
+
+Map the source `NSNumber` without renumbering or inferring a reason:
+
+| `HKInsulinDeliveryReason` raw `NSNumber` value | Adapter code | Display |
+|---:|---|---|
+| `1` | `basal` | Basal |
+| `2` | `bolus` | Bolus |
+
+A sample that does not carry the key, or carries a value the table does not map, is rejected; the component is never omitted and a reason is never inferred.
 
 There is no generic metadata extension.
 Adding another key requires a defined semantic purpose, a typed FHIR representation, an explicit allowlist update, and validation examples.

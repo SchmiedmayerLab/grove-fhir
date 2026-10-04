@@ -27,6 +27,7 @@ Description: "HealthKit metadata keys retained by the relevant Grove FHIR Implem
 * #HKMetadataKeyAppleECGAlgorithmVersion "Apple ECG Algorithm Version" "The HealthKit metadata key whose NSNumber value identifies the Apple ECG classification algorithm version."
 * #HKMetadataKeySyncIdentifier "Sync Identifier" "The HealthKit metadata key whose value is the writer-assigned logical identity of a sample, stable across the replacements HealthKit performs when a higher sync version is saved."
 * #HKMetadataKeySyncVersion "Sync Version" "The HealthKit metadata key whose NSNumber value orders revisions of one sync identifier; HealthKit keeps the higher version and discards the lower."
+* #HKInsulinDeliveryReason "Insulin Delivery Reason" "The HealthKit metadata key that the constant HKMetadataKeyInsulinDeliveryReason holds, as a sample's metadata carries it; its NSNumber value is mapped to a basal or bolus delivery-reason code."
 
 ValueSet: HealthKitMetadataKeyVS
 Id: healthkit-metadata-key
@@ -325,6 +326,13 @@ Description: "Exact HealthKit HKInsulinDeliveryReason cases carried as the requi
 * ^copyright = "HealthKit API identifiers and type names originate from Apple Inc. and are used here only to identify source API concepts for interoperability. The MIT license applies to Grove-authored definitions; it does not grant rights in Apple material."
 * #basal "Basal" "HealthKit HKInsulinDeliveryReason.basal."
 * #bolus "Bolus" "HealthKit HKInsulinDeliveryReason.bolus."
+
+ValueSet: HealthkitInsulinDeliveryReasonVS
+Id: healthkit-insulin-delivery-reason
+Title: "HealthKit Insulin Delivery Reason"
+Description: "Delivery reasons permitted by the required insulinDeliveryReason component of a HealthKit insulin-delivery Observation."
+* ^experimental = false
+* include codes from system HealthKitInsulinDeliveryReasonCS
 
 CodeSystem: HealthKitWorkoutActivityCS
 Id: healthkit-workout-activity

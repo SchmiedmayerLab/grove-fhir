@@ -4376,7 +4376,16 @@
         "oura": "unmodeled",
         "withings": "unmodeled",
         "questionnaire": "platform-exclusive"
-      }
+      },
+      "components": [
+        {
+          "id": "insulinDeliveryReason",
+          "system": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-metadata-key",
+          "code": "HKInsulinDeliveryReason",
+          "cardinality": "1..1",
+          "valueSet": "https://grovealliance.org/fhir/healthkit/ValueSet/healthkit-insulin-delivery-reason"
+        }
+      ]
     },
     {
       "id": "intermenstrual-bleeding",
