@@ -251,7 +251,7 @@ The table's `Nullable` column controls empty fields: `no` requires a non-empty f
 | `latitude` | number | no | `deg` | WGS 84 latitude in degrees. |
 | `longitude` | number | no | `deg` | WGS 84 longitude in degrees. |
 | `altitude` | number | no | `m` | Altitude above the WGS 84 reference ellipsoid in metres. |
-| `horizontalAccuracy` | number | no | `m` | Radius of uncertainty for the horizontal position in metres. |
+| `horizontalAccuracy` | number | yes | `m` | Radius of uncertainty for the horizontal position in metres; empty when the horizontal position is invalid. |
 | `verticalAccuracy` | number | yes | `m` | Uncertainty of the altitude in metres; empty when altitude is invalid. |
 | `speed` | number | yes | `m/s` | Instantaneous speed in metres per second; empty when unavailable. |
 | `speedAccuracy` | number | yes | `m/s` | Uncertainty of the speed in metres per second; empty when unavailable. |
