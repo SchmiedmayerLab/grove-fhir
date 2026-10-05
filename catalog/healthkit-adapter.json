@@ -3514,7 +3514,7 @@
       "profiles": [
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-recording-document"
       ],
-      "requirement": "The recorded route is admitted as a recording document carrying the published location-track-samples column schema. A route re-identifies readily, so a producer discloses it only under an explicit route-disclosure authorization."
+      "requirement": "The recorded route is admitted as a recording document carrying the published location-track-samples column schema. A route re-identifies readily, so a producer discloses it only under an explicit route-disclosure authorization. A location whose CLLocation horizontalAccuracy is negative, CoreLocation's marker for an invalid horizontal position, keeps its row, with horizontalAccuracy empty and latitude and longitude as the CLLocation states them; a negative verticalAccuracy, the marker for an invalid altitude, leaves verticalAccuracy empty."
     },
     {
       "sourceTypeIdentifier": "HKWorkoutTypeIdentifier",
