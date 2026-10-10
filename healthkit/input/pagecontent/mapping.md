@@ -101,10 +101,44 @@ An event segment's value carries the shared Grove workout-segment-type coding fi
 | `8` | `pauseOrResumeRequest` | `pause-or-resume-request` |
 
 The session's value classifies `HKWorkout.workoutActivityType`, and an activity segment's value classifies `HKWorkoutActivity.workoutConfiguration.activityType` the same way; each carries the shared Grove workout-activity coding first and the exact [HealthKit Workout Activity](CodeSystem-healthkit-workout-activity.html) coding second.
+The shared code is the one this table gives the exact code, as the workout output's `activityMapping` in [`catalog/healthkit-adapter.json`](https://grovealliance.org/fhir/catalog/healthkit-adapter.json) states for every code: a code the shared vocabulary names maps to it, a code each of whose activities is a kind of one shared activity maps to that activity, and every other code maps to `other`.
+A related activity that is not such a kind maps to `other` rather than to its nearest shared activity: water fitness is not swimming, and a wheelchair pace is neither running nor walking.
+
+| Grove workout-activity code | HealthKit Workout Activity codes |
+|---|---|
+| `running` | `running` |
+| `walking` | `walking` |
+| `cycling` | `cycling`, `handCycling` |
+| `hiking` | `hiking` |
+| `swimming` | `swimming` |
+| `strength-training` | `coreTraining`, `functionalStrengthTraining`, `traditionalStrengthTraining` |
+| `high-intensity-interval-training` | `highIntensityIntervalTraining` |
+| `yoga` | `yoga` |
+| `pilates` | `pilates` |
+| `rowing` | `rowing` |
+| `elliptical` | `elliptical` |
+| `stair-climbing` | `stairClimbing`, `stairs` |
+| `dancing` | `cardioDance`, `dance`, `socialDance` |
+| `tennis` | `tennis` |
+| `table-tennis` | `tableTennis` |
+| `badminton` | `badminton` |
+| `squash` | `squash` |
+| `basketball` | `basketball` |
+| `soccer` | `soccer` |
+| `american-football` | `americanFootball` |
+| `baseball` | `baseball` |
+| `volleyball` | `volleyball` |
+| `golf` | `golf` |
+| `boxing` | `boxing` |
+| `martial-arts` | `kickboxing`, `martialArts`, `taiChi`, `wrestling` |
+| `skiing` | `crossCountrySkiing`, `downhillSkiing` |
+| `snowboarding` | `snowboarding` |
+| `other` | every other code, `other` included |
+
 The Workout Segment value set admits the shared activity codes, although the Mobile measurement catalog's `workout-segment` `allowedValues` list only the structural codes.
 
 A raw value that this guide does not list does not refuse the workout and is not lost.
-An `HKWorkoutEventType` raw value that the table above does not list gives its segment the Grove workout-segment-type code `unknown`, and an `HKWorkoutActivityType` that HealthKit Workout Activity does not list gives the session or the activity segment the Grove workout-activity code `other`.
+An `HKWorkoutEventType` raw value that the event-type table above does not list gives its segment the Grove workout-segment-type code `unknown`, and an `HKWorkoutActivityType` that HealthKit Workout Activity does not list gives the session or the activity segment the Grove workout-activity code `other`.
 Such a value carries no HealthKit coding, because both HealthKit CodeSystems are complete, and carries its raw SDK integer in one [HealthKit Unmapped Source Value](StructureDefinition-healthkit-unmapped-source-value.html) extension, in canonical decimal text exactly as the discriminator's `raw value` below writes it, so every raw value the SDK can hold is kept.
 
 A workout is refused when one of its outputs cannot be stated:

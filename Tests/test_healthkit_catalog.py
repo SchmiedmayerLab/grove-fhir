@@ -1107,6 +1107,86 @@ class HealthKitCatalogTests(unittest.TestCase):
             with self.subTest(raw=raw):
                 self.assertIsNone(text.fullmatch(raw))
 
+    def test_workout_activity_mapping_gives_every_healthkit_code_one_shared_code(self) -> None:
+        healthkit = (ROOT / "healthkit/input/fsh/terminology.fsh").read_text(encoding="utf-8")
+        mobile = (ROOT / "mobile/input/fsh/terminology.fsh").read_text(encoding="utf-8")
+
+        def codes(text: str, code_system: str) -> list[str]:
+            lines = text.split(f"CodeSystem: {code_system}\n", 1)[1].split("\n\n", 1)[0].splitlines()
+            return [line.split()[1][1:] for line in lines if line.startswith("* #")]
+
+        def kebab(name: str) -> str:
+            return "".join(f"-{c.lower()}" if c.isupper() else c for c in name)
+
+        row = next(row for row in self.catalog["rows"] if "outputs" in row)
+        session, segment = row["outputs"]
+        activities = session["activityMapping"]
+        shared = codes(mobile, "GroveWorkoutActivityCS")
+        # Every HealthKit code is mapped once, in its CodeSystem's order, and every shared code is
+        # reached.
+        self.assertEqual(list(activities), codes(healthkit, "HealthKitWorkoutActivityCS"))
+        self.assertEqual(set(activities.values()), set(shared))
+        # A code the shared vocabulary names maps to it; these vectors pin every collapse onto a
+        # shared activity the code is a kind of, and every other code maps to other.
+        for code, activity in activities.items():
+            if kebab(code) in shared:
+                with self.subTest(code=code):
+                    self.assertEqual(activity, kebab(code))
+        self.assertEqual(
+            {
+                code: activity for code, activity in activities.items()
+                if activity not in {kebab(code), "other"}
+            },
+            {
+                "handCycling": "cycling",
+                "coreTraining": "strength-training",
+                "functionalStrengthTraining": "strength-training",
+                "traditionalStrengthTraining": "strength-training",
+                "stairs": "stair-climbing",
+                "cardioDance": "dancing",
+                "dance": "dancing",
+                "socialDance": "dancing",
+                "kickboxing": "martial-arts",
+                "taiChi": "martial-arts",
+                "wrestling": "martial-arts",
+                "crossCountrySkiing": "skiing",
+                "downhillSkiing": "skiing",
+            },
+        )
+        # The page's table states the same mapping, one row per shared code, other last.
+        mapping = (ROOT / "healthkit/input/pagecontent/mapping.md").read_text(encoding="utf-8")
+        section = mapping.split("### Workouts\n", 1)[1].split("\n### ", 1)[0]
+        table = {
+            cells[0].strip("`"): cells[1]
+            for cells in (
+                [cell.strip() for cell in line.strip("|").split("|")]
+                for line in section.splitlines()
+                if re.match(r"\| `[a-z-]+` \|", line)
+            )
+        }
+        self.assertEqual(list(table), shared)
+        self.assertEqual(table.pop("other"), "every other code, `other` included")
+        # A related activity that is no kind of a shared one is other, not its nearest neighbour.
+        for code in (
+            "waterSports", "waterFitness", "barre", "danceInspiredTraining", "wheelchairRunPace",
+            "wheelchairWalkPace", "softball", "stepTraining",
+        ):
+            with self.subTest(code=code):
+                self.assertEqual(activities[code], "other")
+        for activity, cell in table.items():
+            with self.subTest(activity=activity):
+                self.assertEqual(
+                    cell,
+                    ", ".join(f"`{code}`" for code, mapped in activities.items() if mapped == activity),
+                )
+        # Both outputs classify their activity type through the one mapping.
+        self.assertIn("the grove-workout-activity code that activityMapping gives", session["rule"])
+        self.assertIn(
+            "the grove-workout-activity code that the workout output's activityMapping gives its "
+            "activity type", segment["rule"],
+        )
+        self.assertNotIn("activityMapping", segment)
+
     def test_workout_instant_vectors_render_the_exact_nanosecond(self) -> None:
         row = next(row for row in self.catalog["rows"] if "outputs" in row)
         vectors = row["outputs"][1]["instantVectors"]
