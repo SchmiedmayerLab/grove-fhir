@@ -409,9 +409,9 @@ Description: "The exact registered Grove PPG binary recording; the summary recor
 * content.attachment.contentType = #application/octet-stream
 * content.format = $recordingFormat#photoplethysmogram-samples "Photoplethysmogram Samples"
 * content.attachment.title = "SensorKit PPG Recording"
-* content.attachment.data = "AUHaoal8AAAAAgABAXUBAwIBAgQ/8AAAAAAAAEAAAAAAAAAAQBAAAAAAAAAFAQFjAT/wAAAAAAAAv/AAAAAAAABAAAAAAAAAAMAAAAAAAAAAAT/gAAAAAAAAAQZAIAAAAAAAAD/wAAAAAAAAv/AAAAAAAAAAAAAAAAAAAA=="
-* content.attachment.size = 124
-* content.attachment.hash = "EUIYvP3929camULujA1TxHgSHco="
+* content.attachment.data = "AQFB2qGpfAAAAAIAAQF1AQMCAQIEP/AAAAAAAABAAAAAAAAAAEAQAAAAAAAABQEBYwE/8AAAAAAAAL/wAAAAAAAAQAAAAAAAAADAAAAAAAAAAAE/4AAAAAAAAAEGQCAAAAAAAAA/8AAAAAAAAL/wAAAAAAAAAAAAAAAAAAA="
+* content.attachment.size = 125
+* content.attachment.hash = "qCZ95nUdSmuI/H2gvmCrvoHQdiQ="
 * context.related = Reference(SensorKitPPGExample)
 
 Instance: SensorKitPPGExample

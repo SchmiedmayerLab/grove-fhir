@@ -300,7 +300,7 @@ One document carries one API response for one account and one source element bat
 ### `photoplethysmogram-samples` — Photoplethysmogram Samples
 
 Media type: `application/octet-stream`.
-Varint record count, then that many PPG records.
+Version byte 0x01, then a varint record count, then that many PPG records. Decoders reject any other version byte; a payload whose grammar changes takes the next version.
 
 **Primitive encodings**
 
