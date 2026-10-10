@@ -31,7 +31,7 @@ Description: "The closed registry of payload formats a Grove recording DocumentR
 * #clinical-document "Clinical Document" "One HL7 Clinical Document Architecture Release 2 document, byte-preserved exactly as the source platform delivered it. Grove never rewrites, reserializes, or asserts conformance over another issuer's document; the carrying document records the issuer."
 * #native-recording "Native Recording" "The payload is strict UTF-8 JSON with an object or array root. Byte-order marks, duplicate object member names, non-finite numeric values, scalar roots, malformed UTF-8, and malformed JSON are rejected."
 * #provider-recording "Provider Recording" "The payload is the exact JSON response-body bytes returned by the provider API; HTTP transport framing is not part of the payload."
-* #photoplethysmogram-samples "Photoplethysmogram Samples" "Varint record count, then that many PPG records."
+* #photoplethysmogram-samples "Photoplethysmogram Samples" "Version byte 0x01, then a varint record count, then that many PPG records. Decoders reject any other version byte; a payload whose grammar changes takes the next version."
 
 ValueSet: GroveRecordingFormatVS
 Id: grove-recording-format
