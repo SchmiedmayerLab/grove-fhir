@@ -202,6 +202,8 @@ Each target role fixes both its resource type and Identifier role: primary outpu
 
 Instead of those typed targets, the Provenance may address the source record as a whole through one `source-record` target, which is then its only target.
 That target is an untyped logical Reference with role `source-record` whose Identifier repeats the exact `source-record` Identifier of the Provenance source entity; the role states no resource type, and that Identifier is the retraction address.
+The Reference identifies the source business record itself, never a graph node: a platform record such as a HealthKit sample, which has no FHIR resource, or the QuestionnaireResponse a questionnaire extraction converted, which is why the profile admits a QuestionnaireResponse target only in this form.
+The receiving system's lifecycle policy, not the Reference, expands the retraction to the output graph.
 It addresses every node that the conversion Provenance of any active event with that source entity targets, and the event-time Device snapshots those events carry, whether an event arrives before or after the retraction.
 It names no output identity, so it associates no output with the source record, and it remains valid when it addresses no node the receiving system holds.
 A receiving system resolves it through the source entity of every conversion Provenance it has accepted or later accepts, never as the identity of one node, and applies it to the addressed nodes exactly as it would apply typed targets naming each of them.

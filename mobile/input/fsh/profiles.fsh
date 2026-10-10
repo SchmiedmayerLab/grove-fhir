@@ -414,10 +414,10 @@ Profile: GroveMobileRetractionProvenance
 Parent: Provenance
 Id: grove-mobile-retraction-provenance
 Title: "Grove Mobile Retraction Provenance"
-Description: "An append-only assertion that a source record is no longer exposed and that identifies each exact previously emitted output. It is not a FHIR delete command and does not assert that the prior clinical result was erroneous."
+Description: "An append-only assertion that a source record is no longer exposed, identifying each exact previously emitted output or the source record as a whole. It is not a FHIR delete command and does not assert that the prior clinical result was erroneous."
 * obeys grove-retraction-target-1 and grove-retraction-lifecycle-coding-1 and grove-lifecycle-source-entity-1 and grove-retraction-target-semantics-1 and grove-retraction-source-record-target-1
 * target 1..* MS
-* target only Reference(Observation or DocumentReference or VisionPrescription or MedicationAdministration or MedicationStatement or Specimen or Device)
+* target only Reference(Observation or DocumentReference or VisionPrescription or MedicationAdministration or MedicationStatement or Specimen or Device or QuestionnaireResponse)
 * target.reference 0..0
 * target.type 0..1 MS
 * target.identifier 1..1 MS
