@@ -427,6 +427,23 @@ Description: "Exact HealthKit HKWorkoutActivityType cases retained alongside the
 * #wrestling "Wrestling" "HealthKit HKWorkoutActivityType.wrestling."
 * #yoga "Yoga" "HealthKit HKWorkoutActivityType.yoga."
 
+CodeSystem: HealthKitWorkoutEventTypeCS
+Id: healthkit-workout-event-type
+Title: "HealthKit Workout Event Type"
+Description: "Exact HealthKit HKWorkoutEventType cases retained alongside the source-neutral Grove workout-segment coding of the segment each workout event converts to."
+* ^experimental = false
+* ^caseSensitive = true
+* ^content = #complete
+* ^copyright = "HealthKit API identifiers and type names originate from Apple Inc. and are used here only to identify source API concepts for interoperability. The MIT license applies to Grove-authored definitions; it does not grant rights in Apple material."
+* #pause "Pause" "HealthKit HKWorkoutEventType.pause."
+* #resume "Resume" "HealthKit HKWorkoutEventType.resume."
+* #lap "Lap" "HealthKit HKWorkoutEventType.lap."
+* #marker "Marker" "HealthKit HKWorkoutEventType.marker."
+* #motionPaused "Motion paused" "HealthKit HKWorkoutEventType.motionPaused."
+* #motionResumed "Motion resumed" "HealthKit HKWorkoutEventType.motionResumed."
+* #segment "Segment" "HealthKit HKWorkoutEventType.segment."
+* #pauseOrResumeRequest "Pause or resume request" "HealthKit HKWorkoutEventType.pauseOrResumeRequest."
+
 CodeSystem: HealthKitMedicationDoseLogStatusCS
 Id: healthkit-medication-dose-log-status
 Title: "HealthKit Medication Dose Log Status"

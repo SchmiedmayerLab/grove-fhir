@@ -11,7 +11,9 @@ from __future__ import annotations
 import json
 import re
 import unittest
+from datetime import datetime, timedelta, timezone
 from decimal import Decimal
+from fractions import Fraction
 from pathlib import Path
 
 
@@ -43,6 +45,27 @@ def percent_from_fraction(fraction: float) -> str:
     """Shift the fraction's shortest round-trip decimal two places exactly, then round once."""
     # scaleb moves the decimal point exactly, and float() of a decimal is correctly rounded.
     return shortest_round_trip(float(Decimal(shortest_round_trip(fraction)).scaleb(2)))
+
+
+def canonical_instant(seconds_since_1970: Fraction) -> tuple[str, bool]:
+    """Round exact Unix seconds half-even to a nanosecond, render them in UTC, and report a tie."""
+    nanoseconds = seconds_since_1970 * 1_000_000_000
+    whole, remainder = divmod(nanoseconds.numerator, nanoseconds.denominator)
+    tie = 2 * remainder == nanoseconds.denominator
+    if 2 * remainder > nanoseconds.denominator or (tie and whole % 2):
+        whole += 1
+    seconds, fraction = divmod(whole, 1_000_000_000)
+    instant = datetime(1970, 1, 1, tzinfo=timezone.utc) + timedelta(seconds=seconds)
+    return instant.strftime("%Y-%m-%dT%H:%M:%S") + f".{fraction:09d}Z", tie
+
+
+def unmapped_source_value_text() -> re.Pattern[str]:
+    """The canonical decimal text that the healthkit-unmapped-source-value-1 invariant admits."""
+    profiles = (ROOT / "healthkit/input/fsh/profiles.fsh").read_text(encoding="utf-8")
+    invariant = profiles.split("Invariant: healthkit-unmapped-source-value-1\n", 1)[1]
+    expression = invariant.split("\n\n", 1)[0].split('Expression: "', 1)[1].split('"', 1)[0]
+    match = re.fullmatch(r"[$]this[.]matches[(]'\^[(](.+)[)]\$'[)]", expression)
+    return re.compile(f"(?:{match.group(1)})")
 
 
 class HealthKitCatalogTests(unittest.TestCase):
@@ -225,6 +248,7 @@ class HealthKitCatalogTests(unittest.TestCase):
                     "profiles",
                 }
                 | ({"requirement"} if "requirement" in row else set())
+                | ({"outputs"} if "outputs" in row else set())
                 | (
                     {"clinicalAdmissionContract"}
                     if "clinicalAdmissionContract" in row
@@ -954,6 +978,273 @@ class HealthKitCatalogTests(unittest.TestCase):
         ):
             with self.subTest(rule=rule):
                 self.assertIn(rule, insulin)
+
+    def test_workout_emits_its_session_and_every_segment(self) -> None:
+        generic = "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-observation"
+        declaring = [row for row in self.catalog["rows"] if "outputs" in row]
+        self.assertEqual(
+            [row["sourceTypeIdentifier"] for row in declaring], ["HKWorkoutTypeIdentifier"]
+        )
+        row = declaring[0]
+        session, segment = row["outputs"]
+        # One output per measurement of the row, each claiming its Mobile profile and the adapter's.
+        self.assertEqual([output["outputRole"] for output in row["outputs"]], row["measurementIDs"])
+        self.assertEqual(
+            [output["profiles"] for output in row["outputs"]],
+            [[profile, generic] for profile in row["profiles"]],
+        )
+        self.assertEqual((session["outputDiscriminator"], session["cardinality"]), ("single", "1..1"))
+        mapping = (ROOT / "healthkit/input/pagecontent/mapping.md").read_text(encoding="utf-8")
+        section = mapping.split("### Workouts\n", 1)[1].split("\n### ", 1)[0]
+        # Segments are mandatory, a sole activity is still a segment, an unlisted value keeps its
+        # output, and writer identity is the same on every output or on none.
+        for text, rule in (
+            (segment["rule"], "including the sole activity of a single-activity workout"),
+            (segment["rule"], "does not convert the HKWorkout and refuses it with "
+             "mobile-input.not-yet-convertible"),
+            (segment["rule"], "does not refuse the HKWorkout: on a segment or on the session, that "
+             "value carries grove-workout-segment-type unknown or grove-workout-activity other, no "
+             "exact HealthKit coding, and the raw value, as the canonical decimal text of the "
+             "discriminator's raw value, in one healthkit-unmapped-source-value extension."),
+            (session["rule"], "The session and every segment carry the same writer-record "
+             "Identifier and writer record version, or none of them carries either."),
+            (section, "a producer that does not emit every segment this section defines does not "
+             "convert the workout and refuses it with `mobile-input.not-yet-convertible`."),
+            (section, "A workout with a single activity still emits that activity's segment."),
+            (section, "A raw value that this guide does not list does not refuse the workout and is "
+             "not lost."),
+            (section, "extension, in canonical decimal text exactly as the discriminator's `raw "
+             "value` below writes it, so every raw value the SDK can hold is kept."),
+            (section, "The session and every segment carry the same writer-record Identifier and "
+             "Grove Writer Record Version, or none of them carries either; the [revision "
+             "rules](#logical-identity-and-revisions) decide whether the session carries them."),
+            (section, "as the [withheld-metadata rules](#withheld-metadata) define."),
+        ):
+            with self.subTest(rule=rule):
+                self.assertIn(rule, text)
+        # The rule and the page name the same registered input rules.
+        registered = {
+            item["code"]: item["emittedBy"] for item in self.protocol["producerDiagnostics"]
+        }
+        named = set(re.findall(r"mobile-input[.][a-z-]*[a-z]", segment["rule"]))
+        self.assertEqual(
+            named,
+            {
+                "mobile-input.not-yet-convertible",
+                "mobile-input.required-metadata-missing",
+                "mobile-input.effective-period-invalid",
+            },
+        )
+        self.assertEqual(set(re.findall(r"`(mobile-input[.][a-z-]+)`", section)), named)
+        for code in named:
+            self.assertEqual(registered[code], "client")
+
+    def test_workout_event_table_and_unlisted_values_use_published_codes(self) -> None:
+        healthkit = (ROOT / "healthkit/input/fsh/terminology.fsh").read_text(encoding="utf-8")
+        mobile = (ROOT / "mobile/input/fsh/terminology.fsh").read_text(encoding="utf-8")
+
+        def block(text: str, declaration: str) -> list[str]:
+            return text.split(f"{declaration}\n", 1)[1].split("\n\n", 1)[0].splitlines()
+
+        def codes(text: str, code_system: str) -> list[str]:
+            lines = block(text, f"CodeSystem: {code_system}")
+            return [line.split()[1][1:] for line in lines if line.startswith("* #")]
+
+        event_types = block(healthkit, "CodeSystem: HealthKitWorkoutEventTypeCS")
+        self.assertIn("Id: healthkit-workout-event-type", event_types)
+        self.assertIn("* ^content = #complete", event_types)
+        mapping = (ROOT / "healthkit/input/pagecontent/mapping.md").read_text(encoding="utf-8")
+        section = mapping.split("### Workouts\n", 1)[1].split("\n### ", 1)[0]
+        rows = [
+            [cell.strip().strip("`") for cell in line.strip("|").split("|")]
+            for line in section.splitlines()
+            if line.startswith("| `") and line[3].isdigit()
+        ]
+        # The raw values are those of the hashed HKWorkout.h, and each maps to its own case.
+        self.assertEqual([raw for raw, _, _ in rows], [str(value) for value in range(1, 9)])
+        self.assertEqual(
+            [code for _, code, _ in rows], codes(healthkit, "HealthKitWorkoutEventTypeCS")
+        )
+        provenance = json.loads(
+            (ROOT / "healthkit/input/data/terminology-provenance.json").read_text(encoding="utf-8")
+        )
+        self.assertIn(
+            "HealthKit.framework/Headers/HKWorkout.h",
+            [item["path"] for item in provenance["source"]["files"]],
+        )
+        shared = [code for _, _, code in rows]
+        segment_types = codes(mobile, "GroveWorkoutSegmentTypeCS")
+        self.assertEqual(len(set(shared)), len(shared))
+        self.assertLessEqual(set(shared), set(segment_types))
+        # An unlisted value takes the shared code that no listed value claims.
+        self.assertIn("unknown", set(segment_types) - set(shared))
+        self.assertIn("other", codes(mobile, "GroveWorkoutActivityCS"))
+        self.assertEqual(
+            [line for line in block(mobile, "ValueSet: GroveWorkoutSegmentTypeVS") if "include" in line],
+            [
+                "* include codes from system GroveWorkoutSegmentTypeCS",
+                "* include codes from system GroveWorkoutActivityCS",
+            ],
+        )
+        extensions = (ROOT / "healthkit/input/fsh/extensions.fsh").read_text(encoding="utf-8")
+        extension = block(extensions, "Extension: HealthKitUnmappedSourceValue")
+        self.assertIn("Id: healthkit-unmapped-source-value", extension)
+        self.assertIn("Context: Observation.value[x]", extension)
+        self.assertEqual(
+            [line for line in extension if line.startswith("* ")],
+            [
+                "* value[x] 1..1 MS",
+                "* value[x] only string",
+                "* valueString obeys healthkit-unmapped-source-value-1",
+            ],
+        )
+        # The text keeps every raw value an NSUInteger or an NSInteger holds, in one spelling.
+        text = unmapped_source_value_text()
+        for raw in ("0", "9", "37", str(2**31), str(2**64 - 1), str(-(2**63))):
+            with self.subTest(raw=raw):
+                self.assertIsNotNone(text.fullmatch(raw))
+        for raw in ("", "00", "037", "-0", "+3", "3.0", "1,000", " 3"):
+            with self.subTest(raw=raw):
+                self.assertIsNone(text.fullmatch(raw))
+
+    def test_workout_activity_mapping_gives_every_healthkit_code_one_shared_code(self) -> None:
+        healthkit = (ROOT / "healthkit/input/fsh/terminology.fsh").read_text(encoding="utf-8")
+        mobile = (ROOT / "mobile/input/fsh/terminology.fsh").read_text(encoding="utf-8")
+
+        def codes(text: str, code_system: str) -> list[str]:
+            lines = text.split(f"CodeSystem: {code_system}\n", 1)[1].split("\n\n", 1)[0].splitlines()
+            return [line.split()[1][1:] for line in lines if line.startswith("* #")]
+
+        def kebab(name: str) -> str:
+            return "".join(f"-{c.lower()}" if c.isupper() else c for c in name)
+
+        row = next(row for row in self.catalog["rows"] if "outputs" in row)
+        session, segment = row["outputs"]
+        activities = session["activityMapping"]
+        shared = codes(mobile, "GroveWorkoutActivityCS")
+        # Every HealthKit code is mapped once, in its CodeSystem's order, and every shared code is
+        # reached.
+        self.assertEqual(list(activities), codes(healthkit, "HealthKitWorkoutActivityCS"))
+        self.assertEqual(set(activities.values()), set(shared))
+        # A code the shared vocabulary names maps to it; these vectors pin every collapse onto a
+        # shared activity the code is a kind of, and every other code maps to other.
+        for code, activity in activities.items():
+            if kebab(code) in shared:
+                with self.subTest(code=code):
+                    self.assertEqual(activity, kebab(code))
+        self.assertEqual(
+            {
+                code: activity for code, activity in activities.items()
+                if activity not in {kebab(code), "other"}
+            },
+            {
+                "handCycling": "cycling",
+                "coreTraining": "strength-training",
+                "functionalStrengthTraining": "strength-training",
+                "traditionalStrengthTraining": "strength-training",
+                "stairs": "stair-climbing",
+                "cardioDance": "dancing",
+                "dance": "dancing",
+                "socialDance": "dancing",
+                "kickboxing": "martial-arts",
+                "taiChi": "martial-arts",
+                "wrestling": "martial-arts",
+                "crossCountrySkiing": "skiing",
+                "downhillSkiing": "skiing",
+            },
+        )
+        # The page's table states the same mapping, one row per shared code, other last.
+        mapping = (ROOT / "healthkit/input/pagecontent/mapping.md").read_text(encoding="utf-8")
+        section = mapping.split("### Workouts\n", 1)[1].split("\n### ", 1)[0]
+        table = {
+            cells[0].strip("`"): cells[1]
+            for cells in (
+                [cell.strip() for cell in line.strip("|").split("|")]
+                for line in section.splitlines()
+                if re.match(r"\| `[a-z-]+` \|", line)
+            )
+        }
+        self.assertEqual(list(table), shared)
+        self.assertEqual(table.pop("other"), "every other code, `other` included")
+        # A related activity that is no kind of a shared one is other, not its nearest neighbour.
+        for code in (
+            "waterSports", "waterFitness", "barre", "danceInspiredTraining", "wheelchairRunPace",
+            "wheelchairWalkPace", "softball", "stepTraining",
+        ):
+            with self.subTest(code=code):
+                self.assertEqual(activities[code], "other")
+        for activity, cell in table.items():
+            with self.subTest(activity=activity):
+                self.assertEqual(
+                    cell,
+                    ", ".join(f"`{code}`" for code, mapped in activities.items() if mapped == activity),
+                )
+        # Both outputs classify their activity type through the one mapping.
+        self.assertIn("the grove-workout-activity code that activityMapping gives", session["rule"])
+        self.assertIn(
+            "the grove-workout-activity code that the workout output's activityMapping gives its "
+            "activity type", segment["rule"],
+        )
+        self.assertNotIn("activityMapping", segment)
+
+    def test_workout_instant_vectors_render_the_exact_nanosecond(self) -> None:
+        row = next(row for row in self.catalog["rows"] if "outputs" in row)
+        vectors = row["outputs"][1]["instantVectors"]
+        exact, summed = [], []
+        for vector in vectors:
+            lexeme = vector["timeIntervalSinceReferenceDate"]
+            # Each lexeme is the exact value of the binary64 that an NSDate holds.
+            self.assertEqual(Fraction(Decimal(lexeme)), Fraction(float(lexeme)))
+            exact.append(canonical_instant(Fraction(float(lexeme)) + 978_307_200))
+            summed.append(canonical_instant(Fraction(float(lexeme) + 978_307_200.0))[0])
+        self.assertEqual([instant for instant, _ in exact], [item["canonical"] for item in vectors])
+        # Two are half-nanosecond ties: 976562.5 ns rounds down and 2929687.5 ns up, each to even.
+        self.assertEqual([tie for _, tie in exact], [True, True, False])
+        self.assertTrue(vectors[0]["canonical"].endswith(".000976562Z"))
+        self.assertTrue(vectors[1]["canonical"].endswith(".002929688Z"))
+        # Only the third tells the exact addition from the binary64 sum the rule forbids.
+        self.assertEqual(
+            [instant == rendered for (instant, _), rendered in zip(exact, summed)],
+            [True, True, False],
+        )
+
+    def test_workout_identity_vectors_use_the_declared_grammar(self) -> None:
+        vectors = {
+            vector["id"]: vector["components"]
+            for vector in self.protocol["testVectors"]["identities"]
+            if vector["id"].startswith("healthkit-workout-")
+        }
+        self.assertEqual(
+            set(vectors),
+            {
+                "healthkit-workout-session-output",
+                "healthkit-workout-event-segment-output",
+                "healthkit-workout-activity-segment-output",
+            },
+        )
+        self.assertEqual(len({tuple(components[:5]) for components in vectors.values()}), 1)
+        self.assertEqual(vectors["healthkit-workout-session-output"][5:], ["workout", "single"])
+        instant = r"[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}[.][0-9]{9}Z"
+        # The raw value is written as the healthkit-unmapped-source-value extension writes it.
+        raw = unmapped_source_value_text().pattern
+        grammar = re.compile(
+            rf"({instant})[|]({instant})[|](event|activity)[|]({raw})[|](0|[1-9][0-9]*)"
+        )
+        segments = {}
+        for vector_id in (
+            "healthkit-workout-event-segment-output",
+            "healthkit-workout-activity-segment-output",
+        ):
+            role, discriminator = vectors[vector_id][5:]
+            self.assertEqual(role, "workout-segment")
+            match = grammar.fullmatch(discriminator)
+            self.assertIsNotNone(match, vector_id)
+            self.assertLess(match.group(1), match.group(2))
+            segments[vector_id] = (match.group(3), match.group(4))
+        # A lap event (raw value 3) and a running activity (HKWorkoutActivityType raw value 37).
+        self.assertEqual(
+            list(segments.values()), [("event", "3"), ("activity", "37")]
+        )
 
     def test_mobile_healthkit_coverage_is_bidirectional(self) -> None:
         supported_rows: dict[str, list[str]] = {}

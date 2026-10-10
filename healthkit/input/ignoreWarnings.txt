@@ -107,6 +107,7 @@ WARNING: Resource: The resource ValueSet/healthkit-state-of-mind-valence-classif
 WARNING: Resource: The resource CodeSystem/healthkit-state-of-mind-association should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/fhir-tools-ig/CodeSystem-ig-parameters.html#ig-parameters-auto-oid-root)
 WARNING: Resource: The resource CodeSystem/healthkit-state-of-mind-label should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/fhir-tools-ig/CodeSystem-ig-parameters.html#ig-parameters-auto-oid-root)
 WARNING: Resource: The resource CodeSystem/healthkit-workout-activity should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/fhir-tools-ig/CodeSystem-ig-parameters.html#ig-parameters-auto-oid-root)
+WARNING: Resource: The resource CodeSystem/healthkit-workout-event-type should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/fhir-tools-ig/CodeSystem-ig-parameters.html#ig-parameters-auto-oid-root)
 WARNING: Resource: The resource ValueSet/healthkit-state-of-mind-association should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/fhir-tools-ig/CodeSystem-ig-parameters.html#ig-parameters-auto-oid-root)
 WARNING: Resource: The resource ValueSet/healthkit-state-of-mind-label should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/fhir-tools-ig/CodeSystem-ig-parameters.html#ig-parameters-auto-oid-root)
 WARNING: Resource: The resource CodeSystem/healthkit-notification-occurrence should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/fhir-tools-ig/CodeSystem-ig-parameters.html#ig-parameters-auto-oid-root)
@@ -136,6 +137,10 @@ WARNING: Observation/HealthkitGad7AssessmentExample: Observation.value.ofType(Qu
 # The profile forbids prescriber.reference, .identifier and .display and asserts absence with
 # data-absent-reason: HealthKit carries no prescriber, and a display would invent one.
 WARNING: VisionPrescription/HealthKitVisionPrescriptionExample: VisionPrescription.prescriber: A Reference without an actual reference or identifier should have a display
+
+# The workout mapping specifies this extension on a workout segment's value, and the guide has no
+# worked workout segment example that would carry it.
+WARNING: StructureDefinition.where(url = 'https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-unmapped-source-value'): The Implementation Guide contains no examples for this extension
 
 # The mapping specifies this extension on an author-less conversion Provenance's source entity, and
 # no conversion Provenance example of the guide carries it.
