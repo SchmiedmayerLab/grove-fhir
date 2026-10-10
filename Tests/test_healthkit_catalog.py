@@ -593,18 +593,21 @@ class HealthKitCatalogTests(unittest.TestCase):
         for line in section.splitlines():
             if line.startswith("| `"):
                 key, constant, source_types, _ = (
-                    cell.strip().strip("`") for cell in line.strip("|").split("|")
+                    cell.strip() for cell in line.strip("|").split("|")
                 )
+                key, constant = key.strip("`"), constant.strip("`")
                 self.assertNotIn(key, table)
-                table[key] = source_types
+                table[key] = ", ".join(name.strip().strip("`") for name in source_types.split(","))
                 constants[key] = constant
         # A row names the key by the string the constant holds in an iOS 26.5 simulator on the SDK
-        # baseline; these five hold another string than their constant's name.
+        # baseline; these seven hold another string than their constant's name.
         self.assertEqual(
             {key: constant for key, constant in constants.items() if key != constant},
             {
                 "HKTimeZone": "HKMetadataKeyTimeZone",
                 "HKWasUserEntered": "HKMetadataKeyWasUserEntered",
+                "HKHeartRateEventThreshold": "HKMetadataKeyHeartRateEventThreshold",
+                "HKLowCardioFitnessEventThreshold": "HKMetadataKeyLowCardioFitnessEventThreshold",
                 "HKInsulinDeliveryReason": "HKMetadataKeyInsulinDeliveryReason",
                 "HKMenstrualCycleStart": "HKMetadataKeyMenstrualCycleStart",
                 "HKSexualActivityProtectionUsed": "HKMetadataKeySexualActivityProtectionUsed",
@@ -615,6 +618,11 @@ class HealthKitCatalogTests(unittest.TestCase):
             {key: source_types for key, source_types in table.items() if source_types != every},
             {
                 "HKMetadataKeyHeartRateMotionContext": "HKQuantityTypeIdentifierHeartRate",
+                "HKHeartRateEventThreshold": (
+                    "HKCategoryTypeIdentifierHighHeartRateEvent, "
+                    "HKCategoryTypeIdentifierLowHeartRateEvent"
+                ),
+                "HKLowCardioFitnessEventThreshold": "HKCategoryTypeIdentifierLowCardioFitnessEvent",
                 "HKMetadataKeyAppleECGAlgorithmVersion": "HKDataTypeIdentifierElectrocardiogram",
                 "HKInsulinDeliveryReason": "HKQuantityTypeIdentifierInsulinDelivery",
                 "HKMenstrualCycleStart": "HKCategoryTypeIdentifierMenstrualFlow",
@@ -631,8 +639,32 @@ class HealthKitCatalogTests(unittest.TestCase):
             },
         )
         rows = {row["sourceTypeIdentifier"]: row for row in self.catalog["rows"]}
-        for source_type in set(table.values()) - {every}:
+        listed = {
+            source_type
+            for source_types in table.values() if source_types != every
+            for source_type in source_types.split(", ")
+        }
+        for source_type in listed:
             self.assertEqual(rows[source_type]["status"], "supported")
+        # A notification's threshold component carries the threshold key its samples hold, so the
+        # table lists that key for every supported type whose measurement has the component, and a
+        # threshold that an output carries is represented rather than withheld and reported.
+        measurements = {row["id"]: row for row in self.mobile["measurements"]}
+        thresholds = {
+            row["sourceTypeIdentifier"]
+            for row in self.catalog["rows"] if row["status"] == "supported"
+            for measurement in row["measurementIDs"]
+            # A row may name a measurement outside the Mobile catalog, such as the electrocardiogram.
+            for component in measurements.get(measurement, {}).get("components") or []
+            if component["id"] == "threshold"
+        }
+        self.assertEqual(
+            thresholds,
+            {
+                *table["HKHeartRateEventThreshold"].split(", "),
+                table["HKLowCardioFitnessEventThreshold"],
+            },
+        )
         # Every key of HealthKit Metadata Keys has a row, and the supported-metadata count agrees.
         terminology = (ROOT / "healthkit/input/fsh/terminology.fsh").read_text(encoding="utf-8")
         key_system = terminology.split("CodeSystem: HealthKitMetadataKeyCS\n", 1)[1].split("\n\n", 1)[0]
