@@ -171,9 +171,11 @@ The application's mandatory event-scoped `device-snapshot` HMAC identifies this 
 The app is the assembler agent in [conversion Provenance](https://grovealliance.org/fhir/mobile/StructureDefinition-grove-mobile-conversion-provenance.html). Converting a stored HealthKit object does not by itself make the app an Observation gateway; add `observation-gatewayDevice` only if the app actually mediated or routed the measurement.
 
 The Provenance source entity repeats the typed source-record Identifier actually consumed by the transformation. `HKSourceRevision.source` identifies the application or device that authored that object; do not treat its version as the Grove converter's version.
+Comparing it with the converting application's build under the same-application rule below does not treat it as the converter's version.
 
 When the source is a caller-classified application, represent it as a HealthKit Application Device.
-Use the [Apple Bundle Identifier](NamingSystem-apple-bundle-id.html) namespace for `HKSource.bundleIdentifier`, and copy `HKSourceRevision.version` into the typed application-version slice when HealthKit supplies it.
+Use the [Apple Bundle Identifier](NamingSystem-apple-bundle-id.html) namespace for `HKSource.bundleIdentifier`.
+HealthKit takes `HKSourceRevision.version` from the source's `CFBundleVersion`: when HealthKit supplies it, copy it unchanged into the typed application-build slice (`grove-application-version-type#build`), never into the application-version slice.
 When HealthKit reports a supported Bluetooth Low Energy source, represent the author as a Grove Recording Device only when the caller supplies a governed stable per-unit token under the deployment's source-actor identity policy.
 HMAC-protect it with the deployment-scoped `recording-device` and `device-snapshot` identities defined by the Mobile exchange protocol.
 If native source-actor round-trip requires the clear HealthKit source UUID, disclose it only as a separately governed, system-qualified Identifier under that policy.
@@ -181,13 +183,56 @@ HealthKit does not specify that its UUID is a serial number, a globally stable h
 If the adapter cannot establish whether the source is an application or a device, omit the writer agent rather than guessing its identity. `HKSourceRevision` does not expose an application-or-device discriminator: do not classify the source from the identifier's string shape, source name, or `productType`.
 A producer therefore needs explicit source actor classification from its caller or adapter context before it emits this author Device.
 The classification is the only caller-supplied part: the author name, identifier, and version are copied from that same sample's `HKSourceRevision` and must not be replaced with independently supplied identity data.
+The same-application rule below is the only exception.
 The [Bluetooth heart-rate example](Observation-HealthKitBluetoothHeartRateObservationExample.html) and its [source Provenance](Provenance-HealthKitBluetoothSourceProvenanceExample.html) show this explicit governed branch without treating the source identifier as a serial number.
 
 Link an included source application or device through `Provenance.entity.agent` with participant type `author`.
 This author role is distinct from the converter's top-level `assembler` role and does not make either Device a gateway.
 When the same application performed both roles, both agents may reference the same Grove Application Device while retaining their separate roles.
+For a HealthKit source, the same-application rule decides when that is so: a producer may treat an application-classified source as the converting application only when all of the following hold:
+
+- `HKSource.bundleIdentifier` equals the converting application's Apple bundle identifier;
+- HealthKit supplies `HKSourceRevision.version`, and it equals, character for character, the build that the converting application's Device states in its application-build slice;
+- the producer never reuses a build across releases of that bundle identifier.
+
+HealthKit reports only the source's build, and a platform may let a build number recur in another release; without the last condition, the source's release is unknown.
+A producer that applies the rule makes the author agent reference the converting application's Device, which states that application's name, release, and build as reported at conversion; its `Device.parent`, when present, remains the conversion host.
+It then emits no other Device for the source and makes no claim about the host on which the source wrote the object.
+Every application-classified source that the producer does not treat as the converting application is a distinct application snapshot, including one without `HKSourceRevision.version`, one of another build, and every one compared with a converting application Device that states no build.
 
 Study resources are linked through the study model; they are not source entities unless the conversion literally consumed them as inputs.
+
+### Unclassified source revision
+
+When the [writer rules](#device-application-and-provenance) state no author agent for the source entity of a HealthKit conversion Provenance, because the caller did not classify the source or classified it as something those rules cannot state, such as a Bluetooth source without a governed per-unit token, that source entity carries one [HealthKit Source Revision](StructureDefinition-healthkit-source-revision.html) extension, so omitting the writer does not lose where the object came from.
+The extension never appears beside an author agent: a graph states a source as its writer or through its source revision, never both.
+Only the source entity of a conversion Provenance carries it, and only for a record with an `HKSourceRevision`; a tracked medication has none, because `HKUserAnnotatedMedication` is not an `HKObject`.
+
+The extension has five members, each one `valueString` that appears at most once, in this order:
+
+| Member | `HKSourceRevision` fact | Value | By default |
+|---|---|---|---|
+| `sourceName` | `source.name` | the exact string | withheld |
+| `sourceBundleIdentifier` | `source.bundleIdentifier` | the exact string | withheld |
+| `version` | `version` | the exact string, the source's build, which HealthKit takes from its `CFBundleVersion` | emitted |
+| `productType` | `productType` | the exact string, the product type of the device that ran HealthKit when the object was created | emitted |
+| `operatingSystemVersion` | `operatingSystemVersion` | its `majorVersion`, `minorVersion`, and `patchVersion`, each as canonical decimal integer text without a leading zero and with a `-` only before a negative value, joined by `.`; all three always appear, so `26.5.0` is never written `26.5` | emitted |
+
+A member whose string fact HealthKit does not supply, or supplies empty, is left out.
+`HKSourceRevision.operatingSystemVersion` is not optional, so its member is present, `0.0.0` included, unless a disclosure policy withholds it.
+
+`sourceName` and `sourceBundleIdentifier` are withheld by default: a producer carries them only under an explicit deployment authorization to disclose the names and identifiers of the applications and devices that wrote its records.
+`HKSource.name` can be the name a person gave a device, a device's `HKSource.bundleIdentifier` can embed an identifier that HealthKit assigns to that one device, and a producer cannot tell either from an application's without classifying the source.
+`version`, `productType`, and `operatingSystemVersion` are emitted by default.
+A deployment's disclosure policy may withhold any of them, or the whole extension; as for every omission a disclosure policy chooses, that is not reported, and an extension with no member left is not emitted.
+
+The extension describes the consumed object, not an actor: it adds no agent, participant type, or Device, and it states neither that the source is an application nor that it is a device.
+The rule that a source is never classified from its identifier's string shape, source name, or `productType` holds for its members as it holds for `HKSourceRevision`.
+`sourceBundleIdentifier` is text, never an Identifier.
+The extension mints no identity, and no identity is derived from it: adding or withholding it, or any of its members, changes no Identifier that is not event-scoped, such as a `source-record`, `source-output`, or `writer-record` Identifier.
+A record delivered again with the extension or any of its members added or withheld is still changed content: it receives a new event sequence and with it new event-scoped identities, as the [Mobile exchange graph](https://grovealliance.org/fhir/mobile/observations.html#exchange-graph) requires.
+Writer identity depends neither on the extension nor on the source's classification: for a sample from every source, whether the caller classified it as an application, as a device, or not at all, the writing-application Identifier pair from which the [revision rules](#logical-identity-and-revisions) derive the `writer-record` Identifier is the [Apple Bundle Identifier](NamingSystem-apple-bundle-id.html) namespace with `HKSource.bundleIdentifier`.
+Whether a graph states an author therefore never decides whether its outputs carry the sample's `writer-record` Identifier and version; the [revision rules](#logical-identity-and-revisions) and the [withheld-metadata rules](#withheld-metadata) decide that, and withholding `sourceBundleIdentifier` does not withhold them.
 
 ### Supported HealthKit metadata
 

@@ -9,7 +9,7 @@
     "mobile/input/fsh/terminology.fsh",
     "mobile/input/fsh/profiles.fsh"
   ],
-  "groundTruthDigest": "sha256:9340d778809d5dd8709595261a64fd5816530fc6c5d08233ff201ee272bc9f3d",
+  "groundTruthDigest": "sha256:d2517a074547680e3600a78ddd5b429458596842fd3f85b162850879215c695d",
   "valueDomainReview": {
     "status": "prepared-pending-release-ratification",
     "preparedOn": "2026-08-27",
@@ -4630,6 +4630,15 @@
       "measurementImpact": "None. The change is confined to the retraction lifecycle Provenance; every per-measurement digest is unchanged.",
       "review": "Pending pull-request review of the source-record retraction target.",
       "approvedOn": "2026-10-10"
+    },
+    {
+      "from": "sha256:9340d778809d5dd8709595261a64fd5816530fc6c5d08233ff201ee272bc9f3d",
+      "to": "sha256:d2517a074547680e3600a78ddd5b429458596842fd3f85b162850879215c695d",
+      "baseCommit": "d8e5661",
+      "change": "Reworded the build definition in GroveApplicationVersionTypeCS so the build slot states the build of the application the Device snapshot describes, including a writer application, rather than only the build that produced the resource.",
+      "measurementImpact": "None. The change rewords one code definition of a Device version-type code system; no code, binding, or per-measurement digest changes.",
+      "review": "Pending pull-request review of the source application build rule.",
+      "approvedOn": "2026-10-04"
     }
   ]
 }

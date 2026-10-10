@@ -9,6 +9,7 @@
 from __future__ import annotations
 
 import json
+import re
 import unittest
 from decimal import Decimal
 from pathlib import Path
@@ -344,6 +345,160 @@ class HealthKitCatalogTests(unittest.TestCase):
         )
         self.assertIn("Profile: HealthKitApplicationDevice", profiles)
         self.assertIn("identifier[appleBundleId].type", profiles)
+
+    def test_source_application_states_its_build_and_shares_only_the_same_build(self) -> None:
+        # HKSourceRevision.version is the source's CFBundleVersion: a build, never a release.
+        contract = self.catalog["applicationDeviceIdentity"]
+        self.assertIn("CFBundleVersion", contract["sourceBuildRule"])
+        self.assertIn(
+            "applicationBuild slice, never into applicationVersion", contract["sourceBuildRule"]
+        )
+        for condition in (
+            "HKSource.bundleIdentifier equals that Device's Apple bundle identifier",
+            "HKSourceRevision.version is supplied and equals, character for character, "
+            "the build that Device states in applicationBuild",
+            "the producer never reuses a build across releases of that bundle identifier",
+            "every one compared with a converting application Device that states no build",
+        ):
+            with self.subTest(condition=condition):
+                self.assertIn(condition, contract["sameApplicationRule"])
+        mapping = (ROOT / "healthkit/input/pagecontent/mapping.md").read_text(encoding="utf-8")
+        self.assertIn(
+            "copy it unchanged into the typed application-build slice "
+            "(`grove-application-version-type#build`), never into the application-version slice.",
+            mapping,
+        )
+        self.assertNotIn("into the typed application-version slice", mapping)
+        self.assertIn(
+            "- `HKSource.bundleIdentifier` equals the converting application's Apple bundle "
+            "identifier;\n"
+            "- HealthKit supplies `HKSourceRevision.version`, and it equals, character for "
+            "character, the build that the converting application's Device states in its "
+            "application-build slice;\n"
+            "- the producer never reuses a build across releases of that bundle identifier.\n",
+            mapping,
+        )
+        self.assertIn("The same-application rule below is the only exception.", mapping)
+        example = (ROOT / "healthkit/input/fsh/examples.fsh").read_text(encoding="utf-8")
+        example = example.split("Instance: HealthKitSourceApplicationDeviceExample\n", 1)[1]
+        example = example.split("\nInstance: ", 1)[0]
+        self.assertIn(
+            '* version[applicationBuild].type = $groveApplicationVersionType#build "Build"', example
+        )
+        self.assertNotIn("applicationVersion", example)
+        terminology = (ROOT / "mobile/input/fsh/terminology.fsh").read_text(encoding="utf-8")
+        self.assertIn(
+            '#build "Build" "The build of the application the Device snapshot describes', terminology
+        )
+
+    def test_unclassified_source_revision_withholds_names_and_keeps_writer_identity(self) -> None:
+        # A source entity without an author agent states its HKSourceRevision instead. The two
+        # members that can name or identify a person's device need an explicit authorization.
+        contract = self.catalog["sourceRevisionExtension"]
+        url = "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-source-revision"
+        self.assertEqual(contract["url"], url)
+        self.assertEqual(
+            [(member["url"], member["defaultDisclosure"]) for member in contract["members"]],
+            [
+                ("sourceName", "withheld"),
+                ("sourceBundleIdentifier", "withheld"),
+                ("version", "emitted"),
+                ("productType", "emitted"),
+                ("operatingSystemVersion", "emitted"),
+            ],
+        )
+        self.assertIn("carried only under an explicit deployment authorization", contract["disclosureRule"])
+        extensions = (ROOT / "healthkit/input/fsh/extensions.fsh").read_text(encoding="utf-8")
+        extension = extensions.split("Extension: HealthKitSourceRevision\n", 1)[1]
+        extension = extension.split("\nExtension: ", 1)[0]
+        self.assertIn("Id: healthkit-source-revision\n", extension)
+        self.assertIn(f"Context: {contract['r4Context']}\n", extension)
+        self.assertEqual(
+            re.findall(r"^    (\w+) 0[.][.]1 MS", extension, re.MULTILINE),
+            [member["url"] for member in contract["members"]],
+        )
+        for member in contract["members"]:
+            with self.subTest(member=member["url"]):
+                self.assertIn(
+                    f'* extension[{member["url"]}] ^short = "{member["sourceField"]}"', extension
+                )
+                self.assertIn(f'* extension[{member["url"]}].value[x] only string', extension)
+        self.assertIn("* value[x] 0..0", extension)
+        self.assertIn(
+            "* extension[operatingSystemVersion].valueString obeys "
+            "healthkit-source-revision-os-version-1",
+            extension,
+        )
+        profiles = (ROOT / "healthkit/input/fsh/profiles.fsh").read_text(encoding="utf-8")
+        provenance = profiles.split("Profile: HealthKitConversionProvenance\n", 1)[1]
+        provenance = provenance.split("\nProfile: ", 1)[0]
+        self.assertIn("* obeys healthkit-source-revision-writer-1\n", provenance)
+        self.assertIn(
+            "* entity.extension contains HealthKitSourceRevision named sourceRevision 0..1 MS",
+            provenance,
+        )
+        # Never beside an author agent.
+        writer = profiles.split("Invariant: healthkit-source-revision-writer-1\n", 1)[1]
+        writer = writer.split("\n\n", 1)[0]
+        self.assertIn(
+            f"Expression: \"entity.all(extension('{url}').empty() or agent.where(type.coding.where("
+            "system = 'http://terminology.hl7.org/CodeSystem/provenance-participant-type' and "
+            "code = 'author').exists()).empty())\"\nSeverity: #error",
+            writer,
+        )
+        # All three components always appear: 26.5.0, never 26.5.
+        version = profiles.split("Invariant: healthkit-source-revision-os-version-1\n", 1)[1]
+        version = version.split("\n\n", 1)[0]
+        self.assertIn("Severity: #error", version)
+        expression = version.split('Expression: "', 1)[1].split('"', 1)[0]
+        match = re.fullmatch(r"[$]this[.]matches[(]'\^(.+)\$'[)]", expression)
+        form = re.compile(match.group(1))
+        for text in ("26.5.0", "0.0.0", "17.10.3", "8.2.0", "-1.0.0"):
+            with self.subTest(admitted=text):
+                self.assertIsNotNone(form.fullmatch(text))
+        for text in ("26.5", "26.05.0", "-0.0.0", "+26.5.0", "26.5.0.1", " 26.5.0", "26.5.x"):
+            with self.subTest(rejected=text):
+                self.assertIsNone(form.fullmatch(text))
+        mapping = (ROOT / "healthkit/input/pagecontent/mapping.md").read_text(encoding="utf-8")
+        section = mapping.split("### Unclassified source revision\n", 1)[1].split("\n### ", 1)[0]
+        for member in contract["members"]:
+            with self.subTest(row=member["url"]):
+                row = next(
+                    line for line in section.splitlines() if line.startswith(f"| `{member['url']}` |")
+                )
+                self.assertTrue(row.endswith(f"| {member['defaultDisclosure']} |"))
+        for sentence in (
+            "The extension never appears beside an author agent",
+            "`sourceName` and `sourceBundleIdentifier` are withheld by default: a producer carries "
+            "them only under an explicit deployment authorization",
+            "`version`, `productType`, and `operatingSystemVersion` are emitted by default.",
+            "all three always appear, so `26.5.0` is never written `26.5`",
+            "for a sample from every source, whether the caller classified it as an application, as "
+            "a device, or not at all, the writing-application Identifier pair from which the "
+            "[revision rules](#logical-identity-and-revisions) derive the `writer-record` "
+            "Identifier is the [Apple Bundle Identifier](NamingSystem-apple-bundle-id.html) "
+            "namespace with `HKSource.bundleIdentifier`.",
+            # An author decides nothing about the writer-record Identifier, whose carriage the
+            # revision and withheld-metadata rules decide; a Recording Document carries none.
+            "Whether a graph states an author therefore never decides whether its outputs carry "
+            "the sample's `writer-record` Identifier and version; the [revision rules]"
+            "(#logical-identity-and-revisions) and the [withheld-metadata rules]"
+            "(#withheld-metadata) decide that, and withholding `sourceBundleIdentifier` does not "
+            "withhold them.",
+            # Changed content still takes a new event and new event-scoped identities.
+            "changes no Identifier that is not event-scoped, such as a `source-record`, "
+            "`source-output`, or `writer-record` Identifier.",
+            "is still changed content: it receives a new event sequence and with it new "
+            "event-scoped identities",
+        ):
+            with self.subTest(sentence=sentence):
+                self.assertIn(sentence, section)
+        self.assertIn(
+            "For a sample from every source, whatever the caller's classification, the "
+            "writing-application Identifier pair of the writer-record Identifier is the Apple "
+            "Bundle Identifier system with HKSource.bundleIdentifier.",
+            contract["identityRule"],
+        )
 
     def test_platform_additions_and_derived_aggregate_are_explicit(self) -> None:
         rows = {row["sourceTypeIdentifier"]: row for row in self.catalog["rows"]}

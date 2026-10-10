@@ -2625,6 +2625,13 @@
           "classification": "definition"
         },
         {
+          "fshName": "HealthKitSourceRevision",
+          "fshType": "Extension",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-source-revision",
+          "classification": "definition"
+        },
+        {
           "fshName": "HealthKitSourceType",
           "fshType": "Extension",
           "resourceType": "StructureDefinition",
