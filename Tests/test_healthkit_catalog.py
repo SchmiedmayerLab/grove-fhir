@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import json
 import unittest
+from decimal import Decimal
 from pathlib import Path
 
 
@@ -21,6 +22,26 @@ OLD_MOBILE = {
     "grove-mobile-serum-plasma-glucose",
     "grove-mobile-interstitial-glucose",
 }
+
+
+def plain_decimal(value: Decimal) -> str:
+    """Write a decimal in plain positional notation without trailing fractional zeros."""
+    text = format(value, "f")
+    return text.rstrip("0").rstrip(".") if "." in text else text
+
+
+def shortest_round_trip(value: float) -> str:
+    """Write a binary64 as its shortest round-trip decimal in plain positional notation."""
+    # repr is the decimal with the fewest significant digits that converts back to the same
+    # binary64, of several the one nearest it, and of two equally near ones the one whose last
+    # digit is even; only the notation is normalized here.
+    return plain_decimal(Decimal(repr(value)))
+
+
+def percent_from_fraction(fraction: float) -> str:
+    """Shift the fraction's shortest round-trip decimal two places exactly, then round once."""
+    # scaleb moves the decimal point exactly, and float() of a decimal is correctly rounded.
+    return shortest_round_trip(float(Decimal(shortest_round_trip(fraction)).scaleb(2)))
 
 
 class HealthKitCatalogTests(unittest.TestCase):
@@ -221,13 +242,18 @@ class HealthKitCatalogTests(unittest.TestCase):
                 self.assertTrue(row["requirement"])
 
     def test_producer_numeric_canonicalization_reuses_the_mobile_contract(self) -> None:
+        # The percent vectors are checked against the rule they pin below.
         self.assertEqual(
-            self.catalog["producerCanonicalization"],
+            {
+                key: value for key, value in self.catalog["producerCanonicalization"].items()
+                if key != "percentScalingVectors"
+            },
             {
                 "mobileEffectiveContract": "catalog/measurement-catalog.json#effectiveCanonicalization",
                 "effectivePrecision": "millisecond",
                 "effectiveRounding": "half-even",
                 "scalarQuantityDecimal": "shortest-round-trip",
+                "percentScaling": "shortest-round-trip-decimal-shift-rounded-once",
                 "identityPreimages": "unmodified",
                 "sensorAndEcgTiming": "excluded",
             },
@@ -238,6 +264,62 @@ class HealthKitCatalogTests(unittest.TestCase):
         self.assertEqual(
             self.mobile["effectiveCanonicalization"]["rounding"], "half-even"
         )
+
+    def test_an_interval_under_a_date_time_only_profile_keeps_its_start(self) -> None:
+        mapping = (ROOT / "healthkit/input/pagecontent/mapping.md").read_text(encoding="utf-8")
+        section = mapping.split("### Values, units, and time\n", 1)[1].split("\n### ", 1)[0]
+        # The exception follows the interval rule it narrows, which stays as it was.
+        self.assertIn(
+            "Use `effectivePeriod` when HealthKit supplies a start and end that define an "
+            "interval. Preserve fractional seconds and the numeric offset.\n"
+            "Where the selected profile admits only `dateTime`, an interval sample states its "
+            "`startDate` as `effectiveDateTime` and withholds its `endDate`.\n",
+            section,
+        )
+
+    def test_percent_vectors_follow_the_rounded_decimal_shift(self) -> None:
+        vectors = self.catalog["producerCanonicalization"]["percentScalingVectors"]
+        for vector in vectors:
+            with self.subTest(fraction=vector["fraction"]):
+                # Each fraction is written as its own shortest round-trip decimal, the text step 1
+                # starts from, and each percent is the result of the three steps.
+                fraction = float(vector["fraction"])
+                self.assertEqual(shortest_round_trip(fraction), vector["fraction"])
+                self.assertEqual(percent_from_fraction(fraction), vector["percent"])
+
+        # The vectors tell the rule apart from a binary64 product by 100 and from the shift of
+        # step 2 emitted without the rounding of step 3.
+        product_failures = {
+            vector["fraction"] for vector in vectors
+            if shortest_round_trip(float(vector["fraction"]) * 100) != vector["percent"]
+        }
+        unrounded_failures = {
+            vector["fraction"] for vector in vectors
+            if plain_decimal(Decimal(vector["fraction"]).scaleb(2)) != vector["percent"]
+        }
+        self.assertEqual(
+            product_failures,
+            {
+                "0.0000001", "0.0007", "0.07", "0.14", "0.28", "0.282",
+                "0.29", "0.5000076293945312", "0.55", "0.56", "0.57", "0.58",
+            },
+        )
+        self.assertEqual(unrounded_failures, {"0.49543508709194095"})
+
+    def test_a_percent_vector_pins_the_even_digit_of_two_equally_near_decimals(self) -> None:
+        vectors = {
+            vector["fraction"]: vector["percent"]
+            for vector in self.catalog["producerCanonicalization"]["percentScalingVectors"]
+        }
+        fraction = 0.5 + 2 ** -17
+        even, odd = "0.5000076293945312", "0.5000076293945313"
+        # Both 16-digit decimals convert back to the fraction and lie equally near it, so only the
+        # tie-break chooses step 1's decimal, and the two choices emit different percents.
+        self.assertEqual(Decimal(fraction), Decimal("0.50000762939453125"))
+        self.assertEqual({float(even), float(odd)}, {fraction})
+        self.assertEqual(Decimal(odd) - Decimal(fraction), Decimal(fraction) - Decimal(even))
+        self.assertEqual(vectors[even], "50.00076293945312")
+        self.assertNotEqual(shortest_round_trip(float(Decimal(odd).scaleb(2))), vectors[even])
 
     def test_application_device_separates_opaque_snapshot_from_bundle_product(self) -> None:
         contract = self.catalog["applicationDeviceIdentity"]
