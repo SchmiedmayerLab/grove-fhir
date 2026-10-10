@@ -40,7 +40,7 @@ class ReceiverLifecycleTests(unittest.TestCase):
         protocol = json.loads((ROOT / "catalog/exchange-protocol.json").read_text())
         del protocol["testVectors"]
         rules = json.dumps(protocol, sort_keys=True, separators=(",", ":")).encode()
-        self.assertEqual(hashlib.sha256(rules).hexdigest(), "81b1a6fa4f9a7872cab8f987f2761f2723786b5e80839f8b6d0a985ea779d9b0")
+        self.assertEqual(hashlib.sha256(rules).hexdigest(), "42a7ae4eae7640c8508dbb92f748d42536b9c22b00bd8fbcfa33e664e930454f")
         for name, digest in {
             "exchange-bundle.json": "0606a575d494b029838aea451dda726fbc90e389c9c1318bae8e743cf1dc556e",
             "retraction-bundle.json": "54085f51d0d7629bc5a556cb9ea2813b7c7d6defadb8f2d3340270bc88f5d226",

@@ -39,8 +39,9 @@ ROOT = Path(__file__).resolve().parent.parent
 MANIFEST = ROOT / "Conformance/fixture-validator-manifest.json"
 GROVE_CANONICAL_PREFIX = "https://grovealliance.org/fhir/"
 NEGATIVE_CORPUS_KEYS = {"schemaVersion", "purpose", "profile", "control", "cases"}
-NEGATIVE_CASE_EXPECTATIONS = {"expectedInvariant", "expectedBinding"}
+NEGATIVE_CASE_EXPECTATIONS = {"expectedInvariant", "expectedBinding", "expectedRequired"}
 REQUIRED_BINDING_FAILURE = "a coding from this value set is required"
+REQUIRED_ELEMENT_FAILURE = "minimum required = 1, but only found 0"
 
 
 def load_manifest(path: Path) -> dict[str, Any]:
@@ -180,8 +181,8 @@ def declared_negative_corpora(manifest: dict[str, Any]) -> list[dict[str, Any]]:
                 or set(case) - NEGATIVE_CASE_EXPECTATIONS - {"path", "alsoRejected"}
             ):
                 raise ProducerValidationError(
-                    f"{case_label} must declare path, exactly one of expectedInvariant or "
-                    "expectedBinding, and at most alsoRejected"
+                    f"{case_label} must declare path, exactly one of expectedInvariant, "
+                    "expectedBinding or expectedRequired, and at most alsoRejected"
                 )
             also_rejected = case.get("alsoRejected", [])
             expectation = next(iter(set(case) & NEGATIVE_CASE_EXPECTATIONS))
@@ -206,6 +207,8 @@ def expected_rejections(case: dict[str, Any]) -> list[tuple[str, ...]]:
     """The Validator phrases one case must be rejected with, as fragments one message carries."""
     if "expectedInvariant" in case:
         expected = [(f"Constraint failed: {case['expectedInvariant']}:",)]
+    elif "expectedRequired" in case:
+        expected = [(f"{case['expectedRequired']}: {REQUIRED_ELEMENT_FAILURE}",)]
     else:
         expected = [(case["expectedBinding"], REQUIRED_BINDING_FAILURE)]
     expected.extend((fragment,) for fragment in case.get("alsoRejected", []))

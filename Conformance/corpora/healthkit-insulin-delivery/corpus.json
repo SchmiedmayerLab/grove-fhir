@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 0,
+  "purpose": "An Insulin Delivery Observation whose required delivery-reason component stands without the dose it qualifies. grove-mobile-result-1 accepts a component value in place of a root one, so only the profile's required root valueQuantity rejects it; the official Validator must accept the control and reject the case for exactly the missing Observation.value[x].",
+  "profile": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-insulin-delivery",
+  "control": "control.json",
+  "cases": [
+    {
+      "path": "reason-without-dose.json",
+      "expectedRequired": "Observation.value[x]"
+    }
+  ]
+}

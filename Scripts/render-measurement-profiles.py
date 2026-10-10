@@ -425,6 +425,11 @@ def render_profile(
                 measurement["quantity"].get("valueDomain"),
             )
         )
+        if measurement.get("components"):
+            # A component only qualifies the root result, yet grove-mobile-result-1 accepts a
+            # component value in place of a root one; so the root quantity is required here, as
+            # valueCodeableConcept is below, and an insulin delivery reason never stands alone.
+            lines.append("* valueQuantity 1..1 MS")
     elif kind == "codeableConcept":
         lines.append("* value[x] only CodeableConcept")
         lines.append("* valueCodeableConcept 1..1 MS")

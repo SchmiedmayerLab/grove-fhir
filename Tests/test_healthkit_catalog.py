@@ -526,6 +526,280 @@ class HealthKitCatalogTests(unittest.TestCase):
         self.assertIn("MUST reject either half-pair", mapping)
         self.assertIn("MUST NOT fabricate version `0`", mapping)
 
+    def test_blood_pressure_objects_supply_what_the_correlation_does_not_state(self) -> None:
+        mapping = (ROOT / "healthkit/input/pagecontent/mapping.md").read_text(encoding="utf-8")
+        heading = "Blood-pressure correlation objects"
+        headings = [line[4:] for line in mapping.splitlines() if line.startswith("### ")]
+        index = headings.index(heading)
+        self.assertEqual(
+            headings[index - 1 : index + 2],
+            ["Capture mode and performer", heading, "Device, application, and provenance"],
+        )
+        section = mapping.split(f"### {heading}\n", 1)[1].split("\n### ", 1)[0]
+        quoted = set(section.split("`")[1::2])
+        # Scope: the catalog's two correlation rows, blood pressure in and food out, because a
+        # food correlation's objects convert to Observations of their own.
+        correlations = {
+            row["sourceTypeIdentifier"] for row in self.catalog["rows"]
+            if row["sourceTypeIdentifier"].startswith("HKCorrelationTypeIdentifier")
+        }
+        self.assertEqual({name for name in quoted if name in correlations}, correlations)
+        self.assertIn("does not apply to an `HKCorrelationTypeIdentifierFood` correlation", section)
+        # Every code the section names is registered.
+        registered = {row["code"] for row in self.protocol["producerDiagnostics"]}
+        codes = {name for name in quoted if name.startswith("mobile-")}
+        self.assertEqual(
+            codes,
+            {
+                "mobile-omission.source-offset",
+                "mobile-input.unsupported-source-value",
+                "mobile-omission.recording-method",
+                "mobile-omission.unmodeled-metadata",
+            },
+        )
+        self.assertLessEqual(codes, registered)
+        for rule in (
+            "Use the correlation's `HKMetadataKeyTimeZone` when it carries one, and consult no "
+            "object's.",
+            "every object that carries one carries the same name, compared character for character",
+            "or two objects carry different names, even a link and its target",
+            "when an object's consulted value is not a valid IANA time-zone name, even when other "
+            "objects carry a valid one.",
+            "When the correlation states `HKMetadataKeyWasUserEntered`, its value decides",
+            "Otherwise set `manual-entry` when there is at least one object and every object "
+            "states `true`",
+            "When the correlation or an object states `true` and the Observation carries no "
+            "`grove-recording-method` extension, report `mobile-omission.recording-method`.",
+            "report the keys withheld from the correlation and its objects as "
+            "`mobile-omission.unmodeled-metadata`, naming each key once",
+        ):
+            with self.subTest(rule=rule):
+                self.assertIn(rule, section)
+        # What states the flag is defined once for every sample, so a correlation's 2 defers.
+        capture = mapping.split("### Capture mode and performer\n", 1)[1].split("\n### ", 1)[0]
+        self.assertIn("any other value, such as 2, states nothing", capture)
+
+    def test_withheld_metadata_follows_what_the_outputs_carry(self) -> None:
+        mapping = (ROOT / "healthkit/input/pagecontent/mapping.md").read_text(encoding="utf-8")
+        heading = "Withheld metadata"
+        headings = [line[4:] for line in mapping.splitlines() if line.startswith("### ")]
+        index = headings.index(heading)
+        self.assertEqual(
+            headings[index - 1 : index + 2],
+            ["Supported HealthKit metadata", heading, "Study context"],
+        )
+        section = mapping.split(f"### {heading}\n", 1)[1].split("\n### ", 1)[0]
+        table, constants = {}, {}
+        for line in section.splitlines():
+            if line.startswith("| `"):
+                key, constant, source_types, _ = (
+                    cell.strip() for cell in line.strip("|").split("|")
+                )
+                key, constant = key.strip("`"), constant.strip("`")
+                self.assertNotIn(key, table)
+                table[key] = ", ".join(name.strip().strip("`") for name in source_types.split(","))
+                constants[key] = constant
+        # A row names the key by the string the constant holds in an iOS 26.5 simulator on the SDK
+        # baseline; these seven hold another string than their constant's name.
+        self.assertEqual(
+            {key: constant for key, constant in constants.items() if key != constant},
+            {
+                "HKTimeZone": "HKMetadataKeyTimeZone",
+                "HKWasUserEntered": "HKMetadataKeyWasUserEntered",
+                "HKHeartRateEventThreshold": "HKMetadataKeyHeartRateEventThreshold",
+                "HKLowCardioFitnessEventThreshold": "HKMetadataKeyLowCardioFitnessEventThreshold",
+                "HKInsulinDeliveryReason": "HKMetadataKeyInsulinDeliveryReason",
+                "HKMenstrualCycleStart": "HKMetadataKeyMenstrualCycleStart",
+                "HKSexualActivityProtectionUsed": "HKMetadataKeySexualActivityProtectionUsed",
+            },
+        )
+        every = "every type with an Observation output"
+        self.assertEqual(
+            {key: source_types for key, source_types in table.items() if source_types != every},
+            {
+                "HKMetadataKeyHeartRateMotionContext": "HKQuantityTypeIdentifierHeartRate",
+                "HKHeartRateEventThreshold": (
+                    "HKCategoryTypeIdentifierHighHeartRateEvent, "
+                    "HKCategoryTypeIdentifierLowHeartRateEvent"
+                ),
+                "HKLowCardioFitnessEventThreshold": "HKCategoryTypeIdentifierLowCardioFitnessEvent",
+                "HKMetadataKeyAppleECGAlgorithmVersion": "HKDataTypeIdentifierElectrocardiogram",
+                "HKInsulinDeliveryReason": "HKQuantityTypeIdentifierInsulinDelivery",
+                "HKMenstrualCycleStart": "HKCategoryTypeIdentifierMenstrualFlow",
+                "HKSexualActivityProtectionUsed": "HKCategoryTypeIdentifierSexualActivity",
+            },
+        )
+        self.assertEqual(
+            {key for key, source_types in table.items() if source_types == every},
+            {
+                "HKTimeZone",
+                "HKWasUserEntered",
+                "HKMetadataKeySyncIdentifier",
+                "HKMetadataKeySyncVersion",
+            },
+        )
+        rows = {row["sourceTypeIdentifier"]: row for row in self.catalog["rows"]}
+        listed = {
+            source_type
+            for source_types in table.values() if source_types != every
+            for source_type in source_types.split(", ")
+        }
+        for source_type in listed:
+            self.assertEqual(rows[source_type]["status"], "supported")
+        # A notification's threshold component carries the threshold key its samples hold, so the
+        # table lists that key for every supported type whose measurement has the component, and a
+        # threshold that an output carries is represented rather than withheld and reported.
+        measurements = {row["id"]: row for row in self.mobile["measurements"]}
+        thresholds = {
+            row["sourceTypeIdentifier"]
+            for row in self.catalog["rows"] if row["status"] == "supported"
+            for measurement in row["measurementIDs"]
+            # A row may name a measurement outside the Mobile catalog, such as the electrocardiogram.
+            for component in measurements.get(measurement, {}).get("components") or []
+            if component["id"] == "threshold"
+        }
+        self.assertEqual(
+            thresholds,
+            {
+                *table["HKHeartRateEventThreshold"].split(", "),
+                table["HKLowCardioFitnessEventThreshold"],
+            },
+        )
+        # Every key of HealthKit Metadata Keys has a row, and the supported-metadata count agrees.
+        terminology = (ROOT / "healthkit/input/fsh/terminology.fsh").read_text(encoding="utf-8")
+        key_system = terminology.split("CodeSystem: HealthKitMetadataKeyCS\n", 1)[1].split("\n\n", 1)[0]
+        codes = {line.split()[1][1:] for line in key_system.splitlines() if line.startswith("* #")}
+        self.assertEqual(len(codes), 5)
+        self.assertLessEqual(codes, set(table))
+        self.assertIn("Of the five keys in [HealthKit Metadata Keys]", mapping)
+        self.assertNotIn("residual key", mapping)
+        reasons = {row["code"]: row["reason"] for row in self.protocol["producerDiagnostics"]}
+        self.assertEqual(
+            reasons["mobile-omission.unmodeled-metadata"],
+            "The source record, or a part of it, carries metadata that no output of its graph "
+            "represents, so the producer withholds those fields.",
+        )
+        for rule in (
+            "is represented only by the element that this table gives it, for the source types the "
+            "table names, and only when an output of the record's graph carries the key's value in "
+            "that element.",
+            "and report those keys as `mobile-omission.unmodeled-metadata`, naming each key once by "
+            "its runtime key.",
+            "A runtime key is the string that a metadata dictionary holds as the key, as the table's "
+            "first column gives it, not the name of the SDK constant that holds it, which can "
+            "differ: `HKMetadataKeyTimeZone` holds `HKTimeZone`.",
+            "A key that no SDK constant declares is named the same way.",
+            "a key it lists only for other source types, and a listed key whose element no output "
+            "carries.",
+            "`HKMetadataKeyWasUserEntered` stating `false`, whether the record or a part of it "
+            "carries it, maps to no element",
+            "and is never reported; a value that states nothing is reported.",
+            "represents no key, not even a valid sync pair.",
+            "an object of a blood-pressure correlation or an `HKWorkoutEvent` or "
+            "`HKWorkoutActivity` of a workout, is represented only when the record itself carries "
+            "the same key with an equal value that its graph represents",
+            "time-zone names or sync identifiers that match character for character, user-entered "
+            "flags that state the same thing, or sync versions that are the same number.",
+            "decide instead what a blood-pressure object's `HKMetadataKeyTimeZone` and "
+            "`HKMetadataKeyWasUserEntered` contribute.",
+            "a half or invalid sync pair that the record itself carries rejects the record even "
+            "when no output could carry the pair.",
+            "a key that a disclosure policy withholds is not reported.",
+        ):
+            with self.subTest(rule=rule):
+                self.assertIn(rule, section)
+        # Every in-page link of the section names a heading of this page.
+        anchors = {
+            "".join(c for c in name.lower() if c.isalnum() or c in " -").replace(" ", "-")
+            for name in headings
+        }
+        links = {part.split(")", 1)[0] for part in section.split("](#")[1:]}
+        self.assertEqual(len(links), 5)
+        self.assertLessEqual(links, anchors)
+
+    def test_insulin_delivery_reason_is_a_required_component_coded_by_its_key(self) -> None:
+        base = "https://grovealliance.org/fhir/healthkit/"
+        key_system = base + "CodeSystem/healthkit-metadata-key"
+        reasons = base + "ValueSet/healthkit-insulin-delivery-reason"
+        terminology = (ROOT / "healthkit/input/fsh/terminology.fsh").read_text(encoding="utf-8")
+        blocks = {block.split("\n", 1)[0]: block.splitlines() for block in terminology.split("\n\n")}
+        # The code is the key the constant holds, and its definition names the constant.
+        concept = [
+            line for line in blocks["CodeSystem: HealthKitMetadataKeyCS"]
+            if line.startswith("* #HKInsulinDeliveryReason ")
+        ]
+        self.assertEqual(len(concept), 1)
+        self.assertIn("the constant HKMetadataKeyInsulinDeliveryReason holds", concept[0])
+        # The bound value set admits exactly the existing delivery-reason codes, under the name
+        # the generated profile binds.
+        value_set = blocks["ValueSet: HealthkitInsulinDeliveryReasonVS"]
+        self.assertIn("Id: healthkit-insulin-delivery-reason", value_set)
+        self.assertEqual(
+            [line for line in value_set if line.startswith("* ")],
+            [
+                "* ^experimental = false",
+                "* include codes from system HealthKitInsulinDeliveryReasonCS",
+            ],
+        )
+        cases = {
+            line.split()[1][1:]: line.split('"')[1]
+            for line in blocks["CodeSystem: HealthKitInsulinDeliveryReasonCS"]
+            if line.startswith("* #")
+        }
+        self.assertEqual(cases, {"basal": "Basal", "bolus": "Bolus"})
+        measurement = next(m for m in self.mobile["measurements"] if m["id"] == "insulin-delivery")
+        self.assertEqual(
+            measurement["components"],
+            [
+                {
+                    "id": "insulinDeliveryReason",
+                    "system": key_system,
+                    "code": "HKInsulinDeliveryReason",
+                    "cardinality": "1..1",
+                    "valueSet": reasons,
+                }
+            ],
+        )
+        generated = (ROOT / "healthkit/input/fsh/generated-measurement-profiles.fsh").read_text(
+            encoding="utf-8"
+        )
+        rendered = {block.split("\n", 1)[0]: block.splitlines() for block in generated.split("\n\n")}
+        coded = f"* component[insulinDeliveryReason].code = {key_system}#HKInsulinDeliveryReason"
+        for rule in (
+            "* component contains insulinDeliveryReason 1..1 MS",
+            coded,
+            "* component[insulinDeliveryReason].valueCodeableConcept 1..1 MS",
+            "* component[insulinDeliveryReason].valueCodeableConcept from "
+            "HealthkitInsulinDeliveryReasonVS (required)",
+        ):
+            with self.subTest(rule=rule):
+                self.assertIn(rule, rendered["Profile: HealthkitInsulinDelivery"])
+        self.assertIn(coded, rendered["Instance: HealthkitInsulinDeliveryExample"])
+        # The page maps each raw value to one of those codes and admits nothing else.
+        mapping = (ROOT / "healthkit/input/pagecontent/mapping.md").read_text(encoding="utf-8")
+        section = mapping.split("### Supported HealthKit metadata\n", 1)[1].split("\n### ", 1)[0]
+        opening = (
+            "Another is carried as an adapter-coded component: "
+            "`HKMetadataKeyInsulinDeliveryReason`.\n"
+        )
+        insulin = section.split(opening, 1)[1]
+        rows = [
+            [cell.strip().strip("`") for cell in line.strip("|").split("|")]
+            for line in insulin.splitlines()
+            if line.startswith("| `") and not line.startswith("| `HK")
+        ]
+        self.assertEqual(rows, [["1", "basal", "Basal"], ["2", "bolus", "Bolus"]])
+        self.assertEqual({code: display for _, code, display in rows}, cases)
+        for rule in (
+            "is represented by the required `Observation.component:insulinDeliveryReason` slice",
+            "The component's code is `HKInsulinDeliveryReason`, the key that the constant "
+            "`HKMetadataKeyInsulinDeliveryReason` holds",
+            "A sample that does not carry the key, or carries a value the table does not map, is "
+            "rejected; the component is never omitted and a reason is never inferred.",
+        ):
+            with self.subTest(rule=rule):
+                self.assertIn(rule, insulin)
+
     def test_mobile_healthkit_coverage_is_bidirectional(self) -> None:
         supported_rows: dict[str, list[str]] = {}
         for row in self.catalog["rows"]:

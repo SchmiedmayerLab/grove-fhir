@@ -123,7 +123,7 @@ class ExchangeProtocolTests(unittest.TestCase):
                 else:
                     self.assertNotEqual(row.get("severity"), "warning")
         self.assertIn("mobile-input.unclassified", codes)
-        self.assertEqual(sum(row.get("severity") == "warning" for row in rows), 3)
+        self.assertEqual(sum(row.get("severity") == "warning" for row in rows), 4)
 
     def test_invalid_hmac_vectors_fail_closed(self) -> None:
         expected_messages = {

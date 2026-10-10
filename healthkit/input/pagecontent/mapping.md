@@ -126,12 +126,32 @@ The Mobile percent domain of 0 through 100 applies to the emitted value.
 ### Capture mode and performer
 
 When `HKMetadataKeyWasUserEntered` is explicitly `true`, set the Mobile `grove-recording-method` extension to `manual-entry`.
+A sample states the flag only through an `NSNumber` equal to 1, which is `true`, or 0, which is `false`; any other value, such as 2, states nothing, even though Objective-C `boolValue` reads it as `true`.
 This flag does not identify the person who entered the value, so it does not justify a Patient performer.
 Populate `Observation.performer` only when separate source evidence identifies a responsible party.
 The [body-weight example](Observation-HealthKitManuallyEnteredBodyWeightExample.html) shows this mapping.
 
 Do not infer `actively-recorded` or `automatically-recorded` when the flag is absent or false; omission means the converter does not know the capture mode.
 Do not add the Patient as performer solely from capture mode. `Observation.method` remains available for a clinical measurement technique and is not used for HealthKit capture mode.
+
+### Blood-pressure correlation objects
+
+An `HKCorrelationTypeIdentifierBloodPressure` correlation converts to one Observation: its identity and effective time come from the `HKCorrelation`, and its systolic and diastolic components from the `HKQuantitySample` objects in `HKCorrelation.objects`.
+The objects' `HKMetadataKeyTimeZone` and `HKMetadataKeyWasUserEntered` count for that Observation as this section defines.
+`HKCorrelation.objects` is a set, so no outcome below depends on the order in which a producer reads the objects.
+This section does not apply to an `HKCorrelationTypeIdentifierFood` correlation, whose objects are nutrient samples converted to Observations of their own.
+
+Use the correlation's `HKMetadataKeyTimeZone` when it carries one, and consult no object's.
+Otherwise consult every object's, and an object that does not carry one abstains: when at least one object carries one and every object that carries one carries the same name, compared character for character, use that name as if the correlation carried it.
+When no object carries one, or two objects carry different names, even a link and its target such as `US/Pacific` and `America/Los_Angeles`, the record supplies no time-zone name: serialize the effective value in UTC without a `timezone` extension and report `mobile-omission.source-offset`.
+Refuse the record with `mobile-input.unsupported-source-value` when an object's consulted value is not a valid IANA time-zone name, even when other objects carry a valid one.
+
+When the correlation states `HKMetadataKeyWasUserEntered`, its value decides as the [capture-mode rule](#capture-mode-and-performer) defines, whatever its objects state.
+Otherwise set `manual-entry` when there is at least one object and every object states `true`, and omit it when any object states `false` or nothing.
+When the correlation or an object states `true` and the Observation carries no `grove-recording-method` extension, report `mobile-omission.recording-method`.
+
+These rules decide what an object's `HKMetadataKeyTimeZone` and `HKMetadataKeyWasUserEntered` contribute, so neither key on an object is reported as `mobile-omission.unmodeled-metadata`.
+An object's other metadata keys are withheld under the same condition as the correlation's own; report the keys withheld from the correlation and its objects as `mobile-omission.unmodeled-metadata`, naming each key once however many of them carry it.
 
 ### Device, application, and provenance
 
@@ -172,7 +192,7 @@ Study resources are linked through the study model; they are not source entities
 ### Supported HealthKit metadata
 
 Map source facts to standard FHIR fields and published extensions before retaining adapter-specific metadata.
-The Grove FHIR contracts permit one residual key: `HKMetadataKeyHeartRateMotionContext`.
+Of the five keys in [HealthKit Metadata Keys](CodeSystem-healthkit-metadata-key.html), one is carried as an adapter-coded component: `HKMetadataKeyHeartRateMotionContext`.
 It is represented by the named `Observation.component:heartRateMotionContext` slice and bound to [HealthKit Heart Rate Motion Context](CodeSystem-healthkit-heart-rate-motion-context.html).
 The component is valid only on a LOINC `8867-4` heart-rate Observation.
 
@@ -188,8 +208,53 @@ The lower-case values in the second column are codes in the adapter's FHIR CodeS
 For any other integer, reject the unsupported value or omit the component according to the importer's policy.
 Never default an unknown value to `not-set`.
 
+Another is carried as an adapter-coded component: `HKMetadataKeyInsulinDeliveryReason`.
+It is represented by the required `Observation.component:insulinDeliveryReason` slice of [Insulin Delivery](StructureDefinition-healthkit-insulin-delivery.html) and bound to [HealthKit Insulin Delivery Reason](ValueSet-healthkit-insulin-delivery-reason.html).
+The component's code is `HKInsulinDeliveryReason`, the key that the constant `HKMetadataKeyInsulinDeliveryReason` holds and a sample's metadata carries.
+
+Map the source `NSNumber` without renumbering or inferring a reason:
+
+| `HKInsulinDeliveryReason` raw `NSNumber` value | Adapter code | Display |
+|---:|---|---|
+| `1` | `basal` | Basal |
+| `2` | `bolus` | Bolus |
+
+A sample that does not carry the key, or carries a value the table does not map, is rejected; the component is never omitted and a reason is never inferred.
+
 There is no generic metadata extension.
 Adding another key requires a defined semantic purpose, a typed FHIR representation, an explicit allowlist update, and validation examples.
+
+### Withheld metadata
+
+A metadata key that a source record carries is represented only by the element that this table gives it, for the source types the table names, and only when an output of the record's graph carries the key's value in that element.
+
+| Runtime key | SDK constant | Source types | Element |
+|---|---|---|---|
+| `HKTimeZone` | `HKMetadataKeyTimeZone` | every type with an Observation output | the `timezone` extension on each `effective[x]` date-time, as the [time rules](#values-units-and-time) define |
+| `HKWasUserEntered` | `HKMetadataKeyWasUserEntered` | every type with an Observation output | the `grove-recording-method` extension, `manual-entry` when the key states `true`, as the [capture-mode rule](#capture-mode-and-performer) defines |
+| `HKMetadataKeySyncIdentifier` | `HKMetadataKeySyncIdentifier` | every type with an Observation output | the `writer-record` Identifier, as the [revision rules](#logical-identity-and-revisions) define |
+| `HKMetadataKeySyncVersion` | `HKMetadataKeySyncVersion` | every type with an Observation output | the Grove Writer Record Version extension beside the `writer-record` Identifier |
+| `HKMetadataKeyHeartRateMotionContext` | `HKMetadataKeyHeartRateMotionContext` | `HKQuantityTypeIdentifierHeartRate` | `Observation.component:heartRateMotionContext`, as [above](#supported-healthkit-metadata) |
+| `HKHeartRateEventThreshold` | `HKMetadataKeyHeartRateEventThreshold` | `HKCategoryTypeIdentifierHighHeartRateEvent`, `HKCategoryTypeIdentifierLowHeartRateEvent` | `Observation.component:threshold` of the notification, in UCUM `/min` |
+| `HKLowCardioFitnessEventThreshold` | `HKMetadataKeyLowCardioFitnessEventThreshold` | `HKCategoryTypeIdentifierLowCardioFitnessEvent` | `Observation.component:threshold` of the notification, in UCUM `mL/kg/min` |
+| `HKMetadataKeyAppleECGAlgorithmVersion` | `HKMetadataKeyAppleECGAlgorithmVersion` | `HKDataTypeIdentifierElectrocardiogram` | `Observation.method` of the ECG Observation |
+| `HKInsulinDeliveryReason` | `HKMetadataKeyInsulinDeliveryReason` | `HKQuantityTypeIdentifierInsulinDelivery` | the delivery-reason component that the Insulin Delivery measurement requires |
+| `HKMenstrualCycleStart` | `HKMetadataKeyMenstrualCycleStart` | `HKCategoryTypeIdentifierMenstrualFlow` | `Observation.component:cycleStart` |
+| `HKSexualActivityProtectionUsed` | `HKMetadataKeySexualActivityProtectionUsed` | `HKCategoryTypeIdentifierSexualActivity` | `Observation.valueCodeableConcept`, `protected` or `unprotected` |
+
+Withhold every metadata key that an accepted record carries and that no output of its graph represents, and report those keys as `mobile-omission.unmodeled-metadata`, naming each key once by its runtime key.
+That includes a key the table does not list, a key it lists only for other source types, and a listed key whose element no output carries.
+A runtime key is the string that a metadata dictionary holds as the key, as the table's first column gives it, not the name of the SDK constant that holds it, which can differ: `HKMetadataKeyTimeZone` holds `HKTimeZone`.
+A key that no SDK constant declares is named the same way.
+`HKMetadataKeyWasUserEntered` stating `false`, whether the record or a part of it carries it, maps to no element, as the capture-mode rule defines, and is never reported; a value that states nothing is reported.
+Every element in the table belongs to an Observation, so a [HealthKit Recording Document](StructureDefinition-healthkit-recording-document.html) represents no key, not even a valid sync pair.
+
+A key that a part of the record carries, an object of a blood-pressure correlation or an `HKWorkoutEvent` or `HKWorkoutActivity` of a workout, is represented only when the record itself carries the same key with an equal value that its graph represents; otherwise it is withheld and reported with the record's own keys.
+Two values are equal when they are time-zone names or sync identifiers that match character for character, user-entered flags that state the same thing, or sync versions that are the same number.
+The [correlation-object rules](#blood-pressure-correlation-objects) decide instead what a blood-pressure object's `HKMetadataKeyTimeZone` and `HKMetadataKeyWasUserEntered` contribute.
+
+Reporting never relaxes a rejection: a half or invalid sync pair that the record itself carries rejects the record even when no output could carry the pair.
+As for every omission, a key that a disclosure policy withholds is not reported.
 
 ### Study context
 

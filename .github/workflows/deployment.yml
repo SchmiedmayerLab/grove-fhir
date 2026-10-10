@@ -149,7 +149,9 @@ jobs:
           python3 Scripts/validate-fixtures.py \
             --validator .build/fhir-tools/validator_cli.jar \
             --package mobile=mobile/output/package.tgz \
-            --package questionnaire=questionnaire/output/package.tgz
+            --package questionnaire=questionnaire/output/package.tgz \
+            --package sensor=sensor/output/package.tgz \
+            --package healthkit=healthkit/output/package.tgz
       - name: Verify the assembled site
         run: >-
           python3 Scripts/check-publication.py
