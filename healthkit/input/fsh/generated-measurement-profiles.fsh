@@ -1320,6 +1320,7 @@ Description: "The quantity of insulin delivered during the exact effective Perio
 * valueQuantity.system = $ucum (exactly)
 * valueQuantity.code 1..1 MS
 * valueQuantity.code = #[iU] (exactly)
+* valueQuantity 1..1 MS
 * component ^slicing.discriminator.type = #pattern
 * component ^slicing.discriminator.path = "code"
 * component ^slicing.rules = #open
@@ -1742,6 +1743,7 @@ Description: "HKStateOfMind: a self-reported reflection on how the participant f
 * valueQuantity.code = #1 (exactly)
 * valueQuantity.value ^minValueDecimal = -1
 * valueQuantity.value ^maxValueDecimal = 1
+* valueQuantity 1..1 MS
 * component ^slicing.discriminator.type = #pattern
 * component ^slicing.discriminator.path = "code"
 * component ^slicing.rules = #open

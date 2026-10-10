@@ -17,6 +17,17 @@
       "packageId": "org.grovealliance.fhir.questionnaire",
       "version": "0.6.0"
     }
+ ,
+    {
+      "alias": "sensor",
+      "packageId": "org.grovealliance.fhir.sensor",
+      "version": "0.6.0"
+    },
+    {
+      "alias": "healthkit",
+      "packageId": "org.grovealliance.fhir.healthkit",
+      "version": "0.6.0"
+    }
   ],
   "resources": [
     {"path": "Conformance/corpora/receiver-lifecycle/resources/changed-source-record.json", "profiles": ["https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle"]},
@@ -151,7 +162,8 @@
     }
   ],
   "negativeCorpora": [
-    "Conformance/corpora/mobile-profile-invariants/corpus.json"
+    "Conformance/corpora/mobile-profile-invariants/corpus.json",
+    "Conformance/corpora/healthkit-insulin-delivery/corpus.json"
   ],
   "excluded": [
     {"path": "Conformance/corpora/receiver-lifecycle/identity-sequences.json", "reason": "Receiver-policy expectations for contradictory source-output/source-record bindings, checked by Tests/test_output_record_binding.py; not a FHIR resource."},

@@ -123,6 +123,24 @@ class FixtureValidatorLaneTests(unittest.TestCase):
         }
         with self.assertRaisesRegex(lane.ProducerValidationError, "did not reject"):
             lane.reject_negative_case(binding, {"issue": [invariant]})
+        required = {
+            "path": Path("reason-without-dose.json"),
+            "expectedRequired": "Observation.value[x]",
+        }
+        missing = {
+            "severity": "error",
+            "code": "structure",
+            "details": {"text": "Observation.value[x]: minimum required = 1, but only found 0 "
+                        "(from https://grovealliance.org/fhir/healthkit/StructureDefinition/"
+                        "healthkit-insulin-delivery|0.6.0)"},
+        }
+        lane.reject_negative_case(required, {"issue": [missing]})
+        with self.assertRaisesRegex(lane.ProducerValidationError, "did not reject"):
+            lane.reject_negative_case(required, {"issue": [invariant]})
+        with self.assertRaisesRegex(lane.ProducerValidationError, "did not reject"):
+            lane.reject_negative_case(
+                {**required, "expectedRequired": "Observation.component"}, {"issue": [missing]}
+            )
 
 
 class FixtureValidatorLaneToolingTests(unittest.TestCase):
