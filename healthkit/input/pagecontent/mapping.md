@@ -108,17 +108,18 @@ The value is the total count attributed to that Period; do not turn a point samp
 ### Percentages
 
 HealthKit reports a percentage type as a binary64 fraction in `HKUnit.percent()`, where 1 means 100 percent, and the adapter emits UCUM `%`.
-Here the shortest round-trip decimal of a binary64 is the decimal with the fewest significant digits that converts back to exactly that binary64, and of several such decimals the one nearest it.
+Here the shortest round-trip decimal of a binary64 is the decimal with the fewest significant digits that converts back to exactly that binary64, of several such decimals the one nearest it, and of two equally near ones the one whose last digit is even.
 The adapter scales the fraction to percent in three steps, which the catalog's `percentScaling` names `shortest-round-trip-decimal-shift-rounded-once`:
 
 1. Write the fraction as its shortest round-trip decimal.
 2. Move that decimal's point two places to the right, which multiplies it by 100 exactly.
-3. Convert the result once to the nearest binary64, as a correctly rounded decimal parser does, and emit that binary64 as its shortest round-trip decimal.
+3. Convert the result once to the nearest binary64, a tie going to the one with the even significand (round to nearest, ties to even), as a correctly rounded decimal parser does, and emit that binary64 as its shortest round-trip decimal.
 
 A fraction of 0.282 is therefore emitted as `28.2`.
 Never multiply the binary64 fraction by 100 in binary64; for 0.282 that yields `28.199999999999996`.
 Never emit the shifted decimal of step 2 without step 3 either: 0.49543508709194095 is emitted as `49.54350870919409`, not `49.543508709194095`.
 The emitted value never has more significant digits than the fraction's shortest round-trip decimal.
+A fraction of 0.5 + 2⁻¹⁷ is exactly 0.50000762939453125, equally near the round-trip decimals 0.5000076293945312 and 0.5000076293945313, so step 1 writes `0.5000076293945312` and the emitted value is `50.00076293945312`, never `50.00076293945313`.
 Each of the catalog's `percentScalingVectors` pairs a fraction with its percent, and a producer's emitted value equals the vector's `percent` as an exact decimal.
 The Mobile percent domain of 0 through 100 applies to the emitted value.
 

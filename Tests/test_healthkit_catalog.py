@@ -33,7 +33,8 @@ def plain_decimal(value: Decimal) -> str:
 def shortest_round_trip(value: float) -> str:
     """Write a binary64 as its shortest round-trip decimal in plain positional notation."""
     # repr is the decimal with the fewest significant digits that converts back to the same
-    # binary64, and of several the one nearest it; only the notation is normalized here.
+    # binary64, of several the one nearest it, and of two equally near ones the one whose last
+    # digit is even; only the notation is normalized here.
     return plain_decimal(Decimal(repr(value)))
 
 
@@ -300,10 +301,25 @@ class HealthKitCatalogTests(unittest.TestCase):
             product_failures,
             {
                 "0.0000001", "0.0007", "0.07", "0.14", "0.28", "0.282",
-                "0.29", "0.55", "0.56", "0.57", "0.58",
+                "0.29", "0.5000076293945312", "0.55", "0.56", "0.57", "0.58",
             },
         )
         self.assertEqual(unrounded_failures, {"0.49543508709194095"})
+
+    def test_a_percent_vector_pins_the_even_digit_of_two_equally_near_decimals(self) -> None:
+        vectors = {
+            vector["fraction"]: vector["percent"]
+            for vector in self.catalog["producerCanonicalization"]["percentScalingVectors"]
+        }
+        fraction = 0.5 + 2 ** -17
+        even, odd = "0.5000076293945312", "0.5000076293945313"
+        # Both 16-digit decimals convert back to the fraction and lie equally near it, so only the
+        # tie-break chooses step 1's decimal, and the two choices emit different percents.
+        self.assertEqual(Decimal(fraction), Decimal("0.50000762939453125"))
+        self.assertEqual({float(even), float(odd)}, {fraction})
+        self.assertEqual(Decimal(odd) - Decimal(fraction), Decimal(fraction) - Decimal(even))
+        self.assertEqual(vectors[even], "50.00076293945312")
+        self.assertNotEqual(shortest_round_trip(float(Decimal(odd).scaleb(2))), vectors[even])
 
     def test_application_device_separates_opaque_snapshot_from_bundle_product(self) -> None:
         contract = self.catalog["applicationDeviceIdentity"]
