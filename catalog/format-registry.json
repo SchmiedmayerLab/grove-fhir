@@ -496,9 +496,9 @@
         {
           "name": "horizontalAccuracy",
           "type": "number",
-          "nullable": false,
+          "nullable": true,
           "unit": "m",
-          "meaning": "Radius of uncertainty for the horizontal position in metres."
+          "meaning": "Radius of uncertainty for the horizontal position in metres; empty when the horizontal position is invalid."
         },
         {
           "name": "verticalAccuracy",
