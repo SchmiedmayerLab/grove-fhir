@@ -451,13 +451,14 @@
             "targetRoles": {
               "type": "object",
               "additionalProperties": false,
-              "required": ["primary-output", "source-artifact", "child-output", "specimen", "device-snapshot"],
+              "required": ["primary-output", "source-artifact", "child-output", "specimen", "device-snapshot", "source-record"],
               "properties": {
                 "primary-output": { "const": { "identifierRole": "source-output", "resourceTypes": ["Observation", "VisionPrescription", "MedicationAdministration", "MedicationStatement"] } },
                 "source-artifact": { "const": { "identifierRole": "source-output", "resourceTypes": ["DocumentReference"] } },
                 "child-output": { "const": { "identifierRole": "source-output", "resourceTypes": ["Observation"] } },
                 "specimen": { "const": { "identifierRole": "source-output", "resourceTypes": ["Specimen"] } },
-                "device-snapshot": { "const": { "identifierRole": "device-snapshot", "resourceTypes": ["Device"] } }
+                "device-snapshot": { "const": { "identifierRole": "device-snapshot", "resourceTypes": ["Device"] } },
+                "source-record": { "const": { "identifierRole": "source-record", "resourceTypes": [] } }
               }
             },
             "sink": { "$ref": "#/$defs/nonempty" }

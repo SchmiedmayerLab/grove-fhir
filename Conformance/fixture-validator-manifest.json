@@ -46,6 +46,7 @@
     {"path": "Conformance/corpora/receiver-lifecycle/resources/pending.json", "profiles": ["https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle"]},
     {"path": "Conformance/corpora/receiver-lifecycle/resources/target.json", "profiles": ["https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle"]},
     {"path": "Conformance/corpora/receiver-lifecycle/resources/retraction.json", "profiles": ["https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-retraction-bundle"]},
+    {"path": "Conformance/corpora/receiver-lifecycle/resources/source-record-target-retraction.json", "profiles": ["https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-retraction-bundle"]},
     {
       "path": "Conformance/corpora/mobile-exchange/exchange-bundle.json",
       "profiles": [
@@ -54,6 +55,12 @@
     },
     {
       "path": "Conformance/corpora/mobile-exchange/retraction-bundle.json",
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-retraction-bundle"
+      ]
+    },
+    {
+      "path": "Conformance/corpora/mobile-exchange/source-record-target-retraction-bundle.json",
       "profiles": [
         "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-retraction-bundle"
       ]
@@ -149,6 +156,7 @@
   "excluded": [
     {"path": "Conformance/corpora/receiver-lifecycle/identity-sequences.json", "reason": "Receiver-policy expectations for contradictory source-output/source-record bindings, checked by Tests/test_output_record_binding.py; not a FHIR resource."},
     {"path": "Conformance/corpora/receiver-lifecycle/revision-sequences.json", "reason": "Exact output aliases and receiver-policy expectations for complete-revision membership and ambiguous version claims; checked by Tests/test_revision_membership.py, not a FHIR resource."},
+    {"path": "Conformance/corpora/receiver-lifecycle/source-record-target-retraction-sequences.json", "reason": "Receiver-policy expectations for one source-record target retraction before and after its events, beside other records and output bindings; checked by Tests/test_source_record_target_retraction.py, not a FHIR resource."},
     {"path": "Conformance/corpora/study-attribution/authority.json", "reason": "Synthetic receiver-owned source bindings, consent receipts and collection windows, not FHIR resources; checked by Tests/test_study_attribution.py."},
     {"path": "Conformance/corpora/study-attribution/authority-negative-cases.json", "reason": "Mutations of receiver-owned authority, not FHIR resources; each must fail the exact consent/source/window predicate in Tests/test_study_attribution.py."},
     {"path": "Conformance/corpora/study-attribution/official-validator-manifest.json", "reason": "Producer validation manifest for the multi-study source examples, not a FHIR resource."},

@@ -58,6 +58,7 @@ RETRACTION_TARGET_ROLE_EXTENSION = (
     "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-retraction-target-role"
 )
 SOURCE_RECORD_RETRACTED = "source-record-retracted"
+SOURCE_RECORD_TARGET_ROLE = "source-record"
 VALIDATOR_FILE_EXTENSION = "http://hl7.org/fhir/StructureDefinition/operationoutcome-file"
 VALIDATOR_ATTEMPTS = 2
 VALIDATOR_LOG_LIMIT = 4000

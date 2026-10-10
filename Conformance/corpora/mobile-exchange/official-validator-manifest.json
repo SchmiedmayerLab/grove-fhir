@@ -29,6 +29,12 @@
       "requiredProfiles": [
         "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-retraction-bundle"
       ]
+    },
+    {
+      "path": "source-record-target-retraction-bundle.json",
+      "requiredProfiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-retraction-bundle"
+      ]
     }
   ],
   "semanticVectors": [

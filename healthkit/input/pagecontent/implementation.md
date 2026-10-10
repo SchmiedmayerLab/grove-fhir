@@ -54,7 +54,10 @@ Start with the [heart-rate JSON](Observation-HealthKitHeartRateObservationExampl
 
 ### Retracting a source record
 
-When HealthKit reports a deleted source object, emit the dedicated Grove Mobile Retraction Bundle.
-Its sole source-record-retracted Provenance identifies the exact prior output graph through typed logical References carrying complete business Identifier pairs and only the target roles allowed by the retraction profile.
+When HealthKit reports a deleted source object, emit the dedicated Grove Mobile Retraction Bundle unless the producer establishes that it emitted no output for that object.
+Its sole source-record-retracted Provenance identifies the exact prior output graph through typed logical References carrying complete business Identifier pairs and only the target roles allowed by the retraction profile, or through one source-record target.
+An `HKDeletedObject` carries only the object's UUID and, at most, its sync identifier and version, so it does not establish whether the sample was converted or which conditional outputs its conversion emitted, such as an electrocardiogram's average-heart-rate Observation; a producer that kept no record of the prior output set uses the source-record target.
+A producer that has never converted an object of the deleted object's type emitted no output for it; a blood-pressure systolic or diastolic sample, converted only through its correlation, has no output of its own.
+A workout route is retracted only when the producer establishes that it disclosed that route under a route-disclosure authorization, because otherwise the retraction would itself disclose the route.
 Do not copy the former resources, relabel them `entered-in-error`, or encode a FHIR DELETE transaction.
 The assertion records source removal; the receiving deployment defines identifier resolution, repeated and all-or-nothing event handling, retention, and deletion.
