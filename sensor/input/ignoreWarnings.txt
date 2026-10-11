@@ -19,3 +19,7 @@ WARNING: ValueSet/grove-recording-mime-type: ValueSet.expansion: Because the exp
 # The generated recording-format terminology is Grove-owned and carries no OID by policy.
 WARNING: Resource: The resource CodeSystem/grove-recording-format should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/fhir-tools-ig/CodeSystem-ig-parameters.html#ig-parameters-auto-oid-root)
 WARNING: Resource: The resource ValueSet/grove-recording-format should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/fhir-tools-ig/CodeSystem-ig-parameters.html#ig-parameters-auto-oid-root)
+
+# A sensor recording identifies its device, not a responsible performer, and the Patient is never inferred as one.
+WARNING: Observation/GroveSensorECGExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Observation/GroveSensorSampledDataExample: Observation: Best Practice Recommendation: In general, all observations should have a performer

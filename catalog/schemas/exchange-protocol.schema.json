@@ -659,13 +659,14 @@
     "measurementExamples": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["effectiveInstant", "effectivePeriodStart", "effectivePeriodEnd", "healthConnectLastModifiedTime", "nativeRecordPrefix", "repositoryScope", "providerScope", "globalProviderScope", "coordinates"],
+      "required": ["effectiveInstant", "effectivePeriodStart", "effectivePeriodEnd", "healthConnectLastModifiedTime", "nativeRecordPrefix", "healthKitNativeRecordNamespace", "repositoryScope", "providerScope", "globalProviderScope", "coordinates"],
       "properties": {
         "effectiveInstant": { "type": "string", "format": "date-time" },
         "effectivePeriodStart": { "type": "string", "format": "date-time" },
         "effectivePeriodEnd": { "type": "string", "format": "date-time" },
         "healthConnectLastModifiedTime": { "type": "string", "format": "date-time" },
         "nativeRecordPrefix": { "$ref": "#/$defs/nonempty" },
+        "healthKitNativeRecordNamespace": { "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" },
         "repositoryScope": { "$ref": "#/$defs/exampleScope" },
         "providerScope": { "$ref": "#/$defs/exampleScope" },
         "globalProviderScope": { "$ref": "#/$defs/exampleScope" },

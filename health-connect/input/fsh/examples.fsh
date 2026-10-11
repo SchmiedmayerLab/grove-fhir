@@ -76,7 +76,6 @@ Description: "One instantaneous AndroidX RestingHeartRateRecord. It is never con
 * code.coding[0] = $loinc#40443-4 "Heart rate --resting"
 * code.coding[1] = $loinc#8867-4 "Heart rate"
 * subject = Reference(HealthConnectPatientExample)
-* performer = Reference(HealthConnectPatientExample)
 * effectiveDateTime = "2026-08-19T08:15:00-07:00"
 * issued = "2026-08-19T15:15:01Z"
 * valueQuantity = 58 '/min' "beats/minute"
@@ -97,7 +96,6 @@ Description: "A bounded mindfulness session preserving its exact AndroidX type, 
 * category = $observationCategory#activity "Activity"
 * code = $groveMobileMeasurement#mindfulness-session-duration "Mindfulness session duration"
 * subject = Reference(HealthConnectPatientExample)
-* performer = Reference(HealthConnectPatientExample)
 * effectivePeriod.start = "2026-08-19T07:00:00-07:00"
 * effectivePeriod.end = "2026-08-19T07:12:00-07:00"
 * issued = "2026-08-19T14:12:01Z"
@@ -121,7 +119,6 @@ Description: "A point VO2 max result preserving the exact AndroidX measurement m
 * category = $observationCategory#activity "Activity"
 * code = $groveMobileMeasurement#vo2-max "VO2 max"
 * subject = Reference(HealthConnectPatientExample)
-* performer = Reference(HealthConnectPatientExample)
 * effectiveDateTime = "2026-08-19T09:00:00-07:00"
 * issued = "2026-08-19T16:00:01Z"
 * valueQuantity = 42.5 'mL/kg/min' "mL/kg/min"
@@ -142,7 +139,6 @@ Description: "A bounded workout summary retaining the shared activity, exact And
 * category = $observationCategory#activity "Activity"
 * code = $groveMobileMeasurement#workout "Workout session"
 * subject = Reference(HealthConnectPatientExample)
-* performer = Reference(HealthConnectPatientExample)
 * effectivePeriod.start = "2026-08-19T17:30:00-07:00"
 * effectivePeriod.end = "2026-08-19T18:05:00-07:00"
 * issued = "2026-08-20T01:05:01Z"
@@ -178,7 +174,6 @@ Description: "A specimen-specific glucose result retaining non-unknown source me
 * category = $observationCategory#laboratory "Laboratory"
 * code = $loinc#32016-8 "Glucose [Mass/volume] in Capillary blood"
 * subject = Reference(HealthConnectPatientExample)
-* performer = Reference(HealthConnectPatientExample)
 * effectiveDateTime = "2026-08-20T07:15:00-07:00"
 * issued = "2026-08-20T14:15:01Z"
 * valueQuantity = 96 'mg/dL' "mg/dL"
@@ -213,7 +208,6 @@ Description: "A BloodGlucoseRecord whose exact whole-blood source token selects 
 * category = $observationCategory#laboratory "Laboratory"
 * code = $loinc#2339-0 "Glucose [Mass/volume] in Blood"
 * subject = Reference(HealthConnectPatientExample)
-* performer = Reference(HealthConnectPatientExample)
 * effectiveDateTime = "2026-08-20T07:20:00-07:00"
 * issued = "2026-08-20T14:20:01Z"
 * valueQuantity = 91 'mg/dL' "mg/dL"
@@ -246,7 +240,6 @@ Description: "A BloodGlucoseRecord whose exact plasma source token is preserved 
 * category = $observationCategory#laboratory "Laboratory"
 * code = $loinc#2345-7 "Glucose [Mass/volume] in Serum or Plasma"
 * subject = Reference(HealthConnectPatientExample)
-* performer = Reference(HealthConnectPatientExample)
 * effectiveDateTime = "2026-08-20T07:25:00-07:00"
 * issued = "2026-08-20T14:25:01Z"
 * valueQuantity = 94 'mg/dL' "mg/dL"
@@ -279,7 +272,6 @@ Description: "A BloodGlucoseRecord whose interstitial-fluid source token selects
 * category = $observationCategory#laboratory "Laboratory"
 * code = $loinc#99504-3 "Glucose [Mass/volume] in Interstitial fluid"
 * subject = Reference(HealthConnectPatientExample)
-* performer = Reference(HealthConnectPatientExample)
 * effectiveDateTime = "2026-08-20T07:30:00-07:00"
 * issued = "2026-08-20T14:30:01Z"
 * valueQuantity = 99 'mg/dL' "mg/dL"
@@ -299,7 +291,6 @@ Description: "A SleepSessionRecord summary that preserves the non-blank source t
 * status = #final
 * code = $loinc#93832-4 "Sleep duration"
 * subject = Reference(HealthConnectPatientExample)
-* performer = Reference(HealthConnectPatientExample)
 * effectivePeriod.start = "2026-08-19T22:30:00-07:00"
 * effectivePeriod.end = "2026-08-20T06:30:00-07:00"
 * issued = "2026-08-20T13:30:01Z"

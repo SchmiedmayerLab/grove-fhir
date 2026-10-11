@@ -81,6 +81,37 @@ class MeasurementProfileProjectionTests(unittest.TestCase):
                 )
         return contract, rows
 
+    def test_a_generated_healthkit_example_names_its_record_by_uuid(self) -> None:
+        # HealthKit's source-record preimage ends in the record's lowercase canonical HKObject.uuid text
+        # (healthkit/input/pagecontent/mapping.md), so a generated example's native id is one too.
+        _, rows = self.projected_example_identities()
+        healthkit = [row for row in rows if row["sourceRecord"]["components"][0] == "healthkit"]
+        self.assertTrue(healthkit)
+        canonical = re.compile(r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}")
+        for row in healthkit:
+            with self.subTest(measurement=row["measurementId"]):
+                self.assertIsNotNone(canonical.fullmatch(row["sourceRecord"]["components"][4]))
+
+    def test_an_example_whose_result_is_its_period_length_lasts_exactly_its_value(self) -> None:
+        from datetime import datetime
+
+        contract = RENDERER_MODULE.example_contract(ROOT)
+        catalog = json.loads((ROOT / "catalog/measurement-catalog.json").read_text(encoding="utf-8"))
+        spanning = [m for m in catalog["measurements"] if m["generation"].get("exampleSpansValue")]
+        self.assertEqual(
+            {m["id"] for m in spanning},
+            {"handwashing-session", "mindfulness-session", "toothbrushing-session"},
+        )
+        for measurement in spanning:
+            with self.subTest(measurement=measurement["id"]):
+                lines = RENDERER_MODULE.example_effective_lines(measurement, measurement.get("owner", "mobile"), contract)
+                start, end = (datetime.fromisoformat(line.split('"')[1]) for line in lines[:2])
+                quantity = measurement["quantity"]
+                self.assertEqual(
+                    (end - start).total_seconds(),
+                    quantity["example"] * RENDERER_MODULE.EXAMPLE_DURATION_SECONDS[quantity["code"]],
+                )
+
     def run_renderer(self, root: Path, *extra: str) -> tuple[int, str]:
         result = subprocess.run(
             [sys.executable, str(RENDERER), "--root", str(root), *extra],

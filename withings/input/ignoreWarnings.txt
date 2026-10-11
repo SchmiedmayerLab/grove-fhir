@@ -19,3 +19,21 @@ WARNING: Resource: The resource ValueSet/withings-measurement should have an OID
 # The annotation names what the dimensionless number counts. UCUM ignores it when comparing units, which is correct: the value is a count, not a physical quantity.
 WARNING: Observation/WithingsNerveHealthScoreExample: Observation.value.ofType(Quantity): UCUM Codes that contain human readable annotations like {score} can be misleading (e.g. they are ignored when comparing units). Best Practice is not to depend on annotations in the UCUM code, so this usage should be checked
 WARNING: Observation/WithingsVisceralFatIndexExample: Observation.value.ofType(Quantity): UCUM Codes that contain human readable annotations like {score} can be misleading (e.g. they are ignored when comparing units). Best Practice is not to depend on annotations in the UCUM code, so this usage should be checked
+
+# The Withings API identifies no responsible performer for these measurements, and the Patient is never inferred as one.
+WARNING: Observation/WithingsAtrialFibrillationNotificationEcgExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Observation/WithingsAtrialFibrillationNotificationPpgExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Observation/WithingsBloodPressureExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Observation/WithingsBodyFatMassExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Observation/WithingsBodyWeightExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Observation/WithingsCorrectedQtIntervalExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Observation/WithingsExtracellularWaterMassExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Observation/WithingsIntracellularWaterMassExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Observation/WithingsMuscleMassExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Observation/WithingsNerveHealthScoreExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Observation/WithingsPrIntervalExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Observation/WithingsPulseWaveVelocityExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Observation/WithingsQrsDurationExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Observation/WithingsQtIntervalExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Observation/WithingsVascularAgeExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Observation/WithingsVisceralFatIndexExample: Observation: Best Practice Recommendation: In general, all observations should have a performer

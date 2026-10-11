@@ -19,7 +19,6 @@ Description: "An interval total of activity-related energy expenditure."
 * category = $observationCategory#activity "Activity"
 * code = GroveMobileMeasurementCS#active-energy-burned "Active energy burned"
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-20T08:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T09:00:00-07:00"
 * issued = "2026-08-20T16:00:02Z"
@@ -38,7 +37,6 @@ Description: "A basal body temperature normalized to degrees Celsius."
 * category = $observationCategory#vital-signs "Vital Signs"
 * code = GroveMobileMeasurementCS#basal-body-temperature "Basal body temperature"
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectiveDateTime = "2026-08-20T06:30:00-07:00"
 * issued = "2026-08-20T13:30:02Z"
 * valueQuantity = 36.4 'Cel' "°C"
@@ -56,7 +54,6 @@ Description: "A blood-pressure panel with normalized systolic and diastolic comp
 * category = $observationCategory#vital-signs "Vital Signs"
 * code = $loinc#85354-9 "Blood pressure panel with all children optional"
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectiveDateTime = "2026-08-20T08:20:00-07:00"
 * issued = "2026-08-20T15:20:02Z"
 * component[systolic].code = $loinc#8480-6 "Systolic blood pressure"
@@ -77,7 +74,6 @@ Description: "A body height normalized to centimetres."
 * category = $observationCategory#vital-signs "Vital Signs"
 * code = $loinc#8302-2 "Body height"
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectiveDateTime = "2026-08-20T08:30:00-07:00"
 * issued = "2026-08-20T15:30:02Z"
 * valueQuantity = 174 'cm' "cm"
@@ -95,7 +91,6 @@ Description: "A body temperature normalized to degrees Celsius."
 * category = $observationCategory#vital-signs "Vital Signs"
 * code = $loinc#8310-5 "Body temperature"
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectiveDateTime = "2026-08-20T08:35:00-07:00"
 * issued = "2026-08-20T15:35:02Z"
 * valueQuantity = 36.8 'Cel' "°C"
@@ -113,7 +108,6 @@ Description: "A body weight normalized to kilograms."
 * category = $observationCategory#vital-signs "Vital Signs"
 * code = $loinc#29463-7 "Body weight"
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectiveDateTime = "2026-08-20T08:40:00-07:00"
 * issued = "2026-08-20T15:40:02Z"
 * valueQuantity = 68.2 'kg' "kg"
@@ -131,7 +125,6 @@ Description: "An interval total of distance traveled."
 * category = $observationCategory#activity "Activity"
 * code = $loinc#103208-5 "Distance traveled"
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-20T08:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T09:00:00-07:00"
 * issued = "2026-08-20T16:00:02Z"
@@ -150,7 +143,6 @@ Description: "A peripheral oxygen saturation normalized to percent."
 * category = $observationCategory#vital-signs "Vital Signs"
 * code = $loinc#2708-6 "Oxygen saturation in Arterial blood"
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectiveDateTime = "2026-08-20T08:45:00-07:00"
 * issued = "2026-08-20T15:45:02Z"
 * valueQuantity = 98 '%' "%"
@@ -168,7 +160,6 @@ Description: "A respiratory rate normalized to breaths per minute."
 * category = $observationCategory#vital-signs "Vital Signs"
 * code = $loinc#9279-1 "Respiratory rate"
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectiveDateTime = "2026-08-20T08:50:00-07:00"
 * issued = "2026-08-20T15:50:02Z"
 * valueQuantity = 15 '/min' "breaths/minute"
@@ -186,7 +177,6 @@ Description: "One classified interval within a sleep session."
 * category = $observationCategory#activity "Activity"
 * code = GroveMobileMeasurementCS#sleep-stage "Sleep stage"
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-20T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:42:00-07:00"
 * issued = "2026-08-20T14:00:02Z"
@@ -205,7 +195,6 @@ Description: "A sleep-session summary linked to its stage observations."
 * category = $observationCategory#activity "Activity"
 * code = $loinc#93832-4 "Sleep duration"
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-19T23:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T07:00:00-07:00"
 * issued = "2026-08-20T14:00:02Z"

@@ -28,7 +28,6 @@ Description: "An already-obtained Oura daily activity step total conforming to b
 * category = http://terminology.hl7.org/CodeSystem/observation-category#activity
 * code = https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement#step-count-total "Step count total"
 * subject = Reference(OuraPatientExample)
-* performer = Reference(OuraPatientExample)
 * effectivePeriod.start = "2026-08-20T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-21T00:00:00-07:00"
 * valueQuantity = 8241 '{steps}' "steps"

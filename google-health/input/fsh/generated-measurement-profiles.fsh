@@ -59,7 +59,6 @@ Description: "A conformant Resting Heart Rate Daily Average instance."
 * extension[+].url = "https://grovealliance.org/fhir/providers/StructureDefinition/provider-source-type"
 * extension[=].valueCode = #google-health-api/daily-resting-heart-rate
 * subject = Reference(GoogleHealthPatientExample)
-* performer = Reference(GoogleHealthPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 58 '/min' "beats/minute"
