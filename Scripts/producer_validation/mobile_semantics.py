@@ -30,6 +30,32 @@ def nested_fhir_resources(resource: dict[str, Any]) -> list[dict[str, Any]]:
             resources.extend(nested_fhir_resources(child))
     return resources
 
+# The semantic-vector source key of each adapter guide whose profile an Observation may claim.
+ADAPTER_SOURCES = {
+    "healthkit": "healthkit",
+    "health-connect": "health-connect",
+    "google-health": "google-health-api",
+    "oura": "oura",
+    "withings": "withings",
+}
+
+
+def projection_source(resource: Any) -> str | None:
+    """The semantic-vector source whose adapter profile the resource claims, if it claims one."""
+    profiles = resource.get("meta", {}).get("profile", []) if isinstance(resource, dict) else []
+    for guide, source in ADAPTER_SOURCES.items():
+        prefix = f"https://grovealliance.org/fhir/{guide}/StructureDefinition/"
+        if any(isinstance(profile, str) and profile.startswith(prefix) for profile in profiles):
+            return source
+    return None
+
+
+def vector_for_source(vector: dict[str, Any], resource: Any) -> dict[str, Any]:
+    """The vector a resource is compared with: a sourceEffective replaces effective for the source it names."""
+    effective = vector.get("sourceEffective", {}).get(projection_source(resource))
+    return vector if effective is None else {**vector, "effective": effective}
+
+
 def mobile_semantic_projection(
     resource: Any, vector: dict[str, Any], label: str
 ) -> dict[str, Any]:
@@ -234,7 +260,7 @@ def validate_mobile_semantic_vectors(
             binding["resourcePointer"],
             f"{label}.resourcePointer",
         )
-        vector = vectors[vector_id]
+        vector = vector_for_source(vectors[vector_id], selected)
         actual = mobile_semantic_projection(selected, vector, label)
         expected = {
             key: vector[key] for key in ("profile", "code", "effective", "result")
