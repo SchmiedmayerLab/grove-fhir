@@ -291,6 +291,78 @@ class GuideQATests(unittest.TestCase):
         self.assertNotIn("qa_arguments", script)
         self.assertNotIn('qa.get("errs"', fallback)
 
+    def test_offline_timezone_exception_is_exact_resource_backed_and_fail_closed(self) -> None:
+        message = (
+            "The value provided ('America/Los_Angeles') was not found in the value set "
+            "'I a n a timezones' (http://hl7.org/fhir/ValueSet/timezones|4.0.1), and a code "
+            "is required from this value set (error message = Cannot invoke "
+            '"org.hl7.fhir.r5.terminologies.client.TerminologyClientContext.getAddress()" '
+            'because "tc" is null)'
+        )
+
+        def qa_html(
+            *,
+            path: str = "Observation.effective.ofType(dateTime).extension[0].value.ofType(code) (l75/c43)",
+            finding: str = message,
+            diagnostic: str = "Terminology_TX_NoValid_16",
+            publisher: str = "2.3.3",
+        ) -> str:
+            return (
+                f"<p>IG Publisher Version: v{publisher}</p>"
+                '<h2><a href="Observation-Example.html">fsh-generated/resources/'
+                "Observation-Example.json</a></h2><table>"
+                '<tr style="background-color: #ffcccc">'
+                f"<td><b>{path}</b></td><td><b>error</b></td>"
+                f'<td><b>{finding}</b> <span class="code-value">{diagnostic}</span></td>'
+                "<td>profile</td></tr></table>"
+            )
+
+        observation = {
+            "resourceType": "Observation",
+            "effectiveDateTime": "2026-08-20T07:45:00-07:00",
+            "_effectiveDateTime": {"extension": [{
+                "url": "http://hl7.org/fhir/StructureDefinition/timezone",
+                "valueCode": "America/Los_Angeles",
+            }]},
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            guide = Path(directory).resolve() / "guide"
+            resources = guide / "fsh-generated/resources"
+            output = guide / "output"
+            resources.mkdir(parents=True)
+            output.mkdir()
+
+            def write_case(html_text: str, resource: dict[str, object] = observation) -> int:
+                (output / "qa.html").write_text(html_text, encoding="utf-8")
+                (resources / "Observation-Example.json").write_text(
+                    json.dumps(resource), encoding="utf-8"
+                )
+                return CHECK.offline_timezone_error_count(guide)
+
+            self.assertEqual(write_case(qa_html()), 1)
+            # Another value set, failure, diagnostic, path or Publisher version stays an error.
+            near_misses = [
+                qa_html(finding=message.replace("timezones|4.0.1", "other|4.0.1")),
+                qa_html(finding=message.replace('because "tc" is null', "different failure")),
+                qa_html(diagnostic="Terminology_TX_NoValid_15"),
+                qa_html(path="Observation.effective.ofType(dateTime).extension[1].value.ofType(code) (l75/c43)"),
+                qa_html(path="Observation.valueCode (l1/c1)"),
+                qa_html(publisher="2.3.4"),
+            ]
+            for html_text in near_misses:
+                with self.subTest(html_text=html_text):
+                    self.assertEqual(write_case(html_text), 0)
+            # The resource must state that zone itself, and it must be a zone the IANA database knows.
+            other_zone = json.loads(json.dumps(observation))
+            other_zone["_effectiveDateTime"]["extension"][0]["valueCode"] = "Europe/Berlin"
+            self.assertEqual(write_case(qa_html(), other_zone), 0)
+            invented = json.loads(json.dumps(observation))
+            invented["_effectiveDateTime"]["extension"][0]["valueCode"] = "Mars/Olympus_Mons"
+            self.assertEqual(
+                write_case(qa_html(finding=message.replace("America/Los_Angeles", "Mars/Olympus_Mons")), invented),
+                0,
+            )
+
     def test_offline_mime_exception_is_exact_registry_backed_and_fail_closed(self) -> None:
         message = (
             "The value provided ('application/json') was not found in the value set "

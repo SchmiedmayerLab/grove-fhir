@@ -5,6 +5,8 @@ The offline structural lane may explicitly account for Publisher 2.3.3 findings
 that say its absent terminology client could not validate external codes. Those
 exceptions are deliberately narrower than Publisher suppressions: MIME errors
 must match a generated DocumentReference and the authoritative format registry;
+IANA time-zone errors must match a generated Observation's own timezone
+extension and name a zone the IANA time zone database knows;
 no-service warnings must match a coding in the generated resource and Grove's
 pinned terminology evidence, and a value set's absent-LOINC warning must name an
 include whose every enumerated code is in that evidence. The default/online lane
@@ -26,6 +28,7 @@ import json
 import os
 import re
 import sys
+import zoneinfo
 from pathlib import Path
 
 
@@ -173,6 +176,21 @@ OFFLINE_MIME_MESSAGE = re.compile(
     r'"org\.hl7\.fhir\.r5\.terminologies\.client\.TerminologyClientContext\.getAddress\(\)" '
     r'because "tc" is null\)$'
 )
+
+OFFLINE_TIMEZONE_MESSAGE = re.compile(
+    r"^The value provided \('(?P<code>[^']+)'\) was not found in the value set "
+    r"'I a n a timezones' \(http://hl7\.org/fhir/ValueSet/timezones\|4\.0\.1\), and a code "
+    r"is required from this value set \(error message = Cannot invoke "
+    r'"org\.hl7\.fhir\.r5\.terminologies\.client\.TerminologyClientContext\.getAddress\(\)" '
+    r'because "tc" is null\)$'
+)
+
+TIMEZONE_PATH = re.compile(
+    r"^Observation\.effective\.ofType\(dateTime\)\.extension\[(?P<index>[0-9]+)\]"
+    r"\.value\.ofType\(code\) \(l[0-9]+/c[0-9]+\)$"
+)
+
+TIMEZONE_EXTENSION = "http://hl7.org/fhir/StructureDefinition/timezone"
 
 CONTENT_TYPE_PATH = re.compile(
     r"^DocumentReference\.content\[(?P<index>[0-9]+)\]\.attachment\.contentType "
@@ -340,6 +358,64 @@ def offline_mime_error_count(
             ):
                 continue
             count += 1
+    return count
+
+
+def offline_timezone_error_count(guide: Path) -> int:
+    """Count only Publisher 2.3.3's exact IANA time-zone false positive.
+
+    Offline, the Publisher sometimes reports an Observation's IANA time-zone code
+    as absent from the required timezones value set because its terminology client
+    is null, where it otherwise says the code could not be validated. Every
+    accepted row must name the generated Observation's own effectiveDateTime
+    timezone extension at that index, with the same code, and a zone the IANA
+    time zone database knows; anything else remains an unsuppressed error.
+    """
+
+    qa_html = (guide / "output/qa.html").read_text(encoding="utf-8")
+    if "IG Publisher Version: v2.3.3" not in qa_html:
+        return 0
+    zones = zoneinfo.available_timezones()
+    count = 0
+    for section in re.split(r"<h2>", qa_html)[1:]:
+        resource_match = re.match(
+            r'\s*<a href="[^"]+">fsh-generated/resources/'
+            r'(?P<filename>[^<]+)\.json</a>',
+            section,
+        )
+        if resource_match is None:
+            continue
+        resource_path = (
+            guide / "fsh-generated/resources" / f"{resource_match.group('filename')}.json"
+        )
+        try:
+            resource = json.loads(resource_path.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            continue
+        if resource.get("resourceType") != "Observation":
+            continue
+        extensions = (resource.get("_effectiveDateTime") or {}).get("extension")
+        table = section.partition("</table>")[0]
+        for raw_row in re.findall(r"<tr[^>]*>.*?</tr>", table, re.DOTALL):
+            row = ERROR_ROW.fullmatch(raw_row)
+            if row is None or plain_html(row.group("diagnostic")) != "Terminology_TX_NoValid_16":
+                continue
+            path_match = TIMEZONE_PATH.fullmatch(plain_html(row.group("path")))
+            message_match = OFFLINE_TIMEZONE_MESSAGE.fullmatch(plain_html(row.group("message")))
+            if path_match is None or message_match is None:
+                continue
+            code = message_match.group("code")
+            index = int(path_match.group("index"))
+            if not isinstance(extensions, list) or index >= len(extensions):
+                continue
+            extension = extensions[index]
+            if (
+                isinstance(extension, dict)
+                and extension.get("url") == TIMEZONE_EXTENSION
+                and extension.get("valueCode") == code
+                and code in zones
+            ):
+                count += 1
     return count
 
 
@@ -1106,7 +1182,7 @@ def main() -> int:
         try:
             exact_suppressions = exercised_suppressions(guide / "output" / "qa.html")
             offline_terminology_errors = (
-                offline_mime_error_count(guide)
+                offline_mime_error_count(guide) + offline_timezone_error_count(guide)
                 if arguments.offline_terminology
                 else 0
             )
