@@ -112,7 +112,7 @@ class MobileSemanticVectorTests(unittest.TestCase):
                 continue
             vector = vectors[measurement["id"]]
             self.assertEqual(
-                set(vector),
+                set(vector) - {"sourceEffective"},
                 {
                     "id",
                     "profile",
@@ -123,6 +123,10 @@ class MobileSemanticVectorTests(unittest.TestCase):
                     "admittedSourceContext",
                 },
             )
+            # A source whose window differs states its own; it never changes the result or the effective type.
+            for source, effective in vector.get("sourceEffective", {}).items():
+                self.assertIn(source, vector["admittedSourceContext"])
+                self.assertEqual(effective["type"], vector["effective"]["type"])
             self.assertEqual(
                 vector["profile"],
                 f"{self.catalog['canonicalRoot']}/{measurement['profile']}",
@@ -207,6 +211,28 @@ class MobileSemanticVectorTests(unittest.TestCase):
             for rule_id in vector["admittedSourceContext"].values():
                 self.assertIn(rule_id, rules)
 
+
+class SourceEffectiveTests(unittest.TestCase):
+    def test_a_source_with_its_own_window_is_compared_with_it(self) -> None:
+        from Scripts.producer_validation import mobile_semantics
+
+        corpus = json.loads(
+            (ROOT / "Conformance/corpora/mobile-semantics/corpus.json").read_text(encoding="utf-8")
+        )
+        vector = next(v for v in corpus["vectors"] if v["id"] == "respiratory-rate-average")
+        google = {"resourceType": "Observation", "meta": {"profile": [
+            vector["profile"], "https://grovealliance.org/fhir/google-health/StructureDefinition/google-health-observation",
+        ]}}
+        oura = {"resourceType": "Observation", "meta": {"profile": [
+            vector["profile"], "https://grovealliance.org/fhir/oura/StructureDefinition/oura-observation",
+        ]}}
+        self.assertEqual(mobile_semantics.projection_source(google), "google-health-api")
+        self.assertEqual(
+            mobile_semantics.vector_for_source(vector, google)["effective"],
+            vector["sourceEffective"]["google-health-api"],
+        )
+        self.assertEqual(mobile_semantics.vector_for_source(vector, oura)["effective"], vector["effective"])
+        self.assertNotEqual(vector["sourceEffective"]["google-health-api"], vector["effective"])
 
 if __name__ == "__main__":
     unittest.main()

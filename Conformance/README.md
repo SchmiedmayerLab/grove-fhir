@@ -91,6 +91,9 @@ Every negative case applies exactly one RFC 6902 JSON Patch operation and names 
 It contains exactly one vector for every shared Mobile measurement and binds the exact profile, code, unit, effective shape, result shape, edge rules, and admitted adapter context to `catalog/measurement-catalog.json`.
 A producer manifest binds one generated Observation to every shared Mobile meaning present in its submitted resources through `semanticVectors`.
 The producer validator resolves the declared JSON Pointer and compares the exact normalized clinical projection to the versioned vector.
+A vector whose sources report over different windows, such as a civil-date average beside a sleep-session one, states the differing source's window in `sourceEffective`; the validator compares an Observation claiming that source's adapter profile with it.
+The adapter context a vector admits for each source is its closed `sourceContextRules` entry: what the source's mapping requires or allows beyond the clinical projection, including an aggregation method that varies by source.
+The validator does not enforce those rules; they state what a producer may add.
 Equal offset-bearing FHIR instants are normalized without losing fractional precision before comparison, so a producer retains a real source offset when available and uses UTC when its source API supplies only an instant; it never invents an offset to match a fixture.
 Swift, Kotlin, and TypeScript repositories therefore generate these fixtures in their own CI; Grove FHIR still never executes their implementations.
 
