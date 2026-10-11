@@ -528,8 +528,8 @@ Description: "A platform-exclusive inferred sleep period, stating the exact leng
 * status = #final
 * code = $sensorKitConcept#sleep-session "Sleep session"
 * subject = Reference(SensorKitPatientExample)
-* effectivePeriod.start = "2026-08-20T00:00:00-07:00"
-* effectivePeriod.end = "2026-08-21T00:00:00-07:00"
+* effectivePeriod.start = "2026-08-19T23:00:00-07:00"
+* effectivePeriod.end = "2026-08-20T06:30:00-07:00"
 * valueQuantity = 27000 's'
 * device = Reference(SensorKitDeviceExample)
 
