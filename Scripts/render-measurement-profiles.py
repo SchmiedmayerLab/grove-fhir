@@ -31,6 +31,7 @@ import hashlib
 import json
 import re
 import uuid
+from datetime import datetime, timedelta
 from pathlib import Path
 
 try:
@@ -209,6 +210,8 @@ GROUND_TRUTH_FILES = (
 # Illustrative example values ride along in the catalog but state no terminology, so they stay
 # outside the reviewed projection; tuning one must not invalidate a reviewer's terminology sign-off.
 UNREVIEWED_KEYS = ("example",)
+# The UCUM duration units an example whose Period spans its value may state, in seconds.
+EXAMPLE_DURATION_SECONDS = {"s": 1, "min": 60, "h": 3600}
 
 
 def without_unreviewed(value: object) -> object:
@@ -893,7 +896,16 @@ def example_category_lines(measurement: dict) -> list[str]:
 def example_effective_lines(
     measurement: dict, owner_key: str, contract: dict
 ) -> list[str]:
-    if measurement["effective"] == "Period":
+    if measurement["effective"] == "Period" and measurement["generation"].get("exampleSpansValue"):
+        # The result is the length of the effective Period, so the example's Period lasts exactly its value.
+        start = datetime.fromisoformat(contract["effectiveInstant"])
+        quantity = measurement["quantity"]
+        end = start + timedelta(seconds=quantity["example"] * EXAMPLE_DURATION_SECONDS[quantity["code"]])
+        lines = [
+            f'* effectivePeriod.start = "{start.isoformat()}"',
+            f'* effectivePeriod.end = "{end.isoformat()}"',
+        ]
+    elif measurement["effective"] == "Period":
         lines = [
             f'* effectivePeriod.start = "{contract["effectivePeriodStart"]}"',
             f'* effectivePeriod.end = "{contract["effectivePeriodEnd"]}"',

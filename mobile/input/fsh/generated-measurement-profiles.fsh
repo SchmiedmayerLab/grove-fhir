@@ -2726,8 +2726,8 @@ Description: "A conformant Mindfulness Session instance."
 * status = #final
 * code = GroveMobileMeasurementCS#mindfulness-session-duration
 * subject = Reference(GroveMobilePatientExample)
-* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
-* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* effectivePeriod.start = "2026-08-19T10:30:00-07:00"
+* effectivePeriod.end = "2026-08-19T10:40:00-07:00"
 * valueQuantity = 10 'min'
 
 Instance: GroveMobileOvulationTestResultExample

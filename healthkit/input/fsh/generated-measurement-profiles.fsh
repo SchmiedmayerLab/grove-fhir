@@ -2947,8 +2947,8 @@ Description: "A conformant Handwashing Session instance."
 * code = HealthKitMeasurementCS#handwashing-session
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierHandwashingEvent
 * subject = Reference(HealthKitPatientExample)
-* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
-* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* effectivePeriod.start = "2026-08-19T10:30:00-07:00"
+* effectivePeriod.end = "2026-08-19T10:30:22-07:00"
 * valueQuantity = 22 's'
 
 Instance: HealthkitHeadphoneAudioExposureExample
@@ -4181,8 +4181,8 @@ Description: "A conformant Toothbrushing Session instance."
 * code = HealthKitMeasurementCS#toothbrushing-session
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierToothbrushingEvent
 * subject = Reference(HealthKitPatientExample)
-* effectivePeriod.start = "2026-08-19T00:00:00-07:00"
-* effectivePeriod.end = "2026-08-20T00:00:00-07:00"
+* effectivePeriod.start = "2026-08-19T10:30:00-07:00"
+* effectivePeriod.end = "2026-08-19T10:32:00-07:00"
 * valueQuantity = 120 's'
 
 Instance: HealthkitUnderwaterDepthExample
