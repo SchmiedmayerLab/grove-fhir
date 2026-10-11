@@ -830,8 +830,6 @@ def render_example(
         *example_category_lines(measurement),
         *example_source_type_lines(measurement, owner_key, projections),
         f"* subject = Reference({owner['patientExample']})",
-        # Consumer health data is self-recorded, so the participant is also the performer.
-        f"* performer = Reference({owner['patientExample']})",
         *example_effective_lines(measurement, owner_key, contract),
     ]
     method = example_method(measurement)

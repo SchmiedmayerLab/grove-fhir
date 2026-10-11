@@ -52,7 +52,6 @@ Description: "A lossless, uniformly sampled three-axis rotation-rate stream that
 * status = #final
 * code = $sensorKitSourceType#rotation-rate "Rotation rate"
 * subject = Reference(SensorKitPatientExample)
-* performer = Reference(SensorKitPatientExample)
 * effectivePeriod.start = "2026-08-20T09:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T09:00:00.020-07:00"
 * valueSampledData.origin.value = 0
@@ -93,7 +92,6 @@ Description: "The complete uniform voltage projection of one SensorKit ECG recor
 * status = #final
 * code = $loinc#11524-6 "EKG study"
 * subject = Reference(SensorKitPatientExample)
-* performer = Reference(SensorKitPatientExample)
 * effectivePeriod.start = "2026-08-20T09:10:00.000-07:00"
 * effectivePeriod.end = "2026-08-20T09:10:00.012-07:00"
 * derivedFrom = Reference(SensorKitECGDocumentExample)
@@ -164,7 +162,6 @@ Description: "A complete right-arm-minus-left-arm voltage projection. The exact 
 * status = #final
 * code = $loinc#11524-6 "EKG study"
 * subject = Reference(SensorKitPatientExample)
-* performer = Reference(SensorKitPatientExample)
 * effectivePeriod.start = "2026-08-20T09:12:00.000-07:00"
 * effectivePeriod.end = "2026-08-20T09:12:00.012-07:00"
 * derivedFrom = Reference(SensorKitInverseECGDocumentExample)
@@ -232,7 +229,6 @@ Description: "A platform-exclusive on-wrist state with wrist and crown placement
 * status = #final
 * code = $sensorKitConcept#on-wrist-state "On-wrist state"
 * subject = Reference(SensorKitPatientExample)
-* performer = Reference(SensorKitPatientExample)
 * effectivePeriod.start = "2026-08-20T08:30:00-07:00"
 * effectivePeriod.end = "2026-08-20T09:02:00-07:00"
 * valueCodeableConcept = $sensorKitValue#on-wrist "On wrist"
@@ -255,7 +251,6 @@ Description: "A platform-exclusive device-usage summary linked to the complete n
 * status = #final
 * code = $sensorKitConcept#device-usage-summary "Device usage summary"
 * subject = Reference(SensorKitPatientExample)
-* performer = Reference(SensorKitPatientExample)
 * effectivePeriod.start = "2026-08-20T08:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T08:15:00-07:00"
 * valueQuantity = 372 's' "seconds"
@@ -282,7 +277,6 @@ Description: "A platform-exclusive visit summary that preserves uncertain arriva
 * status = #final
 * code = $sensorKitConcept#visit-summary "Visit summary"
 * subject = Reference(SensorKitPatientExample)
-* performer = Reference(SensorKitPatientExample)
 * effectivePeriod.start = "2026-08-20T07:59:00-07:00"
 * effectivePeriod.end = "2026-08-20T09:31:00-07:00"
 * component[locationCategory].code = $sensorKitConcept#visit-location-category "Visit location category"
@@ -378,7 +372,6 @@ Description: "A platform-exclusive coverage summary of one accelerometer recordi
 * status = #final
 * code = $sensorKitConcept#accelerometer-recording-summary "Accelerometer recording summary"
 * subject = Reference(SensorKitPatientExample)
-* performer = Reference(SensorKitPatientExample)
 * effectivePeriod.start = "2026-08-20T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-21T00:00:00-07:00"
 * derivedFrom = Reference(SensorKitAccelerometerDocumentExample)
@@ -427,7 +420,6 @@ Description: "A platform-exclusive coverage summary of one photoplethysmography 
 * status = #final
 * code = $sensorKitConcept#ppg-recording-summary "PPG recording summary"
 * subject = Reference(SensorKitPatientExample)
-* performer = Reference(SensorKitPatientExample)
 * effectivePeriod.start = "2026-08-20T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-21T00:00:00-07:00"
 * derivedFrom = Reference(SensorKitPPGDocumentExample)
@@ -452,7 +444,6 @@ Description: "A platform-exclusive messaging summary over one day, with no messa
 * status = #final
 * code = $sensorKitConcept#messages-usage-summary "Messages usage summary"
 * subject = Reference(SensorKitPatientExample)
-* performer = Reference(SensorKitPatientExample)
 * effectivePeriod.start = "2026-08-20T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-21T00:00:00-07:00"
 * component[incomingMessages].code = $sensorKitConcept#incoming-messages "Incoming messages"
@@ -476,7 +467,6 @@ Description: "A platform-exclusive call summary over one day, with no call conte
 * status = #final
 * code = $sensorKitConcept#phone-usage-summary "Phone usage summary"
 * subject = Reference(SensorKitPatientExample)
-* performer = Reference(SensorKitPatientExample)
 * effectivePeriod.start = "2026-08-20T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-21T00:00:00-07:00"
 * valueQuantity = 1860 's'
@@ -501,7 +491,6 @@ Description: "A platform-exclusive typing summary over one day; no typed text is
 * status = #final
 * code = $sensorKitConcept#keyboard-metrics-summary "Keyboard metrics summary"
 * subject = Reference(SensorKitPatientExample)
-* performer = Reference(SensorKitPatientExample)
 * effectivePeriod.start = "2026-08-20T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-21T00:00:00-07:00"
 * derivedFrom = Reference(SensorKitKeyboardMetricsDocumentExample)
@@ -539,7 +528,6 @@ Description: "A platform-exclusive inferred sleep period, stating the exact leng
 * status = #final
 * code = $sensorKitConcept#sleep-session "Sleep session"
 * subject = Reference(SensorKitPatientExample)
-* performer = Reference(SensorKitPatientExample)
 * effectivePeriod.start = "2026-08-20T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-21T00:00:00-07:00"
 * valueQuantity = 27000 's'
@@ -610,7 +598,6 @@ Description: "A platform-exclusive coverage summary of one wrist-temperature ses
 * status = #final
 * code = $sensorKitConcept#wrist-temperature-recording-summary "Wrist temperature recording summary"
 * subject = Reference(SensorKitPatientExample)
-* performer = Reference(SensorKitPatientExample)
 * effectivePeriod.start = "2026-08-20T23:10:00-07:00"
 * effectivePeriod.end = "2026-08-21T06:40:00-07:00"
 * derivedFrom = Reference(SensorKitWristTemperatureDocumentExample)

@@ -51,7 +51,6 @@ Description: "A single-channel uniformly sampled waveform represented inline wit
 * status = #final
 * code = $mdc#150452 "MDC_PULS_OXIM_PLETH"
 * subject = Reference(GroveSensorPatientExample)
-* performer = Reference(GroveSensorPatientExample)
 * effectivePeriod.start = "2026-08-20T10:30:00-07:00"
 * effectivePeriod.end = "2026-08-20T10:30:00.050-07:00"
 * valueSampledData.origin.value = 0
@@ -73,7 +72,6 @@ Description: "A Lead I ECG channel using the ISO/IEEE 11073 MDC lead code, UCUM 
 * identifier[sourceOutput].value = "v0:test-key:1:2CsQrfS-JuC6DoGFIUevA9SEvVf1cvWbxhqkxnf7tu4"
 * status = #final
 * subject = Reference(GroveSensorPatientExample)
-* performer = Reference(GroveSensorPatientExample)
 * effectivePeriod.start = "2026-08-20T10:31:00-07:00"
 * effectivePeriod.end = "2026-08-20T10:31:00.020-07:00"
 * component[0].code = $mdc#131329 "MDC_ECG_ELEC_POTL_I"

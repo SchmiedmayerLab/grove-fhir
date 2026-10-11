@@ -1858,7 +1858,6 @@ Description: "A conformant Basal Energy Burned instance."
 * status = #final
 * code = GroveMobileMeasurementCS#basal-energy-burned
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 1580 'kcal'
@@ -1875,7 +1874,6 @@ Description: "A conformant Blood Glucose (Unspecified Specimen) instance."
 * status = #final
 * code = $loinc#2339-0 "Glucose [Mass/volume] in Blood"
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueQuantity = 95 'mg/dL'
 
@@ -1891,7 +1889,6 @@ Description: "A conformant Body Fat Percentage instance."
 * status = #final
 * code = $loinc#41982-0 "Percentage of body fat Measured"
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueQuantity = 22 '%'
 
@@ -1907,7 +1904,6 @@ Description: "A conformant Body Water Mass instance."
 * status = #final
 * code = $loinc#101683-1 "Body water mass"
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueQuantity = 42 'kg'
 
@@ -1923,7 +1919,6 @@ Description: "A conformant Bone Mass instance."
 * status = #final
 * code = $loinc#101685-6 "Body bone mass"
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueQuantity = 3.1 'kg'
 
@@ -1939,7 +1934,6 @@ Description: "A conformant Cervical Mucus Quality instance."
 * status = #final
 * code = GroveMobileMeasurementCS#cervical-mucus-quality
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueCodeableConcept = GroveCervicalMucusQualityCS#dry "Dry"
 
@@ -1955,7 +1949,6 @@ Description: "A conformant Cycling Cadence instance."
 * status = #final
 * code = GroveMobileMeasurementCS#cycling-cadence
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueQuantity = 85 '/min' "revolutions/minute"
 
@@ -1971,7 +1964,6 @@ Description: "A conformant Deep Sleep Duration instance."
 * status = #final
 * code = $loinc#93831-6 "Deep sleep duration"
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 78 'min'
@@ -1988,7 +1980,6 @@ Description: "A conformant Grove Mobile Dietary Biotin instance."
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-biotin
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 30 'ug'
@@ -2005,7 +1996,6 @@ Description: "A conformant Grove Mobile Dietary Caffeine instance."
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-caffeine
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 95 'mg'
@@ -2022,7 +2012,6 @@ Description: "A conformant Grove Mobile Dietary Calcium instance."
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-calcium
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 1000 'mg'
@@ -2039,7 +2028,6 @@ Description: "A conformant Grove Mobile Dietary Carbohydrates instance."
 * status = #final
 * code = $loinc#9060-5 "Carbohydrate intake Measured"
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 275 'g'
@@ -2056,7 +2044,6 @@ Description: "A conformant Grove Mobile Dietary Chloride instance."
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-chloride
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 2300 'mg'
@@ -2073,7 +2060,6 @@ Description: "A conformant Grove Mobile Dietary Cholesterol instance."
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-cholesterol
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 250 'mg'
@@ -2090,7 +2076,6 @@ Description: "A conformant Grove Mobile Dietary Chromium instance."
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-chromium
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 35 'ug'
@@ -2107,7 +2092,6 @@ Description: "A conformant Grove Mobile Dietary Copper instance."
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-copper
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 900 'ug'
@@ -2124,7 +2108,6 @@ Description: "A conformant Grove Mobile Dietary Energy instance."
 * status = #final
 * code = $loinc#9052-2 "Calorie intake total"
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 2100 'kcal'
@@ -2141,7 +2124,6 @@ Description: "A conformant Grove Mobile Dietary Monounsaturated Fat instance."
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-fat-monounsaturated
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 35 'g'
@@ -2158,7 +2140,6 @@ Description: "A conformant Grove Mobile Dietary Polyunsaturated Fat instance."
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-fat-polyunsaturated
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 22 'g'
@@ -2175,7 +2156,6 @@ Description: "A conformant Grove Mobile Dietary Saturated Fat instance."
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-fat-saturated
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 20 'g'
@@ -2192,7 +2172,6 @@ Description: "A conformant Grove Mobile Dietary Fat instance."
 * status = #final
 * code = $loinc#9067-0 "Fat intake Measured"
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 78 'g'
@@ -2209,7 +2188,6 @@ Description: "A conformant Grove Mobile Dietary Fiber instance."
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-fiber
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 28 'g'
@@ -2226,7 +2204,6 @@ Description: "A conformant Grove Mobile Dietary Folate instance."
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-folate
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 400 'ug'
@@ -2243,7 +2220,6 @@ Description: "A conformant Grove Mobile Dietary Iodine instance."
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-iodine
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 150 'ug'
@@ -2260,7 +2236,6 @@ Description: "A conformant Grove Mobile Dietary Iron instance."
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-iron
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 18 'mg'
@@ -2277,7 +2252,6 @@ Description: "A conformant Grove Mobile Dietary Magnesium instance."
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-magnesium
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 400 'mg'
@@ -2294,7 +2268,6 @@ Description: "A conformant Grove Mobile Dietary Manganese instance."
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-manganese
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 2.3 'mg'
@@ -2311,7 +2284,6 @@ Description: "A conformant Grove Mobile Dietary Molybdenum instance."
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-molybdenum
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 45 'ug'
@@ -2328,7 +2300,6 @@ Description: "A conformant Grove Mobile Dietary Niacin instance."
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-niacin
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 16 'mg'
@@ -2345,7 +2316,6 @@ Description: "A conformant Grove Mobile Dietary Pantothenic Acid instance."
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-pantothenic-acid
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 5 'mg'
@@ -2362,7 +2332,6 @@ Description: "A conformant Grove Mobile Dietary Phosphorus instance."
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-phosphorus
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 700 'mg'
@@ -2379,7 +2348,6 @@ Description: "A conformant Grove Mobile Dietary Potassium instance."
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-potassium
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 3400 'mg'
@@ -2396,7 +2364,6 @@ Description: "A conformant Grove Mobile Dietary Protein instance."
 * status = #final
 * code = $loinc#9080-3 "Protein intake Measured"
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 50 'g'
@@ -2413,7 +2380,6 @@ Description: "A conformant Grove Mobile Dietary Riboflavin instance."
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-riboflavin
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 1.3 'mg'
@@ -2430,7 +2396,6 @@ Description: "A conformant Grove Mobile Dietary Selenium instance."
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-selenium
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 55 'ug'
@@ -2447,7 +2412,6 @@ Description: "A conformant Grove Mobile Dietary Sodium instance."
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-sodium
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 2300 'mg'
@@ -2464,7 +2428,6 @@ Description: "A conformant Grove Mobile Dietary Sugar instance."
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-sugar
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 50 'g'
@@ -2481,7 +2444,6 @@ Description: "A conformant Grove Mobile Dietary Thiamin instance."
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-thiamin
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 1.2 'mg'
@@ -2498,7 +2460,6 @@ Description: "A conformant Grove Mobile Dietary Vitamin A instance."
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-vitamin-a
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 900 'ug'
@@ -2515,7 +2476,6 @@ Description: "A conformant Grove Mobile Dietary Vitamin B12 instance."
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-vitamin-b12
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 2.4 'ug'
@@ -2532,7 +2492,6 @@ Description: "A conformant Grove Mobile Dietary Vitamin B6 instance."
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-vitamin-b6
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 1.7 'mg'
@@ -2549,7 +2508,6 @@ Description: "A conformant Grove Mobile Dietary Vitamin C instance."
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-vitamin-c
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 90 'mg'
@@ -2566,7 +2524,6 @@ Description: "A conformant Grove Mobile Dietary Vitamin D instance."
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-vitamin-d
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 20 'ug'
@@ -2583,7 +2540,6 @@ Description: "A conformant Grove Mobile Dietary Vitamin E instance."
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-vitamin-e
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 15 'mg'
@@ -2600,7 +2556,6 @@ Description: "A conformant Grove Mobile Dietary Vitamin K instance."
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-vitamin-k
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 120 'ug'
@@ -2617,7 +2572,6 @@ Description: "A conformant Grove Mobile Dietary Zinc instance."
 * status = #final
 * code = GroveMobileMeasurementCS#dietary-zinc
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 11 'mg'
@@ -2634,7 +2588,6 @@ Description: "A conformant Electrodermal Activity instance."
 * status = #final
 * code = GroveMobileMeasurementCS#electrodermal-activity
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueQuantity = 0.8 'uS'
 
@@ -2650,7 +2603,6 @@ Description: "A conformant Flights Climbed instance."
 * status = #final
 * code = $loinc#100304-5 "Flights climbed [#] Reporting Period"
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 12 '{flights}' "flights"
@@ -2667,7 +2619,6 @@ Description: "A conformant Grove Mobile Fluid Intake instance."
 * status = #final
 * code = $loinc#8985-4 "Fluid intake Measured"
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 250 'mL'
@@ -2684,7 +2635,6 @@ Description: "A conformant Heart Rate Variability RMSSD instance."
 * status = #final
 * code = GroveMobileMeasurementCS#heart-rate-variability-rmssd
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueQuantity = 42 'ms'
 
@@ -2700,7 +2650,6 @@ Description: "A conformant Heart Rate Variability SDNN instance."
 * status = #final
 * code = $loinc#112429-6 "Heart rate variability SDNN [Time]"
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueQuantity = 58 'ms'
 
@@ -2716,7 +2665,6 @@ Description: "A conformant Intermenstrual Bleeding instance."
 * status = #final
 * code = GroveMobileMeasurementCS#intermenstrual-bleeding
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueCodeableConcept = GroveIntermenstrualBleedingCS#present "Present"
 
@@ -2732,7 +2680,6 @@ Description: "A conformant Lean Body Mass instance."
 * status = #final
 * code = $loinc#91557-9 "Lean body weight"
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueQuantity = 56 'kg'
 
@@ -2748,7 +2695,6 @@ Description: "A conformant Light Sleep Duration instance."
 * status = #final
 * code = $loinc#93830-8 "Light sleep duration"
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 244 'min'
@@ -2765,7 +2711,6 @@ Description: "A conformant Menstruation Flow instance."
 * status = #final
 * code = GroveMobileMeasurementCS#menstruation-flow
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueCodeableConcept = GroveMenstruationFlowCS#unspecified "Unspecified"
 
@@ -2781,7 +2726,6 @@ Description: "A conformant Mindfulness Session instance."
 * status = #final
 * code = GroveMobileMeasurementCS#mindfulness-session-duration
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 10 'min'
@@ -2798,7 +2742,6 @@ Description: "A conformant Ovulation Test Result instance."
 * status = #final
 * code = GroveMobileMeasurementCS#ovulation-test-result
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueCodeableConcept = GroveOvulationTestResultCS#negative "Negative"
 
@@ -2814,7 +2757,6 @@ Description: "A conformant Oxygen Saturation Daily Average instance."
 * status = #final
 * code = $loinc#103209-3 "Mean oxygen saturation"
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 96 '%'
@@ -2831,7 +2773,6 @@ Description: "A conformant Power instance."
 * status = #final
 * code = GroveMobileMeasurementCS#power
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueQuantity = 180 'W'
 
@@ -2847,7 +2788,6 @@ Description: "A conformant REM Sleep Duration instance."
 * status = #final
 * code = $loinc#93829-0 "REM sleep duration"
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 96 'min'
@@ -2864,7 +2804,6 @@ Description: "A conformant Respiratory Rate Average instance."
 * status = #final
 * code = $loinc#103217-6 "Mean respiratory rate"
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * method = GroveAggregationMethodCS#daily-mean
@@ -2884,7 +2823,6 @@ Description: "A conformant Resting Heart Rate instance."
 * code.coding[heartRate] = $loinc#8867-4 "Heart rate"
 * category = $observationCategory#vital-signs "Vital Signs"
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueQuantity = 58 '/min' "beats/minute"
 
@@ -2900,7 +2838,6 @@ Description: "A conformant Sexual Activity instance."
 * status = #final
 * code = GroveMobileMeasurementCS#sexual-activity
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueCodeableConcept = GroveSexualActivityCS#protected "Protection used"
 
@@ -2916,7 +2853,6 @@ Description: "A conformant Skin Temperature instance."
 * status = #final
 * code = $loinc#61008-9 "Body surface temperature"
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueQuantity = 33.2 'Cel'
 
@@ -2932,7 +2868,6 @@ Description: "A conformant Awake Duration During Sleep instance."
 * status = #final
 * code = $loinc#93828-2 "Nighttime awakening duration"
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 22 'min'
@@ -2949,7 +2884,6 @@ Description: "A conformant Sleep Heart Rate instance."
 * status = #final
 * code = GroveMobileMeasurementCS#sleep-heart-rate
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * method = GroveAggregationMethodCS#session-mean
@@ -2967,7 +2901,6 @@ Description: "A conformant Speed instance."
 * status = #final
 * code = GroveMobileMeasurementCS#speed
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueQuantity = 3.2 'm/s'
 
@@ -2983,7 +2916,6 @@ Description: "A conformant VO2 Max instance."
 * status = #final
 * code = GroveMobileMeasurementCS#vo2-max
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueQuantity = 42.5 'mL/kg/min'
 
@@ -2999,7 +2931,6 @@ Description: "A conformant Wheelchair Push Count instance."
 * status = #final
 * code = $loinc#96502-0 "Number of wheelchair pushes per time period"
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 1240 '{pushes}' "pushes"
@@ -3016,7 +2947,6 @@ Description: "A conformant Workout instance."
 * status = #final
 * code = GroveMobileMeasurementCS#workout
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = GroveWorkoutActivityCS#running "Running"
@@ -3033,7 +2963,6 @@ Description: "A conformant Workout Segment instance."
 * status = #final
 * code = GroveMobileMeasurementCS#workout-segment
 * subject = Reference(GroveMobilePatientExample)
-* performer = Reference(GroveMobilePatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = GroveWorkoutSegmentTypeCS#lap "Lap"

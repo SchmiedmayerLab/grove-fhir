@@ -39,7 +39,6 @@ Description: "An already-obtained Withings weight measurement conforming to both
 * category = http://terminology.hl7.org/CodeSystem/observation-category#vital-signs "Vital Signs"
 * code = $loinc#29463-7 "Body weight"
 * subject = Reference(WithingsPatientExample)
-* performer = Reference(WithingsPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueQuantity = 72.5 'kg' "kg"
 * extension[providerSourceType].valueCode = #withings/getmeas:1
@@ -61,7 +60,6 @@ Description: "One Withings measure group converted to one blood-pressure panel u
 * category = http://terminology.hl7.org/CodeSystem/observation-category#vital-signs "Vital Signs"
 * code = http://loinc.org#85354-9 "Blood pressure panel with all children optional"
 * subject = Reference(WithingsPatientExample)
-* performer = Reference(WithingsPatientExample)
 * effectiveDateTime = "2026-08-20T07:45:00-07:00"
 * component[0].code = http://loinc.org#8480-6 "Systolic blood pressure"
 * component[0].valueQuantity = 118 'mm[Hg]' "mmHg"

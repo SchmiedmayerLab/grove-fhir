@@ -79,11 +79,6 @@
     "reference": "Patient/GroveMobilePatientExample"
   },
   "issued": "2026-08-19T17:30:02.000Z",
-  "performer": [
-    {
-      "reference": "Patient/GroveMobilePatientExample"
-    }
-  ],
   "valueQuantity": {
     "value": 72,
     "unit": "beats/minute",

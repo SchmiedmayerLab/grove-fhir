@@ -1,0 +1,33 @@
+<!--
+This source file is part of the Grove FHIR open-source project
+
+SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTRIBUTORS.md)
+
+SPDX-License-Identifier: MIT
+-->
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <strong>Extracted Observation</strong>
+  </div>
+  <div class="panel-body">
+    <dl class="dl-horizontal">
+      <dt>Declared profile</dt>
+      <dd>{% for profile in $this.meta.profile %}<code>{{ profile }}</code><br />{% endfor %}</dd>
+      <dt>Code</dt>
+      <dd>{% for coding in $this.code.coding %}{{ coding.display }} (<code>{{ coding.system }}#{{ coding.code }}</code>){% endfor %}</dd>
+      <dt>Value</dt>
+      <dd><code>{{ $this.valueQuantity.value }} {{ $this.valueQuantity.code }}</code></dd>
+      <dt>Effective</dt>
+      <dd><code>{{ $this.effectiveDateTime }}</code></dd>
+      <dt>Issued</dt>
+      <dd><code>{{ $this.issued }}</code></dd>
+      <dt>Subject</dt>
+      <dd><code>{{ $this.subject.reference }}</code></dd>
+      <dt>Performer</dt>
+      <dd>{% for performer in $this.performer %}<code>{{ performer.reference }}</code>, the response's <code>author</code>{% endfor %}</dd>
+      <dt>Derived from</dt>
+      <dd>{% for source in $this.derivedFrom %}<code>{{ source.reference }}</code>{% endfor %}</dd>
+    </dl>
+  </div>
+</div>

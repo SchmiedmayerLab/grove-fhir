@@ -2566,7 +2566,6 @@ Description: "A conformant Apple Exercise Time instance."
 * code = HealthKitMeasurementCS#apple-exercise-time
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierAppleExerciseTime
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 32 'min'
@@ -2584,7 +2583,6 @@ Description: "A conformant Apple Move Time instance."
 * code = HealthKitMeasurementCS#apple-move-time
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierAppleMoveTime
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 45 'min'
@@ -2602,7 +2600,6 @@ Description: "A conformant Apple Stand Hour instance."
 * code = HealthKitMeasurementCS#apple-stand-hour
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierAppleStandHour
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = HealthkitAppleStandHourCS#stood "Stood"
@@ -2620,7 +2617,6 @@ Description: "A conformant Apple Stand Time instance."
 * code = HealthKitMeasurementCS#apple-stand-time
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierAppleStandTime
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 12 'min'
@@ -2638,7 +2634,6 @@ Description: "A conformant Atrial Fibrillation Burden instance."
 * code = HealthKitMeasurementCS#atrial-fibrillation-burden
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierAtrialFibrillationBurden
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 2 '%'
@@ -2656,7 +2651,6 @@ Description: "A conformant Audiogram Panel instance."
 * code = $loinc#89015-2 "Pure tone air conduction threshold audiometry panel"
 * extension[healthKitSourceType].valueCode = #HKDataTypeIdentifierAudiogram
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * component[left-250].code = $loinc#91375-6
 * component[left-250].valueQuantity = 20 'dB'
@@ -2676,7 +2670,6 @@ Description: "A conformant Grove HealthKit Biological Sex instance."
 * code = $loinc#46098-0 "Sex"
 * extension[healthKitSourceType].valueCode = #HKCharacteristicTypeIdentifierBiologicalSex
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueCodeableConcept = HealthkitBiologicalSexCS#female "Female"
 
@@ -2693,7 +2686,6 @@ Description: "A conformant Bladder Incontinence instance."
 * code = HealthKitMeasurementCS#bladder-incontinence
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierBladderIncontinence
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
 
@@ -2710,7 +2702,6 @@ Description: "A conformant Bleeding After Pregnancy instance."
 * code = HealthKitMeasurementCS#bleeding-after-pregnancy
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierBleedingAfterPregnancy
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueCodeableConcept = HealthkitBleedingAfterPregnancyCS#unspecified "Unspecified"
 
@@ -2727,7 +2718,6 @@ Description: "A conformant Bleeding During Pregnancy instance."
 * code = HealthKitMeasurementCS#bleeding-during-pregnancy
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierBleedingDuringPregnancy
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueCodeableConcept = HealthkitBleedingDuringPregnancyCS#unspecified "Unspecified"
 
@@ -2744,7 +2734,6 @@ Description: "A conformant Blood Alcohol Content instance."
 * code = HealthKitMeasurementCS#blood-alcohol-content
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierBloodAlcoholContent
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueQuantity = 0.04 '%'
 
@@ -2761,7 +2750,6 @@ Description: "A conformant Grove HealthKit Blood Type instance."
 * code = $loinc#882-1 "ABO and Rh group [Type] in Blood"
 * extension[healthKitSourceType].valueCode = #HKCharacteristicTypeIdentifierBloodType
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueCodeableConcept = HealthkitBloodTypeCS#a-positive "A positive"
 
@@ -2778,7 +2766,6 @@ Description: "A conformant Contraceptive Use instance."
 * code = $loinc#8659-5 "Birth control method - Reported"
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierContraceptive
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = HealthkitContraceptiveUseCS#unspecified "Unspecified"
@@ -2796,7 +2783,6 @@ Description: "A conformant Cycling Functional Threshold Power instance."
 * code = HealthKitMeasurementCS#cycling-functional-threshold-power
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierCyclingFunctionalThresholdPower
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueQuantity = 235 'W'
 
@@ -2813,7 +2799,6 @@ Description: "A conformant Grove HealthKit Date of Birth instance."
 * code = $loinc#21112-8 "Birth date"
 * extension[healthKitSourceType].valueCode = #HKCharacteristicTypeIdentifierDateOfBirth
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueDateTime = "1985-04-12"
 
@@ -2830,7 +2815,6 @@ Description: "A conformant Environmental Audio Exposure instance."
 * code = HealthKitMeasurementCS#environmental-audio-exposure
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierEnvironmentalAudioExposure
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 68 'dB[SPL]' "dB(SPL)"
@@ -2848,7 +2832,6 @@ Description: "A conformant Environmental Audio Exposure Notification instance."
 * code = HealthKitMeasurementCS#environmental-audio-exposure-notification
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierAudioExposureEvent
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = HealthkitEnvironmentalAudioExposureNotificationCS#momentary-limit "Momentary limit"
@@ -2866,7 +2849,6 @@ Description: "A conformant Environmental Sound Reduction instance."
 * code = HealthKitMeasurementCS#environmental-sound-reduction
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierEnvironmentalSoundReduction
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 22 'dB[SPL]' "dB(SPL)"
@@ -2884,7 +2866,6 @@ Description: "A conformant Grove HealthKit Fitzpatrick Skin Type instance."
 * code = $loinc#66555-4 "Skin type [Fitzpatrick Classification Scale]"
 * extension[healthKitSourceType].valueCode = #HKCharacteristicTypeIdentifierFitzpatrickSkinType
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueCodeableConcept = HealthkitFitzpatrickSkinTypeCS#type-i "Type I"
 
@@ -2901,7 +2882,6 @@ Description: "A conformant Food Correlation instance."
 * code = HealthKitMeasurementCS#food-correlation
 * extension[healthKitSourceType].valueCode = #HKCorrelationTypeIdentifierFood
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * hasMember[+] = Reference(Observation/GroveMobileDietaryEnergyExample)
@@ -2919,7 +2899,6 @@ Description: "A conformant Forced Expiratory Volume in 1 Second instance."
 * code = $loinc#20150-9 "FEV1"
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierForcedExpiratoryVolume1
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueQuantity = 3.6 'L'
 
@@ -2936,7 +2915,6 @@ Description: "A conformant Forced Vital Capacity instance."
 * code = $loinc#19868-9 "Forced vital capacity [Volume] Respiratory system by Spirometry"
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierForcedVitalCapacity
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueQuantity = 4.5 'L'
 
@@ -2953,7 +2931,6 @@ Description: "A conformant Grove HealthKit GAD-7 Score instance."
 * code = $loinc#70274-6 "Generalized anxiety disorder 7 item (GAD-7) total score [Reported.PHQ]"
 * extension[healthKitSourceType].valueCode = #HKScoredAssessmentTypeIdentifierGAD7
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueQuantity = 6 '{score}' "score"
 
@@ -2970,7 +2947,6 @@ Description: "A conformant Handwashing Session instance."
 * code = HealthKitMeasurementCS#handwashing-session
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierHandwashingEvent
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 22 's'
@@ -2988,7 +2964,6 @@ Description: "A conformant Headphone Audio Exposure instance."
 * code = HealthKitMeasurementCS#headphone-audio-exposure
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierHeadphoneAudioExposure
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 74 'dB[SPL]' "dB(SPL)"
@@ -3006,7 +2981,6 @@ Description: "A conformant Headphone Audio Exposure Notification instance."
 * code = HealthKitMeasurementCS#headphone-audio-exposure-notification
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierHeadphoneAudioExposureEvent
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = HealthkitHeadphoneAudioExposureNotificationCS#seven-day-limit "Seven day limit"
@@ -3024,7 +2998,6 @@ Description: "A conformant Heart Rate Recovery (One Minute) instance."
 * code = HealthKitMeasurementCS#heart-rate-recovery-one-minute
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierHeartRateRecoveryOneMinute
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueQuantity = 24 '/min' "beats/minute"
 
@@ -3041,7 +3014,6 @@ Description: "A conformant High Heart Rate Notification instance."
 * code = HealthKitMeasurementCS#high-heart-rate-notification
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierHighHeartRateEvent
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = HealthkitHighHeartRateNotificationCS#occurred "Occurred"
@@ -3059,7 +3031,6 @@ Description: "A conformant Hypertension Notification instance."
 * code = HealthKitMeasurementCS#hypertension-notification
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierHypertensionEvent
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = HealthkitHypertensionNotificationCS#occurred "Occurred"
@@ -3077,7 +3048,6 @@ Description: "A conformant Infrequent Menstrual Cycles instance."
 * code = HealthKitMeasurementCS#infrequent-menstrual-cycles
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierInfrequentMenstrualCycles
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = HealthkitInfrequentMenstrualCyclesCS#present "Present"
@@ -3095,7 +3065,6 @@ Description: "A conformant Inhaler Usage instance."
 * code = HealthKitMeasurementCS#inhaler-usage
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierInhalerUsage
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 2 '{puff}' "puffs"
@@ -3113,7 +3082,6 @@ Description: "A conformant Insulin Delivery instance."
 * code = HealthKitMeasurementCS#insulin-delivery
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierInsulinDelivery
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 6 '[iU]' "IU"
@@ -3133,7 +3101,6 @@ Description: "A conformant Irregular Heart Rhythm Notification instance."
 * code = HealthKitMeasurementCS#irregular-heart-rhythm-notification
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierIrregularHeartRhythmEvent
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = HealthkitIrregularHeartRhythmNotificationCS#occurred "Occurred"
@@ -3151,7 +3118,6 @@ Description: "A conformant Irregular Menstrual Cycles instance."
 * code = HealthKitMeasurementCS#irregular-menstrual-cycles
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierIrregularMenstrualCycles
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = HealthkitIrregularMenstrualCyclesCS#present "Present"
@@ -3169,7 +3135,6 @@ Description: "A conformant Lactation Status instance."
 * code = $loinc#63895-7 "Breastfeeding status"
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierLactation
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = HealthkitLactationStatusCS#lactating "Lactating"
@@ -3187,7 +3152,6 @@ Description: "A conformant Low Cardio Fitness Notification instance."
 * code = HealthKitMeasurementCS#low-cardio-fitness-notification
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierLowCardioFitnessEvent
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = HealthkitLowCardioFitnessNotificationCS#low-fitness "Low fitness"
@@ -3205,7 +3169,6 @@ Description: "A conformant Low Heart Rate Notification instance."
 * code = HealthKitMeasurementCS#low-heart-rate-notification
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierLowHeartRateEvent
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = HealthkitLowHeartRateNotificationCS#occurred "Occurred"
@@ -3223,7 +3186,6 @@ Description: "A conformant Number of Alcoholic Beverages instance."
 * code = HealthKitMeasurementCS#number-of-alcoholic-beverages
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierNumberOfAlcoholicBeverages
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 2 '{drinks}' "drinks"
@@ -3241,7 +3203,6 @@ Description: "A conformant Number of Times Fallen instance."
 * code = HealthKitMeasurementCS#number-of-times-fallen
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierNumberOfTimesFallen
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 1 '{falls}' "falls"
@@ -3259,7 +3220,6 @@ Description: "A conformant Peak Expiratory Flow Rate instance."
 * code = $loinc#33452-4 "Maximum expiratory gas flow Respiratory system airway"
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierPeakExpiratoryFlowRate
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueQuantity = 480 'L/min'
 
@@ -3276,7 +3236,6 @@ Description: "A conformant Peripheral Perfusion Index instance."
 * code = $loinc#61006-3 "Perfusion index Tissue by Pulse oximetry"
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierPeripheralPerfusionIndex
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueQuantity = 3.5 '%'
 
@@ -3293,7 +3252,6 @@ Description: "A conformant Persistent Intermenstrual Bleeding instance."
 * code = HealthKitMeasurementCS#persistent-intermenstrual-bleeding
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierPersistentIntermenstrualBleeding
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = HealthkitPersistentIntermenstrualBleedingCS#present "Present"
@@ -3311,7 +3269,6 @@ Description: "A conformant Grove HealthKit PHQ-9 Score instance."
 * code = $loinc#44261-6 "Patient Health Questionnaire 9 item (PHQ-9) total score [Reported]"
 * extension[healthKitSourceType].valueCode = #HKScoredAssessmentTypeIdentifierPHQ9
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueQuantity = 8 '{score}' "score"
 
@@ -3328,7 +3285,6 @@ Description: "A conformant Physical Effort instance."
 * code = HealthKitMeasurementCS#physical-effort
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierPhysicalEffort
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 4.5 'kcal/kg/h' "kcal/(kg.h)"
@@ -3346,7 +3302,6 @@ Description: "A conformant Pregnancy Status instance."
 * code = $loinc#82810-3 "Pregnancy status"
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierPregnancy
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = HealthkitPregnancyStatusCS#pregnant "Pregnant"
@@ -3364,7 +3319,6 @@ Description: "A conformant Pregnancy Test Result instance."
 * code = $loinc#2106-3 "Choriogonadotropin [Presence] in Urine"
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierPregnancyTestResult
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueCodeableConcept = HealthkitPregnancyTestResultCS#negative "Negative"
 
@@ -3381,7 +3335,6 @@ Description: "A conformant Progesterone Test Result instance."
 * code = HealthKitMeasurementCS#progesterone-test-result
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierProgesteroneTestResult
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueCodeableConcept = HealthkitProgesteroneTestResultCS#negative "Negative"
 
@@ -3398,7 +3351,6 @@ Description: "A conformant Prolonged Menstrual Periods instance."
 * code = HealthKitMeasurementCS#prolonged-menstrual-periods
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierProlongedMenstrualPeriods
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = HealthkitProlongedMenstrualPeriodsCS#present "Present"
@@ -3416,7 +3368,6 @@ Description: "A conformant Running Ground Contact Time instance."
 * code = HealthKitMeasurementCS#running-ground-contact-time
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierRunningGroundContactTime
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueQuantity = 245 'ms'
 
@@ -3433,7 +3384,6 @@ Description: "A conformant Running Stride Length instance."
 * code = HealthKitMeasurementCS#running-stride-length
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierRunningStrideLength
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueQuantity = 1.15 'm'
 
@@ -3450,7 +3400,6 @@ Description: "A conformant Running Vertical Oscillation instance."
 * code = HealthKitMeasurementCS#running-vertical-oscillation
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierRunningVerticalOscillation
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueQuantity = 8.4 'cm'
 
@@ -3467,7 +3416,6 @@ Description: "A conformant Six-Minute Walk Test Distance instance."
 * code = $loinc#64098-7 "Six minute walk test"
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierSixMinuteWalkTestDistance
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 540 'm'
@@ -3485,7 +3433,6 @@ Description: "A conformant Sleep Apnea Notification instance."
 * code = HealthKitMeasurementCS#sleep-apnea-notification
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierSleepApneaEvent
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = HealthkitSleepApneaNotificationCS#occurred "Occurred"
@@ -3503,7 +3450,6 @@ Description: "A conformant Sleeping Breathing Disturbances instance."
 * code = HealthKitMeasurementCS#sleeping-breathing-disturbances
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierAppleSleepingBreathingDisturbances
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 4.2 '/h' "events/hour"
@@ -3521,7 +3467,6 @@ Description: "A conformant Stair Ascent Speed instance."
 * code = $loinc#112431-2 "Stair ascent speed [Velocity]"
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierStairAscentSpeed
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueQuantity = 0.42 'm/s'
 
@@ -3538,7 +3483,6 @@ Description: "A conformant Stair Descent Speed instance."
 * code = $loinc#112430-4 "Stair descent speed [Velocity]"
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierStairDescentSpeed
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueQuantity = 0.52 'm/s'
 
@@ -3555,7 +3499,6 @@ Description: "A conformant State of Mind instance."
 * code = HealthKitMeasurementCS#state-of-mind
 * extension[healthKitSourceType].valueCode = #HKDataTypeStateOfMind
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 0.4 '1' "valence"
@@ -3575,7 +3518,6 @@ Description: "A conformant Swimming Stroke Count instance."
 * code = HealthKitMeasurementCS#swimming-stroke-count
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierSwimmingStrokeCount
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 640 '{strokes}' "strokes"
@@ -3593,7 +3535,6 @@ Description: "A conformant Symptom: Abdominal Cramps instance."
 * code = HealthKitMeasurementCS#symptom-abdominal-cramps
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierAbdominalCramps
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
@@ -3611,7 +3552,6 @@ Description: "A conformant Symptom: Acne instance."
 * code = HealthKitMeasurementCS#symptom-acne
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierAcne
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
@@ -3629,7 +3569,6 @@ Description: "A conformant Symptom: Appetite Changes instance."
 * code = HealthKitMeasurementCS#symptom-appetite-changes
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierAppetiteChanges
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = HealthkitSymptomAppetiteChangesCS#no-change "No change"
@@ -3647,7 +3586,6 @@ Description: "A conformant Symptom: Bloating instance."
 * code = HealthKitMeasurementCS#symptom-bloating
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierBloating
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
@@ -3665,7 +3603,6 @@ Description: "A conformant Symptom: Breast Pain instance."
 * code = HealthKitMeasurementCS#symptom-breast-pain
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierBreastPain
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
@@ -3683,7 +3620,6 @@ Description: "A conformant Symptom: Chest Tightness or Pain instance."
 * code = HealthKitMeasurementCS#symptom-chest-tightness-or-pain
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierChestTightnessOrPain
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
@@ -3701,7 +3637,6 @@ Description: "A conformant Symptom: Chills instance."
 * code = HealthKitMeasurementCS#symptom-chills
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierChills
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
@@ -3719,7 +3654,6 @@ Description: "A conformant Symptom: Constipation instance."
 * code = HealthKitMeasurementCS#symptom-constipation
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierConstipation
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
@@ -3737,7 +3671,6 @@ Description: "A conformant Symptom: Coughing instance."
 * code = HealthKitMeasurementCS#symptom-coughing
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierCoughing
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
@@ -3755,7 +3688,6 @@ Description: "A conformant Symptom: Diarrhea instance."
 * code = HealthKitMeasurementCS#symptom-diarrhea
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierDiarrhea
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
@@ -3773,7 +3705,6 @@ Description: "A conformant Symptom: Dizziness instance."
 * code = HealthKitMeasurementCS#symptom-dizziness
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierDizziness
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
@@ -3791,7 +3722,6 @@ Description: "A conformant Symptom: Dry Skin instance."
 * code = HealthKitMeasurementCS#symptom-dry-skin
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierDrySkin
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
@@ -3809,7 +3739,6 @@ Description: "A conformant Symptom: Fainting instance."
 * code = HealthKitMeasurementCS#symptom-fainting
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierFainting
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
@@ -3827,7 +3756,6 @@ Description: "A conformant Symptom: Fatigue instance."
 * code = HealthKitMeasurementCS#symptom-fatigue
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierFatigue
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
@@ -3845,7 +3773,6 @@ Description: "A conformant Symptom: Fever instance."
 * code = HealthKitMeasurementCS#symptom-fever
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierFever
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
@@ -3863,7 +3790,6 @@ Description: "A conformant Symptom: Generalized Body Ache instance."
 * code = HealthKitMeasurementCS#symptom-generalized-body-ache
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierGeneralizedBodyAche
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
@@ -3881,7 +3807,6 @@ Description: "A conformant Symptom: Hair Loss instance."
 * code = HealthKitMeasurementCS#symptom-hair-loss
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierHairLoss
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
@@ -3899,7 +3824,6 @@ Description: "A conformant Symptom: Headache instance."
 * code = HealthKitMeasurementCS#symptom-headache
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierHeadache
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
@@ -3917,7 +3841,6 @@ Description: "A conformant Symptom: Heartburn instance."
 * code = HealthKitMeasurementCS#symptom-heartburn
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierHeartburn
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
@@ -3935,7 +3858,6 @@ Description: "A conformant Symptom: Hot Flashes instance."
 * code = HealthKitMeasurementCS#symptom-hot-flashes
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierHotFlashes
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
@@ -3953,7 +3875,6 @@ Description: "A conformant Symptom: Loss of Smell instance."
 * code = HealthKitMeasurementCS#symptom-loss-of-smell
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierLossOfSmell
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
@@ -3971,7 +3892,6 @@ Description: "A conformant Symptom: Loss of Taste instance."
 * code = HealthKitMeasurementCS#symptom-loss-of-taste
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierLossOfTaste
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
@@ -3989,7 +3909,6 @@ Description: "A conformant Symptom: Lower Back Pain instance."
 * code = HealthKitMeasurementCS#symptom-lower-back-pain
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierLowerBackPain
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
@@ -4007,7 +3926,6 @@ Description: "A conformant Symptom: Memory Lapse instance."
 * code = HealthKitMeasurementCS#symptom-memory-lapse
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierMemoryLapse
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
@@ -4025,7 +3943,6 @@ Description: "A conformant Symptom: Mood Changes instance."
 * code = HealthKitMeasurementCS#symptom-mood-changes
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierMoodChanges
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
@@ -4043,7 +3960,6 @@ Description: "A conformant Symptom: Nausea instance."
 * code = $loinc#81660-3 "Nausea [Presence]"
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierNausea
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
@@ -4061,7 +3977,6 @@ Description: "A conformant Symptom: Night Sweats instance."
 * code = HealthKitMeasurementCS#symptom-night-sweats
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierNightSweats
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
@@ -4079,7 +3994,6 @@ Description: "A conformant Symptom: Pelvic Pain instance."
 * code = HealthKitMeasurementCS#symptom-pelvic-pain
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierPelvicPain
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
@@ -4097,7 +4011,6 @@ Description: "A conformant Symptom: Rapid, Pounding, or Fluttering Heartbeat ins
 * code = HealthKitMeasurementCS#symptom-rapid-pounding-or-fluttering-heartbeat
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierRapidPoundingOrFlutteringHeartbeat
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
@@ -4115,7 +4028,6 @@ Description: "A conformant Symptom: Runny Nose instance."
 * code = HealthKitMeasurementCS#symptom-runny-nose
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierRunnyNose
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
@@ -4133,7 +4045,6 @@ Description: "A conformant Symptom: Shortness of Breath instance."
 * code = HealthKitMeasurementCS#symptom-shortness-of-breath
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierShortnessOfBreath
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
@@ -4151,7 +4062,6 @@ Description: "A conformant Symptom: Sinus Congestion instance."
 * code = HealthKitMeasurementCS#symptom-sinus-congestion
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierSinusCongestion
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
@@ -4169,7 +4079,6 @@ Description: "A conformant Symptom: Skipped Heartbeat instance."
 * code = HealthKitMeasurementCS#symptom-skipped-heartbeat
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierSkippedHeartbeat
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
@@ -4187,7 +4096,6 @@ Description: "A conformant Symptom: Sleep Changes instance."
 * code = HealthKitMeasurementCS#symptom-sleep-changes
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierSleepChanges
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
@@ -4205,7 +4113,6 @@ Description: "A conformant Symptom: Sore Throat instance."
 * code = HealthKitMeasurementCS#symptom-sore-throat
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierSoreThroat
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
@@ -4223,7 +4130,6 @@ Description: "A conformant Symptom: Vomiting instance."
 * code = HealthKitMeasurementCS#symptom-vomiting
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierVomiting
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
@@ -4241,7 +4147,6 @@ Description: "A conformant Symptom: Wheezing instance."
 * code = HealthKitMeasurementCS#symptom-wheezing
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierWheezing
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
@@ -4259,7 +4164,6 @@ Description: "A conformant Time in Daylight instance."
 * code = HealthKitMeasurementCS#time-in-daylight
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierTimeInDaylight
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 47 'min'
@@ -4277,7 +4181,6 @@ Description: "A conformant Toothbrushing Session instance."
 * code = HealthKitMeasurementCS#toothbrushing-session
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierToothbrushingEvent
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 120 's'
@@ -4295,7 +4198,6 @@ Description: "A conformant Underwater Depth instance."
 * code = HealthKitMeasurementCS#underwater-depth
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierUnderwaterDepth
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueQuantity = 12 'm'
 
@@ -4312,7 +4214,6 @@ Description: "A conformant UV Exposure instance."
 * code = HealthKitMeasurementCS#uv-exposure
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierUVExposure
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 6 '{uvindex}' "UV index"
@@ -4330,7 +4231,6 @@ Description: "A conformant Vaginal Dryness instance."
 * code = HealthKitMeasurementCS#vaginal-dryness
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierVaginalDryness
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
 
@@ -4347,7 +4247,6 @@ Description: "A conformant Waist Circumference instance."
 * code = $loinc#8280-0 "Waist Circumference at umbilicus by Tape measure"
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierWaistCircumference
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueQuantity = 84 'cm'
 
@@ -4364,7 +4263,6 @@ Description: "A conformant Walking Asymmetry instance."
 * code = $loinc#112432-0 "Walking asymmetry"
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierWalkingAsymmetryPercentage
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueQuantity = 1.4 '%'
 
@@ -4381,7 +4279,6 @@ Description: "A conformant Walking Double Support instance."
 * code = $loinc#112434-6 "Walking double support [Percentile]"
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierWalkingDoubleSupportPercentage
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueQuantity = 27 '%'
 
@@ -4398,7 +4295,6 @@ Description: "A conformant Walking Heart Rate Average instance."
 * code = HealthKitMeasurementCS#walking-heart-rate-average
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierWalkingHeartRateAverage
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 98 '/min' "beats/minute"
@@ -4416,7 +4312,6 @@ Description: "A conformant Walking Speed instance."
 * code = HealthKitMeasurementCS#walking-speed
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierWalkingSpeed
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueQuantity = 1.32 'm/s'
 
@@ -4433,7 +4328,6 @@ Description: "A conformant Walking Steadiness instance."
 * code = HealthKitMeasurementCS#walking-steadiness
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierAppleWalkingSteadiness
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 82 '%'
@@ -4451,7 +4345,6 @@ Description: "A conformant Walking Steadiness Notification instance."
 * code = HealthKitMeasurementCS#walking-steadiness-notification
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierAppleWalkingSteadinessEvent
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = HealthkitWalkingSteadinessNotificationCS#low "Low"
@@ -4471,7 +4364,6 @@ Description: "A conformant Walking Step Length instance."
 * code = HealthKitMeasurementCS#walking-step-length
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierWalkingStepLength
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueQuantity = 72 'cm'
 
@@ -4488,7 +4380,6 @@ Description: "A conformant Water Temperature instance."
 * code = HealthKitMeasurementCS#water-temperature
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierWaterTemperature
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueQuantity = 24.5 'Cel'
 
@@ -4505,7 +4396,6 @@ Description: "A conformant Grove HealthKit Wheelchair Use instance."
 * code = HealthKitMeasurementCS#wheelchair-use
 * extension[healthKitSourceType].valueCode = #HKCharacteristicTypeIdentifierWheelchairUse
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueCodeableConcept = HealthkitWheelchairUseCS#uses-wheelchair "Uses wheelchair"
 
@@ -4522,7 +4412,6 @@ Description: "A conformant Workout Effort Score instance."
 * code = HealthKitMeasurementCS#workout-effort-score
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierEstimatedWorkoutEffortScore
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 7 '{score}' "score"
