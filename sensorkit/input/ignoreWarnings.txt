@@ -45,3 +45,18 @@ WARNING: Observation/SensorKitAccelerometerExample: Observation.component[1].val
 # each profile fixes, and nothing here compares quantities across annotated units.
 WARNING: Observation/SensorKitAccelerometerExample: Observation.component[0].value.ofType(Quantity): UCUM Codes that contain human readable annotations like {count} can be misleading (e.g. they are ignored when comparing units). Best Practice is not to depend on annotations in the UCUM code, so this usage should be checked, and the Quantity.unit SHOULD contain the annotation
 WARNING: Observation/SensorKitWristTemperatureExample: Observation.component[0].value.ofType(Quantity): UCUM Codes that contain human readable annotations like {count} can be misleading (e.g. they are ignored when comparing units). Best Practice is not to depend on annotations in the UCUM code, so this usage should be checked
+
+# SensorKit identifies the recording device, not a responsible performer, and the Patient is never inferred as one.
+WARNING: Observation/SensorKitAccelerometerExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Observation/SensorKitDeviceUsageExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Observation/SensorKitECGExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Observation/SensorKitInverseECGExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Observation/SensorKitKeyboardMetricsExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Observation/SensorKitMessagesUsageExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Observation/SensorKitOnWristExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Observation/SensorKitPPGExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Observation/SensorKitPhoneUsageExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Observation/SensorKitRotationRateExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Observation/SensorKitSleepSessionExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Observation/SensorKitVisitExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Observation/SensorKitWristTemperatureExample: Observation: Best Practice Recommendation: In general, all observations should have a performer

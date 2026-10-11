@@ -15,3 +15,8 @@ WARNING: Resource: The resource ValueSet/oura-measurement should have an OID ass
 # The annotation names what the dimensionless number counts. UCUM ignores it when comparing units, which is correct: the value is a count, not a physical quantity.
 WARNING: Observation/OuraReadinessScoreExample: Observation.value.ofType(Quantity): UCUM Codes that contain human readable annotations like {score} can be misleading (e.g. they are ignored when comparing units). Best Practice is not to depend on annotations in the UCUM code, so this usage should be checked
 WARNING: Observation/OuraStepCountExample: Observation.value.ofType(Quantity): UCUM Codes that contain human readable annotations like {steps} can be misleading (e.g. they are ignored when comparing units). Best Practice is not to depend on annotations in the UCUM code, so this usage should be checked
+
+# The Oura API identifies no responsible performer for these measurements, and the Patient is never inferred as one.
+WARNING: Observation/OuraCardiovascularAgeExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Observation/OuraReadinessScoreExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Observation/OuraStepCountExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
