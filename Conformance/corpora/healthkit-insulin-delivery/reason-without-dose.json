@@ -23,7 +23,7 @@
         ]
       },
       "system": "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1",
-      "value": "v0:test-key:1:cBCVAOwmOndbXKTkEvuABJ3SOihJN-qHzx41r8f-iPA"
+      "value": "v0:test-key:1:7lzhOmmKmafAWGACCH0NQSIFrryjPDGysIFmrg1_s8o"
     },
     {
       "type": {
@@ -35,7 +35,7 @@
         ]
       },
       "system": "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1",
-      "value": "v0:test-key:1:iXkd4P4yyDhIiPAS-c748bmb3XGtS_ANJCF0CkiPME0"
+      "value": "v0:test-key:1:fHSbttO2vnRwctsGiMr8ecXvWQOj5SdMWrTa--ZPLI4"
     }
   ],
   "status": "final",

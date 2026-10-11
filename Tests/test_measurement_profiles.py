@@ -81,6 +81,17 @@ class MeasurementProfileProjectionTests(unittest.TestCase):
                 )
         return contract, rows
 
+    def test_a_generated_healthkit_example_names_its_record_by_uuid(self) -> None:
+        # HealthKit's source-record preimage ends in the record's lowercase canonical HKObject.uuid text
+        # (healthkit/input/pagecontent/mapping.md), so a generated example's native id is one too.
+        _, rows = self.projected_example_identities()
+        healthkit = [row for row in rows if row["sourceRecord"]["components"][0] == "healthkit"]
+        self.assertTrue(healthkit)
+        canonical = re.compile(r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}")
+        for row in healthkit:
+            with self.subTest(measurement=row["measurementId"]):
+                self.assertIsNotNone(canonical.fullmatch(row["sourceRecord"]["components"][4]))
+
     def run_renderer(self, root: Path, *extra: str) -> tuple[int, str]:
         result = subprocess.run(
             [sys.executable, str(RENDERER), "--root", str(root), *extra],

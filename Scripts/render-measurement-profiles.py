@@ -30,6 +30,7 @@ import difflib
 import hashlib
 import json
 import re
+import uuid
 from pathlib import Path
 
 try:
@@ -916,7 +917,12 @@ def example_identity_record(
 ) -> dict:
     """Build the manifest row and exact FSH identity pairs for one example."""
     projection = example_projection(measurement, owner_key, projections)
-    native_id = f"{contract['nativeRecordPrefix']}{measurement['id']}"
+    if projection["adapterId"] == "healthkit":
+        # HealthKit's source-record preimage ends in the record's lowercase canonical HKObject.uuid text, so a
+        # generated example names a stable UUID derived from its measurement rather than a prefixed id.
+        native_id = str(uuid.uuid5(uuid.UUID(contract["healthKitNativeRecordNamespace"]), measurement["id"]))
+    else:
+        native_id = f"{contract['nativeRecordPrefix']}{measurement['id']}"
     source_kind = projection["sourceIdentityKind"]
     if source_kind == "provider-record":
         scope = (
