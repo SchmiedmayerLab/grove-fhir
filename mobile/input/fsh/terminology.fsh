@@ -241,7 +241,7 @@ Description: "The revisions a producing application states about itself. Each na
 * ^experimental = false
 * ^caseSensitive = true
 * ^content = #complete
-* #build "Build" "The build that produced the resource, as the producing platform reports it. Distinct from the marketing version: one marketing version is released from many builds, and only the build identifies which one converted a given record."
+* #build "Build" "The build of the application the Device snapshot describes, as its platform reports it. Distinct from the marketing version: one marketing version is released from many builds, and only the build identifies which one converted a given record or, for a writer application, wrote it."
 * #os-version "Operating system version" "The operating system release the conversion ran on."
 
 

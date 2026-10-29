@@ -3559,7 +3559,24 @@
       "cardinality": "1..1",
       "meaning": "Exact Apple application product bundle identifier; never an installation, host, account, or person identifier."
     },
-    "classificationRule": "The converting application always uses this profile. An HKSourceRevision author uses it only when the caller explicitly classifies that source as an application; never infer actor class from name, bundle text, UUID shape, or productType."
+    "classificationRule": "The converting application always uses this profile. An HKSourceRevision author uses it only when the caller explicitly classifies that source as an application; never infer actor class from name, bundle text, UUID shape, or productType.",
+    "sourceBuildRule": "HKSourceRevision.version is the source's CFBundleVersion: when HealthKit supplies it, copy it unchanged into the applicationBuild slice, never into applicationVersion.",
+    "sameApplicationRule": "An application-classified source's author may reference the converting application's Device only when HKSource.bundleIdentifier equals that Device's Apple bundle identifier, HKSourceRevision.version is supplied and equals, character for character, the build that Device states in applicationBuild, and the producer never reuses a build across releases of that bundle identifier. The shared Device keeps the converting application's name, release, build, and parent, and the producer emits no other Device for the source. Every application-classified source whose author does not reference the converting application's Device, including one without HKSourceRevision.version, one of another build, and every one compared with a converting application Device that states no build, is a distinct application snapshot."
+  },
+  "sourceRevisionExtension": {
+    "url": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-source-revision",
+    "r4Context": "Provenance.entity",
+    "members": [
+      {"url": "sourceName", "sourceField": "HKSourceRevision.source.name", "defaultDisclosure": "withheld"},
+      {"url": "sourceBundleIdentifier", "sourceField": "HKSourceRevision.source.bundleIdentifier", "defaultDisclosure": "withheld"},
+      {"url": "version", "sourceField": "HKSourceRevision.version", "defaultDisclosure": "emitted"},
+      {"url": "productType", "sourceField": "HKSourceRevision.productType", "defaultDisclosure": "emitted"},
+      {"url": "operatingSystemVersion", "sourceField": "HKSourceRevision.operatingSystemVersion", "defaultDisclosure": "emitted"}
+    ],
+    "emissionRule": "When the writer rules state no author agent for the source entity of a HealthKit conversion Provenance, because the caller did not classify the source or classified it as something those rules cannot state, that source entity carries this extension; it never appears beside an author agent. Only the source entity of a conversion Provenance carries it, and only for a record with an HKSourceRevision. It describes the consumed object, not an actor: it adds no agent, participant type, or Device, and no source is classified from its members.",
+    "valueRule": "Each member is one valueString, at most once, in the order of members. A string fact is copied exactly, and a member whose string fact HealthKit does not supply, or supplies empty, is left out. operatingSystemVersion is majorVersion, minorVersion, and patchVersion, each the canonical decimal text of its integer without a leading zero and with a minus sign only before a negative value, joined by full stops; all three always appear, 0.0.0 included.",
+    "disclosureRule": "A member whose defaultDisclosure is withheld is carried only under an explicit deployment authorization to disclose the names and identifiers of the applications and devices that wrote the deployment's records; a member whose defaultDisclosure is emitted is carried by default. A disclosure policy may withhold any member or the whole extension, which is not reported, and an extension with no member left is not emitted.",
+    "identityRule": "The extension mints no identity, and no identity is derived from it: adding or withholding it, or any of its members, changes no Identifier that is not event-scoped, such as a source-record, source-output, or writer-record Identifier. A record delivered again with the extension or any of its members added or withheld is still changed content: it receives a new event sequence and with it new event-scoped identities, as the Mobile exchange graph requires. For a sample from every source, whatever the caller's classification, the writing-application Identifier pair of the writer-record Identifier is the Apple Bundle Identifier system with HKSource.bundleIdentifier."
   },
   "identity": {
     "contract": "catalog/exchange-protocol.json",

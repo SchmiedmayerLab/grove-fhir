@@ -61,6 +61,16 @@ Description: "A tracked medication has exactly one deployment-scoped opaque sour
 Expression: "identifier.where(type.coding.where(system = 'https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role' and code = 'source-context').exists()).count() = 1"
 Severity: #error
 
+Invariant: healthkit-source-revision-os-version-1
+Description: "An HKSourceRevision.operatingSystemVersion is its majorVersion, minorVersion, and patchVersion, each as canonical decimal integer text, joined by full stops; all three are always present."
+Expression: "$this.matches('^(0|-?[1-9][0-9]*)[.](0|-?[1-9][0-9]*)[.](0|-?[1-9][0-9]*)$')"
+Severity: #error
+
+Invariant: healthkit-source-revision-writer-1
+Description: "A source entity states its source through an author agent or through the HealthKit Source Revision extension, never both."
+Expression: "entity.all(extension('https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-source-revision').empty() or agent.where(type.coding.where(system = 'http://terminology.hl7.org/CodeSystem/provenance-participant-type' and code = 'author').exists()).empty())"
+Severity: #error
+
 Profile: HealthKitApplicationDevice
 Parent: GroveApplicationDevice
 Id: healthkit-application-device
@@ -169,6 +179,7 @@ Parent: GroveMobileConversionProvenance
 Id: healthkit-conversion-provenance
 Title: "HealthKit Conversion Provenance"
 Description: "Provenance for transforming or byte-preserving one HealthKit object into every admitted HealthKit adapter output without fetching source data."
+* obeys healthkit-source-revision-writer-1
 * target 1..* MS
 * target only Reference(HealthKitObservation or HealthKitRecordingDocument or HealthKitVisionPrescription or HealthKitMedicationDoseEvent or HealthKitUserAnnotatedMedication)
 * entity 1..1 MS
@@ -178,6 +189,7 @@ Description: "Provenance for transforming or byte-preserving one HealthKit objec
 * entity.what.identifier.type = $groveIdentifierRole#source-record
 * entity.what.identifier.system 1..1 MS
 * entity.what.identifier.value 1..1 MS
+* entity.extension contains HealthKitSourceRevision named sourceRevision 0..1 MS
 
 Profile: HealthKitRecordingDocument
 Parent: GroveSensorRecordingDocument

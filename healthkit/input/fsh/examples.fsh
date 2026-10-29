@@ -116,8 +116,8 @@ Description: "The application reported by HKSourceRevision as the author of the 
 * identifier[appleBundleId].value = "com.example.health-source"
 * deviceName[applicationName].name = "Example Health Source"
 * deviceName[applicationName].type = #user-friendly-name
-* version[applicationVersion].type = $mdc#531975 "MDC_ID_PROD_SPEC_SW"
-* version[applicationVersion].value = "4.7.2"
+* version[applicationBuild].type = $groveApplicationVersionType#build "Build"
+* version[applicationBuild].value = "472"
 
 Instance: HealthKitBluetoothSourceDeviceExample
 InstanceOf: GroveRecordingDevice
