@@ -205,11 +205,6 @@
         "subject": {
           "reference": "urn:uuid:f9ee2eb6-66a5-5bb5-9459-0ba0d68e823a"
         },
-        "performer": [
-          {
-            "reference": "urn:uuid:f9ee2eb6-66a5-5bb5-9459-0ba0d68e823a"
-          }
-        ],
         "derivedFrom": [
           {
             "reference": "urn:uuid:cf931bb7-b891-515b-8ca9-5645f6beb6e3"

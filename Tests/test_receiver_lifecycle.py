@@ -42,7 +42,7 @@ class ReceiverLifecycleTests(unittest.TestCase):
         rules = json.dumps(protocol, sort_keys=True, separators=(",", ":")).encode()
         self.assertEqual(hashlib.sha256(rules).hexdigest(), "42a7ae4eae7640c8508dbb92f748d42536b9c22b00bd8fbcfa33e664e930454f")
         for name, digest in {
-            "exchange-bundle.json": "0606a575d494b029838aea451dda726fbc90e389c9c1318bae8e743cf1dc556e",
+            "exchange-bundle.json": "75808ad2f0ae0523cfac0c8df2465927595a56e489ffdb0f5ccca524d4a1f27e",
             "retraction-bundle.json": "54085f51d0d7629bc5a556cb9ea2813b7c7d6defadb8f2d3340270bc88f5d226",
             "source-record-target-retraction-bundle.json": "5cbddeb671a88c2132129b2d42622dc97b2e9aeffbb5f9046e8ff6c6e7229da9",
         }.items():

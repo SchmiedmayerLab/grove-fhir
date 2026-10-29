@@ -125,6 +125,7 @@ class ProducerExchangeTests(ProducerValidationTestCase):
             exchange_bundle.validate_exchange_bundle(false_declared_type, "active")
 
         logical_subject = copy.deepcopy(active)
+        patient_url = logical_subject["entry"][observation_index]["resource"]["subject"]["reference"]
         logical_subject["entry"][observation_index]["resource"]["subject"] = {
             "type": "Patient",
             "identifier": {
@@ -132,10 +133,18 @@ class ProducerExchangeTests(ProducerValidationTestCase):
                 "value": "participant-42",
             },
         }
+        # The subject was the Patient entry's only reference, so a logical subject leaves no Patient to carry.
+        logical_subject["entry"] = [
+            entry for entry in logical_subject["entry"] if entry["fullUrl"] != patient_url
+        ]
+        logical_index = next(
+            index for index, entry in enumerate(logical_subject["entry"])
+            if entry["resource"]["resourceType"] == "Observation"
+        )
         exchange_bundle.validate_exchange_bundle(logical_subject, "active")
 
         untyped_logical_subject = copy.deepcopy(logical_subject)
-        del untyped_logical_subject["entry"][observation_index]["resource"]["subject"]["type"]
+        del untyped_logical_subject["entry"][logical_index]["resource"]["subject"]["type"]
         with self.assertRaisesRegex(
             diagnostics.ProducerValidationError,
             "logical reference type must be Patient",
@@ -154,7 +163,7 @@ class ProducerExchangeTests(ProducerValidationTestCase):
             exchange_bundle.validate_exchange_bundle(mixed_subject, "active")
 
         reserved_subject = copy.deepcopy(logical_subject)
-        reserved_subject["entry"][observation_index]["resource"]["subject"][
+        reserved_subject["entry"][logical_index]["resource"]["subject"][
             "identifier"
         ]["system"] = context.IDENTIFIER_ROLE_SYSTEM
         with self.assertRaisesRegex(
@@ -163,7 +172,7 @@ class ProducerExchangeTests(ProducerValidationTestCase):
             exchange_bundle.validate_exchange_bundle(reserved_subject, "active")
 
         role_claiming_subject = copy.deepcopy(logical_subject)
-        role_claiming_subject["entry"][observation_index]["resource"]["subject"][
+        role_claiming_subject["entry"][logical_index]["resource"]["subject"][
             "identifier"
         ]["type"] = {"coding": [{
             "system": context.IDENTIFIER_ROLE_SYSTEM,

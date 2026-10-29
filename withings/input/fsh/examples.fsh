@@ -39,7 +39,6 @@ Description: "An already-obtained Withings weight measurement conforming to both
 * category = http://terminology.hl7.org/CodeSystem/observation-category#vital-signs "Vital Signs"
 * code = $loinc#29463-7 "Body weight"
 * subject = Reference(WithingsPatientExample)
-* performer = Reference(WithingsPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueQuantity = 72.5 'kg' "kg"
 * extension[providerSourceType].valueCode = #withings/getmeas:1
@@ -54,15 +53,12 @@ Description: "One Withings measure group converted to one blood-pressure panel u
 * identifier[sourceRecord].value = "v0:test-key:1:hLs7ljU3fw_38iQ8d8ZZYSwX0za7TE42EwXnhhf5iII"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-provider-output-v0/test-key/1"
 * identifier[sourceOutput].value = "v0:test-key:1:pQmb1oYp20fwShbyX9zldMlTaFAFcbhNbfxCnu_gL6Q"
-* identifier[writerRecord].system = "https://study.example.org/fhir/NamingSystem/grove-writer-record-v0/test-key/1"
-* identifier[writerRecord].value = "v0:test-key:1:qxujzFH9irQKon1KMxiN8jK8ahVB36Fq0JIKoBDNa2s"
-* extension[writerRecordVersion].valueString = "1"
 * status = #final
 * category = http://terminology.hl7.org/CodeSystem/observation-category#vital-signs "Vital Signs"
 * code = http://loinc.org#85354-9 "Blood pressure panel with all children optional"
 * subject = Reference(WithingsPatientExample)
-* performer = Reference(WithingsPatientExample)
 * effectiveDateTime = "2026-08-20T07:45:00-07:00"
+* effectiveDateTime.extension[timezone].valueCode = #America/Los_Angeles
 * component[0].code = http://loinc.org#8480-6 "Systolic blood pressure"
 * component[0].valueQuantity = 118 'mm[Hg]' "mmHg"
 * component[1].code = http://loinc.org#8462-4 "Diastolic blood pressure"

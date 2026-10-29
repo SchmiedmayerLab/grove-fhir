@@ -189,11 +189,6 @@
         "subject": {
           "reference": "urn:uuid:38245485-4bc3-59c4-876d-aa568b5dadeb"
         },
-        "performer": [
-          {
-            "reference": "urn:uuid:38245485-4bc3-59c4-876d-aa568b5dadeb"
-          }
-        ],
         "derivedFrom": [
           {
             "type": "QuestionnaireResponse",

@@ -189,11 +189,6 @@
         "subject": {
           "reference": "urn:uuid:6cfd6eec-c9a2-58e1-9c1c-7e0099f2ddff"
         },
-        "performer": [
-          {
-            "reference": "urn:uuid:6cfd6eec-c9a2-58e1-9c1c-7e0099f2ddff"
-          }
-        ],
         "derivedFrom": [
           {
             "reference": "urn:uuid:67ffa41f-8ddb-54db-b3bb-7f2702db250c"

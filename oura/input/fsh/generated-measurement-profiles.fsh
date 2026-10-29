@@ -75,7 +75,6 @@ Description: "A conformant Oura Cardiovascular Age instance."
 * extension[+].url = "https://grovealliance.org/fhir/providers/StructureDefinition/provider-source-type"
 * extension[=].valueCode = #oura/daily_cardiovascular_age
 * subject = Reference(OuraPatientExample)
-* performer = Reference(OuraPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 38 'a' "years"
@@ -97,7 +96,6 @@ Description: "A conformant Oura Readiness Score instance."
 * extension[+].url = "https://grovealliance.org/fhir/providers/StructureDefinition/provider-source-type"
 * extension[=].valueCode = #oura/daily_readiness
 * subject = Reference(OuraPatientExample)
-* performer = Reference(OuraPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueQuantity = 78 '{score}' "score"

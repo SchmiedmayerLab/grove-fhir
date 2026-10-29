@@ -3893,7 +3893,8 @@
       },
       "effective": "Period",
       "generation": {
-        "emit": true
+        "emit": true,
+        "exampleSpansValue": true
       },
       "coverage": {
         "healthkit": "supported",
@@ -4943,7 +4944,8 @@
       },
       "effective": "Period",
       "generation": {
-        "emit": true
+        "emit": true,
+        "exampleSpansValue": true
       },
       "coverage": {
         "healthkit": "supported",
@@ -8635,7 +8637,8 @@
       },
       "effective": "Period",
       "generation": {
-        "emit": true
+        "emit": true,
+        "exampleSpansValue": true
       },
       "coverage": {
         "healthkit": "supported",

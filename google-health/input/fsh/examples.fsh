@@ -28,7 +28,6 @@ Description: "An already-obtained Google Health API step-count interval conformi
 * category = http://terminology.hl7.org/CodeSystem/observation-category#activity "Activity"
 * code = https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement#step-count-total "Step count total"
 * subject = Reference(GoogleHealthPatientExample)
-* performer = Reference(GoogleHealthPatientExample)
 * effectivePeriod.start = "2026-08-20T09:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T10:00:00-07:00"
 * valueQuantity = 1042 '{steps}' "steps"

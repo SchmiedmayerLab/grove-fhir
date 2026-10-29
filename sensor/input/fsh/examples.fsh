@@ -51,7 +51,6 @@ Description: "A single-channel uniformly sampled waveform represented inline wit
 * status = #final
 * code = $mdc#150452 "MDC_PULS_OXIM_PLETH"
 * subject = Reference(GroveSensorPatientExample)
-* performer = Reference(GroveSensorPatientExample)
 * effectivePeriod.start = "2026-08-20T10:30:00-07:00"
 * effectivePeriod.end = "2026-08-20T10:30:00.050-07:00"
 * valueSampledData.origin.value = 0
@@ -73,7 +72,6 @@ Description: "A Lead I ECG channel using the ISO/IEEE 11073 MDC lead code, UCUM 
 * identifier[sourceOutput].value = "v0:test-key:1:2CsQrfS-JuC6DoGFIUevA9SEvVf1cvWbxhqkxnf7tu4"
 * status = #final
 * subject = Reference(GroveSensorPatientExample)
-* performer = Reference(GroveSensorPatientExample)
 * effectivePeriod.start = "2026-08-20T10:31:00-07:00"
 * effectivePeriod.end = "2026-08-20T10:31:00.020-07:00"
 * component[0].code = $mdc#131329 "MDC_ECG_ELEC_POTL_I"
@@ -103,9 +101,9 @@ Description: "A compact embedded native recording linked to the parsed ECG Obser
 * author = Reference(GroveSensorDeviceExample)
 * content.attachment.contentType = #application/json
 * content.attachment.title = "Native ECG recording"
-* content.attachment.data = "eyJsZWFkIjoiSSIsInVuaXQiOiJ1ViIsInNhbXBsZXMiOlszMTIsMzA1LDI5MV19"
-* content.attachment.size = 48
-* content.attachment.hash = "mzgiyiPRcgwlAYq6ZhFBwSs26gw="
+* content.attachment.data = "eyJsZWFkIjoiSSIsInVuaXQiOiJ1ViIsInNhbXBsZXMiOlsxMCw0MCwxMjAsMzAsLTEwXX0="
+* content.attachment.size = 53
+* content.attachment.hash = "oXwMobBXGCGxZ9coBgjYXhY29Dc="
 * content.format = GroveRecordingFormatCS#native-recording "Native Recording"
 * context.related = Reference(GroveSensorECGExample)
 

@@ -1250,6 +1250,7 @@
       "effectivePeriodEnd": "2026-08-20T00:00:00-07:00",
       "healthConnectLastModifiedTime": "2026-08-20T08:00:00Z",
       "nativeRecordPrefix": "record-",
+      "healthKitNativeRecordNamespace": "a185964d-c06e-4e4f-bd8d-a5d0e6fd6e10",
       "repositoryScope": {
         "system": "https://study.example.org/fhir/NamingSystem/source-repository",
         "value": "1f5c58aa-6ec6-4e79-a682-829a9debd3f5"
@@ -1486,9 +1487,9 @@
           "HKQuantityTypeIdentifierInsulinDelivery",
           "https://study.example.org/fhir/NamingSystem/source-repository",
           "1f5c58aa-6ec6-4e79-a682-829a9debd3f5",
-          "record-insulin-delivery"
+          "2151b0ca-54b4-52a0-84f5-3c1c1ee0dfb4"
         ],
-        "value": "v0:test-key:1:cBCVAOwmOndbXKTkEvuABJ3SOihJN-qHzx41r8f-iPA"
+        "value": "v0:test-key:1:7lzhOmmKmafAWGACCH0NQSIFrryjPDGysIFmrg1_s8o"
       },
       {
         "id": "healthkit-insulin-delivery-example-source-output",
@@ -1498,11 +1499,11 @@
           "HKQuantityTypeIdentifierInsulinDelivery",
           "https://study.example.org/fhir/NamingSystem/source-repository",
           "1f5c58aa-6ec6-4e79-a682-829a9debd3f5",
-          "record-insulin-delivery",
+          "2151b0ca-54b4-52a0-84f5-3c1c1ee0dfb4",
           "insulin-delivery",
           "single"
         ],
-        "value": "v0:test-key:1:iXkd4P4yyDhIiPAS-c748bmb3XGtS_ANJCF0CkiPME0"
+        "value": "v0:test-key:1:fHSbttO2vnRwctsGiMr8ecXvWQOj5SdMWrTa--ZPLI4"
       },
       {
         "id": "normative-corpus-retraction-application-snapshot",

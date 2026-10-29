@@ -521,6 +521,9 @@
           "properties": {
             "emit": {
               "type": "boolean"
+            },
+            "exampleSpansValue": {
+              "const": true
             }
           }
         },

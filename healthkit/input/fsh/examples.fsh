@@ -147,7 +147,6 @@ Description: "A passive HealthKit heart-rate sample with the standard clinical p
 * code = $loinc#8867-4 "Heart rate"
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierHeartRate
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00.251-07:00"
 * valueQuantity = 72 '/min' "beats/minute"
 * device = Reference(HealthKitRecordingDeviceExample)
@@ -173,7 +172,6 @@ Description: "A body-weight sample a connected scale re-imported after correctin
 * code = $loinc#29463-7 "Body weight"
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierBodyMass
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T07:12:00.000-07:00"
 * valueQuantity = 68.9 'kg' "kg"
 * extension[researchStudy].valueReference = Reference(HealthKitResearchStudyExample)
@@ -193,7 +191,6 @@ Description: "A HealthKit interval sample preserving the recorded count of 1,042
 * code = $groveMobileMeasurement#step-count-total "Step count total"
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierStepCount
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T09:00:00-07:00"
 * effectivePeriod.end = "2026-08-19T10:00:00-07:00"
 * valueQuantity = 1042 '{steps}' "steps"
@@ -215,7 +212,6 @@ Description: "A heart-rate sample imported directly from a supported Bluetooth L
 * code = $loinc#8867-4 "Heart rate"
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierHeartRate
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T10:45:00.251-07:00"
 * valueQuantity = 78 '/min' "beats/minute"
 * device = Reference(HealthKitBluetoothSourceDeviceExample)
@@ -236,7 +232,6 @@ Description: "A body weight with an explicit HealthKit user-entered indication m
 * code = $loinc#29463-7 "Body weight"
 * extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierBodyMass
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T08:15:00-07:00"
 * valueQuantity = 68.4 'kg' "kg"
 * extension[recordingMethod].valueCoding = GroveRecordingMethodCS#manual-entry "Manual entry"
@@ -257,7 +252,6 @@ Description: "A HealthKit blood-pressure correlation whose result is carried by 
 * code = $loinc#85354-9 "Blood pressure panel with all children optional"
 * extension[healthKitSourceType].valueCode = #HKCorrelationTypeIdentifierBloodPressure
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T08:20:00-07:00"
 * component[+].code = $loinc#8480-6 "Systolic blood pressure"
 * component[=].valueQuantity = 118 'mm[Hg]' "mmHg"
@@ -280,7 +274,6 @@ Description: "A HealthKit asleep-core interval retaining both the shared light-s
 * code = $groveMobileMeasurement#sleep-stage "Sleep stage"
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierSleepAnalysis
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T23:10:00-07:00"
 * effectivePeriod.end = "2026-08-19T23:42:00-07:00"
 * valueCodeableConcept.coding[+] = $groveSleepStage#light "Light sleep"
@@ -302,7 +295,6 @@ Description: "An already-obtained HealthKit ECG with a complete uniformly sample
 * code = $loinc#11524-6 "EKG study"
 * extension[healthKitSourceType].valueCode = #HKDataTypeIdentifierElectrocardiogram
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T10:50:00.002-07:00"
 * effectivePeriod.end = "2026-08-19T10:50:00.008-07:00"
 * interpretation = $healthKitECGClassification#sinusRhythm "Sinus rhythm"
@@ -338,7 +330,6 @@ Description: "The user's average heart rate during the ECG, represented as its o
 * category = $observationCategory#vital-signs "Vital Signs"
 * extension[healthKitSourceType].valueCode = #HKDataTypeIdentifierElectrocardiogram
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T10:50:00.002-07:00"
 * effectivePeriod.end = "2026-08-19T10:50:00.008-07:00"
 * valueQuantity = 72 '/min' "beats/minute"
@@ -358,7 +349,6 @@ Description: "The independently identifiable HealthKit category sample associate
 * code = HealthKitMeasurementCS#symptom-dizziness "Dizziness"
 * extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierDizziness
 * subject = Reference(HealthKitPatientExample)
-* performer = Reference(HealthKitPatientExample)
 * effectivePeriod.start = "2026-08-19T10:49:55-07:00"
 * effectivePeriod.end = "2026-08-19T10:50:05-07:00"
 * valueCodeableConcept = GroveSymptomSeverityCS#mild "Mild"

@@ -205,11 +205,6 @@
         "subject": {
           "reference": "urn:uuid:cd66f121-2723-5e47-b262-c5887dd4037e"
         },
-        "performer": [
-          {
-            "reference": "urn:uuid:cd66f121-2723-5e47-b262-c5887dd4037e"
-          }
-        ],
         "derivedFrom": [
           {
             "reference": "urn:uuid:5e75658c-daf2-5e4c-a732-d2f326a0739a"
@@ -489,11 +484,6 @@
         "subject": {
           "reference": "urn:uuid:cd66f121-2723-5e47-b262-c5887dd4037e"
         },
-        "performer": [
-          {
-            "reference": "urn:uuid:cd66f121-2723-5e47-b262-c5887dd4037e"
-          }
-        ],
         "derivedFrom": [
           {
             "reference": "urn:uuid:5e75658c-daf2-5e4c-a732-d2f326a0739a"

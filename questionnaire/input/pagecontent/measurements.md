@@ -93,6 +93,10 @@ The body-weight item becomes a standalone Observation; systolic and diastolic pr
 Both Observations receive `vital-signs` from the Questionnaire declaration.
 Both receive `effectiveDateTime` and `issued` from the response's exact `authored` value, and copy their `performer` from the response's explicit `author`.
 
+The body-weight Observation shows that copy: its `performer` is the Patient the response names as its `author`, and its `derivedFrom` names the response.
+
+{% json fixtures/extraction/body-weight.json liquid/extracted-observation.liquid %}
+
 A producer that emits these Observations binds the mandatory Mobile semantic-vector layer the same way an adapter does.
 A response-sourced Observation carries no adapter context, so it binds the bare source-neutral clinical projection, whose admitted additions are the `questionnaire.default` source-context rule: the `derivedFrom` reference to the QuestionnaireResponse is required, and performer, issued, the manual-entry recording method, and the gateway device are permitted.
 The measurement catalog records that admission as `questionnaire` coverage.

@@ -289,7 +289,6 @@ Description: "A conformant Body Fat Mass instance."
 * extension[+].url = "https://grovealliance.org/fhir/providers/StructureDefinition/provider-source-type"
 * extension[=].valueCode = #withings/getmeas:8
 * subject = Reference(WithingsPatientExample)
-* performer = Reference(WithingsPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueQuantity = 16.4 'kg'
 
@@ -310,7 +309,6 @@ Description: "A conformant Corrected QT Interval instance."
 * extension[+].url = "https://grovealliance.org/fhir/providers/StructureDefinition/provider-source-type"
 * extension[=].valueCode = #withings/getmeas:138
 * subject = Reference(WithingsPatientExample)
-* performer = Reference(WithingsPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueQuantity = 410 'ms'
 
@@ -331,7 +329,6 @@ Description: "A conformant Extracellular Water Mass instance."
 * extension[+].url = "https://grovealliance.org/fhir/providers/StructureDefinition/provider-source-type"
 * extension[=].valueCode = #withings/getmeas:168
 * subject = Reference(WithingsPatientExample)
-* performer = Reference(WithingsPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueQuantity = 17 'kg'
 
@@ -352,7 +349,6 @@ Description: "A conformant Intracellular Water Mass instance."
 * extension[+].url = "https://grovealliance.org/fhir/providers/StructureDefinition/provider-source-type"
 * extension[=].valueCode = #withings/getmeas:169
 * subject = Reference(WithingsPatientExample)
-* performer = Reference(WithingsPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueQuantity = 25 'kg'
 
@@ -373,7 +369,6 @@ Description: "A conformant Muscle Mass instance."
 * extension[+].url = "https://grovealliance.org/fhir/providers/StructureDefinition/provider-source-type"
 * extension[=].valueCode = #withings/getmeas:76
 * subject = Reference(WithingsPatientExample)
-* performer = Reference(WithingsPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueQuantity = 31.5 'kg'
 
@@ -394,7 +389,6 @@ Description: "A conformant PR Interval instance."
 * extension[+].url = "https://grovealliance.org/fhir/providers/StructureDefinition/provider-source-type"
 * extension[=].valueCode = #withings/getmeas:136
 * subject = Reference(WithingsPatientExample)
-* performer = Reference(WithingsPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueQuantity = 160 'ms'
 
@@ -415,7 +409,6 @@ Description: "A conformant QRS Duration instance."
 * extension[+].url = "https://grovealliance.org/fhir/providers/StructureDefinition/provider-source-type"
 * extension[=].valueCode = #withings/getmeas:135
 * subject = Reference(WithingsPatientExample)
-* performer = Reference(WithingsPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueQuantity = 92 'ms'
 
@@ -436,7 +429,6 @@ Description: "A conformant QT Interval instance."
 * extension[+].url = "https://grovealliance.org/fhir/providers/StructureDefinition/provider-source-type"
 * extension[=].valueCode = #withings/getmeas:137
 * subject = Reference(WithingsPatientExample)
-* performer = Reference(WithingsPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueQuantity = 390 'ms'
 
@@ -457,7 +449,6 @@ Description: "A conformant Withings Atrial Fibrillation Notification (ECG) insta
 * extension[+].url = "https://grovealliance.org/fhir/providers/StructureDefinition/provider-source-type"
 * extension[=].valueCode = #withings/getmeas:130
 * subject = Reference(WithingsPatientExample)
-* performer = Reference(WithingsPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueCodeableConcept = WithingsAtrialFibrillationNotificationEcgCS#signs-detected "Signs Detected"
 
@@ -478,7 +469,6 @@ Description: "A conformant Withings Atrial Fibrillation Notification (PPG) insta
 * extension[+].url = "https://grovealliance.org/fhir/providers/StructureDefinition/provider-source-type"
 * extension[=].valueCode = #withings/getmeas:139
 * subject = Reference(WithingsPatientExample)
-* performer = Reference(WithingsPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueCodeableConcept = WithingsAtrialFibrillationNotificationPpgCS#signs-detected "Signs Detected"
 
@@ -499,7 +489,6 @@ Description: "A conformant Withings Nerve Health Score instance."
 * extension[+].url = "https://grovealliance.org/fhir/providers/StructureDefinition/provider-source-type"
 * extension[=].valueCode = #withings/getmeas:167
 * subject = Reference(WithingsPatientExample)
-* performer = Reference(WithingsPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueQuantity = 80 '{score}' "score"
 
@@ -520,7 +509,6 @@ Description: "A conformant Withings Pulse Wave Velocity instance."
 * extension[+].url = "https://grovealliance.org/fhir/providers/StructureDefinition/provider-source-type"
 * extension[=].valueCode = #withings/getmeas:91
 * subject = Reference(WithingsPatientExample)
-* performer = Reference(WithingsPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueQuantity = 7.5 'm/s'
 
@@ -541,7 +529,6 @@ Description: "A conformant Withings Vascular Age instance."
 * extension[+].url = "https://grovealliance.org/fhir/providers/StructureDefinition/provider-source-type"
 * extension[=].valueCode = #withings/getmeas:155
 * subject = Reference(WithingsPatientExample)
-* performer = Reference(WithingsPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueQuantity = 45 'a' "years"
 
@@ -562,6 +549,5 @@ Description: "A conformant Withings Visceral Fat Index instance."
 * extension[+].url = "https://grovealliance.org/fhir/providers/StructureDefinition/provider-source-type"
 * extension[=].valueCode = #withings/getmeas:170
 * subject = Reference(WithingsPatientExample)
-* performer = Reference(WithingsPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueQuantity = 8 '{score}' "score"

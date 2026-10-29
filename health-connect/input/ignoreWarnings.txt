@@ -47,3 +47,23 @@ WARNING: Resource: The resource ValueSet/health-connect-vo2-max-measurement-meth
 
 # each profile fixes, and nothing here compares quantities across annotated units.
 WARNING: Observation/HealthConnectStepCadenceExample: Observation.value.ofType(Quantity): UCUM Codes that contain human readable annotations like {steps} can be misleading (e.g. they are ignored when comparing units). Best Practice is not to depend on annotations in the UCUM code, so this usage should be checked
+
+# Health Connect does not identify a responsible performer for these records. Capture mode and DataOrigin identify neither a person nor a clinical performer, so no example names the Patient as performer.
+WARNING: Observation/HealthConnectBasalMetabolicRateExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Observation/HealthConnectCapillaryGlucoseExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Observation/HealthConnectDietaryEnergyFromFatExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Observation/HealthConnectDietaryFatTransExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Observation/HealthConnectDietaryFatUnsaturatedExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Observation/HealthConnectDietaryFolicAcidExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Observation/HealthConnectElevationGainedExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Observation/HealthConnectExerciseSessionExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Observation/HealthConnectInterstitialGlucoseExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Observation/HealthConnectMenstruationPeriodExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Observation/HealthConnectMindfulnessExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Observation/HealthConnectPlasmaGlucoseExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Observation/HealthConnectRestingHeartRateExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Observation/HealthConnectSleepDurationExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Observation/HealthConnectStepCadenceExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Observation/HealthConnectTotalEnergyExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Observation/HealthConnectVo2MaxExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Observation/HealthConnectWholeBloodGlucoseExample: Observation: Best Practice Recommendation: In general, all observations should have a performer

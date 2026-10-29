@@ -207,7 +207,6 @@ Description: "A conformant Basal Metabolic Rate instance."
 * code = HealthConnectMeasurementCS#basal-metabolic-rate
 * extension[healthConnectRecordType].valueCode = #BasalMetabolicRateRecord
 * subject = Reference(HealthConnectPatientExample)
-* performer = Reference(HealthConnectPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * issued = "2026-08-20T08:00:00Z"
 * valueQuantity = 1580 'kcal/d' "kcal/day"
@@ -225,7 +224,6 @@ Description: "A conformant Health Connect Dietary Energy from Fat instance."
 * code = HealthConnectMeasurementCS#dietary-energy-from-fat
 * extension[healthConnectRecordType].valueCode = #NutritionRecord
 * subject = Reference(HealthConnectPatientExample)
-* performer = Reference(HealthConnectPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * issued = "2026-08-20T08:00:00Z"
@@ -244,7 +242,6 @@ Description: "A conformant Health Connect Dietary Trans Fat instance."
 * code = HealthConnectMeasurementCS#dietary-fat-trans
 * extension[healthConnectRecordType].valueCode = #NutritionRecord
 * subject = Reference(HealthConnectPatientExample)
-* performer = Reference(HealthConnectPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * issued = "2026-08-20T08:00:00Z"
@@ -263,7 +260,6 @@ Description: "A conformant Health Connect Dietary Unsaturated Fat instance."
 * code = HealthConnectMeasurementCS#dietary-fat-unsaturated
 * extension[healthConnectRecordType].valueCode = #NutritionRecord
 * subject = Reference(HealthConnectPatientExample)
-* performer = Reference(HealthConnectPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * issued = "2026-08-20T08:00:00Z"
@@ -282,7 +278,6 @@ Description: "A conformant Health Connect Dietary Folic Acid instance."
 * code = HealthConnectMeasurementCS#dietary-folic-acid
 * extension[healthConnectRecordType].valueCode = #NutritionRecord
 * subject = Reference(HealthConnectPatientExample)
-* performer = Reference(HealthConnectPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * issued = "2026-08-20T08:00:00Z"
@@ -301,7 +296,6 @@ Description: "A conformant Elevation Gained instance."
 * code = HealthConnectMeasurementCS#elevation-gained
 * extension[healthConnectRecordType].valueCode = #ElevationGainedRecord
 * subject = Reference(HealthConnectPatientExample)
-* performer = Reference(HealthConnectPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * issued = "2026-08-20T08:00:00Z"
@@ -320,7 +314,6 @@ Description: "A conformant Menstruation Period instance."
 * code = HealthConnectMeasurementCS#menstruation-period
 * extension[healthConnectRecordType].valueCode = #MenstruationPeriodRecord
 * subject = Reference(HealthConnectPatientExample)
-* performer = Reference(HealthConnectPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * issued = "2026-08-20T08:00:00Z"
@@ -339,7 +332,6 @@ Description: "A conformant Step Cadence instance."
 * code = HealthConnectMeasurementCS#step-cadence
 * extension[healthConnectRecordType].valueCode = #StepsCadenceRecord
 * subject = Reference(HealthConnectPatientExample)
-* performer = Reference(HealthConnectPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * issued = "2026-08-20T08:00:00Z"
 * valueQuantity = 112 '{steps}/min' "steps/minute"
@@ -357,7 +349,6 @@ Description: "A conformant Total Energy Burned instance."
 * code = HealthConnectMeasurementCS#total-energy-burned
 * extension[healthConnectRecordType].valueCode = #TotalCaloriesBurnedRecord
 * subject = Reference(HealthConnectPatientExample)
-* performer = Reference(HealthConnectPatientExample)
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * issued = "2026-08-20T08:00:00Z"
