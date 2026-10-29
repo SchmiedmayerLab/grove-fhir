@@ -293,6 +293,26 @@ class ReleaseWorkflowTests(unittest.TestCase):
             encoding="utf-8"
         )
 
+    def test_extension_alias_versions_match_their_dependency(self) -> None:
+        manifest = json.loads((ROOT / "catalog/release-manifest.json").read_text())
+        aliases_checked = 0
+        for guide in manifest["guides"]:
+            version = next(
+                dependency.split("#", 1)[1]
+                for dependency in guide["directDependencies"]
+                if dependency.startswith("hl7.fhir.uv.extensions.r4#")
+            )
+            for source in (ROOT / guide["source"] / "input/fsh").glob("*.fsh"):
+                aliases = re.findall(
+                    r"^Alias: (\S+) = http://hl7\.org/fhir/StructureDefinition/[^|\s]+\|(\S+)$",
+                    source.read_text(), re.MULTILINE,
+                )
+                for alias, pinned in aliases:
+                    with self.subTest(source=str(source.relative_to(ROOT)), alias=alias):
+                        self.assertEqual(pinned, version)
+                    aliases_checked += 1
+        self.assertGreater(aliases_checked, 0)
+
     def test_release_is_created_only_after_verification(self) -> None:
         self.assertNotIn("types: [published]", self.workflow)
         self.assertNotIn("gh release upload", self.workflow)
