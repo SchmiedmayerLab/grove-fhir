@@ -36,8 +36,8 @@ copyright: >-
   HealthKit and SensorKit API identifiers and type names originate from Apple Inc. and are used here only to identify source API concepts for interoperability. The MIT license applies to Grove-authored definitions; it does not grant rights in Apple material.
 
 dependencies:
-  hl7.terminology.r4: 7.4.0
-  hl7.fhir.uv.extensions.r4: 5.3.0
+  hl7.terminology.r4: 7.5.0
+  hl7.fhir.uv.extensions.r4: 5.4.0
   org.grovealliance.fhir.mobile:
     version: 0.7.0
     uri: https://grovealliance.org/fhir/mobile/ImplementationGuide/org.grovealliance.fhir.mobile
