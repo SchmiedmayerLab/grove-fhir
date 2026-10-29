@@ -48,11 +48,11 @@ readonly FHIR_PACKAGE_ARCHIVES=(
   "hl7.fhir.uv.extensions.r5|5.2.0|e02fc6eff0f37c1611a35aa93ef9aaa3b55ab7371a5c96f4d2a5834106a13170"
   "hl7.terminology.r5|7.1.0|473303108b5607aad7b910581739e8bbf3e61a625ed9e739c66e0ca597d4aefe"
   "hl7.fhir.uv.extensions.r5|5.3.0|f1039cac888d79ebd29878d7debe5e647ffe7ed962a9033da095258a03a06105"
-  "hl7.terminology|7.3.0|8318f87cdcb44a6dfc5c197ca569c9b0499b06f45522324bfc4b4b810d51d4b9"
+  "hl7.terminology|7.4.0|b321ad4ee1c18798abd8692f45bc86550cffac72ae97413125cfb82f0112c72d"
   "hl7.fhir.uv.extensions|5.3.0|6e3a3f9929e05d2b813a3f98fa1ad2f5122fb6b2819fa73e6c5520002fb2c5b0"
   "hl7.terminology.r4|7.1.0|1cb0cd5601972925fcd04f2c175d9cc63a9ecd9346a91a6e735f1a865dc5fba1"
   "hl7.fhir.uv.extensions.r4|5.3.0|dfbc3ac95df91ed845cc6b60920d2875f679361fa0e16f227cee93c4a9ab2104"
-  "hl7.terminology.r4|7.3.0|1a1ef2aa22ecc820341267f2bdba3b2d1f4adafb9bdddfc9e51c611cd64f3b54"
+  "hl7.terminology.r4|7.4.0|1dc558c204f5ee1f2b96ab9a8cd83d0811475b08a4e06a7c2bcea55d1ab116ed"
   "hl7.fhir.uv.sdc|4.0.0|d785be8474c7ec7988e32e326430d9ca4aeb2cac4a1f195022e4d6f7dc5c5291"
   # SDC 4.0.0 declares this exact ballot build as its dependency; the guides themselves pin 5.3.0.
   "hl7.fhir.uv.extensions.r4|5.3.0-ballot-tc1|5f5d1e88052d615453e6b7a1eb4f885df36590f14b52974e5860485d16819bd9"

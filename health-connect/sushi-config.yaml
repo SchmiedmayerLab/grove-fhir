@@ -38,7 +38,7 @@ copyright: >-
   AndroidX Health Connect API identifiers and type names originate from Google LLC and are used here only to identify source API concepts for interoperability. The MIT license applies to Grove-authored definitions; it does not grant rights in Google material.
 
 dependencies:
-  hl7.terminology.r4: 7.3.0
+  hl7.terminology.r4: 7.4.0
   # Used directly by the version-pinned standard body-position extension slice.
   hl7.fhir.uv.extensions.r4: 5.3.0
   org.grovealliance.fhir.mobile:

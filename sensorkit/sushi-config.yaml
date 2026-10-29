@@ -35,7 +35,7 @@ publisher:
   name: Schmiedmayer Lab
   url: https://github.com/SchmiedmayerLab
 dependencies:
-  hl7.terminology.r4: 7.3.0
+  hl7.terminology.r4: 7.4.0
   hl7.fhir.uv.extensions.r4: 5.3.0
   org.grovealliance.fhir.mobile:
     version: 0.7.0
