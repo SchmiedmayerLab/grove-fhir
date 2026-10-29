@@ -345,6 +345,29 @@ class ReleaseWorkflowTests(unittest.TestCase):
                     script,
                 )
 
+    def test_fixture_validation_supplies_the_manifest_package_closure(self) -> None:
+        manifest = json.loads(
+            (ROOT / "Conformance/fixture-validator-manifest.json").read_text(encoding="utf-8")
+        )
+        expected = {
+            package["alias"]: f"{package['alias']}/output/package.tgz"
+            for package in manifest["packages"]
+        }
+        for label, script in (
+            ("build workflow", self.build_workflow),
+            ("deployment workflow", self.workflow),
+            ("local release script", self.build_release),
+        ):
+            with self.subTest(label=label):
+                command = re.search(
+                    r"python3 Scripts/validate-fixtures\.py(?:[ \t]*\\?\n[ \t]+--[^\n]*)+",
+                    script,
+                )
+                self.assertIsNotNone(command)
+                assert command is not None
+                supplied = dict(re.findall(r"--package ([a-z-]+)=([^\s\\]+)", command.group()))
+                self.assertEqual(supplied, expected)
+
     def test_write_token_is_isolated_from_repository_code(self) -> None:
         verify, publish = self.workflow.split("\n  publish:\n", maxsplit=1)
         self.assertNotIn("contents: write", verify)

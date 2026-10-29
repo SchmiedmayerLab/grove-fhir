@@ -71,7 +71,9 @@ python3 Scripts/validate-producer.py \
 python3 Scripts/validate-fixtures.py \
   --validator .build/fhir-tools/validator_cli.jar \
   --package mobile=mobile/output/package.tgz \
-  --package questionnaire=questionnaire/output/package.tgz
+  --package questionnaire=questionnaire/output/package.tgz \
+  --package sensor=sensor/output/package.tgz \
+  --package healthkit=healthkit/output/package.tgz
 python3 Scripts/check-publication.py \
   --site .build/pages \
   --repository-root . \
