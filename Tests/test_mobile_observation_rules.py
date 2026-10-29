@@ -117,6 +117,28 @@ class MobileObservationRulesTests(unittest.TestCase):
         with self.assertRaisesRegex(SystemExit, "heart-rate: unsupported code system"):
             RENDERER.render_mobile_code_allowlist([foreign])
 
+    def test_shared_measurement_table_states_each_catalog_effective(self) -> None:
+        page = (ROOT / "mobile/input/pagecontent/observations.md").read_text(encoding="utf-8")
+        table = page.split("\n### Shared measurement contract\n", 1)[1].split("\n### ", 1)[0]
+        rows = [
+            [cell.strip() for cell in line.strip("|").split("|")]
+            for line in table.splitlines()
+            if line.startswith("| ") and not line.startswith("| Measurement |")
+        ]
+        effective = {
+            measurement["profile"]: measurement["effective"] for measurement in self.measurements
+        }
+        cells = {
+            "dateTime": "`dateTime`",
+            "Period": "`Period`",
+            "dateTime-or-Period": "`dateTime` or `Period`",
+        }
+        self.assertTrue(rows)
+        for row in rows:
+            profile = row[1].strip("`")
+            with self.subTest(profile=profile):
+                self.assertEqual(row[4], cells[effective[profile]])
+
 
 class MobileProfileInvariantCorpusTests(unittest.TestCase):
     @classmethod
