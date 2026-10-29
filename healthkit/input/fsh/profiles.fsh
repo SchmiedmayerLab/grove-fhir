@@ -16,6 +16,11 @@ Description: "A HealthKit source, output, or writer identifier is a canonical de
 Expression: "$this.matches('^v0:[A-Za-z0-9._-]+:[1-9][0-9]*:[A-Za-z0-9_-]{43}$')"
 Severity: #error
 
+Invariant: healthkit-unmapped-source-value-1
+Description: "An unmapped source value is the raw SDK integer as canonical decimal text, written without a plus sign, leading zeros, or separators, and with a minus sign only before a negative value."
+Expression: "$this.matches('^(0|-?[1-9][0-9]*)$')"
+Severity: #error
+
 Invariant: healthkit-writer-record-1
 Description: "HealthKit requires a sync version exactly when a sync identifier is present, so the two appear together or not at all. A sync version orders revisions of one logical sample, so it appears only with the sync identifier it versions."
 Expression: "extension('https://grovealliance.org/fhir/mobile/StructureDefinition/grove-writer-record-version').exists() = identifier.where(type.coding.where(system = 'https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role' and code = 'writer-record').exists()).exists()"

@@ -74,6 +74,96 @@ Because one Mobile Exchange Bundle represents one source-record revision, each s
 The ECG groups the separately available observations with identifier-only `hasMember` references carrying the symptoms' opaque `source-output` Identifiers.
 Distinct equal-type samples remain distinct; `present` requires at least one distinct member, while `none` and `notSet` require none.
 
+### Workouts
+
+An `HKWorkout` converts to exactly one session Observation and one segment Observation for every workout event and every workout activity.
+The session directly claims [Workout](https://grovealliance.org/fhir/mobile/StructureDefinition-grove-mobile-workout.html) and HealthKit Observation; its output role is `workout` and its discriminator is `single`, whether or not it has segments.
+Each segment directly claims [Workout Segment](https://grovealliance.org/fhir/mobile/StructureDefinition-grove-mobile-workout-segment.html) and HealthKit Observation; its output role is `workout-segment`.
+The workout row's `outputs` in [`catalog/healthkit-adapter.json`](https://grovealliance.org/fhir/catalog/healthkit-adapter.json) state both output contracts.
+The segments are part of the conversion: a producer that does not emit every segment this section defines does not convert the workout and refuses it with `mobile-input.not-yet-convertible`.
+
+Emit one segment for every `HKWorkoutEvent` in `HKWorkout.workoutEvents`, in array order, then one for every `HKWorkoutActivity` in `HKWorkout.workoutActivities`, in array order, and no other workout child.
+A workout with a single activity still emits that activity's segment.
+`HKWorkoutActivity.workoutEvents` lists a subset of the workout's events, so it emits nothing of its own.
+The session lists every segment under `hasMember`, each once and in that emission order, through a resolving literal Reference.
+
+An event segment's value carries the shared Grove workout-segment-type coding first and the exact [HealthKit Workout Event Type](CodeSystem-healthkit-workout-event-type.html) coding second:
+
+| `HKWorkoutEventType` raw value | HealthKit code | Grove workout-segment-type code |
+|---:|---|---|
+| `1` | `pause` | `pause` |
+| `2` | `resume` | `resume` |
+| `3` | `lap` | `lap` |
+| `4` | `marker` | `marker` |
+| `5` | `motionPaused` | `motion-paused` |
+| `6` | `motionResumed` | `motion-resumed` |
+| `7` | `segment` | `segment-generic` |
+| `8` | `pauseOrResumeRequest` | `pause-or-resume-request` |
+
+The session's value classifies `HKWorkout.workoutActivityType`, and an activity segment's value classifies `HKWorkoutActivity.workoutConfiguration.activityType` the same way; each carries the shared Grove workout-activity coding first and the exact [HealthKit Workout Activity](CodeSystem-healthkit-workout-activity.html) coding second.
+The shared code is the one this table gives the exact code, as the workout output's `activityMapping` in [`catalog/healthkit-adapter.json`](https://grovealliance.org/fhir/catalog/healthkit-adapter.json) states for every code: a code the shared vocabulary names maps to it, a code each of whose activities is a kind of one shared activity maps to that activity, and every other code maps to `other`.
+A related activity that is not such a kind maps to `other` rather than to its nearest shared activity: water fitness is not swimming, and a wheelchair pace is neither running nor walking.
+
+| Grove workout-activity code | HealthKit Workout Activity codes |
+|---|---|
+| `running` | `running` |
+| `walking` | `walking` |
+| `cycling` | `cycling`, `handCycling` |
+| `hiking` | `hiking` |
+| `swimming` | `swimming` |
+| `strength-training` | `coreTraining`, `functionalStrengthTraining`, `traditionalStrengthTraining` |
+| `high-intensity-interval-training` | `highIntensityIntervalTraining` |
+| `yoga` | `yoga` |
+| `pilates` | `pilates` |
+| `rowing` | `rowing` |
+| `elliptical` | `elliptical` |
+| `stair-climbing` | `stairClimbing`, `stairs` |
+| `dancing` | `cardioDance`, `dance`, `socialDance` |
+| `tennis` | `tennis` |
+| `table-tennis` | `tableTennis` |
+| `badminton` | `badminton` |
+| `squash` | `squash` |
+| `basketball` | `basketball` |
+| `soccer` | `soccer` |
+| `american-football` | `americanFootball` |
+| `baseball` | `baseball` |
+| `volleyball` | `volleyball` |
+| `golf` | `golf` |
+| `boxing` | `boxing` |
+| `martial-arts` | `kickboxing`, `martialArts`, `taiChi`, `wrestling` |
+| `skiing` | `crossCountrySkiing`, `downhillSkiing` |
+| `snowboarding` | `snowboarding` |
+| `other` | every other code, `other` included |
+
+The Workout Segment value set admits the shared activity codes, although the Mobile measurement catalog's `workout-segment` `allowedValues` list only the structural codes.
+
+A raw value that this guide does not list does not refuse the workout and is not lost.
+An `HKWorkoutEventType` raw value that the event-type table above does not list gives its segment the Grove workout-segment-type code `unknown`, and an `HKWorkoutActivityType` that HealthKit Workout Activity does not list gives the session or the activity segment the Grove workout-activity code `other`.
+Such a value carries no HealthKit coding, because both HealthKit CodeSystems are complete, and carries its raw SDK integer in one [HealthKit Unmapped Source Value](StructureDefinition-healthkit-unmapped-source-value.html) extension, in canonical decimal text exactly as the discriminator's `raw value` below writes it, so every raw value the SDK can hold is kept.
+
+A workout is refused when one of its outputs cannot be stated:
+
+- with `mobile-input.required-metadata-missing` when an activity has no `endDate`;
+- with `mobile-input.effective-period-invalid` when an event or activity lies outside the workout's own interval.
+
+A segment's `effectivePeriod` runs from the start to the end of the event's `dateInterval`, or from the activity's `startDate` to its `endDate`; an instantaneous event has equal endpoints.
+It uses the session's time zone, never one from the event's or activity's own metadata.
+Every segment states the same subject, recording Device, gateway Device, study associations, and `grove-recording-method` as its session, and carries no governed source identifier.
+The session and every segment carry the same writer-record Identifier and Grove Writer Record Version, or none of them carries either; the [revision rules](#logical-identity-and-revisions) decide whether the session carries them.
+Metadata that an `HKWorkoutEvent` or `HKWorkoutActivity` carries is represented or withheld as the [withheld-metadata rules](#withheld-metadata) define.
+
+A segment's discriminator is `<start>|<end>|<kind>|<raw value>|<occurrence>`:
+
+- `start` and `end` are the interval endpoints: the exact binary64 `timeIntervalSinceReferenceDate` of each `NSDate` plus 978307200 seconds, added exactly and never as a binary64 sum such as `Date.timeIntervalSince1970`, then rounded half-even to a whole nanosecond and rendered in UTC as `YYYY-MM-DDThh:mm:ss.fffffffffZ` with exactly nine fractional digits;
+- `kind` is `event` or `activity`;
+- `raw value` is the `HKWorkoutEventType` or `HKWorkoutActivityType` raw SDK integer in decimal, without leading zeros and with `-` only before a negative value, whether or not this guide lists it, so a segment keeps its identity when a later version names that value;
+- `occurrence` is the count, in decimal without leading zeros, of earlier segments in emission order with the identical start, end, kind, and raw value.
+
+The segment output's `instantVectors` fix the endpoint rendering, and the `healthkit-workout-*` identity vectors in [`catalog/exchange-protocol.json`](https://grovealliance.org/fhir/catalog/exchange-protocol.json) fix one session, one event segment, and one activity segment.
+
+The exact targets of a workout retraction name the session as `primary-output` and every segment its conversion emitted as `child-output`.
+An `HKDeletedObject` carries none of the deleted workout's events or activities, so a producer that did not retain the segment identities it emitted uses the source-record target.
+
 ### Clinical FHIR records
 
 HealthKit can expose both DSTU2 and R4 `HKFHIRResource` payloads.
