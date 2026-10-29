@@ -135,7 +135,7 @@ A related activity that is not such a kind maps to `other` rather than to its ne
 | `snowboarding` | `snowboarding` |
 | `other` | every other code, `other` included |
 
-The Workout Segment value set admits the shared activity codes, although the Mobile measurement catalog's `workout-segment` `allowedValues` list only the structural codes.
+The Workout Segment value set and Mobile measurement catalog admit both classifications: `resultCodeSystem` and `allowedValues` state the structural codes, and `additionalResultBindings` states the shared activity codes under their own system.
 
 A raw value that this guide does not list does not refuse the workout and is not lost.
 An `HKWorkoutEventType` raw value that the event-type table above does not list gives its segment the Grove workout-segment-type code `unknown`, and an `HKWorkoutActivityType` that HealthKit Workout Activity does not list gives the session or the activity segment the Grove workout-activity code `other`.

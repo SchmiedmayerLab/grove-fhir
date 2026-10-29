@@ -210,7 +210,7 @@ A receiving system resolves it through the source entity of every conversion Pro
 
 A target may additionally carry one [Grove Retraction Native Record Identifier](StructureDefinition-grove-retraction-target-native-identifier.html), the platform-native record identifier of the record being retracted, so a consumer can delete the exact native records rather than only the projections.
 `Identifier.system` is the adapter's own absolute native key space, scoped to the governed repository, account, or store exactly as it is for the optional governed source identifier on the addition path, and the same explicit deployment disclosure policy governs both; omitting it remains conformant.
-It never addresses the target: the minted `source-output` or `device-snapshot` identity remains the retraction address, and the native Identifier carries no Grove identifier role.
+It never addresses the target: the minted `source-record`, `source-output`, or `device-snapshot` identity remains the retraction address, and the native Identifier carries no Grove identifier role.
 Both active and retraction Provenance carry exactly one logical `source-record` Identifier entity with role `source`; literal source references and additional source entities are rejected.
 
 This guide sets no limits on Bundle size, resource count, paging, retry behavior, or storage.

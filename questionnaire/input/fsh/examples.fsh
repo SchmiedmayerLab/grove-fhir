@@ -24,7 +24,7 @@ Description: "A versioned instrument with a conditional follow-up question, writ
 // The Publisher stamps the guide version onto every canonical resource it builds, so an
 // example instrument cannot carry a version of its own; a response joining any other value
 // would name an instrument nobody can resolve.
-* version = "0.6.0"
+* version = "0.7.0"
 * language = #en-US
 * name = "GroveWeeklySymptomCheckIn"
 * title = "Weekly Symptom Check-In"
@@ -80,7 +80,7 @@ Usage: #example
 Title: "Weekly Symptom Check-In Response"
 Description: "A completed response whose follow-up answer is nested beneath the answer that enabled it."
 * language = #en-US
-* questionnaire = "https://grovealliance.org/fhir/questionnaire/Questionnaire/GroveWeeklySymptomCheckInExample|0.6.0"
+* questionnaire = "https://grovealliance.org/fhir/questionnaire/Questionnaire/GroveWeeklySymptomCheckInExample|0.7.0"
 * identifier.system = "https://example.org/research/questionnaire-response-id"
 * identifier.value = "weekly-check-in-0001"
 * status = #completed
@@ -115,7 +115,7 @@ Description: "A response captured while the participant read the Spanish transla
 // The answer carries no display, so a generated narrative would need a terminology server offline.
 * text.status = #additional
 * text.div = "<div xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"es\" xml:lang=\"es\"><p><b>Síntomas</b></p><p>P1. ¿Ha tenido dolor durante la última semana? Sí</p><p>P1a. ¿Qué tan intenso fue el dolor? Leve</p><p>P2. ¿Hay algo más que quiera contarnos? El dolor empezó después de correr.</p></div>"
-* questionnaire = "https://grovealliance.org/fhir/questionnaire/Questionnaire/GroveWeeklySymptomCheckInExample|0.6.0"
+* questionnaire = "https://grovealliance.org/fhir/questionnaire/Questionnaire/GroveWeeklySymptomCheckInExample|0.7.0"
 * identifier.system = "https://example.org/research/questionnaire-response-id"
 * identifier.value = "weekly-check-in-0002"
 * status = #completed
@@ -144,7 +144,7 @@ Title: "Home Vitals"
 Description: "An instrument whose answers extract into body-weight and blood-pressure Observations."
 * extension[versionAlgorithm].valueCoding = $versionAlgorithm#semver
 * url = "https://grovealliance.org/fhir/questionnaire/Questionnaire/GroveHomeVitalsExample"
-* version = "0.6.0"
+* version = "0.7.0"
 * language = #en-US
 * name = "GroveHomeVitals"
 * title = "Home Vitals"
@@ -192,7 +192,7 @@ Description: "A conformant response to the Home Vitals instrument, carrying the 
 * identifier.system = "https://study.example.org/fhir/NamingSystem/questionnaire-response"
 * identifier.value = "home-vitals-2026-08-28"
 * language = #en-US
-* questionnaire = "https://grovealliance.org/fhir/questionnaire/Questionnaire/GroveHomeVitalsExample|0.6.0"
+* questionnaire = "https://grovealliance.org/fhir/questionnaire/Questionnaire/GroveHomeVitalsExample|0.7.0"
 * status = #completed
 * subject = Reference(GroveQuestionnairePatientExample)
 * author = Reference(GroveQuestionnairePatientExample)

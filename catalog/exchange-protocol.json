@@ -1,9 +1,9 @@
 {
   "$schema": "https://grovealliance.org/fhir/catalog/schemas/exchange-protocol.schema.json",
   "schemaVersion": 0,
-  "version": "0.6.0",
+  "version": "0.7.0",
   "protocolVersion": 0,
-  "releaseVersion": "0.6.0",
+  "releaseVersion": "0.7.0",
   "fhirVersion": "4.0.1",
   "profiles": {
     "activeBundle": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle",
@@ -950,7 +950,7 @@
         "system": "The adapter-owned absolute URI naming the exact native key space, scoped to the governed repository, account, or store exactly as a governed source identifier is on the addition path. An underspecified vendor-wide system is nonconformant.",
         "value": "The exact platform-native record identifier of the retracted source record in the adapter's own canonical form, so a consumer can delete the exact native records.",
         "disclosurePolicy": "governedSourceIdentifier",
-        "prohibitions": "It never addresses the target: the Grove source-output or device-snapshot identity remains the retraction address. It carries no Grove identifier-role coding, and omitting it remains conformant."
+        "prohibitions": "It never addresses the target: the Grove source-record, source-output, or device-snapshot identity remains the retraction address. It carries no Grove identifier-role coding, and omitting it remains conformant."
       },
       "targetRoles": {
         "primary-output": {

@@ -474,7 +474,7 @@ def generated_files():
         "contractLock": {
             "baseSourceRevision": "928db16ef8bfd86d2a171727d2d1cb9f8979a442",
             "baseExchangeProtocolSHA256": "bbc9e980c2c674d5ef6f9900958d29c5602031ead8a3b6325cff508799106bb5",
-            "releaseVersion": "0.6.0", "fhirVersion": "4.0.1",
+            "releaseVersion": "0.7.0", "fhirVersion": "4.0.1",
             "exchangeProtocolSHA256": hashlib.sha256((ROOT / "catalog/exchange-protocol.json").read_bytes()).hexdigest(),
         },
         "events": {

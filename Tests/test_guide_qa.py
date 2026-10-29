@@ -518,72 +518,110 @@ class GuideQATests(unittest.TestCase):
                 "not exercised exactly", CHECK.validate_suppressions(guide)[0]
             )
 
-    def test_exact_package_age_suppression_may_be_absent_online(self) -> None:
-        message = (
-            "WARNING: ImplementationGuide/org.example.fhir.guide: "
-            "ImplementationGuide.dependsOn[2]: The ImplementationGuide uses package "
-            "hl7.fhir.uv.extensions.r4#5.3.0 released on 2026-05-16, but the "
-            "most recent appropriate version is 5.3.0-ballot-tc1. This reference "
-            "is getting old and the more recent version should be considered"
-        )
+    def test_compatibility_package_age_advisories_are_exact_and_optional(self) -> None:
+        def message(package: str, version: str, date: str, latest: str, index: int) -> str:
+            return (
+                "WARNING: ImplementationGuide/org.example.fhir.guide: "
+                f"ImplementationGuide.dependsOn[{index}]: The ImplementationGuide "
+                f"uses package {package}#{version} released on {date}, but the "
+                f"most recent appropriate version is {latest}. This reference "
+                "is getting old and the more recent version should be considered"
+            )
+
+        advisories = [
+            message("hl7.fhir.uv.extensions.r4", "5.3.0", "2026-05-16", latest, 2)
+            for latest in ("5.3.0-ballot-tc1", "5.4.0")
+        ] + [
+            message("hl7.terminology.r4", "7.3.0", "2026-07-27", latest, 0)
+            for latest in ("7.4.0", "7.5.0")
+        ]
         with tempfile.TemporaryDirectory() as directory:
             guide = Path(directory).resolve()
             (guide / "input").mkdir()
             (guide / "output").mkdir()
-            (guide / "output/ImplementationGuide-org.example.fhir.guide.json").write_text(
-                json.dumps(
-                    {
-                        "resourceType": "ImplementationGuide",
-                        "id": "org.example.fhir.guide",
-                        "dependsOn": [
-                            {
-                                "packageId": "hl7.terminology.r4",
-                                "version": "7.3.0",
-                            },
-                            {"packageId": "hl7.fhir.uv.sdc", "version": "4.0.0"},
-                            {
-                                "packageId": "hl7.fhir.uv.extensions.r4",
-                                "version": "5.3.0",
-                            },
-                        ],
-                    }
-                ),
-                encoding="utf-8",
-            )
-            (guide / "input/ignoreWarnings.txt").write_text(
-                f"== Suppressed Messages ==\n{message}\n", encoding="utf-8"
-            )
-            (guide / "output/qa.html").write_text(
-                '<p>IG Publisher Version: v2.3.3</p>'
-                '<a name="suppressed"> </a><ul><li>'
-                f'{message} <span style="color: navy">(0 uses)</span></li></ul>'
-                '<a name="sorted"> </a>',
-                encoding="utf-8",
-            )
-            self.assertEqual(CHECK.validate_suppressions(guide), [])
-            self.assertIn(
-                "not exercised exactly",
-                CHECK.validate_suppressions(
-                    guide, offline_terminology=True
-                )[0],
-            )
+            ig_path = guide / "output/ImplementationGuide-org.example.fhir.guide.json"
+            ig = {
+                "resourceType": "ImplementationGuide",
+                "id": "org.example.fhir.guide",
+                "dependsOn": [
+                    {"packageId": "hl7.terminology.r4", "version": "7.3.0"},
+                    {"packageId": "hl7.fhir.uv.sdc", "version": "4.0.0"},
+                    {"packageId": "hl7.fhir.uv.extensions.r4", "version": "5.3.0"},
+                ],
+            }
+            ig_path.write_text(json.dumps(ig), encoding="utf-8")
+            configured = guide / "input/ignoreWarnings.txt"
+            qa = guide / "output/qa.html"
 
+            def write_qa(advisory: str, uses: int, publisher: str = "2.3.3") -> None:
+                qa.write_text(
+                    f"<p>IG Publisher Version: v{publisher}</p>"
+                    '<a name="suppressed"> </a><ul><li>'
+                    f'{advisory} <span style="color: navy">({uses} uses)</span></li></ul>'
+                    '<a name="sorted"> </a>',
+                    encoding="utf-8",
+                )
+
+            for advisory in advisories:
+                configured.write_text(
+                    f"== Suppressed Messages ==\n{advisory}\n", encoding="utf-8"
+                )
+                for offline in (False, True):
+                    for uses in (0, 1, 2):
+                        with self.subTest(advisory=advisory, offline=offline, uses=uses):
+                            write_qa(advisory, uses)
+                            problems = CHECK.validate_suppressions(
+                                guide, offline_terminology=offline
+                            )
+                            self.assertEqual(problems == [], uses < 2)
+                for publisher in (
+                    "2.3.3. The latest official release version is unknown",
+                    "2.3.3, which is out of date. The current version is v3.0.1",
+                ):
+                    with self.subTest(advisory=advisory, publisher=publisher):
+                        write_qa(advisory, 0, publisher)
+                        self.assertEqual(
+                            CHECK.validate_suppressions(guide, offline_terminology=True),
+                            [],
+                        )
+
+            original = advisories[1]
             for changed in (
-                message.replace("org.example.fhir.guide", "org.example.fhir.other"),
-                message.replace("dependsOn[2]", "dependsOn[1]"),
-                message.replace("hl7.fhir.uv.extensions.r4", "hl7.fhir.uv.extensions.r5"),
-                message.replace("#5.3.0", "#5.2.0"),
-                message.replace("2026-05-16", "2026-05-17"),
-                message.replace("5.3.0-ballot-tc1", "5.3.0-ballot-tc"),
+                original.replace("org.example.fhir.guide", "org.example.fhir.other"),
+                original.replace("dependsOn[2]", "dependsOn[1]"),
+                original.replace("hl7.fhir.uv.extensions.r4", "hl7.fhir.uv.extensions.r5"),
+                original.replace("#5.3.0", "#5.2.0"),
+                original.replace("2026-05-16", "2026-05-17"),
+                original.replace("5.4.0. This", "5.5.0. This"),
+                advisories[3].replace("7.5.0. This", "7.6.0. This"),
+                "WARNING: CodeSystem/Example: CodeSystem.property[0].type: "
+                "ValueSet 'http://hl7.org/fhir/ValueSet/concept-property-type|4.0.1' not found",
             ):
                 with self.subTest(changed=changed):
-                    (guide / "input/ignoreWarnings.txt").write_text(
+                    configured.write_text(
                         f"== Suppressed Messages ==\n{changed}\n", encoding="utf-8"
                     )
-                    self.assertIn(
-                        "not exercised exactly",
-                        CHECK.validate_suppressions(guide)[0],
-                    )
+                    write_qa(changed, 0)
+                    self.assertIn("not exercised exactly", CHECK.validate_suppressions(guide)[0])
+
+            configured.write_text(
+                f"== Suppressed Messages ==\n{original}\n", encoding="utf-8"
+            )
+            for publisher in ("2.3.30", "2.3.3.1", "2.3.3-SNAPSHOT", "2.4.0", "3.0.1"):
+                write_qa(original, 0, publisher)
+                self.assertIn("not exercised exactly", CHECK.validate_suppressions(guide)[0])
+            write_qa(original, 0)
+            ig["dependsOn"][2]["version"] = "5.4.0"
+            ig_path.write_text(json.dumps(ig), encoding="utf-8")
+            self.assertIn("not exercised exactly", CHECK.validate_suppressions(guide)[0])
+
+            # An exercised advisory never accounts for a missing ValueSet or other
+            # validation warning: the Publisher's unsuppressed counter stays fatal.
+            counts = CHECK.finding_counts(
+                {"errs": 0, "warnings": 1, "suppressed-warnings": 1},
+                {original: 1},
+            )
+            self.assertEqual(counts.unsuppressed_warnings, 1)
 
     def test_rendered_liquid_failures_are_not_hidden_by_green_publisher_qa(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

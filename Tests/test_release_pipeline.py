@@ -293,6 +293,40 @@ class ReleaseWorkflowTests(unittest.TestCase):
             encoding="utf-8"
         )
 
+    def test_dependency_cache_fallbacks_preserve_the_exact_external_closure(self) -> None:
+        closure_hash = "${{ hashFiles('Scripts/download-fhir-tools.sh') }}"
+        guide_wave = (ROOT / ".github/workflows/build-guide-wave.yml").read_text()
+        for workflow in (self.workflow, self.build_workflow, guide_wave):
+            keys = re.findall(r"(?m)^\s*key: (fhir-guides-.+)$", workflow)
+            self.assertTrue(keys)
+            for key in keys:
+                self.assertIn(closure_hash + "-", key)
+            for fallback in re.findall(
+                r"(?m)^\s+(fhir-guides-.+)$", workflow
+            ):
+                self.assertTrue(fallback.endswith(closure_hash + "-"))
+        self.assertNotIn("restore-keys:", self.workflow)
+
+    def test_extension_alias_versions_match_their_dependency(self) -> None:
+        manifest = json.loads((ROOT / "catalog/release-manifest.json").read_text())
+        aliases_checked = 0
+        for guide in manifest["guides"]:
+            version = next(
+                dependency.split("#", 1)[1]
+                for dependency in guide["directDependencies"]
+                if dependency.startswith("hl7.fhir.uv.extensions.r4#")
+            )
+            for source in (ROOT / guide["source"] / "input/fsh").glob("*.fsh"):
+                aliases = re.findall(
+                    r"^Alias: (\S+) = http://hl7\.org/fhir/StructureDefinition/[^|\s]+\|(\S+)$",
+                    source.read_text(), re.MULTILINE,
+                )
+                for alias, pinned in aliases:
+                    with self.subTest(source=str(source.relative_to(ROOT)), alias=alias):
+                        self.assertEqual(pinned, version)
+                    aliases_checked += 1
+        self.assertGreater(aliases_checked, 0)
+
     def test_release_is_created_only_after_verification(self) -> None:
         self.assertNotIn("types: [published]", self.workflow)
         self.assertNotIn("gh release upload", self.workflow)
@@ -344,6 +378,29 @@ class ReleaseWorkflowTests(unittest.TestCase):
                     "--package questionnaire=questionnaire/output/package.tgz",
                     script,
                 )
+
+    def test_fixture_validation_supplies_the_manifest_package_closure(self) -> None:
+        manifest = json.loads(
+            (ROOT / "Conformance/fixture-validator-manifest.json").read_text(encoding="utf-8")
+        )
+        expected = {
+            package["alias"]: f"{package['alias']}/output/package.tgz"
+            for package in manifest["packages"]
+        }
+        for label, script in (
+            ("build workflow", self.build_workflow),
+            ("deployment workflow", self.workflow),
+            ("local release script", self.build_release),
+        ):
+            with self.subTest(label=label):
+                command = re.search(
+                    r"python3 Scripts/validate-fixtures\.py(?:[ \t]*\\?\n[ \t]+--[^\n]*)+",
+                    script,
+                )
+                self.assertIsNotNone(command)
+                assert command is not None
+                supplied = dict(re.findall(r"--package ([a-z-]+)=([^\s\\]+)", command.group()))
+                self.assertEqual(supplied, expected)
 
     def test_write_token_is_isolated_from_repository_code(self) -> None:
         verify, publish = self.workflow.split("\n  publish:\n", maxsplit=1)

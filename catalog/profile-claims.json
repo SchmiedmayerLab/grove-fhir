@@ -2,7 +2,7 @@
   "$schema": "https://grovealliance.org/fhir/catalog/schemas/catalog-contracts.schema.json",
   "schemaVersion": 0,
   "fhirVersion": "4.0.1",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "observationAdapterClaim": {
     "cardinality": 2,
     "members": [

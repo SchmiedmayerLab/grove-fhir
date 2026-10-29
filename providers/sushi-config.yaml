@@ -14,7 +14,7 @@ description: >-
   FHIR R4 semantic, lineage, and deterministic-identity contracts for
   already-obtained Google Health API, Oura API, and Withings API data.
 status: draft
-version: 0.6.0
+version: 0.7.0
 fhirVersion: 4.0.1
 copyrightYear: 2026+
 releaseLabel: ci-build
@@ -37,10 +37,10 @@ dependencies:
   hl7.terminology.r4: 7.3.0
   hl7.fhir.uv.extensions.r4: 5.3.0
   org.grovealliance.fhir.mobile:
-    version: 0.6.0
+    version: 0.7.0
     uri: https://grovealliance.org/fhir/mobile/ImplementationGuide/org.grovealliance.fhir.mobile
   org.grovealliance.fhir.sensor:
-    version: 0.6.0
+    version: 0.7.0
     uri: https://grovealliance.org/fhir/sensor/ImplementationGuide/org.grovealliance.fhir.sensor
 menu:
   Overview: index.html

@@ -24,7 +24,7 @@ The following excerpt highlights the identity fields:
 ```json
 {
   "url": "https://grovealliance.org/fhir/questionnaire/Questionnaire/GroveWeeklySymptomCheckInExample",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "status": "active"
 }
 ```
@@ -33,7 +33,7 @@ The response joins the canonical URL and version with one `|`:
 
 ```json
 {
-  "questionnaire": "https://grovealliance.org/fhir/questionnaire/Questionnaire/GroveWeeklySymptomCheckInExample|0.6.0"
+  "questionnaire": "https://grovealliance.org/fhir/questionnaire/Questionnaire/GroveWeeklySymptomCheckInExample|0.7.0"
 }
 ```
 
@@ -110,7 +110,7 @@ java -jar validator_cli.jar QuestionnaireResponse-GroveWeeklySymptomCheckInRespo
 
 The second command carries two arguments the first does not.
 The Validator rejects reserved `example.org` URLs by default, and this published response uses them for its submission identifier and its application naming system, so it opts in explicitly; real deployment resources use resolvable systems and omit the flag.
-It also names the instrument as a second `-ig` source, because a package's examples are not indexed as resolvable canonicals: without it the Validator reports that it cannot resolve `…GroveWeeklySymptomCheckInExample|0.6.0` and skips every check against the instrument.
+It also names the instrument as a second `-ig` source, because a package's examples are not indexed as resolvable canonicals: without it the Validator reports that it cannot resolve `…GroveWeeklySymptomCheckInExample|0.7.0` and skips every check against the instrument.
 Supply the exact instrument the response names, whatever its source.
 
 ### 5. Validate the resource pair

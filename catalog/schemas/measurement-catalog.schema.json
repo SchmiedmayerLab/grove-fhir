@@ -27,7 +27,7 @@
       "const": "4.0.1"
     },
     "version": {
-      "const": "0.6.0"
+      "const": "0.7.0"
     },
     "canonicalRoot": {
       "const": "https://grovealliance.org/fhir/mobile/StructureDefinition"
@@ -560,12 +560,33 @@
         },
         "resultCodeSystem": {
           "type": "string",
-          "format": "uri"
+          "format": "uri",
+          "description": "The system of allowedValues. Additional admitted systems, when present, are listed separately in additionalResultBindings."
         },
         "allowedValues": {
           "type": "array",
           "items": {
             "type": "string"
+          }
+        },
+        "additionalResultBindings": {
+          "description": "Additional admitted system/code pairs. The union of these bindings and resultCodeSystem/allowedValues is the complete result set; a code is admitted only under its own binding's system.",
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["system", "allowedValues"],
+            "properties": {
+              "system": {"type": "string", "format": "uri"},
+              "allowedValues": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": {"type": "string", "minLength": 1}
+              }
+            }
           }
         },
         "resultCodes": {

@@ -14,7 +14,7 @@ description: >-
   FHIR R4 mappings and lineage contracts for data already obtained from Apple
   SensorKit, layered on the Grove FHIR Mobile and Sensor contracts.
 status: draft
-version: 0.6.0
+version: 0.7.0
 fhirVersion: 4.0.1
 copyrightYear: 2026+
 releaseLabel: ci-build
@@ -38,10 +38,10 @@ dependencies:
   hl7.terminology.r4: 7.3.0
   hl7.fhir.uv.extensions.r4: 5.3.0
   org.grovealliance.fhir.mobile:
-    version: 0.6.0
+    version: 0.7.0
     uri: https://grovealliance.org/fhir/mobile/ImplementationGuide/org.grovealliance.fhir.mobile
   org.grovealliance.fhir.sensor:
-    version: 0.6.0
+    version: 0.7.0
     uri: https://grovealliance.org/fhir/sensor/ImplementationGuide/org.grovealliance.fhir.sensor
 pages:
   index.md:

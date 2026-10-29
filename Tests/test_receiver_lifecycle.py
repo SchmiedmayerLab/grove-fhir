@@ -28,7 +28,7 @@ class ReceiverLifecycleTests(unittest.TestCase):
                 self.assertEqual(path.read_text(), expected)
         index = json.loads((CORPUS / "events.json").read_text())
         self.assertEqual(index["contractLock"]["baseSourceRevision"], "928db16ef8bfd86d2a171727d2d1cb9f8979a442")
-        self.assertEqual(index["contractLock"]["releaseVersion"], "0.6.0")
+        self.assertEqual(index["contractLock"]["releaseVersion"], "0.7.0")
         self.assertEqual(index["contractLock"]["fhirVersion"], "4.0.1")
         self.assertEqual(index["contractLock"]["exchangeProtocolSHA256"], hashlib.sha256((ROOT / "catalog/exchange-protocol.json").read_bytes()).hexdigest())
         for event in index["events"].values():
@@ -40,7 +40,7 @@ class ReceiverLifecycleTests(unittest.TestCase):
         protocol = json.loads((ROOT / "catalog/exchange-protocol.json").read_text())
         del protocol["testVectors"]
         rules = json.dumps(protocol, sort_keys=True, separators=(",", ":")).encode()
-        self.assertEqual(hashlib.sha256(rules).hexdigest(), "42a7ae4eae7640c8508dbb92f748d42536b9c22b00bd8fbcfa33e664e930454f")
+        self.assertEqual(hashlib.sha256(rules).hexdigest(), "784f81ec260a02cd190acfa5dd046f643222a9ee15b951b493a61b4ad212d9d4")
         for name, digest in {
             "exchange-bundle.json": "75808ad2f0ae0523cfac0c8df2465927595a56e489ffdb0f5ccca524d4a1f27e",
             "retraction-bundle.json": "54085f51d0d7629bc5a556cb9ea2813b7c7d6defadb8f2d3340270bc88f5d226",

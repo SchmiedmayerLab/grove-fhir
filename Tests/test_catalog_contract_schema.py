@@ -29,6 +29,21 @@ def _read(relative_path: str) -> dict[str, Any]:
 class CatalogContractSchemaTests(unittest.TestCase):
     maxDiff = None
 
+    def test_measurement_additional_result_bindings_are_closed(self) -> None:
+        catalog = _read("catalog/measurement-catalog.json")
+        schema = CATALOG_DIR / "schemas/measurement-catalog.schema.json"
+        self._assert_valid(catalog, schema)
+        segment = next(entry for entry in catalog["measurements"] if entry["id"] == "workout-segment")
+        for bindings in (
+            [],
+            [{"system": "https://example.org/codes"}],
+            [{"system": "https://example.org/codes", "allowedValues": []}],
+            [{"system": "https://example.org/codes", "allowedValues": ["running"], "extra": True}],
+        ):
+            with self.subTest(bindings=bindings):
+                segment["additionalResultBindings"] = bindings
+                self._assert_invalid(catalog, schema)
+
     def _validation_result(
         self,
         document: dict[str, Any],

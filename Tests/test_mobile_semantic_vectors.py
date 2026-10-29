@@ -9,15 +9,28 @@
 from __future__ import annotations
 
 import json
+import re
 import unittest
 from decimal import Decimal
 from pathlib import Path
 
-from Scripts.producer_validation import payloads
+from Scripts.producer_validation import mobile_semantics, payloads
 
 
 ROOT = Path(__file__).parents[1]
 class MobileSemanticVectorTests(unittest.TestCase):
+    @staticmethod
+    def result_codings(measurement: dict) -> set[tuple[str, str]]:
+        bindings = [{
+            "system": measurement["resultCodeSystem"],
+            "allowedValues": measurement["allowedValues"],
+        }, *measurement.get("additionalResultBindings", [])]
+        return {
+            (binding["system"], code)
+            for binding in bindings
+            for code in binding["allowedValues"]
+        }
+
     @classmethod
     def setUpClass(cls) -> None:
         cls.catalog = json.loads(
@@ -178,10 +191,40 @@ class MobileSemanticVectorTests(unittest.TestCase):
                     self.assertEqual(actual["unit"], expected["quantity"]["unit"])
             else:
                 self.assertEqual(result["type"], "CodeableConcept")
-                self.assertEqual(result["system"], measurement["resultCodeSystem"])
-                self.assertIn(result["code"], measurement["allowedValues"])
+                self.assertIn((result["system"], result["code"]), self.result_codings(measurement))
             self.assertTrue(vector["edgeRules"])
             self.assertTrue(all(isinstance(rule, str) and rule for rule in vector["edgeRules"]))
+
+    def test_workout_segments_admit_structural_and_activity_codings(self) -> None:
+        measurements = {entry["id"]: entry for entry in self.catalog["measurements"]}
+        segment = measurements["workout-segment"]
+        workout = measurements["workout"]
+        self.assertEqual(segment["additionalResultBindings"], [{
+            "system": workout["resultCodeSystem"],
+            "allowedValues": workout["allowedValues"],
+        }])
+        terminology = (ROOT / "mobile/input/fsh/terminology.fsh").read_text(encoding="utf-8")
+        activities = terminology.split("CodeSystem: GroveWorkoutActivityCS\n", 1)[1].split("\nValueSet:", 1)[0]
+        self.assertEqual(workout["allowedValues"], re.findall(r"^\* #(\S+)", activities, re.MULTILINE))
+        admitted = self.result_codings(segment)
+        self.assertNotIn((segment["resultCodeSystem"], "running"), admitted)
+        self.assertNotIn((workout["resultCodeSystem"], "lap"), admitted)
+        base_vector = next(vector for vector in self.corpus["vectors"] if vector["id"] == "workout-segment")
+        for system, code in ((segment["resultCodeSystem"], "lap"), (workout["resultCodeSystem"], "running")):
+            with self.subTest(system=system, code=code):
+                self.assertIn((system, code), admitted)
+                vector = {**base_vector, "result": {"type": "CodeableConcept", "system": system, "code": code}}
+                observation = {
+                    "resourceType": "Observation",
+                    "meta": {"profile": [vector["profile"]]},
+                    "code": {"coding": [vector["code"]]},
+                    "effectivePeriod": {key: vector["effective"][key] for key in ("start", "end")},
+                    "valueCodeableConcept": {"coding": [{"system": system, "code": code}]},
+                }
+                self.assertEqual(
+                    mobile_semantics.mobile_semantic_projection(observation, vector, "workout-segment"),
+                    {key: vector[key] for key in ("profile", "code", "effective", "result")},
+                )
 
     def test_source_context_is_exactly_the_supported_adapter_surface(self) -> None:
         rules = self.corpus["sourceContextRules"]

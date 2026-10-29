@@ -7,7 +7,7 @@
   "properties": {
     "$schema": {"const": "https://grovealliance.org/fhir/catalog/schemas/release-manifest.schema.json"},
     "schemaVersion": {"const": 0},
-    "releaseVersion": {"const": "0.6.0"},
+    "releaseVersion": {"const": "0.7.0"},
     "fhirVersion": {"const": "4.0.1"},
     "canonicalRoot": {"const": "https://grovealliance.org/fhir"},
     "toolchain": {
@@ -78,14 +78,14 @@
         "oneOf": [
           {"const": {"source": "mobile", "packageId": "org.grovealliance.fhir.mobile", "canonical": "https://grovealliance.org/fhir/mobile", "directDependencies": ["hl7.terminology.r4#7.3.0", "hl7.fhir.uv.extensions.r4#5.3.0"]}},
           {"const": {"source": "questionnaire", "packageId": "org.grovealliance.fhir.questionnaire", "canonical": "https://grovealliance.org/fhir/questionnaire", "directDependencies": ["hl7.fhir.uv.sdc#4.0.0", "hl7.fhir.uv.extensions.r4#5.3.0"]}},
-          {"const": {"source": "sensor", "packageId": "org.grovealliance.fhir.sensor", "canonical": "https://grovealliance.org/fhir/sensor", "directDependencies": ["hl7.terminology.r4#7.3.0", "hl7.fhir.uv.extensions.r4#5.3.0", "org.grovealliance.fhir.mobile#0.6.0"]}},
-          {"const": {"source": "sensorkit", "packageId": "org.grovealliance.fhir.sensorkit", "canonical": "https://grovealliance.org/fhir/sensorkit", "directDependencies": ["hl7.terminology.r4#7.3.0", "hl7.fhir.uv.extensions.r4#5.3.0", "org.grovealliance.fhir.mobile#0.6.0", "org.grovealliance.fhir.sensor#0.6.0"]}},
-          {"const": {"source": "healthkit", "packageId": "org.grovealliance.fhir.healthkit", "canonical": "https://grovealliance.org/fhir/healthkit", "directDependencies": ["hl7.terminology.r4#7.3.0", "hl7.fhir.uv.extensions.r4#5.3.0", "org.grovealliance.fhir.mobile#0.6.0", "org.grovealliance.fhir.sensor#0.6.0"]}},
-          {"const": {"source": "health-connect", "packageId": "org.grovealliance.fhir.health-connect", "canonical": "https://grovealliance.org/fhir/health-connect", "directDependencies": ["hl7.terminology.r4#7.3.0", "hl7.fhir.uv.extensions.r4#5.3.0", "org.grovealliance.fhir.mobile#0.6.0"]}},
-          {"const": {"source": "providers", "packageId": "org.grovealliance.fhir.providers", "canonical": "https://grovealliance.org/fhir/providers", "directDependencies": ["hl7.terminology.r4#7.3.0", "hl7.fhir.uv.extensions.r4#5.3.0", "org.grovealliance.fhir.mobile#0.6.0", "org.grovealliance.fhir.sensor#0.6.0"]}},
-          {"const": {"source": "withings", "packageId": "org.grovealliance.fhir.withings", "canonical": "https://grovealliance.org/fhir/withings", "directDependencies": ["hl7.terminology.r4#7.3.0", "hl7.fhir.uv.extensions.r4#5.3.0", "org.grovealliance.fhir.mobile#0.6.0", "org.grovealliance.fhir.providers#0.6.0", "org.grovealliance.fhir.sensor#0.6.0"]}},
-          {"const": {"source": "oura", "packageId": "org.grovealliance.fhir.oura", "canonical": "https://grovealliance.org/fhir/oura", "directDependencies": ["hl7.terminology.r4#7.3.0", "hl7.fhir.uv.extensions.r4#5.3.0", "org.grovealliance.fhir.mobile#0.6.0", "org.grovealliance.fhir.providers#0.6.0", "org.grovealliance.fhir.sensor#0.6.0"]}},
-          {"const": {"source": "google-health", "packageId": "org.grovealliance.fhir.google-health", "canonical": "https://grovealliance.org/fhir/google-health", "directDependencies": ["hl7.terminology.r4#7.3.0", "hl7.fhir.uv.extensions.r4#5.3.0", "org.grovealliance.fhir.mobile#0.6.0", "org.grovealliance.fhir.providers#0.6.0", "org.grovealliance.fhir.sensor#0.6.0"]}}
+          {"const": {"source": "sensor", "packageId": "org.grovealliance.fhir.sensor", "canonical": "https://grovealliance.org/fhir/sensor", "directDependencies": ["hl7.terminology.r4#7.3.0", "hl7.fhir.uv.extensions.r4#5.3.0", "org.grovealliance.fhir.mobile#0.7.0"]}},
+          {"const": {"source": "sensorkit", "packageId": "org.grovealliance.fhir.sensorkit", "canonical": "https://grovealliance.org/fhir/sensorkit", "directDependencies": ["hl7.terminology.r4#7.3.0", "hl7.fhir.uv.extensions.r4#5.3.0", "org.grovealliance.fhir.mobile#0.7.0", "org.grovealliance.fhir.sensor#0.7.0"]}},
+          {"const": {"source": "healthkit", "packageId": "org.grovealliance.fhir.healthkit", "canonical": "https://grovealliance.org/fhir/healthkit", "directDependencies": ["hl7.terminology.r4#7.3.0", "hl7.fhir.uv.extensions.r4#5.3.0", "org.grovealliance.fhir.mobile#0.7.0", "org.grovealliance.fhir.sensor#0.7.0"]}},
+          {"const": {"source": "health-connect", "packageId": "org.grovealliance.fhir.health-connect", "canonical": "https://grovealliance.org/fhir/health-connect", "directDependencies": ["hl7.terminology.r4#7.3.0", "hl7.fhir.uv.extensions.r4#5.3.0", "org.grovealliance.fhir.mobile#0.7.0"]}},
+          {"const": {"source": "providers", "packageId": "org.grovealliance.fhir.providers", "canonical": "https://grovealliance.org/fhir/providers", "directDependencies": ["hl7.terminology.r4#7.3.0", "hl7.fhir.uv.extensions.r4#5.3.0", "org.grovealliance.fhir.mobile#0.7.0", "org.grovealliance.fhir.sensor#0.7.0"]}},
+          {"const": {"source": "withings", "packageId": "org.grovealliance.fhir.withings", "canonical": "https://grovealliance.org/fhir/withings", "directDependencies": ["hl7.terminology.r4#7.3.0", "hl7.fhir.uv.extensions.r4#5.3.0", "org.grovealliance.fhir.mobile#0.7.0", "org.grovealliance.fhir.providers#0.7.0", "org.grovealliance.fhir.sensor#0.7.0"]}},
+          {"const": {"source": "oura", "packageId": "org.grovealliance.fhir.oura", "canonical": "https://grovealliance.org/fhir/oura", "directDependencies": ["hl7.terminology.r4#7.3.0", "hl7.fhir.uv.extensions.r4#5.3.0", "org.grovealliance.fhir.mobile#0.7.0", "org.grovealliance.fhir.providers#0.7.0", "org.grovealliance.fhir.sensor#0.7.0"]}},
+          {"const": {"source": "google-health", "packageId": "org.grovealliance.fhir.google-health", "canonical": "https://grovealliance.org/fhir/google-health", "directDependencies": ["hl7.terminology.r4#7.3.0", "hl7.fhir.uv.extensions.r4#5.3.0", "org.grovealliance.fhir.mobile#0.7.0", "org.grovealliance.fhir.providers#0.7.0", "org.grovealliance.fhir.sensor#0.7.0"]}}
         ]
       }
     },

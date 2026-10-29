@@ -31,9 +31,9 @@
   "properties": {
     "$schema": { "const": "https://grovealliance.org/fhir/catalog/schemas/exchange-protocol.schema.json" },
     "schemaVersion": { "const": 0 },
-    "version": { "const": "0.6.0" },
+    "version": { "const": "0.7.0" },
     "protocolVersion": { "const": 0 },
-    "releaseVersion": { "const": "0.6.0" },
+    "releaseVersion": { "const": "0.7.0" },
     "fhirVersion": { "const": "4.0.1" },
     "profiles": { "$ref": "#/$defs/profiles" },
     "extensions": { "$ref": "#/$defs/extensions" },

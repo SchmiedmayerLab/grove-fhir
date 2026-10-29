@@ -1,7 +1,7 @@
 {
   "$schema": "https://grovealliance.org/fhir/catalog/schemas/release-manifest.schema.json",
   "schemaVersion": 0,
-  "releaseVersion": "0.6.0",
+  "releaseVersion": "0.7.0",
   "fhirVersion": "4.0.1",
   "canonicalRoot": "https://grovealliance.org/fhir",
   "toolchain": {
@@ -51,7 +51,7 @@
       "directDependencies": [
         "hl7.terminology.r4#7.3.0",
         "hl7.fhir.uv.extensions.r4#5.3.0",
-        "org.grovealliance.fhir.mobile#0.6.0"
+        "org.grovealliance.fhir.mobile#0.7.0"
       ]
     },
     {
@@ -61,8 +61,8 @@
       "directDependencies": [
         "hl7.terminology.r4#7.3.0",
         "hl7.fhir.uv.extensions.r4#5.3.0",
-        "org.grovealliance.fhir.mobile#0.6.0",
-        "org.grovealliance.fhir.sensor#0.6.0"
+        "org.grovealliance.fhir.mobile#0.7.0",
+        "org.grovealliance.fhir.sensor#0.7.0"
       ]
     },
     {
@@ -72,8 +72,8 @@
       "directDependencies": [
         "hl7.terminology.r4#7.3.0",
         "hl7.fhir.uv.extensions.r4#5.3.0",
-        "org.grovealliance.fhir.mobile#0.6.0",
-        "org.grovealliance.fhir.sensor#0.6.0"
+        "org.grovealliance.fhir.mobile#0.7.0",
+        "org.grovealliance.fhir.sensor#0.7.0"
       ]
     },
     {
@@ -83,7 +83,7 @@
       "directDependencies": [
         "hl7.terminology.r4#7.3.0",
         "hl7.fhir.uv.extensions.r4#5.3.0",
-        "org.grovealliance.fhir.mobile#0.6.0"
+        "org.grovealliance.fhir.mobile#0.7.0"
       ]
     },
     {
@@ -93,8 +93,8 @@
       "directDependencies": [
         "hl7.terminology.r4#7.3.0",
         "hl7.fhir.uv.extensions.r4#5.3.0",
-        "org.grovealliance.fhir.mobile#0.6.0",
-        "org.grovealliance.fhir.sensor#0.6.0"
+        "org.grovealliance.fhir.mobile#0.7.0",
+        "org.grovealliance.fhir.sensor#0.7.0"
       ]
     },
     {
@@ -104,9 +104,9 @@
       "directDependencies": [
         "hl7.terminology.r4#7.3.0",
         "hl7.fhir.uv.extensions.r4#5.3.0",
-        "org.grovealliance.fhir.mobile#0.6.0",
-        "org.grovealliance.fhir.providers#0.6.0",
-        "org.grovealliance.fhir.sensor#0.6.0"
+        "org.grovealliance.fhir.mobile#0.7.0",
+        "org.grovealliance.fhir.providers#0.7.0",
+        "org.grovealliance.fhir.sensor#0.7.0"
       ]
     },
     {
@@ -116,9 +116,9 @@
       "directDependencies": [
         "hl7.terminology.r4#7.3.0",
         "hl7.fhir.uv.extensions.r4#5.3.0",
-        "org.grovealliance.fhir.mobile#0.6.0",
-        "org.grovealliance.fhir.providers#0.6.0",
-        "org.grovealliance.fhir.sensor#0.6.0"
+        "org.grovealliance.fhir.mobile#0.7.0",
+        "org.grovealliance.fhir.providers#0.7.0",
+        "org.grovealliance.fhir.sensor#0.7.0"
       ]
     },
     {
@@ -128,9 +128,9 @@
       "directDependencies": [
         "hl7.terminology.r4#7.3.0",
         "hl7.fhir.uv.extensions.r4#5.3.0",
-        "org.grovealliance.fhir.mobile#0.6.0",
-        "org.grovealliance.fhir.providers#0.6.0",
-        "org.grovealliance.fhir.sensor#0.6.0"
+        "org.grovealliance.fhir.mobile#0.7.0",
+        "org.grovealliance.fhir.providers#0.7.0",
+        "org.grovealliance.fhir.sensor#0.7.0"
       ]
     }
   ],

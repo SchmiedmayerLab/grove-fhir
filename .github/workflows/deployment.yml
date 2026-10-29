@@ -118,7 +118,7 @@ jobs:
             .build/fhir-home
             .build/fhir-tools
             .build/bundle
-          key: fhir-guides-${{ runner.os }}-${{ hashFiles('Gemfile.lock', 'package-lock.json', 'Scripts/download-fhir-tools.sh') }}
+          key: fhir-guides-${{ runner.os }}-${{ hashFiles('Scripts/download-fhir-tools.sh') }}-${{ hashFiles('Gemfile.lock', 'package-lock.json') }}
       - name: Bootstrap the checksum-pinned dependency closure online
         run: |
           npm ci

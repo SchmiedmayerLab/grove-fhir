@@ -131,7 +131,7 @@
           "value": "home-vitals-2026-08-28"
         },
         "language": "en-US",
-        "questionnaire": "https://grovealliance.org/fhir/questionnaire/Questionnaire/GroveHomeVitalsExample|0.6.0",
+        "questionnaire": "https://grovealliance.org/fhir/questionnaire/Questionnaire/GroveHomeVitalsExample|0.7.0",
         "status": "completed",
         "subject": {
           "reference": "urn:uuid:44a907a4-8316-5a5e-9a90-7149a1b6207e"

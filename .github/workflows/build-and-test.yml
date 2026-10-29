@@ -167,9 +167,9 @@ jobs:
             .build/fhir-home
             .build/fhir-tools
             .build/bundle
-          key: fhir-guides-${{ runner.os }}-${{ hashFiles('Gemfile.lock', 'package-lock.json', 'Scripts/download-fhir-tools.sh') }}
+          key: fhir-guides-${{ runner.os }}-${{ hashFiles('Scripts/download-fhir-tools.sh') }}-${{ hashFiles('Gemfile.lock', 'package-lock.json') }}
           restore-keys: |
-            fhir-guides-${{ runner.os }}-
+            fhir-guides-${{ runner.os }}-${{ hashFiles('Scripts/download-fhir-tools.sh') }}-
       - run: npm ci
       - name: Select dependency-closed changed guides
         id: scope
@@ -330,9 +330,9 @@ jobs:
             .build/fhir-home
             .build/fhir-tools
             .build/bundle
-          key: fhir-guides-${{ runner.os }}-${{ hashFiles('Gemfile.lock', 'package-lock.json', 'Scripts/download-fhir-tools.sh') }}
+          key: fhir-guides-${{ runner.os }}-${{ hashFiles('Scripts/download-fhir-tools.sh') }}-${{ hashFiles('Gemfile.lock', 'package-lock.json') }}
           restore-keys: |
-            fhir-guides-${{ runner.os }}-
+            fhir-guides-${{ runner.os }}-${{ hashFiles('Scripts/download-fhir-tools.sh') }}-
       - name: Bootstrap the checksum-pinned dependency closure online
         run: |
           npm ci
@@ -360,6 +360,7 @@ jobs:
           path: |
             */output/qa.html
             */output/qa.json
+            */output/package.tgz
             */fsh-generated/resources/ImplementationGuide-*.json
 
   guides:
@@ -403,9 +404,9 @@ jobs:
             .build/fhir-home
             .build/fhir-tools
             .build/bundle
-          key: fhir-guides-${{ runner.os }}-${{ hashFiles('Gemfile.lock', 'package-lock.json', 'Scripts/download-fhir-tools.sh') }}
+          key: fhir-guides-${{ runner.os }}-${{ hashFiles('Scripts/download-fhir-tools.sh') }}-${{ hashFiles('Gemfile.lock', 'package-lock.json') }}
           restore-keys: |
-            fhir-guides-${{ runner.os }}-
+            fhir-guides-${{ runner.os }}-${{ hashFiles('Scripts/download-fhir-tools.sh') }}-
       - run: npm ci
       - uses: actions/download-artifact@v8
         with:
