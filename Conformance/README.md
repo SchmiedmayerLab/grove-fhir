@@ -60,13 +60,16 @@ The QA audit requires explicit nonnegative integer error, warning and hint count
 python3 Scripts/validate-fixtures.py \
   --validator .build/fhir-tools/validator_cli.jar \
   --package mobile=mobile/output/package.tgz \
-  --package questionnaire=questionnaire/output/package.tgz
+  --package questionnaire=questionnaire/output/package.tgz \
+  --package sensor=sensor/output/package.tgz \
+  --package healthkit=healthkit/output/package.tgz
 ```
 
 Every JSON file beneath the declared roots is either validated here or excluded with a stated reason, so a fixture cannot be added without being classified.
 `python3 Scripts/validate-fixtures.py --coverage-only` checks that classification alone and needs neither Java nor a built package.
 `Conformance/corpora/mobile-profile-invariants` is the negative corpus of that lane: one heart-rate Observation per way a Mobile Observation can breach a `GroveMobileObservationRules` invariant or the `dataAbsentReason` binding, named in the manifest's `negativeCorpora`.
 The lane requires the control to pass and each case to fail for exactly the invariant key or value set its `corpus.json` declares, so a rule dropped from the base profile fails here instead of only in a guide build.
+`Conformance/corpora/healthkit-insulin-delivery` is its second negative corpus: an Insulin Delivery Observation whose delivery-reason component stands without the dose it qualifies, which the lane requires the Validator to reject for exactly the missing `Observation.value[x]`, so a component never substitutes for the root result.
 
 ## Positive and negative corpus
 

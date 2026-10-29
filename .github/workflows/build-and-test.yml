@@ -443,6 +443,8 @@ jobs:
           --validator .build/fhir-tools/validator_cli.jar
           --package mobile=mobile/output/package.tgz
           --package questionnaire=questionnaire/output/package.tgz
+          --package sensor=sensor/output/package.tgz
+          --package healthkit=healthkit/output/package.tgz
       - uses: actions/upload-artifact@v7
         with:
           name: pages-site
