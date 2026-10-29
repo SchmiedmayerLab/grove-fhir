@@ -574,6 +574,16 @@ class GuideQATests(unittest.TestCase):
                                 guide, offline_terminology=offline
                             )
                             self.assertEqual(problems == [], uses < 2)
+                for publisher in (
+                    "2.3.3. The latest official release version is unknown",
+                    "2.3.3, which is out of date. The current version is v3.0.1",
+                ):
+                    with self.subTest(advisory=advisory, publisher=publisher):
+                        write_qa(advisory, 0, publisher)
+                        self.assertEqual(
+                            CHECK.validate_suppressions(guide, offline_terminology=True),
+                            [],
+                        )
 
             original = advisories[1]
             for changed in (
@@ -597,7 +607,7 @@ class GuideQATests(unittest.TestCase):
             configured.write_text(
                 f"== Suppressed Messages ==\n{original}\n", encoding="utf-8"
             )
-            for publisher in ("2.3.30", "2.4.0", "3.0.1"):
+            for publisher in ("2.3.30", "2.3.3.1", "2.3.3-SNAPSHOT", "2.4.0", "3.0.1"):
                 write_qa(original, 0, publisher)
                 self.assertIn("not exercised exactly", CHECK.validate_suppressions(guide)[0])
             write_qa(original, 0)

@@ -1076,7 +1076,7 @@ def compatibility_package_age_suppression_is_applicable(
     if match.group("latest") not in COMPATIBILITY_PACKAGE_AGE_ADVISORIES.get(key, ()):
         return False
     qa_html = (guide / "output/qa.html").read_text(encoding="utf-8")
-    if re.search(r"IG Publisher Version: v2\.3\.3(?=[,<\s])", qa_html) is None:
+    if re.search(r"IG Publisher Version: v2\.3\.3(?=[,<\s]|\.\s)", qa_html) is None:
         return False
     index = int(match.group("index"))
     for path in (guide / "output").glob("ImplementationGuide-*.json"):
