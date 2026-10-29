@@ -391,6 +391,43 @@ class ProducerPayloadsTests(ProducerValidationTestCase):
             "Attachment",
         )
 
+    def test_location_track_keeps_a_fix_whose_horizontal_position_is_invalid(self) -> None:
+        registry = json.loads(
+            (context.CATALOG_ROOT / "format-registry.json").read_text(encoding="utf-8")
+        )
+        track = registry["formats"]["location-track-samples"]
+        header = (
+            "timestamp,latitude,longitude,altitude,horizontalAccuracy,verticalAccuracy,"
+            "speed,speedAccuracy,course,courseAccuracy\n"
+        )
+        # The second fix is one whose source marks its horizontal position and its altitude
+        # invalid: both accuracy cells are empty, and the row still states its coordinate.
+        valid = (
+            header
+            + "1787005800,37.4275,-122.1697,30.5,5,3,2.25,0.5,91.5,10\n"
+            + "1787005801,37.4276,-122.1698,0,,,,,,\n"
+        )
+        payloads.validate_inline_recording_payload(
+            self.inline(valid.encode()),
+            "location-track-samples",
+            track,
+            "Attachment",
+        )
+
+        for row, message in (
+            ("1787005801,,-122.1698,0,,,,,,\n", "non-nullable latitude"),
+            ("1787005801,37.4276,,0,,,,,,\n", "non-nullable longitude"),
+        ):
+            with self.subTest(row=row), self.assertRaisesRegex(
+                diagnostics.ProducerValidationError, message
+            ):
+                payloads.validate_inline_recording_payload(
+                    self.inline((header + row).encode()),
+                    "location-track-samples",
+                    track,
+                    "Attachment",
+                )
+
     def test_recording_format_validation_checks_inline_payload_syntax(self) -> None:
         resource = {
             "resourceType": "DocumentReference",

@@ -1343,6 +1343,41 @@ class HealthKitCatalogTests(unittest.TestCase):
             list(segments.values()), [("event", "3"), ("activity", "37")]
         )
 
+    def test_workout_route_keeps_a_location_whose_position_is_invalid(self) -> None:
+        rule = (
+            "A location whose CLLocation horizontalAccuracy is negative, CoreLocation's marker "
+            "for an invalid horizontal position, keeps its row, with horizontalAccuracy empty and "
+            "latitude and longitude as the CLLocation states them; a negative verticalAccuracy, "
+            "the marker for an invalid altitude, leaves verticalAccuracy empty."
+        )
+        route = next(
+            row for row in self.catalog["rows"]
+            if row["sourceTypeIdentifier"] == "HKWorkoutRouteTypeIdentifier"
+        )
+        self.assertTrue(route["requirement"].endswith(" " + rule))
+        matrix = (ROOT / "healthkit/input/pagecontent/status-matrix.md").read_text(encoding="utf-8")
+        self.assertIn(
+            rule,
+            next(line for line in matrix.splitlines() if "HKWorkoutRouteTypeIdentifier" in line),
+        )
+        # The shared format admits both empty cells with the meaning the rule relies on, and the
+        # row still states the coordinate it was given.
+        formats = json.loads((ROOT / "catalog/format-registry.json").read_text(encoding="utf-8"))
+        columns = {
+            column["name"]: column
+            for column in formats["formats"]["location-track-samples"]["columns"]
+        }
+        for name, meaning in (
+            ("horizontalAccuracy", "; empty when the horizontal position is invalid."),
+            ("verticalAccuracy", "; empty when altitude is invalid."),
+        ):
+            with self.subTest(column=name):
+                self.assertTrue(columns[name]["nullable"])
+                self.assertTrue(columns[name]["meaning"].endswith(meaning))
+        for name in ("latitude", "longitude"):
+            with self.subTest(column=name):
+                self.assertFalse(columns[name]["nullable"])
+
     def test_mobile_healthkit_coverage_is_bidirectional(self) -> None:
         supported_rows: dict[str, list[str]] = {}
         for row in self.catalog["rows"]:
