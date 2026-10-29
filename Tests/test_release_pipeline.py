@@ -293,6 +293,20 @@ class ReleaseWorkflowTests(unittest.TestCase):
             encoding="utf-8"
         )
 
+    def test_dependency_cache_fallbacks_preserve_the_exact_external_closure(self) -> None:
+        closure_hash = "${{ hashFiles('Scripts/download-fhir-tools.sh') }}"
+        guide_wave = (ROOT / ".github/workflows/build-guide-wave.yml").read_text()
+        for workflow in (self.workflow, self.build_workflow, guide_wave):
+            keys = re.findall(r"(?m)^\s*key: (fhir-guides-.+)$", workflow)
+            self.assertTrue(keys)
+            for key in keys:
+                self.assertIn(closure_hash + "-", key)
+            for fallback in re.findall(
+                r"(?m)^\s+(fhir-guides-.+)$", workflow
+            ):
+                self.assertTrue(fallback.endswith(closure_hash + "-"))
+        self.assertNotIn("restore-keys:", self.workflow)
+
     def test_extension_alias_versions_match_their_dependency(self) -> None:
         manifest = json.loads((ROOT / "catalog/release-manifest.json").read_text())
         aliases_checked = 0

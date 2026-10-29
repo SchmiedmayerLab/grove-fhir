@@ -6,9 +6,9 @@
 // SPDX-License-Identifier: MIT
 //
 
-Alias: $gatewayDevice = http://hl7.org/fhir/StructureDefinition/observation-gatewayDevice|5.4.0
-Alias: $researchStudy = http://hl7.org/fhir/StructureDefinition/workflow-researchStudy|5.4.0
-Alias: $timezone = http://hl7.org/fhir/StructureDefinition/timezone|5.4.0
+Alias: $gatewayDevice = http://hl7.org/fhir/StructureDefinition/observation-gatewayDevice|5.3.0
+Alias: $researchStudy = http://hl7.org/fhir/StructureDefinition/workflow-researchStudy|5.3.0
+Alias: $timezone = http://hl7.org/fhir/StructureDefinition/timezone|5.3.0
 Alias: $loinc = http://loinc.org
 Alias: $ucum = http://unitsofmeasure.org
 Alias: $observationCategory = http://terminology.hl7.org/CodeSystem/observation-category

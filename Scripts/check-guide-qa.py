@@ -49,12 +49,21 @@ SUPPRESSED_MESSAGE = re.compile(
 
 PACKAGE_AGE_WARNING = re.compile(
     r"^WARNING: ImplementationGuide/(?P<id>[A-Za-z0-9.-]+): "
-    r"ImplementationGuide\.dependsOn\[(?P<index>[1-9][0-9]*)\]: The "
-    r"ImplementationGuide uses package hl7\.fhir\.uv\.extensions\.r4#5\.3\.0 "
-    r"released on 2026-05-16, but the most recent appropriate version is "
-    r"5\.3\.0-ballot-tc1\. This reference is getting old and the more recent "
+    r"ImplementationGuide\.dependsOn\[(?P<index>0|[1-9][0-9]*)\]: The "
+    r"ImplementationGuide uses package (?P<package>[a-z0-9.-]+)#(?P<version>[0-9.]+) "
+    r"released on (?P<date>[0-9-]+), but the most recent appropriate version is "
+    r"(?P<latest>[0-9A-Za-z.-]+)\. This reference is getting old and the more recent "
     r"version should be considered$"
 )
+# Closed alternatives observed in the online registry and Publisher's cached
+# package list. These are upgrade advisories only, never validation exceptions.
+# See publication/dependency-compatibility.md before changing these pins.
+COMPATIBILITY_PACKAGE_AGE_ADVISORIES = {
+    ("hl7.fhir.uv.extensions.r4", "5.3.0", "2026-05-16"): {
+        "5.3.0-ballot-tc1", "5.4.0"
+    },
+    ("hl7.terminology.r4", "7.3.0", "2026-07-27"): {"7.4.0", "7.5.0"},
+}
 
 RENDERED_TEMPLATE_ERROR = re.compile(
     r"<p>\s*Script\s+[^<\r\n]+:\s*[^<\r\n]+</p>",
@@ -1056,13 +1065,18 @@ def validate_broken_links(guide: Path) -> list[str]:
     return problems
 
 
-def online_package_age_suppression_is_applicable(guide: Path, message: str) -> bool:
-    """Recognize Publisher 2.3.3's offline-only stable-version false positive."""
+def compatibility_package_age_suppression_is_applicable(
+    guide: Path, message: str
+) -> bool:
+    """Recognize only reviewed advisories for the compatible dependency pins."""
     match = PACKAGE_AGE_WARNING.fullmatch(message)
     if match is None:
         return False
+    key = (match.group("package"), match.group("version"), match.group("date"))
+    if match.group("latest") not in COMPATIBILITY_PACKAGE_AGE_ADVISORIES.get(key, ()):
+        return False
     qa_html = (guide / "output/qa.html").read_text(encoding="utf-8")
-    if "IG Publisher Version: v2.3.3" not in qa_html:
+    if re.search(r"IG Publisher Version: v2\.3\.3(?=[,<\s])", qa_html) is None:
         return False
     index = int(match.group("index"))
     for path in (guide / "output").glob("ImplementationGuide-*.json"):
@@ -1070,15 +1084,20 @@ def online_package_age_suppression_is_applicable(guide: Path, message: str) -> b
             resource = json.loads(path.read_text(encoding="utf-8"))
         except (json.JSONDecodeError, OSError):
             continue
-        if resource.get("id") != match.group("id"):
+        if (
+            resource.get("resourceType") != "ImplementationGuide"
+            or resource.get("id") != match.group("id")
+        ):
             continue
         dependencies = resource.get("dependsOn")
         if not isinstance(dependencies, list) or index >= len(dependencies):
             return False
         dependency = dependencies[index]
-        return isinstance(dependency, dict) and dependency.get("packageId") == (
-            "hl7.fhir.uv.extensions.r4"
-        ) and dependency.get("version") == "5.3.0"
+        return (
+            isinstance(dependency, dict)
+            and dependency.get("packageId") == match.group("package")
+            and dependency.get("version") == match.group("version")
+        )
     return False
 
 
@@ -1087,10 +1106,10 @@ def validate_suppressions(
 ) -> list[str]:
     """Return exact configuration/execution mismatches for one built guide.
 
-    Publisher 2.3.3 misorders one stable-versus-ballot package pair without its
-    online registry view. That one exact suppression must occur offline and may
-    be absent online. Its generated dependency is verified before the exception
-    applies; a changed finding remains unconfigured and fails the ledger.
+    Publisher's live and cached registry views may report different reviewed
+    upgrade advisories for the compatibility-pinned packages. Only those exact
+    alternatives may be absent, in either lane, after checking the generated
+    dependency. Every other suppression must still occur exactly once.
     """
     configured_path = guide / "input" / "ignoreWarnings.txt"
     qa_path = guide / "output" / "qa.html"
@@ -1108,9 +1127,8 @@ def validate_suppressions(
         for message in configured
         if exercised.get(message) != 1
         and not (
-            not offline_terminology
-            and exercised.get(message) in (None, 0)
-            and online_package_age_suppression_is_applicable(guide, message)
+            exercised.get(message) in (None, 0)
+            and compatibility_package_age_suppression_is_applicable(guide, message)
         )
     ]
     problems.extend(

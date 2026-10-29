@@ -73,9 +73,9 @@ jobs:
             .build/fhir-home
             .build/fhir-tools
             .build/bundle
-          key: fhir-guides-${{ runner.os }}-${{ hashFiles('Gemfile.lock', 'package-lock.json', 'Scripts/download-fhir-tools.sh') }}
+          key: fhir-guides-${{ runner.os }}-${{ hashFiles('Scripts/download-fhir-tools.sh') }}-${{ hashFiles('Gemfile.lock', 'package-lock.json') }}
           restore-keys: |
-            fhir-guides-${{ runner.os }}-
+            fhir-guides-${{ runner.os }}-${{ hashFiles('Scripts/download-fhir-tools.sh') }}-
       - run: npm ci
       # Every earlier wave's output, restored into the tree where a dependent guide expects it.
       - uses: actions/download-artifact@v8

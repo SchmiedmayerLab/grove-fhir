@@ -10,8 +10,8 @@
       "packageId": "org.grovealliance.fhir.mobile",
       "canonical": "https://grovealliance.org/fhir/mobile",
       "dependencies": [
-        "hl7.terminology.r4#7.5.0",
-        "hl7.fhir.uv.extensions.r4#5.4.0"
+        "hl7.terminology.r4#7.3.0",
+        "hl7.fhir.uv.extensions.r4#5.3.0"
       ],
       "profiles": [
         "grove-application-device",
@@ -114,7 +114,7 @@
       "canonical": "https://grovealliance.org/fhir/questionnaire",
       "dependencies": [
         "hl7.fhir.uv.sdc#4.0.0",
-        "hl7.fhir.uv.extensions.r4#5.4.0"
+        "hl7.fhir.uv.extensions.r4#5.3.0"
       ],
       "profiles": [
         "grove-questionnaire",
@@ -126,8 +126,8 @@
       "packageId": "org.grovealliance.fhir.sensor",
       "canonical": "https://grovealliance.org/fhir/sensor",
       "dependencies": [
-        "hl7.terminology.r4#7.5.0",
-        "hl7.fhir.uv.extensions.r4#5.4.0",
+        "hl7.terminology.r4#7.3.0",
+        "hl7.fhir.uv.extensions.r4#5.3.0",
         "org.grovealliance.fhir.mobile#0.7.0"
       ],
       "profiles": [
@@ -142,8 +142,8 @@
       "packageId": "org.grovealliance.fhir.sensorkit",
       "canonical": "https://grovealliance.org/fhir/sensorkit",
       "dependencies": [
-        "hl7.terminology.r4#7.5.0",
-        "hl7.fhir.uv.extensions.r4#5.4.0",
+        "hl7.terminology.r4#7.3.0",
+        "hl7.fhir.uv.extensions.r4#5.3.0",
         "org.grovealliance.fhir.mobile#0.7.0",
         "org.grovealliance.fhir.sensor#0.7.0"
       ],
@@ -169,8 +169,8 @@
       "packageId": "org.grovealliance.fhir.healthkit",
       "canonical": "https://grovealliance.org/fhir/healthkit",
       "dependencies": [
-        "hl7.terminology.r4#7.5.0",
-        "hl7.fhir.uv.extensions.r4#5.4.0",
+        "hl7.terminology.r4#7.3.0",
+        "hl7.fhir.uv.extensions.r4#5.3.0",
         "org.grovealliance.fhir.mobile#0.7.0",
         "org.grovealliance.fhir.sensor#0.7.0"
       ],
@@ -303,8 +303,8 @@
       "packageId": "org.grovealliance.fhir.health-connect",
       "canonical": "https://grovealliance.org/fhir/health-connect",
       "dependencies": [
-        "hl7.terminology.r4#7.5.0",
-        "hl7.fhir.uv.extensions.r4#5.4.0",
+        "hl7.terminology.r4#7.3.0",
+        "hl7.fhir.uv.extensions.r4#5.3.0",
         "org.grovealliance.fhir.mobile#0.7.0"
       ],
       "profiles": [
@@ -331,8 +331,8 @@
       "packageId": "org.grovealliance.fhir.providers",
       "canonical": "https://grovealliance.org/fhir/providers",
       "dependencies": [
-        "hl7.terminology.r4#7.5.0",
-        "hl7.fhir.uv.extensions.r4#5.4.0",
+        "hl7.terminology.r4#7.3.0",
+        "hl7.fhir.uv.extensions.r4#5.3.0",
         "org.grovealliance.fhir.mobile#0.7.0",
         "org.grovealliance.fhir.sensor#0.7.0"
       ],
@@ -347,8 +347,8 @@
       "packageId": "org.grovealliance.fhir.withings",
       "canonical": "https://grovealliance.org/fhir/withings",
       "dependencies": [
-        "hl7.terminology.r4#7.5.0",
-        "hl7.fhir.uv.extensions.r4#5.4.0",
+        "hl7.terminology.r4#7.3.0",
+        "hl7.fhir.uv.extensions.r4#5.3.0",
         "org.grovealliance.fhir.mobile#0.7.0",
         "org.grovealliance.fhir.providers#0.7.0",
         "org.grovealliance.fhir.sensor#0.7.0"
@@ -376,8 +376,8 @@
       "packageId": "org.grovealliance.fhir.oura",
       "canonical": "https://grovealliance.org/fhir/oura",
       "dependencies": [
-        "hl7.terminology.r4#7.5.0",
-        "hl7.fhir.uv.extensions.r4#5.4.0",
+        "hl7.terminology.r4#7.3.0",
+        "hl7.fhir.uv.extensions.r4#5.3.0",
         "org.grovealliance.fhir.mobile#0.7.0",
         "org.grovealliance.fhir.providers#0.7.0",
         "org.grovealliance.fhir.sensor#0.7.0"
@@ -393,8 +393,8 @@
       "packageId": "org.grovealliance.fhir.google-health",
       "canonical": "https://grovealliance.org/fhir/google-health",
       "dependencies": [
-        "hl7.terminology.r4#7.5.0",
-        "hl7.fhir.uv.extensions.r4#5.4.0",
+        "hl7.terminology.r4#7.3.0",
+        "hl7.fhir.uv.extensions.r4#5.3.0",
         "org.grovealliance.fhir.mobile#0.7.0",
         "org.grovealliance.fhir.providers#0.7.0",
         "org.grovealliance.fhir.sensor#0.7.0"

@@ -1903,7 +1903,7 @@ class QuestionnaireContractTests(unittest.TestCase):
         self.assertEqual(package["dependencies"].get("hl7.fhir.uv.sdc"), "4.0.0")
         self.assertEqual(
             package["dependencies"].get("hl7.fhir.uv.extensions.r4"),
-            "5.4.0",
+            "5.3.0",
         )
 
 

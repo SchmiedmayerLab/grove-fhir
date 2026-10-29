@@ -52,6 +52,7 @@ Adapter packages define mappings and conformance; they do not fetch provider or 
 
 The build requires Node.js 24, Ruby 3.3, and Java 21.
 It uses lockfile-pinned SUSHI and Jekyll dependencies and downloads checksum-pinned FHIR Publisher and Validator releases.
+The [dependency compatibility policy](publication/dependency-compatibility.md) explains the exact HL7 package pins and their reviewed upgrade advisories.
 
 ```sh
 npm ci
