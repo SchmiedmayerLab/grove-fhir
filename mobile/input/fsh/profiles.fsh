@@ -147,8 +147,8 @@ Expression: "activity.coding.where(system = 'https://grovealliance.org/fhir/mobi
 Severity: #error
 
 Invariant: grove-retraction-target-1
-Description: "Every retraction target is a typed logical Reference with one complete identifier, one Grove output role, and no literal reference."
-Expression: "target.all(reference.empty() and type.exists() and identifier.system.exists() and identifier.value.exists() and extension('https://grovealliance.org/fhir/mobile/StructureDefinition/grove-retraction-target-role').count() = 1)"
+Description: "Every retraction target is a logical Reference with one complete identifier, one Grove output role, and no literal reference; every target except a source-record target states its resource type."
+Expression: "target.all(reference.empty() and (type.exists() or extension('https://grovealliance.org/fhir/mobile/StructureDefinition/grove-retraction-target-role').where(value = 'source-record').exists()) and identifier.system.exists() and identifier.value.exists() and extension('https://grovealliance.org/fhir/mobile/StructureDefinition/grove-retraction-target-role').count() = 1)"
 Severity: #error
 
 Invariant: grove-native-record-identifier-1
@@ -164,6 +164,11 @@ Severity: #error
 Invariant: grove-retraction-target-semantics-1
 Description: "Every retraction role fixes its logical target resource type and Identifier role."
 Expression: "target.all((extension('https://grovealliance.org/fhir/mobile/StructureDefinition/grove-retraction-target-role').where(value = 'primary-output').exists() implies ((type = 'Observation' or type = 'VisionPrescription' or type = 'MedicationAdministration' or type = 'MedicationStatement') and identifier.type.coding.where(system = 'https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role' and code = 'source-output').count() = 1)) and (extension('https://grovealliance.org/fhir/mobile/StructureDefinition/grove-retraction-target-role').where(value = 'source-artifact').exists() implies (type = 'DocumentReference' and identifier.type.coding.where(system = 'https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role' and code = 'source-output').count() = 1)) and (extension('https://grovealliance.org/fhir/mobile/StructureDefinition/grove-retraction-target-role').where(value = 'child-output').exists() implies (type = 'Observation' and identifier.type.coding.where(system = 'https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role' and code = 'source-output').count() = 1)) and (extension('https://grovealliance.org/fhir/mobile/StructureDefinition/grove-retraction-target-role').where(value = 'specimen').exists() implies (type = 'Specimen' and identifier.type.coding.where(system = 'https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role' and code = 'source-output').count() = 1)) and (extension('https://grovealliance.org/fhir/mobile/StructureDefinition/grove-retraction-target-role').where(value = 'device-snapshot').exists() implies (type = 'Device' and identifier.type.coding.where(system = 'https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role' and code = 'device-snapshot').count() = 1)))"
+Severity: #error
+
+Invariant: grove-retraction-source-record-target-1
+Description: "A source-record target is the retraction's only target, states no resource type, carries the source-record Identifier role, and repeats the exact source-record Identifier of the Provenance source entity."
+Expression: "target.where(extension('https://grovealliance.org/fhir/mobile/StructureDefinition/grove-retraction-target-role').where(value = 'source-record').exists()).exists() implies (target.count() = 1 and target.type.empty() and target.identifier.type.coding.where(system = 'https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role' and code = 'source-record').count() = 1 and target.identifier.system = entity.what.identifier.system and target.identifier.value = entity.what.identifier.value)"
 Severity: #error
 
 Invariant: grove-writer-version-requires-identity-1
@@ -409,12 +414,12 @@ Profile: GroveMobileRetractionProvenance
 Parent: Provenance
 Id: grove-mobile-retraction-provenance
 Title: "Grove Mobile Retraction Provenance"
-Description: "An append-only assertion that a source record is no longer exposed and that identifies each exact previously emitted output. It is not a FHIR delete command and does not assert that the prior clinical result was erroneous."
-* obeys grove-retraction-target-1 and grove-retraction-lifecycle-coding-1 and grove-lifecycle-source-entity-1 and grove-retraction-target-semantics-1
+Description: "An append-only assertion that a source record is no longer exposed, identifying each exact previously emitted output or the source record as a whole. It is not a FHIR delete command and does not assert that the prior clinical result was erroneous."
+* obeys grove-retraction-target-1 and grove-retraction-lifecycle-coding-1 and grove-lifecycle-source-entity-1 and grove-retraction-target-semantics-1 and grove-retraction-source-record-target-1
 * target 1..* MS
-* target only Reference(Observation or DocumentReference or VisionPrescription or MedicationAdministration or MedicationStatement or Specimen or Device)
+* target only Reference(Observation or DocumentReference or VisionPrescription or MedicationAdministration or MedicationStatement or Specimen or Device or QuestionnaireResponse)
 * target.reference 0..0
-* target.type 1..1 MS
+* target.type 0..1 MS
 * target.identifier 1..1 MS
 * target.identifier.type 1..1 MS
 * target.identifier.system 1..1 MS

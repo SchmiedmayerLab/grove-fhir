@@ -805,6 +805,20 @@
           "classification": "example"
         },
         {
+          "fshName": "GroveMobileSourceRecordTargetRetractionBundleExample",
+          "fshType": "Instance",
+          "resourceType": "Bundle",
+          "id": "GroveMobileSourceRecordTargetRetractionBundleExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "GroveMobileSourceRecordTargetRetractionProvenanceExample",
+          "fshType": "Instance",
+          "resourceType": "Provenance",
+          "id": "GroveMobileSourceRecordTargetRetractionProvenanceExample",
+          "classification": "example"
+        },
+        {
           "fshName": "GroveMobileSpeedExample",
           "fshType": "Instance",
           "resourceType": "Observation",

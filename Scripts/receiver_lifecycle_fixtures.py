@@ -142,6 +142,7 @@ def resources():
         "unordered-b": active(45, note="Different wording without comparable writer ordering evidence."),
         "pending": pending, "target": target,
         "retraction": json.loads((BASE / "retraction-bundle.json").read_text()),
+        "source-record-target-retraction": json.loads((BASE / "source-record-target-retraction-bundle.json").read_text()),
         **revision_resources(),
         "changed-source-record": changed_source_record(),
     }
@@ -226,6 +227,93 @@ def retraction_binding_sequences():
             step("retraction", "rejected", **claimed),
         ]},
     ]
+
+
+def source_record_target_retraction_sequences(bundles):
+    """Explicit source-record target expectations, not a receiver or a selection algorithm."""
+    def conversion(event):
+        return next(entry["resource"] for entry in bundles[event]["entry"] if entry["resource"]["resourceType"] == "Provenance")
+
+    # An output is any node the conversion Provenance targets, whatever its resource type.
+    outputs, devices = {}, {}
+    for event in ("multi-v1", "multi-v2", "multi-v3", "target", "changed-source-record"):
+        for index, target in enumerate(conversion(event)["target"]):
+            outputs[event + (".primary" if index == 0 else ".secondary")] = {"event": event, "fullUrl": target["reference"]}
+        for entry in bundles[event]["entry"]:
+            if entry["resource"]["resourceType"] == "Device":
+                devices[event + ".application"] = {"event": event, "fullUrl": entry["fullUrl"]}
+
+    def source(event):
+        identifier = conversion(event)["entity"][0]["what"]["identifier"]
+        return {"system": identifier["system"], "value": identifier["value"]}
+
+    def sequence(name, deliveries):
+        steps, history, previous_visible = [], [], set()
+        for event, disposition, current, retracted, retired in deliveries:
+            if disposition == "accepted":
+                history.append(event)
+            # Every output version is authorized for purpose-a, so visibility is current selection.
+            visible = sorted(current)
+            steps.append({"event": event, "expect": {
+                "history": list(history),
+                "versions": sorted(alias for alias, output in outputs.items() if output["event"] in history),
+                "current": visible, "retractedRecords": retracted, "retiredDeviceSnapshots": sorted(retired),
+                "visible": visible, "newlyVisible": sorted(set(visible) - previous_visible),
+                "disposition": disposition, "receiptEvent": None if disposition == "rejected" else event,
+                "reason": "source-output-record-conflict" if disposition == "rejected" else None,
+            }})
+            previous_visible = set(visible)
+        return {"id": name, "steps": steps}
+
+    retraction = "source-record-target-retraction"
+    heart = ["record-heart-001"]
+    claimed = ["changed-source-record.primary"]
+    v1, v2, v3 = "multi-v1.application", "multi-v2.application", "multi-v3.application"
+    return {
+        "schemaVersion": 0,
+        "events": "events.json",
+        "records": {
+            "record-heart-001": source("multi-v1"),
+            "record-2": source("target"),
+            "another-record": source("changed-source-record"),
+        },
+        "outputs": outputs,
+        "deviceSnapshots": devices,
+        "policy": {
+            "scope": "One verified participant and source repository. A record alias names the complete source-record Identifier, system and value, of an event's conversion Provenance source entity.",
+            "addressing": "A source-record target addresses every node targeted by the conversion Provenance of every accepted active event whose source entity is its complete source-record Identifier, and the event-time Device snapshots those events carry, whether the event is accepted before or after the retraction. A retraction that addresses no accepted event yet is still accepted and applies to later events.",
+            "selection": "An addressed output never becomes current and an addressed Device snapshot is retired, while every accepted event and output version stays in history. Nodes of events attributed to any other source record are unaffected.",
+            "binding": "A source-record target names no output Identifier, so it binds no output to its record. The first accepted active event still binds each of its outputs; a later event that claims a bound output under another record is rejected as source-output-record-conflict, and a rejected event is never addressed.",
+            "authorization": "Every output version is authorized for purpose-a, so visibility follows current selection and a grant never overrides an accepted retraction. Purpose-b has no grants, and replay creates no new access.",
+        },
+        "authorizedOutputs": {"purpose-a": sorted(outputs), "purpose-b": []},
+        "sequences": [
+            sequence("source-record-target-retraction-after-its-event", [
+                ("multi-v1", "accepted", ["multi-v1.primary", "multi-v1.secondary"], [], []),
+                (retraction, "accepted", [], heart, [v1]),
+                ("multi-v1", "replayed", [], heart, [v1]),
+                (retraction, "replayed", [], heart, [v1]),
+            ]),
+            sequence("source-record-target-retraction-before-any-event", [
+                (retraction, "accepted", [], heart, []),
+                ("multi-v1", "accepted", [], heart, [v1]),
+                ("multi-v3", "accepted", [], heart, [v1, v3]),
+            ]),
+            sequence("source-record-target-retraction-leaves-other-records-current", [
+                ("target", "accepted", ["target.primary"], [], []),
+                (retraction, "accepted", ["target.primary"], heart, []),
+                ("multi-v2", "accepted", ["target.primary"], heart, [v2]),
+            ]),
+            # Contrast identity-sequences.json, where an exact retraction binds first.
+            sequence("source-record-target-retraction-binds-no-output", [
+                (retraction, "accepted", [], heart, []),
+                ("changed-source-record", "accepted", claimed, heart, []),
+                ("multi-v2", "rejected", claimed, heart, []),
+                (retraction, "replayed", claimed, heart, []),
+            ]),
+        ],
+        "replayWholeSequence": {"repeat": 1, "restartBeforeReplay": True, "preserveFinalState": True, "newlyVisible": []},
+    }
 
 
 def revision_resources():
@@ -400,6 +488,7 @@ def generated_files():
     })
     files[CORPUS / "revision-sequences.json"] = encoded(revision_sequences(revision_resources()))
     files[CORPUS / "identity-sequences.json"] = encoded(identity_sequences())
+    files[CORPUS / "source-record-target-retraction-sequences.json"] = encoded(source_record_target_retraction_sequences(bundles))
     return files
 
 

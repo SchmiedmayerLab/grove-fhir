@@ -367,6 +367,11 @@ class ExchangeProtocolTests(unittest.TestCase):
                     "identifierRole": "device-snapshot",
                     "resourceTypes": ["Device"],
                 },
+                # The source record as a whole is no one resource, so its target is untyped.
+                "source-record": {
+                    "identifierRole": "source-record",
+                    "resourceTypes": [],
+                },
             },
         )
         paths = self.catalog["referencePolicy"]["paths"]

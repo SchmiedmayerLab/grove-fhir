@@ -9,6 +9,10 @@
     {
       "id": "mobile-retraction",
       "path": "retraction-bundle.json"
+    },
+    {
+      "id": "mobile-source-record-target-retraction",
+      "path": "source-record-target-retraction-bundle.json"
     }
   ],
   "cases": [
@@ -1311,6 +1315,107 @@
         "code": "mobile-retraction.distinct-target",
         "reason": "No two retraction targets carry the same Identifier system and value pair.",
         "location": "Provenance.target[1].identifier",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "source-record-target-retraction-typed-target",
+      "base": "mobile-source-record-target-retraction",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/entry/0/resource/target/0/type",
+          "value": "Observation"
+        }
+      ],
+      "expectedRule": {
+        "code": "mobile-retraction.source-record-target",
+        "reason": "A source-record retraction target is the Provenance's only target, states no Reference.type, and repeats the exact source-record Identifier of the Provenance source entity.",
+        "location": "Provenance.target[0].type",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "source-record-target-retraction-with-exact-target",
+      "base": "mobile-source-record-target-retraction",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/entry/0/resource/target/-",
+          "value": {
+            "extension": [
+              {
+                "url": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-retraction-target-role",
+                "valueCode": "primary-output"
+              }
+            ],
+            "type": "Observation",
+            "identifier": {
+              "type": {
+                "coding": [
+                  {
+                    "code": "source-output",
+                    "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+                    "display": "Source output"
+                  }
+                ]
+              },
+              "system": "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1",
+              "value": "v0:test-key:1:PPULnf0LKpASjIj8mU5TKafPKig_oqWND3_dHFShGd8"
+            }
+          }
+        }
+      ],
+      "expectedRule": {
+        "code": "mobile-retraction.source-record-target",
+        "reason": "A source-record retraction target is the Provenance's only target, states no Reference.type, and repeats the exact source-record Identifier of the Provenance source entity.",
+        "location": "Provenance.target",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "source-record-target-retraction-names-another-record",
+      "base": "mobile-source-record-target-retraction",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/entry/0/resource/target/0/identifier/value",
+          "value": "v0:test-key:1:WssrtI7oYzcgG0mFxlitvSznCx4esKSDEbK-bOUQpTk"
+        }
+      ],
+      "expectedRule": {
+        "code": "mobile-retraction.source-record-target",
+        "reason": "A source-record retraction target is the Provenance's only target, states no Reference.type, and repeats the exact source-record Identifier of the Provenance source entity.",
+        "location": "Provenance.target[0].identifier",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "source-record-target-retraction-output-identifier-role",
+      "base": "mobile-source-record-target-retraction",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/entry/0/resource/target/0/identifier",
+          "value": {
+            "type": {
+              "coding": [
+                {
+                  "code": "source-output",
+                  "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+                  "display": "Source output"
+                }
+              ]
+            },
+            "system": "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1",
+            "value": "v0:test-key:1:PPULnf0LKpASjIj8mU5TKafPKig_oqWND3_dHFShGd8"
+          }
+        }
+      ],
+      "expectedRule": {
+        "code": "mobile-retraction.source-record-target",
+        "reason": "A source-record retraction target is the Provenance's only target, states no Reference.type, and repeats the exact source-record Identifier of the Provenance source entity.",
+        "location": "Provenance.target[0].identifier",
         "severity": "error"
       }
     }

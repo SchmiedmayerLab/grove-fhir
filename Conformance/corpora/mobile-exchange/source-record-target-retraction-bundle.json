@@ -1,0 +1,146 @@
+{
+  "resourceType": "Bundle",
+  "id": "GroveMobileSourceRecordTargetRetractionBundleExample",
+  "meta": {
+    "profile": [
+      "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-retraction-bundle"
+    ]
+  },
+  "type": "collection",
+  "identifier": {
+    "type": {
+      "coding": [
+        {
+          "code": "event",
+          "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+          "display": "Event"
+        }
+      ]
+    },
+    "system": "https://study.example.org/fhir/NamingSystem/grove-event-v0",
+    "value": "e0:1f5c58aa-6ec6-4e79-a682-829a9debd3f5:48"
+  },
+  "entry": [
+    {
+      "extension": [
+        {
+          "url": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-exchange-entry-node-key",
+          "valueIdentifier": {
+            "type": {
+              "coding": [
+                {
+                  "code": "entry-node",
+                  "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+                  "display": "Entry node"
+                }
+              ]
+            },
+            "system": "https://study.example.org/fhir/NamingSystem/grove-entry-node-v0",
+            "value": "n0:retraction-provenance:0:6hlvPfKOTB9--5ewGju7a1GOd2yovK-d4vLMnc5y9dg"
+          }
+        }
+      ],
+      "fullUrl": "urn:uuid:60f3a05d-4c20-5802-a4b9-aff94f7e553c",
+      "resource": {
+        "resourceType": "Provenance",
+        "id": "GroveMobileSourceRecordTargetRetractionProvenanceExample",
+        "meta": {
+          "profile": [
+            "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-retraction-provenance"
+          ]
+        },
+        "activity": {
+          "coding": [
+            {
+              "code": "source-record-retracted",
+              "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-lifecycle-event",
+              "display": "Source record retracted"
+            }
+          ]
+        },
+        "agent": [
+          {
+            "type": {
+              "coding": [
+                {
+                  "code": "assembler",
+                  "system": "http://terminology.hl7.org/CodeSystem/provenance-participant-type",
+                  "display": "Assembler"
+                }
+              ]
+            },
+            "who": {
+              "type": "Device",
+              "identifier": {
+                "type": {
+                  "coding": [
+                    {
+                      "code": "device-snapshot",
+                      "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+                      "display": "Device snapshot"
+                    }
+                  ]
+                },
+                "system": "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v0/test-key/1",
+                "value": "v0:test-key:1:v2S4UaQfgSAXnbRfvHV12rL9HC2qB3MGCe2nLkRlItg"
+              }
+            }
+          }
+        ],
+        "entity": [
+          {
+            "role": "source",
+            "what": {
+              "identifier": {
+                "type": {
+                  "coding": [
+                    {
+                      "code": "source-record",
+                      "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+                      "display": "Source record"
+                    }
+                  ]
+                },
+                "system": "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1",
+                "value": "v0:test-key:1:ptHr751zWyYfaR2WIvrP1TfnVEK4bInC__ibP_AYfVY"
+              }
+            }
+          }
+        ],
+        "target": [
+          {
+            "extension": [
+              {
+                "url": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-retraction-target-role",
+                "valueCode": "source-record"
+              },
+              {
+                "url": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-retraction-target-native-identifier",
+                "valueIdentifier": {
+                  "system": "https://study.example.org/fhir/NamingSystem/native-record/health-connect/1f5c58aa-6ec6-4e79-a682-829a9debd3f5",
+                  "value": "record-heart-001"
+                }
+              }
+            ],
+            "identifier": {
+              "type": {
+                "coding": [
+                  {
+                    "code": "source-record",
+                    "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+                    "display": "Source record"
+                  }
+                ]
+              },
+              "system": "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1",
+              "value": "v0:test-key:1:ptHr751zWyYfaR2WIvrP1TfnVEK4bInC__ibP_AYfVY"
+            }
+          }
+        ],
+        "occurredDateTime": "2026-08-21T08:00:00Z",
+        "recorded": "2026-08-21T08:00:01Z"
+      }
+    }
+  ],
+  "timestamp": "2026-08-21T08:00:01Z"
+}
