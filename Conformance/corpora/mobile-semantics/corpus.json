@@ -4,7 +4,7 @@
   "version": "0.6.0",
   "catalog": "catalog/measurement-catalog.json",
   "purpose": "Implementation-neutral normalized clinical projections used by Swift, Kotlin, and TypeScript producer CI. These vectors contain no source business identity and execute no producer implementation.",
-  "comparisonRule": "Compare exactly profile, code, effective, and result after removing adapter lineage/context. Every Mobile scalar or aggregate effective endpoint is first rounded to the nearest millisecond with ties to even, then serialized with the caller/source numeric UTC offset when available; Sensor and ECG SampledData timing is excluded. Parse offset-bearing FHIR endpoints without precision loss, require the emitted endpoint already to be millisecond-canonical, and normalize equal instants to the vector representation. Compare the remaining projection using RFC 8785/JCS JSON. Adapter context is admitted only by the referenced closed sourceContextRules and is not part of the source-neutral clinical projection.",
+  "comparisonRule": "Compare exactly profile, code, effective, and result after removing adapter lineage/context. Every Mobile scalar or aggregate effective endpoint is first rounded to the nearest millisecond with ties to even, then serialized with the caller/source numeric UTC offset when available; Sensor and ECG SampledData timing is excluded. Parse offset-bearing FHIR endpoints without precision loss, require the emitted endpoint already to be millisecond-canonical, and normalize equal instants to the vector representation. Compare the remaining projection using RFC 8785/JCS JSON. Adapter context is admitted only by the referenced closed sourceContextRules and is not part of the source-neutral clinical projection; an element the profile itself fixes, such as an aggregate's fixed method, belongs to the compared profile and needs no admission. A vector's sourceEffective replaces its effective for the named source, whose source window differs.",
   "effectiveCanonicalization": {
     "precision": "millisecond",
     "rounding": "half-even",
@@ -58,7 +58,9 @@
         "Observation.extension[recordingMethod]",
         "Observation.extension[gatewayDevice]",
         "Observation.extension[researchStudy]",
-        "Observation.derivedFrom"
+        "Observation.derivedFrom",
+        "Observation.identifier[writerRecord]",
+        "Observation.extension[writerRecordVersion]"
       ]
     },
     "healthkit.heart-rate": {
@@ -76,7 +78,8 @@
     },
     "health-connect.default": {
       "required": [
-        "Observation.extension[health-connect-record-type]"
+        "Observation.extension[health-connect-record-type]",
+        "Observation.issued"
       ],
       "allowedAdditions": [
         "Observation.identifier[healthConnectRecordId]",
@@ -85,7 +88,9 @@
         "Observation.extension[recordingMethod]",
         "Observation.extension[gatewayDevice]",
         "Observation.extension[researchStudy]",
-        "Observation.derivedFrom"
+        "Observation.derivedFrom",
+        "Observation.identifier[writerRecord]",
+        "Observation.extension[writerRecordVersion]"
       ]
     },
     "health-connect.blood-pressure": {
@@ -128,7 +133,9 @@
         "Observation.extension[recordingMethod]",
         "Observation.extension[gatewayDevice]",
         "Observation.extension[researchStudy]",
-        "Observation.derivedFrom"
+        "Observation.derivedFrom",
+        "Observation.identifier[writerRecord]",
+        "Observation.extension[writerRecordVersion]"
       ]
     },
     "providers.withings-blood-pressure": {
@@ -148,6 +155,55 @@
         "Observation.extension[recordingMethod].valueCoding.code=manual-entry",
         "Observation.extension[gatewayDevice]"
       ]
+    },
+    "providers.daily-mean": {
+      "inherits": "providers.default",
+      "required": [
+        "Observation.method.coding[system=https://grovealliance.org/fhir/mobile/CodeSystem/grove-aggregation-method].code=daily-mean"
+      ],
+      "allowedAdditions": []
+    },
+    "providers.session-mean": {
+      "inherits": "providers.default",
+      "required": [
+        "Observation.method.coding[system=https://grovealliance.org/fhir/mobile/CodeSystem/grove-aggregation-method].code=session-mean"
+      ],
+      "allowedAdditions": []
+    },
+    "providers.session-minimum": {
+      "inherits": "providers.default",
+      "required": [
+        "Observation.method.coding[system=https://grovealliance.org/fhir/mobile/CodeSystem/grove-aggregation-method].code=session-minimum"
+      ],
+      "allowedAdditions": []
+    },
+    "health-connect.mindfulness": {
+      "inherits": "health-connect.default",
+      "required": [
+        "Observation.method.coding[system=https://grovealliance.org/fhir/health-connect/CodeSystem/health-connect-mindfulness-session-type]"
+      ],
+      "allowedAdditions": [
+        "Observation.extension[health-connect-session-title]",
+        "Observation.note"
+      ]
+    },
+    "health-connect.vo2-max": {
+      "inherits": "health-connect.default",
+      "required": [
+        "Observation.method.coding[system=https://grovealliance.org/fhir/health-connect/CodeSystem/health-connect-vo2-max-measurement-method]"
+      ],
+      "allowedAdditions": []
+    },
+    "health-connect.workout": {
+      "inherits": "health-connect.default",
+      "required": [
+        "Observation.valueCodeableConcept.coding[system=https://grovealliance.org/fhir/health-connect/CodeSystem/health-connect-exercise-type]"
+      ],
+      "allowedAdditions": [
+        "Observation.extension[health-connect-session-title]",
+        "Observation.note",
+        "Observation.hasMember"
+      ]
     }
   },
   "vectors": [
@@ -160,8 +216,8 @@
       },
       "effective": {
         "type": "Period",
-        "start": "2026-08-20T08:00:00-07:00",
-        "end": "2026-08-20T09:00:00-07:00"
+        "start": "2026-08-20T00:00:00-07:00",
+        "end": "2026-08-21T00:00:00-07:00"
       },
       "result": {
         "type": "Quantity",
@@ -1639,8 +1695,8 @@
       },
       "effective": {
         "type": "Period",
-        "start": "2026-08-20T07:00:00-07:00",
-        "end": "2026-08-20T07:30:00-07:00"
+        "start": "2026-08-20T00:00:00-07:00",
+        "end": "2026-08-21T00:00:00-07:00"
       },
       "result": {
         "type": "Quantity",
@@ -1650,7 +1706,7 @@
         "unit": "m"
       },
       "edgeRules": [
-        "The result is distance over the exact Period, not speed or a fixed-day aggregate.",
+        "The result is distance over the exact Period, not speed.",
         "HealthKit activity-specific source type remains adapter lineage and is not discarded from the full resource."
       ],
       "admittedSourceContext": {
@@ -1962,7 +2018,7 @@
       ],
       "admittedSourceContext": {
         "healthkit": "healthkit.default",
-        "health-connect": "health-connect.default"
+        "health-connect": "health-connect.mindfulness"
       }
     },
     {
@@ -2028,8 +2084,8 @@
       },
       "effective": {
         "type": "Period",
-        "start": "2026-08-19T22:40:00-07:00",
-        "end": "2026-08-20T06:55:00-07:00"
+        "start": "2026-08-20T00:00:00-07:00",
+        "end": "2026-08-21T00:00:00-07:00"
       },
       "result": {
         "type": "Quantity",
@@ -2152,12 +2208,20 @@
       },
       "edgeRules": [
         "The effective Period has an exact start and end.",
-        "The method coding asserts the aggregation window; the value is never a point Respiratory Rate Average sample."
+        "The method coding asserts the aggregation window; the value is never a point Respiratory Rate Average sample.",
+        "Google Health API reports a civil-date average and Oura and Withings a sleep-session average, so the Google Health API projection's Period is the civil date in sourceEffective."
       ],
       "admittedSourceContext": {
-        "google-health-api": "providers.default",
-        "oura": "providers.default",
-        "withings": "providers.default"
+        "google-health-api": "providers.daily-mean",
+        "oura": "providers.session-mean",
+        "withings": "providers.session-mean"
+      },
+      "sourceEffective": {
+        "google-health-api": {
+          "type": "Period",
+          "start": "2026-08-20T00:00:00-07:00",
+          "end": "2026-08-21T00:00:00-07:00"
+        }
       }
     },
     {
@@ -2333,8 +2397,8 @@
         "The method coding asserts the aggregation window; the value is never a point Sleep Heart Rate sample."
       ],
       "admittedSourceContext": {
-        "oura": "providers.default",
-        "withings": "providers.default"
+        "oura": "providers.session-minimum",
+        "withings": "providers.session-mean"
       }
     },
     {
@@ -2400,8 +2464,8 @@
       },
       "effective": {
         "type": "Period",
-        "start": "2026-08-20T08:00:00-07:00",
-        "end": "2026-08-20T09:00:00-07:00"
+        "start": "2026-08-20T00:00:00-07:00",
+        "end": "2026-08-21T00:00:00-07:00"
       },
       "result": {
         "type": "Quantity",
@@ -2412,7 +2476,7 @@
       },
       "edgeRules": [
         "The Period is non-zero.",
-        "A populated step count is non-negative and represents the exact source interval, not an assumed 24-hour total."
+        "A populated step count is non-negative and is the total for the exact source interval, never extrapolated to a longer one."
       ],
       "admittedSourceContext": {
         "healthkit": "healthkit.default",
@@ -2445,7 +2509,7 @@
       ],
       "admittedSourceContext": {
         "healthkit": "healthkit.default",
-        "health-connect": "health-connect.default",
+        "health-connect": "health-connect.vo2-max",
         "google-health-api": "providers.default",
         "oura": "providers.default",
         "withings": "providers.default",
@@ -2503,7 +2567,7 @@
       ],
       "admittedSourceContext": {
         "healthkit": "healthkit.default",
-        "health-connect": "health-connect.default",
+        "health-connect": "health-connect.workout",
         "google-health-api": "providers.default",
         "oura": "providers.default",
         "withings": "providers.default"
