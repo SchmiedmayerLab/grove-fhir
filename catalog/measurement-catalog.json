@@ -9837,6 +9837,41 @@
         "other-workout",
         "unknown"
       ],
+      "additionalResultBindings": [
+        {
+          "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-workout-activity",
+          "allowedValues": [
+            "running",
+            "walking",
+            "cycling",
+            "hiking",
+            "swimming",
+            "strength-training",
+            "high-intensity-interval-training",
+            "yoga",
+            "pilates",
+            "rowing",
+            "elliptical",
+            "stair-climbing",
+            "dancing",
+            "tennis",
+            "table-tennis",
+            "badminton",
+            "squash",
+            "basketball",
+            "soccer",
+            "american-football",
+            "baseball",
+            "volleyball",
+            "golf",
+            "boxing",
+            "martial-arts",
+            "skiing",
+            "snowboarding",
+            "other"
+          ]
+        }
+      ],
       "components": [
         {
           "id": "repetitions",

@@ -198,6 +198,7 @@ PROJECTION_KEYS = (
     "resultCodes",
     "resultCodeSystem",
     "allowedValues",
+    "additionalResultBindings",
 )
 GROUND_TRUTH_FILES = (
     "catalog/terminology/loinc-concepts.json",

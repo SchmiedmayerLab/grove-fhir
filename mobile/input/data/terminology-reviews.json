@@ -2,7 +2,7 @@
   "schemaVersion": 0,
   "description": "The per-measurement terminology review record; profile generation refuses any measurement without an approved entry whose digest matches the measurement's current terminology projection.",
   "digestScope": "grove-terminology-projection-3",
-  "digestAlgorithm": "sha256 over the UTF-8 canonical JSON (sorted keys, separators ',' ':') of the terminology projection: the measurement's code, components, description, effective, hasMember, obeys, quantity, standardProfile, valueKind, valueSet, resultCodes, resultCodeSystem, and allowedValues fields, omitting null or absent fields.",
+  "digestAlgorithm": "sha256 over the UTF-8 canonical JSON (sorted keys, separators ',' ':') of the terminology projection: the measurement's code, components, description, effective, hasMember, obeys, quantity, standardProfile, valueKind, valueSet, resultCodes, resultCodeSystem, allowedValues, and additionalResultBindings fields, omitting null or absent fields.",
   "groundTruthFiles": [
     "catalog/terminology/loinc-concepts.json",
     "catalog/terminology/ucum-units.json",
@@ -4443,7 +4443,7 @@
     "workout-segment": {
       "status": "approved",
       "provenance": "reviewed",
-      "digest": "sha256:0e38af765f217821db292cff653cf973f14908ba7644ec633ac4124cfa7a35a8",
+      "digest": "sha256:62b42eb0e85b7a2103331b0b91011d042f7882550ce302f9cc9ccdc2f34c7da1",
       "preparedBy": [
         {
           "name": "terminology sweep drafting agent (concepts-workout-enums)",
@@ -4460,7 +4460,7 @@
       "reviewedOn": "2026-08-21",
       "recordedOn": "2026-08-21",
       "reviewRef": "pending-integration-commit",
-      "notes": "Implements the decided segments design: the sleep-duration hasMember mechanism, structural value codes for laps/pauses/markers/events, the four HC-only scalar components plus HK lap length as optional slices, and documented overlap permission for lap children. Lap children may overlap activity segments; HK metadata dictionaries ride the recording payload."
+      "notes": "Implements the decided segments design: the sleep-duration hasMember mechanism, structural value codes for laps/pauses/markers/events, the four HC-only scalar components plus HK lap length as optional slices, and documented overlap permission for lap children. Lap children may overlap activity segments; HK metadata dictionaries ride the recording payload. Catalog completeness correction: additionalResultBindings explicitly enumerates the existing GroveWorkoutActivityCS codes already included by the unchanged GroveWorkoutSegmentTypeVS; no code or value-set membership changed."
     },
     "biological-sex": {
       "status": "approved",
