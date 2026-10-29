@@ -27,7 +27,7 @@
       "const": "4.0.1"
     },
     "version": {
-      "const": "0.6.0"
+      "const": "0.7.0"
     },
     "canonicalRoot": {
       "const": "https://grovealliance.org/fhir/mobile/StructureDefinition"

@@ -3,9 +3,9 @@
   "contractLock": {
     "baseSourceRevision": "928db16ef8bfd86d2a171727d2d1cb9f8979a442",
     "baseExchangeProtocolSHA256": "bbc9e980c2c674d5ef6f9900958d29c5602031ead8a3b6325cff508799106bb5",
-    "releaseVersion": "0.6.0",
+    "releaseVersion": "0.7.0",
     "fhirVersion": "4.0.1",
-    "exchangeProtocolSHA256": "d185d15b1d2f99cec62ac0241e79d5efe27c85c31a454fe84437c04564c8e026"
+    "exchangeProtocolSHA256": "fec45c4aaa7c9b63b2db25cfb0b82088a61f061ef404cbb17073025649072768"
   },
   "events": {
     "original": {

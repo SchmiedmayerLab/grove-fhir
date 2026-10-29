@@ -5,7 +5,7 @@ SPDX-License-Identifier: MIT
 
 # Receiver Lifecycle Sequences
 
-These synthetic sequences exercise a declared receiver policy against grove-fhir 0.6.0.
+These synthetic sequences exercise a declared receiver policy against grove-fhir 0.7.0.
 They do not add a Bundle field, endpoint, receipt code, storage engine or universal disclosure policy to the IG.
 `events.json` pins the contract and exact fixture bytes. `sequences.json` covers eleven single-output lifecycle sequences; `revision-sequences.json` adds thirty-five complete-revision and ordering-conflict sequences.
 `identity-sequences.json` adds two arrival orders for a contradictory source-record claim under the same output identity.

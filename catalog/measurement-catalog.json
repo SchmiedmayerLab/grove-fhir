@@ -2,7 +2,7 @@
   "$schema": "https://grovealliance.org/fhir/catalog/schemas/measurement-catalog.schema.json",
   "schemaVersion": 0,
   "fhirVersion": "4.0.1",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "canonicalRoot": "https://grovealliance.org/fhir/mobile/StructureDefinition",
   "statusVocabulary": {
     "supported": "The named adapter emits and validates this exact catalog semantic profile under the Grove FHIR contracts.",

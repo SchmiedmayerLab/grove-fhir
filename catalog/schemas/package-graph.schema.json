@@ -10,7 +10,7 @@
     "$schema": { "const": "https://grovealliance.org/fhir/catalog/schemas/package-graph.schema.json" },
     "schemaVersion": { "const": 0 },
     "fhirVersion": { "const": "4.0.1" },
-    "version": { "const": "0.6.0" },
+    "version": { "const": "0.7.0" },
     "canonicalRoot": { "const": "https://grovealliance.org/fhir" },
     "packages": {
       "type": "array",

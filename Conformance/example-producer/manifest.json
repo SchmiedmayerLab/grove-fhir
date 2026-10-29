@@ -9,12 +9,12 @@
     {
       "alias": "mobile",
       "packageId": "org.grovealliance.fhir.mobile",
-      "version": "0.6.0"
+      "version": "0.7.0"
     },
     {
       "alias": "questionnaire",
       "packageId": "org.grovealliance.fhir.questionnaire",
-      "version": "0.6.0"
+      "version": "0.7.0"
     }
   ],
   "resources": [

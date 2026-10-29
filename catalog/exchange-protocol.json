@@ -1,9 +1,9 @@
 {
   "$schema": "https://grovealliance.org/fhir/catalog/schemas/exchange-protocol.schema.json",
   "schemaVersion": 0,
-  "version": "0.6.0",
+  "version": "0.7.0",
   "protocolVersion": 0,
-  "releaseVersion": "0.6.0",
+  "releaseVersion": "0.7.0",
   "fhirVersion": "4.0.1",
   "profiles": {
     "activeBundle": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle",

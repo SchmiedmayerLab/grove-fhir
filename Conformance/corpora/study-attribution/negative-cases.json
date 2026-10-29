@@ -1,6 +1,6 @@
 {
   "schemaVersion": 0,
-  "version": "0.6.0",
+  "version": "0.7.0",
   "bases": [
     {"id": "source-event", "path": "source-event.json"},
     {"id": "export-a", "path": "export-a.json"}

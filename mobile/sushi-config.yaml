@@ -14,7 +14,7 @@ description: >-
   FHIR R4 contracts for exchanging source-neutral mobile health measurements,
   device and application snapshots, lifecycle events, and conversion provenance.
 status: draft
-version: 0.6.0
+version: 0.7.0
 fhirVersion: 4.0.1
 copyrightYear: 2026+
 releaseLabel: ci-build

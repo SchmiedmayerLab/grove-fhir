@@ -187,7 +187,7 @@ def generated_files():
     manifest["semanticVectors"][0]["path"] = "source-event.json"
     files[CORPUS / "official-validator-manifest.json"] = encoded(manifest)
     files[CORPUS / "event-lock.json"] = encoded({
-        "baseSourceRevision": "928db16ef8bfd86d2a171727d2d1cb9f8979a442", "releaseVersion": "0.6.0",
+        "baseSourceRevision": "928db16ef8bfd86d2a171727d2d1cb9f8979a442", "releaseVersion": "0.7.0",
         "eventIdentity": source["identifier"], "sourceEventSHA256": hashlib.sha256(encoded(source).encode()).hexdigest(),
         "outputPointer": "/entry/2/resource",
         "protocols": {"a": {"url": "https://study.example.org/PlanDefinition/a", "version": "1"}, "b": {"url": "https://study.example.org/PlanDefinition/b", "version": "3"}},
