@@ -155,6 +155,9 @@ def read_ppg_counts(
     payload: bytes,
 ) -> tuple[dict[str, int], list[Decimal], list[tuple[int, list[int], int]]]:
     reader = PPGReader(payload)
+    version = reader.take(1)[0]
+    if version != 1:
+        raise ValueError(f"unsupported PPG version {version}")
     optical_sample_count = 0
     accelerometer_sample_count = 0
     payload_instants: list[Decimal] = []
@@ -656,6 +659,7 @@ class SensorKitRecordingExampleTests(unittest.TestCase):
         negative_two = b"\xfe" + b"\xff" * 8 + b"\x01"
         unsigned_int64_high_bit = b"\x80" * 9 + b"\x01"
         full_record = b"".join((
+            b"\x01",  # version
             b"\x01",  # record count
             struct.pack(">d", 1_787_209_200.0),
             b"\x07",  # record offset from the session start anchor
@@ -742,6 +746,14 @@ class SensorKitRecordingExampleTests(unittest.TestCase):
                 for value in payload_instants
             )
         )
+
+    def test_ppg_payload_starts_with_its_version(self) -> None:
+        payload = attachment_bytes(self.blocks["SensorKitPPGDocumentExample"])
+        self.assertEqual(payload[0], 1)
+        with self.assertRaisesRegex(ValueError, "unsupported PPG version 2"):
+            read_ppg_counts(bytes([2]) + payload[1:])
+        with self.assertRaisesRegex(ValueError, "truncated PPG payload"):
+            read_ppg_counts(b"")
 
     def test_wrist_temperature_count_and_coverage_come_from_the_registered_csv(self) -> None:
         document = self.blocks["SensorKitWristTemperatureDocumentExample"]

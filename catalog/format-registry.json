@@ -608,7 +608,7 @@
           "set": "Canonical set: reject duplicate logical values, sort unique values in ascending numeric order, then encode the count and elements. Decoders reject duplicate or non-ascending elements.",
           "optional": "One boolean presence byte; when true, the value follows."
         },
-        "file": "Varint record count, then that many PPG records.",
+        "file": "Version byte 0x01, then a varint record count, then that many PPG records. Decoders reject any other version byte; a payload whose grammar changes takes the next version.",
         "record": [
           {
             "field": "startDate",
