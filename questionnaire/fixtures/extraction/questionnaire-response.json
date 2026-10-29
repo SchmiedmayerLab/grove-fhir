@@ -56,7 +56,7 @@
     "value": "home-vitals-2026-08-28"
   },
   "language": "en-US",
-  "questionnaire": "https://grovealliance.org/fhir/questionnaire/Questionnaire/GroveHomeVitalsExample|0.6.0",
+  "questionnaire": "https://grovealliance.org/fhir/questionnaire/Questionnaire/GroveHomeVitalsExample|0.7.0",
   "status": "completed",
   "subject": {
     "reference": "Patient/GroveQuestionnairePatientExample"
