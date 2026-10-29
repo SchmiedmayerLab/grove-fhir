@@ -102,6 +102,7 @@ jobs:
           path: |
             ${{ matrix.guide }}/output/qa.html
             ${{ matrix.guide }}/output/qa.json
+            ${{ matrix.guide }}/output/package.tgz
             ${{ matrix.guide }}/fsh-generated/resources/ImplementationGuide-*.json
       - uses: actions/upload-artifact@v7
         with:

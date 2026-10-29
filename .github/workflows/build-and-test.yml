@@ -360,6 +360,7 @@ jobs:
           path: |
             */output/qa.html
             */output/qa.json
+            */output/package.tgz
             */fsh-generated/resources/ImplementationGuide-*.json
 
   guides:
