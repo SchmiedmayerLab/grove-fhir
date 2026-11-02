@@ -245,6 +245,33 @@ class MeasurementCatalogTests(unittest.TestCase):
                 )
                 self.assertEqual(measurement.get("owner", "mobile"), "mobile")
 
+    def test_questionnaire_unit_conversions_name_other_units_of_questionnaire_measurements(self) -> None:
+        catalog = json.loads((ROOT / "catalog/measurement-catalog.json").read_text(encoding="utf-8"))
+        quantities = []
+        for measurement in catalog["measurements"]:
+            quantities.append((measurement, measurement.get("quantity")))
+            for component in measurement.get("components") or []:
+                quantities.append((measurement, component.get("quantity")))
+        declared = {}
+        for measurement, quantity in quantities:
+            conversions = (quantity or {}).get("questionnaireUnitConversions")
+            if not conversions:
+                continue
+            with self.subTest(measurement=measurement["id"]):
+                # Only an answer to a Questionnaire is converted; every other source records the measurement's own unit.
+                self.assertEqual(measurement["coverage"]["questionnaire"], "supported")
+                codes = [conversion["code"] for conversion in conversions]
+                self.assertEqual(len(codes), len(set(codes)))
+                self.assertNotIn(quantity["code"], codes)
+                for conversion in conversions:
+                    self.assertEqual(conversion["system"], "http://unitsofmeasure.org")
+                    self.assertGreater(conversion["factor"], 0)
+                    self.assertTrue(conversion["basis"])
+                declared[measurement["id"]] = {
+                    conversion["code"]: conversion["factor"] for conversion in conversions
+                }
+        self.assertEqual(declared, {"blood-glucose-unspecified-specimen": {"mmol/L": 18.0156}})
+
     def test_full_url_vectors_use_the_normative_framed_identifier_pair(self) -> None:
         from Scripts import exchange_protocol
 

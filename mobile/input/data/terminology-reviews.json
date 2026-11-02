@@ -292,7 +292,7 @@
     "blood-glucose-unspecified-specimen": {
       "status": "approved",
       "provenance": "reviewed",
-      "digest": "sha256:5240f8145ba0d9cf6e8813ed8c30093ee8598f1c7f45a11d2b312f49b21a3093",
+      "digest": "sha256:8a9cfbc79d4596bb69d12007e2c92a0ec597d5be8ad3891dcf69c7bfef6568d3",
       "preparedBy": [
         {
           "name": "terminology sweep drafting agent (concepts-quantity)",
@@ -309,7 +309,7 @@
       "reviewedOn": "2026-08-21",
       "recordedOn": "2026-08-21",
       "reviewRef": "pending-integration-commit",
-      "notes": "2339-0 is already pinned and ratified (LOINC 2.82, ACTIVE, MCnc, Qn); its system Bld does not assert a sub-specimen, so the unspecified-specimen reading is faithful, and disjointness from the Health Connect whole-blood profile (same code plus REQUIRED SNOMED 258580003 specimen) is enforced by the required-ABSENT specimen rule. Verified in catalog/providers-adapter.json that google-health-api blood-glucose is deferred precisely because 'the consumed source shape has no specimen evidence', so HealthKit and Google Health API both evidence the specimen-less form (two sources). mg/dL parses under pinned UCUM 2.2 with dimension {g:1,m:-3}, matching MCnc; effective dateTime for a point result."
+      "notes": "2339-0 is already pinned and ratified (LOINC 2.82, ACTIVE, MCnc, Qn); its system Bld does not assert a sub-specimen, so the unspecified-specimen reading is faithful, and disjointness from the Health Connect whole-blood profile (same code plus REQUIRED SNOMED 258580003 specimen) is enforced by the required-ABSENT specimen rule. Verified in catalog/providers-adapter.json that google-health-api blood-glucose is deferred precisely because 'the consumed source shape has no specimen evidence', so HealthKit and Google Health API both evidence the specimen-less form (two sources). mg/dL parses under pinned UCUM 2.2 with dimension {g:1,m:-3}, matching MCnc; effective dateTime for a point result. Questionnaire unit conversion: quantity.questionnaireUnitConversions admits UCUM mmol/L (parses under pinned UCUM 2.2, mol being dimensionless) with factor 18.0156, from glucose's molar mass of 180.156 g/mol (C6H12O6), so 1 mmol/L = 180.156 mg/L = 18.0156 mg/dL; the extracted Observation keeps code 2339-0 and unit mg/dL, so MCnc and the profile are unchanged."
     },
     "blood-pressure": {
       "status": "approved",

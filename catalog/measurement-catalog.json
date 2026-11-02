@@ -1010,7 +1010,16 @@
         "dimension": {
           "g": 1,
           "m": -3
-        }
+        },
+        "questionnaireUnitConversions": [
+          {
+            "system": "http://unitsofmeasure.org",
+            "code": "mmol/L",
+            "unit": "mmol/L",
+            "factor": 18.0156,
+            "basis": "Glucose has a molar mass of 180.156 g/mol, so 1 mmol/L of glucose is 180.156 mg/L, or 18.0156 mg/dL."
+          }
+        ]
       },
       "effective": "dateTime",
       "forbiddenElements": [

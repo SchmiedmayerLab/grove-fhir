@@ -61,9 +61,13 @@ Unit semantics originate in the Questionnaire; a form filler must not invent the
 The form filler presents the declared units and preserves the selected coded unit in the response.
 A unit option is a Coding, so its display must be one the code system publishes: UCUM `mm[Hg]` displays as `mm[Hg]`, never as `mmHg`.
 The response answer repeats that selected display, and the projection then normalizes it to the `quantity.unit` its measurement records in [`catalog/measurement-catalog.json`](https://grovealliance.org/fhir/catalog/measurement-catalog.json); no Grove profile fixes `Quantity.unit`, so the catalog is the only authority for it.
-The coded unit and the value are carried through untouched.
+An answer in the measurement's own unit carries its coded unit and value through untouched.
+A measurement may also declare `quantity.questionnaireUnitConversions`: further units a Questionnaire may ask in, each with the factor that converts an answer into the measurement's unit and the basis that factor rests on.
+Extraction multiplies an answer given in such a unit by its factor and records the product in the measurement's coded unit; the QuestionnaireResponse keeps the answer as given, and the Observation's `derivedFrom` reaches it.
+Blood glucose, for example, declares UCUM `mmol/L` with factor 18.0156, from glucose's molar mass of 180.156 g/mol, so an instrument can ask in the unit UK laboratories report while every extracted glucose Observation stays in `mg/dL`.
+An answer in a unit the measurement neither fixes nor declares is refused.
 An item without a usable unit declaration cannot safely target a measurement profile that fixes a unit.
-Likewise, a body-weight item that permits only UCUM `[lb_av]` cannot produce an Observation conforming to a body-weight profile fixed to UCUM `kg` without an explicitly defined conversion.
+Likewise, a body-weight item that permits only UCUM `[lb_av]` cannot produce an Observation conforming to a body-weight profile fixed to UCUM `kg` unless the body-weight measurement declares that conversion.
 
 ### Home Vitals extraction example
 

@@ -240,6 +240,34 @@
         }
       }
     },
+    "questionnaireUnitConversion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["system", "code", "unit", "factor", "basis"],
+      "properties": {
+        "system": {
+          "const": "http://unitsofmeasure.org"
+        },
+        "code": {
+          "type": "string",
+          "minLength": 1
+        },
+        "unit": {
+          "type": "string",
+          "minLength": 1
+        },
+        "factor": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "The number of the measurement's units in one of this unit."
+        },
+        "basis": {
+          "type": "string",
+          "minLength": 1,
+          "description": "What the factor rests on, such as the molar mass a conversion between molar and mass concentration needs."
+        }
+      }
+    },
     "quantity": {
       "type": "object",
       "additionalProperties": false,
@@ -283,6 +311,14 @@
         },
         "unitMustSupport": {
           "type": "boolean"
+        },
+        "questionnaireUnitConversions": {
+          "type": "array",
+          "minItems": 1,
+          "description": "Units other than the measurement's own in which a Questionnaire may ask for it. Extraction multiplies an answer given in such a unit by its factor and records the product in the measurement's unit.",
+          "items": {
+            "$ref": "#/$defs/questionnaireUnitConversion"
+          }
         }
       },
       "allOf": [
