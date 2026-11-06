@@ -18,14 +18,20 @@ Instance: SensorKitDeviceExample
 InstanceOf: GroveRecordingDevice
 Usage: #example
 Title: "SensorKit Example Recording Device"
-Description: "The watch that captured the example SensorKit streams."
-* identifier[physicalUnit].system = "https://study.example.org/fhir/NamingSystem/grove-recording-device-v0/test-key/1"
-* identifier[physicalUnit].value = "v0:test-key:1:cJAjPtBEVCTnnwsMUKciYeJx6OfRsikB6q-K3SWVFKs"
-* identifier[eventSnapshot].system = "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v0/test-key/1"
-* identifier[eventSnapshot].value = "v0:test-key:1:ATVCLxSureccbQ7AwmvG6NNLUi_ZS4Puw5HD7HonXPI"
+Description: "The watch that captured the example SensorKit streams, with every fact its SRDevice exposes: the name a person gave it, its model, its operating-system name and version, and its product type. SensorKit gives no stable per-unit token, so it carries only its device-snapshot content key; an equal snapshot never proves the same physical unit."
+* identifier[snapshot].system = "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v0/test-key/1"
+* identifier[snapshot].value = "v0:test-key:1:6FYt90zfGaQ9oTcPOh2L7dgYZ7oGeSHTtNQ7xooCG6g"
 * status = #active
-* manufacturer = "Example Manufacturer"
+* deviceName[+].name = "Participant's Watch"
+* deviceName[=].type = #user-friendly-name
+* deviceName[+].name = "Apple Watch"
+* deviceName[=].type = #model-name
+* modelNumber = "Watch7,1"
 * type.text = "Watch"
+* version[operatingSystemName].type = $groveApplicationVersionType#os-name "Operating system name"
+* version[operatingSystemName].value = "watchOS"
+* version[operatingSystemVersion].type = $groveApplicationVersionType#os-version "Operating system version"
+* version[operatingSystemVersion].value = "11.2"
 
 Instance: SensorKitApplicationExample
 InstanceOf: GroveApplicationDevice
@@ -34,7 +40,7 @@ Title: "SensorKit Converting Application"
 Description: "The application that transforms already-obtained SensorKit records into the FHIR graph."
 * status = #active
 * identifier[applicationSnapshot].system = "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v0/test-key/1"
-* identifier[applicationSnapshot].value = "v0:test-key:1:oPo1uGEd7tR0bTNv5UKq2L-4mHGX86JdNrqB3aYW1LE"
+* identifier[applicationSnapshot].value = "v0:test-key:1:lkD5mwC_VmiSaernPMS8S3YdGo1wk7OHcA_hCkO6Z10"
 * deviceName[applicationName].name = "SensorKit Mapper"
 * deviceName[applicationName].type = #user-friendly-name
 
@@ -66,7 +72,10 @@ Instance: SensorKitRotationRateProvenanceExample
 InstanceOf: SensorKitConversionProvenance
 Usage: #example
 Title: "SensorKit Rotation-rate Conversion Provenance"
-Description: "The transformation event linking one SensorKit source record to its structured SampledData output."
+Description: "The one conversion Provenance of a SensorKit record, linking its source record to its structured SampledData output."
+* extension[recordVersion].valueIdentifier.type = $groveIdentifierRole#record-version "Record version"
+* extension[recordVersion].valueIdentifier.system = "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1"
+* extension[recordVersion].valueIdentifier.value = "v0:test-key:1:eKKFU9cmMtGSAxiU-hdc4nvW8wl1gKQnGIzIGs9VQM8"
 * target = Reference(SensorKitRotationRateExample)
 * occurredDateTime = "2026-08-20T16:00:01Z"
 * recorded = "2026-08-20T16:00:01Z"
@@ -135,7 +144,10 @@ Instance: SensorKitECGProvenanceExample
 InstanceOf: SensorKitConversionProvenance
 Usage: #example
 Title: "SensorKit ECG Conversion Provenance"
-Description: "One conversion event targets both the structured waveform and exact native companion for the same SensorKit source record."
+Description: "The record's one conversion Provenance targets both the structured waveform and exact native companion for the same SensorKit source record."
+* extension[recordVersion].valueIdentifier.type = $groveIdentifierRole#record-version "Record version"
+* extension[recordVersion].valueIdentifier.system = "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1"
+* extension[recordVersion].valueIdentifier.value = "v0:test-key:1:8FSD81PdG2ycNu8tyVNQCfo1M3CiMg3MvSqmfQl39QU"
 * target[+] = Reference(SensorKitECGExample)
 * target[+] = Reference(SensorKitECGDocumentExample)
 * occurredDateTime = "2026-08-20T16:10:01Z"
@@ -204,7 +216,10 @@ Instance: SensorKitInverseECGProvenanceExample
 InstanceOf: SensorKitConversionProvenance
 Usage: #example
 Title: "SensorKit Inverse-Lead ECG Conversion Provenance"
-Description: "One conversion event targets both inverse-lead ECG representations for the same SensorKit source record."
+Description: "The record's one conversion Provenance targets both inverse-lead ECG representations for the same SensorKit source record."
+* extension[recordVersion].valueIdentifier.type = $groveIdentifierRole#record-version "Record version"
+* extension[recordVersion].valueIdentifier.system = "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1"
+* extension[recordVersion].valueIdentifier.value = "v0:test-key:1:GTY-tn0lU7-5fFqWXVYrFxTsulhteJEKN-FGMVETNik"
 * target[+] = Reference(SensorKitInverseECGExample)
 * target[+] = Reference(SensorKitInverseECGDocumentExample)
 * occurredDateTime = "2026-08-20T16:12:01Z"
@@ -321,7 +336,10 @@ Instance: SensorKitDeviceUsageProvenanceExample
 InstanceOf: SensorKitConversionProvenance
 Usage: #example
 Title: "SensorKit Device-usage Conversion Provenance"
-Description: "One conversion event targeting both the structured summary and required native Recording Document for the same source record."
+Description: "The record's one conversion Provenance targets both the structured summary and required native Recording Document for the same source record."
+* extension[recordVersion].valueIdentifier.type = $groveIdentifierRole#record-version "Record version"
+* extension[recordVersion].valueIdentifier.system = "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1"
+* extension[recordVersion].valueIdentifier.value = "v0:test-key:1:lvDu5tzVaRQKWISwSBkVs_vBnZsalqbrZrUhjopoo74"
 * target[+] = Reference(SensorKitDeviceUsageExample)
 * target[+] = Reference(SensorKitDeviceUsageDocumentExample)
 * occurredDateTime = "2026-08-20T15:15:01Z"

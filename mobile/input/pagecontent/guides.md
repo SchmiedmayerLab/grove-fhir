@@ -51,7 +51,7 @@ Producer implementations use these files to select profiles, map source data, an
 | [sensor-catalog.json](https://grovealliance.org/fhir/catalog/sensor-catalog.json) | The source-neutral sensor recording and time-series contract |
 | [profile-claims.json](https://grovealliance.org/fhir/catalog/profile-claims.json) | The exact profile sets a conformant resource must claim, per output kind |
 | [package-graph.json](https://grovealliance.org/fhir/catalog/package-graph.json) | The dependency graph between the ten guide packages |
-| [exchange-protocol.json](https://grovealliance.org/fhir/catalog/exchange-protocol.json) | The normative identity, event, lifecycle, graph-key, and payload contract, including language-independent conformance test vectors |
+| [exchange-protocol.json](https://grovealliance.org/fhir/catalog/exchange-protocol.json) | The normative identity, record, record-version, lifecycle, entry-key, canonical JSON, and payload contract, including language-independent conformance test vectors |
 | [release-manifest.json](https://grovealliance.org/fhir/catalog/release-manifest.json) | The coordinated release version, FHIR release, package identities, exact direct dependencies, catalogs, and publication state |
 
 ### Status vocabulary

@@ -51,9 +51,9 @@ A native Recording Document also carries a `provider-artifact` identity under th
 These provider-specific HMAC kinds cannot alias the adapter-scoped `source-output` and `source-artifact` kinds.
 Writer identity is emitted only when the payload supplies a complete writer-application pair and logical writer record id; provider code plus native id is not evidence that two ingestion channels name the same logical record.
 
-The Bundle owns the event Identifier `e0:<producer-instance-uuid>:<positive-sequence>`; Provenance is an event-scoped entry node rather than a second event business identifier.
-A byte-identical retry reuses the event identity, times, graph keys, and payload.
-New or corrected content receives a new event sequence.
+Each provider record is one record of the exchange: its outputs and one conversion Provenance, keyed by its record version, the keyed `record-version` Identifier over its source-record pair and the canonical content of the Provenance and its outputs; the Provenance repeats it in `grove-record-version`.
+`Bundle.identifier` is an optional, untyped transport id and `Bundle.timestamp` the packing time; neither enters any identity, so one Bundle may carry the records of several provider records.
+An exact retry repeats the record version, times, entry keys, and payload; new or corrected content is a new version of the provider record, ordered by writer version where the payload supplies one and otherwise by `Provenance.recorded`.
 The protocol and language-independent conformance test vectors in [`catalog/exchange-protocol.json`](https://grovealliance.org/fhir/catalog/exchange-protocol.json) are normative.
 
 Business identifiers are not copied into `Resource.id`.

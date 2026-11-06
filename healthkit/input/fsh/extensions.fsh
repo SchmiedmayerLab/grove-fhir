@@ -150,7 +150,7 @@ Context: Observation.value[x]
 Extension: HealthKitSourceRevision
 Id: healthkit-source-revision
 Title: "HealthKit Source Revision"
-Description: "What the HKSourceRevision of the consumed HealthKit object supplies about its source, on a conversion Provenance source entity that names no author agent. It describes the object rather than an actor: it states neither that the source is an application nor that it is a device, and it is no identity. sourceName and sourceBundleIdentifier are carried only under an explicit deployment disclosure authorization, because they can name and identify a person's device; version, productType, and operatingSystemVersion are carried by default. The two members that hold HKSource properties take a source prefix so that no bare name reads as the converter's; the other three are named as their HKSourceRevision properties."
+Description: "What the HKSourceRevision of the consumed HealthKit object supplies about its source, on a conversion Provenance source entity that names no author agent. It describes the object rather than an actor: it states neither that the source is an application nor that it is a device, and it is no identity. Every member is carried by default: the producer emits every source fact and consumers filter what they do not need, although sourceName and sourceBundleIdentifier can name and identify a person's device. A deployment disclosure policy may withhold any member. The two members that hold HKSource properties take a source prefix so that no bare name reads as the converter's; the other three are named as their HKSourceRevision properties."
 Context: Provenance.entity
 * extension contains
     sourceName 0..1 MS and

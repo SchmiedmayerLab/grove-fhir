@@ -6,13 +6,13 @@ SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTR
 SPDX-License-Identifier: MIT
 -->
 
-This walkthrough follows one HealthKit heart-rate sample into a conformant Grove FHIR HealthKit exchange event.
+This walkthrough follows one HealthKit heart-rate sample into a conformant Grove FHIR HealthKit record and the exchange Bundle that carries it.
 The linked examples illustrate the individual adapter resources; the [Mobile exchange example](https://grovealliance.org/fhir/mobile/Bundle-GroveMobileExchangeBundleExample.html) shows the complete operational Bundle shape.
 
 ### 1. Establish conversion context
 
 The application fetches the HealthKit object before conversion.
-The producer supplies facts the sample cannot establish: the receiving-system Patient reference, a stable HealthKit-store scope, the converting application and host snapshots, an event-system/producer sequence, and a managed v0 HMAC key identifier and positive epoch.
+The producer supplies facts the sample cannot establish: the receiving-system Patient reference, a stable HealthKit-store scope, the converting application and host snapshots, and a managed v0 HMAC key identifier and positive epoch.
 The key published with the conformance examples is for testing only and must not be used in production.
 
 For the illustrated record, the source coordinates are:
@@ -71,9 +71,9 @@ The exact source type remains in the adapter-lineage extension beside LOINC `886
 
 ### 4. Represent device roles
 
-The [recording Device](Device-HealthKitRecordingDeviceExample.html) exists only because the caller supplied a governed stable per-unit token.
-It carries both a stable `recording-device` identity and an event-scoped `device-snapshot` identity.
-Descriptive manufacturer/model/version fields alone would require the Device to be omitted.
+The [recording Device](Device-HealthKitRecordingDeviceExample.html) exists because the sample states an `HKDevice`, and it carries every field that `HKDevice` and the sample's device metadata keys supply.
+It always carries a content `device-snapshot` identity, and it carries a stable `recording-device` identity too only when the caller supplies a governed stable per-unit token, scoped by the writing source's bundle identifier.
+Without that token the Device is still emitted and referenced, with its snapshot identity only; descriptive manufacturer, model, and version fields never prove one physical unit.
 
 The [converting application](Device-HealthKitApplicationDeviceExample.html) and [host](Device-HealthKitHostDeviceExample.html) are distinct immutable snapshots linked through `Device.parent`.
 Application release and build are separate typed versions; operating-system version belongs to the host.
@@ -82,21 +82,22 @@ An Apple bundle-identifier pair names the application product but is not an inst
 ### 5. Record the conversion with Provenance
 
 The [conversion Provenance](Provenance-HealthKitConversionProvenanceExample.html) targets the output, records the source activity time separately from mandatory `recorded`, names the converter as assembler, and carries the same typed source-record Identifier as its source entity.
-In an operational event its entry gets an event-scoped `n0:` node key; Provenance does not invent a second event business identifier.
+Its entry key is the record version, a keyed `record-version` Identifier over the source-record pair and the canonical content of the Provenance and the Observation, and the Provenance repeats it in the `grove-record-version` extension; Provenance does not invent another business identifier.
 
-### 6. Assemble one immutable event
+### 6. Assemble the record into a Bundle
 
+The sample's record is its Observation, the conversion Provenance, and the nodes they reference.
 The operational Bundle conforms to [Grove Mobile Exchange Bundle](https://grovealliance.org/fhir/mobile/StructureDefinition-grove-mobile-exchange-bundle.html):
 
-- `Bundle.identifier` alone owns `e0:<producer-instance-uuid>:<positive-sequence>`;
-- the Bundle contains every output for exactly this source-record revision and exactly one conversion Provenance;
+- it carries this record, and it may carry the records of other samples of the same participant, sharing one entry for each Device and context node they have in common;
+- each record has every output for exactly its source-record revision and exactly one conversion Provenance;
 - every entry has one selected complete entry key and a deterministic lowercase UUIDv5 `fullUrl`;
-- `Bundle.timestamp`, `Provenance.occurred[x]`, and `Provenance.recorded` keep their separate meanings; and
+- `Bundle.identifier` is optional and untyped, and `Bundle.timestamp` is the packing time; neither enters any identity, while `Provenance.occurred[x]` and `Provenance.recorded` keep their separate meanings; and
 - collection entries contain no FHIR request/response operations.
 
-An exact retry reuses the event identity, all three times, entry keys, and payload.
-Changed source content or revision receives a new event.
-A later source deletion produces a separate [retraction Bundle](https://grovealliance.org/fhir/mobile/Bundle-GroveMobileRetractionBundleExample.html) that identifies prior outputs without copying their clinical values or issuing a server DELETE.
+An exact retry repeats the record-version key and the content of every resource of the record, in whatever Bundle it travels.
+Changed source content, a source revision, or a re-conversion with a new `Provenance.recorded` is a new version of the record, which a receiver orders by writer version, then `recorded`.
+A later source deletion produces a separate [retraction Bundle](https://grovealliance.org/fhir/mobile/Bundle-GroveMobileRetractionBundleExample.html) that retracts the whole source record without copying its clinical values or issuing a server DELETE.
 
 The [HealthKit study Bundle](Bundle-HealthKitStudyBundleExample.html) illustrates how the participant, protocol, enrollment, devices, Observation, and Provenance relate.
 It is a documentation example, not the operational exchange unit.

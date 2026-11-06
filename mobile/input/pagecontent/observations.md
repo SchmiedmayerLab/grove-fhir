@@ -54,7 +54,7 @@ This exact-two rule prevents a producer from presenting ambiguous adapter or mea
 | What was the result? | `value[x]`, `component`, or `hasMember` | Required unless `dataAbsentReason` explains absence with a FHIR data-absent-reason code |
 | Where on the body? | `bodySite` | SNOMED CT, only when the source states it |
 | Which measurement technique? | `method` | Fixed by aggregate and ECG profiles; otherwise SNOMED CT or a Grove code system, when the source states it |
-| Which hardware measured it? | `device` | Device, when known and governed |
+| Which hardware measured it? | `device` | Recording Device, whenever the source states it; a stable unit identity is optional |
 | How was it captured? | `grove-recording-method` | Only when the source positively establishes the mode |
 | Which app mediated it? | `observation-gatewayDevice` | Only when the application actually mediated the measurement |
 | Which study applies? | `workflow-researchStudy` | ResearchStudy reference, when applicable |
@@ -104,18 +104,22 @@ These are source-representation rules, not invented physiologic plausibility ran
 An Observation identifier is a business identifier, not the FHIR server's resource id.
 Every Grove output carries separately typed source-record and source-output Identifiers.
 Their systems are deployment-owned and immutable for one identity kind, scope, HMAC key id, and key epoch; their values use the `v0:<key-id>:<epoch>:<digest>` form.
-A deployment should name each system `<deployment-root>/NamingSystem/grove-<identity-kind>-v0/<key-id>/<epoch>`, the event Bundle identifier system `<deployment-root>/NamingSystem/grove-event-v0`, and the entry-node system `<deployment-root>/NamingSystem/grove-entry-node-v0`.
+A deployment should name each system `<deployment-root>/NamingSystem/grove-<identity-kind>-v0/<key-id>/<epoch>`, including the systems that key a Provenance: `<deployment-root>/NamingSystem/grove-record-version-v0/<key-id>/<epoch>` for a record version and `<deployment-root>/NamingSystem/grove-record-retraction-v0/<key-id>/<epoch>` for a record retraction.
 The form carries the identity kind, the protocol version, the key id, and the epoch, so a receiver reads them from the namespace itself and the same key material names the same namespace on every platform.
-The normative test vectors use it under the root `https://study.example.org/fhir`; a deployment that already governs its own namespaces remains conformant.
+The normative test vectors use that system form, with key id `test-key`, under the root `https://study.example.org/fhir`; a deployment that already governs its own namespaces remains conformant.
+A key id names exactly one key for the deployment's lifetime: a deployment that cannot prove it still holds the same key, such as one that re-mints a lost key, uses a new key id.
+The recommended key id is a deployment prefix followed by the first 8 characters of the key's fingerprint for the subject, defined in `opaqueIdentity.keyId`; because the fingerprint is per subject, a key that several subjects share never puts one key id into all of their identifiers.
 The exact component order and unsigned 32-bit length-framed UTF-8 preimage are normative in [`catalog/exchange-protocol.json`](https://grovealliance.org/fhir/catalog/exchange-protocol.json). Each catalog-named identity component is a non-empty Unicode-scalar string; missing, empty, additional, reordered, or non-scalar components are errors.
 A `part-index` component is the zero-based position of a preserved payload part as a canonical unsigned decimal: `0`, or a nonzero digit followed by digits, with no sign or leading zero.
 The three identifier roles answer different questions.
 
 | Role | Names | Derived from | When the platform revises the record in place |
 |---|---|---|---|
-| `source-record` | the exact source record the graph was converted from | adapter id, source type, repository scope, and the native record identifier; a provider adapter uses its provider code and scope | unchanged |
+| `source-record` | the exact source record the record was converted from | adapter id, source type, repository scope, and the native record identifier; a provider adapter uses its provider code and scope | unchanged |
 | `source-output` | one exact output of that record, told apart by output role and discriminator | the source-record components plus the output role and discriminator | unchanged, so a receiver supersedes the output in place |
-| `writer-record` | the logical record identity assigned by the application that wrote the source record | an opaque identity over the writer application and its record identifier, present when the platform supplies them, with the version in the writer-record-version extension | unchanged; the version orders the revisions |
+| `writer-record` | the logical record identity assigned by the application that wrote the source record | an opaque identity over the subject, the writer application, and its record identifier, present when the platform supplies them, with the version in the writer-record-version extension | unchanged; the version orders the revisions |
+
+Every conversion also names its own version of the source record: the conversion Provenance is keyed by a `record-version` Identifier over the source-record pair and the canonical content of the Provenance and its outputs, so a revision, a re-conversion, or any changed byte gives a new record version while these three roles stay unchanged.
 
 The opaque Grove identifiers are mandatory even when a deployment intentionally discloses a source-native identifier for round-trip or traceability.
 That optional identifier belongs only on the designated one-to-one primary output (or on the source Recording Document when no structured output exists).
@@ -131,8 +135,9 @@ Preserve meaningful source order, time, multiplicity, or ordinal in a FHIR eleme
 
 Intentional source-identifier disclosure is separate from accidental propagation.
 A source-native value is never `Resource.id`, a Bundle entry key, a retraction address, an arbitrary Observation component, or untyped metadata.
-Do not incidentally copy it into Attachment titles or URLs, transport/object names, or logs.
+Do not incidentally copy it into Attachment titles or URLs, `Bundle.identifier`, transport/object names, or logs.
 A deployment may deliberately use the value in a separately governed non-FHIR storage contract.
+Every export a deployment makes of received records strips every governed source identifier and every `grove-retraction-target-native-identifier` extension: a native value that other applications also read would join an exported copy back to their data record by record.
 HMAC reduces identifier disclosure but does not de-identify clinical content, timestamps, references, or attachments; a repository may assign or replace `Resource.id` independently.
 
 ### Codes and quantities
@@ -155,23 +160,41 @@ Reject a source that does not establish blood glucose or supplies an unsupported
 
 ### Exchange graph
 
-The normative producer output is a [Grove Mobile Exchange Bundle](StructureDefinition-grove-mobile-exchange-bundle.html), a FHIR `collection` Bundle for exactly one immutable source-record revision.
-The Bundle has one typed event Identifier (`e0:<producer-instance-uuid>:<positive-sequence>`), a mandatory assembly timestamp, and exactly one transform Provenance that records source occurrence and assertion times and targets every output.
+The normative producer output is a [Grove Mobile Exchange Bundle](StructureDefinition-grove-mobile-exchange-bundle.html), a FHIR `collection` Bundle that carries one or more records of one subject.
+A record is one immutable source-record revision, every output derived from it, and exactly one transform Provenance that records source occurrence and assertion times and targets every one of those outputs.
+Every output in the Bundle is targeted by exactly one Provenance, and each Provenance names exactly one source record.
+Two versions of one source record never share a Bundle, because their outputs share fullUrls.
+The records share their supporting nodes, such as Devices, the Patient, and study context, and each shared node appears once.
+`Bundle.timestamp` is the mandatory packing time, and `Bundle.identifier` is an optional, untyped transport id with no Grove identifier role and no format; neither names a record or enters any identity, so packing records into Bundles, or repacking them, changes no record.
+A receiving system accepts or rejects each record on its own: a contradictory record is rejected alone, and the other records of its Bundle remain admissible.
 
-Lifecycle semantics are unambiguous: an active event contains exactly one coding from the ISO 21089 lifecycle system, and that code is `transform`; it contains no coding from the Grove lifecycle system.
-A retraction event contains exactly one coding from the Grove lifecycle system, and that code is `source-record-retracted`; it contains no ISO lifecycle coding.
+Lifecycle semantics are unambiguous: every Provenance in an active Bundle contains exactly one coding from the ISO 21089 lifecycle system, and that code is `transform`; it contains no coding from the Grove lifecycle system.
+Every Provenance in a retraction Bundle contains exactly one coding from the Grove lifecycle system, and that code is `source-record-retracted`; it contains no ISO lifecycle coding.
+The two kinds never share a Bundle.
 Additional translations from unrelated coding systems remain open.
 
-Every entry carries one `grove-exchange-entry-node-key` extension.
-A resource with business identity selects the highest-priority typed Identifier defined by the protocol; a resource without one uses an event-scoped `n0:` graph-node key.
-That key's ordinal is zero-based within its own node-role, counted in Bundle entry order across the entries that carry an entry-node key: a role represented once is always `0`, a second entry of that role is `1`, and each role is numbered independently of every other.
-Because the digest is taken over the ordinal the key itself states, a receiver derives the expected ordinal from the Bundle rather than reading it back from the key.
-Its `fullUrl` is UUIDv5 under namespace `43df4575-bff7-5a57-9a80-2472cd2b0623`, derived from the complete selected system/value pair using the same length-framed UTF-8 encoding.
+Every entry carries one `grove-exchange-entry-key` extension, which holds its entry key, the Identifier from which its fullUrl derives.
+
+- An output selects its highest-priority typed `Resource.identifier` as the protocol orders them: its `source-output` or `source-artifact` Identifier.
+- Every shared node except a QuestionnaireResponse, that is, the application, host, and recording Device, Patient, ResearchStudy, ResearchSubject, and PlanDefinition, selects its content-snapshot Identifier, `device-snapshot` or `context-snapshot`, from `Resource.identifier`. It is a v0 HMAC over the subject, the node role, and the digest of the node's complete canonical content minus `id` and minus that Identifier, so the same content gives the same key and fullUrl in every Bundle, and changed content a new one. A canonical `url|version` or an untyped business identifier never selects an entry key, even when immutable.
+- A conversion Provenance, which has no identifier in R4, is keyed by its `record-version` Identifier and repeats it in the [Grove Record Version](StructureDefinition-grove-record-version.html) extension, so a consumer that stores the Provenance alone keeps it and can search for it through the `grove-provenance-record-version` SearchParameter.
+- A QuestionnaireResponse, whose one identifier holds its submission's business identifier, is keyed by its `context-snapshot` Identifier with node role `questionnaire-response` and repeats it in the `grove-context-snapshot` extension, so a consumer that stores the response alone can still resolve literal references to it.
+- A retraction Provenance is keyed by its `record-retraction` Identifier, which it carries on its entry alone.
+
+Each repeated key equals its entry key in system and value.
+The `fullUrl` is UUIDv5 under namespace `43df4575-bff7-5a57-9a80-2472cd2b0623`, derived from the complete entry-key system/value pair using the same length-framed UTF-8 encoding.
 References between entries use those UUID URNs.
 UUIDv5 is deterministic formatting, not concealment.
 
-Every literal Reference is closed over that graph and resolves to an addressable Bundle entry.
-Contained resources and `#id` references are prohibited in both active and retraction events; allowing them would create a second, owner-local identity and resolution model outside the event-node contract.
+A record version is a keyed HMAC over the Provenance's source-record pair and the record's content digest.
+That digest is taken over the `grove-canonical-json-v0` bytes of the Provenance, minus `id` and minus its own `grove-record-version` extension, followed by each output in `Provenance.target` order, minus `id`.
+Canonical JSON sorts members by name, drops insignificant whitespace, and keeps every number exactly as written, so `72` and `72.0` give different record versions while a reordered or re-indented copy gives the same one.
+A shared node enters the digest through the content-derived fullUrl that the record references, so a changed Device changes the record version of every record that references it.
+Receivers never parse or recompute a record version; [Receiving record versions](implementation.html#receiving-record-versions) describes how they compare and order versions.
+
+Every literal Reference is closed over the Bundle and resolves to an addressable Bundle entry: an output of the referring resource's own record, or a shared node.
+A reference from one record to an output of another record is identifier-only.
+Contained resources and `#id` references are prohibited in both active and retraction Bundles; allowing them would create a second, owner-local identity and resolution model outside the entry-key contract.
 A populated `Reference.type` must equal the target's actual resource type.
 The Grove producer validator also enforces the target-type table in `exchange-protocol.json` for Observation and QuestionnaireResponse subjects, device, specimen, member, source-document, study, parent-device, gateway, and research-study paths.
 At those paths a logical Reference instead omits `reference`, carries the exact allowed `type` and one complete absolute-system Identifier, and cannot be mixed with a literal.
@@ -181,36 +204,41 @@ The Grove producer validator checks only that the namespace is an absolute URI a
 These logical-reference shape and pseudonym-namespace rules govern Mobile exchange Bundles.
 The standalone Grove QuestionnaireResponse profile independently constrains its subject target to Patient but does not impose this exchange graph's identifier-only policy outside such a Bundle.
 An active Bundle may contain only the following resource types.
-Outputs are Observation, DocumentReference, Specimen, VisionPrescription, MedicationAdministration, or MedicationStatement; supporting nodes are Patient, Device, ResearchStudy, ResearchSubject, PlanDefinition, or a Grove-profiled QuestionnaireResponse; and the sole lifecycle node is Provenance.
+Outputs are Observation, DocumentReference, Specimen, VisionPrescription, MedicationAdministration, or MedicationStatement; supporting nodes are Patient, Device, ResearchStudy, ResearchSubject, PlanDefinition, or a Grove-profiled QuestionnaireResponse; and the only lifecycle resource is Provenance.
 Every active output and each Device, QuestionnaireResponse, and Provenance must declare exactly the profiles required by `profile-claims.json`.
 DocumentReference cannot enter as an unprofiled generic envelope.
-Supporting entries must be connected to an output or the lifecycle assertion, so the Bundle cannot carry unrelated context.
+Every supporting entry lies in at least one record unit, the record's Provenance, its targets, and every entry their literal references reach in the forward direction, so the Bundle cannot carry unrelated context; a ResearchSubject joins every record whose unit reaches the ResearchStudy it references.
 `DeviceMetric` is not admitted under the Grove FHIR contracts; admitting it requires a governed profile, identity and reference rules, and validating examples.
 
-An exact retry reuses the event Identifier, occurrence/recording/assembly times, entry keys, and payload.
-Changed content or a new source revision receives a new event sequence.
+An exact retry repeats a record's record-version Identifier and the lossless content of every resource of the record, in any Bundle and under any `Bundle.identifier` or `Bundle.timestamp`.
+Any change, including a re-conversion's new `Provenance.recorded` or a changed decimal lexeme, is a new version of the source record with a new record-version Identifier.
 Bundle entry order does not request repository operations; `entry.request` and `entry.response` are prohibited. How a receiving system creates or updates resources, and whether it processes the Bundle atomically, are separate deployment policies.
 
-### Retraction events
+### Retraction Bundles
 
-A source removal is represented by the dedicated Grove Mobile Retraction Bundle and exactly one source-record-retracted Provenance.
-It contains typed logical `Reference.identifier` targets for the previously emitted graph nodes, using only the target roles allowed by the retraction profile; it contains no copied clinical resources and is not a FHIR DELETE transaction.
-A receiving system resolves every complete Identifier pair unambiguously; the deployment defines how repeated events and all-or-nothing processing are handled.
+A source removal is represented by the dedicated Grove Mobile Retraction Bundle, which carries one or more source-record-retracted Provenances and no conversion Provenance.
+Each Provenance asserts that the source no longer exposes the one source record its source entity names, and it is keyed by that source record's `record-retraction` Identifier, so the Provenances of one Bundle carry distinct keys.
+Its targets are typed logical `Reference.identifier` targets using only the target roles the retraction profile allows; the Bundle contains no copied clinical resources and is not a FHIR DELETE transaction.
+Its assembler is a literal reference to the shared application Device, with its host, in the same Bundle.
 Retraction does not assert that the prior clinical statement was erroneous.
 
-Each target role fixes both its resource type and Identifier role: primary outputs are supported clinical result resources, child outputs are Observations, source artifacts are DocumentReferences, specimens are Specimens, and device snapshots are Devices.
+A retraction addresses the whole source record its source entity names.
+A receiving system that accepts it suppresses every output of every version of that record, whether the version is accepted before or after the retraction and whatever its writer version or `recorded` instant; every version stays in history, and the record is never un-retracted.
+A re-reported retraction repeats the record-retraction key and fullUrl and is a duplicate: the first accepted retraction wins, which loses nothing because every retraction addresses the whole record.
+Devices are never retracted.
 
-Instead of those typed targets, the Provenance may address the source record as a whole through one `source-record` target, which is then its only target.
-That target is an untyped logical Reference with role `source-record` whose Identifier repeats the exact `source-record` Identifier of the Provenance source entity; the role states no resource type, and that Identifier is the retraction address.
+The targets are informative: they record what the producer emitted, or name the source record as a whole, and they neither address nor bind an output.
+Each typed target role fixes both its resource type and Identifier role: primary outputs are supported clinical result resources, child outputs are Observations, source artifacts are DocumentReferences, and specimens are Specimens.
+
+Instead of typed targets, the Provenance may name the source record as a whole through one `source-record` target, which is then its only target.
+That target is an untyped logical Reference with role `source-record` whose Identifier repeats the exact `source-record` Identifier of the Provenance source entity; the role states no resource type.
 The Reference identifies the source business record itself, never a graph node: a platform record such as a HealthKit sample, which has no FHIR resource, or the QuestionnaireResponse a questionnaire extraction converted, which is why the profile admits a QuestionnaireResponse target only in this form.
-The receiving system's lifecycle policy, not the Reference, expands the retraction to the output graph.
-It addresses every node that the conversion Provenance of any active event with that source entity targets, and the event-time Device snapshots those events carry, whether an event arrives before or after the retraction.
-It names no output identity, so it associates no output with the source record, and it remains valid when it addresses no node the receiving system holds.
-A receiving system resolves it through the source entity of every conversion Provenance it has accepted or later accepts, never as the identity of one node, and applies it to the addressed nodes exactly as it would apply typed targets naming each of them.
+It names no output, so a producer needs no record of what it emitted, and it remains valid when the receiving system holds no version of the record.
+Typed targets and the source-record target are alternatives with the same effect: either way, the receiving system finds the record's versions through the source entity of every conversion Provenance it has accepted or later accepts.
 
 A target may additionally carry one [Grove Retraction Native Record Identifier](StructureDefinition-grove-retraction-target-native-identifier.html), the platform-native record identifier of the record being retracted, so a consumer can delete the exact native records rather than only the projections.
 `Identifier.system` is the adapter's own absolute native key space, scoped to the governed repository, account, or store exactly as it is for the optional governed source identifier on the addition path, and the same explicit deployment disclosure policy governs both; omitting it remains conformant.
-It never addresses the target: the minted `source-record`, `source-output`, or `device-snapshot` identity remains the retraction address, and the native Identifier carries no Grove identifier role.
+It addresses nothing: the retraction address is the Provenance's source-record entity, the targets are informative, and the native Identifier carries no Grove identifier role.
 Both active and retraction Provenance carry exactly one logical `source-record` Identifier entity with role `source`; literal source references and additional source entities are rejected.
 
 This guide sets no limits on Bundle size, resource count, paging, retry behavior, or storage.
@@ -231,7 +259,7 @@ Each adapter guide states which it does.
 The conversion time belongs on the conversion Provenance and must not be substituted for `Observation.issued`.
 
 Ordering *revisions of the same measurement* is a separate question, and `issued` does not answer it — a replaced record can carry an earlier timestamp than the one it supersedes.
-Where a platform gives the writer a logical identity and a version, the adapter carries both, and a receiver supersedes on the version.
+Where a platform gives the writer a logical identity and a version, the adapter carries both, and a receiver supersedes on the version; otherwise the later `Provenance.recorded` orders the versions of one source record, as [Receiving record versions](implementation.html#receiving-record-versions) describes.
 
 The [Grove Recording Method extension](StructureDefinition-grove-recording-method.html) describes positively established `manual-entry`, `actively-recorded`, or `automatically-recorded` capture.
 Omit it when unknown. `Observation.method` remains available for the clinical measurement technique and is not a capture-mode field.

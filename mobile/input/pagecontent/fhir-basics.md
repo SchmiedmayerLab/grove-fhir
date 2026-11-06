@@ -38,7 +38,7 @@ Specialized Grove guides add resources for their own use cases, including questi
 | `Patient` | Who the measurement is about | The study participant; referenced by every Observation and included as a Bundle entry when the exchange supplies the Patient resource |
 | `Device` | What produced the record | Split in two: the recording device and the application |
 | `Provenance` | Where this record came from and who assembled it | The audit trail of the conversion itself |
-| `Bundle` | A set of resources traveling together | One immutable exchange event graph |
+| `Bundle` | A set of resources traveling together | One upload of one or more records, each a source record's outputs and its conversion Provenance, sharing their supporting entries |
 
 ### Observation example
 
@@ -74,7 +74,7 @@ Grove quantity profiles require the applicable UCUM code so results remain compa
 **`effective` and `issued` represent different times.** `effective` identifies when the measurement applied. `issued` identifies when this version of the record became available, using the source platform's own timestamp.
 A platform that does not retain such a timestamp omits `issued` rather than substituting the conversion time. This ensures that converting unchanged source data twice does not create an apparent revision.
 A receiver uses `effective` for the clinical timeline.
-Ordering *revisions of the same measurement* is a separate concern addressed by writer-assigned versions in the adapter guides.
+Ordering *revisions of the same measurement* is a separate concern addressed by the [record-version selection rule](implementation.html#receiving-record-versions): a writer-assigned version, where the adapter carries one, then the later `Provenance.recorded`.
 
 **`subject` is a reference to another resource.** The next section distinguishes references from identities.
 
@@ -132,10 +132,15 @@ Provenance is a separate resource because one conversion can cover multiple outp
 A `Bundle` is a resource container.
 Grove uses `type: collection`, which groups resources without assigning transactional meaning.
 
+One Grove Bundle carries one or more **records**: a record is one source-record revision, its outputs, and the one conversion Provenance that targets them.
+The records of a Bundle share their supporting entries, such as Devices and study context, and each such entry appears once.
+
 Inside a Bundle, resources refer to each other by `fullUrl`.
-Grove derives each `fullUrl` deterministically from the entry identity selected by the [exchange protocol](https://grovealliance.org/fhir/catalog/exchange-protocol.json).
-An entry without a business identifier instead uses the protocol's event-scoped `n0:` graph key.
-An exact retry therefore preserves graph identity and can be recognized as a duplicate.
+Grove derives each `fullUrl` deterministically from the entry key selected by the [exchange protocol](https://grovealliance.org/fhir/catalog/exchange-protocol.json).
+An output is keyed by its business identifier.
+A shared entry without an immutable business identifier, such as a Device, is keyed by a content snapshot, an opaque identity over its complete content, so the same content has the same `fullUrl` in every Bundle.
+A Provenance is keyed by its record version, an opaque identity over the source record and the content of the Provenance and its outputs.
+An exact retry repeats the same record-version key and content and can be recognized as a duplicate, whichever Bundle carries it; any changed content is a new version.
 
 ### Reading profile pages
 

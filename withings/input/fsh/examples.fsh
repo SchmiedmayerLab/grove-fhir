@@ -18,9 +18,9 @@ Instance: WithingsApplicationExample
 InstanceOf: GroveApplicationDevice
 Usage: #example
 Title: "Withings Converter Snapshot"
-Description: "The immutable event-time application snapshot that converted one already-obtained Withings record."
+Description: "The immutable content snapshot of the application that converted one already-obtained Withings record."
 * identifier[applicationSnapshot].system = "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v0/test-key/1"
-* identifier[applicationSnapshot].value = "v0:test-key:1:qQso4SobAvLoIw52zGgRfchXgkb3zWsVAD1gitCE6KQ"
+* identifier[applicationSnapshot].value = "v0:test-key:1:flgbXqrmDlbQSg82DzevaW6yuu_H7vtDrcOrAHpZxRU"
 * status = #active
 * deviceName[applicationName].name = "Withings Provider Mapper"
 * deviceName[applicationName].type = #user-friendly-name
@@ -69,7 +69,10 @@ Instance: WithingsBloodPressureProvenanceExample
 InstanceOf: ProvidersConversionProvenance
 Usage: #example
 Title: "Withings Blood Pressure Conversion Provenance"
-Description: "The one-source conversion event for the grouped blood-pressure output."
+Description: "The one conversion Provenance of the record whose output is the grouped blood-pressure Observation."
+* extension[recordVersion].valueIdentifier.type = $groveIdentifierRole#record-version "Record version"
+* extension[recordVersion].valueIdentifier.system = "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1"
+* extension[recordVersion].valueIdentifier.value = "v0:test-key:1:wYO3znHznprvS-u6OyI0fQs4KfIWUFDmK7Q4rTEOCaM"
 * target = Reference(WithingsBloodPressureExample)
 * occurredDateTime = "2026-08-20T17:00:00Z"
 * recorded = "2026-08-20T17:00:01Z"

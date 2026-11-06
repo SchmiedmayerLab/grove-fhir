@@ -34,12 +34,12 @@ For each emitted Observation:
    Do not repeat an inherited Mobile or core standard profile.
 3. Populate the typed source-record and source-output business identifiers using the Health Connect binding in [`catalog/health-connect-adapter.json`](https://grovealliance.org/fhir/catalog/health-connect-adapter.json) and the sole normative algorithm in [`catalog/exchange-protocol.json`](https://grovealliance.org/fhir/catalog/exchange-protocol.json).
 4. Apply every required code, unit, effective type, result shape, specimen, and admitted context mapping from the published adapter and measurement catalogs.
-5. Add conversion Provenance and every internally referenced graph node.
+5. Add conversion Provenance and every internally referenced node.
    Conversion Provenance directly declares only Health Connect Conversion Provenance; its inherited Mobile conversion profile is not repeated.
-   Its sole source entity Identifier matches the output source-record Identifier, and it targets every output for that source Record.
-6. Package the complete graph as a Grove Mobile Exchange Bundle.
-   Derive every entry `urn:uuid` from its selected entry node key and use those URNs for internal references.
-   Every literal `Reference.reference` resolves to an entry UUID URN in that same Bundle; external or unresolved literals, contained resources, and `#id` references are not admitted. `Resource.id` remains optional and repository-assigned.
+   Its sole source entity Identifier matches the output source-record Identifier, and it targets every output for that source Record; the Record's outputs and that Provenance form one record.
+6. Package one or more records as a Grove Mobile Exchange Bundle, each shared node once.
+   Derive every entry `urn:uuid` from its selected entry key: an output's business identifier, a shared node's content snapshot, or the Provenance's record version, which it repeats in `grove-record-version`; use those URNs for internal references.
+   Every literal `Reference.reference` resolves to an entry UUID URN in that same Bundle, an output of the referring resource's own record or a shared node; external or unresolved literals, contained resources, and `#id` references are not admitted. `Resource.id` remains optional and repository-assigned.
 
 The source-neutral measurement profile inherits the generic Mobile and applicable core standard constraints.
 The adapter profile adds Health Connect identity and source context.
@@ -69,10 +69,11 @@ The adapter may expose producer-owned durable synchronization state, as describe
 
 ### Retracting a source record
 
-When Health Connect reports a deleted source record, emit the dedicated Grove Mobile Retraction Bundle.
-Its sole source-record-retracted Provenance identifies every previously emitted output, artifact, specimen, and device snapshot through a typed logical Reference carrying the exact complete business Identifier and target-role extension.
+When Health Connect reports a deleted source record, emit one source-record-retracted Provenance for it in a Grove Mobile Retraction Bundle; one Bundle may carry the retractions of several deleted Records.
+The retraction addresses the deleted Record's whole source record: a receiver suppresses every output of every version of it.
+Its targets are the source-record target, which needs no ledger, or typed logical References naming the outputs, artifacts, and specimens it emitted, each with its exact complete business Identifier and target-role extension; typed targets are informative and bind no output.
 Do not copy the former clinical resources, set them to `entered-in-error`, or encode FHIR DELETE requests.
-The assertion records source removal; the receiving deployment defines identifier resolution, repeated and all-or-nothing event handling, retention, and deletion.
+The assertion records source removal; a retraction reported again repeats its key and is a duplicate, and the receiving deployment defines all-or-nothing processing, retention, and deletion.
 
 ### Dependencies and terminology notices
 

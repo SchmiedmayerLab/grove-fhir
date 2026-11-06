@@ -14,7 +14,7 @@
     {"id": "collection-at-exclusive-end", "receiptChanges": {"collectionWindow": {"startInclusive": "2026-08-19T12:00:00Z", "endExclusive": "2026-08-20T15:30:00.251Z"}}, "expectedFailure": "collection-authority"}
   ],
   "expectAfterEveryRejection": {
-    "storedEvents": 1,
+    "storedRecordVersions": 1,
     "storedClinicalPayloads": 1,
     "sourceUnchanged": true,
     "activeGrants": ["a1"],

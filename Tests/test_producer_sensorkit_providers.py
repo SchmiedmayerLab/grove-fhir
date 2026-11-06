@@ -8,6 +8,7 @@
 
 from __future__ import annotations
 
+from Scripts import exchange_protocol
 from Scripts.producer_validation import (
     context, diagnostics, exchange_bundle, identity, profiles, providers, sensorkit,
 )
@@ -16,14 +17,15 @@ from Tests.producer_validation_test_support import (
     ROOT,
     copy,
     derive_hmac_identity,
-    entry_node_identity,
-    event_identity,
     json,
+    lossless,
+    record_version_identity,
+    rekey_records,
     typed_identifier,
 )
 
 class ProducerSensorkitProvidersTests(ProducerValidationTestCase):
-    def test_provider_identity_kinds_validate_in_active_and_retraction_events(self) -> None:
+    def test_provider_identity_kinds_validate_in_active_and_retraction_bundles(self) -> None:
         source_system = (
             "https://study.example.org/fhir/NamingSystem/"
             "grove-provider-record-v0/test-key/1"
@@ -104,7 +106,8 @@ class ProducerSensorkitProvidersTests(ProducerValidationTestCase):
             "source-record", source_system, source_value
         )
         provenance["target"] = [{"reference": observation_entry["fullUrl"]}]
-        exchange_bundle.validate_exchange_bundle(active, "Provider active event")
+        # The changed output and source record give the record a new version and fullUrl.
+        exchange_bundle.validate_exchange_bundle(rekey_records(active), "Provider active Bundle")
 
         retraction = json.loads(
             (ROOT / "Conformance/corpora/mobile-exchange/retraction-bundle.json")
@@ -117,8 +120,9 @@ class ProducerSensorkitProvidersTests(ProducerValidationTestCase):
         assertion["target"][0]["identifier"] = typed_identifier(
             "source-output", output_system, output_value
         )
+        # The retraction key is a function of the source-record entity alone.
         exchange_bundle.validate_exchange_bundle(
-            retraction, "Provider retraction event"
+            rekey_records(retraction), "Provider retraction Bundle"
         )
 
         with self.assertRaisesRegex(
@@ -744,8 +748,7 @@ class ProducerSensorkitProvidersTests(ProducerValidationTestCase):
         source_system = "https://example.org/fhir/NamingSystem/source-record/test-key/1"
         output_system = "https://example.org/fhir/NamingSystem/source-output/test-key/1"
         artifact_system = "https://example.org/fhir/NamingSystem/source-artifact/test-key/1"
-        event_system = "https://example.org/fhir/NamingSystem/event"
-        node_system = "https://example.org/fhir/NamingSystem/entry-node"
+        version_system = "https://example.org/fhir/NamingSystem/record-version/test-key/1"
         components = [
             "sensorkit",
             "device-usage",
@@ -842,16 +845,6 @@ class ProducerSensorkitProvidersTests(ProducerValidationTestCase):
             }]},
         }
 
-        event_value = event_identity("1f5c58aa-6ec6-4e79-a682-829a9debd3f5", 9)
-        provenance_entry_value = entry_node_identity(
-            event_system=event_system,
-            event_value=event_value,
-            role="conversion-provenance",
-            ordinal=0,
-        )
-        provenance_url = identity.expected_entry_full_url(
-            node_system, provenance_entry_value
-        )
         provenance = {
             "resourceType": "Provenance",
             "meta": {"profile": [
@@ -888,18 +881,31 @@ class ProducerSensorkitProvidersTests(ProducerValidationTestCase):
                 "resource": resource,
             }
 
-        bundle = {
+        # One record: its Provenance is keyed by the record version, which it repeats in
+        # grove-record-version; the Bundle carries no identifier.
+        bundle = rekey_records({
             "resourceType": "Bundle",
             "meta": {"profile": [context.EXCHANGE_BUNDLE_PROFILE]},
-            "identifier": typed_identifier("event", event_system, event_value),
             "type": "collection",
             "timestamp": "2026-08-20T08:00:01Z",
             "entry": [
                 entry(observation, observation_output, "source-output", output_system),
                 entry(document, document_output, "source-output", output_system),
-                entry(provenance, provenance_entry_value, "entry-node", node_system),
+                entry(provenance, "v0:test-key:1:" + "A" * 43, "record-version", version_system),
             ],
-        }
+        })
+        version = bundle["entry"][2]["extension"][0]["valueIdentifier"]
+        self.assertEqual(bundle["entry"][2]["resource"]["extension"], [{
+            "url": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-record-version",
+            "valueIdentifier": version,
+        }])
+        self.assertEqual(version["value"], record_version_identity(
+            key=key, key_id="test-key", epoch=1, source_record_system=source_system,
+            source_record_value=source_value,
+            record_content_digest=exchange_protocol.record_content_digest(
+                lossless(provenance), [lossless(observation), lossless(document)]
+            ),
+        ))
         exchange_bundle.validate_exchange_bundle(bundle, "Bundle")
 
         raw_only = copy.deepcopy(bundle)
@@ -910,7 +916,7 @@ class ProducerSensorkitProvidersTests(ProducerValidationTestCase):
             {"reference": document_url}
         ]
         raw_only["entry"] = raw_only["entry"][1:]
-        exchange_bundle.validate_exchange_bundle(raw_only, "Raw-only Bundle")
+        exchange_bundle.validate_exchange_bundle(rekey_records(raw_only), "Raw-only Bundle")
 
         unprofiled_raw = copy.deepcopy(raw_only)
         unprofiled_raw["entry"][0]["resource"]["meta"]["profile"] = [
@@ -921,8 +927,7 @@ class ProducerSensorkitProvidersTests(ProducerValidationTestCase):
             diagnostics.ProducerValidationError,
             "must directly claim exactly the source-neutral and SensorKit recording profiles",
         ):
-            exchange_bundle.validate_exchange_bundle(
-                unprofiled_raw, "Unprofiled raw-only Bundle"
+            exchange_bundle.validate_exchange_bundle(rekey_records(unprofiled_raw), "Unprofiled raw-only Bundle"
             )
 
         orphan_hybrid = copy.deepcopy(raw_only)
@@ -933,8 +938,7 @@ class ProducerSensorkitProvidersTests(ProducerValidationTestCase):
             diagnostics.ProducerValidationError,
             "requires exactly one linked structured Observation",
         ):
-            exchange_bundle.validate_exchange_bundle(
-                orphan_hybrid, "Orphan hybrid Bundle"
+            exchange_bundle.validate_exchange_bundle(rekey_records(orphan_hybrid), "Orphan hybrid Bundle"
             )
 
         duplicate_transform_system = copy.deepcopy(bundle)
@@ -946,7 +950,7 @@ class ProducerSensorkitProvidersTests(ProducerValidationTestCase):
             diagnostics.ProducerValidationError,
             "exactly one coding across the ISO transform and Grove retraction lifecycle systems",
         ):
-            exchange_bundle.validate_exchange_bundle(duplicate_transform_system, "Bundle")
+            exchange_bundle.validate_exchange_bundle(rekey_records(duplicate_transform_system), "Bundle")
 
         contradictory_lifecycle = copy.deepcopy(bundle)
         contradictory_lifecycle["entry"][2]["resource"]["activity"]["coding"].append({
@@ -957,14 +961,14 @@ class ProducerSensorkitProvidersTests(ProducerValidationTestCase):
             diagnostics.ProducerValidationError,
             "exactly one coding across the ISO transform and Grove retraction lifecycle systems",
         ):
-            exchange_bundle.validate_exchange_bundle(contradictory_lifecycle, "Bundle")
+            exchange_bundle.validate_exchange_bundle(rekey_records(contradictory_lifecycle), "Bundle")
 
         translated_lifecycle = copy.deepcopy(bundle)
         translated_lifecycle["entry"][2]["resource"]["activity"]["coding"].append({
             "system": "https://study.example.org/fhir/CodeSystem/lifecycle-translation",
             "code": "converted",
         })
-        exchange_bundle.validate_exchange_bundle(translated_lifecycle, "Bundle")
+        exchange_bundle.validate_exchange_bundle(rekey_records(translated_lifecycle), "Bundle")
 
         cross_stream_document = copy.deepcopy(bundle)
         cross_stream_document["entry"][1]["resource"]["extension"][0][
@@ -974,7 +978,7 @@ class ProducerSensorkitProvidersTests(ProducerValidationTestCase):
             diagnostics.ProducerValidationError,
             "must carry the same matching SensorKit source type",
         ):
-            exchange_bundle.validate_exchange_bundle(cross_stream_document, "Bundle")
+            exchange_bundle.validate_exchange_bundle(rekey_records(cross_stream_document), "Bundle")
 
         for malformed_related in (
             [{"reference": observation_url}, "ignored"],
@@ -992,8 +996,7 @@ class ProducerSensorkitProvidersTests(ProducerValidationTestCase):
                     "relate back to exactly its structured Observation|"
                     "must equal the referenced resource type Observation",
                 ):
-                    exchange_bundle.validate_exchange_bundle(
-                        malformed_backlink, "Bundle"
+                    exchange_bundle.validate_exchange_bundle(rekey_records(malformed_backlink), "Bundle"
                     )
 
         missing_raw_target = copy.deepcopy(bundle)
@@ -1002,9 +1005,10 @@ class ProducerSensorkitProvidersTests(ProducerValidationTestCase):
         ]
         with self.assertRaisesRegex(
             diagnostics.ProducerValidationError,
-            "target every and only source-derived output|target every structured and raw output",
+            "target every and only source-derived output|target every structured and raw output|"
+            "targeted by no conversion Provenance",
         ):
-            exchange_bundle.validate_exchange_bundle(missing_raw_target, "Bundle")
+            exchange_bundle.validate_exchange_bundle(rekey_records(missing_raw_target), "Bundle")
 
         missing_document = copy.deepcopy(bundle)
         missing_document["entry"] = missing_document["entry"][:1]
@@ -1012,7 +1016,7 @@ class ProducerSensorkitProvidersTests(ProducerValidationTestCase):
                 diagnostics.ProducerValidationError,
                 "exactly one transform Provenance|reference must resolve to an entry UUID URN|same Bundle",
         ):
-            exchange_bundle.validate_exchange_bundle(missing_document, "Bundle")
+            exchange_bundle.validate_exchange_bundle(rekey_records(missing_document), "Bundle")
 
         mismatched_identity = copy.deepcopy(bundle)
         other_source = derive_hmac_identity(
@@ -1024,9 +1028,10 @@ class ProducerSensorkitProvidersTests(ProducerValidationTestCase):
         )
         mismatched_identity["entry"][1]["resource"]["identifier"][0]["value"] = other_source
         with self.assertRaisesRegex(
-            diagnostics.ProducerValidationError, "exactly one source record|same source-record [Ii]dentifier"
+            diagnostics.ProducerValidationError,
+            "exactly one source record|same source-record [Ii]dentifier|targets an output of another source record",
         ):
-            exchange_bundle.validate_exchange_bundle(mismatched_identity, "Bundle")
+            exchange_bundle.validate_exchange_bundle(rekey_records(mismatched_identity), "Bundle")
 
         wrong_provenance_source = copy.deepcopy(bundle)
         wrong_provenance_source["entry"][2]["resource"]["entity"][0]["what"][
@@ -1034,6 +1039,7 @@ class ProducerSensorkitProvidersTests(ProducerValidationTestCase):
         ]["value"] = other_source
         with self.assertRaisesRegex(
             diagnostics.ProducerValidationError,
-            "source must equal|exactly one conversion Provenance|no output for its source record",
+            "source must equal|exactly one conversion Provenance|no output for its source record|"
+            "targets an output of another source record",
         ):
-            exchange_bundle.validate_exchange_bundle(wrong_provenance_source, "Bundle")
+            exchange_bundle.validate_exchange_bundle(rekey_records(wrong_provenance_source), "Bundle")

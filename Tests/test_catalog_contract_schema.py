@@ -506,18 +506,19 @@ class CatalogContractSchemaTests(unittest.TestCase):
             <= admitted_count_rules
         )
 
-    def test_health_connect_data_origin_is_identifier_only_and_not_an_event_node(self) -> None:
+    def test_health_connect_data_origin_is_identifier_only(self) -> None:
         catalog = _read("catalog/health-connect-adapter.json")
         contract = catalog["dataOriginApplication"]
         self.assertEqual(contract["referenceMode"], "identifier-only")
         self.assertFalse(contract["literalReferenceAllowed"])
-        self.assertFalse(contract["eventBundleEntryRequired"])
+        self.assertFalse(contract["bundleEntryRequired"])
+        self.assertNotIn("eventBundleEntryRequired", contract)
         self.assertFalse(contract["profileClaimRequired"])
 
         for field, replacement in (
             ("referenceMode", "literal-reference"),
             ("literalReferenceAllowed", True),
-            ("eventBundleEntryRequired", True),
+            ("bundleEntryRequired", True),
             ("profileClaimRequired", True),
         ):
             with self.subTest(field=field):
