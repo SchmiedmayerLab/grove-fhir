@@ -17,6 +17,15 @@ from typing import Any
 
 from .diagnostics import ProducerValidationError
 
+try:
+    from Scripts.canonical_json import (
+        CanonicalJSONError, JSONNumber, canonical_bytes, loads_lossless,
+    )
+except ModuleNotFoundError:  # Direct `python Scripts/validate-producer.py` execution.
+    from canonical_json import (  # type: ignore[no-redef]
+        CanonicalJSONError, JSONNumber, canonical_bytes, loads_lossless,
+    )
+
 
 def unlinked_path(path: Path, label: str) -> Path:
     """Return one lexical path after rejecting every supplied symlink component."""
@@ -88,6 +97,52 @@ def read_json(path: Path) -> Any:
         )
     except (OSError, UnicodeDecodeError, json.JSONDecodeError) as error:
         raise ProducerValidationError(f"cannot read JSON {path}: {error}") from error
+
+
+def read_lossless_json(path: Path) -> Any:
+    """Read one JSON text as a grove-canonical-json-v0 lossless tree.
+
+    read_json parses decimals as Decimal, which keeps their value but not always their lexeme
+    (1e2 and 100 compare equal), so every digest recompute reads the bytes again through this.
+    """
+    try:
+        return loads_lossless(path.read_bytes())
+    except OSError as error:
+        raise ProducerValidationError(f"cannot read JSON {path}: {error}") from error
+
+
+def decimal_lexeme(value: Decimal) -> str:
+    """Return the lexeme a JSON reader most plausibly parsed into this Decimal."""
+    if not value.is_finite():
+        raise CanonicalJSONError("non-json-constant", f"{value} is not a JSON number")
+    if value.as_tuple().exponent <= 0:
+        return format(value, "f")
+    return str(value)
+
+
+def lossless_tree(value: Any) -> Any:
+    """Convert a parsed JSON tree into the lossless tree of grove-canonical-json-v0.
+
+    A tree read through read_lossless_json is returned unchanged. A tree parsed with int, Decimal
+    or float numbers keeps only what its parser kept: 1e2 reads back as 1E+2 and -0 as 0. A key
+    recomputed over such a tree can refuse a valid Bundle whose lexemes the parser normalized, so
+    a validator that holds the bytes passes read_lossless_json's tree instead.
+    """
+    if isinstance(value, (JSONNumber, str)) or value is None or isinstance(value, bool):
+        return value
+    if isinstance(value, int):
+        return JSONNumber(str(value))
+    if isinstance(value, Decimal):
+        return JSONNumber(decimal_lexeme(value))
+    if isinstance(value, float):
+        if value != value or value in (float("inf"), float("-inf")):
+            raise CanonicalJSONError("non-json-constant", f"{value} is not a JSON number")
+        return JSONNumber(repr(value))
+    if isinstance(value, dict):
+        return {name: lossless_tree(child) for name, child in value.items()}
+    if isinstance(value, list):
+        return [lossless_tree(child) for child in value]
+    raise CanonicalJSONError("not-lossless", f"{type(value).__name__} is not a JSON value")
 
 
 def require_keys(value: dict[str, Any], expected: set[str], label: str) -> None:

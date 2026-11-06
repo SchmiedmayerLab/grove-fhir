@@ -23,8 +23,8 @@ It is not copied to child or support resources, entry addressing, retraction key
 
 When a Record maps to several Observations, derive the complete replacement set before publishing it.
 An update can add, retain, or remove output identifiers.
-A deletion resolves the prior set from the ledger because Health Connect supplies only the deleted Record id.
-The exchange representation is the dedicated Retraction Bundle: resolve the exact prior target Identifier pairs and roles from the ledger and emit one source-record-retracted Provenance.
+A deletion supplies only the deleted Record id, and that is enough: the retraction addresses the deleted Record's whole source record, whose `source-record` Identifier derives from that id.
+The exchange representation is one source-record-retracted Provenance in a Retraction Bundle; its source-record target needs no ledger, and typed targets, when the ledger names the prior outputs, are informative.
 Do not copy or mutate the prior clinical resources.
 Receiver projection and storage lifecycle remain deployment policy.
 
@@ -38,8 +38,8 @@ For each change page:
 4. Retire an outbox item only after the caller-selected sink acknowledges it.
 
 A retry reuses the same source and output identifiers.
-If the caller assigns a durable positive `eventSequence`, preserve it for byte-identical retries and allocate a higher value for a new source event.
-The exchange protocol uses that sequence in the Bundle's `e0:` event Identifier; it does not prescribe an external message format.
+An exact retry repeats each record's record-version key and content, in whatever Bundle the caller packs it; a changed Record, or one converted again with a new `Provenance.recorded`, is a new version of its source record.
+The exchange protocol does not prescribe an external message format.
 
 ### New or expired tokens
 

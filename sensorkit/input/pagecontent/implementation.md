@@ -21,6 +21,7 @@ The generation changes only for an explicit cursor reset after the prior generat
 Before yielding records, persist the exact pending start ordinal and count, ordered keys and verification evidence, source bytes, and pre-yield cursor boundary.
 The cursor advances only after the whole pending delivery is handed off durably.
 Retrying that delivery reuses the same coordinates even if SensorKit splits or combines callback batches differently; a different acquisition receives a different key even when its bytes and source timestamp are identical.
+A producer that starts a source cursor without persisted acquisition state, such as after a fresh installation or cleared storage, starts a new opaque stream partition, random and persisted with the cursor, so its coordinates never repeat an earlier cursor's in the same repository scope.
 
 Measured values, serialized-content hashes, and sorting by measured timestamps are prohibited as identity inputs.
 Callback order and multiplicity are preserved: no `Set`, payload-based deduplication, or `compactMap` may collapse byte-equal records.
@@ -54,7 +55,7 @@ The machine-readable `graphContract` on each catalog row states the exact resour
 
 The linked Observation and DocumentReference examples illustrate individual resources rather than a complete exchange Bundle.
 The catalog's `graphContract` defines the required resource pair, bidirectional references, coverage bounds, and derivation rules.
-When those resources are assembled into a Mobile exchange event, every transformation graph includes one `sensorkit-conversion-provenance` for each source-record identifier.
+When those resources are assembled into a Mobile exchange Bundle, each record includes exactly one `sensorkit-conversion-provenance` for its source-record identifier.
 Its sole source entity is that complete SensorKit record Identifier, and its internal UUID targets cover every structured and native output for the record.
 A device-usage conversion uses one Provenance with both the structured summary and required native document as targets; omitting either target is nonconformant.
 
@@ -71,13 +72,14 @@ The R4 SHA-1 Attachment hash is change detection only, not a signature, credenti
 ### Exchange Bundles
 
 When resources are exchanged as a graph, the [Mobile exchange graph](https://grovealliance.org/fhir/mobile/observations.html#exchange-graph) contract applies unchanged.
-A SensorKit event carries every output derived from one acquisition-ledger record, including a device-usage summary together with its required native document.
+A SensorKit record is one acquisition-ledger record: every output derived from it, including a device-usage summary together with its required native document, and its one conversion Provenance.
+One Bundle carries one or more such records; a producer that uploads a delivery of many records as one object packs them into one Bundle, where they share their recording, application, and host Devices and their study context.
 No receiver capacity, authentication, storage, retention, or transport rule is defined here.
 
 ### Retracting a source record
 
-Emit the dedicated Grove Mobile Retraction Bundle when the producer can establish that a prior SensorKit source record is no longer exposed; the [Mobile retraction contract](https://grovealliance.org/fhir/mobile/observations.html#retraction-events) governs its shape, target roles, and meaning.
-The SensorKit trigger is the acquisition-ledger record: one retraction event addresses the structured outputs, source artifacts, and device snapshots emitted under that record's identity.
+Emit a source-record-retracted Provenance in a Grove Mobile Retraction Bundle when the producer can establish that a prior SensorKit source record is no longer exposed; the [Mobile retraction contract](https://grovealliance.org/fhir/mobile/observations.html#retraction-bundles) governs its shape, target roles, and meaning.
+The SensorKit trigger is the acquisition-ledger record: one retraction addresses that whole source record, so a receiver suppresses every structured output and source artifact of every version of it; its targets are informative, and Devices are never retracted.
 
 ### Dependencies and terminology notices
 

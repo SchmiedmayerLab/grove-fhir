@@ -26,7 +26,8 @@ The exact catalog roles and discriminators are length-framed into the HMAC preim
 In an exchange Bundle those internal references use the target entries' UUID `fullUrl` values; the standalone examples use their logical example references.
 One [conversion Provenance](StructureDefinition-sensorkit-conversion-provenance.html) targets both outputs and names the record identifier as its sole source entity; omitting either target is nonconformant.
 Every Bundle entry `fullUrl` is the UUIDv5 of its selected complete entry key under the Mobile exchange namespace.
-Exact retries therefore preserve graph identity, while a distinct acquired record uses a distinct acquisition coordinate and event sequence regardless of whether its bytes happen to match another record.
+The Provenance's entry key is the record version, a keyed digest over the source record and the canonical content of the Provenance and both outputs, which the Provenance repeats in `grove-record-version`.
+Exact retries therefore repeat the record version and every entry key, while a distinct acquired record uses a distinct acquisition coordinate, and so a distinct source record and record version, regardless of whether its bytes happen to match another record.
 
 ### Structured summary
 
@@ -97,7 +98,7 @@ The producer emits the document only after the caller asserts `caller-authorized
 1. Resolve `Observation.derivedFrom` to the entry whose `fullUrl` matches; the target must be a Recording Document in the same Bundle.
 2. Check both outputs carry the identical typed source-record `(system, value)` pair and distinct typed source-output pairs.
 3. Check `DocumentReference.context.related` holds exactly the Observation's `fullUrl`.
-4. Find the one conversion Provenance whose source entity is that record identifier and confirm its targets cover both outputs.
-5. Recompute the output identifiers and entry `fullUrl` values from the exchange protocol to detect drift; HMAC verification requires the governed key.
+4. Find the one conversion Provenance whose source entity is that record identifier, confirm its targets cover both outputs and that no other Provenance targets either, and check that its `grove-record-version` extension equals its entry key.
+5. Recompute the entry `fullUrl` values from their entry keys to detect drift; recomputing the output identifiers or the record version requires the governed key, so a receiver without it compares them only.
 
 A receiver that primarily consumes structured summaries still retains the paired Recording Document because it preserves the report fields that the Observation cannot represent.

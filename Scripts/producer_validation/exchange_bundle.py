@@ -1,4 +1,4 @@
-"""Active/retraction Mobile Exchange Bundle orchestration and graph closure."""
+"""Active/retraction Mobile Exchange Bundle orchestration, record partition, and key checks."""
 
 # This source file is part of the Grove FHIR open-source project
 #
@@ -6,19 +6,28 @@
 #
 # SPDX-License-Identifier: MIT
 
+# One exchange Bundle carries one or more records of one kind and one subject. A record is one
+# lifecycle Provenance with its targets (bundle.recordUnit). The checks run structural rules first
+# and recompute keys last, so a fixture that breaks a structural rule reports that rule, and one
+# whose content changed under an unchanged key reports the key.
+
 from __future__ import annotations
 
 from typing import Any
 
 from .context import (
     ACTIVE_ENTRY_POLICY, ACTIVE_ENTRY_RESOURCE_TYPES, ACTIVE_OUTPUT_RESOURCE_TYPES,
-    ACTIVE_SUPPORTING_RESOURCE_TYPES, CATALOG_ROOT, ENTRY_IDENTIFIER_EXTENSION,
-    ENTRY_NODE_IDENTITY, EVENT_IDENTITY, EXCHANGE_BUNDLE_PROFILE, HMAC_IDENTITY,
-    IDENTIFIER_ROLE_SYSTEM, LIFECYCLE_EVENT_SYSTEM, OPAQUE_IDENTIFIER_ROLES,
-    RETRACTION_BUNDLE_PROFILE, RETRACTION_NATIVE_RECORD_IDENTIFIER_EXTENSION,
-    RETRACTION_TARGET_CONTRACTS, RETRACTION_TARGET_ROLES,
-    RETRACTION_TARGET_ROLE_EXTENSION, SOURCE_RECORD_RETRACTED, SOURCE_RECORD_TARGET_ROLE,
-    ExchangeProtocolError, entry_node_identity, require_absolute_uri,
+    ACTIVE_SUPPORTING_RESOURCE_TYPES, CATALOG_ROOT, CONTEXT_NODE_ROLES,
+    CONTEXT_SNAPSHOT_EXTENSION, DEVICE_NODE_ROLES, ENTRY_IDENTIFIER_EXTENSION,
+    EXCHANGE_BUNDLE_PROFILE, HMAC_IDENTITY, IDENTIFIER_ROLE_SYSTEM, LIFECYCLE_EVENT_SYSTEM,
+    OPAQUE_IDENTIFIER_ROLES, PROVENANCE_KEY_ROLES, RECORD_VERSION_EXTENSION,
+    REFERENCE_POLICY, RETRACTION_BUNDLE_PROFILE,
+    RETRACTION_NATIVE_RECORD_IDENTIFIER_EXTENSION, RETRACTION_TARGET_CONTRACTS,
+    RETRACTION_TARGET_ROLES, RETRACTION_TARGET_ROLE_EXTENSION, SOURCE_RECORD_RETRACTED,
+    SOURCE_RECORD_TARGET_ROLE, TEST_KEY, TEST_KEY_ID, ExchangeProtocolError, content_digest,
+    context_snapshot_identity, device_snapshot_identity, parse_hmac_identity,
+    record_content_digest, record_retraction_identity, record_version_identity,
+    require_absolute_uri,
 )
 from .diagnostics import (
     PRODUCER_RULE_REASONS,
@@ -38,7 +47,7 @@ from .identity import (
     expected_entry_full_url, identifier_role, selected_entry_identifier,
     typed_resource_identifiers, validate_governed_source_identifiers,
 )
-from .io import read_json
+from .io import CanonicalJSONError, canonical_bytes, lossless_tree, read_json
 from .profiles import (
     validate_active_adapter_only_output_profile_claim,
     validate_active_adapter_package_claims, validate_active_document_reference_profile_claim,
@@ -57,6 +66,20 @@ from .sensorkit import (
     exact_sensorkit_source_type, validate_sensor_contract, validate_sensorkit_ecg_contract,
     validate_sensorkit_identity, validate_sensorkit_native_r4_context,
     validate_sensorkit_profile_claim, validate_sensorkit_quantity_domains,
+)
+
+
+ISO_LIFECYCLE_SYSTEM = "http://terminology.hl7.org/CodeSystem/iso-21089-lifecycle"
+SNAPSHOT_ROLE_BY_RESOURCE_TYPE = {
+    "Device": "device-snapshot",
+    **{resource_type: "context-snapshot" for resource_type in CONTEXT_NODE_ROLES},
+}
+# The governed Patient paths of active outputs: what a record states as its subject.
+OUTPUT_SUBJECT_PATHS = tuple(
+    (rule["resourceType"], rule["path"])
+    for rule in REFERENCE_POLICY["paths"]
+    if rule["targetTypes"] == ["Patient"]
+    and rule["resourceType"] in ACTIVE_OUTPUT_RESOURCE_TYPES
 )
 
 
@@ -141,312 +164,201 @@ def validate_resource_profile_claims(
     validate_sensor_contract(resource, label)
     validate_recording_format(resource, label)
 
-def validate_exchange_bundle(
-    resource: dict[str, Any],
-    label: str,
-    active_adapter_profiles: set[str] | None = None,
-) -> None:
-    profiles = resource.get("meta", {}).get("profile", [])
-    is_active = EXCHANGE_BUNDLE_PROFILE in profiles
-    is_retraction = RETRACTION_BUNDLE_PROFILE in profiles
-    if not is_active and not is_retraction:
-        return
-    if is_active and is_retraction:
-        raise contract_failure(
-            "mobile-exchange.bundle-profile",
-            "Bundle.meta.profile",
-            f"{label} cannot claim both active and retraction exchange profiles",
-        )
-    if resource.get("type") != "collection":
-        raise ProducerValidationError(f"{label} exchange Bundle must have type collection")
-    event_system, event_value = complete_identifier(
-        resource.get("identifier"), f"{label} Bundle.identifier"
-    )
-    if identifier_role(
-        resource["identifier"], f"{label} Bundle.identifier", "Bundle.identifier"
-    ) != "event":
-        raise ProducerValidationError(
-            f"{label} Bundle.identifier must carry the event role"
-        )
-    if EVENT_IDENTITY.fullmatch(event_value) is None:
-        raise contract_failure(
-            "mobile-exchange.event-identity",
-            "Bundle.identifier.value",
-            f"{label} Bundle.identifier is not a canonical Grove v0 event identity",
-        )
-    validate_identity_system_role(resource, label)
-    entries = resource.get("entry")
-    if not isinstance(entries, list) or not entries:
-        raise contract_failure(
-            "mobile-exchange.entry-required",
-            "Bundle.entry",
-            f"{label} exchange Bundle must contain entries",
-        )
-    full_urls: set[str] = set()
-    node_role_ordinals: dict[str, int] = {}
-    entry_resources: list[dict[str, Any]] = []
-    entry_identities: list[tuple[str, str, dict[str, Any]]] = []
-    resources_by_full_url: dict[str, dict[str, Any]] = {}
-    for index, entry in enumerate(entries):
-        if not isinstance(entry, dict) or not isinstance(entry.get("resource"), dict):
-            raise ProducerValidationError(f"{label} entry[{index}] must contain a resource")
-        entry_resource = entry["resource"]
-        resource_type = entry_resource.get("resourceType")
-        admitted_types = (
-            ACTIVE_ENTRY_RESOURCE_TYPES if is_active else frozenset({"Provenance", "Device"})
-        )
-        if resource_type not in admitted_types:
-            if is_retraction:
-                raise contract_failure(
-                    "mobile-retraction.no-clinical-copy",
-                    f"Bundle.entry[{index}].resource",
-                    f"{label} entry[{index}] resource type {resource_type!r} is not "
-                    "admitted by the retraction event profile",
-                )
-            raise contract_failure(
-                "mobile-exchange.entry-resource-type",
-                f"Bundle.entry[{index}].resource.resourceType",
-                f"{label} entry[{index}] resource type {resource_type!r} is not admitted "
-                "by the active exchange event profile",
-            )
-        if "contained" in entry_resource:
-            raise contract_failure(
-                "mobile-exchange.contained-resource-prohibited",
-                f"Bundle.entry[{index}].resource.contained",
-                f"{label} entry[{index}] contains a Resource; Mobile event graphs require "
-                "addressable Bundle entries",
-            )
-        if is_active and resource_type in ACTIVE_OUTPUT_RESOURCE_TYPES:
-            output_identifiers = typed_resource_identifiers(
-                entry_resource, f"{label} entry[{index}].resource"
-            )
-            if not {"source-record", "source-output"} <= set(output_identifiers):
-                raise contract_failure(
-                    "mobile-output.source-output-required",
-                    f"Bundle.entry[{index}].resource.identifier",
-                    f"{label} entry[{index}] active output must carry typed source-record "
-                    "and source-output identities",
-                )
-        extensions = entry.get("extension", [])
-        identities = [
-            extension.get("valueIdentifier")
-            for extension in extensions
-            if isinstance(extension, dict) and extension.get("url") == ENTRY_IDENTIFIER_EXTENSION
-        ] if isinstance(extensions, list) else []
-        if len(identities) != 1:
-            raise contract_failure(
-                "mobile-exchange.entry-node-key",
-                f"Bundle.entry[{index}]",
-                f"{label} entry[{index}] must have one entry node key",
-            )
-        key_location = f"Bundle.entry[{index}].extension.valueIdentifier"
-        system, value = complete_identifier(identities[0], f"{label} entry[{index}] identity")
-        role = identifier_role(identities[0], f"{label} entry[{index}] identity", key_location)
-        selected = selected_entry_identifier(
-            entry_resource, f"{label} entry[{index}].resource"
-        )
-        if selected is None:
-            match = ENTRY_NODE_IDENTITY.fullmatch(value)
-            if role != "entry-node" or match is None:
-                raise contract_failure(
-                    "mobile-exchange.entry-key-selection",
-                    key_location,
-                    f"{label} entry[{index}] resource without typed business identity "
-                    "must use a canonical entry-node key",
-                )
-            # Derived from the Bundle rather than read back from the key, which is the
-            # producer's own claim: a self-consistent digest over a wrong ordinal would
-            # otherwise verify against itself and mint a different fullUrl for the same node.
-            node_role = match.group("role")
-            expected_ordinal = node_role_ordinals.get(node_role, 0)
-            node_role_ordinals[node_role] = expected_ordinal + 1
-            if int(match.group("ordinal")) != expected_ordinal:
-                raise contract_failure(
-                    "mobile-exchange.entry-node-ordinal",
-                    f"Bundle.entry[{index}].extension.valueIdentifier.value",
-                    f"{label} entry[{index}] entry-node ordinal is not the zero-based "
-                    f"position of node-role {node_role!r} in Bundle entry order",
-                )
-            try:
-                expected_node = entry_node_identity(
-                    event_system=event_system,
-                    event_value=event_value,
-                    role=match.group("role"),
-                    ordinal=match.group("ordinal"),
-                )
-            except ValueError as error:
-                raise ProducerValidationError(str(error)) from error
-            if value != expected_node:
-                raise contract_failure(
-                    "mobile-exchange.entry-node-digest",
-                    f"Bundle.entry[{index}].extension.valueIdentifier.value",
-                    f"{label} entry[{index}] entry-node digest does not match its event, "
-                    "role, and ordinal",
-                )
-        else:
-            selected_role, selected_pair = selected
-            if role != selected_role or (system, value) != selected_pair:
-                raise contract_failure(
-                    "mobile-exchange.entry-key-selection",
-                    key_location,
-                    f"{label} entry[{index}] node key is not the resource's highest-priority "
-                    "typed identifier",
-                )
-        expected = expected_entry_full_url(system, value)
-        if entry.get("fullUrl") != expected:
-            raise contract_failure(
-                "mobile-exchange.deterministic-full-url",
-                f"Bundle.entry[{index}].fullUrl",
-                f"{label} entry[{index}] fullUrl is not the deterministic UUID URN",
-            )
-        if expected in full_urls:
-            raise contract_failure(
-                "mobile-exchange.distinct-entry-key",
-                key_location,
-                f"{label} entry[{index}] repeats the entry key behind fullUrl {expected}",
-            )
-        full_urls.add(expected)
-        validate_resource_profile_claims(
-            entry_resource,
-            f"{label} entry[{index}].resource",
-            active_adapter_profiles,
-        )
-        if is_active:
-            validate_active_observation_profile_claim(
-                entry_resource,
-                f"{label} entry[{index}].resource",
-                active_adapter_profiles,
-            )
-            validate_active_adapter_only_output_profile_claim(
-                entry_resource,
-                f"{label} entry[{index}].resource",
-            )
-            validate_active_document_reference_profile_claim(
-                entry_resource,
-                f"{label} entry[{index}].resource",
-            )
-            validate_active_provenance_profile_claim(
-                entry_resource,
-                f"{label} entry[{index}].resource",
-            )
-            validate_active_measurement_fixed_semantics(
-                entry_resource,
-                f"{label} entry[{index}].resource",
-            )
-        else:
-            validate_retraction_provenance_profile_claim(
-                entry_resource,
-                f"{label} entry[{index}].resource",
-            )
-        validate_exchange_supporting_profile_claim(
-            entry_resource,
-            f"{label} entry[{index}].resource",
-        )
-        entry_resources.append(entry_resource)
-        entry_identities.append((system, value, entry_resource))
-        resources_by_full_url[expected] = entry_resource
 
-    if is_retraction:
-        for candidate in entry_resources:
-            if candidate.get("resourceType") != "Provenance":
-                continue
-            targets = candidate.get("target", [])
-            if not isinstance(targets, list):
-                continue
-            for target_index, target in enumerate(targets):
-                if isinstance(target, dict) and "reference" in target:
-                    raise contract_failure(
-                        "mobile-retraction.logical-target",
-                        f"Provenance.target[{target_index}]",
-                        f"{label} retraction target[{target_index}] must be a typed logical "
-                        "Reference without a literal reference",
-                    )
-    for index, entry_resource in enumerate(entry_resources):
-        for reference_path, reference in all_reference_nodes_with_paths(entry_resource):
-            literal = reference["reference"]
-            if literal not in full_urls:
-                raise contract_failure(
-                    "mobile-exchange.resolved-reference",
-                    f"Bundle.entry[{index}].resource.{reference_path}.reference",
-                    f"{label} entry[{index}] reference must resolve to an entry UUID URN: "
-                    f"{literal}",
-                )
-            reference_target(
-                reference,
-                resources_by_full_url,
-                f"{entry_resource.get('resourceType')}.{reference_path}",
-            )
-        validate_reference_policy(
-            entry_resource,
-            resources_by_full_url,
-            f"{label} entry[{index}].resource",
-        )
-
-    if is_active and ACTIVE_ENTRY_POLICY["supportingResourcesMustBeConnected"]:
-        full_url_by_resource = {
-            id(candidate): full_url
-            for full_url, candidate in resources_by_full_url.items()
-        }
-        adjacency = {full_url: set() for full_url in resources_by_full_url}
-        for candidate in entry_resources:
-            source_url = full_url_by_resource[id(candidate)]
-            for reference in all_reference_nodes(candidate):
-                target_url = reference.get("reference")
-                if target_url in resources_by_full_url:
-                    adjacency[source_url].add(target_url)
-                    adjacency[target_url].add(source_url)
-        reachable = {
-            full_url
-            for full_url, candidate in resources_by_full_url.items()
-            if candidate.get("resourceType") in ACTIVE_OUTPUT_RESOURCE_TYPES
-            or candidate.get("resourceType") == ACTIVE_ENTRY_POLICY["lifecycleResourceType"]
-        }
-        pending = list(reachable)
-        while pending:
-            current = pending.pop()
-            for connected in adjacency[current] - reachable:
-                reachable.add(connected)
-                pending.append(connected)
-        disconnected = [
-            full_url
-            for full_url, candidate in resources_by_full_url.items()
-            if candidate.get("resourceType") in ACTIVE_SUPPORTING_RESOURCE_TYPES
-            and full_url not in reachable
-        ]
-        if disconnected:
-            raise contract_failure(
-                "mobile-support.connected",
-                "Bundle.entry",
-                f"{label} supporting resources are disconnected from every output and "
-                f"lifecycle assertion: {', '.join(sorted(disconnected))}",
-            )
-
-    provenances = [
-        candidate for candidate in entry_resources
-        if candidate.get("resourceType") == "Provenance"
+def _extension_identifiers(resource: dict[str, Any], url: str) -> list[Any]:
+    """Return the valueIdentifier of every top-level extension with this url."""
+    extensions = resource.get("extension")
+    if not isinstance(extensions, list):
+        return []
+    return [
+        extension.get("valueIdentifier")
+        for extension in extensions
+        if isinstance(extension, dict) and extension.get("url") == url
     ]
-    transform_provenances: list[dict[str, object]] = []
-    retraction_provenances: list[dict[str, object]] = []
-    iso_lifecycle_system = (
-        "http://terminology.hl7.org/CodeSystem/iso-21089-lifecycle"
+
+
+def _same_pair(identifier: Any, pair: tuple[str, str]) -> bool:
+    return (
+        isinstance(identifier, dict)
+        and identifier.get("system") == pair[0]
+        and identifier.get("value") == pair[1]
     )
-    for provenance_index, candidate in enumerate(provenances):
+
+
+def validate_entry_key(
+    entry: dict[str, Any],
+    index: int,
+    is_active: bool,
+    label: str,
+) -> tuple[str, str, str]:
+    """Check one entry key's selection and shape; return its role, system and value.
+
+    The key follows entryIdentity.selection. Keys derived from content are recomputed later, by
+    validate_derived_keys, and only under the published test key.
+    """
+    entry_label = f"{label} entry[{index}]"
+    resource = entry["resource"]
+    resource_type = resource.get("resourceType")
+    extensions = entry.get("extension", [])
+    identities = [
+        extension.get("valueIdentifier")
+        for extension in extensions
+        if isinstance(extension, dict) and extension.get("url") == ENTRY_IDENTIFIER_EXTENSION
+    ] if isinstance(extensions, list) else []
+    if len(identities) != 1:
+        raise contract_failure(
+            "mobile-exchange.entry-key",
+            f"Bundle.entry[{index}]",
+            f"{entry_label} must have exactly one Grove exchange entry key",
+        )
+    key = identities[0]
+    key_location = f"Bundle.entry[{index}].extension.valueIdentifier"
+    system, value = complete_identifier(key, f"{entry_label} entry key")
+    role = identifier_role(key, f"{entry_label} entry key", key_location)
+
+    if resource_type == "Provenance":
+        expected_role = PROVENANCE_KEY_ROLES["active" if is_active else "retraction"]
+        if role != expected_role:
+            raise contract_failure(
+                "mobile-exchange.entry-key-selection",
+                key_location,
+                f"{entry_label} Provenance must be keyed by its {expected_role} Identifier",
+            )
+        if HMAC_IDENTITY.fullmatch(value) is None:
+            raise contract_failure(
+                "mobile-exchange.record-version-key" if is_active
+                else "mobile-retraction.retraction-key",
+                f"{key_location}.value",
+                f"{entry_label} {expected_role} key is not a canonical Grove v0 HMAC identity",
+            )
+        versions = _extension_identifiers(resource, RECORD_VERSION_EXTENSION)
+        if is_active and (
+            len(versions) != 1
+            or not _same_pair(versions[0], (system, value))
+            or role_of_typed(versions[0]) != expected_role
+        ):
+            raise contract_failure(
+                "mobile-exchange.record-version-extension",
+                f"Bundle.entry[{index}].resource.extension",
+                f"{entry_label} conversion Provenance must repeat its record-version entry key "
+                "in exactly one grove-record-version extension",
+            )
+        if not is_active and versions:
+            raise contract_failure(
+                "mobile-exchange.record-version-extension",
+                f"Bundle.entry[{index}].resource.extension",
+                f"{entry_label} retraction Provenance carries no grove-record-version extension",
+            )
+        return role, system, value
+
+    snapshots = _extension_identifiers(resource, CONTEXT_SNAPSHOT_EXTENSION)
+    if resource_type == "QuestionnaireResponse":
+        if role != "context-snapshot":
+            raise contract_failure(
+                "mobile-exchange.entry-key-selection",
+                key_location,
+                f"{entry_label} QuestionnaireResponse must be keyed by its context-snapshot "
+                "Identifier, never by its submission identifier",
+            )
+        if HMAC_IDENTITY.fullmatch(value) is None:
+            raise contract_failure(
+                "mobile-exchange.content-snapshot-key",
+                f"{key_location}.value",
+                f"{entry_label} context-snapshot key is not a canonical Grove v0 HMAC identity",
+            )
+        if len(snapshots) != 1 or not _same_pair(snapshots[0], (system, value)):
+            raise contract_failure(
+                "mobile-exchange.context-snapshot-extension",
+                f"Bundle.entry[{index}].resource.extension",
+                f"{entry_label} QuestionnaireResponse must repeat its context-snapshot entry key "
+                "in exactly one grove-context-snapshot extension",
+            )
+        if role_of_typed(snapshots[0]) != "context-snapshot":
+            raise contract_failure(
+                "mobile-exchange.context-snapshot-extension",
+                f"Bundle.entry[{index}].resource.extension",
+                f"{entry_label} grove-context-snapshot must carry the context-snapshot role",
+            )
+        return role, system, value
+    if snapshots:
+        raise contract_failure(
+            "mobile-exchange.context-snapshot-extension",
+            f"Bundle.entry[{index}].resource.extension",
+            f"{entry_label} {resource_type} carries a grove-context-snapshot extension, which "
+            "only a QuestionnaireResponse carries",
+        )
+
+    snapshot_role = SNAPSHOT_ROLE_BY_RESOURCE_TYPE.get(resource_type)
+    resource_label = f"{entry_label}.resource"
+    if snapshot_role is not None and snapshot_role not in typed_resource_identifiers(
+        resource, resource_label
+    ):
+        raise contract_failure(
+            "mobile-exchange.content-snapshot-key",
+            f"Bundle.entry[{index}].resource.identifier",
+            f"{entry_label} shared {resource_type} must carry its typed {snapshot_role} "
+            "Identifier",
+        )
+    selected = selected_entry_identifier(resource, resource_label)
+    if selected is None:
+        raise contract_failure(
+            "mobile-exchange.entry-key-selection",
+            key_location,
+            f"{entry_label} {resource_type} carries no typed business identity to key it",
+        )
+    selected_role, selected_pair = selected
+    if snapshot_role is not None and selected_role != snapshot_role:
+        raise contract_failure(
+            "mobile-exchange.entry-key-selection",
+            key_location,
+            f"{entry_label} shared {resource_type} must be keyed by its {snapshot_role} "
+            f"Identifier, not its {selected_role} Identifier",
+        )
+    if role != selected_role or (system, value) != selected_pair:
+        raise contract_failure(
+            "mobile-exchange.entry-key-selection",
+            key_location,
+            f"{entry_label} entry key is not the resource's highest-priority typed identifier",
+        )
+    return role, system, value
+
+
+def role_of_typed(identifier: Any) -> str | None:
+    """Return the one Grove role of an Identifier, or None when it carries none or several."""
+    if not isinstance(identifier, dict):
+        return None
+    identifier_type = identifier.get("type")
+    codings = identifier_type.get("coding", []) if isinstance(identifier_type, dict) else []
+    roles = [
+        coding.get("code") for coding in codings
+        if isinstance(coding, dict) and coding.get("system") == IDENTIFIER_ROLE_SYSTEM
+    ] if isinstance(codings, list) else []
+    return roles[0] if len(roles) == 1 else None
+
+
+def classify_lifecycle(
+    provenances: list[tuple[int, dict[str, Any]]], label: str
+) -> tuple[list[tuple[int, dict[str, Any]]], list[tuple[int, dict[str, Any]]], int]:
+    """Split Provenances into transform and retraction assertions; count unclassified ones."""
+    transforms: list[tuple[int, dict[str, Any]]] = []
+    retractions: list[tuple[int, dict[str, Any]]] = []
+    unclassified = 0
+    for index, candidate in provenances:
         activity = candidate.get("activity", {})
         codings = activity.get("coding", []) if isinstance(activity, dict) else []
         codings = codings if isinstance(codings, list) else []
         iso_codings = [
             coding for coding in codings
-            if isinstance(coding, dict)
-            and coding.get("system") == iso_lifecycle_system
+            if isinstance(coding, dict) and coding.get("system") == ISO_LIFECYCLE_SYSTEM
         ]
         grove_codings = [
             coding for coding in codings
-            if isinstance(coding, dict)
-            and coding.get("system") == LIFECYCLE_EVENT_SYSTEM
+            if isinstance(coding, dict) and coding.get("system") == LIFECYCLE_EVENT_SYSTEM
         ]
         if not iso_codings and not grove_codings:
+            unclassified += 1
             continue
-        lifecycle_label = f"{label} Provenance[{provenance_index}] activity"
+        lifecycle_label = f"{label} entry[{index}] Provenance activity"
         if len(iso_codings) + len(grove_codings) != 1:
             raise contract_failure(
                 "mobile-exchange.lifecycle-coding",
@@ -459,97 +371,247 @@ def validate_exchange_bundle(
                 raise ProducerValidationError(
                     f"{lifecycle_label} has an unadmitted ISO lifecycle code"
                 )
-            transform_provenances.append(candidate)
+            transforms.append((index, candidate))
         else:
             if grove_codings[0].get("code") != SOURCE_RECORD_RETRACTED:
                 raise ProducerValidationError(
                     f"{lifecycle_label} has an unadmitted Grove lifecycle code"
                 )
-            retraction_provenances.append(candidate)
-    if is_active:
-        if (
-            len(provenances) != 1
-            or len(transform_provenances) != 1
-            or retraction_provenances
-        ):
-            raise contract_failure(
-                "mobile-exchange.transform-provenance",
-                "Bundle.entry",
-                f"{label} active event must contain exactly one transform Provenance and no retraction",
-            )
-        output_urls: set[str] = set()
-        source_pairs: set[tuple[str, str]] = set()
-        for full_url, candidate in resources_by_full_url.items():
-            if candidate.get("resourceType") not in ACTIVE_OUTPUT_RESOURCE_TYPES:
+            retractions.append((index, candidate))
+    return transforms, retractions, unclassified
+
+
+def subject_statement(
+    reference: Any, resources_by_full_url: dict[str, dict[str, Any]]
+) -> tuple[str, ...] | None:
+    """Return the subject one governed Patient reference states.
+
+    A logical reference states its pseudonym pair. A literal reference states the Patient
+    entry's one untyped identifier pair; a Patient with none or several states its fullUrl.
+    """
+    if not isinstance(reference, dict):
+        return None
+    literal = reference.get("reference")
+    if isinstance(literal, str):
+        patient = resources_by_full_url.get(literal)
+        if not isinstance(patient, dict) or patient.get("resourceType") != "Patient":
+            return None
+        identifiers = patient.get("identifier", [])
+        pairs = [
+            (identifier.get("system"), identifier.get("value"))
+            for identifier in identifiers if isinstance(identifier, dict)
+            and role_of_typed(identifier) is None
+            and isinstance(identifier.get("system"), str)
+            and isinstance(identifier.get("value"), str)
+        ] if isinstance(identifiers, list) else []
+        return ("pair", *pairs[0]) if len(pairs) == 1 else ("entry", literal)
+    identifier = reference.get("identifier")
+    if isinstance(identifier, dict):
+        system, value = complete_identifier(identifier, "subject identifier")
+        return ("pair", system, value)
+    return None
+
+
+def record_unit(
+    start: set[str],
+    resources_by_full_url: dict[str, dict[str, Any]],
+) -> set[str]:
+    """Return the directed literal closure of a record unit (bundle.recordUnit)."""
+    research_subjects = {
+        full_url: resource for full_url, resource in resources_by_full_url.items()
+        if resource.get("resourceType") == "ResearchSubject"
+    }
+    unit: set[str] = set()
+    pending = [full_url for full_url in start if full_url in resources_by_full_url]
+    while True:
+        while pending:
+            current = pending.pop()
+            if current in unit:
                 continue
-            typed = typed_resource_identifiers(candidate, f"{label} output {full_url}")
-            if "source-record" not in typed or "source-output" not in typed:
-                raise ProducerValidationError(
-                    f"{label} active output {full_url} must carry typed source-record and source-output identities"
-                )
-            output_urls.add(full_url)
-            source_pairs.add(typed["source-record"])
-        if not output_urls:
+            unit.add(current)
+            for reference in all_reference_nodes(resources_by_full_url[current]):
+                target = reference.get("reference")
+                if target in resources_by_full_url and target not in unit:
+                    pending.append(target)
+        # A ResearchSubject joins every record whose closure contains the study it references.
+        joining = [
+            full_url for full_url, subject in research_subjects.items()
+            if full_url not in unit
+            and isinstance(subject.get("study"), dict)
+            and subject["study"].get("reference") in unit
+        ]
+        if not joining:
+            return unit
+        pending.extend(joining)
+
+
+def validate_connected(
+    lifecycle: list[tuple[int, dict[str, Any]]],
+    supporting_types: frozenset[str],
+    full_url_by_index: dict[int, str],
+    resources_by_full_url: dict[str, dict[str, Any]],
+    label: str,
+) -> None:
+    connected: set[str] = set()
+    for index, provenance in lifecycle:
+        targets = provenance.get("target")
+        start = {full_url_by_index[index]}
+        if isinstance(targets, list):
+            start.update(
+                target["reference"] for target in targets
+                if isinstance(target, dict) and isinstance(target.get("reference"), str)
+            )
+        connected |= record_unit(start, resources_by_full_url)
+    disconnected = [
+        full_url
+        for full_url, candidate in resources_by_full_url.items()
+        if candidate.get("resourceType") in supporting_types and full_url not in connected
+    ]
+    if disconnected:
+        raise contract_failure(
+            "mobile-support.connected",
+            "Bundle.entry",
+            f"{label} supporting resources lie in no record unit: "
+            f"{', '.join(sorted(disconnected))}",
+        )
+
+
+def validate_active_records(
+    transforms: list[tuple[int, dict[str, Any]]],
+    entry_resources: list[dict[str, Any]],
+    full_url_by_index: dict[int, str],
+    resources_by_full_url: dict[str, dict[str, Any]],
+    label: str,
+) -> None:
+    """Partition an active Bundle into records: one conversion Provenance and its outputs each."""
+    record_by_source: dict[tuple[str, str], int] = {}
+    source_by_record: dict[int, tuple[str, str]] = {}
+    for index, provenance in transforms:
+        source = exact_source_entity(provenance, f"{label} entry[{index}] transform Provenance")
+        if source in record_by_source:
+            raise contract_failure(
+                "mobile-exchange.distinct-source-record",
+                f"Bundle.entry[{index}].resource.entity",
+                f"{label} entry[{index}] names the source record of "
+                f"entry[{record_by_source[source]}]; two versions of one source record travel "
+                "in different Bundles",
+            )
+        record_by_source[source] = index
+        source_by_record[index] = source
+    outputs = {
+        full_url: candidate for full_url, candidate in resources_by_full_url.items()
+        if candidate.get("resourceType") in ACTIVE_OUTPUT_RESOURCE_TYPES
+    }
+    if not outputs:
+        raise contract_failure(
+            "mobile-exchange.output-required",
+            "Bundle.entry",
+            f"{label} active Bundle must contain at least one output",
+        )
+    record_by_output: dict[str, int] = {}
+    targets_by_record: dict[int, list[str]] = {}
+    for index, provenance in transforms:
+        targets = provenance.get("target")
+        if not isinstance(targets, list) or not targets:
             raise contract_failure(
                 "mobile-exchange.output-required",
-                "Bundle.entry",
-                f"{label} active event must contain at least one output",
+                f"Bundle.entry[{index}].resource.target",
+                f"{label} entry[{index}] conversion Provenance targets no output",
             )
-        if len(source_pairs) != 1:
-            raise ProducerValidationError(
-                f"{label} active event must contain outputs for exactly one source record"
-            )
-        provenance = transform_provenances[0]
-        if exact_source_entity(provenance, f"{label} transform Provenance") not in source_pairs:
-            raise ProducerValidationError(
-                f"{label} transform source must equal the event output source-record identity"
-            )
-        targets = provenance.get("target")
-        target_urls = [
-            target.get("reference") for target in targets
-            if isinstance(target, dict) and isinstance(target.get("reference"), str)
-        ] if isinstance(targets, list) else []
-        if len(target_urls) != len(set(target_urls)) or set(target_urls) != output_urls:
-            raise contract_failure(
-                "mobile-exchange.provenance-targets",
-                "Provenance.target",
-                f"{label} transform Provenance must target every and only source-derived output",
-            )
-        validate_governed_source_identifiers(entry_resources, label)
-        validate_health_connect_output_graph(entry_resources, resources_by_full_url, label)
-        validate_healthkit_ecg_output_graph(entry_resources, resources_by_full_url, label)
-        validate_adapter_provenance_graph(entry_resources, resources_by_full_url, label)
-    else:
-        if (
-            len(provenances) != 1
-            or len(retraction_provenances) != 1
-            or transform_provenances
-        ):
-            raise contract_failure(
-                "mobile-retraction.provenance",
-                "Bundle.entry",
-                f"{label} retraction event must contain exactly one retraction Provenance "
-                "and no transform",
-            )
-        if any(
-            candidate.get("resourceType") not in {"Provenance", "Device"}
-            for candidate in entry_resources
-        ):
-            raise ProducerValidationError(
-                f"{label} retraction event may contain only its Provenance and Device agents"
-            )
-        provenance = retraction_provenances[0]
+        target_urls: list[str] = []
+        for target_index, target in enumerate(targets):
+            reference = target.get("reference") if isinstance(target, dict) else None
+            if not isinstance(reference, str) or reference not in outputs:
+                raise contract_failure(
+                    "mobile-exchange.provenance-targets",
+                    "Provenance.target",
+                    f"{label} entry[{index}] Provenance.target[{target_index}] is not a literal "
+                    "reference to an active output",
+                )
+            if reference in target_urls:
+                raise contract_failure(
+                    "mobile-exchange.output-targeted-once",
+                    f"Bundle.entry[{index}].resource.target[{target_index}]",
+                    f"{label} entry[{index}] conversion Provenance repeats the target {reference}",
+                )
+            target_urls.append(reference)
+        targets_by_record[index] = target_urls
+    for index, target_urls in targets_by_record.items():
+        for reference in target_urls:
+            if reference in record_by_output:
+                raise contract_failure(
+                    "mobile-exchange.output-targeted-once",
+                    "Bundle.entry",
+                    f"{label} output {reference} is targeted by entry[{record_by_output[reference]}] "
+                    f"and entry[{index}]",
+                )
+            record_by_output[reference] = index
+    untargeted = sorted(set(outputs) - set(record_by_output))
+    if untargeted:
+        raise contract_failure(
+            "mobile-exchange.output-targeted-once",
+            "Bundle.entry",
+            f"{label} outputs are targeted by no conversion Provenance: {', '.join(untargeted)}",
+        )
+    for index, target_urls in targets_by_record.items():
+        for reference in target_urls:
+            typed = typed_resource_identifiers(outputs[reference], f"{label} output {reference}")
+            if typed.get("source-record") != source_by_record[index]:
+                raise contract_failure(
+                    "mobile-exchange.provenance-targets",
+                    "Provenance.target",
+                    f"{label} entry[{index}] conversion Provenance targets an output of another "
+                    "source record",
+                )
+
+    # Decision 7: a literal reference stays inside its record or reaches a shared node.
+    record_by_provenance = {full_url_by_index[index]: index for index, _ in transforms}
+    for entry_index, candidate in enumerate(entry_resources):
+        referrer = full_url_by_index[entry_index]
+        own_record = record_by_output.get(referrer, record_by_provenance.get(referrer))
+        for reference_path, reference in all_reference_nodes_with_paths(candidate):
+            target_record = record_by_output.get(reference["reference"])
+            if target_record is not None and target_record != own_record:
+                raise contract_failure(
+                    "mobile-exchange.cross-record-reference",
+                    f"Bundle.entry[{entry_index}].resource.{reference_path}.reference",
+                    f"{label} entry[{entry_index}] references an output of another record; "
+                    "a reference between records is identifier-only",
+                )
+
+    statements: set[tuple[str, ...]] = set()
+    for candidate in outputs.values():
+        for resource_type, path in OUTPUT_SUBJECT_PATHS:
+            if candidate.get("resourceType") == resource_type:
+                statement = subject_statement(candidate.get(path), resources_by_full_url)
+                if statement is not None:
+                    statements.add(statement)
+    if len(statements) > 1:
+        raise contract_failure(
+            "mobile-exchange.single-subject",
+            "Bundle.entry",
+            f"{label} records state {len(statements)} different subjects",
+        )
+
+
+def validate_retraction_records(
+    retractions: list[tuple[int, dict[str, Any]]], label: str
+) -> None:
+    """Check each retraction assertion; each addresses one whole source record once."""
+    sources: dict[tuple[str, str], int] = {}
+    for index, provenance in retractions:
+        provenance_label = f"{label} entry[{index}] retraction"
         targets = provenance.get("target")
         if not isinstance(targets, list) or not targets:
             raise contract_failure(
                 "mobile-retraction.target-required",
                 "Provenance.target",
-                f"{label} retraction must identify at least one target",
+                f"{provenance_label} must identify at least one target",
             )
         seen_targets: set[tuple[str, str]] = set()
         source_record_targets: list[tuple[int, tuple[str, str]]] = []
         for target_index, target in enumerate(targets):
-            target_label = f"{label} retraction target[{target_index}]"
+            target_label = f"{provenance_label} target[{target_index}]"
             if not isinstance(target, dict) or "reference" in target:
                 raise ProducerValidationError(
                     f"{target_label} must be a logical Reference without a literal reference"
@@ -573,7 +635,7 @@ def validate_exchange_bundle(
                 raise contract_failure(
                     "mobile-retraction.distinct-target",
                     f"Provenance.target[{target_index}].identifier",
-                    f"{label} repeats a retraction target",
+                    f"{provenance_label} repeats a retraction target",
                 )
             seen_targets.add(pair)
             extensions = target.get("extension", [])
@@ -634,16 +696,416 @@ def validate_exchange_bundle(
             validate_retraction_native_record_identifier(
                 target, target_index, target_label
             )
-        source = exact_source_entity(provenance, f"{label} retraction Provenance")
+        source = exact_source_entity(provenance, f"{provenance_label} Provenance")
         for target_index, pair in source_record_targets:
             if pair != source:
                 raise contract_failure(
                     "mobile-retraction.source-record-target",
                     f"Provenance.target[{target_index}].identifier",
-                    f"{label} retraction target[{target_index}] must repeat the source-record "
+                    f"{provenance_label} target[{target_index}] must repeat the source-record "
                     "Identifier of the Provenance source entity",
                 )
+        if source in sources:
+            raise contract_failure(
+                "mobile-retraction.provenance",
+                f"Bundle.entry[{index}].resource.entity",
+                f"{provenance_label} retracts the source record of entry[{sources[source]}] "
+                "under the same record-retraction key",
+            )
+        sources[source] = index
 
+
+def bundle_subject(
+    entry_resources: list[dict[str, Any]],
+    resources_by_full_url: dict[str, dict[str, Any]],
+) -> tuple[str, str] | None:
+    """Return the one subject pair the Bundle's records state, if they state exactly one."""
+    statements = {
+        statement
+        for candidate in entry_resources
+        for resource_type, path in OUTPUT_SUBJECT_PATHS
+        if candidate.get("resourceType") == resource_type
+        and (statement := subject_statement(candidate.get(path), resources_by_full_url))
+        is not None
+    }
+    if len(statements) != 1:
+        return None
+    statement = next(iter(statements))
+    return (statement[1], statement[2]) if statement[0] == "pair" else None
+
+
+def validate_derived_keys(
+    lossless: Any,
+    is_active: bool,
+    keys: list[tuple[str, str, str]],
+    entry_resources: list[dict[str, Any]],
+    resources_by_full_url: dict[str, dict[str, Any]],
+    label: str,
+) -> None:
+    """Canonicalize every resource and recompute every content-derived key under the test key.
+
+    A key under any other key id is checked for shape only: a receiver never holds a
+    deployment's key, so it compares record versions and never recomputes them.
+    """
+    lossless_entries = lossless.get("entry") if isinstance(lossless, dict) else None
+    if not isinstance(lossless_entries, list) or len(lossless_entries) != len(entry_resources):
+        raise contract_failure(
+            "mobile-exchange.canonical-json",
+            "Bundle.entry",
+            f"{label} lossless form does not match the parsed Bundle",
+        )
+    lossless_resources = [entry.get("resource") for entry in lossless_entries]
+    for index, candidate in enumerate(lossless_resources):
+        try:
+            canonical_bytes(candidate)
+        except CanonicalJSONError as error:
+            raise contract_failure(
+                "mobile-exchange.canonical-json",
+                f"Bundle.entry[{index}].resource",
+                f"{label} entry[{index}] has no grove-canonical-json-v0 form: {error}",
+            ) from error
+
+    def recomputes(value: str) -> tuple[str, str] | None:
+        key_id, epoch, _ = parse_hmac_identity(value)
+        return (key_id, epoch) if key_id == TEST_KEY_ID else None
+
+    subject = bundle_subject(entry_resources, resources_by_full_url)
+    for index, (role, _system, value) in enumerate(keys):
+        candidate = entry_resources[index]
+        resource_type = candidate.get("resourceType")
+        snapshot_role = SNAPSHOT_ROLE_BY_RESOURCE_TYPE.get(resource_type)
+        if resource_type == "QuestionnaireResponse":
+            snapshot_role = "context-snapshot"
+        if snapshot_role is None or role != snapshot_role or subject is None:
+            continue
+        scope = recomputes(value)
+        if scope is None:
+            continue
+        if resource_type == "Device":
+            profiles = candidate.get("meta", {}).get("profile", [])
+            node_roles = {DEVICE_NODE_ROLES[profile] for profile in profiles if profile in DEVICE_NODE_ROLES}
+            if len(node_roles) != 1:
+                continue
+            derive, node_role = device_snapshot_identity, next(iter(node_roles))
+        else:
+            derive, node_role = context_snapshot_identity, CONTEXT_NODE_ROLES[resource_type]
+        try:
+            expected = derive(
+                key=TEST_KEY, key_id=scope[0], epoch=scope[1], subject_system=subject[0],
+                subject_value=subject[1], node_role=node_role,
+                content_digest=content_digest(lossless_resources[index]),
+            )
+        except (ExchangeProtocolError, CanonicalJSONError) as error:
+            raise contract_failure(
+                "mobile-exchange.content-snapshot-key",
+                f"Bundle.entry[{index}].extension.valueIdentifier.value",
+                f"{label} entry[{index}] content snapshot cannot be recomputed: {error}",
+            ) from error
+        if value != expected:
+            raise contract_failure(
+                "mobile-exchange.content-snapshot-key",
+                f"Bundle.entry[{index}].extension.valueIdentifier.value",
+                f"{label} entry[{index}] {snapshot_role} key does not recompute from the "
+                f"{resource_type}'s canonical content under the test key",
+            )
+
+    for index, (role, _system, value) in enumerate(keys):
+        candidate = entry_resources[index]
+        if candidate.get("resourceType") != "Provenance":
+            continue
+        scope = recomputes(value)
+        if scope is None:
+            continue
+        source = exact_source_entity(candidate, f"{label} entry[{index}] Provenance")
+        location = f"Bundle.entry[{index}].extension.valueIdentifier.value"
+        if is_active:
+            try:
+                outputs = [
+                    lossless_resources[resources_index]
+                    for resources_index in _target_indexes(candidate, entry_resources, resources_by_full_url)
+                ]
+                expected = record_version_identity(
+                    key=TEST_KEY, key_id=scope[0], epoch=scope[1],
+                    source_record_system=source[0], source_record_value=source[1],
+                    record_content_digest=record_content_digest(lossless_resources[index], outputs),
+                )
+            except (ExchangeProtocolError, CanonicalJSONError) as error:
+                raise contract_failure(
+                    "mobile-exchange.record-version-key", location,
+                    f"{label} entry[{index}] record version cannot be recomputed: {error}",
+                ) from error
+            if value != expected:
+                raise contract_failure(
+                    "mobile-exchange.record-version-key", location,
+                    f"{label} entry[{index}] record-version key does not recompute from its "
+                    "source record and the canonical content of its Provenance and outputs",
+                )
+        else:
+            try:
+                expected = record_retraction_identity(
+                    key=TEST_KEY, key_id=scope[0], epoch=scope[1],
+                    source_record_system=source[0], source_record_value=source[1],
+                )
+            except ExchangeProtocolError as error:
+                raise contract_failure(
+                    "mobile-retraction.retraction-key", location,
+                    f"{label} entry[{index}] record-retraction key cannot be recomputed: {error}",
+                ) from error
+            if value != expected:
+                raise contract_failure(
+                    "mobile-retraction.retraction-key", location,
+                    f"{label} entry[{index}] record-retraction key is not the key of its "
+                    "source-record entity under the test key",
+                )
+
+
+def _target_indexes(
+    provenance: dict[str, Any],
+    entry_resources: list[dict[str, Any]],
+    resources_by_full_url: dict[str, dict[str, Any]],
+) -> list[int]:
+    """Return the entry index of each Provenance.target, in target order."""
+    index_by_resource = {id(candidate): index for index, candidate in enumerate(entry_resources)}
+    return [
+        index_by_resource[id(resources_by_full_url[target["reference"]])]
+        for target in provenance["target"]
+    ]
+
+
+def validate_exchange_bundle(
+    resource: dict[str, Any],
+    label: str,
+    active_adapter_profiles: set[str] | None = None,
+    lossless_resource: Any = None,
+) -> None:
+    """Validate one exchange Bundle; lossless_resource is its loads_lossless tree, if read."""
+    profiles = resource.get("meta", {}).get("profile", [])
+    is_active = EXCHANGE_BUNDLE_PROFILE in profiles
+    is_retraction = RETRACTION_BUNDLE_PROFILE in profiles
+    if not is_active and not is_retraction:
+        return
+    if is_active and is_retraction:
+        raise contract_failure(
+            "mobile-exchange.bundle-profile",
+            "Bundle.meta.profile",
+            f"{label} cannot claim both active and retraction exchange profiles",
+        )
+    if resource.get("type") != "collection":
+        raise ProducerValidationError(f"{label} exchange Bundle must have type collection")
+    if "identifier" in resource:
+        # An optional, untyped transport id with no format: it names no record and enters
+        # no identity. Any type is refused, a Grove identifier role or another.
+        if not isinstance(resource["identifier"], dict):
+            raise ProducerValidationError(f"{label} Bundle.identifier must be an Identifier")
+        if "type" in resource["identifier"]:
+            raise contract_failure(
+                "mobile-exchange.bundle-identifier",
+                "Bundle.identifier",
+                f"{label} Bundle.identifier is an untyped transport id and carries no type, "
+                "Grove identifier role or other",
+            )
+    validate_identity_system_role(resource, label)
+    entries = resource.get("entry")
+    if not isinstance(entries, list) or not entries:
+        raise contract_failure(
+            "mobile-exchange.entry-required",
+            "Bundle.entry",
+            f"{label} exchange Bundle must contain entries",
+        )
+    full_urls: set[str] = set()
+    entry_resources: list[dict[str, Any]] = []
+    keys: list[tuple[str, str, str]] = []
+    full_url_by_index: dict[int, str] = {}
+    resources_by_full_url: dict[str, dict[str, Any]] = {}
+    for index, entry in enumerate(entries):
+        if not isinstance(entry, dict) or not isinstance(entry.get("resource"), dict):
+            raise ProducerValidationError(f"{label} entry[{index}] must contain a resource")
+        entry_resource = entry["resource"]
+        resource_type = entry_resource.get("resourceType")
+        admitted_types = (
+            ACTIVE_ENTRY_RESOURCE_TYPES if is_active else frozenset({"Provenance", "Device"})
+        )
+        if resource_type not in admitted_types:
+            if is_retraction:
+                raise contract_failure(
+                    "mobile-retraction.no-clinical-copy",
+                    f"Bundle.entry[{index}].resource",
+                    f"{label} entry[{index}] resource type {resource_type!r} is not "
+                    "admitted by the retraction Bundle profile",
+                )
+            raise contract_failure(
+                "mobile-exchange.entry-resource-type",
+                f"Bundle.entry[{index}].resource.resourceType",
+                f"{label} entry[{index}] resource type {resource_type!r} is not admitted "
+                "by the active exchange Bundle profile",
+            )
+        if "contained" in entry_resource:
+            raise contract_failure(
+                "mobile-exchange.contained-resource-prohibited",
+                f"Bundle.entry[{index}].resource.contained",
+                f"{label} entry[{index}] contains a Resource; Mobile exchange Bundles require "
+                "addressable Bundle entries",
+            )
+        if is_active and resource_type in ACTIVE_OUTPUT_RESOURCE_TYPES:
+            output_identifiers = typed_resource_identifiers(
+                entry_resource, f"{label} entry[{index}].resource"
+            )
+            if not {"source-record", "source-output"} <= set(output_identifiers):
+                raise contract_failure(
+                    "mobile-output.source-output-required",
+                    f"Bundle.entry[{index}].resource.identifier",
+                    f"{label} entry[{index}] active output must carry typed source-record "
+                    "and source-output identities",
+                )
+        role, system, value = validate_entry_key(entry, index, is_active, label)
+        key_location = f"Bundle.entry[{index}].extension.valueIdentifier"
+        expected = expected_entry_full_url(system, value)
+        if entry.get("fullUrl") != expected:
+            raise contract_failure(
+                "mobile-exchange.deterministic-full-url",
+                f"Bundle.entry[{index}].fullUrl",
+                f"{label} entry[{index}] fullUrl is not the deterministic UUID URN",
+            )
+        if expected in full_urls:
+            raise contract_failure(
+                "mobile-exchange.distinct-entry-key",
+                key_location,
+                f"{label} entry[{index}] repeats the entry key behind fullUrl {expected}",
+            )
+        full_urls.add(expected)
+        validate_resource_profile_claims(
+            entry_resource,
+            f"{label} entry[{index}].resource",
+            active_adapter_profiles,
+        )
+        if is_active:
+            validate_active_observation_profile_claim(
+                entry_resource,
+                f"{label} entry[{index}].resource",
+                active_adapter_profiles,
+            )
+            validate_active_adapter_only_output_profile_claim(
+                entry_resource,
+                f"{label} entry[{index}].resource",
+            )
+            validate_active_document_reference_profile_claim(
+                entry_resource,
+                f"{label} entry[{index}].resource",
+            )
+            validate_active_provenance_profile_claim(
+                entry_resource,
+                f"{label} entry[{index}].resource",
+            )
+            validate_active_measurement_fixed_semantics(
+                entry_resource,
+                f"{label} entry[{index}].resource",
+            )
+        else:
+            validate_retraction_provenance_profile_claim(
+                entry_resource,
+                f"{label} entry[{index}].resource",
+            )
+        validate_exchange_supporting_profile_claim(
+            entry_resource,
+            f"{label} entry[{index}].resource",
+        )
+        entry_resources.append(entry_resource)
+        keys.append((role, system, value))
+        full_url_by_index[index] = expected
+        resources_by_full_url[expected] = entry_resource
+
+    if is_retraction:
+        for index, candidate in enumerate(entry_resources):
+            if candidate.get("resourceType") != "Provenance":
+                continue
+            targets = candidate.get("target", [])
+            if not isinstance(targets, list):
+                continue
+            for target_index, target in enumerate(targets):
+                if isinstance(target, dict) and "reference" in target:
+                    raise contract_failure(
+                        "mobile-retraction.logical-target",
+                        f"Provenance.target[{target_index}]",
+                        f"{label} entry[{index}] retraction target[{target_index}] must be a "
+                        "typed logical Reference without a literal reference",
+                    )
+    for index, entry_resource in enumerate(entry_resources):
+        for reference_path, reference in all_reference_nodes_with_paths(entry_resource):
+            literal = reference["reference"]
+            if literal not in full_urls:
+                raise contract_failure(
+                    "mobile-exchange.resolved-reference",
+                    f"Bundle.entry[{index}].resource.{reference_path}.reference",
+                    f"{label} entry[{index}] reference must resolve to an entry UUID URN: "
+                    f"{literal}",
+                )
+            reference_target(
+                reference,
+                resources_by_full_url,
+                f"{entry_resource.get('resourceType')}.{reference_path}",
+            )
+        validate_reference_policy(
+            entry_resource,
+            resources_by_full_url,
+            f"{label} entry[{index}].resource",
+        )
+
+    provenances = [
+        (index, candidate) for index, candidate in enumerate(entry_resources)
+        if candidate.get("resourceType") == "Provenance"
+    ]
+    transforms, retractions, unclassified = classify_lifecycle(provenances, label)
+    if is_active:
+        if not transforms or retractions or unclassified:
+            raise contract_failure(
+                "mobile-exchange.transform-provenance",
+                "Bundle.entry",
+                f"{label} active Bundle must contain at least one transform Provenance, one for "
+                "each record, and no retraction",
+            )
+        validate_active_records(
+            transforms, entry_resources, full_url_by_index, resources_by_full_url, label
+        )
+        if ACTIVE_ENTRY_POLICY["supportingResourcesMustBeConnected"]:
+            validate_connected(
+                transforms, ACTIVE_SUPPORTING_RESOURCE_TYPES, full_url_by_index,
+                resources_by_full_url, label,
+            )
+        validate_governed_source_identifiers(entry_resources, label)
+        validate_health_connect_output_graph(entry_resources, resources_by_full_url, label)
+        validate_healthkit_ecg_output_graph(entry_resources, resources_by_full_url, label)
+        validate_adapter_provenance_graph(entry_resources, resources_by_full_url, label)
+    else:
+        if not retractions or transforms or unclassified:
+            raise contract_failure(
+                "mobile-retraction.provenance",
+                "Bundle.entry",
+                f"{label} retraction Bundle must contain at least one retraction Provenance "
+                "and no transform",
+            )
+        validate_retraction_records(retractions, label)
+        validate_connected(
+            retractions, frozenset({"Device"}), full_url_by_index, resources_by_full_url, label
+        )
+
+    validate_adapter_companion_graphs(entry_resources, resources_by_full_url, label)
+    try:
+        lossless = lossless_tree(resource) if lossless_resource is None else lossless_resource
+    except CanonicalJSONError as error:
+        raise contract_failure(
+            "mobile-exchange.canonical-json",
+            "Bundle",
+            f"{label} has no grove-canonical-json-v0 form: {error}",
+        ) from error
+    validate_derived_keys(lossless, is_active, keys, entry_resources, resources_by_full_url, label)
+
+
+def validate_adapter_companion_graphs(
+    entry_resources: list[dict[str, Any]],
+    resources_by_full_url: dict[str, dict[str, Any]],
+    label: str,
+) -> None:
+    """Close the SensorKit hybrid and Health Connect glucose companion graphs."""
     sensorkit = read_json(CATALOG_ROOT / "sensorkit-adapter.json")
     sensorkit_hybrid_profiles: dict[str, tuple[str, dict[str, Any]]] = {}
     sensorkit_hybrid_contracts: dict[str, dict[str, Any]] = {}
@@ -808,14 +1270,17 @@ def validate_exchange_bundle(
                 "does not match its exact adapter-specific profile"
             )
 
+
+
 def exchange_bundle_diagnostics(
     resource: dict[str, Any],
     label: str = "exchange Bundle",
     active_adapter_profiles: set[str] | None = None,
+    lossless_resource: Any = None,
 ) -> list[dict[str, str]]:
     """Return the one stable structural diagnostic used by the cross-SDK corpus."""
     try:
-        validate_exchange_bundle(resource, label, active_adapter_profiles)
+        validate_exchange_bundle(resource, label, active_adapter_profiles, lossless_resource)
     except ProducerValidationError as error:
         if error.diagnostic is not None:
             return [error.diagnostic]

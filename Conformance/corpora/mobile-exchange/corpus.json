@@ -1,6 +1,6 @@
 {
   "schemaVersion": 0,
-  "version": "0.7.0",
+  "version": "0.8.0",
   "bases": [
     {
       "id": "mobile-exchange",
@@ -17,7 +17,7 @@
   ],
   "cases": [
     {
-      "id": "missing-entry-node-key",
+      "id": "missing-entry-key",
       "base": "mobile-exchange",
       "patch": [
         {
@@ -26,8 +26,8 @@
         }
       ],
       "expectedRule": {
-        "code": "mobile-exchange.entry-node-key",
-        "reason": "Every Bundle entry must carry exactly one complete Grove exchange entry node key.",
+        "code": "mobile-exchange.entry-key",
+        "reason": "Every Bundle entry must carry exactly one complete Grove exchange entry key.",
         "location": "Bundle.entry[0]",
         "severity": "error"
       }
@@ -84,57 +84,6 @@
       }
     },
     {
-      "id": "non-canonical-event-identity",
-      "base": "mobile-exchange",
-      "patch": [
-        {
-          "op": "replace",
-          "path": "/identifier/value",
-          "value": "exchange-20260820-001"
-        }
-      ],
-      "expectedRule": {
-        "code": "mobile-exchange.event-identity",
-        "reason": "Bundle.identifier.value must be the canonical e0 producer UUID and positive sequence form.",
-        "location": "Bundle.identifier.value",
-        "severity": "error"
-      }
-    },
-    {
-      "id": "tampered-entry-node-digest",
-      "base": "mobile-exchange",
-      "patch": [
-        {
-          "op": "replace",
-          "path": "/entry/0/extension/0/valueIdentifier/value",
-          "value": "n0:patient:0:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-        }
-      ],
-      "expectedRule": {
-        "code": "mobile-exchange.entry-node-digest",
-        "reason": "An entry-node digest must be derived from the enclosing event identifier, role, and ordinal.",
-        "location": "Bundle.entry[0].extension.valueIdentifier.value",
-        "severity": "error"
-      }
-    },
-    {
-      "id": "misnumbered-entry-node-ordinal",
-      "base": "mobile-exchange",
-      "patch": [
-        {
-          "op": "replace",
-          "path": "/entry/0/extension/0/valueIdentifier/value",
-          "value": "n0:patient:1:qN9xaTdoz-LfvONC7FgEUNMz06zyWhfzD0khPhtjVig"
-        }
-      ],
-      "expectedRule": {
-        "code": "mobile-exchange.entry-node-ordinal",
-        "reason": "An entry-node ordinal is the zero-based position of its entry among the entries sharing that node-role, in Bundle entry order.",
-        "location": "Bundle.entry[0].extension.valueIdentifier.value",
-        "severity": "error"
-      }
-    },
-    {
       "id": "missing-source-output-identity",
       "base": "mobile-exchange",
       "patch": [
@@ -162,7 +111,7 @@
       ],
       "expectedRule": {
         "code": "mobile-exchange.identity-system-role",
-        "reason": "Within one event graph, each Grove Identifier.system names exactly one Grove identifier role; one namespace cannot change meaning between nodes.",
+        "reason": "Within one Bundle, each Grove Identifier.system names exactly one Grove identifier role; one namespace cannot change meaning between nodes.",
         "location": "Bundle",
         "severity": "error"
       }
@@ -172,13 +121,389 @@
       "base": "mobile-exchange",
       "patch": [
         {
-          "op": "remove",
-          "path": "/entry/3"
+          "op": "replace",
+          "path": "/entry",
+          "value": [
+            {
+              "extension": [
+                {
+                  "url": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-exchange-entry-key",
+                  "valueIdentifier": {
+                    "type": {
+                      "coding": [
+                        {
+                          "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+                          "code": "context-snapshot"
+                        }
+                      ]
+                    },
+                    "system": "https://study.example.org/fhir/NamingSystem/grove-context-snapshot-v0/test-key/1",
+                    "value": "v0:test-key:1:3ZTiYqzi8xk9ZhSE3U_roFsDtUYoNTQ_CbWEDvOZwLQ"
+                  }
+                }
+              ],
+              "fullUrl": "urn:uuid:a3a3368b-fb0f-5113-9d9d-7c651a4b96ca",
+              "resource": {
+                "resourceType": "Patient",
+                "id": "GroveMobileExchangePatientExample",
+                "identifier": [
+                  {
+                    "system": "https://study.example.org/fhir/identifiers/participant",
+                    "value": "participant-001"
+                  },
+                  {
+                    "type": {
+                      "coding": [
+                        {
+                          "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+                          "code": "context-snapshot"
+                        }
+                      ]
+                    },
+                    "system": "https://study.example.org/fhir/NamingSystem/grove-context-snapshot-v0/test-key/1",
+                    "value": "v0:test-key:1:3ZTiYqzi8xk9ZhSE3U_roFsDtUYoNTQ_CbWEDvOZwLQ"
+                  }
+                ]
+              }
+            },
+            {
+              "extension": [
+                {
+                  "url": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-exchange-entry-key",
+                  "valueIdentifier": {
+                    "type": {
+                      "coding": [
+                        {
+                          "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+                          "code": "device-snapshot"
+                        }
+                      ]
+                    },
+                    "system": "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v0/test-key/1",
+                    "value": "v0:test-key:1:Gm8_MD0ZNlH6vNBsj8s11GgVDJGHMUROX1amyK00jFs"
+                  }
+                }
+              ],
+              "fullUrl": "urn:uuid:5afa0f42-eff6-5665-b7f6-e3c2ef5cfbc4",
+              "resource": {
+                "resourceType": "Device",
+                "id": "GroveMobileExchangeApplicationExample",
+                "meta": {
+                  "profile": [
+                    "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-application-device"
+                  ]
+                },
+                "identifier": [
+                  {
+                    "type": {
+                      "coding": [
+                        {
+                          "code": "device-snapshot",
+                          "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role"
+                        }
+                      ]
+                    },
+                    "system": "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v0/test-key/1",
+                    "value": "v0:test-key:1:Gm8_MD0ZNlH6vNBsj8s11GgVDJGHMUROX1amyK00jFs"
+                  }
+                ],
+                "deviceName": [
+                  {
+                    "type": "user-friendly-name",
+                    "name": "Mobile Study"
+                  }
+                ],
+                "status": "active"
+              }
+            },
+            {
+              "extension": [
+                {
+                  "url": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-exchange-entry-key",
+                  "valueIdentifier": {
+                    "type": {
+                      "coding": [
+                        {
+                          "code": "source-output",
+                          "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role"
+                        }
+                      ]
+                    },
+                    "system": "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1",
+                    "value": "v0:test-key:1:PPULnf0LKpASjIj8mU5TKafPKig_oqWND3_dHFShGd8"
+                  }
+                }
+              ],
+              "fullUrl": "urn:uuid:a9b76bbc-f523-5ef4-9919-813ec70553e5",
+              "resource": {
+                "resourceType": "Observation",
+                "id": "GroveMobileExchangeHeartRateExample",
+                "meta": {
+                  "profile": [
+                    "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-heart-rate"
+                  ]
+                },
+                "code": {
+                  "coding": [
+                    {
+                      "code": "8867-4",
+                      "system": "http://loinc.org",
+                      "display": "Heart rate"
+                    }
+                  ]
+                },
+                "identifier": [
+                  {
+                    "type": {
+                      "coding": [
+                        {
+                          "code": "source-record",
+                          "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role"
+                        }
+                      ]
+                    },
+                    "system": "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1",
+                    "value": "v0:test-key:1:ptHr751zWyYfaR2WIvrP1TfnVEK4bInC__ibP_AYfVY"
+                  },
+                  {
+                    "type": {
+                      "coding": [
+                        {
+                          "code": "source-output",
+                          "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role"
+                        }
+                      ]
+                    },
+                    "system": "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1",
+                    "value": "v0:test-key:1:PPULnf0LKpASjIj8mU5TKafPKig_oqWND3_dHFShGd8"
+                  }
+                ],
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/observation-gatewayDevice",
+                    "valueReference": {
+                      "reference": "urn:uuid:5afa0f42-eff6-5665-b7f6-e3c2ef5cfbc4"
+                    }
+                  }
+                ],
+                "status": "final",
+                "category": [
+                  {
+                    "coding": [
+                      {
+                        "code": "vital-signs",
+                        "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                        "display": "Vital Signs"
+                      }
+                    ]
+                  }
+                ],
+                "subject": {
+                  "reference": "urn:uuid:a3a3368b-fb0f-5113-9d9d-7c651a4b96ca"
+                },
+                "derivedFrom": [
+                  {
+                    "reference": "urn:uuid:9d9ad748-503d-5b45-b5db-b14d5c965705"
+                  }
+                ],
+                "effectiveDateTime": "2026-08-20T08:30:00.251-07:00",
+                "issued": "2026-08-20T17:30:02Z",
+                "valueQuantity": {
+                  "value": 72,
+                  "code": "/min",
+                  "system": "http://unitsofmeasure.org",
+                  "unit": "beats/minute"
+                }
+              }
+            },
+            {
+              "extension": [
+                {
+                  "url": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-exchange-entry-key",
+                  "valueIdentifier": {
+                    "type": {
+                      "coding": [
+                        {
+                          "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+                          "code": "context-snapshot"
+                        }
+                      ]
+                    },
+                    "system": "https://study.example.org/fhir/NamingSystem/grove-context-snapshot-v0/test-key/1",
+                    "value": "v0:test-key:1:_rNxPQWm7HC8lN4rxNvNcQDkKO0Ew1LhBZ9jO8jJduM"
+                  }
+                }
+              ],
+              "fullUrl": "urn:uuid:9d9ad748-503d-5b45-b5db-b14d5c965705",
+              "resource": {
+                "resourceType": "QuestionnaireResponse",
+                "id": "GroveMobileExchangeQuestionnaireResponseExample",
+                "meta": {
+                  "profile": [
+                    "https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire-response"
+                  ]
+                },
+                "language": "en-US",
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaireresponse-completionMode",
+                    "valueCodeableConcept": {
+                      "coding": [
+                        {
+                          "system": "http://terminology.hl7.org/CodeSystem/v3-ParticipationMode",
+                          "code": "ELECTRONIC"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "url": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-context-snapshot",
+                    "valueIdentifier": {
+                      "type": {
+                        "coding": [
+                          {
+                            "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+                            "code": "context-snapshot"
+                          }
+                        ]
+                      },
+                      "system": "https://study.example.org/fhir/NamingSystem/grove-context-snapshot-v0/test-key/1",
+                      "value": "v0:test-key:1:_rNxPQWm7HC8lN4rxNvNcQDkKO0Ew1LhBZ9jO8jJduM"
+                    }
+                  }
+                ],
+                "identifier": {
+                  "system": "https://study.example.org/fhir/NamingSystem/questionnaire-response",
+                  "value": "response-1"
+                },
+                "questionnaire": "https://study.example.org/fhir/Questionnaire/heart-rate-check|1.0.0",
+                "status": "completed",
+                "subject": {
+                  "type": "Patient",
+                  "identifier": {
+                    "system": "https://study.example.org/fhir/identifiers/participant",
+                    "value": "participant-001"
+                  }
+                },
+                "authored": "2026-08-20T08:30:00-07:00",
+                "item": [
+                  {
+                    "linkId": "heart-rate",
+                    "answer": [
+                      {
+                        "valueQuantity": {
+                          "value": 72,
+                          "code": "/min",
+                          "system": "http://unitsofmeasure.org",
+                          "unit": "beats/minute"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "extension": [
+                {
+                  "url": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-exchange-entry-key",
+                  "valueIdentifier": {
+                    "type": {
+                      "coding": [
+                        {
+                          "code": "source-output",
+                          "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role"
+                        }
+                      ]
+                    },
+                    "system": "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1",
+                    "value": "v0:test-key:1:P5ckwkm_jpCABzYEwupDLVKFyQiGyaWE-y8eRTMFj2A"
+                  }
+                }
+              ],
+              "fullUrl": "urn:uuid:f5377adb-a242-5c0e-927a-a57d90e8ade6",
+              "resource": {
+                "resourceType": "Observation",
+                "id": "GroveMobileExchangeSecondHeartRateExample",
+                "meta": {
+                  "profile": [
+                    "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-heart-rate"
+                  ]
+                },
+                "code": {
+                  "coding": [
+                    {
+                      "code": "8867-4",
+                      "system": "http://loinc.org",
+                      "display": "Heart rate"
+                    }
+                  ]
+                },
+                "identifier": [
+                  {
+                    "type": {
+                      "coding": [
+                        {
+                          "code": "source-record",
+                          "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role"
+                        }
+                      ]
+                    },
+                    "system": "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1",
+                    "value": "v0:test-key:1:Ce4AD2kT5yierXkx5QJNFu7d8qqaSSQOCKGFeYpu2M0"
+                  },
+                  {
+                    "type": {
+                      "coding": [
+                        {
+                          "code": "source-output",
+                          "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role"
+                        }
+                      ]
+                    },
+                    "system": "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1",
+                    "value": "v0:test-key:1:P5ckwkm_jpCABzYEwupDLVKFyQiGyaWE-y8eRTMFj2A"
+                  }
+                ],
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/observation-gatewayDevice",
+                    "valueReference": {
+                      "reference": "urn:uuid:5afa0f42-eff6-5665-b7f6-e3c2ef5cfbc4"
+                    }
+                  }
+                ],
+                "status": "final",
+                "category": [
+                  {
+                    "coding": [
+                      {
+                        "code": "vital-signs",
+                        "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                        "display": "Vital Signs"
+                      }
+                    ]
+                  }
+                ],
+                "subject": {
+                  "reference": "urn:uuid:a3a3368b-fb0f-5113-9d9d-7c651a4b96ca"
+                },
+                "effectiveDateTime": "2026-08-20T08:31:00.251-07:00",
+                "issued": "2026-08-20T17:31:02Z",
+                "valueQuantity": {
+                  "value": 64,
+                  "code": "/min",
+                  "system": "http://unitsofmeasure.org",
+                  "unit": "beats/minute"
+                }
+              }
+            }
+          ]
         }
       ],
       "expectedRule": {
         "code": "mobile-exchange.transform-provenance",
-        "reason": "An active event must contain exactly one transform Provenance and no retraction Provenance.",
+        "reason": "An active Bundle must contain at least one transform Provenance, exactly one for each record, and no retraction Provenance.",
         "location": "Bundle.entry",
         "severity": "error"
       }
@@ -246,7 +571,7 @@
       ],
       "expectedRule": {
         "code": "mobile-retraction.no-clinical-copy",
-        "reason": "A retraction event contains its lifecycle Provenance and optional Device agents, never a copied or mutilated clinical resource.",
+        "reason": "A retraction Bundle contains its retraction Provenances and the Device snapshots their agents reach, never a copied or mutilated clinical resource.",
         "location": "Bundle.entry[0].resource",
         "severity": "error"
       }
@@ -314,7 +639,7 @@
         {
           "op": "replace",
           "path": "/entry/2/resource/subject/reference",
-          "value": "urn:uuid:aef62dba-db7e-5a99-a854-3b5ec312312f"
+          "value": "urn:uuid:5afa0f42-eff6-5665-b7f6-e3c2ef5cfbc4"
         }
       ],
       "expectedRule": {
@@ -348,7 +673,7 @@
         {
           "op": "add",
           "path": "/entry/3/resource/entity/0/what/reference",
-          "value": "urn:uuid:d5137e30-79b1-5110-a09c-bd2528e25085"
+          "value": "urn:uuid:a3a3368b-fb0f-5113-9d9d-7c651a4b96ca"
         }
       ],
       "expectedRule": {
@@ -462,7 +787,7 @@
       ],
       "expectedRule": {
         "code": "mobile-exchange.entry-resource-type",
-        "reason": "An active event admits only its closed output, supporting, and lifecycle resource type set.",
+        "reason": "An active Bundle admits only its closed output, supporting, and lifecycle resource type set.",
         "location": "Bundle.entry[0].resource.resourceType",
         "severity": "error"
       }
@@ -501,7 +826,7 @@
       ],
       "expectedRule": {
         "code": "mobile-exchange.contained-resource-prohibited",
-        "reason": "Mobile exchange events prohibit contained resources; every graph node must be an addressable Bundle entry.",
+        "reason": "Mobile exchange Bundles prohibit contained resources; every graph node must be an addressable Bundle entry.",
         "location": "Bundle.entry[2].resource.contained",
         "severity": "error"
       }
@@ -518,7 +843,7 @@
       ],
       "expectedRule": {
         "code": "mobile-exchange.entry-resource-type",
-        "reason": "An active event admits only its closed output, supporting, and lifecycle resource type set.",
+        "reason": "An active Bundle admits only its closed output, supporting, and lifecycle resource type set.",
         "location": "Bundle.entry[0].resource.resourceType",
         "severity": "error"
       }
@@ -560,7 +885,7 @@
             ],
             "status": "current",
             "subject": {
-              "reference": "urn:uuid:d5137e30-79b1-5110-a09c-bd2528e25085"
+              "reference": "urn:uuid:a3a3368b-fb0f-5113-9d9d-7c651a4b96ca"
             },
             "date": "2026-08-19T17:30:00Z",
             "content": [
@@ -608,7 +933,7 @@
       ],
       "expectedRule": {
         "code": "mobile-exchange.provenance-profile",
-        "reason": "The sole active lifecycle Provenance must directly claim exactly one admitted Mobile or adapter conversion profile.",
+        "reason": "Every active conversion Provenance must directly claim exactly one admitted Mobile or adapter conversion profile.",
         "location": "Provenance.meta.profile",
         "severity": "error"
       }
@@ -621,7 +946,7 @@
           "op": "replace",
           "path": "/entry/4/resource/subject",
           "value": {
-            "reference": "urn:uuid:aef62dba-db7e-5a99-a854-3b5ec312312f"
+            "reference": "urn:uuid:5afa0f42-eff6-5665-b7f6-e3c2ef5cfbc4"
           }
         }
       ],
@@ -681,21 +1006,21 @@
           "op": "add",
           "path": "/entry/-",
           "value": {
-            "fullUrl": "urn:uuid:27d2d3da-934e-52bd-ad54-d720752df13f",
+            "fullUrl": "urn:uuid:aee98136-857a-5116-9036-3579611e169e",
             "extension": [
               {
-                "url": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-exchange-entry-node-key",
+                "url": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-exchange-entry-key",
                 "valueIdentifier": {
                   "type": {
                     "coding": [
                       {
                         "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
-                        "code": "entry-node"
+                        "code": "context-snapshot"
                       }
                     ]
                   },
-                  "system": "https://study.example.org/fhir/NamingSystem/grove-entry-node-v0",
-                  "value": "n0:patient:1:qN9xaTdoz-LfvONC7FgEUNMz06zyWhfzD0khPhtjVig"
+                  "system": "https://study.example.org/fhir/NamingSystem/grove-context-snapshot-v0/fixture-key/1",
+                  "value": "v0:fixture-key:1:1vdUJ0wCRZgJV0liu-DRsc5f_xrLXB6tWIe9_fzOnwg"
                 }
               }
             ],
@@ -705,6 +1030,18 @@
                 {
                   "system": "https://deployment.example/fhir/NamingSystem/patient-pseudonym",
                   "value": "participant-99"
+                },
+                {
+                  "type": {
+                    "coding": [
+                      {
+                        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+                        "code": "context-snapshot"
+                      }
+                    ]
+                  },
+                  "system": "https://study.example.org/fhir/NamingSystem/grove-context-snapshot-v0/fixture-key/1",
+                  "value": "v0:fixture-key:1:1vdUJ0wCRZgJV0liu-DRsc5f_xrLXB6tWIe9_fzOnwg"
                 }
               ]
             }
@@ -713,7 +1050,7 @@
       ],
       "expectedRule": {
         "code": "mobile-support.connected",
-        "reason": "Every supporting resource must be connected to an output or the lifecycle Provenance.",
+        "reason": "Every supporting resource must lie in the directed record-unit closure of at least one record of its Bundle.",
         "location": "Bundle.entry",
         "severity": "error"
       }
@@ -754,7 +1091,7 @@
       ],
       "expectedRule": {
         "code": "mobile-exchange.bundle-profile",
-        "reason": "An exchange Bundle directly claims exactly the Grove Mobile exchange or retraction Bundle profile for its event kind.",
+        "reason": "An exchange Bundle directly claims exactly the Grove Mobile exchange or retraction Bundle profile for the kind of records it carries.",
         "location": "Bundle.meta.profile",
         "severity": "error"
       }
@@ -771,8 +1108,64 @@
       ],
       "expectedRule": {
         "code": "mobile-exchange.entry-required",
-        "reason": "An exchange event carries at least one entry; an empty Bundle is not an event.",
+        "reason": "An exchange Bundle carries at least one entry; an empty Bundle carries no record.",
         "location": "Bundle.entry",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "grove-typed-bundle-identifier",
+      "base": "mobile-exchange",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/identifier",
+          "value": {
+            "system": "https://study.example.org/fhir/NamingSystem/upload-transport",
+            "type": {
+              "coding": [
+                {
+                  "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+                  "code": "source-record"
+                }
+              ]
+            },
+            "value": "upload-0001"
+          }
+        }
+      ],
+      "expectedRule": {
+        "code": "mobile-exchange.bundle-identifier",
+        "reason": "Bundle.identifier is an optional, untyped transport id: it carries no Grove identifier role, names no record, and enters no identity.",
+        "location": "Bundle.identifier",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "non-grove-typed-bundle-identifier",
+      "base": "mobile-exchange",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/identifier",
+          "value": {
+            "system": "https://study.example.org/fhir/NamingSystem/upload-transport",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "RI"
+                }
+              ]
+            },
+            "value": "upload-0001"
+          }
+        }
+      ],
+      "expectedRule": {
+        "code": "mobile-exchange.bundle-identifier",
+        "reason": "Bundle.identifier is an optional, untyped transport id: it carries no Grove identifier role, names no record, and enters no identity.",
+        "location": "Bundle.identifier",
         "severity": "error"
       }
     },
@@ -786,23 +1179,22 @@
           "value": {
             "extension": [
               {
-                "url": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-exchange-entry-node-key",
+                "url": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-exchange-entry-key",
                 "valueIdentifier": {
                   "type": {
                     "coding": [
                       {
-                        "code": "device-snapshot",
                         "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
-                        "display": "Device snapshot"
+                        "code": "device-snapshot"
                       }
                     ]
                   },
                   "system": "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v0/test-key/1",
-                  "value": "v0:test-key:1:Q2sME_dGFj94xyprI1HtMokER94GYsHINZi0ilnsnRY"
+                  "value": "v0:test-key:1:Gm8_MD0ZNlH6vNBsj8s11GgVDJGHMUROX1amyK00jFs"
                 }
               }
             ],
-            "fullUrl": "urn:uuid:aef62dba-db7e-5a99-a854-3b5ec312312f",
+            "fullUrl": "urn:uuid:5afa0f42-eff6-5665-b7f6-e3c2ef5cfbc4",
             "resource": {
               "resourceType": "Device",
               "id": "GroveMobileExchangeApplicationExample",
@@ -822,7 +1214,7 @@
                     ]
                   },
                   "system": "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v0/test-key/1",
-                  "value": "v0:test-key:1:Q2sME_dGFj94xyprI1HtMokER94GYsHINZi0ilnsnRY"
+                  "value": "v0:test-key:1:Gm8_MD0ZNlH6vNBsj8s11GgVDJGHMUROX1amyK00jFs"
                 }
               ],
               "deviceName": [
@@ -838,8 +1230,8 @@
       ],
       "expectedRule": {
         "code": "mobile-exchange.distinct-entry-key",
-        "reason": "No two entries of one event carry the same entry key system and value pair.",
-        "location": "Bundle.entry[5].extension.valueIdentifier",
+        "reason": "No two entries of one Bundle carry the same entry key system and value pair; a shared node appears once, however many records reference it.",
+        "location": "Bundle.entry[7].extension.valueIdentifier",
         "severity": "error"
       }
     },
@@ -866,45 +1258,25 @@
       ],
       "expectedRule": {
         "code": "mobile-exchange.entry-key-selection",
-        "reason": "An entry key is the entry resource's highest-priority typed business identifier, or its entry-node key when the resource carries none.",
+        "reason": "An entry key follows entryIdentity.selection: an output's highest-priority typed business Identifier, a shared node's content-snapshot Identifier, never a canonical url|version or an untyped business identifier, and a Provenance's record-version or record-retraction Identifier.",
         "location": "Bundle.entry[2].extension.valueIdentifier",
         "severity": "error"
       }
     },
     {
-      "id": "non-canonical-entry-node-key",
+      "id": "non-canonical-record-version-key",
       "base": "mobile-exchange",
       "patch": [
         {
           "op": "replace",
-          "path": "/entry/0/extension/0/valueIdentifier/value",
-          "value": "patient-node-0"
+          "path": "/entry/3/extension/0/valueIdentifier/value",
+          "value": "provenance-node-0"
         }
       ],
       "expectedRule": {
-        "code": "mobile-exchange.entry-key-selection",
-        "reason": "An entry key is the entry resource's highest-priority typed business identifier, or its entry-node key when the resource carries none.",
-        "location": "Bundle.entry[0].extension.valueIdentifier",
-        "severity": "error"
-      }
-    },
-    {
-      "id": "event-identifier-with-two-roles",
-      "base": "mobile-exchange",
-      "patch": [
-        {
-          "op": "add",
-          "path": "/identifier/type/coding/-",
-          "value": {
-            "code": "source-record",
-            "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role"
-          }
-        }
-      ],
-      "expectedRule": {
-        "code": "mobile-exchange.identifier-role",
-        "reason": "A Grove-typed resource Identifier carries exactly one closed Grove identifier-role coding.",
-        "location": "Bundle.identifier",
+        "code": "mobile-exchange.record-version-key",
+        "reason": "The entry key of a conversion Provenance is its typed record-version Identifier pair over its source-record entity and record content digest; its shape is always checked, and it recomputes only when its key id is the published test key.",
+        "location": "Bundle.entry[3].extension.valueIdentifier.value",
         "severity": "error"
       }
     },
@@ -974,34 +1346,35 @@
       }
     },
     {
-      "id": "active-event-without-output",
+      "id": "record-without-output",
       "base": "mobile-exchange",
       "patch": [
         {
           "op": "replace",
-          "path": "/entry/2/resource/resourceType",
-          "value": "ResearchStudy"
+          "path": "/entry/6/resource/target",
+          "value": []
         }
       ],
       "expectedRule": {
         "code": "mobile-exchange.output-required",
-        "reason": "An active event carries at least one clinical or source-artifact output.",
-        "location": "Bundle.entry",
+        "reason": "Every record of an active Bundle carries at least one clinical or source-artifact output.",
+        "location": "Bundle.entry[6].resource.target",
         "severity": "error"
       }
     },
     {
-      "id": "transform-provenance-without-target",
+      "id": "provenance-targets-non-output",
       "base": "mobile-exchange",
       "patch": [
         {
-          "op": "remove",
-          "path": "/entry/3/resource/target/0"
+          "op": "replace",
+          "path": "/entry/3/resource/target/0/reference",
+          "value": "urn:uuid:a3a3368b-fb0f-5113-9d9d-7c651a4b96ca"
         }
       ],
       "expectedRule": {
         "code": "mobile-exchange.provenance-targets",
-        "reason": "A conversion Provenance targets every active clinical output of its event and nothing else.",
+        "reason": "A conversion Provenance targets only active clinical or source-artifact outputs carrying its source-record Identifier, and every such output of its Bundle.",
         "location": "Provenance.target",
         "severity": "error"
       }
@@ -1018,7 +1391,7 @@
       ],
       "expectedRule": {
         "code": "mobile-exchange.adapter-provenance-graph",
-        "reason": "Every adapter output of an event claims the adapter profile its conversion Provenance governs, and a source-neutral event claims no adapter output.",
+        "reason": "Every adapter output of a record claims the adapter profile its conversion Provenance governs, and a source-neutral record claims no adapter output.",
         "location": "Provenance.entity",
         "severity": "error"
       }
@@ -1114,13 +1487,13 @@
             ],
             "status": "current",
             "subject": {
-              "reference": "urn:uuid:d5137e30-79b1-5110-a09c-bd2528e25085"
+              "reference": "urn:uuid:a3a3368b-fb0f-5113-9d9d-7c651a4b96ca"
             },
             "date": "2026-08-20T17:30:02Z",
             "context": {
               "related": [
                 {
-                  "reference": "urn:uuid:e516dd51-04d0-502d-abcf-b5c870915c17"
+                  "reference": "urn:uuid:9d9ad748-503d-5b45-b5db-b14d5c965705"
                 }
               ]
             },
@@ -1202,13 +1575,13 @@
             ],
             "status": "current",
             "subject": {
-              "reference": "urn:uuid:d5137e30-79b1-5110-a09c-bd2528e25085"
+              "reference": "urn:uuid:a3a3368b-fb0f-5113-9d9d-7c651a4b96ca"
             },
             "date": "2026-08-20T17:30:02Z",
             "context": {
               "related": [
                 {
-                  "reference": "urn:uuid:e516dd51-04d0-502d-abcf-b5c870915c17"
+                  "reference": "urn:uuid:9d9ad748-503d-5b45-b5db-b14d5c965705"
                 }
               ]
             },
@@ -1251,7 +1624,7 @@
       ],
       "expectedRule": {
         "code": "mobile-retraction.provenance",
-        "reason": "A retraction event carries exactly one retraction Provenance and no transform Provenance.",
+        "reason": "A retraction Bundle carries at least one retraction Provenance, each under a distinct record-retraction key, and no transform Provenance.",
         "location": "Bundle.entry",
         "severity": "error"
       }
@@ -1416,6 +1789,554 @@
         "code": "mobile-retraction.source-record-target",
         "reason": "A source-record retraction target is the Provenance's only target, states no Reference.type, and repeats the exact source-record Identifier of the Provenance source entity.",
         "location": "Provenance.target[0].identifier",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "tampered-patient-snapshot",
+      "base": "mobile-exchange",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/entry/0/resource/active",
+          "value": true
+        }
+      ],
+      "expectedRule": {
+        "code": "mobile-exchange.content-snapshot-key",
+        "reason": "A shared node carries one typed device-snapshot or context-snapshot v0 Identifier for its node role, in Resource.identifier or, on a QuestionnaireResponse, in grove-context-snapshot; its shape is always checked, and under the published test key it recomputes from the node's canonical content.",
+        "location": "Bundle.entry[0].extension.valueIdentifier.value",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "tampered-device-snapshot",
+      "base": "mobile-exchange",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/entry/1/resource/deviceName/0/name",
+          "value": "Another Study"
+        }
+      ],
+      "expectedRule": {
+        "code": "mobile-exchange.content-snapshot-key",
+        "reason": "A shared node carries one typed device-snapshot or context-snapshot v0 Identifier for its node role, in Resource.identifier or, on a QuestionnaireResponse, in grove-context-snapshot; its shape is always checked, and under the published test key it recomputes from the node's canonical content.",
+        "location": "Bundle.entry[1].extension.valueIdentifier.value",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "tampered-questionnaire-response-snapshot",
+      "base": "mobile-exchange",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/entry/4/resource/authored",
+          "value": "2026-08-20T08:31:00-07:00"
+        }
+      ],
+      "expectedRule": {
+        "code": "mobile-exchange.content-snapshot-key",
+        "reason": "A shared node carries one typed device-snapshot or context-snapshot v0 Identifier for its node role, in Resource.identifier or, on a QuestionnaireResponse, in grove-context-snapshot; its shape is always checked, and under the published test key it recomputes from the node's canonical content.",
+        "location": "Bundle.entry[4].extension.valueIdentifier.value",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "shared-node-without-content-snapshot",
+      "base": "mobile-exchange",
+      "patch": [
+        {
+          "op": "remove",
+          "path": "/entry/0/resource/identifier/1"
+        }
+      ],
+      "expectedRule": {
+        "code": "mobile-exchange.content-snapshot-key",
+        "reason": "A shared node carries one typed device-snapshot or context-snapshot v0 Identifier for its node role, in Resource.identifier or, on a QuestionnaireResponse, in grove-context-snapshot; its shape is always checked, and under the published test key it recomputes from the node's canonical content.",
+        "location": "Bundle.entry[0].resource.identifier",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "record-version-digest-mismatch",
+      "base": "mobile-exchange",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/entry/2/resource/valueQuantity/value",
+          "value": 73
+        }
+      ],
+      "expectedRule": {
+        "code": "mobile-exchange.record-version-key",
+        "reason": "The entry key of a conversion Provenance is its typed record-version Identifier pair over its source-record entity and record content digest; its shape is always checked, and it recomputes only when its key id is the published test key.",
+        "location": "Bundle.entry[3].extension.valueIdentifier.value",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "decimal-lexeme-changes-record-version",
+      "base": "mobile-exchange",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/entry/2/resource/valueQuantity/value",
+          "value": 72.0
+        }
+      ],
+      "expectedRule": {
+        "code": "mobile-exchange.record-version-key",
+        "reason": "The entry key of a conversion Provenance is its typed record-version Identifier pair over its source-record entity and record content digest; its shape is always checked, and it recomputes only when its key id is the published test key.",
+        "location": "Bundle.entry[3].extension.valueIdentifier.value",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "record-version-role",
+      "base": "mobile-exchange",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/entry/3/extension/0/valueIdentifier",
+          "value": {
+            "type": {
+              "coding": [
+                {
+                  "code": "source-output",
+                  "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role"
+                }
+              ]
+            },
+            "system": "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1",
+            "value": "v0:test-key:1:PPULnf0LKpASjIj8mU5TKafPKig_oqWND3_dHFShGd8"
+          }
+        }
+      ],
+      "expectedRule": {
+        "code": "mobile-exchange.entry-key-selection",
+        "reason": "An entry key follows entryIdentity.selection: an output's highest-priority typed business Identifier, a shared node's content-snapshot Identifier, never a canonical url|version or an untyped business identifier, and a Provenance's record-version or record-retraction Identifier.",
+        "location": "Bundle.entry[3].extension.valueIdentifier",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "record-version-extension-missing",
+      "base": "mobile-exchange",
+      "patch": [
+        {
+          "op": "remove",
+          "path": "/entry/3/resource/extension"
+        }
+      ],
+      "expectedRule": {
+        "code": "mobile-exchange.record-version-extension",
+        "reason": "A conversion Provenance carries exactly one grove-record-version extension, equal in system and value to its entry key; a retraction Provenance carries none.",
+        "location": "Bundle.entry[3].resource.extension",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "record-version-extension-mismatch",
+      "base": "mobile-exchange",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/entry/3/resource/extension/0/valueIdentifier/value",
+          "value": "v0:test-key:1:a_uGh_911xHmIsPSEu0p147dT2I3rtr1uWWiKrKudsY"
+        }
+      ],
+      "expectedRule": {
+        "code": "mobile-exchange.record-version-extension",
+        "reason": "A conversion Provenance carries exactly one grove-record-version extension, equal in system and value to its entry key; a retraction Provenance carries none.",
+        "location": "Bundle.entry[3].resource.extension",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "record-version-extension-on-retraction",
+      "base": "mobile-retraction",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/entry/0/resource/extension",
+          "value": [
+            {
+              "url": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-record-version",
+              "valueIdentifier": {
+                "type": {
+                  "coding": [
+                    {
+                      "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+                      "code": "record-version"
+                    }
+                  ]
+                },
+                "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
+                "value": "v0:test-key:1:cd-Pae2AS1sITLmwdpC9D0uOuEfWCn58_X4d6EA8qtY"
+              }
+            }
+          ]
+        }
+      ],
+      "expectedRule": {
+        "code": "mobile-exchange.record-version-extension",
+        "reason": "A conversion Provenance carries exactly one grove-record-version extension, equal in system and value to its entry key; a retraction Provenance carries none.",
+        "location": "Bundle.entry[0].resource.extension",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "context-snapshot-extension-missing",
+      "base": "mobile-exchange",
+      "patch": [
+        {
+          "op": "remove",
+          "path": "/entry/4/resource/extension/1"
+        }
+      ],
+      "expectedRule": {
+        "code": "mobile-exchange.context-snapshot-extension",
+        "reason": "A QuestionnaireResponse in an exchange Bundle carries exactly one grove-context-snapshot extension, equal in system and value to its entry key; no other resource carries it.",
+        "location": "Bundle.entry[4].resource.extension",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "context-snapshot-extension-mismatch",
+      "base": "mobile-exchange",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/entry/4/resource/extension/1/valueIdentifier/value",
+          "value": "v0:test-key:1:3ZTiYqzi8xk9ZhSE3U_roFsDtUYoNTQ_CbWEDvOZwLQ"
+        }
+      ],
+      "expectedRule": {
+        "code": "mobile-exchange.context-snapshot-extension",
+        "reason": "A QuestionnaireResponse in an exchange Bundle carries exactly one grove-context-snapshot extension, equal in system and value to its entry key; no other resource carries it.",
+        "location": "Bundle.entry[4].resource.extension",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "context-snapshot-extension-on-observation",
+      "base": "mobile-exchange",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/entry/2/resource/extension/-",
+          "value": {
+            "url": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-context-snapshot",
+            "valueIdentifier": {
+              "type": {
+                "coding": [
+                  {
+                    "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+                    "code": "context-snapshot"
+                  }
+                ]
+              },
+              "system": "https://study.example.org/fhir/NamingSystem/grove-context-snapshot-v0/test-key/1",
+              "value": "v0:test-key:1:_rNxPQWm7HC8lN4rxNvNcQDkKO0Ew1LhBZ9jO8jJduM"
+            }
+          }
+        }
+      ],
+      "expectedRule": {
+        "code": "mobile-exchange.context-snapshot-extension",
+        "reason": "A QuestionnaireResponse in an exchange Bundle carries exactly one grove-context-snapshot extension, equal in system and value to its entry key; no other resource carries it.",
+        "location": "Bundle.entry[2].resource.extension",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "retraction-key-mismatch",
+      "base": "mobile-retraction",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/entry/0/resource/entity/0/what/identifier/value",
+          "value": "v0:test-key:1:WssrtI7oYzcgG0mFxlitvSznCx4esKSDEbK-bOUQpTk"
+        }
+      ],
+      "expectedRule": {
+        "code": "mobile-retraction.retraction-key",
+        "reason": "The entry key of a retraction Provenance is the typed record-retraction Identifier pair of its source-record entity; under the published test key it recomputes.",
+        "location": "Bundle.entry[0].extension.valueIdentifier.value",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "output-targeted-twice",
+      "base": "mobile-exchange",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/entry/6/resource/target/-",
+          "value": {
+            "reference": "urn:uuid:a9b76bbc-f523-5ef4-9919-813ec70553e5"
+          }
+        }
+      ],
+      "expectedRule": {
+        "code": "mobile-exchange.output-targeted-once",
+        "reason": "Every output of an active Bundle is targeted by exactly one conversion Provenance, and no Provenance repeats a target reference.",
+        "location": "Bundle.entry",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "output-repeated-in-one-provenance",
+      "base": "mobile-exchange",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/entry/3/resource/target/-",
+          "value": {
+            "reference": "urn:uuid:a9b76bbc-f523-5ef4-9919-813ec70553e5"
+          }
+        }
+      ],
+      "expectedRule": {
+        "code": "mobile-exchange.output-targeted-once",
+        "reason": "Every output of an active Bundle is targeted by exactly one conversion Provenance, and no Provenance repeats a target reference.",
+        "location": "Bundle.entry[3].resource.target[1]",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "output-never-targeted",
+      "base": "mobile-exchange",
+      "patch": [
+        {
+          "op": "remove",
+          "path": "/entry/6"
+        }
+      ],
+      "expectedRule": {
+        "code": "mobile-exchange.output-targeted-once",
+        "reason": "Every output of an active Bundle is targeted by exactly one conversion Provenance, and no Provenance repeats a target reference.",
+        "location": "Bundle.entry",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "output-of-another-source-record",
+      "base": "mobile-exchange",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/entry/5/resource/identifier/0/value",
+          "value": "v0:test-key:1:ptHr751zWyYfaR2WIvrP1TfnVEK4bInC__ibP_AYfVY"
+        }
+      ],
+      "expectedRule": {
+        "code": "mobile-exchange.provenance-targets",
+        "reason": "A conversion Provenance targets only active clinical or source-artifact outputs carrying its source-record Identifier, and every such output of its Bundle.",
+        "location": "Provenance.target",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "cross-record-literal-reference",
+      "base": "mobile-exchange",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/entry/5/resource/derivedFrom",
+          "value": [
+            {
+              "reference": "urn:uuid:a9b76bbc-f523-5ef4-9919-813ec70553e5"
+            }
+          ]
+        }
+      ],
+      "expectedRule": {
+        "code": "mobile-exchange.cross-record-reference",
+        "reason": "A literal Reference resolves to an output of its own record or to a shared node of the same Bundle; a reference to an output of another record is identifier-only.",
+        "location": "Bundle.entry[5].resource.derivedFrom[0].reference",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "two-versions-of-one-source-record",
+      "base": "mobile-exchange",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/entry/6/resource/entity/0/what/identifier/value",
+          "value": "v0:test-key:1:ptHr751zWyYfaR2WIvrP1TfnVEK4bInC__ibP_AYfVY"
+        }
+      ],
+      "expectedRule": {
+        "code": "mobile-exchange.distinct-source-record",
+        "reason": "No two conversion Provenances of one active Bundle name the same source-record entity; two versions of one source record travel in different Bundles.",
+        "location": "Bundle.entry[6].resource.entity",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "mixed-record-kinds",
+      "base": "mobile-exchange",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/entry/6/resource/activity/coding/0",
+          "value": {
+            "code": "source-record-retracted",
+            "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-lifecycle-event"
+          }
+        }
+      ],
+      "expectedRule": {
+        "code": "mobile-exchange.transform-provenance",
+        "reason": "An active Bundle must contain at least one transform Provenance, exactly one for each record, and no retraction Provenance.",
+        "location": "Bundle.entry",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "duplicate-retraction-key",
+      "base": "mobile-retraction",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/entry/1/resource/entity/0/what/identifier/value",
+          "value": "v0:test-key:1:ptHr751zWyYfaR2WIvrP1TfnVEK4bInC__ibP_AYfVY"
+        }
+      ],
+      "expectedRule": {
+        "code": "mobile-retraction.provenance",
+        "reason": "A retraction Bundle carries at least one retraction Provenance, each under a distinct record-retraction key, and no transform Provenance.",
+        "location": "Bundle.entry[1].resource.entity",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "mixed-subjects",
+      "base": "mobile-exchange",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/entry/5/resource/subject",
+          "value": {
+            "type": "Patient",
+            "identifier": {
+              "system": "https://study.example.org/fhir/identifiers/participant",
+              "value": "participant-002"
+            }
+          }
+        }
+      ],
+      "expectedRule": {
+        "code": "mobile-exchange.single-subject",
+        "reason": "Every record of one exchange Bundle states the same subject.",
+        "location": "Bundle.entry",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "device-snapshot-retraction-target-role",
+      "base": "mobile-retraction",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/entry/0/resource/target/0/extension/0/valueCode",
+          "value": "device-snapshot"
+        }
+      ],
+      "expectedRule": {
+        "code": "mobile-retraction.target-role",
+        "reason": "Every retraction target must carry exactly one closed Grove target-role code.",
+        "location": "Provenance.target[0].extension",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "retraction-device-in-no-record-unit",
+      "base": "mobile-retraction",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/entry/-",
+          "value": {
+            "fullUrl": "urn:uuid:bc1c99c0-dae2-50da-b49f-8a19b60d788a",
+            "extension": [
+              {
+                "url": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-exchange-entry-key",
+                "valueIdentifier": {
+                  "type": {
+                    "coding": [
+                      {
+                        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+                        "code": "device-snapshot"
+                      }
+                    ]
+                  },
+                  "system": "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v0/fixture-key/1",
+                  "value": "v0:fixture-key:1:FUbeK02j-tbKrMTDyI0xBCvC4B-1LRobdIvAQrHDMBk"
+                }
+              }
+            ],
+            "resource": {
+              "resourceType": "Device",
+              "meta": {
+                "profile": [
+                  "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-host-device"
+                ]
+              },
+              "deviceName": [
+                {
+                  "type": "model-name",
+                  "name": "iPhone"
+                }
+              ],
+              "identifier": [
+                {
+                  "type": {
+                    "coding": [
+                      {
+                        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+                        "code": "device-snapshot"
+                      }
+                    ]
+                  },
+                  "system": "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v0/fixture-key/1",
+                  "value": "v0:fixture-key:1:FUbeK02j-tbKrMTDyI0xBCvC4B-1LRobdIvAQrHDMBk"
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "expectedRule": {
+        "code": "mobile-support.connected",
+        "reason": "Every supporting resource must lie in the directed record-unit closure of at least one record of its Bundle.",
+        "location": "Bundle.entry",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "non-ascii-member-name",
+      "base": "mobile-exchange",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/entry/2/resource/note",
+          "value": [
+            {
+              "text": "Resting.",
+              "café": true
+            }
+          ]
+        }
+      ],
+      "expectedRule": {
+        "code": "mobile-exchange.canonical-json",
+        "reason": "Every resource of a record canonicalizes under grove-canonical-json-v0.",
+        "location": "Bundle.entry[2].resource",
         "severity": "error"
       }
     }

@@ -1,9 +1,9 @@
 {
   "$schema": "https://grovealliance.org/fhir/catalog/schemas/exchange-protocol.schema.json",
   "schemaVersion": 0,
-  "version": "0.7.0",
+  "version": "0.8.0",
   "protocolVersion": 0,
-  "releaseVersion": "0.7.0",
+  "releaseVersion": "0.8.0",
   "fhirVersion": "4.0.1",
   "profiles": {
     "activeBundle": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle",
@@ -12,10 +12,15 @@
     "retractionProvenance": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-retraction-provenance"
   },
   "extensions": {
-    "entryNodeKey": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-exchange-entry-node-key",
+    "entryKey": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-exchange-entry-key",
+    "recordVersion": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-record-version",
+    "contextSnapshot": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-context-snapshot",
     "retractionTargetRole": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-retraction-target-role",
     "retractionTargetNativeIdentifier": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-retraction-target-native-identifier",
     "writerRecordVersion": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-writer-record-version"
+  },
+  "searchParameters": {
+    "provenanceRecordVersion": "https://grovealliance.org/fhir/mobile/SearchParameter/grove-provenance-record-version"
   },
   "codeSystems": {
     "identifierRole": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
@@ -46,8 +51,8 @@
       "emittedBy": "conformance-kit"
     },
     {
-      "code": "mobile-exchange.entry-node-key",
-      "reason": "Every Bundle entry must carry exactly one complete Grove exchange entry node key.",
+      "code": "mobile-exchange.entry-key",
+      "reason": "Every Bundle entry must carry exactly one complete Grove exchange entry key.",
       "emittedBy": "conformance-kit"
     },
     {
@@ -61,23 +66,33 @@
       "emittedBy": "conformance-kit"
     },
     {
-      "code": "mobile-exchange.event-identity",
-      "reason": "Bundle.identifier.value must be the canonical e0 producer UUID and positive sequence form.",
+      "code": "mobile-exchange.content-snapshot-key",
+      "reason": "A shared node carries one typed device-snapshot or context-snapshot v0 Identifier for its node role, in Resource.identifier or, on a QuestionnaireResponse, in grove-context-snapshot; its shape is always checked, and under the published test key it recomputes from the node's canonical content.",
       "emittedBy": "conformance-kit"
     },
     {
-      "code": "mobile-exchange.entry-node-digest",
-      "reason": "An entry-node digest must be derived from the enclosing event identifier, role, and ordinal.",
+      "code": "mobile-exchange.record-version-key",
+      "reason": "The entry key of a conversion Provenance is its typed record-version Identifier pair over its source-record entity and record content digest; its shape is always checked, and it recomputes only when its key id is the published test key.",
       "emittedBy": "conformance-kit"
     },
     {
-      "code": "mobile-exchange.entry-node-ordinal",
-      "reason": "An entry-node ordinal is the zero-based position of its entry among the entries sharing that node-role, in Bundle entry order.",
+      "code": "mobile-exchange.record-version-extension",
+      "reason": "A conversion Provenance carries exactly one grove-record-version extension, equal in system and value to its entry key; a retraction Provenance carries none.",
+      "emittedBy": "conformance-kit"
+    },
+    {
+      "code": "mobile-exchange.context-snapshot-extension",
+      "reason": "A QuestionnaireResponse in an exchange Bundle carries exactly one grove-context-snapshot extension, equal in system and value to its entry key; no other resource carries it.",
+      "emittedBy": "conformance-kit"
+    },
+    {
+      "code": "mobile-exchange.canonical-json",
+      "reason": "Every resource of a record canonicalizes under grove-canonical-json-v0.",
       "emittedBy": "conformance-kit"
     },
     {
       "code": "mobile-exchange.identity-system-role",
-      "reason": "Within one event graph, each Grove Identifier.system names exactly one Grove identifier role; one namespace cannot change meaning between nodes.",
+      "reason": "Within one Bundle, each Grove Identifier.system names exactly one Grove identifier role; one namespace cannot change meaning between nodes.",
       "emittedBy": "conformance-kit"
     },
     {
@@ -92,12 +107,12 @@
     },
     {
       "code": "healthkit-ecg.output-graph",
-      "reason": "A HealthKit ECG event must satisfy the catalog-owned waveform, optional average-heart-rate, symptom-member, relationship-direction, identity, and effective-period graph contract.",
+      "reason": "A HealthKit ECG record must satisfy the catalog-owned waveform, optional average-heart-rate, symptom-member, relationship-direction, identity, and effective-period graph contract.",
       "emittedBy": "conformance-kit"
     },
     {
       "code": "mobile-exchange.transform-provenance",
-      "reason": "An active event must contain exactly one transform Provenance and no retraction Provenance.",
+      "reason": "An active Bundle must contain at least one transform Provenance, exactly one for each record, and no retraction Provenance.",
       "emittedBy": "conformance-kit"
     },
     {
@@ -122,7 +137,7 @@
     },
     {
       "code": "mobile-exchange.collection-entry-operation",
-      "reason": "A Mobile exchange event is a collection Bundle; an entry may carry neither a request nor a response, because an event is an assertion and never a transaction instruction.",
+      "reason": "A Mobile exchange Bundle is a collection Bundle; an entry may carry neither a request nor a response, because a record is an assertion and never a transaction instruction.",
       "emittedBy": "client"
     },
     {
@@ -132,7 +147,7 @@
     },
     {
       "code": "mobile-device.recording-device-dual-identity",
-      "reason": "A recording Device carries both its durable recording-device identity and its event-scoped device-snapshot identity; neither may stand alone.",
+      "reason": "A recording Device always carries exactly one content device-snapshot identity and carries at most one durable recording-device identity, which is optional.",
       "emittedBy": "client"
     },
     {
@@ -147,7 +162,7 @@
     },
     {
       "code": "mobile-retraction.no-clinical-copy",
-      "reason": "A retraction event contains its lifecycle Provenance and optional Device agents, never a copied or mutilated clinical resource.",
+      "reason": "A retraction Bundle contains its retraction Provenances and the Device snapshots their agents reach, never a copied or mutilated clinical resource.",
       "emittedBy": "conformance-kit"
     },
     {
@@ -212,12 +227,12 @@
     },
     {
       "code": "mobile-exchange.entry-resource-type",
-      "reason": "An active event admits only its closed output, supporting, and lifecycle resource type set.",
+      "reason": "An active Bundle admits only its closed output, supporting, and lifecycle resource type set.",
       "emittedBy": "conformance-kit"
     },
     {
       "code": "mobile-exchange.contained-resource-prohibited",
-      "reason": "Mobile exchange events prohibit contained resources; every graph node must be an addressable Bundle entry.",
+      "reason": "Mobile exchange Bundles prohibit contained resources; every graph node must be an addressable Bundle entry.",
       "emittedBy": "conformance-kit"
     },
     {
@@ -232,12 +247,12 @@
     },
     {
       "code": "mobile-support.connected",
-      "reason": "Every supporting resource must be connected to an output or the lifecycle Provenance.",
+      "reason": "Every supporting resource must lie in the directed record-unit closure of at least one record of its Bundle.",
       "emittedBy": "conformance-kit"
     },
     {
       "code": "mobile-exchange.provenance-profile",
-      "reason": "The sole active lifecycle Provenance must directly claim exactly one admitted Mobile or adapter conversion profile.",
+      "reason": "Every active conversion Provenance must directly claim exactly one admitted Mobile or adapter conversion profile.",
       "emittedBy": "conformance-kit"
     },
     {
@@ -297,7 +312,7 @@
     },
     {
       "code": "mobile-input.conversion-instant-precedes-source-version",
-      "reason": "The conversion instant precedes the source record's own last-modified time, so the event would misstate its order.",
+      "reason": "The conversion instant precedes the source record's own last-modified time, so Provenance.recorded would misstate the order of the record's versions.",
       "emittedBy": "client"
     },
     {
@@ -347,27 +362,32 @@
     },
     {
       "code": "mobile-exchange.bundle-profile",
-      "reason": "An exchange Bundle directly claims exactly the Grove Mobile exchange or retraction Bundle profile for its event kind.",
+      "reason": "An exchange Bundle directly claims exactly the Grove Mobile exchange or retraction Bundle profile for the kind of records it carries.",
       "emittedBy": "conformance-kit"
     },
     {
       "code": "mobile-exchange.entry-required",
-      "reason": "An exchange event carries at least one entry; an empty Bundle is not an event.",
+      "reason": "An exchange Bundle carries at least one entry; an empty Bundle carries no record.",
       "emittedBy": "conformance-kit"
     },
     {
-      "code": "mobile-exchange.event-times",
-      "reason": "An event states its Bundle timestamp, and its lifecycle Provenance states occurred[x] and recorded.",
+      "code": "mobile-exchange.bundle-identifier",
+      "reason": "Bundle.identifier is an optional, untyped transport id: it carries no Grove identifier role, names no record, and enters no identity.",
+      "emittedBy": "conformance-kit"
+    },
+    {
+      "code": "mobile-exchange.record-times",
+      "reason": "A Bundle states Bundle.timestamp, its packing time, which enters no identity, and every lifecycle Provenance states occurred[x] and recorded.",
       "emittedBy": "client"
     },
     {
       "code": "mobile-exchange.distinct-entry-key",
-      "reason": "No two entries of one event carry the same entry key system and value pair.",
+      "reason": "No two entries of one Bundle carry the same entry key system and value pair; a shared node appears once, however many records reference it.",
       "emittedBy": "conformance-kit"
     },
     {
       "code": "mobile-exchange.entry-key-selection",
-      "reason": "An entry key is the entry resource's highest-priority typed business identifier, or its entry-node key when the resource carries none.",
+      "reason": "An entry key follows entryIdentity.selection: an output's highest-priority typed business Identifier, a shared node's content-snapshot Identifier, never a canonical url|version or an untyped business identifier, and a Provenance's record-version or record-retraction Identifier.",
       "emittedBy": "conformance-kit"
     },
     {
@@ -387,22 +407,42 @@
     },
     {
       "code": "mobile-exchange.output-required",
-      "reason": "An active event carries at least one clinical or source-artifact output.",
+      "reason": "Every record of an active Bundle carries at least one clinical or source-artifact output.",
       "emittedBy": "conformance-kit"
     },
     {
       "code": "mobile-exchange.provenance-assembler",
-      "reason": "A conversion Provenance names exactly one assembler agent, and that agent is the event's application Device snapshot.",
+      "reason": "A conversion Provenance names exactly one assembler agent, and that agent is the application Device snapshot of its record.",
       "emittedBy": "client"
     },
     {
       "code": "mobile-exchange.provenance-targets",
-      "reason": "A conversion Provenance targets every active clinical output of its event and nothing else.",
+      "reason": "A conversion Provenance targets only active clinical or source-artifact outputs carrying its source-record Identifier, and every such output of its Bundle.",
+      "emittedBy": "conformance-kit"
+    },
+    {
+      "code": "mobile-exchange.output-targeted-once",
+      "reason": "Every output of an active Bundle is targeted by exactly one conversion Provenance, and no Provenance repeats a target reference.",
+      "emittedBy": "conformance-kit"
+    },
+    {
+      "code": "mobile-exchange.distinct-source-record",
+      "reason": "No two conversion Provenances of one active Bundle name the same source-record entity; two versions of one source record travel in different Bundles.",
+      "emittedBy": "conformance-kit"
+    },
+    {
+      "code": "mobile-exchange.cross-record-reference",
+      "reason": "A literal Reference resolves to an output of its own record or to a shared node of the same Bundle; a reference to an output of another record is identifier-only.",
+      "emittedBy": "conformance-kit"
+    },
+    {
+      "code": "mobile-exchange.single-subject",
+      "reason": "Every record of one exchange Bundle states the same subject.",
       "emittedBy": "conformance-kit"
     },
     {
       "code": "mobile-exchange.adapter-provenance-graph",
-      "reason": "Every adapter output of an event claims the adapter profile its conversion Provenance governs, and a source-neutral event claims no adapter output.",
+      "reason": "Every adapter output of a record claims the adapter profile its conversion Provenance governs, and a source-neutral record claims no adapter output.",
       "emittedBy": "conformance-kit"
     },
     {
@@ -412,12 +452,12 @@
     },
     {
       "code": "mobile-device.host-device-identity",
-      "reason": "A host Device carries exactly one event-scoped device-snapshot identity.",
+      "reason": "A host Device carries exactly one content device-snapshot identity.",
       "emittedBy": "client"
     },
     {
       "code": "mobile-support.study-context",
-      "reason": "A bundled study context carries one ResearchStudy, its exact-revision PlanDefinition with canonical url and version, and one ResearchSubject linking the subject to the study, each keyed as an entry node with its study-context role.",
+      "reason": "A bundled study context carries one ResearchStudy, its exact-revision PlanDefinition with canonical url and version, and one ResearchSubject linking the subject to the study, each a shared node keyed by its context-snapshot Identifier with its node role.",
       "emittedBy": "client"
     },
     {
@@ -442,7 +482,12 @@
     },
     {
       "code": "mobile-retraction.provenance",
-      "reason": "A retraction event carries exactly one retraction Provenance and no transform Provenance.",
+      "reason": "A retraction Bundle carries at least one retraction Provenance, each under a distinct record-retraction key, and no transform Provenance.",
+      "emittedBy": "conformance-kit"
+    },
+    {
+      "code": "mobile-retraction.retraction-key",
+      "reason": "The entry key of a retraction Provenance is the typed record-retraction Identifier pair of its source-record entity; under the published test key it recomputes.",
       "emittedBy": "conformance-kit"
     },
     {
@@ -461,12 +506,6 @@
       "emittedBy": "conformance-kit"
     },
     {
-      "code": "mobile-omission.recording-device",
-      "reason": "The source names a recording device without a stable per-unit token, so the producer emits no recording Device and the output carries no device reference.",
-      "emittedBy": "client",
-      "severity": "warning"
-    },
-    {
       "code": "mobile-omission.source-offset",
       "reason": "The source supplies an effective instant without a UTC offset or time-zone name, so the producer serializes it in UTC and attaches no timezone extension.",
       "emittedBy": "client",
@@ -474,7 +513,7 @@
     },
     {
       "code": "mobile-omission.unmodeled-metadata",
-      "reason": "The source record, or a part of it, carries metadata that no output of its graph represents, so the producer withholds those fields.",
+      "reason": "The source record, or a part of it, carries metadata that neither an output of its graph nor the recording Device it references represents, so the producer withholds those fields.",
       "emittedBy": "client",
       "severity": "warning"
     },
@@ -485,20 +524,20 @@
       "severity": "warning"
     }
   ],
-  "event": {
-    "semanticUnit": "Exactly one immutable source record revision or one retraction assertion. A transport may batch complete event Bundles without changing this unit.",
-    "bundleIdentifier": {
-      "system": "A deployment-owned absolute URI, stable for the producer instance and never reused for another key space.",
-      "recommendedSystemForm": "<deployment-root>/NamingSystem/grove-event-v0",
-      "valueForm": "e0:<lowercase-producer-instance-uuid>:<positive-monotonic-sequence>",
-      "soleEventBusinessIdentifier": true
+  "bundle": {
+    "semanticUnit": "The record: one immutable source-record revision with every output derived from it and exactly one conversion Provenance targeting those outputs, or one retraction assertion for one whole source record. One exchange Bundle carries one or more records of one kind, active or retraction, and of one subject. The Bundle is a container: packing records into Bundles, or repacking them, changes no record.",
+    "recordUnit": "A record unit is a record's lifecycle Provenance, that Provenance's targets, and the forward literal closure from them: every literal Reference in their elements and extensions, including Provenance.agent.who, Provenance.entity.agent.who, and Device.parent, followed transitively over the Bundle's entries. A ResearchSubject joins every record whose closure contains the ResearchStudy it references. A shared node (a Patient, Device, ResearchStudy, ResearchSubject, PlanDefinition, or QuestionnaireResponse) may lie in several record units and appears once in its Bundle. Validators compute record units by directed reachability; a supporting entry that lies in no record unit is not connected.",
+    "identifier": {
+      "cardinality": "0..1",
+      "groveRoleAllowed": false,
+      "rule": "Bundle.identifier is an optional, untyped transport id with no Grove identifier role and no format. It names no record and enters no identity."
     },
     "times": {
       "occurred": "The source activity or retraction-detection time, carried on Provenance.occurred[x].",
-      "recorded": "The time the Provenance assertion was recorded; mandatory Provenance.recorded.",
-      "assembled": "The time the immutable exchange graph was assembled; mandatory Bundle.timestamp."
+      "recorded": "The time the Provenance assertion was recorded; mandatory Provenance.recorded. It orders the versions of one source record that writer evidence does not order (lifecycle.active.versionSelection).",
+      "packed": "The time the Bundle was packed; mandatory Bundle.timestamp. It enters no identity, so a record packed into another Bundle keeps its record version."
     },
-    "retry": "An exact retry reuses the Bundle identifier, all three times, entry keys, and payload. Any source revision or content change receives a new sequence.",
+    "retry": "A record's retry identity is its record version (recordVersion). An exact retry repeats the record-version key and the lossless tokens of every resource of the record, in any Bundle and under any Bundle.identifier or Bundle.timestamp. Any change to the conversion Provenance or an output, including a re-conversion's new Provenance.recorded or a changed decimal lexeme, is a new version of the source record.",
     "transport": "Bundle.type is collection. Bundle.entry.request and Bundle.entry.response are prohibited; repository application and atomicity are separate sink behavior."
   },
   "opaqueIdentity": {
@@ -520,7 +559,22 @@
       "unsignedDecimal": [
         "part-index"
       ],
-      "unsignedDecimalForm": "A canonical unsigned decimal: 0, or a nonzero digit followed by digits, with no sign, whitespace, or leading zero."
+      "unsignedDecimalForm": "A canonical unsigned decimal: 0, or a nonzero digit followed by digits, with no sign, whitespace, or leading zero.",
+      "digestComponents": [
+        "content-digest",
+        "record-content-digest"
+      ],
+      "digestForm": "A SHA-256 digest in base64url without padding: exactly 43 characters from A-Z, a-z, 0-9, hyphen, and underscore."
+    },
+    "contentDigest": "The content-digest component is the base64url SHA-256 digest, without padding, of the grove-canonical-json-v0 bytes of the node resource, canonicalized from its lossless tokens, minus Resource.id and minus its own content-snapshot Identifier, the device-snapshot or context-snapshot Identifier in Resource.identifier (identifier itself is dropped if it becomes empty). A QuestionnaireResponse, whose key is not in identifier, is instead taken minus Resource.id and minus every element of QuestionnaireResponse.extension whose url is https://grovealliance.org/fhir/mobile/StructureDefinition/grove-context-snapshot (extension itself is dropped if it becomes empty). Nothing else is removed. A producer mints the key after the body is final and builds a node after every node it references, such as a host Device before the application Device whose parent it is, so a changed referenced node changes the referring node's fullUrl reference, content, and key. The same content gives the same key in every Bundle, changed content gives a new snapshot, and nothing is mutated.",
+    "keyId": {
+      "rule": "A key id names exactly one key for the lifetime of its deployment. A deployment that cannot prove it still holds the same key, such as one that re-mints a lost key, uses a new key id. One key may carry several key ids.",
+      "fingerprintDomain": "org.grovealliance.fhir.key-fingerprint.v0",
+      "fingerprintComponents": [
+        "subject-system",
+        "subject-value"
+      ],
+      "recommendedForm": "A deployment-chosen prefix followed by the first 8 characters of the key fingerprint, the base64url HMAC-SHA-256 digest, without padding, under the key over the unsigned 32-bit length-framed UTF-8 fields [fingerprintDomain, subject-system, subject-value]. The fingerprint is per subject, so a key that several subjects share, such as one participant's accounts in two deployments of a study, never puts one key id into the identifiers of all of them."
     },
     "privacy": "HMAC reduces disclosure of native identifiers. It does not de-identify subjects, times, clinical data, graph relationships, or attachments.",
     "informationPreservation": {
@@ -535,7 +589,7 @@
       "internalCoordinateRule": "A coordinate may exist only in the HMAC preimage when it has no standalone source or clinical meaning.",
       "semanticSourceFactRule": "Every meaningful source order, time, multiplicity, ordinal, or other source fact must also be preserved in a FHIR element or registered source payload; a HMAC preimage is never its sole representation."
     },
-    "rotation": "A deployment must retain old key epochs while identifiers from them can be replayed or retracted. Losing a key ends deterministic reconciliation for that epoch; a new key must never be presented under the old system.",
+    "rotation": "A deployment must retain old key epochs while identifiers from them can be replayed or retracted. Losing a key ends deterministic reconciliation for that epoch; a new key must never be presented under the old system, and a re-minted key takes a new key id (keyId).",
     "identityKinds": [
       {
         "kind": "source-record",
@@ -565,6 +619,8 @@
         "kind": "writer-record",
         "identifierRole": "writer-record",
         "components": [
+          "subject-system",
+          "subject-value",
           "writer-application-system",
           "writer-application-value",
           "writer-record-id"
@@ -638,6 +694,7 @@
           "adapter-id",
           "subject-system",
           "subject-value",
+          "token-scope",
           "stable-unit-token"
         ]
       },
@@ -645,13 +702,59 @@
         "kind": "device-snapshot",
         "identifierRole": "device-snapshot",
         "components": [
-          "event-system",
-          "event-value",
-          "device-role",
-          "source-device-token"
+          "subject-system",
+          "subject-value",
+          "node-role",
+          "content-digest"
+        ]
+      },
+      {
+        "kind": "context-snapshot",
+        "identifierRole": "context-snapshot",
+        "components": [
+          "subject-system",
+          "subject-value",
+          "node-role",
+          "content-digest"
+        ]
+      },
+      {
+        "kind": "record-version",
+        "identifierRole": "record-version",
+        "components": [
+          "source-record-system",
+          "source-record-value",
+          "record-content-digest"
+        ]
+      },
+      {
+        "kind": "record-retraction",
+        "identifierRole": "record-retraction",
+        "components": [
+          "source-record-system",
+          "source-record-value"
         ]
       }
     ]
+  },
+  "canonicalJson": {
+    "name": "grove-canonical-json-v0",
+    "input": "One RFC 8259 JSON text in UTF-8. It is refused when it is not valid UTF-8 (invalid-utf8); when it begins with a byte order mark (byte-order-mark); when a member name contains any Unicode scalar above U+007F after unescaping (non-ascii-member-name), which refuses no FHIR R4 resource because every FHIR R4 JSON member name is ASCII; when one object repeats a member name, compared bytewise after unescaping and whatever the two values (duplicate-member), which for ASCII names is also scalar, UTF-16, and canonical-equivalence equality; when a string contains an unpaired surrogate escape (unpaired-surrogate); and when it contains any non-JSON constant, such as NaN or Infinity.",
+    "output": "UTF-8 with no insignificant whitespace and no trailing newline. Scripts/canonical_json.py is the reference implementation.",
+    "members": "Object members are sorted by the unsigned bytewise order of their ASCII names, which is also the RFC 8785 order.",
+    "strings": "Strings are written exactly as RFC 8785 section 3.2.2.2 writes them: quotation mark and reverse solidus as \\\" and \\\\; U+0008, U+0009, U+000A, U+000C, and U+000D as \\b, \\t, \\n, \\f, and \\r; every other scalar from U+0000 to U+001F as \\u00xx with lowercase hexadecimal digits; and every other scalar raw, including U+007F, U+2028, and U+2029, with no Unicode normalization.",
+    "numbers": "A number is its input lexeme verbatim after an RFC 8259 grammar check, so 72.0, 72, -0, 1E-7, and 1e2 stay distinct; a number is never parsed into a binary value and re-rendered.",
+    "literals": "true, false, and null are written as they are; array order is kept."
+  },
+  "recordVersion": {
+    "contentDomain": "org.grovealliance.fhir.record-content.v0",
+    "content": "The record-content-digest component is the base64url SHA-256 digest, without padding, over the unsigned 32-bit length-framed UTF-8 fields [contentDomain, canonical(P), canonical(O1), ..., canonical(On)], where canonical is grove-canonical-json-v0 (canonicalJson), P is the record's conversion Provenance, and Oi is the resource the i-th Provenance.target resolves to, in Provenance.target order, each after the exclusions. Each resource is canonicalized from its lossless tokens, never re-encoded from a FHIR model. Shared nodes enter only through the content-derived fullUrls that P and the outputs reference, so a changed node changes its fullUrl and with it the referring JSON. The digest has no subject component: the source-record pair is already repository-scoped and the outputs carry the subject.",
+    "exclusions": "From every resource, Resource.id. From P, every element of Provenance.extension whose url is https://grovealliance.org/fhir/mobile/StructureDefinition/grove-record-version, and then Provenance.extension itself if it is left empty. Nothing else is removed.",
+    "digestComponent": "record-content-digest",
+    "key": "The record version is the record-version v0 HMAC identity over [source-record-system, source-record-value, record-content-digest], where the source-record pair is the conversion Provenance's entity.what.identifier, under a system of the recommended form <deployment-root>/NamingSystem/grove-record-version-v0/<key-id>/<epoch>. It is the Provenance's entry key, typed record-version, and its fullUrl follows entryIdentity.fullUrl, so every version of a record has its own Provenance fullUrl while the output fullUrls stay the same. The conversion Provenance repeats it in grove-record-version (extensions.recordVersion), which carries exactly one value equal in system and value to the entry key.",
+    "retractionKey": "A retraction Provenance is keyed by the record-retraction v0 HMAC identity over [source-record-system, source-record-value] of its source-record entity, under a system of the recommended form <deployment-root>/NamingSystem/grove-record-retraction-v0/<key-id>/<epoch>. It is one key and one fullUrl per source record, carried only as the entry key: a retraction Provenance has no grove-record-version. A re-reported retraction repeats the key and fullUrl, and the first accepted wins, which loses nothing because a retraction addresses its whole source record (lifecycle.active.versionSelection.retraction).",
+    "receiverUse": "equality-and-tie-break",
+    "receiverRule": "Receivers never parse or recompute a record version: they compare the complete record-version Identifier pair for equality, which detects a retry, and order it bytewise only as lifecycle.active.versionSelection.tieBreak. Only the conformance kit recomputes it, and only under testVectors.keyHex."
   },
   "governedSourceIdentifier": {
     "purpose": "Optional source-native round-trip or traceability identity on the one primary source-derived output. It supplements, and never replaces, the mandatory opaque Grove source-record and source-output identifiers.",
@@ -659,7 +762,7 @@
     "system": "Identifier.system is a deployment- or source-authority-owned absolute URI naming the exact native key space. When the native value is not globally unique, the system must identify the governed repository/account/store scope; an underspecified vendor-wide system is nonconformant.",
     "value": "Identifier.value is the exact source-native value. It is emitted only under an explicit deployment purpose and disclosure policy; omission remains conformant and does not weaken Grove reconciliation.",
     "type": "Identifier.type is optional when system fully defines the key space, as in FHIR R4. A present type may be text-only. Every present Coding has an absolute system and a code in the FHIR code lexical form; no Coding may use the Grove identifier-role CodeSystem because source-native identifiers are not Grove graph keys.",
-    "prohibitions": "Never use a source-native value as Resource.id, a Bundle entry key, retraction address, arbitrary Observation component, or untyped metadata. Do not incidentally copy it into Attachment.title, Attachment.url, transport/object names, or logs; a deployment that deliberately uses it in a separate non-FHIR storage contract must govern that use explicitly.",
+    "prohibitions": "Never use a source-native value as Resource.id, a Bundle entry key, retraction address, arbitrary Observation component, or untyped metadata. Do not incidentally copy it into Attachment.title, Attachment.url, Bundle.identifier, transport/object names, or logs; a deployment that deliberately uses it in a separate non-FHIR storage contract must govern that use explicitly. Every export a deployment makes of received records strips every governed source identifier, such as a HealthKit record Identifier, and every grove-retraction-target-native-identifier extension, because a native value that other applications also read joins an exported copy back to theirs record by record.",
     "closedProfiles": "A profile with a closed or exact Identifier set admits no governed source identifier unless that profile explicitly adds such a slice. Supporting nodes whose identity is synthesized from another source record remain closed.",
     "validation": {
       "optionality": "optional",
@@ -668,7 +771,7 @@
         "r4Element": "Resource.identifier",
         "designationMode": "catalog-output-selector",
         "maxPerPrimaryOutput": 1,
-        "maxPrimaryOutputsPerEvent": 1,
+        "maxPrimaryOutputsPerRecord": 1,
         "ambiguityRule": "omit-native-identifier",
         "outputModeRules": {
           "semantic-only": "sole-source-derived-output",
@@ -784,7 +887,7 @@
             "**.Identifier"
           ],
           "matchRule": "exact-system-and-value",
-          "enforcement": "event-validator"
+          "enforcement": "record-validator"
         },
         "resourceId": {
           "r4Paths": [
@@ -830,7 +933,7 @@
           "enforcement": "deployment-governance-and-producer-obligation"
         }
       },
-      "duplicateElsewhereInEventAllowed": false,
+      "duplicateElsewhereInRecordAllowed": false,
       "neverResourceTypes": [
         "Specimen",
         "Patient",
@@ -854,33 +957,31 @@
         "one-per-source-segment-or-lap",
         "one-per-source-delta"
       ],
-      "recordingDocumentRule": "A DocumentReference may carry the governed source Identifier only when it is the active event's sole source-derived output; a companion source artifact in a hybrid graph is not primary."
+      "recordingDocumentRule": "A DocumentReference may carry the governed source Identifier only when it is its record's sole source-derived output; a companion source artifact in a hybrid graph is not primary."
     }
   },
   "entryIdentity": {
-    "selection": "Use the selected complete business Identifier pair for a resource that has one. Otherwise use the entry-node Identifier carried by the Grove entry-node-key extension.",
+    "selection": "Every entry carries its entry key in the Grove exchange entry-key extension. The key is the resource's highest-priority typed Resource.identifier in resourceIdentifierPriority: an output selects its source-output or source-artifact Identifier, and every shared node except a QuestionnaireResponse (the application, host, and recording Device, Patient, ResearchStudy, ResearchSubject, and PlanDefinition) selects its content-snapshot Identifier, device-snapshot or context-snapshot, from Resource.identifier. Every shared context node is keyed by its content HMAC: a canonical url|version or an untyped business identifier never selects an entry key, even when immutable. Two resource types carry their key in the entry-key extension with no typed Resource.identifier. A Provenance has no identifier in R4, so it uses its record-version (active) or record-retraction (retraction) Identifier (provenanceKey), and a conversion Provenance repeats it in grove-record-version. A QuestionnaireResponse's one R4 identifier holds the submission's business identifier, so it uses its context-snapshot Identifier, node role questionnaire-response, and repeats it in grove-context-snapshot. Only a retraction Provenance carries its key on the entry alone.",
     "resourceIdentifierPriority": [
       "source-output",
       "source-artifact",
       "source-record",
       "writer-record",
       "device-snapshot",
+      "context-snapshot",
       "recording-device"
     ],
-    "entryNode": {
-      "system": "A deployment-owned absolute URI for event-scoped graph nodes.",
-      "recommendedSystemForm": "<deployment-root>/NamingSystem/grove-entry-node-v0",
-      "domain": "org.grovealliance.fhir.entry-node.v0",
-      "components": [
-        "event-system",
-        "event-value",
-        "node-role",
-        "zero-based-ordinal"
-      ],
-      "ordinal": "Zero-based among the entries that share the same node-role within the one event, counted in Bundle.entry order over the entries that carry an entry-node key. A role represented once is always 0; a second entry of that role is 1. Roles are numbered independently of one another, and an entry whose resource has a typed business Identifier takes no ordinal because it carries no entry-node key.",
-      "valueForm": "n0:<node-role>:<zero-based-ordinal>:<43-character-base64url-sha256-without-padding>",
-      "digest": "Unkeyed SHA-256 over the same unsigned 32-bit length-framed UTF-8 encoding. It is a deterministic graph key, not a privacy control."
+    "provenanceKey": {
+      "active": "record-version",
+      "retraction": "record-retraction"
     },
+    "contextSnapshotRoles": [
+      "patient",
+      "research-study",
+      "research-subject",
+      "plan-definition",
+      "questionnaire-response"
+    ],
     "fullUrl": {
       "algorithm": "UUID version 5 over the unsigned 32-bit length-framed UTF-8 fields [Identifier.system, Identifier.value]. Identifier.system is an absolute ASCII RFC 3986 URI; an IRI must first be represented as its canonical URI form (for example IDNA plus percent-encoding) before it enters FHIR or the identity preimage.",
       "namespace": "43df4575-bff7-5a57-9a80-2472cd2b0623",
@@ -893,12 +994,23 @@
       "activitySystem": "http://terminology.hl7.org/CodeSystem/iso-21089-lifecycle",
       "activityCode": "transform",
       "codingCardinality": "Exactly one coding from the ISO lifecycle system and zero codings from the Grove lifecycle system; translations from unrelated systems remain open.",
-      "shape": "One active Bundle contains every output derived from exactly one source record revision and exactly one conversion Provenance targeting every output.",
+      "shape": "One active Bundle contains one or more records of one subject. Each record is every output derived from exactly one source-record revision and exactly one conversion Provenance targeting every one of those outputs. The records share their supporting nodes, each a content-addressed entry that appears once in the Bundle.",
       "studyContext": {
-        "recommendedShape": "A producer that knows the participant's enrollment should bundle one ResearchStudy, its exact-revision PlanDefinition, and one ResearchSubject as event-scoped entry-node entries, reference the ResearchStudy from each output through workflow-researchStudy, and reference the PlanDefinition from ResearchStudy.protocol. An identifier-only logical ResearchStudy reference remains conformant but carries no protocol revision.",
+        "recommendedShape": "A producer that knows the participant's enrollment should bundle one ResearchStudy, its exact-revision PlanDefinition, and one ResearchSubject as shared nodes keyed by their context-snapshot Identifiers, reference the ResearchStudy from each output through workflow-researchStudy, and reference the PlanDefinition from ResearchStudy.protocol. An identifier-only logical ResearchStudy reference remains conformant but carries no protocol revision.",
         "subject": "Observation.subject is the identifier-only deployment pseudonym unless the deployment supplies a Patient entry; ResearchSubject.individual references the same subject.",
-        "protocol": "ResearchStudy.protocol references a PlanDefinition entry whose url and version are exact; workflow-instantiatesCanonical is not an admitted extension.",
-        "entryNodeRoles": ["patient", "research-study", "research-subject", "plan-definition"]
+        "protocol": "ResearchStudy.protocol references a PlanDefinition entry whose url and version are exact; workflow-instantiatesCanonical is not an admitted extension."
+      },
+      "versionSelection": {
+        "scope": "Normative for every receiver that keeps a current view. Selection runs within one verified subject and source binding and one complete source-record Identifier pair. A version is one distinct record-version Identifier pair, system and value, of that source record.",
+        "exactRetry": "The same record-version pair with the same lossless tokens for every resource of the record changes nothing.",
+        "alteredRetry": "The same record-version pair with other tokens is a producer integrity failure: the first accepted content stays, and the later content is disregarded, may be quarantined, and is never a version.",
+        "writerEvidence": "A version's writer evidence is the one complete writer-record Identifier pair and Grove Writer Record Version that its outputs state. Outputs stating neither are ignored; the version extension exists only on Observation. No statement, a writer-record Identifier without a version, or two different statements among the outputs is no evidence.",
+        "writerOrder": "Drop every version for which another accepted version of the same source record has evidence under the same complete writer-record pair with a greater writer version. Writer versions are canonical unsigned decimals: the longer is greater, and decimals of equal length compare bytewise.",
+        "recordedOrder": "Of the versions that remain, select the latest Provenance.recorded, compared as an exact instant on the UTC timeline at its full stated precision; it is never compared as text and never rounded, as a millisecond date value would round it.",
+        "tieBreak": "Among remaining versions with equal recorded instants, select the greatest record-version Identifier.value by unsigned bytewise UTF-8 comparison, then the greatest Identifier.system. For two versions this means: comparable writer versions, the higher wins; otherwise the later recorded instant wins; otherwise the bytewise-greater key wins. With more versions, the drop step keeps a superseded writer version from returning.",
+        "membership": "The selected version's targets are the record's current outputs. Every other output of the record, including one that only an earlier version emitted, leaves the current view. Selection is never a maximum taken independently for each output.",
+        "history": "Every accepted version stays in history.",
+        "retraction": "An accepted retraction suppresses every output of every version of its Provenance.entity source record, whether the version is accepted before or after the retraction and whatever its writer version or recorded instant. From then on the record has no current outputs, and every version stays in history. The retraction's targets are informative: they neither address nor bind an output. A record is never un-retracted. Writer-record supersession across source records, which an adapter mapping may define, is a separate rule and unchanged."
       },
       "entryResourcePolicy": {
         "outputResourceTypes": [
@@ -922,7 +1034,7 @@
         "containedResourcesAllowed": false,
         "supportingResourcesMustBeConnected": true,
         "profileClaimAuthority": "catalog/profile-claims.json",
-        "rule": "Every top-level entry is one admitted source-derived output, the sole conversion Provenance, or a connected supporting resource. Every output and each Device or QuestionnaireResponse matches one exact direct-profile mode. Contained resources are prohibited so clinical output cannot bypass event identity and Provenance targeting."
+        "rule": "Every top-level entry is one admitted source-derived output, a conversion Provenance, or a supporting resource connected through at least one record unit (bundle.recordUnit). Every output and each Device or QuestionnaireResponse matches one exact direct-profile mode. Contained resources are prohibited so clinical output cannot bypass record identity and Provenance targeting."
       },
       "adapterOnlyOutputProfileClaims": {
         "authority": "catalog/profile-claims.json",
@@ -939,8 +1051,9 @@
       "activitySystem": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-lifecycle-event",
       "activityCode": "source-record-retracted",
       "codingCardinality": "Exactly one coding from the Grove lifecycle system and zero codings from the ISO lifecycle system; translations from unrelated systems remain open.",
-      "meaning": "The producer records that its source no longer exposes the record and identifies the exact previously emitted graph nodes. It neither asserts clinical error nor instructs a FHIR server to delete anything. Instead of naming those nodes, the producer may address the source record as a whole through one source-record target.",
-      "target": "Each Provenance.target is a logical Reference with exactly one complete Identifier, one Grove target-role extension, and at most one Grove native-record-identifier extension. Literal references and copied active clinical resources are prohibited. Every target except a source-record target states the Reference.type its role admits; a source-record target is the Provenance's only target, states no Reference.type, and repeats the exact source-record Identifier of the Provenance source entity. That Identifier names the source business record, such as the QuestionnaireResponse a questionnaire extraction converted, never a graph node; the receiver's lifecycle policy expands it to the addressed graph.",
+      "meaning": "The producer records that its source no longer exposes the source record named by Provenance.entity, and the retraction addresses that whole record. It neither asserts clinical error nor instructs a FHIR server to delete anything.",
+      "entryKey": "record-retraction",
+      "target": "Each Provenance.target is a logical Reference with exactly one complete Identifier, one Grove target-role extension, and at most one Grove native-record-identifier extension. Literal references and copied active clinical resources are prohibited. The targets name what the producer emitted, or the source record as a whole, and are informative: they neither address nor bind an output. Every target except a source-record target states the Reference.type its role admits; a source-record target is the Provenance's only target, states no Reference.type, and repeats the exact source-record Identifier of the Provenance source entity. That Identifier names the source business record, such as the QuestionnaireResponse a questionnaire extraction converted, never a graph node.",
       "nativeRecordIdentifier": {
         "optionality": "optional",
         "extension": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-retraction-target-native-identifier",
@@ -950,7 +1063,7 @@
         "system": "The adapter-owned absolute URI naming the exact native key space, scoped to the governed repository, account, or store exactly as a governed source identifier is on the addition path. An underspecified vendor-wide system is nonconformant.",
         "value": "The exact platform-native record identifier of the retracted source record in the adapter's own canonical form, so a consumer can delete the exact native records.",
         "disclosurePolicy": "governedSourceIdentifier",
-        "prohibitions": "It never addresses the target: the Grove source-record, source-output, or device-snapshot identity remains the retraction address. It carries no Grove identifier-role coding, and omitting it remains conformant."
+        "prohibitions": "It addresses nothing: the retraction address is the Provenance's source-record entity, and the targets are informative. It carries no Grove identifier-role coding, and omitting it remains conformant."
       },
       "targetRoles": {
         "primary-output": {
@@ -980,22 +1093,16 @@
             "Specimen"
           ]
         },
-        "device-snapshot": {
-          "identifierRole": "device-snapshot",
-          "resourceTypes": [
-            "Device"
-          ]
-        },
         "source-record": {
           "identifierRole": "source-record",
           "resourceTypes": []
         }
       },
-      "sink": "A receiver must resolve every target unambiguously under its indexed complete Identifier pair before applying its separately configured idempotent and atomic lifecycle policy. A source-record target resolves to every node that the conversion Provenance of any accepted active event with that source entity targets, and to the event-time Device snapshots those events carry, whether the event is accepted before or after the retraction; it names no output Identifier and so associates no output with the record."
+      "sink": "A receiver applies an accepted retraction to every output of every version of the source record its Provenance.entity names, whether the version is accepted before or after the retraction (lifecycle.active.versionSelection.retraction), through its separately configured idempotent and atomic lifecycle policy. It need not resolve the targets, and no target binds an output. A later retraction of the same source record repeats its record-retraction key and fullUrl and is a duplicate; the first accepted retraction wins. Devices are never retracted."
     }
   },
   "referencePolicy": {
-    "literalClosure": "Every literal Reference in an exchange Bundle resolves to exactly one Bundle.entry.fullUrl. Contained resources and #id references are prohibited in Mobile active and retraction event Bundles.",
+    "literalClosure": "Every literal Reference in an exchange Bundle resolves to exactly one Bundle.entry.fullUrl, and that entry is an output of the referring resource's own record or a shared node of the same Bundle. A reference from one record to an output of another record is identifier-only. Contained resources and #id references are prohibited in Mobile active and retraction Bundles.",
     "declaredType": "When Reference.type is present on a literal reference, it is the exact target resourceType token.",
     "governedShape": "Every reference at a governed path is either one resolving Bundle fullUrl with no logical identifier, or one identifier-only logical reference with no literal, an exact allowed Reference.type, and one complete absolute-system Identifier. Identifier-only Patient references carry the exact deployment-scoped pseudonym pair, use no Grove identifier role or protocol-reserved code-system URI, and are not fabricated Bundle nodes.",
     "identifierOnlyPatient": {
@@ -1181,20 +1288,22 @@
     "graph-specific"
   ],
   "recordingDevice": {
-    "instanceRule": "A shared FHIR Device requires a deployment-governed stable per-unit token. Manufacturer, model, hardware version, subject, or their digest cannot establish physical-instance identity.",
-    "unknownInstance": "If no stable per-unit token is available, omit the shared Device and retain model/source description only where the selected resource permits it.",
-    "snapshots": "A Grove recording Device carries both its stable per-unit recording-device identifier and a distinct event-scoped device-snapshot identifier. The snapshot is the selected entry key. Event-time firmware, software, operating-system, and application build facts are immutable snapshot data; never mutate one shared Device while importing historical events out of order.",
-    "roles": "The device-snapshot component device-role is the resource kind only: application, host, or recording-device. Participation roles such as assembler, enterer, gateway, or author never enter identity. One Device resource may participate in several roles; graph construction deduplicates the resource and retains every role relationship."
+    "instanceRule": "Only a recording-device identifier, minted from a deployment-governed stable per-unit token, establishes physical-instance identity. Manufacturer, model, hardware version, subject, a content snapshot, or their digest cannot, and two Devices whose snapshot content is equal are never inferred to be one physical unit.",
+    "unitIdentity": "The recording-device identifier is optional. A recording Device always carries its device-snapshot identifier and carries a recording-device identifier only when a governed stable per-unit token exists; without one, the producer still emits the Device and the output still references it. A token may be local to one host and writable by other applications, as HKDevice.localIdentifier is, so the recording-device kind scopes it with token-scope, the authority that assigned it (for HealthKit, the writing source's HKSource.bundleIdentifier).",
+    "snapshots": "Every Grove Device, whether application, host, or recording, carries exactly one device-snapshot identifier, its content key and selected entry key, minted over its complete rendered content (opaqueIdentity.contentDigest). Snapshot identifiers are descriptive: the same content gives the same identifier in every Bundle and changed content a new snapshot. Firmware, software, operating-system, and application build facts are immutable snapshot data; a shared Device is never mutated while historical records import out of order.",
+    "deviceFacts": "A producer emits every device fact its source exposes, mapped as the adapter catalog's recordingDeviceIdentity field mappings state. Consumers filter what they do not need; the source does not.",
+    "roles": "The device-snapshot component node-role is the resource kind only: application, host, or recording-device. Participation roles such as assembler, enterer, gateway, or author never enter identity. One Device resource may participate in several roles; graph construction deduplicates the resource and retains every role relationship."
   },
   "payload": {
     "attachmentSize": "When a Grove profile requires Attachment.size it is the exact pre-base64 byte count and must be between 0 and 2147483647 inclusive. Larger payloads are rejected unless a future segmented manifest profile is used.",
     "attachmentHash": "FHIR R4 Attachment.hash is base64 SHA-1 over the pre-base64 payload bytes. Stronger integrity uses a separately defined manifest element and never changes Attachment.hash semantics.",
     "semanticComparison": "FHIR graphs compare semantically through lossless JSON tokens that preserve decimal lexemes. Whole-Bundle byte equality is not required.",
-    "byteComparison": "Exact bytes are required for identity preimages and registered opaque, CSV, or binary payloads.",
+    "byteComparison": "Exact bytes are required for identity preimages, including the record-version preimage over the grove-canonical-json-v0 bytes of every resource of a record (recordVersion), and for registered opaque, CSV, or binary payloads.",
     "equality": {
-      "formatting": "A replay that differs from the accepted event only in JSON member order, whitespace, or string escaping carries the same tokens and is the exact retry.",
-      "decimalLexeme": "A replay whose decimal lexeme differs, such as 72.0 for 72, is different content under a reused event identifier; the receiver retains the accepted event and disregards the replay exactly as any other altered retry.",
-      "vectors": "Conformance/corpora/receiver-lifecycle: reformatted-retry and lexeme-retry"
+      "formatting": "A replay that differs only in JSON member order, whitespace, or string escaping changes no canonical byte and so no key: it is the exact retry.",
+      "decimalLexeme": "A replay whose decimal lexeme differs, such as 72.0 for 72, changes the canonical bytes and so the record-version key: it is a new version of the source record, ordered by lifecycle.active.versionSelection.",
+      "alteredRetry": "The same record-version key with other tokens is an altered retry: a producer integrity failure that the receiver disregards. It covers record-version keys only; a repeated record-retraction key with other tokens is a duplicate retraction, never an integrity failure.",
+      "vectors": "Conformance/corpora/receiver-lifecycle: reformatted-retry, lexeme-retry, and altered-retry; testVectors.canonicalJson and testVectors.recordContents"
     }
   },
   "testVectors": {
@@ -1242,6 +1351,18 @@
       {
         "identityKind": "device-snapshot",
         "system": "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v0/test-key/1"
+      },
+      {
+        "identityKind": "context-snapshot",
+        "system": "https://study.example.org/fhir/NamingSystem/grove-context-snapshot-v0/test-key/1"
+      },
+      {
+        "identityKind": "record-version",
+        "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1"
+      },
+      {
+        "identityKind": "record-retraction",
+        "system": "https://study.example.org/fhir/NamingSystem/grove-record-retraction-v0/test-key/1"
       }
     ],
     "measurementExamples": {
@@ -1357,11 +1478,13 @@
         "id": "writer-record-complete-application-pair",
         "identityKind": "writer-record",
         "components": [
+          "https://study.example.org/fhir/identifiers/participant",
+          "participant-001",
           "https://applications.example.org",
           "com.withings.wiscale2",
           "logical-record-001"
         ],
-        "value": "v0:test-key:1:DvVpDnGZfj28tqpozMhpZSHjT2J65wvN_bmTYu0x0Cw"
+        "value": "v0:test-key:1:t3yJ50PlC4YfvU2A4qhUgG17VfFJ_QhTgltKtosdl7w"
       },
       {
         "id": "healthkit-medication-source-context",
@@ -1424,20 +1547,10 @@
           "healthkit",
           "https://study.example.org/participants",
           "participant-001",
+          "com.example.watch-app",
           "watch-unit-token-001"
         ],
-        "value": "v0:test-key:1:BZfymBSOLQlRaEwkvjBNFKbiTvUoNrz8CJEgYlztkus"
-      },
-      {
-        "id": "device-snapshot-per-event",
-        "identityKind": "device-snapshot",
-        "components": [
-          "https://study.example.org/fhir/NamingSystem/grove-event-v0",
-          "e0:1f5c58aa-6ec6-4e79-a682-829a9debd3f5:42",
-          "application",
-          "com.example.app|1.2.3"
-        ],
-        "value": "v0:test-key:1:Q2sME_dGFj94xyprI1HtMokER94GYsHINZi0ilnsnRY"
+        "value": "v0:test-key:1:EGbYNz6iVTYGCXRIUR-1TVJeTAVmPhsQmT6UF-dC3q0"
       },
       {
         "id": "normative-corpus-heart-rate-source-record",
@@ -1506,28 +1619,6 @@
         "value": "v0:test-key:1:fHSbttO2vnRwctsGiMr8ecXvWQOj5SdMWrTa--ZPLI4"
       },
       {
-        "id": "normative-corpus-retraction-application-snapshot",
-        "identityKind": "device-snapshot",
-        "components": [
-          "https://study.example.org/fhir/NamingSystem/grove-event-v0",
-          "e0:1f5c58aa-6ec6-4e79-a682-829a9debd3f5:43",
-          "application",
-          "com.example.app|1.2.3"
-        ],
-        "value": "v0:test-key:1:JUZooa4NZX-rlMn9-NC8W078xzEuUO9X3Xo1mgk0Vac"
-      },
-      {
-        "id": "normative-corpus-source-record-target-retraction-application-snapshot",
-        "identityKind": "device-snapshot",
-        "components": [
-          "https://study.example.org/fhir/NamingSystem/grove-event-v0",
-          "e0:1f5c58aa-6ec6-4e79-a682-829a9debd3f5:48",
-          "application",
-          "com.example.app|1.2.3"
-        ],
-        "value": "v0:test-key:1:v2S4UaQfgSAXnbRfvHV12rL9HC2qB3MGCe2nLkRlItg"
-      },
-      {
         "id": "questionnaire-extraction-source-record",
         "identityKind": "source-record",
         "components": [
@@ -1568,17 +1659,6 @@
         "value": "v0:test-key:1:ljzpyfYa15oOpj_A37-cd-_8JXqQwwfomR9iT0gct6g"
       },
       {
-        "id": "questionnaire-extraction-application-snapshot",
-        "identityKind": "device-snapshot",
-        "components": [
-          "https://study.example.org/fhir/NamingSystem/grove-event-v0",
-          "e0:6f9d1c4a-2b7e-4f18-9c33-5a1d0e7b2c48:1",
-          "application",
-          "org.grovealliance.example.client|1.4.0|1402"
-        ],
-        "value": "v0:test-key:1:W8r_v8DzqOippQF5DUZiyhr_iwyRQk3NTa_sQLF8aM0"
-      },
-      {
         "id": "receiver-secondary-output",
         "identityKind": "source-output",
         "components": [
@@ -1599,103 +1679,22 @@
         "value": "v0:test-key:1:WssrtI7oYzcgG0mFxlitvSznCx4esKSDEbK-bOUQpTk"
       },
       {
-        "id": "receiver-application-snapshot-67",
-        "identityKind": "device-snapshot",
-        "components": ["https://study.example.org/fhir/NamingSystem/grove-event-v0", "e0:1f5c58aa-6ec6-4e79-a682-829a9debd3f5:67", "application", "fixture-app"],
-        "value": "v0:test-key:1:2f3FbY5IkXSZQs9xgEChYLIWANCcdFhDmauCsjHgA7A"
-      },
-      {
         "id": "receiver-other-writer",
         "identityKind": "writer-record",
         "components": [
+          "https://study.example.org/fhir/identifiers/participant",
+          "participant-001",
           "https://study.example.org/apps",
           "another-writer",
           "heart-rate-1"
         ],
-        "value": "v0:test-key:1:5mIZKnS2ox49bXbK-YuTn_SPDVdslEyQIsXF7oV2h3k"
-      },
-      {
-        "id": "receiver-application-snapshot-60",
-        "identityKind": "device-snapshot",
-        "components": [
-          "https://study.example.org/fhir/NamingSystem/grove-event-v0",
-          "e0:1f5c58aa-6ec6-4e79-a682-829a9debd3f5:60",
-          "application",
-          "fixture-app"
-        ],
-        "value": "v0:test-key:1:dFdgpZqSrZI83hNxyslxoI1qXUlq0fa2bAo4tnhv2CE"
-      },
-      {
-        "id": "receiver-application-snapshot-61",
-        "identityKind": "device-snapshot",
-        "components": [
-          "https://study.example.org/fhir/NamingSystem/grove-event-v0",
-          "e0:1f5c58aa-6ec6-4e79-a682-829a9debd3f5:61",
-          "application",
-          "fixture-app"
-        ],
-        "value": "v0:test-key:1:G0shWKztBFVa7S2QFoeDhU71zLfIEkS5BkE_3jFpiNk"
-      },
-      {
-        "id": "receiver-application-snapshot-62",
-        "identityKind": "device-snapshot",
-        "components": [
-          "https://study.example.org/fhir/NamingSystem/grove-event-v0",
-          "e0:1f5c58aa-6ec6-4e79-a682-829a9debd3f5:62",
-          "application",
-          "fixture-app"
-        ],
-        "value": "v0:test-key:1:tfnsLulBQxFAOUV6gNjzORPIjCXbXgrqMMZ3bvNa1ik"
-      },
-      {
-        "id": "receiver-application-snapshot-63",
-        "identityKind": "device-snapshot",
-        "components": [
-          "https://study.example.org/fhir/NamingSystem/grove-event-v0",
-          "e0:1f5c58aa-6ec6-4e79-a682-829a9debd3f5:63",
-          "application",
-          "fixture-app"
-        ],
-        "value": "v0:test-key:1:-mUWvC9wBT8cKHPAO4t6fvsJW9ele_WgaEO0swH-tQc"
-      },
-      {
-        "id": "receiver-application-snapshot-64",
-        "identityKind": "device-snapshot",
-        "components": [
-          "https://study.example.org/fhir/NamingSystem/grove-event-v0",
-          "e0:1f5c58aa-6ec6-4e79-a682-829a9debd3f5:64",
-          "application",
-          "fixture-app"
-        ],
-        "value": "v0:test-key:1:EYUasFsZmO8n8-2AWt5w5VyYh-6Yz5-5vSybbwLlMb8"
-      },
-      {
-        "id": "receiver-application-snapshot-65",
-        "identityKind": "device-snapshot",
-        "components": [
-          "https://study.example.org/fhir/NamingSystem/grove-event-v0",
-          "e0:1f5c58aa-6ec6-4e79-a682-829a9debd3f5:65",
-          "application",
-          "fixture-app"
-        ],
-        "value": "v0:test-key:1:oPK4uLWJLUJo8JL5r7lWjaQL8dAiSAsfVOtqsk6ruQ8"
-      },
-      {
-        "id": "receiver-application-snapshot-66",
-        "identityKind": "device-snapshot",
-        "components": [
-          "https://study.example.org/fhir/NamingSystem/grove-event-v0",
-          "e0:1f5c58aa-6ec6-4e79-a682-829a9debd3f5:66",
-          "application",
-          "fixture-app"
-        ],
-        "value": "v0:test-key:1:Tj726etFKNnHaooVq2wP2K9I5odIL8ZDIp4yvqJJtS4"
+        "value": "v0:test-key:1:BFpff8qHdBDm3tYIRMg68xE7_9kMSA765y6q8oQX3ZM"
       },
       {
         "id": "receiver-writer",
         "identityKind": "writer-record",
-        "components": ["https://study.example.org/apps", "fixture-writer", "heart-rate-1"],
-        "value": "v0:test-key:1:TN39cF6jcCICy4SlWBjpAulk4eMlcb-KM3MwESD9cvw"
+        "components": ["https://study.example.org/fhir/identifiers/participant", "participant-001", "https://study.example.org/apps", "fixture-writer", "heart-rate-1"],
+        "value": "v0:test-key:1:MuzeFm07qaquRaZFTBMn6ZerEu5wAVEbZUzxrKBehao"
       },
       {
         "id": "receiver-target-record",
@@ -1710,63 +1709,464 @@
         "value": "v0:test-key:1:M6afafiHPF1Pqyg4OZ5IN0R_8s97oM3WWy904IjTwy8"
       },
       {
-        "id": "receiver-application-snapshot-41",
+        "id": "device-snapshot-application-content",
         "identityKind": "device-snapshot",
-        "components": ["https://study.example.org/fhir/NamingSystem/grove-event-v0", "e0:1f5c58aa-6ec6-4e79-a682-829a9debd3f5:41", "application", "fixture-app"],
-        "value": "v0:test-key:1:s7LpE9vScdo_lguSPQ-KetFYzpcgwAdbUFlTLS8ECPY"
+        "components": [
+          "https://study.example.org/fhir/identifiers/participant",
+          "participant-001",
+          "application",
+          "4pqk-W06e5OEkG9iG862Vgry02ywK4iomj_6BqrTZG4"
+        ],
+        "value": "v0:test-key:1:OKD7MHwL4JGF9Y-_i_qJGKK36zobAOlJrBNAAakQcro"
       },
       {
-        "id": "receiver-application-snapshot-42",
-        "identityKind": "device-snapshot",
-        "components": ["https://study.example.org/fhir/NamingSystem/grove-event-v0", "e0:1f5c58aa-6ec6-4e79-a682-829a9debd3f5:42", "application", "fixture-app"],
-        "value": "v0:test-key:1:FhFF4pknUiHfdg3v3p6KQYzE8ZI_U3YKj-IdsYcRpLU"
+        "id": "context-snapshot-patient-content",
+        "identityKind": "context-snapshot",
+        "components": [
+          "https://study.example.org/fhir/identifiers/participant",
+          "participant-001",
+          "patient",
+          "UTUjY3oNbfaI_fz_ZVsTLr48Sc1SP2v430H9rwT6jPg"
+        ],
+        "value": "v0:test-key:1:3ZTiYqzi8xk9ZhSE3U_roFsDtUYoNTQ_CbWEDvOZwLQ"
       },
       {
-        "id": "receiver-application-snapshot-44",
-        "identityKind": "device-snapshot",
-        "components": ["https://study.example.org/fhir/NamingSystem/grove-event-v0", "e0:1f5c58aa-6ec6-4e79-a682-829a9debd3f5:44", "application", "fixture-app"],
-        "value": "v0:test-key:1:6I8uWw-e6duXMHPcuf6Zcjv5YKphw1S0hZgfq1N9EMM"
+        "id": "record-version-heart-rate-72",
+        "identityKind": "record-version",
+        "components": [
+          "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1",
+          "v0:test-key:1:ptHr751zWyYfaR2WIvrP1TfnVEK4bInC__ibP_AYfVY",
+          "zQn6qLSfmufltslE_5oFb25RNjY1-XN5s547r43EumY"
+        ],
+        "value": "v0:test-key:1:xjbzwZqYyBE1boHxzOoS09iLXEMrvo0o8dpxtlwPQhE"
       },
       {
-        "id": "receiver-application-snapshot-45",
-        "identityKind": "device-snapshot",
-        "components": ["https://study.example.org/fhir/NamingSystem/grove-event-v0", "e0:1f5c58aa-6ec6-4e79-a682-829a9debd3f5:45", "application", "fixture-app"],
-        "value": "v0:test-key:1:v4OvFw1CH0dYyiwUrWICl6MPUpp9BrBDva51303xv4M"
+        "id": "record-version-heart-rate-72-0",
+        "identityKind": "record-version",
+        "components": [
+          "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1",
+          "v0:test-key:1:ptHr751zWyYfaR2WIvrP1TfnVEK4bInC__ibP_AYfVY",
+          "1VvPJMtUBZEzD8DX5WFNjMr8pMVyKERNzlUyAKQLpuk"
+        ],
+        "value": "v0:test-key:1:z2SXdSGr63iLne5oavwMibQClshhTEABve_JEZLljCo"
       },
       {
-        "id": "receiver-application-snapshot-46",
-        "identityKind": "device-snapshot",
-        "components": ["https://study.example.org/fhir/NamingSystem/grove-event-v0", "e0:1f5c58aa-6ec6-4e79-a682-829a9debd3f5:46", "application", "fixture-app"],
-        "value": "v0:test-key:1:P-CZcBXDylBtujPUTLBrMVc24OEl_83sh_WrgLhEGfk"
+        "id": "record-retraction-heart-rate",
+        "identityKind": "record-retraction",
+        "components": [
+          "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1",
+          "v0:test-key:1:ptHr751zWyYfaR2WIvrP1TfnVEK4bInC__ibP_AYfVY"
+        ],
+        "value": "v0:test-key:1:0JJ96w-JxTpK7Bb-910L_61f3KJdI8Cr4eSGTpJ7L7o"
       },
       {
-        "id": "receiver-application-snapshot-47",
-        "identityKind": "device-snapshot",
-        "components": ["https://study.example.org/fhir/NamingSystem/grove-event-v0", "e0:1f5c58aa-6ec6-4e79-a682-829a9debd3f5:47", "application", "fixture-app"],
-        "value": "v0:test-key:1:7CSIYKL1G_jH0947A2Wrz5arDAmPJ__NU5syHdbiLFk"
+        "id": "receiver-lifecycle-multi-v3-record-version-3",
+        "identityKind": "record-version",
+        "components": [
+          "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1",
+          "v0:test-key:1:ptHr751zWyYfaR2WIvrP1TfnVEK4bInC__ibP_AYfVY",
+          "qLuPgG-qb3Djg6CxJEurlNNk7M2haatvWuCQVn6ZAVM"
+        ],
+        "value": "v0:test-key:1:-0FOFDNefG_F1Kijariy5UrCFGYN10hKiIu4RyF_VWA"
       },
       {
-        "id": "multi-study-application-snapshot-50",
-        "identityKind": "device-snapshot",
-        "components": ["https://study.example.org/fhir/NamingSystem/grove-event-v0", "e0:1f5c58aa-6ec6-4e79-a682-829a9debd3f5:50", "application", "fixture-app"],
-        "value": "v0:test-key:1:IPo3xVSPUNGwqi_4L3JZCTpztid-H4rQEvEt3YZ2TcU"
+        "id": "receiver-lifecycle-other-writer-record-version-3",
+        "identityKind": "record-version",
+        "components": [
+          "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1",
+          "v0:test-key:1:ptHr751zWyYfaR2WIvrP1TfnVEK4bInC__ibP_AYfVY",
+          "NBpFl1FvTAFIMI86cCgE1dtZGzkU_EGBlO1aa6kmUwY"
+        ],
+        "value": "v0:test-key:1:52Q6md0UZ0wG5BDeLVhz-LdbDVfqBARUXBvV0fFj_8Y"
       },
       {
-        "id": "multi-study-application-snapshot-51",
+        "id": "receiver-lifecycle-lexeme-retry-record-version-3",
+        "identityKind": "record-version",
+        "components": [
+          "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1",
+          "v0:test-key:1:ptHr751zWyYfaR2WIvrP1TfnVEK4bInC__ibP_AYfVY",
+          "bKUy3TUh47p2U1gNSAVMyfEhr460TjgIiOHpPJsH7t4"
+        ],
+        "value": "v0:test-key:1:57rOqeDd5AVmNxQma4fZXGMnlb8zrZrHSCQKb0TMe9M"
+      },
+      {
+        "id": "receiver-lifecycle-reconverted-record-version-3",
+        "identityKind": "record-version",
+        "components": [
+          "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1",
+          "v0:test-key:1:ptHr751zWyYfaR2WIvrP1TfnVEK4bInC__ibP_AYfVY",
+          "mzpjr4IQzHNquIMetMCVLA2eZFAyoQ0MwFm2zlqkdSU"
+        ],
+        "value": "v0:test-key:1:62Xc65RPZmki7UB7iYw2CT4BMvNH9Gt8WUXsSwkl2P8"
+      },
+      {
+        "id": "study-attribution-context-two-studies-plan-definition-context-snapshot-5",
+        "identityKind": "context-snapshot",
+        "components": [
+          "https://study.example.org/fhir/identifiers/participant",
+          "participant-001",
+          "plan-definition",
+          "H-rJPtVSpcVtww7svw_27iaQuBmbSU2HOXXHNXsL-20"
+        ],
+        "value": "v0:test-key:1:98e-x5T3aYtFZosSXLNLfnWuHAJoVqSzon8Nd0PTfMg"
+      },
+      {
+        "id": "mobile-exchange-retraction-bundle-record-retraction-1",
+        "identityKind": "record-retraction",
+        "components": [
+          "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1",
+          "v0:test-key:1:Ce4AD2kT5yierXkx5QJNFu7d8qqaSSQOCKGFeYpu2M0"
+        ],
+        "value": "v0:test-key:1:B21Bfil3Angm31WXctopw5mzf3r2zaP3cR4dfxh-gbg"
+      },
+      {
+        "id": "study-attribution-policy-negative-subject-mismatch-research-subject-context-snapshot-7",
+        "identityKind": "context-snapshot",
+        "components": [
+          "https://study.example.org/fhir/identifiers/participant",
+          "participant-001",
+          "research-subject",
+          "ckHBUXqFhTy5vB066RST-fnUFwwpU77EUJPs8tx18VE"
+        ],
+        "value": "v0:test-key:1:CGiGWkfY-tTd-izT5-yHSTcqvPjMY9N3QrlPQUTTec8"
+      },
+      {
+        "id": "mobile-exchange-second-heart-rate-source-record",
+        "identityKind": "source-record",
+        "components": [
+          "health-connect",
+          "HeartRateRecord",
+          "urn:uuid:1f5c58aa-6ec6-4e79-a682-829a9debd3f5",
+          "default",
+          "record-heart-002"
+        ],
+        "value": "v0:test-key:1:Ce4AD2kT5yierXkx5QJNFu7d8qqaSSQOCKGFeYpu2M0"
+      },
+      {
+        "id": "receiver-lifecycle-equal-version-later-recorded-record-version-3",
+        "identityKind": "record-version",
+        "components": [
+          "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1",
+          "v0:test-key:1:ptHr751zWyYfaR2WIvrP1TfnVEK4bInC__ibP_AYfVY",
+          "744fvjlVTE85v-DOhtmIoKT4PvjiuBPn4qzuCmuMh-Y"
+        ],
+        "value": "v0:test-key:1:FFtAoENlRmglBM3sGXPCP3C-SiYzk5KqUROAxK7sjDM"
+      },
+      {
+        "id": "mobile-exchange-exchange-bundle-application-device-snapshot-1",
         "identityKind": "device-snapshot",
-        "components": ["https://study.example.org/fhir/NamingSystem/grove-event-v0", "e0:1f5c58aa-6ec6-4e79-a682-829a9debd3f5:51", "application", "fixture-app"],
-        "value": "v0:test-key:1:1BRlmWamqCymL8adxO0bJCs1rV4L6ZGkPUGzrOfixnw"
+        "components": [
+          "https://study.example.org/fhir/identifiers/participant",
+          "participant-001",
+          "application",
+          "wAZ92PxGmx1A9BciamqWIUn685NqcdVl1IFrw1ULGtY"
+        ],
+        "value": "v0:test-key:1:Gm8_MD0ZNlH6vNBsj8s11GgVDJGHMUROX1amyK00jFs"
+      },
+      {
+        "id": "receiver-lifecycle-missing-order-record-version-3",
+        "identityKind": "record-version",
+        "components": [
+          "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1",
+          "v0:test-key:1:ptHr751zWyYfaR2WIvrP1TfnVEK4bInC__ibP_AYfVY",
+          "AZ1-Ll5twnuDmHIw12OmEXjnHpu3ceSNT7oeVWU-BCA"
+        ],
+        "value": "v0:test-key:1:I7oI-P0smVTBW-1WvmgeT2UR9I2UDPNuHasdnxNOR3U"
+      },
+      {
+        "id": "receiver-lifecycle-original-record-version-3",
+        "identityKind": "record-version",
+        "components": [
+          "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1",
+          "v0:test-key:1:ptHr751zWyYfaR2WIvrP1TfnVEK4bInC__ibP_AYfVY",
+          "KuOyMG30Y7RYgC5U_Sz404F0ejAoM-3_yvVLpC5vOtM"
+        ],
+        "value": "v0:test-key:1:I8TcW3NvmUyaAVzIhPiY7oo0EA5uOn979Nhuixy0STo"
+      },
+      {
+        "id": "study-attribution-context-two-studies-research-study-context-snapshot-9",
+        "identityKind": "context-snapshot",
+        "components": [
+          "https://study.example.org/fhir/identifiers/participant",
+          "participant-001",
+          "research-study",
+          "bMthbG773a592xhddmuPH1jw6ByKSOnAlddVg9diiwY"
+        ],
+        "value": "v0:test-key:1:Jvrz0c_Aj1XeiPB2n-4VmwZsycKREFrN1ml9BruhLMc"
+      },
+      {
+        "id": "receiver-lifecycle-multi-v1-record-version-3",
+        "identityKind": "record-version",
+        "components": [
+          "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1",
+          "v0:test-key:1:ptHr751zWyYfaR2WIvrP1TfnVEK4bInC__ibP_AYfVY",
+          "Y_1wxNjQ9jHtgFZbJqi-AEnAeIoEvxPw8GyIgEmscX0"
+        ],
+        "value": "v0:test-key:1:NQSJUQLiSfB8UFUm-DN4F3yJKBQJk01Hnjr1ZuMCDGc"
+      },
+      {
+        "id": "receiver-lifecycle-equal-version-reconversion-record-version-3",
+        "identityKind": "record-version",
+        "components": [
+          "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1",
+          "v0:test-key:1:ptHr751zWyYfaR2WIvrP1TfnVEK4bInC__ibP_AYfVY",
+          "pS0YIbjWtIZez1pZGdvMS5PqhnBl2K3ZNbmP7XcPUf8"
+        ],
+        "value": "v0:test-key:1:NeQ-uDYACuiF9yijNydPYDDtkK6QJiTytLzmR2Lliw4"
+      },
+      {
+        "id": "mobile-exchange-second-heart-rate-source-output",
+        "identityKind": "source-output",
+        "components": [
+          "health-connect",
+          "HeartRateRecord",
+          "urn:uuid:1f5c58aa-6ec6-4e79-a682-829a9debd3f5",
+          "default",
+          "record-heart-002",
+          "sample",
+          "2026-08-20T15:31:00.251000000Z|0"
+        ],
+        "value": "v0:test-key:1:P5ckwkm_jpCABzYEwupDLVKFyQiGyaWE-y8eRTMFj2A"
+      },
+      {
+        "id": "receiver-lifecycle-unordered-a-record-version-3",
+        "identityKind": "record-version",
+        "components": [
+          "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1",
+          "v0:test-key:1:ptHr751zWyYfaR2WIvrP1TfnVEK4bInC__ibP_AYfVY",
+          "kntrWeMBeWiu2_fCLLe23RzR48CVFXwMMa924k0q9Sc"
+        ],
+        "value": "v0:test-key:1:PaxxOvAs91EJRAKUFZMqjzU4GlgXld9rdRf_xswYpWw"
+      },
+      {
+        "id": "receiver-lifecycle-mixed-admission-record-version-6",
+        "identityKind": "record-version",
+        "components": [
+          "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1",
+          "v0:test-key:1:TE47APXmta6xbmGufkf8LBv8q3aPR4NDn9bltP7vEn4",
+          "Pmn2QyxL5l7Eb_If-eXylkDcOIpcnAsm5kmqExhddJs"
+        ],
+        "value": "v0:test-key:1:TQHdUGNfFyyNL6tbhoyEdOGuFaXmRWlGX71Rz1hMJno"
+      },
+      {
+        "id": "study-attribution-context-two-studies-research-subject-context-snapshot-7",
+        "identityKind": "context-snapshot",
+        "components": [
+          "https://study.example.org/fhir/identifiers/participant",
+          "participant-001",
+          "research-subject",
+          "NHAHUZJuGqJa1gPFMW7zbJYKsRnhUe9mSLGMWa4GCgI"
+        ],
+        "value": "v0:test-key:1:TU_T_l_ZEBRpx8JBioX4xPay0exzggKbZK1Am_-VIgQ"
+      },
+      {
+        "id": "receiver-lifecycle-changed-source-record-record-version-3",
+        "identityKind": "record-version",
+        "components": [
+          "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1",
+          "v0:test-key:1:WssrtI7oYzcgG0mFxlitvSznCx4esKSDEbK-bOUQpTk",
+          "MzWAtV5KZyJ8J1KPeA2adcE5BZRimVzPm1QIGt9sKW4"
+        ],
+        "value": "v0:test-key:1:VSrL_eGaokv2Z16RAt1_kaSSYjvHh3Ks8EYCNsEUTTw"
+      },
+      {
+        "id": "mobile-exchange-exchange-bundle-questionnaire-response-context-snapshot-4",
+        "identityKind": "context-snapshot",
+        "components": [
+          "https://study.example.org/fhir/identifiers/participant",
+          "participant-001",
+          "questionnaire-response",
+          "X2Id9QqNzGPNZMoa3r-2eXbeDEp8_FNic6YtLQghl-g"
+        ],
+        "value": "v0:test-key:1:_rNxPQWm7HC8lN4rxNvNcQDkKO0Ew1LhBZ9jO8jJduM"
+      },
+      {
+        "id": "mobile-exchange-exchange-bundle-record-version-6",
+        "identityKind": "record-version",
+        "components": [
+          "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1",
+          "v0:test-key:1:Ce4AD2kT5yierXkx5QJNFu7d8qqaSSQOCKGFeYpu2M0",
+          "k_a3SM53Lfq9R6jgYDhN8EcuIp118I4xyADWn9Da32Q"
+        ],
+        "value": "v0:test-key:1:a_uGh_911xHmIsPSEu0p147dT2I3rtr1uWWiKrKudsY"
+      },
+      {
+        "id": "study-attribution-policy-negative-subject-mismatch-record-version-3",
+        "identityKind": "record-version",
+        "components": [
+          "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1",
+          "v0:test-key:1:ptHr751zWyYfaR2WIvrP1TfnVEK4bInC__ibP_AYfVY",
+          "xpke1ZbN6GtUhlvQw-liTCkamThH5hpn7JpecKRitFk"
+        ],
+        "value": "v0:test-key:1:bPyV3lwtPox84i-1jtri_UyMis2PtZvmo0mmq9XQrn0"
+      },
+      {
+        "id": "mobile-exchange-exchange-bundle-record-version-3",
+        "identityKind": "record-version",
+        "components": [
+          "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1",
+          "v0:test-key:1:ptHr751zWyYfaR2WIvrP1TfnVEK4bInC__ibP_AYfVY",
+          "JH6LXyyA4k6l-QgmWSzIfJwJ-DBpo4RbUFW2qUHuVKg"
+        ],
+        "value": "v0:test-key:1:cd-Pae2AS1sITLmwdpC9D0uOuEfWCn58_X4d6EA8qtY"
+      },
+      {
+        "id": "study-attribution-context-two-studies-record-version-3",
+        "identityKind": "record-version",
+        "components": [
+          "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1",
+          "v0:test-key:1:ptHr751zWyYfaR2WIvrP1TfnVEK4bInC__ibP_AYfVY",
+          "0EZV-zNTRRH--o35_kB9Qu04K3nwAGbz9eHB6t89KEI"
+        ],
+        "value": "v0:test-key:1:chouEwId0FQ039PjSGtiQ7t0vFrAhI7ME1uUfyPfq6k"
+      },
+      {
+        "id": "receiver-lifecycle-corrected-record-version-3",
+        "identityKind": "record-version",
+        "components": [
+          "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1",
+          "v0:test-key:1:ptHr751zWyYfaR2WIvrP1TfnVEK4bInC__ibP_AYfVY",
+          "xZLNI23x_jYBVkOeyDOLfDJ8EmBpxRUS2xkEyyvGoY8"
+        ],
+        "value": "v0:test-key:1:coyKAaPUs9QdAHkecsNE5g5dUzACb3FAv_vLQDiyf8w"
+      },
+      {
+        "id": "study-attribution-context-two-studies-research-study-context-snapshot-6",
+        "identityKind": "context-snapshot",
+        "components": [
+          "https://study.example.org/fhir/identifiers/participant",
+          "participant-001",
+          "research-study",
+          "IRN-Krfjb3tko63z9Ef8JvK1lSU6iSRf-PwfmUPcqqY"
+        ],
+        "value": "v0:test-key:1:jdGcoytaICam-J_tUFjSkKomwIRDN8Om7xCmRZKNj88"
+      },
+      {
+        "id": "study-attribution-context-two-studies-plan-definition-context-snapshot-8",
+        "identityKind": "context-snapshot",
+        "components": [
+          "https://study.example.org/fhir/identifiers/participant",
+          "participant-001",
+          "plan-definition",
+          "11KoTQkrOCkuylJJRiDZpP_zM83zvRLdr18YL3-w3hU"
+        ],
+        "value": "v0:test-key:1:qeuoZyehsUiU7Amgxpv3QGWK6PED9rXxFIAVsvvmENg"
+      },
+      {
+        "id": "receiver-lifecycle-unordered-b-record-version-3",
+        "identityKind": "record-version",
+        "components": [
+          "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1",
+          "v0:test-key:1:ptHr751zWyYfaR2WIvrP1TfnVEK4bInC__ibP_AYfVY",
+          "gOpSgrZM-UHxCMdilzByhbRB8Ir6vPGBIDoj8C6hBDk"
+        ],
+        "value": "v0:test-key:1:rN1qE7AnoFKaJhnAPooL9VFq1Uh1DGDxT3GzG6eJF44"
+      },
+      {
+        "id": "receiver-lifecycle-multi-v2-record-version-3",
+        "identityKind": "record-version",
+        "components": [
+          "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1",
+          "v0:test-key:1:ptHr751zWyYfaR2WIvrP1TfnVEK4bInC__ibP_AYfVY",
+          "2CEqHmkIwHuLwArerxZdW5DdW3b9z8ZFtr-6fgR6GkY"
+        ],
+        "value": "v0:test-key:1:tTobsrtpfc56ceW0b3bMJe-3KAOSYLnENUzDpgykFec"
+      },
+      {
+        "id": "receiver-lifecycle-pending-record-version-3",
+        "identityKind": "record-version",
+        "components": [
+          "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1",
+          "v0:test-key:1:ptHr751zWyYfaR2WIvrP1TfnVEK4bInC__ibP_AYfVY",
+          "vAanUPEOfJhjYfI7QQwSWqFR6LWnNzp_VQy1dK2Pwm0"
+        ],
+        "value": "v0:test-key:1:wowwu5_jxYykm0KTPrF1NVtu0asK9xWjoapLoGOXzyw"
+      },
+      {
+        "id": "study-attribution-context-two-studies-research-subject-context-snapshot-10",
+        "identityKind": "context-snapshot",
+        "components": [
+          "https://study.example.org/fhir/identifiers/participant",
+          "participant-001",
+          "research-subject",
+          "qpgCUzPEntZkLnWcR3s_P-jg80E_FUiZsgT1g2hyxw8"
+        ],
+        "value": "v0:test-key:1:wztISDWD-1YX1KDcqawFlN2-3IzUtAdy0Hjh3_w8TaM"
+      },
+      {
+        "id": "receiver-lifecycle-equal-version-equal-recorded-record-version-3",
+        "identityKind": "record-version",
+        "components": [
+          "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1",
+          "v0:test-key:1:ptHr751zWyYfaR2WIvrP1TfnVEK4bInC__ibP_AYfVY",
+          "1W1vTIW6x7BzWHmNt5_UdhvVvQZkjkzN6xPYOtdvGVs"
+        ],
+        "value": "v0:test-key:1:xXRvK4HIFPEXVYyBgM90FNbIPDZfsMNsoBkjQosbp8o"
       },
       {
         "id": "questionnaire-extraction-host-snapshot",
         "identityKind": "device-snapshot",
         "components": [
-          "https://study.example.org/fhir/NamingSystem/grove-event-v0",
-          "e0:6f9d1c4a-2b7e-4f18-9c33-5a1d0e7b2c48:1",
+          "https://example.org/research/participant-id",
+          "participant-001",
           "host",
-          "iPhone17,1|26.0"
+          "KO2_OD0upXDBqxHQkB_z9wUQbBQla-3q0BW6ZCVXdvU"
         ],
-        "value": "v0:test-key:1:Bjx_NBNO2-QhII9c1M5mcLUUOJRB0YSTXbg68kkTDdc"
+        "value": "v0:test-key:1:BJ68B1Ln-JzOKPDWOevEmnjQNsX0BheIosEdSGgRV1A"
+      },
+      {
+        "id": "questionnaire-extraction-application-snapshot",
+        "identityKind": "device-snapshot",
+        "components": [
+          "https://example.org/research/participant-id",
+          "participant-001",
+          "application",
+          "LEXpeoVjEJDN7-MtE7yu81zeJoxB5dk2RWvsbqGc00w"
+        ],
+        "value": "v0:test-key:1:XoZPVj1lObWj4ma3jFPQvjayZF1v4Piu9mnFu-xwx_0"
+      },
+      {
+        "id": "questionnaire-extraction-patient-snapshot",
+        "identityKind": "context-snapshot",
+        "components": [
+          "https://example.org/research/participant-id",
+          "participant-001",
+          "patient",
+          "88YRN0-d7QiE-PB_z80P3wrWVCmcoDzpeeVc-C1h67E"
+        ],
+        "value": "v0:test-key:1:0Bqdjt59Tx6RlSNPK625TzKjLgrZiw6OHtnobZsfskk"
+      },
+      {
+        "id": "questionnaire-extraction-response-snapshot",
+        "identityKind": "context-snapshot",
+        "components": [
+          "https://example.org/research/participant-id",
+          "participant-001",
+          "questionnaire-response",
+          "lL45s2YarFEQ2kOriLYHUu1f3neOwZhtUx_k6-IyMbc"
+        ],
+        "value": "v0:test-key:1:fE9dYA07a6yqebbrEAnnljfpr727wsDXFFvPxDPLuPI"
+      },
+      {
+        "id": "questionnaire-extraction-bundle-application-snapshot",
+        "identityKind": "device-snapshot",
+        "components": [
+          "https://example.org/research/participant-id",
+          "participant-001",
+          "application",
+          "fW5oESnyMKwYu_AtB-FkvKLkKAM7mbdsv0SMHZiBS7s"
+        ],
+        "value": "v0:test-key:1:fZBQIWIeM0SUmHvsH68yGnBNNNz_jdJ9SFkWOMGuxKw"
+      },
+      {
+        "id": "questionnaire-extraction-record-version",
+        "identityKind": "record-version",
+        "components": [
+          "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1",
+          "v0:test-key:1:7_7dmqTFxPH01QGTycmp8nIPty7WwphH2X0ZaV-p3wk",
+          "81FfElnoVKcSLq7w3HBsGRXNiMN9wwZjNofjWo_VLnc"
+        ],
+        "value": "v0:test-key:1:RIiSEVoX9fCoWyNMZvL3QAPxmelpxzePPzRbQOfPtb0"
       }
     ],
     "invalidIdentities": [
@@ -1849,27 +2249,133 @@
           "01"
         ],
         "expectedError": "non-canonical-part-index"
+      },
+      {
+        "id": "padded-record-content-digest",
+        "identityKind": "record-version",
+        "components": [
+          "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1",
+          "v0:test-key:1:ptHr751zWyYfaR2WIvrP1TfnVEK4bInC__ibP_AYfVY",
+          "zQn6qLSfmufltslE_5oFb25RNjY1-XN5s547r43EumY="
+        ],
+        "expectedError": "non-canonical-digest"
+      },
+      {
+        "id": "truncated-content-digest",
+        "identityKind": "device-snapshot",
+        "components": [
+          "https://study.example.org/fhir/identifiers/participant",
+          "participant-001",
+          "application",
+          "4pqk-W06e5OEkG9iG862Vgry02ywK4iomj_6BqrTZG"
+        ],
+        "expectedError": "non-canonical-digest"
       }
     ],
-    "event": {
-      "system": "https://study.example.org/fhir/NamingSystem/grove-event-v0",
-      "producerInstance": "1f5c58aa-6ec6-4e79-a682-829a9debd3f5",
-      "sequence": "42",
-      "value": "e0:1f5c58aa-6ec6-4e79-a682-829a9debd3f5:42"
-    },
-    "entryNode": {
-      "system": "https://study.example.org/fhir/NamingSystem/grove-entry-node-v0",
-      "role": "conversion-provenance",
-      "ordinal": "0",
-      "value": "n0:conversion-provenance:0:8JmcQF7rmULm9uJBkHWruJwfMu3GJTxGWqXWn2DGqWk",
-      "fullUrl": "urn:uuid:71abc484-b9ee-511e-b22a-5b35d026d620"
-    },
     "fullUrls": [
       {
         "id": "unicode-value-and-escaped-system",
         "system": "https://xn--fsq.example/%E8%AD%98%E5%88%A5%E5%AD%90",
         "value": "café|東京",
         "fullUrl": "urn:uuid:d35e4203-71f6-595c-bd1b-306b8414974e"
+      },
+      {
+        "id": "record-version-heart-rate-72",
+        "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
+        "value": "v0:test-key:1:xjbzwZqYyBE1boHxzOoS09iLXEMrvo0o8dpxtlwPQhE",
+        "fullUrl": "urn:uuid:af53df9f-24e4-5773-9301-a3887fdf2f57"
+      },
+      {
+        "id": "record-version-heart-rate-72-0",
+        "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
+        "value": "v0:test-key:1:z2SXdSGr63iLne5oavwMibQClshhTEABve_JEZLljCo",
+        "fullUrl": "urn:uuid:b0624977-9c3f-574d-82ae-112f578bae1a"
+      },
+      {
+        "id": "record-retraction-heart-rate",
+        "system": "https://study.example.org/fhir/NamingSystem/grove-record-retraction-v0/test-key/1",
+        "value": "v0:test-key:1:0JJ96w-JxTpK7Bb-910L_61f3KJdI8Cr4eSGTpJ7L7o",
+        "fullUrl": "urn:uuid:03e766bb-9cc6-51b2-b67e-e8902e01513f"
+      }
+    ],
+    "canonicalJson": [
+      {
+        "id": "numbers",
+        "input": "{\"v\" : [72.0, 72, -0, 1E-7, 1e2, 0.10]}",
+        "canonical": "{\"v\":[72.0,72,-0,1E-7,1e2,0.10]}",
+        "sha256": "42051e54d78d891b33e023b66429044312e8c99b8430af3ca1b6b4f7be34d82c"
+      },
+      {
+        "id": "members-and-escapes",
+        "input": "{\"b\":\"é\\/\",\"c\":\"ｚ😀\",\"a\":\"q\\\"\\\\\\u0001\\t\",\"A\":2}",
+        "canonical": "{\"A\":2,\"a\":\"q\\\"\\\\\\u0001\\t\",\"b\":\"é/\",\"c\":\"ｚ😀\"}",
+        "sha256": "79e56476cbdc80332cc8dc46c5d24578aec04aad5ffc94427e7d8a5346c45e94"
+      }
+    ],
+    "invalidCanonicalJson": [
+      {
+        "id": "duplicate-member-equal-values",
+        "inputHex": "7b2261223a312c2261223a317d",
+        "expectedError": "duplicate-member"
+      },
+      {
+        "id": "non-ascii-member-name-raw",
+        "inputHex": "7b22c3a9223a317d",
+        "expectedError": "non-ascii-member-name"
+      },
+      {
+        "id": "non-ascii-member-name-escaped",
+        "inputHex": "7b225c7530306539223a317d",
+        "expectedError": "non-ascii-member-name"
+      },
+      {
+        "id": "unpaired-surrogate-escape",
+        "inputHex": "7b2261223a225c7564383030227d",
+        "expectedError": "unpaired-surrogate"
+      },
+      {
+        "id": "byte-order-mark",
+        "inputHex": "efbbbf7b7d",
+        "expectedError": "byte-order-mark"
+      },
+      {
+        "id": "invalid-utf8",
+        "inputHex": "7b2261223a22ff227d",
+        "expectedError": "invalid-utf8"
+      }
+    ],
+    "recordContents": [
+      {
+        "id": "heart-rate-72",
+        "provenance": "{\"resourceType\":\"Provenance\",\"id\":\"not-in-the-digest\",\"meta\":{\"profile\":[\"https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-conversion-provenance\"]},\"extension\":[{\"url\":\"https://grovealliance.org/fhir/mobile/StructureDefinition/grove-record-version\",\"valueIdentifier\":{\"system\":\"https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1\",\"type\":{\"coding\":[{\"code\":\"record-version\",\"system\":\"https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role\"}]},\"value\":\"v0:test-key:1:xjbzwZqYyBE1boHxzOoS09iLXEMrvo0o8dpxtlwPQhE\"}}],\"activity\":{\"coding\":[{\"code\":\"transform\",\"system\":\"http://terminology.hl7.org/CodeSystem/iso-21089-lifecycle\"}]},\"agent\":[{\"type\":{\"coding\":[{\"code\":\"assembler\",\"system\":\"http://terminology.hl7.org/CodeSystem/provenance-participant-type\"}]},\"who\":{\"reference\":\"urn:uuid:aef62dba-db7e-5a99-a854-3b5ec312312f\"}}],\"entity\":[{\"role\":\"source\",\"what\":{\"identifier\":{\"system\":\"https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1\",\"type\":{\"coding\":[{\"code\":\"source-record\",\"system\":\"https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role\"}]},\"value\":\"v0:test-key:1:ptHr751zWyYfaR2WIvrP1TfnVEK4bInC__ibP_AYfVY\"}}}],\"occurredDateTime\":\"2026-08-20T10:30:02-07:00\",\"recorded\":\"2026-08-20T17:30:02Z\",\"target\":[{\"reference\":\"urn:uuid:a9b76bbc-f523-5ef4-9919-813ec70553e5\"}]}",
+        "outputs": [
+          "{\"code\":{\"coding\":[{\"code\":\"8867-4\",\"system\":\"http://loinc.org\"}]},\"effectiveDateTime\":\"2026-08-20T08:30:00.251-07:00\",\"identifier\":[{\"system\":\"https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1\",\"type\":{\"coding\":[{\"code\":\"source-record\",\"system\":\"https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role\"}]},\"value\":\"v0:test-key:1:ptHr751zWyYfaR2WIvrP1TfnVEK4bInC__ibP_AYfVY\"},{\"system\":\"https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1\",\"type\":{\"coding\":[{\"code\":\"source-output\",\"system\":\"https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role\"}]},\"value\":\"v0:test-key:1:PPULnf0LKpASjIj8mU5TKafPKig_oqWND3_dHFShGd8\"}],\"meta\":{\"profile\":[\"https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-heart-rate\"]},\"resourceType\":\"Observation\",\"status\":\"final\",\"subject\":{\"identifier\":{\"system\":\"https://study.example.org/fhir/identifiers/participant\",\"value\":\"participant-001\"},\"type\":\"Patient\"},\"valueQuantity\":{\"code\":\"/min\",\"system\":\"http://unitsofmeasure.org\",\"unit\":\"beats/minute\",\"value\":72}}"
+        ],
+        "recordContentDigest": "zQn6qLSfmufltslE_5oFb25RNjY1-XN5s547r43EumY"
+      },
+      {
+        "id": "heart-rate-72-0",
+        "provenance": "{\"resourceType\":\"Provenance\",\"id\":\"not-in-the-digest\",\"meta\":{\"profile\":[\"https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-conversion-provenance\"]},\"extension\":[{\"url\":\"https://grovealliance.org/fhir/mobile/StructureDefinition/grove-record-version\",\"valueIdentifier\":{\"system\":\"https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1\",\"type\":{\"coding\":[{\"code\":\"record-version\",\"system\":\"https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role\"}]},\"value\":\"v0:test-key:1:z2SXdSGr63iLne5oavwMibQClshhTEABve_JEZLljCo\"}}],\"activity\":{\"coding\":[{\"code\":\"transform\",\"system\":\"http://terminology.hl7.org/CodeSystem/iso-21089-lifecycle\"}]},\"agent\":[{\"type\":{\"coding\":[{\"code\":\"assembler\",\"system\":\"http://terminology.hl7.org/CodeSystem/provenance-participant-type\"}]},\"who\":{\"reference\":\"urn:uuid:aef62dba-db7e-5a99-a854-3b5ec312312f\"}}],\"entity\":[{\"role\":\"source\",\"what\":{\"identifier\":{\"system\":\"https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1\",\"type\":{\"coding\":[{\"code\":\"source-record\",\"system\":\"https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role\"}]},\"value\":\"v0:test-key:1:ptHr751zWyYfaR2WIvrP1TfnVEK4bInC__ibP_AYfVY\"}}}],\"occurredDateTime\":\"2026-08-20T10:30:02-07:00\",\"recorded\":\"2026-08-20T17:30:02Z\",\"target\":[{\"reference\":\"urn:uuid:a9b76bbc-f523-5ef4-9919-813ec70553e5\"}]}",
+        "outputs": [
+          "{\"code\":{\"coding\":[{\"code\":\"8867-4\",\"system\":\"http://loinc.org\"}]},\"effectiveDateTime\":\"2026-08-20T08:30:00.251-07:00\",\"identifier\":[{\"system\":\"https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1\",\"type\":{\"coding\":[{\"code\":\"source-record\",\"system\":\"https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role\"}]},\"value\":\"v0:test-key:1:ptHr751zWyYfaR2WIvrP1TfnVEK4bInC__ibP_AYfVY\"},{\"system\":\"https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1\",\"type\":{\"coding\":[{\"code\":\"source-output\",\"system\":\"https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role\"}]},\"value\":\"v0:test-key:1:PPULnf0LKpASjIj8mU5TKafPKig_oqWND3_dHFShGd8\"}],\"meta\":{\"profile\":[\"https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-heart-rate\"]},\"resourceType\":\"Observation\",\"status\":\"final\",\"subject\":{\"identifier\":{\"system\":\"https://study.example.org/fhir/identifiers/participant\",\"value\":\"participant-001\"},\"type\":\"Patient\"},\"valueQuantity\":{\"code\":\"/min\",\"system\":\"http://unitsofmeasure.org\",\"unit\":\"beats/minute\",\"value\":72.0}}"
+        ],
+        "recordContentDigest": "1VvPJMtUBZEzD8DX5WFNjMr8pMVyKERNzlUyAKQLpuk"
+      }
+    ],
+    "keyFingerprint": [
+      {
+        "id": "participant-001",
+        "subjectSystem": "https://study.example.org/fhir/identifiers/participant",
+        "subjectValue": "participant-001",
+        "fingerprint": "P9uBXnCHhfLE5C5Mp3Xh0AMVDpbuflhG4AFWUbowp40",
+        "keyIdSuffix": "P9uBXnCH"
+      },
+      {
+        "id": "participant-002",
+        "subjectSystem": "https://study.example.org/fhir/identifiers/participant",
+        "subjectValue": "participant-002",
+        "fingerprint": "InZQvEQlaalyElrzinq8t-OpRxvRNxJtJ9mNBNYEaRM",
+        "keyIdSuffix": "InZQvEQl"
       }
     ]
   }

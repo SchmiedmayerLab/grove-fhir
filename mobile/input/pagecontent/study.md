@@ -55,26 +55,32 @@ For example, study A's historical representation can reference protocol A versio
 A single protocol string beside both study references cannot express those separate associations.
 
 When study A publishes version `2`, retain the earlier ResearchStudy representation and its protocol target.
-A version-specific repository reference or the immutable event's graph entries can preserve that history.
-Here “graph entries” means addressable `Bundle.entry` resources, not FHIR `contained` resources, which Mobile exchange events prohibit.
+A version-specific repository reference or the immutable record's Bundle entries can preserve that history.
+Here “Bundle entries” means addressable `Bundle.entry` resources, not FHIR `contained` resources, which Mobile exchange Bundles prohibit.
 Resolving an old observation only through the latest ResearchStudy representation loses its original protocol identity.
 
 Connected ResearchStudy, ResearchSubject and PlanDefinition resources are permitted supporting entries in a Mobile exchange Bundle.
 Use `workflow-researchStudy` for each known association and keep each study's protocol link distinct.
-A producer that knows the participant's enrollment should include one ResearchStudy, its exact-revision PlanDefinition, and one ResearchSubject as event-scoped entries, reference the ResearchStudy from each output through `workflow-researchStudy`, and reference the PlanDefinition from `ResearchStudy.protocol`.
+A producer that knows the participant's enrollment should include one ResearchStudy, its exact-revision PlanDefinition, and one ResearchSubject as shared nodes, reference the ResearchStudy from each output through `workflow-researchStudy`, and reference the PlanDefinition from `ResearchStudy.protocol`.
 An identifier-only logical ResearchStudy reference remains conformant but carries no protocol revision.
 `Observation.subject` stays the identifier-only deployment pseudonym unless the deployment supplies a Patient entry; `ResearchSubject.individual` references the same subject.
-The entry-node roles for these entries are `patient`, `research-study`, `research-subject`, and `plan-definition`, as [`catalog/exchange-protocol.json`](https://grovealliance.org/fhir/catalog/exchange-protocol.json) lists them.
+
+Each of these shared nodes is content-addressed.
+It carries a typed `context-snapshot` Identifier in `Resource.identifier`, a v0 HMAC over the subject, its node role, and the digest of its complete canonical content minus `id` and minus that Identifier, and that Identifier is its entry key.
+A business identifier the resource also carries, such as a ResearchStudy's study identifier, stays beside it and never selects the key, and neither does a PlanDefinition's canonical `url|version`, even when immutable.
+The same content therefore gives the same entry in every Bundle, shared by every record of the Bundle that references it, while a study revision, a changed protocol status, or a changed enrollment gives a new snapshot with its own fullUrl instead of a second body under one key.
+The node roles are `patient`, `research-study`, `research-subject`, `plan-definition`, and `questionnaire-response`, as `entryIdentity.contextSnapshotRoles` in [`catalog/exchange-protocol.json`](https://grovealliance.org/fhir/catalog/exchange-protocol.json) lists them; a QuestionnaireResponse, whose one identifier holds its submission identifier, repeats its key in the `grove-context-snapshot` extension instead.
+A ResearchSubject belongs to every record whose references reach the ResearchStudy it names.
 These supporting resources do not turn the Bundle into a consent document or grant the sender access to a study.
 
-### Late attribution does not rewrite a producer event
+### Late attribution does not rewrite a record version
 
-A receiver can associate one retained output version with another study after accepting its producer event.
-It records that decision separately, with the exact output version, enrollment, protocol revision and authorized purpose.
-Neither adding a grant nor withdrawing from a study changes the original event identifier, bytes or source-output identity.
+A receiver can associate one retained record version with another study after accepting it.
+It records that decision separately, with the exact record version, enrollment, protocol revision and authorized purpose.
+Neither adding a grant nor withdrawing from a study changes the original record-version Identifier, bytes or source-output identity.
 The receiver must verify subject/source ownership, consent, collection eligibility and the applicable upload window independently of producer-supplied study metadata.
 
-The worked sequence starts with an event that names only study A version `1`.
+The worked sequence starts with a record version that names only study A version `1`.
 Study B's version `3` protocol and enrollment enter the receiver repository later; B then receives its own authorized association with the same output.
 Publishing A version `2` does not silently retarget either historical grant.
 Under the illustrated policy, withdrawing from A ends A's current access while B's independently authorized association remains available.
@@ -87,10 +93,11 @@ A study-scoped export includes its own ResearchSubject, the appropriate historic
 It must not disclose other study membership through extra entries, study extensions, copied narrative or provenance metadata.
 Filter supporting graphs deliberately; removing only the other study's top-level entry leaves dangling references or leaks its association elsewhere.
 
-Filtering or adding receiver-owned study context produces a **derived export**, not an exact retry of the producer event.
-Give the export its own identity and derivation Provenance; do not reuse the original event's identifier or claim that the modified collection is the original Mobile event.
-An opaque, study-scoped lineage identifier can resolve to the retained source internally without exposing its other associations or granting direct access to the raw event.
-The source event and its original conversion Provenance remain immutable in custody.
+Filtering or adding receiver-owned study context produces a **derived export**, not an exact retry of the producer's record versions.
+Give the export its own identity and derivation Provenance; do not reuse a record-version Identifier or the original conversion Provenance, and do not claim that the modified collection carries the original Mobile records.
+Strip every governed source identifier and every `grove-retraction-target-native-identifier` extension from the export, so no clear native value joins the exported copy to other applications' data.
+An opaque, study-scoped lineage identifier can resolve to the retained source internally without exposing its other associations or granting direct access to the raw record versions.
+The source record versions and their original conversion Provenances remain immutable in custody.
 
 The [multi-study conformance examples](https://github.com/SchmiedmayerLab/grove-fhir/tree/main/Conformance/corpora/study-attribution) include both supported producer shapes, late attribution, revision history, isolated withdrawal and derived exports.
 They also separate an invalid protocol Reference from profile-valid but unauthorized subject/revision/replay cases.

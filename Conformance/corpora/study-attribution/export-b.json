@@ -2,13 +2,9 @@
   "resourceType": "Bundle",
   "id": "GroveStudyBDerivedExportExample",
   "type": "collection",
-  "identifier": {
-    "system": "https://receiver.example.org/exports",
-    "value": "study-b-export-1"
-  },
   "entry": [
     {
-      "fullUrl": "urn:uuid:8c91dca5-9545-52e3-97ef-12d9b2e1e509",
+      "fullUrl": "urn:uuid:a3a3368b-fb0f-5113-9d9d-7c651a4b96ca",
       "resource": {
         "resourceType": "Patient",
         "id": "GroveMobileExchangePatientExample",
@@ -16,12 +12,24 @@
           {
             "system": "https://study.example.org/fhir/identifiers/participant",
             "value": "participant-001"
+          },
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+                  "code": "context-snapshot"
+                }
+              ]
+            },
+            "system": "https://study.example.org/fhir/NamingSystem/grove-context-snapshot-v0/test-key/1",
+            "value": "v0:test-key:1:3ZTiYqzi8xk9ZhSE3U_roFsDtUYoNTQ_CbWEDvOZwLQ"
           }
         ]
       }
     },
     {
-      "fullUrl": "urn:uuid:6bd9d0ad-1c35-5db9-86d1-089037b64138",
+      "fullUrl": "urn:uuid:5afa0f42-eff6-5665-b7f6-e3c2ef5cfbc4",
       "resource": {
         "resourceType": "Device",
         "id": "GroveMobileExchangeApplicationExample",
@@ -36,13 +44,12 @@
               "coding": [
                 {
                   "code": "device-snapshot",
-                  "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
-                  "display": "Device snapshot"
+                  "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role"
                 }
               ]
             },
             "system": "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v0/test-key/1",
-            "value": "v0:test-key:1:IPo3xVSPUNGwqi_4L3JZCTpztid-H4rQEvEt3YZ2TcU"
+            "value": "v0:test-key:1:Gm8_MD0ZNlH6vNBsj8s11GgVDJGHMUROX1amyK00jFs"
           }
         ],
         "deviceName": [
@@ -103,7 +110,7 @@
           {
             "url": "http://hl7.org/fhir/StructureDefinition/observation-gatewayDevice",
             "valueReference": {
-              "reference": "urn:uuid:6bd9d0ad-1c35-5db9-86d1-089037b64138"
+              "reference": "urn:uuid:5afa0f42-eff6-5665-b7f6-e3c2ef5cfbc4"
             }
           },
           {
@@ -126,11 +133,11 @@
           }
         ],
         "subject": {
-          "reference": "urn:uuid:8c91dca5-9545-52e3-97ef-12d9b2e1e509"
+          "reference": "urn:uuid:a3a3368b-fb0f-5113-9d9d-7c651a4b96ca"
         },
         "derivedFrom": [
           {
-            "reference": "urn:uuid:dd4166bd-a23d-5162-850c-bf91c1a0d422"
+            "reference": "urn:uuid:9d9ad748-503d-5b45-b5db-b14d5c965705"
           }
         ],
         "effectiveDateTime": "2026-08-20T08:30:00.251-07:00",
@@ -144,7 +151,7 @@
       }
     },
     {
-      "fullUrl": "urn:uuid:dd4166bd-a23d-5162-850c-bf91c1a0d422",
+      "fullUrl": "urn:uuid:9d9ad748-503d-5b45-b5db-b14d5c965705",
       "resource": {
         "resourceType": "QuestionnaireResponse",
         "id": "GroveMobileExchangeQuestionnaireResponseExample",
@@ -164,6 +171,21 @@
                   "code": "ELECTRONIC"
                 }
               ]
+            }
+          },
+          {
+            "url": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-context-snapshot",
+            "valueIdentifier": {
+              "type": {
+                "coding": [
+                  {
+                    "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+                    "code": "context-snapshot"
+                  }
+                ]
+              },
+              "system": "https://study.example.org/fhir/NamingSystem/grove-context-snapshot-v0/test-key/1",
+              "value": "v0:test-key:1:_rNxPQWm7HC8lN4rxNvNcQDkKO0Ew1LhBZ9jO8jJduM"
             }
           }
         ],
@@ -245,7 +267,7 @@
           "reference": "https://receiver.example.org/ResearchStudy/study-b-r3"
         },
         "individual": {
-          "reference": "urn:uuid:8c91dca5-9545-52e3-97ef-12d9b2e1e509"
+          "reference": "urn:uuid:a3a3368b-fb0f-5113-9d9d-7c651a4b96ca"
         }
       }
     },
@@ -293,5 +315,9 @@
       }
     }
   ],
-  "timestamp": "2026-08-22T10:00:00Z"
+  "timestamp": "2026-08-22T10:00:00Z",
+  "identifier": {
+    "system": "https://receiver.example.org/exports",
+    "value": "study-b-export-1"
+  }
 }

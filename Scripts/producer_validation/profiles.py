@@ -405,9 +405,10 @@ def validate_exchange_supporting_profile_claim(
             "supporting-resource profile mode"
         )
     required_roles = set(matches[0].get("requiredIdentifierRoles", []))
+    optional_roles = set(matches[0].get("optionalIdentifierRoles", []))
     if required_roles:
-        typed = typed_resource_identifiers(resource, label)
-        if set(typed) != required_roles:
+        typed = set(typed_resource_identifiers(resource, label))
+        if not required_roles <= typed <= required_roles | optional_roles:
             raise ProducerValidationError(
                 f"{label} active {resource_type} has invalid Grove identifier roles"
             )
@@ -415,7 +416,7 @@ def validate_exchange_supporting_profile_claim(
 def validate_active_provenance_profile_claim(
     resource: dict[str, Any], label: str
 ) -> None:
-    """Require the sole active lifecycle assertion to declare one exact direct profile."""
+    """Require every conversion Provenance to declare one exact direct profile."""
     if resource.get("resourceType") != "Provenance":
         return
     claims = read_json(CATALOG_ROOT / "profile-claims.json")
@@ -435,7 +436,7 @@ def validate_active_provenance_profile_claim(
 def validate_retraction_provenance_profile_claim(
     resource: dict[str, Any], label: str
 ) -> None:
-    """Require the sole retraction assertion to declare only its Mobile profile."""
+    """Require every retraction Provenance to declare only its Mobile profile."""
     if resource.get("resourceType") != "Provenance":
         return
     expected = EXCHANGE_PROTOCOL["profiles"]["retractionProvenance"]

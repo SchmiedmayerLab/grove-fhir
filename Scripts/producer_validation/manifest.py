@@ -14,14 +14,14 @@ from pathlib import Path
 from typing import Any
 
 from .context import (
-    ADAPTER_PACKAGE_PROFILES, GROVE_PROFILE, PACKAGE_ALIAS, PACKAGE_ID,
-    RELEASE_VERSION, TOP_LEVEL_KEYS,
+    ADAPTER_PACKAGE_PROFILES, EXCHANGE_BUNDLE_PROFILE, GROVE_PROFILE, PACKAGE_ALIAS,
+    PACKAGE_ID, RELEASE_VERSION, RETRACTION_BUNDLE_PROFILE, TOP_LEVEL_KEYS,
 )
-from .diagnostics import ProducerValidationError
+from .diagnostics import ProducerValidationError, contract_failure
 from .exchange_bundle import validate_exchange_bundle, validate_resource_profile_claims
 from .io import (
-    read_json, require_keys, resolve_unlinked_regular_file, safe_resource_path,
-    unique_object,
+    CanonicalJSONError, read_json, read_lossless_json, require_keys,
+    resolve_unlinked_regular_file, safe_resource_path, unique_object,
 )
 from .mobile_semantics import validate_mobile_semantic_vectors
 
@@ -143,7 +143,18 @@ def validate_manifest(path: Path) -> tuple[dict[str, Any], list[Path]]:
                 f"unlisted: {', '.join(sorted(hidden))}"
             )
         validate_resource_profile_claims(resource, relative, active_adapter_profiles)
-        validate_exchange_bundle(resource, relative, active_adapter_profiles)
+        lossless = None
+        if {EXCHANGE_BUNDLE_PROFILE, RETRACTION_BUNDLE_PROFILE} & set(actual):
+            # Keys are recomputed from the exact lexemes, which read_json's Decimals lose.
+            try:
+                lossless = read_lossless_json(resource_path)
+            except CanonicalJSONError as error:
+                raise contract_failure(
+                    "mobile-exchange.canonical-json",
+                    "Bundle",
+                    f"{relative} has no grove-canonical-json-v0 form: {error}",
+                ) from error
+        validate_exchange_bundle(resource, relative, active_adapter_profiles, lossless)
         resources_by_path[relative] = resource
         paths.append(resource_path)
     validate_mobile_semantic_vectors(manifest["semanticVectors"], resources_by_path)

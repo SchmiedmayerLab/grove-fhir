@@ -1,56 +1,159 @@
 {
   "schemaVersion": 0,
-  "events": "events.json",
+  "bundles": "bundles.json",
   "outputs": {
     "multi-v1.primary": {
-      "event": "multi-v1",
+      "bundle": "multi-v1",
       "fullUrl": "urn:uuid:a9b76bbc-f523-5ef4-9919-813ec70553e5"
     },
     "multi-v1.secondary": {
-      "event": "multi-v1",
+      "bundle": "multi-v1",
       "fullUrl": "urn:uuid:96934596-b8b3-5623-b026-cb381d6beede"
     },
     "multi-v2.primary": {
-      "event": "multi-v2",
+      "bundle": "multi-v2",
       "fullUrl": "urn:uuid:a9b76bbc-f523-5ef4-9919-813ec70553e5"
     },
     "multi-v3.primary": {
-      "event": "multi-v3",
+      "bundle": "multi-v3",
       "fullUrl": "urn:uuid:a9b76bbc-f523-5ef4-9919-813ec70553e5"
     },
     "multi-v3.secondary": {
-      "event": "multi-v3",
+      "bundle": "multi-v3",
       "fullUrl": "urn:uuid:96934596-b8b3-5623-b026-cb381d6beede"
     },
-    "equal-version-conflict.primary": {
-      "event": "equal-version-conflict",
+    "equal-version-later-recorded.primary": {
+      "bundle": "equal-version-later-recorded",
       "fullUrl": "urn:uuid:a9b76bbc-f523-5ef4-9919-813ec70553e5"
     },
-    "equal-version-reassembly.primary": {
-      "event": "equal-version-reassembly",
+    "equal-version-reconversion.primary": {
+      "bundle": "equal-version-reconversion",
+      "fullUrl": "urn:uuid:a9b76bbc-f523-5ef4-9919-813ec70553e5"
+    },
+    "equal-version-equal-recorded.primary": {
+      "bundle": "equal-version-equal-recorded",
       "fullUrl": "urn:uuid:a9b76bbc-f523-5ef4-9919-813ec70553e5"
     },
     "other-writer.primary": {
-      "event": "other-writer",
+      "bundle": "other-writer",
       "fullUrl": "urn:uuid:a9b76bbc-f523-5ef4-9919-813ec70553e5"
     },
     "missing-order.primary": {
-      "event": "missing-order",
+      "bundle": "missing-order",
       "fullUrl": "urn:uuid:a9b76bbc-f523-5ef4-9919-813ec70553e5"
+    }
+  },
+  "recordVersions": {
+    "multi-v1": {
+      "type": {
+        "coding": [
+          {
+            "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+            "code": "record-version"
+          }
+        ]
+      },
+      "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
+      "value": "v0:test-key:1:NQSJUQLiSfB8UFUm-DN4F3yJKBQJk01Hnjr1ZuMCDGc"
+    },
+    "multi-v2": {
+      "type": {
+        "coding": [
+          {
+            "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+            "code": "record-version"
+          }
+        ]
+      },
+      "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
+      "value": "v0:test-key:1:tTobsrtpfc56ceW0b3bMJe-3KAOSYLnENUzDpgykFec"
+    },
+    "multi-v3": {
+      "type": {
+        "coding": [
+          {
+            "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+            "code": "record-version"
+          }
+        ]
+      },
+      "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
+      "value": "v0:test-key:1:-0FOFDNefG_F1Kijariy5UrCFGYN10hKiIu4RyF_VWA"
+    },
+    "equal-version-later-recorded": {
+      "type": {
+        "coding": [
+          {
+            "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+            "code": "record-version"
+          }
+        ]
+      },
+      "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
+      "value": "v0:test-key:1:FFtAoENlRmglBM3sGXPCP3C-SiYzk5KqUROAxK7sjDM"
+    },
+    "equal-version-reconversion": {
+      "type": {
+        "coding": [
+          {
+            "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+            "code": "record-version"
+          }
+        ]
+      },
+      "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
+      "value": "v0:test-key:1:NeQ-uDYACuiF9yijNydPYDDtkK6QJiTytLzmR2Lliw4"
+    },
+    "equal-version-equal-recorded": {
+      "type": {
+        "coding": [
+          {
+            "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+            "code": "record-version"
+          }
+        ]
+      },
+      "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
+      "value": "v0:test-key:1:xXRvK4HIFPEXVYyBgM90FNbIPDZfsMNsoBkjQosbp8o"
+    },
+    "other-writer": {
+      "type": {
+        "coding": [
+          {
+            "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+            "code": "record-version"
+          }
+        ]
+      },
+      "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
+      "value": "v0:test-key:1:52Q6md0UZ0wG5BDeLVhz-LdbDVfqBARUXBvV0fFj_8Y"
+    },
+    "missing-order": {
+      "type": {
+        "coding": [
+          {
+            "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+            "code": "record-version"
+          }
+        ]
+      },
+      "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
+      "value": "v0:test-key:1:I7oI-P0smVTBW-1WvmgeT2UR9I2UDPNuHasdnxNOR3U"
     }
   },
   "policy": {
     "scope": "One verified participant/source repository and the same complete source-record identity.",
-    "membership": "Comparable writer versions select one complete source-record revision, including its output membership, not a maximum independently for each output.",
-    "equivalence": "Exact event replay is proven equality. This receiver policy does not infer cross-event source-content equality by stripping graph fields. Distinct events with equal writer versions remain unresolved, even when displayed measurements agree.",
-    "ordering": "Different writer identities or absent comparable writer evidence cannot order candidates. A missing output in a later complete revision is not a retraction tombstone.",
-    "supersession": "A unique higher complete revision under the same writer identity can become current while equal-version conflicts among older revisions remain in history. A higher version cannot resolve missing or different writer evidence. Conflict evidence is not erased when current selection advances.",
+    "membership": "The selected record version's targets are the record's current outputs, its output membership included; selection is never a maximum taken independently for each output. An output missing from a later version is not a retraction tombstone.",
+    "selection": "lifecycle.active.versionSelection: drop every version that another version beats with a greater writer version under the same complete writer-record pair; of the rest, select the latest Provenance.recorded as an exact instant; equal instants select the bytewise-greater record-version Identifier value, then system. A different writer identity or absent writer evidence leaves the order to recorded.",
+    "equivalence": "The same record-version Identifier with the same lossless tokens is an exact retry. Any other content, the same source content converted again included, is a distinct version. This receiver policy never infers source-content equality across versions by stripping graph fields.",
+    "history": "Every accepted version stays in history; advancing the current selection never removes one.",
     "authorization": "Only the listed exact output versions are authorized. Current selection never carries a previous version's grant forward."
   },
   "authorizedOutputs": {
     "purpose-a": [
-      "equal-version-conflict.primary",
-      "equal-version-reassembly.primary",
+      "equal-version-equal-recorded.primary",
+      "equal-version-later-recorded.primary",
+      "equal-version-reconversion.primary",
       "missing-order.primary",
       "multi-v1.primary",
       "multi-v1.secondary",
@@ -65,7 +168,7 @@
       "id": "removed-child-does-not-remain-current",
       "steps": [
         {
-          "event": "multi-v1",
+          "bundle": "multi-v1",
           "expect": {
             "history": [
               "multi-v1"
@@ -78,7 +181,6 @@
               "multi-v1.primary",
               "multi-v1.secondary"
             ],
-            "conflicts": [],
             "visible": [
               "multi-v1.primary",
               "multi-v1.secondary"
@@ -90,7 +192,7 @@
           }
         },
         {
-          "event": "multi-v2",
+          "bundle": "multi-v2",
           "expect": {
             "history": [
               "multi-v1",
@@ -104,7 +206,6 @@
             "current": [
               "multi-v2.primary"
             ],
-            "conflicts": [],
             "visible": [
               "multi-v2.primary"
             ],
@@ -114,7 +215,7 @@
           }
         },
         {
-          "event": "multi-v1",
+          "bundle": "multi-v1",
           "expect": {
             "history": [
               "multi-v1",
@@ -128,7 +229,6 @@
             "current": [
               "multi-v2.primary"
             ],
-            "conflicts": [],
             "visible": [
               "multi-v2.primary"
             ],
@@ -141,7 +241,7 @@
       "id": "late-old-revision-does-not-add-a-child",
       "steps": [
         {
-          "event": "multi-v2",
+          "bundle": "multi-v2",
           "expect": {
             "history": [
               "multi-v2"
@@ -152,7 +252,6 @@
             "current": [
               "multi-v2.primary"
             ],
-            "conflicts": [],
             "visible": [
               "multi-v2.primary"
             ],
@@ -162,7 +261,7 @@
           }
         },
         {
-          "event": "multi-v1",
+          "bundle": "multi-v1",
           "expect": {
             "history": [
               "multi-v2",
@@ -176,7 +275,6 @@
             "current": [
               "multi-v2.primary"
             ],
-            "conflicts": [],
             "visible": [
               "multi-v2.primary"
             ],
@@ -189,7 +287,7 @@
       "id": "membership-removal-is-not-a-tombstone-or-a-grant",
       "steps": [
         {
-          "event": "multi-v1",
+          "bundle": "multi-v1",
           "expect": {
             "history": [
               "multi-v1"
@@ -202,7 +300,6 @@
               "multi-v1.primary",
               "multi-v1.secondary"
             ],
-            "conflicts": [],
             "visible": [
               "multi-v1.primary",
               "multi-v1.secondary"
@@ -214,7 +311,7 @@
           }
         },
         {
-          "event": "multi-v2",
+          "bundle": "multi-v2",
           "expect": {
             "history": [
               "multi-v1",
@@ -228,7 +325,6 @@
             "current": [
               "multi-v2.primary"
             ],
-            "conflicts": [],
             "visible": [
               "multi-v2.primary"
             ],
@@ -238,7 +334,7 @@
           }
         },
         {
-          "event": "multi-v3",
+          "bundle": "multi-v3",
           "expect": {
             "history": [
               "multi-v1",
@@ -256,7 +352,6 @@
               "multi-v3.primary",
               "multi-v3.secondary"
             ],
-            "conflicts": [],
             "visible": [
               "multi-v3.primary"
             ],
@@ -268,10 +363,10 @@
       ]
     },
     {
-      "id": "equal-version-conflict-requires-resolution",
+      "id": "equal-version-later-recorded-after-older",
       "steps": [
         {
-          "event": "multi-v2",
+          "bundle": "multi-v2",
           "expect": {
             "history": [
               "multi-v2"
@@ -282,7 +377,6 @@
             "current": [
               "multi-v2.primary"
             ],
-            "conflicts": [],
             "visible": [
               "multi-v2.primary"
             ],
@@ -292,118 +386,119 @@
           }
         },
         {
-          "event": "equal-version-conflict",
+          "bundle": "equal-version-later-recorded",
           "expect": {
             "history": [
               "multi-v2",
-              "equal-version-conflict"
+              "equal-version-later-recorded"
             ],
             "versions": [
-              "equal-version-conflict.primary",
+              "equal-version-later-recorded.primary",
               "multi-v2.primary"
             ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "equal-version-conflict"
+            "current": [
+              "equal-version-later-recorded.primary"
             ],
-            "visible": [],
-            "newlyVisible": []
+            "visible": [
+              "equal-version-later-recorded.primary"
+            ],
+            "newlyVisible": [
+              "equal-version-later-recorded.primary"
+            ]
           }
         },
         {
-          "event": "multi-v2",
+          "bundle": "multi-v2",
           "expect": {
             "history": [
               "multi-v2",
-              "equal-version-conflict"
+              "equal-version-later-recorded"
             ],
             "versions": [
-              "equal-version-conflict.primary",
+              "equal-version-later-recorded.primary",
               "multi-v2.primary"
             ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "equal-version-conflict"
+            "current": [
+              "equal-version-later-recorded.primary"
             ],
-            "visible": [],
+            "visible": [
+              "equal-version-later-recorded.primary"
+            ],
             "newlyVisible": []
           }
         }
       ]
     },
     {
-      "id": "equal-version-conflict-arrives-first",
+      "id": "equal-version-later-recorded-before-older",
       "steps": [
         {
-          "event": "equal-version-conflict",
+          "bundle": "equal-version-later-recorded",
           "expect": {
             "history": [
-              "equal-version-conflict"
+              "equal-version-later-recorded"
             ],
             "versions": [
-              "equal-version-conflict.primary"
+              "equal-version-later-recorded.primary"
             ],
             "current": [
-              "equal-version-conflict.primary"
+              "equal-version-later-recorded.primary"
             ],
-            "conflicts": [],
             "visible": [
-              "equal-version-conflict.primary"
+              "equal-version-later-recorded.primary"
             ],
             "newlyVisible": [
-              "equal-version-conflict.primary"
+              "equal-version-later-recorded.primary"
             ]
           }
         },
         {
-          "event": "multi-v2",
+          "bundle": "multi-v2",
           "expect": {
             "history": [
-              "equal-version-conflict",
+              "equal-version-later-recorded",
               "multi-v2"
             ],
             "versions": [
-              "equal-version-conflict.primary",
+              "equal-version-later-recorded.primary",
               "multi-v2.primary"
             ],
-            "current": [],
-            "conflicts": [
-              "equal-version-conflict",
-              "multi-v2"
+            "current": [
+              "equal-version-later-recorded.primary"
             ],
-            "visible": [],
+            "visible": [
+              "equal-version-later-recorded.primary"
+            ],
             "newlyVisible": []
           }
         },
         {
-          "event": "equal-version-conflict",
+          "bundle": "equal-version-later-recorded",
           "expect": {
             "history": [
-              "equal-version-conflict",
+              "equal-version-later-recorded",
               "multi-v2"
             ],
             "versions": [
-              "equal-version-conflict.primary",
+              "equal-version-later-recorded.primary",
               "multi-v2.primary"
             ],
-            "current": [],
-            "conflicts": [
-              "equal-version-conflict",
-              "multi-v2"
+            "current": [
+              "equal-version-later-recorded.primary"
             ],
-            "visible": [],
+            "visible": [
+              "equal-version-later-recorded.primary"
+            ],
             "newlyVisible": []
           }
         }
       ]
     },
     {
-      "id": "equal-version-conflict-with-higher-revision-older-competing-newer",
+      "id": "equal-version-later-recorded-with-newer-revision-older-candidate-newer",
       "steps": [
         {
-          "event": "multi-v2",
+          "bundle": "multi-v2",
           "expect": {
             "history": [
               "multi-v2"
@@ -414,7 +509,6 @@
             "current": [
               "multi-v2.primary"
             ],
-            "conflicts": [],
             "visible": [
               "multi-v2.primary"
             ],
@@ -424,35 +518,37 @@
           }
         },
         {
-          "event": "equal-version-conflict",
+          "bundle": "equal-version-later-recorded",
           "expect": {
             "history": [
               "multi-v2",
-              "equal-version-conflict"
+              "equal-version-later-recorded"
             ],
             "versions": [
-              "equal-version-conflict.primary",
+              "equal-version-later-recorded.primary",
               "multi-v2.primary"
             ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "equal-version-conflict"
+            "current": [
+              "equal-version-later-recorded.primary"
             ],
-            "visible": [],
-            "newlyVisible": []
+            "visible": [
+              "equal-version-later-recorded.primary"
+            ],
+            "newlyVisible": [
+              "equal-version-later-recorded.primary"
+            ]
           }
         },
         {
-          "event": "multi-v3",
+          "bundle": "multi-v3",
           "expect": {
             "history": [
               "multi-v2",
-              "equal-version-conflict",
+              "equal-version-later-recorded",
               "multi-v3"
             ],
             "versions": [
-              "equal-version-conflict.primary",
+              "equal-version-later-recorded.primary",
               "multi-v2.primary",
               "multi-v3.primary",
               "multi-v3.secondary"
@@ -460,10 +556,6 @@
             "current": [
               "multi-v3.primary",
               "multi-v3.secondary"
-            ],
-            "conflicts": [
-              "multi-v2",
-              "equal-version-conflict"
             ],
             "visible": [
               "multi-v3.primary"
@@ -474,15 +566,15 @@
           }
         },
         {
-          "event": "multi-v2",
+          "bundle": "multi-v2",
           "expect": {
             "history": [
               "multi-v2",
-              "equal-version-conflict",
+              "equal-version-later-recorded",
               "multi-v3"
             ],
             "versions": [
-              "equal-version-conflict.primary",
+              "equal-version-later-recorded.primary",
               "multi-v2.primary",
               "multi-v3.primary",
               "multi-v3.secondary"
@@ -490,10 +582,6 @@
             "current": [
               "multi-v3.primary",
               "multi-v3.secondary"
-            ],
-            "conflicts": [
-              "multi-v2",
-              "equal-version-conflict"
             ],
             "visible": [
               "multi-v3.primary"
@@ -502,15 +590,15 @@
           }
         },
         {
-          "event": "equal-version-conflict",
+          "bundle": "equal-version-later-recorded",
           "expect": {
             "history": [
               "multi-v2",
-              "equal-version-conflict",
+              "equal-version-later-recorded",
               "multi-v3"
             ],
             "versions": [
-              "equal-version-conflict.primary",
+              "equal-version-later-recorded.primary",
               "multi-v2.primary",
               "multi-v3.primary",
               "multi-v3.secondary"
@@ -518,10 +606,6 @@
             "current": [
               "multi-v3.primary",
               "multi-v3.secondary"
-            ],
-            "conflicts": [
-              "multi-v2",
-              "equal-version-conflict"
             ],
             "visible": [
               "multi-v3.primary"
@@ -530,15 +614,15 @@
           }
         },
         {
-          "event": "multi-v3",
+          "bundle": "multi-v3",
           "expect": {
             "history": [
               "multi-v2",
-              "equal-version-conflict",
+              "equal-version-later-recorded",
               "multi-v3"
             ],
             "versions": [
-              "equal-version-conflict.primary",
+              "equal-version-later-recorded.primary",
               "multi-v2.primary",
               "multi-v3.primary",
               "multi-v3.secondary"
@@ -546,10 +630,6 @@
             "current": [
               "multi-v3.primary",
               "multi-v3.secondary"
-            ],
-            "conflicts": [
-              "multi-v2",
-              "equal-version-conflict"
             ],
             "visible": [
               "multi-v3.primary"
@@ -560,10 +640,10 @@
       ]
     },
     {
-      "id": "equal-version-conflict-with-higher-revision-older-newer-competing",
+      "id": "equal-version-later-recorded-with-newer-revision-older-newer-candidate",
       "steps": [
         {
-          "event": "multi-v2",
+          "bundle": "multi-v2",
           "expect": {
             "history": [
               "multi-v2"
@@ -574,7 +654,6 @@
             "current": [
               "multi-v2.primary"
             ],
-            "conflicts": [],
             "visible": [
               "multi-v2.primary"
             ],
@@ -584,7 +663,7 @@
           }
         },
         {
-          "event": "multi-v3",
+          "bundle": "multi-v3",
           "expect": {
             "history": [
               "multi-v2",
@@ -599,7 +678,6 @@
               "multi-v3.primary",
               "multi-v3.secondary"
             ],
-            "conflicts": [],
             "visible": [
               "multi-v3.primary"
             ],
@@ -609,15 +687,15 @@
           }
         },
         {
-          "event": "equal-version-conflict",
+          "bundle": "equal-version-later-recorded",
           "expect": {
             "history": [
               "multi-v2",
               "multi-v3",
-              "equal-version-conflict"
+              "equal-version-later-recorded"
             ],
             "versions": [
-              "equal-version-conflict.primary",
+              "equal-version-later-recorded.primary",
               "multi-v2.primary",
               "multi-v3.primary",
               "multi-v3.secondary"
@@ -625,10 +703,6 @@
             "current": [
               "multi-v3.primary",
               "multi-v3.secondary"
-            ],
-            "conflicts": [
-              "multi-v2",
-              "equal-version-conflict"
             ],
             "visible": [
               "multi-v3.primary"
@@ -637,15 +711,15 @@
           }
         },
         {
-          "event": "multi-v2",
+          "bundle": "multi-v2",
           "expect": {
             "history": [
               "multi-v2",
               "multi-v3",
-              "equal-version-conflict"
+              "equal-version-later-recorded"
             ],
             "versions": [
-              "equal-version-conflict.primary",
+              "equal-version-later-recorded.primary",
               "multi-v2.primary",
               "multi-v3.primary",
               "multi-v3.secondary"
@@ -653,10 +727,6 @@
             "current": [
               "multi-v3.primary",
               "multi-v3.secondary"
-            ],
-            "conflicts": [
-              "multi-v2",
-              "equal-version-conflict"
             ],
             "visible": [
               "multi-v3.primary"
@@ -665,15 +735,15 @@
           }
         },
         {
-          "event": "multi-v3",
+          "bundle": "multi-v3",
           "expect": {
             "history": [
               "multi-v2",
               "multi-v3",
-              "equal-version-conflict"
+              "equal-version-later-recorded"
             ],
             "versions": [
-              "equal-version-conflict.primary",
+              "equal-version-later-recorded.primary",
               "multi-v2.primary",
               "multi-v3.primary",
               "multi-v3.secondary"
@@ -681,10 +751,6 @@
             "current": [
               "multi-v3.primary",
               "multi-v3.secondary"
-            ],
-            "conflicts": [
-              "multi-v2",
-              "equal-version-conflict"
             ],
             "visible": [
               "multi-v3.primary"
@@ -693,15 +759,15 @@
           }
         },
         {
-          "event": "equal-version-conflict",
+          "bundle": "equal-version-later-recorded",
           "expect": {
             "history": [
               "multi-v2",
               "multi-v3",
-              "equal-version-conflict"
+              "equal-version-later-recorded"
             ],
             "versions": [
-              "equal-version-conflict.primary",
+              "equal-version-later-recorded.primary",
               "multi-v2.primary",
               "multi-v3.primary",
               "multi-v3.secondary"
@@ -709,10 +775,6 @@
             "current": [
               "multi-v3.primary",
               "multi-v3.secondary"
-            ],
-            "conflicts": [
-              "multi-v2",
-              "equal-version-conflict"
             ],
             "visible": [
               "multi-v3.primary"
@@ -723,59 +785,58 @@
       ]
     },
     {
-      "id": "equal-version-conflict-with-higher-revision-competing-older-newer",
+      "id": "equal-version-later-recorded-with-newer-revision-candidate-older-newer",
       "steps": [
         {
-          "event": "equal-version-conflict",
+          "bundle": "equal-version-later-recorded",
           "expect": {
             "history": [
-              "equal-version-conflict"
+              "equal-version-later-recorded"
             ],
             "versions": [
-              "equal-version-conflict.primary"
+              "equal-version-later-recorded.primary"
             ],
             "current": [
-              "equal-version-conflict.primary"
+              "equal-version-later-recorded.primary"
             ],
-            "conflicts": [],
             "visible": [
-              "equal-version-conflict.primary"
+              "equal-version-later-recorded.primary"
             ],
             "newlyVisible": [
-              "equal-version-conflict.primary"
+              "equal-version-later-recorded.primary"
             ]
           }
         },
         {
-          "event": "multi-v2",
+          "bundle": "multi-v2",
           "expect": {
             "history": [
-              "equal-version-conflict",
+              "equal-version-later-recorded",
               "multi-v2"
             ],
             "versions": [
-              "equal-version-conflict.primary",
+              "equal-version-later-recorded.primary",
               "multi-v2.primary"
             ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "equal-version-conflict"
+            "current": [
+              "equal-version-later-recorded.primary"
             ],
-            "visible": [],
+            "visible": [
+              "equal-version-later-recorded.primary"
+            ],
             "newlyVisible": []
           }
         },
         {
-          "event": "multi-v3",
+          "bundle": "multi-v3",
           "expect": {
             "history": [
-              "equal-version-conflict",
+              "equal-version-later-recorded",
               "multi-v2",
               "multi-v3"
             ],
             "versions": [
-              "equal-version-conflict.primary",
+              "equal-version-later-recorded.primary",
               "multi-v2.primary",
               "multi-v3.primary",
               "multi-v3.secondary"
@@ -783,10 +844,6 @@
             "current": [
               "multi-v3.primary",
               "multi-v3.secondary"
-            ],
-            "conflicts": [
-              "multi-v2",
-              "equal-version-conflict"
             ],
             "visible": [
               "multi-v3.primary"
@@ -797,15 +854,15 @@
           }
         },
         {
-          "event": "equal-version-conflict",
+          "bundle": "equal-version-later-recorded",
           "expect": {
             "history": [
-              "equal-version-conflict",
+              "equal-version-later-recorded",
               "multi-v2",
               "multi-v3"
             ],
             "versions": [
-              "equal-version-conflict.primary",
+              "equal-version-later-recorded.primary",
               "multi-v2.primary",
               "multi-v3.primary",
               "multi-v3.secondary"
@@ -813,10 +870,6 @@
             "current": [
               "multi-v3.primary",
               "multi-v3.secondary"
-            ],
-            "conflicts": [
-              "multi-v2",
-              "equal-version-conflict"
             ],
             "visible": [
               "multi-v3.primary"
@@ -825,15 +878,15 @@
           }
         },
         {
-          "event": "multi-v2",
+          "bundle": "multi-v2",
           "expect": {
             "history": [
-              "equal-version-conflict",
+              "equal-version-later-recorded",
               "multi-v2",
               "multi-v3"
             ],
             "versions": [
-              "equal-version-conflict.primary",
+              "equal-version-later-recorded.primary",
               "multi-v2.primary",
               "multi-v3.primary",
               "multi-v3.secondary"
@@ -841,10 +894,6 @@
             "current": [
               "multi-v3.primary",
               "multi-v3.secondary"
-            ],
-            "conflicts": [
-              "multi-v2",
-              "equal-version-conflict"
             ],
             "visible": [
               "multi-v3.primary"
@@ -853,15 +902,15 @@
           }
         },
         {
-          "event": "multi-v3",
+          "bundle": "multi-v3",
           "expect": {
             "history": [
-              "equal-version-conflict",
+              "equal-version-later-recorded",
               "multi-v2",
               "multi-v3"
             ],
             "versions": [
-              "equal-version-conflict.primary",
+              "equal-version-later-recorded.primary",
               "multi-v2.primary",
               "multi-v3.primary",
               "multi-v3.secondary"
@@ -869,10 +918,6 @@
             "current": [
               "multi-v3.primary",
               "multi-v3.secondary"
-            ],
-            "conflicts": [
-              "multi-v2",
-              "equal-version-conflict"
             ],
             "visible": [
               "multi-v3.primary"
@@ -883,38 +928,37 @@
       ]
     },
     {
-      "id": "equal-version-conflict-with-higher-revision-competing-newer-older",
+      "id": "equal-version-later-recorded-with-newer-revision-candidate-newer-older",
       "steps": [
         {
-          "event": "equal-version-conflict",
+          "bundle": "equal-version-later-recorded",
           "expect": {
             "history": [
-              "equal-version-conflict"
+              "equal-version-later-recorded"
             ],
             "versions": [
-              "equal-version-conflict.primary"
+              "equal-version-later-recorded.primary"
             ],
             "current": [
-              "equal-version-conflict.primary"
+              "equal-version-later-recorded.primary"
             ],
-            "conflicts": [],
             "visible": [
-              "equal-version-conflict.primary"
+              "equal-version-later-recorded.primary"
             ],
             "newlyVisible": [
-              "equal-version-conflict.primary"
+              "equal-version-later-recorded.primary"
             ]
           }
         },
         {
-          "event": "multi-v3",
+          "bundle": "multi-v3",
           "expect": {
             "history": [
-              "equal-version-conflict",
+              "equal-version-later-recorded",
               "multi-v3"
             ],
             "versions": [
-              "equal-version-conflict.primary",
+              "equal-version-later-recorded.primary",
               "multi-v3.primary",
               "multi-v3.secondary"
             ],
@@ -922,7 +966,6 @@
               "multi-v3.primary",
               "multi-v3.secondary"
             ],
-            "conflicts": [],
             "visible": [
               "multi-v3.primary"
             ],
@@ -932,15 +975,15 @@
           }
         },
         {
-          "event": "multi-v2",
+          "bundle": "multi-v2",
           "expect": {
             "history": [
-              "equal-version-conflict",
+              "equal-version-later-recorded",
               "multi-v3",
               "multi-v2"
             ],
             "versions": [
-              "equal-version-conflict.primary",
+              "equal-version-later-recorded.primary",
               "multi-v2.primary",
               "multi-v3.primary",
               "multi-v3.secondary"
@@ -948,10 +991,6 @@
             "current": [
               "multi-v3.primary",
               "multi-v3.secondary"
-            ],
-            "conflicts": [
-              "multi-v2",
-              "equal-version-conflict"
             ],
             "visible": [
               "multi-v3.primary"
@@ -960,15 +999,15 @@
           }
         },
         {
-          "event": "equal-version-conflict",
+          "bundle": "equal-version-later-recorded",
           "expect": {
             "history": [
-              "equal-version-conflict",
+              "equal-version-later-recorded",
               "multi-v3",
               "multi-v2"
             ],
             "versions": [
-              "equal-version-conflict.primary",
+              "equal-version-later-recorded.primary",
               "multi-v2.primary",
               "multi-v3.primary",
               "multi-v3.secondary"
@@ -976,10 +1015,6 @@
             "current": [
               "multi-v3.primary",
               "multi-v3.secondary"
-            ],
-            "conflicts": [
-              "multi-v2",
-              "equal-version-conflict"
             ],
             "visible": [
               "multi-v3.primary"
@@ -988,15 +1023,15 @@
           }
         },
         {
-          "event": "multi-v3",
+          "bundle": "multi-v3",
           "expect": {
             "history": [
-              "equal-version-conflict",
+              "equal-version-later-recorded",
               "multi-v3",
               "multi-v2"
             ],
             "versions": [
-              "equal-version-conflict.primary",
+              "equal-version-later-recorded.primary",
               "multi-v2.primary",
               "multi-v3.primary",
               "multi-v3.secondary"
@@ -1004,10 +1039,6 @@
             "current": [
               "multi-v3.primary",
               "multi-v3.secondary"
-            ],
-            "conflicts": [
-              "multi-v2",
-              "equal-version-conflict"
             ],
             "visible": [
               "multi-v3.primary"
@@ -1016,15 +1047,15 @@
           }
         },
         {
-          "event": "multi-v2",
+          "bundle": "multi-v2",
           "expect": {
             "history": [
-              "equal-version-conflict",
+              "equal-version-later-recorded",
               "multi-v3",
               "multi-v2"
             ],
             "versions": [
-              "equal-version-conflict.primary",
+              "equal-version-later-recorded.primary",
               "multi-v2.primary",
               "multi-v3.primary",
               "multi-v3.secondary"
@@ -1032,10 +1063,6 @@
             "current": [
               "multi-v3.primary",
               "multi-v3.secondary"
-            ],
-            "conflicts": [
-              "multi-v2",
-              "equal-version-conflict"
             ],
             "visible": [
               "multi-v3.primary"
@@ -1046,10 +1073,10 @@
       ]
     },
     {
-      "id": "equal-version-conflict-with-higher-revision-newer-older-competing",
+      "id": "equal-version-later-recorded-with-newer-revision-newer-older-candidate",
       "steps": [
         {
-          "event": "multi-v3",
+          "bundle": "multi-v3",
           "expect": {
             "history": [
               "multi-v3"
@@ -1062,7 +1089,6 @@
               "multi-v3.primary",
               "multi-v3.secondary"
             ],
-            "conflicts": [],
             "visible": [
               "multi-v3.primary"
             ],
@@ -1072,7 +1098,7 @@
           }
         },
         {
-          "event": "multi-v2",
+          "bundle": "multi-v2",
           "expect": {
             "history": [
               "multi-v3",
@@ -1087,7 +1113,6 @@
               "multi-v3.primary",
               "multi-v3.secondary"
             ],
-            "conflicts": [],
             "visible": [
               "multi-v3.primary"
             ],
@@ -1095,15 +1120,15 @@
           }
         },
         {
-          "event": "equal-version-conflict",
+          "bundle": "equal-version-later-recorded",
           "expect": {
             "history": [
               "multi-v3",
               "multi-v2",
-              "equal-version-conflict"
+              "equal-version-later-recorded"
             ],
             "versions": [
-              "equal-version-conflict.primary",
+              "equal-version-later-recorded.primary",
               "multi-v2.primary",
               "multi-v3.primary",
               "multi-v3.secondary"
@@ -1112,10 +1137,6 @@
               "multi-v3.primary",
               "multi-v3.secondary"
             ],
-            "conflicts": [
-              "multi-v2",
-              "equal-version-conflict"
-            ],
             "visible": [
               "multi-v3.primary"
             ],
@@ -1123,15 +1144,15 @@
           }
         },
         {
-          "event": "multi-v3",
+          "bundle": "multi-v3",
           "expect": {
             "history": [
               "multi-v3",
               "multi-v2",
-              "equal-version-conflict"
+              "equal-version-later-recorded"
             ],
             "versions": [
-              "equal-version-conflict.primary",
+              "equal-version-later-recorded.primary",
               "multi-v2.primary",
               "multi-v3.primary",
               "multi-v3.secondary"
@@ -1140,10 +1161,6 @@
               "multi-v3.primary",
               "multi-v3.secondary"
             ],
-            "conflicts": [
-              "multi-v2",
-              "equal-version-conflict"
-            ],
             "visible": [
               "multi-v3.primary"
             ],
@@ -1151,15 +1168,15 @@
           }
         },
         {
-          "event": "multi-v2",
+          "bundle": "multi-v2",
           "expect": {
             "history": [
               "multi-v3",
               "multi-v2",
-              "equal-version-conflict"
+              "equal-version-later-recorded"
             ],
             "versions": [
-              "equal-version-conflict.primary",
+              "equal-version-later-recorded.primary",
               "multi-v2.primary",
               "multi-v3.primary",
               "multi-v3.secondary"
@@ -1168,10 +1185,6 @@
               "multi-v3.primary",
               "multi-v3.secondary"
             ],
-            "conflicts": [
-              "multi-v2",
-              "equal-version-conflict"
-            ],
             "visible": [
               "multi-v3.primary"
             ],
@@ -1179,15 +1192,15 @@
           }
         },
         {
-          "event": "equal-version-conflict",
+          "bundle": "equal-version-later-recorded",
           "expect": {
             "history": [
               "multi-v3",
               "multi-v2",
-              "equal-version-conflict"
+              "equal-version-later-recorded"
             ],
             "versions": [
-              "equal-version-conflict.primary",
+              "equal-version-later-recorded.primary",
               "multi-v2.primary",
               "multi-v3.primary",
               "multi-v3.secondary"
@@ -1195,10 +1208,6 @@
             "current": [
               "multi-v3.primary",
               "multi-v3.secondary"
-            ],
-            "conflicts": [
-              "multi-v2",
-              "equal-version-conflict"
             ],
             "visible": [
               "multi-v3.primary"
@@ -1209,10 +1218,10 @@
       ]
     },
     {
-      "id": "equal-version-conflict-with-higher-revision-newer-competing-older",
+      "id": "equal-version-later-recorded-with-newer-revision-newer-candidate-older",
       "steps": [
         {
-          "event": "multi-v3",
+          "bundle": "multi-v3",
           "expect": {
             "history": [
               "multi-v3"
@@ -1225,7 +1234,6 @@
               "multi-v3.primary",
               "multi-v3.secondary"
             ],
-            "conflicts": [],
             "visible": [
               "multi-v3.primary"
             ],
@@ -1235,49 +1243,20 @@
           }
         },
         {
-          "event": "equal-version-conflict",
+          "bundle": "equal-version-later-recorded",
           "expect": {
             "history": [
               "multi-v3",
-              "equal-version-conflict"
+              "equal-version-later-recorded"
             ],
             "versions": [
-              "equal-version-conflict.primary",
+              "equal-version-later-recorded.primary",
               "multi-v3.primary",
               "multi-v3.secondary"
             ],
             "current": [
               "multi-v3.primary",
               "multi-v3.secondary"
-            ],
-            "conflicts": [],
-            "visible": [
-              "multi-v3.primary"
-            ],
-            "newlyVisible": []
-          }
-        },
-        {
-          "event": "multi-v2",
-          "expect": {
-            "history": [
-              "multi-v3",
-              "equal-version-conflict",
-              "multi-v2"
-            ],
-            "versions": [
-              "equal-version-conflict.primary",
-              "multi-v2.primary",
-              "multi-v3.primary",
-              "multi-v3.secondary"
-            ],
-            "current": [
-              "multi-v3.primary",
-              "multi-v3.secondary"
-            ],
-            "conflicts": [
-              "multi-v2",
-              "equal-version-conflict"
             ],
             "visible": [
               "multi-v3.primary"
@@ -1286,15 +1265,15 @@
           }
         },
         {
-          "event": "multi-v3",
+          "bundle": "multi-v2",
           "expect": {
             "history": [
               "multi-v3",
-              "equal-version-conflict",
+              "equal-version-later-recorded",
               "multi-v2"
             ],
             "versions": [
-              "equal-version-conflict.primary",
+              "equal-version-later-recorded.primary",
               "multi-v2.primary",
               "multi-v3.primary",
               "multi-v3.secondary"
@@ -1302,10 +1281,6 @@
             "current": [
               "multi-v3.primary",
               "multi-v3.secondary"
-            ],
-            "conflicts": [
-              "multi-v2",
-              "equal-version-conflict"
             ],
             "visible": [
               "multi-v3.primary"
@@ -1314,15 +1289,15 @@
           }
         },
         {
-          "event": "equal-version-conflict",
+          "bundle": "multi-v3",
           "expect": {
             "history": [
               "multi-v3",
-              "equal-version-conflict",
+              "equal-version-later-recorded",
               "multi-v2"
             ],
             "versions": [
-              "equal-version-conflict.primary",
+              "equal-version-later-recorded.primary",
               "multi-v2.primary",
               "multi-v3.primary",
               "multi-v3.secondary"
@@ -1330,10 +1305,6 @@
             "current": [
               "multi-v3.primary",
               "multi-v3.secondary"
-            ],
-            "conflicts": [
-              "multi-v2",
-              "equal-version-conflict"
             ],
             "visible": [
               "multi-v3.primary"
@@ -1342,15 +1313,15 @@
           }
         },
         {
-          "event": "multi-v2",
+          "bundle": "equal-version-later-recorded",
           "expect": {
             "history": [
               "multi-v3",
-              "equal-version-conflict",
+              "equal-version-later-recorded",
               "multi-v2"
             ],
             "versions": [
-              "equal-version-conflict.primary",
+              "equal-version-later-recorded.primary",
               "multi-v2.primary",
               "multi-v3.primary",
               "multi-v3.secondary"
@@ -1359,9 +1330,29 @@
               "multi-v3.primary",
               "multi-v3.secondary"
             ],
-            "conflicts": [
-              "multi-v2",
-              "equal-version-conflict"
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": []
+          }
+        },
+        {
+          "bundle": "multi-v2",
+          "expect": {
+            "history": [
+              "multi-v3",
+              "equal-version-later-recorded",
+              "multi-v2"
+            ],
+            "versions": [
+              "equal-version-later-recorded.primary",
+              "multi-v2.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
             ],
             "visible": [
               "multi-v3.primary"
@@ -1372,10 +1363,10 @@
       ]
     },
     {
-      "id": "equal-version-reassembly-requires-resolution",
+      "id": "equal-version-reconversion-after-older",
       "steps": [
         {
-          "event": "multi-v2",
+          "bundle": "multi-v2",
           "expect": {
             "history": [
               "multi-v2"
@@ -1386,7 +1377,6 @@
             "current": [
               "multi-v2.primary"
             ],
-            "conflicts": [],
             "visible": [
               "multi-v2.primary"
             ],
@@ -1396,118 +1386,119 @@
           }
         },
         {
-          "event": "equal-version-reassembly",
+          "bundle": "equal-version-reconversion",
           "expect": {
             "history": [
               "multi-v2",
-              "equal-version-reassembly"
+              "equal-version-reconversion"
             ],
             "versions": [
-              "equal-version-reassembly.primary",
+              "equal-version-reconversion.primary",
               "multi-v2.primary"
             ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "equal-version-reassembly"
+            "current": [
+              "equal-version-reconversion.primary"
             ],
-            "visible": [],
-            "newlyVisible": []
+            "visible": [
+              "equal-version-reconversion.primary"
+            ],
+            "newlyVisible": [
+              "equal-version-reconversion.primary"
+            ]
           }
         },
         {
-          "event": "multi-v2",
+          "bundle": "multi-v2",
           "expect": {
             "history": [
               "multi-v2",
-              "equal-version-reassembly"
+              "equal-version-reconversion"
             ],
             "versions": [
-              "equal-version-reassembly.primary",
+              "equal-version-reconversion.primary",
               "multi-v2.primary"
             ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "equal-version-reassembly"
+            "current": [
+              "equal-version-reconversion.primary"
             ],
-            "visible": [],
+            "visible": [
+              "equal-version-reconversion.primary"
+            ],
             "newlyVisible": []
           }
         }
       ]
     },
     {
-      "id": "equal-version-reassembly-arrives-first",
+      "id": "equal-version-reconversion-before-older",
       "steps": [
         {
-          "event": "equal-version-reassembly",
+          "bundle": "equal-version-reconversion",
           "expect": {
             "history": [
-              "equal-version-reassembly"
+              "equal-version-reconversion"
             ],
             "versions": [
-              "equal-version-reassembly.primary"
+              "equal-version-reconversion.primary"
             ],
             "current": [
-              "equal-version-reassembly.primary"
+              "equal-version-reconversion.primary"
             ],
-            "conflicts": [],
             "visible": [
-              "equal-version-reassembly.primary"
+              "equal-version-reconversion.primary"
             ],
             "newlyVisible": [
-              "equal-version-reassembly.primary"
+              "equal-version-reconversion.primary"
             ]
           }
         },
         {
-          "event": "multi-v2",
+          "bundle": "multi-v2",
           "expect": {
             "history": [
-              "equal-version-reassembly",
+              "equal-version-reconversion",
               "multi-v2"
             ],
             "versions": [
-              "equal-version-reassembly.primary",
+              "equal-version-reconversion.primary",
               "multi-v2.primary"
             ],
-            "current": [],
-            "conflicts": [
-              "equal-version-reassembly",
-              "multi-v2"
+            "current": [
+              "equal-version-reconversion.primary"
             ],
-            "visible": [],
+            "visible": [
+              "equal-version-reconversion.primary"
+            ],
             "newlyVisible": []
           }
         },
         {
-          "event": "equal-version-reassembly",
+          "bundle": "equal-version-reconversion",
           "expect": {
             "history": [
-              "equal-version-reassembly",
+              "equal-version-reconversion",
               "multi-v2"
             ],
             "versions": [
-              "equal-version-reassembly.primary",
+              "equal-version-reconversion.primary",
               "multi-v2.primary"
             ],
-            "current": [],
-            "conflicts": [
-              "equal-version-reassembly",
-              "multi-v2"
+            "current": [
+              "equal-version-reconversion.primary"
             ],
-            "visible": [],
+            "visible": [
+              "equal-version-reconversion.primary"
+            ],
             "newlyVisible": []
           }
         }
       ]
     },
     {
-      "id": "equal-version-reassembly-with-higher-revision-older-competing-newer",
+      "id": "equal-version-reconversion-with-newer-revision-older-candidate-newer",
       "steps": [
         {
-          "event": "multi-v2",
+          "bundle": "multi-v2",
           "expect": {
             "history": [
               "multi-v2"
@@ -1518,7 +1509,6 @@
             "current": [
               "multi-v2.primary"
             ],
-            "conflicts": [],
             "visible": [
               "multi-v2.primary"
             ],
@@ -1528,35 +1518,37 @@
           }
         },
         {
-          "event": "equal-version-reassembly",
+          "bundle": "equal-version-reconversion",
           "expect": {
             "history": [
               "multi-v2",
-              "equal-version-reassembly"
+              "equal-version-reconversion"
             ],
             "versions": [
-              "equal-version-reassembly.primary",
+              "equal-version-reconversion.primary",
               "multi-v2.primary"
             ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "equal-version-reassembly"
+            "current": [
+              "equal-version-reconversion.primary"
             ],
-            "visible": [],
-            "newlyVisible": []
+            "visible": [
+              "equal-version-reconversion.primary"
+            ],
+            "newlyVisible": [
+              "equal-version-reconversion.primary"
+            ]
           }
         },
         {
-          "event": "multi-v3",
+          "bundle": "multi-v3",
           "expect": {
             "history": [
               "multi-v2",
-              "equal-version-reassembly",
+              "equal-version-reconversion",
               "multi-v3"
             ],
             "versions": [
-              "equal-version-reassembly.primary",
+              "equal-version-reconversion.primary",
               "multi-v2.primary",
               "multi-v3.primary",
               "multi-v3.secondary"
@@ -1564,10 +1556,6 @@
             "current": [
               "multi-v3.primary",
               "multi-v3.secondary"
-            ],
-            "conflicts": [
-              "multi-v2",
-              "equal-version-reassembly"
             ],
             "visible": [
               "multi-v3.primary"
@@ -1578,15 +1566,15 @@
           }
         },
         {
-          "event": "multi-v2",
+          "bundle": "multi-v2",
           "expect": {
             "history": [
               "multi-v2",
-              "equal-version-reassembly",
+              "equal-version-reconversion",
               "multi-v3"
             ],
             "versions": [
-              "equal-version-reassembly.primary",
+              "equal-version-reconversion.primary",
               "multi-v2.primary",
               "multi-v3.primary",
               "multi-v3.secondary"
@@ -1594,10 +1582,6 @@
             "current": [
               "multi-v3.primary",
               "multi-v3.secondary"
-            ],
-            "conflicts": [
-              "multi-v2",
-              "equal-version-reassembly"
             ],
             "visible": [
               "multi-v3.primary"
@@ -1606,15 +1590,15 @@
           }
         },
         {
-          "event": "equal-version-reassembly",
+          "bundle": "equal-version-reconversion",
           "expect": {
             "history": [
               "multi-v2",
-              "equal-version-reassembly",
+              "equal-version-reconversion",
               "multi-v3"
             ],
             "versions": [
-              "equal-version-reassembly.primary",
+              "equal-version-reconversion.primary",
               "multi-v2.primary",
               "multi-v3.primary",
               "multi-v3.secondary"
@@ -1622,10 +1606,6 @@
             "current": [
               "multi-v3.primary",
               "multi-v3.secondary"
-            ],
-            "conflicts": [
-              "multi-v2",
-              "equal-version-reassembly"
             ],
             "visible": [
               "multi-v3.primary"
@@ -1634,15 +1614,15 @@
           }
         },
         {
-          "event": "multi-v3",
+          "bundle": "multi-v3",
           "expect": {
             "history": [
               "multi-v2",
-              "equal-version-reassembly",
+              "equal-version-reconversion",
               "multi-v3"
             ],
             "versions": [
-              "equal-version-reassembly.primary",
+              "equal-version-reconversion.primary",
               "multi-v2.primary",
               "multi-v3.primary",
               "multi-v3.secondary"
@@ -1650,10 +1630,6 @@
             "current": [
               "multi-v3.primary",
               "multi-v3.secondary"
-            ],
-            "conflicts": [
-              "multi-v2",
-              "equal-version-reassembly"
             ],
             "visible": [
               "multi-v3.primary"
@@ -1664,10 +1640,10 @@
       ]
     },
     {
-      "id": "equal-version-reassembly-with-higher-revision-older-newer-competing",
+      "id": "equal-version-reconversion-with-newer-revision-older-newer-candidate",
       "steps": [
         {
-          "event": "multi-v2",
+          "bundle": "multi-v2",
           "expect": {
             "history": [
               "multi-v2"
@@ -1678,7 +1654,6 @@
             "current": [
               "multi-v2.primary"
             ],
-            "conflicts": [],
             "visible": [
               "multi-v2.primary"
             ],
@@ -1688,7 +1663,7 @@
           }
         },
         {
-          "event": "multi-v3",
+          "bundle": "multi-v3",
           "expect": {
             "history": [
               "multi-v2",
@@ -1703,7 +1678,6 @@
               "multi-v3.primary",
               "multi-v3.secondary"
             ],
-            "conflicts": [],
             "visible": [
               "multi-v3.primary"
             ],
@@ -1713,15 +1687,15 @@
           }
         },
         {
-          "event": "equal-version-reassembly",
+          "bundle": "equal-version-reconversion",
           "expect": {
             "history": [
               "multi-v2",
               "multi-v3",
-              "equal-version-reassembly"
+              "equal-version-reconversion"
             ],
             "versions": [
-              "equal-version-reassembly.primary",
+              "equal-version-reconversion.primary",
               "multi-v2.primary",
               "multi-v3.primary",
               "multi-v3.secondary"
@@ -1729,10 +1703,6 @@
             "current": [
               "multi-v3.primary",
               "multi-v3.secondary"
-            ],
-            "conflicts": [
-              "multi-v2",
-              "equal-version-reassembly"
             ],
             "visible": [
               "multi-v3.primary"
@@ -1741,15 +1711,15 @@
           }
         },
         {
-          "event": "multi-v2",
+          "bundle": "multi-v2",
           "expect": {
             "history": [
               "multi-v2",
               "multi-v3",
-              "equal-version-reassembly"
+              "equal-version-reconversion"
             ],
             "versions": [
-              "equal-version-reassembly.primary",
+              "equal-version-reconversion.primary",
               "multi-v2.primary",
               "multi-v3.primary",
               "multi-v3.secondary"
@@ -1757,10 +1727,6 @@
             "current": [
               "multi-v3.primary",
               "multi-v3.secondary"
-            ],
-            "conflicts": [
-              "multi-v2",
-              "equal-version-reassembly"
             ],
             "visible": [
               "multi-v3.primary"
@@ -1769,15 +1735,15 @@
           }
         },
         {
-          "event": "multi-v3",
+          "bundle": "multi-v3",
           "expect": {
             "history": [
               "multi-v2",
               "multi-v3",
-              "equal-version-reassembly"
+              "equal-version-reconversion"
             ],
             "versions": [
-              "equal-version-reassembly.primary",
+              "equal-version-reconversion.primary",
               "multi-v2.primary",
               "multi-v3.primary",
               "multi-v3.secondary"
@@ -1785,10 +1751,6 @@
             "current": [
               "multi-v3.primary",
               "multi-v3.secondary"
-            ],
-            "conflicts": [
-              "multi-v2",
-              "equal-version-reassembly"
             ],
             "visible": [
               "multi-v3.primary"
@@ -1797,15 +1759,15 @@
           }
         },
         {
-          "event": "equal-version-reassembly",
+          "bundle": "equal-version-reconversion",
           "expect": {
             "history": [
               "multi-v2",
               "multi-v3",
-              "equal-version-reassembly"
+              "equal-version-reconversion"
             ],
             "versions": [
-              "equal-version-reassembly.primary",
+              "equal-version-reconversion.primary",
               "multi-v2.primary",
               "multi-v3.primary",
               "multi-v3.secondary"
@@ -1813,10 +1775,6 @@
             "current": [
               "multi-v3.primary",
               "multi-v3.secondary"
-            ],
-            "conflicts": [
-              "multi-v2",
-              "equal-version-reassembly"
             ],
             "visible": [
               "multi-v3.primary"
@@ -1827,59 +1785,58 @@
       ]
     },
     {
-      "id": "equal-version-reassembly-with-higher-revision-competing-older-newer",
+      "id": "equal-version-reconversion-with-newer-revision-candidate-older-newer",
       "steps": [
         {
-          "event": "equal-version-reassembly",
+          "bundle": "equal-version-reconversion",
           "expect": {
             "history": [
-              "equal-version-reassembly"
+              "equal-version-reconversion"
             ],
             "versions": [
-              "equal-version-reassembly.primary"
+              "equal-version-reconversion.primary"
             ],
             "current": [
-              "equal-version-reassembly.primary"
+              "equal-version-reconversion.primary"
             ],
-            "conflicts": [],
             "visible": [
-              "equal-version-reassembly.primary"
+              "equal-version-reconversion.primary"
             ],
             "newlyVisible": [
-              "equal-version-reassembly.primary"
+              "equal-version-reconversion.primary"
             ]
           }
         },
         {
-          "event": "multi-v2",
+          "bundle": "multi-v2",
           "expect": {
             "history": [
-              "equal-version-reassembly",
+              "equal-version-reconversion",
               "multi-v2"
             ],
             "versions": [
-              "equal-version-reassembly.primary",
+              "equal-version-reconversion.primary",
               "multi-v2.primary"
             ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "equal-version-reassembly"
+            "current": [
+              "equal-version-reconversion.primary"
             ],
-            "visible": [],
+            "visible": [
+              "equal-version-reconversion.primary"
+            ],
             "newlyVisible": []
           }
         },
         {
-          "event": "multi-v3",
+          "bundle": "multi-v3",
           "expect": {
             "history": [
-              "equal-version-reassembly",
+              "equal-version-reconversion",
               "multi-v2",
               "multi-v3"
             ],
             "versions": [
-              "equal-version-reassembly.primary",
+              "equal-version-reconversion.primary",
               "multi-v2.primary",
               "multi-v3.primary",
               "multi-v3.secondary"
@@ -1887,10 +1844,6 @@
             "current": [
               "multi-v3.primary",
               "multi-v3.secondary"
-            ],
-            "conflicts": [
-              "multi-v2",
-              "equal-version-reassembly"
             ],
             "visible": [
               "multi-v3.primary"
@@ -1901,15 +1854,15 @@
           }
         },
         {
-          "event": "equal-version-reassembly",
+          "bundle": "equal-version-reconversion",
           "expect": {
             "history": [
-              "equal-version-reassembly",
+              "equal-version-reconversion",
               "multi-v2",
               "multi-v3"
             ],
             "versions": [
-              "equal-version-reassembly.primary",
+              "equal-version-reconversion.primary",
               "multi-v2.primary",
               "multi-v3.primary",
               "multi-v3.secondary"
@@ -1917,10 +1870,6 @@
             "current": [
               "multi-v3.primary",
               "multi-v3.secondary"
-            ],
-            "conflicts": [
-              "multi-v2",
-              "equal-version-reassembly"
             ],
             "visible": [
               "multi-v3.primary"
@@ -1929,15 +1878,15 @@
           }
         },
         {
-          "event": "multi-v2",
+          "bundle": "multi-v2",
           "expect": {
             "history": [
-              "equal-version-reassembly",
+              "equal-version-reconversion",
               "multi-v2",
               "multi-v3"
             ],
             "versions": [
-              "equal-version-reassembly.primary",
+              "equal-version-reconversion.primary",
               "multi-v2.primary",
               "multi-v3.primary",
               "multi-v3.secondary"
@@ -1945,10 +1894,6 @@
             "current": [
               "multi-v3.primary",
               "multi-v3.secondary"
-            ],
-            "conflicts": [
-              "multi-v2",
-              "equal-version-reassembly"
             ],
             "visible": [
               "multi-v3.primary"
@@ -1957,15 +1902,15 @@
           }
         },
         {
-          "event": "multi-v3",
+          "bundle": "multi-v3",
           "expect": {
             "history": [
-              "equal-version-reassembly",
+              "equal-version-reconversion",
               "multi-v2",
               "multi-v3"
             ],
             "versions": [
-              "equal-version-reassembly.primary",
+              "equal-version-reconversion.primary",
               "multi-v2.primary",
               "multi-v3.primary",
               "multi-v3.secondary"
@@ -1973,10 +1918,6 @@
             "current": [
               "multi-v3.primary",
               "multi-v3.secondary"
-            ],
-            "conflicts": [
-              "multi-v2",
-              "equal-version-reassembly"
             ],
             "visible": [
               "multi-v3.primary"
@@ -1987,38 +1928,37 @@
       ]
     },
     {
-      "id": "equal-version-reassembly-with-higher-revision-competing-newer-older",
+      "id": "equal-version-reconversion-with-newer-revision-candidate-newer-older",
       "steps": [
         {
-          "event": "equal-version-reassembly",
+          "bundle": "equal-version-reconversion",
           "expect": {
             "history": [
-              "equal-version-reassembly"
+              "equal-version-reconversion"
             ],
             "versions": [
-              "equal-version-reassembly.primary"
+              "equal-version-reconversion.primary"
             ],
             "current": [
-              "equal-version-reassembly.primary"
+              "equal-version-reconversion.primary"
             ],
-            "conflicts": [],
             "visible": [
-              "equal-version-reassembly.primary"
+              "equal-version-reconversion.primary"
             ],
             "newlyVisible": [
-              "equal-version-reassembly.primary"
+              "equal-version-reconversion.primary"
             ]
           }
         },
         {
-          "event": "multi-v3",
+          "bundle": "multi-v3",
           "expect": {
             "history": [
-              "equal-version-reassembly",
+              "equal-version-reconversion",
               "multi-v3"
             ],
             "versions": [
-              "equal-version-reassembly.primary",
+              "equal-version-reconversion.primary",
               "multi-v3.primary",
               "multi-v3.secondary"
             ],
@@ -2026,7 +1966,6 @@
               "multi-v3.primary",
               "multi-v3.secondary"
             ],
-            "conflicts": [],
             "visible": [
               "multi-v3.primary"
             ],
@@ -2036,15 +1975,15 @@
           }
         },
         {
-          "event": "multi-v2",
+          "bundle": "multi-v2",
           "expect": {
             "history": [
-              "equal-version-reassembly",
+              "equal-version-reconversion",
               "multi-v3",
               "multi-v2"
             ],
             "versions": [
-              "equal-version-reassembly.primary",
+              "equal-version-reconversion.primary",
               "multi-v2.primary",
               "multi-v3.primary",
               "multi-v3.secondary"
@@ -2052,10 +1991,6 @@
             "current": [
               "multi-v3.primary",
               "multi-v3.secondary"
-            ],
-            "conflicts": [
-              "multi-v2",
-              "equal-version-reassembly"
             ],
             "visible": [
               "multi-v3.primary"
@@ -2064,15 +1999,15 @@
           }
         },
         {
-          "event": "equal-version-reassembly",
+          "bundle": "equal-version-reconversion",
           "expect": {
             "history": [
-              "equal-version-reassembly",
+              "equal-version-reconversion",
               "multi-v3",
               "multi-v2"
             ],
             "versions": [
-              "equal-version-reassembly.primary",
+              "equal-version-reconversion.primary",
               "multi-v2.primary",
               "multi-v3.primary",
               "multi-v3.secondary"
@@ -2080,10 +2015,6 @@
             "current": [
               "multi-v3.primary",
               "multi-v3.secondary"
-            ],
-            "conflicts": [
-              "multi-v2",
-              "equal-version-reassembly"
             ],
             "visible": [
               "multi-v3.primary"
@@ -2092,15 +2023,15 @@
           }
         },
         {
-          "event": "multi-v3",
+          "bundle": "multi-v3",
           "expect": {
             "history": [
-              "equal-version-reassembly",
+              "equal-version-reconversion",
               "multi-v3",
               "multi-v2"
             ],
             "versions": [
-              "equal-version-reassembly.primary",
+              "equal-version-reconversion.primary",
               "multi-v2.primary",
               "multi-v3.primary",
               "multi-v3.secondary"
@@ -2108,10 +2039,6 @@
             "current": [
               "multi-v3.primary",
               "multi-v3.secondary"
-            ],
-            "conflicts": [
-              "multi-v2",
-              "equal-version-reassembly"
             ],
             "visible": [
               "multi-v3.primary"
@@ -2120,15 +2047,15 @@
           }
         },
         {
-          "event": "multi-v2",
+          "bundle": "multi-v2",
           "expect": {
             "history": [
-              "equal-version-reassembly",
+              "equal-version-reconversion",
               "multi-v3",
               "multi-v2"
             ],
             "versions": [
-              "equal-version-reassembly.primary",
+              "equal-version-reconversion.primary",
               "multi-v2.primary",
               "multi-v3.primary",
               "multi-v3.secondary"
@@ -2136,10 +2063,6 @@
             "current": [
               "multi-v3.primary",
               "multi-v3.secondary"
-            ],
-            "conflicts": [
-              "multi-v2",
-              "equal-version-reassembly"
             ],
             "visible": [
               "multi-v3.primary"
@@ -2150,10 +2073,10 @@
       ]
     },
     {
-      "id": "equal-version-reassembly-with-higher-revision-newer-older-competing",
+      "id": "equal-version-reconversion-with-newer-revision-newer-older-candidate",
       "steps": [
         {
-          "event": "multi-v3",
+          "bundle": "multi-v3",
           "expect": {
             "history": [
               "multi-v3"
@@ -2166,7 +2089,6 @@
               "multi-v3.primary",
               "multi-v3.secondary"
             ],
-            "conflicts": [],
             "visible": [
               "multi-v3.primary"
             ],
@@ -2176,7 +2098,7 @@
           }
         },
         {
-          "event": "multi-v2",
+          "bundle": "multi-v2",
           "expect": {
             "history": [
               "multi-v3",
@@ -2191,7 +2113,6 @@
               "multi-v3.primary",
               "multi-v3.secondary"
             ],
-            "conflicts": [],
             "visible": [
               "multi-v3.primary"
             ],
@@ -2199,15 +2120,15 @@
           }
         },
         {
-          "event": "equal-version-reassembly",
+          "bundle": "equal-version-reconversion",
           "expect": {
             "history": [
               "multi-v3",
               "multi-v2",
-              "equal-version-reassembly"
+              "equal-version-reconversion"
             ],
             "versions": [
-              "equal-version-reassembly.primary",
+              "equal-version-reconversion.primary",
               "multi-v2.primary",
               "multi-v3.primary",
               "multi-v3.secondary"
@@ -2216,10 +2137,6 @@
               "multi-v3.primary",
               "multi-v3.secondary"
             ],
-            "conflicts": [
-              "multi-v2",
-              "equal-version-reassembly"
-            ],
             "visible": [
               "multi-v3.primary"
             ],
@@ -2227,15 +2144,15 @@
           }
         },
         {
-          "event": "multi-v3",
+          "bundle": "multi-v3",
           "expect": {
             "history": [
               "multi-v3",
               "multi-v2",
-              "equal-version-reassembly"
+              "equal-version-reconversion"
             ],
             "versions": [
-              "equal-version-reassembly.primary",
+              "equal-version-reconversion.primary",
               "multi-v2.primary",
               "multi-v3.primary",
               "multi-v3.secondary"
@@ -2244,10 +2161,6 @@
               "multi-v3.primary",
               "multi-v3.secondary"
             ],
-            "conflicts": [
-              "multi-v2",
-              "equal-version-reassembly"
-            ],
             "visible": [
               "multi-v3.primary"
             ],
@@ -2255,15 +2168,15 @@
           }
         },
         {
-          "event": "multi-v2",
+          "bundle": "multi-v2",
           "expect": {
             "history": [
               "multi-v3",
               "multi-v2",
-              "equal-version-reassembly"
+              "equal-version-reconversion"
             ],
             "versions": [
-              "equal-version-reassembly.primary",
+              "equal-version-reconversion.primary",
               "multi-v2.primary",
               "multi-v3.primary",
               "multi-v3.secondary"
@@ -2272,10 +2185,6 @@
               "multi-v3.primary",
               "multi-v3.secondary"
             ],
-            "conflicts": [
-              "multi-v2",
-              "equal-version-reassembly"
-            ],
             "visible": [
               "multi-v3.primary"
             ],
@@ -2283,15 +2192,15 @@
           }
         },
         {
-          "event": "equal-version-reassembly",
+          "bundle": "equal-version-reconversion",
           "expect": {
             "history": [
               "multi-v3",
               "multi-v2",
-              "equal-version-reassembly"
+              "equal-version-reconversion"
             ],
             "versions": [
-              "equal-version-reassembly.primary",
+              "equal-version-reconversion.primary",
               "multi-v2.primary",
               "multi-v3.primary",
               "multi-v3.secondary"
@@ -2299,10 +2208,6 @@
             "current": [
               "multi-v3.primary",
               "multi-v3.secondary"
-            ],
-            "conflicts": [
-              "multi-v2",
-              "equal-version-reassembly"
             ],
             "visible": [
               "multi-v3.primary"
@@ -2313,10 +2218,10 @@
       ]
     },
     {
-      "id": "equal-version-reassembly-with-higher-revision-newer-competing-older",
+      "id": "equal-version-reconversion-with-newer-revision-newer-candidate-older",
       "steps": [
         {
-          "event": "multi-v3",
+          "bundle": "multi-v3",
           "expect": {
             "history": [
               "multi-v3"
@@ -2329,7 +2234,6 @@
               "multi-v3.primary",
               "multi-v3.secondary"
             ],
-            "conflicts": [],
             "visible": [
               "multi-v3.primary"
             ],
@@ -2339,49 +2243,20 @@
           }
         },
         {
-          "event": "equal-version-reassembly",
+          "bundle": "equal-version-reconversion",
           "expect": {
             "history": [
               "multi-v3",
-              "equal-version-reassembly"
+              "equal-version-reconversion"
             ],
             "versions": [
-              "equal-version-reassembly.primary",
+              "equal-version-reconversion.primary",
               "multi-v3.primary",
               "multi-v3.secondary"
             ],
             "current": [
               "multi-v3.primary",
               "multi-v3.secondary"
-            ],
-            "conflicts": [],
-            "visible": [
-              "multi-v3.primary"
-            ],
-            "newlyVisible": []
-          }
-        },
-        {
-          "event": "multi-v2",
-          "expect": {
-            "history": [
-              "multi-v3",
-              "equal-version-reassembly",
-              "multi-v2"
-            ],
-            "versions": [
-              "equal-version-reassembly.primary",
-              "multi-v2.primary",
-              "multi-v3.primary",
-              "multi-v3.secondary"
-            ],
-            "current": [
-              "multi-v3.primary",
-              "multi-v3.secondary"
-            ],
-            "conflicts": [
-              "multi-v2",
-              "equal-version-reassembly"
             ],
             "visible": [
               "multi-v3.primary"
@@ -2390,15 +2265,15 @@
           }
         },
         {
-          "event": "multi-v3",
+          "bundle": "multi-v2",
           "expect": {
             "history": [
               "multi-v3",
-              "equal-version-reassembly",
+              "equal-version-reconversion",
               "multi-v2"
             ],
             "versions": [
-              "equal-version-reassembly.primary",
+              "equal-version-reconversion.primary",
               "multi-v2.primary",
               "multi-v3.primary",
               "multi-v3.secondary"
@@ -2406,10 +2281,6 @@
             "current": [
               "multi-v3.primary",
               "multi-v3.secondary"
-            ],
-            "conflicts": [
-              "multi-v2",
-              "equal-version-reassembly"
             ],
             "visible": [
               "multi-v3.primary"
@@ -2418,15 +2289,15 @@
           }
         },
         {
-          "event": "equal-version-reassembly",
+          "bundle": "multi-v3",
           "expect": {
             "history": [
               "multi-v3",
-              "equal-version-reassembly",
+              "equal-version-reconversion",
               "multi-v2"
             ],
             "versions": [
-              "equal-version-reassembly.primary",
+              "equal-version-reconversion.primary",
               "multi-v2.primary",
               "multi-v3.primary",
               "multi-v3.secondary"
@@ -2434,10 +2305,6 @@
             "current": [
               "multi-v3.primary",
               "multi-v3.secondary"
-            ],
-            "conflicts": [
-              "multi-v2",
-              "equal-version-reassembly"
             ],
             "visible": [
               "multi-v3.primary"
@@ -2446,15 +2313,15 @@
           }
         },
         {
-          "event": "multi-v2",
+          "bundle": "equal-version-reconversion",
           "expect": {
             "history": [
               "multi-v3",
-              "equal-version-reassembly",
+              "equal-version-reconversion",
               "multi-v2"
             ],
             "versions": [
-              "equal-version-reassembly.primary",
+              "equal-version-reconversion.primary",
               "multi-v2.primary",
               "multi-v3.primary",
               "multi-v3.secondary"
@@ -2463,9 +2330,29 @@
               "multi-v3.primary",
               "multi-v3.secondary"
             ],
-            "conflicts": [
-              "multi-v2",
-              "equal-version-reassembly"
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": []
+          }
+        },
+        {
+          "bundle": "multi-v2",
+          "expect": {
+            "history": [
+              "multi-v3",
+              "equal-version-reconversion",
+              "multi-v2"
+            ],
+            "versions": [
+              "equal-version-reconversion.primary",
+              "multi-v2.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
             ],
             "visible": [
               "multi-v3.primary"
@@ -2476,10 +2363,10 @@
       ]
     },
     {
-      "id": "other-writer-requires-resolution",
+      "id": "equal-version-equal-recorded-after-older",
       "steps": [
         {
-          "event": "multi-v2",
+          "bundle": "multi-v2",
           "expect": {
             "history": [
               "multi-v2"
@@ -2490,7 +2377,6 @@
             "current": [
               "multi-v2.primary"
             ],
-            "conflicts": [],
             "visible": [
               "multi-v2.primary"
             ],
@@ -2500,7 +2386,1007 @@
           }
         },
         {
-          "event": "other-writer",
+          "bundle": "equal-version-equal-recorded",
+          "expect": {
+            "history": [
+              "multi-v2",
+              "equal-version-equal-recorded"
+            ],
+            "versions": [
+              "equal-version-equal-recorded.primary",
+              "multi-v2.primary"
+            ],
+            "current": [
+              "equal-version-equal-recorded.primary"
+            ],
+            "visible": [
+              "equal-version-equal-recorded.primary"
+            ],
+            "newlyVisible": [
+              "equal-version-equal-recorded.primary"
+            ]
+          }
+        },
+        {
+          "bundle": "multi-v2",
+          "expect": {
+            "history": [
+              "multi-v2",
+              "equal-version-equal-recorded"
+            ],
+            "versions": [
+              "equal-version-equal-recorded.primary",
+              "multi-v2.primary"
+            ],
+            "current": [
+              "equal-version-equal-recorded.primary"
+            ],
+            "visible": [
+              "equal-version-equal-recorded.primary"
+            ],
+            "newlyVisible": []
+          }
+        }
+      ]
+    },
+    {
+      "id": "equal-version-equal-recorded-before-older",
+      "steps": [
+        {
+          "bundle": "equal-version-equal-recorded",
+          "expect": {
+            "history": [
+              "equal-version-equal-recorded"
+            ],
+            "versions": [
+              "equal-version-equal-recorded.primary"
+            ],
+            "current": [
+              "equal-version-equal-recorded.primary"
+            ],
+            "visible": [
+              "equal-version-equal-recorded.primary"
+            ],
+            "newlyVisible": [
+              "equal-version-equal-recorded.primary"
+            ]
+          }
+        },
+        {
+          "bundle": "multi-v2",
+          "expect": {
+            "history": [
+              "equal-version-equal-recorded",
+              "multi-v2"
+            ],
+            "versions": [
+              "equal-version-equal-recorded.primary",
+              "multi-v2.primary"
+            ],
+            "current": [
+              "equal-version-equal-recorded.primary"
+            ],
+            "visible": [
+              "equal-version-equal-recorded.primary"
+            ],
+            "newlyVisible": []
+          }
+        },
+        {
+          "bundle": "equal-version-equal-recorded",
+          "expect": {
+            "history": [
+              "equal-version-equal-recorded",
+              "multi-v2"
+            ],
+            "versions": [
+              "equal-version-equal-recorded.primary",
+              "multi-v2.primary"
+            ],
+            "current": [
+              "equal-version-equal-recorded.primary"
+            ],
+            "visible": [
+              "equal-version-equal-recorded.primary"
+            ],
+            "newlyVisible": []
+          }
+        }
+      ]
+    },
+    {
+      "id": "equal-version-equal-recorded-with-newer-revision-older-candidate-newer",
+      "steps": [
+        {
+          "bundle": "multi-v2",
+          "expect": {
+            "history": [
+              "multi-v2"
+            ],
+            "versions": [
+              "multi-v2.primary"
+            ],
+            "current": [
+              "multi-v2.primary"
+            ],
+            "visible": [
+              "multi-v2.primary"
+            ],
+            "newlyVisible": [
+              "multi-v2.primary"
+            ]
+          }
+        },
+        {
+          "bundle": "equal-version-equal-recorded",
+          "expect": {
+            "history": [
+              "multi-v2",
+              "equal-version-equal-recorded"
+            ],
+            "versions": [
+              "equal-version-equal-recorded.primary",
+              "multi-v2.primary"
+            ],
+            "current": [
+              "equal-version-equal-recorded.primary"
+            ],
+            "visible": [
+              "equal-version-equal-recorded.primary"
+            ],
+            "newlyVisible": [
+              "equal-version-equal-recorded.primary"
+            ]
+          }
+        },
+        {
+          "bundle": "multi-v3",
+          "expect": {
+            "history": [
+              "multi-v2",
+              "equal-version-equal-recorded",
+              "multi-v3"
+            ],
+            "versions": [
+              "equal-version-equal-recorded.primary",
+              "multi-v2.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": [
+              "multi-v3.primary"
+            ]
+          }
+        },
+        {
+          "bundle": "multi-v2",
+          "expect": {
+            "history": [
+              "multi-v2",
+              "equal-version-equal-recorded",
+              "multi-v3"
+            ],
+            "versions": [
+              "equal-version-equal-recorded.primary",
+              "multi-v2.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": []
+          }
+        },
+        {
+          "bundle": "equal-version-equal-recorded",
+          "expect": {
+            "history": [
+              "multi-v2",
+              "equal-version-equal-recorded",
+              "multi-v3"
+            ],
+            "versions": [
+              "equal-version-equal-recorded.primary",
+              "multi-v2.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": []
+          }
+        },
+        {
+          "bundle": "multi-v3",
+          "expect": {
+            "history": [
+              "multi-v2",
+              "equal-version-equal-recorded",
+              "multi-v3"
+            ],
+            "versions": [
+              "equal-version-equal-recorded.primary",
+              "multi-v2.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": []
+          }
+        }
+      ]
+    },
+    {
+      "id": "equal-version-equal-recorded-with-newer-revision-older-newer-candidate",
+      "steps": [
+        {
+          "bundle": "multi-v2",
+          "expect": {
+            "history": [
+              "multi-v2"
+            ],
+            "versions": [
+              "multi-v2.primary"
+            ],
+            "current": [
+              "multi-v2.primary"
+            ],
+            "visible": [
+              "multi-v2.primary"
+            ],
+            "newlyVisible": [
+              "multi-v2.primary"
+            ]
+          }
+        },
+        {
+          "bundle": "multi-v3",
+          "expect": {
+            "history": [
+              "multi-v2",
+              "multi-v3"
+            ],
+            "versions": [
+              "multi-v2.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": [
+              "multi-v3.primary"
+            ]
+          }
+        },
+        {
+          "bundle": "equal-version-equal-recorded",
+          "expect": {
+            "history": [
+              "multi-v2",
+              "multi-v3",
+              "equal-version-equal-recorded"
+            ],
+            "versions": [
+              "equal-version-equal-recorded.primary",
+              "multi-v2.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": []
+          }
+        },
+        {
+          "bundle": "multi-v2",
+          "expect": {
+            "history": [
+              "multi-v2",
+              "multi-v3",
+              "equal-version-equal-recorded"
+            ],
+            "versions": [
+              "equal-version-equal-recorded.primary",
+              "multi-v2.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": []
+          }
+        },
+        {
+          "bundle": "multi-v3",
+          "expect": {
+            "history": [
+              "multi-v2",
+              "multi-v3",
+              "equal-version-equal-recorded"
+            ],
+            "versions": [
+              "equal-version-equal-recorded.primary",
+              "multi-v2.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": []
+          }
+        },
+        {
+          "bundle": "equal-version-equal-recorded",
+          "expect": {
+            "history": [
+              "multi-v2",
+              "multi-v3",
+              "equal-version-equal-recorded"
+            ],
+            "versions": [
+              "equal-version-equal-recorded.primary",
+              "multi-v2.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": []
+          }
+        }
+      ]
+    },
+    {
+      "id": "equal-version-equal-recorded-with-newer-revision-candidate-older-newer",
+      "steps": [
+        {
+          "bundle": "equal-version-equal-recorded",
+          "expect": {
+            "history": [
+              "equal-version-equal-recorded"
+            ],
+            "versions": [
+              "equal-version-equal-recorded.primary"
+            ],
+            "current": [
+              "equal-version-equal-recorded.primary"
+            ],
+            "visible": [
+              "equal-version-equal-recorded.primary"
+            ],
+            "newlyVisible": [
+              "equal-version-equal-recorded.primary"
+            ]
+          }
+        },
+        {
+          "bundle": "multi-v2",
+          "expect": {
+            "history": [
+              "equal-version-equal-recorded",
+              "multi-v2"
+            ],
+            "versions": [
+              "equal-version-equal-recorded.primary",
+              "multi-v2.primary"
+            ],
+            "current": [
+              "equal-version-equal-recorded.primary"
+            ],
+            "visible": [
+              "equal-version-equal-recorded.primary"
+            ],
+            "newlyVisible": []
+          }
+        },
+        {
+          "bundle": "multi-v3",
+          "expect": {
+            "history": [
+              "equal-version-equal-recorded",
+              "multi-v2",
+              "multi-v3"
+            ],
+            "versions": [
+              "equal-version-equal-recorded.primary",
+              "multi-v2.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": [
+              "multi-v3.primary"
+            ]
+          }
+        },
+        {
+          "bundle": "equal-version-equal-recorded",
+          "expect": {
+            "history": [
+              "equal-version-equal-recorded",
+              "multi-v2",
+              "multi-v3"
+            ],
+            "versions": [
+              "equal-version-equal-recorded.primary",
+              "multi-v2.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": []
+          }
+        },
+        {
+          "bundle": "multi-v2",
+          "expect": {
+            "history": [
+              "equal-version-equal-recorded",
+              "multi-v2",
+              "multi-v3"
+            ],
+            "versions": [
+              "equal-version-equal-recorded.primary",
+              "multi-v2.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": []
+          }
+        },
+        {
+          "bundle": "multi-v3",
+          "expect": {
+            "history": [
+              "equal-version-equal-recorded",
+              "multi-v2",
+              "multi-v3"
+            ],
+            "versions": [
+              "equal-version-equal-recorded.primary",
+              "multi-v2.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": []
+          }
+        }
+      ]
+    },
+    {
+      "id": "equal-version-equal-recorded-with-newer-revision-candidate-newer-older",
+      "steps": [
+        {
+          "bundle": "equal-version-equal-recorded",
+          "expect": {
+            "history": [
+              "equal-version-equal-recorded"
+            ],
+            "versions": [
+              "equal-version-equal-recorded.primary"
+            ],
+            "current": [
+              "equal-version-equal-recorded.primary"
+            ],
+            "visible": [
+              "equal-version-equal-recorded.primary"
+            ],
+            "newlyVisible": [
+              "equal-version-equal-recorded.primary"
+            ]
+          }
+        },
+        {
+          "bundle": "multi-v3",
+          "expect": {
+            "history": [
+              "equal-version-equal-recorded",
+              "multi-v3"
+            ],
+            "versions": [
+              "equal-version-equal-recorded.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": [
+              "multi-v3.primary"
+            ]
+          }
+        },
+        {
+          "bundle": "multi-v2",
+          "expect": {
+            "history": [
+              "equal-version-equal-recorded",
+              "multi-v3",
+              "multi-v2"
+            ],
+            "versions": [
+              "equal-version-equal-recorded.primary",
+              "multi-v2.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": []
+          }
+        },
+        {
+          "bundle": "equal-version-equal-recorded",
+          "expect": {
+            "history": [
+              "equal-version-equal-recorded",
+              "multi-v3",
+              "multi-v2"
+            ],
+            "versions": [
+              "equal-version-equal-recorded.primary",
+              "multi-v2.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": []
+          }
+        },
+        {
+          "bundle": "multi-v3",
+          "expect": {
+            "history": [
+              "equal-version-equal-recorded",
+              "multi-v3",
+              "multi-v2"
+            ],
+            "versions": [
+              "equal-version-equal-recorded.primary",
+              "multi-v2.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": []
+          }
+        },
+        {
+          "bundle": "multi-v2",
+          "expect": {
+            "history": [
+              "equal-version-equal-recorded",
+              "multi-v3",
+              "multi-v2"
+            ],
+            "versions": [
+              "equal-version-equal-recorded.primary",
+              "multi-v2.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": []
+          }
+        }
+      ]
+    },
+    {
+      "id": "equal-version-equal-recorded-with-newer-revision-newer-older-candidate",
+      "steps": [
+        {
+          "bundle": "multi-v3",
+          "expect": {
+            "history": [
+              "multi-v3"
+            ],
+            "versions": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": [
+              "multi-v3.primary"
+            ]
+          }
+        },
+        {
+          "bundle": "multi-v2",
+          "expect": {
+            "history": [
+              "multi-v3",
+              "multi-v2"
+            ],
+            "versions": [
+              "multi-v2.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": []
+          }
+        },
+        {
+          "bundle": "equal-version-equal-recorded",
+          "expect": {
+            "history": [
+              "multi-v3",
+              "multi-v2",
+              "equal-version-equal-recorded"
+            ],
+            "versions": [
+              "equal-version-equal-recorded.primary",
+              "multi-v2.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": []
+          }
+        },
+        {
+          "bundle": "multi-v3",
+          "expect": {
+            "history": [
+              "multi-v3",
+              "multi-v2",
+              "equal-version-equal-recorded"
+            ],
+            "versions": [
+              "equal-version-equal-recorded.primary",
+              "multi-v2.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": []
+          }
+        },
+        {
+          "bundle": "multi-v2",
+          "expect": {
+            "history": [
+              "multi-v3",
+              "multi-v2",
+              "equal-version-equal-recorded"
+            ],
+            "versions": [
+              "equal-version-equal-recorded.primary",
+              "multi-v2.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": []
+          }
+        },
+        {
+          "bundle": "equal-version-equal-recorded",
+          "expect": {
+            "history": [
+              "multi-v3",
+              "multi-v2",
+              "equal-version-equal-recorded"
+            ],
+            "versions": [
+              "equal-version-equal-recorded.primary",
+              "multi-v2.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": []
+          }
+        }
+      ]
+    },
+    {
+      "id": "equal-version-equal-recorded-with-newer-revision-newer-candidate-older",
+      "steps": [
+        {
+          "bundle": "multi-v3",
+          "expect": {
+            "history": [
+              "multi-v3"
+            ],
+            "versions": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": [
+              "multi-v3.primary"
+            ]
+          }
+        },
+        {
+          "bundle": "equal-version-equal-recorded",
+          "expect": {
+            "history": [
+              "multi-v3",
+              "equal-version-equal-recorded"
+            ],
+            "versions": [
+              "equal-version-equal-recorded.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": []
+          }
+        },
+        {
+          "bundle": "multi-v2",
+          "expect": {
+            "history": [
+              "multi-v3",
+              "equal-version-equal-recorded",
+              "multi-v2"
+            ],
+            "versions": [
+              "equal-version-equal-recorded.primary",
+              "multi-v2.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": []
+          }
+        },
+        {
+          "bundle": "multi-v3",
+          "expect": {
+            "history": [
+              "multi-v3",
+              "equal-version-equal-recorded",
+              "multi-v2"
+            ],
+            "versions": [
+              "equal-version-equal-recorded.primary",
+              "multi-v2.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": []
+          }
+        },
+        {
+          "bundle": "equal-version-equal-recorded",
+          "expect": {
+            "history": [
+              "multi-v3",
+              "equal-version-equal-recorded",
+              "multi-v2"
+            ],
+            "versions": [
+              "equal-version-equal-recorded.primary",
+              "multi-v2.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": []
+          }
+        },
+        {
+          "bundle": "multi-v2",
+          "expect": {
+            "history": [
+              "multi-v3",
+              "equal-version-equal-recorded",
+              "multi-v2"
+            ],
+            "versions": [
+              "equal-version-equal-recorded.primary",
+              "multi-v2.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": []
+          }
+        }
+      ]
+    },
+    {
+      "id": "other-writer-after-older",
+      "steps": [
+        {
+          "bundle": "multi-v2",
+          "expect": {
+            "history": [
+              "multi-v2"
+            ],
+            "versions": [
+              "multi-v2.primary"
+            ],
+            "current": [
+              "multi-v2.primary"
+            ],
+            "visible": [
+              "multi-v2.primary"
+            ],
+            "newlyVisible": [
+              "multi-v2.primary"
+            ]
+          }
+        },
+        {
+          "bundle": "other-writer",
           "expect": {
             "history": [
               "multi-v2",
@@ -2510,17 +3396,17 @@
               "multi-v2.primary",
               "other-writer.primary"
             ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "other-writer"
+            "current": [
+              "multi-v2.primary"
             ],
-            "visible": [],
+            "visible": [
+              "multi-v2.primary"
+            ],
             "newlyVisible": []
           }
         },
         {
-          "event": "multi-v2",
+          "bundle": "multi-v2",
           "expect": {
             "history": [
               "multi-v2",
@@ -2530,22 +3416,22 @@
               "multi-v2.primary",
               "other-writer.primary"
             ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "other-writer"
+            "current": [
+              "multi-v2.primary"
             ],
-            "visible": [],
+            "visible": [
+              "multi-v2.primary"
+            ],
             "newlyVisible": []
           }
         }
       ]
     },
     {
-      "id": "other-writer-arrives-first",
+      "id": "other-writer-before-older",
       "steps": [
         {
-          "event": "other-writer",
+          "bundle": "other-writer",
           "expect": {
             "history": [
               "other-writer"
@@ -2556,7 +3442,6 @@
             "current": [
               "other-writer.primary"
             ],
-            "conflicts": [],
             "visible": [
               "other-writer.primary"
             ],
@@ -2566,7 +3451,7 @@
           }
         },
         {
-          "event": "multi-v2",
+          "bundle": "multi-v2",
           "expect": {
             "history": [
               "other-writer",
@@ -2576,17 +3461,19 @@
               "multi-v2.primary",
               "other-writer.primary"
             ],
-            "current": [],
-            "conflicts": [
-              "other-writer",
-              "multi-v2"
+            "current": [
+              "multi-v2.primary"
             ],
-            "visible": [],
-            "newlyVisible": []
+            "visible": [
+              "multi-v2.primary"
+            ],
+            "newlyVisible": [
+              "multi-v2.primary"
+            ]
           }
         },
         {
-          "event": "other-writer",
+          "bundle": "other-writer",
           "expect": {
             "history": [
               "other-writer",
@@ -2596,22 +3483,22 @@
               "multi-v2.primary",
               "other-writer.primary"
             ],
-            "current": [],
-            "conflicts": [
-              "other-writer",
-              "multi-v2"
+            "current": [
+              "multi-v2.primary"
             ],
-            "visible": [],
+            "visible": [
+              "multi-v2.primary"
+            ],
             "newlyVisible": []
           }
         }
       ]
     },
     {
-      "id": "other-writer-with-higher-revision-older-competing-newer",
+      "id": "other-writer-with-newer-revision-older-candidate-newer",
       "steps": [
         {
-          "event": "multi-v2",
+          "bundle": "multi-v2",
           "expect": {
             "history": [
               "multi-v2"
@@ -2622,7 +3509,6 @@
             "current": [
               "multi-v2.primary"
             ],
-            "conflicts": [],
             "visible": [
               "multi-v2.primary"
             ],
@@ -2632,7 +3518,7 @@
           }
         },
         {
-          "event": "other-writer",
+          "bundle": "other-writer",
           "expect": {
             "history": [
               "multi-v2",
@@ -2641,155 +3527,34 @@
             "versions": [
               "multi-v2.primary",
               "other-writer.primary"
-            ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "other-writer"
-            ],
-            "visible": [],
-            "newlyVisible": []
-          }
-        },
-        {
-          "event": "multi-v3",
-          "expect": {
-            "history": [
-              "multi-v2",
-              "other-writer",
-              "multi-v3"
-            ],
-            "versions": [
-              "multi-v2.primary",
-              "multi-v3.primary",
-              "multi-v3.secondary",
-              "other-writer.primary"
-            ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "other-writer",
-              "multi-v3"
-            ],
-            "visible": [],
-            "newlyVisible": []
-          }
-        },
-        {
-          "event": "multi-v2",
-          "expect": {
-            "history": [
-              "multi-v2",
-              "other-writer",
-              "multi-v3"
-            ],
-            "versions": [
-              "multi-v2.primary",
-              "multi-v3.primary",
-              "multi-v3.secondary",
-              "other-writer.primary"
-            ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "other-writer",
-              "multi-v3"
-            ],
-            "visible": [],
-            "newlyVisible": []
-          }
-        },
-        {
-          "event": "other-writer",
-          "expect": {
-            "history": [
-              "multi-v2",
-              "other-writer",
-              "multi-v3"
-            ],
-            "versions": [
-              "multi-v2.primary",
-              "multi-v3.primary",
-              "multi-v3.secondary",
-              "other-writer.primary"
-            ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "other-writer",
-              "multi-v3"
-            ],
-            "visible": [],
-            "newlyVisible": []
-          }
-        },
-        {
-          "event": "multi-v3",
-          "expect": {
-            "history": [
-              "multi-v2",
-              "other-writer",
-              "multi-v3"
-            ],
-            "versions": [
-              "multi-v2.primary",
-              "multi-v3.primary",
-              "multi-v3.secondary",
-              "other-writer.primary"
-            ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "other-writer",
-              "multi-v3"
-            ],
-            "visible": [],
-            "newlyVisible": []
-          }
-        }
-      ]
-    },
-    {
-      "id": "other-writer-with-higher-revision-older-newer-competing",
-      "steps": [
-        {
-          "event": "multi-v2",
-          "expect": {
-            "history": [
-              "multi-v2"
-            ],
-            "versions": [
-              "multi-v2.primary"
             ],
             "current": [
               "multi-v2.primary"
             ],
-            "conflicts": [],
             "visible": [
               "multi-v2.primary"
             ],
-            "newlyVisible": [
-              "multi-v2.primary"
-            ]
+            "newlyVisible": []
           }
         },
         {
-          "event": "multi-v3",
+          "bundle": "multi-v3",
           "expect": {
             "history": [
               "multi-v2",
+              "other-writer",
               "multi-v3"
             ],
             "versions": [
               "multi-v2.primary",
               "multi-v3.primary",
-              "multi-v3.secondary"
+              "multi-v3.secondary",
+              "other-writer.primary"
             ],
             "current": [
               "multi-v3.primary",
               "multi-v3.secondary"
             ],
-            "conflicts": [],
             "visible": [
               "multi-v3.primary"
             ],
@@ -2799,153 +3564,11 @@
           }
         },
         {
-          "event": "other-writer",
+          "bundle": "multi-v2",
           "expect": {
             "history": [
-              "multi-v2",
-              "multi-v3",
-              "other-writer"
-            ],
-            "versions": [
-              "multi-v2.primary",
-              "multi-v3.primary",
-              "multi-v3.secondary",
-              "other-writer.primary"
-            ],
-            "current": [],
-            "conflicts": [
               "multi-v2",
               "other-writer",
-              "multi-v3"
-            ],
-            "visible": [],
-            "newlyVisible": []
-          }
-        },
-        {
-          "event": "multi-v2",
-          "expect": {
-            "history": [
-              "multi-v2",
-              "multi-v3",
-              "other-writer"
-            ],
-            "versions": [
-              "multi-v2.primary",
-              "multi-v3.primary",
-              "multi-v3.secondary",
-              "other-writer.primary"
-            ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "other-writer",
-              "multi-v3"
-            ],
-            "visible": [],
-            "newlyVisible": []
-          }
-        },
-        {
-          "event": "multi-v3",
-          "expect": {
-            "history": [
-              "multi-v2",
-              "multi-v3",
-              "other-writer"
-            ],
-            "versions": [
-              "multi-v2.primary",
-              "multi-v3.primary",
-              "multi-v3.secondary",
-              "other-writer.primary"
-            ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "other-writer",
-              "multi-v3"
-            ],
-            "visible": [],
-            "newlyVisible": []
-          }
-        },
-        {
-          "event": "other-writer",
-          "expect": {
-            "history": [
-              "multi-v2",
-              "multi-v3",
-              "other-writer"
-            ],
-            "versions": [
-              "multi-v2.primary",
-              "multi-v3.primary",
-              "multi-v3.secondary",
-              "other-writer.primary"
-            ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "other-writer",
-              "multi-v3"
-            ],
-            "visible": [],
-            "newlyVisible": []
-          }
-        }
-      ]
-    },
-    {
-      "id": "other-writer-with-higher-revision-competing-older-newer",
-      "steps": [
-        {
-          "event": "other-writer",
-          "expect": {
-            "history": [
-              "other-writer"
-            ],
-            "versions": [
-              "other-writer.primary"
-            ],
-            "current": [
-              "other-writer.primary"
-            ],
-            "conflicts": [],
-            "visible": [
-              "other-writer.primary"
-            ],
-            "newlyVisible": [
-              "other-writer.primary"
-            ]
-          }
-        },
-        {
-          "event": "multi-v2",
-          "expect": {
-            "history": [
-              "other-writer",
-              "multi-v2"
-            ],
-            "versions": [
-              "multi-v2.primary",
-              "other-writer.primary"
-            ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "other-writer"
-            ],
-            "visible": [],
-            "newlyVisible": []
-          }
-        },
-        {
-          "event": "multi-v3",
-          "expect": {
-            "history": [
-              "other-writer",
-              "multi-v2",
               "multi-v3"
             ],
             "versions": [
@@ -2953,277 +3576,11 @@
               "multi-v3.primary",
               "multi-v3.secondary",
               "other-writer.primary"
-            ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "other-writer",
-              "multi-v3"
-            ],
-            "visible": [],
-            "newlyVisible": []
-          }
-        },
-        {
-          "event": "other-writer",
-          "expect": {
-            "history": [
-              "other-writer",
-              "multi-v2",
-              "multi-v3"
-            ],
-            "versions": [
-              "multi-v2.primary",
-              "multi-v3.primary",
-              "multi-v3.secondary",
-              "other-writer.primary"
-            ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "other-writer",
-              "multi-v3"
-            ],
-            "visible": [],
-            "newlyVisible": []
-          }
-        },
-        {
-          "event": "multi-v2",
-          "expect": {
-            "history": [
-              "other-writer",
-              "multi-v2",
-              "multi-v3"
-            ],
-            "versions": [
-              "multi-v2.primary",
-              "multi-v3.primary",
-              "multi-v3.secondary",
-              "other-writer.primary"
-            ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "other-writer",
-              "multi-v3"
-            ],
-            "visible": [],
-            "newlyVisible": []
-          }
-        },
-        {
-          "event": "multi-v3",
-          "expect": {
-            "history": [
-              "other-writer",
-              "multi-v2",
-              "multi-v3"
-            ],
-            "versions": [
-              "multi-v2.primary",
-              "multi-v3.primary",
-              "multi-v3.secondary",
-              "other-writer.primary"
-            ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "other-writer",
-              "multi-v3"
-            ],
-            "visible": [],
-            "newlyVisible": []
-          }
-        }
-      ]
-    },
-    {
-      "id": "other-writer-with-higher-revision-competing-newer-older",
-      "steps": [
-        {
-          "event": "other-writer",
-          "expect": {
-            "history": [
-              "other-writer"
-            ],
-            "versions": [
-              "other-writer.primary"
-            ],
-            "current": [
-              "other-writer.primary"
-            ],
-            "conflicts": [],
-            "visible": [
-              "other-writer.primary"
-            ],
-            "newlyVisible": [
-              "other-writer.primary"
-            ]
-          }
-        },
-        {
-          "event": "multi-v3",
-          "expect": {
-            "history": [
-              "other-writer",
-              "multi-v3"
-            ],
-            "versions": [
-              "multi-v3.primary",
-              "multi-v3.secondary",
-              "other-writer.primary"
-            ],
-            "current": [],
-            "conflicts": [
-              "other-writer",
-              "multi-v3"
-            ],
-            "visible": [],
-            "newlyVisible": []
-          }
-        },
-        {
-          "event": "multi-v2",
-          "expect": {
-            "history": [
-              "other-writer",
-              "multi-v3",
-              "multi-v2"
-            ],
-            "versions": [
-              "multi-v2.primary",
-              "multi-v3.primary",
-              "multi-v3.secondary",
-              "other-writer.primary"
-            ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "other-writer",
-              "multi-v3"
-            ],
-            "visible": [],
-            "newlyVisible": []
-          }
-        },
-        {
-          "event": "other-writer",
-          "expect": {
-            "history": [
-              "other-writer",
-              "multi-v3",
-              "multi-v2"
-            ],
-            "versions": [
-              "multi-v2.primary",
-              "multi-v3.primary",
-              "multi-v3.secondary",
-              "other-writer.primary"
-            ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "other-writer",
-              "multi-v3"
-            ],
-            "visible": [],
-            "newlyVisible": []
-          }
-        },
-        {
-          "event": "multi-v3",
-          "expect": {
-            "history": [
-              "other-writer",
-              "multi-v3",
-              "multi-v2"
-            ],
-            "versions": [
-              "multi-v2.primary",
-              "multi-v3.primary",
-              "multi-v3.secondary",
-              "other-writer.primary"
-            ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "other-writer",
-              "multi-v3"
-            ],
-            "visible": [],
-            "newlyVisible": []
-          }
-        },
-        {
-          "event": "multi-v2",
-          "expect": {
-            "history": [
-              "other-writer",
-              "multi-v3",
-              "multi-v2"
-            ],
-            "versions": [
-              "multi-v2.primary",
-              "multi-v3.primary",
-              "multi-v3.secondary",
-              "other-writer.primary"
-            ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "other-writer",
-              "multi-v3"
-            ],
-            "visible": [],
-            "newlyVisible": []
-          }
-        }
-      ]
-    },
-    {
-      "id": "other-writer-with-higher-revision-newer-older-competing",
-      "steps": [
-        {
-          "event": "multi-v3",
-          "expect": {
-            "history": [
-              "multi-v3"
-            ],
-            "versions": [
-              "multi-v3.primary",
-              "multi-v3.secondary"
             ],
             "current": [
               "multi-v3.primary",
               "multi-v3.secondary"
             ],
-            "conflicts": [],
-            "visible": [
-              "multi-v3.primary"
-            ],
-            "newlyVisible": [
-              "multi-v3.primary"
-            ]
-          }
-        },
-        {
-          "event": "multi-v2",
-          "expect": {
-            "history": [
-              "multi-v3",
-              "multi-v2"
-            ],
-            "versions": [
-              "multi-v2.primary",
-              "multi-v3.primary",
-              "multi-v3.secondary"
-            ],
-            "current": [
-              "multi-v3.primary",
-              "multi-v3.secondary"
-            ],
-            "conflicts": [],
             "visible": [
               "multi-v3.primary"
             ],
@@ -3231,253 +3588,60 @@
           }
         },
         {
-          "event": "other-writer",
+          "bundle": "other-writer",
           "expect": {
             "history": [
-              "multi-v3",
               "multi-v2",
-              "other-writer"
+              "other-writer",
+              "multi-v3"
             ],
             "versions": [
               "multi-v2.primary",
               "multi-v3.primary",
               "multi-v3.secondary",
               "other-writer.primary"
-            ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "other-writer",
-              "multi-v3"
-            ],
-            "visible": [],
-            "newlyVisible": []
-          }
-        },
-        {
-          "event": "multi-v3",
-          "expect": {
-            "history": [
-              "multi-v3",
-              "multi-v2",
-              "other-writer"
-            ],
-            "versions": [
-              "multi-v2.primary",
-              "multi-v3.primary",
-              "multi-v3.secondary",
-              "other-writer.primary"
-            ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "other-writer",
-              "multi-v3"
-            ],
-            "visible": [],
-            "newlyVisible": []
-          }
-        },
-        {
-          "event": "multi-v2",
-          "expect": {
-            "history": [
-              "multi-v3",
-              "multi-v2",
-              "other-writer"
-            ],
-            "versions": [
-              "multi-v2.primary",
-              "multi-v3.primary",
-              "multi-v3.secondary",
-              "other-writer.primary"
-            ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "other-writer",
-              "multi-v3"
-            ],
-            "visible": [],
-            "newlyVisible": []
-          }
-        },
-        {
-          "event": "other-writer",
-          "expect": {
-            "history": [
-              "multi-v3",
-              "multi-v2",
-              "other-writer"
-            ],
-            "versions": [
-              "multi-v2.primary",
-              "multi-v3.primary",
-              "multi-v3.secondary",
-              "other-writer.primary"
-            ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "other-writer",
-              "multi-v3"
-            ],
-            "visible": [],
-            "newlyVisible": []
-          }
-        }
-      ]
-    },
-    {
-      "id": "other-writer-with-higher-revision-newer-competing-older",
-      "steps": [
-        {
-          "event": "multi-v3",
-          "expect": {
-            "history": [
-              "multi-v3"
-            ],
-            "versions": [
-              "multi-v3.primary",
-              "multi-v3.secondary"
             ],
             "current": [
               "multi-v3.primary",
               "multi-v3.secondary"
             ],
-            "conflicts": [],
             "visible": [
               "multi-v3.primary"
             ],
-            "newlyVisible": [
+            "newlyVisible": []
+          }
+        },
+        {
+          "bundle": "multi-v3",
+          "expect": {
+            "history": [
+              "multi-v2",
+              "other-writer",
+              "multi-v3"
+            ],
+            "versions": [
+              "multi-v2.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary",
+              "other-writer.primary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "visible": [
               "multi-v3.primary"
-            ]
-          }
-        },
-        {
-          "event": "other-writer",
-          "expect": {
-            "history": [
-              "multi-v3",
-              "other-writer"
             ],
-            "versions": [
-              "multi-v3.primary",
-              "multi-v3.secondary",
-              "other-writer.primary"
-            ],
-            "current": [],
-            "conflicts": [
-              "other-writer",
-              "multi-v3"
-            ],
-            "visible": [],
-            "newlyVisible": []
-          }
-        },
-        {
-          "event": "multi-v2",
-          "expect": {
-            "history": [
-              "multi-v3",
-              "other-writer",
-              "multi-v2"
-            ],
-            "versions": [
-              "multi-v2.primary",
-              "multi-v3.primary",
-              "multi-v3.secondary",
-              "other-writer.primary"
-            ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "other-writer",
-              "multi-v3"
-            ],
-            "visible": [],
-            "newlyVisible": []
-          }
-        },
-        {
-          "event": "multi-v3",
-          "expect": {
-            "history": [
-              "multi-v3",
-              "other-writer",
-              "multi-v2"
-            ],
-            "versions": [
-              "multi-v2.primary",
-              "multi-v3.primary",
-              "multi-v3.secondary",
-              "other-writer.primary"
-            ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "other-writer",
-              "multi-v3"
-            ],
-            "visible": [],
-            "newlyVisible": []
-          }
-        },
-        {
-          "event": "other-writer",
-          "expect": {
-            "history": [
-              "multi-v3",
-              "other-writer",
-              "multi-v2"
-            ],
-            "versions": [
-              "multi-v2.primary",
-              "multi-v3.primary",
-              "multi-v3.secondary",
-              "other-writer.primary"
-            ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "other-writer",
-              "multi-v3"
-            ],
-            "visible": [],
-            "newlyVisible": []
-          }
-        },
-        {
-          "event": "multi-v2",
-          "expect": {
-            "history": [
-              "multi-v3",
-              "other-writer",
-              "multi-v2"
-            ],
-            "versions": [
-              "multi-v2.primary",
-              "multi-v3.primary",
-              "multi-v3.secondary",
-              "other-writer.primary"
-            ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "other-writer",
-              "multi-v3"
-            ],
-            "visible": [],
             "newlyVisible": []
           }
         }
       ]
     },
     {
-      "id": "missing-order-requires-resolution",
+      "id": "other-writer-with-newer-revision-older-newer-candidate",
       "steps": [
         {
-          "event": "multi-v2",
+          "bundle": "multi-v2",
           "expect": {
             "history": [
               "multi-v2"
@@ -3488,7 +3652,6 @@
             "current": [
               "multi-v2.primary"
             ],
-            "conflicts": [],
             "visible": [
               "multi-v2.primary"
             ],
@@ -3498,7 +3661,732 @@
           }
         },
         {
-          "event": "missing-order",
+          "bundle": "multi-v3",
+          "expect": {
+            "history": [
+              "multi-v2",
+              "multi-v3"
+            ],
+            "versions": [
+              "multi-v2.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": [
+              "multi-v3.primary"
+            ]
+          }
+        },
+        {
+          "bundle": "other-writer",
+          "expect": {
+            "history": [
+              "multi-v2",
+              "multi-v3",
+              "other-writer"
+            ],
+            "versions": [
+              "multi-v2.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary",
+              "other-writer.primary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": []
+          }
+        },
+        {
+          "bundle": "multi-v2",
+          "expect": {
+            "history": [
+              "multi-v2",
+              "multi-v3",
+              "other-writer"
+            ],
+            "versions": [
+              "multi-v2.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary",
+              "other-writer.primary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": []
+          }
+        },
+        {
+          "bundle": "multi-v3",
+          "expect": {
+            "history": [
+              "multi-v2",
+              "multi-v3",
+              "other-writer"
+            ],
+            "versions": [
+              "multi-v2.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary",
+              "other-writer.primary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": []
+          }
+        },
+        {
+          "bundle": "other-writer",
+          "expect": {
+            "history": [
+              "multi-v2",
+              "multi-v3",
+              "other-writer"
+            ],
+            "versions": [
+              "multi-v2.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary",
+              "other-writer.primary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": []
+          }
+        }
+      ]
+    },
+    {
+      "id": "other-writer-with-newer-revision-candidate-older-newer",
+      "steps": [
+        {
+          "bundle": "other-writer",
+          "expect": {
+            "history": [
+              "other-writer"
+            ],
+            "versions": [
+              "other-writer.primary"
+            ],
+            "current": [
+              "other-writer.primary"
+            ],
+            "visible": [
+              "other-writer.primary"
+            ],
+            "newlyVisible": [
+              "other-writer.primary"
+            ]
+          }
+        },
+        {
+          "bundle": "multi-v2",
+          "expect": {
+            "history": [
+              "other-writer",
+              "multi-v2"
+            ],
+            "versions": [
+              "multi-v2.primary",
+              "other-writer.primary"
+            ],
+            "current": [
+              "multi-v2.primary"
+            ],
+            "visible": [
+              "multi-v2.primary"
+            ],
+            "newlyVisible": [
+              "multi-v2.primary"
+            ]
+          }
+        },
+        {
+          "bundle": "multi-v3",
+          "expect": {
+            "history": [
+              "other-writer",
+              "multi-v2",
+              "multi-v3"
+            ],
+            "versions": [
+              "multi-v2.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary",
+              "other-writer.primary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": [
+              "multi-v3.primary"
+            ]
+          }
+        },
+        {
+          "bundle": "other-writer",
+          "expect": {
+            "history": [
+              "other-writer",
+              "multi-v2",
+              "multi-v3"
+            ],
+            "versions": [
+              "multi-v2.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary",
+              "other-writer.primary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": []
+          }
+        },
+        {
+          "bundle": "multi-v2",
+          "expect": {
+            "history": [
+              "other-writer",
+              "multi-v2",
+              "multi-v3"
+            ],
+            "versions": [
+              "multi-v2.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary",
+              "other-writer.primary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": []
+          }
+        },
+        {
+          "bundle": "multi-v3",
+          "expect": {
+            "history": [
+              "other-writer",
+              "multi-v2",
+              "multi-v3"
+            ],
+            "versions": [
+              "multi-v2.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary",
+              "other-writer.primary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": []
+          }
+        }
+      ]
+    },
+    {
+      "id": "other-writer-with-newer-revision-candidate-newer-older",
+      "steps": [
+        {
+          "bundle": "other-writer",
+          "expect": {
+            "history": [
+              "other-writer"
+            ],
+            "versions": [
+              "other-writer.primary"
+            ],
+            "current": [
+              "other-writer.primary"
+            ],
+            "visible": [
+              "other-writer.primary"
+            ],
+            "newlyVisible": [
+              "other-writer.primary"
+            ]
+          }
+        },
+        {
+          "bundle": "multi-v3",
+          "expect": {
+            "history": [
+              "other-writer",
+              "multi-v3"
+            ],
+            "versions": [
+              "multi-v3.primary",
+              "multi-v3.secondary",
+              "other-writer.primary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": [
+              "multi-v3.primary"
+            ]
+          }
+        },
+        {
+          "bundle": "multi-v2",
+          "expect": {
+            "history": [
+              "other-writer",
+              "multi-v3",
+              "multi-v2"
+            ],
+            "versions": [
+              "multi-v2.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary",
+              "other-writer.primary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": []
+          }
+        },
+        {
+          "bundle": "other-writer",
+          "expect": {
+            "history": [
+              "other-writer",
+              "multi-v3",
+              "multi-v2"
+            ],
+            "versions": [
+              "multi-v2.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary",
+              "other-writer.primary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": []
+          }
+        },
+        {
+          "bundle": "multi-v3",
+          "expect": {
+            "history": [
+              "other-writer",
+              "multi-v3",
+              "multi-v2"
+            ],
+            "versions": [
+              "multi-v2.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary",
+              "other-writer.primary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": []
+          }
+        },
+        {
+          "bundle": "multi-v2",
+          "expect": {
+            "history": [
+              "other-writer",
+              "multi-v3",
+              "multi-v2"
+            ],
+            "versions": [
+              "multi-v2.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary",
+              "other-writer.primary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": []
+          }
+        }
+      ]
+    },
+    {
+      "id": "other-writer-with-newer-revision-newer-older-candidate",
+      "steps": [
+        {
+          "bundle": "multi-v3",
+          "expect": {
+            "history": [
+              "multi-v3"
+            ],
+            "versions": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": [
+              "multi-v3.primary"
+            ]
+          }
+        },
+        {
+          "bundle": "multi-v2",
+          "expect": {
+            "history": [
+              "multi-v3",
+              "multi-v2"
+            ],
+            "versions": [
+              "multi-v2.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": []
+          }
+        },
+        {
+          "bundle": "other-writer",
+          "expect": {
+            "history": [
+              "multi-v3",
+              "multi-v2",
+              "other-writer"
+            ],
+            "versions": [
+              "multi-v2.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary",
+              "other-writer.primary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": []
+          }
+        },
+        {
+          "bundle": "multi-v3",
+          "expect": {
+            "history": [
+              "multi-v3",
+              "multi-v2",
+              "other-writer"
+            ],
+            "versions": [
+              "multi-v2.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary",
+              "other-writer.primary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": []
+          }
+        },
+        {
+          "bundle": "multi-v2",
+          "expect": {
+            "history": [
+              "multi-v3",
+              "multi-v2",
+              "other-writer"
+            ],
+            "versions": [
+              "multi-v2.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary",
+              "other-writer.primary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": []
+          }
+        },
+        {
+          "bundle": "other-writer",
+          "expect": {
+            "history": [
+              "multi-v3",
+              "multi-v2",
+              "other-writer"
+            ],
+            "versions": [
+              "multi-v2.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary",
+              "other-writer.primary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": []
+          }
+        }
+      ]
+    },
+    {
+      "id": "other-writer-with-newer-revision-newer-candidate-older",
+      "steps": [
+        {
+          "bundle": "multi-v3",
+          "expect": {
+            "history": [
+              "multi-v3"
+            ],
+            "versions": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": [
+              "multi-v3.primary"
+            ]
+          }
+        },
+        {
+          "bundle": "other-writer",
+          "expect": {
+            "history": [
+              "multi-v3",
+              "other-writer"
+            ],
+            "versions": [
+              "multi-v3.primary",
+              "multi-v3.secondary",
+              "other-writer.primary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": []
+          }
+        },
+        {
+          "bundle": "multi-v2",
+          "expect": {
+            "history": [
+              "multi-v3",
+              "other-writer",
+              "multi-v2"
+            ],
+            "versions": [
+              "multi-v2.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary",
+              "other-writer.primary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": []
+          }
+        },
+        {
+          "bundle": "multi-v3",
+          "expect": {
+            "history": [
+              "multi-v3",
+              "other-writer",
+              "multi-v2"
+            ],
+            "versions": [
+              "multi-v2.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary",
+              "other-writer.primary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": []
+          }
+        },
+        {
+          "bundle": "other-writer",
+          "expect": {
+            "history": [
+              "multi-v3",
+              "other-writer",
+              "multi-v2"
+            ],
+            "versions": [
+              "multi-v2.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary",
+              "other-writer.primary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": []
+          }
+        },
+        {
+          "bundle": "multi-v2",
+          "expect": {
+            "history": [
+              "multi-v3",
+              "other-writer",
+              "multi-v2"
+            ],
+            "versions": [
+              "multi-v2.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary",
+              "other-writer.primary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "visible": [
+              "multi-v3.primary"
+            ],
+            "newlyVisible": []
+          }
+        }
+      ]
+    },
+    {
+      "id": "missing-order-after-older",
+      "steps": [
+        {
+          "bundle": "multi-v2",
+          "expect": {
+            "history": [
+              "multi-v2"
+            ],
+            "versions": [
+              "multi-v2.primary"
+            ],
+            "current": [
+              "multi-v2.primary"
+            ],
+            "visible": [
+              "multi-v2.primary"
+            ],
+            "newlyVisible": [
+              "multi-v2.primary"
+            ]
+          }
+        },
+        {
+          "bundle": "missing-order",
           "expect": {
             "history": [
               "multi-v2",
@@ -3508,17 +4396,17 @@
               "missing-order.primary",
               "multi-v2.primary"
             ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "missing-order"
+            "current": [
+              "multi-v2.primary"
             ],
-            "visible": [],
+            "visible": [
+              "multi-v2.primary"
+            ],
             "newlyVisible": []
           }
         },
         {
-          "event": "multi-v2",
+          "bundle": "multi-v2",
           "expect": {
             "history": [
               "multi-v2",
@@ -3528,22 +4416,22 @@
               "missing-order.primary",
               "multi-v2.primary"
             ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "missing-order"
+            "current": [
+              "multi-v2.primary"
             ],
-            "visible": [],
+            "visible": [
+              "multi-v2.primary"
+            ],
             "newlyVisible": []
           }
         }
       ]
     },
     {
-      "id": "missing-order-arrives-first",
+      "id": "missing-order-before-older",
       "steps": [
         {
-          "event": "missing-order",
+          "bundle": "missing-order",
           "expect": {
             "history": [
               "missing-order"
@@ -3554,7 +4442,6 @@
             "current": [
               "missing-order.primary"
             ],
-            "conflicts": [],
             "visible": [
               "missing-order.primary"
             ],
@@ -3564,7 +4451,7 @@
           }
         },
         {
-          "event": "multi-v2",
+          "bundle": "multi-v2",
           "expect": {
             "history": [
               "missing-order",
@@ -3574,17 +4461,19 @@
               "missing-order.primary",
               "multi-v2.primary"
             ],
-            "current": [],
-            "conflicts": [
-              "missing-order",
-              "multi-v2"
+            "current": [
+              "multi-v2.primary"
             ],
-            "visible": [],
-            "newlyVisible": []
+            "visible": [
+              "multi-v2.primary"
+            ],
+            "newlyVisible": [
+              "multi-v2.primary"
+            ]
           }
         },
         {
-          "event": "missing-order",
+          "bundle": "missing-order",
           "expect": {
             "history": [
               "missing-order",
@@ -3594,22 +4483,22 @@
               "missing-order.primary",
               "multi-v2.primary"
             ],
-            "current": [],
-            "conflicts": [
-              "missing-order",
-              "multi-v2"
+            "current": [
+              "multi-v2.primary"
             ],
-            "visible": [],
+            "visible": [
+              "multi-v2.primary"
+            ],
             "newlyVisible": []
           }
         }
       ]
     },
     {
-      "id": "missing-order-with-higher-revision-older-competing-newer",
+      "id": "missing-order-with-newer-revision-older-candidate-newer",
       "steps": [
         {
-          "event": "multi-v2",
+          "bundle": "multi-v2",
           "expect": {
             "history": [
               "multi-v2"
@@ -3620,7 +4509,6 @@
             "current": [
               "multi-v2.primary"
             ],
-            "conflicts": [],
             "visible": [
               "multi-v2.primary"
             ],
@@ -3630,7 +4518,7 @@
           }
         },
         {
-          "event": "missing-order",
+          "bundle": "missing-order",
           "expect": {
             "history": [
               "multi-v2",
@@ -3640,17 +4528,17 @@
               "missing-order.primary",
               "multi-v2.primary"
             ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "missing-order"
+            "current": [
+              "multi-v2.primary"
             ],
-            "visible": [],
+            "visible": [
+              "multi-v2.primary"
+            ],
             "newlyVisible": []
           }
         },
         {
-          "event": "multi-v3",
+          "bundle": "multi-v3",
           "expect": {
             "history": [
               "multi-v2",
@@ -3663,18 +4551,19 @@
               "multi-v3.primary",
               "multi-v3.secondary"
             ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "missing-order",
-              "multi-v3"
+            "current": [
+              "missing-order.primary"
             ],
-            "visible": [],
-            "newlyVisible": []
+            "visible": [
+              "missing-order.primary"
+            ],
+            "newlyVisible": [
+              "missing-order.primary"
+            ]
           }
         },
         {
-          "event": "multi-v2",
+          "bundle": "multi-v2",
           "expect": {
             "history": [
               "multi-v2",
@@ -3687,18 +4576,17 @@
               "multi-v3.primary",
               "multi-v3.secondary"
             ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "missing-order",
-              "multi-v3"
+            "current": [
+              "missing-order.primary"
             ],
-            "visible": [],
+            "visible": [
+              "missing-order.primary"
+            ],
             "newlyVisible": []
           }
         },
         {
-          "event": "missing-order",
+          "bundle": "missing-order",
           "expect": {
             "history": [
               "multi-v2",
@@ -3711,18 +4599,17 @@
               "multi-v3.primary",
               "multi-v3.secondary"
             ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "missing-order",
-              "multi-v3"
+            "current": [
+              "missing-order.primary"
             ],
-            "visible": [],
+            "visible": [
+              "missing-order.primary"
+            ],
             "newlyVisible": []
           }
         },
         {
-          "event": "multi-v3",
+          "bundle": "multi-v3",
           "expect": {
             "history": [
               "multi-v2",
@@ -3735,23 +4622,22 @@
               "multi-v3.primary",
               "multi-v3.secondary"
             ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "missing-order",
-              "multi-v3"
+            "current": [
+              "missing-order.primary"
             ],
-            "visible": [],
+            "visible": [
+              "missing-order.primary"
+            ],
             "newlyVisible": []
           }
         }
       ]
     },
     {
-      "id": "missing-order-with-higher-revision-older-newer-competing",
+      "id": "missing-order-with-newer-revision-older-newer-candidate",
       "steps": [
         {
-          "event": "multi-v2",
+          "bundle": "multi-v2",
           "expect": {
             "history": [
               "multi-v2"
@@ -3762,7 +4648,6 @@
             "current": [
               "multi-v2.primary"
             ],
-            "conflicts": [],
             "visible": [
               "multi-v2.primary"
             ],
@@ -3772,7 +4657,7 @@
           }
         },
         {
-          "event": "multi-v3",
+          "bundle": "multi-v3",
           "expect": {
             "history": [
               "multi-v2",
@@ -3787,7 +4672,6 @@
               "multi-v3.primary",
               "multi-v3.secondary"
             ],
-            "conflicts": [],
             "visible": [
               "multi-v3.primary"
             ],
@@ -3797,7 +4681,7 @@
           }
         },
         {
-          "event": "missing-order",
+          "bundle": "missing-order",
           "expect": {
             "history": [
               "multi-v2",
@@ -3810,18 +4694,42 @@
               "multi-v3.primary",
               "multi-v3.secondary"
             ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "missing-order",
-              "multi-v3"
+            "current": [
+              "missing-order.primary"
             ],
-            "visible": [],
+            "visible": [
+              "missing-order.primary"
+            ],
+            "newlyVisible": [
+              "missing-order.primary"
+            ]
+          }
+        },
+        {
+          "bundle": "multi-v2",
+          "expect": {
+            "history": [
+              "multi-v2",
+              "multi-v3",
+              "missing-order"
+            ],
+            "versions": [
+              "missing-order.primary",
+              "multi-v2.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "current": [
+              "missing-order.primary"
+            ],
+            "visible": [
+              "missing-order.primary"
+            ],
             "newlyVisible": []
           }
         },
         {
-          "event": "multi-v2",
+          "bundle": "multi-v3",
           "expect": {
             "history": [
               "multi-v2",
@@ -3834,18 +4742,17 @@
               "multi-v3.primary",
               "multi-v3.secondary"
             ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "missing-order",
-              "multi-v3"
+            "current": [
+              "missing-order.primary"
             ],
-            "visible": [],
+            "visible": [
+              "missing-order.primary"
+            ],
             "newlyVisible": []
           }
         },
         {
-          "event": "multi-v3",
+          "bundle": "missing-order",
           "expect": {
             "history": [
               "multi-v2",
@@ -3858,47 +4765,22 @@
               "multi-v3.primary",
               "multi-v3.secondary"
             ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "missing-order",
-              "multi-v3"
+            "current": [
+              "missing-order.primary"
             ],
-            "visible": [],
-            "newlyVisible": []
-          }
-        },
-        {
-          "event": "missing-order",
-          "expect": {
-            "history": [
-              "multi-v2",
-              "multi-v3",
-              "missing-order"
+            "visible": [
+              "missing-order.primary"
             ],
-            "versions": [
-              "missing-order.primary",
-              "multi-v2.primary",
-              "multi-v3.primary",
-              "multi-v3.secondary"
-            ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "missing-order",
-              "multi-v3"
-            ],
-            "visible": [],
             "newlyVisible": []
           }
         }
       ]
     },
     {
-      "id": "missing-order-with-higher-revision-competing-older-newer",
+      "id": "missing-order-with-newer-revision-candidate-older-newer",
       "steps": [
         {
-          "event": "missing-order",
+          "bundle": "missing-order",
           "expect": {
             "history": [
               "missing-order"
@@ -3909,7 +4791,6 @@
             "current": [
               "missing-order.primary"
             ],
-            "conflicts": [],
             "visible": [
               "missing-order.primary"
             ],
@@ -3919,7 +4800,7 @@
           }
         },
         {
-          "event": "multi-v2",
+          "bundle": "multi-v2",
           "expect": {
             "history": [
               "missing-order",
@@ -3929,17 +4810,19 @@
               "missing-order.primary",
               "multi-v2.primary"
             ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "missing-order"
+            "current": [
+              "multi-v2.primary"
             ],
-            "visible": [],
-            "newlyVisible": []
+            "visible": [
+              "multi-v2.primary"
+            ],
+            "newlyVisible": [
+              "multi-v2.primary"
+            ]
           }
         },
         {
-          "event": "multi-v3",
+          "bundle": "multi-v3",
           "expect": {
             "history": [
               "missing-order",
@@ -3951,107 +4834,10 @@
               "multi-v2.primary",
               "multi-v3.primary",
               "multi-v3.secondary"
-            ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "missing-order",
-              "multi-v3"
-            ],
-            "visible": [],
-            "newlyVisible": []
-          }
-        },
-        {
-          "event": "missing-order",
-          "expect": {
-            "history": [
-              "missing-order",
-              "multi-v2",
-              "multi-v3"
-            ],
-            "versions": [
-              "missing-order.primary",
-              "multi-v2.primary",
-              "multi-v3.primary",
-              "multi-v3.secondary"
-            ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "missing-order",
-              "multi-v3"
-            ],
-            "visible": [],
-            "newlyVisible": []
-          }
-        },
-        {
-          "event": "multi-v2",
-          "expect": {
-            "history": [
-              "missing-order",
-              "multi-v2",
-              "multi-v3"
-            ],
-            "versions": [
-              "missing-order.primary",
-              "multi-v2.primary",
-              "multi-v3.primary",
-              "multi-v3.secondary"
-            ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "missing-order",
-              "multi-v3"
-            ],
-            "visible": [],
-            "newlyVisible": []
-          }
-        },
-        {
-          "event": "multi-v3",
-          "expect": {
-            "history": [
-              "missing-order",
-              "multi-v2",
-              "multi-v3"
-            ],
-            "versions": [
-              "missing-order.primary",
-              "multi-v2.primary",
-              "multi-v3.primary",
-              "multi-v3.secondary"
-            ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "missing-order",
-              "multi-v3"
-            ],
-            "visible": [],
-            "newlyVisible": []
-          }
-        }
-      ]
-    },
-    {
-      "id": "missing-order-with-higher-revision-competing-newer-older",
-      "steps": [
-        {
-          "event": "missing-order",
-          "expect": {
-            "history": [
-              "missing-order"
-            ],
-            "versions": [
-              "missing-order.primary"
             ],
             "current": [
               "missing-order.primary"
             ],
-            "conflicts": [],
             "visible": [
               "missing-order.primary"
             ],
@@ -4061,33 +4847,12 @@
           }
         },
         {
-          "event": "multi-v3",
+          "bundle": "missing-order",
           "expect": {
             "history": [
               "missing-order",
+              "multi-v2",
               "multi-v3"
-            ],
-            "versions": [
-              "missing-order.primary",
-              "multi-v3.primary",
-              "multi-v3.secondary"
-            ],
-            "current": [],
-            "conflicts": [
-              "missing-order",
-              "multi-v3"
-            ],
-            "visible": [],
-            "newlyVisible": []
-          }
-        },
-        {
-          "event": "multi-v2",
-          "expect": {
-            "history": [
-              "missing-order",
-              "multi-v3",
-              "multi-v2"
             ],
             "versions": [
               "missing-order.primary",
@@ -4095,23 +4860,22 @@
               "multi-v3.primary",
               "multi-v3.secondary"
             ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "missing-order",
-              "multi-v3"
+            "current": [
+              "missing-order.primary"
             ],
-            "visible": [],
+            "visible": [
+              "missing-order.primary"
+            ],
             "newlyVisible": []
           }
         },
         {
-          "event": "missing-order",
+          "bundle": "multi-v2",
           "expect": {
             "history": [
               "missing-order",
-              "multi-v3",
-              "multi-v2"
+              "multi-v2",
+              "multi-v3"
             ],
             "versions": [
               "missing-order.primary",
@@ -4119,23 +4883,22 @@
               "multi-v3.primary",
               "multi-v3.secondary"
             ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "missing-order",
-              "multi-v3"
+            "current": [
+              "missing-order.primary"
             ],
-            "visible": [],
+            "visible": [
+              "missing-order.primary"
+            ],
             "newlyVisible": []
           }
         },
         {
-          "event": "multi-v3",
+          "bundle": "multi-v3",
           "expect": {
             "history": [
               "missing-order",
-              "multi-v3",
-              "multi-v2"
+              "multi-v2",
+              "multi-v3"
             ],
             "versions": [
               "missing-order.primary",
@@ -4143,47 +4906,160 @@
               "multi-v3.primary",
               "multi-v3.secondary"
             ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "missing-order",
-              "multi-v3"
+            "current": [
+              "missing-order.primary"
             ],
-            "visible": [],
-            "newlyVisible": []
-          }
-        },
-        {
-          "event": "multi-v2",
-          "expect": {
-            "history": [
-              "missing-order",
-              "multi-v3",
-              "multi-v2"
+            "visible": [
+              "missing-order.primary"
             ],
-            "versions": [
-              "missing-order.primary",
-              "multi-v2.primary",
-              "multi-v3.primary",
-              "multi-v3.secondary"
-            ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "missing-order",
-              "multi-v3"
-            ],
-            "visible": [],
             "newlyVisible": []
           }
         }
       ]
     },
     {
-      "id": "missing-order-with-higher-revision-newer-older-competing",
+      "id": "missing-order-with-newer-revision-candidate-newer-older",
       "steps": [
         {
-          "event": "multi-v3",
+          "bundle": "missing-order",
+          "expect": {
+            "history": [
+              "missing-order"
+            ],
+            "versions": [
+              "missing-order.primary"
+            ],
+            "current": [
+              "missing-order.primary"
+            ],
+            "visible": [
+              "missing-order.primary"
+            ],
+            "newlyVisible": [
+              "missing-order.primary"
+            ]
+          }
+        },
+        {
+          "bundle": "multi-v3",
+          "expect": {
+            "history": [
+              "missing-order",
+              "multi-v3"
+            ],
+            "versions": [
+              "missing-order.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "current": [
+              "missing-order.primary"
+            ],
+            "visible": [
+              "missing-order.primary"
+            ],
+            "newlyVisible": []
+          }
+        },
+        {
+          "bundle": "multi-v2",
+          "expect": {
+            "history": [
+              "missing-order",
+              "multi-v3",
+              "multi-v2"
+            ],
+            "versions": [
+              "missing-order.primary",
+              "multi-v2.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "current": [
+              "missing-order.primary"
+            ],
+            "visible": [
+              "missing-order.primary"
+            ],
+            "newlyVisible": []
+          }
+        },
+        {
+          "bundle": "missing-order",
+          "expect": {
+            "history": [
+              "missing-order",
+              "multi-v3",
+              "multi-v2"
+            ],
+            "versions": [
+              "missing-order.primary",
+              "multi-v2.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "current": [
+              "missing-order.primary"
+            ],
+            "visible": [
+              "missing-order.primary"
+            ],
+            "newlyVisible": []
+          }
+        },
+        {
+          "bundle": "multi-v3",
+          "expect": {
+            "history": [
+              "missing-order",
+              "multi-v3",
+              "multi-v2"
+            ],
+            "versions": [
+              "missing-order.primary",
+              "multi-v2.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "current": [
+              "missing-order.primary"
+            ],
+            "visible": [
+              "missing-order.primary"
+            ],
+            "newlyVisible": []
+          }
+        },
+        {
+          "bundle": "multi-v2",
+          "expect": {
+            "history": [
+              "missing-order",
+              "multi-v3",
+              "multi-v2"
+            ],
+            "versions": [
+              "missing-order.primary",
+              "multi-v2.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "current": [
+              "missing-order.primary"
+            ],
+            "visible": [
+              "missing-order.primary"
+            ],
+            "newlyVisible": []
+          }
+        }
+      ]
+    },
+    {
+      "id": "missing-order-with-newer-revision-newer-older-candidate",
+      "steps": [
+        {
+          "bundle": "multi-v3",
           "expect": {
             "history": [
               "multi-v3"
@@ -4196,7 +5072,6 @@
               "multi-v3.primary",
               "multi-v3.secondary"
             ],
-            "conflicts": [],
             "visible": [
               "multi-v3.primary"
             ],
@@ -4206,7 +5081,7 @@
           }
         },
         {
-          "event": "multi-v2",
+          "bundle": "multi-v2",
           "expect": {
             "history": [
               "multi-v3",
@@ -4221,7 +5096,6 @@
               "multi-v3.primary",
               "multi-v3.secondary"
             ],
-            "conflicts": [],
             "visible": [
               "multi-v3.primary"
             ],
@@ -4229,7 +5103,7 @@
           }
         },
         {
-          "event": "missing-order",
+          "bundle": "missing-order",
           "expect": {
             "history": [
               "multi-v3",
@@ -4242,18 +5116,42 @@
               "multi-v3.primary",
               "multi-v3.secondary"
             ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "missing-order",
-              "multi-v3"
+            "current": [
+              "missing-order.primary"
             ],
-            "visible": [],
+            "visible": [
+              "missing-order.primary"
+            ],
+            "newlyVisible": [
+              "missing-order.primary"
+            ]
+          }
+        },
+        {
+          "bundle": "multi-v3",
+          "expect": {
+            "history": [
+              "multi-v3",
+              "multi-v2",
+              "missing-order"
+            ],
+            "versions": [
+              "missing-order.primary",
+              "multi-v2.primary",
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "current": [
+              "missing-order.primary"
+            ],
+            "visible": [
+              "missing-order.primary"
+            ],
             "newlyVisible": []
           }
         },
         {
-          "event": "multi-v3",
+          "bundle": "multi-v2",
           "expect": {
             "history": [
               "multi-v3",
@@ -4266,18 +5164,17 @@
               "multi-v3.primary",
               "multi-v3.secondary"
             ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "missing-order",
-              "multi-v3"
+            "current": [
+              "missing-order.primary"
             ],
-            "visible": [],
+            "visible": [
+              "missing-order.primary"
+            ],
             "newlyVisible": []
           }
         },
         {
-          "event": "multi-v2",
+          "bundle": "missing-order",
           "expect": {
             "history": [
               "multi-v3",
@@ -4290,47 +5187,22 @@
               "multi-v3.primary",
               "multi-v3.secondary"
             ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "missing-order",
-              "multi-v3"
+            "current": [
+              "missing-order.primary"
             ],
-            "visible": [],
-            "newlyVisible": []
-          }
-        },
-        {
-          "event": "missing-order",
-          "expect": {
-            "history": [
-              "multi-v3",
-              "multi-v2",
-              "missing-order"
+            "visible": [
+              "missing-order.primary"
             ],
-            "versions": [
-              "missing-order.primary",
-              "multi-v2.primary",
-              "multi-v3.primary",
-              "multi-v3.secondary"
-            ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "missing-order",
-              "multi-v3"
-            ],
-            "visible": [],
             "newlyVisible": []
           }
         }
       ]
     },
     {
-      "id": "missing-order-with-higher-revision-newer-competing-older",
+      "id": "missing-order-with-newer-revision-newer-candidate-older",
       "steps": [
         {
-          "event": "multi-v3",
+          "bundle": "multi-v3",
           "expect": {
             "history": [
               "multi-v3"
@@ -4343,7 +5215,6 @@
               "multi-v3.primary",
               "multi-v3.secondary"
             ],
-            "conflicts": [],
             "visible": [
               "multi-v3.primary"
             ],
@@ -4353,7 +5224,7 @@
           }
         },
         {
-          "event": "missing-order",
+          "bundle": "missing-order",
           "expect": {
             "history": [
               "multi-v3",
@@ -4364,17 +5235,19 @@
               "multi-v3.primary",
               "multi-v3.secondary"
             ],
-            "current": [],
-            "conflicts": [
-              "missing-order",
-              "multi-v3"
+            "current": [
+              "missing-order.primary"
             ],
-            "visible": [],
-            "newlyVisible": []
+            "visible": [
+              "missing-order.primary"
+            ],
+            "newlyVisible": [
+              "missing-order.primary"
+            ]
           }
         },
         {
-          "event": "multi-v2",
+          "bundle": "multi-v2",
           "expect": {
             "history": [
               "multi-v3",
@@ -4387,18 +5260,17 @@
               "multi-v3.primary",
               "multi-v3.secondary"
             ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "missing-order",
-              "multi-v3"
+            "current": [
+              "missing-order.primary"
             ],
-            "visible": [],
+            "visible": [
+              "missing-order.primary"
+            ],
             "newlyVisible": []
           }
         },
         {
-          "event": "multi-v3",
+          "bundle": "multi-v3",
           "expect": {
             "history": [
               "multi-v3",
@@ -4411,18 +5283,17 @@
               "multi-v3.primary",
               "multi-v3.secondary"
             ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "missing-order",
-              "multi-v3"
+            "current": [
+              "missing-order.primary"
             ],
-            "visible": [],
+            "visible": [
+              "missing-order.primary"
+            ],
             "newlyVisible": []
           }
         },
         {
-          "event": "missing-order",
+          "bundle": "missing-order",
           "expect": {
             "history": [
               "multi-v3",
@@ -4435,18 +5306,17 @@
               "multi-v3.primary",
               "multi-v3.secondary"
             ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "missing-order",
-              "multi-v3"
+            "current": [
+              "missing-order.primary"
             ],
-            "visible": [],
+            "visible": [
+              "missing-order.primary"
+            ],
             "newlyVisible": []
           }
         },
         {
-          "event": "multi-v2",
+          "bundle": "multi-v2",
           "expect": {
             "history": [
               "multi-v3",
@@ -4459,13 +5329,12 @@
               "multi-v3.primary",
               "multi-v3.secondary"
             ],
-            "current": [],
-            "conflicts": [
-              "multi-v2",
-              "missing-order",
-              "multi-v3"
+            "current": [
+              "missing-order.primary"
             ],
-            "visible": [],
+            "visible": [
+              "missing-order.primary"
+            ],
             "newlyVisible": []
           }
         }

@@ -19,9 +19,11 @@ SPDX-License-Identifier: MIT
     <dl class="dl-horizontal">
       <dt>Bundle type</dt>
       <dd><code>{{ $this.type }}</code></dd>
-      <dt>Event identifier</dt>
+      {% if $this.identifier %}
+      <dt>Transport identifier</dt>
       <dd><code>{{ $this.identifier.value }}</code></dd>
-      <dt>Bundle timestamp</dt>
+      {% endif %}
+      <dt>Packing timestamp</dt>
       <dd><code>{{ $this.timestamp }}</code></dd>
       <dt>Entries</dt>
       <dd>{{ $this.entry.count() }}</dd>
@@ -49,14 +51,14 @@ SPDX-License-Identifier: MIT
           <td>
             {% if entry.resource.resourceType = 'Patient' %}Subject of the response and projected measurements.{% endif %}
             {% if entry.resource.resourceType = 'QuestionnaireResponse' %}Source response from which the measurements were extracted.{% endif %}
-            {% if entry.resource.resourceType = 'Device' %}Event-time snapshot of the capturing application or its host.{% endif %}
+            {% if entry.resource.resourceType = 'Device' %}Content-addressed snapshot of the capturing application or its host.{% endif %}
             {% if entry.resource.resourceType = 'Observation' %}
               Projected measurement
               {% for coding in entry.resource.code.coding %}
                 {% if coding.display %}: {{ coding.display }} (<code>{{ coding.code }}</code>){% endif %}
               {% endfor %}
             {% endif %}
-            {% if entry.resource.resourceType = 'Provenance' %}Record of the response-to-FHIR transformation.{% endif %}
+            {% if entry.resource.resourceType = 'Provenance' %}Record of the response-to-FHIR transformation, keyed by its record version.{% endif %}
           </td>
           <td>
           {% if entry.resource.meta.profile %}

@@ -1,20 +1,21 @@
 {
-  "baseSourceRevision": "928db16ef8bfd86d2a171727d2d1cb9f8979a442",
-  "releaseVersion": "0.7.0",
-  "eventIdentity": {
-    "type": {
-      "coding": [
-        {
-          "code": "event",
-          "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
-          "display": "Event"
-        }
-      ]
-    },
-    "system": "https://study.example.org/fhir/NamingSystem/grove-event-v0",
-    "value": "e0:1f5c58aa-6ec6-4e79-a682-829a9debd3f5:50"
-  },
-  "sourceEventSHA256": "30415e5a9e6fc6d8c53feabeae1133220541d16602ea6b044903f4a230a0213d",
+  "baseSourceRevision": "be0e370cbc9e789f5ad30df18d3332713387a9c3",
+  "releaseVersion": "0.8.0",
+  "recordVersions": [
+    {
+      "type": {
+        "coding": [
+          {
+            "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+            "code": "record-version"
+          }
+        ]
+      },
+      "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
+      "value": "v0:test-key:1:bPyV3lwtPox84i-1jtri_UyMis2PtZvmo0mmq9XQrn0"
+    }
+  ],
+  "sourceEventSHA256": "7b31809d2f8ec6f232cb524a9328b07be17c6434ef40d8c1eeafe761dc47ddaa",
   "outputPointer": "/entry/2/resource",
   "protocols": {
     "a": {

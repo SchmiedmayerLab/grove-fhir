@@ -389,22 +389,19 @@ class QuestionnaireContractTests(unittest.TestCase):
     def test_extraction_ships_a_conformant_exchange_bundle(self) -> None:
         """A projection ships a Bundle, so the worked example has to be one.
 
-        The envelope carries the event identity and the entry keys, and every literal
-        reference has to land on an entry in the same Bundle. A loose Observation would
-        satisfy neither, and would misrepresent what a receiving system actually gets.
+        The Bundle carries one record, its entry keys and its content-addressed shared nodes,
+        and every literal reference has to land on an entry in the same Bundle. A loose
+        Observation would satisfy neither, and would misrepresent what a receiving system
+        actually gets.
         """
-        bundle = json.loads(
-            (ROOT / "questionnaire/fixtures/extraction/exchange-bundle.json").read_text(
-                encoding="utf-8"
-            )
-        )
+        path = ROOT / "questionnaire/fixtures/extraction/exchange-bundle.json"
+        bundle = json.loads(path.read_text(encoding="utf-8"))
         module = import_exchange_protocol()
 
         self.assertEqual(bundle["type"], "collection")
-        self.assertEqual(
-            bundle["identifier"]["type"]["coding"][0]["code"], "event"
-        )
-        self.assertRegex(bundle["identifier"]["value"], module.EVENT_IDENTITY)
+        # No event identity: Bundle.identifier is at most an untyped transport id.
+        if "identifier" in bundle:
+            self.assertNotIn("type", bundle["identifier"])
         self.assertIn("timestamp", bundle)
 
         provenance = next(
@@ -415,17 +412,20 @@ class QuestionnaireContractTests(unittest.TestCase):
         timestamp = datetime.fromisoformat(bundle["timestamp"].replace("Z", "+00:00"))
         recorded = datetime.fromisoformat(provenance["recorded"].replace("Z", "+00:00"))
         occurred = datetime.fromisoformat(provenance["occurredDateTime"])
-        self.assertEqual(recorded, timestamp)
+        # Bundle.timestamp is the packing time, which follows the conversion.
+        self.assertGreaterEqual(timestamp, recorded)
         self.assertGreaterEqual(recorded, occurred)
 
-        node_key = "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-exchange-entry-node-key"
+        entry_key = "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-exchange-entry-key"
         urls = set()
         priority = ("source-output", "source-artifact", "source-record", "writer-record",
-                    "device-snapshot", "recording-device")
+                    "device-snapshot", "context-snapshot", "recording-device")
         for entry in bundle["entry"]:
-            key = next(e for e in entry["extension"] if e["url"] == node_key)["valueIdentifier"]
-            # An entry keys off its own highest-priority typed identity, and falls back to a
-            # canonical entry-node key only when the resource carries no typed identity.
+            self.assertFalse(any(e["url"].endswith("grove-exchange-entry-node-key") for e in entry["extension"]))
+            key = next(e for e in entry["extension"] if e["url"] == entry_key)["valueIdentifier"]
+            # An entry keys off its own highest-priority typed identity; a Provenance keys off its
+            # record version and a QuestionnaireResponse off its context snapshot, which each
+            # repeats in an extension, because neither has a free R4 identifier.
             resource = entry["resource"]
             raw = resource.get("identifier") or []
             carried = raw if isinstance(raw, list) else [raw]
@@ -436,20 +436,35 @@ class QuestionnaireContractTests(unittest.TestCase):
                 for coding in (identifier.get("type") or {}).get("coding") or []
                 if coding.get("system", "").endswith("grove-identifier-role")
             }
-            expected = next((role for role in priority if role in roles), "entry-node")
+            if resource["resourceType"] == "Provenance":
+                expected, copy_url = "record-version", module.RECORD_VERSION_EXTENSION
+            elif resource["resourceType"] == "QuestionnaireResponse":
+                expected, copy_url = "context-snapshot", module.CONTEXT_SNAPSHOT_EXTENSION
+            else:
+                expected, copy_url = next(role for role in priority if role in roles), None
             self.assertEqual(key["type"]["coding"][0]["code"], expected)
+            if copy_url is not None:
+                copies = [e["valueIdentifier"] for e in resource.get("extension", []) if e["url"] == copy_url]
+                self.assertEqual([(c["system"], c["value"]) for c in copies], [(key["system"], key["value"])])
             self.assertEqual(
                 entry["fullUrl"],
                 module.entry_full_url(key["system"], key["value"]),
-                "fullUrl is derived from the entry node key",
+                "fullUrl is derived from the entry key",
             )
             urls.add(entry["fullUrl"])
         self.assertEqual(len(urls), len(bundle["entry"]), "entry fullUrls are distinct")
 
+        # Every content and record key recomputes from the final content under the test key.
+        from Scripts.canonical_json import loads_lossless
+        from Tests.producer_validation_test_support import rekey_records
+
+        lossless = loads_lossless(path.read_bytes())
+        self.assertEqual(rekey_records(copy.deepcopy(lossless)), lossless)
+
         present = [entry["resource"]["resourceType"] for entry in bundle["entry"]]
         for required in ("Patient", "QuestionnaireResponse", "Device", "Observation", "Provenance"):
             self.assertIn(required, present)
-        self.assertEqual(present.count("Provenance"), 1, "exactly one conversion Provenance")
+        self.assertEqual(present.count("Provenance"), 1, "one record, so one conversion Provenance")
         self.assertEqual(present.count("Observation"), 2)
 
         # Literal closure: a reference that leaves the Bundle cannot be resolved by a receiver.
@@ -538,6 +553,9 @@ class QuestionnaireContractTests(unittest.TestCase):
         self.assertEqual(
             version(host, "os-version"), stated["hostOperatingSystemVersion"]["valueString"]
         )
+        # Decision 4: the operating-system name and build travel too.
+        self.assertEqual(version(host, "os-name"), stated["hostOperatingSystemName"]["valueString"])
+        self.assertEqual(version(host, "os-build"), stated["hostOperatingSystemBuild"]["valueString"])
 
         # Both projected Observations point at the application snapshot as their gateway.
         gateway = "http://hl7.org/fhir/StructureDefinition/observation-gatewayDevice"
