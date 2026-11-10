@@ -18,11 +18,6 @@
       "status": "verified",
       "source": "https://hl7.org/fhir/uv/phd/STU1/Observation-rtsa-1234.html"
     },
-    "531974": {
-      "display": "MDC_ID_PROD_SPEC_HW",
-      "status": "verified",
-      "source": "https://hl7.org/fhir/uv/phd/STU1/PhdDeviceProfile.html"
-    },
     "531975": {
       "display": "MDC_ID_PROD_SPEC_SW",
       "status": "verified",

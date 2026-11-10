@@ -53,7 +53,7 @@ RECORD_RETRACTION_SYSTEM = (
 )
 SUBJECT_SYSTEM = "https://study.example.org/fhir/identifiers/participant"
 # The spec's D3/D4 vectors: record-content digests, record-version and record-retraction values
-# with their fullUrls, and per-subject key fingerprints.
+# with their fullUrls.
 RECORD_CONTENT_DIGESTS = {
     "heart-rate-72": "zQn6qLSfmufltslE_5oFb25RNjY1-XN5s547r43EumY",
     "heart-rate-72-0": "1VvPJMtUBZEzD8DX5WFNjMr8pMVyKERNzlUyAKQLpuk",
@@ -72,10 +72,6 @@ RECORD_RETRACTION = (
     "v0:test-key:1:0JJ96w-JxTpK7Bb-910L_61f3KJdI8Cr4eSGTpJ7L7o",
     "urn:uuid:03e766bb-9cc6-51b2-b67e-e8902e01513f",
 )
-KEY_FINGERPRINTS = {
-    "participant-001": "P9uBXnCHhfLE5C5Mp3Xh0AMVDpbuflhG4AFWUbowp40",
-    "participant-002": "InZQvEQlaalyElrzinq8t-OpRxvRNxJtJ9mNBNYEaRM",
-}
 DIGEST = "A" * 43
 
 
@@ -233,9 +229,7 @@ class ExchangeProtocolTests(unittest.TestCase):
                 else:
                     self.assertNotEqual(row.get("severity"), "warning")
         self.assertIn("mobile-input.unclassified", codes)
-        # A recording Device is always emitted, so omitting it is no longer a warning.
-        self.assertNotIn("mobile-omission.recording-device", codes)
-        self.assertEqual(sum(row.get("severity") == "warning" for row in rows), 3)
+        self.assertEqual(sum(row.get("severity") == "warning" for row in rows), 4)
 
     def test_record_centric_diagnostics_replace_the_event_diagnostics(self) -> None:
         codes = {row["code"]: row for row in self.catalog["producerDiagnostics"]}
@@ -245,7 +239,6 @@ class ExchangeProtocolTests(unittest.TestCase):
             "mobile-exchange.entry-node-ordinal",
             "mobile-exchange.entry-node-key",
             "mobile-exchange.event-times",
-            "mobile-omission.recording-device",
         ):
             with self.subTest(deleted=deleted):
                 self.assertNotIn(deleted, codes)
@@ -760,9 +753,6 @@ class ExchangeProtocolTests(unittest.TestCase):
         self.assertIn("Nothing else is removed", record["exclusions"])
         self.assertIn("never parse or recompute", record["receiverRule"])
         self.assertIn("has no grove-record-version", record["retractionKey"])
-        key_id = self.catalog["opaqueIdentity"]["keyId"]
-        self.assertEqual(key_id["fingerprintDomain"], PROTOCOL.KEY_FINGERPRINT_DOMAIN)
-        self.assertEqual(key_id["fingerprintComponents"], ["subject-system", "subject-value"])
 
     def test_version_selection_is_one_normative_set_rule(self) -> None:
         selection = self.catalog["lifecycle"]["active"]["versionSelection"]
@@ -815,12 +805,9 @@ class ExchangeProtocolTests(unittest.TestCase):
             with self.subTest(vector=vector):
                 self.assertIn(vector, equality["vectors"])
 
-    def test_recording_device_snapshot_is_mandatory_and_the_unit_optional(self) -> None:
+    def test_recording_device_carries_one_content_snapshot_and_requires_a_unit_token(self) -> None:
         device = self.catalog["recordingDevice"]
-        self.assertNotIn("unknownInstance", device)
-        self.assertIn("optional", device["unitIdentity"])
-        self.assertIn("token-scope", device["unitIdentity"])
-        self.assertIn("never inferred to be one physical unit", device["instanceRule"])
+        self.assertIn("omit", device["unknownInstance"].lower())
         self.assertIn("exactly one device-snapshot identifier", device["snapshots"])
 
     def test_test_key_is_explicitly_forbidden_in_production(self) -> None:
@@ -831,7 +818,7 @@ class ExchangeProtocolTests(unittest.TestCase):
 
 
 class RecordIdentityTests(unittest.TestCase):
-    """The record-centric identities: content snapshots, record versions, retractions, key ids."""
+    """The record-centric identities: content snapshots, record versions, and retractions."""
 
     key = bytes(range(32))
 
@@ -872,29 +859,8 @@ class RecordIdentityTests(unittest.TestCase):
             [SOURCE_RECORD_SYSTEM, SOURCE_RECORD_VALUE],
         )
 
-    def test_catalog_key_fingerprint_vectors_match_the_spec(self) -> None:
-        key = bytes.fromhex(self.vectors["keyHex"])
-        self.assertEqual(key, self.key)
-        self.assertEqual(
-            {vector["subjectValue"]: vector["fingerprint"] for vector in self.vectors["keyFingerprint"]},
-            KEY_FINGERPRINTS,
-        )
-        for vector in self.vectors["keyFingerprint"]:
-            with self.subTest(vector=vector["id"]):
-                subject = (vector["subjectSystem"], vector["subjectValue"])
-                self.assertEqual(vector["subjectSystem"], SUBJECT_SYSTEM)
-                self.assertEqual(PROTOCOL.key_fingerprint(key, subject), vector["fingerprint"])
-                self.assertEqual(PROTOCOL.recommended_key_id("", key, subject), vector["keyIdSuffix"])
-
     def test_identity_components_have_the_record_centric_positions(self) -> None:
         expected = {
-            "writer-record": (
-                "subject-system", "subject-value", "writer-application-system",
-                "writer-application-value", "writer-record-id",
-            ),
-            "recording-device": (
-                "adapter-id", "subject-system", "subject-value", "token-scope", "stable-unit-token",
-            ),
             "device-snapshot": ("subject-system", "subject-value", "node-role", "content-digest"),
             "context-snapshot": ("subject-system", "subject-value", "node-role", "content-digest"),
             "record-version": ("source-record-system", "source-record-value", "record-content-digest"),
@@ -906,20 +872,6 @@ class RecordIdentityTests(unittest.TestCase):
                 self.assertEqual(PROTOCOL.IDENTITY_KIND_COMPONENT_NAMES[kind], names)
         common = {"key": self.key, "key_id": "test-key", "epoch": 1}
         cases = (
-            (
-                PROTOCOL.writer_record_identity(
-                    **common, subject_system="s", subject_value="p", writer_application_system="a",
-                    writer_application_value="b", writer_record_id="r",
-                ),
-                "writer-record", ["s", "p", "a", "b", "r"],
-            ),
-            (
-                PROTOCOL.recording_device_identity(
-                    **common, adapter_id="healthkit", subject_system="s", subject_value="p",
-                    token_scope="com.example.cuff", stable_unit_token="t",
-                ),
-                "recording-device", ["healthkit", "s", "p", "com.example.cuff", "t"],
-            ),
             (
                 PROTOCOL.device_snapshot_identity(
                     **common, subject_system="s", subject_value="p", node_role="host", content_digest=DIGEST,
@@ -952,22 +904,6 @@ class RecordIdentityTests(unittest.TestCase):
                 )
                 values.add(value)
         self.assertEqual(len(values), len(cases))
-        # The subject scopes a writer record and a recording device: one key, two subjects, two ids.
-        self.assertNotEqual(
-            PROTOCOL.writer_record_identity(
-                **common, subject_system="s", subject_value="p2", writer_application_system="a",
-                writer_application_value="b", writer_record_id="r",
-            ),
-            cases[0][0],
-        )
-        # The token scope separates equal host-local tokens assigned by different writers.
-        self.assertNotEqual(
-            PROTOCOL.recording_device_identity(
-                **common, adapter_id="healthkit", subject_system="s", subject_value="p",
-                token_scope="com.example.other", stable_unit_token="t",
-            ),
-            cases[1][0],
-        )
 
     def test_record_content_vectors_are_exact(self) -> None:
         self.assertEqual(
@@ -1012,30 +948,6 @@ class RecordIdentityTests(unittest.TestCase):
             RECORD_VERSIONS["heart-rate-72-0"][0].encode("utf-8"),
             RECORD_VERSIONS["heart-rate-72"][0].encode("utf-8"),
         )
-
-    def test_key_fingerprint_vectors_are_exact(self) -> None:
-        for subject_value, fingerprint in KEY_FINGERPRINTS.items():
-            with self.subTest(subject=subject_value):
-                actual = PROTOCOL.key_fingerprint(self.key, (SUBJECT_SYSTEM, subject_value))
-                self.assertEqual(actual, fingerprint)
-                self.assertEqual(
-                    PROTOCOL.recommended_key_id("s", self.key, (SUBJECT_SYSTEM, subject_value)),
-                    "s" + fingerprint[:8],
-                )
-        self.assertEqual(
-            PROTOCOL.recommended_key_id("", self.key, (SUBJECT_SYSTEM, "participant-001")), "P9uBXnCH"
-        )
-        self.assertNotEqual(
-            PROTOCOL.key_fingerprint(bytes(range(1, 33)), (SUBJECT_SYSTEM, "participant-001")),
-            KEY_FINGERPRINTS["participant-001"],
-        )
-        for subject in (("", "participant-001"), (SUBJECT_SYSTEM, ""), (SUBJECT_SYSTEM,), "subject", None):
-            with self.subTest(subject=subject), self.assertRaises(PROTOCOL.ExchangeProtocolError):
-                PROTOCOL.key_fingerprint(self.key, subject)  # type: ignore[arg-type]
-        with self.assertRaisesRegex(PROTOCOL.ExchangeProtocolError, "at least 32"):
-            PROTOCOL.key_fingerprint(b"short", (SUBJECT_SYSTEM, "participant-001"))
-        with self.assertRaisesRegex(PROTOCOL.ExchangeProtocolError, "ASCII token"):
-            PROTOCOL.recommended_key_id("s:", self.key, (SUBJECT_SYSTEM, "participant-001"))
 
     def test_record_content_excludes_only_id_and_the_record_version_extension(self) -> None:
         expected = RECORD_CONTENT_DIGESTS["heart-rate-72"]

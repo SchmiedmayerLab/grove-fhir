@@ -121,8 +121,6 @@
       "identityKind": "writer-record",
       "identifierRole": "writer-record",
       "components": [
-        "subject-system",
-        "subject-value",
         "writer-application-system",
         "writer-application-value",
         "writer-record-id"
@@ -1377,8 +1375,9 @@
   ],
   "recordingDeviceIdentity": {
     "adapterId": "providers",
-    "status": "snapshot-required-unit-optional",
+    "status": "stable-token-required",
     "stableUnitToken": "A caller-governed, deployment-scoped per-unit token from already-authorized provider device data.",
-    "snapshot": "A recording Device always carries one content device-snapshot v0 identifier over its complete rendered content and carries a recording-device v0 identifier only with that token. Manufacturer, model, payload group, account, and record identity do not prove a physical device instance, and equal snapshots never prove one unit."
+    "fallback": "Omit Observation.device when no stable per-unit token exists. Manufacturer, model, payload group, account, and record identity do not prove a physical device instance.",
+    "snapshot": "When emitted, the Device carries both recording-device and content device-snapshot v0 identifiers."
   }
 }

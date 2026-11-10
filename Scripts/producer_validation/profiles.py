@@ -405,10 +405,9 @@ def validate_exchange_supporting_profile_claim(
             "supporting-resource profile mode"
         )
     required_roles = set(matches[0].get("requiredIdentifierRoles", []))
-    optional_roles = set(matches[0].get("optionalIdentifierRoles", []))
     if required_roles:
-        typed = set(typed_resource_identifiers(resource, label))
-        if not required_roles <= typed <= required_roles | optional_roles:
+        typed = typed_resource_identifiers(resource, label)
+        if set(typed) != required_roles:
             raise ProducerValidationError(
                 f"{label} active {resource_type} has invalid Grove identifier roles"
             )

@@ -44,16 +44,8 @@
           "valueString": "iPhone17,1"
         },
         {
-          "url": "hostOperatingSystemName",
-          "valueString": "iOS"
-        },
-        {
           "url": "hostOperatingSystemVersion",
           "valueString": "26.0"
-        },
-        {
-          "url": "hostOperatingSystemBuild",
-          "valueString": "23A341"
         }
       ],
       "url": "https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire-writer-context"

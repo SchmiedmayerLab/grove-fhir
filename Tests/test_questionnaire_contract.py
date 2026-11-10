@@ -553,9 +553,6 @@ class QuestionnaireContractTests(unittest.TestCase):
         self.assertEqual(
             version(host, "os-version"), stated["hostOperatingSystemVersion"]["valueString"]
         )
-        # Decision 4: the operating-system name and build travel too.
-        self.assertEqual(version(host, "os-name"), stated["hostOperatingSystemName"]["valueString"])
-        self.assertEqual(version(host, "os-build"), stated["hostOperatingSystemBuild"]["valueString"])
 
         # Both projected Observations point at the application snapshot as their gateway.
         gateway = "http://hl7.org/fhir/StructureDefinition/observation-gatewayDevice"

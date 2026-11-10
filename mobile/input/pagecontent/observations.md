@@ -54,7 +54,7 @@ This exact-two rule prevents a producer from presenting ambiguous adapter or mea
 | What was the result? | `value[x]`, `component`, or `hasMember` | Required unless `dataAbsentReason` explains absence with a FHIR data-absent-reason code |
 | Where on the body? | `bodySite` | SNOMED CT, only when the source states it |
 | Which measurement technique? | `method` | Fixed by aggregate and ECG profiles; otherwise SNOMED CT or a Grove code system, when the source states it |
-| Which hardware measured it? | `device` | Recording Device, whenever the source states it; a stable unit identity is optional |
+| Which hardware measured it? | `device` | Device, when known and governed |
 | How was it captured? | `grove-recording-method` | Only when the source positively establishes the mode |
 | Which app mediated it? | `observation-gatewayDevice` | Only when the application actually mediated the measurement |
 | Which study applies? | `workflow-researchStudy` | ResearchStudy reference, when applicable |
@@ -106,9 +106,7 @@ Every Grove output carries separately typed source-record and source-output Iden
 Their systems are deployment-owned and immutable for one identity kind, scope, HMAC key id, and key epoch; their values use the `v0:<key-id>:<epoch>:<digest>` form.
 A deployment should name each system `<deployment-root>/NamingSystem/grove-<identity-kind>-v0/<key-id>/<epoch>`, including the systems that key a Provenance: `<deployment-root>/NamingSystem/grove-record-version-v0/<key-id>/<epoch>` for a record version and `<deployment-root>/NamingSystem/grove-record-retraction-v0/<key-id>/<epoch>` for a record retraction.
 The form carries the identity kind, the protocol version, the key id, and the epoch, so a receiver reads them from the namespace itself and the same key material names the same namespace on every platform.
-The normative test vectors use that system form, with key id `test-key`, under the root `https://study.example.org/fhir`; a deployment that already governs its own namespaces remains conformant.
-A key id names exactly one key for the deployment's lifetime: a deployment that cannot prove it still holds the same key, such as one that re-mints a lost key, uses a new key id.
-The recommended key id is a deployment prefix followed by the first 8 characters of the key's fingerprint for the subject, defined in `opaqueIdentity.keyId`; because the fingerprint is per subject, a key that several subjects share never puts one key id into all of their identifiers.
+The normative test vectors use that system form under the root `https://study.example.org/fhir`; a deployment that already governs its own namespaces remains conformant.
 The exact component order and unsigned 32-bit length-framed UTF-8 preimage are normative in [`catalog/exchange-protocol.json`](https://grovealliance.org/fhir/catalog/exchange-protocol.json). Each catalog-named identity component is a non-empty Unicode-scalar string; missing, empty, additional, reordered, or non-scalar components are errors.
 A `part-index` component is the zero-based position of a preserved payload part as a canonical unsigned decimal: `0`, or a nonzero digit followed by digits, with no sign or leading zero.
 The three identifier roles answer different questions.
@@ -117,7 +115,7 @@ The three identifier roles answer different questions.
 |---|---|---|---|
 | `source-record` | the exact source record the record was converted from | adapter id, source type, repository scope, and the native record identifier; a provider adapter uses its provider code and scope | unchanged |
 | `source-output` | one exact output of that record, told apart by output role and discriminator | the source-record components plus the output role and discriminator | unchanged, so a receiver supersedes the output in place |
-| `writer-record` | the logical record identity assigned by the application that wrote the source record | an opaque identity over the subject, the writer application, and its record identifier, present when the platform supplies them, with the version in the writer-record-version extension | unchanged; the version orders the revisions |
+| `writer-record` | the logical record identity assigned by the application that wrote the source record | an opaque identity over the writer application and its record identifier, present when the platform supplies them, with the version in the writer-record-version extension | unchanged; the version orders the revisions |
 
 Every conversion also names its own version of the source record: the conversion Provenance is keyed by a `record-version` Identifier over the source-record pair and the canonical content of the Provenance and its outputs, so a revision, a re-conversion, or any changed byte gives a new record version while these three roles stay unchanged.
 
@@ -135,9 +133,8 @@ Preserve meaningful source order, time, multiplicity, or ordinal in a FHIR eleme
 
 Intentional source-identifier disclosure is separate from accidental propagation.
 A source-native value is never `Resource.id`, a Bundle entry key, a retraction address, an arbitrary Observation component, or untyped metadata.
-Do not incidentally copy it into Attachment titles or URLs, `Bundle.identifier`, transport/object names, or logs.
+Do not incidentally copy it into Attachment titles or URLs, transport/object names, or logs.
 A deployment may deliberately use the value in a separately governed non-FHIR storage contract.
-Every export a deployment makes of received records strips every governed source identifier and every `grove-retraction-target-native-identifier` extension: a native value that other applications also read would join an exported copy back to their data record by record.
 HMAC reduces identifier disclosure but does not de-identify clinical content, timestamps, references, or attachments; a repository may assign or replace `Resource.id` independently.
 
 ### Codes and quantities

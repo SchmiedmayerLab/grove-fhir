@@ -987,7 +987,7 @@ class GuideQATests(unittest.TestCase):
             self.assertEqual(write_case(observation, iso_resource, iso_html), 1)
             self.assertEqual(
                 set(CHECK.iso_11073_evidence()),
-                {"131329", "150452", "531974", "531975", "531976"},
+                {"131329", "150452", "531975", "531976"},
             )
 
             bundle = "Bundle-example"

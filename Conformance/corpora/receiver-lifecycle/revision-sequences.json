@@ -54,7 +54,7 @@
         ]
       },
       "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
-      "value": "v0:test-key:1:NQSJUQLiSfB8UFUm-DN4F3yJKBQJk01Hnjr1ZuMCDGc"
+      "value": "v0:test-key:1:9KrWXi6Y5p8bI7bOGY8THmBdLCcH-0vay1G5bVK48oI"
     },
     "multi-v2": {
       "type": {
@@ -66,7 +66,7 @@
         ]
       },
       "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
-      "value": "v0:test-key:1:tTobsrtpfc56ceW0b3bMJe-3KAOSYLnENUzDpgykFec"
+      "value": "v0:test-key:1:3u2mQn8g5ptz47rHITeniMcMQpl5ZvNffgthHPcETOg"
     },
     "multi-v3": {
       "type": {
@@ -78,7 +78,7 @@
         ]
       },
       "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
-      "value": "v0:test-key:1:-0FOFDNefG_F1Kijariy5UrCFGYN10hKiIu4RyF_VWA"
+      "value": "v0:test-key:1:f_V4WBxCc7mbc1txUhZ61EK-gQKT9Ve-4PAh-JdVg3o"
     },
     "equal-version-later-recorded": {
       "type": {
@@ -90,7 +90,7 @@
         ]
       },
       "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
-      "value": "v0:test-key:1:FFtAoENlRmglBM3sGXPCP3C-SiYzk5KqUROAxK7sjDM"
+      "value": "v0:test-key:1:qEov7x9hE2iqcQQTeyWa_F0_tm9MoEYwwfjrxSAIOG0"
     },
     "equal-version-reconversion": {
       "type": {
@@ -102,7 +102,7 @@
         ]
       },
       "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
-      "value": "v0:test-key:1:NeQ-uDYACuiF9yijNydPYDDtkK6QJiTytLzmR2Lliw4"
+      "value": "v0:test-key:1:u0vpOJxB2rhPLjSfDAoY63-b_G4YUSLeAspdCAo7EdU"
     },
     "equal-version-equal-recorded": {
       "type": {
@@ -114,7 +114,7 @@
         ]
       },
       "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
-      "value": "v0:test-key:1:xXRvK4HIFPEXVYyBgM90FNbIPDZfsMNsoBkjQosbp8o"
+      "value": "v0:test-key:1:JFlHMMZRb0RR101RJgfvPYC3TxbMd2MR1Ma6qJR8UO0"
     },
     "other-writer": {
       "type": {
@@ -126,7 +126,7 @@
         ]
       },
       "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
-      "value": "v0:test-key:1:52Q6md0UZ0wG5BDeLVhz-LdbDVfqBARUXBvV0fFj_8Y"
+      "value": "v0:test-key:1:KRXWXx1nrrcVvRExxQGll0bd3kPLMAlfbyNHjWnh05Y"
     },
     "missing-order": {
       "type": {

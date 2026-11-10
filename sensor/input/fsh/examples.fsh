@@ -20,9 +20,9 @@ Usage: #example
 Title: "Grove Sensor Example Device"
 Description: "A content snapshot of the physical sensor that captured the examples. Its device-snapshot identifier is its content key; a governed stable per-unit token also gives it a recording-device unit key."
 * identifier[physicalUnit].system = "https://study.example.org/fhir/NamingSystem/grove-recording-device-v0/test-key/1"
-* identifier[physicalUnit].value = "v0:test-key:1:3u6TBfv_KXfH_RaTMEOB2UOz_CkQ-sDZOSkdPN9O2Lc"
+* identifier[physicalUnit].value = "v0:test-key:1:izeNpl55_7d6M_9MCfZNMbX2Uu-on5fNZ7fedyWW1g8"
 * identifier[snapshot].system = "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v0/test-key/1"
-* identifier[snapshot].value = "v0:test-key:1:Ycdj8UUClQZew0ENaWl68eoDQfmbcaKnSbLvdkkX08Y"
+* identifier[snapshot].value = "v0:test-key:1:1HnT6Igufm7nDIkqZ5-wxlZ8Q18d8Poc7N4qIXzEo1k"
 * status = #active
 * manufacturer = "Example Devices"
 * modelNumber = "Wave 2"

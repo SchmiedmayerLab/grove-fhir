@@ -245,38 +245,18 @@ An object's other metadata keys are withheld under the same condition as the cor
 
 ### Device, application, and provenance
 
-Map every non-nil `HKObject.device` to a [Grove Recording Device](https://grovealliance.org/fhir/mobile/StructureDefinition-grove-recording-device.html) that `Observation.device` references, and carry every field that `HKDevice` and the sample's device metadata keys supply; consumers filter what they do not need.
-The Device always carries the content `device-snapshot` identity, minted over its complete rendered content after every field is set.
-It also carries the typed `recording-device` identity only when a governed stable per-unit token exists: `HKDevice.localIdentifier` when it is nonempty and the deployment has verified its stability for the acquisition scope, or another caller-governed token.
-That token is local to the host that recorded the sample and writable by any application, so its HMAC is scoped by the writing source's `HKSource.bundleIdentifier`, and the same token stated by two writers names two units.
-Without a token the Device is still emitted and referenced; manufacturer, model, version, subject, a snapshot, or their digest never establish a physical instance, and equal snapshots are never inferred to be one unit.
+Map `HKDevice` to a [Grove Recording Device](https://grovealliance.org/fhir/mobile/StructureDefinition-grove-recording-device.html) only when the caller supplies a governed stable per-unit token for the hardware that acquired the value.
+HMAC-protect that token in the typed `recording-device` identity and add the content `device-snapshot` identity, minted over the Device's complete rendered content after every field is set.
+Omit the recorder when no stable token exists; manufacturer, model, version, subject, or their digest cannot establish a physical instance.
 
-| HealthKit field | Grove Recording Device element |
-|---|---|
-| `HKDevice.name` | `deviceName` of type `user-friendly-name`; the name may be one a person gave the device |
-| `HKDevice.manufacturer` | `manufacturer` |
-| `HKDevice.model` | `modelNumber`; it is not a version |
-| `HKDevice.hardwareVersion` | `version` of type MDC `531974` |
-| `HKDevice.firmwareVersion` | `version` of type MDC `531976` |
-| `HKDevice.softwareVersion` | `version` of type MDC `531975` |
-| `HKDevice.localIdentifier` | `identifier` of type `device-local-identifier`, clear, under a deployment-owned system |
-| `HKDevice.UDIDeviceIdentifier` | `udiCarrier.deviceIdentifier` |
-| `HKMetadataKeyDeviceSerialNumber` | `serialNumber` |
-| `HKMetadataKeyDeviceName` | `deviceName` of type `user-friendly-name`, when `HKDevice.name` is absent |
-| `HKMetadataKeyDeviceManufacturerName` | `manufacturer`, when `HKDevice.manufacturer` is absent |
-| `HKMetadataKeyUDIDeviceIdentifier` | `udiCarrier.deviceIdentifier`, when `HKDevice.UDIDeviceIdentifier` is absent |
-| `HKMetadataKeyUDIProductionIdentifier` | the [Grove UDI Production Identifier](https://grovealliance.org/fhir/mobile/StructureDefinition-grove-udi-production-identifier.html) extension on `udiCarrier`, because FHIR R4 has no element for the raw production identifier |
-
-An `HKDevice` property wins over a device metadata key, a metadata key fills only an absent field, and the serial number comes only from its metadata key.
-Map each field only when its value is present.
-The `Device.version.type` codings use the ISO 11073 MDC revision codes; these standard type codes do not assert conformance to a PHD profile.
-The clear local identifier links a participant's samples from one device within one host; a deployment that shares or exports data applies its own policy to it, to the serial number, and to a device name.
-`recordingDeviceIdentity.fieldMappings` in [`catalog/healthkit-adapter.json`](https://grovealliance.org/fhir/catalog/healthkit-adapter.json) states the same mapping.
+Map `HKDevice.hardwareVersion`, `firmwareVersion`, and `softwareVersion` only when each value is present.
+Their `Device.version.type` codings use the ISO 11073 MDC revision codes `531974`, `531976`, and `531975`, respectively. `HKDevice.model` maps to `Device.modelNumber`; it is not a version.
+These standard type codes do not assert conformance to a PHD profile.
 
 Represent the converting app as a [HealthKit Application Device](StructureDefinition-healthkit-application-device.html), which specializes the shared Grove Application Device.
 Its required, typed Apple bundle identifier uses the [Apple Bundle Identifier](NamingSystem-apple-bundle-id.html) namespace and identifies only the application product.
 Put the human-facing release and build into separate typed Device version entries.
-Represent host hardware and its operating-system name, version, and build as a distinct immutable [Grove Host Device](https://grovealliance.org/fhir/mobile/StructureDefinition-grove-host-device.html) referenced by `Device.parent`; never put the host OS on the application Device.
+Represent host hardware and its operating-system version as a distinct immutable [Grove Host Device](https://grovealliance.org/fhir/mobile/StructureDefinition-grove-host-device.html) referenced by `Device.parent`; never put the host OS on the application Device.
 The application's mandatory content `device-snapshot` HMAC identifies this immutable content, not an installation, account, or person; the host Device it references through `Device.parent` is part of that content.
 The app is the assembler agent in [conversion Provenance](https://grovealliance.org/fhir/mobile/StructureDefinition-grove-mobile-conversion-provenance.html). Converting a stored HealthKit object does not by itself make the app an Observation gateway; add `observation-gatewayDevice` only if the app actually mediated or routed the measurement.
 
@@ -286,8 +266,8 @@ Comparing it with the converting application's build under the same-application 
 When the source is a caller-classified application, represent it as a HealthKit Application Device.
 Use the [Apple Bundle Identifier](NamingSystem-apple-bundle-id.html) namespace for `HKSource.bundleIdentifier`.
 HealthKit takes `HKSourceRevision.version` from the source's `CFBundleVersion`: when HealthKit supplies it, copy it unchanged into the typed application-build slice (`grove-application-version-type#build`), never into the application-version slice.
-When HealthKit reports a supported Bluetooth Low Energy source, represent the author as a Grove Recording Device with its content `device-snapshot` identity, under the deployment's source-actor identity policy.
-When the caller also supplies a governed stable per-unit token, HMAC-protect it in the deployment-scoped `recording-device` identity defined by the Mobile exchange protocol.
+When HealthKit reports a supported Bluetooth Low Energy source, represent the author as a Grove Recording Device only when the caller supplies a governed stable per-unit token under the deployment's source-actor identity policy.
+HMAC-protect it with the deployment-scoped `recording-device` and `device-snapshot` identities defined by the Mobile exchange protocol.
 If native source-actor round-trip requires the clear HealthKit source UUID, disclose it only as a separately governed, system-qualified Identifier under that policy.
 HealthKit does not specify that its UUID is a serial number, a globally stable hardware identity, or stable outside the contexts in which the exact value recurs.
 If the adapter cannot establish whether the source is an application or a device, omit the writer agent rather than guessing its identity. `HKSourceRevision` does not expose an application-or-device discriminator: do not classify the source from the identifier's string shape, source name, or `productType`.
@@ -314,7 +294,7 @@ Study resources are linked through the study model; they are not source entities
 
 ### Unclassified source revision
 
-When the [writer rules](#device-application-and-provenance) state no author agent for the source entity of a HealthKit conversion Provenance, because the caller did not classify the source or classified it as something those rules cannot state, such as a device that is not a supported Bluetooth Low Energy source, that source entity carries one [HealthKit Source Revision](StructureDefinition-healthkit-source-revision.html) extension, so omitting the writer does not lose where the object came from.
+When the [writer rules](#device-application-and-provenance) state no author agent for the source entity of a HealthKit conversion Provenance, because the caller did not classify the source or classified it as something those rules cannot state, such as a Bluetooth source without a governed per-unit token, that source entity carries one [HealthKit Source Revision](StructureDefinition-healthkit-source-revision.html) extension, so omitting the writer does not lose where the object came from.
 The extension never appears beside an author agent: a graph states a source as its writer or through its source revision, never both.
 Only the source entity of a conversion Provenance carries it, and only for a record with an `HKSourceRevision`; a tracked medication has none, because `HKUserAnnotatedMedication` is not an `HKObject`.
 
@@ -322,8 +302,8 @@ The extension has five members, each one `valueString` that appears at most once
 
 | Member | `HKSourceRevision` fact | Value | By default |
 |---|---|---|---|
-| `sourceName` | `source.name` | the exact string | emitted |
-| `sourceBundleIdentifier` | `source.bundleIdentifier` | the exact string | emitted |
+| `sourceName` | `source.name` | the exact string | withheld |
+| `sourceBundleIdentifier` | `source.bundleIdentifier` | the exact string | withheld |
 | `version` | `version` | the exact string, the source's build, which HealthKit takes from its `CFBundleVersion` | emitted |
 | `productType` | `productType` | the exact string, the product type of the device that ran HealthKit when the object was created | emitted |
 | `operatingSystemVersion` | `operatingSystemVersion` | its `majorVersion`, `minorVersion`, and `patchVersion`, each as canonical decimal integer text without a leading zero and with a `-` only before a negative value, joined by `.`; all three always appear, so `26.5.0` is never written `26.5` | emitted |
@@ -331,8 +311,9 @@ The extension has five members, each one `valueString` that appears at most once
 A member whose string fact HealthKit does not supply, or supplies empty, is left out.
 `HKSourceRevision.operatingSystemVersion` is not optional, so its member is present, `0.0.0` included, unless a disclosure policy withholds it.
 
-Every member is emitted by default: the producer carries every source fact, and consumers filter what they do not need.
-`HKSource.name` can be the name a person gave a device, and a device's `HKSource.bundleIdentifier` can embed an identifier that HealthKit assigns to that one device; a producer cannot tell either from an application's without classifying the source, so a deployment that shares or exports data applies its own policy to them.
+`sourceName` and `sourceBundleIdentifier` are withheld by default: a producer carries them only under an explicit deployment authorization to disclose the names and identifiers of the applications and devices that wrote its records.
+`HKSource.name` can be the name a person gave a device, a device's `HKSource.bundleIdentifier` can embed an identifier that HealthKit assigns to that one device, and a producer cannot tell either from an application's without classifying the source.
+`version`, `productType`, and `operatingSystemVersion` are emitted by default.
 A deployment's disclosure policy may withhold any of them, or the whole extension; as for every omission a disclosure policy chooses, that is not reported, and an extension with no member left is not emitted.
 
 The extension describes the consumed object, not an actor: it adds no agent, participant type, or Device, and it states neither that the source is an application nor that it is a device.
@@ -380,7 +361,7 @@ Adding another key requires a defined semantic purpose, a typed FHIR representat
 
 ### Withheld metadata
 
-A metadata key that a source record carries is represented only by the element that this table gives it, for the source types the table names, and only when an output of the record's graph, or the recording Device it references, carries the key's value in that element.
+A metadata key that a source record carries is represented only by the element that this table gives it, for the source types the table names, and only when an output of the record's graph carries the key's value in that element.
 
 | Runtime key | SDK constant | Source types | Element |
 |---|---|---|---|
@@ -388,11 +369,6 @@ A metadata key that a source record carries is represented only by the element t
 | `HKWasUserEntered` | `HKMetadataKeyWasUserEntered` | every type with an Observation output | the `grove-recording-method` extension, `manual-entry` when the key states `true`, as the [capture-mode rule](#capture-mode-and-performer) defines |
 | `HKMetadataKeySyncIdentifier` | `HKMetadataKeySyncIdentifier` | every type with an Observation output | the `writer-record` Identifier, as the [revision rules](#logical-identity-and-revisions) define |
 | `HKMetadataKeySyncVersion` | `HKMetadataKeySyncVersion` | every type with an Observation output | the Grove Writer Record Version extension beside the `writer-record` Identifier |
-| `HKDeviceSerialNumber` | `HKMetadataKeyDeviceSerialNumber` | every type with an Observation output | `serialNumber` of the recording Device, as the device rules define |
-| `HKDeviceName` | `HKMetadataKeyDeviceName` | every type with an Observation output | `deviceName` of type `user-friendly-name` of the recording Device, when `HKDevice.name` is absent |
-| `HKDeviceManufacturerName` | `HKMetadataKeyDeviceManufacturerName` | every type with an Observation output | `manufacturer` of the recording Device, when `HKDevice.manufacturer` is absent |
-| `HKUDIDeviceIdentifier` | `HKMetadataKeyUDIDeviceIdentifier` | every type with an Observation output | `udiCarrier.deviceIdentifier` of the recording Device, when `HKDevice.UDIDeviceIdentifier` is absent |
-| `HKUDIProductionIdentifier` | `HKMetadataKeyUDIProductionIdentifier` | every type with an Observation output | the Grove UDI Production Identifier extension on `udiCarrier` of the recording Device |
 | `HKMetadataKeyHeartRateMotionContext` | `HKMetadataKeyHeartRateMotionContext` | `HKQuantityTypeIdentifierHeartRate` | `Observation.component:heartRateMotionContext`, as [above](#supported-healthkit-metadata) |
 | `HKHeartRateEventThreshold` | `HKMetadataKeyHeartRateEventThreshold` | `HKCategoryTypeIdentifierHighHeartRateEvent`, `HKCategoryTypeIdentifierLowHeartRateEvent` | `Observation.component:threshold` of the notification, in UCUM `/min` |
 | `HKLowCardioFitnessEventThreshold` | `HKMetadataKeyLowCardioFitnessEventThreshold` | `HKCategoryTypeIdentifierLowCardioFitnessEvent` | `Observation.component:threshold` of the notification, in UCUM `mL/kg/min` |
@@ -401,13 +377,12 @@ A metadata key that a source record carries is represented only by the element t
 | `HKMenstrualCycleStart` | `HKMetadataKeyMenstrualCycleStart` | `HKCategoryTypeIdentifierMenstrualFlow` | `Observation.component:cycleStart` |
 | `HKSexualActivityProtectionUsed` | `HKMetadataKeySexualActivityProtectionUsed` | `HKCategoryTypeIdentifierSexualActivity` | `Observation.valueCodeableConcept`, `protected` or `unprotected` |
 
-Withhold every metadata key that an accepted record carries and that neither an output of its graph nor the recording Device it references represents, and report those keys as `mobile-omission.unmodeled-metadata`, naming each key once by its runtime key.
+Withhold every metadata key that an accepted record carries and that no output of its graph represents, and report those keys as `mobile-omission.unmodeled-metadata`, naming each key once by its runtime key.
 That includes a key the table does not list, a key it lists only for other source types, and a listed key whose element no output carries.
 A runtime key is the string that a metadata dictionary holds as the key, as the table's first column gives it, not the name of the SDK constant that holds it, which can differ: `HKMetadataKeyTimeZone` holds `HKTimeZone`.
 A key that no SDK constant declares is named the same way.
 `HKMetadataKeyWasUserEntered` stating `false`, whether the record or a part of it carries it, maps to no element, as the capture-mode rule defines, and is never reported; a value that states nothing is reported.
-Every element in the table belongs to an Observation or to the recording Device it references, so a [HealthKit Recording Document](StructureDefinition-healthkit-recording-document.html) represents no key, not even a valid sync pair.
-A device key of a sample that states no `HKDevice` has no recording Device to carry it, so it is withheld and reported.
+Every element in the table belongs to an Observation, so a [HealthKit Recording Document](StructureDefinition-healthkit-recording-document.html) represents no key, not even a valid sync pair.
 
 A key that a part of the record carries, an object of a blood-pressure correlation or an `HKWorkoutEvent` or `HKWorkoutActivity` of a workout, is represented only when the record itself carries the same key with an equal value that its graph represents; otherwise it is withheld and reported with the record's own keys.
 Two values are equal when they are time-zone names or sync identifiers that match character for character, user-entered flags that state the same thing, or sync versions that are the same number.
@@ -447,7 +422,6 @@ Every key is ordinary except the identifying keys below, which can identify a pe
 | `HKDeviceName` | `HKMetadataKeyDeviceName` |
 | `HKDigitalSignature` | `HKMetadataKeyDigitalSignature` |
 
-The device keys among them, `HKDeviceSerialNumber`, `HKUDIDeviceIdentifier`, `HKUDIProductionIdentifier`, and `HKDeviceName`, are withheld only where the device rules do not map them to the record's recording Device, so the artifact never repeats a value that the Device carries.
 Without an authorization, a producer emits no artifact; that is the default.
 A producer also emits no artifact for a record whose payload would carry no key, so a missing artifact never says whether a record carried metadata.
 The deployment's disclosure policy takes precedence over the authorization: a key that the policy withholds is never carried, whatever the authorization reaches, and, as for every omission a disclosure policy chooses, it is not reported.

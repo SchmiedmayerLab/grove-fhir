@@ -109,7 +109,7 @@ The Grove projection stage adds the identity, device context, and Provenance req
 Each Observation receives `source-record` and `source-output` identifiers, `manual-entry` as its recording method, and a gateway-device reference to the application Device.
 
 The Grove Questionnaire Writer Context extension supplies the facts used to create a [Grove Application Device](https://grovealliance.org/fhir/mobile/StructureDefinition-grove-application-device.html) and its parent [Grove Host Device](https://grovealliance.org/fhir/mobile/StructureDefinition-grove-host-device.html).
-The application identifier, name, version, and build populate the application Device; the host's model and operating-system facts populate its parent.
+The application identifier, name, version, and build populate the application Device; the host model and operating-system version populate its parent.
 Both Devices receive content `device-snapshot` identifiers during the Grove projection stage, the host first, because the application Device's `parent` reference is part of its content.
 
 ### Information unavailable to QuestionnaireResponse projection

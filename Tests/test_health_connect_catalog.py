@@ -503,16 +503,9 @@ class HealthConnectCatalogTests(unittest.TestCase):
 
     def test_recording_device_requires_true_per_unit_evidence(self) -> None:
         device = self.adapter["recordingDeviceIdentity"]
-        self.assertEqual(device["status"], "snapshot-required-unit-optional")
+        self.assertEqual(device["status"], "stable-token-required")
         self.assertIn("no per-unit", device["stableUnitToken"])
-        # The Device is always emitted with its snapshot; only the unit identifier is optional.
-        self.assertNotIn("fallback", device)
-        self.assertIn("always carries one content device-snapshot", device["snapshot"])
-        self.assertIn("equal snapshots never prove one unit", device["snapshot"])
-        self.assertEqual(
-            [mapping["source"] for mapping in device["fieldMappings"]],
-            device["sourceDescriptionFields"],
-        )
+        self.assertIn("Omit", device["fallback"])
         self.assertNotIn("derived", json.dumps(device).lower())
 
 

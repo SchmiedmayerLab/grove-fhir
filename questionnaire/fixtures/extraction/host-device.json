@@ -17,7 +17,7 @@
         ]
       },
       "system": "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v0/test-key/1",
-      "value": "v0:test-key:1:BJ68B1Ln-JzOKPDWOevEmnjQNsX0BheIosEdSGgRV1A"
+      "value": "v0:test-key:1:thKw-S5xmR-Lk7zCnMPtopHLDCVIGyfokZL6zU5ddkw"
     }
   ],
   "status": "active",
@@ -28,33 +28,11 @@
         "coding": [
           {
             "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-application-version-type",
-            "code": "os-name"
-          }
-        ]
-      },
-      "value": "iOS"
-    },
-    {
-      "type": {
-        "coding": [
-          {
-            "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-application-version-type",
             "code": "os-version"
           }
         ]
       },
       "value": "26.0"
-    },
-    {
-      "type": {
-        "coding": [
-          {
-            "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-application-version-type",
-            "code": "os-build"
-          }
-        ]
-      },
-      "value": "23A341"
     }
   ]
 }

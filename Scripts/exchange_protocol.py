@@ -25,7 +25,6 @@ except ModuleNotFoundError:  # Direct execution places Scripts itself on sys.pat
 
 IDENTITY_DOMAIN = "org.grovealliance.fhir.identity.v0"
 RECORD_CONTENT_DOMAIN = "org.grovealliance.fhir.record-content.v0"
-KEY_FINGERPRINT_DOMAIN = "org.grovealliance.fhir.key-fingerprint.v0"
 FULL_URL_NAMESPACE = uuid.UUID("43df4575-bff7-5a57-9a80-2472cd2b0623")
 
 TOKEN = re.compile(r"^[A-Za-z0-9._-]+$")
@@ -95,8 +94,6 @@ IDENTITY_KIND_COMPONENT_NAMES = {
         "output-discriminator",
     ),
     "writer-record": (
-        "subject-system",
-        "subject-value",
         "writer-application-system",
         "writer-application-value",
         "writer-record-id",
@@ -146,7 +143,6 @@ IDENTITY_KIND_COMPONENT_NAMES = {
         "adapter-id",
         "subject-system",
         "subject-value",
-        "token-scope",
         "stable-unit-token",
     ),
     "device-snapshot": (
@@ -226,11 +222,6 @@ def frame_bytes(values: Iterable[bytes]) -> bytes:
     return bytes(output)
 
 
-def _require_key(key: bytes) -> None:
-    if not isinstance(key, bytes) or len(key) < 32:
-        raise ExchangeProtocolError("the HMAC key must contain at least 32 bytes")
-
-
 def require_absolute_uri(value: str, label: str) -> None:
     """Reject IRIs, whitespace, malformed escapes, and relative URI references."""
     if not isinstance(value, str) or ABSOLUTE_URI.fullmatch(value) is None:
@@ -246,7 +237,8 @@ def derive_hmac_identity(
     components: Sequence[str],
 ) -> str:
     """Derive one deployment-scoped opaque business identifier value."""
-    _require_key(key)
+    if not isinstance(key, bytes) or len(key) < 32:
+        raise ExchangeProtocolError("the HMAC key must contain at least 32 bytes")
     if not isinstance(key_id, str) or TOKEN.fullmatch(key_id) is None:
         raise ExchangeProtocolError("key_id must be a nonempty ASCII token")
     epoch_text = str(epoch)
@@ -538,54 +530,6 @@ def context_snapshot_identity(
     )
 
 
-def writer_record_identity(
-    *,
-    key: bytes,
-    key_id: str,
-    epoch: str | int,
-    subject_system: str,
-    subject_value: str,
-    writer_application_system: str,
-    writer_application_value: str,
-    writer_record_id: str,
-) -> str:
-    """Derive a writer-record value, scoped to the subject so accounts sharing a key never link."""
-    return derive_hmac_identity(
-        key=key,
-        key_id=key_id,
-        epoch=epoch,
-        identity_kind="writer-record",
-        components=[
-            subject_system,
-            subject_value,
-            writer_application_system,
-            writer_application_value,
-            writer_record_id,
-        ],
-    )
-
-
-def recording_device_identity(
-    *,
-    key: bytes,
-    key_id: str,
-    epoch: str | int,
-    adapter_id: str,
-    subject_system: str,
-    subject_value: str,
-    token_scope: str,
-    stable_unit_token: str,
-) -> str:
-    """Derive a recording-device unit value; token_scope names who assigned the host-local token."""
-    return derive_hmac_identity(
-        key=key,
-        key_id=key_id,
-        epoch=epoch,
-        identity_kind="recording-device",
-        components=[adapter_id, subject_system, subject_value, token_scope, stable_unit_token],
-    )
-
-
 def record_version_identity(
     *,
     key: bytes,
@@ -621,33 +565,3 @@ def record_retraction_identity(
         identity_kind="record-retraction",
         components=[source_record_system, source_record_value],
     )
-
-
-KEY_ID_FINGERPRINT_LENGTH = 8
-
-
-def key_fingerprint(key: bytes, subject: Sequence[str]) -> str:
-    """Return the per-subject key fingerprint of opaqueIdentity.keyId.
-
-    base64url-nopad HMAC-SHA-256(key, u32-framed [KEY_FINGERPRINT_DOMAIN, subject-system,
-    subject-value]). It is per subject, so one key that several subjects share yields a different
-    key id for each of them.
-    """
-    _require_key(key)
-    if isinstance(subject, (str, bytes)) or not isinstance(subject, Sequence) or len(subject) != 2:
-        raise ExchangeProtocolError("subject must be a (subject-system, subject-value) pair")
-    for name, component in zip(("subject-system", "subject-value"), subject, strict=True):
-        if not isinstance(component, str) or component == "":
-            raise ExchangeProtocolError(f"key-fingerprint.{name} must be a nonempty string")
-    preimage = frame_fields([KEY_FINGERPRINT_DOMAIN, *subject])
-    return base64url_no_padding(hmac.new(key, preimage, hashlib.sha256).digest())
-
-
-def recommended_key_id(prefix: str, key: bytes, subject: Sequence[str]) -> str:
-    """Return the recommended key id: a deployment prefix and the fingerprint's first 8 characters."""
-    if not isinstance(prefix, str):
-        raise ExchangeProtocolError("the key-id prefix must be a string")
-    key_id = prefix + key_fingerprint(key, subject)[:KEY_ID_FINGERPRINT_LENGTH]
-    if TOKEN.fullmatch(key_id) is None:
-        raise ExchangeProtocolError("the key id must be a nonempty ASCII token")
-    return key_id

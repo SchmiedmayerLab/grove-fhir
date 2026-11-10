@@ -18,21 +18,25 @@ Instance: HealthConnectRecordingDeviceExample
 InstanceOf: GroveRecordingDevice
 Usage: #example
 Title: "Health Connect Recording Device"
-Description: "The watch a Record's Metadata.device names, with every fact Health Connect exposes for it: manufacturer, model, and device type. Health Connect gives no per-unit device identifier and the deployment supplies no other token, so it carries only its device-snapshot content key. The Device is still emitted and referenced; manufacturer and model do not establish Device instance identity, and an equal snapshot never proves the same physical unit."
+Description: "A physical watch included only because the deployment has a governed stable per-unit token. Manufacturer and model alone would not establish Device instance identity."
+* identifier[physicalUnit].system = "https://study.example.org/fhir/NamingSystem/grove-recording-device-v0/test-key/1"
+* identifier[physicalUnit].value = "v0:test-key:1:Hvznmkjvjderchpr-aV8bLB9jk73kIIL1c9b8c7K8-k"
 * identifier[snapshot].system = "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v0/test-key/1"
-* identifier[snapshot].value = "v0:test-key:1:CyzQ1aPxNy8NjzgB6AQnxV4XcjjzCZHnTwFjIBh9Lx8"
+* identifier[snapshot].value = "v0:test-key:1:yTmxgKUaN1aJaHwcwGYQc6DHAa1GMDY9yQkNhFp95w0"
 * status = #active
 * type.text = "Watch"
 * manufacturer = "Example Devices"
 * modelNumber = "Study Watch 2"
+* deviceName.name = "Participant study watch"
+* deviceName.type = #user-friendly-name
 
 Instance: HealthConnectHostDeviceExample
 InstanceOf: GroveHostDevice
 Usage: #example
 Title: "Health Connect Host Snapshot"
 Description: "An immutable content snapshot of the phone and operating system hosting the converter."
-* identifier[snapshot].system = "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v0/test-key/1"
-* identifier[snapshot].value = "v0:test-key:1:djeil_yU8_hjmed4drKim-tdEKXhqEL4SQq0ejmKyhw"
+* identifier.system = "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v0/test-key/1"
+* identifier.value = "v0:test-key:1:djeil_yU8_hjmed4drKim-tdEKXhqEL4SQq0ejmKyhw"
 * status = #active
 * manufacturer = "Example Devices"
 * modelNumber = "Example Phone"

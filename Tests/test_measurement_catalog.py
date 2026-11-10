@@ -269,10 +269,9 @@ class MeasurementCatalogTests(unittest.TestCase):
         kinds = {
             row["kind"]: row for row in contract["opaqueIdentity"]["identityKinds"]
         }
-        # The token scope separates equal host-local tokens that different writers assigned (H16).
         self.assertEqual(
             kinds["recording-device"]["components"],
-            ["adapter-id", "subject-system", "subject-value", "token-scope", "stable-unit-token"],
+            ["adapter-id", "subject-system", "subject-value", "stable-unit-token"],
         )
         # A snapshot is minted over the complete rendered content, never over an event (H2).
         self.assertEqual(
@@ -281,11 +280,9 @@ class MeasurementCatalogTests(unittest.TestCase):
         )
         recording = contract["recordingDevice"]
         self.assertIn("stable per-unit token", recording["instanceRule"])
-        self.assertNotIn("unknownInstance", recording)
-        self.assertIn("optional", recording["unitIdentity"])
-        self.assertIn("still emits the Device", recording["unitIdentity"])
+        self.assertIn("omit", recording["unknownInstance"].lower())
         self.assertIn("application, host, or recording-device", recording["roles"])
-        for forbidden in ("manufacturer", "model", "hardware version", "content snapshot"):
+        for forbidden in ("manufacturer", "model", "hardware version"):
             self.assertIn(forbidden, recording["instanceRule"].lower())
 
     def test_every_adapter_declares_its_recording_device_identity(self) -> None:
@@ -296,17 +293,10 @@ class MeasurementCatalogTests(unittest.TestCase):
             )
             declaration = catalog.get("recordingDeviceIdentity")
             self.assertIsNotNone(declaration, f"{name} declares no recording-device identity")
-            self.assertEqual(declaration["status"], "snapshot-required-unit-optional", name)
-            self.assertNotIn("fallback", declaration, name)
+            self.assertEqual(declaration["status"], "stable-token-required", name)
+            self.assertIn("Omit", declaration["fallback"], name)
             self.assertIn("stable", json.dumps(declaration).lower(), name)
-            self.assertIn("device-snapshot", declaration["snapshot"], name)
-            self.assertIn("only", declaration["snapshot"], name)
-            self.assertNotIn("Omit", json.dumps(declaration), name)
-            if name != "providers":
-                # Every device fact the source exposes is mapped (decision 4).
-                self.assertTrue(declaration["fieldMappings"], name)
-                for mapping in declaration["fieldMappings"]:
-                    self.assertTrue(mapping["source"] and mapping["r4Element"], name)
+            self.assertIn("content device-snapshot", declaration["snapshot"], name)
             adapters[name] = declaration["adapterId"]
         self.assertEqual(len(set(adapters.values())), len(adapters), "adapter ids must be distinct")
 

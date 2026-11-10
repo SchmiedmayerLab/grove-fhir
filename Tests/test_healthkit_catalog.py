@@ -346,44 +346,6 @@ class HealthKitCatalogTests(unittest.TestCase):
         self.assertEqual(vectors[even], "50.00076293945312")
         self.assertNotEqual(shortest_round_trip(float(Decimal(odd).scaleb(2))), vectors[even])
 
-    def test_recording_device_maps_every_hkdevice_field_and_device_metadata_key(self) -> None:
-        # Decision 4: collect every device fact HealthKit exposes and filter downstream.
-        device = self.catalog["recordingDeviceIdentity"]
-        self.assertEqual(device["status"], "snapshot-required-unit-optional")
-        self.assertNotIn("fallback", device)
-        self.assertIn("non-nil HKDevice", device["snapshot"])
-        self.assertIn("HKSource.bundleIdentifier", device["tokenScope"])
-        mappings = {mapping["source"]: mapping for mapping in device["fieldMappings"]}
-        self.assertEqual(len(mappings), len(device["fieldMappings"]))
-        self.assertEqual(
-            set(mappings),
-            {
-                "HKDevice.name", "HKDevice.manufacturer", "HKDevice.model", "HKDevice.hardwareVersion",
-                "HKDevice.firmwareVersion", "HKDevice.softwareVersion", "HKDevice.localIdentifier",
-                "HKDevice.UDIDeviceIdentifier", "HKMetadataKeyDeviceSerialNumber", "HKMetadataKeyDeviceName",
-                "HKMetadataKeyDeviceManufacturerName", "HKMetadataKeyUDIDeviceIdentifier",
-                "HKMetadataKeyUDIProductionIdentifier",
-            },
-        )
-        for source, element in (
-            ("HKDevice.hardwareVersion", "531974"),
-            ("HKDevice.firmwareVersion", "531976"),
-            ("HKDevice.softwareVersion", "531975"),
-            ("HKDevice.localIdentifier", "device-local-identifier"),
-            ("HKMetadataKeyDeviceSerialNumber", "Device.serialNumber"),
-            ("HKMetadataKeyUDIProductionIdentifier", "Device.udiCarrier"),
-        ):
-            with self.subTest(source=source):
-                self.assertIn(element, mappings[source]["r4Element"])
-        # The HKDevice property wins; a metadata key fills only an absent field.
-        for key in ("HKMetadataKeyDeviceName", "HKMetadataKeyDeviceManufacturerName", "HKMetadataKeyUDIDeviceIdentifier"):
-            with self.subTest(key=key):
-                self.assertIn("absent", mappings[key]["rule"])
-        # Descriptive facts are snapshot data and never a unit identity.
-        for prohibited in device["prohibitedIdentityInputs"]:
-            with self.subTest(prohibited=prohibited):
-                self.assertIn(prohibited, mappings)
-
     def test_application_device_separates_opaque_snapshot_from_bundle_product(self) -> None:
         contract = self.catalog["applicationDeviceIdentity"]
         self.assertEqual(
@@ -453,24 +415,23 @@ class HealthKitCatalogTests(unittest.TestCase):
             '#build "Build" "The build of the application the Device snapshot describes', terminology
         )
 
-    def test_unclassified_source_revision_emits_every_fact_and_keeps_writer_identity(self) -> None:
-        # A source entity without an author agent states its HKSourceRevision instead. Every
-        # device fact is collected at the source and filtered downstream (decision 4).
+    def test_unclassified_source_revision_withholds_names_and_keeps_writer_identity(self) -> None:
+        # A source entity without an author agent states its HKSourceRevision instead. The two
+        # members that can name or identify a person's device need an explicit authorization.
         contract = self.catalog["sourceRevisionExtension"]
         url = "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-source-revision"
         self.assertEqual(contract["url"], url)
         self.assertEqual(
             [(member["url"], member["defaultDisclosure"]) for member in contract["members"]],
             [
-                ("sourceName", "emitted"),
-                ("sourceBundleIdentifier", "emitted"),
+                ("sourceName", "withheld"),
+                ("sourceBundleIdentifier", "withheld"),
                 ("version", "emitted"),
                 ("productType", "emitted"),
                 ("operatingSystemVersion", "emitted"),
             ],
         )
-        self.assertIn("Every member is carried by default", contract["disclosureRule"])
-        self.assertNotIn("explicit deployment authorization", contract["disclosureRule"])
+        self.assertIn("carried only under an explicit deployment authorization", contract["disclosureRule"])
         # The extension is part of the conversion Provenance, so it is part of the record content.
         self.assertIn("changes the record version", contract["identityRule"])
         self.assertNotRegex(contract["identityRule"], r"\bevent")
@@ -535,6 +496,9 @@ class HealthKitCatalogTests(unittest.TestCase):
                 self.assertTrue(row.endswith(f"| {member['defaultDisclosure']} |"))
         for sentence in (
             "The extension never appears beside an author agent",
+            "`sourceName` and `sourceBundleIdentifier` are withheld by default: a producer carries "
+            "them only under an explicit deployment authorization",
+            "`version`, `productType`, and `operatingSystemVersion` are emitted by default.",
             "all three always appear, so `26.5.0` is never written `26.5`",
             "for a sample from every source, whether the caller classified it as an application, as "
             "a device, or not at all, the writing-application Identifier pair from which the "
@@ -554,7 +518,6 @@ class HealthKitCatalogTests(unittest.TestCase):
         # Changed content is a new version of the source record; no identity is event-scoped.
         self.assertIn("record version", section)
         self.assertNotRegex(section, r"\bevent")
-        self.assertNotIn("withheld by default", section)
         self.assertIn(
             "For a sample from every source, whatever the caller's classification, the "
             "writing-application Identifier pair of the writer-record Identifier is the Apple "
@@ -820,17 +783,12 @@ class HealthKitCatalogTests(unittest.TestCase):
                 table[key] = ", ".join(name.strip().strip("`") for name in source_types.split(","))
                 constants[key] = constant
         # A row names the key by the string the constant holds in an iOS 26.5 simulator on the SDK
-        # baseline; these twelve hold another string than their constant's name.
+        # baseline; these seven hold another string than their constant's name.
         self.assertEqual(
             {key: constant for key, constant in constants.items() if key != constant},
             {
                 "HKTimeZone": "HKMetadataKeyTimeZone",
                 "HKWasUserEntered": "HKMetadataKeyWasUserEntered",
-                "HKDeviceSerialNumber": "HKMetadataKeyDeviceSerialNumber",
-                "HKDeviceName": "HKMetadataKeyDeviceName",
-                "HKDeviceManufacturerName": "HKMetadataKeyDeviceManufacturerName",
-                "HKUDIDeviceIdentifier": "HKMetadataKeyUDIDeviceIdentifier",
-                "HKUDIProductionIdentifier": "HKMetadataKeyUDIProductionIdentifier",
                 "HKHeartRateEventThreshold": "HKMetadataKeyHeartRateEventThreshold",
                 "HKLowCardioFitnessEventThreshold": "HKMetadataKeyLowCardioFitnessEventThreshold",
                 "HKInsulinDeliveryReason": "HKMetadataKeyInsulinDeliveryReason",
@@ -861,19 +819,8 @@ class HealthKitCatalogTests(unittest.TestCase):
                 "HKWasUserEntered",
                 "HKMetadataKeySyncIdentifier",
                 "HKMetadataKeySyncVersion",
-                # Decision 4: every device metadata key fills the recording Device.
-                "HKDeviceSerialNumber",
-                "HKDeviceName",
-                "HKDeviceManufacturerName",
-                "HKUDIDeviceIdentifier",
-                "HKUDIProductionIdentifier",
             },
         )
-        device_keys = {
-            mapping["source"] for mapping in self.catalog["recordingDeviceIdentity"]["fieldMappings"]
-            if mapping["source"].startswith("HKMetadataKey")
-        }
-        self.assertEqual(device_keys, {constants[key] for key in constants if key.startswith(("HKDevice", "HKUDI"))})
         rows = {row["sourceTypeIdentifier"]: row for row in self.catalog["rows"]}
         listed = {
             source_type
@@ -912,17 +859,13 @@ class HealthKitCatalogTests(unittest.TestCase):
         reasons = {row["code"]: row["reason"] for row in self.protocol["producerDiagnostics"]}
         self.assertEqual(
             reasons["mobile-omission.unmodeled-metadata"],
-            "The source record, or a part of it, carries metadata that neither an output of its "
-            "graph nor the recording Device it references represents, so the producer withholds "
-            "those fields.",
+            "The source record, or a part of it, carries metadata that no output of its graph "
+            "represents, so the producer withholds those fields.",
         )
         for rule in (
             "is represented only by the element that this table gives it, for the source types the "
-            "table names, and only when an output of the record's graph, or the recording Device it "
-            "references, carries the key's value in that element.",
-            # Decision 4: a device key fills the recording Device, which exists only with an HKDevice.
-            "A device key of a sample that states no `HKDevice` has no recording Device to carry it, "
-            "so it is withheld and reported.",
+            "table names, and only when an output of the record's graph carries the key's value in "
+            "that element.",
             "and report those keys as `mobile-omission.unmodeled-metadata`, naming each key once by "
             "its runtime key.",
             "A runtime key is the string that a metadata dictionary holds as the key, as the table's "

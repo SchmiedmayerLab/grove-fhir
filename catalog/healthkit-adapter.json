@@ -3651,9 +3651,8 @@
   ],
   "recordingDeviceIdentity": {
     "adapterId": "healthkit",
-    "status": "snapshot-required-unit-optional",
+    "status": "stable-token-required",
     "preferredStableUnitEvidence": "HKDevice.localIdentifier when nonempty and the deployment has verified its stability for the acquisition scope; otherwise a caller-governed stable per-unit token.",
-    "tokenScope": "The writing source's HKSource.bundleIdentifier. HKDevice.localIdentifier is local to the host that recorded it and writable by any application, so the same token stated by two writers names two units.",
     "prohibitedIdentityInputs": [
       "HKDevice.name",
       "HKDevice.manufacturer",
@@ -3661,22 +3660,8 @@
       "HKDevice.hardwareVersion",
       "HKDevice.softwareVersion"
     ],
-    "snapshot": "Every HealthKit object with a non-nil HKDevice yields a recording Device that Observation.device references. The Device always carries one content device-snapshot v0 identifier over its complete rendered content and carries a recording-device v0 identifier only when a governed stable per-unit token exists. Descriptive and version fields are snapshot data; equal snapshots never prove one physical unit.",
-    "fieldMappings": [
-      {"source": "HKDevice.name", "r4Element": "Device.deviceName with type user-friendly-name", "rule": "The name may be one a person gave the device."},
-      {"source": "HKDevice.manufacturer", "r4Element": "Device.manufacturer"},
-      {"source": "HKDevice.model", "r4Element": "Device.modelNumber"},
-      {"source": "HKDevice.hardwareVersion", "r4Element": "Device.version with type MDC 531974 (hardware revision)"},
-      {"source": "HKDevice.firmwareVersion", "r4Element": "Device.version with type MDC 531976 (firmware revision)"},
-      {"source": "HKDevice.softwareVersion", "r4Element": "Device.version with type MDC 531975 (software revision)"},
-      {"source": "HKDevice.localIdentifier", "r4Element": "Device.identifier with type device-local-identifier", "rule": "Carried clear under the deployment's local-identifier system. It is local to one host and links a participant's samples from one device; as a stable per-unit token it is scoped by tokenScope."},
-      {"source": "HKDevice.UDIDeviceIdentifier", "r4Element": "Device.udiCarrier.deviceIdentifier"},
-      {"source": "HKMetadataKeyDeviceSerialNumber", "r4Element": "Device.serialNumber", "rule": "The serial number comes only from this metadata key."},
-      {"source": "HKMetadataKeyDeviceName", "r4Element": "Device.deviceName with type user-friendly-name", "rule": "Only when HKDevice.name is absent: an HKDevice property wins, and a metadata key fills only an absent field."},
-      {"source": "HKMetadataKeyDeviceManufacturerName", "r4Element": "Device.manufacturer", "rule": "Only when HKDevice.manufacturer is absent."},
-      {"source": "HKMetadataKeyUDIDeviceIdentifier", "r4Element": "Device.udiCarrier.deviceIdentifier", "rule": "Only when HKDevice.UDIDeviceIdentifier is absent."},
-      {"source": "HKMetadataKeyUDIProductionIdentifier", "r4Element": "Device.udiCarrier.extension grove-udi-production-identifier", "rule": "FHIR R4 has no element for the raw production identifier, so the Grove UDI production-identifier extension on Device.udiCarrier carries it."}
-    ]
+    "fallback": "Omit Observation.device when no governed stable per-unit token exists. Descriptive and version fields alone cannot establish a physical instance.",
+    "snapshot": "When emitted, the Device carries both recording-device and content device-snapshot v0 identifiers; descriptive and version fields are snapshot data."
   },
   "applicationDeviceIdentity": {
     "profile": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-application-device",
@@ -3696,15 +3681,15 @@
     "url": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-source-revision",
     "r4Context": "Provenance.entity",
     "members": [
-      {"url": "sourceName", "sourceField": "HKSourceRevision.source.name", "defaultDisclosure": "emitted"},
-      {"url": "sourceBundleIdentifier", "sourceField": "HKSourceRevision.source.bundleIdentifier", "defaultDisclosure": "emitted"},
+      {"url": "sourceName", "sourceField": "HKSourceRevision.source.name", "defaultDisclosure": "withheld"},
+      {"url": "sourceBundleIdentifier", "sourceField": "HKSourceRevision.source.bundleIdentifier", "defaultDisclosure": "withheld"},
       {"url": "version", "sourceField": "HKSourceRevision.version", "defaultDisclosure": "emitted"},
       {"url": "productType", "sourceField": "HKSourceRevision.productType", "defaultDisclosure": "emitted"},
       {"url": "operatingSystemVersion", "sourceField": "HKSourceRevision.operatingSystemVersion", "defaultDisclosure": "emitted"}
     ],
     "emissionRule": "When the writer rules state no author agent for the source entity of a HealthKit conversion Provenance, because the caller did not classify the source or classified it as something those rules cannot state, that source entity carries this extension; it never appears beside an author agent. Only the source entity of a conversion Provenance carries it, and only for a record with an HKSourceRevision. It describes the consumed object, not an actor: it adds no agent, participant type, or Device, and no source is classified from its members.",
     "valueRule": "Each member is one valueString, at most once, in the order of members. A string fact is copied exactly, and a member whose string fact HealthKit does not supply, or supplies empty, is left out. operatingSystemVersion is majorVersion, minorVersion, and patchVersion, each the canonical decimal text of its integer without a leading zero and with a minus sign only before a negative value, joined by full stops; all three always appear, 0.0.0 included.",
-    "disclosureRule": "Every member is carried by default: the producer emits every source fact, and consumers filter what they do not need. A disclosure policy may withhold any member or the whole extension, which is not reported, and an extension with no member left is not emitted.",
+    "disclosureRule": "A member whose defaultDisclosure is withheld is carried only under an explicit deployment authorization to disclose the names and identifiers of the applications and devices that wrote the deployment's records; a member whose defaultDisclosure is emitted is carried by default. A disclosure policy may withhold any member or the whole extension, which is not reported, and an extension with no member left is not emitted.",
     "identityRule": "The extension mints no identity, and no business identity is derived from it: adding or withholding it, or any of its members, changes no source-record, source-output, or writer-record Identifier. It is part of the conversion Provenance, so a record delivered again with the extension or any of its members added or withheld is changed content: it changes the record version and is a new version of the source record. For a sample from every source, whatever the caller's classification, the writing-application Identifier pair of the writer-record Identifier is the Apple Bundle Identifier system with HKSource.bundleIdentifier."
   },
   "identity": {
@@ -3748,8 +3733,6 @@
       "identityKind": "writer-record",
       "identifierRole": "writer-record",
       "components": [
-        "subject-system",
-        "subject-value",
         "writer-application-system",
         "writer-application-value",
         "writer-record-id"

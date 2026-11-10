@@ -21,17 +21,3 @@ Description: "The identifier namespace for an Apple application bundle identifie
 * uniqueId.type = #uri
 * uniqueId.value = $appleBundleId
 * uniqueId.preferred = true
-
-Instance: HealthKitDeviceLocalIdentifierExample
-InstanceOf: NamingSystem
-Usage: #example
-Title: "Example HealthKit Device Local Identifier Namespace"
-Description: "An example deployment-owned namespace for the clear HKDevice.localIdentifier a recording Device carries. The value is local to the host that recorded it, so a deployment names its own system; production deployments define their own immutable URI."
-* name = "HealthKitDeviceLocalIdentifierExample"
-* status = #active
-* kind = #identifier
-* date = "2026-11-02"
-* publisher = "Example Study"
-* uniqueId.type = #uri
-* uniqueId.value = "https://study.example.org/fhir/NamingSystem/healthkit-device-local-identifier"
-* uniqueId.preferred = true

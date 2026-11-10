@@ -76,7 +76,6 @@ class RecordFSHContractTests(unittest.TestCase):
         self.assertFalse({"event", "entry-node"} & roles)
         # Devices are never retracted, so no retraction target plays a Device snapshot.
         self.assertNotIn("device-snapshot", codes(self.block("CodeSystem: GroveRetractionTargetRoleCS")))
-        self.assertTrue({"os-name", "os-build", "os-version", "build"} <= codes(self.block("CodeSystem: GroveApplicationVersionTypeCS")))
         for name in ("profiles", "extensions", "examples"):
             with self.subTest(file=name):
                 text = (FSH / f"{name}.fsh").read_text(encoding="utf-8")
@@ -93,31 +92,6 @@ class RecordFSHContractTests(unittest.TestCase):
         for header in ("Profile: GroveMobileExchangeBundle", "Profile: GroveMobileRetractionBundle"):
             with self.subTest(bundle=header):
                 self.assertIn("* entry.extension contains GroveExchangeEntryKey named entryKey 1..1 MS", self.block(header))
-
-    def test_every_adapter_shares_the_one_device_local_identifier_type(self) -> None:
-        self.assertEqual(codes(self.block("CodeSystem: GroveDeviceIdentifierTypeCS")), {"device-local-identifier"})
-        # Every Grove identifier role is a keyed identity; this value is the source's own.
-        self.assertNotIn("device-local-identifier", codes(self.block("CodeSystem: GroveIdentifierRoleCS")))
-        device = self.block("Profile: GroveRecordingDevice")
-        for rule in (
-            "* identifier contains physicalUnit 0..1 MS and snapshot 1..1 MS and localIdentifier 0..1 MS",
-            "* identifier[localIdentifier].type 1..1 MS",
-            "* identifier[localIdentifier].type = GroveDeviceIdentifierTypeCS#device-local-identifier",
-            "* identifier[localIdentifier].system 1..1 MS",
-            "* identifier[localIdentifier].value 1..1 MS",
-        ):
-            with self.subTest(rule=rule):
-                self.assertIn(rule, device)
-        self.assertNotIn("device-local-identifier", (ROOT / "healthkit/input/fsh/terminology.fsh").read_text(encoding="utf-8"))
-        self.assertIn(
-            "* identifier[localIdentifier].value",
-            (ROOT / "healthkit/input/fsh/examples.fsh").read_text(encoding="utf-8"),
-        )
-        for adapter, source in (("healthkit", "HKDevice.localIdentifier"), ("sensorkit", "SRSourceDevice.localIdentifier")):
-            with self.subTest(adapter=adapter):
-                catalog = json.loads((ROOT / f"catalog/{adapter}-adapter.json").read_text(encoding="utf-8"))
-                mappings = {row["source"]: row for row in catalog["recordingDeviceIdentity"]["fieldMappings"]}
-                self.assertEqual(mappings[source]["r4Element"], "Device.identifier with type device-local-identifier")
 
     def test_the_record_version_extension_is_on_every_conversion_provenance(self) -> None:
         block = self.block("Extension: GroveRecordVersion")

@@ -934,32 +934,14 @@
   ],
   "recordingDeviceIdentity": {
     "adapterId": "sensorkit",
-    "status": "snapshot-required-unit-optional",
+    "status": "stable-token-required",
     "stableUnitToken": "A caller-governed, deployment-scoped stable token for the physical acquisition unit.",
     "sourceDescriptionFields": [
-      "SRDevice.name",
-      "SRDevice.model",
-      "SRDevice.systemName",
-      "SRDevice.systemVersion",
-      "SRDevice.productType",
-      "SRSourceDevice.localIdentifier",
-      "SRSourceDevice.manufacturer",
-      "SRSourceDevice.model",
-      "SRSourceDevice.hardwareVersion",
-      "SRSourceDevice.firmwareVersion"
+      "recordingDevice.manufacturer",
+      "recordingDevice.model",
+      "recordingDevice.hardwareVersion"
     ],
-    "snapshot": "Every SensorKit record yields a recording Device for the SRDevice that recorded it, which the record's structured Observation references through Observation.device and its Recording Document through DocumentReference.author, and, where SRFetchResult.sourceDevice names a peripheral, a recording Device for that peripheral. Each always carries one content device-snapshot v0 identifier over its complete rendered content and carries a recording-device v0 identifier only with a governed stable per-unit token. Descriptive fields cannot establish instance identity, and equal snapshots never prove one unit.",
-    "fieldMappings": [
-      {"source": "SRDevice.name", "r4Element": "Device.deviceName with type user-friendly-name", "rule": "The name a person gave the device, such as My iPhone."},
-      {"source": "SRDevice.model", "r4Element": "Device.deviceName with type model-name"},
-      {"source": "SRDevice.systemName", "r4Element": "Device.version with type os-name"},
-      {"source": "SRDevice.systemVersion", "r4Element": "Device.version with type os-version"},
-      {"source": "SRDevice.productType", "r4Element": "Device.modelNumber"},
-      {"source": "SRSourceDevice.localIdentifier", "r4Element": "Device.identifier with type device-local-identifier", "rule": "Carried clear under the deployment's local-identifier system on the peripheral's recording Device; it is local to one host and links a participant's records from one peripheral."},
-      {"source": "SRSourceDevice.manufacturer", "r4Element": "Device.manufacturer"},
-      {"source": "SRSourceDevice.model", "r4Element": "Device.modelNumber"},
-      {"source": "SRSourceDevice.hardwareVersion", "r4Element": "Device.version with type MDC 531974 (hardware revision)"},
-      {"source": "SRSourceDevice.firmwareVersion", "r4Element": "Device.version with type MDC 531976 (firmware revision)"}
-    ]
+    "fallback": "Omit Observation.device when no stable per-unit token exists; descriptive fields cannot establish instance identity.",
+    "snapshot": "When emitted, the Device carries both recording-device and content device-snapshot v0 identifiers."
   }
 }

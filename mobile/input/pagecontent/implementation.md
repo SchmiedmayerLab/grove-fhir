@@ -14,7 +14,7 @@ A Grove Mobile implementation begins with a valid clinical Observation and adds 
 2. Derive exactly one typed `source-record` Identifier and one typed `source-output` Identifier as complete `(system, value)` pairs using the exchange protocol.
 3. Set the Patient, effective time, status, and result.
    Add category and recording method when they are known.
-4. Link the recording Device whenever the source states the hardware that acquired the measurement, carrying every device fact the source exposes; a stable per-unit identity is optional.
+4. Link the recording Device only when its acquisition role and admitted Device profile are known.
 5. Link an application with `observation-gatewayDevice` only when it mediated or routed the measurement.
 6. Link applicable studies with `workflow-researchStudy`.
 7. Create exactly one conversion Provenance for the source-record revision, targeting every output derived from it.

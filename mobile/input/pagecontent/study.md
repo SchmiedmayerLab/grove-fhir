@@ -95,7 +95,6 @@ Filter supporting graphs deliberately; removing only the other study's top-level
 
 Filtering or adding receiver-owned study context produces a **derived export**, not an exact retry of the producer's record versions.
 Give the export its own identity and derivation Provenance; do not reuse a record-version Identifier or the original conversion Provenance, and do not claim that the modified collection carries the original Mobile records.
-Strip every governed source identifier and every `grove-retraction-target-native-identifier` extension from the export, so no clear native value joins the exported copy to other applications' data.
 An opaque, study-scoped lineage identifier can resolve to the retained source internally without exposing its other associations or granting direct access to the raw record versions.
 The source record versions and their original conversion Provenances remain immutable in custody.
 

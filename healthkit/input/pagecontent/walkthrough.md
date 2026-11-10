@@ -71,9 +71,9 @@ The exact source type remains in the adapter-lineage extension beside LOINC `886
 
 ### 4. Represent device roles
 
-The [recording Device](Device-HealthKitRecordingDeviceExample.html) exists because the sample states an `HKDevice`, and it carries every field that `HKDevice` and the sample's device metadata keys supply.
-It always carries a content `device-snapshot` identity, and it carries a stable `recording-device` identity too only when the caller supplies a governed stable per-unit token, scoped by the writing source's bundle identifier.
-Without that token the Device is still emitted and referenced, with its snapshot identity only; descriptive manufacturer, model, and version fields never prove one physical unit.
+The [recording Device](Device-HealthKitRecordingDeviceExample.html) exists only because the caller supplied a governed stable per-unit token.
+It carries both a stable `recording-device` identity and a content `device-snapshot` identity.
+Descriptive manufacturer/model/version fields alone would require the Device to be omitted.
 
 The [converting application](Device-HealthKitApplicationDeviceExample.html) and [host](Device-HealthKitHostDeviceExample.html) are distinct immutable snapshots linked through `Device.parent`.
 Application release and build are separate typed versions; operating-system version belongs to the host.

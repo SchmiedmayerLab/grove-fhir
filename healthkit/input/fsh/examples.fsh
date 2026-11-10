@@ -56,19 +56,19 @@ Instance: HealthKitRecordingDeviceExample
 InstanceOf: GroveRecordingDevice
 Usage: #example
 Title: "HealthKit Recording Device"
-Description: "The watch HealthKit reports as the HKDevice of the passive examples, with every HKDevice field it supplies. It states no localIdentifier and the deployment has no other stable per-unit token for it, so it carries only its device-snapshot content key; the outputs still reference it."
+Description: "The watch reported by HealthKit as the physical recorder for the passive examples."
+* identifier[physicalUnit].system = "https://study.example.org/fhir/NamingSystem/grove-recording-device-v0/test-key/1"
+* identifier[physicalUnit].value = "v0:test-key:1:qhSRcij9sI7cts2PrP7Yj5iAetB4cyTf_hq2Q6b_Hbc"
 * identifier[snapshot].system = "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v0/test-key/1"
-* identifier[snapshot].value = "v0:test-key:1:OgVhKvKRnzaB1CzeVp-cXILzX1g7pVzoh0lEEXDYbss"
+* identifier[snapshot].value = "v0:test-key:1:hbbjbwsAAd0oiJK8XAQWVx4RTGIlZj_1LI3thqc55Fo"
 * status = #active
 * deviceName.name = "Study Watch"
 * deviceName.type = #user-friendly-name
 * manufacturer = "Apple Inc."
 * modelNumber = "Watch"
 * type.text = "Wrist-worn sensor"
-* version[hardwareVersion].type = $mdc#531974 "MDC_ID_PROD_SPEC_HW"
-* version[hardwareVersion].value = "Watch7,1"
-* version[softwareVersion].type = $mdc#531975 "MDC_ID_PROD_SPEC_SW"
-* version[softwareVersion].value = "11.2"
+* version.type = $mdc#531976 "MDC_ID_PROD_SPEC_FW"
+* version.value = "11.2"
 
 Instance: HealthKitApplicationDeviceExample
 InstanceOf: HealthKitApplicationDevice
@@ -92,21 +92,17 @@ Instance: HealthKitHostDeviceExample
 InstanceOf: GroveHostDevice
 Usage: #example
 Title: "HealthKit Host Device Snapshot"
-Description: "The immutable content snapshot of the phone hardware and operating system hosting the converting application, including the operating-system name and build."
-* identifier[snapshot].system = "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v0/test-key/1"
-* identifier[snapshot].value = "v0:test-key:1:7hSXBvj17J_tWEbr8ffpCFpVOCMpRdFOFFHO7KQQSGA"
+Description: "The immutable content snapshot of the phone hardware and operating system hosting the converting application."
+* identifier.system = "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v0/test-key/1"
+* identifier.value = "v0:test-key:1:avcIAk8cRkUJkR4uThX1SAB1sDlwBf5h-pGm_y-D_1c"
 * status = #active
 * manufacturer = "Apple Inc."
 * modelNumber = "Example Phone"
 * deviceName.name = "Study Phone"
 * deviceName.type = #user-friendly-name
 * type.text = "iOS host device"
-* version[operatingSystemName].type = $groveApplicationVersionType#os-name "Operating system name"
-* version[operatingSystemName].value = "iOS"
 * version[operatingSystemVersion].type = $groveApplicationVersionType#os-version "Operating system version"
 * version[operatingSystemVersion].value = "20.1"
-* version[operatingSystemBuild].type = $groveApplicationVersionType#os-build "Operating system build"
-* version[operatingSystemBuild].value = "24A101"
 
 Instance: HealthKitSourceApplicationDeviceExample
 InstanceOf: HealthKitApplicationDevice
@@ -127,22 +123,14 @@ Instance: HealthKitBluetoothSourceDeviceExample
 InstanceOf: GroveRecordingDevice
 Usage: #example
 Title: "HealthKit Bluetooth Source Device"
-Description: "A supported Bluetooth Low Energy source explicitly classified by the producer, with every HKDevice field HealthKit supplies for it. Its clear HKDevice.localIdentifier is carried under the deployment's local-identifier system. The deployment has verified that identifier as stable for the acquisition scope, so it is also the per-unit token of a recording-device identity, scoped by the writing source's bundle identifier because any application can write the identifier."
+Description: "A supported Bluetooth Low Energy source explicitly classified by the producer after the deployment supplied an authorized stable per-unit token. Only deployment-scoped HMAC identities are exchanged."
 * status = #active
-* identifier[snapshot].system = "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v0/test-key/1"
-* identifier[snapshot].value = "v0:test-key:1:48fUUuV1M5c71SfAgXBAhK21SNPsWtUtPp2n5UzKQno"
 * identifier[physicalUnit].system = "https://study.example.org/fhir/NamingSystem/grove-recording-device-v0/test-key/1"
-* identifier[physicalUnit].value = "v0:test-key:1:CAZK3SPUQBklGyt6OT8gLWzf18XNA6P9fQ1NdY_AbHs"
-* identifier[localIdentifier].system = "https://study.example.org/fhir/NamingSystem/healthkit-device-local-identifier"
-* identifier[localIdentifier].value = "6F1A0C2E-3B5D-4E7A-9C11-2D4F6B8A0E13"
+* identifier[physicalUnit].value = "v0:test-key:1:WFvTdsYYy25kOKXkXRmN5LUpuewL402vPr8OS40oGw0"
+* identifier[snapshot].system = "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v0/test-key/1"
+* identifier[snapshot].value = "v0:test-key:1:y6NrCVKggfT-m1TuIOSs8Xh0zbWrb0i-hRfEHSvelEI"
 * deviceName.name = "Example Bluetooth Source"
 * deviceName.type = #user-friendly-name
-* manufacturer = "Example Sensors"
-* modelNumber = "HRM-2"
-* version[hardwareVersion].type = $mdc#531974 "MDC_ID_PROD_SPEC_HW"
-* version[hardwareVersion].value = "2"
-* version[firmwareVersion].type = $mdc#531976 "MDC_ID_PROD_SPEC_FW"
-* version[firmwareVersion].value = "1.0.3"
 
 Instance: HealthKitHeartRateObservationExample
 InstanceOf: HealthKitObservation
@@ -177,7 +165,7 @@ Description: "A body-weight sample a connected scale re-imported after correctin
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
 * identifier[sourceOutput].value = "v0:test-key:1:FR__fLtP23UvZ4eCVmgFh_0IDG5YOK4MmEzZVjERlAk"
 * identifier[writerRecord].system = "https://study.example.org/fhir/NamingSystem/grove-writer-record-v0/test-key/1"
-* identifier[writerRecord].value = "v0:test-key:1:STyede3o70KFor32OsduoVtSWiUnYYXR-pH-fRC6ME4"
+* identifier[writerRecord].value = "v0:test-key:1:qxujzFH9irQKon1KMxiN8jK8ahVB36Fq0JIKoBDNa2s"
 * extension[writerRecordVersion].valueString = "2"
 * status = #amended
 * category = $observationCategory#vital-signs "Vital Signs"
@@ -213,7 +201,7 @@ Instance: HealthKitBluetoothHeartRateObservationExample
 InstanceOf: HealthKitObservation
 Usage: #example
 Title: "HealthKit Bluetooth Heart Rate"
-Description: "A heart-rate sample imported directly from a supported Bluetooth Low Energy heart-rate monitor; its recording Device states the monitor's HKDevice facts."
+Description: "A heart-rate sample imported directly from a supported Bluetooth Low Energy heart-rate monitor after the deployment supplied a governed stable per-unit token."
 * meta.profile[+] = "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-heart-rate"
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
 * identifier[sourceRecord].value = "v0:test-key:1:hLRtdm8TLwFdzySX_s3cl30mzvcJzdzSWn3N31O24d8"

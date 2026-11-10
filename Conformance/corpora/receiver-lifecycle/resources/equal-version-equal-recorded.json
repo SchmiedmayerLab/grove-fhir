@@ -171,7 +171,7 @@
               ]
             },
             "system": "https://study.example.org/fhir/NamingSystem/grove-writer-record-v0/test-key/1",
-            "value": "v0:test-key:1:MuzeFm07qaquRaZFTBMn6ZerEu5wAVEbZUzxrKBehao"
+            "value": "v0:test-key:1:TN39cF6jcCICy4SlWBjpAulk4eMlcb-KM3MwESD9cvw"
           }
         ],
         "extension": [
@@ -235,11 +235,11 @@
               ]
             },
             "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
-            "value": "v0:test-key:1:xXRvK4HIFPEXVYyBgM90FNbIPDZfsMNsoBkjQosbp8o"
+            "value": "v0:test-key:1:JFlHMMZRb0RR101RJgfvPYC3TxbMd2MR1Ma6qJR8UO0"
           }
         }
       ],
-      "fullUrl": "urn:uuid:d48e168e-ff13-54af-9bce-18fc5ddaa145",
+      "fullUrl": "urn:uuid:7debe988-cdb5-5a25-b8b7-110c9cc20261",
       "resource": {
         "resourceType": "Provenance",
         "id": "GroveMobileExchangeProvenanceExample",
@@ -261,7 +261,7 @@
                 ]
               },
               "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
-              "value": "v0:test-key:1:xXRvK4HIFPEXVYyBgM90FNbIPDZfsMNsoBkjQosbp8o"
+              "value": "v0:test-key:1:JFlHMMZRb0RR101RJgfvPYC3TxbMd2MR1Ma6qJR8UO0"
             }
           }
         ],

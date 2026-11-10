@@ -71,49 +71,34 @@ Instance: GroveRecordingDeviceExample
 InstanceOf: GroveRecordingDevice
 Usage: #example
 Title: "Example Recording Device"
-Description: "The physical wrist-worn device that measured the example heart rate, with every device fact its source exposes: names, model, serial number, UDI, and its hardware, firmware, and software revisions. The device-snapshot identifier is its content key; because the deployment also holds a governed stable per-unit token for it, it carries a recording-device unit key."
+Description: "The physical wrist-worn device that measured the example heart rate. The device-snapshot identifier is its content key; the deployment's governed stable per-unit token gives it its recording-device unit key."
 * identifier[physicalUnit].system = "https://study.example.org/fhir/NamingSystem/grove-recording-device-v0/test-key/1"
-* identifier[physicalUnit].value = "v0:test-key:1:PSE1lQ7AEZUu7ZJ--beHmadd52noTMWeJ_m1lnzG574"
+* identifier[physicalUnit].value = "v0:test-key:1:6MCZSHEfrM1QhfZn-Fw6afErSknFcKZvUJWbaCfXJkQ"
 * identifier[snapshot].system = "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v0/test-key/1"
-* identifier[snapshot].value = "v0:test-key:1:RtGDcvUanL6j9N3v7RLOQGdOlIDDZNEzaG6SANUd18U"
+* identifier[snapshot].value = "v0:test-key:1:aC-W5CzErQDjX3e9aNHd-pjPgYgDGkUJGjMZ0a0QI-M"
 * status = #active
-* deviceName[+].name = "Study Watch"
-* deviceName[=].type = #user-friendly-name
-* deviceName[+].name = "Watch One"
-* deviceName[=].type = #model-name
+* deviceName.name = "Study Watch"
+* deviceName.type = #user-friendly-name
 * manufacturer = "Example Device Company"
-* modelNumber = "EXW1"
-* serialNumber = "EXW1-000123"
-* udiCarrier.deviceIdentifier = "00812345000017"
-* udiCarrier.extension[productionIdentifier].valueString = "(21)EXW1-000123"
+* modelNumber = "Watch One"
 * type.text = "Wrist-worn heart-rate sensor"
-* version[hardwareVersion].type = $mdc#531974 "MDC_ID_PROD_SPEC_HW"
-* version[hardwareVersion].value = "B"
-* version[firmwareVersion].type = $mdc#531976 "MDC_ID_PROD_SPEC_FW"
-* version[firmwareVersion].value = "2.1"
-* version[softwareVersion].type = $mdc#531975 "MDC_ID_PROD_SPEC_SW"
-* version[softwareVersion].value = "11.2"
+* version.type = $mdc#531976 "MDC_ID_PROD_SPEC_FW"
+* version.value = "2.1"
 
 Instance: GroveHostDeviceExample
 InstanceOf: GroveHostDevice
 Usage: #example
 Title: "Example Host Device Snapshot"
-Description: "The immutable content snapshot of the host hardware and operating system on which the application converted the example: its product type, names, and operating-system name, version, and build."
-* identifier[snapshot].system = "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v0/test-key/1"
-* identifier[snapshot].value = "v0:test-key:1:8ics5AVDm2ngOFjE1eKVGj623BSEF8UPuQ5D_Zv_PSI"
+Description: "The immutable content snapshot of the host hardware and operating system on which the application converted the example."
+* identifier.system = "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v0/test-key/1"
+* identifier.value = "v0:test-key:1:kNx7SybOxz-E8O4JYPluK5lXFbbpNcH3iC7SZsZCkFY"
 * status = #active
 * manufacturer = "Example Device Company"
-* modelNumber = "Phone1,1"
-* deviceName[+].name = "Study Phone"
-* deviceName[=].type = #user-friendly-name
-* deviceName[+].name = "Phone One"
-* deviceName[=].type = #model-name
-* version[operatingSystemName].type = $groveApplicationVersionType#os-name "Operating system name"
-* version[operatingSystemName].value = "ExampleOS"
+* modelNumber = "Phone One"
+* deviceName.name = "Study Phone"
+* deviceName.type = #user-friendly-name
 * version[operatingSystemVersion].type = $groveApplicationVersionType#os-version "Operating system version"
 * version[operatingSystemVersion].value = "20.1"
-* version[operatingSystemBuild].type = $groveApplicationVersionType#os-build "Operating system build"
-* version[operatingSystemBuild].value = "20B101"
 
 Instance: GroveApplicationDeviceExample
 InstanceOf: GroveApplicationDevice
@@ -210,16 +195,12 @@ InstanceOf: GroveHostDevice
 Usage: #example
 Title: "Exchange Bundle Host"
 Description: "The shared host node of the exchange and retraction Bundle examples, keyed by its content."
-* identifier[snapshot].system = "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v0/test-key/1"
-* identifier[snapshot].value = "v0:test-key:1:rwFNAjqMcBmS0HimLM74soOwigqGu5J04JKh0z8MyzY"
+* identifier.system = "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v0/test-key/1"
+* identifier.value = "v0:test-key:1:01dJDxR9bIctHh_m-iQIOMvapXGnIq_0wmLCNEXTIvo"
 * status = #active
 * modelNumber = "Phone1,1"
-* version[operatingSystemName].type = $groveApplicationVersionType#os-name "Operating system name"
-* version[operatingSystemName].value = "ExampleOS"
 * version[operatingSystemVersion].type = $groveApplicationVersionType#os-version "Operating system version"
 * version[operatingSystemVersion].value = "20.1"
-* version[operatingSystemBuild].type = $groveApplicationVersionType#os-build "Operating system build"
-* version[operatingSystemBuild].value = "20B101"
 
 Instance: GroveMobileExchangeApplicationExample
 InstanceOf: GroveApplicationDevice
@@ -227,7 +208,7 @@ Usage: #example
 Title: "Exchange Bundle Application"
 Description: "The shared converting application node of the exchange and retraction Bundle examples. Its parent reference names the host's content-derived fullUrl, so its own content key covers the host it ran on."
 * identifier[applicationSnapshot].system = "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v0/test-key/1"
-* identifier[applicationSnapshot].value = "v0:test-key:1:YiR1iraqCKj1AsX5GNsHGee3_JOcUEtx0fmrsGCn96Q"
+* identifier[applicationSnapshot].value = "v0:test-key:1:H9mN3DGJkpaJ785z-KtZ7dZ3Gz274Ea1sL2oGs3Jkf4"
 * status = #active
 * deviceName[applicationName].name = "Mobile Study"
 * deviceName[applicationName].type = #user-friendly-name
@@ -235,22 +216,7 @@ Description: "The shared converting application node of the exchange and retract
 * version[applicationVersion].value = "3.2.0"
 * version[applicationBuild].type = $groveApplicationVersionType#build "Build"
 * version[applicationBuild].value = "32014"
-* parent.reference = "urn:uuid:f0749915-accb-5c85-8073-7b9cf0a9a58f"
-
-Instance: GroveMobileExchangeRecordingDeviceExample
-InstanceOf: GroveRecordingDevice
-Usage: #example
-Title: "Exchange Bundle Recording Device"
-Description: "The shared recording Device node of the exchange Bundle example. The deployment has no stable per-unit token for it, so it carries only its device-snapshot content key: the Device is still emitted and still referenced, and an equal snapshot never proves the same physical unit."
-* identifier[snapshot].system = "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v0/test-key/1"
-* identifier[snapshot].value = "v0:test-key:1:TewaIbS5c6kP9zvw0NW2c_eTOCN-hxXbeEagnG0J_Ds"
-* status = #active
-* deviceName[+].name = "Study Watch"
-* deviceName[=].type = #user-friendly-name
-* manufacturer = "Example Device Company"
-* modelNumber = "EXW1"
-* version[firmwareVersion].type = $mdc#531976 "MDC_ID_PROD_SPEC_FW"
-* version[firmwareVersion].value = "2.1"
+* parent.reference = "urn:uuid:76a3c913-b4e7-5299-b4ac-caf23054b231"
 
 Instance: GroveMobileExchangeHeartRateExample
 InstanceOf: GroveMobileHeartRate
@@ -268,8 +234,7 @@ Description: "The output of the first record of the exchange Bundle example. Its
 * effectiveDateTime = "2026-08-20T08:30:00.251-07:00"
 * issued = "2026-08-20T17:30:02Z"
 * valueQuantity = 72 '/min' "beats/minute"
-* device.reference = "urn:uuid:e9a484e6-f08b-5be4-8856-4ee1fb327e46"
-* extension[gatewayDevice].valueReference.reference = "urn:uuid:b2054534-b624-50c9-be27-aab7ac5150b8"
+* extension[gatewayDevice].valueReference.reference = "urn:uuid:d39c21c3-97f6-5ce8-bcae-d3d65339e429"
 
 Instance: GroveMobileExchangeProvenanceExample
 InstanceOf: GroveMobileConversionProvenance
@@ -278,13 +243,13 @@ Title: "Exchange Bundle Conversion Provenance"
 Description: "The conversion Provenance of the first record. Its entry key is its record-version Identifier, repeated in grove-record-version; target and assembler references resolve through Bundle UUID URNs."
 * extension[recordVersion].valueIdentifier.type = GroveIdentifierRoleCS#record-version "Record version"
 * extension[recordVersion].valueIdentifier.system = "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1"
-* extension[recordVersion].valueIdentifier.value = "v0:test-key:1:g94kzD923uWbVqwCpCfPmfBZ7ZnSrKdcx5NPT5eLZ3A"
+* extension[recordVersion].valueIdentifier.value = "v0:test-key:1:1b32Y3AcBpsWou7Vw8hQfJ-R3_h-uIQgmaNzRPQ4Jus"
 * target.reference = "urn:uuid:a9b76bbc-f523-5ef4-9919-813ec70553e5"
 * occurredDateTime = "2026-08-20T10:30:02-07:00"
 * recorded = "2026-08-20T17:30:02Z"
 * activity = $recordLifecycleEvent#transform "Transform/Translate Record Lifecycle Event"
 * agent[assembler].type = $provenanceParticipantType#assembler "Assembler"
-* agent[assembler].who.reference = "urn:uuid:b2054534-b624-50c9-be27-aab7ac5150b8"
+* agent[assembler].who.reference = "urn:uuid:d39c21c3-97f6-5ce8-bcae-d3d65339e429"
 * entity.role = #source
 * entity.what.identifier.type = GroveIdentifierRoleCS#source-record "Source record"
 * entity.what.identifier.system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
@@ -294,7 +259,7 @@ Instance: GroveMobileExchangeSecondHeartRateExample
 InstanceOf: GroveMobileHeartRate
 Usage: #example
 Title: "Exchange Bundle Second Heart Rate"
-Description: "The output of the second record of the exchange Bundle example. It references the same shared Patient, recording Device, and application as the first record, each of which appears once in the Bundle."
+Description: "The output of the second record of the exchange Bundle example. It references the same shared Patient and application as the first record, each of which appears once in the Bundle."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
 * identifier[sourceRecord].value = "v0:test-key:1:Ce4AD2kT5yierXkx5QJNFu7d8qqaSSQOCKGFeYpu2M0"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
@@ -306,8 +271,7 @@ Description: "The output of the second record of the exchange Bundle example. It
 * effectiveDateTime = "2026-08-20T08:35:00.251-07:00"
 * issued = "2026-08-20T17:35:02Z"
 * valueQuantity = 75 '/min' "beats/minute"
-* device.reference = "urn:uuid:e9a484e6-f08b-5be4-8856-4ee1fb327e46"
-* extension[gatewayDevice].valueReference.reference = "urn:uuid:b2054534-b624-50c9-be27-aab7ac5150b8"
+* extension[gatewayDevice].valueReference.reference = "urn:uuid:d39c21c3-97f6-5ce8-bcae-d3d65339e429"
 
 Instance: GroveMobileExchangeSecondProvenanceExample
 InstanceOf: GroveMobileConversionProvenance
@@ -316,13 +280,13 @@ Title: "Exchange Bundle Second Conversion Provenance"
 Description: "The conversion Provenance of the second record, keyed by its own record-version Identifier."
 * extension[recordVersion].valueIdentifier.type = GroveIdentifierRoleCS#record-version "Record version"
 * extension[recordVersion].valueIdentifier.system = "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1"
-* extension[recordVersion].valueIdentifier.value = "v0:test-key:1:IFr7-YVL3rs4l8F6QyZtRxK305FUrf72DhaRRQUY2pc"
+* extension[recordVersion].valueIdentifier.value = "v0:test-key:1:Fiz_W2KPmuHp0lqnmBcrjgY1hwfsHAAUuXNVq6LP05Q"
 * target.reference = "urn:uuid:923c35c9-6909-5d65-89ac-ef130e9e019d"
 * occurredDateTime = "2026-08-20T10:35:02-07:00"
 * recorded = "2026-08-20T17:35:02Z"
 * activity = $recordLifecycleEvent#transform "Transform/Translate Record Lifecycle Event"
 * agent[assembler].type = $provenanceParticipantType#assembler "Assembler"
-* agent[assembler].who.reference = "urn:uuid:b2054534-b624-50c9-be27-aab7ac5150b8"
+* agent[assembler].who.reference = "urn:uuid:d39c21c3-97f6-5ce8-bcae-d3d65339e429"
 * entity.role = #source
 * entity.what.identifier.type = GroveIdentifierRoleCS#source-record "Source record"
 * entity.what.identifier.system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
@@ -332,7 +296,7 @@ Instance: GroveMobileExchangeBundleExample
 InstanceOf: GroveMobileExchangeBundle
 Usage: #example
 Title: "Deterministic Mobile Exchange Bundle"
-Description: "One upload of two heart-rate records of one participant. Each record is its Observation and one conversion Provenance keyed by its record-version Identifier. The two records share the Patient, the recording Device, and the converting application with its host; each shared node is keyed by its content and appears once. The Bundle has no identifier: it is a container and names no record."
+Description: "One upload of two heart-rate records of one participant. Each record is its Observation and one conversion Provenance keyed by its record-version Identifier. The two records share the Patient and the converting application with its host; each shared node is keyed by its content and appears once. The Bundle has no identifier: it is a container and names no record."
 * type = #collection
 * timestamp = "2026-08-20T17:35:03Z"
 * entry[0].extension[entryKey].valueIdentifier.type = GroveIdentifierRoleCS#context-snapshot "Context snapshot"
@@ -342,39 +306,34 @@ Description: "One upload of two heart-rate records of one participant. Each reco
 * entry[0].resource = GroveMobileExchangePatientExample
 * entry[1].extension[entryKey].valueIdentifier.type = GroveIdentifierRoleCS#device-snapshot "Device snapshot"
 * entry[1].extension[entryKey].valueIdentifier.system = "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v0/test-key/1"
-* entry[1].extension[entryKey].valueIdentifier.value = "v0:test-key:1:rwFNAjqMcBmS0HimLM74soOwigqGu5J04JKh0z8MyzY"
-* entry[1].fullUrl = "urn:uuid:f0749915-accb-5c85-8073-7b9cf0a9a58f"
+* entry[1].extension[entryKey].valueIdentifier.value = "v0:test-key:1:01dJDxR9bIctHh_m-iQIOMvapXGnIq_0wmLCNEXTIvo"
+* entry[1].fullUrl = "urn:uuid:76a3c913-b4e7-5299-b4ac-caf23054b231"
 * entry[1].resource = GroveMobileExchangeHostExample
 * entry[2].extension[entryKey].valueIdentifier.type = GroveIdentifierRoleCS#device-snapshot "Device snapshot"
 * entry[2].extension[entryKey].valueIdentifier.system = "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v0/test-key/1"
-* entry[2].extension[entryKey].valueIdentifier.value = "v0:test-key:1:YiR1iraqCKj1AsX5GNsHGee3_JOcUEtx0fmrsGCn96Q"
-* entry[2].fullUrl = "urn:uuid:b2054534-b624-50c9-be27-aab7ac5150b8"
+* entry[2].extension[entryKey].valueIdentifier.value = "v0:test-key:1:H9mN3DGJkpaJ785z-KtZ7dZ3Gz274Ea1sL2oGs3Jkf4"
+* entry[2].fullUrl = "urn:uuid:d39c21c3-97f6-5ce8-bcae-d3d65339e429"
 * entry[2].resource = GroveMobileExchangeApplicationExample
-* entry[3].extension[entryKey].valueIdentifier.type = GroveIdentifierRoleCS#device-snapshot "Device snapshot"
-* entry[3].extension[entryKey].valueIdentifier.system = "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v0/test-key/1"
-* entry[3].extension[entryKey].valueIdentifier.value = "v0:test-key:1:TewaIbS5c6kP9zvw0NW2c_eTOCN-hxXbeEagnG0J_Ds"
-* entry[3].fullUrl = "urn:uuid:e9a484e6-f08b-5be4-8856-4ee1fb327e46"
-* entry[3].resource = GroveMobileExchangeRecordingDeviceExample
-* entry[4].extension[entryKey].valueIdentifier.type = GroveIdentifierRoleCS#source-output "Source output"
-* entry[4].extension[entryKey].valueIdentifier.system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
-* entry[4].extension[entryKey].valueIdentifier.value = "v0:test-key:1:PPULnf0LKpASjIj8mU5TKafPKig_oqWND3_dHFShGd8"
-* entry[4].fullUrl = "urn:uuid:a9b76bbc-f523-5ef4-9919-813ec70553e5"
-* entry[4].resource = GroveMobileExchangeHeartRateExample
-* entry[5].extension[entryKey].valueIdentifier.type = GroveIdentifierRoleCS#record-version "Record version"
-* entry[5].extension[entryKey].valueIdentifier.system = "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1"
-* entry[5].extension[entryKey].valueIdentifier.value = "v0:test-key:1:g94kzD923uWbVqwCpCfPmfBZ7ZnSrKdcx5NPT5eLZ3A"
-* entry[5].fullUrl = "urn:uuid:971465e4-4156-59fb-b6d9-20dbe7d765a2"
-* entry[5].resource = GroveMobileExchangeProvenanceExample
-* entry[6].extension[entryKey].valueIdentifier.type = GroveIdentifierRoleCS#source-output "Source output"
-* entry[6].extension[entryKey].valueIdentifier.system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
-* entry[6].extension[entryKey].valueIdentifier.value = "v0:test-key:1:N8Rta5CkBmwGgJDKxdrh7xI0h9EgCKlQLPGxr7QRpAw"
-* entry[6].fullUrl = "urn:uuid:923c35c9-6909-5d65-89ac-ef130e9e019d"
-* entry[6].resource = GroveMobileExchangeSecondHeartRateExample
-* entry[7].extension[entryKey].valueIdentifier.type = GroveIdentifierRoleCS#record-version "Record version"
-* entry[7].extension[entryKey].valueIdentifier.system = "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1"
-* entry[7].extension[entryKey].valueIdentifier.value = "v0:test-key:1:IFr7-YVL3rs4l8F6QyZtRxK305FUrf72DhaRRQUY2pc"
-* entry[7].fullUrl = "urn:uuid:eeb6a3b9-35e6-5123-874b-14966047915b"
-* entry[7].resource = GroveMobileExchangeSecondProvenanceExample
+* entry[3].extension[entryKey].valueIdentifier.type = GroveIdentifierRoleCS#source-output "Source output"
+* entry[3].extension[entryKey].valueIdentifier.system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* entry[3].extension[entryKey].valueIdentifier.value = "v0:test-key:1:PPULnf0LKpASjIj8mU5TKafPKig_oqWND3_dHFShGd8"
+* entry[3].fullUrl = "urn:uuid:a9b76bbc-f523-5ef4-9919-813ec70553e5"
+* entry[3].resource = GroveMobileExchangeHeartRateExample
+* entry[4].extension[entryKey].valueIdentifier.type = GroveIdentifierRoleCS#record-version "Record version"
+* entry[4].extension[entryKey].valueIdentifier.system = "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1"
+* entry[4].extension[entryKey].valueIdentifier.value = "v0:test-key:1:1b32Y3AcBpsWou7Vw8hQfJ-R3_h-uIQgmaNzRPQ4Jus"
+* entry[4].fullUrl = "urn:uuid:20c970e9-1df8-5af7-ba42-ba4a4621c422"
+* entry[4].resource = GroveMobileExchangeProvenanceExample
+* entry[5].extension[entryKey].valueIdentifier.type = GroveIdentifierRoleCS#source-output "Source output"
+* entry[5].extension[entryKey].valueIdentifier.system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* entry[5].extension[entryKey].valueIdentifier.value = "v0:test-key:1:N8Rta5CkBmwGgJDKxdrh7xI0h9EgCKlQLPGxr7QRpAw"
+* entry[5].fullUrl = "urn:uuid:923c35c9-6909-5d65-89ac-ef130e9e019d"
+* entry[5].resource = GroveMobileExchangeSecondHeartRateExample
+* entry[6].extension[entryKey].valueIdentifier.type = GroveIdentifierRoleCS#record-version "Record version"
+* entry[6].extension[entryKey].valueIdentifier.system = "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1"
+* entry[6].extension[entryKey].valueIdentifier.value = "v0:test-key:1:Fiz_W2KPmuHp0lqnmBcrjgY1hwfsHAAUuXNVq6LP05Q"
+* entry[6].fullUrl = "urn:uuid:555e8629-6601-58e7-b030-e6540a933aa0"
+* entry[6].resource = GroveMobileExchangeSecondProvenanceExample
 
 Instance: GroveMobileRetractionProvenanceExample
 InstanceOf: GroveMobileRetractionProvenance
@@ -392,7 +351,7 @@ Description: "A later append-only assertion that the source record behind the fi
 * recorded = "2026-08-21T08:00:01Z"
 * activity = GroveLifecycleEventCS#source-record-retracted "Source record retracted"
 * agent[assembler].type = $provenanceParticipantType#assembler "Assembler"
-* agent[assembler].who.reference = "urn:uuid:b2054534-b624-50c9-be27-aab7ac5150b8"
+* agent[assembler].who.reference = "urn:uuid:d39c21c3-97f6-5ce8-bcae-d3d65339e429"
 * entity.role = #source
 * entity.what.identifier.type = GroveIdentifierRoleCS#source-record "Source record"
 * entity.what.identifier.system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
@@ -414,7 +373,7 @@ Description: "The retraction of the second exchange record's source record, pack
 * recorded = "2026-08-21T08:00:01Z"
 * activity = GroveLifecycleEventCS#source-record-retracted "Source record retracted"
 * agent[assembler].type = $provenanceParticipantType#assembler "Assembler"
-* agent[assembler].who.reference = "urn:uuid:b2054534-b624-50c9-be27-aab7ac5150b8"
+* agent[assembler].who.reference = "urn:uuid:d39c21c3-97f6-5ce8-bcae-d3d65339e429"
 * entity.role = #source
 * entity.what.identifier.type = GroveIdentifierRoleCS#source-record "Source record"
 * entity.what.identifier.system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
@@ -429,13 +388,13 @@ Description: "One upload of two retraction records: one retraction Provenance pe
 * timestamp = "2026-08-21T08:00:02Z"
 * entry[0].extension[entryKey].valueIdentifier.type = GroveIdentifierRoleCS#device-snapshot "Device snapshot"
 * entry[0].extension[entryKey].valueIdentifier.system = "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v0/test-key/1"
-* entry[0].extension[entryKey].valueIdentifier.value = "v0:test-key:1:rwFNAjqMcBmS0HimLM74soOwigqGu5J04JKh0z8MyzY"
-* entry[0].fullUrl = "urn:uuid:f0749915-accb-5c85-8073-7b9cf0a9a58f"
+* entry[0].extension[entryKey].valueIdentifier.value = "v0:test-key:1:01dJDxR9bIctHh_m-iQIOMvapXGnIq_0wmLCNEXTIvo"
+* entry[0].fullUrl = "urn:uuid:76a3c913-b4e7-5299-b4ac-caf23054b231"
 * entry[0].resource = GroveMobileExchangeHostExample
 * entry[1].extension[entryKey].valueIdentifier.type = GroveIdentifierRoleCS#device-snapshot "Device snapshot"
 * entry[1].extension[entryKey].valueIdentifier.system = "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v0/test-key/1"
-* entry[1].extension[entryKey].valueIdentifier.value = "v0:test-key:1:YiR1iraqCKj1AsX5GNsHGee3_JOcUEtx0fmrsGCn96Q"
-* entry[1].fullUrl = "urn:uuid:b2054534-b624-50c9-be27-aab7ac5150b8"
+* entry[1].extension[entryKey].valueIdentifier.value = "v0:test-key:1:H9mN3DGJkpaJ785z-KtZ7dZ3Gz274Ea1sL2oGs3Jkf4"
+* entry[1].fullUrl = "urn:uuid:d39c21c3-97f6-5ce8-bcae-d3d65339e429"
 * entry[1].resource = GroveMobileExchangeApplicationExample
 * entry[2].extension[entryKey].valueIdentifier.type = GroveIdentifierRoleCS#record-retraction "Record retraction"
 * entry[2].extension[entryKey].valueIdentifier.system = "https://study.example.org/fhir/NamingSystem/grove-record-retraction-v0/test-key/1"
@@ -463,7 +422,7 @@ Description: "Retracts the same source record as the first retraction example, a
 * recorded = "2026-08-21T08:00:01Z"
 * activity = GroveLifecycleEventCS#source-record-retracted "Source record retracted"
 * agent[assembler].type = $provenanceParticipantType#assembler "Assembler"
-* agent[assembler].who.reference = "urn:uuid:b2054534-b624-50c9-be27-aab7ac5150b8"
+* agent[assembler].who.reference = "urn:uuid:d39c21c3-97f6-5ce8-bcae-d3d65339e429"
 * entity.role = #source
 * entity.what.identifier.type = GroveIdentifierRoleCS#source-record "Source record"
 * entity.what.identifier.system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
@@ -478,13 +437,13 @@ Description: "One retraction record whose lifecycle Provenance names its source 
 * timestamp = "2026-08-21T08:00:02Z"
 * entry[0].extension[entryKey].valueIdentifier.type = GroveIdentifierRoleCS#device-snapshot "Device snapshot"
 * entry[0].extension[entryKey].valueIdentifier.system = "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v0/test-key/1"
-* entry[0].extension[entryKey].valueIdentifier.value = "v0:test-key:1:rwFNAjqMcBmS0HimLM74soOwigqGu5J04JKh0z8MyzY"
-* entry[0].fullUrl = "urn:uuid:f0749915-accb-5c85-8073-7b9cf0a9a58f"
+* entry[0].extension[entryKey].valueIdentifier.value = "v0:test-key:1:01dJDxR9bIctHh_m-iQIOMvapXGnIq_0wmLCNEXTIvo"
+* entry[0].fullUrl = "urn:uuid:76a3c913-b4e7-5299-b4ac-caf23054b231"
 * entry[0].resource = GroveMobileExchangeHostExample
 * entry[1].extension[entryKey].valueIdentifier.type = GroveIdentifierRoleCS#device-snapshot "Device snapshot"
 * entry[1].extension[entryKey].valueIdentifier.system = "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v0/test-key/1"
-* entry[1].extension[entryKey].valueIdentifier.value = "v0:test-key:1:YiR1iraqCKj1AsX5GNsHGee3_JOcUEtx0fmrsGCn96Q"
-* entry[1].fullUrl = "urn:uuid:b2054534-b624-50c9-be27-aab7ac5150b8"
+* entry[1].extension[entryKey].valueIdentifier.value = "v0:test-key:1:H9mN3DGJkpaJ785z-KtZ7dZ3Gz274Ea1sL2oGs3Jkf4"
+* entry[1].fullUrl = "urn:uuid:d39c21c3-97f6-5ce8-bcae-d3d65339e429"
 * entry[1].resource = GroveMobileExchangeApplicationExample
 * entry[2].extension[entryKey].valueIdentifier.type = GroveIdentifierRoleCS#record-retraction "Record retraction"
 * entry[2].extension[entryKey].valueIdentifier.system = "https://study.example.org/fhir/NamingSystem/grove-record-retraction-v0/test-key/1"
@@ -496,13 +455,13 @@ Instance: GroveMobileWriterRecordIdentityExample
 InstanceOf: GroveMobileHeartRate
 Usage: #example
 Title: "Writer Record Identity and Version"
-Description: "One measurement carrying opaque source, exact output, and writer identities. The writer HMAC includes the subject and the complete writing-application Identifier pair, so one participant's accounts in two deployments that share a key never link, and is comparable only within the configured deployment key epoch."
+Description: "One measurement carrying opaque source, exact output, and writer identities. The writer HMAC includes the complete writing-application Identifier pair and is comparable only within the configured deployment key epoch."
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
 * identifier[sourceRecord].value = "v0:test-key:1:zT15-qZa1ZBiSNVchkZ-Wpdf1FuX2PFomttu-7UEq2w"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
 * identifier[sourceOutput].value = "v0:test-key:1:lCAE3ge3khFSSMmAGHi7M6XICSfaVnc6EjaWsofB4-Y"
 * identifier[writerRecord].system = "https://study.example.org/fhir/NamingSystem/grove-writer-record-v0/test-key/1"
-* identifier[writerRecord].value = "v0:test-key:1:t3yJ50PlC4YfvU2A4qhUgG17VfFJ_QhTgltKtosdl7w"
+* identifier[writerRecord].value = "v0:test-key:1:qxujzFH9irQKon1KMxiN8jK8ahVB36Fq0JIKoBDNa2s"
 * status = #final
 * category = $observationCategory#vital-signs "Vital Signs"
 * code = $loinc#8867-4 "Heart rate"

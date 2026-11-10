@@ -44,14 +44,6 @@ Context: QuestionnaireResponse
 * valueIdentifier 1..1 MS
 * insert GroveOpaqueIdentifier(valueIdentifier, context-snapshot)
 
-Extension: GroveUDIProductionIdentifier
-Id: grove-udi-production-identifier
-Title: "Grove UDI Production Identifier"
-Description: "The raw UDI production identifier (UDI-PI) the source states for a recording device, such as HKMetadataKeyUDIProductionIdentifier. FHIR R4 Device.udiCarrier has no element for the production identifier on its own, so it is carried as stated, beside the device identifier (UDI-DI). It may embed a lot or serial number."
-Context: Device.udiCarrier
-* value[x] only string
-* valueString 1..1 MS
-
 Extension: GroveRetractionTargetRole
 Id: grove-retraction-target-role
 Title: "Grove Retraction Target Role"
