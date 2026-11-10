@@ -29,7 +29,7 @@ Description: "The semantic role of a complete Identifier pair in the Grove excha
 * #writer-record "Writer record" "The logical record identity assigned by the application that originally wrote the source record."
 * #source-artifact "Source artifact" "One exact preserved source payload or payload part."
 * #source-context "Source context" "A deployment-scoped opaque identity for a source-native concept or context node referenced by more than one source record."
-* #recording-device "Recording device" "A physical recording-device instance established by a stable per-unit token."
+* #recording-device "Recording device" "A physical recording-device instance established by a stable per-unit token, scoped by the authority that assigned the token."
 * #device-snapshot "Device snapshot" "The content key of one immutable application, host, or recording Device snapshot: a keyed digest over the subject, the Device's node role, and its complete rendered content. The same content gives the same key in every Bundle; changed firmware, software, operating-system, or build facts give a new snapshot."
 * #context-snapshot "Context snapshot" "The content key of one immutable shared context node, a Patient, ResearchStudy, ResearchSubject, PlanDefinition, or QuestionnaireResponse: a keyed digest over the subject, the node role, and the node's complete rendered content. A canonical url and version or a business identifier never stands in for it."
 * #record-version "Record version" "One immutable version of one source record: a keyed digest over its source-record Identifier and the canonical content of its conversion Provenance and outputs. Receivers never parse or recompute it; they compare it for equality and order it bytewise only to break a tie between versions."
@@ -41,6 +41,15 @@ Title: "Grove Identifier Role"
 Description: "Every typed Identifier role admitted by the Grove exchange protocol."
 * ^experimental = false
 * include codes from system GroveIdentifierRoleCS
+
+CodeSystem: GroveDeviceIdentifierTypeCS
+Id: grove-device-identifier-type
+Title: "Grove Device Identifier Type"
+Description: "The types of clear identifier a source states for a device. Unlike a Grove identifier role, the value is the source's own, not a keyed identity."
+* ^experimental = false
+* ^caseSensitive = true
+* ^content = #complete
+* #device-local-identifier "Device local identifier" "The clear identifier a source states for a device, such as HealthKit's HKDevice.localIdentifier or SensorKit's SRSourceDevice.localIdentifier, under a deployment-owned system. It is local to the host that recorded it, and who assigns it depends on the source, so it is no Grove identity and equal values never prove one physical unit; only a recording-device identity does."
 
 CodeSystem: GroveLifecycleEventCS
 Id: grove-lifecycle-event
@@ -237,17 +246,19 @@ Description: "The per-interval statistic concepts a workout or workout-segment O
 CodeSystem: GroveApplicationVersionTypeCS
 Id: grove-application-version-type
 Title: "Grove Application Version Type"
-Description: "The revisions a producing application states about itself. Each names a distinct fact that can be read without parsing a composite string. The marketing version is carried by its ISO/IEEE 11073 code rather than a code here, because a standard code for it already exists."
+Description: "The revisions a Grove Device snapshot states about the application or operating system it describes. Each names a distinct fact that can be read without parsing a composite string. The marketing version and the hardware, firmware, and software revisions are carried by their ISO/IEEE 11073 codes rather than a code here, because standard codes for them already exist."
 * ^experimental = false
 * ^caseSensitive = true
 * ^content = #complete
 * #build "Build" "The build of the application the Device snapshot describes, as its platform reports it. Distinct from the marketing version: one marketing version is released from many builds, and only the build identifies which one converted a given record or, for a writer application, wrote it."
-* #os-version "Operating system version" "The operating system release the conversion ran on."
+* #os-version "Operating system version" "The operating system release of the device the snapshot describes: for a host, the release the conversion ran on."
+* #os-name "Operating system name" "The name of the operating system of the device the snapshot describes, as its platform reports it, such as iOS or watchOS."
+* #os-build "Operating system build" "The build of the operating system release of the device the snapshot describes, as its platform reports it. One operating-system version is released in several builds."
 
 
 ValueSet: GroveApplicationVersionTypeVS
 Id: grove-application-version-type
 Title: "Grove Application Version Type"
-Description: "Every revision a producing application may state about itself beyond its marketing version."
+Description: "Every revision a Grove Device snapshot may state beyond its ISO/IEEE 11073 version types."
 * ^experimental = false
 * include codes from system GroveApplicationVersionTypeCS

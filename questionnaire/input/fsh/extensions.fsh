@@ -16,7 +16,9 @@ Description: "The application and host that captured one response, stated as pla
     applicationVersion 1..1 MS and
     applicationBuild 0..1 MS and
     hostModel 0..1 MS and
-    hostOperatingSystemVersion 0..1 MS
+    hostOperatingSystemName 0..1 MS and
+    hostOperatingSystemVersion 0..1 MS and
+    hostOperatingSystemBuild 0..1 MS
 * extension[applicationIdentifier].value[x] only Identifier
 * extension[applicationIdentifier].valueIdentifier.system 1..1 MS
 * extension[applicationIdentifier].valueIdentifier.value 1..1 MS
@@ -29,5 +31,9 @@ Description: "The application and host that captured one response, stated as pla
 * extension[applicationBuild] ^short = "Exact build the capturing application reports for itself"
 * extension[hostModel].value[x] only string
 * extension[hostModel] ^short = "Hardware product type the application ran on, such as iPhone17,1; the host snapshot's modelNumber"
+* extension[hostOperatingSystemName].value[x] only string
+* extension[hostOperatingSystemName] ^short = "Name of the host's operating system, such as iOS"
 * extension[hostOperatingSystemVersion].value[x] only string
 * extension[hostOperatingSystemVersion] ^short = "Operating system version the host snapshot requires"
+* extension[hostOperatingSystemBuild].value[x] only string
+* extension[hostOperatingSystemBuild] ^short = "Build of the host's operating-system version"

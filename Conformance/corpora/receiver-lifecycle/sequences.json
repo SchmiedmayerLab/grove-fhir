@@ -185,16 +185,14 @@
               "lexeme-retry"
             ],
             "current": [
-              "lexeme-retry"
+              "original"
             ],
             "pending": [],
             "retracted": [],
             "visible": [
-              "lexeme-retry"
+              "original"
             ],
-            "newlyVisible": [
-              "lexeme-retry"
-            ],
+            "newlyVisible": [],
             "references": {}
           }
         }
@@ -238,14 +236,16 @@
               "original"
             ],
             "current": [
-              "lexeme-retry"
+              "original"
             ],
             "pending": [],
             "retracted": [],
             "visible": [
-              "lexeme-retry"
+              "original"
             ],
-            "newlyVisible": [],
+            "newlyVisible": [
+              "original"
+            ],
             "references": {}
           }
         }

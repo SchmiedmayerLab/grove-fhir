@@ -18,14 +18,20 @@ Instance: SensorKitDeviceExample
 InstanceOf: GroveRecordingDevice
 Usage: #example
 Title: "SensorKit Example Recording Device"
-Description: "The watch that captured the example SensorKit streams."
-* identifier[physicalUnit].system = "https://study.example.org/fhir/NamingSystem/grove-recording-device-v0/test-key/1"
-* identifier[physicalUnit].value = "v0:test-key:1:cJAjPtBEVCTnnwsMUKciYeJx6OfRsikB6q-K3SWVFKs"
+Description: "The watch that captured the example SensorKit streams, with every fact its SRDevice exposes: the name a person gave it, its model, its operating-system name and version, and its product type. SensorKit gives no stable per-unit token, so it carries only its device-snapshot content key; an equal snapshot never proves the same physical unit."
 * identifier[snapshot].system = "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v0/test-key/1"
-* identifier[snapshot].value = "v0:test-key:1:zFiI8-bAqZ_pSg_4aLj1UxJLLvkvjotNbbCbi4Ms6HQ"
+* identifier[snapshot].value = "v0:test-key:1:6FYt90zfGaQ9oTcPOh2L7dgYZ7oGeSHTtNQ7xooCG6g"
 * status = #active
-* manufacturer = "Example Manufacturer"
+* deviceName[+].name = "Participant's Watch"
+* deviceName[=].type = #user-friendly-name
+* deviceName[+].name = "Apple Watch"
+* deviceName[=].type = #model-name
+* modelNumber = "Watch7,1"
 * type.text = "Watch"
+* version[operatingSystemName].type = $groveApplicationVersionType#os-name "Operating system name"
+* version[operatingSystemName].value = "watchOS"
+* version[operatingSystemVersion].type = $groveApplicationVersionType#os-version "Operating system version"
+* version[operatingSystemVersion].value = "11.2"
 
 Instance: SensorKitApplicationExample
 InstanceOf: GroveApplicationDevice

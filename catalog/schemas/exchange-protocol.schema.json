@@ -207,7 +207,7 @@
     "opaqueIdentity": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["algorithm", "domain", "preimage", "valueForm", "identifierSystem", "recommendedSystemForm", "keyRequirements", "componentRequirements", "contentDigest", "privacy", "informationPreservation", "rotation", "identityKinds"],
+      "required": ["algorithm", "domain", "preimage", "valueForm", "identifierSystem", "recommendedSystemForm", "keyRequirements", "componentRequirements", "contentDigest", "keyId", "privacy", "informationPreservation", "rotation", "identityKinds"],
       "properties": {
         "algorithm": { "const": "HMAC-SHA-256" },
         "domain": { "const": "org.grovealliance.fhir.identity.v0" },
@@ -240,6 +240,17 @@
           }
         },
         "contentDigest": { "$ref": "#/$defs/nonempty" },
+        "keyId": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["rule", "fingerprintDomain", "fingerprintComponents", "recommendedForm"],
+          "properties": {
+            "rule": { "$ref": "#/$defs/nonempty" },
+            "fingerprintDomain": { "const": "org.grovealliance.fhir.key-fingerprint.v0" },
+            "fingerprintComponents": { "const": ["subject-system", "subject-value"] },
+            "recommendedForm": { "$ref": "#/$defs/nonempty" }
+          }
+        },
         "privacy": { "$ref": "#/$defs/nonempty" },
         "informationPreservation": {
           "type": "object", "additionalProperties": false,
@@ -639,11 +650,12 @@
     "recordingDevice": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["instanceRule", "unknownInstance", "snapshots", "roles"],
+      "required": ["instanceRule", "unitIdentity", "snapshots", "deviceFacts", "roles"],
       "properties": {
         "instanceRule": { "$ref": "#/$defs/nonempty" },
-        "unknownInstance": { "$ref": "#/$defs/nonempty" },
+        "unitIdentity": { "$ref": "#/$defs/nonempty" },
         "snapshots": { "$ref": "#/$defs/nonempty" },
+        "deviceFacts": { "$ref": "#/$defs/nonempty" },
         "roles": { "$ref": "#/$defs/nonempty" }
       }
     },
@@ -672,7 +684,7 @@
     "testVectors": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["keyHex", "keyId", "epoch", "warning", "identitySystems", "measurementExamples", "identities", "invalidIdentities", "fullUrls", "canonicalJson", "invalidCanonicalJson", "recordContents"],
+      "required": ["keyHex", "keyId", "epoch", "warning", "identitySystems", "measurementExamples", "identities", "invalidIdentities", "fullUrls", "canonicalJson", "invalidCanonicalJson", "recordContents", "keyFingerprint"],
       "properties": {
         "keyHex": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
         "keyId": { "type": "string", "pattern": "^[A-Za-z0-9._-]+$" },
@@ -714,6 +726,11 @@
           "type": "array",
           "minItems": 1,
           "items": { "$ref": "#/$defs/recordContentVector" }
+        },
+        "keyFingerprint": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/keyFingerprintVector" }
         }
       }
     },
@@ -816,6 +833,18 @@
         "provenance": { "$ref": "#/$defs/nonempty" },
         "outputs": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/nonempty" } },
         "recordContentDigest": { "type": "string", "pattern": "^[A-Za-z0-9_-]{43}$" }
+      }
+    },
+    "keyFingerprintVector": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "subjectSystem", "subjectValue", "fingerprint", "keyIdSuffix"],
+      "properties": {
+        "id": { "$ref": "#/$defs/code" },
+        "subjectSystem": { "$ref": "#/$defs/uri" },
+        "subjectValue": { "$ref": "#/$defs/nonempty" },
+        "fingerprint": { "type": "string", "pattern": "^[A-Za-z0-9_-]{43}$" },
+        "keyIdSuffix": { "type": "string", "pattern": "^[A-Za-z0-9_-]{8}$" }
       }
     },
     "fullUrlVector": {

@@ -27,8 +27,9 @@ PRODUCER = "1f5c58aa-6ec6-4e79-a682-829a9debd3f5"
 MOBILE = "https://grovealliance.org/fhir/mobile/"
 ROLES = MOBILE + "CodeSystem/grove-identifier-role"
 VERSION = MOBILE + "StructureDefinition/grove-writer-record-version"
-WRITER = ["https://study.example.org/apps", "fixture-writer", "heart-rate-1"]
-OTHER_WRITER = ["https://study.example.org/apps", "another-writer", "heart-rate-1"]
+SUBJECT = ["https://study.example.org/fhir/identifiers/participant", "participant-001"]
+WRITER = [*SUBJECT, "https://study.example.org/apps", "fixture-writer", "heart-rate-1"]
+OTHER_WRITER = [*SUBJECT, "https://study.example.org/apps", "another-writer", "heart-rate-1"]
 # The IG revision the record-centric bases were cut from, and its exchange protocol.
 BASE_SOURCE_REVISION = "be0e370cbc9e789f5ad30df18d3332713387a9c3"
 BASE_EXCHANGE_PROTOCOL_SHA256 = "fec45c4aaa7c9b63b2db25cfb0b82088a61f061ef404cbb17073025649072768"

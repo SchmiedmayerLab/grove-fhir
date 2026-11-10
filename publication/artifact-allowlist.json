@@ -35,6 +35,13 @@
           "classification": "definition"
         },
         {
+          "fshName": "GroveDeviceIdentifierTypeCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "grove-device-identifier-type",
+          "classification": "definition"
+        },
+        {
           "fshName": "GroveIdentifierRoleCS",
           "fshType": "CodeSystem",
           "resourceType": "CodeSystem",
@@ -172,6 +179,13 @@
           "fshType": "Extension",
           "resourceType": "StructureDefinition",
           "id": "grove-retraction-target-role",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveUDIProductionIdentifier",
+          "fshType": "Extension",
+          "resourceType": "StructureDefinition",
+          "id": "grove-udi-production-identifier",
           "classification": "definition"
         },
         {
@@ -620,6 +634,13 @@
           "fshType": "Instance",
           "resourceType": "Provenance",
           "id": "GroveMobileExchangeProvenanceExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "GroveMobileExchangeRecordingDeviceExample",
+          "fshType": "Instance",
+          "resourceType": "Device",
+          "id": "GroveMobileExchangeRecordingDeviceExample",
           "classification": "example"
         },
         {
@@ -2783,6 +2804,13 @@
           "fshType": "Instance",
           "resourceType": "Provenance",
           "id": "HealthKitDSTU2ClinicalRecordProvenanceExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "HealthKitDeviceLocalIdentifierExample",
+          "fshType": "Instance",
+          "resourceType": "NamingSystem",
+          "id": "HealthKitDeviceLocalIdentifierExample",
           "classification": "example"
         },
         {

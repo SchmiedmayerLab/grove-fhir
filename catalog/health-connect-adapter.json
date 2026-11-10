@@ -1708,15 +1708,19 @@
   },
   "recordingDeviceIdentity": {
     "adapterId": "health-connect",
-    "status": "stable-token-required",
+    "status": "snapshot-required-unit-optional",
     "sourceDescriptionFields": [
       "Metadata.device.manufacturer",
       "Metadata.device.model",
       "Metadata.device.type"
     ],
-    "stableUnitToken": "Health Connect 1.1 exposes no per-unit device identifier. A producer may emit Observation.device only when its caller supplies a separately governed stable per-unit token.",
-    "fallback": "Omit Observation.device when that token is absent. Manufacturer, model, device type, repository scope, and their digest do not establish a physical instance.",
-    "snapshot": "When emitted, the Device carries both recording-device and content device-snapshot v0 identifiers."
+    "stableUnitToken": "Health Connect 1.1 exposes no per-unit device identifier. A recording Device carries a recording-device identifier only when its caller supplies a separately governed stable per-unit token.",
+    "snapshot": "Every Record with a supplied Metadata.device yields a recording Device that Observation.device references. The Device always carries one content device-snapshot v0 identifier over its complete rendered content and carries a recording-device v0 identifier only with that token. Manufacturer, model, device type, repository scope, and their digest do not establish a physical instance, and equal snapshots never prove one unit.",
+    "fieldMappings": [
+      {"source": "Metadata.device.manufacturer", "r4Element": "Device.manufacturer"},
+      {"source": "Metadata.device.model", "r4Element": "Device.modelNumber"},
+      {"source": "Metadata.device.type", "r4Element": "Device.type", "rule": "The Health Connect device type, carried as the type's text."}
+    ]
   },
   "identity": {
     "contract": "catalog/exchange-protocol.json",
@@ -1777,11 +1781,15 @@
       "identifierRole": "writer-record",
       "condition": "Metadata.clientRecordId is present.",
       "components": [
+        "subject-system",
+        "subject-value",
         "writer-application-system",
         "writer-application-value",
         "writer-record-id"
       ],
       "bindings": {
+        "subject-system": "the deployment's subject pseudonym system",
+        "subject-value": "the subject pseudonym",
         "writer-application-system": "deployment-owned URI naming Android application package identifiers",
         "writer-application-value": "Metadata.dataOrigin.packageName",
         "writer-record-id": "Metadata.clientRecordId"
