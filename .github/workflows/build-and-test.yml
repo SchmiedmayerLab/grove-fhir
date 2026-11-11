@@ -504,7 +504,10 @@ jobs:
           --package questionnaire=questionnaire/output/package.tgz
           --package sensor=sensor/output/package.tgz
           --package healthkit=healthkit/output/package.tgz
+      # pages.yml deploys only from Build and Test runs on main, so only those need the ~900 MB site.
+      # Every run still assembles and checks it above.
       - uses: actions/upload-artifact@v7
+        if: github.ref == 'refs/heads/main'
         with:
           name: pages-site
           include-hidden-files: true

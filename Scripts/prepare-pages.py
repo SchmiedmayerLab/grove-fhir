@@ -17,12 +17,15 @@ import html
 import importlib.util
 import io
 import json
+import multiprocessing
 import os
+import pickle
 import re
 import shutil
 import subprocess
 import tarfile
 import tempfile
+from concurrent.futures import ProcessPoolExecutor
 from datetime import datetime, timezone
 from pathlib import Path, PurePosixPath
 from typing import Any
@@ -625,6 +628,85 @@ def prepare_guide(
         )
 
 
+def stage_guide(
+    staging_root: Path,
+    repository_root: Path,
+    guide: dict[str, Any],
+    canonical_base_url: str,
+    public_urls: dict[str, str],
+    source_url: str,
+    history_url: str,
+    source_date_epoch: int,
+    canonical_public_urls: dict[str, str],
+) -> tuple[str, dict[str, Any]]:
+    """Copy one guide's Publisher output into its own stage and make it publishable there.
+
+    Touches nothing outside `staging_root / source`, so guides can be staged concurrently. Returns
+    the guide's canonical URL and its rewritten package metadata.
+    """
+    source = guide["source"]
+    output = repository_root / safe_relative_path(source, "guide source") / "output"
+    if not (output / "index.html").is_file() or not (output / "package.tgz").is_file():
+        raise FileNotFoundError(f"{source}/output is not a complete Publisher build")
+
+    stage = staging_root / source
+    shutil.copytree(output, stage)
+    metadata = read_package_metadata(stage / "package.tgz")
+    canonical = metadata.get("canonical")
+    if not isinstance(canonical, str):
+        raise ValueError(f"{source} package has no canonical URL")
+    expected_canonical = f"{canonical_base_url.rstrip('/')}/{guide['canonicalPath']}"
+    if canonical.rstrip("/") != expected_canonical:
+        raise ValueError(
+            f"{source} canonical {canonical!r} does not match configured "
+            f"canonical {expected_canonical!r}"
+        )
+
+    prepare_guide(
+        stage,
+        repository_root,
+        source,
+        public_urls,
+        source_url,
+        canonical,
+        history_url,
+        source_date_epoch,
+        canonical_public_urls,
+    )
+    metadata = read_package_metadata(stage / "package.tgz")
+    if metadata.get("url") != canonical:
+        raise ValueError(f"{source} package URL must equal its canonical URL")
+    return canonical, metadata
+
+
+def stage_guide_job(job: dict[str, Any]) -> tuple[str, dict[str, Any]]:
+    return stage_guide(**job)
+
+
+def stage_guides(jobs: list[dict[str, Any]]) -> list[tuple[str, dict[str, Any]]]:
+    """Stage every guide, concurrently where the platform can fork, returning results in order.
+
+    Rewriting a guide's text and package is Python-bound work, so the guides are spread over
+    processes rather than threads. A worker's exception is raised here for the first failing guide
+    in configuration order, the same one a serial run would report.
+    """
+    workers = min(len(jobs), os.cpu_count() or 1)
+    if workers > 1 and "fork" not in multiprocessing.get_all_start_methods():
+        workers = 1
+    if workers > 1:
+        try:
+            pickle.dumps(stage_guide_job)
+        except (pickle.PicklingError, AttributeError, TypeError):
+            # Loaded without a module of its own, so a worker could not name the function.
+            workers = 1
+    if workers <= 1:
+        return [stage_guide_job(job) for job in jobs]
+    with ProcessPoolExecutor(
+        max_workers=workers, mp_context=multiprocessing.get_context("fork")
+    ) as pool:
+        return list(pool.map(stage_guide_job, jobs))
+
+
 def assemble_site(
     site: Path,
     repository_root: Path,
@@ -692,45 +774,31 @@ def assemble_site(
     with tempfile.TemporaryDirectory(prefix="grove-fhir-pages-", dir=site.parent) as temp:
         staging_root = Path(temp)
         for guide in guides:
+            safe_relative_path(guide["source"], "guide source")
+            safe_relative_path(guide["canonicalPath"], "canonicalPath")
+        staged = stage_guides(
+            [
+                {
+                    "staging_root": staging_root,
+                    "repository_root": repository_root,
+                    "guide": guide,
+                    "canonical_base_url": str(configuration["canonicalBaseUrl"]),
+                    "public_urls": public_urls,
+                    "source_url": source_url,
+                    "history_url": f"{base_url}/{guide['canonicalPath']}/history.html",
+                    "source_date_epoch": source_date_epoch,
+                    "canonical_public_urls": canonical_public_urls,
+                }
+                for guide in guides
+            ]
+        )
+        # Writing the site stays serial and in configuration order: guides share its tree, and an
+        # alias may overlay another guide's files.
+        for guide, (canonical, metadata) in zip(guides, staged, strict=True):
             source = guide["source"]
-            source_path = safe_relative_path(source, "guide source")
-            output = repository_root / source_path / "output"
-            if not (output / "index.html").is_file() or not (output / "package.tgz").is_file():
-                raise FileNotFoundError(f"{source}/output is not a complete Publisher build")
-
             canonical_path = safe_relative_path(guide["canonicalPath"], "canonicalPath")
             stage = staging_root / source
-            shutil.copytree(output, stage)
-            metadata = read_package_metadata(stage / "package.tgz")
-            canonical = metadata.get("canonical")
-            if not isinstance(canonical, str):
-                raise ValueError(f"{source} package has no canonical URL")
-            expected_canonical = (
-                f"{str(configuration['canonicalBaseUrl']).rstrip('/')}/"
-                f"{guide['canonicalPath']}"
-            )
-            if canonical.rstrip("/") != expected_canonical:
-                raise ValueError(
-                    f"{source} canonical {canonical!r} does not match configured "
-                    f"canonical {expected_canonical!r}"
-                )
-
             preview_url = public_urls[source]
-            history_url = f"{base_url}/{guide['canonicalPath']}/history.html"
-            prepare_guide(
-                stage,
-                repository_root,
-                source,
-                public_urls,
-                source_url,
-                canonical,
-                history_url,
-                source_date_epoch,
-                canonical_public_urls,
-            )
-            metadata = read_package_metadata(stage / "package.tgz")
-            if metadata.get("url") != canonical:
-                raise ValueError(f"{source} package URL must equal its canonical URL")
 
             canonical_root = site / canonical_path
             preview_destination = canonical_root / "ci-build"

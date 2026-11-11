@@ -16,10 +16,14 @@ import subprocess
 import sys
 import tempfile
 from pathlib import Path, PurePosixPath
-from typing import Any, Callable, Iterator, Sequence
+from typing import Any, Callable, Sequence
 
 from producer_validation.diagnostics import ProducerValidationError
-from producer_validation.external_validator import validator_outcomes
+from producer_validation.external_validator import (
+    canonical_references,
+    defined_canonical,
+    validator_outcomes,
+)
 from questionnaire_fixture_corpus import apply_mutation, load_json, write_json
 
 
@@ -355,17 +359,6 @@ def validate_one(
     return results[0][1], logs
 
 
-def strings_in(value: Any) -> Iterator[str]:
-    if isinstance(value, str):
-        yield value
-    elif isinstance(value, dict):
-        for item in value.values():
-            yield from strings_in(item)
-    elif isinstance(value, list):
-        for item in value:
-            yield from strings_in(item)
-
-
 def sibling_references(resources: dict[Path, Any]) -> set[Path]:
     """The inputs that name the canonical URL of another input in the same set.
 
@@ -375,22 +368,14 @@ def sibling_references(resources: dict[Path, Any]) -> set[Path]:
     """
     owners: dict[str, set[Path]] = {}
     for path, resource in resources.items():
-        url = resource.get("url") if isinstance(resource, dict) else None
-        if isinstance(url, str) and url:
+        url = defined_canonical(resource)
+        if url:
             owners.setdefault(url, set()).add(path)
-    referencing: set[Path] = set()
-    for path, resource in resources.items():
-        body = (
-            {key: value for key, value in resource.items() if key != "url"}
-            if isinstance(resource, dict)
-            else resource
-        )
-        for text in strings_in(body):
-            canonical = text.split("#", 1)[0].split("|", 1)[0]
-            if owners.get(canonical, set()) - {path}:
-                referencing.add(path)
-                break
-    return referencing
+    return {
+        path
+        for path, resource in resources.items()
+        if any(owners.get(reference, set()) - {path} for reference in canonical_references(resource))
+    }
 
 
 def validate_batch(

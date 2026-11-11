@@ -13,10 +13,12 @@ import importlib.util
 import io
 import json
 import shutil
+import sys
 import tarfile
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 from Scripts import fhir_package_semantic_snapshot as SNAPSHOT
 
@@ -562,6 +564,116 @@ class PreparePagesTests(unittest.TestCase):
                 "https://pages.example/repository/fhir/mobile/history.html",
                 (mobile / "ci-build/index.html").read_text(encoding="utf-8"),
             )
+
+    def test_parallel_staging_assembles_the_serial_site_byte_for_byte(self) -> None:
+        # A forked worker names its job function through the module, so register it as the script
+        # run directly would be; the other tests leave it unregistered and run serially.
+        sys.modules["prepare_pages"] = PREPARE_PAGES
+        self.addCleanup(sys.modules.pop, "prepare_pages", None)
+        with tempfile.TemporaryDirectory() as directory:
+            repository = Path(directory) / "repository"
+            (repository / "tools").mkdir(parents=True)
+            shutil.copy2(
+                ROOT / "tools/make-canonical-redirects.py",
+                repository / "tools/make-canonical-redirects.py",
+            )
+            guides = (
+                self._write_guide(
+                    repository,
+                    "mobile",
+                    "org.example.mobile",
+                    "https://pages.example/repository/fhir/mobile",
+                    "StructureDefinition",
+                    "example-profile",
+                ),
+                self._write_guide(
+                    repository,
+                    "healthkit",
+                    "org.example.healthkit",
+                    "https://pages.example/repository/fhir/healthkit",
+                    "CodeSystem",
+                    "example-codes",
+                ),
+            )
+            configuration = {
+                "schemaVersion": 0,
+                "previewBaseUrl": "https://pages.example/repository",
+                "canonicalBaseUrl": "https://pages.example/repository",
+                "sourceRepository": "https://github.com/example/repository",
+                "releaseMode": "ci-build-only",
+                "guides": [
+                    {
+                        "source": guides[0][0],
+                        "canonicalPath": "fhir/mobile",
+                        "aliases": [""],
+                        "representativeResource": "StructureDefinition/example-profile",
+                    },
+                    {
+                        "source": guides[1][0],
+                        "canonicalPath": "fhir/healthkit",
+                        "aliases": ["healthkit"],
+                        "representativeResource": "CodeSystem/example-codes",
+                    },
+                ],
+            }
+
+            def assemble(workers: int) -> dict[str, bytes]:
+                site = repository / f".build/pages-{workers}"
+                with mock.patch.object(PREPARE_PAGES.os, "cpu_count", return_value=workers), \
+                        mock.patch.object(
+                            PREPARE_PAGES,
+                            "ProcessPoolExecutor",
+                            wraps=PREPARE_PAGES.ProcessPoolExecutor,
+                        ) as pool:
+                    PREPARE_PAGES.assemble_site(
+                        site,
+                        repository,
+                        configuration,
+                        "https://pages.example/repository",
+                        "abc123",
+                        1_700_000_000,
+                    )
+                self.assertEqual(pool.called, workers > 1)
+                return {
+                    path.relative_to(site).as_posix(): path.read_bytes()
+                    for path in sorted(site.rglob("*"))
+                    if path.is_file()
+                }
+
+            serial = assemble(1)
+            self.assertTrue(serial)
+            self.assertEqual(assemble(2), serial)
+
+            # A worker's failure reaches the caller as itself, for the guide that failed.
+            (repository / guides[1][0] / "output/package.tgz").unlink()
+            with mock.patch.object(PREPARE_PAGES.os, "cpu_count", return_value=2):
+                with self.assertRaisesRegex(
+                    FileNotFoundError, "healthkit/output is not a complete Publisher build"
+                ):
+                    PREPARE_PAGES.assemble_site(
+                        repository / ".build/pages-failed",
+                        repository,
+                        configuration,
+                        "https://pages.example/repository",
+                        "abc123",
+                        1_700_000_000,
+                    )
+
+    def test_staging_runs_serially_where_the_platform_cannot_fork(self) -> None:
+        sys.modules["prepare_pages"] = PREPARE_PAGES
+        self.addCleanup(sys.modules.pop, "prepare_pages", None)
+        with mock.patch.object(
+            PREPARE_PAGES.multiprocessing, "get_all_start_methods", return_value=["spawn"]
+        ), mock.patch.object(PREPARE_PAGES.os, "cpu_count", return_value=4), mock.patch.object(
+            PREPARE_PAGES, "ProcessPoolExecutor"
+        ) as pool, mock.patch.object(
+            PREPARE_PAGES, "stage_guide_job", side_effect=lambda job: (job["guide"], {})
+        ):
+            self.assertEqual(
+                PREPARE_PAGES.stage_guides([{"guide": "a"}, {"guide": "b"}]),
+                [("a", {}), ("b", {})],
+            )
+        pool.assert_not_called()
 
     def test_local_validation_rejects_canonical_origin_drift(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

@@ -22,6 +22,15 @@ if [[ -x "$REPOSITORY_ROOT/.build/jdk21/Contents/Home/bin/java" ]]; then
 fi
 readonly JAVA_COMMAND
 readonly JAVA_MEMORY_ARGUMENTS=("-Xmx4g" "-XX:MaxMetaspaceSize=512m")
+# A build that owns its home (Scripts/build-guides-parallel.sh) gets its own temporary directory as
+# well. The Publisher writes its log and scratch files under java.io.tmpdir, which is otherwise the
+# /tmp that every concurrent build shares.
+java_temporary_arguments=()
+if [[ -n "${GROVE_FHIR_HOME_OVERRIDE:-}" ]]; then
+  mkdir -p "$FHIR_TOOL_HOME/tmp"
+  java_temporary_arguments=("-Djava.io.tmpdir=$FHIR_TOOL_HOME/tmp")
+fi
+readonly java_temporary_arguments
 
 cd "$REPOSITORY_ROOT"
 export PATH="$REPOSITORY_ROOT/node_modules/.bin:$PATH"
@@ -157,7 +166,8 @@ for guide in "${guides[@]}"; do
     cd "$guide"
     GROVE_FHIR_TOOL_HOME="$FHIR_TOOL_HOME" \
     NODE_OPTIONS="--require=$REPOSITORY_ROOT/Scripts/sushi-cache-home.cjs" \
-      "$JAVA_COMMAND" "${JAVA_MEMORY_ARGUMENTS[@]}" -Djava.awt.headless=true \
+      "$JAVA_COMMAND" "${JAVA_MEMORY_ARGUMENTS[@]}" \
+      ${java_temporary_arguments[@]+"${java_temporary_arguments[@]}"} -Djava.awt.headless=true \
       -Duser.home="$FHIR_TOOL_HOME" -jar "$TOOLS_DIRECTORY/publisher.jar" \
       "${publisher_arguments[@]}"
   ) || {

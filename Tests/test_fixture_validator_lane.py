@@ -15,6 +15,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -158,6 +159,80 @@ class FixtureValidatorLaneToolingTests(unittest.TestCase):
             ):
                 lane.committed_json_files(manifest)
             shutil.rmtree(directory, ignore_errors=True)
+
+
+    def test_groups_interact_only_across_groups(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+
+            def resource(name: str, value: dict) -> Path:
+                path = root / f"{name}.json"
+                path.write_text(json.dumps(value), encoding="utf-8")
+                return path
+
+            definition = resource(
+                "definition", {"resourceType": "Questionnaire", "url": "https://example.org/Q"}
+            )
+            reference = resource(
+                "reference",
+                {"resourceType": "QuestionnaireResponse", "questionnaire": "https://example.org/Q|1"},
+            )
+            redefinition = resource(
+                "redefinition", {"resourceType": "Questionnaire", "url": "https://example.org/Q"}
+            )
+            unrelated = resource("unrelated", {"resourceType": "Observation", "status": "final"})
+
+            # Within one group the inputs always shared a run, so that is nothing new.
+            self.assertFalse(lane.groups_interact([[definition, reference], [unrelated]]))
+            self.assertTrue(lane.groups_interact([[definition], [reference]]))
+            self.assertTrue(lane.groups_interact([[definition], [redefinition]]))
+            self.assertFalse(lane.groups_interact([[definition], [unrelated]]))
+
+    def test_validate_all_merges_runs_only_when_the_groups_cannot_interact(self) -> None:
+        resources = [Path("/fixtures/a.json"), Path("/fixtures/b.json")]
+        corpora = [
+            {
+                "manifest": Path(f"/negative/{name}/corpus.json"),
+                "control": Path(f"/negative/{name}/control.json"),
+                "cases": [{"path": Path(f"/negative/{name}/case.json")}],
+            }
+            for name in ("one", "two")
+        ]
+        members = [
+            path
+            for corpus in corpora
+            for path in (corpus["control"], *(case["path"] for case in corpus["cases"]))
+        ]
+
+        def outcomes(validator, packages, paths, **_: object) -> list:
+            return [(path, {"resourceType": "OperationOutcome"}) for path in paths]
+
+        for interact in (False, True):
+            with self.subTest(interact=interact), \
+                    mock.patch.object(lane, "groups_interact", return_value=interact), \
+                    mock.patch.object(lane, "collect_validator_outcomes", side_effect=outcomes) as collect, \
+                    mock.patch.object(lane, "run_validator") as run, \
+                    mock.patch.object(lane, "reject_validator_errors") as reject, \
+                    mock.patch.object(lane, "check_negative_corpus") as check:
+                lane.validate_all(Path("validator.jar"), [Path("package.tgz")], resources, corpora)
+                if interact:
+                    run.assert_called_once_with(
+                        Path("validator.jar"), [Path("package.tgz")], resources,
+                        allow_example_urls=True,
+                    )
+                    self.assertEqual(
+                        [call.args[2] for call in collect.call_args_list],
+                        [members[:2], members[2:]],
+                    )
+                else:
+                    run.assert_not_called()
+                    collect.assert_called_once()
+                    self.assertEqual(collect.call_args.args[2], [*resources, *members])
+                    self.assertEqual(
+                        [call.args[1] for call in reject.call_args_list],
+                        ["a.json", "b.json"],
+                    )
+                self.assertEqual(check.call_count, 2)
 
 
 if __name__ == "__main__":
