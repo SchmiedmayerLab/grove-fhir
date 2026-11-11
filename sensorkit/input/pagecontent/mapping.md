@@ -35,7 +35,8 @@ The [authoritative status matrix](status-matrix.html) lists every one of those r
 
 Every SensorKit record yields a [Grove Recording Device](https://grovealliance.org/fhir/mobile/StructureDefinition-grove-recording-device.html) for the `SRDevice` that recorded it, which a Recording Document names through `DocumentReference.author`.
 For each peripheral that `SRFetchResult.sourceDevice`, available from iOS 27, names, the record also yields a recording Device for that peripheral from its `SRSourceDevice`.
-A structured Observation references, through `Observation.device`, the device that generated its data: the peripheral's Device when exactly one peripheral supplied every sample of the record, and the `SRDevice`'s otherwise.
+A structured Observation references, through `Observation.device`, the peripheral's Device when exactly one peripheral supplied every sample of the record, as the device that generated its data.
+Otherwise it references the `SRDevice`'s Device, which recorded the samples but isn't thereby stated to have generated them; the peripherals that may have are the source entity's `performer` agents below.
 When the record names any peripheral, its conversion Provenance's source entity names each peripheral's Device as an agent of participant type `performer` (`Provenance.entity.agent`), and the `SRDevice`'s as an agent of participant type `composer`, the device that recorded the peripherals' samples.
 The record unit therefore reaches every Device of the record, whichever outputs it has, the way HealthKit names a source application as `author`.
 Each Device carries every fact SensorKit exposes, and consumers filter what they do not need:
