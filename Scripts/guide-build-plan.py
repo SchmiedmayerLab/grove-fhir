@@ -68,6 +68,36 @@ def waves() -> list[list[str]]:
     return ordered
 
 
+def ci_outputs(levels: int) -> dict[str, list[str]]:
+    """The guides for each CI wave job, split into the trunk that gates the next wave and leaves.
+
+    A guide belongs to the trunk when another guide depends on it. Every dependency of a guide in
+    wave N is therefore a trunk guide of an earlier wave, so wave N needs only the trunk of wave
+    N-1 to have finished, and a leaf, however slow, gates nothing but the final aggregate.
+    `builtN` is the trunk of waves 1 to N: what the jobs of wave N+1 restore before building.
+    The last level has no trunk job, because nothing can depend on its guides.
+    """
+    plan = waves()
+    if len(plan) > levels:
+        raise SystemExit(
+            f"::error::the guide graph now has {len(plan)} waves but CI provides {levels}; "
+            "add a trunk and a leaf job and raise --ci-outputs"
+        )
+    trunk = set().union(*(dependencies(guide) for guide in guides()))
+    outputs: dict[str, list[str]] = {}
+    built: list[str] = []
+    for level in range(1, levels + 1):
+        wave = plan[level - 1] if level <= len(plan) else []
+        outputs[f"leaf{level}"] = [guide for guide in wave if guide not in trunk]
+        if level < levels:
+            outputs[f"trunk{level}"] = [guide for guide in wave if guide in trunk]
+            built.extend(outputs[f"trunk{level}"])
+            outputs[f"built{level}"] = sorted(built)
+        elif any(guide in trunk for guide in wave):
+            raise SystemExit(f"::error::wave {level} has dependents but no later wave job")
+    return outputs
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -86,7 +116,17 @@ def main() -> int:
         type=int,
         help="print only this wave, counted from 1; prints nothing when the plan has no such wave",
     )
+    parser.add_argument(
+        "--ci-outputs",
+        type=int,
+        metavar="LEVELS",
+        help="print the trunk, leaf, and built guides of each CI wave job as GITHUB_OUTPUT lines",
+    )
     arguments = parser.parse_args()
+    if arguments.ci_outputs is not None:
+        for name, value in ci_outputs(arguments.ci_outputs).items():
+            print(f"{name}={json.dumps(value)}")
+        return 0
     if arguments.dependencies:
         for name, version in pinned(arguments.dependencies):
             print(f"{name} {version}")

@@ -16,8 +16,10 @@ import subprocess
 import sys
 import tempfile
 from pathlib import Path, PurePosixPath
-from typing import Any, Sequence
+from typing import Any, Callable, Iterator, Sequence
 
+from producer_validation.diagnostics import ProducerValidationError
+from producer_validation.external_validator import validator_outcomes
 from questionnaire_fixture_corpus import apply_mutation, load_json, write_json
 
 
@@ -41,6 +43,8 @@ PROFILES = {
 VALIDATOR_ATTEMPTS = 2
 VALIDATOR_LOG_LIMIT = 4_000
 VALIDATOR_TIMEOUT_SECONDS = 180
+# A batch of 29 takes as long as one resource: the package load is the cost, not the validation.
+VALIDATOR_TIMEOUT_SECONDS_PER_RESOURCE = 5
 
 
 def resolve_corpus_file(root: Path, value: Any, label: str) -> Path:
@@ -217,21 +221,21 @@ def exact_error_failure(
     return None
 
 
-def validate_one(
+def validator_command(
     validator: Path,
     package: Path,
-    resource_path: Path,
+    resource_paths: Sequence[Path],
     outcome_path: Path,
     allow_example_urls: bool,
     fhir_home: Path,
-) -> tuple[list[dict[str, Any]], str]:
-    resource = load_json(resource_path)
+    profile: str | None,
+) -> list[str]:
     command = [
         "java",
         f"-Duser.home={fhir_home}",
         "-jar",
         str(validator),
-        str(resource_path),
+        *(str(path) for path in resource_paths),
         "-version",
         "4.0.1",
         "-ig",
@@ -248,9 +252,19 @@ def validate_one(
     ]
     if allow_example_urls:
         command.extend(["-allow-example-urls", "true"])
-    profile = PROFILES.get(resource.get("resourceType"))
     if profile:
         command.extend(["-profile", profile])
+    return command
+
+
+def run_validator(
+    command: list[str],
+    outcome_path: Path,
+    label: str,
+    timeout: int,
+    read_errors: Callable[[Any], list[tuple[Path, list[dict[str, Any]]]]],
+) -> tuple[list[tuple[Path, list[dict[str, Any]]]], str]:
+    """Run one Validator process and return each input's errors, or raise on infrastructure failure."""
     last_failure = ""
     for attempt in range(1, VALIDATOR_ATTEMPTS + 1):
         if outcome_path.exists() or outcome_path.is_symlink():
@@ -261,13 +275,13 @@ def validate_one(
                 cwd=ROOT,
                 capture_output=True,
                 text=True,
-                timeout=VALIDATOR_TIMEOUT_SECONDS,
+                timeout=timeout,
             )
         except subprocess.TimeoutExpired as error:
             logs = truncated_validator_log(error.stdout, error.stderr)
             last_failure = (
-                f"FHIR Validator timed out after {VALIDATOR_TIMEOUT_SECONDS} seconds "
-                f"for {resource_path}; log: {logs}"
+                f"FHIR Validator timed out after {timeout} seconds "
+                f"for {label}; log: {logs}"
             )
             if attempt < VALIDATOR_ATTEMPTS:
                 continue
@@ -276,23 +290,23 @@ def validate_one(
         if not outcome_path.is_file() or outcome_path.is_symlink():
             last_failure = (
                 f"FHIR Validator produced no trustworthy OperationOutcome for "
-                f"{resource_path} (exit {result.returncode}); log: {logs}"
+                f"{label} (exit {result.returncode}); log: {logs}"
             )
             if attempt < VALIDATOR_ATTEMPTS:
                 continue
             raise RuntimeError(last_failure)
         try:
-            issues = operation_outcome_issues(load_json(outcome_path), resource_path)
+            results = read_errors(load_json(outcome_path))
         except (ValueError, OSError) as error:
             last_failure = (
-                f"untrustworthy FHIR Validator output for {resource_path}: {error} "
+                f"untrustworthy FHIR Validator output for {label}: {error} "
                 f"(exit {result.returncode}); log: {logs}"
             )
             if attempt < VALIDATOR_ATTEMPTS:
                 continue
             raise RuntimeError(last_failure) from error
 
-        errors = error_issues(issues)
+        errors = sum(len(errors) for _, errors in results)
         # The pinned Validator uses exit 1 for genuine validation errors. A populated,
         # well-formed error outcome from exit 0/1 is authoritative and the caller compares
         # it to the exact negative-corpus expectation. Every other exit is infrastructure
@@ -300,15 +314,134 @@ def validate_one(
         if (errors and result.returncode in {0, 1}) or (
             not errors and result.returncode == 0
         ):
-            return errors, logs
+            return results, logs
         last_failure = (
-            f"FHIR Validator process failed for {resource_path} with an unexpected "
+            f"FHIR Validator process failed for {label} with an unexpected "
             f"exit code after producing a trustworthy outcome (exit "
-            f"{result.returncode}, errors={len(errors)}); log: {logs}"
+            f"{result.returncode}, errors={errors}); log: {logs}"
         )
         if attempt == VALIDATOR_ATTEMPTS:
             raise RuntimeError(last_failure)
     raise RuntimeError(last_failure)
+
+
+def validate_one(
+    validator: Path,
+    package: Path,
+    resource_path: Path,
+    outcome_path: Path,
+    allow_example_urls: bool,
+    fhir_home: Path,
+) -> tuple[list[dict[str, Any]], str]:
+    resource = load_json(resource_path)
+    command = validator_command(
+        validator,
+        package,
+        [resource_path],
+        outcome_path,
+        allow_example_urls,
+        fhir_home,
+        PROFILES.get(resource.get("resourceType")),
+    )
+    results, logs = run_validator(
+        command,
+        outcome_path,
+        str(resource_path),
+        VALIDATOR_TIMEOUT_SECONDS,
+        lambda value: [
+            (resource_path, error_issues(operation_outcome_issues(value, resource_path)))
+        ],
+    )
+    return results[0][1], logs
+
+
+def strings_in(value: Any) -> Iterator[str]:
+    if isinstance(value, str):
+        yield value
+    elif isinstance(value, dict):
+        for item in value.values():
+            yield from strings_in(item)
+    elif isinstance(value, list):
+        for item in value:
+            yield from strings_in(item)
+
+
+def sibling_references(resources: dict[Path, Any]) -> set[Path]:
+    """The inputs that name the canonical URL of another input in the same set.
+
+    The Validator loads every input of a run into one context before it validates any of them, so
+    within a batch such a name could resolve against the sibling, which a run of its own never sees.
+    A resource's own top-level `url` is its identity, not a reference, and is not counted.
+    """
+    owners: dict[str, set[Path]] = {}
+    for path, resource in resources.items():
+        url = resource.get("url") if isinstance(resource, dict) else None
+        if isinstance(url, str) and url:
+            owners.setdefault(url, set()).add(path)
+    referencing: set[Path] = set()
+    for path, resource in resources.items():
+        body = (
+            {key: value for key, value in resource.items() if key != "url"}
+            if isinstance(resource, dict)
+            else resource
+        )
+        for text in strings_in(body):
+            canonical = text.split("#", 1)[0].split("|", 1)[0]
+            if owners.get(canonical, set()) - {path}:
+                referencing.add(path)
+                break
+    return referencing
+
+
+def validate_batch(
+    validator: Path,
+    package: Path,
+    resource_paths: Sequence[Path],
+    outcome_path: Path,
+    allow_example_urls: bool,
+    fhir_home: Path,
+    profile: str | None,
+) -> dict[Path, tuple[list[dict[str, Any]], str]]:
+    """Validate several resources against one profile, sharing one Validator process.
+
+    Each Validator process spends most of its time loading the FHIR packages, so one process per
+    resource costs that load every time. A batch pays it once. The Validator then reports one
+    OperationOutcome per input, which must be attributed to exactly that input, in order. An input
+    that names a sibling's canonical URL is validated on its own, so that no input's verdict can
+    depend on which other inputs share its process.
+    """
+    paths = sorted(dict.fromkeys(resource_paths), key=lambda path: path.as_posix())
+    alone = sibling_references({path: load_json(path) for path in paths})
+    shared = [path for path in paths if path not in alone]
+    results: dict[Path, tuple[list[dict[str, Any]], str]] = {}
+    for path in [path for path in paths if path in alone] + (shared if len(shared) == 1 else []):
+        results[path] = validate_one(
+            validator, package, path, outcome_path, allow_example_urls, fhir_home
+        )
+    if len(shared) < 2:
+        return results
+
+    def read_errors(value: Any) -> list[tuple[Path, list[dict[str, Any]]]]:
+        try:
+            outcomes = validator_outcomes(value, shared)
+        except ProducerValidationError as error:
+            raise ValueError(str(error)) from error
+        return [
+            (path, error_issues(operation_outcome_issues(outcome, path)))
+            for path, outcome in outcomes
+        ]
+
+    batch, logs = run_validator(
+        validator_command(
+            validator, package, shared, outcome_path, allow_example_urls, fhir_home, profile
+        ),
+        outcome_path,
+        f"{len(shared)} resources validated against {profile or 'their base types'}",
+        VALIDATOR_TIMEOUT_SECONDS + VALIDATOR_TIMEOUT_SECONDS_PER_RESOURCE * len(shared),
+        read_errors,
+    )
+    results.update((path, (errors, logs)) for path, errors in batch)
+    return results
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -361,7 +494,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     passed = 0
     expectations: dict[str, list[dict[str, str]]] = {}
     with tempfile.TemporaryDirectory(prefix="grove-questionnaire-validator-") as temporary:
-        temporary_path = Path(temporary)
+        # Resolved, because the Validator attributes each outcome to the input path as written
+        # and a batch is matched to its inputs by that path.
+        temporary_path = Path(temporary).resolve()
         if arguments.resource:
             resources = [(path.resolve(), True, None) for path in arguments.resource]
             allow_example_urls = arguments.allow_example_urls
@@ -401,20 +536,39 @@ def main(argv: Sequence[str] | None = None) -> int:
                 write_json(path, resource)
                 resources.append((path, False, case["id"]))
 
-        for index, (resource_path, expected_valid, case_id) in enumerate(resources):
-            outcome_path = temporary_path / f"outcome-{index}.json"
+        # One Validator process per profile rather than per resource: the process start, not the
+        # validation, is what each run costs.
+        batches: dict[str | None, list[Path]] = {}
+        for resource_path, _, _ in resources:
             try:
-                errors, logs = validate_one(
-                    validator,
-                    package,
-                    resource_path,
-                    outcome_path,
-                    allow_example_urls,
-                    arguments.fhir_home.resolve(),
+                resource_type = load_json(resource_path).get("resourceType")
+            except (OSError, ValueError) as error:
+                failures.append(f"{resource_path}: {error}")
+                continue
+            batches.setdefault(PROFILES.get(resource_type), []).append(resource_path)
+        outcomes: dict[Path, tuple[list[dict[str, Any]], str]] = {}
+        for index, (profile, paths) in enumerate(batches.items()):
+            try:
+                outcomes.update(
+                    validate_batch(
+                        validator,
+                        package,
+                        paths,
+                        temporary_path / f"outcome-{index}.json",
+                        allow_example_urls,
+                        arguments.fhir_home.resolve(),
+                        profile,
+                    )
                 )
             except (OSError, RuntimeError, ValueError) as error:
                 failures.append(str(error))
                 continue
+
+        for resource_path, expected_valid, case_id in resources:
+            if resource_path not in outcomes:
+                # Its batch failed, and that failure is already reported.
+                continue
+            errors, logs = outcomes[resource_path]
             if expected_valid and errors:
                 failures.append(
                     f"{resource_path}: expected valid, found {issue_text(errors)}"

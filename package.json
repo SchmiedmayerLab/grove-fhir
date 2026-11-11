@@ -6,6 +6,7 @@
   "scripts": {
     "build": "./Scripts/build-guides.sh",
     "pages:build": "./Scripts/build-guides.sh && ./Scripts/assemble-pages.sh",
+    "pages:build:parallel": "./Scripts/build-guides-parallel.sh && ./Scripts/assemble-pages.sh",
     "producer-kit:check": "python3 Scripts/validate-producer.py --manifest Conformance/example-producer/manifest.json --structural-only",
     "fixtures:check": "python3 Scripts/validate-fixtures.py --coverage-only",
     "inventory:refresh": "python3 Scripts/render-platform-inventories.py",

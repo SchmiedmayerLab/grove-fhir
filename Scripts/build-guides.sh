@@ -25,8 +25,21 @@ readonly JAVA_MEMORY_ARGUMENTS=("-Xmx4g" "-XX:MaxMetaspaceSize=512m")
 
 cd "$REPOSITORY_ROOT"
 export PATH="$REPOSITORY_ROOT/node_modules/.bin:$PATH"
-bundle config set --local path "$REPOSITORY_ROOT/.build/bundle"
-bundle config set --local bin "$REPOSITORY_ROOT/.build/bin"
+# Scripts/build-guides-parallel.sh bootstraps once with --bootstrap-only, then runs its concurrent
+# builds with GROVE_SKIP_BOOTSTRAP=1: concurrent bootstraps would race on the Bundler
+# configuration, the binstubs, and the tool archives they all share.
+bootstrap_only=false
+if [[ "${1:-}" == "--bootstrap-only" ]]; then
+  bootstrap_only=true
+  shift
+fi
+readonly bootstrap_only
+case "${GROVE_SKIP_BOOTSTRAP:-0}" in
+  0|"") skip_bootstrap=false ;;
+  1) skip_bootstrap=true ;;
+  *) echo "GROVE_SKIP_BOOTSTRAP must be 0 or 1" >&2; exit 2 ;;
+esac
+readonly skip_bootstrap
 case "${GROVE_TX_OFFLINE:-0}" in
   0|"") offline_build=false ;;
   1) offline_build=true ;;
@@ -49,21 +62,30 @@ if [[ "$offline_build" == "true" ]]; then
     exit 2
   fi
   export BUNDLE_FROZEN=true
-  # Release builds bootstrap these dependencies in an explicit online phase. Re-resolve the
-  # complete bundle locally here so a missing gem fails instead of falling back to RubyGems.
-  bundle install --local --jobs 4
-  bundle check
-else
-  bundle install --jobs 4 --retry 3
 fi
-bundle binstubs jekyll
+if [[ "$skip_bootstrap" == "false" ]]; then
+  bundle config set --local path "$REPOSITORY_ROOT/.build/bundle"
+  bundle config set --local bin "$REPOSITORY_ROOT/.build/bin"
+  if [[ "$offline_build" == "true" ]]; then
+    # Release builds bootstrap these dependencies in an explicit online phase. Re-resolve the
+    # complete bundle locally here so a missing gem fails instead of falling back to RubyGems.
+    bundle install --local --jobs 4
+    bundle check
+  else
+    bundle install --jobs 4 --retry 3
+  fi
+  bundle binstubs jekyll
+  if [[ "$offline_build" == "true" ]]; then
+    # This re-hashes Publisher, Validator, the template, and the external FHIR package closure,
+    # then seeds the isolated package cache exclusively from those verified local archives.
+    ./Scripts/download-fhir-tools.sh --offline "$TOOLS_DIRECTORY"
+  else
+    ./Scripts/download-fhir-tools.sh "$TOOLS_DIRECTORY"
+  fi
+fi
 export PATH="$REPOSITORY_ROOT/.build/bin:$PATH"
-if [[ "$offline_build" == "true" ]]; then
-  # This re-hashes Publisher, Validator, the template, and the external FHIR package closure,
-  # then seeds the isolated package cache exclusively from those verified local archives.
-  ./Scripts/download-fhir-tools.sh --offline "$TOOLS_DIRECTORY"
-else
-  ./Scripts/download-fhir-tools.sh "$TOOLS_DIRECTORY"
+if [[ "$bootstrap_only" == "true" ]]; then
+  exit 0
 fi
 
 if [[ "$#" -eq 0 ]]; then
