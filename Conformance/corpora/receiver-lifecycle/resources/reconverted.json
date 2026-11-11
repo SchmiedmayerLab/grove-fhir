@@ -7,40 +7,26 @@
     ]
   },
   "type": "collection",
-  "identifier": {
-    "type": {
-      "coding": [
-        {
-          "code": "event",
-          "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
-          "display": "Event"
-        }
-      ]
-    },
-    "system": "https://study.example.org/fhir/NamingSystem/grove-event-v0",
-    "value": "e0:1f5c58aa-6ec6-4e79-a682-829a9debd3f5:64"
-  },
   "entry": [
     {
       "extension": [
         {
-          "url": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-exchange-entry-node-key",
+          "url": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-exchange-entry-key",
           "valueIdentifier": {
             "type": {
               "coding": [
                 {
-                  "code": "entry-node",
                   "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
-                  "display": "Entry node"
+                  "code": "context-snapshot"
                 }
               ]
             },
-            "system": "https://study.example.org/fhir/NamingSystem/grove-entry-node-v0",
-            "value": "n0:patient:0:c3oXK_O4H_U-bPi8ojCQ7evxWEoDUZ1DuRQawgfZO9A"
+            "system": "https://study.example.org/fhir/NamingSystem/grove-context-snapshot-v0/test-key/1",
+            "value": "v0:test-key:1:3ZTiYqzi8xk9ZhSE3U_roFsDtUYoNTQ_CbWEDvOZwLQ"
           }
         }
       ],
-      "fullUrl": "urn:uuid:7797382f-269c-563e-9103-03f7a5f8b96f",
+      "fullUrl": "urn:uuid:a3a3368b-fb0f-5113-9d9d-7c651a4b96ca",
       "resource": {
         "resourceType": "Patient",
         "id": "GroveMobileExchangePatientExample",
@@ -48,6 +34,18 @@
           {
             "system": "https://study.example.org/fhir/identifiers/participant",
             "value": "participant-001"
+          },
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+                  "code": "context-snapshot"
+                }
+              ]
+            },
+            "system": "https://study.example.org/fhir/NamingSystem/grove-context-snapshot-v0/test-key/1",
+            "value": "v0:test-key:1:3ZTiYqzi8xk9ZhSE3U_roFsDtUYoNTQ_CbWEDvOZwLQ"
           }
         ]
       }
@@ -55,23 +53,22 @@
     {
       "extension": [
         {
-          "url": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-exchange-entry-node-key",
+          "url": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-exchange-entry-key",
           "valueIdentifier": {
             "type": {
               "coding": [
                 {
-                  "code": "device-snapshot",
                   "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
-                  "display": "Device snapshot"
+                  "code": "device-snapshot"
                 }
               ]
             },
             "system": "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v0/test-key/1",
-            "value": "v0:test-key:1:EYUasFsZmO8n8-2AWt5w5VyYh-6Yz5-5vSybbwLlMb8"
+            "value": "v0:test-key:1:Gm8_MD0ZNlH6vNBsj8s11GgVDJGHMUROX1amyK00jFs"
           }
         }
       ],
-      "fullUrl": "urn:uuid:0232612a-a1ea-5122-92d8-90f8a485dac5",
+      "fullUrl": "urn:uuid:5afa0f42-eff6-5665-b7f6-e3c2ef5cfbc4",
       "resource": {
         "resourceType": "Device",
         "id": "GroveMobileExchangeApplicationExample",
@@ -86,13 +83,12 @@
               "coding": [
                 {
                   "code": "device-snapshot",
-                  "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
-                  "display": "Device snapshot"
+                  "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role"
                 }
               ]
             },
             "system": "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v0/test-key/1",
-            "value": "v0:test-key:1:EYUasFsZmO8n8-2AWt5w5VyYh-6Yz5-5vSybbwLlMb8"
+            "value": "v0:test-key:1:Gm8_MD0ZNlH6vNBsj8s11GgVDJGHMUROX1amyK00jFs"
           }
         ],
         "deviceName": [
@@ -107,7 +103,7 @@
     {
       "extension": [
         {
-          "url": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-exchange-entry-node-key",
+          "url": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-exchange-entry-key",
           "valueIdentifier": {
             "type": {
               "coding": [
@@ -182,12 +178,12 @@
           {
             "url": "http://hl7.org/fhir/StructureDefinition/observation-gatewayDevice",
             "valueReference": {
-              "reference": "urn:uuid:0232612a-a1ea-5122-92d8-90f8a485dac5"
+              "reference": "urn:uuid:5afa0f42-eff6-5665-b7f6-e3c2ef5cfbc4"
             }
           },
           {
             "url": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-writer-record-version",
-            "valueString": "9007199254740993"
+            "valueString": "9007199254740992"
           }
         ],
         "status": "final",
@@ -203,11 +199,11 @@
           }
         ],
         "subject": {
-          "reference": "urn:uuid:7797382f-269c-563e-9103-03f7a5f8b96f"
+          "reference": "urn:uuid:a3a3368b-fb0f-5113-9d9d-7c651a4b96ca"
         },
         "derivedFrom": [
           {
-            "reference": "urn:uuid:20043975-ca5b-5ae5-9684-c782ebc5bc33"
+            "reference": "urn:uuid:9d9ad748-503d-5b45-b5db-b14d5c965705"
           }
         ],
         "effectiveDateTime": "2026-08-20T08:30:00.251-07:00",
@@ -220,7 +216,7 @@
         },
         "note": [
           {
-            "text": "Primary reading from the synthetic source record."
+            "text": "Original source wording."
           }
         ]
       }
@@ -228,23 +224,22 @@
     {
       "extension": [
         {
-          "url": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-exchange-entry-node-key",
+          "url": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-exchange-entry-key",
           "valueIdentifier": {
             "type": {
               "coding": [
                 {
-                  "code": "entry-node",
                   "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
-                  "display": "Entry node"
+                  "code": "record-version"
                 }
               ]
             },
-            "system": "https://study.example.org/fhir/NamingSystem/grove-entry-node-v0",
-            "value": "n0:conversion-provenance:0:4TLJ2QSOG-UwZ0JJez8C1EQwy2YA5bdG4CK5hsmO15w"
+            "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
+            "value": "v0:test-key:1:JjdQZSnV7AQ1Q3BdOoHU0qybpa6Bj7q_jvsj5iLue6I"
           }
         }
       ],
-      "fullUrl": "urn:uuid:f24e4958-e688-5b5c-953f-9d2da7e03683",
+      "fullUrl": "urn:uuid:5bc57179-5c3e-53b6-bf27-452886015f89",
       "resource": {
         "resourceType": "Provenance",
         "id": "GroveMobileExchangeProvenanceExample",
@@ -253,6 +248,23 @@
             "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-conversion-provenance"
           ]
         },
+        "extension": [
+          {
+            "url": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-record-version",
+            "valueIdentifier": {
+              "type": {
+                "coding": [
+                  {
+                    "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+                    "code": "record-version"
+                  }
+                ]
+              },
+              "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
+              "value": "v0:test-key:1:JjdQZSnV7AQ1Q3BdOoHU0qybpa6Bj7q_jvsj5iLue6I"
+            }
+          }
+        ],
         "activity": {
           "coding": [
             {
@@ -274,7 +286,7 @@
               ]
             },
             "who": {
-              "reference": "urn:uuid:0232612a-a1ea-5122-92d8-90f8a485dac5"
+              "reference": "urn:uuid:5afa0f42-eff6-5665-b7f6-e3c2ef5cfbc4"
             }
           }
         ],
@@ -303,30 +315,29 @@
             "reference": "urn:uuid:a9b76bbc-f523-5ef4-9919-813ec70553e5"
           }
         ],
-        "occurredDateTime": "2026-08-20T10:30:02-07:00",
-        "recorded": "2026-08-20T17:30:02Z"
+        "occurredDateTime": "2026-08-20T10:31:02-07:00",
+        "recorded": "2026-08-20T17:31:02Z"
       }
     },
     {
       "extension": [
         {
-          "url": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-exchange-entry-node-key",
+          "url": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-exchange-entry-key",
           "valueIdentifier": {
             "type": {
               "coding": [
                 {
-                  "code": "entry-node",
                   "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
-                  "display": "Entry node"
+                  "code": "context-snapshot"
                 }
               ]
             },
-            "system": "https://study.example.org/fhir/NamingSystem/grove-entry-node-v0",
-            "value": "n0:questionnaire-response:0:uajXfnMJHTMNEvY41IEBi0nlH8FUTkr0onITiAo3d50"
+            "system": "https://study.example.org/fhir/NamingSystem/grove-context-snapshot-v0/test-key/1",
+            "value": "v0:test-key:1:_rNxPQWm7HC8lN4rxNvNcQDkKO0Ew1LhBZ9jO8jJduM"
           }
         }
       ],
-      "fullUrl": "urn:uuid:20043975-ca5b-5ae5-9684-c782ebc5bc33",
+      "fullUrl": "urn:uuid:9d9ad748-503d-5b45-b5db-b14d5c965705",
       "resource": {
         "resourceType": "QuestionnaireResponse",
         "id": "GroveMobileExchangeQuestionnaireResponseExample",
@@ -346,6 +357,21 @@
                   "code": "ELECTRONIC"
                 }
               ]
+            }
+          },
+          {
+            "url": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-context-snapshot",
+            "valueIdentifier": {
+              "type": {
+                "coding": [
+                  {
+                    "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+                    "code": "context-snapshot"
+                  }
+                ]
+              },
+              "system": "https://study.example.org/fhir/NamingSystem/grove-context-snapshot-v0/test-key/1",
+              "value": "v0:test-key:1:_rNxPQWm7HC8lN4rxNvNcQDkKO0Ew1LhBZ9jO8jJduM"
             }
           }
         ],
@@ -381,5 +407,5 @@
       }
     }
   ],
-  "timestamp": "2026-08-20T17:30:02Z"
+  "timestamp": "2026-08-20T17:31:05Z"
 }

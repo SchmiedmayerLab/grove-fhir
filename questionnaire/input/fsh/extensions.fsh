@@ -7,7 +7,7 @@
 Extension: GroveQuestionnaireWriterContext
 Id: grove-questionnaire-writer-context
 Title: "Grove Questionnaire Writer Context"
-Description: "The application and host that captured one response, stated as plain facts. A writer cannot mint a Grove device snapshot, whose identity is scoped to an exchange event that does not exist at submission, so it states what it is and the projecting system builds the snapshot."
+Description: "The application and host that captured one response, stated as plain facts. A Grove device snapshot is keyed by a digest of the complete Device the projecting system renders, under a deployment key the writer does not hold, so the writer states what it is and the projecting system builds the application and host snapshots from these facts."
 * ^context[+].type = #element
 * ^context[=].expression = "QuestionnaireResponse"
 * extension contains
@@ -28,6 +28,6 @@ Description: "The application and host that captured one response, stated as pla
 * extension[applicationBuild].value[x] only string
 * extension[applicationBuild] ^short = "Exact build the capturing application reports for itself"
 * extension[hostModel].value[x] only string
-* extension[hostModel] ^short = "Hardware model the application ran on"
+* extension[hostModel] ^short = "Hardware product type the application ran on, such as iPhone17,1; the host snapshot's modelNumber"
 * extension[hostOperatingSystemVersion].value[x] only string
 * extension[hostOperatingSystemVersion] ^short = "Operating system version the host snapshot requires"

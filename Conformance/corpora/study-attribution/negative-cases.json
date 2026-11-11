@@ -1,34 +1,144 @@
 {
   "schemaVersion": 0,
-  "version": "0.7.0",
+  "version": "0.8.0",
   "bases": [
-    {"id": "source-event", "path": "source-event.json"},
-    {"id": "export-a", "path": "export-a.json"}
+    {
+      "id": "source-event",
+      "path": "source-event.json"
+    },
+    {
+      "id": "export-a",
+      "path": "export-a.json"
+    }
   ],
   "cases": [
     {
       "id": "subject-mismatch",
       "base": "source-event",
-      "patch": [{"op": "replace", "path": "/entry/7/resource/individual", "value": {"type": "Patient", "identifier": {"system": "https://study.example.org/fhir/identifiers/participant", "value": "participant-002"}}}],
-      "expectedRule": {"code": "receiver-study.subject-mismatch", "reason": "Study enrollment subject differs from the verified source subject."}
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/entry/7",
+          "value": {
+            "fullUrl": "urn:uuid:6b65863c-535f-56f6-8b26-9841fc42c6af",
+            "resource": {
+              "resourceType": "ResearchSubject",
+              "id": "enrollment-a",
+              "identifier": [
+                {
+                  "system": "https://study.example.org/enrollments",
+                  "value": "enrollment-a"
+                },
+                {
+                  "type": {
+                    "coding": [
+                      {
+                        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+                        "code": "context-snapshot"
+                      }
+                    ]
+                  },
+                  "system": "https://study.example.org/fhir/NamingSystem/grove-context-snapshot-v0/test-key/1",
+                  "value": "v0:test-key:1:CGiGWkfY-tTd-izT5-yHSTcqvPjMY9N3QrlPQUTTec8"
+                }
+              ],
+              "status": "on-study",
+              "study": {
+                "reference": "urn:uuid:e2b85719-2092-5af6-89f7-0570fa9e6e3e"
+              },
+              "individual": {
+                "type": "Patient",
+                "identifier": {
+                  "system": "https://study.example.org/fhir/identifiers/participant",
+                  "value": "participant-002"
+                }
+              }
+            },
+            "extension": [
+              {
+                "url": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-exchange-entry-key",
+                "valueIdentifier": {
+                  "type": {
+                    "coding": [
+                      {
+                        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+                        "code": "context-snapshot"
+                      }
+                    ]
+                  },
+                  "system": "https://study.example.org/fhir/NamingSystem/grove-context-snapshot-v0/test-key/1",
+                  "value": "v0:test-key:1:CGiGWkfY-tTd-izT5-yHSTcqvPjMY9N3QrlPQUTTec8"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expectedRule": {
+        "code": "receiver-study.subject-mismatch",
+        "reason": "Study enrollment subject differs from the verified source subject."
+      }
     },
     {
       "id": "protocol-is-not-a-reference",
       "base": "source-event",
-      "patch": [{"op": "replace", "path": "/entry/6/resource/protocol/0", "value": "https://study.example.org/PlanDefinition/a|1"}],
-      "expectedRule": {"code": "mobile-exchange.reference-shape", "reason": "ResearchStudy.protocol requires a Reference, not a canonical string."}
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/entry/6/resource/protocol/0",
+          "value": "https://study.example.org/PlanDefinition/a|1"
+        }
+      ],
+      "expectedRule": {
+        "code": "mobile-exchange.reference-shape",
+        "reason": "ResearchStudy.protocol requires a Reference, not a canonical string."
+      }
     },
     {
       "id": "lost-historical-revision",
       "base": "export-a",
-      "patch": [{"op": "replace", "path": "/entry/4/resource/version", "value": "2"}],
-      "expectedRule": {"code": "receiver-study.historical-revision", "reason": "The export's protocol differs from the immutable revision authorized by its grant."}
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/entry/4/resource/version",
+          "value": "2"
+        }
+      ],
+      "expectedRule": {
+        "code": "receiver-study.historical-revision",
+        "reason": "The export's protocol differs from the immutable revision authorized by its grant."
+      }
     },
     {
-      "id": "derived-export-as-event-retry",
+      "id": "derived-export-as-record-retry",
       "base": "export-a",
-      "patch": [{"op": "replace", "path": "/identifier", "value": {"type": {"coding": [{"code": "event", "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role", "display": "Event"}]}, "system": "https://study.example.org/fhir/NamingSystem/grove-event-v0", "value": "e0:1f5c58aa-6ec6-4e79-a682-829a9debd3f5:50"}}],
-      "expectedRule": {"code": "receiver-study.not-exact-replay", "reason": "A filtered export cannot reuse the immutable producer event identity for different bytes."}
+      "patch": [
+        {
+          "op": "add",
+          "path": "/entry/7/resource/extension",
+          "value": [
+            {
+              "url": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-record-version",
+              "valueIdentifier": {
+                "type": {
+                  "coding": [
+                    {
+                      "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+                      "code": "record-version"
+                    }
+                  ]
+                },
+                "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
+                "value": "v0:test-key:1:bPyV3lwtPox84i-1jtri_UyMis2PtZvmo0mmq9XQrn0"
+              }
+            }
+          ]
+        }
+      ],
+      "expectedRule": {
+        "code": "receiver-study.not-exact-replay",
+        "reason": "A filtered export cannot reuse the immutable source record version for different bytes."
+      }
     }
   ]
 }

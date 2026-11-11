@@ -432,7 +432,7 @@ def validate_health_connect_output_graph(
     resources_by_full_url: dict[str, dict[str, Any]],
     label: str,
 ) -> None:
-    """Enforce Health Connect cardinalities visible in one active exchange event."""
+    """Enforce Health Connect cardinalities for each record of one active exchange Bundle."""
     catalog = read_json(CATALOG_ROOT / "health-connect-adapter.json")
     observation_profile = (
         "https://grovealliance.org/fhir/health-connect/StructureDefinition/"

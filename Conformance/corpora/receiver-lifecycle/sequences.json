@@ -1,25 +1,38 @@
 {
   "schemaVersion": 0,
-  "events": "events.json",
+  "bundles": "bundles.json",
   "policy": {
     "visiblePurpose": "purpose-a",
     "deniedPurposes": [
       "purpose-b"
     ],
     "scope": "One verified participant and source repository; transport restoration preserves that scope.",
-    "order": "Compare canonical decimal writer versions only for the same complete writer-record Identifier pair. Neither arrival, event sequence nor issued establishes source revision order.",
-    "conflict": "Retain incomparable different versions; disclose neither as the current output.",
-    "retraction": "Retain the logical target tombstone before or after its target arrives. Replay never removes it. Reappearance requires a separate receiver policy and is outside this corpus.",
+    "order": "lifecycle.active.versionSelection: comparable writer versions under the same complete writer-record Identifier pair decide first; otherwise the later Provenance.recorded instant; equal instants select the bytewise-greater record-version Identifier. Neither arrival nor Bundle.timestamp orders versions.",
+    "retraction": "lifecycle.active.versionSelection.retraction: the tombstone covers the whole source record, every output of every version accepted before or after it, and replay never removes it. A record is never un-retracted.",
     "references": "An unresolved logical clinical reference keeps the referring output pending and undisclosed. A later target must match its complete Identifier and verified subject/source scope.",
     "authorization": "The harness independently authorizes purpose-a for the named output versions only; purpose-b has no authorization. Profile validity and graph readiness never create authorization.",
-    "arrays": "State arrays are sets of event aliases. Versions/current/visible aliases select the Observation in the named event. A retracted alias identifies its complete source-output Identifier and suppresses every version with that identity, not just that alias. history includes retractions; versions does not. newlyVisible is the access newly made available at this step, not an HTTP receipt code."
+    "arrays": "State arrays are sets of Bundle aliases. Versions/current/visible aliases select the Observation in the named Bundle. A retracted alias names an output of a retracted source record and suppresses every output of every version of that source record, not only versions sharing its source-output Identifier. history includes retractions; versions does not. newlyVisible is the access newly made available at this step, not an HTTP receipt code."
+  },
+  "replayWholeSequence": {
+    "repeat": 1,
+    "restartBeforeReplay": true,
+    "preserveFinalState": true,
+    "newlyVisible": []
+  },
+  "logicalReferences": {
+    "questionnaire": {
+      "sourceBundle": "pending",
+      "referencePointer": "/entry/2/resource/derivedFrom/0",
+      "targetBundle": "target",
+      "targetPointer": "/entry/4/resource"
+    }
   },
   "sequences": [
     {
       "id": "exact-and-conflicting-replay",
       "steps": [
         {
-          "event": "original",
+          "bundle": "original",
           "expect": {
             "history": [
               "original"
@@ -32,7 +45,6 @@
             ],
             "pending": [],
             "retracted": [],
-            "conflicts": [],
             "visible": [
               "original"
             ],
@@ -43,7 +55,7 @@
           }
         },
         {
-          "event": "original",
+          "bundle": "original",
           "expect": {
             "history": [
               "original"
@@ -56,7 +68,6 @@
             ],
             "pending": [],
             "retracted": [],
-            "conflicts": [],
             "visible": [
               "original"
             ],
@@ -65,7 +76,7 @@
           }
         },
         {
-          "event": "altered-retry",
+          "bundle": "altered-retry",
           "expect": {
             "history": [
               "original"
@@ -78,7 +89,6 @@
             ],
             "pending": [],
             "retracted": [],
-            "conflicts": [],
             "visible": [
               "original"
             ],
@@ -92,7 +102,7 @@
       "id": "reformatted-replay",
       "steps": [
         {
-          "event": "original",
+          "bundle": "original",
           "expect": {
             "history": [
               "original"
@@ -105,7 +115,6 @@
             ],
             "pending": [],
             "retracted": [],
-            "conflicts": [],
             "visible": [
               "original"
             ],
@@ -116,7 +125,7 @@
           }
         },
         {
-          "event": "reformatted-retry",
+          "bundle": "reformatted-retry",
           "expect": {
             "history": [
               "original"
@@ -129,7 +138,6 @@
             ],
             "pending": [],
             "retracted": [],
-            "conflicts": [],
             "visible": [
               "original"
             ],
@@ -140,10 +148,10 @@
       ]
     },
     {
-      "id": "lexeme-replay",
+      "id": "lexeme-version-after-original",
       "steps": [
         {
-          "event": "original",
+          "bundle": "original",
           "expect": {
             "history": [
               "original"
@@ -156,7 +164,6 @@
             ],
             "pending": [],
             "retracted": [],
-            "conflicts": [],
             "visible": [
               "original"
             ],
@@ -167,22 +174,76 @@
           }
         },
         {
-          "event": "lexeme-retry",
+          "bundle": "lexeme-retry",
           "expect": {
             "history": [
-              "original"
+              "original",
+              "lexeme-retry"
             ],
             "versions": [
-              "original"
+              "original",
+              "lexeme-retry"
             ],
             "current": [
-              "original"
+              "lexeme-retry"
             ],
             "pending": [],
             "retracted": [],
-            "conflicts": [],
             "visible": [
+              "lexeme-retry"
+            ],
+            "newlyVisible": [
+              "lexeme-retry"
+            ],
+            "references": {}
+          }
+        }
+      ]
+    },
+    {
+      "id": "lexeme-version-before-original",
+      "steps": [
+        {
+          "bundle": "lexeme-retry",
+          "expect": {
+            "history": [
+              "lexeme-retry"
+            ],
+            "versions": [
+              "lexeme-retry"
+            ],
+            "current": [
+              "lexeme-retry"
+            ],
+            "pending": [],
+            "retracted": [],
+            "visible": [
+              "lexeme-retry"
+            ],
+            "newlyVisible": [
+              "lexeme-retry"
+            ],
+            "references": {}
+          }
+        },
+        {
+          "bundle": "original",
+          "expect": {
+            "history": [
+              "lexeme-retry",
               "original"
+            ],
+            "versions": [
+              "lexeme-retry",
+              "original"
+            ],
+            "current": [
+              "lexeme-retry"
+            ],
+            "pending": [],
+            "retracted": [],
+            "visible": [
+              "lexeme-retry"
             ],
             "newlyVisible": [],
             "references": {}
@@ -194,7 +255,7 @@
       "id": "correction-before-original",
       "steps": [
         {
-          "event": "corrected",
+          "bundle": "corrected",
           "expect": {
             "history": [
               "corrected"
@@ -207,7 +268,6 @@
             ],
             "pending": [],
             "retracted": [],
-            "conflicts": [],
             "visible": [
               "corrected"
             ],
@@ -218,7 +278,7 @@
           }
         },
         {
-          "event": "original",
+          "bundle": "original",
           "expect": {
             "history": [
               "corrected",
@@ -233,7 +293,6 @@
             ],
             "pending": [],
             "retracted": [],
-            "conflicts": [],
             "visible": [
               "corrected"
             ],
@@ -242,7 +301,7 @@
           }
         },
         {
-          "event": "corrected",
+          "bundle": "corrected",
           "expect": {
             "history": [
               "corrected",
@@ -257,7 +316,6 @@
             ],
             "pending": [],
             "retracted": [],
-            "conflicts": [],
             "visible": [
               "corrected"
             ],
@@ -271,7 +329,7 @@
       "id": "original-before-correction",
       "steps": [
         {
-          "event": "original",
+          "bundle": "original",
           "expect": {
             "history": [
               "original"
@@ -284,7 +342,6 @@
             ],
             "pending": [],
             "retracted": [],
-            "conflicts": [],
             "visible": [
               "original"
             ],
@@ -295,7 +352,7 @@
           }
         },
         {
-          "event": "corrected",
+          "bundle": "corrected",
           "expect": {
             "history": [
               "original",
@@ -310,7 +367,6 @@
             ],
             "pending": [],
             "retracted": [],
-            "conflicts": [],
             "visible": [
               "corrected"
             ],
@@ -323,10 +379,10 @@
       ]
     },
     {
-      "id": "unordered-conflict",
+      "id": "unordered-later-recorded-first",
       "steps": [
         {
-          "event": "unordered-a",
+          "bundle": "unordered-a",
           "expect": {
             "history": [
               "unordered-a"
@@ -339,7 +395,6 @@
             ],
             "pending": [],
             "retracted": [],
-            "conflicts": [],
             "visible": [
               "unordered-a"
             ],
@@ -350,7 +405,7 @@
           }
         },
         {
-          "event": "unordered-b",
+          "bundle": "unordered-b",
           "expect": {
             "history": [
               "unordered-a",
@@ -360,20 +415,20 @@
               "unordered-a",
               "unordered-b"
             ],
-            "current": [],
+            "current": [
+              "unordered-a"
+            ],
             "pending": [],
             "retracted": [],
-            "conflicts": [
-              "unordered-a",
-              "unordered-b"
+            "visible": [
+              "unordered-a"
             ],
-            "visible": [],
             "newlyVisible": [],
             "references": {}
           }
         },
         {
-          "event": "unordered-a",
+          "bundle": "unordered-a",
           "expect": {
             "history": [
               "unordered-a",
@@ -383,14 +438,194 @@
               "unordered-a",
               "unordered-b"
             ],
-            "current": [],
+            "current": [
+              "unordered-a"
+            ],
             "pending": [],
             "retracted": [],
-            "conflicts": [
-              "unordered-a",
+            "visible": [
+              "unordered-a"
+            ],
+            "newlyVisible": [],
+            "references": {}
+          }
+        }
+      ]
+    },
+    {
+      "id": "unordered-later-recorded-last",
+      "steps": [
+        {
+          "bundle": "unordered-b",
+          "expect": {
+            "history": [
               "unordered-b"
             ],
-            "visible": [],
+            "versions": [
+              "unordered-b"
+            ],
+            "current": [
+              "unordered-b"
+            ],
+            "pending": [],
+            "retracted": [],
+            "visible": [
+              "unordered-b"
+            ],
+            "newlyVisible": [
+              "unordered-b"
+            ],
+            "references": {}
+          }
+        },
+        {
+          "bundle": "unordered-a",
+          "expect": {
+            "history": [
+              "unordered-b",
+              "unordered-a"
+            ],
+            "versions": [
+              "unordered-b",
+              "unordered-a"
+            ],
+            "current": [
+              "unordered-a"
+            ],
+            "pending": [],
+            "retracted": [],
+            "visible": [
+              "unordered-a"
+            ],
+            "newlyVisible": [
+              "unordered-a"
+            ],
+            "references": {}
+          }
+        },
+        {
+          "bundle": "unordered-b",
+          "expect": {
+            "history": [
+              "unordered-b",
+              "unordered-a"
+            ],
+            "versions": [
+              "unordered-b",
+              "unordered-a"
+            ],
+            "current": [
+              "unordered-a"
+            ],
+            "pending": [],
+            "retracted": [],
+            "visible": [
+              "unordered-a"
+            ],
+            "newlyVisible": [],
+            "references": {}
+          }
+        }
+      ]
+    },
+    {
+      "id": "reconversion-after-original",
+      "steps": [
+        {
+          "bundle": "original",
+          "expect": {
+            "history": [
+              "original"
+            ],
+            "versions": [
+              "original"
+            ],
+            "current": [
+              "original"
+            ],
+            "pending": [],
+            "retracted": [],
+            "visible": [
+              "original"
+            ],
+            "newlyVisible": [
+              "original"
+            ],
+            "references": {}
+          }
+        },
+        {
+          "bundle": "reconverted",
+          "expect": {
+            "history": [
+              "original",
+              "reconverted"
+            ],
+            "versions": [
+              "original",
+              "reconverted"
+            ],
+            "current": [
+              "reconverted"
+            ],
+            "pending": [],
+            "retracted": [],
+            "visible": [
+              "reconverted"
+            ],
+            "newlyVisible": [
+              "reconverted"
+            ],
+            "references": {}
+          }
+        }
+      ]
+    },
+    {
+      "id": "reconversion-before-original",
+      "steps": [
+        {
+          "bundle": "reconverted",
+          "expect": {
+            "history": [
+              "reconverted"
+            ],
+            "versions": [
+              "reconverted"
+            ],
+            "current": [
+              "reconverted"
+            ],
+            "pending": [],
+            "retracted": [],
+            "visible": [
+              "reconverted"
+            ],
+            "newlyVisible": [
+              "reconverted"
+            ],
+            "references": {}
+          }
+        },
+        {
+          "bundle": "original",
+          "expect": {
+            "history": [
+              "reconverted",
+              "original"
+            ],
+            "versions": [
+              "reconverted",
+              "original"
+            ],
+            "current": [
+              "reconverted"
+            ],
+            "pending": [],
+            "retracted": [],
+            "visible": [
+              "reconverted"
+            ],
             "newlyVisible": [],
             "references": {}
           }
@@ -401,7 +636,7 @@
       "id": "pending-reference-resolution",
       "steps": [
         {
-          "event": "pending",
+          "bundle": "pending",
           "expect": {
             "history": [
               "pending"
@@ -416,7 +651,6 @@
               "pending"
             ],
             "retracted": [],
-            "conflicts": [],
             "visible": [],
             "newlyVisible": [],
             "references": {
@@ -425,7 +659,7 @@
           }
         },
         {
-          "event": "target",
+          "bundle": "target",
           "expect": {
             "history": [
               "pending",
@@ -441,7 +675,6 @@
             ],
             "pending": [],
             "retracted": [],
-            "conflicts": [],
             "visible": [
               "pending",
               "target"
@@ -461,7 +694,7 @@
       "id": "retraction-before-target",
       "steps": [
         {
-          "event": "retraction",
+          "bundle": "retraction",
           "expect": {
             "history": [
               "retraction"
@@ -472,14 +705,13 @@
             "retracted": [
               "original"
             ],
-            "conflicts": [],
             "visible": [],
             "newlyVisible": [],
             "references": {}
           }
         },
         {
-          "event": "original",
+          "bundle": "original",
           "expect": {
             "history": [
               "retraction",
@@ -493,14 +725,13 @@
             "retracted": [
               "original"
             ],
-            "conflicts": [],
             "visible": [],
             "newlyVisible": [],
             "references": {}
           }
         },
         {
-          "event": "retraction",
+          "bundle": "retraction",
           "expect": {
             "history": [
               "retraction",
@@ -514,15 +745,14 @@
             "retracted": [
               "original"
             ],
-            "conflicts": [],
             "visible": [],
             "newlyVisible": [],
             "references": {}
           }
         },
         {
-          "event": "original",
-          "transport": "restored-producer",
+          "bundle": "original",
+          "transport": "restored-transport",
           "expect": {
             "history": [
               "retraction",
@@ -536,7 +766,6 @@
             "retracted": [
               "original"
             ],
-            "conflicts": [],
             "visible": [],
             "newlyVisible": [],
             "references": {}
@@ -548,7 +777,7 @@
       "id": "retraction-after-target",
       "steps": [
         {
-          "event": "original",
+          "bundle": "original",
           "expect": {
             "history": [
               "original"
@@ -561,7 +790,6 @@
             ],
             "pending": [],
             "retracted": [],
-            "conflicts": [],
             "visible": [
               "original"
             ],
@@ -572,7 +800,7 @@
           }
         },
         {
-          "event": "retraction",
+          "bundle": "retraction",
           "expect": {
             "history": [
               "original",
@@ -586,14 +814,13 @@
             "retracted": [
               "original"
             ],
-            "conflicts": [],
             "visible": [],
             "newlyVisible": [],
             "references": {}
           }
         },
         {
-          "event": "original",
+          "bundle": "original",
           "expect": {
             "history": [
               "original",
@@ -607,7 +834,6 @@
             "retracted": [
               "original"
             ],
-            "conflicts": [],
             "visible": [],
             "newlyVisible": [],
             "references": {}
@@ -619,36 +845,91 @@
       "id": "correction-before-retraction",
       "steps": [
         {
-          "event": "corrected",
+          "bundle": "corrected",
           "expect": {
-            "history": ["corrected"], "versions": ["corrected"], "current": ["corrected"],
-            "pending": [], "retracted": [], "conflicts": [], "visible": ["corrected"],
-            "newlyVisible": ["corrected"], "references": {}
+            "history": [
+              "corrected"
+            ],
+            "versions": [
+              "corrected"
+            ],
+            "current": [
+              "corrected"
+            ],
+            "pending": [],
+            "retracted": [],
+            "visible": [
+              "corrected"
+            ],
+            "newlyVisible": [
+              "corrected"
+            ],
+            "references": {}
           }
         },
         {
-          "event": "retraction",
+          "bundle": "retraction",
           "expect": {
-            "history": ["corrected", "retraction"], "versions": ["corrected"], "current": [],
-            "pending": [], "retracted": ["original"], "conflicts": [], "visible": [],
-            "newlyVisible": [], "references": {}
+            "history": [
+              "corrected",
+              "retraction"
+            ],
+            "versions": [
+              "corrected"
+            ],
+            "current": [],
+            "pending": [],
+            "retracted": [
+              "original"
+            ],
+            "visible": [],
+            "newlyVisible": [],
+            "references": {}
           }
         },
         {
-          "event": "original",
+          "bundle": "original",
           "expect": {
-            "history": ["corrected", "retraction", "original"], "versions": ["corrected", "original"], "current": [],
-            "pending": [], "retracted": ["original"], "conflicts": [], "visible": [],
-            "newlyVisible": [], "references": {}
+            "history": [
+              "corrected",
+              "retraction",
+              "original"
+            ],
+            "versions": [
+              "corrected",
+              "original"
+            ],
+            "current": [],
+            "pending": [],
+            "retracted": [
+              "original"
+            ],
+            "visible": [],
+            "newlyVisible": [],
+            "references": {}
           }
         },
         {
-          "event": "corrected",
-          "transport": "restored-producer",
+          "bundle": "corrected",
+          "transport": "restored-transport",
           "expect": {
-            "history": ["corrected", "retraction", "original"], "versions": ["corrected", "original"], "current": [],
-            "pending": [], "retracted": ["original"], "conflicts": [], "visible": [],
-            "newlyVisible": [], "references": {}
+            "history": [
+              "corrected",
+              "retraction",
+              "original"
+            ],
+            "versions": [
+              "corrected",
+              "original"
+            ],
+            "current": [],
+            "pending": [],
+            "retracted": [
+              "original"
+            ],
+            "visible": [],
+            "newlyVisible": [],
+            "references": {}
           }
         }
       ]
@@ -657,53 +938,88 @@
       "id": "retraction-before-correction",
       "steps": [
         {
-          "event": "retraction",
+          "bundle": "retraction",
           "expect": {
-            "history": ["retraction"], "versions": [], "current": [],
-            "pending": [], "retracted": ["original"], "conflicts": [], "visible": [],
-            "newlyVisible": [], "references": {}
+            "history": [
+              "retraction"
+            ],
+            "versions": [],
+            "current": [],
+            "pending": [],
+            "retracted": [
+              "original"
+            ],
+            "visible": [],
+            "newlyVisible": [],
+            "references": {}
           }
         },
         {
-          "event": "corrected",
+          "bundle": "corrected",
           "expect": {
-            "history": ["retraction", "corrected"], "versions": ["corrected"], "current": [],
-            "pending": [], "retracted": ["original"], "conflicts": [], "visible": [],
-            "newlyVisible": [], "references": {}
+            "history": [
+              "retraction",
+              "corrected"
+            ],
+            "versions": [
+              "corrected"
+            ],
+            "current": [],
+            "pending": [],
+            "retracted": [
+              "original"
+            ],
+            "visible": [],
+            "newlyVisible": [],
+            "references": {}
           }
         },
         {
-          "event": "original",
+          "bundle": "original",
           "expect": {
-            "history": ["retraction", "corrected", "original"], "versions": ["corrected", "original"], "current": [],
-            "pending": [], "retracted": ["original"], "conflicts": [], "visible": [],
-            "newlyVisible": [], "references": {}
+            "history": [
+              "retraction",
+              "corrected",
+              "original"
+            ],
+            "versions": [
+              "corrected",
+              "original"
+            ],
+            "current": [],
+            "pending": [],
+            "retracted": [
+              "original"
+            ],
+            "visible": [],
+            "newlyVisible": [],
+            "references": {}
           }
         },
         {
-          "event": "corrected",
-          "transport": "restored-producer",
+          "bundle": "corrected",
+          "transport": "restored-transport",
           "expect": {
-            "history": ["retraction", "corrected", "original"], "versions": ["corrected", "original"], "current": [],
-            "pending": [], "retracted": ["original"], "conflicts": [], "visible": [],
-            "newlyVisible": [], "references": {}
+            "history": [
+              "retraction",
+              "corrected",
+              "original"
+            ],
+            "versions": [
+              "corrected",
+              "original"
+            ],
+            "current": [],
+            "pending": [],
+            "retracted": [
+              "original"
+            ],
+            "visible": [],
+            "newlyVisible": [],
+            "references": {}
           }
         }
       ]
     }
-  ],
-  "replayWholeSequence": {
-    "repeat": 1,
-    "restartBeforeReplay": true,
-    "preserveFinalState": true,
-    "newlyVisible": []
-  },
-  "logicalReferences": {
-    "questionnaire": {
-      "sourceEvent": "pending",
-      "referencePointer": "/entry/2/resource/derivedFrom/0",
-      "targetEvent": "target",
-      "targetPointer": "/entry/4/resource"
-    }
-  }
+  ]
 }

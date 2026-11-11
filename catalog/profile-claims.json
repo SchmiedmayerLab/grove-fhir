@@ -2,7 +2,7 @@
   "$schema": "https://grovealliance.org/fhir/catalog/schemas/catalog-contracts.schema.json",
   "schemaVersion": 0,
   "fhirVersion": "4.0.1",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "observationAdapterClaim": {
     "cardinality": 2,
     "members": [
@@ -222,7 +222,7 @@
       "targetType": "Observation",
       "referenceShape": "identifier-only",
       "identifierRole": "source-output",
-      "sameEventBundle": false,
+      "sameRecord": false,
       "cardinality": {"min": 0, "max": "*"},
       "statusConditionedCardinality": [
         {"status": "notSet", "min": 0, "max": 0},
@@ -234,7 +234,7 @@
     },
     "provenance": {
       "profile": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-conversion-provenance",
-      "rule": "The ECG conversion Provenance targets the waveform and the optional average-heart-rate output. Each correlated symptom has its own source-record event and normal HealthKit conversion Provenance."
+      "rule": "The ECG conversion Provenance targets the waveform and the optional average-heart-rate output. Each correlated symptom is its own record, with its own source record and normal HealthKit conversion Provenance, and may travel in the same Bundle."
     }
   },
   "sensorRecordingDocumentClaim": {
@@ -528,7 +528,7 @@
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-wheelchair-use",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-workout-effort-score"
       ],
-      "rule": "One Provenance in the active exchange graph targets every admitted HealthKit structured or byte-preserving output produced from its exact sole typed source-record Identifier, including child-only Observation, recording, clinical-document, vision, dose, and tracked-medication resources; every target is an internal UUID reference. An active conversion graph never encodes retraction by mutating output status. A separate retraction Bundle with retraction Provenance asserts source removal and carries no conversion Provenance.",
+      "rule": "One conversion Provenance per record targets every admitted HealthKit structured or byte-preserving output produced from its exact sole typed source-record Identifier, including child-only Observation, recording, clinical-document, vision, dose, and tracked-medication resources; every target is an internal UUID reference. An active conversion graph never encodes retraction by mutating output status. A separate retraction Bundle with retraction Provenance asserts source removal and carries no conversion Provenance.",
       "sourceIdentifierRole": "source-record",
       "sourceIdentityKind": "source-record"
     },
@@ -543,7 +543,7 @@
         "https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-interstitial-glucose",
         "https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-specimen"
       ],
-      "rule": "One Provenance in the active exchange graph targets every Health Connect Observation and synthesized Specimen produced from its exact sole typed source-record Identifier; every target is an internal UUID reference. The Provenance directly declares only the Health Connect conversion profile; its inherited Mobile profile is not repeated. An active conversion graph never encodes retraction by mutating output status. A separate retraction Bundle with retraction Provenance asserts source removal and carries no conversion Provenance.",
+      "rule": "One conversion Provenance per record targets every Health Connect Observation and synthesized Specimen produced from its exact sole typed source-record Identifier; every target is an internal UUID reference. The Provenance directly declares only the Health Connect conversion profile; its inherited Mobile profile is not repeated. An active conversion graph never encodes retraction by mutating output status. A separate retraction Bundle with retraction Provenance asserts source removal and carries no conversion Provenance.",
       "sourceIdentifierRole": "source-record",
       "sourceIdentityKind": "source-record"
     },
@@ -556,7 +556,7 @@
         "https://grovealliance.org/fhir/oura/StructureDefinition/oura-observation",
         "https://grovealliance.org/fhir/google-health/StructureDefinition/google-health-observation"
       ],
-      "rule": "One Provenance in the active exchange graph targets every connected-provider Observation carrying its exact provider-owned adapter envelope and every Provider Recording Document carrying its exact sole typed source-record Identifier; the abstract ProvidersObservation parent is never a direct claim. Every target is an internal UUID reference. An active conversion graph never encodes retraction by mutating output status. A separate retraction Bundle with retraction Provenance asserts source removal and carries no conversion Provenance.",
+      "rule": "One conversion Provenance per record targets every connected-provider Observation carrying its exact provider-owned adapter envelope and every Provider Recording Document carrying its exact sole typed source-record Identifier; the abstract ProvidersObservation parent is never a direct claim. Every target is an internal UUID reference. An active conversion graph never encodes retraction by mutating output status. A separate retraction Bundle with retraction Provenance asserts source removal and carries no conversion Provenance.",
       "sourceIdentifierRole": "source-record",
       "sourceIdentityKind": "provider-record"
     },
@@ -578,7 +578,7 @@
         "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-visit-observation",
         "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-wrist-temperature-observation"
       ],
-      "rule": "One Provenance in the active exchange graph targets every SensorKit structured and raw output carrying its exact sole typed source-record Identifier; every target is an internal UUID reference. An active conversion graph never encodes retraction by mutating output status. A separate retraction Bundle with retraction Provenance asserts source removal and carries no conversion Provenance.",
+      "rule": "One conversion Provenance per record targets every SensorKit structured and raw output carrying its exact sole typed source-record Identifier; every target is an internal UUID reference. An active conversion graph never encodes retraction by mutating output status. A separate retraction Bundle with retraction Provenance asserts source removal and carries no conversion Provenance.",
       "sourceIdentifierRole": "source-record",
       "sourceIdentityKind": "source-record"
     }
@@ -606,7 +606,7 @@
       "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-ecg-observation"
     ],
     "requiredCompanionProfile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-recording-document",
-    "rule": "The ECG Observation and exact native Recording Document are linked in one exchange graph, share the exact source-record Identifier, and are both targeted by one SensorKit conversion Provenance."
+    "rule": "The ECG Observation and exact native Recording Document are linked in one record, share the exact source-record Identifier, and are both targeted by one SensorKit conversion Provenance."
   },
   "healthConnectSpecimenClaim": {
     "resourceType": "Specimen",

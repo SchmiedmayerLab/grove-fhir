@@ -57,8 +57,8 @@ Expression: "entry.all(fullUrl.matches('^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-5[0-9a
 Severity: #error
 
 Invariant: grove-exchange-entry-identity-1
-Description: "Exchange entry node-key system and value pairs are distinct."
-Expression: "entry.extension('https://grovealliance.org/fhir/mobile/StructureDefinition/grove-exchange-entry-node-key').value.ofType(Identifier).select(system.length().toString() & ':' & system & value.length().toString() & ':' & value).isDistinct()"
+Description: "Exchange entry-key system and value pairs are distinct."
+Expression: "entry.extension('https://grovealliance.org/fhir/mobile/StructureDefinition/grove-exchange-entry-key').value.ofType(Identifier).select(system.length().toString() & ':' & system & value.length().toString() & ':' & value).isDistinct()"
 Severity: #error
 
 Invariant: grove-opaque-identifier-value-1
@@ -66,33 +66,48 @@ Description: "A pseudonymous Grove identifier is a canonical v0 HMAC value carry
 Expression: "$this.matches('^v0:[A-Za-z0-9._-]+:[1-9][0-9]*:[A-Za-z0-9_-]{43}$')"
 Severity: #error
 
-Invariant: grove-event-identifier-value-1
-Description: "An exchange event is partitioned by a lowercase producer-instance UUID and canonical positive monotonic sequence."
-Expression: "$this.matches('^e0:[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}:[1-9][0-9]*$')"
+Invariant: grove-active-bundle-provenance-1
+Description: "An active exchange Bundle contains at least one Provenance, one per record, and each has exactly one ISO transform lifecycle coding and no Grove retraction lifecycle coding."
+Expression: "entry.resource.ofType(Provenance).exists() and entry.resource.ofType(Provenance).all(activity.coding.where(system = 'http://terminology.hl7.org/CodeSystem/iso-21089-lifecycle').count() = 1 and activity.coding.where(system = 'http://terminology.hl7.org/CodeSystem/iso-21089-lifecycle' and code = 'transform').count() = 1 and activity.coding.where(system = 'https://grovealliance.org/fhir/mobile/CodeSystem/grove-lifecycle-event').empty())"
 Severity: #error
 
-Invariant: grove-entry-node-value-1
-Description: "An event-scoped entry node key carries a role, canonical zero-based ordinal, and base64url SHA-256 digest."
-Expression: "$this.matches('^n0:[a-z][a-z0-9-]*:(0|[1-9][0-9]*):[A-Za-z0-9_-]{43}$')"
+Invariant: grove-retraction-bundle-provenance-1
+Description: "A retraction exchange Bundle contains at least one Provenance, one per retracted source record; each has exactly one Grove source-record-retracted lifecycle coding and no ISO lifecycle coding, and the Bundle carries no active clinical resource."
+Expression: "entry.resource.ofType(Provenance).exists() and entry.resource.ofType(Provenance).all(activity.coding.where(system = 'https://grovealliance.org/fhir/mobile/CodeSystem/grove-lifecycle-event').count() = 1 and activity.coding.where(system = 'https://grovealliance.org/fhir/mobile/CodeSystem/grove-lifecycle-event' and code = 'source-record-retracted').count() = 1 and activity.coding.where(system = 'http://terminology.hl7.org/CodeSystem/iso-21089-lifecycle').empty()) and entry.resource.all($this is Provenance or $this is Device)"
 Severity: #error
 
-Invariant: grove-active-event-provenance-1
-Description: "One active exchange event contains exactly one ISO transform lifecycle coding and no Grove retraction lifecycle coding."
-Expression: "entry.resource.ofType(Provenance).count() = 1 and entry.resource.ofType(Provenance).activity.coding.where(system = 'http://terminology.hl7.org/CodeSystem/iso-21089-lifecycle').count() = 1 and entry.resource.ofType(Provenance).activity.coding.where(system = 'http://terminology.hl7.org/CodeSystem/iso-21089-lifecycle' and code = 'transform').count() = 1 and entry.resource.ofType(Provenance).activity.coding.where(system = 'https://grovealliance.org/fhir/mobile/CodeSystem/grove-lifecycle-event').empty()"
+Invariant: grove-exchange-target-distinct-1
+Description: "No two Provenance targets in one exchange Bundle name the same entry, so every output is targeted by exactly one Provenance."
+Expression: "entry.resource.ofType(Provenance).target.reference.isDistinct()"
 Severity: #error
 
-Invariant: grove-retraction-event-provenance-1
-Description: "One retraction exchange event contains exactly one Grove source-record-retracted lifecycle coding, no ISO lifecycle coding, and no active clinical resource."
-Expression: "entry.resource.ofType(Provenance).count() = 1 and entry.resource.ofType(Provenance).activity.coding.where(system = 'https://grovealliance.org/fhir/mobile/CodeSystem/grove-lifecycle-event').count() = 1 and entry.resource.ofType(Provenance).activity.coding.where(system = 'https://grovealliance.org/fhir/mobile/CodeSystem/grove-lifecycle-event' and code = 'source-record-retracted').count() = 1 and entry.resource.ofType(Provenance).activity.coding.where(system = 'http://terminology.hl7.org/CodeSystem/iso-21089-lifecycle').empty() and entry.resource.all($this is Provenance or $this is Device)"
+Invariant: grove-exchange-output-target-1
+Description: "Every output entry of an active exchange Bundle is a target of a conversion Provenance in the same Bundle."
+Expression: "entry.where(resource is Observation or resource is DocumentReference or resource is Specimen or resource is VisionPrescription or resource is MedicationAdministration or resource is MedicationStatement).all(fullUrl in %resource.entry.resource.ofType(Provenance).target.reference)"
+Severity: #error
+
+Invariant: grove-record-version-entry-key-1
+Description: "Every conversion Provenance repeats its Bundle entry key, its record-version Identifier, in exactly one grove-record-version extension with the same system and value."
+Expression: "entry.where(resource is Provenance).all(resource.extension('https://grovealliance.org/fhir/mobile/StructureDefinition/grove-record-version').value.ofType(Identifier).select(system.length().toString() & ':' & system & value.length().toString() & ':' & value) = extension('https://grovealliance.org/fhir/mobile/StructureDefinition/grove-exchange-entry-key').value.ofType(Identifier).select(system.length().toString() & ':' & system & value.length().toString() & ':' & value))"
+Severity: #error
+
+Invariant: grove-context-snapshot-entry-key-1
+Description: "Every QuestionnaireResponse repeats its Bundle entry key, its context-snapshot Identifier, in exactly one grove-context-snapshot extension with the same system and value."
+Expression: "entry.where(resource is QuestionnaireResponse).all(resource.extension('https://grovealliance.org/fhir/mobile/StructureDefinition/grove-context-snapshot').value.ofType(Identifier).select(system.length().toString() & ':' & system & value.length().toString() & ':' & value) = extension('https://grovealliance.org/fhir/mobile/StructureDefinition/grove-exchange-entry-key').value.ofType(Identifier).select(system.length().toString() & ':' & system & value.length().toString() & ':' & value))"
+Severity: #error
+
+Invariant: grove-retraction-no-record-version-1
+Description: "A retraction Provenance carries no grove-record-version: its record-retraction key is carried only as its Bundle entry key."
+Expression: "extension('https://grovealliance.org/fhir/mobile/StructureDefinition/grove-record-version').empty()"
 Severity: #error
 
 Invariant: grove-active-entry-resource-type-1
-Description: "Every active event entry is one admitted output, lifecycle assertion, or supporting-context resource."
+Description: "Every active Bundle entry is one admitted output, lifecycle assertion, or supporting-context resource."
 Expression: "entry.resource.all($this is Observation or $this is DocumentReference or $this is Specimen or $this is VisionPrescription or $this is MedicationAdministration or $this is MedicationStatement or $this is Provenance or $this is Patient or $this is Device or $this is ResearchStudy or $this is ResearchSubject or $this is PlanDefinition or $this is QuestionnaireResponse)"
 Severity: #error
 
 Invariant: grove-exchange-contained-resource-1
-Description: "A Mobile event graph uses addressable Bundle entries and does not carry contained resources."
+Description: "A Mobile exchange Bundle uses addressable Bundle entries and does not carry contained resources."
 Expression: "entry.resource.ofType(DomainResource).contained.empty()"
 Severity: #error
 
@@ -117,7 +132,7 @@ Expression: "entry.resource.ofType(QuestionnaireResponse).all(meta.profile.count
 Severity: #error
 
 Invariant: grove-active-provenance-profile-1
-Description: "The active lifecycle Provenance directly declares exactly one admitted Mobile or adapter conversion profile."
+Description: "Every active lifecycle Provenance directly declares exactly one admitted Mobile or adapter conversion profile."
 Expression: "entry.resource.ofType(Provenance).all(meta.profile.count() = 1 and meta.profile.where($this = 'https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-conversion-provenance' or $this = 'https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-conversion-provenance' or $this = 'https://grovealliance.org/fhir/health-connect/StructureDefinition/health-connect-conversion-provenance' or $this = 'https://grovealliance.org/fhir/providers/StructureDefinition/providers-conversion-provenance' or $this = 'https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-conversion-provenance').count() = 1)"
 Severity: #error
 
@@ -163,7 +178,7 @@ Severity: #error
 
 Invariant: grove-retraction-target-semantics-1
 Description: "Every retraction role fixes its logical target resource type and Identifier role."
-Expression: "target.all((extension('https://grovealliance.org/fhir/mobile/StructureDefinition/grove-retraction-target-role').where(value = 'primary-output').exists() implies ((type = 'Observation' or type = 'VisionPrescription' or type = 'MedicationAdministration' or type = 'MedicationStatement') and identifier.type.coding.where(system = 'https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role' and code = 'source-output').count() = 1)) and (extension('https://grovealliance.org/fhir/mobile/StructureDefinition/grove-retraction-target-role').where(value = 'source-artifact').exists() implies (type = 'DocumentReference' and identifier.type.coding.where(system = 'https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role' and code = 'source-output').count() = 1)) and (extension('https://grovealliance.org/fhir/mobile/StructureDefinition/grove-retraction-target-role').where(value = 'child-output').exists() implies (type = 'Observation' and identifier.type.coding.where(system = 'https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role' and code = 'source-output').count() = 1)) and (extension('https://grovealliance.org/fhir/mobile/StructureDefinition/grove-retraction-target-role').where(value = 'specimen').exists() implies (type = 'Specimen' and identifier.type.coding.where(system = 'https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role' and code = 'source-output').count() = 1)) and (extension('https://grovealliance.org/fhir/mobile/StructureDefinition/grove-retraction-target-role').where(value = 'device-snapshot').exists() implies (type = 'Device' and identifier.type.coding.where(system = 'https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role' and code = 'device-snapshot').count() = 1)))"
+Expression: "target.all((extension('https://grovealliance.org/fhir/mobile/StructureDefinition/grove-retraction-target-role').where(value = 'primary-output').exists() implies ((type = 'Observation' or type = 'VisionPrescription' or type = 'MedicationAdministration' or type = 'MedicationStatement') and identifier.type.coding.where(system = 'https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role' and code = 'source-output').count() = 1)) and (extension('https://grovealliance.org/fhir/mobile/StructureDefinition/grove-retraction-target-role').where(value = 'source-artifact').exists() implies (type = 'DocumentReference' and identifier.type.coding.where(system = 'https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role' and code = 'source-output').count() = 1)) and (extension('https://grovealliance.org/fhir/mobile/StructureDefinition/grove-retraction-target-role').where(value = 'child-output').exists() implies (type = 'Observation' and identifier.type.coding.where(system = 'https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role' and code = 'source-output').count() = 1)) and (extension('https://grovealliance.org/fhir/mobile/StructureDefinition/grove-retraction-target-role').where(value = 'specimen').exists() implies (type = 'Specimen' and identifier.type.coding.where(system = 'https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role' and code = 'source-output').count() = 1)))"
 Severity: #error
 
 Invariant: grove-retraction-source-record-target-1
@@ -259,10 +274,10 @@ RuleSet: GroveMobilePointObservationContextRules
 * extension[gatewayDevice].valueReference only Reference(GroveApplicationDevice)
 * extension[researchStudy].valueReference only Reference(ResearchStudy)
 
-Extension: GroveExchangeEntryNodeKey
-Id: grove-exchange-entry-node-key
-Title: "Grove Exchange Entry Node Key"
-Description: "The selected complete Identifier from which an exchange entry fullUrl is derived. A resource with business identity uses the highest-priority typed Identifier from the exchange protocol; a resource without one uses a typed event-scoped entry-node key. This graph key is not a Provenance business identifier."
+Extension: GroveExchangeEntryKey
+Id: grove-exchange-entry-key
+Title: "Grove Exchange Entry Key"
+Description: "The selected complete Identifier from which an exchange entry fullUrl is derived. It is one of three kinds: an output's selected business Identifier, its highest-priority typed Identifier from the exchange protocol; a shared node's content-snapshot key, which the node also carries as its typed device-snapshot or context-snapshot Resource.identifier, or a QuestionnaireResponse in its grove-context-snapshot extension; or, for a Provenance, its record-version key (active) or record-retraction key (retraction). This graph key is not a Provenance business identifier."
 Context: Bundle.entry
 * value[x] only Identifier
 * valueIdentifier 1..1
@@ -274,18 +289,16 @@ Profile: GroveMobileExchangeBundle
 Parent: Bundle
 Id: grove-mobile-exchange-bundle
 Title: "Grove Mobile Exchange Bundle"
-Description: "One immutable active conversion event for exactly one source record revision. A transport may batch complete event Bundles, but must not merge their semantic units. Entry UUID URNs are deterministic formatting of typed entry node keys; Resource.id is not source identity."
-* obeys grove-exchange-full-url-1 and grove-exchange-entry-identity-1 and grove-active-event-provenance-1 and grove-active-entry-resource-type-1 and grove-exchange-contained-resource-1 and grove-active-output-profile-1 and grove-active-document-profile-1 and grove-active-device-profile-1 and grove-active-questionnaire-response-profile-1 and grove-active-provenance-profile-1 and grove-active-adapter-output-profile-1
-* identifier 1..1 MS
-* identifier.type 1..1 MS
-* identifier.type = GroveIdentifierRoleCS#event
-* identifier.system 1..1 MS
-* identifier.value 1..1 MS
-* identifier.value obeys grove-event-identifier-value-1
+Description: "One upload of one or more active records of one subject. A record is one immutable source-record revision, every output derived from it, and exactly one conversion Provenance targeting those outputs, keyed by its record version. Shared nodes, such as the Patient and the application, host, and recording Devices, are content-addressed and appear once however many records reference them. The Bundle is a container: packing records into Bundles, or repacking them, changes no record. Entry UUID URNs are deterministic formatting of typed entry keys; Resource.id is not source identity."
+* obeys grove-exchange-full-url-1 and grove-exchange-entry-identity-1 and grove-active-bundle-provenance-1 and grove-exchange-target-distinct-1 and grove-exchange-output-target-1 and grove-record-version-entry-key-1 and grove-context-snapshot-entry-key-1 and grove-active-entry-resource-type-1 and grove-exchange-contained-resource-1 and grove-active-output-profile-1 and grove-active-document-profile-1 and grove-active-device-profile-1 and grove-active-questionnaire-response-profile-1 and grove-active-provenance-profile-1 and grove-active-adapter-output-profile-1
+* identifier 0..1
+* identifier ^short = "Optional untyped transport id; it names no record and enters no identity"
+* identifier.type 0..0
 * type = #collection
 * timestamp 1..1 MS
+* timestamp ^short = "When the Bundle was packed; enters no identity"
 * entry 1..* MS
-* entry.extension contains GroveExchangeEntryNodeKey named entryNodeKey 1..1 MS
+* entry.extension contains GroveExchangeEntryKey named entryKey 1..1 MS
 * entry.fullUrl 1..1 MS
 * entry.resource 1..1 MS
 * entry.search 0..0
@@ -296,16 +309,16 @@ Profile: GroveRecordingDevice
 Parent: Device
 Id: grove-recording-device
 Title: "Grove Recording Device"
-Description: "An immutable event-time snapshot of the physical device that acquired a measurement. The recording-device identifier proves stable per-unit identity; the device-snapshot identifier prevents firmware, software, and other event-time facts from mutating one shared Device during out-of-order import. Observation.device references this profile only when a governed stable per-unit token is available."
+Description: "An immutable content snapshot of the physical device that acquired a measurement. The recording-device identifier proves stable per-unit identity; the device-snapshot identifier is its content key: the same content gives the same key in every Bundle, and changed firmware, software, or other facts give a new snapshot instead of mutating one shared Device. Observation.device references this profile only when a governed stable per-unit token is available."
 * insert CompleteIdentifierPairs
 * obeys grove-identifier-token-1 and grove-identifier-role-coding-1
 * identifier 2..2 MS
 * identifier ^slicing.discriminator.type = #pattern
 * identifier ^slicing.discriminator.path = "type"
 * identifier ^slicing.rules = #closed
-* identifier contains physicalUnit 1..1 MS and eventSnapshot 1..1 MS
+* identifier contains physicalUnit 1..1 MS and snapshot 1..1 MS
 * insert GroveOpaqueIdentifier(identifier[physicalUnit], recording-device)
-* insert GroveOpaqueIdentifier(identifier[eventSnapshot], device-snapshot)
+* insert GroveOpaqueIdentifier(identifier[snapshot], device-snapshot)
 * status MS
 * type MS
 * deviceName MS
@@ -319,7 +332,7 @@ Profile: GroveApplicationDevice
 Parent: Device
 Id: grove-application-device
 Title: "Grove Application Device"
-Description: "An immutable event-time snapshot of the software application that saved, routed, or converted a mobile record. The application is distinct from the physical recording device and from its host hardware; release and build facts are never retroactively mutated."
+Description: "An immutable content snapshot of the software application that saved, routed, or converted a mobile record. The application is distinct from the physical recording device and from its host hardware. Its device-snapshot identifier is its content key, so changed release or build facts, or a changed host it names as parent, give a new snapshot rather than mutating a shared Device."
 * insert CompleteIdentifierPairs
 * obeys grove-identifier-token-1 and grove-identifier-role-coding-1
 * identifier 1..* MS
@@ -352,7 +365,7 @@ Profile: GroveHostDevice
 Parent: Device
 Id: grove-host-device
 Title: "Grove Host Device Snapshot"
-Description: "An immutable event-time snapshot of the host hardware and operating system on which a Grove application converted an event. It is not the physical recording Device unless the source explicitly establishes that identity."
+Description: "An immutable content snapshot of the host hardware and operating system on which a Grove application converted a record. Its device-snapshot identifier is its content key, so a changed operating-system version gives a new snapshot. It is not the physical recording Device unless the source explicitly establishes that identity."
 * insert CompleteIdentifierPairs
 * obeys grove-identifier-token-1 and grove-identifier-role-coding-1
 * identifier 1..1 MS
@@ -381,8 +394,10 @@ Profile: GroveMobileConversionProvenance
 Parent: Provenance
 Id: grove-mobile-conversion-provenance
 Title: "Grove Mobile Conversion Provenance"
-Description: "Provenance for the application that transformed exactly one source record revision into every output in one immutable active exchange event."
+Description: "Provenance for the application that transformed exactly one source record revision into every output of one record. It targets each output of its record exactly once, and repeats its record-version key, its Bundle entry key, in grove-record-version, so a consumer that stores the Provenance alone keeps it."
 * obeys grove-transform-lifecycle-coding-1 and grove-lifecycle-source-entity-1
+* extension contains GroveRecordVersion named recordVersion 1..1 MS
+* extension[recordVersion] ^short = "The record-version Identifier of this record version, equal to its Bundle entry key"
 * target 1..* MS
 * target only Reference(Observation or DocumentReference or VisionPrescription or MedicationAdministration or MedicationStatement or Specimen)
 * occurred[x] 1..1 MS
@@ -414,10 +429,10 @@ Profile: GroveMobileRetractionProvenance
 Parent: Provenance
 Id: grove-mobile-retraction-provenance
 Title: "Grove Mobile Retraction Provenance"
-Description: "An append-only assertion that a source record is no longer exposed, identifying each exact previously emitted output or the source record as a whole. It is not a FHIR delete command and does not assert that the prior clinical result was erroneous."
-* obeys grove-retraction-target-1 and grove-retraction-lifecycle-coding-1 and grove-lifecycle-source-entity-1 and grove-retraction-target-semantics-1 and grove-retraction-source-record-target-1
+Description: "An append-only assertion that the source record named by its source entity is no longer exposed. It suppresses every output of every version of that record; its targets name what the producer emitted, or the source record as a whole, and are informative. It is not a FHIR delete command and does not assert that the prior clinical result was erroneous."
+* obeys grove-retraction-target-1 and grove-retraction-lifecycle-coding-1 and grove-lifecycle-source-entity-1 and grove-retraction-target-semantics-1 and grove-retraction-source-record-target-1 and grove-retraction-no-record-version-1
 * target 1..* MS
-* target only Reference(Observation or DocumentReference or VisionPrescription or MedicationAdministration or MedicationStatement or Specimen or Device or QuestionnaireResponse)
+* target only Reference(Observation or DocumentReference or VisionPrescription or MedicationAdministration or MedicationStatement or Specimen or QuestionnaireResponse)
 * target.reference 0..0
 * target.type 0..1 MS
 * target.identifier 1..1 MS
@@ -455,18 +470,16 @@ Profile: GroveMobileRetractionBundle
 Parent: Bundle
 Id: grove-mobile-retraction-bundle
 Title: "Grove Mobile Retraction Bundle"
-Description: "One immutable source-record retraction assertion. It contains the retraction Provenance and optional Device agents only; it never copies or mutilates the prior clinical outputs."
-* obeys grove-exchange-full-url-1 and grove-exchange-entry-identity-1 and grove-retraction-event-provenance-1 and grove-exchange-contained-resource-1 and grove-retraction-direct-profile-1
-* identifier 1..1 MS
-* identifier.type 1..1 MS
-* identifier.type = GroveIdentifierRoleCS#event
-* identifier.system 1..1 MS
-* identifier.value 1..1 MS
-* identifier.value obeys grove-event-identifier-value-1
+Description: "One upload of one or more retraction records of one subject: one retraction Provenance per retracted source record, each keyed by its record-retraction key, plus the shared application Device that assembled them and its host. It never mixes with active records and never copies or mutilates the prior clinical outputs."
+* obeys grove-exchange-full-url-1 and grove-exchange-entry-identity-1 and grove-retraction-bundle-provenance-1 and grove-exchange-contained-resource-1 and grove-retraction-direct-profile-1
+* identifier 0..1
+* identifier ^short = "Optional untyped transport id; it names no record and enters no identity"
+* identifier.type 0..0
 * type = #collection
 * timestamp 1..1 MS
+* timestamp ^short = "When the Bundle was packed; enters no identity"
 * entry 1..* MS
-* entry.extension contains GroveExchangeEntryNodeKey named entryNodeKey 1..1 MS
+* entry.extension contains GroveExchangeEntryKey named entryKey 1..1 MS
 * entry.fullUrl 1..1 MS
 * entry.resource 1..1 MS
 * entry.search 0..0

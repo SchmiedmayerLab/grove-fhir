@@ -133,10 +133,24 @@
           "classification": "definition"
         },
         {
-          "fshName": "GroveExchangeEntryNodeKey",
+          "fshName": "GroveContextSnapshot",
           "fshType": "Extension",
           "resourceType": "StructureDefinition",
-          "id": "grove-exchange-entry-node-key",
+          "id": "grove-context-snapshot",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveExchangeEntryKey",
+          "fshType": "Extension",
+          "resourceType": "StructureDefinition",
+          "id": "grove-exchange-entry-key",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveRecordVersion",
+          "fshType": "Extension",
+          "resourceType": "StructureDefinition",
+          "id": "grove-record-version",
           "classification": "definition"
         },
         {
@@ -588,6 +602,13 @@
           "classification": "example"
         },
         {
+          "fshName": "GroveMobileExchangeHostExample",
+          "fshType": "Instance",
+          "resourceType": "Device",
+          "id": "GroveMobileExchangeHostExample",
+          "classification": "example"
+        },
+        {
           "fshName": "GroveMobileExchangePatientExample",
           "fshType": "Instance",
           "resourceType": "Patient",
@@ -599,6 +620,20 @@
           "fshType": "Instance",
           "resourceType": "Provenance",
           "id": "GroveMobileExchangeProvenanceExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "GroveMobileExchangeSecondHeartRateExample",
+          "fshType": "Instance",
+          "resourceType": "Observation",
+          "id": "GroveMobileExchangeSecondHeartRateExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "GroveMobileExchangeSecondProvenanceExample",
+          "fshType": "Instance",
+          "resourceType": "Provenance",
+          "id": "GroveMobileExchangeSecondProvenanceExample",
           "classification": "example"
         },
         {
@@ -763,6 +798,13 @@
           "classification": "example"
         },
         {
+          "fshName": "GroveMobileSecondRetractionProvenanceExample",
+          "fshType": "Instance",
+          "resourceType": "Provenance",
+          "id": "GroveMobileSecondRetractionProvenanceExample",
+          "classification": "example"
+        },
+        {
           "fshName": "GroveMobileSexualActivityExample",
           "fshType": "Instance",
           "resourceType": "Observation",
@@ -873,6 +915,13 @@
           "resourceType": "Observation",
           "id": "GroveMobileWriterRecordIdentityExample",
           "classification": "example"
+        },
+        {
+          "fshName": "GroveProvenanceRecordVersion",
+          "fshType": "Instance",
+          "resourceType": "SearchParameter",
+          "id": "grove-provenance-record-version",
+          "classification": "definition"
         },
         {
           "fshName": "GroveRecordingDeviceExample",

@@ -20,7 +20,7 @@ Derive one typed `source-record` v0 HMAC Identifier from the exact component ord
 The Identifier system is deployment-owned and immutable for the identity kind, key id, and positive epoch.
 
 Derive a distinct typed `source-output` Identifier by adding the closed output role and catalog discriminator.
-This matters even for a single output: source-record identity answers which source revision was consumed, while source-output identity names the exact FHIR graph node previously emitted and later retracted.
+This matters even for a single output: source-record identity answers which source revision was consumed, while source-output identity names the exact FHIR output emitted in every version of the record.
 A FHIR repository controls `Resource.id`; Grove business identifiers never do.
 
 When native round-trip or traceability genuinely requires `HKObject.uuid`, a deployment may opt in to one additional Identifier on the designated one-to-one primary output.
@@ -70,7 +70,7 @@ The reported sampling frequency and voltage count are admission inputs: they mus
 When average heart rate is present, emit a separate LOINC 8867-4 `/min` Observation over the exact waveform Period; it has its own `average-heart-rate` source-output identity and `derivedFrom` points to the waveform.
 
 Each correlated symptom is converted through its existing HealthKit symptom Observation profile, retaining its own source-record and source-output identity, exact Period, severity, source Device, and conversion Provenance.
-Because one Mobile Exchange Bundle represents one source-record revision, each symptom is exchanged as its own event.
+Each symptom is its own record, with its own source record and conversion Provenance, and it may travel in the same Bundle as the ECG.
 The ECG groups the separately available observations with identifier-only `hasMember` references carrying the symptoms' opaque `source-output` Identifiers.
 Distinct equal-type samples remain distinct; `present` requires at least one distinct member, while `none` and `notSet` require none.
 
@@ -161,8 +161,8 @@ A segment's discriminator is `<start>|<end>|<kind>|<raw value>|<occurrence>`:
 
 The segment output's `instantVectors` fix the endpoint rendering, and the `healthkit-workout-*` identity vectors in [`catalog/exchange-protocol.json`](https://grovealliance.org/fhir/catalog/exchange-protocol.json) fix one session, one event segment, and one activity segment.
 
-The exact targets of a workout retraction name the session as `primary-output` and every segment its conversion emitted as `child-output`.
-An `HKDeletedObject` carries none of the deleted workout's events or activities, so a producer that did not retain the segment identities it emitted uses the source-record target.
+A workout retraction, like every HealthKit retraction, names the source record as its only target and suppresses the session and every segment of every version of the record.
+An `HKDeletedObject` carries none of the deleted workout's events or activities, and the source-record target needs none of the segment identities a conversion emitted.
 
 ### Clinical FHIR records
 
@@ -246,7 +246,7 @@ An object's other metadata keys are withheld under the same condition as the cor
 ### Device, application, and provenance
 
 Map `HKDevice` to a [Grove Recording Device](https://grovealliance.org/fhir/mobile/StructureDefinition-grove-recording-device.html) only when the caller supplies a governed stable per-unit token for the hardware that acquired the value.
-HMAC-protect that token in the typed `recording-device` identity and add the event-scoped `device-snapshot` identity.
+HMAC-protect that token in the typed `recording-device` identity and add the content `device-snapshot` identity, minted over the Device's complete rendered content after every field is set.
 Omit the recorder when no stable token exists; manufacturer, model, version, subject, or their digest cannot establish a physical instance.
 
 Map `HKDevice.hardwareVersion`, `firmwareVersion`, and `softwareVersion` only when each value is present.
@@ -257,7 +257,7 @@ Represent the converting app as a [HealthKit Application Device](StructureDefini
 Its required, typed Apple bundle identifier uses the [Apple Bundle Identifier](NamingSystem-apple-bundle-id.html) namespace and identifies only the application product.
 Put the human-facing release and build into separate typed Device version entries.
 Represent host hardware and its operating-system version as a distinct immutable [Grove Host Device](https://grovealliance.org/fhir/mobile/StructureDefinition-grove-host-device.html) referenced by `Device.parent`; never put the host OS on the application Device.
-The application's mandatory event-scoped `device-snapshot` HMAC identifies this immutable event view, not an installation, account, or person.
+The application's mandatory content `device-snapshot` HMAC identifies this immutable content, not an installation, account, or person; the host Device it references through `Device.parent` is part of that content.
 The app is the assembler agent in [conversion Provenance](https://grovealliance.org/fhir/mobile/StructureDefinition-grove-mobile-conversion-provenance.html). Converting a stored HealthKit object does not by itself make the app an Observation gateway; add `observation-gatewayDevice` only if the app actually mediated or routed the measurement.
 
 The Provenance source entity repeats the typed source-record Identifier actually consumed by the transformation. `HKSourceRevision.source` identifies the application or device that authored that object; do not treat its version as the Grove converter's version.
@@ -319,8 +319,8 @@ A deployment's disclosure policy may withhold any of them, or the whole extensio
 The extension describes the consumed object, not an actor: it adds no agent, participant type, or Device, and it states neither that the source is an application nor that it is a device.
 The rule that a source is never classified from its identifier's string shape, source name, or `productType` holds for its members as it holds for `HKSourceRevision`.
 `sourceBundleIdentifier` is text, never an Identifier.
-The extension mints no identity, and no identity is derived from it: adding or withholding it, or any of its members, changes no Identifier that is not event-scoped, such as a `source-record`, `source-output`, or `writer-record` Identifier.
-A record delivered again with the extension or any of its members added or withheld is still changed content: it receives a new event sequence and with it new event-scoped identities, as the [Mobile exchange graph](https://grovealliance.org/fhir/mobile/observations.html#exchange-graph) requires.
+The extension mints no identity, and no business identity is derived from it: adding or withholding it, or any of its members, changes no `source-record`, `source-output`, or `writer-record` Identifier.
+It is part of the conversion Provenance, so a record delivered again with the extension or any of its members added or withheld is changed content: it changes the record version and is a new version of the source record, as the [Mobile exchange graph](https://grovealliance.org/fhir/mobile/observations.html#exchange-graph) requires.
 Writer identity depends neither on the extension nor on the source's classification: for a sample from every source, whether the caller classified it as an application, as a device, or not at all, the writing-application Identifier pair from which the [revision rules](#logical-identity-and-revisions) derive the `writer-record` Identifier is the [Apple Bundle Identifier](NamingSystem-apple-bundle-id.html) namespace with `HKSource.bundleIdentifier`.
 Whether a graph states an author therefore never decides whether its outputs carry the sample's `writer-record` Identifier and version; the [revision rules](#logical-identity-and-revisions) and the [withheld-metadata rules](#withheld-metadata) decide that, and withholding `sourceBundleIdentifier` does not withhold them.
 
@@ -405,7 +405,7 @@ It proposes a carrier for the metadata keys that those rules withhold; its open 
 Under a source-metadata disclosure authorization, a producer adds one source-metadata artifact to the graph of a record for which the payload below would carry at least one key: a DocumentReference that claims the proposed HealthKit Source Metadata Document profile, a specialization of the [HealthKit Recording Document](StructureDefinition-healthkit-recording-document.html).
 It is a source artifact: beside the record's `source-record` Identifier it carries a `source-output` Identifier with output role `source-metadata` and discriminator `single`, and a `source-artifact` Identifier with format code `source-metadata` and part index `0`.
 Its `content.format` is the proposed recording format `source-metadata`, its `Attachment.contentType` is `application/json`, and its `Attachment.data` holds the payload below, with `size` and `hash` taken over the payload bytes.
-It references no other output and no other output references it: the shared `source-record` Identifier and the conversion Provenance, which targets it as it targets every output, relate it to the record, so adding or omitting it changes nothing that another output takes from the record and no Identifier that is not event-scoped, such as a `source-record`, `source-output`, or `writer-record` Identifier.
+It references no other output and no other output references it: the shared `source-record` Identifier and the conversion Provenance, which targets it as it targets every output, relate it to the record, so adding or omitting it changes nothing that another output takes from the record and no business Identifier, such as a `source-record`, `source-output`, or `writer-record` Identifier; it changes the record version.
 It is never the designated primary output and never carries a governed source identifier or a `writer-record` Identifier.
 
 The authorization is the deployment's explicit decision to disclose source metadata, and it is never inferred from the converting application, a key's spelling, or a value.
@@ -489,7 +489,7 @@ Carrying a key changes no other rule: a half or invalid sync pair that the recor
 
 The payload depends only on the record's metadata, the authorization, the deployment's disclosure policy, and the unit table above, never on the conversion instant, a locale, or the order in which a dictionary or set is iterated.
 Converting an unchanged record again under the same authorization and disclosure policy therefore yields the same bytes, as an exact retry requires.
-A changed authorization, disclosure policy, or unit table that still yields an artifact changes its content, which the producer delivers as a new event, and the artifact keeps its `source-output` and `source-artifact` Identifiers, so a receiver supersedes it in place.
+A changed authorization, disclosure policy, or unit table that still yields an artifact changes its content, which the producer delivers as a new version of the record, and the artifact keeps its `source-output` and `source-artifact` Identifiers, so a receiver supersedes it in place.
 A change that leaves the record no carried key yields no artifact, so it neither supersedes nor retracts the delivered one; that is the withdrawal question below.
 An exact retraction names the artifact with target role `source-artifact` when the producer establishes that it emitted the artifact.
 An `HKDeletedObject` carries no metadata beyond the sync pair, so a producer that kept no record of the output set uses the source-record target, which addresses the artifact with the record's other nodes.
@@ -503,8 +503,8 @@ A value can identify a person, a device, or a writer's record, so the artifact c
 
 HealthKit metadata is an open dictionary that every writing application fills: besides the keys this guide maps, it holds the identifying keys above, free text, and keys whose meaning only their writer knows, and the SDK header discourages storing the UDI production identifier in HealthKit for user privacy reasons.
 Disclosure is therefore the deployment's explicit decision and is off by default, an identifying key is disclosed only by name, and the withheld-metadata report keeps every loss visible, including that of an origin key such as `HKDeviceManufacturerName`.
-A separate artifact keeps that content off the clinical resources: a receiver can drop, segregate, or retract it on its own, and the authorization changes nothing that another output takes from the record and no Identifier that is not event-scoped.
-In the new event that delivers a changed artifact, another output differs only in what every new event changes, such as a reference to a node with an event-scoped identity.
+A separate artifact keeps that content off the clinical resources: a receiver can drop or segregate it on its own, and the authorization changes nothing that another output takes from the record and no business Identifier.
+In the new record version that delivers a changed artifact, another output changes only where its own content, or a node it references, changes.
 An extension would need a context on every output type, repeat itself across a multi-output graph, and change a clinical resource whenever the authorization changes, and this guide admits no generic metadata extension.
 The payload defines a canonical value for each class rather than promising a verbatim copy, because what a copy preserves cannot be checked across platforms; it names its losses instead: an `NSNumber`'s storage class, an `NSDate`'s detail below a nanosecond, a quantity's original unit, which `HKQuantity` does not expose, the sign of a floating zero, and every value it does not carry.
 `HKObject.h` names four value classes, `NSString`, `NSNumber`, `NSDate`, and `HKQuantity`; on the SDK baseline the `HKQuantitySample` initializer also admits `NSData` and `NSDecimalNumber` values and rejects `NSArray` and `NSNull` values.
@@ -512,12 +512,12 @@ The payload defines a canonical value for each class rather than promising a ver
 #### Open questions
 
 - Carrier: is a separate DocumentReference source artifact the carrier the owner wants, rather than an extension on each output?
-- Admission: admitting the artifact also registers `source-metadata` in the Sensor recording-format registry; adds the HealthKit Source Metadata Document profile, with a `type` coding and a `date` that states when the reference was created, as FHIR R4 defines `DocumentReference.date`, and that an exact retry reuses, under a parent whose description says byte-preserved; adds its claim to `catalog/profile-claims.json`, whose HealthKit conversion Provenance claim and ECG claim name the Provenance targets, while HealthKit Conversion Provenance already admits it as a target through that parent; excludes it in the HealthKit selector of the governed source identifier in `catalog/exchange-protocol.json`; amends that identifier's `source-only` output-mode rule and `recordingDocumentRule` there, which let a DocumentReference carry it only as the event's sole DocumentReference or sole source-derived output, and the Mobile statement that it may sit on the source Recording Document when no structured output exists, because twelve HealthKit rows emit a recording document as their only output; adds a `source-artifact` identity vector and producer-kit checks; amends the Mobile statement that source-platform fields do not pass through a generic metadata container and the `untypedMetadata` enforcement in `catalog/exchange-protocol.json`; amends this page's statements that there is no generic metadata extension and that another key needs a typed FHIR representation, that a key is represented only by the element the withheld-metadata table gives it, that a HealthKit Recording Document represents no key, and that the exact targets of a workout retraction are its session and its segments; amends the description of HealthKit Metadata Keys, which calls its keys the ones the guide retains after the standard mappings; amends the HealthKit catalog's identity `outputRoleRule`, which takes every output role from a catalog row, and its `sourceArtifact` rule, which gives a format code only to a clinical or native recording; and amends the conditional outputs that the [implementation page](implementation.html) names for a retracted source record.
+- Admission: admitting the artifact also registers `source-metadata` in the Sensor recording-format registry; adds the HealthKit Source Metadata Document profile, with a `type` coding and a `date` that states when the reference was created, as FHIR R4 defines `DocumentReference.date`, and that an exact retry reuses, under a parent whose description says byte-preserved; adds its claim to `catalog/profile-claims.json`, whose HealthKit conversion Provenance claim and ECG claim name the Provenance targets, while HealthKit Conversion Provenance already admits it as a target through that parent; excludes it in the HealthKit selector of the governed source identifier in `catalog/exchange-protocol.json`; amends that identifier's `source-only` output-mode rule and `recordingDocumentRule` there, which let a DocumentReference carry it only as the record's sole DocumentReference or sole source-derived output, and the Mobile statement that it may sit on the source Recording Document when no structured output exists, because twelve HealthKit rows emit a recording document as their only output; adds a `source-artifact` identity vector and producer-kit checks; amends the Mobile statement that source-platform fields do not pass through a generic metadata container and the `untypedMetadata` enforcement in `catalog/exchange-protocol.json`; amends this page's statements that there is no generic metadata extension and that another key needs a typed FHIR representation, that a key is represented only by the element the withheld-metadata table gives it, and that a HealthKit Recording Document represents no key; amends the description of HealthKit Metadata Keys, which calls its keys the ones the guide retains after the standard mappings; amends the HealthKit catalog's identity `outputRoleRule`, which takes every output role from a catalog row, and its `sourceArtifact` rule, which gives a format code only to a clinical or native recording; and amends the conditional outputs that the [implementation page](implementation.html) names for a retracted source record.
 - Source types: should an authorization also be able to name the source types it reaches? If it may, it names a record's own source type identifier and reaches the record with all of its parts, a blood-pressure correlation's objects and a workout's events and activities among them, while a part's type, such as `HKQuantityTypeIdentifierBloodPressureSystolic` for a blood-pressure object, names no record and reaches nothing.
 - `NSNumber` storage class: should the payload state whether a number was stored as a Boolean, an integer, a floating value, or a decimal? An integer whose magnitude exceeds 2^53 keeps every digit when stored as an integer and is rounded when stored as a floating value.
 - `NSData` and `NSDecimalNumber`: the `HKQuantitySample` initializer admits both although `HKObject.h` does not list them; whether the store returns them after a save is not known, and until it is, either could instead stay uncarried and reported.
 - Withdrawal: how does a deployment withdraw an artifact that it delivered before its authorization ended, or before a change left its record no carried key?
-- Units: a quantity compatible with no listed unit is not carried; extending the list changes the payload for such a key, which is then a new event, not a retry.
+- Units: a quantity compatible with no listed unit is not carried; extending the list changes the payload for such a key, which is then a new record version, not a retry.
 
 ### Dependencies and terminology notices
 

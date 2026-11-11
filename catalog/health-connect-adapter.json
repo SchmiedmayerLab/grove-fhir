@@ -2,7 +2,7 @@
   "$schema": "https://grovealliance.org/fhir/catalog/schemas/catalog-contracts.schema.json",
   "schemaVersion": 0,
   "fhirVersion": "4.0.1",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "source": {
     "package": "androidx.health.connect:connect-client",
     "version": "1.1.0",
@@ -24,7 +24,7 @@
     "identifierSystem": "https://grovealliance.org/fhir/health-connect/NamingSystem/android-package-name",
     "identifierValue": "exact non-blank Metadata.dataOrigin.packageName",
     "literalReferenceAllowed": false,
-    "eventBundleEntryRequired": false,
+    "bundleEntryRequired": false,
     "profileClaimRequired": false,
     "rule": "Carry one complete absolute-system Identifier on the typed logical Device Reference. The package name identifies an application product, not an installation, host, account, person, or physical recording device."
   },
@@ -1716,7 +1716,7 @@
     ],
     "stableUnitToken": "Health Connect 1.1 exposes no per-unit device identifier. A producer may emit Observation.device only when its caller supplies a separately governed stable per-unit token.",
     "fallback": "Omit Observation.device when that token is absent. Manufacturer, model, device type, repository scope, and their digest do not establish a physical instance.",
-    "snapshot": "When emitted, the Device carries both recording-device and event-scoped device-snapshot v0 identifiers."
+    "snapshot": "When emitted, the Device carries both recording-device and content device-snapshot v0 identifiers."
   },
   "identity": {
     "contract": "catalog/exchange-protocol.json",
@@ -1799,6 +1799,6 @@
         "invalidDisposition": "reject-source-record"
       }
     },
-    "resourceIdPolicy": "Resource.id is optional and repository-assigned. Platform, output, writer, specimen, and event business identifiers are never copied into Resource.id."
+    "resourceIdPolicy": "Resource.id is optional and repository-assigned. Platform, output, writer, and specimen business identifiers are never copied into Resource.id."
   }
 }

@@ -2,7 +2,7 @@
   "$schema": "https://grovealliance.org/fhir/catalog/schemas/catalog-contracts.schema.json",
   "schemaVersion": 0,
   "fhirVersion": "4.0.1",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "source": {
     "platform": "Apple HealthKit",
     "sdkBaseline": {
@@ -246,8 +246,8 @@
           "HKCategoryTypeIdentifierDizziness"
         ],
         "rule": "Each supplied HKCategorySample is converted through its existing HealthKit symptom Observation profile with its own source-record and source-output identities, exact effectivePeriod, and severity. The ECG hasMember Reference carries type Observation and that symptom's complete source-output Identifier. Duplicate References and samples outside the admitted seven source types fail closed; the number of associated samples is not capped by the number of admitted types.",
-        "exchangeRule": "A Mobile Exchange Bundle contains exactly one source-record revision, so a symptom Observation travels in its own event Bundle and normal conversion Provenance. The ECG uses an identifier-only logical hasMember Reference; it never embeds or relabels the symptom as an ECG child output.",
-        "sourceRevisionRule": "Each symptom event represents its HKSourceRevision through the normal HealthKit application/recording Device and conversion Provenance policy. Source-revision fields are not copied into a complex ECG extension."
+        "exchangeRule": "A symptom Observation is its own record, with its own source record and normal conversion Provenance, and may travel in the same Bundle as the ECG. The ECG uses an identifier-only logical hasMember Reference; it never embeds or relabels the symptom as an ECG child output.",
+        "sourceRevisionRule": "Each symptom record represents its HKSourceRevision through the normal HealthKit application/recording Device and conversion Provenance policy. Source-revision fields are not copied into a complex ECG extension."
       },
       "wireMapping": {
         "classification": "Observation.interpretation with exactly one coding from HealthKitECGClassificationVS",
@@ -259,7 +259,7 @@
         "sourcePeriod": "required healthkit-ecg-source-period extension because waveform effectivePeriod may be narrower"
       },
       "effectiveRule": "Observation.effectivePeriod starts at HKElectrocardiogram.startDate plus the exact first timeSinceSampleStart and ends at the exact last supplied voltage instant. The required healthkit-ecg-source-period extension separately preserves the HKElectrocardiogram startDate/endDate.",
-      "admissionRule": "The caller supplies already-obtained evidence. The supplied voltage array length and SampledData whitespace-token frame count both equal numberOfVoltageMeasurements exactly; offsets are complete, unique, sorted, and satisfy offset[i] = offset[0] + i * SampledData.period exactly; every voltage is present. Canonicalize samplingFrequency and computed 1000 / SampledData.period to the producer's shortest round-trip base-10 decimal representation and require exact decimal equality (tolerance zero). Every associated symptom is supplied as its exact HKCategorySample and converted as its own admitted HealthKit Observation event. Missing, non-uniform, repeated-symptom-identity, resampled, or inconsistent evidence fails closed; the adapter performs no HealthKit query."
+      "admissionRule": "The caller supplies already-obtained evidence. The supplied voltage array length and SampledData whitespace-token frame count both equal numberOfVoltageMeasurements exactly; offsets are complete, unique, sorted, and satisfy offset[i] = offset[0] + i * SampledData.period exactly; every voltage is present. Canonicalize samplingFrequency and computed 1000 / SampledData.period to the producer's shortest round-trip base-10 decimal representation and require exact decimal equality (tolerance zero). Every associated symptom is supplied as its exact HKCategorySample and converted as its own admitted HealthKit Observation record. Missing, non-uniform, repeated-symptom-identity, resampled, or inconsistent evidence fails closed; the adapter performs no HealthKit query."
     }
   },
   "derivedAggregates": [
@@ -1594,7 +1594,7 @@
         "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-ecg-observation",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-observation"
       ],
-      "requirement": "The caller supplies the HKElectrocardiogram, every voltage measurement with its exact timeSinceSampleStart, and each associated HKCategorySample when symptomsStatus is present. Classification is Observation.interpretation; Apple ECG algorithm version is Observation.method; optional average heart rate is a separate LOINC 8867-4 Observation derived from the waveform. Each supplied symptom is converted through its existing HealthKit symptom Observation profile as a separate source event, and the ECG hasMember carries that Observation's opaque source-output Identifier. Sampling frequency and reported count are validated against SampledData but are not duplicated on the wire. The adapter preserves source and waveform intervals, lead, offsets, and voltages without fetching or resampling."
+      "requirement": "The caller supplies the HKElectrocardiogram, every voltage measurement with its exact timeSinceSampleStart, and each associated HKCategorySample when symptomsStatus is present. Classification is Observation.interpretation; Apple ECG algorithm version is Observation.method; optional average heart rate is a separate LOINC 8867-4 Observation derived from the waveform. Each supplied symptom is converted through its existing HealthKit symptom Observation profile as a separate record, and the ECG hasMember carries that Observation's opaque source-output Identifier. Sampling frequency and reported count are validated against SampledData but are not duplicated on the wire. The adapter preserves source and waveform intervals, lead, offsets, and voltages without fetching or resampling."
     },
     {
       "sourceTypeIdentifier": "HKDataTypeIdentifierHeartbeatSeries",
@@ -3661,7 +3661,7 @@
       "HKDevice.softwareVersion"
     ],
     "fallback": "Omit Observation.device when no governed stable per-unit token exists. Descriptive and version fields alone cannot establish a physical instance.",
-    "snapshot": "When emitted, the Device carries both recording-device and event-scoped device-snapshot v0 identifiers; descriptive and version fields are event-time snapshot data."
+    "snapshot": "When emitted, the Device carries both recording-device and content device-snapshot v0 identifiers; descriptive and version fields are snapshot data."
   },
   "applicationDeviceIdentity": {
     "profile": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-application-device",
@@ -3690,7 +3690,7 @@
     "emissionRule": "When the writer rules state no author agent for the source entity of a HealthKit conversion Provenance, because the caller did not classify the source or classified it as something those rules cannot state, that source entity carries this extension; it never appears beside an author agent. Only the source entity of a conversion Provenance carries it, and only for a record with an HKSourceRevision. It describes the consumed object, not an actor: it adds no agent, participant type, or Device, and no source is classified from its members.",
     "valueRule": "Each member is one valueString, at most once, in the order of members. A string fact is copied exactly, and a member whose string fact HealthKit does not supply, or supplies empty, is left out. operatingSystemVersion is majorVersion, minorVersion, and patchVersion, each the canonical decimal text of its integer without a leading zero and with a minus sign only before a negative value, joined by full stops; all three always appear, 0.0.0 included.",
     "disclosureRule": "A member whose defaultDisclosure is withheld is carried only under an explicit deployment authorization to disclose the names and identifiers of the applications and devices that wrote the deployment's records; a member whose defaultDisclosure is emitted is carried by default. A disclosure policy may withhold any member or the whole extension, which is not reported, and an extension with no member left is not emitted.",
-    "identityRule": "The extension mints no identity, and no identity is derived from it: adding or withholding it, or any of its members, changes no Identifier that is not event-scoped, such as a source-record, source-output, or writer-record Identifier. A record delivered again with the extension or any of its members added or withheld is still changed content: it receives a new event sequence and with it new event-scoped identities, as the Mobile exchange graph requires. For a sample from every source, whatever the caller's classification, the writing-application Identifier pair of the writer-record Identifier is the Apple Bundle Identifier system with HKSource.bundleIdentifier."
+    "identityRule": "The extension mints no identity, and no business identity is derived from it: adding or withholding it, or any of its members, changes no source-record, source-output, or writer-record Identifier. It is part of the conversion Provenance, so a record delivered again with the extension or any of its members added or withheld is changed content: it changes the record version and is a new version of the source record. For a sample from every source, whatever the caller's classification, the writing-application Identifier pair of the writer-record Identifier is the Apple Bundle Identifier system with HKSource.bundleIdentifier."
   },
   "identity": {
     "contract": "catalog/exchange-protocol.json",
@@ -3776,6 +3776,6 @@
       ],
       "rule": "HKHealthConceptIdentifier is HMAC-protected as medication-health-concept context under the same deployment-owned repository scope and key epoch as its source records. A tracked medication and every dose reference use the same complete opaque Identifier pair."
     },
-    "resourceIdPolicy": "Resource.id is optional and repository-assigned. HealthKit source, output, writer, artifact, context, and event business identifiers are never copied into Resource.id."
+    "resourceIdPolicy": "Resource.id is optional and repository-assigned. HealthKit source, output, writer, artifact, and context business identifiers are never copied into Resource.id."
   }
 }

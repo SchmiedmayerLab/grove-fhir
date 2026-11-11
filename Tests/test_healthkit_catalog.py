@@ -432,6 +432,9 @@ class HealthKitCatalogTests(unittest.TestCase):
             ],
         )
         self.assertIn("carried only under an explicit deployment authorization", contract["disclosureRule"])
+        # The extension is part of the conversion Provenance, so it is part of the record content.
+        self.assertIn("changes the record version", contract["identityRule"])
+        self.assertNotRegex(contract["identityRule"], r"\bevent")
         extensions = (ROOT / "healthkit/input/fsh/extensions.fsh").read_text(encoding="utf-8")
         extension = extensions.split("Extension: HealthKitSourceRevision\n", 1)[1]
         extension = extension.split("\nExtension: ", 1)[0]
@@ -509,14 +512,12 @@ class HealthKitCatalogTests(unittest.TestCase):
             "(#logical-identity-and-revisions) and the [withheld-metadata rules]"
             "(#withheld-metadata) decide that, and withholding `sourceBundleIdentifier` does not "
             "withhold them.",
-            # Changed content still takes a new event and new event-scoped identities.
-            "changes no Identifier that is not event-scoped, such as a `source-record`, "
-            "`source-output`, or `writer-record` Identifier.",
-            "is still changed content: it receives a new event sequence and with it new "
-            "event-scoped identities",
         ):
             with self.subTest(sentence=sentence):
                 self.assertIn(sentence, section)
+        # Changed content is a new version of the source record; no identity is event-scoped.
+        self.assertIn("record version", section)
+        self.assertNotRegex(section, r"\bevent")
         self.assertIn(
             "For a sample from every source, whatever the caller's classification, the "
             "writing-application Identifier pair of the writer-record Identifier is the Apple "
@@ -632,7 +633,9 @@ class HealthKitCatalogTests(unittest.TestCase):
         self.assertIn("Observation.hasMember", symptom["r4Element"])
         self.assertEqual(len(symptom["sourceTypes"]), 7)
         self.assertIn("source-output Identifier", symptom["rule"])
-        self.assertIn("own event Bundle", symptom["exchangeRule"])
+        self.assertIn("is its own record", symptom["exchangeRule"])
+        self.assertIn("may travel in the same Bundle", symptom["exchangeRule"])
+        self.assertNotRegex(symptom["exchangeRule"], r"\bevent")
         self.assertIn("normal HealthKit", symptom["sourceRevisionRule"])
         self.assertNotIn("authorization", json.dumps(contract).lower())
         self.assertEqual(
@@ -660,7 +663,8 @@ class HealthKitCatalogTests(unittest.TestCase):
                 "max": 1,
             },
         )
-        self.assertFalse(graph["correlatedSymptoms"]["sameEventBundle"])
+        self.assertFalse(graph["correlatedSymptoms"]["sameRecord"])
+        self.assertNotIn("sameEventBundle", graph["correlatedSymptoms"])
         self.assertEqual(
             graph["correlatedSymptoms"]["statusConditionedCardinality"],
             [

@@ -1,10 +1,14 @@
 {
   "schemaVersion": 0,
-  "events": "events.json",
+  "bundles": "bundles.json",
   "records": {
     "record-heart-001": {
       "system": "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1",
       "value": "v0:test-key:1:ptHr751zWyYfaR2WIvrP1TfnVEK4bInC__ibP_AYfVY"
+    },
+    "record-heart-002": {
+      "system": "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1",
+      "value": "v0:test-key:1:Ce4AD2kT5yierXkx5QJNFu7d8qqaSSQOCKGFeYpu2M0"
     },
     "record-2": {
       "system": "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1",
@@ -17,61 +21,39 @@
   },
   "outputs": {
     "multi-v1.primary": {
-      "event": "multi-v1",
+      "bundle": "multi-v1",
       "fullUrl": "urn:uuid:a9b76bbc-f523-5ef4-9919-813ec70553e5"
     },
     "multi-v1.secondary": {
-      "event": "multi-v1",
+      "bundle": "multi-v1",
       "fullUrl": "urn:uuid:96934596-b8b3-5623-b026-cb381d6beede"
     },
     "multi-v2.primary": {
-      "event": "multi-v2",
+      "bundle": "multi-v2",
       "fullUrl": "urn:uuid:a9b76bbc-f523-5ef4-9919-813ec70553e5"
     },
     "multi-v3.primary": {
-      "event": "multi-v3",
+      "bundle": "multi-v3",
       "fullUrl": "urn:uuid:a9b76bbc-f523-5ef4-9919-813ec70553e5"
     },
     "multi-v3.secondary": {
-      "event": "multi-v3",
+      "bundle": "multi-v3",
       "fullUrl": "urn:uuid:96934596-b8b3-5623-b026-cb381d6beede"
     },
     "target.primary": {
-      "event": "target",
+      "bundle": "target",
       "fullUrl": "urn:uuid:a0b3b2a7-a112-5a26-9090-e0b1ee94dcab"
     },
     "changed-source-record.primary": {
-      "event": "changed-source-record",
+      "bundle": "changed-source-record",
       "fullUrl": "urn:uuid:a9b76bbc-f523-5ef4-9919-813ec70553e5"
     }
   },
-  "deviceSnapshots": {
-    "multi-v1.application": {
-      "event": "multi-v1",
-      "fullUrl": "urn:uuid:0e18ddb5-c122-5cfa-b694-c68f1c1482f1"
-    },
-    "multi-v2.application": {
-      "event": "multi-v2",
-      "fullUrl": "urn:uuid:c0100562-c587-53c1-84db-4c7a00dfdbcb"
-    },
-    "multi-v3.application": {
-      "event": "multi-v3",
-      "fullUrl": "urn:uuid:c4fc6731-fa00-594a-8b16-84bb4a2f41e5"
-    },
-    "target.application": {
-      "event": "target",
-      "fullUrl": "urn:uuid:059b32db-025e-5bce-9d3e-451f14a2bf7a"
-    },
-    "changed-source-record.application": {
-      "event": "changed-source-record",
-      "fullUrl": "urn:uuid:e74f8749-7016-514a-b496-270fcc99a8ae"
-    }
-  },
   "policy": {
-    "scope": "One verified participant and source repository. A record alias names the complete source-record Identifier, system and value, of an event's conversion Provenance source entity.",
-    "addressing": "A source-record target addresses every node targeted by the conversion Provenance of every accepted active event whose source entity is its complete source-record Identifier, and the event-time Device snapshots those events carry, whether the event is accepted before or after the retraction. A retraction that addresses no accepted event yet is still accepted and applies to later events.",
-    "selection": "An addressed output never becomes current and an addressed Device snapshot is retired, while every accepted event and output version stays in history. Nodes of events attributed to any other source record are unaffected.",
-    "binding": "A source-record target names no output Identifier, so it binds no output to its record. The first accepted active event still binds each of its outputs; a later event that claims a bound output under another record is rejected as source-output-record-conflict, and a rejected event is never addressed.",
+    "scope": "One verified participant and source repository. A record alias names the complete source-record Identifier, system and value, of a conversion or retraction Provenance source entity. Both retraction Bundles retract record-heart-001 and record-heart-002; no version of record-heart-002 arrives here.",
+    "addressing": "A retraction addresses its whole source record: every output of every accepted record version whose conversion Provenance source entity is that complete source-record Identifier, whether the version is accepted before or after the retraction. Its targets are informative, a typed output target and a source-record target alike. A retraction that addresses no accepted record version yet is still accepted and applies to later versions.",
+    "selection": "An addressed output never becomes current, and a record is never un-retracted, while every accepted record version and output version stays in history. Outputs of every other source record are unaffected.",
+    "binding": "A retraction binds no output to its record, whatever its targets name. The first accepted active record version still binds each of its outputs; a later version that claims a bound output under another record is rejected as source-output-record-conflict, and a rejected record is never addressed.",
     "authorization": "Every output version is authorized for purpose-a, so visibility follows current selection and a grant never overrides an accepted retraction. Purpose-b has no grants, and replay creates no new access."
   },
   "authorizedOutputs": {
@@ -88,10 +70,10 @@
   },
   "sequences": [
     {
-      "id": "source-record-target-retraction-after-its-event",
+      "id": "source-record-target-retraction-after-its-record",
       "steps": [
         {
-          "event": "multi-v1",
+          "bundle": "multi-v1",
           "expect": {
             "history": [
               "multi-v1"
@@ -105,7 +87,6 @@
               "multi-v1.secondary"
             ],
             "retractedRecords": [],
-            "retiredDeviceSnapshots": [],
             "visible": [
               "multi-v1.primary",
               "multi-v1.secondary"
@@ -115,12 +96,12 @@
               "multi-v1.secondary"
             ],
             "disposition": "accepted",
-            "receiptEvent": "multi-v1",
+            "receiptBundle": "multi-v1",
             "reason": null
           }
         },
         {
-          "event": "source-record-target-retraction",
+          "bundle": "source-record-target-retraction",
           "expect": {
             "history": [
               "multi-v1",
@@ -132,20 +113,18 @@
             ],
             "current": [],
             "retractedRecords": [
-              "record-heart-001"
-            ],
-            "retiredDeviceSnapshots": [
-              "multi-v1.application"
+              "record-heart-001",
+              "record-heart-002"
             ],
             "visible": [],
             "newlyVisible": [],
             "disposition": "accepted",
-            "receiptEvent": "source-record-target-retraction",
+            "receiptBundle": "source-record-target-retraction",
             "reason": null
           }
         },
         {
-          "event": "multi-v1",
+          "bundle": "multi-v1",
           "expect": {
             "history": [
               "multi-v1",
@@ -157,20 +136,18 @@
             ],
             "current": [],
             "retractedRecords": [
-              "record-heart-001"
-            ],
-            "retiredDeviceSnapshots": [
-              "multi-v1.application"
+              "record-heart-001",
+              "record-heart-002"
             ],
             "visible": [],
             "newlyVisible": [],
             "disposition": "replayed",
-            "receiptEvent": "multi-v1",
+            "receiptBundle": "multi-v1",
             "reason": null
           }
         },
         {
-          "event": "source-record-target-retraction",
+          "bundle": "source-record-target-retraction",
           "expect": {
             "history": [
               "multi-v1",
@@ -182,25 +159,23 @@
             ],
             "current": [],
             "retractedRecords": [
-              "record-heart-001"
-            ],
-            "retiredDeviceSnapshots": [
-              "multi-v1.application"
+              "record-heart-001",
+              "record-heart-002"
             ],
             "visible": [],
             "newlyVisible": [],
             "disposition": "replayed",
-            "receiptEvent": "source-record-target-retraction",
+            "receiptBundle": "source-record-target-retraction",
             "reason": null
           }
         }
       ]
     },
     {
-      "id": "source-record-target-retraction-before-any-event",
+      "id": "source-record-target-retraction-before-any-version",
       "steps": [
         {
-          "event": "source-record-target-retraction",
+          "bundle": "source-record-target-retraction",
           "expect": {
             "history": [
               "source-record-target-retraction"
@@ -208,18 +183,18 @@
             "versions": [],
             "current": [],
             "retractedRecords": [
-              "record-heart-001"
+              "record-heart-001",
+              "record-heart-002"
             ],
-            "retiredDeviceSnapshots": [],
             "visible": [],
             "newlyVisible": [],
             "disposition": "accepted",
-            "receiptEvent": "source-record-target-retraction",
+            "receiptBundle": "source-record-target-retraction",
             "reason": null
           }
         },
         {
-          "event": "multi-v1",
+          "bundle": "multi-v1",
           "expect": {
             "history": [
               "source-record-target-retraction",
@@ -231,20 +206,18 @@
             ],
             "current": [],
             "retractedRecords": [
-              "record-heart-001"
-            ],
-            "retiredDeviceSnapshots": [
-              "multi-v1.application"
+              "record-heart-001",
+              "record-heart-002"
             ],
             "visible": [],
             "newlyVisible": [],
             "disposition": "accepted",
-            "receiptEvent": "multi-v1",
+            "receiptBundle": "multi-v1",
             "reason": null
           }
         },
         {
-          "event": "multi-v3",
+          "bundle": "multi-v3",
           "expect": {
             "history": [
               "source-record-target-retraction",
@@ -259,16 +232,13 @@
             ],
             "current": [],
             "retractedRecords": [
-              "record-heart-001"
-            ],
-            "retiredDeviceSnapshots": [
-              "multi-v1.application",
-              "multi-v3.application"
+              "record-heart-001",
+              "record-heart-002"
             ],
             "visible": [],
             "newlyVisible": [],
             "disposition": "accepted",
-            "receiptEvent": "multi-v3",
+            "receiptBundle": "multi-v3",
             "reason": null
           }
         }
@@ -278,7 +248,7 @@
       "id": "source-record-target-retraction-leaves-other-records-current",
       "steps": [
         {
-          "event": "target",
+          "bundle": "target",
           "expect": {
             "history": [
               "target"
@@ -290,7 +260,6 @@
               "target.primary"
             ],
             "retractedRecords": [],
-            "retiredDeviceSnapshots": [],
             "visible": [
               "target.primary"
             ],
@@ -298,12 +267,12 @@
               "target.primary"
             ],
             "disposition": "accepted",
-            "receiptEvent": "target",
+            "receiptBundle": "target",
             "reason": null
           }
         },
         {
-          "event": "source-record-target-retraction",
+          "bundle": "source-record-target-retraction",
           "expect": {
             "history": [
               "target",
@@ -316,20 +285,20 @@
               "target.primary"
             ],
             "retractedRecords": [
-              "record-heart-001"
+              "record-heart-001",
+              "record-heart-002"
             ],
-            "retiredDeviceSnapshots": [],
             "visible": [
               "target.primary"
             ],
             "newlyVisible": [],
             "disposition": "accepted",
-            "receiptEvent": "source-record-target-retraction",
+            "receiptBundle": "source-record-target-retraction",
             "reason": null
           }
         },
         {
-          "event": "multi-v2",
+          "bundle": "multi-v2",
           "expect": {
             "history": [
               "target",
@@ -344,17 +313,15 @@
               "target.primary"
             ],
             "retractedRecords": [
-              "record-heart-001"
-            ],
-            "retiredDeviceSnapshots": [
-              "multi-v2.application"
+              "record-heart-001",
+              "record-heart-002"
             ],
             "visible": [
               "target.primary"
             ],
             "newlyVisible": [],
             "disposition": "accepted",
-            "receiptEvent": "multi-v2",
+            "receiptBundle": "multi-v2",
             "reason": null
           }
         }
@@ -364,7 +331,7 @@
       "id": "source-record-target-retraction-binds-no-output",
       "steps": [
         {
-          "event": "source-record-target-retraction",
+          "bundle": "source-record-target-retraction",
           "expect": {
             "history": [
               "source-record-target-retraction"
@@ -372,18 +339,18 @@
             "versions": [],
             "current": [],
             "retractedRecords": [
-              "record-heart-001"
+              "record-heart-001",
+              "record-heart-002"
             ],
-            "retiredDeviceSnapshots": [],
             "visible": [],
             "newlyVisible": [],
             "disposition": "accepted",
-            "receiptEvent": "source-record-target-retraction",
+            "receiptBundle": "source-record-target-retraction",
             "reason": null
           }
         },
         {
-          "event": "changed-source-record",
+          "bundle": "changed-source-record",
           "expect": {
             "history": [
               "source-record-target-retraction",
@@ -396,9 +363,9 @@
               "changed-source-record.primary"
             ],
             "retractedRecords": [
-              "record-heart-001"
+              "record-heart-001",
+              "record-heart-002"
             ],
-            "retiredDeviceSnapshots": [],
             "visible": [
               "changed-source-record.primary"
             ],
@@ -406,12 +373,12 @@
               "changed-source-record.primary"
             ],
             "disposition": "accepted",
-            "receiptEvent": "changed-source-record",
+            "receiptBundle": "changed-source-record",
             "reason": null
           }
         },
         {
-          "event": "multi-v2",
+          "bundle": "multi-v2",
           "expect": {
             "history": [
               "source-record-target-retraction",
@@ -424,20 +391,20 @@
               "changed-source-record.primary"
             ],
             "retractedRecords": [
-              "record-heart-001"
+              "record-heart-001",
+              "record-heart-002"
             ],
-            "retiredDeviceSnapshots": [],
             "visible": [
               "changed-source-record.primary"
             ],
             "newlyVisible": [],
             "disposition": "rejected",
-            "receiptEvent": null,
+            "receiptBundle": null,
             "reason": "source-output-record-conflict"
           }
         },
         {
-          "event": "source-record-target-retraction",
+          "bundle": "source-record-target-retraction",
           "expect": {
             "history": [
               "source-record-target-retraction",
@@ -450,15 +417,216 @@
               "changed-source-record.primary"
             ],
             "retractedRecords": [
-              "record-heart-001"
+              "record-heart-001",
+              "record-heart-002"
             ],
-            "retiredDeviceSnapshots": [],
             "visible": [
               "changed-source-record.primary"
             ],
             "newlyVisible": [],
             "disposition": "replayed",
-            "receiptEvent": "source-record-target-retraction",
+            "receiptBundle": "source-record-target-retraction",
+            "reason": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "typed-retraction-suppresses-whole-record",
+      "steps": [
+        {
+          "bundle": "multi-v3",
+          "expect": {
+            "history": [
+              "multi-v3"
+            ],
+            "versions": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "current": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "retractedRecords": [],
+            "visible": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "newlyVisible": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "disposition": "accepted",
+            "receiptBundle": "multi-v3",
+            "reason": null
+          }
+        },
+        {
+          "bundle": "retraction",
+          "expect": {
+            "history": [
+              "multi-v3",
+              "retraction"
+            ],
+            "versions": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "current": [],
+            "retractedRecords": [
+              "record-heart-001",
+              "record-heart-002"
+            ],
+            "visible": [],
+            "newlyVisible": [],
+            "disposition": "accepted",
+            "receiptBundle": "retraction",
+            "reason": null
+          }
+        },
+        {
+          "bundle": "multi-v1",
+          "expect": {
+            "history": [
+              "multi-v3",
+              "retraction",
+              "multi-v1"
+            ],
+            "versions": [
+              "multi-v1.primary",
+              "multi-v1.secondary",
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "current": [],
+            "retractedRecords": [
+              "record-heart-001",
+              "record-heart-002"
+            ],
+            "visible": [],
+            "newlyVisible": [],
+            "disposition": "accepted",
+            "receiptBundle": "multi-v1",
+            "reason": null
+          }
+        },
+        {
+          "bundle": "retraction",
+          "expect": {
+            "history": [
+              "multi-v3",
+              "retraction",
+              "multi-v1"
+            ],
+            "versions": [
+              "multi-v1.primary",
+              "multi-v1.secondary",
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "current": [],
+            "retractedRecords": [
+              "record-heart-001",
+              "record-heart-002"
+            ],
+            "visible": [],
+            "newlyVisible": [],
+            "disposition": "replayed",
+            "receiptBundle": "retraction",
+            "reason": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "typed-retraction-suppresses-whole-record-before-its-version",
+      "steps": [
+        {
+          "bundle": "retraction",
+          "expect": {
+            "history": [
+              "retraction"
+            ],
+            "versions": [],
+            "current": [],
+            "retractedRecords": [
+              "record-heart-001",
+              "record-heart-002"
+            ],
+            "visible": [],
+            "newlyVisible": [],
+            "disposition": "accepted",
+            "receiptBundle": "retraction",
+            "reason": null
+          }
+        },
+        {
+          "bundle": "multi-v3",
+          "expect": {
+            "history": [
+              "retraction",
+              "multi-v3"
+            ],
+            "versions": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "current": [],
+            "retractedRecords": [
+              "record-heart-001",
+              "record-heart-002"
+            ],
+            "visible": [],
+            "newlyVisible": [],
+            "disposition": "accepted",
+            "receiptBundle": "multi-v3",
+            "reason": null
+          }
+        },
+        {
+          "bundle": "multi-v3",
+          "expect": {
+            "history": [
+              "retraction",
+              "multi-v3"
+            ],
+            "versions": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "current": [],
+            "retractedRecords": [
+              "record-heart-001",
+              "record-heart-002"
+            ],
+            "visible": [],
+            "newlyVisible": [],
+            "disposition": "replayed",
+            "receiptBundle": "multi-v3",
+            "reason": null
+          }
+        },
+        {
+          "bundle": "retraction",
+          "expect": {
+            "history": [
+              "retraction",
+              "multi-v3"
+            ],
+            "versions": [
+              "multi-v3.primary",
+              "multi-v3.secondary"
+            ],
+            "current": [],
+            "retractedRecords": [
+              "record-heart-001",
+              "record-heart-002"
+            ],
+            "visible": [],
+            "newlyVisible": [],
+            "disposition": "replayed",
+            "receiptBundle": "retraction",
             "reason": null
           }
         }

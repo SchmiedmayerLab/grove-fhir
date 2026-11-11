@@ -59,8 +59,14 @@ WARNING: Resource: The resource CodeSystem/grove-application-version-type should
 WARNING: Resource: The resource ValueSet/grove-application-version-type should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/fhir-tools-ig/CodeSystem-ig-parameters.html#ig-parameters-auto-oid-root)
 WARNING: Resource: The resource ValueSet/grove-mobile-measurement-code should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/fhir-tools-ig/CodeSystem-ig-parameters.html#ig-parameters-auto-oid-root)
 
+# A QuestionnaireResponse carries this extension, and the Questionnaire guide owns the response
+# profile, which this guide does not depend on; the Questionnaire guide's extraction exchange
+# Bundle and the Mobile exchange conformance corpus carry it.
+WARNING: StructureDefinition.where(url = 'https://grovealliance.org/fhir/mobile/StructureDefinition/grove-context-snapshot'): The Implementation Guide contains no examples for this extension
+
 # A source-neutral example depicts no source evidence of a responsible performer, and the Patient is never inferred as one.
-WARNING: Bundle/GroveMobileExchangeBundleExample: Bundle.entry[2].resource/*Observation/GroveMobileExchangeHeartRateExample*/: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Bundle/GroveMobileExchangeBundleExample: Bundle.entry[3].resource/*Observation/GroveMobileExchangeHeartRateExample*/: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Bundle/GroveMobileExchangeBundleExample: Bundle.entry[5].resource/*Observation/GroveMobileExchangeSecondHeartRateExample*/: Best Practice Recommendation: In general, all observations should have a performer
 WARNING: Observation/GroveMobileActiveEnergyExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
 WARNING: Observation/GroveMobileBasalBodyTemperatureExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
 WARNING: Observation/GroveMobileBasalEnergyExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
@@ -116,6 +122,7 @@ WARNING: Observation/GroveMobileDietaryZincExample: Observation: Best Practice R
 WARNING: Observation/GroveMobileDistanceExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
 WARNING: Observation/GroveMobileElectrodermalActivityExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
 WARNING: Observation/GroveMobileExchangeHeartRateExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Observation/GroveMobileExchangeSecondHeartRateExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
 WARNING: Observation/GroveMobileFlightsClimbedExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
 WARNING: Observation/GroveMobileFluidIntakeExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
 WARNING: Observation/GroveMobileHeartRateExample: Observation: Best Practice Recommendation: In general, all observations should have a performer

@@ -2,7 +2,7 @@
   "$schema": "https://grovealliance.org/fhir/catalog/schemas/catalog-contracts.schema.json",
   "schemaVersion": 0,
   "fhirVersion": "4.0.1",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "packageId": "org.grovealliance.fhir.providers",
   "canonical": "https://grovealliance.org/fhir/providers",
   "adapterProfile": "https://grovealliance.org/fhir/providers/StructureDefinition/providers-observation",
@@ -1377,7 +1377,7 @@
     "adapterId": "providers",
     "status": "stable-token-required",
     "stableUnitToken": "A caller-governed, deployment-scoped per-unit token from already-authorized provider device data.",
-    "fallback": "Omit Observation.device when no stable per-unit token exists. Manufacturer, model, payload group, account, and event identity do not prove a physical device instance.",
-    "snapshot": "When emitted, the Device carries both recording-device and event-scoped device-snapshot v0 identifiers."
+    "fallback": "Omit Observation.device when no stable per-unit token exists. Manufacturer, model, payload group, account, and record identity do not prove a physical device instance.",
+    "snapshot": "When emitted, the Device carries both recording-device and content device-snapshot v0 identifiers."
   }
 }

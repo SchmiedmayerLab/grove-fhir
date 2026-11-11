@@ -48,7 +48,7 @@ The table above is a quick-start subset; the [status matrix](status-matrix.html)
 The mandatory source-record identifier is repository-scoped and does not disclose `Record.metadata.id`.
 Every output, including a one-to-one conversion, carries a distinct typed source-output identifier; a synthesized glucose Specimen uses the specimen output role.
 When exact upstream traceability is deliberately enabled, the raw metadata id may additionally appear once under a deployment-governed non-Grove Identifier system on the catalog-designated primary output; it never substitutes for either Grove HMAC identifier.
-The HMAC algorithm, event/node identities, fullUrl derivation, lifecycle rules, and language-independent conformance test vectors are normative in [`catalog/exchange-protocol.json`](https://grovealliance.org/fhir/catalog/exchange-protocol.json), while the exact Health Connect component bindings are in the adapter catalog.
+The HMAC algorithm, content-snapshot and record-version identities, canonical JSON, fullUrl derivation, lifecycle rules, and language-independent conformance test vectors are normative in [`catalog/exchange-protocol.json`](https://grovealliance.org/fhir/catalog/exchange-protocol.json), while the exact Health Connect component bindings are in the adapter catalog.
 None of these values becomes `Resource.id`.
 
 Supported source context is represented explicitly:

@@ -262,7 +262,7 @@ class MeasurementCatalogTests(unittest.TestCase):
                     vector["fullUrl"],
                 )
 
-    def test_recording_device_identity_is_per_unit_and_snapshot_identity_is_event_scoped(self) -> None:
+    def test_recording_device_identity_is_per_unit_and_snapshot_identity_is_content_addressed(self) -> None:
         contract = json.loads(
             (ROOT / "catalog/exchange-protocol.json").read_text(encoding="utf-8")
         )
@@ -273,9 +273,10 @@ class MeasurementCatalogTests(unittest.TestCase):
             kinds["recording-device"]["components"],
             ["adapter-id", "subject-system", "subject-value", "stable-unit-token"],
         )
+        # A snapshot is minted over the complete rendered content, never over an event (H2).
         self.assertEqual(
             kinds["device-snapshot"]["components"],
-            ["event-system", "event-value", "device-role", "source-device-token"],
+            ["subject-system", "subject-value", "node-role", "content-digest"],
         )
         recording = contract["recordingDevice"]
         self.assertIn("stable per-unit token", recording["instanceRule"])
@@ -295,7 +296,7 @@ class MeasurementCatalogTests(unittest.TestCase):
             self.assertEqual(declaration["status"], "stable-token-required", name)
             self.assertIn("Omit", declaration["fallback"], name)
             self.assertIn("stable", json.dumps(declaration).lower(), name)
-            self.assertIn("device-snapshot", declaration["snapshot"], name)
+            self.assertIn("content device-snapshot", declaration["snapshot"], name)
             adapters[name] = declaration["adapterId"]
         self.assertEqual(len(set(adapters.values())), len(adapters), "adapter ids must be distinct")
 

@@ -13,11 +13,14 @@
     "fhirVersion",
     "profiles",
     "extensions",
+    "searchParameters",
     "codeSystems",
     "conformanceLevels",
     "producerDiagnostics",
-    "event",
+    "bundle",
     "opaqueIdentity",
+    "canonicalJson",
+    "recordVersion",
     "governedSourceIdentifier",
     "entryIdentity",
     "lifecycle",
@@ -31,12 +34,13 @@
   "properties": {
     "$schema": { "const": "https://grovealliance.org/fhir/catalog/schemas/exchange-protocol.schema.json" },
     "schemaVersion": { "const": 0 },
-    "version": { "const": "0.7.0" },
+    "version": { "const": "0.8.0" },
     "protocolVersion": { "const": 0 },
-    "releaseVersion": { "const": "0.7.0" },
+    "releaseVersion": { "const": "0.8.0" },
     "fhirVersion": { "const": "4.0.1" },
     "profiles": { "$ref": "#/$defs/profiles" },
     "extensions": { "$ref": "#/$defs/extensions" },
+    "searchParameters": { "$ref": "#/$defs/searchParameters" },
     "codeSystems": { "$ref": "#/$defs/codeSystems" },
     "conformanceLevels": {
       "type": "array",
@@ -49,8 +53,10 @@
       "minItems": 1,
       "items": { "$ref": "#/$defs/producerDiagnostic" }
     },
-    "event": { "$ref": "#/$defs/event" },
+    "bundle": { "$ref": "#/$defs/bundle" },
     "opaqueIdentity": { "$ref": "#/$defs/opaqueIdentity" },
+    "canonicalJson": { "$ref": "#/$defs/canonicalJson" },
+    "recordVersion": { "$ref": "#/$defs/recordVersion" },
     "governedSourceIdentifier": { "$ref": "#/$defs/governedSourceIdentifier" },
     "entryIdentity": { "$ref": "#/$defs/entryIdentity" },
     "lifecycle": { "$ref": "#/$defs/lifecycle" },
@@ -100,12 +106,22 @@
     "extensions": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["entryNodeKey", "retractionTargetRole", "retractionTargetNativeIdentifier", "writerRecordVersion"],
+      "required": ["entryKey", "recordVersion", "contextSnapshot", "retractionTargetRole", "retractionTargetNativeIdentifier", "writerRecordVersion"],
       "properties": {
-        "entryNodeKey": { "$ref": "#/$defs/uri" },
+        "entryKey": { "$ref": "#/$defs/uri" },
+        "recordVersion": { "$ref": "#/$defs/uri" },
+        "contextSnapshot": { "$ref": "#/$defs/uri" },
         "retractionTargetRole": { "$ref": "#/$defs/uri" },
         "retractionTargetNativeIdentifier": { "$ref": "#/$defs/uri" },
         "writerRecordVersion": { "$ref": "#/$defs/uri" }
+      }
+    },
+    "searchParameters": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provenanceRecordVersion"],
+      "properties": {
+        "provenanceRecordVersion": { "$ref": "#/$defs/uri" }
       }
     },
     "codeSystems": {
@@ -128,41 +144,70 @@
         "validator": { "$ref": "#/$defs/nonempty" }
       }
     },
-    "event": {
+    "bundle": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["semanticUnit", "bundleIdentifier", "times", "retry", "transport"],
+      "required": ["semanticUnit", "recordUnit", "identifier", "times", "retry", "transport"],
       "properties": {
         "semanticUnit": { "$ref": "#/$defs/nonempty" },
-        "bundleIdentifier": {
+        "recordUnit": { "$ref": "#/$defs/nonempty" },
+        "identifier": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["system", "recommendedSystemForm", "valueForm", "soleEventBusinessIdentifier"],
+          "required": ["cardinality", "groveRoleAllowed", "rule"],
           "properties": {
-            "system": { "$ref": "#/$defs/nonempty" },
-            "recommendedSystemForm": { "$ref": "#/$defs/nonempty" },
-            "valueForm": { "$ref": "#/$defs/nonempty" },
-            "soleEventBusinessIdentifier": { "const": true }
+            "cardinality": { "const": "0..1" },
+            "groveRoleAllowed": { "const": false },
+            "rule": { "$ref": "#/$defs/nonempty" }
           }
         },
         "times": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["occurred", "recorded", "assembled"],
+          "required": ["occurred", "recorded", "packed"],
           "properties": {
             "occurred": { "$ref": "#/$defs/nonempty" },
             "recorded": { "$ref": "#/$defs/nonempty" },
-            "assembled": { "$ref": "#/$defs/nonempty" }
+            "packed": { "$ref": "#/$defs/nonempty" }
           }
         },
         "retry": { "$ref": "#/$defs/nonempty" },
         "transport": { "$ref": "#/$defs/nonempty" }
       }
     },
+    "canonicalJson": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "input", "output", "members", "strings", "numbers", "literals"],
+      "properties": {
+        "name": { "const": "grove-canonical-json-v0" },
+        "input": { "$ref": "#/$defs/nonempty" },
+        "output": { "$ref": "#/$defs/nonempty" },
+        "members": { "$ref": "#/$defs/nonempty" },
+        "strings": { "$ref": "#/$defs/nonempty" },
+        "numbers": { "$ref": "#/$defs/nonempty" },
+        "literals": { "$ref": "#/$defs/nonempty" }
+      }
+    },
+    "recordVersion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["contentDomain", "content", "exclusions", "digestComponent", "key", "retractionKey", "receiverUse", "receiverRule"],
+      "properties": {
+        "contentDomain": { "const": "org.grovealliance.fhir.record-content.v0" },
+        "content": { "$ref": "#/$defs/nonempty" },
+        "exclusions": { "$ref": "#/$defs/nonempty" },
+        "digestComponent": { "const": "record-content-digest" },
+        "key": { "$ref": "#/$defs/nonempty" },
+        "retractionKey": { "$ref": "#/$defs/nonempty" },
+        "receiverUse": { "const": "equality-and-tie-break" },
+        "receiverRule": { "$ref": "#/$defs/nonempty" }
+      }
+    },
     "opaqueIdentity": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["algorithm", "domain", "preimage", "valueForm", "identifierSystem", "recommendedSystemForm", "keyRequirements", "componentRequirements", "privacy", "informationPreservation", "rotation", "identityKinds"],
+      "required": ["algorithm", "domain", "preimage", "valueForm", "identifierSystem", "recommendedSystemForm", "keyRequirements", "componentRequirements", "contentDigest", "privacy", "informationPreservation", "rotation", "identityKinds"],
       "properties": {
         "algorithm": { "const": "HMAC-SHA-256" },
         "domain": { "const": "org.grovealliance.fhir.identity.v0" },
@@ -183,15 +228,18 @@
         "componentRequirements": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["valueType", "nonEmpty", "arity", "unsignedDecimal", "unsignedDecimalForm"],
+          "required": ["valueType", "nonEmpty", "arity", "unsignedDecimal", "unsignedDecimalForm", "digestComponents", "digestForm"],
           "properties": {
             "valueType": { "const": "unicode-scalar-string" },
             "nonEmpty": { "const": true },
             "arity": { "const": "exactly-kind-components" },
             "unsignedDecimal": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/code" } },
-            "unsignedDecimalForm": { "$ref": "#/$defs/nonempty" }
+            "unsignedDecimalForm": { "$ref": "#/$defs/nonempty" },
+            "digestComponents": { "const": ["content-digest", "record-content-digest"] },
+            "digestForm": { "$ref": "#/$defs/nonempty" }
           }
         },
+        "contentDigest": { "$ref": "#/$defs/nonempty" },
         "privacy": { "$ref": "#/$defs/nonempty" },
         "informationPreservation": {
           "type": "object", "additionalProperties": false,
@@ -242,18 +290,18 @@
         "validation": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["optionality", "designatedNode", "identifier", "forbiddenIdentityUses", "forbiddenIdentityUseEnforcement", "duplicateElsewhereInEventAllowed", "neverResourceTypes", "neverProfiles", "healthConnectChildCountRules", "healthConnectChildGraphRules", "recordingDocumentRule"],
+          "required": ["optionality", "designatedNode", "identifier", "forbiddenIdentityUses", "forbiddenIdentityUseEnforcement", "duplicateElsewhereInRecordAllowed", "neverResourceTypes", "neverProfiles", "healthConnectChildCountRules", "healthConnectChildGraphRules", "recordingDocumentRule"],
           "properties": {
             "optionality": { "const": "optional" },
             "designatedNode": {
               "type": "object", "additionalProperties": false,
-              "required": ["lifecycle", "r4Element", "designationMode", "maxPerPrimaryOutput", "maxPrimaryOutputsPerEvent", "ambiguityRule", "outputModeRules", "adapterSelectors"],
+              "required": ["lifecycle", "r4Element", "designationMode", "maxPerPrimaryOutput", "maxPrimaryOutputsPerRecord", "ambiguityRule", "outputModeRules", "adapterSelectors"],
               "properties": {
                 "lifecycle": { "const": "active" },
                 "r4Element": { "const": "Resource.identifier" },
                 "designationMode": { "const": "catalog-output-selector" },
                 "maxPerPrimaryOutput": { "const": 1 },
-                "maxPrimaryOutputsPerEvent": { "const": 1 },
+                "maxPrimaryOutputsPerRecord": { "const": 1 },
                 "ambiguityRule": { "const": "omit-native-identifier" },
                 "outputModeRules": {
                   "const": {
@@ -303,7 +351,7 @@
             },
             "forbiddenIdentityUseEnforcement": {
               "const": {
-                "exactIdentifierPair": {"r4Paths": ["**.Identifier"], "matchRule": "exact-system-and-value", "enforcement": "event-validator"},
+                "exactIdentifierPair": {"r4Paths": ["**.Identifier"], "matchRule": "exact-system-and-value", "enforcement": "record-validator"},
                 "resourceId": {"r4Paths": ["**.Resource.id"], "matchRule": "no-value-only-heuristic", "enforcement": "producer-obligation-and-profile-review"},
                 "bundleEntryKey": {"r4Paths": ["Bundle.entry.fullUrl", "Bundle.entry.extension.valueIdentifier.value"], "matchRule": "identifier-pair-structural-validation; no-fullUrl-value-heuristic", "enforcement": "exchange-entry-key-validator-and-producer-obligation"},
                 "retractionAddress": {"r4Paths": ["Provenance.target.reference", "Provenance.target.identifier.value"], "matchRule": "identifier-pair-structural-validation; no-reference-value-heuristic", "enforcement": "retraction-profile-validator-and-producer-obligation"},
@@ -312,7 +360,7 @@
                 "attachmentPresentation": {"r4Paths": ["DocumentReference.content.attachment.title", "DocumentReference.content.attachment.url"], "matchRule": "no-substring-heuristic", "enforcement": "deployment-governance-and-producer-obligation"}
               }
             },
-            "duplicateElsewhereInEventAllowed": { "const": false },
+            "duplicateElsewhereInRecordAllowed": { "const": false },
             "neverResourceTypes": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/nonempty" } },
             "neverProfiles": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/uri" } },
             "healthConnectChildCountRules": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/code" } },
@@ -375,7 +423,7 @@
     "entryIdentity": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["selection", "resourceIdentifierPriority", "entryNode", "fullUrl"],
+      "required": ["selection", "resourceIdentifierPriority", "provenanceKey", "contextSnapshotRoles", "fullUrl"],
       "properties": {
         "selection": { "$ref": "#/$defs/nonempty" },
         "resourceIdentifierPriority": {
@@ -384,25 +432,8 @@
           "uniqueItems": true,
           "items": { "$ref": "#/$defs/code" }
         },
-        "entryNode": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": ["system", "recommendedSystemForm", "domain", "components", "ordinal", "valueForm", "digest"],
-          "properties": {
-            "system": { "$ref": "#/$defs/nonempty" },
-            "recommendedSystemForm": { "$ref": "#/$defs/nonempty" },
-            "domain": { "const": "org.grovealliance.fhir.entry-node.v0" },
-            "components": {
-              "type": "array",
-              "minItems": 4,
-              "maxItems": 4,
-              "items": { "$ref": "#/$defs/code" }
-            },
-            "ordinal": { "$ref": "#/$defs/nonempty" },
-            "valueForm": { "$ref": "#/$defs/nonempty" },
-            "digest": { "$ref": "#/$defs/nonempty" }
-          }
-        },
+        "provenanceKey": { "const": { "active": "record-version", "retraction": "record-retraction" } },
+        "contextSnapshotRoles": { "const": ["patient", "research-study", "research-subject", "plan-definition", "questionnaire-response"] },
         "fullUrl": {
           "type": "object",
           "additionalProperties": false,
@@ -425,12 +456,13 @@
         "retraction": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["activitySystem", "activityCode", "codingCardinality", "meaning", "target", "nativeRecordIdentifier", "targetRoles", "sink"],
+          "required": ["activitySystem", "activityCode", "codingCardinality", "meaning", "entryKey", "target", "nativeRecordIdentifier", "targetRoles", "sink"],
           "properties": {
             "activitySystem": { "$ref": "#/$defs/uri" },
             "activityCode": { "const": "source-record-retracted" },
             "codingCardinality": { "$ref": "#/$defs/nonempty" },
             "meaning": { "$ref": "#/$defs/nonempty" },
+            "entryKey": { "const": "record-retraction" },
             "target": { "$ref": "#/$defs/nonempty" },
             "nativeRecordIdentifier": {
               "type": "object",
@@ -451,13 +483,12 @@
             "targetRoles": {
               "type": "object",
               "additionalProperties": false,
-              "required": ["primary-output", "source-artifact", "child-output", "specimen", "device-snapshot", "source-record"],
+              "required": ["primary-output", "source-artifact", "child-output", "specimen", "source-record"],
               "properties": {
                 "primary-output": { "const": { "identifierRole": "source-output", "resourceTypes": ["Observation", "VisionPrescription", "MedicationAdministration", "MedicationStatement"] } },
                 "source-artifact": { "const": { "identifierRole": "source-output", "resourceTypes": ["DocumentReference"] } },
                 "child-output": { "const": { "identifierRole": "source-output", "resourceTypes": ["Observation"] } },
                 "specimen": { "const": { "identifierRole": "source-output", "resourceTypes": ["Specimen"] } },
-                "device-snapshot": { "const": { "identifierRole": "device-snapshot", "resourceTypes": ["Device"] } },
                 "source-record": { "const": { "identifierRole": "source-record", "resourceTypes": [] } }
               }
             },
@@ -469,7 +500,7 @@
     "lifecycleShape": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["activitySystem", "activityCode", "codingCardinality", "shape", "studyContext", "entryResourcePolicy", "adapterOnlyOutputProfileClaims"],
+      "required": ["activitySystem", "activityCode", "codingCardinality", "shape", "studyContext", "versionSelection", "entryResourcePolicy", "adapterOnlyOutputProfileClaims"],
       "properties": {
         "activitySystem": { "$ref": "#/$defs/uri" },
         "activityCode": { "const": "transform" },
@@ -478,12 +509,28 @@
         "studyContext": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["recommendedShape", "subject", "protocol", "entryNodeRoles"],
+          "required": ["recommendedShape", "subject", "protocol"],
           "properties": {
             "recommendedShape": { "$ref": "#/$defs/nonempty" },
             "subject": { "$ref": "#/$defs/nonempty" },
-            "protocol": { "$ref": "#/$defs/nonempty" },
-            "entryNodeRoles": { "const": ["patient", "research-study", "research-subject", "plan-definition"] }
+            "protocol": { "$ref": "#/$defs/nonempty" }
+          }
+        },
+        "versionSelection": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["scope", "exactRetry", "alteredRetry", "writerEvidence", "writerOrder", "recordedOrder", "tieBreak", "membership", "history", "retraction"],
+          "properties": {
+            "scope": { "$ref": "#/$defs/nonempty" },
+            "exactRetry": { "$ref": "#/$defs/nonempty" },
+            "alteredRetry": { "$ref": "#/$defs/nonempty" },
+            "writerEvidence": { "$ref": "#/$defs/nonempty" },
+            "writerOrder": { "$ref": "#/$defs/nonempty" },
+            "recordedOrder": { "$ref": "#/$defs/nonempty" },
+            "tieBreak": { "$ref": "#/$defs/nonempty" },
+            "membership": { "$ref": "#/$defs/nonempty" },
+            "history": { "$ref": "#/$defs/nonempty" },
+            "retraction": { "$ref": "#/$defs/nonempty" }
           }
         },
         "entryResourcePolicy": {
@@ -612,10 +659,11 @@
         "equality": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["formatting", "decimalLexeme", "vectors"],
+          "required": ["formatting", "decimalLexeme", "alteredRetry", "vectors"],
           "properties": {
             "formatting": { "$ref": "#/$defs/nonempty" },
             "decimalLexeme": { "$ref": "#/$defs/nonempty" },
+            "alteredRetry": { "$ref": "#/$defs/nonempty" },
             "vectors": { "$ref": "#/$defs/nonempty" }
           }
         }
@@ -624,7 +672,7 @@
     "testVectors": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["keyHex", "keyId", "epoch", "warning", "identitySystems", "measurementExamples", "identities", "invalidIdentities", "event", "entryNode", "fullUrls"],
+      "required": ["keyHex", "keyId", "epoch", "warning", "identitySystems", "measurementExamples", "identities", "invalidIdentities", "fullUrls", "canonicalJson", "invalidCanonicalJson", "recordContents"],
       "properties": {
         "keyHex": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
         "keyId": { "type": "string", "pattern": "^[A-Za-z0-9._-]+$" },
@@ -632,8 +680,8 @@
         "warning": { "$ref": "#/$defs/nonempty" },
         "identitySystems": {
           "type": "array",
-          "minItems": 10,
-          "maxItems": 10,
+          "minItems": 13,
+          "maxItems": 13,
           "items": { "$ref": "#/$defs/exampleIdentitySystem" }
         },
         "measurementExamples": { "$ref": "#/$defs/measurementExamples" },
@@ -647,12 +695,25 @@
           "minItems": 1,
           "items": { "$ref": "#/$defs/invalidIdentityVector" }
         },
-        "event": { "$ref": "#/$defs/eventVector" },
-        "entryNode": { "$ref": "#/$defs/entryNodeVector" },
         "fullUrls": {
           "type": "array",
           "minItems": 1,
           "items": { "$ref": "#/$defs/fullUrlVector" }
+        },
+        "canonicalJson": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/canonicalJsonVector" }
+        },
+        "invalidCanonicalJson": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/invalidCanonicalJsonVector" }
+        },
+        "recordContents": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/recordContentVector" }
         }
       }
     },
@@ -699,7 +760,7 @@
       "additionalProperties": false,
       "required": ["identityKind", "system"],
       "properties": {
-        "identityKind": { "enum": ["source-record", "source-output", "writer-record", "provider-record", "provider-output", "source-artifact", "provider-artifact", "source-context", "recording-device", "device-snapshot"] },
+        "identityKind": { "enum": ["source-record", "source-output", "writer-record", "provider-record", "provider-output", "source-artifact", "provider-artifact", "source-context", "recording-device", "device-snapshot", "context-snapshot", "record-version", "record-retraction"] },
         "system": { "$ref": "#/$defs/uri" }
       }
     },
@@ -722,30 +783,39 @@
         "id": { "$ref": "#/$defs/code" },
         "identityKind": { "$ref": "#/$defs/code" },
         "components": { "type": "array", "items": { "type": "string" } },
-        "expectedError": { "enum": ["empty-component", "provider-kind-required", "non-canonical-part-index"] }
+        "expectedError": { "enum": ["empty-component", "provider-kind-required", "non-canonical-part-index", "non-canonical-digest"] }
       }
     },
-    "eventVector": {
+    "canonicalJsonVector": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["system", "producerInstance", "sequence", "value"],
+      "required": ["id", "input", "canonical", "sha256"],
       "properties": {
-        "system": { "$ref": "#/$defs/uri" },
-        "producerInstance": { "type": "string", "pattern": "^[0-9a-f-]{36}$" },
-        "sequence": { "type": "string", "pattern": "^[1-9][0-9]*$" },
-        "value": { "type": "string", "pattern": "^e0:[0-9a-f-]{36}:[1-9][0-9]*$" }
+        "id": { "$ref": "#/$defs/code" },
+        "input": { "$ref": "#/$defs/nonempty" },
+        "canonical": { "$ref": "#/$defs/nonempty" },
+        "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
       }
     },
-    "entryNodeVector": {
+    "invalidCanonicalJsonVector": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["system", "role", "ordinal", "value", "fullUrl"],
+      "required": ["id", "inputHex", "expectedError"],
       "properties": {
-        "system": { "$ref": "#/$defs/uri" },
-        "role": { "$ref": "#/$defs/code" },
-        "ordinal": { "type": "string", "pattern": "^(0|[1-9][0-9]*)$" },
-        "value": { "type": "string", "pattern": "^n0:[a-z][a-z0-9-]*:(0|[1-9][0-9]*):[A-Za-z0-9_-]{43}$" },
-        "fullUrl": { "type": "string", "pattern": "^urn:uuid:[0-9a-f-]{36}$" }
+        "id": { "$ref": "#/$defs/code" },
+        "inputHex": { "type": "string", "pattern": "^(?:[0-9a-f]{2})+$" },
+        "expectedError": { "enum": ["duplicate-member", "non-ascii-member-name", "unpaired-surrogate", "byte-order-mark", "invalid-utf8"] }
+      }
+    },
+    "recordContentVector": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "provenance", "outputs", "recordContentDigest"],
+      "properties": {
+        "id": { "$ref": "#/$defs/code" },
+        "provenance": { "$ref": "#/$defs/nonempty" },
+        "outputs": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/nonempty" } },
+        "recordContentDigest": { "type": "string", "pattern": "^[A-Za-z0-9_-]{43}$" }
       }
     },
     "fullUrlVector": {

@@ -9,7 +9,7 @@
     "mobile/input/fsh/terminology.fsh",
     "mobile/input/fsh/profiles.fsh"
   ],
-  "groundTruthDigest": "sha256:d2517a074547680e3600a78ddd5b429458596842fd3f85b162850879215c695d",
+  "groundTruthDigest": "sha256:2c4b49d2979da3f9e3c04f374380d332781b061a5b0de6d0797bdba53f424594",
   "valueDomainReview": {
     "status": "prepared-pending-release-ratification",
     "preparedOn": "2026-08-27",
@@ -4639,6 +4639,15 @@
       "measurementImpact": "None. The change rewords one code definition of a Device version-type code system; no code, binding, or per-measurement digest changes.",
       "review": "Pending pull-request review of the source application build rule.",
       "approvedOn": "2026-10-04"
+    },
+    {
+      "from": "sha256:d2517a074547680e3600a78ddd5b429458596842fd3f85b162850879215c695d",
+      "to": "sha256:2c4b49d2979da3f9e3c04f374380d332781b061a5b0de6d0797bdba53f424594",
+      "baseCommit": "be0e370",
+      "change": "Replaced the exchange event with the record: removed the event and entry-node identifier roles and the device-snapshot retraction target role, added the context-snapshot, record-version, and record-retraction identifier roles, redefined the device-snapshot role as a content key, renamed the entry-key extension and the Bundle Provenance invariants, made Bundle.identifier an optional untyped transport id, renamed the recording Device's event-snapshot identifier slice to snapshot, and added the record-version and context-snapshot Bundle invariants and the record-version extension on the conversion Provenance.",
+      "measurementImpact": "None. The changes are confined to the exchange Bundle, lifecycle Provenance, Device, and identifier-role definitions; no measurement code, binding, or per-measurement digest changes.",
+      "review": "Pending pull-request review of the record-centric exchange.",
+      "approvedOn": "2026-11-06"
     }
   ]
 }

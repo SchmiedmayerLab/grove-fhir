@@ -13,7 +13,7 @@
   ],
   "$defs": {
     "schemaUri": {"const": "https://grovealliance.org/fhir/catalog/schemas/catalog-contracts.schema.json"},
-    "releaseVersion": {"const": "0.7.0"},
+    "releaseVersion": {"const": "0.8.0"},
     "nonEmptyText": {"type": "string", "minLength": 1},
     "uri": {"type": "string", "format": "uri"},
     "slug": {"type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"},
@@ -216,13 +216,13 @@
         "sourceTypeExtension": {"$ref": "#/$defs/markerExtension"},
         "dataOriginApplication": {
           "type": "object", "additionalProperties": false,
-          "required": ["sourceField", "r4Element", "referenceType", "referenceMode", "identifierSystem", "identifierValue", "literalReferenceAllowed", "eventBundleEntryRequired", "profileClaimRequired", "rule"],
+          "required": ["sourceField", "r4Element", "referenceType", "referenceMode", "identifierSystem", "identifierValue", "literalReferenceAllowed", "bundleEntryRequired", "profileClaimRequired", "rule"],
           "properties": {
             "sourceField": {"const": "Metadata.dataOrigin.packageName"}, "r4Element": {"const": "Provenance.entity.agent.who"},
             "referenceType": {"const": "Device"}, "referenceMode": {"const": "identifier-only"},
             "identifierSystem": {"const": "https://grovealliance.org/fhir/health-connect/NamingSystem/android-package-name"},
             "identifierValue": {"$ref": "#/$defs/nonEmptyText"}, "literalReferenceAllowed": {"const": false},
-            "eventBundleEntryRequired": {"const": false}, "profileClaimRequired": {"const": false}, "rule": {"$ref": "#/$defs/nonEmptyText"}
+            "bundleEntryRequired": {"const": false}, "profileClaimRequired": {"const": false}, "rule": {"$ref": "#/$defs/nonEmptyText"}
           }
         },
         "statusVocabulary": {"$ref": "#/$defs/statusVocabularyObject"}, "observationIssued": {"$ref": "#/$defs/observationIssued"},
@@ -458,7 +458,7 @@
       "properties": {
         "waveform": {"type": "object", "additionalProperties": false, "required": ["cardinality", "profiles", "outputIdentity"], "properties": {"cardinality": {"const": {"min": 1, "max": 1}}, "profiles": {"const": ["https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-ecg-observation", "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-observation"]}, "outputIdentity": {"$ref": "#/$defs/ecgOutputIdentity"}}},
         "averageHeartRate": {"type": "object", "additionalProperties": false, "required": ["cardinality", "profiles", "code", "quantity", "outputIdentity", "sameSourceRecord", "sameEffectivePeriod", "reference"], "properties": {"cardinality": {"const": {"min": 0, "max": 1}}, "profiles": {"const": ["https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-heart-rate", "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-average-heart-rate-observation"]}, "code": {"$ref": "#/$defs/coding"}, "quantity": {"$ref": "#/$defs/quantity"}, "outputIdentity": {"$ref": "#/$defs/ecgOutputIdentity"}, "sameSourceRecord": {"const": true}, "sameEffectivePeriod": {"const": true}, "reference": {"$ref": "#/$defs/ecgResolvingReference"}}},
-        "correlatedSymptoms": {"type": "object", "additionalProperties": false, "required": ["sourceOutput", "r4Path", "targetOutputClass", "targetProfiles", "targetType", "referenceShape", "identifierRole", "sameEventBundle", "cardinality", "statusConditionedCardinality", "distinctIdentifiers", "preserveDuplicateSourceSamples"], "properties": {"sourceOutput": {"const": "electrocardiogram"}, "r4Path": {"const": "Observation.hasMember"}, "targetOutputClass": {"const": "admitted-healthkit-symptom"}, "targetProfiles": {"type": "array", "minItems": 7, "maxItems": 7, "uniqueItems": true, "items": {"$ref": "#/$defs/uri"}}, "targetType": {"const": "Observation"}, "referenceShape": {"const": "identifier-only"}, "identifierRole": {"const": "source-output"}, "sameEventBundle": {"const": false}, "cardinality": {"const": {"min": 0, "max": "*"}}, "statusConditionedCardinality": {"type": "array", "minItems": 3, "maxItems": 3, "items": {"$ref": "#/$defs/ecgStatusCardinality"}}, "distinctIdentifiers": {"const": true}, "preserveDuplicateSourceSamples": {"const": true}}},
+        "correlatedSymptoms": {"type": "object", "additionalProperties": false, "required": ["sourceOutput", "r4Path", "targetOutputClass", "targetProfiles", "targetType", "referenceShape", "identifierRole", "sameRecord", "cardinality", "statusConditionedCardinality", "distinctIdentifiers", "preserveDuplicateSourceSamples"], "properties": {"sourceOutput": {"const": "electrocardiogram"}, "r4Path": {"const": "Observation.hasMember"}, "targetOutputClass": {"const": "admitted-healthkit-symptom"}, "targetProfiles": {"type": "array", "minItems": 7, "maxItems": 7, "uniqueItems": true, "items": {"$ref": "#/$defs/uri"}}, "targetType": {"const": "Observation"}, "referenceShape": {"const": "identifier-only"}, "identifierRole": {"const": "source-output"}, "sameRecord": {"const": false}, "cardinality": {"const": {"min": 0, "max": "*"}}, "statusConditionedCardinality": {"type": "array", "minItems": 3, "maxItems": 3, "items": {"$ref": "#/$defs/ecgStatusCardinality"}}, "distinctIdentifiers": {"const": true}, "preserveDuplicateSourceSamples": {"const": true}}},
         "provenance": {"type": "object", "additionalProperties": false, "required": ["profile", "rule"], "properties": {"profile": {"const": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-conversion-provenance"}, "rule": {"$ref": "#/$defs/nonEmptyText"}}}
       }
     },

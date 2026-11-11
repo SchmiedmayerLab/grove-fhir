@@ -29,6 +29,20 @@ An asymmetry that survives review is deliberate: if two sibling artifacts are na
 `healthkit-source-type-extension` became `healthkit-source-type` in 0.6.0 under the no-shipping-data statement: publication is CI-build-only, no immutable release had been cut, and the HealthKit CodeSystem and ValueSet already shared the plain id, so the suffix never bought uniqueness.
 This was the last free window for that name.
 
+0.8.0 replaces the exchange event with the record and renames or redefines these persisted identifiers under a no-data statement:
+
+- the entry-key extension `grove-exchange-entry-node-key` became `grove-exchange-entry-key`, and its rule code `mobile-exchange.entry-node-key` became `mobile-exchange.entry-key`; `mobile-exchange.event-times` became `mobile-exchange.record-times`, and `mobile-exchange.event-identity`, `mobile-exchange.entry-node-digest`, and `mobile-exchange.entry-node-ordinal` were removed;
+- the catalog keys `extensions.entryNodeKey` became `entryKey`, `event` became `bundle` (with `times.assembled` now `times.packed`), `lifecycle.active.studyContext.entryNodeRoles` became `entryIdentity.contextSnapshotRoles`, `maxPrimaryOutputsPerEvent` became `maxPrimaryOutputsPerRecord`, `duplicateElsewhereInEventAllowed` became `duplicateElsewhereInRecordAllowed`, `eventBundleEntryRequired` became `bundleEntryRequired`, and `sameEventBundle` became `sameRecord`; `entryIdentity.entryNode` was removed;
+- the invariant keys `grove-active-event-provenance-1` and `grove-retraction-event-provenance-1` became `grove-active-bundle-provenance-1` and `grove-retraction-bundle-provenance-1`, and `grove-event-identifier-value-1` and `grove-entry-node-value-1` were removed;
+- the identifier-role codes `#event` and `#entry-node` and the retraction target role `#device-snapshot` were removed, and the identifier role `#device-snapshot` was redefined; and
+- the identity component names: `device-snapshot` keeps its kind name, but its components changed from [`event-system`, `event-value`, `device-role`, `source-device-token`] to [`subject-system`, `subject-value`, `node-role`, `content-digest`].
+
+The statement is that no App Store build of any client ever emitted one of the old names.
+Data under them does exist from TestFlight builds, and the project lead ruled on 2026-11-01 that TestFlight-era uploads are disregarded; for that data the statement rests on the ruling, not on there being none.
+The 0.6.0 precedent above rested on no immutable release having been cut, which no longer holds: tag `0.7.0` is immutable, so this statement is about data, not releases.
+The release side is settled separately: the change ships as `0.8.0`, and `0.7.0` keeps the old names for whoever pins it.
+The pull request that performs the rename records the full basis of the statement.
+
 ## Clients pin tagged releases
 
 The canonical namespace `https://grovealliance.org/fhir` is an identifier, not a download location, and the CI-build preview is not release history.

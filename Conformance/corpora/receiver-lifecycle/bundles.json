@@ -1,0 +1,444 @@
+{
+  "schemaVersion": 0,
+  "contractLock": {
+    "baseSourceRevision": "be0e370cbc9e789f5ad30df18d3332713387a9c3",
+    "baseExchangeProtocolSHA256": "fec45c4aaa7c9b63b2db25cfb0b82088a61f061ef404cbb17073025649072768",
+    "releaseVersion": "0.8.0",
+    "fhirVersion": "4.0.1",
+    "exchangeProtocolSHA256": "9236c3ca2fe08e8af3a52dcff5ca96b0a21427a572f62af64ee2b3c4288353b0"
+  },
+  "bundles": {
+    "original": {
+      "path": "resources/original.json",
+      "sha256": "9fa161f05a9debb42912cd70fbd98672b5ca5caf96d94cd8a8ffe3bd58030b77",
+      "recordVersions": [
+        {
+          "type": {
+            "coding": [
+              {
+                "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+                "code": "record-version"
+              }
+            ]
+          },
+          "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
+          "value": "v0:test-key:1:4WNaaLPaRS-T6ghPrAf0kAIRFyc1mrj1S5IhR8HenqY"
+        }
+      ]
+    },
+    "corrected": {
+      "path": "resources/corrected.json",
+      "sha256": "d4d1b78e50de48b43fc6b11d4d706ae7b94f3d5069f24310346ee06b6af0ae8c",
+      "recordVersions": [
+        {
+          "type": {
+            "coding": [
+              {
+                "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+                "code": "record-version"
+              }
+            ]
+          },
+          "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
+          "value": "v0:test-key:1:zPb6avFa9hswf086Kxibw-DIlL5LBD9TAs7bIF9RExM"
+        }
+      ]
+    },
+    "altered-retry": {
+      "path": "resources/altered-retry.json",
+      "sha256": "ce02606365fc7c09f269e92ba939a551b9e8182e4c924b82bed6ae86568ebd7d",
+      "recordVersions": [
+        {
+          "type": {
+            "coding": [
+              {
+                "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+                "code": "record-version"
+              }
+            ]
+          },
+          "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
+          "value": "v0:test-key:1:4WNaaLPaRS-T6ghPrAf0kAIRFyc1mrj1S5IhR8HenqY"
+        }
+      ]
+    },
+    "reformatted-retry": {
+      "path": "resources/reformatted-retry.json",
+      "sha256": "9f8bbd18322492b1cc92c9184b943aaf202003c47ec16268b129b4c28a1fb95f",
+      "recordVersions": [
+        {
+          "type": {
+            "coding": [
+              {
+                "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+                "code": "record-version"
+              }
+            ]
+          },
+          "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
+          "value": "v0:test-key:1:4WNaaLPaRS-T6ghPrAf0kAIRFyc1mrj1S5IhR8HenqY"
+        }
+      ]
+    },
+    "lexeme-retry": {
+      "path": "resources/lexeme-retry.json",
+      "sha256": "f93f084bf05d8ecc7ad6c4e281ed900337c992367154b7c25c605a1d97bef298",
+      "recordVersions": [
+        {
+          "type": {
+            "coding": [
+              {
+                "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+                "code": "record-version"
+              }
+            ]
+          },
+          "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
+          "value": "v0:test-key:1:l2-o498e8gF3_Pir0BnIrlvz2Oa7fo8JR9s9r6EB0DE"
+        }
+      ]
+    },
+    "reconverted": {
+      "path": "resources/reconverted.json",
+      "sha256": "f0912f0d05b5a08ba880b32c92e9327e06a647bdbbb32443e03f9fbdb5ef45db",
+      "recordVersions": [
+        {
+          "type": {
+            "coding": [
+              {
+                "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+                "code": "record-version"
+              }
+            ]
+          },
+          "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
+          "value": "v0:test-key:1:JjdQZSnV7AQ1Q3BdOoHU0qybpa6Bj7q_jvsj5iLue6I"
+        }
+      ]
+    },
+    "unordered-a": {
+      "path": "resources/unordered-a.json",
+      "sha256": "29ede4ea2da37f307b60f24dea5b20a7db93e097a992d96eff3b9690c8f4cea0",
+      "recordVersions": [
+        {
+          "type": {
+            "coding": [
+              {
+                "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+                "code": "record-version"
+              }
+            ]
+          },
+          "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
+          "value": "v0:test-key:1:PaxxOvAs91EJRAKUFZMqjzU4GlgXld9rdRf_xswYpWw"
+        }
+      ]
+    },
+    "unordered-b": {
+      "path": "resources/unordered-b.json",
+      "sha256": "ff1fb5d5434074ced8cd6ebb148ee0aa74e74e3d74521ed7f7a0a06eadaec6dc",
+      "recordVersions": [
+        {
+          "type": {
+            "coding": [
+              {
+                "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+                "code": "record-version"
+              }
+            ]
+          },
+          "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
+          "value": "v0:test-key:1:rN1qE7AnoFKaJhnAPooL9VFq1Uh1DGDxT3GzG6eJF44"
+        }
+      ]
+    },
+    "pending": {
+      "path": "resources/pending.json",
+      "sha256": "79235f31e1f9ceaebffd3de4a3a985d8ec2b30b67b241fdfaac89465eb0ba807",
+      "recordVersions": [
+        {
+          "type": {
+            "coding": [
+              {
+                "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+                "code": "record-version"
+              }
+            ]
+          },
+          "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
+          "value": "v0:test-key:1:wowwu5_jxYykm0KTPrF1NVtu0asK9xWjoapLoGOXzyw"
+        }
+      ]
+    },
+    "target": {
+      "path": "resources/target.json",
+      "sha256": "de2d253b4ffe89929e92df5c2c5eea81a88b38baccd941a80a2e45d82dc0ef9b",
+      "recordVersions": [
+        {
+          "type": {
+            "coding": [
+              {
+                "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+                "code": "record-version"
+              }
+            ]
+          },
+          "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
+          "value": "v0:test-key:1:TQHdUGNfFyyNL6tbhoyEdOGuFaXmRWlGX71Rz1hMJno"
+        }
+      ]
+    },
+    "retraction": {
+      "path": "resources/retraction.json",
+      "sha256": "02eef355417fcca1d8c0d6ed5def2f6349bae7fc8cf0625e7414b5c17461152b",
+      "recordVersions": [
+        {
+          "type": {
+            "coding": [
+              {
+                "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+                "code": "record-retraction"
+              }
+            ]
+          },
+          "system": "https://study.example.org/fhir/NamingSystem/grove-record-retraction-v0/test-key/1",
+          "value": "v0:test-key:1:0JJ96w-JxTpK7Bb-910L_61f3KJdI8Cr4eSGTpJ7L7o"
+        },
+        {
+          "type": {
+            "coding": [
+              {
+                "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+                "code": "record-retraction"
+              }
+            ]
+          },
+          "system": "https://study.example.org/fhir/NamingSystem/grove-record-retraction-v0/test-key/1",
+          "value": "v0:test-key:1:B21Bfil3Angm31WXctopw5mzf3r2zaP3cR4dfxh-gbg"
+        }
+      ]
+    },
+    "source-record-target-retraction": {
+      "path": "resources/source-record-target-retraction.json",
+      "sha256": "bea24e01e77c180c8f7c69cb9fc90bfc5cddba375d949ca7646ae4929b3cafd3",
+      "recordVersions": [
+        {
+          "type": {
+            "coding": [
+              {
+                "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+                "code": "record-retraction"
+              }
+            ]
+          },
+          "system": "https://study.example.org/fhir/NamingSystem/grove-record-retraction-v0/test-key/1",
+          "value": "v0:test-key:1:0JJ96w-JxTpK7Bb-910L_61f3KJdI8Cr4eSGTpJ7L7o"
+        },
+        {
+          "type": {
+            "coding": [
+              {
+                "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+                "code": "record-retraction"
+              }
+            ]
+          },
+          "system": "https://study.example.org/fhir/NamingSystem/grove-record-retraction-v0/test-key/1",
+          "value": "v0:test-key:1:B21Bfil3Angm31WXctopw5mzf3r2zaP3cR4dfxh-gbg"
+        }
+      ]
+    },
+    "multi-v1": {
+      "path": "resources/multi-v1.json",
+      "sha256": "db6cec0bf000591058775d9cb22e04ebe4ba14806127c25f8b731262f9aac78a",
+      "recordVersions": [
+        {
+          "type": {
+            "coding": [
+              {
+                "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+                "code": "record-version"
+              }
+            ]
+          },
+          "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
+          "value": "v0:test-key:1:9KrWXi6Y5p8bI7bOGY8THmBdLCcH-0vay1G5bVK48oI"
+        }
+      ]
+    },
+    "multi-v2": {
+      "path": "resources/multi-v2.json",
+      "sha256": "face5eae37282b347d67435bc38ce456d49c77a9efbeadbda56215a3b5ab696f",
+      "recordVersions": [
+        {
+          "type": {
+            "coding": [
+              {
+                "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+                "code": "record-version"
+              }
+            ]
+          },
+          "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
+          "value": "v0:test-key:1:3u2mQn8g5ptz47rHITeniMcMQpl5ZvNffgthHPcETOg"
+        }
+      ]
+    },
+    "multi-v3": {
+      "path": "resources/multi-v3.json",
+      "sha256": "613f569bc0d88fc9bfa06e40b7fc53e9c35eb524dfa13c0cdba126c337fa5756",
+      "recordVersions": [
+        {
+          "type": {
+            "coding": [
+              {
+                "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+                "code": "record-version"
+              }
+            ]
+          },
+          "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
+          "value": "v0:test-key:1:f_V4WBxCc7mbc1txUhZ61EK-gQKT9Ve-4PAh-JdVg3o"
+        }
+      ]
+    },
+    "equal-version-later-recorded": {
+      "path": "resources/equal-version-later-recorded.json",
+      "sha256": "98b96b5d78cc4b7b050a6f923534af9832d70dff5eb168d4d4f534fe2f975f32",
+      "recordVersions": [
+        {
+          "type": {
+            "coding": [
+              {
+                "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+                "code": "record-version"
+              }
+            ]
+          },
+          "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
+          "value": "v0:test-key:1:qEov7x9hE2iqcQQTeyWa_F0_tm9MoEYwwfjrxSAIOG0"
+        }
+      ]
+    },
+    "equal-version-reconversion": {
+      "path": "resources/equal-version-reconversion.json",
+      "sha256": "ec6af995499d3f0c38fdab3577ef92a9c4ad436df688fa5d9567d06c6c276e95",
+      "recordVersions": [
+        {
+          "type": {
+            "coding": [
+              {
+                "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+                "code": "record-version"
+              }
+            ]
+          },
+          "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
+          "value": "v0:test-key:1:u0vpOJxB2rhPLjSfDAoY63-b_G4YUSLeAspdCAo7EdU"
+        }
+      ]
+    },
+    "equal-version-equal-recorded": {
+      "path": "resources/equal-version-equal-recorded.json",
+      "sha256": "c64d23d5d365718cf4753ad87027d0dd42fac1eb62c9320e088b93443dd0be45",
+      "recordVersions": [
+        {
+          "type": {
+            "coding": [
+              {
+                "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+                "code": "record-version"
+              }
+            ]
+          },
+          "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
+          "value": "v0:test-key:1:JFlHMMZRb0RR101RJgfvPYC3TxbMd2MR1Ma6qJR8UO0"
+        }
+      ]
+    },
+    "other-writer": {
+      "path": "resources/other-writer.json",
+      "sha256": "d20ea4055d56a99639ff54630dba403027b372ef4bd140bb874e15847d8520e8",
+      "recordVersions": [
+        {
+          "type": {
+            "coding": [
+              {
+                "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+                "code": "record-version"
+              }
+            ]
+          },
+          "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
+          "value": "v0:test-key:1:KRXWXx1nrrcVvRExxQGll0bd3kPLMAlfbyNHjWnh05Y"
+        }
+      ]
+    },
+    "missing-order": {
+      "path": "resources/missing-order.json",
+      "sha256": "88809afa1be484bf6778e95127221ad2a6c5077f416a5ca6bd7227e74761be30",
+      "recordVersions": [
+        {
+          "type": {
+            "coding": [
+              {
+                "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+                "code": "record-version"
+              }
+            ]
+          },
+          "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
+          "value": "v0:test-key:1:I7oI-P0smVTBW-1WvmgeT2UR9I2UDPNuHasdnxNOR3U"
+        }
+      ]
+    },
+    "changed-source-record": {
+      "path": "resources/changed-source-record.json",
+      "sha256": "e9442a37087a8dde9c2eb89888ae70b2e30f9be3249ac4fb502f62a40414e5ed",
+      "recordVersions": [
+        {
+          "type": {
+            "coding": [
+              {
+                "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+                "code": "record-version"
+              }
+            ]
+          },
+          "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
+          "value": "v0:test-key:1:v4ARuAjBMENxtw0RZVSzb8BsKcKTywht3i4BzfKqkdc"
+        }
+      ]
+    },
+    "mixed-admission": {
+      "path": "resources/mixed-admission.json",
+      "sha256": "4e28076ec08d11bfe0c3ce7fcb899d3d5574332cfd5c21ef1dc60f2503b3bea0",
+      "recordVersions": [
+        {
+          "type": {
+            "coding": [
+              {
+                "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+                "code": "record-version"
+              }
+            ]
+          },
+          "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
+          "value": "v0:test-key:1:v4ARuAjBMENxtw0RZVSzb8BsKcKTywht3i4BzfKqkdc"
+        },
+        {
+          "type": {
+            "coding": [
+              {
+                "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+                "code": "record-version"
+              }
+            ]
+          },
+          "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
+          "value": "v0:test-key:1:TQHdUGNfFyyNL6tbhoyEdOGuFaXmRWlGX71Rz1hMJno"
+        }
+      ]
+    }
+  }
+}

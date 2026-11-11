@@ -5,13 +5,11 @@
   "sourceBindings": {
     "participant-source": {
       "participant": {"system": "https://study.example.org/fhir/identifiers/participant", "value": "participant-001"},
-      "eventSystem": "https://study.example.org/fhir/NamingSystem/grove-event-v0",
-      "sourceID": "1f5c58aa-6ec6-4e79-a682-829a9debd3f5"
+      "sourceRecordSystem": "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
     },
     "other-source": {
       "participant": {"system": "https://study.example.org/fhir/identifiers/participant", "value": "participant-001"},
-      "eventSystem": "https://study.example.org/fhir/NamingSystem/grove-event-v0",
-      "sourceID": "22222222-2222-4222-8222-222222222222"
+      "sourceRecordSystem": "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/other-key/1"
     }
   },
   "consentReceipts": {

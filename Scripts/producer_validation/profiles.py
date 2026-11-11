@@ -415,7 +415,7 @@ def validate_exchange_supporting_profile_claim(
 def validate_active_provenance_profile_claim(
     resource: dict[str, Any], label: str
 ) -> None:
-    """Require the sole active lifecycle assertion to declare one exact direct profile."""
+    """Require every conversion Provenance to declare one exact direct profile."""
     if resource.get("resourceType") != "Provenance":
         return
     claims = read_json(CATALOG_ROOT / "profile-claims.json")
@@ -435,7 +435,7 @@ def validate_active_provenance_profile_claim(
 def validate_retraction_provenance_profile_claim(
     resource: dict[str, Any], label: str
 ) -> None:
-    """Require the sole retraction assertion to declare only its Mobile profile."""
+    """Require every retraction Provenance to declare only its Mobile profile."""
     if resource.get("resourceType") != "Provenance":
         return
     expected = EXCHANGE_PROTOCOL["profiles"]["retractionProvenance"]

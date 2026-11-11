@@ -18,9 +18,9 @@ Instance: ProviderApplicationExample
 InstanceOf: GroveApplicationDevice
 Usage: #example
 Title: "Provider Converter Snapshot"
-Description: "The immutable event-time application snapshot that converted one already-obtained provider record."
+Description: "The immutable content snapshot of the application that converted one already-obtained provider record."
 * identifier[applicationSnapshot].system = "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v0/test-key/1"
-* identifier[applicationSnapshot].value = "v0:test-key:1:qQso4SobAvLoIw52zGgRfchXgkb3zWsVAD1gitCE6KQ"
+* identifier[applicationSnapshot].value = "v0:test-key:1:0NiwvImJVJVk3U9zvDSWpm-skR1kkGQ_NOrQQCRUJ50"
 * status = #active
 * deviceName[applicationName].name = "Provider Mapper"
 * deviceName[applicationName].type = #user-friendly-name
@@ -55,7 +55,10 @@ Instance: GoogleHealthHeartRateRecordingProvenanceExample
 InstanceOf: ProvidersConversionProvenance
 Usage: #example
 Title: "Google Health Native Heart-rate Recording Provenance"
-Description: "The one-source conversion event that preserved the authorized Google Health heart-rate payload as a native recording document."
+Description: "The one conversion Provenance of the record that preserved the authorized Google Health heart-rate payload as a native recording document."
+* extension[recordVersion].valueIdentifier.type = $groveIdentifierRole#record-version "Record version"
+* extension[recordVersion].valueIdentifier.system = "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1"
+* extension[recordVersion].valueIdentifier.value = "v0:test-key:1:R0G1LeIv14xRcYhlH8mgd8CSB1zbMhuIhPEHMiYUlDk"
 * target = Reference(GoogleHealthHeartRateRecordingExample)
 * occurredDateTime = "2026-08-20T17:00:00Z"
 * recorded = "2026-08-20T17:00:01Z"

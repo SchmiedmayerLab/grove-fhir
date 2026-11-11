@@ -21,8 +21,8 @@ Title: "Health Connect Recording Device"
 Description: "A physical watch included only because the deployment has a governed stable per-unit token. Manufacturer and model alone would not establish Device instance identity."
 * identifier[physicalUnit].system = "https://study.example.org/fhir/NamingSystem/grove-recording-device-v0/test-key/1"
 * identifier[physicalUnit].value = "v0:test-key:1:Hvznmkjvjderchpr-aV8bLB9jk73kIIL1c9b8c7K8-k"
-* identifier[eventSnapshot].system = "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v0/test-key/1"
-* identifier[eventSnapshot].value = "v0:test-key:1:isEfA9plJyk8KFfNHW6M9JbNFeNGGJ8dFIdKA5Vy4TM"
+* identifier[snapshot].system = "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v0/test-key/1"
+* identifier[snapshot].value = "v0:test-key:1:yTmxgKUaN1aJaHwcwGYQc6DHAa1GMDY9yQkNhFp95w0"
 * status = #active
 * type.text = "Watch"
 * manufacturer = "Example Devices"
@@ -34,9 +34,9 @@ Instance: HealthConnectHostDeviceExample
 InstanceOf: GroveHostDevice
 Usage: #example
 Title: "Health Connect Host Snapshot"
-Description: "An immutable event-time snapshot of the phone and operating system hosting the converter."
+Description: "An immutable content snapshot of the phone and operating system hosting the converter."
 * identifier.system = "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v0/test-key/1"
-* identifier.value = "v0:test-key:1:bu837H0RBwa-hjaS24GEP1f15BM1vTuX8rkOhU-vO9Y"
+* identifier.value = "v0:test-key:1:djeil_yU8_hjmed4drKim-tdEKXhqEL4SQq0ejmKyhw"
 * status = #active
 * manufacturer = "Example Devices"
 * modelNumber = "Example Phone"
@@ -49,9 +49,9 @@ Instance: HealthConnectConverterApplicationExample
 InstanceOf: GroveApplicationDevice
 Usage: #example
 Title: "Health Connect Converter Snapshot"
-Description: "An immutable event-time snapshot of the application that converted one source Record."
+Description: "An immutable content snapshot of the application that converted the example Records, with the host it ran on as its parent."
 * identifier[applicationSnapshot].system = "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v0/test-key/1"
-* identifier[applicationSnapshot].value = "v0:test-key:1:oPo1uGEd7tR0bTNv5UKq2L-4mHGX86JdNrqB3aYW1LE"
+* identifier[applicationSnapshot].value = "v0:test-key:1:metBRMuxk-x5bkwK9odpDZtWEGLzi3EdxwR3AocL-bo"
 * status = #active
 * deviceName[applicationName].name = "Grove Study"
 * deviceName[applicationName].type = #user-friendly-name
@@ -303,6 +303,9 @@ InstanceOf: HealthConnectConversionProvenance
 Usage: #example
 Title: "Health Connect Capillary Glucose Conversion"
 Description: "One conversion Provenance targets both outputs of the admitted glucose graph: the clinical Observation and synthesized Specimen."
+* extension[recordVersion].valueIdentifier.type = $groveIdentifierRole#record-version "Record version"
+* extension[recordVersion].valueIdentifier.system = "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1"
+* extension[recordVersion].valueIdentifier.value = "v0:test-key:1:09j-cokTigCgMeYj7ZifCd4UAUQiV-qDU-wpFz52Dmo"
 * target[+] = Reference(HealthConnectCapillaryGlucoseExample)
 * target[+] = Reference(HealthConnectCapillaryGlucoseSpecimenExample)
 * occurredDateTime = "2026-08-20T07:15:00-07:00"
@@ -323,7 +326,10 @@ Instance: HealthConnectRestingHeartRateProvenanceExample
 InstanceOf: HealthConnectConversionProvenance
 Usage: #example
 Title: "Health Connect Resting Heart Rate Conversion"
-Description: "One source Record revision transformed into every output for this event, with distinct activity and recording times."
+Description: "One source Record revision transformed into every output of its record, with distinct activity and recording times."
+* extension[recordVersion].valueIdentifier.type = $groveIdentifierRole#record-version "Record version"
+* extension[recordVersion].valueIdentifier.system = "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1"
+* extension[recordVersion].valueIdentifier.value = "v0:test-key:1:YPs1_ojczsJd7KCiPI-uSOKT1dwWoSAi6z7NKDvVIyM"
 * target = Reference(HealthConnectRestingHeartRateExample)
 * occurredDateTime = "2026-08-19T08:15:00-07:00"
 * recorded = "2026-08-19T15:15:02Z"

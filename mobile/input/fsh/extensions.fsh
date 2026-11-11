@@ -26,10 +26,28 @@ Description: "The version the writing application gave this revision of its logi
 * valueString 1..1
 * valueString obeys grove-writer-record-version-value-1
 
+Extension: GroveRecordVersion
+Id: grove-record-version
+Title: "Grove Record Version"
+Description: "The record-version Identifier of this conversion Provenance, repeated from its Bundle entry key so a consumer that stores the Provenance alone keeps it. It is removed from its own preimage. Receivers never parse or recompute it; they compare it for equality and order it bytewise only to break a tie between versions (versionSelection)."
+Context: Provenance
+* value[x] only Identifier
+* valueIdentifier 1..1 MS
+* insert GroveOpaqueIdentifier(valueIdentifier, record-version)
+
+Extension: GroveContextSnapshot
+Id: grove-context-snapshot
+Title: "Grove Context Snapshot"
+Description: "The context-snapshot Identifier of this QuestionnaireResponse, repeated from its Bundle entry key, because the response's one identifier holds its submission identifier. A consumer that stores the response alone keeps the key and can resolve literal references to it. It is removed from the response's own content digest."
+Context: QuestionnaireResponse
+* value[x] only Identifier
+* valueIdentifier 1..1 MS
+* insert GroveOpaqueIdentifier(valueIdentifier, context-snapshot)
+
 Extension: GroveRetractionTargetRole
 Id: grove-retraction-target-role
 Title: "Grove Retraction Target Role"
-Description: "The role the exact prior output played in the source-derived graph. It disambiguates otherwise similar logical targets and is part of the retraction assertion, not a FHIR server delete instruction."
+Description: "The role a named retraction target played in the source-derived graph. Targets are informative: they record what the producer emitted, or name the source record as a whole, and the retraction addresses its whole source record whatever they name. It is part of the retraction assertion, not a FHIR server delete instruction."
 Context: Provenance.target
 * value[x] only code
 * valueCode 1..1 MS
@@ -39,7 +57,7 @@ Context: Provenance.target
 Extension: GroveRetractionTargetNativeIdentifier
 Id: grove-retraction-target-native-identifier
 Title: "Grove Retraction Target Native Identifier"
-Description: "The platform-native record identifier of the retracted source record, carried beside the minted Grove identity so a consumer can delete the exact native records. Identifier.system names the adapter's own native key space, exactly as it does for a governed source identifier on the addition path, and the value is emitted only under that same explicit deployment disclosure policy. It never addresses the target: the Grove source-record, source-output, or device-snapshot identity remains the retraction address."
+Description: "The platform-native record identifier of the retracted source record, carried beside the minted Grove identity so a consumer can delete the exact native records. Identifier.system names the adapter's own native key space, exactly as it does for a governed source identifier on the addition path, and the value is emitted only under that same explicit deployment disclosure policy. It addresses nothing: the retraction address is the Provenance's source-record entity, and the targets are informative."
 Context: Provenance.target
 * value[x] only Identifier
 * valueIdentifier 1..1 MS

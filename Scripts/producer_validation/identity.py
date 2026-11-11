@@ -476,6 +476,7 @@ def validate_governed_source_identifiers(
         for source, outputs in outputs_by_source.items()
     }
     governed: list[tuple[dict[str, Any], tuple[str, str]]] = []
+    governed_outputs_by_source: dict[tuple[str, str], int] = {}
     for resource in active_outputs:
         pairs = non_grove_resource_identifiers(
             resource, f"{label} {resource.get('resourceType')} output"
@@ -484,10 +485,17 @@ def validate_governed_source_identifiers(
             raise ProducerValidationError(
                 f"{label} active output carries more than one governed source Identifier"
             )
+        if pairs:
+            source = source_by_output[id(resource)]
+            governed_outputs_by_source[source] = governed_outputs_by_source.get(source, 0) + 1
         governed.extend((resource, pair) for pair in pairs)
-    if len(governed) > designated["maxPrimaryOutputsPerEvent"]:
+    # The cap is per record: each record of a Bundle designates at most one primary output.
+    if any(
+        count > designated["maxPrimaryOutputsPerRecord"]
+        for count in governed_outputs_by_source.values()
+    ):
         raise ProducerValidationError(
-            f"{label} governed source Identifier may designate only one primary output"
+            f"{label} governed source Identifier may designate only one primary output per record"
         )
 
     health_connect = read_json(CATALOG_ROOT / "health-connect-adapter.json")
@@ -507,7 +515,7 @@ def validate_governed_source_identifiers(
             raise ProducerValidationError(
                 f"{label} governed source Identifier is not allowed on a secondary or support output"
             )
-        if resource_type == "DocumentReference" and len(active_outputs) != 1:
+        if resource_type == "DocumentReference" and len(outputs_by_source[source]) != 1:
             raise ProducerValidationError(
                 f"{label} companion source artifact must not carry the governed source Identifier"
             )

@@ -48,7 +48,7 @@ The producer remains responsible for generating the files before this command ru
 The JSON Schema is useful for editor integration; `validate-producer.py` applies the same fail-closed rules without requiring a third-party Python package.
 
 `Conformance/corpora/mobile-exchange/official-validator-manifest.json` is the release lane manifest.
-It sends the three normative positive bases—the active conversion event and the retraction assertion in its exact-target and source-record-target forms—through the exact Mobile package and official Validator.
+It sends the three normative positive bases—the active Bundle of two records that share their nodes, and the retraction Bundle in its exact-target and source-record-target forms—through the exact Mobile package and official Validator.
 
 ## Every committed fixture
 
@@ -73,8 +73,9 @@ The lane requires the control to pass and each case to fail for exactly the inva
 
 ## Positive and negative corpus
 
-`Conformance/corpora/receiver-lifecycle` adds delivery sequences over pinned, immutable event fixtures.
-It covers exact/conflicting replay, writer-ordered corrections in both delivery orders, unordered conflict, logical-reference resolution and retraction before/after its target.
+`Conformance/corpora/receiver-lifecycle` adds delivery sequences over pinned, immutable record versions, each keyed by its record-version Identifier.
+It covers exact, reformatted, and altered replay, a decimal lexeme as a new version, writer-ordered corrections and re-conversions in both delivery orders, versions without writer evidence ordered by `Provenance.recorded`, the tie-break between equal instants, per-record admission within one Bundle, logical-reference resolution, and record-level retraction before and after its target.
+Every expectation follows `lifecycle.active.versionSelection` in `catalog/exchange-protocol.json`.
 Its declared receiver policy and step-by-step expectations are separate from FHIR validity; receiver implementations must prove their own authorization, transaction and restart behavior.
 See [Receiver Lifecycle Sequences](corpora/receiver-lifecycle/README.md) for the harness contract and validation boundaries.
 
@@ -82,10 +83,13 @@ The [multi-study attribution corpus](corpora/study-attribution/README.md) comple
 Its derived exports deliberately have new identities and omit the other study's membership; profile-valid policy counterexamples remain in the official fixture lane.
 
 `Conformance/corpora/mobile-exchange` is the normative producer corpus for the Mobile exchange graph.
-Its positive bases cover one immutable conversion event and one dedicated source-record retraction event in each target form: one names the prior primary output through an exact typed target, and one addresses the whole source record through its sole, untyped source-record target.
+Its positive bases cover one active Bundle of two records that share their content-addressed nodes, each record one conversion Provenance, keyed by its record version, with the outputs it targets; and one dedicated retraction Bundle in each target form: one names the prior primary output through an exact typed target, and one names the whole source record through its sole, untyped source-record target.
+Either way a retraction addresses its whole source record and is keyed by that record's `record-retraction` Identifier.
 The retraction base also carries the optional native record identifier on its target, so a producer can see the exact shape of the disclosure the addition path's governed-source-identifier policy also governs.
 The active Bundle is byte-for-byte equal to the example producer Bundle.
 Every negative case applies exactly one RFC 6902 JSON Patch operation and names the one rule it is intended to violate.
+Under the published test key the kit recomputes every content-snapshot, record-version, and record-retraction key, so a changed output under a kept key fails; a producer's own key cannot be recomputed, and only the key shape is checked. One exception: a retraction Bundle's Device snapshots are minted over the subject of the records they retract, which no element of a retraction states, so the kit checks only their shape. An active Bundle always states its subject, and the kit refuses one whose test-key snapshots it cannot recompute.
+Byte-level canonical-JSON refusals, such as a byte order mark or a repeated member name, cannot be expressed as JSON Patch operations; `Tests/test_canonical_json.py` holds them against `Scripts/canonical_json.py`, the reference implementation of `grove-canonical-json-v0`.
 
 `Conformance/corpora/mobile-semantics/corpus.json` is the implementation-neutral clinical projection corpus.
 It contains exactly one vector for every shared Mobile measurement and binds the exact profile, code, unit, effective shape, result shape, edge rules, and admitted adapter context to `catalog/measurement-catalog.json`.
@@ -114,11 +118,12 @@ Completeness of a source-dependent one-per-sample/stage/delta/present-field proj
 A producer test suite must run all three layers; structural-only success is not FHIR conformance.
 
 Closed-reference validation permits only addressable Bundle entries.
-Active and retraction events reject every contained resource and `#id` reference, so all SDKs share one event-node, identity, and reference-closure model.
+Active and retraction Bundles reject every contained resource and `#id` reference, so all SDKs share one entry-key, identity, and reference-closure model.
+A literal reference resolves to an output of the referring resource's own record or to a shared node; a reference to another record's output is identifier-only.
 
 The active graph is also closed by resource class and direct profile claim.
-Observation, DocumentReference, Specimen, VisionPrescription, MedicationAdministration, and MedicationStatement are outputs; Patient, Device, ResearchStudy, ResearchSubject, PlanDefinition, and Grove QuestionnaireResponse are supporting entries; exactly one Provenance is the lifecycle assertion.
-Supporting entries must connect to an output or that Provenance.
+Observation, DocumentReference, Specimen, VisionPrescription, MedicationAdministration, and MedicationStatement are outputs; Patient, Device, ResearchStudy, ResearchSubject, PlanDefinition, and Grove QuestionnaireResponse are supporting entries; each record has exactly one Provenance as its lifecycle assertion, and every output is targeted by exactly one Provenance.
+The kit splits a Bundle into record units by directed reachability from each Provenance and its targets, and every supporting entry must lie in at least one record unit.
 `DeviceMetric` and every other unlisted R4 type fail closed under the Grove FHIR contracts.
 
 Every adapter output uses one of the permitted direct Grove profile-claim sets in `catalog/profile-claims.json`:

@@ -19,6 +19,7 @@ from Tests.producer_validation_test_support import (
     ProducerValidationTestCase,
     copy,
     json,
+    rekey_records,
     tempfile,
     typed_identifier,
 )
@@ -59,8 +60,10 @@ class ProducerIdentityTests(ProducerValidationTestCase):
             resource_path = root / "resources/exchange-bundle.json"
 
             def validate() -> None:
+                # A changed output is a new record version, so every variant is rekeyed and
+                # fails only on the semantic defect it plants.
                 manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
-                resource_path.write_text(json.dumps(resource), encoding="utf-8")
+                resource_path.write_text(json.dumps(rekey_records(copy.deepcopy(resource))), encoding="utf-8")
                 manifest_validation.validate_manifest(manifest_path)
 
             validate()
@@ -150,22 +153,22 @@ class ProducerIdentityTests(ProducerValidationTestCase):
             }],
             "identifier": [copy.deepcopy(source), copy.deepcopy(output), copy.deepcopy(native)],
         }
-        identity.validate_governed_source_identifiers([primary], "Event")
+        identity.validate_governed_source_identifiers([primary], "Record")
         without_native = copy.deepcopy(primary)
         without_native["identifier"].pop()
-        identity.validate_governed_source_identifiers([without_native], "Event")
+        identity.validate_governed_source_identifiers([without_native], "Record")
 
         relative_system = copy.deepcopy(primary)
         relative_system["identifier"][2]["system"] = "healthkit/store-a"
         with self.assertRaisesRegex(diagnostics.ProducerValidationError, "absolute.*URI"):
-            identity.validate_governed_source_identifiers([relative_system], "Event")
+            identity.validate_governed_source_identifiers([relative_system], "Record")
         blank_value = copy.deepcopy(primary)
         blank_value["identifier"][2]["value"] = ""
         with self.assertRaisesRegex(diagnostics.ProducerValidationError, "complete system and value"):
-            identity.validate_governed_source_identifiers([blank_value], "Event")
+            identity.validate_governed_source_identifiers([blank_value], "Record")
         text_only_type = copy.deepcopy(primary)
         text_only_type["identifier"][2]["type"] = {"text": "HealthKit object UUID"}
-        identity.validate_governed_source_identifiers([text_only_type], "Event")
+        identity.validate_governed_source_identifiers([text_only_type], "Record")
         coded_type = copy.deepcopy(primary)
         coded_type["identifier"][2]["type"] = {
             "coding": [{
@@ -173,30 +176,30 @@ class ProducerIdentityTests(ProducerValidationTestCase):
                 "code": "healthkit-object-uuid",
             }]
         }
-        identity.validate_governed_source_identifiers([coded_type], "Event")
+        identity.validate_governed_source_identifiers([coded_type], "Record")
         relative_type_system = copy.deepcopy(coded_type)
         relative_type_system["identifier"][2]["type"]["coding"][0]["system"] = (
             "native-id-type"
         )
         with self.assertRaisesRegex(diagnostics.ProducerValidationError, "absolute.*URI"):
             identity.validate_governed_source_identifiers(
-                [relative_type_system], "Event"
+                [relative_type_system], "Record"
             )
         invalid_type_code = copy.deepcopy(coded_type)
         invalid_type_code["identifier"][2]["type"]["coding"][0]["code"] = (
             " healthkit-object-uuid "
         )
         with self.assertRaisesRegex(diagnostics.ProducerValidationError, "FHIR code"):
-            identity.validate_governed_source_identifiers([invalid_type_code], "Event")
+            identity.validate_governed_source_identifiers([invalid_type_code], "Record")
         false_grove_type = copy.deepcopy(primary)
         false_grove_type["identifier"][2]["type"] = {
             "coding": [{"system": context.IDENTIFIER_ROLE_SYSTEM, "code": "source-record"}]
         }
         with self.assertRaises(diagnostics.ProducerValidationError):
-            identity.validate_governed_source_identifiers([false_grove_type], "Event")
+            identity.validate_governed_source_identifiers([false_grove_type], "Record")
         copied_resource_id = copy.deepcopy(primary)
         copied_resource_id["id"] = native["value"]
-        identity.validate_governed_source_identifiers([copied_resource_id], "Event")
+        identity.validate_governed_source_identifiers([copied_resource_id], "Record")
 
         average = copy.deepcopy(primary)
         average["meta"]["profile"][1] = (
@@ -205,7 +208,7 @@ class ProducerIdentityTests(ProducerValidationTestCase):
         )
         average["extension"][0]["valueCode"] = "HKDataTypeIdentifierElectrocardiogram"
         with self.assertRaisesRegex(diagnostics.ProducerValidationError, "catalog-designated"):
-            identity.validate_governed_source_identifiers([average], "Event")
+            identity.validate_governed_source_identifiers([average], "Record")
 
         workout_primary = copy.deepcopy(primary)
         workout_primary["meta"]["profile"][0] = (
@@ -224,7 +227,7 @@ class ProducerIdentityTests(ProducerValidationTestCase):
             ),
         ]
         identity.validate_governed_source_identifiers(
-            [workout_primary, workout_segment], "Event"
+            [workout_primary, workout_segment], "Record"
         )
         segment_disclosure = copy.deepcopy(workout_segment)
         segment_disclosure["identifier"].append(copy.deepcopy(native))
@@ -232,29 +235,40 @@ class ProducerIdentityTests(ProducerValidationTestCase):
         workout_without_native["identifier"].pop()
         with self.assertRaisesRegex(diagnostics.ProducerValidationError, "catalog-designated"):
             identity.validate_governed_source_identifiers(
-                [workout_without_native, segment_disclosure], "Event"
+                [workout_without_native, segment_disclosure], "Record"
             )
         specimen = copy.deepcopy(primary)
         specimen["resourceType"] = "Specimen"
         with self.assertRaisesRegex(diagnostics.ProducerValidationError, "secondary or support"):
-            identity.validate_governed_source_identifiers([specimen], "Event")
+            identity.validate_governed_source_identifiers([specimen], "Record")
 
         second_primary = copy.deepcopy(primary)
         second_primary["identifier"][2]["value"] = "another-native-id"
         with self.assertRaisesRegex(diagnostics.ProducerValidationError, "only one primary"):
             identity.validate_governed_source_identifiers(
-                [primary, second_primary], "Event"
+                [primary, second_primary], "Record"
             )
+        # The cap is per record: a Bundle of two records carries one primary disclosure each.
+        other_record = copy.deepcopy(second_primary)
+        other_record["identifier"][0]["value"] = "v0:test-key:1:" + "R" * 43
+        other_record["identifier"][1]["value"] = "v0:test-key:1:" + "S" * 43
+        identity.validate_governed_source_identifiers([primary, other_record], "Bundle")
+        self.assertEqual(
+            context.EXCHANGE_PROTOCOL["governedSourceIdentifier"]["validation"]["designatedNode"][
+                "maxPrimaryOutputsPerRecord"
+            ],
+            1,
+        )
         support_copy = {
             "resourceType": "Device",
             "identifier": [copy.deepcopy(native)],
         }
         with self.assertRaisesRegex(diagnostics.ProducerValidationError, "appear exactly once"):
-            identity.validate_governed_source_identifiers([primary, support_copy], "Event")
+            identity.validate_governed_source_identifiers([primary, support_copy], "Record")
 
         support_id_copy = {"resourceType": "Device", "id": native["value"]}
         identity.validate_governed_source_identifiers(
-            [primary, support_id_copy], "Event"
+            [primary, support_id_copy], "Record"
         )
 
         # Value-only coincidences are not identity evidence. The validator therefore
@@ -266,7 +280,7 @@ class ProducerIdentityTests(ProducerValidationTestCase):
             "code": {"text": "Source trace"},
             "valueString": native["value"],
         }]
-        identity.validate_governed_source_identifiers([component_copy], "Event")
+        identity.validate_governed_source_identifiers([component_copy], "Record")
 
         retraction_copy = {
             "resourceType": "Provenance",
@@ -276,7 +290,7 @@ class ProducerIdentityTests(ProducerValidationTestCase):
             }}],
         }
         identity.validate_governed_source_identifiers(
-            [primary, retraction_copy], "Event"
+            [primary, retraction_copy], "Record"
         )
 
         sensorkit_marker = {
@@ -313,7 +327,7 @@ class ProducerIdentityTests(ProducerValidationTestCase):
         }
         with self.assertRaisesRegex(diagnostics.ProducerValidationError, "catalog-designated"):
             identity.validate_governed_source_identifiers(
-                [structured_primary, companion_artifact], "Event"
+                [structured_primary, companion_artifact], "Record"
             )
 
         child = copy.deepcopy(primary)
@@ -329,12 +343,12 @@ class ProducerIdentityTests(ProducerValidationTestCase):
             "valueCode": "SleepSessionRecord",
         }]
         with self.assertRaisesRegex(diagnostics.ProducerValidationError, "catalog-designated"):
-            identity.validate_governed_source_identifiers([child], "Event")
+            identity.validate_governed_source_identifiers([child], "Record")
 
         self_designated = copy.deepcopy(primary)
         self_designated["extension"] = []
         with self.assertRaisesRegex(diagnostics.ProducerValidationError, "catalog-designated"):
-            identity.validate_governed_source_identifiers([self_designated], "Event")
+            identity.validate_governed_source_identifiers([self_designated], "Record")
 
     def test_governed_source_identifier_uses_health_connect_and_provider_row_output(self) -> None:
         source = typed_identifier(
@@ -374,14 +388,14 @@ class ProducerIdentityTests(ProducerValidationTestCase):
             "extension": [copy.deepcopy(hc_marker)],
             "identifier": [copy.deepcopy(source), output("G")],
         }
-        identity.validate_governed_source_identifiers([summary, stage], "Event")
+        identity.validate_governed_source_identifiers([summary, stage], "Record")
         child_disclosure = copy.deepcopy(stage)
         child_disclosure["identifier"].append(copy.deepcopy(native))
         summary_without_native = copy.deepcopy(summary)
         summary_without_native["identifier"].pop()
         with self.assertRaisesRegex(diagnostics.ProducerValidationError, "catalog-designated"):
             identity.validate_governed_source_identifiers(
-                [summary_without_native, child_disclosure], "Event"
+                [summary_without_native, child_disclosure], "Record"
             )
 
         provider_extensions = [
@@ -403,7 +417,7 @@ class ProducerIdentityTests(ProducerValidationTestCase):
             "extension": copy.deepcopy(provider_extensions),
             "identifier": [copy.deepcopy(source), output("H"), copy.deepcopy(native)],
         }
-        identity.validate_governed_source_identifiers([provider_single], "Event")
+        identity.validate_governed_source_identifiers([provider_single], "Record")
 
         provider_multi = copy.deepcopy(provider_single)
         provider_multi["meta"]["profile"][0] = (
@@ -412,4 +426,4 @@ class ProducerIdentityTests(ProducerValidationTestCase):
         provider_multi["extension"][0]["valueCode"] = "oura"
         provider_multi["extension"][1]["valueCode"] = "oura/daily_activity"
         with self.assertRaisesRegex(diagnostics.ProducerValidationError, "catalog-designated"):
-            identity.validate_governed_source_identifiers([provider_multi], "Event")
+            identity.validate_governed_source_identifiers([provider_multi], "Record")

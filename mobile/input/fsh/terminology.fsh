@@ -24,15 +24,16 @@ Description: "The semantic role of a complete Identifier pair in the Grove excha
 * ^experimental = false
 * ^caseSensitive = true
 * ^content = #complete
-* #source-record "Source record" "The exact source record revision from which an event was derived."
+* #source-record "Source record" "The exact source record revision from which a record was derived."
 * #source-output "Source output" "One exact output node derived from a source record, including its closed output discriminator."
 * #writer-record "Writer record" "The logical record identity assigned by the application that originally wrote the source record."
 * #source-artifact "Source artifact" "One exact preserved source payload or payload part."
 * #source-context "Source context" "A deployment-scoped opaque identity for a source-native concept or context node referenced by more than one source record."
 * #recording-device "Recording device" "A physical recording-device instance established by a stable per-unit token."
-* #device-snapshot "Device snapshot" "An immutable event-time application, host, firmware, software, or operating-system snapshot."
-* #event "Event" "One immutable active conversion or retraction event."
-* #entry-node "Entry node" "An event-scoped graph node that has no independent business identifier."
+* #device-snapshot "Device snapshot" "The content key of one immutable application, host, or recording Device snapshot: a keyed digest over the subject, the Device's node role, and its complete rendered content. The same content gives the same key in every Bundle; changed firmware, software, operating-system, or build facts give a new snapshot."
+* #context-snapshot "Context snapshot" "The content key of one immutable shared context node, a Patient, ResearchStudy, ResearchSubject, PlanDefinition, or QuestionnaireResponse: a keyed digest over the subject, the node role, and the node's complete rendered content. A canonical url and version or a business identifier never stands in for it."
+* #record-version "Record version" "One immutable version of one source record: a keyed digest over its source-record Identifier and the canonical content of its conversion Provenance and outputs. Receivers never parse or recompute it; they compare it for equality and order it bytewise only to break a tie between versions."
+* #record-retraction "Record retraction" "The retraction assertion for one whole source record; every retraction of that record carries the same key."
 
 ValueSet: GroveIdentifierRoleVS
 Id: grove-identifier-role
@@ -48,7 +49,7 @@ Description: "Grove-specific lifecycle assertions whose meaning is not a FHIR re
 * ^experimental = false
 * ^caseSensitive = true
 * ^content = #complete
-* #source-record-retracted "Source record retracted" "The producer records that its source no longer exposes a record it converted or may have converted, and identifies either the exact prior outputs or, through one source-record target, every prior output of that record. This does not assert clinical error and does not instruct a FHIR server to delete them."
+* #source-record-retracted "Source record retracted" "The producer records that its source no longer exposes a record it converted or may have converted. The assertion addresses that whole source record and suppresses every output of every version of it; its targets, the exact prior outputs or one source-record target, are informative. This does not assert clinical error and does not instruct a FHIR server to delete them."
 
 ValueSet: GroveLifecycleEventVS
 Id: grove-lifecycle-event
@@ -60,7 +61,7 @@ Description: "Lifecycle assertions defined by Grove rather than by a FHIR reposi
 CodeSystem: GroveRetractionTargetRoleCS
 Id: grove-retraction-target-role
 Title: "Grove Retraction Target Role"
-Description: "The closed roles a prior output may play in a source-derived graph targeted by a retraction assertion."
+Description: "The closed roles a named target of a retraction assertion played in the source-derived graph. Targets are informative: the retraction addresses its whole source record, whatever its targets name."
 * ^experimental = false
 * ^caseSensitive = true
 * ^content = #complete
@@ -68,8 +69,7 @@ Description: "The closed roles a prior output may play in a source-derived graph
 * #source-artifact "Source artifact" "An exact source-preservation DocumentReference or payload part."
 * #child-output "Child output" "A sample, stage, workout segment, or other child output."
 * #specimen "Specimen" "A synthesized Specimen node used by a prior output."
-* #device-snapshot "Device snapshot" "An event-time Device snapshot that must be retired with the source-derived graph under the deployment's lifecycle policy."
-* #source-record "Source record" "The source record as a whole: every node that the conversion Provenance of any active event with this exact source-record entity targets, and the event-time Device snapshots those events carry, whether an event arrives before or after the retraction."
+* #source-record "Source record" "The source record as a whole, named without listing its outputs."
 
 ValueSet: GroveRetractionTargetRoleVS
 Id: grove-retraction-target-role
