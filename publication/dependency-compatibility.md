@@ -13,6 +13,10 @@ SPDX-License-Identifier: MIT
 The 0.7.0 release retains Extensions R4 5.3.0 and HL7 Terminology (THO) R4
 7.3.0 with Publisher 2.3.3. The archive checksums and complete transitive
 closure remain pinned in `Scripts/download-fhir-tools.sh`.
+Every guide declares the THO version in its `sushi-config.yaml`: a guide that
+declares none gets the newest THO SUSHI resolves at build time, outside that
+closure. The Questionnaire guide declared none, so its 0.7.0 and 0.8.0 packages
+depend on THO 7.5.0, which the offline producer validator cannot resolve.
 CI cache keys and fallback prefixes include the hash of that exact closure
 file, so a restored cache cannot introduce packages from a different closure.
 Deployment retains its exact-key-only cache policy.

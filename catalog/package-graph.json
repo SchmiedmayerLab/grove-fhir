@@ -113,6 +113,7 @@
       "packageId": "org.grovealliance.fhir.questionnaire",
       "canonical": "https://grovealliance.org/fhir/questionnaire",
       "dependencies": [
+        "hl7.terminology.r4#7.3.0",
         "hl7.fhir.uv.sdc#4.0.0",
         "hl7.fhir.uv.extensions.r4#5.3.0"
       ],

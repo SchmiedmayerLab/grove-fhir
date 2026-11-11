@@ -137,6 +137,37 @@ class PackageGraphTests(unittest.TestCase):
         self.assertIn(specimen, claim["targetAdapterProfiles"])
         self.assertIn("Observation and synthesized Specimen", claim["rule"])
 
+    def test_every_external_dependency_is_in_the_pinned_package_closure(self) -> None:
+        # The offline Publisher and the producer validator resolve packages only from this closure.
+        script = (ROOT / "Scripts/download-fhir-tools.sh").read_text(encoding="utf-8")
+        closure = {
+            f"{package}#{version}"
+            for package, version in re.findall(
+                r'^\s+"([a-z0-9.-]+)\|([0-9A-Za-z.+-]+)\|[0-9a-f]{64}"$', script, re.MULTILINE
+            )
+        }
+        self.assertTrue(closure)
+        graph = json.loads((ROOT / "catalog/package-graph.json").read_text(encoding="utf-8"))
+        for package in graph["packages"]:
+            for dependency in package["dependencies"]:
+                if not dependency.startswith("org.grovealliance.fhir."):
+                    self.assertIn(dependency, closure, package["source"])
+
+    def test_every_guide_declares_the_same_terminology_package(self) -> None:
+        # A guide that declares none gets the newest THO SUSHI resolves at build time:
+        # Questionnaire 0.7.0 and 0.8.0 shipped with THO 7.5.0 that way.
+        graph = json.loads((ROOT / "catalog/package-graph.json").read_text(encoding="utf-8"))
+        versions = {}
+        for package in graph["packages"]:
+            declared = [
+                dependency
+                for dependency in package["dependencies"]
+                if dependency.startswith("hl7.terminology.r4#")
+            ]
+            self.assertEqual(len(declared), 1, package["source"])
+            versions[package["source"]] = declared[0]
+        self.assertEqual(len(set(versions.values())), 1, versions)
+
 
 if __name__ == "__main__":
     unittest.main()
