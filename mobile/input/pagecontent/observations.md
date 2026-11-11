@@ -203,6 +203,7 @@ This permits a deployment-scoped Patient pseudonym without fabricating or copyin
 Its system/value pair is preserved exactly, and its Identifier neither claims a Grove identifier role nor uses a protocol code system as the pseudonym namespace.
 The Grove producer validator checks only that the namespace is an absolute URI and does not use a reserved Grove protocol system; ownership and deployment scope remain deployment obligations.
 These logical-reference shape and pseudonym-namespace rules govern Mobile exchange Bundles.
+A bundled Patient entry carries the same pseudonym as its only identifier without a Grove role, under the same namespace rules, so the pseudonym every subject-scoped key was minted over is stated on the wire whichever way an output references the Patient.
 The standalone Grove QuestionnaireResponse profile independently constrains its subject target to Patient but does not impose this exchange graph's identifier-only policy outside such a Bundle.
 An active Bundle may contain only the following resource types.
 Outputs are Observation, DocumentReference, Specimen, VisionPrescription, MedicationAdministration, or MedicationStatement; supporting nodes are Patient, Device, ResearchStudy, ResearchSubject, PlanDefinition, or a Grove-profiled QuestionnaireResponse; and the only lifecycle resource is Provenance.

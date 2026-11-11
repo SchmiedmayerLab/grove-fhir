@@ -64,6 +64,7 @@ Use `workflow-researchStudy` for each known association and keep each study's pr
 A producer that knows the participant's enrollment should include one ResearchStudy, its exact-revision PlanDefinition, and one ResearchSubject as shared nodes, reference the ResearchStudy from each output through `workflow-researchStudy`, and reference the PlanDefinition from `ResearchStudy.protocol`.
 An identifier-only logical ResearchStudy reference remains conformant but carries no protocol revision.
 `Observation.subject` stays the identifier-only deployment pseudonym unless the deployment supplies a Patient entry; `ResearchSubject.individual` references the same subject.
+A supplied Patient entry carries the pseudonym as its only identifier without a Grove role, so a literal and an identifier-only reference to it state the same subject; another business identifier of the participant, such as a medical record number, does not travel on the exchange Patient.
 
 Each of these shared nodes is content-addressed.
 It carries a typed `context-snapshot` Identifier in `Resource.identifier`, a v0 HMAC over the subject, its node role, and the digest of its complete canonical content minus `id` and minus that Identifier, and that Identifier is its entry key.

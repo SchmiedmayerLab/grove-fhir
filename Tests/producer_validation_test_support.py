@@ -145,13 +145,22 @@ def provenances(bundle: dict[str, Any]) -> list[dict[str, Any]]:
 
 
 def bundle_subject(bundle: dict[str, Any]) -> tuple[str, str]:
-    """Return the one subject pair the records of a Bundle state, as the snapshot kinds take it."""
+    """Return the one subject pair the records of a Bundle state, as the snapshot kinds take it.
+
+    A Patient entry names it through its one identifier without a Grove role. A Patient with
+    several has no pseudonym to take, so a test that builds one passes `subject` to rekey_records
+    rather than letting this pick one.
+    """
     for entry in bundle["entry"]:
         resource = entry["resource"]
         if resource["resourceType"] == "Patient":
-            for identifier in resource.get("identifier", []):
-                if identifier_role(identifier) is None:
-                    return identifier["system"], identifier["value"]
+            plain = [
+                identifier for identifier in resource.get("identifier", [])
+                if identifier_role(identifier) is None
+            ]
+            if len(plain) != 1:
+                raise NoSubject(f"the Patient states {len(plain)} identifiers without a Grove role")
+            return plain[0]["system"], plain[0]["value"]
     for entry in bundle["entry"]:
         subject = entry["resource"].get("subject")
         if isinstance(subject, dict) and isinstance(subject.get("identifier"), dict):

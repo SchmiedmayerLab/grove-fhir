@@ -441,6 +441,11 @@
       "emittedBy": "conformance-kit"
     },
     {
+      "code": "mobile-exchange.patient-pseudonym",
+      "reason": "A Patient entry carries exactly one identifier without a Grove role, the deployment's complete pseudonym under a system the protocol doesn't reserve, and it names the subject its Bundle's records state.",
+      "emittedBy": "conformance-kit"
+    },
+    {
       "code": "mobile-exchange.adapter-provenance-graph",
       "reason": "Every adapter output of a record claims the adapter profile its conversion Provenance governs, and a source-neutral record claims no adapter output.",
       "emittedBy": "conformance-kit"
@@ -997,7 +1002,7 @@
       "shape": "One active Bundle contains one or more records of one subject. Each record is every output derived from exactly one source-record revision and exactly one conversion Provenance targeting every one of those outputs. The records share their supporting nodes, each a content-addressed entry that appears once in the Bundle.",
       "studyContext": {
         "recommendedShape": "A producer that knows the participant's enrollment should bundle one ResearchStudy, its exact-revision PlanDefinition, and one ResearchSubject as shared nodes keyed by their context-snapshot Identifiers, reference the ResearchStudy from each output through workflow-researchStudy, and reference the PlanDefinition from ResearchStudy.protocol. An identifier-only logical ResearchStudy reference remains conformant but carries no protocol revision.",
-        "subject": "Observation.subject is the identifier-only deployment pseudonym unless the deployment supplies a Patient entry; ResearchSubject.individual references the same subject.",
+        "subject": "Observation.subject is the identifier-only deployment pseudonym unless the deployment supplies a Patient entry; ResearchSubject.individual references the same subject. A supplied Patient entry carries the pseudonym as its only identifier without a Grove role, so a literal and an identifier-only reference to it state the same subject, and the subject every subject-scoped key was minted over is stated on the wire; any other business identifier of the participant, such as a medical record number, does not travel on the exchange Patient.",
         "protocol": "ResearchStudy.protocol references a PlanDefinition entry whose url and version are exact; workflow-instantiatesCanonical is not an admitted extension."
       },
       "versionSelection": {
@@ -1104,7 +1109,7 @@
   "referencePolicy": {
     "literalClosure": "Every literal Reference in an exchange Bundle resolves to exactly one Bundle.entry.fullUrl, and that entry is an output of the referring resource's own record or a shared node of the same Bundle. A lifecycle Provenance is neither, so no literal reference reaches one, in an active or a retraction Bundle. A reference from one record to an output of another record is identifier-only. Contained resources and #id references are prohibited in Mobile active and retraction Bundles.",
     "declaredType": "When Reference.type is present on a literal reference, it is the exact target resourceType token.",
-    "governedShape": "Every reference at a governed path is either one resolving Bundle fullUrl with no logical identifier, or one identifier-only logical reference with no literal, an exact allowed Reference.type, and one complete absolute-system Identifier. Identifier-only Patient references carry the exact deployment-scoped pseudonym pair, use no Grove identifier role or protocol-reserved code-system URI, and are not fabricated Bundle nodes.",
+    "governedShape": "Every reference at a governed path is either one resolving Bundle fullUrl with no logical identifier, or one identifier-only logical reference with no literal, an exact allowed Reference.type, and one complete absolute-system Identifier. Identifier-only Patient references carry the exact deployment-scoped pseudonym pair, use no Grove identifier role or protocol-reserved code-system URI, and are not fabricated Bundle nodes. A literal Patient reference states the referenced Patient entry's pseudonym, its one identifier without a Grove role.",
     "identifierOnlyPatient": {
       "systemRule": "Identifier.system is an absolute pseudonym namespace and is not one of the protocol-reserved code-system URIs. Namespace ownership and deployment scope are producer/deployment obligations; this validator proves only absolute-URI shape and reserved-system exclusion.",
       "valueRule": "Identifier.value is the exact non-empty caller-supplied pseudonym token; producers do not normalize or replace it.",
