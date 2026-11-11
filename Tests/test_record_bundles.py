@@ -211,6 +211,29 @@ class RecordBundleTests(ProducerValidationTestCase):
         )
         self.assertEqual(self.codes(rekey_records(logical)), [])
 
+    def test_nothing_references_a_conversion_provenance(self) -> None:
+        # Neither an output nor a shared node, so no allowed literal target; followed, the
+        # reference would pull the other record's Provenance and outputs into this record.
+        supporting_info = "http://hl7.org/fhir/StructureDefinition/workflow-supportingInfo"
+        for path in ("extension", "basedOn", "partOf"):
+            with self.subTest(path=path):
+                bundle = copy.deepcopy(self.active)
+                first, second = provenances(bundle)[:2]
+                output = next(entry for entry in bundle["entry"] if entry["fullUrl"] == second["resource"]["target"][0]["reference"])
+                reference = {"reference": first["fullUrl"]}
+                if path == "extension":
+                    output["resource"].setdefault("extension", []).append({"url": supporting_info, "valueReference": reference})
+                else:
+                    output["resource"].setdefault(path, []).append(reference)
+                self.assert_code(rekey_records(bundle), "mobile-exchange.cross-record-reference")
+        shared = copy.deepcopy(self.active)
+        first = provenances(shared)[0]
+        patient = entries_of(shared, "Patient")[0]
+        patient["resource"].setdefault("extension", []).append(
+            {"url": supporting_info, "valueReference": {"reference": first["fullUrl"]}}
+        )
+        self.assert_code(rekey_records(shared), "mobile-exchange.cross-record-reference")
+
     def test_every_record_of_a_bundle_states_one_subject(self) -> None:
         bundle = copy.deepcopy(self.active)
         output = next(

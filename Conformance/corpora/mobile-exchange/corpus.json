@@ -2161,6 +2161,50 @@
       }
     },
     {
+      "id": "literal-reference-to-another-records-provenance",
+      "base": "mobile-exchange",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/entry/5/resource/extension/-",
+          "value": {
+            "url": "http://hl7.org/fhir/StructureDefinition/workflow-supportingInfo",
+            "valueReference": {
+              "reference": "urn:uuid:0883888e-cc27-579f-a8b7-6be87fc6f6a6"
+            }
+          }
+        }
+      ],
+      "expectedRule": {
+        "code": "mobile-exchange.cross-record-reference",
+        "reason": "A literal Reference resolves to an output of its own record or to a shared node of the same Bundle; a reference to an output of another record is identifier-only.",
+        "location": "Bundle.entry[5].resource.extension[1].valueReference.reference",
+        "severity": "error"
+      }
+    },
+    {
+      "id": "shared-node-literal-reference-to-a-provenance",
+      "base": "mobile-exchange",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/entry/4/resource/extension/-",
+          "value": {
+            "url": "http://hl7.org/fhir/StructureDefinition/workflow-supportingInfo",
+            "valueReference": {
+              "reference": "urn:uuid:3b6d3c22-7e63-500b-b186-c4e71102ba81"
+            }
+          }
+        }
+      ],
+      "expectedRule": {
+        "code": "mobile-exchange.cross-record-reference",
+        "reason": "A literal Reference resolves to an output of its own record or to a shared node of the same Bundle; a reference to an output of another record is identifier-only.",
+        "location": "Bundle.entry[4].resource.extension[2].valueReference.reference",
+        "severity": "error"
+      }
+    },
+    {
       "id": "two-versions-of-one-source-record",
       "base": "mobile-exchange",
       "patch": [
