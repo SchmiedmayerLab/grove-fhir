@@ -188,7 +188,9 @@ Description: "A conformant response to the Home Vitals instrument, carrying the 
 * extension[writerContext].extension[applicationVersion].valueString = "1.4.0"
 * extension[writerContext].extension[applicationBuild].valueString = "1402"
 * extension[writerContext].extension[hostModel].valueString = "iPhone17,1"
+* extension[writerContext].extension[hostOperatingSystemName].valueString = "iOS"
 * extension[writerContext].extension[hostOperatingSystemVersion].valueString = "26.0"
+* extension[writerContext].extension[hostOperatingSystemBuild].valueString = "23A341"
 * identifier.system = "https://study.example.org/fhir/NamingSystem/questionnaire-response"
 * identifier.value = "home-vitals-2026-08-28"
 * language = #en-US

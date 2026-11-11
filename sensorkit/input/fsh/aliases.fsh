@@ -16,3 +16,4 @@ Alias: $loinc = http://loinc.org
 Alias: $provenanceParticipantType = http://terminology.hl7.org/CodeSystem/provenance-participant-type
 Alias: $recordingFormat = https://grovealliance.org/fhir/sensor/CodeSystem/grove-recording-format
 Alias: $groveIdentifierRole = https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role
+Alias: $groveApplicationVersionType = https://grovealliance.org/fhir/mobile/CodeSystem/grove-application-version-type

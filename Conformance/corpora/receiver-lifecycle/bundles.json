@@ -5,12 +5,12 @@
     "baseExchangeProtocolSHA256": "fec45c4aaa7c9b63b2db25cfb0b82088a61f061ef404cbb17073025649072768",
     "releaseVersion": "0.8.0",
     "fhirVersion": "4.0.1",
-    "exchangeProtocolSHA256": "9236c3ca2fe08e8af3a52dcff5ca96b0a21427a572f62af64ee2b3c4288353b0"
+    "exchangeProtocolSHA256": "b54d2d9ec0212ced227c1222e24924141924e7d1ae47df4475bf9a02b030e721"
   },
   "bundles": {
     "original": {
       "path": "resources/original.json",
-      "sha256": "9fa161f05a9debb42912cd70fbd98672b5ca5caf96d94cd8a8ffe3bd58030b77",
+      "sha256": "3db1ce426499347eff242e3933c67f25e787ba8226b25db03dd6e25f82d4fccb",
       "recordVersions": [
         {
           "type": {
@@ -22,13 +22,13 @@
             ]
           },
           "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
-          "value": "v0:test-key:1:4WNaaLPaRS-T6ghPrAf0kAIRFyc1mrj1S5IhR8HenqY"
+          "value": "v0:test-key:1:I8TcW3NvmUyaAVzIhPiY7oo0EA5uOn979Nhuixy0STo"
         }
       ]
     },
     "corrected": {
       "path": "resources/corrected.json",
-      "sha256": "d4d1b78e50de48b43fc6b11d4d706ae7b94f3d5069f24310346ee06b6af0ae8c",
+      "sha256": "a59309febe4cc93ef0280de4c7112eac0c26ecb5885c4a970d6232a5c4c1a506",
       "recordVersions": [
         {
           "type": {
@@ -40,13 +40,13 @@
             ]
           },
           "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
-          "value": "v0:test-key:1:zPb6avFa9hswf086Kxibw-DIlL5LBD9TAs7bIF9RExM"
+          "value": "v0:test-key:1:coyKAaPUs9QdAHkecsNE5g5dUzACb3FAv_vLQDiyf8w"
         }
       ]
     },
     "altered-retry": {
       "path": "resources/altered-retry.json",
-      "sha256": "ce02606365fc7c09f269e92ba939a551b9e8182e4c924b82bed6ae86568ebd7d",
+      "sha256": "89f291e2e80f43de353327e877e3956628e728b41497e33b40275d6975341913",
       "recordVersions": [
         {
           "type": {
@@ -58,13 +58,13 @@
             ]
           },
           "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
-          "value": "v0:test-key:1:4WNaaLPaRS-T6ghPrAf0kAIRFyc1mrj1S5IhR8HenqY"
+          "value": "v0:test-key:1:I8TcW3NvmUyaAVzIhPiY7oo0EA5uOn979Nhuixy0STo"
         }
       ]
     },
     "reformatted-retry": {
       "path": "resources/reformatted-retry.json",
-      "sha256": "9f8bbd18322492b1cc92c9184b943aaf202003c47ec16268b129b4c28a1fb95f",
+      "sha256": "5a346ec28baec4deaea8b90130c1ae4fbdffd680544e94447cf258ece4f5da74",
       "recordVersions": [
         {
           "type": {
@@ -76,13 +76,13 @@
             ]
           },
           "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
-          "value": "v0:test-key:1:4WNaaLPaRS-T6ghPrAf0kAIRFyc1mrj1S5IhR8HenqY"
+          "value": "v0:test-key:1:I8TcW3NvmUyaAVzIhPiY7oo0EA5uOn979Nhuixy0STo"
         }
       ]
     },
     "lexeme-retry": {
       "path": "resources/lexeme-retry.json",
-      "sha256": "f93f084bf05d8ecc7ad6c4e281ed900337c992367154b7c25c605a1d97bef298",
+      "sha256": "0385103a9dd408ed1c4ce14f1683c5d05b4e251710317f00a37af53b05b10565",
       "recordVersions": [
         {
           "type": {
@@ -94,13 +94,13 @@
             ]
           },
           "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
-          "value": "v0:test-key:1:l2-o498e8gF3_Pir0BnIrlvz2Oa7fo8JR9s9r6EB0DE"
+          "value": "v0:test-key:1:57rOqeDd5AVmNxQma4fZXGMnlb8zrZrHSCQKb0TMe9M"
         }
       ]
     },
     "reconverted": {
       "path": "resources/reconverted.json",
-      "sha256": "f0912f0d05b5a08ba880b32c92e9327e06a647bdbbb32443e03f9fbdb5ef45db",
+      "sha256": "13d7b3fae3547b8f9202c7845083bfd9f689cc4e55de08e8de942738a28756f3",
       "recordVersions": [
         {
           "type": {
@@ -112,7 +112,7 @@
             ]
           },
           "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
-          "value": "v0:test-key:1:JjdQZSnV7AQ1Q3BdOoHU0qybpa6Bj7q_jvsj5iLue6I"
+          "value": "v0:test-key:1:62Xc65RPZmki7UB7iYw2CT4BMvNH9Gt8WUXsSwkl2P8"
         }
       ]
     },
@@ -250,7 +250,7 @@
     },
     "multi-v1": {
       "path": "resources/multi-v1.json",
-      "sha256": "db6cec0bf000591058775d9cb22e04ebe4ba14806127c25f8b731262f9aac78a",
+      "sha256": "06756f4361abb1ee8c46e8ef44ea957d53fc44e4bc342ecab3b46d54bf4289ff",
       "recordVersions": [
         {
           "type": {
@@ -262,13 +262,13 @@
             ]
           },
           "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
-          "value": "v0:test-key:1:9KrWXi6Y5p8bI7bOGY8THmBdLCcH-0vay1G5bVK48oI"
+          "value": "v0:test-key:1:NQSJUQLiSfB8UFUm-DN4F3yJKBQJk01Hnjr1ZuMCDGc"
         }
       ]
     },
     "multi-v2": {
       "path": "resources/multi-v2.json",
-      "sha256": "face5eae37282b347d67435bc38ce456d49c77a9efbeadbda56215a3b5ab696f",
+      "sha256": "483f21eae5cf7b80e3ddf8f9861f67fcd4bd73fea95ba6fb62cc983e1b64e6f1",
       "recordVersions": [
         {
           "type": {
@@ -280,13 +280,13 @@
             ]
           },
           "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
-          "value": "v0:test-key:1:3u2mQn8g5ptz47rHITeniMcMQpl5ZvNffgthHPcETOg"
+          "value": "v0:test-key:1:tTobsrtpfc56ceW0b3bMJe-3KAOSYLnENUzDpgykFec"
         }
       ]
     },
     "multi-v3": {
       "path": "resources/multi-v3.json",
-      "sha256": "613f569bc0d88fc9bfa06e40b7fc53e9c35eb524dfa13c0cdba126c337fa5756",
+      "sha256": "0185faeac101b6c6aa5a09175a7caf2b622c4188f43a65bc20fb8f927cc56af7",
       "recordVersions": [
         {
           "type": {
@@ -298,13 +298,13 @@
             ]
           },
           "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
-          "value": "v0:test-key:1:f_V4WBxCc7mbc1txUhZ61EK-gQKT9Ve-4PAh-JdVg3o"
+          "value": "v0:test-key:1:-0FOFDNefG_F1Kijariy5UrCFGYN10hKiIu4RyF_VWA"
         }
       ]
     },
     "equal-version-later-recorded": {
       "path": "resources/equal-version-later-recorded.json",
-      "sha256": "98b96b5d78cc4b7b050a6f923534af9832d70dff5eb168d4d4f534fe2f975f32",
+      "sha256": "ec82f8e17cc12dc29c0b271fb56631c315791cdc9d47e809112952c1b872fa35",
       "recordVersions": [
         {
           "type": {
@@ -316,13 +316,13 @@
             ]
           },
           "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
-          "value": "v0:test-key:1:qEov7x9hE2iqcQQTeyWa_F0_tm9MoEYwwfjrxSAIOG0"
+          "value": "v0:test-key:1:FFtAoENlRmglBM3sGXPCP3C-SiYzk5KqUROAxK7sjDM"
         }
       ]
     },
     "equal-version-reconversion": {
       "path": "resources/equal-version-reconversion.json",
-      "sha256": "ec6af995499d3f0c38fdab3577ef92a9c4ad436df688fa5d9567d06c6c276e95",
+      "sha256": "52d50fda7e974ec9f2603d902007a2231bbfb2378badaaf24ecae6315ba594d1",
       "recordVersions": [
         {
           "type": {
@@ -334,13 +334,13 @@
             ]
           },
           "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
-          "value": "v0:test-key:1:u0vpOJxB2rhPLjSfDAoY63-b_G4YUSLeAspdCAo7EdU"
+          "value": "v0:test-key:1:NeQ-uDYACuiF9yijNydPYDDtkK6QJiTytLzmR2Lliw4"
         }
       ]
     },
     "equal-version-equal-recorded": {
       "path": "resources/equal-version-equal-recorded.json",
-      "sha256": "c64d23d5d365718cf4753ad87027d0dd42fac1eb62c9320e088b93443dd0be45",
+      "sha256": "3c95b2b7577a418e047883b8b319d24c3410c83ac6a94e5ae9834ba4f532e8a0",
       "recordVersions": [
         {
           "type": {
@@ -352,13 +352,13 @@
             ]
           },
           "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
-          "value": "v0:test-key:1:JFlHMMZRb0RR101RJgfvPYC3TxbMd2MR1Ma6qJR8UO0"
+          "value": "v0:test-key:1:xXRvK4HIFPEXVYyBgM90FNbIPDZfsMNsoBkjQosbp8o"
         }
       ]
     },
     "other-writer": {
       "path": "resources/other-writer.json",
-      "sha256": "d20ea4055d56a99639ff54630dba403027b372ef4bd140bb874e15847d8520e8",
+      "sha256": "b8ff91b4fa8e1b4b02263752b55cd42e4c2cc82f8c6685d5d1e1dd19ca192552",
       "recordVersions": [
         {
           "type": {
@@ -370,7 +370,7 @@
             ]
           },
           "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
-          "value": "v0:test-key:1:KRXWXx1nrrcVvRExxQGll0bd3kPLMAlfbyNHjWnh05Y"
+          "value": "v0:test-key:1:52Q6md0UZ0wG5BDeLVhz-LdbDVfqBARUXBvV0fFj_8Y"
         }
       ]
     },
@@ -394,7 +394,7 @@
     },
     "changed-source-record": {
       "path": "resources/changed-source-record.json",
-      "sha256": "e9442a37087a8dde9c2eb89888ae70b2e30f9be3249ac4fb502f62a40414e5ed",
+      "sha256": "a4d72f680177edc1d3aa6568ed5be39221f9e78d4fac7d409b2d0cbe4c811d26",
       "recordVersions": [
         {
           "type": {
@@ -406,13 +406,13 @@
             ]
           },
           "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
-          "value": "v0:test-key:1:v4ARuAjBMENxtw0RZVSzb8BsKcKTywht3i4BzfKqkdc"
+          "value": "v0:test-key:1:VSrL_eGaokv2Z16RAt1_kaSSYjvHh3Ks8EYCNsEUTTw"
         }
       ]
     },
     "mixed-admission": {
       "path": "resources/mixed-admission.json",
-      "sha256": "4e28076ec08d11bfe0c3ce7fcb899d3d5574332cfd5c21ef1dc60f2503b3bea0",
+      "sha256": "ef600e9fed716d2f034aede779f05d456f755cf56943d4d66ff24259f294fa6c",
       "recordVersions": [
         {
           "type": {
@@ -424,7 +424,7 @@
             ]
           },
           "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
-          "value": "v0:test-key:1:v4ARuAjBMENxtw0RZVSzb8BsKcKTywht3i4BzfKqkdc"
+          "value": "v0:test-key:1:VSrL_eGaokv2Z16RAt1_kaSSYjvHh3Ks8EYCNsEUTTw"
         },
         {
           "type": {

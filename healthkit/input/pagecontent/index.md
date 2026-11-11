@@ -37,7 +37,7 @@ The [walkthrough](walkthrough.html) follows one heart-rate sample from `HKQuanti
   A deployment may also disclose `HKObject.uuid` on the one-to-one primary output under an explicit, governed absolute HealthKit-store namespace when native round-trip is required; it never replaces Grove identity.
 - [HealthKit Application Device](StructureDefinition-healthkit-application-device.html) carries exactly one typed [Apple Bundle Identifier](NamingSystem-apple-bundle-id.html) in addition to the shared opaque content snapshot.
   The bundle namespace identifies an application product; it does not identify an installation, host, account, or person.
-- A physical source Device is emitted only with a governed stable per-unit token and the shared `recording-device` plus content `device-snapshot` identities.
+- A physical source Device is emitted whenever a HealthKit object states an `HKDevice`, with every device fact HealthKit exposes and the shared content `device-snapshot` identity; it also carries a `recording-device` identity only with a governed stable per-unit token.
   Any deliberate disclosure of a HealthKit source UUID uses its own governed Identifier namespace and deployment purpose; descriptive source metadata alone is not physical-device identity.
 - The optional `heartRateMotionContext` component preserves one allowlisted HealthKit metadata value.
   An invariant permits it only on LOINC `8867-4` heart-rate records.

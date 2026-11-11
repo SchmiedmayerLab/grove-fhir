@@ -354,8 +354,10 @@
       ],
       "otherProfilesAllowed": false,
       "requiredIdentifierRoles": [
-        "recording-device",
         "device-snapshot"
+      ],
+      "optionalIdentifierRoles": [
+        "recording-device"
       ]
     },
     {

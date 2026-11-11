@@ -309,24 +309,57 @@ Profile: GroveRecordingDevice
 Parent: Device
 Id: grove-recording-device
 Title: "Grove Recording Device"
-Description: "An immutable content snapshot of the physical device that acquired a measurement. The recording-device identifier proves stable per-unit identity; the device-snapshot identifier is its content key: the same content gives the same key in every Bundle, and changed firmware, software, or other facts give a new snapshot instead of mutating one shared Device. Observation.device references this profile only when a governed stable per-unit token is available."
+Description: "An immutable content snapshot of the physical device that acquired a measurement, carrying every device fact the source exposes. The device-snapshot identifier is its content key: the same content gives the same key in every Bundle, and changed firmware, software, or other facts give a new snapshot instead of mutating one shared Device. Only the optional recording-device identifier, minted from a governed stable per-unit token, proves a physical unit; equal snapshots never do. Observation.device references this profile whenever the source names a recording device, with or without a per-unit token."
 * insert CompleteIdentifierPairs
 * obeys grove-identifier-token-1 and grove-identifier-role-coding-1
-* identifier 2..2 MS
+* identifier 1..* MS
 * identifier ^slicing.discriminator.type = #pattern
 * identifier ^slicing.discriminator.path = "type"
-* identifier ^slicing.rules = #closed
-* identifier contains physicalUnit 1..1 MS and snapshot 1..1 MS
+* identifier ^slicing.rules = #open
+* identifier contains physicalUnit 0..1 MS and snapshot 1..1 MS and localIdentifier 0..1 MS
 * insert GroveOpaqueIdentifier(identifier[physicalUnit], recording-device)
 * insert GroveOpaqueIdentifier(identifier[snapshot], device-snapshot)
+* identifier[localIdentifier].type 1..1 MS
+* identifier[localIdentifier].type = GroveDeviceIdentifierTypeCS#device-local-identifier
+* identifier[localIdentifier].system 1..1 MS
+* identifier[localIdentifier].value 1..1 MS
+* identifier[localIdentifier] ^short = "The clear host-local identifier the source states for this device, under a deployment-owned system; it is no Grove identity"
+* identifier ^short = "The device-snapshot content key, an optional recording-device unit key, an optional clear host-local identifier, and any other clear source identifier"
 * status MS
 * type MS
+* udiCarrier MS
+* udiCarrier.deviceIdentifier MS
+* udiCarrier.extension contains GroveUDIProductionIdentifier named productionIdentifier 0..1 MS
 * deviceName MS
 * manufacturer MS
+* lotNumber MS
+* serialNumber MS
 * modelNumber MS
 * version MS
 * version.type 1..1 MS
 * version.value MS
+* version ^slicing.discriminator.type = #pattern
+* version ^slicing.discriminator.path = "type"
+* version ^slicing.rules = #open
+* version contains
+    hardwareVersion 0..1 MS and
+    firmwareVersion 0..1 MS and
+    softwareVersion 0..1 MS and
+    operatingSystemName 0..1 MS and
+    operatingSystemVersion 0..1 MS and
+    operatingSystemBuild 0..1 MS
+* version[hardwareVersion].type = $mdc#531974
+* version[hardwareVersion].value 1..1 MS
+* version[firmwareVersion].type = $mdc#531976
+* version[firmwareVersion].value 1..1 MS
+* version[softwareVersion].type = $mdc#531975
+* version[softwareVersion].value 1..1 MS
+* version[operatingSystemName].type = $groveApplicationVersionType#os-name
+* version[operatingSystemName].value 1..1 MS
+* version[operatingSystemVersion].type = $groveApplicationVersionType#os-version
+* version[operatingSystemVersion].value 1..1 MS
+* version[operatingSystemBuild].type = $groveApplicationVersionType#os-build
+* version[operatingSystemBuild].value 1..1 MS
 
 Profile: GroveApplicationDevice
 Parent: Device
@@ -365,11 +398,15 @@ Profile: GroveHostDevice
 Parent: Device
 Id: grove-host-device
 Title: "Grove Host Device Snapshot"
-Description: "An immutable content snapshot of the host hardware and operating system on which a Grove application converted a record. Its device-snapshot identifier is its content key, so a changed operating-system version gives a new snapshot. It is not the physical recording Device unless the source explicitly establishes that identity."
+Description: "An immutable content snapshot of the host hardware and operating system on which a Grove application converted a record. Its device-snapshot identifier is its content key, so a changed operating-system version or build gives a new snapshot. It is not the physical recording Device unless the source explicitly establishes that identity."
 * insert CompleteIdentifierPairs
 * obeys grove-identifier-token-1 and grove-identifier-role-coding-1
-* identifier 1..1 MS
-* insert GroveOpaqueIdentifier(identifier, device-snapshot)
+* identifier 1..* MS
+* identifier ^slicing.discriminator.type = #pattern
+* identifier ^slicing.discriminator.path = "type"
+* identifier ^slicing.rules = #open
+* identifier contains snapshot 1..1 MS
+* insert GroveOpaqueIdentifier(identifier[snapshot], device-snapshot)
 * status MS
 * manufacturer MS
 * modelNumber MS
@@ -377,10 +414,19 @@ Description: "An immutable content snapshot of the host hardware and operating s
 * version ^slicing.discriminator.type = #pattern
 * version ^slicing.discriminator.path = "type"
 * version ^slicing.rules = #open
-* version contains operatingSystemVersion 1..1 MS
+* version contains
+    operatingSystemVersion 1..1 MS and
+    operatingSystemName 0..1 MS and
+    operatingSystemBuild 0..1 MS
 * version[operatingSystemVersion].type 1..1 MS
 * version[operatingSystemVersion].type = $groveApplicationVersionType#os-version
 * version[operatingSystemVersion].value 1..1 MS
+* version[operatingSystemName].type 1..1 MS
+* version[operatingSystemName].type = $groveApplicationVersionType#os-name
+* version[operatingSystemName].value 1..1 MS
+* version[operatingSystemBuild].type 1..1 MS
+* version[operatingSystemBuild].type = $groveApplicationVersionType#os-build
+* version[operatingSystemBuild].value 1..1 MS
 
 Profile: GroveMobileObservation
 Parent: Observation
