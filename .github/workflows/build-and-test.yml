@@ -375,7 +375,8 @@ jobs:
       always() &&
       (github.event_name != 'pull_request' || github.event.pull_request.draft == false)
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    # The questionnaire validation alone takes 15 to 21 minutes, so a whole run takes 23 to 31; the wave jobs allow 60.
+    timeout-minutes: 60
     steps:
       - name: Require every wave to have succeeded
         if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
