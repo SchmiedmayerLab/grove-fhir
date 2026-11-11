@@ -20,6 +20,7 @@ from Tests.producer_validation_test_support import (
     ProducerValidationTestCase,
     RECORD_VERSION_EXTENSION,
     ROOT,
+    bundle_subject,
     copy,
     entry_full_url,
     entry_key,
@@ -421,6 +422,36 @@ class RecordBundleTests(ProducerValidationTestCase):
                 node = entries_of(tampered, resource_type)[0]["resource"]
                 node["meta"] = {**node.get("meta", {}), "tag": [{"system": "https://example.org/tag", "code": "changed"}]}
                 self.assert_code(tampered, "mobile-exchange.content-snapshot-key")
+
+    def test_an_active_bundle_that_states_no_subject_fails_its_test_key_snapshots(self) -> None:
+        bundle = copy.deepcopy(self.active)
+        subject = bundle_subject(bundle)
+        patients = {entry["fullUrl"] for entry in entries_of(bundle, "Patient")}
+        bundle["entry"] = [entry for entry in bundle["entry"] if entry["fullUrl"] not in patients]
+        logical = {"type": "Patient", "identifier": {"system": subject[0], "value": subject[1]}}
+
+        def point_at_the_pseudonym(node: Any) -> None:
+            for key, value in node.items() if isinstance(node, dict) else enumerate(node if isinstance(node, list) else []):
+                if isinstance(value, dict) and value.get("reference") in patients:
+                    node[key] = copy.deepcopy(logical)
+                else:
+                    point_at_the_pseudonym(value)
+
+        point_at_the_pseudonym(bundle)
+        for output in entries_of(bundle, "Observation"):
+            output["resource"].pop("subject")
+        rekey_records(bundle, subject=subject)
+        diagnostics = exchange_bundle.exchange_bundle_diagnostics(bundle, "Bundle")
+        self.assertEqual([item["code"] for item in diagnostics], ["mobile-exchange.content-snapshot-key"])
+        self.assertRegex(diagnostics[0]["location"], r"^Bundle\.entry\[\d+\]\.extension\.valueIdentifier\.value$")
+
+    def test_a_retraction_checks_its_test_key_device_snapshots_for_shape_only(self) -> None:
+        # No retraction element states the subject a Device snapshot was minted over
+        # (Conformance/README.md), so a changed Device keeps its old test key.
+        bundle = retraction_bundle(self.active)
+        device = entries_of(bundle, "Device")[0]["resource"]
+        device["meta"] = {**device.get("meta", {}), "tag": [{"system": "https://example.org/tag", "code": "changed"}]}
+        self.assertEqual(self.codes(bundle), [])
 
     def test_record_version_key_covers_the_outputs_and_the_provenance(self) -> None:
         changed_output = copy.deepcopy(self.active)

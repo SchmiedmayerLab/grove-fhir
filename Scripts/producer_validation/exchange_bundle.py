@@ -883,7 +883,7 @@ def validate_derived_keys(
                 continue
             raise contract_failure(
                 "mobile-exchange.content-snapshot-key",
-                f"Bundle.entry[{index}]",
+                f"Bundle.entry[{index}].extension.valueIdentifier.value",
                 f"{label} entry[{index}] {snapshot_role} key is under the test key, but the "
                 "Bundle's records state no one subject to recompute it over",
             )
