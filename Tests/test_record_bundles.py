@@ -318,6 +318,11 @@ class RecordBundleTests(ProducerValidationTestCase):
             if identifier_role(identifier) is None:
                 identifier["system"] = reserved
         cases["reserved system"] = reserved_system
+        relative_system = copy.deepcopy(self.active)
+        for identifier in patient_of(relative_system)["identifier"]:
+            if identifier_role(identifier) is None:
+                identifier["system"] = "participants"
+        cases["relative system"] = relative_system
         for name, bundle in cases.items():
             with self.subTest(case=name):
                 self.assertEqual(
