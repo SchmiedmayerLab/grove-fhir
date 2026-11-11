@@ -2205,6 +2205,30 @@
       }
     },
     {
+      "id": "retraction-literal-reference-to-a-provenance",
+      "base": "mobile-retraction",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/entry/2/resource/extension",
+          "value": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/workflow-supportingInfo",
+              "valueReference": {
+                "reference": "urn:uuid:03e766bb-9cc6-51b2-b67e-e8902e01513f"
+              }
+            }
+          ]
+        }
+      ],
+      "expectedRule": {
+        "code": "mobile-exchange.cross-record-reference",
+        "reason": "A literal Reference resolves to an output of its own record or to a shared node of the same Bundle; a reference to an output of another record is identifier-only.",
+        "location": "Bundle.entry[2].resource.extension[0].valueReference.reference",
+        "severity": "error"
+      }
+    },
+    {
       "id": "two-versions-of-one-source-record",
       "base": "mobile-exchange",
       "patch": [

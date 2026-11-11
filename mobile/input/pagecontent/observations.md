@@ -189,10 +189,11 @@ UUIDv5 is deterministic formatting, not concealment.
 A record version is a keyed HMAC over the Provenance's source-record pair and the record's content digest.
 That digest is taken over the `grove-canonical-json-v0` bytes of the Provenance, minus `id` and minus its own `grove-record-version` extension, followed by each output in `Provenance.target` order, minus `id`.
 Canonical JSON sorts members by name, drops insignificant whitespace, and keeps every number exactly as written, so `72` and `72.0` give different record versions while a reordered or re-indented copy gives the same one.
-A shared node enters the digest through the content-derived fullUrl that the record references, so a changed Device changes the record version of every record that references it.
+A shared node that the Provenance or an output references enters the digest through its content-derived fullUrl, so a changed Device changes the record version of every record that references it. A ResearchSubject that joins a record only by the study rule stays outside the record version ([Study context](study.html)).
 Receivers never parse or recompute a record version; [Receiving record versions](implementation.html#receiving-record-versions) describes how they compare and order versions.
 
 Every literal Reference is closed over the Bundle and resolves to an addressable Bundle entry: an output of the referring resource's own record, or a shared node.
+A lifecycle Provenance is neither, so no literal reference reaches one.
 A reference from one record to an output of another record is identifier-only.
 Contained resources and `#id` references are prohibited in both active and retraction Bundles; allowing them would create a second, owner-local identity and resolution model outside the entry-key contract.
 A populated `Reference.type` must equal the target's actual resource type.

@@ -233,6 +233,35 @@ class RecordBundleTests(ProducerValidationTestCase):
             {"url": supporting_info, "valueReference": {"reference": first["fullUrl"]}}
         )
         self.assert_code(rekey_records(shared), "mobile-exchange.cross-record-reference")
+        # Not even its own record's Provenance, and not from another Provenance.
+        own = copy.deepcopy(self.active)
+        second = provenances(own)[1]
+        output = next(entry for entry in own["entry"] if entry["fullUrl"] == second["resource"]["target"][0]["reference"])
+        output["resource"].setdefault("extension", []).append(
+            {"url": supporting_info, "valueReference": {"reference": second["fullUrl"]}}
+        )
+        self.assert_code(rekey_records(own), "mobile-exchange.cross-record-reference")
+        between = copy.deepcopy(self.active)
+        first, second = provenances(between)[:2]
+        second["resource"].setdefault("extension", []).append(
+            {"url": supporting_info, "valueReference": {"reference": first["fullUrl"]}}
+        )
+        self.assert_code(rekey_records(between), "mobile-exchange.cross-record-reference")
+
+    def test_nothing_references_a_retraction_provenance(self) -> None:
+        supporting_info = "http://hl7.org/fhir/StructureDefinition/workflow-supportingInfo"
+        for referrer in ("Provenance", "Device"):
+            with self.subTest(referrer=referrer):
+                bundle = retraction_bundle(self.active)
+                first, second = [entry for entry in bundle["entry"] if is_retraction_provenance(entry["resource"])][:2]
+                source = second if referrer == "Provenance" else entries_of(bundle, "Device")[0]
+                source["resource"].setdefault("extension", []).append(
+                    {"url": supporting_info, "valueReference": {"reference": first["fullUrl"]}}
+                )
+                self.assertEqual(
+                    self.codes(rekey_records(bundle), "retraction"),
+                    ["mobile-exchange.cross-record-reference"],
+                )
 
     def test_every_record_of_a_bundle_states_one_subject(self) -> None:
         bundle = copy.deepcopy(self.active)

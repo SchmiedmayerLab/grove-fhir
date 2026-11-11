@@ -573,12 +573,7 @@ def validate_active_records(
         own_record = record_by_output.get(referrer, record_by_provenance.get(referrer))
         for reference_path, reference in all_reference_nodes_with_paths(candidate):
             if reference["reference"] in record_by_provenance:
-                raise contract_failure(
-                    "mobile-exchange.cross-record-reference",
-                    f"Bundle.entry[{entry_index}].resource.{reference_path}.reference",
-                    f"{label} entry[{entry_index}] references a conversion Provenance; a literal "
-                    "reference reaches only an output of its own record or a shared node",
-                )
+                raise provenance_reference_failure(entry_index, reference_path, label)
             target_record = record_by_output.get(reference["reference"])
             if target_record is not None and target_record != own_record:
                 raise contract_failure(
@@ -601,6 +596,32 @@ def validate_active_records(
             "Bundle.entry",
             f"{label} records state {len(statements)} different subjects",
         )
+
+
+def provenance_reference_failure(
+    entry_index: int, reference_path: str, label: str
+) -> ProducerValidationError:
+    """A literal reference to a lifecycle Provenance, which is neither an output nor a shared node."""
+    return contract_failure(
+        "mobile-exchange.cross-record-reference",
+        f"Bundle.entry[{entry_index}].resource.{reference_path}.reference",
+        f"{label} entry[{entry_index}] references a lifecycle Provenance; a literal reference "
+        "reaches only an output of its own record or a shared node",
+    )
+
+
+def validate_retraction_references(
+    retractions: list[tuple[int, dict[str, Any]]],
+    entry_resources: list[dict[str, Any]],
+    full_url_by_index: dict[int, str],
+    label: str,
+) -> None:
+    """literalClosure in a retraction Bundle: nothing references a retraction Provenance."""
+    provenance_urls = {full_url_by_index[index] for index, _ in retractions}
+    for entry_index, candidate in enumerate(entry_resources):
+        for reference_path, reference in all_reference_nodes_with_paths(candidate):
+            if reference["reference"] in provenance_urls:
+                raise provenance_reference_failure(entry_index, reference_path, label)
 
 
 def validate_retraction_records(
@@ -1093,6 +1114,7 @@ def validate_exchange_bundle(
                 "and no transform",
             )
         validate_retraction_records(retractions, label)
+        validate_retraction_references(retractions, entry_resources, full_url_by_index, label)
         validate_connected(
             retractions, frozenset({"Device"}), full_url_by_index, resources_by_full_url, label
         )
