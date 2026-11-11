@@ -71,6 +71,7 @@ A business identifier the resource also carries, such as a ResearchStudy's study
 The same content therefore gives the same entry in every Bundle, shared by every record of the Bundle that references it, while a study revision, a changed protocol status, or a changed enrollment gives a new snapshot with its own fullUrl instead of a second body under one key.
 The node roles are `patient`, `research-study`, `research-subject`, `plan-definition`, and `questionnaire-response`, as `entryIdentity.contextSnapshotRoles` in [`catalog/exchange-protocol.json`](https://grovealliance.org/fhir/catalog/exchange-protocol.json) lists them; a QuestionnaireResponse, whose one identifier holds its submission identifier, repeats its key in the `grove-context-snapshot` extension instead.
 A ResearchSubject belongs to every record whose references reach the ResearchStudy it names.
+Nothing in a record references that ResearchSubject, so it stays outside the record version: a changed enrollment under an unchanged record version is a new snapshot with its own fullUrl, not a new record version, and enrollment and withdrawal state belong to the receiver, as the next section describes.
 These supporting resources do not turn the Bundle into a consent document or grant the sender access to a study.
 
 ### Late attribution does not rewrite a record version

@@ -564,12 +564,21 @@ def validate_active_records(
                     "source record",
                 )
 
-    # Decision 7: a literal reference stays inside its record or reaches a shared node.
+    # Decision 7: a literal reference stays inside its record or reaches a shared node. A
+    # conversion Provenance is neither an output nor a shared node, so nothing references one;
+    # a reference to another record's Provenance would pull that whole record into this one.
     record_by_provenance = {full_url_by_index[index]: index for index, _ in transforms}
     for entry_index, candidate in enumerate(entry_resources):
         referrer = full_url_by_index[entry_index]
         own_record = record_by_output.get(referrer, record_by_provenance.get(referrer))
         for reference_path, reference in all_reference_nodes_with_paths(candidate):
+            if reference["reference"] in record_by_provenance:
+                raise contract_failure(
+                    "mobile-exchange.cross-record-reference",
+                    f"Bundle.entry[{entry_index}].resource.{reference_path}.reference",
+                    f"{label} entry[{entry_index}] references a conversion Provenance; a literal "
+                    "reference reaches only an output of its own record or a shared node",
+                )
             target_record = record_by_output.get(reference["reference"])
             if target_record is not None and target_record != own_record:
                 raise contract_failure(
