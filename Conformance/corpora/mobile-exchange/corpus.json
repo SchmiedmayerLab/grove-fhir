@@ -1804,7 +1804,7 @@
       ],
       "expectedRule": {
         "code": "mobile-exchange.content-snapshot-key",
-        "reason": "A shared node carries one typed device-snapshot or context-snapshot v0 Identifier for its node role, in Resource.identifier or, on a QuestionnaireResponse, in grove-context-snapshot; its shape is always checked, and under the published test key it recomputes from the node's canonical content.",
+        "reason": "A shared node carries one typed device-snapshot or context-snapshot v0 Identifier for its node role, in Resource.identifier or, on a QuestionnaireResponse, in grove-context-snapshot; its shape is always checked, and under the published test key it recomputes from the node's canonical content over the one subject its Bundle's records state. An active Bundle whose records state no one subject fails; a retraction Bundle states no subject, so its Device snapshots are checked for shape only.",
         "location": "Bundle.entry[0].extension.valueIdentifier.value",
         "severity": "error"
       }
@@ -1821,7 +1821,7 @@
       ],
       "expectedRule": {
         "code": "mobile-exchange.content-snapshot-key",
-        "reason": "A shared node carries one typed device-snapshot or context-snapshot v0 Identifier for its node role, in Resource.identifier or, on a QuestionnaireResponse, in grove-context-snapshot; its shape is always checked, and under the published test key it recomputes from the node's canonical content.",
+        "reason": "A shared node carries one typed device-snapshot or context-snapshot v0 Identifier for its node role, in Resource.identifier or, on a QuestionnaireResponse, in grove-context-snapshot; its shape is always checked, and under the published test key it recomputes from the node's canonical content over the one subject its Bundle's records state. An active Bundle whose records state no one subject fails; a retraction Bundle states no subject, so its Device snapshots are checked for shape only.",
         "location": "Bundle.entry[1].extension.valueIdentifier.value",
         "severity": "error"
       }
@@ -1838,7 +1838,7 @@
       ],
       "expectedRule": {
         "code": "mobile-exchange.content-snapshot-key",
-        "reason": "A shared node carries one typed device-snapshot or context-snapshot v0 Identifier for its node role, in Resource.identifier or, on a QuestionnaireResponse, in grove-context-snapshot; its shape is always checked, and under the published test key it recomputes from the node's canonical content.",
+        "reason": "A shared node carries one typed device-snapshot or context-snapshot v0 Identifier for its node role, in Resource.identifier or, on a QuestionnaireResponse, in grove-context-snapshot; its shape is always checked, and under the published test key it recomputes from the node's canonical content over the one subject its Bundle's records state. An active Bundle whose records state no one subject fails; a retraction Bundle states no subject, so its Device snapshots are checked for shape only.",
         "location": "Bundle.entry[4].extension.valueIdentifier.value",
         "severity": "error"
       }
@@ -1854,7 +1854,7 @@
       ],
       "expectedRule": {
         "code": "mobile-exchange.content-snapshot-key",
-        "reason": "A shared node carries one typed device-snapshot or context-snapshot v0 Identifier for its node role, in Resource.identifier or, on a QuestionnaireResponse, in grove-context-snapshot; its shape is always checked, and under the published test key it recomputes from the node's canonical content.",
+        "reason": "A shared node carries one typed device-snapshot or context-snapshot v0 Identifier for its node role, in Resource.identifier or, on a QuestionnaireResponse, in grove-context-snapshot; its shape is always checked, and under the published test key it recomputes from the node's canonical content over the one subject its Bundle's records state. An active Bundle whose records state no one subject fails; a retraction Bundle states no subject, so its Device snapshots are checked for shape only.",
         "location": "Bundle.entry[0].resource.identifier",
         "severity": "error"
       }
