@@ -2140,6 +2140,26 @@
       }
     },
     {
+      "id": "patient-with-a-medical-record-number",
+      "base": "mobile-exchange",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/entry/0/resource/identifier/-",
+          "value": {
+            "system": "https://hospital.example.org/fhir/mrn",
+            "value": "MRN-0001"
+          }
+        }
+      ],
+      "expectedRule": {
+        "code": "mobile-exchange.patient-pseudonym",
+        "reason": "A Patient entry carries exactly one identifier without a Grove role, the deployment's complete pseudonym under a system the protocol doesn't reserve, and it names the subject its Bundle's records state.",
+        "location": "Bundle.entry[0].resource.identifier",
+        "severity": "error"
+      }
+    },
+    {
       "id": "cross-record-literal-reference",
       "base": "mobile-exchange",
       "patch": [

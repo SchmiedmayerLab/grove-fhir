@@ -20,9 +20,11 @@ from Tests.producer_validation_test_support import (
     Path,
     ProducerValidationTestCase,
     ROOT,
+    bundle_subject,
     copy,
     json,
     mock,
+    rekey_records,
     subprocess,
     tempfile,
 )
@@ -171,6 +173,24 @@ class ProducerManifestExternalTests(ProducerValidationTestCase):
             path.write_text(json.dumps(manifest), encoding="utf-8")
             with self.assertRaisesRegex(diagnostics.ProducerValidationError, "must be unique"):
                 manifest_validation.validate_manifest(path)
+
+    def test_a_patient_with_a_second_identifier_fails_the_manifest_and_the_cli(self) -> None:
+        bundle = json.loads((self.example.parent / "resources/exchange-bundle.json").read_text(encoding="utf-8"))
+        subject = bundle_subject(bundle)
+        patient = next(entry["resource"] for entry in bundle["entry"] if entry["resource"]["resourceType"] == "Patient")
+        patient["identifier"].append({"system": "https://hospital.example.org/fhir/mrn", "value": "MRN-0001"})
+        rekey_records(bundle, subject=subject)
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "resources").mkdir()
+            (root / "resources/exchange-bundle.json").write_text(json.dumps(bundle), encoding="utf-8")
+            path = root / "manifest.json"
+            path.write_bytes(self.example.read_bytes())
+            with self.assertRaises(diagnostics.ProducerValidationError) as raised:
+                manifest_validation.validate_manifest(path)
+            self.assertEqual(raised.exception.diagnostic["code"], "mobile-exchange.patient-pseudonym")
+            with mock.patch("sys.stderr"):
+                self.assertEqual(cli.main(["--manifest", str(path), "--structural-only"]), 1)
 
     def test_cli_requires_official_validator_outside_structural_mode(self) -> None:
         self.assertEqual(cli.main(["--manifest", str(self.example)]), 1)

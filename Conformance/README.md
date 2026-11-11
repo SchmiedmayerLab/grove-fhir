@@ -88,7 +88,7 @@ Either way a retraction addresses its whole source record and is keyed by that r
 The retraction base also carries the optional native record identifier on its target, so a producer can see the exact shape of the disclosure the addition path's governed-source-identifier policy also governs.
 The active Bundle is byte-for-byte equal to the example producer Bundle.
 Every negative case applies exactly one RFC 6902 JSON Patch operation and names the one rule it is intended to violate.
-Under the published test key the kit recomputes every content-snapshot, record-version, and record-retraction key, so a changed output under a kept key fails; a producer's own key cannot be recomputed, and only the key shape is checked.
+Under the published test key the kit recomputes every content-snapshot, record-version, and record-retraction key, so a changed output under a kept key fails; a producer's own key cannot be recomputed, and only the key shape is checked. One exception: a retraction Bundle's Device snapshots are minted over the subject of the records they retract, which no element of a retraction states, so the kit checks only their shape. An active Bundle always states its subject, and the kit refuses one whose test-key snapshots it cannot recompute.
 Byte-level canonical-JSON refusals, such as a byte order mark or a repeated member name, cannot be expressed as JSON Patch operations; `Tests/test_canonical_json.py` holds them against `Scripts/canonical_json.py`, the reference implementation of `grove-canonical-json-v0`.
 
 `Conformance/corpora/mobile-semantics/corpus.json` is the implementation-neutral clinical projection corpus.

@@ -12,6 +12,7 @@ from decimal import Decimal
 from typing import Any
 
 from Scripts.producer_validation import exchange_bundle
+from Scripts.producer_validation.context import REFERENCE_POLICY
 from Tests.producer_validation_test_support import (
     CONTEXT_SNAPSHOT_EXTENSION,
     ENTRY_KEY_EXTENSION,
@@ -274,6 +275,75 @@ class RecordBundleTests(ProducerValidationTestCase):
             "identifier": {"system": "https://study.example.org/fhir/identifiers/participant", "value": "participant-002"},
         }
         self.assert_code(rekey_records(bundle), "mobile-exchange.single-subject")
+
+    def test_a_bundled_patient_names_exactly_one_pseudonym(self) -> None:
+        subject = ("https://study.example.org/fhir/identifiers/participant", "participant-001")
+        mrn = {"system": "https://hospital.example.org/fhir/mrn", "value": "MRN-0001"}
+        typed_mrn = {
+            **mrn,
+            "type": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v2-0203", "code": "MR"}]},
+        }
+        reserved = REFERENCE_POLICY["identifierOnlyPatient"]["reservedSystems"][0]
+
+        def patient_of(bundle: dict[str, Any]) -> dict[str, Any]:
+            return entries_of(bundle, "Patient")[0]["resource"]
+
+        def logical_subjects(bundle: dict[str, Any], count: int) -> None:
+            outputs = [entry for entry in bundle["entry"] if entry["resource"].get("resourceType") == "Observation"]
+            for output in outputs[:count]:
+                output["resource"]["subject"] = {
+                    "type": "Patient", "identifier": {"system": subject[0], "value": subject[1]},
+                }
+
+        cases: dict[str, Any] = {}
+        # Every output references a Patient that also carries a medical record number, typed or not.
+        for name, extra in (("plain MRN", mrn), ("typed MRN", typed_mrn)):
+            bundle = copy.deepcopy(self.active)
+            patient_of(bundle)["identifier"].append(copy.deepcopy(extra))
+            cases[name] = bundle
+        # One output references the Patient literally, another names its pseudonym, and the Patient
+        # carries an MRN: the reviewer's case, which used to fail single-subject.
+        mixed = copy.deepcopy(self.active)
+        patient_of(mixed)["identifier"].append(copy.deepcopy(mrn))
+        logical_subjects(mixed, 1)
+        cases["mixed references with an MRN"] = mixed
+        # A Patient with no pseudonym, or one under a protocol-reserved system.
+        keyless = copy.deepcopy(self.active)
+        patient_of(keyless)["identifier"] = [
+            identifier for identifier in patient_of(keyless)["identifier"] if identifier_role(identifier)
+        ]
+        cases["no pseudonym"] = keyless
+        reserved_system = copy.deepcopy(self.active)
+        for identifier in patient_of(reserved_system)["identifier"]:
+            if identifier_role(identifier) is None:
+                identifier["system"] = reserved
+        cases["reserved system"] = reserved_system
+        for name, bundle in cases.items():
+            with self.subTest(case=name):
+                self.assertEqual(
+                    self.codes(rekey_records(bundle, subject=subject)), ["mobile-exchange.patient-pseudonym"]
+                )
+
+        # A Patient that names another participant than the outputs do, reached only through the
+        # QuestionnaireResponse, is refused too.
+        other = copy.deepcopy(self.active)
+        logical_subjects(other, len(other["entry"]))
+        for identifier in patient_of(other)["identifier"]:
+            if identifier_role(identifier) is None:
+                identifier["value"] = "participant-999"
+        questionnaire = entries_of(other, "QuestionnaireResponse")[0]["resource"]
+        questionnaire["source"] = {"reference": entries_of(other, "Patient")[0]["fullUrl"]}
+        with self.subTest(case="another participant"):
+            self.assertEqual(
+                self.codes(rekey_records(other, subject=subject)), ["mobile-exchange.patient-pseudonym"]
+            )
+
+        # A literal and an identifier-only reference to a Patient that carries only the pseudonym
+        # state one subject.
+        guard = copy.deepcopy(self.active)
+        logical_subjects(guard, 1)
+        with self.subTest(case="mixed references, one pseudonym"):
+            self.assertEqual(self.codes(rekey_records(guard)), [])
 
     def test_supporting_nodes_are_connected_by_directed_record_units(self) -> None:
         bundle = copy.deepcopy(self.active)

@@ -336,6 +336,53 @@ def role_of_typed(identifier: Any) -> str | None:
     return roles[0] if len(roles) == 1 else None
 
 
+def has_grove_role(identifier: Any) -> bool:
+    """Whether an Identifier carries any coding from the Grove identifier-role system."""
+    identifier_type = identifier.get("type") if isinstance(identifier, dict) else None
+    codings = identifier_type.get("coding", []) if isinstance(identifier_type, dict) else []
+    return isinstance(codings, list) and any(
+        isinstance(coding, dict) and coding.get("system") == IDENTIFIER_ROLE_SYSTEM
+        for coding in codings
+    )
+
+
+def patient_pseudonym(patient: dict[str, Any]) -> tuple[str, str] | None:
+    """The pseudonym of a Patient entry: its one identifier without a Grove role, when complete.
+
+    A Patient whose identifiers without a Grove role are none, several, or incomplete names no
+    pseudonym (lifecycle.active.studyContext.subject), so it can't state the subject a key was
+    minted over.
+    """
+    identifiers = patient.get("identifier", [])
+    plain = [
+        identifier for identifier in identifiers
+        if isinstance(identifier, dict) and not has_grove_role(identifier)
+    ] if isinstance(identifiers, list) else []
+    if len(plain) != 1:
+        return None
+    system, value = plain[0].get("system"), plain[0].get("value")
+    if not isinstance(system, str) or not system or not isinstance(value, str) or not value:
+        return None
+    return system, value
+
+
+def validate_patient_entries(entry_resources: list[dict[str, Any]], label: str) -> None:
+    """Every Patient entry names exactly one pseudonym, under a system the protocol doesn't reserve."""
+    reserved = REFERENCE_POLICY["identifierOnlyPatient"]["reservedSystems"]
+    for index, candidate in enumerate(entry_resources):
+        if candidate.get("resourceType") != "Patient":
+            continue
+        pseudonym = patient_pseudonym(candidate)
+        if pseudonym is None or pseudonym[0] in reserved:
+            raise contract_failure(
+                "mobile-exchange.patient-pseudonym",
+                f"Bundle.entry[{index}].resource.identifier",
+                f"{label} entry[{index}] Patient must carry exactly one complete identifier "
+                "without a Grove role, the deployment's pseudonym, under a system the protocol "
+                "doesn't reserve",
+            )
+
+
 def classify_lifecycle(
     provenances: list[tuple[int, dict[str, Any]]], label: str
 ) -> tuple[list[tuple[int, dict[str, Any]]], list[tuple[int, dict[str, Any]]], int]:
@@ -386,8 +433,8 @@ def subject_statement(
 ) -> tuple[str, ...] | None:
     """Return the subject one governed Patient reference states.
 
-    A logical reference states its pseudonym pair. A literal reference states the Patient
-    entry's one untyped identifier pair; a Patient with none or several states its fullUrl.
+    A logical reference states its pseudonym pair, and a literal reference the referenced Patient
+    entry's pseudonym (patient_pseudonym), which validate_patient_entries already required.
     """
     if not isinstance(reference, dict):
         return None
@@ -396,15 +443,8 @@ def subject_statement(
         patient = resources_by_full_url.get(literal)
         if not isinstance(patient, dict) or patient.get("resourceType") != "Patient":
             return None
-        identifiers = patient.get("identifier", [])
-        pairs = [
-            (identifier.get("system"), identifier.get("value"))
-            for identifier in identifiers if isinstance(identifier, dict)
-            and role_of_typed(identifier) is None
-            and isinstance(identifier.get("system"), str)
-            and isinstance(identifier.get("value"), str)
-        ] if isinstance(identifiers, list) else []
-        return ("pair", *pairs[0]) if len(pairs) == 1 else ("entry", literal)
+        pseudonym = patient_pseudonym(patient)
+        return None if pseudonym is None else ("pair", *pseudonym)
     identifier = reference.get("identifier")
     if isinstance(identifier, dict):
         system, value = complete_identifier(identifier, "subject identifier")
@@ -610,6 +650,29 @@ def provenance_reference_failure(
     )
 
 
+def validate_patients_name_the_subject(
+    entry_resources: list[dict[str, Any]],
+    resources_by_full_url: dict[str, dict[str, Any]],
+    label: str,
+) -> None:
+    """Every Patient entry of an active Bundle names the one subject its records state.
+
+    A Patient that no output's subject reaches, such as one a QuestionnaireResponse names, is held
+    to the same subject. It runs after connectivity, so a disconnected Patient reports that first.
+    """
+    subject = bundle_subject(entry_resources, resources_by_full_url)
+    if subject is None:
+        return
+    for index, candidate in enumerate(entry_resources):
+        if candidate.get("resourceType") == "Patient" and patient_pseudonym(candidate) != subject:
+            raise contract_failure(
+                "mobile-exchange.patient-pseudonym",
+                f"Bundle.entry[{index}].resource.identifier",
+                f"{label} entry[{index}] Patient names another pseudonym than the subject its "
+                "Bundle's records state",
+            )
+
+
 def validate_retraction_references(
     retractions: list[tuple[int, dict[str, Any]]],
     entry_resources: list[dict[str, Any]],
@@ -806,11 +869,22 @@ def validate_derived_keys(
         snapshot_role = SNAPSHOT_ROLE_BY_RESOURCE_TYPE.get(resource_type)
         if resource_type == "QuestionnaireResponse":
             snapshot_role = "context-snapshot"
-        if snapshot_role is None or role != snapshot_role or subject is None:
+        if snapshot_role is None or role != snapshot_role:
             continue
         scope = recomputes(value)
         if scope is None:
             continue
+        if subject is None:
+            if not is_active:
+                # A retraction states no subject, so its test-key Device snapshots can't be
+                # recomputed here (Conformance/README.md).
+                continue
+            raise contract_failure(
+                "mobile-exchange.content-snapshot-key",
+                f"Bundle.entry[{index}]",
+                f"{label} entry[{index}] {snapshot_role} key is under the test key, but the "
+                "Bundle's records state no one subject to recompute it over",
+            )
         if resource_type == "Device":
             profiles = candidate.get("meta", {}).get("profile", [])
             node_roles = {DEVICE_NODE_ROLES[profile] for profile in profiles if profile in DEVICE_NODE_ROLES}
@@ -1080,6 +1154,8 @@ def validate_exchange_bundle(
             f"{label} entry[{index}].resource",
         )
 
+    validate_patient_entries(entry_resources, label)
+
     provenances = [
         (index, candidate) for index, candidate in enumerate(entry_resources)
         if candidate.get("resourceType") == "Provenance"
@@ -1101,6 +1177,7 @@ def validate_exchange_bundle(
                 transforms, ACTIVE_SUPPORTING_RESOURCE_TYPES, full_url_by_index,
                 resources_by_full_url, label,
             )
+        validate_patients_name_the_subject(entry_resources, resources_by_full_url, label)
         validate_governed_source_identifiers(entry_resources, label)
         validate_health_connect_output_graph(entry_resources, resources_by_full_url, label)
         validate_healthkit_ecg_output_graph(entry_resources, resources_by_full_url, label)
