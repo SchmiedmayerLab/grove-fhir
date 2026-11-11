@@ -349,6 +349,8 @@ def has_grove_role(identifier: Any) -> bool:
 def patient_pseudonym(patient: dict[str, Any]) -> tuple[str, str] | None:
     """The pseudonym of a Patient entry: its one identifier without a Grove role, when complete.
 
+    Complete means a non-empty value under an absolute-URI system, as complete_identifier requires.
+
     A Patient whose identifiers without a Grove role are none, several, or incomplete names no
     pseudonym (lifecycle.active.studyContext.subject), so it can't state the subject a key was
     minted over.
@@ -360,10 +362,10 @@ def patient_pseudonym(patient: dict[str, Any]) -> tuple[str, str] | None:
     ] if isinstance(identifiers, list) else []
     if len(plain) != 1:
         return None
-    system, value = plain[0].get("system"), plain[0].get("value")
-    if not isinstance(system, str) or not system or not isinstance(value, str) or not value:
+    try:
+        return complete_identifier(plain[0], "Patient pseudonym")
+    except ProducerValidationError:
         return None
-    return system, value
 
 
 def validate_patient_entries(entry_resources: list[dict[str, Any]], label: str) -> None:
