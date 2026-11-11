@@ -249,6 +249,7 @@ Map every non-nil `HKObject.device` to a [Grove Recording Device](https://grovea
 The Device always carries the content `device-snapshot` identity, minted over its complete rendered content after every field is set.
 It also carries the typed `recording-device` identity only when a governed stable per-unit token exists: `HKDevice.localIdentifier` when it is nonempty and the deployment has verified its stability for the acquisition scope, or another caller-governed token.
 That token is local to the host that recorded the sample and writable by any application, so its HMAC is scoped by the writing source's `HKSource.bundleIdentifier`, and the same token stated by two writers names two units.
+The scope separates writers only: a writer that states the same token for distinct units, on one host or on several, merges them into one identity, and only the deployment's verification of the token's stability guards against that.
 Without a token the Device is still emitted and referenced; manufacturer, model, version, subject, a snapshot, or their digest never establish a physical instance, and equal snapshots are never inferred to be one unit.
 
 | HealthKit field | Grove Recording Device element |
