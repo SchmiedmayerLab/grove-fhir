@@ -86,6 +86,69 @@ Description: "The one conversion Provenance of a SensorKit record, linking its s
 * entity.what.identifier.system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
 * entity.what.identifier.value = "v0:test-key:1:4BxIRTHcopOlCM3qYdI5WAXBsQ4fsPM0f7zkh9yIE3U"
 
+Instance: SensorKitPeripheralDeviceExample
+InstanceOf: GroveRecordingDevice
+Usage: #example
+Title: "SensorKit Example Peripheral"
+Description: "An illustrative peripheral that SRFetchResult.sourceDevice names, with every fact its SRSourceDevice exposes: its manufacturer, model, hardware and firmware versions, and its clear localIdentifier under the deployment's local-identifier system. The localIdentifier is local to one host, so it proves no physical unit, and the Device carries only its device-snapshot content key."
+* status = #active
+* identifier[snapshot].system = "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v0/test-key/1"
+* identifier[snapshot].value = "v0:test-key:1:WJc0kV1D7AwqHP6ZsgxsX2CVDSzHyYJTkhq8sGRxu4E"
+* identifier[localIdentifier].system = "https://study.example.org/fhir/NamingSystem/sensorkit-device-local-identifier"
+* identifier[localIdentifier].value = "3C9E1B52-7A4D-4F18-8B06-5D2E9A7C1F40"
+* manufacturer = "Example Sensors"
+* modelNumber = "Motion-Band-1"
+* version[hardwareVersion].type = $mdc#531974 "MDC_ID_PROD_SPEC_HW"
+* version[hardwareVersion].value = "3"
+* version[firmwareVersion].type = $mdc#531976 "MDC_ID_PROD_SPEC_FW"
+* version[firmwareVersion].value = "2.1.0"
+
+Instance: SensorKitPeripheralRotationRateExample
+InstanceOf: SensorKitObservation
+Usage: #example
+Title: "SensorKit Rotation Rate from One Peripheral"
+Description: "An illustrative structured-only record whose fetch results all name one peripheral, so Observation.device references that peripheral's recording Device instead of the SRDevice's. Which SensorKit streams name a peripheral depends on the platform; the example shows the shape, not a particular stream."
+* meta.profile[+] = "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-sampled-data-observation"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:6ikkYhQ2Ypkfg1_FPja3TdGeClVFAjz1oEVmiQwTBxE"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:xn8sQIzyCRJ4EkohcU6j6NX_VAxMN-nSib5Y9YnjUc8"
+* extension[sensorKitSourceType].valueCode = #rotation-rate
+* status = #final
+* code = $sensorKitSourceType#rotation-rate "Rotation rate"
+* subject = Reference(SensorKitPatientExample)
+* effectivePeriod.start = "2026-08-20T09:05:00-07:00"
+* effectivePeriod.end = "2026-08-20T09:05:00.020-07:00"
+* valueSampledData.origin.value = 0
+* valueSampledData.origin.system = $ucum
+* valueSampledData.origin.code = #rad/s
+* valueSampledData.period = 10
+* valueSampledData.dimensions = 3
+* valueSampledData.data = "0.02 -0.01 0.03 0.01 -0.02 0.02 0.03 -0.01 0.01"
+* device = Reference(SensorKitPeripheralDeviceExample)
+
+Instance: SensorKitPeripheralRotationRateProvenanceExample
+InstanceOf: SensorKitConversionProvenance
+Usage: #example
+Title: "SensorKit Conversion Provenance Naming a Peripheral"
+Description: "The conversion Provenance of a SensorKit record whose fetch results name one peripheral. Its source entity names the peripheral's recording Device as the performer and the SRDevice's as the composer that recorded the samples, so the record unit reaches both Devices although the record has only a structured Observation."
+* extension[recordVersion].valueIdentifier.type = $groveIdentifierRole#record-version "Record version"
+* extension[recordVersion].valueIdentifier.system = "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1"
+* extension[recordVersion].valueIdentifier.value = "v0:test-key:1:Ej1YVNWg84JoHzYw7wbzYoXHPoAyhVIHrQaqAtcsbS0"
+* target = Reference(SensorKitPeripheralRotationRateExample)
+* occurredDateTime = "2026-08-20T16:05:01Z"
+* recorded = "2026-08-20T16:05:01Z"
+* agent[assembler].type = $provenanceParticipantType#assembler
+* agent[assembler].who = Reference(SensorKitApplicationExample)
+* entity.role = #source
+* entity.what.identifier.type = $groveIdentifierRole#source-record "Source record"
+* entity.what.identifier.system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* entity.what.identifier.value = "v0:test-key:1:6ikkYhQ2Ypkfg1_FPja3TdGeClVFAjz1oEVmiQwTBxE"
+* entity.agent[performer].type = $provenanceParticipantType#performer "Performer"
+* entity.agent[performer].who = Reference(SensorKitPeripheralDeviceExample)
+* entity.agent[composer].type = $provenanceParticipantType#composer "Composer"
+* entity.agent[composer].who = Reference(SensorKitDeviceExample)
+
 Instance: SensorKitECGExample
 InstanceOf: SensorKitECGObservation
 Usage: #example

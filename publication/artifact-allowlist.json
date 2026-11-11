@@ -2030,6 +2030,27 @@
           "classification": "example"
         },
         {
+          "fshName": "SensorKitPeripheralDeviceExample",
+          "fshType": "Instance",
+          "resourceType": "Device",
+          "id": "SensorKitPeripheralDeviceExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "SensorKitPeripheralRotationRateExample",
+          "fshType": "Instance",
+          "resourceType": "Observation",
+          "id": "SensorKitPeripheralRotationRateExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "SensorKitPeripheralRotationRateProvenanceExample",
+          "fshType": "Instance",
+          "resourceType": "Provenance",
+          "id": "SensorKitPeripheralRotationRateProvenanceExample",
+          "classification": "example"
+        },
+        {
           "fshName": "SensorKitPhoneUsageExample",
           "fshType": "Instance",
           "resourceType": "Observation",

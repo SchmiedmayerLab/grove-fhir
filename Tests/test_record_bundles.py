@@ -356,6 +356,57 @@ class RecordBundleTests(ProducerValidationTestCase):
         bundle["entry"].append(device)
         self.assert_code(rekey_records(bundle), "mobile-support.connected")
 
+    def test_a_peripheral_and_its_recording_device_stay_connected_through_the_source_entity(self) -> None:
+        # The SensorKit shape: an SRDevice (S) that recorded a record and a peripheral (P) that supplied
+        # its samples. No output references P, and when Observation.device names P, none references S
+        # either; the source entity's performer and composer agents connect them.
+        participant_type = "http://terminology.hl7.org/CodeSystem/provenance-participant-type"
+        recording_profile = "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-recording-device"
+
+        def recording_device(base: dict[str, Any], suffix: str, name: str) -> dict[str, Any]:
+            device = copy.deepcopy(entries_of(base, "Device")[0])
+            device["fullUrl"] = f"urn:uuid:00000000-0000-5000-8000-0000000000{suffix}"
+            device["resource"] = {
+                "resourceType": "Device",
+                "meta": {"profile": [recording_profile]},
+                "identifier": [copy.deepcopy(entry_key(device))],
+                "status": "active",
+                "deviceName": [{"name": name, "type": "model-name"}],
+            }
+            return device
+
+        def agent(code: str, device: dict[str, Any]) -> dict[str, Any]:
+            return {
+                "type": {"coding": [{"system": participant_type, "code": code}]},
+                "who": {"reference": device["fullUrl"]},
+            }
+
+        def bundle_with(*, device_of_outputs: str, performer: bool, composer: bool) -> dict[str, Any]:
+            bundle = copy.deepcopy(self.active)
+            recording = recording_device(bundle, "a1", "Example Watch")
+            peripheral = recording_device(bundle, "a2", "Example Peripheral")
+            bundle["entry"] += [recording, peripheral]
+            for output in entries_of(bundle, "Observation"):
+                output["resource"]["device"] = {
+                    "reference": (peripheral if device_of_outputs == "peripheral" else recording)["fullUrl"]
+                }
+            for provenance in provenances(bundle):
+                agents = [agent("performer", peripheral)] if performer else []
+                agents += [agent("composer", recording)] if composer else []
+                if agents:
+                    provenance["resource"]["entity"][0]["agent"] = agents
+            return rekey_records(bundle)
+
+        cases = {
+            "peripheral named by nothing": (dict(device_of_outputs="recording", performer=False, composer=False), ["mobile-support.connected"]),
+            "peripheral as performer": (dict(device_of_outputs="recording", performer=True, composer=False), []),
+            "outputs on the peripheral, no composer": (dict(device_of_outputs="peripheral", performer=True, composer=False), ["mobile-support.connected"]),
+            "outputs on the peripheral, SRDevice as composer": (dict(device_of_outputs="peripheral", performer=True, composer=True), []),
+        }
+        for name, (arguments, expected) in cases.items():
+            with self.subTest(case=name):
+                self.assertEqual(self.codes(bundle_with(**arguments)), expected)
+
     # Content and record keys
 
     def test_tampered_content_snapshots_fail_the_recompute(self) -> None:
