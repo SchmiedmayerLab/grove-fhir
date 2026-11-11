@@ -3652,8 +3652,8 @@
   "recordingDeviceIdentity": {
     "adapterId": "healthkit",
     "status": "snapshot-required-unit-optional",
-    "preferredStableUnitEvidence": "HKDevice.localIdentifier when nonempty and the deployment has verified its stability for the acquisition scope; otherwise a caller-governed stable per-unit token.",
-    "tokenScope": "The writing source's HKSource.bundleIdentifier. HKDevice.localIdentifier is local to the host that recorded it and writable by any application, so the same token stated by two writers names two units. The scope separates writers only: a writer that states the same token for distinct units, on one host or on several, merges them into one identity, and only the deployment's verification of the token guards against that.",
+    "preferredStableUnitEvidence": "HKDevice.localIdentifier when nonempty and the deployment has verified that it is stable and names exactly one unit for the acquisition scope; otherwise a caller-governed stable per-unit token.",
+    "tokenScope": "The writing source's HKSource.bundleIdentifier. HKDevice.localIdentifier is local to the host that recorded it and writable by any application, so the same token stated by two writers names two units. The scope separates writers only: a writer that states the same token for distinct units of one subject, on one host or on several, merges them into one identity, and only the deployment's verification that the token names exactly one unit guards against that.",
     "prohibitedIdentityInputs": [
       "HKDevice.name",
       "HKDevice.manufacturer",

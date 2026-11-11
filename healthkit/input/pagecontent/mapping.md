@@ -247,9 +247,9 @@ An object's other metadata keys are withheld under the same condition as the cor
 
 Map every non-nil `HKObject.device` to a [Grove Recording Device](https://grovealliance.org/fhir/mobile/StructureDefinition-grove-recording-device.html) that `Observation.device` references, and carry every field that `HKDevice` and the sample's device metadata keys supply; consumers filter what they do not need.
 The Device always carries the content `device-snapshot` identity, minted over its complete rendered content after every field is set.
-It also carries the typed `recording-device` identity only when a governed stable per-unit token exists: `HKDevice.localIdentifier` when it is nonempty and the deployment has verified its stability for the acquisition scope, or another caller-governed token.
+It also carries the typed `recording-device` identity only when a governed stable per-unit token exists: `HKDevice.localIdentifier` when it is nonempty and the deployment has verified that it is stable and names exactly one unit for the acquisition scope, or another caller-governed token.
 That token is local to the host that recorded the sample and writable by any application, so its HMAC is scoped by the writing source's `HKSource.bundleIdentifier`, and the same token stated by two writers names two units.
-The scope separates writers only: a writer that states the same token for distinct units, on one host or on several, merges them into one identity, and only the deployment's verification of the token's stability guards against that.
+The scope separates writers only: a writer that states the same token for distinct units of one subject, on one host or on several, merges them into one identity, and only the deployment's verification that the token names exactly one unit guards against that.
 Without a token the Device is still emitted and referenced; manufacturer, model, version, subject, a snapshot, or their digest never establish a physical instance, and equal snapshots are never inferred to be one unit.
 
 | HealthKit field | Grove Recording Device element |

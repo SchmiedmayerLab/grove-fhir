@@ -46,7 +46,7 @@ A producer emits the recording Device and references it from `Observation.device
 When a governed stable per-unit token exists, the Device also carries the deployment-scoped v0 HMAC `recording-device` identity minted from it.
 The subject's complete Identifier pair is part of the preimage, preventing the same device token from producing the same identity for different subjects.
 So is the token's scope, the authority that assigned the token: a token can be local to one host and writable by other applications, as `HKDevice.localIdentifier` is, so the same token from two writers names two units.
-The scope separates writers only: a writer that states the same token for distinct units, on one host or on several, merges them into one identity, and only the deployment's verification of the token's stability guards against that.
+The scope separates writers only: a writer that states the same token for distinct units of one subject, on one host or on several, merges them into one identity, and only the deployment's verification that the token names exactly one unit guards against that.
 The deployment decides whether source per-unit evidence may be used and manages the HMAC key, epoch, retention, and linkage policy.
 
 See the [recording-device example](Device-GroveRecordingDeviceExample.html).
