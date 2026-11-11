@@ -68,10 +68,10 @@ An identifier-only logical ResearchStudy reference remains conformant but carrie
 Each of these shared nodes is content-addressed.
 It carries a typed `context-snapshot` Identifier in `Resource.identifier`, a v0 HMAC over the subject, its node role, and the digest of its complete canonical content minus `id` and minus that Identifier, and that Identifier is its entry key.
 A business identifier the resource also carries, such as a ResearchStudy's study identifier, stays beside it and never selects the key, and neither does a PlanDefinition's canonical `url|version`, even when immutable.
-The same content therefore gives the same entry in every Bundle, shared by every record of the Bundle that references it, while a study revision, a changed protocol status, or a changed enrollment gives a new snapshot with its own fullUrl instead of a second body under one key.
+The same content therefore gives the same entry in every Bundle, shared by every record of the Bundle whose record unit contains it, while a study revision, a changed protocol status, or a changed enrollment gives a new snapshot with its own fullUrl instead of a second body under one key.
 The node roles are `patient`, `research-study`, `research-subject`, `plan-definition`, and `questionnaire-response`, as `entryIdentity.contextSnapshotRoles` in [`catalog/exchange-protocol.json`](https://grovealliance.org/fhir/catalog/exchange-protocol.json) lists them; a QuestionnaireResponse, whose one identifier holds its submission identifier, repeats its key in the `grove-context-snapshot` extension instead.
 A ResearchSubject belongs to every record whose references reach the ResearchStudy it names.
-Nothing in a record references that ResearchSubject, so it stays outside the record version: a changed enrollment under an unchanged record version is a new snapshot with its own fullUrl, not a new record version, and enrollment and withdrawal state belong to the receiver, as the next section describes.
+A ResearchSubject that joins a record only this way is referenced by nothing in it, so it stays outside the record version, as does any node that only it reaches: a changed enrollment under an unchanged record version is a new snapshot with its own fullUrl, not a new record version. The receiver's own enrollment and withdrawal records decide, not a producer-sent ResearchSubject, as the next section describes.
 These supporting resources do not turn the Bundle into a consent document or grant the sender access to a study.
 
 ### Late attribution does not rewrite a record version
