@@ -35,6 +35,13 @@
           "classification": "definition"
         },
         {
+          "fshName": "GroveDeviceIdentifierTypeCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "grove-device-identifier-type",
+          "classification": "definition"
+        },
+        {
           "fshName": "GroveIdentifierRoleCS",
           "fshType": "CodeSystem",
           "resourceType": "CodeSystem",
@@ -133,10 +140,24 @@
           "classification": "definition"
         },
         {
-          "fshName": "GroveExchangeEntryNodeKey",
+          "fshName": "GroveContextSnapshot",
           "fshType": "Extension",
           "resourceType": "StructureDefinition",
-          "id": "grove-exchange-entry-node-key",
+          "id": "grove-context-snapshot",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveExchangeEntryKey",
+          "fshType": "Extension",
+          "resourceType": "StructureDefinition",
+          "id": "grove-exchange-entry-key",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveRecordVersion",
+          "fshType": "Extension",
+          "resourceType": "StructureDefinition",
+          "id": "grove-record-version",
           "classification": "definition"
         },
         {
@@ -158,6 +179,13 @@
           "fshType": "Extension",
           "resourceType": "StructureDefinition",
           "id": "grove-retraction-target-role",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveUDIProductionIdentifier",
+          "fshType": "Extension",
+          "resourceType": "StructureDefinition",
+          "id": "grove-udi-production-identifier",
           "classification": "definition"
         },
         {
@@ -588,6 +616,13 @@
           "classification": "example"
         },
         {
+          "fshName": "GroveMobileExchangeHostExample",
+          "fshType": "Instance",
+          "resourceType": "Device",
+          "id": "GroveMobileExchangeHostExample",
+          "classification": "example"
+        },
+        {
           "fshName": "GroveMobileExchangePatientExample",
           "fshType": "Instance",
           "resourceType": "Patient",
@@ -599,6 +634,27 @@
           "fshType": "Instance",
           "resourceType": "Provenance",
           "id": "GroveMobileExchangeProvenanceExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "GroveMobileExchangeRecordingDeviceExample",
+          "fshType": "Instance",
+          "resourceType": "Device",
+          "id": "GroveMobileExchangeRecordingDeviceExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "GroveMobileExchangeSecondHeartRateExample",
+          "fshType": "Instance",
+          "resourceType": "Observation",
+          "id": "GroveMobileExchangeSecondHeartRateExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "GroveMobileExchangeSecondProvenanceExample",
+          "fshType": "Instance",
+          "resourceType": "Provenance",
+          "id": "GroveMobileExchangeSecondProvenanceExample",
           "classification": "example"
         },
         {
@@ -763,6 +819,13 @@
           "classification": "example"
         },
         {
+          "fshName": "GroveMobileSecondRetractionProvenanceExample",
+          "fshType": "Instance",
+          "resourceType": "Provenance",
+          "id": "GroveMobileSecondRetractionProvenanceExample",
+          "classification": "example"
+        },
+        {
           "fshName": "GroveMobileSexualActivityExample",
           "fshType": "Instance",
           "resourceType": "Observation",
@@ -873,6 +936,13 @@
           "resourceType": "Observation",
           "id": "GroveMobileWriterRecordIdentityExample",
           "classification": "example"
+        },
+        {
+          "fshName": "GroveProvenanceRecordVersion",
+          "fshType": "Instance",
+          "resourceType": "SearchParameter",
+          "id": "grove-provenance-record-version",
+          "classification": "definition"
         },
         {
           "fshName": "GroveRecordingDeviceExample",
@@ -1960,6 +2030,27 @@
           "classification": "example"
         },
         {
+          "fshName": "SensorKitPeripheralDeviceExample",
+          "fshType": "Instance",
+          "resourceType": "Device",
+          "id": "SensorKitPeripheralDeviceExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "SensorKitPeripheralRotationRateExample",
+          "fshType": "Instance",
+          "resourceType": "Observation",
+          "id": "SensorKitPeripheralRotationRateExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "SensorKitPeripheralRotationRateProvenanceExample",
+          "fshType": "Instance",
+          "resourceType": "Provenance",
+          "id": "SensorKitPeripheralRotationRateProvenanceExample",
+          "classification": "example"
+        },
+        {
           "fshName": "SensorKitPhoneUsageExample",
           "fshType": "Instance",
           "resourceType": "Observation",
@@ -2734,6 +2825,13 @@
           "fshType": "Instance",
           "resourceType": "Provenance",
           "id": "HealthKitDSTU2ClinicalRecordProvenanceExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "HealthKitDeviceLocalIdentifierExample",
+          "fshType": "Instance",
+          "resourceType": "NamingSystem",
+          "id": "HealthKitDeviceLocalIdentifierExample",
           "classification": "example"
         },
         {

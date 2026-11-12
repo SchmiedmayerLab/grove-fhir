@@ -60,6 +60,19 @@ Description: "Provenance for transforming one SensorKit source record into struc
 * entity.what.identifier.type = $groveIdentifierRole#source-record
 * entity.what.identifier.system 1..1 MS
 * entity.what.identifier.value 1..1 MS
+* entity.agent ^slicing.discriminator.type = #pattern
+* entity.agent ^slicing.discriminator.path = "type"
+* entity.agent ^slicing.rules = #open
+* entity.agent ^slicing.description = "A record that names a peripheral names each peripheral as a performer and the SRDevice that recorded its samples as the composer."
+* entity.agent contains performer 0..* MS and composer 0..1 MS
+* entity.agent[performer].type 1..1 MS
+* entity.agent[performer].type = $provenanceParticipantType#performer
+* entity.agent[performer].who 1..1 MS
+* entity.agent[performer].who only Reference(GroveRecordingDevice)
+* entity.agent[composer].type 1..1 MS
+* entity.agent[composer].type = $provenanceParticipantType#composer
+* entity.agent[composer].who 1..1 MS
+* entity.agent[composer].who only Reference(GroveRecordingDevice)
 
 Profile: SensorKitOnWristObservation
 Parent: SensorKitObservation

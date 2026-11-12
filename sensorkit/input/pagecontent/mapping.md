@@ -30,3 +30,31 @@ The [device-usage walkthrough](walkthrough.html) shows the required two-resource
 
 See [`catalog/sensorkit-adapter.json`](https://grovealliance.org/fhir/catalog/sensorkit-adapter.json) for the exact 22 source tokens, platform inventory scope, OS availability, profile claims, represented fields, fail-closed conditions, and status.
 The [authoritative status matrix](status-matrix.html) lists every one of those rows.
+
+### Recording devices
+
+Every SensorKit record yields a [Grove Recording Device](https://grovealliance.org/fhir/mobile/StructureDefinition-grove-recording-device.html) for the `SRDevice` that recorded it, which a Recording Document names through `DocumentReference.author`.
+For each peripheral that `SRFetchResult.sourceDevice`, available from iOS 27, names, the record also yields a recording Device for that peripheral from its `SRSourceDevice`.
+A structured Observation references, through `Observation.device`, the peripheral's Device when exactly one peripheral supplied every sample of the record, as the device that generated its data.
+Otherwise it references the `SRDevice`'s Device, which recorded the samples but isn't thereby stated to have generated them; the peripherals that may have are the source entity's `performer` agents below.
+When the record names any peripheral, its conversion Provenance's source entity names each peripheral's Device as an agent of participant type `performer` (`Provenance.entity.agent`), and the `SRDevice`'s as an agent of participant type `composer`, the device that recorded the peripherals' samples.
+The record unit therefore reaches every Device of the record, whichever outputs it has, the way HealthKit names a source application as `author`.
+Each Device carries every fact SensorKit exposes, and consumers filter what they do not need:
+
+| SensorKit field | Grove Recording Device element |
+|---|---|
+| `SRDevice.name` | `deviceName` of type `user-friendly-name`; the name a person gave the device, such as "My iPhone" |
+| `SRDevice.model` | `deviceName` of type `model-name` |
+| `SRDevice.systemName` | `version` of type `os-name` |
+| `SRDevice.systemVersion` | `version` of type `os-version` |
+| `SRDevice.productType` | `modelNumber` |
+| `SRSourceDevice.localIdentifier` | `identifier` of type `device-local-identifier`, clear, under a deployment-owned system |
+| `SRSourceDevice.manufacturer` | `manufacturer` |
+| `SRSourceDevice.model` | `modelNumber` |
+| `SRSourceDevice.hardwareVersion` | `version` of type MDC `531974` |
+| `SRSourceDevice.firmwareVersion` | `version` of type MDC `531976` |
+
+Each Device always carries one content `device-snapshot` identifier, minted over its complete rendered content, and carries a `recording-device` identifier only when the caller supplies a governed stable per-unit token.
+`SRDevice.productType` and the other descriptive fields never establish physical-unit identity, and Devices with equal snapshot content are never inferred to be one unit.
+`SRDevice.name` can name a person's device as a HealthKit source name can, and `SRSourceDevice.localIdentifier` is local to one host and links a participant's records from one peripheral; a deployment that shares or exports data applies its own policy to both.
+`recordingDeviceIdentity.fieldMappings` in [`catalog/sensorkit-adapter.json`](https://grovealliance.org/fhir/catalog/sensorkit-adapter.json) states the same mapping.

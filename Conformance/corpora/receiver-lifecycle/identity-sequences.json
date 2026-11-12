@@ -1,25 +1,26 @@
 {
   "schemaVersion": 0,
-  "events": "events.json",
+  "bundles": "bundles.json",
   "policy": {
     "scope": "One authenticated participant and verified source binding; the complete output Identifier includes system and value.",
-    "binding": "The first committed active event or retraction assertion binds its source-output Identifier to the complete source-record Identifier. Subsequent active or retraction events cannot move that output to another record, even with a greater writer version.",
-    "rejection": "A contradictory binding rejects the complete candidate event without receipt, custody, grants or changes to the accepted record. This is contextual admission failure, not an equal-version revision conflict or a standalone FHIR validation error.",
+    "binding": "The first accepted active record version binds its source-output Identifiers to its complete source-record Identifier. A retraction binds nothing: it addresses its whole source record, and its targets are informative. No later record version can move a bound output to another record, even with a greater writer version.",
+    "rejection": "Admission is per record. A record whose output contradicts a binding is rejected alone, without receipt, custody, grants or changes to the accepted record, and the other records of its Bundle are admitted. This is contextual admission failure, not a version-selection outcome or a standalone FHIR validation error.",
     "trust": "The receiver cannot reconstruct a producer's secret HMAC preimage. The first binding records the authenticated producer claim; it does not prove that claim is clinically correct. Corrected identity requires a new correctly derived output identity, not rebinding retained history.",
-    "concurrency": "Serialize the binding and event transaction. Concurrent contradictory first claims may commit either one, but never both. Audit or transaction failure must not reserve a binding.",
-    "authorization": "Accepted active events receive exact output grants for purpose-a; retractions receive no clinical grants. Purpose-b has no grants. A rejected event cannot change either purpose or retract the accepted output; a grant never overrides an accepted retraction."
+    "concurrency": "Serialize the binding and record transaction. Concurrent contradictory first claims may commit either one, but never both. Audit or transaction failure must not reserve a binding.",
+    "authorization": "Accepted active record versions receive exact output grants for purpose-a; retractions receive no clinical grants. Purpose-b has no grants. A rejected record cannot change either purpose or retract the accepted output; a grant never overrides an accepted retraction.",
+    "arrays": "history, bindingBundle, current, grants, retractionBundles and receiptBundle name Bundle aliases; an alias in current or grants names its Bundle's one output, and mixed-admission.target names the output of mixed-admission's target record. rejectedRecords names the records a delivery rejected, by the alias of the Bundle that carries each one alone."
   },
   "sequences": [
     {
       "id": "multi-v2-binds-output-first",
       "steps": [
         {
-          "event": "multi-v2",
+          "bundle": "multi-v2",
           "expect": {
             "history": [
               "multi-v2"
             ],
-            "bindingEvent": "multi-v2",
+            "bindingBundle": "multi-v2",
             "current": [
               "multi-v2"
             ],
@@ -29,19 +30,20 @@
               ],
               "purpose-b": []
             },
-            "retractionEvents": [],
+            "retractionBundles": [],
             "disposition": "accepted",
-            "receiptEvent": "multi-v2",
+            "rejectedRecords": [],
+            "receiptBundle": "multi-v2",
             "reason": null
           }
         },
         {
-          "event": "changed-source-record",
+          "bundle": "changed-source-record",
           "expect": {
             "history": [
               "multi-v2"
             ],
-            "bindingEvent": "multi-v2",
+            "bindingBundle": "multi-v2",
             "current": [
               "multi-v2"
             ],
@@ -51,19 +53,22 @@
               ],
               "purpose-b": []
             },
-            "retractionEvents": [],
+            "retractionBundles": [],
             "disposition": "rejected",
-            "receiptEvent": null,
+            "rejectedRecords": [
+              "changed-source-record"
+            ],
+            "receiptBundle": null,
             "reason": "source-output-record-conflict"
           }
         },
         {
-          "event": "multi-v2",
+          "bundle": "multi-v2",
           "expect": {
             "history": [
               "multi-v2"
             ],
-            "bindingEvent": "multi-v2",
+            "bindingBundle": "multi-v2",
             "current": [
               "multi-v2"
             ],
@@ -73,19 +78,20 @@
               ],
               "purpose-b": []
             },
-            "retractionEvents": [],
+            "retractionBundles": [],
             "disposition": "replayed",
-            "receiptEvent": "multi-v2",
+            "rejectedRecords": [],
+            "receiptBundle": "multi-v2",
             "reason": null
           }
         },
         {
-          "event": "changed-source-record",
+          "bundle": "changed-source-record",
           "expect": {
             "history": [
               "multi-v2"
             ],
-            "bindingEvent": "multi-v2",
+            "bindingBundle": "multi-v2",
             "current": [
               "multi-v2"
             ],
@@ -95,9 +101,12 @@
               ],
               "purpose-b": []
             },
-            "retractionEvents": [],
+            "retractionBundles": [],
             "disposition": "rejected",
-            "receiptEvent": null,
+            "rejectedRecords": [
+              "changed-source-record"
+            ],
+            "receiptBundle": null,
             "reason": "source-output-record-conflict"
           }
         }
@@ -107,12 +116,12 @@
       "id": "changed-source-record-binds-output-first",
       "steps": [
         {
-          "event": "changed-source-record",
+          "bundle": "changed-source-record",
           "expect": {
             "history": [
               "changed-source-record"
             ],
-            "bindingEvent": "changed-source-record",
+            "bindingBundle": "changed-source-record",
             "current": [
               "changed-source-record"
             ],
@@ -122,19 +131,20 @@
               ],
               "purpose-b": []
             },
-            "retractionEvents": [],
+            "retractionBundles": [],
             "disposition": "accepted",
-            "receiptEvent": "changed-source-record",
+            "rejectedRecords": [],
+            "receiptBundle": "changed-source-record",
             "reason": null
           }
         },
         {
-          "event": "multi-v2",
+          "bundle": "multi-v2",
           "expect": {
             "history": [
               "changed-source-record"
             ],
-            "bindingEvent": "changed-source-record",
+            "bindingBundle": "changed-source-record",
             "current": [
               "changed-source-record"
             ],
@@ -144,19 +154,22 @@
               ],
               "purpose-b": []
             },
-            "retractionEvents": [],
+            "retractionBundles": [],
             "disposition": "rejected",
-            "receiptEvent": null,
+            "rejectedRecords": [
+              "multi-v2"
+            ],
+            "receiptBundle": null,
             "reason": "source-output-record-conflict"
           }
         },
         {
-          "event": "changed-source-record",
+          "bundle": "changed-source-record",
           "expect": {
             "history": [
               "changed-source-record"
             ],
-            "bindingEvent": "changed-source-record",
+            "bindingBundle": "changed-source-record",
             "current": [
               "changed-source-record"
             ],
@@ -166,19 +179,20 @@
               ],
               "purpose-b": []
             },
-            "retractionEvents": [],
+            "retractionBundles": [],
             "disposition": "replayed",
-            "receiptEvent": "changed-source-record",
+            "rejectedRecords": [],
+            "receiptBundle": "changed-source-record",
             "reason": null
           }
         },
         {
-          "event": "multi-v2",
+          "bundle": "multi-v2",
           "expect": {
             "history": [
               "changed-source-record"
             ],
-            "bindingEvent": "changed-source-record",
+            "bindingBundle": "changed-source-record",
             "current": [
               "changed-source-record"
             ],
@@ -188,183 +202,159 @@
               ],
               "purpose-b": []
             },
-            "retractionEvents": [],
+            "retractionBundles": [],
             "disposition": "rejected",
-            "receiptEvent": null,
+            "rejectedRecords": [
+              "multi-v2"
+            ],
+            "receiptBundle": null,
             "reason": "source-output-record-conflict"
           }
         }
       ]
     },
     {
-      "id": "retraction-binds-before-active-claim",
+      "id": "mixed-admission-rejects-only-the-contradictory-record",
       "steps": [
         {
-          "event": "retraction",
+          "bundle": "multi-v2",
           "expect": {
             "history": [
-              "retraction"
+              "multi-v2"
             ],
-            "bindingEvent": "retraction",
-            "current": [],
+            "bindingBundle": "multi-v2",
+            "current": [
+              "multi-v2"
+            ],
             "grants": {
-              "purpose-a": [],
+              "purpose-a": [
+                "multi-v2"
+              ],
               "purpose-b": []
             },
-            "retractionEvents": [
-              "retraction"
-            ],
+            "retractionBundles": [],
             "disposition": "accepted",
-            "receiptEvent": "retraction",
+            "rejectedRecords": [],
+            "receiptBundle": "multi-v2",
             "reason": null
           }
         },
         {
-          "event": "changed-source-record",
+          "bundle": "mixed-admission",
           "expect": {
             "history": [
-              "retraction"
+              "multi-v2",
+              "mixed-admission"
             ],
-            "bindingEvent": "retraction",
-            "current": [],
+            "bindingBundle": "multi-v2",
+            "current": [
+              "multi-v2",
+              "mixed-admission.target"
+            ],
             "grants": {
-              "purpose-a": [],
+              "purpose-a": [
+                "multi-v2",
+                "mixed-admission.target"
+              ],
               "purpose-b": []
             },
-            "retractionEvents": [
-              "retraction"
+            "retractionBundles": [],
+            "disposition": "partially-accepted",
+            "rejectedRecords": [
+              "changed-source-record"
             ],
-            "disposition": "rejected",
-            "receiptEvent": null,
+            "receiptBundle": "mixed-admission",
             "reason": "source-output-record-conflict"
           }
         },
         {
-          "event": "multi-v2",
+          "bundle": "multi-v2",
           "expect": {
             "history": [
-              "retraction",
-              "multi-v2"
+              "multi-v2",
+              "mixed-admission"
             ],
-            "bindingEvent": "retraction",
-            "current": [],
+            "bindingBundle": "multi-v2",
+            "current": [
+              "multi-v2",
+              "mixed-admission.target"
+            ],
             "grants": {
               "purpose-a": [
-                "multi-v2"
+                "multi-v2",
+                "mixed-admission.target"
               ],
               "purpose-b": []
             },
-            "retractionEvents": [
-              "retraction"
-            ],
-            "disposition": "accepted",
-            "receiptEvent": "multi-v2",
-            "reason": null
-          }
-        },
-        {
-          "event": "multi-v2",
-          "expect": {
-            "history": [
-              "retraction",
-              "multi-v2"
-            ],
-            "bindingEvent": "retraction",
-            "current": [],
-            "grants": {
-              "purpose-a": [
-                "multi-v2"
-              ],
-              "purpose-b": []
-            },
-            "retractionEvents": [
-              "retraction"
-            ],
+            "retractionBundles": [],
             "disposition": "replayed",
-            "receiptEvent": "multi-v2",
+            "rejectedRecords": [],
+            "receiptBundle": "multi-v2",
             "reason": null
           }
         },
         {
-          "event": "retraction",
+          "bundle": "mixed-admission",
           "expect": {
             "history": [
-              "retraction",
-              "multi-v2"
+              "multi-v2",
+              "mixed-admission"
             ],
-            "bindingEvent": "retraction",
-            "current": [],
+            "bindingBundle": "multi-v2",
+            "current": [
+              "multi-v2",
+              "mixed-admission.target"
+            ],
             "grants": {
               "purpose-a": [
-                "multi-v2"
+                "multi-v2",
+                "mixed-admission.target"
               ],
               "purpose-b": []
             },
-            "retractionEvents": [
-              "retraction"
+            "retractionBundles": [],
+            "disposition": "partially-replayed",
+            "rejectedRecords": [
+              "changed-source-record"
             ],
-            "disposition": "replayed",
-            "receiptEvent": "retraction",
-            "reason": null
-          }
-        },
-        {
-          "event": "changed-source-record",
-          "expect": {
-            "history": [
-              "retraction",
-              "multi-v2"
-            ],
-            "bindingEvent": "retraction",
-            "current": [],
-            "grants": {
-              "purpose-a": [
-                "multi-v2"
-              ],
-              "purpose-b": []
-            },
-            "retractionEvents": [
-              "retraction"
-            ],
-            "disposition": "rejected",
-            "receiptEvent": null,
+            "receiptBundle": "mixed-admission",
             "reason": "source-output-record-conflict"
           }
         }
       ]
     },
     {
-      "id": "active-binding-rejects-contradictory-retraction",
+      "id": "typed-retraction-binds-no-output",
       "steps": [
         {
-          "event": "changed-source-record",
+          "bundle": "retraction",
           "expect": {
             "history": [
-              "changed-source-record"
+              "retraction"
             ],
-            "bindingEvent": "changed-source-record",
-            "current": [
-              "changed-source-record"
-            ],
+            "bindingBundle": null,
+            "current": [],
             "grants": {
-              "purpose-a": [
-                "changed-source-record"
-              ],
+              "purpose-a": [],
               "purpose-b": []
             },
-            "retractionEvents": [],
+            "retractionBundles": [
+              "retraction"
+            ],
             "disposition": "accepted",
-            "receiptEvent": "changed-source-record",
+            "rejectedRecords": [],
+            "receiptBundle": "retraction",
             "reason": null
           }
         },
         {
-          "event": "retraction",
+          "bundle": "changed-source-record",
           "expect": {
             "history": [
+              "retraction",
               "changed-source-record"
             ],
-            "bindingEvent": "changed-source-record",
+            "bindingBundle": "changed-source-record",
             "current": [
               "changed-source-record"
             ],
@@ -374,19 +364,51 @@
               ],
               "purpose-b": []
             },
-            "retractionEvents": [],
+            "retractionBundles": [
+              "retraction"
+            ],
+            "disposition": "accepted",
+            "rejectedRecords": [],
+            "receiptBundle": "changed-source-record",
+            "reason": null
+          }
+        },
+        {
+          "bundle": "multi-v2",
+          "expect": {
+            "history": [
+              "retraction",
+              "changed-source-record"
+            ],
+            "bindingBundle": "changed-source-record",
+            "current": [
+              "changed-source-record"
+            ],
+            "grants": {
+              "purpose-a": [
+                "changed-source-record"
+              ],
+              "purpose-b": []
+            },
+            "retractionBundles": [
+              "retraction"
+            ],
             "disposition": "rejected",
-            "receiptEvent": null,
+            "rejectedRecords": [
+              "multi-v2"
+            ],
+            "receiptBundle": null,
             "reason": "source-output-record-conflict"
           }
         },
         {
-          "event": "changed-source-record",
+          "bundle": "retraction",
           "expect": {
             "history": [
+              "retraction",
               "changed-source-record"
             ],
-            "bindingEvent": "changed-source-record",
+            "bindingBundle": "changed-source-record",
             "current": [
               "changed-source-record"
             ],
@@ -396,19 +418,23 @@
               ],
               "purpose-b": []
             },
-            "retractionEvents": [],
+            "retractionBundles": [
+              "retraction"
+            ],
             "disposition": "replayed",
-            "receiptEvent": "changed-source-record",
+            "rejectedRecords": [],
+            "receiptBundle": "retraction",
             "reason": null
           }
         },
         {
-          "event": "retraction",
+          "bundle": "changed-source-record",
           "expect": {
             "history": [
+              "retraction",
               "changed-source-record"
             ],
-            "bindingEvent": "changed-source-record",
+            "bindingBundle": "changed-source-record",
             "current": [
               "changed-source-record"
             ],
@@ -418,10 +444,147 @@
               ],
               "purpose-b": []
             },
-            "retractionEvents": [],
+            "retractionBundles": [
+              "retraction"
+            ],
+            "disposition": "replayed",
+            "rejectedRecords": [],
+            "receiptBundle": "changed-source-record",
+            "reason": null
+          }
+        },
+        {
+          "bundle": "multi-v2",
+          "expect": {
+            "history": [
+              "retraction",
+              "changed-source-record"
+            ],
+            "bindingBundle": "changed-source-record",
+            "current": [
+              "changed-source-record"
+            ],
+            "grants": {
+              "purpose-a": [
+                "changed-source-record"
+              ],
+              "purpose-b": []
+            },
+            "retractionBundles": [
+              "retraction"
+            ],
             "disposition": "rejected",
-            "receiptEvent": null,
+            "rejectedRecords": [
+              "multi-v2"
+            ],
+            "receiptBundle": null,
             "reason": "source-output-record-conflict"
+          }
+        }
+      ]
+    },
+    {
+      "id": "retraction-after-contradictory-claim",
+      "steps": [
+        {
+          "bundle": "changed-source-record",
+          "expect": {
+            "history": [
+              "changed-source-record"
+            ],
+            "bindingBundle": "changed-source-record",
+            "current": [
+              "changed-source-record"
+            ],
+            "grants": {
+              "purpose-a": [
+                "changed-source-record"
+              ],
+              "purpose-b": []
+            },
+            "retractionBundles": [],
+            "disposition": "accepted",
+            "rejectedRecords": [],
+            "receiptBundle": "changed-source-record",
+            "reason": null
+          }
+        },
+        {
+          "bundle": "retraction",
+          "expect": {
+            "history": [
+              "changed-source-record",
+              "retraction"
+            ],
+            "bindingBundle": "changed-source-record",
+            "current": [
+              "changed-source-record"
+            ],
+            "grants": {
+              "purpose-a": [
+                "changed-source-record"
+              ],
+              "purpose-b": []
+            },
+            "retractionBundles": [
+              "retraction"
+            ],
+            "disposition": "accepted",
+            "rejectedRecords": [],
+            "receiptBundle": "retraction",
+            "reason": null
+          }
+        },
+        {
+          "bundle": "changed-source-record",
+          "expect": {
+            "history": [
+              "changed-source-record",
+              "retraction"
+            ],
+            "bindingBundle": "changed-source-record",
+            "current": [
+              "changed-source-record"
+            ],
+            "grants": {
+              "purpose-a": [
+                "changed-source-record"
+              ],
+              "purpose-b": []
+            },
+            "retractionBundles": [
+              "retraction"
+            ],
+            "disposition": "replayed",
+            "rejectedRecords": [],
+            "receiptBundle": "changed-source-record",
+            "reason": null
+          }
+        },
+        {
+          "bundle": "retraction",
+          "expect": {
+            "history": [
+              "changed-source-record",
+              "retraction"
+            ],
+            "bindingBundle": "changed-source-record",
+            "current": [
+              "changed-source-record"
+            ],
+            "grants": {
+              "purpose-a": [
+                "changed-source-record"
+              ],
+              "purpose-b": []
+            },
+            "retractionBundles": [
+              "retraction"
+            ],
+            "disposition": "replayed",
+            "rejectedRecords": [],
+            "receiptBundle": "retraction",
+            "reason": null
           }
         }
       ]

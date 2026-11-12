@@ -58,6 +58,7 @@ WARNING: Observation/SensorKitKeyboardMetricsExample: Observation: Best Practice
 WARNING: Observation/SensorKitMessagesUsageExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
 WARNING: Observation/SensorKitOnWristExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
 WARNING: Observation/SensorKitPPGExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Observation/SensorKitPeripheralRotationRateExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
 WARNING: Observation/SensorKitPhoneUsageExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
 WARNING: Observation/SensorKitRotationRateExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
 WARNING: Observation/SensorKitSleepSessionExample: Observation: Best Practice Recommendation: In general, all observations should have a performer

@@ -129,7 +129,7 @@ These fields are admitted only on an output whose record-type extension is `Mind
 ### Provenance and applications
 
 The converting application is a Grove Application Device and the assembler in conversion Provenance. `DataOrigin.packageName` identifies the application that inserted the Record into Health Connect and is represented as the enterer's identifier-only logical Device Reference.
-It is not a Bundle Device node, does not claim a Grove Device profile, and does not invent an installation or event snapshot.
+It is not a Bundle Device node, does not claim a Grove Device profile, and does not invent an installation or content snapshot.
 The Reference fixes `type` to `Device`, prohibits a literal `reference`, and carries the complete Android package-name Identifier.
 It does not prove which hardware measured the value or which person performed it.
 Capture mode does not populate `Observation.method` or justify a performer.

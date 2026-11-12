@@ -15,7 +15,7 @@ It does not define a Grove-specific extraction operation or a hybrid extraction 
 The workflow has two distinct stages:
 
 1. SDC `$extract` returns one extracted resource or, for multiple resources, a transaction Bundle.
-2. The Grove projection stage adds exchange-scoped identity, device snapshots, and conversion Provenance, then packages the complete graph as a Grove Mobile collection Bundle.
+2. The Grove projection stage adds record identity, content-addressed Device snapshots, and conversion Provenance, then packages the record as a Grove Mobile collection Bundle.
 
 The collection Bundle shown below is therefore the final Grove exchange artifact, not the literal response returned by `$extract`.
 
@@ -46,8 +46,8 @@ Its explicit `author` identifies the person who recorded the answers and becomes
 Under Observation-based extraction, `QuestionnaireResponse.authored` supplies both the effective time and the issued time described in [Measurement time](#measurement-time).
 
 The [Grove Questionnaire Writer Context extension](StructureDefinition-grove-questionnaire-writer-context.html) records plain facts about the application and host that captured the response.
-The response producer does not create a Grove device snapshot because snapshot identity is scoped to an exchange event that does not yet exist when the response is authored.
-After an exchange event and identity key are available, the Grove projection stage creates the application and host snapshots from these facts.
+The response producer does not create a Grove device snapshot: a snapshot identifier is a keyed digest of the Device's complete rendered content, so only the projecting system, which holds the identity key and renders the Device, can mint it.
+The Grove projection stage creates the host snapshot and then the application snapshot from these facts; the same facts give the same snapshots in every Bundle, and a changed fact gives a new one.
 
 ### Unit declarations
 
@@ -88,7 +88,8 @@ The response shows how group children align with the instrument hierarchy and ho
 
 {% json fixtures/extraction/exchange-bundle.json liquid/extraction-bundle.liquid %}
 
-The Grove exchange Bundle contains the Patient and QuestionnaireResponse, application and host Device snapshots, two Observations, and the conversion Provenance that joins the graph.
+The Grove exchange Bundle carries one record: two Observations and the conversion Provenance that targets them, keyed by its record version.
+The Patient, the QuestionnaireResponse, and the application and host Device snapshots are shared nodes, each keyed by its content snapshot; the QuestionnaireResponse repeats its key in the `grove-context-snapshot` extension, because its one identifier holds its submission identifier.
 The body-weight item becomes a standalone Observation; systolic and diastolic pressure become components of one blood-pressure Observation.
 Both Observations receive `vital-signs` from the Questionnaire declaration.
 Both receive `effectiveDateTime` and `issued` from the response's exact `authored` value, and copy their `performer` from the response's explicit `author`.
@@ -108,8 +109,8 @@ The Grove projection stage adds the identity, device context, and Provenance req
 Each Observation receives `source-record` and `source-output` identifiers, `manual-entry` as its recording method, and a gateway-device reference to the application Device.
 
 The Grove Questionnaire Writer Context extension supplies the facts used to create a [Grove Application Device](https://grovealliance.org/fhir/mobile/StructureDefinition-grove-application-device.html) and its parent [Grove Host Device](https://grovealliance.org/fhir/mobile/StructureDefinition-grove-host-device.html).
-The application identifier, name, version, and build populate the application Device; the host model and operating-system version populate its parent.
-Both Devices receive event-scoped snapshot identifiers during the Grove projection stage.
+The application identifier, name, version, and build populate the application Device; the host's model and operating-system facts populate its parent.
+Both Devices receive content `device-snapshot` identifiers during the Grove projection stage, the host first, because the application Device's `parent` reference is part of its content.
 
 ### Information unavailable to QuestionnaireResponse projection
 

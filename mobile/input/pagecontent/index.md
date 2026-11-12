@@ -29,8 +29,9 @@ That page introduces the core resources used by these guides, distinguishes reso
 
 ### The exchange model
 
-The collection Bundle is the exchange unit.
-Its output entries carry the clinical records—often Observations—while supporting entries provide the context needed to interpret and audit them.
+The record is the semantic unit of exchange: one source-record revision, the outputs derived from it, and the one conversion Provenance that targets them.
+A collection Bundle carries one or more records of one participant.
+Its output entries carry the clinical results—often Observations—while supporting entries, shared by the records that reference them, provide the context needed to interpret and audit them.
 
 ```text
 Patient <--------- Observation ---------> recording Device

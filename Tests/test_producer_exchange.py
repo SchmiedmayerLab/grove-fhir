@@ -28,6 +28,8 @@ from Tests.producer_validation_test_support import (
     copy,
     derive_hmac_identity,
     json,
+    rekey_records,
+    single_record,
     tempfile,
     typed_identifier,
 )
@@ -77,12 +79,13 @@ class ProducerExchangeTests(ProducerValidationTestCase):
                 manifest_validation.validate_manifest(root / "manifest.json")
 
     def test_exchange_profiles_references_entities_and_retraction_roles_fail_closed(self) -> None:
-        active = json.loads(
+        # One record of the two-record base, so each planted defect is the record's only one.
+        active = single_record(json.loads(
             (ROOT / "Conformance/example-producer/resources/exchange-bundle.json").read_text(
                 encoding="utf-8"
             )
-        )
-        exchange_bundle.validate_exchange_bundle(active, "active")
+        ))
+        exchange_bundle.validate_exchange_bundle(rekey_records(active), "active")
         observation_index = next(
             index for index, entry in enumerate(active["entry"])
             if entry["resource"].get("resourceType") == "Observation"
@@ -107,14 +110,14 @@ class ProducerExchangeTests(ProducerValidationTestCase):
                 diagnostics.ProducerValidationError,
                 "active Observation must carry|admitted semantic profile",
             ):
-                exchange_bundle.validate_exchange_bundle(invalid, "active")
+                exchange_bundle.validate_exchange_bundle(rekey_records(invalid), "active")
 
         wrong_subject = copy.deepcopy(active)
         wrong_subject["entry"][observation_index]["resource"]["subject"]["reference"] = device_url
         with self.assertRaisesRegex(
             diagnostics.ProducerValidationError, r"Observation\.subject must reference Patient"
         ):
-            exchange_bundle.validate_exchange_bundle(wrong_subject, "active")
+            exchange_bundle.validate_exchange_bundle(rekey_records(wrong_subject), "active")
 
         false_declared_type = copy.deepcopy(active)
         false_declared_type["entry"][observation_index]["resource"]["subject"]["type"] = "Device"
@@ -122,18 +125,19 @@ class ProducerExchangeTests(ProducerValidationTestCase):
             diagnostics.ProducerValidationError,
             "type must equal the referenced resource type Patient",
         ):
-            exchange_bundle.validate_exchange_bundle(false_declared_type, "active")
+            exchange_bundle.validate_exchange_bundle(rekey_records(false_declared_type), "active")
 
         logical_subject = copy.deepcopy(active)
         patient_url = logical_subject["entry"][observation_index]["resource"]["subject"]["reference"]
         logical_subject["entry"][observation_index]["resource"]["subject"] = {
             "type": "Patient",
             "identifier": {
-                "system": "https://deployment.example/fhir/NamingSystem/patient-pseudonym",
-                "value": "participant-42",
+                "system": "https://study.example.org/fhir/identifiers/participant",
+                "value": "participant-001",
             },
         }
-        # The subject was the Patient entry's only reference, so a logical subject leaves no Patient to carry.
+        # The subject was the Patient entry's only reference, so a logical subject leaves no Patient
+        # to carry; the record keeps its one subject, the pseudonym its QuestionnaireResponse states.
         logical_subject["entry"] = [
             entry for entry in logical_subject["entry"] if entry["fullUrl"] != patient_url
         ]
@@ -141,7 +145,7 @@ class ProducerExchangeTests(ProducerValidationTestCase):
             index for index, entry in enumerate(logical_subject["entry"])
             if entry["resource"]["resourceType"] == "Observation"
         )
-        exchange_bundle.validate_exchange_bundle(logical_subject, "active")
+        exchange_bundle.validate_exchange_bundle(rekey_records(logical_subject), "active")
 
         untyped_logical_subject = copy.deepcopy(logical_subject)
         del untyped_logical_subject["entry"][logical_index]["resource"]["subject"]["type"]
@@ -149,7 +153,7 @@ class ProducerExchangeTests(ProducerValidationTestCase):
             diagnostics.ProducerValidationError,
             "logical reference type must be Patient",
         ):
-            exchange_bundle.validate_exchange_bundle(untyped_logical_subject, "active")
+            exchange_bundle.validate_exchange_bundle(rekey_records(untyped_logical_subject), "active")
 
         mixed_subject = copy.deepcopy(active)
         mixed_subject["entry"][observation_index]["resource"]["subject"]["identifier"] = {
@@ -160,7 +164,7 @@ class ProducerExchangeTests(ProducerValidationTestCase):
             diagnostics.ProducerValidationError,
             "must not mix a resolving literal with a logical identifier",
         ):
-            exchange_bundle.validate_exchange_bundle(mixed_subject, "active")
+            exchange_bundle.validate_exchange_bundle(rekey_records(mixed_subject), "active")
 
         reserved_subject = copy.deepcopy(logical_subject)
         reserved_subject["entry"][logical_index]["resource"]["subject"][
@@ -169,7 +173,7 @@ class ProducerExchangeTests(ProducerValidationTestCase):
         with self.assertRaisesRegex(
             diagnostics.ProducerValidationError, "protocol-reserved system"
         ):
-            exchange_bundle.validate_exchange_bundle(reserved_subject, "active")
+            exchange_bundle.validate_exchange_bundle(rekey_records(reserved_subject), "active")
 
         role_claiming_subject = copy.deepcopy(logical_subject)
         role_claiming_subject["entry"][logical_index]["resource"]["subject"][
@@ -181,7 +185,7 @@ class ProducerExchangeTests(ProducerValidationTestCase):
         with self.assertRaisesRegex(
             diagnostics.ProducerValidationError, "must not claim a Grove identifier role"
         ):
-            exchange_bundle.validate_exchange_bundle(role_claiming_subject, "active")
+            exchange_bundle.validate_exchange_bundle(rekey_records(role_claiming_subject), "active")
 
         wrong_gateway = copy.deepcopy(active)
         wrong_gateway["entry"][observation_index]["resource"]["extension"][0][
@@ -191,7 +195,7 @@ class ProducerExchangeTests(ProducerValidationTestCase):
             diagnostics.ProducerValidationError,
             r"extension\[[0-9]+\]\.valueReference must reference Device",
         ):
-            exchange_bundle.validate_exchange_bundle(wrong_gateway, "active")
+            exchange_bundle.validate_exchange_bundle(rekey_records(wrong_gateway), "active")
 
         for malformed_value in (None, "Device/not-a-reference-object"):
             malformed_gateway = copy.deepcopy(active)
@@ -204,7 +208,7 @@ class ProducerExchangeTests(ProducerValidationTestCase):
                 diagnostics.ProducerValidationError,
                 "must contain exactly one Reference-shaped valueReference",
             ):
-                exchange_bundle.validate_exchange_bundle(malformed_gateway, "active")
+                exchange_bundle.validate_exchange_bundle(rekey_records(malformed_gateway), "active")
 
         missing_gateway_value = copy.deepcopy(active)
         del missing_gateway_value["entry"][observation_index]["resource"]["extension"][0][
@@ -214,7 +218,7 @@ class ProducerExchangeTests(ProducerValidationTestCase):
             diagnostics.ProducerValidationError,
             "must contain exactly one Reference-shaped valueReference",
         ):
-            exchange_bundle.validate_exchange_bundle(missing_gateway_value, "active")
+            exchange_bundle.validate_exchange_bundle(rekey_records(missing_gateway_value), "active")
 
         multiple_gateway_values = copy.deepcopy(active)
         multiple_gateway_values["entry"][observation_index]["resource"]["extension"][0][
@@ -224,7 +228,7 @@ class ProducerExchangeTests(ProducerValidationTestCase):
             diagnostics.ProducerValidationError,
             "must contain exactly one Reference-shaped valueReference",
         ):
-            exchange_bundle.validate_exchange_bundle(multiple_gateway_values, "active")
+            exchange_bundle.validate_exchange_bundle(rekey_records(multiple_gateway_values), "active")
 
         literal_source = copy.deepcopy(active)
         literal_source["entry"][provenance_index]["resource"]["entity"][0]["what"][
@@ -234,7 +238,7 @@ class ProducerExchangeTests(ProducerValidationTestCase):
             diagnostics.ProducerValidationError,
             "source must be exactly one logical Identifier entity",
         ):
-            exchange_bundle.validate_exchange_bundle(literal_source, "active")
+            exchange_bundle.validate_exchange_bundle(rekey_records(literal_source), "active")
 
         additional_source = copy.deepcopy(active)
         additional_source["entry"][provenance_index]["resource"]["entity"].append(
@@ -245,31 +249,35 @@ class ProducerExchangeTests(ProducerValidationTestCase):
         with self.assertRaisesRegex(
             diagnostics.ProducerValidationError, "identify exactly one source record"
         ):
-            exchange_bundle.validate_exchange_bundle(additional_source, "active")
+            exchange_bundle.validate_exchange_bundle(rekey_records(additional_source), "active")
 
         retraction = json.loads(
             (ROOT / "Conformance/corpora/mobile-exchange/retraction-bundle.json").read_text(
                 encoding="utf-8"
             )
         )
-        exchange_bundle.validate_exchange_bundle(retraction, "retraction")
+        exchange_bundle.validate_exchange_bundle(rekey_records(retraction), "retraction")
         wrong_target_type = copy.deepcopy(retraction)
         wrong_target_type["entry"][0]["resource"]["target"][0]["type"] = "Device"
         with self.assertRaisesRegex(
             diagnostics.ProducerValidationError,
             "role primary-output does not admit resource type Device",
         ):
-            exchange_bundle.validate_exchange_bundle(wrong_target_type, "retraction")
+            exchange_bundle.validate_exchange_bundle(rekey_records(wrong_target_type), "retraction")
 
         wrong_target_identifier_role = copy.deepcopy(retraction)
-        wrong_target_identifier_role["entry"][0]["resource"]["target"][0]["identifier"][
-            "type"
-        ]["coding"][0]["code"] = "device-snapshot"
+        target_identifier = wrong_target_identifier_role["entry"][0]["resource"]["target"][0]["identifier"]
+        target_identifier["type"]["coding"][0]["code"] = "device-snapshot"
+        # The Device snapshot namespace, so no system changes its role within the Bundle.
+        target_identifier["system"] = next(
+            entry["resource"]["identifier"][0]["system"]
+            for entry in retraction["entry"] if entry["resource"]["resourceType"] == "Device"
+        )
         with self.assertRaisesRegex(
             diagnostics.ProducerValidationError,
             "role primary-output requires the source-output identifier role",
         ):
-            exchange_bundle.validate_exchange_bundle(wrong_target_identifier_role, "retraction")
+            exchange_bundle.validate_exchange_bundle(rekey_records(wrong_target_identifier_role), "retraction")
 
         # Only the source-record role is untyped; an exact target still states its type.
         untyped_exact_target = copy.deepcopy(retraction)
@@ -277,7 +285,7 @@ class ProducerExchangeTests(ProducerValidationTestCase):
         with self.assertRaisesRegex(
             diagnostics.ProducerValidationError, "must state its resource type"
         ):
-            exchange_bundle.validate_exchange_bundle(untyped_exact_target, "retraction")
+            exchange_bundle.validate_exchange_bundle(rekey_records(untyped_exact_target), "retraction")
 
         source_record_target_retraction = json.loads(
             (
@@ -285,7 +293,7 @@ class ProducerExchangeTests(ProducerValidationTestCase):
                 / "Conformance/corpora/mobile-exchange/source-record-target-retraction-bundle.json"
             ).read_text(encoding="utf-8")
         )
-        exchange_bundle.validate_exchange_bundle(source_record_target_retraction, "retraction")
+        exchange_bundle.validate_exchange_bundle(rekey_records(source_record_target_retraction), "retraction")
         # The sole-target rule holds wherever the source-record target sits.
         exact_first = copy.deepcopy(source_record_target_retraction)
         exact_first["entry"][0]["resource"]["target"] = [
@@ -295,7 +303,7 @@ class ProducerExchangeTests(ProducerValidationTestCase):
         self.assertEqual(
             [
                 (item["code"], item["location"])
-                for item in exchange_bundle.exchange_bundle_diagnostics(exact_first, "retraction")
+                for item in exchange_bundle.exchange_bundle_diagnostics(rekey_records(exact_first), "retraction")
             ],
             [("mobile-retraction.source-record-target", "Provenance.target")],
         )
@@ -309,24 +317,41 @@ class ProducerExchangeTests(ProducerValidationTestCase):
         retraction_provenance["entity"][0]["what"]["reference"] = "#forbidden-source"
         with self.assertRaisesRegex(
             diagnostics.ProducerValidationError,
-            "contains a Resource; Mobile event graphs require addressable Bundle entries",
+            "contains a Resource; Mobile .* require addressable Bundle entries",
         ):
-            exchange_bundle.validate_exchange_bundle(retraction_literal_source, "retraction")
+            exchange_bundle.validate_exchange_bundle(rekey_records(retraction_literal_source), "retraction")
 
     def test_questionnaire_response_subject_uses_the_governed_patient_contract(self) -> None:
-        active = json.loads(
+        # One record of the two-record base, so each planted defect is the record's only one.
+        active = single_record(json.loads(
             (ROOT / "Conformance/example-producer/resources/exchange-bundle.json").read_text(
                 encoding="utf-8"
             )
-        )
+        ))
         response_index = next(
             index
             for index, entry in enumerate(active["entry"])
             if entry["resource"].get("resourceType") == "QuestionnaireResponse"
         )
         response = active["entry"][response_index]["resource"]
+        response_key = next(
+            item["valueIdentifier"] for item in active["entry"][response_index]["extension"]
+            if item["url"].endswith("/grove-exchange-entry-key")
+        )
+        # The response repeats its context-snapshot entry key, because its one R4 identifier
+        # holds the submission identifier (H4).
+        snapshots = [
+            item for item in response["extension"]
+            if item["url"] == "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-context-snapshot"
+        ]
         self.assertEqual(
-            response["extension"],
+            [(item["valueIdentifier"]["system"], item["valueIdentifier"]["value"]) for item in snapshots],
+            [(response_key["system"], response_key["value"])],
+        )
+        self.assertEqual(response_key["type"]["coding"][0]["code"], "context-snapshot")
+        self.assertNotIn("type", response["identifier"])
+        self.assertEqual(
+            [item for item in response["extension"] if item not in snapshots],
             [{
                 "url": (
                     "http://hl7.org/fhir/StructureDefinition/"
@@ -369,7 +394,7 @@ class ProducerExchangeTests(ProducerValidationTestCase):
             for entry in active["entry"]
             if entry["resource"].get("resourceType") == "Device"
         )
-        exchange_bundle.validate_exchange_bundle(active, "active")
+        exchange_bundle.validate_exchange_bundle(rekey_records(active), "active")
 
         logical = copy.deepcopy(active)
         logical["entry"][response_index]["resource"]["subject"] = {
@@ -379,7 +404,7 @@ class ProducerExchangeTests(ProducerValidationTestCase):
                 "value": "participant-42",
             },
         }
-        exchange_bundle.validate_exchange_bundle(logical, "active")
+        exchange_bundle.validate_exchange_bundle(rekey_records(logical), "active")
 
         wrong_target = copy.deepcopy(active)
         wrong_target["entry"][response_index]["resource"]["subject"] = {
@@ -389,7 +414,7 @@ class ProducerExchangeTests(ProducerValidationTestCase):
             diagnostics.ProducerValidationError,
             r"QuestionnaireResponse\.subject must reference Patient",
         ):
-            exchange_bundle.validate_exchange_bundle(wrong_target, "active")
+            exchange_bundle.validate_exchange_bundle(rekey_records(wrong_target), "active")
 
         reserved = copy.deepcopy(logical)
         reserved["entry"][response_index]["resource"]["subject"]["identifier"][
@@ -398,7 +423,7 @@ class ProducerExchangeTests(ProducerValidationTestCase):
         with self.assertRaisesRegex(
             diagnostics.ProducerValidationError, "protocol-reserved system"
         ):
-            exchange_bundle.validate_exchange_bundle(reserved, "active")
+            exchange_bundle.validate_exchange_bundle(rekey_records(reserved), "active")
 
         role_claiming = copy.deepcopy(logical)
         role_claiming["entry"][response_index]["resource"]["subject"]["identifier"][
@@ -410,7 +435,7 @@ class ProducerExchangeTests(ProducerValidationTestCase):
         with self.assertRaisesRegex(
             diagnostics.ProducerValidationError, "must not claim a Grove identifier role"
         ):
-            exchange_bundle.validate_exchange_bundle(role_claiming, "active")
+            exchange_bundle.validate_exchange_bundle(rekey_records(role_claiming), "active")
 
         for malformed_subject in (
             "Patient/not-a-reference-object",
@@ -423,7 +448,7 @@ class ProducerExchangeTests(ProducerValidationTestCase):
             with self.subTest(subject=malformed_subject), self.assertRaisesRegex(
                 diagnostics.ProducerValidationError, "must be one Reference object"
             ):
-                exchange_bundle.validate_exchange_bundle(malformed, "active")
+                exchange_bundle.validate_exchange_bundle(rekey_records(malformed), "active")
 
         malformed_reference_keys = (
             (
@@ -449,7 +474,7 @@ class ProducerExchangeTests(ProducerValidationTestCase):
             with self.subTest(subject=subject), self.assertRaisesRegex(
                 diagnostics.ProducerValidationError, message
             ):
-                exchange_bundle.validate_exchange_bundle(malformed, "active")
+                exchange_bundle.validate_exchange_bundle(rekey_records(malformed), "active")
 
         observation_index = active["entry"].index(next(
             entry
@@ -470,7 +495,7 @@ class ProducerExchangeTests(ProducerValidationTestCase):
                 diagnostics.ProducerValidationError,
                 "must be an array containing only Reference objects",
             ):
-                exchange_bundle.validate_exchange_bundle(malformed, "active")
+                exchange_bundle.validate_exchange_bundle(rekey_records(malformed), "active")
 
     def test_reviewed_quantity_value_domains_accept_boundaries_and_reject_bypasses(self) -> None:
         body_fat = (

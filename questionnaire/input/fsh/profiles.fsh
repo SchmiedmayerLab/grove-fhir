@@ -205,7 +205,7 @@ Description: "A response to one exact version of a Grove Questionnaire, with a s
 * author MS
 * source MS
 * extension contains GroveQuestionnaireWriterContext named writerContext 0..1 MS
-* extension[writerContext] ^short = "What captured the response, so a projection can rebuild the device snapshot"
+* extension[writerContext] ^short = "What captured the response, so a projection can build the application and host Device snapshots"
 * extension[completionMode] 1..1 MS
 * extension[completionMode].value[x] only CodeableConcept
 * extension[completionMode].valueCodeableConcept.coding 1..1 MS

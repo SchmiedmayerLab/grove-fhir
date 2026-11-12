@@ -18,11 +18,11 @@ Instance: GroveSensorDeviceExample
 InstanceOf: GroveRecordingDevice
 Usage: #example
 Title: "Grove Sensor Example Device"
-Description: "An event-time snapshot of the physical sensor that captured the examples, backed by a governed stable per-unit token."
+Description: "A content snapshot of the physical sensor that captured the examples. Its device-snapshot identifier is its content key; a governed stable per-unit token also gives it a recording-device unit key."
 * identifier[physicalUnit].system = "https://study.example.org/fhir/NamingSystem/grove-recording-device-v0/test-key/1"
-* identifier[physicalUnit].value = "v0:test-key:1:izeNpl55_7d6M_9MCfZNMbX2Uu-on5fNZ7fedyWW1g8"
-* identifier[eventSnapshot].system = "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v0/test-key/1"
-* identifier[eventSnapshot].value = "v0:test-key:1:Wwnmc-OpfPgk4HXP3hG_xPwlF5OLcqYHduQ3vIKqOj8"
+* identifier[physicalUnit].value = "v0:test-key:1:3u6TBfv_KXfH_RaTMEOB2UOz_CkQ-sDZOSkdPN9O2Lc"
+* identifier[snapshot].system = "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v0/test-key/1"
+* identifier[snapshot].value = "v0:test-key:1:Ycdj8UUClQZew0ENaWl68eoDQfmbcaKnSbLvdkkX08Y"
 * status = #active
 * manufacturer = "Example Devices"
 * modelNumber = "Wave 2"
@@ -35,7 +35,7 @@ Title: "Grove Sensor Example Converter"
 Description: "The already-running application that transformed an already-obtained sensor recording into FHIR resources."
 * status = #active
 * identifier[applicationSnapshot].system = "https://study.example.org/fhir/NamingSystem/grove-device-snapshot-v0/test-key/1"
-* identifier[applicationSnapshot].value = "v0:test-key:1:_cdbrIUf-0-RxDX02Z1TvNslbnXran1mhDn_kEfsvn0"
+* identifier[applicationSnapshot].value = "v0:test-key:1:Mfy_0SdEAySPEcPEPoOrsiZHZRVVK_hU4KNm6J_Qblc"
 * deviceName[applicationName].name = "Sensor Converter"
 * deviceName[applicationName].type = #user-friendly-name
 
@@ -111,7 +111,10 @@ Instance: GroveSensorConversionProvenanceExample
 InstanceOf: GroveSensorConversionProvenance
 Usage: #example
 Title: "Grove Sensor Conversion Provenance"
-Description: "The source-neutral conversion event that targets both the structured ECG and its native Recording Document."
+Description: "The source-neutral conversion Provenance of one record: it targets both the structured ECG and its native Recording Document, and repeats its record-version key in grove-record-version."
+* extension[recordVersion].valueIdentifier.type = $groveIdentifierRole#record-version "Record version"
+* extension[recordVersion].valueIdentifier.system = "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1"
+* extension[recordVersion].valueIdentifier.value = "v0:test-key:1:N_va5_IaE-mWPMJUYZJLaVND5hr0op5k2TqddLdGUUg"
 * target[0] = Reference(GroveSensorECGExample)
 * target[0].display = "Lead I ECG"
 * target[1] = Reference(GroveSensorRecordingDocumentExample)
