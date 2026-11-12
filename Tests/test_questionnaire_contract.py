@@ -2103,6 +2103,7 @@ class QuestionnaireContractTests(unittest.TestCase):
             package["dependencies"].get("hl7.fhir.uv.extensions.r4"),
             "5.3.0",
         )
+        self.assertEqual(package["dependencies"].get("hl7.terminology.r4"), "7.3.0")
 
 
 if __name__ == "__main__":

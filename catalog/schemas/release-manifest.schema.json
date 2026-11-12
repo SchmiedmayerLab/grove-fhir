@@ -77,7 +77,7 @@
         },
         "oneOf": [
           {"const": {"source": "mobile", "packageId": "org.grovealliance.fhir.mobile", "canonical": "https://grovealliance.org/fhir/mobile", "directDependencies": ["hl7.terminology.r4#7.3.0", "hl7.fhir.uv.extensions.r4#5.3.0"]}},
-          {"const": {"source": "questionnaire", "packageId": "org.grovealliance.fhir.questionnaire", "canonical": "https://grovealliance.org/fhir/questionnaire", "directDependencies": ["hl7.fhir.uv.sdc#4.0.0", "hl7.fhir.uv.extensions.r4#5.3.0"]}},
+          {"const": {"source": "questionnaire", "packageId": "org.grovealliance.fhir.questionnaire", "canonical": "https://grovealliance.org/fhir/questionnaire", "directDependencies": ["hl7.terminology.r4#7.3.0", "hl7.fhir.uv.sdc#4.0.0", "hl7.fhir.uv.extensions.r4#5.3.0"]}},
           {"const": {"source": "sensor", "packageId": "org.grovealliance.fhir.sensor", "canonical": "https://grovealliance.org/fhir/sensor", "directDependencies": ["hl7.terminology.r4#7.3.0", "hl7.fhir.uv.extensions.r4#5.3.0", "org.grovealliance.fhir.mobile#0.8.0"]}},
           {"const": {"source": "sensorkit", "packageId": "org.grovealliance.fhir.sensorkit", "canonical": "https://grovealliance.org/fhir/sensorkit", "directDependencies": ["hl7.terminology.r4#7.3.0", "hl7.fhir.uv.extensions.r4#5.3.0", "org.grovealliance.fhir.mobile#0.8.0", "org.grovealliance.fhir.sensor#0.8.0"]}},
           {"const": {"source": "healthkit", "packageId": "org.grovealliance.fhir.healthkit", "canonical": "https://grovealliance.org/fhir/healthkit", "directDependencies": ["hl7.terminology.r4#7.3.0", "hl7.fhir.uv.extensions.r4#5.3.0", "org.grovealliance.fhir.mobile#0.8.0", "org.grovealliance.fhir.sensor#0.8.0"]}},

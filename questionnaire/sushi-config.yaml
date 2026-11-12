@@ -29,6 +29,9 @@ copyright: >-
   This material includes SNOMED Clinical Terms® (SNOMED CT®), which is copyright © SNOMED International. Implementers must hold a valid SNOMED CT affiliate licence in their territory; this guide grants no rights in SNOMED CT.
 
 dependencies:
+  # Declared like every other guide's: left out, SUSHI adds the newest THO it can resolve, which Publisher 2.3.3
+  # cannot use and the offline package closure does not hold (publication/dependency-compatibility.md).
+  hl7.terminology.r4: 7.3.0
   hl7.fhir.uv.sdc: 4.0.0
   hl7.fhir.uv.extensions.r4: 5.3.0
 
