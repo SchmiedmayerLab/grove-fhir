@@ -8,11 +8,12 @@
 
 name: Build One Guide Wave
 
-# One wave of the guide build. Every guide in a wave is independent of the others, so each gets its
-# own runner; a wave starts only once the waves it depends on have finished, because a guide reads
-# the built package of every guide it depends on.
+# One wave of the guide build: either its trunk (the guides other guides depend on) or its leaves.
+# Every guide here is independent of the others, so each gets its own runner; it starts only once the
+# trunk of the wave before has finished, because a guide reads the built package of every guide it
+# depends on, and every such guide is a trunk guide of an earlier wave.
 #
-# The caller passes the wave's guides and the guides already built. Nothing here names a guide, so
+# The caller passes the guides and the trunk guides already built. Nothing here names a guide, so
 # adding one changes only Scripts/guide-build-plan.py.
 on:
   workflow_call:
@@ -22,9 +23,14 @@ on:
         required: true
         type: string
       built:
-        description: The guides earlier waves built, as a JSON array; their outputs are restored.
+        description: The trunk guides earlier waves built, as a JSON array; their packages are restored.
         required: true
         type: string
+      upload-package:
+        description: Publish each guide's package for later waves, which only trunk guides need.
+        required: false
+        type: boolean
+        default: false
       ref:
         description: The commit to build.
         required: true
@@ -77,18 +83,39 @@ jobs:
           restore-keys: |
             fhir-guides-${{ runner.os }}-${{ hashFiles('Scripts/download-fhir-tools.sh') }}-
       - run: npm ci
-      # Every earlier wave's output, restored into the tree where a dependent guide expects it.
+      # A dependent guide reads only each dependency's package.tgz, so only the packages are
+      # restored, and only the ones named in `built`: those come from trunk jobs that have finished,
+      # never from a concurrent job that may still be uploading.
+      - name: Name the packages earlier waves built
+        if: inputs.built != '[]'
+        id: built
+        env:
+          BUILT: ${{ inputs.built }}
+        run: |
+          python3 - <<'PATTERN' >> "$GITHUB_OUTPUT"
+          import json, os
+          built = json.loads(os.environ["BUILT"])
+          # One name stays literal: a brace with no comma is not an alternation.
+          names = built[0] if len(built) == 1 else "{" + ",".join(built) + "}"
+          print(f"pattern=guide-package-{names}")
+          PATTERN
+      # Each package artifact holds `<guide>/package.tgz`, and merging keeps that layout whether the
+      # pattern matches one artifact or several.
       - uses: actions/download-artifact@v8
         if: inputs.built != '[]'
         with:
-          pattern: guide-output-*
-          path: .build/restored
-      - name: Restore the guides earlier waves built
+          pattern: ${{ steps.built.outputs.pattern }}
+          merge-multiple: true
+          path: .build/restored-packages
+      - name: Restore the packages earlier waves built
         if: inputs.built != '[]'
+        env:
+          BUILT: ${{ inputs.built }}
         run: |
-          for guide in $(printf '%s' '${{ inputs.built }}' | python3 -c 'import json,sys; print(" ".join(json.load(sys.stdin)))'); do
+          for guide in $(printf '%s' "$BUILT" | python3 -c 'import json,sys; print(" ".join(json.load(sys.stdin)))'); do
+            test -f ".build/restored-packages/$guide/package.tgz"
             mkdir -p "$guide/output"
-            cp -R ".build/restored/guide-output-$guide/." "$guide/output/"
+            cp ".build/restored-packages/$guide/package.tgz" "$guide/output/package.tgz"
           done
       - name: Build ${{ matrix.guide }}
         run: ./Scripts/build-guides.sh "${{ matrix.guide }}"
@@ -104,6 +131,20 @@ jobs:
             ${{ matrix.guide }}/output/qa.json
             ${{ matrix.guide }}/output/package.tgz
             ${{ matrix.guide }}/fsh-generated/resources/ImplementationGuide-*.json
+      - name: Stage the package later waves build against
+        if: inputs.upload-package
+        run: |
+          mkdir -p ".build/package-artifact/${{ matrix.guide }}"
+          cp "${{ matrix.guide }}/output/package.tgz" ".build/package-artifact/${{ matrix.guide }}/package.tgz"
+      - uses: actions/upload-artifact@v7
+        if: inputs.upload-package
+        with:
+          name: guide-package-${{ matrix.guide }}
+          if-no-files-found: error
+          retention-days: 1
+          # Already gzip-compressed.
+          compression-level: 0
+          path: .build/package-artifact
       - uses: actions/upload-artifact@v7
         with:
           name: guide-output-${{ matrix.guide }}

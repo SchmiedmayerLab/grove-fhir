@@ -17,7 +17,7 @@ from typing import Any
 try:
     from Scripts.producer_validation.diagnostics import ProducerValidationError
     from Scripts.producer_validation.external_validator import (
-        collect_validator_outcomes, reject_validator_errors, run_validator,
+        collect_validator_outcomes, groups_interact, reject_validator_errors, run_validator,
         validator_error_messages,
     )
     from Scripts.producer_validation.io import read_json, resolve_unlinked_regular_file
@@ -26,7 +26,7 @@ except ModuleNotFoundError:  # Direct `python Scripts/validate-fixtures.py` exec
     sys.path.insert(0, str(Path(__file__).resolve().parent))
     from producer_validation.diagnostics import ProducerValidationError  # type: ignore[no-redef]
     from producer_validation.external_validator import (  # type: ignore[no-redef]
-        collect_validator_outcomes, reject_validator_errors, run_validator,
+        collect_validator_outcomes, groups_interact, reject_validator_errors, run_validator,
         validator_error_messages,
     )
     from producer_validation.io import (  # type: ignore[no-redef]
@@ -235,20 +235,60 @@ def reject_negative_case(case: dict[str, Any], outcome: dict[str, Any]) -> None:
             )
 
 
+def corpus_members(corpus: dict[str, Any]) -> list[Path]:
+    return [corpus["control"], *(case["path"] for case in corpus["cases"])]
+
+
+def check_negative_corpus(corpus: dict[str, Any], outcomes: dict[Path, dict[str, Any]]) -> None:
+    reject_validator_errors(outcomes[corpus["control"]], corpus["control"].name)
+    for case in corpus["cases"]:
+        reject_negative_case(case, outcomes[case["path"]])
+
+
 def reject_negative_corpus(
     validator: Path, packages: list[Path], corpus: dict[str, Any]
 ) -> None:
+    check_negative_corpus(
+        corpus,
+        dict(
+            collect_validator_outcomes(
+                validator, packages, corpus_members(corpus), allow_example_urls=True
+            )
+        ),
+    )
+
+
+def validate_all(
+    validator: Path,
+    packages: list[Path],
+    resources: list[Path],
+    corpora: list[dict[str, Any]],
+) -> None:
+    """Validate the fixtures and reject every negative corpus, in one Validator run if that is safe.
+
+    Each Validator run spends most of its time loading the packages, and the fixtures and every
+    negative corpus all load the same ones. One run checks each input exactly as a run of its own
+    group would, unless an input could resolve a canonical URL another group defines; then each
+    group keeps its own run.
+    """
+    groups = [resources, *(corpus_members(corpus) for corpus in corpora)]
+    if groups_interact(groups):
+        run_validator(validator, packages, resources, allow_example_urls=True)
+        for corpus in corpora:
+            reject_negative_corpus(validator, packages, corpus)
+        return
     outcomes = dict(
         collect_validator_outcomes(
             validator,
             packages,
-            [corpus["control"], *(case["path"] for case in corpus["cases"])],
+            list(dict.fromkeys(path for group in groups for path in group)),
             allow_example_urls=True,
         )
     )
-    reject_validator_errors(outcomes[corpus["control"]], corpus["control"].name)
-    for case in corpus["cases"]:
-        reject_negative_case(case, outcomes[case["path"]])
+    for path in sorted(resources, key=lambda path: path.as_posix()):
+        reject_validator_errors(outcomes[path], path.name)
+    for corpus in corpora:
+        check_negative_corpus(corpus, outcomes)
 
 
 def validate_coverage(
@@ -342,14 +382,9 @@ def main(argv: list[str] | None = None) -> int:
                 "--validator is required unless --coverage-only is used"
             )
         packages = resolve_packages(manifest, parse_package_arguments(arguments.package))
-        run_validator(
-            arguments.validator,
-            packages,
-            [path for path, _ in resources],
-            allow_example_urls=True,
+        validate_all(
+            arguments.validator, packages, [path for path, _ in resources], corpora
         )
-        for corpus in corpora:
-            reject_negative_corpus(arguments.validator, packages, corpus)
     except ProducerValidationError as error:
         print(f"Fixture validation failed: {error}", file=sys.stderr)
         return 1

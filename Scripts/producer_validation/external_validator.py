@@ -11,7 +11,7 @@ from __future__ import annotations
 import subprocess
 import tempfile
 from pathlib import Path
-from typing import Any
+from typing import Any, Iterator
 
 from .context import (
     FHIR_TOOL_HOME, VALIDATOR_ATTEMPTS, VALIDATOR_FILE_EXTENSION,
@@ -216,6 +216,62 @@ def collect_validator_outcomes(
             if attempt == VALIDATOR_ATTEMPTS:
                 raise ProducerValidationError(last_failure)
     raise ProducerValidationError(last_failure)
+
+def _strings_in(value: Any) -> Iterator[str]:
+    if isinstance(value, str):
+        yield value
+    elif isinstance(value, dict):
+        for item in value.values():
+            yield from _strings_in(item)
+    elif isinstance(value, list):
+        for item in value:
+            yield from _strings_in(item)
+
+
+def defined_canonical(resource: Any) -> str | None:
+    """The canonical URL a resource defines, if it defines one."""
+    url = resource.get("url") if isinstance(resource, dict) else None
+    return url if isinstance(url, str) and url else None
+
+
+def canonical_references(resource: Any) -> set[str]:
+    """Every string a resource carries outside its own top-level `url`, as a bare canonical URL.
+
+    Deliberately over-inclusive: any string could be a canonical the Validator resolves, so each one
+    is reduced to its URL without `|version` or `#fragment` and compared against definitions.
+    """
+    body = (
+        {key: value for key, value in resource.items() if key != "url"}
+        if isinstance(resource, dict)
+        else resource
+    )
+    return {text.split("#", 1)[0].split("|", 1)[0] for text in _strings_in(body)}
+
+
+def groups_interact(groups: list[list[Path]]) -> bool:
+    """Whether one Validator run over all of these groups could change any input's verdict.
+
+    The Validator loads every input of a run into one context before validating any of them. Inputs
+    of one group always shared a run, so only reaching across groups is new: an input naming a
+    canonical URL that another group defines, or two groups defining the same one.
+    """
+    owners: dict[str, set[int]] = {}
+    resources: list[tuple[int, Any]] = []
+    for index, group in enumerate(groups):
+        for path in group:
+            resource = read_json(path)
+            resources.append((index, resource))
+            url = defined_canonical(resource)
+            if url:
+                owners.setdefault(url, set()).add(index)
+    if any(len(groups_defining) > 1 for groups_defining in owners.values()):
+        return True
+    return any(
+        owners.get(reference, set()) - {index}
+        for index, resource in resources
+        for reference in canonical_references(resource)
+    )
+
 
 def run_validator(
     validator: Path,

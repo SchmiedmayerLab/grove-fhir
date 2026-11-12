@@ -504,5 +504,32 @@ printf '%s\n' "$@"
                 self.assertEqual(result.returncode, 0, result.stderr)
                 self.assertEqual(result.stdout.splitlines(), expected)
 
+    def test_release_gate_replays_the_release_build(self) -> None:
+        # The gate on every pull request and the release itself must run the same build, or a
+        # pull request can pass a gate the release would fail.
+        gate = self.build_workflow.split("\n  release-gate:\n", maxsplit=1)[1]
+        gate = gate.split("\n  guides:\n", maxsplit=1)[0]
+        for workflow in (gate, self.workflow):
+            replay = workflow.split("Replay the verified closure", maxsplit=1)[1]
+            self.assertIn("npm run pages:build:parallel", replay)
+            self.assertNotIn("npm run pages:build\n", replay)
+        # And the local mirror of the release-candidate build, which PUBLICATION.md documents.
+        offline = self.build_release.split("npm ci --offline", maxsplit=1)[1]
+        self.assertIn("npm run pages:build:parallel\n", offline)
+        self.assertNotIn("npm run pages:build\n", offline)
+
+    def test_parallel_build_bootstraps_once_and_never_concurrently(self) -> None:
+        bootstrap = self.build_guides_parallel.index("build-guides.sh\" --bootstrap-only")
+        first_wave = self.build_guides_parallel.index("run_wave \"${wave[@]}\"")
+        self.assertLess(bootstrap, first_wave)
+        self.assertIn("GROVE_SKIP_BOOTSTRAP=1 GROVE_FHIR_HOME_OVERRIDE", self.build_guides_parallel)
+        # Skipping the bootstrap must never skip the offline lane's own guards.
+        skipped = self.build_guides.index('if [[ "$skip_bootstrap" == "false" ]]; then')
+        for guard in (
+            "GROVE_TX_SERVER is prohibited when GROVE_TX_OFFLINE=1",
+            "export BUNDLE_FROZEN=true",
+        ):
+            self.assertLess(self.build_guides.index(guard), skipped)
+
 if __name__ == "__main__":
     unittest.main()

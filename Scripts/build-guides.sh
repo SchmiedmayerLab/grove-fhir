@@ -22,11 +22,33 @@ if [[ -x "$REPOSITORY_ROOT/.build/jdk21/Contents/Home/bin/java" ]]; then
 fi
 readonly JAVA_COMMAND
 readonly JAVA_MEMORY_ARGUMENTS=("-Xmx4g" "-XX:MaxMetaspaceSize=512m")
+# A build that owns its home (Scripts/build-guides-parallel.sh) gets its own temporary directory as
+# well. The Publisher writes its log and scratch files under java.io.tmpdir, which is otherwise the
+# /tmp that every concurrent build shares.
+java_temporary_arguments=()
+if [[ -n "${GROVE_FHIR_HOME_OVERRIDE:-}" ]]; then
+  mkdir -p "$FHIR_TOOL_HOME/tmp"
+  java_temporary_arguments=("-Djava.io.tmpdir=$FHIR_TOOL_HOME/tmp")
+fi
+readonly java_temporary_arguments
 
 cd "$REPOSITORY_ROOT"
 export PATH="$REPOSITORY_ROOT/node_modules/.bin:$PATH"
-bundle config set --local path "$REPOSITORY_ROOT/.build/bundle"
-bundle config set --local bin "$REPOSITORY_ROOT/.build/bin"
+# Scripts/build-guides-parallel.sh bootstraps once with --bootstrap-only, then runs its concurrent
+# builds with GROVE_SKIP_BOOTSTRAP=1: concurrent bootstraps would race on the Bundler
+# configuration, the binstubs, and the tool archives they all share.
+bootstrap_only=false
+if [[ "${1:-}" == "--bootstrap-only" ]]; then
+  bootstrap_only=true
+  shift
+fi
+readonly bootstrap_only
+case "${GROVE_SKIP_BOOTSTRAP:-0}" in
+  0|"") skip_bootstrap=false ;;
+  1) skip_bootstrap=true ;;
+  *) echo "GROVE_SKIP_BOOTSTRAP must be 0 or 1" >&2; exit 2 ;;
+esac
+readonly skip_bootstrap
 case "${GROVE_TX_OFFLINE:-0}" in
   0|"") offline_build=false ;;
   1) offline_build=true ;;
@@ -49,21 +71,30 @@ if [[ "$offline_build" == "true" ]]; then
     exit 2
   fi
   export BUNDLE_FROZEN=true
-  # Release builds bootstrap these dependencies in an explicit online phase. Re-resolve the
-  # complete bundle locally here so a missing gem fails instead of falling back to RubyGems.
-  bundle install --local --jobs 4
-  bundle check
-else
-  bundle install --jobs 4 --retry 3
 fi
-bundle binstubs jekyll
+if [[ "$skip_bootstrap" == "false" ]]; then
+  bundle config set --local path "$REPOSITORY_ROOT/.build/bundle"
+  bundle config set --local bin "$REPOSITORY_ROOT/.build/bin"
+  if [[ "$offline_build" == "true" ]]; then
+    # Release builds bootstrap these dependencies in an explicit online phase. Re-resolve the
+    # complete bundle locally here so a missing gem fails instead of falling back to RubyGems.
+    bundle install --local --jobs 4
+    bundle check
+  else
+    bundle install --jobs 4 --retry 3
+  fi
+  bundle binstubs jekyll
+  if [[ "$offline_build" == "true" ]]; then
+    # This re-hashes Publisher, Validator, the template, and the external FHIR package closure,
+    # then seeds the isolated package cache exclusively from those verified local archives.
+    ./Scripts/download-fhir-tools.sh --offline "$TOOLS_DIRECTORY"
+  else
+    ./Scripts/download-fhir-tools.sh "$TOOLS_DIRECTORY"
+  fi
+fi
 export PATH="$REPOSITORY_ROOT/.build/bin:$PATH"
-if [[ "$offline_build" == "true" ]]; then
-  # This re-hashes Publisher, Validator, the template, and the external FHIR package closure,
-  # then seeds the isolated package cache exclusively from those verified local archives.
-  ./Scripts/download-fhir-tools.sh --offline "$TOOLS_DIRECTORY"
-else
-  ./Scripts/download-fhir-tools.sh "$TOOLS_DIRECTORY"
+if [[ "$bootstrap_only" == "true" ]]; then
+  exit 0
 fi
 
 if [[ "$#" -eq 0 ]]; then
@@ -135,7 +166,8 @@ for guide in "${guides[@]}"; do
     cd "$guide"
     GROVE_FHIR_TOOL_HOME="$FHIR_TOOL_HOME" \
     NODE_OPTIONS="--require=$REPOSITORY_ROOT/Scripts/sushi-cache-home.cjs" \
-      "$JAVA_COMMAND" "${JAVA_MEMORY_ARGUMENTS[@]}" -Djava.awt.headless=true \
+      "$JAVA_COMMAND" "${JAVA_MEMORY_ARGUMENTS[@]}" \
+      ${java_temporary_arguments[@]+"${java_temporary_arguments[@]}"} -Djava.awt.headless=true \
       -Duser.home="$FHIR_TOOL_HOME" -jar "$TOOLS_DIRECTORY/publisher.jar" \
       "${publisher_arguments[@]}"
   ) || {

@@ -59,7 +59,7 @@ export GROVE_TX_OFFLINE=1
 bundle check
 ./Scripts/download-fhir-tools.sh --offline "$REPOSITORY_ROOT/.build/fhir-tools"
 npm run inventory:check
-npm run pages:build
+npm run pages:build:parallel
 npm test
 python3 Scripts/validate-questionnaire-fhir.py
 python3 Scripts/validate-producer.py \

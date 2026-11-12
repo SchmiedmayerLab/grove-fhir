@@ -94,7 +94,9 @@ jobs:
     # which is why this lane is macOS. It runs only when its inputs can have changed;
     # pushes to main always run it.
     needs: inventory-paths
-    if: always() && (github.event_name != 'pull_request' || needs.inventory-paths.outputs.changed == 'true')
+    # `!cancelled()` rather than `always()`: it still runs when inventory-paths is skipped on a
+    # push, but a superseded run no longer keeps this job alive and holds up the run after it.
+    if: ${{ !cancelled() && (github.event_name != 'pull_request' || needs.inventory-paths.outputs.changed == 'true') }}
     runs-on: macos-latest
     timeout-minutes: 20
     steps:
@@ -135,7 +137,6 @@ jobs:
   draft-guides:
     name: "Draft: Build Changed R4 Guides"
     if: github.event_name == 'pull_request' && github.event.pull_request.draft == true
-    needs: tooling
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -188,16 +189,20 @@ jobs:
   guide-plan:
     name: Plan the Guide Build Waves
     if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
-    needs: tooling
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
-      wave1: ${{ steps.plan.outputs.wave1 }}
-      wave2: ${{ steps.plan.outputs.wave2 }}
-      wave3: ${{ steps.plan.outputs.wave3 }}
-      wave4: ${{ steps.plan.outputs.wave4 }}
-      wave5: ${{ steps.plan.outputs.wave5 }}
-      wave6: ${{ steps.plan.outputs.wave6 }}
+      trunk1: ${{ steps.plan.outputs.trunk1 }}
+      trunk2: ${{ steps.plan.outputs.trunk2 }}
+      trunk3: ${{ steps.plan.outputs.trunk3 }}
+      trunk4: ${{ steps.plan.outputs.trunk4 }}
+      trunk5: ${{ steps.plan.outputs.trunk5 }}
+      leaf1: ${{ steps.plan.outputs.leaf1 }}
+      leaf2: ${{ steps.plan.outputs.leaf2 }}
+      leaf3: ${{ steps.plan.outputs.leaf3 }}
+      leaf4: ${{ steps.plan.outputs.leaf4 }}
+      leaf5: ${{ steps.plan.outputs.leaf5 }}
+      leaf6: ${{ steps.plan.outputs.leaf6 }}
       built1: ${{ steps.plan.outputs.built1 }}
       built2: ${{ steps.plan.outputs.built2 }}
       built3: ${{ steps.plan.outputs.built3 }}
@@ -213,81 +218,114 @@ jobs:
         with:
           python-version: "3.13.15"
       # The waves come from each guide's own dependencies, so adding a guide needs no edit here.
-      # `builtN` is everything the waves before N produced, which wave N restores before building.
+      # Each wave is split into its trunk (guides another guide depends on) and its leaves. Only
+      # the trunk gates the next wave, so a slow leaf such as healthkit no longer holds back
+      # guides that never read it. `builtN` is the trunk of waves 1 to N, which wave N+1 restores.
+      # 6 is the number of wave levels the jobs below provide; a deeper plan fails loudly.
       - id: plan
-        run: |
-          python3 - <<'PLAN' >> "$GITHUB_OUTPUT"
-          import json, subprocess
-          # The number of wave jobs defined below. A plan deeper than this fails loudly
-          # rather than silently dropping a wave; add a job and raise this together.
-          WAVE_JOBS = 6
-          plan = json.loads(subprocess.run(
-              ["python3", "Scripts/guide-build-plan.py", "--format", "json"],
-              capture_output=True, text=True, check=True).stdout)
-          if len(plan) > WAVE_JOBS:
-              raise SystemExit(
-                  f"::error::the guide graph now has {len(plan)} waves; add a wave job")
-          built = []
-          for index in range(WAVE_JOBS):
-              wave = plan[index] if index < len(plan) else []
-              print(f"wave{index + 1}={json.dumps(wave)}")
-              built.extend(wave)
-              # `builtN` is everything available to wave N+1, so it includes wave N itself.
-              if index < WAVE_JOBS - 1:
-                  print(f"built{index + 1}={json.dumps(sorted(built))}")
-          PLAN
+        run: python3 Scripts/guide-build-plan.py --ci-outputs 6 >> "$GITHUB_OUTPUT"
 
-  guide-wave-1:
+  guide-trunk-1:
     name: Guides
     needs: guide-plan
     uses: ./.github/workflows/build-guide-wave.yml
     with:
-      guides: ${{ needs.guide-plan.outputs.wave1 }}
+      guides: ${{ needs.guide-plan.outputs.trunk1 }}
+      built: "[]"
+      ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      upload-package: true
+
+  guide-leaf-1:
+    name: Guides
+    needs: guide-plan
+    uses: ./.github/workflows/build-guide-wave.yml
+    with:
+      guides: ${{ needs.guide-plan.outputs.leaf1 }}
       built: "[]"
       ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
-  guide-wave-2:
+  guide-trunk-2:
     name: Guides
-    needs: [guide-plan, guide-wave-1]
+    needs: [guide-plan, guide-trunk-1]
     uses: ./.github/workflows/build-guide-wave.yml
     with:
-      guides: ${{ needs.guide-plan.outputs.wave2 }}
+      guides: ${{ needs.guide-plan.outputs.trunk2 }}
+      built: ${{ needs.guide-plan.outputs.built1 }}
+      ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      upload-package: true
+
+  guide-leaf-2:
+    name: Guides
+    needs: [guide-plan, guide-trunk-1]
+    uses: ./.github/workflows/build-guide-wave.yml
+    with:
+      guides: ${{ needs.guide-plan.outputs.leaf2 }}
       built: ${{ needs.guide-plan.outputs.built1 }}
       ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
-  guide-wave-3:
+  guide-trunk-3:
     name: Guides
-    needs: [guide-plan, guide-wave-2]
+    needs: [guide-plan, guide-trunk-2]
     uses: ./.github/workflows/build-guide-wave.yml
     with:
-      guides: ${{ needs.guide-plan.outputs.wave3 }}
+      guides: ${{ needs.guide-plan.outputs.trunk3 }}
+      built: ${{ needs.guide-plan.outputs.built2 }}
+      ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      upload-package: true
+
+  guide-leaf-3:
+    name: Guides
+    needs: [guide-plan, guide-trunk-2]
+    uses: ./.github/workflows/build-guide-wave.yml
+    with:
+      guides: ${{ needs.guide-plan.outputs.leaf3 }}
       built: ${{ needs.guide-plan.outputs.built2 }}
       ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
-  guide-wave-4:
+  guide-trunk-4:
     name: Guides
-    needs: [guide-plan, guide-wave-3]
+    needs: [guide-plan, guide-trunk-3]
     uses: ./.github/workflows/build-guide-wave.yml
     with:
-      guides: ${{ needs.guide-plan.outputs.wave4 }}
+      guides: ${{ needs.guide-plan.outputs.trunk4 }}
+      built: ${{ needs.guide-plan.outputs.built3 }}
+      ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      upload-package: true
+
+  guide-leaf-4:
+    name: Guides
+    needs: [guide-plan, guide-trunk-3]
+    uses: ./.github/workflows/build-guide-wave.yml
+    with:
+      guides: ${{ needs.guide-plan.outputs.leaf4 }}
       built: ${{ needs.guide-plan.outputs.built3 }}
       ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
-  guide-wave-5:
+  guide-trunk-5:
     name: Guides
-    needs: [guide-plan, guide-wave-4]
+    needs: [guide-plan, guide-trunk-4]
     uses: ./.github/workflows/build-guide-wave.yml
     with:
-      guides: ${{ needs.guide-plan.outputs.wave5 }}
+      guides: ${{ needs.guide-plan.outputs.trunk5 }}
+      built: ${{ needs.guide-plan.outputs.built4 }}
+      ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      upload-package: true
+
+  guide-leaf-5:
+    name: Guides
+    needs: [guide-plan, guide-trunk-4]
+    uses: ./.github/workflows/build-guide-wave.yml
+    with:
+      guides: ${{ needs.guide-plan.outputs.leaf5 }}
       built: ${{ needs.guide-plan.outputs.built4 }}
       ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
-  guide-wave-6:
+  guide-leaf-6:
     name: Guides
-    needs: [guide-plan, guide-wave-5]
+    needs: [guide-plan, guide-trunk-5]
     uses: ./.github/workflows/build-guide-wave.yml
     with:
-      guides: ${{ needs.guide-plan.outputs.wave6 }}
+      guides: ${{ needs.guide-plan.outputs.leaf6 }}
       built: ${{ needs.guide-plan.outputs.built5 }}
       ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
@@ -296,8 +334,8 @@ jobs:
     # The offline lane is what `deployment.yml` gates a release on, and it is stricter than the
     # per-guide online waves: without a terminology server the Publisher reports findings the
     # online build never sees. Running it here means a release-blocking regression surfaces on the
-    # pull request that introduces it rather than months later at release time.
-    needs: tooling
+    # pull request that introduces it rather than months later at release time. It starts at once
+    # rather than after the tooling tests: it reads nothing they produce, and it is the longest lane.
     if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -341,6 +379,9 @@ jobs:
           bundle install --jobs 4 --retry 3
           ./Scripts/download-fhir-tools.sh "$GITHUB_WORKSPACE/.build/fhir-tools"
       - name: Replay the verified closure and build in the offline lane
+        # Below the job's 60 minutes: a hung build then fails this step, rather than cancelling the
+        # job, so the upload below still collects the per-guide logs.
+        timeout-minutes: 50
         env:
           GROVE_TX_OFFLINE: "1"
           NPM_CONFIG_OFFLINE: "true"
@@ -348,7 +389,7 @@ jobs:
           npm ci --offline
           bundle check
           ./Scripts/download-fhir-tools.sh --offline "$GITHUB_WORKSPACE/.build/fhir-tools"
-          npm run pages:build
+          npm run pages:build:parallel
       # The QA ledger is what the gate reads; without it a failure names a count and nothing else.
       - name: Upload the QA ledgers
         if: failure()
@@ -357,17 +398,34 @@ jobs:
           name: offline-lane-qa
           if-no-files-found: warn
           retention-days: 7
+          # The per-guide build logs live under the hidden .build/ directory.
+          include-hidden-files: true
           path: |
             */output/qa.html
             */output/qa.json
             */output/package.tgz
             */fsh-generated/resources/ImplementationGuide-*.json
+            .build/parallel-homes/*.log
 
   guides:
     name: Build and Validate All R4 Guides
-    # Every wave, including one the plan left empty: a skipped wave still has to be accounted for
-    # rather than letting the ledger run against a partial set.
-    needs: [guide-wave-1, guide-wave-2, guide-wave-3, guide-wave-4, guide-wave-5, guide-wave-6]
+    # Every trunk and leaf job, including one the plan left empty: a skipped job still has to be
+    # accounted for rather than letting the ledger run against a partial set. The tooling tests and
+    # the plan no longer gate the guide builds, so they are required here instead.
+    needs:
+      - tooling
+      - guide-plan
+      - guide-trunk-1
+      - guide-leaf-1
+      - guide-trunk-2
+      - guide-leaf-2
+      - guide-trunk-3
+      - guide-leaf-3
+      - guide-trunk-4
+      - guide-leaf-4
+      - guide-trunk-5
+      - guide-leaf-5
+      - guide-leaf-6
     # Runs even when a full-build wave fails, so this required check fails rather than hiding a
     # partial build. Draft pull requests use `draft-guides` instead; all full-build waves are
     # intentionally skipped there, so the aggregate must be skipped with them.
@@ -381,7 +439,7 @@ jobs:
       - name: Require every wave to have succeeded
         if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
         run: |
-          echo "::error::a guide wave did not succeed; the ledger cannot audit a partial build"
+          echo "::error::the tooling tests, the plan, or a guide wave did not succeed; the ledger cannot audit a partial build"
           exit 1
       - uses: actions/checkout@v7
         with:
@@ -447,7 +505,10 @@ jobs:
           --package questionnaire=questionnaire/output/package.tgz
           --package sensor=sensor/output/package.tgz
           --package healthkit=healthkit/output/package.tgz
+      # pages.yml deploys only from Build and Test runs on main, so only those need the ~900 MB site.
+      # Every run still assembles and checks it above.
       - uses: actions/upload-artifact@v7
+        if: github.ref == 'refs/heads/main'
         with:
           name: pages-site
           include-hidden-files: true

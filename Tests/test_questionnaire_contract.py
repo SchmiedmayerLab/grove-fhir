@@ -218,6 +218,186 @@ class QuestionnaireContractTests(unittest.TestCase):
             self.assertEqual([issue["diagnostics"] for issue in errors], ["expected rejection"])
             self.assertEqual(run.call_count, 1)
 
+    def test_official_validator_batch_attributes_each_outcome_to_its_input(self) -> None:
+        file_extension = "http://hl7.org/fhir/StructureDefinition/operationoutcome-file"
+        profile = fhir_validator.PROFILES["Questionnaire"]
+
+        def outcome(path: Path, severity: str) -> dict:
+            return {
+                "resourceType": "OperationOutcome",
+                "extension": [{"url": file_extension, "valueString": str(path)}],
+                "issue": [{"severity": severity, "code": "invariant", "diagnostics": path.name}],
+            }
+
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary).resolve()
+            outcome_path = root / "outcome.json"
+            # Given out of order, so the batch has to sort before it can match outputs to inputs.
+            paths = [root / "b.json", root / "a.json", root / "c.json"]
+            for path in paths:
+                path.write_text('{"resourceType":"Questionnaire"}\n', encoding="utf-8")
+
+            def batch(entries: list[dict], returncode: int):
+                def run(command: list[str], **_: object) -> subprocess.CompletedProcess[str]:
+                    output = Path(command[command.index("-output") + 1])
+                    output.write_text(
+                        json.dumps(
+                            {
+                                "resourceType": "Bundle",
+                                "type": "collection",
+                                "entry": [{"resource": entry} for entry in entries],
+                            }
+                        ),
+                        encoding="utf-8",
+                    )
+                    return subprocess.CompletedProcess(command, returncode, stdout="", stderr="")
+
+                return run
+
+            def validate() -> dict:
+                return fhir_validator.validate_batch(
+                    root / "validator.jar",
+                    root / "package.tgz",
+                    paths,
+                    outcome_path,
+                    True,
+                    root / "fhir-home",
+                    profile,
+                )
+
+            a, b, c = sorted(paths)
+            accepted = batch(
+                [outcome(a, "information"), outcome(b, "error"), outcome(c, "information")], 1
+            )
+            with mock.patch.object(fhir_validator.subprocess, "run", side_effect=accepted) as run:
+                results = validate()
+            self.assertEqual(run.call_count, 1)
+            command = run.call_args.args[0]
+            self.assertEqual(command.count("-profile"), 1)
+            self.assertEqual(command[command.index("-profile") + 1], profile)
+            self.assertEqual(
+                [argument for argument in command if argument.endswith(".json")][:3],
+                [str(a), str(b), str(c)],
+            )
+            self.assertEqual(
+                {
+                    path.name: [issue["diagnostics"] for issue in issues]
+                    for path, (issues, _) in results.items()
+                },
+                {"a.json": [], "b.json": ["b.json"], "c.json": []},
+            )
+
+            # Every way the output can fail to account for exactly these inputs is an
+            # infrastructure failure: retried once, then reported, never read as a verdict.
+            for name, entries in (
+                ("short", [outcome(a, "error"), outcome(b, "error")]),
+                ("misordered", [outcome(b, "error"), outcome(a, "error"), outcome(c, "error")]),
+                ("misattributed", [outcome(a, "error"), outcome(b, "error"), outcome(b, "error")]),
+            ):
+                with self.subTest(name):
+                    with mock.patch.object(
+                        fhir_validator.subprocess, "run", side_effect=batch(entries, 1)
+                    ) as run:
+                        with self.assertRaisesRegex(RuntimeError, "untrustworthy"):
+                            validate()
+                    self.assertEqual(run.call_count, 2)
+
+            # An error-free batch must still exit 0; any other exit is not a verdict.
+            clean = [outcome(path, "information") for path in (a, b, c)]
+            with mock.patch.object(
+                fhir_validator.subprocess, "run", side_effect=batch(clean, 1)
+            ) as run:
+                with self.assertRaisesRegex(RuntimeError, "unexpected exit code"):
+                    validate()
+            self.assertEqual(run.call_count, 2)
+
+    def test_official_validator_runs_an_input_naming_a_sibling_on_its_own(self) -> None:
+        # The Validator loads every input of a run into one context, so an input that names a
+        # sibling's canonical could resolve it there; it gets a process of its own instead.
+        file_extension = "http://hl7.org/fhir/StructureDefinition/operationoutcome-file"
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary).resolve()
+            base = root / "base.json"
+            derived = root / "derived.json"
+            other = root / "other.json"
+            unrelated = root / "unrelated.json"
+            base.write_text(
+                json.dumps({"resourceType": "Questionnaire", "url": "https://example.org/Q/base"}),
+                encoding="utf-8",
+            )
+            derived.write_text(
+                json.dumps(
+                    {
+                        "resourceType": "Questionnaire",
+                        "url": "https://example.org/Q/derived",
+                        "derivedFrom": ["https://example.org/Q/base|1.0.0"],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            # Shares only its own url with nothing, and names no sibling.
+            other.write_text(
+                json.dumps({"resourceType": "Questionnaire", "url": "https://example.org/Q/other"}),
+                encoding="utf-8",
+            )
+            unrelated.write_text(
+                json.dumps(
+                    {
+                        "resourceType": "Questionnaire",
+                        "url": "https://example.org/Q/unrelated",
+                        "derivedFrom": ["https://example.org/Q/elsewhere"],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            self.assertEqual(
+                fhir_validator.sibling_references(
+                    {path: json.loads(path.read_text()) for path in (base, derived, other, unrelated)}
+                ),
+                {derived},
+            )
+
+            runs: list[list[str]] = []
+
+            def run(command: list[str], **_: object) -> subprocess.CompletedProcess[str]:
+                inputs = [argument for argument in command if argument.endswith(".json")][:-1]
+                runs.append(inputs)
+                output = Path(command[command.index("-output") + 1])
+
+                def outcome(path: str) -> dict:
+                    return {
+                        "resourceType": "OperationOutcome",
+                        "extension": [{"url": file_extension, "valueString": path}],
+                        "issue": [{"severity": "information", "code": "informational"}],
+                    }
+
+                value = (
+                    outcome(inputs[0])
+                    if len(inputs) == 1
+                    else {
+                        "resourceType": "Bundle",
+                        "type": "collection",
+                        "entry": [{"resource": outcome(path)} for path in inputs],
+                    }
+                )
+                output.write_text(json.dumps(value), encoding="utf-8")
+                return subprocess.CompletedProcess(command, 0, stdout="", stderr="")
+
+            with mock.patch.object(fhir_validator.subprocess, "run", side_effect=run):
+                results = fhir_validator.validate_batch(
+                    root / "validator.jar",
+                    root / "package.tgz",
+                    [base, derived, other, unrelated],
+                    root / "outcome.json",
+                    True,
+                    root / "fhir-home",
+                    fhir_validator.PROFILES["Questionnaire"],
+                )
+            self.assertEqual(
+                runs, [[str(derived)], [str(base), str(other), str(unrelated)]]
+            )
+            self.assertEqual(set(results), {base, derived, other, unrelated})
+
     def test_fixture_writer_preserves_exact_decimal_values(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             source = Path(temporary) / "source.json"

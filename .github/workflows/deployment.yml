@@ -134,7 +134,9 @@ jobs:
           npm ci --offline
           bundle check
           ./Scripts/download-fhir-tools.sh --offline "$GITHUB_WORKSPACE/.build/fhir-tools"
-          npm run pages:build
+          # The same wave-parallel build as the Release Gate in build-and-test.yml, so the gate a pull
+          # request passes is the build a release runs.
+          npm run pages:build:parallel
       - name: Verify the repository and tooling contract
         run: npm test
       - name: Verify the normative corpora with the official FHIR Validator

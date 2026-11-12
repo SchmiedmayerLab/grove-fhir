@@ -12,6 +12,10 @@
 # The Publisher keeps its package cache under one `-Duser.home`, and two builds writing that cache
 # at once corrupt it. Each concurrent build therefore gets its own home, cloned from the warm one:
 # on APFS `cp -c` is a copy-on-write clone, so the clone costs neither the copy time nor the disk.
+# Elsewhere it is a real copy, so a home is removed as soon as its guide has built.
+#
+# The Bundler setup and the checksum-pinned tools are bootstrapped once, before any wave, in the
+# mode GROVE_TX_OFFLINE selects; the concurrent builds then skip that bootstrap rather than race it.
 
 set -euo pipefail
 
@@ -30,8 +34,10 @@ if pgrep -f "publisher.jar" > /dev/null 2>&1; then
   exit 2
 fi
 
+"$REPOSITORY_ROOT/Scripts/build-guides.sh" --bootstrap-only
+
 if [[ ! -d "$WARM_HOME/.fhir/packages" ]]; then
-  echo "error: no warm package cache at $WARM_HOME; run Scripts/build-guides.sh once first" >&2
+  echo "error: the bootstrap left no package cache at $WARM_HOME" >&2
   exit 2
 fi
 
@@ -41,12 +47,19 @@ mkdir -p "$WAVE_ROOT"
 build_one() {
   local guide="$1"
   local home="$WAVE_ROOT/$guide"
-  mkdir -p "$home"
-  # -c clones on APFS and falls back to a real copy elsewhere, so this stays correct off macOS.
-  cp -Rc "$WARM_HOME/.fhir" "$home/.fhir" 2>/dev/null || cp -R "$WARM_HOME/.fhir" "$home/.fhir"
-  GROVE_FHIR_HOME_OVERRIDE="$home" \
-    "$REPOSITORY_ROOT/Scripts/build-guides.sh" "$guide" \
-    > "$WAVE_ROOT/$guide.log" 2>&1
+  # Everything, including the clone, writes to the guide's log, so a failed copy is reported too.
+  {
+    mkdir -p "$home"
+    # -c clones on APFS and falls back to a real copy elsewhere, so this stays correct off macOS.
+    # A failed clone may leave a partial tree, which the copy would then nest itself inside.
+    if ! cp -Rc "$WARM_HOME/.fhir" "$home/.fhir" 2>/dev/null; then
+      rm -rf "$home/.fhir"
+      cp -R "$WARM_HOME/.fhir" "$home/.fhir"
+    fi
+    GROVE_SKIP_BOOTSTRAP=1 GROVE_FHIR_HOME_OVERRIDE="$home" \
+      "$REPOSITORY_ROOT/Scripts/build-guides.sh" "$guide"
+    rm -rf "$home"
+  } > "$WAVE_ROOT/$guide.log" 2>&1
 }
 
 run_wave() {
@@ -59,12 +72,26 @@ run_wave() {
     names+=("$guide")
   done
   local failed=0
+  local -a results=()
   for index in "${!pids[@]}"; do
     if wait "${pids[$index]}"; then
+      results+=("built")
+    else
+      results+=("FAILED")
+      failed=1
+    fi
+  done
+  for index in "${!names[@]}"; do
+    # On GitHub Actions the per-guide logs are not otherwise visible, so fold each into the job log.
+    if [[ "${GITHUB_ACTIONS:-}" == "true" ]]; then
+      echo "::group::${names[$index]} (${results[$index]})"
+      cat "$WAVE_ROOT/${names[$index]}.log" || echo "(no log was written)"
+      echo "::endgroup::"
+    fi
+    if [[ "${results[$index]}" == "built" ]]; then
       echo "  ${names[$index]}: built"
     else
       echo "  ${names[$index]}: FAILED (see $WAVE_ROOT/${names[$index]}.log)" >&2
-      failed=1
     fi
   done
   return "$failed"
