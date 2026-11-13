@@ -30,6 +30,7 @@
     }
   ],
   "resources": [
+    {"path": "Conformance/corpora/healthkit-metadata/observation.json", "profiles": ["https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-insulin-delivery"]},
     {"path": "Conformance/corpora/receiver-lifecycle/resources/changed-source-record.json", "profiles": ["https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle"]},
     {"path": "Conformance/corpora/receiver-lifecycle/resources/mixed-admission.json", "profiles": ["https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle"]},
     {"path": "Conformance/corpora/receiver-lifecycle/resources/multi-v1.json", "profiles": ["https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle"]},
@@ -169,6 +170,10 @@
     "Conformance/corpora/healthkit-insulin-delivery/corpus.json"
   ],
   "excluded": [
+    {
+      "path": "Conformance/corpora/healthkit-metadata/legacy-values.json",
+      "reason": "Typed source-to-FHIR migration vectors, not a FHIR resource. Tests/test_healthkit_metadata.py validates their carrier; Grove tests the source conversion. observation.json carries the same expected values through the official Validator."
+    },
     {"path": "Conformance/corpora/receiver-lifecycle/identity-sequences.json", "reason": "Receiver-policy expectations for contradictory source-output/source-record bindings, per-record admission and retractions that bind nothing; checked by Tests/test_output_record_binding.py; not a FHIR resource."},
     {"path": "Conformance/corpora/receiver-lifecycle/revision-sequences.json", "reason": "Exact output aliases and receiver-policy expectations for complete-revision membership and record-version selection; checked by Tests/test_revision_membership.py, not a FHIR resource."},
     {"path": "Conformance/corpora/receiver-lifecycle/source-record-target-retraction-sequences.json", "reason": "Receiver-policy expectations for whole-record retraction before and after its record versions, beside other records and output bindings; checked by Tests/test_source_record_target_retraction.py, not a FHIR resource."},

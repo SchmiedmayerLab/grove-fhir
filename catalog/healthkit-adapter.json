@@ -3692,6 +3692,28 @@
     "sourceBuildRule": "HKSourceRevision.version is the source's CFBundleVersion: when HealthKit supplies it, copy it unchanged into the applicationBuild slice, never into applicationVersion.",
     "sameApplicationRule": "An application-classified source's author may reference the converting application's Device only when HKSource.bundleIdentifier equals that Device's Apple bundle identifier, HKSourceRevision.version is supplied and equals, character for character, the build that Device states in applicationBuild, and the producer never reuses a build across releases of that bundle identifier. The shared Device keeps the converting application's name, release, build, and parent, and the producer emits no other Device for the source. Every application-classified source whose author does not reference the converting application's Device, including one without HKSourceRevision.version, one of another build, and every one compared with a converting application Device that states no build, is a distinct application snapshot."
   },
+  "metadataExtension": {
+    "url": "https://grovealliance.org/fhir/core/StructureDefinition/metadata",
+    "resourceTypes": [
+      "Observation",
+      "DocumentReference",
+      "MedicationAdministration",
+      "MedicationStatement",
+      "VisionPrescription"
+    ],
+    "valueElements": [
+      "valueString",
+      "valueDecimal",
+      "valueBoolean",
+      "valueDateTime",
+      "valueCoding",
+      "valueQuantity"
+    ],
+    "keyEncoding": "Each entry has url entry and two children in order: key with the exact runtime key in valueString, then value with one typed value. Do not normalize Unicode. Keys occur once, ordered by their UTF-16 code units. Legacy dynamic child URLs are not admitted by the record exchange.",
+    "emissionRule": "Preserve supported source metadata by default on the primary output of its source record, including custom keys. A caller may explicitly limit disclosure; unsupported values and intentional exclusions must remain observable. Mapped clinical elements retain their own semantics and validation; metadata never overrides them. A clinical recording carries the extension on its wrapper, never by mutating the embedded source bytes.",
+    "identityRule": "Metadata changes record content and therefore record version. It never changes source-record or source-output identity and does not mint another resource. The native HKObject.uuid is not automatically copied here; its governed identifier is independent.",
+    "valueRule": "Use typed FHIR values as the legacy encoder did. Dates are full date-times with an offset. Numbers must be finite. Quantities use declared compatible UCUM units; an original HKQuantity unit is not exposed. Known quantity keys retain their legacy units (with lx correcting lux); custom keys use the ordered compatible-unit fallback specified in mapping.md. Unsupported quantities and value classes are reported rather than stringified. Do not confuse a numeric one with a Boolean without source type evidence."
+  },
   "sourceRevisionExtension": {
     "url": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-source-revision",
     "r4Context": "Provenance.entity",

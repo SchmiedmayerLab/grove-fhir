@@ -241,7 +241,7 @@ Otherwise set `manual-entry` when there is at least one object and every object 
 When the correlation or an object states `true` and the Observation carries no `grove-recording-method` extension, report `mobile-omission.recording-method`.
 
 These rules decide what an object's `HKMetadataKeyTimeZone` and `HKMetadataKeyWasUserEntered` contribute, so neither key on an object is reported as `mobile-omission.unmodeled-metadata`.
-An object's other metadata keys are withheld under the same condition as the correlation's own; report the keys withheld from the correlation and its objects as `mobile-omission.unmodeled-metadata`, naming each key once however many of them carry it.
+The correlation's own metadata can be preserved through its typed source-metadata extension. An object's other metadata cannot be moved into that extension without losing its owner; report unrepresented object keys as `mobile-omission.unmodeled-metadata`, naming each key once however many objects carry it. A parent value with the same key does not represent the object's value.
 
 ### Device, application, and provenance
 
@@ -376,12 +376,40 @@ Map the source `NSNumber` without renumbering or inferring a reason:
 
 A sample that does not carry the key, or carries a value the table does not map, is rejected; the component is never omitted and a reason is never inferred.
 
-There is no generic metadata extension.
-Adding another key requires a defined semantic purpose, a typed FHIR representation, an explicit allowlist update, and validation examples.
+The existing typed metadata extension at `https://grovealliance.org/fhir/core/StructureDefinition/metadata` is restored. Its URL is preserved because clients already emitted it; the HealthKit package owns its definition. Metadata does not override any clinical mapping or relax a required-value check.
+
+Emit at most one container on the primary output, including a recording or clinical DocumentReference wrapper. Never alter embedded clinical source bytes. Each child has URL `entry` and two defined children, in order: `key` with the exact runtime key in `valueString`, and `value` with its typed value. Do not normalize Unicode; distinct source keys remain distinct. Emit each key once, ordered by UTF-16 code units. The legacy encoder put each key in a dynamic child URL without defining that extension; the official FHIR Validator rejects that form. Migration preserves the existing container canonical and typed values, but deliberately changes the child structure. Existing stored evidence is not rewritten and is not claimed as a valid record-exchange retry.
+
+Children carry exactly one `valueString`, `valueDecimal`, `valueBoolean`, `valueDateTime`, `valueCoding`, or `valueQuantity`, as the legacy encoder did. Numeric values are finite; dates have a full date-time and offset; coded values name their system and code; quantities state a finite value and compatible UCUM unit. A quantity's original unit is not exposed by HealthKit. Preserve supported custom keys by default within requested metadata scope; report unsupported values instead of converting them to descriptive strings. A deployment's explicit exclusions remain observable separately from conversion failures.
+
+Known quantity keys retain the legacy normalization below. Convert only after `HKQuantity.is(compatibleWith:)` succeeds. A percentage uses the HealthKit fraction multiplied by 100 for UCUM `%`; a quantity incompatible with its declared key's unit is an omission, never guessed from another dimension.
+
+| SDK metadata key (common `HKMetadataKey` prefix omitted) | UCUM code |
+|---|---|
+| `WeatherTemperature` | `Cel` |
+| `WeatherHumidity`, `AlpineSlopeGrade` | `%` |
+| `HeartRateRecoveryActivityDuration`, `FitnessMachineDuration`, `AudioExposureDuration` | `s` |
+| `HeartRateRecoveryMaxObservedRecoveryHeartRate`, `HeartRateEventThreshold` | `/min` |
+| `AverageSpeed`, `MaximumSpeed` | `m/s` |
+| `ElevationAscended`, `ElevationDescended`, `IndoorBikeDistance`, `CrossTrainerDistance` | `m` |
+| `AverageMETs` | `kcal/(kg.h)` |
+| `AudioExposureLevel`, `HeadphoneGain` | `dB[SPL]` |
+| `BarometricPressure` | `mm[Hg]` |
+| `VO2MaxValue`, `LowCardioFitnessEventThreshold` | `mL/kg/min` |
+| `MaximumLightIntensity` | `lx` (correcting the legacy non-UCUM spelling `lux`) |
+| `SessionEstimate` on a supported quantity sample | the sample's selected measurement unit |
+
+For a quantity under another key, use the first compatible unit in this ordered list: `1`, `/min`, `s`, `m`, `m/s`, `g`, `L`, `L/min`, `kcal`, `W`, `Cel`, `mm[Hg]`, `mg/dL`, `mL/kg/min`, `kcal/(kg.h)`, `[iU]`, `S`, `dB[SPL]`, `dB`, `lx`. Use the corresponding HealthKit constructors, not UCUM strings as HealthKit unit spellings. No compatible unit, a nonfinite result or a result outside the producer's FHIR decimal domain is reported as unsupported. This preserves compatible custom quantity keys that the legacy encoder skipped. A custom dimensionless percentage uses `1` and retains its fractional value.
+
+Known SDK enumeration keys retain their legacy Apple documentation system and raw integer code; the metadata value is independent of any clinical coded mapping. Never truncate a fractional number to select an enumeration case. Preserve CFBoolean as Boolean and other numeric zero/one values as decimals; the legacy char-zero/one heuristic is not reliable type evidence. Arrays, dictionaries, binary values and unknown value classes are not silently stringified or recursively admitted. Additional classes require verified HealthKit store behavior and a specified FHIR representation.
+
+The shared `Conformance/corpora/healthkit-metadata/legacy-values.json` fixture identifies the legacy encoder revision and covers strings, integers, Booleans, dates, SDK codings, temperatures and percentage quantities. It tests semantic value preservation; optional display text and equivalent date-time offsets are not source identity.
+
+The extension adds no source/output identifier. Changing metadata changes the record version, and retries of the same version preserve its content. The native `HKObject.uuid` is not automatically copied into metadata; governed native identifier disclosure remains independent. A producer must retain metadata on the source output and avoid repeating a record's metadata on unrelated child outputs. Metadata from contained correlation objects or workout parts remains associated with that part; it is never silently substituted for the parent metadata.
 
 ### Withheld metadata
 
-A metadata key that a source record carries is represented only by the element that this table gives it, for the source types the table names, and only when an output of the record's graph, or the recording Device it references, carries the key's value in that element.
+A metadata key has a clinical mapping through the element that this table gives it, for the source types the table names. A value is also preserved when the typed source-metadata extension carries it; preserving metadata does not create an additional clinical interpretation.
 
 | Runtime key | SDK constant | Source types | Element |
 |---|---|---|---|
@@ -402,20 +430,20 @@ A metadata key that a source record carries is represented only by the element t
 | `HKMenstrualCycleStart` | `HKMetadataKeyMenstrualCycleStart` | `HKCategoryTypeIdentifierMenstrualFlow` | `Observation.component:cycleStart` |
 | `HKSexualActivityProtectionUsed` | `HKMetadataKeySexualActivityProtectionUsed` | `HKCategoryTypeIdentifierSexualActivity` | `Observation.valueCodeableConcept`, `protected` or `unprotected` |
 
-Withhold every metadata key that an accepted record carries and that neither an output of its graph nor the recording Device it references represents, and report those keys as `mobile-omission.unmodeled-metadata`, naming each key once by its runtime key.
-That includes a key the table does not list, a key it lists only for other source types, and a listed key whose element no output carries.
+Withhold every metadata key that an accepted record carries and that neither an output of its graph (including its typed source-metadata extension) nor the recording Device it references represents, and report those keys as `mobile-omission.unmodeled-metadata`, naming each key once by its runtime key.
+For source-sample metadata, this applies when the typed extension cannot preserve the value, including unsupported classes or a quantity with no supported compatible unit. An intentional exclusion is reported separately. Contained metadata follows the owner-preserving rules below.
 A runtime key is the string that a metadata dictionary holds as the key, as the table's first column gives it, not the name of the SDK constant that holds it, which can differ: `HKMetadataKeyTimeZone` holds `HKTimeZone`.
 A key that no SDK constant declares is named the same way.
-`HKMetadataKeyWasUserEntered` stating `false`, whether the record or a part of it carries it, maps to no element, as the capture-mode rule defines, and is never reported; a value that states nothing is reported.
-Every element in the table belongs to an Observation or to the recording Device it references, so a [HealthKit Recording Document](StructureDefinition-healthkit-recording-document.html) represents no key, not even a valid sync pair.
-A device key of a sample that states no `HKDevice` has no recording Device to carry it, so it is withheld and reported.
+`HKMetadataKeyWasUserEntered` stating `false` creates no manual-entry clinical assertion, but the typed extension preserves that Boolean when supplied on the source sample. An unsupported value remains an omission.
+A [HealthKit Recording Document](StructureDefinition-healthkit-recording-document.html) can preserve metadata through the typed extension without inventing an Observation mapping or a writer-record identity.
+A device key of a sample that states no `HKDevice` has no recording Device to carry it, so preserve it in the typed extension when supported; otherwise report the omission.
 
-A key that a part of the record carries, an object of a blood-pressure correlation or an `HKWorkoutEvent` or `HKWorkoutActivity` of a workout, is represented only when the record itself carries the same key with an equal value that its graph represents; otherwise it is withheld and reported with the record's own keys.
+The restored extension covers the source sample metadata. It does not flatten an object of a blood-pressure correlation or an `HKWorkoutEvent` or `HKWorkoutActivity` into its parent. A contained value counts as represented only where the existing clinical mapping explicitly incorporates it; otherwise it remains an observable omission. Separate part-scoped metadata requires an owner-preserving representation and is not claimed by this restoration.
 Two values are equal when they are time-zone names or sync identifiers that match character for character, user-entered flags that state the same thing, or sync versions that are the same number.
 The [correlation-object rules](#blood-pressure-correlation-objects) decide instead what a blood-pressure object's `HKMetadataKeyTimeZone` and `HKMetadataKeyWasUserEntered` contribute.
 
 Reporting never relaxes a rejection: a half or invalid sync pair that the record itself carries rejects the record even when no output could carry the pair.
-As for every omission, a key that a disclosure policy withholds is not reported.
+Report intentional disclosure exclusions separately from unsupported-value omissions; conversion success does not assert complete source coverage.
 
 ### Study context
 
@@ -424,7 +452,7 @@ The [study Bundle](Bundle-HealthKitStudyBundleExample.html) demonstrates the gra
 
 ### Source metadata artifact
 
-This section is a draft proposal for owner review and is not yet admitted.
+This section is a draft proposal for owner review and is not yet admitted. It is a historical alternative to the restored typed extension, not a prerequisite for metadata preservation.
 Until it is admitted, a producer emits no source-metadata artifact, and the [withheld-metadata rules](#withheld-metadata) apply unchanged.
 It proposes a carrier for the metadata keys that those rules withhold; its open questions close the section.
 
@@ -532,7 +560,7 @@ HealthKit metadata is an open dictionary that every writing application fills: b
 Disclosure is therefore the deployment's explicit decision and is off by default, an identifying key is disclosed only by name, and the withheld-metadata report keeps every loss visible, including that of an origin key such as `HKDeviceManufacturerName`.
 A separate artifact keeps that content off the clinical resources: a receiver can drop or segregate it on its own, and the authorization changes nothing that another output takes from the record and no business Identifier.
 In the new record version that delivers a changed artifact, another output changes only where its own content, or a node it references, changes.
-An extension would need a context on every output type, repeat itself across a multi-output graph, and change a clinical resource whenever the authorization changes, and this guide admits no generic metadata extension.
+The restored typed extension is attached to its owning output rather than repeated across unrelated outputs. Its content participates in record versioning. A separate artifact remains a possible future design only if a demonstrated requirement justifies it.
 The payload defines a canonical value for each class rather than promising a verbatim copy, because what a copy preserves cannot be checked across platforms; it names its losses instead: an `NSNumber`'s storage class, an `NSDate`'s detail below a nanosecond, a quantity's original unit, which `HKQuantity` does not expose, the sign of a floating zero, and every value it does not carry.
 `HKObject.h` names four value classes, `NSString`, `NSNumber`, `NSDate`, and `HKQuantity`; on the SDK baseline the `HKQuantitySample` initializer also admits `NSData` and `NSDecimalNumber` values and rejects `NSArray` and `NSNull` values.
 

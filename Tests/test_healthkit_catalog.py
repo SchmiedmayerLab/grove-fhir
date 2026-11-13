@@ -790,8 +790,9 @@ class HealthKitCatalogTests(unittest.TestCase):
             "states `true`",
             "When the correlation or an object states `true` and the Observation carries no "
             "`grove-recording-method` extension, report `mobile-omission.recording-method`.",
-            "report the keys withheld from the correlation and its objects as "
+            "report unrepresented object keys as "
             "`mobile-omission.unmodeled-metadata`, naming each key once",
+            "A parent value with the same key does not represent the object's value",
         ):
             with self.subTest(rule=rule):
                 self.assertIn(rule, section)
@@ -917,34 +918,31 @@ class HealthKitCatalogTests(unittest.TestCase):
             "those fields.",
         )
         for rule in (
-            "is represented only by the element that this table gives it, for the source types the "
-            "table names, and only when an output of the record's graph, or the recording Device it "
-            "references, carries the key's value in that element.",
+            "A value is also preserved when the typed source-metadata extension carries it; "
+            "preserving metadata does not create an additional clinical interpretation.",
             # Decision 4: a device key fills the recording Device, which exists only with an HKDevice.
             "A device key of a sample that states no `HKDevice` has no recording Device to carry it, "
-            "so it is withheld and reported.",
+            "so preserve it in the typed extension when supported; otherwise report the omission.",
             "and report those keys as `mobile-omission.unmodeled-metadata`, naming each key once by "
             "its runtime key.",
             "A runtime key is the string that a metadata dictionary holds as the key, as the table's "
             "first column gives it, not the name of the SDK constant that holds it, which can "
             "differ: `HKMetadataKeyTimeZone` holds `HKTimeZone`.",
             "A key that no SDK constant declares is named the same way.",
-            "a key it lists only for other source types, and a listed key whose element no output "
-            "carries.",
-            "`HKMetadataKeyWasUserEntered` stating `false`, whether the record or a part of it "
-            "carries it, maps to no element",
-            "and is never reported; a value that states nothing is reported.",
-            "represents no key, not even a valid sync pair.",
-            "an object of a blood-pressure correlation or an `HKWorkoutEvent` or "
-            "`HKWorkoutActivity` of a workout, is represented only when the record itself carries "
-            "the same key with an equal value that its graph represents",
+            "For source-sample metadata, this applies when the typed extension cannot preserve the value",
+            "An intentional exclusion is reported separately",
+            "the typed extension preserves that Boolean when supplied on the source sample",
+            "An unsupported value remains an omission.",
+            "can preserve metadata through the typed extension without inventing an Observation "
+            "mapping or a writer-record identity.",
+            "Separate part-scoped metadata requires an owner-preserving representation",
             "time-zone names or sync identifiers that match character for character, user-entered "
             "flags that state the same thing, or sync versions that are the same number.",
             "decide instead what a blood-pressure object's `HKMetadataKeyTimeZone` and "
             "`HKMetadataKeyWasUserEntered` contribute.",
             "a half or invalid sync pair that the record itself carries rejects the record even "
             "when no output could carry the pair.",
-            "a key that a disclosure policy withholds is not reported.",
+            "Report intentional disclosure exclusions separately from unsupported-value omissions",
         ):
             with self.subTest(rule=rule):
                 self.assertIn(rule, section)
@@ -1119,7 +1117,7 @@ class HealthKitCatalogTests(unittest.TestCase):
             "Another is carried as an adapter-coded component: "
             "`HKMetadataKeyInsulinDeliveryReason`.\n"
         )
-        insulin = section.split(opening, 1)[1]
+        insulin = section.split(opening, 1)[1].split("The existing typed metadata extension", 1)[0]
         rows = [
             [cell.strip().strip("`") for cell in line.strip("|").split("|")]
             for line in insulin.splitlines()

@@ -478,7 +478,7 @@ class CatalogContractSchemaTests(unittest.TestCase):
         )
         self.assertEqual(
             enforcement["untypedMetadata"]["matchRule"],
-            "no-generic-carrier-admitted",
+            "no-untyped-carrier-admitted",
         )
         information = protocol["opaqueIdentity"]["informationPreservation"]
         self.assertFalse(information["reversible"])

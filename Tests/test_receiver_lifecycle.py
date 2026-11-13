@@ -115,6 +115,16 @@ class ReceiverLifecycleTests(unittest.TestCase):
     def test_protocol_rules_and_base_bundles_still_match_the_pinned_source(self):
         protocol = json.loads((ROOT / "catalog/exchange-protocol.json").read_text())
         del protocol["testVectors"]
+        metadata = protocol["governedSourceIdentifier"]["validation"]["forbiddenIdentityUseEnforcement"]["untypedMetadata"]
+        self.assertEqual(metadata, {
+            "r4Paths": [],
+            "matchRule": "no-untyped-carrier-admitted",
+            "enforcement": "typed-healthkit-metadata-extension-and-no-automatic-native-uuid-copy",
+        })
+        # The metadata restoration changes only this carrier rule. Keep the original digest
+        # guarding every other protocol rule and all source Bundles, rather than rebaselining them.
+        metadata["matchRule"] = "no-generic-carrier-admitted"
+        metadata["enforcement"] = "closed-adapter-metadata-allowlists-and-no-grove-generic-extension"
         rules = json.dumps(protocol, sort_keys=True, separators=(",", ":")).encode()
         self.assertEqual(hashlib.sha256(rules).hexdigest(), "bf408a97524fc62036ae40fdb7a37f98b0a0474eff51e6807e1877c3e06598a7")
         for name, digest in {

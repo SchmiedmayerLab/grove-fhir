@@ -926,8 +926,8 @@
         },
         "untypedMetadata": {
           "r4Paths": [],
-          "matchRule": "no-generic-carrier-admitted",
-          "enforcement": "closed-adapter-metadata-allowlists-and-no-grove-generic-extension"
+          "matchRule": "no-untyped-carrier-admitted",
+          "enforcement": "typed-healthkit-metadata-extension-and-no-automatic-native-uuid-copy"
         },
         "attachmentPresentation": {
           "r4Paths": [

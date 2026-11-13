@@ -1,0 +1,192 @@
+{
+  "resourceType": "Observation",
+  "id": "metadata-preservation",
+  "meta": {
+    "profile": [
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-insulin-delivery"
+    ]
+  },
+  "extension": [
+    {
+      "url": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-source-type",
+      "valueCode": "HKQuantityTypeIdentifierInsulinDelivery"
+    },
+    {
+      "url": "https://grovealliance.org/fhir/core/StructureDefinition/metadata",
+      "extension": [
+        {
+          "url": "entry",
+          "extension": [
+            {
+              "url": "key",
+              "valueString": "HKMetadataKeyHeartRateMotionContext"
+            },
+            {
+              "url": "value",
+              "valueCoding": {
+                "system": "https://developer.apple.com/documentation/healthkit/hkheartratemotioncontext",
+                "code": "2",
+                "display": "Active"
+              }
+            }
+          ]
+        },
+        {
+          "url": "entry",
+          "extension": [
+            {
+              "url": "key",
+              "valueString": "HKWeatherHumidity"
+            },
+            {
+              "url": "value",
+              "valueQuantity": {
+                "value": 75,
+                "system": "http://unitsofmeasure.org",
+                "code": "%"
+              }
+            }
+          ]
+        },
+        {
+          "url": "entry",
+          "extension": [
+            {
+              "url": "key",
+              "valueString": "HKWeatherTemperature"
+            },
+            {
+              "url": "value",
+              "valueQuantity": {
+                "value": 22,
+                "system": "http://unitsofmeasure.org",
+                "code": "Cel"
+              }
+            }
+          ]
+        },
+        {
+          "url": "entry",
+          "extension": [
+            {
+              "url": "key",
+              "valueString": "com.example.count"
+            },
+            {
+              "url": "value",
+              "valueDecimal": 70000
+            }
+          ]
+        },
+        {
+          "url": "entry",
+          "extension": [
+            {
+              "url": "key",
+              "valueString": "com.example.date"
+            },
+            {
+              "url": "value",
+              "valueDateTime": "2026-11-12T18:00:00+00:00"
+            }
+          ]
+        },
+        {
+          "url": "entry",
+          "extension": [
+            {
+              "url": "key",
+              "valueString": "com.example.flag"
+            },
+            {
+              "url": "value",
+              "valueBoolean": true
+            }
+          ]
+        },
+        {
+          "url": "entry",
+          "extension": [
+            {
+              "url": "key",
+              "valueString": "com.example.note"
+            },
+            {
+              "url": "value",
+              "valueString": "after exercise"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "identifier": [
+    {
+      "type": {
+        "coding": [
+          {
+            "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+            "code": "source-record"
+          }
+        ]
+      },
+      "system": "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1",
+      "value": "v0:test-key:1:7lzhOmmKmafAWGACCH0NQSIFrryjPDGysIFmrg1_s8o"
+    },
+    {
+      "type": {
+        "coding": [
+          {
+            "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+            "code": "source-output"
+          }
+        ]
+      },
+      "system": "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1",
+      "value": "v0:test-key:1:fHSbttO2vnRwctsGiMr8ecXvWQOj5SdMWrTa--ZPLI4"
+    }
+  ],
+  "status": "final",
+  "code": {
+    "coding": [
+      {
+        "system": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-measurement",
+        "code": "insulin-delivery"
+      }
+    ]
+  },
+  "subject": {
+    "reference": "Patient/HealthKitPatientExample"
+  },
+  "effectivePeriod": {
+    "start": "2026-08-19T00:00:00-07:00",
+    "end": "2026-08-20T00:00:00-07:00"
+  },
+  "valueQuantity": {
+    "value": 6,
+    "unit": "IU",
+    "system": "http://unitsofmeasure.org",
+    "code": "[iU]"
+  },
+  "component": [
+    {
+      "code": {
+        "coding": [
+          {
+            "system": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-metadata-key",
+            "code": "HKInsulinDeliveryReason"
+          }
+        ]
+      },
+      "valueCodeableConcept": {
+        "coding": [
+          {
+            "system": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-insulin-delivery-reason",
+            "code": "basal",
+            "display": "Basal"
+          }
+        ]
+      }
+    }
+  ]
+}

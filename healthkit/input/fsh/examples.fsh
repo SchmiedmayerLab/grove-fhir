@@ -166,6 +166,30 @@ Description: "A passive HealthKit heart-rate sample with the standard clinical p
 * component[heartRateMotionContext].code = $healthKitMetadataKey#HKMetadataKeyHeartRateMotionContext "Heart Rate Motion Context"
 * component[heartRateMotionContext].valueCodeableConcept = $healthKitHeartRateMotionContext#sedentary "Sedentary"
 
+Instance: HealthKitMetadataObservationExample
+InstanceOf: HealthKitObservation
+Usage: #example
+Title: "HealthKit Heart Rate with Source Metadata"
+Description: "The same source/output identity with a preserved custom metadata value. A conversion carrying this content has its own record version; this standalone example does not assert a conversion Provenance."
+* meta.profile[+] = "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-heart-rate"
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:KbhJV4Hy226SHr2hw6IsWmGQudFmoxM1RxJ-eflU7c0"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:-OEmUVWfiQ2oJ9BagEvk4GTXuo-zMmDX8BzP-GqfPEs"
+* status = #final
+* category = $observationCategory#vital-signs "Vital Signs"
+* code = $loinc#8867-4 "Heart rate"
+* extension[healthKitSourceType].valueCode = #HKQuantityTypeIdentifierHeartRate
+* subject = Reference(HealthKitPatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00.251-07:00"
+* valueQuantity = 72 '/min' "beats/minute"
+* device = Reference(HealthKitRecordingDeviceExample)
+* extension[researchStudy].valueReference = Reference(HealthKitResearchStudyExample)
+* component[heartRateMotionContext].code = $healthKitMetadataKey#HKMetadataKeyHeartRateMotionContext "Heart Rate Motion Context"
+* component[heartRateMotionContext].valueCodeableConcept = $healthKitHeartRateMotionContext#sedentary "Sedentary"
+* extension[sourceMetadata].extension[entry].extension[key].valueString = "com.example.note"
+* extension[sourceMetadata].extension[entry].extension[value].valueString = "after exercise"
+
 Instance: HealthKitRevisedBodyWeightObservationExample
 InstanceOf: HealthKitObservation
 Usage: #example

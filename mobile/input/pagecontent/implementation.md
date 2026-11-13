@@ -28,7 +28,7 @@ A Grove Mobile implementation begins with a valid clinical Observation and adds 
    Allow only the resource types listed for active outputs, supporting entries, and lifecycle entries. Connect every supporting entry to at least one record. Require every output, Device, QuestionnaireResponse, and Provenance to declare exactly the profile set defined in `profile-claims.json`.
 10. Validate the Bundle against FHIR R4, the Grove package, and the applicable graph and lifecycle rules.
 
-Source-platform fields do not pass through a generic metadata container.
+Source-platform fields use the adapter's declared typed representations. The HealthKit adapter also restores its existing typed source-metadata extension for values without a clinical mapping; it is not an untyped escape hatch.
 A platform adapter owns its identifier namespaces, source-type terminology, and a small allowlist of typed metadata that lacks a standard FHIR representation.
 Add a field to that allowlist only after checking for a base FHIR element, published extension, and established terminology.
 

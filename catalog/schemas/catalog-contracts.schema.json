@@ -296,8 +296,48 @@
     "derivedAggregate": {"type": "object", "additionalProperties": false, "required": ["id", "title", "sourceTypeIdentifiers", "scope", "status", "measurementIDs", "profiles", "requirement"], "properties": {"id": {"$ref": "#/$defs/slug"}, "title": {"$ref": "#/$defs/nonEmptyText"}, "sourceTypeIdentifiers": {"$ref": "#/$defs/textArray"}, "scope": {"$ref": "#/$defs/nonEmptyText"}, "status": {"$ref": "#/$defs/status"}, "measurementIDs": {"$ref": "#/$defs/textArray"}, "profiles": {"$ref": "#/$defs/uriArray"}, "requirement": {"$ref": "#/$defs/nonEmptyText"}}},
     "healthKit": {
       "type": "object", "additionalProperties": false,
-      "required": ["$schema", "schemaVersion", "fhirVersion", "version", "source", "producerCanonicalization", "sourceTypeExtension", "clinicalRecordAdmission", "conversionProvenanceProfile", "statusVocabulary", "observationIssued", "standardAdapterClaims", "sensorAdapterClaims", "derivedAggregates", "rows", "recordingDeviceIdentity", "applicationDeviceIdentity", "sourceRevisionExtension", "identity"],
+      "required": ["$schema", "schemaVersion", "fhirVersion", "version", "source", "producerCanonicalization", "sourceTypeExtension", "clinicalRecordAdmission", "conversionProvenanceProfile", "statusVocabulary", "observationIssued", "standardAdapterClaims", "sensorAdapterClaims", "derivedAggregates", "rows", "recordingDeviceIdentity", "applicationDeviceIdentity", "sourceRevisionExtension", "metadataExtension", "identity"],
       "properties": {
+        "metadataExtension": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "url",
+            "resourceTypes",
+            "valueElements",
+            "keyEncoding",
+            "emissionRule",
+            "identityRule",
+            "valueRule"
+          ],
+          "properties": {
+            "url": {
+              "const": "https://grovealliance.org/fhir/core/StructureDefinition/metadata"
+            },
+            "resourceTypes": {
+              "const": ["Observation", "DocumentReference", "MedicationAdministration", "MedicationStatement", "VisionPrescription"]
+            },
+            "valueElements": {
+              "const": ["valueString", "valueDecimal", "valueBoolean", "valueDateTime", "valueCoding", "valueQuantity"]
+            },
+            "keyEncoding": {
+              "type": "string",
+              "minLength": 1
+            },
+            "emissionRule": {
+              "type": "string",
+              "minLength": 1
+            },
+            "identityRule": {
+              "type": "string",
+              "minLength": 1
+            },
+            "valueRule": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
         "$schema": {"$ref": "#/$defs/schemaUri"}, "schemaVersion": {"const": 0}, "fhirVersion": {"const": "4.0.1"}, "version": {"$ref": "#/$defs/releaseVersion"},
         "source": {"type": "object", "additionalProperties": false, "required": ["platform", "sdkBaseline", "accessed", "inventory", "rowScope", "evidence", "rowCount", "derivedAggregateCount"], "properties": {"platform": {"const": "Apple HealthKit"}, "sdkBaseline": {"$ref": "#/$defs/sdkBaseline"}, "accessed": {"$ref": "#/$defs/date"}, "inventory": {"$ref": "#/$defs/nonEmptyText"}, "rowScope": {"$ref": "#/$defs/nonEmptyText"}, "evidence": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/healthKitEvidence"}}, "rowCount": {"type": "integer", "minimum": 1}, "derivedAggregateCount": {"type": "integer", "minimum": 0}}},
         "producerCanonicalization": {"type": "object", "additionalProperties": false, "required": ["mobileEffectiveContract", "effectivePrecision", "effectiveRounding", "scalarQuantityDecimal", "percentScaling", "percentScalingVectors", "identityPreimages", "sensorAndEcgTiming"], "properties": {"mobileEffectiveContract": {"const": "catalog/measurement-catalog.json#effectiveCanonicalization"}, "effectivePrecision": {"const": "millisecond"}, "effectiveRounding": {"const": "half-even"}, "scalarQuantityDecimal": {"const": "shortest-round-trip"}, "percentScaling": {"const": "shortest-round-trip-decimal-shift-rounded-once"}, "percentScalingVectors": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/healthKitPercentScalingVector"}}, "identityPreimages": {"const": "unmodified"}, "sensorAndEcgTiming": {"const": "excluded"}}},

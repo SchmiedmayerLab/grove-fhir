@@ -93,6 +93,7 @@ Parent: GroveMobileObservation
 Id: healthkit-observation
 Title: "HealthKit Observation"
 Description: "The source identity and allowlisted HealthKit context for an Observation that also conforms to an appropriate clinical or research profile."
+* extension contains HealthKitSourceMetadata named sourceMetadata 0..1 MS
 * obeys healthkit-motion-context-1 and healthkit-sleep-stage-1 and healthkit-writer-record-1
 * issued 0..0
 * extension contains HealthKitSourceType named healthKitSourceType 1..1 MS
@@ -201,6 +202,7 @@ Parent: GroveSensorRecordingDocument
 Id: healthkit-recording-document
 Title: "HealthKit Recording Document"
 Description: "A byte-preserved HealthKit source document or series whose native representation is not a scalar result. Beat-to-beat intervals and workout routes use registered column schemas; provider-issued clinical resources use a stricter derived profile that declares their source FHIR release in the attachment media type."
+* extension contains HealthKitSourceMetadata named sourceMetadata 0..1 MS
 // The SDK source class is lineage, not a document-type coding.
 * extension contains HealthKitSourceType named healthKitSourceType 1..1 MS
 * type 1..1 MS
@@ -236,6 +238,7 @@ Parent: VisionPrescription
 Id: healthkit-vision-prescription
 Title: "HealthKit Vision Prescription"
 Description: "A glasses or contacts prescription a person entered in Health, carried as the structured lens specification HealthKit publishes rather than as an opaque document. HealthKit exposes no separate record-creation instant, so `created` and `dateWritten` both carry HKVisionPrescription.dateIssued. It exposes no prescriber either, and R4 makes that reference mandatory, so the reference is stated absent rather than invented."
+* extension contains HealthKitSourceMetadata named sourceMetadata 0..1 MS
 * insert HealthKitOutputIdentitySlices
 // No classifying element exists on this resource, and a tag may be ignored when a resource is
 // interpreted, so the source type is stated as an extension.
@@ -272,6 +275,7 @@ Parent: MedicationAdministration
 Id: healthkit-medication-dose-event
 Title: "HealthKit Medication Dose Event"
 Description: "One dose a person logged against a medication they track in Health. The R4 administration status is coarser than the source, and this contract states no mapping from it, so the exact HKMedicationDoseEvent.LogStatus is retained beside it together with the schedule the dose was logged against; a consumer reads the log status, not the R4 status, to learn what the person did. HealthKit publishes no medication record, so the medication is named by the same HKHealthConceptIdentifier the tracked-medication statement carries and by nothing else."
+* extension contains HealthKitSourceMetadata named sourceMetadata 0..1 MS
 * insert HealthKitOutputIdentitySlices
 // No classifying element exists on this resource, and a tag may be ignored when a resource is
 // interpreted, so the source type is stated as an extension.
@@ -315,6 +319,7 @@ Parent: MedicationStatement
 Id: healthkit-user-annotated-medication
 Title: "HealthKit User Annotated Medication"
 Description: "A non-archived medication a person tracks in Health, with the annotations they added while adding it. HealthKit publishes no sample identity for a tracked medication, so the HKHealthConceptIdentifier of the underlying concept is the identity a dose event refers to. The status is active; archived entries are not admitted because archival alone does not establish that medication use was completed or stopped."
+* extension contains HealthKitSourceMetadata named sourceMetadata 0..1 MS
 * insert HealthKitOutputIdentitySlices
 * identifier 3..* MS
 * identifier contains healthConcept 1..1 MS
