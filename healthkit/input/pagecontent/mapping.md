@@ -191,6 +191,10 @@ Use `effectivePeriod` when HealthKit supplies a start and end that define an int
 Where the selected profile admits only `dateTime`, an interval sample states its `startDate` as `effectiveDateTime` and withholds its `endDate`.
 Map an available IANA time-zone name to the standard FHIR `timezone` extension on the corresponding date-time value.
 
+For an `HKHeartbeatSeriesSample` or `HKWorkoutRoute`, set `DocumentReference.context.period` to the sample's `startDate` and `endDate`. Both endpoints use the same millisecond precision, half-even rounding, numeric-offset and IANA `timezone` rules as Observation effective times. Preserve the complete source interval, including equal endpoints; reject reversed or unrepresentable periods and invalid supplied time-zone names. Without a source time zone, serialize the endpoints in UTC without inventing a zone name. Do not substitute the conversion instant in `DocumentReference.date` for the recording period. A time zone represented on this period is not repeated in source metadata.
+
+Provider-issued clinical documents preserve their original bytes. Do not infer a clinical service period from import or conversion timestamps. Preserve otherwise unmapped `HKTimeZone` metadata on the wrapper when its relationship to a clinical date-time is not established.
+
 Step count preserves the source interval total with Grove `step-count-total` and UCUM `{steps}`.
 The effective Period must have both endpoints and a positive duration.
 The value is the total count attributed to that Period; do not turn a point sample into a step count and do not normalize the source count to `/h` or another rate.
@@ -413,7 +417,7 @@ Use the clinical, device and other structured mappings in this guide first. The 
 
 | Runtime key | SDK constant | Source types | Element |
 |---|---|---|---|
-| `HKTimeZone` | `HKMetadataKeyTimeZone` | every type with an Observation output | the `timezone` extension on each `effective[x]` date-time, as the [time rules](#values-units-and-time) define |
+| `HKTimeZone` | `HKMetadataKeyTimeZone` | every type with an Observation output; heartbeat series and workout routes | the `timezone` extension on each `effective[x]` or recording `context.period` endpoint, as the [time rules](#values-units-and-time) define |
 | `HKWasUserEntered` | `HKMetadataKeyWasUserEntered` | every type with an Observation output | the `grove-recording-method` extension, `manual-entry` when the key states `true`, as the [capture-mode rule](#capture-mode-and-performer) defines |
 | `HKMetadataKeySyncIdentifier` | `HKMetadataKeySyncIdentifier` | every type with an Observation output | the `writer-record` Identifier, as the [revision rules](#logical-identity-and-revisions) define |
 | `HKMetadataKeySyncVersion` | `HKMetadataKeySyncVersion` | every type with an Observation output | the Grove Writer Record Version extension beside the `writer-record` Identifier |

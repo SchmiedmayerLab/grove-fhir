@@ -105,6 +105,16 @@
     "deferred": "No FHIR output for this source type is admitted by the current adapter.",
     "intentionally-unsupported": "The Grove FHIR contracts explicitly reject this source meaning rather than approximating it."
   },
+  "recordingPeriod": {
+    "sourceTypes": [
+      "HKDataTypeIdentifierHeartbeatSeries",
+      "HKWorkoutRouteTypeIdentifier"
+    ],
+    "r4Element": "DocumentReference.context.period",
+    "start": "HKSample.startDate",
+    "end": "HKSample.endDate",
+    "rule": "Preserve the complete source interval with both endpoints, including equal endpoints. Apply the Mobile millisecond, half-even and numeric-offset rules; map a supplied valid IANA time-zone name to the standard timezone extension on both endpoints. Without a source zone, use UTC without a timezone extension. Refuse reversed or unrepresentable periods and invalid supplied time-zone names. Do not repeat the mapped time zone in source metadata or use DocumentReference.date as measurement time. Provider-issued clinical documents do not infer a service period from import or conversion timestamps; unmapped time-zone metadata remains on their wrapper."
+  },
   "observationIssued": {
     "cardinality": "0..0",
     "source": "none",

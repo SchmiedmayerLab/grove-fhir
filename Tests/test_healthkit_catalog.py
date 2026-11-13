@@ -844,6 +844,7 @@ class HealthKitCatalogTests(unittest.TestCase):
         self.assertEqual(
             {key: source_types for key, source_types in table.items() if source_types not in {every, devices}},
             {
+                "HKTimeZone": "every type with an Observation output; heartbeat series and workout routes",
                 "HKMetadataKeyHeartRateMotionContext": "HKQuantityTypeIdentifierHeartRate",
                 "HKHeartRateEventThreshold": (
                     "HKCategoryTypeIdentifierHighHeartRateEvent, "
@@ -859,7 +860,6 @@ class HealthKitCatalogTests(unittest.TestCase):
         self.assertEqual(
             {key for key, source_types in table.items() if source_types == every},
             {
-                "HKTimeZone",
                 "HKWasUserEntered",
                 "HKMetadataKeySyncIdentifier",
                 "HKMetadataKeySyncVersion",
@@ -883,7 +883,7 @@ class HealthKitCatalogTests(unittest.TestCase):
         rows = {row["sourceTypeIdentifier"]: row for row in self.catalog["rows"]}
         listed = {
             source_type
-            for source_types in table.values() if source_types not in {every, devices}
+            for source_types in table.values() if source_types not in {every, devices, table["HKTimeZone"]}
             for source_type in source_types.split(", ")
         }
         for source_type in listed:
