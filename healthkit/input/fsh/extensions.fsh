@@ -9,7 +9,7 @@
 Extension: HealthKitSourceMetadata
 Id: metadata
 Title: "HealthKit Source Metadata"
-Description: "Typed HealthKit source metadata beside mapped clinical facts, retaining the legacy container canonical. Each entry declares its exact runtime key and one typed value. Unlike the legacy dynamic child URLs, these children have definitions and can be validated by FHIR."
+Description: "Typed HealthKit source metadata on the primary output of its source record, alongside mapped clinical facts. Each entry declares its exact runtime key and one typed value. Metadata preserves source values without overriding clinical mappings."
 Context: Observation, DocumentReference, MedicationAdministration, MedicationStatement, VisionPrescription
 * ^url = "https://grovealliance.org/fhir/core/StructureDefinition/metadata"
 * url = "https://grovealliance.org/fhir/core/StructureDefinition/metadata" (exactly)

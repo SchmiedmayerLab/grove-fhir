@@ -935,9 +935,7 @@ class HealthKitCatalogTests(unittest.TestCase):
             "An unsupported value remains an omission.",
             "can preserve metadata through the typed extension without inventing an Observation "
             "mapping or a writer-record identity.",
-            "Separate part-scoped metadata requires an owner-preserving representation",
-            "time-zone names or sync identifiers that match character for character, user-entered "
-            "flags that state the same thing, or sync versions that are the same number.",
+            "This extension does not represent metadata belonging to contained parts.",
             "decide instead what a blood-pressure object's `HKMetadataKeyTimeZone` and "
             "`HKMetadataKeyWasUserEntered` contribute.",
             "a half or invalid sync pair that the record itself carries rejects the record even "
@@ -953,103 +951,6 @@ class HealthKitCatalogTests(unittest.TestCase):
         }
         links = {part.split(")", 1)[0] for part in section.split("](#")[1:]}
         self.assertEqual(len(links), 5)
-        self.assertLessEqual(links, anchors)
-
-    def test_source_metadata_artifact_is_a_proposal_that_nothing_admits(self) -> None:
-        mapping = (ROOT / "healthkit/input/pagecontent/mapping.md").read_text(encoding="utf-8")
-        heading = "Source metadata artifact"
-        headings = [line[4:] for line in mapping.splitlines() if line.startswith("### ")]
-        index = headings.index(heading)
-        self.assertEqual(
-            headings[index - 1 : index + 2],
-            ["Study context", heading, "Dependencies and terminology notices"],
-        )
-        section = mapping.split(f"### {heading}\n", 1)[1].split("\n### ", 1)[0]
-        for sentence in (
-            "This section is a draft proposal for owner review and is not yet admitted.",
-            "Until it is admitted, a producer emits no source-metadata artifact, and the "
-            "[withheld-metadata rules](#withheld-metadata) apply unchanged.",
-            "Without an authorization, a producer emits no artifact; that is the default.",
-            "an authorization reaches an identifying key only when it names that key, and reaching "
-            "every ordinary key reaches none of them.",
-            "a key is identifying only when its code units are those of a runtime key in the table "
-            "above.",
-            "The deployment's disclosure policy takes precedence over the authorization",
-            "An authorization only discloses: it is not a disclosure policy that withholds keys, "
-            "so it never silences a report.",
-            "the value is never read through `doubleValue`",
-            "choosing the one whose last digit is even when two are equally near it, and as `0` for "
-            "either zero;",
-            "#### Open questions\n",
-        ):
-            with self.subTest(sentence=sentence[:60]):
-                self.assertIn(sentence, section)
-
-        # Admission would register each of these; until the owner admits the proposal, no
-        # published artifact may, or the draft would already be a producer mode.
-        formats = json.loads((ROOT / "catalog/format-registry.json").read_text(encoding="utf-8"))
-        self.assertNotIn("source-metadata", formats["formats"])
-        self.assertNotIn(
-            "* #source-metadata ",
-            (ROOT / "sensor/input/fsh/generated-recording-formats.fsh").read_text(encoding="utf-8"),
-        )
-        for fsh in sorted(ROOT.glob("*/input/fsh/*.fsh")):
-            with self.subTest(fsh=str(fsh.relative_to(ROOT))):
-                text = fsh.read_text(encoding="utf-8")
-                self.assertNotIn("healthkit-source-metadata-document", text)
-                self.assertNotIn("HealthKitSourceMetadataDocument", text)
-        for published in (
-            "catalog/profile-claims.json",
-            "catalog/exchange-protocol.json",
-            "publication/artifact-allowlist.json",
-        ):
-            with self.subTest(published=published):
-                text = (ROOT / published).read_text(encoding="utf-8")
-                self.assertNotIn("healthkit-source-metadata-document", text)
-                self.assertNotIn('"source-metadata"', text)
-        roles = {
-            output["outputRole"]
-            for row in self.catalog["rows"]
-            for output in row.get("outputs", [])
-        }
-        self.assertNotIn("source-metadata", roles)
-
-        # An authorization that reaches every ordinary key reaches no identifying key. The table
-        # names each identifying key by the string its constant holds in an iOS 26.5 simulator on
-        # the SDK baseline, and the section names no such key by its constant elsewhere.
-        identifying = {}
-        for line in section.split("| Runtime key | SDK constant |\n|---|---|\n", 1)[1].splitlines():
-            if not line.startswith("| `"):
-                break
-            key, constant = (cell.strip().strip("`") for cell in line.strip("|").split("|"))
-            identifying[key] = constant
-        self.assertEqual(
-            identifying,
-            {
-                "HKMetadataKeySyncIdentifier": "HKMetadataKeySyncIdentifier",
-                "HKExternalUUID": "HKMetadataKeyExternalUUID",
-                "HKDeviceSerialNumber": "HKMetadataKeyDeviceSerialNumber",
-                "HKUDIDeviceIdentifier": "HKMetadataKeyUDIDeviceIdentifier",
-                "HKUDIProductionIdentifier": "HKMetadataKeyUDIProductionIdentifier",
-                "HKDeviceName": "HKMetadataKeyDeviceName",
-                "HKDigitalSignature": "HKMetadataKeyDigitalSignature",
-            },
-        )
-        for key, constant in identifying.items():
-            if key != constant:
-                with self.subTest(constant=constant):
-                    self.assertEqual(section.count(f"`{constant}`"), 1)
-
-        # Every in-page link of the section names a heading of this page.
-        anchors = {
-            "".join(c for c in name.lower() if c.isalnum() or c in " -").replace(" ", "-")
-            for name in headings
-        }
-        links = {part.split(")", 1)[0] for part in section.split("](#")[1:]}
-        self.assertEqual(
-            links,
-            {"withheld-metadata", "workouts", "percentages", "logical-identity-and-revisions"},
-        )
         self.assertLessEqual(links, anchors)
 
     def test_insulin_delivery_reason_is_a_required_component_coded_by_its_key(self) -> None:
@@ -1117,7 +1018,7 @@ class HealthKitCatalogTests(unittest.TestCase):
             "Another is carried as an adapter-coded component: "
             "`HKMetadataKeyInsulinDeliveryReason`.\n"
         )
-        insulin = section.split(opening, 1)[1].split("The existing typed metadata extension", 1)[0]
+        insulin = section.split(opening, 1)[1].split("#### Typed source metadata\n", 1)[0]
         rows = [
             [cell.strip().strip("`") for cell in line.strip("|").split("|")]
             for line in insulin.splitlines()

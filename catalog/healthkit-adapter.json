@@ -3709,10 +3709,10 @@
       "valueCoding",
       "valueQuantity"
     ],
-    "keyEncoding": "Each entry has url entry and two children in order: key with the exact runtime key in valueString, then value with one typed value. Do not normalize Unicode. Keys occur once, ordered by their UTF-16 code units. Legacy dynamic child URLs are not admitted by the record exchange.",
+    "keyEncoding": "Each entry has url entry and two children in order: key with the exact runtime key in valueString, then value with one typed value. Do not normalize Unicode. Keys occur once, ordered by their UTF-16 code units.",
     "emissionRule": "Preserve supported source metadata by default on the primary output of its source record, including custom keys. A caller may explicitly limit disclosure; unsupported values and intentional exclusions must remain observable. Mapped clinical elements retain their own semantics and validation; metadata never overrides them. A clinical recording carries the extension on its wrapper, never by mutating the embedded source bytes.",
     "identityRule": "Metadata changes record content and therefore record version. It never changes source-record or source-output identity and does not mint another resource. The native HKObject.uuid is not automatically copied here; its governed identifier is independent.",
-    "valueRule": "Use typed FHIR values as the legacy encoder did. Dates are full date-times with an offset. Numbers must be finite. Quantities use declared compatible UCUM units; an original HKQuantity unit is not exposed. Known quantity keys retain their legacy units (with lx correcting lux); custom keys use the ordered compatible-unit fallback specified in mapping.md. Unsupported quantities and value classes are reported rather than stringified. Do not confuse a numeric one with a Boolean without source type evidence."
+    "valueRule": "Use the declared typed FHIR values. Dates are full date-times with an offset. Numbers must be finite. Quantities use declared compatible UCUM units; an original HKQuantity unit is not exposed. Known quantity keys use the units specified in mapping.md; custom keys use its ordered compatible-unit fallback. Unsupported quantities and value classes are reported rather than stringified. Do not confuse a numeric one with a Boolean without source type evidence."
   },
   "sourceRevisionExtension": {
     "url": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-source-revision",

@@ -1,4 +1,4 @@
-"""Validate the restored typed HealthKit metadata extension."""
+"""Validate the typed HealthKit source-metadata extension."""
 
 # This source file is part of the Grove FHIR open-source project
 #
