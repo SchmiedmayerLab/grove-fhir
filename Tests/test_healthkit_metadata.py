@@ -1,4 +1,4 @@
-"""Preservation and rejection cases for the restored source metadata carrier."""
+"""Preservation and rejection cases for the typed source-metadata extension."""
 
 # This source file is part of the Grove FHIR open-source project
 #
