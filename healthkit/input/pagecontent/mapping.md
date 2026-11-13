@@ -245,7 +245,7 @@ The correlation's own metadata can be preserved through its typed source-metadat
 
 ### Device, application, and provenance
 
-Map every non-nil `HKObject.device` to a [Grove Recording Device](https://grovealliance.org/fhir/mobile/StructureDefinition-grove-recording-device.html) that `Observation.device` references, and carry every field that `HKDevice` and the sample's device metadata keys supply; consumers filter what they do not need.
+Map every non-nil `HKObject.device` to a [Grove Recording Device](https://grovealliance.org/fhir/mobile/StructureDefinition-grove-recording-device.html). When `HKObject.device` is absent, create a recording Device if the sample supplies a nonblank string for a device metadata field listed below. Apply these mappings to both Observation and document outputs: `Observation.device` references the recording Device, and `DocumentReference.author` includes it. Carry the available device facts without inferring a stable physical-unit identity from descriptive metadata.
 The Device always carries the content `device-snapshot` identity, minted over its complete rendered content after every field is set.
 It also carries the typed `recording-device` identity only when a governed stable per-unit token exists: `HKDevice.localIdentifier` when it is nonempty and the deployment has verified that it is stable and names exactly one unit for the acquisition scope, or another caller-governed token.
 That token is local to the host that recorded the sample and writable by any application, so its HMAC is scoped by the writing source's `HKSource.bundleIdentifier`, and the same token stated by two writers names two units.
@@ -269,7 +269,7 @@ Without a token the Device is still emitted and referenced; manufacturer, model,
 | `HKMetadataKeyUDIProductionIdentifier` | the [Grove UDI Production Identifier](https://grovealliance.org/fhir/mobile/StructureDefinition-grove-udi-production-identifier.html) extension on `udiCarrier`, because FHIR R4 has no element for the raw production identifier |
 
 An `HKDevice` property wins over a device metadata key, a metadata key fills only an absent field, and the serial number comes only from its metadata key.
-Map each field only when its value is present.
+Map each field only when its value is present. Do not duplicate a faithfully mapped value in the typed metadata extension. If a metadata value conflicts with the preferred `HKDevice` property, preserve that different value in the typed extension. Device metadata describes recording hardware; it does not identify the gateway application.
 The `Device.version.type` codings use the ISO 11073 MDC revision codes; these standard type codes do not assert conformance to a PHD profile.
 The clear local identifier links a participant's samples from one device within one host; a deployment that shares or exports data applies its own policy to it, to the serial number, and to a device name.
 `recordingDeviceIdentity.fieldMappings` in [`catalog/healthkit-adapter.json`](https://grovealliance.org/fhir/catalog/healthkit-adapter.json) states the same mapping.
@@ -409,7 +409,7 @@ The extension adds no source/output identifier. Changing metadata changes the re
 
 ### Withheld metadata
 
-A metadata key has a clinical mapping through the element that this table gives it, for the source types the table names. A value is also preserved when the typed source-metadata extension carries it; preserving metadata does not create an additional clinical interpretation.
+Use the clinical, device and other structured mappings in this guide first. The typed source-metadata extension carries values that have no faithful representation through those mappings; do not duplicate an already represented value. Conflicting source values and values whose original form cannot be recovered from a mapped keyed identity remain eligible for the extension. Preserving metadata does not create an additional clinical interpretation.
 
 | Runtime key | SDK constant | Source types | Element |
 |---|---|---|---|
@@ -417,11 +417,11 @@ A metadata key has a clinical mapping through the element that this table gives 
 | `HKWasUserEntered` | `HKMetadataKeyWasUserEntered` | every type with an Observation output | the `grove-recording-method` extension, `manual-entry` when the key states `true`, as the [capture-mode rule](#capture-mode-and-performer) defines |
 | `HKMetadataKeySyncIdentifier` | `HKMetadataKeySyncIdentifier` | every type with an Observation output | the `writer-record` Identifier, as the [revision rules](#logical-identity-and-revisions) define |
 | `HKMetadataKeySyncVersion` | `HKMetadataKeySyncVersion` | every type with an Observation output | the Grove Writer Record Version extension beside the `writer-record` Identifier |
-| `HKDeviceSerialNumber` | `HKMetadataKeyDeviceSerialNumber` | every type with an Observation output | `serialNumber` of the recording Device, as the device rules define |
-| `HKDeviceName` | `HKMetadataKeyDeviceName` | every type with an Observation output | `deviceName` of type `user-friendly-name` of the recording Device, when `HKDevice.name` is absent |
-| `HKDeviceManufacturerName` | `HKMetadataKeyDeviceManufacturerName` | every type with an Observation output | `manufacturer` of the recording Device, when `HKDevice.manufacturer` is absent |
-| `HKUDIDeviceIdentifier` | `HKMetadataKeyUDIDeviceIdentifier` | every type with an Observation output | `udiCarrier.deviceIdentifier` of the recording Device, when `HKDevice.UDIDeviceIdentifier` is absent |
-| `HKUDIProductionIdentifier` | `HKMetadataKeyUDIProductionIdentifier` | every type with an Observation output | the Grove UDI Production Identifier extension on `udiCarrier` of the recording Device |
+| `HKDeviceSerialNumber` | `HKMetadataKeyDeviceSerialNumber` | every type with an Observation or document output | `serialNumber` of the recording Device, as the device rules define |
+| `HKDeviceName` | `HKMetadataKeyDeviceName` | every type with an Observation or document output | `deviceName` of type `user-friendly-name` of the recording Device, when `HKDevice.name` is absent |
+| `HKDeviceManufacturerName` | `HKMetadataKeyDeviceManufacturerName` | every type with an Observation or document output | `manufacturer` of the recording Device, when `HKDevice.manufacturer` is absent |
+| `HKUDIDeviceIdentifier` | `HKMetadataKeyUDIDeviceIdentifier` | every type with an Observation or document output | `udiCarrier.deviceIdentifier` of the recording Device, when `HKDevice.UDIDeviceIdentifier` is absent |
+| `HKUDIProductionIdentifier` | `HKMetadataKeyUDIProductionIdentifier` | every type with an Observation or document output | the Grove UDI Production Identifier extension on `udiCarrier` of the recording Device |
 | `HKMetadataKeyHeartRateMotionContext` | `HKMetadataKeyHeartRateMotionContext` | `HKQuantityTypeIdentifierHeartRate` | `Observation.component:heartRateMotionContext`, as [above](#supported-healthkit-metadata) |
 | `HKHeartRateEventThreshold` | `HKMetadataKeyHeartRateEventThreshold` | `HKCategoryTypeIdentifierHighHeartRateEvent`, `HKCategoryTypeIdentifierLowHeartRateEvent` | `Observation.component:threshold` of the notification, in UCUM `/min` |
 | `HKLowCardioFitnessEventThreshold` | `HKMetadataKeyLowCardioFitnessEventThreshold` | `HKCategoryTypeIdentifierLowCardioFitnessEvent` | `Observation.component:threshold` of the notification, in UCUM `mL/kg/min` |
@@ -436,7 +436,7 @@ A runtime key is the string that a metadata dictionary holds as the key, as the 
 A key that no SDK constant declares is named the same way.
 `HKMetadataKeyWasUserEntered` stating `false` creates no manual-entry clinical assertion, but the typed extension preserves that Boolean when supplied on the source sample. An unsupported value remains an omission.
 A [HealthKit Recording Document](StructureDefinition-healthkit-recording-document.html) can preserve metadata through the typed extension without inventing an Observation mapping or a writer-record identity.
-A device key of a sample that states no `HKDevice` has no recording Device to carry it, so preserve it in the typed extension when supported; otherwise report the omission.
+The device mappings apply even when the sample states no `HKDevice`. A recognized nonblank string creates the corresponding recording Device fact; other values remain eligible for the typed extension when supported.
 
 The typed extension carries the source sample metadata. It does not flatten an object of a blood-pressure correlation or an `HKWorkoutEvent` or `HKWorkoutActivity` into its parent. A contained value counts as represented only where the existing clinical mapping explicitly incorporates it; otherwise it remains an observable omission. This extension does not represent metadata belonging to contained parts.
 The [correlation-object rules](#blood-pressure-correlation-objects) decide instead what a blood-pressure object's `HKMetadataKeyTimeZone` and `HKMetadataKeyWasUserEntered` contribute.

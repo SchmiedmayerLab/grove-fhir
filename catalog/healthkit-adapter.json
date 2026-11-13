@@ -3661,7 +3661,7 @@
       "HKDevice.hardwareVersion",
       "HKDevice.softwareVersion"
     ],
-    "snapshot": "Every HealthKit object with a non-nil HKDevice yields a recording Device that Observation.device references. The Device always carries one content device-snapshot v0 identifier over its complete rendered content and carries a recording-device v0 identifier only when a governed stable per-unit token exists. Descriptive and version fields are snapshot data; equal snapshots never prove one physical unit.",
+    "snapshot": "Every HealthKit object with a non-nil HKDevice or a recognized nonblank device metadata string yields a recording Device. Observation.device references it and DocumentReference.author includes it. Device metadata supplements absent HKDevice facts for both output kinds. The Device always carries one content device-snapshot v0 identifier over its complete rendered content and carries a recording-device v0 identifier only when a governed stable per-unit token exists. Descriptive and version fields are snapshot data; equal snapshots never prove one physical unit.",
     "fieldMappings": [
       {"source": "HKDevice.name", "r4Element": "Device.deviceName with type user-friendly-name", "rule": "The name may be one a person gave the device."},
       {"source": "HKDevice.manufacturer", "r4Element": "Device.manufacturer"},
@@ -3710,7 +3710,7 @@
       "valueQuantity"
     ],
     "keyEncoding": "Each entry has url entry and two children in order: key with the exact runtime key in valueString, then value with one typed value. Do not normalize Unicode. Keys occur once, ordered by their UTF-16 code units.",
-    "emissionRule": "Preserve supported source metadata by default on the primary output of its source record, including custom keys. A caller may explicitly limit disclosure; unsupported values and intentional exclusions must remain observable. Mapped clinical elements retain their own semantics and validation; metadata never overrides them. A clinical recording carries the extension on its wrapper, never by mutating the embedded source bytes.",
+    "emissionRule": "Apply structured clinical, device and other IG mappings first. Preserve supported source metadata not faithfully represented by those mappings on the primary output, including custom keys and conflicting source values. Do not duplicate already mapped values; keyed identities do not reproduce their original source strings. A caller may explicitly limit disclosure; unsupported values and intentional exclusions must remain observable. Mapped clinical elements retain their own semantics and validation; metadata never overrides them. A clinical recording carries the extension on its wrapper, never by mutating the embedded source bytes.",
     "identityRule": "Metadata changes record content and therefore record version. It never changes source-record or source-output identity and does not mint another resource. The native HKObject.uuid is not automatically copied here; its governed identifier is independent.",
     "valueRule": "Use the declared typed FHIR values. Dates are full date-times with an offset. Numbers must be finite. Quantities use declared compatible UCUM units; an original HKQuantity unit is not exposed. Known quantity keys use the units specified in mapping.md; custom keys use its ordered compatible-unit fallback. Unsupported quantities and value classes are reported rather than stringified. Do not confuse a numeric one with a Boolean without source type evidence."
   },

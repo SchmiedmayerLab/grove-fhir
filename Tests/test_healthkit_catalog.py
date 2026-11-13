@@ -840,8 +840,9 @@ class HealthKitCatalogTests(unittest.TestCase):
             },
         )
         every = "every type with an Observation output"
+        devices = "every type with an Observation or document output"
         self.assertEqual(
-            {key: source_types for key, source_types in table.items() if source_types != every},
+            {key: source_types for key, source_types in table.items() if source_types not in {every, devices}},
             {
                 "HKMetadataKeyHeartRateMotionContext": "HKQuantityTypeIdentifierHeartRate",
                 "HKHeartRateEventThreshold": (
@@ -862,7 +863,11 @@ class HealthKitCatalogTests(unittest.TestCase):
                 "HKWasUserEntered",
                 "HKMetadataKeySyncIdentifier",
                 "HKMetadataKeySyncVersion",
-                # Decision 4: every device metadata key fills the recording Device.
+            },
+        )
+        self.assertEqual(
+            {key for key, source_types in table.items() if source_types == devices},
+            {
                 "HKDeviceSerialNumber",
                 "HKDeviceName",
                 "HKDeviceManufacturerName",
@@ -878,7 +883,7 @@ class HealthKitCatalogTests(unittest.TestCase):
         rows = {row["sourceTypeIdentifier"]: row for row in self.catalog["rows"]}
         listed = {
             source_type
-            for source_types in table.values() if source_types != every
+            for source_types in table.values() if source_types not in {every, devices}
             for source_type in source_types.split(", ")
         }
         for source_type in listed:
@@ -918,11 +923,9 @@ class HealthKitCatalogTests(unittest.TestCase):
             "those fields.",
         )
         for rule in (
-            "A value is also preserved when the typed source-metadata extension carries it; "
-            "preserving metadata does not create an additional clinical interpretation.",
-            # Decision 4: a device key fills the recording Device, which exists only with an HKDevice.
-            "A device key of a sample that states no `HKDevice` has no recording Device to carry it, "
-            "so preserve it in the typed extension when supported; otherwise report the omission.",
+            "The typed source-metadata extension carries values that have no faithful representation "
+            "through those mappings; do not duplicate an already represented value.",
+            "The device mappings apply even when the sample states no `HKDevice`.",
             "and report those keys as `mobile-omission.unmodeled-metadata`, naming each key once by "
             "its runtime key.",
             "A runtime key is the string that a metadata dictionary holds as the key, as the table's "
