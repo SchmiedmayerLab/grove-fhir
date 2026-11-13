@@ -28,6 +28,7 @@
     {
       "source": "healthkit",
       "canonicalPath": "healthkit",
+      "retainedCanonicalPaths": ["core"],
       "aliases": [],
       "representativeResource": "StructureDefinition/healthkit-observation"
     },
