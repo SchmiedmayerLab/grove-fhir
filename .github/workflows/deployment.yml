@@ -31,8 +31,42 @@ permissions:
   contents: read
 
 jobs:
+  website-access:
+    name: Verify website release notification access
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions: {}
+    steps:
+      - name: Require the default branch
+        env:
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: test "$GITHUB_REF" = "refs/heads/$DEFAULT_BRANCH"
+      - name: Report an unconfigured website notification
+        if: vars.GROVE_WEBSITE_APP_ID == ''
+        run: echo 'Website notification is not configured; continuing without a website dispatch.'
+      - name: Authenticate for the website repository
+        if: vars.GROVE_WEBSITE_APP_ID != ''
+        uses: actions/create-github-app-token@v3
+        id: app
+        with:
+          app-id: ${{ vars.GROVE_WEBSITE_APP_ID }}
+          private-key: ${{ secrets.GROVE_WEBSITE_APP_PRIVATE_KEY }}
+          owner: SchmiedmayerLab
+          repositories: grove-website
+          permission-actions: write
+      - name: Verify access without dispatching a workflow
+        if: vars.GROVE_WEBSITE_APP_ID != ''
+        env:
+          GH_TOKEN: ${{ steps.app.outputs.token }}
+        run: |
+          workflow="$(gh api repos/SchmiedmayerLab/grove-website/actions/workflows/pages.yml)"
+          test "$(jq -r '.state' <<< "$workflow")" = active
+          test "$(jq -r '.path' <<< "$workflow")" = .github/workflows/pages.yml
+          echo 'Website app authentication and workflow access verified; no deployment was dispatched.'
+
   verify:
     name: Verify the R4 Guides
+    needs: website-access
     runs-on: ubuntu-24.04
     timeout-minutes: 240
     env:

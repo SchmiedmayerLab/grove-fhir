@@ -327,6 +327,19 @@ class ReleaseWorkflowTests(unittest.TestCase):
                     aliases_checked += 1
         self.assertGreater(aliases_checked, 0)
 
+    def test_website_credentials_are_checked_in_an_isolated_non_dispatching_job(self) -> None:
+        access = self.workflow.split("\n  website-access:\n", 1)[1].split("\n  verify:\n", 1)[0]
+        self.assertIn("permissions: {}", access)
+        self.assertIn('test "$GITHUB_REF" = "refs/heads/$DEFAULT_BRANCH"', access)
+        self.assertIn("repositories: grove-website", access)
+        self.assertIn("permission-actions: write", access)
+        self.assertIn("actions/workflows/pages.yml", access)
+        for forbidden in ("actions/checkout@", "gh workflow run", "gh release", "inputs.dryRun"):
+            self.assertNotIn(forbidden, access)
+        verification = self.workflow.split("\n  verify:\n", 1)[1].split("\n  publish:\n", 1)[0]
+        self.assertIn("needs: website-access", verification)
+        self.assertNotIn("GROVE_WEBSITE_APP_PRIVATE_KEY", verification)
+
     def test_release_is_created_only_after_verification(self) -> None:
         self.assertNotIn("types: [published]", self.workflow)
         self.assertNotIn("gh release upload", self.workflow)
@@ -432,6 +445,7 @@ class ReleaseWorkflowTests(unittest.TestCase):
                 "actions/upload-artifact@v7",
                 "actions/download-artifact@v8",
                 "actions/upload-artifact@v7",
+                "actions/create-github-app-token@v3",
                 "actions/create-github-app-token@v3",
             ],
         )

@@ -69,6 +69,8 @@ This is the complete language-neutral contract input for producer CI, not a sele
 
 **Release Publication** (`.github/workflows/deployment.yml`) is manually dispatched from the default branch with a bare numeric version, for example `0.9.0`. The version must match every guide and `catalog/release-manifest.json`. `dryRun` defaults to `true`; a dry run uploads a review artifact and creates no tag or GitHub Release.
 
+When the website app is configured, both dry runs and real releases first authenticate with an Actions-write token restricted to `grove-website` and verify access to its active `pages.yml` workflow. This separate job executes no repository code and dispatches nothing. Invalid credentials or missing workflow access stop the release before the guide build; the notification job still authenticates again after publication.
+
 After collecting the source-build evidence above, `Scripts/stage-publication.py` invokes the pinned HL7 IG Publisher's standard `-go-publish` process for each guide in dependency order. It creates standard `publication-request.json` files in temporary source copies, uses `publication/publish-setup.json` for the website layout, and renders history with a checksum-pinned revision of [HL7's history template](https://github.com/HL7/fhir-ig-history-template). The website registry is local to staging; the command does not submit anything to the upstream IG registry.
 
 Publisher builds both the versioned publication and the current milestone copy, producing routes such as:
