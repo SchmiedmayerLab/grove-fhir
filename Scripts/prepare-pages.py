@@ -31,6 +31,11 @@ from pathlib import Path, PurePosixPath
 from typing import Any
 
 try:
+    from publication_downloads import offload_downloads, redirect_page
+except ModuleNotFoundError:
+    from Scripts.publication_downloads import offload_downloads, redirect_page
+
+try:
     from fhir_package_semantic_snapshot import is_publisher_generated_resource_date
 except ModuleNotFoundError:  # Imported as Scripts.prepare-pages in tests.
     from Scripts.fhir_package_semantic_snapshot import (  # type: ignore[no-redef]
@@ -568,6 +573,38 @@ def safe_site_output(site: Path, repository_root: Path) -> Path:
     return resolved_site
 
 
+def development_banner(text: str, source_url: str, canonical: str) -> str:
+    """Populate the FHIR publish box, including custom full-page HTML outputs."""
+    revision = source_url.rstrip("/").rsplit("/", 1)[-1]
+    banner = (
+        '<!--ReleaseHeader--><p id="publish-box" data-publication-status="ci-build" '
+        'style="background:#fff3cd;color:#332701;border:2px solid #8a6500;'
+        'padding:1rem;line-height:1.5">'
+        '<strong>Development build — not a published release.</strong> '
+        'This preview follows <code>main</code> and changes regularly. '
+        f'Built from <a href="{html.escape(source_url, quote=True)}">'
+        f'<code>{html.escape(revision[:12])}</code></a>. '
+        f'<a href="{html.escape(canonical, quote=True)}/">Published guide</a> · '
+        f'<a href="{html.escape(canonical, quote=True)}/history.html">Publication history</a>.'
+        '</p><!--EndReleaseHeader-->'
+    )
+    if "<!--ReleaseHeader-->" in text:
+        text, count = re.subn(
+            r"<!--ReleaseHeader-->.*?<!--EndReleaseHeader-->",
+            lambda _: banner, text, flags=re.DOTALL,
+        )
+        if count != 1:
+            raise ValueError("expected exactly one complete FHIR publish box")
+        return text
+    if re.search(r'<p\b[^>]*\bid=["\']publish-box["\']', text):
+        return re.sub(
+            r'<p\b[^>]*\bid=["\']publish-box["\'][^>]*>.*?</p>',
+            lambda _: banner, text, count=1, flags=re.DOTALL,
+        )
+    # Publisher also emits standalone QA pages. Fragments have no body and are left alone.
+    return re.sub(r"<body\b[^>]*>", lambda m: m[0] + banner, text, count=1, flags=re.I)
+
+
 def prepare_guide(
     stage: Path,
     repository_root: Path,
@@ -593,8 +630,16 @@ def prepare_guide(
             rewritten = replace_build_locations(text, repository_root, public_urls, source_url)
             rewritten = rewritten.replace(f"{canonical}/history.html", history_url)
             rewritten = rewritten.replace("Local Development build", "Continuous Build")
+            if path.name == "lang-redirects.js":
+                # Publisher's language hop otherwise drops bookmarked fragments
+                # after the legacy root redirects arrive at the guide.
+                rewritten = rewritten.replace('"/"+pageName)',
+                    '"/"+pageName+window.location.search+window.location.hash)')
             if canonical_public_urls and path.suffix == ".html":
                 rewritten = rewrite_authored_canonical_links(rewritten, canonical_public_urls)
+            if path.suffix == ".html":
+                # Insert last: links to accepted publications must not be rewritten to previews.
+                rewritten = development_banner(rewritten, source_url, canonical)
             path.write_text(rewritten, encoding="utf-8")
 
     for archive in stage.glob("package*.tgz"):
@@ -723,6 +768,14 @@ def assemble_site(
         shutil.rmtree(site)
     site.mkdir(parents=True)
     (site / ".nojekyll").touch()
+    downloads = site.with_name(site.name + "-downloads")
+    # The sibling directory belongs to this assembler, just like the site itself.
+    safe_site_output(downloads, repository_root)
+    if downloads.exists():
+        shutil.rmtree(downloads)
+    downloads.mkdir()
+    run_id = os.environ.get("GITHUB_RUN_ID")
+    run_url = f"{configuration['sourceRepository']}/actions/runs/{run_id}" if run_id else None
 
     catalog_source = repository_root / "catalog"
     if catalog_source.is_dir():
@@ -799,6 +852,11 @@ def assemble_site(
             canonical_path = safe_relative_path(guide["canonicalPath"], "canonicalPath")
             stage = staging_root / source
             preview_url = public_urls[source]
+            offload_downloads(stage, downloads / source, public_url=preview_url, run_url=run_url)
+            downloads_page = stage / "bulk-downloads.html"
+            if downloads_page.exists():
+                downloads_page.write_text(development_banner(
+                    downloads_page.read_text(encoding="utf-8"), source_url, canonical), encoding="utf-8")
 
             canonical_root = site / canonical_path
             preview_destination = canonical_root / "ci-build"
@@ -860,17 +918,23 @@ def assemble_site(
                 )
                 write_json(canonical_root / "publication-manifest.json", ci_manifest)
 
-            publication_files = (
-                "package-list.json",
-                "history.html",
-            )
             for alias in guide.get("aliases", []):
                 alias_path = safe_relative_path(alias, "alias", allow_empty=True)
                 alias_root = site / alias_path
                 alias_root.mkdir(parents=True, exist_ok=True)
-                shutil.copytree(stage, alias_root, dirs_exist_ok=True)
-                for filename in publication_files:
-                    shutil.copy2(canonical_root / filename, alias_root / filename)
+                # Keep old browser bookmarks without duplicating the guide and its assets.
+                for page in stage.rglob("*.html"):
+                    relative = page.relative_to(stage)
+                    destination = alias_root / relative
+                    if destination.exists():
+                        raise ValueError(f"preview alias would overwrite an existing page: {destination}")
+                    destination.parent.mkdir(parents=True, exist_ok=True)
+                    destination.write_text(redirect_page(f"{preview_url}/{relative.as_posix()}"), encoding="utf-8")
+                (alias_root / "history.html").write_text(redirect_page(
+                    f"{base_url}/{guide['canonicalPath']}/history.html"), encoding="utf-8")
+                shutil.copy2(canonical_root / "package-list.json", alias_root / "package-list.json")
+                # Retain the small, widely consumed package endpoint for compatibility.
+                shutil.copy2(stage / "package.tgz", alias_root / "package.tgz")
                 (alias_root / "package.tgz.sha256").write_text(
                     f"{ci_digest}  package.tgz\n", encoding="utf-8"
                 )

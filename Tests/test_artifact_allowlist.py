@@ -94,7 +94,7 @@ def package_contents(
             path = Path(member.name)
             if (
                 not member.isfile()
-                or path.parent.as_posix() != "package/example"
+                or path.parent.as_posix() not in {"package/example", "package/examples"}
                 or path.suffix != ".json"
                 or path.name == ".index.json"
             ):

@@ -194,6 +194,16 @@ class FHIRPackageSemanticTests(unittest.TestCase):
             },
         }
 
+    def test_current_publisher_example_directory_preserves_semantic_identity(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            resources = self._resources()
+            legacy = self._write_package(root / "legacy", resources)
+            current = self._write_package(root / "current", {
+                name.replace("example/", "examples/", 1): resource for name, resource in resources.items()
+            })
+            self.assertEqual(SNAPSHOT.create_snapshot(legacy), SNAPSHOT.create_snapshot(current))
+
     def _write_package(
         self,
         root: Path,

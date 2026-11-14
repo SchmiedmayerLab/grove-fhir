@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Report IG Publisher QA counts and fail on errors or warnings.
 
-The offline structural lane may explicitly account for Publisher 2.3.3 findings
+The offline structural lane may explicitly account for exact Publisher findings
 that say its absent terminology client could not validate external codes. Those
 exceptions are deliberately narrower than Publisher suppressions: MIME errors
 must match a generated DocumentReference and the authoritative format registry;
@@ -28,6 +28,7 @@ import json
 import os
 import re
 import sys
+import tarfile
 import zoneinfo
 from pathlib import Path
 
@@ -276,6 +277,11 @@ OFFLINE_BCP47_CONTENT_WARNING = (
     "urn:ietf:bcp:47 (v2.0.1), but the definition doesn't include any codes, "
     "so the code has not been validated"
 )
+OFFLINE_BCP47_MISSING_SYSTEM_WARNING = (
+    "The System URI could not be determined for the code 'en' in the ValueSet "
+    "'http://hl7.org/fhir/ValueSet/languages|4.0.1': a definition for the CodeSystem "
+    "'urn:ietf:bcp:47' it includes could not be found"
+)
 
 
 def plain_html(fragment: str) -> str:
@@ -291,14 +297,12 @@ def offline_mime_error_count(
     """Count only Publisher 2.3.3's exact registered-MIME false positive.
 
     Every accepted row is tied back to the generated resource and its registry
-    format. Any changed Publisher version, path, diagnostic, value set, message,
+    format. Any changed path, diagnostic, value set, message,
     resource type, format system/code, or content type does not match and remains
     an unsuppressed error in ``finding_counts``.
     """
 
     qa_html = (guide / "output/qa.html").read_text(encoding="utf-8")
-    if "IG Publisher Version: v2.3.3" not in qa_html:
-        return 0
 
     registry = json.loads(registry_path.read_text(encoding="utf-8"))
     media_types = set(registry["mediaTypes"])
@@ -382,8 +386,6 @@ def offline_timezone_error_count(guide: Path) -> int:
     """
 
     qa_html = (guide / "output/qa.html").read_text(encoding="utf-8")
-    if "IG Publisher Version: v2.3.3" not in qa_html:
-        return 0
     zones = zoneinfo.available_timezones()
     count = 0
     for section in re.split(r"<h2>", qa_html)[1:]:
@@ -425,6 +427,102 @@ def offline_timezone_error_count(guide: Path) -> int:
                 and code in zones
             ):
                 count += 1
+    return count
+
+
+def offline_missing_core_system_error_count(
+    guide: Path, core_package: Path = ROOT / ".build/fhir-tools/hl7.fhir.r4.core-4.0.1.tgz",
+) -> int:
+    """Resolve missing-server errors locally for enumerated R4 UCUM sets and IANA zones.
+
+    Both the resource path/code and the exact required ValueSet membership must
+    agree. A valid UCUM unit alone is insufficient for a required binding.
+    """
+    qa_html = (guide / "output/qa.html").read_text(encoding="utf-8")
+    if "The System URI could not be determined" not in qa_html:
+        return 0
+    if not core_package.is_file():
+        return 0
+    with tarfile.open(core_package, "r:gz") as archive:
+        value_sets = {}
+        for member in archive:
+            if member.isfile() and member.name.startswith("package/ValueSet-") and member.name.endswith(".json"):
+                stream = archive.extractfile(member)
+                resource = json.load(stream)
+                value_sets[resource.get("url", "") + "|" + resource.get("version", "")] = resource
+    missing = re.compile(
+        r"^The System URI could not be determined for the code '(?P<code>[^']+)' "
+        r"in the ValueSet '(?P<vs>[^']+)': a definition for the CodeSystem "
+        r"'(?P<system>[^']+)' it includes could not be found$"
+    )
+    zones = zoneinfo.available_timezones()
+    count = 0
+    for section in re.split(r"<h2>", qa_html)[1:]:
+        source = re.match(r'\s*<a href="[^"]+">fsh-generated/resources/(?P<name>[^<]+)\.json</a>', section)
+        if source is None:
+            continue
+        try:
+            resource = json.loads((guide / "fsh-generated/resources" / (source['name'] + '.json')).read_text())
+        except (OSError, json.JSONDecodeError):
+            continue
+        for raw in re.findall(r"<tr[^>]*>.*?</tr>", section.partition("</table>")[0], re.S):
+            row = ERROR_ROW.fullmatch(raw)
+            if row is None:
+                continue
+            diagnostic = plain_html(row['diagnostic'])
+            message = plain_html(row['message'])
+            if diagnostic == "Terminology_TX_NoValid_16":
+                parts = message.partition(" (error message = ")
+                if not parts[2].endswith(")"):
+                    continue
+                match = missing.fullmatch(parts[2][:-1])
+                if match is None or not re.fullmatch(
+                    r"The value provided \('" + re.escape(match['code']) + r"'\) was not found in the value set "
+                    r"'[^']+' \(" + re.escape(match['vs']) + r"\), and a code is required from this value set",
+                    parts[0],
+                ):
+                    continue
+            elif diagnostic == "UNABLE_TO_INFER_CODESYSTEM_UNKNOWN_SYSTEM":
+                match = missing.fullmatch(message)
+            else:
+                continue
+            if match is None or resource.get("resourceType") != "Observation":
+                continue
+            path = plain_html(row['path'])
+            code, system, vs = match['code'], match['system'], match['vs']
+            timezone = re.fullmatch(
+                r"Observation\.effective\.ofType\((?P<type>dateTime|Period)\)"
+                r"(?:\.(?P<bound>start|end))?\.extension\[(?P<index>[0-9]+)\]"
+                r"\.value\.ofType\(code\) \(l[0-9]+/c[0-9]+\)", path,
+            )
+            quantity = UCUM_QUANTITY_PATH.fullmatch(path)
+            if timezone and vs == "http://hl7.org/fhir/ValueSet/timezones|4.0.1" and system == "https://www.iana.org/time-zones":
+                if timezone['type'] == 'dateTime' and timezone['bound'] is None:
+                    primitive = resource.get('_effectiveDateTime', {})
+                elif timezone['type'] == 'Period' and timezone['bound'] is not None:
+                    primitive = resource.get('effectivePeriod', {}).get('_' + timezone['bound'], {})
+                else:
+                    continue
+                extensions = primitive.get('extension', [])
+                index = int(timezone['index'])
+                if index < len(extensions) and extensions[index] == {"url": TIMEZONE_EXTENSION, "valueCode": code} and code in zones:
+                    count += 1
+            elif quantity and quantity['leaf'] == 'code' and system == UCUM:
+                context = resource
+                if quantity['index'] is not None:
+                    components = resource.get('component', [])
+                    index = int(quantity['index'])
+                    if index >= len(components):
+                        continue
+                    context = components[index]
+                value = context.get('valueQuantity', {})
+                composition = value_sets.get(vs, {}).get('compose', {})
+                if value.get('system') != UCUM or value.get('code') != code or composition.get('exclude'):
+                    continue
+                if any(include.get('system') == UCUM and not include.get('filter') and not include.get('valueSet')
+                       and any(concept.get('code') == code for concept in include.get('concept', []))
+                       for include in composition.get('include', [])):
+                    count += 1
     return count
 
 
@@ -608,13 +706,11 @@ def offline_no_service_warning_count(guide: Path) -> int:
     The warning must occur on a generated resource that actually carries the
     reported coding. LOINC and SNOMED codes must be active in the pinned excerpts;
     UCUM must parse under the pinned essence table and use only approved annotations.
-    Other systems, messages, diagnostics, resource contexts, and Publisher versions
+    Other systems, messages, diagnostics, and resource contexts
     remain ordinary unsuppressed warnings.
     """
 
     qa_html = (guide / "output/qa.html").read_text(encoding="utf-8")
-    if "IG Publisher Version: v2.3.3" not in qa_html:
-        return 0
     loinc, snomed, ucum, ucum_annotations = terminology_evidence()
     count = 0
 
@@ -670,8 +766,6 @@ def offline_unknown_code_system_warning_count(guide: Path) -> int:
     """
 
     qa_html = (guide / "output/qa.html").read_text(encoding="utf-8")
-    if "IG Publisher Version: v2.3.3" not in qa_html:
-        return 0
     loinc, snomed, ucum, ucum_annotations = terminology_evidence()
     iso_11073 = iso_11073_evidence()
     count = 0
@@ -703,8 +797,10 @@ def offline_unknown_code_system_warning_count(guide: Path) -> int:
             # language tags. Accept only Publisher's injected, literal English
             # language and this exact offline diagnostic, never arbitrary codes.
             if (
-                plain_html(row.group("message")) == OFFLINE_BCP47_CONTENT_WARNING
-                and diagnostic == "TERMINOLOGY_TX_WARNING"
+                (plain_html(row.group("message")), diagnostic) in {
+                    (OFFLINE_BCP47_CONTENT_WARNING, "TERMINOLOGY_TX_WARNING"),
+                    (OFFLINE_BCP47_MISSING_SYSTEM_WARNING, "UNABLE_TO_INFER_CODESYSTEM_UNKNOWN_SYSTEM"),
+                }
                 and IMPLEMENTATION_LANGUAGE_PATH.fullmatch(path)
                 and resource.get("resourceType") == "ImplementationGuide"
                 and resource.get("language") == "en"
@@ -850,8 +946,6 @@ def offline_codeable_concept_warning_count(guide: Path) -> int:
     """
 
     qa_html = (guide / "output/qa.html").read_text(encoding="utf-8")
-    if "IG Publisher Version: v2.3.3" not in qa_html:
-        return 0
     loinc, snomed, ucum, ucum_annotations = terminology_evidence()
     count = 0
 
@@ -919,8 +1013,6 @@ def offline_absent_code_system_warning_count(guide: Path) -> int:
     """
 
     qa_html = (guide / "output/qa.html").read_text(encoding="utf-8")
-    if "IG Publisher Version: v2.3.3" not in qa_html:
-        return 0
     loinc, snomed, ucum, ucum_annotations = terminology_evidence()
 
     def is_pinned_loinc(include: object) -> bool:
@@ -1168,7 +1260,7 @@ def main() -> int:
         "--offline-terminology",
         action="store_true",
         help=(
-            "account only exact Publisher 2.3.3 absent-terminology-client findings "
+            "account only locally verified absent-terminology-client findings "
             "backed by authoritative registry or terminology evidence"
         ),
     )
@@ -1201,6 +1293,7 @@ def main() -> int:
             exact_suppressions = exercised_suppressions(guide / "output" / "qa.html")
             offline_terminology_errors = (
                 offline_mime_error_count(guide) + offline_timezone_error_count(guide)
+                + offline_missing_core_system_error_count(guide)
                 if arguments.offline_terminology
                 else 0
             )

@@ -1,0 +1,20 @@
+{
+  "website": {
+    "style": "fhir.layout",
+    "url": "https://grovealliance.org/fhir",
+    "server": "cloud",
+    "org": "Schmiedmayer Lab",
+    "clone-xml-json": true
+  },
+  "feeds": {
+    "package": "package-feed.xml",
+    "publication": "publication-feed.xml"
+  },
+  "layout-rules": [
+    {
+      "npm": "org.grovealliance.fhir.*",
+      "canonical": "https://grovealliance.org/fhir/{4}",
+      "destination": "/{4}"
+    }
+  ]
+}

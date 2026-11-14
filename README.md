@@ -11,7 +11,7 @@ SPDX-License-Identifier: MIT
 # Grove FHIR
 
 [![Build and Test](https://github.com/SchmiedmayerLab/grove-fhir/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/SchmiedmayerLab/grove-fhir/actions/workflows/build-and-test.yml)
-[![Deployment](https://github.com/SchmiedmayerLab/grove-fhir/actions/workflows/pages.yml/badge.svg)](https://github.com/SchmiedmayerLab/grove-fhir/actions/workflows/pages.yml)
+[![Development Preview](https://github.com/SchmiedmayerLab/grove-fhir/actions/workflows/pages.yml/badge.svg)](https://github.com/SchmiedmayerLab/grove-fhir/actions/workflows/pages.yml)
 [![CodeQL](https://github.com/SchmiedmayerLab/grove-fhir/actions/workflows/codeql.yml/badge.svg)](https://github.com/SchmiedmayerLab/grove-fhir/actions/workflows/codeql.yml)
 [![REUSE status](https://api.reuse.software/badge/github.com/SchmiedmayerLab/grove-fhir)](https://api.reuse.software/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE.md)
@@ -24,7 +24,9 @@ This repository owns the guides, examples, negative corpora, and a producer-neut
 
 The canonical namespace is `https://grovealliance.org/fhir`.
 Canonical identity does not imply that the guides are currently hosted on that domain.
-During development, GitHub Pages remains the documentation preview.
+Every successful `main` build prepares a development preview with a clear development banner and source commit. The Pages workflow deploys that verified artifact and reports its expanded size; see the [hosting considerations](PUBLICATION.md#future-website-integration).
+Legacy Mobile HTML URLs redirect to `/mobile/ci-build/`. Bulk ZIP and Validator downloads live in the matching `fhir-bulk-downloads` Actions artifact; each guide links to download instructions. FHIR packages and individual resources remain on Pages.
+Versioned publications are prepared separately with the standard FHIR Publisher; see the [release workflow](PUBLICATION.md#standard-fhir-publication).
 
 ## Documentation
 
@@ -50,9 +52,9 @@ Adapter packages define mappings and conformance; they do not fetch provider or 
 
 ## Development
 
-The build requires Node.js 24, Ruby 3.3, and Java 21.
+Use a current Node.js LTS release, Ruby 3.3 or newer, a current Python 3 release, and Java 21 or newer. CI uses Java 25 LTS.
 It uses lockfile-pinned SUSHI and Jekyll dependencies and downloads checksum-pinned FHIR Publisher and Validator releases.
-The [dependency compatibility policy](publication/dependency-compatibility.md) explains the exact HL7 package pins and their reviewed upgrade advisories.
+Run `npm run dependencies:update` to refresh the build toolchain and external FHIR packages locally. The [dependency update guide](publication/dependency-compatibility.md) explains the workflow and validation.
 
 ```sh
 npm ci

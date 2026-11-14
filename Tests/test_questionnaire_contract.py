@@ -2098,12 +2098,11 @@ class QuestionnaireContractTests(unittest.TestCase):
             package = json.load(package_file)
         self.assertEqual(package["name"], "org.grovealliance.fhir.questionnaire")
         self.assertEqual(package["version"], RELEASE_VERSION)
-        self.assertEqual(package["dependencies"].get("hl7.fhir.uv.sdc"), "4.0.0")
-        self.assertEqual(
-            package["dependencies"].get("hl7.fhir.uv.extensions.r4"),
-            "5.3.0",
-        )
-        self.assertEqual(package["dependencies"].get("hl7.terminology.r4"), "7.3.0")
+        configuration = (ROOT / "questionnaire/sushi-config.yaml").read_text()
+        for package_id in ("hl7.fhir.uv.sdc", "hl7.fhir.uv.extensions.r4", "hl7.terminology.r4"):
+            declared = re.search(r"(?m)^  " + re.escape(package_id) + r": ([^\s]+)$", configuration)
+            self.assertIsNotNone(declared)
+            self.assertEqual(package["dependencies"].get(package_id), declared[1])
 
 
 if __name__ == "__main__":

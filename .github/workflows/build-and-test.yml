@@ -38,11 +38,11 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-node@v7
         with:
-          node-version: "24"
+          node-version: "lts/*"
           cache: npm
       - uses: actions/setup-python@v7
         with:
-          python-version: "3.13.15"
+          python-version: "3.x"
       - run: npm ci
       - run: npm test
       - run: npm run producer-kit:check
@@ -107,7 +107,7 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-python@v7
         with:
-          python-version: "3.13.15"
+          python-version: "3.x"
       # The identifiers are read from the SDK the catalogs are frozen on, so select that
       # Xcode when the runner has it. If it does not, the check reports that it cannot
       # verify rather than reporting a vendor change that did not happen.
@@ -147,21 +147,20 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-node@v7
         with:
-          node-version: "24"
+          node-version: "lts/*"
           cache: npm
       - uses: actions/setup-python@v7
         with:
-          python-version: "3.13.15"
+          python-version: "3.x"
       - uses: actions/setup-java@v6
         with:
           distribution: temurin
-          java-version: "21.0.10+7.0.LTS"
+          java-version: "25"
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: "3.3.12"
+          ruby-version: "ruby"
           bundler-cache: false
-      - name: Select the locked Bundler
-        run: gem install bundler -v 4.0.16 --no-document
+          bundler: latest
       - uses: actions/cache@v6
         with:
           path: |
@@ -216,7 +215,7 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-python@v7
         with:
-          python-version: "3.13.15"
+          python-version: "3.x"
       # The waves come from each guide's own dependencies, so adding a guide needs no edit here.
       # Each wave is split into its trunk (guides another guide depends on) and its leaves. Only
       # the trunk gates the next wave, so a slow leaf such as healthkit no longer holds back
@@ -347,21 +346,20 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-node@v7
         with:
-          node-version: "24.16.0"
+          node-version: "lts/*"
           cache: npm
       - uses: actions/setup-python@v7
         with:
-          python-version: "3.13.15"
+          python-version: "3.x"
       - uses: actions/setup-java@v6
         with:
           distribution: temurin
-          java-version: "21.0.10+7.0.LTS"
+          java-version: "25"
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: "3.3.12"
+          ruby-version: "ruby"
           bundler-cache: false
-      - name: Select the locked Bundler
-        run: gem install bundler -v 4.0.16 --no-document
+          bundler: latest
       - uses: actions/cache@v6
         with:
           path: |
@@ -448,15 +446,15 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-node@v7
         with:
-          node-version: "24"
+          node-version: "lts/*"
           cache: npm
       - uses: actions/setup-python@v7
         with:
-          python-version: "3.13.15"
+          python-version: "3.x"
       - uses: actions/setup-java@v6
         with:
           distribution: temurin
-          java-version: "21.0.10+7.0.LTS"
+          java-version: "25"
       - uses: actions/cache@v6
         with:
           path: |
@@ -505,7 +503,16 @@ jobs:
           --package questionnaire=questionnaire/output/package.tgz
           --package sensor=sensor/output/package.tgz
           --package healthkit=healthkit/output/package.tgz
-      # pages.yml deploys only from Build and Test runs on main, so only those need the ~900 MB site.
+      - name: Upload bulk FHIR downloads separately from Pages
+        uses: actions/upload-artifact@v7
+        if: github.ref == 'refs/heads/main'
+        with:
+          name: fhir-bulk-downloads
+          path: .build/pages-downloads
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 0
+      # pages.yml deploys only from Build and Test runs on main.
       # Every run still assembles and checks it above.
       - uses: actions/upload-artifact@v7
         if: github.ref == 'refs/heads/main'

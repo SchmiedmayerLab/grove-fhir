@@ -161,6 +161,31 @@ class CacheFHIRPackageTests(unittest.TestCase):
                 (installed / "includes/fragment.html").read_text(), "second"
             )
 
+    def test_template_search_image_is_closed_before_publication(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            archive = root / "template.tgz"
+            with tarfile.open(archive, "w:gz") as output:
+                files = {"package/package.json": json.dumps({"name": "fhir2.base.template", "version": "0.1.0", "type": "fhir.template"}),
+                         "config.json": "{}", "content/searchform.html": '<a><img src="logo.png" alt="FHIR"></a><img src="other.png" />',
+                         "layouts/layout-profile-history.html": '<h2>History</h2>\n  <h2 id="root">{{modelType}}: {{site.data.resources[resource_].titlelang[\'{{[lang]}}\']}}\n<p>Changes</p>',
+                         "layouts/layout-profile.html": '<p>{{site.data.stringsBase[\'{{[lang]}}\'][\'Derived\'] | replace: "%ARTIFACT%", sdlink}}</p>\n </p>',
+                         "layouts/layout-ext.html": '<p>{{site.data.stringsBase[\'{{[lang]}}\'][\'Derived\'] | replace: "%ARTIFACT%", sdlink}}</p>\n </p>'}
+                for name, value in files.items():
+                    member = tarfile.TarInfo(name)
+                    content = value.encode()
+                    member.size = len(content)
+                    output.addfile(member, io.BytesIO(content))
+            result = self.run_cache(root / 'cache', archive)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual((root / 'cache/fhir2.base.template#0.1.0/content/searchform.html').read_text(),
+                             '<a><img src="logo.png" alt="FHIR" /></a><img src="other.png" />')
+            layouts = root / 'cache/fhir2.base.template#0.1.0/layouts'
+            self.assertEqual((layouts / 'layout-profile-history.html').read_text(),
+                             '<h2>History</h2>\n\n<p>Changes</p>')
+            for name in ('layout-profile.html', 'layout-ext.html'):
+                self.assertEqual((layouts / name).read_text().count('</p>'), 1)
+
     def test_publisher_template_rejects_link_members(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

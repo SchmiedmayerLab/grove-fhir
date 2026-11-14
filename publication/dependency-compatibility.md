@@ -8,51 +8,26 @@ SPDX-License-Identifier: MIT
 
 -->
 
-# HL7 dependency compatibility
+# Dependency updates
 
-The 0.7.0 release retains Extensions R4 5.3.0 and HL7 Terminology (THO) R4
-7.3.0 with Publisher 2.3.3. The archive checksums and complete transitive
-closure remain pinned in `Scripts/download-fhir-tools.sh`.
-Every guide declares the THO version in its `sushi-config.yaml`: a guide that
-declares none gets the newest THO SUSHI resolves at build time, outside that
-closure. The Questionnaire guide declared none, so its 0.7.0 and 0.8.0 packages
-depend on THO 7.5.0, which the offline producer validator cannot resolve.
-CI cache keys and fallback prefixes include the hash of that exact closure
-file, so a restored cache cannot introduce packages from a different closure.
-Deployment retains its exact-key-only cache policy.
+Use current stable build tools and compatible R4 package releases. Standard npm and Bundler lockfiles record the resolved dependencies; the release manifest records the Publisher, Validator, and template checksums. The schema validates their shape rather than duplicating individual dependency versions.
 
-THO 7.5.0 newly includes the `concept-property-type` CodeSystem and ValueSet
-under their existing `http://hl7.org/fhir` canonicals at version 6.0.1.
-The R4 core package contains the same resources at version 4.0.1, and the
-R4 `CodeSystem.property.type` binding explicitly requires that ValueSet version.
-Publisher 2.3.3 uses FHIR core 6.10.3. Its
-[canonical-resource loader](https://github.com/hapifhir/org.hl7.fhir.core/blob/6.10.3/org.hl7.fhir.r5/src/main/java/org/hl7/fhir/r5/context/CanonicalResourceManager.java#L368-L378)
-removes same-canonical resources from the base package when a THO package loads.
-Consequently, loading THO 7.5.0 removes the required R4 ValueSet.
+```sh
+npm run dependencies:update
+npm test
+GROVE_TX_OFFLINE=1 npm run pages:build:parallel
+```
 
-The [0.7.0 Health Connect build](https://github.com/SchmiedmayerLab/grove-fhir/actions/runs/40913649601/job/123593989608)
-then reports `concept-property-type|4.0.1` as missing while validating the
-valid `string` property type in `health-connect-record-type`. The exact
-ValueSet and code are present in the checksum-pinned R4 core package; the
-failure occurs during binding resolution before code validation. Extensions
-5.4.0 requires THO 7.5.0, so retaining a coherent compatible closure requires
-retaining Extensions 5.3.0 as well.
+The update command requires Node/npm, Ruby/Bundler, Python, and an authenticated GitHub CLI. It refreshes npm and Ruby dependencies, the official Publisher and Validator releases, the selected stable FHIR base template, and the history template. It also synchronizes declared external FHIR package versions, extension aliases, diagnostic version references, the package graph, and the bootstrap package closure. All changes stay local for review. It verifies existing package checksums instead of silently accepting changed bytes under an already recorded version.
 
-Only these exact package-age advisory alternatives are configured:
+Dependabot already groups npm, Bundler, and GitHub Actions updates weekly. CI follows Node LTS, stable Python and Ruby, and the Java 25 LTS line, with current patches selected by the setup actions. Tool versions need not be changed in schema definitions or dependency-version assertions in tests.
 
-| Compatible package | Reported newer version |
-| --- | --- |
-| `hl7.fhir.uv.extensions.r4#5.3.0`, released 2026-05-16 | `5.3.0-ballot-tc1` or `5.4.0` |
-| `hl7.terminology.r4#7.3.0`, released 2026-07-27 | `7.4.0` or `7.5.0` |
+FHIR R4 remains the guide's interoperability target. Review the generated semantic diff when changing FHIR package dependencies: tool maintenance must not silently change the published contract. The update command does not accept a new semantic baseline or publish a release.
 
-The live registry and cached package lists can report different alternatives.
-An unused alternative is permitted only for Publisher 2.3.3 and a matching
-generated ImplementationGuide ID, dependency index, package ID, and pinned
-version. An exercised advisory must still occur exactly once. Any other
-unused suppression, future version advisory, missing ValueSet, invalid code,
-or other validation finding continues to fail the QA gate.
+The supported `fhir2.base.template` remains the base template. Cache preparation repairs malformed markup in its released search page and profile layouts (an unclosed image, duplicate closing tags, and a stray heading). These replacements leave corrected upstream files unchanged. The upstream archive checksum still verifies the downloaded bytes.
 
-Remove this compatibility policy only after testing a corrected resolver and
-dependency closure through every guide, the offline release gate, and the
-producer fixture validator. Review the mobile semantic baseline when updating
-the dependency versions; do not suppress the missing-ValueSet finding.
+Offline terminology diagnostics are accounted for only when the actual generated resource and checked-in terminology evidence establish the code's validity. Required UCUM bindings also need membership in the exact R4 core ValueSet; IANA time-zone codes must exist in the local time-zone database. Changed tool version strings alone do not invalidate those checks. New or unexplained diagnostics still fail the build.
+
+## Reviewed Publisher 3 update
+
+Publisher 3.0.3 and Validator 7.0.6 build with SUSHI 3.21.0, THO R4 7.5.0, and Extensions R4 5.4.0. The Mobile baseline refresh preserves examples and terminology definitions. Its differential changes are extension-version references. The new snapshot generator represents 526 minimum-cardinality and 532 Must Support constraints on their unsliced parent elements rather than repeating them on slices; all remain present on those parents. Official Validator checks accept the valid Device and Observation controls and reject missing identifier systems and values. The other snapshot changes are inherited SimpleQuantity constraints and extension-version references; the ImplementationGuide changes reflect Publisher parameter serialization.

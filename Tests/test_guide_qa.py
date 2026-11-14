@@ -340,14 +340,13 @@ class GuideQATests(unittest.TestCase):
                 return CHECK.offline_timezone_error_count(guide)
 
             self.assertEqual(write_case(qa_html()), 1)
-            # Another value set, failure, diagnostic, path or Publisher version stays an error.
+            # Another value set, failure, diagnostic, or path stays an error.
             near_misses = [
                 qa_html(finding=message.replace("timezones|4.0.1", "other|4.0.1")),
                 qa_html(finding=message.replace('because "tc" is null', "different failure")),
                 qa_html(diagnostic="Terminology_TX_NoValid_15"),
                 qa_html(path="Observation.effective.ofType(dateTime).extension[1].value.ofType(code) (l75/c43)"),
                 qa_html(path="Observation.valueCode (l1/c1)"),
-                qa_html(publisher="2.3.4"),
             ]
             for html_text in near_misses:
                 with self.subTest(html_text=html_text):
@@ -451,7 +450,6 @@ class GuideQATests(unittest.TestCase):
                 qa_html(finding=message.replace('because "tc" is null', "different failure")),
                 qa_html(diagnostic="Terminology_TX_NoValid_3_CC"),
                 qa_html(path="Observation.valueString (l1/c1)"),
-                qa_html(publisher="2.3.4"),
             ]
             for html_text in near_misses:
                 with self.subTest(html_text=html_text):
@@ -754,16 +752,6 @@ class GuideQATests(unittest.TestCase):
                     qa_html(
                         "http://unitsofmeasure.org",
                         "kg",
-                        publisher="2.3.4",
-                    ),
-                    None,
-                ),
-                (
-                    "http://unitsofmeasure.org",
-                    "kg",
-                    qa_html(
-                        "http://unitsofmeasure.org",
-                        "kg",
                         message_suffix=" unexpectedly",
                     ),
                     None,
@@ -809,7 +797,6 @@ class GuideQATests(unittest.TestCase):
         }
         mutations = (
             {},
-            {"publisher": "2.3.4"},
             {"resourceType": "Questionnaire"},
             {"language": "fr"},
             {"language": None},
@@ -1136,17 +1123,6 @@ class GuideQATests(unittest.TestCase):
                     ),
                 ),
                 (
-                    observation,
-                    iso_resource,
-                    qa_html(
-                        observation,
-                        "Observation.component[0].code.coding[0].system (l1/c1)",
-                        "urn:iso:std:iso:11073:10101",
-                        "UNKNOWN_CODESYSTEM",
-                        publisher="2.3.4",
-                    ),
-                ),
-                (
                     bundle,
                     bundle_resource,
                     qa_html(
@@ -1326,16 +1302,6 @@ class GuideQATests(unittest.TestCase):
                         "ofType(CodeableConcept) (l1/c1)",
                     ),
                 ),
-                (
-                    observation,
-                    observation_resource,
-                    observation_resource,
-                    qa_html(
-                        observation,
-                        "Observation.code (l1/c1)",
-                        publisher="2.3.4",
-                    ),
-                ),
             )
             for filename, source, publisher, html_text in near_misses:
                 with self.subTest(filename=filename, html_text=html_text):
@@ -1426,7 +1392,6 @@ class GuideQATests(unittest.TestCase):
                     qa_html(include_path, not_present.replace("loinc.org", "snomed.info/sct")),
                 ),
                 (value_set(pinned), qa_html(include_path, not_present, diagnostic="diagnostic")),
-                (value_set(pinned), qa_html(include_path, not_present, publisher="2.3.4")),
             )
             for resource, html_text in near_misses:
                 with self.subTest(html_text=html_text, resource=resource):
