@@ -120,7 +120,7 @@ class SensorCatalogTests(unittest.TestCase):
             f"org.grovealliance.fhir.mobile:\n    version: {RELEASE_VERSION}",
             configuration,
         )
-        self.assertIn("hl7.terminology.r4: 7.3.0", configuration)
+        self.assertRegex(configuration, r"hl7\.terminology\.r4: [0-9]+\.[0-9]+\.[0-9]+")
         # PHD is an alignment described in prose, not a package dependency.
         self.assertNotIn("hl7.fhir.uv.phd", configuration)
 

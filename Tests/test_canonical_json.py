@@ -13,6 +13,7 @@ import hashlib
 import json
 import pickle
 import unittest
+from unittest import mock
 from decimal import Decimal
 from pathlib import Path
 
@@ -195,8 +196,20 @@ class CanonicalJSONFormTests(unittest.TestCase):
     def test_every_parsed_depth_serializes(self) -> None:
         deep = b"[" * 5000 + b'{"a":-0}' + b"]" * 5000
         self.assertEqual(CANONICAL.canonicalize(deep), deep)
-        with self.assertRaises(CANONICAL.CanonicalJSONError) as context:
-            CANONICAL.canonicalize(b"[" * 100000 + b"]" * 100000)
+        # The parser's limit is runtime-dependent. Newer Python versions can
+        # accept this depth; anything accepted must still serialize exactly.
+        deeper = b"[" * 100000 + b"]" * 100000
+        try:
+            result = CANONICAL.canonicalize(deeper)
+        except CANONICAL.CanonicalJSONError as error:
+            self.assertEqual(error.code, "nesting-too-deep")
+        else:
+            self.assertEqual(result, deeper)
+
+    def test_parser_recursion_failure_has_a_stable_diagnostic(self) -> None:
+        with mock.patch.object(CANONICAL.json, "loads", side_effect=RecursionError), \
+             self.assertRaises(CANONICAL.CanonicalJSONError) as context:
+            CANONICAL.canonicalize(b"[]")
         self.assertEqual(context.exception.code, "nesting-too-deep")
 
     def test_output_has_no_whitespace_or_trailing_newline_and_is_idempotent(self) -> None:

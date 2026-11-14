@@ -542,7 +542,7 @@ class HealthKitCatalogTests(unittest.TestCase):
             "Identifier is the [Apple Bundle Identifier](NamingSystem-apple-bundle-id.html) "
             "namespace with `HKSource.bundleIdentifier`.",
             # An author decides nothing about the writer-record Identifier, whose carriage the
-            # revision and withheld-metadata rules decide; a Recording Document carries none.
+            # revision and withheld-metadata rules decide.
             "Whether a graph states an author therefore never decides whether its outputs carry "
             "the sample's `writer-record` Identifier and version; the [revision rules]"
             "(#logical-identity-and-revisions) and the [withheld-metadata rules]"
@@ -840,9 +840,11 @@ class HealthKitCatalogTests(unittest.TestCase):
             },
         )
         every = "every type with an Observation output"
+        devices = "every type with an Observation or document output"
         self.assertEqual(
-            {key: source_types for key, source_types in table.items() if source_types != every},
+            {key: source_types for key, source_types in table.items() if source_types not in {every, devices}},
             {
+                "HKTimeZone": "every type with an Observation output; heartbeat series and workout routes",
                 "HKMetadataKeyHeartRateMotionContext": "HKQuantityTypeIdentifierHeartRate",
                 "HKHeartRateEventThreshold": (
                     "HKCategoryTypeIdentifierHighHeartRateEvent, "
@@ -857,12 +859,13 @@ class HealthKitCatalogTests(unittest.TestCase):
         )
         self.assertEqual(
             {key for key, source_types in table.items() if source_types == every},
+            {"HKWasUserEntered"},
+        )
+        self.assertEqual(
+            {key for key, source_types in table.items() if source_types == devices},
             {
-                "HKTimeZone",
-                "HKWasUserEntered",
                 "HKMetadataKeySyncIdentifier",
                 "HKMetadataKeySyncVersion",
-                # Decision 4: every device metadata key fills the recording Device.
                 "HKDeviceSerialNumber",
                 "HKDeviceName",
                 "HKDeviceManufacturerName",
@@ -875,10 +878,15 @@ class HealthKitCatalogTests(unittest.TestCase):
             if mapping["source"].startswith("HKMetadataKey")
         }
         self.assertEqual(device_keys, {constants[key] for key in constants if key.startswith(("HKDevice", "HKUDI"))})
+        # The sync pair is carried by the revision rules alone and is never a metadata entry.
+        self.assertEqual(
+            self.catalog["metadataExtension"]["excludedKeys"],
+            ["HKMetadataKeySyncIdentifier", "HKMetadataKeySyncVersion"],
+        )
         rows = {row["sourceTypeIdentifier"]: row for row in self.catalog["rows"]}
         listed = {
             source_type
-            for source_types in table.values() if source_types != every
+            for source_types in table.values() if source_types not in {every, devices, table["HKTimeZone"]}
             for source_type in source_types.split(", ")
         }
         for source_type in listed:
@@ -918,11 +926,9 @@ class HealthKitCatalogTests(unittest.TestCase):
             "those fields.",
         )
         for rule in (
-            "A value is also preserved when the typed source-metadata extension carries it; "
-            "preserving metadata does not create an additional clinical interpretation.",
-            # Decision 4: a device key fills the recording Device, which exists only with an HKDevice.
-            "A device key of a sample that states no `HKDevice` has no recording Device to carry it, "
-            "so preserve it in the typed extension when supported; otherwise report the omission.",
+            "The typed source-metadata extension carries values that have no faithful representation "
+            "through those mappings; do not duplicate an already represented value.",
+            "The device mappings apply even when the sample states no `HKDevice`.",
             "and report those keys as `mobile-omission.unmodeled-metadata`, naming each key once by "
             "its runtime key.",
             "A runtime key is the string that a metadata dictionary holds as the key, as the table's "
@@ -934,7 +940,9 @@ class HealthKitCatalogTests(unittest.TestCase):
             "the typed extension preserves that Boolean when supplied on the source sample",
             "An unsupported value remains an omission.",
             "can preserve metadata through the typed extension without inventing an Observation "
-            "mapping or a writer-record identity.",
+            "mapping.",
+            "The typed extension never carries the sync pair: an output that cannot carry the "
+            "`writer-record` Identifier and version reports both keys as withheld.",
             "This extension does not represent metadata belonging to contained parts.",
             "decide instead what a blood-pressure object's `HKMetadataKeyTimeZone` and "
             "`HKMetadataKeyWasUserEntered` contribute.",
@@ -950,7 +958,7 @@ class HealthKitCatalogTests(unittest.TestCase):
             for name in headings
         }
         links = {part.split(")", 1)[0] for part in section.split("](#")[1:]}
-        self.assertEqual(len(links), 5)
+        self.assertEqual(len(links), 6)
         self.assertLessEqual(links, anchors)
 
     def test_insulin_delivery_reason_is_a_required_component_coded_by_its_key(self) -> None:

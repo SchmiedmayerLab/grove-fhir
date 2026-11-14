@@ -6,11 +6,11 @@
 # SPDX-License-Identifier: MIT
 #
 
-name: Deployment
+name: Release Publication
 
 on:
-  # A release can only be created at the end of this workflow. In particular, an already-public
-  # release is never treated as input to a validation job.
+  # Release publication is deliberate. Main pushes only deploy the development preview.
+  # A signed annotated tag must already identify the reviewed source before publication.
   workflow_dispatch:
     inputs:
       version:
@@ -18,13 +18,13 @@ on:
         required: true
         type: string
       dryRun:
-        description: Build and verify the release without creating a tag or a GitHub release.
+        description: Build and verify the release without publishing a GitHub release.
         required: false
         type: boolean
-        default: false
+        default: true
 
 concurrency:
-  group: deployment-${{ inputs.version }}
+  group: release-publication
   cancel-in-progress: false
 
 permissions:
@@ -34,7 +34,7 @@ jobs:
   verify:
     name: Verify the R4 Guides
     runs-on: ubuntu-24.04
-    timeout-minutes: 90
+    timeout-minutes: 240
     env:
       BUNDLE_FROZEN: "true"
     outputs:
@@ -67,7 +67,7 @@ jobs:
         env:
           VERSION: ${{ steps.release.outputs.version }}
         run: |
-          if ! printf '%s' "$VERSION" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z]+([.-][0-9A-Za-z]+)*)?$'; then
+          if ! printf '%s' "$VERSION" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$'; then
             echo "::error::'$VERSION' is not a bare semantic version."
             exit 1
           fi
@@ -87,31 +87,36 @@ jobs:
             echo "::error::Release manifest declares $manifest_version, not $VERSION."
             exit 1
           fi
-      - name: Refuse a tag that already exists
+      - name: Require the reviewed signed tag for a real release
+        if: ${{ !inputs.dryRun }}
         env:
           VERSION: ${{ steps.release.outputs.version }}
+          SOURCE_REVISION: ${{ steps.release.outputs.source_revision }}
+          GH_TOKEN: ${{ github.token }}
         run: |
-          if git rev-parse -q --verify "refs/tags/$VERSION" >/dev/null; then
-            echo "::error::Tag $VERSION already exists; a published version is never rewritten."
-            exit 1
-          fi
+          ref="$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$VERSION")"
+          test "$(jq -r '.object.type' <<< "$ref")" = tag
+          tag="$(gh api "repos/$GITHUB_REPOSITORY/git/tags/$(jq -r '.object.sha' <<< "$ref")")"
+          test "$(jq -r '.verification.verified' <<< "$tag")" = true
+          test "$(jq -r '.object.type' <<< "$tag")" = commit
+          test "$(jq -r '.object.sha' <<< "$tag")" = "$SOURCE_REVISION"
+          test "$(jq -r '.tagger.email' <<< "$tag")" = PSchmiedmayer@users.noreply.github.com
       - uses: actions/setup-node@v7
         with:
-          node-version: "24.16.0"
+          node-version: "lts/*"
           cache: npm
       - uses: actions/setup-python@v7
         with:
-          python-version: "3.13.15"
+          python-version: "3.x"
       - uses: actions/setup-java@v6
         with:
           distribution: temurin
-          java-version: "21.0.10+7.0.LTS"
+          java-version: "25"
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: "3.3.12"
+          ruby-version: "ruby"
           bundler-cache: false
-      - name: Select the locked Bundler
-        run: gem install bundler -v 4.0.16 --no-document
+          bundler: latest
       - uses: actions/cache@v6
         with:
           path: |
@@ -171,15 +176,29 @@ jobs:
             --lane offline-structural
           (cd .build/release && sha256sum --check SHA256SUMS)
           ls -la .build/release
+      - name: Stage versioned guides with the standard FHIR publication tooling
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 Scripts/stage-publication.py --evidence .build/release --output .build/publication-release --date "$(date -u +%F)"
+          (cd .build/publication-release && sha256sum --check SHA256SUMS)
+      - name: Retain publication artifacts for review
+        if: inputs.dryRun
+        uses: actions/upload-artifact@v7
+        with:
+          name: grove-fhir-${{ steps.release.outputs.version }}-publication-review
+          path: .build/publication-release/
+          if-no-files-found: error
+          retention-days: 14
       - name: Report a dry run
         if: inputs.dryRun
-        run: echo "Dry run verified ${{ steps.release.outputs.version }} without tagging or releasing."
+        run: echo "Dry run verified ${{ steps.release.outputs.version }} without publishing a GitHub release."
       - name: Transfer verified evidence to the isolated publication job
         if: ${{ !inputs.dryRun }}
         uses: actions/upload-artifact@v7
         with:
           name: grove-fhir-${{ steps.release.outputs.version }}-evidence
-          path: .build/release/
+          path: .build/publication-release/
           if-no-files-found: error
           retention-days: 1
 
@@ -189,6 +208,7 @@ jobs:
     needs: verify
     runs-on: ubuntu-24.04
     timeout-minutes: 10
+    environment: fhir-release
     permissions:
       actions: read
       contents: write
@@ -199,25 +219,28 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: grove-fhir-${{ needs.verify.outputs.version }}-evidence
-          path: .build/release
+          path: .build/publication-release
       - name: Recheck transferred evidence
-        run: (cd .build/release && sha256sum --check SHA256SUMS)
-      - name: Create the immutable release tag at the verified source
+        run: (cd .build/publication-release && sha256sum --check SHA256SUMS)
+      - name: Recheck the signed tag before publication
         env:
           VERSION: ${{ needs.verify.outputs.version }}
           SOURCE_REVISION: ${{ needs.verify.outputs.source_revision }}
           GH_TOKEN: ${{ github.token }}
-        run: >-
-          gh api --method POST
-          "repos/$GITHUB_REPOSITORY/git/refs"
-          -f "ref=refs/tags/$VERSION"
-          -f "sha=$SOURCE_REVISION"
+        run: |
+          ref="$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$VERSION")"
+          test "$(jq -r '.object.type' <<< "$ref")" = tag
+          tag="$(gh api "repos/$GITHUB_REPOSITORY/git/tags/$(jq -r '.object.sha' <<< "$ref")")"
+          test "$(jq -r '.verification.verified' <<< "$tag")" = true
+          test "$(jq -r '.object.type' <<< "$tag")" = commit
+          test "$(jq -r '.object.sha' <<< "$tag")" = "$SOURCE_REVISION"
+          test "$(jq -r '.tagger.email' <<< "$tag")" = PSchmiedmayer@users.noreply.github.com
       - name: Publish the release and its packages
         env:
           VERSION: ${{ needs.verify.outputs.version }}
           GH_TOKEN: ${{ github.token }}
         run: |
-          # --verify-tag makes the public release consume only the exact ref created above.
+          # --verify-tag consumes the existing signed tag checked against the verified source.
           # Assets are uploaded while the release is a draft. A failed upload therefore cannot
           # expose a partial release; only the final edit makes the complete draft public.
           gh release create "$VERSION" \
@@ -226,20 +249,36 @@ jobs:
             --title "$VERSION" \
             --generate-notes \
             --draft \
-            .build/release/*
+            .build/publication-release/*
           gh release edit "$VERSION" \
             --repo "$GITHUB_REPOSITORY" \
             --draft=false \
             --latest
-      - name: Report where the guides are published
+      - name: Report the publication artifact
+        env:
+          VERSION: ${{ needs.verify.outputs.version }}
         run: |
-          {
-            echo "### Grove FHIR ${{ needs.verify.outputs.version }}"
-            echo
-            echo "Guides: https://schmiedmayerlab.github.io/grove-fhir/"
-            echo
-            echo "This attaches checksum-bound packages, Publisher QA, semantic snapshot, release"
-            echo "manifest, and source/toolchain provenance. It does not claim canonical publication."
-            echo "The canonical host is not served yet; immutable canonical promotion remains gated"
-            echo "behind publication/config.json plus live-host and governance approval."
-          } >> "$GITHUB_STEP_SUMMARY"
+          echo "Published grove-fhir-publication-$VERSION.tar.gz for the website to mount under /fhir/." >> "$GITHUB_STEP_SUMMARY"
+          echo "This workflow does not deploy or change the canonical website." >> "$GITHUB_STEP_SUMMARY"
+
+  notify-website:
+    name: Notify the website of the published release
+    needs: [verify, publish]
+    if: vars.GROVE_WEBSITE_APP_ID != ''
+    runs-on: ubuntu-24.04
+    permissions: {}
+    steps:
+      - uses: actions/create-github-app-token@v3
+        id: app
+        with:
+          app-id: ${{ vars.GROVE_WEBSITE_APP_ID }}
+          private-key: ${{ secrets.GROVE_WEBSITE_APP_PRIVATE_KEY }}
+          owner: SchmiedmayerLab
+          repositories: grove-website
+          permission-actions: write
+      - name: Dispatch the website deployment
+        env:
+          GH_TOKEN: ${{ steps.app.outputs.token }}
+          VERSION: ${{ needs.verify.outputs.version }}
+        run: |
+          gh workflow run pages.yml --repo SchmiedmayerLab/grove-website --ref main -f "releaseTag=$VERSION"

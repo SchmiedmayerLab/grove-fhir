@@ -387,7 +387,7 @@ def _semantic_resource_members(files: Mapping[str, Any]) -> list[str]:
             "FHIR package contains unindexed root resources: " + ", ".join(unindexed)
         )
 
-    members = sorted([*indexed, *(name for name in files if name.startswith("example/"))])
+    members = sorted([*indexed, *(name for name in files if name.startswith(("example/", "examples/")))])
     unexpected = sorted(
         name
         for name in files

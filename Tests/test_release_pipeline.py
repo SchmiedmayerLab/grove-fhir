@@ -337,10 +337,10 @@ class ReleaseWorkflowTests(unittest.TestCase):
             self.workflow.index("collect-release-evidence.py"),
             self.workflow.index("gh release create"),
         )
-        self.assertLess(
-            self.workflow.index('"repos/$GITHUB_REPOSITORY/git/refs"'),
-            self.workflow.index("gh release create"),
-        )
+        self.assertNotIn('"repos/$GITHUB_REPOSITORY/git/refs"', self.workflow)
+        self.assertIn(".verification.verified", self.workflow)
+        self.assertIn("Recheck the signed tag before publication", self.workflow)
+        self.assertLess(self.workflow.index("stage-publication.py"), self.workflow.index("gh release create"))
         self.assertIn("--verify-tag", self.workflow)
         self.assertLess(
             self.workflow.index("gh release create"),
@@ -431,10 +431,12 @@ class ReleaseWorkflowTests(unittest.TestCase):
                 "actions/cache@v6",
                 "actions/upload-artifact@v7",
                 "actions/download-artifact@v8",
+                "actions/upload-artifact@v7",
+                "actions/create-github-app-token@v3",
             ],
         )
         self.assertTrue(all(re.search(r"@v[0-9]+$", ref) for ref in action_references))
-        self.assertIn('node-version: "24.16.0"', self.workflow)
+        self.assertIn('node-version: "lts/*"', self.workflow)
         self.assertNotIn("runs-on: ubuntu-latest", self.workflow)
 
     def test_artifact_boundary_uses_reviewed_major_tags_in_separate_jobs(self) -> None:

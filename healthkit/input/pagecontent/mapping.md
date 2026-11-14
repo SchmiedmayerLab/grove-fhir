@@ -28,6 +28,9 @@ Its absolute system is a governed HealthKit-store namespace and its value is the
 This disclosure does not replace or alter either HMAC identity, and the UUID is not repeated on child outputs or support resources.
 Never copy it into `Resource.id`, Bundle entry keys, retraction addresses, arbitrary components, or untyped metadata, and do not incidentally propagate it into attachment names, URLs, or logs.
 
+The same opt-in setting also discloses the [readable sync identifier](#readable-sync-identifier) of a sample that carries a sync pair; no separate setting exists.
+Enabling the setting therefore discloses the bundle identifier of the application that wrote such a sample, because the sync identifier's namespace names that application, also for a record whose writer attribution is otherwise withheld.
+
 HealthKit replaces a sample when a writer saves the same `HKMetadataKeySyncIdentifier` with a higher `HKMetadataKeySyncVersion`, and that replacement has a new object UUID.
 The new source record and output therefore receive new v0 identities.
 Logical revision correlation is carried separately as writer identity.
@@ -56,8 +59,34 @@ A sample with neither sync field omits writer identity and writer version.
 It still carries mandatory source-record and source-output identities.
 Do not synthesize writer identity: a writer that did not assign one has not promised cross-revision correlation.
 
+The `writer-record` Identifier and the Grove Writer Record Version are carried by every Observation output and by the sole DocumentReference of a heartbeat series, a workout route, or a clinical record.
+The clinical record's wrapper carries them; the embedded clinical source bytes are never altered.
+A vision prescription, a medication dose event, and a tracked medication cannot carry the version and therefore carry neither.
+
 The sample-type identifier dispatches converter code and is preserved as exactly one `healthkit-source-type` value.
 This is adapter lineage, not a second expression of the observed clinical concept: `Observation.code` and `DocumentReference.type` retain only codings that actually mean the result or document type.
+
+### Readable sync identifier
+
+The `writer-record` Identifier is a keyed value: it links the versions of one logical sample and does not reveal the sync identifier it was derived from.
+A deployment that has opted in to the readable `HKObject.uuid` Identifier additionally emits the exact `HKMetadataKeySyncIdentifier` text as one readable Identifier on the same designated primary output:
+
+| Element | Content |
+|---|---|
+| `Identifier.type` | exactly one coding, `healthkit-sync-id` in [HealthKit Identifier Types](CodeSystem-healthkit-identifier-type.html) |
+| `Identifier.system` | the deployment-owned absolute URI of the participant's HealthKit store scope, then the path segment `healthkit-sync-identifier`, then one final segment naming the writing application |
+| `Identifier.value` | the exact sync identifier text |
+
+The final system segment is the unpadded RFC 4648 base64url encoding of the exact UTF-8 bytes of `HKSource.bundleIdentifier`; do not trim, case-fold, normalize, truncate, or hash the bundle identifier.
+For a participant store scope `https://study.example.org/fhir/NamingSystem/healthkit-store/7d0f3c52` and the writer `com.example.scale`, the system is `https://study.example.org/fhir/NamingSystem/healthkit-store/7d0f3c52/healthkit-sync-identifier/Y29tLmV4YW1wbGUuc2NhbGU`.
+Sync identifier text is unique only for one writing application in one HealthKit store, so equal text under another writer or another participant has another system, and the system never equals that of the `HKObject.uuid` Identifier.
+
+The readable sync identifier appears only beside the `HKObject.uuid` Identifier, the `writer-record` Identifier, and the Grove Writer Record Version of the same output: an Observation, or the sole DocumentReference of a heartbeat series, a workout route, or a clinical record.
+Workout segments, the electrocardiogram's average-heart-rate Observation, companion artifacts, Devices, and Provenance never carry it.
+With the setting off, the sync identifier text is not exported in any element, and the `writer-record` Identifier alone represents it.
+
+The readable sync identifier is traceability, not identity.
+Source-record and source-output identity remain the identity of a record: Bundle entry keys, version selection, deduplication, receipts, and retractions never read the readable value, and adding or withholding it changes only the record's content and therefore its version.
 
 ### Electrocardiograms
 
@@ -191,6 +220,10 @@ Use `effectivePeriod` when HealthKit supplies a start and end that define an int
 Where the selected profile admits only `dateTime`, an interval sample states its `startDate` as `effectiveDateTime` and withholds its `endDate`.
 Map an available IANA time-zone name to the standard FHIR `timezone` extension on the corresponding date-time value.
 
+For an `HKHeartbeatSeriesSample` or `HKWorkoutRoute`, set `DocumentReference.context.period` to the sample's `startDate` and `endDate`. Both endpoints use the same millisecond precision, half-even rounding, numeric-offset and IANA `timezone` rules as Observation effective times. Preserve the complete source interval, including equal endpoints; reject reversed or unrepresentable periods and invalid supplied time-zone names. Without a source time zone, serialize the endpoints in UTC without inventing a zone name. Do not substitute the conversion instant in `DocumentReference.date` for the recording period. A time zone represented on this period is not repeated in source metadata.
+
+Provider-issued clinical documents preserve their original bytes. Do not infer a clinical service period from import or conversion timestamps. Preserve otherwise unmapped `HKTimeZone` metadata on the wrapper when its relationship to a clinical date-time is not established.
+
 Step count preserves the source interval total with Grove `step-count-total` and UCUM `{steps}`.
 The effective Period must have both endpoints and a positive duration.
 The value is the total count attributed to that Period; do not turn a point sample into a step count and do not normalize the source count to `/h` or another rate.
@@ -245,7 +278,7 @@ The correlation's own metadata can be preserved through its typed source-metadat
 
 ### Device, application, and provenance
 
-Map every non-nil `HKObject.device` to a [Grove Recording Device](https://grovealliance.org/fhir/mobile/StructureDefinition-grove-recording-device.html) that `Observation.device` references, and carry every field that `HKDevice` and the sample's device metadata keys supply; consumers filter what they do not need.
+Map every non-nil `HKObject.device` to a [Grove Recording Device](https://grovealliance.org/fhir/mobile/StructureDefinition-grove-recording-device.html). When `HKObject.device` is absent, create a recording Device if the sample supplies a nonblank string for a device metadata field listed below. Apply these mappings to both Observation and document outputs: `Observation.device` references the recording Device, and `DocumentReference.author` includes it. Carry the available device facts without inferring a stable physical-unit identity from descriptive metadata.
 The Device always carries the content `device-snapshot` identity, minted over its complete rendered content after every field is set.
 It also carries the typed `recording-device` identity only when a governed stable per-unit token exists: `HKDevice.localIdentifier` when it is nonempty and the deployment has verified that it is stable and names exactly one unit for the acquisition scope, or another caller-governed token.
 That token is local to the host that recorded the sample and writable by any application, so its HMAC is scoped by the writing source's `HKSource.bundleIdentifier`, and the same token stated by two writers names two units.
@@ -269,7 +302,7 @@ Without a token the Device is still emitted and referenced; manufacturer, model,
 | `HKMetadataKeyUDIProductionIdentifier` | the [Grove UDI Production Identifier](https://grovealliance.org/fhir/mobile/StructureDefinition-grove-udi-production-identifier.html) extension on `udiCarrier`, because FHIR R4 has no element for the raw production identifier |
 
 An `HKDevice` property wins over a device metadata key, a metadata key fills only an absent field, and the serial number comes only from its metadata key.
-Map each field only when its value is present.
+Map each field only when its value is present. Do not duplicate a faithfully mapped value in the typed metadata extension. If a metadata value conflicts with the preferred `HKDevice` property, preserve that different value in the typed extension. Device metadata describes recording hardware; it does not identify the gateway application.
 The `Device.version.type` codings use the ISO 11073 MDC revision codes; these standard type codes do not assert conformance to a PHD profile.
 The clear local identifier links a participant's samples from one device within one host; a deployment that shares or exports data applies its own policy to it, to the serial number, and to a device name.
 `recordingDeviceIdentity.fieldMappings` in [`catalog/healthkit-adapter.json`](https://grovealliance.org/fhir/catalog/healthkit-adapter.json) states the same mapping.
@@ -405,23 +438,23 @@ For a quantity under another key, use the first compatible unit in this ordered 
 
 Known SDK enumeration keys use their Apple documentation system and raw integer code; the metadata value is independent of any clinical coded mapping. Never truncate a fractional number to select an enumeration case. Preserve CFBoolean as Boolean and other numeric zero/one values as decimals; determine the type from the source object, not its numeric value. Arrays, dictionaries, binary values and unknown value classes are not silently stringified or recursively admitted. Additional classes require verified HealthKit store behavior and a specified FHIR representation.
 
-The extension adds no source/output identifier. Changing metadata changes the record version, and retries of the same version preserve its content. The native `HKObject.uuid` is not automatically copied into metadata; governed native identifier disclosure remains independent. A producer must retain metadata on the source output and avoid repeating a record's metadata on unrelated child outputs. Metadata from contained correlation objects or workout parts remains associated with that part; it is never silently substituted for the parent metadata.
+The extension adds no source/output identifier. `HKMetadataKeySyncIdentifier` and `HKMetadataKeySyncVersion` are never metadata entries; the [revision rules](#logical-identity-and-revisions) alone carry them. Changing metadata changes the record version, and retries of the same version preserve its content. The native `HKObject.uuid` is not automatically copied into metadata; governed native identifier disclosure remains independent. A producer must retain metadata on the source output and avoid repeating a record's metadata on unrelated child outputs. Metadata from contained correlation objects or workout parts remains associated with that part; it is never silently substituted for the parent metadata.
 
 ### Withheld metadata
 
-A metadata key has a clinical mapping through the element that this table gives it, for the source types the table names. A value is also preserved when the typed source-metadata extension carries it; preserving metadata does not create an additional clinical interpretation.
+Use the clinical, device and other structured mappings in this guide first. The typed source-metadata extension carries values that have no faithful representation through those mappings; do not duplicate an already represented value. Conflicting source values remain eligible for the extension. Preserving metadata does not create an additional clinical interpretation.
 
 | Runtime key | SDK constant | Source types | Element |
 |---|---|---|---|
-| `HKTimeZone` | `HKMetadataKeyTimeZone` | every type with an Observation output | the `timezone` extension on each `effective[x]` date-time, as the [time rules](#values-units-and-time) define |
+| `HKTimeZone` | `HKMetadataKeyTimeZone` | every type with an Observation output; heartbeat series and workout routes | the `timezone` extension on each `effective[x]` or recording `context.period` endpoint, as the [time rules](#values-units-and-time) define |
 | `HKWasUserEntered` | `HKMetadataKeyWasUserEntered` | every type with an Observation output | the `grove-recording-method` extension, `manual-entry` when the key states `true`, as the [capture-mode rule](#capture-mode-and-performer) defines |
-| `HKMetadataKeySyncIdentifier` | `HKMetadataKeySyncIdentifier` | every type with an Observation output | the `writer-record` Identifier, as the [revision rules](#logical-identity-and-revisions) define |
-| `HKMetadataKeySyncVersion` | `HKMetadataKeySyncVersion` | every type with an Observation output | the Grove Writer Record Version extension beside the `writer-record` Identifier |
-| `HKDeviceSerialNumber` | `HKMetadataKeyDeviceSerialNumber` | every type with an Observation output | `serialNumber` of the recording Device, as the device rules define |
-| `HKDeviceName` | `HKMetadataKeyDeviceName` | every type with an Observation output | `deviceName` of type `user-friendly-name` of the recording Device, when `HKDevice.name` is absent |
-| `HKDeviceManufacturerName` | `HKMetadataKeyDeviceManufacturerName` | every type with an Observation output | `manufacturer` of the recording Device, when `HKDevice.manufacturer` is absent |
-| `HKUDIDeviceIdentifier` | `HKMetadataKeyUDIDeviceIdentifier` | every type with an Observation output | `udiCarrier.deviceIdentifier` of the recording Device, when `HKDevice.UDIDeviceIdentifier` is absent |
-| `HKUDIProductionIdentifier` | `HKMetadataKeyUDIProductionIdentifier` | every type with an Observation output | the Grove UDI Production Identifier extension on `udiCarrier` of the recording Device |
+| `HKMetadataKeySyncIdentifier` | `HKMetadataKeySyncIdentifier` | every type with an Observation or document output | the `writer-record` Identifier and, when disclosed, the [readable sync identifier](#readable-sync-identifier), as the [revision rules](#logical-identity-and-revisions) define |
+| `HKMetadataKeySyncVersion` | `HKMetadataKeySyncVersion` | every type with an Observation or document output | the Grove Writer Record Version extension beside the `writer-record` Identifier |
+| `HKDeviceSerialNumber` | `HKMetadataKeyDeviceSerialNumber` | every type with an Observation or document output | `serialNumber` of the recording Device, as the device rules define |
+| `HKDeviceName` | `HKMetadataKeyDeviceName` | every type with an Observation or document output | `deviceName` of type `user-friendly-name` of the recording Device, when `HKDevice.name` is absent |
+| `HKDeviceManufacturerName` | `HKMetadataKeyDeviceManufacturerName` | every type with an Observation or document output | `manufacturer` of the recording Device, when `HKDevice.manufacturer` is absent |
+| `HKUDIDeviceIdentifier` | `HKMetadataKeyUDIDeviceIdentifier` | every type with an Observation or document output | `udiCarrier.deviceIdentifier` of the recording Device, when `HKDevice.UDIDeviceIdentifier` is absent |
+| `HKUDIProductionIdentifier` | `HKMetadataKeyUDIProductionIdentifier` | every type with an Observation or document output | the Grove UDI Production Identifier extension on `udiCarrier` of the recording Device |
 | `HKMetadataKeyHeartRateMotionContext` | `HKMetadataKeyHeartRateMotionContext` | `HKQuantityTypeIdentifierHeartRate` | `Observation.component:heartRateMotionContext`, as [above](#supported-healthkit-metadata) |
 | `HKHeartRateEventThreshold` | `HKMetadataKeyHeartRateEventThreshold` | `HKCategoryTypeIdentifierHighHeartRateEvent`, `HKCategoryTypeIdentifierLowHeartRateEvent` | `Observation.component:threshold` of the notification, in UCUM `/min` |
 | `HKLowCardioFitnessEventThreshold` | `HKMetadataKeyLowCardioFitnessEventThreshold` | `HKCategoryTypeIdentifierLowCardioFitnessEvent` | `Observation.component:threshold` of the notification, in UCUM `mL/kg/min` |
@@ -435,8 +468,9 @@ For source-sample metadata, this applies when the typed extension cannot preserv
 A runtime key is the string that a metadata dictionary holds as the key, as the table's first column gives it, not the name of the SDK constant that holds it, which can differ: `HKMetadataKeyTimeZone` holds `HKTimeZone`.
 A key that no SDK constant declares is named the same way.
 `HKMetadataKeyWasUserEntered` stating `false` creates no manual-entry clinical assertion, but the typed extension preserves that Boolean when supplied on the source sample. An unsupported value remains an omission.
-A [HealthKit Recording Document](StructureDefinition-healthkit-recording-document.html) can preserve metadata through the typed extension without inventing an Observation mapping or a writer-record identity.
-A device key of a sample that states no `HKDevice` has no recording Device to carry it, so preserve it in the typed extension when supported; otherwise report the omission.
+A [HealthKit Recording Document](StructureDefinition-healthkit-recording-document.html) can preserve metadata through the typed extension without inventing an Observation mapping.
+The typed extension never carries the sync pair: an output that cannot carry the `writer-record` Identifier and version reports both keys as withheld.
+The device mappings apply even when the sample states no `HKDevice`. A recognized nonblank string creates the corresponding recording Device fact; other values remain eligible for the typed extension when supported.
 
 The typed extension carries the source sample metadata. It does not flatten an object of a blood-pressure correlation or an `HKWorkoutEvent` or `HKWorkoutActivity` into its parent. A contained value counts as represented only where the existing clinical mapping explicitly incorporates it; otherwise it remains an observable omission. This extension does not represent metadata belonging to contained parts.
 The [correlation-object rules](#blood-pressure-correlation-objects) decide instead what a blood-pressure object's `HKMetadataKeyTimeZone` and `HKMetadataKeyWasUserEntered` contribute.

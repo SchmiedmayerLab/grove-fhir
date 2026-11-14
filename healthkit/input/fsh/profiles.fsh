@@ -26,6 +26,26 @@ Description: "HealthKit requires a sync version exactly when a sync identifier i
 Expression: "extension('https://grovealliance.org/fhir/mobile/StructureDefinition/grove-writer-record-version').exists() = identifier.where(type.coding.where(system = 'https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role' and code = 'writer-record').exists()).exists()"
 Severity: #error
 
+Invariant: healthkit-sync-identifier-1
+Description: "A readable sync identifier appears only on an output that also carries the writer-record identifier derived from the same sync identifier."
+Expression: "identifier.where(type.coding.where(system = 'https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-identifier-type' and code = 'healthkit-sync-id').exists()).exists() implies identifier.where(type.coding.where(system = 'https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role' and code = 'writer-record').exists()).exists()"
+Severity: #error
+
+Invariant: healthkit-sync-identifier-system-1
+Description: "The namespace of a readable sync identifier ends with the healthkit-sync-identifier path segment and the unpadded base64url encoding of the writing application's bundle identifier."
+Expression: "$this.matches('^.+/healthkit-sync-identifier/[A-Za-z0-9_-]+$')"
+Severity: #error
+
+RuleSet: HealthKitSyncIdentifierSlice
+* obeys healthkit-sync-identifier-1
+* identifier contains syncIdentifier 0..1 MS
+* identifier[syncIdentifier] ^short = "Readable sync identifier, disclosed together with the readable HealthKit object identifier"
+* identifier[syncIdentifier].type 1..1 MS
+* identifier[syncIdentifier].type = $healthKitIdentifierType#healthkit-sync-id
+* identifier[syncIdentifier].system 1..1 MS
+* identifier[syncIdentifier].system obeys healthkit-sync-identifier-system-1
+* identifier[syncIdentifier].value 1..1 MS
+
 Invariant: healthkit-clinical-fhir-content-type-1
 Description: "The clinical attachment declares DSTU2 or R4 with the standard FHIR media-type parameter."
 Expression: "content.attachment.contentType.all($this = 'application/fhir+json; fhirVersion=1.0' or $this = 'application/fhir+json; fhirVersion=4.0')"
@@ -95,6 +115,7 @@ Title: "HealthKit Observation"
 Description: "The source identity and allowlisted HealthKit context for an Observation that also conforms to an appropriate clinical or research profile."
 * extension contains HealthKitSourceMetadata named sourceMetadata 0..1 MS
 * obeys healthkit-motion-context-1 and healthkit-sleep-stage-1 and healthkit-writer-record-1
+* insert HealthKitSyncIdentifierSlice
 * issued 0..0
 * extension contains HealthKitSourceType named healthKitSourceType 1..1 MS
 * component ^slicing.discriminator.type = #pattern
@@ -203,6 +224,10 @@ Id: healthkit-recording-document
 Title: "HealthKit Recording Document"
 Description: "A byte-preserved HealthKit source document or series whose native representation is not a scalar result. Beat-to-beat intervals and workout routes use registered column schemas; provider-issued clinical resources use a stricter derived profile that declares their source FHIR release in the attachment media type."
 * extension contains HealthKitSourceMetadata named sourceMetadata 0..1 MS
+* obeys healthkit-writer-record-1
+* extension contains GroveWriterRecordVersion named writerRecordVersion 0..1 MS
+* extension[writerRecordVersion] ^short = "Writer's version of the logical record this document came from"
+* insert HealthKitSyncIdentifierSlice
 // The SDK source class is lineage, not a document-type coding.
 * extension contains HealthKitSourceType named healthKitSourceType 1..1 MS
 * type 1..1 MS

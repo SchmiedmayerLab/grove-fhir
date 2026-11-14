@@ -194,14 +194,18 @@ Instance: HealthKitRevisedBodyWeightObservationExample
 InstanceOf: HealthKitObservation
 Usage: #example
 Title: "HealthKit Revised Body Weight"
-Description: "A body-weight sample a connected scale re-imported after correcting it. HealthKit replaced the earlier object, so this Observation carries a new object identifier, the unchanged sync identifier that names the measurement, and the higher sync version that supersedes the previous one."
+Description: "A body-weight sample a connected scale re-imported after correcting it. HealthKit replaced the earlier object, so this Observation carries a new object identifier, the unchanged sync identifier that names the measurement, and the higher sync version that supersedes the previous one. The deployment discloses readable native identifiers, so the object UUID and the sync identifier text appear beside the keyed identities, and the sync identifier's namespace names the writing application com.example.scale."
 * meta.profile[+] = "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-body-weight"
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
 * identifier[sourceRecord].value = "v0:test-key:1:nPJeEaz45T9YDxj5eDR9tH8vd_lY1wIaPN0YB24m9ms"
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
 * identifier[sourceOutput].value = "v0:test-key:1:FR__fLtP23UvZ4eCVmgFh_0IDG5YOK4MmEzZVjERlAk"
 * identifier[writerRecord].system = "https://study.example.org/fhir/NamingSystem/grove-writer-record-v0/test-key/1"
-* identifier[writerRecord].value = "v0:test-key:1:STyede3o70KFor32OsduoVtSWiUnYYXR-pH-fRC6ME4"
+* identifier[writerRecord].value = "v0:test-key:1:yXf2mQVVCw6x5H05itpMpbHbi2ix8AHs18tpR9Z6mhs"
+* identifier[syncIdentifier].system = "https://study.example.org/fhir/NamingSystem/healthkit-store/1f5c58aa-6ec6-4e79-a682-829a9debd3f5/healthkit-sync-identifier/Y29tLmV4YW1wbGUuc2NhbGU"
+* identifier[syncIdentifier].value = "scale-reading-0042"
+* identifier[4].system = "https://study.example.org/fhir/NamingSystem/healthkit-store/1f5c58aa-6ec6-4e79-a682-829a9debd3f5/healthkit-native-record"
+* identifier[4].value = "310e9c93-c2da-50dc-824d-13bd3bf95e74"
 * extension[writerRecordVersion].valueString = "2"
 * status = #amended
 * category = $observationCategory#vital-signs "Vital Signs"
@@ -621,7 +625,7 @@ Instance: HealthKitHeartbeatSeriesRecordingExample
 InstanceOf: HealthKitRecordingDocument
 Usage: #example
 Title: "HealthKit Heartbeat Series Recording"
-Description: "A beat-to-beat interval series carried as its published column schema. Reducing the series to one Observation value would keep a single beat and discard the rest."
+Description: "A beat-to-beat interval series carried as its published column schema. Reducing the series to one Observation value would keep a single beat and discard the rest. The writing application assigned a sync identifier, so the document carries the keyed writer-record identity and its version; the deployment discloses readable native identifiers, so the object UUID and the sync identifier text appear beside them."
 * meta.profile[+] = "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document"
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
 * identifier[sourceRecord].value = "v0:test-key:1:WcJEb3IdnPKltbqMjxoeo-kDcGnvOz7f6gW7_Nr55z4"
@@ -629,6 +633,14 @@ Description: "A beat-to-beat interval series carried as its published column sch
 * identifier[sourceOutput].value = "v0:test-key:1:-hvxbZhBlqPixknyrvDdW7Fkl8zbcl_FHAUmVQk_UFg"
 * identifier[sourceArtifact].system = "https://study.example.org/fhir/NamingSystem/grove-source-artifact-v0/test-key/1"
 * identifier[sourceArtifact].value = "v0:test-key:1:7tVsCFC3DOk-0eneckGKzPj6qx7T1kvnwnpEwTtw3Q4"
+* identifier[writerRecord].type = $groveIdentifierRole#writer-record
+* identifier[writerRecord].system = "https://study.example.org/fhir/NamingSystem/grove-writer-record-v0/test-key/1"
+* identifier[writerRecord].value = "v0:test-key:1:7tQQdJFxmb3lzdoPDPuofR4xX6Lb9wnykT0ovoW7ldI"
+* identifier[syncIdentifier].system = "https://study.example.org/fhir/NamingSystem/healthkit-store/1f5c58aa-6ec6-4e79-a682-829a9debd3f5/healthkit-sync-identifier/Y29tLmV4YW1wbGUuaGVhcnRzdHVkeQ"
+* identifier[syncIdentifier].value = "series-2026-08-19T10:00"
+* identifier[5].system = "https://study.example.org/fhir/NamingSystem/healthkit-store/1f5c58aa-6ec6-4e79-a682-829a9debd3f5/healthkit-native-record"
+* identifier[5].value = "f1563e62-82ae-55be-a073-0e80d97531df"
+* extension[writerRecordVersion].valueString = "1"
 * status = #current
 * type.text = "Heartbeat series recording"
 * extension[healthKitSourceType].valueCode = #HKDataTypeIdentifierHeartbeatSeries

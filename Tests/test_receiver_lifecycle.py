@@ -121,10 +121,21 @@ class ReceiverLifecycleTests(unittest.TestCase):
             "matchRule": "no-untyped-carrier-admitted",
             "enforcement": "typed-healthkit-metadata-extension-and-no-automatic-native-uuid-copy",
         })
-        # The metadata restoration changes only this carrier rule. Keep the original digest
+        # The typed metadata carrier, the writer-assigned readable Identifier and the writer
+        # version on a DocumentReference are the only rule differences. Keep the original digest
         # guarding every other protocol rule and all source Bundles, rather than rebaselining them.
         metadata["matchRule"] = "no-generic-carrier-admitted"
         metadata["enforcement"] = "closed-adapter-metadata-allowlists-and-no-grove-generic-extension"
+        governed = protocol["governedSourceIdentifier"]
+        self.assertIn("discloses both or neither", governed.pop("writerAssignedIdentifier"))
+        self.assertEqual(
+            governed["validation"]["designatedNode"].pop("writerAssignedIdentifier")["maxPerPrimaryOutput"], 1
+        )
+        selection = protocol["lifecycle"]["active"]["versionSelection"]
+        self.assertIn("only on Observation and DocumentReference.", selection["writerEvidence"])
+        selection["writerEvidence"] = selection["writerEvidence"].replace(
+            "only on Observation and DocumentReference.", "only on Observation."
+        )
         rules = json.dumps(protocol, sort_keys=True, separators=(",", ":")).encode()
         self.assertEqual(hashlib.sha256(rules).hexdigest(), "bf408a97524fc62036ae40fdb7a37f98b0a0474eff51e6807e1877c3e06598a7")
         for name, digest in {

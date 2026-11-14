@@ -72,6 +72,9 @@ class LivePublicationTests(unittest.TestCase):
 
         def response(url: str, expected: int) -> bytes:
             calls.append((url, expected))
+            if url.endswith("/ci-build/"):
+                return ('<p id="publish-box" data-publication-status="ci-build">'
+                        'Development build — not a published release.</p>').encode()
             if url.endswith("package-list.json"):
                 entries = [
                     {
@@ -146,6 +149,15 @@ class LivePublicationTests(unittest.TestCase):
             ),
             calls,
         )
+
+    def test_rejects_preview_without_development_notice(self) -> None:
+        _, response = self.responses()
+        with mock.patch.object(CHECK, "expect_status", side_effect=lambda url, status:
+                               b"<html><body>Guide</body></html>" if url.endswith('/ci-build/')
+                               else response(url, status)):
+            with self.assertRaisesRegex(RuntimeError, "no development-build banner"):
+                CHECK.verify("https://pages.example/repository/", self.configuration(),
+                             canonical_only=False, expected_revision="abc123")
 
     def test_rejects_a_stale_ci_build_revision(self) -> None:
         _, response = self.responses(source_revision="previous")
