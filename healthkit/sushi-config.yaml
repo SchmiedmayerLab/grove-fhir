@@ -49,6 +49,9 @@ dependencies:
 # dependency version; pinning the canonical too states which the profile actually means.
 parameters:
   pin-canonicals: pin-multiples
+  # Turtle serializations and their rendered views are omitted to keep the published site small.
+  # JSON and XML remain complete.
+  excludettl: true
 
 menu:
   Overview: index.html

@@ -42,6 +42,12 @@ dependencies:
   org.grovealliance.fhir.sensor:
     version: 0.8.1
     uri: https://grovealliance.org/fhir/sensor/ImplementationGuide/org.grovealliance.fhir.sensor
+
+# Turtle serializations and their rendered views are omitted to keep the published site small.
+# JSON and XML remain complete.
+parameters:
+  excludettl: true
+
 menu:
   Overview: index.html
   Guides: https://grovealliance.org/fhir/mobile/guides.html

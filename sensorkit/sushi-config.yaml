@@ -69,3 +69,6 @@ parameters:
   show-inherited-invariants: false
   usage-stats-opt-out: true
   i18n-default-lang: en
+  # Turtle serializations and their rendered views are omitted to keep the published site small.
+  # JSON and XML remain complete.
+  excludettl: true

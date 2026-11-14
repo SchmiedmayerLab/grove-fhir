@@ -40,6 +40,11 @@ dependencies:
   hl7.terminology.r4: 7.5.0
   hl7.fhir.uv.extensions.r4: 5.4.0
 
+# Turtle serializations and their rendered views are omitted to keep the published site small.
+# JSON and XML remain complete.
+parameters:
+  excludettl: true
+
 menu:
   Overview: index.html
   New to FHIR: fhir-basics.html

@@ -43,6 +43,9 @@ dependencies:
 parameters:
   special-url:
     - urn:ietf:bcp:13
+  # Turtle serializations and their rendered views are omitted to keep the published site small.
+  # JSON and XML remain complete.
+  excludettl: true
 
 menu:
   Overview: index.html
