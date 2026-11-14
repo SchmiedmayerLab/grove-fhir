@@ -73,15 +73,18 @@ When the website app is configured, both dry runs and real releases first authen
 
 After collecting the source-build evidence above, `Scripts/stage-publication.py` invokes the pinned HL7 IG Publisher's standard `-go-publish` process for each guide in dependency order. It creates standard `publication-request.json` files in temporary source copies, uses `publication/publish-setup.json` for the website layout, and renders history with a checksum-pinned revision of [HL7's history template](https://github.com/HL7/fhir-ig-history-template). The website registry is local to staging; the command does not submit anything to the upstream IG registry.
 
-Publisher builds both the versioned publication and the current milestone copy, producing routes such as:
+Every release replaces the current publication. Only the first release of a major version from `1.0.0` (`1.0.0`, `2.0.0`, and so on) also keeps a complete, permanently hosted copy of each guide. All other releases use Publisher's standard `current-only` publish pattern: the version directory holds the exact package and a short entry page, and the complete guide of that version remains a download on its GitHub Release. The hosted site therefore grows by a full copy of the guides once per major version, not with every release.
 
 | Route under `https://grovealliance.org/fhir` | Purpose |
 |---|---|
-| `/mobile/0.9.0/` | Permanent version |
 | `/mobile/` | Current published version |
 | `/mobile/history.html` | Standard FHIR publication history |
 | `/mobile/package-list.json` | Machine-readable publication history |
 | `/mobile/0.9.0/package.tgz` | Exact versioned FHIR package |
+| `/mobile/0.9.0/` | Entry page for a version without a hosted copy |
+| `/mobile/1.0.0/` | Complete permanent copy of a major version |
+
+The guides are published as HTML, JSON, and XML. Turtle serializations are not generated (`excludettl` in each `sushi-config.yaml`), and `publication/publish-setup.json` disables Publisher's `.json1`/`.json2`/`.xml1`/`.xml2` clones, which exist for server-side content negotiation that a static host cannot perform.
 
 The same layout applies to all ten guides. The archive root is the `/fhir/` subtree, leaving `/` and other routes available for the future website.
 
@@ -115,7 +118,7 @@ The release assets include:
 - `grove-fhir-source-evidence-<version>.tar.gz`: the earlier offline source-build evidence, kept separate because native publication rebuilds the packages; and
 - `SHA256SUMS` covering every release asset.
 
-The final packages are audited again with the repository QA checks and official Validator corpora. Missing Publisher outputs fail staging even if the process returns success. Historical version directories retain their sealed bytes; their banners name the version and link to the current publication and history without claiming to remain current.
+The final packages are audited again with the repository QA checks and official Validator corpora. Missing Publisher outputs fail staging even if the process returns success. Historical version directories retain their sealed bytes. The pages of a hosted major-version copy and the entry page of every other version name the version and link to the current publication and history without claiming to remain current.
 
 The isolated publication job uploads all assets to a new draft GitHub Release, then makes the complete release public/latest. Existing releases are never overwritten. An upload failure may leave a draft for investigation; do not automatically delete or reuse it.
 
@@ -177,7 +180,7 @@ Suppression never proves terminology membership or attachment authorization.
 
 Canonical promotion may be activated only by a separately reviewed change that switches `publication/config.json` to `immutable-releases` and supplies all of the following:
 
-1. an accountable canonical-host owner and successful live HTTPS checks for owned canonical JSON, XML, Turtle, HTML, package, history, and package-list routes;
+1. an accountable canonical-host owner and successful live HTTPS checks for owned canonical JSON, XML, HTML, package, history, and package-list routes;
 2. approved permanence, correction, withdrawal, key-retention, and security policies;
 3. a clean signed/tagged source revision matching the release manifest and evidence checksums;
 4. complete offline structural and approved online terminology evidence;
