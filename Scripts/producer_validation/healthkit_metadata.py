@@ -58,6 +58,8 @@ def validate_healthkit_metadata(resource: dict[str, Any], label: str) -> None:
         key = key_child["valueString"]
         if not isinstance(key, str) or not key or key in seen:
             fail("keys must be nonempty and unique")
+        if key in contract["excludedKeys"]:
+            fail(f"must not carry {key}, which the writer-record identity represents")
         try:
             ordered_key = key.encode("utf-16-be", errors="strict")
         except UnicodeError:

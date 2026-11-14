@@ -769,6 +769,7 @@
     "type": "Identifier.type is optional when system fully defines the key space, as in FHIR R4. A present type may be text-only. Every present Coding has an absolute system and a code in the FHIR code lexical form; no Coding may use the Grove identifier-role CodeSystem because source-native identifiers are not Grove graph keys.",
     "prohibitions": "Never use a source-native value as Resource.id, a Bundle entry key, retraction address, arbitrary Observation component, or untyped metadata. Do not incidentally copy it into Attachment.title, Attachment.url, Bundle.identifier, transport/object names, or logs; a deployment that deliberately uses it in a separate non-FHIR storage contract must govern that use explicitly. Every export a deployment makes of received records strips every governed source identifier, such as a HealthKit record Identifier, and every grove-retraction-target-native-identifier extension, because a native value that other applications also read joins an exported copy back to theirs record by record.",
     "closedProfiles": "A profile with a closed or exact Identifier set admits no governed source identifier unless that profile explicitly adds such a slice. Supporting nodes whose identity is synthesized from another source record remain closed.",
+    "writerAssignedIdentifier": "An adapter contract may admit one further readable Identifier on the same designated primary output for the logical record id that the writing application assigned, such as a HealthKit sync identifier. It carries the adapter's exact Identifier.type coding and appears only beside the record's native record Identifier, its writer-record Identifier, and its Grove Writer Record Version. The disclosure policy of the native record Identifier governs it: a deployment discloses both or neither. Its system is scoped to the governed repository, account, or store and to the writing application, so it names the writing application even where writer attribution is otherwise withheld. It never replaces the writer-record Identifier, which every version of the logical record carries whether or not the readable value is disclosed.",
     "validation": {
       "optionality": "optional",
       "designatedNode": {
@@ -777,6 +778,22 @@
         "designationMode": "catalog-output-selector",
         "maxPerPrimaryOutput": 1,
         "maxPrimaryOutputsPerRecord": 1,
+        "writerAssignedIdentifier": {
+          "maxPerPrimaryOutput": 1,
+          "requiredBeside": [
+            "native-record-identifier",
+            "writer-record",
+            "writer-record-version"
+          ],
+          "disclosurePolicy": "native-record-identifier",
+          "adapterTypes": {
+            "healthkit": {
+              "contract": "catalog/healthkit-adapter.json#/identity/writerRecord/revision/readableIdentifier",
+              "typeSystem": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-identifier-type",
+              "typeCode": "healthkit-sync-id"
+            }
+          }
+        },
         "ambiguityRule": "omit-native-identifier",
         "outputModeRules": {
           "semantic-only": "sole-source-derived-output",
@@ -1009,7 +1026,7 @@
         "scope": "Normative for every receiver that keeps a current view. Selection runs within one verified subject and source binding and one complete source-record Identifier pair. A version is one distinct record-version Identifier pair, system and value, of that source record.",
         "exactRetry": "The same record-version pair with the same lossless tokens for every resource of the record changes nothing.",
         "alteredRetry": "The same record-version pair with other tokens is a producer integrity failure: the first accepted content stays, and the later content is disregarded, may be quarantined, and is never a version.",
-        "writerEvidence": "A version's writer evidence is the one complete writer-record Identifier pair and Grove Writer Record Version that its outputs state. Outputs stating neither are ignored; the version extension exists only on Observation. No statement, a writer-record Identifier without a version, or two different statements among the outputs is no evidence.",
+        "writerEvidence": "A version's writer evidence is the one complete writer-record Identifier pair and Grove Writer Record Version that its outputs state. Outputs stating neither are ignored; the version extension exists only on Observation and DocumentReference. No statement, a writer-record Identifier without a version, or two different statements among the outputs is no evidence.",
         "writerOrder": "Drop every version for which another accepted version of the same source record has evidence under the same complete writer-record pair with a greater writer version. Writer versions are canonical unsigned decimals: the longer is greater, and decimals of equal length compare bytewise.",
         "recordedOrder": "Of the versions that remain, select the latest Provenance.recorded, compared as an exact instant on the UTC timeline at its full stated precision; it is never compared as text and never rounded, as a millisecond date value would round it.",
         "tieBreak": "Among remaining versions with equal recorded instants, select the greatest record-version Identifier.value by unsigned bytewise UTF-8 comparison, then the greatest Identifier.system. For two versions this means: comparable writer versions, the higher wins; otherwise the later recorded instant wins; otherwise the bytewise-greater key wins. With more versions, the drop step keeps a superseded writer version from returning.",
@@ -1622,6 +1639,96 @@
           "single"
         ],
         "value": "v0:test-key:1:fHSbttO2vnRwctsGiMr8ecXvWQOj5SdMWrTa--ZPLI4"
+      },
+      {
+        "id": "healthkit-sync-identifier-observation-source-record",
+        "identityKind": "source-record",
+        "components": [
+          "healthkit",
+          "HKQuantityTypeIdentifierBodyMass",
+          "https://study.example.org/fhir/NamingSystem/source-repository",
+          "1f5c58aa-6ec6-4e79-a682-829a9debd3f5",
+          "310e9c93-c2da-50dc-824d-13bd3bf95e74"
+        ],
+        "value": "v0:test-key:1:P31ftVEbxztRigXCr_7aHWo4LdyC9r9ZuQhtlHsJfOk"
+      },
+      {
+        "id": "healthkit-sync-identifier-observation-source-output",
+        "identityKind": "source-output",
+        "components": [
+          "healthkit",
+          "HKQuantityTypeIdentifierBodyMass",
+          "https://study.example.org/fhir/NamingSystem/source-repository",
+          "1f5c58aa-6ec6-4e79-a682-829a9debd3f5",
+          "310e9c93-c2da-50dc-824d-13bd3bf95e74",
+          "body-weight",
+          "single"
+        ],
+        "value": "v0:test-key:1:EpwVZed4aAIaruXCfAGrbFHQdRBXkwdke63X7mGRUSQ"
+      },
+      {
+        "id": "healthkit-sync-identifier-observation-writer-record",
+        "identityKind": "writer-record",
+        "components": [
+          "https://study.example.org/fhir/identifiers/participant",
+          "participant-001",
+          "https://grovealliance.org/fhir/healthkit/NamingSystem/apple-bundle-id",
+          "com.example.scale",
+          "scale-reading-0042"
+        ],
+        "value": "v0:test-key:1:yXf2mQVVCw6x5H05itpMpbHbi2ix8AHs18tpR9Z6mhs"
+      },
+      {
+        "id": "healthkit-sync-identifier-document-source-record",
+        "identityKind": "source-record",
+        "components": [
+          "healthkit",
+          "HKDataTypeIdentifierHeartbeatSeries",
+          "https://study.example.org/fhir/NamingSystem/source-repository",
+          "1f5c58aa-6ec6-4e79-a682-829a9debd3f5",
+          "f1563e62-82ae-55be-a073-0e80d97531df"
+        ],
+        "value": "v0:test-key:1:iLwPuf71UnHiF1dLITgany8JsaJs7LD3oSynY2gnowA"
+      },
+      {
+        "id": "healthkit-sync-identifier-document-source-output",
+        "identityKind": "source-output",
+        "components": [
+          "healthkit",
+          "HKDataTypeIdentifierHeartbeatSeries",
+          "https://study.example.org/fhir/NamingSystem/source-repository",
+          "1f5c58aa-6ec6-4e79-a682-829a9debd3f5",
+          "f1563e62-82ae-55be-a073-0e80d97531df",
+          "native-recording",
+          "single"
+        ],
+        "value": "v0:test-key:1:as2R2gyk_aozWfm1-QpA2rUISYtKE_eTnRCHIVTeJLM"
+      },
+      {
+        "id": "healthkit-sync-identifier-document-source-artifact",
+        "identityKind": "source-artifact",
+        "components": [
+          "healthkit",
+          "HKDataTypeIdentifierHeartbeatSeries",
+          "https://study.example.org/fhir/NamingSystem/source-repository",
+          "1f5c58aa-6ec6-4e79-a682-829a9debd3f5",
+          "f1563e62-82ae-55be-a073-0e80d97531df",
+          "beat-interval-series",
+          "0"
+        ],
+        "value": "v0:test-key:1:tmmTrOs_O1Qfzj2oLTSmF5FP0rJGRGVUoBSNy4JHj9A"
+      },
+      {
+        "id": "healthkit-sync-identifier-document-writer-record",
+        "identityKind": "writer-record",
+        "components": [
+          "https://study.example.org/fhir/identifiers/participant",
+          "participant-001",
+          "https://grovealliance.org/fhir/healthkit/NamingSystem/apple-bundle-id",
+          "com.example.heartstudy",
+          "series-2026-08-19T10:00"
+        ],
+        "value": "v0:test-key:1:7tQQdJFxmb3lzdoPDPuofR4xX6Lb9wnykT0ovoW7ldI"
       },
       {
         "id": "questionnaire-extraction-source-record",

@@ -542,7 +542,7 @@ class HealthKitCatalogTests(unittest.TestCase):
             "Identifier is the [Apple Bundle Identifier](NamingSystem-apple-bundle-id.html) "
             "namespace with `HKSource.bundleIdentifier`.",
             # An author decides nothing about the writer-record Identifier, whose carriage the
-            # revision and withheld-metadata rules decide; a Recording Document carries none.
+            # revision and withheld-metadata rules decide.
             "Whether a graph states an author therefore never decides whether its outputs carry "
             "the sample's `writer-record` Identifier and version; the [revision rules]"
             "(#logical-identity-and-revisions) and the [withheld-metadata rules]"
@@ -859,15 +859,13 @@ class HealthKitCatalogTests(unittest.TestCase):
         )
         self.assertEqual(
             {key for key, source_types in table.items() if source_types == every},
-            {
-                "HKWasUserEntered",
-                "HKMetadataKeySyncIdentifier",
-                "HKMetadataKeySyncVersion",
-            },
+            {"HKWasUserEntered"},
         )
         self.assertEqual(
             {key for key, source_types in table.items() if source_types == devices},
             {
+                "HKMetadataKeySyncIdentifier",
+                "HKMetadataKeySyncVersion",
                 "HKDeviceSerialNumber",
                 "HKDeviceName",
                 "HKDeviceManufacturerName",
@@ -880,6 +878,11 @@ class HealthKitCatalogTests(unittest.TestCase):
             if mapping["source"].startswith("HKMetadataKey")
         }
         self.assertEqual(device_keys, {constants[key] for key in constants if key.startswith(("HKDevice", "HKUDI"))})
+        # The sync pair is carried by the revision rules alone and is never a metadata entry.
+        self.assertEqual(
+            self.catalog["metadataExtension"]["excludedKeys"],
+            ["HKMetadataKeySyncIdentifier", "HKMetadataKeySyncVersion"],
+        )
         rows = {row["sourceTypeIdentifier"]: row for row in self.catalog["rows"]}
         listed = {
             source_type
@@ -937,7 +940,9 @@ class HealthKitCatalogTests(unittest.TestCase):
             "the typed extension preserves that Boolean when supplied on the source sample",
             "An unsupported value remains an omission.",
             "can preserve metadata through the typed extension without inventing an Observation "
-            "mapping or a writer-record identity.",
+            "mapping.",
+            "The typed extension never carries the sync pair: an output that cannot carry the "
+            "`writer-record` Identifier and version reports both keys as withheld.",
             "This extension does not represent metadata belonging to contained parts.",
             "decide instead what a blood-pressure object's `HKMetadataKeyTimeZone` and "
             "`HKMetadataKeyWasUserEntered` contribute.",
@@ -953,7 +958,7 @@ class HealthKitCatalogTests(unittest.TestCase):
             for name in headings
         }
         links = {part.split(")", 1)[0] for part in section.split("](#")[1:]}
-        self.assertEqual(len(links), 5)
+        self.assertEqual(len(links), 6)
         self.assertLessEqual(links, anchors)
 
     def test_insulin_delivery_reason_is_a_required_component_coded_by_its_key(self) -> None:

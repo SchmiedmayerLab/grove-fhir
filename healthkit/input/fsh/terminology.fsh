@@ -14,6 +14,7 @@ Description: "Identifier roles used only by the HealthKit adapter when a standar
 * ^caseSensitive = true
 * ^content = #complete
 * #apple-bundle-id "Apple Bundle Identifier" "A clear Apple application product bundle identifier. It does not identify an installation, host, account, or person."
+* #healthkit-sync-id "HealthKit Sync Identifier" "The exact HKMetadataKeySyncIdentifier text a writing application assigned to one logical sample, readable under a namespace scoped to the participant's HealthKit store and that writing application. It names the logical sample across the replacements HealthKit performs for a higher sync version; it does not identify one HealthKit object."
 
 CodeSystem: HealthKitMetadataKeyCS
 Id: healthkit-metadata-key

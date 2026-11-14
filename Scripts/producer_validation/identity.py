@@ -8,14 +8,16 @@
 
 from __future__ import annotations
 
+import base64
+import binascii
 import re
 from typing import Any
 
 from .context import (
     ACTIVE_OUTPUT_RESOURCE_TYPES, CATALOG_ROOT, EXCHANGE_PROTOCOL, HMAC_IDENTITY,
     IDENTIFIER_PRIORITY, IDENTIFIER_ROLE_SYSTEM, MEASUREMENT_BY_PROFILE,
-    OPAQUE_IDENTIFIER_ROLES, REPOSITORY_ROOT, ExchangeProtocolError,
-    entry_full_url, require_absolute_uri,
+    OPAQUE_IDENTIFIER_ROLES, REPOSITORY_ROOT, WRITER_RECORD_VERSION_EXTENSION,
+    ExchangeProtocolError, entry_full_url, require_absolute_uri,
 )
 from .diagnostics import ProducerValidationError, contract_failure
 from .io import read_json
@@ -200,10 +202,91 @@ def validate_governed_identifier_type(identifier: dict[str, Any], label: str) ->
                 f"{coding_label}.code must use the FHIR code lexical form"
             )
 
+def writer_assigned_identifier_type(identifier: dict[str, Any]) -> str | None:
+    """Return the adapter whose writer-assigned Identifier.type coding this Identifier carries."""
+    identifier_type = identifier.get("type")
+    codings = identifier_type.get("coding", []) if isinstance(identifier_type, dict) else []
+    if not isinstance(codings, list):
+        return None
+    adapter_types = EXCHANGE_PROTOCOL["governedSourceIdentifier"]["validation"][
+        "designatedNode"
+    ]["writerAssignedIdentifier"]["adapterTypes"]
+    for adapter, contract in adapter_types.items():
+        if any(
+            isinstance(coding, dict)
+            and coding.get("system") == contract["typeSystem"]
+            and coding.get("code") == contract["typeCode"]
+            for coding in codings
+        ):
+            return adapter
+    return None
+
+
+def validate_healthkit_sync_identifier(
+    resource: dict[str, Any],
+    identifier: dict[str, Any],
+    native_pairs: list[tuple[str, str]],
+    label: str,
+) -> None:
+    """Enforce the readable HealthKit sync Identifier contract on one primary output."""
+    catalog = read_json(CATALOG_ROOT / "healthkit-adapter.json")
+    contract = catalog["identity"]["writerRecord"]["revision"]["readableIdentifier"]
+    marker = catalog["sourceTypeExtension"]
+    if (
+        resource.get("resourceType") not in contract["resourceTypes"]
+        or exact_marker_code(
+            resource, {"url": marker["url"], "valueElement": marker["valueElement"]}
+        ) is None
+    ):
+        raise ProducerValidationError(
+            f"{label} readable sync Identifier requires a HealthKit Observation or document output"
+        )
+    codings = identifier["type"]["coding"]
+    if len(codings) != 1 or set(identifier["type"]) != {"coding"}:
+        raise ProducerValidationError(
+            f"{label} readable sync Identifier carries exactly its one type Coding"
+        )
+    system, _ = complete_identifier(identifier, f"{label} readable sync Identifier")
+    prefix, separator, writer = system.rpartition(f"/{contract['systemPathSegment']}/")
+    try:
+        require_absolute_uri(prefix, "readable sync Identifier store scope")
+        decoded = base64.b64decode(
+            writer + "=" * (-len(writer) % 4), altchars=b"-_", validate=True
+        )
+        canonical = base64.urlsafe_b64encode(decoded).rstrip(b"=").decode("ascii")
+        decoded.decode("utf-8", errors="strict")
+    except (ExchangeProtocolError, binascii.Error, ValueError) as error:
+        raise ProducerValidationError(
+            f"{label} readable sync Identifier system must name the store scope and the "
+            "base64url-encoded writing application"
+        ) from error
+    if not separator or not decoded or canonical != writer:
+        raise ProducerValidationError(
+            f"{label} readable sync Identifier system must name the store scope and the "
+            "base64url-encoded writing application"
+        )
+    if "writer-record" not in typed_resource_identifiers(resource, label) or len(
+        extensions_with_url(resource, WRITER_RECORD_VERSION_EXTENSION)
+    ) != 1:
+        raise ProducerValidationError(
+            f"{label} readable sync Identifier requires the writer-record Identifier and version"
+        )
+    if len(native_pairs) != 1 or native_pairs[0][0] == system:
+        raise ProducerValidationError(
+            f"{label} readable sync Identifier appears only beside the native record Identifier "
+            "and never shares its system"
+        )
+
+
 def non_grove_resource_identifiers(
     resource: dict[str, Any], label: str
 ) -> list[tuple[str, str]]:
-    """Classify every non-Grove Identifier on an active output as governed source identity."""
+    """Classify every non-Grove Identifier on an active output as governed source identity.
+
+    The native record Identifier is capped by ``maxPerPrimaryOutput``. An adapter's one
+    writer-assigned Identifier is admitted beside it and is validated here; both are returned so
+    that placement and uniqueness apply to each.
+    """
     # Validate every Grove-coded identifier first so a source-native value cannot evade this
     # policy by falsely claiming a graph role.
     typed_resource_identifiers(resource, label)
@@ -214,7 +297,9 @@ def non_grove_resource_identifiers(
         identifiers = [identifiers]
     if not isinstance(identifiers, list):
         raise ProducerValidationError(f"{label}.identifier must be an Identifier array")
+    designated = EXCHANGE_PROTOCOL["governedSourceIdentifier"]["validation"]["designatedNode"]
     pairs: list[tuple[str, str]] = []
+    writer_assigned: list[dict[str, Any]] = []
     for index, identifier in enumerate(identifiers):
         if not isinstance(identifier, dict):
             raise ProducerValidationError(f"{label}.identifier[{index}] must be an Identifier")
@@ -229,8 +314,24 @@ def non_grove_resource_identifiers(
         validate_governed_identifier_type(
             identifier, f"{label}.identifier[{index}]"
         )
-        pairs.append(complete_identifier(identifier, f"{label}.identifier[{index}]"))
-    return pairs
+        if writer_assigned_identifier_type(identifier) is not None:
+            writer_assigned.append(identifier)
+        else:
+            pairs.append(complete_identifier(identifier, f"{label}.identifier[{index}]"))
+    if len(pairs) > designated["maxPerPrimaryOutput"]:
+        raise ProducerValidationError(
+            f"{label} carries more than one governed source Identifier"
+        )
+    if len(writer_assigned) > designated["writerAssignedIdentifier"]["maxPerPrimaryOutput"]:
+        raise ProducerValidationError(
+            f"{label} carries more than one readable sync Identifier"
+        )
+    for identifier in writer_assigned:
+        validate_healthkit_sync_identifier(resource, identifier, pairs, label)
+    return pairs + [
+        complete_identifier(identifier, f"{label} readable sync Identifier")
+        for identifier in writer_assigned
+    ]
 
 def identifier_pair_occurrences(value: Any, pair: tuple[str, str]) -> int:
     """Count exact Identifier-shaped pair occurrences anywhere in a graph."""
@@ -481,10 +582,6 @@ def validate_governed_source_identifiers(
         pairs = non_grove_resource_identifiers(
             resource, f"{label} {resource.get('resourceType')} output"
         )
-        if len(pairs) > designated["maxPerPrimaryOutput"]:
-            raise ProducerValidationError(
-                f"{label} active output carries more than one governed source Identifier"
-            )
         if pairs:
             source = source_by_output[id(resource)]
             governed_outputs_by_source[source] = governed_outputs_by_source.get(source, 0) + 1
