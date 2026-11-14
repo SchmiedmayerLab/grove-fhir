@@ -105,6 +105,16 @@
     "deferred": "No FHIR output for this source type is admitted by the current adapter.",
     "intentionally-unsupported": "The Grove FHIR contracts explicitly reject this source meaning rather than approximating it."
   },
+  "recordingPeriod": {
+    "sourceTypes": [
+      "HKDataTypeIdentifierHeartbeatSeries",
+      "HKWorkoutRouteTypeIdentifier"
+    ],
+    "r4Element": "DocumentReference.context.period",
+    "start": "HKSample.startDate",
+    "end": "HKSample.endDate",
+    "rule": "Preserve the complete source interval with both endpoints, including equal endpoints. Apply the Mobile millisecond, half-even and numeric-offset rules; map a supplied valid IANA time-zone name to the standard timezone extension on both endpoints. Without a source zone, use UTC without a timezone extension. Refuse reversed or unrepresentable periods and invalid supplied time-zone names. Do not repeat the mapped time zone in source metadata or use DocumentReference.date as measurement time. Provider-issued clinical documents do not infer a service period from import or conversion timestamps; unmapped time-zone metadata remains on their wrapper."
+  },
   "observationIssued": {
     "cardinality": "0..0",
     "source": "none",
@@ -3661,7 +3671,7 @@
       "HKDevice.hardwareVersion",
       "HKDevice.softwareVersion"
     ],
-    "snapshot": "Every HealthKit object with a non-nil HKDevice yields a recording Device that Observation.device references. The Device always carries one content device-snapshot v0 identifier over its complete rendered content and carries a recording-device v0 identifier only when a governed stable per-unit token exists. Descriptive and version fields are snapshot data; equal snapshots never prove one physical unit.",
+    "snapshot": "Every HealthKit object with a non-nil HKDevice or a recognized nonblank device metadata string yields a recording Device. Observation.device references it and DocumentReference.author includes it. Device metadata supplements absent HKDevice facts for both output kinds. The Device always carries one content device-snapshot v0 identifier over its complete rendered content and carries a recording-device v0 identifier only when a governed stable per-unit token exists. Descriptive and version fields are snapshot data; equal snapshots never prove one physical unit.",
     "fieldMappings": [
       {"source": "HKDevice.name", "r4Element": "Device.deviceName with type user-friendly-name", "rule": "The name may be one a person gave the device."},
       {"source": "HKDevice.manufacturer", "r4Element": "Device.manufacturer"},
@@ -3691,6 +3701,28 @@
     "classificationRule": "The converting application always uses this profile. An HKSourceRevision author uses it only when the caller explicitly classifies that source as an application; never infer actor class from name, bundle text, UUID shape, or productType.",
     "sourceBuildRule": "HKSourceRevision.version is the source's CFBundleVersion: when HealthKit supplies it, copy it unchanged into the applicationBuild slice, never into applicationVersion.",
     "sameApplicationRule": "An application-classified source's author may reference the converting application's Device only when HKSource.bundleIdentifier equals that Device's Apple bundle identifier, HKSourceRevision.version is supplied and equals, character for character, the build that Device states in applicationBuild, and the producer never reuses a build across releases of that bundle identifier. The shared Device keeps the converting application's name, release, build, and parent, and the producer emits no other Device for the source. Every application-classified source whose author does not reference the converting application's Device, including one without HKSourceRevision.version, one of another build, and every one compared with a converting application Device that states no build, is a distinct application snapshot."
+  },
+  "metadataExtension": {
+    "url": "https://grovealliance.org/fhir/core/StructureDefinition/metadata",
+    "resourceTypes": [
+      "Observation",
+      "DocumentReference",
+      "MedicationAdministration",
+      "MedicationStatement",
+      "VisionPrescription"
+    ],
+    "valueElements": [
+      "valueString",
+      "valueDecimal",
+      "valueBoolean",
+      "valueDateTime",
+      "valueCoding",
+      "valueQuantity"
+    ],
+    "keyEncoding": "Each entry has url entry and two children in order: key with the exact runtime key in valueString, then value with one typed value. Do not normalize Unicode. Keys occur once, ordered by their UTF-16 code units.",
+    "emissionRule": "Apply structured clinical, device and other IG mappings first. Preserve supported source metadata not faithfully represented by those mappings on the primary output, including custom keys and conflicting source values. Do not duplicate already mapped values; keyed identities do not reproduce their original source strings. A caller may explicitly limit disclosure; unsupported values and intentional exclusions must remain observable. Mapped clinical elements retain their own semantics and validation; metadata never overrides them. A clinical recording carries the extension on its wrapper, never by mutating the embedded source bytes.",
+    "identityRule": "Metadata changes record content and therefore record version. It never changes source-record or source-output identity and does not mint another resource. The native HKObject.uuid is not automatically copied here; its governed identifier is independent.",
+    "valueRule": "Use the declared typed FHIR values. Dates are full date-times with an offset. Numbers must be finite. Quantities use declared compatible UCUM units; an original HKQuantity unit is not exposed. Known quantity keys use the units specified in mapping.md; custom keys use its ordered compatible-unit fallback. Unsupported quantities and value classes are reported rather than stringified. Do not confuse a numeric one with a Boolean without source type evidence."
   },
   "sourceRevisionExtension": {
     "url": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-source-revision",

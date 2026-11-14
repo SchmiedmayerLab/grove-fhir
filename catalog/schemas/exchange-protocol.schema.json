@@ -367,7 +367,7 @@
                 "bundleEntryKey": {"r4Paths": ["Bundle.entry.fullUrl", "Bundle.entry.extension.valueIdentifier.value"], "matchRule": "identifier-pair-structural-validation; no-fullUrl-value-heuristic", "enforcement": "exchange-entry-key-validator-and-producer-obligation"},
                 "retractionAddress": {"r4Paths": ["Provenance.target.reference", "Provenance.target.identifier.value"], "matchRule": "identifier-pair-structural-validation; no-reference-value-heuristic", "enforcement": "retraction-profile-validator-and-producer-obligation"},
                 "observationComponent": {"r4Paths": ["Observation.component.value[x]"], "matchRule": "no-value-only-heuristic", "enforcement": "closed-adapter-component-semantics-and-producer-obligation"},
-                "untypedMetadata": {"r4Paths": [], "matchRule": "no-generic-carrier-admitted", "enforcement": "closed-adapter-metadata-allowlists-and-no-grove-generic-extension"},
+                "untypedMetadata": {"r4Paths": [], "matchRule": "no-untyped-carrier-admitted", "enforcement": "typed-healthkit-metadata-extension-and-no-automatic-native-uuid-copy"},
                 "attachmentPresentation": {"r4Paths": ["DocumentReference.content.attachment.title", "DocumentReference.content.attachment.url"], "matchRule": "no-substring-heuristic", "enforcement": "deployment-governance-and-producer-obligation"}
               }
             },

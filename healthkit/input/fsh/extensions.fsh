@@ -6,6 +6,32 @@
 // SPDX-License-Identifier: MIT
 //
 
+Extension: HealthKitSourceMetadata
+Id: metadata
+Title: "HealthKit Source Metadata"
+Description: "Typed HealthKit source metadata without a faithful structured mapping, on the primary output of its source record. Already mapped values are not duplicated. Each entry declares its exact runtime key and one typed value. Metadata preserves source values without overriding clinical mappings."
+Context: Observation, DocumentReference, MedicationAdministration, MedicationStatement, VisionPrescription
+* ^url = "https://grovealliance.org/fhir/core/StructureDefinition/metadata"
+* url = "https://grovealliance.org/fhir/core/StructureDefinition/metadata" (exactly)
+* value[x] 0..0
+* extension contains entry 1..*
+* extension ^slicing.rules = #closed
+* extension[entry].value[x] 0..0
+* extension[entry].extension contains key 1..1 and value 1..1
+* extension[entry].extension ^slicing.rules = #closed
+* extension[entry].extension[key].extension 0..0
+* extension[entry].extension[key].value[x] 1..1
+* extension[entry].extension[key].value[x] only string
+* extension[entry].extension[value].extension 0..0
+* extension[entry].extension[value].value[x] 1..1
+* extension[entry].extension[value].value[x] only string or decimal or boolean or dateTime or Coding or Quantity
+* extension[entry].extension[value].valueCoding.system 1..1
+* extension[entry].extension[value].valueCoding.code 1..1
+* extension[entry].extension[value].valueQuantity.value 1..1
+* extension[entry].extension[value].valueQuantity.system 1..1
+* extension[entry].extension[value].valueQuantity.system = "http://unitsofmeasure.org" (exactly)
+* extension[entry].extension[value].valueQuantity.code 1..1
+
 Extension: HealthKitECGSymptomsStatus
 Id: healthkit-ecg-symptoms-status
 Title: "HealthKit ECG Symptoms Status"

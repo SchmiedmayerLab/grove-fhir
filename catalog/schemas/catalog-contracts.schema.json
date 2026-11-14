@@ -256,6 +256,15 @@
       "type": "object", "additionalProperties": false, "required": ["profile", "payloadFormat", "sourceFHIRReleaseField", "admittedFHIRReleases", "fhirRepresentation", "rejectedFHIRReleases", "rule"],
       "properties": {"profile": {"const": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document"}, "payloadFormat": {"const": "fhir-resource"}, "sourceFHIRReleaseField": {"const": "HKFHIRVersion.fhirRelease"}, "admittedFHIRReleases": {"const": ["dstu2", "r4"]}, "fhirRepresentation": {"$ref": "#/$defs/healthKitClinicalFHIRRepresentation"}, "rejectedFHIRReleases": {"const": ["unknown"]}, "rule": {"$ref": "#/$defs/nonEmptyText"}}
     },
+    "healthKitRecordingPeriod": {
+      "type": "object", "additionalProperties": false, "required": ["sourceTypes", "r4Element", "start", "end", "rule"],
+      "properties": {
+        "sourceTypes": {"const": ["HKDataTypeIdentifierHeartbeatSeries", "HKWorkoutRouteTypeIdentifier"]},
+        "r4Element": {"const": "DocumentReference.context.period"},
+        "start": {"const": "HKSample.startDate"}, "end": {"const": "HKSample.endDate"},
+        "rule": {"$ref": "#/$defs/nonEmptyText"}
+      }
+    },
     "healthKitClaim": {"type": "object", "additionalProperties": false, "required": ["claimMode", "profiles", "code", "quantity", "effective", "reason"], "properties": {"claimMode": {"const": "exactly-standard-plus-adapter"}, "profiles": {"$ref": "#/$defs/uriArray"}, "code": {"$ref": "#/$defs/coding"}, "quantity": {"$ref": "#/$defs/quantity"}, "effective": {"const": "dateTime"}, "reason": {"$ref": "#/$defs/nonEmptyText"}}},
     "healthKitEcgOutput": {"type": "object", "additionalProperties": false, "required": ["outputRole", "outputDiscriminator", "cardinality", "profiles"], "properties": {"outputRole": {"enum": ["electrocardiogram", "average-heart-rate"]}, "outputDiscriminator": {"const": "single"}, "cardinality": {"$ref": "#/$defs/nonEmptyText"}, "profiles": {"$ref": "#/$defs/uriArray"}, "code": {"$ref": "#/$defs/coding"}, "quantity": {"$ref": "#/$defs/quantity"}, "effective": {"$ref": "#/$defs/nonEmptyText"}, "relationship": {"$ref": "#/$defs/nonEmptyText"}}},
     "healthKitEcgSymptomEvidence": {"type": "object", "additionalProperties": false, "required": ["cardinality", "r4Element", "sourceTypes", "rule", "exchangeRule", "sourceRevisionRule"], "properties": {"cardinality": {"const": "0..*"}, "r4Element": {"const": "Observation.hasMember as identifier-only logical Reference(Observation)"}, "sourceTypes": {"type": "array", "minItems": 7, "maxItems": 7, "uniqueItems": true, "items": {"$ref": "#/$defs/nonEmptyText"}}, "rule": {"$ref": "#/$defs/nonEmptyText"}, "exchangeRule": {"$ref": "#/$defs/nonEmptyText"}, "sourceRevisionRule": {"$ref": "#/$defs/nonEmptyText"}}},
@@ -296,13 +305,53 @@
     "derivedAggregate": {"type": "object", "additionalProperties": false, "required": ["id", "title", "sourceTypeIdentifiers", "scope", "status", "measurementIDs", "profiles", "requirement"], "properties": {"id": {"$ref": "#/$defs/slug"}, "title": {"$ref": "#/$defs/nonEmptyText"}, "sourceTypeIdentifiers": {"$ref": "#/$defs/textArray"}, "scope": {"$ref": "#/$defs/nonEmptyText"}, "status": {"$ref": "#/$defs/status"}, "measurementIDs": {"$ref": "#/$defs/textArray"}, "profiles": {"$ref": "#/$defs/uriArray"}, "requirement": {"$ref": "#/$defs/nonEmptyText"}}},
     "healthKit": {
       "type": "object", "additionalProperties": false,
-      "required": ["$schema", "schemaVersion", "fhirVersion", "version", "source", "producerCanonicalization", "sourceTypeExtension", "clinicalRecordAdmission", "conversionProvenanceProfile", "statusVocabulary", "observationIssued", "standardAdapterClaims", "sensorAdapterClaims", "derivedAggregates", "rows", "recordingDeviceIdentity", "applicationDeviceIdentity", "sourceRevisionExtension", "identity"],
+      "required": ["$schema", "schemaVersion", "fhirVersion", "version", "source", "producerCanonicalization", "sourceTypeExtension", "clinicalRecordAdmission", "recordingPeriod", "conversionProvenanceProfile", "statusVocabulary", "observationIssued", "standardAdapterClaims", "sensorAdapterClaims", "derivedAggregates", "rows", "recordingDeviceIdentity", "applicationDeviceIdentity", "sourceRevisionExtension", "metadataExtension", "identity"],
       "properties": {
+        "metadataExtension": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "url",
+            "resourceTypes",
+            "valueElements",
+            "keyEncoding",
+            "emissionRule",
+            "identityRule",
+            "valueRule"
+          ],
+          "properties": {
+            "url": {
+              "const": "https://grovealliance.org/fhir/core/StructureDefinition/metadata"
+            },
+            "resourceTypes": {
+              "const": ["Observation", "DocumentReference", "MedicationAdministration", "MedicationStatement", "VisionPrescription"]
+            },
+            "valueElements": {
+              "const": ["valueString", "valueDecimal", "valueBoolean", "valueDateTime", "valueCoding", "valueQuantity"]
+            },
+            "keyEncoding": {
+              "type": "string",
+              "minLength": 1
+            },
+            "emissionRule": {
+              "type": "string",
+              "minLength": 1
+            },
+            "identityRule": {
+              "type": "string",
+              "minLength": 1
+            },
+            "valueRule": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
         "$schema": {"$ref": "#/$defs/schemaUri"}, "schemaVersion": {"const": 0}, "fhirVersion": {"const": "4.0.1"}, "version": {"$ref": "#/$defs/releaseVersion"},
         "source": {"type": "object", "additionalProperties": false, "required": ["platform", "sdkBaseline", "accessed", "inventory", "rowScope", "evidence", "rowCount", "derivedAggregateCount"], "properties": {"platform": {"const": "Apple HealthKit"}, "sdkBaseline": {"$ref": "#/$defs/sdkBaseline"}, "accessed": {"$ref": "#/$defs/date"}, "inventory": {"$ref": "#/$defs/nonEmptyText"}, "rowScope": {"$ref": "#/$defs/nonEmptyText"}, "evidence": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/healthKitEvidence"}}, "rowCount": {"type": "integer", "minimum": 1}, "derivedAggregateCount": {"type": "integer", "minimum": 0}}},
         "producerCanonicalization": {"type": "object", "additionalProperties": false, "required": ["mobileEffectiveContract", "effectivePrecision", "effectiveRounding", "scalarQuantityDecimal", "percentScaling", "percentScalingVectors", "identityPreimages", "sensorAndEcgTiming"], "properties": {"mobileEffectiveContract": {"const": "catalog/measurement-catalog.json#effectiveCanonicalization"}, "effectivePrecision": {"const": "millisecond"}, "effectiveRounding": {"const": "half-even"}, "scalarQuantityDecimal": {"const": "shortest-round-trip"}, "percentScaling": {"const": "shortest-round-trip-decimal-shift-rounded-once"}, "percentScalingVectors": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/healthKitPercentScalingVector"}}, "identityPreimages": {"const": "unmodified"}, "sensorAndEcgTiming": {"const": "excluded"}}},
         "sourceTypeExtension": {"type": "object", "additionalProperties": false, "required": ["url", "valueSystem", "valueElement", "cardinality", "contexts", "rule"], "properties": {"url": {"$ref": "#/$defs/uri"}, "valueSystem": {"$ref": "#/$defs/uri"}, "valueElement": {"const": "valueCode"}, "cardinality": {"const": "exactly one"}, "contexts": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["Observation", "DocumentReference", "VisionPrescription", "MedicationAdministration", "MedicationStatement"]}}, "rule": {"$ref": "#/$defs/nonEmptyText"}}},
-        "clinicalRecordAdmission": {"$ref": "#/$defs/healthKitClinicalAdmission"}, "conversionProvenanceProfile": {"$ref": "#/$defs/uri"}, "statusVocabulary": {"$ref": "#/$defs/statusVocabularyObject"}, "observationIssued": {"$ref": "#/$defs/observationIssued"},
+        "clinicalRecordAdmission": {"$ref": "#/$defs/healthKitClinicalAdmission"}, "recordingPeriod": {"$ref": "#/$defs/healthKitRecordingPeriod"}, "conversionProvenanceProfile": {"$ref": "#/$defs/uri"}, "statusVocabulary": {"$ref": "#/$defs/statusVocabularyObject"}, "observationIssued": {"$ref": "#/$defs/observationIssued"},
         "standardAdapterClaims": {"type": "object", "additionalProperties": false, "required": ["body-mass-index"], "properties": {"body-mass-index": {"$ref": "#/$defs/healthKitClaim"}}},
         "sensorAdapterClaims": {"type": "object", "additionalProperties": false, "required": ["electrocardiogram"], "properties": {"electrocardiogram": {"$ref": "#/$defs/healthKitEcgClaim"}}},
         "derivedAggregates": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/derivedAggregate"}}, "rows": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/healthKitRow"}}, "recordingDeviceIdentity": {"allOf": [{"$ref": "#/$defs/recordingDeviceIdentity"}, {"type": "object", "required": ["fieldMappings"], "properties": {"fieldMappings": {"type": "array", "minItems": 1}}}]}, "applicationDeviceIdentity": {"$ref": "#/$defs/applicationDeviceIdentity"}, "sourceRevisionExtension": {"$ref": "#/$defs/healthKitSourceRevisionExtension"}, "identity": {"$ref": "#/$defs/exchangeIdentity"}

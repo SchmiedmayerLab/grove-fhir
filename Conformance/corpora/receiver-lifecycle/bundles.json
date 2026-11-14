@@ -5,7 +5,7 @@
     "baseExchangeProtocolSHA256": "fec45c4aaa7c9b63b2db25cfb0b82088a61f061ef404cbb17073025649072768",
     "releaseVersion": "0.8.0",
     "fhirVersion": "4.0.1",
-    "exchangeProtocolSHA256": "b54d2d9ec0212ced227c1222e24924141924e7d1ae47df4475bf9a02b030e721"
+    "exchangeProtocolSHA256": "df15abcda5ba7e38438706d8b51e93ff64053b8c764b28300701392fc383c12b"
   },
   "bundles": {
     "original": {

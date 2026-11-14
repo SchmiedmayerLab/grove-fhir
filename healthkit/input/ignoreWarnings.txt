@@ -153,6 +153,7 @@ WARNING: Observation/HealthKitECGAverageHeartRateExample: Observation: Best Prac
 WARNING: Observation/HealthKitECGCorrelatedDizzinessExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
 WARNING: Observation/HealthKitECGObservationExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
 WARNING: Observation/HealthKitHeartRateObservationExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
+WARNING: Observation/HealthKitMetadataObservationExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
 WARNING: Observation/HealthKitManuallyEnteredBodyWeightExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
 WARNING: Observation/HealthKitRevisedBodyWeightObservationExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
 WARNING: Observation/HealthKitSleepStageObservationExample: Observation: Best Practice Recommendation: In general, all observations should have a performer

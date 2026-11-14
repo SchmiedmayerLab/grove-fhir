@@ -49,6 +49,8 @@ dependencies:
 # dependency version; pinning the canonical too states which the profile actually means.
 parameters:
   pin-canonicals: pin-multiples
+  # Preserve the metadata canonical emitted by the legacy HealthKit exporter.
+  special-url: https://grovealliance.org/fhir/core/StructureDefinition/metadata
 
 menu:
   Overview: index.html
