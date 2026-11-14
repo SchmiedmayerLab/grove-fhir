@@ -417,6 +417,7 @@ def rewrite_package_archive(
             filename="",
             fileobj=destination,
             mode="wb",
+            compresslevel=9,
             mtime=source_date_epoch,
         ) as compressed:
             compressed.write(uncompressed.getvalue())

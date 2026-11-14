@@ -202,7 +202,7 @@ def check_package_portability(package: Path) -> None:
 
 def archive_site(web: Path, output: Path) -> None:
     """Stable archive metadata; source content remains exactly as validated."""
-    with output.open("xb") as raw, gzip.GzipFile(fileobj=raw, mode="wb", filename="", mtime=0) as compressed:
+    with output.open("xb") as raw, gzip.GzipFile(fileobj=raw, mode="wb", filename="", mtime=0, compresslevel=9) as compressed:
         with tarfile.open(fileobj=compressed, mode="w") as archive:
             for path in sorted(web.rglob("*")):
                 if path.is_symlink():

@@ -83,7 +83,9 @@ FindingCounts = namedtuple(
         "exact_suppressed_warnings",
         "offline_terminology_warnings",
         "unsuppressed_warnings",
+        "verified_terminology_errors",
     ),
+    defaults=(0,),
 )
 
 
@@ -102,6 +104,7 @@ def finding_counts(
     exact_suppressions: dict[str, int],
     offline_terminology_errors: int = 0,
     offline_terminology_warnings: int = 0,
+    verified_terminology_errors: int = 0,
 ) -> FindingCounts:
     """Normalize Publisher's asymmetric treatment of ignored errors/warnings.
 
@@ -134,7 +137,7 @@ def finding_counts(
         for message, count in exact_suppressions.items()
         if message.startswith("WARNING: ")
     )
-    accounted_validation_errors = suppressed_validation_errors + offline_terminology_errors
+    accounted_validation_errors = suppressed_validation_errors + offline_terminology_errors + verified_terminology_errors
     if publisher_errors < accounted_validation_errors:
         raise ValueError(
             "Publisher error count is smaller than its accounted exact "
@@ -146,6 +149,7 @@ def finding_counts(
             "offline terminology warning count"
         )
     return FindingCounts(
+        verified_terminology_errors=verified_terminology_errors,
         raw_errors=publisher_errors + suppressed_link_errors,
         exact_suppressed_errors=suppressed_errors,
         offline_terminology_errors=offline_terminology_errors,
@@ -1003,6 +1007,60 @@ def offline_codeable_concept_warning_count(guide: Path) -> int:
     return count
 
 
+def is_pinned_loinc_include(include: object, evidence: tuple) -> bool:
+    if not isinstance(include, dict) or set(include) != {"system", "concept"}:
+        return False
+    concepts = include["concept"]
+    return (
+        include["system"] == LOINC
+        and isinstance(concepts, list)
+        and bool(concepts)
+        and all(isinstance(concept, dict) and isinstance(concept.get("code"), str)
+                and ratified_external_code(LOINC, concept["code"], *evidence)
+                for concept in concepts)
+    )
+
+
+def verified_loinc_system_error_count(guide: Path) -> int:
+    """Account for the exact LOINC CodeSystem/ValueSet lookup collision.
+
+    Core's ValueSetValidator can find the all-codes ValueSet at http://loinc.org
+    after failing to load its CodeSystem, then misclassify the system URL. Accept
+    only explicit includes whose every code is active in the pinned LOINC evidence.
+    This also applies to online builds; it is not an online terminology attestation.
+    """
+    qa_html = (guide / "output/qa.html").read_text(encoding="utf-8")
+    diagnostic = "VALUESET_INCLUDE_WRONG_VS_HINT"
+    if diagnostic not in qa_html:
+        return 0
+    message = ("The system 'http://loinc.org' is actually a value set, which itself refers "
+               "to the system 'http://loinc.org' so that may be what is intended here")
+    evidence = terminology_evidence()
+    count = 0
+    for section in re.split(r"<h2>", qa_html)[1:]:
+        source = re.match(r'\s*<a href="[^"]+">fsh-generated/resources/(?P<name>[^<]+)\.json</a>', section)
+        if source is None:
+            continue
+        try:
+            resource = json.loads((guide / "output" / f"{source['name']}.json").read_text())
+        except (OSError, json.JSONDecodeError):
+            continue
+        if resource.get("resourceType") != "ValueSet":
+            continue
+        includes = resource.get("compose", {}).get("include", [])
+        if not isinstance(includes, list):
+            continue
+        for raw in re.findall(r"<tr[^>]*>.*?</tr>", section.partition("</table>")[0], re.S):
+            row = ERROR_ROW.fullmatch(raw)
+            if (row is None or plain_html(row["diagnostic"]) != diagnostic
+                    or plain_html(row["message"]) != message):
+                continue
+            path = VALUE_SET_INCLUDE_PATH.fullmatch(plain_html(row["path"]))
+            if path and int(path["index"]) < len(includes) and is_pinned_loinc_include(includes[int(path["index"])], evidence):
+                count += 1
+    return count
+
+
 def offline_absent_code_system_warning_count(guide: Path) -> int:
     """Count exact absent-LOINC warnings for value sets that enumerate pinned codes.
 
@@ -1013,25 +1071,10 @@ def offline_absent_code_system_warning_count(guide: Path) -> int:
     """
 
     qa_html = (guide / "output/qa.html").read_text(encoding="utf-8")
-    loinc, snomed, ucum, ucum_annotations = terminology_evidence()
+    evidence = terminology_evidence()
 
     def is_pinned_loinc(include: object) -> bool:
-        if not isinstance(include, dict) or set(include) != {"system", "concept"}:
-            return False
-        concepts = include["concept"]
-        return (
-            include["system"] == LOINC
-            and isinstance(concepts, list)
-            and bool(concepts)
-            and all(
-                isinstance(concept, dict)
-                and isinstance(concept.get("code"), str)
-                and ratified_external_code(
-                    LOINC, concept["code"], loinc, snomed, ucum, ucum_annotations
-                )
-                for concept in concepts
-            )
-        )
+        return is_pinned_loinc_include(include, evidence)
 
     count = 0
     for section in re.split(r"<h2>", qa_html)[1:]:
@@ -1310,6 +1353,7 @@ def main() -> int:
                 exact_suppressions,
                 offline_terminology_errors,
                 offline_terminology_warnings,
+                verified_terminology_errors=verified_loinc_system_error_count(guide),
             )
         except ValueError as error:
             suppression_problems.append(str(error))
@@ -1319,6 +1363,7 @@ def main() -> int:
             f"{guide}: raw-errors={counts.raw_errors} "
             f"exact-suppressed-errors={counts.exact_suppressed_errors} "
             f"offline-terminology-errors={counts.offline_terminology_errors} "
+            f"verified-terminology-errors={counts.verified_terminology_errors} "
             f"unsuppressed-errors={counts.unsuppressed_errors} "
             f"raw-warnings={counts.raw_warnings} "
             f"exact-suppressed-warnings={counts.exact_suppressed_warnings} "
@@ -1336,21 +1381,22 @@ def main() -> int:
             summary.write("## FHIR implementation-guide QA\n\n")
             summary.write(
                 "| Guide | Raw errors | Exact-suppressed errors | "
-                "Offline terminology errors | Unsuppressed errors | "
+                "Offline terminology errors | Verified terminology errors | Unsuppressed errors | "
                 "Raw warnings | Exact-suppressed warnings | "
                 "Offline terminology warnings | Unsuppressed warnings | Hints |\n"
-                "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|\n"
+                "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|\n"
             )
             for guide, counts, hints in rows:
                 if counts is None:
                     summary.write(
-                        f"| `{guide}` | - | - | - | - | - | - | - | - | {hints} |\n"
+                        f"| `{guide}` | - | - | - | - | - | - | - | - | - | {hints} |\n"
                     )
                     continue
                 summary.write(
                     f"| `{guide}` | {counts.raw_errors} | "
                     f"{counts.exact_suppressed_errors} | "
                     f"{counts.offline_terminology_errors} | "
+                    f"{counts.verified_terminology_errors} | "
                     f"{counts.unsuppressed_errors} | "
                     f"{counts.raw_warnings} | {counts.exact_suppressed_warnings} | "
                     f"{counts.offline_terminology_warnings} | "

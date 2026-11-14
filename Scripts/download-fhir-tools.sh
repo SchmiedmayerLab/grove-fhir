@@ -91,8 +91,18 @@ download_and_verify() {
     exit 1
   fi
   # --retry alone skips connection failures, which is how the package host usually fails.
-  curl --fail --location --retry 3 --retry-all-errors --retry-delay 5 \
-    --connect-timeout 30 --output "$temporary_file" "$url"
+  if ! curl --fail --location --retry 3 --retry-all-errors --retry-delay 5 \
+      --connect-timeout 30 --output "$temporary_file" "$url"; then
+    # Use the same secondary registry as the FHIR package loader. The pinned
+    # checksum below still applies; a mirror cannot substitute different bytes.
+    if [[ "$url" != https://packages.fhir.org/* ]]; then
+      return 1
+    fi
+    local mirror="https://packages2.fhir.org/packages/${url#https://packages.fhir.org/}"
+    echo "Primary FHIR registry unavailable; trying $mirror" >&2
+    curl --fail --location --retry 3 --retry-all-errors --retry-delay 5 \
+      --connect-timeout 30 --output "$temporary_file" "$mirror"
+  fi
   printf '%s  %s\n' "$expected_sha" "$temporary_file" | shasum -a 256 --check
   mv "$temporary_file" "$destination"
 }
