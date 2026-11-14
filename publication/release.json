@@ -1,6 +1,6 @@
 {
   "status": "draft",
   "sequence": "Releases",
-  "description": "Versioned publication of the Grove FHIR implementation guides.",
+  "description": "First native website publication of all ten Grove FHIR implementation guides, with versioned pages, publication history, and release downloads for grovealliance.org.",
   "previousPublication": null
 }

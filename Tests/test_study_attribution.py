@@ -111,7 +111,7 @@ class StudyAttributionTests(unittest.TestCase):
             [{"system": key["system"], "value": key["value"]} for key in self.lock["recordVersions"]],
             record_versions(self.source),
         )
-        self.assertEqual(self.lock["releaseVersion"], "0.8.0")
+        self.assertEqual(self.lock["releaseVersion"], "0.8.1")
         self.assertEqual(self.lock["sourceEventSHA256"], hashlib.sha256((CORPUS / self.history["source"]).read_bytes()).hexdigest())
 
     def test_study_context_nodes_are_content_addressed(self):
