@@ -138,9 +138,10 @@ def _redirect_document(
     redirect: PurePosixPath,
     human: PurePosixPath,
     formats: dict[str, str],
+    package_path: PurePosixPath = PurePosixPath("package.tgz"),
 ) -> bytes:
     target_href = _relative_href(redirect, human)
-    package_href = _relative_href(redirect, PurePosixPath("package.tgz"))
+    package_href = _relative_href(redirect, package_path)
     format_links = " · ".join(
         f'<a href="{html.escape(_relative_href(redirect, PurePosixPath(path)), quote=True)}">'
         f"{name.upper()}</a>"
@@ -223,13 +224,18 @@ def generate_routes(
     site: Path,
     canonical: str,
     target_prefix: str = "",
+    *,
+    route_prefix: str = "",
+    package_path: str = "package.tgz",
 ) -> list[dict[str, object]]:
     """Generate routes and return their deterministic JSON-serializable manifest rows.
 
     ``output`` is a FHIR Publisher output directory. ``site`` is the root at which the
     supplied canonical is hosted. ``target_prefix`` locates the copied Publisher site
     below that root (for example ``ci-build``); canonical routes themselves always live
-    directly below ``site``.
+    directly below ``site``. A retained canonical can use ``route_prefix`` within a shared
+    publication root while its human rendering and package remain in another guide. All
+    three paths stay beneath the same root; parent traversal is never admitted.
     """
 
     output = output.resolve()
@@ -239,6 +245,8 @@ def generate_routes(
 
     normalized_canonical, canonical_parts = _normalized_canonical(canonical)
     human_prefix = _safe_target_prefix(target_prefix)
+    resource_prefix = _safe_target_prefix(route_prefix)
+    package_target = _safe_target_prefix(package_path)
     discovered: list[dict[str, Any]] = []
     claimed_routes: dict[str, str] = {}
 
@@ -266,7 +274,8 @@ def generate_routes(
                 f"owned resource does not use the Publisher primary filename: {source_json.name}"
             )
 
-        route = PurePosixPath(*route_segments)
+        canonical_route = PurePosixPath(*route_segments)
+        route = resource_prefix / canonical_route
         route_key = route.as_posix()
         previous = claimed_routes.get(route_key)
         if previous is not None:
@@ -301,7 +310,7 @@ def generate_routes(
             source_formats[format_name] = source
             destination_formats[format_name] = f"{route.as_posix()}.{format_name}"
 
-        canonical_url = f"{normalized_canonical}/{route.as_posix()}"
+        canonical_url = f"{normalized_canonical}/{canonical_route.as_posix()}"
         directory_redirect = route / "index.html"
         html_redirect = PurePosixPath(f"{route.as_posix()}.html")
         discovered.append(
@@ -353,6 +362,7 @@ def generate_routes(
                     redirect=redirect,
                     human=human,
                     formats={str(key): str(value) for key, value in formats.items()},
+                    package_path=package_target,
                 ),
                 str(row["source"]),
             )
@@ -366,7 +376,7 @@ def generate_routes(
     manifest_bytes = (
         json.dumps(manifest, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
     ).encode("utf-8")
-    _add_file(files, PurePosixPath(MANIFEST_NAME), manifest_bytes, "route manifest")
+    _add_file(files, resource_prefix / MANIFEST_NAME, manifest_bytes, "route manifest")
 
     _validate_plan(site, files)
     site.mkdir(parents=True, exist_ok=True)

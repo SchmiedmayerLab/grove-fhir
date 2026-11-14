@@ -123,6 +123,34 @@ def owned_resources(preview: Path, canonical: str) -> list[tuple[str, Path]]:
     return resources
 
 
+def check_retained_canonicals(site: Path, preview: Path, canonical_base: str, paths: list[str]) -> list[str]:
+    """Audit definitions whose existing canonical lives outside their current package's base."""
+    failures: list[str] = []
+    for prefix in paths:
+        prefix_path = safe_path(prefix)
+        manifest_path = site / prefix_path / "canonical-routes.json"
+        if not manifest_path.is_file():
+            failures.append(f"retained canonical route manifest is missing: {prefix}")
+            continue
+        resources = owned_resources(preview, canonical_base.rstrip("/") + "/" + prefix)
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        rows = manifest.get("routes", [])
+        expected = {str(prefix_path / relative) for relative, _ in resources}
+        if {row.get("route") for row in rows} != expected or len(rows) != len(expected):
+            failures.append(f"retained canonical routes differ from package definitions: {prefix}")
+        for relative, source_json in resources:
+            route = site / prefix_path / safe_path(relative)
+            for suffix in (".json", ".xml", ".ttl"):
+                target = appended_suffix(route, suffix)
+                source = source_json.with_suffix(suffix)
+                if not target.is_file() or not source.is_file() or target.read_bytes() != source.read_bytes():
+                    failures.append(f"retained canonical {relative}{suffix} differs from its package")
+            for target in (route / "index.html", appended_suffix(route, ".html")):
+                if not target.is_file():
+                    failures.append(f"retained canonical rendering is missing: {target.relative_to(site)}")
+    return failures
+
+
 def check_site(
     site: Path,
     repository_root: Path,
@@ -308,6 +336,11 @@ def check_site(
                 source_format = source_json.with_suffix(extension)
                 if source_format.is_file() and not appended_suffix(route, extension).is_file():
                     failures.append(f"missing {extension} canonical route for {relative}")
+
+        if not release_entries:
+            failures.extend(check_retained_canonicals(
+                site, preview, configuration["canonicalBaseUrl"], guide.get("retainedCanonicalPaths", [])
+            ))
 
         representative = canonical_root / safe_path(guide["representativeResource"])
         if not (representative / "index.html").is_file() or not appended_suffix(

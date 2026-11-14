@@ -73,6 +73,44 @@ class PreparePagesTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "collides with canonicalPath"):
                 PREPARE_PAGES.load_configuration(path)
 
+    def test_retained_canonicals_cannot_collide_with_guide_paths(self) -> None:
+        for retained in ["healthkit", "healthkit/ci-build", "../outside", "", "."]:
+            configuration = {
+                "schemaVersion": 0, "releaseMode": "ci-build-only",
+                "guides": [{"source": "healthkit", "canonicalPath": "healthkit",
+                            "retainedCanonicalPaths": [retained], "aliases": []}],
+            }
+            with self.subTest(retained=retained), tempfile.TemporaryDirectory() as directory:
+                path = Path(directory) / "config.json"
+                path.write_text(json.dumps(configuration))
+                with self.assertRaises(ValueError):
+                    PREPARE_PAGES.load_configuration(path)
+
+    def test_retained_canonical_audit_detects_changed_resource_bytes(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            preview, site = root / "preview", root / "site"
+            preview.mkdir()
+            target = site / "core/StructureDefinition/metadata"
+            target.mkdir(parents=True)
+            resource = {"resourceType": "StructureDefinition", "id": "metadata",
+                        "url": "https://example.org/fhir/core/StructureDefinition/metadata"}
+            source = preview / "StructureDefinition-metadata.json"
+            source.write_text(json.dumps(resource))
+            for suffix in (".json", ".xml", ".ttl"):
+                if suffix != ".json":
+                    source.with_suffix(suffix).write_text("example " + suffix)
+                CHECK_PUBLICATION.appended_suffix(target, suffix).write_bytes(source.with_suffix(suffix).read_bytes())
+            (target / "index.html").write_text("redirect")
+            target.with_suffix(".html").write_text("redirect")
+            (site / "core/canonical-routes.json").write_text(json.dumps({
+                "routes": [{"route": "core/StructureDefinition/metadata"}]
+            }))
+            self.assertEqual(CHECK_PUBLICATION.check_retained_canonicals(site, preview, "https://example.org/fhir", ["core"]), [])
+            target.with_suffix(".json").write_text("{}")
+            failures = CHECK_PUBLICATION.check_retained_canonicals(site, preview, "https://example.org/fhir", ["core"])
+            self.assertEqual(failures, ["retained canonical StructureDefinition/metadata.json differs from its package"])
+
     def test_rewrites_build_locations(self) -> None:
         repository = Path("/private/tmp/grove-fhir")
         text = (

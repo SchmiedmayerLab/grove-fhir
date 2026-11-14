@@ -61,6 +61,30 @@ class CanonicalRedirectTests(unittest.TestCase):
             destination.parent.mkdir(parents=True, exist_ok=True)
             destination.write_text(f"<h1>{resource_id}</h1>", encoding="utf-8")
 
+    def test_retained_canonical_routes_stay_in_the_shared_publication_root(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            output, site = root / "output", root / "site"
+            output.mkdir()
+            site.mkdir()
+            canonical = "https://example.org/fhir/core"
+            self.add_resource(output, site, resource_type="StructureDefinition", resource_id="metadata",
+                              url=canonical + "/StructureDefinition/metadata", target_prefix="healthkit/ci-build")
+            routes = ROUTES.generate_routes(output, site, canonical, "healthkit/ci-build",
+                                            route_prefix="core", package_path="healthkit/package.tgz")
+            self.assertEqual(routes[0]["canonical"], canonical + "/StructureDefinition/metadata")
+            self.assertEqual(routes[0]["route"], "core/StructureDefinition/metadata")
+            self.assertTrue((site / "core/canonical-routes.json").is_file())
+            route = site / "core/StructureDefinition/metadata/index.html"
+            self.assertIn("../../../healthkit/ci-build/StructureDefinition-metadata.html", route.read_text())
+            self.assertIn("../../../healthkit/package.tgz", route.read_text())
+            self.assertEqual((site / "core/StructureDefinition/metadata.json").read_bytes(),
+                             (output / "StructureDefinition-metadata.json").read_bytes())
+            with self.assertRaises(ROUTES.UnsafeRouteError):
+                ROUTES.generate_routes(output, site, canonical, "healthkit/ci-build", route_prefix="../outside")
+            with self.assertRaises(ROUTES.UnsafeRouteError):
+                ROUTES.generate_routes(output, site, canonical, "healthkit/ci-build", package_path="../outside")
+
     def test_generates_standard_and_nested_routes_with_sibling_formats(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
