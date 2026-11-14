@@ -169,7 +169,10 @@ def verify(
         root = f"{base_url}/{guide['canonicalPath']}"
         expected_canonical = canonical_for_guide(configuration, guide)
         expect_status(f"{root}/", 200)
-        expect_status(f"{root}/ci-build/", 200)
+        preview_page = expect_status(f"{root}/ci-build/", 200).decode("utf-8")
+        if ('data-publication-status="ci-build"' not in preview_page
+                or "Development build — not a published release." not in preview_page):
+            raise RuntimeError(f"{root}/ci-build/ has no development-build banner")
         expect_status(f"{root}/history.html", 200)
         package_list = json.loads(expect_status(f"{root}/package-list.json", 200))
         entries = package_list.get("list")

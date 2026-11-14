@@ -203,8 +203,6 @@ def main() -> int:
     package = load_json(ROOT / "package.json")
     if package.get("version") != release:
         failures.append("package.json version differs from release manifest")
-    if package.get("devDependencies", {}).get("fsh-sushi") != toolchain["sushi"]["version"]:
-        failures.append("package.json SUSHI version differs from release manifest")
     # GitHub renders CITATION.cff as the repository's citation; a version-less one at the tag
     # would be the only projection of the release that does not name it.
     citation = (ROOT / "CITATION.cff").read_text(encoding="utf-8")

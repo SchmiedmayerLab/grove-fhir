@@ -318,9 +318,9 @@ def check_site(
         preview_index = (preview / "index.html").read_text(encoding="utf-8")
         if "Local Development build" in preview_index:
             failures.append(f"{source} still presents the hosted preview as a local build")
-        expected_history = f"{base_url}/{guide['canonicalPath']}/history.html"
+        expected_history = f"{canonical_for_guide(configuration, guide)}/history.html"
         if expected_history not in preview_index:
-            failures.append(f"{source} release header does not link to hosted history")
+            failures.append(f"{source} development banner does not link to published history")
 
         for alias in guide.get("aliases", []):
             alias_root = site / safe_path(alias)
@@ -328,6 +328,11 @@ def check_site(
                 failures.append(f"missing preview alias: {alias or '/'}")
             if not (alias_root / "package-list.json").is_file():
                 failures.append(f"missing package-list at preview alias: {alias or '/'}")
+            if (alias_root / "index.html").is_file():
+                redirect = (alias_root / "index.html").read_text(encoding="utf-8")
+                target = f"{base_url}/{guide['canonicalPath']}/ci-build/index.html"
+                if target not in redirect or "location.search + location.hash" not in redirect:
+                    failures.append(f"preview alias is not a bookmark-preserving redirect: {alias or '/'}")
 
     for retired in configuration.get("retiredPreviewPaths", []):
         if (site / safe_path(retired)).exists():
@@ -335,6 +340,22 @@ def check_site(
 
     for guide in configuration["guides"]:
         preview = site / safe_path(guide["canonicalPath"]) / "ci-build"
+        if any(p.is_file() and p.suffix in {".zip", ".pack"} for p in preview.rglob("*")):
+            failures.append(f"bulk downloads remain in the Pages site: {guide['source']}")
+        downloads = preview / "bulk-downloads.json"
+        if downloads.is_file():
+            if not (preview / "bulk-downloads.html").is_file():
+                failures.append(f"missing bulk-download instructions: {guide['source']}")
+            for row in json.loads(downloads.read_text(encoding="utf-8"))["files"]:
+                if (preview / safe_path(row["path"])).exists():
+                    failures.append(f"offloaded download still exists in Pages: {row['path']}")
+        for page in preview.rglob("*.html"):
+            text = page.read_text(encoding="utf-8")
+            if re.search(r"<body\b", text, re.I) and (
+                'data-publication-status="ci-build"' not in text
+                or "Development build — not a published release." not in text
+            ):
+                failures.append(f"missing development banner: {page.relative_to(site)}")
         for path in preview.rglob("*"):
             if not path.is_file() or path.suffix not in PUBLIC_TEXT_SUFFIXES:
                 continue

@@ -38,6 +38,23 @@ CHECK_SPECIFICATION.loader.exec_module(CHECK_PUBLICATION)
 
 
 class PreparePagesTests(unittest.TestCase):
+    def test_language_redirect_keeps_bookmark_query_and_fragment(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            script = root / "lang-redirects.js"
+            original = 'window.location.replace(langs[i]+"/"+pageName);'
+            script.write_text(original)
+            PREPARE_PAGES.prepare_guide(root, root, "mobile", {},
+                "https://github.com/example/repo/tree/abc", "https://example.org/mobile",
+                "https://example.org/mobile/history.html", 1_700_000_000)
+            self.assertEqual(script.read_text(),
+                'window.location.replace(langs[i]+"/"+pageName+window.location.search+window.location.hash);')
+            # A second staging pass must not append the fragment twice.
+            PREPARE_PAGES.prepare_guide(root, root, "mobile", {},
+                "https://github.com/example/repo/tree/abc", "https://example.org/mobile",
+                "https://example.org/mobile/history.html", 1_700_000_000)
+            self.assertEqual(script.read_text().count("window.location.hash"), 1)
+
     def test_configuration_rejects_alias_and_canonical_path_collisions(self) -> None:
         configuration = {
             "schemaVersion": 0,
@@ -506,6 +523,12 @@ class PreparePagesTests(unittest.TestCase):
             self.assertTrue((site / ".nojekyll").is_file())
             self.assertTrue((site / "catalog/example-catalog.json").is_file())
             self.assertTrue((site / "index.html").is_file())
+            self.assertIn('location.search + location.hash', (site / "index.html").read_text())
+            self.assertIn('https://pages.example/repository/fhir/mobile/ci-build/index.html',
+                          (site / "index.html").read_text())
+            self.assertFalse((site / "assets/images/001.svg").exists())
+            self.assertFalse((site / "StructureDefinition-example-profile.json").exists())
+            self.assertEqual((site / "package.tgz").read_bytes(), (mobile / "ci-build/package.tgz").read_bytes())
             self.assertTrue((site / "healthkit/index.html").is_file())
             self.assertTrue((mobile / "ci-build/index.html").is_file())
             self.assertTrue((mobile / "ci-build/package.tgz.sha256").is_file())

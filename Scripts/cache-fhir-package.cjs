@@ -177,6 +177,29 @@ async function cachePublisherTemplate(archive, cacheRoot, packageId, version) {
     if (!fs.statSync(path.join(temporary, "config.json")).isFile()) {
       throw new Error("Publisher template has no root config.json");
     }
+    // Correct malformed markup in the released language-aware template before
+    // rendering. These replacements become no-ops when upstream fixes the files.
+    const searchForm = path.join(temporary, "content", "searchform.html");
+    if (packageId === "fhir2.base.template" && fs.existsSync(searchForm)) {
+      const content = fs.readFileSync(searchForm, "utf8");
+      fs.writeFileSync(searchForm, content.replace(/<img\b[^>]*>/g, (tag) =>
+        /\/\s*>$/.test(tag) ? tag : `${tag.slice(0, -1)} />`
+      ).replace(/(<!-- ============BreadCrumb=============== -->)\s*<\/div>\s*<!-- \/container -->\s*<\/div>\s*<!-- \/segment-breadcrumb -->/, "$1")
+        .replace(/(<!-- \/segment-content -->)\s*<\/div>\s*<\/div>\s*<!-- \/inner-wrapper -->\s*<\/div>\s*<!-- \/row -->\s*<\/div>\s*<!-- \/container -->\s*<\/div>\s*<!-- \/segment-content -->/, "$1"));
+    }
+    if (packageId === "fhir2.base.template") {
+      const repairs = [
+        ["layout-profile-history.html", /^\s*<h2 id="root">\{\{modelType\}\}: \{\{site\.data\.resources\[resource_\]\.titlelang\['\{\{\[lang\]\}\}'\]\}\}\r?\n/gm, "\n"],
+        ["layout-profile.html", /(<p>\{\{site\.data\.stringsBase[^\n]+\['Derived'\][^\n]+<\/p>)\s*<\/p>/g, "$1"],
+        ["layout-ext.html", /(<p>\{\{site\.data\.stringsBase[^\n]+\['Derived'\][^\n]+<\/p>)\s*<\/p>/g, "$1"],
+      ];
+      for (const [name, pattern, replacement] of repairs) {
+        const file = path.join(temporary, "layouts", name);
+        if (fs.existsSync(file)) {
+          fs.writeFileSync(file, fs.readFileSync(file, "utf8").replace(pattern, replacement));
+        }
+      }
+    }
     fs.rmSync(expected, { recursive: true, force: true });
     fs.renameSync(temporary, expected);
     return expected;

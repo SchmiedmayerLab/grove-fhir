@@ -114,7 +114,7 @@
         "messageId": "Validation_VAL_Profile_Minimum",
         "code": "structure",
         "expression": "Questionnaire.extension[2].extension[3]",
-        "detailsContains": "Extension.extension:human.value[x]: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/targetConstraint|5.3.0)"
+        "detailsContains": "Extension.extension:human.value[x]: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/targetConstraint|5.4.0)"
       }
     ],
     "questionnaire-initial-forms-combined": [
@@ -176,7 +176,7 @@
         "messageId": "Profile_EXT_Not_Here",
         "code": "structure",
         "expression": "Questionnaire.item[0]",
-        "detailsContains": "The extension http://hl7.org/fhir/StructureDefinition/questionnaire-unitOption v4.0.1 is not allowed to be used at this point (based on context invariant 'type='quantity'')"
+        "detailsContains": "The extension http://hl7.org/fhir/StructureDefinition/questionnaire-unitOption v5.4.0 is not allowed to be used at this point (based on context invariant 'ofType(ElementDefinition).type.exists(code='Quantity') or where(%resource.is(Questionnaire)).exists(type.first()='quantity')')"
       },
       {
         "messageId": "https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire#qg-unit-1",
@@ -202,6 +202,12 @@
       }
     ],
     "questionnaire-occurrence-placement": [
+      {
+        "messageId": "Profile_EXT_Not_Here",
+        "code": "structure",
+        "expression": "Questionnaire.item[0]",
+        "detailsContains": "The extension http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs v5.4.0 is not allowed to be used at this point (based on context invariant 'required=true and repeats=true')"
+      },
       {
         "messageId": "https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire#qg-occurrence-1",
         "code": "invariant",
