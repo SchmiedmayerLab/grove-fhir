@@ -2148,9 +2148,9 @@
           "https://example.org/research/participant-id",
           "participant-001",
           "questionnaire-response",
-          "lL45s2YarFEQ2kOriLYHUu1f3neOwZhtUx_k6-IyMbc"
+          "RQqyR4hhSYTy6N4dlPjDD8dV-R5YQP5N93O1Fdqaprw"
         ],
-        "value": "v0:test-key:1:fE9dYA07a6yqebbrEAnnljfpr727wsDXFFvPxDPLuPI"
+        "value": "v0:test-key:1:CemDNy4FUo9sEMidkI2B4TLqm3qerDgTYMMolw8KHyE"
       },
       {
         "id": "questionnaire-extraction-bundle-application-snapshot",
@@ -2169,9 +2169,9 @@
         "components": [
           "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1",
           "v0:test-key:1:7_7dmqTFxPH01QGTycmp8nIPty7WwphH2X0ZaV-p3wk",
-          "81FfElnoVKcSLq7w3HBsGRXNiMN9wwZjNofjWo_VLnc"
+          "iAAuj955hyHehjNHaBNPLxPGPVg-_bjssxhJyRnqYOk"
         ],
-        "value": "v0:test-key:1:RIiSEVoX9fCoWyNMZvL3QAPxmelpxzePPzRbQOfPtb0"
+        "value": "v0:test-key:1:sYrQOyA7hB-1ufVVjgf6orRKv4dXbCSjQCVLSNVXn0M"
       }
     ],
     "invalidIdentities": [
