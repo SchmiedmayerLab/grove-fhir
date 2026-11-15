@@ -16,9 +16,9 @@ The [terminology provenance manifest](https://github.com/SchmiedmayerLab/grove-f
 |---|---|
 | Package | `org.grovealliance.fhir.healthkit` (resolve the exact version from `catalog/release-manifest.json`) |
 | SDK baseline | iPhoneOS 27.2, Xcode 27.2 build 27B52 |
-| Extraction date | 2026-08-21 |
+| Extraction date | 2026-11-14 |
 | Selection method | Every declared identifier constant resolved inside an iOS simulator on the SDK baseline, plus the two sample types Apple publishes without a constant |
-| SDK inputs | `HKTypeIdentifiers.h`, `HKObjectType.h`, `HKMetadata.h`, `HKMetadataEnums.h`, and `HKWorkout.h`, with SHA-256 hashes in the manifest |
+| SDK inputs | `HKTypeIdentifiers.h`, `HKObjectType.h`, `HKMetadata.h`, `HKMetadataEnums.h`, `HKWorkout.h`, and `HKCategoryValues.h`, with SHA-256 hashes in the manifest |
 | Case sensitivity | Case-sensitive |
 | Content scope | Complete for the 221 source-type identifiers and the adapter terminology represented by this manifest |
 
@@ -26,6 +26,7 @@ The retained identifiers and type names originate from Apple.
 The SDK baseline, official platform documentation, and catalog together bind the source-type inventory; the hashed metadata headers bind the five retained metadata keys and the three motion-context cases.
 The headers declare the constant `HKMetadataKeyInsulinDeliveryReason` but not the key it holds; inside an iOS simulator on the SDK baseline it holds `HKInsulinDeliveryReason`, which is the retained code.
 The hashed `HKWorkout.h` binds the eight `HKWorkoutEventType` cases that [HealthKit Workout Event Type](CodeSystem-healthkit-workout-event-type.html) retains and the raw values that the [workout mapping](mapping.html#workouts) gives them.
+The hashed `HKCategoryValues.h` binds the `HKCategoryValueVaginalBleeding` and `HKCategoryValueMenopausalState` cases that the bleeding-after-menopause and menopausal-state result codes retain.
 The mapping narrative also refers descriptively to source API fields such as `HKObject.uuid`, `HKSource.bundleIdentifier`, `HKSourceRevision`, `HKDevice`, and `HKMetadataKeyWasUserEntered`.
 All names are used only to identify source API concepts for interoperability; the package does not copy SDK implementation, private API, or documentation prose.
 Grove-authored material is licensed under MIT; the retained Apple names remain attributed in the provenance manifest.
