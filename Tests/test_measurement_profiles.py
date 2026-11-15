@@ -416,6 +416,29 @@ class MeasurementProfileProjectionTests(unittest.TestCase):
             self.assertEqual(code, 2, output)
             self.assertIn("no approved terminology review entry", output)
 
+    def test_pending_owner_ratification_is_provisional(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = self.make_fixture(Path(directory))
+            reviews_path = root / "mobile/input/data/terminology-reviews.json"
+            reviews = json.loads(reviews_path.read_text(encoding="utf-8"))
+            reviews["entries"]["heart-rate"]["status"] = "pending-owner-ratification"
+            reviews_path.write_text(json.dumps(reviews, indent=2), encoding="utf-8")
+            code, output = self.run_renderer(root)
+            self.assertEqual(code, 0, output)
+            self.assertIn("pending owner ratification: ", output)
+            self.assertIn("heart-rate", output.split("pending owner ratification: ", 1)[1])
+
+    def test_unknown_review_status_refuses_generation(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = self.make_fixture(Path(directory))
+            reviews_path = root / "mobile/input/data/terminology-reviews.json"
+            reviews = json.loads(reviews_path.read_text(encoding="utf-8"))
+            reviews["entries"]["heart-rate"]["status"] = "rejected"
+            reviews_path.write_text(json.dumps(reviews, indent=2), encoding="utf-8")
+            code, output = self.run_renderer(root, "--check")
+            self.assertEqual(code, 2, output)
+            self.assertIn("heart-rate: no approved terminology review entry", output)
+
     def test_emitted_profile_may_not_stay_hand_written(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = self.make_fixture(Path(directory))
