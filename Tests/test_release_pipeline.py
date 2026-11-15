@@ -351,8 +351,12 @@ class ReleaseWorkflowTests(unittest.TestCase):
             self.workflow.index("gh release create"),
         )
         self.assertNotIn('"repos/$GITHUB_REPOSITORY/git/refs"', self.workflow)
-        self.assertIn(".verification.verified", self.workflow)
-        self.assertIn("Recheck the signed tag before publication", self.workflow)
+        self.assertIn("Recheck the release tag before publication", self.workflow)
+        self.assertEqual(self.workflow.count('test "$commit" = "$SOURCE_REVISION"'), 2)
+        # Who may tag and publish is governed by the tag ruleset and the environment reviewers,
+        # never by an identity written into the workflow.
+        self.assertNotIn("tagger", self.workflow)
+        self.assertNotIn("@users.noreply.github.com", self.workflow)
         self.assertLess(self.workflow.index("stage-publication.py"), self.workflow.index("gh release create"))
         self.assertIn("--verify-tag", self.workflow)
         self.assertLess(
