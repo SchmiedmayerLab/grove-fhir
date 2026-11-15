@@ -79,7 +79,7 @@
           }
         ]
       },
-      "system": "https://study.example.org/fhir/NamingSystem/healthkit-store/1f5c58aa-6ec6-4e79-a682-829a9debd3f5/healthkit-sync-identifier/com.example.heartstudy",
+      "system": "https://study.example.org/fhir/NamingSystem/healthkit-store/1f5c58aa-6ec6-4e79-a682-829a9debd3f5/healthkit-native-record/healthkit-sync-identifier/com.example.heartstudy",
       "value": "series-2026-08-19T10:00"
     }
   ],
