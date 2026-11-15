@@ -74,14 +74,14 @@ A deployment that has opted in to the readable `HKObject.uuid` Identifier additi
 | Element | Content |
 |---|---|
 | `Identifier.type` | exactly one coding, `healthkit-sync-id` in [HealthKit Identifier Types](CodeSystem-healthkit-identifier-type.html) |
-| `Identifier.system` | the deployment-owned absolute URI of the participant's HealthKit store scope, then the path segment `healthkit-sync-identifier`, then one final segment naming the writing application |
+| `Identifier.system` | the `Identifier.system` of the `HKObject.uuid` Identifier on the same output, then the path segment `healthkit-sync-identifier`, then one final segment naming the writing application |
 | `Identifier.value` | the exact sync identifier text |
 
 The final system segment is `HKSource.bundleIdentifier` exactly as HealthKit states it; do not trim, case-fold, normalize, encode, truncate, or hash it.
 An Apple bundle identifier consists only of ASCII letters, digits, hyphens, and periods.
-A source whose bundle identifier is empty or contains any other character has no conforming namespace: withhold the readable sync identifier for its samples, never escape or substitute the value, and still carry the `writer-record` Identifier and version.
-For a participant store scope `https://study.example.org/fhir/NamingSystem/healthkit-store/7d0f3c52` and the writer `com.example.scale`, the system is `https://study.example.org/fhir/NamingSystem/healthkit-store/7d0f3c52/healthkit-sync-identifier/com.example.scale`.
-Sync identifier text is unique only for one writing application in one HealthKit store, so equal text under another writer or another participant has another system, and the system never equals that of the `HKObject.uuid` Identifier.
+A source whose bundle identifier is empty or contains any other character has no conforming namespace: withhold the readable sync identifier for its samples, never escape or substitute the value, report `HKMetadataKeySyncIdentifier` as a withheld key under `mobile-omission.unmodeled-metadata`, and still carry the `writer-record` Identifier and version.
+A deployment configures one native identifier system, and the sync identifier's system is derived from it. For the `HKObject.uuid` system `https://study.example.org/fhir/NamingSystem/healthkit-store/7d0f3c52/healthkit-native-record` and the writer `com.example.scale`, the system is `https://study.example.org/fhir/NamingSystem/healthkit-store/7d0f3c52/healthkit-native-record/healthkit-sync-identifier/com.example.scale`.
+Sync identifier text is unique only for one writing application in one HealthKit store, so equal text under another writer or another participant has another system.
 
 The readable sync identifier appears only beside the `HKObject.uuid` Identifier, the `writer-record` Identifier, and the Grove Writer Record Version of the same output: an Observation, or the sole DocumentReference of a heartbeat series, a workout route, or a clinical record.
 Workout segments, the electrocardiogram's average-heart-rate Observation, companion artifacts, Devices, and Provenance never carry it.
