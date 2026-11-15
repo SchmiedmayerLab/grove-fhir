@@ -77,8 +77,10 @@ A deployment that has opted in to the readable `HKObject.uuid` Identifier additi
 | `Identifier.system` | the deployment-owned absolute URI of the participant's HealthKit store scope, then the path segment `healthkit-sync-identifier`, then one final segment naming the writing application |
 | `Identifier.value` | the exact sync identifier text |
 
-The final system segment is the unpadded RFC 4648 base64url encoding of the exact UTF-8 bytes of `HKSource.bundleIdentifier`; do not trim, case-fold, normalize, truncate, or hash the bundle identifier.
-For a participant store scope `https://study.example.org/fhir/NamingSystem/healthkit-store/7d0f3c52` and the writer `com.example.scale`, the system is `https://study.example.org/fhir/NamingSystem/healthkit-store/7d0f3c52/healthkit-sync-identifier/Y29tLmV4YW1wbGUuc2NhbGU`.
+The final system segment is `HKSource.bundleIdentifier` exactly as HealthKit states it; do not trim, case-fold, normalize, encode, truncate, or hash it.
+An Apple bundle identifier consists only of ASCII letters, digits, hyphens, and periods.
+A source whose bundle identifier is empty or contains any other character has no conforming namespace: withhold the readable sync identifier for its samples, never escape or substitute the value, and still carry the `writer-record` Identifier and version.
+For a participant store scope `https://study.example.org/fhir/NamingSystem/healthkit-store/7d0f3c52` and the writer `com.example.scale`, the system is `https://study.example.org/fhir/NamingSystem/healthkit-store/7d0f3c52/healthkit-sync-identifier/com.example.scale`.
 Sync identifier text is unique only for one writing application in one HealthKit store, so equal text under another writer or another participant has another system, and the system never equals that of the `HKObject.uuid` Identifier.
 
 The readable sync identifier appears only beside the `HKObject.uuid` Identifier, the `writer-record` Identifier, and the Grove Writer Record Version of the same output: an Observation, or the sole DocumentReference of a heartbeat series, a workout route, or a clinical record.

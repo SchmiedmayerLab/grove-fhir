@@ -5,7 +5,6 @@
 # SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTRIBUTORS.md)
 # SPDX-License-Identifier: MIT
 
-import base64
 import copy
 import json
 from pathlib import Path
@@ -76,6 +75,10 @@ class HealthKitSyncIdentifierTests(unittest.TestCase):
         self.assertIn(f"* #{self.contract['typeCode']} ", types)
         self.assertIn("no separate setting exists", self.contract["disclosureRule"])
         self.assertIn("writing application's bundle identifier", self.contract["disclosureRule"])
+        self.assertEqual(self.contract["writerSegment"], "bundle-identifier")
+        self.assertIn("withholds the readable Identifier", self.contract["nonConformingWriterRule"])
+        profiles = (ROOT / "healthkit/input/fsh/profiles.fsh").read_text(encoding="utf-8")
+        self.assertIn("/healthkit-sync-identifier/" + self.contract["writerSegmentPattern"][1:], profiles)
         mapping = (ROOT / "healthkit/input/pagecontent/mapping.md").read_text(encoding="utf-8")
         for sentence in (
             "The same opt-in setting also discloses the [readable sync identifier](#readable-sync-identifier) "
@@ -83,6 +86,7 @@ class HealthKitSyncIdentifierTests(unittest.TestCase):
             "Enabling the setting therefore discloses the bundle identifier of the application that wrote "
             "such a sample",
             "With the setting off, the sync identifier text is not exported in any element",
+            "withhold the readable sync identifier for its samples",
             "`HKMetadataKeySyncIdentifier` and `HKMetadataKeySyncVersion` are never metadata entries",
         ):
             with self.subTest(sentence=sentence):
@@ -96,7 +100,8 @@ class HealthKitSyncIdentifierTests(unittest.TestCase):
                 validate_writer_record_revision(resource, name)
                 readable = sync_identifier(resource)
                 prefix, _, segment = readable["system"].rpartition(f"/{self.contract['systemPathSegment']}/")
-                writer = base64.urlsafe_b64decode(segment + "=" * (-len(segment) % 4)).decode("utf-8")
+                writer = segment
+                self.assertRegex(writer, self.contract["writerSegmentPattern"])
                 self.assertTrue(native_identifier(resource)["system"].startswith(prefix + "/"))
                 self.assertEqual(
                     role(resource, "writer-record")["value"],
@@ -110,7 +115,7 @@ class HealthKitSyncIdentifierTests(unittest.TestCase):
     def test_equal_text_under_another_writer_or_store_is_another_identifier(self):
         resource = load("observation")
         readable = sync_identifier(resource)
-        other_writer = base64.urlsafe_b64encode(b"com.example.other").rstrip(b"=").decode("ascii")
+        other_writer = "com.example.other"
         prefix = readable["system"].rsplit("/", 1)[0]
         self.assertNotEqual(readable["system"], f"{prefix}/{other_writer}")
         relocated = copy.deepcopy(resource)
@@ -144,18 +149,19 @@ class HealthKitSyncIdentifierTests(unittest.TestCase):
             validate(keyed_only)
             validate_writer_record_revision(keyed_only, name)
 
-    def test_system_names_the_store_scope_and_one_canonical_writer_segment(self):
+    def test_system_names_the_store_scope_and_one_plain_bundle_identifier(self):
         resource = load("observation")
         prefix = sync_identifier(resource)["system"].rsplit("/", 1)[0]
         for system in (
             "https://study.example.org/fhir/NamingSystem/healthkit-sync-identifier",
             prefix + "/",
+            prefix + "/com.example_scale",
+            prefix + "/com.example.scale/extra",
+            prefix + "/com.example%2Escale",
             prefix + "/Y29tLmV4YW1wbGUuc2NhbGU=",
-            prefix + "/Y29tLmV4YW1wbGUuc2NhbGV",
-            prefix + "/com.example.scale",
-            prefix + "/_w",
-            "/healthkit-sync-identifier/Y29tLmV4YW1wbGUuc2NhbGU",
-            prefix.replace("healthkit-sync-identifier", "sync") + "/Y29tLmV4YW1wbGUuc2NhbGU",
+            prefix + "/com.exämple.scale",
+            "/healthkit-sync-identifier/com.example.scale",
+            prefix.replace("healthkit-sync-identifier", "sync") + "/com.example.scale",
         ):
             mutated = copy.deepcopy(resource)
             sync_identifier(mutated)["system"] = system

@@ -32,8 +32,8 @@ Expression: "identifier.where(type.coding.where(system = 'https://grovealliance.
 Severity: #error
 
 Invariant: healthkit-sync-identifier-system-1
-Description: "The namespace of a readable sync identifier ends with the healthkit-sync-identifier path segment and the unpadded base64url encoding of the writing application's bundle identifier."
-Expression: "$this.matches('^.+/healthkit-sync-identifier/[A-Za-z0-9_-]+$')"
+Description: "The namespace of a readable sync identifier ends with the healthkit-sync-identifier path segment and the writing application's bundle identifier, which consists of letters, digits, hyphens, and periods."
+Expression: "$this.matches('^.+/healthkit-sync-identifier/[A-Za-z0-9.-]+$')"
 Severity: #error
 
 RuleSet: HealthKitSyncIdentifierSlice
