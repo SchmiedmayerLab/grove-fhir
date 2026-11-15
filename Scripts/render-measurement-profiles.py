@@ -14,9 +14,12 @@ FSH file; one with emit false must match its hand-written block in
 mobile/input/fsh/profiles.fsh byte for byte, so the projection is proven
 against the shipped profiles before any cutover.
 
-Generation is review-gated: a measurement without an approved entry in
-mobile/input/data/terminology-reviews.json whose digest matches the current
-terminology projection is refused with exit code 2.
+Generation is review-gated: a measurement without an approved or
+pending-owner-ratification entry in mobile/input/data/terminology-reviews.json
+whose digest matches the current terminology projection is refused with exit
+code 2. A pending-owner-ratification entry is provisional: it records prepared
+and verified terminology that the repository owner has not yet approved, and
+the generator lists it on every run.
 
 Usage:
   Scripts/render-measurement-profiles.py           # write + verify parity
@@ -181,6 +184,8 @@ HEADER = """// GENERATED FILE. Edit catalog/measurement-catalog.json and run
 """
 
 DIGEST_SCOPE = "grove-terminology-projection-3"
+APPROVED_STATUS = "approved"
+PROVISIONAL_STATUS = "pending-owner-ratification"
 PROJECTION_KEYS = (
     "code",
     "components",
@@ -1300,14 +1305,18 @@ def main() -> int:
     measurements = catalog["measurements"]
     by_id = {measurement["id"]: measurement for measurement in measurements}
 
+    provisional: list[str] = []
     for measurement in measurements:
         entry = reviews.get(measurement["id"])
-        if entry is None or entry.get("status") != "approved":
+        status = None if entry is None else entry.get("status")
+        if status not in (APPROVED_STATUS, PROVISIONAL_STATUS):
             print(
                 f"{measurement['id']}: no approved terminology review entry; "
                 "generation refused"
             )
             return 2
+        if status == PROVISIONAL_STATUS:
+            provisional.append(measurement["id"])
         digest = projection_digest(measurement)
         if entry.get("digest") != digest:
             print(
@@ -1408,6 +1417,11 @@ def main() -> int:
             else:
                 target.unlink()
 
+    if provisional:
+        print(
+            "provisional terminology, pending owner ratification: "
+            + ", ".join(sorted(provisional))
+        )
     emit_count = sum(
         1 for measurement in measurements if measurement.get("generation", {}).get("emit")
     )
