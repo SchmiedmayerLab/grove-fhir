@@ -61,11 +61,11 @@ def validate_healthkit_metadata(resource: dict[str, Any], label: str) -> None:
         if key in contract["excludedKeys"]:
             fail(f"must not carry {key}, which the writer-record identity represents")
         try:
-            ordered_key = key.encode("utf-16-be", errors="strict")
+            ordered_key = key.encode("utf-8", errors="strict")
         except UnicodeError:
             fail("key must be valid Unicode")
         if previous is not None and ordered_key <= previous:
-            fail("keys must follow UTF-16 ordering")
+            fail("keys must follow the unsigned byte order of their UTF-8 encoding")
         previous = ordered_key
         seen.add(key)
         if len(entry) != 2 or entry.get("url") != "value":
