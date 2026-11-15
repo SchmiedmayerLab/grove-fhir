@@ -115,6 +115,27 @@ class ReceiverLifecycleTests(unittest.TestCase):
     def test_protocol_rules_and_base_bundles_still_match_the_pinned_source(self):
         protocol = json.loads((ROOT / "catalog/exchange-protocol.json").read_text())
         del protocol["testVectors"]
+        metadata = protocol["governedSourceIdentifier"]["validation"]["forbiddenIdentityUseEnforcement"]["untypedMetadata"]
+        self.assertEqual(metadata, {
+            "r4Paths": [],
+            "matchRule": "no-untyped-carrier-admitted",
+            "enforcement": "typed-healthkit-metadata-extension-and-no-automatic-native-uuid-copy",
+        })
+        # The typed metadata carrier, the writer-assigned readable Identifier and the writer
+        # version on a DocumentReference are the only rule differences. Keep the original digest
+        # guarding every other protocol rule and all source Bundles, rather than rebaselining them.
+        metadata["matchRule"] = "no-generic-carrier-admitted"
+        metadata["enforcement"] = "closed-adapter-metadata-allowlists-and-no-grove-generic-extension"
+        governed = protocol["governedSourceIdentifier"]
+        self.assertIn("discloses both or neither", governed.pop("writerAssignedIdentifier"))
+        self.assertEqual(
+            governed["validation"]["designatedNode"].pop("writerAssignedIdentifier")["maxPerPrimaryOutput"], 1
+        )
+        selection = protocol["lifecycle"]["active"]["versionSelection"]
+        self.assertIn("only on Observation and DocumentReference.", selection["writerEvidence"])
+        selection["writerEvidence"] = selection["writerEvidence"].replace(
+            "only on Observation and DocumentReference.", "only on Observation."
+        )
         rules = json.dumps(protocol, sort_keys=True, separators=(",", ":")).encode()
         self.assertEqual(hashlib.sha256(rules).hexdigest(), "32a3b75da42a5a2db31d7939e34fbed34467aa51b66c6d2b123b29089ac4be6d")
         for name, digest in {

@@ -26,6 +26,26 @@ Description: "HealthKit requires a sync version exactly when a sync identifier i
 Expression: "extension('https://grovealliance.org/fhir/mobile/StructureDefinition/grove-writer-record-version').exists() = identifier.where(type.coding.where(system = 'https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role' and code = 'writer-record').exists()).exists()"
 Severity: #error
 
+Invariant: healthkit-sync-identifier-1
+Description: "A readable sync identifier appears only on an output that also carries the writer-record identifier derived from the same sync identifier."
+Expression: "identifier.where(type.coding.where(system = 'https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-identifier-type' and code = 'healthkit-sync-id').exists()).exists() implies identifier.where(type.coding.where(system = 'https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role' and code = 'writer-record').exists()).exists()"
+Severity: #error
+
+Invariant: healthkit-sync-identifier-system-1
+Description: "The namespace of a readable sync identifier ends with the healthkit-sync-identifier path segment and the writing application's bundle identifier, which consists of letters, digits, hyphens, and periods."
+Expression: "$this.matches('^.+/healthkit-sync-identifier/[A-Za-z0-9.-]+$')"
+Severity: #error
+
+RuleSet: HealthKitSyncIdentifierSlice
+* obeys healthkit-sync-identifier-1
+* identifier contains syncIdentifier 0..1 MS
+* identifier[syncIdentifier] ^short = "Readable sync identifier, disclosed together with the readable HealthKit object identifier"
+* identifier[syncIdentifier].type 1..1 MS
+* identifier[syncIdentifier].type = $healthKitIdentifierType#healthkit-sync-id
+* identifier[syncIdentifier].system 1..1 MS
+* identifier[syncIdentifier].system obeys healthkit-sync-identifier-system-1
+* identifier[syncIdentifier].value 1..1 MS
+
 Invariant: healthkit-clinical-fhir-content-type-1
 Description: "The clinical attachment declares DSTU2 or R4 with the standard FHIR media-type parameter."
 Expression: "content.attachment.contentType.all($this = 'application/fhir+json; fhirVersion=1.0' or $this = 'application/fhir+json; fhirVersion=4.0')"
@@ -93,7 +113,9 @@ Parent: GroveMobileObservation
 Id: healthkit-observation
 Title: "HealthKit Observation"
 Description: "The source identity and allowlisted HealthKit context for an Observation that also conforms to an appropriate clinical or research profile."
+* extension contains HealthKitSourceMetadata named sourceMetadata 0..1 MS
 * obeys healthkit-motion-context-1 and healthkit-sleep-stage-1 and healthkit-writer-record-1
+* insert HealthKitSyncIdentifierSlice
 * issued 0..0
 * extension contains HealthKitSourceType named healthKitSourceType 1..1 MS
 * component ^slicing.discriminator.type = #pattern
@@ -201,6 +223,11 @@ Parent: GroveSensorRecordingDocument
 Id: healthkit-recording-document
 Title: "HealthKit Recording Document"
 Description: "A byte-preserved HealthKit source document or series whose native representation is not a scalar result. Beat-to-beat intervals and workout routes use registered column schemas; provider-issued clinical resources use a stricter derived profile that declares their source FHIR release in the attachment media type."
+* extension contains HealthKitSourceMetadata named sourceMetadata 0..1 MS
+* obeys healthkit-writer-record-1
+* extension contains GroveWriterRecordVersion named writerRecordVersion 0..1 MS
+* extension[writerRecordVersion] ^short = "Writer's version of the logical record this document came from"
+* insert HealthKitSyncIdentifierSlice
 // The SDK source class is lineage, not a document-type coding.
 * extension contains HealthKitSourceType named healthKitSourceType 1..1 MS
 * type 1..1 MS
@@ -236,6 +263,7 @@ Parent: VisionPrescription
 Id: healthkit-vision-prescription
 Title: "HealthKit Vision Prescription"
 Description: "A glasses or contacts prescription a person entered in Health, carried as the structured lens specification HealthKit publishes rather than as an opaque document. HealthKit exposes no separate record-creation instant, so `created` and `dateWritten` both carry HKVisionPrescription.dateIssued. It exposes no prescriber either, and R4 makes that reference mandatory, so the reference is stated absent rather than invented."
+* extension contains HealthKitSourceMetadata named sourceMetadata 0..1 MS
 * insert HealthKitOutputIdentitySlices
 // No classifying element exists on this resource, and a tag may be ignored when a resource is
 // interpreted, so the source type is stated as an extension.
@@ -272,6 +300,7 @@ Parent: MedicationAdministration
 Id: healthkit-medication-dose-event
 Title: "HealthKit Medication Dose Event"
 Description: "One dose a person logged against a medication they track in Health. The R4 administration status is coarser than the source, and this contract states no mapping from it, so the exact HKMedicationDoseEvent.LogStatus is retained beside it together with the schedule the dose was logged against; a consumer reads the log status, not the R4 status, to learn what the person did. HealthKit publishes no medication record, so the medication is named by the same HKHealthConceptIdentifier the tracked-medication statement carries and by nothing else."
+* extension contains HealthKitSourceMetadata named sourceMetadata 0..1 MS
 * insert HealthKitOutputIdentitySlices
 // No classifying element exists on this resource, and a tag may be ignored when a resource is
 // interpreted, so the source type is stated as an extension.
@@ -315,6 +344,7 @@ Parent: MedicationStatement
 Id: healthkit-user-annotated-medication
 Title: "HealthKit User Annotated Medication"
 Description: "A non-archived medication a person tracks in Health, with the annotations they added while adding it. HealthKit publishes no sample identity for a tracked medication, so the HKHealthConceptIdentifier of the underlying concept is the identity a dose event refers to. The status is active; archived entries are not admitted because archival alone does not establish that medication use was completed or stopped."
+* extension contains HealthKitSourceMetadata named sourceMetadata 0..1 MS
 * insert HealthKitOutputIdentitySlices
 * identifier 3..* MS
 * identifier contains healthConcept 1..1 MS

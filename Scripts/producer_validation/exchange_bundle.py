@@ -47,6 +47,7 @@ from .identity import (
     expected_entry_full_url, identifier_role, selected_entry_identifier,
     typed_resource_identifiers, validate_governed_source_identifiers,
 )
+from .healthkit_metadata import validate_healthkit_metadata
 from .io import CanonicalJSONError, canonical_bytes, lossless_tree, read_json
 from .profiles import (
     validate_active_adapter_only_output_profile_claim,
@@ -151,6 +152,7 @@ def validate_resource_profile_claims(
     validate_health_connect_provider_claim(resource, label)
     validate_healthkit_resource_claims(resource, label)
     validate_healthkit_source_type(resource, label)
+    validate_healthkit_metadata(resource, label)
     validate_healthkit_ecg_contract(resource, label)
     validate_health_connect_source_type(resource, label)
     validate_provider_claim(resource, label)

@@ -289,7 +289,7 @@
     "governedSourceIdentifier": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["purpose", "placement", "system", "value", "type", "prohibitions", "closedProfiles", "validation"],
+      "required": ["purpose", "placement", "system", "value", "type", "prohibitions", "closedProfiles", "writerAssignedIdentifier", "validation"],
       "properties": {
         "purpose": { "$ref": "#/$defs/nonempty" },
         "placement": { "$ref": "#/$defs/nonempty" },
@@ -298,6 +298,7 @@
         "type": { "$ref": "#/$defs/nonempty" },
         "prohibitions": { "$ref": "#/$defs/nonempty" },
         "closedProfiles": { "$ref": "#/$defs/nonempty" },
+        "writerAssignedIdentifier": { "$ref": "#/$defs/nonempty" },
         "validation": {
           "type": "object",
           "additionalProperties": false,
@@ -306,13 +307,37 @@
             "optionality": { "const": "optional" },
             "designatedNode": {
               "type": "object", "additionalProperties": false,
-              "required": ["lifecycle", "r4Element", "designationMode", "maxPerPrimaryOutput", "maxPrimaryOutputsPerRecord", "ambiguityRule", "outputModeRules", "adapterSelectors"],
+              "required": ["lifecycle", "r4Element", "designationMode", "maxPerPrimaryOutput", "maxPrimaryOutputsPerRecord", "writerAssignedIdentifier", "ambiguityRule", "outputModeRules", "adapterSelectors"],
               "properties": {
                 "lifecycle": { "const": "active" },
                 "r4Element": { "const": "Resource.identifier" },
                 "designationMode": { "const": "catalog-output-selector" },
                 "maxPerPrimaryOutput": { "const": 1 },
                 "maxPrimaryOutputsPerRecord": { "const": 1 },
+                "writerAssignedIdentifier": {
+                  "type": "object", "additionalProperties": false,
+                  "required": ["maxPerPrimaryOutput", "requiredBeside", "disclosurePolicy", "adapterTypes"],
+                  "properties": {
+                    "maxPerPrimaryOutput": { "const": 1 },
+                    "requiredBeside": { "const": ["native-record-identifier", "writer-record", "writer-record-version"] },
+                    "disclosurePolicy": { "const": "native-record-identifier" },
+                    "adapterTypes": {
+                      "type": "object", "additionalProperties": false,
+                      "required": ["healthkit"],
+                      "properties": {
+                        "healthkit": {
+                          "type": "object", "additionalProperties": false,
+                          "required": ["contract", "typeSystem", "typeCode"],
+                          "properties": {
+                            "contract": { "const": "catalog/healthkit-adapter.json#/identity/writerRecord/revision/readableIdentifier" },
+                            "typeSystem": { "const": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-identifier-type" },
+                            "typeCode": { "const": "healthkit-sync-id" }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
                 "ambiguityRule": { "const": "omit-native-identifier" },
                 "outputModeRules": {
                   "const": {
@@ -367,7 +392,7 @@
                 "bundleEntryKey": {"r4Paths": ["Bundle.entry.fullUrl", "Bundle.entry.extension.valueIdentifier.value"], "matchRule": "identifier-pair-structural-validation; no-fullUrl-value-heuristic", "enforcement": "exchange-entry-key-validator-and-producer-obligation"},
                 "retractionAddress": {"r4Paths": ["Provenance.target.reference", "Provenance.target.identifier.value"], "matchRule": "identifier-pair-structural-validation; no-reference-value-heuristic", "enforcement": "retraction-profile-validator-and-producer-obligation"},
                 "observationComponent": {"r4Paths": ["Observation.component.value[x]"], "matchRule": "no-value-only-heuristic", "enforcement": "closed-adapter-component-semantics-and-producer-obligation"},
-                "untypedMetadata": {"r4Paths": [], "matchRule": "no-generic-carrier-admitted", "enforcement": "closed-adapter-metadata-allowlists-and-no-grove-generic-extension"},
+                "untypedMetadata": {"r4Paths": [], "matchRule": "no-untyped-carrier-admitted", "enforcement": "typed-healthkit-metadata-extension-and-no-automatic-native-uuid-copy"},
                 "attachmentPresentation": {"r4Paths": ["DocumentReference.content.attachment.title", "DocumentReference.content.attachment.url"], "matchRule": "no-substring-heuristic", "enforcement": "deployment-governance-and-producer-obligation"}
               }
             },

@@ -2723,6 +2723,13 @@
           "classification": "definition"
         },
         {
+          "fshName": "HealthKitSourceMetadata",
+          "fshType": "Extension",
+          "resourceType": "StructureDefinition",
+          "id": "metadata",
+          "classification": "definition"
+        },
+        {
           "fshName": "HealthKitSourceRevision",
           "fshType": "Extension",
           "resourceType": "StructureDefinition",
@@ -2902,6 +2909,13 @@
           "fshType": "Instance",
           "resourceType": "MedicationAdministration",
           "id": "HealthKitMedicationDoseEventExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "HealthKitMetadataObservationExample",
+          "fshType": "Instance",
+          "resourceType": "Observation",
+          "id": "HealthKitMetadataObservationExample",
           "classification": "example"
         },
         {

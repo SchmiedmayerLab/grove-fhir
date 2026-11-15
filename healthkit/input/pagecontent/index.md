@@ -34,7 +34,7 @@ The [walkthrough](walkthrough.html) follows one heart-rate sample from `HKQuanti
 ### Adapter responsibilities
 
 - [HealthKit Observation](StructureDefinition-healthkit-observation.html) requires typed deployment-scoped v0 source-record and source-output HMAC identifiers.
-  A deployment may also disclose `HKObject.uuid` on the one-to-one primary output under an explicit, governed absolute HealthKit-store namespace when native round-trip is required; it never replaces Grove identity.
+  A deployment may also disclose `HKObject.uuid` on the one-to-one primary output under an explicit, governed absolute HealthKit-store namespace when native round-trip is required; it never replaces Grove identity. The same setting discloses a sample's sync identifier, and with it the writing application's bundle identifier.
 - [HealthKit Application Device](StructureDefinition-healthkit-application-device.html) carries exactly one typed [Apple Bundle Identifier](NamingSystem-apple-bundle-id.html) in addition to the shared opaque content snapshot.
   The bundle namespace identifies an application product; it does not identify an installation, host, account, or person.
 - A physical source Device is emitted whenever a HealthKit object states an `HKDevice`, with every device fact HealthKit exposes and the shared content `device-snapshot` identity; it also carries a `recording-device` identity only with a governed stable per-unit token.

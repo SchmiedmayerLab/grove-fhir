@@ -28,9 +28,9 @@ A Grove Mobile implementation begins with a valid clinical Observation and adds 
    Allow only the resource types listed for active outputs, supporting entries, and lifecycle entries. Connect every supporting entry to at least one record. Require every output, Device, QuestionnaireResponse, and Provenance to declare exactly the profile set defined in `profile-claims.json`.
 10. Validate the Bundle against FHIR R4, the Grove package, and the applicable graph and lifecycle rules.
 
-Source-platform fields do not pass through a generic metadata container.
-A platform adapter owns its identifier namespaces, source-type terminology, and a small allowlist of typed metadata that lacks a standard FHIR representation.
-Add a field to that allowlist only after checking for a base FHIR element, published extension, and established terminology.
+Source-platform fields use the adapter's declared typed representations. The HealthKit adapter defines a [typed source-metadata extension](https://grovealliance.org/fhir/healthkit/mapping.html#supported-healthkit-metadata) that preserves supported source values, including custom keys, alongside clinical mappings.
+A platform adapter owns its identifier namespaces, source-type terminology, metadata representations, and validation rules.
+Map clinical facts to base FHIR elements, published extensions, and established terminology where applicable; metadata preservation does not replace those mappings.
 
 ### Add the package
 
@@ -145,7 +145,7 @@ Implementations name their public types after these terms, in each platform's ca
 - **Study enrollment**: one ResearchStudy, its exact-revision PlanDefinition and one ResearchSubject for a known association.
 - **Application device, host device, recording device**: the three immutable, content-addressed Device snapshots that claim the Grove application, host and recording Device profiles.
 - **Retraction record and retraction target**: the lifecycle assertion, keyed by its `record-retraction` Identifier and carried in a retraction Bundle, that one whole source record is no longer exposed; its targets name what the producer emitted, or the source record as a whole, and are informative.
-- **Governed source identifier**: the optional clear native identifier a deployment discloses on the designated primary output or a retraction target.
+- **Governed source identifier**: the optional clear native identifier a deployment discloses on the designated primary output or a retraction target. An adapter may admit one further readable identifier beside it for the record id the writing application assigned; the same disclosure setting governs both.
 - **Writer**: the application or device that wrote the source record at its platform; it is the source agent of the conversion Provenance and, when the platform assigns them, the origin of the writer-record identity and version.
 - **Producer diagnostic**: a registered rule code that a producer or the conformance kit reports, at error severity for a refused record or invalid graph and at warning severity for what an accepted record lost.
 

@@ -1,0 +1,110 @@
+{
+  "resourceType": "DocumentReference",
+  "id": "readable-sync-identifier",
+  "meta": {
+    "profile": [
+      "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-recording-document"
+    ]
+  },
+  "extension": [
+    {
+      "url": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-source-type",
+      "valueCode": "HKDataTypeIdentifierHeartbeatSeries"
+    },
+    {
+      "url": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-writer-record-version",
+      "valueString": "1"
+    }
+  ],
+  "identifier": [
+    {
+      "type": {
+        "coding": [
+          {
+            "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+            "code": "source-record"
+          }
+        ]
+      },
+      "system": "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1",
+      "value": "v0:test-key:1:iLwPuf71UnHiF1dLITgany8JsaJs7LD3oSynY2gnowA"
+    },
+    {
+      "type": {
+        "coding": [
+          {
+            "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+            "code": "source-output"
+          }
+        ]
+      },
+      "system": "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1",
+      "value": "v0:test-key:1:as2R2gyk_aozWfm1-QpA2rUISYtKE_eTnRCHIVTeJLM"
+    },
+    {
+      "type": {
+        "coding": [
+          {
+            "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+            "code": "source-artifact"
+          }
+        ]
+      },
+      "system": "https://study.example.org/fhir/NamingSystem/grove-source-artifact-v0/test-key/1",
+      "value": "v0:test-key:1:tmmTrOs_O1Qfzj2oLTSmF5FP0rJGRGVUoBSNy4JHj9A"
+    },
+    {
+      "type": {
+        "coding": [
+          {
+            "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+            "code": "writer-record"
+          }
+        ]
+      },
+      "system": "https://study.example.org/fhir/NamingSystem/grove-writer-record-v0/test-key/1",
+      "value": "v0:test-key:1:7tQQdJFxmb3lzdoPDPuofR4xX6Lb9wnykT0ovoW7ldI"
+    },
+    {
+      "system": "https://study.example.org/fhir/NamingSystem/healthkit-store/1f5c58aa-6ec6-4e79-a682-829a9debd3f5/healthkit-native-record",
+      "value": "f1563e62-82ae-55be-a073-0e80d97531df"
+    },
+    {
+      "type": {
+        "coding": [
+          {
+            "system": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-identifier-type",
+            "code": "healthkit-sync-id"
+          }
+        ]
+      },
+      "system": "https://study.example.org/fhir/NamingSystem/healthkit-store/1f5c58aa-6ec6-4e79-a682-829a9debd3f5/healthkit-native-record/healthkit-sync-identifier/com.example.heartstudy",
+      "value": "series-2026-08-19T10:00"
+    }
+  ],
+  "status": "current",
+  "type": {
+    "text": "Heartbeat series recording"
+  },
+  "subject": {
+    "reference": "Patient/HealthKitPatientExample"
+  },
+  "date": "2026-08-19T10:05:00Z",
+  "content": [
+    {
+      "attachment": {
+        "contentType": "text/csv",
+        "data": "dGltZXN0YW1wLHByZWNlZGVkQnlHYXAKMTc4NzEzMzYwMC4wLDAKMTc4NzEzMzYwMC44NCwwCjE3ODcxMzM2MDEuNzEsMQo=",
+        "title": "Heartbeat series beat intervals",
+        "size": 71,
+        "hash": "hRPUfJrDsoGXIPige7C51EtpY9E="
+      },
+      "format": {
+        "system": "https://grovealliance.org/fhir/sensor/CodeSystem/grove-recording-format",
+        "code": "beat-interval-series",
+        "display": "Beat Interval Series"
+      }
+    }
+  ]
+}
