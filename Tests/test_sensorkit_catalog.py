@@ -143,6 +143,16 @@ class SensorKitCatalogTests(unittest.TestCase):
             )
         )
 
+    def test_sleep_session_retains_native_identifier_separately(self) -> None:
+        sleep = next(row for row in self.catalog["entries"] if row["sourceToken"] == "SRSensor.sleepSessions")
+        mapping = sleep["structured"]["nativeR4Mappings"][0]
+        self.assertEqual(mapping["sourceField"], "SRSleepSession.identifier")
+        self.assertEqual(mapping["r4Element"], "Observation.identifier")
+        self.assertEqual(mapping["valueKind"], "identifier")
+        self.assertTrue(mapping["exactSourceValue"])
+        self.assertIn("source repository", mapping["identifierSystemRule"])
+        self.assertIn("never replaces", mapping["rule"])
+
     def test_every_row_has_one_definitive_status_and_admitted_contract(self) -> None:
         statuses = set(self.catalog["statusVocabulary"])
         for entry in self.catalog["entries"]:

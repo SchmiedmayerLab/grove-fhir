@@ -852,7 +852,23 @@
       "structured": {
         "status": "platform-exclusive",
         "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-sleep-session-observation",
-        "outputDiscriminator": "sleep-session"
+        "outputDiscriminator": "sleep-session",
+        "representedFields": [
+          "SRSleepSession.startDate",
+          "SRSleepSession.duration",
+          "SRSleepSession.identifier"
+        ],
+        "nativeR4Mappings": [
+          {
+            "sourceField": "SRSleepSession.identifier",
+            "r4Element": "Observation.identifier",
+            "cardinality": "1..1 when supplied by the source",
+            "valueKind": "identifier",
+            "exactSourceValue": true,
+            "identifierSystemRule": "An absolute deployment-governed namespace scoped to the source repository. Keep the exact namespace and value stable on replay; do not claim global device or account uniqueness.",
+            "rule": "Preserve the exact native string without normalization as an additional Identifier with no Grove identifier-role coding. It never replaces the acquisition-derived source-record or source-output keys and is not evidence of cross-install deduplication."
+          }
+        ]
       }
     },
     {
