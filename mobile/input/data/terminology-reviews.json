@@ -1,6 +1,6 @@
 {
   "schemaVersion": 0,
-  "description": "The per-measurement terminology review record; profile generation refuses any measurement without an entry whose digest matches the measurement's current terminology projection and whose status is 'approved' or 'pending-owner-ratification'. A 'pending-owner-ratification' entry is provisional: its terminology was prepared and verified, but the repository owner has not approved it, so it names no approver; ratification replaces the status with 'approved' and adds the approval without changing the digest.",
+  "description": "The per-measurement terminology review record; profile generation refuses any measurement without an approved entry whose digest matches the measurement's current terminology projection.",
   "digestScope": "grove-terminology-projection-3",
   "digestAlgorithm": "sha256 over the UTF-8 canonical JSON (sorted keys, separators ',' ':') of the terminology projection: the measurement's code, components, description, effective, hasMember, obeys, quantity, standardProfile, valueKind, valueSet, resultCodes, resultCodeSystem, allowedValues, and additionalResultBindings fields, omitting null or absent fields.",
   "groundTruthFiles": [
@@ -1889,7 +1889,11 @@
       "notes": "NLM Clinical Tables returns zero LOINC results for 'heart rate recovery', so no faithful LOINC concept exists for this protocolized delta and a Grove code is defined. Only HealthKit evidences it, making it platform-exclusive. /min parses under pinned UCUM 2.2 with dimension {s:-1}; effective dateTime is the one-minute-post-exercise instant the sample is anchored to."
     },
     "heart-rate-variability-rmssd": {
-      "status": "pending-owner-ratification",
+      "status": "approved",
+      "approvedBy": [
+        "P. Schmiedmayer (repository owner)"
+      ],
+      "approvedOn": "2026-11-15",
       "provenance": "reviewed",
       "digest": "sha256:b36ea76e96b9559fbbfa653b789f7512c338f03f6de1744cfecb4ce6d6dcfdc1",
       "preparedBy": [
@@ -1910,7 +1914,7 @@
       ],
       "reviewedOn": "2026-11-14",
       "recordedOn": "2026-11-14",
-      "notes": "NLM Clinical Tables returns zero LOINC concepts for RMSSD (only the SDNN codes 80404-7/76643-6 exist), so a Grove code is required to avoid mislabeling RMSSD as SDNN — the exact confusion the providers catalog flags ('RMSSD is distinct from SDNN'). Two sources evidence it: Health Connect HeartRateVariabilityRmssdRecord (an InstantaneousRecord) and the Google Health API rootMeanSquareOfSuccessiveDifferencesMilliseconds element. ms parses under pinned UCUM 2.2 with dimension {s:1}; effective dateTime matches both sources' instantaneous shape. HealthKit joins as a third source: HKQuantityTypeIdentifierHeartRateVariabilityRMSSD is declared in the iPhoneOS 27.2 SDK in ms as a discrete arithmetic quantity. A HealthKit sample states a start and an end, so the effective time admits a Period beside the instant; the code, unit, and dimension are unchanged. The previous digest was recorded as verified by the terminology sweep adversarial verifier; that verification does not cover this digest. Awaiting the repository owner's ratification; no approval of this digest is recorded."
+      "notes": "NLM Clinical Tables returns zero LOINC concepts for RMSSD (only the SDNN codes 80404-7/76643-6 exist), so a Grove code is required to avoid mislabeling RMSSD as SDNN — the exact confusion the providers catalog flags ('RMSSD is distinct from SDNN'). Two sources evidence it: Health Connect HeartRateVariabilityRmssdRecord (an InstantaneousRecord) and the Google Health API rootMeanSquareOfSuccessiveDifferencesMilliseconds element. ms parses under pinned UCUM 2.2 with dimension {s:1}; effective dateTime matches both sources' instantaneous shape. HealthKit joins as a third source: HKQuantityTypeIdentifierHeartRateVariabilityRMSSD is declared in the iPhoneOS 27.2 SDK in ms as a discrete arithmetic quantity. A HealthKit sample states a start and an end, so the effective time admits a Period beside the instant; the code, unit, and dimension are unchanged. The previous digest was recorded as verified by the terminology sweep adversarial verifier; that verification does not cover this digest. Ratified by the repository owner on 2026-11-15."
     },
     "heart-rate-variability-sdnn": {
       "status": "approved",
@@ -4546,7 +4550,11 @@
       "notes": "LOINC 66555-4 'Skin type [Fitzpatrick Classification Scale]' verified ACTIVE on both servers (LOINC 2.82), Type/Nom. Exact concept; the six-type scale maps one-to-one onto HKFitzpatrickSkinType, notSet excluded."
     },
     "bleeding-after-menopause": {
-      "status": "pending-owner-ratification",
+      "status": "approved",
+      "approvedBy": [
+        "P. Schmiedmayer (repository owner)"
+      ],
+      "approvedOn": "2026-11-15",
       "provenance": "reviewed",
       "digest": "sha256:d54dc8fc5163faf3d410294d33932713d9c8d57a5954c417d781f0b202ec0f5b",
       "preparedBy": [
@@ -4563,10 +4571,14 @@
       ],
       "reviewedOn": "2026-11-14",
       "recordedOn": "2026-11-14",
-      "notes": "HealthKit-owned code and result code system; no external terminology concept is bound, so no LOINC or UCUM verification applies. HKCategoryTypeIdentifierBleedingAfterMenopause is declared with HKCategoryValueVaginalBleeding in the iPhoneOS 27.2 SDK, and the five result codes match its five cases (unspecified, light, medium, heavy, none) one-to-one. The measurement mirrors bleeding-after-pregnancy and bleeding-during-pregnancy and stays distinct from menstrual flow and intermenstrual bleeding. Awaiting the repository owner's ratification; no approval of this digest is recorded."
+      "notes": "HealthKit-owned code and result code system; no external terminology concept is bound, so no LOINC or UCUM verification applies. HKCategoryTypeIdentifierBleedingAfterMenopause is declared with HKCategoryValueVaginalBleeding in the iPhoneOS 27.2 SDK, and the five result codes match its five cases (unspecified, light, medium, heavy, none) one-to-one. The measurement mirrors bleeding-after-pregnancy and bleeding-during-pregnancy and stays distinct from menstrual flow and intermenstrual bleeding. Ratified by the repository owner on 2026-11-15."
     },
     "menopausal-state": {
-      "status": "pending-owner-ratification",
+      "status": "approved",
+      "approvedBy": [
+        "P. Schmiedmayer (repository owner)"
+      ],
+      "approvedOn": "2026-11-15",
       "provenance": "reviewed",
       "digest": "sha256:6d1c95a73fd8c7b6e2da5dcca7c88d8b1f115dd4d88f6365c520c71e73f4b860",
       "preparedBy": [
@@ -4583,7 +4595,7 @@
       ],
       "reviewedOn": "2026-11-14",
       "recordedOn": "2026-11-14",
-      "notes": "HealthKit-owned code and result code system; no external terminology concept is bound, so no LOINC or UCUM verification applies. HKCategoryTypeIdentifierMenopausalState is declared with HKCategoryValueMenopausalState in the iPhoneOS 27.2 SDK, and the three result codes match its three cases (menopause, perimenopause, none) one-to-one. The effective time is the source instant; no interval of the state is asserted. Awaiting the repository owner's ratification; no approval of this digest is recorded."
+      "notes": "HealthKit-owned code and result code system; no external terminology concept is bound, so no LOINC or UCUM verification applies. HKCategoryTypeIdentifierMenopausalState is declared with HKCategoryValueMenopausalState in the iPhoneOS 27.2 SDK, and the three result codes match its three cases (menopause, perimenopause, none) one-to-one. The effective time is the source instant; no interval of the state is asserted. Ratified by the repository owner on 2026-11-15."
     }
   },
   "groundTruthRemints": [
