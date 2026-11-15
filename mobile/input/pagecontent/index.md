@@ -61,7 +61,7 @@ This keeps the shared contract independent of any mobile operating system or ven
 
 The **Differential Table** on a profile page shows the rules added by this guide.
 The **Snapshot Table** includes all inherited FHIR R4 rules.
-Examples provide XML, JSON, and Turtle representations; the JSON representation is generally the most direct reference for application development.
+Examples provide XML and JSON representations; the JSON representation is generally the most direct reference for application development.
 
 Start with the [heart-rate JSON](Observation-GroveMobileHeartRateExample.json), then compare it with the [Mobile envelope](StructureDefinition-grove-mobile-observation.html) and the [FHIR R4 Heart Rate profile](https://hl7.org/fhir/R4/heartrate.html).
 

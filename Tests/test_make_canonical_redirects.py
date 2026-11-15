@@ -36,7 +36,7 @@ class CanonicalRedirectTests(unittest.TestCase):
         url: str,
         target_prefix: str = "ci-build",
         copy_human: bool = True,
-        machine_formats: tuple[str, ...] = ("json", "xml", "ttl"),
+        machine_formats: tuple[str, ...] = ("json", "xml"),
     ) -> None:
         stem = f"{resource_type}-{resource_id}"
         resource = {
@@ -50,11 +50,6 @@ class CanonicalRedirectTests(unittest.TestCase):
             )
         if "xml" in machine_formats:
             (output / f"{stem}.xml").write_text(f"<{resource_type}/>", encoding="utf-8")
-        if "ttl" in machine_formats:
-            (output / f"{stem}.ttl").write_text(
-                f"@prefix fhir: <http://hl7.org/fhir/> . # {resource_id}\n",
-                encoding="utf-8",
-            )
         (output / f"{stem}.html").write_text(f"<h1>{resource_id}</h1>", encoding="utf-8")
         if copy_human:
             destination = site / target_prefix / f"{stem}.html"
@@ -106,7 +101,7 @@ class CanonicalRedirectTests(unittest.TestCase):
                     f"{self.canonical}/StructureDefinition/standard",
                 ],
             )
-            for suffix in ("json", "xml", "ttl"):
+            for suffix in ("json", "xml"):
                 self.assertTrue((site / f"StructureDefinition/standard.{suffix}").is_file())
                 self.assertTrue(
                     (site / f"StructureDefinition/parent/child.{suffix}").is_file()
@@ -317,9 +312,9 @@ class CanonicalRedirectTests(unittest.TestCase):
                 output,
                 site,
                 resource_type="ValueSet",
-                resource_id="missing-ttl",
-                url=f"{self.canonical}/ValueSet/missing-ttl",
-                machine_formats=("json", "xml"),
+                resource_id="missing-xml",
+                url=f"{self.canonical}/ValueSet/missing-xml",
+                machine_formats=("json",),
             )
             with self.assertRaises(ROUTES.MissingRepresentationError):
                 ROUTES.generate_routes(output, site, self.canonical, "ci-build")
