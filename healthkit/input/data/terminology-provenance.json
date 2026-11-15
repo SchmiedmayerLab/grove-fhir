@@ -1,20 +1,20 @@
 {
   "schemaVersion": 0,
   "package": "org.grovealliance.fhir.healthkit#0.8.0",
-  "extractionDate": "2026-08-21",
+  "extractionDate": "2026-11-14",
   "source": {
     "framework": "Apple HealthKit",
-    "sdk": "iPhoneOS 26.5",
+    "sdk": "iPhoneOS 27.2",
     "xcode": {
-      "version": "26.6",
-      "build": "17F113"
+      "version": "27.2",
+      "build": "27B52"
     },
     "sourceCommit": null,
     "sourceCommitReason": "The terminology was selected from an installed Apple SDK, not a Git source tree.",
     "files": [
       {
         "path": "HealthKit.framework/Headers/HKTypeIdentifiers.h",
-        "sha256": "0169c6f491e28597bf1c4326e78f5f8ea883de26294bbe12f0d04cb2e13b16f7"
+        "sha256": "90cd9674f3cedfa7b7911edd5f290db9f47dab90507d5c56ff321de20f68d3e4"
       },
       {
         "path": "HealthKit.framework/Headers/HKObjectType.h",
@@ -26,11 +26,15 @@
       },
       {
         "path": "HealthKit.framework/Headers/HKMetadataEnums.h",
-        "sha256": "c50c9903ce97f8fdbda5226e4d88a3792695423bbeea579e36fcd3cd614fabda"
+        "sha256": "ccffab5671ea890588a6935c8f9d5f9fa779e83349ea0c4ee0cc64bdaa93e2f8"
       },
       {
         "path": "HealthKit.framework/Headers/HKWorkout.h",
-        "sha256": "e70d78cfa0ebe8a3909ddd64e1410fb0d2df1073b8012513938fdf388d0178d5"
+        "sha256": "cd582a1dfb0ab6114c55cf44cf003c49978cb6f153d3a8536968c8f13ba11104"
+      },
+      {
+        "path": "HealthKit.framework/Headers/HKCategoryValues.h",
+        "sha256": "c26f7e0255f5c08b7c5f4c06fe44ac0abd3ac2f3707ff5fb46b16351df860907"
       }
     ],
     "documentation": [
@@ -48,14 +52,14 @@
       "version": "0.8.0"
     },
     "generated": true,
-    "description": "The catalog freezes the 218 source-type identifiers the stated SDK baseline hands back at runtime. Every identifier constant the headers declare is resolved inside an iOS simulator on that baseline, together with the two sample types Apple publishes without a constant. A code is the identifier a producer reads from a sample, not the name of the constant holding it. Two metadata keys plus three motion-context values used by admitted mappings are selected separately. The separately declared sleep-duration aggregate is not a platform source type and is excluded from the source-type CodeSystem."
+    "description": "The catalog freezes the 221 source-type identifiers the stated SDK baseline hands back at runtime. Every identifier constant the headers declare is resolved inside an iOS simulator on that baseline, together with the two sample types Apple publishes without a constant. A code is the identifier a producer reads from a sample, not the name of the constant holding it. Two metadata keys plus three motion-context values used by admitted mappings are selected separately. The separately declared sleep-duration aggregate is not a platform source type and is excluded from the source-type CodeSystem."
   },
   "terminology": {
     "caseSensitive": true,
     "artifacts": {
       "healthkit-source-type": {
         "content": "complete",
-        "sourceTypeCount": 218,
+        "sourceTypeCount": 221,
         "rationale": "Complete describes the closed set of runtime source-type identifiers frozen in catalog/healthkit-adapter.json and verified against healthkit/input/data/healthkit-inventory.json; it does not copy Apple documentation prose or private SDK concepts.",
         "derivedAggregateExclusion": "The sleep-duration session aggregate is a Grove-defined transformation contract, not a HealthKit source identifier, and is excluded from this CodeSystem."
       },
@@ -65,7 +69,7 @@
       },
       "healthkit-heart-rate-motion-context": {
         "content": "complete",
-        "rationale": "The code system contains an adapter code for every HKHeartRateMotionContext case present in the iPhoneOS 26.5 SDK baseline.",
+        "rationale": "The code system contains an adapter code for every HKHeartRateMotionContext case present in the iPhoneOS 27.2 SDK baseline.",
         "rawNSNumberMapping": {
           "0": {
             "sourceCase": "notSet",
@@ -87,7 +91,7 @@
   "thirdParty": {
     "owner": "Apple Inc.",
     "attribution": "HealthKit API identifiers and type names originate from Apple and are retained here to identify the platform concepts used by the interoperability mapping.",
-    "retainedTerminology": "The package retains the 218 public source-type identifiers in the closed catalog, the five allowlisted metadata keys (HKMetadataKeyHeartRateMotionContext, HKMetadataKeyAppleECGAlgorithmVersion, HKMetadataKeySyncIdentifier, HKMetadataKeySyncVersion, and HKInsulinDeliveryReason), and the republished Apple case vocabularies for heart-rate motion context, sleep analysis, ECG classification, ECG symptoms status, symptom severity, ECG algorithm version, medication dose status and schedule, medication general form, and workout event type.",
+    "retainedTerminology": "The package retains the 221 public source-type identifiers in the closed catalog, the five allowlisted metadata keys (HKMetadataKeyHeartRateMotionContext, HKMetadataKeyAppleECGAlgorithmVersion, HKMetadataKeySyncIdentifier, HKMetadataKeySyncVersion, and HKInsulinDeliveryReason), and the republished Apple case vocabularies for heart-rate motion context, sleep analysis, ECG classification, ECG symptoms status, symptom severity, ECG algorithm version, medication dose status and schedule, medication general form, and workout event type.",
     "descriptiveApiReferences": "The mapping narrative and identifier definitions also refer to HKObject.uuid, HKSource.bundleIdentifier, HKSourceRevision, HKDevice, HKMetadataKeyWasUserEntered, and source fields required by admitted mappings. These references describe source fields and dispatch rules; they are not copied documentation prose.",
     "redistributionBasis": "These API identifiers and case names are reproduced only as interoperability identifiers needed to state the source mapping. The package does not reproduce Apple documentation prose, SDK implementation, or a general HealthKit vocabulary.",
     "excludedMaterial": "No HealthKit SDK implementation, private API, or documentation prose is copied into the package.",

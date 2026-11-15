@@ -7,7 +7,7 @@ SPDX-License-Identifier: MIT
 -->
 
 The HealthKit-specific terminology in the Grove FHIR contracts is case-sensitive.
-It contains a complete 218-concept platform source-type inventory, five retained metadata keys, and the adapter motion-context codes required by the heart-rate mapping.
+It contains a complete 221-concept platform source-type inventory, five retained metadata keys, and the adapter motion-context codes required by the heart-rate mapping.
 The separately declared sleep duration aggregate is not a platform source type and is excluded from the source-type CodeSystem.
 
 The [terminology provenance manifest](https://github.com/SchmiedmayerLab/grove-fhir/blob/main/healthkit/input/data/terminology-provenance.json) records the following reproducibility information:
@@ -15,12 +15,12 @@ The [terminology provenance manifest](https://github.com/SchmiedmayerLab/grove-f
 | Field | Value |
 |---|---|
 | Package | `org.grovealliance.fhir.healthkit` (resolve the exact version from `catalog/release-manifest.json`) |
-| SDK baseline | iPhoneOS 26.5, Xcode 26.6 build 17F113 |
+| SDK baseline | iPhoneOS 27.2, Xcode 27.2 build 27B52 |
 | Extraction date | 2026-08-21 |
 | Selection method | Every declared identifier constant resolved inside an iOS simulator on the SDK baseline, plus the two sample types Apple publishes without a constant |
 | SDK inputs | `HKTypeIdentifiers.h`, `HKObjectType.h`, `HKMetadata.h`, `HKMetadataEnums.h`, and `HKWorkout.h`, with SHA-256 hashes in the manifest |
 | Case sensitivity | Case-sensitive |
-| Content scope | Complete for the 218 source-type identifiers and the adapter terminology represented by this manifest |
+| Content scope | Complete for the 221 source-type identifiers and the adapter terminology represented by this manifest |
 
 The retained identifiers and type names originate from Apple.
 The SDK baseline, official platform documentation, and catalog together bind the source-type inventory; the hashed metadata headers bind the five retained metadata keys and the three motion-context cases.
