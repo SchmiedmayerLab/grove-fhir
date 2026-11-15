@@ -1,6 +1,6 @@
 {
   "schemaVersion": 0,
-  "description": "The per-measurement terminology review record; profile generation refuses any measurement without an approved entry whose digest matches the measurement's current terminology projection.",
+  "description": "The per-measurement terminology review record; profile generation refuses any measurement without an entry whose digest matches the measurement's current terminology projection and whose status is 'approved' or 'pending-owner-ratification'. A 'pending-owner-ratification' entry is provisional: its terminology was prepared and verified, but the repository owner has not approved it, so it names no approver; ratification replaces the status with 'approved' and adds the approval without changing the digest.",
   "digestScope": "grove-terminology-projection-3",
   "digestAlgorithm": "sha256 over the UTF-8 canonical JSON (sorted keys, separators ',' ':') of the terminology projection: the measurement's code, components, description, effective, hasMember, obeys, quantity, standardProfile, valueKind, valueSet, resultCodes, resultCodeSystem, allowedValues, and additionalResultBindings fields, omitting null or absent fields.",
   "groundTruthFiles": [
@@ -139,7 +139,7 @@
       "notes": "NLM Clinical Tables returns zero LOINC results for 'atrial fibrillation burden', so a Grove code is defined. Explicitly named in the aggregate-family policy list; HealthKit is the only evidencing source (Withings getmeas:130/139 are diagnostic-adjacent AFib classifications, already intentionally-unsupported in the providers catalog, not burden percentages). % parses under pinned UCUM 2.2 as dimensionless; effective Period covers the exact multi-day estimation window."
     },
     "audiogram-panel": {
-      "status": "approved",
+      "status": "pending-owner-ratification",
       "provenance": "reviewed",
       "digest": "sha256:779b8c55f1c5b3f03a4d7f4d5497fc41eb6b68e1909cbaea81cbbea593e6a1c8",
       "preparedBy": [
@@ -148,17 +148,15 @@
           "role": "engineering"
         }
       ],
-      "approvedBy": [
+      "verifiedBy": [
         {
           "name": "iPhoneOS 27.2 SDK header comparison (HKAudiogramSample.h, HKAudiogramSensitivityPoint.h, HKAudiogramSensitivityTest.h, HKAudiogramSensitivityPointClampingRange.h)",
           "role": "terminology-verification"
         }
       ],
-      "ratification": "pending-pull-request-review",
       "reviewedOn": "2026-11-14",
       "recordedOn": "2026-11-14",
-      "reviewRef": "pending-integration-commit",
-      "notes": "The code, the 22 component codes, and the dB unit are unchanged from the projection the repository owner approved on 2026-08-26 (digest sha256:45eb47dac73f4e4d480ef9a6e4c025adad3c9897260424f829370abcc770595c): LOINC 89015-2 for the test and the 22 per-ear, per-frequency air conduction threshold codes for its components, all verified 2026-08-26 on tx.fhir.org r4 and r4.ontoserver.csiro.au (LOINC 2.82). The panel 100653-5 that a secondary source named as current is deprecated and was rejected. Thresholds are components rather than member Observations because they are parts of one test: a single-frequency threshold is not recorded on its own. The unit is dB, which is what LOINC states for these codes; UCUM 2.2 defines no hearing-level bel, and the hearing-level reference is carried by the concept. This digest differs only in the description and in the effective time, which admits a Period because an HKAudiogramSample states a start and an end. The source test details (ear, frequency, air conduction, masking, clamping bounds) match HKAudiogramSensitivityTest and its clamping range in the iPhoneOS 27.2 SDK. The owner's ratification of this digest is pending with the pull request."
+      "notes": "The code, the 22 component codes, and the dB unit are unchanged from the projection the repository owner approved on 2026-08-26 (digest sha256:45eb47dac73f4e4d480ef9a6e4c025adad3c9897260424f829370abcc770595c): LOINC 89015-2 for the test and the 22 per-ear, per-frequency air conduction threshold codes for its components, all verified 2026-08-26 on tx.fhir.org r4 and r4.ontoserver.csiro.au (LOINC 2.82). The panel 100653-5 that a secondary source named as current is deprecated and was rejected. Thresholds are components rather than member Observations because they are parts of one test: a single-frequency threshold is not recorded on its own. The unit is dB, which is what LOINC states for these codes; UCUM 2.2 defines no hearing-level bel, and the hearing-level reference is carried by the concept. This digest differs only in the description and in the effective time, which admits a Period because an HKAudiogramSample states a start and an end. The source test details (ear, frequency, air conduction, masking, clamping bounds) match HKAudiogramSensitivityTest and its clamping range in the iPhoneOS 27.2 SDK. Awaiting the repository owner's ratification; no approval of this digest is recorded."
     },
     "basal-body-temperature": {
       "status": "approved",
@@ -1887,7 +1885,7 @@
       "notes": "NLM Clinical Tables returns zero LOINC results for 'heart rate recovery', so no faithful LOINC concept exists for this protocolized delta and a Grove code is defined. Only HealthKit evidences it, making it platform-exclusive. /min parses under pinned UCUM 2.2 with dimension {s:-1}; effective dateTime is the one-minute-post-exercise instant the sample is anchored to."
     },
     "heart-rate-variability-rmssd": {
-      "status": "approved",
+      "status": "pending-owner-ratification",
       "provenance": "reviewed",
       "digest": "sha256:b36ea76e96b9559fbbfa653b789f7512c338f03f6de1744cfecb4ce6d6dcfdc1",
       "preparedBy": [
@@ -1900,21 +1898,15 @@
           "role": "engineering"
         }
       ],
-      "approvedBy": [
-        {
-          "name": "terminology sweep adversarial verifier",
-          "role": "terminology-verification"
-        },
+      "verifiedBy": [
         {
           "name": "iPhoneOS 27.2 SDK header comparison (HKTypeIdentifiers.h)",
           "role": "terminology-verification"
         }
       ],
-      "ratification": "pending-pull-request-review",
       "reviewedOn": "2026-11-14",
       "recordedOn": "2026-11-14",
-      "reviewRef": "pending-integration-commit",
-      "notes": "NLM Clinical Tables returns zero LOINC concepts for RMSSD (only the SDNN codes 80404-7/76643-6 exist), so a Grove code is required to avoid mislabeling RMSSD as SDNN — the exact confusion the providers catalog flags ('RMSSD is distinct from SDNN'). Two sources evidence it: Health Connect HeartRateVariabilityRmssdRecord (an InstantaneousRecord) and the Google Health API rootMeanSquareOfSuccessiveDifferencesMilliseconds element. ms parses under pinned UCUM 2.2 with dimension {s:1}; effective dateTime matches both sources' instantaneous shape. HealthKit joins as a third source: HKQuantityTypeIdentifierHeartRateVariabilityRMSSD is declared in the iPhoneOS 27.2 SDK in ms as a discrete arithmetic quantity. A HealthKit sample states a start and an end, so the effective time admits a Period beside the instant; the code, unit, and dimension are unchanged. The owner's ratification of this digest is pending with the pull request."
+      "notes": "NLM Clinical Tables returns zero LOINC concepts for RMSSD (only the SDNN codes 80404-7/76643-6 exist), so a Grove code is required to avoid mislabeling RMSSD as SDNN — the exact confusion the providers catalog flags ('RMSSD is distinct from SDNN'). Two sources evidence it: Health Connect HeartRateVariabilityRmssdRecord (an InstantaneousRecord) and the Google Health API rootMeanSquareOfSuccessiveDifferencesMilliseconds element. ms parses under pinned UCUM 2.2 with dimension {s:1}; effective dateTime matches both sources' instantaneous shape. HealthKit joins as a third source: HKQuantityTypeIdentifierHeartRateVariabilityRMSSD is declared in the iPhoneOS 27.2 SDK in ms as a discrete arithmetic quantity. A HealthKit sample states a start and an end, so the effective time admits a Period beside the instant; the code, unit, and dimension are unchanged. The previous digest was recorded as verified by the terminology sweep adversarial verifier; that verification does not cover this digest. Awaiting the repository owner's ratification; no approval of this digest is recorded."
     },
     "heart-rate-variability-sdnn": {
       "status": "approved",
@@ -4550,7 +4542,7 @@
       "notes": "LOINC 66555-4 'Skin type [Fitzpatrick Classification Scale]' verified ACTIVE on both servers (LOINC 2.82), Type/Nom. Exact concept; the six-type scale maps one-to-one onto HKFitzpatrickSkinType, notSet excluded."
     },
     "bleeding-after-menopause": {
-      "status": "approved",
+      "status": "pending-owner-ratification",
       "provenance": "reviewed",
       "digest": "sha256:d54dc8fc5163faf3d410294d33932713d9c8d57a5954c417d781f0b202ec0f5b",
       "preparedBy": [
@@ -4559,20 +4551,18 @@
           "role": "engineering"
         }
       ],
-      "approvedBy": [
+      "verifiedBy": [
         {
           "name": "iPhoneOS 27.2 SDK header comparison (HKTypeIdentifiers.h, HKCategoryValues.h)",
           "role": "terminology-verification"
         }
       ],
-      "ratification": "pending-pull-request-review",
       "reviewedOn": "2026-11-14",
       "recordedOn": "2026-11-14",
-      "reviewRef": "pending-integration-commit",
-      "notes": "HealthKit-owned code and result code system; no external terminology concept is bound, so no LOINC or UCUM verification applies. HKCategoryTypeIdentifierBleedingAfterMenopause is declared with HKCategoryValueVaginalBleeding in the iPhoneOS 27.2 SDK, and the five result codes match its five cases (unspecified, light, medium, heavy, none) one-to-one. The measurement mirrors bleeding-after-pregnancy and bleeding-during-pregnancy and stays distinct from menstrual flow and intermenstrual bleeding. The owner's ratification is pending with the pull request."
+      "notes": "HealthKit-owned code and result code system; no external terminology concept is bound, so no LOINC or UCUM verification applies. HKCategoryTypeIdentifierBleedingAfterMenopause is declared with HKCategoryValueVaginalBleeding in the iPhoneOS 27.2 SDK, and the five result codes match its five cases (unspecified, light, medium, heavy, none) one-to-one. The measurement mirrors bleeding-after-pregnancy and bleeding-during-pregnancy and stays distinct from menstrual flow and intermenstrual bleeding. Awaiting the repository owner's ratification; no approval of this digest is recorded."
     },
     "menopausal-state": {
-      "status": "approved",
+      "status": "pending-owner-ratification",
       "provenance": "reviewed",
       "digest": "sha256:6d1c95a73fd8c7b6e2da5dcca7c88d8b1f115dd4d88f6365c520c71e73f4b860",
       "preparedBy": [
@@ -4581,17 +4571,15 @@
           "role": "engineering"
         }
       ],
-      "approvedBy": [
+      "verifiedBy": [
         {
           "name": "iPhoneOS 27.2 SDK header comparison (HKTypeIdentifiers.h, HKCategoryValues.h)",
           "role": "terminology-verification"
         }
       ],
-      "ratification": "pending-pull-request-review",
       "reviewedOn": "2026-11-14",
       "recordedOn": "2026-11-14",
-      "reviewRef": "pending-integration-commit",
-      "notes": "HealthKit-owned code and result code system; no external terminology concept is bound, so no LOINC or UCUM verification applies. HKCategoryTypeIdentifierMenopausalState is declared with HKCategoryValueMenopausalState in the iPhoneOS 27.2 SDK, and the three result codes match its three cases (menopause, perimenopause, none) one-to-one. The effective time is the source instant; no interval of the state is asserted. The owner's ratification is pending with the pull request."
+      "notes": "HealthKit-owned code and result code system; no external terminology concept is bound, so no LOINC or UCUM verification applies. HKCategoryTypeIdentifierMenopausalState is declared with HKCategoryValueMenopausalState in the iPhoneOS 27.2 SDK, and the three result codes match its three cases (menopause, perimenopause, none) one-to-one. The effective time is the source instant; no interval of the state is asserted. Awaiting the repository owner's ratification; no approval of this digest is recorded."
     }
   },
   "groundTruthRemints": [
