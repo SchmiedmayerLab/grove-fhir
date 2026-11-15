@@ -2401,6 +2401,13 @@
           "classification": "definition"
         },
         {
+          "fshName": "HealthKitSourceDocumentTimeBasisCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "healthkit-source-document-time-basis",
+          "classification": "definition"
+        },
+        {
           "fshName": "HealthKitSourceTypeCS",
           "fshType": "CodeSystem",
           "resourceType": "CodeSystem",
@@ -2748,6 +2755,13 @@
           "fshType": "Extension",
           "resourceType": "StructureDefinition",
           "id": "healthkit-medication-nickname",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthKitSourceDocumentTime",
+          "fshType": "Extension",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-source-document-time",
           "classification": "definition"
         },
         {
@@ -4785,6 +4799,13 @@
           "fshType": "ValueSet",
           "resourceType": "ValueSet",
           "id": "healthkit-sleep-analysis",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthKitSourceDocumentTimeBasisVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "healthkit-source-document-time-basis",
           "classification": "definition"
         },
         {

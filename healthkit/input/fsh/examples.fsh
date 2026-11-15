@@ -578,6 +578,9 @@ Description: "The converter byte-preserved one provider-issued R4 resource in it
 * entity.what.identifier.type = $groveIdentifierRole#source-record "Source record"
 * entity.what.identifier.system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
 * entity.what.identifier.value = "v0:test-key:1:B1KqoWjy3t3ZGjgJgs36zq44-GTIkXFvIr-2gke2dj0"
+* entity.extension[sourceDocumentTime].extension[basis].valueCode = #clinical-record-download
+* entity.extension[sourceDocumentTime].extension[period].valuePeriod.start = "2026-08-18T09:41:07.000-07:00"
+* entity.extension[sourceDocumentTime].extension[period].valuePeriod.end = "2026-08-18T09:41:07.000-07:00"
 
 Instance: HealthKitDSTU2ClinicalRecordDocumentExample
 InstanceOf: HealthKitClinicalRecordDocument

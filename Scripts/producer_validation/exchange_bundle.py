@@ -41,7 +41,8 @@ from .health_connect import (
 )
 from .healthkit import (
     validate_healthkit_ecg_contract, validate_healthkit_ecg_output_graph,
-    validate_healthkit_resource_claims, validate_healthkit_source_type,
+    validate_healthkit_resource_claims, validate_healthkit_source_document_time,
+    validate_healthkit_source_type,
 )
 from .identity import (
     expected_entry_full_url, identifier_role, selected_entry_identifier,
@@ -153,6 +154,7 @@ def validate_resource_profile_claims(
     validate_healthkit_resource_claims(resource, label)
     validate_healthkit_source_type(resource, label)
     validate_healthkit_metadata(resource, label)
+    validate_healthkit_source_document_time(resource, label)
     validate_healthkit_ecg_contract(resource, label)
     validate_health_connect_source_type(resource, label)
     validate_provider_claim(resource, label)

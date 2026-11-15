@@ -217,6 +217,18 @@ Do not parse and reserialize, relabel, upgrade, downgrade, or otherwise rewrite 
 Grove validation checks that an inline attachment is strict UTF-8 JSON containing one `resourceType`-bearing object, but it does not apply R4 rules to a DSTU2 payload or assert conformance to the issuer's FHIR release.
 The R4 envelope asserts the exact source release, payload integrity, identity, and provenance—not that Grove has validated or endorsed the provider's clinical content.
 
+The `startDate` and `endDate` of a clinical record or a CDA document sample are facts about the source document, not about the care it describes.
+Carry them in the [HealthKit Source Document Time](StructureDefinition-healthkit-source-document-time.html) extension on the source entity of the conversion Provenance, with the basis that names their meaning:
+
+| Sample class | Basis | Meaning of the period |
+|---|---|---|
+| `HKClinicalRecord` | `clinical-record-download` | when HealthKit downloaded the provider-issued FHIR resource to the device |
+| `HKCDADocumentSample` | `cda-source-document-period` | the dates the document's creator assigned; no clinical service or download time is inferred |
+
+The period states both endpoints as complete date-times with an offset under the [time rules](#values-units-and-time), and equal endpoints are admitted.
+Never copy these dates into `DocumentReference.context.period`, `DocumentReference.date`, or the embedded source bytes.
+The extension mints no identity; adding or changing it changes the record version.
+
 ### Values, units, and time
 
 | HealthKit sample type | Required profile and code | FHIR value |
