@@ -13,8 +13,8 @@ Description: "The source API meaning of a clinical or CDA document sample's date
 * ^experimental = false
 * ^caseSensitive = true
 * ^content = #complete
-* #clinical-record-download "Download to HealthKit" "The time when HealthKit downloaded the provider-issued FHIR resource to the device."
-* #cda-source-document-period "Source-assigned document dates" "The dates assigned by the creator of a HealthKit CDA document sample; no clinical service or download-time meaning is inferred."
+* #clinical-record-download "Download to HealthKit" "The date and time when the system downloaded the FHIR data of an HKClinicalRecord to the device and added the sample to Health; it is not taken from the FHIR data."
+* #cda-source-document-period "Source-assigned document dates" "The start and end dates that the app creating a HealthKit CDA document sample supplied for the document; no clinical service or download-time meaning is inferred."
 
 ValueSet: HealthKitSourceDocumentTimeBasisVS
 Id: healthkit-source-document-time-basis

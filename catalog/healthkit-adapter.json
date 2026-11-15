@@ -3782,12 +3782,12 @@
       {
         "code": "clinical-record-download",
         "sourceClass": "HKClinicalRecord",
-        "meaning": "HKSample.startDate and HKSample.endDate of a clinical record state when HealthKit downloaded the provider-issued FHIR resource to the device."
+        "meaning": "HKSample.startDate and HKSample.endDate of a clinical record state when the system downloaded the FHIR data to the device and added the sample to Health; they are not taken from the FHIR data."
       },
       {
         "code": "cda-source-document-period",
         "sourceClass": "HKCDADocumentSample",
-        "meaning": "HKSample.startDate and HKSample.endDate of a CDA document sample are the dates its creator assigned; no clinical service or download-time meaning is inferred."
+        "meaning": "HKSample.startDate and HKSample.endDate of a CDA document sample are the start and end dates that the app creating the sample supplied for the document; no clinical service or download-time meaning is inferred."
       }
     ],
     "members": [
