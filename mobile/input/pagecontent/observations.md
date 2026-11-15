@@ -249,7 +249,10 @@ Those are transport and deployment policy outside this guide.
 ### Time, capture mode, and clinical method
 
 Use the effective datatype fixed by the selected profile.
-For every Mobile scalar or aggregate `effectiveDateTime` and `effectivePeriod` endpoint, round the exact instant to the nearest millisecond with ties to even before FHIR serialization.
+For Mobile scalar or aggregate `effectiveDateTime` and `effectivePeriod` endpoints, apply the selected adapter’s time contract.
+HealthKit, Health Connect and adapters without an explicit source-precision override round the exact instant to the nearest millisecond with ties to even before FHIR serialization.
+Connected-provider outputs from Google Health, Oura and Withings preserve the exact source instant and its supplied fractional seconds without millisecond rounding. Insignificant trailing zeros may be normalized without changing the instant.
+The machine-readable rules and adapter overrides are in `catalog/measurement-catalog.json#effectiveCanonicalization`.
 Every `effectiveDateTime` and `effectivePeriod` bound states a time of day and an offset: the numeric UTC offset the source supplies, otherwise UTC, never an invented one; a calendar date alone is invalid.
 This rule does not apply to Sensor or ECG `SampledData`, whose exact Decimal timing contract is defined by the Sensor guide.
 When the source also supplies an IANA time-zone name, attach the standard `timezone` extension; the name must agree with the offset at that instant.

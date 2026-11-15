@@ -94,20 +94,24 @@ def mobile_semantic_projection(
                 f"{required_coding['system']}#{required_coding['code']}"
             )
 
+    contract = read_json(REPOSITORY_ROOT / "catalog/measurement-catalog.json")["effectiveCanonicalization"]
+    exact_source = projection_source(resource) in contract["sourcePrecisionOverrides"]["adapters"]
     expected_effective = vector["effective"]
     if expected_effective["type"] == "dateTime":
         actual_value = resource.get("effectiveDateTime")
         actual_milliseconds = parse_fhir_instant(
             actual_value, f"{label}.effectiveDateTime"
         )
-        if actual_milliseconds != round_mobile_epoch_milliseconds(actual_milliseconds):
+        if not exact_source and actual_milliseconds != round_mobile_epoch_milliseconds(actual_milliseconds):
             raise ProducerValidationError(
                 f"{label} effective instant is not millisecond-canonical"
             )
-        expected_milliseconds = round_mobile_epoch_milliseconds(parse_fhir_instant(
+        expected_milliseconds = parse_fhir_instant(
             expected_effective["value"],
             f"Mobile semantic vector {vector['id']} effectiveDateTime",
-        ))
+        )
+        if not exact_source:
+            expected_milliseconds = round_mobile_epoch_milliseconds(expected_milliseconds)
         if actual_milliseconds != expected_milliseconds:
             raise ProducerValidationError(
                 f"{label} effective instant does not equal Mobile semantic vector {vector['id']}"
@@ -121,14 +125,16 @@ def mobile_semantic_projection(
             actual_milliseconds = parse_fhir_instant(
                 period.get(endpoint), f"{label}.effectivePeriod.{endpoint}"
             )
-            if actual_milliseconds != round_mobile_epoch_milliseconds(actual_milliseconds):
+            if not exact_source and actual_milliseconds != round_mobile_epoch_milliseconds(actual_milliseconds):
                 raise ProducerValidationError(
                     f"{label} effective Period {endpoint} is not millisecond-canonical"
                 )
-            expected_milliseconds = round_mobile_epoch_milliseconds(parse_fhir_instant(
+            expected_milliseconds = parse_fhir_instant(
                 expected_effective[endpoint],
                 f"Mobile semantic vector {vector['id']} effectivePeriod.{endpoint}",
-            ))
+            )
+            if not exact_source:
+                expected_milliseconds = round_mobile_epoch_milliseconds(expected_milliseconds)
             if actual_milliseconds != expected_milliseconds:
                 raise ProducerValidationError(
                     f"{label} effective Period does not equal Mobile semantic vector {vector['id']}"
