@@ -1641,6 +1641,46 @@
         "value": "v0:test-key:1:fHSbttO2vnRwctsGiMr8ecXvWQOj5SdMWrTa--ZPLI4"
       },
       {
+        "id": "healthkit-ecg-unreadable-symptoms-example-source-record",
+        "identityKind": "source-record",
+        "components": [
+          "healthkit",
+          "HKDataTypeIdentifierElectrocardiogram",
+          "https://study.example.org/fhir/NamingSystem/source-repository",
+          "8c0b6f7e-3d52-4b0e-9a71-2f6d4c1e5a90",
+          "2151b0ca-54b4-52a0-84f5-3c1c1ee0dfb4"
+        ],
+        "value": "v0:test-key:1:NgGy-e0_7xzmc2gJr_ekKZNQlGALWOSijVy8PnmIof0"
+      },
+      {
+        "id": "healthkit-ecg-unreadable-symptoms-example-source-output",
+        "identityKind": "source-output",
+        "components": [
+          "healthkit",
+          "HKDataTypeIdentifierElectrocardiogram",
+          "https://study.example.org/fhir/NamingSystem/source-repository",
+          "8c0b6f7e-3d52-4b0e-9a71-2f6d4c1e5a90",
+          "2151b0ca-54b4-52a0-84f5-3c1c1ee0dfb4",
+          "electrocardiogram",
+          "single"
+        ],
+        "value": "v0:test-key:1:iv6G2HXg54C4jxzo4h5m43uFqtfX32ur5VNvPvy8B88"
+      },
+      {
+        "id": "healthkit-ecg-symptom-dizziness-example-source-output",
+        "identityKind": "source-output",
+        "components": [
+          "healthkit",
+          "HKCategoryTypeIdentifierDizziness",
+          "https://study.example.org/fhir/NamingSystem/source-repository",
+          "d3e9a1b4-7c26-4f58-8e0d-5b1a9c7f2e63",
+          "2151b0ca-54b4-52a0-84f5-3c1c1ee0dfb4",
+          "symptom-dizziness",
+          "single"
+        ],
+        "value": "v0:test-key:1:X1j16QiYjSkvtgAcg79tCtGBrWWsGqUXjRNHyVnEuAI"
+      },
+      {
         "id": "healthkit-sync-identifier-observation-source-record",
         "identityKind": "source-record",
         "components": [

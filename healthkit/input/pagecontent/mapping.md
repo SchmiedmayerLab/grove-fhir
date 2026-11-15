@@ -93,7 +93,7 @@ Source-record and source-output identity remain the identity of a record: Bundle
 ### Electrocardiograms
 
 A structured HealthKit ECG directly claims the source-neutral Sensor ECG profile and the HealthKit ECG adapter profile.
-The caller supplies the already-obtained `HKElectrocardiogram`, every voltage measurement and exact offset, and every associated symptom `HKCategorySample`; the adapter performs no query and never resamples.
+The caller supplies the already-obtained `HKElectrocardiogram`, every voltage measurement and exact offset, and every associated symptom `HKCategorySample`, or the fact that they could not be read; the adapter performs no query and never resamples.
 Voltage offsets must form one exact uniform sequence, the reported count must match, and an optional sampling frequency must agree exactly with the SampledData period.
 
 Classification is carried in `Observation.interpretation`, and the optional Apple ECG algorithm version is carried in `Observation.method`.
@@ -104,6 +104,11 @@ Each correlated symptom is converted through its existing HealthKit symptom Obse
 Each symptom is its own record, with its own source record and conversion Provenance, and it may travel in the same Bundle as the ECG.
 The ECG groups the separately available observations with identifier-only `hasMember` references carrying the symptoms' opaque `source-output` Identifiers.
 Distinct equal-type samples remain distinct; `present` requires at least one distinct member, while `none` and `notSet` require none.
+
+Symptom samples need their own HealthKit read authorization, separate from the ECG's, and HealthKit does not reveal a denied read: a `present` ECG whose symptom samples cannot be read returns none.
+The producer then states that the symptoms could not be read instead of withholding the ECG.
+It keeps the `present` status as HealthKit reports it and carries exactly one `hasMember` entry with only the standard [data-absent-reason](http://hl7.org/fhir/R4/extension-data-absent-reason.html) extension, code `unknown`, and no type, identifier or display.
+The waveform and the optional average heart rate are emitted as usual; `none` and `notSet` never carry the reason.
 
 ### Audiogram sensitivity tests
 
