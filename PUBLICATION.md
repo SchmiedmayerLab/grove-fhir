@@ -69,17 +69,22 @@ This is the complete language-neutral contract input for producer CI, not a sele
 
 **Release Publication** (`.github/workflows/deployment.yml`) is manually dispatched from the default branch with a bare numeric version, for example `0.9.0`. The version must match every guide and `catalog/release-manifest.json`. `dryRun` defaults to `true`; a dry run uploads a review artifact and creates no tag or GitHub Release.
 
+When the website app is configured, both dry runs and real releases first authenticate with an Actions-write token restricted to `grove-website` and verify access to its active `pages.yml` workflow. This separate job executes no repository code and dispatches nothing. Invalid credentials or missing workflow access stop the release before the guide build; the notification job still authenticates again after publication.
+
 After collecting the source-build evidence above, `Scripts/stage-publication.py` invokes the pinned HL7 IG Publisher's standard `-go-publish` process for each guide in dependency order. It creates standard `publication-request.json` files in temporary source copies, uses `publication/publish-setup.json` for the website layout, and renders history with a checksum-pinned revision of [HL7's history template](https://github.com/HL7/fhir-ig-history-template). The website registry is local to staging; the command does not submit anything to the upstream IG registry.
 
-Publisher builds both the versioned publication and the current milestone copy, producing routes such as:
+Every release replaces the current publication. Only the first release of a major version from `1.0.0` (`1.0.0`, `2.0.0`, and so on) also keeps a complete, permanently hosted copy of each guide. All other releases use Publisher's standard `current-only` publish pattern: the version directory holds the exact package and a short entry page, and the complete guide of that version remains a download on its GitHub Release. The hosted site therefore grows by a full copy of the guides once per major version, not with every release.
 
 | Route under `https://grovealliance.org/fhir` | Purpose |
 |---|---|
-| `/mobile/0.9.0/` | Permanent version |
 | `/mobile/` | Current published version |
 | `/mobile/history.html` | Standard FHIR publication history |
 | `/mobile/package-list.json` | Machine-readable publication history |
 | `/mobile/0.9.0/package.tgz` | Exact versioned FHIR package |
+| `/mobile/0.9.0/` | Entry page for a version without a hosted copy |
+| `/mobile/1.0.0/` | Complete permanent copy of a major version |
+
+The guides are published as HTML, JSON, and XML. Turtle serializations are not generated (`excludettl` in each `sushi-config.yaml`), and `publication/publish-setup.json` disables Publisher's `.json1`/`.json2`/`.xml1`/`.xml2` clones, which exist for server-side content negotiation that a static host cannot perform.
 
 The same layout applies to all ten guides. The archive root is the `/fhir/` subtree, leaving `/` and other routes available for the future website.
 
@@ -113,17 +118,17 @@ The release assets include:
 - `grove-fhir-source-evidence-<version>.tar.gz`: the earlier offline source-build evidence, kept separate because native publication rebuilds the packages; and
 - `SHA256SUMS` covering every release asset.
 
-The final packages are audited again with the repository QA checks and official Validator corpora. Missing Publisher outputs fail staging even if the process returns success. Historical version directories retain their sealed bytes; their banners name the version and link to the current publication and history without claiming to remain current.
+The final packages are audited again with the repository QA checks and official Validator corpora. Missing Publisher outputs fail staging even if the process returns success. Historical version directories retain their sealed bytes. The pages of a hosted major-version copy and the entry page of every other version name the version and link to the current publication and history without claiming to remain current.
 
 The isolated publication job uploads all assets to a new draft GitHub Release, then makes the complete release public/latest. Existing releases are never overwritten. An upload failure may leave a draft for investigation; do not automatically delete or reuse it.
 
 ### Future website integration
 
-The ten-guide preview built with Publisher 3.0.3 occupies approximately **2.60 GB expanded**, down from **3.83 GB** before alias/download optimization (32% smaller). The [prior successful deployment](https://github.com/SchmiedmayerLab/grove-fhir/actions/runs/43200603008) used a **4.11 GB** expanded artifact; its Pages upload was approximately **909 MB compressed**. Compressed artifact size and expanded website size are different measurements.
+The ten-guide preview built with Publisher 3.0.3 occupies approximately **1.87 GB expanded**. It occupied **3.83 GB** before alias/download optimization and **2.60 GB** before Turtle renderings were omitted. The [prior successful deployment](https://github.com/SchmiedmayerLab/grove-fhir/actions/runs/43200603008) used a **4.11 GB** expanded artifact; its Pages upload was approximately **909 MB compressed**. Compressed artifact size and expanded website size are different measurements.
 
 [GitHub Pages documents a 1 GB supported site size](https://docs.github.com/en/pages/getting-started-with-github-pages/github-pages-limits). [The official upload action](https://github.com/actions/upload-pages-artifact#artifact-validation) explains that larger deployments can succeed, with an absolute rejection threshold of 10 GB for the deployment tarball. They are not guaranteed and remain subject to the deployment timeout. The preview workflow therefore reports expanded size and warns above 1 GB without imposing a new hard stop on the existing deployment.
 
-GitHub Pages remains the deployment target. Root HTML redirects and offloaded bulk downloads reduce duplication while preserving all rendered FHIR pages, packages, and canonical resource routes. The complete guide content still exceeds 1 GB, so the size warning remains. Versioned publications offload only new/current bundles; older sealed version directories keep their original bytes and download locations. The website receiver can mount the publication archive under `/fhir/` while ordinary website pages occupy the other routes.
+GitHub Pages remains the deployment target. Root HTML redirects, offloaded bulk downloads, and the omission of Turtle renderings and negotiation clones reduce duplication while preserving all rendered FHIR pages, JSON and XML resources, packages, and canonical resource routes. The staged 0.8.1 publication expands to **1.73 GB** (a 225 MB archive); its ten version directories together hold 7 MB. A complete copy of the guides is added only with the first release of a major version from `1.0.0`. The complete guide content still exceeds 1 GB, so the size warning remains. Versioned publications offload only new/current bundles; older sealed version directories keep their original bytes and download locations. The website receiver can mount the publication archive under `/fhir/` while ordinary website pages occupy the other routes.
 
 The optional notification job is disabled unless `GROVE_WEBSITE_APP_ID` is configured. Once `grove-website` implements the receiver, configure that repository variable and the `GROVE_WEBSITE_APP_PRIVATE_KEY` secret for a GitHub App installed on `SchmiedmayerLab/grove-website` with **Actions: write**. After a successful release, it dispatches the website's `pages.yml` workflow on `main` with `releaseTag=<version>`.
 
@@ -175,7 +180,7 @@ Suppression never proves terminology membership or attachment authorization.
 
 Canonical promotion may be activated only by a separately reviewed change that switches `publication/config.json` to `immutable-releases` and supplies all of the following:
 
-1. an accountable canonical-host owner and successful live HTTPS checks for owned canonical JSON, XML, Turtle, HTML, package, history, and package-list routes;
+1. an accountable canonical-host owner and successful live HTTPS checks for owned canonical JSON, XML, HTML, package, history, and package-list routes;
 2. approved permanence, correction, withdrawal, key-retention, and security policies;
 3. a clean signed/tagged source revision matching the release manifest and evidence checksums;
 4. complete offline structural and approved online terminology evidence;

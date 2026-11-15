@@ -858,7 +858,6 @@ class PreparePagesTests(unittest.TestCase):
         prefix = f"{resource_type}-{resource_id}"
         (output / f"{prefix}.json").write_text(json.dumps(resource), encoding="utf-8")
         (output / f"{prefix}.xml").write_text("<resource />", encoding="utf-8")
-        (output / f"{prefix}.ttl").write_text("# resource", encoding="utf-8")
         (output / f"{prefix}.html").write_text("resource", encoding="utf-8")
         (output / "qa.json").write_bytes(
             b"\xef\xbb\xbf" + json.dumps({"url": f"{canonical}/ImplementationGuide/{package_id}"}).encode("utf-8")

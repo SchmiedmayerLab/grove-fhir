@@ -153,7 +153,7 @@ Each profile page contains two complementary tables:
 
 For Grove profiles, a conformant producer populates fields marked **Must Support (MS)** whenever the data is available, and a conformant consumer must be able to read them.
 
-Every profile has at least one example with JSON, XML, and Turtle representations.
+Every profile has at least one example with JSON and XML representations.
 The JSON representation is generally the most direct starting point for application development.
 
 A useful reading sequence is the [heart-rate example JSON](Observation-GroveMobileHeartRateExample.json), the constraining [Mobile envelope](StructureDefinition-grove-mobile-observation.html), and then [Observations](observations.html) for the field-by-field rules.
