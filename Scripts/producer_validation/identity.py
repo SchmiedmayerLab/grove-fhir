@@ -8,8 +8,6 @@
 
 from __future__ import annotations
 
-import base64
-import binascii
 import re
 from typing import Any
 
@@ -250,20 +248,15 @@ def validate_healthkit_sync_identifier(
     prefix, separator, writer = system.rpartition(f"/{contract['systemPathSegment']}/")
     try:
         require_absolute_uri(prefix, "readable sync Identifier store scope")
-        decoded = base64.b64decode(
-            writer + "=" * (-len(writer) % 4), altchars=b"-_", validate=True
-        )
-        canonical = base64.urlsafe_b64encode(decoded).rstrip(b"=").decode("ascii")
-        decoded.decode("utf-8", errors="strict")
-    except (ExchangeProtocolError, binascii.Error, ValueError) as error:
+    except ExchangeProtocolError as error:
         raise ProducerValidationError(
             f"{label} readable sync Identifier system must name the store scope and the "
-            "base64url-encoded writing application"
+            "writing application's bundle identifier"
         ) from error
-    if not separator or not decoded or canonical != writer:
+    if not separator or re.fullmatch(contract["writerSegmentPattern"], writer) is None:
         raise ProducerValidationError(
             f"{label} readable sync Identifier system must name the store scope and the "
-            "base64url-encoded writing application"
+            "writing application's bundle identifier"
         )
     if "writer-record" not in typed_resource_identifiers(resource, label) or len(
         extensions_with_url(resource, WRITER_RECORD_VERSION_EXTENSION)

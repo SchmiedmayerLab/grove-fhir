@@ -202,7 +202,7 @@ Description: "A body-weight sample a connected scale re-imported after correctin
 * identifier[sourceOutput].value = "v0:test-key:1:FR__fLtP23UvZ4eCVmgFh_0IDG5YOK4MmEzZVjERlAk"
 * identifier[writerRecord].system = "https://study.example.org/fhir/NamingSystem/grove-writer-record-v0/test-key/1"
 * identifier[writerRecord].value = "v0:test-key:1:yXf2mQVVCw6x5H05itpMpbHbi2ix8AHs18tpR9Z6mhs"
-* identifier[syncIdentifier].system = "https://study.example.org/fhir/NamingSystem/healthkit-store/1f5c58aa-6ec6-4e79-a682-829a9debd3f5/healthkit-sync-identifier/Y29tLmV4YW1wbGUuc2NhbGU"
+* identifier[syncIdentifier].system = "https://study.example.org/fhir/NamingSystem/healthkit-store/1f5c58aa-6ec6-4e79-a682-829a9debd3f5/healthkit-sync-identifier/com.example.scale"
 * identifier[syncIdentifier].value = "scale-reading-0042"
 * identifier[4].system = "https://study.example.org/fhir/NamingSystem/healthkit-store/1f5c58aa-6ec6-4e79-a682-829a9debd3f5/healthkit-native-record"
 * identifier[4].value = "310e9c93-c2da-50dc-824d-13bd3bf95e74"
@@ -636,7 +636,7 @@ Description: "A beat-to-beat interval series carried as its published column sch
 * identifier[writerRecord].type = $groveIdentifierRole#writer-record
 * identifier[writerRecord].system = "https://study.example.org/fhir/NamingSystem/grove-writer-record-v0/test-key/1"
 * identifier[writerRecord].value = "v0:test-key:1:7tQQdJFxmb3lzdoPDPuofR4xX6Lb9wnykT0ovoW7ldI"
-* identifier[syncIdentifier].system = "https://study.example.org/fhir/NamingSystem/healthkit-store/1f5c58aa-6ec6-4e79-a682-829a9debd3f5/healthkit-sync-identifier/Y29tLmV4YW1wbGUuaGVhcnRzdHVkeQ"
+* identifier[syncIdentifier].system = "https://study.example.org/fhir/NamingSystem/healthkit-store/1f5c58aa-6ec6-4e79-a682-829a9debd3f5/healthkit-sync-identifier/com.example.heartstudy"
 * identifier[syncIdentifier].value = "series-2026-08-19T10:00"
 * identifier[5].system = "https://study.example.org/fhir/NamingSystem/healthkit-store/1f5c58aa-6ec6-4e79-a682-829a9debd3f5/healthkit-native-record"
 * identifier[5].value = "f1563e62-82ae-55be-a073-0e80d97531df"
