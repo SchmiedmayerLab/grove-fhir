@@ -169,7 +169,7 @@ class HealthKitSyncIdentifierTests(unittest.TestCase):
             mutated = copy.deepcopy(resource)
             sync_identifier(mutated)["system"] = system
             with self.subTest(system=system), self.assertRaisesRegex(
-                ProducerValidationError, "store scope|absolute|extends its system"
+                ProducerValidationError, "native record Identifier system|absolute|extends its system"
             ):
                 validate(mutated)
 
