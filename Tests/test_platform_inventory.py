@@ -89,7 +89,7 @@ class SensorKitInventoryTests(unittest.TestCase):
         }
 
     def test_catalog_is_exactly_the_recorded_platform_inventory(self) -> None:
-        compare(self.evidence, self.rows, expected=22)
+        compare(self.evidence, self.rows, expected=24)
 
     def test_every_entry_carries_the_platform_facts(self) -> None:
         for symbol, fact in self.evidence.items():

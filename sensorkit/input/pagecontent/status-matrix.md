@@ -11,7 +11,7 @@ GENERATED FILE. Edit the corresponding catalog JSON and run
 
 ### SensorKit support matrix
 
-This table is the normative SensorKit support inventory: 20 catalog-baseline platform symbols and 2 stable additions in the stated Apple SDK baseline. Each of the 22 sources has one status, and only the listed representations are admitted. Recording Document support preserves a registered payload and does not imply that FHIR retrieves it; `content.format` states whether its payload is CSV, FHIR, binary, native JSON, or another admitted format.
+This table is the normative SensorKit support inventory: 20 catalog-baseline platform symbols and 4 stable additions in the stated Apple SDK baseline. Each of the 24 sources has one status, and only the listed representations are admitted. Recording Document support preserves a registered payload and does not imply that FHIR retrieves it; `content.format` states whether its payload is CSV, FHIR, binary, native JSON, or another admitted format.
 
 | SensorKit source | Adapter code | Inventory scope | Minimum iOS | Status | Structured profile claim(s) | Raw profile claim(s) | Binding reason |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -22,6 +22,8 @@ This table is the normative SensorKit support inventory: 20 catalog-baseline pla
 | `SRSensor.deviceUsageReport` | `device-usage` | catalog-baseline | 14.0 | `platform-exclusive` | sensorkit-device-usage-observation | grove-sensor-recording-document; sensorkit-recording-document | — |
 | `SRSensor.electrocardiogram` | `ecg` | catalog-baseline | 17.4 | `supported` | grove-sensor-ecg-observation; sensorkit-ecg-observation | grove-sensor-recording-document; sensorkit-recording-document | — |
 | `SRSensor.faceMetrics` | `face-metrics` | catalog-baseline | 17.0 | `mapped-standard` | — | grove-sensor-recording-document; sensorkit-recording-document | The Grove FHIR contracts publish no structured profile for the heterogeneous face metrics. |
+| `SRSensor.headphoneMotion` | `headphone-motion` | stable-addition | 27.0 | `mapped-standard` | — | grove-sensor-recording-document; sensorkit-recording-document | The source includes orientation, multiple motion vectors, calibration facts and native batch timing; the typed recording preserves them without inventing one scalar clinical meaning. |
+| `SRSensor.headphoneSettings` | `headphone-settings` | stable-addition | 27.0 | `mapped-standard` | — | grove-sensor-recording-document; sensorkit-recording-document | The source describes device configuration, explicit setting availability and optional hearing-assistance settings; the typed recording does not infer a clinical finding. |
 | `SRSensor.heartRate` | `heart-rate` | catalog-baseline | 17.0 | `mapped-standard` | — | grove-sensor-recording-document; sensorkit-recording-document | Bare SampledData cannot preserve CMHighFrequencyHeartRateDataConfidence for each source point. |
 | `SRSensor.keyboardMetrics` | `keyboard-metrics` | catalog-baseline | 14.0 | `platform-exclusive` | sensorkit-keyboard-metrics-observation | grove-sensor-recording-document; sensorkit-recording-document | — |
 | `SRSensor.mediaEvents` | `media-events` | catalog-baseline | 16.4 | `mapped-standard` | — | grove-sensor-recording-document; sensorkit-recording-document | Media interactions do not have a source-neutral clinical Observation representation under the Grove FHIR contracts. |
