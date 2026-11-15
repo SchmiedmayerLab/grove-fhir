@@ -136,6 +136,19 @@ def load_configuration(path: Path) -> dict[str, Any]:
         sources.add(source_path)
         canonical_paths.add(canonical_path)
 
+    for index, guide in enumerate(configuration["guides"]):
+        retained = guide.get("retainedCanonicalPaths", [])
+        if not isinstance(retained, list) or not all(isinstance(path, str) for path in retained):
+            raise ValueError("retainedCanonicalPaths must be a list of paths")
+        for path in retained:
+            retained_path = safe_relative_path(path, f"guide[{index}] retained canonical").as_posix()
+            if retained_path == "." or any(
+                retained_path == existing or retained_path.startswith(existing + "/") or existing.startswith(retained_path + "/")
+                for existing in canonical_paths
+            ):
+                raise ValueError(f"retained canonical collides with canonicalPath: {retained_path}")
+            canonical_paths.add(retained_path)
+
     aliases: set[str] = set()
     for index, guide in enumerate(configuration["guides"]):
         declared_aliases = guide.get("aliases", [])
@@ -883,6 +896,16 @@ def assemble_site(
                     site=canonical_root,
                     canonical=canonical,
                     target_prefix="ci-build",
+                )
+
+            for retained_path in guide.get("retainedCanonicalPaths", []) if not release_entries else []:
+                redirect_generator.generate_routes(
+                    output=stage,
+                    site=site,
+                    canonical=f"{canonical_base}/{retained_path}",
+                    target_prefix=f"{guide['canonicalPath']}/ci-build",
+                    route_prefix=retained_path,
+                    package_path=f"{guide['canonicalPath']}/package.tgz",
                 )
 
             history = package_list(metadata, preview_url, published_history)
