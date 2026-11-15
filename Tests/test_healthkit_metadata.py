@@ -25,7 +25,7 @@ def record(entries):
     return {
         "resourceType": "Observation",
         "meta": {"profile": ["https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-observation"]},
-        "extension": [{"url": URL, "extension": sorted(entries, key=lambda item: item["extension"][0]["valueString"].encode("utf-16-be"))}],
+        "extension": [{"url": URL, "extension": sorted(entries, key=lambda item: item["extension"][0]["valueString"].encode("utf-8"))}],
     }
 
 
@@ -66,6 +66,15 @@ class HealthKitMetadataTests(unittest.TestCase):
             with self.subTest(entries=entries), self.assertRaises(ProducerValidationError):
                 validate_healthkit_metadata(record(entries), "source")
         resource = record([entry("a", "valueString", "a"), entry("b", "valueString", "b")])
+        resource["extension"][0]["extension"].reverse()
+        with self.assertRaises(ProducerValidationError):
+            validate_healthkit_metadata(resource, "source")
+
+    def test_keys_follow_utf8_byte_order_not_utf16_code_units(self):
+        # U+FF01 precedes U+1F600 in UTF-8 but follows it in UTF-16, whose surrogates precede U+E000.
+        keys = ["\uff01", "\U0001f600"]
+        validate_healthkit_metadata(record([entry(key, "valueString", "value") for key in keys]), "source")
+        resource = record([entry(key, "valueString", "value") for key in keys])
         resource["extension"][0]["extension"].reverse()
         with self.assertRaises(ProducerValidationError):
             validate_healthkit_metadata(resource, "source")
