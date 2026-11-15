@@ -87,6 +87,8 @@ class HealthKitSyncIdentifierTests(unittest.TestCase):
             "such a sample",
             "With the setting off, the sync identifier text is not exported in any element",
             "withhold the readable sync identifier for its samples",
+            "report `HKMetadataKeySyncIdentifier` as a withheld key under `mobile-omission.unmodeled-metadata`",
+            "A deployment configures one native identifier system",
             "`HKMetadataKeySyncIdentifier` and `HKMetadataKeySyncVersion` are never metadata entries",
         ):
             with self.subTest(sentence=sentence):
@@ -102,7 +104,8 @@ class HealthKitSyncIdentifierTests(unittest.TestCase):
                 prefix, _, segment = readable["system"].rpartition(f"/{self.contract['systemPathSegment']}/")
                 writer = segment
                 self.assertRegex(writer, self.contract["writerSegmentPattern"])
-                self.assertTrue(native_identifier(resource)["system"].startswith(prefix + "/"))
+                self.assertEqual(native_identifier(resource)["system"], prefix)
+                self.assertEqual(self.contract["systemBase"], "native-record-identifier-system")
                 self.assertEqual(
                     role(resource, "writer-record")["value"],
                     test_identity(
@@ -135,7 +138,7 @@ class HealthKitSyncIdentifierTests(unittest.TestCase):
                 if item["url"] != context.WRITER_RECORD_VERSION_EXTENSION
             ]
             same_system = copy.deepcopy(resource)
-            native_identifier(same_system)["system"] = sync_identifier(same_system)["system"]
+            native_identifier(same_system)["system"] = sync_identifier(same_system)["system"].rsplit("/", 3)[0]
             for label, mutated in (
                 ("native", without_native), ("writer", without_writer),
                 ("version", without_version), ("system", same_system),
@@ -165,7 +168,9 @@ class HealthKitSyncIdentifierTests(unittest.TestCase):
         ):
             mutated = copy.deepcopy(resource)
             sync_identifier(mutated)["system"] = system
-            with self.subTest(system=system), self.assertRaisesRegex(ProducerValidationError, "store scope|absolute"):
+            with self.subTest(system=system), self.assertRaisesRegex(
+                ProducerValidationError, "store scope|absolute|extends its system"
+            ):
                 validate(mutated)
 
     def test_at_most_one_and_only_its_exact_type(self):
