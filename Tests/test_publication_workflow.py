@@ -100,10 +100,24 @@ class PublicationStagingTests(unittest.TestCase):
         self.assertEqual(first['path'], 'https://example.org/fhir/mobile/0.9.0')
         self.assertEqual(first['mode'], 'milestone')
         self.assertEqual(first['ci-build'], 'https://example.org/dev/mobile/ci-build')
+        self.assertEqual(first['publish-pattern'], 'current-only')
         later = STAGE.publication_request(guide, metadata, config, release, False)
         self.assertFalse(later['first'])
         self.assertNotIn('category', later)
         self.assertNotIn('ci-build', later)
+        major = STAGE.publication_request(guide, dict(metadata, version='1.0.0'), config, release, True)
+        self.assertNotIn('publish-pattern', major)
+
+    def test_only_the_first_release_of_a_major_version_keeps_a_hosted_copy(self):
+        self.assertEqual([version for version in ('0.8.1', '0.9.0', '1.0.0', '1.0.1', '1.1.0', '2.0.0')
+                          if STAGE.hosts_version_copy(version)], ['1.0.0', '2.0.0'])
+        with tempfile.TemporaryDirectory() as directory:
+            history = Path(directory) / 'package-list.json'
+            STAGE.write_json(history, {'list': [], 'publish-pattern': 'current-only'})
+            STAGE.select_publish_pattern(history, '1.0.0')
+            self.assertEqual(json.loads(history.read_text()), {'list': []})
+            STAGE.select_publish_pattern(history, '1.0.1')
+            self.assertEqual(json.loads(history.read_text())['publish-pattern'], 'current-only')
 
     def test_previous_publication_cannot_drop_existing_history(self):
         releases = [{'tag_name': '0.8.0', 'assets': [{'name': 'grove-fhir-publication-0.8.0.tar.gz'}]}]
@@ -184,6 +198,24 @@ class PublicationStagingTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'current package identity'):
                 check()
 
+    def test_hosted_version_copy_requires_its_own_pages(self):
+        with tempfile.TemporaryDirectory() as directory:
+            web = Path(directory)
+            root = web / 'mobile'
+            canonical = 'https://example.org/fhir/mobile'
+            metadata = {'name': 'org.example.mobile', 'version': '1.0.0',
+                        'canonical': canonical, 'url': canonical + '/1.0.0'}
+            for destination in (root, root / '1.0.0'):
+                package(destination / 'package.tgz', metadata)
+                (destination / 'qa.json').write_text('{}')
+            (root / 'index.html').write_text('<p id="publish-box">Published</p>')
+            (root / 'history.html').write_text('history')
+            STAGE.write_json(root / 'package-list.json', {'list': [
+                {'version': '1.0.0', 'path': metadata['url'], 'current': True}]})
+            with self.assertRaisesRegex(ValueError, 'did not produce'):
+                STAGE.check_published_guide(web, {'canonicalPath': 'mobile'},
+                                            {'canonicalBaseUrl': 'https://example.org/fhir'}, '1.0.0')
+
     def test_published_package_rejects_local_paths(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / 'package.tgz'
@@ -244,6 +276,7 @@ class PublicationStagingTests(unittest.TestCase):
                     web = Path(command[command.index('-web') + 1])
                     request = json.loads((source / 'publication-request.json').read_text())
                     self.assertEqual(request['mode'], 'milestone')
+                    self.assertEqual(request['publish-pattern'], 'current-only')
                     self.assertTrue((source / 'input/fsh/example.fsh').is_file())
                     self.assertIn('releaseLabel: draft', (source / 'sushi-config.yaml').read_text())
                     self.assertNotIn('-no-network', command)
@@ -255,11 +288,9 @@ class PublicationStagingTests(unittest.TestCase):
                     metadata['url'] = request['path']
                     package(published / 'package.tgz', metadata)
                     package(web / name / 'package.tgz', metadata)
-                    (web / name / 'index.html').write_text('<html><body>Current publication</body></html>')
+                    (web / name / 'index.html').write_text('<html><body><!--ReleaseHeader--><p id="publish-box">Published</p><!--EndReleaseHeader--></body></html>')
                     (web / name / 'qa.json').write_text('{}')
-                    (published / 'index.html').write_text('<html><body><!--ReleaseHeader--><p id="publish-box">Published</p><!--EndReleaseHeader--></body></html>')
-                    (published / 'qa.json').write_text('{}')
-                    (published / 'qa.html').write_text('QA')
+                    (web / name / 'qa.html').write_text('QA')
                     (published / 'full-ig.zip').write_bytes(b'versioned offline guide')
                     (web / name / 'full-ig.zip').write_bytes(b'current offline guide')
                     (web / name / 'history.html').write_text('history')
@@ -297,7 +328,12 @@ class PublicationStagingTests(unittest.TestCase):
                 (archive.parent / 'org.grovealliance.fhir.mobile-0.9.0.tgz').read_bytes(),
                 (root / 'result/mobile/0.9.0/package.tgz').read_bytes(),
             )
-            self.assertIn('Published version 0.9.0', (root / 'result/mobile/0.9.0/index.html').read_text())
+            version_page = (root / 'result/mobile/0.9.0/index.html').read_text()
+            self.assertIn('Published version 0.9.0', version_page)
+            self.assertIn('/releases/download/0.9.0/grove-mobile-0.9.0-full-ig.zip', version_page)
+            self.assertEqual(sorted(path.name for path in (root / 'result/mobile/0.9.0').iterdir()),
+                             ['bulk-downloads.html', 'bulk-downloads.json', 'index.html', 'package.tgz'])
+            self.assertEqual((archive.parent / 'org.grovealliance.fhir.mobile-0.9.0-qa.html').read_text(), 'QA')
             self.assertEqual((root / 'mobile/sushi-config.yaml').read_text(), 'releaseLabel: ci-build\n')
             self.assertTrue((root / 'mobile/input/fsh/example.fsh').is_file())
 

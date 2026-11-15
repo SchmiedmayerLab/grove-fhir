@@ -304,10 +304,8 @@ def check_site(
                     failures.append(
                         f"missing canonical route for {relative}: {suffix_path.relative_to(site)}"
                     )
-            for extension in (".xml", ".ttl"):
-                source_format = source_json.with_suffix(extension)
-                if source_format.is_file() and not appended_suffix(route, extension).is_file():
-                    failures.append(f"missing {extension} canonical route for {relative}")
+            if source_json.with_suffix(".xml").is_file() and not appended_suffix(route, ".xml").is_file():
+                failures.append(f"missing .xml canonical route for {relative}")
 
         representative = canonical_root / safe_path(guide["representativeResource"])
         if not (representative / "index.html").is_file() or not appended_suffix(

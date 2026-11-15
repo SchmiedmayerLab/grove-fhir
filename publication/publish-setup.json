@@ -4,7 +4,7 @@
     "url": "https://grovealliance.org/fhir",
     "server": "cloud",
     "org": "Schmiedmayer Lab",
-    "clone-xml-json": true
+    "clone-xml-json": false
   },
   "feeds": {
     "package": "package-feed.xml",
