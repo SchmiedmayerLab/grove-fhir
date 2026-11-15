@@ -152,6 +152,9 @@ class SensorKitCatalogTests(unittest.TestCase):
         self.assertTrue(mapping["exactSourceValue"])
         self.assertIn("source repository", mapping["identifierSystemRule"])
         self.assertIn("never replaces", mapping["rule"])
+        self.assertEqual(mapping["cardinality"], "0..1")
+        self.assertIn("governedSourceIdentifier", mapping["rule"])
+        self.assertIn("omission remains conformant", mapping["rule"])
 
     def test_every_row_has_one_definitive_status_and_admitted_contract(self) -> None:
         statuses = set(self.catalog["statusVocabulary"])

@@ -83,7 +83,7 @@ The SensorKit trigger is the acquisition-ledger record: one retraction addresses
 
 ### Sleep-session native identity
 
-Preserve `SRSleepSession.identifier` exactly in an additional `Observation.identifier`, under an absolute deployment-governed namespace scoped to the source repository. The native identifier has no Grove identifier-role coding. It does not replace the acquisition-derived source-record or source-output identifier, change their preimages, or establish cross-install deduplication. Its namespace must remain stable across retries. Do not normalize the native string.
+`SRSleepSession.identifier` is the native identifier of a sleep session. It is optional and governed like every other source-native identifier: a deployment that has opted in to the [governed source identifier](https://grovealliance.org/fhir/mobile/observations.html) carries it exactly in one additional `Observation.identifier`, under an absolute deployment-governed namespace scoped to the source repository, and a deployment that has not omits it. The native identifier has no Grove identifier-role coding. It does not replace the acquisition-derived source-record or source-output identifier, change their preimages, or establish cross-install deduplication. Its namespace must remain stable across retries. Do not normalize the native string.
 
 `effectivePeriod.start` is `startDate`, `effectivePeriod.end` is `startDate + duration`, and the duration quantity is the exact source duration in seconds. A zero duration remains zero; it does not justify inventing an end event, sleep stage, efficiency, or quality.
 
