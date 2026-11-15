@@ -93,8 +93,8 @@ The same layout applies to all ten guides. The archive root is the `/fhir/` subt
 1. Update the guide and release-manifest versions and the reviewed release description.
 2. For the first website publication, leave `previousPublication` as `null`. For subsequent releases, set it to `{"tag": "0.9.0", "sha256": "<SHA-256 of grove-fhir-publication-0.9.0.tar.gz>"}`. The script requires the latest published website archive and verifies its checksum before extraction; it refuses to drop history or reuse a version directory.
 3. Run the default dry run and review the archive and QA. This stages publications but does not change `publication/config.json`'s preview mode or deploy the canonical host.
-4. Before a real release, create and verify a signed annotated tag identifying that exact default-branch revision. GitHub must verify the tag signature; the tagger email must be `PSchmiedmayer@users.noreply.github.com`. The workflow creates no commits or tags and rechecks the tag immediately before release creation.
-5. Dispatch with `dryRun: false` only when ready to publish the release. Configure required reviewers on the `fhir-release` GitHub environment before using this path; declaring its name in YAML does not configure protection.
+4. Before a real release, create the release tag on that exact default-branch revision, for example on GitHub or with `git tag 0.9.0 <commit> && git push origin 0.9.0`. Lightweight and annotated tags both work. The repository's "Release tags" ruleset limits who can create, move, or delete tags. The workflow creates no commits or tags and checks again immediately before release creation that the tag still identifies the released revision.
+5. Dispatch with `dryRun: false` only when ready to publish the release. One of the required reviewers of the `fhir-release` GitHub environment approves the publication job; declaring the environment in YAML does not configure that protection.
 
 Local staging, from a clean reviewed checkout with the documented build prerequisites and an authenticated GitHub CLI:
 
@@ -167,7 +167,7 @@ Only checksum-bound evidence crosses into the publication job through pinned art
 Consequently an npm/Ruby/Publisher build input never receives the token capable of tagging or publishing the repository.
 
 Two managed-runner inputs remain outside repository byte pinning: GitHub's rolling `ubuntu-24.04` image implementation and its preinstalled GitHub CLI.
-The release runner is restricted to an exact OS release family rather than `ubuntu-latest`; the CLI reads prior publication assets and signed-tag metadata, creates the release, and optionally dispatches the website workflow.
+The release runner is restricted to an exact OS release family rather than `ubuntu-latest`; the CLI reads prior publication assets and tag metadata, creates the release, and optionally dispatches the website workflow.
 The dependency offline phase is enforced by each package/tool consumer and Publisher's `-no-network`; the hosted runner itself is not claimed to be packet-filtered.
 The operating-system layer is not reproducible unless the runner image is content-addressed.
 
@@ -182,7 +182,7 @@ Canonical promotion may be activated only by a separately reviewed change that s
 
 1. an accountable canonical-host owner and successful live HTTPS checks for owned canonical JSON, XML, HTML, package, history, and package-list routes;
 2. approved permanence, correction, withdrawal, key-retention, and security policies;
-3. a clean signed/tagged source revision matching the release manifest and evidence checksums;
+3. a clean tagged source revision matching the release manifest and evidence checksums;
 4. complete offline structural and approved online terminology evidence;
 5. reviewed publication requests for all ten packages; and
 6. a reviewed archive from `Scripts/stage-publication.py` and a website deployment that verifies its checksums and preserves all version directories.

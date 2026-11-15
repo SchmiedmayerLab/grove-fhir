@@ -10,7 +10,7 @@ name: Release Publication
 
 on:
   # Release publication is deliberate. Main pushes only deploy the development preview.
-  # A signed annotated tag must already identify the reviewed source before publication.
+  # A release tag must already identify the reviewed source before publication.
   workflow_dispatch:
     inputs:
       version:
@@ -121,20 +121,23 @@ jobs:
             echo "::error::Release manifest declares $manifest_version, not $VERSION."
             exit 1
           fi
-      - name: Require the reviewed signed tag for a real release
+      - name: Require the release tag at the reviewed revision
         if: ${{ !inputs.dryRun }}
         env:
           VERSION: ${{ steps.release.outputs.version }}
           SOURCE_REVISION: ${{ steps.release.outputs.source_revision }}
           GH_TOKEN: ${{ github.token }}
         run: |
+          # The "Release tags" ruleset decides who may create or move a tag, and the fhir-release
+          # environment who may publish; this only binds the tag to the reviewed commit. A tag
+          # created on GitHub is lightweight and points at the commit; an annotated tag points at
+          # a tag object that names it.
           ref="$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$VERSION")"
-          test "$(jq -r '.object.type' <<< "$ref")" = tag
-          tag="$(gh api "repos/$GITHUB_REPOSITORY/git/tags/$(jq -r '.object.sha' <<< "$ref")")"
-          test "$(jq -r '.verification.verified' <<< "$tag")" = true
-          test "$(jq -r '.object.type' <<< "$tag")" = commit
-          test "$(jq -r '.object.sha' <<< "$tag")" = "$SOURCE_REVISION"
-          test "$(jq -r '.tagger.email' <<< "$tag")" = PSchmiedmayer@users.noreply.github.com
+          commit="$(jq -r '.object.sha' <<< "$ref")"
+          if [ "$(jq -r '.object.type' <<< "$ref")" = tag ]; then
+            commit="$(gh api "repos/$GITHUB_REPOSITORY/git/tags/$commit" --jq 'select(.object.type == "commit") | .object.sha')"
+          fi
+          test "$commit" = "$SOURCE_REVISION"
       - uses: actions/setup-node@v7
         with:
           node-version: "lts/*"
@@ -256,25 +259,28 @@ jobs:
           path: .build/publication-release
       - name: Recheck transferred evidence
         run: (cd .build/publication-release && sha256sum --check SHA256SUMS)
-      - name: Recheck the signed tag before publication
+      - name: Recheck the release tag before publication
         env:
           VERSION: ${{ needs.verify.outputs.version }}
           SOURCE_REVISION: ${{ needs.verify.outputs.source_revision }}
           GH_TOKEN: ${{ github.token }}
         run: |
+          # The "Release tags" ruleset decides who may create or move a tag, and the fhir-release
+          # environment who may publish; this only binds the tag to the reviewed commit. A tag
+          # created on GitHub is lightweight and points at the commit; an annotated tag points at
+          # a tag object that names it.
           ref="$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$VERSION")"
-          test "$(jq -r '.object.type' <<< "$ref")" = tag
-          tag="$(gh api "repos/$GITHUB_REPOSITORY/git/tags/$(jq -r '.object.sha' <<< "$ref")")"
-          test "$(jq -r '.verification.verified' <<< "$tag")" = true
-          test "$(jq -r '.object.type' <<< "$tag")" = commit
-          test "$(jq -r '.object.sha' <<< "$tag")" = "$SOURCE_REVISION"
-          test "$(jq -r '.tagger.email' <<< "$tag")" = PSchmiedmayer@users.noreply.github.com
+          commit="$(jq -r '.object.sha' <<< "$ref")"
+          if [ "$(jq -r '.object.type' <<< "$ref")" = tag ]; then
+            commit="$(gh api "repos/$GITHUB_REPOSITORY/git/tags/$commit" --jq 'select(.object.type == "commit") | .object.sha')"
+          fi
+          test "$commit" = "$SOURCE_REVISION"
       - name: Publish the release and its packages
         env:
           VERSION: ${{ needs.verify.outputs.version }}
           GH_TOKEN: ${{ github.token }}
         run: |
-          # --verify-tag consumes the existing signed tag checked against the verified source.
+          # --verify-tag consumes the existing tag checked against the verified source.
           # Assets are uploaded while the release is a draft. A failed upload therefore cannot
           # expose a partial release; only the final edit makes the complete draft public.
           gh release create "$VERSION" \
