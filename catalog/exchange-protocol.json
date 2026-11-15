@@ -1126,7 +1126,7 @@
   "referencePolicy": {
     "literalClosure": "Every literal Reference in an exchange Bundle resolves to exactly one Bundle.entry.fullUrl, and that entry is an output of the referring resource's own record or a shared node of the same Bundle. A lifecycle Provenance is neither, so no literal reference reaches one, in an active or a retraction Bundle. A reference from one record to an output of another record is identifier-only. Contained resources and #id references are prohibited in Mobile active and retraction Bundles.",
     "declaredType": "When Reference.type is present on a literal reference, it is the exact target resourceType token.",
-    "governedShape": "Every reference at a governed path is either one resolving Bundle fullUrl with no logical identifier, or one identifier-only logical reference with no literal, an exact allowed Reference.type, and one complete absolute-system Identifier. Identifier-only Patient references carry the exact deployment-scoped pseudonym pair, use no Grove identifier role or protocol-reserved code-system URI, and are not fabricated Bundle nodes. A literal Patient reference states the referenced Patient entry's pseudonym, its one identifier without a Grove role.",
+    "governedShape": "Every reference at a governed path is either one resolving Bundle fullUrl with no logical identifier, or one identifier-only logical reference with no literal, an exact allowed Reference.type, and one complete absolute-system Identifier, or, only where dataAbsentReferences admits it, a Reference that carries nothing but one data-absent-reason extension. Identifier-only Patient references carry the exact deployment-scoped pseudonym pair, use no Grove identifier role or protocol-reserved code-system URI, and are not fabricated Bundle nodes. A literal Patient reference states the referenced Patient entry's pseudonym, its one identifier without a Grove role.",
     "identifierOnlyPatient": {
       "systemRule": "Identifier.system is an absolute pseudonym namespace and is not one of the protocol-reserved code-system URIs. Namespace ownership and deployment scope are producer/deployment obligations; this validator proves only absolute-URI shape and reserved-system exclusion.",
       "valueRule": "Identifier.value is the exact non-empty caller-supplied pseudonym token; producers do not normalize or replace it.",
@@ -1280,6 +1280,20 @@
         "targetTypes": [
           "ResearchStudy"
         ]
+      }
+    ],
+    "dataAbsentReferences": [
+      {
+        "resourceType": "Observation",
+        "path": "hasMember",
+        "profiles": [
+          "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-observation"
+        ],
+        "extension": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+        "codes": [
+          "unknown"
+        ],
+        "rule": "A HealthKit ECG whose present symptoms could not be read carries one hasMember entry with only the data-absent-reason extension. It names no target, resolves nothing and grants nothing; healthkit-ecg-symptom-state-1 bounds where it occurs."
       }
     ]
   },

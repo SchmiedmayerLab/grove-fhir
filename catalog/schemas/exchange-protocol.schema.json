@@ -599,7 +599,7 @@
     "referencePolicy": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["literalClosure", "declaredType", "governedShape", "identifierOnlyPatient", "paths", "extensionTargets"],
+      "required": ["literalClosure", "declaredType", "governedShape", "identifierOnlyPatient", "paths", "extensionTargets", "dataAbsentReferences"],
       "properties": {
         "literalClosure": { "$ref": "#/$defs/nonempty" },
         "declaredType": { "$ref": "#/$defs/nonempty" },
@@ -614,7 +614,24 @@
           "type": "array",
           "minItems": 1,
           "items": { "$ref": "#/$defs/extensionTarget" }
+        },
+        "dataAbsentReferences": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/dataAbsentReference" }
         }
+      }
+    },
+    "dataAbsentReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["resourceType", "path", "profiles", "extension", "codes", "rule"],
+      "properties": {
+        "resourceType": { "$ref": "#/$defs/nonempty" },
+        "path": { "$ref": "#/$defs/nonempty" },
+        "profiles": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/nonempty" } },
+        "extension": { "const": "http://hl7.org/fhir/StructureDefinition/data-absent-reason" },
+        "codes": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/nonempty" } },
+        "rule": { "$ref": "#/$defs/nonempty" }
       }
     },
     "identifierOnlyPatient": {

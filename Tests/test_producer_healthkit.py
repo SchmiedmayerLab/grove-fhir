@@ -19,6 +19,7 @@ from Scripts.producer_validation import (
     graphs,
     healthkit as healthkit_validation,
     profiles as profile_validation,
+    references,
 )
 from Tests.producer_validation_test_support import (
     ProducerValidationTestCase,
@@ -369,6 +370,21 @@ class ProducerHealthkitTests(ProducerValidationTestCase):
         exchange_bundle.validate_resource_profile_claims(
             unreadable_symptoms, "HealthKit ECG with unreadable symptoms"
         )
+        references.validate_reference_policy(unreadable_symptoms, {}, "HealthKit ECG")
+        unprofiled_absent_member = copy.deepcopy(unreadable_symptoms)
+        unprofiled_absent_member["meta"]["profile"] = [
+            "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-ecg-observation"
+        ]
+        absent_derivation = copy.deepcopy(ecg)
+        absent_derivation["derivedFrom"] = copy.deepcopy(unreadable_symptoms["hasMember"])
+        for name, invalid in (
+            ("no HealthKit ECG claim", unprofiled_absent_member),
+            ("not a member", absent_derivation),
+        ):
+            with self.subTest(absent_reference=name), self.assertRaisesRegex(
+                diagnostics.ProducerValidationError, "logical reference must contain one Identifier"
+            ):
+                references.validate_reference_policy(invalid, {}, "HealthKit ECG")
 
         more_than_one_sample_per_admitted_type = copy.deepcopy(with_symptom)
         more_than_one_sample_per_admitted_type["hasMember"] = [

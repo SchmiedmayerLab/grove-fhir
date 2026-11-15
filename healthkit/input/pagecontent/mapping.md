@@ -109,6 +109,7 @@ Symptom samples need their own HealthKit read authorization, separate from the E
 The producer then states that the symptoms could not be read instead of withholding the ECG.
 It keeps the `present` status as HealthKit reports it and carries exactly one `hasMember` entry with only the standard [data-absent-reason](http://hl7.org/fhir/R4/extension-data-absent-reason.html) extension, code `unknown`, and no type, identifier or display.
 The waveform and the optional average heart rate are emitted as usual; `none` and `notSet` never carry the reason.
+This member names no target, so it is the one `hasMember` entry that is neither a resolving literal nor an identifier-only Reference (`referencePolicy.dataAbsentReferences` in the exchange protocol); it grants nothing.
 
 ### Audiogram sensitivity tests
 
