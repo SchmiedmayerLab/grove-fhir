@@ -456,6 +456,8 @@ def render_profile(
         raise SystemExit(f"{measurement['id']}: unsupported valueKind {kind}")
     for element in measurement.get("forbiddenElements", []):
         lines.append(f"* {element} 0..0")
+    if measurement["id"] == "audiogram-panel":
+        lines.append("* component.extension contains HealthKitAudiogramTestDetails named sourceTest 1..1 MS")
     if measurement.get("components"):
         lines.append("* component ^slicing.discriminator.type = #pattern")
         lines.append('* component ^slicing.discriminator.path = "code"')
@@ -467,6 +469,13 @@ def render_profile(
         lines.append(f"* component contains {contains}")
         for component in measurement["components"]:
             slice_name = component["id"]
+            if measurement["id"] == "audiogram-panel":
+                ear, frequency = slice_name.split("-", 1)
+                prefix = f"* component[{slice_name}].extension[sourceTest].extension"
+                lines.extend([
+                    f"{prefix}[frequency].valueQuantity.value = {frequency} (exactly)",
+                    f"{prefix}[ear].valueCode = #{ear} (exactly)",
+                ])
             if component["system"] == LOINC:
                 lines.append(
                     f"* component[{slice_name}].code = $loinc#{component['code']}"
@@ -1118,6 +1127,15 @@ def example_result_lines(measurement: dict, root: Path) -> list[str]:
                 f"* component[{slice_name}].valueQuantity = "
                 f"{example_quantity(component['quantity'])}"
             )
+            if measurement["id"] == "audiogram-panel":
+                ear, frequency = slice_name.split("-", 1)
+                prefix = f"* component[{slice_name}].extension[sourceTest].extension"
+                lines.extend([
+                    f"{prefix}[frequency].valueQuantity = {frequency} 'Hz'",
+                    f"{prefix}[ear].valueCode = #{ear}",
+                    f"{prefix}[conduction].valueCode = #air",
+                    f"{prefix}[masked].valueBoolean = false",
+                ])
         elif component.get("valueSet"):
             system, code, display = coded_example(component, root)
             lines.append(
