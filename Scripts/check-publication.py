@@ -140,7 +140,7 @@ def check_retained_canonicals(site: Path, preview: Path, canonical_base: str, pa
             failures.append(f"retained canonical routes differ from package definitions: {prefix}")
         for relative, source_json in resources:
             route = site / prefix_path / safe_path(relative)
-            for suffix in (".json", ".xml", ".ttl"):
+            for suffix in (".json", ".xml"):
                 target = appended_suffix(route, suffix)
                 source = source_json.with_suffix(suffix)
                 if not target.is_file() or not source.is_file() or target.read_bytes() != source.read_bytes():
@@ -332,10 +332,8 @@ def check_site(
                     failures.append(
                         f"missing canonical route for {relative}: {suffix_path.relative_to(site)}"
                     )
-            for extension in (".xml", ".ttl"):
-                source_format = source_json.with_suffix(extension)
-                if source_format.is_file() and not appended_suffix(route, extension).is_file():
-                    failures.append(f"missing {extension} canonical route for {relative}")
+            if source_json.with_suffix(".xml").is_file() and not appended_suffix(route, ".xml").is_file():
+                failures.append(f"missing .xml canonical route for {relative}")
 
         if not release_entries:
             failures.extend(check_retained_canonicals(

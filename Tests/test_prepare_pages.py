@@ -97,7 +97,7 @@ class PreparePagesTests(unittest.TestCase):
                         "url": "https://example.org/fhir/core/StructureDefinition/metadata"}
             source = preview / "StructureDefinition-metadata.json"
             source.write_text(json.dumps(resource))
-            for suffix in (".json", ".xml", ".ttl"):
+            for suffix in (".json", ".xml"):
                 if suffix != ".json":
                     source.with_suffix(suffix).write_text("example " + suffix)
                 CHECK_PUBLICATION.appended_suffix(target, suffix).write_bytes(source.with_suffix(suffix).read_bytes())
@@ -896,7 +896,6 @@ class PreparePagesTests(unittest.TestCase):
         prefix = f"{resource_type}-{resource_id}"
         (output / f"{prefix}.json").write_text(json.dumps(resource), encoding="utf-8")
         (output / f"{prefix}.xml").write_text("<resource />", encoding="utf-8")
-        (output / f"{prefix}.ttl").write_text("# resource", encoding="utf-8")
         (output / f"{prefix}.html").write_text("resource", encoding="utf-8")
         (output / "qa.json").write_bytes(
             b"\xef\xbb\xbf" + json.dumps({"url": f"{canonical}/ImplementationGuide/{package_id}"}).encode("utf-8")

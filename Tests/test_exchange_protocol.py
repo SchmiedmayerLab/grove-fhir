@@ -678,8 +678,8 @@ class ExchangeProtocolTests(unittest.TestCase):
                     )
 
     def test_release_is_0_8_0_and_the_protocol_version_stays_0(self) -> None:
-        self.assertEqual(self.catalog["version"], "0.8.0")
-        self.assertEqual(self.catalog["releaseVersion"], "0.8.0")
+        self.assertEqual(self.catalog["version"], "0.8.1")
+        self.assertEqual(self.catalog["releaseVersion"], "0.8.1")
         self.assertEqual(self.catalog["protocolVersion"], 0)
         manifest = json.loads((ROOT / "catalog/release-manifest.json").read_text(encoding="utf-8"))
         self.assertEqual(self.catalog["releaseVersion"], manifest["releaseVersion"])

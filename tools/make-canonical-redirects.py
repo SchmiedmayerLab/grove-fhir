@@ -21,7 +21,7 @@ from typing import Any
 from urllib.parse import SplitResult, urlsplit, urlunsplit
 
 
-MACHINE_FORMATS = ("json", "xml", "ttl")
+MACHINE_FORMATS = ("json", "xml")
 MANIFEST_NAME = "canonical-routes.json"
 SAFE_SEGMENT = re.compile(r"^[A-Za-z0-9._-]+$")
 
