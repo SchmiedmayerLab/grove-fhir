@@ -264,10 +264,10 @@ def validate_healthkit_sync_identifier(
         raise ProducerValidationError(
             f"{label} readable sync Identifier requires the writer-record Identifier and version"
         )
-    if len(native_pairs) != 1 or native_pairs[0][0] == system:
+    if len(native_pairs) != 1 or native_pairs[0][0] != prefix:
         raise ProducerValidationError(
             f"{label} readable sync Identifier appears only beside the native record Identifier "
-            "and never shares its system"
+            "and extends its system"
         )
 
 
