@@ -97,7 +97,7 @@ class ReceiverLifecycleTests(unittest.TestCase):
         lock = index["contractLock"]
         self.assertRegex(lock["baseSourceRevision"], r"^[0-9a-f]{40}$")
         self.assertNotEqual(lock["baseSourceRevision"], "928db16ef8bfd86d2a171727d2d1cb9f8979a442")
-        self.assertEqual(lock["releaseVersion"], "0.8.0")
+        self.assertEqual(lock["releaseVersion"], "0.8.1")
         self.assertEqual(lock["fhirVersion"], "4.0.1")
         self.assertEqual(lock["exchangeProtocolSHA256"], hashlib.sha256((ROOT / "catalog/exchange-protocol.json").read_bytes()).hexdigest())
         self.assertEqual(set(index["bundles"]), BUNDLES)
@@ -116,7 +116,7 @@ class ReceiverLifecycleTests(unittest.TestCase):
         protocol = json.loads((ROOT / "catalog/exchange-protocol.json").read_text())
         del protocol["testVectors"]
         rules = json.dumps(protocol, sort_keys=True, separators=(",", ":")).encode()
-        self.assertEqual(hashlib.sha256(rules).hexdigest(), "bf408a97524fc62036ae40fdb7a37f98b0a0474eff51e6807e1877c3e06598a7")
+        self.assertEqual(hashlib.sha256(rules).hexdigest(), "32a3b75da42a5a2db31d7939e34fbed34467aa51b66c6d2b123b29089ac4be6d")
         for name, digest in {
             "exchange-bundle.json": "62678f09d8288cbbbabf2f976750dd3dccf627fb6403ec96ec68ec66be918c12",
             "retraction-bundle.json": "02eef355417fcca1d8c0d6ed5def2f6349bae7fc8cf0625e7414b5c17461152b",

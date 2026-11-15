@@ -69,6 +69,41 @@ def checked_extract(archive: Path, target: Path, *, strip_root: bool = False) ->
                     shutil.copyfileobj(stream, output)
 
 
+def hosts_version_copy(version: str) -> bool:
+    """Whether a release keeps a complete, permanently hosted copy of every guide.
+
+    Only the first release of a major version from 1.0.0 does. Every other release
+    replaces the current publication: its version directory holds the package, and
+    the complete guide stays downloadable from that version's GitHub release.
+    """
+    major, minor, patch = map(int, version.split("."))
+    return major >= 1 and minor == patch == 0
+
+
+def select_publish_pattern(package_list: Path, version: str) -> None:
+    """Tell Publisher whether this release adds a complete version directory."""
+    history = json.loads(package_list.read_text())
+    if hosts_version_copy(version):
+        history.pop("publish-pattern", None)
+    else:
+        history["publish-pattern"] = "current-only"
+    write_json(package_list, history)
+
+
+def version_page(title: str, version: str, status: str, publication_date: str, canonical: str) -> str:
+    """Entry page for a version whose complete copy is a release download."""
+    return ('<!doctype html><html lang="en"><head><meta charset="utf-8">'
+            '<meta name="viewport" content="width=device-width,initial-scale=1">'
+            f'<title>{html.escape(title)} {version}</title></head><body>'
+            f'<h1>{html.escape(title)} {version}</h1>'
+            f'<p id="publish-box">Published version {version} ({html.escape(status)}), {publication_date}. '
+            'This version is not hosted as a separate copy of the guide.</p>'
+            f'<ul><li><a href="{canonical}/">Current publication</a></li>'
+            f'<li><a href="{canonical}/history.html">Publication history</a></li>'
+            '<li><a href="package.tgz">FHIR package</a></li>'
+            '<li><a href="full-ig.zip">Complete guide archive</a></li></ul></body></html>\n')
+
+
 def publication_request(guide: dict, metadata: dict, configuration: dict,
                         release: dict, first: bool) -> dict:
     canonical = CHECK.canonical_for_guide(configuration, guide)
@@ -86,6 +121,8 @@ def publication_request(guide: dict, metadata: dict, configuration: dict,
             "registry-description": metadata.get("description", metadata["title"]),
             "registry-country": "us", "registry-authority": "Schmiedmayer Lab",
         })
+        if not hosts_version_copy(metadata["version"]):
+            request["publish-pattern"] = "current-only"
     return request
 
 
@@ -94,8 +131,9 @@ def check_published_guide(web: Path, guide: dict, configuration: dict, version: 
     canonical = CHECK.canonical_for_guide(configuration, guide)
     guide_root = web / CHECK.safe_path(guide["canonicalPath"])
     published = guide_root / version
-    for path in (published / "index.html", published / "package.tgz",
-                 published / "qa.json", guide_root / "history.html",
+    complete = hosts_version_copy(version)
+    for path in (*((published / "index.html", published / "qa.json") if complete else ()),
+                 published / "package.tgz", guide_root / "history.html",
                  guide_root / "index.html", guide_root / "package.tgz", guide_root / "qa.json"):
         if not path.is_file():
             raise ValueError(f"Publisher did not produce {path}")
@@ -110,7 +148,7 @@ def check_published_guide(web: Path, guide: dict, configuration: dict, version: 
     entries = [row for row in history["list"] if row.get("version") == version]
     if len(entries) != 1 or entries[0].get("path") != f"{canonical}/{version}" or not entries[0].get("current"):
         raise ValueError("Publisher did not register the current version at its permanent URL")
-    page = (published / "index.html").read_text()
+    page = ((published if complete else guide_root) / "index.html").read_text()
     if 'id="publish-box"' not in page or "Publication Build: This will be filled" in page:
         raise ValueError("Publisher did not populate the release publish box")
     return published
@@ -320,8 +358,10 @@ def stage(*, output: Path, evidence: Path, publication_date: str) -> Path:
         guide_root = web / CHECK.safe_path(guide["canonicalPath"])
         if (guide_root / version).exists():
             raise ValueError(f"publication version already exists: {guide_root / version}")
-        request = publication_request(guide, metadata, configuration, release,
-                                      not (guide_root / "package-list.json").exists())
+        first = not (guide_root / "package-list.json").exists()
+        if not first:
+            select_publish_pattern(guide_root / "package-list.json", version)
+        request = publication_request(guide, metadata, configuration, release, first)
         write_json(source / "publication-request.json", request)
         sushi = source / "sushi-config.yaml"
         text = re.sub(r"(?m)^releaseLabel:.*$", f"releaseLabel: {release['status']}", sushi.read_text())
@@ -340,7 +380,13 @@ def stage(*, output: Path, evidence: Path, publication_date: str) -> Path:
         # Audit the actual release output, not only the earlier development build.
         qa_root = workspace / "qa" / source_name
         qa_root.mkdir(parents=True)
-        shutil.copytree(published, qa_root / "output")
+        complete = hosts_version_copy(version)
+        if complete:
+            shutil.copytree(published, qa_root / "output")
+        else:
+            shutil.copytree(guide_root, qa_root / "output", ignore=lambda directory, names: [
+                name for name in names
+                if Path(directory) == guide_root and re.fullmatch(r"\d+\.\d+\.\d+", name)])
         shutil.copytree(ROOT / source_name / "input", qa_root / "input")
         built_source = temp / "ig-builds" / f"{metadata['name']}#{version}"
         shutil.copytree(built_source / "fsh-generated", qa_root / "fsh-generated")
@@ -354,9 +400,13 @@ def stage(*, output: Path, evidence: Path, publication_date: str) -> Path:
             "version": version, "path": f"{guide['canonicalPath']}/{version}/package.tgz",
             "sha256": CHECK.digest(published / "package.tgz"),
         }
+        canonical = CHECK.canonical_for_guide(configuration, guide)
+        if not complete:
+            (published / "index.html").write_text(version_page(
+                metadata["title"], version, release["status"], publication_date, canonical), encoding="utf-8")
+            continue
         # Freeze a version-specific notice before sealing the archive. It never claims
         # that an old version is still current, and requires no historical HTML edits.
-        canonical = CHECK.canonical_for_guide(configuration, guide)
         notice = ('<!--ReleaseHeader--><p id="publish-box">'
                   f'Published version {version} ({html.escape(release["status"])}), {publication_date}. '
                   f'<a href="{canonical}/">Current publication</a> · '
@@ -434,8 +484,9 @@ def stage(*, output: Path, evidence: Path, publication_date: str) -> Path:
     for package_id, details in packages.items():
         published = web / details["path"]
         shutil.copy2(published, output / f"{package_id}-{version}.tgz")
+        qa = published.parent if hosts_version_copy(version) else published.parent.parent
         for suffix in ("json", "html"):
-            shutil.copy2(published.parent / f"qa.{suffix}", output / f"{package_id}-{version}-qa.{suffix}")
+            shutil.copy2(qa / f"qa.{suffix}", output / f"{package_id}-{version}-qa.{suffix}")
     shutil.copy2(web / "publication-manifest.json", output / f"publication-manifest-{version}.json")
     archive_site(web, archive_path)
     with (output / "SHA256SUMS").open("x") as checksums:
