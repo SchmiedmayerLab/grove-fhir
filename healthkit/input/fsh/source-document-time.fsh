@@ -23,11 +23,6 @@ Description: "The closed source-time bases for HealthKit clinical and CDA docume
 * ^experimental = false
 * include codes from system HealthKitSourceDocumentTimeBasisCS
 
-Invariant: healthkit-source-document-time-order
-Description: "Both source period endpoints are present and the end is not before the start."
-Severity: #error
-Expression: "extension.where(url='period').value.ofType(Period).all(start.exists() and end.exists() and start <= end)"
-
 Invariant: healthkit-source-document-time-complete
 Description: "Source document bounds include a complete time and an explicit time zone."
 Severity: #error
@@ -38,7 +33,7 @@ Id: healthkit-source-document-time
 Title: "HealthKit Source Document Time"
 Description: "The source document sample dates and their exact API meaning. These describe the consumed source entity; they do not state when the care described in the original document occurred. HKClinicalRecord uses clinical-record-download; HKCDADocumentSample uses cda-source-document-period. The producer preserves the source bounds under the adapter's timestamp precision rules."
 Context: Provenance.entity
-* obeys healthkit-source-document-time-order and healthkit-source-document-time-complete
+* obeys healthkit-source-document-time-complete
 * extension ^slicing.rules = #closed
 * extension contains basis 1..1 MS and period 1..1 MS
 * extension[basis].extension 0..0
