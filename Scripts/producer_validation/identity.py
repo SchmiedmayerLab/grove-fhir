@@ -247,16 +247,16 @@ def validate_healthkit_sync_identifier(
     system, _ = complete_identifier(identifier, f"{label} readable sync Identifier")
     prefix, separator, writer = system.rpartition(f"/{contract['systemPathSegment']}/")
     try:
-        require_absolute_uri(prefix, "readable sync Identifier store scope")
+        require_absolute_uri(prefix, "readable sync Identifier native record system")
     except ExchangeProtocolError as error:
         raise ProducerValidationError(
-            f"{label} readable sync Identifier system must name the store scope and the "
-            "writing application's bundle identifier"
+            f"{label} readable sync Identifier system must name the native record Identifier system "
+            "and the writing application's bundle identifier"
         ) from error
     if not separator or re.fullmatch(contract["writerSegmentPattern"], writer) is None:
         raise ProducerValidationError(
-            f"{label} readable sync Identifier system must name the store scope and the "
-            "writing application's bundle identifier"
+            f"{label} readable sync Identifier system must name the native record Identifier system "
+            "and the writing application's bundle identifier"
         )
     if "writer-record" not in typed_resource_identifiers(resource, label) or len(
         extensions_with_url(resource, WRITER_RECORD_VERSION_EXTENSION)
