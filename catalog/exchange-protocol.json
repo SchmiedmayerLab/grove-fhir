@@ -1,9 +1,9 @@
 {
   "$schema": "https://grovealliance.org/fhir/catalog/schemas/exchange-protocol.schema.json",
   "schemaVersion": 0,
-  "version": "0.8.1",
+  "version": "0.8.2",
   "protocolVersion": 0,
-  "releaseVersion": "0.8.1",
+  "releaseVersion": "0.8.2",
   "fhirVersion": "4.0.1",
   "profiles": {
     "activeBundle": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle",
@@ -2255,9 +2255,9 @@
           "https://example.org/research/participant-id",
           "participant-001",
           "questionnaire-response",
-          "RQqyR4hhSYTy6N4dlPjDD8dV-R5YQP5N93O1Fdqaprw"
+          "6wdRcDJe0GnRwqWDI6rpyduGLRFrFqDJwesl1Ei9EQ0"
         ],
-        "value": "v0:test-key:1:CemDNy4FUo9sEMidkI2B4TLqm3qerDgTYMMolw8KHyE"
+        "value": "v0:test-key:1:UjRpKw1ChoJ8CY1aT6UTnnnO1CCoHv6aVmLPMbP0kJU"
       },
       {
         "id": "questionnaire-extraction-bundle-application-snapshot",
@@ -2276,9 +2276,9 @@
         "components": [
           "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1",
           "v0:test-key:1:7_7dmqTFxPH01QGTycmp8nIPty7WwphH2X0ZaV-p3wk",
-          "iAAuj955hyHehjNHaBNPLxPGPVg-_bjssxhJyRnqYOk"
+          "3ora5VrFq1fH1P1CpZ0K4uMcqrU9JOqXHaiRN7D0M8c"
         ],
-        "value": "v0:test-key:1:sYrQOyA7hB-1ufVVjgf6orRKv4dXbCSjQCVLSNVXn0M"
+        "value": "v0:test-key:1:E96gmaE_ofFUfBKWb-pcLbNnhxO7QmNh1Yzr5z7qLtw"
       }
     ],
     "invalidIdentities": [
