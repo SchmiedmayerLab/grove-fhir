@@ -293,6 +293,35 @@ class ReleaseWorkflowTests(unittest.TestCase):
             encoding="utf-8"
         )
 
+    def test_online_builds_wait_for_the_terminology_server(self) -> None:
+        offline, online = self.build_guides.split('if [[ "$offline_build" == "true" ]]; then\n    publisher_arguments')[1].split("  else\n", 1)
+        self.assertNotIn("wait_for_terminology_server", offline)
+        self.assertIn("wait_for_terminology_server", online.split("  fi\n", 1)[0])
+        function = re.search(r"(?ms)^wait_for_terminology_server\(\) \{.*?^\}\n", self.build_guides).group(0)
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            # A server that answers on the third attempt, and a sleep that only records its delay.
+            (root / "curl").write_text(
+                '#!/bin/sh\nn=$(cat "$STATE" 2>/dev/null || echo 0); n=$((n + 1)); echo "$n" > "$STATE"\n[ "$n" -ge 3 ]\n'
+            )
+            (root / "sleep").write_text('#!/bin/sh\necho "$1" >> "$SLEPT"\n')
+            for name in ("curl", "sleep"):
+                (root / name).chmod(0o755)
+            environment = {"PATH": f"{root}:/usr/bin:/bin", "STATE": str(root / "state"), "SLEPT": str(root / "slept")}
+            result = subprocess.run(
+                ["bash", "-c", function + "wait_for_terminology_server"],
+                env=environment, capture_output=True, text=True,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual((root / "slept").read_text().split(), ["30", "60"])
+            (root / "curl").write_text("#!/bin/sh\nexit 7\n")
+            result = subprocess.run(
+                ["bash", "-c", function + "wait_for_terminology_server"],
+                env=environment, capture_output=True, text=True,
+            )
+            self.assertEqual(result.returncode, 1)
+            self.assertIn("did not answer; rerun the build", result.stderr)
+
     def test_dependency_cache_fallbacks_preserve_the_exact_external_closure(self) -> None:
         closure_hash = "${{ hashFiles('Scripts/download-fhir-tools.sh') }}"
         guide_wave = (ROOT / ".github/workflows/build-guide-wave.yml").read_text()

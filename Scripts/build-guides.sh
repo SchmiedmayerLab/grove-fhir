@@ -56,6 +56,22 @@ case "${GROVE_TX_OFFLINE:-0}" in
 esac
 readonly offline_build
 
+# The online lane depends on a public terminology server that is sometimes briefly unreachable, failing a build
+# that would otherwise pass. Wait for it to answer before each guide, and fail with a clear message if it stays down.
+wait_for_terminology_server() {
+  local server="${GROVE_TX_SERVER:-https://tx.fhir.org}"
+  local attempt
+  for attempt in 1 2 3 4 5; do
+    if curl --silent --fail --max-time 30 --output /dev/null "$server/r4/metadata"; then
+      return 0
+    fi
+    echo "Terminology server $server did not answer (attempt $attempt of 5); retrying in $((attempt * 30)) seconds" >&2
+    sleep $((attempt * 30))
+  done
+  echo "error: terminology server $server did not answer; rerun the build once it is reachable" >&2
+  return 1
+}
+
 check_guide_qa() {
   if [[ "$offline_build" == "true" ]]; then
     python3 "$REPOSITORY_ROOT/Scripts/check-guide-qa.py" \
@@ -134,6 +150,7 @@ for guide in "${guides[@]}"; do
   if [[ "$offline_build" == "true" ]]; then
     publisher_arguments=(-ig ig.ini -tx n/a -no-network)
   else
+    wait_for_terminology_server
     publisher_arguments=(-ig ig.ini -tx "${GROVE_TX_SERVER:-https://tx.fhir.org}")
   fi
   guide_package_directory="$REPOSITORY_ROOT/.build/guide-packages/$guide"
