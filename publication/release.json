@@ -1,6 +1,9 @@
 {
   "status": "draft",
   "sequence": "Releases",
-  "description": "First native website publication of all ten Grove FHIR implementation guides at grovealliance.org, with publication history and release downloads.",
-  "previousPublication": null
+  "description": "Grove FHIR implementation guides 0.8.2, adding typed HealthKit source metadata and preserving metadata canonical routes in HealthKit previews.",
+  "previousPublication": {
+    "tag": "0.8.1",
+    "sha256": "65a771b0bdb2d44208d798f4b073b03c31d95b4e56140b03b997e8304c5614e4"
+  }
 }

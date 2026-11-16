@@ -52,7 +52,7 @@
       }
     },
     {
-      "fullUrl": "urn:uuid:3adbca54-5683-5264-a598-818727d2d54f",
+      "fullUrl": "urn:uuid:85f3cc21-6763-5cb0-ad39-58b6ba4f4984",
       "extension": [
         {
           "url": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-exchange-entry-key",
@@ -66,7 +66,7 @@
               ]
             },
             "system": "https://study.example.org/fhir/NamingSystem/grove-context-snapshot-v0/test-key/1",
-            "value": "v0:test-key:1:CemDNy4FUo9sEMidkI2B4TLqm3qerDgTYMMolw8KHyE"
+            "value": "v0:test-key:1:UjRpKw1ChoJ8CY1aT6UTnnnO1CCoHv6aVmLPMbP0kJU"
           }
         }
       ],
@@ -142,7 +142,7 @@
                 ]
               },
               "system": "https://study.example.org/fhir/NamingSystem/grove-context-snapshot-v0/test-key/1",
-              "value": "v0:test-key:1:CemDNy4FUo9sEMidkI2B4TLqm3qerDgTYMMolw8KHyE"
+              "value": "v0:test-key:1:UjRpKw1ChoJ8CY1aT6UTnnnO1CCoHv6aVmLPMbP0kJU"
             }
           }
         ],
@@ -151,7 +151,7 @@
           "value": "home-vitals-2026-08-28"
         },
         "language": "en-US",
-        "questionnaire": "https://grovealliance.org/fhir/questionnaire/Questionnaire/GroveHomeVitalsExample|0.8.1",
+        "questionnaire": "https://grovealliance.org/fhir/questionnaire/Questionnaire/GroveHomeVitalsExample|0.8.2",
         "status": "completed",
         "subject": {
           "reference": "urn:uuid:b90557a2-4263-5a57-8d50-871a1ff28c92"
@@ -477,7 +477,7 @@
         ],
         "derivedFrom": [
           {
-            "reference": "urn:uuid:3adbca54-5683-5264-a598-818727d2d54f"
+            "reference": "urn:uuid:85f3cc21-6763-5cb0-ad39-58b6ba4f4984"
           }
         ]
       }
@@ -620,13 +620,13 @@
         ],
         "derivedFrom": [
           {
-            "reference": "urn:uuid:3adbca54-5683-5264-a598-818727d2d54f"
+            "reference": "urn:uuid:85f3cc21-6763-5cb0-ad39-58b6ba4f4984"
           }
         ]
       }
     },
     {
-      "fullUrl": "urn:uuid:97ebae4f-2a3d-551e-b3f4-133ccc516482",
+      "fullUrl": "urn:uuid:5b656e57-ac76-52a2-8d10-b35cb89ea5d6",
       "extension": [
         {
           "url": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-exchange-entry-key",
@@ -640,7 +640,7 @@
               ]
             },
             "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
-            "value": "v0:test-key:1:sYrQOyA7hB-1ufVVjgf6orRKv4dXbCSjQCVLSNVXn0M"
+            "value": "v0:test-key:1:E96gmaE_ofFUfBKWb-pcLbNnhxO7QmNh1Yzr5z7qLtw"
           }
         }
       ],
@@ -664,7 +664,7 @@
                 ]
               },
               "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
-              "value": "v0:test-key:1:sYrQOyA7hB-1ufVVjgf6orRKv4dXbCSjQCVLSNVXn0M"
+              "value": "v0:test-key:1:E96gmaE_ofFUfBKWb-pcLbNnhxO7QmNh1Yzr5z7qLtw"
             }
           }
         ],
