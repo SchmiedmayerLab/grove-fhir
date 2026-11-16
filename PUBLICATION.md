@@ -10,15 +10,14 @@ SPDX-License-Identifier: MIT
 
 # Publication and release evidence
 
-The Grove FHIR Implementation Guides are release candidates, not yet immutable canonical publications.
-The ten guides use canonical URLs under `https://grovealliance.org/fhir`, but that host is not yet operated as the permanent publication origin.
-Until ownership, HTTPS availability, retention, and correction governance are approved, `publication/config.json` deliberately keeps `releaseMode: ci-build-only` and the canonical host must not be described as live.
+The Grove FHIR Implementation Guides are published at their canonical base, `https://grovealliance.org/fhir`. Each release produces a publication archive, which the Grove website mounts under `/fhir/` and deploys.
+Publications carry the FHIR status `draft`. `publication/config.json` keeps `releaseMode: ci-build-only` until a release completes the [immutable canonical promotion](#immutable-canonical-promotion); `Scripts/check-content.py` enforces this.
 
 ## Mutable preview
 
-Every push to `main` runs **Build and Test**. After a successful build, **Development Preview** verifies the `pages-site` artifact and reports its expanded size before deploying it without rebuilding. Completed builds superseded on `main` are skipped, and deployments are serialized. Output above GitHub Pages' supported size produces a warning; see the [hosting considerations](#future-website-integration).
+Every push to `main` runs **Build and Test**. After a successful build, **Development Preview** verifies the `pages-site` artifact and reports its expanded size before deploying it without rebuilding. Completed builds superseded on `main` are skipped, and deployments are serialized. Output above GitHub Pages' supported size produces a warning; see [website hosting](#website-hosting).
 
-Each full guide page displays a high-contrast **Development build — not a published release** banner, the source commit, and links to its published guide and publication history. The banner uses the standard FHIR `publish-box` location; custom full HTML pages receive the same notice. Canonical publication links become available when the website is deployed.
+Each full guide page displays a high-contrast **Development build — not a published release** banner, the source commit, and links to its published guide and publication history. The banner uses the standard FHIR `publish-box` location; custom full HTML pages receive the same notice.
 
 Default-branch builds replace one reader-facing preview for each package:
 
@@ -38,7 +37,7 @@ Default-branch builds replace one reader-facing preview for each package:
 These paths are relative to `https://schmiedmayerlab.github.io/grove-fhir`.
 Versionless aliases are previews, not canonical resource URLs and not immutable release history. `publication/config.json` is the sole route inventory; `npm run pages:build` and `Scripts/check-publication.py` verify it.
 
-The legacy Mobile root is a set of small HTML redirects to `/mobile/ci-build/`, including nested pages and browser query strings/anchors. It no longer duplicates the guide's images, scripts, or raw resources. Use the guide's preview or canonical URLs for individual JSON, XML, Turtle, and tabular files; these remain intact. The root `package.tgz`, checksum, package list, and publication manifest remain available for package consumers.
+The legacy Mobile root is a set of small HTML redirects to `/mobile/ci-build/`, including nested pages and browser query strings/anchors. It no longer duplicates the guide's images, scripts, or raw resources. Use the guide's preview or canonical URLs for individual JSON, XML, and tabular files; these remain intact. The root `package.tgz`, checksum, package list, and publication manifest remain available for package consumers.
 
 Publisher ZIP bundles (including `full-ig.zip`, definitions, examples, and spreadsheet archives) and legacy `.pack` Validator bundles are copied byte-for-byte to `.build/pages-downloads/<guide>/`. The main build uploads them as **fhir-bulk-downloads**, separately from **pages-site**. Each guide's `bulk-downloads.html` links to the exact producing run and lists filenames, sizes, and SHA-256 hashes; existing HTML download links are rewritten to this page. Actions downloads require GitHub sign-in and expire after 14 days. Local builds show the local download directory instead. Packages (`*.tgz`) and all individual resource formats stay on the website.
 
@@ -86,7 +85,7 @@ Every release replaces the current publication. Only the first release of a majo
 
 The guides are published as HTML, JSON, and XML. Turtle serializations are not generated (`excludettl` in each `sushi-config.yaml`), and `publication/publish-setup.json` disables Publisher's `.json1`/`.json2`/`.xml1`/`.xml2` clones, which exist for server-side content negotiation that a static host cannot perform.
 
-The same layout applies to all ten guides. The archive root is the `/fhir/` subtree, leaving `/` and other routes available for the future website.
+The same layout applies to all ten guides. The archive root is the `/fhir/` subtree, leaving `/` and other routes to the website.
 
 `publication/release.json` supplies the publication status, sequence, description, and previous publication. `draft` is a FHIR maturity status, independent of whether the artifact is a development preview or a published version. Before each release:
 
@@ -122,17 +121,13 @@ The final packages are audited again with the repository QA checks and official 
 
 The isolated publication job uploads all assets to a new draft GitHub Release, then makes the complete release public/latest. Existing releases are never overwritten. An upload failure may leave a draft for investigation; do not automatically delete or reuse it.
 
-### Future website integration
+### Website hosting
 
-The ten-guide preview built with Publisher 3.0.3 occupies approximately **1.87 GB expanded**. It occupied **3.83 GB** before alias/download optimization and **2.60 GB** before Turtle renderings were omitted. The [prior successful deployment](https://github.com/SchmiedmayerLab/grove-fhir/actions/runs/43200603008) used a **4.11 GB** expanded artifact; its Pages upload was approximately **909 MB compressed**. Compressed artifact size and expanded website size are different measurements.
+[GitHub Pages documents a 1 GB supported site size](https://docs.github.com/en/pages/getting-started-with-github-pages/github-pages-limits). [The official upload action](https://github.com/actions/upload-pages-artifact#artifact-validation) explains that larger deployments can succeed, with an absolute rejection threshold of 10 GB for the deployment tarball. They are not guaranteed and remain subject to the deployment timeout. The preview workflow therefore reports expanded size and warns above 1 GB without a hard stop.
 
-[GitHub Pages documents a 1 GB supported site size](https://docs.github.com/en/pages/getting-started-with-github-pages/github-pages-limits). [The official upload action](https://github.com/actions/upload-pages-artifact#artifact-validation) explains that larger deployments can succeed, with an absolute rejection threshold of 10 GB for the deployment tarball. They are not guaranteed and remain subject to the deployment timeout. The preview workflow therefore reports expanded size and warns above 1 GB without imposing a new hard stop on the existing deployment.
+Root HTML redirects, offloaded bulk downloads, and the omission of Turtle renderings and negotiation clones keep the site small while preserving all rendered FHIR pages, JSON and XML resources, packages, and canonical resource routes. Each release replaces the current guides, and a complete copy of the guides is kept only for the first release of a major version from `1.0.0`. The guide content still exceeds 1 GB, so the size warning remains. Versioned publications offload only new and current bundles; older sealed version directories keep their original bytes and download locations.
 
-GitHub Pages remains the deployment target. Root HTML redirects, offloaded bulk downloads, and the omission of Turtle renderings and negotiation clones reduce duplication while preserving all rendered FHIR pages, JSON and XML resources, packages, and canonical resource routes. The staged 0.8.1 publication expands to **1.73 GB** (a 225 MB archive); its ten version directories together hold 7 MB. A complete copy of the guides is added only with the first release of a major version from `1.0.0`. The complete guide content still exceeds 1 GB, so the size warning remains. Versioned publications offload only new/current bundles; older sealed version directories keep their original bytes and download locations. The website receiver can mount the publication archive under `/fhir/` while ordinary website pages occupy the other routes.
-
-The optional notification job is disabled unless `GROVE_WEBSITE_APP_ID` is configured. Once `grove-website` implements the receiver, configure that repository variable and the `GROVE_WEBSITE_APP_PRIVATE_KEY` secret for a GitHub App installed on `SchmiedmayerLab/grove-website` with **Actions: write**. After a successful release, it dispatches the website's `pages.yml` workflow on `main` with `releaseTag=<version>`.
-
-The receiver should download that exact release's archive and checksums, verify them, extract the archive under its site's `/fhir/` output directory, and deploy the complete website. It must preserve the selected publication when ordinary website changes rebuild the site. The notification performs no website deployment itself; the receiver and canonical-host checks belong to the separate website work.
+After a successful release, the notification job dispatches the website's `pages.yml` workflow on `main` with `releaseTag=<version>`. It authenticates as a GitHub App installed on `SchmiedmayerLab/grove-website` with **Actions: write**, configured through the repository variable `GROVE_WEBSITE_APP_ID` and the secret `GROVE_WEBSITE_APP_PRIVATE_KEY`, and it is skipped while the variable is empty. The website verifies the release archive and its checksums, mounts it under `/fhir/`, and deploys the combined site; website-only changes keep the deployed publication.
 
 ## Two validation lanes
 

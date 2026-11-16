@@ -22,9 +22,8 @@ Platform adapters add source-specific mappings and deployment-scoped typed ident
 Swift, TypeScript, Kotlin, and other implementations produce FHIR resources conforming to these contracts.
 This repository owns the guides, examples, negative corpora, and a producer-neutral validation kit; it never clones or executes an implementation repository.
 
-The canonical namespace is `https://grovealliance.org/fhir`.
-Canonical identity does not imply that the guides are currently hosted on that domain.
-Every successful `main` build prepares a development preview with a clear development banner and source commit. The Pages workflow deploys that verified artifact and reports its expanded size; see the [hosting considerations](PUBLICATION.md#future-website-integration).
+The canonical namespace is `https://grovealliance.org/fhir`, where the published guides are hosted.
+Every successful `main` build prepares a development preview with a clear development banner and source commit. The Pages workflow deploys that verified artifact and reports its expanded size; see the [hosting considerations](PUBLICATION.md#website-hosting).
 Legacy Mobile HTML URLs redirect to `/mobile/ci-build/`. Bulk ZIP and Validator downloads live in the matching `fhir-bulk-downloads` Actions artifact; each guide links to download instructions. FHIR packages and individual resources remain on Pages.
 Versioned publications are prepared separately with the standard FHIR Publisher; see the [release workflow](PUBLICATION.md#standard-fhir-publication).
 
