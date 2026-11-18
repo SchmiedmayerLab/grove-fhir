@@ -225,6 +225,19 @@ Do not parse and reserialize, relabel, upgrade, downgrade, or otherwise rewrite 
 Grove validation checks that an inline attachment is strict UTF-8 JSON containing one `resourceType`-bearing object, but it does not apply R4 rules to a DSTU2 payload or assert conformance to the issuer's FHIR release.
 The R4 envelope asserts the exact source release, payload integrity, identity, and provenance—not that Grove has validated or endorsed the provider's clinical content.
 
+The `startDate` and `endDate` of a clinical record or a CDA document sample are facts about the HealthKit sample, not about the care its document describes.
+Carry them in the [HealthKit Source Document Time](StructureDefinition-healthkit-source-document-time.html) extension on the source entity of the conversion Provenance, with the basis that names their meaning:
+
+| Sample class | Basis | Meaning of the period |
+|---|---|---|
+| `HKClinicalRecord` | `clinical-record-download` | when the system downloaded the FHIR data to the device and added the sample to Health; not taken from the FHIR data |
+| `HKCDADocumentSample` | `cda-source-document-period` | the start and end dates that the app creating the sample supplied for the document; no clinical service or download time is inferred |
+
+The period states both endpoints as complete date-times with an offset under the [time rules](#values-units-and-time), and equal endpoints are admitted.
+A supplied `HKTimeZone` maps to the `timezone` extension on both endpoints and is not repeated in source metadata.
+Never copy these dates into `DocumentReference.context.period`, `DocumentReference.date`, or the embedded source bytes.
+The extension mints no identity; adding or changing it changes the record version.
+
 ### Values, units, and time
 
 | HealthKit sample type | Required profile and code | FHIR value |
@@ -240,7 +253,7 @@ Map an available IANA time-zone name to the standard FHIR `timezone` extension o
 
 For an `HKHeartbeatSeriesSample` or `HKWorkoutRoute`, set `DocumentReference.context.period` to the sample's `startDate` and `endDate`. Both endpoints use the same millisecond precision, half-even rounding, numeric-offset and IANA `timezone` rules as Observation effective times. Preserve the complete source interval, including equal endpoints; reject reversed or unrepresentable periods and invalid supplied time-zone names. Without a source time zone, serialize the endpoints in UTC without inventing a zone name. Do not substitute the conversion instant in `DocumentReference.date` for the recording period. A time zone represented on this period is not repeated in source metadata.
 
-Provider-issued clinical documents preserve their original bytes. Do not infer a clinical service period from import or conversion timestamps. Preserve otherwise unmapped `HKTimeZone` metadata on the wrapper when its relationship to a clinical date-time is not established.
+Provider-issued clinical documents preserve their original bytes. Do not infer a clinical service period from import or conversion timestamps. The sample dates of a clinical record or CDA document sample, with a supplied `HKTimeZone`, belong to the [source document time](#clinical-fhir-records) extension and never to the document.
 
 Step count preserves the source interval total with Grove `step-count-total` and UCUM `{steps}`.
 The effective Period must have both endpoints and a positive duration.
@@ -464,7 +477,7 @@ Use the clinical, device and other structured mappings in this guide first. The 
 
 | Runtime key | SDK constant | Source types | Element |
 |---|---|---|---|
-| `HKTimeZone` | `HKMetadataKeyTimeZone` | every type with an Observation output; heartbeat series and workout routes | the `timezone` extension on each `effective[x]` or recording `context.period` endpoint, as the [time rules](#values-units-and-time) define |
+| `HKTimeZone` | `HKMetadataKeyTimeZone` | every type with an Observation output; heartbeat series, workout routes, clinical records and CDA documents | the `timezone` extension on each `effective[x]`, recording `context.period` or [source document time](#clinical-fhir-records) endpoint, as the [time rules](#values-units-and-time) define |
 | `HKWasUserEntered` | `HKMetadataKeyWasUserEntered` | every type with an Observation output | the `grove-recording-method` extension, `manual-entry` when the key states `true`, as the [capture-mode rule](#capture-mode-and-performer) defines |
 | `HKMetadataKeySyncIdentifier` | `HKMetadataKeySyncIdentifier` | every type with an Observation or document output | the `writer-record` Identifier and, when disclosed, the [readable sync identifier](#readable-sync-identifier), as the [revision rules](#logical-identity-and-revisions) define |
 | `HKMetadataKeySyncVersion` | `HKMetadataKeySyncVersion` | every type with an Observation or document output | the Grove Writer Record Version extension beside the `writer-record` Identifier |
