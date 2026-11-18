@@ -855,6 +855,7 @@ Parent: HealthKitObservation
 Id: healthkit-audiogram-panel
 Title: "Audiogram Panel"
 Description: "HKAudiogramSample: an air conduction hearing test preserving its complete source interval and each ear/frequency sensitivity test. Known frequencies use the declared LOINC components; other frequencies use an explicit text-only component code and their exact frequency in HealthKit Audiogram Test Details, never a neighbouring frequency code. Each sensitivity test retains its available masking state. Every emitted component carries its source test details, including available masking and clamping bounds; no unmeasured frequency or absent ear is invented."
+* obeys healthkit-audiogram-panel-1
 * code = $loinc#89015-2
 * effective[x] only dateTime or Period
 * value[x] 0..0
