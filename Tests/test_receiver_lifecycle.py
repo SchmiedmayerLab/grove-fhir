@@ -121,8 +121,9 @@ class ReceiverLifecycleTests(unittest.TestCase):
             "matchRule": "no-untyped-carrier-admitted",
             "enforcement": "typed-healthkit-metadata-extension-and-no-automatic-native-uuid-copy",
         })
-        # The typed metadata carrier, the writer-assigned readable Identifier and the writer
-        # version on a DocumentReference are the only rule differences. Keep the original digest
+        # The typed metadata carrier, the writer-assigned readable Identifier, the writer
+        # version on a DocumentReference and the data-absent HealthKit ECG member are the only
+        # rule differences. Keep the original digest
         # guarding every other protocol rule and all source Bundles, rather than rebaselining them.
         metadata["matchRule"] = "no-generic-carrier-admitted"
         metadata["enforcement"] = "closed-adapter-metadata-allowlists-and-no-grove-generic-extension"
@@ -136,6 +137,12 @@ class ReceiverLifecycleTests(unittest.TestCase):
         selection["writerEvidence"] = selection["writerEvidence"].replace(
             "only on Observation and DocumentReference.", "only on Observation."
         )
+        references = protocol["referencePolicy"]
+        absent = references.pop("dataAbsentReferences")
+        self.assertEqual([(item["resourceType"], item["path"], item["codes"]) for item in absent], [("Observation", "hasMember", ["unknown"])])
+        absent_shape = ", or, only where dataAbsentReferences admits it, a Reference that carries nothing but one data-absent-reason extension"
+        self.assertIn(absent_shape, references["governedShape"])
+        references["governedShape"] = references["governedShape"].replace(absent_shape, "")
         rules = json.dumps(protocol, sort_keys=True, separators=(",", ":")).encode()
         self.assertEqual(hashlib.sha256(rules).hexdigest(), "63f074409e699dfeac546932152735cca10edb832e7ca27803eefc4acf1608a3")
         for name, digest in {

@@ -459,6 +459,25 @@ def validate_healthkit_ecg_contract(resource: dict[str, Any], label: str) -> Non
         raise ProducerValidationError(
             f"{label} HealthKit ECG correlated symptoms must agree with symptomsStatus"
         )
+    unreadable = ecg_claim["correlatedSymptomEvidence"]["unreadableSymptoms"]
+    absent_members = [
+        member for member in members
+        if isinstance(member, dict) and "extension" in member
+    ]
+    if absent_members:
+        if (
+            status_code != unreadable["symptomsStatus"]
+            or len(members) != 1
+            or members[0] != {
+                "extension": [{"url": unreadable["extension"], "valueCode": unreadable["code"]}]
+            }
+        ):
+            raise ProducerValidationError(
+                f"{label} HealthKit ECG may state unreadable symptoms only as the single "
+                f"{unreadable['code']} data-absent-reason member of a "
+                f"{unreadable['symptomsStatus']} status"
+            )
+        members = []
     seen_symptom_identifiers: set[tuple[str, str]] = set()
     waveform_output = typed_resource_identifiers(resource, label).get("source-output")
     for index, member in enumerate(members):

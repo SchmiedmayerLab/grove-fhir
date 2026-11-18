@@ -194,7 +194,7 @@
       "callerEvidence": [
         "HKElectrocardiogram",
         "all HKElectrocardiogram.VoltageMeasurement values and timeSinceSampleStart offsets",
-        "the exact associated HKCategorySample objects when symptomsStatus is present"
+        "the exact associated HKCategorySample objects when symptomsStatus is present, or the fact that they could not be read"
       ],
       "requiredContext": [
         "classification",
@@ -257,7 +257,15 @@
         ],
         "rule": "Each supplied HKCategorySample is converted through its existing HealthKit symptom Observation profile with its own source-record and source-output identities, exact effectivePeriod, and severity. The ECG hasMember Reference carries type Observation and that symptom's complete source-output Identifier. Duplicate References and samples outside the admitted seven source types fail closed; the number of associated samples is not capped by the number of admitted types.",
         "exchangeRule": "A symptom Observation is its own record, with its own source record and normal conversion Provenance, and may travel in the same Bundle as the ECG. The ECG uses an identifier-only logical hasMember Reference; it never embeds or relabels the symptom as an ECG child output.",
-        "sourceRevisionRule": "Each symptom record represents its HKSourceRevision through the normal HealthKit application/recording Device and conversion Provenance policy. Source-revision fields are not copied into a complex ECG extension."
+        "sourceRevisionRule": "Each symptom record represents its HKSourceRevision through the normal HealthKit application/recording Device and conversion Provenance policy. Source-revision fields are not copied into a complex ECG extension.",
+        "unreadableSymptoms": {
+          "symptomsStatus": "present",
+          "r4Element": "Observation.hasMember",
+          "cardinality": "1..1",
+          "extension": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+          "code": "unknown",
+          "rule": "The symptom samples of a present ECG can be unreadable while the ECG itself is readable. When symptomsStatus is present but the caller states that the symptom samples could not be read, the ECG keeps the present status and carries exactly one hasMember entry with only the data-absent-reason extension, code unknown, and no type, identifier or display. The waveform and the optional average heart rate are emitted as usual. none and notSet never carry the reason, and the reason never accompanies a symptom member."
+        }
       },
       "wireMapping": {
         "classification": "Observation.interpretation with exactly one coding from HealthKitECGClassificationVS",
@@ -269,7 +277,7 @@
         "sourcePeriod": "required healthkit-ecg-source-period extension because waveform effectivePeriod may be narrower"
       },
       "effectiveRule": "Observation.effectivePeriod starts at HKElectrocardiogram.startDate plus the exact first timeSinceSampleStart and ends at the exact last supplied voltage instant. The required healthkit-ecg-source-period extension separately preserves the HKElectrocardiogram startDate/endDate.",
-      "admissionRule": "The caller supplies already-obtained evidence. The supplied voltage array length and SampledData whitespace-token frame count both equal numberOfVoltageMeasurements exactly; offsets are complete, unique, sorted, and satisfy offset[i] = offset[0] + i * SampledData.period exactly; every voltage is present. Canonicalize samplingFrequency and computed 1000 / SampledData.period to the producer's shortest round-trip base-10 decimal representation and require exact decimal equality (tolerance zero). Every associated symptom is supplied as its exact HKCategorySample and converted as its own admitted HealthKit Observation record. Missing, non-uniform, repeated-symptom-identity, resampled, or inconsistent evidence fails closed; the adapter performs no HealthKit query."
+      "admissionRule": "The caller supplies already-obtained evidence. The supplied voltage array length and SampledData whitespace-token frame count both equal numberOfVoltageMeasurements exactly; offsets are complete, unique, sorted, and satisfy offset[i] = offset[0] + i * SampledData.period exactly; every voltage is present. Canonicalize samplingFrequency and computed 1000 / SampledData.period to the producer's shortest round-trip base-10 decimal representation and require exact decimal equality (tolerance zero). Every associated symptom is supplied as its exact HKCategorySample and converted as its own admitted HealthKit Observation record, unless the caller states that the symptom samples could not be read. Missing, non-uniform, repeated-symptom-identity, resampled, or inconsistent evidence fails closed; the adapter performs no HealthKit query."
     }
   },
   "derivedAggregates": [
@@ -1634,7 +1642,7 @@
         "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-ecg-observation",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-observation"
       ],
-      "requirement": "The caller supplies the HKElectrocardiogram, every voltage measurement with its exact timeSinceSampleStart, and each associated HKCategorySample when symptomsStatus is present. Classification is Observation.interpretation; Apple ECG algorithm version is Observation.method; optional average heart rate is a separate LOINC 8867-4 Observation derived from the waveform. Each supplied symptom is converted through its existing HealthKit symptom Observation profile as a separate record, and the ECG hasMember carries that Observation's opaque source-output Identifier. Sampling frequency and reported count are validated against SampledData but are not duplicated on the wire. The adapter preserves source and waveform intervals, lead, offsets, and voltages without fetching or resampling."
+      "requirement": "The caller supplies the HKElectrocardiogram, every voltage measurement with its exact timeSinceSampleStart, and each associated HKCategorySample when symptomsStatus is present, or the fact that they could not be read, which the ECG states as a single data-absent-reason unknown hasMember entry. Classification is Observation.interpretation; Apple ECG algorithm version is Observation.method; optional average heart rate is a separate LOINC 8867-4 Observation derived from the waveform. Each supplied symptom is converted through its existing HealthKit symptom Observation profile as a separate record, and the ECG hasMember carries that Observation's opaque source-output Identifier. Sampling frequency and reported count are validated against SampledData but are not duplicated on the wire. The adapter preserves source and waveform intervals, lead, offsets, and voltages without fetching or resampling."
     },
     {
       "sourceTypeIdentifier": "HKDataTypeIdentifierHeartbeatSeries",
