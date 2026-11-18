@@ -435,6 +435,12 @@ class ProducerHealthkitTests(ProducerValidationTestCase):
             with_symptom["hasMember"][0]["identifier"]
         )
         mutations.append((unreadable_with_identifier, "single unknown data-absent-reason"))
+        two_unreadable_members = copy.deepcopy(unreadable_symptoms)
+        two_unreadable_members["hasMember"].append(copy.deepcopy(unreadable_symptoms["hasMember"][0]))
+        mutations.append((two_unreadable_members, "single unknown data-absent-reason"))
+        unreadable_with_display = copy.deepcopy(unreadable_symptoms)
+        unreadable_with_display["hasMember"][0]["display"] = "Symptoms unavailable"
+        mutations.append((unreadable_with_display, "single unknown data-absent-reason"))
         obsolete = copy.deepcopy(ecg)
         obsolete["extension"].append({
             "url": healthkit_root + "StructureDefinition/healthkit-ecg-average-heart-rate",
