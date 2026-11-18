@@ -7,7 +7,9 @@
 # SPDX-License-Identifier: MIT
 
 import copy
+import json
 import unittest
+from pathlib import Path
 
 from Scripts.producer_validation.diagnostics import ProducerValidationError
 from Scripts.producer_validation.mobile_semantics import mobile_semantic_projection
@@ -65,6 +67,16 @@ class ProviderTimePrecisionTests(unittest.TestCase):
         resource, vector = self.fixture()
         resource["effectiveDateTime"] = "2026-11-01T00:00:00.123456789000Z"
         mobile_semantic_projection(resource, vector, "same source instant")
+
+    def test_oura_daily_activity_uses_the_source_activity_day(self):
+        catalog = json.loads((Path(__file__).resolve().parents[1] / "catalog" / "providers-adapter.json").read_text(encoding="utf-8"))
+        oura = next(provider for provider in catalog["providers"] if provider["measurementOwner"] == "oura")
+        daily = next(source for source in oura["sourceTypes"] if source["token"] == "daily_activity")
+        for element in daily["elements"]:
+            with self.subTest(path=element["path"]):
+                self.assertIn("from 04:00 on its named date to 04:00 on the following date", element["effective"])
+                self.assertIn("midnight substitution is forbidden", element["effective"])
+                self.assertNotIn("civil day", element["effective"])
 
 
 if __name__ == "__main__":
