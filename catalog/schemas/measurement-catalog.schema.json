@@ -96,14 +96,15 @@
     },
     "effectiveCanonicalization": {
       "type": "object",
-      "description": "How every exchanged timestamp is normalised. A silent typo here changes a normative contract, so the shape is closed and the two mechanical fields are enumerated.",
+      "description": "Default Mobile timestamp canonicalization and explicit adapter overrides. Both shapes are closed so a typo cannot change the temporal contract.",
       "additionalProperties": false,
       "required": [
         "scope",
         "precision",
         "rounding",
         "epoch",
-        "offsetPolicy"
+        "offsetPolicy",
+        "sourcePrecisionOverrides"
       ],
       "properties": {
         "scope": {
@@ -130,6 +131,20 @@
         "offsetPolicy": {
           "type": "string",
           "minLength": 1
+        },
+        "sourcePrecisionOverrides": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["adapters", "precision", "rounding", "rule"],
+          "properties": {
+            "adapters": {
+              "type": "array", "minItems": 1, "uniqueItems": true,
+              "items": {"enum": ["google-health-api", "oura", "withings"]}
+            },
+            "precision": {"const": "source"},
+            "rounding": {"const": "none"},
+            "rule": {"type": "string", "minLength": 1}
+          }
         }
       }
     },

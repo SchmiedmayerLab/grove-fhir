@@ -33,3 +33,19 @@ Important fail-closed boundaries include:
 See [`catalog/providers-adapter.json`](https://grovealliance.org/fhir/catalog/providers-adapter.json) for every exact source token, element, unit conversion, grouping rule, semantic profile, and definitive status.
 The [authoritative status matrix](status-matrix.html) lists every provider field and the atomic Withings grouped mapping in that contract.
 The [Withings walkthrough](walkthrough.html) shows the grouped blood-pressure mapping end to end, from measure-group JSON to the emitted exchange Bundle.
+
+### Measurement time
+
+Provider `effectiveDateTime` values and both `effectivePeriod` endpoints retain the exact source instant, including its fractional seconds.
+Preserve each endpoint's supplied numeric UTC offset independently; a session may cross a daylight-saving transition.
+Do not pass source timestamp strings through a floating-point date representation or round them to milliseconds before serialization or collection-window comparison.
+Insignificant trailing zeros may be normalized without changing the instant.
+
+A date-only aggregate needs the source's defined day boundary and a source-evidenced time zone before it can become an exact interval.
+A retrieval clock, server time zone or participant's current location does not supply that evidence.
+An offset on a timestamp identifies that instant's displacement from UTC; it does not establish an IANA time-zone name or the offset at another endpoint.
+Keep any separately reported source offset in its defined field rather than applying it to a timestamp that already denotes UTC.
+
+The source-precision override applies to measurement time.
+Conversion Provenance retains its own conversion instant, and it never substitutes for a missing measurement timestamp.
+These rules do not change the native adapters' millisecond canonicalization or Sensor `SampledData` timing.
