@@ -19,6 +19,7 @@ from Scripts.producer_validation import (
     graphs,
     healthkit as healthkit_validation,
     profiles as profile_validation,
+    references,
 )
 from Tests.producer_validation_test_support import (
     ProducerValidationTestCase,
@@ -360,6 +361,31 @@ class ProducerHealthkitTests(ProducerValidationTestCase):
         }]
         exchange_bundle.validate_resource_profile_claims(with_symptom, "HealthKit ECG")
 
+        unreadable_symptoms = copy.deepcopy(ecg)
+        unreadable_symptoms["extension"][1]["valueCode"] = "present"
+        unreadable_symptoms["hasMember"] = [{"extension": [{
+            "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+            "valueCode": "unknown",
+        }]}]
+        exchange_bundle.validate_resource_profile_claims(
+            unreadable_symptoms, "HealthKit ECG with unreadable symptoms"
+        )
+        references.validate_reference_policy(unreadable_symptoms, {}, "HealthKit ECG")
+        unprofiled_absent_member = copy.deepcopy(unreadable_symptoms)
+        unprofiled_absent_member["meta"]["profile"] = [
+            "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-ecg-observation"
+        ]
+        absent_derivation = copy.deepcopy(ecg)
+        absent_derivation["derivedFrom"] = copy.deepcopy(unreadable_symptoms["hasMember"])
+        for name, invalid in (
+            ("no HealthKit ECG claim", unprofiled_absent_member),
+            ("not a member", absent_derivation),
+        ):
+            with self.subTest(absent_reference=name), self.assertRaisesRegex(
+                diagnostics.ProducerValidationError, "logical reference must contain one Identifier"
+            ):
+                references.validate_reference_policy(invalid, {}, "HealthKit ECG")
+
         more_than_one_sample_per_admitted_type = copy.deepcopy(with_symptom)
         more_than_one_sample_per_admitted_type["hasMember"] = [
             {
@@ -393,6 +419,22 @@ class ProducerHealthkitTests(ProducerValidationTestCase):
         wrong_role = copy.deepcopy(with_symptom)
         wrong_role["hasMember"][0]["identifier"]["type"]["coding"][0]["code"] = "source-record"
         mutations.append((wrong_role, "must use a source-output"))
+        unreadable_without_present = copy.deepcopy(unreadable_symptoms)
+        unreadable_without_present["extension"][1]["valueCode"] = "none"
+        mutations.append((unreadable_without_present, "must agree with symptomsStatus"))
+        unreadable_beside_symptom = copy.deepcopy(with_symptom)
+        unreadable_beside_symptom["hasMember"].append(
+            copy.deepcopy(unreadable_symptoms["hasMember"][0])
+        )
+        mutations.append((unreadable_beside_symptom, "single unknown data-absent-reason"))
+        unreadable_other_reason = copy.deepcopy(unreadable_symptoms)
+        unreadable_other_reason["hasMember"][0]["extension"][0]["valueCode"] = "asked-declined"
+        mutations.append((unreadable_other_reason, "single unknown data-absent-reason"))
+        unreadable_with_identifier = copy.deepcopy(unreadable_symptoms)
+        unreadable_with_identifier["hasMember"][0]["identifier"] = copy.deepcopy(
+            with_symptom["hasMember"][0]["identifier"]
+        )
+        mutations.append((unreadable_with_identifier, "single unknown data-absent-reason"))
         obsolete = copy.deepcopy(ecg)
         obsolete["extension"].append({
             "url": healthkit_root + "StructureDefinition/healthkit-ecg-average-heart-rate",
