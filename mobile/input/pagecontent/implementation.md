@@ -14,7 +14,7 @@ A Grove Mobile implementation begins with a valid clinical Observation and adds 
 2. Derive exactly one typed `source-record` Identifier and one typed `source-output` Identifier as complete `(system, value)` pairs using the exchange protocol.
 3. Set the Patient, effective time, status, and result.
    Add category and recording method when they are known.
-4. Link the recording Device whenever the source states the hardware that acquired the measurement, carrying every device fact the source exposes; a stable per-unit identity is optional.
+4. Link the recording Device whenever the source states the hardware that acquired the measurement, carrying every device fact the source exposes unless the deployment's disclosure policy withholds it; a stable per-unit identity is optional.
 5. Link an application with `observation-gatewayDevice` only when it mediated or routed the measurement.
 6. Link applicable studies with `workflow-researchStudy`.
 7. Create exactly one conversion Provenance for the source-record revision, targeting every output derived from it.
@@ -145,7 +145,7 @@ Implementations name their public types after these terms, in each platform's ca
 - **Study enrollment**: one ResearchStudy, its exact-revision PlanDefinition and one ResearchSubject for a known association.
 - **Application device, host device, recording device**: the three immutable, content-addressed Device snapshots that claim the Grove application, host and recording Device profiles.
 - **Retraction record and retraction target**: the lifecycle assertion, keyed by its `record-retraction` Identifier and carried in a retraction Bundle, that one whole source record is no longer exposed; its targets name what the producer emitted, or the source record as a whole, and are informative.
-- **Governed source identifier**: the optional clear native identifier a deployment discloses on the designated primary output or a retraction target. An adapter may admit one further readable identifier beside it for the record id the writing application assigned; the same disclosure setting governs both.
+- **Governed source identifier**: the optional clear native identifier a deployment discloses on the designated primary output or a retraction target. An adapter may admit one further readable identifier beside it for the record id the writing application assigned; it has its own disclosure setting, which takes effect only while the governed source identifier is disclosed.
 - **Writer**: the application or device that wrote the source record at its platform; it is the source agent of the conversion Provenance and, when the platform assigns them, the origin of the writer-record identity and version.
 - **Producer diagnostic**: a registered rule code that a producer or the conformance kit reports, at error severity for a refused record or invalid graph and at warning severity for what an accepted record lost.
 
