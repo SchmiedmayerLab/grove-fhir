@@ -407,6 +407,55 @@
         "definition": {
           "type": "string",
           "minLength": 1
+        },
+        "extensionValues": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "member"
+            ],
+            "minProperties": 2,
+            "maxProperties": 2,
+            "properties": {
+              "member": {
+                "type": "string",
+                "pattern": "^[a-zA-Z][a-zA-Z0-9]*$"
+              },
+              "valueCode": {
+                "type": "string",
+                "minLength": 1
+              },
+              "valueBoolean": {
+                "type": "boolean"
+              },
+              "valueQuantity": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "value",
+                  "system",
+                  "code"
+                ],
+                "properties": {
+                  "value": {
+                    "type": "number"
+                  },
+                  "system": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "code": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              }
+            }
+          },
+          "description": "Members of the measurement's componentExtension that this component fixes, so the extension cannot disagree with the component code."
         }
       },
       "additionalProperties": false
@@ -617,6 +666,84 @@
           "type": "array",
           "items": {
             "type": "string"
+          }
+        },
+        "componentExtension": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "url",
+            "name",
+            "slice",
+            "cardinality"
+          ],
+          "description": "An extension every component carries. Consumers generating from the catalog must require it; components fix their own members through extensionValues.",
+          "properties": {
+            "url": {
+              "type": "string",
+              "format": "uri"
+            },
+            "name": {
+              "type": "string",
+              "pattern": "^[A-Z][A-Za-z0-9]*$"
+            },
+            "slice": {
+              "type": "string",
+              "pattern": "^[a-z][A-Za-z0-9]*$"
+            },
+            "cardinality": {
+              "type": "string",
+              "pattern": "^[0-9]+\\.\\.([0-9]+|\\*)$"
+            },
+            "example": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "member"
+              ],
+              "minProperties": 2,
+              "maxProperties": 2,
+              "properties": {
+                "member": {
+                  "type": "string",
+                  "pattern": "^[a-zA-Z][a-zA-Z0-9]*$"
+                },
+                "valueCode": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "valueBoolean": {
+                  "type": "boolean"
+                },
+                "valueQuantity": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "value",
+                    "system",
+                    "code"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "number"
+                    },
+                    "system": {
+                      "type": "string",
+                      "format": "uri"
+                    },
+                    "code": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                }
+              }
+          },
+              "description": "Further members the generated example sets on every component."
+            }
           }
         },
         "obeys": {

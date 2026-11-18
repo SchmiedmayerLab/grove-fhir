@@ -340,7 +340,21 @@
             "unit": "dB",
             "example": 20,
             "dimension": {}
-          }
+          },
+          "extensionValues": [
+            {
+              "member": "frequency",
+              "valueQuantity": {
+                "value": 250,
+                "system": "http://unitsofmeasure.org",
+                "code": "Hz"
+              }
+            },
+            {
+              "member": "ear",
+              "valueCode": "left"
+            }
+          ]
         },
         {
           "id": "right-250",
@@ -353,7 +367,21 @@
             "unit": "dB",
             "example": 25,
             "dimension": {}
-          }
+          },
+          "extensionValues": [
+            {
+              "member": "frequency",
+              "valueQuantity": {
+                "value": 250,
+                "system": "http://unitsofmeasure.org",
+                "code": "Hz"
+              }
+            },
+            {
+              "member": "ear",
+              "valueCode": "right"
+            }
+          ]
         },
         {
           "id": "left-500",
@@ -366,7 +394,21 @@
             "unit": "dB",
             "example": 20,
             "dimension": {}
-          }
+          },
+          "extensionValues": [
+            {
+              "member": "frequency",
+              "valueQuantity": {
+                "value": 500,
+                "system": "http://unitsofmeasure.org",
+                "code": "Hz"
+              }
+            },
+            {
+              "member": "ear",
+              "valueCode": "left"
+            }
+          ]
         },
         {
           "id": "right-500",
@@ -379,7 +421,21 @@
             "unit": "dB",
             "example": 25,
             "dimension": {}
-          }
+          },
+          "extensionValues": [
+            {
+              "member": "frequency",
+              "valueQuantity": {
+                "value": 500,
+                "system": "http://unitsofmeasure.org",
+                "code": "Hz"
+              }
+            },
+            {
+              "member": "ear",
+              "valueCode": "right"
+            }
+          ]
         },
         {
           "id": "left-750",
@@ -392,7 +448,21 @@
             "unit": "dB",
             "example": 20,
             "dimension": {}
-          }
+          },
+          "extensionValues": [
+            {
+              "member": "frequency",
+              "valueQuantity": {
+                "value": 750,
+                "system": "http://unitsofmeasure.org",
+                "code": "Hz"
+              }
+            },
+            {
+              "member": "ear",
+              "valueCode": "left"
+            }
+          ]
         },
         {
           "id": "right-750",
@@ -405,7 +475,21 @@
             "unit": "dB",
             "example": 25,
             "dimension": {}
-          }
+          },
+          "extensionValues": [
+            {
+              "member": "frequency",
+              "valueQuantity": {
+                "value": 750,
+                "system": "http://unitsofmeasure.org",
+                "code": "Hz"
+              }
+            },
+            {
+              "member": "ear",
+              "valueCode": "right"
+            }
+          ]
         },
         {
           "id": "left-1000",
@@ -418,7 +502,21 @@
             "unit": "dB",
             "example": 20,
             "dimension": {}
-          }
+          },
+          "extensionValues": [
+            {
+              "member": "frequency",
+              "valueQuantity": {
+                "value": 1000,
+                "system": "http://unitsofmeasure.org",
+                "code": "Hz"
+              }
+            },
+            {
+              "member": "ear",
+              "valueCode": "left"
+            }
+          ]
         },
         {
           "id": "right-1000",
@@ -431,7 +529,21 @@
             "unit": "dB",
             "example": 25,
             "dimension": {}
-          }
+          },
+          "extensionValues": [
+            {
+              "member": "frequency",
+              "valueQuantity": {
+                "value": 1000,
+                "system": "http://unitsofmeasure.org",
+                "code": "Hz"
+              }
+            },
+            {
+              "member": "ear",
+              "valueCode": "right"
+            }
+          ]
         },
         {
           "id": "left-1500",
@@ -444,7 +556,21 @@
             "unit": "dB",
             "example": 20,
             "dimension": {}
-          }
+          },
+          "extensionValues": [
+            {
+              "member": "frequency",
+              "valueQuantity": {
+                "value": 1500,
+                "system": "http://unitsofmeasure.org",
+                "code": "Hz"
+              }
+            },
+            {
+              "member": "ear",
+              "valueCode": "left"
+            }
+          ]
         },
         {
           "id": "right-1500",
@@ -457,7 +583,21 @@
             "unit": "dB",
             "example": 25,
             "dimension": {}
-          }
+          },
+          "extensionValues": [
+            {
+              "member": "frequency",
+              "valueQuantity": {
+                "value": 1500,
+                "system": "http://unitsofmeasure.org",
+                "code": "Hz"
+              }
+            },
+            {
+              "member": "ear",
+              "valueCode": "right"
+            }
+          ]
         },
         {
           "id": "left-2000",
@@ -470,7 +610,21 @@
             "unit": "dB",
             "example": 20,
             "dimension": {}
-          }
+          },
+          "extensionValues": [
+            {
+              "member": "frequency",
+              "valueQuantity": {
+                "value": 2000,
+                "system": "http://unitsofmeasure.org",
+                "code": "Hz"
+              }
+            },
+            {
+              "member": "ear",
+              "valueCode": "left"
+            }
+          ]
         },
         {
           "id": "right-2000",
@@ -483,7 +637,21 @@
             "unit": "dB",
             "example": 25,
             "dimension": {}
-          }
+          },
+          "extensionValues": [
+            {
+              "member": "frequency",
+              "valueQuantity": {
+                "value": 2000,
+                "system": "http://unitsofmeasure.org",
+                "code": "Hz"
+              }
+            },
+            {
+              "member": "ear",
+              "valueCode": "right"
+            }
+          ]
         },
         {
           "id": "left-3000",
@@ -496,7 +664,21 @@
             "unit": "dB",
             "example": 20,
             "dimension": {}
-          }
+          },
+          "extensionValues": [
+            {
+              "member": "frequency",
+              "valueQuantity": {
+                "value": 3000,
+                "system": "http://unitsofmeasure.org",
+                "code": "Hz"
+              }
+            },
+            {
+              "member": "ear",
+              "valueCode": "left"
+            }
+          ]
         },
         {
           "id": "right-3000",
@@ -509,7 +691,21 @@
             "unit": "dB",
             "example": 25,
             "dimension": {}
-          }
+          },
+          "extensionValues": [
+            {
+              "member": "frequency",
+              "valueQuantity": {
+                "value": 3000,
+                "system": "http://unitsofmeasure.org",
+                "code": "Hz"
+              }
+            },
+            {
+              "member": "ear",
+              "valueCode": "right"
+            }
+          ]
         },
         {
           "id": "left-4000",
@@ -522,7 +718,21 @@
             "unit": "dB",
             "example": 20,
             "dimension": {}
-          }
+          },
+          "extensionValues": [
+            {
+              "member": "frequency",
+              "valueQuantity": {
+                "value": 4000,
+                "system": "http://unitsofmeasure.org",
+                "code": "Hz"
+              }
+            },
+            {
+              "member": "ear",
+              "valueCode": "left"
+            }
+          ]
         },
         {
           "id": "right-4000",
@@ -535,7 +745,21 @@
             "unit": "dB",
             "example": 25,
             "dimension": {}
-          }
+          },
+          "extensionValues": [
+            {
+              "member": "frequency",
+              "valueQuantity": {
+                "value": 4000,
+                "system": "http://unitsofmeasure.org",
+                "code": "Hz"
+              }
+            },
+            {
+              "member": "ear",
+              "valueCode": "right"
+            }
+          ]
         },
         {
           "id": "left-5000",
@@ -548,7 +772,21 @@
             "unit": "dB",
             "example": 20,
             "dimension": {}
-          }
+          },
+          "extensionValues": [
+            {
+              "member": "frequency",
+              "valueQuantity": {
+                "value": 5000,
+                "system": "http://unitsofmeasure.org",
+                "code": "Hz"
+              }
+            },
+            {
+              "member": "ear",
+              "valueCode": "left"
+            }
+          ]
         },
         {
           "id": "right-5000",
@@ -561,7 +799,21 @@
             "unit": "dB",
             "example": 25,
             "dimension": {}
-          }
+          },
+          "extensionValues": [
+            {
+              "member": "frequency",
+              "valueQuantity": {
+                "value": 5000,
+                "system": "http://unitsofmeasure.org",
+                "code": "Hz"
+              }
+            },
+            {
+              "member": "ear",
+              "valueCode": "right"
+            }
+          ]
         },
         {
           "id": "left-6000",
@@ -574,7 +826,21 @@
             "unit": "dB",
             "example": 20,
             "dimension": {}
-          }
+          },
+          "extensionValues": [
+            {
+              "member": "frequency",
+              "valueQuantity": {
+                "value": 6000,
+                "system": "http://unitsofmeasure.org",
+                "code": "Hz"
+              }
+            },
+            {
+              "member": "ear",
+              "valueCode": "left"
+            }
+          ]
         },
         {
           "id": "right-6000",
@@ -587,7 +853,21 @@
             "unit": "dB",
             "example": 25,
             "dimension": {}
-          }
+          },
+          "extensionValues": [
+            {
+              "member": "frequency",
+              "valueQuantity": {
+                "value": 6000,
+                "system": "http://unitsofmeasure.org",
+                "code": "Hz"
+              }
+            },
+            {
+              "member": "ear",
+              "valueCode": "right"
+            }
+          ]
         },
         {
           "id": "left-8000",
@@ -600,7 +880,21 @@
             "unit": "dB",
             "example": 20,
             "dimension": {}
-          }
+          },
+          "extensionValues": [
+            {
+              "member": "frequency",
+              "valueQuantity": {
+                "value": 8000,
+                "system": "http://unitsofmeasure.org",
+                "code": "Hz"
+              }
+            },
+            {
+              "member": "ear",
+              "valueCode": "left"
+            }
+          ]
         },
         {
           "id": "right-8000",
@@ -613,8 +907,41 @@
             "unit": "dB",
             "example": 25,
             "dimension": {}
-          }
+          },
+          "extensionValues": [
+            {
+              "member": "frequency",
+              "valueQuantity": {
+                "value": 8000,
+                "system": "http://unitsofmeasure.org",
+                "code": "Hz"
+              }
+            },
+            {
+              "member": "ear",
+              "valueCode": "right"
+            }
+          ]
         }
+      ],
+      "componentExtension": {
+        "url": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-audiogram-test-details",
+        "name": "HealthKitAudiogramTestDetails",
+        "slice": "sourceTest",
+        "cardinality": "1..1",
+        "example": [
+          {
+            "member": "conduction",
+            "valueCode": "air"
+          },
+          {
+            "member": "masked",
+            "valueBoolean": false
+          }
+        ]
+      },
+      "obeys": [
+        "healthkit-audiogram-panel-1"
       ]
     },
     {
