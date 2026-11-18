@@ -305,7 +305,7 @@
       "profile": "healthkit-audiogram-panel",
       "standardProfile": null,
       "title": "Audiogram Panel",
-      "description": "HKAudiogramSample: a hearing test reporting an air conduction threshold per ear at each frequency it measured. The thresholds are parts of one test rather than results that stand alone, so they are components. Every component is optional: a test states the frequencies it measured and no others, and a frequency outside this set is carried by its own component keyed to the frequency rather than forced onto a neighbouring code.",
+      "description": "HKAudiogramSample: an air conduction hearing test preserving its complete source interval and each ear/frequency sensitivity test. Known frequencies use the declared LOINC components; other frequencies use an explicit text-only component code and their exact frequency in HealthKit Audiogram Test Details, never a neighbouring frequency code. Each sensitivity test retains its available masking state. Every emitted component carries its source test details, including available masking and clamping bounds; no unmeasured frequency or absent ear is invented.",
       "code": {
         "system": "http://loinc.org",
         "code": "89015-2",
@@ -315,7 +315,7 @@
       "valueKind": "components",
       "owner": "healthkit",
       "quantity": null,
-      "effective": "dateTime",
+      "effective": "dateTime-or-Period",
       "generation": {
         "emit": true
       },
