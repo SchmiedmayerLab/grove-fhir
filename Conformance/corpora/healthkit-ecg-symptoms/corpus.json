@@ -1,6 +1,6 @@
 {
   "schemaVersion": 0,
-  "purpose": "A HealthKit ECG whose symptoms status is present but whose symptom samples could not be read. The control keeps the present status and carries exactly one hasMember entry with only the data-absent-reason extension, code unknown; the official Validator must accept it and reject, through healthkit-ecg-symptom-state-1, the reason on a none status, beside a symptom member, on a member that also identifies a symptom, and with any code other than unknown, which the fixed reason code also rejects.",
+  "purpose": "A HealthKit ECG whose symptoms status is present but whose symptom samples could not be read. The control keeps the present status and carries exactly one hasMember entry with only the data-absent-reason extension, code unknown; the official Validator must accept it and reject, through healthkit-ecg-symptom-state-1, the reason on a none status, beside a symptom member, on a member that also identifies a symptom, twice, with a display, and with any code other than unknown, which the fixed reason code also rejects.",
   "profile": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-observation",
   "control": "control.json",
   "cases": [
@@ -14,6 +14,14 @@
     },
     {
       "path": "reason-with-identifier.json",
+      "expectedInvariant": "healthkit-ecg-symptom-state-1"
+    },
+    {
+      "path": "two-reasons.json",
+      "expectedInvariant": "healthkit-ecg-symptom-state-1"
+    },
+    {
+      "path": "reason-with-display.json",
       "expectedInvariant": "healthkit-ecg-symptom-state-1"
     },
     {
