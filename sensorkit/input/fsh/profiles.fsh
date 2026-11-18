@@ -375,7 +375,7 @@ Profile: SensorKitSleepSessionObservation
 Parent: SensorKitObservation
 Id: sensorkit-sleep-session-observation
 Title: "SensorKit Sleep Session Observation"
-Description: "A platform-exclusive assertion of one SensorKit sleep session interval. The source publishes only the session bounds, so the result is the exact length of that interval and no stage, efficiency, or quality result may be invented."
+Description: "A platform-exclusive assertion of one SensorKit sleep session interval. The result is its exact duration, including zero when the source reports no end event. A deployment that discloses source-native identifiers may carry SRSleepSession.identifier as the optional governed source Identifier under a deployment-governed source namespace; it does not replace the Grove source-record or source-output identity. No stage, efficiency, or quality result may be invented."
 * obeys sensorkit-summary-quantity-nonnegative-1
 * extension[sensorKitSourceType].valueCode = #sleep-sessions
 * code = $sensorKitConcept#sleep-session

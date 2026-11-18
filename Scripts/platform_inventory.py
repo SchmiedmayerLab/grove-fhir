@@ -48,7 +48,7 @@ HEALTH_CONNECT_ARTIFACT = (
 # Headers whose hashes pin the exact SDK the identifiers were read from.
 EVIDENCE_HEADERS = {
     "HealthKit": ("HKTypeIdentifiers.h", "HKObjectType.h", "HKMetadata.h", "HKMetadataEnums.h"),
-    "SensorKit": ("SRSensor.h",),
+    "SensorKit": ("SRSensor.h", "SRSensors.h"),
 }
 
 HEALTHKIT_ACCESSORS = {
