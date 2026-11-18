@@ -432,8 +432,8 @@ The table's `Nullable` column controls empty fields: `no` requires a non-empty f
 | Column | Type | Nullable | Unit | Meaning |
 |---|---|---|---|---|
 | `timestamp` | timestamp | no | — | SensorKit configuration event instant. |
-| `adaptiveAudioStrength` | integer | no | — | Exact SDK enum raw value; preserve unsupported, enabled and disabled as distinct states where defined. |
-| `listeningMode` | integer | no | — | Exact SDK enum raw value; preserve unsupported, enabled and disabled as distinct states where defined. |
+| `adaptiveAudioStrength` | integer | no | — | Exact SRHeadphoneSettingsAdaptiveAudioStrength raw value: 1 low, 2 medium, 3 high. Any other raw value is preserved unchanged and not mapped to a strength. |
+| `listeningMode` | integer | no | — | Exact SRHeadphoneSettingsListeningMode raw value: 1 normal, 2 active noise cancelling, 3 transparency, 4 automatic active noise cancelling. Any other raw value is preserved unchanged and not mapped to a mode. |
 | `personalizedVolumeEnabled` | integer | no | — | Exact SDK enum raw value; preserve unsupported, enabled and disabled as distinct states where defined. |
 | `conversationAwarenessEnabled` | integer | no | — | Exact SDK enum raw value; preserve unsupported, enabled and disabled as distinct states where defined. |
 | `spatialAudioEnabled` | integer | no | — | Exact SDK enum raw value; preserve unsupported, enabled and disabled as distinct states where defined. |

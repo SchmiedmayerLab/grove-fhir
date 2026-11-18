@@ -70,6 +70,7 @@ Every JSON file beneath the declared roots is either validated here or excluded 
 `Conformance/corpora/mobile-profile-invariants` is the negative corpus of that lane: one heart-rate Observation per way a Mobile Observation can breach a `GroveMobileObservationRules` invariant or the `dataAbsentReason` binding, named in the manifest's `negativeCorpora`.
 The lane requires the control to pass and each case to fail for exactly the invariant key or value set its `corpus.json` declares, so a rule dropped from the base profile fails here instead of only in a guide build.
 `Conformance/corpora/healthkit-insulin-delivery` is its second negative corpus: an Insulin Delivery Observation whose delivery-reason component stands without the dose it qualifies, which the lane requires the Validator to reject for exactly the missing `Observation.value[x]`, so a component never substitutes for the root result.
+`Conformance/corpora/healthkit-audiogram` is its third: an audiogram panel whose text-only component at 125 Hz names a frequency the catalog does not code; the lane requires the Validator to accept that control and to reject, through `healthkit-audiogram-panel-1`, a text-only component at a catalog frequency and a second component for the same ear and frequency.
 
 ## Positive and negative corpus
 

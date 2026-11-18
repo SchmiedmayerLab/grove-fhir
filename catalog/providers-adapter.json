@@ -468,7 +468,7 @@
                 "step-count"
               ],
               "unitConversion": "integer count to UCUM {steps}",
-              "effective": "the source civil day represented as a complete day Period; midpoint substitution is forbidden"
+              "effective": "the source activity day, from 04:00 on its named date to 04:00 on the following date in the evidenced source zone; midnight substitution is forbidden"
             },
             {
               "path": "active_calories",
@@ -477,7 +477,7 @@
                 "active-energy"
               ],
               "unitConversion": "identity UCUM kcal",
-              "effective": "the source civil day represented as a complete day Period; midpoint substitution is forbidden"
+              "effective": "the source activity day, from 04:00 on its named date to 04:00 on the following date in the evidenced source zone; midnight substitution is forbidden"
             },
             {
               "path": "equivalent_walking_distance",
@@ -486,7 +486,7 @@
                 "distance"
               ],
               "unitConversion": "identity UCUM m",
-              "effective": "the source civil day represented as a complete day Period; midpoint substitution is forbidden"
+              "effective": "the source activity day, from 04:00 on its named date to 04:00 on the following date in the evidenced source zone; midnight substitution is forbidden"
             }
           ]
         },

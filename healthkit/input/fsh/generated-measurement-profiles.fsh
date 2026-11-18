@@ -23,7 +23,6 @@ Description: "Measurement concepts defined by the HealthKit adapter for platform
 * #bleeding-after-menopause "Bleeding after menopause" "Logged vaginal bleeding after menopause."
 * #bleeding-after-pregnancy "Bleeding after pregnancy" "Logged vaginal bleeding amount after pregnancy."
 * #bleeding-during-pregnancy "Bleeding during pregnancy" "Logged vaginal bleeding amount during pregnancy."
-* #menopausal-state "Menopausal state" "A person’s logged menopausal state at one source instant."
 * #blood-alcohol-content "Blood alcohol content" "The blood alcohol concentration expressed as a percent, as reported by the source at the Observation effective instant."
 * #cycling-functional-threshold-power "Cycling functional threshold power" "The source-estimated highest cycling power output the subject can sustain for approximately one hour."
 * #environmental-audio-exposure "Environmental audio exposure" "The A-weighted equivalent continuous sound pressure level of environmental sound the user was exposed to during the exact Observation effective Period."
@@ -43,6 +42,7 @@ Description: "Measurement concepts defined by the HealthKit adapter for platform
 * #irregular-menstrual-cycles "Irregular menstrual cycles" "Cycle lengths outside the expected range, derived from the participant's logged cycle records. Corresponds to SNOMED CT 80182007 (Irregular periods); the concept is cited rather than bound, because this guide carries no SNOMED dependency."
 * #low-cardio-fitness-notification "Low Cardio Fitness Notification" "A device notification that estimated cardio fitness fell below the configured threshold."
 * #low-heart-rate-notification "Low Heart Rate Notification" "A device notification that heart rate stayed below the wearer's configured threshold while apparently inactive."
+* #menopausal-state "Menopausal state" "A person's logged menopausal state at one source instant."
 * #number-of-alcoholic-beverages "Number of alcoholic beverages" "The number of standard alcoholic drinks attributed to the exact Observation effective Period."
 * #number-of-times-fallen "Number of times fallen" "The total number of falls attributed to the exact Observation effective Period."
 * #persistent-intermenstrual-bleeding "Persistent intermenstrual bleeding" "Bleeding between periods persisting across cycles, derived from logged cycle records."
@@ -215,24 +215,6 @@ Title: "Bleeding During Pregnancy Result"
 Description: "Every admitted result code of the Bleeding During Pregnancy measurement."
 * ^experimental = false
 * include codes from system HealthkitBleedingDuringPregnancyCS
-
-CodeSystem: HealthkitMenopausalStateCS
-Id: healthkit-menopausal-state
-Title: "Menopausal State Result"
-Description: "The closed result codes of the Menopausal State measurement."
-* ^experimental = false
-* ^caseSensitive = true
-* ^content = #complete
-* #menopause "Menopause" "The source states menopause."
-* #perimenopause "Perimenopause" "The source states perimenopause."
-* #none "None" "The source states neither menopause nor perimenopause."
-
-ValueSet: HealthkitMenopausalStateVS
-Id: healthkit-menopausal-state
-Title: "Menopausal State Result"
-Description: "Every admitted result code of the Menopausal State measurement."
-* ^experimental = false
-* include codes from system HealthkitMenopausalStateCS
 
 CodeSystem: HealthkitBloodTypeCS
 Id: healthkit-blood-type
@@ -461,6 +443,24 @@ Title: "Low Heart Rate Notification Result"
 Description: "Every admitted result code of the Low Heart Rate Notification measurement."
 * ^experimental = false
 * include codes from system HealthkitLowHeartRateNotificationCS
+
+CodeSystem: HealthkitMenopausalStateCS
+Id: healthkit-menopausal-state
+Title: "Menopausal State Result"
+Description: "The closed result codes of the Menopausal State measurement."
+* ^experimental = false
+* ^caseSensitive = true
+* ^content = #complete
+* #menopause "Menopause" "The source states menopause."
+* #perimenopause "Perimenopause" "The source states perimenopause."
+* #none "None" "The source states neither menopause nor perimenopause."
+
+ValueSet: HealthkitMenopausalStateVS
+Id: healthkit-menopausal-state
+Title: "Menopausal State Result"
+Description: "Every admitted result code of the Menopausal State measurement."
+* ^experimental = false
+* include codes from system HealthkitMenopausalStateCS
 
 CodeSystem: HealthkitPersistentIntermenstrualBleedingCS
 Id: healthkit-persistent-intermenstrual-bleeding
@@ -855,6 +855,7 @@ Parent: HealthKitObservation
 Id: healthkit-audiogram-panel
 Title: "Audiogram Panel"
 Description: "HKAudiogramSample: an air conduction hearing test preserving its complete source interval and each ear/frequency sensitivity test. Known frequencies use the declared LOINC components; other frequencies use an explicit text-only component code and their exact frequency in HealthKit Audiogram Test Details, never a neighbouring frequency code. Each sensitivity test retains its available masking state. Every emitted component carries its source test details, including available masking and clamping bounds; no unmeasured frequency or absent ear is invented."
+* obeys healthkit-audiogram-panel-1
 * code = $loinc#89015-2
 * effective[x] only dateTime or Period
 * value[x] 0..0
@@ -1045,10 +1046,10 @@ Profile: HealthkitBleedingAfterMenopause
 Parent: HealthKitObservation
 Id: healthkit-bleeding-after-menopause
 Title: "Bleeding After Menopause"
-Description: "Bleeding logged after menopause, with the complete source interval and the exact HKCategoryValueVaginalBleeding intensity. This measurement is distinct from menstrual flow and intermenstrual bleeding."
+Description: "Bleeding logged after menopause, with the exact HKCategoryValueVaginalBleeding amount at the source instant, like bleeding after pregnancy and bleeding during pregnancy. This measurement is distinct from menstrual flow and intermenstrual bleeding."
 * code = HealthKitMeasurementCS#bleeding-after-menopause
 * code from HealthKitMeasurementVS (required)
-* effective[x] only dateTime or Period
+* effective[x] only dateTime
 * value[x] only CodeableConcept
 * valueCodeableConcept 1..1 MS
 * valueCodeableConcept from HealthkitBleedingAfterMenopauseVS (required)
@@ -1076,18 +1077,6 @@ Description: "HKCategoryTypeIdentifierBleedingDuringPregnancy: records bleeding 
 * value[x] only CodeableConcept
 * valueCodeableConcept 1..1 MS
 * valueCodeableConcept from HealthkitBleedingDuringPregnancyVS (required)
-
-Profile: HealthkitMenopausalState
-Parent: HealthKitObservation
-Id: healthkit-menopausal-state
-Title: "Menopausal State"
-Description: "The exact HKCategoryValueMenopausalState recorded at the source instant. The source sample establishes no continuous interval of that state and does not imply when it began or ended."
-* code = HealthKitMeasurementCS#menopausal-state
-* code from HealthKitMeasurementVS (required)
-* effective[x] only dateTime
-* value[x] only CodeableConcept
-* valueCodeableConcept 1..1 MS
-* valueCodeableConcept from HealthkitMenopausalStateVS (required)
 
 Invariant: healthkit-blood-alcohol-content-value-domain-1
 Description: "A populated Blood Alcohol Content value is >= 0, <= 100."
@@ -1520,6 +1509,18 @@ Description: "HKCategoryTypeIdentifierLowHeartRateEvent: an Apple Watch notifica
 * component[threshold].valueQuantity.value 1..1 MS
 * component[threshold].valueQuantity.system = $ucum (exactly)
 * component[threshold].valueQuantity.code = #/min (exactly)
+
+Profile: HealthkitMenopausalState
+Parent: HealthKitObservation
+Id: healthkit-menopausal-state
+Title: "Menopausal State"
+Description: "The exact HKCategoryValueMenopausalState recorded at the source instant. The source sample establishes no continuous interval of that state and does not imply when it began or ended."
+* code = HealthKitMeasurementCS#menopausal-state
+* code from HealthKitMeasurementVS (required)
+* effective[x] only dateTime
+* value[x] only CodeableConcept
+* valueCodeableConcept 1..1 MS
+* valueCodeableConcept from HealthkitMenopausalStateVS (required)
 
 Invariant: healthkit-number-of-alcoholic-beverages-value-domain-1
 Description: "A populated Number of Alcoholic Beverages value is >= 0, an integer."
@@ -2854,22 +2855,6 @@ Description: "A conformant Bleeding During Pregnancy instance."
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueCodeableConcept = HealthkitBleedingDuringPregnancyCS#unspecified "Unspecified"
 
-Instance: HealthkitMenopausalStateExample
-InstanceOf: HealthkitMenopausalState
-Usage: #example
-Title: "Menopausal State Example"
-Description: "A conformant Menopausal State instance."
-* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
-* identifier[sourceRecord].value = "v0:test-key:1:r0j_q_uBS0F0-tnOoXsbbMwASj_tH-O07MsphNVafKU"
-* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
-* identifier[sourceOutput].value = "v0:test-key:1:xFUqiGlKb8Z4Gg4jMI4BTWH010fcnFtIek7ov9Ehsbg"
-* status = #final
-* code = HealthKitMeasurementCS#menopausal-state
-* extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierMenopausalState
-* subject = Reference(HealthKitPatientExample)
-* effectiveDateTime = "2026-08-19T10:30:00-07:00"
-* valueCodeableConcept = HealthkitMenopausalStateCS#menopause "Menopause"
-
 Instance: HealthkitBloodAlcoholContentExample
 InstanceOf: HealthkitBloodAlcoholContent
 Usage: #example
@@ -3321,6 +3306,22 @@ Description: "A conformant Low Heart Rate Notification instance."
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = HealthkitLowHeartRateNotificationCS#occurred "Occurred"
+
+Instance: HealthkitMenopausalStateExample
+InstanceOf: HealthkitMenopausalState
+Usage: #example
+Title: "Menopausal State Example"
+Description: "A conformant Menopausal State instance."
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:r0j_q_uBS0F0-tnOoXsbbMwASj_tH-O07MsphNVafKU"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:xFUqiGlKb8Z4Gg4jMI4BTWH010fcnFtIek7ov9Ehsbg"
+* status = #final
+* code = HealthKitMeasurementCS#menopausal-state
+* extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierMenopausalState
+* subject = Reference(HealthKitPatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00-07:00"
+* valueCodeableConcept = HealthkitMenopausalStateCS#menopause "Menopause"
 
 Instance: HealthkitNumberOfAlcoholicBeveragesExample
 InstanceOf: HealthkitNumberOfAlcoholicBeverages
