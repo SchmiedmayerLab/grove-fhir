@@ -1875,25 +1875,31 @@
     },
     "heart-rate-variability-rmssd": {
       "status": "approved",
+      "approvedBy": [
+        "P. Schmiedmayer (repository owner)"
+      ],
+      "approvedOn": "2026-11-15",
       "provenance": "reviewed",
-      "digest": "sha256:ebbd47d3472b1792718698ed8cd118796d520982438538128306784e2af6b39d",
+      "digest": "sha256:b36ea76e96b9559fbbfa653b789f7512c338f03f6de1744cfecb4ce6d6dcfdc1",
       "preparedBy": [
         {
           "name": "terminology sweep drafting agent (concepts-quantity)",
           "role": "engineering"
+        },
+        {
+          "name": "HealthKit SDK 27.2 baseline update",
+          "role": "engineering"
         }
       ],
-      "approvedBy": [
+      "verifiedBy": [
         {
-          "name": "terminology sweep adversarial verifier",
+          "name": "iPhoneOS 27.2 SDK header comparison (HKTypeIdentifiers.h)",
           "role": "terminology-verification"
         }
       ],
-      "ratification": "pending-pull-request-review",
-      "reviewedOn": "2026-08-21",
-      "recordedOn": "2026-08-21",
-      "reviewRef": "pending-integration-commit",
-      "notes": "NLM Clinical Tables returns zero LOINC concepts for RMSSD (only the SDNN codes 80404-7/76643-6 exist), so a Grove code is required to avoid mislabeling RMSSD as SDNN — the exact confusion the providers catalog flags ('RMSSD is distinct from SDNN'). Two sources evidence it: Health Connect HeartRateVariabilityRmssdRecord (an InstantaneousRecord) and the Google Health API rootMeanSquareOfSuccessiveDifferencesMilliseconds element. ms parses under pinned UCUM 2.2 with dimension {s:1}; effective dateTime matches both sources' instantaneous shape."
+      "reviewedOn": "2026-11-14",
+      "recordedOn": "2026-11-14",
+      "notes": "NLM Clinical Tables returns zero LOINC concepts for RMSSD (only the SDNN codes 80404-7/76643-6 exist), so a Grove code is required to avoid mislabeling RMSSD as SDNN — the exact confusion the providers catalog flags ('RMSSD is distinct from SDNN'). Two sources evidence it: Health Connect HeartRateVariabilityRmssdRecord (an InstantaneousRecord) and the Google Health API rootMeanSquareOfSuccessiveDifferencesMilliseconds element. ms parses under pinned UCUM 2.2 with dimension {s:1}; effective dateTime matches both sources' instantaneous shape. HealthKit joins as a third source: HKQuantityTypeIdentifierHeartRateVariabilityRMSSD is declared in the iPhoneOS 27.2 SDK in ms as a discrete arithmetic quantity. A HealthKit sample states a start and an end, so the effective time admits a Period beside the instant; the code, unit, and dimension are unchanged. The previous digest was recorded as verified by the terminology sweep adversarial verifier; that verification does not cover this digest. Ratified by the repository owner on 2026-11-15."
     },
     "heart-rate-variability-sdnn": {
       "status": "approved",
@@ -4527,6 +4533,54 @@
       "recordedOn": "2026-08-26",
       "reviewRef": "pending-integration-commit",
       "notes": "LOINC 66555-4 'Skin type [Fitzpatrick Classification Scale]' verified ACTIVE on both servers (LOINC 2.82), Type/Nom. Exact concept; the six-type scale maps one-to-one onto HKFitzpatrickSkinType, notSet excluded."
+    },
+    "bleeding-after-menopause": {
+      "status": "approved",
+      "approvedBy": [
+        "P. Schmiedmayer (repository owner)"
+      ],
+      "approvedOn": "2026-11-15",
+      "provenance": "reviewed",
+      "digest": "sha256:d54dc8fc5163faf3d410294d33932713d9c8d57a5954c417d781f0b202ec0f5b",
+      "preparedBy": [
+        {
+          "name": "HealthKit SDK 27.2 baseline update",
+          "role": "engineering"
+        }
+      ],
+      "verifiedBy": [
+        {
+          "name": "iPhoneOS 27.2 SDK header comparison (HKTypeIdentifiers.h, HKCategoryValues.h)",
+          "role": "terminology-verification"
+        }
+      ],
+      "reviewedOn": "2026-11-14",
+      "recordedOn": "2026-11-14",
+      "notes": "HealthKit-owned code and result code system; no external terminology concept is bound, so no LOINC or UCUM verification applies. HKCategoryTypeIdentifierBleedingAfterMenopause is declared with HKCategoryValueVaginalBleeding in the iPhoneOS 27.2 SDK, and the five result codes match its five cases (unspecified, light, medium, heavy, none) one-to-one. The measurement mirrors bleeding-after-pregnancy and bleeding-during-pregnancy and stays distinct from menstrual flow and intermenstrual bleeding. Ratified by the repository owner on 2026-11-15."
+    },
+    "menopausal-state": {
+      "status": "approved",
+      "approvedBy": [
+        "P. Schmiedmayer (repository owner)"
+      ],
+      "approvedOn": "2026-11-15",
+      "provenance": "reviewed",
+      "digest": "sha256:6d1c95a73fd8c7b6e2da5dcca7c88d8b1f115dd4d88f6365c520c71e73f4b860",
+      "preparedBy": [
+        {
+          "name": "HealthKit SDK 27.2 baseline update",
+          "role": "engineering"
+        }
+      ],
+      "verifiedBy": [
+        {
+          "name": "iPhoneOS 27.2 SDK header comparison (HKTypeIdentifiers.h, HKCategoryValues.h)",
+          "role": "terminology-verification"
+        }
+      ],
+      "reviewedOn": "2026-11-14",
+      "recordedOn": "2026-11-14",
+      "notes": "HealthKit-owned code and result code system; no external terminology concept is bound, so no LOINC or UCUM verification applies. HKCategoryTypeIdentifierMenopausalState is declared with HKCategoryValueMenopausalState in the iPhoneOS 27.2 SDK, and the three result codes match its three cases (menopause, perimenopause, none) one-to-one. The effective time is the source instant; no interval of the state is asserted. Ratified by the repository owner on 2026-11-15."
     }
   },
   "groundTruthRemints": [

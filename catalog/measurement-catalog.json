@@ -827,6 +827,71 @@
       }
     },
     {
+      "id": "bleeding-after-menopause",
+      "profile": "healthkit-bleeding-after-menopause",
+      "standardProfile": null,
+      "title": "Bleeding After Menopause",
+      "description": "Bleeding logged after menopause, with the complete source interval and the exact HKCategoryValueVaginalBleeding intensity. This measurement is distinct from menstrual flow and intermenstrual bleeding.",
+      "code": {
+        "system": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-measurement",
+        "code": "bleeding-after-menopause",
+        "display": "Bleeding after menopause",
+        "definition": "Logged vaginal bleeding after menopause."
+      },
+      "valueKind": "codeableConcept",
+      "owner": "healthkit",
+      "quantity": null,
+      "valueSet": "https://grovealliance.org/fhir/healthkit/ValueSet/healthkit-bleeding-after-menopause",
+      "resultCodeSystem": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-bleeding-after-menopause",
+      "allowedValues": [
+        "unspecified",
+        "light",
+        "medium",
+        "heavy",
+        "none"
+      ],
+      "resultCodes": [
+        {
+          "code": "unspecified",
+          "display": "Unspecified",
+          "definition": "Bleeding of unspecified amount."
+        },
+        {
+          "code": "light",
+          "display": "Light",
+          "definition": "Light bleeding."
+        },
+        {
+          "code": "medium",
+          "display": "Medium",
+          "definition": "Medium bleeding."
+        },
+        {
+          "code": "heavy",
+          "display": "Heavy",
+          "definition": "Heavy bleeding."
+        },
+        {
+          "code": "none",
+          "display": "None",
+          "definition": "No bleeding."
+        }
+      ],
+      "effective": "dateTime-or-Period",
+      "generation": {
+        "emit": true
+      },
+      "coverage": {
+        "healthkit": "supported",
+        "health-connect": "unmodeled",
+        "sensorkit": "unmodeled",
+        "google-health-api": "unmodeled",
+        "oura": "unmodeled",
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
+      }
+    },
+    {
       "id": "bleeding-after-pregnancy",
       "profile": "healthkit-bleeding-after-pregnancy",
       "standardProfile": null,
@@ -940,6 +1005,59 @@
           "code": "none",
           "display": "None",
           "definition": "No bleeding."
+        }
+      ],
+      "effective": "dateTime",
+      "generation": {
+        "emit": true
+      },
+      "coverage": {
+        "healthkit": "supported",
+        "health-connect": "unmodeled",
+        "sensorkit": "unmodeled",
+        "google-health-api": "unmodeled",
+        "oura": "unmodeled",
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
+      }
+    },
+    {
+      "id": "menopausal-state",
+      "profile": "healthkit-menopausal-state",
+      "standardProfile": null,
+      "title": "Menopausal State",
+      "description": "The exact HKCategoryValueMenopausalState recorded at the source instant. The source sample establishes no continuous interval of that state and does not imply when it began or ended.",
+      "code": {
+        "system": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-measurement",
+        "code": "menopausal-state",
+        "display": "Menopausal state",
+        "definition": "A person’s logged menopausal state at one source instant."
+      },
+      "valueKind": "codeableConcept",
+      "owner": "healthkit",
+      "quantity": null,
+      "valueSet": "https://grovealliance.org/fhir/healthkit/ValueSet/healthkit-menopausal-state",
+      "resultCodeSystem": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-menopausal-state",
+      "allowedValues": [
+        "menopause",
+        "perimenopause",
+        "none"
+      ],
+      "resultCodes": [
+        {
+          "code": "menopause",
+          "display": "Menopause",
+          "definition": "The source states menopause."
+        },
+        {
+          "code": "perimenopause",
+          "display": "Perimenopause",
+          "definition": "The source states perimenopause."
+        },
+        {
+          "code": "none",
+          "display": "None",
+          "definition": "The source states neither menopause nor perimenopause."
         }
       ],
       "effective": "dateTime",
@@ -4101,7 +4219,7 @@
         "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-mobile-measurement",
         "code": "heart-rate-variability-rmssd",
         "display": "Heart rate variability RMSSD",
-        "definition": "The root mean square of successive differences between adjacent NN intervals at the Observation effective instant."
+        "definition": "The root mean square of successive differences between adjacent NN intervals at the Observation effective time."
       },
       "valueKind": "quantity",
       "quantity": {
@@ -4113,12 +4231,12 @@
           "s": 1
         }
       },
-      "effective": "dateTime",
+      "effective": "dateTime-or-Period",
       "generation": {
         "emit": true
       },
       "coverage": {
-        "healthkit": "unmodeled",
+        "healthkit": "supported",
         "health-connect": "supported",
         "sensorkit": "unmodeled",
         "google-health-api": "supported",

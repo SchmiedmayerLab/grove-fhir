@@ -2450,6 +2450,13 @@
           "classification": "definition"
         },
         {
+          "fshName": "HealthkitBleedingAfterMenopauseCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "healthkit-bleeding-after-menopause",
+          "classification": "definition"
+        },
+        {
           "fshName": "HealthkitBleedingAfterPregnancyCS",
           "fshType": "CodeSystem",
           "resourceType": "CodeSystem",
@@ -2552,6 +2559,13 @@
           "fshType": "CodeSystem",
           "resourceType": "CodeSystem",
           "id": "healthkit-low-heart-rate-notification",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitMenopausalStateCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "healthkit-menopausal-state",
           "classification": "definition"
         },
         {
@@ -3066,6 +3080,13 @@
           "classification": "example"
         },
         {
+          "fshName": "HealthkitBleedingAfterMenopauseExample",
+          "fshType": "Instance",
+          "resourceType": "Observation",
+          "id": "HealthkitBleedingAfterMenopauseExample",
+          "classification": "example"
+        },
+        {
           "fshName": "HealthkitBleedingAfterPregnancyExample",
           "fshType": "Instance",
           "resourceType": "Observation",
@@ -3266,6 +3287,13 @@
           "fshType": "Instance",
           "resourceType": "Observation",
           "id": "HealthkitLowHeartRateNotificationExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "HealthkitMenopausalStateExample",
+          "fshType": "Instance",
+          "resourceType": "Observation",
+          "id": "HealthkitMenopausalStateExample",
           "classification": "example"
         },
         {
@@ -3913,6 +3941,13 @@
           "classification": "definition"
         },
         {
+          "fshName": "HealthkitBleedingAfterMenopause",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-bleeding-after-menopause",
+          "classification": "definition"
+        },
+        {
           "fshName": "HealthkitBleedingAfterPregnancy",
           "fshType": "Profile",
           "resourceType": "StructureDefinition",
@@ -4113,6 +4148,13 @@
           "fshType": "Profile",
           "resourceType": "StructureDefinition",
           "id": "healthkit-low-heart-rate-notification",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitMenopausalState",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-menopausal-state",
           "classification": "definition"
         },
         {
@@ -4753,6 +4795,13 @@
           "classification": "definition"
         },
         {
+          "fshName": "HealthkitBleedingAfterMenopauseVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "healthkit-bleeding-after-menopause",
+          "classification": "definition"
+        },
+        {
           "fshName": "HealthkitBleedingAfterPregnancyVS",
           "fshType": "ValueSet",
           "resourceType": "ValueSet",
@@ -4862,6 +4911,13 @@
           "fshType": "ValueSet",
           "resourceType": "ValueSet",
           "id": "healthkit-low-heart-rate-notification",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthkitMenopausalStateVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "healthkit-menopausal-state",
           "classification": "definition"
         },
         {

@@ -54,7 +54,7 @@ Description: "Measurement concepts defined by the Grove Mobile contract when an 
 * #dietary-vitamin-k "Dietary vitamin K" "Vitamin K consumed during the exact Observation effective Period."
 * #dietary-zinc "Dietary zinc" "Zinc consumed during the exact Observation effective Period."
 * #electrodermal-activity "Electrodermal activity" "The electrical conductance of the skin at the Observation effective instant."
-* #heart-rate-variability-rmssd "Heart rate variability RMSSD" "The root mean square of successive differences between adjacent NN intervals at the Observation effective instant."
+* #heart-rate-variability-rmssd "Heart rate variability RMSSD" "The root mean square of successive differences between adjacent NN intervals at the Observation effective time."
 * #intermenstrual-bleeding "Intermenstrual bleeding" "An observed bleeding event between menstrual periods."
 * #menstruation-flow "Menstruation flow" "The observed menstrual flow classification at the stated instant."
 * #mindfulness-session-duration "Mindfulness session duration" "The duration of a single mindfulness session covering the exact Observation effective Period."
@@ -1289,7 +1289,7 @@ Title: "Heart Rate Variability RMSSD"
 Description: "The root mean square of successive differences between NN (R-R) intervals, normalized to UCUM milliseconds. RMSSD is never relabeled as SDNN; the two HRV statistics remain separate measurements."
 * code = GroveMobileMeasurementCS#heart-rate-variability-rmssd
 * code from GroveMobileMeasurementVS (required)
-* effective[x] only dateTime
+* effective[x] only dateTime or Period
 * value[x] only Quantity
 * valueQuantity.value 1..1 MS
 * valueQuantity.comparator 0..0
