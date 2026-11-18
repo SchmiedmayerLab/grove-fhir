@@ -1033,13 +1033,13 @@
           "name": "adaptiveAudioStrength",
           "type": "integer",
           "nullable": false,
-          "meaning": "Exact SDK enum raw value; preserve unsupported, enabled and disabled as distinct states where defined."
+          "meaning": "Exact SRHeadphoneSettingsAdaptiveAudioStrength raw value: 1 low, 2 medium, 3 high. Any other raw value is preserved unchanged and not mapped to a strength."
         },
         {
           "name": "listeningMode",
           "type": "integer",
           "nullable": false,
-          "meaning": "Exact SDK enum raw value; preserve unsupported, enabled and disabled as distinct states where defined."
+          "meaning": "Exact SRHeadphoneSettingsListeningMode raw value: 1 normal, 2 active noise cancelling, 3 transparency, 4 automatic active noise cancelling. Any other raw value is preserved unchanged and not mapped to a mode."
         },
         {
           "name": "personalizedVolumeEnabled",

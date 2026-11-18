@@ -102,6 +102,9 @@ def _extension_count(value: Any, url: str) -> int:
     return 0
 
 
+TIMEZONE_EXTENSION = "http://hl7.org/fhir/StructureDefinition/timezone"
+
+
 def validate_healthkit_source_document_time(resource: dict[str, Any], label: str) -> None:
     """Admit the source document dates only on a HealthKit conversion source entity."""
     catalog = read_json(CATALOG_ROOT / "healthkit-adapter.json")
@@ -153,6 +156,28 @@ def validate_healthkit_source_document_time(resource: dict[str, Any], label: str
         end = parse_fhir_instant(bounds["end"], f"{label} source document time end")
         if end < start:
             fail("period must not end before it starts")
+        # One HKTimeZone describes the sample, so it is stated on both endpoints or on neither.
+        zones = []
+        for endpoint in ("start", "end"):
+            element = bounds.get(f"_{endpoint}")
+            if element is None:
+                zones.append(None)
+                continue
+            zone_extensions = element.get("extension") if isinstance(element, dict) else None
+            if (
+                set(element) != {"extension"}
+                or not isinstance(zone_extensions, list)
+                or len(zone_extensions) != 1
+                or not isinstance(zone_extensions[0], dict)
+                or set(zone_extensions[0]) != {"url", "valueCode"}
+                or zone_extensions[0]["url"] != TIMEZONE_EXTENSION
+                or not isinstance(zone_extensions[0]["valueCode"], str)
+                or not zone_extensions[0]["valueCode"]
+            ):
+                fail(f"{endpoint} may carry only the standard timezone extension")
+            zones.append(zone_extensions[0]["valueCode"])
+        if zones[0] != zones[1]:
+            fail("time zone must be stated on both endpoints with the same name, or on neither")
     if found != total:
         fail("belongs only to the source entity of a HealthKit conversion Provenance")
 

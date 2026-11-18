@@ -121,6 +121,8 @@ Use the catalog's ear-and-frequency LOINC code when it names that exact coordina
 For another frequency, retain the exact frequency and ear in the required `healthkit-audiogram-test-details` extension and use an explicit component text label; do not substitute the nearest catalog frequency.
 The same extension carries the air-conduction method, the masking state when the source API exposes it, and any source clamping bounds.
 Each ear retains its own masking state; a source sensitivity point has at most one test per ear.
+A coded component's extension fixes the frequency to the integer the catalog names, so write it without a fractional part (`250`, not `250.0`).
+Under `healthkit-audiogram-panel-1`, a text-only component never carries an ear and frequency that a catalog code names, and no two components carry the same ear and frequency; that invariant compares frequencies numerically.
 
 Clamping bounds describe the source's measurement limits.
 Preserve the supplied sensitivity without clamping it again or inventing a less-than or greater-than comparator.
@@ -241,6 +243,7 @@ Carry them in the [HealthKit Source Document Time](StructureDefinition-healthkit
 
 The period states both endpoints as complete date-times with an offset under the [time rules](#values-units-and-time), and equal endpoints are admitted.
 A supplied `HKTimeZone` maps to the `timezone` extension on both endpoints and is not repeated in source metadata.
+A sample that carries `HKTimeZone` therefore emits this extension, so the zone always has a conformant place; without one, neither endpoint carries a `timezone` extension.
 Never copy these dates into `DocumentReference.context.period`, `DocumentReference.date`, or the embedded source bytes.
 The extension mints no identity; adding or changing it changes the record version.
 
