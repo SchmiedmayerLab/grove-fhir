@@ -237,6 +237,7 @@ Carry them in the [HealthKit Source Document Time](StructureDefinition-healthkit
 
 The period states both endpoints as complete date-times with an offset under the [time rules](#values-units-and-time), and equal endpoints are admitted.
 A supplied `HKTimeZone` maps to the `timezone` extension on both endpoints and is not repeated in source metadata.
+A sample that carries `HKTimeZone` therefore emits this extension, so the zone always has a conformant place; without one, neither endpoint carries a `timezone` extension.
 Never copy these dates into `DocumentReference.context.period`, `DocumentReference.date`, or the embedded source bytes.
 The extension mints no identity; adding or changing it changes the record version.
 

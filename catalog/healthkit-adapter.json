@@ -3795,7 +3795,7 @@
       "period"
     ],
     "emissionRule": "Only the source entity of a HealthKit conversion Provenance carries it, at most once, and only for a clinical record or a CDA document sample. The basis follows the sample class. It describes the consumed source entity, not the care the original document describes.",
-    "periodRule": "valuePeriod carries HKSample.startDate and HKSample.endDate, both present, each a complete date-time with an offset, the end not before the start, under the HealthKit millisecond, half-even and numeric-offset rules. Equal endpoints are admitted. A supplied valid IANA time-zone name maps to the standard timezone extension on both endpoints and is not repeated in source metadata.",
+    "periodRule": "valuePeriod carries HKSample.startDate and HKSample.endDate, both present, each a complete date-time with an offset, the end not before the start, under the HealthKit millisecond, half-even and numeric-offset rules. Equal endpoints are admitted. A supplied valid IANA time-zone name maps to the standard timezone extension on both endpoints, with the same name, and is not repeated in source metadata; a sample that carries HKTimeZone therefore emits this extension, so the zone always has a conformant place. Without one, neither endpoint carries a timezone extension.",
     "prohibitions": "Never copy these dates into DocumentReference.context.period, DocumentReference.date, or the embedded source bytes, and never present them as the time of the care the document describes.",
     "identityRule": "The extension mints no identity and changes no source-record, source-output, or writer-record Identifier. It is part of the conversion Provenance, so adding or changing it changes the record version."
   },
