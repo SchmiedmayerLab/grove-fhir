@@ -56,7 +56,7 @@ class HealthKitInventoryTests(unittest.TestCase):
         cls.rows = {row["sourceTypeIdentifier"]: row for row in cls.catalog["rows"]}
 
     def test_catalog_is_exactly_the_recorded_platform_inventory(self) -> None:
-        compare(self.evidence, self.rows, expected=218)
+        compare(self.evidence, self.rows, expected=221)
 
     def test_every_row_carries_the_platform_facts_it_was_verified_against(self) -> None:
         for code, fact in self.evidence.items():
