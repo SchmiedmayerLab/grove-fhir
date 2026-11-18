@@ -20,7 +20,7 @@
       "integers": "Integer values use base-10 lexemes matching the following regular expression. A plus sign, -0, leading zero, decimal point, and exponent are prohibited.",
       "integerPattern": "^(?:0|-?[1-9][0-9]*)$",
       "timestamps": "Seconds since the Unix epoch as a finite IEEE-754 binary64 value in the numbers form above; the column documentation states which columns are timestamps.",
-      "emptyFields": "The table's `Nullable` column controls empty fields: `no` requires a non-empty field in every data row; `yes` permits an empty field with the meaning stated for that column. The literal strings `null` and `NULL` have no special meaning."
+      "emptyFields": "The table's `Nullable` column controls empty fields: `no` requires a non-empty field in every data row; `yes` permits an empty field with the meaning stated for that column. The literal strings `null` and `NULL` have no special meaning. Columns naming the same nullableGroup represent one optional source object: every member is empty, or every member is non-empty, in a given row."
     }
   },
   "mediaTypes": {
@@ -755,6 +755,393 @@
           }
         ]
       }
+    },
+    "device-motion-samples": {
+      "title": "Device Motion Samples",
+      "contentType": "text/csv",
+      "status": "active",
+      "encoding": "csv",
+      "columns": [
+        {
+          "name": "timestamp",
+          "type": "timestamp",
+          "nullable": false,
+          "meaning": "Exact recorded sample start date."
+        },
+        {
+          "name": "deliveryTimestamp",
+          "type": "timestamp",
+          "nullable": false,
+          "meaning": "SensorKit delivery timestamp, distinct from the sample instant."
+        },
+        {
+          "name": "uptime",
+          "type": "number",
+          "nullable": false,
+          "unit": "s",
+          "meaning": "CoreMotion time since boot in seconds."
+        },
+        {
+          "name": "identifier",
+          "type": "integer",
+          "nullable": false,
+          "meaning": "Unsigned native batch identifier within the device partition."
+        },
+        {
+          "name": "roll",
+          "type": "number",
+          "nullable": false,
+          "unit": "rad",
+          "meaning": "Exact source attitude Euler angle."
+        },
+        {
+          "name": "pitch",
+          "type": "number",
+          "nullable": false,
+          "unit": "rad",
+          "meaning": "Exact source attitude Euler angle."
+        },
+        {
+          "name": "yaw",
+          "type": "number",
+          "nullable": false,
+          "unit": "rad",
+          "meaning": "Exact source attitude Euler angle."
+        },
+        {
+          "name": "m11",
+          "type": "number",
+          "nullable": false,
+          "unit": "1",
+          "meaning": "Exact source attitude rotation-matrix element."
+        },
+        {
+          "name": "m12",
+          "type": "number",
+          "nullable": false,
+          "unit": "1",
+          "meaning": "Exact source attitude rotation-matrix element."
+        },
+        {
+          "name": "m13",
+          "type": "number",
+          "nullable": false,
+          "unit": "1",
+          "meaning": "Exact source attitude rotation-matrix element."
+        },
+        {
+          "name": "m21",
+          "type": "number",
+          "nullable": false,
+          "unit": "1",
+          "meaning": "Exact source attitude rotation-matrix element."
+        },
+        {
+          "name": "m22",
+          "type": "number",
+          "nullable": false,
+          "unit": "1",
+          "meaning": "Exact source attitude rotation-matrix element."
+        },
+        {
+          "name": "m23",
+          "type": "number",
+          "nullable": false,
+          "unit": "1",
+          "meaning": "Exact source attitude rotation-matrix element."
+        },
+        {
+          "name": "m31",
+          "type": "number",
+          "nullable": false,
+          "unit": "1",
+          "meaning": "Exact source attitude rotation-matrix element."
+        },
+        {
+          "name": "m32",
+          "type": "number",
+          "nullable": false,
+          "unit": "1",
+          "meaning": "Exact source attitude rotation-matrix element."
+        },
+        {
+          "name": "m33",
+          "type": "number",
+          "nullable": false,
+          "unit": "1",
+          "meaning": "Exact source attitude rotation-matrix element."
+        },
+        {
+          "name": "quaternionX",
+          "type": "number",
+          "nullable": false,
+          "unit": "1",
+          "meaning": "Exact source attitude quaternion element."
+        },
+        {
+          "name": "quaternionY",
+          "type": "number",
+          "nullable": false,
+          "unit": "1",
+          "meaning": "Exact source attitude quaternion element."
+        },
+        {
+          "name": "quaternionZ",
+          "type": "number",
+          "nullable": false,
+          "unit": "1",
+          "meaning": "Exact source attitude quaternion element."
+        },
+        {
+          "name": "quaternionW",
+          "type": "number",
+          "nullable": false,
+          "unit": "1",
+          "meaning": "Exact source attitude quaternion element."
+        },
+        {
+          "name": "rotationRateX",
+          "type": "number",
+          "nullable": false,
+          "unit": "rad/s",
+          "meaning": "Source rotation rate."
+        },
+        {
+          "name": "rotationRateY",
+          "type": "number",
+          "nullable": false,
+          "unit": "rad/s",
+          "meaning": "Source rotation rate."
+        },
+        {
+          "name": "rotationRateZ",
+          "type": "number",
+          "nullable": false,
+          "unit": "rad/s",
+          "meaning": "Source rotation rate."
+        },
+        {
+          "name": "gravityX",
+          "type": "number",
+          "nullable": false,
+          "unit": "[g]",
+          "meaning": "Source gravity acceleration."
+        },
+        {
+          "name": "gravityY",
+          "type": "number",
+          "nullable": false,
+          "unit": "[g]",
+          "meaning": "Source gravity acceleration."
+        },
+        {
+          "name": "gravityZ",
+          "type": "number",
+          "nullable": false,
+          "unit": "[g]",
+          "meaning": "Source gravity acceleration."
+        },
+        {
+          "name": "userAccelerationX",
+          "type": "number",
+          "nullable": false,
+          "unit": "[g]",
+          "meaning": "Source acceleration with gravity removed."
+        },
+        {
+          "name": "userAccelerationY",
+          "type": "number",
+          "nullable": false,
+          "unit": "[g]",
+          "meaning": "Source acceleration with gravity removed."
+        },
+        {
+          "name": "userAccelerationZ",
+          "type": "number",
+          "nullable": false,
+          "unit": "[g]",
+          "meaning": "Source acceleration with gravity removed."
+        },
+        {
+          "name": "magneticFieldX",
+          "type": "number",
+          "nullable": false,
+          "unit": "uT",
+          "meaning": "Source calibrated magnetic field."
+        },
+        {
+          "name": "magneticFieldY",
+          "type": "number",
+          "nullable": false,
+          "unit": "uT",
+          "meaning": "Source calibrated magnetic field."
+        },
+        {
+          "name": "magneticFieldZ",
+          "type": "number",
+          "nullable": false,
+          "unit": "uT",
+          "meaning": "Source calibrated magnetic field."
+        },
+        {
+          "name": "magneticFieldAccuracy",
+          "type": "integer",
+          "nullable": false,
+          "meaning": "Exact CMMagneticFieldCalibrationAccuracy raw value, including uncalibrated sentinel."
+        },
+        {
+          "name": "heading",
+          "type": "number",
+          "nullable": false,
+          "unit": "deg",
+          "meaning": "Exact source heading, including unavailable sentinel."
+        },
+        {
+          "name": "headingAccuracy",
+          "type": "number",
+          "nullable": false,
+          "unit": "deg",
+          "meaning": "Exact source heading accuracy, including unavailable sentinel."
+        },
+        {
+          "name": "sensorLocation",
+          "type": "integer",
+          "nullable": false,
+          "meaning": "Exact CMDeviceMotion.SensorLocation raw value."
+        },
+        {
+          "name": "device",
+          "type": "string",
+          "nullable": false,
+          "meaning": "Exact SRDevice.productType source partition; not a stable physical-unit identifier."
+        }
+      ]
+    },
+    "headphone-settings-samples": {
+      "title": "Headphone Settings Samples",
+      "contentType": "text/csv",
+      "status": "active",
+      "encoding": "csv",
+      "columns": [
+        {
+          "name": "timestamp",
+          "type": "timestamp",
+          "nullable": false,
+          "meaning": "SensorKit configuration event instant."
+        },
+        {
+          "name": "adaptiveAudioStrength",
+          "type": "integer",
+          "nullable": false,
+          "meaning": "Exact SDK enum raw value; preserve unsupported, enabled and disabled as distinct states where defined."
+        },
+        {
+          "name": "listeningMode",
+          "type": "integer",
+          "nullable": false,
+          "meaning": "Exact SDK enum raw value; preserve unsupported, enabled and disabled as distinct states where defined."
+        },
+        {
+          "name": "personalizedVolumeEnabled",
+          "type": "integer",
+          "nullable": false,
+          "meaning": "Exact SDK enum raw value; preserve unsupported, enabled and disabled as distinct states where defined."
+        },
+        {
+          "name": "conversationAwarenessEnabled",
+          "type": "integer",
+          "nullable": false,
+          "meaning": "Exact SDK enum raw value; preserve unsupported, enabled and disabled as distinct states where defined."
+        },
+        {
+          "name": "spatialAudioEnabled",
+          "type": "integer",
+          "nullable": false,
+          "meaning": "Exact SDK enum raw value; preserve unsupported, enabled and disabled as distinct states where defined."
+        },
+        {
+          "name": "personalizedSpatialAudioEnabled",
+          "type": "integer",
+          "nullable": false,
+          "meaning": "Exact SDK enum raw value; preserve unsupported, enabled and disabled as distinct states where defined."
+        },
+        {
+          "name": "hearingAidEnabled",
+          "type": "integer",
+          "nullable": true,
+          "meaning": "Exact hearing-assistance setting enum raw value. Empty only when the entire hearingAssistance object is absent.",
+          "nullableGroup": "hearingAssistance"
+        },
+        {
+          "name": "mediaAssistEnabled",
+          "type": "integer",
+          "nullable": true,
+          "meaning": "Exact hearing-assistance setting enum raw value. Empty only when the entire hearingAssistance object is absent.",
+          "nullableGroup": "hearingAssistance"
+        },
+        {
+          "name": "adjustMediaEnabled",
+          "type": "integer",
+          "nullable": true,
+          "meaning": "Exact hearing-assistance setting enum raw value. Empty only when the entire hearingAssistance object is absent.",
+          "nullableGroup": "hearingAssistance"
+        },
+        {
+          "name": "adjustVoiceEnabled",
+          "type": "integer",
+          "nullable": true,
+          "meaning": "Exact hearing-assistance setting enum raw value. Empty only when the entire hearingAssistance object is absent.",
+          "nullableGroup": "hearingAssistance"
+        },
+        {
+          "name": "hearingProtectionEnabled",
+          "type": "integer",
+          "nullable": true,
+          "meaning": "Exact hearing-assistance setting enum raw value. Empty only when the entire hearingAssistance object is absent.",
+          "nullableGroup": "hearingAssistance"
+        },
+        {
+          "name": "conversationBoostEnabled",
+          "type": "integer",
+          "nullable": true,
+          "meaning": "Exact hearing-assistance setting enum raw value. Empty only when the entire hearingAssistance object is absent.",
+          "nullableGroup": "hearingAssistance"
+        },
+        {
+          "name": "hearingAidAmplification",
+          "type": "number",
+          "nullable": true,
+          "meaning": "Exact dimensionless SDK setting; no clinical unit or range is inferred. Empty only when the entire hearingAssistance object is absent.",
+          "nullableGroup": "hearingAssistance"
+        },
+        {
+          "name": "hearingAidBalance",
+          "type": "number",
+          "nullable": true,
+          "meaning": "Exact dimensionless SDK setting; no clinical unit or range is inferred. Empty only when the entire hearingAssistance object is absent.",
+          "nullableGroup": "hearingAssistance"
+        },
+        {
+          "name": "hearingAidTone",
+          "type": "number",
+          "nullable": true,
+          "meaning": "Exact dimensionless SDK setting; no clinical unit or range is inferred. Empty only when the entire hearingAssistance object is absent.",
+          "nullableGroup": "hearingAssistance"
+        },
+        {
+          "name": "ambientNoiseReduction",
+          "type": "number",
+          "nullable": true,
+          "meaning": "Exact dimensionless SDK setting; no clinical unit or range is inferred. Empty only when the entire hearingAssistance object is absent.",
+          "nullableGroup": "hearingAssistance"
+        },
+        {
+          "name": "device",
+          "type": "string",
+          "nullable": false,
+          "meaning": "Exact SRDevice.productType source partition; not a stable physical-unit identifier."
+        }
+      ]
     }
   }
 }

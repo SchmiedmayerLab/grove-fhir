@@ -176,6 +176,9 @@ def render_column_table(fmt: dict) -> list[str]:
         lines.append(
             f"| `{column['name']}` | {column['type']} | {nullable} | {unit} | {column['meaning']} |"
         )
+    for group in sorted({column["nullableGroup"] for column in fmt["columns"] if "nullableGroup" in column}):
+        members = ", ".join(f"`{column['name']}`" for column in fmt["columns"] if column.get("nullableGroup") == group)
+        lines.extend(["", f"Optional group `{group}`: {members}. All members are empty together or non-empty together in each row."])
     return lines
 
 

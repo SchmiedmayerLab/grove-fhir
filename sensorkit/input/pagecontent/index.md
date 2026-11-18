@@ -12,7 +12,7 @@ It adds exact source identity and preserves SensorKit-only semantics while reusi
 Readers who are new to FHIR can begin with the Mobile guide's [FHIR basics page](https://grovealliance.org/fhir/mobile/fhir-basics.html).
 That page introduces the resources used by these guides, identifiers and references, and the structure of a profile page.
 
-The authoritative Grove FHIR contract inventory contains all 22 streams in the stated Apple `SRSensor` baseline: 20 catalog-baseline symbols and two stable additions.
+The authoritative Grove FHIR contract inventory contains all 24 streams in the stated Apple `SRSensor` baseline: 20 catalog-baseline symbols and four stable additions.
 Every row has one definitive status in [`catalog/sensorkit-adapter.json`](https://grovealliance.org/fhir/catalog/sensorkit-adapter.json). The [device-usage walkthrough](walkthrough.html) demonstrates the required two-resource graph that pairs a structured summary with its complete Recording Document.
 
 This package does not request SensorKit authorization, start collection, query samples, encode native payloads, transmit resources, or define receiver/storage policy.

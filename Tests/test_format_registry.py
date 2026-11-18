@@ -41,6 +41,8 @@ class FormatRegistryTests(unittest.TestCase):
                 "native-recording",
                 "provider-recording",
                 "photoplethysmogram-samples",
+                "device-motion-samples",
+                "headphone-settings-samples",
             ],
         )
         for code, fmt in REGISTRY["formats"].items():
@@ -55,6 +57,13 @@ class FormatRegistryTests(unittest.TestCase):
             if "encoding" in fmt:
                 self.assertIn(fmt["encoding"], REGISTRY["encodings"], code)
                 self.assertTrue(fmt["columns"], code)
+
+    def test_optional_source_objects_have_complete_nullable_groups(self) -> None:
+        columns = REGISTRY["formats"]["headphone-settings-samples"]["columns"]
+        grouped = [column for column in columns if column.get("nullableGroup") == "hearingAssistance"]
+        self.assertEqual(len(grouped), 10)
+        self.assertTrue(all(column["nullable"] for column in grouped))
+        self.assertIn("all members", (ROOT / "sensor/input/pagecontent/formats.md").read_text().lower())
 
     def test_format_content_types_are_admitted_mime_codes(self) -> None:
         terminology = (ROOT / "sensor/input/fsh/generated-recording-mime-types.fsh").read_text(
@@ -86,6 +95,8 @@ class FormatRegistryTests(unittest.TestCase):
         self.assertEqual(
             set(schemas),
             {
+                "device-motion-samples",
+                "headphone-settings-samples",
                 "heart-rate-samples",
                 "triaxial-acceleration-samples",
                 "ambient-light-samples",
@@ -107,6 +118,24 @@ class FormatRegistryTests(unittest.TestCase):
                 self.assertTrue(column["meaning"], f"{stream}.{column['name']}")
                 if column["nullable"]:
                     self.assertIn("empty", column["meaning"].lower())
+
+    def test_motion_and_headphone_settings_preserve_source_facts(self) -> None:
+        motion = {column["name"]: column for column in REGISTRY["formats"]["device-motion-samples"]["columns"]}
+        self.assertEqual(len(motion), 37)
+        self.assertEqual(motion["timestamp"]["type"], "timestamp")
+        self.assertEqual(motion["deliveryTimestamp"]["type"], "timestamp")
+        self.assertEqual(motion["gravityX"]["unit"], "[g]")
+        self.assertEqual(motion["rotationRateX"]["unit"], "rad/s")
+        self.assertEqual(motion["magneticFieldX"]["unit"], "uT")
+        self.assertIn("quaternionW", motion)
+        self.assertIn("m33", motion)
+        self.assertIn("sensorLocation", motion)
+        settings = REGISTRY["formats"]["headphone-settings-samples"]["columns"]
+        self.assertEqual(len(settings), 18)
+        self.assertEqual(sum(column["nullable"] for column in settings), 10)
+        for column in settings:
+            if column["nullable"]:
+                self.assertIn("entire hearingAssistance object is absent", column["meaning"])
 
     def test_csv_lexical_and_empty_field_rules_are_explicit(self) -> None:
         encoding = REGISTRY["encodings"]["csv"]
