@@ -460,9 +460,16 @@ def validate_healthkit_ecg_contract(resource: dict[str, Any], label: str) -> Non
             f"{label} HealthKit ECG correlated symptoms must agree with symptomsStatus"
         )
     unreadable = ecg_claim["correlatedSymptomEvidence"]["unreadableSymptoms"]
+    # Only an entry with the data-absent-reason extension is the unreadable-symptoms member;
+    # another extension on a symptom member is ordinary Reference content.
     absent_members = [
         member for member in members
-        if isinstance(member, dict) and "extension" in member
+        if isinstance(member, dict)
+        and isinstance(member.get("extension"), list)
+        and any(
+            isinstance(item, dict) and item.get("url") == unreadable["extension"]
+            for item in member["extension"]
+        )
     ]
     if absent_members:
         if (

@@ -360,6 +360,14 @@ class ProducerHealthkitTests(ProducerValidationTestCase):
             "identifier": typed_identifier("source-output", output_system, symptom_output),
         }]
         exchange_bundle.validate_resource_profile_claims(with_symptom, "HealthKit ECG")
+        symptom_with_extension = copy.deepcopy(with_symptom)
+        symptom_with_extension["hasMember"][0]["extension"] = [{
+            "url": "https://study.example.org/fhir/StructureDefinition/review-note",
+            "valueString": "reviewed",
+        }]
+        exchange_bundle.validate_resource_profile_claims(
+            symptom_with_extension, "HealthKit ECG symptom member with another extension"
+        )
 
         unreadable_symptoms = copy.deepcopy(ecg)
         unreadable_symptoms["extension"][1]["valueCode"] = "present"
