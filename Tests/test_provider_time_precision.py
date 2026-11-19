@@ -53,6 +53,12 @@ class ProviderTimePrecisionTests(unittest.TestCase):
         changed["effectivePeriod"]["end"] = "2026-11-01T01:00:00.000000002-08:00"
         with self.assertRaisesRegex(ProducerValidationError, "does not equal"):
             mobile_semantic_projection(changed, vector, "changed endpoint")
+        for endpoint, rounded in (("start", "2026-11-01T02:00:00.000-07:00"), ("end", "2026-11-01T01:00:00.000-08:00")):
+            with self.subTest(endpoint=endpoint):
+                rounded_period = copy.deepcopy(resource)
+                rounded_period["effectivePeriod"][endpoint] = rounded
+                with self.assertRaisesRegex(ProducerValidationError, "does not equal"):
+                    mobile_semantic_projection(rounded_period, vector, "rounded provider endpoint")
 
     def test_native_adapters_still_require_millisecond_canonicalization(self):
         for adapter in ("healthkit", "health-connect"):
