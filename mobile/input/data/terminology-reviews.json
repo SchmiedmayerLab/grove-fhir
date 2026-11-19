@@ -160,7 +160,7 @@
       ],
       "reviewedOn": "2026-11-14",
       "recordedOn": "2026-11-14",
-      "notes": "The code, the 22 component codes, and the dB unit are unchanged from the projection the repository owner approved on 2026-08-26 (digest sha256:45eb47dac73f4e4d480ef9a6e4c025adad3c9897260424f829370abcc770595c): LOINC 89015-2 for the test and the 22 per-ear, per-frequency air conduction threshold codes for its components, all verified 2026-08-26 on tx.fhir.org r4 and r4.ontoserver.csiro.au (LOINC 2.82). The panel 100653-5 that a secondary source named as current is deprecated and was rejected. Thresholds are components rather than member Observations because they are parts of one test: a single-frequency threshold is not recorded on its own. The unit is dB, which is what LOINC states for these codes; UCUM 2.2 defines no hearing-level bel, and the hearing-level reference is carried by the concept. This digest differs only in the description and in the effective time, which admits a Period because an HKAudiogramSample states a start and an end. The source test details (ear, frequency, air conduction, masking, clamping bounds) match HKAudiogramSensitivityTest and its clamping range in the iPhoneOS 27.2 SDK. Ratified by the repository owner on 2026-11-15. After independent review on 2026-11-18 each component also fixes its ear and frequency in the catalog (extensionValues) and the panel obeys healthkit-audiogram-panel-1; the codes, unit and effective time are unchanged. The description now names the extension HealthKit Audiogram Sensitivity Test (healthkit-audiogram-sensitivity-test, renamed from healthkit-audiogram-test-details in the naming review). Ratified by the repository owner on 2026-11-18."
+      "notes": "The code, the 22 component codes, and the dB unit are unchanged from the projection the repository owner approved on 2026-08-26 (digest sha256:45eb47dac73f4e4d480ef9a6e4c025adad3c9897260424f829370abcc770595c): LOINC 89015-2 for the test and the 22 per-ear, per-frequency air conduction threshold codes for its components, all verified 2026-08-26 on tx.fhir.org r4 and r4.ontoserver.csiro.au (LOINC 2.82). The panel 100653-5 that a secondary source named as current is deprecated and was rejected. Thresholds are components rather than member Observations because they are parts of one test: a single-frequency threshold is not recorded on its own. The unit is dB, which is what LOINC states for these codes; UCUM 2.2 defines no hearing-level bel, and the hearing-level reference is carried by the concept. Compared with that projection, this digest differs in the description, in the effective time, which admits a Period because an HKAudiogramSample states a start and an end, and in obeying healthkit-audiogram-panel-1. Each component carries the HealthKit Audiogram Sensitivity Test extension (healthkit-audiogram-sensitivity-test), whose ear, frequency, air conduction, masking state and clamping bounds match HKAudiogramSensitivityTest and its clamping range in the iPhoneOS 27.2 SDK. Ratified by the repository owner on 2026-11-18."
     },
     "basal-body-temperature": {
       "status": "approved",
@@ -4554,7 +4554,7 @@
       "approvedBy": [
         "P. Schmiedmayer (repository owner)"
       ],
-      "approvedOn": "2026-11-15",
+      "approvedOn": "2026-11-19",
       "provenance": "reviewed",
       "digest": "sha256:79a5e79a7cc6c1d404de313893cc4b93ff81b4ff0c690076c8f96ae097a4c082",
       "preparedBy": [
@@ -4571,14 +4571,14 @@
       ],
       "reviewedOn": "2026-11-14",
       "recordedOn": "2026-11-14",
-      "notes": "HealthKit-owned code and result code system; no external terminology concept is bound, so no LOINC or UCUM verification applies. HKCategoryTypeIdentifierBleedingAfterMenopause is declared with HKCategoryValueVaginalBleeding in the iPhoneOS 27.2 SDK, and the five result codes match its five cases (unspecified, light, medium, heavy, none) one-to-one. The measurement mirrors bleeding-after-pregnancy and bleeding-during-pregnancy and stays distinct from menstrual flow and intermenstrual bleeding. Its effective time is the source instant (dateTime), as for those two siblings; the header gives no reason for an interval. Ratified by the repository owner on 2026-11-15; effective time aligned with the siblings after independent review on 2026-11-18."
+      "notes": "HealthKit-owned code and result code system; no external terminology concept is bound, so no LOINC or UCUM verification applies. HKCategoryTypeIdentifierBleedingAfterMenopause is declared with HKCategoryValueVaginalBleeding in the iPhoneOS 27.2 SDK, and the five result codes match its five cases (unspecified, light, medium, heavy, none) one-to-one. The measurement mirrors bleeding-after-pregnancy and bleeding-during-pregnancy and stays distinct from menstrual flow and intermenstrual bleeding. Its effective time is the source instant (dateTime), as for those two siblings; the header gives no reason for an interval. Ratified by the repository owner on 2026-11-19."
     },
     "menopausal-state": {
       "status": "approved",
       "approvedBy": [
         "P. Schmiedmayer (repository owner)"
       ],
-      "approvedOn": "2026-11-15",
+      "approvedOn": "2026-11-19",
       "provenance": "reviewed",
       "digest": "sha256:3bb7b14152acd44eb0d8352a55fa33aa70c99723224ae6a886a948790136434b",
       "preparedBy": [
@@ -4595,7 +4595,7 @@
       ],
       "reviewedOn": "2026-11-14",
       "recordedOn": "2026-11-14",
-      "notes": "HealthKit-owned code and result code system; no external terminology concept is bound, so no LOINC or UCUM verification applies. HKCategoryTypeIdentifierMenopausalState is declared with HKCategoryValueMenopausalState in the iPhoneOS 27.2 SDK, and the three result codes match its three cases (menopause, perimenopause, none) one-to-one. The effective time is the source instant; no interval of the state is asserted. Ratified by the repository owner on 2026-11-15; the definition's apostrophe was normalized on 2026-11-18."
+      "notes": "HealthKit-owned code and result code system; no external terminology concept is bound, so no LOINC or UCUM verification applies. HKCategoryTypeIdentifierMenopausalState is declared with HKCategoryValueMenopausalState in the iPhoneOS 27.2 SDK, and the three result codes match its three cases (menopause, perimenopause, none) one-to-one. The effective time is the source instant; no interval of the state is asserted. Ratified by the repository owner on 2026-11-19."
     }
   },
   "groundTruthRemints": [
