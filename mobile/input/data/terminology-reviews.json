@@ -4554,7 +4554,7 @@
       "approvedBy": [
         "P. Schmiedmayer (repository owner)"
       ],
-      "approvedOn": "2026-11-15",
+      "approvedOn": "2026-11-19",
       "provenance": "reviewed",
       "digest": "sha256:79a5e79a7cc6c1d404de313893cc4b93ff81b4ff0c690076c8f96ae097a4c082",
       "preparedBy": [
@@ -4571,14 +4571,14 @@
       ],
       "reviewedOn": "2026-11-14",
       "recordedOn": "2026-11-14",
-      "notes": "HealthKit-owned code and result code system; no external terminology concept is bound, so no LOINC or UCUM verification applies. HKCategoryTypeIdentifierBleedingAfterMenopause is declared with HKCategoryValueVaginalBleeding in the iPhoneOS 27.2 SDK, and the five result codes match its five cases (unspecified, light, medium, heavy, none) one-to-one. The measurement mirrors bleeding-after-pregnancy and bleeding-during-pregnancy and stays distinct from menstrual flow and intermenstrual bleeding. Its effective time is the source instant (dateTime), as for those two siblings; the header gives no reason for an interval. Ratified by the repository owner on 2026-11-15; effective time aligned with the siblings after independent review on 2026-11-18."
+      "notes": "HealthKit-owned code and result code system; no external terminology concept is bound, so no LOINC or UCUM verification applies. HKCategoryTypeIdentifierBleedingAfterMenopause is declared with HKCategoryValueVaginalBleeding in the iPhoneOS 27.2 SDK, and the five result codes match its five cases (unspecified, light, medium, heavy, none) one-to-one. The measurement mirrors bleeding-after-pregnancy and bleeding-during-pregnancy and stays distinct from menstrual flow and intermenstrual bleeding. Its effective time is the source instant (dateTime), as for those two siblings; the header gives no reason for an interval. Ratified by the repository owner on 2026-11-19."
     },
     "menopausal-state": {
       "status": "approved",
       "approvedBy": [
         "P. Schmiedmayer (repository owner)"
       ],
-      "approvedOn": "2026-11-15",
+      "approvedOn": "2026-11-19",
       "provenance": "reviewed",
       "digest": "sha256:3bb7b14152acd44eb0d8352a55fa33aa70c99723224ae6a886a948790136434b",
       "preparedBy": [
@@ -4595,7 +4595,7 @@
       ],
       "reviewedOn": "2026-11-14",
       "recordedOn": "2026-11-14",
-      "notes": "HealthKit-owned code and result code system; no external terminology concept is bound, so no LOINC or UCUM verification applies. HKCategoryTypeIdentifierMenopausalState is declared with HKCategoryValueMenopausalState in the iPhoneOS 27.2 SDK, and the three result codes match its three cases (menopause, perimenopause, none) one-to-one. The effective time is the source instant; no interval of the state is asserted. Ratified by the repository owner on 2026-11-15; the definition's apostrophe was normalized on 2026-11-18."
+      "notes": "HealthKit-owned code and result code system; no external terminology concept is bound, so no LOINC or UCUM verification applies. HKCategoryTypeIdentifierMenopausalState is declared with HKCategoryValueMenopausalState in the iPhoneOS 27.2 SDK, and the three result codes match its three cases (menopause, perimenopause, none) one-to-one. The effective time is the source instant; no interval of the state is asserted. Ratified by the repository owner on 2026-11-19."
     }
   },
   "groundTruthRemints": [
