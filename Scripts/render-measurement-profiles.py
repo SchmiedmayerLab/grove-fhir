@@ -347,6 +347,63 @@ def extension_member_lines(measurement: dict, component: dict, members: list[dic
     return lines
 
 
+def component_invariant(measurement: dict) -> str | None:
+    """Render the invariant that keeps components off the coordinates the catalog codes.
+
+    A component without one of the catalog's codings must not carry the fixed extension
+    values of a catalog component, and no two components carry the same values. Quantity
+    members compare as whole thousandths of their unit (value * 1000, truncated), in both
+    clauses, so 250 and 250.0 are the same coordinate.
+    """
+    extension = measurement.get("componentExtension")
+    if not extension or not extension.get("invariant"):
+        return None
+    if extension["invariant"] not in measurement.get("obeys", []):
+        raise SystemExit(f"{measurement['id']}: componentExtension.invariant must be listed in obeys")
+    components = measurement["components"]
+    members = [member["member"] for member in components[0]["extensionValues"]]
+    url = extension["url"]
+
+    def member_key(member: dict) -> str:
+        if "valueQuantity" in member:
+            return str(int(member["valueQuantity"]["value"] * 1000))
+        return member["valueCode"]
+
+    def member_expression(name: str, quantity: bool) -> str:
+        value = f"extension.where(url = '{url}').extension.where(url = '{name}').value"
+        if quantity:
+            return f"(({value}.value.first() * 1000).truncate().toString())"
+        return f"({value}.first().toString())"
+
+    quantity_members = {member["member"] for member in components[0]["extensionValues"] if "valueQuantity" in member}
+    key = " + '@' + ".join(member_expression(name, name in quantity_members) for name in members)
+    coordinates = []
+    for component in components:
+        values = {member["member"]: member for member in component["extensionValues"]}
+        if [member["member"] for member in component["extensionValues"]] != members:
+            raise SystemExit(f"{measurement['id']}: every component fixes the same extension members in order")
+        coordinates.append("@".join(member_key(values[name]) for name in members))
+    catalog_codes = {}
+    for component in components:
+        catalog_codes.setdefault(component["system"], []).append(component["code"])
+    codings = " or ".join(
+        f"(system = '{system}' and code in (" + " | ".join(f"'{code}'" for code in codes) + "))"
+        for system, codes in catalog_codes.items()
+    )
+    catalog_keys = " | ".join(f"'{coordinate}'" for coordinate in coordinates)
+    expression = (
+        f"component.where(code.coding.where({codings}).empty()).select({key}).intersect({catalog_keys}).empty()"
+        f" and component.select({key}).isDistinct()"
+    )
+    names = " and ".join(members)
+    return "\n".join([
+        f"Invariant: {extension['invariant']}",
+        f'Description: "A component without a catalog coding does not carry the {names} of a catalog component, and no two components carry the same {names}; quantities compare as whole thousandths of their unit."',
+        "Severity: #error",
+        f'Expression: "{expression}"',
+    ]) + "\n"
+
+
 def render_profile(
     measurement: dict,
     aliases: dict[str, str],
@@ -1408,6 +1465,11 @@ def main() -> int:
             if measurement.get("generation", {}).get("emit"):
                 blocks.extend(render_result_terminology(measurement))
         blocks.extend(emitted.get(owner_key, []))
+        for measurement in owner_measurements:
+            if measurement.get("generation", {}).get("emit"):
+                invariant = component_invariant(measurement)
+                if invariant:
+                    blocks.append(invariant)
         # Every generated profile ships one instance, so no profile reaches a reader unexemplified.
         # A hand-written example is richer than anything projected from the catalog, so it wins.
         handwritten = handwritten_instances(layout.root, owner_key)
