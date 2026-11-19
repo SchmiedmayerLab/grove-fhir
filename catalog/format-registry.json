@@ -1024,10 +1024,10 @@
       "encoding": "csv",
       "columns": [
         {
-          "name": "timestamp",
+          "name": "storedTimestamp",
           "type": "timestamp",
           "nullable": false,
-          "meaning": "SensorKit configuration event instant."
+          "meaning": "SRFetchResult.timestamp: when SensorKit wrote the sample to its data store. SRHeadphoneSettings has no time of its own, so this is the only time the source supplies."
         },
         {
           "name": "adaptiveAudioStrength",
