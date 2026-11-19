@@ -32,26 +32,26 @@ class AudiogramContractTests(unittest.TestCase):
         self.assertIn("* effective[x] only dateTime or Period", self.profile)
         self.assertTrue(all(row["cardinality"] == "0..1" for row in self.row["components"]))
         self.assertIn("* component ^slicing.rules = #open", self.profile)
-        self.assertIn("HealthKitAudiogramTestDetails named sourceTest 1..1", self.profile)
+        self.assertIn("HealthKitAudiogramSensitivityTest named sensitivityTest 1..1", self.profile)
 
     def test_known_frequency_codes_cannot_disagree_with_the_source_coordinates(self):
         for component in self.row["components"]:
             ear, frequency = component["id"].split("-", 1)
-            prefix = f"* component[{component['id']}].extension[sourceTest].extension"
+            prefix = f"* component[{component['id']}].extension[sensitivityTest].extension"
             self.assertIn(f"{prefix}[frequency].valueQuantity.value = {frequency} (exactly)", self.profile)
             self.assertIn(f"{prefix}[ear].valueCode = #{ear} (exactly)", self.profile)
 
     def test_example_retains_source_facts_for_every_stated_sensitivity(self):
         lines = RENDERER.example_result_lines(self.row, ROOT)
         values = [line for line in lines if "].valueQuantity = " in line and ".extension[" not in line]
-        details = [line for line in lines if "].extension[sourceTest].extension[frequency].valueQuantity = " in line]
+        details = [line for line in lines if "].extension[sensitivityTest].extension[frequency].valueQuantity = " in line]
         self.assertEqual(len(values), 2)
         self.assertEqual(len(details), len(values))
         self.assertEqual(sum("[masked].valueBoolean = false" in line for line in lines), len(values))
 
     def test_catalog_declares_the_required_component_extension(self):
         extension = self.row["componentExtension"]
-        self.assertEqual(extension["url"], "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-audiogram-test-details")
+        self.assertEqual(extension["url"], "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-audiogram-sensitivity-test")
         self.assertEqual(extension["cardinality"], "1..1")
         for component in self.row["components"]:
             ear, frequency = component["id"].split("-", 1)
