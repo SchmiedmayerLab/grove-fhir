@@ -24,9 +24,9 @@ Description: "The closed source-time bases for HealthKit clinical and CDA docume
 * include codes from system HealthKitSourceDocumentTimeBasisCS
 
 Invariant: healthkit-source-document-time-1
-Description: "Source document bounds include a complete time and an explicit time zone."
+Description: "Source document bounds include a complete time and an explicit offset, and a timezone extension appears on both bounds with the same name or on neither."
 Severity: #error
-Expression: "extension.where(url='period').value.ofType(Period).all(start.toString().matches('.*T.*(Z|[+-][0-9]{2}:[0-9]{2})$') and end.toString().matches('.*T.*(Z|[+-][0-9]{2}:[0-9]{2})$'))"
+Expression: "extension.where(url='period').value.ofType(Period).all(start.toString().matches('.*T.*(Z|[+-][0-9]{2}:[0-9]{2})$') and end.toString().matches('.*T.*(Z|[+-][0-9]{2}:[0-9]{2})$') and start.extension('http://hl7.org/fhir/StructureDefinition/timezone').exists() = end.extension('http://hl7.org/fhir/StructureDefinition/timezone').exists() and (start.extension('http://hl7.org/fhir/StructureDefinition/timezone').exists() implies start.extension('http://hl7.org/fhir/StructureDefinition/timezone').value.first() = end.extension('http://hl7.org/fhir/StructureDefinition/timezone').value.first()))"
 
 Extension: HealthKitSourceDocumentTime
 Id: healthkit-source-document-time

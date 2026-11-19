@@ -89,6 +89,18 @@ class HealthKitSourceDocumentTimeTests(unittest.TestCase):
             with self.subTest(case=name), self.assertRaisesRegex(ProducerValidationError, "endpoint|timezone"):
                 validate_healthkit_source_document_time(resource, name)
 
+    def test_member_order_is_not_significant(self):
+        reordered = provenance()
+        reordered["entity"][0]["extension"][0]["extension"].reverse()
+        validate_healthkit_source_document_time(reordered, "reordered")
+
+    def test_a_list_valued_endpoint_extension_is_a_validation_error(self):
+        resource = zoned()
+        period = resource["entity"][0]["extension"][0]["extension"][1]["valuePeriod"]
+        period["_start"] = [period["_start"]]
+        with self.assertRaisesRegex(ProducerValidationError, "timezone"):
+            validate_healthkit_source_document_time(resource, "list endpoint")
+
     def test_incomplete_reversed_or_unknown_values_are_rejected(self):
         cases = [
             provenance(basis="download"),
@@ -98,13 +110,11 @@ class HealthKitSourceDocumentTimeTests(unittest.TestCase):
         ]
         missing_end = provenance()
         del missing_end["entity"][0]["extension"][0]["extension"][1]["valuePeriod"]["end"]
-        reordered = provenance()
-        reordered["entity"][0]["extension"][0]["extension"].reverse()
         extra = provenance()
         extra["entity"][0]["extension"][0]["extension"].append({"url": "note", "valueString": "x"})
         repeated = provenance()
         repeated["entity"][0]["extension"] *= 2
-        for index, resource in enumerate([*cases, missing_end, reordered, extra, repeated]):
+        for index, resource in enumerate([*cases, missing_end, extra, repeated]):
             with self.subTest(case=index), self.assertRaises(ProducerValidationError):
                 validate_healthkit_source_document_time(resource, "source")
 

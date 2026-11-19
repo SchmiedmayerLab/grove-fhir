@@ -20,7 +20,8 @@ from .references import extensions_with_url
 
 def validate_healthkit_metadata(resource: dict[str, Any], label: str) -> None:
     """Keep source values typed without admitting arbitrary nested FHIR content."""
-    contract = read_json(CATALOG_ROOT / "healthkit-adapter.json")["metadataExtension"]
+    adapter = read_json(CATALOG_ROOT / "healthkit-adapter.json")
+    contract = adapter["metadataExtension"]
     url = contract["url"]
     extensions = extensions_with_url(resource, url)
     if not extensions:
@@ -60,6 +61,8 @@ def validate_healthkit_metadata(resource: dict[str, Any], label: str) -> None:
             fail("keys must be nonempty and unique")
         if key in contract["excludedKeys"]:
             fail(f"must not carry {key}, which the writer-record identity represents")
+        if key == "HKMetadataKeyTimeZone" and _is_source_document(resource, adapter):
+            fail("must not carry HKMetadataKeyTimeZone on a clinical record or CDA document; the source document time carries it")
         try:
             ordered_key = key.encode("utf-8", errors="strict")
         except UnicodeError:
@@ -100,6 +103,15 @@ def validate_healthkit_metadata(resource: dict[str, Any], label: str) -> None:
                 fail("quantity requires a finite value and UCUM code")
             if "unit" in value and not _nonempty(value["unit"]):
                 fail("quantity unit must be nonempty")
+
+
+def _is_source_document(resource: dict[str, Any], adapter: dict[str, Any]) -> bool:
+    """A clinical record or CDA document, whose time zone belongs to the source document time."""
+    profiles = resource.get("meta", {}).get("profile", [])
+    if isinstance(profiles, list) and "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document" in profiles:
+        return True
+    source_types = extensions_with_url(resource, adapter["sourceTypeExtension"]["url"])
+    return any(isinstance(item, dict) and item.get("valueCode") == "HKDocumentTypeIdentifierCDA" for item in source_types)
 
 
 def _nonempty(value: Any) -> bool:
