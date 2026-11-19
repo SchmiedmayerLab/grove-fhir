@@ -124,6 +124,10 @@ class FormatRegistryTests(unittest.TestCase):
         self.assertEqual(len(motion), 37)
         self.assertEqual(motion["timestamp"]["type"], "timestamp")
         self.assertEqual(motion["storedTimestamp"]["type"], "timestamp")
+        settings = {column["name"]: column for column in REGISTRY["formats"]["headphone-settings-samples"]["columns"]}
+        self.assertEqual(next(iter(settings)), "storedTimestamp")
+        self.assertIn("SRFetchResult.timestamp", settings["storedTimestamp"]["meaning"])
+        self.assertNotIn("timestamp", settings)
         self.assertEqual(motion["gravityX"]["unit"], "[g]")
         self.assertEqual(motion["rotationRateX"]["unit"], "rad/s")
         self.assertEqual(motion["magneticFieldX"]["unit"], "uT")
