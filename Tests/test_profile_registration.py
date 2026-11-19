@@ -26,6 +26,7 @@ GUIDES = (
     "oura",
     "google-health",
     "questionnaire",
+    "study",
 )
 
 

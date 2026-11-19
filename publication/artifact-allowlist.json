@@ -6104,6 +6104,118 @@
           "classification": "definition"
         }
       ]
+    },
+    {
+      "source": "study",
+      "packageId": "org.grovealliance.fhir.study",
+      "canonical": "https://grovealliance.org/fhir/study",
+      "artifacts": [
+        {
+          "fshName": "GroveStudyTaskParameterCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "grove-study-task-parameter",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveStudyTaskStatusReasonCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "grove-study-task-status-reason",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveStudyAssignedTaskExample",
+          "fshType": "Instance",
+          "resourceType": "Task",
+          "id": "GroveStudyAssignedTaskExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "GroveStudyCompletedTaskExample",
+          "fshType": "Instance",
+          "resourceType": "Task",
+          "id": "GroveStudyCompletedTaskExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "GroveStudyDailyCheckInActivityExample",
+          "fshType": "Instance",
+          "resourceType": "ActivityDefinition",
+          "id": "GroveStudyDailyCheckInActivityExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "GroveStudyDailyCheckInExample",
+          "fshType": "Instance",
+          "resourceType": "Questionnaire",
+          "id": "GroveStudyDailyCheckInExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "GroveStudyDailyCheckInResponseExample",
+          "fshType": "Instance",
+          "resourceType": "QuestionnaireResponse",
+          "id": "GroveStudyDailyCheckInResponseExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "GroveStudyEnrollmentExample",
+          "fshType": "Instance",
+          "resourceType": "ResearchSubject",
+          "id": "GroveStudyEnrollmentExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "GroveStudyExcusedTaskExample",
+          "fshType": "Instance",
+          "resourceType": "Task",
+          "id": "GroveStudyExcusedTaskExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "GroveStudyProtocolExample",
+          "fshType": "Instance",
+          "resourceType": "PlanDefinition",
+          "id": "GroveStudyProtocolExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "GroveStudyProtocol",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-study-protocol",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveStudyQuestionnaireActivity",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-study-questionnaire-activity",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveStudyQuestionnaireTask",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-study-questionnaire-task",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveStudyTaskStatusReasonVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "grove-study-task-status-reason",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveStudyTaskStatusVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "grove-study-task-status",
+          "classification": "definition"
+        }
+      ]
     }
   ]
 }

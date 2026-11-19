@@ -274,6 +274,7 @@ class GuideQATests(unittest.TestCase):
             "health-connect",
             "providers",
             "questionnaire",
+            "study",
         ):
             errors = {
                 message

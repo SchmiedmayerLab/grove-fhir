@@ -33,6 +33,7 @@ Default-branch builds replace one reader-facing preview for each package:
 | `org.grovealliance.fhir.withings` | `/withings/ci-build/` |
 | `org.grovealliance.fhir.oura` | `/oura/ci-build/` |
 | `org.grovealliance.fhir.google-health` | `/google-health/ci-build/` |
+| `org.grovealliance.fhir.study` | `/study/ci-build/` |
 
 These paths are relative to `https://schmiedmayerlab.github.io/grove-fhir`.
 Versionless aliases are previews, not canonical resource URLs and not immutable release history. `publication/config.json` is the sole route inventory; `npm run pages:build` and `Scripts/check-publication.py` verify it.
@@ -43,7 +44,7 @@ Publisher ZIP bundles (including `full-ig.zip`, definitions, examples, and sprea
 
 ## Release-candidate evidence
 
-`Scripts/build-release.sh` is the local mirror of the release-candidate build: it performs an explicit two-phase build for all ten guides from one clean checked-out revision.
+`Scripts/build-release.sh` is the local mirror of the release-candidate build: it performs an explicit two-phase build for all eleven guides from one clean checked-out revision.
 The Release Publication workflow reimplements the same two phases inline rather than calling the script, and it omits the script's `npm run inventory:check` step; `Tests/test_release_pipeline.py` holds the two lanes to the same steps.
 The first phase is network-enabled and bootstraps the integrity-locked npm and Bundler closures plus the SHA-256-pinned Publisher, Validator, template, and external FHIR package archives.
 The second phase reconstructs or verifies each closure with `npm ci --offline`, `bundle install --local`, and `download-fhir-tools.sh --offline`, then runs Publisher with `-tx n/a -no-network`.
@@ -85,7 +86,7 @@ Every release replaces the current publication. Only the first release of a majo
 
 The guides are published as HTML, JSON, and XML. Turtle serializations are not generated (`excludettl` in each `sushi-config.yaml`), and `publication/publish-setup.json` disables Publisher's `.json1`/`.json2`/`.xml1`/`.xml2` clones, which exist for server-side content negotiation that a static host cannot perform.
 
-The same layout applies to all ten guides. The archive root is the `/fhir/` subtree, leaving `/` and other routes to the website.
+The same layout applies to all eleven guides. The archive root is the `/fhir/` subtree, leaving `/` and other routes to the website.
 
 `publication/release.json` supplies the publication status, sequence, description, and previous publication. `draft` is a FHIR maturity status, independent of whether the artifact is a development preview or a published version. Before each release:
 
@@ -141,7 +142,7 @@ The lanes are deliberately distinct and must never silently fall back into one a
 2. `online-terminology` is an accountable validation performed with the manifest-pinned FHIR Validator against an explicitly approved terminology endpoint.
    Its evidence must satisfy the closed `catalog/schemas/terminology-evidence.schema.json` before it is copied.
    The record binds the exact source revision and every built package checksum to the Validator version/checksum, HTTPS endpoint software/version, licensed terminology systems and editions, validation date, checksum-bound request policy, exact arguments, and passed result/counts.
-   Cross-file checks require all ten package digests, the release Validator pin, unique terminology systems, and a completion timestamp on the declared validation date.
+   Cross-file checks require all eleven package digests, the release Validator pin, unique terminology systems, and a completion timestamp on the declared validation date.
    Pass it to `collect-release-evidence.py --lane online-terminology --terminology-evidence ...`; an invalid, incomplete, duplicate, stale, or package-drifted record is rejected before evidence output is created.
    The declared endpoint must be a credential-free HTTPS URL selected by the recorded Validator arguments; credentials and bearer tokens must never be written to evidence.
    The record must name a sibling JSON Validator report and match its SHA-256 digest; the collector validates and copies that raw report as a separately checksummed release artifact.
@@ -179,7 +180,7 @@ Canonical promotion may be activated only by a separately reviewed change that s
 2. approved permanence, correction, withdrawal, key-retention, and security policies;
 3. a clean tagged source revision matching the release manifest and evidence checksums;
 4. complete offline structural and approved online terminology evidence;
-5. reviewed publication requests for all ten packages; and
+5. reviewed publication requests for all eleven packages; and
 6. a reviewed archive from `Scripts/stage-publication.py` and a website deployment that verifies its checksums and preserves all version directories.
 
 The earlier `Scripts/publish-version.py` remains available for its existing manually gated promotion contract; the Release Publication workflow uses native `-go-publish` instead.

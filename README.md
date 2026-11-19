@@ -44,9 +44,11 @@ The package graph is:
 | `org.grovealliance.fhir.withings` | Withings-exclusive mappings; depends on Mobile, Sensor, and the Connected Provider Adapter |
 | `org.grovealliance.fhir.oura` | Oura-exclusive mappings; depends on Mobile, Sensor, and the Connected Provider Adapter |
 | `org.grovealliance.fhir.google-health` | Google Health API-exclusive mappings; depends on Mobile, Sensor, and the Connected Provider Adapter |
+| `org.grovealliance.fhir.study` | Study protocols, assigned task occurrences, and their accepted questionnaire results; depends on Questionnaire |
 
 Use the [HealthKit adapter](https://schmiedmayerlab.github.io/grove-fhir/healthkit/), [Health Connect adapter](https://schmiedmayerlab.github.io/grove-fhir/health-connect/), [Sensor and waveform guide](https://schmiedmayerlab.github.io/grove-fhir/sensor/), [SensorKit adapter](https://schmiedmayerlab.github.io/grove-fhir/sensorkit/), or [connected-provider adapter](https://schmiedmayerlab.github.io/grove-fhir/providers/) for the applicable already-obtained source data.
 Use the [Questionnaire Exchange guide](https://schmiedmayerlab.github.io/grove-fhir/questionnaire/) to publish instruments and exchange their responses.
+Use the [Study Interaction Exchange guide](https://schmiedmayerlab.github.io/grove-fhir/study/) to exchange the task occurrences a study assigns and the responses that complete them.
 Adapter packages define mappings and conformance; they do not fetch provider or platform data, authenticate to provider APIs, or prescribe persistence behavior.
 
 ## Development
