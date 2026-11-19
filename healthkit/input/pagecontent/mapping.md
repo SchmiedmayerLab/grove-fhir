@@ -118,7 +118,7 @@ Preserve its complete source interval: use `effectiveDateTime` for a point and `
 Each sensitivity test becomes its own component, retaining the supplied dB hearing-level value.
 
 Use the catalog's ear-and-frequency LOINC code when it names that exact coordinate.
-For another frequency, retain the exact frequency and ear in the required `healthkit-audiogram-test-details` extension and use an explicit component text label; do not substitute the nearest catalog frequency.
+For another frequency, retain the exact frequency and ear in the required `healthkit-audiogram-sensitivity-test` extension and use an explicit component text label; do not substitute the nearest catalog frequency.
 The same extension carries the air-conduction method, the masking state when the source API exposes it, and any source clamping bounds.
 Each ear retains its own masking state; a source sensitivity point has at most one test per ear.
 A coded component's extension fixes the frequency to the integer the catalog names, so write it without a fractional part (`250`, not `250.0`).
@@ -239,7 +239,7 @@ Carry them in the [HealthKit Source Document Time](StructureDefinition-healthkit
 | Sample class | Basis | Meaning of the period |
 |---|---|---|
 | `HKClinicalRecord` | `clinical-record-download` | when the system downloaded the FHIR data to the device and added the sample to Health; not taken from the FHIR data |
-| `HKCDADocumentSample` | `cda-source-document-period` | the start and end dates that the app creating the sample supplied for the document; no clinical service or download time is inferred |
+| `HKCDADocumentSample` | `cda-document-app-supplied` | the start and end dates that the app creating the sample supplied for the document; no clinical service or download time is inferred |
 
 The period states both endpoints as complete date-times with an offset under the [time rules](#values-units-and-time), and equal endpoints are admitted.
 A supplied `HKTimeZone` maps to the `timezone` extension on both endpoints and is not repeated in source metadata.

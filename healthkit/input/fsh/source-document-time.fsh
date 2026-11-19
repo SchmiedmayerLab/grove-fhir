@@ -14,7 +14,7 @@ Description: "The source API meaning of a clinical or CDA document sample's date
 * ^caseSensitive = true
 * ^content = #complete
 * #clinical-record-download "Download to HealthKit" "The date and time when the system downloaded the FHIR data of an HKClinicalRecord to the device and added the sample to Health; it is not taken from the FHIR data."
-* #cda-source-document-period "Source-assigned document dates" "The start and end dates that the app creating a HealthKit CDA document sample supplied for the document; no clinical service or download-time meaning is inferred."
+* #cda-document-app-supplied "App-supplied document dates" "The start and end dates that the app creating a HealthKit CDA document sample supplied for the document; no clinical service or download-time meaning is inferred."
 
 ValueSet: HealthKitSourceDocumentTimeBasisVS
 Id: healthkit-source-document-time-basis
@@ -31,7 +31,7 @@ Expression: "extension.where(url='period').value.ofType(Period).all(start.toStri
 Extension: HealthKitSourceDocumentTime
 Id: healthkit-source-document-time
 Title: "HealthKit Source Document Time"
-Description: "The source document sample dates and their exact API meaning. These describe the consumed source entity; they do not state when the care described in the original document occurred. HKClinicalRecord uses clinical-record-download; HKCDADocumentSample uses cda-source-document-period. The producer preserves the source bounds under the adapter's timestamp precision rules."
+Description: "The source document sample dates and their exact API meaning. These describe the consumed source entity; they do not state when the care described in the original document occurred. HKClinicalRecord uses clinical-record-download; HKCDADocumentSample uses cda-document-app-supplied. The producer preserves the source bounds under the adapter's timestamp precision rules."
 Context: Provenance.entity
 * obeys healthkit-source-document-time-1
 * extension ^slicing.rules = #closed
