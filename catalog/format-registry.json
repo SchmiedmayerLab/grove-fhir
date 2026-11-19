@@ -769,10 +769,10 @@
           "meaning": "Exact recorded sample start date."
         },
         {
-          "name": "deliveryTimestamp",
+          "name": "storedTimestamp",
           "type": "timestamp",
           "nullable": false,
-          "meaning": "SensorKit delivery timestamp, distinct from the sample instant."
+          "meaning": "SRFetchResult.timestamp: when SensorKit wrote the sample to its data store, distinct from the sample instant."
         },
         {
           "name": "uptime",
