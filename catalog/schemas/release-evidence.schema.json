@@ -29,7 +29,7 @@
       "type": "object",
       "minProperties": 1,
       "propertyNames": {
-        "pattern": "^(?:catalog|Conformance/corpora|questionnaire/fixtures)/(?:[A-Za-z0-9_-]+/)*[A-Za-z0-9._-]+\\.json$"
+        "pattern": "^(?:catalog|Conformance/corpora|questionnaire/fixtures|study/fixtures)/(?:[A-Za-z0-9_-]+/)*[A-Za-z0-9._-]+\\.json$"
       },
       "additionalProperties": {
         "type": "object",

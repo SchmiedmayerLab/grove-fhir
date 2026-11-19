@@ -1,0 +1,104 @@
+{
+  "resourceType": "Task",
+  "id": "occurrence-0001",
+  "meta": {
+    "profile": [
+      "https://grovealliance.org/fhir/study/StructureDefinition/grove-study-questionnaire-task"
+    ]
+  },
+  "identifier": [
+    {
+      "value": "occurrence-0001"
+    }
+  ],
+  "instantiatesCanonical": "https://example.org/fhir/ActivityDefinition/daily-check-in|1.0.0",
+  "status": "completed",
+  "intent": "order",
+  "code": {
+    "coding": [
+      {
+        "system": "http://hl7.org/fhir/uv/sdc/CodeSystem/temp",
+        "code": "complete-questionnaire"
+      }
+    ]
+  },
+  "for": {
+    "type": "Patient",
+    "identifier": {
+      "system": "https://example.org/research/participant-id",
+      "value": "participant-001"
+    }
+  },
+  "authoredOn": "2026-08-18T08:00:00-07:00",
+  "lastModified": "2026-08-19T09:31:02-07:00",
+  "input": [
+    {
+      "type": {
+        "coding": [
+          {
+            "system": "https://grovealliance.org/fhir/study/CodeSystem/grove-study-task-parameter",
+            "code": "performance-window"
+          }
+        ]
+      },
+      "valuePeriod": {
+        "start": "2026-08-19T06:00:00-07:00",
+        "end": "2026-08-19T23:59:59-07:00"
+      }
+    },
+    {
+      "type": {
+        "coding": [
+          {
+            "system": "https://grovealliance.org/fhir/study/CodeSystem/grove-study-task-parameter",
+            "code": "enrollment"
+          }
+        ]
+      },
+      "valueReference": {
+        "type": "ResearchSubject",
+        "identifier": {
+          "system": "https://example.org/research/enrollment-id",
+          "value": "enrollment-001"
+        }
+      }
+    },
+    {
+      "type": {
+        "coding": [
+          {
+            "system": "https://grovealliance.org/fhir/study/CodeSystem/grove-study-task-parameter",
+            "code": "protocol"
+          }
+        ]
+      },
+      "valueCanonical": "https://example.org/fhir/PlanDefinition/daily-check-in-protocol|1.0.0"
+    },
+    {
+      "type": {
+        "coding": [
+          {
+            "system": "http://hl7.org/fhir/uv/sdc/CodeSystem/temp",
+            "code": "questionnaire"
+          }
+        ]
+      },
+      "valueCanonical": "https://example.org/fhir/Questionnaire/daily-check-in|1.0.0"
+    }
+  ],
+  "output": [
+    {
+      "type": {
+        "coding": [
+          {
+            "system": "http://hl7.org/fhir/uv/sdc/CodeSystem/temp",
+            "code": "questionnaire-response"
+          }
+        ]
+      },
+      "valueReference": {
+        "reference": "QuestionnaireResponse/response-0001/_history/1"
+      }
+    }
+  ]
+}

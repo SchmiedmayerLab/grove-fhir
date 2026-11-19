@@ -53,7 +53,7 @@ It sends the three normative positive bases—the active Bundle of two records t
 ## Every committed fixture
 
 `Conformance/fixture-validator-manifest.json` is the all-fixtures lane.
-A guide's own worked examples are validated by the IG Publisher during its build and audited by `Scripts/check-guide-qa.py`; the fixtures under `Conformance/` and `questionnaire/fixtures/` are the ones no guide build ever sees.
+A guide's own worked examples are validated by the IG Publisher during its build and audited by `Scripts/check-guide-qa.py`; the fixtures under `Conformance/`, `questionnaire/fixtures/`, and `study/fixtures/` are the ones no guide build ever sees.
 The QA audit requires explicit nonnegative integer error, warning and hint counts; missing or malformed counts are not evidence of a clean build.
 
 ```sh
@@ -62,7 +62,8 @@ python3 Scripts/validate-fixtures.py \
   --package mobile=mobile/output/package.tgz \
   --package questionnaire=questionnaire/output/package.tgz \
   --package sensor=sensor/output/package.tgz \
-  --package healthkit=healthkit/output/package.tgz
+  --package healthkit=healthkit/output/package.tgz \
+  --package study=study/output/package.tgz
 ```
 
 Every JSON file beneath the declared roots is either validated here or excluded with a stated reason, so a fixture cannot be added without being classified.
@@ -70,6 +71,7 @@ Every JSON file beneath the declared roots is either validated here or excluded 
 `Conformance/corpora/mobile-profile-invariants` is the negative corpus of that lane: one heart-rate Observation per way a Mobile Observation can breach a `GroveMobileObservationRules` invariant or the `dataAbsentReason` binding, named in the manifest's `negativeCorpora`.
 The lane requires the control to pass and each case to fail for exactly the invariant key or value set its `corpus.json` declares, so a rule dropped from the base profile fails here instead of only in a guide build.
 `Conformance/corpora/healthkit-insulin-delivery` is its second negative corpus: an Insulin Delivery Observation whose delivery-reason component stands without the dose it qualifies, which the lane requires the Validator to reject for exactly the missing `Observation.value[x]`, so a component never substitutes for the root result.
+`study/fixtures/structural` is its third: a completed study occurrence Task whose cases each break the Grove Study Questionnaire Task profile for one named reason, including a pending status, a result link that disagrees with the status, a reversed or date-only performance window, and unpinned canonicals.
 
 ## Positive and negative corpus
 
@@ -81,6 +83,10 @@ See [Receiver Lifecycle Sequences](corpora/receiver-lifecycle/README.md) for the
 
 The [multi-study attribution corpus](corpora/study-attribution/README.md) complements those sequences with exact protocol references, late receiver-owned association and isolated withdrawal.
 Its derived exports deliberately have new identities and omit the other study's membership; profile-valid policy counterexamples remain in the official fixture lane.
+
+`study/fixtures/graph` holds the study task delivery sequences: a single-arm daily check-in with its definitions and, per case, the deliveries a receiver applies in order with the outcome or graph rules expected for each.
+It covers assignment and completion, exact replay, conflicting reuse of an occurrence identifier, same-time occurrences, re-enrollment, a corrected result, a second completion, and responses that are profile-valid but name another participant, another instrument version, a pending status, a time outside the window, or a version the result link does not reach.
+Every delivery is in the official fixture lane; `Scripts/validate-study-graph.py` applies the cases and `Tests/test_study_graph.py` checks every expectation.
 
 `Conformance/corpora/mobile-exchange` is the normative producer corpus for the Mobile exchange graph.
 Its positive bases cover one active Bundle of two records that share their content-addressed nodes, each record one conversion Provenance, keyed by its record version, with the outputs it targets; and one dedicated retraction Bundle in each target form: one names the prior primary output through an exact typed target, and one names the whole source record through its sole, untyped source-record target.

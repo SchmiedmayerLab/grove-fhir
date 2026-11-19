@@ -512,6 +512,7 @@ jobs:
           --package questionnaire=questionnaire/output/package.tgz
           --package sensor=sensor/output/package.tgz
           --package healthkit=healthkit/output/package.tgz
+          --package study=study/output/package.tgz
       - name: Upload bulk FHIR downloads separately from Pages
         uses: actions/upload-artifact@v7
         if: github.ref == 'refs/heads/main'
