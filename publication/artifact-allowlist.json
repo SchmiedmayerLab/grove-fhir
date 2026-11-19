@@ -2681,10 +2681,10 @@
           "classification": "definition"
         },
         {
-          "fshName": "HealthKitAudiogramTestDetails",
+          "fshName": "HealthKitAudiogramSensitivityTest",
           "fshType": "Extension",
           "resourceType": "StructureDefinition",
-          "id": "healthkit-audiogram-test-details",
+          "id": "healthkit-audiogram-sensitivity-test",
           "classification": "definition"
         },
         {

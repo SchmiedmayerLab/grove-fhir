@@ -44,7 +44,6 @@ Insignificant trailing zeros may be normalized without changing the instant.
 A date-only aggregate needs the source's defined day boundary and a source-evidenced time zone before it can become an exact interval.
 A retrieval clock, server time zone or participant's current location does not supply that evidence.
 An offset on a timestamp identifies that instant's displacement from UTC; it does not establish an IANA time-zone name or the offset at another endpoint.
-Keep any separately reported source offset in its defined field rather than applying it to a timestamp that already denotes UTC.
 
 The source-precision override applies to measurement time.
 Conversion Provenance retains its own conversion instant, and it never substitutes for a missing measurement timestamp.

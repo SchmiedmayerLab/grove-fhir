@@ -33,13 +33,22 @@ def provenance(basis="clinical-record-download", start="2026-08-18T09:41:07.000-
     }
 
 
+def zoned(start_zone="America/Los_Angeles", end_zone="America/Los_Angeles"):
+    resource = provenance()
+    period = resource["entity"][0]["extension"][0]["extension"][1]["valuePeriod"]
+    for endpoint, zone in (("start", start_zone), ("end", end_zone)):
+        if zone is not None:
+            period[f"_{endpoint}"] = {"extension": [{"url": "http://hl7.org/fhir/StructureDefinition/timezone", "valueCode": zone}]}
+    return resource
+
+
 class HealthKitSourceDocumentTimeTests(unittest.TestCase):
     def test_contract_profile_and_page_agree(self):
         self.assertEqual(CONTRACT["r4Context"], "Provenance.entity")
         self.assertEqual(CONTRACT["cardinality"], "0..1")
         self.assertEqual(
             {item["code"]: item["sourceClass"] for item in CONTRACT["bases"]},
-            {"clinical-record-download": "HKClinicalRecord", "cda-source-document-period": "HKCDADocumentSample"},
+            {"clinical-record-download": "HKClinicalRecord", "cda-document-app-supplied": "HKCDADocumentSample"},
         )
         definition = (ROOT / "healthkit/input/fsh/source-document-time.fsh").read_text(encoding="utf-8")
         self.assertIn("Id: healthkit-source-document-time\n", definition)
@@ -59,15 +68,26 @@ class HealthKitSourceDocumentTimeTests(unittest.TestCase):
     def test_both_bases_and_equal_or_ordered_bounds_are_admitted(self):
         validate_healthkit_source_document_time(provenance(), "download")
         validate_healthkit_source_document_time(
-            provenance("cda-source-document-period", "2026-08-01T00:00:00Z", "2026-08-02T12:30:00.500+02:00"),
+            provenance("cda-document-app-supplied", "2026-08-01T00:00:00Z", "2026-08-02T12:30:00.500+02:00"),
             "document",
         )
-        zoned = provenance()
-        zoned["entity"][0]["extension"][0]["extension"][1]["valuePeriod"]["_start"] = {"extension": [{
-            "url": "http://hl7.org/fhir/StructureDefinition/timezone", "valueCode": "America/Los_Angeles",
-        }]}
-        validate_healthkit_source_document_time(zoned, "zoned")
+        validate_healthkit_source_document_time(zoned(), "zoned")
         validate_healthkit_source_document_time({"resourceType": "Provenance", "entity": [{"role": "source"}]}, "absent")
+
+    def test_time_zone_is_on_both_endpoints_or_neither(self):
+        validate_healthkit_source_document_time(zoned(), "both")
+        validate_healthkit_source_document_time(zoned(None, None), "neither")
+        other_extension = zoned()
+        other_extension["entity"][0]["extension"][0]["extension"][1]["valuePeriod"]["_end"]["extension"][0]["url"] = "https://example.org/zone"
+        cases = {
+            "start only": zoned("America/Los_Angeles", None),
+            "end only": zoned(None, "America/Los_Angeles"),
+            "different zones": zoned("America/Los_Angeles", "Europe/Berlin"),
+            "other extension": other_extension,
+        }
+        for name, resource in cases.items():
+            with self.subTest(case=name), self.assertRaisesRegex(ProducerValidationError, "endpoint|timezone"):
+                validate_healthkit_source_document_time(resource, name)
 
     def test_incomplete_reversed_or_unknown_values_are_rejected(self):
         cases = [

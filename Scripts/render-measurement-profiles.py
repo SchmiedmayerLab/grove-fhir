@@ -324,6 +324,29 @@ def quantity_domain_invariant(measurement: dict) -> tuple[str, str] | None:
     return key, invariant
 
 
+def extension_member_lines(measurement: dict, component: dict, members: list[dict], fixed: bool) -> list[str]:
+    """Render members of the measurement's component extension, fixed in a profile or set in an example."""
+    if not members:
+        return []
+    extension = measurement["componentExtension"]
+    prefix = f"* component[{component['id']}].extension[{extension['slice']}].extension"
+    exactly = " (exactly)" if fixed else ""
+    lines = []
+    for member in members:
+        name = member["member"]
+        if "valueQuantity" in member:
+            quantity = member["valueQuantity"]
+            if fixed:
+                lines.append(f"{prefix}[{name}].valueQuantity.value = {quantity['value']}{exactly}")
+            else:
+                lines.append(f"{prefix}[{name}].valueQuantity = {quantity['value']} '{quantity['code']}'")
+        elif "valueCode" in member:
+            lines.append(f"{prefix}[{name}].valueCode = #{member['valueCode']}{exactly}")
+        else:
+            lines.append(f"{prefix}[{name}].valueBoolean = {str(member['valueBoolean']).lower()}{exactly}")
+    return lines
+
+
 def render_profile(
     measurement: dict,
     aliases: dict[str, str],
@@ -456,8 +479,12 @@ def render_profile(
         raise SystemExit(f"{measurement['id']}: unsupported valueKind {kind}")
     for element in measurement.get("forbiddenElements", []):
         lines.append(f"* {element} 0..0")
-    if measurement["id"] == "audiogram-panel":
-        lines.append("* component.extension contains HealthKitAudiogramTestDetails named sourceTest 1..1 MS")
+    component_extension = measurement.get("componentExtension")
+    if component_extension:
+        lines.append(
+            f"* component.extension contains {component_extension['fshName']} named "
+            f"{component_extension['slice']} {component_extension['cardinality']} MS"
+        )
     if measurement.get("components"):
         lines.append("* component ^slicing.discriminator.type = #pattern")
         lines.append('* component ^slicing.discriminator.path = "code"')
@@ -469,13 +496,9 @@ def render_profile(
         lines.append(f"* component contains {contains}")
         for component in measurement["components"]:
             slice_name = component["id"]
-            if measurement["id"] == "audiogram-panel":
-                ear, frequency = slice_name.split("-", 1)
-                prefix = f"* component[{slice_name}].extension[sourceTest].extension"
-                lines.extend([
-                    f"{prefix}[frequency].valueQuantity.value = {frequency} (exactly)",
-                    f"{prefix}[ear].valueCode = #{ear} (exactly)",
-                ])
+            lines.extend(
+                extension_member_lines(measurement, component, component.get("extensionValues", []), fixed=True)
+            )
             if component["system"] == LOINC:
                 lines.append(
                     f"* component[{slice_name}].code = $loinc#{component['code']}"
@@ -1127,15 +1150,8 @@ def example_result_lines(measurement: dict, root: Path) -> list[str]:
                 f"* component[{slice_name}].valueQuantity = "
                 f"{example_quantity(component['quantity'])}"
             )
-            if measurement["id"] == "audiogram-panel":
-                ear, frequency = slice_name.split("-", 1)
-                prefix = f"* component[{slice_name}].extension[sourceTest].extension"
-                lines.extend([
-                    f"{prefix}[frequency].valueQuantity = {frequency} 'Hz'",
-                    f"{prefix}[ear].valueCode = #{ear}",
-                    f"{prefix}[conduction].valueCode = #air",
-                    f"{prefix}[masked].valueBoolean = false",
-                ])
+            members = component.get("extensionValues", []) + measurement.get("componentExtension", {}).get("example", [])
+            lines.extend(extension_member_lines(measurement, component, members, fixed=False))
         elif component.get("valueSet"):
             system, code, display = coded_example(component, root)
             lines.append(

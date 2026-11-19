@@ -311,7 +311,7 @@
       "profile": "healthkit-audiogram-panel",
       "standardProfile": null,
       "title": "Audiogram Panel",
-      "description": "HKAudiogramSample: an air conduction hearing test preserving its complete source interval and each ear/frequency sensitivity test. Known frequencies use the declared LOINC components; other frequencies use an explicit text-only component code and their exact frequency in HealthKit Audiogram Test Details, never a neighbouring frequency code. Each sensitivity test retains its available masking state. Every emitted component carries its source test details, including available masking and clamping bounds; no unmeasured frequency or absent ear is invented.",
+      "description": "HKAudiogramSample: an air conduction hearing test preserving its complete source interval and each ear/frequency sensitivity test. Known frequencies use the declared LOINC components; other frequencies use an explicit text-only component code and their exact frequency in HealthKit Audiogram Sensitivity Test, never a neighbouring frequency code. Each sensitivity test retains its available masking state. Every emitted component carries its source test details, including available masking and clamping bounds; no unmeasured frequency or absent ear is invented.",
       "code": {
         "system": "http://loinc.org",
         "code": "89015-2",
@@ -346,7 +346,21 @@
             "unit": "dB",
             "example": 20,
             "dimension": {}
-          }
+          },
+          "extensionValues": [
+            {
+              "member": "frequency",
+              "valueQuantity": {
+                "value": 250,
+                "system": "http://unitsofmeasure.org",
+                "code": "Hz"
+              }
+            },
+            {
+              "member": "ear",
+              "valueCode": "left"
+            }
+          ]
         },
         {
           "id": "right-250",
@@ -359,7 +373,21 @@
             "unit": "dB",
             "example": 25,
             "dimension": {}
-          }
+          },
+          "extensionValues": [
+            {
+              "member": "frequency",
+              "valueQuantity": {
+                "value": 250,
+                "system": "http://unitsofmeasure.org",
+                "code": "Hz"
+              }
+            },
+            {
+              "member": "ear",
+              "valueCode": "right"
+            }
+          ]
         },
         {
           "id": "left-500",
@@ -372,7 +400,21 @@
             "unit": "dB",
             "example": 20,
             "dimension": {}
-          }
+          },
+          "extensionValues": [
+            {
+              "member": "frequency",
+              "valueQuantity": {
+                "value": 500,
+                "system": "http://unitsofmeasure.org",
+                "code": "Hz"
+              }
+            },
+            {
+              "member": "ear",
+              "valueCode": "left"
+            }
+          ]
         },
         {
           "id": "right-500",
@@ -385,7 +427,21 @@
             "unit": "dB",
             "example": 25,
             "dimension": {}
-          }
+          },
+          "extensionValues": [
+            {
+              "member": "frequency",
+              "valueQuantity": {
+                "value": 500,
+                "system": "http://unitsofmeasure.org",
+                "code": "Hz"
+              }
+            },
+            {
+              "member": "ear",
+              "valueCode": "right"
+            }
+          ]
         },
         {
           "id": "left-750",
@@ -398,7 +454,21 @@
             "unit": "dB",
             "example": 20,
             "dimension": {}
-          }
+          },
+          "extensionValues": [
+            {
+              "member": "frequency",
+              "valueQuantity": {
+                "value": 750,
+                "system": "http://unitsofmeasure.org",
+                "code": "Hz"
+              }
+            },
+            {
+              "member": "ear",
+              "valueCode": "left"
+            }
+          ]
         },
         {
           "id": "right-750",
@@ -411,7 +481,21 @@
             "unit": "dB",
             "example": 25,
             "dimension": {}
-          }
+          },
+          "extensionValues": [
+            {
+              "member": "frequency",
+              "valueQuantity": {
+                "value": 750,
+                "system": "http://unitsofmeasure.org",
+                "code": "Hz"
+              }
+            },
+            {
+              "member": "ear",
+              "valueCode": "right"
+            }
+          ]
         },
         {
           "id": "left-1000",
@@ -424,7 +508,21 @@
             "unit": "dB",
             "example": 20,
             "dimension": {}
-          }
+          },
+          "extensionValues": [
+            {
+              "member": "frequency",
+              "valueQuantity": {
+                "value": 1000,
+                "system": "http://unitsofmeasure.org",
+                "code": "Hz"
+              }
+            },
+            {
+              "member": "ear",
+              "valueCode": "left"
+            }
+          ]
         },
         {
           "id": "right-1000",
@@ -437,7 +535,21 @@
             "unit": "dB",
             "example": 25,
             "dimension": {}
-          }
+          },
+          "extensionValues": [
+            {
+              "member": "frequency",
+              "valueQuantity": {
+                "value": 1000,
+                "system": "http://unitsofmeasure.org",
+                "code": "Hz"
+              }
+            },
+            {
+              "member": "ear",
+              "valueCode": "right"
+            }
+          ]
         },
         {
           "id": "left-1500",
@@ -450,7 +562,21 @@
             "unit": "dB",
             "example": 20,
             "dimension": {}
-          }
+          },
+          "extensionValues": [
+            {
+              "member": "frequency",
+              "valueQuantity": {
+                "value": 1500,
+                "system": "http://unitsofmeasure.org",
+                "code": "Hz"
+              }
+            },
+            {
+              "member": "ear",
+              "valueCode": "left"
+            }
+          ]
         },
         {
           "id": "right-1500",
@@ -463,7 +589,21 @@
             "unit": "dB",
             "example": 25,
             "dimension": {}
-          }
+          },
+          "extensionValues": [
+            {
+              "member": "frequency",
+              "valueQuantity": {
+                "value": 1500,
+                "system": "http://unitsofmeasure.org",
+                "code": "Hz"
+              }
+            },
+            {
+              "member": "ear",
+              "valueCode": "right"
+            }
+          ]
         },
         {
           "id": "left-2000",
@@ -476,7 +616,21 @@
             "unit": "dB",
             "example": 20,
             "dimension": {}
-          }
+          },
+          "extensionValues": [
+            {
+              "member": "frequency",
+              "valueQuantity": {
+                "value": 2000,
+                "system": "http://unitsofmeasure.org",
+                "code": "Hz"
+              }
+            },
+            {
+              "member": "ear",
+              "valueCode": "left"
+            }
+          ]
         },
         {
           "id": "right-2000",
@@ -489,7 +643,21 @@
             "unit": "dB",
             "example": 25,
             "dimension": {}
-          }
+          },
+          "extensionValues": [
+            {
+              "member": "frequency",
+              "valueQuantity": {
+                "value": 2000,
+                "system": "http://unitsofmeasure.org",
+                "code": "Hz"
+              }
+            },
+            {
+              "member": "ear",
+              "valueCode": "right"
+            }
+          ]
         },
         {
           "id": "left-3000",
@@ -502,7 +670,21 @@
             "unit": "dB",
             "example": 20,
             "dimension": {}
-          }
+          },
+          "extensionValues": [
+            {
+              "member": "frequency",
+              "valueQuantity": {
+                "value": 3000,
+                "system": "http://unitsofmeasure.org",
+                "code": "Hz"
+              }
+            },
+            {
+              "member": "ear",
+              "valueCode": "left"
+            }
+          ]
         },
         {
           "id": "right-3000",
@@ -515,7 +697,21 @@
             "unit": "dB",
             "example": 25,
             "dimension": {}
-          }
+          },
+          "extensionValues": [
+            {
+              "member": "frequency",
+              "valueQuantity": {
+                "value": 3000,
+                "system": "http://unitsofmeasure.org",
+                "code": "Hz"
+              }
+            },
+            {
+              "member": "ear",
+              "valueCode": "right"
+            }
+          ]
         },
         {
           "id": "left-4000",
@@ -528,7 +724,21 @@
             "unit": "dB",
             "example": 20,
             "dimension": {}
-          }
+          },
+          "extensionValues": [
+            {
+              "member": "frequency",
+              "valueQuantity": {
+                "value": 4000,
+                "system": "http://unitsofmeasure.org",
+                "code": "Hz"
+              }
+            },
+            {
+              "member": "ear",
+              "valueCode": "left"
+            }
+          ]
         },
         {
           "id": "right-4000",
@@ -541,7 +751,21 @@
             "unit": "dB",
             "example": 25,
             "dimension": {}
-          }
+          },
+          "extensionValues": [
+            {
+              "member": "frequency",
+              "valueQuantity": {
+                "value": 4000,
+                "system": "http://unitsofmeasure.org",
+                "code": "Hz"
+              }
+            },
+            {
+              "member": "ear",
+              "valueCode": "right"
+            }
+          ]
         },
         {
           "id": "left-5000",
@@ -554,7 +778,21 @@
             "unit": "dB",
             "example": 20,
             "dimension": {}
-          }
+          },
+          "extensionValues": [
+            {
+              "member": "frequency",
+              "valueQuantity": {
+                "value": 5000,
+                "system": "http://unitsofmeasure.org",
+                "code": "Hz"
+              }
+            },
+            {
+              "member": "ear",
+              "valueCode": "left"
+            }
+          ]
         },
         {
           "id": "right-5000",
@@ -567,7 +805,21 @@
             "unit": "dB",
             "example": 25,
             "dimension": {}
-          }
+          },
+          "extensionValues": [
+            {
+              "member": "frequency",
+              "valueQuantity": {
+                "value": 5000,
+                "system": "http://unitsofmeasure.org",
+                "code": "Hz"
+              }
+            },
+            {
+              "member": "ear",
+              "valueCode": "right"
+            }
+          ]
         },
         {
           "id": "left-6000",
@@ -580,7 +832,21 @@
             "unit": "dB",
             "example": 20,
             "dimension": {}
-          }
+          },
+          "extensionValues": [
+            {
+              "member": "frequency",
+              "valueQuantity": {
+                "value": 6000,
+                "system": "http://unitsofmeasure.org",
+                "code": "Hz"
+              }
+            },
+            {
+              "member": "ear",
+              "valueCode": "left"
+            }
+          ]
         },
         {
           "id": "right-6000",
@@ -593,7 +859,21 @@
             "unit": "dB",
             "example": 25,
             "dimension": {}
-          }
+          },
+          "extensionValues": [
+            {
+              "member": "frequency",
+              "valueQuantity": {
+                "value": 6000,
+                "system": "http://unitsofmeasure.org",
+                "code": "Hz"
+              }
+            },
+            {
+              "member": "ear",
+              "valueCode": "right"
+            }
+          ]
         },
         {
           "id": "left-8000",
@@ -606,7 +886,21 @@
             "unit": "dB",
             "example": 20,
             "dimension": {}
-          }
+          },
+          "extensionValues": [
+            {
+              "member": "frequency",
+              "valueQuantity": {
+                "value": 8000,
+                "system": "http://unitsofmeasure.org",
+                "code": "Hz"
+              }
+            },
+            {
+              "member": "ear",
+              "valueCode": "left"
+            }
+          ]
         },
         {
           "id": "right-8000",
@@ -619,8 +913,41 @@
             "unit": "dB",
             "example": 25,
             "dimension": {}
-          }
+          },
+          "extensionValues": [
+            {
+              "member": "frequency",
+              "valueQuantity": {
+                "value": 8000,
+                "system": "http://unitsofmeasure.org",
+                "code": "Hz"
+              }
+            },
+            {
+              "member": "ear",
+              "valueCode": "right"
+            }
+          ]
         }
+      ],
+      "componentExtension": {
+        "url": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-audiogram-sensitivity-test",
+        "fshName": "HealthKitAudiogramSensitivityTest",
+        "slice": "sensitivityTest",
+        "cardinality": "1..1",
+        "example": [
+          {
+            "member": "conduction",
+            "valueCode": "air"
+          },
+          {
+            "member": "masked",
+            "valueBoolean": false
+          }
+        ]
+      },
+      "obeys": [
+        "healthkit-audiogram-panel-1"
       ]
     },
     {
@@ -831,7 +1158,7 @@
       "profile": "healthkit-bleeding-after-menopause",
       "standardProfile": null,
       "title": "Bleeding After Menopause",
-      "description": "Bleeding logged after menopause, with the complete source interval and the exact HKCategoryValueVaginalBleeding intensity. This measurement is distinct from menstrual flow and intermenstrual bleeding.",
+      "description": "Bleeding logged after menopause, with the exact HKCategoryValueVaginalBleeding amount at the source instant, like bleeding after pregnancy and bleeding during pregnancy. This measurement is distinct from menstrual flow and intermenstrual bleeding.",
       "code": {
         "system": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-measurement",
         "code": "bleeding-after-menopause",
@@ -877,7 +1204,7 @@
           "definition": "No bleeding."
         }
       ],
-      "effective": "dateTime-or-Period",
+      "effective": "dateTime",
       "generation": {
         "emit": true
       },
@@ -1005,59 +1332,6 @@
           "code": "none",
           "display": "None",
           "definition": "No bleeding."
-        }
-      ],
-      "effective": "dateTime",
-      "generation": {
-        "emit": true
-      },
-      "coverage": {
-        "healthkit": "supported",
-        "health-connect": "unmodeled",
-        "sensorkit": "unmodeled",
-        "google-health-api": "unmodeled",
-        "oura": "unmodeled",
-        "withings": "unmodeled",
-        "questionnaire": "platform-exclusive"
-      }
-    },
-    {
-      "id": "menopausal-state",
-      "profile": "healthkit-menopausal-state",
-      "standardProfile": null,
-      "title": "Menopausal State",
-      "description": "The exact HKCategoryValueMenopausalState recorded at the source instant. The source sample establishes no continuous interval of that state and does not imply when it began or ended.",
-      "code": {
-        "system": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-measurement",
-        "code": "menopausal-state",
-        "display": "Menopausal state",
-        "definition": "A person’s logged menopausal state at one source instant."
-      },
-      "valueKind": "codeableConcept",
-      "owner": "healthkit",
-      "quantity": null,
-      "valueSet": "https://grovealliance.org/fhir/healthkit/ValueSet/healthkit-menopausal-state",
-      "resultCodeSystem": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-menopausal-state",
-      "allowedValues": [
-        "menopause",
-        "perimenopause",
-        "none"
-      ],
-      "resultCodes": [
-        {
-          "code": "menopause",
-          "display": "Menopause",
-          "definition": "The source states menopause."
-        },
-        {
-          "code": "perimenopause",
-          "display": "Perimenopause",
-          "definition": "The source states perimenopause."
-        },
-        {
-          "code": "none",
-          "display": "None",
-          "definition": "The source states neither menopause nor perimenopause."
         }
       ],
       "effective": "dateTime",
@@ -4914,6 +5188,59 @@
           }
         }
       ]
+    },
+    {
+      "id": "menopausal-state",
+      "profile": "healthkit-menopausal-state",
+      "standardProfile": null,
+      "title": "Menopausal State",
+      "description": "The exact HKCategoryValueMenopausalState recorded at the source instant. The source sample establishes no continuous interval of that state and does not imply when it began or ended.",
+      "code": {
+        "system": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-measurement",
+        "code": "menopausal-state",
+        "display": "Menopausal state",
+        "definition": "A person's logged menopausal state at one source instant."
+      },
+      "valueKind": "codeableConcept",
+      "owner": "healthkit",
+      "quantity": null,
+      "valueSet": "https://grovealliance.org/fhir/healthkit/ValueSet/healthkit-menopausal-state",
+      "resultCodeSystem": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-menopausal-state",
+      "allowedValues": [
+        "menopause",
+        "perimenopause",
+        "none"
+      ],
+      "resultCodes": [
+        {
+          "code": "menopause",
+          "display": "Menopause",
+          "definition": "The source states menopause."
+        },
+        {
+          "code": "perimenopause",
+          "display": "Perimenopause",
+          "definition": "The source states perimenopause."
+        },
+        {
+          "code": "none",
+          "display": "None",
+          "definition": "The source states neither menopause nor perimenopause."
+        }
+      ],
+      "effective": "dateTime",
+      "generation": {
+        "emit": true
+      },
+      "coverage": {
+        "healthkit": "supported",
+        "health-connect": "unmodeled",
+        "sensorkit": "unmodeled",
+        "google-health-api": "unmodeled",
+        "oura": "unmodeled",
+        "withings": "unmodeled",
+        "questionnaire": "platform-exclusive"
+      }
     },
     {
       "id": "menstruation-flow",

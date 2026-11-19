@@ -192,6 +192,7 @@
   "negativeCorpora": [
     "Conformance/corpora/mobile-profile-invariants/corpus.json",
     "Conformance/corpora/healthkit-insulin-delivery/corpus.json",
+    "Conformance/corpora/healthkit-audiogram/corpus.json",
     "Conformance/corpora/healthkit-ecg-symptoms/corpus.json",
     "study/fixtures/structural/corpus.json"
   ],
