@@ -29,6 +29,7 @@ EXPECTED_GUIDE_SOURCES = (
     "oura",
     "google-health",
     "questionnaire",
+    "study",
 )
 MOBILE_ADAPTER_SOURCES = (
     "sensor",
