@@ -929,6 +929,7 @@
         "fshName": "HealthKitAudiogramSensitivityTest",
         "slice": "sensitivityTest",
         "cardinality": "1..1",
+        "invariant": "healthkit-audiogram-panel-1",
         "example": [
           {
             "member": "conduction",
