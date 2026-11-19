@@ -123,7 +123,7 @@ class FormatRegistryTests(unittest.TestCase):
         motion = {column["name"]: column for column in REGISTRY["formats"]["device-motion-samples"]["columns"]}
         self.assertEqual(len(motion), 37)
         self.assertEqual(motion["timestamp"]["type"], "timestamp")
-        self.assertEqual(motion["deliveryTimestamp"]["type"], "timestamp")
+        self.assertEqual(motion["storedTimestamp"]["type"], "timestamp")
         self.assertEqual(motion["gravityX"]["unit"], "[g]")
         self.assertEqual(motion["rotationRateX"]["unit"], "rad/s")
         self.assertEqual(motion["magneticFieldX"]["unit"], "uT")

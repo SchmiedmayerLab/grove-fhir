@@ -112,7 +112,7 @@ Preserve its complete source interval: use `effectiveDateTime` for a point and `
 Each sensitivity test becomes its own component, retaining the supplied dB hearing-level value.
 
 Use the catalog's ear-and-frequency LOINC code when it names that exact coordinate.
-For another frequency, retain the exact frequency and ear in the required `healthkit-audiogram-test-details` extension and use an explicit component text label; do not substitute the nearest catalog frequency.
+For another frequency, retain the exact frequency and ear in the required `healthkit-audiogram-sensitivity-test` extension and use an explicit component text label; do not substitute the nearest catalog frequency.
 The same extension carries the air-conduction method, the masking state when the source API exposes it, and any source clamping bounds.
 Each ear retains its own masking state; a source sensitivity point has at most one test per ear.
 A coded component's extension fixes the frequency to the integer the catalog names, so write it without a fractional part (`250`, not `250.0`).

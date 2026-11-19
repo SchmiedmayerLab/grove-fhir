@@ -58,7 +58,7 @@
     {
       "extension": [
         {
-          "url": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-audiogram-test-details",
+          "url": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-audiogram-sensitivity-test",
           "extension": [
             {
               "url": "frequency",
@@ -102,7 +102,7 @@
     {
       "extension": [
         {
-          "url": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-audiogram-test-details",
+          "url": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-audiogram-sensitivity-test",
           "extension": [
             {
               "url": "frequency",
@@ -146,7 +146,7 @@
     {
       "extension": [
         {
-          "url": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-audiogram-test-details",
+          "url": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-audiogram-sensitivity-test",
           "extension": [
             {
               "url": "frequency",
@@ -185,7 +185,7 @@
     {
       "extension": [
         {
-          "url": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-audiogram-test-details",
+          "url": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-audiogram-sensitivity-test",
           "extension": [
             {
               "url": "frequency",

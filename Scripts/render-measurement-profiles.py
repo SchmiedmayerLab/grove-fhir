@@ -482,7 +482,7 @@ def render_profile(
     component_extension = measurement.get("componentExtension")
     if component_extension:
         lines.append(
-            f"* component.extension contains {component_extension['name']} named "
+            f"* component.extension contains {component_extension['fshName']} named "
             f"{component_extension['slice']} {component_extension['cardinality']} MS"
         )
     if measurement.get("components"):
