@@ -2663,6 +2663,11 @@ Description: "Apple's 1-10 workout effort rating over the associated workout's e
 * valueQuantity.code 1..1 MS
 * valueQuantity.code = #{score} (exactly)
 
+Invariant: healthkit-audiogram-panel-1
+Description: "A component without a catalog coding does not carry the frequency and ear of a catalog component, and no two components carry the same frequency and ear; quantities compare as whole thousandths of their unit."
+Severity: #error
+Expression: "component.where(code.coding.where((system = 'http://loinc.org' and code in ('91375-6' | '91374-9' | '89024-4' | '89025-1' | '91379-8' | '91378-0' | '89016-0' | '89017-8' | '91373-1' | '91372-3' | '89018-6' | '89019-4' | '89020-2' | '89021-0' | '89022-8' | '89023-6' | '91377-2' | '91376-4' | '89026-9' | '89027-7' | '89028-5' | '89029-3'))).empty()).select(((extension.where(url = 'https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-audiogram-sensitivity-test').extension.where(url = 'frequency').value.value.first() * 1000).truncate().toString()) + '@' + (extension.where(url = 'https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-audiogram-sensitivity-test').extension.where(url = 'ear').value.first().toString())).intersect('250000@left' | '250000@right' | '500000@left' | '500000@right' | '750000@left' | '750000@right' | '1000000@left' | '1000000@right' | '1500000@left' | '1500000@right' | '2000000@left' | '2000000@right' | '3000000@left' | '3000000@right' | '4000000@left' | '4000000@right' | '5000000@left' | '5000000@right' | '6000000@left' | '6000000@right' | '8000000@left' | '8000000@right').empty() and component.select(((extension.where(url = 'https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-audiogram-sensitivity-test').extension.where(url = 'frequency').value.value.first() * 1000).truncate().toString()) + '@' + (extension.where(url = 'https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-audiogram-sensitivity-test').extension.where(url = 'ear').value.first().toString())).isDistinct()"
+
 Instance: HealthkitAppleExerciseTimeExample
 InstanceOf: HealthkitAppleExerciseTime
 Usage: #example

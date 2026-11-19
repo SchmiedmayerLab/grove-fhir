@@ -78,8 +78,3 @@ Invariant: healthkit-audiogram-clamping-1
 Description: "A source clamping range supplies at least one bound, and its lower bound is strictly less than its upper bound when both are present."
 Severity: #error
 Expression: "(low.exists() or high.exists()) and ((low.exists() and high.exists()) implies (low.value < high.value))"
-
-Invariant: healthkit-audiogram-panel-1
-Description: "A component without a coding does not carry an ear and frequency that a catalog LOINC component names, and no two components carry the same ear and frequency. Frequencies compare numerically to the millihertz, so 250 and 250.0 are the same frequency."
-Severity: #error
-Expression: "component.where(code.coding.empty()).extension.where(url = 'https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-audiogram-sensitivity-test').extension.where(url = 'frequency').value.value.where($this = 250 or $this = 500 or $this = 750 or $this = 1000 or $this = 1500 or $this = 2000 or $this = 3000 or $this = 4000 or $this = 5000 or $this = 6000 or $this = 8000).empty() and component.extension.where(url = 'https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-audiogram-sensitivity-test').select(extension.where(url = 'ear').value.toString() + '@' + (extension.where(url = 'frequency').value.value.first() * 1000).truncate().toString()).isDistinct()"
