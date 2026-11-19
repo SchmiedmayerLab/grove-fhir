@@ -48,7 +48,7 @@ class HealthKitSourceDocumentTimeTests(unittest.TestCase):
         self.assertEqual(CONTRACT["cardinality"], "0..1")
         self.assertEqual(
             {item["code"]: item["sourceClass"] for item in CONTRACT["bases"]},
-            {"clinical-record-download": "HKClinicalRecord", "cda-source-document-period": "HKCDADocumentSample"},
+            {"clinical-record-download": "HKClinicalRecord", "cda-document-app-supplied": "HKCDADocumentSample"},
         )
         definition = (ROOT / "healthkit/input/fsh/source-document-time.fsh").read_text(encoding="utf-8")
         self.assertIn("Id: healthkit-source-document-time\n", definition)
@@ -68,7 +68,7 @@ class HealthKitSourceDocumentTimeTests(unittest.TestCase):
     def test_both_bases_and_equal_or_ordered_bounds_are_admitted(self):
         validate_healthkit_source_document_time(provenance(), "download")
         validate_healthkit_source_document_time(
-            provenance("cda-source-document-period", "2026-08-01T00:00:00Z", "2026-08-02T12:30:00.500+02:00"),
+            provenance("cda-document-app-supplied", "2026-08-01T00:00:00Z", "2026-08-02T12:30:00.500+02:00"),
             "document",
         )
         validate_healthkit_source_document_time(zoned(), "zoned")
