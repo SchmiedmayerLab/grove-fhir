@@ -305,7 +305,7 @@
       "profile": "healthkit-audiogram-panel",
       "standardProfile": null,
       "title": "Audiogram Panel",
-      "description": "HKAudiogramSample: an air conduction hearing test preserving its complete source interval and each ear/frequency sensitivity test. Known frequencies use the declared LOINC components; other frequencies use an explicit text-only component code and their exact frequency in HealthKit Audiogram Test Details, never a neighbouring frequency code. Each sensitivity test retains its available masking state. Every emitted component carries its source test details, including available masking and clamping bounds; no unmeasured frequency or absent ear is invented.",
+      "description": "HKAudiogramSample: an air conduction hearing test preserving its complete source interval and each ear/frequency sensitivity test. Known frequencies use the declared LOINC components; other frequencies use an explicit text-only component code and their exact frequency in HealthKit Audiogram Sensitivity Test, never a neighbouring frequency code. Each sensitivity test retains its available masking state. Every emitted component carries its source test details, including available masking and clamping bounds; no unmeasured frequency or absent ear is invented.",
       "code": {
         "system": "http://loinc.org",
         "code": "89015-2",
@@ -925,9 +925,9 @@
         }
       ],
       "componentExtension": {
-        "url": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-audiogram-test-details",
-        "name": "HealthKitAudiogramTestDetails",
-        "slice": "sourceTest",
+        "url": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-audiogram-sensitivity-test",
+        "fshName": "HealthKitAudiogramSensitivityTest",
+        "slice": "sensitivityTest",
         "cardinality": "1..1",
         "example": [
           {
