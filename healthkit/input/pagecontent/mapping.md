@@ -233,7 +233,7 @@ Carry them in the [HealthKit Source Document Time](StructureDefinition-healthkit
 | Sample class | Basis | Meaning of the period |
 |---|---|---|
 | `HKClinicalRecord` | `clinical-record-download` | when the system downloaded the FHIR data to the device and added the sample to Health; not taken from the FHIR data |
-| `HKCDADocumentSample` | `cda-source-document-period` | the start and end dates that the app creating the sample supplied for the document; no clinical service or download time is inferred |
+| `HKCDADocumentSample` | `cda-document-app-supplied` | the start and end dates that the app creating the sample supplied for the document; no clinical service or download time is inferred |
 
 The period states both endpoints as complete date-times with an offset under the [time rules](#values-units-and-time), and equal endpoints are admitted.
 A supplied `HKTimeZone` maps to the `timezone` extension on both endpoints and is not repeated in source metadata.
