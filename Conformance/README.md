@@ -71,6 +71,7 @@ Every JSON file beneath the declared roots is either validated here or excluded 
 The lane requires the control to pass and each case to fail for exactly the invariant key or value set its `corpus.json` declares, so a rule dropped from the base profile fails here instead of only in a guide build.
 `Conformance/corpora/healthkit-insulin-delivery` is its second negative corpus: an Insulin Delivery Observation whose delivery-reason component stands without the dose it qualifies, which the lane requires the Validator to reject for exactly the missing `Observation.value[x]`, so a component never substitutes for the root result.
 `Conformance/corpora/healthkit-audiogram` is its third: an audiogram panel whose text-only component at 125 Hz names a frequency the catalog does not code; the lane requires the Validator to accept that control and to reject, through `healthkit-audiogram-panel-1`, a component without a catalog coding at a catalog frequency (text-only, written as `250.0`, or coded in another code system) and a second component for the same ear and frequency.
+`Conformance/corpora/healthkit-source-document-time` is its fourth: a HealthKit conversion Provenance whose source document time has complete bounds and the same `timezone` extension on both; the lane requires the Validator to accept that control and to reject, through `healthkit-source-document-time-1`, a date-only start, a zone on one bound only, and two different zones.
 
 ## Positive and negative corpus
 

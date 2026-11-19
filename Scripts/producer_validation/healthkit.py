@@ -138,11 +138,14 @@ def validate_healthkit_source_document_time(resource: dict[str, Any], label: str
         found += 1
         extension = extensions[0]
         members = extension.get("extension")
-        if set(extension) != {"url", "extension"} or not isinstance(members, list) or [
+        member_urls = [
             member.get("url") if isinstance(member, dict) else None for member in members
-        ] != contract["members"]:
-            fail("carries exactly one basis and one period, in that order")
-        basis, period = members
+        ] if isinstance(members, list) else None
+        if set(extension) != {"url", "extension"} or member_urls is None or sorted(
+            member_urls, key=str
+        ) != sorted(contract["members"]):
+            fail("carries exactly one basis and one period")
+        basis, period = (members[member_urls.index(name)] for name in ("basis", "period"))
         if set(basis) != {"url", "valueCode"} or basis["valueCode"] not in {
             item["code"] for item in contract["bases"]
         }:
@@ -165,7 +168,8 @@ def validate_healthkit_source_document_time(resource: dict[str, Any], label: str
                 continue
             zone_extensions = element.get("extension") if isinstance(element, dict) else None
             if (
-                set(element) != {"extension"}
+                not isinstance(element, dict)
+                or set(element) != {"extension"}
                 or not isinstance(zone_extensions, list)
                 or len(zone_extensions) != 1
                 or not isinstance(zone_extensions[0], dict)
