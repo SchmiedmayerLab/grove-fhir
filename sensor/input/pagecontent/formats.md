@@ -377,7 +377,7 @@ The table's `Nullable` column controls empty fields: `no` requires a non-empty f
 | Column | Type | Nullable | Unit | Meaning |
 |---|---|---|---|---|
 | `timestamp` | timestamp | no | — | Exact recorded sample start date. |
-| `deliveryTimestamp` | timestamp | no | — | SensorKit delivery timestamp, distinct from the sample instant. |
+| `storedTimestamp` | timestamp | no | — | SRFetchResult.timestamp: when SensorKit wrote the sample to its data store, distinct from the sample instant. |
 | `uptime` | number | no | `s` | CoreMotion time since boot in seconds. |
 | `identifier` | integer | no | — | Unsigned native batch identifier within the device partition. |
 | `roll` | number | no | `rad` | Exact source attitude Euler angle. |
