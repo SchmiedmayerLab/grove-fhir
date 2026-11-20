@@ -24,7 +24,7 @@
       "purpose": "A known occurrence identifier sent with another performance window is a conflicting reuse.",
       "deliveries": [
         {"path": "deliveries/assigned.json", "outcomes": {"occurrence-0001": "accepted"}},
-        {"path": "deliveries/conflicting-reuse.json", "rejected": ["study-task.occurrence-conflict"]}
+        {"path": "deliveries/conflicting-reuse.json", "rejected": ["study-task-occurrence-conflict"]}
       ]
     },
     {
@@ -40,7 +40,7 @@
       "deliveries": [
         {"path": "deliveries/completed.json", "outcomes": {"occurrence-0001": "accepted"}},
         {"path": "deliveries/re-enrollment.json", "outcomes": {"occurrence-0201": "accepted"}},
-        {"path": "deliveries/reused-after-re-enrollment.json", "rejected": ["study-task.occurrence-conflict"]}
+        {"path": "deliveries/reused-after-re-enrollment.json", "rejected": ["study-task-occurrence-conflict"]}
       ]
     },
     {
@@ -57,7 +57,7 @@
       "purpose": "A completed occurrence is not completed again by a response with another submission identifier.",
       "deliveries": [
         {"path": "deliveries/completed.json", "outcomes": {"occurrence-0001": "accepted"}},
-        {"path": "deliveries/second-completion.json", "rejected": ["study-task.completion-conflict"]}
+        {"path": "deliveries/second-completion.json", "rejected": ["study-task-completion-conflict"]}
       ]
     },
     {
@@ -65,7 +65,7 @@
       "purpose": "A completed occurrence never returns to ready.",
       "deliveries": [
         {"path": "deliveries/completed.json", "outcomes": {"occurrence-0001": "accepted"}},
-        {"path": "deliveries/assigned.json", "rejected": ["study-task.status-transition"]}
+        {"path": "deliveries/assigned.json", "rejected": ["study-task-status-transition"]}
       ]
     },
     {
@@ -79,42 +79,42 @@
       "id": "wrong-subject",
       "purpose": "A structurally valid response about another participant does not complete the occurrence.",
       "deliveries": [
-        {"path": "deliveries/wrong-subject.json", "rejected": ["study-task.result-subject"]}
+        {"path": "deliveries/wrong-subject.json", "rejected": ["study-task-result-subject"]}
       ]
     },
     {
       "id": "wrong-instrument-version",
       "purpose": "A structurally valid response to another version of the instrument does not complete the occurrence.",
       "deliveries": [
-        {"path": "deliveries/wrong-instrument-version.json", "rejected": ["study-task.result-instrument"]}
+        {"path": "deliveries/wrong-instrument-version.json", "rejected": ["study-task-result-instrument"]}
       ]
     },
     {
       "id": "wrong-component-revision",
       "purpose": "A Task naming a component revision that was never published resolves to no definition and to no protocol action.",
       "deliveries": [
-        {"path": "deliveries/wrong-component-revision.json", "rejected": ["study-task.definition", "study-task.protocol"]}
+        {"path": "deliveries/wrong-component-revision.json", "rejected": ["study-task-definition", "study-task-protocol"]}
       ]
     },
     {
       "id": "pending-as-completed",
       "purpose": "A completed Task that links an in-progress response presents a pending completion as accepted.",
       "deliveries": [
-        {"path": "deliveries/pending-as-completed.json", "rejected": ["study-task.result-status"]}
+        {"path": "deliveries/pending-as-completed.json", "rejected": ["study-task-result-status"]}
       ]
     },
     {
       "id": "invalid-result-reference",
       "purpose": "A result link naming a response version the delivery does not carry resolves to nothing.",
       "deliveries": [
-        {"path": "deliveries/invalid-result-reference.json", "rejected": ["study-task.result-reference"]}
+        {"path": "deliveries/invalid-result-reference.json", "rejected": ["study-task-result-reference"]}
       ]
     },
     {
       "id": "result-outside-window",
       "purpose": "A response authored after the performance window ended does not complete the occurrence.",
       "deliveries": [
-        {"path": "deliveries/result-outside-window.json", "rejected": ["study-task.result-window"]}
+        {"path": "deliveries/result-outside-window.json", "rejected": ["study-task-result-window"]}
       ]
     }
   ]

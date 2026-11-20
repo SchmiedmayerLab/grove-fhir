@@ -122,7 +122,7 @@ class StudyGraphCaseTests(unittest.TestCase):
         corrected["entry"][1]["resource"]["authored"] = "2026-08-19T21:00:00-07:00"
         self.assertEqual(
             outcome(receiver.apply(graph.resources_of(corrected))),
-            {"rejected": ["study-task.correction"]},
+            {"rejected": ["study-task-correction"]},
         )
 
     def test_an_altered_replay_and_an_altered_result_are_rejected(self) -> None:
@@ -132,13 +132,13 @@ class StudyGraphCaseTests(unittest.TestCase):
         altered["entry"][0]["resource"]["executionPeriod"] = {"start": "2026-08-19T09:20:00-07:00"}
         self.assertEqual(
             outcome(receiver.apply(graph.resources_of(altered))),
-            {"rejected": ["study-task.altered-replay"]},
+            {"rejected": ["study-task-altered-replay"]},
         )
         altered = self.delivery("completed")
         altered["entry"][1]["resource"]["item"][1]["answer"][0]["valueInteger"] = 3
         self.assertEqual(
             outcome(receiver.apply(graph.resources_of(altered))),
-            {"rejected": ["study-task.altered-result"]},
+            {"rejected": ["study-task-altered-result"]},
         )
 
     def test_a_cancelled_occurrence_is_final_and_stopped_before_its_window_ends(self) -> None:
@@ -150,13 +150,13 @@ class StudyGraphCaseTests(unittest.TestCase):
         del task["statusReason"]
         self.assertEqual(
             outcome(receiver.apply(graph.resources_of(reopened))),
-            {"rejected": ["study-task.status-transition"]},
+            {"rejected": ["study-task-status-transition"]},
         )
         late = self.delivery("excused")
         late["entry"][0]["resource"]["lastModified"] = "2026-08-22T00:00:01-07:00"
         self.assertEqual(
             outcome(self.receiver().apply(graph.resources_of(late))),
-            {"rejected": ["study-task.cancelled-after-window"]},
+            {"rejected": ["study-task-cancelled-after-window"]},
         )
 
     def test_one_response_completes_one_occurrence(self) -> None:
@@ -168,7 +168,7 @@ class StudyGraphCaseTests(unittest.TestCase):
         shared["entry"].append(other)
         self.assertEqual(
             outcome(self.receiver().apply(graph.resources_of(shared))),
-            {"rejected": ["study-task.result-shared"]},
+            {"rejected": ["study-task-result-shared"]},
         )
         receiver = self.receiver()
         receiver.apply(graph.resources_of(self.delivery("completed")))
@@ -178,7 +178,7 @@ class StudyGraphCaseTests(unittest.TestCase):
         later["entry"].append(self.delivery("completed")["entry"][1])
         self.assertEqual(
             outcome(receiver.apply(graph.resources_of(later))),
-            {"rejected": ["study-task.result-shared"]},
+            {"rejected": ["study-task-result-shared"]},
         )
 
     def test_one_delivery_carries_an_occurrence_once(self) -> None:
@@ -186,7 +186,7 @@ class StudyGraphCaseTests(unittest.TestCase):
         duplicated["entry"].append(copy.deepcopy(duplicated["entry"][0]))
         self.assertEqual(
             outcome(self.receiver().apply(graph.resources_of(duplicated))),
-            {"rejected": ["study-task.duplicate-occurrence"]},
+            {"rejected": ["study-task-duplicate-occurrence"]},
         )
 
     def test_a_response_never_points_back_through_part_of(self) -> None:
@@ -194,14 +194,14 @@ class StudyGraphCaseTests(unittest.TestCase):
         delivery["entry"][1]["resource"]["partOf"] = [{"reference": "Task/occurrence-0001"}]
         self.assertEqual(
             outcome(self.receiver().apply(graph.resources_of(delivery))),
-            {"rejected": ["study-task.result-part-of"]},
+            {"rejected": ["study-task-result-part-of"]},
         )
 
     def test_definitions_and_enrollment_must_resolve_and_agree(self) -> None:
         cases = {
-            "study-task.instrument": ("/entry/0/resource/input/3/valueCanonical", "https://example.org/fhir/Questionnaire/daily-check-in|1.1.0"),
-            "study-task.protocol": ("/entry/0/resource/input/2/valueCanonical", "https://example.org/fhir/PlanDefinition/daily-check-in-protocol|2.0.0"),
-            "study-task.enrollment": ("/entry/0/resource/input/1/valueReference/identifier/value", "enrollment-999"),
+            "study-task-instrument": ("/entry/0/resource/input/3/valueCanonical", "https://example.org/fhir/Questionnaire/daily-check-in|1.1.0"),
+            "study-task-protocol": ("/entry/0/resource/input/2/valueCanonical", "https://example.org/fhir/PlanDefinition/daily-check-in-protocol|2.0.0"),
+            "study-task-enrollment": ("/entry/0/resource/input/1/valueReference/identifier/value", "enrollment-999"),
         }
         for rule, (pointer, value) in cases.items():
             with self.subTest(rule=rule):
@@ -221,7 +221,7 @@ class StudyGraphCaseTests(unittest.TestCase):
         delivery["entry"][0]["resource"]["for"]["identifier"]["value"] = "participant-002"
         self.assertEqual(
             outcome(self.receiver().apply(graph.resources_of(delivery))),
-            {"rejected": ["study-task.enrollment"]},
+            {"rejected": ["study-task-enrollment"]},
         )
 
     def test_paired_questionnaire_rules_apply_to_the_linked_response(self) -> None:
@@ -243,7 +243,7 @@ class StudyGraphCaseTests(unittest.TestCase):
         output["reference"] = "https://elsewhere.example.org/fhir/QuestionnaireResponse/response-0001/_history/1"
         self.assertEqual(
             outcome(self.receiver().apply(graph.resources_of(delivery))),
-            {"rejected": ["study-task.result-reference"]},
+            {"rejected": ["study-task-result-reference"]},
         )
 
     def test_a_single_task_is_a_delivery(self) -> None:
@@ -272,7 +272,7 @@ class StudyGraphCaseTests(unittest.TestCase):
         delivery["entry"][-1] = changed
         self.assertEqual(
             outcome(self.receiver().apply(graph.resources_of(delivery))),
-            {"rejected": ["study-task.instrument"]},
+            {"rejected": ["study-task-instrument"]},
         )
 
     def test_a_result_link_without_a_restful_base_resolves_only_without_one(self) -> None:
@@ -286,7 +286,7 @@ class StudyGraphCaseTests(unittest.TestCase):
         delivery["entry"][1]["fullUrl"] = "https://other.example.org/fhir/QuestionnaireResponse/response-0001"
         self.assertEqual(
             outcome(self.receiver().apply(graph.resources_of(delivery))),
-            {"rejected": ["study-task.result-reference"]},
+            {"rejected": ["study-task-result-reference"]},
         )
 
     def test_a_correction_keeps_the_response_resource(self) -> None:
@@ -300,7 +300,7 @@ class StudyGraphCaseTests(unittest.TestCase):
         swapped["entry"][1]["resource"]["id"] = "response-0009"
         self.assertEqual(
             outcome(receiver.apply(graph.resources_of(swapped))),
-            {"rejected": ["study-task.correction"]},
+            {"rejected": ["study-task-correction"]},
         )
 
     def test_a_corrected_response_records_when_it_was_corrected(self) -> None:
@@ -311,7 +311,7 @@ class StudyGraphCaseTests(unittest.TestCase):
         completed["entry"][1]["resource"]["authored"] = corrected["entry"][1]["resource"]["authored"]
         self.assertEqual(
             outcome(self.receiver().apply(graph.resources_of(completed))),
-            {"rejected": ["study-task.result-window"]},
+            {"rejected": ["study-task-result-window"]},
         )
 
     def test_an_amended_response_does_not_complete_an_assigned_occurrence(self) -> None:
@@ -321,7 +321,7 @@ class StudyGraphCaseTests(unittest.TestCase):
         amended["entry"][1]["resource"]["status"] = "amended"
         self.assertEqual(
             outcome(receiver.apply(graph.resources_of(amended))),
-            {"rejected": ["study-task.result-status"]},
+            {"rejected": ["study-task-result-status"]},
         )
 
     def test_an_amended_response_is_never_authored_before_the_window_or_its_predecessor(self) -> None:
@@ -331,7 +331,7 @@ class StudyGraphCaseTests(unittest.TestCase):
         early["entry"][1]["resource"]["authored"] = "2026-08-19T05:00:00-07:00"
         self.assertEqual(
             outcome(receiver.apply(graph.resources_of(early))),
-            {"rejected": ["study-task.result-window"]},
+            {"rejected": ["study-task-result-window"]},
         )
         receiver = self.receiver()
         receiver.apply(graph.resources_of(self.delivery("completed")))
@@ -339,13 +339,13 @@ class StudyGraphCaseTests(unittest.TestCase):
         backdated["entry"][1]["resource"]["authored"] = "2026-08-19T09:00:00-07:00"
         self.assertEqual(
             outcome(receiver.apply(graph.resources_of(backdated))),
-            {"rejected": ["study-task.correction"]},
+            {"rejected": ["study-task-correction"]},
         )
 
     def test_a_corrected_result_travels_after_the_version_it_corrects(self) -> None:
         self.assertEqual(
             outcome(self.receiver().apply(graph.resources_of(self.delivery("corrected")))),
-            {"rejected": ["study-task.result-status"]},
+            {"rejected": ["study-task-result-status"]},
         )
 
     def test_malformed_members_fail_closed_without_a_crash(self) -> None:
@@ -354,11 +354,11 @@ class StudyGraphCaseTests(unittest.TestCase):
         task["input"][0]["type"] = ["performance-window"]
         task["input"][1]["valueReference"] = "enrollment-001"
         result = self.receiver().apply(graph.resources_of(delivery))
-        self.assertEqual(outcome(result), {"rejected": ["study-task.enrollment"]})
+        self.assertEqual(outcome(result), {"rejected": ["study-task-enrollment"]})
 
     def test_the_conformance_page_lists_every_graph_rule(self) -> None:
         page = (ROOT / "study/input/pagecontent/conformance.md").read_text(encoding="utf-8")
-        documented = re.findall(r"^\| `(study-task\.[a-z-]+)` \|", page, re.MULTILINE)
+        documented = re.findall(r"^\| `(study-task-[a-z-]+)` \|", page, re.MULTILINE)
         self.assertEqual(documented, list(graph.RULES))
 
     def test_every_rule_is_exercised(self) -> None:
@@ -369,7 +369,7 @@ class StudyGraphCaseTests(unittest.TestCase):
             for rule in delivery.get("rejected", [])
         }
         source = Path(__file__).read_text(encoding="utf-8")
-        exercised = recorded | set(re.findall(r'"(study-task\.[a-z-]+)"', source))
+        exercised = recorded | set(re.findall(r'"(study-task-[a-z-]+)"', source))
         self.assertEqual(set(graph.RULES) - exercised, set())
 
     def test_cli_reports_each_delivery_and_fails_on_a_rejection(self) -> None:
@@ -387,7 +387,7 @@ class StudyGraphCaseTests(unittest.TestCase):
             capture_output=True, text=True, check=False, timeout=60,
         )
         self.assertEqual(rejected.returncode, 1)
-        self.assertIn("REJECTED study-task.result-subject occurrence-0001", rejected.stdout)
+        self.assertIn("REJECTED study-task-result-subject occurrence-0001", rejected.stdout)
 
 
 class StudyStructuralCorpusTests(unittest.TestCase):

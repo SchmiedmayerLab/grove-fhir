@@ -35,25 +35,25 @@ RESULT_REFERENCE = re.compile(
 )
 ACCEPTED_RESPONSE_STATUSES = frozenset({"completed", "amended"})
 RULES = (
-    "study-task.definition",
-    "study-task.protocol",
-    "study-task.instrument",
-    "study-task.enrollment",
-    "study-task.duplicate-occurrence",
-    "study-task.cancelled-after-window",
-    "study-task.result-reference",
-    "study-task.result-subject",
-    "study-task.result-instrument",
-    "study-task.result-status",
-    "study-task.result-window",
-    "study-task.result-part-of",
-    "study-task.result-shared",
-    "study-task.occurrence-conflict",
-    "study-task.status-transition",
-    "study-task.altered-replay",
-    "study-task.altered-result",
-    "study-task.completion-conflict",
-    "study-task.correction",
+    "study-task-definition",
+    "study-task-protocol",
+    "study-task-instrument",
+    "study-task-enrollment",
+    "study-task-duplicate-occurrence",
+    "study-task-cancelled-after-window",
+    "study-task-result-reference",
+    "study-task-result-subject",
+    "study-task-result-instrument",
+    "study-task-result-status",
+    "study-task-result-window",
+    "study-task-result-part-of",
+    "study-task-result-shared",
+    "study-task-occurrence-conflict",
+    "study-task-status-transition",
+    "study-task-altered-replay",
+    "study-task-altered-result",
+    "study-task-completion-conflict",
+    "study-task-correction",
 )
 
 
@@ -324,7 +324,7 @@ def check_delivery(
     for item in responses:
         if any(references_task(reference) for reference in members(item.resource, "partOf")):
             issues.append(Issue(
-                "study-task.result-part-of", f"QuestionnaireResponse/{item.resource.get('id')}",
+                "study-task-result-part-of", f"QuestionnaireResponse/{item.resource.get('id')}",
                 "a response never references its occurrence through partOf; the Task links the response",
             ))
     seen: dict[tuple[str, str], int] = {}
@@ -332,7 +332,7 @@ def check_delivery(
         seen[view.key] = seen.get(view.key, 0) + 1
     for key, count in sorted(seen.items()):
         if count > 1:
-            issues.append(Issue("study-task.duplicate-occurrence", key[1], f"{count} Tasks carry this occurrence identifier"))
+            issues.append(Issue("study-task-duplicate-occurrence", key[1], f"{count} Tasks carry this occurrence identifier"))
 
     linked: dict[tuple[str, str], list[str]] = {}
     for view in views:
@@ -344,7 +344,7 @@ def check_delivery(
     for submission, labels in sorted(linked.items()):
         if len(labels) > 1:
             issues.append(Issue(
-                "study-task.result-shared", ", ".join(sorted(labels)),
+                "study-task-result-shared", ", ".join(sorted(labels)),
                 f"response {submission[1]} is linked by more than one occurrence",
             ))
     return sorted(set(issues)), views
@@ -361,14 +361,14 @@ def check_task(view: TaskView, index: Definitions, responses: Sequence[Resolved]
     component_canonical = task.get("instantiatesCanonical")
     component = index.one("ActivityDefinition", component_canonical)
     if component is None:
-        report("study-task.definition", f"component revision {component_canonical!r} resolves to no single ActivityDefinition")
+        report("study-task-definition", f"component revision {component_canonical!r} resolves to no single ActivityDefinition")
 
     protocol_canonical = typed_input(task, PARAMETER_SYSTEM, "protocol").get("valueCanonical")
     protocol = index.one("PlanDefinition", protocol_canonical)
     if protocol is None or not any(
         action.get("definitionCanonical") == component_canonical for action in actions(protocol)
     ):
-        report("study-task.protocol", f"protocol revision {protocol_canonical!r} has no action assigning {component_canonical!r}")
+        report("study-task-protocol", f"protocol revision {protocol_canonical!r} has no action assigning {component_canonical!r}")
 
     questionnaire_canonical = typed_input(task, SDC_SYSTEM, "questionnaire").get("valueCanonical")
     pinned = None
@@ -380,12 +380,12 @@ def check_task(view: TaskView, index: Definitions, responses: Sequence[Resolved]
         ]
     instrument = index.one("Questionnaire", questionnaire_canonical)
     if instrument is None or (pinned is not None and pinned != [questionnaire_canonical]):
-        report("study-task.instrument", f"instrument {questionnaire_canonical!r} is not the one resolvable instrument of the component revision")
+        report("study-task-instrument", f"instrument {questionnaire_canonical!r} is not the one resolvable instrument of the component revision")
 
     enrollment_key = identifier_key(member(typed_input(task, PARAMETER_SYSTEM, "enrollment"), "valueReference", "identifier"))
     enrollment = index.enrollment(enrollment_key)
     if enrollment is None or subject not in index.subject_keys(enrollment.get("individual")):
-        report("study-task.enrollment", f"enrollment {enrollment_key!r} resolves to no single ResearchSubject of this participant")
+        report("study-task-enrollment", f"enrollment {enrollment_key!r} resolves to no single ResearchSubject of this participant")
 
     window = typed_input(task, PARAMETER_SYSTEM, "performance-window").get("valuePeriod")
     start, end = instant(member(window, "start")), instant(member(window, "end"))
@@ -393,27 +393,27 @@ def check_task(view: TaskView, index: Definitions, responses: Sequence[Resolved]
     if status == "cancelled":
         stopped = instant(task.get("lastModified"))
         if end is None or stopped is None or stopped > end:
-            report("study-task.cancelled-after-window", "a cancelled occurrence was last modified after its window ended")
+            report("study-task-cancelled-after-window", "a cancelled occurrence was last modified after its window ended")
 
     if status != "completed":
         return issues
     response = resolve_result(view, responses)
     if response is None:
-        report("study-task.result-reference", f"result link {result_link(task)!r} resolves to no single response version in the delivery")
+        report("study-task-result-reference", f"result link {result_link(task)!r} resolves to no single response version in the delivery")
         return issues
     view.response = response
     if subject is None or subject not in index.subject_keys(response.get("subject")):
-        report("study-task.result-subject", "the linked response is about another participant")
+        report("study-task-result-subject", "the linked response is about another participant")
     if response.get("questionnaire") != questionnaire_canonical:
-        report("study-task.result-instrument", f"the linked response answers {response.get('questionnaire')!r}")
+        report("study-task-result-instrument", f"the linked response answers {response.get('questionnaire')!r}")
     if response.get("status") not in ACCEPTED_RESPONSE_STATUSES:
-        report("study-task.result-status", f"a {response.get('status')!r} response is not an accepted completion")
+        report("study-task-result-status", f"a {response.get('status')!r} response is not an accepted completion")
     # authored is when the answers last changed, so an amended version records the correction time:
     # it can lie after the window, never before it opened.
     authored = instant(response.get("authored"))
     latest = end if response.get("status") != "amended" else None
     if start is None or end is None or authored is None or authored < start or (latest is not None and authored > latest):
-        report("study-task.result-window", "the linked response was not authored within the performance window")
+        report("study-task-result-window", "the linked response was not authored within the performance window")
     if instrument is not None and response.get("questionnaire") == questionnaire_canonical:
         for issue in PAIR.validate_pair(instrument, response):
             if issue.severity == "error":
@@ -462,9 +462,9 @@ class Receiver:
                 content = canonical_json(view.response)
                 owner = self.linked_by.get(submission)
                 if stored is not None and stored != content:
-                    outcome, rule = "an accepted response version repeats with different content", "study-task.altered-result"
+                    outcome, rule = "an accepted response version repeats with different content", "study-task-altered-result"
                 elif owner is not None and owner != view.key:
-                    outcome, rule = "the response already completes another occurrence", "study-task.result-shared"
+                    outcome, rule = "the response already completes another occurrence", "study-task-result-shared"
                 responses[(submission, version)] = content
                 linked_by[submission] = view.key
             if rule:
@@ -488,34 +488,34 @@ class Receiver:
         """The outcome for one occurrence, or the message and rule that reject it."""
         completing = current.status == "completed" and (prior is None or prior.status == "ready")
         if completing and (response or {}).get("status") != "completed":
-            return "the first accepted result of an occurrence is a completed response", "study-task.result-status"
+            return "the first accepted result of an occurrence is a completed response", "study-task-result-status"
         if prior is None:
             return "accepted", None
         if prior.facts != current.facts:
-            return "the occurrence identifier is already assigned with other facts", "study-task.occurrence-conflict"
+            return "the occurrence identifier is already assigned with other facts", "study-task-occurrence-conflict"
         if prior.content == current.content:
             return "replayed", None
         if prior.status == "ready" and current.status in {"completed", "cancelled"}:
             return "accepted", None
         if prior.status == "completed" and current.status == "completed":
             if current.submission != prior.submission:
-                return "the occurrence is already completed by another response", "study-task.completion-conflict"
+                return "the occurrence is already completed by another response", "study-task-completion-conflict"
             if current.result_id != prior.result_id:
-                return "a correction is a new version of the same response resource", "study-task.correction"
+                return "a correction is a new version of the same response resource", "study-task-correction"
             if current.result_version == prior.result_version:
-                return "the accepted occurrence repeats with different content", "study-task.altered-replay"
+                return "the accepted occurrence repeats with different content", "study-task-altered-replay"
             if (response or {}).get("status") != "amended":
-                return "a corrected response must carry the status amended", "study-task.correction"
+                return "a corrected response must carry the status amended", "study-task-correction"
             if (
                 current.result_authored is None
                 or prior.result_authored is None
                 or current.result_authored < prior.result_authored
             ):
-                return "a correction is authored at or after the version it corrects", "study-task.correction"
+                return "a correction is authored at or after the version it corrects", "study-task-correction"
             return "corrected", None
         if prior.status == current.status:
-            return "the accepted occurrence repeats with different content", "study-task.altered-replay"
-        return f"{prior.status} cannot become {current.status}", "study-task.status-transition"
+            return "the accepted occurrence repeats with different content", "study-task-altered-replay"
+        return f"{prior.status} cannot become {current.status}", "study-task-status-transition"
 
 
 def load(path: Path) -> list[Resolved]:
