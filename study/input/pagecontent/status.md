@@ -7,7 +7,7 @@ SPDX-License-Identifier: MIT
 -->
 
 `Task.status` records the state of the assignment of an occurrence of any component kind.
-Study outcomes such as missed and excused are derived from the status, the status reason, and the performance window by the projection below, without additional R4 status codes or extensions.
+Completion states such as missed and excused are derived from the status, the status reason, and the performance window by the completion projection below, without additional R4 status codes or extensions.
 
 ### Status mapping
 
@@ -48,11 +48,11 @@ A cancelled Task without a status reason is a cancelled occurrence.
 Stop an occurrence before its window ends.
 A cancelled Task's `lastModified` is at or before the end of its performance window, so cancelling an occurrence that already lapsed cannot remove it from the missed count.
 
-### Outcome projection
+### Completion projection
 
-A consumer that reports outcomes evaluates each Task at one stated projection instant `T`:
+A consumer that reports completion evaluates each Task at one stated projection instant `T`:
 
-| Outcome | Task |
+| Projected state | Task |
 |---|---|
 | completed | `status` is `completed` |
 | excused | `status` is `cancelled` and `statusReason` is `excused` |
@@ -60,8 +60,8 @@ A consumer that reports outcomes evaluates each Task at one stated projection in
 | missed | `status` is `ready` and the performance window ended at or before `T` |
 | open | `status` is `ready` and the performance window ends after `T` |
 
-Each occurrence has exactly one outcome at `T`.
+Each occurrence has exactly one projected state at `T`.
 Comparisons use the instants the window's time-zone offsets denote.
-A report states `T` beside its outcomes, because a `ready` occurrence moves from open to missed as `T` passes its window end.
+A report states `T` beside its projected states, because a `ready` occurrence moves from open to missed as `T` passes its window end.
 
 The [excused occurrence](Task-GroveStudyExcusedTaskExample.html) was cancelled with the `excused` reason before its window opened.

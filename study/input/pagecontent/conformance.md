@@ -11,7 +11,7 @@ This guide names two actors:
 | Actor | Responsibility |
 |---|---|
 | **Assigning application** | Publishes protocol and component revisions, assigns occurrences, accepts results, and produces the Tasks. |
-| **Receiving application** | Accepts Tasks and their results, keeps the accepted state of each occurrence, and reports outcomes. |
+| **Receiving application** | Accepts Tasks and their results, keeps the accepted state of each occurrence, and reports completion. |
 
 One application can hold both roles.
 The guide defines resource content and the rules that join resources; it does not define a REST API or a transport workflow.
@@ -34,8 +34,8 @@ It checks base R4 and the Grove profiles of each resource on its own:
 
 - cardinalities, fixed values, and the input and output slicing, which the questionnaire profiles close;
 - the required status and status-reason bindings;
-- exact `url|version` syntax of the component, protocol, and instrument canonicals (`grove-study-task-pinned-1`, `grove-study-protocol-pinned-1`, `grove-study-activity-pinned-1`);
-- a performance window with offsets that starts before it ends (`grove-study-task-window-1`);
+- exact `url|version` syntax of the component, protocol, and instrument canonicals (`grove-study-task-pinned-1`, `grove-study-protocol-pinned-1`, `grove-study-component-pinned-1`);
+- every Period input, including the performance window, with offsets and a start before its end (`grove-study-task-window-1`);
 - an output on a completed Task only (`grove-study-task-output-1`) and a status reason on a cancelled Task only (`grove-study-task-status-reason-1`); and
 - for a questionnaire Task, a result link on every completed Task (`grove-study-questionnaire-task-completed-1`) that is a version-specific reference (`grove-study-questionnaire-task-result-1`).
 
@@ -52,15 +52,15 @@ These rules apply to every occurrence:
 
 | Rule | Rejects |
 |---|---|
-| `study-task-definition` | A component revision that resolves to no ActivityDefinition, or to more than one |
+| `study-task-component` | A component revision that resolves to no ActivityDefinition, or to more than one |
 | `study-task-protocol` | A protocol revision that resolves to no PlanDefinition, or whose actions do not name the Task's component revision |
 | `study-task-enrollment` | An enrollment identifier that resolves to no ResearchSubject, or to one for another participant |
 | `study-task-duplicate-occurrence` | Two Tasks with one occurrence identifier in one delivery |
-| `study-task-cancelled-after-window` | A cancelled Task last modified after its window ended |
+| `study-task-cancellation-window` | A cancelled Task last modified after its window ended |
 | `study-task-output` | An output on an occurrence whose component defines no result in this guide |
 | `study-task-completion-window` | A completed occurrence whose component defines no result, last modified outside its performance window |
 | `study-task-occurrence-conflict` | A known occurrence identifier with different assignment facts |
-| `study-task-status-transition` | A transition [Outcomes](outcomes.html) does not allow |
+| `study-task-status-transition` | A transition [Status](status.html) does not allow |
 | `study-task-altered-replay` | A known occurrence repeated with its accepted status and output but different content |
 
 An occurrence is a questionnaire occurrence when its component revision or the Task has the code `complete-questionnaire`.

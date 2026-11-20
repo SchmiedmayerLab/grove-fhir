@@ -28,7 +28,7 @@ from typing import Any, Iterator, Sequence
 
 
 ROOT = Path(__file__).resolve().parent.parent
-PARAMETER_SYSTEM = "https://grovealliance.org/fhir/study/CodeSystem/grove-study-task-parameter"
+INPUT_SYSTEM = "https://grovealliance.org/fhir/study/CodeSystem/grove-study-task-input"
 SDC_SYSTEM = "http://hl7.org/fhir/uv/sdc/CodeSystem/temp"
 RESULT_REFERENCE = re.compile(
     r"^(?:(?P<base>https?://[^\s|#]+)/)?QuestionnaireResponse/"
@@ -37,11 +37,11 @@ RESULT_REFERENCE = re.compile(
 ACCEPTED_RESPONSE_STATUSES = frozenset({"completed", "amended"})
 # Rules for an occurrence of any component kind.
 OCCURRENCE_RULES = (
-    "study-task-definition",
+    "study-task-component",
     "study-task-protocol",
     "study-task-enrollment",
     "study-task-duplicate-occurrence",
-    "study-task-cancelled-after-window",
+    "study-task-cancellation-window",
     "study-task-output",
     "study-task-completion-window",
     "study-task-occurrence-conflict",
@@ -224,11 +224,11 @@ class TaskView:
         task = self.resource
         return canonical_json({
             "for": identifier_key(member(task, "for", "identifier")),
-            "enrollment": identifier_key(member(typed_input(task, PARAMETER_SYSTEM, "enrollment"), "valueReference", "identifier")),
+            "enrollment": identifier_key(member(typed_input(task, INPUT_SYSTEM, "enrollment"), "valueReference", "identifier")),
             "component": task.get("instantiatesCanonical"),
-            "protocol": typed_input(task, PARAMETER_SYSTEM, "protocol").get("valueCanonical"),
+            "protocol": typed_input(task, INPUT_SYSTEM, "protocol").get("valueCanonical"),
             "questionnaire": typed_input(task, SDC_SYSTEM, "questionnaire").get("valueCanonical"),
-            "window": typed_input(task, PARAMETER_SYSTEM, "performance-window").get("valuePeriod"),
+            "window": typed_input(task, INPUT_SYSTEM, "performance-window").get("valuePeriod"),
             "authoredOn": task.get("authoredOn"),
         })
 
@@ -380,33 +380,33 @@ def check_task(view: TaskView, index: Definitions, responses: Sequence[Resolved]
     component_canonical = task.get("instantiatesCanonical")
     component = index.one("ActivityDefinition", component_canonical)
     if component is None:
-        report("study-task-definition", f"component revision {component_canonical!r} resolves to no single ActivityDefinition")
+        report("study-task-component", f"component revision {component_canonical!r} resolves to no single ActivityDefinition")
 
-    protocol_canonical = typed_input(task, PARAMETER_SYSTEM, "protocol").get("valueCanonical")
+    protocol_canonical = typed_input(task, INPUT_SYSTEM, "protocol").get("valueCanonical")
     protocol = index.one("PlanDefinition", protocol_canonical)
     if protocol is None or not any(
         action.get("definitionCanonical") == component_canonical for action in actions(protocol)
     ):
         report("study-task-protocol", f"protocol revision {protocol_canonical!r} has no action assigning {component_canonical!r}")
 
-    enrollment_key = identifier_key(member(typed_input(task, PARAMETER_SYSTEM, "enrollment"), "valueReference", "identifier"))
+    enrollment_key = identifier_key(member(typed_input(task, INPUT_SYSTEM, "enrollment"), "valueReference", "identifier"))
     enrollment = index.enrollment(enrollment_key)
     if enrollment is None or subject not in index.subject_keys(enrollment.get("individual")):
         report("study-task-enrollment", f"enrollment {enrollment_key!r} resolves to no single ResearchSubject of this participant")
 
-    window = typed_input(task, PARAMETER_SYSTEM, "performance-window").get("valuePeriod")
+    window = typed_input(task, INPUT_SYSTEM, "performance-window").get("valuePeriod")
     start, end = instant(member(window, "start")), instant(member(window, "end"))
     status = task.get("status")
     if status == "cancelled":
         stopped = instant(task.get("lastModified"))
         if end is None or stopped is None or stopped > end:
-            report("study-task-cancelled-after-window", "a cancelled occurrence was last modified after its window ended")
+            report("study-task-cancellation-window", "a cancelled occurrence was last modified after its window ended")
 
     # A component revision or a Task with the complete-questionnaire code makes the occurrence a
     # questionnaire occurrence. Any other occurrence completes without an output.
     view.questionnaire = is_questionnaire(component) or is_questionnaire(task)
     if not view.questionnaire:
-        # Without a resolved component the kind is unknown; study-task-definition already rejects it.
+        # Without a resolved component the kind is unknown; study-task-component already rejects it.
         if component is None:
             return issues
         if members(task, "output"):

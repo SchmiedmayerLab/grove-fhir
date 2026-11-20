@@ -6,7 +6,7 @@ SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTR
 SPDX-License-Identifier: MIT
 -->
 
-The Grove Study Interaction Exchange defines how a published study protocol, the occurrences of study components it assigns to a participant, and the questionnaire responses that complete questionnaire occurrences are exchanged as FHIR R4.
+The Grove Study Exchange defines how a published study protocol, the occurrences of study components it assigns to a participant, and the questionnaire responses that complete questionnaire occurrences are exchanged as FHIR R4.
 This package is experimental.
 
 It uses standard resources:
@@ -16,6 +16,9 @@ It uses standard resources:
 - a `Task` is one assigned occurrence of a component for one participant in one enrollment;
 - a `QuestionnaireResponse` is the result that completes a questionnaire occurrence, profiled by the [Questionnaire Exchange](https://grovealliance.org/fhir/questionnaire/); and
 - a `ResearchSubject` is the participant's enrollment.
+
+In the Grove Scheduler, a FHIR `Task` is one Scheduler `Event`, and a study component is one Scheduler `Task`.
+The performance window is the Scheduler `Occurrence`, narrowed by the component's allowed completion policy.
 
 Readers who are new to FHIR should begin with the [FHIR basics page](https://grovealliance.org/fhir/mobile/fhir-basics.html) in the Mobile guide.
 
@@ -27,7 +30,7 @@ This guide defines one such kind, the questionnaire.
 
 | Base profile | Questionnaire profile derived from it |
 |---|---|
-| [Grove Study Activity](StructureDefinition-grove-study-activity.html): one component revision | [Grove Study Questionnaire Activity](StructureDefinition-grove-study-questionnaire-activity.html): adds the instrument the component administers |
+| [Grove Study Component](StructureDefinition-grove-study-component.html): one component revision | [Grove Study Questionnaire Component](StructureDefinition-grove-study-questionnaire-component.html): adds the instrument the component administers |
 | [Grove Study Task](StructureDefinition-grove-study-task.html): one assigned occurrence | [Grove Study Questionnaire Task](StructureDefinition-grove-study-questionnaire-task.html): adds the questionnaire input and the result link |
 
 The [Grove Study Protocol](StructureDefinition-grove-study-protocol.html) names component revisions of any kind.
@@ -81,8 +84,8 @@ Both validation stages described on the [conformance page](conformance.html) run
 | Resource | What to look for |
 |---|---|
 | [Single-arm protocol](PlanDefinition-GroveStudyProtocolExample.html) | Two actions, each naming the exact revision of the component it assigns |
-| [Welcome component](ActivityDefinition-GroveStudyWelcomeActivityExample.html) | An informational component revision that conforms to the base activity profile |
-| [Daily check-in component](ActivityDefinition-GroveStudyDailyCheckInActivityExample.html) | A questionnaire component revision and the exact instrument it pins |
+| [Welcome component](ActivityDefinition-GroveStudyWelcomeComponentExample.html) | An informational component revision that conforms to the base component profile |
+| [Daily check-in component](ActivityDefinition-GroveStudyDailyCheckInComponentExample.html) | A questionnaire component revision and the exact instrument it pins |
 | [Daily check-in instrument](Questionnaire-GroveStudyDailyCheckInExample.html) | The Grove Questionnaire the participant completes |
 | [Enrollment](ResearchSubject-GroveStudyEnrollmentExample.html) | The ResearchSubject the occurrences name by identifier |
 | [Completed informational occurrence](Task-GroveStudyWelcomeTaskExample.html) | A `completed` base Task without an output |
@@ -96,6 +99,6 @@ Both validation stages described on the [conformance page](conformance.html) run
 - [Publish the protocol](protocol.html) covers protocol and component revisions and how a questionnaire component pins its instrument.
 - [Assign an occurrence](occurrences.html) defines the base Task, the questionnaire Task, their inputs, and occurrence identity.
 - [Link the result](results.html) defines how an accepted response, and a correction of it, is linked to its questionnaire occurrence.
-- [Outcomes](outcomes.html) maps the assignment states to Task statuses and defines the projection to completed, missed, cancelled, and excused outcomes.
+- [Status](status.html) maps the assignment states to Task statuses and defines the completion projection to completed, excused, cancelled, missed, and open.
 - [Conformance](conformance.html) defines structural validation and graph validation and what each one establishes.
 - [Artifacts](artifacts.html) lists the profiles, terminology, and examples.

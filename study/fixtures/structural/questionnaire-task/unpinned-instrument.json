@@ -37,7 +37,7 @@
       "type": {
         "coding": [
           {
-            "system": "https://grovealliance.org/fhir/study/CodeSystem/grove-study-task-parameter",
+            "system": "https://grovealliance.org/fhir/study/CodeSystem/grove-study-task-input",
             "code": "performance-window"
           }
         ]
@@ -51,7 +51,7 @@
       "type": {
         "coding": [
           {
-            "system": "https://grovealliance.org/fhir/study/CodeSystem/grove-study-task-parameter",
+            "system": "https://grovealliance.org/fhir/study/CodeSystem/grove-study-task-input",
             "code": "enrollment"
           }
         ]
@@ -68,7 +68,7 @@
       "type": {
         "coding": [
           {
-            "system": "https://grovealliance.org/fhir/study/CodeSystem/grove-study-task-parameter",
+            "system": "https://grovealliance.org/fhir/study/CodeSystem/grove-study-task-input",
             "code": "protocol"
           }
         ]
@@ -84,7 +84,7 @@
           }
         ]
       },
-      "valueCanonical": "https://example.org/fhir/Questionnaire/daily-check-in|1.0.0"
+      "valueCanonical": "https://example.org/fhir/Questionnaire/daily-check-in"
     }
   ],
   "output": [

@@ -16,8 +16,8 @@ Description: "The protocol has an absolute canonical url without a version separ
 Severity: #error
 Expression: "url.matches('^https?://[^\\\\s|#]+$') and repeat(action).definition.ofType(canonical).all(matches('^https?://[^\\\\s|#]+[|][^\\\\s|#]+$'))"
 
-Invariant: grove-study-activity-pinned-1
-Description: "The activity has an absolute canonical url without a version separator, and every artifact it depends on is named by one exact url|version."
+Invariant: grove-study-component-pinned-1
+Description: "The component has an absolute canonical url without a version separator, and every artifact it depends on is named by one exact url|version."
 Severity: #error
 Expression: "url.matches('^https?://[^\\\\s|#]+$') and relatedArtifact.where(type = 'depends-on').resource.all(matches('^https?://[^\\\\s|#]+[|][^\\\\s|#]+$'))"
 
@@ -27,7 +27,7 @@ Severity: #error
 Expression: "instantiatesCanonical.all(matches('^https?://[^\\\\s|#]+[|][^\\\\s|#]+$')) and input.value.ofType(canonical).all(matches('^https?://[^\\\\s|#]+[|][^\\\\s|#]+$'))"
 
 Invariant: grove-study-task-window-1
-Description: "The performance window has a start and an end, each with seconds and a time-zone offset, and it starts before it ends."
+Description: "Every Period input, including the performance window, has a start and an end, each with seconds and a time-zone offset, and starts before it ends."
 Severity: #error
 Expression: "input.value.ofType(Period).all(start.exists() and end.exists() and start.toString().matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}([.][0-9]+)?(Z|[+-][0-9]{2}:[0-9]{2})$') and end.toString().matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}([.][0-9]+)?(Z|[+-][0-9]{2}:[0-9]{2})$') and start < end)"
 
@@ -65,16 +65,16 @@ Description: "One published revision of a study protocol. Each action names the 
 * action 1..* MS
 * action.title MS
 * action.definition[x] 1..1 MS
-* action.definition[x] only Canonical(GroveStudyActivity)
+* action.definition[x] only Canonical(GroveStudyComponent)
 * action.definition[x] ^short = "Exact url|version of the study component revision this action assigns"
 
-Profile: GroveStudyActivity
+Profile: GroveStudyComponent
 Parent: ActivityDefinition
-Id: grove-study-activity
-Title: "Grove Study Activity"
+Id: grove-study-component
+Title: "Grove Study Component"
 Description: "One immutable revision of a study component of any kind, such as a questionnaire or an informational component. Each assigned occurrence of the component is a Task. A profile derived from this one defines what a component of one kind adds."
 * insert GroveStudyExperimental
-* obeys grove-study-activity-pinned-1
+* obeys grove-study-component-pinned-1
 * url 1..1 MS
 * url ^short = "Canonical URL of the study component"
 * version 1..1 MS
@@ -85,10 +85,10 @@ Description: "One immutable revision of a study component of any kind, such as a
 * intent 1..1 MS
 * intent = #order (exactly)
 
-Profile: GroveStudyQuestionnaireActivity
-Parent: GroveStudyActivity
-Id: grove-study-questionnaire-activity
-Title: "Grove Study Questionnaire Activity"
+Profile: GroveStudyQuestionnaireComponent
+Parent: GroveStudyComponent
+Id: grove-study-questionnaire-component
+Title: "Grove Study Questionnaire Component"
 Description: "One immutable revision of a study component that asks the participant to complete one exact Questionnaire version."
 * insert GroveStudyExperimental
 * code 1..1 MS
@@ -96,7 +96,7 @@ Description: "One immutable revision of a study component that asks the particip
 * relatedArtifact ^slicing.discriminator.type = #value
 * relatedArtifact ^slicing.discriminator.path = "type"
 * relatedArtifact ^slicing.rules = #open
-* relatedArtifact ^slicing.description = "The instrument is the one artifact this activity depends on."
+* relatedArtifact ^slicing.description = "The instrument is the one artifact this component depends on."
 * relatedArtifact contains instrument 1..1 MS
 * relatedArtifact[instrument].type = #depends-on (exactly)
 * relatedArtifact[instrument].resource 1..1 MS
@@ -115,7 +115,7 @@ Description: "One assigned occurrence of a study component of any kind. A recurr
 * identifier.system 1..1 MS
 * identifier.value 1..1 MS
 * instantiatesCanonical 1..1 MS
-* instantiatesCanonical only Canonical(GroveStudyActivity)
+* instantiatesCanonical only Canonical(GroveStudyComponent)
 * instantiatesCanonical ^short = "Exact url|version of the component revision this occurrence belongs to"
 * status 1..1 MS
 * status from GroveStudyTaskStatusVS (required)
@@ -147,16 +147,16 @@ Description: "One assigned occurrence of a study component of any kind. A recurr
     performanceWindow 1..1 MS and
     enrollment 1..1 MS and
     protocol 1..1 MS
-* input[performanceWindow].type = GroveStudyTaskParameterCS#performance-window
+* input[performanceWindow].type = GroveStudyTaskInputCS#performance-window
 * input[performanceWindow].value[x] only Period
 * input[performanceWindow].value[x] ^short = "When the participant is allowed to perform the occurrence"
-* input[enrollment].type = GroveStudyTaskParameterCS#enrollment
+* input[enrollment].type = GroveStudyTaskInputCS#enrollment
 * input[enrollment].value[x] only Reference(ResearchSubject)
 * input[enrollment].valueReference.identifier 1..1 MS
 * input[enrollment].valueReference.identifier.system 1..1 MS
 * input[enrollment].valueReference.identifier.value 1..1 MS
 * input[enrollment].value[x] ^short = "The ResearchSubject, by its complete business identifier"
-* input[protocol].type = GroveStudyTaskParameterCS#protocol
+* input[protocol].type = GroveStudyTaskInputCS#protocol
 * input[protocol].value[x] only Canonical(GroveStudyProtocol)
 * input[protocol].value[x] ^short = "Exact url|version of the protocol whose action assigned the occurrence"
 * output MS
@@ -172,7 +172,7 @@ Title: "Grove Study Questionnaire Task"
 Description: "One assigned occurrence of a study component that the participant completes with one exact Questionnaire version. A completed Task links exactly one QuestionnaireResponse version."
 * insert GroveStudyExperimental
 * obeys grove-study-questionnaire-task-completed-1 and grove-study-questionnaire-task-result-1
-* instantiatesCanonical only Canonical(GroveStudyQuestionnaireActivity)
+* instantiatesCanonical only Canonical(GroveStudyQuestionnaireComponent)
 * code 1..1 MS
 * code = $sdcTemp#complete-questionnaire
 * input 4..4

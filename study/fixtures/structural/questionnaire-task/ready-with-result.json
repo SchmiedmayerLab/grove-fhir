@@ -8,11 +8,12 @@
   },
   "identifier": [
     {
+      "system": "https://example.org/research/occurrence-id",
       "value": "occurrence-0001"
     }
   ],
   "instantiatesCanonical": "https://example.org/fhir/ActivityDefinition/daily-check-in|1.0.0",
-  "status": "completed",
+  "status": "ready",
   "intent": "order",
   "code": {
     "coding": [
@@ -36,7 +37,7 @@
       "type": {
         "coding": [
           {
-            "system": "https://grovealliance.org/fhir/study/CodeSystem/grove-study-task-parameter",
+            "system": "https://grovealliance.org/fhir/study/CodeSystem/grove-study-task-input",
             "code": "performance-window"
           }
         ]
@@ -50,7 +51,7 @@
       "type": {
         "coding": [
           {
-            "system": "https://grovealliance.org/fhir/study/CodeSystem/grove-study-task-parameter",
+            "system": "https://grovealliance.org/fhir/study/CodeSystem/grove-study-task-input",
             "code": "enrollment"
           }
         ]
@@ -67,7 +68,7 @@
       "type": {
         "coding": [
           {
-            "system": "https://grovealliance.org/fhir/study/CodeSystem/grove-study-task-parameter",
+            "system": "https://grovealliance.org/fhir/study/CodeSystem/grove-study-task-input",
             "code": "protocol"
           }
         ]

@@ -20,7 +20,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 GRAPH = ROOT / "study/fixtures/graph"
-STRUCTURAL = ROOT / "study/fixtures/structural"
+QUESTIONNAIRE_TASK_CORPUS = ROOT / "study/fixtures/structural/questionnaire-task"
+TASK_CORPUS = ROOT / "study/fixtures/structural/task"
 GENERATED = ROOT / "study/fsh-generated/resources"
 
 spec = importlib.util.spec_from_file_location(
@@ -97,8 +98,8 @@ class StudyGraphCaseTests(unittest.TestCase):
         for path in [GRAPH / "definitions.json", *sorted((GRAPH / "deliveries").glob("*.json"))]:
             with self.subTest(path=path.name):
                 self.assertIn(path.relative_to(ROOT).as_posix(), validated)
-        self.assertIn("study/fixtures/structural/corpus.json", manifest["negativeCorpora"])
-        self.assertIn("study/fixtures/structural/base/corpus.json", manifest["negativeCorpora"])
+        self.assertIn("study/fixtures/structural/questionnaire-task/corpus.json", manifest["negativeCorpora"])
+        self.assertIn("study/fixtures/structural/task/corpus.json", manifest["negativeCorpora"])
 
     def test_completion_is_counted_once_across_replay_and_correction(self) -> None:
         receiver = self.receiver()
@@ -158,7 +159,7 @@ class StudyGraphCaseTests(unittest.TestCase):
         late["entry"][0]["resource"]["lastModified"] = "2026-08-22T00:00:01-07:00"
         self.assertEqual(
             outcome(self.receiver().apply(graph.resources_of(late))),
-            {"rejected": ["study-task-cancelled-after-window"]},
+            {"rejected": ["study-task-cancellation-window"]},
         )
 
     def test_one_response_completes_one_occurrence(self) -> None:
@@ -311,7 +312,7 @@ class StudyGraphCaseTests(unittest.TestCase):
         task["output"] = [{"type": {"text": "result"}, "valueString": "done"}]
         self.assertEqual(
             outcome(self.receiver().apply(graph.resources_of(delivery))),
-            {"rejected": ["study-task-definition", "study-task-protocol"]},
+            {"rejected": ["study-task-component", "study-task-protocol"]},
         )
 
     def test_rule_groups_are_disjoint(self) -> None:
@@ -486,7 +487,7 @@ class StudyGraphCaseTests(unittest.TestCase):
 
 class StudyStructuralCorpusTests(unittest.TestCase):
     def test_each_case_differs_from_the_control_in_one_place(self) -> None:
-        for directory in (STRUCTURAL, STRUCTURAL / "base"):
+        for directory in (QUESTIONNAIRE_TASK_CORPUS, TASK_CORPUS):
             corpus = load(directory / "corpus.json")
             control = load(directory / corpus["control"])
             for case in corpus["cases"]:
@@ -496,12 +497,12 @@ class StudyStructuralCorpusTests(unittest.TestCase):
                     self.assertEqual(len(changed), 1, changed)
 
     def test_the_control_completes_the_graph_fixture_occurrence(self) -> None:
-        control = load(STRUCTURAL / "control.json")
+        control = load(QUESTIONNAIRE_TASK_CORPUS / "control.json")
         completed = load(GRAPH / "deliveries/completed.json")["entry"][0]["resource"]
         self.assertEqual(control, completed)
 
-    def test_the_base_control_assigns_the_informational_graph_occurrence(self) -> None:
-        control = load(STRUCTURAL / "base/control.json")
+    def test_the_task_control_assigns_the_informational_graph_occurrence(self) -> None:
+        control = load(TASK_CORPUS / "control.json")
         completed = load(GRAPH / "deliveries/informational-completed.json")["entry"][0]["resource"]
         self.assertEqual(control["status"], "ready")
         self.assertEqual(

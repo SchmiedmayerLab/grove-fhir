@@ -14,6 +14,14 @@
   ],
   "instantiatesCanonical": "https://example.org/fhir/ActivityDefinition/daily-check-in|1.0.0",
   "status": "completed",
+  "statusReason": {
+    "coding": [
+      {
+        "system": "https://grovealliance.org/fhir/study/CodeSystem/grove-study-task-status-reason",
+        "code": "excused"
+      }
+    ]
+  },
   "intent": "order",
   "code": {
     "coding": [
@@ -37,7 +45,7 @@
       "type": {
         "coding": [
           {
-            "system": "https://grovealliance.org/fhir/study/CodeSystem/grove-study-task-parameter",
+            "system": "https://grovealliance.org/fhir/study/CodeSystem/grove-study-task-input",
             "code": "performance-window"
           }
         ]
@@ -51,7 +59,7 @@
       "type": {
         "coding": [
           {
-            "system": "https://grovealliance.org/fhir/study/CodeSystem/grove-study-task-parameter",
+            "system": "https://grovealliance.org/fhir/study/CodeSystem/grove-study-task-input",
             "code": "enrollment"
           }
         ]
@@ -68,7 +76,7 @@
       "type": {
         "coding": [
           {
-            "system": "https://grovealliance.org/fhir/study/CodeSystem/grove-study-task-parameter",
+            "system": "https://grovealliance.org/fhir/study/CodeSystem/grove-study-task-input",
             "code": "protocol"
           }
         ]
@@ -84,7 +92,7 @@
           }
         ]
       },
-      "valueCanonical": "https://example.org/fhir/Questionnaire/daily-check-in"
+      "valueCanonical": "https://example.org/fhir/Questionnaire/daily-check-in|1.0.0"
     }
   ],
   "output": [

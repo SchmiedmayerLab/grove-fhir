@@ -15,13 +15,6 @@
   "instantiatesCanonical": "https://example.org/fhir/ActivityDefinition/welcome|1.0.0",
   "status": "ready",
   "intent": "order",
-  "for": {
-    "type": "Patient",
-    "identifier": {
-      "system": "https://example.org/research/participant-id",
-      "value": "participant-001"
-    }
-  },
   "authoredOn": "2026-08-18T08:00:00-07:00",
   "lastModified": "2026-08-18T08:00:00-07:00",
   "input": [
@@ -29,7 +22,7 @@
       "type": {
         "coding": [
           {
-            "system": "https://grovealliance.org/fhir/study/CodeSystem/grove-study-task-parameter",
+            "system": "https://grovealliance.org/fhir/study/CodeSystem/grove-study-task-input",
             "code": "performance-window"
           }
         ]
@@ -43,7 +36,7 @@
       "type": {
         "coding": [
           {
-            "system": "https://grovealliance.org/fhir/study/CodeSystem/grove-study-task-parameter",
+            "system": "https://grovealliance.org/fhir/study/CodeSystem/grove-study-task-input",
             "code": "enrollment"
           }
         ]
@@ -60,7 +53,7 @@
       "type": {
         "coding": [
           {
-            "system": "https://grovealliance.org/fhir/study/CodeSystem/grove-study-task-parameter",
+            "system": "https://grovealliance.org/fhir/study/CodeSystem/grove-study-task-input",
             "code": "protocol"
           }
         ]

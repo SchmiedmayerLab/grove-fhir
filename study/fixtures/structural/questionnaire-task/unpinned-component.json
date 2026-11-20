@@ -12,7 +12,7 @@
       "value": "occurrence-0001"
     }
   ],
-  "instantiatesCanonical": "https://example.org/fhir/ActivityDefinition/daily-check-in|1.0.0",
+  "instantiatesCanonical": "https://example.org/fhir/ActivityDefinition/daily-check-in",
   "status": "completed",
   "intent": "order",
   "code": {
@@ -37,7 +37,7 @@
       "type": {
         "coding": [
           {
-            "system": "https://grovealliance.org/fhir/study/CodeSystem/grove-study-task-parameter",
+            "system": "https://grovealliance.org/fhir/study/CodeSystem/grove-study-task-input",
             "code": "performance-window"
           }
         ]
@@ -51,20 +51,24 @@
       "type": {
         "coding": [
           {
-            "system": "https://grovealliance.org/fhir/study/CodeSystem/grove-study-task-parameter",
+            "system": "https://grovealliance.org/fhir/study/CodeSystem/grove-study-task-input",
             "code": "enrollment"
           }
         ]
       },
       "valueReference": {
-        "type": "ResearchSubject"
+        "type": "ResearchSubject",
+        "identifier": {
+          "system": "https://example.org/research/enrollment-id",
+          "value": "enrollment-001"
+        }
       }
     },
     {
       "type": {
         "coding": [
           {
-            "system": "https://grovealliance.org/fhir/study/CodeSystem/grove-study-task-parameter",
+            "system": "https://grovealliance.org/fhir/study/CodeSystem/grove-study-task-input",
             "code": "protocol"
           }
         ]

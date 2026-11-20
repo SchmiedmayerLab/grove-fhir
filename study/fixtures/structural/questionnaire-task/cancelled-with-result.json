@@ -13,7 +13,7 @@
     }
   ],
   "instantiatesCanonical": "https://example.org/fhir/ActivityDefinition/daily-check-in|1.0.0",
-  "status": "completed",
+  "status": "cancelled",
   "intent": "order",
   "code": {
     "coding": [
@@ -37,21 +37,21 @@
       "type": {
         "coding": [
           {
-            "system": "https://grovealliance.org/fhir/study/CodeSystem/grove-study-task-parameter",
+            "system": "https://grovealliance.org/fhir/study/CodeSystem/grove-study-task-input",
             "code": "performance-window"
           }
         ]
       },
       "valuePeriod": {
-        "start": "2026-08-19T23:59:59-07:00",
-        "end": "2026-08-19T06:00:00-07:00"
+        "start": "2026-08-19T06:00:00-07:00",
+        "end": "2026-08-19T23:59:59-07:00"
       }
     },
     {
       "type": {
         "coding": [
           {
-            "system": "https://grovealliance.org/fhir/study/CodeSystem/grove-study-task-parameter",
+            "system": "https://grovealliance.org/fhir/study/CodeSystem/grove-study-task-input",
             "code": "enrollment"
           }
         ]
@@ -68,7 +68,7 @@
       "type": {
         "coding": [
           {
-            "system": "https://grovealliance.org/fhir/study/CodeSystem/grove-study-task-parameter",
+            "system": "https://grovealliance.org/fhir/study/CodeSystem/grove-study-task-input",
             "code": "protocol"
           }
         ]

@@ -15,7 +15,7 @@ Nothing in this chain resolves to "the latest" revision.
 A [Grove Study Protocol](StructureDefinition-grove-study-protocol.html) is a PlanDefinition with a canonical `url` and a `version`.
 Each published `url|version` is one protocol revision and is never changed after publication; a changed protocol is a new version.
 
-Every `action` names one component revision of any kind in `action.definitionCanonical` as an exact `url|version` of a [Grove Study Activity](StructureDefinition-grove-study-activity.html) or a profile derived from it.
+Every `action` names one component revision of any kind in `action.definitionCanonical` as an exact `url|version` of a [Grove Study Component](StructureDefinition-grove-study-component.html) or a profile derived from it.
 This guide does not define when or how often an action assigns occurrences; it exchanges the occurrences the assigning application assigns.
 
 A single-arm protocol lists its actions without arm selection.
@@ -25,7 +25,7 @@ The [example protocol](PlanDefinition-GroveStudyProtocolExample.html) has two ac
 
 ### Component revision
 
-A [Grove Study Activity](StructureDefinition-grove-study-activity.html) is an ActivityDefinition for one study component of any kind, such as a questionnaire or an informational message.
+A [Grove Study Component](StructureDefinition-grove-study-component.html) is an ActivityDefinition for one study component of any kind, such as a questionnaire or an informational message.
 Its `url` identifies the component and its `version` identifies one immutable revision of it.
 
 | Element | Value |
@@ -36,11 +36,11 @@ Its `url` identifies the component and its `version` identifies one immutable re
 | `intent` | `order` |
 
 Every artifact a component revision names with the `relatedArtifact` type `depends-on` is an exact `url|version`.
-A component of a kind that defines no result, such as an informational message, conforms to this profile and needs nothing more; the [welcome component](ActivityDefinition-GroveStudyWelcomeActivityExample.html) is an example.
+A component of a kind that defines no result, such as an informational message, conforms to this profile and needs nothing more; the [welcome component](ActivityDefinition-GroveStudyWelcomeComponentExample.html) is an example.
 
 ### Questionnaire component revision
 
-A [Grove Study Questionnaire Activity](StructureDefinition-grove-study-questionnaire-activity.html) derives from Grove Study Activity for a component that asks the participant to complete a Questionnaire.
+A [Grove Study Questionnaire Component](StructureDefinition-grove-study-questionnaire-component.html) derives from Grove Study Component for a component that asks the participant to complete a Questionnaire.
 It adds:
 
 | Element | Value |
@@ -53,7 +53,7 @@ A component revision pins one instrument revision.
 Administering a different Questionnaire version is a new component revision, and a protocol that adopts it is a new protocol revision.
 Occurrences already assigned keep the component revision they were assigned with.
 
-The [daily check-in component](ActivityDefinition-GroveStudyDailyCheckInActivityExample.html) pins the [daily check-in instrument](Questionnaire-GroveStudyDailyCheckInExample.html).
+The [daily check-in component](ActivityDefinition-GroveStudyDailyCheckInComponentExample.html) pins the [daily check-in instrument](Questionnaire-GroveStudyDailyCheckInExample.html).
 
 ### Revision identifiers
 

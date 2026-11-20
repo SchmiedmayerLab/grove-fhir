@@ -7,7 +7,7 @@
 //
 
 // The Publisher stamps the guide version onto every canonical resource it builds, so the example
-// protocol, activity, and instrument carry the guide version, and every exact canonical that joins
+// protocol, components, and instrument carry the guide version, and every exact canonical that joins
 // them names that version.
 
 Instance: GroveStudyDailyCheckInExample
@@ -33,14 +33,14 @@ Description: "The instrument the daily check-in component asks the participant t
 * item[1].type = #integer
 * item[1].required = true
 
-Instance: GroveStudyDailyCheckInActivityExample
-InstanceOf: GroveStudyQuestionnaireActivity
+Instance: GroveStudyDailyCheckInComponentExample
+InstanceOf: GroveStudyQuestionnaireComponent
 Usage: #example
 Title: "Daily Check-In Component"
 Description: "One revision of the daily check-in study component. It pins the exact instrument revision every occurrence of this component administers."
-* url = "https://grovealliance.org/fhir/study/ActivityDefinition/GroveStudyDailyCheckInActivityExample"
+* url = "https://grovealliance.org/fhir/study/ActivityDefinition/GroveStudyDailyCheckInComponentExample"
 * version = "0.8.2"
-* name = "GroveStudyDailyCheckInActivity"
+* name = "GroveStudyDailyCheckInComponent"
 * title = "Daily check-in"
 * status = #active
 * experimental = true
@@ -50,14 +50,14 @@ Description: "One revision of the daily check-in study component. It pins the ex
 * relatedArtifact[instrument].type = #depends-on
 * relatedArtifact[instrument].resource = "https://grovealliance.org/fhir/study/Questionnaire/GroveStudyDailyCheckInExample|0.8.2"
 
-Instance: GroveStudyWelcomeActivityExample
-InstanceOf: GroveStudyActivity
+Instance: GroveStudyWelcomeComponentExample
+InstanceOf: GroveStudyComponent
 Usage: #example
 Title: "Welcome Component"
 Description: "One revision of an informational study component that shows the participant a welcome message. It defines no result, so its occurrences complete without an output."
-* url = "https://grovealliance.org/fhir/study/ActivityDefinition/GroveStudyWelcomeActivityExample"
+* url = "https://grovealliance.org/fhir/study/ActivityDefinition/GroveStudyWelcomeComponentExample"
 * version = "0.8.2"
-* name = "GroveStudyWelcomeActivity"
+* name = "GroveStudyWelcomeComponent"
 * title = "Welcome"
 * status = #active
 * experimental = true
@@ -72,14 +72,14 @@ Title: "Single-Arm Daily Check-In Protocol"
 Description: "One revision of a single-arm protocol with two actions: an informational welcome component and the daily check-in."
 * url = "https://grovealliance.org/fhir/study/PlanDefinition/GroveStudyProtocolExample"
 * version = "0.8.2"
-* name = "GroveStudyProtocol"
+* name = "GroveStudyDailyCheckInProtocol"
 * title = "Single-arm daily check-in protocol"
 * status = #active
 * experimental = true
 * action[0].title = "Welcome"
-* action[0].definitionCanonical = "https://grovealliance.org/fhir/study/ActivityDefinition/GroveStudyWelcomeActivityExample|0.8.2"
+* action[0].definitionCanonical = "https://grovealliance.org/fhir/study/ActivityDefinition/GroveStudyWelcomeComponentExample|0.8.2"
 * action[1].title = "Daily check-in"
-* action[1].definitionCanonical = "https://grovealliance.org/fhir/study/ActivityDefinition/GroveStudyDailyCheckInActivityExample|0.8.2"
+* action[1].definitionCanonical = "https://grovealliance.org/fhir/study/ActivityDefinition/GroveStudyDailyCheckInComponentExample|0.8.2"
 
 Instance: GroveStudyEnrollmentExample
 InstanceOf: ResearchSubject
@@ -106,18 +106,18 @@ RuleSet: GroveStudyOccurrence(component, occurrence, start, end)
 * for.identifier.system = "https://example.org/research/participant-id"
 * for.identifier.value = "participant-001"
 * authoredOn = "2026-08-18T08:00:00-07:00"
-* input[performanceWindow].type = GroveStudyTaskParameterCS#performance-window
+* input[performanceWindow].type = GroveStudyTaskInputCS#performance-window
 * input[performanceWindow].valuePeriod.start = "{start}"
 * input[performanceWindow].valuePeriod.end = "{end}"
-* input[enrollment].type = GroveStudyTaskParameterCS#enrollment
+* input[enrollment].type = GroveStudyTaskInputCS#enrollment
 * input[enrollment].valueReference.type = "ResearchSubject"
 * input[enrollment].valueReference.identifier.system = "https://example.org/research/enrollment-id"
 * input[enrollment].valueReference.identifier.value = "enrollment-001"
-* input[protocol].type = GroveStudyTaskParameterCS#protocol
+* input[protocol].type = GroveStudyTaskInputCS#protocol
 * input[protocol].valueCanonical = "https://grovealliance.org/fhir/study/PlanDefinition/GroveStudyProtocolExample|0.8.2"
 
 RuleSet: GroveStudyDailyCheckInOccurrence(occurrence, start, end)
-* insert GroveStudyOccurrence(GroveStudyDailyCheckInActivityExample, {occurrence}, {start}, {end})
+* insert GroveStudyOccurrence(GroveStudyDailyCheckInComponentExample, {occurrence}, {start}, {end})
 * code = $sdcTemp#complete-questionnaire
 * input[questionnaire].type = $sdcTemp#questionnaire
 * input[questionnaire].valueCanonical = "https://grovealliance.org/fhir/study/Questionnaire/GroveStudyDailyCheckInExample|0.8.2"
@@ -127,7 +127,7 @@ InstanceOf: GroveStudyTask
 Usage: #example
 Title: "Completed Informational Occurrence"
 Description: "The welcome occurrence after the participant viewed the message. Its component defines no result, so the completed Task carries no output."
-* insert GroveStudyOccurrence(GroveStudyWelcomeActivityExample, welcome-0001, 2026-08-18T08:00:00-07:00, 2026-08-25T08:00:00-07:00)
+* insert GroveStudyOccurrence(GroveStudyWelcomeComponentExample, welcome-0001, 2026-08-18T08:00:00-07:00, 2026-08-25T08:00:00-07:00)
 * status = #completed
 * lastModified = "2026-08-18T08:05:12-07:00"
 * executionPeriod.start = "2026-08-18T08:04:30-07:00"

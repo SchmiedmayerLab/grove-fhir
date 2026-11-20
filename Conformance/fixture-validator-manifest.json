@@ -195,8 +195,8 @@
   "negativeCorpora": [
     "Conformance/corpora/mobile-profile-invariants/corpus.json",
     "Conformance/corpora/healthkit-insulin-delivery/corpus.json",
-    "study/fixtures/structural/corpus.json",
-    "study/fixtures/structural/base/corpus.json"
+    "study/fixtures/structural/questionnaire-task/corpus.json",
+    "study/fixtures/structural/task/corpus.json"
   ],
   "excluded": [
     {

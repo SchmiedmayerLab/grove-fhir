@@ -72,7 +72,7 @@
       "source": "study",
       "canonicalPath": "study",
       "aliases": [],
-      "representativeResource": "StructureDefinition/grove-study-questionnaire-task"
+      "representativeResource": "StructureDefinition/grove-study-task"
     }
   ],
   "retiredPreviewPaths": [

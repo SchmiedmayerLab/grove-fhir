@@ -114,7 +114,7 @@
       "id": "wrong-component-revision",
       "purpose": "A Task naming a component revision that was never published resolves to no definition and to no protocol action.",
       "deliveries": [
-        {"path": "deliveries/wrong-component-revision.json", "rejected": ["study-task-definition", "study-task-protocol"]}
+        {"path": "deliveries/wrong-component-revision.json", "rejected": ["study-task-component", "study-task-protocol"]}
       ]
     },
     {

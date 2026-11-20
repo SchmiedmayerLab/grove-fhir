@@ -416,9 +416,9 @@
         "org.grovealliance.fhir.questionnaire#0.8.2"
       ],
       "profiles": [
-        "grove-study-activity",
+        "grove-study-component",
         "grove-study-protocol",
-        "grove-study-questionnaire-activity",
+        "grove-study-questionnaire-component",
         "grove-study-questionnaire-task",
         "grove-study-task"
       ]

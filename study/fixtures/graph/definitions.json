@@ -37,7 +37,7 @@
         "id": "daily-check-in",
         "meta": {
           "profile": [
-            "https://grovealliance.org/fhir/study/StructureDefinition/grove-study-questionnaire-activity"
+            "https://grovealliance.org/fhir/study/StructureDefinition/grove-study-questionnaire-component"
           ]
         },
         "url": "https://example.org/fhir/ActivityDefinition/daily-check-in",
@@ -221,7 +221,7 @@
         "id": "welcome",
         "meta": {
           "profile": [
-            "https://grovealliance.org/fhir/study/StructureDefinition/grove-study-activity"
+            "https://grovealliance.org/fhir/study/StructureDefinition/grove-study-component"
           ]
         },
         "url": "https://example.org/fhir/ActivityDefinition/welcome",

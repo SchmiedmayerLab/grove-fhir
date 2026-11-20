@@ -18,7 +18,7 @@ Every occurrence carries these elements:
 |---|---|
 | `identifier` | The occurrence identifier, with `system` and `value` |
 | `instantiatesCanonical` | The exact `url|version` of the component revision |
-| `status` | `ready`, `completed`, or `cancelled`, as [Outcomes](outcomes.html) defines |
+| `status` | `ready`, `completed`, or `cancelled`, as [Status](status.html) defines |
 | `statusReason` | Only on a cancelled Task, where the reason changes how it counts |
 | `intent` | `order` |
 | `for` | The participant's Patient, by its complete identifier |
@@ -47,9 +47,9 @@ Every occurrence carries these three inputs, once each:
 
 | Input | `type` | Value |
 |---|---|---|
-| `performanceWindow` | `performance-window` from [Grove Study Task Parameter](CodeSystem-grove-study-task-parameter.html) | `valuePeriod` with `start` and `end`, each with seconds and a time-zone offset, and `start` before `end` |
-| `enrollment` | `enrollment` from Grove Study Task Parameter | `valueReference` to the ResearchSubject with its complete `identifier`; a literal reference may accompany it |
-| `protocol` | `protocol` from Grove Study Task Parameter | `valueCanonical` with the exact `url|version` of the protocol revision whose action assigned the occurrence |
+| `performanceWindow` | `performance-window` from [Grove Study Task Input](CodeSystem-grove-study-task-input.html) | `valuePeriod` with `start` and `end`, each with seconds and a time-zone offset, and `start` before `end` |
+| `enrollment` | `enrollment` from Grove Study Task Input | `valueReference` to the ResearchSubject with its complete `identifier`; a literal reference may accompany it |
+| `protocol` | `protocol` from Grove Study Task Input | `valueCanonical` with the exact `url|version` of the protocol revision whose action assigned the occurrence |
 
 The input slicing of the base profile is open, so a derived profile can add the inputs of its component kind.
 The questionnaire Task adds one input and closes the slicing: it carries exactly these four inputs, once each.
@@ -82,7 +82,7 @@ The facts it was assigned with never change under it:
 
 Every retransmission of an occurrence preserves its identifier and these facts exactly as first sent; the same instant written with another offset is a different fact.
 A Task with a known identifier and different assignment facts is a conflicting reuse of the identifier and is rejected.
-Status changes and the result link of a questionnaire occurrence are the only changes an occurrence admits; [Outcomes](outcomes.html) lists the allowed transitions.
+Status changes and the result link of a questionnaire occurrence are the only changes an occurrence admits; [Status](status.html) lists the allowed transitions.
 
 Two occurrences with the same component revision and the same window, such as two check-ins assigned for the same time, have different identifiers and remain two occurrences.
 A later enrollment of the same participant is a different ResearchSubject with its own identifier, and occurrences assigned under it have new occurrence identifiers even when their component revision and window match an earlier occurrence.

@@ -6,9 +6,9 @@
 // SPDX-License-Identifier: MIT
 //
 
-CodeSystem: GroveStudyTaskParameterCS
-Id: grove-study-task-parameter
-Title: "Grove Study Task Parameter"
+CodeSystem: GroveStudyTaskInputCS
+Id: grove-study-task-input
+Title: "Grove Study Task Input"
 Description: "The type of one Task input that places an assigned occurrence of any component kind in its study context. The Questionnaire input of a questionnaire occurrence uses the Structured Data Capture code for that role."
 * insert GroveStudyExperimental
 * ^caseSensitive = true

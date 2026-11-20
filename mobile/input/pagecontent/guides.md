@@ -9,7 +9,7 @@ SPDX-License-Identifier: MIT
 The Grove FHIR Implementation Guides are a coordinated family of eleven packages.
 This guide, Mobile, is the hub of the measurement exchange: it defines the source-neutral profiles every adapter emits.
 Each adapter guide binds one platform or provider API to those shared profiles and states exactly which source types convert, which do not, and why.
-The Questionnaire and Study Interaction guides define instruments, responses, and assigned study tasks beside the measurement exchange.
+The Questionnaire and Study guides define instruments, responses, and assigned study tasks beside the measurement exchange.
 
 ### Guide responsibilities
 
@@ -25,7 +25,7 @@ The Questionnaire and Study Interaction guides define instruments, responses, an
 | [Oura](https://grovealliance.org/fhir/oura/) | The Oura specialization of the provider contract | Implementing the exact Oura source surface |
 | [Google Health](https://grovealliance.org/fhir/google-health/) | The Google Health API specialization of the provider contract | Implementing the exact Google source surface |
 | [Questionnaire](https://grovealliance.org/fhir/questionnaire/) | Instrument definition, response capture, and the validated pair contract | Defining instruments or accepting questionnaire responses |
-| [Study Interaction](https://grovealliance.org/fhir/study/) | Protocol and component revisions, assigned task occurrences, and their accepted results | Assigning study tasks or accepting their completions |
+| [Study](https://grovealliance.org/fhir/study/) | Protocol and component revisions, assigned task occurrences, and their accepted results | Assigning study tasks or accepting their completions |
 
 ### Select a source route
 

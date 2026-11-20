@@ -6111,10 +6111,10 @@
       "canonical": "https://grovealliance.org/fhir/study",
       "artifacts": [
         {
-          "fshName": "GroveStudyTaskParameterCS",
+          "fshName": "GroveStudyTaskInputCS",
           "fshType": "CodeSystem",
           "resourceType": "CodeSystem",
-          "id": "grove-study-task-parameter",
+          "id": "grove-study-task-input",
           "classification": "definition"
         },
         {
@@ -6139,10 +6139,10 @@
           "classification": "example"
         },
         {
-          "fshName": "GroveStudyDailyCheckInActivityExample",
+          "fshName": "GroveStudyDailyCheckInComponentExample",
           "fshType": "Instance",
           "resourceType": "ActivityDefinition",
-          "id": "GroveStudyDailyCheckInActivityExample",
+          "id": "GroveStudyDailyCheckInComponentExample",
           "classification": "example"
         },
         {
@@ -6181,10 +6181,10 @@
           "classification": "example"
         },
         {
-          "fshName": "GroveStudyWelcomeActivityExample",
+          "fshName": "GroveStudyWelcomeComponentExample",
           "fshType": "Instance",
           "resourceType": "ActivityDefinition",
-          "id": "GroveStudyWelcomeActivityExample",
+          "id": "GroveStudyWelcomeComponentExample",
           "classification": "example"
         },
         {
@@ -6195,10 +6195,10 @@
           "classification": "example"
         },
         {
-          "fshName": "GroveStudyActivity",
+          "fshName": "GroveStudyComponent",
           "fshType": "Profile",
           "resourceType": "StructureDefinition",
-          "id": "grove-study-activity",
+          "id": "grove-study-component",
           "classification": "definition"
         },
         {
@@ -6209,10 +6209,10 @@
           "classification": "definition"
         },
         {
-          "fshName": "GroveStudyQuestionnaireActivity",
+          "fshName": "GroveStudyQuestionnaireComponent",
           "fshType": "Profile",
           "resourceType": "StructureDefinition",
-          "id": "grove-study-questionnaire-activity",
+          "id": "grove-study-questionnaire-component",
           "classification": "definition"
         },
         {
