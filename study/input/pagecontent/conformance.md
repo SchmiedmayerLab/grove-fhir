@@ -47,25 +47,25 @@ Graph validation resolves the Task against the definitions and the response it l
 
 | Rule | Rejects |
 |---|---|
-| `study-task.definition` | A component revision that resolves to no ActivityDefinition, or to more than one |
-| `study-task.protocol` | A protocol revision that resolves to no PlanDefinition, or whose actions do not name the Task's component revision |
-| `study-task.instrument` | A questionnaire input that differs from the instrument the component revision pins, or that resolves to no Questionnaire |
-| `study-task.enrollment` | An enrollment identifier that resolves to no ResearchSubject, or to one for another participant |
-| `study-task.duplicate-occurrence` | Two Tasks with one occurrence identifier in one delivery |
-| `study-task.cancelled-after-window` | A cancelled Task last modified after its window ended |
-| `study-task.result-reference` | A result link that resolves to no response version in the delivery |
-| `study-task.result-subject` | A linked response about another participant |
-| `study-task.result-instrument` | A linked response to another instrument or another instrument version |
-| `study-task.result-status` | A linked response that is not `completed` or `amended`, such as a pending response presented as a completion, or an `amended` response as the first accepted result |
-| `study-task.result-window` | A linked `completed` response authored outside the performance window, or an `amended` one authored before it opened |
-| `study-task.result-part-of` | A response whose `partOf` references a Task |
-| `study-task.result-shared` | One response linked by two occurrences |
-| `study-task.occurrence-conflict` | A known occurrence identifier with different assignment facts |
-| `study-task.status-transition` | A transition [Outcomes](outcomes.html) does not allow |
-| `study-task.altered-replay` | A known occurrence repeated with its accepted status and result link but different content |
-| `study-task.altered-result` | An accepted response version repeated with different content |
-| `study-task.completion-conflict` | A completed occurrence linked to a response with another submission identifier |
-| `study-task.correction` | A changed result link to a new version that does not carry the status `amended`, that names another response resource, or that is authored before the version it corrects |
+| `study-task-definition` | A component revision that resolves to no ActivityDefinition, or to more than one |
+| `study-task-protocol` | A protocol revision that resolves to no PlanDefinition, or whose actions do not name the Task's component revision |
+| `study-task-instrument` | A questionnaire input that differs from the instrument the component revision pins, or that resolves to no Questionnaire |
+| `study-task-enrollment` | An enrollment identifier that resolves to no ResearchSubject, or to one for another participant |
+| `study-task-duplicate-occurrence` | Two Tasks with one occurrence identifier in one delivery |
+| `study-task-cancelled-after-window` | A cancelled Task last modified after its window ended |
+| `study-task-result-reference` | A result link that resolves to no response version in the delivery |
+| `study-task-result-subject` | A linked response about another participant |
+| `study-task-result-instrument` | A linked response to another instrument or another instrument version |
+| `study-task-result-status` | A linked response that is not `completed` or `amended`, such as a pending response presented as a completion, or an `amended` response as the first accepted result |
+| `study-task-result-window` | A linked `completed` response authored outside the performance window, or an `amended` one authored before it opened |
+| `study-task-result-part-of` | A response whose `partOf` references a Task |
+| `study-task-result-shared` | One response linked by two occurrences |
+| `study-task-occurrence-conflict` | A known occurrence identifier with different assignment facts |
+| `study-task-status-transition` | A transition [Outcomes](outcomes.html) does not allow |
+| `study-task-altered-replay` | A known occurrence repeated with its accepted status and result link but different content |
+| `study-task-altered-result` | An accepted response version repeated with different content |
+| `study-task-completion-conflict` | A completed occurrence linked to a response with another submission identifier |
+| `study-task-correction` | A changed result link to a new version that does not carry the status `amended`, that names another response resource, or that is authored before the version it corrects |
 
 Every linked response is also checked against its exact instrument with the paired Questionnaire validator, whose `pair-*` rules apply unchanged.
 An exact replay of an accepted occurrence is accepted again without a change.
